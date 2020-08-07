@@ -24,4 +24,6 @@ export const ExchangePair = styled(({ gridBorder, paddingCell, ...props }) => (
 ))`
   ${ChartSelectStyles}
   ${(props) => props.selectStyles}
+  border-radius: 0;
+  box-shadow: none;
 `

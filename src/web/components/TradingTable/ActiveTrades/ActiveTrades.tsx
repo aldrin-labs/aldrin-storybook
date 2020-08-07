@@ -665,6 +665,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
 
     const {
       tab,
+      theme,
       currencyPair,
       handleTabChange,
       show,
@@ -899,8 +900,13 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
           expandedRows={expandedRows}
           onChange={this.setExpandedRows}
           rowsWithHover={false}
-          style={{ borderRadius: 0, height: '100%', overflowX: 'scroll' }}
-          stylesForTable={{ backgroundColor: '#fff' }}
+          style={{
+            borderRadius: 0,
+            height: '100%',
+            overflowX: 'scroll',
+            backgroundColor: theme.palette.white.background,
+          }}
+          stylesForTable={{ backgroundColor: theme.palette.white.background }}
           defaultSort={{
             sortColumn: 'date',
             sortDirection: 'desc',
@@ -918,6 +924,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
             additionalBlock: (
               <PaginationBlock
                 {...{
+                  theme,
                   allKeys,
                   specificPair,
                   handleToggleAllKeys: !!cachedOrder
@@ -929,26 +936,31 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
                 }}
               />
             ),
-            paginationStyles: { width: 'calc(100% - 0.4rem)' },
+            paginationStyles: {
+              width: 'calc(100%)',
+              backgroundColor: theme.palette.white.background,
+              border: theme.palette.border.main,
+            },
           }}
           tableStyles={{
             headRow: {
-              borderBottom: '1px solid #e0e5ec',
+              borderBottom: theme.palette.border.main,
               boxShadow: 'none',
             },
             heading: {
               fontSize: '1rem',
               fontWeight: 'bold',
-              backgroundColor: '#fff',
-              color: '#16253D',
+              backgroundColor: theme.palette.white.background,
+              color: theme.palette.dark.main,
               boxShadow: 'none',
             },
             cell: {
-              color: '#16253D',
+              color: theme.palette.dark.main,
               fontSize: '1rem', // 1.2 if bold
               fontWeight: 'bold',
-              letterSpacing: '1px',
-              borderBottom: '1px solid #e0e5ec',
+              letterSpacing: '.1rem',
+              borderBottom: theme.palette.border.main,
+              backgroundColor: theme.palette.white.background,
               boxShadow: 'none',
               paddingTop: '.5rem',
               paddingBottom: '.5rem',

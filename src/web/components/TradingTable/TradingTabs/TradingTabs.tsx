@@ -17,6 +17,7 @@ import { getActiveStrategies } from '@core/graphql/queries/chart/getActiveStrate
 
 const TradingTabs = ({
   tab,
+  theme,
   handleTabChange,
   marketType,
   getOpenOrderHistoryQuery: {
@@ -40,7 +41,6 @@ const TradingTabs = ({
   showSmartTradesFromAllAccounts,
   ...props
 }: IProps) => {
-
   const openOrdersLength = getOpenOrderHistory.orders.filter((order) =>
     filterOpenOrders({
       order,
@@ -64,8 +64,9 @@ const TradingTabs = ({
 
   return (
     <>
-      <TitleTabsGroup>
+      <TitleTabsGroup theme={theme}>
         <TitleTab
+          theme={theme}
           active={tab === 'activeTrades'}
           onClick={() => handleTabChange('activeTrades')}
         >
@@ -77,6 +78,7 @@ const TradingTabs = ({
             : ''}
         </TitleTab>
         <TitleTab
+          theme={theme}
           active={tab === 'strategiesHistory'}
           onClick={() => handleTabChange('strategiesHistory')}
         >
@@ -84,6 +86,7 @@ const TradingTabs = ({
         </TitleTab>
         {!isSPOTMarketType(marketType) && (
           <TitleTab
+            theme={theme}
             active={tab === 'positions'}
             onClick={() => {
               handleTabChange('positions')
@@ -99,6 +102,7 @@ const TradingTabs = ({
         )}
 
         <TitleTab
+          theme={theme}
           active={tab === 'openOrders'}
           onClick={() => handleTabChange('openOrders')}
         >
@@ -110,12 +114,14 @@ const TradingTabs = ({
             : ''}
         </TitleTab>
         <TitleTab
+          theme={theme}
           active={tab === 'orderHistory'}
           onClick={() => handleTabChange('orderHistory')}
         >
           Order history
         </TitleTab>
         <TitleTab
+          theme={theme}
           active={tab === 'tradeHistory'}
           onClick={() => handleTabChange('tradeHistory')}
         >
@@ -124,6 +130,7 @@ const TradingTabs = ({
 
         {isSPOTMarketType(marketType) && (
           <TitleTab
+            theme={theme}
             active={tab === 'funds'}
             onClick={() => handleTabChange('funds')}
           >

@@ -12,11 +12,11 @@ export const UpdateFuturesBalancesComponent = ({ ...props }: IProps) => {
   const { keyId, updateFuturesBalancesHandler } = props
 
   return (
-    <>
+    <div style={{ position: 'absolute', right: '1rem', cursor: 'pointer' }}>
       {loading ? (
         <Loading size={16} style={{ height: '16px' }} />
       ) : (
-        <Grid style={{ cursor: 'pointer' }}>
+        <Grid>
           <TooltipCustom
             PopperProps={{ disablePortal: false }}
             withSpan={true}
@@ -37,6 +37,6 @@ export const UpdateFuturesBalancesComponent = ({ ...props }: IProps) => {
           />
         </Grid>
       )}
-    </>
+    </div>
   )
 }

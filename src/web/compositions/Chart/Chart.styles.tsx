@@ -117,10 +117,20 @@ export const PanelWrapper = styled.div`
 export const CustomCard = styled(Card)`
   width: 100%;
   height: 100%;
-  background-color: #fff;
-  border: 0.1rem solid #e0e5ec;
-  border-radius: 0.75rem;
-  box-shadow: 0px 0px 1.2rem rgba(8, 22, 58, 0.1);
+  background-color: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.white &&
+      props.theme.palette.white.background) ||
+    '#fff'};
+  border: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.border &&
+      props.theme.palette.border.main) ||
+    '.1rem solid #e0e5ec'};
+  border-radius: 0;
+  box-shadow: none;
 `
 
 export const PanelCard = styled.div`
@@ -173,7 +183,10 @@ export const PanelCardSubValue = styled.span`
 `
 
 // depth chart container
-export const DepthChartContainer = styled(CustomCard)``
+export const DepthChartContainer = styled(CustomCard)`
+  border-bottom: 0;
+  border-right: 0;
+`
 
 export const RangesContainer = styled(Card)`
   width: 100%;
@@ -205,6 +218,8 @@ export const TablesBlockWrapper = styled(({ background = '', ...rest }) => (
 export const OrderbookContainer = styled(({ background = '', ...rest }) => (
   <CustomCard {...rest} />
 ))`
+  border-right: 0;
+
   && {
     overflow: hidden;
   }
@@ -243,12 +258,14 @@ export const WatchListContainer = styled(Card)`
 export const ChartGridContainer = styled(({ MASTER_BUILD, ...rest }) => (
   <Grid {...rest} />
 ))`
-  position: absolute;
+  position: relative;
   display: flex;
   flex: auto;
   align-items: center;
   width: calc(100% - 2rem);
   height: 4%;
+  padding: 0;
+  margin: 1rem;
 
   && {
     padding: 0;
@@ -265,8 +282,8 @@ export const ChartGridContainer = styled(({ MASTER_BUILD, ...rest }) => (
 export const TablesContainer = styled(Grid)`
   position: relative;
   display: flex;
+  padding: 0;
 
-  top: 2%;
   // height: calc(60vh - 59px - ${CSS_CONFIG.navBarHeight}px);
   height: 100%;
   overflow: hidden;
@@ -300,11 +317,10 @@ export const TradingTerminalContainer = styled(
       ? '17%'
       : props.hideDepthChart
       ? '35%'
-      : '45%'};
+      : '41.66667%'};
   overflow: hidden;
 
   flex-direction: column;
-  padding: 0 0 0 0.4rem;
 
   @media (max-width: 1080px) {
     flex-wrap: wrap;
@@ -329,25 +345,16 @@ export const TopChartsContainer = styled(
   flex-grow: 0;
   max-width: 100%;
   flex-basis: 100%;
-  top: calc(4% + 0.8rem);
   height: ${(props) =>
-    props.isDefaultTerminalViewMode
-      ? 'calc(59% - .8rem)'
-      : 'calc(48% - .8rem)'};
+    props.isDefaultTerminalViewMode ? 'calc(60%)' : 'calc(50%)'};
   @media screen and (max-width: 1440px) {
-    top: calc(4% + 0.8rem);
     height: ${(props) =>
-      props.isDefaultTerminalViewMode
-        ? 'calc(59% - .8rem)'
-        : 'calc(48% - .8rem)'};
+      props.isDefaultTerminalViewMode ? 'calc(60%)' : 'calc(50%)'};
   }
 
   @media screen and (max-width: 1140px) {
-    top: calc(2.5% + 0.8rem);
     height: ${(props) =>
-      props.isDefaultTerminalViewMode
-        ? 'calc(60.5% - .8rem)'
-        : 'calc(49.5% - .8rem)'};
+      props.isDefaultTerminalViewMode ? 'calc(61%)' : 'calc(51%)'};
   }
 `
 
@@ -374,7 +381,7 @@ export const ChartsContainer = styled(
       ? '83%'
       : props.hideDepthChart
       ? '65%'
-      : '55%'};
+      : '58.33333%'};
   justify-content: flex-end;
   flex-direction: column;
   border-radius: 0;
@@ -382,18 +389,16 @@ export const ChartsContainer = styled(
     flex-wrap: nowrap;
   }
 
-  padding: 0 0.4rem 0.4rem 0;
-  background-color: #f9fbfd;
+  background-color: ${(props) => props.theme.palette.white.background};
 `
 
 export const TradingTabelContainer = styled(
   ({ isDefaultTerminalViewMode, ...rest }) => <TablesContainer {...rest} />
 )`
   // 32vh was
-  background-color: #f9fbfd;
-  padding: 0.4rem 0.4rem 0 0;
+  background-color: ${(props) => props.theme.palette.white.background};
   position: relative;
-  height: ${(props) => props.isDefaultTerminalViewMode && '37%'};
+  height: ${(props) => props.isDefaultTerminalViewMode && '40%'};
   justify-content: flex-start;
   flex-direction: column;
   overflow: hidden;
@@ -403,26 +408,6 @@ export const TradingTabelContainer = styled(
   }
 
   flex: auto;
-`
-
-export const TogglerContainer = styled(Grid)`
-  align-items: center;
-  height: 6.4rem;
-  width: 100%;
-`
-
-export const Toggler = styled.div`
-  overflow: hidden;
-  width: auto;
-  min-height: 100%;
-  background: #f9fbfd;
-  font-weight: bold;
-
-  text-transform: uppercase;
-  display: flex;
-  flex-grow: 100;
-  align-items: center;
-  justify-content: flex-end;
 `
 
 export const StyledSwitch = styled(({ isActive, ...rest }) => (
@@ -445,10 +430,10 @@ export const Container = styled(Grid)`
   // - ( menu + margin )
   height: calc(100vh - 3.8rem);
   width: 100%;
-  padding: 1rem;
   margin: 0;
+  padding: 0;
   font-family: DM Sans;
-  background-color: #f9fbfd;
+  background-color: ${(props) => props.theme.palette.white.background};
 
   @media (max-width: 1400px) {
     height: calc(100vh - 5rem);
@@ -492,15 +477,9 @@ export const WatchSubvalue = styled.span`
 export const BalancesContainer = styled(
   ({ isDefaultTerminalViewMode, ...rest }) => <Grid {...rest} />
 )`
-  top: 2%;
   position: relative;
-  height: ${(props) => (props.isDefaultTerminalViewMode ? '37%' : '48%')};
-  padding: ${({
-    isDefaultTerminalViewMode,
-  }: {
-    isDefaultTerminalViewMode: boolean
-  }) =>
-    isDefaultTerminalViewMode ? '.4rem .4rem 0 .4rem' : '.4rem .4rem 0 0'};
+  padding: 0;
+  height: ${(props) => (props.isDefaultTerminalViewMode ? '40%' : '50%')};
 `
 
 export const SmartTerminalContainer = styled(Grid)`

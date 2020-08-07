@@ -275,8 +275,8 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
               curve={'curveStep'}
               onNearestX={this.onNearestOrderX}
               style={{
-                fill: 'rgba(255, 163, 163, 1)',
-                stroke: '#FF3716',
+                fill: theme.palette.depthChart.redBackground,
+                stroke: theme.palette.depthChart.redStroke,
                 strokeWidth: '.2rem',
                 transform: 'translate(0)',
               }}
@@ -432,8 +432,8 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
               curve={'curveStep'}
               onNearestX={this.onNearestSpreadX}
               style={{
-                fill: 'rgba(41, 175, 128, .65)',
-                stroke: '#13901F',
+                fill: theme.palette.depthChart.greenBackground,
+                stroke: theme.palette.depthChart.greenStroke,
                 strokeWidth: '.2rem',
                 transform: 'translate(0)',
               }}

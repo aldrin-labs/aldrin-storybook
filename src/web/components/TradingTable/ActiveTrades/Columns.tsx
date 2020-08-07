@@ -6,6 +6,7 @@ dayjs.extend(localizedFormat)
 
 import { InputTitle } from '@sb/components/TraidingTerminal/styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { Theme } from '@material-ui/core'
 
 export const SubColumnTitle = styled(InputTitle)`
   display: inline-block;
@@ -21,14 +22,14 @@ export const SubColumnValue = styled(InputTitle)`
   width: 50%;
   padding: 0.4rem 0rem 0.4rem 0rem;
   color: ${(props: { textAlign?: string; color?: string }) =>
-    props.color || '#16253D'};
+    props.color || props.theme.palette.dark.main};
 `
 
 export const BlockContainer = styled.div`
   width: 25%;
   display: inline-block;
   padding: 0 2.5%;
-  border-right: 0.1rem solid #e0e5ec;
+  border-right: ${(props) => props.theme.palette.border.main};
 `
 
 export const EntryOrderColumn = ({
@@ -46,6 +47,7 @@ export const EntryOrderColumn = ({
   editTrade,
   haveEdit,
   activatePrice,
+  theme,
 }: {
   price: number
   pair: string
@@ -64,9 +66,10 @@ export const EntryOrderColumn = ({
   }
   haveEdit: boolean
   editTrade: () => void
+  theme: Theme
 }) => {
   return (
-    <BlockContainer>
+    <BlockContainer theme={theme}>
       <div
         style={{
           width: '100%',
@@ -75,7 +78,7 @@ export const EntryOrderColumn = ({
           alignItems: 'center',
         }}
       >
-        <SubColumnValue>entry point</SubColumnValue>
+        <SubColumnValue theme={theme}>entry point</SubColumnValue>
         {haveEdit && (
           <SubColumnTitle style={{ width: 'auto', padding: '0' }}>
             <BtnCustom
@@ -102,12 +105,14 @@ export const EntryOrderColumn = ({
 
       <div>
         <SubColumnTitle>pair</SubColumnTitle>
-        <SubColumnValue textAlign={'right'}>{pair}</SubColumnValue>
+        <SubColumnValue theme={theme} textAlign={'right'}>
+          {pair}
+        </SubColumnValue>
       </div>
 
       <div>
         <SubColumnTitle>side</SubColumnTitle>
-        <SubColumnValue textAlign={'right'}>
+        <SubColumnValue theme={theme} textAlign={'right'}>
           <span style={{ color: side === 'buy' ? green : red }}>{side}</span>/
           {order}
         </SubColumnValue>
@@ -115,7 +120,11 @@ export const EntryOrderColumn = ({
 
       <div style={{ display: 'flex' }}>
         <SubColumnTitle>price</SubColumnTitle>
-        <SubColumnValue style={{ display: 'block' }} textAlign={'right'}>
+        <SubColumnValue
+          theme={theme}
+          style={{ display: 'block' }}
+          textAlign={'right'}
+        >
           {trailing ? (
             <span>
               Trailing <span style={{ color: green }}>{trailing}%</span>
@@ -133,12 +142,16 @@ export const EntryOrderColumn = ({
 
       <div>
         <SubColumnTitle>amount</SubColumnTitle>
-        <SubColumnValue textAlign={'right'}>{amount}</SubColumnValue>
+        <SubColumnValue theme={theme} textAlign={'right'}>
+          {amount}
+        </SubColumnValue>
       </div>
 
       <div>
         <SubColumnTitle>total</SubColumnTitle>
-        <SubColumnValue textAlign={'right'}>{total.toFixed(2)}</SubColumnValue>
+        <SubColumnValue theme={theme} textAlign={'right'}>
+          {total.toFixed(2)}
+        </SubColumnValue>
       </div>
     </BlockContainer>
   )
@@ -157,6 +170,7 @@ export const TakeProfitColumn = ({
   editTrade,
   enableEdit,
   haveEdit,
+  theme,
 }: {
   price: number
   targets?: any
@@ -173,9 +187,10 @@ export const TakeProfitColumn = ({
   haveEdit: boolean
   enableEdit: boolean
   editTrade: () => void
+  theme: Theme
 }) => {
   return (
-    <BlockContainer style={{ position: 'absolute', left: '25%' }}>
+    <BlockContainer theme={theme} style={{ position: 'absolute', left: '25%' }}>
       <div
         style={{
           width: '100%',
@@ -184,7 +199,7 @@ export const TakeProfitColumn = ({
           alignItems: 'center',
         }}
       >
-        <SubColumnValue>take profit</SubColumnValue>
+        <SubColumnValue theme={theme}>take profit</SubColumnValue>
         {haveEdit && (
           <SubColumnTitle style={{ width: 'auto', padding: '0' }}>
             <BtnCustom
@@ -209,7 +224,7 @@ export const TakeProfitColumn = ({
       </div>
       <div>
         <SubColumnTitle>profit</SubColumnTitle>
-        <SubColumnValue color={green} textAlign={'right'}>
+        <SubColumnValue theme={theme} color={green} textAlign={'right'}>
           {trailing
             ? 'trailing'
             : targets[0] && targets[0].amount
@@ -222,26 +237,34 @@ export const TakeProfitColumn = ({
 
       <div>
         <SubColumnTitle>targets</SubColumnTitle>
-        <SubColumnValue textAlign={'right'}>
+        <SubColumnValue theme={theme} textAlign={'right'}>
           {targets.length || '-'}
         </SubColumnValue>
       </div>
 
       <div>
         <SubColumnTitle>order</SubColumnTitle>
-        <SubColumnValue textAlign={'right'}>{order}</SubColumnValue>
+        <SubColumnValue theme={theme} textAlign={'right'}>
+          {order}
+        </SubColumnValue>
       </div>
 
       <div>
         <SubColumnTitle>trailing</SubColumnTitle>
-        <SubColumnValue textAlign={'right'} color={trailing ? green : red}>
+        <SubColumnValue
+          theme={theme}
+          textAlign={'right'}
+          color={trailing ? green : red}
+        >
           {trailing ? 'on' : 'off'}
         </SubColumnValue>
       </div>
 
       {/* <div>
         <SubColumnTitle>timeout</SubColumnTitle>
-        <SubColumnValue textAlign={'right'}>
+        <SubColumnValue 
+theme={theme} 
+ theme={theme} theme={theme} textAlign={'right'}>
           {timeoutProfit || '-'} / {timeoutProfitable || '-'}
         </SubColumnValue>
       </div> */}
@@ -261,6 +284,7 @@ export const StopLossColumn = ({
   editTrade,
   haveEdit,
   enableEdit,
+  theme,
 }: {
   price: number
   forced?: boolean
@@ -276,9 +300,10 @@ export const StopLossColumn = ({
   haveEdit: boolean
   enableEdit: boolean
   editTrade: () => void
+  theme: Theme
 }) => {
   return (
-    <BlockContainer style={{ position: 'absolute', left: '50%' }}>
+    <BlockContainer theme={theme} style={{ position: 'absolute', left: '50%' }}>
       <div
         style={{
           width: '100%',
@@ -287,7 +312,7 @@ export const StopLossColumn = ({
           alignItems: 'center',
         }}
       >
-        <SubColumnValue>stop loss</SubColumnValue>
+        <SubColumnValue theme={theme}>stop loss</SubColumnValue>
         {haveEdit && (
           <SubColumnTitle style={{ width: 'auto', padding: '0' }}>
             <BtnCustom
@@ -312,26 +337,28 @@ export const StopLossColumn = ({
       </div>
       <div>
         <SubColumnTitle>loss</SubColumnTitle>
-        <SubColumnValue textAlign={'right'} color={red}>
+        <SubColumnValue theme={theme} textAlign={'right'} color={red}>
           -{price}%
         </SubColumnValue>
       </div>
 
       <div>
         <SubColumnTitle>forced</SubColumnTitle>
-        <SubColumnValue textAlign={'right'} color={red}>
+        <SubColumnValue theme={theme} textAlign={'right'} color={red}>
           {!!forced ? `-${forced}%` : 'off'}
         </SubColumnValue>
       </div>
 
       <div>
         <SubColumnTitle>order</SubColumnTitle>
-        <SubColumnValue textAlign={'right'}>{order}</SubColumnValue>
+        <SubColumnValue theme={theme} textAlign={'right'}>
+          {order}
+        </SubColumnValue>
       </div>
 
       <div>
         <SubColumnTitle>timeout</SubColumnTitle>
-        <SubColumnValue textAlign={'right'}>
+        <SubColumnValue theme={theme} textAlign={'right'}>
           {/* {timeoutWhenLoss || '-'} /  */}
           {timeoutLoss || '-'}
         </SubColumnValue>
@@ -340,17 +367,17 @@ export const StopLossColumn = ({
   )
 }
 
-export const DateColumn = ({ createdAt }) => {
+export const DateColumn = ({ createdAt, theme }) => {
   return (
-    <BlockContainer style={{ position: 'absolute', right: '0' }}>
+    <BlockContainer theme={theme} style={{ position: 'absolute', right: '0' }}>
       {dayjs(createdAt)
         .format('LT')
         .toLowerCase() !== 'invalid date' ? (
         <div style={{ textAlign: 'right' }}>
-          <span style={{ display: 'block', color: '#16253D' }}>
+          <span style={{ display: 'block', color: theme.palette.dark.main }}>
             {String(dayjs(createdAt).format('ll'))}
           </span>
-          <span style={{ color: '#7284A0' }}>
+          <span style={{ color: theme.palette.grey.text }}>
             {dayjs(createdAt).format('LT')}
           </span>
         </div>
@@ -368,6 +395,7 @@ export const StatusColumn = ({
   green,
   red,
   blue,
+  theme,
 }: {
   status: string[]
   profitAmount: number
@@ -378,19 +406,27 @@ export const StatusColumn = ({
     first: string
     second: string
   }
+  theme: Theme
 }) => {
   return (
     <>
       <div>
         <SubColumnTitle>status</SubColumnTitle>
-        <SubColumnValue style={{ textTransform: 'none' }} color={status[1]}>
+        <SubColumnValue
+          theme={theme}
+          style={{ textTransform: 'none' }}
+          color={status[1]}
+        >
           {status[0]}
         </SubColumnValue>
       </div>
 
       <div>
         <SubColumnTitle>pnl (roe)</SubColumnTitle>
-        <SubColumnValue color={profitPercentage > 0 ? green : red}>
+        <SubColumnValue
+          theme={theme}
+          color={profitPercentage > 0 ? green : red}
+        >
           {profitPercentage && profitAmount
             ? `${+profitAmount.toFixed(8)} / ${+profitPercentage.toFixed(2)}%`
             : '-'}

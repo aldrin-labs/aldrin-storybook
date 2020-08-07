@@ -7,7 +7,7 @@ export const customAquaScrollBar = `
   }
 
   &::-webkit-scrollbar-track {
-    background: rgba(45, 49, 54, 0.1);
+    background: transparent;
   }
 
   &::-webkit-scrollbar-thumb {
@@ -42,5 +42,5 @@ export const LegendContainer = styled.div`
   background-color: #869eb180;
   top: 0px;
   left: 10%;
-  transition: ${(props: {transition: number}) => props.transition};
+  transition: ${(props: { transition: number }) => props.transition};
 `

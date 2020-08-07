@@ -4,6 +4,7 @@ import { OrderBookTable } from '../Tables/Tables'
 import { OrderbookContainer } from '../Chart.styles'
 
 export const OrderBook = ({
+  theme,
   chartProps,
   changeTable,
   aggregation,
@@ -23,10 +24,11 @@ export const OrderBook = ({
   marketOrders,
 }) => {
   return (
-    <OrderbookContainer key={`orderbook_table`}>
+    <OrderbookContainer key={`orderbook_table`} theme={theme}>
       <OrderBookTable
         {...{
           quote,
+          theme,
           currencyPair: symbol,
           exchange,
           aggregation,

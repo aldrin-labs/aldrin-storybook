@@ -12,8 +12,7 @@ export const TablesBlockWrapper = styled(Grid)`
     isDefaultTerminalViewMode,
   }: {
     isDefaultTerminalViewMode: boolean
-  }) => (isDefaultTerminalViewMode ? '37%' : '48%')};
-  top: 2%;
+  }) => (isDefaultTerminalViewMode ? '40%' : '50%')};
 
   && {
     box-shadow: none !important;
@@ -95,8 +94,8 @@ export const SellTab = styled(StyledTab)`
 export const TerminalHeader = styled.div`
   width: 100%;
   position: relative;
-  background-color: #f2f4f6;
-  border-bottom: 0.1rem solid #e0e5ec;
+  background-color: ${(props) => props.theme.palette.grey.main};
+  border-bottom: ${(props) => props.theme.palette.border.main};
 `
 
 export const TerminalMainGrid = styled(({ marketType, ...rest }) => (
@@ -111,7 +110,8 @@ export const FullHeightGrid = styled(({ needBorderRight, ...rest }) => (
   <Grid {...rest} />
 ))`
   height: 100%;
-  border-right: ${(props) => props.needBorderRight && '.1rem solid #e0e5ec;'};
+  border-right: ${(props) =>
+    props.needBorderRight && props.theme.palette.border.main};
 `
 
 export const TerminalModeButton = styled(({ isActive, children, ...rest }) => (
@@ -135,13 +135,20 @@ export const TerminalModeButton = styled(({ isActive, children, ...rest }) => (
   font-weight: normal;
   letter-spacing: 0.05rem;
   width: 33.3%;
-  background-color: ${(props) => (props.isActive ? '#5C8CEA' : '#f2f4f6')};
-  color: ${(props) => (props.isActive ? '#fff' : '#16253D')};
-  border: ${(props) =>
-    props.isActive ? '.1rem solid #5C8CEA' : '.1rem solid #f2f4f6'};
+  color: ${(props: { active: boolean; theme: Theme }) =>
+    props.active
+      ? props.theme.palette.button.color
+      : props.theme.palette.dark.main};
+  background-color: ${(props: { active: boolean; theme: Theme }) =>
+    props.active
+      ? props.theme.palette.grey.border
+      : props.theme.palette.grey.main};
+  border: none;
+  border-right: ${(props) => props.theme.palette.border.main};
   text-transform: none;
   white-space: nowrap;
-  padding: 0.7rem 0 0.5rem 0;
+  padding: 1rem 0;
+  line-height: 1rem;
 
   &:hover {
     cursor: pointer;
@@ -152,7 +159,7 @@ export const TerminalModeButton = styled(({ isActive, children, ...rest }) => (
   }
 
   @media (max-width: 1600px) {
-    padding: 0.7rem 2rem 0.5rem 2rem;
+    padding: 1rem 2rem;
   }
 `
 
@@ -165,7 +172,12 @@ export const TradingMenuContainer = styled.div`
 export const LeverageContainer = styled(TradingMenuContainer)`
   margin: 0.2rem 0;
   padding: 0.5rem;
-  border-left: 0.1rem solid #e0e5ec;
+  border-left: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.border &&
+      props.theme.palette.border.main) ||
+    '.1rem solid #e0e5ec'};
 `
 
 export const LeverageLabel = styled.label`
@@ -174,7 +186,12 @@ export const LeverageLabel = styled.label`
   text-transform: uppercase;
   text-align: center;
   letter-spacing: 0.05rem;
-  color: #16253d;
+  color: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.dark &&
+      props.theme.palette.dark.main) ||
+    '#16253D'};
 `
 
 export const LeverageTitle = styled(LeverageLabel)`
@@ -188,17 +205,38 @@ export const SettingsContainer = styled(TradingMenuContainer)`
 `
 
 export const SettingsLabel = styled(LeverageLabel)`
-  color: #7284a0;
+  color: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.grey &&
+      props.theme.palette.grey.light) ||
+    '#7284a0'};
 `
 
 export const StyledSelect = styled.select`
   width: 100%;
-  background: ${(props) => !props.disabled && '#ffffff'};
-  border: 0.1rem solid #e0e5ec;
+  background: ${(props) =>
+    (!props.disabled &&
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.white &&
+        props.theme.palette.white.background)) ||
+    '#16253D'};
+  border: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.border &&
+      props.theme.palette.border.main) ||
+    '.1rem solid #e0e5ec'};
   border-radius: 0.2rem;
   padding: 0.2rem;
   margin: 0 0.5rem;
-  color: #7284a0;
+  color: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.grey &&
+      props.theme.palette.grey.light) ||
+    '#7284a0'};
   font-weight: bold;
   font-size: 1rem;
   text-align: center;

@@ -9,7 +9,7 @@ export const SelectR = styled(ReactSelectComponent)`
 
 export const SelectContainer = styled.div`
   margin-left: 1.12rem;
-  border-radius: 24px;
+  border-radius: 0;
   border: 2px solid ${(props: { border: string }) => props.border};
   padding: 0 16px;
   height: 38px;
@@ -19,5 +19,5 @@ export const SelectContainer = styled.div`
 `
 
 export const OptionContainer = styled.div`
-  display: flex
+  display: flex;
 `

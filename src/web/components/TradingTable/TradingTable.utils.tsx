@@ -47,8 +47,8 @@ export const CloseButton = ({
       size={`small`}
       disabled={isCancelled}
       style={{
-        color: isCancelled ? 'grey' : '#DD6956',
-        borderColor: isCancelled ? 'grey' : '#DD6956',
+        color: isCancelled ? 'grey' : theme.palette.red.main,
+        borderColor: isCancelled ? 'grey' : theme.palette.red.main,
       }}
       onClick={() => {
         onClick()
@@ -244,6 +244,7 @@ type IStatus = {
 }
 
 const getActiveOrderStatus = ({
+  theme,
   strategy,
   state,
   profitPercentage,
@@ -253,10 +254,10 @@ const getActiveOrderStatus = ({
 ] => {
   if (strategy.conditions.isTemplate) {
     if (strategy.conditions.templateStatus === 'enabled') {
-      return ['Waiting alert', '#29AC80']
+      return ['Waiting alert', theme.palette.green.main]
     }
     if (strategy.conditions.templateStatus === 'paused') {
-      return ['On pause', '#5C8CEA']
+      return ['On pause', theme.palette.blue.background]
     }
   }
 
@@ -264,31 +265,31 @@ const getActiveOrderStatus = ({
     strategy.conditions.hedging &&
     strategy.conditions.hedgeStrategyId === null
   ) {
-    return ['Waiting hedge', '#29AC80']
+    return ['Waiting hedge', theme.palette.green.main]
   }
 
   if (state && state.state && state.state !== 'WaitForEntry') {
     const { state: status } = state
 
     if (status === 'TrailingEntry') {
-      return ['Trailing entry', '#29AC80']
+      return ['Trailing entry', theme.palette.green.main]
     }
 
     if (status === 'Timeout') {
-      return ['Timeout', '#29AC80']
+      return ['Timeout', theme.palette.green.main]
     }
 
     // if (status === 'InEntry') {
-    //   return ['Active', '#29AC80']
+    //   return ['Active', theme.palette.green.main]
     // }
 
     if (profitPercentage > 0) {
-      return ['In Profit', '#29AC80']
+      return ['In Profit', theme.palette.green.main]
     } else {
-      return ['In Loss', '#DD6956']
+      return ['In Loss', theme.palette.red.main]
     }
   } else {
-    return ['Preparing', '#5C8CEA']
+    return ['Preparing', theme.palette.blue.background]
   }
 }
 
@@ -441,7 +442,7 @@ export const combinePositionsTable = ({
           index: {
             render: i + 1,
             rowspan: 2,
-            color: '#7284A0',
+            color: theme.palette.grey.light,
           },
           id: el._id,
           pair: {
@@ -464,7 +465,7 @@ export const combinePositionsTable = ({
                   style={{
                     display: 'block',
                     textTransform: 'uppercase',
-                    color: side === 'buy long' ? green.new : red.new,
+                    color: side === 'buy long' ? green.main : red.main,
                   }}
                 >
                   {side}
@@ -510,7 +511,7 @@ export const combinePositionsTable = ({
                       width: '1.5rem',
                       height: '1.5rem',
                       marginLeft: '.5rem',
-                      fill: '#0B1FD1',
+                      fill: theme.palette.blue.main,
                     }}
                   />
                 )}
@@ -549,11 +550,15 @@ export const combinePositionsTable = ({
           adl: {
             render: (
               <div style={{ display: 'flex', height: '2rem' }}>
-                <AdlIndicator color={'#29AC80'} adl={adl} i={0} />
+                <AdlIndicator
+                  color={theme.palette.green.main}
+                  adl={adl}
+                  i={0}
+                />
                 <AdlIndicator color={'#A2AC29'} adl={adl} i={1} />
                 <AdlIndicator color={'#F3BA2F'} adl={adl} i={2} />
                 <AdlIndicator color={'#F38D2F'} adl={adl} i={3} />
-                <AdlIndicator color={'#DD6956'} adl={adl} i={4} />
+                <AdlIndicator color={theme.palette.red.main} adl={adl} i={4} />
               </div>
             ),
           },
@@ -572,8 +577,9 @@ export const combinePositionsTable = ({
           profit: {
             render: marketPrice ? (
               <SubColumnValue
+                theme={theme}
                 style={{ whiteSpace: 'nowrap' }}
-                color={profitPercentage > 0 ? green.new : red.new}
+                color={profitPercentage > 0 ? green.main : red.main}
               >
                 {`${profitAmount < 0 ? '-' : ''}${Math.abs(
                   Number(profitAmount.toFixed(3))
@@ -594,6 +600,7 @@ export const combinePositionsTable = ({
             render: (
               <div>
                 <SubRow
+                  theme={theme}
                   positionId={el._id}
                   getVariables={getVariables}
                   priceFromOrderbook={priceFromOrderbook}
@@ -775,6 +782,7 @@ export const combineActiveTradesTable = ({
         strategy: el,
         state: el.state,
         profitPercentage,
+        theme,
       })
 
       const isErrorInOrder = !!msg
@@ -784,6 +792,7 @@ export const combineActiveTradesTable = ({
         pair: {
           render: (
             <SubColumnValue
+              theme={theme}
               onClick={(e) => {
                 handlePairChange(pair)
               }}
@@ -796,7 +805,10 @@ export const combineActiveTradesTable = ({
         },
         side: {
           render: (
-            <SubColumnValue color={side === 'buy' ? green.new : red.new}>
+            <SubColumnValue
+              theme={theme}
+              color={side === 'buy' ? green.main : red.main}
+            >
               {marketType === 0
                 ? side
                 : side === 'buy'
@@ -811,19 +823,19 @@ export const combineActiveTradesTable = ({
         },
         entryPrice: {
           render: entryPrice ? (
-            <SubColumnValue>
+            <SubColumnValue theme={theme}>
               {entryPrice} {pairArr[1]}
             </SubColumnValue>
           ) : !!entryDeviation ? (
-            <SubColumnValue>
-              <div style={{ color: '#7284A0' }}>trailing</div>{' '}
+            <SubColumnValue theme={theme}>
+              <div style={{ color: theme.palette.grey.light }}>trailing</div>{' '}
               <div>
-                <span style={{ color: '#7284A0' }}>from</span>{' '}
+                <span style={{ color: theme.palette.grey.light }}>from</span>{' '}
                 {stripDigitPlaces(activatePrice, 8)}
               </div>
             </SubColumnValue>
           ) : !!entryOrderPrice ? (
-            <SubColumnValue>
+            <SubColumnValue theme={theme}>
               {stripDigitPlaces(entryOrderPrice, 8)} {pairArr[1]}
             </SubColumnValue>
           ) : (
@@ -836,7 +848,7 @@ export const combineActiveTradesTable = ({
         },
         quantity: {
           render: (
-            <SubColumnValue>
+            <SubColumnValue theme={theme}>
               {stripDigitPlaces(
                 amount,
                 marketType === 0 ? 8 : quantityPrecision
@@ -851,7 +863,7 @@ export const combineActiveTradesTable = ({
         },
         takeProfit: {
           render: (
-            <SubColumnValue color={green.new}>
+            <SubColumnValue theme={theme} color={green.main}>
               {exitLevels[0] &&
               exitLevels[0].activatePrice &&
               exitLevels[0].entryDeviation ? (
@@ -863,7 +875,7 @@ export const combineActiveTradesTable = ({
                   <div>
                     {exitLevels.map((level, i) =>
                       i < 4 ? (
-                        <span style={{ color: '#7284A0' }}>
+                        <span style={{ color: theme.palette.grey.light }}>
                           {level.amount}%{' '}
                           {i === 3 || i + 1 === exitLevels.length ? '' : '/ '}
                         </span>
@@ -893,7 +905,7 @@ export const combineActiveTradesTable = ({
         stopLoss: {
           render:
             stopLoss || hedgeLossDeviation ? (
-              <SubColumnValue color={red.new}>
+              <SubColumnValue theme={theme} color={red.main}>
                 {stopLoss || hedgeLossDeviation}%
               </SubColumnValue>
             ) : (
@@ -914,8 +926,11 @@ export const combineActiveTradesTable = ({
               !!currentPrice &&
               entryOrderPrice) ? (
               <SubColumnValue
+                theme={theme}
                 color={
-                  profitPercentage > 0 || templatePnl > 0 ? green.new : red.new
+                  profitPercentage > 0 || templatePnl > 0
+                    ? green.main
+                    : red.main
                 }
               >
                 {' '}
@@ -939,12 +954,13 @@ export const combineActiveTradesTable = ({
         status: {
           render: (
             <SubColumnValue
+              theme={theme}
               style={{
                 textTransform: 'none',
                 display: 'flex',
                 alignItems: 'center',
               }}
-              color={isErrorInOrder ? red.new : statusColor}
+              color={isErrorInOrder ? red.main : statusColor}
             >
               {isErrorInOrder ? 'Error' : activeOrderStatus}
               {isErrorInOrder ? (
@@ -956,7 +972,7 @@ export const combineActiveTradesTable = ({
                         style={{
                           height: '1.5rem',
                           width: '1.5rem',
-                          color: red.new,
+                          color: red.main,
                           marginLeft: '.5rem',
                         }}
                       />
@@ -983,11 +999,11 @@ export const combineActiveTradesTable = ({
                 padding=".2rem 0 .1rem 0"
                 margin="0 0 .4rem 0"
                 borderRadius=".8rem"
-                btnColor={'#fff'}
-                borderColor={'#5C8CEA'}
-                backgroundColor={'#5C8CEA'}
-                hoverColor={'#5C8CEA'}
-                hoverBackground={'#fff'}
+                btnColor={theme.palette.white.main}
+                borderColor={theme.palette.blue.background}
+                backgroundColor={theme.palette.blue.background}
+                hoverColor={theme.palette.white.main}
+                hoverBackground={theme.palette.blue.background}
                 transition={'all .4s ease-out'}
                 onClick={(e) => {
                   e.stopPropagation()
@@ -1007,11 +1023,11 @@ export const combineActiveTradesTable = ({
                 margin=".4rem 0 0 0"
                 padding=".2rem 0 .1rem 0"
                 borderRadius=".8rem"
-                btnColor={'#fff'}
-                borderColor={red.new}
-                backgroundColor={red.new}
-                hoverColor={red.new}
-                hoverBackground={'#fff'}
+                btnColor={theme.palette.white.main}
+                borderColor={red.main}
+                backgroundColor={red.main}
+                hoverColor={red.main}
+                hoverBackground={theme.palette.white.main}
                 transition={'all .4s ease-out'}
                 onClick={(e) => {
                   e.stopPropagation()
@@ -1029,11 +1045,11 @@ export const combineActiveTradesTable = ({
               fontSize=".9rem"
               padding=".2rem 0 .1rem 0"
               borderRadius=".8rem"
-              btnColor={'#fff'}
-              borderColor={red.new}
-              backgroundColor={red.new}
-              hoverColor={red.new}
-              hoverBackground={'#fff'}
+              btnColor={theme.palette.white.main}
+              borderColor={red.main}
+              backgroundColor={red.main}
+              hoverColor={red.main}
+              hoverBackground={theme.palette.white.main}
               transition={'all .4s ease-out'}
               onClick={(e) => {
                 e.stopPropagation()
@@ -1055,6 +1071,7 @@ export const combineActiveTradesTable = ({
               render: (
                 <div style={{ position: 'relative' }}>
                   <EntryOrderColumn
+                    theme={theme}
                     haveEdit={true}
                     editTrade={() => editTrade('entryOrder', el)}
                     enableEdit={activeOrderStatus === 'Preparing' || isTemplate}
@@ -1072,12 +1089,13 @@ export const combineActiveTradesTable = ({
                         : false
                     }
                     activatePrice={activatePrice}
-                    red={red.new}
-                    green={green.new}
+                    red={red.main}
+                    green={green.main}
                     blue={blue}
                   />
                   <TakeProfitColumn
                     haveEdit={true}
+                    theme={theme}
                     enableEdit={true}
                     editTrade={() => editTrade('takeProfit', el)}
                     price={exitLevels.length > 0 && exitLevels[0].price}
@@ -1086,11 +1104,12 @@ export const combineActiveTradesTable = ({
                     timeoutProfit={timeoutWhenProfit}
                     timeoutProfitable={timeoutIfProfitable}
                     trailing={trailingExit}
-                    red={red.new}
-                    green={green.new}
+                    red={red.main}
+                    green={green.main}
                     blue={blue}
                   />
                   <StopLossColumn
+                    theme={theme}
                     haveEdit={true}
                     enableEdit={true}
                     editTrade={() => editTrade('stopLoss', el)}
@@ -1099,11 +1118,11 @@ export const combineActiveTradesTable = ({
                     forced={forcedLoss}
                     timeoutWhenLoss={timeoutWhenLoss}
                     timeoutLoss={timeoutLoss}
-                    red={red.new}
-                    green={green.new}
+                    red={red.main}
+                    green={green.main}
                     blue={blue}
                   />
-                  <DateColumn createdAt={date} />
+                  <DateColumn theme={theme} createdAt={date} />
                 </div>
               ),
               colspan: 9,
@@ -1251,9 +1270,10 @@ export const combineStrategiesHistoryTable = (
         id: el._id,
         pair: {
           render: (
-            <SubColumnValue onClick={() => handlePairChange(pair)}>{`${
-              pairArr[0]
-            }/${pairArr[1]}`}</SubColumnValue>
+            <SubColumnValue
+              theme={theme}
+              onClick={() => handlePairChange(pair)}
+            >{`${pairArr[0]}/${pairArr[1]}`}</SubColumnValue>
           ),
           style: {
             opacity: needOpacity ? 0.6 : 1,
@@ -1263,7 +1283,10 @@ export const combineStrategiesHistoryTable = (
         },
         side: {
           render: (
-            <SubColumnValue color={side === 'buy' ? green.new : red.new}>
+            <SubColumnValue
+              theme={theme}
+              color={side === 'buy' ? green.main : red.main}
+            >
               {marketType === 0
                 ? side
                 : side === 'buy'
@@ -1278,7 +1301,7 @@ export const combineStrategiesHistoryTable = (
         },
         entryPrice: {
           render: (
-            <SubColumnValue>
+            <SubColumnValue theme={theme}>
               {stripDigitPlaces(
                 entryOrderPrice,
                 getNumberOfPrecisionDigitsForSymbol(pairArr[1])
@@ -1293,7 +1316,7 @@ export const combineStrategiesHistoryTable = (
         },
         quantity: {
           render: (
-            <SubColumnValue>
+            <SubColumnValue theme={theme}>
               {stripDigitPlaces(amount, 8)} {pairArr[0]}{' '}
             </SubColumnValue>
           ),
@@ -1304,7 +1327,7 @@ export const combineStrategiesHistoryTable = (
         },
         takeProfit: {
           render: (
-            <SubColumnValue color={green.new}>
+            <SubColumnValue theme={theme} color={green.main}>
               {trailingExit &&
               exitLevels[0] &&
               exitLevels[0].activatePrice &&
@@ -1323,7 +1346,9 @@ export const combineStrategiesHistoryTable = (
         },
         stopLoss: {
           render: stopLoss ? (
-            <SubColumnValue color={red.new}>{stopLoss}%</SubColumnValue>
+            <SubColumnValue theme={theme} color={red.main}>
+              {stopLoss}%
+            </SubColumnValue>
           ) : (
             '-'
           ),
@@ -1335,12 +1360,13 @@ export const combineStrategiesHistoryTable = (
         profit: {
           render: (
             <SubColumnValue
+              theme={theme}
               color={
                 profitPercentage === 0 && !templatePnl
                   ? ''
                   : profitPercentage > 0 || (!!templatePnl && templatePnl > 0)
-                  ? green.new
-                  : red.new
+                  ? green.main
+                  : red.main
               }
             >
               {!!templatePnl
@@ -1358,6 +1384,7 @@ export const combineStrategiesHistoryTable = (
         status: {
           render: (
             <SubColumnValue
+              theme={theme}
               style={{
                 display: 'flex',
                 textTransform: 'none',
@@ -1366,9 +1393,9 @@ export const combineStrategiesHistoryTable = (
               color={
                 state || isTemplate
                   ? !isErrorInOrder && orderState !== 'Canceled'
-                    ? green.new
-                    : red.new
-                  : red.new
+                    ? green.main
+                    : red.main
+                  : red.main
               }
             >
               {isErrorInOrder ? 'Error' : orderState}
@@ -1381,7 +1408,7 @@ export const combineStrategiesHistoryTable = (
                         style={{
                           height: '1.5rem',
                           width: '1.5rem',
-                          color: red.new,
+                          color: red.main,
                           marginLeft: '.5rem',
                         }}
                       />
@@ -1399,10 +1426,12 @@ export const combineStrategiesHistoryTable = (
         date: {
           render: (
             <div>
-              <span style={{ display: 'block', color: '#16253D' }}>
+              <span
+                style={{ display: 'block', color: theme.palette.dark.main }}
+              >
                 {String(dayjs(date).format('ll'))}
               </span>
-              <span style={{ color: '#7284A0' }}>
+              <span style={{ color: theme.palette.grey.light }}>
                 {dayjs(date).format('LT')}
               </span>
             </div>
@@ -1420,6 +1449,7 @@ export const combineStrategiesHistoryTable = (
               render: (
                 <div style={{ position: 'relative' }}>
                   <EntryOrderColumn
+                    theme={theme}
                     haveEdit={false}
                     enableEdit={!!entryPrice}
                     pair={`${pairArr[0]}/${pairArr[1]}`}
@@ -1436,11 +1466,12 @@ export const combineStrategiesHistoryTable = (
                         : false
                     }
                     activatePrice={activatePrice}
-                    red={red.new}
-                    green={green.new}
+                    red={red.main}
+                    green={green.main}
                     blue={blue}
                   />
                   <TakeProfitColumn
+                    theme={theme}
                     haveEdit={false}
                     price={exitLevels.length > 0 && exitLevels[0].price}
                     order={exitLevels.length > 0 && exitLevels[0].orderType}
@@ -1448,19 +1479,20 @@ export const combineStrategiesHistoryTable = (
                     timeoutProfit={timeoutWhenProfit}
                     timeoutProfitable={timeoutIfProfitable}
                     trailing={trailingExit}
-                    red={red.new}
-                    green={green.new}
+                    red={red.main}
+                    green={green.main}
                     blue={blue}
                   />
                   <StopLossColumn
+                    theme={theme}
                     haveEdit={false}
                     price={stopLoss}
                     order={stopLossType}
                     forced={forcedLoss}
                     timeoutWhenLoss={timeoutWhenLoss}
                     timeoutLoss={timeoutLoss}
-                    red={red.new}
-                    green={green.new}
+                    red={red.main}
+                    green={green.main}
                     blue={blue}
                   />
                 </div>
@@ -1590,7 +1622,9 @@ export const combineOpenOrdersTable = (
                 style={{
                   display: 'block',
                   textTransform: 'uppercase',
-                  color: isBuyTypeOrder(orderSide) ? '#29AC80' : '#DD6956',
+                  color: isBuyTypeOrder(orderSide)
+                    ? theme.palette.green.main
+                    : theme.palette.red.main,
                 }}
               >
                 {orderSide}
@@ -1598,7 +1632,7 @@ export const combineOpenOrdersTable = (
               <span
                 style={{
                   textTransform: 'capitalize',
-                  color: '#7284A0',
+                  color: theme.palette.grey.light,
                   letterSpacing: '1px',
                 }}
               >
@@ -1665,7 +1699,7 @@ export const combineOpenOrdersTable = (
                     style={{
                       width: '.6rem',
                       height: '.6rem',
-                      background: '#5C8CEA',
+                      background: theme.palette.blue.background,
                       borderRadius: '50%',
                     }}
                   />
@@ -1679,10 +1713,12 @@ export const combineOpenOrdersTable = (
         date: {
           render: (
             <div>
-              <span style={{ display: 'block', color: '#16253D' }}>
+              <span
+                style={{ display: 'block', color: theme.palette.dark.main }}
+              >
                 {String(dayjs(timestamp).format('ll'))}
               </span>
-              <span style={{ color: '#7284A0' }}>
+              <span style={{ color: theme.palette.grey.light }}>
                 {dayjs(timestamp).format('LT')}
               </span>
             </div>
@@ -1809,7 +1845,9 @@ export const combineOrderHistoryTable = (
                 style={{
                   display: 'block',
                   textTransform: 'uppercase',
-                  color: isBuyTypeOrder(side) ? '#29AC80' : '#DD6956',
+                  color: isBuyTypeOrder(side)
+                    ? theme.palette.green.main
+                    : theme.palette.red.main,
                 }}
               >
                 {side}
@@ -1817,7 +1855,7 @@ export const combineOrderHistoryTable = (
               <span
                 style={{
                   textTransform: 'capitalize',
-                  color: '#7284A0',
+                  color: theme.palette.grey.light,
                   letterSpacing: '1px',
                 }}
               >
@@ -1877,7 +1915,7 @@ export const combineOrderHistoryTable = (
                     style={{
                       width: '.6rem',
                       height: '.6rem',
-                      background: '#5C8CEA',
+                      background: theme.palette.blue.background,
                       borderRadius: '50%',
                     }}
                   />
@@ -1892,7 +1930,10 @@ export const combineOrderHistoryTable = (
           render: status ? (
             <span
               style={{
-                color: status === 'canceled' ? '#DD6956' : '#29AC80',
+                color:
+                  status === 'canceled'
+                    ? theme.palette.red.main
+                    : theme.palette.green.main,
                 textTransform: 'uppercase',
               }}
             >
@@ -1906,10 +1947,12 @@ export const combineOrderHistoryTable = (
         date: {
           render: (
             <div>
-              <span style={{ display: 'block', color: '#16253D' }}>
+              <span
+                style={{ display: 'block', color: theme.palette.dark.main }}
+              >
                 {String(dayjs(timestamp).format('ll'))}
               </span>
-              <span style={{ color: '#7284A0' }}>
+              <span style={{ color: theme.palette.grey.light }}>
                 {dayjs(timestamp).format('LT')}
               </span>
             </div>
@@ -1985,7 +2028,10 @@ export const combineTradeHistoryTable = (
                 style={{
                   display: 'block',
                   textTransform: 'uppercase',
-                  color: side === 'buy' ? '#29AC80' : '#DD6956',
+                  color:
+                    side === 'buy'
+                      ? theme.palette.green.main
+                      : theme.palette.red.main,
                 }}
               >
                 {side}
@@ -2021,9 +2067,9 @@ export const combineTradeHistoryTable = (
                     style={{
                       color:
                         realizedPnl > 0
-                          ? '#29AC80'
+                          ? theme.palette.green.main
                           : realizedPnl < 0
-                          ? '#DD6956'
+                          ? theme.palette.red.main
                           : '',
                     }}
                   >
@@ -2051,7 +2097,12 @@ export const combineTradeHistoryTable = (
         },
         status: {
           render: (
-            <span style={{ color: '#29AC80', textTransform: 'uppercase' }}>
+            <span
+              style={{
+                color: theme.palette.green.main,
+                textTransform: 'uppercase',
+              }}
+            >
               succesful
             </span>
           ),
@@ -2061,10 +2112,12 @@ export const combineTradeHistoryTable = (
         date: {
           render: (
             <div>
-              <span style={{ display: 'block', color: '#16253D' }}>
+              <span
+                style={{ display: 'block', color: theme.palette.dark.main }}
+              >
                 {String(dayjs(timestamp).format('ll'))}
               </span>
-              <span style={{ color: '#7284A0' }}>
+              <span style={{ color: theme.palette.grey.light }}>
                 {dayjs(timestamp).format('LT')}
               </span>
             </div>

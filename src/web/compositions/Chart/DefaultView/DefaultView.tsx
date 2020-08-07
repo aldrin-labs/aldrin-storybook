@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { Fade, Grid } from '@material-ui/core'
+import { Fade, Grid, Theme } from '@material-ui/core'
 
 import MainDepthChart from '../DepthChart/MainDepthChart/MainDepthChart'
 import { SingleChart } from '@sb/components/Chart'
@@ -12,23 +12,24 @@ import { TablesBlockWrapper } from '@sb/components/TradingWrapper/styles'
 import { TradeHistory, OrderbookAndDepthChart } from '../components'
 import CardsPanel from '../components/CardsPanel'
 import { GuestMode } from '../components/GuestMode/GuestMode'
+import ChartCardHeader from '@sb/components/ChartCardHeader'
 import { HideArrow } from '../components/HideArrow/HideArrow'
 
 const TerminalContainer = ({
   isDefaultTerminalViewMode,
   children,
+  theme,
 }: {
   isDefaultTerminalViewMode: boolean
   children: React.ReactChild
+  theme: Theme
 }) => (
   <TablesBlockWrapper
     item
     container
+    theme={theme}
     xs={isDefaultTerminalViewMode ? 5 : 12}
     isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-    style={{
-      padding: '.4rem 0 0 .4rem',
-    }}
   >
     {children}
   </TablesBlockWrapper>
@@ -55,6 +56,7 @@ export const DefaultViewComponent = (
     id,
     view,
     marketType,
+    theme,
     themeMode,
     activeExchange,
     changeTable,
@@ -77,6 +79,7 @@ export const DefaultViewComponent = (
     chartPagePopup,
     closeChartPagePopup,
     authenticated,
+    maxLeverage,
     layout,
     changeChartLayoutMutation,
   } = props
@@ -147,13 +150,14 @@ export const DefaultViewComponent = (
   console.log('default view rerender', props)
 
   return (
-    <Container container spacing={8}>
-      <ChartGridContainer item xs={12}>
+    <Container container spacing={8} theme={theme}>
+      <ChartGridContainer item xs={12} theme={theme}>
         <CardsPanel
           {...{
             _id: id,
             pair: currencyPair,
             view,
+            theme,
             themeMode,
             activeExchange,
             selectedKey,
@@ -172,13 +176,11 @@ export const DefaultViewComponent = (
         container
         xs={12}
         style={{
-          height: '100%',
+          height: 'calc(96% - 2rem)',
           padding: '0',
-          marginLeft: 0,
-          marginRight: 0,
+          margin: 0,
         }}
         direction="column"
-        spacing={8}
       >
         <Grid
           item
@@ -186,19 +188,47 @@ export const DefaultViewComponent = (
           xs={12}
           style={{
             height: '100%',
-            padding: '.4rem .4rem 0 0',
           }}
         >
           <TopChartsContainer
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+            theme={theme}
           >
             <ChartsContainer
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
               hideDepthChart={hideDepthChart}
               hideOrderbook={hideOrderbook}
+              theme={theme}
               hideTradeHistory={hideTradeHistory}
             >
-              <CustomCard id="tradingViewChart">
+              <CustomCard
+                theme={theme}
+                id="tradingViewChart"
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  borderBottom: 'none',
+                  borderRight: 'none',
+                }}
+              >
+                <ChartCardHeader
+                  theme={theme}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  <span
+                    style={{
+                      width: '40%',
+                      whiteSpace: 'pre-line',
+                      textAlign: 'left',
+                    }}
+                  >
+                    Chart
+                  </span>
+                </ChartCardHeader>
                 <SingleChart
                   name=""
                   additionalUrl={`/?symbol=${base}/${quote}_${String(
@@ -207,7 +237,7 @@ export const DefaultViewComponent = (
                 />
               </CustomCard>
 
-              {!hideTradeHistory && (
+              {/* {!hideTradeHistory && (
                 <HideArrow key="hide" onClick={hideLayoutHandler} />
               )}
               {(hideDepthChart || hideTradeHistory || hideOrderbook) && (
@@ -217,9 +247,10 @@ export const DefaultViewComponent = (
                   onClick={showLayoutHandler}
                   right="-11px"
                 />
-              )}
+              )} */}
             </ChartsContainer>
             <TradingTerminalContainer
+              theme={theme}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
               hideDepthChart={hideDepthChart}
               hideOrderbook={hideOrderbook}
@@ -251,6 +282,7 @@ export const DefaultViewComponent = (
                         pair: currencyPair,
                         exchange,
                         quote,
+                        theme,
                         isPairDataLoading,
                         minPriceDigits,
                         arrayOfMarketIds,
@@ -273,7 +305,6 @@ export const DefaultViewComponent = (
                   xs={5}
                   style={{
                     height: '100%',
-                    padding: '0 0 .4rem .4rem',
                     flexBasis: hideOrderbook
                       ? '100%'
                       : hideDepthChart
@@ -293,6 +324,7 @@ export const DefaultViewComponent = (
                         pair: currencyPair,
                         exchange,
                         quote,
+                        theme,
                         minPriceDigits,
                         updateTerminalPriceFromOrderbook,
                         marketType,
@@ -314,10 +346,12 @@ export const DefaultViewComponent = (
           {authenticated && isDefaultTerminalViewMode && (
             <TradingTabelContainer
               item
+              theme={theme}
               xs={marketType === 0 ? 7 : 6}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
             >
               <TradingTable
+                theme={theme}
                 selectedKey={selectedKey}
                 showOrderResult={showOrderResult}
                 showCancelResult={showCancelResult}
@@ -335,6 +369,7 @@ export const DefaultViewComponent = (
             <BalancesContainer
               item
               xs={1}
+              theme={theme}
               id="balances"
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
             >
@@ -342,6 +377,7 @@ export const DefaultViewComponent = (
                 pair={currencyPair.split('_')}
                 selectedKey={selectedKey}
                 marketType={marketType}
+                theme={theme}
                 showFuturesTransfer={showFuturesTransfer}
               />
             </BalancesContainer>
@@ -349,12 +385,14 @@ export const DefaultViewComponent = (
 
           {authenticated && (
             <TerminalContainer
+              theme={theme}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
             >
               <TradingComponent
                 selectedKey={selectedKey}
                 activeExchange={activeExchange}
                 pair={baseQuoteArr}
+                theme={theme}
                 chartPagePopup={chartPagePopup}
                 closeChartPagePopup={closeChartPagePopup}
                 quantityPrecision={quantityPrecision}
@@ -363,6 +401,7 @@ export const DefaultViewComponent = (
                 minFuturesStep={minFuturesStep}
                 priceFromOrderbook={priceFromOrderbook}
                 marketType={marketType}
+                maxLeverage={maxLeverage}
                 showOrderResult={showOrderResult}
                 showCancelResult={showCancelResult}
                 showChangePositionModeResult={showChangePositionModeResult}
@@ -386,6 +425,9 @@ export const DefaultView = React.memo(DefaultViewComponent, (prev, next) => {
     prev.selectedKey.hedgeMode === next.selectedKey.hedgeMode &&
     prev.isPairDataLoading === next.isPairDataLoading &&
     prev.chartPagePopup === next.chartPagePopup &&
+    prev.maxLeverage === next.maxLeverage &&
+    prev.themeMode === next.themeMode &&
+    prev.theme.palette.type === next.theme.palette.type &&
     prev.layout.hideDepthChart === next.layout.hideDepthChart &&
     prev.layout.hideOrderbook === next.layout.hideOrderbook &&
     prev.layout.hideTradeHistory === next.layout.hideTradeHistory

@@ -94,8 +94,15 @@ export default React.memo(OrderStatusWrapper, (prev, next) => {
       prev.terminalViewMode === next.terminalViewMode &&
       prev.selectedKey.hedgeMode === next.selectedKey.hedgeMode &&
       prev.isPairDataLoading === next.isPairDataLoading &&
-      prev.chartPagePopup === next.chartPagePopup
+      prev.chartPagePopup === next.chartPagePopup &&
+      prev.maxLeverage === next.maxLeverage &&
+      prev.themeMode === next.themeMode &&
+      prev.theme.palette.type === next.theme.palette.type &&
+      prev.layout.hideDepthChart === next.layout.hideDepthChart &&
+      prev.layout.hideOrderbook === next.layout.hideOrderbook &&
+      prev.layout.hideTradeHistory === next.layout.hideTradeHistory
   )
+
   return (
     prev.marketType === next.marketType &&
     prev.selectedKey.keyId === next.selectedKey.keyId &&
@@ -104,6 +111,9 @@ export default React.memo(OrderStatusWrapper, (prev, next) => {
     prev.selectedKey.hedgeMode === next.selectedKey.hedgeMode &&
     prev.isPairDataLoading === next.isPairDataLoading &&
     prev.chartPagePopup === next.chartPagePopup &&
+    prev.maxLeverage === next.maxLeverage &&
+    prev.themeMode === next.themeMode &&
+    prev.theme.palette.type === next.theme.palette.type &&
     prev.layout.hideDepthChart === next.layout.hideDepthChart &&
     prev.layout.hideOrderbook === next.layout.hideOrderbook &&
     prev.layout.hideTradeHistory === next.layout.hideTradeHistory
