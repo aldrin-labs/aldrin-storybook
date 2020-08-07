@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { Button, Theme } from '@material-ui/core'
 
 export const TitleTab = styled(({ active, theme, ...rest }) => {
-  console.log('rest', rest)
   return <button {...rest} />
 })`
   &&& {
