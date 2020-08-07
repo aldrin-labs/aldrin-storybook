@@ -918,7 +918,7 @@ export const combineActiveTradesTable = ({
         },
         profit: {
           render:
-            !!templatePnl ||
+            !isTemplate &&
             (state &&
               activeOrderStatus !== 'Preparing' &&
               state !== 'WaitForEntry' &&
