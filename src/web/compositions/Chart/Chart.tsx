@@ -229,8 +229,12 @@ function ChartPageComponent(props: any) {
       +props.pairPropertiesQuery.marketByName[0].properties.binance.filters[1]
         .stepSize || 0.001
 
+    console.log(
+      'props.pairPropertiesQuery.marketByName[0].leverageBrackets',
+      props.pairPropertiesQuery.marketByName[0].leverageBrackets
+    )
     initialLeverage =
-      (+props.pairPropertiesQuery.marketByName[0].leverageBrackets &&
+      (props.pairPropertiesQuery.marketByName[0].leverageBrackets &&
         +props.pairPropertiesQuery.marketByName[0].leverageBrackets.binance[0]
           .initialLeverage) ||
       125
