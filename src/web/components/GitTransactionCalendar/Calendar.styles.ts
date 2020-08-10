@@ -99,6 +99,38 @@ export const SquarePopup = styled.div`
 `
 
 export const StyleForCalendar = createGlobalStyle`
+.DateInput {
+  background: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.white &&
+      props.theme.palette.white.background) ||
+    '#fff'};
+
+  .DateInput_input {
+       
+  background: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.white &&
+      props.theme.palette.white.background) ||
+    '#fff'};
+  color:  ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.dark &&
+      props.theme.palette.dark.main) ||
+    '#16253d'};
+     
+     border: ${(props) =>
+       (props.theme &&
+         props.theme.palette &&
+         props.theme.palette.border &&
+         props.theme.palette.border.main) ||
+       '.1rem solid #e0e5ec'};
+  }
+}
+
 .DateRangePicker_picker.DateRangePicker_picker__portal {
   z-index: 1008;
 }
@@ -119,7 +151,12 @@ export const StyleForCalendar = createGlobalStyle`
   }
 
   .CalendarDay__default {
-    border: 1px solid #e0e5ec;
+    border: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.border &&
+        props.theme.palette.border.main) ||
+      '.1rem solid #e0e5ec'};
   }
 
   .CalendarDay__default, 
@@ -130,7 +167,12 @@ export const StyleForCalendar = createGlobalStyle`
   .CalendarDay__selected_span {
     color: #fff;
     background: #5c8cea;
-    border: 1px solid #e0e5ec;
+    border: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.border &&
+        props.theme.palette.border.main) ||
+      '.1rem solid #e0e5ec'};
   }
 
   .CalendarDay__hovered_span,
@@ -138,15 +180,30 @@ export const StyleForCalendar = createGlobalStyle`
   .CalendarDay__hovered_span:active {
     color: #fff;
     background: #A1BFF9;
-    border: 1px solid #e0e5ec;
+    border: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.border &&
+        props.theme.palette.border.main) ||
+      '.1rem solid #e0e5ec'};
   }
 
   .CalendarDay__selected_span:hover, 
   .CalendarDay__selected_span:active {
     color: #fff;
     background: #4152AF;
-    border: 1px solid #e0e5ec;
-    border: 1px solid #e0e5ec;
+    border: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.border &&
+        props.theme.palette.border.main) ||
+      '.1rem solid #e0e5ec'};
+    border: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.border &&
+        props.theme.palette.border.main) ||
+      '.1rem solid #e0e5ec'};
   }
 
   & .CalendarDay__selected,
@@ -154,7 +211,12 @@ export const StyleForCalendar = createGlobalStyle`
   .CalendarDay__selected:hover {
     color: #fff;
     background: #0b1fd1;
-    border: 1px solid #e0e5ec;
+    border: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.border &&
+        props.theme.palette.border.main) ||
+      '.1rem solid #e0e5ec'};
   }
 
   .CalendarDay__blocked_out_of_range,
@@ -176,7 +238,12 @@ export const StyleForCalendar = createGlobalStyle`
   }
 
   .DayPickerNavigation_button__default {
-    border: 1px solid #e0e5ec;
+    border: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.border &&
+        props.theme.palette.border.main) ||
+      '.1rem solid #e0e5ec'};
   }
 
   .DateRangePickerInput_arrow {

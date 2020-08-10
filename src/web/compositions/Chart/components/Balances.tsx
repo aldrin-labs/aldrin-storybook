@@ -181,7 +181,7 @@ export const Balances = ({
         loading={loading}
         setLoading={setLoading}
       />
-      <CustomCard theme={theme} style={{ borderRight: 'none' }}>
+      <CustomCard theme={theme} style={{ borderRight: 'none', borderTop: '0' }}>
         <ChartCardHeader
           theme={theme}
           style={{

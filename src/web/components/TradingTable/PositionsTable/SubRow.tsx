@@ -58,7 +58,7 @@ const SubRow = ({
           hoverColor={'#fff'}
           hoverBackground={'#0B1FD1'}
           transition={'all .4s ease-out'}
-          disabled={isClosingPositionProcessEnabled}
+          disabled={isClosingPositionProcessEnabled && closingType === 'limit'}
           onClick={async () => {
             setClosingType('limit')
             closePosition(true)
@@ -73,13 +73,7 @@ const SubRow = ({
             }
           }}
         >
-          {closingType === 'limit' ? (
-            <div>
-              <Loading size={16} style={{ height: '16px' }} />
-            </div>
-          ) : (
-            'limit'
-          )}
+          limit
         </BtnCustom>
         <BtnCustom
           btnWidth="30%"
@@ -92,7 +86,7 @@ const SubRow = ({
           hoverColor={'#fff'}
           hoverBackground={'#0B1FD1'}
           transition={'all .4s ease-out'}
-          disabled={isClosingPositionProcessEnabled}
+          disabled={isClosingPositionProcessEnabled && closingType === 'market'}
           onClick={async () => {
             setClosingType('market')
             closePosition(true)
@@ -107,13 +101,7 @@ const SubRow = ({
             }
           }}
         >
-          {closingType === 'market' ? (
-            <div>
-              <Loading size={16} style={{ height: '16px' }} />
-            </div>
-          ) : (
-            'market'
-          )}
+          market
         </BtnCustom>
       </div>
     </div>

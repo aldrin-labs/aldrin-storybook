@@ -23,6 +23,7 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
   render() {
     const {
       data,
+      theme,
       updateTerminalPriceFromOrderbook,
       amountForBackground,
     } = this.props
@@ -34,13 +35,13 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
             <Table
               headerHeight={window.outerHeight / 50}
               headerStyle={{
-                color: '#7284A0',
+                color: theme.palette.grey.text,
                 paddingLeft: '.5rem',
                 marginLeft: 0,
                 marginRight: 0,
                 paddingTop: '.25rem',
                 letterSpacing: '.075rem',
-                borderBottom: '.1rem solid #e0e5ec',
+                borderBottom: theme.palette.border.main,
                 fontSize: '1rem',
               }}
               gridStyle={{
@@ -56,7 +57,12 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
                 updateTerminalPriceFromOrderbook(+rowData.price)
               }}
               rowRenderer={(...rest) =>
-                defaultRowRenderer({ ...rest[0], amountForBackground })
+                defaultRowRenderer({
+                  ...rest[0],
+                  theme,
+                  amountForBackground,
+                  openOrderHistory: [],
+                })
               }
             >
               <Column
@@ -70,13 +76,13 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
                 label="Size"
                 dataKey="size"
                 width={width}
-                style={{ color: '#16253D' }}
+                style={{ color: theme.palette.dark.main }}
               />
               <Column
                 label="time"
                 dataKey="time"
                 width={width}
-                style={{ color: '#16253D' }}
+                style={{ color: theme.palette.dark.main }}
               />
             </Table>
           )}

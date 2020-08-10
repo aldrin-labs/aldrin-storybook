@@ -391,7 +391,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         'entryPoint',
         'order',
         'total',
-        this.props.priceFromOrderbook * this.state.entryPoint.order.amount
+        stripDigitPlaces(
+          this.props.priceFromOrderbook * this.state.entryPoint.order.amount,
+          this.props.marketType === 1 ? 2 : 8
+        )
       )
     }
 
@@ -896,6 +899,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     } else if (marketType === 1) {
       maxAmount = funds[1].quantity * entryPoint.order.leverage
     }
+
+    console.log(
+      '(entryPoint.order.total / maxAmount) * 100',
+      (entryPoint.order.total / maxAmount) * 100
+    )
 
     return (
       <>
@@ -2216,7 +2224,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     showMarks
                     value={
                       entryPoint.order.side === 'buy' || marketType === 1
-                        ? entryPoint.order.total / (maxAmount / 100)
+                        ? (entryPoint.order.total / maxAmount) * 100
                         : entryPoint.order.amount / (maxAmount / 100)
                     }
                     sliderContainerStyles={{
@@ -2224,18 +2232,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       margin: '0 .8rem 0 auto',
                     }}
                     onChange={(value) => {
+                      console.log('value', value)
                       const newValue = (maxAmount / 100) * value
 
                       const newAmount =
                         entryPoint.order.side === 'buy' || marketType === 1
-                          ? stripDigitPlaces(
-                              newValue / priceForCalculate,
-                              marketType === 1 ? quantityPrecision : 8
-                            )
-                          : stripDigitPlaces(
-                              newValue,
-                              marketType === 1 ? quantityPrecision : 8
-                            )
+                          ? newValue / priceForCalculate
+                          : newValue
 
                       const newTotal = newAmount * priceForCalculate
 
@@ -2248,9 +2251,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         'entryPoint',
                         'order',
                         'amount',
-                        newAmount
+                        stripDigitPlaces(
+                          newAmount,
+                          marketType === 1 ? quantityPrecision : 8
+                        )
                       )
 
+                      console.log('new total', newTotal)
                       this.updateSubBlockValue(
                         'entryPoint',
                         'order',

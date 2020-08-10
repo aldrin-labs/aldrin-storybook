@@ -2,10 +2,11 @@ import React from 'react'
 import { compose } from 'recompose'
 import dayjs from 'dayjs'
 import { withTheme } from '@material-ui/core/styles'
+import SvgIcon from '@sb/components/SvgIcon'
 import { Theme } from '@material-ui/core'
 import Timer from 'react-compound-timer'
 import { TooltipCustom } from '@sb/components/index'
-
+import BinanceLogo from '@icons/binanceLogo.svg'
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import { getMarketStatisticsByPair } from '@core/graphql/queries/chart/getMarketStatisticsByPair'
 import { getFundingRate } from '@core/graphql/queries/chart/getFundingRate'
@@ -219,54 +220,79 @@ class MarketStats extends React.PureComponent<IProps> {
 
     return (
       <div style={{ display: 'flex', width: '100%' }} key={this.state.key}>
-        <PanelCard style={{ minWidth: '21%', maxWidth: '21%' }}>
+        {marketType === 0 ? null : (
+          <PanelCard marketType={marketType} theme={theme}>
+            <PanelCardValue
+              theme={theme}
+              style={{
+                whiteSpace: 'nowrap',
+                fontSize: '2rem',
+                textAlign: 'center',
+              }}
+            >
+              {formatNumberToUSFormat(
+                roundAndFormatNumber(lastMarketPrice, pricePrecision, false)
+              )}
+            </PanelCardValue>
+          </PanelCard>
+        )}
+
+        <PanelCard marketType={marketType} theme={theme}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <PanelCardTitle style={{ whiteSpace: 'nowrap' }}>
-              Last price
-            </PanelCardTitle>
+            {marketType === 1 ? null : (
+              <PanelCardTitle theme={theme} style={{ whiteSpace: 'nowrap' }}>
+                Last price
+              </PanelCardTitle>
+            )}
             {marketType === 0 ? null : (
-              <PanelCardTitle style={{ whiteSpace: 'nowrap' }}>
+              <PanelCardTitle theme={theme} style={{ whiteSpace: 'nowrap' }}>
                 Mark price
               </PanelCardTitle>
             )}
           </div>
           <span style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <PanelCardValue>
-              {formatNumberToUSFormat(
-                roundAndFormatNumber(lastMarketPrice, pricePrecision, false)
-              )}
-            </PanelCardValue>
+            {marketType === 1 ? null : (
+              <PanelCardValue theme={theme}>
+                {formatNumberToUSFormat(
+                  roundAndFormatNumber(lastMarketPrice, pricePrecision, false)
+                )}
+              </PanelCardValue>
+            )}
 
             {marketType === 0 ? null : (
-              <PanelCardSubValue>
+              <PanelCardValue theme={theme}>
                 {formatNumberToUSFormat(
                   roundAndFormatNumber(markPrice, pricePrecision, false)
                 )}
-              </PanelCardSubValue>
+              </PanelCardValue>
             )}
           </span>
         </PanelCard>
 
-        <PanelCard style={{ minWidth: '15%', maxWidth: '21%' }}>
-          <PanelCardTitle>24h change</PanelCardTitle>
+        <PanelCard marketType={marketType} theme={theme}>
+          <PanelCardTitle theme={theme}>24h change</PanelCardTitle>
           <span style={{ display: 'flex', justifyContent: 'space-between' }}>
             <PanelCardValue
-              color={
-                +priceChange > 0
-                  ? theme.customPalette.green.main
-                  : theme.customPalette.red.main
-              }
+              theme={theme}
+              style={{
+                color:
+                  +priceChange > 0
+                    ? theme.palette.green.main
+                    : theme.palette.red.main,
+              }}
             >
               {formatNumberToUSFormat(
                 stripDigitPlaces(priceChange, pricePrecision)
               )}
             </PanelCardValue>
             <PanelCardSubValue
-              color={
-                +priceChangePercent > 0
-                  ? theme.customPalette.green.main
-                  : theme.customPalette.red.main
-              }
+              theme={theme}
+              style={{
+                color:
+                  +priceChangePercent > 0
+                    ? theme.customPalette.green.main
+                    : theme.customPalette.red.main,
+              }}
             >
               {`${sign24hChange}
               ${formatNumberToUSFormat(
@@ -276,18 +302,18 @@ class MarketStats extends React.PureComponent<IProps> {
           </span>
         </PanelCard>
 
-        <PanelCard>
-          <PanelCardTitle>24h high</PanelCardTitle>
-          <PanelCardValue>
+        <PanelCard marketType={marketType} theme={theme}>
+          <PanelCardTitle theme={theme}>24h high</PanelCardTitle>
+          <PanelCardValue theme={theme}>
             {formatNumberToUSFormat(
               roundAndFormatNumber(highPrice, pricePrecision, false)
             )}
           </PanelCardValue>
         </PanelCard>
 
-        <PanelCard>
-          <PanelCardTitle>24h low</PanelCardTitle>
-          <PanelCardValue>
+        <PanelCard marketType={marketType} theme={theme}>
+          <PanelCardTitle theme={theme}>24h low</PanelCardTitle>
+          <PanelCardValue theme={theme}>
             {formatNumberToUSFormat(
               roundAndFormatNumber(lowPrice, pricePrecision, false)
             )}
@@ -298,35 +324,52 @@ class MarketStats extends React.PureComponent<IProps> {
           title="Cryptocurrencies.ai is a Binance partner exchange"
           enterDelay={250}
           component={
-            <PanelCard>
-              <PanelCardTitle>24h volume</PanelCardTitle>
-              <PanelCardValue>
+            <PanelCard
+              marketType={marketType}
+              theme={theme}
+              style={{
+                borderRight: marketType === 0 ? '0' : theme.palette.border.main,
+                position: 'relative',
+              }}
+            >
+              <PanelCardTitle theme={theme}>24h volume</PanelCardTitle>
+              <PanelCardValue theme={theme}>
                 {formatNumberToUSFormat(stripDigitPlaces(volume))}
                 {` ${marketType === 0 ? quote : base}`}
               </PanelCardValue>
+              <SvgIcon
+                style={{ position: 'absolute', right: '1rem' }}
+                src={BinanceLogo}
+              />
             </PanelCard>
           }
         />
 
         {marketType === 1 && (
           <PanelCard
+            marketType={marketType}
+            theme={theme}
             style={{
               borderRight: '0',
             }}
           >
-            <PanelCardTitle>Funding</PanelCardTitle>
+            <PanelCardTitle theme={theme}>Funding</PanelCardTitle>
             <span style={{ display: 'flex', justifyContent: 'space-between' }}>
               <PanelCardValue
-                color={
-                  +fundingRate > 0
-                    ? theme.customPalette.green.main
-                    : theme.customPalette.red.main
-                }
+                theme={theme}
+                style={{
+                  color: '#235DCF',
+                  whiteSpace: 'nowrap',
+                }}
               >
-                {(+fundingRate * 100).toFixed(4)}
-                {' %'}
+                {`${fundingRate > 0 ? '+' : '-'} ${(+fundingRate * 100).toFixed(
+                  4
+                )} %`}
               </PanelCardValue>
-              <PanelCardSubValue style={{ minWidth: '57px' }}>
+              <PanelCardSubValue
+                theme={theme}
+                style={{ minWidth: '57px', color: theme.palette.grey.text }}
+              >
                 {' '}
                 <Timer
                   initialTime={+dayjs(fundingTime) - Date.now()}
@@ -364,7 +407,6 @@ class MarketStats extends React.PureComponent<IProps> {
 }
 
 export default compose(
-  withTheme(),
   queryRendererHoc({
     query: getMarkPrice,
     name: 'getMarkPriceQuery',

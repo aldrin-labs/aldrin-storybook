@@ -207,7 +207,6 @@ export const DefaultViewComponent = (
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
-                  borderBottom: 'none',
                   borderRight: 'none',
                 }}
               >

@@ -219,6 +219,10 @@ export default class ThemeWrapper extends Component<Props> {
                 greenBackground: 'rgba(57, 167, 76, 0.35)',
                 redBackground: 'rgba(255, 30, 62, 0.35)',
               },
+              orderbook: {
+                greenBackground: 'rgba(57, 167, 76, 0.35)',
+                redBackground: 'rgba(255, 30, 62, 0.35)',
+              },
               slider: {
                 dots: '#2F3949',
                 rail: '#2E2E2E',
@@ -402,6 +406,10 @@ export default class ThemeWrapper extends Component<Props> {
               slider: {
                 dots: '#ABBAD1',
                 rail: '#e0e5ec',
+              },
+              orderbook: {
+                greenBackground: '#AAF2C9',
+                redBackground: '#FFD1D1',
               },
             },
           }

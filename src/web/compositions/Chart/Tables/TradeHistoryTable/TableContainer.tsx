@@ -169,6 +169,7 @@ class TableContainer extends Component<IProps, IState> {
         <ChartCardHeader theme={theme}>Trade history</ChartCardHeader>
         <TradeHistoryTable
           data={data}
+          theme={theme}
           numbersAfterDecimalForPrice={numbersAfterDecimalForPrice}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
           quote={quote}
