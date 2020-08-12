@@ -233,12 +233,13 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
         <StyledDialogContent id="share-dialog-content">
           <InputRowContainer justify="center" padding={'1rem 0 .6rem 0'}>
             <CustomSwitcher
+              theme={theme}
               firstHalfText={'limit'}
               secondHalfText={'market'}
               buttonHeight={'2.5rem'}
               containerStyles={{ width: '100%' }}
-              firstHalfStyleProperties={BlueSwitcherStyles}
-              secondHalfStyleProperties={BlueSwitcherStyles}
+              firstHalfStyleProperties={BlueSwitcherStyles(theme)}
+              secondHalfStyleProperties={BlueSwitcherStyles(theme)}
               firstHalfIsActive={this.state.type === 'limit'}
               changeHalf={() => {
                 this.setState((prev) => ({
@@ -254,6 +255,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
               padding={'.8rem 0 1.2rem 0'}
             >
               <AdditionalSettingsButton
+                theme={theme}
                 style={{ fontSize: '1rem' }}
                 isActive={this.state.isTrailingOn}
                 onClick={() => {
@@ -277,6 +279,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
               </AdditionalSettingsButton>
 
               <AdditionalSettingsButton
+                theme={theme}
                 isActive={this.state.isSplitTargetsOn}
                 onClick={() => {
                   this.setState((prev) => ({
@@ -292,7 +295,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                 Split targets
               </AdditionalSettingsButton>
 
-              {/* <AdditionalSettingsButton
+              {/* <AdditionalSettingsButton theme={theme}
                 isActive={this.state.isTimeoutOn}
                 onClick={() => {
                   this.setState((prev) => ({
@@ -845,6 +848,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
   render() {
     const {
       open,
+      theme,
       handleClose,
       updateState,
       transformProperties,
@@ -881,12 +885,13 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
         <StyledDialogContent id="edit-stop-loss-dialog-content">
           <InputRowContainer justify="center" padding={'1rem 0 .6rem 0'}>
             <CustomSwitcher
+              theme={theme}
               firstHalfText={'limit'}
               secondHalfText={'market'}
               buttonHeight={'2.5rem'}
               containerStyles={{ width: '100%' }}
-              firstHalfStyleProperties={BlueSwitcherStyles}
-              secondHalfStyleProperties={BlueSwitcherStyles}
+              firstHalfStyleProperties={BlueSwitcherStyles(theme)}
+              secondHalfStyleProperties={BlueSwitcherStyles(theme)}
               firstHalfIsActive={this.state.type === 'limit'}
               changeHalf={() => {
                 this.setState((prev) => ({
@@ -901,6 +906,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
               padding={'.8rem 0 1.2rem 0'}
             >
               <AdditionalSettingsButton
+                theme={theme}
                 isActive={this.state.isTimeoutOn}
                 onClick={() =>
                   this.setState((prev) => ({
@@ -911,7 +917,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                 Timeout
               </AdditionalSettingsButton>
 
-              {/* <AdditionalSettingsButton
+              {/* <AdditionalSettingsButton theme={theme}
                 isActive={this.state.isForcedStopOn}
                 onClick={() =>
                   this.setState((prev) => ({
@@ -1239,7 +1245,7 @@ export class EditHedgePopup extends React.Component<IProps, HedgeState> {
   }
 
   render() {
-    const { open, pair, handleClose, updateState, validate } = this.props
+    const { open, pair, handleClose, updateState, validate, theme } = this.props
 
     return (
       <Dialog
@@ -1274,12 +1280,15 @@ export class EditHedgePopup extends React.Component<IProps, HedgeState> {
                   this.setState((prev) => ({ isHedgeOn: !prev.isHedgeOn }))
                 }
               />
-              <HeaderLabel htmlFor="isHedgeDialogOn">hedge</HeaderLabel>
+              <HeaderLabel theme={theme} htmlFor="isHedgeDialogOn">
+                hedge
+              </HeaderLabel>
             </div>
           </InputRowContainer>
           <InputRowContainer>
             <FormInputContainer title={'hedge'}>
               <CustomSwitcher
+                theme={theme}
                 firstHalfText={'long'}
                 secondHalfText={'short'}
                 buttonHeight={'2.5rem'}
@@ -1288,8 +1297,8 @@ export class EditHedgePopup extends React.Component<IProps, HedgeState> {
                   padding: '0 .4rem 0 0',
                   whiteSpace: 'nowrap',
                 }}
-                firstHalfStyleProperties={GreenSwitcherStyles}
-                secondHalfStyleProperties={RedSwitcherStyles}
+                firstHalfStyleProperties={GreenSwitcherStyles(theme)}
+                secondHalfStyleProperties={RedSwitcherStyles(theme)}
                 firstHalfIsActive={this.state.hedgeSide === 'long'}
                 changeHalf={() =>
                   this.setState((prev) => ({
@@ -1401,7 +1410,9 @@ export class EditEntryOrderPopup extends React.Component<
 
       return {
         ...props.derivedState,
-        price: props.derivedState.isTrailingOn ? props.derivedState.activatePrice : props.derivedState.price,
+        price: props.derivedState.isTrailingOn
+          ? props.derivedState.activatePrice
+          : props.derivedState.price,
         trailingDeviationPrice,
         deviationPercentage,
         leverage,
@@ -1521,61 +1532,61 @@ export class EditEntryOrderPopup extends React.Component<
           id="responsive-edit-entry-order-dialog-title"
         >
           <TypographyTitle>{`Edit entry point`}</TypographyTitle>
-          <div style={{ display: 'flex', alignItems: 'center', width:  '60%' }}>
-          <SmallSlider
-                  min={1}
-                  max={maxLeverage.get(`${pair[0]}_${pair[1]}`) || 75}
-                  defaultValue={this.state.leverage}
-                  value={this.state.leverage}
-                  valueSymbol={'X'}
-                  marks={
-                    maxLeverage.get(`${pair[0]}_${pair[1]}`) !== 125
-                      ? {
-                          1: {},
-                          15: {},
-                          30: {},
-                          45: {},
-                          60: {},
-                          75: {},
-                        }
-                      : {
-                          1: {},
-                          25: {},
-                          50: {},
-                          75: {},
-                          100: {},
-                          125: {},
-                        }
-                  }
-                  onChange={(leverage: number) => {
-                    this.setState({ leverage })
-                  }}
-                  sliderContainerStyles={{
-                    width: '80%',
-                    margin: '0 auto',
-                  }}
-                  trackBeforeBackground={'#29AC80'}
-                  handleStyles={{
-                    width: '1.2rem',
-                    height: '1.2rem',
-                    border: 'none',
-                    backgroundColor: '#036141',
-                    marginTop: '-.28rem',
-                    boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
-                    transform: 'translate(-50%, -15%) !important',
-                  }}
-                  dotStyles={{
-                    border: 'none',
-                    backgroundColor: '#ABBAD1',
-                  }}
-                  activeDotStyles={{
-                    backgroundColor: '#29AC80',
-                  }}
-                />
-                <LeverageLabel style={{ fontFamily: 'DM Sans'}}>
-                  {this.state.leverage}X 
-                </LeverageLabel>
-                </div>
+          <div style={{ display: 'flex', alignItems: 'center', width: '60%' }}>
+            <SmallSlider
+              min={1}
+              max={maxLeverage.get(`${pair[0]}_${pair[1]}`) || 75}
+              defaultValue={this.state.leverage}
+              value={this.state.leverage}
+              valueSymbol={'X'}
+              marks={
+                maxLeverage.get(`${pair[0]}_${pair[1]}`) !== 125
+                  ? {
+                      1: {},
+                      15: {},
+                      30: {},
+                      45: {},
+                      60: {},
+                      75: {},
+                    }
+                  : {
+                      1: {},
+                      25: {},
+                      50: {},
+                      75: {},
+                      100: {},
+                      125: {},
+                    }
+              }
+              onChange={(leverage: number) => {
+                this.setState({ leverage })
+              }}
+              sliderContainerStyles={{
+                width: '80%',
+                margin: '0 auto',
+              }}
+              trackBeforeBackground={'#29AC80'}
+              handleStyles={{
+                width: '1.2rem',
+                height: '1.2rem',
+                border: 'none',
+                backgroundColor: '#036141',
+                marginTop: '-.28rem',
+                boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
+                transform: 'translate(-50%, -15%) !important',
+              }}
+              dotStyles={{
+                border: 'none',
+                backgroundColor: '#ABBAD1',
+              }}
+              activeDotStyles={{
+                backgroundColor: '#29AC80',
+              }}
+            />
+            <LeverageLabel style={{ fontFamily: 'DM Sans' }}>
+              {this.state.leverage}X
+            </LeverageLabel>
+          </div>
           <ClearButton>
             <Clear
               style={{ fontSize: '2rem' }}
@@ -1586,12 +1597,13 @@ export class EditEntryOrderPopup extends React.Component<
         </StyledDialogTitle>
         <StyledDialogContent id="edit-entry-order-dialog-content">
           <CustomSwitcher
+            theme={theme}
             firstHalfText={'buy'}
             secondHalfText={'sell'}
             buttonHeight={'2.5rem'}
             containerStyles={{ width: '100%', padding: '1.2rem 0 .6rem 0' }}
-            firstHalfStyleProperties={GreenSwitcherStyles}
-            secondHalfStyleProperties={RedSwitcherStyles}
+            firstHalfStyleProperties={GreenSwitcherStyles(theme)}
+            secondHalfStyleProperties={RedSwitcherStyles(theme)}
             firstHalfIsActive={side === 'buy'}
             changeHalf={() => {
               if (marketType === 0) {
@@ -1640,6 +1652,7 @@ export class EditEntryOrderPopup extends React.Component<
           />
 
           <CustomSwitcher
+            theme={theme}
             firstHalfText={'limit'}
             secondHalfText={'market'}
             buttonHeight={'2.5rem'}
@@ -1647,8 +1660,8 @@ export class EditEntryOrderPopup extends React.Component<
               width: '100%',
               paddingBottom: marketType === 1 ? '0' : '.6rem',
             }}
-            firstHalfStyleProperties={BlueSwitcherStyles}
-            secondHalfStyleProperties={BlueSwitcherStyles}
+            firstHalfStyleProperties={BlueSwitcherStyles(theme)}
+            secondHalfStyleProperties={BlueSwitcherStyles(theme)}
             firstHalfIsActive={type === 'limit'}
             changeHalf={() => {
               this.setState((prev) => ({
@@ -1672,6 +1685,7 @@ export class EditEntryOrderPopup extends React.Component<
                 padding={'.6rem 0 1.2rem 0'}
               >
                 <AdditionalSettingsButton
+                  theme={theme}
                   isActive={isTrailingOn}
                   onClick={() => {
                     this.setState((prev) => ({

@@ -13,6 +13,7 @@ import {
 import { TooltipContainer, Tooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 import { BeforeCharacter, InputRowContainer } from './styles'
+import { Theme } from '@material-ui/core'
 
 export const Character = ({
   needCharacter,
@@ -115,6 +116,7 @@ export const FormInputContainer = ({
   tooltipText = '',
   tooltipStyles = {},
   onValueClick = () => {},
+  theme,
 }: {
   title: string
   children: ReactNode
@@ -127,6 +129,7 @@ export const FormInputContainer = ({
   tooltipText?: string | React.ReactChild
   tooltipStyles?: React.CSSProperties
   onValueClick?: any
+  theme: Theme
 }) => {
   return (
     <InputRowContainer padding={padding} direction="column">
@@ -136,6 +139,7 @@ export const FormInputContainer = ({
         >
           <Tooltip style={{ ...tooltipStyles }}>{tooltipText}</Tooltip> */}
       <TradeInputHeader
+        theme={theme}
         title={title}
         haveTooltip={haveTooltip}
         needLine={needLine}

@@ -46,6 +46,7 @@ export const TradeInputHeader = ({
   tooltipText = '',
   tooltipStyles = {},
   onValueClick = () => {},
+  theme,
 }) => {
   return (
     <InputRowContainer
@@ -62,6 +63,7 @@ export const TradeInputHeader = ({
             enterDelay={10000}
           >
             <SeparateInputTitle
+              theme={theme}
               haveTooltip={haveTooltip}
               style={{
                 borderBottom: haveTooltip ? '.1rem dashed #e0e5ec' : 'none',
@@ -74,6 +76,7 @@ export const TradeInputHeader = ({
         </>
       ) : (
         <SeparateInputTitle
+          theme={theme}
           style={{
             borderBottom: haveTooltip ? '.1rem dashed #e0e5ec' : 'none',
           }}
@@ -88,7 +91,7 @@ export const TradeInputHeader = ({
       </SeparateInputTitle> */}
       {needLine && <Line lineMargin={lineMargin} />}
       {needRightValue && (
-        <BlueInputTitle onClick={() => onValueClick()}>
+        <BlueInputTitle theme={theme} onClick={() => onValueClick()}>
           {rightValue}
         </BlueInputTitle>
       )}
@@ -659,14 +662,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   direction={'column'}
                   justify="flex-end"
                 >
-                  {/* <InputTitle>cost:</InputTitle>
-                      <InputTitle color="#16253D" style={{ width: 'auto' }}>
-                        {(
-                          (values.amount / leverage) *
-                          priceForCalculate
-                        ).toFixed(2)}{' '}
-                        {pair[1]}
-                      </InputTitle> */}
                   <TradeInputContent
                     theme={theme}
                     needTitle
@@ -678,22 +673,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     onChange={this.onMarginChange}
                     symbol={pair[1]}
                   />
-                  {/* <Grid
-                      container
-                      justify="space-between"
-                      style={{ padding: '.6rem 0' }}
-                    >
-                      <InputTitle>max buy:</InputTitle>
-                      <InputTitle color="#16253D" style={{ width: 'auto' }}>
-                        {priceForCalculate
-                          ? (
-                              (funds[1].quantity * leverage) /
-                              priceForCalculate
-                            ).toFixed(3)
-                          : 0}{' '}
-                        {pair[0]}
-                      </InputTitle>
-                    </Grid> */}
                 </InputRowContainer>
               )}
             </InputRowContainer>

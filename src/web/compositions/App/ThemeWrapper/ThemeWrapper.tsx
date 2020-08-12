@@ -137,6 +137,9 @@ export default class ThemeWrapper extends Component<Props> {
                 dark: '#7284A0',
                 subPrimary: 'white',
               },
+              orange: {
+                main: '#F29C38',
+              },
               black: {
                 custom: '#16253D',
                 registration: '#000000',
@@ -154,6 +157,9 @@ export default class ThemeWrapper extends Component<Props> {
                 second: '#5C8CEA',
                 background: '#5C8CEA',
                 main: '#165BE0',
+                btnBackground: '#165BE0',
+                switcherBackground: '#165BE0',
+                switcherBorder: '#2E2E2E',
               },
               green: {
                 dark: '#377E21',
@@ -321,6 +327,9 @@ export default class ThemeWrapper extends Component<Props> {
                 blue: '#165BE0',
                 subPrimary: '#16253D',
               },
+              orange: {
+                main: '#F29C38',
+              },
               black: {
                 custom: '#16253D',
                 registration: '#000000',
@@ -338,6 +347,9 @@ export default class ThemeWrapper extends Component<Props> {
                 second: '#5C8CEA',
                 background: '#5C8CEA',
                 main: '#165BE0',
+                btnBackground: '#5C8CEA',
+                switcherBackground: 'rgba(11, 31, 209, 0.5)',
+                switcherBorder: '#0B1FD1',
               },
               green: {
                 dark: '#377E21',

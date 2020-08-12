@@ -900,11 +900,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       maxAmount = funds[1].quantity * entryPoint.order.leverage
     }
 
-    console.log(
-      '(entryPoint.order.total / maxAmount) * 100',
-      (entryPoint.order.total / maxAmount) * 100
-    )
-
     return (
       <>
         {showConfirmationPopup && !editPopup && (
@@ -922,11 +917,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         <CustomCard theme={theme}>
           <TerminalHeaders>
             <TerminalHeader
+              theme={theme}
               key={'entryPoint'}
               width={'33%'}
               justify={marketType === 0 ? 'center' : 'space-between'}
             >
-              <BlockHeader>entry point</BlockHeader>
+              <BlockHeader theme={theme}>entry point</BlockHeader>
               {marketType === 1 && (
                 <div
                   style={{
@@ -1002,7 +998,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       width: '65%',
                       margin: '0 auto',
                     }}
-                    trackBeforeBackground={'#29AC80;'}
+                    trackBeforeBackground={theme.palette.green.main}
                     handleStyles={{
                       width: '1.2rem',
                       height: '1.2rem',
@@ -1014,10 +1010,17 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     }}
                     dotStyles={{
                       border: 'none',
-                      backgroundColor: '#ABBAD1',
+                      backgroundColor: theme.palette.slider.dots,
                     }}
                     activeDotStyles={{
-                      backgroundColor: '#29AC80',
+                      backgroundColor: theme.palette.green.main,
+                    }}
+                    markTextSlyles={{
+                      color: theme.palette.grey.light,
+                      fontSize: '1rem',
+                    }}
+                    railStyle={{
+                      backgroundColor: theme.palette.slider.rail,
                     }}
                   />
                   <LeverageLabel style={{ width: '12.5%' }}>
@@ -1027,13 +1030,14 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               )}
             </TerminalHeader>
             <TerminalHeader
+              theme={theme}
               width={'32.5%'}
               margin={'0 1%'}
               padding={'0rem 1.5rem'}
               justify={'center'}
               key={'stopLoss'}
             >
-              <BlockHeader>stop loss</BlockHeader>
+              <BlockHeader theme={theme}>stop loss</BlockHeader>
               {/* <GreenSwitcher
                 id="isStopLossOn"
                 checked={stopLoss.isStopLossOn}
@@ -1043,12 +1047,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               /> */}
             </TerminalHeader>
             <TerminalHeader
+              theme={theme}
               key={'takeProfit'}
               width={'32.5%'}
               padding={'0rem 1.5rem'}
               justify={'center'}
             >
-              <BlockHeader>take a profit</BlockHeader>
+              <BlockHeader theme={theme}>take a profit</BlockHeader>
               {/* <GreenSwitcher
                 id="isTakeProfitOn"
                 checked={takeProfit.isTakeProfitOn}
@@ -1072,7 +1077,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             <TerminalBlock width={'calc(33% + 0.5%)'}>
               {/* {marketType === 1 && (
                 <InputRowContainer padding={'0 0 0.6rem 0'}>
-                  <CustomSwitcher
+                  <CustomSwitcher theme={theme}
                     containerStyles={{
                       width: entryPoint.TVAlert.plotEnabled ? '70%' : '100%',
                       margin: 0,
@@ -1123,8 +1128,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           }}
                         />
                       </div>
-                      <Input
-                        type={'number'}
+                      <Input theme={theme}                        type={'number'}
                         needTitle
                         title={`plot_`}
                         textAlign="left"
@@ -1154,6 +1158,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               )} */}
               <InputRowContainer padding={'0 0 .6rem 0'}>
                 <CustomSwitcher
+                  theme={theme}
                   firstHalfText={'buy'}
                   secondHalfText={'sell'}
                   buttonHeight={'2.5rem'}
@@ -1164,14 +1169,14 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   firstHalfStyleProperties={
                     entryPoint.TVAlert.plotEnabled &&
                     entryPoint.TVAlert.sidePlotEnabled
-                      ? DisabledSwitcherStyles
-                      : GreenSwitcherStyles
+                      ? DisabledSwitcherStyles(theme)
+                      : GreenSwitcherStyles(theme)
                   }
                   secondHalfStyleProperties={
                     entryPoint.TVAlert.plotEnabled &&
                     entryPoint.TVAlert.sidePlotEnabled
-                      ? DisabledSwitcherStyles
-                      : RedSwitcherStyles
+                      ? DisabledSwitcherStyles(theme)
+                      : RedSwitcherStyles(theme)
                   }
                   firstHalfIsActive={entryPoint.order.side === 'buy'}
                   changeHalf={() => {
@@ -1274,6 +1279,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       />
                     </div>
                     <Input
+                      theme={theme}
                       type={'number'}
                       needTitle
                       title={`plot_`}
@@ -1304,6 +1310,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
               <InputRowContainer padding={'0 0 0.6rem 0'}>
                 <CustomSwitcher
+                  theme={theme}
                   firstHalfText={'limit'}
                   secondHalfText={'market'}
                   buttonHeight={'2.5rem'}
@@ -1314,14 +1321,14 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   firstHalfStyleProperties={
                     entryPoint.TVAlert.plotEnabled &&
                     entryPoint.TVAlert.typePlotEnabled
-                      ? DisabledSwitcherStyles
-                      : BlueSwitcherStyles
+                      ? DisabledSwitcherStyles(theme)
+                      : BlueSwitcherStyles(theme)
                   }
                   secondHalfStyleProperties={
                     entryPoint.TVAlert.plotEnabled &&
                     entryPoint.TVAlert.typePlotEnabled
-                      ? DisabledSwitcherStyles
-                      : BlueSwitcherStyles
+                      ? DisabledSwitcherStyles(theme)
+                      : BlueSwitcherStyles(theme)
                   }
                   firstHalfIsActive={entryPoint.order.type === 'limit'}
                   changeHalf={() => {
@@ -1408,6 +1415,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       />
                     </div>
                     <Input
+                      theme={theme}
                       type={'number'}
                       needTitle
                       title={`plot_`}
@@ -1477,6 +1485,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       }
                     >
                       <AdditionalSettingsButton
+                        theme={theme}
                         isActive={entryPoint.trailing.isTrailingOn}
                         onClick={() => {
                           this.updateSubBlockValue(
@@ -1505,6 +1514,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     }
                   >
                     <AdditionalSettingsButton
+                      theme={theme}
                       isActive={entryPoint.TVAlert.isTVAlertOn}
                       onClick={() => {
                         this.updateSubBlockValue(
@@ -1572,7 +1582,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             />
                             <SettingsLabel
                               style={{
-                                color: '#16253D',
+                                color: theme.palette.dark.main,
                                 textDecoration: 'underline',
                               }}
                               htmlFor={'once'}
@@ -1608,7 +1618,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             />
                             <SettingsLabel
                               style={{
-                                color: '#16253D',
+                                color: theme.palette.dark.main,
                                 textDecoration: 'underline',
                               }}
                               htmlFor={'ifNoActive'}
@@ -1647,7 +1657,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             />
                             <SettingsLabel
                               style={{
-                                color: '#16253D',
+                                color: theme.palette.dark.main,
                                 textDecoration: 'underline',
                               }}
                               htmlFor={'always'}
@@ -1660,13 +1670,14 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     </InputRowContainer>
 
                     <FormInputContainer
+                      theme={theme}
                       padding={'0 0 .8rem 0'}
                       haveTooltip={false}
                       tooltipText={''}
                       title={'action when alert'}
                     >
                       <InputRowContainer>
-                        {/* <AdditionalSettingsButton
+                        {/* <AdditionalSettingsButton theme={theme}
                           isActive={entryPoint.TVAlert.immediateEntry}
                           onClick={() => {
                             this.updateSubBlockValue(
@@ -1694,6 +1705,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           Immediate entry
                         </AdditionalSettingsButton> */}
                         <AdditionalSettingsButton
+                          theme={theme}
                           isActive={entryPoint.TVAlert.plotEnabled}
                           onClick={() => {
                             this.updateSubBlockValue(
@@ -1712,6 +1724,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 )}
 
                 <FormInputContainer
+                  theme={theme}
                   padding={'0 0 1.2rem 0'}
                   haveTooltip={entryPoint.trailing.isTrailingOn}
                   tooltipText={
@@ -1721,6 +1734,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 >
                   <InputRowContainer>
                     <Input
+                      theme={theme}
                       width={entryPoint.TVAlert.plotEnabled ? '70%' : '100%'}
                       symbol={pair[1]}
                       type={
@@ -1796,6 +1810,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           />
                         </div>
                         <Input
+                          theme={theme}
                           type={'number'}
                           needTitle
                           title={`plot_`}
@@ -1827,6 +1842,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
                 {entryPoint.trailing.isTrailingOn && marketType !== 0 && (
                   <FormInputContainer
+                    theme={theme}
                     haveTooltip
                     tooltipText={
                       'The level of price change after the trend reversal, at which the order will be executed.'
@@ -1835,6 +1851,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   >
                     <InputRowContainer>
                       <Input
+                        theme={theme}
                         padding={'0'}
                         width={'calc(32.5%)'}
                         textAlign={'left'}
@@ -1877,6 +1894,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       />
 
                       <Input
+                        theme={theme}
                         padding={'0 .8rem 0 .8rem'}
                         width={'calc(17.5%)'}
                         symbol={'%'}
@@ -1978,6 +1996,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             />
                           </div>
                           <Input
+                            theme={theme}
                             type={'number'}
                             needTitle
                             title={`plot_`}
@@ -2015,6 +2034,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     }}
                   >
                     <FormInputContainer
+                      theme={theme}
                       needLine={false}
                       needRightValue={true}
                       rightValue={`${
@@ -2034,6 +2054,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       } (${pair[0]})`}
                     >
                       <Input
+                        theme={theme}
                         type={'text'}
                         pattern={
                           marketType === 0
@@ -2102,7 +2123,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   >
                     <HeightIcon
                       style={{
-                        color: '#7284A0',
+                        color: theme.palette.grey.text,
                         transform: 'rotate(-90deg) translateX(-30%)',
                       }}
                     />
@@ -2113,6 +2134,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     }}
                   >
                     <FormInputContainer
+                      theme={theme}
                       needLine={false}
                       needRightValue={true}
                       rightValue={`${
@@ -2130,6 +2152,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       title={`total (${pair[1]})`}
                     >
                       <Input
+                        theme={theme}
                         symbol={pair[1]}
                         value={entryPoint.order.total}
                         disabled={
@@ -2190,6 +2213,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         />
                       </div>
                       <Input
+                        theme={theme}
                         type={'number'}
                         needTitle
                         title={`plot_`}
@@ -2232,7 +2256,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       margin: '0 .8rem 0 auto',
                     }}
                     onChange={(value) => {
-                      console.log('value', value)
                       const newValue = (maxAmount / 100) * value
 
                       const newAmount =
@@ -2257,7 +2280,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         )
                       )
 
-                      console.log('new total', newTotal)
                       this.updateSubBlockValue(
                         'entryPoint',
                         'order',
@@ -2273,6 +2295,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 {marketType === 1 && (
                   <InputRowContainer>
                     <FormInputContainer
+                      theme={theme}
                       needLine={false}
                       needRightValue={true}
                       rightValue={`${stripDigitPlaces(funds[1].quantity, 2)} ${
@@ -2282,6 +2305,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       title={`cost / initial margin (${pair[1]})`}
                     >
                       <Input
+                        theme={theme}
                         symbol={pair[1]}
                         value={this.state.temp.initialMargin}
                         disabled={
@@ -2326,8 +2350,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
                 {entryPoint.order.isHedgeOn && (
                   <InputRowContainer>
-                    <FormInputContainer title={'hedge'}>
+                    <FormInputContainer theme={theme} title={'hedge'}>
                       <CustomSwitcher
+                        theme={theme}
                         firstHalfText={'long'}
                         secondHalfText={'short'}
                         buttonHeight={'2.5rem'}
@@ -2336,8 +2361,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           padding: '0 .4rem 0 0',
                           whiteSpace: 'nowrap',
                         }}
-                        firstHalfStyleProperties={GreenSwitcherStyles}
-                        secondHalfStyleProperties={RedSwitcherStyles}
+                        firstHalfStyleProperties={GreenSwitcherStyles(theme)}
+                        secondHalfStyleProperties={RedSwitcherStyles(theme)}
                         firstHalfIsActive={
                           entryPoint.order.hedgeSide === 'long'
                         }
@@ -2351,6 +2376,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         }
                       />
                       <Input
+                        theme={theme}
                         padding="0 .8rem 0 .8rem"
                         width={'calc(40% - 1.6rem)'}
                         symbol={pair[1]}
@@ -2402,6 +2428,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   <>
                     {' '}
                     <FormInputContainer
+                      theme={theme}
                       padding={'0 0 .8rem 0'}
                       haveTooltip={true}
                       tooltipText={
@@ -2413,13 +2440,18 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       title={
                         <span>
                           paste it into{' '}
-                          <span style={{ color: '#5C8CEA' }}>web-hook url</span>{' '}
+                          <span
+                            style={{ color: theme.palette.blue.background }}
+                          >
+                            web-hook url
+                          </span>{' '}
                           field when creating tv alert
                         </span>
                       }
                     >
                       <InputRowContainer>
                         <Input
+                          theme={theme}
                           width={'85%'}
                           type={'text'}
                           disabled={true}
@@ -2433,10 +2465,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           fontSize="1rem"
                           padding=".5rem 0 .4rem 0"
                           borderRadius=".8rem"
-                          btnColor={'#0B1FD1'}
-                          backgroundColor={'#fff'}
-                          hoverColor={'#fff'}
-                          hoverBackground={'#0B1FD1'}
+                          btnColor={theme.palette.blue.main}
+                          backgroundColor={theme.palette.white.main}
+                          hoverColor={theme.palette.white.main}
+                          hoverBackground={theme.palette.blue.main}
                           transition={'all .4s ease-out'}
                           onClick={() => {
                             copy(`https://${API_URL}/createSmUsingTemplate`)
@@ -2447,6 +2479,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       </InputRowContainer>
                     </FormInputContainer>
                     <FormInputContainer
+                      theme={theme}
                       padding={'0 0 .8rem 0'}
                       haveTooltip={true}
                       tooltipText={
@@ -2458,13 +2491,18 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       title={
                         <span>
                           paste it into{' '}
-                          <span style={{ color: '#5C8CEA' }}>message</span>{' '}
+                          <span
+                            style={{ color: theme.palette.blue.background }}
+                          >
+                            message
+                          </span>{' '}
                           field when creating tv alert
                         </span>
                       }
                     >
                       <InputRowContainer>
                         <Input
+                          theme={theme}
                           width={'65%'}
                           type={'text'}
                           disabled={true}
@@ -2479,10 +2517,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           fontSize="1rem"
                           padding=".5rem 0 .4rem 0"
                           borderRadius=".8rem"
-                          btnColor={'#0B1FD1'}
-                          backgroundColor={'#fff'}
-                          hoverColor={'#fff'}
-                          hoverBackground={'#0B1FD1'}
+                          btnColor={theme.palette.blue.main}
+                          backgroundColor={theme.palette.white.main}
+                          hoverColor={theme.palette.white.main}
+                          hoverBackground={theme.palette.blue.main}
                           transition={'all .4s ease-out'}
                           onClick={() => {
                             copy(this.getEntryAlertJson())
@@ -2497,10 +2535,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           fontSize="1rem"
                           padding=".5rem 0 .4rem 0"
                           borderRadius=".8rem"
-                          btnColor={'#0B1FD1'}
-                          backgroundColor={'#fff'}
-                          hoverColor={'#fff'}
-                          hoverBackground={'#0B1FD1'}
+                          btnColor={theme.palette.blue.main}
+                          backgroundColor={theme.palette.white.main}
+                          hoverColor={theme.palette.white.main}
+                          hoverBackground={theme.palette.blue.main}
                           transition={'all .4s ease-out'}
                           onClick={() => {
                             // redirect to full example page
@@ -2529,12 +2567,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               >
                 <InputRowContainer justify="center">
                   <CustomSwitcher
+                    theme={theme}
                     firstHalfText={'limit'}
                     secondHalfText={'market'}
                     buttonHeight={'2.5rem'}
                     containerStyles={{ width: '100%' }}
-                    firstHalfStyleProperties={BlueSwitcherStyles}
-                    secondHalfStyleProperties={BlueSwitcherStyles}
+                    firstHalfStyleProperties={BlueSwitcherStyles(theme)}
+                    secondHalfStyleProperties={BlueSwitcherStyles(theme)}
                     firstHalfIsActive={stopLoss.type === 'limit'}
                     changeHalf={() =>
                       this.updateBlockValue(
@@ -2568,6 +2607,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       }
                     >
                       <AdditionalSettingsButton
+                        theme={theme}
                         isActive={stopLoss.timeout.isTimeoutOn}
                         onClick={() => {
                           this.updateSubBlockValue(
@@ -2602,6 +2642,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       }
                     >
                       <AdditionalSettingsButton
+                        theme={theme}
                         isActive={stopLoss.external}
                         onClick={() => {
                           this.updateBlockValue(
@@ -2626,7 +2667,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         SL by TV Alert
                       </AdditionalSettingsButton>
                     </DarkTooltip>
-                    {/* <AdditionalSettingsButton
+                    {/* <AdditionalSettingsButton theme={theme}
                     isActive={stopLoss.forcedStop.isForcedStopOn}
                     onClick={() =>
                       this.updateSubBlockValue(
@@ -2646,6 +2687,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     !stopLoss.plotEnabled) ||
                     !stopLoss.external) && (
                     <FormInputContainer
+                      theme={theme}
                       haveTooltip
                       tooltipText={
                         <>
@@ -2661,6 +2703,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     >
                       <InputRowContainer>
                         <Input
+                          theme={theme}
                           padding={'0'}
                           width={'calc(32.5%)'}
                           textAlign={'left'}
@@ -2706,6 +2749,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         />
 
                         <Input
+                          theme={theme}
                           padding={'0 .8rem 0 .8rem'}
                           width={'calc(17.5%)'}
                           symbol={'%'}
@@ -2772,6 +2816,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   {stopLoss.external && (
                     <>
                       <FormInputContainer
+                        theme={theme}
                         padding={'0 0 .8rem 0'}
                         haveTooltip={false}
                         tooltipText={''}
@@ -2779,6 +2824,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       >
                         <InputRowContainer>
                           <AdditionalSettingsButton
+                            theme={theme}
                             isActive={stopLoss.forcedStopByAlert}
                             onClick={() => {
                               this.updateBlockValue(
@@ -2802,6 +2848,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             Forced Stop by Alert
                           </AdditionalSettingsButton>
                           <AdditionalSettingsButton
+                            theme={theme}
                             isActive={stopLoss.plotEnabled}
                             onClick={() => {
                               this.updateBlockValue(
@@ -2825,6 +2872,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       {stopLoss.plotEnabled && (
                         <InputRowContainer padding={'0 0 .8rem 0'}>
                           <Input
+                            theme={theme}
                             type={'number'}
                             needTitle
                             title={`plot_`}
@@ -2847,6 +2895,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       )}
 
                       <FormInputContainer
+                        theme={theme}
                         padding={'0 0 .8rem 0'}
                         haveTooltip={true}
                         tooltipText={
@@ -2858,7 +2907,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         title={
                           <span>
                             paste it into{' '}
-                            <span style={{ color: '#5C8CEA' }}>
+                            <span
+                              style={{ color: theme.palette.blue.background }}
+                            >
                               web-hook url
                             </span>{' '}
                             field when creating tv alert
@@ -2867,6 +2918,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       >
                         <InputRowContainer>
                           <Input
+                            theme={theme}
                             width={'85%'}
                             type={'text'}
                             disabled={true}
@@ -2880,10 +2932,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             fontSize="1rem"
                             padding=".5rem 0 .4rem 0"
                             borderRadius=".8rem"
-                            btnColor={'#0B1FD1'}
-                            backgroundColor={'#fff'}
-                            hoverColor={'#fff'}
-                            hoverBackground={'#0B1FD1'}
+                            btnColor={theme.palette.blue.main}
+                            backgroundColor={theme.palette.white.main}
+                            hoverColor={theme.palette.white.main}
+                            hoverBackground={theme.palette.blue.main}
                             transition={'all .4s ease-out'}
                             onClick={() => {
                               copy(`https://${API_URL}/editStopLossByAlert`)
@@ -2894,6 +2946,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         </InputRowContainer>
                       </FormInputContainer>
                       <FormInputContainer
+                        theme={theme}
                         padding={'0 0 .8rem 0'}
                         haveTooltip={true}
                         tooltipText={
@@ -2905,13 +2958,18 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         title={
                           <span>
                             paste it into{' '}
-                            <span style={{ color: '#5C8CEA' }}>message</span>{' '}
+                            <span
+                              style={{ color: theme.palette.blue.background }}
+                            >
+                              message
+                            </span>{' '}
                             field when creating tv alert
                           </span>
                         }
                       >
                         <InputRowContainer>
                           <Input
+                            theme={theme}
                             width={'65%'}
                             type={'text'}
                             disabled={true}
@@ -2942,10 +3000,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             fontSize="1rem"
                             padding=".5rem 0 .4rem 0"
                             borderRadius=".8rem"
-                            btnColor={'#0B1FD1'}
-                            backgroundColor={'#fff'}
-                            hoverColor={'#fff'}
-                            hoverBackground={'#0B1FD1'}
+                            btnColor={theme.palette.blue.main}
+                            backgroundColor={theme.palette.white.main}
+                            hoverColor={theme.palette.white.main}
+                            hoverBackground={theme.palette.blue.main}
                             transition={'all .4s ease-out'}
                             onClick={() => {
                               copy(
@@ -2978,10 +3036,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             fontSize="1rem"
                             padding=".5rem 0 .4rem 0"
                             borderRadius=".8rem"
-                            btnColor={'#0B1FD1'}
-                            backgroundColor={'#fff'}
-                            hoverColor={'#fff'}
-                            hoverBackground={'#0B1FD1'}
+                            btnColor={theme.palette.blue.main}
+                            backgroundColor={theme.palette.white.main}
+                            hoverColor={theme.palette.white.main}
+                            hoverBackground={theme.palette.blue.main}
                             transition={'all .4s ease-out'}
                             onClick={() => {
                               // redirect to full example page
@@ -3022,8 +3080,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             }}
                             style={{ padding: '0 .4rem 0 0' }}
                           />
-                          <Input
-                            haveSelector
+                          <Input theme={theme}                            haveSelector
                             width={'calc(55% - .4rem)'}
                             value={stopLoss.timeout.whenLossSec}
                             showErrors={showErrors && stopLoss.isStopLossOn}
@@ -3073,6 +3130,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           <TimeoutTitle>When in loss</TimeoutTitle>
                         </InputRowContainer> */}
                           <FormInputContainer
+                            theme={theme}
                             haveTooltip
                             tooltipText={
                               <>
@@ -3113,6 +3171,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             style={{ padding: '0 .4rem 0 0' }}
                           /> */}
                               <Input
+                                theme={theme}
                                 haveSelector
                                 // width={'calc(55% - .4rem)'}
                                 width={'calc(75% - .4rem)'}
@@ -3162,6 +3221,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         </SubBlocksContainer>
                         <SubBlocksContainer>
                           <FormInputContainer
+                            theme={theme}
                             haveTooltip
                             tooltipText={
                               <>
@@ -3183,6 +3243,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           >
                             <InputRowContainer>
                               <Input
+                                theme={theme}
                                 padding={'0'}
                                 width={'calc(65%)'}
                                 textAlign={'left'}
@@ -3233,6 +3294,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                                 }}
                               />
                               <Input
+                                theme={theme}
                                 showErrors={showErrors && stopLoss.isStopLossOn}
                                 isValid={this.validateField(
                                   stopLoss.forcedStop.isForcedStopOn,
@@ -3439,12 +3501,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             <TerminalBlock width={'calc(33%)'} borderRight="0">
               <InputRowContainer justify="center">
                 <CustomSwitcher
+                  theme={theme}
                   firstHalfText={'limit'}
                   secondHalfText={'market'}
                   buttonHeight={'2.5rem'}
                   containerStyles={{ width: '100%' }}
-                  firstHalfStyleProperties={BlueSwitcherStyles}
-                  secondHalfStyleProperties={BlueSwitcherStyles}
+                  firstHalfStyleProperties={BlueSwitcherStyles(theme)}
+                  secondHalfStyleProperties={BlueSwitcherStyles(theme)}
                   firstHalfIsActive={takeProfit.type === 'limit'}
                   changeHalf={() => {
                     this.updateBlockValue(
@@ -3485,6 +3548,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     }
                   >
                     <AdditionalSettingsButton
+                      theme={theme}
                       style={{ fontSize: '1rem' }}
                       isActive={takeProfit.trailingTAP.isTrailingOn}
                       onClick={() => {
@@ -3547,6 +3611,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       }
                     >
                       <AdditionalSettingsButton
+                        theme={theme}
                         isActive={takeProfit.splitTargets.isSplitTargetsOn}
                         onClick={() => {
                           this.updateSubBlockValue(
@@ -3584,6 +3649,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     }
                   >
                     <AdditionalSettingsButton
+                      theme={theme}
                       isActive={takeProfit.external}
                       onClick={() => {
                         this.updateSubBlockValue(
@@ -3615,7 +3681,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       TAP by TV Alert
                     </AdditionalSettingsButton>
                   </DarkTooltip>
-                  {/* <AdditionalSettingsButton
+                  {/* <AdditionalSettingsButton theme={theme}
                     isActive={takeProfit.timeout.isTimeoutOn}
                     onClick={() => {
                       this.updateSubBlockValue(
@@ -3649,6 +3715,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     !takeProfit.plotEnabled) ||
                     !takeProfit.external) && (
                     <FormInputContainer
+                      theme={theme}
                       haveTooltip
                       tooltipText={
                         <>
@@ -3666,6 +3733,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     >
                       <InputRowContainer>
                         <Input
+                          theme={theme}
                           textAlign={'left'}
                           padding={'0'}
                           width={'calc(32.5%)'}
@@ -3718,6 +3786,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         />
 
                         <Input
+                          theme={theme}
                           padding={'0 .8rem 0 .8rem'}
                           width={'calc(17.5%)'}
                           symbol={'%'}
@@ -3788,6 +3857,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     !takeProfit.external) && (
                     <>
                       <FormInputContainer
+                        theme={theme}
                         haveTooltip
                         tooltipText={
                           'The price at which the trailing algorithm is enabled.'
@@ -3800,6 +3870,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       >
                         <InputRowContainer>
                           <Input
+                            theme={theme}
                             textAlign={'left'}
                             padding={'0'}
                             width={'calc(32.5%)'}
@@ -3851,6 +3922,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             }}
                           />
                           <Input
+                            theme={theme}
                             symbol={'%'}
                             padding={'0 .8rem 0 .8rem'}
                             width={'calc(17.5%)'}
@@ -3915,6 +3987,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       </FormInputContainer>
                       {!takeProfit.external && (
                         <FormInputContainer
+                          theme={theme}
                           haveTooltip
                           tooltipText={
                             'The level of price change after the trend reversal, at which the order will be executed.'
@@ -3923,6 +3996,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         >
                           <InputRowContainer>
                             <Input
+                              theme={theme}
                               padding={'0 .8rem 0 0'}
                               width={'calc(50%)'}
                               symbol={'%'}
@@ -3970,6 +4044,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 {takeProfit.external && (
                   <>
                     <FormInputContainer
+                      theme={theme}
                       padding={'0 0 .8rem 0'}
                       haveTooltip={false}
                       tooltipText={''}
@@ -3977,6 +4052,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     >
                       <InputRowContainer>
                         <AdditionalSettingsButton
+                          theme={theme}
                           isActive={takeProfit.forcedStopByAlert}
                           onClick={() => {
                             this.updateBlockValue(
@@ -4000,6 +4076,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           Forced Stop by Alert
                         </AdditionalSettingsButton>
                         <AdditionalSettingsButton
+                          theme={theme}
                           isActive={takeProfit.plotEnabled}
                           onClick={() => {
                             this.updateBlockValue(
@@ -4023,6 +4100,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     {takeProfit.plotEnabled && (
                       <InputRowContainer padding={'0 0 .8rem 0'}>
                         <Input
+                          theme={theme}
                           type={'number'}
                           needTitle
                           title={`plot_`}
@@ -4044,6 +4122,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       </InputRowContainer>
                     )}
                     <FormInputContainer
+                      theme={theme}
                       padding={'0 0 .8rem 0'}
                       haveTooltip={true}
                       tooltipText={
@@ -4055,13 +4134,18 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       title={
                         <span>
                           paste it into{' '}
-                          <span style={{ color: '#5C8CEA' }}>web-hook url</span>{' '}
+                          <span
+                            style={{ color: theme.palette.blue.background }}
+                          >
+                            web-hook url
+                          </span>{' '}
                           field when creating tv alert
                         </span>
                       }
                     >
                       <InputRowContainer>
                         <Input
+                          theme={theme}
                           width={'85%'}
                           type={'text'}
                           disabled={true}
@@ -4076,10 +4160,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           fontSize="1rem"
                           padding=".5rem 0 .4rem 0"
                           borderRadius=".8rem"
-                          btnColor={'#0B1FD1'}
-                          backgroundColor={'#fff'}
-                          hoverColor={'#fff'}
-                          hoverBackground={'#0B1FD1'}
+                          btnColor={theme.palette.blue.main}
+                          backgroundColor={theme.palette.white.main}
+                          hoverColor={theme.palette.white.main}
+                          hoverBackground={theme.palette.blue.main}
                           transition={'all .4s ease-out'}
                           onClick={() => {
                             copy(`https://${API_URL}/editTakeProfitByAlert`)
@@ -4090,6 +4174,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       </InputRowContainer>
                     </FormInputContainer>
                     <FormInputContainer
+                      theme={theme}
                       padding={'0 0 .8rem 0'}
                       haveTooltip={true}
                       tooltipText={
@@ -4101,13 +4186,18 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       title={
                         <span>
                           paste it into{' '}
-                          <span style={{ color: '#5C8CEA' }}>message</span>{' '}
+                          <span
+                            style={{ color: theme.palette.blue.background }}
+                          >
+                            message
+                          </span>{' '}
                           field when creating tv alert
                         </span>
                       }
                     >
                       <InputRowContainer>
                         <Input
+                          theme={theme}
                           width={'65%'}
                           type={'text'}
                           disabled={true}
@@ -4146,10 +4236,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           fontSize="1rem"
                           padding=".5rem 0 .4rem 0"
                           borderRadius=".8rem"
-                          btnColor={'#0B1FD1'}
-                          backgroundColor={'#fff'}
-                          hoverColor={'#fff'}
-                          hoverBackground={'#0B1FD1'}
+                          btnColor={theme.palette.blue.main}
+                          backgroundColor={theme.palette.white.main}
+                          hoverColor={theme.palette.white.main}
+                          hoverBackground={theme.palette.blue.main}
                           transition={'all .4s ease-out'}
                           onClick={() => {
                             copy(
@@ -4190,10 +4280,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           fontSize="1rem"
                           padding=".5rem 0 .4rem 0"
                           borderRadius=".8rem"
-                          btnColor={'#0B1FD1'}
-                          backgroundColor={'#fff'}
-                          hoverColor={'#fff'}
-                          hoverBackground={'#0B1FD1'}
+                          btnColor={theme.palette.blue.main}
+                          backgroundColor={theme.palette.white.main}
+                          hoverColor={theme.palette.white.main}
+                          hoverBackground={theme.palette.blue.main}
                           transition={'all .4s ease-out'}
                           onClick={() => {
                             // redirect to full example page
@@ -4208,9 +4298,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
                 {takeProfit.splitTargets.isSplitTargetsOn && (
                   <>
-                    <FormInputContainer title={'amount (%)'}>
+                    <FormInputContainer theme={theme} title={'amount (%)'}>
                       <InputRowContainer>
                         <Input
+                          theme={theme}
                           padding={'0 .8rem 0 0'}
                           width={'calc(50%)'}
                           symbol={'%'}
@@ -4260,9 +4351,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
                     <InputRowContainer padding="0 0 .6rem 0">
                       <BtnCustom
-                        btnColor={'#fff'}
-                        backgroundColor={'#F29C38'}
-                        borderColor={'#F29C38'}
+                        btnColor={theme.palette.white.main}
+                        backgroundColor={theme.palette.orange.main}
+                        borderColor={theme.palette.orange.main}
                         btnWidth={'100%'}
                         height={'auto'}
                         borderRadius={'1rem'}
@@ -4294,9 +4385,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       <div
                         style={{
                           width: '100%',
-                          background: '#F9FBFD',
+                          background: theme.palette.grey.main,
                           borderRadius: '.8rem',
-                          border: '.1rem solid #e0e5ec',
+                          border: theme.palette.border.main,
                         }}
                       >
                         {takeProfit.splitTargets.targets.map((target, i) => (
@@ -4306,7 +4397,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             style={
                               takeProfit.splitTargets.targets.length - 1 !== i
                                 ? {
-                                    borderBottom: '.1rem solid #e0e5ec',
+                                    borderBottom: theme.palette.border.main,
                                   }
                                 : {}
                             }
@@ -4322,7 +4413,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             <CloseIcon
                               onClick={() => this.deleteTarget(i)}
                               style={{
-                                color: '#DD6956',
+                                color: theme.palette.red.main,
                                 fontSize: '1.8rem',
                                 cursor: 'pointer',
                               }}
@@ -4363,6 +4454,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             style={{ padding: '0 .4rem 0 0' }}
                           />
                           <Input
+                            theme={theme}
                             haveSelector
                             width={'calc(55% - .4rem)'}
                             value={takeProfit.timeout.whenProfitSec}
@@ -4433,6 +4525,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             style={{ padding: '0 .4rem 0 0' }}
                           />
                           <Input
+                            theme={theme}
                             haveSelector
                             width={'calc(55% - .4rem)'}
                             value={takeProfit.timeout.whenProfitableSec}

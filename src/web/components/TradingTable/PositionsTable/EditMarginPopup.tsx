@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Dialog, Paper } from '@material-ui/core'
+import { Dialog, Paper, Theme } from '@material-ui/core'
 import { StyledDialogContent } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { TradeInputContent as Input } from '@sb/components/TraidingTerminal/index'
 import { BlueSwitcherStyles } from '@sb/compositions/Chart/components/SmartOrderTerminal/utils'
@@ -10,12 +10,12 @@ import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderT
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
-const SwitcherStyles = {
-  ...BlueSwitcherStyles,
+const SwitcherStyles = (theme: Theme) => ({
+  ...BlueSwitcherStyles(theme),
   activeBackgroundColor: '#0B1FD1',
   fontWeight: 'bold',
   textTransform: 'uppercase',
-}
+})
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -37,6 +37,7 @@ export class EditMarginPopup extends React.Component {
   render() {
     const {
       open,
+      theme,
       handleClose,
       USDTFuturesFund,
       editMarginPosition,
@@ -71,6 +72,7 @@ export class EditMarginPopup extends React.Component {
       >
         <StyledDialogContent id="edit-margin-dialog-content">
           <CustomSwitcher
+            theme={theme}
             firstHalfText={'Add margin'}
             secondHalfText={'remove margin '}
             buttonHeight={'4rem'}
@@ -78,8 +80,8 @@ export class EditMarginPopup extends React.Component {
               width: '100%',
               padding: '0 0 .6rem 0',
             }}
-            firstHalfStyleProperties={SwitcherStyles}
-            secondHalfStyleProperties={SwitcherStyles}
+            firstHalfStyleProperties={SwitcherStyles(theme)}
+            secondHalfStyleProperties={SwitcherStyles(theme)}
             firstHalfIsActive={type === 1}
             changeHalf={this.toggleType}
           />
