@@ -184,6 +184,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         whenLossableSec: 0,
       },
       forcedStop: {
+        mandatoryForcedLoss: false,
         isForcedStopOn: false,
         pricePercentage: 0,
         forcedStopPrice: 0,
@@ -317,6 +318,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           forcedStopPrice: 0,
           ...result.stopLoss.forcedStop,
           isForcedStopOn: result.stopLoss.timeout.isTimeoutOn,
+          mandatoryForcedLoss: !!result.stopLoss.forcedStop.mandatoryForcedLoss,
         },
       },
     }))
@@ -904,6 +906,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       <>
         {showConfirmationPopup && !editPopup && (
           <ConfirmationPopup
+            theme={theme}
             confirmTrade={this.confirmTrade}
             handleOpenEditPopup={this.handleOpenEditPopup}
             open={showConfirmationPopup}
@@ -914,7 +917,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             pair={pair}
           />
         )}
-        <CustomCard theme={theme}>
+        <CustomCard theme={theme} style={{ borderTop: 0 }}>
           <TerminalHeaders>
             <TerminalHeader
               theme={theme}
@@ -931,7 +934,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     alignItems: 'center',
                   }}
                 >
-                  <LeverageTitle>leverage:</LeverageTitle>
+                  <LeverageTitle theme={theme}>leverage:</LeverageTitle>
                   <SmallSlider
                     min={1}
                     max={maxLeverage}
@@ -1023,7 +1026,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       backgroundColor: theme.palette.slider.rail,
                     }}
                   />
-                  <LeverageLabel style={{ width: '12.5%' }}>
+                  <LeverageLabel theme={theme} style={{ width: '12.5%' }}>
                     {entryPoint.order.leverage || 1}x
                   </LeverageLabel>
                 </div>
@@ -1074,7 +1077,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           <TerminalBlocksContainer xs={12} container item>
             {/* ENTRY POINT */}
 
-            <TerminalBlock width={'calc(33% + 0.5%)'}>
+            <TerminalBlock theme={theme} width={'calc(33% + 0.5%)'}>
               {/* {marketType === 1 && (
                 <InputRowContainer padding={'0 0 0.6rem 0'}>
                   <CustomSwitcher theme={theme}
@@ -2396,6 +2399,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         }}
                       />
                       <Select
+                        theme={theme}
                         width={'18%'}
                         symbol={'LVRG.'}
                         value={entryPoint.order.hedgeIncrease}
@@ -2466,7 +2470,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           padding=".5rem 0 .4rem 0"
                           borderRadius=".8rem"
                           btnColor={theme.palette.blue.main}
-                          backgroundColor={theme.palette.white.main}
+                          backgroundColor={theme.palette.white.background}
                           hoverColor={theme.palette.white.main}
                           hoverBackground={theme.palette.blue.main}
                           transition={'all .4s ease-out'}
@@ -2518,7 +2522,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           padding=".5rem 0 .4rem 0"
                           borderRadius=".8rem"
                           btnColor={theme.palette.blue.main}
-                          backgroundColor={theme.palette.white.main}
+                          backgroundColor={theme.palette.white.background}
                           hoverColor={theme.palette.white.main}
                           hoverBackground={theme.palette.blue.main}
                           transition={'all .4s ease-out'}
@@ -2536,7 +2540,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           padding=".5rem 0 .4rem 0"
                           borderRadius=".8rem"
                           btnColor={theme.palette.blue.main}
-                          backgroundColor={theme.palette.white.main}
+                          backgroundColor={theme.palette.white.background}
                           hoverColor={theme.palette.white.main}
                           hoverBackground={theme.palette.blue.main}
                           transition={'all .4s ease-out'}
@@ -2555,6 +2559,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
             {/* STOP LOSS */}
             <TerminalBlock
+              theme={theme}
               width={'calc(32.5% + 1%)'}
               style={{ overflow: 'hidden', padding: 0 }}
             >
@@ -2610,6 +2615,15 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         theme={theme}
                         isActive={stopLoss.timeout.isTimeoutOn}
                         onClick={() => {
+                          if (!stopLoss.external) {
+                            this.updateBlockValue('stopLoss', 'external', false)
+                            this.updateSubBlockValue(
+                              'stopLoss',
+                              'forcedStop',
+                              'mandatoryForcedLoss',
+                              false
+                            )
+                          }
                           this.updateSubBlockValue(
                             'stopLoss',
                             'timeout',
@@ -2650,6 +2664,22 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             'external',
                             !stopLoss.external
                           )
+
+                          if (!stopLoss.external) {
+                            this.updateSubBlockValue(
+                              'stopLoss',
+                              'timeout',
+                              'isTimeoutOn',
+                              false
+                            )
+                          } else {
+                            this.updateSubBlockValue(
+                              'stopLoss',
+                              'forcedStop',
+                              'mandatoryForcedLoss',
+                              false
+                            )
+                          }
 
                           if (
                             !stopLoss.external &&
@@ -2813,6 +2843,315 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     </FormInputContainer>
                   )}
 
+                  {(stopLoss.timeout.isTimeoutOn ||
+                    (stopLoss.forcedStop.isForcedStopOn &&
+                      stopLoss.forcedStop.mandatoryForcedLoss)) &&
+                    (!stopLoss.external ||
+                      (stopLoss.external &&
+                        stopLoss.forcedStop.mandatoryForcedLoss)) && (
+                      <>
+                        <InputRowContainer>
+                          {stopLoss.timeout.isTimeoutOn && (
+                            <SubBlocksContainer>
+                              <FormInputContainer
+                                theme={theme}
+                                haveTooltip
+                                tooltipText={
+                                  <>
+                                    <p>
+                                      Waiting after unrealized P&L will reach
+                                      set target.
+                                    </p>
+                                    <p>
+                                      <b>For example:</b> you set 10% stop loss
+                                      and 1 minute timeout. When your unrealized
+                                      loss is 10% timeout will give a minute for
+                                      a chance to reverse trend and loss to go
+                                      below 10% before stop loss order executes.
+                                    </p>
+                                  </>
+                                }
+                                title={'timeout'}
+                                lineMargin={'0 1.2rem 0 1rem'}
+                              >
+                                <InputRowContainer>
+                                  <Input
+                                    theme={theme}
+                                    haveSelector
+                                    // width={'calc(55% - .4rem)'}
+                                    width={'calc(75% - .4rem)'}
+                                    showErrors={
+                                      showErrors && stopLoss.isStopLossOn
+                                    }
+                                    isValid={this.validateField(
+                                      stopLoss.timeout.whenLossableOn,
+                                      stopLoss.timeout.whenLossableSec
+                                    )}
+                                    value={stopLoss.timeout.whenLossableSec}
+                                    onChange={(e) => {
+                                      this.updateSubBlockValue(
+                                        'stopLoss',
+                                        'timeout',
+                                        'whenLossableSec',
+                                        e.target.value
+                                      )
+                                    }}
+                                    inputStyles={{
+                                      borderTopRightRadius: 0,
+                                      borderBottomRightRadius: 0,
+                                    }}
+                                    // disabled={!stopLoss.timeout.whenLossableOn}
+                                  />
+                                  <Select
+                                    theme={theme}
+                                    width={'calc(25% - .8rem)'}
+                                    // width={'calc(30% - .4rem)'}
+                                    value={stopLoss.timeout.whenLossableMode}
+                                    inputStyles={{
+                                      borderTopLeftRadius: 0,
+                                      borderBottomLeftRadius: 0,
+                                    }}
+                                    onChange={(e) => {
+                                      this.updateSubBlockValue(
+                                        'stopLoss',
+                                        'timeout',
+                                        'whenLossableMode',
+                                        e.target.value
+                                      )
+                                    }}
+                                    // isDisabled={!stopLoss.timeout.whenLossableOn}
+                                  >
+                                    <option>sec</option>
+                                    <option>min</option>
+                                  </Select>
+                                </InputRowContainer>
+                              </FormInputContainer>
+                            </SubBlocksContainer>
+                          )}
+                          <SubBlocksContainer
+                            width={
+                              stopLoss.forcedStop.mandatoryForcedLoss
+                                ? '100%'
+                                : '50%'
+                            }
+                          >
+                            <FormInputContainer
+                              theme={theme}
+                              haveTooltip
+                              tooltipText={
+                                <>
+                                  <p>
+                                    How much should the price change to ignore
+                                    timeout.
+                                  </p>
+
+                                  <p>
+                                    <b>For example:</b> You bought BTC and set
+                                    10% stop loss with 1 minute timeout and 15%
+                                    forced stop. But the price continued to fall
+                                    during the timeout. Your trade will be
+                                    closed when loss will be 15% regardless of
+                                    timeout.
+                                  </p>
+                                </>
+                              }
+                              title={'forced stop price'}
+                            >
+                              <InputRowContainer>
+                                <Input
+                                  theme={theme}
+                                  padding={'0'}
+                                  width={
+                                    stopLoss.forcedStop.mandatoryForcedLoss
+                                      ? '32.5%'
+                                      : '65%'
+                                  }
+                                  textAlign={'left'}
+                                  symbol={pair[1]}
+                                  value={stopLoss.forcedStop.forcedStopPrice}
+                                  disabled={
+                                    entryPoint.order.type === 'market' &&
+                                    !entryPoint.trailing.isTrailingOn
+                                  }
+                                  showErrors={
+                                    showErrors && stopLoss.isStopLossOn
+                                  }
+                                  isValid={this.validateField(
+                                    true,
+                                    stopLoss.forcedStop.forcedStopPrice
+                                  )}
+                                  inputStyles={{
+                                    paddingLeft: '1rem',
+                                  }}
+                                  onChange={(e) => {
+                                    const percentage =
+                                      entryPoint.order.side === 'buy'
+                                        ? (1 -
+                                            e.target.value /
+                                              priceForCalculate) *
+                                          100 *
+                                          entryPoint.order.leverage
+                                        : -(
+                                            1 -
+                                            e.target.value / priceForCalculate
+                                          ) *
+                                          100 *
+                                          entryPoint.order.leverage
+
+                                    this.updateSubBlockValue(
+                                      'stopLoss',
+                                      'forcedStop',
+                                      'pricePercentage',
+                                      stripDigitPlaces(
+                                        percentage < 0 ? 0 : percentage,
+                                        2
+                                      )
+                                    )
+
+                                    this.updateSubBlockValue(
+                                      'stopLoss',
+                                      'forcedStop',
+                                      'forcedStopPrice',
+                                      e.target.value
+                                    )
+                                  }}
+                                />
+                                <Input
+                                  theme={theme}
+                                  showErrors={
+                                    showErrors && stopLoss.isStopLossOn
+                                  }
+                                  isValid={this.validateField(
+                                    stopLoss.forcedStop.isForcedStopOn,
+                                    stopLoss.forcedStop.pricePercentage
+                                  )}
+                                  padding={'0 .8rem 0 .8rem'}
+                                  width={
+                                    stopLoss.forcedStop.mandatoryForcedLoss
+                                      ? '17.5%'
+                                      : 'calc(35%)'
+                                  }
+                                  symbol={'%'}
+                                  preSymbol={'-'}
+                                  textAlign={'left'}
+                                  needPreSymbol={true}
+                                  inputStyles={{
+                                    paddingRight: 0,
+                                    paddingLeft: '2rem',
+                                  }}
+                                  value={
+                                    stopLoss.forcedStop.pricePercentage > 100
+                                      ? 100
+                                      : stopLoss.forcedStop.pricePercentage
+                                  }
+                                  onChange={(e) => {
+                                    this.updateSubBlockValue(
+                                      'stopLoss',
+                                      'forcedStop',
+                                      'pricePercentage',
+                                      e.target.value
+                                    )
+
+                                    this.updateStopLossAndTakeProfitPrices({
+                                      forcedStopPercentage: e.target.value,
+                                    })
+                                  }}
+                                />
+                                <BlueSlider
+                                  theme={theme}
+                                  value={stopLoss.forcedStop.pricePercentage}
+                                  sliderContainerStyles={{
+                                    width: 'calc(50%)',
+                                    margin: '0 .8rem 0 .8rem',
+                                  }}
+                                  onChange={(value) => {
+                                    if (
+                                      stopLoss.forcedStop.pricePercentage >
+                                        100 &&
+                                      value === 100
+                                    ) {
+                                      return
+                                    }
+
+                                    this.updateSubBlockValue(
+                                      'stopLoss',
+                                      'forcedStop',
+                                      'pricePercentage',
+                                      value
+                                    )
+
+                                    this.updateStopLossAndTakeProfitPrices({
+                                      forcedStopPercentage: value,
+                                    })
+                                  }}
+                                />
+                              </InputRowContainer>
+                            </FormInputContainer>
+                          </SubBlocksContainer>
+                        </InputRowContainer>
+                      </>
+                    )}
+
+                  {stopLoss.timeout.isTimeoutOn && !stopLoss.external && (
+                    <>
+                      <InputRowContainer>
+                        <SubBlocksContainer>
+                          <BlueSlider
+                            theme={theme}
+                            max={60}
+                            value={
+                              stopLoss.timeout.whenLossableSec > 60
+                                ? 60
+                                : stopLoss.timeout.whenLossableSec
+                            }
+                            sliderContainerStyles={{
+                              width: 'calc(100% - 1.2rem)',
+                              margin: '0 1.2rem 0 0rem',
+                            }}
+                            onChange={(value) => {
+                              this.updateSubBlockValue(
+                                'stopLoss',
+                                'timeout',
+                                'whenLossableSec',
+                                value
+                              )
+                            }}
+                          />
+                        </SubBlocksContainer>
+
+                        <SubBlocksContainer>
+                          <BlueSlider
+                            theme={theme}
+                            value={stopLoss.forcedStop.pricePercentage}
+                            sliderContainerStyles={{
+                              width: 'calc(100%)',
+                              margin: '0 0rem 0 0',
+                            }}
+                            onChange={(value) => {
+                              if (
+                                stopLoss.forcedStop.pricePercentage > 100 &&
+                                value === 100
+                              ) {
+                                return
+                              }
+
+                              this.updateSubBlockValue(
+                                'stopLoss',
+                                'forcedStop',
+                                'pricePercentage',
+                                value
+                              )
+
+                              this.updateStopLossAndTakeProfitPrices({
+                                forcedStopPercentage: value,
+                              })
+                            }}
+                          />
+                        </SubBlocksContainer>
+                      </InputRowContainer>
+                    </>
+                  )}
+
                   {stopLoss.external && (
                     <>
                       <FormInputContainer
@@ -2846,6 +3185,27 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             }}
                           >
                             Forced Stop by Alert
+                          </AdditionalSettingsButton>
+                          <AdditionalSettingsButton
+                            theme={theme}
+                            isActive={stopLoss.forcedStop.mandatoryForcedLoss}
+                            onClick={() => {
+                              this.updateSubBlockValue(
+                                'stopLoss',
+                                'forcedStop',
+                                'isForcedStopOn',
+                                !stopLoss.forcedStop.mandatoryForcedLoss
+                              )
+
+                              this.updateSubBlockValue(
+                                'stopLoss',
+                                'forcedStop',
+                                'mandatoryForcedLoss',
+                                !stopLoss.forcedStop.mandatoryForcedLoss
+                              )
+                            }}
+                          >
+                            Forced Stop by Settings
                           </AdditionalSettingsButton>
                           <AdditionalSettingsButton
                             theme={theme}
@@ -2933,7 +3293,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             padding=".5rem 0 .4rem 0"
                             borderRadius=".8rem"
                             btnColor={theme.palette.blue.main}
-                            backgroundColor={theme.palette.white.main}
+                            backgroundColor={theme.palette.white.background}
                             hoverColor={theme.palette.white.main}
                             hoverBackground={theme.palette.blue.main}
                             transition={'all .4s ease-out'}
@@ -3001,7 +3361,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             padding=".5rem 0 .4rem 0"
                             borderRadius=".8rem"
                             btnColor={theme.palette.blue.main}
-                            backgroundColor={theme.palette.white.main}
+                            backgroundColor={theme.palette.white.background}
                             hoverColor={theme.palette.white.main}
                             hoverBackground={theme.palette.blue.main}
                             transition={'all .4s ease-out'}
@@ -3037,7 +3397,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             padding=".5rem 0 .4rem 0"
                             borderRadius=".8rem"
                             btnColor={theme.palette.blue.main}
-                            backgroundColor={theme.palette.white.main}
+                            backgroundColor={theme.palette.white.background}
                             hoverColor={theme.palette.white.main}
                             hoverBackground={theme.palette.blue.main}
                             transition={'all .4s ease-out'}
@@ -3049,349 +3409,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           </BtnCustom>
                         </InputRowContainer>
                       </FormInputContainer>
-                    </>
-                  )}
-
-                  {stopLoss.timeout.isTimeoutOn && !stopLoss.external && (
-                    <>
-                      {/* <TradeInputHeader title={`timeout`} needLine={true} /> */}
-                      <InputRowContainer>
-                        {/* <SubBlocksContainer>
-                        <InputRowContainer>
-                          <TimeoutTitle> When loss</TimeoutTitle>
-                        </InputRowContainer>
-                        <InputRowContainer>
-                          <SCheckbox
-                            checked={stopLoss.timeout.whenLossOn}
-                            onChange={() => {
-                              this.updateSubBlockValue(
-                                'stopLoss',
-                                'timeout',
-                                'whenLossOn',
-                                !stopLoss.timeout.whenLossOn
-                              )
-
-                              this.updateSubBlockValue(
-                                'stopLoss',
-                                'timeout',
-                                'whenLossableOn',
-                                false
-                              )
-                            }}
-                            style={{ padding: '0 .4rem 0 0' }}
-                          />
-                          <Input theme={theme}                            haveSelector
-                            width={'calc(55% - .4rem)'}
-                            value={stopLoss.timeout.whenLossSec}
-                            showErrors={showErrors && stopLoss.isStopLossOn}
-                            isValid={this.validateField(
-                              stopLoss.timeout.whenLossOn,
-                              stopLoss.timeout.whenLossSec
-                            )}
-                            onChange={(e) => {
-                              this.updateSubBlockValue(
-                                'stopLoss',
-                                'timeout',
-                                'whenLossSec',
-                                e.target.value
-                              )
-                            }}
-                            inputStyles={{
-                              borderTopRightRadius: 0,
-                              borderBottomRightRadius: 0,
-                            }}
-                            disabled={!stopLoss.timeout.whenLossOn}
-                          />
-                          <Select
-                            width={'calc(30% - .4rem)'}
-                            value={stopLoss.timeout.whenLossMode}
-                            inputStyles={{
-                              borderTopLeftRadius: 0,
-                              borderBottomLeftRadius: 0,
-                            }}
-                            onChange={(e) => {
-                              this.updateSubBlockValue(
-                                'stopLoss',
-                                'timeout',
-                                'whenLossMode',
-                                e.target.value
-                              )
-                            }}
-                            isDisabled={!stopLoss.timeout.whenLossOn}
-                          >
-                            <option>sec</option>
-                            <option>min</option>
-                          </Select>
-                        </InputRowContainer>
-                      </SubBlocksContainer> */}
-
-                        <SubBlocksContainer>
-                          {/* <InputRowContainer>
-                          <TimeoutTitle>When in loss</TimeoutTitle>
-                        </InputRowContainer> */}
-                          <FormInputContainer
-                            theme={theme}
-                            haveTooltip
-                            tooltipText={
-                              <>
-                                <p>
-                                  Waiting after unrealized P&L will reach set
-                                  target.
-                                </p>
-                                <p>
-                                  <b>For example:</b> you set 10% stop loss and
-                                  1 minute timeout. When your unrealized loss is
-                                  10% timeout will give a minute for a chance to
-                                  reverse trend and loss to go below 10% before
-                                  stop loss order executes.
-                                </p>
-                              </>
-                            }
-                            title={'timeout'}
-                            lineMargin={'0 1.2rem 0 1rem'}
-                          >
-                            <InputRowContainer>
-                              {/* <SCheckbox
-                            checked={stopLoss.timeout.whenLossableOn}
-                            onChange={() => {
-                              this.updateSubBlockValue(
-                                'stopLoss',
-                                'timeout',
-                                'whenLossableOn',
-                                !stopLoss.timeout.whenLossableOn
-                              )
-
-                              this.updateSubBlockValue(
-                                'stopLoss',
-                                'timeout',
-                                'whenLossOn',
-                                false
-                              )
-                            }}
-                            style={{ padding: '0 .4rem 0 0' }}
-                          /> */}
-                              <Input
-                                theme={theme}
-                                haveSelector
-                                // width={'calc(55% - .4rem)'}
-                                width={'calc(75% - .4rem)'}
-                                showErrors={showErrors && stopLoss.isStopLossOn}
-                                isValid={this.validateField(
-                                  stopLoss.timeout.whenLossableOn,
-                                  stopLoss.timeout.whenLossableSec
-                                )}
-                                value={stopLoss.timeout.whenLossableSec}
-                                onChange={(e) => {
-                                  this.updateSubBlockValue(
-                                    'stopLoss',
-                                    'timeout',
-                                    'whenLossableSec',
-                                    e.target.value
-                                  )
-                                }}
-                                inputStyles={{
-                                  borderTopRightRadius: 0,
-                                  borderBottomRightRadius: 0,
-                                }}
-                                // disabled={!stopLoss.timeout.whenLossableOn}
-                              />
-                              <Select
-                                width={'calc(25% - .8rem)'}
-                                // width={'calc(30% - .4rem)'}
-                                value={stopLoss.timeout.whenLossableMode}
-                                inputStyles={{
-                                  borderTopLeftRadius: 0,
-                                  borderBottomLeftRadius: 0,
-                                }}
-                                onChange={(e) => {
-                                  this.updateSubBlockValue(
-                                    'stopLoss',
-                                    'timeout',
-                                    'whenLossableMode',
-                                    e.target.value
-                                  )
-                                }}
-                                // isDisabled={!stopLoss.timeout.whenLossableOn}
-                              >
-                                <option>sec</option>
-                                <option>min</option>
-                              </Select>
-                            </InputRowContainer>
-                          </FormInputContainer>
-                        </SubBlocksContainer>
-                        <SubBlocksContainer>
-                          <FormInputContainer
-                            theme={theme}
-                            haveTooltip
-                            tooltipText={
-                              <>
-                                <p>
-                                  How much should the price change to ignore
-                                  timeout.
-                                </p>
-
-                                <p>
-                                  <b>For example:</b> You bought BTC and set 10%
-                                  stop loss with 1 minute timeout and 15% forced
-                                  stop. But the price continued to fall during
-                                  the timeout. Your trade will be closed when
-                                  loss will be 15% regardless of timeout.
-                                </p>
-                              </>
-                            }
-                            title={'forced stop price'}
-                          >
-                            <InputRowContainer>
-                              <Input
-                                theme={theme}
-                                padding={'0'}
-                                width={'calc(65%)'}
-                                textAlign={'left'}
-                                symbol={pair[1]}
-                                value={stopLoss.forcedStop.forcedStopPrice}
-                                disabled={
-                                  entryPoint.order.type === 'market' &&
-                                  !entryPoint.trailing.isTrailingOn
-                                }
-                                showErrors={showErrors && stopLoss.isStopLossOn}
-                                isValid={this.validateField(
-                                  true,
-                                  stopLoss.forcedStop.forcedStopPrice
-                                )}
-                                inputStyles={{
-                                  paddingLeft: '1rem',
-                                }}
-                                onChange={(e) => {
-                                  const percentage =
-                                    entryPoint.order.side === 'buy'
-                                      ? (1 -
-                                          e.target.value / priceForCalculate) *
-                                        100 *
-                                        entryPoint.order.leverage
-                                      : -(
-                                          1 -
-                                          e.target.value / priceForCalculate
-                                        ) *
-                                        100 *
-                                        entryPoint.order.leverage
-
-                                  this.updateSubBlockValue(
-                                    'stopLoss',
-                                    'forcedStop',
-                                    'pricePercentage',
-                                    stripDigitPlaces(
-                                      percentage < 0 ? 0 : percentage,
-                                      2
-                                    )
-                                  )
-
-                                  this.updateSubBlockValue(
-                                    'stopLoss',
-                                    'forcedStop',
-                                    'forcedStopPrice',
-                                    e.target.value
-                                  )
-                                }}
-                              />
-                              <Input
-                                theme={theme}
-                                showErrors={showErrors && stopLoss.isStopLossOn}
-                                isValid={this.validateField(
-                                  stopLoss.forcedStop.isForcedStopOn,
-                                  stopLoss.forcedStop.pricePercentage
-                                )}
-                                padding={'0 .8rem 0 .8rem'}
-                                width={'calc(35%)'}
-                                symbol={'%'}
-                                preSymbol={'-'}
-                                textAlign={'left'}
-                                needPreSymbol={true}
-                                inputStyles={{
-                                  paddingRight: 0,
-                                  paddingLeft: '2rem',
-                                }}
-                                value={
-                                  stopLoss.forcedStop.pricePercentage > 100
-                                    ? 100
-                                    : stopLoss.forcedStop.pricePercentage
-                                }
-                                onChange={(e) => {
-                                  this.updateSubBlockValue(
-                                    'stopLoss',
-                                    'forcedStop',
-                                    'pricePercentage',
-                                    e.target.value
-                                  )
-
-                                  this.updateStopLossAndTakeProfitPrices({
-                                    forcedStopPercentage: e.target.value,
-                                  })
-                                }}
-                              />
-                            </InputRowContainer>
-                          </FormInputContainer>
-                        </SubBlocksContainer>
-                      </InputRowContainer>
-                    </>
-                  )}
-
-                  {stopLoss.timeout.isTimeoutOn && !stopLoss.external && (
-                    <>
-                      <InputRowContainer>
-                        <SubBlocksContainer>
-                          <BlueSlider
-                            theme={theme}
-                            max={60}
-                            value={
-                              stopLoss.timeout.whenLossableSec > 60
-                                ? 60
-                                : stopLoss.timeout.whenLossableSec
-                            }
-                            sliderContainerStyles={{
-                              width: 'calc(100% - 1.2rem)',
-                              margin: '0 1.2rem 0 0rem',
-                            }}
-                            onChange={(value) => {
-                              this.updateSubBlockValue(
-                                'stopLoss',
-                                'timeout',
-                                'whenLossableSec',
-                                value
-                              )
-                            }}
-                          />
-                        </SubBlocksContainer>
-
-                        <SubBlocksContainer>
-                          <BlueSlider
-                            theme={theme}
-                            value={stopLoss.forcedStop.pricePercentage}
-                            sliderContainerStyles={{
-                              width: 'calc(100%)',
-                              margin: '0 0rem 0 0',
-                            }}
-                            onChange={(value) => {
-                              if (
-                                stopLoss.forcedStop.pricePercentage > 100 &&
-                                value === 100
-                              ) {
-                                return
-                              }
-
-                              this.updateSubBlockValue(
-                                'stopLoss',
-                                'forcedStop',
-                                'pricePercentage',
-                                value
-                              )
-
-                              this.updateStopLossAndTakeProfitPrices({
-                                forcedStopPercentage: value,
-                              })
-                            }}
-                          />
-                        </SubBlocksContainer>
-                      </InputRowContainer>
                     </>
                   )}
                 </div>
@@ -3498,7 +3515,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             </TerminalBlock>
 
             {/* TAKE A PROFIT */}
-            <TerminalBlock width={'calc(33%)'} borderRight="0">
+            <TerminalBlock theme={theme} width={'calc(33%)'} borderRight="0">
               <InputRowContainer justify="center">
                 <CustomSwitcher
                   theme={theme}
@@ -4161,7 +4178,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           padding=".5rem 0 .4rem 0"
                           borderRadius=".8rem"
                           btnColor={theme.palette.blue.main}
-                          backgroundColor={theme.palette.white.main}
+                          backgroundColor={theme.palette.white.background}
                           hoverColor={theme.palette.white.main}
                           hoverBackground={theme.palette.blue.main}
                           transition={'all .4s ease-out'}
@@ -4237,7 +4254,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           padding=".5rem 0 .4rem 0"
                           borderRadius=".8rem"
                           btnColor={theme.palette.blue.main}
-                          backgroundColor={theme.palette.white.main}
+                          backgroundColor={theme.palette.white.background}
                           hoverColor={theme.palette.white.main}
                           hoverBackground={theme.palette.blue.main}
                           transition={'all .4s ease-out'}
@@ -4281,7 +4298,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           padding=".5rem 0 .4rem 0"
                           borderRadius=".8rem"
                           btnColor={theme.palette.blue.main}
-                          backgroundColor={theme.palette.white.main}
+                          backgroundColor={theme.palette.white.background}
                           hoverColor={theme.palette.white.main}
                           hoverBackground={theme.palette.blue.main}
                           transition={'all .4s ease-out'}
@@ -4374,11 +4391,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     >
                       <InputRowContainer padding=".2rem .5rem">
                         <TargetTitle
+                          theme={theme}
                           style={{ width: '50%', paddingLeft: '2rem' }}
                         >
                           profit
                         </TargetTitle>
-                        <TargetTitle style={{ width: '50%' }}>
+                        <TargetTitle theme={theme} style={{ width: '50%' }}>
                           quantity
                         </TargetTitle>
                       </InputRowContainer>
@@ -4403,11 +4421,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             }
                           >
                             <TargetValue
+                              theme={theme}
                               style={{ width: '50%', paddingLeft: '2rem' }}
                             >
                               +{target.price}%
                             </TargetValue>
-                            <TargetValue style={{ width: '40%' }}>
+                            <TargetValue theme={theme} style={{ width: '40%' }}>
                               {target.quantity}%
                             </TargetValue>
                             <CloseIcon
@@ -4427,7 +4446,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
                 {takeProfit.timeout.isTimeoutOn && (
                   <>
-                    <TradeInputHeader title={`timeout`} needLine={true} />
+                    <TradeInputHeader
+                      theme={theme}
+                      title={`timeout`}
+                      needLine={true}
+                    />
                     <InputRowContainer>
                       <SubBlocksContainer>
                         <InputRowContainer>
@@ -4478,6 +4501,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             disabled={!takeProfit.timeout.whenProfitOn}
                           />
                           <Select
+                            theme={theme}
                             width={'calc(30% - .4rem)'}
                             value={takeProfit.timeout.whenProfitMode}
                             inputStyles={{
@@ -4549,6 +4573,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             disabled={!takeProfit.timeout.whenProfitableOn}
                           />
                           <Select
+                            theme={theme}
                             width={'calc(30% - .4rem)'}
                             value={takeProfit.timeout.whenProfitableMode}
                             inputStyles={{
@@ -4597,6 +4622,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           </TerminalBlocksContainer>
           {editPopup === 'takeProfit' && (
             <EditTakeProfitPopup
+              theme={theme}
               openFromTerminal
               price={this.getEntryPrice()}
               pair={pair}
@@ -4639,6 +4665,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
           {editPopup === 'stopLoss' && (
             <EditStopLossPopup
+              theme={theme}
               openFromTerminal
               price={this.getEntryPrice()}
               pair={pair}
@@ -4707,33 +4734,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               validateField={this.validateField}
             />
           )}
-
-          {editPopup === 'hedge' && (
-            <EditHedgePopup
-              openFromTerminal
-              open={editPopup === 'hedge'}
-              pair={pair}
-              transformProperties={() => {}}
-              handleClose={() => this.setState({ editPopup: null })}
-              updateState={(hedgeProperties) =>
-                this.setState({
-                  entryPoint: {
-                    ...entryPoint,
-                    order: {
-                      ...entryPoint.order,
-                      ...hedgeProperties,
-                    },
-                  },
-                })
-              }
-              validate={validateStopLoss}
-              derivedState={this.state.entryPoint.order}
-              validateField={this.validateField}
-            />
-          )}
-
           {editPopup === 'entryOrder' && (
             <EditEntryOrderPopup
+              theme={theme}
+              maxLeverage={maxLeverage}
               openFromTerminal
               open={editPopup === 'entryOrder'}
               price={this.props.price}

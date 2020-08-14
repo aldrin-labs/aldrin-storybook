@@ -130,7 +130,7 @@ export const CardsPanel = ({
           style={{
             position: 'relative',
             display: 'flex',
-            maxWidth: marketType === 0 ? '40%' : '58.33333%',
+            maxWidth: marketType === 0 ? '50%' : '58.33333%',
             marginRight: '.4rem',
             flexGrow: 1,
             border: '0',
@@ -205,7 +205,7 @@ export const CardsPanel = ({
             ? 'go to smart terminal'
             : 'back to basic terminal'}
         </SmartTradeButton>
-        {/* <div style={{ width: '15.5%', margin: '0 .4rem 0 .6rem' }}>
+        <div style={{ width: '15.5%', margin: '0 .4rem 0 .6rem' }}>
           <PillowButton
             firstHalfText={'light'}
             secondHalfText={'dark'}
@@ -226,8 +226,8 @@ export const CardsPanel = ({
               toggleThemeMode()
             }}
           />
-        </div> */}
-        {marketType === 1 && (
+        </div>
+        {/* {marketType === 1 && (
           <div style={{ width: '15.5%', margin: '0 .4rem 0 .6rem' }}>
             <PillowButton
               firstHalfText={'one-way'}
@@ -250,7 +250,7 @@ export const CardsPanel = ({
               }}
             />
           </div>
-        )}
+        )} */}
       </PanelWrapper>
     </>
   )

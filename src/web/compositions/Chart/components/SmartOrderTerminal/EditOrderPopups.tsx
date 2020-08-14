@@ -208,10 +208,12 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
       side,
       price,
       leverage,
+      theme,
     } = this.props
 
     return (
       <Dialog
+        theme={theme}
         PaperComponent={StyledPaper}
         style={{ width: '85rem', margin: 'auto' }}
         fullScreen={false}
@@ -220,8 +222,14 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
         open={open}
         aria-labelledby="responsive-dialog-title"
       >
-        <StyledDialogTitle disableTypography id="responsive-dialog-title">
-          <TypographyTitle>{`Edit take a profit`}</TypographyTitle>
+        <StyledDialogTitle
+          theme={theme}
+          disableTypography
+          id="responsive-dialog-title"
+        >
+          <TypographyTitle
+            theme={theme}
+          >{`Edit take a profit`}</TypographyTitle>
           <ClearButton>
             <Clear
               style={{ fontSize: '2rem' }}
@@ -230,7 +238,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
             />
           </ClearButton>
         </StyledDialogTitle>
-        <StyledDialogContent id="share-dialog-content">
+        <StyledDialogContent theme={theme} id="share-dialog-content">
           <InputRowContainer justify="center" padding={'1rem 0 .6rem 0'}>
             <CustomSwitcher
               theme={theme}
@@ -314,9 +322,10 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
 
             {!this.state.isTrailingOn && (
               <InputRowContainer>
-                <FormInputContainer title={'stop price'}>
+                <FormInputContainer theme={theme} title={'stop price'}>
                   <InputRowContainer>
                     <Input
+                      theme={theme}
                       textAlign={'left'}
                       padding={'0'}
                       width={'calc(32.5%)'}
@@ -347,6 +356,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                       }}
                     />
                     <Input
+                      theme={theme}
                       padding={'0 .8rem 0 .8rem'}
                       width={'calc(17.5%)'}
                       preSymbol={'+'}
@@ -375,6 +385,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                     />
 
                     <BlueSlider
+                      theme={theme}
                       value={this.state.pricePercentage}
                       sliderContainerStyles={{
                         width: '50%',
@@ -392,9 +403,10 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
 
             {this.state.isTrailingOn && (
               <>
-                <FormInputContainer title={`activate price`}>
+                <FormInputContainer theme={theme} title={`activate price`}>
                   <InputRowContainer>
                     <Input
+                      theme={theme}
                       textAlign={'left'}
                       padding={'0'}
                       width={'calc(32.5%)'}
@@ -420,6 +432,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                       }}
                     />
                     <Input
+                      theme={theme}
                       symbol={'%'}
                       padding={'0 .8rem 0 .8rem'}
                       width={'calc(17.5%)'}
@@ -437,6 +450,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                       }}
                     />
                     <BlueSlider
+                      theme={theme}
                       value={this.state.activatePrice}
                       sliderContainerStyles={{
                         width: '50%',
@@ -450,9 +464,10 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                   </InputRowContainer>
                 </FormInputContainer>
                 <InputRowContainer>
-                  <FormInputContainer title={'deviation'}>
+                  <FormInputContainer theme={theme} title={'deviation'}>
                     <InputRowContainer>
                       <Input
+                        theme={theme}
                         padding={'0 .8rem 0 0'}
                         width={'calc(50%)'}
                         symbol={'%'}
@@ -468,6 +483,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                       />
 
                       <BlueSlider
+                        theme={theme}
                         value={this.state.deviationPercentage}
                         sliderContainerStyles={{
                           width: '50%',
@@ -486,9 +502,10 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
             {this.state.isSplitTargetsOn && (
               <>
                 <InputRowContainer>
-                  <FormInputContainer title={'volume'}>
+                  <FormInputContainer theme={theme} title={'volume'}>
                     <InputRowContainer>
                       <Input
+                        theme={theme}
                         padding={'0 .8rem 0 0'}
                         width={'calc(55%)'}
                         symbol={'%'}
@@ -509,6 +526,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                       />
 
                       <BlueSlider
+                        theme={theme}
                         value={this.state.volumePercentage}
                         sliderContainerStyles={{
                           width: '50%',
@@ -535,7 +553,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                 <InputRowContainer
                   padding="0 0 .4rem 0"
                   style={{
-                    borderBottom: '.1rem solid #e0e5ec',
+                    borderBottom: theme.palette.border.main,
                   }}
                 >
                   <BtnCustom
@@ -574,17 +592,22 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                   direction="column"
                 >
                   <InputRowContainer padding=".2rem .5rem">
-                    <TargetTitle style={{ width: '50%', paddingLeft: '2rem' }}>
+                    <TargetTitle
+                      theme={theme}
+                      style={{ width: '50%', paddingLeft: '2rem' }}
+                    >
                       profit
                     </TargetTitle>
-                    <TargetTitle style={{ width: '50%' }}>quantity</TargetTitle>
+                    <TargetTitle theme={theme} style={{ width: '50%' }}>
+                      quantity
+                    </TargetTitle>
                   </InputRowContainer>
                   <div
                     style={{
                       width: '100%',
-                      background: '#F9FBFD',
+                      background: theme.palette.grey.main,
                       borderRadius: '.8rem',
-                      border: '.1rem solid #e0e5ec',
+                      border: theme.palette.border.main,
                     }}
                   >
                     {this.state.targets.map((target, i) => (
@@ -594,17 +617,18 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                         style={
                           this.state.targets.length - 1 !== i
                             ? {
-                                borderBottom: '.1rem solid #e0e5ec',
+                                borderBottom: theme.palette.border.main,
                               }
                             : {}
                         }
                       >
                         <TargetValue
+                          theme={theme}
                           style={{ width: '50%', paddingLeft: '2rem' }}
                         >
                           +{target.price}%
                         </TargetValue>
-                        <TargetValue style={{ width: '40%' }}>
+                        <TargetValue theme={theme} style={{ width: '40%' }}>
                           {target.quantity}%
                         </TargetValue>
                         <CloseIcon
@@ -617,7 +641,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                             }))
                           }
                           style={{
-                            color: '#DD6956',
+                            color: theme.palette.red.main,
                             fontSize: '1.8rem',
                             cursor: 'pointer',
                           }}
@@ -631,7 +655,11 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
 
             {this.state.isTimeoutOn && (
               <>
-                <TradeInputHeader title={`timeout`} needLine={true} />
+                <TradeInputHeader
+                  theme={theme}
+                  title={`timeout`}
+                  needLine={true}
+                />
                 <InputRowContainer>
                   <SubBlocksContainer>
                     <InputRowContainer>
@@ -652,6 +680,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                         style={{ padding: '0 .4rem 0 0' }}
                       />
                       <Input
+                        theme={theme}
                         width={'calc(55% - .4rem)'}
                         value={this.state.whenProfitSec}
                         showErrors={this.state.whenProfitOn}
@@ -669,6 +698,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                         disabled={!this.state.whenProfitOn}
                       />
                       <Select
+                        theme={theme}
                         width={'calc(30% - .4rem)'}
                         value={this.state.whenProfitMode}
                         inputStyles={{
@@ -705,6 +735,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                         style={{ padding: '0 .4rem 0 0' }}
                       />
                       <Input
+                        theme={theme}
                         width={'calc(55% - .4rem)'}
                         value={this.state.whenProfitableSec}
                         showErrors={this.state.whenProfitableOn}
@@ -722,6 +753,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                         disabled={!this.state.whenProfitableOn}
                       />
                       <Select
+                        theme={theme}
                         width={'calc(30% - .4rem)'}
                         value={this.state.whenProfitableMode}
                         inputStyles={{
@@ -861,6 +893,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
 
     return (
       <Dialog
+        theme={theme}
         PaperComponent={StyledPaper}
         style={{ width: '85rem', margin: 'auto' }}
         fullScreen={false}
@@ -870,10 +903,11 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
         aria-labelledby="responsive-edit-stop-loss-dialog-title"
       >
         <StyledDialogTitle
+          theme={theme}
           disableTypography
           id="responsive-edit-stop-loss-dialog-title"
         >
-          <TypographyTitle>{`Edit stop loss`}</TypographyTitle>
+          <TypographyTitle theme={theme}>{`Edit stop loss`}</TypographyTitle>
           <ClearButton>
             <Clear
               style={{ fontSize: '2rem' }}
@@ -882,7 +916,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
             />
           </ClearButton>
         </StyledDialogTitle>
-        <StyledDialogContent id="edit-stop-loss-dialog-content">
+        <StyledDialogContent theme={theme} id="edit-stop-loss-dialog-content">
           <InputRowContainer justify="center" padding={'1rem 0 .6rem 0'}>
             <CustomSwitcher
               theme={theme}
@@ -930,9 +964,10 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
             </InputRowContainer>
 
             <InputRowContainer>
-              <FormInputContainer title={'stop price'}>
+              <FormInputContainer theme={theme} title={'stop price'}>
                 <InputRowContainer>
                   <Input
+                    theme={theme}
                     padding={'0'}
                     width={'calc(32.5%)'}
                     textAlign={'left'}
@@ -963,6 +998,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                   />
 
                   <Input
+                    theme={theme}
                     padding={'0 .8rem 0 .8rem'}
                     width={'calc(17.5%)'}
                     symbol={'%'}
@@ -986,6 +1022,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                   />
 
                   <BlueSlider
+                    theme={theme}
                     value={this.state.pricePercentage}
                     sliderContainerStyles={{
                       width: '50%',
@@ -1002,7 +1039,11 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
 
             {this.state.isTimeoutOn && (
               <>
-                <TradeInputHeader title={`timeout`} needLine={true} />
+                <TradeInputHeader
+                  theme={theme}
+                  title={`timeout`}
+                  needLine={true}
+                />
                 <InputRowContainer>
                   {/* <SubBlocksContainer>
                     <InputRowContainer>
@@ -1039,8 +1080,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                         }}
                         disabled={!this.state.whenLossOn}
                       />
-                      <Select
-                        width={'calc(30% - .4rem)'}
+                      <Select theme={theme}                        width={'calc(30% - .4rem)'}
                         value={this.state.whenLossMode}
                         inputStyles={{
                           borderTopLeftRadius: 0,
@@ -1076,6 +1116,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                         style={{ padding: '0 .4rem 0 0' }}
                       /> */}
                       <Input
+                        theme={theme}
                         width={'calc(75% - .4rem)'}
                         value={this.state.whenLossableSec}
                         showErrors={this.state.whenLossableOn}
@@ -1093,6 +1134,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                         // disabled={!this.state.whenLossableOn}
                       />
                       <Select
+                        theme={theme}
                         width={'calc(25% - .4rem)'}
                         value={this.state.whenLossableMode}
                         inputStyles={{
@@ -1112,6 +1154,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                   <SubBlocksContainer>
                     <InputRowContainer>
                       <BlueSlider
+                        theme={theme}
                         max={60}
                         value={this.state.whenLossableSec}
                         sliderContainerStyles={{
@@ -1128,12 +1171,16 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
               </>
             )}
 
-            {this.state.isForcedStopOn && (
+            {this.state.isTimeoutOn && (
               <>
                 <InputRowContainer>
-                  <FormInputContainer title={'forced stop (loss %)'}>
+                  <FormInputContainer
+                    theme={theme}
+                    title={'forced stop (loss %)'}
+                  >
                     <InputRowContainer>
                       <Input
+                        theme={theme}
                         padding={'0'}
                         width={'calc(32.5%)'}
                         textAlign={'left'}
@@ -1164,6 +1211,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                       />
 
                       <Input
+                        theme={theme}
                         showErrors={true}
                         isValid={this.props.validateField(
                           this.state.isForcedStopOn,
@@ -1187,6 +1235,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                       />
 
                       <BlueSlider
+                        theme={theme}
                         value={this.state.forcedPercentage}
                         sliderContainerStyles={{
                           width: '50%',
@@ -1322,6 +1371,7 @@ export class EditHedgePopup extends React.Component<IProps, HedgeState> {
                 }}
               />
               <Select
+                theme={theme}
                 width={'18%'}
                 symbol={'LVRG.'}
                 isDisabled={!this.state.isHedgeOn}
@@ -1485,6 +1535,7 @@ export class EditEntryOrderPopup extends React.Component<
 
   render() {
     const {
+      theme,
       open,
       pair,
       funds,
@@ -1495,6 +1546,7 @@ export class EditEntryOrderPopup extends React.Component<
       validate,
       marketType,
       quantityPrecision,
+      maxLeverage,
     } = this.props
 
     const {
@@ -1519,6 +1571,7 @@ export class EditEntryOrderPopup extends React.Component<
 
     return (
       <Dialog
+        theme={theme}
         PaperComponent={StyledPaper}
         style={{ width: '85rem', margin: 'auto' }}
         fullScreen={false}
@@ -1528,19 +1581,30 @@ export class EditEntryOrderPopup extends React.Component<
         aria-labelledby="responsive-edit-entry-order-dialog-title"
       >
         <StyledDialogTitle
+          theme={theme}
           disableTypography
           id="responsive-edit-entry-order-dialog-title"
         >
-          <TypographyTitle>{`Edit entry point`}</TypographyTitle>
+          <TypographyTitle theme={theme}>{`Edit entry point`}</TypographyTitle>
           <div style={{ display: 'flex', alignItems: 'center', width: '60%' }}>
             <SmallSlider
+              theme={theme}
               min={1}
-              max={maxLeverage.get(`${pair[0]}_${pair[1]}`) || 75}
+              max={maxLeverage}
               defaultValue={this.state.leverage}
               value={this.state.leverage}
               valueSymbol={'X'}
               marks={
-                maxLeverage.get(`${pair[0]}_${pair[1]}`) !== 125
+                maxLeverage === 125
+                  ? {
+                      1: {},
+                      25: {},
+                      50: {},
+                      75: {},
+                      100: {},
+                      125: {},
+                    }
+                  : maxLeverage === 75
                   ? {
                       1: {},
                       15: {},
@@ -1551,11 +1615,11 @@ export class EditEntryOrderPopup extends React.Component<
                     }
                   : {
                       1: {},
-                      25: {},
+                      10: {},
+                      20: {},
+                      30: {},
+                      40: {},
                       50: {},
-                      75: {},
-                      100: {},
-                      125: {},
                     }
               }
               onChange={(leverage: number) => {
@@ -1565,7 +1629,7 @@ export class EditEntryOrderPopup extends React.Component<
                 width: '80%',
                 margin: '0 auto',
               }}
-              trackBeforeBackground={'#29AC80'}
+              trackBeforeBackground={theme.palette.green.main}
               handleStyles={{
                 width: '1.2rem',
                 height: '1.2rem',
@@ -1577,13 +1641,20 @@ export class EditEntryOrderPopup extends React.Component<
               }}
               dotStyles={{
                 border: 'none',
-                backgroundColor: '#ABBAD1',
+                backgroundColor: theme.palette.slider.dots,
               }}
               activeDotStyles={{
-                backgroundColor: '#29AC80',
+                backgroundColor: theme.palette.green.main,
+              }}
+              markTextSlyles={{
+                color: theme.palette.grey.light,
+                fontSize: '1rem',
+              }}
+              railStyle={{
+                backgroundColor: theme.palette.slider.rail,
               }}
             />
-            <LeverageLabel style={{ fontFamily: 'DM Sans' }}>
+            <LeverageLabel theme={theme} style={{ fontFamily: 'DM Sans' }}>
               {this.state.leverage}X
             </LeverageLabel>
           </div>
@@ -1699,8 +1770,9 @@ export class EditEntryOrderPopup extends React.Component<
             )}
 
             <InputRowContainer>
-              <FormInputContainer title={'price'}>
+              <FormInputContainer theme={theme} title={'price'}>
                 <Input
+                  theme={theme}
                   symbol={pair[1]}
                   type={
                     type === 'limit'
@@ -1730,9 +1802,10 @@ export class EditEntryOrderPopup extends React.Component<
             </InputRowContainer>
 
             {isTrailingOn && (
-              <FormInputContainer title={'price deviation'}>
+              <FormInputContainer theme={theme} title={'price deviation'}>
                 <InputRowContainer>
                   <Input
+                    theme={theme}
                     padding={'0'}
                     width={'calc(32.5%)'}
                     textAlign={'left'}
@@ -1763,6 +1836,7 @@ export class EditEntryOrderPopup extends React.Component<
                   />
 
                   <Input
+                    theme={theme}
                     padding={'0 .8rem 0 .8rem'}
                     width={'calc(17.5%)'}
                     symbol={'%'}
@@ -1788,6 +1862,7 @@ export class EditEntryOrderPopup extends React.Component<
                   />
 
                   <BlueSlider
+                    theme={theme}
                     disabled={!isTrailingOn}
                     value={stripDigitPlaces(deviationPercentage * leverage, 3)}
                     sliderContainerStyles={{
@@ -1813,6 +1888,7 @@ export class EditEntryOrderPopup extends React.Component<
             <InputRowContainer>
               <div style={{ width: '47%' }}>
                 <FormInputContainer
+                  theme={theme}
                   needLine={false}
                   needRightValue={true}
                   rightValue={`${
@@ -1830,6 +1906,7 @@ export class EditEntryOrderPopup extends React.Component<
                   })`}
                 >
                   <Input
+                    theme={theme}
                     type={'text'}
                     pattern={
                       marketType === 0 ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'
@@ -1885,6 +1962,7 @@ export class EditEntryOrderPopup extends React.Component<
               </div>
               <div style={{ width: '47%' }}>
                 <FormInputContainer
+                  theme={theme}
                   needLine={false}
                   needRightValue={true}
                   rightValue={`${
@@ -1899,6 +1977,7 @@ export class EditEntryOrderPopup extends React.Component<
                   title={`total (${pair[1]})`}
                 >
                   <Input
+                    theme={theme}
                     symbol={pair[1]}
                     value={total}
                     disabled={isTrailingOn || type === 'market'}
@@ -1928,6 +2007,7 @@ export class EditEntryOrderPopup extends React.Component<
 
             <InputRowContainer>
               <BlueSlider
+                theme={theme}
                 showMarks
                 value={
                   side === 'buy' || marketType === 1
@@ -1972,6 +2052,7 @@ export class EditEntryOrderPopup extends React.Component<
             {marketType === 1 && (
               <InputRowContainer>
                 <FormInputContainer
+                  theme={theme}
                   needLine={false}
                   needRightValue={true}
                   rightValue={`${stripDigitPlaces(funds[1].quantity, 2)} ${
@@ -1981,6 +2062,7 @@ export class EditEntryOrderPopup extends React.Component<
                   title={`cost / initial margin (${pair[1]})`}
                 >
                   <Input
+                    theme={theme}
                     symbol={pair[1]}
                     value={this.state.initialMargin}
                     disabled={isTrailingOn || type === 'market'}
@@ -2010,6 +2092,7 @@ export class EditEntryOrderPopup extends React.Component<
 
             <InputRowContainer padding={'2rem 0 0 0'}>
               <SendButton
+                theme={theme}
                 type={'buy'}
                 onClick={() => {
                   const percentage = this.props.openFromTerminal

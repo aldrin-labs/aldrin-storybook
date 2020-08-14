@@ -771,6 +771,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
         />
         {this.state.editMarginPopup && (
           <EditMarginPopup
+            theme={theme}
             open={true}
             editMarginPosition={this.state.editMarginPosition}
             handleClose={this.toogleEditMarginPopup}

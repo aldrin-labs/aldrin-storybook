@@ -89,7 +89,7 @@ export const TradeInputHeader = ({
       >
         {title}
       </SeparateInputTitle> */}
-      {needLine && <Line lineMargin={lineMargin} />}
+      {needLine && <Line theme={theme} lineMargin={lineMargin} />}
       {needRightValue && (
         <BlueInputTitle theme={theme} onClick={() => onValueClick()}>
           {rightValue}

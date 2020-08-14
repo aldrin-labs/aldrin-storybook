@@ -718,6 +718,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
           selectedTrade &&
           selectedTrade.conditions && (
             <EditEntryOrderPopup
+              theme={theme}
               price={this.getEntryPrice()}
               funds={processedFunds}
               quantityPrecision={quantityPrecision}
@@ -778,6 +779,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
           selectedTrade &&
           selectedTrade.conditions && (
             <EditTakeProfitPopup
+              theme={theme}
               open={editTrade === 'takeProfit'}
               price={this.getEntryPrice()}
               pricePrecision={pricePrecision}
@@ -834,6 +836,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
 
         {editTrade === 'stopLoss' && selectedTrade && selectedTrade.conditions && (
           <EditStopLossPopup
+            theme={theme}
             open={editTrade === 'stopLoss'}
             price={this.getEntryPrice()}
             pricePrecision={pricePrecision}

@@ -85,12 +85,14 @@ export const Select = ({
   showErrors = false,
   inputStyles,
   children,
+  theme,
 }: InputProps) => {
   return (
     <div
       style={{ width, padding, position: 'relative', display: 'inline-block' }}
     >
       <TradeSelect
+        theme={theme}
         value={value}
         onChange={onChange}
         disabled={isDisabled}

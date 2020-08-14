@@ -351,6 +351,7 @@ export const DefaultViewComponent = (
             >
               <TradingTable
                 theme={theme}
+                maxLeverage={maxLeverage}
                 selectedKey={selectedKey}
                 showOrderResult={showOrderResult}
                 showCancelResult={showCancelResult}

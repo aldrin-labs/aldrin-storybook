@@ -169,7 +169,7 @@ export default class ThemeWrapper extends Component<Props> {
                 new: '#29AC80',
               },
               grey: {
-                custom: '#ABBAD1',
+                custom: '#2E2E2E',
                 dark: '#2c2c34', //'#1F1F24',
                 light: '#D1DDEF',
                 main: '#0B0B0E',

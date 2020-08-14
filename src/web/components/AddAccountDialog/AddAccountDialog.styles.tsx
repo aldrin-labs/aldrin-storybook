@@ -57,7 +57,7 @@ export const InputBaseCustom = styled(InputBase)`
   border: 1px solid #e0e5ec;
   box-sizing: border-box;
   border-radius: 1rem;
-  box-shadow: inset .1rem .1rem .2rem rgba(0, 0, 0, 0.15);
+  box-shadow: inset 0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.15);
 
   input {
     color: #16253d;

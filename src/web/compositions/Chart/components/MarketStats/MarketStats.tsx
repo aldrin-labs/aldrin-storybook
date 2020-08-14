@@ -290,8 +290,8 @@ class MarketStats extends React.PureComponent<IProps> {
               style={{
                 color:
                   +priceChangePercent > 0
-                    ? theme.customPalette.green.main
-                    : theme.customPalette.red.main,
+                    ? theme.palette.green.main
+                    : theme.palette.red.main,
               }}
             >
               {`${sign24hChange}

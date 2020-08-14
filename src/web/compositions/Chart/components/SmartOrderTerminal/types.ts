@@ -94,6 +94,7 @@ export type StopLossType = {
   }
   forcedStop: {
     isForcedStopOn: boolean
+    mandatoryForcedLoss: boolean
     pricePercentage: number
     forcedStopPrice: number
   }

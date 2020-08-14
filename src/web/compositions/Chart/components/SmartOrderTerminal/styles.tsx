@@ -26,6 +26,7 @@ export const TerminalHeader = styled.div`
 
   background: ${(props) => props.theme.palette.grey.main};
   border: ${(props) => props.theme.palette.border.main};
+  border-top: 0;
   border-radius: 0.2rem;
 `
 
@@ -83,7 +84,8 @@ export const TerminalBlock = styled(({ borderRight, ...rest }) => (
 ))`
   width: ${(props: BlockProperties) => props.width};
   padding: ${(props) => props.padding || '0rem 1rem 0rem 1.2rem'};
-  border-right: ${(props) => props.borderRight || '0.1rem solid #abbad1'};
+  border-right: ${(props) =>
+    props.borderRight || props.theme.palette.border.main};
   position: relative;
   overflow: hidden scroll;
   height: 100%;
@@ -94,7 +96,7 @@ export const FieldsContainer = styled.div`
 `
 
 export const SubBlocksContainer = styled.div`
-  width: 50%;
+  width: ${(props) => props.width || '50%'};
   border-right: ${(props) => props.needBorder && '.1rem solid #e0e5ec'};
   padding-right: 0.4rem;
 `
