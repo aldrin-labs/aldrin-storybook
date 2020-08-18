@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles'
 import { ThemeOptions } from '@material-ui/core/styles/createMuiTheme'
 import { fade } from '@material-ui/core/styles/colorManipulator'
-
+import { client } from '@core/graphql/apolloClient'
 import { Props } from './ThemeWrapper.types'
+import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 
 declare module '@material-ui/core/styles/createMuiTheme' {
   interface Theme {
@@ -33,7 +34,7 @@ function createMyTheme(options: ThemeOptions) {
 
 export default class ThemeWrapper extends Component<Props> {
   render() {
-    const { themeMode } = this.props
+    const { themeMode, isChartPage } = this.props
 
     // refactor this
     const theme = createMyTheme(
@@ -152,11 +153,11 @@ export default class ThemeWrapper extends Component<Props> {
               },
               blue: {
                 custom: '#5085EC',
-                light: '#165BE0',
                 first: '#0B1FD1',
                 second: '#5C8CEA',
                 background: '#5C8CEA',
                 main: '#165BE0',
+                light: '#D1DDEF',
                 btnBackground: '#165BE0',
                 switcherBackground: '#165BE0',
                 switcherBorder: '#2E2E2E',
@@ -176,6 +177,7 @@ export default class ThemeWrapper extends Component<Props> {
                 background: '#2E2E2E',
                 text: '#7284A0',
                 border: '#2E2E2E',
+                cream: '#0B0B0E',
               },
               primary: {
                 main: '#303037',
@@ -365,6 +367,7 @@ export default class ThemeWrapper extends Component<Props> {
                 backround: '#f2f4f6',
                 text: '#7284A0',
                 border: '#E0E5EC',
+                cream: '#F9FBFD',
               },
               primary: {
                 main: '#FEFEFE',

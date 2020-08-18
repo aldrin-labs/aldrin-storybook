@@ -47,6 +47,7 @@ export const Input = ({
   isValid = true,
   showErrors = false,
   inputStyles,
+  theme
 }: InputProps) => {
   return (
     <div
@@ -56,6 +57,7 @@ export const Input = ({
         {beforeSymbol}
       </Character>
       <TradeInput
+        theme={theme}
         value={value}
         onChange={onChange}
         disabled={isDisabled}

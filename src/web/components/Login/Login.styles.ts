@@ -11,4 +11,10 @@ export const SWrapperStyles = `
 
 export const SWrapper = styled.div`
   ${SWrapperStyles}
+  border-left: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.border &&
+      props.theme.palette.border.main) ||
+    '.1rem solid #e0e5ec'};
 `

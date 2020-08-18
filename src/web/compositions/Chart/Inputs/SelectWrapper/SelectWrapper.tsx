@@ -232,6 +232,7 @@ class SelectPairListComponent extends React.PureComponent<
   render() {
     const { processedSelectData } = this.state
     const {
+      theme,
       searchValue,
       tab,
       tabSpecificCoin,
@@ -249,24 +250,22 @@ class SelectPairListComponent extends React.PureComponent<
           right: marketType === 0 ? 'calc(16% + 1rem)' : 'calc(25% + 2rem)',
           position: 'absolute',
           zIndex: 900,
-          background: '#fff',
+          background: theme.palette.white.background,
           minWidth: '35%',
           height: '35rem',
           marginTop: '3rem',
           borderRadius: '.4rem',
           overflow: 'hidden',
-          border: '.1rem solid #E0E5EC',
+          border: theme.palette.border.main,
           boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
         }}
-        // TODO: uncomment this line
-        // onMouseLeave={closeMenu}
       >
         <Grid container style={{ padding: '0.5rem' }}>
           <Grid
             style={{
               display: 'flex',
               padding: '1rem',
-              background: tab === 'favorite' ? '#F2F4F6' : '',
+              background: tab === 'favorite' ? theme.palette.grey.main : '',
               cursor: 'pointer',
             }}
             onClick={() => onTabChange('favorite')}
@@ -276,12 +275,12 @@ class SelectPairListComponent extends React.PureComponent<
           <Grid
             style={{
               padding: '1rem',
-              background: tab === 'all' ? '#F2F4F6' : '',
+              background: tab === 'all' ? theme.palette.grey.main : '',
               display: 'flex',
               alignItems: 'center',
               cursor: 'pointer',
               fontSize: '1.2rem',
-              color: '#7284A0',
+              color: theme.palette.grey.light,
               fontWeight: 'bold',
             }}
             onClick={() => onTabChange('all')}
@@ -293,12 +292,12 @@ class SelectPairListComponent extends React.PureComponent<
               <Grid
                 style={{
                   padding: '1rem',
-                  background: tab === 'btc' ? '#F2F4F6' : '',
+                  background: tab === 'btc' ? theme.palette.grey.main : '',
                   display: 'flex',
                   alignItems: 'center',
                   cursor: 'pointer',
                   fontSize: '1.2rem',
-                  color: '#7284A0',
+                  color: theme.palette.grey.light,
                   fontWeight: 'bold',
                 }}
                 onClick={() => onTabChange('btc')}
@@ -309,11 +308,11 @@ class SelectPairListComponent extends React.PureComponent<
                 style={{
                   display: 'flex',
                   padding: '1rem',
-                  background: tab === 'alts' ? '#F2F4F6' : '',
+                  background: tab === 'alts' ? theme.palette.grey.main : '',
                   alignItems: 'center',
                   cursor: 'pointer',
                   fontSize: '1.2rem',
-                  color: '#7284A0',
+                  color: theme.palette.grey.light,
                   fontWeight: 'bold',
                 }}
                 onClick={() => onTabChange('alts')}
@@ -348,11 +347,11 @@ class SelectPairListComponent extends React.PureComponent<
                 style={{
                   display: 'flex',
                   padding: '1rem',
-                  background: tab === 'fiat' ? '#F2F4F6' : '',
+                  background: tab === 'fiat' ? theme.palette.grey.main : '',
                   alignItems: 'center',
                   cursor: 'pointer',
                   fontSize: '1.2rem',
-                  color: '#7284A0',
+                  color: theme.palette.grey.light,
                   fontWeight: 'bold',
                 }}
                 onClick={() => onTabChange('fiat')}
@@ -390,7 +389,12 @@ class SelectPairListComponent extends React.PureComponent<
           <Input
             placeholder="Search..."
             disableUnderline={true}
-            style={{ width: '100%', background: '#F2F4F6' }}
+            style={{
+              width: '100%',
+              background: theme.palette.grey.main,
+              borderTop: theme.palette.border.main,
+              borderBottom: theme.palette.border.main,
+            }}
             value={searchValue}
             onChange={onChangeSearch}
             inputProps={{
@@ -430,12 +434,12 @@ class SelectPairListComponent extends React.PureComponent<
                 rowStyle={{
                   outline: 'none',
                   cursor: 'pointer',
-                  color: '#7284A0',
-                  borderBottom: '1px solid #E0E5EC',
+                  color: theme.palette.grey.light,
+                  borderBottom: theme.palette.border.main,
                 }}
                 headerHeight={window.outerHeight / 40}
                 headerStyle={{
-                  color: '#16253D',
+                  color: theme.palette.dark.main,
                   paddingLeft: '.5rem',
                   paddingTop: '.25rem',
                   marginLeft: 0,
@@ -529,12 +533,12 @@ class SelectPairListComponent extends React.PureComponent<
           style={{
             display: 'flex',
             padding: '1rem',
-            background: tab === 'fiat' ? '#F2F4F6' : '',
+            background: tab === 'fiat' ? theme.palette.grey.main : '',
             alignItems: 'center',
             justifyContent: 'flex-end',
             cursor: 'pointer',
             fontSize: '1.4rem',
-            color: '#7284A0',
+            color: theme.palette.grey.light,
             height: '3rem',
           }}
           onClick={() => onTabChange('fiat')}

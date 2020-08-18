@@ -71,7 +71,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       const chartPageType = marketType === 0 ? 'spot' : 'futures'
 
       history.push(`/chart/${chartPageType}/${value}`)
-      
+
       // await changeCurrencyPairMutation({
       //   variables: {
       //     pairInput: {
@@ -124,7 +124,6 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
           border={divider}
           selectStyles={selectStyles}
           onClick={this.toggleMenu}
-          // onMouseOver={this.openMenu}
         >
           <SelectR
             id={this.props.id}

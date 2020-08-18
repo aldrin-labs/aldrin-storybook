@@ -4,13 +4,13 @@ import { Redirect } from 'react-router-dom'
 import { withTheme } from '@material-ui/styles'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
-
+import { client } from '@core/graphql/apolloClient'
 // import { Grid, Hidden } from '@material-ui/core'
 
 // import { CardsPanel } from './components'
 import OnlyCharts from './OnlyCharts/OnlyCharts'
 import DefaultView from './DefaultView/StatusWrapper'
-
+import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 import { getChartLayout } from '@core/graphql/queries/chart/getChartLayout'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
@@ -241,7 +241,8 @@ function ChartPageComponent(props: any) {
     ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
     : { keyId: '', hedgeMode: false, isFuturesWarsKey: false }
 
-  console.log('chart page rerender')
+  console.log('chart page rerender', themeMode)
+  console.log('reda 2', client.readQuery({ query: GET_THEME_MODE }))
 
   return (
     <MainContainer fullscreen={view !== 'default'}>
@@ -304,7 +305,7 @@ function ChartPageComponent(props: any) {
 }
 
 const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
-  console.log('memo func chart page')
+  console.log('memo func chart page', prev, next)
 
   const isAuthenticatedUser = checkLoginStatus()
 
@@ -358,7 +359,10 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
     prev.getChartLayoutQuery.chart.layout.hideTradeHistory ===
       next.getChartLayoutQuery.chart.layout.hideTradeHistory &&
     themeChanged &&
-    prev.theme.palette.type === next.theme.palette.type
+    prev.theme.palette.type === next.theme.palette.type &&
+    prev.getChartDataQuery.app.themeMode ===
+      next.getChartDataQuery.app.themeMode
+    // false
   )
 })
 
@@ -399,7 +403,7 @@ export default compose(
   queryRendererHoc({
     query: getChartLayout,
     name: 'getChartLayoutQuery',
-    fetchPolicy: 'cache-first',
+    fetchPolicy: 'cache-and-network',
     withoutLoading: true,
   }),
   graphql(updateTooltipSettings, {

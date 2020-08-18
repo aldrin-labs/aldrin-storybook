@@ -4,7 +4,7 @@ import { Theme } from '@material-ui/core'
 import { withTheme } from '@material-ui/styles'
 
 import MainLogo from '@icons/Logo.svg'
-import MainLogoDark from '@icons/Logo.svg'
+import MainLogoDark from '@icons/lightLogo.svg'
 import { Link } from 'react-router-dom'
 
 const Logo = ({
@@ -16,7 +16,7 @@ const Logo = ({
 }) => {
   return (
     <Link to="/">
-      <StyledLogo src={!(type === 'dark') ? MainLogoDark : MainLogo} />
+      <StyledLogo src={type === 'dark' ? MainLogoDark : MainLogo} />
     </Link>
   )
 }

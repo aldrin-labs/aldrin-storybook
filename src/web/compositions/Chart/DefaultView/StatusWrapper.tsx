@@ -73,7 +73,7 @@ const OrderStatusWrapper = (props) => {
     }
   }
 
-  console.log('status wrapper rerender')
+  console.log('status wrapper rerender', props)
   return (
     <DefaultView
       showOrderResult={showOrderResult}
@@ -117,5 +117,6 @@ export default React.memo(OrderStatusWrapper, (prev, next) => {
     prev.layout.hideDepthChart === next.layout.hideDepthChart &&
     prev.layout.hideOrderbook === next.layout.hideOrderbook &&
     prev.layout.hideTradeHistory === next.layout.hideTradeHistory
+    // false
   )
 })

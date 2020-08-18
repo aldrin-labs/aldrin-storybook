@@ -90,50 +90,13 @@ export const DefaultViewComponent = (
 
   const { hideDepthChart, hideOrderbook, hideTradeHistory } = layout
 
-  const hideLayoutHandler = async () => {
-    const argObject =
-      hideDepthChart && !hideOrderbook
-        ? {
-            hideDepthChart,
-            hideOrderbook: true,
-            hideTradeHistory,
-          }
-        : hideOrderbook && !hideTradeHistory
-        ? {
-            hideDepthChart,
-            hideOrderbook,
-            hideTradeHistory: true,
-          }
-        : {
-            hideDepthChart: true,
-            hideOrderbook,
-            hideTradeHistory,
-          }
-
-    await changeChartLayoutMutation({
-      variables: { input: { layout: argObject } },
-    })
-  }
-
-  const showLayoutHandler = async () => {
-    const argObject =
-      hideDepthChart && !hideOrderbook && !hideTradeHistory
-        ? {
-            hideDepthChart: false,
-            hideOrderbook,
-            hideTradeHistory,
-          }
-        : hideOrderbook && !hideTradeHistory
-        ? {
-            hideDepthChart,
-            hideOrderbook: false,
-            hideTradeHistory,
-          }
-        : {
-            hideDepthChart,
-            hideOrderbook,
-            hideTradeHistory: false,
-          }
+  const changeChartLayout = async (newParams) => {
+    const argObject = {
+      hideDepthChart,
+      hideTradeHistory,
+      hideOrderbook,
+      ...newParams,
+    }
     await changeChartLayoutMutation({
       variables: { input: { layout: argObject } },
     })
@@ -167,6 +130,10 @@ export const DefaultViewComponent = (
             marketType,
             quantityPrecision,
             pricePrecision,
+            hideDepthChart,
+            hideOrderbook,
+            hideTradeHistory,
+            changeChartLayout,
           }}
         />
       </ChartGridContainer>
@@ -431,5 +398,6 @@ export const DefaultView = React.memo(DefaultViewComponent, (prev, next) => {
     prev.layout.hideDepthChart === next.layout.hideDepthChart &&
     prev.layout.hideOrderbook === next.layout.hideOrderbook &&
     prev.layout.hideTradeHistory === next.layout.hideTradeHistory
+    // false
   )
 })

@@ -3,6 +3,7 @@ import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { useLocation, useHistory } from 'react-router-dom'
 import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
+import PreferencesSelect from '../Inputs/PreferencesSelect'
 import LayoutSelector from '@core/components/LayoutSelector'
 import KeySelector from '@core/components/KeySelector'
 import SelectExchange from '../Inputs/SelectExchange/SelectExchange'
@@ -15,26 +16,27 @@ import { TOGGLE_THEME_MODE } from '@core/graphql/mutations/app/toggleThemeMode'
 import { changeHedgeModeInCache } from '@core/utils/tradingComponent.utils'
 import { checkLoginStatus } from '@core/utils/loginUtils'
 import { PanelWrapper, CustomCard } from '../Chart.styles'
+import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
 
-const selectStyles = {
+const selectStyles = (theme: Theme) => ({
   height: '100%',
-  background: '#FFFFFF',
+  background: theme.palette.white.background,
   marginRight: '.8rem',
   cursor: 'pointer',
   padding: 0,
-  backgroundColor: '#fff',
-  border: '0.1rem solid #e0e5ec',
+  backgroundColor: theme.palette.white.background,
+  border: theme.palette.border.main,
   borderRadius: '0.75rem',
   boxShadow: '0px 0px 1.2rem rgba(8, 22, 58, 0.1)',
   width: '20%',
   '& div': {
     cursor: 'pointer',
-    color: '#16253D',
+    color: theme.palette.dark.main,
     textTransform: 'uppercase',
     fontWeight: 'bold',
   },
   '& svg': {
-    color: '#7284A0',
+    color: theme.palette.grey.light,
   },
   '.custom-select-box__control': {
     padding: '0 .75rem',
@@ -45,7 +47,7 @@ const selectStyles = {
     borderRadius: '0',
     boxShadow: '0px 4px 8px rgba(10,19,43,0.1)',
   },
-}
+})
 
 export const CardsPanel = ({
   _id,
@@ -63,6 +65,11 @@ export const CardsPanel = ({
   selectedKey,
   showChangePositionModeResult,
   toggleThemeMode,
+  hideDepthChart,
+  hideOrderbook,
+  hideTradeHistory,
+  changeChartLayout,
+  persistorInstance,
 }) => {
   const hedgeMode = selectedKey.hedgeMode
 
@@ -154,9 +161,10 @@ export const CardsPanel = ({
 
         {view === 'default' && (
           <KeySelector
+            theme={theme}
             exchange={activeExchange}
             selectStyles={{
-              ...selectStyles,
+              ...selectStyles(theme),
               width: marketType === 1 ? '11%' : '15%',
             }}
             isAccountSelect={true}
@@ -169,14 +177,18 @@ export const CardsPanel = ({
           id={'pairSelector'}
           view={view}
           activeExchange={activeExchange}
-          selectStyles={selectStyles}
+          selectStyles={selectStyles(theme)}
           marketType={marketType}
           quantityPrecision={quantityPrecision}
           pricePrecision={pricePrecision}
         />
 
         <SmartTradeButton
-          style={{ height: '100%', width: '16.5%' }}
+          style={{
+            height: '100%',
+            maxWidth:
+              marketType === 0 ? 'calc(35% - 28.8rem)' : 'calc(30% - 28.8rem)',
+          }}
           type={isDefaultTerminalViewMode ? 'buy' : 'sell'}
           id="smartTradingButton"
           onClick={() => {
@@ -205,6 +217,22 @@ export const CardsPanel = ({
             ? 'go to smart terminal'
             : 'back to basic terminal'}
         </SmartTradeButton>
+        <PreferencesSelect
+          theme={theme}
+          style={{ width: '15%', minWidth: '0', marginLeft: '.8rem' }}
+          id={'preferencesSelector'}
+          value={'preferences'}
+          selectStyles={selectStyles(theme)}
+          hedgeMode={hedgeMode}
+          changePositionModeWithStatus={changePositionModeWithStatus}
+          themeMode={themeMode}
+          toggleThemeMode={toggleThemeMode}
+          hideDepthChart={hideDepthChart}
+          hideOrderbook={hideOrderbook}
+          hideTradeHistory={hideTradeHistory}
+          changeChartLayout={changeChartLayout}
+          persistorInstance={persistorInstance}
+        />
         {/* <div style={{ width: '15.5%', margin: '0 .4rem 0 .6rem' }}>
           <PillowButton
             firstHalfText={'light'}
@@ -217,17 +245,18 @@ export const CardsPanel = ({
               width: '50%',
             }}
             containerStyle={{ height: '100%', margin: 0 }}
-            changeHalf={() => {
+            changeHalf={async () => {
               // for guest mode
               if (!authenticated) {
                 return
               }
 
-              toggleThemeMode()
+              await toggleThemeMode()
+              // persistorInstance.persist()
             }}
           />
         </div> */}
-        {marketType === 1 && (
+        {/* {marketType === 1 && (
           <div style={{ width: '15.5%', margin: '0 .4rem 0 .6rem' }}>
             <PillowButton
               firstHalfText={'one-way'}
@@ -250,13 +279,14 @@ export const CardsPanel = ({
               }}
             />
           </div>
-        )}
+        )} */}
       </PanelWrapper>
     </>
   )
 }
 
 export default compose(
+  withApolloPersist,
   graphql(TOGGLE_THEME_MODE, { name: 'toggleThemeMode' }),
   graphql(changePositionMode, { name: 'changePositionModeMutation' })
 )(CardsPanel)

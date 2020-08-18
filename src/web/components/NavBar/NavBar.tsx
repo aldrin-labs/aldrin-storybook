@@ -62,6 +62,7 @@ const NavBarRaw: SFC<Props> = ({
   theme: {
     palette: { primary },
   },
+  theme,
   pathname,
   $hide = false,
   logoutMutation,
@@ -123,11 +124,12 @@ const NavBarRaw: SFC<Props> = ({
 
   return (
     <Nav
-      variant={{ hide: $hide, background: primary.main }}
+      theme={theme}
+      variant={{ hide: $hide }}
       color="default"
       className="Navbar"
     >
-      <StyledToolbar variant="dense">
+      <StyledToolbar theme={theme} variant="dense">
         <Grid
           alignItems="center"
           style={{ height: '100%' }}
@@ -141,7 +143,7 @@ const NavBarRaw: SFC<Props> = ({
               style={{
                 display: 'flex',
                 height: '100%',
-                borderRight: '.1rem solid #e0e5ec',
+                borderRight: theme.palette.border.main,
               }}
             >
               <Grid
@@ -150,12 +152,14 @@ const NavBarRaw: SFC<Props> = ({
                 wrap="nowrap"
                 style={{}}
               >
-                <Logo />
+                <Logo theme={theme} />
               </Grid>
             </Grid>
           </Hidden>
           <Grid style={{ width: '100%', textAlign: 'center' }}>
-            <NavBreadcrumbTypography>{page}</NavBreadcrumbTypography>
+            <NavBreadcrumbTypography theme={theme}>
+              {page}
+            </NavBreadcrumbTypography>
           </Grid>
           <Grid style={{ height: '100%' }} item={true} key={'navBarGrid'}>
             <NavBarWrapper container={true} key={'NavBarWrapper'}>
@@ -167,6 +171,7 @@ const NavBarRaw: SFC<Props> = ({
                 Portfolio
               </NavLinkButton> */}
               <Dropdown
+                theme={theme}
                 id="portfolio-menu"
                 key="portfolio-menu"
                 buttonText="Portfolio"
@@ -222,7 +227,7 @@ const NavBarRaw: SFC<Props> = ({
                             fontWeight: 'bold',
                             textTransform: 'uppercase',
                             letterSpacing: '.05rem',
-                            color: 'rgb(11, 31, 209)',
+                            color: theme.palette.blue.main,
                           }}
                         >
                           beta
@@ -239,59 +244,10 @@ const NavBarRaw: SFC<Props> = ({
                       prefetchRebalance()
                     },
                   },
-                  // !MASTER_BUILD && {
-                  //   text: 'Optimizaton',
-                  //   icon: <OptimizationIcon fontSize="small" />,
-                  //   to: '/portfolio/optimization',
-                  // },
                 ]}
               />
-              {/* <Dropdown
-                id="transaction-menu"
-                key="transaction-menu"
-                buttonText="Transactions"
-                selectedMenu={selectedMenu}
-                selectActiveMenu={selectMenu}
-                items={[
-                  
-                  // !MASTER_BUILD && {
-                  //   text: 'Optimizaton',
-                  //   icon: <OptimizationIcon fontSize="small" />,
-                  //   to: '/portfolio/optimization',
-                  // },
-                ]}
-              /> */}
-
-              {/* {!MASTER_BUILD && (
-                <Dropdown
-                  id="explore-menu"
-                  key="explore-menu"
-                  buttonText="Explore"
-                  selectedMenu={selectedMenu}
-                  selectActiveMenu={selectMenu}
-                  items={[
-                    {
-                      text: 'Industry',
-                      icon: <MainIcon fontSize="small" />,
-                      to: '/portfolio/industry',
-                    },
-                    // { text: 'Correlation', icon: <CorrelationIcon fontSize="small" />, to: '/portfolio/correlation' },
-                    // { text: 'Index', icon: <RebalanceIcon fontSize="small" />, to: '/' },
-                    {
-                      text: 'Social Portfolio',
-                      icon: <OptimizationIcon fontSize="small" />,
-                      to: '/portfolio/social',
-                      onMouseOver: () => {
-                        client.query({
-                          query: GET_FOLLOWING_PORTFOLIOS,
-                        })
-                      },
-                    },
-                  ]}
-                />
-              )} */}
-
               <Dropdown
+                theme={theme}
                 id="chart-page"
                 key="chart-page"
                 buttonText="Trading"
@@ -331,7 +287,7 @@ const NavBarRaw: SFC<Props> = ({
               />
 
               {!MASTER_BUILD && (
-                <NavLinkButtonWrapper key="market-wrapper">
+                <NavLinkButtonWrapper theme={theme} key="market-wrapper">
                   <NavLinkButton
                     key="market-2"
                     page={`market`}
@@ -352,7 +308,7 @@ const NavBarRaw: SFC<Props> = ({
                 </NavLinkButtonWrapper>
               )}
               {!MASTER_BUILD && (
-                <NavLinkButtonWrapper key="signals-wrapper">
+                <NavLinkButtonWrapper theme={theme} key="signals-wrapper">
                   <NavLinkButton
                     key="signals"
                     page={`signals`}
@@ -373,6 +329,7 @@ const NavBarRaw: SFC<Props> = ({
                 </NavLinkButtonWrapper>
               )}
               <Dropdown
+                theme={theme}
                 id="profile-page"
                 key="profile-page"
                 buttonText="Settings"
@@ -446,7 +403,7 @@ const NavBarRaw: SFC<Props> = ({
                 <Feedback borderColor={fade(divider, 0.5)} />
               </Hidden> */}
               <Hidden only="xs">
-                <Login joyridePage={joyridePage} />
+                <Login theme={theme} joyridePage={joyridePage} />
               </Hidden>
             </Grid>
           </Grid>

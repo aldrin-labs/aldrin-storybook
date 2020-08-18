@@ -37,15 +37,17 @@ export default class Dropdown extends React.Component<IProps> {
   }
 
   render() {
-    const { selectedMenu, id } = this.props
+    const { selectedMenu, id, theme } = this.props
 
     return (
       <StyledDropdown
+        theme={theme}
         // onMouseEnter={this.handleToggle}
         // onMouseLeave={this.handleClose}
         key={`${id}-${selectedMenu}`}
       >
         <StyledButton
+          theme={theme}
           disableRipple={false}
           aria-controls={this.props.id}
           aria-haspopup="true"
@@ -56,12 +58,19 @@ export default class Dropdown extends React.Component<IProps> {
         </StyledButton>
 
         <StyledPaper
+          theme={theme}
           style={{ display: selectedMenu === id ? 'block' : 'none' }}
         >
           <MenuList style={{ padding: 0 }}>
             {this.props.items.map(({ icon, text, to, style, ...events }) => (
-              <StyledMenuItem disableRipple disableGutters={true} key={text}>
+              <StyledMenuItem
+                theme={theme}
+                disableRipple
+                disableGutters={true}
+                key={text}
+              >
                 <StyledLink
+                  theme={theme}
                   to={to}
                   key={`${text}-link`}
                   onClick={this.handleClose}

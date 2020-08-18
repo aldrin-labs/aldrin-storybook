@@ -171,6 +171,7 @@ export const Balances = ({
     <>
       <TransferPopup
         open={open}
+        theme={theme}
         handleClose={() => togglePopup(false)}
         transferFromSpotToFutures={transferFromSpotToFutures}
         selectedAccount={selectedKey.keyId}

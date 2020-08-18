@@ -4,14 +4,13 @@ import { Grid, Typography, Button } from '@material-ui/core'
 
 export const GuestModeWrapper = styled(({ ...props }) => <Grid {...props} />)`
   background: #16253d;
-  border: 2px solid #e0e5ec;
-  border-radius: 16px;
+  border: 0.1rem solid #e0e5ec;
+  border-radius: 0.8rem;
 
   width: 100%;
   display: flex;
   height: 37%;
   position: relative;
-  top: 3%;
   overflow: hidden;
 `
 

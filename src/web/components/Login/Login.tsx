@@ -38,11 +38,12 @@ class LoginClassComponent extends React.Component<Props> {
       },
       location: { pathname },
       joyridePage,
+      theme,
     } = this.props
     const loginStatus = checkLoginStatus()
 
     return (
-      <SWrapper className="LoginButton">
+      <SWrapper theme={theme} className="LoginButton">
         <Grow in={!loginStatus} unmountOnExit={true} mountOnEnter={true}>
           <>
             <Button

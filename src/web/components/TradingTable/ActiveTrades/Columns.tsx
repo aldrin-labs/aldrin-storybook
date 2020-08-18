@@ -61,8 +61,8 @@ export const EntryOrderColumn = ({
   red: string
   enableEdit: boolean
   blue: {
-    first: string
-    second: string
+    main: string
+    main: string
   }
   haveEdit: boolean
   editTrade: () => void
@@ -89,10 +89,10 @@ export const EntryOrderColumn = ({
               fontSize=".9rem"
               padding=".1rem .5rem 0 .5rem"
               borderRadius=".8rem"
-              borderColor={enableEdit ? blue.first : '#e0e5ec'}
+              borderColor={enableEdit ? blue.main : '#e0e5ec'}
               btnColor={'#fff'}
-              backgroundColor={enableEdit ? blue.second : '#e0e5ec'}
-              hoverBackground={enableEdit ? blue.first : '#e0e5ec'}
+              backgroundColor={enableEdit ? blue.main : '#e0e5ec'}
+              hoverBackground={enableEdit ? blue.main : '#e0e5ec'}
               transition={'all .4s ease-out'}
               onClick={enableEdit ? editTrade : () => {}}
               style={enableEdit ? {} : { cursor: 'default' }}
@@ -181,8 +181,8 @@ export const TakeProfitColumn = ({
   green: string
   red: string
   blue: {
-    first: string
-    second: string
+    main: string
+    main: string
   }
   haveEdit: boolean
   enableEdit: boolean
@@ -210,10 +210,10 @@ export const TakeProfitColumn = ({
               fontSize=".9rem"
               padding=".1rem .5rem 0 .5rem"
               borderRadius=".8rem"
-              borderColor={enableEdit ? blue.first : '#e0e5ec'}
+              borderColor={enableEdit ? blue.main : '#e0e5ec'}
               btnColor={'#fff'}
-              backgroundColor={enableEdit ? blue.second : '#e0e5ec'}
-              hoverBackground={blue.first}
+              backgroundColor={enableEdit ? blue.main : '#e0e5ec'}
+              hoverBackground={blue.main}
               transition={'all .4s ease-out'}
               onClick={editTrade}
             >
@@ -294,8 +294,8 @@ export const StopLossColumn = ({
   green: string
   red: string
   blue: {
-    first: string
-    second: string
+    main: string
+    main: string
   }
   haveEdit: boolean
   enableEdit: boolean
@@ -323,10 +323,10 @@ export const StopLossColumn = ({
               fontSize=".9rem"
               padding=".1rem .5rem 0 .5rem"
               borderRadius=".8rem"
-              borderColor={enableEdit ? blue.first : '#e0e5ec'}
+              borderColor={enableEdit ? blue.main : '#e0e5ec'}
               btnColor={'#fff'}
-              backgroundColor={enableEdit ? blue.second : '#e0e5ec'}
-              hoverBackground={blue.first}
+              backgroundColor={enableEdit ? blue.main : '#e0e5ec'}
+              hoverBackground={blue.main}
               transition={'all .4s ease-out'}
               onClick={editTrade}
             >
@@ -403,8 +403,8 @@ export const StatusColumn = ({
   green: string
   red: string
   blue: {
-    first: string
-    second: string
+    main: string
+    main: string
   }
   theme: Theme
 }) => {

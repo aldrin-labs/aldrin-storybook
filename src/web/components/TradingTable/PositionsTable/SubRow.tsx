@@ -37,6 +37,7 @@ const SubRow = ({
       >
         <Typography theme={theme}>close:</Typography>
         <Input
+          theme={theme}
           width={'30%'}
           padding={'0 .5rem 0 1rem'}
           value={price}
@@ -44,7 +45,7 @@ const SubRow = ({
           onChange={(e) => {
             updateClosePrice(e.target.value)
           }}
-          inputStyles={{ textTransform: 'uppercase', color: '#16253d' }}
+          inputStyles={{ textTransform: 'uppercase', color: theme.palette.blue.main }}
         />
         <BtnCustom
           btnWidth="30%"
@@ -53,10 +54,10 @@ const SubRow = ({
           padding=".5rem 0 .4rem 0"
           margin="0 .5rem 0 .5rem"
           borderRadius=".8rem"
-          btnColor={'#0B1FD1'}
-          backgroundColor={'#fff'}
+          btnColor={theme.palette.blue.main}
+          backgroundColor={theme.palette.white.background}
           hoverColor={'#fff'}
-          hoverBackground={'#0B1FD1'}
+          hoverBackground={theme.palette.blue.main}
           transition={'all .4s ease-out'}
           disabled={isClosingPositionProcessEnabled && closingType === 'limit'}
           onClick={async () => {
@@ -81,10 +82,10 @@ const SubRow = ({
           fontSize="1rem"
           padding=".5rem 0 .4rem 0"
           borderRadius=".8rem"
-          btnColor={'#0B1FD1'}
-          backgroundColor={'#fff'}
+          btnColor={theme.palette.blue.main}
+          backgroundColor={theme.palette.white.background}
           hoverColor={'#fff'}
-          hoverBackground={'#0B1FD1'}
+          hoverBackground={theme.palette.blue.main}
           transition={'all .4s ease-out'}
           disabled={isClosingPositionProcessEnabled && closingType === 'market'}
           onClick={async () => {
