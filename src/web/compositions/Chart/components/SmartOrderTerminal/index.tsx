@@ -380,7 +380,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
   componentDidUpdate(prevProps: IProps) {
     if (
       prevProps.priceFromOrderbook !== this.props.priceFromOrderbook &&
-      this.props.priceFromOrderbook
+      this.props.priceFromOrderbook && this.state.entryPoint.order.type === "limit"
     ) {
       this.updateSubBlockValue(
         'entryPoint',

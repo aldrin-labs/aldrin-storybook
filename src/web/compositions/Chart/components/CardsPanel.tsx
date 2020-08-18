@@ -184,6 +184,7 @@ export const CardsPanel = ({
         />
 
         <SmartTradeButton
+          theme={theme}
           style={{
             height: '100%',
             maxWidth:

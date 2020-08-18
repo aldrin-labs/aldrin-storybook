@@ -156,10 +156,10 @@ export default class ThemeWrapper extends Component<Props> {
                 first: '#0B1FD1',
                 second: '#5C8CEA',
                 background: '#5C8CEA',
-                main: '#165BE0',
+                main: '#3B63AF', // 165BE0
                 light: '#D1DDEF',
-                btnBackground: '#165BE0',
-                switcherBackground: '#165BE0',
+                btnBackground: '#3B63AF', // 165BE0
+                switcherBackground: '#3B63AF', // 165BE0
                 switcherBorder: '#2E2E2E',
               },
               green: {
