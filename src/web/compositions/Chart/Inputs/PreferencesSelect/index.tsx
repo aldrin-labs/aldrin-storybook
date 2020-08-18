@@ -146,7 +146,7 @@ class IntegrationReactSelect extends React.PureComponent {
             >
               <SCheckbox
                 style={{ padding: '.4rem .8rem' }}
-                checked={hideDepthChart}
+                checked={!hideDepthChart}
               />
               <Text theme={theme} style={{ paddingBottom: '.15rem' }}>
                 depth chart
@@ -170,7 +170,7 @@ class IntegrationReactSelect extends React.PureComponent {
             >
               <SCheckbox
                 style={{ padding: '.4rem .8rem' }}
-                checked={hideOrderbook}
+                checked={!hideOrderbook}
               />
               <Text theme={theme} style={{ paddingBottom: '.15rem' }}>
                 orderbook
@@ -194,7 +194,7 @@ class IntegrationReactSelect extends React.PureComponent {
             >
               <SCheckbox
                 style={{ padding: '.4rem .8rem' }}
-                checked={hideTradeHistory}
+                checked={!hideTradeHistory}
               />
               <Text theme={theme} style={{ paddingBottom: '.15rem' }}>
                 trade history
