@@ -99,8 +99,49 @@ export const SquarePopup = styled.div`
 `
 
 export const StyleForCalendar = createGlobalStyle`
+.DateInput {
+  background: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.white &&
+      props.theme.palette.white.background) ||
+    '#fff'};
+
+  .DateInput_input {
+       
+  background: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.white &&
+      props.theme.palette.white.background) ||
+    '#fff'};
+  color:  ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.dark &&
+      props.theme.palette.dark.main) ||
+    '#16253d'};
+     
+     border: ${(props) =>
+       (props.theme &&
+         props.theme.palette &&
+         props.theme.palette.border &&
+         props.theme.palette.border.main) ||
+       '.1rem solid #e0e5ec'};
+  }
+}
+
 .DateRangePicker_picker.DateRangePicker_picker__portal {
   z-index: 1008;
+}
+
+.DayPicker_transitionContainer {
+  border: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.border &&
+      props.theme.palette.border.main) ||
+    '.1rem solid #e0e5ec'};
 }
 
 .DateRangePicker_picker {
@@ -111,56 +152,153 @@ export const StyleForCalendar = createGlobalStyle`
   }
   
   .DayPicker_weekHeader {
-    color: #7284A0;
+    color: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.grey &&
+        props.theme.palette.grey.light) ||
+      '#7284A0'};
   }
 
   .DayPicker, .CalendarMonthGrid, .CalendarMonth {
-    background: #F9FBFD;
+    background: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.grey &&
+        props.theme.palette.grey.main) ||
+      '#f2f4f6'};
   }
 
   .CalendarDay__default {
-    border: 1px solid #e0e5ec;
+    background: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.white &&
+        props.theme.palette.white.background) ||
+      '#fff'};
+    border: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.border &&
+        props.theme.palette.border.main) ||
+      '.1rem solid #e0e5ec'};
   }
 
   .CalendarDay__default, 
   .CalendarMonth_caption {
-    color: #16253D;
+    color: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.dark &&
+        props.theme.palette.dark.main) ||
+      '#16253d'};
   }
 
   .CalendarDay__selected_span {
-    color: #fff;
-    background: #5c8cea;
-    border: 1px solid #e0e5ec;
+    color: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.white &&
+        props.theme.palette.white.main) ||
+      '#fff'};
+     background: ${(props) =>
+       (props.theme &&
+         props.theme.palette &&
+         props.theme.palette.blue &&
+         props.theme.palette.blue.main) ||
+       '#0b1fd1'}; 
+    border: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.border &&
+        props.theme.palette.border.main) ||
+      '.1rem solid #e0e5ec'};
   }
 
   .CalendarDay__hovered_span,
   .CalendarDay__hovered_span:hover, 
   .CalendarDay__hovered_span:active {
-    color: #fff;
+    color: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.white &&
+        props.theme.palette.white.main) ||
+      '#fff'};
     background: #A1BFF9;
-    border: 1px solid #e0e5ec;
+    border: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.border &&
+        props.theme.palette.border.main) ||
+      '.1rem solid #e0e5ec'};
   }
 
   .CalendarDay__selected_span:hover, 
   .CalendarDay__selected_span:active {
-    color: #fff;
+    color: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.white &&
+        props.theme.palette.white.main) ||
+      '#fff'};
     background: #4152AF;
-    border: 1px solid #e0e5ec;
-    border: 1px solid #e0e5ec;
+    border: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.border &&
+        props.theme.palette.border.main) ||
+      '.1rem solid #e0e5ec'};
+    border: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.border &&
+        props.theme.palette.border.main) ||
+      '.1rem solid #e0e5ec'};
   }
 
   & .CalendarDay__selected,
   .CalendarDay__selected:active,
   .CalendarDay__selected:hover {
-    color: #fff;
-    background: #0b1fd1;
-    border: 1px solid #e0e5ec;
+    color: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.white &&
+        props.theme.palette.white.main) ||
+      '#fff'};
+    background: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.blue &&
+        props.theme.palette.blue.main) ||
+      '#0b1fd1'}; 
+    border: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.border &&
+        props.theme.palette.border.main) ||
+      '.1rem solid #e0e5ec'};
   }
 
-  .CalendarDay__blocked_out_of_range,
    .CalendarDay__blocked_out_of_range:active,
     .CalendarDay__blocked_out_of_range:hover {
-    color: #7284A0;
+      background: ${(props) =>
+        (props.theme &&
+          props.theme.palette &&
+          props.theme.palette.grey &&
+          props.theme.palette.grey.background) ||
+        '#f2f4f6'};
+    color: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.grey &&
+        props.theme.palette.grey.light) ||
+      '#7284A0'};
+       border: ${(props) =>
+         (props.theme &&
+           props.theme.palette &&
+           props.theme.palette.border &&
+           props.theme.palette.border.main) ||
+         '.1rem solid #e0e5ec'};
   }
 
   .DayPickerKeyboardShortcuts_show__bottomRight::before {
@@ -172,11 +310,28 @@ export const StyleForCalendar = createGlobalStyle`
   }
 
   .DayPickerNavigation_svg__horizontal {
-    fill: #7284A0;
+    fill: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.grey &&
+        props.theme.palette.grey.light) ||
+      '#7284A0'};
   }
 
-  .DayPickerNavigation_button__default {
-    border: 1px solid #e0e5ec;
+  .DayPickerNavigation_button__default, .DayPickerNavigation_button__default:focus, .DayPickerNavigation_button__default:hover {
+    border: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.border &&
+        props.theme.palette.border.main) ||
+      '.1rem solid #e0e5ec'};
+
+    background: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.white &&
+        props.theme.palette.white.background) ||
+      '#fff'};
   }
 
   .DateRangePickerInput_arrow {

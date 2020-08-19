@@ -8,5 +8,11 @@ export const StyledTypography = styled(({ color, ...rest }) => (
   text-transform: uppercase;
   font-size: 1.1rem;
   font-weight: bold;
-  color: ${(props) => props.color};
+  color: ${(props) =>
+    props.color ||
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.grey &&
+      props.theme.palette.grey.light) ||
+    '#7284a0'};
 `

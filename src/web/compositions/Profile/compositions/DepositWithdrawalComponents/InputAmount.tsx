@@ -23,6 +23,7 @@ interface IProps {
   onChange: ({ target: { value } }: { target: { value: number } }) => void
   subscribeToMore: () => () => void
   selectedAccount: string
+  theme: Theme
 }
 
 const Balances = ({
@@ -31,6 +32,7 @@ const Balances = ({
   marketType = 0,
   subscribeToMore,
   selectedAccount,
+  theme,
   onChange = () => {},
   ...inputProps
 }: IProps) => {
@@ -57,6 +59,7 @@ const Balances = ({
 
   return (
     <StyledInput
+      theme={theme}
       autoComplete="off"
       onChange={onChange}
       endAdornment={

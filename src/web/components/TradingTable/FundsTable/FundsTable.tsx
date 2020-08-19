@@ -75,23 +75,7 @@ class FundsTable extends React.PureComponent<IProps> {
 
   render() {
     const { fundsProcessedData, hideSmallAssets } = this.state
-    const {
-      tab,
-      theme,
-      handleTabChange,
-      show,
-      marketType,
-      selectedKey,
-      canceledOrders,
-      arrayOfMarketIds,
-      currencyPair,
-      showAllPositionPairs,
-      showAllOpenOrderPairs,
-      showAllSmartTradePairs,
-      showPositionsFromAllAccounts,
-      showOpenOrdersFromAllAccounts,
-      showSmartTradesFromAllAccounts,
-    } = this.props
+    const { tab, theme, show } = this.props
 
     if (!show) {
       return null

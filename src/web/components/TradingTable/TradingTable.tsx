@@ -134,8 +134,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
         style={{
           height: '100%',
           backgroundColor: theme.palette.white.background,
-          border: theme.palette.border.main,
-          borderRight: '0',
+          borderLeft: theme.palette.border.main,
+          borderBottom: theme.palette.border.main,
         }}
       >
         <TradingTabs
@@ -370,7 +370,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             handleTabChange: this.handleTabChange,
           }}
         />
-        <StyleForCalendar />
+        <StyleForCalendar theme={theme} />
       </div>
     )
   }

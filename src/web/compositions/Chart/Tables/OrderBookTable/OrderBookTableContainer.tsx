@@ -155,6 +155,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
         <OrderBookTable
           data={data}
           mode={mode}
+          theme={theme}
           marketType={marketType}
           arrayOfMarketIds={arrayOfMarketIds}
           aggregation={aggregation}
@@ -169,6 +170,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
         <LastTrade
           mode={mode}
           data={data}
+          theme={theme}
           minPriceDigits={minPriceDigits}
           marketType={marketType}
           marketOrders={marketOrders}
@@ -181,6 +183,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
         <SpreadTable
           data={data}
           mode={mode}
+          theme={theme}
           marketType={marketType}
           arrayOfMarketIds={arrayOfMarketIds}
           aggregation={aggregation}

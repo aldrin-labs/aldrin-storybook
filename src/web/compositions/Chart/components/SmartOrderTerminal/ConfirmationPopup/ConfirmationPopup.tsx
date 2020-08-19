@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid } from '@material-ui/core'
+import { Grid, Theme } from '@material-ui/core'
 import Clear from '@material-ui/icons/Clear'
 
 import { SendButton } from '@sb/components/TraidingTerminal/styles'
@@ -27,11 +27,11 @@ const EditButton = ({ children, ...props }) => (
   <BtnCustom
     btnWidth={'6rem'}
     padding={'0'}
-    borderRadius={'8px'}
-    backgroundColor={'#5C8CEA'}
-    btnColor={'#fff'}
-    borderWidth={'2px'}
-    borderColor={'#0B1FD1'}
+    borderRadius={'.4rem'}
+    backgroundColor={props.theme.palette.blue.main}
+    btnColor={props.theme.palette.white.main}
+    borderWidth={'.1rem'}
+    borderColor={props.theme.palette.blue.main}
     fontWeight={'bold'}
     fontSize={'1.2rem'}
     height={'2.2rem'}
@@ -41,12 +41,12 @@ const EditButton = ({ children, ...props }) => (
   </BtnCustom>
 )
 
-const TitleTypography = ({ children, ...props }) => (
+const TitleTypography = ({ children, theme, ...props }) => (
   <StyledTypography
     {...props}
     style={{
       fontSize: '1.2rem',
-      color: '#16253D',
+      color: theme.palette.dark.main,
       letterSpacing: '1px',
       ...props.style,
     }}
@@ -78,9 +78,11 @@ interface IProps {
   stopLoss: StopLossType
   takeProfit: TakeProfitType
   pair: [string, string]
+  theme: Theme
 }
 
-const getColor = (value: boolean) => (value ? '#29AC80' : '#DD6956')
+const getColor = (value: boolean, theme: Theme) =>
+  value ? theme.palette.green.main : theme.palette.red.main
 const getOnOffText = (value: boolean) => (value ? 'ON' : 'OFF')
 
 export default ({
@@ -92,12 +94,14 @@ export default ({
   stopLoss,
   takeProfit,
   pair,
+  theme,
 }: IProps) => {
   const { order, trailing } = entryPoint
 
   return (
     <>
       <DialogWrapper
+        theme={theme}
         aria-labelledby="customized-dialog-title"
         onClose={handleClose}
         open={open}
@@ -106,14 +110,18 @@ export default ({
           // paddingTop: 0,
         }}
       >
-        <StyledDialogTitle disableTypography id="customized-dialog-title">
+        <StyledDialogTitle
+          theme={theme}
+          disableTypography
+          id="customized-dialog-title"
+        >
           <TypographyCustomHeading
             fontWeight={'700'}
             style={{
               textAlign: 'center',
               fontSize: '1.4rem',
               letterSpacing: '1.5px',
-              color: '#16253D',
+              color: theme.palette.dark.main,
             }}
           >
             Confirm trade
@@ -127,6 +135,7 @@ export default ({
           </ClearButton>
         </StyledDialogTitle>
         <DialogContent
+          theme={theme}
           justify="center"
           style={{
             minWidth: '440px',
@@ -141,25 +150,34 @@ export default ({
                 alignItems="center"
                 style={{ padding: '1rem 0' }}
               >
-                <TitleTypography>Entry point</TitleTypography>
-                <EditButton onClick={() => handleOpenEditPopup('entryOrder')}>
+                <TitleTypography theme={theme}>Entry point</TitleTypography>
+                <EditButton
+                  theme={theme}
+                  onClick={() => handleOpenEditPopup('entryOrder')}
+                >
                   edit
                 </EditButton>
               </Grid>
               <Grid container style={{ padding: '1rem 5.5rem' }}>
                 <Grid style={{ textAlign: 'right', position: 'relative' }}>
-                  <ItemTypography>Side:</ItemTypography>
-                  <ItemTypography>price:</ItemTypography>
-                  <ItemTypography>amount:</ItemTypography>
-                  <ItemTypography style={{ position: 'absolute', bottom: '0' }}>
+                  <ItemTypography theme={theme}>Side:</ItemTypography>
+                  <ItemTypography theme={theme}>price:</ItemTypography>
+                  <ItemTypography theme={theme}>amount:</ItemTypography>
+                  <ItemTypography
+                    theme={theme}
+                    style={{ position: 'absolute', bottom: '0' }}
+                  >
                     Trailing:
                   </ItemTypography>
                 </Grid>
                 <Grid style={{ paddingLeft: '4rem', width: '55%' }}>
-                  <ItemTypography color={getColor(order.side === 'buy')}>
+                  <ItemTypography
+                    theme={theme}
+                    color={getColor(order.side === 'buy', theme)}
+                  >
                     {order.side}
                   </ItemTypography>
-                  <ItemTypography color="#16253D">
+                  <ItemTypography theme={theme} color={theme.palette.dark.main}>
                     {`${
                       entryPoint.order.type === 'limit'
                         ? entryPoint.order.price
@@ -168,7 +186,7 @@ export default ({
                         : 'MARKET'
                     } ${pair[1]}`}
                   </ItemTypography>
-                  <ItemTypography color="#16253D">
+                  <ItemTypography theme={theme} color={theme.palette.dark.main}>
                     {getArrowSymbol(
                       `${entryPoint.order.amount} ${pair[0]}`,
                       `${entryPoint.order.total} ${pair[1]}`,
@@ -176,18 +194,23 @@ export default ({
                     )}
                   </ItemTypography>
                   <Grid container justify="space-between" wrap={'nowrap'}>
-                    <ItemTypography color={getColor(trailing.isTrailingOn)}>
+                    <ItemTypography
+                      theme={theme}
+                      color={getColor(trailing.isTrailingOn, theme)}
+                    >
                       {getOnOffText(trailing.isTrailingOn)}
                     </ItemTypography>
                     {trailing.isTrailingOn && (
                       <>
                         <ItemTypography
+                          theme={theme}
                           style={{ padding: '0 .5rem .65rem .5rem' }}
                         >
                           Deviation:
                         </ItemTypography>
                         <ItemTypography
-                          color="#16253D"
+                          theme={theme}
+                          color={theme.palette.dark.main}
                           style={{ whiteSpace: 'nowrap' }}
                         >
                           {trailing.deviationPercentage}%
@@ -210,33 +233,33 @@ export default ({
                   justify="space-between"
                   style={{ width: '18%' }}
                 >
-                  <TitleTypography>hedge:</TitleTypography>
-                  <TitleTypography
+                  <TitleTypography theme={theme}>hedge:</TitleTypography>
+                  <TitleTypography theme={theme}
                     style={{ color: getColor(entryPoint.order.isHedgeOn) }}
                   >
                     {getOnOffText(entryPoint.order.isHedgeOn)}
                   </TitleTypography>
                 </Grid>
-                <EditButton onClick={() => handleOpenEditPopup('hedge')}>
+                <EditButton theme={theme} onClick={() => handleOpenEditPopup('hedge')}>
                   edit
                 </EditButton>
               </Grid>
               <Grid container style={{ padding: '1rem 4.5rem' }}>
                 <Grid style={{ textAlign: 'right' }}>
-                  <ItemTypography>Side:</ItemTypography>
-                  <ItemTypography>amount:</ItemTypography>
-                  <ItemTypography>leverage:</ItemTypography>
+                  <ItemTypography theme={theme}>Side:</ItemTypography>
+                  <ItemTypography theme={theme}>amount:</ItemTypography>
+                  <ItemTypography theme={theme}>leverage:</ItemTypography>
                 </Grid>
                 <Grid style={{ paddingLeft: '4rem', width: '55%' }}>
-                  <ItemTypography
+                  <ItemTypography theme={theme}
                     color={getColor(entryPoint.order.hedgeSide !== 'short')}
                   >
                     {entryPoint.order.hedgeSide}
                   </ItemTypography>
-                  <ItemTypography color="#16253D">
+                  <ItemTypography theme={theme} color={theme.palette.dark.main}>
                     {entryPoint.order.hedgePrice}
                   </ItemTypography>
-                  <ItemTypography color="#16253D">
+                  <ItemTypography theme={theme} color={theme.palette.dark.main}>
                     X{entryPoint.order.hedgeIncrease}
                   </ItemTypography>
                 </Grid>
@@ -254,14 +277,22 @@ export default ({
                   justify="space-between"
                   style={{ width: '30%' }}
                 >
-                  <TitleTypography>take a profit:</TitleTypography>
+                  <TitleTypography theme={theme}>
+                    take a profit:
+                  </TitleTypography>
                   <TitleTypography
-                    style={{ color: getColor(takeProfit.isTakeProfitOn) }}
+                    theme={theme}
+                    style={{
+                      color: getColor(takeProfit.isTakeProfitOn, theme),
+                    }}
                   >
                     {getOnOffText(takeProfit.isTakeProfitOn)}
                   </TitleTypography>
                 </Grid>
-                <EditButton onClick={() => handleOpenEditPopup('takeProfit')}>
+                <EditButton
+                  theme={theme}
+                  onClick={() => handleOpenEditPopup('takeProfit')}
+                >
                   edit
                 </EditButton>
               </Grid>
@@ -269,9 +300,12 @@ export default ({
                 <Grid style={{ textAlign: 'right' }}>
                   {!takeProfit.trailingTAP.isTrailingOn && (
                     <>
-                      <ItemTypography>split target:</ItemTypography>
+                      <ItemTypography theme={theme}>
+                        split target:
+                      </ItemTypography>
                       {takeProfit.splitTargets.isSplitTargetsOn && (
                         <ItemTypography
+                          theme={theme}
                           style={{
                             paddingBottom: `${takeProfit.splitTargets.targets
                               .length *
@@ -285,28 +319,32 @@ export default ({
                     </>
                   )}
                   {!takeProfit.splitTargets.isSplitTargetsOn && (
-                    <ItemTypography>trailing:</ItemTypography>
+                    <ItemTypography theme={theme}>trailing:</ItemTypography>
                   )}
                   {!takeProfit.splitTargets.isSplitTargetsOn &&
                     takeProfit.trailingTAP.isTrailingOn && (
-                      <ItemTypography>deviation:</ItemTypography>
+                      <ItemTypography theme={theme}>deviation:</ItemTypography>
                     )}
                   {!takeProfit.splitTargets.isSplitTargetsOn &&
                     !takeProfit.trailingTAP.isTrailingOn && (
-                      <ItemTypography>price:</ItemTypography>
+                      <ItemTypography theme={theme}>price:</ItemTypography>
                     )}
-                  {/* <ItemTypography>timeout:</ItemTypography>
+                  {/* <ItemTypography theme={theme}>timeout:</ItemTypography>
                   {takeProfit.timeout.isTimeoutOn && (
                     <>
-                      <ItemTypography>when profit:</ItemTypography>
-                      <ItemTypography>when in profit:</ItemTypography>
+                      <ItemTypography theme={theme}>when profit:</ItemTypography>
+                      <ItemTypography theme={theme}>when in profit:</ItemTypography>
                     </>
                   )} */}
                 </Grid>
                 <Grid style={{ paddingLeft: '4rem', width: '55%' }}>
                   {!takeProfit.trailingTAP.isTrailingOn && (
                     <ItemTypography
-                      color={getColor(takeProfit.splitTargets.isSplitTargetsOn)}
+                      theme={theme}
+                      color={getColor(
+                        takeProfit.splitTargets.isSplitTargetsOn,
+                        theme
+                      )}
                     >
                       {getOnOffText(takeProfit.splitTargets.isSplitTargetsOn)}
                     </ItemTypography>
@@ -314,7 +352,7 @@ export default ({
 
                   {takeProfit.splitTargets.isSplitTargetsOn &&
                     !takeProfit.trailingTAP.isTrailingOn && (
-                      <ItemTypography>
+                      <ItemTypography theme={theme}>
                         <InputRowContainer padding=".2rem .5rem">
                           <TargetTitle style={{ width: '50%' }}>
                             price
@@ -335,7 +373,10 @@ export default ({
                               style={{ borderBottom: '.1rem solid #e0e5ec' }}
                             >
                               <TargetValue
-                                style={{ width: '50%', color: getColor(true) }}
+                                style={{
+                                  width: '50%',
+                                  color: getColor(true, theme),
+                                }}
                               >
                                 +{target.price}%
                               </TargetValue>
@@ -349,7 +390,11 @@ export default ({
                     )}
                   {!takeProfit.splitTargets.isSplitTargetsOn && (
                     <ItemTypography
-                      color={getColor(takeProfit.trailingTAP.isTrailingOn)}
+                      theme={theme}
+                      color={getColor(
+                        takeProfit.trailingTAP.isTrailingOn,
+                        theme
+                      )}
                     >
                       {getOnOffText(takeProfit.trailingTAP.isTrailingOn)}
                     </ItemTypography>
@@ -357,19 +402,25 @@ export default ({
 
                   {!takeProfit.splitTargets.isSplitTargetsOn &&
                     takeProfit.trailingTAP.isTrailingOn && (
-                      <ItemTypography color="#16253D">
+                      <ItemTypography
+                        theme={theme}
+                        color={theme.palette.dark.main}
+                      >
                         {takeProfit.trailingTAP.deviationPercentage} %
                       </ItemTypography>
                     )}
 
                   {!takeProfit.splitTargets.isSplitTargetsOn &&
                     !takeProfit.trailingTAP.isTrailingOn && (
-                      <ItemTypography color={getColor(true)}>
+                      <ItemTypography
+                        theme={theme}
+                        color={getColor(true, theme)}
+                      >
                         {takeProfit.pricePercentage} %
                       </ItemTypography>
                     )}
 
-                  {/* <ItemTypography
+                  {/* <ItemTypography theme={theme}
                     color={getColor(takeProfit.timeout.isTimeoutOn)}
                   >
                     {getOnOffText(takeProfit.timeout.isTimeoutOn)}
@@ -377,12 +428,12 @@ export default ({
 
                   {takeProfit.timeout.isTimeoutOn && (
                     <>
-                      <ItemTypography color="#16253D">
+                      <ItemTypography theme={theme} color={theme.palette.dark.main}>
                         {`${takeProfit.timeout.whenProfitSec} ${
                           takeProfit.timeout.whenProfitMode
                         }`}
                       </ItemTypography>
-                      <ItemTypography color="#16253D">
+                      <ItemTypography theme={theme} color={theme.palette.dark.main}>
                         {`${takeProfit.timeout.whenProfitableSec} ${
                           takeProfit.timeout.whenProfitableMode
                         }`}
@@ -404,46 +455,56 @@ export default ({
                   justify="space-between"
                   style={{ width: '25%' }}
                 >
-                  <TitleTypography>stop loss:</TitleTypography>
+                  <TitleTypography theme={theme}>stop loss:</TitleTypography>
                   <TitleTypography
-                    style={{ color: getColor(stopLoss.isStopLossOn) }}
+                    theme={theme}
+                    style={{ color: getColor(stopLoss.isStopLossOn, theme) }}
                   >
                     {getOnOffText(stopLoss.isStopLossOn)}
                   </TitleTypography>
                 </Grid>
-                <EditButton onClick={() => handleOpenEditPopup('stopLoss')}>
+                <EditButton
+                  theme={theme}
+                  onClick={() => handleOpenEditPopup('stopLoss')}
+                >
                   edit
                 </EditButton>
               </Grid>
               <Grid container style={{ padding: '1rem 1.6rem 3rem 1.6rem' }}>
                 <Grid style={{ textAlign: 'right' }}>
-                  <ItemTypography>price:</ItemTypography>
-                  <ItemTypography>timeout:</ItemTypography>
+                  <ItemTypography theme={theme}>price:</ItemTypography>
+                  <ItemTypography theme={theme}>timeout:</ItemTypography>
                   {stopLoss.timeout.isTimeoutOn && (
                     <>
-                      {/* <ItemTypography>when loss:</ItemTypography> */}
-                      <ItemTypography>when in loss:</ItemTypography>{' '}
+                      {/* <ItemTypography theme={theme}>when loss:</ItemTypography> */}
+                      <ItemTypography theme={theme}>
+                        when in loss:
+                      </ItemTypography>{' '}
                     </>
                   )}
-                  <ItemTypography>forced stop:</ItemTypography>
+                  <ItemTypography theme={theme}>forced stop:</ItemTypography>
                 </Grid>
                 <Grid style={{ paddingLeft: '5rem' }}>
-                  <ItemTypography color={getColor(false)}>
+                  <ItemTypography theme={theme} color={getColor(false, theme)}>
                     -{stopLoss.pricePercentage}%
                   </ItemTypography>
                   <ItemTypography
-                    color={getColor(stopLoss.timeout.isTimeoutOn)}
+                    theme={theme}
+                    color={getColor(stopLoss.timeout.isTimeoutOn, theme)}
                   >
                     {getOnOffText(stopLoss.timeout.isTimeoutOn)}
                   </ItemTypography>
                   {stopLoss.timeout.isTimeoutOn && (
                     <>
-                      {/* <ItemTypography color="#16253D">
+                      {/* <ItemTypography theme={theme} color={theme.palette.dark.main}>
                         {`${stopLoss.timeout.whenLossSec} ${
                           stopLoss.timeout.whenLossMode
                         }`}
                       </ItemTypography> */}
-                      <ItemTypography color="#16253D">
+                      <ItemTypography
+                        theme={theme}
+                        color={theme.palette.dark.main}
+                      >
                         {`${stopLoss.timeout.whenLossableSec} ${
                           stopLoss.timeout.whenLossableMode
                         }`}
@@ -451,7 +512,8 @@ export default ({
                     </>
                   )}
                   <ItemTypography
-                    color={getColor(stopLoss.forcedStop.isForcedStopOn)}
+                    theme={theme}
+                    color={getColor(stopLoss.forcedStop.isForcedStopOn, theme)}
                   >
                     {`${getOnOffText(stopLoss.forcedStop.isForcedStopOn)} / ${
                       stopLoss.forcedStop.pricePercentage

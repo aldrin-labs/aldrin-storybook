@@ -824,7 +824,7 @@ export const combineActiveTradesTable = ({
         entryPrice: {
           render: entryPrice ? (
             <SubColumnValue theme={theme}>
-              {entryPrice} {pairArr[1]}
+              {stripDigitPlaces(entryPrice, 8)} {pairArr[1]}
             </SubColumnValue>
           ) : !!entryDeviation ? (
             <SubColumnValue theme={theme}>
@@ -1000,10 +1000,10 @@ export const combineActiveTradesTable = ({
                 margin="0 0 .4rem 0"
                 borderRadius=".8rem"
                 btnColor={theme.palette.white.main}
-                borderColor={theme.palette.blue.background}
-                backgroundColor={theme.palette.blue.background}
+                borderColor={theme.palette.blue.main}
+                backgroundColor={theme.palette.blue.main}
                 hoverColor={theme.palette.white.main}
-                hoverBackground={theme.palette.blue.background}
+                hoverBackground={theme.palette.blue.main}
                 transition={'all .4s ease-out'}
                 onClick={(e) => {
                   e.stopPropagation()
@@ -1026,8 +1026,8 @@ export const combineActiveTradesTable = ({
                 btnColor={theme.palette.white.main}
                 borderColor={red.main}
                 backgroundColor={red.main}
-                hoverColor={red.main}
-                hoverBackground={theme.palette.white.main}
+                hoverColor={theme.palette.white.main}
+                hoverBackground={red.main}
                 transition={'all .4s ease-out'}
                 onClick={(e) => {
                   e.stopPropagation()

@@ -1,7 +1,6 @@
 import React from 'react'
 import { compose } from 'recompose'
 import { withRouter } from 'react-router-dom'
-
 // https://material-ui.com/customization/css-in-js/#other-html-element
 import JssProvider from 'react-jss/lib/JssProvider'
 import { create } from 'jss'
@@ -19,7 +18,6 @@ jss.options.insertionPoint = document.getElementById('jss-insertion-point')
 
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Footer from '@sb/components/Footer'
-
 import AnimatedNavBar from '@sb/components/NavBar/AnimatedNavBar'
 import ThemeWrapper from './ThemeWrapper/ThemeWrapper'
 import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
@@ -32,6 +30,7 @@ import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 import { syncStorage } from '@storage'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
+import { useQuery } from 'react-apollo'
 
 const version = `10.5.39`
 const currentVersion = localStorage.getItem('version')
@@ -44,16 +43,18 @@ const AppRaw = ({
   children,
   getViewModeQuery,
   getThemeModeQuery,
+  getChartDataQuery,
   location: { pathname: currentPage, search },
 }: any) => {
-  const themeMode =
-    getThemeModeQuery &&
-    getThemeModeQuery.app &&
-    getThemeModeQuery.app.themeMode
+  const isChartPage = /chart/.test(currentPage)
+
+  const themeMode = isChartPage
+    ? getThemeModeQuery &&
+      getThemeModeQuery.app &&
+      getThemeModeQuery.app.themeMode
+    : 'light'
   const chartPageView =
     getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
-
-  const isChartPage = /chart/.test(currentPage)
 
   const fullscreen: boolean = isChartPage && chartPageView !== 'default'
   const showFooter = currentPage !== '/registration'
@@ -76,7 +77,7 @@ const AppRaw = ({
   return (
     <ApolloPersistWrapper>
       <JssProvider jss={jss} generateClassName={generateClassName}>
-        <ThemeWrapper themeMode={themeMode}>
+        <ThemeWrapper themeMode={themeMode} isChartPage={isChartPage}>
           <SnackbarWrapper>
             <CssBaseline />
             <FontStyle />
@@ -109,9 +110,11 @@ export const App = compose(
   queryRendererHoc({
     query: GET_VIEW_MODE,
     name: 'getViewModeQuery',
+    fetchPolicy: 'cache-and-network',
   }),
   queryRendererHoc({
     query: GET_THEME_MODE,
     name: 'getThemeModeQuery',
+    fetchPolicy: 'cache-and-network',
   })
 )(AppRaw)

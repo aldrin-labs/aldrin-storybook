@@ -394,15 +394,10 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     const {
       tab,
       theme,
-      handleTabChange,
       show,
       page,
       perPage,
       marketType,
-      selectedKey,
-      canceledOrders,
-      currencyPair,
-      arrayOfMarketIds,
       allKeys,
       specificPair,
       handleChangePage,
@@ -410,12 +405,6 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       getOpenOrderHistoryQuery,
       handleToggleAllKeys,
       handleToggleSpecificPair,
-      showAllPositionPairs,
-      showAllOpenOrderPairs,
-      showAllSmartTradePairs,
-      showPositionsFromAllAccounts,
-      showOpenOrdersFromAllAccounts,
-      showSmartTradesFromAllAccounts,
     } = this.props
 
     if (!show) {
@@ -465,6 +454,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
             width: 'calc(100%)',
             backgroundColor: theme.palette.white.background,
             border: theme.palette.border.main,
+            borderRight: 0,
           },
         }}
         tableStyles={{

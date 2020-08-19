@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Paper, MenuItem, Button } from '@material-ui/core'
 
 export const StyledLink = styled(NavLink)`
-  color: #7284a0;
+  color: ${(props) => props.theme.palette.grey.text};
   padding: 1.5rem 0 1.5rem 10%;
   font-size: 1.2rem;
   display: flex;
@@ -12,11 +12,11 @@ export const StyledLink = styled(NavLink)`
   border-radius: 0rem;
   text-decoration: none;
   width: 100%;
-  border-bottom: 0.1rem solid #e0e5ec;
+  border-bottom: ${(props) => props.theme.palette.border.main};
 
   &:hover {
-    background-color: #e0e5ec;
-    color: #0b1fd1;
+    background-color: ${(props) => props.theme.palette.grey.border};
+    color: ${(props) => props.theme.palette.blue.light};
   }
 
   @media (max-width: 1400px) {
@@ -56,7 +56,7 @@ export const StyledDropdown = styled.div`
   padding: 0rem 0.5rem; */
   width: 14rem;
   height: 100%;
-  border-left: 0.1rem solid #e0e5ec;
+  border-left: ${(props) => props.theme.palette.border.main};
 
   @media only screen and (max-width: 1400px) {
     width: 17rem;
@@ -82,8 +82,8 @@ export const StyledPaper = styled(Paper)`
     width: calc(100% + 0.15rem);
     height: auto;
     box-shadow: 0px 8px 16px rgba(10, 19, 43, 0.1);
-    border: 1px solid #e0e5ec;
-    background: #fefefe;
+    border: ${(props) => props.theme.palette.border.main};
+    background: ${(props) => props.theme.palette.white.background};
     transform: translateX(-50%);
     border-radius: 0rem;
     /* border-top-left-radius: 0;
@@ -104,6 +104,8 @@ export const StyledMenuItem = styled(MenuItem)`
   /* padding: 0.3rem 0 0.3rem 0.4rem; */
   padding: 0;
   height: auto;
+  color: ${(props) => props.theme.palette.grey.light};
+  background: ${(props) => props.theme.palette.white.background};
 
   svg {
     font-size: 14px;

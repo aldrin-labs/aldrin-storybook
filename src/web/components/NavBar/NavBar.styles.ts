@@ -19,7 +19,12 @@ export const Nav = styled(AppBar)`
     position: unset;
     box-shadow: none;
     /* padding: 0 3rem 0 6rem; */
-    background-color: #f9fbfd;
+    background-color: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.grey &&
+        props.theme.palette.grey.cream) ||
+      '#f9fbfd'};
     @media only screen and (max-width: 1024px) {
       /* padding: 0 2rem 0 4rem; */
     }
@@ -27,7 +32,12 @@ export const Nav = styled(AppBar)`
 `
 
 export const StyledToolbar = styled(Toolbar)`
-  border-bottom: 0.1rem solid #e0e5ec;
+  border-bottom: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.border &&
+      props.theme.palette.border.main) ||
+    '.1rem solid #e0e5ec'};
   height: 100%;
   min-height: auto;
   padding-right: 0;
@@ -56,8 +66,8 @@ export const NavLinkButtonWrapper = styled.div`
   padding: 0;
   height: 100%;
   width: 14rem;
-  color: #7284a0;
-  border-left: 0.1rem solid #e0e5ec;
+  color: ${(props) => props.theme.palette.grey.text};
+  border-left: ${(props) => props.theme.palette.border.main};
   /* border-right: 0.1rem solid #e0e5ec; */
 
   @media only screen and (max-width: 1400px) {
@@ -75,7 +85,12 @@ export const NavBarWrapper = styled(Grid)`
 `
 
 export const NavBreadcrumbTypography = styled(Typography)`
-  color: #16253d;
+  color: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.dark &&
+      props.theme.palette.dark.main) ||
+    '#16253d'};
   font-weight: bold;
   text-transform: uppercase;
   border-left: 0;

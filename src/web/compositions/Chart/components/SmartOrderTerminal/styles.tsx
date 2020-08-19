@@ -24,8 +24,9 @@ export const TerminalHeader = styled.div`
   padding: ${(props: HeaderProperties) => props.padding || '.8rem 1.5rem'};
   margin: ${(props: HeaderProperties) => props.margin || '0'};
 
-  background: #f2f4f6;
-  border: 0.1rem solid #e0e5ec;
+  background: ${(props) => props.theme.palette.grey.main};
+  border: ${(props) => props.theme.palette.border.main};
+  border-top: 0;
   border-radius: 0.2rem;
 `
 
@@ -33,7 +34,7 @@ export const HeaderLabel = styled.label`
   font-size: 1rem;
   font-weight: bold;
   text-transform: uppercase;
-  color: #16253d;
+  color: ${(props) => props.theme.palette.dark.main};
   border-bottom: 0.1rem dashed #5c8cea;
   cursor: pointer;
 `
@@ -42,17 +43,17 @@ export const HeaderTitle = styled.span`
   font-size: 1rem;
   font-weight: bold;
   text-transform: uppercase;
-  color: #16253d;
+  color: ${(props) => props.theme.palette.dark.main};
 `
 
 export const BlockHeader = styled(HeaderTitle)`
-  color: #7284a0;
+  color: ${(props) => props.theme.palette.grey.light};
   font-size: 1.5rem;
   letter-spacing: 0.1rem;
 `
 
 export const InputTitle = styled(HeaderTitle)`
-  color: #7284a0;
+  color: ${(props) => props.theme.palette.grey.light};
   margin-right: 1rem;
 `
 
@@ -60,7 +61,7 @@ export const TimeoutTitle = styled(HeaderTitle)`
   font-size: 1.1rem;
   text-transform: capitalize;
   border: none;
-  color: #7284a0;
+  color: ${(props) => props.theme.palette.grey.light};
 `
 
 export const TargetValue = styled(HeaderTitle)`
@@ -68,7 +69,7 @@ export const TargetValue = styled(HeaderTitle)`
 `
 
 export const TargetTitle = styled(TargetValue)`
-  color: #7284a0;
+  color: ${(props) => props.theme.palette.grey.light};
   letter-spacing: 0.1rem;
 `
 
@@ -83,7 +84,8 @@ export const TerminalBlock = styled(({ borderRight, ...rest }) => (
 ))`
   width: ${(props: BlockProperties) => props.width};
   padding: ${(props) => props.padding || '0rem 1rem 0rem 1.2rem'};
-  border-right: ${(props) => props.borderRight || '0.1rem solid #abbad1'};
+  border-right: ${(props) =>
+    props.borderRight || props.theme.palette.border.main};
   position: relative;
   overflow: hidden scroll;
   height: 100%;
@@ -94,7 +96,7 @@ export const FieldsContainer = styled.div`
 `
 
 export const SubBlocksContainer = styled.div`
-  width: 50%;
+  width: ${(props) => props.width || '50%'};
   border-right: ${(props) => props.needBorder && '.1rem solid #e0e5ec'};
   padding-right: 0.4rem;
 `
@@ -145,20 +147,24 @@ export const BeforeCharacter = styled.span`
 `
 
 export const AdditionalSettingsButton = styled(
-  ({ isActive, children, ...rest }) => (
+  ({ isActive, children, theme, ...rest }) => (
     <BtnCustom
       btnWidth="30%"
       height={'2.5rem'}
       fontSize="1.2rem"
       fontWeight="normal"
       padding="0"
-      borderRadius=".8rem"
-      borderColor={isActive ? '#5C8CEA' : '#E0E5EC'}
-      btnColor={isActive ? '#fff' : '#7284A0'}
-      backgroundColor={isActive ? '#5C8CEA' : '#F2F4F6'}
-      hoverColor={'#fff'}
-      hoverBorderColor={'#5C8CEA'}
-      hoverBackground={'#5C8CEA'}
+      borderRadius="0"
+      borderColor={
+        isActive ? theme.palette.blue.btnBackground : theme.palette.grey.border
+      }
+      btnColor={isActive ? theme.palette.white.main : theme.palette.grey.text}
+      backgroundColor={
+        isActive ? theme.palette.blue.btnBackground : theme.palette.grey.main
+      }
+      hoverColor={theme.palette.white.main}
+      hoverBorderColor={theme.palette.blue.btnBackground}
+      hoverBackground={theme.palette.blue.btnBackground}
       transition={'all .25s ease-out'}
       textTransform="none"
       boxShadow={'0px .2rem .3rem rgba(8, 22, 58, 0.15)'}

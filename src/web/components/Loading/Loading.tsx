@@ -10,7 +10,7 @@ const RawLoading = ({
   margin = 0,
   centerAligned = false,
   theme,
-  style
+  style,
 }: {
   color?: string
   size?: number
@@ -20,6 +20,7 @@ const RawLoading = ({
   style?: CSSProperties
 }) => (
   <SpinnerContainer
+    theme={theme}
     margin={margin}
     centerAligned={centerAligned}
     data-e2e="Loadig"

@@ -949,11 +949,9 @@ const CustomTable = (props: Props) => {
         )} */}
       </StyledTable>
       {enabledPagination && (
-        <Grow
+        <div
           // we show pagination only when you pass pagination.enabled = true
-          in={pagination.enabled}
-          mountOnEnter
-          unmountOnExit
+          style={{ display: pagination.enabled ? 'flex' : 'none' }}
         >
           <div
             style={{
@@ -965,6 +963,7 @@ const CustomTable = (props: Props) => {
               borderBottomLeftRadius: 'inherit',
               borderBottomRightRadius: 'inherit',
               border: '.1rem solid #e0e5ec',
+              borderRight: '0',
               display: 'flex',
               height: '3rem',
               ...paginationStyles,
@@ -1060,7 +1059,7 @@ const CustomTable = (props: Props) => {
               ) : null}
             </div>
           </div>
-        </Grow>
+        </div>
       )}
     </Paper>
   )

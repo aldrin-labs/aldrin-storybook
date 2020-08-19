@@ -71,7 +71,7 @@ class SharePortfolioPanel extends Component<IProps> {
                 {isUSDCurrently ? 'BTC' : 'USD'}
               </StyledButton> */}
 
-              <PillowButton
+              {/* <PillowButton
                 firstHalfText={'spot'}
                 secondHalfText={'futures'}
                 activeHalf={isSPOTCurrently ? 'first' : 'second'}
@@ -90,7 +90,7 @@ class SharePortfolioPanel extends Component<IProps> {
                   activeHalf={isUSDCurrently ? 'first' : 'second'}
                   changeHalf={onToggleUSDBTC}
                 />
-              )}
+              )} */}
             </Grid>
           </Grid>
         </Grid>

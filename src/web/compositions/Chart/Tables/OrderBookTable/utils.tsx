@@ -15,6 +15,7 @@ import { filterOpenOrders } from '@sb/components/TradingTable/TradingTable.utils
 import RedArrow from '@icons/redArrow.png'
 import GreenArrow from '@icons/greenArrow.png'
 import { isDataForThisMarket } from '@sb/components/TradingTable/TradingTable.utils'
+import { Theme } from '@material-ui/core'
 
 // ${rowStyles}
 // ${(props: { style: CSSProperties }) =>
@@ -41,6 +42,7 @@ type IProps = {
   index: number
   key?: string
   rowData?: any
+  theme: Theme
   style?: CSSProperties
   openOrderHistory: { price: number }[]
   onRowClick?: ({
@@ -108,12 +110,17 @@ export default function defaultRowRenderer({
   aggregation = 0.00000001,
   openOrderHistory = [],
   amountForBackground,
+  theme,
 }: IProps) {
   const a11yProps = { 'aria-rowindex': index + 1 }
   const colorStyles =
     rowData.fall !== undefined
       ? // ? { color: rowData.fall ? '#DD6956' : '#29AC80' }
-        { color: rowData.fall ? '#FF3716' : '#13901F' }
+        {
+          color: rowData.fall
+            ? theme.palette.red.main
+            : theme.palette.green.main,
+        }
       : {}
   let needHighlightPrice = false
   let needHighlightStopPrice = false
@@ -245,10 +252,8 @@ export default function defaultRowRenderer({
         style={{
           backgroundColor:
             side === 'bids' || rowData.fall === 0
-              ? // ? 'rgba(149, 220, 160, 0.31)'
-                // : 'rgba(220, 157, 149, 0.31)',
-                '#AAF2C9'
-              : '#FFD1D1',
+              ? theme.palette.orderbook.greenBackground
+              : theme.palette.orderbook.redBackground,
           transform: `translateX(calc(100% - ${orderPercentage}%))`,
           ...(rowData.fall === undefined
             ? {}

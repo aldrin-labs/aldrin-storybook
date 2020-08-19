@@ -39,6 +39,7 @@ const styles1 = (theme) => ({
   message: {
     display: 'flex',
     alignItems: 'center',
+    color: theme.palette.dark.main,
   },
 })
 
