@@ -30,6 +30,7 @@ import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 import { syncStorage } from '@storage'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
+import { useQuery } from 'react-apollo'
 
 const version = `10.5.39`
 const currentVersion = localStorage.getItem('version')
@@ -72,8 +73,6 @@ const AppRaw = ({
     const code = searchParamsObject['code']
     syncStorage.setItem('code', code)
   }
-
-  console.log('getThemeModeQuery', getThemeModeQuery)
 
   return (
     <ApolloPersistWrapper>

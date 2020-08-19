@@ -380,7 +380,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
   componentDidUpdate(prevProps: IProps) {
     if (
       prevProps.priceFromOrderbook !== this.props.priceFromOrderbook &&
-      this.props.priceFromOrderbook && this.state.entryPoint.order.type === "limit"
+      this.props.priceFromOrderbook &&
+      this.state.entryPoint.order.type === 'limit'
     ) {
       this.updateSubBlockValue(
         'entryPoint',
@@ -3057,34 +3058,39 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                                     })
                                   }}
                                 />
-                                <BlueSlider
-                                  theme={theme}
-                                  value={stopLoss.forcedStop.pricePercentage}
-                                  sliderContainerStyles={{
-                                    width: 'calc(50%)',
-                                    margin: '0 .8rem 0 .8rem',
-                                  }}
-                                  onChange={(value) => {
-                                    if (
-                                      stopLoss.forcedStop.pricePercentage >
-                                        100 &&
-                                      value === 100
-                                    ) {
-                                      return
-                                    }
+                                {stopLoss.external &&
+                                  stopLoss.forcedStop.mandatoryForcedLoss && (
+                                    <BlueSlider
+                                      theme={theme}
+                                      value={
+                                        stopLoss.forcedStop.pricePercentage
+                                      }
+                                      sliderContainerStyles={{
+                                        width: 'calc(50%)',
+                                        margin: '0 .8rem 0 .8rem',
+                                      }}
+                                      onChange={(value) => {
+                                        if (
+                                          stopLoss.forcedStop.pricePercentage >
+                                            100 &&
+                                          value === 100
+                                        ) {
+                                          return
+                                        }
 
-                                    this.updateSubBlockValue(
-                                      'stopLoss',
-                                      'forcedStop',
-                                      'pricePercentage',
-                                      value
-                                    )
+                                        this.updateSubBlockValue(
+                                          'stopLoss',
+                                          'forcedStop',
+                                          'pricePercentage',
+                                          value
+                                        )
 
-                                    this.updateStopLossAndTakeProfitPrices({
-                                      forcedStopPercentage: value,
-                                    })
-                                  }}
-                                />
+                                        this.updateStopLossAndTakeProfitPrices({
+                                          forcedStopPercentage: value,
+                                        })
+                                      }}
+                                    />
+                                  )}
                               </InputRowContainer>
                             </FormInputContainer>
                           </SubBlocksContainer>

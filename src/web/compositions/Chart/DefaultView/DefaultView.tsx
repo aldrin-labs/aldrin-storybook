@@ -14,6 +14,7 @@ import CardsPanel from '../components/CardsPanel'
 import { GuestMode } from '../components/GuestMode/GuestMode'
 import ChartCardHeader from '@sb/components/ChartCardHeader'
 import { HideArrow } from '../components/HideArrow/HideArrow'
+import { isEqual } from 'lodash'
 
 const TerminalContainer = ({
   isDefaultTerminalViewMode,
@@ -397,7 +398,8 @@ export const DefaultView = React.memo(DefaultViewComponent, (prev, next) => {
     prev.theme.palette.type === next.theme.palette.type &&
     prev.layout.hideDepthChart === next.layout.hideDepthChart &&
     prev.layout.hideOrderbook === next.layout.hideOrderbook &&
-    prev.layout.hideTradeHistory === next.layout.hideTradeHistory
+    prev.layout.hideTradeHistory === next.layout.hideTradeHistory &&
+    isEqual(prev.theme, next.theme)
     // false
   )
 })

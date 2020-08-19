@@ -5,6 +5,7 @@ import { withTheme } from '@material-ui/styles'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { client } from '@core/graphql/apolloClient'
+import { isEqual } from 'lodash'
 // import { Grid, Hidden } from '@material-ui/core'
 
 // import { CardsPanel } from './components'
@@ -241,9 +242,6 @@ function ChartPageComponent(props: any) {
     ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
     : { keyId: '', hedgeMode: false, isFuturesWarsKey: false }
 
-  console.log('chart page rerender', themeMode)
-  console.log('reda 2', client.readQuery({ query: GET_THEME_MODE }))
-
   return (
     <MainContainer fullscreen={view !== 'default'}>
       <GlobalStyles />
@@ -361,8 +359,8 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
     themeChanged &&
     prev.theme.palette.type === next.theme.palette.type &&
     prev.getChartDataQuery.app.themeMode ===
-      next.getChartDataQuery.app.themeMode
-    // false
+      next.getChartDataQuery.app.themeMode &&
+    isEqual(prev.theme, next.theme)
   )
 })
 

@@ -17,6 +17,7 @@ import { changeHedgeModeInCache } from '@core/utils/tradingComponent.utils'
 import { checkLoginStatus } from '@core/utils/loginUtils'
 import { PanelWrapper, CustomCard } from '../Chart.styles'
 import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
+import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 
 const selectStyles = (theme: Theme) => ({
   height: '100%',
@@ -227,7 +228,10 @@ export const CardsPanel = ({
           hedgeMode={hedgeMode}
           changePositionModeWithStatus={changePositionModeWithStatus}
           themeMode={themeMode}
-          toggleThemeMode={toggleThemeMode}
+          toggleThemeMode={async () => {
+            await toggleThemeMode()
+            theme.updateMode(themeMode === 'dark' ? 'light' : 'dark')
+          }}
           hideDepthChart={hideDepthChart}
           hideOrderbook={hideOrderbook}
           hideTradeHistory={hideTradeHistory}
@@ -288,6 +292,8 @@ export const CardsPanel = ({
 
 export default compose(
   withApolloPersist,
-  graphql(TOGGLE_THEME_MODE, { name: 'toggleThemeMode' }),
+  graphql(TOGGLE_THEME_MODE, {
+    name: 'toggleThemeMode',
+  }),
   graphql(changePositionMode, { name: 'changePositionModeMutation' })
 )(CardsPanel)
