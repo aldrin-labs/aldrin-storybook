@@ -229,8 +229,9 @@ export const CardsPanel = ({
           changePositionModeWithStatus={changePositionModeWithStatus}
           themeMode={themeMode}
           toggleThemeMode={async () => {
-            await toggleThemeMode()
             theme.updateMode(themeMode === 'dark' ? 'light' : 'dark')
+            await toggleThemeMode()
+            await persistorInstance.persist()
           }}
           hideDepthChart={hideDepthChart}
           hideOrderbook={hideOrderbook}
