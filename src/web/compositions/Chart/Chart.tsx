@@ -237,7 +237,6 @@ function ChartPageComponent(props: any) {
       125
   }
 
-  const themeMode = props.getThemeModeQuery && props.getThemeModeQuery.getAccountSettings && props.getThemeModeQuery.getAccountSettings.themeMode || 'light'
   const arrayOfMarketIds = marketByMarketType.map((el) => el._id)
   const selectedKey = selectedTradingKey
     ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
@@ -312,10 +311,6 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
     return false
   }
 
-  const themeChanged =
-    prev.getChartDataQuery.app.themeMode ===
-    next.getChartDataQuery.app.themeMode
-
   const prevIsPairDataLoading =
     prev.loading ||
     !prev.pairPropertiesQuery.marketByName ||
@@ -357,10 +352,7 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
       next.getChartLayoutQuery.chart.layout.hideOrderbook &&
     prev.getChartLayoutQuery.chart.layout.hideTradeHistory ===
       next.getChartLayoutQuery.chart.layout.hideTradeHistory &&
-    themeChanged &&
     prev.theme.palette.type === next.theme.palette.type &&
-    prev.getThemeModeQuery.getAccountSettings.themeMode ===
-      next.getThemeModeQuery.getAccountSettings.themeMode &&
     isEqual(prev.theme, next.theme)
   )
 })
@@ -371,12 +363,6 @@ export default compose(
   withAuthStatus,
   withTheme(),
   // withAuth,
-  queryRendererHoc({
-    skip: (props: any) => !props.authenticated,
-    query: getThemeMode,
-    name: 'getThemeModeQuery',
-    fetchPolicy: 'cache-and-network',
-  }),
   queryRendererHoc({
     skip: (props: any) => !props.authenticated,
     query: getChartData,
