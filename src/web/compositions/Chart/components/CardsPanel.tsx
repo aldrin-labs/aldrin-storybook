@@ -233,6 +233,10 @@ export const CardsPanel = ({
           changePositionModeWithStatus={changePositionModeWithStatus}
           themeMode={themeMode}
           toggleThemeMode={async () => {
+            if (!authenticated) {
+              return
+            }
+            
             theme.updateMode(themeMode === 'dark' ? 'light' : 'dark')
             await writeQueryData(getThemeMode, {}, { getAccountSettings: { themeMode: themeMode === 'dark' ? 'light' : 'dark', __typename: 'getAccountSettings' }})
             await persistorInstance.persist()

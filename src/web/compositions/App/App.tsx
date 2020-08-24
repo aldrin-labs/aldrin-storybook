@@ -16,6 +16,7 @@ const jss = create(jssPreset())
 jss.options.insertionPoint = document.getElementById('jss-insertion-point')
 //
 
+import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Footer from '@sb/components/Footer'
 import AnimatedNavBar from '@sb/components/NavBar/AnimatedNavBar'
@@ -50,11 +51,7 @@ const AppRaw = ({
 }: any) => {
   const isChartPage = /chart/.test(currentPage)
 
-  const themeMode = isChartPage
-    ? getThemeModeQuery &&
-      getThemeModeQuery.app &&
-      getThemeModeQuery.app.themeMode
-    : 'light'
+  const themeMode = getThemeModeQuery && getThemeModeQuery.getAccountSettings && getThemeModeQuery.getAccountSettings.themeMode || 'light'
   const chartPageView =
     getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
 
@@ -79,7 +76,7 @@ const AppRaw = ({
   return (
     <ApolloPersistWrapper>
       <JssProvider jss={jss} generateClassName={generateClassName}>
-        <ThemeWrapper themeMode={getThemeModeQuery.getAccountSettings.themeMode} isChartPage={isChartPage}>
+        <ThemeWrapper themeMode={themeMode} isChartPage={isChartPage}>
           <SnackbarWrapper>
             <CssBaseline />
             <FontStyle />
@@ -109,6 +106,7 @@ const AppRaw = ({
 
 export const App = compose(
   withRouter,
+  withAuthStatus,
   queryRendererHoc({
     query: GET_VIEW_MODE,
     name: 'getViewModeQuery',
@@ -120,6 +118,7 @@ export const App = compose(
   //   fetchPolicy: 'cache-and-network',
   // }),
   queryRendererHoc({
+    skip: (props: any) => !props.authenticated,
     query: getThemeMode,
     name: 'getThemeModeQuery',
     fetchPolicy: 'cache-and-network',

@@ -237,6 +237,7 @@ function ChartPageComponent(props: any) {
       125
   }
 
+  const themeMode = props.getThemeModeQuery && props.getThemeModeQuery.getAccountSettings && props.getThemeModeQuery.getAccountSettings.themeMode || 'light'
   const arrayOfMarketIds = marketByMarketType.map((el) => el._id)
   const selectedKey = selectedTradingKey
     ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
@@ -261,7 +262,7 @@ function ChartPageComponent(props: any) {
           minSpotNotional={minSpotNotional}
           minFuturesStep={minFuturesStep}
           isPairDataLoading={isPairDataLoading}
-          themeMode={props.getThemeModeQuery.getAccountSettings.themeMode}
+          themeMode={theme.palette.type}
           selectedKey={selectedKey}
           activeExchange={activeExchange}
           terminalViewMode={terminalViewMode}
@@ -371,6 +372,7 @@ export default compose(
   withTheme(),
   // withAuth,
   queryRendererHoc({
+    skip: (props: any) => !props.authenticated,
     query: getThemeMode,
     name: 'getThemeModeQuery',
     fetchPolicy: 'cache-and-network',
