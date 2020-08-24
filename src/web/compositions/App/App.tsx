@@ -26,6 +26,7 @@ import { AppGridLayout, FontStyle } from './App.styles'
 // import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
 import { GlobalStyle } from '@sb/styles/global.styles'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 import { syncStorage } from '@storage'
@@ -45,6 +46,7 @@ const AppRaw = ({
   getThemeModeQuery,
   getChartDataQuery,
   location: { pathname: currentPage, search },
+  ...props
 }: any) => {
   const isChartPage = /chart/.test(currentPage)
 
@@ -77,7 +79,7 @@ const AppRaw = ({
   return (
     <ApolloPersistWrapper>
       <JssProvider jss={jss} generateClassName={generateClassName}>
-        <ThemeWrapper themeMode={themeMode} isChartPage={isChartPage}>
+        <ThemeWrapper themeMode={getThemeModeQuery.getAccountSettings.themeMode} isChartPage={isChartPage}>
           <SnackbarWrapper>
             <CssBaseline />
             <FontStyle />
@@ -112,9 +114,14 @@ export const App = compose(
     name: 'getViewModeQuery',
     fetchPolicy: 'cache-and-network',
   }),
+  // queryRendererHoc({
+  //   query: GET_THEME_MODE,
+  //   name: 'getThemeModeQuery',
+  //   fetchPolicy: 'cache-and-network',
+  // }),
   queryRendererHoc({
-    query: GET_THEME_MODE,
+    query: getThemeMode,
     name: 'getThemeModeQuery',
     fetchPolicy: 'cache-and-network',
-  })
+  }),
 )(AppRaw)
