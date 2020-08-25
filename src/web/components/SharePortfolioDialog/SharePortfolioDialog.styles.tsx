@@ -17,13 +17,14 @@ import SearchUsername from '@core/components/SearchUsername/SearchUsername'
 import { Link } from 'react-router-dom'
 
 export const StyledDialogContent = styled(DialogContent)`
-  border-radius: 20px;
+  border-radius: none;
   border: ${(props) =>
       (props.theme &&
         props.theme.palette &&
         props.theme.palette.border &&
         props.theme.palette.border.main) ||
       '.1rem solid #e0e5ec'};
+  border-top: 0;
   padding: 0 2.4rem 2.4rem;
   font-family: DM Sans;
 

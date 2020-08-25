@@ -198,9 +198,10 @@ export const DefaultViewComponent = (
                 </ChartCardHeader>
                 <SingleChart
                   name=""
+                  themeMode={themeMode}
                   additionalUrl={`/?symbol=${base}/${quote}_${String(
                     marketType
-                  )}&user_id=${id}&theme=${themeMode}`}
+                  )}&user_id=${id}`}
                 />
               </CustomCard>
 

@@ -362,7 +362,7 @@ class MarketStats extends React.PureComponent<IProps> {
                   whiteSpace: 'nowrap',
                 }}
               >
-                {`${fundingRate > 0 ? '+' : '-'} ${(+fundingRate * 100).toFixed(
+                {`${fundingRate > 0 ? '+ ' : ''}${(+fundingRate * 100).toFixed(
                   4
                 )} %`}
               </PanelCardValue>

@@ -136,7 +136,7 @@ export default ({ themeMode, isChartPage, children }) => {
           },
           palette: {
             divider: fade('#748AA1', 0.16),
-            type: themeMode,
+            type: "dark",
             text: {
               primary: '#DBD9E6',
               dark: '#7284A0',
@@ -329,7 +329,7 @@ export default ({ themeMode, isChartPage, children }) => {
           },
           palette: {
             divider: fade('#BCC2CF', 0.5),
-            type: themeMode,
+            type: "light",
             text: {
               primary: fade('#41495E', 0.69),
               dark: '#7284A0',

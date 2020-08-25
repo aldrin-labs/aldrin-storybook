@@ -12,6 +12,7 @@ import { isEqual } from 'lodash'
 import OnlyCharts from './OnlyCharts/OnlyCharts'
 import DefaultView from './DefaultView/StatusWrapper'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
+import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 import { getChartLayout } from '@core/graphql/queries/chart/getChartLayout'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
@@ -149,7 +150,6 @@ function ChartPageComponent(props: any) {
         activeExchange: { name: 'Binance', symbol: 'binance' },
         view: 'default',
       },
-      app: { themeMode } = { themeMode: 'light' },
     },
     getTooltipSettingsQuery: {
       getTooltipSettings = { chartPage: false, chartPagePopup: false },
@@ -261,7 +261,7 @@ function ChartPageComponent(props: any) {
           minSpotNotional={minSpotNotional}
           minFuturesStep={minFuturesStep}
           isPairDataLoading={isPairDataLoading}
-          themeMode={themeMode}
+          themeMode={theme.palette.type}
           selectedKey={selectedKey}
           activeExchange={activeExchange}
           terminalViewMode={terminalViewMode}
@@ -311,10 +311,6 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
     return false
   }
 
-  const themeChanged =
-    prev.getChartDataQuery.app.themeMode ===
-    next.getChartDataQuery.app.themeMode
-
   const prevIsPairDataLoading =
     prev.loading ||
     !prev.pairPropertiesQuery.marketByName ||
@@ -356,10 +352,7 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
       next.getChartLayoutQuery.chart.layout.hideOrderbook &&
     prev.getChartLayoutQuery.chart.layout.hideTradeHistory ===
       next.getChartLayoutQuery.chart.layout.hideTradeHistory &&
-    themeChanged &&
     prev.theme.palette.type === next.theme.palette.type &&
-    prev.getChartDataQuery.app.themeMode ===
-      next.getChartDataQuery.app.themeMode &&
     isEqual(prev.theme, next.theme)
   )
 })

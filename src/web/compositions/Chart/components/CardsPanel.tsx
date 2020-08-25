@@ -18,6 +18,9 @@ import { checkLoginStatus } from '@core/utils/loginUtils'
 import { PanelWrapper, CustomCard } from '../Chart.styles'
 import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
+import { updateThemeMode } from '@core/graphql/mutations/chart/updateThemeMode'
+import { writeQueryData } from '@core/utils/TradingTable.utils'
+import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
 
 const selectStyles = (theme: Theme) => ({
   height: '100%',
@@ -71,6 +74,7 @@ export const CardsPanel = ({
   hideTradeHistory,
   changeChartLayout,
   persistorInstance,
+  updateThemeModeMutation
 }) => {
   const hedgeMode = selectedKey.hedgeMode
 
@@ -229,8 +233,20 @@ export const CardsPanel = ({
           changePositionModeWithStatus={changePositionModeWithStatus}
           themeMode={themeMode}
           toggleThemeMode={async () => {
-            await toggleThemeMode()
+            if (!authenticated) {
+              return
+            }
+            
             theme.updateMode(themeMode === 'dark' ? 'light' : 'dark')
+            await writeQueryData(getThemeMode, {}, { getAccountSettings: { themeMode: themeMode === 'dark' ? 'light' : 'dark', __typename: 'getAccountSettings' }})
+            await persistorInstance.persist()
+            await updateThemeModeMutation({
+              variables: {
+                input: {
+                  themeMode: themeMode === 'dark' ? 'light' : 'dark',
+                }
+              },
+            })
           }}
           hideDepthChart={hideDepthChart}
           hideOrderbook={hideOrderbook}
@@ -295,5 +311,6 @@ export default compose(
   graphql(TOGGLE_THEME_MODE, {
     name: 'toggleThemeMode',
   }),
-  graphql(changePositionMode, { name: 'changePositionModeMutation' })
+  graphql(changePositionMode, { name: 'changePositionModeMutation' }),
+  graphql(updateThemeMode, { name: 'updateThemeModeMutation'}),
 )(CardsPanel)

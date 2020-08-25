@@ -1666,7 +1666,7 @@ export class EditEntryOrderPopup extends React.Component<
             />
           </ClearButton>
         </StyledDialogTitle>
-        <StyledDialogContent id="edit-entry-order-dialog-content">
+        <StyledDialogContent theme={theme} id="edit-entry-order-dialog-content">
           <CustomSwitcher
             theme={theme}
             firstHalfText={'buy'}
