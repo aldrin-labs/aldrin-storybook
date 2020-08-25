@@ -51,7 +51,11 @@ const AppRaw = ({
 }: any) => {
   const isChartPage = /chart/.test(currentPage)
 
-  const themeMode = getThemeModeQuery && getThemeModeQuery.getAccountSettings && getThemeModeQuery.getAccountSettings.themeMode || 'light'
+  const themeMode =
+    (getThemeModeQuery &&
+      getThemeModeQuery.getAccountSettings &&
+      getThemeModeQuery.getAccountSettings.themeMode) ||
+    'light'
   const chartPageView =
     getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
 
@@ -118,9 +122,12 @@ export const App = compose(
   //   fetchPolicy: 'cache-and-network',
   // }),
   queryRendererHoc({
-    skip: (props: any) => !props.authenticated,
+    skip: (props: any) => {
+      console.log('props')
+      return !props.authenticated
+    },
     query: getThemeMode,
     name: 'getThemeModeQuery',
     fetchPolicy: 'cache-and-network',
-  }),
+  })
 )(AppRaw)
