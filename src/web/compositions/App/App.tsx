@@ -123,7 +123,6 @@ export const App = compose(
   // }),
   queryRendererHoc({
     skip: (props: any) => {
-      console.log('props')
       return !props.authenticated
     },
     query: getThemeMode,
