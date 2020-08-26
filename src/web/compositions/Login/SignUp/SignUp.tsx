@@ -141,8 +141,8 @@ const SignUp = ({
         onClose={() => toggleConfirmTermsOfUse(!showConfirmTermsOfUse)}
       />
       <LoginContainer>
-        <Grid container>
-          <WithGoogleButton
+        {/* <Grid container> */}
+          {/* <WithGoogleButton
             onClick={() => {
               isAgreeWithRules
                 ? signUpWithGoogleAndAnalytics()
@@ -153,11 +153,11 @@ const SignUp = ({
               <SvgIcon src={GoogleLogo} width="2rem" height="auto" />
               <WithGoogleButtonText> Sign up with Google</WithGoogleButtonText>
             </Grid>
-          </WithGoogleButton>
-        </Grid>
-        <OrContainerText>
+          </WithGoogleButton> */}
+        {/* </Grid> */}
+        {/* <OrContainerText>
           <OrText>Or</OrText>
-        </OrContainerText>
+        </OrContainerText> */}
         <FormContainer
           action=""
           onSubmit={async (e: React.ChangeEvent<HTMLFormElement>) => {
