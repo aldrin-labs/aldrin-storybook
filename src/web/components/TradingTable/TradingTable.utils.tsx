@@ -2495,7 +2495,8 @@ export const updateOrderHistoryQuerryFunction = (
 
 export const updatePaginatedOrderHistoryQuerryFunction = (
   previous,
-  { subscriptionData }
+  { subscriptionData },
+  enqueueSnackbar
 ) => {
   // console.log(
   //   'updatePaginatedOrderHistoryQuerryFunction subscriptionData',
@@ -2522,6 +2523,25 @@ export const updatePaginatedOrderHistoryQuerryFunction = (
     const oldDataElement =
       prev.getPaginatedOrderHistory.orders[openOrderHasTheSameOrderIndex]
     const newDataElement = subscriptionData.data.listenOrderHistory
+
+    if (
+      oldDataElement.status !== 'filled' &&
+      newDataElement.status === 'filled' &&
+      newDataElement.type !== 'market'
+    ) {
+      enqueueSnackbar(
+        `${
+          newDataElement.type
+            ? `${newDataElement.type
+                .charAt(0)
+                .toUpperCase()}${newDataElement.type.slice(1)} order`
+            : 'Order'
+        } with price ${newDataElement.price} was executed!`,
+        {
+          variant: 'success',
+        }
+      )
+    }
 
     if (
       newDataElement.status !== 'open' &&

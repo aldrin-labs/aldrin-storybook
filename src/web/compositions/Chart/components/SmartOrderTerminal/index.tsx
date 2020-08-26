@@ -402,6 +402,30 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     }
 
     if (prevProps.componentLeverage !== this.props.componentLeverage) {
+      const total = this.state.temp.initialMargin * this.props.componentLeverage
+      const price =
+        this.state.entryPoint.order.type === 'market' &&
+        !this.state.entryPoint.trailing.isTrailingOn
+          ? this.props.price
+          : entryPoint.order.price
+
+      this.updateSubBlockValue(
+        'entryPoint',
+        'order',
+        'total',
+        stripDigitPlaces(total, this.props.marketType === 1 ? 2 : 8)
+      )
+
+      this.updateSubBlockValue(
+        'entryPoint',
+        'order',
+        'amount',
+        stripDigitPlaces(
+          total / price,
+          this.props.marketType === 1 ? this.props.quantityPrecision : 8
+        )
+      )
+
       this.updateSubBlockValue(
         'entryPoint',
         'order',
@@ -420,24 +444,17 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       !this.state.entryPoint.trailing.isTrailingOn
     ) {
       const { price, marketType } = this.props
-
-      const { entryPoint } = this.state
-
-      const total = price * entryPoint.order.amount
+      const total = this.state.temp.initialMargin * this.props.componentLeverage
 
       this.updateSubBlockValue(
         'entryPoint',
         'order',
-        'total',
-        stripDigitPlaces(total, marketType === 1 ? 2 : 8)
+        'amount',
+        stripDigitPlaces(
+          total / this.props.price,
+          marketType === 1 ? this.props.quantityPrecision : 8
+        )
       )
-
-      const newMargin = stripDigitPlaces(
-        (entryPoint.order.amount / entryPoint.order.leverage) * price,
-        2
-      )
-
-      this.updateBlockValue('temp', 'initialMargin', newMargin)
 
       this.updateStopLossAndTakeProfitPrices({
         price,
@@ -982,15 +999,36 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         leverage
                       )
 
-                      this.updateBlockValue(
-                        'temp',
-                        'initialMargin',
+                      const total = this.state.temp.initialMargin * leverage
+
+                      const price =
+                        entryPoint.order.type === 'market' &&
+                        !entryPoint.trailing.isTrailingOn
+                          ? this.props.price
+                          : entryPoint.order.price
+
+                      this.updateSubBlockValue(
+                        'entryPoint',
+                        'order',
+                        'total',
                         stripDigitPlaces(
-                          (priceForCalculate * entryPoint.order.amount) /
-                            leverage,
-                          2
+                          total,
+                          this.props.marketType === 1 ? 2 : 8
                         )
                       )
+
+                      this.updateSubBlockValue(
+                        'entryPoint',
+                        'order',
+                        'amount',
+                        stripDigitPlaces(
+                          total / price,
+                          this.props.marketType === 1
+                            ? this.props.quantityPrecision
+                            : 8
+                        )
+                      )
+
                       this.updateStopLossAndTakeProfitPrices({
                         leverage,
                       })

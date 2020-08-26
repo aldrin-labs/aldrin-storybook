@@ -1,7 +1,7 @@
 import React from 'react'
 import copy from 'clipboard-copy'
 import { withTheme } from '@material-ui/styles'
-
+import { useSnackbar } from 'notistack'
 import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
 import { PaginationBlock } from '../TradingTablePagination'
@@ -257,6 +257,8 @@ const TableDataWrapper = ({ ...props }) => {
     specificPair,
   } = props
 
+  const { enqueueSnackbar } = useSnackbar()
+
   startDate = +startDate
   endDate = +endDate
 
@@ -294,7 +296,12 @@ const TableDataWrapper = ({ ...props }) => {
             ...(!specificPair ? {} : { specificPair: props.currencyPair }),
           },
         },
-        updateQueryFunction: updatePaginatedOrderHistoryQuerryFunction,
+        updateQueryFunction: (prev, data) =>
+          updatePaginatedOrderHistoryQuerryFunction(
+            prev,
+            data,
+            enqueueSnackbar
+          ),
       }}
       {...props}
     />

@@ -253,7 +253,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     }
 
     if (this.props.show !== prevProps.show && this.props.show) {
-      if (this.checkForCachedOrder()) return
+      // if (this.checkForCachedOrder()) return
 
       this.props.ordersHealthcheckMutation({
         variables: {

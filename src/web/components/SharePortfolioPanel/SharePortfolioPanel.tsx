@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
 import { Grid } from '@material-ui/core'
-import { TypographyHeading, StyledButton } from './SharePortfolioPanel.style'
+import {
+  TypographyHeading,
+  StyledButton,
+  StyledLink,
+} from './SharePortfolioPanel.style'
 import SelectPortfolioPeriod from '@sb/components/SelectPortfolioPeriod'
 import { IProps } from './SharePortfolio.types'
 import { MASTER_BUILD } from '@core/utils/config'
@@ -63,34 +67,45 @@ class SharePortfolioPanel extends Component<IProps> {
               />
             </Grid>
             <Grid item style={{ display: 'flex' }}>
-              {/* <StyledButton
-                onClick={onToggleUSDBTC}
-                padding="0.25rem 1rem 0.25rem 1rem"
-                borderRadius={'28px'}
-              >
-                {isUSDCurrently ? 'BTC' : 'USD'}
-              </StyledButton> */}
-
-              {/* <PillowButton
-                firstHalfText={'spot'}
-                secondHalfText={'futures'}
-                activeHalf={isSPOTCurrently ? 'first' : 'second'}
-                changeHalf={() =>
-                  setPageType({
-                    variables: {
-                      pageType: isSPOTCurrently ? 'FUTURES' : 'SPOT',
-                    },
-                  })
-                }
-              />
-              {isSPOTCurrently && (
-                <PillowButton
-                  firstHalfText={'USD'}
-                  secondHalfText={'BTC'}
-                  activeHalf={isUSDCurrently ? 'first' : 'second'}
-                  changeHalf={onToggleUSDBTC}
-                />
-              )} */}
+              {isSPOTCurrently ? (
+                <>
+                  <StyledLink
+                    to="/profile/deposit"
+                    padding="0.5rem 2rem 0.4rem 2rem"
+                    borderRadius={'.8rem'}
+                  >
+                    deposit
+                  </StyledLink>
+                  <StyledLink
+                    to="/profile/withdrawal"
+                    padding=".5rem .8rem 0.4rem .8rem"
+                    borderRadius={'.8rem'}
+                    style={{ marginLeft: '1.3rem' }}
+                  >
+                    withdrawal
+                  </StyledLink>
+                </>
+              ) : (
+                <>
+                  <StyledLink
+                    to="/profile/deposit"
+                    padding="0.5rem 2rem 0.4rem 2rem"
+                    borderRadius={'.8rem'}
+                  >
+                    {/* here should be popup with selector keyId */}
+                    fund
+                  </StyledLink>
+                  <StyledLink
+                    to="/profile/withdrawal"
+                    padding=".5rem .8rem 0.4rem .8rem"
+                    borderRadius={'.8rem'}
+                    style={{ marginLeft: '1.3rem' }}
+                  >
+                    {/* here should be popup with selector keyId */}
+                    refund
+                  </StyledLink>
+                </>
+              )}
             </Grid>
           </Grid>
         </Grid>
