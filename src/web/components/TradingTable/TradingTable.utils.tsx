@@ -2496,7 +2496,7 @@ export const updateOrderHistoryQuerryFunction = (
 export const updatePaginatedOrderHistoryQuerryFunction = (
   previous,
   { subscriptionData },
-  enqueueSnackbar
+  enqueueSnackbar = (msg: string, obj: { variant: string }) => {}
 ) => {
   // console.log(
   //   'updatePaginatedOrderHistoryQuerryFunction subscriptionData',

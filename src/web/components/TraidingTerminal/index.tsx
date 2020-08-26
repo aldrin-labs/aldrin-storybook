@@ -216,6 +216,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       marketPrice,
       isSPOTMarket,
       quantityPrecision,
+      operationType,
       marketPriceAfterPairChange,
       values: { amount, price, total, margin },
     } = this.props
@@ -554,7 +555,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     title={`${isSPOTMarket ? 'amount' : 'order quantity'} (${
                       pair[0]
                     })`}
-                    value={values.amount || ''}
+                    value={values.amount}
                     type={'text'}
                     pattern={
                       isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'
@@ -569,7 +570,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                         theme={theme}
                         needTitle
                         title={`size`}
-                        value={values.amount || ''}
+                        value={values.amount}
                         type={'text'}
                         pattern={
                           isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'
@@ -597,7 +598,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   showMarks
                   value={
                     isBuyType || !isSPOTMarket
-                      ? values.total / (maxAmount / 100)
+                      ? ((values.margin * leverage) / maxAmount) * 100
                       : values.amount / (maxAmount / 100)
                   }
                   sliderContainerStyles={{
@@ -606,6 +607,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     padding: '.9rem 0 0 0',
                   }}
                   onChange={(value) => {
+                    console.log('value in amount slider', value)
                     const newValue = (maxAmount / 100) * value
 
                     const newAmount =
