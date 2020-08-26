@@ -13,6 +13,7 @@ const styles = theme => ({
     padding: theme.spacing.unit / 2,
   },
   snackbar: {
+    color: theme.palette.dark.main,
     backgroundColor: theme.customPalette.red.main
   },
   icon: {

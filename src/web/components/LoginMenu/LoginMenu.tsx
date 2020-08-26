@@ -139,7 +139,6 @@ class LoginMenuComponent extends React.Component {
                   padding: '0 12px',
                   borderRadius: 0,
                   height: '100%',
-                  borderLeft: '.1rem solid #e0e5ec',
                 }}
               >
                 <TelegramIcon

@@ -1,7 +1,6 @@
 import React from 'react'
 import { compose } from 'recompose'
 import { withRouter } from 'react-router-dom'
-
 // https://material-ui.com/customization/css-in-js/#other-html-element
 import JssProvider from 'react-jss/lib/JssProvider'
 import { create } from 'jss'
@@ -17,9 +16,9 @@ const jss = create(jssPreset())
 jss.options.insertionPoint = document.getElementById('jss-insertion-point')
 //
 
+import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Footer from '@sb/components/Footer'
-
 import AnimatedNavBar from '@sb/components/NavBar/AnimatedNavBar'
 import ThemeWrapper from './ThemeWrapper/ThemeWrapper'
 import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
@@ -28,12 +27,14 @@ import { AppGridLayout, FontStyle } from './App.styles'
 // import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
 import { GlobalStyle } from '@sb/styles/global.styles'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 import { syncStorage } from '@storage'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
+import { useQuery } from 'react-apollo'
 
-const version = `10.5.39`
+const version = `10.5.40`
 const currentVersion = localStorage.getItem('version')
 if (currentVersion !== version) {
   localStorage.clear()
@@ -44,16 +45,19 @@ const AppRaw = ({
   children,
   getViewModeQuery,
   getThemeModeQuery,
+  getChartDataQuery,
   location: { pathname: currentPage, search },
+  ...props
 }: any) => {
+  const isChartPage = /chart/.test(currentPage)
+
   const themeMode =
-    getThemeModeQuery &&
-    getThemeModeQuery.app &&
-    getThemeModeQuery.app.themeMode
+    (getThemeModeQuery &&
+      getThemeModeQuery.getAccountSettings &&
+      getThemeModeQuery.getAccountSettings.themeMode) ||
+    'light'
   const chartPageView =
     getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
-
-  const isChartPage = /chart/.test(currentPage)
 
   const fullscreen: boolean = isChartPage && chartPageView !== 'default'
   const showFooter = currentPage !== '/registration'
@@ -76,7 +80,7 @@ const AppRaw = ({
   return (
     <ApolloPersistWrapper>
       <JssProvider jss={jss} generateClassName={generateClassName}>
-        <ThemeWrapper themeMode={themeMode}>
+        <ThemeWrapper themeMode={themeMode} isChartPage={isChartPage}>
           <SnackbarWrapper>
             <CssBaseline />
             <FontStyle />
@@ -106,12 +110,23 @@ const AppRaw = ({
 
 export const App = compose(
   withRouter,
+  withAuthStatus,
   queryRendererHoc({
     query: GET_VIEW_MODE,
     name: 'getViewModeQuery',
+    fetchPolicy: 'cache-and-network',
   }),
+  // queryRendererHoc({
+  //   query: GET_THEME_MODE,
+  //   name: 'getThemeModeQuery',
+  //   fetchPolicy: 'cache-and-network',
+  // }),
   queryRendererHoc({
-    query: GET_THEME_MODE,
+    skip: (props: any) => {
+      return !props.authenticated
+    },
+    query: getThemeMode,
     name: 'getThemeModeQuery',
+    fetchPolicy: 'cache-and-network',
   })
 )(AppRaw)

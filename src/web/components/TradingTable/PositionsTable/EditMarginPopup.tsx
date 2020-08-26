@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Dialog, Paper } from '@material-ui/core'
+import { Dialog, Paper, Theme } from '@material-ui/core'
 import { StyledDialogContent } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { TradeInputContent as Input } from '@sb/components/TraidingTerminal/index'
 import { BlueSwitcherStyles } from '@sb/compositions/Chart/components/SmartOrderTerminal/utils'
@@ -10,12 +10,12 @@ import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderT
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
-const SwitcherStyles = {
-  ...BlueSwitcherStyles,
+const SwitcherStyles = (theme: Theme) => ({
+  ...BlueSwitcherStyles(theme),
   activeBackgroundColor: '#0B1FD1',
   fontWeight: 'bold',
   textTransform: 'uppercase',
-}
+})
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -37,6 +37,7 @@ export class EditMarginPopup extends React.Component {
   render() {
     const {
       open,
+      theme,
       handleClose,
       USDTFuturesFund,
       editMarginPosition,
@@ -67,10 +68,12 @@ export class EditMarginPopup extends React.Component {
         onClose={handleClose}
         maxWidth={'md'}
         open={open}
+        theme={theme}
         aria-labelledby="responsive-edit-margin-dialog-title"
       >
-        <StyledDialogContent id="edit-margin-dialog-content">
+        <StyledDialogContent theme={theme} id="edit-margin-dialog-content">
           <CustomSwitcher
+            theme={theme}
             firstHalfText={'Add margin'}
             secondHalfText={'remove margin '}
             buttonHeight={'4rem'}
@@ -78,15 +81,16 @@ export class EditMarginPopup extends React.Component {
               width: '100%',
               padding: '0 0 .6rem 0',
             }}
-            firstHalfStyleProperties={SwitcherStyles}
-            secondHalfStyleProperties={SwitcherStyles}
+            firstHalfStyleProperties={SwitcherStyles(theme)}
+            secondHalfStyleProperties={SwitcherStyles(theme)}
             firstHalfIsActive={type === 1}
             changeHalf={this.toggleType}
           />
-          <FormInputContainer padding={'1.2rem 0 1.2rem 0'} title={`amount`}>
+          <FormInputContainer theme={theme} padding={'1.2rem 0 1.2rem 0'} title={`amount`}>
             <div style={{ position: 'relative', width: '100%' }}>
               <Input
                 needTitle
+                theme={theme}
                 textAlign={'left'}
                 inputStyles={{ paddingLeft: '13.5rem', minHeight: '4rem' }}
                 title={'type the amount:'}
@@ -119,23 +123,23 @@ export class EditMarginPopup extends React.Component {
                 }}
               >
                 MAX:{' '}
-                <span style={{ color: '#0B1FD1', textDecoration: 'underline' }}>
+                <span style={{ color: theme.palette.blue.main, textDecoration: 'underline' }}>
                   {max} USDT
                 </span>
               </span>
             </div>
           </FormInputContainer>
           <InputRowContainer padding={'2rem 0 0 0'} justify="space-between">
-            <span style={{ color: '#7284A0' }}>currently assigned margin</span>
-            <span style={{ color: '#16253D' }}>
+            <span style={{ color: theme.palette.grey.light }}>currently assigned margin</span>
+            <span style={{ color: theme.palette.dark.main }}>
               {stripDigitPlaces(editMarginPosition.isolatedMargin, 2)} USDT
             </span>
           </InputRowContainer>
           <InputRowContainer padding={'2rem 0 0 0'} justify="space-between">
-            <span style={{ color: '#7284A0' }}>
+            <span style={{ color: theme.palette.grey.light }}>
               {type === 1 ? 'Available Balance' : 'Max Removeable'}
             </span>
-            <span style={{ color: '#16253D' }}>{max} USDT</span>
+            <span style={{ color: theme.palette.dark.main }}>{max} USDT</span>
           </InputRowContainer>
           <InputRowContainer justify="space-between">
             <BtnCustom
@@ -145,10 +149,11 @@ export class EditMarginPopup extends React.Component {
               margin="3.2rem 2.5% .4rem 1%"
               padding=".5rem 0 .4rem 0"
               borderRadius=".8rem"
-              btnColor={'#DD6956'}
-              backgroundColor={'#fff'}
+              btnColor={'#fff'}
+              borderColor={theme.palette.red.main}
+              backgroundColor={theme.palette.red.main}
               hoverColor={'#fff'}
-              hoverBackground={'#DD6956'}
+              hoverBackground={theme.palette.red.main}
               transition={'all .4s ease-out'}
               onClick={() => {
                 handleClose()
@@ -163,11 +168,11 @@ export class EditMarginPopup extends React.Component {
               margin="3.2rem 2.5% .4rem 1%"
               padding=".5rem 0 .4rem 0"
               borderRadius=".8rem"
-              borderColor={'#29AC80'}
+              borderColor={theme.palette.green.main}
               btnColor={'#fff'}
-              backgroundColor={'#29AC80'}
+              backgroundColor={theme.palette.green.main}
               hoverColor={'#fff'}
-              hoverBackground={'#29AC80'}
+              hoverBackground={theme.palette.green.main}
               boxShadow={'0px .4rem .6rem rgba(8, 22, 58, 0.3);'}
               transition={'all .4s ease-out'}
               onClick={() => {

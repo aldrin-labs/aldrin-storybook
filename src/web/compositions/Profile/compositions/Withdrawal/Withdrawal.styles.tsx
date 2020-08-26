@@ -6,18 +6,18 @@ import { withStyles } from '@material-ui/styles'
 const styles = theme => ({
   root: {
     "&:not(hover):not($disabled):not($focused):not($error) $notchedOutline": {
-      borderColor: "#E0E5EC"
+      borderColor: theme.palette.grey.border,
     },
     "&:hover:not($disabled):not($focused):not($error) $notchedOutline": {
-      borderColor: "#165BE0"
+      borderColor: theme.palette.blue.main,
     },
     "&$focused:not($disabled):not($error) $notchedOutline": {
-      borderColor: "#165BE0"
+      borderColor: theme.palette.blue.main,
     }
   },
   notchedOutline: {
-    borderRadius: "8px",
-    borderWidth: "2px"
+    borderRadius: ".4rem",
+    borderWidth: ".1rem"
   },
   disabled: {},
   focused: {},
@@ -31,10 +31,16 @@ export const Outlined = withStyles(styles)(OutlinedInputMUI)
 export const StyledInput = styled(Outlined)`
   height: 5rem;
   width: 80%;
+  
   & input {
     font-size: 1.4rem;
     font-weight: bold;
-    color: #16253d;
+    color: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.dark &&
+      props.theme.palette.dark.main) ||
+    '#16253D'};
     text-align: left;
   }
 `

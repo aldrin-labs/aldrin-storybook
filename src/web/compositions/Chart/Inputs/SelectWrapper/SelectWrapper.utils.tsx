@@ -245,8 +245,8 @@ export const combineSelectWrapperData = ({
                 +price24hChange === 0
                   ? ''
                   : +price24hChange > 0
-                  ? theme.customPalette.green.main
-                  : theme.customPalette.red.main,
+                  ? theme.palette.green.main
+                  : theme.palette.red.main,
             }}
             onClick={() => onSelectPair({ value: symbol })}
           >

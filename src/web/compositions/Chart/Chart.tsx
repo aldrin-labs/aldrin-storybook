@@ -4,13 +4,15 @@ import { Redirect } from 'react-router-dom'
 import { withTheme } from '@material-ui/styles'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
-
+import { client } from '@core/graphql/apolloClient'
+import { isEqual } from 'lodash'
 // import { Grid, Hidden } from '@material-ui/core'
 
 // import { CardsPanel } from './components'
 import OnlyCharts from './OnlyCharts/OnlyCharts'
 import DefaultView from './DefaultView/StatusWrapper'
-
+import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
+import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 import { getChartLayout } from '@core/graphql/queries/chart/getChartLayout'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
@@ -148,7 +150,6 @@ function ChartPageComponent(props: any) {
         activeExchange: { name: 'Binance', symbol: 'binance' },
         view: 'default',
       },
-      app: { themeMode } = { themeMode: 'light' },
     },
     getTooltipSettingsQuery: {
       getTooltipSettings = { chartPage: false, chartPagePopup: false },
@@ -230,7 +231,7 @@ function ChartPageComponent(props: any) {
         .stepSize || 0.001
 
     initialLeverage =
-      (+props.pairPropertiesQuery.marketByName[0].leverageBrackets &&
+      (props.pairPropertiesQuery.marketByName[0].leverageBrackets &&
         +props.pairPropertiesQuery.marketByName[0].leverageBrackets.binance[0]
           .initialLeverage) ||
       125
@@ -240,8 +241,6 @@ function ChartPageComponent(props: any) {
   const selectedKey = selectedTradingKey
     ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
     : { keyId: '', hedgeMode: false, isFuturesWarsKey: false }
-
-  console.log('chart page rerender')
 
   return (
     <MainContainer fullscreen={view !== 'default'}>
@@ -262,7 +261,7 @@ function ChartPageComponent(props: any) {
           minSpotNotional={minSpotNotional}
           minFuturesStep={minFuturesStep}
           isPairDataLoading={isPairDataLoading}
-          themeMode={themeMode}
+          themeMode={theme.palette.type}
           selectedKey={selectedKey}
           activeExchange={activeExchange}
           terminalViewMode={terminalViewMode}
@@ -304,17 +303,13 @@ function ChartPageComponent(props: any) {
 }
 
 const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
-  console.log('memo func chart page')
+  console.log('memo func chart page', prev, next)
 
   const isAuthenticatedUser = checkLoginStatus()
 
   if (!isAuthenticatedUser) {
     return false
   }
-
-  const themeChanged =
-    prev.getChartDataQuery.app.themeMode ===
-    next.getChartDataQuery.app.themeMode
 
   const prevIsPairDataLoading =
     prev.loading ||
@@ -357,8 +352,8 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
       next.getChartLayoutQuery.chart.layout.hideOrderbook &&
     prev.getChartLayoutQuery.chart.layout.hideTradeHistory ===
       next.getChartLayoutQuery.chart.layout.hideTradeHistory &&
-    themeChanged &&
-    prev.theme.palette.type === next.theme.palette.type
+    prev.theme.palette.type === next.theme.palette.type &&
+    isEqual(prev.theme, next.theme)
   )
 })
 
@@ -399,7 +394,7 @@ export default compose(
   queryRendererHoc({
     query: getChartLayout,
     name: 'getChartLayoutQuery',
-    fetchPolicy: 'cache-first',
+    fetchPolicy: 'cache-and-network',
     withoutLoading: true,
   }),
   graphql(updateTooltipSettings, {

@@ -180,10 +180,7 @@ class SimpleTabs extends React.Component {
         xs={12}
         style={{ height: '100%', padding: '0 0 0 0' }}
       >
-        <CustomCard
-          theme={theme}
-          style={{ borderLeft: theme.palette.border.main }}
-        >
+        <CustomCard theme={theme} style={{ borderTop: 0 }}>
           <TerminalHeader
             key={'spotTerminal'}
             style={{ display: 'flex' }}
@@ -468,7 +465,7 @@ class SimpleTabs extends React.Component {
                     value={componentMarginType}
                     style={{ color: theme.palette.dark.main }}
                   >
-                    <StyledOption>crossed</StyledOption>
+                    <StyledOption>cross</StyledOption>
                     <StyledOption>isolated</StyledOption>
                   </StyledSelect>
                 </LeverageTitle>

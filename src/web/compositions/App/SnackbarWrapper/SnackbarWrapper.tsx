@@ -22,6 +22,7 @@ const CloseButton = withStyles(canselStyeles)((props) => (
 
 const snackStyeles = (theme) => ({
   success: {
+    color: '#fff',
     fontSize: '1.25rem',
     fontWeight: 'bold',
     // backgroundColor: theme.customPalette.green.main,
@@ -31,6 +32,7 @@ const snackStyeles = (theme) => ({
     borderRadius: '16px',
   },
   error: {
+    color: '#fff',
     fontSize: '1.25rem',
     fontWeight: 'bold',
     // backgroundColor: theme.customPalette.red.main,
@@ -44,6 +46,7 @@ const snackStyeles = (theme) => ({
 const IntegrationNotistack = ({ ...props }) => {
   return (
     <SnackbarProvider
+      domRoot={document.getElementById('react-notification')}
       iconVariant={{
         success: (
           <SvgIcon

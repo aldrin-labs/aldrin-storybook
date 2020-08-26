@@ -21,6 +21,7 @@ import { BidsWrapper } from '../../OrderBookTableContainer.styles'
 class SpreadTable extends Component<IProps> {
   render() {
     const {
+      theme,
       data,
       aggregation,
       openOrderHistory,
@@ -57,7 +58,7 @@ class SpreadTable extends Component<IProps> {
                 marginRight: 0,
                 paddingTop: '.25rem',
                 letterSpacing: '.075rem',
-                borderBottom: '.1rem solid #e0e5ec',
+                borderBottom: theme.palette.border.main,
                 fontSize: '1rem',
               }}
               gridStyle={{
@@ -70,6 +71,7 @@ class SpreadTable extends Component<IProps> {
               rowGetter={({ index }) => tableData[index]}
               rowRenderer={(...rest) =>
                 defaultRowRenderer({
+                  theme,
                   ...rest[0],
                   side: 'bids',
                   aggregation,
@@ -85,7 +87,7 @@ class SpreadTable extends Component<IProps> {
                 dataKey="price"
                 headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
                 width={width - width / 6}
-                style={{ color: '#13901F' }}
+                style={{ color: theme.palette.green.main }}
               />
               <Column
                 label={mode === 'bids' ? `size (${base})` : ''}
@@ -94,6 +96,7 @@ class SpreadTable extends Component<IProps> {
                 headerStyle={{ textAlign: 'right', paddingRight: '.9rem' }}
                 style={{
                   textAlign: 'right',
+                  color: theme.palette.dark.main,
                 }}
               />
               <Column
@@ -104,7 +107,7 @@ class SpreadTable extends Component<IProps> {
                   textAlign: 'right',
                 }}
                 width={width}
-                style={{ textAlign: 'right' }}
+                style={{ textAlign: 'right', color: theme.palette.dark.main }}
               />
             </Table>
           )}

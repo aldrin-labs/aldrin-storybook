@@ -7,13 +7,13 @@ export const LastTradeContainer = styled.div`
   justify-content: center;
   align-items: center;
 
-  width: calc(100% - 1.6rem);
+  width: 100%;
   height: 3rem;
-  margin: 0 0.8rem;
+  margin: 0;
   text-align: center;
-  background: #f2f4f6;
-  border: 0.1rem solid #e0e5ec;
-  border-radius: 0.75rem;
+  background: ${(props) => props.theme.palette.white.background};
+  border-top: ${(props) => props.theme.palette.border.main};
+  border-bottom: ${(props) => props.theme.palette.border.main};
   font-family: 'IBM Plex Sans Condensed', sans-serif;
 `
 
@@ -30,7 +30,7 @@ export const LastTradePrice = styled.span`
 
   font-size: 1.6rem;
   font-weight: bold;
-  color: #16253d;
+  color: ${(props) => props.theme.palette.dark.main};
   letter-spacing: 0.075rem;
   padding-left: 1rem;
 `

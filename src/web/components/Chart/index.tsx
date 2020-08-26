@@ -17,19 +17,24 @@ const Wrapper = styled(Card)`
 export const SingleChart = ({
   additionalUrl,
   name,
+  themeMode,
 }: {
   additionalUrl: string
   name: string
-}) => (
-  <Wrapper>
-    <iframe
-      allowfullscreen="" // needed for fullscreen of chart to work
-      style={{ borderWidth: 0 }}
-      src={`https://${CHARTS_API_URL}${additionalUrl}`}
-      height={'100%'}
-      id={name}
-    />
-  </Wrapper>
-)
+  themeMode: string
+}) => {
+  return (
+    <Wrapper>
+      <iframe
+        allowfullscreen="" // needed for fullscreen of chart to work
+        style={{ borderWidth: 0 }}
+        src={`https://${CHARTS_API_URL}${additionalUrl}&theme=${themeMode}`}
+        height={'100%'}
+        id={`${name}${themeMode}`}
+        key={themeMode}
+      />
+    </Wrapper>
+  )
+}
 
 export default SingleChart

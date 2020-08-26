@@ -223,11 +223,16 @@ export const TradeSelect = styled.select`
   width: 100%;
   min-height: 3rem;
   border: ${(props) =>
-    props.isValid ? '.1rem solid #e0e5ec' : '.1rem solid #DD6956'};
+    props.isValid
+      ? props.theme.palette.border.main
+      : `.1rem solid ${props.theme.palette.red.main}`};
   border-radius: 4px;
   box-shadow: inset 0px 0px 0.2rem rgba(0, 0, 0, 0.15);
-  color: #7284a0;
-  background-color: ${(props) => (props.disabled ? '#f2f4f6' : '#fff')};
+  color: ${(props) => props.theme.palette.grey.light};
+  background-color: ${(props) =>
+    props.disabled
+      ? props.theme.palette.grey.background
+      : props.theme.palette.white.inputBackground};
   font-size: 1.1rem;
 
   text-transform: uppercase;
@@ -364,7 +369,7 @@ export const TradeInputBlock = styled.div`
 `
 
 export const SeparateInputTitle = styled.span`
-  color: #16253d;
+  color: ${(props) => props.theme.palette.dark.main};
   font-size: 0.9rem;
   font-weight: bold;
   text-transform: uppercase;

@@ -1,7 +1,7 @@
 import React from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
 import { CardTitle } from '@sb/components/ChartCardHeader'
-import { Card, Grid, Button } from '@material-ui/core'
+import { Card, Grid, Button, Theme } from '@material-ui/core'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 
 export const MainContainer = styled.div`
@@ -109,7 +109,7 @@ html {
 
 export const PanelWrapper = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   width: 100%;
   height: 100%;
 `
@@ -137,23 +137,25 @@ export const PanelCard = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  // min-width: 16.6%;
+  width: ${(props: { marketType: number; theme: Theme }) =>
+    props.marketType === 0 ? '20%' : 'calc(100% / 7)'};
   flex-grow: 1;
   padding: 0.1rem;
   margin: 0;
   min-height: auto;
-  border-right: 0.1rem solid #e0e5ec;
+  border-right: ${(props: { marketType: number; theme: Theme }) =>
+    props.theme.palette.border.main};
   font-weight: bold;
   font-family: DM Sans;
   text-transform: uppercase;
-  letter-spacing: 0.05rem;
+  letter-spacing: 0.1rem;
 `
 
 export const PanelCardTitle = styled.span`
   display: block;
-  font-size: 0.8rem;
   padding: 0.1rem 1rem;
-  color: #7284a0;
+  color: ${(props) => props.theme.palette.grey.text};
+  letter-spacing: 0.1rem;
 
   @media (min-width: 1400px) {
     font-size: 1rem;
@@ -162,9 +164,9 @@ export const PanelCardTitle = styled.span`
 
 export const PanelCardValue = styled.span`
   white-space: pre-line;
-  font-size: 0.8rem;
-  color: ${(props) => props.color};
+  color: ${(props) => props.theme.palette.dark.main};
   padding: 0.1rem 1rem;
+  letter-spacing: 0.1rem;
 
   @media (min-width: 1400px) {
     font-size: 1rem;
@@ -174,8 +176,8 @@ export const PanelCardValue = styled.span`
 export const PanelCardSubValue = styled.span`
   padding: 0.1rem 1rem;
   padding-left: 0.4rem;
-  font-size: 0.8rem;
-  color: ${(props) => props.color};
+  color: ${(props) => props.theme.palette.dark.main};
+  letter-spacing: 0.1rem;
 
   @media (min-width: 1400px) {
     font-size: 1rem;
@@ -184,7 +186,6 @@ export const PanelCardSubValue = styled.span`
 
 // depth chart container
 export const DepthChartContainer = styled(CustomCard)`
-  border-bottom: 0;
   border-right: 0;
 `
 

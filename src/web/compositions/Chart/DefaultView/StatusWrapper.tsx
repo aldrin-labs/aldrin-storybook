@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button } from '@material-ui/core'
 import { useSnackbar } from 'notistack'
+import { isEqual } from 'lodash'
 
 import { orderError } from '@core/utils/errorsConfig'
 import { DefaultView } from './DefaultView'
@@ -73,7 +74,7 @@ const OrderStatusWrapper = (props) => {
     }
   }
 
-  console.log('status wrapper rerender')
+  console.log('status wrapper rerender', props)
   return (
     <DefaultView
       showOrderResult={showOrderResult}
@@ -116,6 +117,8 @@ export default React.memo(OrderStatusWrapper, (prev, next) => {
     prev.theme.palette.type === next.theme.palette.type &&
     prev.layout.hideDepthChart === next.layout.hideDepthChart &&
     prev.layout.hideOrderbook === next.layout.hideOrderbook &&
-    prev.layout.hideTradeHistory === next.layout.hideTradeHistory
+    prev.layout.hideTradeHistory === next.layout.hideTradeHistory &&
+    isEqual(prev.theme, next.theme)
+    // false
   )
 })

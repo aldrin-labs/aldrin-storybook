@@ -32,9 +32,25 @@ export const GridSearchPanel = styled(Grid)`
 `
 export const DialogTitleCustom = styled(DialogTitle)`
   text-align: center;
-  color: #16253d;
-  background: #f2f4f6;
-  border-radius: 32px 32px 0px 0px;
+  color: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.dark &&
+      props.theme.palette.dark.main) ||
+    '#16253d'};
+  background: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.grey &&
+      props.theme.palette.grey.main) ||
+    '#f2f4f6'};
+  border: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.border &&
+      props.theme.palette.border.main) ||
+    '.1rem solid #e0e5ec'};
+  border-radius: 20px 20px 0px 0px;
   padding: 2.4rem 3rem 2.4rem;
 `
 
@@ -57,7 +73,7 @@ export const InputBaseCustom = styled(InputBase)`
   border: 1px solid #e0e5ec;
   box-sizing: border-box;
   border-radius: 1rem;
-  box-shadow: inset .1rem .1rem .2rem rgba(0, 0, 0, 0.15);
+  box-shadow: inset 0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.15);
 
   input {
     color: #16253d;

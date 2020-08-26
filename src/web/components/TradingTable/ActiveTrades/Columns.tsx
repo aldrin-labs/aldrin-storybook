@@ -61,8 +61,8 @@ export const EntryOrderColumn = ({
   red: string
   enableEdit: boolean
   blue: {
-    first: string
-    second: string
+    main: string
+    main: string
   }
   haveEdit: boolean
   editTrade: () => void
@@ -80,7 +80,7 @@ export const EntryOrderColumn = ({
       >
         <SubColumnValue theme={theme}>entry point</SubColumnValue>
         {haveEdit && (
-          <SubColumnTitle style={{ width: 'auto', padding: '0' }}>
+          <SubColumnTitle theme={theme} style={{ width: 'auto', padding: '0' }}>
             <BtnCustom
               disable={!enableEdit}
               needMinWidth={false}
@@ -89,10 +89,10 @@ export const EntryOrderColumn = ({
               fontSize=".9rem"
               padding=".1rem .5rem 0 .5rem"
               borderRadius=".8rem"
-              borderColor={enableEdit ? blue.first : '#e0e5ec'}
+              borderColor={enableEdit ? blue.main : '#e0e5ec'}
               btnColor={'#fff'}
-              backgroundColor={enableEdit ? blue.second : '#e0e5ec'}
-              hoverBackground={enableEdit ? blue.first : '#e0e5ec'}
+              backgroundColor={enableEdit ? blue.main : '#e0e5ec'}
+              hoverBackground={enableEdit ? blue.main : '#e0e5ec'}
               transition={'all .4s ease-out'}
               onClick={enableEdit ? editTrade : () => {}}
               style={enableEdit ? {} : { cursor: 'default' }}
@@ -104,14 +104,14 @@ export const EntryOrderColumn = ({
       </div>
 
       <div>
-        <SubColumnTitle>pair</SubColumnTitle>
+        <SubColumnTitle theme={theme}>pair</SubColumnTitle>
         <SubColumnValue theme={theme} textAlign={'right'}>
           {pair}
         </SubColumnValue>
       </div>
 
       <div>
-        <SubColumnTitle>side</SubColumnTitle>
+        <SubColumnTitle theme={theme}>side</SubColumnTitle>
         <SubColumnValue theme={theme} textAlign={'right'}>
           <span style={{ color: side === 'buy' ? green : red }}>{side}</span>/
           {order}
@@ -119,7 +119,7 @@ export const EntryOrderColumn = ({
       </div>
 
       <div style={{ display: 'flex' }}>
-        <SubColumnTitle>price</SubColumnTitle>
+        <SubColumnTitle theme={theme}>price</SubColumnTitle>
         <SubColumnValue
           theme={theme}
           style={{ display: 'block' }}
@@ -141,14 +141,14 @@ export const EntryOrderColumn = ({
       </div>
 
       <div>
-        <SubColumnTitle>amount</SubColumnTitle>
+        <SubColumnTitle theme={theme}>amount</SubColumnTitle>
         <SubColumnValue theme={theme} textAlign={'right'}>
           {amount}
         </SubColumnValue>
       </div>
 
       <div>
-        <SubColumnTitle>total</SubColumnTitle>
+        <SubColumnTitle theme={theme}>total</SubColumnTitle>
         <SubColumnValue theme={theme} textAlign={'right'}>
           {total.toFixed(2)}
         </SubColumnValue>
@@ -181,8 +181,8 @@ export const TakeProfitColumn = ({
   green: string
   red: string
   blue: {
-    first: string
-    second: string
+    main: string
+    main: string
   }
   haveEdit: boolean
   enableEdit: boolean
@@ -201,7 +201,7 @@ export const TakeProfitColumn = ({
       >
         <SubColumnValue theme={theme}>take profit</SubColumnValue>
         {haveEdit && (
-          <SubColumnTitle style={{ width: 'auto', padding: '0' }}>
+          <SubColumnTitle theme={theme} style={{ width: 'auto', padding: '0' }}>
             <BtnCustom
               disable={!enableEdit}
               needMinWidth={false}
@@ -210,10 +210,10 @@ export const TakeProfitColumn = ({
               fontSize=".9rem"
               padding=".1rem .5rem 0 .5rem"
               borderRadius=".8rem"
-              borderColor={enableEdit ? blue.first : '#e0e5ec'}
+              borderColor={enableEdit ? blue.main : '#e0e5ec'}
               btnColor={'#fff'}
-              backgroundColor={enableEdit ? blue.second : '#e0e5ec'}
-              hoverBackground={blue.first}
+              backgroundColor={enableEdit ? blue.main : '#e0e5ec'}
+              hoverBackground={blue.main}
               transition={'all .4s ease-out'}
               onClick={editTrade}
             >
@@ -223,7 +223,7 @@ export const TakeProfitColumn = ({
         )}
       </div>
       <div>
-        <SubColumnTitle>profit</SubColumnTitle>
+        <SubColumnTitle theme={theme}>profit</SubColumnTitle>
         <SubColumnValue theme={theme} color={green} textAlign={'right'}>
           {trailing
             ? 'trailing'
@@ -236,21 +236,21 @@ export const TakeProfitColumn = ({
       </div>
 
       <div>
-        <SubColumnTitle>targets</SubColumnTitle>
+        <SubColumnTitle theme={theme}>targets</SubColumnTitle>
         <SubColumnValue theme={theme} textAlign={'right'}>
           {targets.length || '-'}
         </SubColumnValue>
       </div>
 
       <div>
-        <SubColumnTitle>order</SubColumnTitle>
+        <SubColumnTitle theme={theme}>order</SubColumnTitle>
         <SubColumnValue theme={theme} textAlign={'right'}>
           {order}
         </SubColumnValue>
       </div>
 
       <div>
-        <SubColumnTitle>trailing</SubColumnTitle>
+        <SubColumnTitle theme={theme}>trailing</SubColumnTitle>
         <SubColumnValue
           theme={theme}
           textAlign={'right'}
@@ -261,7 +261,7 @@ export const TakeProfitColumn = ({
       </div>
 
       {/* <div>
-        <SubColumnTitle>timeout</SubColumnTitle>
+        <SubColumnTitle theme={theme}>timeout</SubColumnTitle>
         <SubColumnValue 
 theme={theme} 
  theme={theme} theme={theme} textAlign={'right'}>
@@ -294,8 +294,8 @@ export const StopLossColumn = ({
   green: string
   red: string
   blue: {
-    first: string
-    second: string
+    main: string
+    main: string
   }
   haveEdit: boolean
   enableEdit: boolean
@@ -314,7 +314,7 @@ export const StopLossColumn = ({
       >
         <SubColumnValue theme={theme}>stop loss</SubColumnValue>
         {haveEdit && (
-          <SubColumnTitle style={{ width: 'auto', padding: '0' }}>
+          <SubColumnTitle theme={theme} style={{ width: 'auto', padding: '0' }}>
             <BtnCustom
               disabled={!enableEdit}
               needMinWidth={false}
@@ -323,10 +323,10 @@ export const StopLossColumn = ({
               fontSize=".9rem"
               padding=".1rem .5rem 0 .5rem"
               borderRadius=".8rem"
-              borderColor={enableEdit ? blue.first : '#e0e5ec'}
+              borderColor={enableEdit ? blue.main : '#e0e5ec'}
               btnColor={'#fff'}
-              backgroundColor={enableEdit ? blue.second : '#e0e5ec'}
-              hoverBackground={blue.first}
+              backgroundColor={enableEdit ? blue.main : '#e0e5ec'}
+              hoverBackground={blue.main}
               transition={'all .4s ease-out'}
               onClick={editTrade}
             >
@@ -336,28 +336,28 @@ export const StopLossColumn = ({
         )}
       </div>
       <div>
-        <SubColumnTitle>loss</SubColumnTitle>
+        <SubColumnTitle theme={theme}>loss</SubColumnTitle>
         <SubColumnValue theme={theme} textAlign={'right'} color={red}>
           -{price}%
         </SubColumnValue>
       </div>
 
       <div>
-        <SubColumnTitle>forced</SubColumnTitle>
+        <SubColumnTitle theme={theme}>forced</SubColumnTitle>
         <SubColumnValue theme={theme} textAlign={'right'} color={red}>
           {!!forced ? `-${forced}%` : 'off'}
         </SubColumnValue>
       </div>
 
       <div>
-        <SubColumnTitle>order</SubColumnTitle>
+        <SubColumnTitle theme={theme}>order</SubColumnTitle>
         <SubColumnValue theme={theme} textAlign={'right'}>
           {order}
         </SubColumnValue>
       </div>
 
       <div>
-        <SubColumnTitle>timeout</SubColumnTitle>
+        <SubColumnTitle theme={theme}>timeout</SubColumnTitle>
         <SubColumnValue theme={theme} textAlign={'right'}>
           {/* {timeoutWhenLoss || '-'} /  */}
           {timeoutLoss || '-'}
@@ -403,15 +403,15 @@ export const StatusColumn = ({
   green: string
   red: string
   blue: {
-    first: string
-    second: string
+    main: string
+    main: string
   }
   theme: Theme
 }) => {
   return (
     <>
       <div>
-        <SubColumnTitle>status</SubColumnTitle>
+        <SubColumnTitle theme={theme}>status</SubColumnTitle>
         <SubColumnValue
           theme={theme}
           style={{ textTransform: 'none' }}
@@ -422,7 +422,7 @@ export const StatusColumn = ({
       </div>
 
       <div>
-        <SubColumnTitle>pnl (roe)</SubColumnTitle>
+        <SubColumnTitle theme={theme}>pnl (roe)</SubColumnTitle>
         <SubColumnValue
           theme={theme}
           color={profitPercentage > 0 ? green : red}

@@ -41,6 +41,7 @@ interface IProps {
   open: boolean
   handleClose: () => void
   showFuturesTransfer: (result: any) => void
+  theme: Theme
 }
 
 const TransferPopup = ({
@@ -57,6 +58,7 @@ const TransferPopup = ({
   timerForFuturesWars,
   loading,
   setLoading,
+  theme
 }: IProps) => {
   const [selectedCoin, setSelectedCoin] = useState({
     label: 'USDT',
@@ -136,6 +138,7 @@ const TransferPopup = ({
   return (
     <>
       <DialogWrapper
+        theme={theme}
         aria-labelledby="customized-dialog-title"
         onClose={handleClose}
         open={open}
@@ -146,17 +149,16 @@ const TransferPopup = ({
       >
         <DialogTitleCustom
           id="customized-dialog-title"
-          style={{
-            backgroundColor: '#fff',
-          }}
+          theme={theme}
         >
           <TypographyCustomHeading
             fontWeight={'700'}
+            theme={theme}
             style={{
               textAlign: 'center',
               fontSize: '1.4rem',
               letterSpacing: '1.5px',
-              color: '#16253D',
+              color: theme.palette.dark.main
             }}
           >
             {isFuturesWarsKey
@@ -167,6 +169,7 @@ const TransferPopup = ({
           </TypographyCustomHeading>
         </DialogTitleCustom>
         <DialogContent
+        theme={theme}
           justify="center"
           style={{
             padding: '0 3rem 3rem',
@@ -177,20 +180,20 @@ const TransferPopup = ({
               {isFuturesWarsKey && futuresWarsRoundBet !== 0 && (
                 <>
                   <Typography
-                    style={{ paddingBottom: '1.4rem', color: '#16253D' }}
+                    style={{ paddingBottom: '1.4rem', color: theme.palette.dark.main }}
                   >
                     You replenish your futureswars account with{' '}
                     {futuresWarsRoundBet} USDT.
                   </Typography>
                   <Typography
-                    style={{ paddingBottom: '1.4rem', color: '#16253D' }}
+                    style={{ paddingBottom: '1.4rem', color: theme.palette.dark.main }}
                   >
                     {futuresWarsRoundBet / 2} USDT is your bet, it will go to
                     the bank. The remaining {futuresWarsRoundBet / 2} USDT is
                     your capital for trading in this round.
                   </Typography>
                   <Typography
-                    style={{ paddingBottom: '1.4rem', color: '#16253D' }}
+                    style={{ paddingBottom: '1.4rem', color: theme.palette.dark.main }}
                   >
                     Good luck!
                   </Typography>
@@ -205,7 +208,7 @@ const TransferPopup = ({
                         style={{
                           paddingBottom: '1.4rem',
                           paddingRight: '1.4rem',
-                          color: '#16253D',
+                          color: theme.palette.dark.main,
                         }}
                       >
                         Round started in:
@@ -213,7 +216,7 @@ const TransferPopup = ({
                       <Typography
                         style={{
                           paddingBottom: '1.4rem',
-                          color: '#16253D',
+                          color: theme.palette.dark.main,
                           width: '20%',
                         }}
                       >
@@ -285,7 +288,7 @@ const TransferPopup = ({
                   padding: '0',
                   borderRadius: '1.5rem',
                   textAlign: 'center',
-                  background: 'white',
+                  background: theme.palette.white.background,
                   position: 'relative',
                   // overflowY: 'auto',
                   boxShadow: 'none',
@@ -304,7 +307,7 @@ const TransferPopup = ({
 
                   '&:hover': {
                     borderRadius: '0.8rem',
-                    color: '#16253D',
+                    color: theme.palette.dark.main,
                     background: '#E7ECF3',
                   },
                 }}
@@ -319,20 +322,20 @@ const TransferPopup = ({
                   marginLeft: '0',
                 }}
                 valueContainerStyles={{
-                  border: '2px solid #E0E5EC',
+                  border: theme.palette.border.main,
                   borderRadius: '8px',
-                  background: '#fff',
+                  background: theme.palette.white.background,
                   paddingLeft: '15px',
                   height: '5rem',
                   '&:hover': {
-                    borderColor: '#165BE0',
+                    borderColor: theme.palette.blue.main,
                   },
                 }}
                 noOptionsMessageStyles={{
                   textAlign: 'left',
                 }}
                 singleValueStyles={{
-                  color: '#16253D',
+                  color: theme.palette.dark.main,
                   fontSize: '1.4rem',
                   fontWeight: 'bold',
                   textTransform: 'uppercase',
@@ -340,7 +343,7 @@ const TransferPopup = ({
                   padding: '0.5rem 0',
                 }}
                 placeholderStyles={{
-                  color: '#16253D',
+                  color: theme.palette.dark.main,
                   fontSize: '1.4rem',
                   fontWeight: 'bold',
                   textTransform: 'uppercase',
@@ -350,6 +353,7 @@ const TransferPopup = ({
             <Grid style={{ paddingBottom: '4rem' }}>
               <StyledTypography>Amount:</StyledTypography>
               <InputAmount
+                theme={theme}
                 selectedCoin={selectedCoin.label}
                 selectedAccount={selectedAccount}
                 marketType={
@@ -368,9 +372,11 @@ const TransferPopup = ({
             <Grid container justify="space-between">
               <BtnCustom
                 btnWidth={'38%'}
-                borderRadius={'8px'}
-                btnColor={'#165BE0'}
-                borderWidth={'2px'}
+                borderRadius={'.4rem'}
+                btnColor={theme.palette.blue.main}
+                hoverColor={theme.palette.white.main}
+                hoverBackground={theme.palette.blue.main}
+                borderWidth={'.1rem'}
                 fontWeight={'bold'}
                 margin={'0 2rem 0 0'}
                 height={'4rem'}
@@ -385,9 +391,11 @@ const TransferPopup = ({
                   loading === true
                 }
                 btnWidth={'38%'}
-                borderRadius={'8px'}
-                btnColor={'#165BE0'}
-                borderWidth={'2px'}
+                borderRadius={'.4rem'}
+                btnColor={theme.palette.blue.main}
+                hoverColor={theme.palette.white.main}
+                hoverBackground={theme.palette.blue.main}
+                borderWidth={'.1rem'}
                 fontWeight={'bold'}
                 fontSize={'1.2rem'}
                 height={'4rem'}

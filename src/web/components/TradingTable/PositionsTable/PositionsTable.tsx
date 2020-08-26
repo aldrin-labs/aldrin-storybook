@@ -142,17 +142,17 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
 
     let data = getActivePositionsQuery.getActivePositions
 
-    if (variables.keyParams.type === 'market') {
-      const position = getActivePositionsQuery.getActivePositions.find(
-        (p) => p._id === positionId
-      )
+    // if (variables.keyParams.type === 'market') {
+    //   const position = getActivePositionsQuery.getActivePositions.find(
+    //     (p) => p._id === positionId
+    //   )
 
-      addOrderToCanceled(positionId)
-      data = getActivePositionsQuery.getActivePositions.filter(
-        (p) => p._id !== positionId
-      )
-      setTimeout(() => clearCanceledOrders(), 5000)
-    }
+    //   addOrderToCanceled(positionId)
+    //   data = getActivePositionsQuery.getActivePositions.filter(
+    //     (p) => p._id !== positionId
+    //   )
+    //   setTimeout(() => clearCanceledOrders(), 5000)
+    // }
 
     // ux improve to show result before
     showOrderResult(
@@ -669,24 +669,13 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     const {
       tab,
       theme,
-      handleTabChange,
       show,
       marketType,
-      selectedKey,
-      canceledOrders,
-      arrayOfMarketIds,
       allKeys,
       specificPair,
       getFundsQuery,
-      showAllPositionPairs,
-      showAllOpenOrderPairs,
-      showAllSmartTradePairs,
-      showPositionsFromAllAccounts,
-      showOpenOrdersFromAllAccounts,
-      showSmartTradesFromAllAccounts,
       handleToggleAllKeys,
       handleToggleSpecificPair,
-      currencyPair,
       getAdlQuantileQuery,
     } = this.props
 
@@ -782,6 +771,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
         />
         {this.state.editMarginPopup && (
           <EditMarginPopup
+            theme={theme}
             open={true}
             editMarginPosition={this.state.editMarginPosition}
             handleClose={this.toogleEditMarginPopup}

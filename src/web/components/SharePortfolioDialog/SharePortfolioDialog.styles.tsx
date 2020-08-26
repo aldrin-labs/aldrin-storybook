@@ -17,6 +17,14 @@ import SearchUsername from '@core/components/SearchUsername/SearchUsername'
 import { Link } from 'react-router-dom'
 
 export const StyledDialogContent = styled(DialogContent)`
+  border-radius: none;
+  border: ${(props) =>
+      (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.border &&
+        props.theme.palette.border.main) ||
+      '.1rem solid #e0e5ec'};
+  border-top: 0;
   padding: 0 2.4rem 2.4rem;
   font-family: DM Sans;
 
@@ -29,9 +37,21 @@ export const StyledDialogTitle = styled(DialogTitle)`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 2px solid #e0e5ec;
-  background-color: #f2f4f6;
+  border: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.border &&
+      props.theme.palette.border.main) ||
+    '.1rem solid #e0e5ec'};
+  background-color: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.grey &&
+      props.theme.palette.grey.main) ||
+    '#f2f4f6'};
   height: 4rem;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
 `
 
 export const StyledPaper = styled(Paper)`
@@ -156,17 +176,9 @@ export const ClearButton = styled(IconButton)`
 export const Line = styled.div`
   content: '';
   width: 100%;
-  background-color: #e0e5ec;
+  background-color: ${(props) => props.theme.palette.grey.border};
   margin: ${(props) => props.lineMargin || '0 0 0 1rem'};
-  height: 1px;
-
-  @media (min-width: 1921px) {
-    height: 1.5px;
-  }
-
-  @media (min-width: 2560px) {
-    height: 2px;
-  }
+  height: 0.1rem;
 `
 
 export const SButton = styled.span`
@@ -277,7 +289,12 @@ export const TypographyTitle = styled(Typography)`
   font-size: 1.6rem;
   text-transform: uppercase;
   line-height: 31px;
-  color: #7284a0;
+  color: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.grey &&
+      props.theme.palette.grey.light) ||
+    '#7284a0'};
 
   @media (min-width: 1440px) {
     font-size: 1.5rem;

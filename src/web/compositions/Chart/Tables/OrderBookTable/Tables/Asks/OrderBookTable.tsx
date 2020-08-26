@@ -18,6 +18,7 @@ class OrderBookTable extends Component<IProps> {
   render() {
     const {
       data,
+      theme,
       mode,
       aggregation,
       openOrderHistory,
@@ -46,13 +47,13 @@ class OrderBookTable extends Component<IProps> {
               }}
               headerHeight={window.outerHeight / 50}
               headerStyle={{
-                color: '#7284A0',
+                color: theme.palette.grey.text,
                 paddingLeft: '.5rem',
                 paddingTop: '.25rem',
                 marginLeft: 0,
                 marginRight: 0,
                 letterSpacing: '.075rem',
-                borderBottom: '.1rem solid #e0e5ec',
+                borderBottom: theme.palette.border.main,
                 fontSize: '1rem',
               }}
               gridStyle={{
@@ -65,6 +66,7 @@ class OrderBookTable extends Component<IProps> {
               rowGetter={({ index }) => tableData[index]}
               rowRenderer={(...rest) =>
                 defaultRowRenderer({
+                  theme,
                   ...rest[0],
                   side: 'asks',
                   marketType,
@@ -80,7 +82,7 @@ class OrderBookTable extends Component<IProps> {
                 dataKey="price"
                 headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
                 width={width - width / 6}
-                style={{ color: '#FF3716' }}
+                style={{ color: theme.palette.red.main }}
               />
               <Column
                 label={`Size (${base})`}
@@ -89,6 +91,7 @@ class OrderBookTable extends Component<IProps> {
                 width={width + width / 6}
                 style={{
                   textAlign: 'right',
+                  color: theme.palette.dark.main,
                 }}
               />
               <Column
@@ -99,7 +102,7 @@ class OrderBookTable extends Component<IProps> {
                   textAlign: 'right',
                 }}
                 width={width}
-                style={{ textAlign: 'right' }}
+                style={{ textAlign: 'right', color: theme.palette.dark.main }}
               />
             </Table>
           )}
