@@ -122,6 +122,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         deviationPercentage: 0,
         trailingDeviationPrice: 0,
       },
+      averaging: {
+        enabled: false,
+        closeStrategyAfterFirstTAP: false,
+        placeWithoutLoss: false,
+        entryLevels: [],
+      },
       TVAlert: {
         isTVAlertOn: false,
         templateMode: 'once',
@@ -271,6 +277,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           leverage: componentLeverage,
           hedgeMode: hedgeMode,
         },
+        averaging: {
+          enabled: false,
+          closeStrategyAfterFirstTAP: false,
+          placeWithoutLoss: false,
+          entryLevels: [],
+          // ...result.entryPoint.averaging,
+        },
         TVAlert: {
           isTVAlertOn: false,
           templateMode: 'once',
@@ -291,8 +304,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         },
         trailing: {
           trailingDeviationPrice: 0,
-          ...prevState.entryPoint.trailing,
-          ...(result.entryPoint
+          deviationPercentage: 0,
+          isTrailingOn: false,
+          ...(marketType === 1 ? { ...prevState.entryPoint.trailing } : {}),
+          ...(result.entryPoint && marketType === 1
             ? {
                 ...result.entryPoint.trailing,
                 deviationPercentage: +stripDigitPlaces(
@@ -407,7 +422,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         this.state.entryPoint.order.type === 'market' &&
         !this.state.entryPoint.trailing.isTrailingOn
           ? this.props.price
-          : entryPoint.order.price
+          : this.state.entryPoint.order.price
 
       this.updateSubBlockValue(
         'entryPoint',
@@ -535,6 +550,50 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         splitTargets: {
           ...this.state.takeProfit.splitTargets,
           targets: [...targets.slice(0, index), ...targets.slice(index + 1)],
+        },
+      },
+    })
+  }
+
+  addAverageTarget = () => {
+    const {
+      averaging: { placeWithoutLoss, entryLevels },
+      order: { price, amount },
+    } = this.state.entryPoint
+
+    console.log('price amount', price, amount)
+
+    if (price !== 0 && amount !== 0) {
+      this.setState((prev) => ({
+        entryPoint: {
+          ...prev.entryPoint,
+          averaging: {
+            ...prev.entryPoint.averaging,
+            placeWithoutLoss: false,
+            entryLevels: [
+              ...entryLevels,
+              { price, amount, type: 0, placeWithoutLoss },
+            ],
+          },
+        },
+      }))
+    }
+  }
+
+  deleteAverageTarget = (index: number) => {
+    const {
+      averaging: { entryLevels },
+    } = this.state.entryPoint
+
+    this.setState({
+      entryPoint: {
+        ...this.state.entryPoint,
+        averaging: {
+          ...this.state.entryPoint.averaging,
+          entryLevels: [
+            ...entryLevels.slice(0, index),
+            ...entryLevels.slice(index + 1),
+          ],
         },
       },
     })
@@ -766,7 +825,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     )
   }
 
-  getMaxValues = () => {
+  getMaxValues = (): number[] => {
     const { entryPoint } = this.state
     const { funds, marketType, quantityPrecision } = this.props
 
@@ -780,10 +839,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     if (marketType === 0) {
       maxAmount =
         entryPoint.order.side === 'buy'
-          ? stripDigitPlaces(funds[1].quantity, 8)
-          : stripDigitPlaces(funds[0].quantity, 8)
+          ? +stripDigitPlaces(funds[1].quantity, 8)
+          : +stripDigitPlaces(funds[0].quantity, 8)
     } else if (marketType === 1) {
-      maxAmount = stripDigitPlaces(
+      maxAmount = +stripDigitPlaces(
         funds[1].quantity * entryPoint.order.leverage,
         quantityPrecision
       )
@@ -1386,12 +1445,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         'market' &&
                       !entryPoint.trailing.isTrailingOn
                     ) {
-                      // this.updateSubBlockValue(
-                      //   'entryPoint',
-                      //   'order',
-                      //   'price',
-                      //   this.props.price
-                      // )
+                      this.updateSubBlockValue(
+                        'entryPoint',
+                        'averaging',
+                        'enabled',
+                        false
+                      )
 
                       this.updateSubBlockValue(
                         'entryPoint',
@@ -1543,6 +1602,15 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             'immediateEntry',
                             false
                           )
+
+                          if (!entryPoint.trailing.isTrailingOn) {
+                            this.updateSubBlockValue(
+                              'entryPoint',
+                              'averaging',
+                              'enabled',
+                              false
+                            )
+                          }
                         }}
                       >
                         Trailing {entryPoint.order.side}
@@ -1579,6 +1647,64 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       Entry by TV Alert
                     </AdditionalSettingsButton>
                   </DarkTooltip>
+                  <DarkTooltip
+                    maxWidth={'30rem'}
+                    title={
+                      'Your smart order will be placed once when there is a Trading View alert that you connected to smart order.'
+                    }
+                  >
+                    <AdditionalSettingsButton
+                      theme={theme}
+                      isActive={entryPoint.averaging.enabled}
+                      onClick={() => {
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'averaging',
+                          'enabled',
+                          !entryPoint.averaging.enabled
+                        )
+
+                        if (!entryPoint.averaging.enabled) {
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'order',
+                            'type',
+                            'limit'
+                          )
+
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'trailing',
+                            'isTrailingOn',
+                            false
+                          )
+
+                          this.updateSubBlockValue(
+                            'takeProfit',
+                            'trailingTAP',
+                            'isTrailingOn',
+                            false
+                          )
+
+                          this.updateSubBlockValue(
+                            'takeProfit',
+                            'splitTargets',
+                            'isSplitTargetsOn',
+                            false
+                          )
+
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'TVAlert',
+                            'plotEnabled',
+                            false
+                          )
+                        }
+                      }}
+                    >
+                      Averaging
+                    </AdditionalSettingsButton>
+                  </DarkTooltip>
                   {/* <SwitcherContainer>
                     <GreenSwitcher
                       id="isHedgeOn"
@@ -1595,6 +1721,43 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     <HeaderLabel htmlFor="isHedgeOn">hedge</HeaderLabel>
                   </SwitcherContainer> */}
                 </InputRowContainer>
+
+                {entryPoint.averaging.enabled && (
+                  <InputRowContainer padding={'0 0 1.2rem 0'}>
+                    <DarkTooltip
+                      maxWidth={'30rem'}
+                      title={
+                        'Your smart order will be placed once when there is a Trading View alert that you connected to smart order.'
+                      }
+                    >
+                      <AdditionalSettingsButton
+                        theme={theme}
+                        isActive={
+                          entryPoint.averaging.closeStrategyAfterFirstTAP
+                        }
+                        onClick={() => {
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'averaging',
+                            'closeStrategyAfterFirstTAP',
+                            !entryPoint.averaging.closeStrategyAfterFirstTAP
+                          )
+
+                          if (entryPoint.averaging.closeStrategyAfterFirstTAP) {
+                            this.updateSubBlockValue(
+                              'entryPoint',
+                              'averaging',
+                              'closeStrategyAfterFirstTAP',
+                              false
+                            )
+                          }
+                        }}
+                      >
+                        Close SM After First TAP
+                      </AdditionalSettingsButton>
+                    </DarkTooltip>
+                  </InputRowContainer>
+                )}
 
                 {entryPoint.TVAlert.isTVAlertOn && (
                   <>
@@ -1756,6 +1919,15 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                               'plotEnabled',
                               !entryPoint.TVAlert.plotEnabled
                             )
+
+                            if (!entryPoint.TVAlert.plotEnabled) {
+                              this.updateSubBlockValue(
+                                'entryPoint',
+                                'averaging',
+                                'enabled',
+                                false
+                              )
+                            }
                           }}
                         >
                           Plot
@@ -1763,6 +1935,33 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       </InputRowContainer>
                     </FormInputContainer>
                   </>
+                )}
+
+                {entryPoint.averaging.enabled && (
+                  <FormInputContainer
+                    theme={theme}
+                    padding={'0 0 .8rem 0'}
+                    haveTooltip={false}
+                    tooltipText={''}
+                    title={'action when entry'}
+                  >
+                    <InputRowContainer>
+                      <AdditionalSettingsButton
+                        theme={theme}
+                        isActive={entryPoint.averaging.placeWithoutLoss}
+                        onClick={() => {
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'averaging',
+                            'placeWithoutLoss',
+                            !entryPoint.averaging.placeWithoutLoss
+                          )
+                        }}
+                      >
+                        Place Without Loss
+                      </AdditionalSettingsButton>
+                    </InputRowContainer>
+                  </FormInputContainer>
                 )}
 
                 <FormInputContainer
@@ -1981,11 +2180,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       <BlueSlider
                         theme={theme}
                         disabled={!entryPoint.trailing.isTrailingOn}
-                        value={stripDigitPlaces(
-                          entryPoint.trailing.deviationPercentage *
-                            entryPoint.order.leverage,
-                          3
-                        )}
+                        value={
+                          +stripDigitPlaces(
+                            entryPoint.trailing.deviationPercentage *
+                              entryPoint.order.leverage,
+                            3
+                          )
+                        }
                         sliderContainerStyles={{
                           width: entryPoint.TVAlert.plotEnabled ? '20%' : '50%',
                           margin: '0 .8rem 0 .8rem',
@@ -2391,6 +2592,92 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       />
                     </FormInputContainer>
                   </InputRowContainer>
+                )}
+
+                {entryPoint.averaging.enabled && (
+                  <>
+                    <InputRowContainer padding="0 0 .6rem 0">
+                      <BtnCustom
+                        btnColor={theme.palette.white.main}
+                        backgroundColor={theme.palette.orange.main}
+                        borderColor={theme.palette.orange.main}
+                        btnWidth={'100%'}
+                        height={'auto'}
+                        borderRadius={'1rem'}
+                        margin={'0'}
+                        padding={'.1rem 0'}
+                        fontSize={'1rem'}
+                        boxShadow={'0px .2rem .3rem rgba(8, 22, 58, 0.15)'}
+                        letterSpacing={'.05rem'}
+                        onClick={this.addAverageTarget}
+                      >
+                        add target
+                      </BtnCustom>
+                    </InputRowContainer>
+
+                    <InputRowContainer
+                      padding=".6rem 1rem 1.2rem .4rem"
+                      direction="column"
+                    >
+                      <InputRowContainer padding=".2rem .5rem">
+                        <TargetTitle
+                          theme={theme}
+                          style={{ width: '25%', paddingLeft: '2rem' }}
+                        >
+                          price
+                        </TargetTitle>
+                        <TargetTitle theme={theme} style={{ width: '25%' }}>
+                          quantity
+                        </TargetTitle>
+                        <TargetTitle theme={theme} style={{ width: '40%' }}>
+                          place Without Loss
+                        </TargetTitle>
+                      </InputRowContainer>
+                      <div
+                        style={{
+                          width: '100%',
+                          background: theme.palette.grey.main,
+                          borderRadius: '.8rem',
+                          border: theme.palette.border.main,
+                        }}
+                      >
+                        {entryPoint.averaging.entryLevels.map((target, i) => (
+                          <InputRowContainer
+                            key={`${target.price}${target.amount}${i}`}
+                            padding=".2rem .5rem"
+                            style={
+                              entryPoint.averaging.entryLevels.length - 1 !== i
+                                ? {
+                                    borderBottom: theme.palette.border.main,
+                                  }
+                                : {}
+                            }
+                          >
+                            <TargetValue
+                              theme={theme}
+                              style={{ width: '25%', paddingLeft: '2rem' }}
+                            >
+                              {target.price} {pair[1]}
+                            </TargetValue>
+                            <TargetValue theme={theme} style={{ width: '25%' }}>
+                              {target.amount} {pair[0]}
+                            </TargetValue>
+                            <TargetValue theme={theme} style={{ width: '40%' }}>
+                              {target.placeWithoutLoss ? '+' : '-'}
+                            </TargetValue>
+                            <CloseIcon
+                              onClick={() => this.deleteAverageTarget(i)}
+                              style={{
+                                color: theme.palette.red.main,
+                                fontSize: '1.8rem',
+                                cursor: 'pointer',
+                              }}
+                            />
+                          </InputRowContainer>
+                        ))}
+                      </div>
+                    </InputRowContainer>
+                  </>
                 )}
 
                 {entryPoint.order.isHedgeOn && (
@@ -3590,68 +3877,71 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   justify="flex-start"
                   padding={'.6rem 0 1.2rem 0'}
                 >
-                  <DarkTooltip
-                    maxWidth={'40rem'}
-                    title={
-                      <>
-                        <p>
-                          The algorithm which will wait for the trend to reverse
-                          to place the order.
-                        </p>
-                        <p>
-                          <b>Deviation:</b> The level of price change after the
-                          trend reversal, at which the order will be executed.
-                        </p>
-                        <p>
-                          <b>For example:</b> you bought BTC at 7500 USDT price
-                          and set 1% trailing deviation to take a profit.
-                          Trailing will start right after you buy. Then the
-                          price goes to 7700 and the trend reverses and begins
-                          to fall. The order will be executed when the price
-                          reaches 7633, i.e. by 1% from the moment the trend
-                          reversed.
-                        </p>
-                      </>
-                    }
-                  >
-                    <AdditionalSettingsButton
-                      theme={theme}
-                      style={{ fontSize: '1rem' }}
-                      isActive={takeProfit.trailingTAP.isTrailingOn}
-                      onClick={() => {
-                        this.updateSubBlockValue(
-                          'takeProfit',
-                          'trailingTAP',
-                          'isTrailingOn',
-                          !takeProfit.trailingTAP.isTrailingOn
-                        )
-
-                        this.updateSubBlockValue(
-                          'takeProfit',
-                          'splitTargets',
-                          'isSplitTargetsOn',
-                          false
-                        )
-
-                        this.updateSubBlockValue(
-                          'takeProfit',
-                          'timeout',
-                          'isTimeoutOn',
-                          false
-                        )
-
-                        this.updateStopLossAndTakeProfitPrices({
-                          takeProfitPercentage: !takeProfit.trailingTAP
-                            .isTrailingOn
-                            ? takeProfit.trailingTAP.activatePrice
-                            : takeProfit.pricePercentage,
-                        })
-                      }}
+                  {!entryPoint.averaging.enabled && (
+                    <DarkTooltip
+                      maxWidth={'40rem'}
+                      title={
+                        <>
+                          <p>
+                            The algorithm which will wait for the trend to
+                            reverse to place the order.
+                          </p>
+                          <p>
+                            <b>Deviation:</b> The level of price change after
+                            the trend reversal, at which the order will be
+                            executed.
+                          </p>
+                          <p>
+                            <b>For example:</b> you bought BTC at 7500 USDT
+                            price and set 1% trailing deviation to take a
+                            profit. Trailing will start right after you buy.
+                            Then the price goes to 7700 and the trend reverses
+                            and begins to fall. The order will be executed when
+                            the price reaches 7633, i.e. by 1% from the moment
+                            the trend reversed.
+                          </p>
+                        </>
+                      }
                     >
-                      Trailing take a profit
-                    </AdditionalSettingsButton>
-                  </DarkTooltip>
-                  {!takeProfit.external && (
+                      <AdditionalSettingsButton
+                        theme={theme}
+                        style={{ fontSize: '1rem' }}
+                        isActive={takeProfit.trailingTAP.isTrailingOn}
+                        onClick={() => {
+                          this.updateSubBlockValue(
+                            'takeProfit',
+                            'trailingTAP',
+                            'isTrailingOn',
+                            !takeProfit.trailingTAP.isTrailingOn
+                          )
+
+                          this.updateSubBlockValue(
+                            'takeProfit',
+                            'splitTargets',
+                            'isSplitTargetsOn',
+                            false
+                          )
+
+                          this.updateSubBlockValue(
+                            'takeProfit',
+                            'timeout',
+                            'isTimeoutOn',
+                            false
+                          )
+
+                          this.updateStopLossAndTakeProfitPrices({
+                            takeProfitPercentage: !takeProfit.trailingTAP
+                              .isTrailingOn
+                              ? takeProfit.trailingTAP.activatePrice
+                              : takeProfit.pricePercentage,
+                          })
+                        }}
+                      >
+                        Trailing take a profit
+                      </AdditionalSettingsButton>
+                    </DarkTooltip>
+                  )}
+                  {!takeProfit.external && !entryPoint.averaging.enabled && (
                     <DarkTooltip
                       maxWidth={'40rem'}
                       title={

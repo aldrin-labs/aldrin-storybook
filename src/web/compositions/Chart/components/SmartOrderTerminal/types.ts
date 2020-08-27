@@ -1,8 +1,26 @@
 import { ChangeEvent, CSSProperties } from 'react'
+import { Theme } from '@material-ui/core'
 
 export interface IProps {
+  price: number
+  leverage: number
+  marketType: 0 | 1
+  quantityPrecision: number
+  pricePrecision: number
+  componentLeverage: number
+  funds: {
+    quantity: number
+  }[]
+  pair: string
+  theme: Theme
+  marketPriceAfterPairChange: number
+  hedgeMode: string
+  maxLeverage: number
+  minFuturesStep: number
+  minSpotNotional: number
   updateTerminalViewMode: (mode: string) => void
   priceFromOrderbook: null | number
+  enqueueSnackbar: (msg: string, obj: { variant: string }) => void
 }
 
 export type EntryPointType = {
@@ -13,11 +31,22 @@ export type EntryPointType = {
     amount: number
     total: number
     leverage: number
-    hedgeMode: boolean
+    hedgeMode: string
     isHedgeOn: boolean
     hedgePrice: number
     hedgeIncrease: number | string
     hedgeSide: 'short' | 'long'
+  }
+  averaging: {
+    enabled: boolean
+    closeStrategyAfterFirstTAP: boolean
+    placeWithoutLoss: boolean
+    entryLevels: {
+      type: number
+      price: number
+      amount: number
+      placeWithoutLoss: boolean
+    }[]
   }
   trailing: {
     isTrailingOn: boolean
@@ -111,6 +140,9 @@ export interface IState {
   entryPoint: EntryPointType
   takeProfit: TakeProfitType
   stopLoss: StopLossType
+  temp: {
+    initialMargin: number
+  }
 }
 
 export type HeaderProperties = {

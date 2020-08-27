@@ -106,7 +106,7 @@ export const TradeInputContent = ({
   haveSelector = false,
   needTitle = false,
   needPreSymbol = false,
-  symbolRightIndent = null,
+  symbolRightIndent = '',
   preSymbol = '',
   title = '',
   symbol = '',
@@ -129,6 +129,7 @@ export const TradeInputContent = ({
   needTitle?: boolean
   needPreSymbol?: boolean
   preSymbol?: string
+  symbolRightIndent?: string
   title?: string
   symbol?: string
   value: string | number
