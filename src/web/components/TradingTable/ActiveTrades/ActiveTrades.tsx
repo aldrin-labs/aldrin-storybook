@@ -57,6 +57,7 @@ import { getFunds } from '@core/graphql/queries/chart/getFunds'
 import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
 import { LISTEN_TABLE_PRICE } from '@core/graphql/subscriptions/LISTEN_TABLE_PRICE'
 import { LISTEN_MARK_PRICES } from '@core/graphql/subscriptions/LISTEN_MARK_PRICES'
+import { useSnackbar } from 'notistack'
 @withTheme()
 class ActiveTradesTable extends React.Component<IProps, IState> {
   state: IState = {
@@ -770,7 +771,9 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
                 showCancelResult(statusResult)
               }}
               derivedState={getEntryOrderFromStrategy(selectedTrade)}
-              validate={validateEntryOrder}
+              validate={(obj, isValid) =>
+                validateEntryOrder(obj, isValid, this.props.enqueueSnackbar)
+              }
               transformProperties={transformEntryOrderProperties}
               validateField={(v) => !!v}
             />
@@ -828,7 +831,9 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
                 showCancelResult(statusResult)
               }}
               derivedState={getTakeProfitFromStrategy(selectedTrade)}
-              validate={validateTakeProfit}
+              validate={(obj, isValid) =>
+                validateTakeProfit(obj, isValid, this.props.enqueueSnackbar)
+              }
               transformProperties={transformTakeProfitProperties}
               validateField={(v) => !!v}
             />
@@ -882,7 +887,9 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
               showCancelResult(statusResult)
             }}
             transformProperties={transformStopLossProperties}
-            validate={validateStopLoss}
+            validate={(obj, isValid) =>
+              validateStopLoss(obj, isValid, this.props.enqueueSnackbar)
+            }
             derivedState={getStopLossFromStrategy(selectedTrade)}
             validateField={(v) => !!v}
           />
@@ -977,6 +984,7 @@ const LastTradeWrapper = ({ ...props }) => {
   let unsubscribe: undefined | Function = undefined
 
   const { page, handleChangePage, perPage, handleChangeRowsPerPage } = props
+  const { enqueueSnackbar } = useSnackbar()
 
   useEffect(() => {
     unsubscribe && unsubscribe()
@@ -990,6 +998,7 @@ const LastTradeWrapper = ({ ...props }) => {
   return (
     <QueryRenderer
       {...props}
+      enqueueSnackbar={enqueueSnackbar}
       page={page}
       perPage={perPage}
       handleChangePage={handleChangePage}

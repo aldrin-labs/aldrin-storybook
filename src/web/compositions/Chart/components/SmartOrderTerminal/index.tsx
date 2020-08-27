@@ -1794,7 +1794,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           : 'MARKET'
                       }
                       showErrors={showErrors}
-                      isValid={this.validateField(true, priceForCalculate)}
+                      isValid={
+                        !entryPoint.TVAlert.pricePlotEnabled &&
+                        this.validateField(true, priceForCalculate)
+                      }
                       disabled={
                         (entryPoint.order.type === 'market' &&
                           !entryPoint.trailing.isTrailingOn) ||
@@ -3489,7 +3492,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 <SendButton
                   type={entryPoint.order.side ? 'buy' : 'sell'}
                   onClick={async () => {
-                    const isValid = validateSmartOrders(this.state)
+                    const isValid = validateSmartOrders(
+                      this.state,
+                      this.props.enqueueSnackbar
+                    )
                     if (isValid) {
                       if (
                         entryPoint.order.total < minSpotNotional &&
@@ -3942,6 +3948,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                               !entryPoint.trailing.isTrailingOn
                             }
                             showErrors={
+                              false &&
                               showErrors &&
                               takeProfit.isTakeProfitOn &&
                               !takeProfit.splitTargets.isSplitTargetsOn &&
@@ -4701,7 +4708,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 })
               }}
               derivedState={getTakeProfitObject(this.state.takeProfit)}
-              validate={validateTakeProfit}
+              validate={(obj, isValid) =>
+                validateTakeProfit(obj, isValid, this.props.enqueueSnackbar)
+              }
               transformProperties={transformTakeProfitProperties}
               validateField={this.validateField}
             />
@@ -4773,7 +4782,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 })
               }}
               transformProperties={transformStopLossProperties}
-              validate={validateStopLoss}
+              validate={(obj, isValid) =>
+                validateStopLoss(obj, isValid, this.props.enqueueSnackbar)
+              }
               derivedState={getStopLossObject(this.state.stopLoss)}
               validateField={this.validateField}
             />
@@ -4826,7 +4837,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   },
                 })
               }}
-              validate={validateEntryOrder}
+              validate={(obj, isValid) =>
+                validateEntryOrder(obj, isValid, this.props.enqueueSnackbar)
+              }
               derivedState={getEntryOrderObject(entryPoint)}
               validateField={this.validateField}
             />
