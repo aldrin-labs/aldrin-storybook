@@ -2559,10 +2559,27 @@ export const updatePaginatedOrderHistoryQuerryFunction = (
 
     result = { ...prev }
   } else {
+    const newDataElement = subscriptionData.data.listenOrderHistory
+
     prev.getPaginatedOrderHistory.orders = [
-      { ...subscriptionData.data.listenOrderHistory },
+      { ...newDataElement },
       ...prev.getPaginatedOrderHistory.orders,
     ]
+
+    if (newDataElement.status === 'filled' && newDataElement.type !== 'market') {
+      enqueueSnackbar(
+        `${
+          newDataElement.type
+            ? `${newDataElement.type
+                .charAt(0)
+                .toUpperCase()}${newDataElement.type.slice(1)} order`
+            : 'Order'
+        } with price ${newDataElement.price} was executed!`,
+        {
+          variant: 'success',
+        }
+      )
+      }
 
     result = { ...prev }
   }

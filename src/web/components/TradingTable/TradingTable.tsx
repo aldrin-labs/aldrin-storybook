@@ -39,6 +39,17 @@ class TradingTable extends React.PureComponent<IProps, IState> {
     perPageSmartTrades: 30,
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.marketType !== this.props.marketType) {
+      if (
+        (this.props.marketType === 0 && this.state.tab === 'positions') ||
+        (this.props.marketType === 1 && this.state.tab === 'funds')
+      ) {
+        this.setState({ tab: 'activeTrades' })
+      }
+    }
+  }
+
   handleChangePage = (tab: IStateKeys, value: number) => {
     this.setState(({ [tab]: value } as unknown) as Pick<IState, keyof IState>)
   }
@@ -125,8 +136,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       }),
       {}
     )
-
-    console.log('theme', theme)
 
     return (
       <div
