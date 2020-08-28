@@ -67,6 +67,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
         allKeys,
         currencyPair,
         specificPair,
+        enqueueSnackbar,
       } = this.props
 
       this.unsubscribeFunction && this.unsubscribeFunction()
@@ -83,7 +84,12 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
               ...(!specificPair ? {} : { specificPair: currencyPair }),
             },
           },
-          updateQuery: updatePaginatedOrderHistoryQuerryFunction,
+          updateQuery: (prev, data) =>
+            updatePaginatedOrderHistoryQuerryFunction(
+              prev,
+              data,
+              enqueueSnackbar
+            ),
         }
       )
     }
@@ -265,6 +271,7 @@ const TableDataWrapper = ({ ...props }) => {
   return (
     <QueryRenderer
       component={OrderHistoryTable}
+      enqueueSnackbar={enqueueSnackbar}
       variables={{
         paginatedOrderHistoryInput: {
           page,

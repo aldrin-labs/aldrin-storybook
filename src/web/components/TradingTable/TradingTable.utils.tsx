@@ -2566,7 +2566,10 @@ export const updatePaginatedOrderHistoryQuerryFunction = (
       ...prev.getPaginatedOrderHistory.orders,
     ]
 
-    if (newDataElement.status === 'filled' && newDataElement.type !== 'market') {
+    if (
+      newDataElement.status === 'filled' &&
+      newDataElement.type !== 'market'
+    ) {
       enqueueSnackbar(
         `${
           newDataElement.type
@@ -2579,7 +2582,7 @@ export const updatePaginatedOrderHistoryQuerryFunction = (
           variant: 'success',
         }
       )
-      }
+    }
 
     result = { ...prev }
   }
