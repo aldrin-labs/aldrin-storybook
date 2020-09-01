@@ -11,7 +11,8 @@ import IBMPlexSansCondensed from '@sb/fonts/IBMPlexSansCondensed.woff2'
 export const AppGridLayout = styled.div`
   position: relative;
   overflow-x: hidden !important;
-  height: ${(props) => (props.isChartPage ? '100vh' : '93.6vh')};
+  height: ${(props) =>
+    props.isChartPage || !props.showFooter ? '100vh' : '93.6vh'};
 `
 
 // height: calc(100vh - 3rem)

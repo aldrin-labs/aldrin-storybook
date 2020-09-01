@@ -34,7 +34,11 @@ import { syncStorage } from '@storage'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { useQuery } from 'react-apollo'
 
+<<<<<<< Updated upstream
 const version = `10.5.44`
+=======
+const version = `10.5.43`
+>>>>>>> Stashed changes
 const currentVersion = localStorage.getItem('version')
 if (currentVersion !== version) {
   localStorage.clear()
@@ -60,7 +64,8 @@ const AppRaw = ({
     getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
 
   const fullscreen: boolean = isChartPage && chartPageView !== 'default'
-  const showFooter = currentPage !== '/registration'
+  const showFooter =
+    currentPage !== '/registration' && currentPage !== '/tech_issues'
   const isPNL = currentPage === '/portfolio/main'
   // TODO: Check this variable
   const pageIsRegistration = currentPage.includes('regist')

@@ -44,7 +44,7 @@ class LoginClassComponent extends React.Component<Props> {
 
     return (
       <SWrapper theme={theme} className="LoginButton">
-        <Grow in={!loginStatus} unmountOnExit={true} mountOnEnter={true}>
+        <Grow in={!loginStatus && pathname !== '/tech_issues'} unmountOnExit={true} mountOnEnter={true}>
           <>
             <Button
               component={SignInLink}
