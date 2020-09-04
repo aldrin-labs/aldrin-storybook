@@ -572,7 +572,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             placeWithoutLoss: false,
             entryLevels: [
               ...entryLevels,
-              { price, amount, type: 0, placeWithoutLoss },
+              { price: +price, amount: +amount, type: 0, placeWithoutLoss },
             ],
           },
         },
@@ -1727,7 +1727,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     <DarkTooltip
                       maxWidth={'30rem'}
                       title={
-                        'Your smart order will be placed once when there is a Trading View alert that you connected to smart order.'
+                        'Your smart order will be closed once first TAP order was executed.'
                       }
                     >
                       <AdditionalSettingsButton
@@ -1946,20 +1946,27 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     title={'action when entry'}
                   >
                     <InputRowContainer>
-                      <AdditionalSettingsButton
-                        theme={theme}
-                        isActive={entryPoint.averaging.placeWithoutLoss}
-                        onClick={() => {
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'averaging',
-                            'placeWithoutLoss',
-                            !entryPoint.averaging.placeWithoutLoss
-                          )
-                        }}
+                      <DarkTooltip
+                        title={
+                          'Without loss order will be placed after entry order execution (mostly TAP order to have 0 profit + comissions).'
+                        }
+                        maxWidth={'30rem'}
                       >
-                        Place Without Loss
-                      </AdditionalSettingsButton>
+                        <AdditionalSettingsButton
+                          theme={theme}
+                          isActive={entryPoint.averaging.placeWithoutLoss}
+                          onClick={() => {
+                            this.updateSubBlockValue(
+                              'entryPoint',
+                              'averaging',
+                              'placeWithoutLoss',
+                              !entryPoint.averaging.placeWithoutLoss
+                            )
+                          }}
+                        >
+                          Place Without Loss
+                        </AdditionalSettingsButton>
+                      </DarkTooltip>
                     </InputRowContainer>
                   </FormInputContainer>
                 )}
@@ -1994,8 +2001,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       }
                       showErrors={showErrors}
                       isValid={
-                        !entryPoint.TVAlert.pricePlotEnabled &&
-                        this.validateField(true, priceForCalculate)
+                        entryPoint.TVAlert.pricePlotEnabled ||
+                        priceForCalculate != 0
                       }
                       disabled={
                         (entryPoint.order.type === 'market' &&
