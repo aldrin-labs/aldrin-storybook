@@ -368,7 +368,7 @@ class PortfolioSelector extends React.Component<IProps> {
 
     const login = true
     const isTransactions =
-      this.props.location.pathname === '/portfolio/transactions'
+      this.props.location.pathname.includes('/portfolio/transactions')
 
     const isCheckedAll =
       activeKeys.length + activeWallets.length ===

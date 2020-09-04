@@ -40,7 +40,7 @@ export const StyledToolbar = styled(Toolbar)`
     '.1rem solid #e0e5ec'};
   height: 100%;
   min-height: auto;
-  padding-right: 0;
+  padding: 0;
 `
 
 // @media (max-width: 1400px) {
@@ -67,7 +67,8 @@ export const NavLinkButtonWrapper = styled.div`
   height: 100%;
   width: 14rem;
   color: ${(props) => props.theme.palette.grey.text};
-  border-left: ${(props) => props.theme.palette.border.main};
+  /* border-left: ${(props) => props.theme.palette.border.main}; */
+  padding: 0.8rem 1.2rem;
   /* border-right: 0.1rem solid #e0e5ec; */
 
   @media only screen and (max-width: 1400px) {

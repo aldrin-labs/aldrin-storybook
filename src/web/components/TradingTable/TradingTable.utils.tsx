@@ -1877,7 +1877,9 @@ export const combineOrderHistoryTable = (
         // },
         price: {
           render: isMarketOrMakerOrder
-            ? 'market'
+            ? !!average
+              ? average
+              : 'market'
             : `${stripDigitPlaces(price, 8)} ${pair[1]}`,
           style: { textAlign: 'left', whiteSpace: 'nowrap' },
           contentToSort: price,

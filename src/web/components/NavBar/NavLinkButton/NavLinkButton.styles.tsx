@@ -16,18 +16,29 @@ const StyledButton = styled(Button)`
 export const SButton = styled(
   ({ isActivePage, type, white, black, ...rest }) => <StyledButton {...rest} />
 )`
-  // margin: 0 1rem;
-  font-weight: 500;
-  letter-spacing: 1px;
-  transition: 0.35s all;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  border-radius: 0;
-  // padding: 0 8px;
+  && {
+    color: ${(props) => (props.isActivePage ? props.blue : props.grey)};
+    background: ${(props) =>
+      props.isActivePage ? props.borderColor : 'transparent'};
+    font-family: Avenir Next Demi;
+    letter-spacing: 0.05rem;
+    font-size: 1.2rem;
+    transition: 0.35s all;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border-radius: 0.6rem;
+    text-transform: capitalize;
+    // padding: 0 8px;
 
-  @media only screen and (max-width: 1100px) {
-    margin: 0;
+    @media only screen and (max-width: 1100px) {
+      margin: 0;
+    }
+
+    &:hover {
+      color: ${(props) => props.blue};
+      background: ${(props) => props.borderColor};
+    }
   }
 `
 

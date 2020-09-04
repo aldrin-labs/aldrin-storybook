@@ -12,6 +12,8 @@ import {
 
 import { IProps } from './types'
 
+import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
+
 @withRouter
 export default class Dropdown extends React.Component<IProps> {
   state = {
@@ -37,7 +39,7 @@ export default class Dropdown extends React.Component<IProps> {
   }
 
   render() {
-    const { selectedMenu, id, theme } = this.props
+    const { selectedMenu, id, theme, component, onMouseOver } = this.props
 
     return (
       <StyledDropdown
@@ -46,16 +48,21 @@ export default class Dropdown extends React.Component<IProps> {
         // onMouseLeave={this.handleClose}
         key={`${id}-${selectedMenu}`}
       >
-        <StyledButton
+        <NavLinkButton
+          onMouseOver={onMouseOver}
           theme={theme}
           disableRipple={false}
           aria-controls={this.props.id}
           aria-haspopup="true"
           id={id}
           onClick={this.handleToggle}
+          component={component}
+          style={{
+            textTransform: 'none',
+          }}
         >
           {this.props.buttonText}
-        </StyledButton>
+        </NavLinkButton>
 
         <StyledPaper
           theme={theme}

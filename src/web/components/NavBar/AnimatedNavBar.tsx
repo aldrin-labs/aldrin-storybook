@@ -9,10 +9,10 @@ export interface Props {
 const AnimatedContainer = styled.div`
   position: sticky;
   z-index: 999;
-  height: 3.8rem;
+  height: 5.4vh;
 
   @media (max-width: 1400px) {
-    height: 5rem;
+    height: 5.4vh;
   }
 `
 

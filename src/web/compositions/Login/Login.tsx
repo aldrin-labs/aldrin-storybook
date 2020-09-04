@@ -11,7 +11,7 @@ const Login = ({
   initialStep: 'signIn' | 'signUp'
 }) => (
   <Grid
-    style={{ height: 'calc(100% - 5rem)' }}
+    style={{ height: 'calc(100% - 5.4vh)' }}
     container
     justify="center"
     alignItems="center"

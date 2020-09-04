@@ -54,12 +54,12 @@ export const StyledDropdown = styled.div`
   justify-content: center;
   /* margin: 0 1rem;
   padding: 0rem 0.5rem; */
-  width: 14rem;
+  width: 18rem;
   height: 100%;
-  border-left: ${(props) => props.theme.palette.border.main};
+  padding: 0.8rem 1.2rem;
 
   @media only screen and (max-width: 1400px) {
-    width: 17rem;
+    width: 18rem;
   }
 
   &:hover > div {
@@ -77,7 +77,7 @@ export const StyledDropdown = styled.div`
 export const StyledPaper = styled(Paper)`
   && {
     position: absolute;
-    top: calc(3.8rem - 1px);
+    top: calc(5.4vh - 1px);
     left: calc(50% - 0.5px);
     width: calc(100% + 0.15rem);
     height: auto;
@@ -94,7 +94,6 @@ export const StyledPaper = styled(Paper)`
 
   @media screen and (max-width: 1400px) {
     && {
-      top: calc(5rem - 1px);
       width: calc(100% + 0.2rem);
     }
   }

@@ -46,8 +46,8 @@ class PortfolioTableTabs extends React.Component<IProps> {
       location: { pathname },
     } = this.props
 
-    const switchUSDBTC = pathname === '/portfolio/main'
-    const isMainPage = pathname === '/portfolio/main'
+    const switchUSDBTC = pathname.includes('/portfolio/main')
+    const isMainPage = pathname.includes('/portfolio/main')
     const isTransactionsPage = /portfolio\/transactions/.test(pathname)
     const isRebalancePage = pathname === '/portfolio/rebalance'
 
