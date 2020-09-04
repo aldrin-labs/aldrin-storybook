@@ -149,7 +149,7 @@ export const BeforeCharacter = styled.span`
 export const AdditionalSettingsButton = styled(
   ({ isActive, children, theme, ...rest }) => (
     <BtnCustom
-      btnWidth="30%"
+      btnWidth="calc(94% / 3)"
       height={'2.5rem'}
       fontSize="1.2rem"
       fontWeight="normal"
@@ -175,6 +175,10 @@ export const AdditionalSettingsButton = styled(
     </BtnCustom>
   )
 )`
+  &:last-child {
+    margin: 0;
+  }
+
   @media (min-width: 1921px) {
     height: calc(2.5rem - 0.5rem);
     font-size: 1.1rem;
