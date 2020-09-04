@@ -88,7 +88,7 @@ const TransferPopup = ({
         variables: {
           input: {
             keyId: haveSelectedAccount
-              ? selectedAccount.keyId
+              ? selectedAccount
               : selectedAccountOption.keyId,
             asset: selectedCoin.label,
             amount: +coinAmount,
@@ -467,7 +467,7 @@ const TransferPopup = ({
                 selectedCoin={selectedCoin.label}
                 selectedAccount={
                   haveSelectedAccount
-                    ? selectedAccount.keyId
+                    ? selectedAccount
                     : selectedAccountOption.keyId
                 }
                 marketType={
