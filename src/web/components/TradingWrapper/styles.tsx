@@ -134,7 +134,7 @@ export const TerminalModeButton = styled(({ isActive, children, ...rest }) => (
   font-size: 1.3rem;
   font-weight: normal;
   letter-spacing: 0.05rem;
-  width: 33.3%;
+  width: 25%;
   color: ${(props: { active: boolean; theme: Theme }) =>
     props.active
       ? props.theme.palette.button.color

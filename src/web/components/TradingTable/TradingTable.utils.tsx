@@ -707,6 +707,7 @@ export const combineActiveTradesTable = ({
             activatePrice,
           },
           exitLevels,
+          entryLevels,
           stopLoss,
           stopLossType,
           forcedLoss,
@@ -728,6 +729,7 @@ export const combineActiveTradesTable = ({
             amount: '-',
           },
           exitLevels: [],
+          entryLevels: [],
           stopLoss: '-',
           stopLossType: '-',
           forcedLoss: false,
@@ -1073,6 +1075,7 @@ export const combineActiveTradesTable = ({
                   <EntryOrderColumn
                     theme={theme}
                     haveEdit={true}
+                    entryLevels={entryLevels}
                     editTrade={() => editTrade('entryOrder', el)}
                     enableEdit={activeOrderStatus === 'Preparing' || isTemplate}
                     pair={`${pairArr[0]}/${pairArr[1]}`}
@@ -1168,6 +1171,7 @@ export const combineStrategiesHistoryTable = (
             activatePrice,
           },
           exitLevels,
+          entryLevels,
           stopLoss,
           stopLossType,
           forcedLoss,
@@ -1188,6 +1192,7 @@ export const combineStrategiesHistoryTable = (
             amount: '-',
           },
           exitLevels: [],
+          entryLevels: [],
           stopLoss: '-',
           stopLossType: '-',
           forcedLoss: false,
@@ -1452,6 +1457,7 @@ export const combineStrategiesHistoryTable = (
                     theme={theme}
                     haveEdit={false}
                     enableEdit={!!entryPrice}
+                    entryLevels={entryLevels}
                     pair={`${pairArr[0]}/${pairArr[1]}`}
                     side={side}
                     price={entryOrderPrice}

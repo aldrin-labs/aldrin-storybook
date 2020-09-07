@@ -7,6 +7,8 @@ dayjs.extend(localizedFormat)
 import { InputTitle } from '@sb/components/TraidingTerminal/styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Theme } from '@material-ui/core'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import Help from '@material-ui/icons/Help'
 
 export const SubColumnTitle = styled(InputTitle)`
   display: inline-block;
@@ -48,6 +50,7 @@ export const EntryOrderColumn = ({
   haveEdit,
   activatePrice,
   theme,
+  entryLevels,
 }: {
   price: number
   pair: string
@@ -67,6 +70,11 @@ export const EntryOrderColumn = ({
   haveEdit: boolean
   editTrade: () => void
   theme: Theme
+  entryLevels: {
+    price: number
+    amount: number
+    placeWithoutLoss: boolean
+  }
 }) => {
   return (
     <BlockContainer theme={theme}>
@@ -118,41 +126,104 @@ export const EntryOrderColumn = ({
         </SubColumnValue>
       </div>
 
-      <div style={{ display: 'flex' }}>
-        <SubColumnTitle theme={theme}>price</SubColumnTitle>
-        <SubColumnValue
-          theme={theme}
-          style={{ display: 'block' }}
-          textAlign={'right'}
-        >
-          {trailing ? (
-            <span>
-              Trailing <span style={{ color: green }}>{trailing}%</span>
-            </span>
-          ) : order === 'market' ? (
-            'market'
-          ) : (
-            price
-          )}
-          {trailing ? (
-            <span style={{ display: 'block' }}>{activatePrice}</span>
-          ) : null}
-        </SubColumnValue>
-      </div>
+      {!entryLevels || entryLevels.length === 0 ? (
+        <>
+          <div style={{ display: 'flex' }}>
+            <SubColumnTitle theme={theme}>price</SubColumnTitle>
+            <SubColumnValue
+              theme={theme}
+              style={{ display: 'block' }}
+              textAlign={'right'}
+            >
+              {trailing ? (
+                <span>
+                  Trailing <span style={{ color: green }}>{trailing}%</span>
+                </span>
+              ) : order === 'market' ? (
+                'market'
+              ) : (
+                price
+              )}
+              {trailing ? (
+                <span style={{ display: 'block' }}>{activatePrice}</span>
+              ) : null}
+            </SubColumnValue>
+          </div>
 
-      <div>
-        <SubColumnTitle theme={theme}>amount</SubColumnTitle>
-        <SubColumnValue theme={theme} textAlign={'right'}>
-          {amount}
-        </SubColumnValue>
-      </div>
-
-      <div>
-        <SubColumnTitle theme={theme}>total</SubColumnTitle>
-        <SubColumnValue theme={theme} textAlign={'right'}>
-          {total.toFixed(2)}
-        </SubColumnValue>
-      </div>
+          <div>
+            <SubColumnTitle theme={theme}>amount</SubColumnTitle>
+            <SubColumnValue theme={theme} textAlign={'right'}>
+              {amount}
+            </SubColumnValue>
+          </div>
+          <div>
+            <SubColumnTitle theme={theme}>total</SubColumnTitle>
+            <SubColumnValue theme={theme} textAlign={'right'}>
+              {total.toFixed(2)}
+            </SubColumnValue>
+          </div>
+        </>
+      ) : (
+        <>
+          <div>
+            <SubColumnTitle theme={theme}>averaging</SubColumnTitle>
+            <DarkTooltip
+              enterDelay={300}
+              maxWidth={'40rem'}
+              title={
+                <div style={{ minWidth: '20rem' }}>
+                  <div
+                    style={{ display: 'flex', justifyContent: 'space-around' }}
+                  >
+                    <span>Price</span> <span>Amount</span>
+                  </div>
+                  {entryLevels.map((target) => (
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-around',
+                      }}
+                    >
+                      <span>{target.price}</span> <span>{target.amount}</span>
+                    </div>
+                  ))}
+                </div>
+              }
+            >
+              <SubColumnValue theme={theme} textAlign={'right'}>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'flex-end',
+                  }}
+                >
+                  targets
+                  <Help
+                    style={{
+                      height: '1.5rem',
+                      width: '1.5rem',
+                      color: 'rgb(0, 93, 217)',
+                      marginLeft: '.5rem',
+                    }}
+                  />
+                </div>
+              </SubColumnValue>
+            </DarkTooltip>
+          </div>
+          <div>
+            <SubColumnTitle theme={theme}>total</SubColumnTitle>
+            <SubColumnValue theme={theme} textAlign={'right'}>
+              {total.toFixed(2)}
+            </SubColumnValue>
+          </div>
+          <div>
+            <SubColumnTitle style={{ visibility: 'hidden' }} theme={theme}>
+              space
+            </SubColumnTitle>
+          </div>
+        </>
+      )}
     </BlockContainer>
   )
 }

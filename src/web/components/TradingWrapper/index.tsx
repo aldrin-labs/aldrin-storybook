@@ -227,6 +227,14 @@ class SimpleTabs extends React.Component {
                 Limit
               </TerminalModeButton>
 
+              <TerminalModeButton
+                theme={theme}
+                active={mode === 'maker-only'}
+                onClick={() => this.handleChangeMode('maker-only')}
+              >
+                Maker-only
+              </TerminalModeButton>
+
               {!isSPOTMarket ? (
                 <TerminalModeButtonWithDropdown
                   theme={theme}

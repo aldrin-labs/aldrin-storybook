@@ -282,7 +282,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           closeStrategyAfterFirstTAP: false,
           placeWithoutLoss: false,
           entryLevels: [],
-          // ...result.entryPoint.averaging,
+          ...result.entryPoint.averaging,
         },
         TVAlert: {
           isTVAlertOn: false,

@@ -493,7 +493,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
               direction="column"
               style={{ margin: 'auto 0', width: '100%' }}
             >
-              {priceType !== 'market' && priceType !== 'stop-market' ? (
+              {priceType !== 'market' &&
+              priceType !== 'stop-market' &&
+              priceType !== 'maker-only' ? (
                 <InputRowContainer
                   key={'limit-price'}
                   padding={'.6rem 0'}
@@ -748,7 +750,7 @@ const validate = (values: FormValues, props: IProps) => {
                   .required(traidingErrorMessages[0])
                   .moreThan(0, traidingErrorMessages[0]),
         })
-      : priceType === 'market'
+      : priceType === 'market' || priceType === 'maker-only'
       ? Yup.object().shape({
           amount:
             byType === 'sell'

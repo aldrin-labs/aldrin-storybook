@@ -59,6 +59,7 @@ export default class Dropdown extends React.Component<IProps> {
           component={component}
           style={{
             textTransform: 'none',
+            padding: '0 1rem',
           }}
         >
           {this.props.buttonText}

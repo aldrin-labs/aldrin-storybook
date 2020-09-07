@@ -15,7 +15,12 @@ export interface FormValues {
   postOnly?: boolean
 }
 
-export type priceType = 'limit' | 'market' | 'stop-limit'
+export type priceType =
+  | 'limit'
+  | 'market'
+  | 'stop-limit'
+  | 'stop-market'
+  | 'maker-only'
 
 export interface IProps {
   byType: 'buy' | 'sell'

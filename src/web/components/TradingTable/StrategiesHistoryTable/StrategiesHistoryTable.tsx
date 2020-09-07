@@ -162,6 +162,7 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
         onChange={this.setExpandedRows}
         rowsWithHover={false}
         style={{
+          height: 'calc(100% - 6rem)',
           borderRadius: 0,
           backgroundColor: theme.palette.white.background,
         }}

@@ -694,7 +694,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
         <TableWithSort
           style={{
             borderRadius: 0,
-            height: '100%',
+            height: 'calc(100% - 5.5rem)',
             overflowX: 'scroll',
             backgroundColor: theme.palette.white.background,
           }}

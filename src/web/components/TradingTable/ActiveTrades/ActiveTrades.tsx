@@ -902,7 +902,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
           rowsWithHover={false}
           style={{
             borderRadius: 0,
-            height: '100%',
+            height: 'calc(100% - 5.5rem)',
             overflowX: 'scroll',
             backgroundColor: theme.palette.white.background,
           }}

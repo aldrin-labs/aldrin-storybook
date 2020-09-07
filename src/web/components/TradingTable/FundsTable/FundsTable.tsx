@@ -85,7 +85,7 @@ class FundsTable extends React.PureComponent<IProps> {
       <TableWithSort
         style={{
           borderRadius: 0,
-          height: '100%',
+          height: 'calc(100% - 3rem)',
           backgroundColor: theme.palette.white.background,
         }}
         stylesForTable={{ backgroundColor: theme.palette.white.background }}

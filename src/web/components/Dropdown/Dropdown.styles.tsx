@@ -54,14 +54,9 @@ export const StyledDropdown = styled.div`
   justify-content: center;
   /* margin: 0 1rem;
   padding: 0rem 0.5rem; */
-  width: 18rem;
+  width: auto;
   height: 100%;
   padding: 0.8rem 1.2rem;
-
-  @media only screen and (max-width: 1400px) {
-    width: 18rem;
-  }
-
   &:hover > div {
     display: block !important;
   }
