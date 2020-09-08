@@ -18,6 +18,7 @@ import stableCoins from '@core/config/stableCoins'
 import { cloneDeep } from 'lodash-es'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
 import { AdlIndicator } from './TradingTable.styles'
+import { getPrecisionItem } from '@core/utils/getPrecisionItem'
 
 const changePairToSelected = (pair: string) => {
   console.log('client mutate', client)
@@ -330,8 +331,8 @@ export const combinePositionsTable = ({
   keys,
   canceledPositions,
   priceFromOrderbook,
-  pricePrecision,
-  quantityPrecision,
+  // pricePrecision,
+  // quantityPrecision,
   adlData,
   toogleEditMarginPopup,
   handlePairChange,
@@ -345,8 +346,8 @@ export const combinePositionsTable = ({
   keyId: string
   canceledPositions: string[]
   priceFromOrderbook: number | string
-  pricePrecision: number
-  quantityPrecision: number
+  // pricePrecision: number
+  // quantityPrecision: number
   keys: Key[]
   adlData: { symbol: string; adlQuantile: any }[]
   toogleEditMarginPopup: (position: Position) => void
@@ -376,6 +377,10 @@ export const combinePositionsTable = ({
         isolatedMargin,
         liquidationPrice,
       } = el
+
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({ marketType: 1, symbol })
+
+
       const needOpacity = el._id === '0'
 
       const marketPrice = (
@@ -565,7 +570,7 @@ export const combinePositionsTable = ({
             ),
           },
           liqPrice: {
-            render: `${liquidationPrice == 0 ? '-' : liquidationPrice} ${
+            render: `${liquidationPrice == 0 ? '-' : stripDigitPlaces(liquidationPrice, pricePrecision)} ${
               liquidationPrice == 0 ? '' : pair[1]
             }`,
             style: {
@@ -637,8 +642,8 @@ export const combineActiveTradesTable = ({
   prices = [],
   marketType,
   currencyPair,
-  pricePrecision,
-  quantityPrecision,
+  // pricePrecision,
+  // quantityPrecision,
   addOrderToCanceled,
   canceledOrders,
   keys,
@@ -656,8 +661,8 @@ export const combineActiveTradesTable = ({
   prices: { pair: string; price: number }[]
   marketType: number
   currencyPair: string
-  pricePrecision: number
-  quantityPrecision: number
+  // pricePrecision: number
+  // quantityPrecision: number
   addOrderToCanceled: (id: string) => void
   canceledOrders: string[]
   keys: Key[]
@@ -792,6 +797,9 @@ export const combineActiveTradesTable = ({
 
       const isErrorInOrder = !!msg
 
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({ marketType, symbol: pair })
+
+
       return {
         id: `${el._id}${i}`,
         pair: {
@@ -829,19 +837,19 @@ export const combineActiveTradesTable = ({
         entryPrice: {
           render: entryPrice ? (
             <SubColumnValue theme={theme}>
-              {stripDigitPlaces(entryPrice, 8)} {pairArr[1]}
+              {stripDigitPlaces(entryPrice, pricePrecision)} {pairArr[1]}
             </SubColumnValue>
           ) : !!entryDeviation ? (
             <SubColumnValue theme={theme}>
               <div style={{ color: theme.palette.grey.light }}>trailing</div>{' '}
               <div>
                 <span style={{ color: theme.palette.grey.light }}>from</span>{' '}
-                {stripDigitPlaces(activatePrice, 8)}
+                {stripDigitPlaces(activatePrice, pricePrecision)}
               </div>
             </SubColumnValue>
           ) : !!entryOrderPrice ? (
             <SubColumnValue theme={theme}>
-              {stripDigitPlaces(entryOrderPrice, 8)} {pairArr[1]}
+              {stripDigitPlaces(entryOrderPrice, pricePrecision)} {pairArr[1]}
             </SubColumnValue>
           ) : (
             '-'
@@ -856,7 +864,7 @@ export const combineActiveTradesTable = ({
             <SubColumnValue theme={theme}>
               {stripDigitPlaces(
                 amount,
-                marketType === 0 ? 8 : quantityPrecision
+                quantityPrecision
               )}{' '}
               {pairArr[0]}{' '}
             </SubColumnValue>
@@ -1274,6 +1282,9 @@ export const combineStrategiesHistoryTable = (
 
       if (isTemplate) orderState = 'Template'
 
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({ marketType, symbol: pair })
+
+
       return {
         id: el._id,
         pair: {
@@ -1312,7 +1323,7 @@ export const combineStrategiesHistoryTable = (
             <SubColumnValue theme={theme}>
               {stripDigitPlaces(
                 entryOrderPrice,
-                getNumberOfPrecisionDigitsForSymbol(pairArr[1])
+                pricePrecision
               )}{' '}
               {pairArr[1]}
             </SubColumnValue>
@@ -1325,7 +1336,7 @@ export const combineStrategiesHistoryTable = (
         quantity: {
           render: (
             <SubColumnValue theme={theme}>
-              {stripDigitPlaces(amount, 8)} {pairArr[0]}{' '}
+              {stripDigitPlaces(amount, quantityPrecision)} {pairArr[0]}{' '}
             </SubColumnValue>
           ),
           style: {
@@ -1525,7 +1536,7 @@ export const combineOpenOrdersTable = (
   ) => Promise<any>,
   theme: Theme,
   arrayOfMarketIds: string[],
-  marketType: number,
+  marketType: 0 | 1,
   canceledOrders: string[],
   keys: Key[],
   handlePairChange: (pair: string) => void
@@ -1606,6 +1617,9 @@ export const combineOpenOrdersTable = (
       const isMarketOrMakerOrder =
         price === 0 && (!!type.match(/market/) || isMakerOnlyOrder)
 
+      
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({ marketType, symbol: symbol })
+
       return {
         id: `${orderId}${timestamp}${origQty}${marketId}`,
         pair: {
@@ -1661,7 +1675,7 @@ export const combineOpenOrdersTable = (
             ? 'market'
             : !+price
             ? price
-            : `${stripDigitPlaces(price, 8)} ${pair[1]}`,
+            : `${stripDigitPlaces(price, pricePrecision)} ${pair[1]}`,
           style: {
             textAlign: 'left',
             whiteSpace: 'nowrap',
@@ -1676,7 +1690,7 @@ export const combineOpenOrdersTable = (
         // },
         // TODO: We should change "total" to total param from backend when it will be ready
         quantity: {
-          render: `${stripDigitPlaces(origQty, 8)} ${pair[0]}`,
+          render: `${stripDigitPlaces(origQty, quantityPrecision)} ${pair[0]}`,
           contentToSort: +origQty,
           style: { opacity: needOpacity ? 0.75 : 1 },
         },
@@ -1687,7 +1701,7 @@ export const combineOpenOrdersTable = (
                 // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
                 render: !+price
                   ? '-'
-                  : `${stripDigitPlaces(+origQty * price, 8)} ${pair[1]}`,
+                  : `${stripDigitPlaces(+origQty * price, quantityPrecision)} ${pair[1]}`,
                 contentToSort: +origQty * price,
                 style: { opacity: needOpacity ? 0.75 : 1 },
               },
@@ -1777,7 +1791,7 @@ export const combineOrderHistoryTable = (
   orderData: OrderType[],
   theme: Theme,
   arrayOfMarketIds: string[],
-  marketType: number,
+  marketType: 0 | 1,
   keys,
   handlePairChange: (pair: string) => void
 ) => {
@@ -1801,6 +1815,8 @@ export const combineOrderHistoryTable = (
         average,
         info,
       } = el
+
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({ marketType, symbol })
 
       // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
       const pair = symbol.split('_')
@@ -1889,7 +1905,7 @@ export const combineOrderHistoryTable = (
             ? !!average
               ? average
               : 'market'
-            : `${stripDigitPlaces(price, 8)} ${pair[1]}`,
+            : `${stripDigitPlaces(price, pricePrecision)} ${pair[1]}`,
           style: { textAlign: 'left', whiteSpace: 'nowrap' },
           contentToSort: price,
         },
@@ -1899,7 +1915,7 @@ export const combineOrderHistoryTable = (
         //   contentToSort: filledQuantityProcessed,
         // },
         quantity: {
-          render: `${stripDigitPlaces(origQty, 8)} ${pair[0]}`,
+          render: `${stripDigitPlaces(origQty, quantityPrecision)} ${pair[0]}`,
           contentToSort: +origQty,
         },
         // TODO: We should change "total" to total param from backend when it will be ready
@@ -1907,7 +1923,7 @@ export const combineOrderHistoryTable = (
           ? {
               amount: {
                 // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-                render: `${stripDigitPlaces(origQty * price, 8)} ${pair[1]}`,
+                render: `${stripDigitPlaces(origQty * price, quantityPrecision)} ${pair[1]}`,
                 contentToSort: origQty * price,
               },
             }
@@ -1982,7 +1998,7 @@ export const combineTradeHistoryTable = (
   tradeData: TradeType[],
   theme: Theme,
   arrayOfMarketIds: string[],
-  marketType: number,
+  marketType: 0 | 1,
   keys,
   handlePairChange: (pair: string) => void
 ) => {
@@ -2005,6 +2021,8 @@ export const combineTradeHistoryTable = (
         amount,
         realizedPnl,
       } = el
+
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({ marketType, symbol })
 
       const keyName = keys ? keys[keyId] : ''
 
@@ -2052,12 +2070,12 @@ export const combineTradeHistoryTable = (
           contentToSort: side,
         },
         price: {
-          render: `${stripDigitPlaces(price, 8)} ${pair[1]}`,
+          render: `${stripDigitPlaces(price, pricePrecision)} ${pair[1]}`,
           style: { textAlign: 'left', whiteSpace: 'nowrap' },
           contentToSort: price,
         },
         quantity: {
-          render: `${stripDigitPlaces(amount, 8)} ${pair[0]}`,
+          render: `${stripDigitPlaces(amount, quantityPrecision)} ${pair[0]}`,
           contentToSort: +amount,
         },
         // TODO: We should change "total" to total param from backend when it will be ready
@@ -2065,7 +2083,7 @@ export const combineTradeHistoryTable = (
           ? {
               amount: {
                 // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-                render: `${stripDigitPlaces(amount * price, 8)} ${pair[1]}`,
+                render: `${stripDigitPlaces(amount * price, quantityPrecision)} ${pair[1]}`,
                 contentToSort: amount * price,
               },
             }
@@ -2102,7 +2120,7 @@ export const combineTradeHistoryTable = (
             }
           : {}),
         fee: {
-          render: `${stripDigitPlaces(cost, 8)} ${currency}`,
+          render: `${stripDigitPlaces(cost, quantityPrecision)} ${currency}`,
 
           contentToSort: cost,
         },
@@ -2146,7 +2164,7 @@ export const combineTradeHistoryTable = (
 export const combineFundsTable = (
   fundsData: FundsType[],
   hideSmallAssets: boolean,
-  marketType: number
+  marketType: 0 | 1
 ) => {
   if (!fundsData && !Array.isArray(fundsData)) {
     return []
@@ -2167,6 +2185,8 @@ export const combineFundsTable = (
         free,
         asset: { symbol, priceBTC, priceUSD },
       } = el
+
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({ marketType, symbol })
 
       if (!quantity || quantity === 0) {
         return
