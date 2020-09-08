@@ -227,7 +227,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     }
 
     if (prevProps.priceType !== priceType) {
-      const priceForCalculate = priceType !== 'market' ? price : marketPrice
+      const priceForCalculate =
+        priceType !== 'market' && priceType !== 'maker-only'
+          ? price
+          : marketPrice
       this.setFormatted(
         'amount',
         stripDigitPlaces(
@@ -240,7 +243,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
     if (
       this.state.priceFromOrderbook !== this.props.priceFromOrderbook &&
-      priceType !== 'market'
+      priceType !== 'market' &&
+      priceType !== 'maker-only'
     ) {
       const { priceFromOrderbook, leverage } = this.props
 
@@ -256,7 +260,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     }
 
     if (leverage !== prevProps.leverage) {
-      const priceForCalculate = priceType !== 'market' ? price : marketPrice
+      const priceForCalculate =
+        priceType !== 'market' && priceType !== 'maker-only'
+          ? price
+          : marketPrice
       const maxTotal = funds[1].quantity * leverage
 
       this.setFormatted('total', stripDigitPlaces(margin * leverage, 8), 0)
@@ -318,20 +325,25 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       values: { price },
       isSPOTMarket,
       quantityPrecision,
+      leverage,
+      setFieldValue,
     } = this.props
 
-    const priceForCalculate = priceType !== 'market' ? price : marketPrice
+    const priceForCalculate =
+      priceType !== 'market' && priceType !== 'maker-only' ? price : marketPrice
 
-    this.setFormatted('total', e.target.value, 1)
+    setFieldValue('total', e.target.value)
 
     if (priceForCalculate) {
       const amount = e.target.value / priceForCalculate
+      const margin = e.target.value / leverage
 
-      this.setFormatted(
+      setFieldValue(
         'amount',
-        stripDigitPlaces(amount, isSPOTMarket ? 8 : quantityPrecision),
-        0
+        stripDigitPlaces(amount, isSPOTMarket ? 8 : quantityPrecision)
       )
+
+      setFieldValue('margin', stripDigitPlaces(margin, 3))
     }
   }
 
@@ -351,7 +363,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       quantityPrecision,
     } = this.props
 
-    const priceForCalculate = priceType !== 'market' ? price : marketPrice
+    const priceForCalculate =
+      priceType !== 'market' && priceType !== 'maker-only' ? price : marketPrice
     const isBuyType = operationType === 'buy'
 
     let maxAmount = 0
@@ -400,7 +413,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     } = this.props
 
     const priceForCalculate =
-      priceType !== 'market' ? e.target.value : marketPrice
+      priceType !== 'market' && priceType !== 'maker-only'
+        ? e.target.value
+        : marketPrice
 
     setFieldValue('price', e.target.value)
 
@@ -434,7 +449,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
         ? stripDigitPlaces(funds[1].quantity, 2)
         : e.target.value
 
-    const priceForCalculate = priceType !== 'market' ? price : marketPrice
+    const priceForCalculate =
+      priceType !== 'market' && priceType !== 'maker-only' ? price : marketPrice
 
     const newAmount = (value * leverage) / priceForCalculate
     const newTotal = value * leverage
@@ -471,7 +487,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     const isBuyType = operationType === 'buy'
 
     const priceForCalculate =
-      priceType !== 'market' && values.limit !== null
+      priceType !== 'market' &&
+      priceType !== 'maker-only' &&
+      values.limit !== null
         ? values.price
         : marketPrice
 
@@ -585,10 +603,11 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     <div style={{ width: '50%', paddingLeft: '1%' }}>
                       <TradeInputContent
                         theme={theme}
-                        disabled={true}
+                        //disabled={false}
                         needTitle
                         title={`total`}
-                        value={stripDigitPlaces(values.total, 2) || ''}
+                        type={'text'}
+                        value={values.total === '' ? '' : values.total}
                         onChange={this.onTotalChange}
                         symbol={pair[1]}
                       />
@@ -653,6 +672,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   <TradeInputContent
                     theme={theme}
                     needTitle
+                    type={'text'}
                     title={`total (${pair[1]})`}
                     value={values.total || ''}
                     onChange={this.onTotalChange}
@@ -671,7 +691,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   <TradeInputContent
                     theme={theme}
                     needTitle
-                    disabled={priceType === 'market'}
+                    //disabled={priceType === 'market'}
                     title={`margin (${pair[1]})`}
                     value={values.margin || ''}
                     type={'text'}
@@ -907,7 +927,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
         {
           leverage,
           marketType: isSPOTMarket ? 0 : 1,
-          ...(priceType !== 'market'
+          ...(priceType !== 'market' && priceType !== 'maker-only'
             ? orderMode === 'TIF' && priceType !== 'stop-market'
               ? { timeInForce: TIFMode, postOnly: false }
               : orderMode === 'postOnly'
