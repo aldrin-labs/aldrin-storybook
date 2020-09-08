@@ -18,6 +18,7 @@ import stableCoins from '@core/config/stableCoins'
 import { cloneDeep } from 'lodash-es'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
 import { AdlIndicator } from './TradingTable.styles'
+import { getPrecisionMap } from '@core/utils/getPrecisionMap'
 
 const changePairToSelected = (pair: string) => {
   console.log('client mutate', client)
@@ -563,7 +564,7 @@ export const combinePositionsTable = ({
             ),
           },
           liqPrice: {
-            render: `${liquidationPrice == 0 ? '-' : liquidationPrice} ${
+            render: `${liquidationPrice == 0 ? '-' : stripDigitPlaces(liquidationPrice, getPrecisionMap({ marketType: 1, symbol }).pricePrecision)} ${
               liquidationPrice == 0 ? '' : pair[1]
             }`,
             style: {
