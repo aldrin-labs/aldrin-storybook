@@ -335,6 +335,7 @@ export const combinePositionsTable = ({
   adlData,
   toogleEditMarginPopup,
   handlePairChange,
+  enqueueSnackbar,
 }: {
   data: Position[]
   createOrderWithStatus: (variables: any, positionId: any) => Promise<void>
@@ -350,6 +351,7 @@ export const combinePositionsTable = ({
   adlData: { symbol: string; adlQuantile: any }[]
   toogleEditMarginPopup: (position: Position) => void
   handlePairChange: (pair: string) => void
+  enqueueSnackbar: (message: string, { variant: string }) => void
 }) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -602,6 +604,7 @@ export const combinePositionsTable = ({
                 <SubRow
                   theme={theme}
                   positionId={el._id}
+                  enqueueSnackbar={enqueueSnackbar}
                   getVariables={getVariables}
                   priceFromOrderbook={priceFromOrderbook}
                   createOrderWithStatus={createOrderWithStatus}
