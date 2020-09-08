@@ -31,7 +31,9 @@ const AccountBlock = ({
   >
     <Grid item id="accounts_block">
       <StyledTypography>Account</StyledTypography>
-      <Grid style={{ height: '6rem', padding: '1rem 0 0 0', overflow: 'hidden' }}>
+      <Grid
+        style={{ height: '6rem', padding: '1rem 0 0 0', overflow: 'hidden' }}
+      >
         <SelectKeyListDW
           isDeposit={isDepositPage}
           classNamePrefix="custom-select-box"
@@ -113,7 +115,9 @@ const AccountBlock = ({
     </Grid>
     <Grid item id="coins_block">
       <StyledTypography>Coin</StyledTypography>
-      <Grid style={{ height: '6rem', padding: '1rem 0 0 0', overflow: 'hidden' }}>
+      <Grid
+        style={{ height: '6rem', padding: '1rem 0 0 0', overflow: 'hidden' }}
+      >
         <SelectCoinList
           classNamePrefix="custom-select-box"
           isSearchable={true}

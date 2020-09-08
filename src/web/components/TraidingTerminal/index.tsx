@@ -329,8 +329,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       setFieldValue,
     } = this.props
 
-    console.log('total', e.target.value)
-
     const priceForCalculate =
       priceType !== 'market' && priceType !== 'maker-only' ? price : marketPrice
 
@@ -339,12 +337,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     if (priceForCalculate) {
       const amount = e.target.value / priceForCalculate
       const margin = e.target.value / leverage
-
-      // this.setFormatted(
-      //   'amount',
-      //   stripDigitPlaces(amount, isSPOTMarket ? 8 : quantityPrecision),
-      //   0
-      // )
 
       setFieldValue(
         'amount',
