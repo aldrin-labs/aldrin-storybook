@@ -114,27 +114,29 @@ export const FullHeightGrid = styled(({ needBorderRight, ...rest }) => (
     props.needBorderRight && props.theme.palette.border.main};
 `
 
-export const TerminalModeButton = styled(({ isActive, children, ...rest }) => (
-  <button
-    // fontSize="1.3rem"
-    // padding=""
-    // btnWidth="auto"
-    // height="auto"
-    // btnColor={isActive ? '#fff' : '#16253D'}
-    // backgroundColor={isActive ? '#5C8CEA' : '#f2f4f6'}
-    // borderColor="#e0e5ec"
-    // borderWidth="0"
-    // borderRadius="0"
-    {...rest}
-  >
-    {children}
-  </button>
-))`
+export const TerminalModeButton = styled(
+  ({ isActive, children, MASTER_BUILD, ...rest }) => (
+    <button
+      // fontSize="1.3rem"
+      // padding=""
+      // btnWidth="auto"
+      // height="auto"
+      // btnColor={isActive ? '#fff' : '#16253D'}
+      // backgroundColor={isActive ? '#5C8CEA' : '#f2f4f6'}
+      // borderColor="#e0e5ec"
+      // borderWidth="0"
+      // borderRadius="0"
+      {...rest}
+    >
+      {children}
+    </button>
+  )
+)`
   height: auto;
   font-size: 1.3rem;
   font-weight: normal;
   letter-spacing: 0.05rem;
-  width: 25%;
+  width: ${(props) => (props.MASTER_BUILD ? '33.3%' : '25%')};
   color: ${(props: { active: boolean; theme: Theme }) =>
     props.active
       ? props.theme.palette.button.color

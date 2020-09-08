@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { Fade, Grid, Theme } from '@material-ui/core'
 
@@ -111,6 +111,11 @@ export const DefaultViewComponent = (
   const exchange = activeExchange.symbol
   const isDefaultTerminalViewMode = terminalViewMode === 'default'
   const sizeDigits = marketType === 0 ? 8 : 3
+
+  useEffect(() => {
+    updateTerminalPriceFromOrderbook(null)
+  }, [currencyPair])
+
   console.log('default view rerender', props)
 
   return (
