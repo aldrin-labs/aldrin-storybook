@@ -24,7 +24,6 @@ import ClaimBonusPopup from '@sb/compositions/Profile/compositions/DepositWithdr
 import { StyledTypography } from '../Withdrawal/Withdrawal.styles'
 import { IProps } from './Deposit.types'
 import { Loading } from '@sb/components/index'
-import { size } from 'lodash'
 
 const Deposits = ({ ...props }: IProps) => {
   const { bonusRequestMutation } = props
