@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
 import { Grid, Typography } from '@material-ui/core'
@@ -9,6 +9,7 @@ import { getProfileSettings } from '@core/graphql/queries/user/getProfileSetting
 import { getActivePromo } from '@core/graphql/queries/user/getActivePromo'
 import { bonusRequest } from '@core/graphql/mutations/bonus/bonusRequest'
 import { addGAEvent } from '@core/utils/ga.utils'
+import { useSnackbar } from 'notistack'
 
 import exclamationMark from '@icons/exclamationMark.svg'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -22,9 +23,12 @@ import ClaimBonusPopup from '@sb/compositions/Profile/compositions/DepositWithdr
 
 import { StyledTypography } from '../Withdrawal/Withdrawal.styles'
 import { IProps } from './Deposit.types'
+import { Loading } from '@sb/components/index'
+import { size } from 'lodash'
 
 const Deposits = ({ ...props }: IProps) => {
   const { bonusRequestMutation } = props
+
   const {
     getProfileSettings: { depositSettings } = {
       depositSettings: { selectedKey: '' },
@@ -49,6 +53,8 @@ const Deposits = ({ ...props }: IProps) => {
   const [claimBonusId, setClaimBonusId] = useState('')
   const [claimRequestStatus, setClaimRequestStatus] = useState('')
   const [claimRequestErrorText, setClaimRequestErrorText] = useState('')
+  const { enqueueSnackbar } = useSnackbar()
+
   const [selectedCoin, setSelectedCoin] = useState({
     label: 'BTC',
     name: 'Bitcoin',
@@ -58,6 +64,11 @@ const Deposits = ({ ...props }: IProps) => {
   const copyCoinAddress = () => {
     copy(coinAddress)
   }
+
+  useEffect(() => {
+    setCoinAddress('')
+  }, [selectedCoin.label, selectedKey])
+
   const networkChange = () => {}
 
   const handleClaimBonus = async () => {
@@ -89,6 +100,8 @@ const Deposits = ({ ...props }: IProps) => {
       setClaimRequestErrorText(e.message)
     }
   }
+
+  const isCoinAddressEmpty = coinAddress == ''
 
   return (
     <>
@@ -160,15 +173,38 @@ const Deposits = ({ ...props }: IProps) => {
               <StyledTypography style={{ paddingBottom: '1rem' }}>
                 {selectedCoin.label} address
               </StyledTypography>
-              <Grid style={{ height: '7rem', overflow: 'hidden' }}>
+              <Grid
+                style={{
+                  height: '7rem',
+                  overflow: 'hidden',
+                  position: 'relative',
+                }}
+              >
+                {isCoinAddressEmpty && (
+                  <Loading
+                    width={'2rem'}
+                    height={'2rem'}
+                    size={24}
+                    style={{
+                      position: 'absolute',
+                      top: '2.5rem',
+                      transform: 'translateY(-50%)',
+                      left: '1.5rem',
+                    }}
+                  />
+                )}
                 <InputAddress
+                  selectedCoinValue={selectedCoin}
                   autoComplete="off"
                   value={coinAddress}
                   selectedCoin={selectedCoin.label}
                   setCoinAddress={setCoinAddress}
                   selectedAccount={selectedKey}
                 />
+
+                {/* <Loading  /> */}
               </Grid>
+
               {/* <StyledInput
                 value={coinAddress}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -207,6 +243,9 @@ const Deposits = ({ ...props }: IProps) => {
                   height={'4rem'}
                   onClick={() => {
                     copyCoinAddress()
+                    enqueueSnackbar('Copied!', {
+                      variant: 'success',
+                    })
 
                     addGAEvent({
                       action: 'Copy address',
@@ -276,13 +315,13 @@ export default compose(
     query: getProfileSettings,
     name: 'getProfileSettingsQuery',
     fetchPolicy: 'cache-and-network',
-    withoutLoading: true,
+    //withoutLoading: true,
   }),
   queryRendererHoc({
     query: getActivePromo,
     name: 'getActivePromoQuery',
     fetchPolicy: 'cache-and-network',
-    withoutLoading: true,
+    //withoutLoading: true,
   }),
   graphql(bonusRequest, { name: 'bonusRequestMutation' })
 )(Deposits)

@@ -1,14 +1,15 @@
 import React from 'react'
 import { InputAdornment } from '@material-ui/core'
-import {
-  StyledInput,
-  StyledTypography,
-} from '../Withdrawal/Withdrawal.styles'
+import { StyledInput, StyledTypography } from '../Withdrawal/Withdrawal.styles'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { GET_DEPOSIT_ADDRESS } from '@core/graphql/queries/user/getDepositAddress'
 
 interface IProps {
+  selectedAccount: string
+  selectedCoinValue: {
+    label: string
+  }
   setCoinAddress: (coin: string) => void
   getDepositAddressQuery: {
     getDepositAddress: {
@@ -17,6 +18,7 @@ interface IProps {
         success: boolean
         addressTag: string
         asset: string
+        keyId: string
       }
       status: string
       errorMessage: string
@@ -25,6 +27,9 @@ interface IProps {
 }
 
 const Balances = ({
+  selectedAccount,
+  keyId,
+  selectedCoinValue,
   setCoinAddress,
   getDepositAddressQuery,
   ...inputProps
@@ -39,18 +44,26 @@ const Balances = ({
   }
 
   const { address, addressTag } = data || {
-    address: '-',
+    address: '',
     addressTag: '-',
   }
   const isAddressTagExists = addressTag !== '-'
 
-  setCoinAddress(address)
+  if (
+    getDepositAddressQuery.getDepositAddress &&
+    getDepositAddressQuery.getDepositAddress.data &&
+    getDepositAddressQuery.getDepositAddress.data.asset ==
+      selectedCoinValue.label &&
+    getDepositAddressQuery.getDepositAddress.data.keyId == selectedAccount
+  ) {
+    setCoinAddress(address)
+  }
 
   return (
     <>
       <StyledInput {...inputProps} />
-      <StyledTypography style={{ padding: '0.5rem 0'}}>
-        <span>Tag:{' '}</span>
+      <StyledTypography style={{ padding: '0.5rem 0' }}>
+        <span>Tag: </span>
         <span>{addressTag}</span>
       </StyledTypography>
     </>

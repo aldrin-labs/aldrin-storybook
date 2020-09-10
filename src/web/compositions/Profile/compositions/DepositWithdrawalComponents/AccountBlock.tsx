@@ -14,6 +14,9 @@ import SelectKeyListDW from '@core/components/SelectKeyListDW/SelectKeyListDW'
 import Balances from './Balances'
 import { StyledTypography } from './AccountBlock.styles'
 import { IProps } from './AccountBlock.types'
+import { filter } from 'react-intl/locale-data/af'
+
+// const filteredCoins = selectCoinList.filter()
 
 const AccountBlock = ({
   isDepositPage,
@@ -35,12 +38,25 @@ const AccountBlock = ({
         style={{ height: '6rem', padding: '1rem 0 0 0', overflow: 'hidden' }}
       >
         <SelectKeyListDW
+          dropdownIndicatorStyles={{
+            position: 'absolute',
+            right: '.5rem',
+            display: 'flex',
+            width: '3rem',
+            height: '3rem',
+            padding: '0',
+            marginRight: '2rem',
+            '& svg': {
+              width: '3rem',
+              height: '3rem',
+            },
+          }}
           isDeposit={isDepositPage}
           classNamePrefix="custom-select-box"
           components={{
             Option: AccountOption,
             SingleValue: AccountSingleValue,
-            DropdownIndicator: undefined,
+            //DropdownIndicator: undefined,
           }}
           isSearchable={false}
           menuPortalTarget={document.body}
@@ -83,6 +99,10 @@ const AccountBlock = ({
             fontSize: '1.4rem',
             marginLeft: '0',
           }}
+          onChange={(optionSelected: { label: string; name: string }) => {
+            //setKeyId({})
+            console.log('optionSelected', optionSelected)
+          }}
           valueContainerStyles={{
             border: '2px solid #E0E5EC',
             borderRadius: '8px',
@@ -119,18 +139,34 @@ const AccountBlock = ({
         style={{ height: '6rem', padding: '1rem 0 0 0', overflow: 'hidden' }}
       >
         <SelectCoinList
+          dropdownIndicatorStyles={{
+            position: 'absolute',
+            right: '.5rem',
+            display: 'flex',
+            width: '3rem',
+            height: '3rem',
+            padding: '0',
+            marginRight: '2rem',
+            '& svg': {
+              width: '3rem',
+              height: '3rem',
+            },
+          }}
           classNamePrefix="custom-select-box"
           isSearchable={true}
           components={{
             Option: CoinOption,
             SingleValue: CoinSingleValue,
-            DropdownIndicator: undefined,
           }}
           menuPortalTarget={document.body}
           menuPortalStyles={{
             zIndex: 11111,
           }}
           value={selectedCoin}
+          needAdditionalFiltering={true}
+          additionalFiltering={(a: { symbol: string }) =>
+            !a.symbol.endsWith('UP') && !a.symbol.endsWith('DOWN')
+          }
           onChange={(optionSelected: { label: string; name: string }) => {
             setSelectedCoin({
               label: optionSelected.label,
@@ -146,13 +182,11 @@ const AccountBlock = ({
             textAlign: 'center',
             background: 'white',
             position: 'relative',
-            // overflowY: 'auto',
             boxShadow: 'none',
             border: 'none',
           }}
           menuListStyles={{
             height: '16rem',
-            // overflowY: '',
           }}
           optionStyles={{
             height: '4rem',
