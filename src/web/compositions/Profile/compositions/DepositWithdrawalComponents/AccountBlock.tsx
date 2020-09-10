@@ -96,8 +96,6 @@ const AccountBlock = ({
             fontSize: '1.4rem',
             marginLeft: '0',
           }}
-          onChange={(optionSelected: { label: string; name: string }) => {
-          }}
           valueContainerStyles={{
             border: '2px solid #E0E5EC',
             borderRadius: '8px',
