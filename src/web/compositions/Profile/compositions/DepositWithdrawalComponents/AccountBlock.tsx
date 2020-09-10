@@ -97,8 +97,6 @@ const AccountBlock = ({
             marginLeft: '0',
           }}
           onChange={(optionSelected: { label: string; name: string }) => {
-            //setKeyId({})
-            console.log('optionSelected', optionSelected)
           }}
           valueContainerStyles={{
             border: '2px solid #E0E5EC',
