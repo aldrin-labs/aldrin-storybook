@@ -11,6 +11,8 @@ const RawLoading = ({
   centerAligned = false,
   theme,
   style,
+  width,
+  height,
 }: {
   color?: string
   size?: number
@@ -18,16 +20,18 @@ const RawLoading = ({
   centerAligned?: boolean
   theme?: Theme
   style?: CSSProperties
+  width?: string
+  height?: string
 }) => (
   <SpinnerContainer
     theme={theme}
     margin={margin}
     centerAligned={centerAligned}
     data-e2e="Loadig"
-    style={style}
+    style={{ width, height, ...style }}
   >
     <CircularProgress
-      style={{ color: color || theme.palette.secondary.main }}
+      style={{ color: color || theme.palette.secondary.main, width, height }}
       size={size}
     />
   </SpinnerContainer>

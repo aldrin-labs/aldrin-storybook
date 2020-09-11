@@ -1260,8 +1260,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               <InputRowContainer padding={'0 0 .6rem 0'}>
                 <CustomSwitcher
                   theme={theme}
-                  firstHalfText={'buy'}
-                  secondHalfText={'sell'}
+                  firstHalfText={marketType === 1 ? 'long' : 'buy'}
+                  secondHalfText={marketType === 1 ? 'short' : 'sell'}
                   buttonHeight={'2.5rem'}
                   containerStyles={{
                     width: entryPoint.TVAlert.plotEnabled ? '70%' : '100%',

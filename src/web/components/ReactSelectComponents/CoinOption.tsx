@@ -35,15 +35,15 @@ const CoinContent = ({ data }: { data: ComponentData }) => (
           />
         }
       > */}
-        <SvgIcon
-          style={{
-            marginRight: '.5rem',
-          }}
-          width={`2rem`}
-          height={'2rem'}
-          src={importCoinIcon(data.label)}
-          onError={onErrorImportCoinUrl}
-        />
+      <SvgIcon
+        style={{
+          marginRight: '.5rem',
+        }}
+        width={`2rem`}
+        height={'2rem'}
+        src={importCoinIcon(data.label)}
+        onError={onErrorImportCoinUrl}
+      />
       {/* </LazyLoad> */}
     </Grid>
     <Grid item style={{ alignSelf: 'center' }}>

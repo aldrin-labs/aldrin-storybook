@@ -12,6 +12,7 @@ import SvgIcon from '@sb/components/SvgIcon'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { ActionType, PortfolioAction } from './RecentHistoryTable.types'
+import { useSnackbar } from 'notistack'
 
 export const columnNames = [
   {
@@ -35,6 +36,8 @@ export const combineRecentHistoryTable = (
   if (!transactionsData.trades && !Array.isArray(transactionsData.trades)) {
     return []
   }
+
+  const { enqueueSnackbar } = useSnackbar()
 
   const getStatusColor = (status: string) =>
     status === 'ok' ? 'green' : 'green'
@@ -87,7 +90,12 @@ export const combineRecentHistoryTable = (
                   src={copyIcon}
                   width="11px"
                   height="auto"
-                  onClick={() => copy(address)}
+                  onClick={() => {
+                    enqueueSnackbar('Copied!', {
+                      variant: 'success',
+                    })
+                    copy(address)
+                  }}
                 />
               </Grid>
             </Grid>
@@ -103,7 +111,12 @@ export const combineRecentHistoryTable = (
                   src={copyIcon}
                   width="12px"
                   height="auto"
-                  onClick={() => copy(txId)}
+                  onClick={() => {
+                    enqueueSnackbar('Copied!', {
+                      variant: 'success',
+                    })
+                    copy(txId)
+                  }}
                 />
               </Grid>
             </Grid>
