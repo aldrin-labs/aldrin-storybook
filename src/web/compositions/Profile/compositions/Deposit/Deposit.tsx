@@ -178,7 +178,6 @@ const Deposits = ({ ...props }: IProps) => {
                 }}
               >
                 <InputAddress
-                  selectedCoinValue={selectedCoin}
                   autoComplete="off"
                   value={coinAddress}
                   selectedCoin={selectedCoin.label}

@@ -49,15 +49,7 @@ const Balances = ({
   }
   const isAddressTagExists = addressTag !== '-'
 
-  if (
-    getDepositAddressQuery.getDepositAddress &&
-    getDepositAddressQuery.getDepositAddress.data &&
-    getDepositAddressQuery.getDepositAddress.data.asset ==
-      selectedCoinValue.label &&
-    getDepositAddressQuery.getDepositAddress.data.keyId == selectedAccount
-  ) {
-    setCoinAddress(address)
-  }
+  setCoinAddress(address)
 
   return (
     <>
