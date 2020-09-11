@@ -14,7 +14,6 @@ import SelectKeyListDW from '@core/components/SelectKeyListDW/SelectKeyListDW'
 import Balances from './Balances'
 import { StyledTypography } from './AccountBlock.styles'
 import { IProps } from './AccountBlock.types'
-import { filter } from 'react-intl/locale-data/af'
 
 const AccountBlock = ({
   isDepositPage,
