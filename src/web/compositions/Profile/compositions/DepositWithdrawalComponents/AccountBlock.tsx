@@ -16,8 +16,6 @@ import { StyledTypography } from './AccountBlock.styles'
 import { IProps } from './AccountBlock.types'
 import { filter } from 'react-intl/locale-data/af'
 
-// const filteredCoins = selectCoinList.filter()
-
 const AccountBlock = ({
   isDepositPage,
   selectedKey,
@@ -56,7 +54,6 @@ const AccountBlock = ({
           components={{
             Option: AccountOption,
             SingleValue: AccountSingleValue,
-            //DropdownIndicator: undefined,
           }}
           isSearchable={false}
           menuPortalTarget={document.body}
@@ -71,13 +68,12 @@ const AccountBlock = ({
             textAlign: 'center',
             background: 'white',
             position: 'relative',
-            // overflowY: 'auto',
+
             boxShadow: 'none',
             border: 'none',
           }}
           menuListStyles={{
             height: '16rem',
-            // overflowY: '',
           }}
           optionStyles={{
             height: '4rem',
@@ -98,10 +94,6 @@ const AccountBlock = ({
           inputStyles={{
             fontSize: '1.4rem',
             marginLeft: '0',
-          }}
-          onChange={(optionSelected: { label: string; name: string }) => {
-            //setKeyId({})
-            console.log('optionSelected', optionSelected)
           }}
           valueContainerStyles={{
             border: '2px solid #E0E5EC',

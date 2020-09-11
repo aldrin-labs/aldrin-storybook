@@ -35,9 +35,6 @@ const Balances = ({ selectedCoin, getFundsQuery, selectedAccount }: IProps) => {
 
   return (
     <Grid item id="balances_block" style={{ padding: '3rem 7rem' }}>
-      {currentElement && currentElement.keyId !== selectedAccount && (
-        <Loading width={'3rem'} height={'3rem'} size={24} />
-      )}
       <Grid container justify="space-between">
         <StyledTypography>Total balance:</StyledTypography>
 
@@ -67,7 +64,6 @@ const BalancesWrapper = ({ ...props }) => {
       component={Balances}
       withOutSpinner={true}
       withTableLoader={true}
-      //withoutLoading={true}
       query={getFunds}
       variables={{ fundsInput: { activeExchangeKey: props.selectedAccount } }}
       name={`getFundsQuery`}

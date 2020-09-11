@@ -24,7 +24,6 @@ import ClaimBonusPopup from '@sb/compositions/Profile/compositions/DepositWithdr
 import { StyledTypography } from '../Withdrawal/Withdrawal.styles'
 import { IProps } from './Deposit.types'
 import { Loading } from '@sb/components/index'
-import { size } from 'lodash'
 
 const Deposits = ({ ...props }: IProps) => {
   const { bonusRequestMutation } = props
@@ -100,8 +99,6 @@ const Deposits = ({ ...props }: IProps) => {
       setClaimRequestErrorText(e.message)
     }
   }
-
-  const isCoinAddressEmpty = coinAddress == ''
 
   return (
     <>
@@ -180,19 +177,6 @@ const Deposits = ({ ...props }: IProps) => {
                   position: 'relative',
                 }}
               >
-                {isCoinAddressEmpty && (
-                  <Loading
-                    width={'2rem'}
-                    height={'2rem'}
-                    size={24}
-                    style={{
-                      position: 'absolute',
-                      top: '2.5rem',
-                      transform: 'translateY(-50%)',
-                      left: '1.5rem',
-                    }}
-                  />
-                )}
                 <InputAddress
                   selectedCoinValue={selectedCoin}
                   autoComplete="off"
@@ -201,16 +185,8 @@ const Deposits = ({ ...props }: IProps) => {
                   setCoinAddress={setCoinAddress}
                   selectedAccount={selectedKey}
                 />
-
-                {/* <Loading  /> */}
               </Grid>
 
-              {/* <StyledInput
-                value={coinAddress}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setCoinAddress(e.target.value)
-                }
-              /> */}
               <Grid style={{ paddingTop: '16px' }}>
                 <BtnCustom
                   btnWidth={'38%'}
@@ -315,13 +291,15 @@ export default compose(
     query: getProfileSettings,
     name: 'getProfileSettingsQuery',
     fetchPolicy: 'cache-and-network',
-    //withoutLoading: true,
+    withOutSpinner: true,
+    withTableLoader: true,
   }),
   queryRendererHoc({
     query: getActivePromo,
     name: 'getActivePromoQuery',
     fetchPolicy: 'cache-and-network',
-    //withoutLoading: true,
+    withOutSpinner: true,
+    withTableLoader: true,
   }),
   graphql(bonusRequest, { name: 'bonusRequestMutation' })
 )(Deposits)

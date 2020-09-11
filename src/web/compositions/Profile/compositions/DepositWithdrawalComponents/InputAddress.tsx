@@ -44,7 +44,7 @@ const Balances = ({
   }
 
   const { address, addressTag } = data || {
-    address: '',
+    address: '-',
     addressTag: '-',
   }
   const isAddressTagExists = addressTag !== '-'
@@ -76,7 +76,7 @@ const BalancesWrapper = (props) => {
       component={Balances}
       withOutSpinner={true}
       withTableLoader={true}
-      withoutLoading={true}
+      // withoutLoading={true}
       query={GET_DEPOSIT_ADDRESS}
       fetchPolicy="cache-and-network"
       variables={{
