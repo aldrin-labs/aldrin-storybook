@@ -87,7 +87,7 @@ const MarketType = (props: any) => {
   const url = isChart
     ? `/chart/${props.marketName}/${chartPair}`
     : isTransactions
-    ? `/transactions/${props.marketName}`
+    ? `/portfolio/transactions/${props.marketName}`
     : isPortfolio
     ? `/portfolio/main/${props.marketName}`
     : `/portfolio/main/${props.marketName}`

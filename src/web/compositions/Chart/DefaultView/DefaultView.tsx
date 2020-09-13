@@ -209,18 +209,6 @@ export const DefaultViewComponent = (
                   )}&user_id=${id}`}
                 />
               </CustomCard>
-
-              {/* {!hideTradeHistory && (
-                <HideArrow key="hide" onClick={hideLayoutHandler} />
-              )}
-              {(hideDepthChart || hideTradeHistory || hideOrderbook) && (
-                <HideArrow
-                  key="show"
-                  revertArrow={true}
-                  onClick={showLayoutHandler}
-                  right="-11px"
-                />
-              )} */}
             </ChartsContainer>
             <TradingTerminalContainer
               theme={theme}
