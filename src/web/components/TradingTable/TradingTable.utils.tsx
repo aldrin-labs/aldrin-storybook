@@ -1532,7 +1532,8 @@ export const combineOpenOrdersTable = (
   cancelOrderFunc: (
     keyId: string,
     orderId: string,
-    pair: string
+    pair: string,
+    type: string
   ) => Promise<any>,
   theme: Theme,
   arrayOfMarketIds: string[],
@@ -1764,8 +1765,9 @@ export const combineOpenOrdersTable = (
             <CloseButton
               i={i}
               onClick={() => {
-                cancelOrderFunc(keyId, orderId, orderSymbol)
+                cancelOrderFunc(keyId, orderId, orderSymbol, order.type)
                 filterCacheData({
+                  data: null,
                   name: 'getOpenOrderHistory',
                   subName: 'orders',
                   query: getOpenOrderHistory,
@@ -2422,11 +2424,6 @@ export const updateOpenOrderHistoryQuerryFunction = (
   previous,
   { subscriptionData }
 ) => {
-  // console.log(
-  //   'updateOpenOrderHistoryQuerryFunction subscriptionData',
-  //   subscriptionData
-  // )
-
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenOpenOrders
 
@@ -2437,17 +2434,29 @@ export const updateOpenOrderHistoryQuerryFunction = (
   const prev = cloneDeep(previous)
 
   const openOrderHasTheSameOrder = prev.getOpenOrderHistory.orders.find(
-    (el: OrderType) =>
-      el.info &&
-      String(el.info.orderId) ===
-        String(subscriptionData.data.listenOpenOrders.info.orderId)
+    (el: OrderType) => {
+      if (el.info && el.info.orderId) {
+        return (
+          el.info.orderId ===
+          subscriptionData.data.listenOpenOrders.info.orderId
+        )
+      } else {
+        return el._id === subscriptionData.data.listenOpenOrders._id
+      }
+    }
   )
 
   const openOrderHasTheSameOrderIndex = prev.getOpenOrderHistory.orders.findIndex(
-    (el: OrderType) =>
-      el.info &&
-      String(el.info.orderId) ===
-        String(subscriptionData.data.listenOpenOrders.info.orderId)
+    (el: OrderType) => {
+      if (el.info && el.info.orderId) {
+        return (
+          el.info.orderId ===
+          subscriptionData.data.listenOpenOrders.info.orderId
+        )
+      } else {
+        return el._id === subscriptionData.data.listenOpenOrders._id
+      }
+    }
   )
 
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
@@ -2508,9 +2517,18 @@ export const updateOrderHistoryQuerryFunction = (
   const prev = cloneDeep(previous)
 
   const openOrderHasTheSameOrderIndex = prev.getOrderHistory.orders.findIndex(
-    (el: OrderType) =>
-      el.info.orderId === subscriptionData.data.listenOrderHistory.info.orderId
+    (el: OrderType) => {
+      if (el.info && el.info.orderId) {
+        return (
+          el.info.orderId ===
+          subscriptionData.data.listenOrderHistory.info.orderId
+        )
+      } else {
+        return el._id === subscriptionData.data.listenOrderHistory._id
+      }
+    }
   )
+
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
 
   let result
@@ -2593,7 +2611,7 @@ export const updatePaginatedOrderHistoryQuerryFunction = (
                 .charAt(0)
                 .toUpperCase()}${newDataElement.type.slice(1)} order`
             : 'Order'
-        } with price ${newDataElement.price} was executed!`,
+        } ${newDataElement.type === 'maker-only' ? '' : `with price ${newDataElement.price}`} was executed!`,
         {
           variant: 'success',
         }
@@ -2634,7 +2652,7 @@ export const updatePaginatedOrderHistoryQuerryFunction = (
                 .charAt(0)
                 .toUpperCase()}${newDataElement.type.slice(1)} order`
             : 'Order'
-        } with price ${newDataElement.price} was executed!`,
+        } ${newDataElement.type === 'maker-only' ? '' : `with price ${newDataElement.price}`} was executed!`,
         {
           variant: 'success',
         }
