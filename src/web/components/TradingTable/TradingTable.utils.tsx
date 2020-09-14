@@ -378,8 +378,10 @@ export const combinePositionsTable = ({
         liquidationPrice,
       } = el
 
-      const { pricePrecision, quantityPrecision } = getPrecisionItem({ marketType: 1, symbol })
-
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({
+        marketType: 1,
+        symbol,
+      })
 
       const needOpacity = el._id === '0'
 
@@ -570,9 +572,11 @@ export const combinePositionsTable = ({
             ),
           },
           liqPrice: {
-            render: `${liquidationPrice == 0 ? '-' : stripDigitPlaces(liquidationPrice, pricePrecision)} ${
-              liquidationPrice == 0 ? '' : pair[1]
-            }`,
+            render: `${
+              liquidationPrice == 0
+                ? '-'
+                : stripDigitPlaces(liquidationPrice, pricePrecision)
+            } ${liquidationPrice == 0 ? '' : pair[1]}`,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
@@ -797,8 +801,10 @@ export const combineActiveTradesTable = ({
 
       const isErrorInOrder = !!msg
 
-      const { pricePrecision, quantityPrecision } = getPrecisionItem({ marketType, symbol: pair })
-
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({
+        marketType,
+        symbol: pair,
+      })
 
       return {
         id: `${el._id}${i}`,
@@ -862,11 +868,7 @@ export const combineActiveTradesTable = ({
         quantity: {
           render: (
             <SubColumnValue theme={theme}>
-              {stripDigitPlaces(
-                amount,
-                quantityPrecision
-              )}{' '}
-              {pairArr[0]}{' '}
+              {stripDigitPlaces(amount, quantityPrecision)} {pairArr[0]}{' '}
             </SubColumnValue>
           ),
           style: {
@@ -1282,8 +1284,10 @@ export const combineStrategiesHistoryTable = (
 
       if (isTemplate) orderState = 'Template'
 
-      const { pricePrecision, quantityPrecision } = getPrecisionItem({ marketType, symbol: pair })
-
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({
+        marketType,
+        symbol: pair,
+      })
 
       return {
         id: el._id,
@@ -1321,11 +1325,7 @@ export const combineStrategiesHistoryTable = (
         entryPrice: {
           render: (
             <SubColumnValue theme={theme}>
-              {stripDigitPlaces(
-                entryOrderPrice,
-                pricePrecision
-              )}{' '}
-              {pairArr[1]}
+              {stripDigitPlaces(entryOrderPrice, pricePrecision)} {pairArr[1]}
             </SubColumnValue>
           ),
           style: {
@@ -1532,7 +1532,8 @@ export const combineOpenOrdersTable = (
   cancelOrderFunc: (
     keyId: string,
     orderId: string,
-    pair: string
+    pair: string,
+    type: string
   ) => Promise<any>,
   theme: Theme,
   arrayOfMarketIds: string[],
@@ -1617,8 +1618,10 @@ export const combineOpenOrdersTable = (
       const isMarketOrMakerOrder =
         price === 0 && (!!type.match(/market/) || isMakerOnlyOrder)
 
-      
-      const { pricePrecision, quantityPrecision } = getPrecisionItem({ marketType, symbol: symbol })
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({
+        marketType,
+        symbol: symbol,
+      })
 
       return {
         id: `${orderId}${timestamp}${origQty}${marketId}`,
@@ -1701,7 +1704,9 @@ export const combineOpenOrdersTable = (
                 // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
                 render: !+price
                   ? '-'
-                  : `${stripDigitPlaces(+origQty * price, quantityPrecision)} ${pair[1]}`,
+                  : `${stripDigitPlaces(+origQty * price, quantityPrecision)} ${
+                      pair[1]
+                    }`,
                 contentToSort: +origQty * price,
                 style: { opacity: needOpacity ? 0.75 : 1 },
               },
@@ -1754,31 +1759,31 @@ export const combineOpenOrdersTable = (
           contentToSort: timestamp,
         },
         cancel: {
-          render:
-            needOpacity || isMakerOnlyOrder ? (
-              '-'
-            ) : (
-              <CloseButton
-                i={i}
-                onClick={() => {
-                  cancelOrderFunc(keyId, orderId, orderSymbol)
-                  filterCacheData({
-                    name: 'getOpenOrderHistory',
-                    subName: 'orders',
-                    query: getOpenOrderHistory,
-                    variables: {
-                      openOrderInput: {
-                        activeExchangeKey: keyId,
-                        marketType,
-                      },
+          render: needOpacity ? (
+            '-'
+          ) : (
+            <CloseButton
+              i={i}
+              onClick={() => {
+                cancelOrderFunc(keyId, orderId, orderSymbol, order.type)
+                filterCacheData({
+                  data: null,
+                  name: 'getOpenOrderHistory',
+                  subName: 'orders',
+                  query: getOpenOrderHistory,
+                  variables: {
+                    openOrderInput: {
+                      activeExchangeKey: keyId,
+                      marketType,
                     },
-                    filterData: (order) => order.info.orderId != orderId,
-                  })
-                }}
-              >
-                Cancel
-              </CloseButton>
-            ),
+                  },
+                  filterData: (order) => order.info.orderId != orderId,
+                })
+              }}
+            >
+              Cancel
+            </CloseButton>
+          ),
         },
         tooltipTitle: keyName,
       }
@@ -1800,7 +1805,7 @@ export const combineOrderHistoryTable = (
   }
 
   const processedOrderHistoryData = orderData
-    .filter((order) => !!order)
+    .filter((order) => !!order && order.side)
     .map((el: OrderType, i) => {
       const {
         keyId,
@@ -1808,7 +1813,7 @@ export const combineOrderHistoryTable = (
         timestamp,
         type: orderType,
         side,
-        price,
+        price = 0,
         reduceOnly,
         status,
         filled,
@@ -1816,7 +1821,10 @@ export const combineOrderHistoryTable = (
         info,
       } = el
 
-      const { pricePrecision, quantityPrecision } = getPrecisionItem({ marketType, symbol })
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({
+        marketType,
+        symbol,
+      })
 
       // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
       const pair = symbol.split('_')
@@ -1843,10 +1851,12 @@ export const combineOrderHistoryTable = (
           : `<= ${triggerConditions}`
 
       const isMarketOrMakerOrder =
-        price === 0 && (!!type.match(/market/) || isMakerOnlyOrder)
+        (!!type.match(/market/) && price === 0) || isMakerOnlyOrder
+
+      const qty = !!origQty ? origQty : filled
 
       return {
-        id: `${orderId}_${timestamp}_${origQty}`,
+        id: `${orderId}_${timestamp}_${qty}`,
         pair: {
           render: (
             <div
@@ -1903,7 +1913,7 @@ export const combineOrderHistoryTable = (
         price: {
           render: isMarketOrMakerOrder
             ? !!average
-              ? average
+              ? `${stripDigitPlaces(average, pricePrecision)} ${pair[1]}`
               : 'market'
             : `${stripDigitPlaces(price, pricePrecision)} ${pair[1]}`,
           style: { textAlign: 'left', whiteSpace: 'nowrap' },
@@ -1915,16 +1925,21 @@ export const combineOrderHistoryTable = (
         //   contentToSort: filledQuantityProcessed,
         // },
         quantity: {
-          render: `${stripDigitPlaces(origQty, quantityPrecision)} ${pair[0]}`,
-          contentToSort: +origQty,
+          render: `${stripDigitPlaces(qty, quantityPrecision)} ${pair[0]}`,
+          contentToSort: +qty,
         },
         // TODO: We should change "total" to total param from backend when it will be ready
         ...(marketType === 0
           ? {
               amount: {
                 // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-                render: `${stripDigitPlaces(origQty * price, quantityPrecision)} ${pair[1]}`,
-                contentToSort: origQty * price,
+                render: `${stripDigitPlaces(
+                  isMarketOrMakerOrder ? qty * average : qty * price,
+                  quantityPrecision
+                )} ${pair[1]}`,
+                contentToSort: isMarketOrMakerOrder
+                  ? qty * average
+                  : qty * price,
               },
             }
           : {}),
@@ -2022,7 +2037,10 @@ export const combineTradeHistoryTable = (
         realizedPnl,
       } = el
 
-      const { pricePrecision, quantityPrecision } = getPrecisionItem({ marketType, symbol })
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({
+        marketType,
+        symbol,
+      })
 
       const keyName = keys ? keys[keyId] : ''
 
@@ -2083,7 +2101,10 @@ export const combineTradeHistoryTable = (
           ? {
               amount: {
                 // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-                render: `${stripDigitPlaces(amount * price, quantityPrecision)} ${pair[1]}`,
+                render: `${stripDigitPlaces(
+                  amount * price,
+                  quantityPrecision
+                )} ${pair[1]}`,
                 contentToSort: amount * price,
               },
             }
@@ -2186,7 +2207,10 @@ export const combineFundsTable = (
         asset: { symbol, priceBTC, priceUSD },
       } = el
 
-      const { pricePrecision, quantityPrecision } = getPrecisionItem({ marketType, symbol })
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({
+        marketType,
+        symbol,
+      })
 
       if (!quantity || quantity === 0) {
         return
@@ -2400,11 +2424,6 @@ export const updateOpenOrderHistoryQuerryFunction = (
   previous,
   { subscriptionData }
 ) => {
-  // console.log(
-  //   'updateOpenOrderHistoryQuerryFunction subscriptionData',
-  //   subscriptionData
-  // )
-
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenOpenOrders
 
@@ -2415,17 +2434,29 @@ export const updateOpenOrderHistoryQuerryFunction = (
   const prev = cloneDeep(previous)
 
   const openOrderHasTheSameOrder = prev.getOpenOrderHistory.orders.find(
-    (el: OrderType) =>
-      el.info &&
-      String(el.info.orderId) ===
-        String(subscriptionData.data.listenOpenOrders.info.orderId)
+    (el: OrderType) => {
+      if (el.info && el.info.orderId) {
+        return (
+          el.info.orderId ===
+          subscriptionData.data.listenOpenOrders.info.orderId
+        )
+      } else {
+        return el._id === subscriptionData.data.listenOpenOrders._id
+      }
+    }
   )
 
   const openOrderHasTheSameOrderIndex = prev.getOpenOrderHistory.orders.findIndex(
-    (el: OrderType) =>
-      el.info &&
-      String(el.info.orderId) ===
-        String(subscriptionData.data.listenOpenOrders.info.orderId)
+    (el: OrderType) => {
+      if (el.info && el.info.orderId) {
+        return (
+          el.info.orderId ===
+          subscriptionData.data.listenOpenOrders.info.orderId
+        )
+      } else {
+        return el._id === subscriptionData.data.listenOpenOrders._id
+      }
+    }
   )
 
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
@@ -2486,9 +2517,18 @@ export const updateOrderHistoryQuerryFunction = (
   const prev = cloneDeep(previous)
 
   const openOrderHasTheSameOrderIndex = prev.getOrderHistory.orders.findIndex(
-    (el: OrderType) =>
-      el.info.orderId === subscriptionData.data.listenOrderHistory.info.orderId
+    (el: OrderType) => {
+      if (el.info && el.info.orderId) {
+        return (
+          el.info.orderId ===
+          subscriptionData.data.listenOrderHistory.info.orderId
+        )
+      } else {
+        return el._id === subscriptionData.data.listenOrderHistory._id
+      }
+    }
   )
+
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
 
   let result
@@ -2529,10 +2569,6 @@ export const updatePaginatedOrderHistoryQuerryFunction = (
   { subscriptionData },
   enqueueSnackbar = (msg: string, obj: { variant: string }) => {}
 ) => {
-  // console.log(
-  //   'updatePaginatedOrderHistoryQuerryFunction subscriptionData',
-  //   subscriptionData
-  // )
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenOrderHistory
 
@@ -2543,8 +2579,16 @@ export const updatePaginatedOrderHistoryQuerryFunction = (
   const prev = cloneDeep(previous)
 
   const openOrderHasTheSameOrderIndex = prev.getPaginatedOrderHistory.orders.findIndex(
-    (el: OrderType) =>
-      el.info.orderId === subscriptionData.data.listenOrderHistory.info.orderId
+    (el: OrderType) => {
+      if (el.info && el.info.orderId) {
+        return (
+          el.info.orderId ===
+          subscriptionData.data.listenOrderHistory.info.orderId
+        )
+      } else {
+        return el._id === subscriptionData.data.listenOrderHistory._id
+      }
+    }
   )
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
 
@@ -2567,7 +2611,7 @@ export const updatePaginatedOrderHistoryQuerryFunction = (
                 .charAt(0)
                 .toUpperCase()}${newDataElement.type.slice(1)} order`
             : 'Order'
-        } with price ${newDataElement.price} was executed!`,
+        } ${newDataElement.type === 'maker-only' ? '' : `with price ${newDataElement.price}`} was executed!`,
         {
           variant: 'success',
         }
@@ -2608,7 +2652,7 @@ export const updatePaginatedOrderHistoryQuerryFunction = (
                 .charAt(0)
                 .toUpperCase()}${newDataElement.type.slice(1)} order`
             : 'Order'
-        } with price ${newDataElement.price} was executed!`,
+        } ${newDataElement.type === 'maker-only' ? '' : `with price ${newDataElement.price}`} was executed!`,
         {
           variant: 'success',
         }

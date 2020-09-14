@@ -437,7 +437,7 @@ export const Container = styled(Grid)`
   background-color: ${(props) => props.theme.palette.white.background};
 
   @media (max-width: 1400px) {
-    height: calc(100vh - 5rem);
+    height: calc(100vh - 5.4vh);
   }
 `
 
