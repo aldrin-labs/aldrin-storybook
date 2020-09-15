@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import { Grid } from '@material-ui/core'
+import { Link } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
+import SvgIcon from '@sb/components/SvgIcon'
+import ArrowBottom from '@icons/arrowBottom.svg'
 import {
   TypographyHeading,
   StyledButton,
@@ -8,10 +11,13 @@ import {
 } from './SharePortfolioPanel.style'
 import SelectPortfolioPeriod from '@sb/components/SelectPortfolioPeriod'
 import TransferPopup from '@sb/compositions/Chart/components/TransferPopup'
+import Dropdown from '@sb/components/Dropdown'
 import { IProps } from './SharePortfolio.types'
 import { MASTER_BUILD } from '@core/utils/config'
 
 import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
+import { StyledInputLabel } from '@sb/compositions/Optimization/Import/Import.styles'
+import { pink } from '@material-ui/core/colors'
 
 const SharePortfolioPanel = ({
   portfolioName,
@@ -21,6 +27,8 @@ const SharePortfolioPanel = ({
   setPageType,
   choosePeriod,
   theme,
+  pathname,
+  logout,
 }) => {
   const [loading, setLoading] = useState(false)
   const [open, togglePopup] = useState(false)
@@ -48,7 +56,7 @@ const SharePortfolioPanel = ({
       justify="space-between"
       alignItems="center"
       style={{
-        padding: '1.6rem 24px',
+        padding: '3rem 24px',
         height: '45%',
         background: '#F9FBFD',
       }}
@@ -85,7 +93,25 @@ const SharePortfolioPanel = ({
               chooseHistoryPeriod={choosePeriod}
             />
           </Grid>
+
           <Grid item style={{ display: 'flex' }}>
+            {!isSPOTCurrently && (
+              <Grid
+                style={{
+                  width: '25rem',
+                  color: '#7284A0',
+                  letterSpacing: '0.05rem',
+                  fontSize: '1rem',
+                  fontFamily: 'Avenir Next Demi',
+                  position: 'absolute',
+                  bottom: '15.7rem',
+                  right: '1rem',
+                }}
+              >
+                Transfer between your spot and futures accounts
+              </Grid>
+            )}
+
             {isSPOTCurrently ? (
               <>
                 <StyledLink

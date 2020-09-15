@@ -39,7 +39,15 @@ export default class Dropdown extends React.Component<IProps> {
   }
 
   render() {
-    const { selectedMenu, id, theme, component, onMouseOver } = this.props
+    const {
+      selectedMenu,
+      id,
+      theme,
+      component,
+      onMouseOver,
+      marketName,
+      pathname,
+    } = this.props
 
     return (
       <StyledDropdown
@@ -57,6 +65,8 @@ export default class Dropdown extends React.Component<IProps> {
           id={id}
           onClick={this.handleToggle}
           component={component}
+          marketName={marketName}
+          pathname={pathname}
           style={{
             textTransform: 'none',
             padding: '0 1rem',
