@@ -78,7 +78,7 @@ function ChartPageComponent(props: any) {
     }, 75000)
 
     setTimeout(() => {
-      checLoginStatusWrapper(prefetchWithdrawal)
+      // checLoginStatusWrapper(prefetchWithdrawal)
     }, 95000)
 
     return () => {
