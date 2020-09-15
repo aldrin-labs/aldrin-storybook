@@ -63,6 +63,8 @@ export default class Dropdown extends React.Component<IProps> {
           aria-controls={this.props.id}
           aria-haspopup="true"
           id={id}
+          page={'profile'}
+          pathname={this.props.pathname}
           onClick={this.handleToggle}
           component={component}
           marketName={marketName}

@@ -21,7 +21,7 @@ import {
 
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { PaginationBlock } from '../TradingTablePagination'
-
+import { disableStrategy } from '@core/graphql/mutations/strategies/disableStrategy'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
 import { CANCEL_ORDER_MUTATION } from '@core/graphql/mutations/chart/cancelOrderMutation'
@@ -41,10 +41,22 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 
   unsubscribeFunction: null | Function = null
 
-  onCancelOrder = async (keyId: string, orderId: string, pair: string) => {
-    const { cancelOrderMutation, marketType } = this.props
+  onCancelOrder = async (keyId: string, orderId: string, pair: string, type: string) => {
+    const { cancelOrderMutation, marketType, disableStrategyMutation } = this.props
 
     try {
+      if (type === "maker-only") {
+        const responseResult = await disableStrategyMutation({
+          variables: {
+            input: {
+              keyId,
+              strategyId: orderId,
+            },
+          },
+        })
+
+        return responseResult
+      }
       const responseResult = await cancelOrderMutation({
         variables: {
           cancelOrderInput: {
@@ -65,12 +77,13 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
   cancelOrderWithStatus = async (
     keyId: string,
     orderId: string,
-    pair: string
+    pair: string,
+    type: string
   ) => {
     const { showCancelResult } = this.props
 
     await this.props.addOrderToCanceled(orderId)
-    const result = await this.onCancelOrder(keyId, orderId, pair)
+    const result = await this.onCancelOrder(keyId, orderId, pair, type)
     const status = await cancelOrderStatus(result)
 
     if (status.result === 'error') {
@@ -411,11 +424,6 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       return null
     }
 
-    console.log(
-      'getOpenOrderHistoryQuery.getOpenOrderHistory.count',
-      getOpenOrderHistoryQuery.getOpenOrderHistory.count
-    )
-
     return (
       <TableWithSort
         style={{
@@ -577,6 +585,7 @@ const MemoizedWrapper = React.memo(TableDataWrapper, (prevProps, nextProps) => {
 })
 
 export default compose(
+  graphql(disableStrategy, { name: 'disableStrategyMutation' }),
   graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' }),
   graphql(ordersHealthcheck, { name: 'ordersHealthcheckMutation' })
 )(MemoizedWrapper)
