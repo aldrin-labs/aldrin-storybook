@@ -300,7 +300,7 @@ class TransactionPage extends React.PureComponent {
               <Grid container style={{ height: '100%' }}>
                 <GridTableContainer item xs={12} id="tableTransactions">
                   <TradeOrderHistory
-                    includeExchangeTransactions={true}
+                    includeExchangeTransactions={false}
                     marketType={pageType === 'SPOT' ? 0 : 1}
                     includeTrades={pageType === 'SPOT'}
                     includeFutures={pageType === 'FUTURES'}

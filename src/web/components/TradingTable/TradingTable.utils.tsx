@@ -1810,6 +1810,7 @@ export const combineOrderHistoryTable = (
     .filter((order) => !!order && order.side)
     .map((el: OrderType, i) => {
       const {
+        _id,
         keyId,
         symbol,
         timestamp,
@@ -1858,7 +1859,7 @@ export const combineOrderHistoryTable = (
       const qty = !!origQty ? origQty : filled
 
       return {
-        id: `${orderId}_${timestamp}_${qty}`,
+        id: `${isMakerOnlyOrder ? _id : orderId}_${timestamp}_${qty}`,
         pair: {
           render: (
             <div
