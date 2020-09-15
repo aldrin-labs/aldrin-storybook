@@ -33,6 +33,7 @@ import {
   prefetchPortfolioMainSpot,
   prefetchPortfolioMainFutures,
   prefetchDeposit,
+  prefetchWithdrawal,
 } from '@core/utils/prefetching'
 import { checLoginStatusWrapper } from '@core/utils/loginUtils'
 
@@ -75,6 +76,10 @@ function ChartPageComponent(props: any) {
     setTimeout(() => {
       checLoginStatusWrapper(prefetchDeposit)
     }, 75000)
+
+    setTimeout(() => {
+      checLoginStatusWrapper(prefetchWithdrawal)
+    }, 95000)
 
     return () => {
       document.title = 'Cryptocurrencies AI'
