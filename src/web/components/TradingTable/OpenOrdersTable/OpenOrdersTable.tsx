@@ -42,9 +42,21 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
   unsubscribeFunction: null | Function = null
 
   onCancelOrder = async (keyId: string, orderId: string, pair: string, type: string) => {
-    const { cancelOrderMutation, marketType } = this.props
+    const { cancelOrderMutation, marketType, disableStrategyMutation } = this.props
 
     try {
+      if (type === "maker-only") {
+        const responseResult = await disableStrategyMutation({
+          variables: {
+            input: {
+              keyId,
+              strategyId: orderId,
+            },
+          },
+        })
+
+        return responseResult
+      }
       const responseResult = await cancelOrderMutation({
         variables: {
           cancelOrderInput: {
@@ -411,11 +423,6 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     if (!show) {
       return null
     }
-
-    console.log(
-      'getOpenOrderHistoryQuery.getOpenOrderHistory.count',
-      getOpenOrderHistoryQuery.getOpenOrderHistory.count
-    )
 
     return (
       <TableWithSort

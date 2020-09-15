@@ -1555,6 +1555,7 @@ export const combineOpenOrdersTable = (
     )
     .map((el: OrderType, i: number) => {
       const {
+        _id = '',
         keyId = '',
         symbol = '',
         type: orderType = '',
@@ -1567,6 +1568,7 @@ export const combineOpenOrdersTable = (
         status = '',
         info = { orderId: '', origQty: '', stopPrice: '' },
       } = el || {
+        _id: '',
         keyId: '',
         symbol: '',
         type: '',
@@ -1765,7 +1767,7 @@ export const combineOpenOrdersTable = (
             <CloseButton
               i={i}
               onClick={() => {
-                cancelOrderFunc(keyId, orderId, orderSymbol, order.type)
+                cancelOrderFunc(keyId, orderType === "maker-only" ? _id : orderId, orderSymbol, orderType)
                 filterCacheData({
                   data: null,
                   name: 'getOpenOrderHistory',
