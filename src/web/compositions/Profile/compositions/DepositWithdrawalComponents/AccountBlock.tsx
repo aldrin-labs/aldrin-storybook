@@ -63,23 +63,26 @@ const AccountBlock = ({
             fontSize: '1.4rem',
             fontWeight: 'bold',
             padding: '0',
-            borderRadius: '1.5rem',
+            borderRadius: '0.2rem',
             textAlign: 'center',
             background: 'white',
             position: 'relative',
-
-            boxShadow: 'none',
-            border: 'none',
+            boxShadow: '-1px 3px 22px -16px rgba(127,139,148,1)',
+            border: 'solid 1px #E0E5EC',
           }}
           menuListStyles={{
             height: '16rem',
           }}
           optionStyles={{
+            color: '#16253D',
             height: '4rem',
             background: 'transparent',
             fontSize: '1.4rem',
             textTransform: 'uppercase',
             padding: '0',
+            borderBottom: '2px solid #E0E5EC',
+            margin: '0 2rem',
+            width: 'calc(100% - 4rem)',
 
             '&:hover': {
               borderRadius: '0.8rem',
@@ -169,25 +172,29 @@ const AccountBlock = ({
             fontSize: '1.4rem',
             fontWeight: 'bold',
             padding: '0',
-            borderRadius: '1.5rem',
+            borderRadius: '0.2rem',
             textAlign: 'center',
             background: 'white',
             position: 'relative',
-            boxShadow: 'none',
-            border: 'none',
+            boxShadow: '-1px 3px 22px -16px rgba(127,139,148,1)',
+            border: 'solid 1px #E0E5EC',
           }}
           menuListStyles={{
-            height: '16rem',
+            height: '20rem',
           }}
           optionStyles={{
+            color: '#16253D',
             height: '4rem',
             background: 'transparent',
             fontSize: '1.4rem',
             textTransform: 'uppercase',
             padding: '0',
+            margin: '0 2rem',
+            borderBottom: '2px solid #E0E5EC',
+            width: 'calc(100% - 4rem)',
 
             '&:hover': {
-              borderRadius: '0.8rem',
+              borderRadius: '0.2rem',
               color: '#16253D',
               background: '#E7ECF3',
             },

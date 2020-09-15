@@ -290,15 +290,14 @@ export default compose(
     query: getProfileSettings,
     name: 'getProfileSettingsQuery',
     fetchPolicy: 'cache-and-network',
-    withOutSpinner: true,
-    withTableLoader: true,
+    withoutLoading: true,
   }),
   queryRendererHoc({
     query: getActivePromo,
     name: 'getActivePromoQuery',
     fetchPolicy: 'cache-and-network',
-    withOutSpinner: true,
-    withTableLoader: true,
+
+    withoutLoading: true,
   }),
   graphql(bonusRequest, { name: 'bonusRequestMutation' })
 )(Deposits)

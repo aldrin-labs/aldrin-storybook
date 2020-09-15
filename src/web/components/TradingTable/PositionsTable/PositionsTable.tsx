@@ -691,11 +691,13 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       return null
     }
 
-    const [
-      USDTFuturesFund = { quantity: 0, value: 0 },
-    ] = getFundsQuery.getFunds
-      .filter((el) => +el.assetType === 1 && el.asset.symbol === 'USDT')
-      .map((el) => ({ quantity: el.free, value: el.free }))
+    let USDTFuturesFund = { quantity: 0, value: 0 }
+
+    if (getFundsQuery && getFundsQuery.getFunds) {
+      USDTFuturesFund = getFundsQuery.getFunds
+        .filter((el) => +el.assetType === 1 && el.asset.symbol === 'USDT')
+        .map((el) => ({ quantity: el.free, value: el.free }))
+    }
 
     return (
       <>

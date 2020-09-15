@@ -456,6 +456,7 @@ const WithdrawalDataWrapper = ({ ...props }) => {
   const { selectedKey: tempSelectedKey = '' } = withdrawalSettings || {
     selectedKey: '',
   }
+
   const selectedKey = tempSelectedKey || ''
 
   const WrappedComponent = compose(
