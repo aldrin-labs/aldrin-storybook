@@ -53,6 +53,7 @@ const NavBarProfileSelector = ({
         id="profile-page"
         key="profile-page"
         pathname={pathname}
+        page={`profile`}
         buttonText={
           <div style={{ display: 'flex', alignItems: 'center' }}>
             {accountData.email}

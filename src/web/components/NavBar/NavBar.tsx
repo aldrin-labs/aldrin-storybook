@@ -80,6 +80,7 @@ const Transactions = (props: any) => (
     {...props}
   />
 )
+
 const Market = (props: any) => <Link to="/market" {...props} />
 const Signals = (props: any) => <Link to="/signals" {...props} />
 const MarketType = (props: any) => {
@@ -162,6 +163,9 @@ const NavBarRaw: SFC<Props> = ({
   const notAuthPages = page === 'Log in' || page === 'Sign up'
   const [selectedMenu, selectMenu] = useState<string | undefined>(undefined)
 
+  const isActivePage = new RegExp(page, 'i').test(pathname)
+  const isSpot = /spot/.test(pathname)
+
   return (
     <Nav
       theme={theme}
@@ -172,7 +176,7 @@ const NavBarRaw: SFC<Props> = ({
       <StyledToolbar theme={theme} variant="dense">
         <Grid
           alignItems="center"
-          style={{ height: '100%', width: '100%' }}
+          style={{ height: '100%', width: '50%' }}
           container={true}
           wrap="nowrap"
           alignContent={'stretch'}
@@ -184,13 +188,20 @@ const NavBarRaw: SFC<Props> = ({
                 display: 'flex',
                 height: '100%',
                 borderRight: theme.palette.border.main,
+                width: '22rem',
               }}
             >
               <Grid
                 container={true}
                 alignItems={'center'}
                 wrap="nowrap"
-                style={{ minWidth: '25rem', padding: '.5rem 1rem' }}
+                style={{
+                  minWidth: '25rem',
+                  padding: '.5rem 1rem',
+                  margin: 'auto auto',
+
+                  width: '20rem',
+                }}
               >
                 <Logo theme={theme} />
               </Grid>
@@ -200,6 +211,8 @@ const NavBarRaw: SFC<Props> = ({
             item={true}
             container={true}
             style={{
+              display: 'flex',
+              justifyContent: 'space-between',
               height: '100%',
               borderRight: theme.palette.border.main,
               width: 'auto',
@@ -210,7 +223,6 @@ const NavBarRaw: SFC<Props> = ({
               component={MarketType}
               theme={theme}
               id="spot-page"
-              key="spot-page"
               marketName="spot"
               buttonText={
                 <div
@@ -222,17 +234,12 @@ const NavBarRaw: SFC<Props> = ({
                   }}
                 >
                   {'Spot'}
-                  <SvgIcon
-                    width="1rem"
-                    height="1rem"
-                    src={ArrowBottom}
-                    style={{
-                      marginLeft: '.5rem',
-                    }}
-                  />
                 </div>
               }
               selectedMenu={selectedMenu}
+              key="spot"
+              page={`spot`}
+              isActivePage={isActivePage}
               pathname={pathname}
               selectActiveMenu={selectMenu}
               onMouseOver={() => {
@@ -245,7 +252,7 @@ const NavBarRaw: SFC<Props> = ({
               }}
               items={[
                 {
-                  text: 'Tradind',
+                  text: 'Trading',
                   to: '/chart/spot/BTC_USDT',
                 },
                 {
@@ -255,6 +262,10 @@ const NavBarRaw: SFC<Props> = ({
                 {
                   text: 'Perfomance',
                   to: '/portfolio/transactions/spot',
+                },
+                {
+                  text: 'Rebalance',
+                  to: '/portfolio/rebalance',
                 },
               ]}
             />
@@ -266,6 +277,7 @@ const NavBarRaw: SFC<Props> = ({
               id="futures-page"
               key="futures-page"
               marketName="futures"
+              page={'futures'}
               buttonText={
                 <div
                   style={{
@@ -276,14 +288,6 @@ const NavBarRaw: SFC<Props> = ({
                   }}
                 >
                   {'Futures'}
-                  <SvgIcon
-                    width="1rem"
-                    height="1rem"
-                    src={ArrowBottom}
-                    style={{
-                      marginLeft: '.5rem',
-                    }}
-                  />
                 </div>
               }
               selectedMenu={selectedMenu}
@@ -298,7 +302,7 @@ const NavBarRaw: SFC<Props> = ({
               }}
               items={[
                 {
-                  text: 'Tradind',
+                  text: 'Trading',
                   to: '/chart/futures/BTC_USDT',
                 },
                 {
@@ -359,7 +363,13 @@ const NavBarRaw: SFC<Props> = ({
           </NavLinkButtonWrapper> */}
         </Grid>
         <Grid
-          style={{ height: '100%', width: '100%' }}
+          style={{
+            height: '100%',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'space-around',
+            margin: 'auto auto',
+          }}
           item={true}
           key={'navBarGrid'}
         >
@@ -475,7 +485,6 @@ const NavBarRaw: SFC<Props> = ({
                   },
                 ]}
               /> */}
-
             <NavLinkButtonWrapper
               theme={theme}
               key="trading-wrapper"
@@ -499,7 +508,6 @@ const NavBarRaw: SFC<Props> = ({
                 Trading
               </NavLinkButton>
             </NavLinkButtonWrapper>
-
             <NavLinkButtonWrapper
               theme={theme}
               key="portfolio-wrapper"
@@ -523,7 +531,6 @@ const NavBarRaw: SFC<Props> = ({
                 Portfolio
               </NavLinkButton>
             </NavLinkButtonWrapper>
-
             <NavLinkButtonWrapper
               theme={theme}
               key="performance-wrapper"
@@ -545,27 +552,28 @@ const NavBarRaw: SFC<Props> = ({
                 Performance
               </NavLinkButton>
             </NavLinkButtonWrapper>
+            {isSpot && (
+              <NavLinkButtonWrapper
+                theme={theme}
+                key="rebalance-wrapper"
+                onMouseOver={() => {
+                  if (notAuthPages || !loginStatus) {
+                    return
+                  }
 
-            <NavLinkButtonWrapper
-              theme={theme}
-              key="rebalance-wrapper"
-              onMouseOver={() => {
-                if (notAuthPages || !loginStatus) {
-                  return
-                }
-
-                prefetchRebalance()
-              }}
-            >
-              <NavLinkButton
-                key="rebalance"
-                page={`rebalance`}
-                component={Rebalance}
-                pathname={pathname}
+                  prefetchRebalance()
+                }}
               >
-                Rebalance
-              </NavLinkButton>
-            </NavLinkButtonWrapper>
+                <NavLinkButton
+                  key="rebalance"
+                  page={`rebalance`}
+                  component={Rebalance}
+                  pathname={pathname}
+                >
+                  Rebalance
+                </NavLinkButton>
+              </NavLinkButtonWrapper>
+            )}
           </NavBarWrapper>
         </Grid>
 

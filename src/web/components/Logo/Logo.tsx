@@ -15,7 +15,7 @@ const Logo = ({
   theme: Theme
 }) => {
   return (
-    <Link to="/" style={{ width: '100%', height: '100%' }}>
+    <Link to="/" style={{ width: '80%', height: '80%' }}>
       <StyledLogo src={type === 'dark' ? MainLogoDark : MainLogo} />
     </Link>
   )

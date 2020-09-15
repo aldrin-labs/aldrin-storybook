@@ -40,6 +40,7 @@ export default class Dropdown extends React.Component<IProps> {
 
   render() {
     const {
+      page,
       selectedMenu,
       id,
       theme,
@@ -47,8 +48,8 @@ export default class Dropdown extends React.Component<IProps> {
       onMouseOver,
       marketName,
       pathname,
+      isActivePage,
     } = this.props
-
     return (
       <StyledDropdown
         theme={theme}
@@ -63,12 +64,12 @@ export default class Dropdown extends React.Component<IProps> {
           aria-controls={this.props.id}
           aria-haspopup="true"
           id={id}
-          page={'profile'}
+          page={page}
+          isActivePage={isActivePage}
           pathname={this.props.pathname}
           onClick={this.handleToggle}
           component={component}
           marketName={marketName}
-          pathname={pathname}
           style={{
             textTransform: 'none',
             padding: '0 1rem',
