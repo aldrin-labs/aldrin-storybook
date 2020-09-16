@@ -510,6 +510,7 @@ const NavBarRaw: SFC<Props> = ({
 
                 client.query({
                   query: getPortfolioAssets,
+                  fetchPolicy: "cache-first",
                   variables: { baseCoin: 'USDT', innerSettings: true },
                 })
               }}
