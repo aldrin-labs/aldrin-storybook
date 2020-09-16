@@ -48,6 +48,7 @@ import {
   prefetchSpotChart,
   prefetchFuturesChart,
   prefetchProfileAccounts,
+  prefetchPortfolio,
 } from '@core/utils/prefetching'
 
 import { MASTER_BUILD } from '@core/utils/config'
@@ -258,6 +259,13 @@ const NavBarRaw: SFC<Props> = ({
                 {
                   text: 'Portfolio',
                   to: '/portfolio/main/spot',
+                  onMouseOver: () => {
+                    if (notAuthPages || !loginStatus) {
+                      return
+                    }
+
+                    prefetchPortfolio()
+                  }
                 },
                 {
                   text: 'Perfomance',
@@ -266,6 +274,13 @@ const NavBarRaw: SFC<Props> = ({
                 {
                   text: 'Rebalance',
                   to: '/portfolio/rebalance',
+                  onMouseOver: () => {
+                    if (notAuthPages || !loginStatus) {
+                      return
+                    }
+
+                    prefetchRebalance()
+                  }
                 },
               ]}
             />
@@ -516,10 +531,7 @@ const NavBarRaw: SFC<Props> = ({
                   return
                 }
 
-                client.query({
-                  query: getPortfolioAssets,
-                  variables: { baseCoin: 'USDT', innerSettings: true },
-                })
+                prefetchPortfolio()
               }}
             >
               <NavLinkButton
