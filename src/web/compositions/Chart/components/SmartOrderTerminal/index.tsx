@@ -206,13 +206,14 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
   }
 
   static getDerivedStateFromProps(props: IProps, state: IState) {
-    const isMarketType = state.entryPoint.order.type === 'market' || state.entryPoint.order.type === 'maker-only'
+    const isMarketType =
+      state.entryPoint.order.type === 'market' ||
+      state.entryPoint.order.type === 'maker-only'
 
     // TODO: check this condition later
     if (
       state.priceForCalculate === 0 ||
-      (isMarketType &&
-        !state.entryPoint.trailing.isTrailingOn)
+      (isMarketType && !state.entryPoint.trailing.isTrailingOn)
     ) {
       return {
         ...state,
@@ -351,11 +352,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       return
     }
 
-    const isMarketType = result.entryPoint.order.type === 'market' || result.entryPoint.order.type === 'maker-only'
+    const isMarketType =
+      result.entryPoint.order.type === 'market' ||
+      result.entryPoint.order.type === 'maker-only'
 
     let price =
-      (isMarketType &&
-        !result.entryPoint.trailing.isTrailingOn) ||
+      (isMarketType && !result.entryPoint.trailing.isTrailingOn) ||
       !result.entryPoint.order.price
         ? this.props.price
         : result.entryPoint.order.price
@@ -421,11 +423,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     }
 
     if (prevProps.componentLeverage !== this.props.componentLeverage) {
-      const isMarketType = this.state.entryPoint.order.type === 'market' || this.state.entryPoint.order.type === 'maker-only'
+      const isMarketType =
+        this.state.entryPoint.order.type === 'market' ||
+        this.state.entryPoint.order.type === 'maker-only'
       const total = this.state.temp.initialMargin * this.props.componentLeverage
       const price =
-      isMarketType &&
-        !this.state.entryPoint.trailing.isTrailingOn
+        isMarketType && !this.state.entryPoint.trailing.isTrailingOn
           ? this.props.price
           : this.state.entryPoint.order.price
 
@@ -697,7 +700,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
   getEntryPrice = () => {
     const { entryPoint } = this.state
-    const isMarketType = entryPoint.order.type === 'market' || entryPoint.order.type === 'maker-only'
+    const isMarketType =
+      entryPoint.order.type === 'market' ||
+      entryPoint.order.type === 'maker-only'
 
     let price =
       entryPoint.order.type === 'market' && !entryPoint.trailing.isTrailingOn
@@ -736,14 +741,15 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     const { pricePrecision } = this.props
     const { entryPoint, stopLoss, takeProfit } = this.state
 
-    const isMarketType = entryPoint.order.type === 'market' || entryPoint.order.type === 'maker-only'
+    const isMarketType =
+      entryPoint.order.type === 'market' ||
+      entryPoint.order.type === 'maker-only'
 
     side = !!side ? side : entryPoint.order.side
     price =
       price !== undefined
         ? price
-        : isMarketType &&
-          !entryPoint.trailing.isTrailingOn
+        : isMarketType && !entryPoint.trailing.isTrailingOn
         ? this.props.price
         : entryPoint.order.price
 
@@ -838,11 +844,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     const { entryPoint } = this.state
     const { funds, marketType, quantityPrecision } = this.props
 
-    const isMarketType = entryPoint.order.type === 'market' || entryPoint.order.type === 'maker-only'
+    const isMarketType =
+      entryPoint.order.type === 'market' ||
+      entryPoint.order.type === 'maker-only'
     let maxAmount = 0
 
     let priceForCalculate =
-    isMarketType && !entryPoint.trailing.isTrailingOn
+      isMarketType && !entryPoint.trailing.isTrailingOn
         ? this.props.price
         : entryPoint.order.price
 
@@ -976,10 +984,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     } = this.state
 
     const isSPOTMarket = marketType === 0
-    const isMarketType = entryPoint.order.type === 'market' || entryPoint.order.type === 'maker-only'
+    const isMarketType =
+      entryPoint.order.type === 'market' ||
+      entryPoint.order.type === 'maker-only'
     let maxAmount = 0
     let priceForCalculate =
-    isMarketType && !entryPoint.trailing.isTrailingOn
+      isMarketType && !entryPoint.trailing.isTrailingOn
         ? this.props.price
         : entryPoint.order.price
 
@@ -1072,8 +1082,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       const total = this.state.temp.initialMargin * leverage
 
                       const price =
-                      isMarketType &&
-                        !entryPoint.trailing.isTrailingOn
+                        isMarketType && !entryPoint.trailing.isTrailingOn
                           ? this.props.price
                           : entryPoint.order.price
 
@@ -1556,128 +1565,124 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 )}
               </InputRowContainer> */}
               <InputRowContainer
-                  justify="flex-start"
-                  padding={'.6rem 0 0.6rem 0'}
-                >
-                      <AdditionalSettingsButton
-                        theme={theme}
-                        isActive={entryPoint.order.type === "market"}
-                        onClick={() => {
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'order',
-                            'type',
-                            "market"
-                          )
+                justify="flex-start"
+                padding={'.6rem 0 0.6rem 0'}
+              >
+                <AdditionalSettingsButton
+                  theme={theme}
+                  isActive={entryPoint.order.type === 'market'}
+                  onClick={() => {
+                    this.updateSubBlockValue(
+                      'entryPoint',
+                      'order',
+                      'type',
+                      'market'
+                    )
 
-                          if (
-                            !entryPoint.trailing.isTrailingOn
-                          ) {
-                            this.updateSubBlockValue(
-                              'entryPoint',
-                              'averaging',
-                              'enabled',
-                              false
-                            )
-      
-                            this.updateSubBlockValue(
-                              'entryPoint',
-                              'order',
-                              'total',
-                              stripDigitPlaces(
-                                this.props.price * entryPoint.order.amount,
-                                marketType === 1 ? 2 : 8
-                              )
-                            )
-      
-                            this.updateBlockValue(
-                              'temp',
-                              'initialMargin',
-                              stripDigitPlaces(
-                                (this.props.price * entryPoint.order.amount) /
-                                  entryPoint.order.leverage,
-                                2
-                              )
-                            )
-                          }
-                        }}
-                      >
-                        Market
-                      </AdditionalSettingsButton>
-                    <AdditionalSettingsButton
-                      theme={theme}
-                      isActive={entryPoint.order.type === "limit"}
-                      onClick={() => {
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'order',
-                          'type',
-                          "limit"
+                    if (!entryPoint.trailing.isTrailingOn) {
+                      this.updateSubBlockValue(
+                        'entryPoint',
+                        'averaging',
+                        'enabled',
+                        false
+                      )
+
+                      this.updateSubBlockValue(
+                        'entryPoint',
+                        'order',
+                        'total',
+                        stripDigitPlaces(
+                          this.props.price * entryPoint.order.amount,
+                          marketType === 1 ? 2 : 8
                         )
+                      )
 
+                      this.updateBlockValue(
+                        'temp',
+                        'initialMargin',
+                        stripDigitPlaces(
+                          (this.props.price * entryPoint.order.amount) /
+                            entryPoint.order.leverage,
+                          2
+                        )
+                      )
+                    }
+                  }}
+                >
+                  Market
+                </AdditionalSettingsButton>
+                <AdditionalSettingsButton
+                  theme={theme}
+                  isActive={entryPoint.order.type === 'limit'}
+                  onClick={() => {
+                    this.updateSubBlockValue(
+                      'entryPoint',
+                      'order',
+                      'type',
+                      'limit'
+                    )
+
+                    this.updateSubBlockValue(
+                      'entryPoint',
+                      'TVAlert',
+                      'immediateEntry',
+                      false
+                    )
+                  }}
+                >
+                  Limit
+                </AdditionalSettingsButton>
+                <DarkTooltip
+                  maxWidth={'30rem'}
+                  title={
+                    'Maker-only or post-only market order will place a post-only limit orders as close to the market price as possible until the last one is executed. This way you can enter the position at the market price by paying low maker fees.'
+                  }
+                >
+                  <AdditionalSettingsButton
+                    theme={theme}
+                    isActive={entryPoint.order.type === 'maker-only'}
+                    onClick={() => {
+                      this.updateSubBlockValue(
+                        'entryPoint',
+                        'order',
+                        'type',
+                        'maker-only'
+                      )
+
+                      if (!entryPoint.trailing.isTrailingOn) {
                         this.updateSubBlockValue(
                           'entryPoint',
-                          'TVAlert',
-                          'immediateEntry',
+                          'averaging',
+                          'enabled',
                           false
                         )
-                      }}
-                    >
-                      Limit
-                    </AdditionalSettingsButton>
-                  <DarkTooltip
-                    maxWidth={'30rem'}
-                    title={
-                      'Your smart order will be placed once when there is a Trading View alert that you connected to smart order.'
-                    }
-                  >
-                    <AdditionalSettingsButton
-                      theme={theme}
-                      isActive={entryPoint.order.type === "maker-only"}
-                      onClick={() => {
+
                         this.updateSubBlockValue(
                           'entryPoint',
                           'order',
-                          'type',
-                          "maker-only"
+                          'total',
+                          stripDigitPlaces(
+                            this.props.price * entryPoint.order.amount,
+                            marketType === 1 ? 2 : 8
+                          )
                         )
 
-                        if (
-                          !entryPoint.trailing.isTrailingOn
-                        ) {
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'averaging',
-                            'enabled',
-                            false
+                        this.updateBlockValue(
+                          'temp',
+                          'initialMargin',
+                          stripDigitPlaces(
+                            (this.props.price * entryPoint.order.amount) /
+                              entryPoint.order.leverage,
+                            2
                           )
-    
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'order',
-                            'total',
-                            stripDigitPlaces(
-                              this.props.price * entryPoint.order.amount,
-                              marketType === 1 ? 2 : 8
-                            )
-                          )
-    
-                          this.updateBlockValue(
-                            'temp',
-                            'initialMargin',
-                            stripDigitPlaces(
-                              (this.props.price * entryPoint.order.amount) /
-                                entryPoint.order.leverage,
-                              2
-                            )
-                          )
-                        }
-                      }}
-                    >
-                      Maker-only
-                    </AdditionalSettingsButton>
-                  </DarkTooltip>
-                </InputRowContainer>
+                        )
+                      }
+                    }}
+                  >
+                    Maker-only
+                  </AdditionalSettingsButton>
+                </DarkTooltip>
+              </InputRowContainer>
 
               <div>
                 <InputRowContainer
@@ -2124,8 +2129,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         priceForCalculate != 0
                       }
                       disabled={
-                        (isMarketType &&
-                          !entryPoint.trailing.isTrailingOn) ||
+                        (isMarketType && !entryPoint.trailing.isTrailingOn) ||
                         (entryPoint.TVAlert.pricePlotEnabled &&
                           entryPoint.TVAlert.plotEnabled)
                       }
@@ -2233,8 +2237,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           entryPoint.trailing.trailingDeviationPrice
                         )}
                         disabled={
-                          (isMarketType &&
-                            !entryPoint.trailing.isTrailingOn) ||
+                          (isMarketType && !entryPoint.trailing.isTrailingOn) ||
                           (entryPoint.TVAlert.deviationPlotEnabled &&
                             entryPoint.TVAlert.plotEnabled)
                         }
@@ -2681,8 +2684,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         symbol={pair[1]}
                         value={this.state.temp.initialMargin}
                         disabled={
-                          entryPoint.trailing.isTrailingOn ||
-                          isMarketType
+                          entryPoint.trailing.isTrailingOn || isMarketType
                         }
                         onChange={(e) => {
                           const inputInitialMargin = e.target.value
@@ -3195,8 +3197,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           symbol={pair[1]}
                           value={stopLoss.stopLossPrice}
                           disabled={
-                            isMarketType &&
-                            !entryPoint.trailing.isTrailingOn
+                            isMarketType && !entryPoint.trailing.isTrailingOn
                           }
                           showErrors={showErrors && stopLoss.isStopLossOn}
                           isValid={this.validateField(
@@ -4223,8 +4224,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           symbol={pair[1]}
                           value={takeProfit.takeProfitPrice}
                           disabled={
-                            isMarketType &&
-                            !entryPoint.trailing.isTrailingOn
+                            isMarketType && !entryPoint.trailing.isTrailingOn
                           }
                           showErrors={
                             showErrors &&
@@ -4360,8 +4360,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             symbol={pair[1]}
                             value={takeProfit.takeProfitPrice}
                             disabled={
-                              isMarketType &&
-                              !entryPoint.trailing.isTrailingOn
+                              isMarketType && !entryPoint.trailing.isTrailingOn
                             }
                             showErrors={
                               false &&
