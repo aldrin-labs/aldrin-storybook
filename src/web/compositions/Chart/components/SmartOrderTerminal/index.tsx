@@ -206,10 +206,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
   }
 
   static getDerivedStateFromProps(props: IProps, state: IState) {
+    const isMarketType = state.entryPoint.order.type === 'market' || state.entryPoint.order.type === 'maker-only'
+
     // TODO: check this condition later
     if (
       state.priceForCalculate === 0 ||
-      (state.entryPoint.order.type === 'market' &&
+      (isMarketType &&
         !state.entryPoint.trailing.isTrailingOn)
     ) {
       return {
@@ -349,8 +351,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       return
     }
 
+    const isMarketType = result.entryPoint.order.type === 'market' || result.entryPoint.order.type === 'maker-only'
+
     let price =
-      (result.entryPoint.order.type === 'market' &&
+      (isMarketType &&
         !result.entryPoint.trailing.isTrailingOn) ||
       !result.entryPoint.order.price
         ? this.props.price
@@ -417,9 +421,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     }
 
     if (prevProps.componentLeverage !== this.props.componentLeverage) {
+      const isMarketType = this.state.entryPoint.order.type === 'market' || this.state.entryPoint.order.type === 'maker-only'
       const total = this.state.temp.initialMargin * this.props.componentLeverage
       const price =
-        this.state.entryPoint.order.type === 'market' &&
+      isMarketType &&
         !this.state.entryPoint.trailing.isTrailingOn
           ? this.props.price
           : this.state.entryPoint.order.price
@@ -692,6 +697,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
   getEntryPrice = () => {
     const { entryPoint } = this.state
+    const isMarketType = entryPoint.order.type === 'market' || entryPoint.order.type === 'maker-only'
+
     let price =
       entryPoint.order.type === 'market' && !entryPoint.trailing.isTrailingOn
         ? this.props.price
@@ -729,11 +736,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     const { pricePrecision } = this.props
     const { entryPoint, stopLoss, takeProfit } = this.state
 
+    const isMarketType = entryPoint.order.type === 'market' || entryPoint.order.type === 'maker-only'
+
     side = !!side ? side : entryPoint.order.side
     price =
       price !== undefined
         ? price
-        : entryPoint.order.type === 'market' &&
+        : isMarketType &&
           !entryPoint.trailing.isTrailingOn
         ? this.props.price
         : entryPoint.order.price
@@ -829,10 +838,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     const { entryPoint } = this.state
     const { funds, marketType, quantityPrecision } = this.props
 
+    const isMarketType = entryPoint.order.type === 'market' || entryPoint.order.type === 'maker-only'
     let maxAmount = 0
 
     let priceForCalculate =
-      entryPoint.order.type === 'market' && !entryPoint.trailing.isTrailingOn
+    isMarketType && !entryPoint.trailing.isTrailingOn
         ? this.props.price
         : entryPoint.order.price
 
@@ -966,9 +976,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     } = this.state
 
     const isSPOTMarket = marketType === 0
+    const isMarketType = entryPoint.order.type === 'market' || entryPoint.order.type === 'maker-only'
     let maxAmount = 0
     let priceForCalculate =
-      entryPoint.order.type === 'market' && !entryPoint.trailing.isTrailingOn
+    isMarketType && !entryPoint.trailing.isTrailingOn
         ? this.props.price
         : entryPoint.order.price
 
@@ -1061,7 +1072,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       const total = this.state.temp.initialMargin * leverage
 
                       const price =
-                        entryPoint.order.type === 'market' &&
+                      isMarketType &&
                         !entryPoint.trailing.isTrailingOn
                           ? this.props.price
                           : entryPoint.order.price
@@ -1409,7 +1420,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 )}
               </InputRowContainer>
 
-              <InputRowContainer padding={'0 0 0.6rem 0'}>
+              {/* <InputRowContainer padding={'0 0 0.6rem 0'}>
                 <CustomSwitcher
                   theme={theme}
                   firstHalfText={'limit'}
@@ -1543,7 +1554,130 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     />
                   </>
                 )}
-              </InputRowContainer>
+              </InputRowContainer> */}
+              <InputRowContainer
+                  justify="flex-start"
+                  padding={'.6rem 0 0.6rem 0'}
+                >
+                      <AdditionalSettingsButton
+                        theme={theme}
+                        isActive={entryPoint.order.type === "market"}
+                        onClick={() => {
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'order',
+                            'type',
+                            "market"
+                          )
+
+                          if (
+                            !entryPoint.trailing.isTrailingOn
+                          ) {
+                            this.updateSubBlockValue(
+                              'entryPoint',
+                              'averaging',
+                              'enabled',
+                              false
+                            )
+      
+                            this.updateSubBlockValue(
+                              'entryPoint',
+                              'order',
+                              'total',
+                              stripDigitPlaces(
+                                this.props.price * entryPoint.order.amount,
+                                marketType === 1 ? 2 : 8
+                              )
+                            )
+      
+                            this.updateBlockValue(
+                              'temp',
+                              'initialMargin',
+                              stripDigitPlaces(
+                                (this.props.price * entryPoint.order.amount) /
+                                  entryPoint.order.leverage,
+                                2
+                              )
+                            )
+                          }
+                        }}
+                      >
+                        Market
+                      </AdditionalSettingsButton>
+                    <AdditionalSettingsButton
+                      theme={theme}
+                      isActive={entryPoint.order.type === "limit"}
+                      onClick={() => {
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'order',
+                          'type',
+                          "limit"
+                        )
+
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'TVAlert',
+                          'immediateEntry',
+                          false
+                        )
+                      }}
+                    >
+                      Limit
+                    </AdditionalSettingsButton>
+                  <DarkTooltip
+                    maxWidth={'30rem'}
+                    title={
+                      'Your smart order will be placed once when there is a Trading View alert that you connected to smart order.'
+                    }
+                  >
+                    <AdditionalSettingsButton
+                      theme={theme}
+                      isActive={entryPoint.order.type === "maker-only"}
+                      onClick={() => {
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'order',
+                          'type',
+                          "maker-only"
+                        )
+
+                        if (
+                          !entryPoint.trailing.isTrailingOn
+                        ) {
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'averaging',
+                            'enabled',
+                            false
+                          )
+    
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'order',
+                            'total',
+                            stripDigitPlaces(
+                              this.props.price * entryPoint.order.amount,
+                              marketType === 1 ? 2 : 8
+                            )
+                          )
+    
+                          this.updateBlockValue(
+                            'temp',
+                            'initialMargin',
+                            stripDigitPlaces(
+                              (this.props.price * entryPoint.order.amount) /
+                                entryPoint.order.leverage,
+                              2
+                            )
+                          )
+                        }
+                      }}
+                    >
+                      Maker-only
+                    </AdditionalSettingsButton>
+                  </DarkTooltip>
+                </InputRowContainer>
 
               <div>
                 <InputRowContainer
@@ -1705,21 +1839,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       Averaging
                     </AdditionalSettingsButton>
                   </DarkTooltip>
-                  {/* <SwitcherContainer>
-                    <GreenSwitcher
-                      id="isHedgeOn"
-                      checked={entryPoint.order.isHedgeOn}
-                      handleToggle={() =>
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'order',
-                          'isHedgeOn',
-                          !entryPoint.order.isHedgeOn
-                        )
-                      }
-                    />
-                    <HeaderLabel htmlFor="isHedgeOn">hedge</HeaderLabel>
-                  </SwitcherContainer> */}
                 </InputRowContainer>
 
                 {entryPoint.averaging.enabled && (
@@ -2005,7 +2124,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         priceForCalculate != 0
                       }
                       disabled={
-                        (entryPoint.order.type === 'market' &&
+                        (isMarketType &&
                           !entryPoint.trailing.isTrailingOn) ||
                         (entryPoint.TVAlert.pricePlotEnabled &&
                           entryPoint.TVAlert.plotEnabled)
@@ -2114,7 +2233,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           entryPoint.trailing.trailingDeviationPrice
                         )}
                         disabled={
-                          (entryPoint.order.type === 'market' &&
+                          (isMarketType &&
                             !entryPoint.trailing.isTrailingOn) ||
                           (entryPoint.TVAlert.deviationPlotEnabled &&
                             entryPoint.TVAlert.plotEnabled)
@@ -2410,7 +2529,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         value={entryPoint.order.total}
                         disabled={
                           entryPoint.trailing.isTrailingOn ||
-                          entryPoint.order.type === 'market' ||
+                          isMarketType ||
                           (entryPoint.TVAlert.amountPlotEnabled &&
                             entryPoint.TVAlert.plotEnabled)
                         }
@@ -2563,7 +2682,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         value={this.state.temp.initialMargin}
                         disabled={
                           entryPoint.trailing.isTrailingOn ||
-                          entryPoint.order.type === 'market'
+                          isMarketType
                         }
                         onChange={(e) => {
                           const inputInitialMargin = e.target.value
@@ -3076,7 +3195,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           symbol={pair[1]}
                           value={stopLoss.stopLossPrice}
                           disabled={
-                            entryPoint.order.type === 'market' &&
+                            isMarketType &&
                             !entryPoint.trailing.isTrailingOn
                           }
                           showErrors={showErrors && stopLoss.isStopLossOn}
@@ -3306,7 +3425,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                                   symbol={pair[1]}
                                   value={stopLoss.forcedStop.forcedStopPrice}
                                   disabled={
-                                    entryPoint.order.type === 'market' &&
+                                    isMarketType &&
                                     !entryPoint.trailing.isTrailingOn
                                   }
                                   showErrors={
@@ -4104,7 +4223,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           symbol={pair[1]}
                           value={takeProfit.takeProfitPrice}
                           disabled={
-                            entryPoint.order.type === 'market' &&
+                            isMarketType &&
                             !entryPoint.trailing.isTrailingOn
                           }
                           showErrors={
@@ -4241,7 +4360,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             symbol={pair[1]}
                             value={takeProfit.takeProfitPrice}
                             disabled={
-                              entryPoint.order.type === 'market' &&
+                              isMarketType &&
                               !entryPoint.trailing.isTrailingOn
                             }
                             showErrors={
