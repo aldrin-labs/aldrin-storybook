@@ -24,6 +24,7 @@ import {
 } from './ProfileAccounts.styles'
 import { Button } from '@material-ui/core'
 import { FileCopy } from '@material-ui/icons'
+import { wrap } from 'lodash'
 
 export const accountsColors = [
   '#9A77F7',
@@ -111,81 +112,169 @@ export const transformData = (
         ),
       },
       name: row.name,
-      value: {
-        render: row.value || '-',
-        style: { textAlign: 'center' },
+      spotWallet: {
+        render: '-',
       },
+      spotWalletDeposit: {
+        render: (
+          <div>
+            <Button
+              style={{
+                margin: '1rem auto',
+                border: 'solid .1rem #5BC9BB',
+                borderRadius: '.6rem',
+                height: '2.2rem',
+                width: '10rem',
+                color: 'white',
+                backgroundColor: '#5BC9BB',
+                textTransform: 'capitalize',
+                fontWeight: 600,
+              }}
+            >
+              Deposit
+            </Button>
+          </div>
+        ),
+      },
+
+      spotWalletWithdrawal: {
+        render: (
+          <div>
+            <Button
+              style={{
+                border: 'solid .1rem #5BC9BB',
+                borderRadius: '.6rem',
+                height: '2.2rem',
+                width: '10rem',
+
+                color: '#5BC9BB',
+                textTransform: 'capitalize',
+                fontWeight: 600,
+              }}
+            >
+              Withdrawal
+            </Button>
+          </div>
+        ),
+      },
+      futuresWallet: {
+        render: '-',
+      },
+      futuresWalletDeposit: {
+        render: (
+          <div>
+            <Button
+              style={{
+                border: 'solid .1rem #5BC9BB',
+                borderRadius: '.6rem',
+                height: '2.2rem',
+                width: '10rem',
+                color: 'white',
+                backgroundColor: '#5BC9BB',
+                textTransform: 'capitalize',
+                fontWeight: 600,
+              }}
+            >
+              Deposit
+            </Button>
+          </div>
+        ),
+      },
+
+      futuresWalletWithdrawal: {
+        render: (
+          <div>
+            <Button
+              style={{
+                border: 'solid .1rem #5BC9BB',
+                borderRadius: '.6rem',
+                width: '10rem',
+                height: '2.2rem',
+                color: '#5BC9BB',
+                textTransform: 'capitalize',
+                fontWeight: 600,
+              }}
+            >
+              Withdrawal
+            </Button>
+          </div>
+        ),
+      },
+      // value: {
+      //   render: row.value || '-',
+      //   style: { textAlign: 'center' },
+      // },
       // amount: {
       //   contentToSort: row.amount,
       //   contentToCSV: roundAndFormatNumber(row.amount, 2, true),
       //   render: addMainSymbol(roundAndFormatNumber(row.amount, 2, true), true),
       // },
-      added: {
-        render: (
-          <div>
-            <span
-              style={{
-                display: 'block',
-                marginBottom: '.2rem',
-                fontSize: '1.3rem',
-              }}
-            >
-              {String(
-                dayjs.unix(row.date / 1000).format('MMM DD, YYYY')
-              ).replace(/-/g, '.')}
-            </span>
-            <span style={{ color: '#ABBAD1' }}>
-              {dayjs.unix(row.date / 1000).format('LT')}
-            </span>
-          </div>
-        ),
-        contentToSort: row.date,
-        // isNumber: true,
-      },
-      lastUpdate: {
-        render: (
-          <div>
-            <span
-              style={{
-                display: 'block',
-                marginBottom: '.2rem',
-                fontSize: '1.3rem',
-              }}
-            >
-              {String(
-                dayjs.unix(row.lastUpdate).format('MMM DD, YYYY')
-              ).replace(/-/g, '.')}
-            </span>
-            <span style={{ color: '#ABBAD1' }}>
-              {dayjs.unix(row.lastUpdate).format('LT')}
-            </span>
-          </div>
-        ),
-        contentToSort: row.lastUpdate,
-        // isNumber: true,
-      },
-      status: {
-        render: (
-          <span style={row.valid ? { ...greenStyle } : { ...redStyle }}>
-            {getKeyStatus(row.status, row.valid)}
-          </span>
-        ),
-      },
-      autoRebalance: {
-        render: (
-          <span style={{ color: '#DD6956', fontWeight: 'bold' }}>disabled</span>
-        ),
-      },
-      edit: {
-        render: (
-          <PortfolioSelectorPopup
-            popupStyle={{ transform: 'translateX(-95%)' }}
-            needPortalMask={true}
-            dotsColor={'#7284A0'}
-            data={row}
-          />
-        ),
-      },
+      // added: {
+      //   render: (
+      //     <div>
+      //       <span
+      //         style={{
+      //           display: 'block',
+      //           marginBottom: '.2rem',
+      //           fontSize: '1.3rem',
+      //         }}
+      //       >
+      //         {String(
+      //           dayjs.unix(row.date / 1000).format('MMM DD, YYYY')
+      //         ).replace(/-/g, '.')}
+      //       </span>
+      //       <span style={{ color: '#ABBAD1' }}>
+      //         {dayjs.unix(row.date / 1000).format('LT')}
+      //       </span>
+      //     </div>
+      //   ),
+      //   contentToSort: row.date,
+      //   // isNumber: true,
+      // },
+      // lastUpdate: {
+      //   render: (
+      //     <div>
+      //       <span
+      //         style={{
+      //           display: 'block',
+      //           marginBottom: '.2rem',
+      //           fontSize: '1.3rem',
+      //         }}
+      //       >
+      //         {String(
+      //           dayjs.unix(row.lastUpdate).format('MMM DD, YYYY')
+      //         ).replace(/-/g, '.')}
+      //       </span>
+      //       <span style={{ color: '#ABBAD1' }}>
+      //         {dayjs.unix(row.lastUpdate).format('LT')}
+      //       </span>
+      //     </div>
+      //   ),
+      //   contentToSort: row.lastUpdate,
+      //   // isNumber: true,
+      // },
+      // status: {
+      //   render: (
+      //     <span style={row.valid ? { ...greenStyle } : { ...redStyle }}>
+      //       {getKeyStatus(row.status, row.valid)}
+      //     </span>
+      //   ),
+      // },
+      // autoRebalance: {
+      //   render: (
+      //     <span style={{ color: '#DD6956', fontWeight: 'bold' }}>disabled</span>
+      //   ),
+      // },
+      // edit: {
+      //   render: (
+      //     <PortfolioSelectorPopup
+      //       popupStyle={{ transform: 'translateX(-95%)' }}
+      //       needPortalMask={true}
+      //       dotsColor={'#7284A0'}
+      //       data={row}
+      //     />
+      //   ),
+      // },
       copy: {
         render: (
           <div
@@ -199,13 +288,25 @@ export const transformData = (
               copy(row._id)
             }}
           >
-            <FileCopy style={{ width: '2rem', height: '2rem' }} />
+            <Button
+              style={{
+                border: 'solid .1rem  #7380EB',
+                borderRadius: '.6rem',
+                height: '2.2rem',
+                width: '10rem',
+                color: ' #7380EB',
+                textTransform: 'capitalize',
+                fontWeight: 'bold',
+              }}
+            >
+              Copy ID
+            </Button>
           </div>
         ),
       },
-      refresh: {
-        render: <ReimportKey keyId={row._id} />,
-      },
+      // refresh: {
+      //   render: <ReimportKey keyId={row._id} />,
+      // },
     }
   })
 
@@ -268,7 +369,7 @@ export const transformData = (
           }}
         >
           <SmallAddIcon />
-          <Typography>add new key</Typography>
+          <Typography style={{ whiteSpace: 'nowrap' }}>add new key</Typography>
         </AddAccountButton>
       ),
     },
@@ -300,40 +401,86 @@ export const putDataInTable = (
         style: { borderTopLeftRadius: '1.5rem' },
         isSortable: false,
       },
-      { id: 'name', label: 'name', isSortable: true },
-      { id: 'value', label: 'value', isSortable: true },
       {
-        id: 'added',
-        label: 'added',
-        // isNumber: true,
+        id: 'name',
+        label: 'name',
         isSortable: true,
+        style: { width: '15rem', display: 'flex', flexWrap: 'nowrap' },
       },
       {
-        id: 'lastUpdate',
-        label: 'last update',
-        // isNumber: true,
+        id: 'spotWallet',
+        label: 'spot wallet',
         isSortable: true,
+        style: { width: '90rem', fontWeight: 'bold' },
       },
-      { id: 'status', label: 'status', isSortable: true },
-      { id: 'autoRebalance', label: 'auto-rebalance', isSortable: true },
       {
-        id: 'edit',
+        id: 'spotWalletDeposit',
         label: '',
-        style: { borderTopRightRadius: '1.5rem' },
-        isSortable: false,
+        isSortable: true,
+        style: { width: '90rem' },
       },
+      {
+        id: 'spotWalletWithdrawal',
+        label: '',
+        isSortable: true,
+        style: { width: '90rem' },
+      },
+      {
+        id: 'futuresWallet',
+        label: 'futures wallet',
+        isSortable: true,
+        style: { width: '90rem' },
+      },
+      {
+        id: 'futuresWalletDeposit',
+        label: '',
+        isSortable: true,
+        style: { width: '90rem' },
+      },
+      {
+        id: 'futuresWalletWithdrawal',
+        label: '',
+        isSortable: true,
+        style: { width: '90rem' },
+      },
+      // { id: 'value', label: 'value', isSortable: true },
+      // {
+      //   id: 'added',
+      //   label: 'added',
+      //   // isNumber: true,
+      //   isSortable: true,
+      // },
+      // {
+      //   id: 'lastUpdate',
+      //   label: 'last update',
+      //   // isNumber: true,
+      //   isSortable: true,
+      // },
+      // { id: 'status', label: 'status', isSortable: true },
+      // { id: 'autoRebalance', label: 'auto-rebalance', isSortable: true },
+      // {
+      //   id: 'edit',
+      //   label: '',
+      //   style: { borderTopRightRadius: '1.5rem' },
+      //   isSortable: false,
+      // },
       {
         id: 'copy',
-        label: '',
-        style: { borderTopRightRadius: '1.5rem' },
+        label: 'account id',
+
+        style: {
+          borderTopRightRadius: '1.5rem',
+
+          width: '20rem',
+        },
         isSortable: false,
       },
-      {
-        id: 'refresh',
-        label: '',
-        style: { borderTopRightRadius: '1.5rem' },
-        isSortable: false,
-      },
+      // {
+      //   id: 'refresh',
+      //   label: '',
+      //   style: { borderTopRightRadius: '1.5rem' },
+      //   isSortable: false,
+      // },
     ],
     body,
   }
