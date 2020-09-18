@@ -45,7 +45,6 @@ import {
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 
 import FirstVisitPopup from '@sb/compositions/Chart/components/FirstVisitPopup'
-import { MASTER_BUILD } from '@core/utils/config'
 
 class SimpleTabs extends React.Component {
   state = {
@@ -214,7 +213,6 @@ class SimpleTabs extends React.Component {
             </div>
             <div style={{ width: '50%' }}>
               <TerminalModeButton
-                MASTER_BUILD={MASTER_BUILD}
                 theme={theme}
                 active={mode === 'market'}
                 onClick={() => this.handleChangeMode('market')}
@@ -222,35 +220,30 @@ class SimpleTabs extends React.Component {
                 Market
               </TerminalModeButton>
               <TerminalModeButton
-                MASTER_BUILD={MASTER_BUILD}
                 theme={theme}
                 active={mode === 'limit'}
                 onClick={() => this.handleChangeMode('limit')}
               >
                 Limit
               </TerminalModeButton>
-              {!MASTER_BUILD && (
-                <DarkTooltip
-                  MASTER_BUILD={MASTER_BUILD}
-                  maxWidth={'35rem'}
-                  title={
-                    'Maker-only or post-only market order will place a post-only limit orders as close to the market price as possible until the last one is executed. This way you can enter the position at the market price by paying low maker fees.'
-                  }
+              <DarkTooltip
+                maxWidth={'35rem'}
+                title={
+                  'Maker-only or post-only market order will place a post-only limit orders as close to the market price as possible until the last one is executed. This way you can enter the position at the market price by paying low maker fees.'
+                }
+              >
+                <TerminalModeButton
+                  theme={theme}
+                  active={mode === 'maker-only'}
+                  onClick={() => this.handleChangeMode('maker-only')}
                 >
-                  <TerminalModeButton
-                    theme={theme}
-                    active={mode === 'maker-only'}
-                    onClick={() => this.handleChangeMode('maker-only')}
-                  >
-                    Maker-only
-                  </TerminalModeButton>
-                </DarkTooltip>
-              )}
+                  Maker-only
+                </TerminalModeButton>
+              </DarkTooltip>
 
               {!isSPOTMarket ? (
                 <TerminalModeButtonWithDropdown
                   theme={theme}
-                  MASTER_BUILD={MASTER_BUILD}
                   active={mode === 'stop-limit' || mode === 'stop-market'}
                 >
                   {mode === 'stop-limit'
@@ -321,7 +314,6 @@ class SimpleTabs extends React.Component {
                 <TerminalModeButton
                   theme={theme}
                   active={mode === 'stop-limit'}
-                  MASTER_BUILD={MASTER_BUILD}
                   onClick={() => {
                     this.handleChangeMode('stop-limit')
                     this.setState({ orderMode: 'TIF' })
