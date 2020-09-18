@@ -56,7 +56,7 @@ const NavBarProfileSelector = ({
         page={`profile`}
         buttonText={
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            {accountData.email}
+            <span style={{ maxWidth: '15rem', overflow: 'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>{accountData.email}</span>
             <SvgIcon
               width="1rem"
               height="1rem"

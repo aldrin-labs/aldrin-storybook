@@ -1649,34 +1649,39 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         'maker-only'
                       )
 
-                      if (!entryPoint.trailing.isTrailingOn) {
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'averaging',
-                          'enabled',
-                          false
-                        )
+                      this.updateSubBlockValue(
+                        'entryPoint',
+                        'averaging',
+                        'enabled',
+                        false
+                      )
 
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'order',
-                          'total',
-                          stripDigitPlaces(
-                            this.props.price * entryPoint.order.amount,
-                            marketType === 1 ? 2 : 8
-                          )
+                      this.updateSubBlockValue(
+                        'entryPoint',
+                        'order',
+                        'total',
+                        stripDigitPlaces(
+                          this.props.price * entryPoint.order.amount,
+                          marketType === 1 ? 2 : 8
                         )
+                      )
 
-                        this.updateBlockValue(
-                          'temp',
-                          'initialMargin',
-                          stripDigitPlaces(
-                            (this.props.price * entryPoint.order.amount) /
-                              entryPoint.order.leverage,
-                            2
-                          )
+                      this.updateBlockValue(
+                        'temp',
+                        'initialMargin',
+                        stripDigitPlaces(
+                          (this.props.price * entryPoint.order.amount) /
+                            entryPoint.order.leverage,
+                          2
                         )
-                      }
+                      )
+
+                      this.updateSubBlockValue(
+                        'entryPoint',
+                        'trailing',
+                        'isTrailingOn',
+                        false
+                      )
                     }}
                   >
                     Maker-only
@@ -1748,6 +1753,15 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                               'averaging',
                               'enabled',
                               false
+                            )
+                          }
+
+                          if (entryPoint.order.type === "maker-only") {
+                            this.updateSubBlockValue(
+                              'entryPoint',
+                              'order',
+                              'type',
+                              "limit"
                             )
                           }
                         }}

@@ -1347,16 +1347,38 @@ export const combineStrategiesHistoryTable = (
         takeProfit: {
           render: (
             <SubColumnValue theme={theme} color={green.main}>
-              {trailingExit &&
-              exitLevels[0] &&
+              {exitLevels[0] &&
               exitLevels[0].activatePrice &&
-              exitLevels[0].entryDeviation
-                ? `${exitLevels[0].activatePrice}% / ${
-                    exitLevels[0].entryDeviation
-                  }%`
-                : exitLevels[0] && exitLevels[0].price
-                ? `${exitLevels[0].price}%`
-                : '-'}
+              exitLevels[0].entryDeviation ? (
+                `${exitLevels[0].activatePrice}% / ${
+                  exitLevels[0].entryDeviation
+                }%`
+              ) : exitLevels.length > 1 ? (
+                <div>
+                  <div>
+                    {exitLevels.map((level, i) =>
+                      i < 4 ? (
+                        <span style={{ color: theme.palette.grey.light }}>
+                          {level.amount}%{' '}
+                          {i === 3 || i + 1 === exitLevels.length ? '' : '/ '}
+                        </span>
+                      ) : null
+                    )}
+                  </div>
+                  <div>
+                    {exitLevels.map((level, i) =>
+                      i < 4 ? (
+                        <span>
+                          {level.price}%{' '}
+                          {i === 3 || i + 1 === exitLevels.length ? '' : '/ '}
+                        </span>
+                      ) : null
+                    )}
+                  </div>
+                </div>
+              ) : (
+                `${exitLevels.length > 0 ? exitLevels[0].price : '-'}%`
+              )}
             </SubColumnValue>
           ),
           style: {
@@ -1767,7 +1789,12 @@ export const combineOpenOrdersTable = (
             <CloseButton
               i={i}
               onClick={() => {
-                cancelOrderFunc(keyId, orderType === "maker-only" ? _id : orderId, orderSymbol, orderType)
+                cancelOrderFunc(
+                  keyId,
+                  orderType === 'maker-only' ? _id : orderId,
+                  orderSymbol,
+                  orderType
+                )
                 filterCacheData({
                   data: null,
                   name: 'getOpenOrderHistory',
@@ -2614,7 +2641,11 @@ export const updatePaginatedOrderHistoryQuerryFunction = (
                 .charAt(0)
                 .toUpperCase()}${newDataElement.type.slice(1)} order`
             : 'Order'
-        } ${newDataElement.type === 'maker-only' ? '' : `with price ${newDataElement.price}`} was executed!`,
+        } ${
+          newDataElement.type === 'maker-only'
+            ? ''
+            : `with price ${newDataElement.price}`
+        } was executed!`,
         {
           variant: 'success',
         }
@@ -2655,7 +2686,11 @@ export const updatePaginatedOrderHistoryQuerryFunction = (
                 .charAt(0)
                 .toUpperCase()}${newDataElement.type.slice(1)} order`
             : 'Order'
-        } ${newDataElement.type === 'maker-only' ? '' : `with price ${newDataElement.price}`} was executed!`,
+        } ${
+          newDataElement.type === 'maker-only'
+            ? ''
+            : `with price ${newDataElement.price}`
+        } was executed!`,
         {
           variant: 'success',
         }

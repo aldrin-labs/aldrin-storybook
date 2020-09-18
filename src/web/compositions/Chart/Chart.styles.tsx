@@ -21,7 +21,7 @@ html {
   }
 }
 
-@media only screen and (max-width: 1400px) {
+@media only screen and (max-width: 1440px) {
   html {
     font-size: 8px !important;
   }
