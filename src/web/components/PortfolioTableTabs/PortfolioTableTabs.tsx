@@ -80,7 +80,7 @@ class PortfolioTableTabs extends React.Component<IProps> {
               to="/portfolio/transactions"
               id="transactionsPanel"
             >
-              Transactions
+              Performance
             </StyledRightButton>
           </>
         ) : null}
