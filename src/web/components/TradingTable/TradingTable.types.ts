@@ -1,6 +1,6 @@
 import { Key } from '@core/types/ChartTypes'
 
-export interface IProps {
+export interface IProps extends IPropsTradingTableWrapper {
   history: History
   showCancelResult: ({
     status,
@@ -19,6 +19,9 @@ export interface IProps {
 
   getSelectedKeyQuery: { chart: { selectedKey: Key } }
   getAllUserKeysQuery: { myPortfolios: { keys: Key[] }[] }
+}
+
+export interface ReadOnly<IPropsTradingTableWrapper> {
   selectedKey: {}
   marketType: 0 | 1
   exchange: string
