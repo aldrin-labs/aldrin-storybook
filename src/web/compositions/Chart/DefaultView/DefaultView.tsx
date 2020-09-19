@@ -304,7 +304,7 @@ export const DefaultViewComponent = (
           </TopChartsContainer>
           {!authenticated && <GuestMode />}
 
-          {authenticated && isDefaultTerminalViewMode && (
+          {authenticated && (
             <TradingTabelContainer
               item
               theme={theme}
@@ -312,7 +312,7 @@ export const DefaultViewComponent = (
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
             >
               <TradingTable
-                theme={theme}
+                isDefaultTerminalViewMode={isDefaultTerminalViewMode}
                 maxLeverage={maxLeverage}
                 selectedKey={selectedKey}
                 showOrderResult={showOrderResult}

@@ -399,7 +399,7 @@ export const TradingTabelContainer = styled(
   // 32vh was
   background-color: ${(props) => props.theme.palette.white.background};
   position: relative;
-  height: ${(props) => props.isDefaultTerminalViewMode && '40%'};
+  height: ${(props) => props.isDefaultTerminalViewMode ? '40%' : '0%'};
   justify-content: flex-start;
   flex-direction: column;
   overflow: hidden;
