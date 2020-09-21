@@ -2,9 +2,10 @@ import React, { useState } from 'react'
 import { withSnackbar } from 'notistack'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
-import { Grid, Typography } from '@material-ui/core'
+import { Grid, Typography, withTheme } from '@material-ui/core'
 import Timer from 'react-compound-timer'
 import { Loading } from '@sb/components/index'
+import { WithTheme } from '@sb/types/materialUI'
 
 import { joinFuturesWarsRound } from '@core/graphql/mutations/futuresWars/joinFuturesWarsRound'
 import { futuresTransfer } from '@core/graphql/mutations/keys/futuresTransfer'
@@ -535,6 +536,7 @@ const TransferPopup = ({
 
 export default compose(
   withSnackbar,
+  withTheme(),
   graphql(futuresTransfer, {
     name: 'futuresTransferMutation',
   }),

@@ -265,7 +265,7 @@ const NavBarRaw: SFC<Props> = ({
                     }
 
                     prefetchPortfolio()
-                  }
+                  },
                 },
                 {
                   text: 'Perfomance',
@@ -280,7 +280,7 @@ const NavBarRaw: SFC<Props> = ({
                     }
 
                     prefetchRebalance()
-                  }
+                  },
                 },
               ]}
             />
@@ -510,7 +510,7 @@ const NavBarRaw: SFC<Props> = ({
 
                 client.query({
                   query: getPortfolioAssets,
-                  fetchPolicy: "cache-first",
+                  fetchPolicy: 'cache-first',
                   variables: { baseCoin: 'USDT', innerSettings: true },
                 })
               }}

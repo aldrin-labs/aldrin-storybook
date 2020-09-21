@@ -1,10 +1,17 @@
 import React from 'react'
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
-dayjs.extend(localizedFormat)
-
+import { NavLink as Link } from 'react-router-dom'
+import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
 import copy from 'clipboard-copy'
-
+import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
+import { selectProfileKey } from '@core/components/SelectKeyListDW/SelectKeyListDW'
+import updateDepositSettings from '@core/components/SelectKeyListDW/SelectKeyListDW'
+import styled from 'styled-components'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 import { TooltipCustom } from '@sb/components/index'
 import ReimportKey from '@core/components/ReimportKey/ReimportKey'
 import PortfolioSelectorPopup from '@sb/components/PortfolioSelectorPopup/PortfolioSelectorPopup'
@@ -25,6 +32,7 @@ import {
 import { Button } from '@material-ui/core'
 import { FileCopy } from '@material-ui/icons'
 import { wrap } from 'lodash'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
 export const accountsColors = [
   '#9A77F7',
@@ -83,14 +91,25 @@ const getKeyStatus = (status: string, valid: boolean) => {
     ? 'initializing'
     : status
 }
+const Deposit = (props: any) => <Link to="/profile/deposit" {...props} />
+const Withdrawal = (props: any) => <Link to="/profile/withdrawal" {...props} />
 
 export const transformData = (
   data: AccountData[],
   numberOfKeys: number,
   telegramUsernameConnected: boolean,
-  setCreatingAdditionalAccount: () => void
+  setCreatingAdditionalAccount: () => void,
+  portfolioAssetsMapFutures: [],
+  portfolioAssetsMapSpot: [],
+  setTransferFromSpotToFutures,
+  togglePopup,
+  setSelectedAccount,
+  updateWithdrawalSettings,
+  updateDepositSettings
 ) => {
   const transformedData = data.map((row, i) => {
+    // console.log('updateDepositSettings', updateDepositSettings)
+
     return {
       id: row._id,
       colorDot: {
@@ -107,76 +126,149 @@ export const transformData = (
               borderRadius: '50%',
               width: '.8rem',
               height: '.8rem',
+              whiteSpace: 'nowrap',
             }}
           />
         ),
       },
       name: row.name,
       spotWallet: {
-        render: '-',
+        render:
+          portfolioAssetsMapSpot.get(row.keyId) === undefined
+            ? '$0'
+            : `$${formatNumberToUSFormat(
+                stripDigitPlaces(portfolioAssetsMapSpot.get(row.keyId).value, 2)
+              )}`,
+        style: {
+          letterSpacing: '0.1rem',
+          color: '#3A475C',
+        },
       },
       spotWalletDeposit: {
         render: (
           <div>
-            <Button
+            <NavLinkButton
+              key="deposit"
+              page={`deposit`}
+              component={Deposit}
               style={{
                 margin: '1rem auto',
-                border: 'solid .1rem #5BC9BB',
-                borderRadius: '.6rem',
+                btnWidth: '100%',
                 height: '2.2rem',
-                width: '10rem',
-                color: 'white',
+                borderRadiu: '.6rem',
+                border: '.1rem solid #5BC9BB',
                 backgroundColor: '#5BC9BB',
+                color: '#fff',
+                transition: 'all .4s ease-out',
                 textTransform: 'capitalize',
-                fontWeight: 600,
+                fontSize: '1.2rem',
+                '&:hover': {
+                  color: '#5bc9bb',
+                  transition: 'all .4s ease-out',
+                  backgroundColor: 'transparent',
+                  border: '.1rem solid #5BC9BB',
+                },
+              }}
+              onClick={() => {
+                selectProfileKey({
+                  keyId: row.keyId,
+                  isDeposit: true,
+                  mutation: updateDepositSettings,
+                })
               }}
             >
               Deposit
-            </Button>
+            </NavLinkButton>
           </div>
         ),
       },
 
       spotWalletWithdrawal: {
         render: (
-          <div>
-            <Button
-              style={{
-                border: 'solid .1rem #5BC9BB',
-                borderRadius: '.6rem',
-                height: '2.2rem',
-                width: '10rem',
-
-                color: '#5BC9BB',
-                textTransform: 'capitalize',
-                fontWeight: 600,
+          <div style={{ paddingRight: '2rem' }}>
+            {/* <StyledBtnLink
+              to="/profile/withdrawal"
+              onClick={() => {
+                selectProfileKey({
+                  keyId: row.keyId,
+                  isDeposit: false,
+                  mutation: updateWithdrawalSettings,
+                })
               }}
             >
               Withdrawal
-            </Button>
+            </StyledBtnLink> */}
+            <NavLinkButton
+              key="withdrawal"
+              page={`withdrawal`}
+              component={Withdrawal}
+              style={{
+                margin: '1rem auto',
+                btnWidth: '0rem',
+                height: '2.2rem',
+                borderRadius: '.6rem',
+                border: '.1rem solid #5BC9BB',
+                backgroundColor: 'transparant',
+                color: '#5bc9bb',
+                textTransform: 'capitalize',
+                fontSize: '1.2rem',
+                '&:hover': {
+                  color: '#fff',
+                  transition: 'all .4s ease-out',
+                  backgroundColor: '#5bc9bb',
+                  border: '.1rem solid #5BC9BB',
+                },
+              }}
+              onClick={() => {
+                selectProfileKey({
+                  keyId: row.keyId,
+                  isDeposit: false,
+                  mutation: updateWithdrawalSettings,
+                })
+              }}
+            >
+              Withdrawal
+            </NavLinkButton>
           </div>
         ),
       },
       futuresWallet: {
-        render: '-',
+        render:
+          portfolioAssetsMapFutures.get(row.keyId) === undefined
+            ? '$0'
+            : `$${formatNumberToUSFormat(
+                stripDigitPlaces(
+                  portfolioAssetsMapFutures.get(row.keyId).value,
+                  2
+                )
+              )}`,
       },
       futuresWalletDeposit: {
         render: (
           <div>
-            <Button
+            <BtnCustom
+              btnWidth="100%"
+              height="2.2rem"
+              borderRadius=".6rem"
+              borderColor="#5BC9BB"
+              backgroundColor={'#5BC9BB'}
+              btnColor={'#fff'}
+              hoverColor="#5BC9BB"
+              hoverBackground="transparant"
+              transition={'all .4s ease-out'}
+              textTransform="capitalize"
+              fontSize="1.2rem"
               style={{
-                border: 'solid .1rem #5BC9BB',
-                borderRadius: '.6rem',
-                height: '2.2rem',
-                width: '10rem',
-                color: 'white',
-                backgroundColor: '#5BC9BB',
-                textTransform: 'capitalize',
-                fontWeight: 600,
+                whiteSpace: 'nowrap',
+              }}
+              onClick={() => {
+                setTransferFromSpotToFutures(true)
+                togglePopup(true)
+                setSelectedAccount(row.keyId)
               }}
             >
-              Deposit
-            </Button>
+              Transfer in
+            </BtnCustom>
           </div>
         ),
       },
@@ -184,19 +276,28 @@ export const transformData = (
       futuresWalletWithdrawal: {
         render: (
           <div>
-            <Button
+            <BtnCustom
+              btnWidth="100%"
+              height="2.2rem"
+              borderRadius=".6rem"
+              borderColor="#5BC9BB"
+              btnColor={'#5BC9BB'}
+              hoverColor="#fff"
+              hoverBackground="#5BC9BB"
+              transition={'all .4s ease-out'}
+              textTransform="capitalize"
+              fontSize="1.2rem"
               style={{
-                border: 'solid .1rem #5BC9BB',
-                borderRadius: '.6rem',
-                width: '10rem',
-                height: '2.2rem',
-                color: '#5BC9BB',
-                textTransform: 'capitalize',
-                fontWeight: 600,
+                whiteSpace: 'nowrap',
+              }}
+              onClick={() => {
+                setTransferFromSpotToFutures(false)
+                togglePopup(true)
+                setSelectedAccount(row.keyId)
               }}
             >
-              Withdrawal
-            </Button>
+              Transfer out
+            </BtnCustom>
           </div>
         ),
       },
@@ -288,19 +389,17 @@ export const transformData = (
               copy(row._id)
             }}
           >
-            <Button
-              style={{
-                border: 'solid .1rem  #7380EB',
-                borderRadius: '.6rem',
-                height: '2.2rem',
-                width: '10rem',
-                color: ' #7380EB',
-                textTransform: 'capitalize',
-                fontWeight: 'bold',
-              }}
+            <BtnCustom
+              borderColor={'#7380EB'}
+              borderRadius={'.6rem'}
+              height="2.2rem"
+              btnWidth="10rem"
+              color=" #7380EB"
+              textTransform="capitalize"
+              fontWeight="bold"
             >
               Copy ID
-            </Button>
+            </BtnCustom>
           </div>
         ),
       },
@@ -313,11 +412,12 @@ export const transformData = (
   transformedData.push({
     id: 'addKeyButton',
     colorDot: ' ',
-    exchange: ' ',
-    name: ' ',
-    value: ' ',
-    added: ' ',
-    lastUpdate: {
+    spotWallet: ' ',
+    spotWalletDeposit: ' ',
+    spotWalletWithdrawal: ' ',
+    futuresWallet: ' ',
+    futuresWalletDeposit: ' ',
+    futuresWalletWithdrawal: {
       render: (
         <TooltipCustom
           title={`First, attach your telegram account via telegram tab on the left menu`}
@@ -361,7 +461,7 @@ export const transformData = (
       ),
       colspan: 2,
     },
-    autoRebalance: {
+    copy: {
       render: (
         <AddAccountButton
           onClick={() => {
@@ -373,9 +473,6 @@ export const transformData = (
         </AddAccountButton>
       ),
     },
-    edit: ' ',
-    copy: ' ',
-    refresh: ' ',
   })
 
   return transformedData
@@ -384,13 +481,27 @@ export const transformData = (
 export const putDataInTable = (
   tableData: any[],
   telegramUsernameConnected: boolean,
-  setCreatingAdditionalAccount: () => void
+  setCreatingAdditionalAccount: () => void,
+  portfolioAssetsMapFutures: [],
+  portfolioAssetsMap: [],
+  setTransferFromSpotToFutures: any,
+  togglePopup: any,
+  setSelectedAccount: string,
+  updateWithdrawalSettings: any,
+  updateDepositSettings: any
 ) => {
   const body = transformData(
     tableData,
     tableData.length,
     telegramUsernameConnected,
-    setCreatingAdditionalAccount
+    setCreatingAdditionalAccount,
+    portfolioAssetsMapFutures,
+    portfolioAssetsMap,
+    setTransferFromSpotToFutures,
+    togglePopup,
+    setSelectedAccount,
+    updateWithdrawalSettings,
+    updateDepositSettings
   )
 
   return {
@@ -405,13 +516,13 @@ export const putDataInTable = (
         id: 'name',
         label: 'name',
         isSortable: true,
-        style: { width: '15rem', display: 'flex', flexWrap: 'nowrap' },
+        style: { width: '18rem', display: 'flex', flexWrap: 'nowrap' },
       },
       {
         id: 'spotWallet',
-        label: 'spot wallet',
+        label: 'spot',
         isSortable: true,
-        style: { width: '90rem', fontWeight: 'bold' },
+        style: { width: '90rem' },
       },
       {
         id: 'spotWalletDeposit',
@@ -427,7 +538,7 @@ export const putDataInTable = (
       },
       {
         id: 'futuresWallet',
-        label: 'futures wallet',
+        label: 'futures',
         isSortable: true,
         style: { width: '90rem' },
       },
@@ -470,7 +581,7 @@ export const putDataInTable = (
 
         style: {
           borderTopRightRadius: '1.5rem',
-
+          textAlign: 'center',
           width: '20rem',
         },
         isSortable: false,
