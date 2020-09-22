@@ -108,10 +108,10 @@ const NavBarProfileSelector = ({
             text: 'Referral',
             to: '/profile/referral',
           },
-          {
-            text: 'Disable Account',
-            to: '/profile/disableaccount',
-          },
+          // {
+          //   text: 'Disable Account',
+          //   to: '/profile/disableaccount',
+          // },
           {
             text: 'Log out',
             to: `/login?callbackURL=${pathname}`,
