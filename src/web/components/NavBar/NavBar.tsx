@@ -166,6 +166,7 @@ const NavBarRaw: SFC<Props> = ({
 
   const isActivePage = new RegExp(page, 'i').test(pathname)
   const isSpot = /spot/.test(pathname)
+  const isRebalance = /rebalance/.test(pathname)
 
   return (
     <Nav
@@ -239,7 +240,7 @@ const NavBarRaw: SFC<Props> = ({
               }
               selectedMenu={selectedMenu}
               key="spot"
-              page={`spot`}
+              page={isRebalance ? `rebalance` : `spot`}
               isActivePage={isActivePage}
               pathname={pathname}
               selectActiveMenu={selectMenu}
@@ -566,6 +567,28 @@ const NavBarRaw: SFC<Props> = ({
               </NavLinkButton>
             </NavLinkButtonWrapper>
             {isSpot && (
+              <NavLinkButtonWrapper
+                theme={theme}
+                key="rebalance-wrapper"
+                onMouseOver={() => {
+                  if (notAuthPages || !loginStatus) {
+                    return
+                  }
+
+                  prefetchRebalance()
+                }}
+              >
+                <NavLinkButton
+                  key="rebalance"
+                  page={`rebalance`}
+                  component={Rebalance}
+                  pathname={pathname}
+                >
+                  Rebalance
+                </NavLinkButton>
+              </NavLinkButtonWrapper>
+            )}
+            {isRebalance && (
               <NavLinkButtonWrapper
                 theme={theme}
                 key="rebalance-wrapper"
