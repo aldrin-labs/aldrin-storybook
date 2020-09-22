@@ -205,6 +205,7 @@ const styles = (theme: Theme) =>
     },
     headRow: {
       height: '2rem',
+
       boxShadow: 'none',
     },
     rowSelected: {

@@ -12,6 +12,7 @@ const NavLinkButton = ({
   page,
   marketName,
   style,
+  onClick,
 }: {
   component: any
   children: React.ReactChild
@@ -19,7 +20,8 @@ const NavLinkButton = ({
   theme: Theme
   page: string
   marketName: string
-  style
+  style: any
+  onClick: any
 }) => {
   const isActivePage = new RegExp(page, 'i').test(pathname)
 
@@ -40,6 +42,7 @@ const NavLinkButton = ({
       color="default"
       variant="text"
       style={style}
+      onClick={onClick}
     >
       {children}
     </SButton>

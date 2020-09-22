@@ -14,7 +14,9 @@ const StyledButton = styled(Button)`
 `
 
 export const SButton = styled(
-  ({ isActivePage, type, white, black, ...rest }) => <StyledButton {...rest} />
+  ({ isActivePage, type, white, black, style, ...rest }) => (
+    <StyledButton {...rest} />
+  )
 )`
   && {
     color: ${(props) => (props.isActivePage ? props.blue : props.grey)};
@@ -39,6 +41,8 @@ export const SButton = styled(
       color: ${(props) => props.blue};
       background: ${(props) => props.borderColor};
     }
+
+    ${(props) => props.style}
   }
 `
 
