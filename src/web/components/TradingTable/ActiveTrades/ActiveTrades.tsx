@@ -3,7 +3,8 @@ import dayjs from 'dayjs'
 import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
 import { client } from '@core/graphql/apolloClient'
-import QueryRenderer from '@core/components/QueryRenderer'
+import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
+import { withSnackbar } from 'notistack'
 
 import { withTheme } from '@material-ui/styles'
 
@@ -57,6 +58,7 @@ import { getFunds } from '@core/graphql/queries/chart/getFunds'
 import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
 import { LISTEN_TABLE_PRICE } from '@core/graphql/subscriptions/LISTEN_TABLE_PRICE'
 import { LISTEN_MARK_PRICES } from '@core/graphql/subscriptions/LISTEN_MARK_PRICES'
+
 @withTheme()
 class ActiveTradesTable extends React.Component<IProps, IState> {
   state: IState = {
@@ -68,11 +70,240 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
     prices: [],
   }
 
-  unsubscribeFunction: null | Function = null
+  unsubscribeFunctionGetActiveStrategies: null | Function = null
+  unsubscribeFunctionGetFunds: null | Function = null
 
   subscription: null | { unsubscribe: () => void } = null
 
   interval: undefined | number = undefined
+
+  componentDidMount() {
+    const {
+      keys,
+      getActiveStrategiesQuery,
+      getFundsQuery,
+      theme,
+      marketType,
+      currencyPair,
+      pricePrecision,
+      quantityPrecision,
+      addOrderToCanceled,
+      canceledOrders,
+      handlePairChange,
+    } = this.props
+
+    const activeStrategiesProcessedData = combineActiveTradesTable({
+      data: getActiveStrategiesQuery.getActiveStrategies.strategies,
+      queryVariables: getActiveStrategiesQuery.variables,
+      queryBody: getActiveStrategiesQuery.query,
+      cancelOrderFunc: this.cancelOrderWithStatus,
+      changeStatusWithStatus: this.changeStatusWithStatus,
+      editTrade: this.editTrade,
+      addOrderToCanceled,
+      canceledOrders,
+      theme,
+      keys,
+      prices: this.state.prices,
+      marketType,
+      currencyPair,
+      pricePrecision,
+      quantityPrecision,
+      handlePairChange,
+    })
+
+    this.setState({
+      activeStrategiesProcessedData,
+    })
+
+    this.subscribe()
+    this.unsubscribeFunctionGetActiveStrategies = getActiveStrategiesQuery.subscribeToMoreFunction()
+    this.unsubscribeFunctionGetFunds = getFundsQuery.subscribeToMoreFunction()
+  }
+
+  componentDidUpdate(prevProps: IProps) {
+    const newOrders = this.props.getActiveStrategiesQuery.getActiveStrategies.strategies.filter(
+      (order) => order.enabled && order._id !== '-1'
+    )
+
+    const prevOrders = prevProps.getActiveStrategiesQuery.getActiveStrategies.strategies.filter(
+      (order) => order.enabled && order._id !== '-1'
+    )
+
+    if (
+      prevProps.exchange !== this.props.exchange ||
+      prevProps.currencyPair !== this.props.currencyPair ||
+      prevProps.marketType !== this.props.marketType ||
+      newOrders.length > prevOrders.length
+    ) {
+      this.subscription && this.subscription.unsubscribe()
+      this.subscribe()
+    }
+
+    if (
+      prevProps.selectedKey.keyId !== this.props.selectedKey.keyId ||
+      prevProps.specificPair !== this.props.specificPair ||
+      prevProps.allKeys !== this.props.allKeys ||
+      prevProps.marketType !== this.props.marketType
+    ) {
+      this.unsubscribeFunctionGetActiveStrategies &&
+        this.unsubscribeFunctionGetActiveStrategies()
+      this.unsubscribeFunctionGetFunds && this.unsubscribeFunctionGetFunds()
+
+      this.unsubscribeFunctionGetFunds = this.props.getFundsQuery.subscribeToMoreFunction()
+      this.unsubscribeFunctionGetActiveStrategies = this.props.getActiveStrategiesQuery.subscribeToMoreFunction()
+    }
+  }
+
+  componentWillUnmount = () => {
+    // unsubscribe subscription
+    if (this.unsubscribeFunctionGetActiveStrategies !== null) {
+      this.unsubscribeFunctionGetActiveStrategies()
+    }
+
+    if (this.unsubscribeFunctionGetFunds !== null) {
+      this.unsubscribeFunctionGetFunds()
+    }
+
+    this.subscription && this.subscription.unsubscribe()
+    clearInterval(this.interval)
+  }
+
+  componentWillReceiveProps(nextProps: IProps) {
+    const {
+      keys,
+      theme,
+      marketType,
+      currencyPair,
+      quantityPrecision,
+      pricePrecision,
+      getActiveStrategiesQuery,
+      addOrderToCanceled,
+      canceledOrders,
+      handlePairChange,
+    } = nextProps
+
+    const { prices } = this.state
+
+    const activeStrategiesProcessedData = combineActiveTradesTable({
+      data: getActiveStrategiesQuery.getActiveStrategies.strategies,
+      queryVariables: getActiveStrategiesQuery.variables,
+      queryBody: getActiveStrategiesQuery.query,
+      cancelOrderFunc: this.cancelOrderWithStatus,
+      changeStatusWithStatus: this.changeStatusWithStatus,
+      editTrade: this.editTrade,
+      addOrderToCanceled,
+      canceledOrders,
+      theme,
+      prices,
+      keys,
+      marketType,
+      currencyPair,
+      pricePrecision,
+      quantityPrecision,
+      handlePairChange,
+    })
+
+    this.setState({
+      activeStrategiesProcessedData,
+    })
+
+    return null
+  }
+
+  subscribe() {
+    const that = this
+    const pairs = this.props.getActiveStrategiesQuery.getActiveStrategies.strategies
+      .map((strategy) => {
+        if (strategy.enabled) {
+          return `${strategy.conditions.pair}:${this.props.marketType}`
+        }
+        return
+      })
+      .filter((pair, i, arr) => arr.indexOf(pair) === i && !!pair)
+    const pairsWithoutMarketType = this.props.getActiveStrategiesQuery.getActiveStrategies.strategies
+      .map((strategy) => {
+        if (strategy.enabled) {
+          return `${strategy.conditions.pair}`
+        }
+        return
+      })
+      .filter((pair, i, arr) => arr.indexOf(pair) === i && !!pair)
+    this.subscription = client
+      .subscribe({
+        query:
+          this.props.marketType === 1 ? LISTEN_MARK_PRICES : LISTEN_TABLE_PRICE,
+        variables: {
+          input: {
+            exchange: this.props.exchange,
+            pairs: this.props.marketType === 1 ? pairsWithoutMarketType : pairs,
+          },
+        },
+        fetchPolicy: 'cache-only',
+      })
+      .subscribe({
+        next: (data: {
+          loading: boolean
+          data: { listenTablePrice: Price[]; listenMarkPrices: Price[] }
+        }) => {
+          const orders = that.props.getActiveStrategiesQuery.getActiveStrategies.strategies
+            .filter(
+              (strategy: SmartOrder) =>
+                (strategy.enabled ||
+                  (strategy.conditions.isTemplate &&
+                    strategy.conditions.templateStatus !== 'disabled')) &&
+                strategy._id !== '-1'
+            )
+            .concat(that.state.cachedOrder)
+          if (
+            !data ||
+            data.loading ||
+            !that.props.show ||
+            // we always have cachedOrder at least
+            orders.length === 1
+          ) {
+            return
+          }
+          const {
+            theme,
+            marketType,
+            currencyPair,
+            keys,
+            quantityPrecision,
+            pricePrecision,
+            addOrderToCanceled,
+            canceledOrders,
+            handlePairChange,
+            getActiveStrategiesQuery,
+          } = that.props
+
+          const subscriptionPropertyKey =
+            marketType === 1 ? `listenMarkPrices` : `listenTablePrice`
+
+          const activeStrategiesProcessedData = combineActiveTradesTable({
+            data: orders,
+            queryVariables: getActiveStrategiesQuery.variables,
+            queryBody: getActiveStrategiesQuery.query,
+            cancelOrderFunc: this.cancelOrderWithStatus,
+            changeStatusWithStatus: this.changeStatusWithStatus,
+            addOrderToCanceled,
+            canceledOrders,
+            editTrade: this.editTrade,
+            theme,
+            keys,
+            prices: data.data[subscriptionPropertyKey],
+            marketType,
+            currencyPair,
+            pricePrecision,
+            quantityPrecision,
+            handlePairChange,
+          })
+          that.setState({
+            activeStrategiesProcessedData,
+            prices: data.data[subscriptionPropertyKey],
+          })
+        },
+      })
+  }
 
   onCancelOrder = async (
     keyId: string,
@@ -134,13 +365,22 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
     this.setState({ editTrade: block, selectedTrade })
   }
 
-  cancelOrderWithStatus = async (strategyId: string, keyId: string) => {
+  cancelOrderWithStatus = async (
+    strategyId: string,
+    keyId: string
+  ): Promise<{
+    status: 'success' | 'error'
+    message: 'Smart order disabled' | 'Smart order disabling failed'
+  }> => {
     const { showCancelResult } = this.props
 
     const result = await this.onCancelOrder(keyId, strategyId)
 
     // TODO: move to utils
-    const statusResult =
+    const statusResult: {
+      status: 'success' | 'error'
+      message: 'Smart order disabled' | 'Smart order disabling failed'
+    } =
       result &&
       result.data &&
       result.data.disableStrategy &&
@@ -155,19 +395,31 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
           }
 
     showCancelResult(statusResult)
+
+    return statusResult
   }
 
   changeStatusWithStatus = async (
     strategyId: string,
     keyId: string,
     status: string
-  ) => {
+  ): Promise<{
+    status: 'success' | 'error'
+    message:
+      | 'Smart order template status changed'
+      | 'Smart order template status change failed'
+  }> => {
     const { showCancelResult } = this.props
 
     const result = await this.onChangeStatus(keyId, strategyId, status)
 
     // TODO: move to utils
-    const statusResult =
+    const statusResult: {
+      status: 'success' | 'error'
+      message:
+        | 'Smart order template status changed'
+        | 'Smart order template status change failed'
+    } =
       result &&
       result.data &&
       result.data.changeTemplateStatus &&
@@ -182,426 +434,8 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
           }
 
     showCancelResult(statusResult)
-  }
 
-  subscribe() {
-    const that = this
-    const pairs = this.props.getActiveStrategiesQuery.getActiveStrategies.strategies
-      .map((strategy) => {
-        if (strategy.enabled) {
-          return `${strategy.conditions.pair}:${this.props.marketType}`
-        }
-
-        return
-      })
-      .filter((pair, i, arr) => arr.indexOf(pair) === i && !!pair)
-
-    const pairsWithoutMarketType = this.props.getActiveStrategiesQuery.getActiveStrategies.strategies
-      .map((strategy) => {
-        if (strategy.enabled) {
-          return `${strategy.conditions.pair}`
-        }
-
-        return
-      })
-      .filter((pair, i, arr) => arr.indexOf(pair) === i && !!pair)
-
-    this.subscription = client
-      .subscribe({
-        query:
-          this.props.marketType === 1 ? LISTEN_MARK_PRICES : LISTEN_TABLE_PRICE,
-        variables: {
-          input: {
-            exchange: this.props.exchange,
-            pairs: this.props.marketType === 1 ? pairsWithoutMarketType : pairs,
-          },
-        },
-        fetchPolicy: 'cache-only',
-      })
-      .subscribe({
-        next: (data: {
-          loading: boolean
-          data: { listenTablePrice: Price[]; listenMarkPrices: Price[] }
-        }) => {
-          const orders = that.props.getActiveStrategiesQuery.getActiveStrategies.strategies
-            .filter(
-              (strategy: SmartOrder) =>
-                (strategy.enabled ||
-                  (strategy.conditions.isTemplate &&
-                    strategy.conditions.templateStatus !== 'disabled')) &&
-                strategy._id !== '-1'
-            )
-            .concat(that.state.cachedOrder)
-
-          if (
-            !data ||
-            data.loading ||
-            !that.props.show ||
-            // we always have cachedOrder at least
-            orders.length === 1
-          ) {
-            return
-          }
-
-          const {
-            theme,
-            marketType,
-            currencyPair,
-            keys,
-            quantityPrecision,
-            pricePrecision,
-            addOrderToCanceled,
-            canceledOrders,
-            handlePairChange,
-          } = that.props
-
-          const subscriptionPropertyKey =
-            marketType === 1 ? `listenMarkPrices` : `listenTablePrice`
-
-          const activeStrategiesProcessedData = combineActiveTradesTable({
-            data: orders,
-            cancelOrderFunc: this.cancelOrderWithStatus,
-            changeStatusWithStatus: this.changeStatusWithStatus,
-            addOrderToCanceled,
-            canceledOrders,
-            editTrade: this.editTrade,
-            theme,
-            keys,
-            prices: data.data[subscriptionPropertyKey],
-            marketType,
-            currencyPair,
-            pricePrecision,
-            quantityPrecision,
-            handlePairChange,
-          })
-
-          that.setState({
-            activeStrategiesProcessedData,
-            prices: data.data[subscriptionPropertyKey],
-          })
-        },
-      })
-  }
-
-  componentDidMount() {
-    const {
-      selectedKey,
-      keys,
-      getActiveStrategiesQuery,
-      subscribeToMore,
-      theme,
-      allKeys,
-      specificPair,
-      marketType,
-      currencyPair,
-      pricePrecision,
-      quantityPrecision,
-      addOrderToCanceled,
-      canceledOrders,
-      handlePairChange,
-    } = this.props
-
-    const filteredStrategies = getActiveStrategiesQuery.getActiveStrategies.strategies.filter(
-      (a) => a._id !== '-1'
-    )
-
-    client.writeQuery({
-      query: getActiveStrategies,
-      variables: {
-        activeStrategiesInput: {
-          activeExchangeKey: selectedKey.keyId,
-          marketType,
-          allKeys,
-          ...(!specificPair ? {} : { specificPair: currencyPair }),
-        },
-      },
-      data: {
-        getActiveStrategies: {
-          strategies: filteredStrategies,
-          count: filteredStrategies.length,
-          __typename: 'getActiveStrategies',
-        },
-      },
-    })
-
-    this.interval = setInterval(() => {
-      const data = client.readQuery({
-        query: getActiveStrategies,
-        variables: {
-          activeStrategiesInput: {
-            activeExchangeKey: this.props.selectedKey.keyId,
-            marketType,
-            allKeys,
-            ...(!specificPair ? {} : { specificPair: currencyPair }),
-          },
-        },
-      })
-
-      if (
-        !this.props.show ||
-        data.getActiveStrategies.strategies.find(
-          (order: SmartOrder) => order._id === '-1'
-        ) ||
-        !!this.state.cachedOrder
-      ) {
-        return
-      }
-
-      this.props.getActiveStrategiesQueryRefetch()
-    }, 60000)
-
-    this.subscribe()
-
-    const activeStrategiesProcessedData = combineActiveTradesTable({
-      data: getActiveStrategiesQuery.getActiveStrategies.strategies,
-      cancelOrderFunc: this.cancelOrderWithStatus,
-      changeStatusWithStatus: this.changeStatusWithStatus,
-      editTrade: this.editTrade,
-      addOrderToCanceled,
-      canceledOrders,
-      theme,
-      keys,
-      prices: this.state.prices,
-      marketType,
-      currencyPair,
-      pricePrecision,
-      quantityPrecision,
-      handlePairChange,
-    })
-
-    this.setState({
-      activeStrategiesProcessedData,
-    })
-
-    this.unsubscribeFunction = subscribeToMore()
-  }
-
-  componentDidUpdate(prevProps: IProps) {
-    const newOrders = this.props.getActiveStrategiesQuery.getActiveStrategies.strategies.filter(
-      (order) => order.enabled && order._id !== '-1'
-    )
-
-    const prevOrders = prevProps.getActiveStrategiesQuery.getActiveStrategies.strategies.filter(
-      (order) => order.enabled && order._id !== '-1'
-    )
-
-    if (
-      prevProps.exchange !== this.props.exchange ||
-      prevProps.currencyPair !== this.props.currencyPair ||
-      prevProps.marketType !== this.props.marketType ||
-      newOrders.length > prevOrders.length
-    ) {
-      this.subscription && this.subscription.unsubscribe()
-      this.subscribe()
-    }
-
-    if (
-      prevProps.selectedKey.keyId !== this.props.selectedKey.keyId ||
-      prevProps.specificPair !== this.props.specificPair ||
-      prevProps.allKeys !== this.props.allKeys ||
-      prevProps.marketType !== this.props.marketType
-    ) {
-      const {
-        marketType,
-        selectedKey,
-        allKeys,
-        currencyPair,
-        specificPair,
-      } = this.props
-
-      this.unsubscribeFunction && this.unsubscribeFunction()
-      this.unsubscribeFunction = this.props.getActiveStrategiesQuery.subscribeToMore(
-        {
-          document: ACTIVE_STRATEGIES,
-          variables: {
-            activeStrategiesInput: {
-              marketType,
-              activeExchangeKey: selectedKey.keyId,
-              allKeys,
-              ...(!specificPair ? {} : { specificPair: currencyPair }),
-            },
-          },
-          updateQuery: updateActiveStrategiesQuerryFunction,
-        }
-      )
-    }
-  }
-
-  componentWillUnmount = () => {
-    // unsubscribe subscription
-    if (this.unsubscribeFunction !== null) {
-      this.unsubscribeFunction()
-    }
-
-    this.subscription && this.subscription.unsubscribe()
-    clearInterval(this.interval)
-  }
-
-  componentWillReceiveProps(nextProps: IProps) {
-    const {
-      keys,
-      theme,
-      marketType,
-      currencyPair,
-      quantityPrecision,
-      selectedKey,
-      specificPair,
-      allKeys,
-      pricePrecision,
-      getActiveStrategiesQuery,
-      addOrderToCanceled,
-      canceledOrders,
-      handlePairChange,
-    } = nextProps
-
-    const { prices, cachedOrder } = this.state
-
-    let data
-
-    try {
-      data = client.readQuery({
-        query: getActiveStrategies,
-        variables: {
-          activeStrategiesInput: {
-            marketType,
-            activeExchangeKey: selectedKey.keyId,
-            allKeys: true,
-            page: 0,
-            perPage: 30,
-          },
-        },
-      })
-    } catch (e) {
-      console.log(e)
-      data = getActiveStrategiesQuery
-    }
-
-    // if order have timestamp greater than cached order - it's new order
-    const newOrderFromSubscription =
-      cachedOrder !== null
-        ? data.getActiveStrategies.strategies.find((order: SmartOrder) => {
-            const orderDate = isNaN(dayjs(+order.createdAt).unix())
-              ? order.createdAt
-              : +order.createdAt
-
-            const cachedOrderDate = cachedOrder.createdAt
-
-            // TODO: Maybe I'm wrong with replacing it here with dayjs
-            return (
-              dayjs(orderDate).valueOf() > cachedOrderDate && order._id !== -1
-            )
-          })
-        : null
-
-    // here we receive order from cache (we write there order on mutation call)
-    if (
-      !cachedOrder &&
-      data.getActiveStrategies.strategies.some(
-        (a: SmartOrder) => a._id === '-1'
-      )
-    ) {
-      const cachedOrder = data.getActiveStrategies.strategies.filter(
-        (a: SmartOrder) => a._id === '-1'
-      )[0]
-
-      console.log('set cached order')
-      this.setState({
-        cachedOrder,
-      })
-
-      const filteredStrategies = data.getActiveStrategies.strategies.filter(
-        (a: SmartOrder) => a._id !== '-1'
-      )
-
-      client.writeQuery({
-        query: getActiveStrategies,
-        variables: {
-          activeStrategiesInput: {
-            marketType,
-            activeExchangeKey: selectedKey.keyId,
-            allKeys: true,
-            page: 0,
-            perPage: 30,
-          },
-        },
-        data: {
-          getActiveStrategies: {
-            strategies: filteredStrategies,
-            count: filteredStrategies.length,
-            __typename: 'getActiveStrategies',
-          },
-        },
-      })
-    }
-
-    const newOrderFromSubscriptionDerived = getActiveStrategiesQuery.getActiveStrategies.strategies.find(
-      (s) => newOrderFromSubscription && s._id === newOrderFromSubscription._id
-    )
-
-    // no need to cached order coz of real
-    if (newOrderFromSubscription && newOrderFromSubscriptionDerived) {
-      console.log('clear cached order')
-      this.setState({ cachedOrder: null })
-
-      const filteredStrategies = data.getActiveStrategies.strategies.filter(
-        (a: SmartOrder) => a._id !== '-1'
-      )
-
-      client.writeQuery({
-        query: getActiveStrategies,
-        variables: {
-          activeStrategiesInput: {
-            marketType,
-            activeExchangeKey: selectedKey.keyId,
-            allKeys: true,
-            page: 0,
-            perPage: 30,
-          },
-        },
-        data: {
-          getActiveStrategies: {
-            strategies: filteredStrategies,
-            count: filteredStrategies.length,
-            __typename: 'getActiveStrategies',
-          },
-        },
-      })
-    }
-
-    const ordersToDisplay =
-      !(newOrderFromSubscription && newOrderFromSubscriptionDerived) &&
-      !!cachedOrder
-        ? getActiveStrategiesQuery.getActiveStrategies.strategies
-            .filter((order: SmartOrder) => order._id !== '-1')
-            .concat(cachedOrder)
-        : newOrderFromSubscriptionDerived
-        ? getActiveStrategiesQuery.getActiveStrategies.strategies.filter(
-            (order: SmartOrder) => order._id !== '-1'
-          )
-        : getActiveStrategiesQuery.getActiveStrategies.strategies
-
-    const activeStrategiesProcessedData = combineActiveTradesTable({
-      data: ordersToDisplay,
-      cancelOrderFunc: this.cancelOrderWithStatus,
-      changeStatusWithStatus: this.changeStatusWithStatus,
-      editTrade: this.editTrade,
-      addOrderToCanceled,
-      canceledOrders,
-      theme,
-      prices,
-      keys,
-      marketType,
-      currencyPair,
-      pricePrecision,
-      quantityPrecision,
-      handlePairChange,
-    })
-
-    this.setState({
-      activeStrategiesProcessedData,
-    })
-
-    return null
+    return statusResult
   }
 
   setExpandedRows = (id: string) => {
@@ -645,7 +479,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
                 selectedTrade.conditions.leverage)
     }
 
-    console.log('price', price)
+    // console.log('price', price)
 
     if (selectedTrade.state && !!selectedTrade.state.entryPrice) {
       price = selectedTrade.state.entryPrice
@@ -679,7 +513,9 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       updateStopLossStrategyMutation,
       updateTakeProfitStrategyMutation,
       showCancelResult,
-      getFundsQuery,
+      getFundsQuery = {
+        getFunds: [],
+      },
       handleToggleAllKeys,
       handleToggleSpecificPair,
       getActiveStrategiesQuery,
@@ -770,7 +606,9 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
                 showCancelResult(statusResult)
               }}
               derivedState={getEntryOrderFromStrategy(selectedTrade)}
-              validate={validateEntryOrder}
+              validate={(obj, isValid) =>
+                validateEntryOrder(obj, isValid, this.props.enqueueSnackbar)
+              }
               transformProperties={transformEntryOrderProperties}
               validateField={(v) => !!v}
             />
@@ -828,7 +666,9 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
                 showCancelResult(statusResult)
               }}
               derivedState={getTakeProfitFromStrategy(selectedTrade)}
-              validate={validateTakeProfit}
+              validate={(obj, isValid) =>
+                validateTakeProfit(obj, isValid, this.props.enqueueSnackbar)
+              }
               transformProperties={transformTakeProfitProperties}
               validateField={(v) => !!v}
             />
@@ -882,7 +722,9 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
               showCancelResult(statusResult)
             }}
             transformProperties={transformStopLossProperties}
-            validate={validateStopLoss}
+            validate={(obj, isValid) =>
+              validateStopLoss(obj, isValid, this.props.enqueueSnackbar)
+            }
             derivedState={getStopLossFromStrategy(selectedTrade)}
             validateField={(v) => !!v}
           />
@@ -895,7 +737,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
           rowsWithHover={false}
           style={{
             borderRadius: 0,
-            height: '100%',
+            height: 'calc(100% - 5.5rem)',
             overflowX: 'scroll',
             backgroundColor: theme.palette.white.background,
           }}
@@ -973,124 +815,8 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
   }
 }
 
-const LastTradeWrapper = ({ ...props }) => {
-  let unsubscribe: undefined | Function = undefined
-
-  const { page, handleChangePage, perPage, handleChangeRowsPerPage } = props
-
-  useEffect(() => {
-    unsubscribe && unsubscribe()
-    unsubscribe = props.subscribeToMore()
-
-    return () => {
-      unsubscribe && unsubscribe()
-    }
-  }, [props.marketType, props.exchange, props.currencyPair])
-
-  return (
-    <QueryRenderer
-      {...props}
-      page={page}
-      perPage={perPage}
-      handleChangePage={handleChangePage}
-      handleChangeRowsPerPage={handleChangeRowsPerPage}
-      component={ActiveTradesTable}
-      variables={{
-        activeStrategiesInput: {
-          marketType: props.marketType,
-          activeExchangeKey: props.selectedKey.keyId,
-          page,
-          perPage,
-          allKeys: props.allKeys,
-          ...(!props.specificPair ? {} : { specificPair: props.currencyPair }),
-        },
-      }}
-      withOutSpinner={true}
-      withTableLoader={true}
-      query={getActiveStrategies}
-      name={`getActiveStrategiesQuery`}
-      showLoadingWhenQueryParamsChange={false}
-      fetchPolicy="cache-and-network"
-      subscriptionArgs={{
-        subscription: ACTIVE_STRATEGIES,
-        variables: {
-          activeStrategiesInput: {
-            marketType: props.marketType,
-            activeExchangeKey: props.selectedKey.keyId,
-            allKeys: props.allKeys,
-            ...(!props.specificPair
-              ? {}
-              : { specificPair: props.currencyPair }),
-          },
-        },
-        updateQueryFunction: updateActiveStrategiesQuerryFunction,
-      }}
-    />
-  )
-}
-
-const TableDataWrapper = ({ ...props }) => {
-  const { showSmartTradesFromAllAccounts, showAllSmartTradePairs } = props
-
-  return (
-    <QueryRenderer
-      component={LastTradeWrapper}
-      withOutSpinner={true}
-      withTableLoader={true}
-      query={getFunds}
-      variables={{ fundsInput: { activeExchangeKey: props.selectedKey.keyId } }}
-      name={`getFundsQuery`}
-      fetchPolicy="cache-and-network"
-      subscriptionArgs={{
-        subscription: FUNDS,
-        variables: {
-          listenFundsInput: { activeExchangeKey: props.selectedKey.keyId },
-        },
-        updateQueryFunction: updateFundsQuerryFunction,
-      }}
-      {...{
-        allKeys: showSmartTradesFromAllAccounts,
-        specificPair: showAllSmartTradePairs,
-      }}
-      {...props}
-    />
-  )
-}
-
-const MemoizedWrapper = React.memo(TableDataWrapper, (prevProps, nextProps) => {
-  // TODO: Refactor isShowEqual --- not so clean
-  const isShowEqual = !nextProps.show && !prevProps.show
-  const showAllAccountsEqual =
-    prevProps.showOpenOrdersFromAllAccounts ===
-    nextProps.showOpenOrdersFromAllAccounts
-  const showAllPairsEqual =
-    prevProps.showAllOpenOrderPairs === nextProps.showAllOpenOrderPairs
-  // TODO: here must be smart condition if specificPair is not changed
-  const pairIsEqual = prevProps.currencyPair === nextProps.currencyPair
-  // TODO: here must be smart condition if showAllAccountsEqual is true & is not changed
-  const selectedKeyIsEqual =
-    prevProps.selectedKey.keyId === nextProps.selectedKey.keyId
-  const isMarketIsEqual = prevProps.marketType === nextProps.marketType
-  const pageIsEqual = prevProps.page === nextProps.page
-  const perPageIsEqual = prevProps.perPage === nextProps.perPage
-
-  if (
-    isShowEqual &&
-    showAllAccountsEqual &&
-    showAllPairsEqual &&
-    pairIsEqual &&
-    selectedKeyIsEqual &&
-    isMarketIsEqual &&
-    pageIsEqual &&
-    perPageIsEqual
-  ) {
-    return true
-  }
-
-  return false
-})
-
-export default compose(
+const ActiveTradesTableWrapper = compose(
+  withSnackbar,
   graphql(disableStrategy, { name: 'disableStrategyMutation' }),
   graphql(changeTemplateStatus, { name: 'changeTemplateStatusMutation' }),
   graphql(updateStopLossStrategy, { name: 'updateStopLossStrategyMutation' }),
@@ -1099,5 +825,90 @@ export default compose(
   }),
   graphql(updateTakeProfitStrategy, {
     name: 'updateTakeProfitStrategyMutation',
-  })
-)(MemoizedWrapper)
+  }),
+  queryRendererHoc({
+    query: getActiveStrategies,
+    name: `getActiveStrategiesQuery`,
+    fetchPolicy: 'cache-and-network',
+    variables: (props: any) => ({
+      activeStrategiesInput: {
+        marketType: props.marketType,
+        activeExchangeKey: props.selectedKey.keyId,
+        page: props.page,
+        perPage: props.perPage,
+        allKeys: props.allKeys,
+        ...(!props.specificPair ? {} : { specificPair: props.currencyPair }),
+      },
+    }),
+    withOutSpinner: true,
+    withTableLoader: true,
+    includeVariables: true,
+    includeQueryBody: true,
+    showLoadingWhenQueryParamsChange: false,
+    subscriptionArgs: {
+      subscription: ACTIVE_STRATEGIES,
+      variables: (props: any) => ({
+        activeStrategiesInput: {
+          marketType: props.marketType,
+          activeExchangeKey: props.selectedKey.keyId,
+          allKeys: props.allKeys,
+          ...(!props.specificPair ? {} : { specificPair: props.currencyPair }),
+        },
+      }),
+      updateQueryFunction: updateActiveStrategiesQuerryFunction,
+    },
+  }),
+  queryRendererHoc({
+    query: getFunds,
+    name: `getFundsQuery`,
+    fetchPolicy: 'cache-and-network',
+    variables: (props: any) => ({
+      fundsInput: { activeExchangeKey: props.selectedKey.keyId },
+    }),
+    withOutSpinner: true,
+    withTableLoader: true,
+    subscriptionArgs: {
+      subscription: FUNDS,
+      variables: (props: any) => ({
+        listenFundsInput: { activeExchangeKey: props.selectedKey.keyId },
+      }),
+      updateQueryFunction: updateFundsQuerryFunction,
+    },
+  }),
+)(ActiveTradesTable)
+
+export default React.memo(
+  ActiveTradesTableWrapper,
+  (prevProps: any, nextProps: any) => {
+    // TODO: Refactor isShowEqual --- not so clean
+    const isShowEqual = !nextProps.show && !prevProps.show
+    const showAllAccountsEqual =
+      prevProps.showOpenOrdersFromAllAccounts ===
+      nextProps.showOpenOrdersFromAllAccounts
+    const showAllPairsEqual =
+      prevProps.showAllOpenOrderPairs === nextProps.showAllOpenOrderPairs
+    // TODO: here must be smart condition if specificPair is not changed
+    const pairIsEqual = prevProps.currencyPair === nextProps.currencyPair
+    // TODO: here must be smart condition if showAllAccountsEqual is true & is not changed
+    const selectedKeyIsEqual =
+      prevProps.selectedKey.keyId === nextProps.selectedKey.keyId
+    const isMarketIsEqual = prevProps.marketType === nextProps.marketType
+    const pageIsEqual = prevProps.page === nextProps.page
+    const perPageIsEqual = prevProps.perPage === nextProps.perPage
+
+    if (
+      isShowEqual &&
+      showAllAccountsEqual &&
+      showAllPairsEqual &&
+      pairIsEqual &&
+      selectedKeyIsEqual &&
+      isMarketIsEqual &&
+      pageIsEqual &&
+      perPageIsEqual
+    ) {
+      return true
+    }
+
+    return false
+  }
+)

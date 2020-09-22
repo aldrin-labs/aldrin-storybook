@@ -354,10 +354,10 @@ export default ({
                     !takeProfit.trailingTAP.isTrailingOn && (
                       <ItemTypography theme={theme}>
                         <InputRowContainer padding=".2rem .5rem">
-                          <TargetTitle style={{ width: '50%' }}>
+                          <TargetTitle theme={theme} style={{ width: '50%' }}>
                             price
                           </TargetTitle>
-                          <TargetTitle style={{ width: '50%' }}>
+                          <TargetTitle theme={theme} style={{ width: '50%' }}>
                             quantity
                           </TargetTitle>
                         </InputRowContainer>
@@ -373,6 +373,7 @@ export default ({
                               style={{ borderBottom: '.1rem solid #e0e5ec' }}
                             >
                               <TargetValue
+                                theme={theme}
                                 style={{
                                   width: '50%',
                                   color: getColor(true, theme),
@@ -380,7 +381,10 @@ export default ({
                               >
                                 +{target.price}%
                               </TargetValue>
-                              <TargetValue style={{ width: '50%' }}>
+                              <TargetValue
+                                theme={theme}
+                                style={{ width: '50%' }}
+                              >
                                 {target.quantity}%
                               </TargetValue>
                             </InputRowContainer>

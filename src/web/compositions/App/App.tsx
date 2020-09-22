@@ -34,7 +34,7 @@ import { syncStorage } from '@storage'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { useQuery } from 'react-apollo'
 
-const version = `10.5.41`
+const version = `10.5.51`
 const currentVersion = localStorage.getItem('version')
 if (currentVersion !== version) {
   localStorage.clear()
@@ -60,8 +60,9 @@ const AppRaw = ({
     getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
 
   const fullscreen: boolean = isChartPage && chartPageView !== 'default'
-  const showFooter = currentPage !== '/registration'
-  const isPNL = currentPage === '/portfolio/main'
+  const showFooter =
+    currentPage !== '/registration' && currentPage !== '/tech_issues'
+  const isPNL = currentPage.includes('/portfolio/main')
   // TODO: Check this variable
   const pageIsRegistration = currentPage.includes('regist')
 
@@ -85,6 +86,7 @@ const AppRaw = ({
             <CssBaseline />
             <FontStyle />
             <AppGridLayout
+              id={'react-notification'}
               showFooter={showFooter}
               isPNL={isPNL}
               isChartPage={isChartPage}

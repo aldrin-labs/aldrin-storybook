@@ -33,6 +33,7 @@ import {
   prefetchPortfolioMainSpot,
   prefetchPortfolioMainFutures,
   prefetchDeposit,
+  prefetchWithdrawal,
 } from '@core/utils/prefetching'
 import { checLoginStatusWrapper } from '@core/utils/loginUtils'
 
@@ -75,6 +76,10 @@ function ChartPageComponent(props: any) {
     setTimeout(() => {
       checLoginStatusWrapper(prefetchDeposit)
     }, 75000)
+
+    setTimeout(() => {
+      // checLoginStatusWrapper(prefetchWithdrawal)
+    }, 95000)
 
     return () => {
       document.title = 'Cryptocurrencies AI'
@@ -338,22 +343,27 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
         next.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup)
 
   return (
-    prev.marketType === next.marketType &&
-    prev.selectedPair === next.selectedPair &&
-    prev.getChartDataQuery.getTradingSettings.selectedTradingKey ===
-      next.getChartDataQuery.getTradingSettings.selectedTradingKey &&
-    prev.getChartDataQuery.getTradingSettings.hedgeMode ===
-      next.getChartDataQuery.getTradingSettings.hedgeMode &&
-    prevIsPairDataLoading === nextIsPairDataLoading &&
-    tooltipQueryChanged &&
-    prev.getChartLayoutQuery.chart.layout.hideDepthChart ===
-      next.getChartLayoutQuery.chart.layout.hideDepthChart &&
-    prev.getChartLayoutQuery.chart.layout.hideOrderbook ===
-      next.getChartLayoutQuery.chart.layout.hideOrderbook &&
-    prev.getChartLayoutQuery.chart.layout.hideTradeHistory ===
-      next.getChartLayoutQuery.chart.layout.hideTradeHistory &&
-    prev.theme.palette.type === next.theme.palette.type &&
-    isEqual(prev.theme, next.theme)
+    // prev.marketType === next.marketType &&
+    // prev.selectedPair === next.selectedPair &&
+    // prev.getChartDataQuery.getTradingSettings.selectedTradingKey ===
+    //   next.getChartDataQuery.getTradingSettings.selectedTradingKey &&
+    // prev.getChartDataQuery.getTradingSettings.hedgeMode ===
+    //   next.getChartDataQuery.getTradingSettings.hedgeMode &&
+    // prevIsPairDataLoading === nextIsPairDataLoading &&
+    // tooltipQueryChanged &&
+    // prev.getChartLayoutQuery.chart.layout.hideDepthChart ===
+    //   next.getChartLayoutQuery.chart.layout.hideDepthChart &&
+    // prev.getChartLayoutQuery.chart.layout.hideOrderbook ===
+    //   next.getChartLayoutQuery.chart.layout.hideOrderbook &&
+    // prev.getChartLayoutQuery.chart.layout.hideTradeHistory ===
+    //   next.getChartLayoutQuery.chart.layout.hideTradeHistory &&
+    // prev.theme.palette.type === next.theme.palette.type &&
+    // isEqual(prev.theme, next.theme) &&
+    // isEqual(
+    //   prev.pairPropertiesQuery.marketByName[0].properties,
+    //   next.pairPropertiesQuery.marketByName[0].properties
+    // )
+    false
   )
 })
 

@@ -1,11 +1,19 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
+import { isEqual } from 'lodash'
+import { withTheme } from '@material-ui/styles'
+
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import withAuth from '@core/hoc/withAuth'
 
 import { Key } from '@core/types/ChartTypes'
-import { IProps, IState, IStateKeys } from './TradingTable.types'
+import {
+  IProps,
+  IPropsTradingTableWrapper,
+  IState,
+  IStateKeys,
+} from './TradingTable.types'
 import { StyleForCalendar } from '@sb/components/GitTransactionCalendar/Calendar.styles'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 
@@ -37,6 +45,24 @@ class TradingTable extends React.PureComponent<IProps, IState> {
     perPagePositions: 30,
     pageSmartTrades: 0,
     perPageSmartTrades: 30,
+  }
+
+  // componentDidMount() {
+  //   console.log('TradingTable componentDidMount')
+  // }
+
+  componentDidUpdate(prevProps) {
+    // console.log('TradingTable componentDidUpdate prevProps', prevProps)
+    // console.log('TradingTable componentDidUpdate this.props', this.props)
+
+    if (prevProps.marketType !== this.props.marketType) {
+      if (
+        (this.props.marketType === 0 && this.state.tab === 'positions') ||
+        (this.props.marketType === 1 && this.state.tab === 'funds')
+      ) {
+        this.setState({ tab: 'activeTrades' })
+      }
+    }
   }
 
   handleChangePage = (tab: IStateKeys, value: number) => {
@@ -94,7 +120,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       perPageSmartTrades,
     } = this.state
 
-    console.log('TradingTable render')
+    // console.log('TradingTable render')
 
     const {
       theme,
@@ -125,8 +151,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       }),
       {}
     )
-
-    console.log('theme', theme)
 
     return (
       <div
@@ -184,6 +208,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             show: tab === 'activeTrades',
             page: pageSmartTrades,
             perPage: perPageSmartTrades,
+            allKeys: showSmartTradesFromAllAccounts,
+            specificPair: showAllSmartTradePairs,
             handleToggleAllKeys: () =>
               this.setState((prev) => ({
                 showSmartTradesFromAllAccounts: !prev.showSmartTradesFromAllAccounts,
@@ -376,10 +402,11 @@ class TradingTable extends React.PureComponent<IProps, IState> {
   }
 }
 
-export default compose(
+const TradingTableWrapper = compose(
   withAuth,
   withRouter,
   withErrorFallback,
+  withTheme(),
   queryRendererHoc({
     query: getAllUserKeys,
     name: 'getAllUserKeysQuery',
@@ -389,3 +416,30 @@ export default compose(
     fetchPolicy: 'cache-only',
   })
 )(TradingTable)
+
+export default React.memo(
+  TradingTableWrapper,
+  (
+    prevProps: IPropsTradingTableWrapper,
+    nextProps: IPropsTradingTableWrapper
+  ) => {
+    // console.log('prevProps: ', prevProps)
+    // console.log('nextProps: ', nextProps)
+
+    if (
+      prevProps.maxLeverage === nextProps.maxLeverage &&
+      isEqual(prevProps.selectedKey, nextProps.selectedKey) &&
+      prevProps.marketType === nextProps.marketType &&
+      prevProps.exchange === nextProps.exchange &&
+      prevProps.pricePrecision === nextProps.pricePrecision &&
+      prevProps.quantityPrecision === nextProps.quantityPrecision &&
+      prevProps.priceFromOrderbook === nextProps.priceFromOrderbook &&
+      prevProps.currencyPair === nextProps.currencyPair &&
+      prevProps.arrayOfMarketIds.length === nextProps.arrayOfMarketIds.length
+    ) {
+      return true
+    }
+
+    return false
+  }
+)

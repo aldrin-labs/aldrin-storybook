@@ -1,6 +1,7 @@
 import React from 'react'
 import dayjs from 'dayjs'
 import { withTheme } from '@material-ui/styles'
+import { withRouter } from 'react-router-dom'
 import styled, { createGlobalStyle } from 'styled-components'
 import { compose } from 'recompose'
 // import Joyride from 'react-joyride'
@@ -57,6 +58,7 @@ const LayoutClearfixWrapper = styled.div`
   }
 `
 @withTheme()
+@withRouter
 class PortfolioMainPage extends React.Component<IProps, IState> {
   state: IState = {
     key: 0,
@@ -148,6 +150,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
     const {
       theme,
       dustFilter,
+      location: { pathname },
       // sharePortfolioMutation,
       // portfolioId,
       portfolioName,
@@ -166,7 +169,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
     } = this.props
 
     const isUserHasActivePromo = !!code
-    const isSPOTCurrently = pageType === 'SPOT'
+    const isSPOTCurrently = /spot/.test(pathname)
     // const { openSharePortfolioPopUp } = this.state
 
     const accountsNames = portfolioKeys
@@ -174,7 +177,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
       .map((key) => key.name)
 
     const enabledAssets = assets.myPortfolios[0].portfolioAssets.filter(
-      (asset) => accountsNames.includes(asset.name)
+      (asset) => accountsNames.includes(asset.name) && asset.assetType === 0
     )
 
     const filteredData = combineTableData(
@@ -203,6 +206,7 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
               isSPOTCurrently={isSPOTCurrently}
               isUSDCurrently={isUSDCurrently}
               choosePeriod={this.choosePeriod}
+              theme={theme}
             />
             {/* TODO: Recomment if needed <Divider /> */}
             <AccordionOverview

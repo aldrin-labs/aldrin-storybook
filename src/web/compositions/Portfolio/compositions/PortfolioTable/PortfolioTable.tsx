@@ -56,7 +56,24 @@ class PortfolioTable extends Component<IProps, IState> {
           <Switch>
             <Route
               exact
-              path="/portfolio/main"
+              path="/portfolio/main/spot"
+              render={(...rest) => (
+                <PortfolioMain
+                  portfolioKeys={keys}
+                  portfolioId={portfolioId}
+                  portfolioName={portfolioName}
+                  isUSDCurrently={isUSDCurrently}
+                  theme={theme}
+                  variables={{ baseCoin }}
+                  baseCoin={baseCoin}
+                  dustFilter={dustFilter}
+                  {...rest}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/portfolio/main/futures"
               render={(...rest) => (
                 <PortfolioMain
                   portfolioKeys={keys}

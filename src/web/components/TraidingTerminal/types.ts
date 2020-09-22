@@ -3,26 +3,37 @@ import { FormikProps } from 'formik'
 import { IResult } from '@core/types/ChartTypes'
 
 export interface FormValues {
-  price: number | string
-  stop: number | string
-  limit: number | string
-  amount: number | string
-  total: number | string
+  price: number
+  stop: number
+  limit: number
+  amount: number
+  margin: number
+  total: number
   reduceOnly: boolean
   leverage: number
   timeInForce?: string
   postOnly?: boolean
 }
 
-export type priceType = 'limit' | 'market' | 'stop-limit'
+export type priceType =
+  | 'limit'
+  | 'market'
+  | 'stop-limit'
+  | 'stop-market'
+  | 'maker-only'
 
 export interface IProps {
   byType: 'buy' | 'sell'
   priceType: priceType
   pair: [string, string]
   decimals: [number, number]
+  leverage: number
   marketPrice: number
   theme: Theme
+  marketPriceAfterPairChange: number
+  priceFromOrderbook: number
+  quantityPrecision: number
+  isSPOTMarket: boolean
   walletValue: number
   confirmOperation: (
     byType: 'buy' | 'sell',

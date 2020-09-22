@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 // import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import { Typography, Button } from '@material-ui/core'
+import { Link } from 'react-router-dom'
 
 export const TypographyHeading = styled(({ textColor, ...rest }) => (
   <Typography {...rest} />
@@ -21,11 +22,45 @@ export const TypographyHeading = styled(({ textColor, ...rest }) => (
 export const StyledButton = styled(
   ({ padding, margin, borderRadius, ...rest }) => <Button {...rest} />
 )`
+  font-family: DM Sans Medium;
+  text-transform: none;
+  text-decoration: none;
   padding: ${(props) => props.padding || 'auto'};
   border-radius: ${(props) => props.borderRadius};
   margin: 'auto';
-  color: #165be0;
-  border: 1.5px solid #165be0;
-  font-size: 1.08rem;
-  font-weight: 600;
+  color: ${(props) => (props.active ? '#fff' : '#0b1fd1')};
+  background: ${(props) => (!props.active ? '#fff' : '#0b1fd1')};
+  border: 0.1rem solid #0b1fd1;
+  font-size: 1.2rem;
+  font-weight: 500;
+  letter-spacing: 0.05rem;
+
+  &:hover {
+    color: ${(props) => (!props.active ? '#fff' : '#0b1fd1')};
+    background: ${(props) => (props.active ? '#fff' : '#0b1fd1')};
+    transition: all 0.3s ease-out;
+  }
+`
+
+export const StyledLink = styled(
+  ({ padding, margin, borderRadius, ...rest }) => <Link {...rest} />
+)`
+  font-family: DM Sans Medium;
+  text-transform: none;
+  text-decoration: none;
+  padding: ${(props) => props.padding || 'auto'};
+  border-radius: ${(props) => props.borderRadius};
+  margin: 'auto';
+  color: ${(props) => (props.active ? '#fff' : '#0b1fd1')};
+  background: ${(props) => (!props.active ? '#fff' : '#0b1fd1')};
+  border: 0.1rem solid #0b1fd1;
+  font-size: 1.2rem;
+  font-weight: 500;
+  letter-spacing: 0.05rem;
+
+  &:hover {
+    color: ${(props) => (!props.active ? '#fff' : '#0b1fd1')};
+    background: ${(props) => (props.active ? '#fff' : '#0b1fd1')};
+    transition: all 0.3s ease-out;
+  }
 `

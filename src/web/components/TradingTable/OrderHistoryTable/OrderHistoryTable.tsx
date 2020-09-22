@@ -1,7 +1,7 @@
 import React from 'react'
 import copy from 'clipboard-copy'
 import { withTheme } from '@material-ui/styles'
-
+import { useSnackbar } from 'notistack'
 import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
 import { PaginationBlock } from '../TradingTablePagination'
@@ -67,6 +67,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
         allKeys,
         currencyPair,
         specificPair,
+        enqueueSnackbar,
       } = this.props
 
       this.unsubscribeFunction && this.unsubscribeFunction()
@@ -83,7 +84,12 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
               ...(!specificPair ? {} : { specificPair: currencyPair }),
             },
           },
-          updateQuery: updatePaginatedOrderHistoryQuerryFunction,
+          updateQuery: (prev, data) =>
+            updatePaginatedOrderHistoryQuerryFunction(
+              prev,
+              data,
+              enqueueSnackbar
+            ),
         }
       )
     }
@@ -149,7 +155,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       <TableWithSort
         style={{
           borderRadius: 0,
-          height: '100%',
+          height: 'calc(100% - 6rem)',
           backgroundColor: theme.palette.white.background,
         }}
         stylesForTable={{ backgroundColor: theme.palette.white.background }}
@@ -257,12 +263,15 @@ const TableDataWrapper = ({ ...props }) => {
     specificPair,
   } = props
 
+  const { enqueueSnackbar } = useSnackbar()
+
   startDate = +startDate
   endDate = +endDate
 
   return (
     <QueryRenderer
       component={OrderHistoryTable}
+      enqueueSnackbar={enqueueSnackbar}
       variables={{
         paginatedOrderHistoryInput: {
           page,
@@ -294,7 +303,12 @@ const TableDataWrapper = ({ ...props }) => {
             ...(!specificPair ? {} : { specificPair: props.currencyPair }),
           },
         },
-        updateQueryFunction: updatePaginatedOrderHistoryQuerryFunction,
+        updateQueryFunction: (prev, data) =>
+          updatePaginatedOrderHistoryQuerryFunction(
+            prev,
+            data,
+            enqueueSnackbar
+          ),
       }}
       {...props}
     />

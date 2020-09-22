@@ -13,15 +13,36 @@ const ProfileAccountsTable = ({
   accounts,
   telegramUsernameConnected,
   setCreatingAdditionalAccount,
+  portfolioAssetsMapFutures,
+  portfolioAssetsMap,
+  setTransferFromSpotToFutures,
+  togglePopup,
+  setSelectedAccount,
+  updateWithdrawalSettings,
+  updateDepositSettings,
 }: {
   accounts: AccountData[]
   telegramUsernameConnected: boolean
   setCreatingAdditionalAccount: () => void
+  portfolioAssetsMapFutures: []
+  portfolioAssetsMap: []
+  setTransferFromSpotToFutures: any
+  togglePopup: any
+  setSelectedAccount: string
+  updateWithdrawalSettings: any
+  updateDepositSettings: any
 }) => {
   const { body, head } = putDataInTable(
     accounts,
     telegramUsernameConnected,
-    setCreatingAdditionalAccount
+    setCreatingAdditionalAccount,
+    portfolioAssetsMapFutures,
+    portfolioAssetsMap,
+    setTransferFromSpotToFutures,
+    togglePopup,
+    setSelectedAccount,
+    updateWithdrawalSettings,
+    updateDepositSettings
   )
 
   return (

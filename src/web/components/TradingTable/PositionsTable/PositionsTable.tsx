@@ -138,6 +138,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       addOrderToCanceled,
       clearCanceledOrders,
       updatePositionMutation,
+      enqueueSnackbar,
     } = this.props
 
     let data = getActivePositionsQuery.getActivePositions
@@ -176,6 +177,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       pricePrecision,
       quantityPrecision,
       handlePairChange,
+      enqueueSnackbar,
     })
 
     this.setState({
@@ -381,6 +383,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
             keys,
             getAdlQuantileQuery,
             handlePairChange,
+            enqueueSnackbar,
           } = that.props
 
           const positionsData = combinePositionsTable({
@@ -398,6 +401,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
             pricePrecision,
             quantityPrecision,
             handlePairChange,
+            enqueueSnackbar,
           })
 
           that.setState({
@@ -434,6 +438,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       keys,
       getAdlQuantileQuery,
       handlePairChange,
+      enqueueSnackbar,
     } = this.props
 
     this.subscribe()
@@ -454,6 +459,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       pricePrecision,
       quantityPrecision,
       handlePairChange,
+      enqueueSnackbar,
     })
 
     this.setState({
@@ -583,6 +589,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       quantityPrecision,
       getAdlQuantileQuery,
       handlePairChange,
+      enqueueSnackbar,
     } = nextProps
 
     const positionsData = combinePositionsTable({
@@ -600,6 +607,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       pricePrecision,
       quantityPrecision,
       handlePairChange,
+      enqueueSnackbar,
     })
 
     this.setState({
@@ -683,18 +691,20 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       return null
     }
 
-    const [
-      USDTFuturesFund = { quantity: 0, value: 0 },
-    ] = getFundsQuery.getFunds
-      .filter((el) => +el.assetType === 1 && el.asset.symbol === 'USDT')
-      .map((el) => ({ quantity: el.free, value: el.free }))
+    let USDTFuturesFund = { quantity: 0, value: 0 }
+
+    if (getFundsQuery && getFundsQuery.getFunds) {
+      USDTFuturesFund = getFundsQuery.getFunds
+        .filter((el) => +el.assetType === 1 && el.asset.symbol === 'USDT')
+        .map((el) => ({ quantity: el.free, value: el.free }))
+    }
 
     return (
       <>
         <TableWithSort
           style={{
             borderRadius: 0,
-            height: '100%',
+            height: 'calc(100% - 5.5rem)',
             overflowX: 'scroll',
             backgroundColor: theme.palette.white.background,
           }}

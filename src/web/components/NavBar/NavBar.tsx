@@ -1,6 +1,9 @@
 import React, { SFC, useState } from 'react'
 import { withApollo, graphql } from 'react-apollo'
 import { compose } from 'recompose'
+import Dropdown from '@sb/components/Dropdown'
+import ArrowBottom from '@icons/arrowBottom.svg'
+import SvgIcon from '@sb/components/SvgIcon'
 
 import { client } from '@core/graphql/apolloClient'
 import { LoginComponent as Login } from '@sb/components/Login'
@@ -23,7 +26,8 @@ import {
 
 import Logo from '@sb/components/Logo/Logo'
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
-import Dropdown from '@sb/components/Dropdown'
+import TotalBalance from '@sb/components/NavBar/TotalBalance'
+import NavBarProfileSelector from '@sb/components/NavBar/NavBarProfileSelector'
 
 import MainIcon from '@material-ui/icons/LineStyle'
 import IndustryIcon from '@material-ui/icons/DonutLarge'
@@ -44,6 +48,7 @@ import {
   prefetchSpotChart,
   prefetchFuturesChart,
   prefetchProfileAccounts,
+  prefetchPortfolio,
 } from '@core/utils/prefetching'
 
 import { MASTER_BUILD } from '@core/utils/config'
@@ -53,10 +58,47 @@ export interface Props extends WithTheme {
   pathname: string
 }
 
-const Portfolio = (props: any) => <Link to="/portfolio" {...props} />
-const Chart = (props: any) => <Link to="/chart" {...props} />
+const Portfolio = (props: any) => (
+  <Link
+    to={`/portfolio/main/${
+      props.pathname.includes('spot') ? 'spot' : 'futures'
+    }`}
+    {...props}
+  />
+)
+const Chart = (props: any) => (
+  <Link
+    to={`/chart/${props.pathname.includes('spot') ? 'spot' : 'futures'}`}
+    {...props}
+  />
+)
+const Rebalance = (props: any) => <Link to="/portfolio/rebalance" {...props} />
+const Transactions = (props: any) => (
+  <Link
+    to={`/portfolio/transactions/${
+      props.pathname.includes('spot') ? 'spot' : 'futures'
+    }`}
+    {...props}
+  />
+)
+
 const Market = (props: any) => <Link to="/market" {...props} />
 const Signals = (props: any) => <Link to="/signals" {...props} />
+const MarketType = (props: any) => {
+  const isChart = /chart/.test(props.pathname)
+  const isTransactions = /transactions/.test(props.pathname)
+  const isPortfolio = /main/.test(props.pathname)
+  const chartPair = props.pathname.split('/')[3]
+  const url = isChart
+    ? `/chart/${props.marketName}/${chartPair}`
+    : isTransactions
+    ? `/portfolio/transactions/${props.marketName}`
+    : isPortfolio
+    ? `/portfolio/main/${props.marketName}`
+    : `/portfolio/main/${props.marketName}`
+
+  return <Link to={url} {...props} />
+}
 
 const NavBarRaw: SFC<Props> = ({
   theme: {
@@ -69,7 +111,6 @@ const NavBarRaw: SFC<Props> = ({
   persistorInstance,
   changeCurrencyPairMutation,
 }) => {
-  const [selectedMenu, selectMenu] = useState<string | undefined>(undefined)
   const pathnamePage = pathname.split('/')
   let page = pathnamePage[pathnamePage.length - 1]
   let joyridePage = null
@@ -121,6 +162,10 @@ const NavBarRaw: SFC<Props> = ({
 
   const loginStatus = checkLoginStatus()
   const notAuthPages = page === 'Log in' || page === 'Sign up'
+  const [selectedMenu, selectMenu] = useState<string | undefined>(undefined)
+
+  const isActivePage = new RegExp(page, 'i').test(pathname)
+  const isSpot = /spot/.test(pathname)
 
   return (
     <Nav
@@ -132,7 +177,7 @@ const NavBarRaw: SFC<Props> = ({
       <StyledToolbar theme={theme} variant="dense">
         <Grid
           alignItems="center"
-          style={{ height: '100%' }}
+          style={{ height: '100%', width: '50%' }}
           container={true}
           wrap="nowrap"
           alignContent={'stretch'}
@@ -144,33 +189,207 @@ const NavBarRaw: SFC<Props> = ({
                 display: 'flex',
                 height: '100%',
                 borderRight: theme.palette.border.main,
+                width: '22rem',
               }}
             >
               <Grid
                 container={true}
                 alignItems={'center'}
                 wrap="nowrap"
-                style={{}}
+                style={{
+                  minWidth: '25rem',
+                  padding: '.5rem 1rem',
+                  margin: 'auto auto',
+
+                  width: '20rem',
+                }}
               >
                 <Logo theme={theme} />
               </Grid>
             </Grid>
           </Hidden>
-          <Grid style={{ width: '100%', textAlign: 'center' }}>
-            <NavBreadcrumbTypography theme={theme}>
-              {page}
-            </NavBreadcrumbTypography>
+          <Grid
+            item={true}
+            container={true}
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              height: '100%',
+              borderRight: theme.palette.border.main,
+              width: 'auto',
+              flexWrap: 'nowrap',
+            }}
+          >
+            <Dropdown
+              component={MarketType}
+              theme={theme}
+              id="spot-page"
+              marketName="spot"
+              buttonText={
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    width: '10rem',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {'Spot'}
+                </div>
+              }
+              selectedMenu={selectedMenu}
+              key="spot"
+              page={`spot`}
+              isActivePage={isActivePage}
+              pathname={pathname}
+              selectActiveMenu={selectMenu}
+              onMouseOver={() => {
+                if (notAuthPages || !loginStatus) {
+                  return
+                }
+
+                prefetchSpotChart()
+                prefetchSpotTransactions()
+              }}
+              items={[
+                {
+                  text: 'Trading',
+                  to: '/chart/spot/BTC_USDT',
+                },
+                {
+                  text: 'Portfolio',
+                  to: '/portfolio/main/spot',
+                  onMouseOver: () => {
+                    if (notAuthPages || !loginStatus) {
+                      return
+                    }
+
+                    prefetchPortfolio()
+                  },
+                },
+                {
+                  text: 'Perfomance',
+                  to: '/portfolio/transactions/spot',
+                },
+                {
+                  text: 'Rebalance',
+                  to: '/portfolio/rebalance',
+                  onMouseOver: () => {
+                    if (notAuthPages || !loginStatus) {
+                      return
+                    }
+
+                    prefetchRebalance()
+                  },
+                },
+              ]}
+            />
+
+            <Dropdown
+              component={MarketType}
+              theme={theme}
+              pathname={pathname}
+              id="futures-page"
+              key="futures-page"
+              marketName="futures"
+              page={'futures'}
+              buttonText={
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    width: '10rem',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {'Futures'}
+                </div>
+              }
+              selectedMenu={selectedMenu}
+              selectActiveMenu={selectMenu}
+              onMouseOver={() => {
+                if (notAuthPages || !loginStatus) {
+                  return
+                }
+
+                prefetchFuturesChart()
+                prefetchFuturesTransactions()
+              }}
+              items={[
+                {
+                  text: 'Trading',
+                  to: '/chart/futures/BTC_USDT',
+                },
+                {
+                  text: 'Portfolio',
+                  to: '/portfolio/main/futures',
+                },
+                {
+                  text: 'Perfomance',
+                  to: '/portfolio/transactions/futures',
+                },
+              ]}
+            />
           </Grid>
-          <Grid style={{ height: '100%' }} item={true} key={'navBarGrid'}>
-            <NavBarWrapper container={true} key={'NavBarWrapper'}>
-              {/* <NavLinkButton
-                page={`portfolio`}
-                component={Portfolio}
-                pathname={pathname}
-              >
-                Portfolio
-              </NavLinkButton> */}
-              <Dropdown
+          {/* <NavLinkButtonWrapper
+            theme={theme}
+            key="spot-wrapper"
+            onMouseOver={() => {
+              if (notAuthPages || !loginStatus) {
+                return
+              }
+
+              prefetchSpotChart()
+              prefetchSpotTransactions()
+            }}
+          >
+            <NavLinkButton
+              key="spot"
+              page={`spot`}
+              marketName={'spot'}
+              component={MarketType}
+              pathname={pathname}
+            >
+              Spot
+            </NavLinkButton>
+          </NavLinkButtonWrapper> */}
+
+          {/* <NavLinkButtonWrapper
+            theme={theme}
+            key="futures-wrapper"
+            onMouseOver={() => {
+              if (notAuthPages || !loginStatus) {
+                return
+              }
+
+              prefetchFuturesChart()
+              prefetchFuturesTransactions()
+            }}
+          >
+            <NavLinkButton
+              key="futures"
+              page={`futures`}
+              marketName={'futures'}
+              component={MarketType}
+              pathname={pathname}
+            >
+              Futures
+            </NavLinkButton>
+          </NavLinkButtonWrapper> */}
+        </Grid>
+        <Grid
+          style={{
+            height: '100%',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'space-around',
+            margin: 'auto auto',
+          }}
+          item={true}
+          key={'navBarGrid'}
+        >
+          <NavBarWrapper>
+            {/* <Dropdown
                 theme={theme}
                 id="portfolio-menu"
                 key="portfolio-menu"
@@ -202,7 +421,7 @@ const NavBarRaw: SFC<Props> = ({
                         return
                       }
 
-                      prefetchSpotTransactions()
+                      
                     },
                   },
                   {
@@ -214,7 +433,7 @@ const NavBarRaw: SFC<Props> = ({
                         return
                       }
 
-                      prefetchFuturesTransactions()
+                      
                     },
                   },
                   {
@@ -241,12 +460,12 @@ const NavBarRaw: SFC<Props> = ({
                         return
                       }
 
-                      prefetchRebalance()
+                     
                     },
                   },
                 ]}
-              />
-              <Dropdown
+              /> */}
+            {/* <Dropdown
                 theme={theme}
                 id="chart-page"
                 key="chart-page"
@@ -258,11 +477,7 @@ const NavBarRaw: SFC<Props> = ({
                     text: 'Spot market',
                     to: '/chart/spot/BTC_USDT',
                     onMouseOver: () => {
-                      if (notAuthPages || !loginStatus) {
-                        return
-                      }
-
-                      prefetchSpotChart()
+                      
                     },
                   },
                   {
@@ -273,7 +488,7 @@ const NavBarRaw: SFC<Props> = ({
                         return
                       }
 
-                      prefetchFuturesChart()
+                      
                       changeCurrencyPairMutation({
                         variables: {
                           pairInput: {
@@ -284,128 +499,128 @@ const NavBarRaw: SFC<Props> = ({
                     },
                   },
                 ]}
-              />
+              /> */}
+            <NavLinkButtonWrapper
+              theme={theme}
+              key="trading-wrapper"
+              onMouseOver={() => {
+                if (notAuthPages || !loginStatus) {
+                  return
+                }
 
-              {!MASTER_BUILD && (
-                <NavLinkButtonWrapper theme={theme} key="market-wrapper">
-                  <NavLinkButton
-                    key="market-2"
-                    page={`market`}
-                    component={Market}
-                    pathname={pathname}
-                    onMouseOver={() => {
-                      if (notAuthPages || !loginStatus) {
-                        return
-                      }
-
-                      client.query({
-                        query: marketsQuery,
-                      })
-                    }}
-                  >
-                    Marketcap
-                  </NavLinkButton>
-                </NavLinkButtonWrapper>
-              )}
-              {!MASTER_BUILD && (
-                <NavLinkButtonWrapper theme={theme} key="signals-wrapper">
-                  <NavLinkButton
-                    key="signals"
-                    page={`signals`}
-                    component={Signals}
-                    pathname={pathname}
-                    onMouseOver={() => {
-                      if (notAuthPages || !loginStatus) {
-                        return
-                      }
-
-                      client.query({
-                        query: GET_FOLLOWING_SIGNALS_QUERY,
-                      })
-                    }}
-                  >
-                    Signals
-                  </NavLinkButton>
-                </NavLinkButtonWrapper>
-              )}
-              <Dropdown
-                theme={theme}
-                id="profile-page"
-                key="profile-page"
-                buttonText="Settings"
-                selectedMenu={selectedMenu}
-                selectActiveMenu={selectMenu}
-                items={[
-                  // {
-                  //   text: 'Accounts',
-                  //   to: '/profile/accounts',
-                  //   onMouseOver: () => {
-                  //     if (notAuthPages || !loginStatus) {
-                  //       return
-                  //     }
-
-                  //     prefetchProfileAccounts()
-                  //   },
-                  // },
-                  {
-                    text: 'Settings',
-                    to: '/profile/settings',
-                  },
-                  {
-                    text: 'Deposit',
-                    to: '/profile/deposit',
-                  },
-                  {
-                    text: 'Withdrawal',
-                    to: '/profile/withdrawal',
-                  },
-                  {
-                    text: 'Internal Transfer',
-                    to: '/profile/internal',
-                  },
-                  {
-                    text: 'API',
-                    to: '/profile/api',
-                  },
-                  {
-                    text: 'Telegram',
-                    to: '/profile/telegram',
-                  },
-                  {
-                    text: 'Referral',
-                    to: '/profile/referral',
-                  },
-                  {
-                    text: 'Disable Account',
-                    to: '/profile/disableaccount',
-                  },
-                  {
-                    text: 'Log out',
-                    to: `/login?callbackURL=${pathname}`,
-                    onClick: logout,
-                    style: {
-                      color: '#DD6956',
-                    },
-                  },
-                ]}
-              />
-            </NavBarWrapper>
-          </Grid>
-
-          <Grid item={true} style={{ display: 'flex', height: '100%' }}>
-            <Grid
-              justify="flex-end"
-              wrap="nowrap"
-              direction={'row'}
-              container={true}
+                client.query({
+                  query: getPortfolioAssets,
+                  fetchPolicy: 'cache-first',
+                  variables: { baseCoin: 'USDT', innerSettings: true },
+                })
+              }}
             >
-              {/* <Hidden only={['sm', 'xs']}>
+              <NavLinkButton
+                key="trading"
+                page={`chart`}
+                component={Chart}
+                pathname={pathname}
+              >
+                Trading
+              </NavLinkButton>
+            </NavLinkButtonWrapper>
+            <NavLinkButtonWrapper
+              theme={theme}
+              key="portfolio-wrapper"
+              onMouseOver={() => {
+                if (notAuthPages || !loginStatus) {
+                  return
+                }
+
+                prefetchPortfolio()
+              }}
+            >
+              <NavLinkButton
+                key="portfolio"
+                page={`main`}
+                component={Portfolio}
+                pathname={pathname}
+              >
+                Portfolio
+              </NavLinkButton>
+            </NavLinkButtonWrapper>
+            <NavLinkButtonWrapper
+              theme={theme}
+              key="performance-wrapper"
+              onMouseOver={() => {
+                if (notAuthPages || !loginStatus) {
+                  return
+                }
+
+                prefetchSpotTransactions()
+                prefetchFuturesTransactions()
+              }}
+            >
+              <NavLinkButton
+                key="performance"
+                page={`transactions`}
+                component={Transactions}
+                pathname={pathname}
+              >
+                Performance
+              </NavLinkButton>
+            </NavLinkButtonWrapper>
+            {isSpot && (
+              <NavLinkButtonWrapper
+                theme={theme}
+                key="rebalance-wrapper"
+                onMouseOver={() => {
+                  if (notAuthPages || !loginStatus) {
+                    return
+                  }
+
+                  prefetchRebalance()
+                }}
+              >
+                <NavLinkButton
+                  key="rebalance"
+                  page={`rebalance`}
+                  component={Rebalance}
+                  pathname={pathname}
+                >
+                  Rebalance
+                </NavLinkButton>
+              </NavLinkButtonWrapper>
+            )}
+          </NavBarWrapper>
+        </Grid>
+
+        {loginStatus && (
+          <>
+            <TotalBalance theme={theme} />
+            <NavBarProfileSelector
+              onMouseOver={() => {
+                if (notAuthPages || !loginStatus) {
+                  return
+                }
+
+                prefetchProfileAccounts()
+              }}
+              logout={logout}
+              pathname={pathname}
+              theme={theme}
+            />
+          </>
+        )}
+
+        <Grid item={true} style={{ display: 'flex', height: '100%' }}>
+          <Grid
+            justify="flex-end"
+            wrap="nowrap"
+            direction={'row'}
+            container={true}
+          >
+            {/* <Hidden only={['sm', 'xs']}>
                 <Feedback borderColor={fade(divider, 0.5)} />
               </Hidden> */}
-              <Hidden only="xs">
-                <Login theme={theme} joyridePage={joyridePage} />
-              </Hidden>
-            </Grid>
+            <Hidden only="xs">
+              <Login theme={theme} joyridePage={joyridePage} />
+            </Hidden>
           </Grid>
         </Grid>
       </StyledToolbar>

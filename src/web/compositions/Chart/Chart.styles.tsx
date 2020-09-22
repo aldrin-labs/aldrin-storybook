@@ -21,7 +21,7 @@ html {
   }
 }
 
-@media only screen and (max-width: 1400px) {
+@media only screen and (max-width: 1440px) {
   html {
     font-size: 8px !important;
   }
@@ -399,7 +399,7 @@ export const TradingTabelContainer = styled(
   // 32vh was
   background-color: ${(props) => props.theme.palette.white.background};
   position: relative;
-  height: ${(props) => props.isDefaultTerminalViewMode && '40%'};
+  height: ${(props) => props.isDefaultTerminalViewMode ? '40%' : '0%'};
   justify-content: flex-start;
   flex-direction: column;
   overflow: hidden;
@@ -429,7 +429,7 @@ export const StyledSwitch = styled(({ isActive, ...rest }) => (
 export const Container = styled(Grid)`
   display: flex;
   // - ( menu + margin )
-  height: calc(100vh - 3.8rem);
+  height: calc(100vh - 5.4vh);
   width: 100%;
   margin: 0;
   padding: 0;
@@ -437,7 +437,7 @@ export const Container = styled(Grid)`
   background-color: ${(props) => props.theme.palette.white.background};
 
   @media (max-width: 1400px) {
-    height: calc(100vh - 5rem);
+    height: calc(100vh - 5.4vh);
   }
 `
 

@@ -226,6 +226,20 @@ class SimpleTabs extends React.Component {
               >
                 Limit
               </TerminalModeButton>
+              <DarkTooltip
+                maxWidth={'35rem'}
+                title={
+                  'Maker-only or post-only market order will place a post-only limit orders as close to the market price as possible until the last one is executed. This way you can enter the position at the market price by paying low maker fees.'
+                }
+              >
+                <TerminalModeButton
+                  theme={theme}
+                  active={mode === 'maker-only'}
+                  onClick={() => this.handleChangeMode('maker-only')}
+                >
+                  Maker-only
+                </TerminalModeButton>
+              </DarkTooltip>
 
               {!isSPOTMarket ? (
                 <TerminalModeButtonWithDropdown

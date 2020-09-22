@@ -55,9 +55,11 @@ export interface IProps {
       strategies: SmartOrder[]
       count: number
     }
+    subscribeToMoreFunction: () => () => void
   }
   getFundsQuery: {
     getFunds: Fund[]
+    subscribeToMoreFunction: () => () => void
   }
   selectedKey: {
     keyId: string

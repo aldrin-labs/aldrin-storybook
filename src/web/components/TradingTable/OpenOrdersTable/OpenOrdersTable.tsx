@@ -21,7 +21,7 @@ import {
 
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { PaginationBlock } from '../TradingTablePagination'
-
+import { disableStrategy } from '@core/graphql/mutations/strategies/disableStrategy'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
 import { CANCEL_ORDER_MUTATION } from '@core/graphql/mutations/chart/cancelOrderMutation'
@@ -41,8 +41,8 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 
   unsubscribeFunction: null | Function = null
 
-  onCancelOrder = async (keyId: string, orderId: string, pair: string) => {
-    const { cancelOrderMutation, marketType } = this.props
+  onCancelOrder = async (keyId: string, orderId: string, pair: string, type: string) => {
+    const { cancelOrderMutation, marketType, disableStrategyMutation } = this.props
 
     try {
       const responseResult = await cancelOrderMutation({
@@ -52,6 +52,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
             orderId,
             pair,
             marketType,
+            type
           },
         },
       })
@@ -65,12 +66,13 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
   cancelOrderWithStatus = async (
     keyId: string,
     orderId: string,
-    pair: string
+    pair: string,
+    type: string
   ) => {
     const { showCancelResult } = this.props
 
     await this.props.addOrderToCanceled(orderId)
-    const result = await this.onCancelOrder(keyId, orderId, pair)
+    const result = await this.onCancelOrder(keyId, orderId, pair, type)
     const status = await cancelOrderStatus(result)
 
     if (status.result === 'error') {
@@ -233,7 +235,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
         specificPair,
       } = this.props
 
-      console.log('OpenOrdersTable unsubscribe')
+      // console.log('OpenOrdersTable unsubscribe')
 
       this.unsubscribeFunction && this.unsubscribeFunction()
       this.unsubscribeFunction = this.props.getOpenOrderHistoryQuery.subscribeToMore(
@@ -253,7 +255,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     }
 
     if (this.props.show !== prevProps.show && this.props.show) {
-      if (this.checkForCachedOrder()) return
+      // if (this.checkForCachedOrder()) return
 
       this.props.ordersHealthcheckMutation({
         variables: {
@@ -279,6 +281,8 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
   componentWillReceiveProps(nextProps: IProps) {
     const { cachedOrder } = this.state
 
+    // console.log('nextProps.getOpenOrderHistoryQuery', nextProps.getOpenOrderHistoryQuery)
+
     let data
     try {
       data = client.readQuery({
@@ -301,7 +305,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       data = nextProps.getOpenOrderHistoryQuery
     }
 
-    console.log('data in receive props', data)
+    // console.log('data in receive props', data)
 
     const newOrderFromSubscription =
       cachedOrder !== null
@@ -310,10 +314,10 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
           })
         : null
 
-    console.log(
-      'newOrderFromSubscription in receive props',
-      newOrderFromSubscription
-    )
+    // console.log(
+    //   'newOrderFromSubscription in receive props',
+    //   newOrderFromSubscription
+    // )
 
     if (newOrderFromSubscription) {
       this.setState({
@@ -326,7 +330,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     //   nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory
     // )
 
-    console.log('cachedOrder', cachedOrder)
+    // console.log('cachedOrder', cachedOrder)
 
     const ordersToDisplay =
       !newOrderFromSubscription && !!cachedOrder
@@ -335,7 +339,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
           )
         : nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory.orders
 
-    console.log('ordersToDisplay in receive props', ordersToDisplay)
+    // console.log('ordersToDisplay in receive props', ordersToDisplay)
 
     const openOrdersProcessedData = combineOpenOrdersTable(
       ordersToDisplay,
@@ -411,16 +415,11 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       return null
     }
 
-    console.log(
-      'getOpenOrderHistoryQuery.getOpenOrderHistory.count',
-      getOpenOrderHistoryQuery.getOpenOrderHistory.count
-    )
-
     return (
       <TableWithSort
         style={{
           borderRadius: 0,
-          height: '100%',
+          height: 'calc(100% - 6rem)',
           overflowX: 'hidden',
           backgroundColor: theme.palette.white.background,
         }}
@@ -577,6 +576,7 @@ const MemoizedWrapper = React.memo(TableDataWrapper, (prevProps, nextProps) => {
 })
 
 export default compose(
+  graphql(disableStrategy, { name: 'disableStrategyMutation' }),
   graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' }),
   graphql(ordersHealthcheck, { name: 'ordersHealthcheckMutation' })
 )(MemoizedWrapper)

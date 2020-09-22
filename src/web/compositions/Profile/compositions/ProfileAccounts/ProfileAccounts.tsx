@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { KeyboardArrowDown, KeyboardArrowUp } from '@material-ui/icons'
-
+import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
+import TransferPopup from '@sb/compositions/Chart/components/TransferPopup'
+import { useSnackbar } from 'notistack'
 import {
   IProps,
   PortfolioData,
@@ -30,6 +32,7 @@ import {
   StyledAddIcon,
   Typography,
 } from './ProfileAccounts.styles'
+import { combineTableData } from '@core/utils/PortfolioTableUtils.ts'
 
 import ProfileAccountsTable from './ProfileAccountsTable'
 import { formatValue, countAllPortfoliosValue } from './ProfileAccounts.utils'
@@ -45,7 +48,30 @@ const ProfileAccounts = ({
   portfolioAccountsData,
   selectPortfolioMutation,
   getTelegramUsername,
+  getPortfolioAssets,
+  portfolioKeys,
+  updateWithdrawalSettings,
+  updateDepositSettings,
 }: IProps) => {
+  const showFuturesTransfer = (result) => {
+    if (result.status === 'OK' && result.data && result.data.tranId) {
+      enqueueSnackbar('Funds transfered!', {
+        variant: 'success',
+        // action: <CloseButton />,
+      })
+    } else {
+      enqueueSnackbar('Something went wrong during transfering funds', {
+        variant: 'error',
+      })
+    }
+  }
+  const [transferFromSpotToFutures, setTransferFromSpotToFutures] = useState(
+    false
+  )
+  const [open, togglePopup] = useState(false)
+  const [selectedAccount, setSelectedAccount] = useState('')
+  const { enqueueSnackbar } = useSnackbar()
+  const [loading, setLoading] = useState(false)
   const [creatingAdditionalAccount, setCreatingAdditionalAccount] = useState(
     false
   )
@@ -65,6 +91,21 @@ const ProfileAccounts = ({
     currentPortfolioIndex === allPortfoliosData.length - 1
       ? allPortfoliosData[0]._id
       : allPortfoliosData[currentPortfolioIndex + 1]._id
+
+  const spotAssets = getPortfolioAssets.myPortfolios[0].portfolioAssets.filter(
+    (asset) => asset.assetType === 0
+  )
+
+  const futuresAssets = getPortfolioAssets.myPortfolios[0].portfolioAssets.filter(
+    (asset) => asset.assetType === 1
+  )
+
+  const {
+    portfolioAssetsMap: portfolioAssetsMapFutures,
+  } = getPortfolioAssetsData(futuresAssets, 'USDT')
+  const { portfolioAssetsMap } = getPortfolioAssetsData(spotAssets, 'USDT')
+
+  // const portfolioAssets = getPortfolioAssetsData(filteredData, baseCoin)
 
   return (
     <MainContainer>
@@ -142,6 +183,13 @@ const ProfileAccounts = ({
             setCreatingAdditionalAccount={setCreatingAdditionalAccount}
             telegramUsernameConnected={telegramUsernameConnected}
             accounts={portfolioAccountsData}
+            portfolioAssetsMapFutures={portfolioAssetsMapFutures}
+            portfolioAssetsMap={portfolioAssetsMap}
+            setTransferFromSpotToFutures={setTransferFromSpotToFutures}
+            togglePopup={togglePopup}
+            setSelectedAccount={setSelectedAccount}
+            updateWithdrawalSettings={updateWithdrawalSettings}
+            updateDepositSettings={updateDepositSettings}
           />
         </GridBlock>
       </ContentContainer>
@@ -182,6 +230,17 @@ const ProfileAccounts = ({
           }}
         />
       )}
+      <TransferPopup
+        open={open}
+        handleClose={() => togglePopup(false)}
+        transferFromSpotToFutures={transferFromSpotToFutures}
+        haveSelectedAccount={true}
+        selectedAccount={selectedAccount}
+        showFuturesTransfer={showFuturesTransfer}
+        isFuturesWarsKey={false}
+        loading={loading}
+        setLoading={setLoading}
+      />{' '}
     </MainContainer>
   )
 }

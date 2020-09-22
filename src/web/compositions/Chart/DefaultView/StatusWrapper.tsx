@@ -114,6 +114,12 @@ export default React.memo(OrderStatusWrapper, (prev, next) => {
     prev.chartPagePopup === next.chartPagePopup &&
     prev.maxLeverage === next.maxLeverage &&
     prev.themeMode === next.themeMode &&
+    prev.minPriceDigits === next.minPriceDigits &&
+    prev.pricePrecision === next.pricePrecision &&
+    prev.quantityPrecision === next.quantityPrecision &&
+    prev.minSpotNotional === next.minSpotNotional &&
+    prev.minFuturesStep === next.minFuturesStep &&
+    prev.initialLeverage === next.initialLeverage &&
     prev.theme.palette.type === next.theme.palette.type &&
     prev.layout.hideDepthChart === next.layout.hideDepthChart &&
     prev.layout.hideOrderbook === next.layout.hideOrderbook &&

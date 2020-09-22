@@ -31,14 +31,28 @@ const AccountBlock = ({
   >
     <Grid item id="accounts_block">
       <StyledTypography>Account</StyledTypography>
-      <Grid style={{ height: '6rem', padding: '1rem 0 0 0', overflow: 'hidden' }}>
+      <Grid
+        style={{ height: '6rem', padding: '1rem 0 0 0', overflow: 'hidden' }}
+      >
         <SelectKeyListDW
+          dropdownIndicatorStyles={{
+            position: 'absolute',
+            right: '.5rem',
+            display: 'flex',
+            width: '3rem',
+            height: '3rem',
+            padding: '0',
+            marginRight: '2rem',
+            '& svg': {
+              width: '3rem',
+              height: '3rem',
+            },
+          }}
           isDeposit={isDepositPage}
           classNamePrefix="custom-select-box"
           components={{
             Option: AccountOption,
             SingleValue: AccountSingleValue,
-            DropdownIndicator: undefined,
           }}
           isSearchable={false}
           menuPortalTarget={document.body}
@@ -49,24 +63,26 @@ const AccountBlock = ({
             fontSize: '1.4rem',
             fontWeight: 'bold',
             padding: '0',
-            borderRadius: '1.5rem',
+            borderRadius: '0.2rem',
             textAlign: 'center',
             background: 'white',
             position: 'relative',
-            // overflowY: 'auto',
-            boxShadow: 'none',
-            border: 'none',
+            boxShadow: '-1px 3px 22px -16px rgba(127,139,148,1)',
+            border: 'solid 1px #E0E5EC',
           }}
           menuListStyles={{
             height: '16rem',
-            // overflowY: '',
           }}
           optionStyles={{
+            color: '#16253D',
             height: '4rem',
             background: 'transparent',
             fontSize: '1.4rem',
             textTransform: 'uppercase',
             padding: '0',
+            borderBottom: '2px solid #E0E5EC',
+            margin: '0 2rem',
+            width: 'calc(100% - 4rem)',
 
             '&:hover': {
               borderRadius: '0.8rem',
@@ -113,20 +129,38 @@ const AccountBlock = ({
     </Grid>
     <Grid item id="coins_block">
       <StyledTypography>Coin</StyledTypography>
-      <Grid style={{ height: '6rem', padding: '1rem 0 0 0', overflow: 'hidden' }}>
+      <Grid
+        style={{ height: '6rem', padding: '1rem 0 0 0', overflow: 'hidden' }}
+      >
         <SelectCoinList
+          dropdownIndicatorStyles={{
+            position: 'absolute',
+            right: '.5rem',
+            display: 'flex',
+            width: '3rem',
+            height: '3rem',
+            padding: '0',
+            marginRight: '2rem',
+            '& svg': {
+              width: '3rem',
+              height: '3rem',
+            },
+          }}
           classNamePrefix="custom-select-box"
           isSearchable={true}
           components={{
             Option: CoinOption,
             SingleValue: CoinSingleValue,
-            DropdownIndicator: undefined,
           }}
           menuPortalTarget={document.body}
           menuPortalStyles={{
             zIndex: 11111,
           }}
           value={selectedCoin}
+          needAdditionalFiltering={true}
+          additionalFiltering={(a: { symbol: string }) =>
+            !a.symbol.endsWith('UP') && !a.symbol.endsWith('DOWN')
+          }
           onChange={(optionSelected: { label: string; name: string }) => {
             setSelectedCoin({
               label: optionSelected.label,
@@ -138,27 +172,29 @@ const AccountBlock = ({
             fontSize: '1.4rem',
             fontWeight: 'bold',
             padding: '0',
-            borderRadius: '1.5rem',
+            borderRadius: '0.2rem',
             textAlign: 'center',
             background: 'white',
             position: 'relative',
-            // overflowY: 'auto',
-            boxShadow: 'none',
-            border: 'none',
+            boxShadow: '-1px 3px 22px -16px rgba(127,139,148,1)',
+            border: 'solid 1px #E0E5EC',
           }}
           menuListStyles={{
-            height: '16rem',
-            // overflowY: '',
+            height: '20rem',
           }}
           optionStyles={{
+            color: '#16253D',
             height: '4rem',
             background: 'transparent',
             fontSize: '1.4rem',
             textTransform: 'uppercase',
             padding: '0',
+            margin: '0 2rem',
+            borderBottom: '2px solid #E0E5EC',
+            width: 'calc(100% - 4rem)',
 
             '&:hover': {
-              borderRadius: '0.8rem',
+              borderRadius: '0.2rem',
               color: '#16253D',
               background: '#E7ECF3',
             },

@@ -3,6 +3,7 @@ import { Grid } from '@material-ui/core'
 
 import { StyledTypography } from './AccountBlock.styles'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import { Loading } from '@sb/components/index'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { getFunds } from '@core/graphql/queries/chart/getFunds'
@@ -11,13 +12,14 @@ import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
 import { FundsType } from '@core/types/ChartTypes'
 
 interface IProps {
+  selectedAccount: string
   selectedCoin: string
   getFundsQuery: {
     getFunds: FundsType[]
   }
 }
 
-const Balances = ({ selectedCoin, getFundsQuery }: IProps) => {
+const Balances = ({ selectedCoin, getFundsQuery, selectedAccount }: IProps) => {
   const { getFunds = [] } = getFundsQuery || {
     getFunds: [],
   }
@@ -35,6 +37,7 @@ const Balances = ({ selectedCoin, getFundsQuery }: IProps) => {
     <Grid item id="balances_block" style={{ padding: '3rem 7rem' }}>
       <Grid container justify="space-between">
         <StyledTypography>Total balance:</StyledTypography>
+
         <StyledTypography style={{ color: '#16253D' }}>
           {`${stripDigitPlaces(quantity, 8)} ${selectedCoin}`}
         </StyledTypography>
@@ -61,7 +64,6 @@ const BalancesWrapper = ({ ...props }) => {
       component={Balances}
       withOutSpinner={true}
       withTableLoader={true}
-      withoutLoading={true}
       query={getFunds}
       variables={{ fundsInput: { activeExchangeKey: props.selectedAccount } }}
       name={`getFundsQuery`}

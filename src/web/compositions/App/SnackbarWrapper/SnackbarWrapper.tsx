@@ -30,6 +30,7 @@ const snackStyeles = (theme) => ({
     boxShadow: '0px 0px 32px rgba(8, 22, 58, 0.1)',
     backdropFilter: 'blur(4px)',
     borderRadius: '16px',
+    flexGrow: 0,
   },
   error: {
     color: '#fff',
@@ -40,10 +41,12 @@ const snackStyeles = (theme) => ({
     boxShadow: '0px 0px 32px rgba(8, 22, 58, 0.1)',
     backdropFilter: 'blur(4px)',
     borderRadius: '16px',
+    flexGrow: 0,
   },
 })
 
 const IntegrationNotistack = ({ ...props }) => {
+  console.log('snackbar rerender')
   return (
     <SnackbarProvider
       domRoot={document.getElementById('react-notification')}

@@ -2,19 +2,27 @@ import React, { useState } from 'react'
 import { withSnackbar } from 'notistack'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
-import { Grid, Typography } from '@material-ui/core'
+import { Grid, Typography, withTheme } from '@material-ui/core'
 import Timer from 'react-compound-timer'
 import { Loading } from '@sb/components/index'
+import { WithTheme } from '@sb/types/materialUI'
 
 import { joinFuturesWarsRound } from '@core/graphql/mutations/futuresWars/joinFuturesWarsRound'
 import { futuresTransfer } from '@core/graphql/mutations/keys/futuresTransfer'
 import SelectCoinList from '@core/components/SelectCoinList/SelectCoinList'
+import SelectKeyListDW from '@core/components/SelectKeyListDW/SelectKeyListDW'
 import { StyledTypography } from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/AccountBlock.styles'
 import InputAmount from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/InputAmount'
+
 import {
   CoinOption,
   CoinSingleValue,
 } from '@sb/components/ReactSelectComponents/CoinOption'
+
+import {
+  AccountOption,
+  AccountSingleValue,
+} from '@sb/components/ReactSelectComponents/AccountOption'
 
 import {
   TypographyCustomHeading,
@@ -24,6 +32,7 @@ import {
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { DialogContent } from '@sb/styles/Dialog.styles'
 import { addGAEvent } from '@core/utils/ga.utils'
+import { stubFalse } from 'lodash'
 
 interface IProps {
   selectedAccount: string
@@ -45,6 +54,7 @@ interface IProps {
 }
 
 const TransferPopup = ({
+  haveSelectedAccount = true,
   selectedAccount,
   transferFromSpotToFutures,
   open,
@@ -58,13 +68,18 @@ const TransferPopup = ({
   timerForFuturesWars,
   loading,
   setLoading,
-  theme
+  theme,
 }: IProps) => {
   const [selectedCoin, setSelectedCoin] = useState({
     label: 'USDT',
     name: 'Tether',
   })
   const [coinAmount, setCoinAmount] = useState('')
+  const [selectedAccountOption, setSelectedAccount] = useState({
+    label: 'Select account',
+    value: '',
+    keyId: '',
+  })
 
   const transferHandler = async () => {
     handleClose()
@@ -73,7 +88,9 @@ const TransferPopup = ({
       const response = await futuresTransferMutation({
         variables: {
           input: {
-            keyId: selectedAccount,
+            keyId: haveSelectedAccount
+              ? selectedAccount
+              : selectedAccountOption.keyId,
             asset: selectedCoin.label,
             amount: +coinAmount,
             type: transferFromSpotToFutures ? 1 : 2,
@@ -147,10 +164,7 @@ const TransferPopup = ({
           paddingTop: 0,
         }}
       >
-        <DialogTitleCustom
-          id="customized-dialog-title"
-          theme={theme}
-        >
+        <DialogTitleCustom id="customized-dialog-title" theme={theme}>
           <TypographyCustomHeading
             fontWeight={'700'}
             theme={theme}
@@ -158,18 +172,18 @@ const TransferPopup = ({
               textAlign: 'center',
               fontSize: '1.4rem',
               letterSpacing: '1.5px',
-              color: theme.palette.dark.main
+              color: theme.palette.dark.main,
             }}
           >
             {isFuturesWarsKey
               ? `Join futures wars`
               : transferFromSpotToFutures
-              ? `Trasfer from spot to futures account`
-              : `Trasfer from futures to spot account`}
+              ? `Transfer from spot to futures account`
+              : `Transfer from futures to spot account`}
           </TypographyCustomHeading>
         </DialogTitleCustom>
         <DialogContent
-        theme={theme}
+          theme={theme}
           justify="center"
           style={{
             padding: '0 3rem 3rem',
@@ -180,20 +194,29 @@ const TransferPopup = ({
               {isFuturesWarsKey && futuresWarsRoundBet !== 0 && (
                 <>
                   <Typography
-                    style={{ paddingBottom: '1.4rem', color: theme.palette.dark.main }}
+                    style={{
+                      paddingBottom: '1.4rem',
+                      color: theme.palette.dark.main,
+                    }}
                   >
                     You replenish your futureswars account with{' '}
                     {futuresWarsRoundBet} USDT.
                   </Typography>
                   <Typography
-                    style={{ paddingBottom: '1.4rem', color: theme.palette.dark.main }}
+                    style={{
+                      paddingBottom: '1.4rem',
+                      color: theme.palette.dark.main,
+                    }}
                   >
                     {futuresWarsRoundBet / 2} USDT is your bet, it will go to
                     the bank. The remaining {futuresWarsRoundBet / 2} USDT is
                     your capital for trading in this round.
                   </Typography>
                   <Typography
-                    style={{ paddingBottom: '1.4rem', color: theme.palette.dark.main }}
+                    style={{
+                      paddingBottom: '1.4rem',
+                      color: theme.palette.dark.main,
+                    }}
                   >
                     Good luck!
                   </Typography>
@@ -254,6 +277,94 @@ const TransferPopup = ({
                 </Typography>
               )}
             </Grid>
+            {!haveSelectedAccount && (
+              <Grid style={{ paddingBottom: '2rem' }}>
+                <StyledTypography>Account:</StyledTypography>
+                <SelectKeyListDW
+                  isDeposit={false}
+                  isAnother={true}
+                  value={selectedAccountOption}
+                  onChange={(obj) => setSelectedAccount(obj)}
+                  classNamePrefix="custom-select-box"
+                  components={{
+                    Option: AccountOption,
+                    SingleValue: AccountSingleValue,
+                    DropdownIndicator: undefined,
+                  }}
+                  isSearchable={false}
+                  menuPortalTarget={document.body}
+                  menuPortalStyles={{
+                    zIndex: 11111,
+                  }}
+                  menuStyles={{
+                    fontSize: '1.4rem',
+                    fontWeight: 'bold',
+                    padding: '0',
+                    borderRadius: '1.5rem',
+                    textAlign: 'center',
+                    background: 'white',
+                    position: 'relative',
+                    // overflowY: 'auto',
+                    boxShadow: 'none',
+                    border: 'none',
+                  }}
+                  menuListStyles={{
+                    height: '16rem',
+                    // overflowY: '',
+                  }}
+                  optionStyles={{
+                    height: '4rem',
+                    background: 'transparent',
+                    fontSize: '1.4rem',
+                    textTransform: 'uppercase',
+                    padding: '0',
+
+                    '&:hover': {
+                      borderRadius: '0.8rem',
+                      color: '#16253D',
+                      background: '#E7ECF3',
+                    },
+                  }}
+                  clearIndicatorStyles={{
+                    padding: '2px',
+                  }}
+                  inputStyles={{
+                    fontSize: '1.4rem',
+                    marginLeft: '0',
+                  }}
+                  valueContainerStyles={{
+                    border: '2px solid #E0E5EC',
+                    borderRadius: '8px',
+                    background: '#fff',
+                    paddingLeft: '15px',
+                    height: '5rem',
+                    '&:hover': {
+                      borderColor: '#165BE0',
+                    },
+                  }}
+                  noOptionsMessageStyles={{
+                    textAlign: 'left',
+                  }}
+                  singleValueStyles={{
+                    color: '#16253D',
+                    fontSize: '1.4rem',
+                    fontWeight: 'bold',
+                    textTransform: 'uppercase',
+                    height: '100%',
+                    padding: '0.5rem 0',
+                  }}
+                  placeholderStyles={{
+                    color: '#16253D',
+                    fontSize: '1.4rem',
+                    fontWeight: 'bold',
+                    textTransform: 'uppercase',
+                  }}
+                  controlStyles={{
+                    padding: '.5rem 0 0 0',
+                  }}
+                />
+              </Grid>
+            )}
             <Grid style={{ paddingBottom: '2rem' }}>
               <StyledTypography>Coin:</StyledTypography>
               <SelectCoinList
@@ -312,7 +423,7 @@ const TransferPopup = ({
                   },
                 }}
                 controlStyles={{
-                  padding: '1rem 0 0 0',
+                  padding: '.5rem 0 0 0',
                 }}
                 clearIndicatorStyles={{
                   padding: '2px',
@@ -355,7 +466,11 @@ const TransferPopup = ({
               <InputAmount
                 theme={theme}
                 selectedCoin={selectedCoin.label}
-                selectedAccount={selectedAccount}
+                selectedAccount={
+                  haveSelectedAccount
+                    ? selectedAccount
+                    : selectedAccountOption.keyId
+                }
                 marketType={
                   transferFromSpotToFutures && !isFuturesWarsKey
                     ? 0
@@ -366,7 +481,7 @@ const TransferPopup = ({
                 value={isFuturesWarsKey ? futuresWarsRoundBet : coinAmount}
                 onClickAbornment={true}
                 onChange={(e) => setCoinAmount(e.target.value)}
-                style={{ width: '100%' }}
+                style={{ width: '100%', paddingTop: '.5rem' }}
               />
             </Grid>
             <Grid container justify="space-between">
@@ -421,6 +536,7 @@ const TransferPopup = ({
 
 export default compose(
   withSnackbar,
+  withTheme(),
   graphql(futuresTransfer, {
     name: 'futuresTransferMutation',
   }),

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { Fade, Grid, Theme } from '@material-ui/core'
 
@@ -111,6 +111,11 @@ export const DefaultViewComponent = (
   const exchange = activeExchange.symbol
   const isDefaultTerminalViewMode = terminalViewMode === 'default'
   const sizeDigits = marketType === 0 ? 8 : 3
+
+  useEffect(() => {
+    updateTerminalPriceFromOrderbook(null)
+  }, [currencyPair])
+
   console.log('default view rerender', props)
 
   return (
@@ -204,18 +209,6 @@ export const DefaultViewComponent = (
                   )}&user_id=${id}`}
                 />
               </CustomCard>
-
-              {/* {!hideTradeHistory && (
-                <HideArrow key="hide" onClick={hideLayoutHandler} />
-              )}
-              {(hideDepthChart || hideTradeHistory || hideOrderbook) && (
-                <HideArrow
-                  key="show"
-                  revertArrow={true}
-                  onClick={showLayoutHandler}
-                  right="-11px"
-                />
-              )} */}
             </ChartsContainer>
             <TradingTerminalContainer
               theme={theme}
@@ -311,7 +304,7 @@ export const DefaultViewComponent = (
           </TopChartsContainer>
           {!authenticated && <GuestMode />}
 
-          {authenticated && isDefaultTerminalViewMode && (
+          {authenticated && (
             <TradingTabelContainer
               item
               theme={theme}
@@ -319,7 +312,7 @@ export const DefaultViewComponent = (
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
             >
               <TradingTable
-                theme={theme}
+                isDefaultTerminalViewMode={isDefaultTerminalViewMode}
                 maxLeverage={maxLeverage}
                 selectedKey={selectedKey}
                 showOrderResult={showOrderResult}
@@ -396,6 +389,12 @@ export const DefaultView = React.memo(DefaultViewComponent, (prev, next) => {
     prev.chartPagePopup === next.chartPagePopup &&
     prev.maxLeverage === next.maxLeverage &&
     prev.themeMode === next.themeMode &&
+    prev.minPriceDigits === next.minPriceDigits &&
+    prev.pricePrecision === next.pricePrecision &&
+    prev.quantityPrecision === next.quantityPrecision &&
+    prev.minSpotNotional === next.minSpotNotional &&
+    prev.minFuturesStep === next.minFuturesStep &&
+    prev.initialLeverage === next.initialLeverage &&
     prev.theme.palette.type === next.theme.palette.type &&
     prev.layout.hideDepthChart === next.layout.hideDepthChart &&
     prev.layout.hideOrderbook === next.layout.hideOrderbook &&

@@ -10,14 +10,17 @@ import { Position } from './PositionsTable/PositionsTable.types'
 import { TableButton } from './TradingTable.styles'
 import { ArrowForward as Arrow } from '@material-ui/icons'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
+import { getActiveStrategies } from '@core/graphql/queries/chart/getActiveStrategies'
+
 import { client } from '@core/graphql/apolloClient'
-import { filterCacheData } from '@core/utils/TradingTable.utils'
+import { filterCacheData, modifyCacheData } from '@core/utils/TradingTable.utils'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components/index'
 import stableCoins from '@core/config/stableCoins'
 import { cloneDeep } from 'lodash-es'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
 import { AdlIndicator } from './TradingTable.styles'
+import { getPrecisionItem } from '@core/utils/getPrecisionItem'
 
 const changePairToSelected = (pair: string) => {
   console.log('client mutate', client)
@@ -330,11 +333,12 @@ export const combinePositionsTable = ({
   keys,
   canceledPositions,
   priceFromOrderbook,
-  pricePrecision,
-  quantityPrecision,
+  // pricePrecision,
+  // quantityPrecision,
   adlData,
   toogleEditMarginPopup,
   handlePairChange,
+  enqueueSnackbar,
 }: {
   data: Position[]
   createOrderWithStatus: (variables: any, positionId: any) => Promise<void>
@@ -344,12 +348,13 @@ export const combinePositionsTable = ({
   keyId: string
   canceledPositions: string[]
   priceFromOrderbook: number | string
-  pricePrecision: number
-  quantityPrecision: number
+  // pricePrecision: number
+  // quantityPrecision: number
   keys: Key[]
   adlData: { symbol: string; adlQuantile: any }[]
   toogleEditMarginPopup: (position: Position) => void
   handlePairChange: (pair: string) => void
+  enqueueSnackbar: (message: string, { variant: string }) => void
 }) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -374,6 +379,12 @@ export const combinePositionsTable = ({
         isolatedMargin,
         liquidationPrice,
       } = el
+
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({
+        marketType: 1,
+        symbol,
+      })
+
       const needOpacity = el._id === '0'
 
       const marketPrice = (
@@ -563,9 +574,11 @@ export const combinePositionsTable = ({
             ),
           },
           liqPrice: {
-            render: `${liquidationPrice == 0 ? '-' : liquidationPrice} ${
-              liquidationPrice == 0 ? '' : pair[1]
-            }`,
+            render: `${
+              liquidationPrice == 0
+                ? '-'
+                : stripDigitPlaces(liquidationPrice, pricePrecision)
+            } ${liquidationPrice == 0 ? '' : pair[1]}`,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
@@ -602,6 +615,7 @@ export const combinePositionsTable = ({
                 <SubRow
                   theme={theme}
                   positionId={el._id}
+                  enqueueSnackbar={enqueueSnackbar}
                   getVariables={getVariables}
                   priceFromOrderbook={priceFromOrderbook}
                   createOrderWithStatus={createOrderWithStatus}
@@ -627,6 +641,8 @@ export const combinePositionsTable = ({
 
 export const combineActiveTradesTable = ({
   data,
+  queryBody,
+  queryVariables,
   cancelOrderFunc,
   changeStatusWithStatus,
   editTrade,
@@ -634,14 +650,16 @@ export const combineActiveTradesTable = ({
   prices = [],
   marketType,
   currencyPair,
-  pricePrecision,
-  quantityPrecision,
+  // pricePrecision,
+  // quantityPrecision,
   addOrderToCanceled,
   canceledOrders,
   keys,
   handlePairChange,
 }: {
   data: any[]
+  queryBody: string,
+  queryVariables: object,
   cancelOrderFunc: (strategyId: string) => Promise<any>
   changeStatusWithStatus: (
     startegyId: string,
@@ -653,8 +671,8 @@ export const combineActiveTradesTable = ({
   prices: { pair: string; price: number }[]
   marketType: number
   currencyPair: string
-  pricePrecision: number
-  quantityPrecision: number
+  // pricePrecision: number
+  // quantityPrecision: number
   addOrderToCanceled: (id: string) => void
   canceledOrders: string[]
   keys: Key[]
@@ -707,6 +725,7 @@ export const combineActiveTradesTable = ({
             activatePrice,
           },
           exitLevels,
+          entryLevels,
           stopLoss,
           stopLossType,
           forcedLoss,
@@ -728,6 +747,7 @@ export const combineActiveTradesTable = ({
             amount: '-',
           },
           exitLevels: [],
+          entryLevels: [],
           stopLoss: '-',
           stopLossType: '-',
           forcedLoss: false,
@@ -742,6 +762,8 @@ export const combineActiveTradesTable = ({
           templateStatus: '-',
         },
       } = el
+
+      console.log('processedActiveTradesData arr :', arr)
 
       const { entryPrice, exitPrice, state, msg } = el.state || {
         entryPrice: 0,
@@ -787,6 +809,13 @@ export const combineActiveTradesTable = ({
 
       const isErrorInOrder = !!msg
 
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({
+        marketType,
+        symbol: pair,
+      })
+
+      const strategyId = el._id
+
       return {
         id: `${el._id}${i}`,
         pair: {
@@ -824,19 +853,19 @@ export const combineActiveTradesTable = ({
         entryPrice: {
           render: entryPrice ? (
             <SubColumnValue theme={theme}>
-              {stripDigitPlaces(entryPrice, 8)} {pairArr[1]}
+              {stripDigitPlaces(entryPrice, pricePrecision)} {pairArr[1]}
             </SubColumnValue>
           ) : !!entryDeviation ? (
             <SubColumnValue theme={theme}>
               <div style={{ color: theme.palette.grey.light }}>trailing</div>{' '}
               <div>
                 <span style={{ color: theme.palette.grey.light }}>from</span>{' '}
-                {stripDigitPlaces(activatePrice, 8)}
+                {stripDigitPlaces(activatePrice, pricePrecision)}
               </div>
             </SubColumnValue>
           ) : !!entryOrderPrice ? (
             <SubColumnValue theme={theme}>
-              {stripDigitPlaces(entryOrderPrice, 8)} {pairArr[1]}
+              {stripDigitPlaces(entryOrderPrice, pricePrecision)} {pairArr[1]}
             </SubColumnValue>
           ) : (
             '-'
@@ -849,11 +878,7 @@ export const combineActiveTradesTable = ({
         quantity: {
           render: (
             <SubColumnValue theme={theme}>
-              {stripDigitPlaces(
-                amount,
-                marketType === 0 ? 8 : quantityPrecision
-              )}{' '}
-              {pairArr[0]}{' '}
+              {stripDigitPlaces(amount, quantityPrecision)} {pairArr[0]}{' '}
             </SubColumnValue>
           ),
           style: {
@@ -1032,7 +1057,58 @@ export const combineActiveTradesTable = ({
                 onClick={(e) => {
                   e.stopPropagation()
                   changeStatusWithStatus(el._id, el.accountId, 'disabled')
-                  addOrderToCanceled(el._id)
+                  .then((res) => {
+                    console.log('changeStatusWithStatus res', res)
+
+                    if (res.status === 'error') {
+                      modifyCacheData({
+                        _id: strategyId,
+                        name: 'getActiveStrategies',
+                        subName: 'strategies',
+                        typename: 'strategiesHistoryOutput',
+                        data: null,
+                        query: queryBody,
+                        variables: queryVariables,
+                        modifyFunc: 'map',
+                        modifyFuncCallBack: (elem) => {
+                          if (elem._id === strategyId) {
+                            elem.enabled = el.enabled
+                      
+                            if (elem.conditions.isTemplate && elem.conditions.templateStatus) {
+                              elem.conditions.templateStatus = el.conditions.templateStatus
+                            }
+                          }
+                      
+                          return elem
+                        },
+                      })
+                    }
+
+                  })
+
+                  modifyCacheData({
+                    _id: strategyId,
+                    name: 'getActiveStrategies',
+                    subName: 'strategies',
+                    typename: 'strategiesHistoryOutput',
+                    data: null,
+                    query: queryBody,
+                    variables: queryVariables,
+                    modifyFunc: 'map',
+                    modifyFuncCallBack: (elem) => {
+                      if (elem._id === strategyId) {
+                        elem.enabled = false
+                  
+                        if (elem.conditions.isTemplate && elem.conditions.templateStatus) {
+                          elem.conditions.templateStatus = 'disabled'
+                        }
+                      }
+                  
+                      return elem
+                    },
+                  })
+
+                  // addOrderToCanceled(el._id)
                 }}
               >
                 stop
@@ -1054,7 +1130,56 @@ export const combineActiveTradesTable = ({
               onClick={(e) => {
                 e.stopPropagation()
                 cancelOrderFunc(el._id, el.accountId)
-                addOrderToCanceled(el._id)
+                .then((res) => {
+                  console.log('changeStatusWithStatus res', res)
+
+                  if (res.status === 'error') {
+                    modifyCacheData({
+                      _id: strategyId,
+                      name: 'getActiveStrategies',
+                      subName: 'strategies',
+                      typename: 'strategiesHistoryOutput',
+                      data: null,
+                      query: queryBody,
+                      variables: queryVariables,
+                      modifyFunc: 'map',
+                      modifyFuncCallBack: (elem) => {
+                        if (elem._id === strategyId) {
+                          elem.enabled = el.enabled
+                    
+                          if (elem.conditions.isTemplate && elem.conditions.templateStatus) {
+                            elem.conditions.templateStatus = el.conditions.templateStatus
+                          }
+                        }
+                    
+                        return elem
+                      },
+                    })
+                  }
+
+                })
+
+                modifyCacheData({
+                  _id: strategyId,
+                  name: 'getActiveStrategies',
+                  subName: 'strategies',
+                  typename: 'strategiesHistoryOutput',
+                  data: null,
+                  query: queryBody,
+                  variables: queryVariables,
+                  modifyFunc: 'map',
+                  modifyFuncCallBack: (elem) => {
+                    if (elem._id === strategyId) {
+                      elem.enabled = false
+                
+                      if (elem.conditions.isTemplate && elem.conditions.templateStatus) {
+                        elem.conditions.templateStatus = 'disabled'
+                      }
+                    }
+                
+                    return elem
+                  },
+                })
               }}
             >
               {activeOrderStatus === 'Preparing' ||
@@ -1073,6 +1198,7 @@ export const combineActiveTradesTable = ({
                   <EntryOrderColumn
                     theme={theme}
                     haveEdit={true}
+                    entryLevels={entryLevels}
                     editTrade={() => editTrade('entryOrder', el)}
                     enableEdit={activeOrderStatus === 'Preparing' || isTemplate}
                     pair={`${pairArr[0]}/${pairArr[1]}`}
@@ -1168,6 +1294,7 @@ export const combineStrategiesHistoryTable = (
             activatePrice,
           },
           exitLevels,
+          entryLevels,
           stopLoss,
           stopLossType,
           forcedLoss,
@@ -1188,6 +1315,7 @@ export const combineStrategiesHistoryTable = (
             amount: '-',
           },
           exitLevels: [],
+          entryLevels: [],
           stopLoss: '-',
           stopLossType: '-',
           forcedLoss: false,
@@ -1266,6 +1394,11 @@ export const combineStrategiesHistoryTable = (
 
       if (isTemplate) orderState = 'Template'
 
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({
+        marketType,
+        symbol: pair,
+      })
+
       return {
         id: el._id,
         pair: {
@@ -1302,11 +1435,7 @@ export const combineStrategiesHistoryTable = (
         entryPrice: {
           render: (
             <SubColumnValue theme={theme}>
-              {stripDigitPlaces(
-                entryOrderPrice,
-                getNumberOfPrecisionDigitsForSymbol(pairArr[1])
-              )}{' '}
-              {pairArr[1]}
+              {stripDigitPlaces(entryOrderPrice, pricePrecision)} {pairArr[1]}
             </SubColumnValue>
           ),
           style: {
@@ -1317,7 +1446,7 @@ export const combineStrategiesHistoryTable = (
         quantity: {
           render: (
             <SubColumnValue theme={theme}>
-              {stripDigitPlaces(amount, 8)} {pairArr[0]}{' '}
+              {stripDigitPlaces(amount, quantityPrecision)} {pairArr[0]}{' '}
             </SubColumnValue>
           ),
           style: {
@@ -1328,16 +1457,38 @@ export const combineStrategiesHistoryTable = (
         takeProfit: {
           render: (
             <SubColumnValue theme={theme} color={green.main}>
-              {trailingExit &&
-              exitLevels[0] &&
+              {exitLevels[0] &&
               exitLevels[0].activatePrice &&
-              exitLevels[0].entryDeviation
-                ? `${exitLevels[0].activatePrice}% / ${
-                    exitLevels[0].entryDeviation
-                  }%`
-                : exitLevels[0] && exitLevels[0].price
-                ? `${exitLevels[0].price}%`
-                : '-'}
+              exitLevels[0].entryDeviation ? (
+                `${exitLevels[0].activatePrice}% / ${
+                  exitLevels[0].entryDeviation
+                }%`
+              ) : exitLevels.length > 1 ? (
+                <div>
+                  <div>
+                    {exitLevels.map((level, i) =>
+                      i < 4 ? (
+                        <span style={{ color: theme.palette.grey.light }}>
+                          {level.amount}%{' '}
+                          {i === 3 || i + 1 === exitLevels.length ? '' : '/ '}
+                        </span>
+                      ) : null
+                    )}
+                  </div>
+                  <div>
+                    {exitLevels.map((level, i) =>
+                      i < 4 ? (
+                        <span>
+                          {level.price}%{' '}
+                          {i === 3 || i + 1 === exitLevels.length ? '' : '/ '}
+                        </span>
+                      ) : null
+                    )}
+                  </div>
+                </div>
+              ) : (
+                `${exitLevels.length > 0 ? exitLevels[0].price : '-'}%`
+              )}
             </SubColumnValue>
           ),
           style: {
@@ -1452,6 +1603,7 @@ export const combineStrategiesHistoryTable = (
                     theme={theme}
                     haveEdit={false}
                     enableEdit={!!entryPrice}
+                    entryLevels={entryLevels}
                     pair={`${pairArr[0]}/${pairArr[1]}`}
                     side={side}
                     price={entryOrderPrice}
@@ -1512,11 +1664,12 @@ export const combineOpenOrdersTable = (
   cancelOrderFunc: (
     keyId: string,
     orderId: string,
-    pair: string
+    pair: string,
+    type: string
   ) => Promise<any>,
   theme: Theme,
   arrayOfMarketIds: string[],
-  marketType: number,
+  marketType: 0 | 1,
   canceledOrders: string[],
   keys: Key[],
   handlePairChange: (pair: string) => void
@@ -1534,6 +1687,7 @@ export const combineOpenOrdersTable = (
     )
     .map((el: OrderType, i: number) => {
       const {
+        _id = '',
         keyId = '',
         symbol = '',
         type: orderType = '',
@@ -1546,6 +1700,7 @@ export const combineOpenOrdersTable = (
         status = '',
         info = { orderId: '', origQty: '', stopPrice: '' },
       } = el || {
+        _id: '',
         keyId: '',
         symbol: '',
         type: '',
@@ -1596,6 +1751,11 @@ export const combineOpenOrdersTable = (
 
       const isMarketOrMakerOrder =
         price === 0 && (!!type.match(/market/) || isMakerOnlyOrder)
+
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({
+        marketType,
+        symbol: symbol,
+      })
 
       return {
         id: `${orderId}${timestamp}${origQty}${marketId}`,
@@ -1652,7 +1812,7 @@ export const combineOpenOrdersTable = (
             ? 'market'
             : !+price
             ? price
-            : `${stripDigitPlaces(price, 8)} ${pair[1]}`,
+            : `${stripDigitPlaces(price, pricePrecision)} ${pair[1]}`,
           style: {
             textAlign: 'left',
             whiteSpace: 'nowrap',
@@ -1667,7 +1827,7 @@ export const combineOpenOrdersTable = (
         // },
         // TODO: We should change "total" to total param from backend when it will be ready
         quantity: {
-          render: `${stripDigitPlaces(origQty, 8)} ${pair[0]}`,
+          render: `${stripDigitPlaces(origQty, quantityPrecision)} ${pair[0]}`,
           contentToSort: +origQty,
           style: { opacity: needOpacity ? 0.75 : 1 },
         },
@@ -1678,7 +1838,9 @@ export const combineOpenOrdersTable = (
                 // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
                 render: !+price
                   ? '-'
-                  : `${stripDigitPlaces(+origQty * price, 8)} ${pair[1]}`,
+                  : `${stripDigitPlaces(+origQty * price, quantityPrecision)} ${
+                      pair[1]
+                    }`,
                 contentToSort: +origQty * price,
                 style: { opacity: needOpacity ? 0.75 : 1 },
               },
@@ -1731,31 +1893,36 @@ export const combineOpenOrdersTable = (
           contentToSort: timestamp,
         },
         cancel: {
-          render:
-            needOpacity || isMakerOnlyOrder ? (
-              '-'
-            ) : (
-              <CloseButton
-                i={i}
-                onClick={() => {
-                  cancelOrderFunc(keyId, orderId, orderSymbol)
-                  filterCacheData({
-                    name: 'getOpenOrderHistory',
-                    subName: 'orders',
-                    query: getOpenOrderHistory,
-                    variables: {
-                      openOrderInput: {
-                        activeExchangeKey: keyId,
-                        marketType,
-                      },
+          render: needOpacity ? (
+            '-'
+          ) : (
+            <CloseButton
+              i={i}
+              onClick={() => {
+                cancelOrderFunc(
+                  keyId,
+                  orderType === 'maker-only' ? _id : orderId,
+                  orderSymbol,
+                  orderType
+                )
+                filterCacheData({
+                  data: null,
+                  name: 'getOpenOrderHistory',
+                  subName: 'orders',
+                  query: getOpenOrderHistory,
+                  variables: {
+                    openOrderInput: {
+                      activeExchangeKey: keyId,
+                      marketType,
                     },
-                    filterData: (order) => order.info.orderId != orderId,
-                  })
-                }}
-              >
-                Cancel
-              </CloseButton>
-            ),
+                  },
+                  filterData: (order) => order.info.orderId != orderId,
+                })
+              }}
+            >
+              Cancel
+            </CloseButton>
+          ),
         },
         tooltipTitle: keyName,
       }
@@ -1768,7 +1935,7 @@ export const combineOrderHistoryTable = (
   orderData: OrderType[],
   theme: Theme,
   arrayOfMarketIds: string[],
-  marketType: number,
+  marketType: 0 | 1,
   keys,
   handlePairChange: (pair: string) => void
 ) => {
@@ -1777,21 +1944,27 @@ export const combineOrderHistoryTable = (
   }
 
   const processedOrderHistoryData = orderData
-    .filter((order) => !!order)
+    .filter((order) => !!order && order.side)
     .map((el: OrderType, i) => {
       const {
+        _id,
         keyId,
         symbol,
         timestamp,
         type: orderType,
         side,
-        price,
+        price = 0,
         reduceOnly,
         status,
         filled,
         average,
         info,
       } = el
+
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({
+        marketType,
+        symbol,
+      })
 
       // const filledQuantityProcessed = getFilledQuantity(filled, origQty)
       const pair = symbol.split('_')
@@ -1818,10 +1991,12 @@ export const combineOrderHistoryTable = (
           : `<= ${triggerConditions}`
 
       const isMarketOrMakerOrder =
-        price === 0 && (!!type.match(/market/) || isMakerOnlyOrder)
+        (!!type.match(/market/) && price === 0) || isMakerOnlyOrder
+
+      const qty = !!origQty ? origQty : filled
 
       return {
-        id: `${orderId}_${timestamp}_${origQty}`,
+        id: `${isMakerOnlyOrder ? _id : orderId}_${timestamp}_${qty}`,
         pair: {
           render: (
             <div
@@ -1877,8 +2052,10 @@ export const combineOrderHistoryTable = (
         // },
         price: {
           render: isMarketOrMakerOrder
-            ? 'market'
-            : `${stripDigitPlaces(price, 8)} ${pair[1]}`,
+            ? !!average
+              ? `${stripDigitPlaces(average, pricePrecision)} ${pair[1]}`
+              : 'market'
+            : `${stripDigitPlaces(price, pricePrecision)} ${pair[1]}`,
           style: { textAlign: 'left', whiteSpace: 'nowrap' },
           contentToSort: price,
         },
@@ -1888,16 +2065,21 @@ export const combineOrderHistoryTable = (
         //   contentToSort: filledQuantityProcessed,
         // },
         quantity: {
-          render: `${stripDigitPlaces(origQty, 8)} ${pair[0]}`,
-          contentToSort: +origQty,
+          render: `${stripDigitPlaces(qty, quantityPrecision)} ${pair[0]}`,
+          contentToSort: +qty,
         },
         // TODO: We should change "total" to total param from backend when it will be ready
         ...(marketType === 0
           ? {
               amount: {
                 // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-                render: `${stripDigitPlaces(origQty * price, 8)} ${pair[1]}`,
-                contentToSort: origQty * price,
+                render: `${stripDigitPlaces(
+                  isMarketOrMakerOrder ? qty * average : qty * price,
+                  quantityPrecision
+                )} ${pair[1]}`,
+                contentToSort: isMarketOrMakerOrder
+                  ? qty * average
+                  : qty * price,
               },
             }
           : {}),
@@ -1971,7 +2153,7 @@ export const combineTradeHistoryTable = (
   tradeData: TradeType[],
   theme: Theme,
   arrayOfMarketIds: string[],
-  marketType: number,
+  marketType: 0 | 1,
   keys,
   handlePairChange: (pair: string) => void
 ) => {
@@ -1994,6 +2176,11 @@ export const combineTradeHistoryTable = (
         amount,
         realizedPnl,
       } = el
+
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({
+        marketType,
+        symbol,
+      })
 
       const keyName = keys ? keys[keyId] : ''
 
@@ -2041,12 +2228,12 @@ export const combineTradeHistoryTable = (
           contentToSort: side,
         },
         price: {
-          render: `${stripDigitPlaces(price, 8)} ${pair[1]}`,
+          render: `${stripDigitPlaces(price, pricePrecision)} ${pair[1]}`,
           style: { textAlign: 'left', whiteSpace: 'nowrap' },
           contentToSort: price,
         },
         quantity: {
-          render: `${stripDigitPlaces(amount, 8)} ${pair[0]}`,
+          render: `${stripDigitPlaces(amount, quantityPrecision)} ${pair[0]}`,
           contentToSort: +amount,
         },
         // TODO: We should change "total" to total param from backend when it will be ready
@@ -2054,7 +2241,10 @@ export const combineTradeHistoryTable = (
           ? {
               amount: {
                 // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-                render: `${stripDigitPlaces(amount * price, 8)} ${pair[1]}`,
+                render: `${stripDigitPlaces(
+                  amount * price,
+                  quantityPrecision
+                )} ${pair[1]}`,
                 contentToSort: amount * price,
               },
             }
@@ -2091,7 +2281,7 @@ export const combineTradeHistoryTable = (
             }
           : {}),
         fee: {
-          render: `${stripDigitPlaces(cost, 8)} ${currency}`,
+          render: `${stripDigitPlaces(cost, quantityPrecision)} ${currency}`,
 
           contentToSort: cost,
         },
@@ -2135,7 +2325,7 @@ export const combineTradeHistoryTable = (
 export const combineFundsTable = (
   fundsData: FundsType[],
   hideSmallAssets: boolean,
-  marketType: number
+  marketType: 0 | 1
 ) => {
   if (!fundsData && !Array.isArray(fundsData)) {
     return []
@@ -2156,6 +2346,11 @@ export const combineFundsTable = (
         free,
         asset: { symbol, priceBTC, priceUSD },
       } = el
+
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({
+        marketType,
+        symbol,
+      })
 
       if (!quantity || quantity === 0) {
         return
@@ -2220,10 +2415,10 @@ export const updateActiveStrategiesQuerryFunction = (
   previous,
   { subscriptionData }
 ) => {
-  // console.log(
-  //   'updateActiveStrategiesQuerryFunction subscriptionData',
-  //   subscriptionData
-  // )
+  console.log(
+    'updateActiveStrategiesQuerryFunction subscriptionData',
+    subscriptionData
+  )
 
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenActiveStrategies
@@ -2233,6 +2428,8 @@ export const updateActiveStrategiesQuerryFunction = (
   }
 
   const prev = cloneDeep(previous)
+
+  console.log('prev cloneDeep', prev)
 
   const strategyHasTheSameIndex = prev.getActiveStrategies.strategies.findIndex(
     (el: TradeType) =>
@@ -2272,6 +2469,7 @@ export const updateActiveStrategiesQuerryFunction = (
     }
   }
 
+  console.log('result: ', result)
   return result
 }
 
@@ -2369,11 +2567,6 @@ export const updateOpenOrderHistoryQuerryFunction = (
   previous,
   { subscriptionData }
 ) => {
-  // console.log(
-  //   'updateOpenOrderHistoryQuerryFunction subscriptionData',
-  //   subscriptionData
-  // )
-
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenOpenOrders
 
@@ -2384,17 +2577,29 @@ export const updateOpenOrderHistoryQuerryFunction = (
   const prev = cloneDeep(previous)
 
   const openOrderHasTheSameOrder = prev.getOpenOrderHistory.orders.find(
-    (el: OrderType) =>
-      el.info &&
-      String(el.info.orderId) ===
-        String(subscriptionData.data.listenOpenOrders.info.orderId)
+    (el: OrderType) => {
+      if (el.info && el.info.orderId) {
+        return (
+          el.info.orderId ===
+          subscriptionData.data.listenOpenOrders.info.orderId
+        )
+      } else {
+        return el._id === subscriptionData.data.listenOpenOrders._id
+      }
+    }
   )
 
   const openOrderHasTheSameOrderIndex = prev.getOpenOrderHistory.orders.findIndex(
-    (el: OrderType) =>
-      el.info &&
-      String(el.info.orderId) ===
-        String(subscriptionData.data.listenOpenOrders.info.orderId)
+    (el: OrderType) => {
+      if (el.info && el.info.orderId) {
+        return (
+          el.info.orderId ===
+          subscriptionData.data.listenOpenOrders.info.orderId
+        )
+      } else {
+        return el._id === subscriptionData.data.listenOpenOrders._id
+      }
+    }
   )
 
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
@@ -2455,9 +2660,18 @@ export const updateOrderHistoryQuerryFunction = (
   const prev = cloneDeep(previous)
 
   const openOrderHasTheSameOrderIndex = prev.getOrderHistory.orders.findIndex(
-    (el: OrderType) =>
-      el.info.orderId === subscriptionData.data.listenOrderHistory.info.orderId
+    (el: OrderType) => {
+      if (el.info && el.info.orderId) {
+        return (
+          el.info.orderId ===
+          subscriptionData.data.listenOrderHistory.info.orderId
+        )
+      } else {
+        return el._id === subscriptionData.data.listenOrderHistory._id
+      }
+    }
   )
+
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
 
   let result
@@ -2495,12 +2709,9 @@ export const updateOrderHistoryQuerryFunction = (
 
 export const updatePaginatedOrderHistoryQuerryFunction = (
   previous,
-  { subscriptionData }
+  { subscriptionData },
+  enqueueSnackbar = (msg: string, obj: { variant: string }) => {}
 ) => {
-  // console.log(
-  //   'updatePaginatedOrderHistoryQuerryFunction subscriptionData',
-  //   subscriptionData
-  // )
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenOrderHistory
 
@@ -2511,8 +2722,16 @@ export const updatePaginatedOrderHistoryQuerryFunction = (
   const prev = cloneDeep(previous)
 
   const openOrderHasTheSameOrderIndex = prev.getPaginatedOrderHistory.orders.findIndex(
-    (el: OrderType) =>
-      el.info.orderId === subscriptionData.data.listenOrderHistory.info.orderId
+    (el: OrderType) => {
+      if (el.info && el.info.orderId) {
+        return (
+          el.info.orderId ===
+          subscriptionData.data.listenOrderHistory.info.orderId
+        )
+      } else {
+        return el._id === subscriptionData.data.listenOrderHistory._id
+      }
+    }
   )
   const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
 
@@ -2522,6 +2741,29 @@ export const updatePaginatedOrderHistoryQuerryFunction = (
     const oldDataElement =
       prev.getPaginatedOrderHistory.orders[openOrderHasTheSameOrderIndex]
     const newDataElement = subscriptionData.data.listenOrderHistory
+
+    if (
+      oldDataElement.status !== 'filled' &&
+      newDataElement.status === 'filled' &&
+      newDataElement.type !== 'market'
+    ) {
+      enqueueSnackbar(
+        `${
+          newDataElement.type
+            ? `${newDataElement.type
+                .charAt(0)
+                .toUpperCase()}${newDataElement.type.slice(1)} order`
+            : 'Order'
+        } ${
+          newDataElement.type === 'maker-only'
+            ? ''
+            : `with price ${newDataElement.price}`
+        } was executed!`,
+        {
+          variant: 'success',
+        }
+      )
+    }
 
     if (
       newDataElement.status !== 'open' &&
@@ -2539,10 +2781,34 @@ export const updatePaginatedOrderHistoryQuerryFunction = (
 
     result = { ...prev }
   } else {
+    const newDataElement = subscriptionData.data.listenOrderHistory
+
     prev.getPaginatedOrderHistory.orders = [
-      { ...subscriptionData.data.listenOrderHistory },
+      { ...newDataElement },
       ...prev.getPaginatedOrderHistory.orders,
     ]
+
+    if (
+      newDataElement.status === 'filled' &&
+      newDataElement.type !== 'market'
+    ) {
+      enqueueSnackbar(
+        `${
+          newDataElement.type
+            ? `${newDataElement.type
+                .charAt(0)
+                .toUpperCase()}${newDataElement.type.slice(1)} order`
+            : 'Order'
+        } ${
+          newDataElement.type === 'maker-only'
+            ? ''
+            : `with price ${newDataElement.price}`
+        } was executed!`,
+        {
+          variant: 'success',
+        }
+      )
+    }
 
     result = { ...prev }
   }

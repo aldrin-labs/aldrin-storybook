@@ -37,7 +37,7 @@ import {
   StyledTypographyCaption,
 } from './Withdrawal.styles'
 import { IProps } from './Withdrawal.types'
-import { validateTransactionAmount } from './Withdrawal.utils'
+import { validateTransactionAmount, getWithdrawalValues, removeWithdrawalValues, setWithdrawalValues } from './Withdrawal.utils'
 
 const Withdrawal = ({ ...props }: IProps) => {
   // we need it here also to update data when it's updated in cache
@@ -120,13 +120,32 @@ const Withdrawal = ({ ...props }: IProps) => {
       errorMessage: string
       withdrawalId?: string
     }
+
+    let coinAddressForWithdrawal = coinAddress
+    let coinAmountForWithdrawal = coinAmount
+    let coinSymbolForWithdrawal = selectedCoin.label
+
+    if (!coinAddress && !coinAddress) {
+      const persistedData = (await getWithdrawalValues()) || '{}'
+      const parsedPersistedData = JSON.parse(persistedData)
+
+      await removeWithdrawalValues()
+
+      if (parsedPersistedData.coinAddress && parsedPersistedData.coinAmount && parsedPersistedData.coinSymbol) {
+        coinAddressForWithdrawal = parsedPersistedData.coinAddress
+        coinAmountForWithdrawal = parsedPersistedData.coinAmount
+        coinSymbolForWithdrawal = parsedPersistedData.coinSymbol
+      }
+
+    }
+    
     try {
       const res = await props.withdrawalMutation({
         variables: {
           input: {
-            address: coinAddress,
-            amount: +coinAmount,
-            symbol: selectedCoin.label,
+            address: coinAddressForWithdrawal,
+            amount: +coinAmountForWithdrawal,
+            symbol: coinSymbolForWithdrawal,
             keyId: selectedKey,
           },
         },
@@ -397,6 +416,9 @@ const Withdrawal = ({ ...props }: IProps) => {
                       return
                     }
 
+                    const withdrawalValuesObj = JSON.stringify({ coinAddress, coinAmount, coinSymbol: selectedCoin.label })
+
+                    await setWithdrawalValues(withdrawalValuesObj)
                     setLoading(false)
                     toggleWithdrawalAuthentificatePopup(true)
                   }}
@@ -434,6 +456,7 @@ const WithdrawalDataWrapper = ({ ...props }) => {
   const { selectedKey: tempSelectedKey = '' } = withdrawalSettings || {
     selectedKey: '',
   }
+
   const selectedKey = tempSelectedKey || ''
 
   const WrappedComponent = compose(
