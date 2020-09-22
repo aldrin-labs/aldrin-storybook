@@ -574,7 +574,7 @@ const NavBarRaw: SFC<Props> = ({
                 Performance
               </NavLinkButton>
             </NavLinkButtonWrapper>
-            {isSpot && (
+            {(isSpot || isRebalance)&& (
               <NavLinkButtonWrapper
                 theme={theme}
                 key="rebalance-wrapper"
@@ -596,28 +596,7 @@ const NavBarRaw: SFC<Props> = ({
                 </NavLinkButton>
               </NavLinkButtonWrapper>
             )}
-            {isRebalance && (
-              <NavLinkButtonWrapper
-                theme={theme}
-                key="rebalance-wrapper"
-                onMouseOver={() => {
-                  if (notAuthPages || !loginStatus) {
-                    return
-                  }
 
-                  prefetchRebalance()
-                }}
-              >
-                <NavLinkButton
-                  key="rebalance"
-                  page={`rebalance`}
-                  component={Rebalance}
-                  pathname={pathname}
-                >
-                  Rebalance
-                </NavLinkButton>
-              </NavLinkButtonWrapper>
-            )}
           </NavBarWrapper>
         </Grid>
 
