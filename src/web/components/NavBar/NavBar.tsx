@@ -58,29 +58,36 @@ export interface Props extends WithTheme {
   pathname: string
 }
 
-const Portfolio = (props: any) => (
-  <Link
-    to={`/portfolio/main/${
-      props.pathname.includes('spot') ? 'spot' : 'futures'
-    }`}
-    {...props}
-  />
-)
-const Chart = (props: any) => (
-  <Link
-    to={`/chart/${props.pathname.includes('spot') ? 'spot' : 'futures'}`}
-    {...props}
-  />
-)
+const Portfolio = (props: any) => {
+  const isSpotOrRebalance =
+    props.pathname.includes('spot') || props.pathname.includes('rebalance')
+  return (
+    <Link
+      to={`/portfolio/main/${isSpotOrRebalance ? 'spot' : 'futures'}`}
+      {...props}
+    />
+  )
+}
+
+const Chart = (props: any) => {
+  const isSpotOrRebalance =
+    props.pathname.includes('spot') || props.pathname.includes('rebalance')
+  return (
+    <Link to={`/chart/${isSpotOrRebalance ? 'spot' : 'futures'}`} {...props} />
+  )
+}
+
 const Rebalance = (props: any) => <Link to="/portfolio/rebalance" {...props} />
-const Transactions = (props: any) => (
-  <Link
-    to={`/portfolio/transactions/${
-      props.pathname.includes('spot') ? 'spot' : 'futures'
-    }`}
-    {...props}
-  />
-)
+const Transactions = (props: any) => {
+  const isSpotOrRebalance =
+    props.pathname.includes('spot') || props.pathname.includes('rebalance')
+  return (
+    <Link
+      to={`/portfolio/transactions/${isSpotOrRebalance ? 'spot' : 'futures'}`}
+      {...props}
+    />
+  )
+}
 
 const Market = (props: any) => <Link to="/market" {...props} />
 const Signals = (props: any) => <Link to="/signals" {...props} />
@@ -88,6 +95,7 @@ const MarketType = (props: any) => {
   const isChart = /chart/.test(props.pathname)
   const isTransactions = /transactions/.test(props.pathname)
   const isPortfolio = /main/.test(props.pathname)
+
   const chartPair = props.pathname.split('/')[3]
   const url = isChart
     ? `/chart/${props.marketName}/${chartPair}`
