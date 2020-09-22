@@ -58,36 +58,48 @@ export interface Props extends WithTheme {
   pathname: string
 }
 
-const Portfolio = (props: any) => (
-  <Link
-    to={`/portfolio/main/${
-      props.pathname.includes('spot') ? 'spot' : 'futures'
-    }`}
-    {...props}
-  />
-)
-const Chart = (props: any) => (
-  <Link
-    to={`/chart/${props.pathname.includes('spot') ? 'spot' : 'futures'}`}
-    {...props}
-  />
-)
-const Rebalance = (props: any) => <Link to="/portfolio/rebalance" {...props} />
-const Transactions = (props: any) => (
-  <Link
-    to={`/portfolio/transactions/${
-      props.pathname.includes('spot') ? 'spot' : 'futures'
-    }`}
-    {...props}
-  />
-)
+const isSpotOrRebalance = (pathname: any) => {
+  return pathname.includes('spot') || pathname.includes('rebalance')
+}
 
+const Portfolio = (props: any) => {
+  return (
+    <Link
+      to={`/portfolio/main/${
+        isSpotOrRebalance(props.pathname) ? 'spot' : 'futures'
+      }`}
+      {...props}
+    />
+  )
+}
+
+const Chart = (props: any) => {
+  return (
+    <Link
+      to={`/chart/${isSpotOrRebalance(props.pathname) ? 'spot' : 'futures'}`}
+      {...props}
+    />
+  )
+}
+
+const Rebalance = (props: any) => <Link to="/portfolio/rebalance" {...props} />
+const Transactions = (props: any) => {
+  return (
+    <Link
+      to={`/portfolio/transactions/${
+        isSpotOrRebalance(props.pathname) ? 'spot' : 'futures'
+      }`}
+      {...props}
+    />
+  )
+}
 const Market = (props: any) => <Link to="/market" {...props} />
 const Signals = (props: any) => <Link to="/signals" {...props} />
 const MarketType = (props: any) => {
   const isChart = /chart/.test(props.pathname)
   const isTransactions = /transactions/.test(props.pathname)
   const isPortfolio = /main/.test(props.pathname)
+
   const chartPair = props.pathname.split('/')[3]
   const url = isChart
     ? `/chart/${props.marketName}/${chartPair}`
@@ -166,6 +178,7 @@ const NavBarRaw: SFC<Props> = ({
 
   const isActivePage = new RegExp(page, 'i').test(pathname)
   const isSpot = /spot/.test(pathname)
+  const isRebalance = /rebalance/.test(pathname)
 
   return (
     <Nav
@@ -239,7 +252,7 @@ const NavBarRaw: SFC<Props> = ({
               }
               selectedMenu={selectedMenu}
               key="spot"
-              page={`spot`}
+              page={isRebalance ? `rebalance` : `spot`}
               isActivePage={isActivePage}
               pathname={pathname}
               selectActiveMenu={selectMenu}
@@ -565,7 +578,7 @@ const NavBarRaw: SFC<Props> = ({
                 Performance
               </NavLinkButton>
             </NavLinkButtonWrapper>
-            {isSpot && (
+            {(isSpot || isRebalance)&& (
               <NavLinkButtonWrapper
                 theme={theme}
                 key="rebalance-wrapper"
@@ -587,6 +600,7 @@ const NavBarRaw: SFC<Props> = ({
                 </NavLinkButton>
               </NavLinkButtonWrapper>
             )}
+
           </NavBarWrapper>
         </Grid>
 
