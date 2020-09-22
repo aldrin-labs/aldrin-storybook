@@ -41,8 +41,6 @@ import PopupStart from '@sb/components/Onboarding/PopupStart/PopupStart'
 import CreatePortfolio from '@sb/components/CreatePortfolio/CreatePortfolio'
 import PortfolioSelectorPopup from '@sb/components/PortfolioSelectorPopup/PortfolioSelectorPopup'
 import { ComingSoonBlock } from '@sb/compositions/Profile/compositions/ProfileRouter/ProfileRouter'
-import { updateWithdrawalSettings } from '@core/graphql/mutations/user/updateWithdrawalSettings'
-import { updateDepositSettings } from '@core/graphql/mutations/user/updateDepositSettings'
 
 const ProfileAccounts = ({
   currentPortfolioData,
