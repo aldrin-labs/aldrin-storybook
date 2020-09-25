@@ -41,6 +41,8 @@ export type EntryPointType = {
     enabled: boolean
     closeStrategyAfterFirstTAP: boolean
     placeWithoutLoss: boolean
+    percentage: number
+    price: number
     entryLevels: {
       type: number
       price: number
