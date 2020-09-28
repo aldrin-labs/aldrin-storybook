@@ -41,11 +41,37 @@ class TradingTable extends React.PureComponent<IProps, IState> {
 
   componentDidUpdate(prevProps) {
     if (prevProps.marketType !== this.props.marketType) {
+      // change from spot to futures when funds is open
+      if (this.props.marketType === 1 && this.state.tab === 'funds') {
+        if (this.props.terminalViewMode === 'onlyTables') {
+          this.setState({ tab: 'activeTrades' })
+        } else {
+          this.setState({ tab: 'positions' })
+        }
+      }
+
+      // change from futures to spot when positions is open
+      if (this.props.marketType === 0 && this.state.tab === 'positions') {
+        if (this.props.terminalViewMode === 'onlyTables') {
+          this.setState({ tab: 'activeTrades' })
+        } else {
+          this.setState({ tab: 'openOrders' })
+        }
+      }
+    }
+
+    // change from onlyTables to basic when SM tables is open
+    if (prevProps.terminalViewMode !== this.props.terminalViewMode) {
       if (
-        (this.props.marketType === 0 && this.state.tab === 'positions') ||
-        (this.props.marketType === 1 && this.state.tab === 'funds')
+        this.props.terminalViewMode === 'default' &&
+        (this.state.tab === 'activeTrades' ||
+          this.state.tab === 'strategiesHistory')
       ) {
-        this.setState({ tab: 'activeTrades' })
+        if (this.props.marketType === 0) {
+          this.setState({ tab: 'openOrders' })
+        } else {
+          this.setState({ tab: 'positions' })
+        }
       }
     }
   }
@@ -141,7 +167,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       }),
       {}
     )
-   
+
     return (
       <div
         id="tables"
