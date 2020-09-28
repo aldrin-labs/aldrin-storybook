@@ -369,7 +369,7 @@ export const Balances = ({
                           togglePopup(true)
                         }}
                       >
-                        Deposit
+                        Transfer in
                       </BtnCustom>
                       <BtnCustom
                         margin="0.5rem auto"
@@ -391,7 +391,7 @@ export const Balances = ({
                           togglePopup(true)
                         }}
                       >
-                        Withdrawal
+                        Transfer out
                       </BtnCustom>
                     </div>
                   </>
