@@ -141,7 +141,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       }),
       {}
     )
-    console.log('updateTerminalViewMode', updateTerminalViewMode)
+   
     return (
       <div
         id="tables"
