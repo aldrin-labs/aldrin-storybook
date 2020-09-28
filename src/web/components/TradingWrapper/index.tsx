@@ -190,11 +190,104 @@ class SimpleTabs extends React.Component {
             <div
               style={{
                 width: '50%',
+                height: '3rem',
                 borderRight: theme.palette.border.main,
                 padding: '0 1rem',
               }}
             >
-              <TerminalModeButton
+              <LeverageContainer
+                theme={theme}
+                style={{
+                  width: '100%',
+                }}
+              >
+                <LeverageTitle>
+                  <StyledSelect
+                    theme={theme}
+                    onChange={(e) =>
+                      changeMarginTypeWithStatus(e.target.value.toLowerCase())
+                    }
+                    value={componentMarginType}
+                    style={{ color: theme.palette.dark.main }}
+                  >
+                    <StyledOption>cross</StyledOption>
+                    <StyledOption>isolated</StyledOption>
+                  </StyledSelect>
+                </LeverageTitle>
+                <SmallSlider
+                  min={1}
+                  max={maxLeverage}
+                  defaultValue={startLeverage}
+                  value={leverage}
+                  valueSymbol={'X'}
+                  marks={
+                    maxLeverage === 125
+                      ? {
+                          1: {},
+                          25: {},
+                          50: {},
+                          75: {},
+                          100: {},
+                          125: {},
+                        }
+                      : maxLeverage === 75
+                      ? {
+                          1: {},
+                          15: {},
+                          30: {},
+                          45: {},
+                          60: {},
+                          75: {},
+                        }
+                      : {
+                          1: {},
+                          10: {},
+                          20: {},
+                          30: {},
+                          40: {},
+                          50: {},
+                        }
+                  }
+                  onChange={(leverage: number) => {
+                    this.setState({ leverage })
+                  }}
+                  onAfterChange={(leverage: number) => {
+                    updateLeverage(leverage)
+                  }}
+                  sliderContainerStyles={{
+                    width: '65%',
+                    margin: '0 auto',
+                  }}
+                  trackBeforeBackground={theme.palette.green.main}
+                  handleStyles={{
+                    width: '1.2rem',
+                    height: '1.2rem',
+                    border: 'none',
+                    backgroundColor: '#036141',
+                    marginTop: '-.28rem',
+                    boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
+                    transform: 'translate(-50%, -15%) !important',
+                  }}
+                  dotStyles={{
+                    border: 'none',
+                    backgroundColor: theme.palette.slider.dots,
+                  }}
+                  activeDotStyles={{
+                    backgroundColor: theme.palette.green.main,
+                  }}
+                  markTextSlyles={{
+                    color: theme.palette.grey.light,
+                    fontSize: '1rem',
+                  }}
+                  railStyle={{
+                    backgroundColor: theme.palette.slider.rail,
+                  }}
+                />
+                <LeverageLabel theme={theme} style={{ width: '12.5%' }}>
+                  {leverage}x
+                </LeverageLabel>
+              </LeverageContainer>
+              {/* <TerminalModeButton
                 theme={theme}
                 style={{
                   width: '100%',
@@ -210,7 +303,7 @@ class SimpleTabs extends React.Component {
                 }}
               >
                 Go to Smart terminal
-              </TerminalModeButton>
+              </TerminalModeButton> */}
             </div>
             <div style={{ width: '50%' }}>
               <TerminalModeButton
@@ -477,7 +570,7 @@ class SimpleTabs extends React.Component {
                   </FuturesSettings>
                 )}
               </SettingsContainer>
-              <LeverageContainer theme={theme}>
+              {/* <LeverageContainer theme={theme}>
                 <LeverageTitle>
                   <StyledSelect
                     theme={theme}
@@ -563,7 +656,7 @@ class SimpleTabs extends React.Component {
                 <LeverageLabel theme={theme} style={{ width: '12.5%' }}>
                   {leverage}x
                 </LeverageLabel>
-              </LeverageContainer>
+              </LeverageContainer> */}
             </TerminalHeader>
           ) : (
             <TerminalHeader style={{ display: 'flex' }} theme={theme}>

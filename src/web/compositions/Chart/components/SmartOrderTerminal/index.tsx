@@ -948,6 +948,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       marketType,
       updateLeverage,
       quantityPrecision,
+      updateTerminalViewMode,
+      isSmartOrderMode,
       pricePrecision,
       enqueueSnackbar,
       minSpotNotional,
@@ -3783,6 +3785,15 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   padding: '0rem 1rem 0rem 1.2rem',
                 }}
               >
+                {' '}
+                <SendButton
+                  type={entryPoint.order.side ? 'sell' : 'buy'}
+                  onClick={() => {
+                    updateTerminalViewMode('onlyTables')
+                  }}
+                >
+                  cancel
+                </SendButton>
                 <SendButton
                   type={entryPoint.order.side ? 'buy' : 'sell'}
                   onClick={async () => {

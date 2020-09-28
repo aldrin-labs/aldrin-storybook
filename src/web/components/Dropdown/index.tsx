@@ -67,7 +67,7 @@ export default class Dropdown extends React.Component<IProps> {
           page={page}
           isActivePage={isActivePage}
           pathname={this.props.pathname}
-          onClick={this.handleToggle}
+          //onClick={this.handleToggle}
           component={component}
           marketName={marketName}
           style={{

@@ -5,9 +5,14 @@ import { useLocation, useHistory } from 'react-router-dom'
 import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import PreferencesSelect from '../Inputs/PreferencesSelect'
 import LayoutSelector from '@core/components/LayoutSelector'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import KeySelector from '@core/components/KeySelector'
 import SelectExchange from '../Inputs/SelectExchange/SelectExchange'
-import { SmartTradeButton } from '@sb/components/TraidingTerminal/styles'
+import {
+  SmartTradeButton,
+  ChangeTerminalButton,
+  ChangeTradeButton,
+} from '@sb/components/TraidingTerminal/styles'
 import MarketStats from './MarketStats/MarketStats'
 import { TooltipCustom } from '@sb/components/index'
 import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
@@ -21,6 +26,7 @@ import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { updateThemeMode } from '@core/graphql/mutations/chart/updateThemeMode'
 import { writeQueryData } from '@core/utils/TradingTable.utils'
 import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
+import { Button } from '@material-ui/core'
 
 const selectStyles = (theme: Theme) => ({
   height: '100%',
@@ -60,6 +66,7 @@ export const CardsPanel = ({
   theme,
   themeMode,
   activeExchange,
+  terminalViewMode,
   isDefaultTerminalViewMode,
   updateTerminalViewMode,
   marketType,
@@ -72,9 +79,10 @@ export const CardsPanel = ({
   hideDepthChart,
   hideOrderbook,
   hideTradeHistory,
+  isDefaultOnlyTables,
   changeChartLayout,
   persistorInstance,
-  updateThemeModeMutation
+  updateThemeModeMutation,
 }) => {
   const hedgeMode = selectedKey.hedgeMode
 
@@ -121,6 +129,7 @@ export const CardsPanel = ({
   const { pathname } = location
 
   const authenticated = checkLoginStatus()
+  const isSmartOrderMode = terminalViewMode === 'smartOrderMode'
 
   return (
     <>
@@ -148,10 +157,6 @@ export const CardsPanel = ({
             border: '0',
           }}
         >
-          {/* <TooltipCustom
-            title="Cryptocurrencies.ai is a Binance partner exchange"
-            enterDelay={250}
-            component={ */}
           <MarketStats
             theme={theme}
             symbol={pair}
@@ -160,8 +165,6 @@ export const CardsPanel = ({
             quantityPrecision={quantityPrecision}
             pricePrecision={pricePrecision}
           />
-          {/* }
-          /> */}
         </CustomCard>
 
         {view === 'default' && (
@@ -188,7 +191,105 @@ export const CardsPanel = ({
           pricePrecision={pricePrecision}
         />
 
-        <SmartTradeButton
+        <ChangeTerminalButton
+          style={{
+            border: theme.palette.border.main,
+            width: '30rem',
+            height: '100%',
+          }}
+        >
+          <DarkTooltip
+            title={
+              'Smart terminal is unique Cryptocurrencies.ai terminal with interface to place and manage smart orders. Click twice to learn more about the smart order.'
+            }
+          >
+            <ChangeTradeButton
+              theme={theme}
+              style={{
+                textDecorationLine: 'underline',
+                height: 'calc(100% - 1rem)',
+                paddingRight: '6rem',
+                cursor: 'pointer',
+                borderRight: theme.palette.border.main,
+                backgroundColor: theme.palette.white.background,
+                color:
+                  isSmartOrderMode || isDefaultOnlyTables
+                    ? theme.palette.blue.main
+                    : theme.palette.grey.light,
+                // border: 'solid 1px black',
+                // width: '7rem',
+              }}
+              type={isDefaultTerminalViewMode ? 'buy' : 'sell'}
+              id="smartTradingButton"
+              onClick={() => {
+                // for guest mode
+                if (!authenticated) {
+                  history.push(`/login?callbackURL=${pathname}`)
+                  return
+                }
+
+                updateTerminalViewMode('onlyTables')
+
+                const joyrideStep = document.getElementById(
+                  'react-joyride-step-7'
+                )
+                const joyrideOverlay = document.getElementById(
+                  'react-joyride-portal'
+                )
+
+                if (joyrideStep && joyrideOverlay) {
+                  joyrideStep.style.display = 'none'
+                  joyrideOverlay.style.display = 'none'
+                }
+              }}
+            >
+              {'Smart'}
+            </ChangeTradeButton>
+          </DarkTooltip>
+
+          <DarkTooltip title={'Trading terminal with basic exchange tool'}>
+            <ChangeTradeButton
+              theme={theme}
+              style={{
+                textDecorationLine: 'underline',
+                cursor: 'pointer',
+                height: '100%',
+                backgroundColor: theme.palette.white.background,
+                color:
+                  isDefaultTerminalViewMode && !isDefaultOnlyTables
+                    ? theme.palette.blue.main
+                    : theme.palette.grey.light,
+              }}
+              //type={isDefaultTerminalViewMode ? 'buy' : 'sell'}
+              id="basicTradingButton"
+              onClick={() => {
+                // for guest mode
+                if (!authenticated) {
+                  history.push(`/login?callbackURL=${pathname}`)
+                  return
+                }
+
+                updateTerminalViewMode('default')
+
+                const joyrideStep = document.getElementById(
+                  'react-joyride-step-7'
+                )
+                const joyrideOverlay = document.getElementById(
+                  'react-joyride-portal'
+                )
+
+                if (joyrideStep && joyrideOverlay) {
+                  joyrideStep.style.display = 'none'
+                  joyrideOverlay.style.display = 'none'
+                }
+              }}
+            >
+              {'Basic'}
+            </ChangeTradeButton>
+          </DarkTooltip>
+        </ChangeTerminalButton>
+
+        {/* <SmartTradeButton
           theme={theme}
           style={{
             height: '100%',
@@ -222,7 +323,7 @@ export const CardsPanel = ({
           {isDefaultTerminalViewMode
             ? 'go to smart terminal'
             : 'back to basic terminal'}
-        </SmartTradeButton>
+        </SmartTradeButton> */}
         <PreferencesSelect
           theme={theme}
           style={{ width: '15%', minWidth: '0', marginLeft: '.8rem' }}
@@ -236,15 +337,24 @@ export const CardsPanel = ({
             if (!authenticated) {
               return
             }
-            
+
             theme.updateMode(themeMode === 'dark' ? 'light' : 'dark')
-            await writeQueryData(getThemeMode, {}, { getAccountSettings: { themeMode: themeMode === 'dark' ? 'light' : 'dark', __typename: 'getAccountSettings' }})
+            await writeQueryData(
+              getThemeMode,
+              {},
+              {
+                getAccountSettings: {
+                  themeMode: themeMode === 'dark' ? 'light' : 'dark',
+                  __typename: 'getAccountSettings',
+                },
+              }
+            )
             await persistorInstance.persist()
             await updateThemeModeMutation({
               variables: {
                 input: {
                   themeMode: themeMode === 'dark' ? 'light' : 'dark',
-                }
+                },
               },
             })
           }}
@@ -312,5 +422,5 @@ export default compose(
     name: 'toggleThemeMode',
   }),
   graphql(changePositionMode, { name: 'changePositionModeMutation' }),
-  graphql(updateThemeMode, { name: 'updateThemeModeMutation'}),
+  graphql(updateThemeMode, { name: 'updateThemeModeMutation' })
 )(CardsPanel)

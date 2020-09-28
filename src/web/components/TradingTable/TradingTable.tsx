@@ -115,6 +115,11 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       currencyPair,
       arrayOfMarketIds,
       priceFromOrderbook,
+      updateTerminalViewMode,
+      isDefaultTerminalViewMode,
+      isDefaultOnlyTables,
+      isSmartOrderMode,
+      terminalViewMode,
       pricePrecision,
       quantityPrecision,
       getAllUserKeysQuery = {
@@ -136,7 +141,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       }),
       {}
     )
-
+    console.log('updateTerminalViewMode', updateTerminalViewMode)
     return (
       <div
         id="tables"
@@ -149,6 +154,11 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       >
         <TradingTabs
           {...{
+            updateTerminalViewMode,
+            terminalViewMode,
+            isDefaultTerminalViewMode,
+            isDefaultOnlyTables,
+            isSmartOrderMode,
             tab,
             theme,
             marketType,
@@ -174,6 +184,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
         <ActiveTrades
           {...{
             tab,
+            updateTerminalViewMode,
+            isDefaultOnlyTables,
             keys,
             theme,
             selectedKey,

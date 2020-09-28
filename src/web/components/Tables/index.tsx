@@ -10,6 +10,7 @@ import Checkbox from '@material-ui/core/Checkbox'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import { fade } from '@material-ui/core/styles/colorManipulator'
+import { SmartTradeButton } from '@sb/components/TradingTable/TradingTabs/TradingTabs.styles'
 
 import {
   StyledTable,
@@ -56,6 +57,7 @@ import {
   OnboardingPlaceholder,
   OnboardingPromoPlaceholder,
 } from '@sb/components'
+import { AdditionalSettingsButton } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 
 const CustomTableCell = withStyles((theme) => ({
   head: {
@@ -588,6 +590,8 @@ const CustomTable = (props: Props) => {
     hideCommonCheckbox = false,
     onboardingPlaceholder = false,
     onboardingPromoPlaceholder = false,
+    needAdditionalComponent = false,
+    AdditionalComponent,
   } = props
 
   if (
@@ -764,7 +768,12 @@ const CustomTable = (props: Props) => {
           ) : data.body.length === 0 && onboardingPlaceholder ? (
             <OnboardingPlaceholder />
           ) : data.body.length === 0 && !onboardingPlaceholder ? (
-            <CustomPlaceholder theme={theme} text={emptyTableText} />
+            <CustomPlaceholder
+              theme={theme}
+              text={emptyTableText}
+              needAdditionalComponent={needAdditionalComponent}
+              AdditionalComponent={AdditionalComponent}
+            />
           ) : (
             paginationFunc(
               data.body.filter(Boolean).map((row) => {

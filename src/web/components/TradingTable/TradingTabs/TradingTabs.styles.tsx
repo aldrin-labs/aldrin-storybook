@@ -14,12 +14,14 @@ export const TitleTab = styled(({ active, theme, ...rest }) => {
       props.active
         ? props.theme.palette.grey.border
         : props.theme.palette.grey.main};
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     font-weight: normal;
+    font-family: DM Sans;
+    font-style: normal;
     width: 20%;
     // padding: 0.6rem 4rem;
     border-radius: 0;
-    letter-spacing: 0.01rem;
+    letter-spacing: 0.05rem;
     border: none;
     border-right: ${(props) => props.theme.palette.border.main};
     height: auto;
@@ -54,4 +56,24 @@ export const TitleTabsGroup = styled(({ ...rest }) => <div {...rest} />)`
     background-color: ${(props) => props.theme.palette.grey.main};
     border-bottom: ${(props) => props.theme.palette.border.main};
   }
+`
+export const SmartTradeButton = styled.button`
+  width: 35rem;
+  height: 3.5rem;
+  margin: 0.5rem 0.5rem;
+  //background-color: ${(props) => props.theme.palette.blue.main};
+  border: none;
+  border-radius: 12px;
+  color: #f5f5fb;
+  font-style: normal;
+  font-weight: bold;
+  line-height: 100%;
+  display: flex;
+  padding: auto 1rem;
+  font-size: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.05rem;
+  font-family: Avenir Next Demi;
+  cursor: pointer;
 `

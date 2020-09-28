@@ -2,7 +2,11 @@ import React from 'react'
 import { compose } from 'recompose'
 
 import { IProps, IQueryProps, INextQueryProps } from './TradingTabs.types'
-import { TitleTab, TitleTabsGroup } from './TradingTabs.styles'
+import {
+  TitleTab,
+  TitleTabsGroup,
+  SmartTradeButton,
+} from '@sb/components/TradingTable/TradingTabs/TradingTabs.styles'
 
 import { isSPOTMarketType } from '@core/utils/chartPageUtils'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -16,6 +20,11 @@ import { getActivePositions } from '@core/graphql/queries/chart/getActivePositio
 import { getActiveStrategies } from '@core/graphql/queries/chart/getActiveStrategies'
 
 const TradingTabs = ({
+  updateTerminalViewMode,
+  terminalViewMode,
+  isDefaultTerminalViewMode,
+  isDefaultOnlyTables,
+  isSmartOrderMode,
   tab,
   theme,
   handleTabChange,
@@ -65,25 +74,29 @@ const TradingTabs = ({
   return (
     <>
       <TitleTabsGroup theme={theme}>
-        <TitleTab
-          theme={theme}
-          active={tab === 'activeTrades'}
-          onClick={() => handleTabChange('activeTrades')}
-        >
-          Smart trades{' '}
-          {activeTradesLength > 0
-            ? `(
+        {(isSmartOrderMode || isDefaultOnlyTables) && (
+          <TitleTab
+            theme={theme}
+            active={tab === 'activeTrades'}
+            onClick={() => handleTabChange('activeTrades')}
+          >
+            Smart trades{' '}
+            {activeTradesLength > 0
+              ? `(
           ${activeTradesLength}
           )`
-            : ''}
-        </TitleTab>
-        <TitleTab
-          theme={theme}
-          active={tab === 'strategiesHistory'}
-          onClick={() => handleTabChange('strategiesHistory')}
-        >
-          ST History
-        </TitleTab>
+              : ''}
+          </TitleTab>
+        )}
+        {(isSmartOrderMode || isDefaultOnlyTables) && (
+          <TitleTab
+            theme={theme}
+            active={tab === 'strategiesHistory'}
+            onClick={() => handleTabChange('strategiesHistory')}
+          >
+            Smart Trades History
+          </TitleTab>
+        )}
         {!isSPOTMarketType(marketType) && (
           <TitleTab
             theme={theme}
@@ -136,6 +149,16 @@ const TradingTabs = ({
           >
             Funds
           </TitleTab>
+        )}
+        {(isDefaultOnlyTables || isDefaultTerminalViewMode) && (
+          <SmartTradeButton
+            style={{ height: '3rem', backgroundColor: theme.palette.blue.main }}
+            onClick={() => {
+              updateTerminalViewMode('smartOrderMode')
+            }}
+          >
+            Create new smart trade
+          </SmartTradeButton>
         )}
       </TitleTabsGroup>
     </>

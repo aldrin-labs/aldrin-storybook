@@ -58,32 +58,37 @@ export interface Props extends WithTheme {
   pathname: string
 }
 
+const isSpotOrRebalance = (pathname: any) => {
+  return pathname.includes('spot') || pathname.includes('rebalance')
+}
+
 const Portfolio = (props: any) => {
-  const isSpotOrRebalance =
-    props.pathname.includes('spot') || props.pathname.includes('rebalance')
   return (
     <Link
-      to={`/portfolio/main/${isSpotOrRebalance ? 'spot' : 'futures'}`}
+      to={`/portfolio/main/${
+        isSpotOrRebalance(props.pathname) ? 'spot' : 'futures'
+      }`}
       {...props}
     />
   )
 }
 
 const Chart = (props: any) => {
-  const isSpotOrRebalance =
-    props.pathname.includes('spot') || props.pathname.includes('rebalance')
   return (
-    <Link to={`/chart/${isSpotOrRebalance ? 'spot' : 'futures'}`} {...props} />
+    <Link
+      to={`/chart/${isSpotOrRebalance(props.pathname) ? 'spot' : 'futures'}`}
+      {...props}
+    />
   )
 }
 
 const Rebalance = (props: any) => <Link to="/portfolio/rebalance" {...props} />
 const Transactions = (props: any) => {
-  const isSpotOrRebalance =
-    props.pathname.includes('spot') || props.pathname.includes('rebalance')
   return (
     <Link
-      to={`/portfolio/transactions/${isSpotOrRebalance ? 'spot' : 'futures'}`}
+      to={`/portfolio/transactions/${
+        isSpotOrRebalance(props.pathname) ? 'spot' : 'futures'
+      }`}
       {...props}
     />
   )
@@ -262,7 +267,7 @@ const NavBarRaw: SFC<Props> = ({
               }}
               items={[
                 {
-                  text: 'Trading',
+                  text: 'Exchange',
                   to: '/chart/spot/BTC_USDT',
                 },
                 {
@@ -326,7 +331,7 @@ const NavBarRaw: SFC<Props> = ({
               }}
               items={[
                 {
-                  text: 'Trading',
+                  text: 'Exchange',
                   to: '/chart/futures/BTC_USDT',
                 },
                 {
@@ -530,7 +535,7 @@ const NavBarRaw: SFC<Props> = ({
                 component={Chart}
                 pathname={pathname}
               >
-                Trading
+                Exchange
               </NavLinkButton>
             </NavLinkButtonWrapper>
             <NavLinkButtonWrapper
@@ -574,7 +579,7 @@ const NavBarRaw: SFC<Props> = ({
                 Performance
               </NavLinkButton>
             </NavLinkButtonWrapper>
-            {isSpot && (
+            {(isSpot || isRebalance) && (
               <NavLinkButtonWrapper
                 theme={theme}
                 key="rebalance-wrapper"
@@ -596,7 +601,7 @@ const NavBarRaw: SFC<Props> = ({
                 </NavLinkButton>
               </NavLinkButtonWrapper>
             )}
-            {isRebalance && (
+            {/* {isRebalance && (
               <NavLinkButtonWrapper
                 theme={theme}
                 key="rebalance-wrapper"
@@ -617,7 +622,7 @@ const NavBarRaw: SFC<Props> = ({
                   Rebalance
                 </NavLinkButton>
               </NavLinkButtonWrapper>
-            )}
+            )} */}
           </NavBarWrapper>
         </Grid>
 

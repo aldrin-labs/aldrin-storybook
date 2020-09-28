@@ -3,6 +3,7 @@ import { compose } from 'recompose'
 import dayjs from 'dayjs'
 import { withTheme } from '@material-ui/core/styles'
 import SvgIcon from '@sb/components/SvgIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { Theme } from '@material-ui/core'
 import Timer from 'react-compound-timer'
 import { TooltipCustom } from '@sb/components/index'
@@ -236,38 +237,43 @@ class MarketStats extends React.PureComponent<IProps> {
             </PanelCardValue>
           </PanelCard>
         )}
+        <DarkTooltip
+          title={
+            'Estimate of the true value of a contract (fair price) when compared to its actual trading price (last price).'
+          }
+        >
+          <PanelCard marketType={marketType} theme={theme}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              {marketType === 1 ? null : (
+                <PanelCardTitle theme={theme} style={{ whiteSpace: 'nowrap' }}>
+                  Last price
+                </PanelCardTitle>
+              )}
+              {marketType === 0 ? null : (
+                <PanelCardTitle theme={theme} style={{ whiteSpace: 'nowrap' }}>
+                  Mark price
+                </PanelCardTitle>
+              )}
+            </div>
+            <span style={{ display: 'flex', justifyContent: 'space-between' }}>
+              {marketType === 1 ? null : (
+                <PanelCardValue theme={theme}>
+                  {formatNumberToUSFormat(
+                    roundAndFormatNumber(lastMarketPrice, pricePrecision, false)
+                  )}
+                </PanelCardValue>
+              )}
 
-        <PanelCard marketType={marketType} theme={theme}>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            {marketType === 1 ? null : (
-              <PanelCardTitle theme={theme} style={{ whiteSpace: 'nowrap' }}>
-                Last price
-              </PanelCardTitle>
-            )}
-            {marketType === 0 ? null : (
-              <PanelCardTitle theme={theme} style={{ whiteSpace: 'nowrap' }}>
-                Mark price
-              </PanelCardTitle>
-            )}
-          </div>
-          <span style={{ display: 'flex', justifyContent: 'space-between' }}>
-            {marketType === 1 ? null : (
-              <PanelCardValue theme={theme}>
-                {formatNumberToUSFormat(
-                  roundAndFormatNumber(lastMarketPrice, pricePrecision, false)
-                )}
-              </PanelCardValue>
-            )}
-
-            {marketType === 0 ? null : (
-              <PanelCardValue theme={theme}>
-                {formatNumberToUSFormat(
-                  roundAndFormatNumber(markPrice, pricePrecision, false)
-                )}
-              </PanelCardValue>
-            )}
-          </span>
-        </PanelCard>
+              {marketType === 0 ? null : (
+                <PanelCardValue theme={theme}>
+                  {formatNumberToUSFormat(
+                    roundAndFormatNumber(markPrice, pricePrecision, false)
+                  )}
+                </PanelCardValue>
+              )}
+            </span>
+          </PanelCard>
+        </DarkTooltip>
 
         <PanelCard marketType={marketType} theme={theme}>
           <PanelCardTitle theme={theme}>24h change</PanelCardTitle>
@@ -320,30 +326,26 @@ class MarketStats extends React.PureComponent<IProps> {
           </PanelCardValue>
         </PanelCard>
 
-        <TooltipCustom
-          title="Cryptocurrencies.ai is a Binance partner exchange"
-          enterDelay={250}
-          component={
-            <PanelCard
-              marketType={marketType}
-              theme={theme}
-              style={{
-                borderRight: marketType === 0 ? '0' : theme.palette.border.main,
-                position: 'relative',
-              }}
-            >
-              <PanelCardTitle theme={theme}>24h volume</PanelCardTitle>
-              <PanelCardValue theme={theme}>
-                {formatNumberToUSFormat(stripDigitPlaces(volume))}
-                {` ${marketType === 0 ? quote : base}`}
-              </PanelCardValue>
-              <SvgIcon
-                style={{ position: 'absolute', right: '1rem' }}
-                src={BinanceLogo}
-              />
-            </PanelCard>
-          }
-        />
+        <DarkTooltip title={'Our liquidity provider’s volume.'}>
+          <PanelCard
+            marketType={marketType}
+            theme={theme}
+            style={{
+              borderRight: marketType === 0 ? '0' : theme.palette.border.main,
+              position: 'relative',
+            }}
+          >
+            <PanelCardTitle theme={theme}>24h volume</PanelCardTitle>
+            <PanelCardValue theme={theme}>
+              {formatNumberToUSFormat(stripDigitPlaces(volume))}
+              {` ${marketType === 0 ? quote : base}`}
+            </PanelCardValue>
+            <SvgIcon
+              style={{ position: 'absolute', right: '1rem' }}
+              src={BinanceLogo}
+            />
+          </PanelCard>
+        </DarkTooltip>
 
         {marketType === 1 && (
           <PanelCard

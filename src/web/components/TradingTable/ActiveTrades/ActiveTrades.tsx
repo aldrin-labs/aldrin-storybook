@@ -58,6 +58,9 @@ import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
 import { LISTEN_TABLE_PRICE } from '@core/graphql/subscriptions/LISTEN_TABLE_PRICE'
 import { LISTEN_MARK_PRICES } from '@core/graphql/subscriptions/LISTEN_MARK_PRICES'
 import { useSnackbar } from 'notistack'
+
+import { SmartTradeButton } from '@sb/components/TradingTable/TradingTabs/TradingTabs.styles'
+
 @withTheme()
 class ActiveTradesTable extends React.Component<IProps, IState> {
   state: IState = {
@@ -686,6 +689,8 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       getActiveStrategiesQuery,
       handleChangePage,
       handleChangeRowsPerPage,
+      updateTerminalViewMode,
+      isDefaultOnlyTables,
     } = this.props
 
     if (!show) {
@@ -896,6 +901,20 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
         )}
         <TableWithSort
           hideCommonCheckbox
+          needAdditionalComponent={isDefaultOnlyTables ? true : false}
+          AdditionalComponent={() => (
+            <SmartTradeButton
+              style={{
+                backgroundColor: theme.palette.blue.main,
+                marginTop: '1.5rem',
+              }}
+              onClick={() => {
+                updateTerminalViewMode('smartOrderMode')
+              }}
+            >
+              Create new smart trade
+            </SmartTradeButton>
+          )}
           expandableRows={true}
           expandedRows={expandedRows}
           onChange={this.setExpandedRows}
