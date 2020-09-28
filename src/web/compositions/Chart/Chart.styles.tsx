@@ -153,7 +153,7 @@ export const PanelCard = styled.div`
 
 export const PanelCardTitle = styled.span`
   display: block;
-  padding: 0.1rem 1rem;
+  margin: 0.1rem 1rem;
   color: ${(props) => props.theme.palette.grey.text};
   letter-spacing: 0.1rem;
 

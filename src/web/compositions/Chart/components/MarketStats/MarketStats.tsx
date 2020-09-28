@@ -250,7 +250,13 @@ class MarketStats extends React.PureComponent<IProps> {
                 </PanelCardTitle>
               )}
               {marketType === 0 ? null : (
-                <PanelCardTitle theme={theme} style={{ whiteSpace: 'nowrap' }}>
+                <PanelCardTitle
+                  theme={theme}
+                  style={{
+                    whiteSpace: 'nowrap',
+                    borderBottom: `.1rem dashed ${theme.palette.grey.border}`,
+                  }}
+                >
                   Mark price
                 </PanelCardTitle>
               )}

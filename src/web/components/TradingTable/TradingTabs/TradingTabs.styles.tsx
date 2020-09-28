@@ -59,6 +59,7 @@ export const TitleTabsGroup = styled(({ ...rest }) => <div {...rest} />)`
 `
 export const SmartTradeButton = styled.button`
   width: 35rem;
+  outline:none;
   height: 3.5rem;
   margin: 0.5rem 0.5rem;
   //background-color: ${(props) => props.theme.palette.blue.main};

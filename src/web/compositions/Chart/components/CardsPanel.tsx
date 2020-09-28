@@ -206,9 +206,9 @@ export const CardsPanel = ({
             <ChangeTradeButton
               theme={theme}
               style={{
-                textDecorationLine: 'underline',
+                //textDecoration: 'underline',
                 height: 'calc(100% - 1rem)',
-                paddingRight: '6rem',
+                //paddingRight: '6rem',
                 cursor: 'pointer',
                 borderRight: theme.palette.border.main,
                 backgroundColor: theme.palette.white.background,
@@ -243,7 +243,13 @@ export const CardsPanel = ({
                 }
               }}
             >
-              {'Smart'}
+              <span
+                style={{
+                  borderBottom: `dashed 0.1rem ${theme.palette.grey.border}`,
+                }}
+              >
+                {'Smart'}
+              </span>
             </ChangeTradeButton>
           </DarkTooltip>
 
@@ -251,7 +257,6 @@ export const CardsPanel = ({
             <ChangeTradeButton
               theme={theme}
               style={{
-                textDecorationLine: 'underline',
                 cursor: 'pointer',
                 height: '100%',
                 backgroundColor: theme.palette.white.background,
@@ -284,7 +289,13 @@ export const CardsPanel = ({
                 }
               }}
             >
-              {'Basic'}
+              <span
+                style={{
+                  borderBottom: `dashed 0.1rem ${theme.palette.grey.border}`,
+                }}
+              >
+                {'Basic'}
+              </span>
             </ChangeTradeButton>
           </DarkTooltip>
         </ChangeTerminalButton>

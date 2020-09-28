@@ -319,8 +319,10 @@ export const SendButton = styled(StyledTab)`
 
 export const ChangeTradeButton = styled.button`
   border: none;
+  width: 50%;
   // background: white;
   display: flex;
+  justify-content: center;
   text-transform: capitalize;
   font-weight: bold;
   text-overflow: ellipsis;
