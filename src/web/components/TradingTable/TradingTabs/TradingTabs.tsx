@@ -128,7 +128,7 @@ const TradingTabs = ({
           Trade history
         </TitleTab>
 
-        {isSPOTMarketType(marketType) && (
+        {/* {isSPOTMarketType(marketType) && (
           <TitleTab
             theme={theme}
             active={tab === 'funds'}
@@ -136,7 +136,7 @@ const TradingTabs = ({
           >
             Funds
           </TitleTab>
-        )}
+        )} */}
       </TitleTabsGroup>
     </>
   )
