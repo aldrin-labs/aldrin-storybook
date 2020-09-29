@@ -473,7 +473,8 @@ export default React.memo(
       prevProps.quantityPrecision === nextProps.quantityPrecision &&
       prevProps.priceFromOrderbook === nextProps.priceFromOrderbook &&
       prevProps.currencyPair === nextProps.currencyPair &&
-      prevProps.arrayOfMarketIds.length === nextProps.arrayOfMarketIds.length
+      prevProps.arrayOfMarketIds.length === nextProps.arrayOfMarketIds.length &&
+      prevProps.theme.palette.type === nextProps.theme.palette.type
     ) {
       return true
     }
