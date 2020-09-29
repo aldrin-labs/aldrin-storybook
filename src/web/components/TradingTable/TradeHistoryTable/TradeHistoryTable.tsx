@@ -37,8 +37,16 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
       handlePairChange,
     } = this.props
 
+    const {
+      getTradeHistory: { trades } = {
+        trades: [],
+      },
+    } = this.props.getTradeHistoryQuery || {
+      getTradeHistory: { trades: [] },
+    }
+
     const tradeHistoryProcessedData = combineTradeHistoryTable(
-      getTradeHistoryQuery.getTradeHistory.trades,
+      trades,
       theme,
       arrayOfMarketIds,
       marketType,
@@ -49,56 +57,64 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
       tradeHistoryProcessedData,
     })
 
-    this.unsubscribeFunction = subscribeToMore()
+    // this.unsubscribeFunction = subscribeToMore()
   }
 
   componentDidUpdate(prevProps: IProps) {
     if (
-      prevProps.selectedKey.keyId !== this.props.selectedKey.keyId ||
+      // prevProps.selectedKey.keyId !== this.props.selectedKey.keyId ||
       prevProps.specificPair !== this.props.specificPair ||
-      prevProps.allKeys !== this.props.allKeys ||
+      // prevProps.allKeys !== this.props.allKeys ||
       prevProps.marketType !== this.props.marketType
     ) {
-      const {
-        startDate,
-        endDate,
-        marketType,
-        selectedKey,
-        allKeys,
-        currencyPair,
-        specificPair,
-      } = this.props
+      // const {
+      //   startDate,
+      //   endDate,
+      //   marketType,
+      //   selectedKey,
+      //   allKeys,
+      //   currencyPair,
+      //   specificPair,
+      // } = this.props
 
-      this.unsubscribeFunction && this.unsubscribeFunction()
-      this.unsubscribeFunction = this.props.getTradeHistoryQuery.subscribeToMore(
-        {
-          document: TRADE_HISTORY,
-          variables: {
-            tradeHistoryInput: {
-              startDate: startDate.valueOf(),
-              endDate: endDate.valueOf(),
-              marketType,
-              activeExchangeKey: selectedKey.keyId,
-              allKeys,
-              ...(!specificPair ? {} : { specificPair: currencyPair }),
-            },
-          },
-          updateQuery: updateTradeHistoryQuerryFunction,
-        }
-      )
+      // this.unsubscribeFunction && this.unsubscribeFunction()
+      // this.unsubscribeFunction = this.props.getTradeHistoryQuery.subscribeToMore(
+      //   {
+      //     document: TRADE_HISTORY,
+      //     variables: {
+      //       tradeHistoryInput: {
+      //         startDate: startDate.valueOf(),
+      //         endDate: endDate.valueOf(),
+      //         marketType,
+      //         activeExchangeKey: selectedKey.keyId,
+      //         allKeys,
+      //         ...(!specificPair ? {} : { specificPair: currencyPair }),
+      //       },
+      //     },
+      //     updateQuery: updateTradeHistoryQuerryFunction,
+      //   }
+      // )
     }
   }
 
   componentWillUnmount = () => {
     // unsubscribe subscription
-    if (this.unsubscribeFunction !== null) {
-      this.unsubscribeFunction()
-    }
+    // if (this.unsubscribeFunction !== null) {
+    //   this.unsubscribeFunction()
+    // }
   }
 
   componentWillReceiveProps(nextProps: IProps) {
+    const {
+      getTradeHistory: { trades } = {
+        trades: [],
+      },
+    } = nextProps.getTradeHistoryQuery || {
+      getTradeHistory: { trades: [] },
+    }
+
     const tradeHistoryProcessedData = combineTradeHistoryTable(
-      nextProps.getTradeHistoryQuery.getTradeHistory.trades,
+      trades,
       nextProps.theme,
       nextProps.arrayOfMarketIds,
       nextProps.marketType,
@@ -143,6 +159,14 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
       return null
     }
 
+    const {
+      getTradeHistory: { count } = {
+        count: 0,
+      },
+    } = this.props.getTradeHistoryQuery || {
+      getTradeHistory: { count: 0 },
+    }
+
     return (
       <TableWithSort
         style={{
@@ -185,7 +209,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
         pagination={{
           fakePagination: false,
           enabled: true,
-          totalCount: getTradeHistoryQuery.getTradeHistory.count,
+          totalCount: count,
           page: page,
           rowsPerPage: perPage,
           rowsPerPageOptions: [10, 20, 30, 50, 100],
@@ -228,7 +252,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
                 onClearDateButtonClick,
                 handleChangePage,
                 handleChangeRowsPerPage,
-                maxRows: getTradeHistoryQuery.getTradeHistory.count,
+                maxRows: count,
               }}
             />
           </div>
@@ -240,54 +264,54 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
   }
 }
 
-const TableDataWrapper = ({ ...props }) => {
-  let { startDate, endDate, page, perPage, allKeys, specificPair } = props
+// const TableDataWrapper = ({ ...props }) => {
+//   let { startDate, endDate, page, perPage, allKeys, specificPair } = props
 
-  startDate = +startDate
-  endDate = +endDate
+//   startDate = +startDate
+//   endDate = +endDate
 
-  return (
-    <QueryRenderer
-      component={TradeHistoryTable}
-      withOutSpinner={true}
-      withTableLoader={true}
-      query={getTradeHistory}
-      name={`getTradeHistoryQuery`}
-      fetchPolicy="cache-and-network"
-      showLoadingWhenQueryParamsChange={false}
-      // pollInterval={props.show ? 60000 : 0}
-      variables={{
-        tradeHistoryInput: {
-          page,
-          perPage,
-          startDate,
-          endDate,
-          activeExchangeKey: props.selectedKey.keyId,
-          marketType: props.marketType,
-          allKeys,
-          ...(!specificPair ? {} : { specificPair: props.currencyPair }),
-        },
-      }}
-      subscriptionArgs={{
-        subscription: TRADE_HISTORY,
-        variables: {
-          tradeHistoryInput: {
-            startDate,
-            endDate,
-            activeExchangeKey: props.selectedKey.keyId,
-            marketType: props.marketType,
-            allKeys,
-            ...(!specificPair ? {} : { specificPair: props.currencyPair }),
-          },
-        },
-        updateQueryFunction: updateTradeHistoryQuerryFunction,
-      }}
-      {...props}
-    />
-  )
-}
+//   return (
+//     <QueryRenderer
+//       component={TradeHistoryTable}
+//       withOutSpinner={true}
+//       withTableLoader={true}
+//       query={getTradeHistory}
+//       name={`getTradeHistoryQuery`}
+//       fetchPolicy="cache-and-network"
+//       showLoadingWhenQueryParamsChange={false}
+//       // pollInterval={props.show ? 60000 : 0}
+//       variables={{
+//         tradeHistoryInput: {
+//           page,
+//           perPage,
+//           startDate,
+//           endDate,
+//           activeExchangeKey: props.selectedKey.keyId,
+//           marketType: props.marketType,
+//           allKeys,
+//           ...(!specificPair ? {} : { specificPair: props.currencyPair }),
+//         },
+//       }}
+//       subscriptionArgs={{
+//         subscription: TRADE_HISTORY,
+//         variables: {
+//           tradeHistoryInput: {
+//             startDate,
+//             endDate,
+//             activeExchangeKey: props.selectedKey.keyId,
+//             marketType: props.marketType,
+//             allKeys,
+//             ...(!specificPair ? {} : { specificPair: props.currencyPair }),
+//           },
+//         },
+//         updateQueryFunction: updateTradeHistoryQuerryFunction,
+//       }}
+//       {...props}
+//     />
+//   )
+// }
 
-export default React.memo(TableDataWrapper, (prevProps, nextProps) => {
+export default React.memo(TradeHistoryTable, (prevProps, nextProps) => {
   // TODO: Refactor isShowEqual --- not so clean
   const isShowEqual = !nextProps.show && !prevProps.show
   const showAllAccountsEqual =
