@@ -21,7 +21,7 @@ html {
   }
 }
 
-@media only screen and (max-width: 1400px) {
+@media only screen and (max-width: 1440px) {
   html {
     font-size: 8px !important;
   }
@@ -399,7 +399,7 @@ export const TradingTabelContainer = styled(
   // 32vh was
   background-color: ${(props) => props.theme.palette.white.background};
   position: relative;
-  height: ${(props) => props.isDefaultTerminalViewMode && '40%'};
+  height: ${(props) => props.isDefaultTerminalViewMode ? '40%' : '0%'};
   justify-content: flex-start;
   flex-direction: column;
   overflow: hidden;

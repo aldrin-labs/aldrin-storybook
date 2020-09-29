@@ -86,6 +86,7 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
     }
 
     const result = await this.auth.handleAuthentication()
+
     if (result.status === 'ok') {
       const { data } = result
       if (data && data.idToken && data.idTokenPayload) {
@@ -96,6 +97,22 @@ class LoginComposition extends React.PureComponent<IProps, IState> {
         }
         await this.props.onLogin(profile, data.idToken, data.accessToken)
       }
+    } else if (result.status === 'err') {
+      const { data } = result
+      const {
+        error = '',
+        errorDescription = 'Something went wrong with login with google',
+        state = '',
+      } = data || {
+        error: '',
+        errorDescription: 'Something went wrong with login with google',
+        state: '',
+      }
+
+      this.showLoginStatus({
+        status: 'error',
+        errorMessage: errorDescription,
+      })
     } else {
       this.showLoginStatus({
         status: 'error',

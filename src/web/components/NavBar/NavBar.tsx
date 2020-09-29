@@ -93,7 +93,6 @@ const Transactions = (props: any) => {
     />
   )
 }
-
 const Market = (props: any) => <Link to="/market" {...props} />
 const Signals = (props: any) => <Link to="/signals" {...props} />
 const MarketType = (props: any) => {
@@ -601,28 +600,6 @@ const NavBarRaw: SFC<Props> = ({
                 </NavLinkButton>
               </NavLinkButtonWrapper>
             )}
-            {/* {isRebalance && (
-              <NavLinkButtonWrapper
-                theme={theme}
-                key="rebalance-wrapper"
-                onMouseOver={() => {
-                  if (notAuthPages || !loginStatus) {
-                    return
-                  }
-
-                  prefetchRebalance()
-                }}
-              >
-                <NavLinkButton
-                  key="rebalance"
-                  page={`rebalance`}
-                  component={Rebalance}
-                  pathname={pathname}
-                >
-                  Rebalance
-                </NavLinkButton>
-              </NavLinkButtonWrapper>
-            )} */}
           </NavBarWrapper>
         </Grid>
 

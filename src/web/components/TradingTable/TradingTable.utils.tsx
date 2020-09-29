@@ -10,8 +10,10 @@ import { Position } from './PositionsTable/PositionsTable.types'
 import { TableButton } from './TradingTable.styles'
 import { ArrowForward as Arrow } from '@material-ui/icons'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
+import { getActiveStrategies } from '@core/graphql/queries/chart/getActiveStrategies'
+
 import { client } from '@core/graphql/apolloClient'
-import { filterCacheData } from '@core/utils/TradingTable.utils'
+import { filterCacheData, modifyCacheData } from '@core/utils/TradingTable.utils'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components/index'
 import stableCoins from '@core/config/stableCoins'
@@ -639,6 +641,8 @@ export const combinePositionsTable = ({
 
 export const combineActiveTradesTable = ({
   data,
+  queryBody,
+  queryVariables,
   cancelOrderFunc,
   changeStatusWithStatus,
   editTrade,
@@ -654,6 +658,8 @@ export const combineActiveTradesTable = ({
   handlePairChange,
 }: {
   data: any[]
+  queryBody: string,
+  queryVariables: object,
   cancelOrderFunc: (strategyId: string) => Promise<any>
   changeStatusWithStatus: (
     startegyId: string,
@@ -757,6 +763,8 @@ export const combineActiveTradesTable = ({
         },
       } = el
 
+      console.log('processedActiveTradesData arr :', arr)
+
       const { entryPrice, exitPrice, state, msg } = el.state || {
         entryPrice: 0,
         state: '-',
@@ -805,6 +813,8 @@ export const combineActiveTradesTable = ({
         marketType,
         symbol: pair,
       })
+
+      const strategyId = el._id
 
       return {
         id: `${el._id}${i}`,
@@ -1047,7 +1057,58 @@ export const combineActiveTradesTable = ({
                 onClick={(e) => {
                   e.stopPropagation()
                   changeStatusWithStatus(el._id, el.accountId, 'disabled')
-                  addOrderToCanceled(el._id)
+                  .then((res) => {
+                    console.log('changeStatusWithStatus res', res)
+
+                    if (res.status === 'error') {
+                      modifyCacheData({
+                        _id: strategyId,
+                        name: 'getActiveStrategies',
+                        subName: 'strategies',
+                        typename: 'strategiesHistoryOutput',
+                        data: null,
+                        query: queryBody,
+                        variables: queryVariables,
+                        modifyFunc: 'map',
+                        modifyFuncCallBack: (elem) => {
+                          if (elem._id === strategyId) {
+                            elem.enabled = el.enabled
+                      
+                            if (elem.conditions.isTemplate && elem.conditions.templateStatus) {
+                              elem.conditions.templateStatus = el.conditions.templateStatus
+                            }
+                          }
+                      
+                          return elem
+                        },
+                      })
+                    }
+
+                  })
+
+                  modifyCacheData({
+                    _id: strategyId,
+                    name: 'getActiveStrategies',
+                    subName: 'strategies',
+                    typename: 'strategiesHistoryOutput',
+                    data: null,
+                    query: queryBody,
+                    variables: queryVariables,
+                    modifyFunc: 'map',
+                    modifyFuncCallBack: (elem) => {
+                      if (elem._id === strategyId) {
+                        elem.enabled = false
+                  
+                        if (elem.conditions.isTemplate && elem.conditions.templateStatus) {
+                          elem.conditions.templateStatus = 'disabled'
+                        }
+                      }
+                  
+                      return elem
+                    },
+                  })
+
+                  // addOrderToCanceled(el._id)
                 }}
               >
                 stop
@@ -1069,7 +1130,56 @@ export const combineActiveTradesTable = ({
               onClick={(e) => {
                 e.stopPropagation()
                 cancelOrderFunc(el._id, el.accountId)
-                addOrderToCanceled(el._id)
+                .then((res) => {
+                  console.log('changeStatusWithStatus res', res)
+
+                  if (res.status === 'error') {
+                    modifyCacheData({
+                      _id: strategyId,
+                      name: 'getActiveStrategies',
+                      subName: 'strategies',
+                      typename: 'strategiesHistoryOutput',
+                      data: null,
+                      query: queryBody,
+                      variables: queryVariables,
+                      modifyFunc: 'map',
+                      modifyFuncCallBack: (elem) => {
+                        if (elem._id === strategyId) {
+                          elem.enabled = el.enabled
+                    
+                          if (elem.conditions.isTemplate && elem.conditions.templateStatus) {
+                            elem.conditions.templateStatus = el.conditions.templateStatus
+                          }
+                        }
+                    
+                        return elem
+                      },
+                    })
+                  }
+
+                })
+
+                modifyCacheData({
+                  _id: strategyId,
+                  name: 'getActiveStrategies',
+                  subName: 'strategies',
+                  typename: 'strategiesHistoryOutput',
+                  data: null,
+                  query: queryBody,
+                  variables: queryVariables,
+                  modifyFunc: 'map',
+                  modifyFuncCallBack: (elem) => {
+                    if (elem._id === strategyId) {
+                      elem.enabled = false
+                
+                      if (elem.conditions.isTemplate && elem.conditions.templateStatus) {
+                        elem.conditions.templateStatus = 'disabled'
+                      }
+                    }
+                
+                    return elem
+                  },
+                })
               }}
             >
               {activeOrderStatus === 'Preparing' ||
@@ -1347,16 +1457,38 @@ export const combineStrategiesHistoryTable = (
         takeProfit: {
           render: (
             <SubColumnValue theme={theme} color={green.main}>
-              {trailingExit &&
-              exitLevels[0] &&
+              {exitLevels[0] &&
               exitLevels[0].activatePrice &&
-              exitLevels[0].entryDeviation
-                ? `${exitLevels[0].activatePrice}% / ${
-                    exitLevels[0].entryDeviation
-                  }%`
-                : exitLevels[0] && exitLevels[0].price
-                ? `${exitLevels[0].price}%`
-                : '-'}
+              exitLevels[0].entryDeviation ? (
+                `${exitLevels[0].activatePrice}% / ${
+                  exitLevels[0].entryDeviation
+                }%`
+              ) : exitLevels.length > 1 ? (
+                <div>
+                  <div>
+                    {exitLevels.map((level, i) =>
+                      i < 4 ? (
+                        <span style={{ color: theme.palette.grey.light }}>
+                          {level.amount}%{' '}
+                          {i === 3 || i + 1 === exitLevels.length ? '' : '/ '}
+                        </span>
+                      ) : null
+                    )}
+                  </div>
+                  <div>
+                    {exitLevels.map((level, i) =>
+                      i < 4 ? (
+                        <span>
+                          {level.price}%{' '}
+                          {i === 3 || i + 1 === exitLevels.length ? '' : '/ '}
+                        </span>
+                      ) : null
+                    )}
+                  </div>
+                </div>
+              ) : (
+                `${exitLevels.length > 0 ? exitLevels[0].price : '-'}%`
+              )}
             </SubColumnValue>
           ),
           style: {
@@ -1767,7 +1899,12 @@ export const combineOpenOrdersTable = (
             <CloseButton
               i={i}
               onClick={() => {
-                cancelOrderFunc(keyId, orderType === "maker-only" ? _id : orderId, orderSymbol, orderType)
+                cancelOrderFunc(
+                  keyId,
+                  orderType === 'maker-only' ? _id : orderId,
+                  orderSymbol,
+                  orderType
+                )
                 filterCacheData({
                   data: null,
                   name: 'getOpenOrderHistory',
@@ -2278,10 +2415,10 @@ export const updateActiveStrategiesQuerryFunction = (
   previous,
   { subscriptionData }
 ) => {
-  // console.log(
-  //   'updateActiveStrategiesQuerryFunction subscriptionData',
-  //   subscriptionData
-  // )
+  console.log(
+    'updateActiveStrategiesQuerryFunction subscriptionData',
+    subscriptionData
+  )
 
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenActiveStrategies
@@ -2291,6 +2428,8 @@ export const updateActiveStrategiesQuerryFunction = (
   }
 
   const prev = cloneDeep(previous)
+
+  console.log('prev cloneDeep', prev)
 
   const strategyHasTheSameIndex = prev.getActiveStrategies.strategies.findIndex(
     (el: TradeType) =>
@@ -2330,6 +2469,7 @@ export const updateActiveStrategiesQuerryFunction = (
     }
   }
 
+  console.log('result: ', result)
   return result
 }
 
@@ -2614,7 +2754,11 @@ export const updatePaginatedOrderHistoryQuerryFunction = (
                 .charAt(0)
                 .toUpperCase()}${newDataElement.type.slice(1)} order`
             : 'Order'
-        } ${newDataElement.type === 'maker-only' ? '' : `with price ${newDataElement.price}`} was executed!`,
+        } ${
+          newDataElement.type === 'maker-only'
+            ? ''
+            : `with price ${newDataElement.price}`
+        } was executed!`,
         {
           variant: 'success',
         }
@@ -2655,7 +2799,11 @@ export const updatePaginatedOrderHistoryQuerryFunction = (
                 .charAt(0)
                 .toUpperCase()}${newDataElement.type.slice(1)} order`
             : 'Order'
-        } ${newDataElement.type === 'maker-only' ? '' : `with price ${newDataElement.price}`} was executed!`,
+        } ${
+          newDataElement.type === 'maker-only'
+            ? ''
+            : `with price ${newDataElement.price}`
+        } was executed!`,
         {
           variant: 'success',
         }

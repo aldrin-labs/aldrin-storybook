@@ -235,7 +235,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
         specificPair,
       } = this.props
 
-      console.log('OpenOrdersTable unsubscribe')
+      // console.log('OpenOrdersTable unsubscribe')
 
       this.unsubscribeFunction && this.unsubscribeFunction()
       this.unsubscribeFunction = this.props.getOpenOrderHistoryQuery.subscribeToMore(
@@ -281,6 +281,8 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
   componentWillReceiveProps(nextProps: IProps) {
     const { cachedOrder } = this.state
 
+    // console.log('nextProps.getOpenOrderHistoryQuery', nextProps.getOpenOrderHistoryQuery)
+
     let data
     try {
       data = client.readQuery({
@@ -303,7 +305,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       data = nextProps.getOpenOrderHistoryQuery
     }
 
-    console.log('data in receive props', data)
+    // console.log('data in receive props', data)
 
     const newOrderFromSubscription =
       cachedOrder !== null
@@ -312,10 +314,10 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
           })
         : null
 
-    console.log(
-      'newOrderFromSubscription in receive props',
-      newOrderFromSubscription
-    )
+    // console.log(
+    //   'newOrderFromSubscription in receive props',
+    //   newOrderFromSubscription
+    // )
 
     if (newOrderFromSubscription) {
       this.setState({
@@ -328,7 +330,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     //   nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory
     // )
 
-    console.log('cachedOrder', cachedOrder)
+    // console.log('cachedOrder', cachedOrder)
 
     const ordersToDisplay =
       !newOrderFromSubscription && !!cachedOrder
@@ -337,7 +339,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
           )
         : nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory.orders
 
-    console.log('ordersToDisplay in receive props', ordersToDisplay)
+    // console.log('ordersToDisplay in receive props', ordersToDisplay)
 
     const openOrdersProcessedData = combineOpenOrdersTable(
       ordersToDisplay,

@@ -94,7 +94,7 @@ const SharePortfolioPanel = ({
             />
           </Grid>
 
-          <Grid item style={{ display: 'flex' }}>
+          <Grid item style={{ display: 'flex', position: 'relative' }}>
             {!isSPOTCurrently && (
               <Grid
                 style={{
@@ -104,8 +104,9 @@ const SharePortfolioPanel = ({
                   fontSize: '1rem',
                   fontFamily: 'Avenir Next Demi',
                   position: 'absolute',
-                  bottom: '15.7rem',
-                  right: '1rem',
+                  top: '0',
+                  right: '-1rem',
+                  transform: 'translateY(-150%)'
                 }}
               >
                 Transfer between your spot and futures accounts

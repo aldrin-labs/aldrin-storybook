@@ -25,7 +25,7 @@ export interface IProps {
 
 export type EntryPointType = {
   order: {
-    type: 'market' | 'limit'
+    type: 'market' | 'limit' | 'maker-only'
     side: 'buy' | 'sell'
     price: number
     amount: number
@@ -41,6 +41,8 @@ export type EntryPointType = {
     enabled: boolean
     closeStrategyAfterFirstTAP: boolean
     placeWithoutLoss: boolean
+    percentage: number
+    price: number
     entryLevels: {
       type: number
       price: number
