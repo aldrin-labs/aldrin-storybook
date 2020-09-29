@@ -8,6 +8,10 @@ import LayoutSelector from '@core/components/LayoutSelector'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import KeySelector from '@core/components/KeySelector'
 import SelectExchange from '../Inputs/SelectExchange/SelectExchange'
+import { getActiveStrategies } from '@core/graphql/queries/chart/getActiveStrategies'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { IProps, IQueryProps, INextQueryProps } from './TradingTabs.types'
+
 import {
   SmartTradeButton,
   ChangeTerminalButton,
@@ -83,6 +87,11 @@ export const CardsPanel = ({
   changeChartLayout,
   persistorInstance,
   updateThemeModeMutation,
+  getActiveStrategiesQuery: {
+    getActiveStrategies = { strategies: [], count: 0 },
+  } = {
+    getActiveStrategies: { strategies: [], count: 0 },
+  },
 }) => {
   const hedgeMode = selectedKey.hedgeMode
 
@@ -123,6 +132,13 @@ export const CardsPanel = ({
 
     showChangePositionModeResult(result, 'Position mode')
   }
+
+  const activeTradesLength = getActiveStrategies.strategies.filter(
+    (a) =>
+      a !== null &&
+      (a.enabled ||
+        (a.conditions.isTemplate && a.conditions.templateStatus !== 'disabled'))
+  ).length
 
   const history = useHistory()
   const location = useLocation()
@@ -250,6 +266,7 @@ export const CardsPanel = ({
               >
                 {'Smart'}
               </span>
+              <span style={{ paddingLeft: '1rem' }}>{activeTradesLength}</span>
             </ChangeTradeButton>
           </DarkTooltip>
 
@@ -431,6 +448,24 @@ export default compose(
   withApolloPersist,
   graphql(TOGGLE_THEME_MODE, {
     name: 'toggleThemeMode',
+  }),
+  queryRendererHoc({
+    query: getActiveStrategies,
+    name: 'getActiveStrategiesQuery',
+    fetchPolicy: 'cache-only',
+    variables: (props: INextQueryProps) => ({
+      activeStrategiesInput: {
+        page: 0,
+        perPage: 30,
+        activeExchangeKey: props.selectedKey.keyId,
+        marketType: props.marketType,
+        allKeys: true,
+      },
+    }),
+    withOutSpinner: true,
+    withTableLoader: false,
+    withoutLoading: true,
+    showLoadingWhenQueryParamsChange: false,
   }),
   graphql(changePositionMode, { name: 'changePositionModeMutation' }),
   graphql(updateThemeMode, { name: 'updateThemeModeMutation' })

@@ -327,6 +327,7 @@ export const DefaultViewComponent = (
               }
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
               updateTerminalViewMode={updateTerminalViewMode}
+              isDefaultOnlyTables={isDefaultOnlyTables}
             >
               <TradingTable
                 isDefaultOnlyTables={isDefaultOnlyTables}

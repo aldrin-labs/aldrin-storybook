@@ -74,7 +74,7 @@ const TradingTabs = ({
   return (
     <>
       <TitleTabsGroup theme={theme}>
-        {(isSmartOrderMode || isDefaultOnlyTables) && (
+        {isDefaultOnlyTables && (
           <TitleTab
             theme={theme}
             active={tab === 'activeTrades'}
@@ -88,7 +88,7 @@ const TradingTabs = ({
               : ''}
           </TitleTab>
         )}
-        {(isSmartOrderMode || isDefaultOnlyTables) && (
+        {isDefaultOnlyTables && (
           <TitleTab
             theme={theme}
             active={tab === 'strategiesHistory'}
