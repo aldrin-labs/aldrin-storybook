@@ -53,13 +53,18 @@ class OrderbookAndDepthChart extends React.Component {
   static getDerivedStateFromProps(newProps, state) {
     const { asks, bids } = state
     const {
-      data: { marketOrders },
       sizeDigits,
       isPairDataLoading,
       minPriceDigits,
     } = newProps
 
     let updatedData = null
+
+    const {
+      marketOrders = {},
+    } = newProps.data || {
+      marketOrders: {},
+    }
 
     // first get data from query
     if (
@@ -88,128 +93,128 @@ class OrderbookAndDepthChart extends React.Component {
 
   subscribe = () => {
     const that = this
-    this.subscription = client
-      .subscribe({
-        query: ORDERBOOK,
-        fetchPolicy: 'no-cache',
-        variables: {
-          marketType: this.props.marketType,
-          exchange: this.props.exchange,
-          symbol: this.props.symbol,
-        },
-      })
-      .subscribe({
-        next: ({ data }) => {
-          const { asks, bids, readyForNewOrder, aggregation } = that.state
+    // this.subscription = client
+    //   .subscribe({
+    //     query: ORDERBOOK,
+    //     fetchPolicy: 'no-cache',
+    //     variables: {
+    //       marketType: this.props.marketType,
+    //       exchange: this.props.exchange,
+    //       symbol: this.props.symbol,
+    //     },
+    //   })
+    //   .subscribe({
+    //     next: ({ data }) => {
+    //       const { asks, bids, readyForNewOrder, aggregation } = that.state
 
-          const { sizeDigits, minPriceDigits, isPairDataLoading } = that.props
+    //       const { sizeDigits, minPriceDigits, isPairDataLoading } = that.props
 
-          if (
-            (asks.getLength() === 0 && bids.getLength() === 0) ||
-            isPairDataLoading
-          ) {
-            return
-          }
+    //       if (
+    //         (asks.getLength() === 0 && bids.getLength() === 0) ||
+    //         isPairDataLoading
+    //       ) {
+    //         return
+    //       }
 
-          let updatedData = null
-          let newResubscribeTimer = null
-          let updatedAggregatedData = that.state.aggregatedData
+    //       let updatedData = null
+    //       let newResubscribeTimer = null
+    //       let updatedAggregatedData = that.state.aggregatedData
 
-          const newOrders = data.listenOrderbook
-          // const newOrders = subscriptionData.data.listenMockedOrderbook
+    //       const newOrders = data.listenOrderbook
+    //       // const newOrders = subscriptionData.data.listenMockedOrderbook
 
-          let ordersAsks = []
-          let ordersBids = []
+    //       let ordersAsks = []
+    //       let ordersBids = []
 
-          if (newOrders.length > 0) {
-            newOrders.forEach((order, i) => {
-              const side = order.side.match(/ask/) ? 'asks' : 'bids'
-              if (side === 'asks') {
-                ordersAsks.push(order)
-              } else {
-                ordersBids.push(order)
-              }
-            })
-          }
+    //       if (newOrders.length > 0) {
+    //         newOrders.forEach((order, i) => {
+    //           const side = order.side.match(/ask/) ? 'asks' : 'bids'
+    //           if (side === 'asks') {
+    //             ordersAsks.push(order)
+    //           } else {
+    //             ordersBids.push(order)
+    //           }
+    //         })
+    //       }
 
-          const marketOrders = Object.assign(
-            {
-              asks: [],
-              bids: [],
-              __typename: 'orderbookOrder',
-            },
-            {
-              asks: ordersAsks,
-              bids: ordersBids,
-            }
-          )
+    //       const marketOrders = Object.assign(
+    //         {
+    //           asks: [],
+    //           bids: [],
+    //           __typename: 'orderbookOrder',
+    //         },
+    //         {
+    //           asks: ordersAsks,
+    //           bids: ordersBids,
+    //         }
+    //       )
 
-          if (
-            ((marketOrders.asks.length > 0 || marketOrders.bids.length > 0) &&
-              !(typeof marketOrders.asks === 'string')) ||
-            !(typeof marketOrders.bids === 'string')
-          ) {
-            const ordersData = marketOrders
-            const orderbookData = updatedData || { asks, bids }
+    //       if (
+    //         ((marketOrders.asks.length > 0 || marketOrders.bids.length > 0) &&
+    //           !(typeof marketOrders.asks === 'string')) ||
+    //         !(typeof marketOrders.bids === 'string')
+    //       ) {
+    //         const ordersData = marketOrders
+    //         const orderbookData = updatedData || { asks, bids }
 
-            // check that current pair and marketType === pair in new orders
-            // if (
-            //   (ordersData.bids.length > 0 &&
-            //     ordersData.bids[0].pair !==
-            //       `${that.props.symbol}_${that.props.marketType}`) ||
-            //   (ordersData.asks.length > 0 &&
-            //     ordersData.asks[0].pair !==
-            //       `${that.props.symbol}_${that.props.marketType}`)
-            // )
-            //   return null
+    //         // check that current pair and marketType === pair in new orders
+    //         // if (
+    //         //   (ordersData.bids.length > 0 &&
+    //         //     ordersData.bids[0].pair !==
+    //         //       `${that.props.symbol}_${that.props.marketType}`) ||
+    //         //   (ordersData.asks.length > 0 &&
+    //         //     ordersData.asks[0].pair !==
+    //         //       `${that.props.symbol}_${that.props.marketType}`)
+    //         // )
+    //         //   return null
 
-            if (
-              String(aggregation) !==
-              String(getAggregationsFromMinPriceDigits(minPriceDigits)[0].value)
-            ) {
-              updatedAggregatedData = addOrdersToOrderbook({
-                updatedData: updatedAggregatedData,
-                ordersData,
-                aggregation,
-                defaultAggregation: getAggregationsFromMinPriceDigits(
-                  this.props.minPriceDigits
-                )[0].value,
-                originalOrderbookTree: { asks, bids },
-                isAggregatedData: true,
-                sizeDigits,
-              })
-            }
+    //         if (
+    //           String(aggregation) !==
+    //           String(getAggregationsFromMinPriceDigits(minPriceDigits)[0].value)
+    //         ) {
+    //           updatedAggregatedData = addOrdersToOrderbook({
+    //             updatedData: updatedAggregatedData,
+    //             ordersData,
+    //             aggregation,
+    //             defaultAggregation: getAggregationsFromMinPriceDigits(
+    //               this.props.minPriceDigits
+    //             )[0].value,
+    //             originalOrderbookTree: { asks, bids },
+    //             isAggregatedData: true,
+    //             sizeDigits,
+    //           })
+    //         }
 
-            updatedData = addOrdersToOrderbook({
-              updatedData: orderbookData,
-              ordersData,
-              aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0]
-                .value,
-              defaultAggregation: getAggregationsFromMinPriceDigits(
-                this.props.minPriceDigits
-              )[0].value,
-              originalOrderbookTree: { asks, bids },
-              isAggregatedData: false,
-              sizeDigits,
-            })
-          }
+    //         updatedData = addOrdersToOrderbook({
+    //           updatedData: orderbookData,
+    //           ordersData,
+    //           aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0]
+    //             .value,
+    //           defaultAggregation: getAggregationsFromMinPriceDigits(
+    //             this.props.minPriceDigits
+    //           )[0].value,
+    //           originalOrderbookTree: { asks, bids },
+    //           isAggregatedData: false,
+    //           sizeDigits,
+    //         })
+    //       }
 
-          that.setState({
-            dataWasUpdated: true,
-            resubscribeTimer: newResubscribeTimer,
-            readyForNewOrder:
-              readyForNewOrder === undefined ? true : readyForNewOrder,
-            aggregation:
-              aggregation === undefined || aggregation === 0
-                ? String(
-                    getAggregationsFromMinPriceDigits(minPriceDigits)[0].value
-                  )
-                : aggregation,
-            aggregatedData: updatedAggregatedData,
-            ...updatedData,
-          })
-        },
-      })
+    //       that.setState({
+    //         dataWasUpdated: true,
+    //         resubscribeTimer: newResubscribeTimer,
+    //         readyForNewOrder:
+    //           readyForNewOrder === undefined ? true : readyForNewOrder,
+    //         aggregation:
+    //           aggregation === undefined || aggregation === 0
+    //             ? String(
+    //               getAggregationsFromMinPriceDigits(minPriceDigits)[0].value
+    //             )
+    //             : aggregation,
+    //         aggregatedData: updatedAggregatedData,
+    //         ...updatedData,
+    //       })
+    //     },
+    //   })
   }
 
   componentDidMount() {
@@ -387,7 +392,6 @@ class OrderbookAndDepthChart extends React.Component {
       exchange,
       quote,
       selectedKey,
-      data: { marketOrders },
       minPriceDigits,
       arrayOfMarketIds,
       updateTerminalPriceFromOrderbook,
@@ -396,9 +400,15 @@ class OrderbookAndDepthChart extends React.Component {
 
     const { asks, bids, aggregation, aggregatedData } = this.state
 
+    const {
+      marketOrders = {},
+    } = this.props.data || {
+      marketOrders: {},
+    }
+
     const dataToSend =
       String(aggregation) ===
-      String(getAggregationsFromMinPriceDigits(minPriceDigits)[0].value)
+        String(getAggregationsFromMinPriceDigits(minPriceDigits)[0].value)
         ? { asks, bids }
         : aggregatedData
 
@@ -460,55 +470,57 @@ class OrderbookAndDepthChart extends React.Component {
   }
 }
 
-export const APIWrapper = ({
-  chartProps,
-  changeTable,
-  isPairDataLoading,
-  marketType,
-  exchange,
-  minPriceDigits,
-  arrayOfMarketIds,
-  selectedKey,
-  updateTerminalPriceFromOrderbook,
-  symbol,
-  sizeDigits,
-  quote,
-  hideDepthChart,
-}) => {
-  return (
-    <QueryRenderer
-      component={OrderbookAndDepthChart}
-      withOutSpinner
-      withTableLoader={false}
-      fetchPolicy="network-only"
-      query={ORDERS_MARKET_QUERY}
-      variables={{ symbol: symbol, exchange, marketType }}
-      subscriptionArgs={{
-        subscription: ORDERBOOK,
-        variables: { symbol, exchange, marketType },
-        // subscription: MOCKED_ORDERBOOK,
-        // variables: { time: 10000, ordersPerTime: 100 },
-        updateQueryFunction: updateOrderBookQuerryFunction,
-      }}
-      {...{
-        quote,
-        symbol,
-        exchange,
-        marketType,
-        sizeDigits,
-        selectedKey,
-        minPriceDigits,
-        arrayOfMarketIds,
-        onButtonClick: changeTable,
-        setOrders: chartProps.setOrders,
-        updateTerminalPriceFromOrderbook,
-        isPairDataLoading,
-        ...chartProps,
-        hideDepthChart,
-      }}
-      isDataLoading={isPairDataLoading}
-      withoutLoading={true}
-      key={`${symbol}${marketType}`}
-    />
-  )
-}
+export { OrderbookAndDepthChart as APIWrapper }
+
+// export const APIWrapper = ({
+//   chartProps,
+//   changeTable,
+//   isPairDataLoading,
+//   marketType,
+//   exchange,
+//   minPriceDigits,
+//   arrayOfMarketIds,
+//   selectedKey,
+//   updateTerminalPriceFromOrderbook,
+//   symbol,
+//   sizeDigits,
+//   quote,
+//   hideDepthChart,
+// }) => {
+//   return (
+//     <QueryRenderer
+//       component={OrderbookAndDepthChart}
+//       withOutSpinner
+//       withTableLoader={false}
+//       fetchPolicy="network-only"
+//       query={ORDERS_MARKET_QUERY}
+//       variables={{ symbol: symbol, exchange, marketType }}
+//       subscriptionArgs={{
+//         subscription: ORDERBOOK,
+//         variables: { symbol, exchange, marketType },
+//         // subscription: MOCKED_ORDERBOOK,
+//         // variables: { time: 10000, ordersPerTime: 100 },
+//         updateQueryFunction: updateOrderBookQuerryFunction,
+//       }}
+//       {...{
+//         quote,
+//         symbol,
+//         exchange,
+//         marketType,
+//         sizeDigits,
+//         selectedKey,
+//         minPriceDigits,
+//         arrayOfMarketIds,
+//         onButtonClick: changeTable,
+//         setOrders: chartProps.setOrders,
+//         updateTerminalPriceFromOrderbook,
+//         isPairDataLoading,
+//         ...chartProps,
+//         hideDepthChart,
+//       }}
+//       isDataLoading={isPairDataLoading}
+//       withoutLoading={true}
+//       key={`${symbol}${marketType}`}
+//     />
+//   )
+// }

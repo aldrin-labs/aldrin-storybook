@@ -25,16 +25,16 @@ const TerminalContainer = ({
   children: React.ReactChild
   theme: Theme
 }) => (
-  <TablesBlockWrapper
-    item
-    container
-    theme={theme}
-    xs={isDefaultTerminalViewMode ? 5 : 12}
-    isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-  >
-    {children}
-  </TablesBlockWrapper>
-)
+    <TablesBlockWrapper
+      item
+      container
+      theme={theme}
+      xs={isDefaultTerminalViewMode ? 5 : 12}
+      isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+    >
+      {children}
+    </TablesBlockWrapper>
+  )
 
 import {
   Container,
@@ -227,13 +227,13 @@ export const DefaultViewComponent = (
                     flexBasis: hideOrderbook
                       ? '0%'
                       : hideDepthChart
-                      ? '50%'
-                      : '65%',
+                        ? '50%'
+                        : '65%',
                     maxWidth: hideOrderbook
                       ? '0%'
                       : hideDepthChart
-                      ? '50%'
-                      : '65%',
+                        ? '50%'
+                        : '65%',
                   }}
                 >
                   {!hideOrderbook && (
@@ -269,13 +269,13 @@ export const DefaultViewComponent = (
                     flexBasis: hideOrderbook
                       ? '100%'
                       : hideDepthChart
-                      ? '50%'
-                      : '35%',
+                        ? '50%'
+                        : '35%',
                     maxWidth: hideOrderbook
                       ? '100%'
                       : hideDepthChart
-                      ? '50%'
-                      : '35%',
+                        ? '50%'
+                        : '35%',
                   }}
                 >
                   {!hideTradeHistory && (
@@ -302,9 +302,9 @@ export const DefaultViewComponent = (
               </Grid>
             </TradingTerminalContainer>
           </TopChartsContainer>
-          {!authenticated && <GuestMode />}
+          {/* {!authenticated && <GuestMode />} */}
 
-          {authenticated && (
+          {(
             <TradingTabelContainer
               item
               theme={theme}
@@ -327,7 +327,7 @@ export const DefaultViewComponent = (
               />
             </TradingTabelContainer>
           )}
-          {authenticated && isDefaultTerminalViewMode && marketType === 1 && (
+          {isDefaultTerminalViewMode && marketType === 1 && (
             <BalancesContainer
               item
               xs={1}
@@ -345,7 +345,7 @@ export const DefaultViewComponent = (
             </BalancesContainer>
           )}
 
-          {authenticated && (
+          {(
             <TerminalContainer
               theme={theme}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}

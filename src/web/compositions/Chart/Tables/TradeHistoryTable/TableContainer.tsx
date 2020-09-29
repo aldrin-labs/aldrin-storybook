@@ -78,58 +78,58 @@ class TableContainer extends Component<IProps, IState> {
 
   subscribe = () => {
     const that = this
-    this.subscription && this.subscription.unsubscribe()
+    // this.subscription && this.subscription.unsubscribe()
 
-    this.subscription = client
-      .subscribe({
-        query: MARKET_TICKERS,
-        fetchPolicy: 'no-cache',
-        variables: {
-          marketType: String(this.props.marketType),
-          exchange: this.props.exchange,
-          symbol: this.props.symbol,
-        },
-      })
-      .subscribe({
-        next: ({ data }) => {
-          if (
-            data &&
-            data.listenMarketTickers &&
-            data.listenMarketTickers.length > 0
-          ) {
-            const tickersData = data.listenMarketTickers
+    // this.subscription = client
+    //   .subscribe({
+    //     query: MARKET_TICKERS,
+    //     fetchPolicy: 'no-cache',
+    //     variables: {
+    //       marketType: String(this.props.marketType),
+    //       exchange: this.props.exchange,
+    //       symbol: this.props.symbol,
+    //     },
+    //   })
+    //   .subscribe({
+    //     next: ({ data }) => {
+    //       if (
+    //         data &&
+    //         data.listenMarketTickers &&
+    //         data.listenMarketTickers.length > 0
+    //       ) {
+    //         const tickersData = data.listenMarketTickers
 
-            if (
-              !tickersData ||
-              tickersData.length === 0 ||
-              tickersData[0].pair !== that.props.currencyPair ||
-              tickersData[0].marketType != that.props.marketType
-            ) {
-              return null
-            }
+    //         if (
+    //           !tickersData ||
+    //           tickersData.length === 0 ||
+    //           tickersData[0].pair !== that.props.currencyPair ||
+    //           tickersData[0].marketType != that.props.marketType
+    //         ) {
+    //           return null
+    //         }
 
-            const updatedData = reduceArrayLength(
-              tickersData
-                .map((trade) => ({
-                  ...trade,
-                  price: Number(trade.price).toFixed(
-                    getNumberOfDecimalsFromNumber(
-                      getAggregationsFromMinPriceDigits(
-                        that.props.minPriceDigits
-                      )[0].value
-                    )
-                  ),
-                  time: new Date(trade.time).toLocaleTimeString(),
-                }))
-                .concat(that.state.data)
-            )
+    //         const updatedData = reduceArrayLength(
+    //           tickersData
+    //             .map((trade) => ({
+    //               ...trade,
+    //               price: Number(trade.price).toFixed(
+    //                 getNumberOfDecimalsFromNumber(
+    //                   getAggregationsFromMinPriceDigits(
+    //                     that.props.minPriceDigits
+    //                   )[0].value
+    //                 )
+    //               ),
+    //               time: new Date(trade.time).toLocaleTimeString(),
+    //             }))
+    //             .concat(that.state.data)
+    //         )
 
-            this.setState({
-              data: updatedData,
-            })
-          }
-        },
-      })
+    //         this.setState({
+    //           data: updatedData,
+    //         })
+    //       }
+    //     },
+    //   })
   }
 
   componentDidMount() {
@@ -146,7 +146,7 @@ class TableContainer extends Component<IProps, IState> {
       this.setState({ data: [] })
 
       //  unsubscribe from old exchange
-      this.subscription && this.subscription.unsubscribe()
+      // this.subscription && this.subscription.unsubscribe()
 
       //  subscribe to new exchange and create new unsub link
       this.subscribe()

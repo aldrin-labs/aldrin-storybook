@@ -164,7 +164,7 @@ export const CardsPanel = ({
           /> */}
         </CustomCard>
 
-        {view === 'default' && (
+        {/* {view === 'default' && (
           <KeySelector
             theme={theme}
             exchange={activeExchange}
@@ -174,7 +174,7 @@ export const CardsPanel = ({
             }}
             isAccountSelect={true}
           />
-        )}
+        )} */}
 
         <AutoSuggestSelect
           style={{ width: '15%', minWidth: '0' }}
@@ -188,7 +188,7 @@ export const CardsPanel = ({
           pricePrecision={pricePrecision}
         />
 
-        <SmartTradeButton
+        {/* <SmartTradeButton
           theme={theme}
           style={{
             height: '100%',
@@ -222,8 +222,8 @@ export const CardsPanel = ({
           {isDefaultTerminalViewMode
             ? 'go to smart terminal'
             : 'back to basic terminal'}
-        </SmartTradeButton>
-        <PreferencesSelect
+        </SmartTradeButton> */}
+        {/* <PreferencesSelect
           theme={theme}
           style={{ width: '15%', minWidth: '0', marginLeft: '.8rem' }}
           id={'preferencesSelector'}
@@ -253,7 +253,7 @@ export const CardsPanel = ({
           hideTradeHistory={hideTradeHistory}
           changeChartLayout={changeChartLayout}
           persistorInstance={persistorInstance}
-        />
+        /> */}
         {/* <div style={{ width: '15.5%', margin: '0 .4rem 0 .6rem' }}>
           <PillowButton
             firstHalfText={'light'}
@@ -312,5 +312,5 @@ export default compose(
     name: 'toggleThemeMode',
   }),
   graphql(changePositionMode, { name: 'changePositionModeMutation' }),
-  graphql(updateThemeMode, { name: 'updateThemeModeMutation'}),
+  graphql(updateThemeMode, { name: 'updateThemeModeMutation' }),
 )(CardsPanel)

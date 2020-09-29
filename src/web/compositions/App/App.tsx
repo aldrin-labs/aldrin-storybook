@@ -91,9 +91,9 @@ const AppRaw = ({
               isPNL={isPNL}
               isChartPage={isChartPage}
             >
-              {!pageIsRegistration && (
+              {/* {!pageIsRegistration && (
                 <AnimatedNavBar pathname={currentPage} hide={fullscreen} />
-              )}
+              )} */}
               {children}
               <Footer
                 isChartPage={isChartPage}

@@ -37,12 +37,12 @@ export const TradeHistory = ({
         show: showTableOnMobile === 'TRADE',
       }}
     >
-      <QueryRenderer
-        component={TradeHistoryTable}
-        withOutSpinner
-        query={MARKET_QUERY}
-        variables={{ symbol, exchange, marketType }}
-        fetchPolicy={'network-only'}
+      <TradeHistoryTable
+        // component={TradeHistoryTable}
+        // withOutSpinner
+        // query={MARKET_QUERY}
+        // variables={{ symbol, exchange, marketType }}
+        // fetchPolicy={'network-only'}
         // subscriptionArgs={{
         //   subscription: MARKET_TICKERS,
         //   variables: { symbol, exchange, marketType: String(marketType) },

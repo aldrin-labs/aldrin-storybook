@@ -108,7 +108,6 @@ export const Balances = ({
   theme,
   marketType,
   selectedKey,
-  subscribeToMore,
   showFuturesTransfer = false,
   timerForFuturesWars = {},
   isAlreadyJoined = false,
@@ -122,7 +121,6 @@ export const Balances = ({
   pair: string[]
   marketType: 0 | 1
   selectedKey: Key
-  subscribeToMore: () => () => void
   showFuturesTransfer: boolean
   timerForFuturesWars: {
     isEnabled: boolean
@@ -269,130 +267,130 @@ export const Balances = ({
               </Grid>
             </>
           ) : (
-            <>
-              <Grid
-                item
-                xs={9}
-                container
-                alignItems="center"
-                justify="flex-start"
-                style={{ maxWidth: '100%' }}
-              >
-                <div style={{ height: '100%', width: '100%' }}>
-                  <BalanceFuturesContainer theme={theme}>
-                    <BalanceFuturesTitle theme={theme}>
-                      Wallet balance
+              <>
+                <Grid
+                  item
+                  xs={9}
+                  container
+                  alignItems="center"
+                  justify="flex-start"
+                  style={{ maxWidth: '100%' }}
+                >
+                  <div style={{ height: '100%', width: '100%' }}>
+                    <BalanceFuturesContainer theme={theme}>
+                      <BalanceFuturesTitle theme={theme}>
+                        Wallet balance
                     </BalanceFuturesTitle>
-                    <BalanceFuturesValue theme={theme}>
-                      <span style={{ color: theme.palette.blue.main }}>
-                        {stripDigitPlaces(USDTFuturesFund.quantity)}
-                      </span>{' '}
-                      <BalanceFuturesSymbol theme={theme}>
-                        USDT
+                      <BalanceFuturesValue theme={theme}>
+                        <span style={{ color: theme.palette.blue.main }}>
+                          {stripDigitPlaces(USDTFuturesFund.quantity)}
+                        </span>{' '}
+                        <BalanceFuturesSymbol theme={theme}>
+                          USDT
                       </BalanceFuturesSymbol>
-                    </BalanceFuturesValue>
-                  </BalanceFuturesContainer>
-                  <BalanceFuturesContainer theme={theme}>
-                    <BalanceFuturesTitle theme={theme}>
-                      Availiable
+                      </BalanceFuturesValue>
+                    </BalanceFuturesContainer>
+                    <BalanceFuturesContainer theme={theme}>
+                      <BalanceFuturesTitle theme={theme}>
+                        Availiable
                     </BalanceFuturesTitle>
-                    <BalanceFuturesValue theme={theme}>
-                      <span style={{ color: theme.palette.blue.main }}>
-                        {stripDigitPlaces(USDTFuturesFund.free)}
-                      </span>{' '}
-                      <BalanceFuturesSymbol theme={theme}>
-                        USDT
+                      <BalanceFuturesValue theme={theme}>
+                        <span style={{ color: theme.palette.blue.main }}>
+                          {stripDigitPlaces(USDTFuturesFund.free)}
+                        </span>{' '}
+                        <BalanceFuturesSymbol theme={theme}>
+                          USDT
                       </BalanceFuturesSymbol>
-                    </BalanceFuturesValue>
-                  </BalanceFuturesContainer>
-                </div>
-              </Grid>
-              <Grid
-                item
-                xs={3}
-                container
-                direction="column"
-                alignItems="center"
-                justify="space-evenly"
-                style={{
-                  maxWidth: '100%',
-                  borderTop: theme.palette.border.main,
-                }}
-              >
-                {isFuturesWarsKey && (
-                  <BtnCustom
-                    disabled={isAlreadyJoined}
-                    btnWidth="100%"
-                    height="auto"
-                    fontSize=".8rem"
-                    padding="1rem 0 .8rem 0;"
-                    borderRadius=".8rem"
-                    btnColor={theme.palette.blue.main}
-                    backgroundColor={theme.palette.white.background}
-                    hoverColor={theme.palette.white.background}
-                    hoverBackground={theme.palette.blue.main}
-                    transition={'all .4s ease-out'}
-                    onClick={() => {
-                      togglePopup(true)
-                    }}
-                  >
-                    {isAlreadyJoined ? 'Joined' : `Join`}
-                  </BtnCustom>
-                )}
-                {!isFuturesWarsKey && (
-                  <>
-                    <BalanceFuturesTitle theme={theme}>
-                      transfer
-                    </BalanceFuturesTitle>
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-evenly',
-                        width: '100%',
+                      </BalanceFuturesValue>
+                    </BalanceFuturesContainer>
+                  </div>
+                </Grid>
+                <Grid
+                  item
+                  xs={3}
+                  container
+                  direction="column"
+                  alignItems="center"
+                  justify="space-evenly"
+                  style={{
+                    maxWidth: '100%',
+                    borderTop: theme.palette.border.main,
+                  }}
+                >
+                  {isFuturesWarsKey && (
+                    <BtnCustom
+                      disabled={isAlreadyJoined}
+                      btnWidth="100%"
+                      height="auto"
+                      fontSize=".8rem"
+                      padding="1rem 0 .8rem 0;"
+                      borderRadius=".8rem"
+                      btnColor={theme.palette.blue.main}
+                      backgroundColor={theme.palette.white.background}
+                      hoverColor={theme.palette.white.background}
+                      hoverBackground={theme.palette.blue.main}
+                      transition={'all .4s ease-out'}
+                      onClick={() => {
+                        togglePopup(true)
                       }}
                     >
-                      <BtnCustom
-                        btnWidth="45%"
-                        height="auto"
-                        fontSize=".8rem"
-                        padding=".5rem 0 .4rem 0;"
-                        borderRadius=".8rem"
-                        btnColor={theme.palette.blue.main}
-                        backgroundColor={theme.palette.white.background}
-                        hoverColor={theme.palette.white.background}
-                        hoverBackground={theme.palette.blue.main}
-                        transition={'all .4s ease-out'}
-                        onClick={() => {
-                          setTransferFromSpotToFutures(true)
-                          togglePopup(true)
+                      {isAlreadyJoined ? 'Joined' : `Join`}
+                    </BtnCustom>
+                  )}
+                  {!isFuturesWarsKey && (
+                    <>
+                      <BalanceFuturesTitle theme={theme}>
+                        transfer
+                    </BalanceFuturesTitle>
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-evenly',
+                          width: '100%',
                         }}
                       >
-                        in
+                        <BtnCustom
+                          btnWidth="45%"
+                          height="auto"
+                          fontSize=".8rem"
+                          padding=".5rem 0 .4rem 0;"
+                          borderRadius=".8rem"
+                          btnColor={theme.palette.blue.main}
+                          backgroundColor={theme.palette.white.background}
+                          hoverColor={theme.palette.white.background}
+                          hoverBackground={theme.palette.blue.main}
+                          transition={'all .4s ease-out'}
+                          onClick={() => {
+                            setTransferFromSpotToFutures(true)
+                            togglePopup(true)
+                          }}
+                        >
+                          in
                       </BtnCustom>
-                      <BtnCustom
-                        btnWidth="45%"
-                        height="auto"
-                        fontSize=".8rem"
-                        padding=".5rem 0 .4rem 0;"
-                        borderRadius=".8rem"
-                        btnColor={theme.palette.blue.main}
-                        backgroundColor={theme.palette.white.background}
-                        hoverColor={theme.palette.white.background}
-                        hoverBackground={theme.palette.blue.main}
-                        transition={'all .4s ease-out'}
-                        onClick={() => {
-                          setTransferFromSpotToFutures(false)
-                          togglePopup(true)
-                        }}
-                      >
-                        out
+                        <BtnCustom
+                          btnWidth="45%"
+                          height="auto"
+                          fontSize=".8rem"
+                          padding=".5rem 0 .4rem 0;"
+                          borderRadius=".8rem"
+                          btnColor={theme.palette.blue.main}
+                          backgroundColor={theme.palette.white.background}
+                          hoverColor={theme.palette.white.background}
+                          hoverBackground={theme.palette.blue.main}
+                          transition={'all .4s ease-out'}
+                          onClick={() => {
+                            setTransferFromSpotToFutures(false)
+                            togglePopup(true)
+                          }}
+                        >
+                          out
                       </BtnCustom>
-                    </div>
-                  </>
-                )}
-              </Grid>
-            </>
-          )}
+                      </div>
+                    </>
+                  )}
+                </Grid>
+              </>
+            )}
         </Grid>
       </CustomCard>
     </>
