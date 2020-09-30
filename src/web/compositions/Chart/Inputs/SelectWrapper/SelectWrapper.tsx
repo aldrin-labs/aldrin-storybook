@@ -60,7 +60,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
   }
   render() {
     const { searchValue, tab, tabSpecificCoin } = this.state
-    const { marketsByExchangeQuery, getSelectorSettingsQuery } = this.props
+    const { marketsByExchangeQuery, getSelectorSettingsQuery, markets = [] } = this.props
 
     const {
       getAccountSettings: {
@@ -80,12 +80,16 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
 
     const fiatRegexp = new RegExp(fiatPairs.join('|'), 'gi')
 
-    const filtredMarketsByExchange = getMarketsByExchange.filter(
+    const dexMarketSymbols = markets.map(el => ({ symbol: el.name }))
+
+
+    const filtredMarketsByExchange = dexMarketSymbols.filter(
       (el) =>
         el.symbol &&
-        +el.volume24hChange &&
-        +el.price &&
-        !Array.isArray(el.symbol.match(fiatRegexp))
+        // +el.volume24hChange &&
+        // +el.price &&
+        !Array.isArray(el.symbol.match(fiatRegexp)) 
+        // dexMarketSymbols.includes(el.symbol)
     )
 
     const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
@@ -545,7 +549,7 @@ class SelectPairListComponent extends React.PureComponent<
           }}
           onClick={() => onTabChange('fiat')}
         >
-          Binance liquidity data
+          {/* Binance liquidity data */}
         </Grid>
       </Grid>
     )
