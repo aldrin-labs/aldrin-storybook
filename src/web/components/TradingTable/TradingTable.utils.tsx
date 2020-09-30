@@ -1871,25 +1871,23 @@ export const combineOpenOrdersTable = (
               <CloseButton
                 i={i}
                 onClick={() => {
-                  // cancelOrderFunc(
-                  //   keyId,
-                  //   orderType === 'maker-only' ? _id : orderId,
-                  //   orderSymbol,
-                  //   orderType
-                  // )
-                  filterCacheData({
-                    data: null,
-                    name: 'getOpenOrderHistory',
-                    subName: 'orders',
-                    query: getOpenOrderHistory,
-                    variables: {
-                      openOrderInput: {
-                        // activeExchangeKey: keyId,
-                        marketType,
-                      },
-                    },
-                    filterData: (order) => order.info.orderId != orderId,
-                  })
+                  cancelOrderFunc(
+                    el
+                  )
+
+                  // filterCacheData({
+                  //   data: null,
+                  //   name: 'getOpenOrderHistory',
+                  //   subName: 'orders',
+                  //   query: getOpenOrderHistory,
+                  //   variables: {
+                  //     openOrderInput: {
+                  //       // activeExchangeKey: keyId,
+                  //       marketType,
+                  //     },
+                  //   },
+                  //   filterData: (order) => order.info.orderId != orderId,
+                  // })
                 }}
               >
                 Cancel
