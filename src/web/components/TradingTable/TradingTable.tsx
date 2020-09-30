@@ -474,7 +474,10 @@ export default React.memo(
       prevProps.priceFromOrderbook === nextProps.priceFromOrderbook &&
       prevProps.currencyPair === nextProps.currencyPair &&
       prevProps.arrayOfMarketIds.length === nextProps.arrayOfMarketIds.length &&
-      prevProps.theme.palette.type === nextProps.theme.palette.type
+      prevProps.theme.palette.type === nextProps.theme.palette.type &&
+      prevProps.isDefaultOnlyTables === nextProps.isDefaultOnlyTables &&
+      prevProps.isDefaultTerminalViewMode ===
+        nextProps.isDefaultTerminalViewMode
     ) {
       return true
     }

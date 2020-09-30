@@ -20,11 +20,6 @@ import { getActivePositions } from '@core/graphql/queries/chart/getActivePositio
 import { getActiveStrategies } from '@core/graphql/queries/chart/getActiveStrategies'
 
 const TradingTabs = ({
-  updateTerminalViewMode,
-  terminalViewMode,
-  isDefaultTerminalViewMode,
-  isDefaultOnlyTables,
-  isSmartOrderMode,
   tab,
   theme,
   handleTabChange,
@@ -48,6 +43,11 @@ const TradingTabs = ({
   subscribeToMore,
   showAllSmartTradePairs,
   showSmartTradesFromAllAccounts,
+  updateTerminalViewMode,
+  terminalViewMode,
+  isDefaultTerminalViewMode,
+  isDefaultOnlyTables,
+  isSmartOrderMode,
   ...props
 }: IProps) => {
   const openOrdersLength = getOpenOrderHistory.orders.filter((order) =>
@@ -70,7 +70,7 @@ const TradingTabs = ({
       (a.enabled ||
         (a.conditions.isTemplate && a.conditions.templateStatus !== 'disabled'))
   ).length
-
+  console.log('props', terminalViewMode)
   return (
     <>
       <TitleTabsGroup theme={theme}>
