@@ -266,7 +266,20 @@ export const CardsPanel = ({
               >
                 {'Smart'}
               </span>
-              <span style={{ paddingLeft: '1rem' }}>{activeTradesLength}</span>
+              <span
+                style={{
+                  backgroundColor: theme.palette.red.primary,
+                  marginLeft: '0.5rem',
+                  borderRadius: '0.5rem',
+                  fontSize: '1.5rem',
+                  width: '3.3rem',
+                  height: '1.6rem',
+                  alignItems: 'center',
+                  color: theme.palette.primary.main,
+                }}
+              >
+                {activeTradesLength}
+              </span>
             </ChangeTradeButton>
           </DarkTooltip>
 

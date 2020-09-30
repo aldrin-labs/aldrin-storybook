@@ -154,6 +154,7 @@ export default ({ themeMode, isChartPage, children }) => {
               custom: '#D93B28',
               bright: '#ED6337',
               new: '#DD6956',
+              primary: '#F07878',
             },
             blue: {
               custom: '#5085EC',
@@ -348,6 +349,7 @@ export default ({ themeMode, isChartPage, children }) => {
               custom: '#D93B28',
               bright: '#ED6337',
               new: '#DD6956',
+              primary: '#F07878',
             },
             blue: {
               custom: '#5085EC',
