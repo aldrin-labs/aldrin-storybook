@@ -203,14 +203,14 @@ function ChartPageComponent(props: any) {
   let initialLeverage
 
   // hacky way to redirect to default market if user selected wrong market in url
-  if (
-    pairPropertiesQuery.loading === false &&
-    pairPropertiesQuery.marketByName.length === 0
-  ) {
-    const chartPageType = marketType === 0 ? 'spot' : 'futures'
-    const pathToRedirect = `/chart/${chartPageType}/BTC_USDT`
-    return <Redirect to={pathToRedirect} exact />
-  }
+  // if (
+  //   pairPropertiesQuery.loading === false &&
+  //   pairPropertiesQuery.marketByName.length === 0
+  // ) {
+  //   const chartPageType = marketType === 0 ? 'spot' : 'futures'
+  //   const pathToRedirect = `/chart/${chartPageType}/BTC_USDT`
+  //   return <Redirect to={pathToRedirect} exact />
+  // }
 
   const isPairDataLoading =
     !pair ||
