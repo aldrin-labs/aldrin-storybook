@@ -874,7 +874,7 @@ const ActiveTradesTableWrapper = compose(
       }),
       updateQueryFunction: updateFundsQuerryFunction,
     },
-  }),
+  })
 )(ActiveTradesTable)
 
 export default React.memo(

@@ -136,7 +136,7 @@ export default ({ themeMode, isChartPage, children }) => {
           },
           palette: {
             divider: fade('#748AA1', 0.16),
-            type: "dark",
+            type: 'dark',
             text: {
               primary: '#DBD9E6',
               dark: '#7284A0',
@@ -170,8 +170,9 @@ export default ({ themeMode, isChartPage, children }) => {
               dark: '#377E21',
               light: '#E7ECF3',
               custom: '#97C15C',
-              main: '#39A74C',
+              main: '#55BB7C',
               new: '#29AC80',
+              tab: '#09ACC7',
             },
             grey: {
               custom: '#2E2E2E',
@@ -219,7 +220,7 @@ export default ({ themeMode, isChartPage, children }) => {
             },
             white: {
               main: '#fff',
-              background: '#0B0B0E',
+              background: '#1B2028',
               inputBackground: '#14161B',
             },
             dark: {
@@ -329,7 +330,7 @@ export default ({ themeMode, isChartPage, children }) => {
           },
           palette: {
             divider: fade('#BCC2CF', 0.5),
-            type: "light",
+            type: 'light',
             text: {
               primary: fade('#41495E', 0.69),
               dark: '#7284A0',
@@ -365,6 +366,7 @@ export default ({ themeMode, isChartPage, children }) => {
               custom: '#97C15C',
               main: '#39A74C',
               new: '#29AC80',
+              tab: '#7380EB',
             },
             grey: {
               custom: '#ABBAD1',
