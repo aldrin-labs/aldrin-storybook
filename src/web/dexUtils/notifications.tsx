@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSnackbar } from 'notistack'
+// import { useSnackbar } from 'notistack'
 import { notification } from 'antd';
 import Link from '../components/Link';
 
@@ -10,8 +10,8 @@ export const notify = ({
   type = 'info',
   placement = 'bottomLeft',
 }) => {
-  const { enqueueSnackbar } = useSnackbar()
-  console.log('enqueueSnackbar', enqueueSnackbar)
+  // const { enqueueSnackbar } = useSnackbar()
+  console.log('notification')
   // if (txid) {
   //   description = (
   //     <Link
@@ -24,9 +24,9 @@ export const notify = ({
   //   );
   // }
 
-  enqueueSnackbar(message, {
-    variant: type,
-  })
+  // enqueueSnackbar(message, {
+  //   variant: type,
+  // })
 
   return null
 }
