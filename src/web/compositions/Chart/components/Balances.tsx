@@ -146,6 +146,8 @@ export const Balances = ({
   const { market } = useMarket()
   const balances = useBalances()
 
+  console.log('balances', balances)
+
   let pricePrecision = market?.tickSize && getDecimalCount(market.tickSize);
   let quantityPrecision = market?.minOrderSize && getDecimalCount(market.minOrderSize);
 
@@ -287,7 +289,7 @@ export const Balances = ({
                     Unsettled balance
                     </BalanceFuturesTitle>
                   <BalanceQuantity>
-                    {balances[1]?.wallet ? stripDigitPlaces(balances[1].unsettled, 8) : 0} {pair[1]}
+                    {balances[1]?.unsettled ? stripDigitPlaces(balances[1].unsettled, 8) : 0} {pair[1]}
                   </BalanceQuantity>
                 </BalanceValues>
               </Grid>

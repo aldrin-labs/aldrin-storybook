@@ -1,13 +1,9 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { useLocation, useHistory } from 'react-router-dom'
 import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
-import PreferencesSelect from '../Inputs/PreferencesSelect'
-import LayoutSelector from '@core/components/LayoutSelector'
-import KeySelector from '@core/components/KeySelector'
-import SelectExchange from '../Inputs/SelectExchange/SelectExchange'
-import { SmartTradeButton } from '@sb/components/TraidingTerminal/styles'
+
 import MarketStats from './MarketStats/MarketStats'
 import { TooltipCustom } from '@sb/components/index'
 import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
@@ -17,10 +13,14 @@ import { changeHedgeModeInCache } from '@core/utils/tradingComponent.utils'
 import { checkLoginStatus } from '@core/utils/loginUtils'
 import { PanelWrapper, CustomCard } from '../Chart.styles'
 import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
-import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { updateThemeMode } from '@core/graphql/mutations/chart/updateThemeMode'
-import { writeQueryData } from '@core/utils/TradingTable.utils'
-import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
+
+import { useWallet, WALLET_PROVIDERS } from '@sb/dexUtils/wallet';
+import { ENDPOINTS, useConnectionConfig } from '@sb/dexUtils/connection';
+
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select'
+import Button from '@material-ui/core/Button'
 
 const selectStyles = (theme: Theme) => ({
   height: '100%',
@@ -53,28 +53,87 @@ const selectStyles = (theme: Theme) => ({
   },
 })
 
+const TopBar = () => {
+  const { connected, wallet, providerUrl, setProvider } = useWallet();
+  const { endpoint, setEndpoint } = useConnectionConfig();
+  const location = useLocation();
+  const history = useHistory();
+
+  const publicKey = wallet?.publicKey?.toBase58();
+
+  const handleClick = useCallback(
+    (e) => {
+      history.push(e.key);
+    },
+    [history],
+  );
+
+  return (
+    <div style={{ display: 'flex' }}>
+      {/* <LogoWrapper> */}
+      {/* <img src={logo} alt="" onClick={() => history.push('/')} /> */}
+      {/* {'SERUM'} */}
+      {/* </LogoWrapper> */}
+      <div>
+        <Select
+          onSelect={setEndpoint}
+          value={endpoint}
+          style={{ marginRight: 8 }}
+        >
+          {ENDPOINTS.map(({ name, endpoint }) => (
+            <MenuItem value={endpoint} key={endpoint}>
+              {name}
+            </MenuItem>
+          ))}
+        </Select>
+      </div>
+      <div>
+        <Select onSelect={setProvider} value={providerUrl}>
+          {WALLET_PROVIDERS.map(({ name, url }) => (
+            <MenuItem value={url} key={url}>
+              {name}
+            </MenuItem>
+          ))}
+        </Select>
+      </div>
+      <div>
+        <Button
+          type="text"
+          size="large"
+          onClick={connected ? wallet.disconnect : wallet.connect}
+          style={{ color: '#2abdd2' }}
+        >
+          {/* <UserOutlined /> */}
+          {!connected ? 'Connect wallet' : 'Disconnect'}
+        </Button>
+        {/* {connected && (
+          <Popover
+            content={<LinkAddress address={publicKey} />}
+            placement="bottomRight"
+            title="Wallet public key"
+            trigger="click"
+          >
+            <InfoCircleOutlined style={{ color: '#2abdd2' }} />
+          </Popover>
+        )} */}
+      </div>
+    </div>
+  );
+}
+
+
 export const CardsPanel = ({
   _id,
   pair,
   view,
   theme,
-  themeMode,
-  activeExchange,
-  isDefaultTerminalViewMode,
-  updateTerminalViewMode,
   marketType,
   quantityPrecision,
   pricePrecision,
   changePositionModeMutation,
   selectedKey,
   showChangePositionModeResult,
-  toggleThemeMode,
-  hideDepthChart,
-  hideOrderbook,
-  hideTradeHistory,
-  changeChartLayout,
-  persistorInstance,
-  updateThemeModeMutation
+  activeExchange,
 }) => {
   const hedgeMode = selectedKey.hedgeMode
 
@@ -93,34 +152,7 @@ export const CardsPanel = ({
     }
   }
 
-  const changePositionModeWithStatus = async (hedgeMode: boolean) => {
-    changeHedgeModeInCache({
-      selectedTradingKey: selectedKey.keyId,
-      hedgeMode,
-      isFuturesWarsKey: selectedKey.isFuturesWarsKey,
-    })
-
-    const result = await changePositionMode(hedgeMode)
-
-    if (
-      (result.status === 'ERR' || result.errors) &&
-      result.binanceMessage !== 'No need to change position side.'
-    ) {
-      changeHedgeModeInCache({
-        selectedTradingKey: selectedKey.keyId,
-        hedgeMode: !hedgeMode,
-        isFuturesWarsKey: selectedKey.isFuturesWarsKey,
-      })
-    }
-
-    showChangePositionModeResult(result, 'Position mode')
-  }
-
-  const history = useHistory()
   const location = useLocation()
-  const { pathname } = location
-
-  const authenticated = checkLoginStatus()
 
   return (
     <>
@@ -187,6 +219,8 @@ export const CardsPanel = ({
           quantityPrecision={quantityPrecision}
           pricePrecision={pricePrecision}
         />
+
+        <TopBar />
 
         {/* <SmartTradeButton
           theme={theme}
