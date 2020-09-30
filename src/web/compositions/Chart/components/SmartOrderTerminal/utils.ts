@@ -40,6 +40,7 @@ export const RedSwitcherStyles = (theme: Theme) => ({
 
 export const BlueSwitcherStyles = (theme: Theme) => ({
   ...CommonSwitcherStyles,
-  activeBackgroundColor: theme.palette.blue.switcherBackground,
-  activeBorderColor: theme.palette.blue.switcherBorder,
+  activeBackgroundColor: theme.palette.white.btnBackground,
+  activeBorderColor: theme.palette.blue.main,
+  activeColor: theme.palette.blue.main,
 })

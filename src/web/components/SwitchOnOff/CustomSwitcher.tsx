@@ -31,7 +31,7 @@ const SwitcherHalf = styled(
   )
 )`
   height: ${(props) => props.height};
-  font-weight: ${(props) => props.fontWeight || 'normal'};
+  font-weight: ${(props) => (props.isDisabled ? 'normal' : 'bold')};
   text-transform: ${(props) => props.textTransform || 'capitalize'};
   white-space: nowrap;
   cursor: ${(props) => (props.isDisabled ? 'unset' : 'pointer')};

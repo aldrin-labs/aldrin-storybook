@@ -150,7 +150,7 @@ export default ({ themeMode, isChartPage, children }) => {
               registration: '#000000',
             },
             red: {
-              main: '#DD6956',
+              main: '#F07878',
               custom: '#D93B28',
               bright: '#ED6337',
               new: '#DD6956',
@@ -171,7 +171,7 @@ export default ({ themeMode, isChartPage, children }) => {
               dark: '#377E21',
               light: '#E7ECF3',
               custom: '#97C15C',
-              main: '#39A74C',
+              main: '#5BC9BB',
               new: '#29AC80',
             },
             grey: {
@@ -345,7 +345,7 @@ export default ({ themeMode, isChartPage, children }) => {
               registration: '#000000',
             },
             red: {
-              main: '#DD6956',
+              main: '#F07878',
               custom: '#D93B28',
               bright: '#ED6337',
               new: '#DD6956',
@@ -365,7 +365,7 @@ export default ({ themeMode, isChartPage, children }) => {
             green: {
               dark: '#377E21',
               custom: '#97C15C',
-              main: '#39A74C',
+              main: '#5BC9BB',
               new: '#29AC80',
             },
             grey: {
@@ -417,6 +417,7 @@ export default ({ themeMode, isChartPage, children }) => {
               main: '#fff',
               background: '#fff',
               inputBackground: '#fff',
+              btnBackground: '#F5F5FB',
             },
             dark: {
               main: '#16253D',

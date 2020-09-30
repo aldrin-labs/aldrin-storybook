@@ -149,25 +149,22 @@ export const BeforeCharacter = styled.span`
 export const AdditionalSettingsButton = styled(
   ({ isActive, children, theme, ...rest }) => (
     <BtnCustom
-      btnWidth="calc(94% / 3)"
-      height={'2.5rem'}
+      btnWidth="22.75%"
+      height={'3.125rem'}
       fontSize="1.2rem"
-      fontWeight="normal"
+      fontWeight={isActive ? '700' : '400'}
       padding="0"
-      borderRadius="0"
+      borderRadius="3.125rem"
       borderColor={
-        isActive ? theme.palette.blue.btnBackground : theme.palette.grey.border
+        isActive ? theme.palette.blue.main : theme.palette.grey.border
       }
-      btnColor={isActive ? theme.palette.white.main : theme.palette.grey.text}
-      backgroundColor={
-        isActive ? theme.palette.blue.btnBackground : theme.palette.grey.main
-      }
-      hoverColor={theme.palette.white.main}
-      hoverBorderColor={theme.palette.blue.btnBackground}
-      hoverBackground={theme.palette.blue.btnBackground}
+      btnColor={isActive ? theme.palette.blue.main : theme.palette.text.dark}
+      backgroundColor={theme.palette.grey.main}
+      hoverColor={theme.palette.blue.main}
+      hoverBorderColor={theme.palette.blue.main}
       transition={'all .25s ease-out'}
       textTransform="none"
-      boxShadow={'0px .2rem .3rem rgba(8, 22, 58, 0.15)'}
+      boxShadow={isActive ? '0px .2rem .3rem rgba(8, 22, 58, 0.15)' : 'none'}
       margin={'0 3% 0 0'}
       {...rest}
     >
@@ -175,10 +172,49 @@ export const AdditionalSettingsButton = styled(
     </BtnCustom>
   )
 )`
+  &:hover {
+    box-shadow: 0px 0.2rem 0.3rem rgba(8, 22, 58, 0.15);
+  }
   &:last-child {
     margin: 0;
   }
 
+  @media (min-width: 1921px) {
+    height: calc(2.5rem - 0.5rem);
+    font-size: 1.1rem;
+    padding-top: 0.2rem;
+  }
+`
+
+export const ChangeOrderTypeBtn = styled(
+  ({ isActive, children, theme, ...rest }) => (
+    <BtnCustom
+      btnWidth="calc(50%/3)"
+      height={'3rem'}
+      fontSize="1.2rem"
+      fontWeight={isActive ? '700' : '400'}
+      padding="0"
+      borderRadius="0.1rem"
+      borderColor={
+        isActive ? theme.palette.blue.main : theme.palette.grey.border
+      }
+      btnColor={isActive ? theme.palette.blue.main : theme.palette.text.dark}
+      backgroundColor={theme.palette.grey.main}
+      hoverColor={theme.palette.blue.main}
+      hoverBorderColor={theme.palette.blue.main}
+      transition={'all .25s ease-out'}
+      textTransform="none"
+      boxShadow={isActive ? '0px .2rem .3rem rgba(8, 22, 58, 0.15)' : 'none'}
+      margin={'0 0 0 0'}
+      {...rest}
+    >
+      {children}
+    </BtnCustom>
+  )
+)`
+  &:hover {
+    box-shadow: 0px 0.2rem 0.3rem rgba(8, 22, 58, 0.15);
+  }
   @media (min-width: 1921px) {
     height: calc(2.5rem - 0.5rem);
     font-size: 1.1rem;

@@ -290,12 +290,12 @@ export const SendButton = styled(StyledTab)`
           props.theme.palette &&
           props.theme.palette.green &&
           props.theme.palette.green.main) ||
-        '#29AC80'
+        '#5BC9BB'
       : (props.theme &&
           props.theme.palette &&
           props.theme.palette.red &&
           props.theme.palette.red.main) ||
-        '#DD6956'};
+        '#F07878'};
   box-shadow: 0px 0.7rem 1rem rgba(8, 22, 58, 0.3);
   border-radius: 0;
   border: none;
