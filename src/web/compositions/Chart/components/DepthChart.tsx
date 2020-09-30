@@ -24,7 +24,6 @@ export const DepthChart = ({
       <DepthChartComponent
         {...{
           onButtonClick: changeTable,
-
           ...chartProps,
           key: 'depth_chart_query_render',
           data,

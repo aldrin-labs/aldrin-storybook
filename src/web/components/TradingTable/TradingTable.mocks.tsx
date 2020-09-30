@@ -25,45 +25,45 @@ export const positionsColumnNames = (
   updatePositionsHandler,
   positionsRefetchInProcess
 ) => [
-  { label: '#', id: 'index' },
-  { label: 'Pair/Side', id: 'pair' },
-  // { label: 'Type', id: 'type' },
-  { label: 'Size', id: 'size', style: { textAlign: 'right' } },
-  { label: 'Margin', id: 'margin' },
-  // { label: 'M. Ratio', id: 'marginRation' },
-  { label: 'Leverage', id: 'leverage' },
-  { label: 'Entry Price', id: 'entryPrice' },
-  { label: 'Mark Price', id: 'marketPrice' },
-  { label: <DarkTooltip maxWidth={'30rem'} title={`This indicator shows your position in the auto-deleverage queue. If all lights are lit, in the event of a liquidation, your position may be reduced.`}><span>adl</span></DarkTooltip>, id: 'adl' },
-  { label: 'Liq. Price', id: 'liqPrice' },
-  { label: 'Pnl/Roe', id: 'pnlRoe' },
-  {
-    label: (
-      <DarkTooltip title={`Update positions`}>
-        <div
-          style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
-        >
-          {positionsRefetchInProcess ? (
-            <Loading size={16} style={{ height: '16px' }} />
-          ) : (
-            <SvgIcon
-              alt="Update positions"
-              src={Reimport}
-              width="26px"
-              height="17px"
-              onClick={async () => {
-                refetch()
-                updatePositionsHandler()
-              }}
-            />
-          )}
-        </div>
-      </DarkTooltip>
-    ),
-    id: 'refetch',
-    isSortable: false,
-  },
-]
+    { label: '#', id: 'index' },
+    { label: 'Pair/Side', id: 'pair' },
+    // { label: 'Type', id: 'type' },
+    { label: 'Size', id: 'size', style: { textAlign: 'right' } },
+    { label: 'Margin', id: 'margin' },
+    // { label: 'M. Ratio', id: 'marginRation' },
+    { label: 'Leverage', id: 'leverage' },
+    { label: 'Entry Price', id: 'entryPrice' },
+    { label: 'Mark Price', id: 'marketPrice' },
+    { label: <DarkTooltip maxWidth={'30rem'} title={`This indicator shows your position in the auto-deleverage queue. If all lights are lit, in the event of a liquidation, your position may be reduced.`}><span>adl</span></DarkTooltip>, id: 'adl' },
+    { label: 'Liq. Price', id: 'liqPrice' },
+    { label: 'Pnl/Roe', id: 'pnlRoe' },
+    {
+      label: (
+        <DarkTooltip title={`Update positions`}>
+          <div
+            style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+          >
+            {positionsRefetchInProcess ? (
+              <Loading size={16} style={{ height: '16px' }} />
+            ) : (
+                <SvgIcon
+                  alt="Update positions"
+                  src={Reimport}
+                  width="26px"
+                  height="17px"
+                  onClick={async () => {
+                    refetch()
+                    updatePositionsHandler()
+                  }}
+                />
+              )}
+          </div>
+        </DarkTooltip>
+      ),
+      id: 'refetch',
+      isSortable: false,
+    },
+  ]
 
 export const activeTradesColumnNames = [
   { label: ' ', id: 'blank' },
@@ -181,16 +181,17 @@ export const positionsBody = new Array(13).fill(undefined).map((el, i) => ({
 
 export const openOrdersColumnNames = (marketType: number) =>
   [
-    { label: 'Pair', id: 'pair' },
+    { label: 'Market', id: 'pair' },
     // { label: 'Type', id: 'type' },
     { label: 'Side/Type', id: 'side' },
     { label: 'Price', id: 'price' },
-    { label: marketType === 0 ? 'Quantity' : 'size', id: 'quantity' },
+    marketType === 0 ? { label: 'Quantity', id: 'quantity' } : {},
+    { label: marketType === 0 ? 'Total' : 'size', id: 'amount' },
     // { label: 'Filled %', id: 'filled',  },
-    marketType === 0 ? { label: 'Amount', id: 'amount' } : {},
-    { label: 'Trigger', id: 'triggerConditions' },
-    marketType === 1 ? { label: 'Reduce Only', id: 'reduceOnly' } : {},
-    { label: 'date', isNumber: true, id: 'date' },
+    // marketType === 0 ? { label: 'Size', id: 'amount' } : {},
+    // { label: 'Trigger', id: 'triggerConditions' },
+    // marketType === 1 ? { label: 'Reduce Only', id: 'reduceOnly' } : {},
+    // { label: 'date', isNumber: true, id: 'date' },
     {
       label:
         // <TableButton size="small" variant="outlined">
@@ -258,15 +259,16 @@ export const orderHistoryBody = new Array(13).fill(undefined).map((el, i) => ({
 
 export const tradeHistoryColumnNames = (marketType: number) =>
   [
-    { label: 'Pair', id: 'pair' },
+    { label: 'Market', id: 'pair' },
     { label: 'Type', id: 'type' },
     { label: 'Price', id: 'price' },
     { label: marketType === 0 ? 'Quantity' : 'size', id: 'quantity' },
-    marketType === 0 ? { label: 'Amount', id: 'amount' } : {},
-    marketType === 1 ? { label: 'P&L', id: 'realizedPnl' } : {},
+    marketType === 0 ? { label: 'Total', id: 'amount' } : {},
+    { label: 'Liquidity', id: 'liquidity' },
+    // marketType === 1 ? { label: 'P&L', id: 'realizedPnl' } : {},
     { label: 'Fee', id: 'fee' },
-    { label: 'Status', id: 'status' },
-    { label: 'date', isNumber: true, id: 'date' },
+    // { label: 'Status', id: 'status' },
+    // { label: 'date', isNumber: true, id: 'date' },
   ].filter((x) => x.label)
 
 export const tradeHistoryBody = new Array(13).fill(undefined).map((el, i) => ({
