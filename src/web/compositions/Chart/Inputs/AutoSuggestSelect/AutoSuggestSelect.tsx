@@ -5,6 +5,7 @@ import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 
 // import stableCoins from '@core/config/stableCoins'
+import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
 import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
@@ -56,6 +57,8 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       changeCurrencyPairMutation,
       history,
       marketType,
+      setMarketAddress,
+      markets,
     } = this.props
     const {
       multichart: { charts },
@@ -68,17 +71,13 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
     this.closeMenu()
 
     if (view === 'default') {
-      const chartPageType = marketType === 0 ? 'spot' : 'futures'
 
-      history.push(`/chart/${chartPageType}/${value}`)
+      // Need to refactor this, address of a coin should be in the value, not name
+      // console.log('value: ', value)
+      const selectedMarketFormSelector = markets.find((el) => el.name === value)
+      // console.log('selectedMarketFormSelector', selectedMarketFormSelector)
+      setMarketAddress(selectedMarketFormSelector.address.toBase58())
 
-      // await changeCurrencyPairMutation({
-      //   variables: {
-      //     pairInput: {
-      //       pair: value,
-      //     },
-      //   },
-      // })
 
       return
     } else if (charts.length < 8 && view === 'onlyCharts') {
@@ -105,6 +104,20 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       activeExchange,
     } = this.props
 
+    const { 
+      market,
+      marketName,
+      customMarkets,
+      setCustomMarkets,
+      setMarketAddress,
+      markets,
+      handleDeprecated,
+      setHandleDeprecated,
+      addMarketVisible,
+      setAddMarketVisible,
+      deprecatedMarkets,
+      getMarketInfos, } = this.props
+
     const { isClosed, isMenuOpen } = this.state
 
     return (
@@ -115,8 +128,9 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
             updateFavoritePairsMutation={updateFavoritePairsMutation}
             onSelectPair={this.handleChange}
             closeMenu={this.closeMenu}
-            marketType={marketType}
+            marketType={1}
             activeExchange={activeExchange}
+            markets={markets}
           />
         )}
         <ExchangePair
@@ -128,7 +142,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
           <SelectR
             id={this.props.id}
             style={{ width: '100%' }}
-            value={isClosed && value && { value, label: value }}
+            value={isClosed && marketName && { marketName, label: marketName }}
             fullWidth={true}
             isDisabled={true}
           />
@@ -155,5 +169,7 @@ export default compose(
   graphql(updateFavoritePairs, {
     name: 'updateFavoritePairsMutation',
   }),
-  graphql(ADD_CHART, { name: 'addChartMutation' })
+  graphql(ADD_CHART, { name: 'addChartMutation' }),
+  withMarketUtilsHOC,
+
 )(IntegrationReactSelect)
