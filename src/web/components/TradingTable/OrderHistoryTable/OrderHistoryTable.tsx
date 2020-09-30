@@ -28,8 +28,8 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
 
   componentDidMount() {
     const {
-      getPaginatedOrderHistoryQuery,
-      subscribeToMore,
+      // getPaginatedOrderHistoryQuery,
+      // subscribeToMore,
       theme,
       keys,
       arrayOfMarketIds,
@@ -37,8 +37,16 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       handlePairChange,
     } = this.props
 
+    const {
+      getPaginatedOrderHistory: { orders } = {
+        orders: [],
+      },
+    } = this.props.getPaginatedOrderHistoryQuery || {
+      getPaginatedOrderHistory: { orders: [] },
+    }
+
     const orderHistoryProcessedData = combineOrderHistoryTable(
-      getPaginatedOrderHistoryQuery.getPaginatedOrderHistory.orders,
+      orders,
       theme,
       arrayOfMarketIds,
       marketType,
@@ -49,49 +57,49 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       orderHistoryProcessedData,
     })
 
-    this.unsubscribeFunction = subscribeToMore()
+    // this.unsubscribeFunction = subscribeToMore()
   }
 
   componentDidUpdate(prevProps: IProps) {
     if (
-      prevProps.selectedKey.keyId !== this.props.selectedKey.keyId ||
+      // prevProps.selectedKey.keyId !== this.props.selectedKey.keyId ||
       prevProps.specificPair !== this.props.specificPair ||
-      prevProps.allKeys !== this.props.allKeys ||
+      // prevProps.allKeys !== this.props.allKeys ||
       prevProps.marketType !== this.props.marketType
     ) {
-      const {
-        startDate,
-        endDate,
-        marketType,
-        selectedKey,
-        allKeys,
-        currencyPair,
-        specificPair,
-        enqueueSnackbar,
-      } = this.props
+      // const {
+      //   startDate,
+      //   endDate,
+      //   marketType,
+      //   selectedKey,
+      //   allKeys,
+      //   currencyPair,
+      //   specificPair,
+      //   enqueueSnackbar,
+      // } = this.props
 
-      this.unsubscribeFunction && this.unsubscribeFunction()
-      this.unsubscribeFunction = this.props.getPaginatedOrderHistoryQuery.subscribeToMore(
-        {
-          document: ORDER_HISTORY,
-          variables: {
-            orderHistoryInput: {
-              startDate: startDate.valueOf(),
-              endDate: endDate.valueOf(),
-              marketType,
-              activeExchangeKey: selectedKey.keyId,
-              allKeys,
-              ...(!specificPair ? {} : { specificPair: currencyPair }),
-            },
-          },
-          updateQuery: (prev, data) =>
-            updatePaginatedOrderHistoryQuerryFunction(
-              prev,
-              data,
-              enqueueSnackbar
-            ),
-        }
-      )
+      // this.unsubscribeFunction && this.unsubscribeFunction()
+      // this.unsubscribeFunction = this.props.getPaginatedOrderHistoryQuery.subscribeToMore(
+      //   {
+      //     document: ORDER_HISTORY,
+      //     variables: {
+      //       orderHistoryInput: {
+      //         startDate: startDate.valueOf(),
+      //         endDate: endDate.valueOf(),
+      //         marketType,
+      //         activeExchangeKey: selectedKey.keyId,
+      //         allKeys,
+      //         ...(!specificPair ? {} : { specificPair: currencyPair }),
+      //       },
+      //     },
+      //     updateQuery: (prev, data) =>
+      //       updatePaginatedOrderHistoryQuerryFunction(
+      //         prev,
+      //         data,
+      //         enqueueSnackbar
+      //       ),
+      //   }
+      // )
     }
   }
 
@@ -103,8 +111,16 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
   }
 
   componentWillReceiveProps(nextProps: IProps) {
+    const {
+      getPaginatedOrderHistory: { orders } = {
+        orders: [],
+      },
+    } = nextProps.getPaginatedOrderHistoryQuery || {
+      getPaginatedOrderHistory: { orders: [] },
+    }
+
     const orderHistoryProcessedData = combineOrderHistoryTable(
-      nextProps.getPaginatedOrderHistoryQuery.getPaginatedOrderHistory.orders,
+      orders,
       nextProps.theme,
       nextProps.arrayOfMarketIds,
       nextProps.marketType,
@@ -148,8 +164,13 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       return null
     }
 
-    const maxRows = this.props.getPaginatedOrderHistoryQuery
-      .getPaginatedOrderHistory.count
+    const {
+      getPaginatedOrderHistory: { count } = {
+        count: 0,
+      },
+    } = this.props.getPaginatedOrderHistoryQuery || {
+      getPaginatedOrderHistory: { count: 0 },
+    }
 
     return (
       <TableWithSort
@@ -196,7 +217,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
         pagination={{
           fakePagination: false,
           enabled: true,
-          totalCount: maxRows,
+          totalCount: count,
           page: page,
           rowsPerPage: perPage,
           rowsPerPageOptions: [10, 20, 30, 50, 100],
@@ -230,7 +251,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
                 startDate,
                 endDate,
                 theme,
-                maxRows,
+                maxRows: count,
                 focusedInput,
                 activeDateButton,
                 minimumDate,
@@ -252,70 +273,70 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
   }
 }
 
-const TableDataWrapper = ({ ...props }) => {
-  let {
-    startDate,
-    endDate,
-    page,
-    perPage,
-    marketType,
-    allKeys,
-    specificPair,
-  } = props
+// const TableDataWrapper = ({ ...props }) => {
+//   let {
+//     startDate,
+//     endDate,
+//     page,
+//     perPage,
+//     marketType,
+//     allKeys,
+//     specificPair,
+//   } = props
 
-  const { enqueueSnackbar } = useSnackbar()
+//   const { enqueueSnackbar } = useSnackbar()
 
-  startDate = +startDate
-  endDate = +endDate
+//   startDate = +startDate
+//   endDate = +endDate
 
-  return (
-    <QueryRenderer
-      component={OrderHistoryTable}
-      enqueueSnackbar={enqueueSnackbar}
-      variables={{
-        paginatedOrderHistoryInput: {
-          page,
-          perPage,
-          startDate,
-          endDate,
-          marketType,
-          allKeys,
-          ...(!specificPair ? {} : { specificPair: props.currencyPair }),
-          activeExchangeKey: props.selectedKey.keyId,
-        },
-      }}
-      withOutSpinner={true}
-      withTableLoader={true}
-      showLoadingWhenQueryParamsChange={false}
-      query={getPaginatedOrderHistory}
-      name={`getPaginatedOrderHistoryQuery`}
-      fetchPolicy="cache-and-network"
-      // pollInterval={props.show ? 45000 : 0}
-      subscriptionArgs={{
-        subscription: ORDER_HISTORY,
-        variables: {
-          orderHistoryInput: {
-            startDate,
-            endDate,
-            marketType,
-            activeExchangeKey: props.selectedKey.keyId,
-            allKeys,
-            ...(!specificPair ? {} : { specificPair: props.currencyPair }),
-          },
-        },
-        updateQueryFunction: (prev, data) =>
-          updatePaginatedOrderHistoryQuerryFunction(
-            prev,
-            data,
-            enqueueSnackbar
-          ),
-      }}
-      {...props}
-    />
-  )
-}
+//   return (
+//     <QueryRenderer
+//       component={OrderHistoryTable}
+//       enqueueSnackbar={enqueueSnackbar}
+//       variables={{
+//         paginatedOrderHistoryInput: {
+//           page,
+//           perPage,
+//           startDate,
+//           endDate,
+//           marketType,
+//           allKeys,
+//           ...(!specificPair ? {} : { specificPair: props.currencyPair }),
+//           activeExchangeKey: props.selectedKey.keyId,
+//         },
+//       }}
+//       withOutSpinner={true}
+//       withTableLoader={true}
+//       showLoadingWhenQueryParamsChange={false}
+//       query={getPaginatedOrderHistory}
+//       name={`getPaginatedOrderHistoryQuery`}
+//       fetchPolicy="cache-and-network"
+//       // pollInterval={props.show ? 45000 : 0}
+//       subscriptionArgs={{
+//         subscription: ORDER_HISTORY,
+//         variables: {
+//           orderHistoryInput: {
+//             startDate,
+//             endDate,
+//             marketType,
+//             activeExchangeKey: props.selectedKey.keyId,
+//             allKeys,
+//             ...(!specificPair ? {} : { specificPair: props.currencyPair }),
+//           },
+//         },
+//         updateQueryFunction: (prev, data) =>
+//           updatePaginatedOrderHistoryQuerryFunction(
+//             prev,
+//             data,
+//             enqueueSnackbar
+//           ),
+//       }}
+//       {...props}
+//     />
+//   )
+// }
 
-export default React.memo(TableDataWrapper, (prevProps, nextProps) => {
+export default React.memo(OrderHistoryTable, (prevProps, nextProps) => {
   // TODO: Refactor isShowEqual --- not so clean
   const isShowEqual = !nextProps.show && !prevProps.show
   const showAllAccountsEqual =

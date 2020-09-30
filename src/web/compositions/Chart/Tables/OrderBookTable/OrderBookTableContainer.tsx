@@ -26,7 +26,7 @@ import SortByBids from '@icons/SortByBids.svg'
 import { IProps, IState, OrderbookMode } from './OrderBookTableContainer.types'
 
 import { ModesContainer, SvgMode } from './OrderBookTableContainer.styles'
-import { getAggregationsFromMinPriceDigits } from '@core/utils/chartPageUtils'
+import { getAggregationsFromMinPriceDigits, getAggregationsFromPricePrecision } from '@core/utils/chartPageUtils'
 
 class OrderBookTableContainer extends Component<IProps, IState> {
   state: IState = {
@@ -88,6 +88,8 @@ class OrderBookTableContainer extends Component<IProps, IState> {
       setOrderbookAggregation,
       updateTerminalPriceFromOrderbook,
       getOpenOrderHistoryQuery,
+      markPrice,
+      pricePrecision
     } = this.props
 
     const { mode } = this.state
@@ -100,7 +102,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
     const openOrders = getOpenOrderHistory.orders.filter((order) =>
       filterOpenOrders({ order, canceledOrders: [] })
     )
-    const aggregationModes = getAggregationsFromMinPriceDigits(minPriceDigits)
+    const aggregationModes = getAggregationsFromPricePrecision(pricePrecision)
 
     return (
       <>
@@ -176,7 +178,9 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           marketOrders={marketOrders}
           aggregation={aggregation}
           symbol={currencyPair}
+          markPrice={markPrice}
           exchange={this.props.exchange}
+          pricePrecision={pricePrecision}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
         />
 
@@ -198,42 +202,42 @@ class OrderBookTableContainer extends Component<IProps, IState> {
   }
 }
 
-const APIWrapper = (props) => {
-  const authenticated = checkLoginStatus()
+// const APIWrapper = (props) => {
+//   const authenticated = checkLoginStatus()
 
-  return (
-    <QueryRenderer
-      component={OrderBookTableContainer}
-      variables={{
-        openOrderInput: {
-          activeExchangeKey: props.selectedKey.keyId,
-          marketType: props.marketType,
-          allKeys: true,
-          page: 0,
-          perPage: 30,
-        },
-      }}
-      withOutSpinner={true}
-      withTableLoader={false}
-      skip={!authenticated}
-      query={getOpenOrderHistory}
-      name={`getOpenOrderHistoryQuery`}
-      fetchPolicy="cache-and-network"
-      subscriptionArgs={{
-        subscription: OPEN_ORDER_HISTORY,
-        variables: {
-          openOrderInput: {
-            marketType: props.marketType,
-            activeExchangeKey: props.selectedKey.keyId,
-            allKeys: true,
-          },
-        },
-        updateQueryFunction: updateOpenOrderHistoryQuerryFunction,
-      }}
-      withoutLoading={true}
-      {...props}
-    />
-  )
-}
+//   return (
+//     <QueryRenderer
+//       component={OrderBookTableContainer}
+//       variables={{
+//         openOrderInput: {
+//           activeExchangeKey: props.selectedKey.keyId,
+//           marketType: props.marketType,
+//           allKeys: true,
+//           page: 0,
+//           perPage: 30,
+//         },
+//       }}
+//       withOutSpinner={true}
+//       withTableLoader={false}
+//       skip={!authenticated}
+//       query={getOpenOrderHistory}
+//       name={`getOpenOrderHistoryQuery`}
+//       fetchPolicy="cache-and-network"
+//       subscriptionArgs={{
+//         subscription: OPEN_ORDER_HISTORY,
+//         variables: {
+//           openOrderInput: {
+//             marketType: props.marketType,
+//             activeExchangeKey: props.selectedKey.keyId,
+//             allKeys: true,
+//           },
+//         },
+//         updateQueryFunction: updateOpenOrderHistoryQuerryFunction,
+//       }}
+//       withoutLoading={true}
+//       {...props}
+//     />
+//   )
+// }
 
-export default APIWrapper
+export default OrderBookTableContainer

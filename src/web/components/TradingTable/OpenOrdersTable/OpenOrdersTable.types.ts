@@ -16,7 +16,9 @@ export interface IProps extends WithTheme<Theme> {
   getOpenOrderHistoryQueryRefetch: () => void
   cancelOrderMutation: CancelOrderMutationType
   getOpenOrderHistoryQuery: {
-    getOpenOrderHistory: OrderType[]
+    getOpenOrderHistory: {
+      orders: OrderType[]
+    }
   }
   subscribeToMore: () => () => void
   addOrderToCanceled: (id: string) => void

@@ -34,6 +34,10 @@ import { syncStorage } from '@storage'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { useQuery } from 'react-apollo'
 
+import { ConnectionProvider } from '@sb/dexUtils/connection'
+import { WalletProvider } from '@sb/dexUtils/wallet'
+import { MarketProvider } from '@sb/dexUtils/markets'
+
 const version = `10.5.52`
 const currentVersion = localStorage.getItem('version')
 if (currentVersion !== version) {
@@ -83,26 +87,34 @@ const AppRaw = ({
       <JssProvider jss={jss} generateClassName={generateClassName}>
         <ThemeWrapper themeMode={themeMode} isChartPage={isChartPage}>
           <SnackbarWrapper>
+
             <CssBaseline />
             <FontStyle />
-            <AppGridLayout
-              id={'react-notification'}
-              showFooter={showFooter}
-              isPNL={isPNL}
-              isChartPage={isChartPage}
-            >
-              {!pageIsRegistration && (
+            <ConnectionProvider>
+              <MarketProvider>
+                <WalletProvider>
+                  <AppGridLayout
+                    id={'react-notification'}
+                    showFooter={showFooter}
+                    isPNL={isPNL}
+                    isChartPage={isChartPage}
+                  >
+                    {/* {!pageIsRegistration && (
                 <AnimatedNavBar pathname={currentPage} hide={fullscreen} />
-              )}
-              {children}
-              <Footer
-                isChartPage={isChartPage}
-                fullscreenMode={fullscreen}
-                showFooter={showFooter}
-              />
-            </AppGridLayout>
-            {/* <ShowWarningOnMoblieDevice /> */}
+              )} */}
+                    {children}
+                    <Footer
+                      isChartPage={isChartPage}
+                      fullscreenMode={fullscreen}
+                      showFooter={showFooter}
+                    />
+                  </AppGridLayout>
+                  {/* <ShowWarningOnMoblieDevice /> */}
+                </WalletProvider>
+              </MarketProvider>
+            </ConnectionProvider>
             <GlobalStyle />
+
           </SnackbarWrapper>
         </ThemeWrapper>
       </JssProvider>

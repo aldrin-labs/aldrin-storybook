@@ -25,16 +25,16 @@ const TerminalContainer = ({
   children: React.ReactChild
   theme: Theme
 }) => (
-  <TablesBlockWrapper
-    item
-    container
-    theme={theme}
-    xs={isDefaultTerminalViewMode ? 5 : 12}
-    isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-  >
-    {children}
-  </TablesBlockWrapper>
-)
+    <TablesBlockWrapper
+      item
+      container
+      theme={theme}
+      xs={isDefaultTerminalViewMode ? 5 : 12}
+      isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+    >
+      {children}
+    </TablesBlockWrapper>
+  )
 
 import {
   Container,
@@ -110,7 +110,7 @@ export const DefaultViewComponent = (
   const baseQuoteArr = [base, quote]
   const exchange = activeExchange.symbol
   const isDefaultTerminalViewMode = terminalViewMode === 'default'
-  const sizeDigits = marketType === 0 ? 8 : 3
+  const sizeDigits = quantityPrecision
 
   useEffect(() => {
     updateTerminalPriceFromOrderbook(null)
@@ -227,13 +227,13 @@ export const DefaultViewComponent = (
                     flexBasis: hideOrderbook
                       ? '0%'
                       : hideDepthChart
-                      ? '50%'
-                      : '65%',
+                        ? '50%'
+                        : '65%',
                     maxWidth: hideOrderbook
                       ? '0%'
                       : hideDepthChart
-                      ? '50%'
-                      : '65%',
+                        ? '50%'
+                        : '65%',
                   }}
                 >
                   {!hideOrderbook && (
@@ -257,6 +257,7 @@ export const DefaultViewComponent = (
                         sizeDigits,
                         hideDepthChart,
                         hideOrderbook,
+                        pricePrecision
                       }}
                     />
                   )}
@@ -269,13 +270,13 @@ export const DefaultViewComponent = (
                     flexBasis: hideOrderbook
                       ? '100%'
                       : hideDepthChart
-                      ? '50%'
-                      : '35%',
+                        ? '50%'
+                        : '35%',
                     maxWidth: hideOrderbook
                       ? '100%'
                       : hideDepthChart
-                      ? '50%'
-                      : '35%',
+                        ? '50%'
+                        : '35%',
                   }}
                 >
                   {!hideTradeHistory && (
@@ -302,13 +303,13 @@ export const DefaultViewComponent = (
               </Grid>
             </TradingTerminalContainer>
           </TopChartsContainer>
-          {!authenticated && <GuestMode />}
+          {/* {!authenticated && <GuestMode />} */}
 
-          {authenticated && (
+          {(
             <TradingTabelContainer
               item
               theme={theme}
-              xs={marketType === 0 ? 7 : 6}
+              xs={6}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
             >
               <TradingTable
@@ -327,7 +328,7 @@ export const DefaultViewComponent = (
               />
             </TradingTabelContainer>
           )}
-          {authenticated && isDefaultTerminalViewMode && marketType === 1 && (
+          {isDefaultTerminalViewMode && (
             <BalancesContainer
               item
               xs={1}
@@ -345,7 +346,7 @@ export const DefaultViewComponent = (
             </BalancesContainer>
           )}
 
-          {authenticated && (
+          {(
             <TerminalContainer
               theme={theme}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}

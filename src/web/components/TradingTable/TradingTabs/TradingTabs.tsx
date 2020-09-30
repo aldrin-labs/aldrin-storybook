@@ -41,12 +41,12 @@ const TradingTabs = ({
   showSmartTradesFromAllAccounts,
   ...props
 }: IProps) => {
-  const openOrdersLength = getOpenOrderHistory.orders.filter((order) =>
-    filterOpenOrders({
-      order,
-      canceledOrders,
-    })
-  ).length
+  // const openOrdersLength = getOpenOrderHistory.orders.filter((order) =>
+  //   filterOpenOrders({
+  //     order,
+  //     canceledOrders,
+  //   })
+  // ).length
 
   const positionsLength = getActivePositions.filter((position) =>
     filterPositions({
@@ -65,7 +65,7 @@ const TradingTabs = ({
   return (
     <>
       <TitleTabsGroup theme={theme}>
-        <TitleTab
+        {/* <TitleTab
           theme={theme}
           active={tab === 'activeTrades'}
           onClick={() => handleTabChange('activeTrades')}
@@ -99,7 +99,7 @@ const TradingTabs = ({
           )`
               : ''}
           </TitleTab>
-        )}
+        )} */}
 
         <TitleTab
           theme={theme}
@@ -107,11 +107,11 @@ const TradingTabs = ({
           onClick={() => handleTabChange('openOrders')}
         >
           Open orders{' '}
-          {openOrdersLength > 0
+          {/* {openOrdersLength > 0
             ? `(
           ${openOrdersLength}
           )`
-            : ''}
+            : ''} */}
         </TitleTab>
         <TitleTab
           theme={theme}
@@ -128,7 +128,7 @@ const TradingTabs = ({
           Trade history
         </TitleTab>
 
-        {isSPOTMarketType(marketType) && (
+        {/* {isSPOTMarketType(marketType) && (
           <TitleTab
             theme={theme}
             active={tab === 'funds'}
@@ -136,71 +136,10 @@ const TradingTabs = ({
           >
             Funds
           </TitleTab>
-        )}
+        )} */}
       </TitleTabsGroup>
     </>
   )
 }
 
-export default compose(
-  queryRendererHoc({
-    query: getActiveStrategies,
-    name: 'getActiveStrategiesQuery',
-    fetchPolicy: 'cache-only',
-    variables: (props: INextQueryProps) => ({
-      activeStrategiesInput: {
-        page: props.pageSmartTrades,
-        perPage: props.perPageSmartTrades,
-        activeExchangeKey: props.selectedKey.keyId,
-        marketType: props.marketType,
-        allKeys: props.showSmartTradesFromAllAccounts,
-        ...(!props.showAllSmartTradePairs
-          ? {}
-          : { specificPair: props.currencyPair }),
-      },
-    }),
-    withOutSpinner: true,
-    withTableLoader: false,
-    withoutLoading: true,
-    showLoadingWhenQueryParamsChange: false,
-  }),
-  queryRendererHoc({
-    query: getActivePositions,
-    name: `getActivePositionsQuery`,
-    fetchPolicy: 'cache-only',
-    variables: (props: INextQueryProps) => ({
-      input: {
-        keyId: props.selectedKey.keyId,
-        allKeys: props.showPositionsFromAllAccounts,
-        ...(!props.showAllPositionPairs
-          ? {}
-          : { specificPair: props.currencyPair }),
-      },
-    }),
-    withOutSpinner: true,
-    withTableLoader: false,
-    withoutLoading: true,
-    showLoadingWhenQueryParamsChange: false,
-  }),
-  queryRendererHoc({
-    query: getOpenOrderHistory,
-    name: `getOpenOrderHistoryQuery`,
-    fetchPolicy: 'cache-and-network',
-    variables: (props: INextQueryProps) => ({
-      openOrderInput: {
-        activeExchangeKey: props.selectedKey.keyId,
-        marketType: props.marketType,
-        allKeys: props.showOpenOrdersFromAllAccounts,
-        page: props.pageOpenOrders,
-        perPage: props.perPageOpenOrders,
-        ...(!props.showAllOpenOrderPairs
-          ? {}
-          : { specificPair: props.currencyPair }),
-      },
-    }),
-    withOutSpinner: true,
-    withTableLoader: false,
-    withoutLoading: true,
-    showLoadingWhenQueryParamsChange: false,
-  })
-)(TradingTabs)
+export default TradingTabs

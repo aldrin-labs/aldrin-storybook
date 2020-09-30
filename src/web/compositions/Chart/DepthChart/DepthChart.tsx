@@ -208,69 +208,12 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
           alignItems: 'flex-end',
         }}
       >
-        {/* <ComingSoon /> */}
         <Container>
           <FlexibleXYPlot
             margin={{ top: 0, left: 0, right: 0, bottom: 0 }}
             onMouseLeave={this.onMouseLeave}
             style={{ transform: 'scale(-1, -1)' }}
-            // xDomain={[0, this.state.MAX_DOMAIN_PLOT]}
-            // style={{ transform: 'scale(1, -1)' }}
           >
-            {/* <ScaleWrapper>
-            <MidPriceContainer
-              background={hexToRgbAWithOpacity(palette.primary.light, 0.1)}
-            >
-              <IconButton onClick={() => this.scale('increase', 1.5)}>
-                <MdRemoveCircleOutline />
-              </IconButton>
-
-              <MidPriceColumnWrapper>
-                <Typography variant="subtitle1">
-                  {this.props.midMarketPrice || 'soon'}
-                </Typography>
-                <Typography variant="caption">Mid Market Price</Typography>
-              </MidPriceColumnWrapper>
-
-              <IconButton onClick={() => this.scale('decrease', 1.5)}>
-                <MdAddCircleOutline />
-              </IconButton>
-            </MidPriceContainer>
-          </ScaleWrapper> */}
-            {/* <XAxis
-            tickTotal={xAxisTickTotal || 10}
-            tickFormat={(value: number) => abbrNum(+value.toFixed(4), 4)}
-            style={axisStyle}
-          />
-          <YAxis
-            tickFormat={(value: number) => abbrNum(+value.toFixed(2), 2)}
-            key="afd"
-            hideLine
-            animation="stiff"
-            orientation="right"
-            style={axisStyle}
-          />
-          <YAxis
-            tickFormat={(value: number) => abbrNum(+value.toFixed(2), 2)}
-            key="dsafd"
-            hideLine
-            animation="stiff"
-            style={axisStyle}
-          /> */}
-            {/* <VerticalRectSeries
-            animation="gentle"
-            key="charst"
-            data={[
-              {
-                x0:
-                  ordersData.length > 1 &&
-                  ordersData[ordersData.length - 1].x - 0.0001,
-                x: ordersData.length > 1 && ordersData[ordersData.length - 1].x,
-                y: this.state.MAX_DOMAIN_PLOT / 2,
-              },
-            ]}
-            color="rgba(91, 96, 102, 0.7)"
-          /> */}
             <AreaSeries
               curve={'curveStep'}
               onNearestX={this.onNearestOrderX}
@@ -284,87 +227,6 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
               key="chart"
               data={ordersData}
             />
-            {/* <AreaSeries
-            curve={'curveStep'}
-            onNearestX={this.onNearestSpreadX}
-            style={{
-              fill: hexToRgbAWithOpacity('#2f7619', 0.5),
-              stroke: '#2F7619',
-              strokeWidth: '3px',
-              // transform: 'translate(0)',
-              width: '50%',
-            }}
-            animation={animated}
-            key="chardt"
-            data={spreadData}
-          /> */}
-            {/* <Crosshair values={crosshairValuesForSpread}>
-              <CrosshairContent
-                background={palette.primary.main}
-                textColor={palette.text.primary}
-              >
-                {crosshairValuesForSpread.length >= 1 ? (
-                  <>
-                    <Typography variant="h6" color="secondary">
-                      {`${crosshairValuesForSpread[0].x.toFixed(8)} `}
-                      {base || 'Fiat'}
-                    </Typography>
-                    <Br light={true} />
-                    <CrosshairBottomWrapper>
-                      <Typography variant="body1">
-                        {crosshairValuesForSpread[0].y.toFixed(2)}{' '}
-                        {base || 'Fiat'}
-                      </Typography>
-                      <RotatedBr />
-                      <Typography variant="body1">
-                        {(
-                          crosshairValuesForSpread[0].y *
-                          crosshairValuesForSpread[0].x
-                        ).toFixed(8)}{' '}
-                        {quote || 'CC'}
-                      </Typography>
-                    </CrosshairBottomWrapper>
-                  </>
-                ) : (
-                  <CircularProgress color="primary" />
-                )}
-              </CrosshairContent>
-            </Crosshair> */}
-            {/* <Crosshair values={crosshairValuesForOrder}>
-              <CrosshairContent
-                background={palette.primary.main}
-                textColor={palette.text.primary}
-              >
-                {crosshairValuesForOrder.length >= 1 ? (
-                  <>
-                    <Typography variant="h6" color="secondary">
-                      {`${crosshairValuesForOrder[0].x.toFixed(8)} `}{' '}
-                      {base || 'Fiat'}
-                    </Typography>
-
-                    <Br light={true} />
-                    <CrosshairBottomWrapper>
-                      <Typography variant="body1">
-                     
-                        {crosshairValuesForOrder[0].y.toFixed(2)}{' '}
-                        {base || 'Fiat'}
-                      </Typography>
-                      <RotatedBr />
-                      <Typography variant="body1">
-                      
-                        {(
-                          crosshairValuesForOrder[0].y *
-                          crosshairValuesForOrder[0].x
-                        ).toFixed(8)}{' '}
-                        {quote || 'CC'}
-                      </Typography>
-                    </CrosshairBottomWrapper>
-                  </>
-                ) : (
-                  <CircularProgress color="primary" />
-                )}
-              </CrosshairContent>
-            </Crosshair> */}
           </FlexibleXYPlot>
         </Container>
         <Container>
@@ -372,62 +234,7 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
             margin={{ top: 0, left: 0, right: 0, bottom: 0 }}
             onMouseLeave={this.onMouseLeave}
             style={{ transform: 'scale(-1, 1)' }}
-            // yDomain={[0, this.state.MAX_DOMAIN_PLOT + 100]}
           >
-            {/* <ScaleWrapper>
-            <MidPriceContainer
-              background={hexToRgbAWithOpacity(palette.primary.light, 0.1)}
-            >
-              <IconButton onClick={() => this.scale('increase', 1.5)}>
-                <MdRemoveCircleOutline />
-              </IconButton>
-
-              <MidPriceColumnWrapper>
-                <Typography variant="subtitle1">
-                  {this.props.midMarketPrice || 'soon'}
-                </Typography>
-                <Typography variant="caption">Mid Market Price</Typography>
-              </MidPriceColumnWrapper>
-
-              <IconButton onClick={() => this.scale('decrease', 1.5)}>
-                <MdAddCircleOutline />
-              </IconButton>
-            </MidPriceContainer>
-          </ScaleWrapper> */}
-            {/* <XAxis
-            tickTotal={xAxisTickTotal || 10}
-            tickFormat={(value: number) => abbrNum(+value.toFixed(4), 4)}
-            style={axisStyle}
-          />
-          <YAxis
-            tickFormat={(value: number) => abbrNum(+value.toFixed(2), 2)}
-            key="afd"
-            hideLine
-            animation="stiff"
-            orientation="right"
-            style={axisStyle}
-          />
-          <YAxis
-            tickFormat={(value: number) => abbrNum(+value.toFixed(2), 2)}
-            key="dsafd"
-            hideLine
-            animation="stiff"
-            style={axisStyle}
-          /> */}
-            {/* <VerticalRectSeries
-            animation="gentle"
-            key="charst"
-            data={[
-              {
-                x0:
-                  ordersData.length > 1 &&
-                  ordersData[ordersData.length - 1].x - 0.0001,
-                x: ordersData.length > 1 && ordersData[ordersData.length - 1].x,
-                y: this.state.MAX_DOMAIN_PLOT / 2,
-              },
-            ]}
-            color="rgba(91, 96, 102, 0.7)"
-          /> */}
             <AreaSeries
               curve={'curveStep'}
               onNearestX={this.onNearestSpreadX}
