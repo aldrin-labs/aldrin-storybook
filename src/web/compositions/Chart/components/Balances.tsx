@@ -146,8 +146,6 @@ export const Balances = ({
   const { market } = useMarket()
   const balances = useBalances()
 
-  console.log('balances', balances)
-
   let pricePrecision = market?.tickSize && getDecimalCount(market.tickSize);
   let quantityPrecision = market?.minOrderSize && getDecimalCount(market.minOrderSize);
 
@@ -169,16 +167,6 @@ export const Balances = ({
   )
 
   const isSPOTMarket = isSPOTMarketType(marketType)
-
-  const firstValuePair =
-    stripDigitPlaces(funds[0].value) === null
-      ? funds[0].value
-      : formatNumberToUSFormat(stripDigitPlaces(funds[0].value))
-
-  const secondValuePair =
-    stripDigitPlaces(funds[1].value) === null
-      ? funds[1].value
-      : formatNumberToUSFormat(stripDigitPlaces(funds[1].value))
 
   return (
     <>

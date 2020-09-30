@@ -168,16 +168,6 @@ const TradeHistoryTable = (props) => {
     liquidity: fill.eventFlags.maker ? 'Maker' : 'Taker',
   }));
 
-  dataSource.push({
-    marketName: 'BTC_USDT',
-    side: 'buy',
-    size: 0.001,
-    price: 10000,
-    orderId: 123,
-    liquidity: 'Maker',
-    feeCost: 1
-  })
-
   if (!show) {
     return null
   }

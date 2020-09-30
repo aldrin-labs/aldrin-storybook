@@ -287,13 +287,8 @@ const OpenOrdersTable = (props) => {
   } = props
 
   const [openOrders] = useOpenOrdersForAllMarkets();
-  openOrders?.push({
-    marketName: 'BTC_USDT',
-    side: 'buy',
-    size: 0.001,
-    price: 10000,
-    orderId: 123
-  })
+
+  console.log('openOrders', openOrders)
 
   if (!show) {
     return null

@@ -515,8 +515,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       maxAmount = funds[1].quantity * leverage
     }
 
-    console.log('((values.total / priceForCalculate) / maxAmount) * 100', ((values.total / priceForCalculate) / maxAmount) * 100)
-
     return (
       <Container background={'transparent'}>
         <GridContainer isBuyType={isBuyType} key={`${pair[0]}/${pair[1]}`}>
@@ -872,16 +870,16 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       minFuturesStep,
     } = props
 
-    if (values.total < minSpotNotional && isSPOTMarket) {
-      enqueueSnackbar(
-        `Order total should be at least ${minSpotNotional} ${pair[1]}`,
-        {
-          variant: 'error',
-        }
-      )
+    // if (values.total < minSpotNotional && isSPOTMarket) {
+    //   enqueueSnackbar(
+    //     `Order total should be at least ${minSpotNotional} ${pair[1]}`,
+    //     {
+    //       variant: 'error',
+    //     }
+    //   )
 
-      return
-    }
+    //   return
+    // }
 
     if (values.amount < minFuturesStep && !isSPOTMarket) {
       enqueueSnackbar(
