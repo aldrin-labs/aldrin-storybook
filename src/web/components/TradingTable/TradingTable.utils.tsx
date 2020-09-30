@@ -1692,7 +1692,7 @@ export const combineOpenOrdersTable = (
         price: 0,
         marketName: '',
       }
-      const orderSymbol = marketName || ''
+      const orderSymbol = marketName.split('/').join('_') || ''
       const orderSide = side || ''
 
       // const keyName = keys ? keys[keyId] : ''
@@ -1871,25 +1871,23 @@ export const combineOpenOrdersTable = (
               <CloseButton
                 i={i}
                 onClick={() => {
-                  // cancelOrderFunc(
-                  //   keyId,
-                  //   orderType === 'maker-only' ? _id : orderId,
-                  //   orderSymbol,
-                  //   orderType
-                  // )
-                  filterCacheData({
-                    data: null,
-                    name: 'getOpenOrderHistory',
-                    subName: 'orders',
-                    query: getOpenOrderHistory,
-                    variables: {
-                      openOrderInput: {
-                        // activeExchangeKey: keyId,
-                        marketType,
-                      },
-                    },
-                    filterData: (order) => order.info.orderId != orderId,
-                  })
+                  cancelOrderFunc(
+                    el
+                  )
+
+                  // filterCacheData({
+                  //   data: null,
+                  //   name: 'getOpenOrderHistory',
+                  //   subName: 'orders',
+                  //   query: getOpenOrderHistory,
+                  //   variables: {
+                  //     openOrderInput: {
+                  //       // activeExchangeKey: keyId,
+                  //       marketType,
+                  //     },
+                  //   },
+                  //   filterData: (order) => order.info.orderId != orderId,
+                  // })
                 }}
               >
                 Cancel
@@ -2153,7 +2151,7 @@ export const combineTradeHistoryTable = (
         symbol: marketName,
       })
 
-      const pair = marketName.split('_')
+      const pair = marketName.split('/').join('_').split('_')
       // const isSmallProfit = Math.abs(realizedPnl) < 0.01 && realizedPnl !== 0
 
       return {

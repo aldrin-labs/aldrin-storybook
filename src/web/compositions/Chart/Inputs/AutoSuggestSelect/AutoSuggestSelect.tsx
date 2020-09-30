@@ -27,6 +27,18 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
     isMenuOpen: false,
   }
 
+  componentDidMount() {
+      const { value, markets, setMarketAddress } = this.props
+      console.log('componentDidMount value: ', value)
+      console.log('componentDidMount markets: ', markets)
+
+      // Need to refactor this, address of a coin should be in the value, not name
+      // console.log('value: ', value)
+      const selectedMarketFromUrl = markets.find((el) => el.name.split('/').join('_') === value)
+      // console.log('selectedMarketFormSelector', selectedMarketFormSelector)
+      setMarketAddress(selectedMarketFromUrl.address.toBase58())
+  }
+
   onMenuOpen = () => {
     this.setState({ isClosed: false })
   }
@@ -78,6 +90,8 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       // console.log('selectedMarketFormSelector', selectedMarketFormSelector)
       setMarketAddress(selectedMarketFormSelector.address.toBase58())
 
+      const chartPageType = marketType === 0 ? 'spot' : 'futures'
+      history.push(`/chart/${chartPageType}/${value.split('/').join('_')}`)
 
       return
     } else if (charts.length < 8 && view === 'onlyCharts') {

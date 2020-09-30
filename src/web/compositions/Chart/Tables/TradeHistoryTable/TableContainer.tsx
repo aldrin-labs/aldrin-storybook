@@ -36,8 +36,6 @@ const TableContainer = (props) => {
     ), time: new Date(Date.now()).toLocaleTimeString(),
   })) : []
 
-  console.log(updatedTrades)
-
   const amountForBackground =
     updatedTrades.reduce((prev, curr) => prev + +curr.size, 0) / updatedTrades.length
 

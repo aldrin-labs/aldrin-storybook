@@ -30,7 +30,14 @@ import { ordersHealthcheck } from '@core/graphql/mutations/chart/ordersHealthche
 import { client } from '@core/graphql/apolloClient'
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
 
-import { useOpenOrdersForAllMarkets } from '@sb/dexUtils/markets'
+import { useOpenOrders } from '@sb/dexUtils/markets'
+
+import { notify } from '@sb/dexUtils/notifications'
+
+import { useSendConnection } from '@sb/dexUtils/connection'
+import { useWallet } from '@sb/dexUtils/wallet'
+
+import { cancelOrder } from '@sb/dexUtils/send'
 
 const OpenOrdersTable = (props) => {
   // state: IState = {
@@ -42,38 +49,35 @@ const OpenOrdersTable = (props) => {
 
   // unsubscribeFunction: null | Function = null
 
-  const onCancelOrder = async (keyId: string, orderId: string, pair: string, type: string) => {
-    const { cancelOrderMutation, marketType, disableStrategyMutation } = props
+  const { wallet } = useWallet()
+  const connection = useSendConnection()
 
+  const onCancelOrder = async (order) => {
     try {
-      const responseResult = await cancelOrderMutation({
-        variables: {
-          cancelOrderInput: {
-            keyId,
-            orderId,
-            pair,
-            marketType,
-            type
-          },
-        },
-      })
+      await cancelOrder({
+        order,
+        market: order.market,
+        connection,
+        wallet,
+      });
+    } catch (e) {
+      notify({
+        message: 'Error cancelling order',
+        description: e.message,
+        type: 'error',
+      });
 
-      return responseResult
-    } catch (err) {
-      return { errors: err }
+      return;
     }
   }
 
   const cancelOrderWithStatus = async (
-    keyId: string,
-    orderId: string,
-    pair: string,
-    type: string
+    order
   ) => {
     const { showCancelResult } = props
 
-    await props.addOrderToCanceled(orderId)
-    const result = await onCancelOrder(keyId, orderId, pair, type)
+    // await props.addOrderToCanceled(orderId)
+    const result = await onCancelOrder(order)
     const status = await cancelOrderStatus(result)
 
     if (status.result === 'error') {
@@ -286,9 +290,7 @@ const OpenOrdersTable = (props) => {
     keys
   } = props
 
-  const [openOrders] = useOpenOrdersForAllMarkets();
-
-  console.log('openOrders', openOrders)
+  const openOrders = useOpenOrders();
 
   if (!show) {
     return null
