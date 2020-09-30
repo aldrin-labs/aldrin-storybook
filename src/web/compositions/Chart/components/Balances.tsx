@@ -21,6 +21,8 @@ import {
 import UpdateFuturesBalances from '@core/components/UpdateFuturesBalances/UpdateFuturesBalances'
 
 import TransferPopup from '@sb/compositions/Chart/components/TransferPopup'
+import DepositPopup from '@sb/compositions/Chart/components/DepositPopup'
+
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
@@ -142,6 +144,8 @@ export const Balances = ({
   const [transferFromSpotToFutures, setTransferFromSpotToFutures] = useState(
     false
   )
+  const [openDepositPopup, toggleOpeningDepositPopup] = useState(false)
+  const [coinForDepositPopup, chooseCoinForDeposit] = useState('')
 
   const { market } = useMarket()
   const balances = useBalances()
@@ -182,6 +186,12 @@ export const Balances = ({
         timerForFuturesWars={timerForFuturesWars}
         loading={loading}
         setLoading={setLoading}
+      />
+      <DepositPopup
+        open={openDepositPopup}
+        handleClose={() => { toggleOpeningDepositPopup(false); chooseCoinForDeposit('') }}
+        baseOrQuote={coinForDepositPopup}
+
       />
       <CustomCard theme={theme} style={{ borderRight: 'none', borderTop: '0' }}>
         <ChartCardHeader
@@ -232,6 +242,10 @@ export const Balances = ({
                     height={`1.7rem`}
                     src={importCoinIcon(pair[0])}
                     onError={onErrorImportCoinUrl}
+                    onClick={() => { 
+                      toggleOpeningDepositPopup(true);
+                      chooseCoinForDeposit('base')
+                    }}
                   />
                 </BalanceTitle>
                 <BalanceValues>
@@ -264,6 +278,10 @@ export const Balances = ({
                     height={`1.7rem`}
                     src={importCoinIcon(pair[1])}
                     onError={onErrorImportCoinUrl}
+                    onClick={() => { 
+                      toggleOpeningDepositPopup(true);
+                      chooseCoinForDeposit('quote')
+                    }}
                   />
                 </BalanceTitle>
                 <BalanceValues>
