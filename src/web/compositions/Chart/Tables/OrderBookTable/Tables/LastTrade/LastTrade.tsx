@@ -58,8 +58,6 @@ const LastTrade = (props: IProps) => {
     markPrice,
   } = props
 
-  console.log('markPrice', markPrice)
-
   const { getPrice: lastMarketPrice = 0 } = getPriceQuery || { getPrice: 0 }
   // const { getMarkPrice = { markPrice: 0 } } = getMarkPriceQuery || {
   //   getMarkPrice: { markPrice: 0 },
