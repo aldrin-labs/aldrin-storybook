@@ -29,6 +29,7 @@ import {
   getAggregatedData,
   testJSON,
   getAggregationsFromMinPriceDigits,
+  getAggregationsFromPricePrecision,
   getNumberOfDecimalsFromNumber,
 } from '@core/utils/chartPageUtils'
 
@@ -49,7 +50,8 @@ const OrderbookAndDepthChart = (props) => {
     updateTerminalPriceFromOrderbook,
     hideDepthChart,
     isPairDataLoading,
-    sizeDigits
+    sizeDigits,
+    pricePrecision
   } = props
 
   const {
@@ -70,17 +72,9 @@ const OrderbookAndDepthChart = (props) => {
     bids: new TreeMap()
   });
 
-  const [aggregation, setAggregation] = useState("")
-
-  useEffect(() => {
-    if (!isPairDataLoading) {
-      setAggregation(String(getAggregationsFromMinPriceDigits(minPriceDigits)[0].value))
-    }
-  }, [isPairDataLoading])
+  const [aggregation, setAggregation] = useState(String(getAggregationsFromPricePrecision(pricePrecision)[0].value))
 
   useInterval(() => {
-    if (props.isPairDataLoading || aggregation === "") return
-
     const asks = orderbook?.asks?.map(row => [row[0], [row[1], Date.now()]])
     const bids = orderbook?.bids?.map(row => [row[0], [row[1], Date.now()]])
 
@@ -88,13 +82,13 @@ const OrderbookAndDepthChart = (props) => {
       marketOrders: {
         asks, bids
       },
-      aggregation: +getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
+      aggregation: +getAggregationsFromPricePrecision(pricePrecision)[0].value,
       sizeDigits: props.sizeDigits,
     })
 
     if (
       String(aggregation) !==
-      String(getAggregationsFromMinPriceDigits(minPriceDigits)[0].value)
+      String(getAggregationsFromPricePrecision(pricePrecision)[0].value)
     ) {
       const [aggregatedAsks] = getAggregatedData({
         orderbookData: updatedData.asks,
@@ -128,7 +122,7 @@ const OrderbookAndDepthChart = (props) => {
   }, 250)
 
   const dataToSend = String(aggregation) ===
-    String(getAggregationsFromMinPriceDigits(minPriceDigits)[0].value)
+    String(getAggregationsFromPricePrecision(pricePrecision)[0].value)
     ? orderbookData
     : aggregatedOrderbookData
 
@@ -183,6 +177,7 @@ const OrderbookAndDepthChart = (props) => {
           setOrderbookAggregation={setAggregation}
           quote={quote}
           markPrice={markPrice}
+          pricePrecision={pricePrecision}
           data={dataToSend}
         />
       </Grid>

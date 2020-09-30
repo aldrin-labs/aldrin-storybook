@@ -56,23 +56,15 @@ const LastTrade = (props: IProps) => {
     marketType,
     theme,
     markPrice,
+    pricePrecision
   } = props
-
-  const { getPrice: lastMarketPrice = 0 } = getPriceQuery || { getPrice: 0 }
-  // const { getMarkPrice = { markPrice: 0 } } = getMarkPriceQuery || {
-  //   getMarkPrice: { markPrice: 0 },
-  // }
-  // const { markPrice = 0 } = getMarkPrice || { markPrice: 0 }
-
-  const aggregation = getAggregationsFromMinPriceDigits(props.minPriceDigits)[0]
-    .value
 
   return (
     <LastTradeContainer
       theme={theme}
       onClick={() =>
         updateTerminalPriceFromOrderbook(
-          Number(markPrice).toFixed(getNumberOfDecimalsFromNumber(aggregation))
+          Number(markPrice).toFixed(pricePrecision)
         )
       }
     >
@@ -90,7 +82,7 @@ const LastTrade = (props: IProps) => {
         <LastTradePrice theme={theme}>
           {/* <ArrowIcon fall={fall} /> */}
           {Number(markPrice).toFixed(
-            getNumberOfDecimalsFromNumber(aggregation)
+            pricePrecision
           )}
         </LastTradePrice>
         {/* {marketType === 1 && (

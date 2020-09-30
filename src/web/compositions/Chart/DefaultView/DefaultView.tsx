@@ -110,7 +110,7 @@ export const DefaultViewComponent = (
   const baseQuoteArr = [base, quote]
   const exchange = activeExchange.symbol
   const isDefaultTerminalViewMode = terminalViewMode === 'default'
-  const sizeDigits = marketType === 0 ? 8 : 3
+  const sizeDigits = quantityPrecision
 
   useEffect(() => {
     updateTerminalPriceFromOrderbook(null)
@@ -257,6 +257,7 @@ export const DefaultViewComponent = (
                         sizeDigits,
                         hideDepthChart,
                         hideOrderbook,
+                        pricePrecision
                       }}
                     />
                   )}

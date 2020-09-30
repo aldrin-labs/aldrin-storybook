@@ -26,7 +26,7 @@ import SortByBids from '@icons/SortByBids.svg'
 import { IProps, IState, OrderbookMode } from './OrderBookTableContainer.types'
 
 import { ModesContainer, SvgMode } from './OrderBookTableContainer.styles'
-import { getAggregationsFromMinPriceDigits } from '@core/utils/chartPageUtils'
+import { getAggregationsFromMinPriceDigits, getAggregationsFromPricePrecision } from '@core/utils/chartPageUtils'
 
 class OrderBookTableContainer extends Component<IProps, IState> {
   state: IState = {
@@ -89,6 +89,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
       updateTerminalPriceFromOrderbook,
       getOpenOrderHistoryQuery,
       markPrice,
+      pricePrecision
     } = this.props
 
     const { mode } = this.state
@@ -101,7 +102,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
     const openOrders = getOpenOrderHistory.orders.filter((order) =>
       filterOpenOrders({ order, canceledOrders: [] })
     )
-    const aggregationModes = getAggregationsFromMinPriceDigits(minPriceDigits)
+    const aggregationModes = getAggregationsFromPricePrecision(pricePrecision)
 
     return (
       <>
@@ -179,6 +180,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           symbol={currencyPair}
           markPrice={markPrice}
           exchange={this.props.exchange}
+          pricePrecision={pricePrecision}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
         />
 

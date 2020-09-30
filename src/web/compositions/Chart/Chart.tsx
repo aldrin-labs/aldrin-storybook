@@ -42,6 +42,14 @@ import { checkLoginStatus } from '@core/utils/loginUtils'
 import { MainContainer, GlobalStyles } from './Chart.styles'
 import { IProps } from './Chart.types'
 
+import {
+  useMarket
+} from '@sb/dexUtils/markets'
+
+import {
+  getDecimalCount
+} from '@sb/dexUtils/utils'
+
 function ChartPageComponent(props: any) {
   const [terminalViewMode, updateTerminalViewMode] = useState('default')
   const [stepIndex, updateStepIndex] = useState(0)
@@ -185,6 +193,8 @@ function ChartPageComponent(props: any) {
     changeChartLayoutMutation,
   } = props
 
+  const { market } = useMarket()
+
   let minPriceDigits
   let quantityPrecision
   let pricePrecision
@@ -209,7 +219,7 @@ function ChartPageComponent(props: any) {
     !pairPropertiesQuery.marketByName[0] ||
     pairPropertiesQuery.networkStatus === 2 ||
     pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
-      selectedPair.replace('_', '')
+    selectedPair.replace('_', '')
 
   if (isPairDataLoading) {
     minPriceDigits = 0.00000001
@@ -224,8 +234,12 @@ function ChartPageComponent(props: any) {
     quantityPrecision = +props.pairPropertiesQuery.marketByName[0].properties
       .binance.quantityPrecision
 
+    quantityPrecision = market?.minOrderSize && getDecimalCount(market.minOrderSize);
+
     pricePrecision = +props.pairPropertiesQuery.marketByName[0].properties
       .binance.pricePrecision
+
+    pricePrecision = market?.tickSize && getDecimalCount(market.tickSize);
 
     minSpotNotional =
       +props.pairPropertiesQuery.marketByName[0].properties.binance.filters[3]
@@ -246,6 +260,8 @@ function ChartPageComponent(props: any) {
   const selectedKey = selectedTradingKey
     ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
     : { keyId: '', hedgeMode: false, isFuturesWarsKey: false }
+
+  console.log(pricePrecision, quantityPrecision)
 
   return (
     <MainContainer fullscreen={view !== 'default'}>
@@ -322,7 +338,7 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
     !prev.pairPropertiesQuery.marketByName[0] ||
     prev.pairPropertiesQuery.networkStatus === 2 ||
     prev.pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
-      prev.selectedPair.replace('_', '')
+    prev.selectedPair.replace('_', '')
 
   const nextIsPairDataLoading =
     next.loading ||
@@ -330,17 +346,17 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
     !next.pairPropertiesQuery.marketByName[0] ||
     next.pairPropertiesQuery.networkStatus === 2 ||
     next.pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
-      next.selectedPair.replace('_', '')
+    next.selectedPair.replace('_', '')
 
   const tooltipQueryChanged =
     (prev.getTooltipSettingsQuery.getTooltipSettings &&
       prev.getTooltipSettingsQuery.getTooltipSettings.chartPage) ===
-      (next.getTooltipSettingsQuery.getTooltipSettings &&
-        next.getTooltipSettingsQuery.getTooltipSettings.chartPage) &&
+    (next.getTooltipSettingsQuery.getTooltipSettings &&
+      next.getTooltipSettingsQuery.getTooltipSettings.chartPage) &&
     (prev.getTooltipSettingsQuery.getTooltipSettings &&
       prev.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup) ===
-      (next.getTooltipSettingsQuery.getTooltipSettings &&
-        next.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup)
+    (next.getTooltipSettingsQuery.getTooltipSettings &&
+      next.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup)
 
   return (
     // prev.marketType === next.marketType &&
