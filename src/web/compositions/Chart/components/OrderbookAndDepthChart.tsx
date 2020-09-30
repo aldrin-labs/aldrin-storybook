@@ -132,6 +132,8 @@ const OrderbookAndDepthChart = (props) => {
     ? orderbookData
     : aggregatedOrderbookData
 
+  console.log('dataToSend', dataToSend)
+
   return (
     <div
       id="depthChartAndOB"
@@ -151,10 +153,12 @@ const OrderbookAndDepthChart = (props) => {
             changeTable={changeTable}
             exchange={exchange}
             symbol={symbol}
-            data={{
-              asks: new TreeMap(),
-              bids: new TreeMap(),
-            }}
+            data={
+              {
+                asks: orderbookData.asks,
+                bids: orderbookData.bids
+              }
+            }
           />
         </Grid>
       )}
