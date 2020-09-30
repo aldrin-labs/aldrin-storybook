@@ -18,250 +18,282 @@ import { getTradeHistory } from '@core/graphql/queries/chart/getTradeHistory'
 import { TRADE_HISTORY } from '@core/graphql/subscriptions/TRADE_HISTORY'
 // import { CSS_CONFIG } from '@sb/config/cssConfig'
 
-@withTheme()
-class TradeHistoryTable extends React.PureComponent<IProps> {
-  state: IState = {
-    tradeHistoryProcessedData: [],
+import { useFills } from '@sb/dexUtils/markets'
+
+// @withTheme()
+const TradeHistoryTable = (props) => {
+  // state: IState = {
+  //   tradeHistoryProcessedData: [],
+  // }
+
+  // unsubscribeFunction: null | Function = null
+
+  // componentDidMount() {
+  //   const {
+  //     getTradeHistoryQuery,
+  //     subscribeToMore,
+  //     theme,
+  //     arrayOfMarketIds,
+  //     marketType,
+  //     keys,
+  //     handlePairChange,
+  //   } = this.props
+
+  //   const {
+  //     getTradeHistory: { trades } = {
+  //       trades: [],
+  //     },
+  //   } = this.props.getTradeHistoryQuery || {
+  //     getTradeHistory: { trades: [] },
+  //   }
+
+  //   const tradeHistoryProcessedData = combineTradeHistoryTable(
+  //     trades,
+  //     theme,
+  //     arrayOfMarketIds,
+  //     marketType,
+  //     keys,
+  //     handlePairChange
+  //   )
+  //   this.setState({
+  //     tradeHistoryProcessedData,
+  //   })
+
+  //   // this.unsubscribeFunction = subscribeToMore()
+  // }
+
+  // componentDidUpdate(prevProps: IProps) {
+  //   if (
+  //     // prevProps.selectedKey.keyId !== this.props.selectedKey.keyId ||
+  //     prevProps.specificPair !== this.props.specificPair ||
+  //     // prevProps.allKeys !== this.props.allKeys ||
+  //     prevProps.marketType !== this.props.marketType
+  //   ) {
+  // const {
+  //   startDate,
+  //   endDate,
+  //   marketType,
+  //   selectedKey,
+  //   allKeys,
+  //   currencyPair,
+  //   specificPair,
+  // } = this.props
+
+  // this.unsubscribeFunction && this.unsubscribeFunction()
+  // this.unsubscribeFunction = this.props.getTradeHistoryQuery.subscribeToMore(
+  //   {
+  //     document: TRADE_HISTORY,
+  //     variables: {
+  //       tradeHistoryInput: {
+  //         startDate: startDate.valueOf(),
+  //         endDate: endDate.valueOf(),
+  //         marketType,
+  //         activeExchangeKey: selectedKey.keyId,
+  //         allKeys,
+  //         ...(!specificPair ? {} : { specificPair: currencyPair }),
+  //       },
+  //     },
+  //     updateQuery: updateTradeHistoryQuerryFunction,
+  //   }
+  // )
+  //   }
+  // }
+
+  // componentWillUnmount = () => {
+  // unsubscribe subscription
+  // if (this.unsubscribeFunction !== null) {
+  //   this.unsubscribeFunction()
+  // }
+  // }
+
+  // componentWillReceiveProps(nextProps: IProps) {
+  //   const {
+  //     getTradeHistory: { trades } = {
+  //       trades: [],
+  //     },
+  //   } = nextProps.getTradeHistoryQuery || {
+  //     getTradeHistory: { trades: [] },
+  //   }
+
+  //   const tradeHistoryProcessedData = combineTradeHistoryTable(
+  //     trades,
+  //     nextProps.theme,
+  //     nextProps.arrayOfMarketIds,
+  //     nextProps.marketType,
+  //     nextProps.keys,
+  //     nextProps.handlePairChange
+  //   )
+  //   this.setState({
+  //     tradeHistoryProcessedData,
+  //   })
+  // }
+
+  // render() {
+  // const { tradeHistoryProcessedData } = this.state
+
+  const {
+    tab,
+    show,
+    page,
+    perPage,
+    theme,
+    focusedInput,
+    endDate,
+    activeDateButton,
+    startDate,
+    maximumDate,
+    minimumDate,
+    onClearDateButtonClick,
+    onDateButtonClick,
+    onDatesChange,
+    onFocusChange,
+    marketType,
+    allKeys,
+    specificPair,
+    handleToggleAllKeys,
+    handleToggleSpecificPair,
+    handleChangePage,
+    getTradeHistoryQuery,
+    handleChangeRowsPerPage,
+    arrayOfMarketIds,
+    handlePairChange,
+    keys,
+  } = props
+
+  const fills = useFills();
+
+  const dataSource = (fills || []).map((fill) => ({
+    ...fill,
+    key: `${fill.orderId}${fill.side}`,
+    liquidity: fill.eventFlags.maker ? 'Maker' : 'Taker',
+  }));
+
+  dataSource.push({
+    marketName: 'BTC_USDT',
+    side: 'buy',
+    size: 0.001,
+    price: 10000,
+    orderId: 123,
+    liquidity: 'Maker',
+    feeCost: 1
+  })
+
+  if (!show) {
+    return null
   }
 
-  unsubscribeFunction: null | Function = null
-
-  componentDidMount() {
-    const {
-      getTradeHistoryQuery,
-      subscribeToMore,
-      theme,
-      arrayOfMarketIds,
-      marketType,
-      keys,
-      handlePairChange,
-    } = this.props
-
-    const {
-      getTradeHistory: { trades } = {
-        trades: [],
-      },
-    } = this.props.getTradeHistoryQuery || {
-      getTradeHistory: { trades: [] },
-    }
-
-    const tradeHistoryProcessedData = combineTradeHistoryTable(
-      trades,
-      theme,
-      arrayOfMarketIds,
-      marketType,
-      keys,
-      handlePairChange
-    )
-    this.setState({
-      tradeHistoryProcessedData,
-    })
-
-    // this.unsubscribeFunction = subscribeToMore()
+  const {
+    getTradeHistory: { count } = {
+      count: 0,
+    },
+  } = props.getTradeHistoryQuery || {
+    getTradeHistory: { count: 0 },
   }
 
-  componentDidUpdate(prevProps: IProps) {
-    if (
-      // prevProps.selectedKey.keyId !== this.props.selectedKey.keyId ||
-      prevProps.specificPair !== this.props.specificPair ||
-      // prevProps.allKeys !== this.props.allKeys ||
-      prevProps.marketType !== this.props.marketType
-    ) {
-      // const {
-      //   startDate,
-      //   endDate,
-      //   marketType,
-      //   selectedKey,
-      //   allKeys,
-      //   currencyPair,
-      //   specificPair,
-      // } = this.props
+  const tradeHistoryProcessedData = combineTradeHistoryTable(
+    dataSource,
+    theme,
+    arrayOfMarketIds,
+    marketType,
+    keys,
+    handlePairChange
+  )
 
-      // this.unsubscribeFunction && this.unsubscribeFunction()
-      // this.unsubscribeFunction = this.props.getTradeHistoryQuery.subscribeToMore(
-      //   {
-      //     document: TRADE_HISTORY,
-      //     variables: {
-      //       tradeHistoryInput: {
-      //         startDate: startDate.valueOf(),
-      //         endDate: endDate.valueOf(),
-      //         marketType,
-      //         activeExchangeKey: selectedKey.keyId,
-      //         allKeys,
-      //         ...(!specificPair ? {} : { specificPair: currencyPair }),
-      //       },
-      //     },
-      //     updateQuery: updateTradeHistoryQuerryFunction,
-      //   }
-      // )
-    }
-  }
-
-  componentWillUnmount = () => {
-    // unsubscribe subscription
-    // if (this.unsubscribeFunction !== null) {
-    //   this.unsubscribeFunction()
-    // }
-  }
-
-  componentWillReceiveProps(nextProps: IProps) {
-    const {
-      getTradeHistory: { trades } = {
-        trades: [],
-      },
-    } = nextProps.getTradeHistoryQuery || {
-      getTradeHistory: { trades: [] },
-    }
-
-    const tradeHistoryProcessedData = combineTradeHistoryTable(
-      trades,
-      nextProps.theme,
-      nextProps.arrayOfMarketIds,
-      nextProps.marketType,
-      nextProps.keys,
-      nextProps.handlePairChange
-    )
-    this.setState({
-      tradeHistoryProcessedData,
-    })
-  }
-
-  render() {
-    const { tradeHistoryProcessedData } = this.state
-
-    const {
-      tab,
-      show,
-      page,
-      perPage,
-      theme,
-      focusedInput,
-      endDate,
-      activeDateButton,
-      startDate,
-      maximumDate,
-      minimumDate,
-      onClearDateButtonClick,
-      onDateButtonClick,
-      onDatesChange,
-      onFocusChange,
-      marketType,
-      allKeys,
-      specificPair,
-      handleToggleAllKeys,
-      handleToggleSpecificPair,
-      handleChangePage,
-      getTradeHistoryQuery,
-      handleChangeRowsPerPage,
-    } = this.props
-
-    if (!show) {
-      return null
-    }
-
-    const {
-      getTradeHistory: { count } = {
-        count: 0,
-      },
-    } = this.props.getTradeHistoryQuery || {
-      getTradeHistory: { count: 0 },
-    }
-
-    return (
-      <TableWithSort
-        style={{
-          borderRadius: 0,
-          height: 'calc(100% - 6rem)',
+  return (
+    <TableWithSort
+      style={{
+        borderRadius: 0,
+        height: 'calc(100% - 6rem)',
+        backgroundColor: theme.palette.white.background,
+      }}
+      stylesForTable={{ backgroundColor: theme.palette.white.background }}
+      defaultSort={{
+        sortColumn: 'date',
+        sortDirection: 'desc',
+      }}
+      withCheckboxes={false}
+      tableStyles={{
+        headRow: {
+          borderBottom: theme.palette.border.main,
+          boxShadow: 'none',
+        },
+        heading: {
+          fontSize: '1rem',
+          fontWeight: 'bold',
           backgroundColor: theme.palette.white.background,
-        }}
-        stylesForTable={{ backgroundColor: theme.palette.white.background }}
-        defaultSort={{
-          sortColumn: 'date',
-          sortDirection: 'desc',
-        }}
-        withCheckboxes={false}
-        tableStyles={{
-          headRow: {
-            borderBottom: theme.palette.border.main,
-            boxShadow: 'none',
-          },
-          heading: {
-            fontSize: '1rem',
-            fontWeight: 'bold',
-            backgroundColor: theme.palette.white.background,
-            color: theme.palette.dark.main,
-            boxShadow: 'none',
-          },
-          cell: {
-            color: theme.palette.dark.main,
-            backgroundColor: theme.palette.white.background,
-            fontSize: '1rem', // 1.2 if bold
-            fontWeight: 'bold',
-            letterSpacing: '.1rem',
-            borderBottom: theme.palette.border.main,
-            boxShadow: 'none',
-          },
-          tab: {
-            padding: 0,
-            boxShadow: 'none',
-          },
-        }}
-        pagination={{
-          fakePagination: false,
-          enabled: true,
-          totalCount: count,
-          page: page,
-          rowsPerPage: perPage,
-          rowsPerPageOptions: [10, 20, 30, 50, 100],
-          handleChangePage: handleChangePage,
-          handleChangeRowsPerPage: handleChangeRowsPerPage,
-          additionalBlock: (
-            <PaginationBlock
-              {...{
-                theme,
-                allKeys,
-                specificPair,
-                handleToggleAllKeys,
-                handleToggleSpecificPair,
-              }}
-            />
-          ),
-          paginationStyles: {
-            width: 'calc(100%)',
-            backgroundColor: theme.palette.white.background,
-            border: theme.palette.border.main,
-          },
-        }}
-        emptyTableText={getEmptyTextPlaceholder(tab)}
-        title={
-          <div>
-            <TradingTitle
-              {...{
-                page,
-                perPage,
-                theme,
-                startDate,
-                endDate,
-                focusedInput,
-                activeDateButton,
-                minimumDate,
-                maximumDate,
-                onDateButtonClick,
-                onDatesChange,
-                onFocusChange,
-                onClearDateButtonClick,
-                handleChangePage,
-                handleChangeRowsPerPage,
-                maxRows: count,
-              }}
-            />
-          </div>
-        }
-        data={{ body: tradeHistoryProcessedData }}
-        columnNames={getTableHead(tab, marketType)}
-      />
-    )
-  }
+          color: theme.palette.dark.main,
+          boxShadow: 'none',
+        },
+        cell: {
+          color: theme.palette.dark.main,
+          backgroundColor: theme.palette.white.background,
+          fontSize: '1rem', // 1.2 if bold
+          fontWeight: 'bold',
+          letterSpacing: '.1rem',
+          borderBottom: theme.palette.border.main,
+          boxShadow: 'none',
+        },
+        tab: {
+          padding: 0,
+          boxShadow: 'none',
+        },
+      }}
+      pagination={{
+        fakePagination: false,
+        enabled: true,
+        totalCount: count,
+        page: page,
+        rowsPerPage: perPage,
+        rowsPerPageOptions: [10, 20, 30, 50, 100],
+        handleChangePage: handleChangePage,
+        handleChangeRowsPerPage: handleChangeRowsPerPage,
+        additionalBlock: (
+          <PaginationBlock
+            {...{
+              theme,
+              allKeys,
+              specificPair,
+              handleToggleAllKeys,
+              handleToggleSpecificPair,
+            }}
+          />
+        ),
+        paginationStyles: {
+          width: 'calc(100%)',
+          backgroundColor: theme.palette.white.background,
+          border: theme.palette.border.main,
+        },
+      }}
+      emptyTableText={getEmptyTextPlaceholder(tab)}
+      // title={
+      //   <div>
+      //     <TradingTitle
+      //       {...{
+      //         page,
+      //         perPage,
+      //         theme,
+      //         startDate,
+      //         endDate,
+      //         focusedInput,
+      //         activeDateButton,
+      //         minimumDate,
+      //         maximumDate,
+      //         onDateButtonClick,
+      //         onDatesChange,
+      //         onFocusChange,
+      //         onClearDateButtonClick,
+      //         handleChangePage,
+      //         handleChangeRowsPerPage,
+      //         maxRows: count,
+      //       }}
+      //     />
+      //   </div>
+      // }
+      data={{ body: tradeHistoryProcessedData }}
+      columnNames={getTableHead(tab, marketType)}
+    />
+  )
+  // }
 }
 
 // const TableDataWrapper = ({ ...props }) => {
