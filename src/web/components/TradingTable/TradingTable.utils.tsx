@@ -1692,7 +1692,7 @@ export const combineOpenOrdersTable = (
         price: 0,
         marketName: '',
       }
-      const orderSymbol = marketName || ''
+      const orderSymbol = marketName.split('/').join('_') || ''
       const orderSide = side || ''
 
       // const keyName = keys ? keys[keyId] : ''
@@ -2153,7 +2153,7 @@ export const combineTradeHistoryTable = (
         symbol: marketName,
       })
 
-      const pair = marketName.split('_')
+      const pair = marketName.split('/').join('_').split('_')
       // const isSmallProfit = Math.abs(realizedPnl) < 0.01 && realizedPnl !== 0
 
       return {

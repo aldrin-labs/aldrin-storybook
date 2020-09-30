@@ -215,7 +215,7 @@ export async function placeOrder({
   }
   const owner = wallet.publicKey;
 
-  const payer = side === 'sell' ? baseCurrencyAccount : quoteCurrencyAccount;
+  const payer = side === 'sell' ? baseCurrencyAccount.pubkey : quoteCurrencyAccount.pubkey;
   if (!payer) {
     notify({
       message: 'Need an SPL token account for cost currency',

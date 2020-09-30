@@ -30,7 +30,7 @@ import { ordersHealthcheck } from '@core/graphql/mutations/chart/ordersHealthche
 import { client } from '@core/graphql/apolloClient'
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
 
-import { useOpenOrdersForAllMarkets } from '@sb/dexUtils/markets'
+import { useOpenOrders } from '@sb/dexUtils/markets'
 
 const OpenOrdersTable = (props) => {
   // state: IState = {
@@ -286,9 +286,7 @@ const OpenOrdersTable = (props) => {
     keys
   } = props
 
-  const [openOrders] = useOpenOrdersForAllMarkets();
-
-  console.log('openOrders', openOrders)
+  const openOrders = useOpenOrders();
 
   if (!show) {
     return null
