@@ -132,8 +132,6 @@ const OrderbookAndDepthChart = (props) => {
     ? orderbookData
     : aggregatedOrderbookData
 
-  console.log('dataToSend', dataToSend)
-
   return (
     <div
       id="depthChartAndOB"

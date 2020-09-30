@@ -44,8 +44,6 @@ class DepthChart extends Component<IDepthChartProps, IDepthChartState> {
   ) {
     const { data } = props
 
-    console.log('data', data)
-
     let totalVolumeAsks = 0
     let transformedAsksData = getDataFromTree(data['asks'], 'asks')
       .reverse()
