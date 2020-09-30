@@ -20,7 +20,7 @@ import {
 } from '../Tables/OrderBookTable/OrderBookTableContainer.types'
 
 import { client } from '@core/graphql/apolloClient'
-import { useOrderbook } from '@sb/dexUtils/markets'
+import { useOrderbook, useMarkPrice } from '@sb/dexUtils/markets'
 
 import {
   transformOrderbookData,
@@ -58,6 +58,7 @@ const OrderbookAndDepthChart = (props) => {
     marketOrders: {},
   }
 
+  const markPrice = useMarkPrice();
   const [orderbook] = useOrderbook()
   const [orderbookData, setOrderbookData] = useState({
     asks: new TreeMap(),
@@ -179,6 +180,7 @@ const OrderbookAndDepthChart = (props) => {
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
           setOrderbookAggregation={setAggregation}
           quote={quote}
+          markPrice={markPrice}
           data={dataToSend}
         />
       </Grid>

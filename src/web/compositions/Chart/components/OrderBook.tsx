@@ -22,6 +22,7 @@ export const OrderBook = ({
   minPriceDigits,
   arrayOfMarketIds,
   marketOrders,
+  markPrice
 }) => {
   return (
     <OrderbookContainer key={`orderbook_table`} theme={theme}>
@@ -43,6 +44,7 @@ export const OrderBook = ({
           minPriceDigits,
           selectedKey,
           arrayOfMarketIds,
+          markPrice,
           ...chartProps,
           data,
           key: 'orderbook_table_query_render',
