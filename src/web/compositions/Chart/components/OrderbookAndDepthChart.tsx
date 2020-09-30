@@ -74,7 +74,11 @@ const OrderbookAndDepthChart = (props) => {
 
   const [aggregation, setAggregation] = useState(String(getAggregationsFromPricePrecision(pricePrecision)[0].value))
 
+  useEffect(() => setAggregation(String(getAggregationsFromPricePrecision(pricePrecision)[0].value)), [pricePrecision])
+
   useInterval(() => {
+    if (!pricePrecision || !sizeDigits) return
+
     const asks = orderbook?.asks?.map(row => [row[0], [row[1], Date.now()]])
     const bids = orderbook?.bids?.map(row => [row[0], [row[1], Date.now()]])
 

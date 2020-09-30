@@ -309,7 +309,7 @@ export const DefaultViewComponent = (
             <TradingTabelContainer
               item
               theme={theme}
-              xs={marketType === 0 ? 7 : 6}
+              xs={6}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
             >
               <TradingTable
@@ -328,7 +328,7 @@ export const DefaultViewComponent = (
               />
             </TradingTabelContainer>
           )}
-          {isDefaultTerminalViewMode && marketType === 1 && (
+          {isDefaultTerminalViewMode && (
             <BalancesContainer
               item
               xs={1}

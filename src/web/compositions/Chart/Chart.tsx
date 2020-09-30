@@ -281,7 +281,7 @@ function ChartPageComponent(props: any) {
           minPriceDigits={minPriceDigits}
           minSpotNotional={minSpotNotional}
           minFuturesStep={minFuturesStep}
-          isPairDataLoading={isPairDataLoading}
+          isPairDataLoading={isPairDataLoading || !pricePrecision || !quantityPrecision}
           themeMode={theme.palette.type}
           selectedKey={selectedKey}
           activeExchange={activeExchange}
