@@ -113,13 +113,13 @@ const TradingTabs = ({
           )`
             : ''} */}
         </TitleTab>
-        <TitleTab
+        {/* <TitleTab
           theme={theme}
           active={tab === 'orderHistory'}
           onClick={() => handleTabChange('orderHistory')}
         >
           Order history
-        </TitleTab>
+        </TitleTab> */}
         <TitleTab
           theme={theme}
           active={tab === 'tradeHistory'}

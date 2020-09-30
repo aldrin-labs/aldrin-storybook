@@ -60,7 +60,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
   }
   render() {
     const { searchValue, tab, tabSpecificCoin } = this.state
-    const { marketsByExchangeQuery, getSelectorSettingsQuery } = this.props
+    const { marketsByExchangeQuery, getSelectorSettingsQuery, markets = [] } = this.props
 
     const {
       getAccountSettings: {
@@ -80,12 +80,15 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
 
     const fiatRegexp = new RegExp(fiatPairs.join('|'), 'gi')
 
-    const filtredMarketsByExchange = getMarketsByExchange.filter(
+    const dexMarketSymbols = markets.map(el => ({ symbol: el.name }))
+
+    const filtredMarketsByExchange = dexMarketSymbols.filter(
       (el) =>
         el.symbol &&
-        +el.volume24hChange &&
-        +el.price &&
-        !Array.isArray(el.symbol.match(fiatRegexp))
+        // +el.volume24hChange &&
+        // +el.price &&
+        !Array.isArray(el.symbol.match(fiatRegexp)) 
+        // dexMarketSymbols.includes(el.symbol)
     )
 
     const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
@@ -263,7 +266,7 @@ class SelectPairListComponent extends React.PureComponent<
         }}
       >
         <Grid container style={{ padding: '0.5rem' }}>
-          <Grid
+          {/* <Grid
             style={{
               display: 'flex',
               padding: '1rem',
@@ -273,7 +276,7 @@ class SelectPairListComponent extends React.PureComponent<
             onClick={() => onTabChange('favorite')}
           >
             <SvgIcon src={favoriteSelected} width="2rem" height="auto" />
-          </Grid>
+          </Grid> */}
           <Grid
             style={{
               padding: '1rem',
@@ -453,7 +456,7 @@ class SelectPairListComponent extends React.PureComponent<
                 rowHeight={window.outerHeight / 30}
                 rowGetter={({ index }) => processedSelectData[index]}
               >
-                <Column
+                {/* <Column
                   label=""
                   dataKey="favorite"
                   headerStyle={{
@@ -465,7 +468,7 @@ class SelectPairListComponent extends React.PureComponent<
                       {cellData.render}
                     </span>
                   )}
-                />
+                /> */}
                 <Column
                   label={`Pair`}
                   dataKey="symbol"
@@ -482,7 +485,7 @@ class SelectPairListComponent extends React.PureComponent<
                   }}
                   cellRenderer={({ cellData }) => cellData.render}
                 />
-                <Column
+                {/* <Column
                   label={`last price`}
                   dataKey="price"
                   headerStyle={{
@@ -526,7 +529,7 @@ class SelectPairListComponent extends React.PureComponent<
                     fontWeight: 'bold',
                   }}
                   cellRenderer={({ cellData }) => cellData.render}
-                />
+                /> */}
               </Table>
             )}
           </AutoSizer>
@@ -545,7 +548,7 @@ class SelectPairListComponent extends React.PureComponent<
           }}
           onClick={() => onTabChange('fiat')}
         >
-          Binance liquidity data
+          {/* Binance liquidity data */}
         </Grid>
       </Grid>
     )
@@ -555,19 +558,19 @@ class SelectPairListComponent extends React.PureComponent<
 export default compose(
   withAuthStatus,
   withTheme(),
-  queryRendererHoc({
-    query: MARKETS_BY_EXCHANE_QUERY,
-    name: 'marketsByExchangeQuery',
-    variables: (props) => ({
-      splitter: '_',
-      exchange: props.activeExchange.symbol,
-      marketType: props.marketType,
-      includeAdditionalMarketData: true,
-    }),
-    fetchPolicy: 'cache-and-network',
-    withOutSpinner: true,
-    withTableLoader: false,
-  }),
+  // queryRendererHoc({
+  //   query: MARKETS_BY_EXCHANE_QUERY,
+  //   name: 'marketsByExchangeQuery',
+  //   variables: (props) => ({
+  //     splitter: '_',
+  //     exchange: props.activeExchange.symbol,
+  //     marketType: props.marketType,
+  //     includeAdditionalMarketData: true,
+  //   }),
+  //   fetchPolicy: 'cache-and-network',
+  //   withOutSpinner: true,
+  //   withTableLoader: false,
+  // }),
   queryRendererHoc({
     query: getSelectorSettings,
     skip: (props: any) => !props.authenticated,

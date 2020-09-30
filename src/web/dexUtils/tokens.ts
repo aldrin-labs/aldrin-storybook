@@ -61,9 +61,9 @@ export async function getOwnedTokenAccounts(connection, publicKey) {
   if (resp.error) {
     throw new Error(
       'failed to get token accounts owned by ' +
-        publicKey.toBase58() +
-        ': ' +
-        resp.error.message,
+      publicKey.toBase58() +
+      ': ' +
+      resp.error.message,
     );
   }
   return resp.result

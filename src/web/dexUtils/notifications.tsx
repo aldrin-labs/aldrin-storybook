@@ -3,14 +3,15 @@ import { useSnackbar } from 'notistack'
 import { notification } from 'antd';
 import Link from '../components/Link';
 
-export function notify({
+export const notify = ({
   message,
   description,
   txid,
   type = 'info',
   placement = 'bottomLeft',
-}) {
+}) => {
   const { enqueueSnackbar } = useSnackbar()
+  console.log('enqueueSnackbar', enqueueSnackbar)
   // if (txid) {
   //   description = (
   //     <Link
@@ -26,4 +27,6 @@ export function notify({
   enqueueSnackbar(message, {
     variant: type,
   })
+
+  return null
 }

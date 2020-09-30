@@ -24,32 +24,37 @@ import TransferPopup from '@sb/compositions/Chart/components/TransferPopup'
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
+import { useBalances, useMarket } from '@sb/dexUtils/markets'
+
+import {
+  getDecimalCount
+} from '@sb/dexUtils/utils'
+
 export const BalanceTitle = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-top: 0.8rem;
   padding: 0.5rem 0.8rem;
   border-radius: 0.8rem;
-  background-color: #e0e5ec;
 `
 
 export const BalanceValues = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  margin-top: 2.5rem;
+  margin-top: 1rem;
   padding: 0 1rem;
-  text-align: center;
+  text-align: left;
 `
 
 export const BalanceQuantity = styled.span`
   color: #16253d;
-  font-size: 1.3rem;
+  font-size: 1rem;
   font-weight: bold;
   letter-spacing: 0.075rem;
 
-  text-align: right;
+  text-align: left;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -83,14 +88,16 @@ export const BalanceFuturesContainer = styled.div`
 `
 
 export const BalanceFuturesTypography = styled.span`
-  font-size: 1rem;
+  font-size: .9rem;
   font-weight: bold;
-  padding: 0.35rem 0;
+  padding: 1rem 0 0.35rem 0;
   letter-spacing: 0.1rem;
   text-transform: uppercase;
+  text-align: left;
 `
 
 export const BalanceFuturesTitle = styled(BalanceFuturesTypography)`
+  margin: 0 auto 0 0;
   color: ${(props) => props.theme.palette.grey.text};
 `
 
@@ -136,6 +143,12 @@ export const Balances = ({
     false
   )
 
+  const { market } = useMarket()
+  const balances = useBalances()
+
+  let pricePrecision = market?.tickSize && getDecimalCount(market.tickSize);
+  let quantityPrecision = market?.minOrderSize && getDecimalCount(market.minOrderSize);
+
   // getting values for the trading terminal pair
   const funds = pair.map((coin, index) => {
     const asset = getFundsQuery.getFunds.find(
@@ -154,16 +167,6 @@ export const Balances = ({
   )
 
   const isSPOTMarket = isSPOTMarketType(marketType)
-
-  const firstValuePair =
-    stripDigitPlaces(funds[0].value) === null
-      ? funds[0].value
-      : formatNumberToUSFormat(stripDigitPlaces(funds[0].value))
-
-  const secondValuePair =
-    stripDigitPlaces(funds[1].value) === null
-      ? funds[1].value
-      : formatNumberToUSFormat(stripDigitPlaces(funds[1].value))
 
   return (
     <>
@@ -215,6 +218,7 @@ export const Balances = ({
                 container
                 direction="column"
                 justify="center"
+                align="flex-start"
                 xs={6}
                 style={{
                   borderBottom: theme.palette.border.main,
@@ -231,12 +235,18 @@ export const Balances = ({
                   />
                 </BalanceTitle>
                 <BalanceValues>
+                  <BalanceFuturesTitle theme={theme}>
+                    Wallet balance
+                    </BalanceFuturesTitle>
                   <BalanceQuantity>
-                    {funds[0].quantity.toFixed(8)}
+                    {balances[0]?.wallet ? stripDigitPlaces(balances[0].wallet, 8) : 0} {pair[0]}
                   </BalanceQuantity>
-                  <BalanceValue>
-                    {addMainSymbol(firstValuePair, true)}
-                  </BalanceValue>
+                  <BalanceFuturesTitle theme={theme}>
+                    Unsettled balance
+                    </BalanceFuturesTitle>
+                  <BalanceQuantity>
+                    {balances[0]?.wallet ? stripDigitPlaces(balances[0].unsettled, 8) : 0} {pair[0]}
+                  </BalanceQuantity>
                 </BalanceValues>
               </Grid>
               <Grid
@@ -257,12 +267,18 @@ export const Balances = ({
                   />
                 </BalanceTitle>
                 <BalanceValues>
+                  <BalanceFuturesTitle theme={theme}>
+                    Wallet balance
+                    </BalanceFuturesTitle>
                   <BalanceQuantity>
-                    {funds[1].quantity.toFixed(8)}
+                    {balances[1]?.wallet ? stripDigitPlaces(balances[1].wallet, 8) : 0} {pair[1]}
                   </BalanceQuantity>
-                  <BalanceValue>
-                    {addMainSymbol(secondValuePair, true)}
-                  </BalanceValue>
+                  <BalanceFuturesTitle theme={theme}>
+                    Unsettled balance
+                    </BalanceFuturesTitle>
+                  <BalanceQuantity>
+                    {balances[1]?.unsettled ? stripDigitPlaces(balances[1].unsettled, 8) : 0} {pair[1]}
+                  </BalanceQuantity>
                 </BalanceValues>
               </Grid>
             </>

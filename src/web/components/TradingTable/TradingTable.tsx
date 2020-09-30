@@ -225,7 +225,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             handlePairChange: this.handlePairChange,
           }}
         />
-        <OrderHistoryTable
+        {/* <OrderHistoryTable
           {...{
             tab,
             keys,
@@ -245,7 +245,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             handleTabChange: this.handleTabChange,
             handlePairChange: this.handlePairChange,
           }}
-        />
+        /> */}
         <TradeHistoryTable
           {...{
             tab,

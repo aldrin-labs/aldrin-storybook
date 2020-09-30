@@ -136,6 +136,7 @@ class SimpleTabs extends React.Component {
       componentMarginType,
       priceFromOrderbook,
       quantityPrecision,
+      pricePrecision,
       minSpotNotional,
       minFuturesStep,
       marketPriceAfterPairChange,
@@ -634,6 +635,7 @@ class SimpleTabs extends React.Component {
                         operationType={'buy'}
                         priceType={mode}
                         hedgeMode={hedgeMode}
+                        pricePrecision={pricePrecision}
                         quantityPrecision={quantityPrecision}
                         minSpotNotional={minSpotNotional}
                         minFuturesStep={minFuturesStep}
@@ -679,6 +681,7 @@ class SimpleTabs extends React.Component {
                         priceType={mode}
                         theme={theme}
                         hedgeMode={hedgeMode}
+                        pricePrecision={pricePrecision}
                         quantityPrecision={quantityPrecision}
                         minSpotNotional={minSpotNotional}
                         minFuturesStep={minFuturesStep}

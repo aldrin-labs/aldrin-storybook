@@ -6,7 +6,7 @@ export { default as BarChart } from './BarChart'
 // export { default as DominanceChart } from "./DominanceChart"
 export { DonutChart } from './DonutChart'
 export { default as Table } from './Tables'
-export { default as TableTypes } from './Tables/index.types'
+// export { default as TableTypes } from './Tables/index.types'
 export { default as TableWithSort } from './Tables/WithSort'
 // export { default as Elements } from "./Elements"
 // export { ErrorFallback } from "./ErrorFallback"
