@@ -20,6 +20,7 @@ import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import ActiveTrades from './ActiveTrades/ActiveTrades'
 import PositionsTable from './PositionsTable/PositionsTable'
 import OpenOrdersTable from './OpenOrdersTable/OpenOrdersTable'
+import Balances from './Balances/Balances'
 import OrderHistoryTable from './OrderHistoryTable/OrderHistoryDataWrapper'
 import TradeHistoryTable from './TradeHistoryTable/TradeHistoryDataWrapper'
 import StrategiesHistoryTable from './StrategiesHistoryTable/StrategiesHistoryDataWrapper'
@@ -263,6 +264,28 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             showOpenOrdersFromAllAccounts,
             showSmartTradesFromAllAccounts,
             show: tab === 'tradeHistory',
+            handleTabChange: this.handleTabChange,
+            handlePairChange: this.handlePairChange,
+          }}
+        />
+
+        <Balances
+          {...{
+            tab,
+            keys,
+            theme,
+            selectedKey,
+            marketType,
+            arrayOfMarketIds,
+            canceledOrders,
+            currencyPair,
+            showAllPositionPairs,
+            showAllOpenOrderPairs,
+            showAllSmartTradePairs,
+            showPositionsFromAllAccounts,
+            showOpenOrdersFromAllAccounts,
+            showSmartTradesFromAllAccounts,
+            show: tab === 'balances',
             handleTabChange: this.handleTabChange,
             handlePairChange: this.handlePairChange,
           }}

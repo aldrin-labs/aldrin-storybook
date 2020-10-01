@@ -165,6 +165,7 @@ export default ({ themeMode, isChartPage, children }) => {
               btnBackground: '#3B63AF', // 165BE0
               switcherBackground: '#3B63AF', // 165BE0
               switcherBorder: '#2E2E2E',
+              serum: '#09ACC7',
             },
             green: {
               dark: '#377E21',
@@ -361,6 +362,7 @@ export default ({ themeMode, isChartPage, children }) => {
               btnBackground: '#5C8CEA',
               switcherBackground: 'rgba(11, 31, 209, 0.5)',
               switcherBorder: '#0B1FD1',
+              serum: '#7380EB',
             },
             green: {
               dark: '#377E21',

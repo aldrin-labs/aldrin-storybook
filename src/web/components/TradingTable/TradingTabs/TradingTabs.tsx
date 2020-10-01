@@ -128,15 +128,15 @@ const TradingTabs = ({
           Trade history
         </TitleTab>
 
-        {/* {isSPOTMarketType(marketType) && (
+        {isSPOTMarketType(marketType) && (
           <TitleTab
             theme={theme}
-            active={tab === 'funds'}
-            onClick={() => handleTabChange('funds')}
+            active={tab === 'balances'}
+            onClick={() => handleTabChange('balances')}
           >
-            Funds
+            Balances
           </TitleTab>
-        )} */}
+        )}
       </TitleTabsGroup>
     </>
   )

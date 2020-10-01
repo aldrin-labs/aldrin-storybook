@@ -1,6 +1,7 @@
-import React, { useCallback } from 'react'
+import React, { useState, useCallback } from 'react'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
+import copy from 'clipboard-copy'
 import { useLocation, useHistory } from 'react-router-dom'
 import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
 
@@ -27,6 +28,7 @@ import Select from '@material-ui/core/Select'
 import Button from '@material-ui/core/Button'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import HelpIcon from '@material-ui/icons/Help';
 
 const selectStyles = (theme: Theme) => ({
   height: '100%',
@@ -64,6 +66,7 @@ const TopBar = ({ theme }) => {
   const { endpoint, setEndpoint } = useConnectionConfig();
   const location = useLocation();
   const history = useHistory();
+  const [isOpenPopup, setPopupOpen] = useState(false)
 
   const publicKey = wallet?.publicKey?.toBase58();
 
@@ -114,7 +117,7 @@ const TopBar = ({ theme }) => {
           type="text"
           size="large"
           onClick={connected ? wallet.disconnect : wallet.connect}
-          btnColor={'#2abdd2'}
+          btnColor={theme.palette.blue.serum}
           btnWidth={'14rem'}
           height={'100%'}
         >
@@ -122,17 +125,34 @@ const TopBar = ({ theme }) => {
           {!connected ? 'Connect wallet' : 'Disconnect'}
         </BtnCustom>
       </div>
-      <div>
-        {connected && (
-          <div
-            // content={<a address={publicKey} />}
-            placement="bottomRight"
-            title="Wallet public key"
-            trigger="click"
-          >
-          </div>
-        )}
-      </div>
+      {connected && (
+        <div
+          style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 1rem', cursor: 'pointer' }}
+        >
+          <HelpIcon onClick={() => setPopupOpen(!isOpenPopup)} style={{ color: theme.palette.blue.serum }} />
+          {
+            isOpenPopup && (
+          <div 
+            style={{ 
+              position: 'absolute', 
+              right: 0, 
+              top: '5rem', 
+              zIndex: 10, 
+              background: theme.palette.white.background, 
+              border: theme.palette.border.main, 
+              padding: '2rem 1rem', 
+              boxShadow: '0px 4px 8px rgba(10,19,43,0.1)' 
+          }}>
+            <a 
+              target={'_blank'}
+              rel={'noopener noreferrer'}
+               href={`https://explorer.solana.com/address/${publicKey}`} 
+              style={{ color: theme.palette.blue.serum, fontSize: '1.4rem', textDecoration: 'none' }}
+            >{publicKey}</a>
+          </div>)
+          }
+        </div>
+      )}
     </div>
   );
 }

@@ -11,7 +11,7 @@ export const notify = ({
   placement = 'bottomLeft',
 }) => {
   // const { enqueueSnackbar } = useSnackbar()
-  console.log('notification')
+  console.log('notification', message)
   // if (txid) {
   //   description = (
   //     <Link
