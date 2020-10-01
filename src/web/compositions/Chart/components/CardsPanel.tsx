@@ -21,6 +21,7 @@ import { ENDPOINTS, useConnectionConfig } from '@sb/dexUtils/connection';
 
 import OvalSelector from '@sb/components/OvalSelector'
 import SerumCCAILogo from '@icons/serumCCAILogo.svg'
+import LightLogo from '@icons/lightLogo.svg'
 import SvgIcon from '@sb/components/SvgIcon'
 
 import MenuItem from '@material-ui/core/MenuItem';
@@ -87,7 +88,7 @@ const TopBar = ({ theme }) => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <SvgIcon 
+      <SvgIcon 
           width={'auto'} 
           height={'100%'} 
           styledComponentsAdditionalStyle={{ padding: '0 2rem 0 0'}} 
@@ -220,7 +221,7 @@ export const CardsPanel = ({
             border: '0',
           }}
         >
-          <img style={{ height: '100%', padding: '0 3rem', borderRight: theme.palette.border.main }} src={SerumCCAILogo} />
+          <img style={{ height: '100%', padding: '0 3rem', borderRight: theme.palette.border.main }} src={isDarkTheme ? SerumCCAILogo : LightLogo} />
 
           <AutoSuggestSelect
             value={view === 'default' && pair}
