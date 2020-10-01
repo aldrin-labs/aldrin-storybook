@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { TableWithSort } from '@sb/components'
+import { useSnackbar } from 'notistack'
 
 import {
   updateOpenOrderHistoryQuerryFunction,
@@ -56,6 +57,13 @@ const OpenOrdersTable = (props) => {
           market?.quoteMintAddress,
         ),
       });
+
+      notify({
+        message: 'Settling funds sucess',
+        description: 'No description',
+        type: 'success',
+      });
+
     } catch (e) {
       notify({
         message: 'Error settling funds',
