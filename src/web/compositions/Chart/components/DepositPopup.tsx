@@ -6,7 +6,7 @@ import { Grid, Typography, withTheme, Input, Link, Theme } from '@material-ui/co
 import Timer from 'react-compound-timer'
 import { Loading } from '@sb/components/index'
 
-import copyIcon from '@icons/copy.svg'
+import copyIcon from '@icons/copySerum.svg'
 import SvgIcon from '@sb/components/SvgIcon'
 
 import { StyledTypography } from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/AccountBlock.styles'
