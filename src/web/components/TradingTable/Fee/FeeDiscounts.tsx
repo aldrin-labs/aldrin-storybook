@@ -3,19 +3,72 @@ import { TableWithSort } from '@sb/components'
 import { useSnackbar } from 'notistack'
 
 import {
-  updateOpenOrderHistoryQuerryFunction,
-  combineBalancesTable,
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
 
-import { useTokenAccounts, getSelectedTokenAccountForMint, useBalances } from '@sb/dexUtils/markets'
-import { notify } from '@sb/dexUtils/notifications'
-import { useSendConnection } from '@sb/dexUtils/connection'
-import { useWallet } from '@sb/dexUtils/wallet'
-import { settleFunds } from '@sb/dexUtils/send'
+import { useTokenAccounts, useFeeDiscountKeys, useBalances } from '@sb/dexUtils/markets'
+import { TokenInstructions, getFeeRates } from '@project-serum/serum';
+import { percentFormat } from '@sb/dexUtils/utils'
 
-const BalancesTable = (props) => {
+export const combineFeeDiscounts = (
+    data,
+    theme,
+  ) => {
+
+    if (!data && !Array.isArray(data)) {
+        return []
+      }
+
+    const processedFundsData = data
+      .map((el, i) => {
+        const {
+          feeTier,
+          taker,
+          maker,
+          pubkey,
+          balance,
+          mint,
+        } = el
+  
+        return {
+          id: `${taker}${feeTier}${pubkey}`,
+          tier: {
+            render: <div style={{ display: 'flex' }}>
+            <span>{feeTier}</span>
+            {i === 0 ? (
+              <div style={{ marginLeft: 10 }}>
+                <span style={{ fontWeight: 700, color: theme.palette.green.main }}>
+                  Selected
+                </span>
+              </div>
+            ) : null}
+          </div>,
+          },
+          taker: {
+              render: percentFormat.format(getFeeRates(el.feeTier).taker),
+          },
+          maker: {
+              render: percentFormat.format(getFeeRates(el.feeTier).maker),
+          },
+          pubkey: {
+              render: pubkey.toBase58(),
+          },
+          balance: `${balance}`,
+          mint: {
+              render: mint.equals(TokenInstructions.SRM_MINT)
+              ? 'SRM'
+              : mint.equals(TokenInstructions.MSRM_MINT)
+              ? 'MSRM'
+              : 'UNKNOWN',
+          }
+        }
+      })
+  
+    return processedFundsData.filter((el) => !!el)
+  }
+
+const FeeDiscounts = (props) => {
   const {
     tab,
     theme,
@@ -23,64 +76,16 @@ const BalancesTable = (props) => {
     page,
     perPage,
     marketType,
-    allKeys,
-    specificPair,
-    handleChangePage,
-    handleChangeRowsPerPage,
-    getOpenOrderHistoryQuery,
-    handleToggleAllKeys,
-    handleToggleSpecificPair,
-    arrayOfMarketIds,
-    canceledOrders,
-    handlePairChange,
-    keys
   } = props
 
-  const balances = useBalances();
-  const [accounts] = useTokenAccounts();
-  const connection = useSendConnection();
-  const { wallet } = useWallet();
-
-  async function onSettleFunds(market, openOrders) {
-    try {
-      await settleFunds({
-        market,
-        openOrders,
-        connection,
-        wallet,
-        baseCurrencyAccount: getSelectedTokenAccountForMint(
-          accounts,
-          market?.baseMintAddress,
-        ),
-        quoteCurrencyAccount: getSelectedTokenAccountForMint(
-          accounts,
-          market?.quoteMintAddress,
-        ),
-      });
-
-      notify({
-        message: 'Settling funds sucess',
-        description: 'No description',
-        type: 'success',
-      });
-
-    } catch (e) {
-      notify({
-        message: 'Error settling funds',
-        description: e.message,
-        type: 'error',
-      });
-      return;
-    }
-  }
+  const [feeAccounts] = useFeeDiscountKeys();
 
   if (!show) {
     return null
   }
 
-  const balancesProcessedData = combineBalancesTable(
-    balances,
-    onSettleFunds,
+  const feeDiscountProcessedData = combineFeeDiscounts(
+    feeAccounts,
     theme
   )
 
@@ -125,14 +130,14 @@ const BalancesTable = (props) => {
         },
       }}
       emptyTableText={getEmptyTextPlaceholder(tab)}
-      data={{ body: balancesProcessedData }}
+      data={{ body: feeDiscountProcessedData }}
       columnNames={getTableHead(tab, marketType)}
     />
   )
   // }
 }
 
-const MemoizedWrapper = React.memo(BalancesTable, (prevProps, nextProps) => {
+const MemoizedWrapper = React.memo(FeeDiscounts, (prevProps, nextProps) => {
   // TODO: Refactor isShowEqual --- not so clean
   const isShowEqual = !nextProps.show && !prevProps.show
   const showAllAccountsEqual =

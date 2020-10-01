@@ -86,7 +86,7 @@ const TopBar = ({ theme }) => {
   const isDarkTheme = theme.palette.type === 'dark'
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <SvgIcon 
           width={'auto'} 
           height={'100%'} 
