@@ -82,14 +82,19 @@ const TransferPopup = ({
           borderRadius: '50%',
           paddingTop: 0,
         }}
+        PaperProps={{
+          style: {
+            minWidth: '480px',
+          },
+        }}
       >
         <DialogTitleCustom id="customized-dialog-title" theme={theme}>
           <TypographyCustomHeading
             fontWeight={'700'}
             theme={theme}
             style={{
-              textAlign: 'center',
-              fontSize: '1.4rem',
+              textAlign: 'left',
+              fontSize: '1.6rem',
               letterSpacing: '1.5px',
               color: theme.palette.dark.main,
             }}
@@ -101,48 +106,63 @@ const TransferPopup = ({
           theme={theme}
           justify="center"
           style={{
-            padding: '0 3rem 3rem',
+            padding: '5rem',
           }}
         >
           <Grid>
-            <Grid style={{ paddingBottom: '1rem', textAlign: 'center' }}>
+            <Grid style={{ paddingBottom: '0', textAlign: 'left' }}>
                   <Typography
                     style={{
-                      paddingBottom: '1.4rem',
-                      color: theme.palette.dark.main,
+                      textTransform: 'uppercase',
+                      color: '#818AA6',
+                      fontWeight: 'bold',
+                      fontSize: '1.6rem',
+                      letterSpacing: '1px',
+                      paddingBottom: '1rem',
                     }}
                   >
                     Mint address:                   
                   </Typography>
                   <Typography
                     style={{
-                      paddingBottom: '1.4rem',
-                      color: theme.palette.dark.main,
+                        color: '#71E0EC',
+                        fontWeight: 'bold',
+                        fontSize: '1.6rem',
+                        paddingBottom: '4.4rem',
+                        letterSpacing: '1px',
                     }}
                   >
                       {coinMint.toBase58()}
                   </Typography>
                   <Typography
                     style={{
-                      paddingBottom: '1.4rem',
-                      color: theme.palette.dark.main,
+                      textTransform: 'uppercase',
+                      color: '#818AA6',
+                      fontWeight: 'bold',
+                      fontSize: '1.6rem',
+                      letterSpacing: '1px',
+                      paddingBottom: '1rem',
                     }}
                   >
                     SPL Deposit address:
                   </Typography>
                   <Typography
                     style={{
-                      paddingBottom: '1.4rem',
-                      color: theme.palette.dark.main,
-                    }}
+                      color: account ? '#71E0EC' : '#FFF',
+                      fontWeight: 'bold',
+                      fontSize: '1.6rem',
+                      letterSpacing: '1px',
+                  }}
                   >
                     {account ? (
                         account.pubkey.toBase58()
                     ) : (
                     <>
                     Visit{' '}
-                        <Link rel="noopener noreferrer" target="_blank" to={providerUrl} href={providerUrl}>
-                        {providerName}
+                        <Link style={{ color: '#71E0EC', textDecoration: 'none' }} rel="noopener noreferrer" target="_blank" to={providerUrl} href={providerUrl}>
+                        <span style={{ color: '#71E0EC' }}>
+                          {providerName}
+                        </span>  
                     </Link>{' '}
                     to create an account for this mint
                      </>
