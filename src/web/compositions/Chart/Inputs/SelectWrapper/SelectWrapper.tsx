@@ -251,7 +251,7 @@ class SelectPairListComponent extends React.PureComponent<
         style={{
           top: '2.5rem',
           left:
-            marketType === 0 ? 'calc(65% + 13.2rem)' : 'calc(69.33% + 14rem)',
+            'calc(14rem)',
           position: 'absolute',
           transform: 'translateX(-100%)',
           zIndex: 900,

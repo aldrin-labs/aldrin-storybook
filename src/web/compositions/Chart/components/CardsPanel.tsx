@@ -30,6 +30,12 @@ import Button from '@material-ui/core/Button'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import HelpIcon from '@material-ui/icons/Help';
 
+import SunDisabled from '@icons/sunDisabled.svg'
+import SunActive from '@icons/sunActive.svg'
+
+import MoonDisabled from '@icons/moonDisabled.svg'
+import MoonActive from '@icons/moonActive.svg'
+
 const selectStyles = (theme: Theme) => ({
   height: '100%',
   background: theme.palette.white.background,
@@ -77,20 +83,35 @@ const TopBar = ({ theme }) => {
     [history],
   );
 
+  const isDarkTheme = theme.palette.type === 'dark'
+
   return (
     <div style={{ display: 'flex' }}>
+              <SvgIcon 
+          width={'auto'} 
+          height={'100%'} 
+          styledComponentsAdditionalStyle={{ padding: '0 2rem 0 0'}} 
+          src={isDarkTheme ? SunDisabled : SunActive} 
+          onClick={() => {
+            if (isDarkTheme) {
+              theme.updateMode('light')
+            }
+          }}
+        />
+        {/* </div> */}
+        {/* <div style={{ display: 'flex' }}> */}
+        <SvgIcon 
+          width={'auto'} 
+          height={'100%'} 
+          styledComponentsAdditionalStyle={{ padding: '0 2rem 0 0'}} 
+          src={isDarkTheme ? MoonActive : MoonDisabled} 
+          onClick={() => {
+            if (!isDarkTheme) {
+              theme.updateMode('dark')
+            }
+          }} 
+        />
       <div>
-        {/* <Select
-          onSelect={setEndpoint}
-          value={endpoint}
-          style={{ marginRight: 8 }}
-        >
-          {ENDPOINTS.map(({ name, endpoint }) => (
-            <MenuItem value={endpoint} key={endpoint}>
-              {name}
-            </MenuItem>
-          ))}
-        </Select> */}
         <OvalSelector
           theme={theme}
           selectStyles={selectStyles(theme)}
@@ -171,6 +192,8 @@ export const CardsPanel = ({
   showChangePositionModeResult,
   activeExchange,
 }) => {
+  const isDarkTheme = theme.palette.type === 'dark'
+
   return (
     <>
       <PanelWrapper>
@@ -227,135 +250,7 @@ export const CardsPanel = ({
           /> */}
         </CustomCard>
 
-        {/* {view === 'default' && (
-          <KeySelector
-            theme={theme}
-            exchange={activeExchange}
-            selectStyles={{
-              ...selectStyles(theme),
-              width: marketType === 1 ? '11%' : '15%',
-            }}
-            isAccountSelect={true}
-          />
-        )} */}
-
-
-
         <TopBar theme={theme} />
-
-        {/* <SmartTradeButton
-          theme={theme}
-          style={{
-            height: '100%',
-            maxWidth:
-              marketType === 0 ? 'calc(35% - 28.8rem)' : 'calc(30% - 28.8rem)',
-          }}
-          type={isDefaultTerminalViewMode ? 'buy' : 'sell'}
-          id="smartTradingButton"
-          onClick={() => {
-            // for guest mode
-            if (!authenticated) {
-              history.push(`/login?callbackURL=${pathname}`)
-              return
-            }
-
-            updateTerminalViewMode(
-              isDefaultTerminalViewMode ? 'smartOrderMode' : 'default'
-            )
-
-            const joyrideStep = document.getElementById('react-joyride-step-7')
-            const joyrideOverlay = document.getElementById(
-              'react-joyride-portal'
-            )
-
-            if (joyrideStep && joyrideOverlay) {
-              joyrideStep.style.display = 'none'
-              joyrideOverlay.style.display = 'none'
-            }
-          }}
-        >
-          {isDefaultTerminalViewMode
-            ? 'go to smart terminal'
-            : 'back to basic terminal'}
-        </SmartTradeButton> */}
-        {/* <PreferencesSelect
-          theme={theme}
-          style={{ width: '15%', minWidth: '0', marginLeft: '.8rem' }}
-          id={'preferencesSelector'}
-          value={'preferences'}
-          selectStyles={selectStyles(theme)}
-          hedgeMode={hedgeMode}
-          changePositionModeWithStatus={changePositionModeWithStatus}
-          themeMode={themeMode}
-          toggleThemeMode={async () => {
-            if (!authenticated) {
-              return
-            }
-            
-            theme.updateMode(themeMode === 'dark' ? 'light' : 'dark')
-            await writeQueryData(getThemeMode, {}, { getAccountSettings: { themeMode: themeMode === 'dark' ? 'light' : 'dark', __typename: 'getAccountSettings' }})
-            await persistorInstance.persist()
-            await updateThemeModeMutation({
-              variables: {
-                input: {
-                  themeMode: themeMode === 'dark' ? 'light' : 'dark',
-                }
-              },
-            })
-          }}
-          hideDepthChart={hideDepthChart}
-          hideOrderbook={hideOrderbook}
-          hideTradeHistory={hideTradeHistory}
-          changeChartLayout={changeChartLayout}
-          persistorInstance={persistorInstance}
-        /> */}
-        {/* <div style={{ width: '15.5%', margin: '0 .4rem 0 .6rem' }}>
-          <PillowButton
-            firstHalfText={'light'}
-            secondHalfText={'dark'}
-            secondHalfTooltip={
-              'You can open a long and short at the same time. Just turn on hedge mode and open opposite positions.'
-            }
-            activeHalf={hedgeMode ? 'second' : 'first'}
-            buttonAdditionalStyle={{
-              width: '50%',
-            }}
-            containerStyle={{ height: '100%', margin: 0 }}
-            changeHalf={async () => {
-              // for guest mode
-              if (!authenticated) {
-                return
-              }
-
-              await toggleThemeMode()
-              // persistorInstance.persist()
-            }}
-          />
-        </div> */}
-        {/* {marketType === 1 && (
-          <div style={{ width: '15.5%', margin: '0 .4rem 0 .6rem' }}>
-            <PillowButton
-              firstHalfText={'one-way'}
-              secondHalfText={'hedge'}
-              secondHalfTooltip={
-                'You can open a long and short at the same time. Just turn on hedge mode and open opposite positions.'
-              }
-              activeHalf={hedgeMode ? 'second' : 'first'}
-              buttonAdditionalStyle={{
-                width: '50%',
-              }}
-              containerStyle={{ height: '100%', margin: 0 }}
-              changeHalf={() => {
-                // for guest mode
-                if (!authenticated) {
-                  return
-                }
-
-                changePositionModeWithStatus(hedgeMode ? false : true)
-              }}
-            />
-          </div>
-        )} */}
       </PanelWrapper>
     </>
   )

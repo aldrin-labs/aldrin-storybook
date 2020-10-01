@@ -244,6 +244,7 @@ export default ({ themeMode, isChartPage, children }) => {
             },
           },
           updateMode: (newMode) => {
+            localStorage.setItem('themeMode', newMode)
             updateMode(newMode)
           },
         }
@@ -441,6 +442,7 @@ export default ({ themeMode, isChartPage, children }) => {
             },
           },
           updateMode: (newMode) => {
+            localStorage.setItem('themeMode', newMode)
             updateMode(newMode)
           },
         }

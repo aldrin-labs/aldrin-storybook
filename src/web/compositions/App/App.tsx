@@ -55,11 +55,13 @@ const AppRaw = ({
 }: any) => {
   const isChartPage = /chart/.test(currentPage)
 
-  const themeMode =
-    (getThemeModeQuery &&
-      getThemeModeQuery.getAccountSettings &&
-      getThemeModeQuery.getAccountSettings.themeMode) ||
-    'dark'
+  let themeMode = localStorage.getItem('themeMode')
+
+  if (!themeMode) {
+    themeMode = 'dark'
+    localStorage.setItem('themeMode', 'dark')
+  }
+
   const chartPageView =
     getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
 
