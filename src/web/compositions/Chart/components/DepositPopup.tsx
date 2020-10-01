@@ -94,7 +94,7 @@ const TransferPopup = ({
               color: theme.palette.dark.main,
             }}
           >
-            Deposit
+            Deposit {depositCoin}
           </TypographyCustomHeading>
         </DialogTitleCustom>
         <DialogContent

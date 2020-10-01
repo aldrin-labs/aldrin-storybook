@@ -69,7 +69,7 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
                 label="Price"
                 dataKey="price"
                 width={width}
-                style={{ color: '' }}
+                style={{ color: theme.palette.dark.main }}
                 headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
               />
               <Column

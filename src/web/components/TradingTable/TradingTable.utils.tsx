@@ -70,7 +70,7 @@ export const CloseButton = ({
 }
 
 import {
-  fundsColumnNames,
+  balancesColumnNames,
   openOrdersColumnNames,
   orderHistoryColumnNames,
   tradeHistoryColumnNames,
@@ -129,8 +129,8 @@ export const getTableHead = (
       ? orderHistoryColumnNames(marketType)
       : tab === 'tradeHistory'
         ? tradeHistoryColumnNames(marketType)
-        : tab === 'funds'
-          ? fundsColumnNames
+        : tab === 'balances'
+          ? balancesColumnNames
           : tab === 'positions'
             ? positionsColumnNames(
               refetch,
@@ -180,7 +180,7 @@ export const getEmptyTextPlaceholder = (tab: string): string =>
       ? 'You have no order history.'
       : tab === 'tradeHistory'
         ? 'You have no trades.'
-        : tab === 'funds'
+        : tab === 'balances'
           ? 'You have no Funds.'
           : tab === 'positions'
             ? 'You have no open positions'
@@ -2289,86 +2289,61 @@ export const combineTradeHistoryTable = (
   return processedTradeHistoryData
 }
 
-export const combineFundsTable = (
+export const combineBalancesTable = (
   fundsData: FundsType[],
-  hideSmallAssets: boolean,
-  marketType: 0 | 1
+  onSettleFunds,
+  theme
 ) => {
   if (!fundsData && !Array.isArray(fundsData)) {
     return []
   }
 
-  const filtredFundsData = hideSmallAssets
-    ? fundsData.filter(
-      (el: FundsType) => el.asset.priceBTC >= TRADING_CONFIG.smallAssetAmount
-    )
-    : fundsData
+  const filtredFundsData = fundsData
 
   const processedFundsData = filtredFundsData
-    .filter((el) => el.assetType === marketType || el.asset.symbol === 'BNB')
     .map((el: FundsType) => {
       const {
-        quantity,
-        locked,
-        free,
-        asset: { symbol, priceBTC, priceUSD },
+        marketName,
+        coin,
+        wallet,
+        orders,
+        unsettled,
+        market,
+        openOrders
       } = el
 
-      const { pricePrecision, quantityPrecision } = getPrecisionItem({
-        marketType,
-        symbol,
-      })
-
-      if (!quantity || quantity === 0) {
-        return
-      }
-
-      const btcValue = addMainSymbol(
-        roundAndFormatNumber(quantity * priceBTC, 8, false),
-        false
-      )
-
       return {
-        id: `${symbol}${quantity}`,
-        coin: symbol || 'unknown',
-        totalBalance: {
-          render:
-            addMainSymbol(
-              roundAndFormatNumber(quantity * priceUSD, 8, true),
-              true
-            ) || '-',
+        id: `${coin}${wallet}`,
+        coin: coin || 'unknown',
+        wallet: {
+          render: roundAndFormatNumber(wallet, 8, true) || '-',
           style: { textAlign: 'left' },
-          contentToSort: +quantity * priceUSD,
+          contentToSort: +wallet,
         },
-        totalQuantity: {
-          render: roundAndFormatNumber(quantity, 8, true) || '-',
+        orders: {
+          render: roundAndFormatNumber(orders, 8, true)|| '-',
           style: { textAlign: 'left' },
-          contentToSort: +quantity,
+          contentToSort: +orders,
         },
-        availableBalance: {
-          render:
-            addMainSymbol(
-              roundAndFormatNumber(free * priceUSD, 8, true),
-              true
-            ) || '-',
+        unsettled: {
+          render: roundAndFormatNumber(unsettled, 8, true) || '-',
           style: { textAlign: 'left' },
-          contentToSort: +free * priceUSD,
+          contentToSort: +unsettled,
         },
-        availableQuantity: {
-          render: roundAndFormatNumber(free, 8, true) || '-',
-          style: { textAlign: 'left' },
-          contentToSort: +free,
-        },
-        inOrder: {
-          render: roundAndFormatNumber(locked, 8, true) || '-',
-          style: { textAlign: 'left' },
-          contentToSort: +locked,
-        },
-        btcValue: {
-          render: btcValue || '-',
-          style: { textAlign: 'left' },
-          contentToSort: quantity * priceBTC,
-        },
+        settle: {
+          render: (
+            <BtnCustom
+            type="text"
+            size="large"
+            onClick={() => onSettleFunds(market, openOrders)}
+            btnColor={theme.palette.blue.serum}
+            btnWidth={'14rem'}
+            height={'100%'}
+          >
+            Settle
+          </BtnCustom>
+          ),
+        }
       }
     })
 

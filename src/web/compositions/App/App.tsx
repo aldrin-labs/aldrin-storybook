@@ -59,7 +59,7 @@ const AppRaw = ({
     (getThemeModeQuery &&
       getThemeModeQuery.getAccountSettings &&
       getThemeModeQuery.getAccountSettings.themeMode) ||
-    'light'
+    'dark'
   const chartPageView =
     getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
 

@@ -9,10 +9,10 @@ export const TablesBlockWrapper = styled(Grid)`
   border: none;
   position: relative;
   height: ${({
-    isDefaultTerminalViewMode,
-  }: {
-    isDefaultTerminalViewMode: boolean
-  }) => (isDefaultTerminalViewMode ? '40%' : '50%')};
+  isDefaultTerminalViewMode,
+}: {
+  isDefaultTerminalViewMode: boolean
+}) => (isDefaultTerminalViewMode ? '40%' : '50%')};
 
   && {
     box-shadow: none !important;
@@ -139,11 +139,11 @@ export const TerminalModeButton = styled(
   width: 25%;
   color: ${(props: { active: boolean; theme: Theme }) =>
     props.active
-      ? props.theme.palette.button.color
+      ? props.theme.palette.white.greyish
       : props.theme.palette.dark.main};
   background-color: ${(props: { active: boolean; theme: Theme }) =>
     props.active
-      ? props.theme.palette.grey.border
+      ? props.theme.palette.blue.serum
       : props.theme.palette.grey.main};
   border: none;
   border-right: ${(props) => props.theme.palette.border.main};
