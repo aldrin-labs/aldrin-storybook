@@ -26,7 +26,12 @@ import DepositPopup from '@sb/compositions/Chart/components/DepositPopup'
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
-import { useBalances, useMarket } from '@sb/dexUtils/markets'
+import { useBalances, useMarket,  useTokenAccounts,
+  getSelectedTokenAccountForMint, } from '@sb/dexUtils/markets'
+import { useSendConnection } from '@sb/dexUtils/connection';
+import { useWallet } from '@sb/dexUtils/wallet';
+import { settleFunds } from '@sb/dexUtils/send';
+import { notify } from '@sb/dexUtils/notifications';
 
 import {
   getDecimalCount
@@ -37,7 +42,7 @@ export const BalanceTitle = styled.div`
   justify-content: space-between;
   align-items: flex-start;
   margin-top: 0.8rem;
-  padding: 0.5rem 0.8rem;
+  padding: 0 0.5rem;
   border-radius: 0.8rem;
 `
 
@@ -45,8 +50,8 @@ export const BalanceValues = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  margin-top: 1rem;
-  padding: 0 1rem;
+  margin-top: 0;
+  padding: 0 0.5rem 1rem;
   text-align: left;
 `
 
@@ -149,6 +154,41 @@ export const Balances = ({
 
   const { market } = useMarket()
   const balances = useBalances()
+  const [accounts] = useTokenAccounts();
+  const connection = useSendConnection();
+  const { wallet } = useWallet();
+
+  async function onSettleSuccess() { console.log('settled funds success') }
+
+  async function onSettleFunds(market, openOrders) {
+    try {
+      await settleFunds({
+        market,
+        openOrders,
+        connection,
+        wallet,
+        baseCurrencyAccount: getSelectedTokenAccountForMint(
+          accounts,
+          market?.baseMintAddress,
+        ),
+        quoteCurrencyAccount: getSelectedTokenAccountForMint(
+          accounts,
+          market?.quoteMintAddress,
+        ),
+      });
+    } catch (e) {
+      console.log('onSettleFunds e', e)
+      // notify({
+      //   message: 'Error settling funds',
+      //   description: e.message,
+      //   type: 'error',
+      // });
+      return;
+    }
+    onSettleSuccess && onSettleSuccess();
+  }
+
+  const [baseBalances, quoteBalances] = balances
 
   let pricePrecision = market?.tickSize && getDecimalCount(market.tickSize);
   let quantityPrecision = market?.minOrderSize && getDecimalCount(market.minOrderSize);
@@ -242,10 +282,6 @@ export const Balances = ({
                     height={`1.7rem`}
                     src={importCoinIcon(pair[0])}
                     onError={onErrorImportCoinUrl}
-                    onClick={() => { 
-                      toggleOpeningDepositPopup(true);
-                      chooseCoinForDeposit('base')
-                    }}
                   />
                 </BalanceTitle>
                 <BalanceValues>
@@ -262,6 +298,52 @@ export const Balances = ({
                     {balances[0]?.wallet ? stripDigitPlaces(balances[0].unsettled, 8) : 0} {pair[0]}
                   </BalanceQuantity>
                 </BalanceValues>
+                <div
+                
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-evenly',
+                          width: '100%',
+                          paddingBottom: '0.8rem',
+                        }}
+                      >
+                        <BtnCustom
+                          btnWidth="45%"
+                          height="auto"
+                          fontSize=".8rem"
+                          padding=".5rem 0 .4rem 0;"
+                          borderRadius=".8rem"
+                          btnColor={theme.palette.white.background}
+                          backgroundColor="#57bc7c"
+                          hoverColor={theme.palette.white.background}
+                          hoverBackground="#50ad72"
+                          transition={'all .4s ease-out'}
+                          onClick={() => {
+                            toggleOpeningDepositPopup(true);
+                            chooseCoinForDeposit('base')
+                          }}
+                        >
+                          deposit
+                      </BtnCustom>
+                        <BtnCustom
+                          btnWidth="45%"
+                          height="auto"
+                          fontSize=".8rem"
+                          padding=".5rem 0 .4rem 0;"
+                          borderRadius=".8rem"
+                          btnColor={theme.palette.white.background}
+                          backgroundColor="#46adc7"
+                          hoverColor={theme.palette.white.background}
+                          hoverBackground="#3992a9"
+                          transition={'all .4s ease-out'}
+                          onClick={() => {
+                            const { market, openOrders } = baseBalances
+                            onSettleFunds(market, openOrders)
+                          }}
+                        >
+                          settle
+                      </BtnCustom>
+                      </div>
               </Grid>
               <Grid
                 container
@@ -278,10 +360,6 @@ export const Balances = ({
                     height={`1.7rem`}
                     src={importCoinIcon(pair[1])}
                     onError={onErrorImportCoinUrl}
-                    onClick={() => { 
-                      toggleOpeningDepositPopup(true);
-                      chooseCoinForDeposit('quote')
-                    }}
                   />
                 </BalanceTitle>
                 <BalanceValues>
@@ -298,6 +376,50 @@ export const Balances = ({
                     {balances[1]?.unsettled ? stripDigitPlaces(balances[1].unsettled, 8) : 0} {pair[1]}
                   </BalanceQuantity>
                 </BalanceValues>
+                <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-evenly',
+                          width: '100%',
+                        }}
+                      >
+                        <BtnCustom
+                          btnWidth="45%"
+                          height="auto"
+                          fontSize=".8rem"
+                          padding=".5rem 0 .4rem 0;"
+                          borderRadius=".8rem"
+                          btnColor={theme.palette.white.background}
+                          backgroundColor="#57bc7c"
+                          hoverColor={theme.palette.white.background}
+                          hoverBackground="#50ad72"
+                          transition={'all .4s ease-out'}
+                          onClick={() => {
+                            toggleOpeningDepositPopup(true);
+                            chooseCoinForDeposit('quote')
+                          }}
+                        >
+                          deposit
+                      </BtnCustom>
+                        <BtnCustom
+                          btnWidth="45%"
+                          height="auto"
+                          fontSize=".8rem"
+                          padding=".5rem 0 .4rem 0;"
+                          borderRadius=".8rem"
+                          btnColor={theme.palette.white.background}
+                          backgroundColor="#46adc7"
+                          hoverColor={theme.palette.white.background}
+                          hoverBackground="#3992a9"
+                          transition={'all .4s ease-out'}
+                          onClick={() => {
+                            const { market, openOrders } = quoteBalances
+                            onSettleFunds(market, openOrders)
+                          }}
+                        >
+                          settle
+                      </BtnCustom>
+                      </div>
               </Grid>
             </>
           ) : (
@@ -381,6 +503,7 @@ export const Balances = ({
                           display: 'flex',
                           justifyContent: 'space-evenly',
                           width: '100%',
+                          paddingBottom: '0.8rem',
                         }}
                       >
                         <BtnCustom
