@@ -251,9 +251,9 @@ class SelectPairListComponent extends React.PureComponent<
         style={{
           top: '2.5rem',
           left:
-            'calc(14rem)',
+            'calc(0)',
           position: 'absolute',
-          transform: 'translateX(-100%)',
+          // transform: 'translateX(-100%)',
           zIndex: 900,
           background: theme.palette.white.background,
           minWidth: '35%',
