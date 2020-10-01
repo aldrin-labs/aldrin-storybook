@@ -181,13 +181,20 @@ export const Balances = ({
           market?.quoteMintAddress,
         ),
       });
+
+      notify({
+        message: 'Settling funds successfully done',
+        description: 'No description',
+        type: 'success',
+      });
+
     } catch (e) {
       console.log('onSettleFunds e', e)
-      // notify({
-      //   message: 'Error settling funds',
-      //   description: e.message,
-      //   type: 'error',
-      // });
+      notify({
+        message: 'Error settling funds',
+        description: e.message,
+        type: 'error',
+      });
       return;
     }
     onSettleSuccess && onSettleSuccess();
