@@ -28,15 +28,15 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
   }
 
   componentDidMount() {
-      const { value, markets, setMarketAddress } = this.props
-      console.log('componentDidMount value: ', value)
-      console.log('componentDidMount markets: ', markets)
+    const { value, markets, setMarketAddress } = this.props
+    console.log('componentDidMount value: ', value)
+    console.log('componentDidMount markets: ', markets)
 
-      // Need to refactor this, address of a coin should be in the value, not name
-      // console.log('value: ', value)
-      const selectedMarketFromUrl = markets.find((el) => el.name.split('/').join('_') === value)
-      // console.log('selectedMarketFormSelector', selectedMarketFormSelector)
-      setMarketAddress(selectedMarketFromUrl.address.toBase58())
+    // Need to refactor this, address of a coin should be in the value, not name
+    // console.log('value: ', value)
+    const selectedMarketFromUrl = markets.find((el) => el.name.split('/').join('_') === value)
+    // console.log('selectedMarketFormSelector', selectedMarketFormSelector)
+    setMarketAddress(selectedMarketFromUrl.address.toBase58())
   }
 
   onMenuOpen = () => {
@@ -118,13 +118,14 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       activeExchange,
     } = this.props
 
-    const { 
+    const {
       market,
       marketName,
       customMarkets,
       setCustomMarkets,
       setMarketAddress,
       markets,
+      style,
       handleDeprecated,
       setHandleDeprecated,
       addMarketVisible,
@@ -148,7 +149,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
           />
         )}
         <ExchangePair
-          style={{ width: '14.4rem' }}
+          style={{ width: '14.4rem', ...style }}
           border={divider}
           selectStyles={selectStyles}
           onClick={this.toggleMenu}
