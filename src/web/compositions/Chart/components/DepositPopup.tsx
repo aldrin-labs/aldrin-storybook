@@ -1,9 +1,13 @@
 import React, { useState } from 'react'
 import { withSnackbar } from 'notistack'
 import { compose } from 'recompose'
+import copy from 'clipboard-copy'
 import { Grid, Typography, withTheme, Input, Link, Theme } from '@material-ui/core'
 import Timer from 'react-compound-timer'
 import { Loading } from '@sb/components/index'
+
+import copyIcon from '@icons/copy.svg'
+import SvgIcon from '@sb/components/SvgIcon'
 
 import { StyledTypography } from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/AccountBlock.styles'
 import InputAmount from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/InputAmount'
@@ -47,7 +51,6 @@ const TransferPopup = ({
   theme,
   baseOrQuote,
 }: IProps) => {
-
     const { market, baseCurrency, quoteCurrency } = useMarket();
 
     const { providerName, providerUrl } = useWallet();
@@ -69,6 +72,14 @@ const TransferPopup = ({
     }
     if (!coinMint) {
       return null;
+    }
+
+    const copyMintAddress = () => {
+      copy(coinMint?.toBase58())
+    }
+
+    const copySPLAddress = () => {
+      copy(account?.pubkey?.toBase58())
     }
 
   return (
@@ -133,6 +144,18 @@ const TransferPopup = ({
                     }}
                   >
                       {coinMint.toBase58()}
+                        <SvgIcon
+                          src={copyIcon}
+                          width="11px"
+                          height="auto"
+                          style={{ cursor: 'pointer', marginLeft: '0.5rem', fill: '#71E0EC' }}
+                          onClick={() => {
+                            enqueueSnackbar('Copied!', {
+                              variant: 'success',
+                            })
+                            copyMintAddress()
+                          }}
+                        />
                   </Typography>
                   <Typography
                     style={{
@@ -148,18 +171,32 @@ const TransferPopup = ({
                   </Typography>
                   <Typography
                     style={{
-                      color: account ? '#71E0EC' : '#FFF',
+                      color: account ? '#71E0EC' : theme.palette.type === 'light' ? '' : '#fff',
                       fontWeight: 'bold',
                       fontSize: '1.6rem',
                       letterSpacing: '1px',
                   }}
                   >
                     {account ? (
-                        account.pubkey.toBase58()
+                        <>
+                        {account.pubkey.toBase58()}
+                        <SvgIcon
+                          src={copyIcon}
+                          width="11px"
+                          height="auto"
+                          style={{ cursor: 'pointer', marginLeft: '0.5rem', fill: '#71E0EC' }}
+                          onClick={() => {
+                            enqueueSnackbar('Copied!', {
+                              variant: 'success',
+                            })
+                            copySPLAddress()
+                          }}
+                        />
+                        </>
                     ) : (
                     <>
                     Visit{' '}
-                        <Link style={{ color: '#71E0EC', textDecoration: 'none' }} rel="noopener noreferrer" target="_blank" to={providerUrl} href={providerUrl}>
+                    <Link style={{ color: '#71E0EC', textDecoration: 'none' }} rel="noopener noreferrer" target="_blank" to={providerUrl} href={providerUrl}>
                         <span style={{ color: '#71E0EC' }}>
                           {providerName}
                         </span>  
