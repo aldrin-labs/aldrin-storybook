@@ -28,7 +28,9 @@ export const SingleChart = ({
       <iframe
         allowfullscreen="" // needed for fullscreen of chart to work
         style={{ borderWidth: 0 }}
-        src={`https://${CHARTS_API_URL}${additionalUrl}&theme=${themeMode}`}
+        src={`https://${CHARTS_API_URL}${additionalUrl}&theme=${
+          themeMode === 'light' ? 'light' : 'serum'
+        }`}
         height={'100%'}
         id={`${name}${themeMode}`}
         key={themeMode}

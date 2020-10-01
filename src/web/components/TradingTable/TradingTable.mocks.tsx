@@ -284,14 +284,12 @@ export const tradeHistoryBody = new Array(13).fill(undefined).map((el, i) => ({
   total: 100,
 }))
 
-export const fundsColumnNames = [
+export const balancesColumnNames = [
   { label: 'Coin', id: 'coin' },
-  { label: 'Total balance', id: 'totalBalance' },
-  { label: 'Total quantity', id: 'totalQuantity' },
-  { label: 'Available balance', id: 'availableBalance' },
-  { label: 'Available quantity', id: 'availableQuantity' },
-  { label: 'In order', id: 'inOrder' },
-  { label: 'BTC Value', id: 'btcValue' },
+  { label: 'Wallet balance', id: 'wallet' },
+  { label: 'Orders', id: 'orders' },
+  { label: 'Settled', id: 'settled' },
+  { label: 'Settle', id: 'settle' },
 ]
 
 export const fundsBody = new Array(13).fill(undefined).map((el, i) => ({

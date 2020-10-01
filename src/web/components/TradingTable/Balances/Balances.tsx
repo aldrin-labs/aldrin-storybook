@@ -3,59 +3,18 @@ import { TableWithSort } from '@sb/components'
 
 import {
   updateOpenOrderHistoryQuerryFunction,
-  combineOpenOrdersTable,
+  combineBalancesTable,
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
 
-import { PaginationBlock } from '../TradingTablePagination'
-import { cancelOrderStatus } from '@core/utils/tradingUtils'
-import { useOpenOrders } from '@sb/dexUtils/markets'
+import { useTokenAccounts, getSelectedTokenAccountForMint, useBalances } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { useSendConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { cancelOrder } from '@sb/dexUtils/send'
+import { settleFunds } from '@sb/dexUtils/send'
 
 const OpenOrdersTable = (props) => {
-
-  const { wallet } = useWallet()
-  const connection = useSendConnection()
-
-  const onCancelOrder = async (order) => {
-    try {
-      await cancelOrder({
-        order,
-        market: order.market,
-        connection,
-        wallet,
-      });
-    } catch (e) {
-      notify({
-        message: 'Error cancelling order',
-        description: e.message,
-        type: 'error',
-      });
-
-      return;
-    }
-  }
-
-  const cancelOrderWithStatus = async (
-    order
-  ) => {
-    const { showCancelResult } = props
-
-    // await props.addOrderToCanceled(orderId)
-    const result = await onCancelOrder(order)
-    const status = await cancelOrderStatus(result)
-
-    if (status.result === 'error') {
-      await props.clearCanceledOrders()
-    }
-
-    showCancelResult(status)
-  }
-
   const {
     tab,
     theme,
@@ -76,21 +35,45 @@ const OpenOrdersTable = (props) => {
     keys
   } = props
 
-  const openOrders = useOpenOrders();
+  const balances = useBalances();
+  const [accounts] = useTokenAccounts();
+  const connection = useSendConnection();
+  const { wallet } = useWallet();
+
+  async function onSettleFunds(market, openOrders) {
+    try {
+      await settleFunds({
+        market,
+        openOrders,
+        connection,
+        wallet,
+        baseCurrencyAccount: getSelectedTokenAccountForMint(
+          accounts,
+          market?.baseMintAddress,
+        ),
+        quoteCurrencyAccount: getSelectedTokenAccountForMint(
+          accounts,
+          market?.quoteMintAddress,
+        ),
+      });
+    } catch (e) {
+      notify({
+        message: 'Error settling funds',
+        description: e.message,
+        type: 'error',
+      });
+      return;
+    }
+  }
 
   if (!show) {
     return null
   }
 
-  const openOrdersProcessedData = combineOpenOrdersTable(
-    openOrders,
-    cancelOrderWithStatus,
-    theme,
-    arrayOfMarketIds,
-    marketType,
-    canceledOrders,
-    keys,
-    handlePairChange
+  const balancesProcessedData = combineBalancesTable(
+    balances,
+    onSettleFunds,
+    theme
   )
 
   return (
@@ -107,33 +90,6 @@ const OpenOrdersTable = (props) => {
         sortDirection: 'desc',
       }}
       withCheckboxes={false}
-      pagination={{
-        fakePagination: false,
-        enabled: true,
-        totalCount: 0,
-        page: page,
-        rowsPerPage: perPage,
-        rowsPerPageOptions: [10, 20, 30, 50, 100],
-        handleChangePage: handleChangePage,
-        handleChangeRowsPerPage: handleChangeRowsPerPage,
-        additionalBlock: (
-          <PaginationBlock
-            {...{
-              theme,
-              allKeys,
-              specificPair,
-              handleToggleAllKeys,
-              handleToggleSpecificPair,
-            }}
-          />
-        ),
-        paginationStyles: {
-          width: 'calc(100%)',
-          backgroundColor: theme.palette.white.background,
-          border: theme.palette.border.main,
-          borderRight: 0,
-        },
-      }}
       tableStyles={{
         headRow: {
           borderBottom: theme.palette.border.main,
@@ -161,7 +117,7 @@ const OpenOrdersTable = (props) => {
         },
       }}
       emptyTableText={getEmptyTextPlaceholder(tab)}
-      data={{ body: openOrdersProcessedData }}
+      data={{ body: balancesProcessedData }}
       columnNames={getTableHead(tab, marketType)}
     />
   )

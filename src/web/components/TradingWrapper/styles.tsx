@@ -143,7 +143,7 @@ export const TerminalModeButton = styled(
       : props.theme.palette.dark.main};
   background-color: ${(props: { active: boolean; theme: Theme }) =>
     props.active
-      ? props.theme.palette.green.tab
+      ? props.theme.palette.blue.serum
       : props.theme.palette.grey.main};
   border: none;
   border-right: ${(props) => props.theme.palette.border.main};

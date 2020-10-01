@@ -7,13 +7,13 @@ export const TitleTab = styled(({ active, theme, ...rest }) => {
 })`
   &&& {
     color: ${(props: { active: boolean; theme: Theme }) =>
-      props.active
-        ? props.theme.palette.white.main
-        : props.theme.palette.dark.main};
+    props.active
+      ? props.theme.palette.white.main
+      : props.theme.palette.dark.main};
     background-color: ${(props: { active: boolean; theme: Theme }) =>
-      props.active
-        ? props.theme.palette.green.tab
-        : props.theme.palette.grey.main};
+    props.active
+      ? props.theme.palette.blue.serum
+      : props.theme.palette.grey.main};
     font-size: 1.3rem;
     font-weight: normal;
     width: 20%;
