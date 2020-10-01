@@ -51,7 +51,7 @@ export const BalanceValues = styled.div`
 `
 
 export const BalanceQuantity = styled.span`
-  color: #16253d;
+  color: ${props => props.theme.palette.dark.main};
   font-size: 1rem;
   font-weight: bold;
   letter-spacing: 0.075rem;
@@ -242,7 +242,7 @@ export const Balances = ({
                     height={`1.7rem`}
                     src={importCoinIcon(pair[0])}
                     onError={onErrorImportCoinUrl}
-                    onClick={() => { 
+                    onClick={() => {
                       toggleOpeningDepositPopup(true);
                       chooseCoinForDeposit('base')
                     }}
@@ -252,13 +252,13 @@ export const Balances = ({
                   <BalanceFuturesTitle theme={theme}>
                     Wallet balance
                     </BalanceFuturesTitle>
-                  <BalanceQuantity>
+                  <BalanceQuantity theme={theme}>
                     {balances[0]?.wallet ? stripDigitPlaces(balances[0].wallet, 8) : 0} {pair[0]}
                   </BalanceQuantity>
                   <BalanceFuturesTitle theme={theme}>
                     Unsettled balance
                     </BalanceFuturesTitle>
-                  <BalanceQuantity>
+                  <BalanceQuantity theme={theme}>
                     {balances[0]?.wallet ? stripDigitPlaces(balances[0].unsettled, 8) : 0} {pair[0]}
                   </BalanceQuantity>
                 </BalanceValues>
@@ -278,7 +278,7 @@ export const Balances = ({
                     height={`1.7rem`}
                     src={importCoinIcon(pair[1])}
                     onError={onErrorImportCoinUrl}
-                    onClick={() => { 
+                    onClick={() => {
                       toggleOpeningDepositPopup(true);
                       chooseCoinForDeposit('quote')
                     }}
@@ -288,13 +288,13 @@ export const Balances = ({
                   <BalanceFuturesTitle theme={theme}>
                     Wallet balance
                     </BalanceFuturesTitle>
-                  <BalanceQuantity>
+                  <BalanceQuantity theme={theme}>
                     {balances[1]?.wallet ? stripDigitPlaces(balances[1].wallet, 8) : 0} {pair[1]}
                   </BalanceQuantity>
                   <BalanceFuturesTitle theme={theme}>
                     Unsettled balance
                     </BalanceFuturesTitle>
-                  <BalanceQuantity>
+                  <BalanceQuantity theme={theme}>
                     {balances[1]?.unsettled ? stripDigitPlaces(balances[1].unsettled, 8) : 0} {pair[1]}
                   </BalanceQuantity>
                 </BalanceValues>
