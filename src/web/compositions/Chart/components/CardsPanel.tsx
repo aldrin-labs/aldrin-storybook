@@ -18,9 +18,15 @@ import { updateThemeMode } from '@core/graphql/mutations/chart/updateThemeMode'
 import { useWallet, WALLET_PROVIDERS } from '@sb/dexUtils/wallet';
 import { ENDPOINTS, useConnectionConfig } from '@sb/dexUtils/connection';
 
+import OvalSelector from '@sb/components/OvalSelector'
+import SerumCCAILogo from '@icons/serumCCAILogo.svg'
+import SvgIcon from '@sb/components/SvgIcon'
+
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select'
 import Button from '@material-ui/core/Button'
+
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
 const selectStyles = (theme: Theme) => ({
   height: '100%',
@@ -32,7 +38,7 @@ const selectStyles = (theme: Theme) => ({
   border: theme.palette.border.main,
   borderRadius: '0.75rem',
   boxShadow: '0px 0px 1.2rem rgba(8, 22, 58, 0.1)',
-  width: '20%',
+  width: '14rem',
   '& div': {
     cursor: 'pointer',
     color: theme.palette.dark.main,
@@ -53,8 +59,8 @@ const selectStyles = (theme: Theme) => ({
   },
 })
 
-const TopBar = () => {
-  const { connected, wallet, providerUrl, setProvider } = useWallet();
+const TopBar = ({ theme }) => {
+  const { connected, wallet, providerUrl, providerName, setProvider } = useWallet();
   const { endpoint, setEndpoint } = useConnectionConfig();
   const location = useLocation();
   const history = useHistory();
@@ -70,12 +76,8 @@ const TopBar = () => {
 
   return (
     <div style={{ display: 'flex' }}>
-      {/* <LogoWrapper> */}
-      {/* <img src={logo} alt="" onClick={() => history.push('/')} /> */}
-      {/* {'SERUM'} */}
-      {/* </LogoWrapper> */}
       <div>
-        <Select
+        {/* <Select
           onSelect={setEndpoint}
           value={endpoint}
           style={{ marginRight: 8 }}
@@ -85,37 +87,51 @@ const TopBar = () => {
               {name}
             </MenuItem>
           ))}
-        </Select>
+        </Select> */}
+        <OvalSelector
+          theme={theme}
+          selectStyles={selectStyles(theme)}
+          onChange={({ value }) => {
+            setEndpoint(value)
+          }}
+          value={{ value: endpoint, label: ENDPOINTS.find(a => a.endpoint === endpoint).name }}
+          options={ENDPOINTS.map(endpoint => ({ value: endpoint.endpoint, label: endpoint.name }))}
+        />
       </div>
       <div>
-        <Select onSelect={setProvider} value={providerUrl}>
-          {WALLET_PROVIDERS.map(({ name, url }) => (
-            <MenuItem value={url} key={url}>
-              {name}
-            </MenuItem>
-          ))}
-        </Select>
+        <OvalSelector
+          theme={theme}
+          selectStyles={selectStyles(theme)}
+          onChange={({ value }) => {
+            setProvider(value)
+          }}
+          value={{ value: providerUrl, label: providerName }}
+          options={WALLET_PROVIDERS.map(provider => ({ value: provider.url, label: provider.name }))}
+        />
       </div>
       <div>
-        <Button
+        <BtnCustom
           type="text"
           size="large"
           onClick={connected ? wallet.disconnect : wallet.connect}
-          style={{ color: '#2abdd2' }}
+          btnColor={'#2abdd2'}
+          btnWidth={'14rem'}
+          height={'100%'}
         >
           {/* <UserOutlined /> */}
           {!connected ? 'Connect wallet' : 'Disconnect'}
-        </Button>
-        {/* {connected && (
-          <Popover
-            content={<LinkAddress address={publicKey} />}
+        </BtnCustom>
+      </div>
+      <div>
+        {connected && (
+          <div
+            // content={<a address={publicKey} />}
             placement="bottomRight"
             title="Wallet public key"
             trigger="click"
           >
-            <InfoCircleOutlined style={{ color: '#2abdd2' }} />
-          </Popover>
-        )} */}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -135,25 +151,6 @@ export const CardsPanel = ({
   showChangePositionModeResult,
   activeExchange,
 }) => {
-  const hedgeMode = selectedKey.hedgeMode
-
-  const changePositionMode = async (hedgeMode: boolean) => {
-    try {
-      const result = await changePositionModeMutation({
-        variables: {
-          keyId: selectedKey.keyId,
-          hedgeMode,
-        },
-      })
-
-      return result.data.changePositionMode
-    } catch (err) {
-      return { errors: err }
-    }
-  }
-
-  const location = useLocation()
-
   return (
     <>
       <PanelWrapper>
@@ -172,14 +169,28 @@ export const CardsPanel = ({
         <CustomCard
           theme={theme}
           style={{
-            position: 'relative',
+            // position: 'relative',
             display: 'flex',
-            maxWidth: marketType === 0 ? '50%' : '58.33333%',
+            maxWidth: '58.33333%',
             marginRight: '.4rem',
             flexGrow: 1,
             border: '0',
           }}
         >
+          <img style={{ height: '100%', padding: '0 3rem', borderRight: theme.palette.border.main }} src={SerumCCAILogo} />
+
+          <AutoSuggestSelect
+            value={view === 'default' && pair}
+            id={'pairSelector'}
+            view={view}
+            style={{ width: '20rem' }}
+            activeExchange={activeExchange}
+            selectStyles={{ ...selectStyles(theme) }}
+            marketType={marketType}
+            quantityPrecision={quantityPrecision}
+            pricePrecision={pricePrecision}
+          />
+
           {/* <TooltipCustom
             title="Cryptocurrencies.ai is a Binance partner exchange"
             enterDelay={250}
@@ -208,19 +219,9 @@ export const CardsPanel = ({
           />
         )} */}
 
-        <AutoSuggestSelect
-          style={{ width: '15%', minWidth: '0' }}
-          value={view === 'default' && pair}
-          id={'pairSelector'}
-          view={view}
-          activeExchange={activeExchange}
-          selectStyles={selectStyles(theme)}
-          marketType={marketType}
-          quantityPrecision={quantityPrecision}
-          pricePrecision={pricePrecision}
-        />
 
-        <TopBar />
+
+        <TopBar theme={theme} />
 
         {/* <SmartTradeButton
           theme={theme}

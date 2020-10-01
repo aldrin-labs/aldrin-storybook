@@ -178,11 +178,11 @@ export default ({ themeMode, isChartPage, children }) => {
               custom: '#2E2E2E',
               dark: '#2c2c34', //'#1F1F24',
               light: '#D1DDEF',
-              main: '#0B0B0E',
+              main: '#0E1016',
               background: '#2E2E2E',
               text: '#7284A0',
               border: '#2E2E2E',
-              cream: '#0B0B0E',
+              cream: '#0E1016',
             },
             primary: {
               main: '#303037',
@@ -222,19 +222,20 @@ export default ({ themeMode, isChartPage, children }) => {
               main: '#fff',
               background: '#1B2028',
               inputBackground: '#14161B',
+              greyish: '#f5f5fb',
             },
             dark: {
               main: '#D1DDEF',
             },
             depthChart: {
-              redStroke: '#E55764',
-              greenStroke: '#39A74C',
-              greenBackground: 'rgba(57, 167, 76, 0.35)',
-              redBackground: 'rgba(255, 30, 62, 0.35)',
+              redStroke: '#FFADAD',
+              greenStroke: '#C7FFD0',
+              greenBackground: '#497E5A',
+              redBackground: '#923B50',
             },
             orderbook: {
-              greenBackground: 'rgba(57, 167, 76, 0.35)',
-              redBackground: 'rgba(255, 30, 62, 0.35)',
+              greenBackground: '#497E5A',
+              redBackground: '#923B50',
             },
             slider: {
               dots: '#2F3949',
@@ -417,6 +418,7 @@ export default ({ themeMode, isChartPage, children }) => {
               main: '#fff',
               background: '#fff',
               inputBackground: '#fff',
+              greyish: '#f5f5fb',
             },
             dark: {
               main: '#16253D',

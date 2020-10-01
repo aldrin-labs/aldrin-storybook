@@ -210,7 +210,7 @@ const TradeHistoryTable = (props) => {
         heading: {
           fontSize: '1rem',
           fontWeight: 'bold',
-          backgroundColor: theme.palette.white.background,
+          backgroundColor: theme.palette.grey.cream,
           color: theme.palette.dark.main,
           boxShadow: 'none',
         },
