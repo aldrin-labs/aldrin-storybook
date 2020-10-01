@@ -16,7 +16,7 @@ export const TitleTab = styled(({ active, theme, ...rest }) => {
       : props.theme.palette.grey.main};
     font-size: 1.3rem;
     font-weight: normal;
-    width: 20%;
+    width: 25%;
     // padding: 0.6rem 4rem;
     border-radius: 0;
     letter-spacing: 0.01rem;

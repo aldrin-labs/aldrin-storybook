@@ -127,6 +127,22 @@ export const activeTradesColumnNames = [
   // { label: 'close', id: 'close' },
 ]
 
+export const feeTiersColumnNames = [
+  { label: 'Fee Tier', id: 'tier' },
+  { label: 'taker', id: 'taker' },
+  { label: 'maker', id: 'maker' },
+  { label: 'Requirements', id: 'condition' },
+]
+
+export const feeDiscountsColumnNames = [
+  { label: 'Fee Tier', id: 'tier' },
+  { label: 'Taker', id: 'taker' },
+  { label: 'Maker', id: 'maker' },
+  { label: 'Public Key', id: 'pubkey' },
+  { label: 'Balance', id: 'balance' },
+  { label: 'Mint', id: 'mint' },
+]
+
 export const strategiesHistoryColumnNames = [
   { label: ' ', id: 'blank' },
   { label: 'pair', id: 'pair' },

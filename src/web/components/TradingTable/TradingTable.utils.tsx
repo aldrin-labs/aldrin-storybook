@@ -74,8 +74,8 @@ import {
   openOrdersColumnNames,
   orderHistoryColumnNames,
   tradeHistoryColumnNames,
-  positionsColumnNames,
-  activeTradesColumnNames,
+  feeTiersColumnNames,
+  feeDiscountsColumnNames,
   strategiesHistoryColumnNames,
   fundsBody,
   positionsBody,
@@ -131,14 +131,10 @@ export const getTableHead = (
         ? tradeHistoryColumnNames(marketType)
         : tab === 'balances'
           ? balancesColumnNames
-          : tab === 'positions'
-            ? positionsColumnNames(
-              refetch,
-              updatePositionsHandler,
-              positionsRefetchInProcess
-            )
-            : tab === 'activeTrades'
-              ? activeTradesColumnNames
+          : tab === 'feeTiers'
+            ? feeTiersColumnNames
+            : tab === 'feeDiscounts'
+              ? feeDiscountsColumnNames
               : tab === 'strategiesHistory'
                 ? strategiesHistoryColumnNames
                 : []
@@ -182,10 +178,10 @@ export const getEmptyTextPlaceholder = (tab: string): string =>
         ? 'You have no trades.'
         : tab === 'balances'
           ? 'You have no Funds.'
-          : tab === 'positions'
-            ? 'You have no open positions'
-            : tab === 'activeTrades'
-              ? 'You have no active smart trades'
+          : tab === 'feeTiers'
+            ? 'You have no fee tiers'
+            : tab === 'feeDiscounts'
+              ? 'You have no (M)SRM accounts'
               : tab === 'strategiesHistory'
                 ? 'You have no smart trades'
                 : 'You have no assets'
