@@ -2307,7 +2307,9 @@ export const combineBalancesTable = (
         coin,
         wallet,
         orders,
-        unsettled
+        unsettled,
+        market,
+        openOrders
       } = el
 
       return {
@@ -2329,7 +2331,18 @@ export const combineBalancesTable = (
           contentToSort: +unsettled,
         },
         settle: {
-          render: 'settle',
+          render: (
+            <BtnCustom
+            type="text"
+            size="large"
+            onClick={() => onSettleFunds(market, openOrders)}
+            btnColor={theme.palette.blue.serum}
+            btnWidth={'14rem'}
+            height={'100%'}
+          >
+            Settle
+          </BtnCustom>
+          ),
         }
       }
     })
