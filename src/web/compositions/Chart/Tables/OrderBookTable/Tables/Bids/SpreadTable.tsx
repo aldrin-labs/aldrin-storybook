@@ -87,7 +87,7 @@ class SpreadTable extends Component<IProps> {
                 dataKey="price"
                 headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
                 width={width - width / 6}
-                style={{ color: theme.palette.green.main }}
+                style={{ color: theme.palette.depthChart.greenStroke }}
               />
               <Column
                 label={mode === 'bids' ? `size (${base})` : ''}
