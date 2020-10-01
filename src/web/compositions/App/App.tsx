@@ -23,6 +23,8 @@ import AnimatedNavBar from '@sb/components/NavBar/AnimatedNavBar'
 import ThemeWrapper from './ThemeWrapper/ThemeWrapper'
 import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
 import SnackbarWrapper from './SnackbarWrapper/SnackbarWrapper'
+import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
+
 import { AppGridLayout, FontStyle } from './App.styles'
 // import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
 import { GlobalStyle } from '@sb/styles/global.styles'
@@ -87,7 +89,7 @@ const AppRaw = ({
       <JssProvider jss={jss} generateClassName={generateClassName}>
         <ThemeWrapper themeMode={themeMode} isChartPage={isChartPage}>
           <SnackbarWrapper>
-
+            <SnackbarUtilsConfigurator />
             <CssBaseline />
             <FontStyle />
             <ConnectionProvider>
