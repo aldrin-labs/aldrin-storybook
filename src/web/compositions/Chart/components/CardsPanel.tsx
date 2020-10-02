@@ -37,6 +37,38 @@ import SunActive from '@icons/sunActive.svg'
 import MoonDisabled from '@icons/moonDisabled.svg'
 import MoonActive from '@icons/moonActive.svg'
 
+import IconButton from '@material-ui/core/IconButton'
+import TelegramIcon from '@icons/telegram.svg'
+import DiscordIcon from '@icons/discord.svg'
+import TwitterIcon from '@icons/twitter.svg'
+
+const TelegramLink = (props) => (
+  <a
+    href="https://t.me/CryptocurrenciesAi"
+    target="_blank"
+    rel="noopener noreferrer"
+    {...props}
+  />
+)
+
+const DiscordLink = (props) => (
+  <a
+    href="https://discord.com/invite/2EaKvrs"
+    target="_blank"
+    rel="noopener noreferrer"
+    {...props}
+  />
+)
+
+const TwitterLink = (props) => (
+  <a
+    href="https://twitter.com/CCAI_Official"
+    target="_blank"
+    rel="noopener noreferrer"
+    {...props}
+  />
+)
+
 const selectStyles = (theme: Theme) => ({
   height: '100%',
   background: theme.palette.white.background,
@@ -91,7 +123,7 @@ const TopBar = ({ theme }) => {
       <SvgIcon 
           width={'auto'} 
           height={'100%'} 
-          styledComponentsAdditionalStyle={{ padding: '0 2rem 0 0'}} 
+          styledComponentsAdditionalStyle={{ padding: '0 2rem 0 0', cursor: 'pointer' }} 
           src={isDarkTheme ? SunDisabled : SunActive} 
           onClick={() => {
             if (isDarkTheme) {
@@ -104,7 +136,7 @@ const TopBar = ({ theme }) => {
         <SvgIcon 
           width={'auto'} 
           height={'100%'} 
-          styledComponentsAdditionalStyle={{ padding: '0 2rem 0 0'}} 
+          styledComponentsAdditionalStyle={{ padding: '0 2rem 0 0', cursor: 'pointer' }} 
           src={isDarkTheme ? MoonActive : MoonDisabled} 
           onClick={() => {
             if (!isDarkTheme) {
@@ -252,6 +284,39 @@ export const CardsPanel = ({
         </CustomCard>
 
         <TopBar theme={theme} />
+        
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <TooltipCustom
+            title={'Our Twitter'}
+            enterDelay={250}
+            component={
+              <TwitterLink>
+                <SvgIcon height={'80%'} width={'auto'} style={{ padding: '0 1rem', cursor: 'pointer'}} src={TwitterIcon} />
+              </TwitterLink>
+            }
+          />
+
+
+          <TooltipCustom
+            title={'Discord chat'}
+            enterDelay={250}
+            component={
+              <DiscordLink>
+                <SvgIcon height={'80%'} width={'auto'} style={{ padding: '0 1rem', cursor: 'pointer'}} src={DiscordIcon} />
+              </DiscordLink>
+            }
+          />
+
+          <TooltipCustom
+            title={'Telegram chat'}
+            enterDelay={250}
+            component={
+              <TelegramLink>
+                <SvgIcon height={'80%'} width={'auto'} style={{ padding: '0 1rem', cursor: 'pointer' }} src={TelegramIcon} />
+              </TelegramLink>
+            }
+          />
+          </div>
       </PanelWrapper>
     </>
   )
