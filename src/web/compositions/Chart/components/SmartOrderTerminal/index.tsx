@@ -5672,6 +5672,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               price={this.props.price}
               pair={pair}
               pricePrecision={pricePrecision}
+              quantityPrecision={quantityPrecision}
               side={entryPoint.order.side}
               marketType={marketType}
               leverage={entryPoint.order.leverage}
