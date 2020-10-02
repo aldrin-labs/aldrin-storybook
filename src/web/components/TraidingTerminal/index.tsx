@@ -952,6 +952,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
             }
             : {}),
           ...{ reduceOnly },
+          orderMode
         }
       )
 

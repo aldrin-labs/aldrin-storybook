@@ -107,33 +107,33 @@ const OpenOrdersTable = (props) => {
         sortDirection: 'desc',
       }}
       withCheckboxes={false}
-      pagination={{
-        fakePagination: false,
-        enabled: true,
-        totalCount: 0,
-        page: page,
-        rowsPerPage: perPage,
-        rowsPerPageOptions: [10, 20, 30, 50, 100],
-        handleChangePage: handleChangePage,
-        handleChangeRowsPerPage: handleChangeRowsPerPage,
-        additionalBlock: (
-          <PaginationBlock
-            {...{
-              theme,
-              allKeys,
-              specificPair,
-              handleToggleAllKeys,
-              handleToggleSpecificPair,
-            }}
-          />
-        ),
-        paginationStyles: {
-          width: 'calc(100%)',
-          backgroundColor: theme.palette.white.background,
-          border: theme.palette.border.main,
-          borderRight: 0,
-        },
-      }}
+      // pagination={{
+      //   fakePagination: false,
+      //   enabled: true,
+      //   totalCount: 0,
+      //   page: page,
+      //   rowsPerPage: perPage,
+      //   rowsPerPageOptions: [10, 20, 30, 50, 100],
+      //   handleChangePage: handleChangePage,
+      //   handleChangeRowsPerPage: handleChangeRowsPerPage,
+      //   additionalBlock: (
+      //     <PaginationBlock
+      //       {...{
+      //         theme,
+      //         allKeys,
+      //         specificPair,
+      //         handleToggleAllKeys,
+      //         handleToggleSpecificPair,
+      //       }}
+      //     />
+      //   ),
+      //   paginationStyles: {
+      //     width: 'calc(100%)',
+      //     backgroundColor: theme.palette.white.background,
+      //     border: theme.palette.border.main,
+      //     borderRight: 0,
+      //   },
+      // }}
       tableStyles={{
         headRow: {
           borderBottom: theme.palette.border.main,

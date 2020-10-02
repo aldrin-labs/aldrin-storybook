@@ -228,32 +228,32 @@ const TradeHistoryTable = (props) => {
           boxShadow: 'none',
         },
       }}
-      pagination={{
-        fakePagination: false,
-        enabled: true,
-        totalCount: count,
-        page: page,
-        rowsPerPage: perPage,
-        rowsPerPageOptions: [10, 20, 30, 50, 100],
-        handleChangePage: handleChangePage,
-        handleChangeRowsPerPage: handleChangeRowsPerPage,
-        additionalBlock: (
-          <PaginationBlock
-            {...{
-              theme,
-              allKeys,
-              specificPair,
-              handleToggleAllKeys,
-              handleToggleSpecificPair,
-            }}
-          />
-        ),
-        paginationStyles: {
-          width: 'calc(100%)',
-          backgroundColor: theme.palette.white.background,
-          border: theme.palette.border.main,
-        },
-      }}
+      // pagination={{
+      //   fakePagination: false,
+      //   enabled: true,
+      //   totalCount: count,
+      //   page: page,
+      //   rowsPerPage: perPage,
+      //   rowsPerPageOptions: [10, 20, 30, 50, 100],
+      //   handleChangePage: handleChangePage,
+      //   handleChangeRowsPerPage: handleChangeRowsPerPage,
+      //   additionalBlock: (
+      //     <PaginationBlock
+      //       {...{
+      //         theme,
+      //         allKeys,
+      //         specificPair,
+      //         handleToggleAllKeys,
+      //         handleToggleSpecificPair,
+      //       }}
+      //     />
+      //   ),
+      //   paginationStyles: {
+      //     width: 'calc(100%)',
+      //     backgroundColor: theme.palette.white.background,
+      //     border: theme.palette.border.main,
+      //   },
+      // }}
       emptyTableText={getEmptyTextPlaceholder(tab)}
       // title={
       //   <div>
