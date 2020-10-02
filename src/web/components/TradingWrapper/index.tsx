@@ -442,7 +442,11 @@ class SimpleTabs extends React.Component {
           {!isSPOTMarket ? (
             <TerminalHeader
               key={'futuresTerminal'}
-              style={{ display: 'flex', height: '9%' }}
+              style={{
+                display: 'flex',
+                paddingTop: '.4rem',
+                paddingBottom: '.3rem',
+              }}
               theme={theme}
             >
               <SettingsContainer>

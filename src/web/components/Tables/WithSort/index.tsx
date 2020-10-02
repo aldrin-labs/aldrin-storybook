@@ -74,13 +74,7 @@ export default class Sort extends React.Component<TableProps> {
   }
 
   render() {
-    const {
-      data: RawRows,
-      columnNames,
-      defaultSort,
-      onTrClick,
-      updateTerminalViewMode,
-    } = this.props
+    const { data: RawRows, columnNames, defaultSort, onTrClick } = this.props
     const { sortColumn, sortDirection } = this.state
     const defaultSortEnabled =
       defaultSort && defaultSort.sortColumn && defaultSort.sortDirection
@@ -105,7 +99,6 @@ export default class Sort extends React.Component<TableProps> {
         {...{
           ...this.props,
           onTrClick: onTrClick,
-          updateTerminalViewMode: updateTerminalViewMode,
           data: result.data,
           columnNames: result.head,
           sort: {

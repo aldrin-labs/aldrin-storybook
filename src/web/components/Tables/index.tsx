@@ -10,7 +10,6 @@ import Checkbox from '@material-ui/core/Checkbox'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import { fade } from '@material-ui/core/styles/colorManipulator'
-import { SmartTradeButton } from '@sb/components/TradingTable/TradingTabs/TradingTabs.styles'
 
 import {
   StyledTable,

@@ -70,7 +70,6 @@ const TradingTabs = ({
       (a.enabled ||
         (a.conditions.isTemplate && a.conditions.templateStatus !== 'disabled'))
   ).length
-  console.log('props', terminalViewMode)
   return (
     <>
       <TitleTabsGroup theme={theme}>
