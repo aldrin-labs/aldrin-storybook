@@ -1569,6 +1569,8 @@ export class EditEntryOrderPopup extends React.Component<
       maxAmount = funds[1].quantity * leverage
     }
 
+    console.log('quantityPrecision', quantityPrecision)
+
     return (
       <Dialog
         theme={theme}

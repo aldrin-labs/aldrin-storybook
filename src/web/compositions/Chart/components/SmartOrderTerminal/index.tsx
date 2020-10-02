@@ -714,6 +714,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
     this.handleCloseConfirmationPopup()
 
+    const isValid = validateSmartOrders(
+      this.state,
+      this.props.enqueueSnackbar
+    )
+
+    if (!isValid) return 
+
     // ux-improvement to see popup before result from the backend received
     const successResult = {
       status: 'success',
@@ -1053,8 +1060,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       maxAmount = funds[1].quantity * entryPoint.order.leverage
     }
 
-    console.log('maxAmount', maxAmount)
-
     if (entryPoint.averaging.entryLevels.length > 0) {
       entryPoint.averaging.entryLevels.forEach(target => {
         if (marketType === 0 && entryPoint.order.side === 'sell') {
@@ -1064,9 +1069,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         }
       })
     }
-
-
-    console.log('maxAmount', maxAmount)
 
     return (
       <>
