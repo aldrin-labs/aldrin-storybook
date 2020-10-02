@@ -109,7 +109,10 @@ export const DefaultViewComponent = (
   const [base, quote] = currencyPair.split('_')
   const baseQuoteArr = [base, quote]
   const exchange = activeExchange.symbol
-  const isDefaultTerminalViewMode = terminalViewMode === 'default'
+  const isDefaultTerminalViewMode = terminalViewMode !== 'smartOrderMode'
+  const isDefaultOnlyTables = terminalViewMode === 'onlyTables'
+  const isSmartOrderMode = terminalViewMode === 'smartOrderMode'
+
   const sizeDigits = marketType === 0 ? 8 : 3
 
   useEffect(() => {
@@ -132,8 +135,11 @@ export const DefaultViewComponent = (
             selectedKey,
             showChangePositionModeResult,
             isDefaultTerminalViewMode,
+            isDefaultOnlyTables,
+            isSmartOrderMode,
             updateTerminalViewMode,
             marketType,
+            terminalViewMode,
             quantityPrecision,
             pricePrecision,
             hideDepthChart,
@@ -216,6 +222,8 @@ export const DefaultViewComponent = (
               hideDepthChart={hideDepthChart}
               hideOrderbook={hideOrderbook}
               hideTradeHistory={hideTradeHistory}
+              isDefaultOnlyTables={isDefaultOnlyTables}
+              isSmartOrderMode={isSmartOrderMode}
             >
               <Grid item container style={{ height: '100%' }}>
                 <Grid
@@ -304,15 +312,30 @@ export const DefaultViewComponent = (
           </TopChartsContainer>
           {!authenticated && <GuestMode />}
 
-          {authenticated && (
+          {authenticated && !isSmartOrderMode && (
             <TradingTabelContainer
               item
               theme={theme}
-              xs={marketType === 0 ? 7 : 6}
+              xs={
+                isDefaultOnlyTables
+                  ? marketType === 0
+                    ? 12
+                    : 11
+                  : marketType === 0
+                  ? 7
+                  : 6
+              }
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+              updateTerminalViewMode={updateTerminalViewMode}
+              isDefaultOnlyTables={isDefaultOnlyTables}
             >
               <TradingTable
+                isDefaultOnlyTables={isDefaultOnlyTables}
+                isSmartOrderMode={isSmartOrderMode}
+                updateTerminalViewMode={updateTerminalViewMode}
+                terminalViewMode={terminalViewMode}
                 isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+                theme={theme}
                 maxLeverage={maxLeverage}
                 selectedKey={selectedKey}
                 showOrderResult={showOrderResult}
@@ -327,7 +350,7 @@ export const DefaultViewComponent = (
               />
             </TradingTabelContainer>
           )}
-          {authenticated && isDefaultTerminalViewMode && marketType === 1 && (
+          {authenticated && !isSmartOrderMode && marketType === 1 && (
             <BalancesContainer
               item
               xs={1}
@@ -345,7 +368,7 @@ export const DefaultViewComponent = (
             </BalancesContainer>
           )}
 
-          {authenticated && (
+          {authenticated && !isDefaultOnlyTables && (
             <TerminalContainer
               theme={theme}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}

@@ -136,7 +136,7 @@ export default ({ themeMode, isChartPage, children }) => {
           },
           palette: {
             divider: fade('#748AA1', 0.16),
-            type: "dark",
+            type: 'dark',
             text: {
               primary: '#DBD9E6',
               dark: '#7284A0',
@@ -150,10 +150,11 @@ export default ({ themeMode, isChartPage, children }) => {
               registration: '#000000',
             },
             red: {
-              main: '#DD6956',
+              main: '#F07878',
               custom: '#D93B28',
               bright: '#ED6337',
               new: '#DD6956',
+              primary: '#F07878',
             },
             blue: {
               custom: '#5085EC',
@@ -170,7 +171,7 @@ export default ({ themeMode, isChartPage, children }) => {
               dark: '#377E21',
               light: '#E7ECF3',
               custom: '#97C15C',
-              main: '#39A74C',
+              main: '#5BC9BB',
               new: '#29AC80',
             },
             grey: {
@@ -329,7 +330,7 @@ export default ({ themeMode, isChartPage, children }) => {
           },
           palette: {
             divider: fade('#BCC2CF', 0.5),
-            type: "light",
+            type: 'light',
             text: {
               primary: fade('#41495E', 0.69),
               dark: '#7284A0',
@@ -344,10 +345,11 @@ export default ({ themeMode, isChartPage, children }) => {
               registration: '#000000',
             },
             red: {
-              main: '#DD6956',
+              main: '#F07878',
               custom: '#D93B28',
               bright: '#ED6337',
               new: '#DD6956',
+              primary: '#F07878',
             },
             blue: {
               custom: '#5085EC',
@@ -355,7 +357,7 @@ export default ({ themeMode, isChartPage, children }) => {
               first: '#0B1FD1',
               second: '#5C8CEA',
               background: '#5C8CEA',
-              main: '#165BE0',
+              main: '#7380EB',
               btnBackground: '#5C8CEA',
               switcherBackground: 'rgba(11, 31, 209, 0.5)',
               switcherBorder: '#0B1FD1',
@@ -363,7 +365,7 @@ export default ({ themeMode, isChartPage, children }) => {
             green: {
               dark: '#377E21',
               custom: '#97C15C',
-              main: '#39A74C',
+              main: '#5BC9BB',
               new: '#29AC80',
             },
             grey: {
@@ -415,6 +417,7 @@ export default ({ themeMode, isChartPage, children }) => {
               main: '#fff',
               background: '#fff',
               inputBackground: '#fff',
+              btnBackground: '#F5F5FB',
             },
             dark: {
               main: '#16253D',

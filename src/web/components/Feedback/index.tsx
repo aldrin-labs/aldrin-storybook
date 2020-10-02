@@ -90,7 +90,6 @@ export const Wrapper = styled.div`
   height: 100%;
   width: 13rem;
   border-left: 0.1rem solid #e0e5ec;
-
   border-bottom: 0px;
 
   /* @media (min-width: 2560px) {

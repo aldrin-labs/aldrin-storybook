@@ -119,6 +119,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
             activeExchange={activeExchange}
           />
         )}
+
         <ExchangePair
           style={{ width: '14.4rem' }}
           border={divider}
