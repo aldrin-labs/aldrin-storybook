@@ -316,7 +316,7 @@ export const Balances = ({
                 justify="space-evenly"
                 style={{
                   maxWidth: '100%',
-                  borderTop: theme.palette.border.main,
+                  //borderTop: theme.palette.border.main,
                 }}
               >
                 {isFuturesWarsKey && (
@@ -341,51 +341,57 @@ export const Balances = ({
                 )}
                 {!isFuturesWarsKey && (
                   <>
-                    <BalanceFuturesTitle theme={theme}>
-                      transfer
-                    </BalanceFuturesTitle>
                     <div
                       style={{
                         display: 'flex',
                         justifyContent: 'space-evenly',
+                        flexDirection: 'column',
                         width: '100%',
                       }}
                     >
                       <BtnCustom
-                        btnWidth="45%"
-                        height="auto"
-                        fontSize=".8rem"
+                        margin="0.5rem auto"
+                        btnWidth="92%"
+                        height="4rem"
+                        fontFamily="Avenir Next Demi"
+                        fontSize="1.3rem"
                         padding=".5rem 0 .4rem 0;"
                         borderRadius=".8rem"
-                        btnColor={theme.palette.blue.main}
-                        backgroundColor={theme.palette.white.background}
-                        hoverColor={theme.palette.white.background}
-                        hoverBackground={theme.palette.blue.main}
+                        borderColor={theme.palette.blue.main}
+                        btnColor={theme.palette.white.background}
+                        backgroundColor={theme.palette.blue.main}
+                        hoverColor={theme.palette.blue.main}
+                        hoverBackground={theme.palette.white.background}
                         transition={'all .4s ease-out'}
+                        textTransform="capitalize"
                         onClick={() => {
                           setTransferFromSpotToFutures(true)
                           togglePopup(true)
                         }}
                       >
-                        in
+                        Transfer in
                       </BtnCustom>
                       <BtnCustom
-                        btnWidth="45%"
-                        height="auto"
-                        fontSize=".8rem"
+                        margin="0.5rem auto"
+                        btnWidth="92%"
+                        height="4rem"
+                        fontFamily="Avenir Next Demi"
+                        fontSize="1.3rem"
                         padding=".5rem 0 .4rem 0;"
                         borderRadius=".8rem"
+                        borderColor={theme.palette.blue.main}
                         btnColor={theme.palette.blue.main}
                         backgroundColor={theme.palette.white.background}
                         hoverColor={theme.palette.white.background}
                         hoverBackground={theme.palette.blue.main}
                         transition={'all .4s ease-out'}
+                        textTransform="capitalize"
                         onClick={() => {
                           setTransferFromSpotToFutures(false)
                           togglePopup(true)
                         }}
                       >
-                        out
+                        Transfer out
                       </BtnCustom>
                     </div>
                   </>

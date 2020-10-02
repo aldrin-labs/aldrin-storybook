@@ -266,7 +266,7 @@ const NavBarRaw: SFC<Props> = ({
               }}
               items={[
                 {
-                  text: 'Trading',
+                  text: 'Exchange',
                   to: '/chart/spot/BTC_USDT',
                 },
                 {
@@ -330,7 +330,7 @@ const NavBarRaw: SFC<Props> = ({
               }}
               items={[
                 {
-                  text: 'Trading',
+                  text: 'Exchange',
                   to: '/chart/futures/BTC_USDT',
                 },
                 {
@@ -534,7 +534,7 @@ const NavBarRaw: SFC<Props> = ({
                 component={Chart}
                 pathname={pathname}
               >
-                Trading
+                Exchange
               </NavLinkButton>
             </NavLinkButtonWrapper>
             <NavLinkButtonWrapper
@@ -578,7 +578,7 @@ const NavBarRaw: SFC<Props> = ({
                 Performance
               </NavLinkButton>
             </NavLinkButtonWrapper>
-            {(isSpot || isRebalance)&& (
+            {(isSpot || isRebalance) && (
               <NavLinkButtonWrapper
                 theme={theme}
                 key="rebalance-wrapper"
@@ -600,7 +600,6 @@ const NavBarRaw: SFC<Props> = ({
                 </NavLinkButton>
               </NavLinkButtonWrapper>
             )}
-
           </NavBarWrapper>
         </Grid>
 

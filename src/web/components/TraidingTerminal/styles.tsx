@@ -282,6 +282,7 @@ export const PercentageItem = styled(StyledTab)`
 
 export const SendButton = styled(StyledTab)`
   width: 100%;
+  margin: auto 0.5rem;
   color: #fff;
   background-color: ${(props) =>
     props.type === 'buy'
@@ -289,12 +290,12 @@ export const SendButton = styled(StyledTab)`
           props.theme.palette &&
           props.theme.palette.green &&
           props.theme.palette.green.main) ||
-        '#29AC80'
+        '#5BC9BB'
       : (props.theme &&
           props.theme.palette &&
           props.theme.palette.red &&
           props.theme.palette.red.main) ||
-        '#DD6956'};
+        '#F07878'};
   box-shadow: 0px 0.7rem 1rem rgba(8, 22, 58, 0.3);
   border-radius: 0;
   border: none;
@@ -314,6 +315,32 @@ export const SendButton = styled(StyledTab)`
             props.theme.palette.red.main) ||
           '#DD6956'};
   }
+`
+
+export const ChangeTradeButton = styled.button`
+  border: none;
+  width: 50%;
+  // background: white;
+  display: flex;
+  justify-content: center;
+  text-transform: capitalize;
+  font-weight: bold;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+  font-family: DM Sans, sans-serif;
+  font-size: 1.4rem;
+  line-height: 1.9rem;
+  align-items: center;
+  outline: none;
+`
+
+export const ChangeTerminalButton = styled.div`
+  background-color: theme.palette.white;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  align-items: center;
 `
 
 export const SmartTradeButton = styled(SendButton)`

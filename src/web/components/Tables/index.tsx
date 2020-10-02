@@ -56,6 +56,7 @@ import {
   OnboardingPlaceholder,
   OnboardingPromoPlaceholder,
 } from '@sb/components'
+import { AdditionalSettingsButton } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 
 const CustomTableCell = withStyles((theme) => ({
   head: {
@@ -588,6 +589,8 @@ const CustomTable = (props: Props) => {
     hideCommonCheckbox = false,
     onboardingPlaceholder = false,
     onboardingPromoPlaceholder = false,
+    needAdditionalComponent = false,
+    AdditionalComponent,
   } = props
 
   if (
@@ -764,7 +767,12 @@ const CustomTable = (props: Props) => {
           ) : data.body.length === 0 && onboardingPlaceholder ? (
             <OnboardingPlaceholder />
           ) : data.body.length === 0 && !onboardingPlaceholder ? (
-            <CustomPlaceholder theme={theme} text={emptyTableText} />
+            <CustomPlaceholder
+              theme={theme}
+              text={emptyTableText}
+              needAdditionalComponent={needAdditionalComponent}
+              AdditionalComponent={AdditionalComponent}
+            />
           ) : (
             paginationFunc(
               data.body.filter(Boolean).map((row) => {
