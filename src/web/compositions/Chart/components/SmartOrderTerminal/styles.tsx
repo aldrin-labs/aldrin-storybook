@@ -147,11 +147,11 @@ export const BeforeCharacter = styled.span`
 `
 
 export const AdditionalSettingsButton = styled(
-  ({ isActive, children, theme, ...rest }) => (
+  ({ isActive, children, theme, width, margin, fontSize, ...rest }) => (
     <BtnCustom
-      btnWidth="22.75%"
+      btnWidth={width || '22.75%'}
       height={'3.125rem'}
-      fontSize="1.2rem"
+      fontSize={fontSize || '1.2rem'}
       fontWeight={isActive ? '700' : '400'}
       padding="0"
       borderRadius="3.125rem"
@@ -165,7 +165,7 @@ export const AdditionalSettingsButton = styled(
       transition={'all .25s ease-out'}
       textTransform="none"
       boxShadow={isActive ? '0px .2rem .3rem rgba(8, 22, 58, 0.15)' : 'none'}
-      margin={'0 3% 0 0'}
+      margin={margin || '0 3% 0 0'}
       {...rest}
     >
       {children}
@@ -191,7 +191,7 @@ export const ChangeOrderTypeBtn = styled(
     <BtnCustom
       btnWidth="calc(50%/3)"
       height={'3rem'}
-      fontSize="1.2rem"
+      fontSize={'1.2rem'}
       fontWeight={isActive ? '700' : '400'}
       padding="0"
       borderRadius="0.1rem"

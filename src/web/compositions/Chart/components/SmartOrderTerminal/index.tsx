@@ -2177,7 +2177,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     </ChangeOrderTypeBtn>
                   </DarkTooltip>
                 </InputRowContainer>
-
                 {entryPoint.averaging.enabled && (
                   <InputRowContainer padding={'0 0 1.2rem 0'}>
                     <DarkTooltip
@@ -2187,7 +2186,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       }
                     >
                       <AdditionalSettingsButton
+                        width={'50%'}
                         theme={theme}
+                        margin={'0 2% 0 0'}
                         isActive={
                           entryPoint.averaging.closeStrategyAfterFirstTAP
                         }
@@ -2212,9 +2213,33 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         Close SM After First TAP
                       </AdditionalSettingsButton>
                     </DarkTooltip>
+                    {entryPoint.averaging.enabled && (
+                      <DarkTooltip
+                        title={
+                          'Without loss order will be placed after entry order execution (mostly TAP order to have 0 profit + comissions).'
+                        }
+                        maxWidth={'30rem'}
+                      >
+                        <AdditionalSettingsButton
+                          theme={theme}
+                          width={'50%'}
+                          padding={'0 0 0 0'}
+                          isActive={entryPoint.averaging.placeWithoutLoss}
+                          onClick={() => {
+                            this.updateSubBlockValue(
+                              'entryPoint',
+                              'averaging',
+                              'placeWithoutLoss',
+                              !entryPoint.averaging.placeWithoutLoss
+                            )
+                          }}
+                        >
+                          Place Without Loss
+                        </AdditionalSettingsButton>
+                      </DarkTooltip>
+                    )}
                   </InputRowContainer>
                 )}
-
                 {entryPoint.TVAlert.isTVAlertOn && (
                   <>
                     <InputRowContainer padding={'.8rem 0 2rem 0'}>
@@ -2391,40 +2416,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       </InputRowContainer>
                     </FormInputContainer>
                   </>
-                )}
-
-                {entryPoint.averaging.enabled && (
-                  <FormInputContainer
-                    theme={theme}
-                    padding={'0 0 .8rem 0'}
-                    haveTooltip={false}
-                    tooltipText={''}
-                    title={'action when entry'}
-                  >
-                    <InputRowContainer>
-                      <DarkTooltip
-                        title={
-                          'Without loss order will be placed after entry order execution (mostly TAP order to have 0 profit + comissions).'
-                        }
-                        maxWidth={'30rem'}
-                      >
-                        <AdditionalSettingsButton
-                          theme={theme}
-                          isActive={entryPoint.averaging.placeWithoutLoss}
-                          onClick={() => {
-                            this.updateSubBlockValue(
-                              'entryPoint',
-                              'averaging',
-                              'placeWithoutLoss',
-                              !entryPoint.averaging.placeWithoutLoss
-                            )
-                          }}
-                        >
-                          Place Without Loss
-                        </AdditionalSettingsButton>
-                      </DarkTooltip>
-                    </InputRowContainer>
-                  </FormInputContainer>
                 )}
 
                 <FormInputContainer
@@ -4077,6 +4068,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         <InputRowContainer>
                           <AdditionalSettingsButton
                             theme={theme}
+                            fontSize={'1rem'}
                             isActive={stopLoss.forcedStopByAlert}
                             onClick={() => {
                               this.updateBlockValue(
@@ -4101,6 +4093,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           </AdditionalSettingsButton>
                           <AdditionalSettingsButton
                             theme={theme}
+                            fontSize={'1rem'}
                             isActive={stopLoss.forcedStop.mandatoryForcedLoss}
                             onClick={() => {
                               this.updateSubBlockValue(
@@ -4118,7 +4111,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                               )
                             }}
                           >
-                            Forced Stop by Settings
+                            Settings Forced stop
                           </AdditionalSettingsButton>
                           <AdditionalSettingsButton
                             theme={theme}
@@ -4997,6 +4990,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       <InputRowContainer>
                         <AdditionalSettingsButton
                           theme={theme}
+                          btnWidth={'50%'}
                           isActive={takeProfit.forcedStopByAlert}
                           onClick={() => {
                             this.updateBlockValue(
@@ -5021,6 +5015,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         </AdditionalSettingsButton>
                         <AdditionalSettingsButton
                           theme={theme}
+                          btnWidth={'50%'}
                           isActive={takeProfit.plotEnabled}
                           onClick={() => {
                             this.updateBlockValue(
