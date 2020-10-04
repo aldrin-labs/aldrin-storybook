@@ -27,6 +27,7 @@ export const positionsColumnNames = (
 ) => [
   { label: '#', id: 'index' },
   { label: 'Pair/Side', id: 'pair' },
+
   // { label: 'Type', id: 'type' },
   { label: 'Size', id: 'size', style: { textAlign: 'right' } },
   { label: 'Margin', id: 'margin' },
@@ -34,7 +35,17 @@ export const positionsColumnNames = (
   { label: 'Leverage', id: 'leverage' },
   { label: 'Entry Price', id: 'entryPrice' },
   { label: 'Mark Price', id: 'marketPrice' },
-  { label: <DarkTooltip maxWidth={'30rem'} title={`This indicator shows your position in the auto-deleverage queue. If all lights are lit, in the event of a liquidation, your position may be reduced.`}><span>adl</span></DarkTooltip>, id: 'adl' },
+  {
+    label: (
+      <DarkTooltip
+        maxWidth={'30rem'}
+        title={`This indicator shows your position in the auto-deleverage queue. If all lights are lit, in the event of a liquidation, your position may be reduced.`}
+      >
+        <span>adl</span>
+      </DarkTooltip>
+    ),
+    id: 'adl',
+  },
   { label: 'Liq. Price', id: 'liqPrice' },
   { label: 'Pnl/Roe', id: 'pnlRoe' },
   {

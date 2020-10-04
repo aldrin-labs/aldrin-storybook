@@ -39,7 +39,9 @@ const SubRow = ({
           justifyContent: 'flex-end',
         }}
       >
-        <Typography theme={theme}>close:</Typography>
+        <Typography theme={theme} style={{ color: theme.palette.grey.light }}>
+          close:
+        </Typography>
         <Input
           theme={theme}
           width={'30%'}
@@ -57,27 +59,23 @@ const SubRow = ({
         <BtnCustom
           btnWidth="30%"
           height="3rem"
-          fontSize="1rem"
+          fontSize="1.1rem"
           padding=".5rem 0 .4rem 0"
           margin="0 .5rem 0 .5rem"
           borderRadius=".8rem"
-          btnColor={
-            isPriceFieldEmpty
-              ? theme.palette.grey.text
-              : theme.palette.blue.main
-          }
-          backgroundColor={theme.palette.white.background}
-          hoverColor={
-            isPriceFieldEmpty
-              ? theme.palette.grey.text
-              : theme.palette.white.main
-          }
-          hoverBackground={
-            isPriceFieldEmpty
-              ? theme.palette.white.background
-              : theme.palette.blue.main
-          }
-          transition={'all .4s ease-out'}
+          btnColor={theme.palette.white.main}
+          backgroundColor={theme.palette.red.primary}
+          // hoverColor={
+          //   isPriceFieldEmpty
+          //     ? theme.palette.grey.text
+          //     : theme.palette.white.main
+          // }
+          // hoverBackground={
+          //   isPriceFieldEmpty
+          //     ? theme.palette.white.background
+          //     : theme.palette.blue.main
+          // }
+          // transition={'all .4s ease-out'}
           disabled={isClosingPositionProcessEnabled && closingType === 'limit'}
           onClick={async () => {
             if (isPriceFieldEmpty) {
@@ -104,14 +102,14 @@ const SubRow = ({
         <BtnCustom
           btnWidth="30%"
           height="3rem"
-          fontSize="1rem"
+          fontSize="1.1rem"
           padding=".5rem 0 .4rem 0"
           borderRadius=".8rem"
-          btnColor={theme.palette.blue.main}
-          backgroundColor={theme.palette.white.background}
-          hoverColor={'#fff'}
-          hoverBackground={theme.palette.blue.main}
-          transition={'all .4s ease-out'}
+          btnColor={theme.palette.white.main}
+          backgroundColor={theme.palette.red.primary}
+          // hoverColor={'#fff'}
+          // hoverBackground={theme.palette.blue.main}
+          // transition={'all .4s ease-out'}
           disabled={isClosingPositionProcessEnabled && closingType === 'market'}
           onClick={async () => {
             setClosingType('market')

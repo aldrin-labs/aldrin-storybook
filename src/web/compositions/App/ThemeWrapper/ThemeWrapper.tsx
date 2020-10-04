@@ -154,7 +154,7 @@ export default ({ themeMode, isChartPage, children }) => {
               custom: '#D93B28',
               bright: '#ED6337',
               new: '#DD6956',
-              primary: '#F07878',
+              primary: 'rgba(185, 59, 43, 0.9',
             },
             blue: {
               custom: '#5085EC',
@@ -166,6 +166,7 @@ export default ({ themeMode, isChartPage, children }) => {
               btnBackground: '#3B63AF', // 165BE0
               switcherBackground: '#3B63AF', // 165BE0
               switcherBorder: '#2E2E2E',
+              tab: '#2E2E2E',
             },
             green: {
               dark: '#377E21',
@@ -361,6 +362,7 @@ export default ({ themeMode, isChartPage, children }) => {
               btnBackground: '#5C8CEA',
               switcherBackground: 'rgba(11, 31, 209, 0.5)',
               switcherBorder: '#0B1FD1',
+              tab: '#6E98E9',
             },
             green: {
               dark: '#377E21',

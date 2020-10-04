@@ -275,7 +275,7 @@ export const CardsPanel = ({
                   width: '3.3rem',
                   height: '1.6rem',
                   alignItems: 'center',
-                  color: theme.palette.primary.main,
+                  color: theme.palette.white.main,
                 }}
               >
                 {activeTradesLength}
