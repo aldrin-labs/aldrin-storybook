@@ -2,7 +2,7 @@ import React from 'react'
 import { withSnackbar } from 'notistack'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
-import { Grid, Typography, withTheme, Link } from '@material-ui/core'
+import { Grid, Typography, withTheme, Link, Theme } from '@material-ui/core'
 import { SvgIcon } from '@sb/components'
 
 import { joinFuturesWarsRound } from '@core/graphql/mutations/futuresWars/joinFuturesWarsRound'
@@ -11,7 +11,6 @@ import { futuresTransfer } from '@core/graphql/mutations/keys/futuresTransfer'
 import {
   DialogWrapper,
 } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { DialogContent } from '@sb/styles/Dialog.styles'
 import sadSmile from '@icons/sadSmile.svg'
 
