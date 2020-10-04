@@ -14,6 +14,8 @@ export const AppGridLayout = styled.div`
   overflow-x: hidden !important;
   height: ${(props) =>
     props.isChartPage || !props.showFooter ? '100vh' : '93.6vh'};
+  filter: ${(props) =>
+    props.isUserFromNotRestrictedCountry ? 'blur(15px);' : ''}; 
 `
 
 // height: calc(100vh - 3rem)
