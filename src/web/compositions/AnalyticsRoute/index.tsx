@@ -28,17 +28,17 @@ export const RowContainer = styled(Row)`
 export const Block = styled.div`
   width: ${(props) => props.width || '17.5%'};
   height: ${(props) => props.height || '20%'};
-  background-color: #1b2028;
+  background-color: ${theme.palette.white.block};
   margin: 0.7rem;
   border-radius: 0.8rem;
-  border: 1px solid #424b68;
+  border: 1px solid ${theme.palette.grey.block};
   font-family: DM Sans;
   font-size: 1.12rem;
   letter-spacing: 0.06rem;
   padding-top: 4rem;
   padding-left: 3rem;
   text-transform: uppercase;
-  color: white;
+  color: ${theme.palette.text.grey};
 `
 
 export const Text = styled.div`
@@ -53,7 +53,7 @@ const Line = styled.div`
     bottom:${(props) => props.bottom || 'none'};
     width: 100%;
     height: .1rem;
-    background: #424B68;
+    background: ${theme.palette.grey.block};
 `
 
 const AnalyticsRoute = (props) => {
@@ -66,7 +66,7 @@ const {market}= useMarket();
   return (
     <RowContainer
       style={{
-        background: '#0E1016',
+        background: theme.palette.grey.additional,
         height: '100%',
         paddingLeft: '.8%',
         paddingRight: '.8%',
@@ -119,7 +119,7 @@ const {market}= useMarket();
       <Line bottom={'5.7rem'}/>
       </RowContainer>
       <Link border={'none'} 
-      style={{color:'#09ACC7'}} to="/vbn/">cryptocurrencies.ai</Link>
+      style={{color:theme.palette.blue.serum}} to="/vbn/">cryptocurrencies.ai</Link>
     </RowContainer>
   )
 }

@@ -261,8 +261,8 @@ console.log('teheme', theme)
 <div style={{width:'15%',marginLeft:'4rem', paddingRight:'4rem', borderRight: theme.palette.border.main,
 display: 'flex',
 justifyContent: 'center',
-alignItems: 'center'}}><NavBarLink style={{ color: !isAnalytics ? '#09ACC7' : '#7284A0'}} to="/chart">trading</NavBarLink>
-  <NavBarLink to="/analytics" style={{ color: isAnalytics ? '#09ACC7' : '#7284A0' }}> Analytics</NavBarLink>
+alignItems: 'center'}}><NavBarLink style={{ color: !isAnalytics ? theme.palette.blue.serum : theme.palette.grey.text}} to="/chart">trading</NavBarLink>
+  <NavBarLink to="/analytics" style={{ color: isAnalytics ? theme.palette.blue.serum : theme.palette.grey.text }}> Analytics</NavBarLink>
   
 </div>
           
