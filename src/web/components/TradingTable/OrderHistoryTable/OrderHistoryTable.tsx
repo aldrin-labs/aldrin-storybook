@@ -35,6 +35,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       arrayOfMarketIds,
       marketType,
       handlePairChange,
+      isDefaultTerminalViewMode
     } = this.props
 
     const orderHistoryProcessedData = combineOrderHistoryTable(
@@ -43,7 +44,8 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       arrayOfMarketIds,
       marketType,
       keys,
-      handlePairChange
+      handlePairChange,
+      isDefaultTerminalViewMode
     )
     this.setState({
       orderHistoryProcessedData,
@@ -109,7 +111,8 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       nextProps.arrayOfMarketIds,
       nextProps.marketType,
       nextProps.keys,
-      nextProps.handlePairChange
+      nextProps.handlePairChange,
+      nextProps.isDefaultTerminalViewMode
     )
 
     this.setState({
@@ -333,6 +336,7 @@ export default React.memo(TableDataWrapper, (prevProps, nextProps) => {
   const endDateIsEqual = +prevProps.endDate === +nextProps.endDate
   const pageIsEqual = prevProps.page === nextProps.page
   const perPageIsEqual = prevProps.perPage === nextProps.perPage
+  const isDefaultTerminalViewModeEqual = prevProps.isDefaultTerminalViewMode === nextProps.isDefaultTerminalViewMode
 
   if (
     isShowEqual &&
@@ -344,7 +348,8 @@ export default React.memo(TableDataWrapper, (prevProps, nextProps) => {
     startDateIsEqual &&
     endDateIsEqual &&
     pageIsEqual &&
-    perPageIsEqual
+    perPageIsEqual &&
+    isDefaultTerminalViewModeEqual
   ) {
     return true
   }

@@ -74,7 +74,7 @@ export const combineRecentHistoryTable = (
                 )}
               </span>
               <span style={{ color: '#7284A0' }}>
-                {dayjs(date * 1000).format('LT')}
+                {dayjs(date * 1000).format('LTS')}
               </span>
             </div>
           ),

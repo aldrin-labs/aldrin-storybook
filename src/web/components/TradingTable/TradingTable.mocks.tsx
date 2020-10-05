@@ -193,7 +193,7 @@ export const positionsBody = new Array(13).fill(undefined).map((el, i) => ({
 export const openOrdersColumnNames = (marketType: number) =>
   [
     { label: 'Pair', id: 'pair' },
-    // { label: 'Type', id: 'type' },
+    { label: 'Account', id: 'account' },
     { label: 'Side/Type', id: 'side' },
     { label: 'Price', id: 'price' },
     { label: marketType === 0 ? 'Quantity' : 'size', id: 'quantity' },
@@ -238,6 +238,7 @@ export const openOrdersBody = new Array(13).fill(undefined).map((el, i) => ({
 export const orderHistoryColumnNames = (marketType: number) =>
   [
     { label: 'Pair', id: 'pair' },
+    { label: 'Account', id: 'account' },
     // { label: 'Type', id: 'type' },
     { label: 'Side/Type', id: 'side' },
     // { label: 'Average', id: 'average',  },
@@ -270,10 +271,10 @@ export const orderHistoryBody = new Array(13).fill(undefined).map((el, i) => ({
 export const tradeHistoryColumnNames = (marketType: number) =>
   [
     { label: 'Pair', id: 'pair' },
+    { label: 'Account', id: 'account' },
     { label: 'Type', id: 'type' },
     { label: 'Price', id: 'price' },
     { label: marketType === 0 ? 'Quantity' : 'size', id: 'quantity' },
-    marketType === 0 ? { label: 'Amount', id: 'amount' } : {},
     marketType === 1 ? { label: 'P&L', id: 'realizedPnl' } : {},
     { label: 'Fee', id: 'fee' },
     { label: 'Status', id: 'status' },

@@ -150,7 +150,7 @@ export default ({ themeMode, isChartPage, children }) => {
               registration: '#000000',
             },
             red: {
-              main: '#F07878',
+              main: '#E55764',
               custom: '#D93B28',
               bright: '#ED6337',
               new: '#DD6956',
@@ -172,7 +172,7 @@ export default ({ themeMode, isChartPage, children }) => {
               dark: '#377E21',
               light: '#E7ECF3',
               custom: '#97C15C',
-              main: '#5BC9BB',
+              main: '#39A74C',
               new: '#29AC80',
             },
             grey: {

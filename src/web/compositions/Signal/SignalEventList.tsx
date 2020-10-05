@@ -90,7 +90,7 @@ const transformData = (data: any[]) => {
               )}
             </span>
             <span style={{ color: '#7284A0' }}>
-              {dayjs(row.t / 1000000).format('LT')}
+              {dayjs(row.t / 1000000).format('LTS')}
             </span>
           </div>
         ) : (

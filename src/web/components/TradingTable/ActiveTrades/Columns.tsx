@@ -442,14 +442,14 @@ export const DateColumn = ({ createdAt, theme }) => {
   return (
     <BlockContainer theme={theme} style={{ position: 'absolute', right: '0' }}>
       {dayjs(createdAt)
-        .format('LT')
+        .format('LTS')
         .toLowerCase() !== 'invalid date' ? (
         <div style={{ textAlign: 'right' }}>
           <span style={{ display: 'block', color: theme.palette.dark.main }}>
             {String(dayjs(createdAt).format('ll'))}
           </span>
           <span style={{ color: theme.palette.grey.text }}>
-            {dayjs(createdAt).format('LT')}
+            {dayjs(createdAt).format('LTS')}
           </span>
         </div>
       ) : (

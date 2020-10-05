@@ -74,26 +74,6 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
 
   render() {
     const {
-      tab,
-      show,
-      keys,
-      theme,
-      handleTabChange,
-      handlePairChange,
-      selectedKey,
-      marketType,
-      canceledOrders,
-      currencyPair,
-      arrayOfMarketIds,
-      showAllPositionPairs,
-      showAllOpenOrderPairs,
-      showAllSmartTradePairs,
-      showPositionsFromAllAccounts,
-      showOpenOrdersFromAllAccounts,
-      showSmartTradesFromAllAccounts,
-    } = this.props
-
-    const {
       page,
       perPage,
       focusedInput,
@@ -110,18 +90,9 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
     return (
       <OrderHistoryTable
         {...{
-          tab,
-          selectedKey,
-          show,
+          ...this.props,
           page,
-          keys,
-          theme,
           perPage,
-          marketType,
-          canceledOrders,
-          currencyPair,
-          arrayOfMarketIds,
-          handleTabChange,
           focusedInput,
           endDate,
           activeDateButton,
@@ -130,13 +101,6 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
           minimumDate,
           allKeys,
           specificPair,
-          showAllPositionPairs,
-          showAllOpenOrderPairs,
-          showAllSmartTradePairs,
-          showPositionsFromAllAccounts,
-          showOpenOrdersFromAllAccounts,
-          showSmartTradesFromAllAccounts,
-          handlePairChange,
           handleChangePage: this.handleChangePage,
           handleChangeRowsPerPage: this.handleChangeRowsPerPage,
           onClearDateButtonClick: this.onClearDateButtonClick,

@@ -325,7 +325,7 @@ export const transformData = (
       //         ).replace(/-/g, '.')}
       //       </span>
       //       <span style={{ color: '#ABBAD1' }}>
-      //         {dayjs.unix(row.date / 1000).format('LT')}
+      //         {dayjs.unix(row.date / 1000).format('LTS')}
       //       </span>
       //     </div>
       //   ),
@@ -347,7 +347,7 @@ export const transformData = (
       //         ).replace(/-/g, '.')}
       //       </span>
       //       <span style={{ color: '#ABBAD1' }}>
-      //         {dayjs.unix(row.lastUpdate).format('LT')}
+      //         {dayjs.unix(row.lastUpdate).format('LTS')}
       //       </span>
       //     </div>
       //   ),

@@ -95,6 +95,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       marketType,
       keys,
       handlePairChange,
+      isDefaultTerminalViewMode
     } = this.props
 
     // const that = this
@@ -107,7 +108,8 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       marketType,
       this.props.canceledOrders,
       keys,
-      handlePairChange
+      handlePairChange,
+      isDefaultTerminalViewMode
     )
 
     // client.writeQuery({
@@ -350,7 +352,8 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       nextProps.marketType,
       nextProps.canceledOrders,
       nextProps.keys,
-      nextProps.handlePairChange
+      nextProps.handlePairChange,
+      nextProps.isDefaultTerminalViewMode,
     )
 
     this.setState({
@@ -558,6 +561,7 @@ const MemoizedWrapper = React.memo(TableDataWrapper, (prevProps, nextProps) => {
   const isMarketIsEqual = prevProps.marketType === nextProps.marketType
   const pageIsEqual = prevProps.page === nextProps.page
   const perPageIsEqual = prevProps.perPage === nextProps.perPage
+  const isDefaultTerminalViewModeEqual = prevProps.isDefaultTerminalViewMode === nextProps.isDefaultTerminalViewMode
 
   if (
     isShowEqual &&
@@ -567,7 +571,8 @@ const MemoizedWrapper = React.memo(TableDataWrapper, (prevProps, nextProps) => {
     selectedKeyIsEqual &&
     isMarketIsEqual &&
     pageIsEqual &&
-    perPageIsEqual
+    perPageIsEqual && 
+    isDefaultTerminalViewModeEqual
   ) {
     return true
   }

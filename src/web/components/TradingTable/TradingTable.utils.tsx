@@ -1583,7 +1583,7 @@ export const combineStrategiesHistoryTable = (
                 {String(dayjs(date).format('ll'))}
               </span>
               <span style={{ color: theme.palette.grey.light }}>
-                {dayjs(date).format('LT')}
+                {dayjs(date).format('LTS')}
               </span>
             </div>
           ),
@@ -1672,7 +1672,8 @@ export const combineOpenOrdersTable = (
   marketType: 0 | 1,
   canceledOrders: string[],
   keys: Key[],
-  handlePairChange: (pair: string) => void
+  handlePairChange: (pair: string) => void,
+  isDefaultTerminalViewMode: boolean
 ) => {
   if (!openOrdersData && !Array.isArray(openOrdersData)) {
     return []
@@ -1774,7 +1775,7 @@ export const combineOpenOrdersTable = (
           ),
           contentToSort: orderSymbol,
         },
-        // type: type,
+        ...(!isDefaultTerminalViewMode ? { account: keyName, } : {}),
         side: {
           render: (
             <div>
@@ -1881,7 +1882,7 @@ export const combineOpenOrdersTable = (
                 {String(dayjs(timestamp).format('ll'))}
               </span>
               <span style={{ color: theme.palette.grey.light }}>
-                {dayjs(timestamp).format('LT')}
+                {dayjs(timestamp).format('LTS')}
               </span>
             </div>
           ),
@@ -1924,7 +1925,7 @@ export const combineOpenOrdersTable = (
             </CloseButton>
           ),
         },
-        tooltipTitle: keyName,
+        ...(isDefaultTerminalViewMode ? { tooltipTitle: keyName } : {})
       }
     })
 
@@ -1937,7 +1938,8 @@ export const combineOrderHistoryTable = (
   arrayOfMarketIds: string[],
   marketType: 0 | 1,
   keys,
-  handlePairChange: (pair: string) => void
+  handlePairChange: (pair: string) => void,
+  isDefaultTerminalViewMode: boolean
 ) => {
   if (!orderData || !orderData) {
     return []
@@ -2012,7 +2014,7 @@ export const combineOrderHistoryTable = (
           ),
           contentToSort: symbol,
         },
-        // type: type,
+        ...(!isDefaultTerminalViewMode ? { account: keyName } : {}),
         side: {
           render: (
             <div>
@@ -2135,14 +2137,14 @@ export const combineOrderHistoryTable = (
                 {String(dayjs(timestamp).format('ll'))}
               </span>
               <span style={{ color: theme.palette.grey.light }}>
-                {dayjs(timestamp).format('LT')}
+                {dayjs(timestamp).format('LTS')}
               </span>
             </div>
           ),
           style: { whiteSpace: 'nowrap', textAlign: 'right' },
           contentToSort: timestamp,
         },
-        tooltipTitle: keyName,
+        ...(isDefaultTerminalViewMode ? { tooltipTitle: keyName } : {})
       }
     })
 
@@ -2233,22 +2235,18 @@ export const combineTradeHistoryTable = (
           contentToSort: price,
         },
         quantity: {
-          render: `${stripDigitPlaces(amount, quantityPrecision)} ${pair[0]}`,
-          contentToSort: +amount,
-        },
-        // TODO: We should change "total" to total param from backend when it will be ready
-        ...(marketType === 0
-          ? {
-              amount: {
-                // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-                render: `${stripDigitPlaces(
+          render: (<div>
+            <span style={{ display: 'block', paddingTop: '.2rem' }}>
+              {stripDigitPlaces(amount, quantityPrecision)} {pair[0]}
+            </span>
+            <span style={{ color: theme.palette.grey.text, paddingBottom: '.2rem' }}>{stripDigitPlaces(
                   amount * price,
                   quantityPrecision
-                )} ${pair[1]}`,
-                contentToSort: amount * price,
-              },
-            }
-          : {}),
+                )} {pair[1]}</span>
+
+          </div>),
+          contentToSort: +amount,
+        },
         ...(marketType === 1
           ? {
               realizedPnl: {
@@ -2307,8 +2305,8 @@ export const combineTradeHistoryTable = (
               >
                 {String(dayjs(timestamp).format('ll'))}
               </span>
-              <span style={{ color: theme.palette.grey.light }}>
-                {dayjs(timestamp).format('LT')}
+              <span style={{ color: theme.palette.grey.text }}>
+                {dayjs(timestamp).format('LTS')}
               </span>
             </div>
           ),
