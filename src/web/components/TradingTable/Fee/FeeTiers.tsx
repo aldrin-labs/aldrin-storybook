@@ -49,25 +49,25 @@ const FeeTiers = (props) => {
   } = props
 
   const dataSource = [
-    { feeTier: 0, taker: 0.0022, maker: -0.0003, token: '', balance: '' },
-    { feeTier: 1, taker: 0.002, maker: -0.0003, token: 'SRM', balance: 100 },
-    { feeTier: 2, taker: 0.0018, maker: -0.0003, token: 'SRM', balance: 1000 },
-    { feeTier: 3, taker: 0.0016, maker: -0.0003, token: 'SRM', balance: 10000 },
+    { feeTier: 0, taker: 0.22, maker: -0.03, token: '', balance: '' },
+    { feeTier: 1, taker: 0.2, maker: -0.03, token: 'SRM', balance: 100 },
+    { feeTier: 2, taker: 0.18, maker: -0.03, token: 'SRM', balance: 1000 },
+    { feeTier: 3, taker: 0.16, maker: -0.03, token: 'SRM', balance: 10000 },
     {
       feeTier: 4,
-      taker: 0.0014,
-      maker: -0.0003,
+      taker: 0.14,
+      maker: -0.03,
       token: 'SRM',
       balance: 100000,
     },
     {
       feeTier: 5,
-      taker: 0.0012,
-      maker: -0.0003,
+      taker: 0.12,
+      maker: -0.03,
       token: 'SRM',
       balance: 1000000,
     },
-    { feeTier: 6, taker: 0.001, maker: -0.0005, token: 'MSRM', balance: 1 },
+    { feeTier: 6, taker: 0.1, maker: -0.05, token: 'MSRM', balance: 1 },
   ];
 
   if (!show) {
