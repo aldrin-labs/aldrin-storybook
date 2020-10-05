@@ -77,9 +77,18 @@ export const ModeButton = styled.button`
     padding: 0.32rem 1rem;
   }
 `
+export const NavBarLink = styled(NavLink)`
+  font-family: DM Sans;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+`
 
 export const Link = styled(NavLink)`
-  border: 1px solid #165be0;
+  border: ${(props) => props.border || '1px solid #165be0'};
   border-radius: 8px;
 
   display: block;
@@ -91,7 +100,7 @@ export const Link = styled(NavLink)`
   color: #165be0;
 
   text-decoration: none;
-  text-transform: uppercase;
+  text-transform: ${(props) => props.textTransform || 'uppercase'};
 
   font-family: 'DM Sans', sans-serif;
   font-style: normal;

@@ -578,7 +578,7 @@ const NavBarRaw: SFC<Props> = ({
                 Performance
               </NavLinkButton>
             </NavLinkButtonWrapper>
-            {(isSpot || isRebalance)&& (
+            {(isSpot || isRebalance) && (
               <NavLinkButtonWrapper
                 theme={theme}
                 key="rebalance-wrapper"
@@ -600,7 +600,6 @@ const NavBarRaw: SFC<Props> = ({
                 </NavLinkButton>
               </NavLinkButtonWrapper>
             )}
-
           </NavBarWrapper>
         </Grid>
 

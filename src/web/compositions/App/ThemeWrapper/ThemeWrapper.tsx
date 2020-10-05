@@ -42,7 +42,7 @@ export default ({ themeMode, isChartPage, children }) => {
 
   // refactor this
   const theme = createMyTheme(
-    mode === 'dark' && isChartPage
+    mode === 'dark'
       ? {
           typography: {
             fontFamily: ['DM Sans', 'sans-serif'].join(','),

@@ -4,6 +4,9 @@ import { graphql } from 'react-apollo'
 import copy from 'clipboard-copy'
 import { useLocation, useHistory } from 'react-router-dom'
 import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
+import {
+  NavBarLink
+} from '@sb/components/PortfolioMainAllocation/PortfolioMainAllocation.styles'
 
 import MarketStats from './MarketStats/MarketStats'
 import { TooltipCustom } from '@sb/components/index'
@@ -86,6 +89,7 @@ const TopBar = ({ theme }) => {
 
   const isDarkTheme = theme.palette.type === 'dark'
 
+
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
       <SvgIcon 
@@ -107,7 +111,9 @@ const TopBar = ({ theme }) => {
           styledComponentsAdditionalStyle={{ padding: '0 2rem 0 0'}} 
           src={isDarkTheme ? MoonActive : MoonDisabled} 
           onClick={() => {
+
             if (!isDarkTheme) {
+
               theme.updateMode('dark')
             }
           }} 
@@ -181,20 +187,18 @@ const TopBar = ({ theme }) => {
 
 
 export const CardsPanel = ({
-  _id,
   pair,
   view,
   theme,
   marketType,
   quantityPrecision,
   pricePrecision,
-  changePositionModeMutation,
-  selectedKey,
-  showChangePositionModeResult,
   activeExchange,
 }) => {
   const isDarkTheme = theme.palette.type === 'dark'
-
+  const isAnalytics = location.pathname.includes('analytics')
+  
+console.log('teheme', theme)
   return (
     <>
       <PanelWrapper>
@@ -222,8 +226,15 @@ export const CardsPanel = ({
           }}
         >
           <img style={{ height: '100%', padding: '0 3rem', borderRight: theme.palette.border.main }} src={isDarkTheme ? SerumCCAILogo : LightLogo} />
-
-          <AutoSuggestSelect
+<div style={{width:'15%',marginLeft:'4rem', paddingRight:'4rem', borderRight: theme.palette.border.main,
+display: 'flex',
+justifyContent: 'center',
+alignItems: 'center'}}><NavBarLink style={{ color: !isAnalytics ? '#09ACC7' : '#7284A0'}} to="/chart">trading</NavBarLink>
+  <NavBarLink to="/analytics" style={{ color: isAnalytics ? '#09ACC7' : '#7284A0' }}> Analytics</NavBarLink>
+  
+</div>
+          
+          {!isAnalytics&&(<AutoSuggestSelect
             value={view === 'default' && pair}
             id={'pairSelector'}
             view={view}
@@ -233,20 +244,21 @@ export const CardsPanel = ({
             marketType={marketType}
             quantityPrecision={quantityPrecision}
             pricePrecision={pricePrecision}
-          />
+          />)}
 
           {/* <TooltipCustom
             title="Cryptocurrencies.ai is a Binance partner exchange"
             enterDelay={250}
             component={ */}
-          <MarketStats
+            {!isAnalytics&&( <MarketStats
             theme={theme}
             symbol={pair}
             marketType={marketType}
             exchange={activeExchange}
             quantityPrecision={quantityPrecision}
             pricePrecision={pricePrecision}
-          />
+          />)}
+         
           {/* }
           /> */}
         </CustomCard>
