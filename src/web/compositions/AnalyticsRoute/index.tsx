@@ -180,7 +180,7 @@ let totalySupply = serumData.getSerumData.totalySupply - serumData.getSerumData.
             </Title>
           </BlockContainer>
         </Block>
-        <Block style={{ visibility: 'hidden' }} theme={theme}>
+        <Block style={{ visibility: 'hidden'}} theme={theme}>
           srm burned
           <BlockContainer>
             {' '}
