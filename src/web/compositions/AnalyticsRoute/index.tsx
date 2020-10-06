@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import CardsPanel from '@sb/compositions/Chart/components/CardsPanel'
 import { compose } from 'recompose'
 import { withTheme } from '@material-ui/styles'
 import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
 import { getSerumData} from '@core/graphql/queries/chart/getSerumData'
+import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import {
   NavBarLink
 } from '@sb/components/PortfolioMainAllocation/PortfolioMainAllocation.styles'
@@ -82,12 +83,26 @@ display: block;
   left: 50%;
   transform: translateX(-50%);
 `
+<<<<<<< Updated upstream
 const AnalyticsRoute = (props) => {
+=======
+
+const AnalyticsRoute = ({ markets, ...props }) => {
+>>>>>>> Stashed changes
 const {theme} = props;
 const serumData = props.getSerumDataQuery;
 const {market}= useMarket();
+<<<<<<< Updated upstream
  console.log('querySerum', serumData.getSerumData.marketcap)
 const markPrice = useMarkPrice();
+=======
+
+  useEffect(() => {
+    const selectedMarketFromUrl = markets.find((el) => el.name.split('/').join('_') === "SRM_USDT")
+    setMarketAddress(selectedMarketFromUrl.address.toBase58())
+  }, [])
+
+>>>>>>> Stashed changes
     let quantityPrecision = market?.minOrderSize && getDecimalCount(market.minOrderSize);
     let pricePrecision = market?.tickSize && getDecimalCount(market.tickSize);
 
@@ -155,6 +170,7 @@ const markPrice = useMarkPrice();
   )
 }
 
+<<<<<<< Updated upstream
 export default compose(withTheme(),queryRendererHoc({
   query: getSerumData,
   name: 'getSerumDataQuery',
@@ -162,3 +178,6 @@ export default compose(withTheme(),queryRendererHoc({
   withTableLoader: false,
   fetchPolicy: 'network-only',
 }),)(AnalyticsRoute)
+=======
+export default compose(withTheme(), withMarketUtilsHOC)(AnalyticsRoute)
+>>>>>>> Stashed changes
