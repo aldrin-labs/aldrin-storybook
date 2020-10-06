@@ -41,11 +41,16 @@ export const Block = styled.div`
   font-family: DM Sans;
   font-size: 1.12rem;
   letter-spacing: 0.06rem;
-  padding-top: 4rem;
   padding-left: 3rem;
   text-transform: uppercase;
   color: ${(props)=>props.color || props.theme.palette.text.grey};
-`
+  display:flex;
+justify-content:space-around;
+flex-direction:column
+ `
+ export const BlockContainer = styled.div`
+
+ `
 
 export const Text = styled.div`
   font-family: DM Sans;
@@ -53,8 +58,18 @@ export const Text = styled.div`
   font-size: 1.5rem;
   text-transform: uppercase;
   color:'white';
-  padding-top: 20%
+
 `
+export const Title = styled.div`
+font-family: DM Sans;
+font-weight: bold;
+font-size: 1.2rem;
+text-transform: uppercase;
+
+padding-top:1.5rem
+
+`
+
 const Line = styled.div`
     position:absolute;
     top:${(props) => props.top || 'none'};
@@ -116,19 +131,20 @@ const markPrice = useMarkPrice();
        
       </ChartGridContainer> <Line top={'5.7rem'}/>
       <RowContainer style={{ height: 'calc(96% - 2rem)', flexDirection: 'column',paddingBottom:'6rem' }}>
+        
         <Block  theme={theme} >
         srm marketcap <Text>{formatNumberToUSFormat((markPrice*serumData.getSerumData.circulatingSupply).toFixed(0))}$</Text>
         </Block>
         <Block theme={theme}>
-          srm totaly supply<Text>
+          srm totaly supply<BlockContainer><Text>
             {formatNumberToUSFormat(serumData.getSerumData.totalySupply)} SRM
-          </Text>
+        </Text><Title>${formatNumberToUSFormat((serumData.getSerumData.totalySupply*markPrice).toFixed(0))}</Title></BlockContainer>
         </Block>
         <Block theme={theme}>
-          srm burned
+          srm burned<Text>{formatNumberToUSFormat(serumData.getSerumData.burned)} SRM</Text>
         </Block>
         <Block theme={theme}>
-          srm burned
+          srm burned<Text>{formatNumberToUSFormat(serumData.getSerumData.burned)} SRM</Text>
         </Block>
         <Block theme={theme}>
           srm last price
@@ -138,10 +154,10 @@ const markPrice = useMarkPrice();
           srm circulating supply<Text>{formatNumberToUSFormat(serumData.getSerumData.circulatingSupply)} SRM</Text>
         </Block>
         <Block theme={theme}>
-          srm pending burn
+          srm pending burn<Text>{formatNumberToUSFormat(serumData.getSerumData.pendingBurn)} Soon</Text>
         </Block>
         <Block theme={theme}>
-          srm pending burn
+          srm pending burn<Text>{formatNumberToUSFormat(serumData.getSerumData.pendingBurn)} soon</Text>
         </Block>
         <Block theme={theme} width={'62.5%'} height={'84.4%'} />
       </RowContainer>
