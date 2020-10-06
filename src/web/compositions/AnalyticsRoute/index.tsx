@@ -28,17 +28,17 @@ export const RowContainer = styled(Row)`
 export const Block = styled.div`
   width: ${(props) => props.width || '17.5%'};
   height: ${(props) => props.height || '20%'};
-  background-color: ${theme.palette.white.block};
+  background-color: ${(props)=>props.backgroundColor || theme.palette.white.block};
   margin: 0.7rem;
   border-radius: 0.8rem;
-  border: 1px solid ${theme.palette.grey.block};
+  border: 1px solid ${(props)=>props.border || theme.palette.grey.block};
   font-family: DM Sans;
   font-size: 1.12rem;
   letter-spacing: 0.06rem;
   padding-top: 4rem;
   padding-left: 3rem;
   text-transform: uppercase;
-  color: ${theme.palette.text.grey};
+  color: ${(props)=>props.color || theme.palette.text.grey};
 `
 
 export const Text = styled.div`
@@ -53,7 +53,26 @@ const Line = styled.div`
     bottom:${(props) => props.bottom || 'none'};
     width: 100%;
     height: .1rem;
-    background: ${theme.palette.grey.block};
+    background: ${(props) => props.background ||theme.palette.grey.block};
+`
+const Link = styled.a`
+display: block;
+  width: fit-content;
+  color: ${(props)=>props.color || theme.palette.blue.serum};
+
+  text-decoration: none;
+  text-transform: ${(props) => props.textTransform || 'uppercase'};
+
+  font-family: 'DM Sans', sans-serif;
+  font-weight: bold;
+  font-size: 1.2rem;
+  line-height: 109.6%;
+  letter-spacing: 1px;
+
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
 `
 
 const AnalyticsRoute = (props) => {
@@ -88,9 +107,8 @@ const {market}= useMarket();
        
       </ChartGridContainer> <Line top={'5.7rem'}/>
       <RowContainer style={{ height: 'calc(96% - 2rem)', flexDirection: 'column',paddingBottom:'6rem' }}>
-        <Block>
-          srm marketcap
-          
+        <Block >
+          srm marketcap 
         </Block>
         <Block>
           srm totaly supply
@@ -116,10 +134,11 @@ const {market}= useMarket();
         <Block width={'62.5%'} height={'84.4%'} />
       </RowContainer>
       <RowContainer>
-      <Line bottom={'5.7rem'}/>
+      <Line bottom={'5.7rem'}/>        <Link  href="https://cryptocurrencies.ai/">cryptocurrencies.ai</Link>
+    
       </RowContainer>
-      <Link border={'none'} 
-      style={{color:theme.palette.blue.serum}} to="/vbn/">cryptocurrencies.ai</Link>
+
+  
     </RowContainer>
   )
 }
