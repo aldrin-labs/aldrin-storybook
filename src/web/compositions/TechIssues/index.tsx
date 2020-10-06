@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import TechSvg from '@icons/tech.svg'
 import TelegramSvg from '@icons/telegram.svg'
-import DiscordSvg from '@icons/discord.svg'
+import DiscordSvg from '@icons/smallDiscord.svg'
 import SvgIcon from '@sb/components/SvgIcon'
 
 const ButtonLink = styled.a`
@@ -32,7 +32,7 @@ const TechIssues = () => {
           fontFamily: 'DM Sans',
           fontWeight: 'bold',
           fontSize: '2.5rem',
-          color: '#3A475C',
+          color: '#fff',
           marginTop: '5rem',
         }}
       >
@@ -42,7 +42,7 @@ const TechIssues = () => {
         style={{
           fontFamily: 'DM Sans',
           fontSize: '2rem',
-          color: '#3A475C',
+          color: '#fff',
           marginTop: '8rem',
         }}
       >

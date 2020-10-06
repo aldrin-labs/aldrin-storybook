@@ -1,13 +1,12 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import CardsPanel from '@sb/compositions/Chart/components/CardsPanel'
 import { compose } from 'recompose'
 import { withTheme } from '@material-ui/styles'
 import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
 import { getSerumData} from '@core/graphql/queries/chart/getSerumData'
-import {
-  NavBarLink
-} from '@sb/components/PortfolioMainAllocation/PortfolioMainAllocation.styles'
+import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
+import { SingleChart } from '@sb/components/Chart'
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import {
   formatNumberToUSFormat,stripDigitPlaces
@@ -97,12 +96,19 @@ display: block;
   left: 50%;
   transform: translateX(-50%);
 `
-const AnalyticsRoute = (props) => {
+
+const AnalyticsRoute = ({ markets, setMarketAddress, ...props }) => {
 const {theme} = props;
 const serumData = props.getSerumDataQuery;
 const {market}= useMarket();
  console.log('querySerum', serumData.getSerumData.marketcap)
 const markPrice = useMarkPrice();
+
+  useEffect(() => {
+    const selectedMarketFromUrl = markets.find((el) => el.name.split('/').join('_') === "SRM_USDT")
+    setMarketAddress(selectedMarketFromUrl.address.toBase58())
+  }, [])
+
     let quantityPrecision = market?.minOrderSize && getDecimalCount(market.minOrderSize);
     let pricePrecision = market?.tickSize && getDecimalCount(market.tickSize);
 
@@ -159,19 +165,23 @@ const markPrice = useMarkPrice();
         <Block theme={theme}>
           srm pending burn<Text>{formatNumberToUSFormat(serumData.getSerumData.pendingBurn)} soon</Text>
         </Block>
-        <Block theme={theme} width={'62.5%'} height={'84.4%'} />
+        <Block theme={theme} width={'62.5%'} height={'84.4%'} style={{ padding: '.5rem' }}>
+        <SingleChart
+          name=""
+          themeMode={theme.palette.type}
+          additionalUrl={`/?symbol=SRM/USDT_0&user_id=id`}
+        />
+        </Block>
       </RowContainer>
       <RowContainer>
-      <Line theme={theme} bottom={'5.7rem'}/>        <Link  href="https://cryptocurrencies.ai/">cryptocurrencies.ai</Link>
-    
+        <Line theme={theme} bottom={'5.7rem'}/>
+        <Link  href="https://cryptocurrencies.ai/">cryptocurrencies.ai</Link>
       </RowContainer>
-
-  
     </RowContainer>
   )
 }
 
-export default compose(withTheme(),queryRendererHoc({
+export default compose(withTheme(), withMarketUtilsHOC, queryRendererHoc({
   query: getSerumData,
   name: 'getSerumDataQuery',
   withOutSpinner: false,
