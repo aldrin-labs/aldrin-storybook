@@ -6,9 +6,7 @@ import { withTheme } from '@material-ui/styles'
 import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
 import { getSerumData} from '@core/graphql/queries/chart/getSerumData'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
-import {
-  NavBarLink
-} from '@sb/components/PortfolioMainAllocation/PortfolioMainAllocation.styles'
+import { SingleChart } from '@sb/components/Chart'
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import {
   formatNumberToUSFormat,stripDigitPlaces
@@ -83,26 +81,19 @@ display: block;
   left: 50%;
   transform: translateX(-50%);
 `
-<<<<<<< Updated upstream
-const AnalyticsRoute = (props) => {
-=======
 
-const AnalyticsRoute = ({ markets, ...props }) => {
->>>>>>> Stashed changes
+const AnalyticsRoute = ({ markets, setMarketAddress, ...props }) => {
 const {theme} = props;
 const serumData = props.getSerumDataQuery;
 const {market}= useMarket();
-<<<<<<< Updated upstream
  console.log('querySerum', serumData.getSerumData.marketcap)
 const markPrice = useMarkPrice();
-=======
 
   useEffect(() => {
     const selectedMarketFromUrl = markets.find((el) => el.name.split('/').join('_') === "SRM_USDT")
     setMarketAddress(selectedMarketFromUrl.address.toBase58())
   }, [])
 
->>>>>>> Stashed changes
     let quantityPrecision = market?.minOrderSize && getDecimalCount(market.minOrderSize);
     let pricePrecision = market?.tickSize && getDecimalCount(market.tickSize);
 
@@ -158,26 +149,26 @@ const markPrice = useMarkPrice();
         <Block theme={theme}>
           srm pending burn
         </Block>
-        <Block theme={theme} width={'62.5%'} height={'84.4%'} />
+        <Block theme={theme} width={'62.5%'} height={'84.4%'} style={{ padding: '.5rem' }}>
+        <SingleChart
+          name=""
+          themeMode={theme.palette.type}
+          additionalUrl={`/?symbol=SRM/USDT_0&user_id=id`}
+        />
+        </Block>
       </RowContainer>
       <RowContainer>
-      <Line theme={theme} bottom={'5.7rem'}/>        <Link  href="https://cryptocurrencies.ai/">cryptocurrencies.ai</Link>
-    
+        <Line theme={theme} bottom={'5.7rem'}/>
+        <Link  href="https://cryptocurrencies.ai/">cryptocurrencies.ai</Link>
       </RowContainer>
-
-  
     </RowContainer>
   )
 }
 
-<<<<<<< Updated upstream
-export default compose(withTheme(),queryRendererHoc({
+export default compose(withTheme(), withMarketUtilsHOC, queryRendererHoc({
   query: getSerumData,
   name: 'getSerumDataQuery',
   withOutSpinner: false,
   withTableLoader: false,
   fetchPolicy: 'network-only',
 }),)(AnalyticsRoute)
-=======
-export default compose(withTheme(), withMarketUtilsHOC)(AnalyticsRoute)
->>>>>>> Stashed changes
