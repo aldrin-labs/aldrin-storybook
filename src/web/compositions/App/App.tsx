@@ -69,7 +69,9 @@ const AppRaw = ({
 
   const fullscreen: boolean = isChartPage && chartPageView !== 'default'
   const showFooter =
-    currentPage !== '/registration' && currentPage !== '/tech_issues'
+    currentPage !== '/registration' &&
+    currentPage !== '/tech_issues' &&
+    currentPage !== '/analytics'
   const isPNL = currentPage.includes('/portfolio/main')
   // TODO: Check this variable
   const pageIsRegistration = currentPage.includes('regist')
@@ -107,6 +109,7 @@ const AppRaw = ({
                 <AnimatedNavBar pathname={currentPage} hide={fullscreen} />
               )} */}
                     {children}
+
                     <Footer
                       isChartPage={isChartPage}
                       fullscreenMode={fullscreen}
@@ -118,7 +121,6 @@ const AppRaw = ({
               </MarketProvider>
             </ConnectionProvider>
             <GlobalStyle />
-
           </SnackbarWrapper>
         </ThemeWrapper>
       </JssProvider>

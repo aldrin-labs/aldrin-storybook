@@ -42,7 +42,7 @@ export default ({ themeMode, isChartPage, children }) => {
 
   // refactor this
   const theme = createMyTheme(
-    mode === 'dark' && isChartPage
+    mode === 'dark'
       ? {
           typography: {
             fontFamily: ['DM Sans', 'sans-serif'].join(','),
@@ -141,6 +141,7 @@ export default ({ themeMode, isChartPage, children }) => {
               primary: '#DBD9E6',
               dark: '#7284A0',
               subPrimary: 'white',
+              grey: '#fff',
             },
             orange: {
               main: '#F29C38',
@@ -184,6 +185,8 @@ export default ({ themeMode, isChartPage, children }) => {
               text: '#7284A0',
               border: '#2E2E2E',
               cream: '#0E1016',
+              additional: '#0E1016',
+              block: '#424b68',
             },
             primary: {
               main: '#303037',
@@ -224,6 +227,7 @@ export default ({ themeMode, isChartPage, children }) => {
               background: '#1B2028',
               inputBackground: '#14161B',
               greyish: '#f5f5fb',
+              block: '#1B2028',
             },
             dark: {
               main: '#D1DDEF',
@@ -339,6 +343,7 @@ export default ({ themeMode, isChartPage, children }) => {
               dark: '#7284A0',
               blue: '#165BE0',
               subPrimary: '#16253D',
+              grey: '#2E2E2E',
             },
             orange: {
               main: '#F29C38',
@@ -381,6 +386,8 @@ export default ({ themeMode, isChartPage, children }) => {
               text: '#7284A0',
               border: '#E0E5EC',
               cream: '#F9FBFD',
+              additional: '#fff',
+              block: '#e0e5ec',
             },
             primary: {
               main: '#FEFEFE',
@@ -422,6 +429,7 @@ export default ({ themeMode, isChartPage, children }) => {
               background: '#fff',
               inputBackground: '#fff',
               greyish: '#f5f5fb',
+              block: '#e0e5ec',
             },
             dark: {
               main: '#16253D',
