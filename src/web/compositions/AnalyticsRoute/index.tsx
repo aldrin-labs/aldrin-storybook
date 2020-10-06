@@ -180,7 +180,7 @@ let totalySupply = serumData.getSerumData.totalySupply - serumData.getSerumData.
             </Title>
           </BlockContainer>
         </Block>
-        <Block theme={theme}>
+        <Block style={{ visibility: 'hidden' }} theme={theme}>
           srm burned
           <BlockContainer>
             {' '}
@@ -226,7 +226,7 @@ let totalySupply = serumData.getSerumData.totalySupply - serumData.getSerumData.
             Soon
           </Text>
         </Block>
-        <Block theme={theme}>
+        <Block style={{ visibility: 'hidden' }} theme={theme}>
           srm pending burn
           <Text>
             {/* {formatNumberToUSFormat(serumData.getSerumData.pendingBurn)}  */}
