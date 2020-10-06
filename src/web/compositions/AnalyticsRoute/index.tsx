@@ -3,10 +3,16 @@ import styled from 'styled-components'
 import CardsPanel from '@sb/compositions/Chart/components/CardsPanel'
 import { compose } from 'recompose'
 import { withTheme } from '@material-ui/styles'
-import { useMarket } from '@sb/dexUtils/markets'
+import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
+import { getSerumData} from '@core/graphql/queries/chart/getSerumData'
 import {
   NavBarLink
 } from '@sb/components/PortfolioMainAllocation/PortfolioMainAllocation.styles'
+import { queryRendererHoc } from '@core/components/QueryRenderer/index'
+import {
+  formatNumberToUSFormat,stripDigitPlaces
+} from '@core/utils/PortfolioTableUtils'
+
 
 
 import { getDecimalCount } from '@sb/dexUtils/utils'
@@ -28,17 +34,17 @@ export const RowContainer = styled(Row)`
 export const Block = styled.div`
   width: ${(props) => props.width || '17.5%'};
   height: ${(props) => props.height || '20%'};
-  background-color: ${(props)=>props.backgroundColor || theme.palette.white.block};
+  background-color: ${(props)=>props.backgroundColor || props.theme.palette.white.block};
   margin: 0.7rem;
-  border-radius: 0.8rem;
-  border: 1px solid ${(props)=>props.border || theme.palette.grey.block};
+  border-radius: 1.6rem;
+  border: 1px solid ${(props)=>props.border || props.theme.palette.grey.block};
   font-family: DM Sans;
   font-size: 1.12rem;
   letter-spacing: 0.06rem;
   padding-top: 4rem;
   padding-left: 3rem;
   text-transform: uppercase;
-  color: ${(props)=>props.color || theme.palette.text.grey};
+  color: ${(props)=>props.color || props.theme.palette.text.grey};
 `
 
 export const Text = styled.div`
@@ -46,6 +52,8 @@ export const Text = styled.div`
   font-weight: bold;
   font-size: 1.5rem;
   text-transform: uppercase;
+  color:'white';
+  padding-top: 20%
 `
 const Line = styled.div`
     position:absolute;
@@ -53,7 +61,7 @@ const Line = styled.div`
     bottom:${(props) => props.bottom || 'none'};
     width: 100%;
     height: .1rem;
-    background: ${(props) => props.background ||theme.palette.grey.block};
+    background: ${(props) => props.background || theme.palette.grey.block};
 `
 const Link = styled.a`
 display: block;
@@ -74,11 +82,12 @@ display: block;
   left: 50%;
   transform: translateX(-50%);
 `
-
 const AnalyticsRoute = (props) => {
 const {theme} = props;
+const serumData = props.getSerumDataQuery;
 const {market}= useMarket();
-
+ console.log('querySerum', serumData.getSerumData.marketcap)
+const markPrice = useMarkPrice();
     let quantityPrecision = market?.minOrderSize && getDecimalCount(market.minOrderSize);
     let pricePrecision = market?.tickSize && getDecimalCount(market.tickSize);
 
@@ -107,34 +116,37 @@ const {market}= useMarket();
        
       </ChartGridContainer> <Line top={'5.7rem'}/>
       <RowContainer style={{ height: 'calc(96% - 2rem)', flexDirection: 'column',paddingBottom:'6rem' }}>
-        <Block >
-          srm marketcap 
+        <Block  theme={theme} >
+        srm marketcap <Text>{formatNumberToUSFormat((markPrice*serumData.getSerumData.circulatingSupply).toFixed(0))}$</Text>
         </Block>
-        <Block>
-          srm totaly supply
+        <Block theme={theme}>
+          srm totaly supply<Text>
+            {formatNumberToUSFormat(serumData.getSerumData.totalySupply)} SRM
+          </Text>
         </Block>
-        <Block>
+        <Block theme={theme}>
           srm burned
         </Block>
-        <Block>
+        <Block theme={theme}>
           srm burned
         </Block>
-        <Block>
+        <Block theme={theme}>
           srm last price
+          <Text>${formatNumberToUSFormat(stripDigitPlaces(markPrice, pricePrecision)) }</Text>
         </Block>
-        <Block>
-          srm circulating supply
+        <Block theme={theme}> 
+          srm circulating supply<Text>{formatNumberToUSFormat(serumData.getSerumData.circulatingSupply)} SRM</Text>
         </Block>
-        <Block>
+        <Block theme={theme}>
           srm pending burn
         </Block>
-        <Block>
+        <Block theme={theme}>
           srm pending burn
         </Block>
-        <Block width={'62.5%'} height={'84.4%'} />
+        <Block theme={theme} width={'62.5%'} height={'84.4%'} />
       </RowContainer>
       <RowContainer>
-      <Line bottom={'5.7rem'}/>        <Link  href="https://cryptocurrencies.ai/">cryptocurrencies.ai</Link>
+      <Line theme={theme} bottom={'5.7rem'}/>        <Link  href="https://cryptocurrencies.ai/">cryptocurrencies.ai</Link>
     
       </RowContainer>
 
@@ -143,4 +155,10 @@ const {market}= useMarket();
   )
 }
 
-export default compose(withTheme())(AnalyticsRoute)
+export default compose(withTheme(),queryRendererHoc({
+  query: getSerumData,
+  name: 'getSerumDataQuery',
+  withOutSpinner: false,
+  withTableLoader: false,
+  fetchPolicy: 'network-only',
+}),)(AnalyticsRoute)
