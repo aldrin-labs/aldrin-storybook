@@ -384,7 +384,7 @@ export const CardsPanel = ({
         </CustomCard>
 
         <TopBar theme={theme} />
-        <Line top={'5.7rem'} />
+        <Line top={'calc(100% + 1rem)'} />
         {/*         
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <TooltipCustom

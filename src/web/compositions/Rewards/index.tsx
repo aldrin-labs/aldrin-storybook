@@ -4,6 +4,7 @@ import { compose } from 'recompose'
 import SvgIcon from '@sb/components/SvgIcon'
 
 import serum from '@icons/Serum.svg'
+import decefi from '@icons/decefi.svg'
 
 import { withTheme } from '@material-ui/styles'
 
@@ -14,11 +15,11 @@ import { Link } from 'react-router-dom'
 export const BlockContainer = styled.div``
 
 export const Card = styled.div`
-  width: 40%;
-  height: 70%;
+  width: 35%;
+  height: 85%;
   background-color: ${(props) =>
     props.backgroundColor || props.theme.palette.white.block};
-  margin: 0.7rem;
+  margin: 0.7rem 1rem;
   border-radius: 1.6rem;
   border: 1px solid ${(props) => props.border || props.theme.palette.grey.block};
   font-family: DM Sans;
@@ -37,12 +38,9 @@ export const Title = styled.div`
   font-style: normal;
   font-weight: bold;
   font-size: 2.5rem;
-  line-height: 47px;
 `
 export const Text = styled.div`
   color: ${(props) => props.color || props.theme.palette.white.main};
-  width: 31%;
-
   font-family: DM Sans;
   font-style: normal;
   font-weight: normal;
@@ -52,19 +50,24 @@ export const Text = styled.div`
   align-items: center;
   text-align: center;
   letter-spacing: 1px;
+  text-transform: none;
 `
+
+const CardText = styled(Text)`
+  font-weight: bold;
+`
+
 export const Value = styled.div`
   color: ${(props) => props.color || props.theme.palette.white.main};
 
   font-family: DM Sans;
   font-style: normal;
   font-weight: bold;
-  font-size: 8rem;
-  line-height: 125px;
+  font-size: 6rem;
 `
 export const Button = styled.button`
-  width: 35%;
-  height: 10%;
+  width: 80%;
+  height: 30%;
   font-family: DM Sans;
   font-style: normal;
   font-weight: bold;
@@ -88,7 +91,9 @@ const RewardsRoute = (props) => {
       }}
     >
       <RowContainer style={{ height: '30%' }} direction={'column'}>
-        <Title theme={theme}>Buy SRM and farm DCFI token</Title>
+        <Title style={{ paddingBottom: '1rem' }} theme={theme}>
+          Buy SRM and farm DCFI token
+        </Title>
         <Text theme={theme}>
           New farming algorithm designed by Cryptocurrencies.ai allows you
         </Text>
@@ -107,25 +112,91 @@ const RewardsRoute = (props) => {
         }}
       >
         <Card theme={theme}>
-          <SvgIcon src={serum} width="13%" height="auto" />
-          <Value theme={theme}>4567</Value>
-          <Link to={'/chart'} style={{ width: '50%', textDecoration: 'none' }}>
-            <BtnCustom
-              theme={theme}
-              btnColor={theme.palette.grey.main}
-              backgroundColor={'#61D8E6'}
-              hoverBackground={theme.palette.blue.serum}
-              padding={'1.5rem 0'}
-              height={'5rem'}
-              fontSize={'1.6rem'}
-              btnWidth={'100%'}
-              textTransform={'capitalize'}
+          <RowContainer style={{ height: '50%' }}>
+            <SvgIcon src={serum} width="13%" height="auto" />
+          </RowContainer>
+          <RowContainer
+            justify={'space-around'}
+            style={{
+              height: '50%',
+              flexDirection: 'column',
+            }}
+          >
+            <Value theme={theme}>456.799</Value>{' '}
+            <CardText theme={theme} width={'auto'}>
+              SRM traded
+            </CardText>
+            <Link
+              to={'/chart'}
+              style={{
+                width: '50%',
+                textDecoration: 'none',
+                paddingBottom: '1.5rem',
+              }}
             >
-              trade
-            </BtnCustom>
-          </Link>
+              <BtnCustom
+                theme={theme}
+                btnColor={theme.palette.grey.main}
+                backgroundColor={'#61D8E6'}
+                hoverBackground={theme.palette.blue.serum}
+                padding={'1.5rem 0'}
+                height={'5rem'}
+                fontSize={'1.6rem'}
+                btnWidth={'100%'}
+                textTransform={'capitalize'}
+              >
+                trade
+              </BtnCustom>
+            </Link>
+          </RowContainer>
         </Card>
-        <Card theme={theme} />
+        {/* <Card theme={theme}>
+          <SvgIcon src={serum} width="11%" height="auto" />
+          <Value theme={theme}>456.997</Value>{' '}
+          <Text theme={theme} width={'auto'}>
+            
+          </Text>
+          <Button></Button>
+        </Card> */}
+        <Card theme={theme}>
+          <RowContainer style={{ height: '50%' }}>
+            <SvgIcon src={decefi} width="30%" height="auto" />
+          </RowContainer>
+          <RowContainer
+            justify={'space-around'}
+            style={{
+              height: '50%',
+              flexDirection: 'column',
+            }}
+          >
+            <Value theme={theme}>456.799</Value>{' '}
+            <CardText theme={theme} width={'auto'}>
+              DCFI earned
+            </CardText>
+            <Link
+              to={'/chart'}
+              style={{
+                width: '50%',
+                textDecoration: 'none',
+                paddingBottom: '1.5rem',
+              }}
+            >
+              <BtnCustom
+                theme={theme}
+                btnColor={theme.palette.grey.main}
+                backgroundColor={'#61D8E6'}
+                hoverBackground={theme.palette.blue.serum}
+                padding={'1.5rem 0'}
+                height={'5rem'}
+                fontSize={'1.6rem'}
+                btnWidth={'100%'}
+                textTransform={'none'}
+              >
+                Harvest (coming soon)
+              </BtnCustom>
+            </Link>
+          </RowContainer>
+        </Card>
       </div>
     </div>
   )
