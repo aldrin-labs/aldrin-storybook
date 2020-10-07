@@ -11,7 +11,7 @@ export const BlockContainer = styled.div``
 
 export const Card = styled.div`
   width: 31%;
-  height: 56%;
+  height: 59%;
   background-color: ${(props) =>
     props.backgroundColor || props.theme.palette.white.block};
   margin: 0.7rem;
@@ -36,9 +36,8 @@ export const Title = styled.div`
   line-height: 47px;
 `
 export const Text = styled.div`
+  width: ${(props) => props.width || '31%'};
   color: ${(props) => props.color || props.theme.palette.white.main};
-  width: 31%;
-
   font-family: DM Sans;
   font-style: normal;
   font-weight: normal;
@@ -48,6 +47,7 @@ export const Text = styled.div`
   align-items: center;
   text-align: center;
   letter-spacing: 1px;
+  text-transform: none;
 `
 export const Value = styled.div`
   color: ${(props) => props.color || props.theme.palette.white.main};
@@ -55,12 +55,12 @@ export const Value = styled.div`
   font-family: DM Sans;
   font-style: normal;
   font-weight: bold;
-  font-size: 8rem;
+  font-size: 7rem;
   line-height: 125px;
 `
 export const Button = styled.button`
-  width: 35%;
-  height: 10%;
+  width: 80%;
+  height: 30%;
   font-family: DM Sans;
   font-style: normal;
   font-weight: bold;
@@ -99,11 +99,41 @@ const RewardsRoute = (props) => {
         }}
       >
         <Card theme={theme}>
-          <SvgIcon src={serum} width="13%" height="auto" />
-          <Value theme={theme}>4567</Value>
-          <Button>trade</Button>
+          <div
+            style={{
+              height: '50%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <SvgIcon src={serum} width="60%" height="auto" />
+          </div>
+          <div
+            style={{
+              height: '50%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexDirection: 'column',
+            }}
+          >
+            {' '}
+            <Value theme={theme}>456.799</Value>{' '}
+            <Text theme={theme} width={'auto'}>
+              SRM traded
+            </Text>
+            <Button>trade</Button>
+          </div>
         </Card>
-        <Card theme={theme} />
+        <Card theme={theme}>
+          <SvgIcon src={serum} width="11%" height="auto" />
+          <Value theme={theme}>456.997</Value>{' '}
+          <Text theme={theme} width={'auto'}>
+            DCFI earned
+          </Text>
+          <Button>Harvest (coming soon)</Button>
+        </Card>
       </div>
     </div>
   )
