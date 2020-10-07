@@ -250,6 +250,7 @@ class SelectPairListComponent extends React.PureComponent<
       <Grid
         style={{
           top: '2.5rem',
+          fontFamily: 'DM Sans',
           left:
             'calc(0)',
           position: 'absolute',
