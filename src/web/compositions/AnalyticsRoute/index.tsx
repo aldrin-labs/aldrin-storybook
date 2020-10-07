@@ -30,7 +30,7 @@ export const RowContainer = styled(Row)`
 `
 export const Block = styled.div`
   width: ${(props) => props.width || '17.5%'};
-  height: ${(props) => props.height || '20%'};
+  height: ${(props) => props.height || 'calc(25% - 1.4rem)'};
   background-color: ${(props) =>
     props.backgroundColor || props.theme.palette.white.block};
   margin: 0.7rem;
@@ -139,7 +139,7 @@ let totalySupply = serumData.getSerumData.totalySupply - serumData.getSerumData.
         style={{
           height: 'calc(96% - 2rem)',
           flexDirection: 'column',
-          paddingBottom: '6rem',
+          padding: '1.5rem 0 3rem 0',
         }}
       >
         <Block theme={theme}>
@@ -236,7 +236,7 @@ let totalySupply = serumData.getSerumData.totalySupply - serumData.getSerumData.
         <Block
           theme={theme}
           width={'62.5%'}
-          height={'84.4%'}
+          height={'100%'}
           style={{ padding: '.5rem' }}
         >
           <SingleChart
