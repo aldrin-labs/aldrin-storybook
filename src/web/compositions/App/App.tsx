@@ -70,8 +70,7 @@ const AppRaw = ({
   const fullscreen: boolean = isChartPage && chartPageView !== 'default'
   const showFooter =
     currentPage !== '/registration' &&
-    currentPage !== '/tech_issues' &&
-    currentPage !== '/analytics'
+    currentPage !== '/tech_issues'
   const isPNL = currentPage.includes('/portfolio/main')
   // TODO: Check this variable
   const pageIsRegistration = currentPage.includes('regist')

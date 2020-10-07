@@ -17,7 +17,7 @@ import {
 import { getDecimalCount } from '@sb/dexUtils/utils'
 
 import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
-import { Link } from '@sb/components/PortfolioMainAllocation/PortfolioMainAllocation.styles'
+// import { Link } from '@sb/components/PortfolioMainAllocation/PortfolioMainAllocation.styles'
 
 export const Row = styled.div`
   display: flex;
@@ -54,7 +54,7 @@ export const Text = styled.div`
   color:'white';
   padding-top: 20%
 `
-const Line = styled.div`
+export const Line = styled.div`
     position:absolute;
     top:${(props) => props.top || 'none'};
     bottom:${(props) => props.bottom || 'none'};
@@ -62,7 +62,7 @@ const Line = styled.div`
     height: .1rem;
     background: ${(props) => props.background || theme.palette.grey.block};
 `
-const Link = styled.a`
+export const Link = styled.a`
 display: block;
   width: fit-content;
   color: ${(props)=>props.color || theme.palette.blue.serum};
@@ -156,10 +156,6 @@ const markPrice = useMarkPrice();
           additionalUrl={`/?symbol=SRM/USDT_0&user_id=id`}
         />
         </Block>
-      </RowContainer>
-      <RowContainer>
-        <Line theme={theme} bottom={'5.7rem'}/>
-        <Link  href="https://cryptocurrencies.ai/">cryptocurrencies.ai</Link>
       </RowContainer>
     </RowContainer>
   )
