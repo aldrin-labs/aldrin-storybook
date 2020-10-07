@@ -5,6 +5,7 @@ import { Card, Grid, Button, Theme } from '@material-ui/core'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 
 export const MainContainer = styled.div`
+  height: 100%;
   ${(props: { fullscreen: boolean }) =>
     props.fullscreen && 'height: 100vh; position: relative; z-index: 10;'};
 `
@@ -425,7 +426,7 @@ export const StyledSwitch = styled(({ isActive, ...rest }) => (
 export const Container = styled(Grid)`
   display: flex;
   // - ( menu + margin )
-  height: calc(100vh);
+  height: calc(100%);
   width: 100%;
   margin: 0;
   padding: 0;

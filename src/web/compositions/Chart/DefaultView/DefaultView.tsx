@@ -120,7 +120,7 @@ export const DefaultViewComponent = (
 
   return (
     <Container container spacing={8} theme={theme}>
-      <ChartGridContainer item xs={12} theme={theme}>
+      {/* <ChartGridContainer item xs={12} theme={theme}>
         <CardsPanel
           {...{
             _id: id,
@@ -142,14 +142,14 @@ export const DefaultViewComponent = (
             changeChartLayout,
           }}
         />
-      </ChartGridContainer>
+      </ChartGridContainer> */}
 
       <Grid
         item
         container
         xs={12}
         style={{
-          height: 'calc(96% - 2rem)',
+          height: 'calc(100%)',
           padding: '0',
           margin: 0,
         }}

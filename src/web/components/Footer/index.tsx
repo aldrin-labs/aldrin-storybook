@@ -23,6 +23,7 @@ const Footer = ({
   toggleThemeModeMutation,
   showFooter,
   isChartPage,
+  theme
 }: Props) => {
   const themeMode =
     getThemeModeQuery &&
@@ -40,64 +41,19 @@ const Footer = ({
   }
 
   return (
-    <Container
-      position="static"
-      color="default"
-      fullscreenMode={fullscreenMode}
-      isChartPage={isChartPage}
-    >
-      <Block style={{ paddingLeft: '24px' }}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            paddingRight: '2rem',
-            borderRight: '.1rem solid #e0e5ec',
-            height: '100%',
-          }}
-        >
-          <StyledTypography>Cryptocurrencies Ai, 2020 </StyledTypography>
-        </div>
-
-        {/* <Typography variant="h6" color="secondary">
-          •
-        </Typography> */}
-
-        <StyledButton
-          size="small"
-          onClick={() => togglePrivacyPolicy(!showPrivacyPolicy)}
-          color="default"
-          style={{ marginLeft: '1rem' }}
-        >
-          Privacy Policy
-        </StyledButton>
-      </Block>
-
-      <Block>
-        <Feedback />
-        {/* <IconButton href={'https://t.me/CryptocurrenciesAi'}>
-          <Telegram color="secondary" width={32} height={32} />
-        </IconButton> */}
-      </Block>
-
-      {/* {!MASTER_BUILD && (
-        <Block>
-          <StyledTypography color="textPrimary">NIGHT MODE</StyledTypography>
-          <Switch
-            checked={themeMode === 'dark'}
-            onChange={async () => {
-              await toggleThemeModeMutation()
-            }}
-            value="theme"
-            color="default"
-          />
-        </Block>
-      )} */}
-      <PrivacyPolicy
-        open={showPrivacyPolicy}
-        onClick={() => togglePrivacyPolicy(!showPrivacyPolicy)}
-      />
-    </Container>
+    null
+    // <Container
+    //   theme={theme}
+    //   position="static"
+    //   color="default"
+    //   fullscreenMode={fullscreenMode}
+    //   isChartPage={isChartPage}
+    // >
+    //   <RowContainer>
+    //     <Line theme={theme} bottom={'5.7rem'}/>
+    //     <Link  href="https://cryptocurrencies.ai/">cryptocurrencies.ai</Link>
+    //   </RowContainer>
+    // </Container>
   )
 }
 
@@ -117,12 +73,12 @@ const Container = styled(({ fullscreenMode, isChartPage, ...rest }) => (
 
   && {
     flex-direction: row;
-    background-color: #f9fbfd;
+    background-color: ${props => props.theme.palette.grey.additional};
     box-shadow: none;
-    border-top: 0.1rem solid #e0e5ec;
+    border-top: ${props => props.theme.palette.border.main};
   }
 
-  height: 6.4vh;
+  height: 5.7rem;
   position: ${(props) => (props.isChartPage ? 'absolute' : 'fixed')};
   bottom: ${(props) => (props.isChartPage ? '-6.4vh' : '0')};
   z-index: 1;
@@ -135,6 +91,45 @@ const Container = styled(({ fullscreenMode, isChartPage, ...rest }) => (
 const Block = styled.div`
   display: flex;
   align-items: center;
+`
+
+const Row = styled.div`
+  display: flex;
+  flex-wrap: ${(props) => props.wrap || 'wrap'};
+  justify-content: ${(props) => props.justify || 'center'};
+  flex-direction: ${(props) => props.direction || 'row'};
+  align-items: ${(props) => props.align || 'center'};
+  
+`
+const RowContainer = styled(Row)`
+  width: 100%;
+`
+const Line = styled.div`
+    position:absolute;
+    top:${(props) => props.top || 'none'};
+    bottom:${(props) => props.bottom || 'none'};
+    width: 100%;
+    height: .1rem;
+    background: ${(props) => props.background || theme.palette.grey.block};
+`
+const Link = styled.a`
+display: block;
+  width: fit-content;
+  color: ${(props)=>props.color || theme.palette.blue.serum};
+
+  text-decoration: none;
+  text-transform: ${(props) => props.textTransform || 'uppercase'};
+
+  font-family: 'DM Sans', sans-serif;
+  font-weight: bold;
+  font-size: 1.2rem;
+  line-height: 109.6%;
+  letter-spacing: 1px;
+
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
 `
 
 export default compose(

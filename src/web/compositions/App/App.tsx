@@ -1,4 +1,5 @@
 import React from 'react'
+import styled from 'styled-components'
 import { compose } from 'recompose'
 import { withRouter } from 'react-router-dom'
 // https://material-ui.com/customization/css-in-js/#other-html-element
@@ -18,7 +19,7 @@ jss.options.insertionPoint = document.getElementById('jss-insertion-point')
 
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import CssBaseline from '@material-ui/core/CssBaseline'
-import Footer from '@sb/components/Footer'
+// import Footer from '@sb/components/Footer'
 import AnimatedNavBar from '@sb/components/NavBar/AnimatedNavBar'
 import ThemeWrapper from './ThemeWrapper/ThemeWrapper'
 import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
@@ -35,6 +36,7 @@ import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 import { syncStorage } from '@storage'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { useQuery } from 'react-apollo'
+import CardsPanel from '@sb/compositions/Chart/components/CardsPanel'
 
 import { ConnectionProvider } from '@sb/dexUtils/connection'
 import { WalletProvider } from '@sb/dexUtils/wallet'
@@ -71,8 +73,7 @@ const AppRaw = ({
   const showFooter =
     currentPage !== '/registration' &&
     currentPage !== '/tech_issues' &&
-    currentPage !== '/analytics' &&
-    currentPage !== '/rewards'
+    !isChartPage
   const isPNL = currentPage.includes('/portfolio/main')
   // TODO: Check this variable
   const pageIsRegistration = currentPage.includes('regist')
@@ -106,16 +107,25 @@ const AppRaw = ({
                     isPNL={isPNL}
                     isChartPage={isChartPage}
                   >
-                    {/* {!pageIsRegistration && (
-                <AnimatedNavBar pathname={currentPage} hide={fullscreen} />
-              )} */}
-                    {children}
-
+                    {!pageIsRegistration && (
+                      <CardsPanel pathname={currentPage} hide={fullscreen} />
+                    )}
+                    <div
+                      style={{
+                        height: showFooter
+                          ? 'calc(96% - 7.7rem)'
+                          : 'calc(96% - 2rem)',
+                      }}
+                    >
+                      {children}
+                    </div>
+                    {showFooter && <Footer />}
+                    {/* 
                     <Footer
                       isChartPage={isChartPage}
                       fullscreenMode={fullscreen}
                       showFooter={showFooter}
-                    />
+                    /> */}
                   </AppGridLayout>
                   {/* <ShowWarningOnMoblieDevice /> */}
                 </WalletProvider>
@@ -128,6 +138,76 @@ const AppRaw = ({
     </ApolloPersistWrapper>
   )
 }
+
+const Footer = () => {
+  return (
+    <RowContainer style={{ height: '5.7rem' }}>
+      <Line bottom={'5.7rem'} />
+      <Link
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://cryptocurrencies.ai/"
+      >
+        Cryptocurrencies.Ai
+      </Link>
+      <Link
+        href="https://t.me/CryptocurrenciesAi"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Telegram
+      </Link>
+      <Link
+        href="https://twitter.com/CCAI_Official"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Twitter
+      </Link>
+      <Link
+        href="https://discord.com/invite/2EaKvrs"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Discord
+      </Link>
+    </RowContainer>
+  )
+}
+
+const Row = styled.div`
+  display: flex;
+  flex-wrap: ${(props) => props.wrap || 'wrap'};
+  justify-content: ${(props) => props.justify || 'center'};
+  flex-direction: ${(props) => props.direction || 'row'};
+  align-items: ${(props) => props.align || 'center'};
+`
+const RowContainer = styled(Row)`
+  width: 100%;
+`
+const Line = styled.div`
+  position: absolute;
+  top: ${(props) => props.top || 'none'};
+  bottom: ${(props) => props.bottom || 'none'};
+  width: 100%;
+  height: 0.1rem;
+  background: ${(props) => props.background || theme.palette.grey.block};
+`
+const Link = styled.a`
+  display: block;
+  width: fit-content;
+  color: ${(props) => props.color || theme.palette.blue.serum};
+
+  text-decoration: none;
+  text-transform: ${(props) => props.textTransform || 'capitalize'};
+
+  font-family: 'DM Sans', sans-serif;
+  font-weight: bold;
+  font-size: 1.2rem;
+  line-height: 109.6%;
+  letter-spacing: 0.1rem;
+  padding: 0 1rem;
+`
 
 export const App = compose(
   withRouter,

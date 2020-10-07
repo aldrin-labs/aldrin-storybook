@@ -632,7 +632,7 @@ const NavBarRaw: SFC<Props> = ({
                 <Feedback borderColor={fade(divider, 0.5)} />
               </Hidden> */}
             <Hidden only="xs">
-              <Login theme={theme} joyridePage={joyridePage} />
+              {/* <Login theme={theme} joyridePage={joyridePage} /> */}
             </Hidden>
           </Grid>
         </Grid>

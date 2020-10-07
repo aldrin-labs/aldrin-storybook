@@ -13,10 +13,10 @@ import {
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 
-import { getDecimalCount } from '@sb/dexUtils/utils'
-
 import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
-import { Link } from '@sb/components/PortfolioMainAllocation/PortfolioMainAllocation.styles'
+
+import { getDecimalCount } from '@sb/dexUtils/utils' 
+// import { Link } from '@sb/components/PortfolioMainAllocation/PortfolioMainAllocation.styles'
 
 export const Row = styled.div`
   display: flex;
@@ -30,7 +30,7 @@ export const RowContainer = styled(Row)`
 `
 export const Block = styled.div`
   width: ${(props) => props.width || '17.5%'};
-  height: ${(props) => props.height || '20%'};
+  height: ${(props) => props.height || 'calc(25% - 1.4rem)'};
   background-color: ${(props) =>
     props.backgroundColor || props.theme.palette.white.block};
   margin: 0.7rem;
@@ -105,10 +105,9 @@ const AnalyticsRoute = ({ markets, setMarketAddress, ...props }) => {
     setMarketAddress(selectedMarketFromUrl.address.toBase58())
   }, [])
 
-let circulatingSupply = serumData.getSerumData.circulatingSupply - serumData.getSerumData.burned;
-let totalySupply = serumData.getSerumData.totalySupply - serumData.getSerumData.burned;
+  let circulatingSupply = serumData.getSerumData.circulatingSupply - serumData.getSerumData.burned;
+  let totalySupply = serumData.getSerumData.totalySupply - serumData.getSerumData.burned;
 
-  let quantityPrecision = market?.minOrderSize && getDecimalCount(market.minOrderSize);
   let pricePrecision = market?.tickSize && getDecimalCount(market.tickSize);
 
   return (
@@ -120,25 +119,12 @@ let totalySupply = serumData.getSerumData.totalySupply - serumData.getSerumData.
         paddingRight: '.8%',
       }}
     >
-      <ChartGridContainer xs={12} theme={theme}>
-        <CardsPanel
-          {...{
-            pair: 'BTC_USDT', // url
-            view: 'default',
-            theme,
-            marketType: 0, // url
-            quantityPrecision, // chart
-            pricePrecision,
-            activeExchange: 'serum', // serum
-          }}
-        />
-      </ChartGridContainer>{' '}
       <Line top={'5.7rem'} />
       <RowContainer
         style={{
-          height: 'calc(96% - 2rem)',
+          height: '100%',
           flexDirection: 'column',
-          paddingBottom: '6rem',
+          padding: '1.5rem 0 3rem 0',
         }}
       >
         <Block theme={theme}>
@@ -151,7 +137,7 @@ let totalySupply = serumData.getSerumData.totalySupply - serumData.getSerumData.
           </Text>
         </Block>
         <Block theme={theme}>
-          srm totaly supply
+          srm total supply
           <BlockContainer>
             <Text>
               {formatNumberToUSFormat(totalySupply.toFixed(0))} SRM
@@ -235,7 +221,7 @@ let totalySupply = serumData.getSerumData.totalySupply - serumData.getSerumData.
         <Block
           theme={theme}
           width={'62.5%'}
-          height={'84.4%'}
+          height={'100%'}
           style={{ padding: '.5rem' }}
         >
           <SingleChart
@@ -244,10 +230,6 @@ let totalySupply = serumData.getSerumData.totalySupply - serumData.getSerumData.
             additionalUrl={`/?symbol=SRM/USDT_0&user_id=id`}
           />
         </Block>
-      </RowContainer>
-      <RowContainer>
-        <Line theme={theme} bottom={'5.7rem'} />
-        <Link href="https://cryptocurrencies.ai/">cryptocurrencies.ai</Link>
       </RowContainer>
     </RowContainer>
   )
