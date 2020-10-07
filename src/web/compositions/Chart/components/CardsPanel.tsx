@@ -18,6 +18,10 @@ import { checkLoginStatus } from '@core/utils/loginUtils'
 import { PanelWrapper, CustomCard } from '../Chart.styles'
 import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
 import { updateThemeMode } from '@core/graphql/mutations/chart/updateThemeMode'
+import { useMarket } from '@sb/dexUtils/markets'
+import { getDecimalCount } from '@sb/dexUtils/utils'
+import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
+
 
 import { useWallet, WALLET_PROVIDERS } from '@sb/dexUtils/wallet';
 import { ENDPOINTS, useConnectionConfig } from '@sb/dexUtils/connection';
@@ -44,6 +48,7 @@ import IconButton from '@material-ui/core/IconButton'
 import TelegramIcon from '@icons/telegram.svg'
 import DiscordIcon from '@icons/discord.svg'
 import TwitterIcon from '@icons/twitter.svg'
+import { withTheme } from '@material-ui/core'
 
 const TelegramLink = (props) => (
   <a
@@ -219,20 +224,24 @@ const TopBar = ({ theme }) => {
 
 
 export const CardsPanel = ({
-  pair,
-  view,
+  view = 'default',
   theme,
-  marketType,
-  quantityPrecision,
-  pricePrecision,
-  activeExchange,
+  marketType = 0,
+  activeExchange = 'serum',
 }) => {
+
+  const pair = 'BTC_USDT'
+  const { market } = useMarket() 
+  const location = useLocation();
+
+  const quantityPrecision = market?.minOrderSize && getDecimalCount(market.minOrderSize);
+  const pricePrecision = market?.tickSize && getDecimalCount(market.tickSize);
+
   const isDarkTheme = theme.palette.type === 'dark'
   const isAnalytics = location.pathname.includes('analytics')
   
-console.log('teheme', theme)
   return (
-    <>
+    <ChartGridContainer>
       <PanelWrapper>
         {/* {view === 'onlyCharts' && (
           <LayoutSelector userId={_id} themeMode={themeMode} />
@@ -271,7 +280,8 @@ console.log('teheme', theme)
             <NavBarLink to="/analytics" style={{ color: isAnalytics ? theme.palette.blue.serum : theme.palette.grey.text }}> Analytics</NavBarLink>
           </div>
           
-          {!isAnalytics&&(<AutoSuggestSelect
+          {!isAnalytics&&(
+            <AutoSuggestSelect
             value={view === 'default' && pair}
             id={'pairSelector'}
             view={view}
@@ -335,11 +345,12 @@ console.log('teheme', theme)
           />
           </div>
       </PanelWrapper>
-    </>
+    </ChartGridContainer>
   )
 }
 
 export default compose(
+  withTheme(),
   withApolloPersist,
   graphql(TOGGLE_THEME_MODE, {
     name: 'toggleThemeMode',

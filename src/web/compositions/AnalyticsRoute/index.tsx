@@ -13,9 +13,9 @@ import {
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 
-import { getDecimalCount } from '@sb/dexUtils/utils'
-
 import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
+
+import { getDecimalCount } from '@sb/dexUtils/utils' 
 // import { Link } from '@sb/components/PortfolioMainAllocation/PortfolioMainAllocation.styles'
 
 export const Row = styled.div`
@@ -96,7 +96,7 @@ const AnalyticsRoute = ({ markets, setMarketAddress, ...props }) => {
   const { theme } = props
   const serumData = props.getSerumDataQuery
   const { market } = useMarket()
-  console.log('querySerum', serumData.getSerumData)
+
   const markPrice = useMarkPrice()
 
   useEffect(() => {
@@ -106,38 +106,24 @@ const AnalyticsRoute = ({ markets, setMarketAddress, ...props }) => {
     setMarketAddress(selectedMarketFromUrl.address.toBase58())
   }, [])
 
-let circulatingSupply = serumData.getSerumData.circulatingSupply - serumData.getSerumData.burned;
-let totalySupply = serumData.getSerumData.totalySupply - serumData.getSerumData.burned;
+  let circulatingSupply = serumData.getSerumData.circulatingSupply - serumData.getSerumData.burned;
+  let totalySupply = serumData.getSerumData.totalySupply - serumData.getSerumData.burned;
 
-  let quantityPrecision = market?.minOrderSize && getDecimalCount(market.minOrderSize);
   let pricePrecision = market?.tickSize && getDecimalCount(market.tickSize);
 
   return (
     <RowContainer
       style={{
         background: theme.palette.grey.additional,
-        height: '100%',
+        height: 'calc(96% - 7.7rem)',
         paddingLeft: '.8%',
         paddingRight: '.8%',
       }}
     >
-      <ChartGridContainer xs={12} theme={theme}>
-        <CardsPanel
-          {...{
-            pair: 'BTC_USDT', // url
-            view: 'default',
-            theme,
-            marketType: 0, // url
-            quantityPrecision, // chart
-            pricePrecision,
-            activeExchange: 'serum', // serum
-          }}
-        />
-      </ChartGridContainer>{' '}
       <Line top={'5.7rem'} />
       <RowContainer
         style={{
-          height: 'calc(96% - 2rem)',
+          height: '100%',
           flexDirection: 'column',
           padding: '1.5rem 0 3rem 0',
         }}

@@ -2,6 +2,10 @@ import React, { PureComponent } from 'react'
 import styled from 'styled-components'
 
 import { NavBar } from './NavBar'
+import CardsPanel  from '@sb/compositions/Chart/components/CardsPanel'
+import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
+import { withTheme } from '@material-ui/core'
+import { compose } from 'recompose'
 
 export interface Props {
   pathname: string
@@ -16,14 +20,16 @@ const AnimatedContainer = styled.div`
   }
 `
 
-export default class AnimatedNavBar extends PureComponent<Props> {
+class AnimatedNavBar extends PureComponent<Props> {
   render() {
-    const { pathname } = this.props
+    const { theme } = this.props
 
     return (
-      <AnimatedContainer>
-        <NavBar pathname={pathname} />
-      </AnimatedContainer>
+      <ChartGridContainer theme={theme} >
+        <CardsPanel />
+      </ChartGridContainer>
     )
   }
 }
+
+export default compose(withTheme())(AnimatedNavBar)

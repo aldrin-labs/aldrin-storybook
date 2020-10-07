@@ -41,18 +41,19 @@ const Footer = ({
   }
 
   return (
-    <Container
-      theme={theme}
-      position="static"
-      color="default"
-      fullscreenMode={fullscreenMode}
-      isChartPage={isChartPage}
-    >
-      <RowContainer>
-        <Line theme={theme} bottom={'5.7rem'}/>
-        <Link  href="https://cryptocurrencies.ai/">cryptocurrencies.ai</Link>
-      </RowContainer>
-    </Container>
+    null
+    // <Container
+    //   theme={theme}
+    //   position="static"
+    //   color="default"
+    //   fullscreenMode={fullscreenMode}
+    //   isChartPage={isChartPage}
+    // >
+    //   <RowContainer>
+    //     <Line theme={theme} bottom={'5.7rem'}/>
+    //     <Link  href="https://cryptocurrencies.ai/">cryptocurrencies.ai</Link>
+    //   </RowContainer>
+    // </Container>
   )
 }
 

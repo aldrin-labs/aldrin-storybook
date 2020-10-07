@@ -1,4 +1,5 @@
 import React from 'react'
+import styled from 'styled-components'
 import { compose } from 'recompose'
 import { withRouter } from 'react-router-dom'
 // https://material-ui.com/customization/css-in-js/#other-html-element
@@ -35,6 +36,7 @@ import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 import { syncStorage } from '@storage'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { useQuery } from 'react-apollo'
+import CardsPanel from '@sb/compositions/Chart/components/CardsPanel'
 
 import { ConnectionProvider } from '@sb/dexUtils/connection'
 import { WalletProvider } from '@sb/dexUtils/wallet'
@@ -70,7 +72,8 @@ const AppRaw = ({
   const fullscreen: boolean = isChartPage && chartPageView !== 'default'
   const showFooter =
     currentPage !== '/registration' &&
-    currentPage !== '/tech_issues'
+    currentPage !== '/tech_issues' &&
+    !isChartPage
   const isPNL = currentPage.includes('/portfolio/main')
   // TODO: Check this variable
   const pageIsRegistration = currentPage.includes('regist')
@@ -104,16 +107,21 @@ const AppRaw = ({
                     isPNL={isPNL}
                     isChartPage={isChartPage}
                   >
-                    {/* {!pageIsRegistration && (
-                <AnimatedNavBar pathname={currentPage} hide={fullscreen} />
-              )} */}
+                    {!pageIsRegistration && (
+                      <CardsPanel pathname={currentPage} hide={fullscreen} />
+                    )}
                     {children}
-
+                    {showFooter && <RowContainer>
+                      <Line bottom={'5.7rem'}/>
+                      <Link href="https://cryptocurrencies.ai/">cryptocurrencies.ai</Link>
+                    </RowContainer>
+                    }
+{/* 
                     <Footer
                       isChartPage={isChartPage}
                       fullscreenMode={fullscreen}
                       showFooter={showFooter}
-                    />
+                    /> */}
                   </AppGridLayout>
                   {/* <ShowWarningOnMoblieDevice /> */}
                 </WalletProvider>
@@ -126,6 +134,45 @@ const AppRaw = ({
     </ApolloPersistWrapper>
   )
 }
+
+const Row = styled.div`
+  display: flex;
+  flex-wrap: ${(props) => props.wrap || 'wrap'};
+  justify-content: ${(props) => props.justify || 'center'};
+  flex-direction: ${(props) => props.direction || 'row'};
+  align-items: ${(props) => props.align || 'center'};
+  
+`
+const RowContainer = styled(Row)`
+  width: 100%;
+`
+const Line = styled.div`
+    position:absolute;
+    top:${(props) => props.top || 'none'};
+    bottom:${(props) => props.bottom || 'none'};
+    width: 100%;
+    height: .1rem;
+    background: ${(props) => props.background || theme.palette.grey.block};
+`
+const Link = styled.a`
+display: block;
+  width: fit-content;
+  color: ${(props)=> props.color || theme.palette.blue.serum};
+
+  text-decoration: none;
+  text-transform: ${(props) => props.textTransform || 'uppercase'};
+
+  font-family: 'DM Sans', sans-serif;
+  font-weight: bold;
+  font-size: 1.2rem;
+  line-height: 109.6%;
+  letter-spacing: 1px;
+
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+`
 
 export const App = compose(
   withRouter,
