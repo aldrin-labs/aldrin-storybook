@@ -96,7 +96,6 @@ const AnalyticsRoute = ({ markets, setMarketAddress, ...props }) => {
   const { theme } = props
   const serumData = props.getSerumDataQuery
   const { market } = useMarket()
-  console.log('querySerum', serumData.getSerumData)
   const markPrice = useMarkPrice()
 
   useEffect(() => {
