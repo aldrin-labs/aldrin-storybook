@@ -22,6 +22,7 @@ import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
 
 import { useWallet, WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
 import { ENDPOINTS, useConnectionConfig } from '@sb/dexUtils/connection'
+import { Line } from '@sb/compositions/AnalyticsRoute/index'
 
 import OvalSelector from '@sb/components/OvalSelector'
 import SerumCCAILogo from '@icons/serumCCAILogo.svg'
@@ -383,6 +384,7 @@ export const CardsPanel = ({
         </CustomCard>
 
         <TopBar theme={theme} />
+        <Line top={'5.7rem'} />
         {/*         
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <TooltipCustom

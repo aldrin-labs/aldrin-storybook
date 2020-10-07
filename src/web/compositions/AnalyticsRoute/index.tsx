@@ -64,7 +64,7 @@ export const Title = styled.div`
   padding-top: 1.5rem;
 `
 
-const Line = styled.div`
+export const Line = styled.div`
   position: absolute;
   top: ${(props) => props.top || 'none'};
   bottom: ${(props) => props.bottom || 'none'};
@@ -119,7 +119,6 @@ const AnalyticsRoute = ({ markets, setMarketAddress, ...props }) => {
         paddingRight: '.8%',
       }}
     >
-      <Line top={'5.7rem'} />
       <RowContainer
         style={{
           height: '100%',

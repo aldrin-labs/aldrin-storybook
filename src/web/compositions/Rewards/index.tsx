@@ -7,11 +7,15 @@ import serum from '@icons/Serum.svg'
 
 import { withTheme } from '@material-ui/styles'
 
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { Link } from 'react-router-dom'
+
 export const BlockContainer = styled.div``
 
 export const Card = styled.div`
-  width: 31%;
-  height: 56%;
+  width: 40%;
+  height: 70%;
   background-color: ${(props) =>
     props.backgroundColor || props.theme.palette.white.block};
   margin: 0.7rem;
@@ -43,7 +47,7 @@ export const Text = styled.div`
   font-style: normal;
   font-weight: normal;
   font-size: 1.5rem;
-  line-height: 31px;
+  line-height: 2rem;
   display: flex;
   align-items: center;
   text-align: center;
@@ -83,25 +87,43 @@ const RewardsRoute = (props) => {
         flexDirection: 'column',
       }}
     >
-      <Title theme={theme}>Buy SRM and farm DCFI token</Title>
-      <Text theme={theme}>
-        New farming algorithm designed by Cryptocurrencies.ai allows you to farm
-        DCFI – token of our upcoming project. Stay tuned for news
-      </Text>
+      <RowContainer style={{ height: '30%' }} direction={'column'}>
+        <Title theme={theme}>Buy SRM and farm DCFI token</Title>
+        <Text theme={theme}>
+          New farming algorithm designed by Cryptocurrencies.ai allows you
+        </Text>
+        <Text theme={theme}>
+          to farm DCFI – token of our upcoming project. Stay tuned for news
+        </Text>
+      </RowContainer>
       <div
         style={{
-          height: '100%',
+          height: '70%',
           width: '100%',
           display: 'flex',
           justifyContent: 'center',
           flexDirection: 'row',
-          alignItems: 'center',
+          alignItems: 'flex-start',
         }}
       >
         <Card theme={theme}>
           <SvgIcon src={serum} width="13%" height="auto" />
           <Value theme={theme}>4567</Value>
-          <Button>trade</Button>
+          <Link to={'/chart'} style={{ width: '50%', textDecoration: 'none' }}>
+            <BtnCustom
+              theme={theme}
+              btnColor={theme.palette.grey.main}
+              backgroundColor={'#61D8E6'}
+              hoverBackground={theme.palette.blue.serum}
+              padding={'1.5rem 0'}
+              height={'5rem'}
+              fontSize={'1.6rem'}
+              btnWidth={'100%'}
+              textTransform={'capitalize'}
+            >
+              trade
+            </BtnCustom>
+          </Link>
         </Card>
         <Card theme={theme} />
       </div>
