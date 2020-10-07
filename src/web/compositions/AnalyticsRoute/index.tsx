@@ -152,7 +152,7 @@ let totalySupply = serumData.getSerumData.totalySupply - serumData.getSerumData.
           </Text>
         </Block>
         <Block theme={theme}>
-          srm totaly supply
+          srm total supply
           <BlockContainer>
             <Text>
               {formatNumberToUSFormat(totalySupply.toFixed(0))} SRM
