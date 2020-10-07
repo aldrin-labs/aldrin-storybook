@@ -4,9 +4,7 @@ import { graphql } from 'react-apollo'
 import copy from 'clipboard-copy'
 import { useLocation, useHistory } from 'react-router-dom'
 import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
-import {
-  NavBarLink
-} from '@sb/components/PortfolioMainAllocation/PortfolioMainAllocation.styles'
+import { NavBarLink } from '@sb/components/PortfolioMainAllocation/PortfolioMainAllocation.styles'
 
 import MarketStats from './MarketStats/MarketStats'
 import { TooltipCustom } from '@sb/components/index'
@@ -22,21 +20,20 @@ import { useMarket } from '@sb/dexUtils/markets'
 import { getDecimalCount } from '@sb/dexUtils/utils'
 import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
 
-
-import { useWallet, WALLET_PROVIDERS } from '@sb/dexUtils/wallet';
-import { ENDPOINTS, useConnectionConfig } from '@sb/dexUtils/connection';
+import { useWallet, WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
+import { ENDPOINTS, useConnectionConfig } from '@sb/dexUtils/connection'
 
 import OvalSelector from '@sb/components/OvalSelector'
 import SerumCCAILogo from '@icons/serumCCAILogo.svg'
 import LightLogo from '@icons/lightLogo.svg'
 import SvgIcon from '@sb/components/SvgIcon'
 
-import MenuItem from '@material-ui/core/MenuItem';
+import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
 import Button from '@material-ui/core/Button'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import HelpIcon from '@material-ui/icons/Help';
+import HelpIcon from '@material-ui/icons/Help'
 
 import SunDisabled from '@icons/sunDisabled.svg'
 import SunActive from '@icons/sunActive.svg'
@@ -109,52 +106,61 @@ const selectStyles = (theme: Theme) => ({
 })
 
 const TopBar = ({ theme }) => {
-  const { connected, wallet, providerUrl, providerName, setProvider } = useWallet();
-  const { endpoint, setEndpoint } = useConnectionConfig();
-  const location = useLocation();
-  const history = useHistory();
+  const {
+    connected,
+    wallet,
+    providerUrl,
+    providerName,
+    setProvider,
+  } = useWallet()
+  const { endpoint, setEndpoint } = useConnectionConfig()
+  const location = useLocation()
+  const history = useHistory()
   const [isOpenPopup, setPopupOpen] = useState(false)
 
   const publicKey = wallet?.publicKey?.toBase58();
 
   const handleClick = useCallback(
     (e) => {
-      history.push(e.key);
+      history.push(e.key)
     },
-    [history],
-  );
+    [history]
+  )
 
   const isDarkTheme = theme.palette.type === 'dark'
 
-
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-      <SvgIcon 
-          width={'auto'} 
-          height={'100%'} 
-          styledComponentsAdditionalStyle={{ padding: '0 2rem 0 0', cursor: 'pointer' }} 
-          src={isDarkTheme ? SunDisabled : SunActive} 
-          onClick={() => {
-            if (isDarkTheme) {
-              theme.updateMode('light')
-            }
-          }}
-        />
-        {/* </div> */}
-        {/* <div style={{ display: 'flex' }}> */}
-        <SvgIcon 
-          width={'auto'} 
-          height={'100%'} 
-          styledComponentsAdditionalStyle={{ padding: '0 2rem 0 0', cursor: 'pointer' }} 
-          src={isDarkTheme ? MoonActive : MoonDisabled} 
-          onClick={() => {
-
-            if (!isDarkTheme) {
-
-              theme.updateMode('dark')
-            }
-          }} 
-        />
+      <SvgIcon
+        width={'auto'}
+        height={'100%'}
+        styledComponentsAdditionalStyle={{
+          padding: '0 2rem 0 0',
+          cursor: 'pointer',
+        }}
+        src={isDarkTheme ? SunDisabled : SunActive}
+        onClick={() => {
+          if (isDarkTheme) {
+            theme.updateMode('light')
+          }
+        }}
+      />
+      {/* </div> */}
+      {/* <div style={{ display: 'flex' }}> */}
+      <SvgIcon
+        width={'auto'}
+        height={'100%'}
+        styledComponentsAdditionalStyle={{
+          padding: '0 2rem 0 0',
+          cursor: 'pointer',
+        }}
+        src={isDarkTheme ? MoonActive : MoonDisabled}
+        onClick={() => {
+          if (!isDarkTheme) {
+            theme.updateMode('dark')
+          }
+        }}
+      />
       <div>
         <OvalSelector
           theme={theme}
@@ -162,8 +168,14 @@ const TopBar = ({ theme }) => {
           onChange={({ value }) => {
             setEndpoint(value)
           }}
-          value={{ value: endpoint, label: ENDPOINTS.find(a => a.endpoint === endpoint).name }}
-          options={ENDPOINTS.map(endpoint => ({ value: endpoint.endpoint, label: endpoint.name }))}
+          value={{
+            value: endpoint,
+            label: ENDPOINTS.find((a) => a.endpoint === endpoint).name,
+          }}
+          options={ENDPOINTS.map((endpoint) => ({
+            value: endpoint.endpoint,
+            label: endpoint.name,
+          }))}
         />
       </div>
       <div>
@@ -174,7 +186,10 @@ const TopBar = ({ theme }) => {
             setProvider(value)
           }}
           value={{ value: providerUrl, label: providerName }}
-          options={WALLET_PROVIDERS.map(provider => ({ value: provider.url, label: provider.name }))}
+          options={WALLET_PROVIDERS.map((provider) => ({
+            value: provider.url,
+            label: provider.name,
+          }))}
         />
       </div>
       <div>
@@ -192,36 +207,51 @@ const TopBar = ({ theme }) => {
       </div>
       {connected && (
         <div
-          style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 1rem', cursor: 'pointer' }}
+          style={{
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '0 1rem',
+            cursor: 'pointer',
+          }}
         >
-          <HelpIcon onClick={() => setPopupOpen(!isOpenPopup)} style={{ color: theme.palette.blue.serum }} />
-          {
-            isOpenPopup && (
-          <div 
-            style={{ 
-              position: 'absolute', 
-              right: 0, 
-              top: '5rem', 
-              zIndex: 10, 
-              background: theme.palette.white.background, 
-              border: theme.palette.border.main, 
-              padding: '2rem 1rem', 
-              boxShadow: '0px 4px 8px rgba(10,19,43,0.1)' 
-          }}>
-            <a 
-              target={'_blank'}
-              rel={'noopener noreferrer'}
-               href={`https://explorer.solana.com/address/${publicKey}`} 
-              style={{ color: theme.palette.blue.serum, fontSize: '1.4rem', textDecoration: 'none' }}
-            >{publicKey}</a>
-          </div>)
-          }
+          <HelpIcon
+            onClick={() => setPopupOpen(!isOpenPopup)}
+            style={{ color: theme.palette.blue.serum }}
+          />
+          {isOpenPopup && (
+            <div
+              style={{
+                position: 'absolute',
+                right: 0,
+                top: '5rem',
+                zIndex: 10,
+                background: theme.palette.white.background,
+                border: theme.palette.border.main,
+                padding: '2rem 1rem',
+                boxShadow: '0px 4px 8px rgba(10,19,43,0.1)',
+              }}
+            >
+              <a
+                target={'_blank'}
+                rel={'noopener noreferrer'}
+                href={`https://explorer.solana.com/address/${publicKey}`}
+                style={{
+                  color: theme.palette.blue.serum,
+                  fontSize: '1.4rem',
+                  textDecoration: 'none',
+                }}
+              >
+                {publicKey}
+              </a>
+            </div>
+          )}
         </div>
       )}
     </div>
-  );
+  )
 }
-
 
 export const CardsPanel = ({
   view = 'default',
@@ -229,17 +259,17 @@ export const CardsPanel = ({
   marketType = 0,
   activeExchange = 'serum',
 }) => {
-
   const pair = 'BTC_USDT'
-  const { market } = useMarket() 
-  const location = useLocation();
+  const { market } = useMarket()
+  const location = useLocation()
 
   const quantityPrecision = market?.minOrderSize && getDecimalCount(market.minOrderSize);
   const pricePrecision = market?.tickSize && getDecimalCount(market.tickSize);
 
   const isDarkTheme = theme.palette.type === 'dark'
   const isAnalytics = location.pathname.includes('analytics')
-  
+  const isChartPage = location.pathname.includes('chart')
+
   return (
     <ChartGridContainer>
       <PanelWrapper>
@@ -260,58 +290,100 @@ export const CardsPanel = ({
           style={{
             // position: 'relative',
             display: 'flex',
-            maxWidth: '58.33333%',
+            maxWidth: '65%',
             marginRight: '.4rem',
             flexGrow: 1,
             border: '0',
           }}
         >
-          <img style={{ height: '100%', padding: '0 3rem', borderRight: theme.palette.border.main }} src={isDarkTheme ? SerumCCAILogo : LightLogo} />
-          <div style={{
-              width:'15%',
-              marginLeft:'4rem', 
-              paddingRight:'4rem', 
+          <img
+            style={{
+              height: '100%',
+              padding: '0 3rem',
+              borderRight: theme.palette.border.main,
+            }}
+            src={isDarkTheme ? SerumCCAILogo : LightLogo}
+          />
+          <div
+            style={{
+              width: '25%',
+              marginLeft: '4rem',
+              paddingRight: '4rem',
               borderRight: theme.palette.border.main,
               display: 'flex',
               justifyContent: 'center',
-              alignItems: 'center'}}
+              alignItems: 'center',
+            }}
+          >
+            <NavBarLink
+              style={{
+                color: location.pathname.includes('chart')
+                  ? theme.palette.blue.serum
+                  : theme.palette.grey.text,
+              }}
+              to="/chart"
             >
-            <NavBarLink style={{ color: !isAnalytics ? theme.palette.blue.serum : theme.palette.grey.text}} to="/chart">trading</NavBarLink>
-            <NavBarLink to="/analytics" style={{ color: isAnalytics ? theme.palette.blue.serum : theme.palette.grey.text }}> Analytics</NavBarLink>
+              Trading
+            </NavBarLink>
+            <NavBarLink
+              to="/analytics"
+              style={{
+                color: location.pathname.includes('analytics')
+                  ? theme.palette.blue.serum
+                  : theme.palette.grey.text,
+              }}
+            >
+              {' '}
+              Analytics
+            </NavBarLink>
+            <NavBarLink
+              to="/rewards"
+              style={{
+                color: location.pathname.includes('rewards')
+                  ? theme.palette.blue.serum
+                  : theme.palette.grey.text,
+              }}
+            >
+              {' '}
+              Rewards
+            </NavBarLink>
           </div>
-          
-          {!isAnalytics&&(
+
+          {isChartPage && (
             <AutoSuggestSelect
-            value={view === 'default' && pair}
-            id={'pairSelector'}
-            view={view}
-            style={{ width: '20rem' }}
-            activeExchange={activeExchange}
-            selectStyles={{ ...selectStyles(theme) }}
-            marketType={marketType}
-            quantityPrecision={quantityPrecision}
-            pricePrecision={pricePrecision}
-          />)}
+              value={view === 'default' && pair}
+              id={'pairSelector'}
+              view={view}
+              style={{ width: '30rem' }}
+              activeExchange={activeExchange}
+              selectStyles={{ ...selectStyles(theme) }}
+              marketType={marketType}
+              quantityPrecision={quantityPrecision}
+              pricePrecision={pricePrecision}
+            />
+          )}
 
           {/* <TooltipCustom
             title="Cryptocurrencies.ai is a Binance partner exchange"
             enterDelay={250}
             component={ */}
-            {!isAnalytics&&( <MarketStats
-            theme={theme}
-            symbol={pair}
-            marketType={marketType}
-            exchange={activeExchange}
-            quantityPrecision={quantityPrecision}
-            pricePrecision={pricePrecision}
-          />)}
-         
+          {isChartPage && (
+            <MarketStats
+              theme={theme}
+              symbol={pair}
+              marketType={marketType}
+              exchange={activeExchange}
+              quantityPrecision={quantityPrecision}
+              pricePrecision={pricePrecision}
+            />
+          )}
+
           {/* }
           /> */}
         </CustomCard>
 
         <TopBar theme={theme} />
-        
+        {/*         
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <TooltipCustom
             title={'Our Twitter'}
@@ -343,7 +415,7 @@ export const CardsPanel = ({
               </TelegramLink>
             }
           />
-          </div>
+          </div> */}
       </PanelWrapper>
     </ChartGridContainer>
   )
@@ -356,5 +428,5 @@ export default compose(
     name: 'toggleThemeMode',
   }),
   graphql(changePositionMode, { name: 'changePositionModeMutation' }),
-  graphql(updateThemeMode, { name: 'updateThemeModeMutation' }),
+  graphql(updateThemeMode, { name: 'updateThemeModeMutation' })
 )(CardsPanel)

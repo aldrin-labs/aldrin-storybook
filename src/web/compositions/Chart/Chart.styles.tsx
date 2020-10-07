@@ -5,7 +5,7 @@ import { Card, Grid, Button, Theme } from '@material-ui/core'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 
 export const MainContainer = styled.div`
-  height: calc(96% - 2rem);
+  height: 100%;
   ${(props: { fullscreen: boolean }) =>
     props.fullscreen && 'height: 100vh; position: relative; z-index: 10;'};
 `

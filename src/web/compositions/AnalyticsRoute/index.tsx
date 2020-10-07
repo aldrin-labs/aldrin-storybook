@@ -115,7 +115,7 @@ const AnalyticsRoute = ({ markets, setMarketAddress, ...props }) => {
     <RowContainer
       style={{
         background: theme.palette.grey.additional,
-        height: 'calc(96% - 7.7rem)',
+        height: '100%',
         paddingLeft: '.8%',
         paddingRight: '.8%',
       }}

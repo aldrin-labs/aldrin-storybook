@@ -261,8 +261,6 @@ function ChartPageComponent(props: any) {
     ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
     : { keyId: '', hedgeMode: false, isFuturesWarsKey: false }
 
-  console.log(pricePrecision, quantityPrecision)
-
   return (
     <MainContainer fullscreen={view !== 'default'}>
       <GlobalStyles />
