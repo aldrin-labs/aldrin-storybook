@@ -246,13 +246,6 @@ let totalySupply = serumData.getSerumData.totalySupply - serumData.getSerumData.
           />
         </Block>
       </RowContainer>
-<<<<<<< HEAD
-=======
-      <RowContainer>
-        <Line theme={theme} bottom={'5.7rem'} />
-        <Link href="https://cryptocurrencies.ai/">cryptocurrencies.ai</Link>
-      </RowContainer>
->>>>>>> 2e140a7c22c9d7b9ad8ad42012374e2076dac154
     </RowContainer>
   )
 }
