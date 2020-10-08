@@ -228,6 +228,7 @@ export default ({ themeMode, isChartPage, children }) => {
               inputBackground: '#14161B',
               greyish: '#f5f5fb',
               block: '#1B2028',
+              card: '#1B2028',
             },
             dark: {
               main: '#D1DDEF',
@@ -429,7 +430,8 @@ export default ({ themeMode, isChartPage, children }) => {
               background: '#fff',
               inputBackground: '#fff',
               greyish: '#f5f5fb',
-              block: '#e0e5ec',
+              block: '#F6F8FA',
+              card: '#fff',
             },
             dark: {
               main: '#16253D',

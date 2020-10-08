@@ -36,14 +36,14 @@ export const Card = styled.div`
   align-items: center;
 `
 export const Title = styled.div`
-  color: ${(props) => props.color || props.theme.palette.white.main};
+  color: ${(props) => props.color || props.theme.palette.text.grey};
   font-family: DM Sans;
   font-style: normal;
   font-weight: bold;
   font-size: 2.5rem;
 `
 export const Text = styled.div`
-  color: ${(props) => props.color || props.theme.palette.white.main};
+  color: ${(props) => props.color || props.theme.palette.text.grey};
   font-family: DM Sans;
   font-style: normal;
   font-weight: normal;
@@ -61,7 +61,7 @@ const CardText = styled(Text)`
 `
 
 export const Value = styled.div`
-  color: ${(props) => props.color || props.theme.palette.white.main};
+  color: ${(props) => props.color || props.theme.palette.text.grey};
 
   font-family: DM Sans;
   font-style: normal;
@@ -81,10 +81,15 @@ export const Button = styled.button`
 `
 
 const RewardsRoute = (props) => {
-  const { theme, getTotalVolumeForSerumKeyQuery, getTotalVolumeForSerumKeyQueryRefetch, publicKey } = props
+  const {
+    theme,
+    getTotalVolumeForSerumKeyQuery,
+    getTotalVolumeForSerumKeyQueryRefetch,
+    publicKey,
+  } = props
 
   useEffect(() => {
-    getTotalVolumeForSerumKeyQueryRefetch({ publicKey: publicKey || '' }) 
+    getTotalVolumeForSerumKeyQueryRefetch({ publicKey: publicKey || '' })
   }, [publicKey])
   // console.log('getTotalVolumeForSerumKeyQuery', getTotalVolumeForSerumKeyQuery)
   return (
@@ -130,7 +135,11 @@ const RewardsRoute = (props) => {
               flexDirection: 'column',
             }}
           >
-            <Value theme={theme}>{getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.srmTraded.toFixed(1)}</Value>{' '}
+            <Value theme={theme}>
+              {getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.srmTraded.toFixed(
+                1
+              )}
+            </Value>{' '}
             <CardText theme={theme} width={'auto'}>
               SRM traded
             </CardText>
@@ -145,7 +154,7 @@ const RewardsRoute = (props) => {
               <BtnCustom
                 theme={theme}
                 btnColor={theme.palette.grey.main}
-                backgroundColor={'#61D8E6'}
+                backgroundColor={theme.palette.blue.serum}
                 hoverBackground={theme.palette.blue.serum}
                 padding={'1.5rem 0'}
                 height={'5rem'}
@@ -177,7 +186,11 @@ const RewardsRoute = (props) => {
               flexDirection: 'column',
             }}
           >
-            <Value theme={theme}>{getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.dcfiEarned.toFixed(3)}</Value>{' '}
+            <Value theme={theme}>
+              {getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.dcfiEarned.toFixed(
+                3
+              )}
+            </Value>{' '}
             <CardText theme={theme} width={'auto'}>
               DCFI earned
             </CardText>
@@ -192,7 +205,7 @@ const RewardsRoute = (props) => {
               <BtnCustom
                 theme={theme}
                 btnColor={theme.palette.grey.main}
-                backgroundColor={'#61D8E6'}
+                backgroundColor={theme.palette.blue.serum}
                 hoverBackground={theme.palette.blue.serum}
                 padding={'1.5rem 0'}
                 height={'5rem'}
@@ -217,16 +230,16 @@ const Wrapper = (props) => {
 
   return (
     <QueryRenderer
-    component={RewardsRoute}
-    query={getTotalVolumeForSerumKey}
-    name={'getTotalVolumeForSerumKeyQuery'}
-    withOutSpinner={false}
-    variables={{
-      publicKey
-    }}
-    publicKey={publicKey}
-    {...props}
-  />
+      component={RewardsRoute}
+      query={getTotalVolumeForSerumKey}
+      name={'getTotalVolumeForSerumKeyQuery'}
+      withOutSpinner={false}
+      variables={{
+        publicKey,
+      }}
+      publicKey={publicKey}
+      {...props}
+    />
   )
 }
 

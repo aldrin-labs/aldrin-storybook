@@ -65,7 +65,7 @@ const AppRaw = ({
     themeMode = 'dark'
     localStorage.setItem('themeMode', 'dark')
   }
-
+  console.log('theme', themeMode)
   const chartPageView =
     getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
 
@@ -139,7 +139,7 @@ const AppRaw = ({
   )
 }
 
-const Footer = () => {
+const Footer = (props) => {
   return (
     <RowContainer style={{ height: '5.7rem' }}>
       <Line bottom={'5.7rem'} />

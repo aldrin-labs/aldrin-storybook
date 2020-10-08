@@ -92,6 +92,20 @@ const Link = styled.a`
   transform: translateX(-50%);
 `
 
+const Card = styled.div`
+width: ${(props) => props.width || '17.5%'};
+height: ${(props) => props.height || 'calc(25% - 1.4rem)'};
+background-color: ${(props) =>
+  props.backgroundColor || props.theme.palette.white.card};
+margin: 0.7rem;
+border-radius: 1.6rem;
+border: 1px solid ${(props) => props.border || props.theme.palette.grey.block};
+color: ${(props) => props.color || props.theme.palette.text.grey};
+display: flex;
+justify-content: space-around;
+flex-direction: column;
+`
+
 const AnalyticsRoute = ({ markets, setMarketAddress, ...props }) => {
   const { theme } = props
   const serumData = props.getSerumDataQuery
@@ -217,7 +231,7 @@ const AnalyticsRoute = ({ markets, setMarketAddress, ...props }) => {
             soon
           </Text>
         </Block>
-        <Block
+        <Card
           theme={theme}
           width={'62.5%'}
           height={'100%'}
@@ -228,7 +242,7 @@ const AnalyticsRoute = ({ markets, setMarketAddress, ...props }) => {
             themeMode={theme.palette.type}
             additionalUrl={`/?symbol=SRM/USDT_0&user_id=id`}
           />
-        </Block>
+        </Card>
       </RowContainer>
     </RowContainer>
   )
