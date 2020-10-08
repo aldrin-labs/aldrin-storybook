@@ -15,6 +15,8 @@ import { TradeHistoryWrapper } from '../Chart.styles'
 export const TradeHistory = ({
   updateTerminalPriceFromOrderbook,
   showTableOnMobile,
+  pricePrecision,
+  quantityPrecision,
   isPairDataLoading,
   activeExchange,
   minPriceDigits,
@@ -45,6 +47,8 @@ export const TradeHistory = ({
           currencyPair: pair,
           showTableOnMobile,
           minPriceDigits,
+          pricePrecision,
+          quantityPrecision,
           changeTable,
           chartProps,
           marketType,
