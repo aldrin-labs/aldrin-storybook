@@ -59,6 +59,7 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
               rowRenderer={(...rest) =>
                 defaultRowRenderer({
                   ...rest[0],
+                  fall: rest[0].side === "buy" ? 0 : 1,
                   theme,
                   amountForBackground,
                   openOrderHistory: [],

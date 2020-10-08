@@ -2281,7 +2281,7 @@ export const combineTradeHistoryTable = (
         // }
       }
     })
-  console.log('processedTradeHistoryData', processedTradeHistoryData)
+
   return processedTradeHistoryData
 }
 

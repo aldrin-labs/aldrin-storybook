@@ -85,6 +85,9 @@ export const NavBarLink = styled(NavLink)`
   font-size: 1.2rem;
   padding-left: 2rem;
   padding-right: 2rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
 `
 
 export const Link = styled(NavLink)`

@@ -213,13 +213,18 @@ class SimpleTabs extends React.Component {
               </TerminalModeButton> */}
             </div>
             <div style={{ width: '50%' }}>
-             {/*  <TerminalModeButton
+              <TerminalModeButton
                 theme={theme}
                 active={mode === 'market'}
-                onClick={() => this.handleChangeMode('market')}
+                onClick={() => {
+                  this.handleChangeMode('market')
+                  this.setState({
+                    orderMode: 'ioc',
+                  })
+                }}
               >
                 Market
-              </TerminalModeButton> */}
+              </TerminalModeButton>
               <TerminalModeButton
                 theme={theme}
                 active={mode === 'limit'}
@@ -353,13 +358,13 @@ class SimpleTabs extends React.Component {
               <SettingsContainer>
                 {mode === 'limit' && (
                   <FuturesSettings key="postOnlyTerminalController">
-                    <SRadio
+                    <SCheckbox
                       id="postOnly"
                       checked={orderMode === 'postOnly'}
                       style={{ padding: '0 1rem' }}
                       onChange={() =>
                         this.setState({
-                          orderMode: 'postOnly',
+                          orderMode: orderMode === 'postOnly' ? '' : 'postOnly',
                           TIFMode: 'GTX',
                         })
                       }
@@ -371,14 +376,14 @@ class SimpleTabs extends React.Component {
                 )}
 
                 {mode === 'limit' && (
-                  <FuturesSettings key="iocTerminalController">
-                    <SRadio
+                  <FuturesSettings key="iocTerminalController" style={{ padding: '.4rem 0'}}>
+                    <SCheckbox
                       id="ioc"
                       checked={orderMode === 'ioc'}
                       style={{ padding: '0 1rem' }}
                       onChange={() =>
                         this.setState({
-                          orderMode: 'ioc',
+                          orderMode: orderMode === 'ioc' ? '' : 'ioc',
                         })
                       }
                     />

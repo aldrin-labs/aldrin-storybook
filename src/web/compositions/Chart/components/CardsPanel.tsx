@@ -260,10 +260,9 @@ export const CardsPanel = ({
   marketType = 0,
   activeExchange = 'serum',
 }) => {
-  const pair = 'BTC_USDT'
   const { market } = useMarket()
   const location = useLocation()
-
+  
   const quantityPrecision = market?.minOrderSize && getDecimalCount(market.minOrderSize);
   const pricePrecision = market?.tickSize && getDecimalCount(market.tickSize);
 
@@ -271,6 +270,13 @@ export const CardsPanel = ({
   const isAnalytics = location.pathname.includes('analytics')
   const isChartPage = location.pathname.includes('chart')
 
+  const pair = isChartPage  ? location.pathname.split('/')[3] : 'SRM_USDT'
+
+  if ( isChartPage && !location.pathname.split('/')[3]) {
+    return null
+  }
+
+  console.log('pair', pair)
   return (
     <ChartGridContainer>
       <PanelWrapper>

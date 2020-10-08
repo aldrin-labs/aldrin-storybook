@@ -113,11 +113,13 @@ export default function defaultRowRenderer({
   theme,
 }: IProps) {
   const a11yProps = { 'aria-rowindex': index + 1 }
+  const fall = side === 'bids' || side === 'asks' ? undefined : rowData.side === "buy" ? 0 : 1
+
   const colorStyles =
-    rowData.fall !== undefined
-      ? // ? { color: rowData.fall ? '#DD6956' : '#29AC80' }
+     fall !== undefined
+      ? // ? { color:  fall ? '#DD6956' : '#29AC80' }
         {
-          color: rowData.fall
+          color:  fall
             ? theme.palette.red.main
             : theme.palette.green.main,
         }
@@ -228,7 +230,7 @@ export default function defaultRowRenderer({
           position: 'absolute',
           left: 0,
           transform: 'translateX(25%)',
-          ...(rowData.fall === undefined || rowData.fall === 0
+          ...( fall === undefined ||  fall === 0
             ? { display: 'none' }
             : { display: 'block' }),
         }}
@@ -240,7 +242,7 @@ export default function defaultRowRenderer({
           position: 'absolute',
           left: 0,
           transform: 'translateX(25%)',
-          ...(rowData.fall === undefined || rowData.fall === 1
+          ...( fall === undefined ||  fall === 1
             ? { display: 'none' }
             : { display: 'block' }),
         }}
@@ -251,11 +253,11 @@ export default function defaultRowRenderer({
         className="amountForBackground"
         style={{
           backgroundColor:
-            side === 'bids' || rowData.fall === 0
+            side === 'bids' ||  fall === 0
               ? theme.palette.orderbook.greenBackground
               : theme.palette.orderbook.redBackground,
           transform: `translateX(calc(100% - ${orderPercentage}%))`,
-          ...(rowData.fall === undefined
+          ...( fall === undefined
             ? {}
             : { transition: 'none', willChange: 'background-color' }),
         }}

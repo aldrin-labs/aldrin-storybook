@@ -2,11 +2,14 @@ import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { compose } from 'recompose'
 import SvgIcon from '@sb/components/SvgIcon'
+import QueryRenderer from '@core/components/QueryRenderer'
+import { getTotalVolumeForSerumKey } from '@core/graphql/queries/chart/getTotalVolumeForSerumKey'
 
 import serum from '@icons/Serum.svg'
 import decefi from '@icons/decefi.svg'
 
 import { withTheme } from '@material-ui/styles'
+import { useWallet } from '@sb/dexUtils/wallet'
 
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
@@ -78,7 +81,7 @@ export const Button = styled.button`
 `
 
 const RewardsRoute = (props) => {
-  const { theme } = props
+  const { theme, getTotalVolumeForSerumKeyQuery } = props
   return (
     <div
       style={{
@@ -122,7 +125,7 @@ const RewardsRoute = (props) => {
               flexDirection: 'column',
             }}
           >
-            <Value theme={theme}>456.799</Value>{' '}
+            <Value theme={theme}>{getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.srmTraded}</Value>{' '}
             <CardText theme={theme} width={'auto'}>
               SRM traded
             </CardText>
@@ -169,7 +172,7 @@ const RewardsRoute = (props) => {
               flexDirection: 'column',
             }}
           >
-            <Value theme={theme}>456.799</Value>{' '}
+            <Value theme={theme}>{getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.dcfiEarned}</Value>{' '}
             <CardText theme={theme} width={'auto'}>
               DCFI earned
             </CardText>
@@ -202,4 +205,22 @@ const RewardsRoute = (props) => {
   )
 }
 
-export default compose(withTheme())(RewardsRoute)
+const Wrapper = (props) => {
+  const { wallet } = useWallet()
+  console.log('wallet.publicKey', wallet.publicKey)
+
+  return (
+    <QueryRenderer
+    component={RewardsRoute}
+    query={getTotalVolumeForSerumKey}
+    name={'getTotalVolumeForSerumKeyQuery'}
+    withOutSpinner={false}
+    variables={{
+      publicKey: wallet.publicKey ? wallet.publicKey ._bn : ''
+    }}
+    {...props}
+  />
+  )
+}
+
+export default compose(withTheme())(Wrapper)
