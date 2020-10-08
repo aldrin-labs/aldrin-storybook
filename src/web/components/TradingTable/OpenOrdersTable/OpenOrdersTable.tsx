@@ -17,7 +17,6 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { cancelOrder } from '@sb/dexUtils/send'
 
 const OpenOrdersTable = (props) => {
-
   const { wallet } = useWallet()
   const connection = useSendConnection()
 
@@ -28,21 +27,19 @@ const OpenOrdersTable = (props) => {
         market: order.market,
         connection,
         wallet,
-      });
+      })
     } catch (e) {
       notify({
         message: 'Error cancelling order',
         description: e.message,
         type: 'error',
-      });
+      })
 
-      return;
+      return
     }
   }
 
-  const cancelOrderWithStatus = async (
-    order
-  ) => {
+  const cancelOrderWithStatus = async (order) => {
     const { showCancelResult } = props
 
     // await props.addOrderToCanceled(orderId)
@@ -53,7 +50,7 @@ const OpenOrdersTable = (props) => {
       await props.clearCanceledOrders()
     }
 
-    showCancelResult(status)
+    // showCancelResult(status)
   }
 
   const {
@@ -73,10 +70,10 @@ const OpenOrdersTable = (props) => {
     arrayOfMarketIds,
     canceledOrders,
     handlePairChange,
-    keys
+    keys,
   } = props
 
-  const openOrders = useOpenOrders();
+  const openOrders = useOpenOrders()
 
   if (!show) {
     return null
