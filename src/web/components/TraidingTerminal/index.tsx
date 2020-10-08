@@ -921,11 +921,11 @@ const formikEnhancer = withFormik<IProps, FormValues>({
         orderId: '0',
       }
 
-      props.showOrderResult(
-        successResult,
-        props.cancelOrder,
-        isSPOTMarket ? 0 : 1
-      )
+      // props.showOrderResult(
+      //   successResult,
+      //   props.cancelOrder,
+      //   isSPOTMarket ? 0 : 1
+      // )
 
       // await props.addLoaderToButton(byType)
 

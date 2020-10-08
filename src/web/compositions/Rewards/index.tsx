@@ -136,10 +136,9 @@ const RewardsRoute = (props) => {
             }}
           >
             <Value theme={theme}>
-              {
-                getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey
-                  .srmTraded
-              }
+              {getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.srmTraded.toFixed(
+                1
+              )}
             </Value>{' '}
             <CardText theme={theme} width={'auto'}>
               SRM traded
@@ -188,10 +187,9 @@ const RewardsRoute = (props) => {
             }}
           >
             <Value theme={theme}>
-              {
-                getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey
-                  .dcfiEarned
-              }
+              {getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.dcfiEarned.toFixed(
+                3
+              )}
             </Value>{' '}
             <CardText theme={theme} width={'auto'}>
               DCFI earned
