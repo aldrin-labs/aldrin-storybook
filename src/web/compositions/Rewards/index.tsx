@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { compose } from 'recompose'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -81,7 +81,12 @@ export const Button = styled.button`
 `
 
 const RewardsRoute = (props) => {
-  const { theme, getTotalVolumeForSerumKeyQuery } = props
+  const { theme, getTotalVolumeForSerumKeyQuery, getTotalVolumeForSerumKeyQueryRefetch, publicKey } = props
+
+  useEffect(() => {
+    getTotalVolumeForSerumKeyQueryRefetch({ publicKey: publicKey || '' }) 
+  }, [publicKey])
+  // console.log('getTotalVolumeForSerumKeyQuery', getTotalVolumeForSerumKeyQuery)
   return (
     <div
       style={{
@@ -130,7 +135,7 @@ const RewardsRoute = (props) => {
               SRM traded
             </CardText>
             <Link
-              to={'/chart'}
+              to={'/chart/spot/SRM_USDT'}
               style={{
                 width: '50%',
                 textDecoration: 'none',
@@ -207,7 +212,8 @@ const RewardsRoute = (props) => {
 
 const Wrapper = (props) => {
   const { wallet } = useWallet()
-  console.log('wallet.publicKey', wallet.publicKey)
+  const publicKey = wallet.publicKey ? wallet.publicKey.toBase58() : ''
+  console.log('wallet.publicKey', publicKey)
 
   return (
     <QueryRenderer
@@ -216,8 +222,9 @@ const Wrapper = (props) => {
     name={'getTotalVolumeForSerumKeyQuery'}
     withOutSpinner={false}
     variables={{
-      publicKey: wallet.publicKey ? wallet.publicKey ._bn : ''
+      publicKey
     }}
+    publicKey={publicKey}
     {...props}
   />
   )

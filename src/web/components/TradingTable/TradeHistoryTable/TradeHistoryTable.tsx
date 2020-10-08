@@ -189,8 +189,8 @@ const TradeHistoryTable = (props) => {
     dataSource.forEach((trade) => {
       // we send mutation only for SRM_USDT trades with Taker comission
       const isTradeAlreadySent = savedIds.includes(trade.orderId)
-      if (!isTradeAlreadySent && trade.liquidity === "Taker" && pair === "SRM_USDT") {
-        addSerumTransactionMutation({ variables: { fee: trade.feeCost, amount: trade.size, dexId: trade.orderId, publicKey: wallet.publicKey._bn }})
+      if (!isTradeAlreadySent && trade.liquidity === "Taker" && pair === "SRM_USDT" && trade.side === "buy") {
+        addSerumTransactionMutation({ variables: { fee: trade.feeCost, amount: trade.size, dexId: trade.orderId, publicKey: wallet.publicKey.toBase58() }})
         saveId([...savedIds, trade.orderId ])
       }
     })
