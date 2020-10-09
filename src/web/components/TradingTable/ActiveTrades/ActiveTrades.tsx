@@ -857,8 +857,8 @@ const ActiveTradesTableWrapper = compose(
         ...(!props.specificPair ? {} : { specificPair: props.currencyPair }),
       },
     }),
-    withOutSpinner: true,
-    withTableLoader: true,
+    withOutSpinner: false,
+    withTableLoader: false,
     includeVariables: true,
     includeQueryBody: true,
     showLoadingWhenQueryParamsChange: false,
@@ -882,8 +882,8 @@ const ActiveTradesTableWrapper = compose(
     variables: (props: any) => ({
       fundsInput: { activeExchangeKey: props.selectedKey.keyId },
     }),
-    withOutSpinner: true,
-    withTableLoader: true,
+    withOutSpinner: false,
+    withTableLoader: false,
     subscriptionArgs: {
       subscription: FUNDS,
       variables: (props: any) => ({

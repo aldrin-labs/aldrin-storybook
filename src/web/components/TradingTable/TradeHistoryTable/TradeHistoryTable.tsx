@@ -249,8 +249,8 @@ const TableDataWrapper = ({ ...props }) => {
   return (
     <QueryRenderer
       component={TradeHistoryTable}
-      withOutSpinner={true}
-      withTableLoader={true}
+      withOutSpinner={false}
+      withTableLoader={false}
       query={getTradeHistory}
       name={`getTradeHistoryQuery`}
       fetchPolicy="cache-and-network"

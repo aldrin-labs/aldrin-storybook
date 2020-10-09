@@ -284,8 +284,8 @@ const TableDataWrapper = ({ ...props }) => {
           activeExchangeKey: props.selectedKey.keyId,
         },
       }}
-      withOutSpinner={true}
-      withTableLoader={true}
+      withOutSpinner={false}
+      withTableLoader={false}
       showLoadingWhenQueryParamsChange={false}
       query={getPaginatedOrderHistory}
       name={`getPaginatedOrderHistoryQuery`}

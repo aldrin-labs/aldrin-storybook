@@ -152,8 +152,8 @@ const TableDataWrapper = ({ ...props }) => {
   return (
     <QueryRenderer
       component={FundsTable}
-      withOutSpinner={true}
-      withTableLoader={true}
+      withOutSpinner={false}
+      withTableLoader={false}
       query={getFunds}
       variables={{ fundsInput: { activeExchangeKey: selectedKey.keyId } }}
       name={`getFundsQuery`}

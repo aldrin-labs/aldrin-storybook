@@ -41,8 +41,17 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
 
   unsubscribeFunction: null | Function = null
 
-  onCancelOrder = async (keyId: string, orderId: string, pair: string, type: string) => {
-    const { cancelOrderMutation, marketType, disableStrategyMutation } = this.props
+  onCancelOrder = async (
+    keyId: string,
+    orderId: string,
+    pair: string,
+    type: string
+  ) => {
+    const {
+      cancelOrderMutation,
+      marketType,
+      disableStrategyMutation,
+    } = this.props
 
     try {
       const responseResult = await cancelOrderMutation({
@@ -52,7 +61,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
             orderId,
             pair,
             marketType,
-            type
+            type,
           },
         },
       })
@@ -515,8 +524,8 @@ const TableDataWrapper = ({ ...props }) => {
           ...(!specificPair ? {} : { specificPair: props.currencyPair }),
         },
       }}
-      withOutSpinner={true}
-      withTableLoader={true}
+      withOutSpinner={false}
+      withTableLoader={false}
       showLoadingWhenQueryParamsChange={false}
       query={getOpenOrderHistory}
       name={`getOpenOrderHistoryQuery`}

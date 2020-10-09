@@ -730,12 +730,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
     this.handleCloseConfirmationPopup()
 
-    const isValid = validateSmartOrders(
-      this.state,
-      this.props.enqueueSnackbar
-    )
+    const isValid = validateSmartOrders(this.state, this.props.enqueueSnackbar)
 
-    if (!isValid) return 
+    if (!isValid) return
 
     // ux-improvement to see popup before result from the backend received
     const successResult = {
@@ -4353,6 +4350,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               >
                 {' '}
                 <SendButton
+                  theme={theme}
                   type={entryPoint.order.side ? 'sell' : 'buy'}
                   onClick={() => {
                     updateTerminalViewMode('onlyTables')
@@ -4361,6 +4359,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   cancel
                 </SendButton>
                 <SendButton
+                  theme={theme}
                   type={entryPoint.order.side ? 'buy' : 'sell'}
                   onClick={async () => {
                     const isValid = validateSmartOrders(

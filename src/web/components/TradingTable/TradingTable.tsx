@@ -47,9 +47,19 @@ class TradingTable extends React.PureComponent<IProps, IState> {
     perPageSmartTrades: 30,
   }
 
-  // componentDidMount() {
-  //   console.log('TradingTable componentDidMount')
-  // }
+  componentDidMount() {
+    if (
+      this.props.terminalViewMode === 'default' &&
+      (this.state.tab === 'activeTrades' ||
+        this.state.tab === 'strategiesHistory')
+    ) {
+      if (this.props.marketType === 0) {
+        this.setState({ tab: 'openOrders' })
+      } else {
+        this.setState({ tab: 'positions' })
+      }
+    }
+  }
 
   componentDidUpdate(prevProps) {
     // console.log('TradingTable componentDidUpdate prevProps', prevProps)

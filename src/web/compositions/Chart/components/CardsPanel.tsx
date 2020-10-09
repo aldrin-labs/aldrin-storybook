@@ -245,18 +245,6 @@ export const CardsPanel = ({
                 }
 
                 updateTerminalViewMode('onlyTables')
-
-                const joyrideStep = document.getElementById(
-                  'react-joyride-step-7'
-                )
-                const joyrideOverlay = document.getElementById(
-                  'react-joyride-portal'
-                )
-
-                if (joyrideStep && joyrideOverlay) {
-                  joyrideStep.style.display = 'none'
-                  joyrideOverlay.style.display = 'none'
-                }
               }}
             >
               <span
@@ -268,14 +256,14 @@ export const CardsPanel = ({
               </span>
               <span
                 style={{
-                  backgroundColor: theme.palette.red.primary,
+                  backgroundColor: theme.palette.red.main,
                   marginLeft: '0.5rem',
                   borderRadius: '0.5rem',
                   fontSize: '1.5rem',
                   width: '3.3rem',
                   height: '1.6rem',
                   alignItems: 'center',
-                  color: theme.palette.primary.main,
+                  color: theme.palette.white.main,
                 }}
               >
                 {activeTradesLength}
@@ -305,18 +293,6 @@ export const CardsPanel = ({
                 }
 
                 updateTerminalViewMode('default')
-
-                const joyrideStep = document.getElementById(
-                  'react-joyride-step-7'
-                )
-                const joyrideOverlay = document.getElementById(
-                  'react-joyride-portal'
-                )
-
-                if (joyrideStep && joyrideOverlay) {
-                  joyrideStep.style.display = 'none'
-                  joyrideOverlay.style.display = 'none'
-                }
               }}
             >
               <span
