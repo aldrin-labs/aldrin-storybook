@@ -1895,7 +1895,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   <DarkTooltip
                     maxWidth={'30rem'}
                     title={
-                      'Your smart order will be placed once when there is a Trading View alert that you connected to smart order.'
+                      'Place multiple entry targets to average your lose'
                     }
                   >
                     <AdditionalSettingsButton
@@ -2216,7 +2216,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     {entryPoint.averaging.enabled && (
                       <DarkTooltip
                         title={
-                          'Without loss order will be placed after entry order execution (mostly TAP order to have 0 profit + comissions).'
+                          'Place order at Break-Even Point for $0 net loss after fees'
                         }
                         maxWidth={'30rem'}
                       >
@@ -2234,7 +2234,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             )
                           }}
                         >
-                          Place Without Loss
+                          Place BEP
                         </AdditionalSettingsButton>
                       </DarkTooltip>
                     )}
@@ -3201,7 +3201,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           quantity
                         </TargetTitle>
                         <TargetTitle theme={theme} style={{ width: '40%' }}>
-                          place Without Loss
+                          place BEP
                         </TargetTitle>
                       </InputRowContainer>
                       <div
