@@ -4578,8 +4578,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           this.updateBlockValue('takeProfit', 'external', false)
                         }}
                       >
-                        Split targets
-                      </AdditionalSettingsButton>
+Multiple targets                      </AdditionalSettingsButton>
                     </DarkTooltip>
                   )}
                   <DarkTooltip
