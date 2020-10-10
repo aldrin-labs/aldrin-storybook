@@ -143,7 +143,12 @@ const AppRaw = ({
 
 const Footer = (props) => {
   return (
-    <RowContainer style={{ height: '5.7rem', ...(props.isRewards ? { position: 'absolute', bottom: '0' } : {}) }}>
+    <RowContainer
+      style={{
+        height: '5.7rem',
+        ...(props.isRewards ? { position: 'absolute', bottom: '0' } : {}),
+      }}
+    >
       <Line bottom={'5.7rem'} />
       <Link
         target="_blank"

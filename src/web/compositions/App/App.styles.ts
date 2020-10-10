@@ -13,7 +13,12 @@ export const AppGridLayout = styled.div`
   position: relative;
   overflow-x: hidden !important;
   height: ${(props) =>
-    props.isRewards ? 'auto' : props.isChartPage || !props.showFooter ? '100vh' : 'calc(100vh)'};
+    props.isRewards
+      ? 'auto'
+      : props.isChartPage || !props.showFooter
+      ? '100vh'
+      : 'calc(100vh)'};
+  min-height: 100vh;
 `
 
 // height: calc(100vh - 3rem)
