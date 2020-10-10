@@ -151,7 +151,7 @@ const Example = (props) => {
       tickValues={[0, 200000, 400000, 600000, 800000,]}
       // tickValues={[0, 200000, 400000, 600000, 800000, 1000000, 1200000, 1400000, 1600000, 1800000, 2000000, ]}
        />
-       <MarkSeries size={10} fill={props.theme.palette.red.chart} data={[{ x: 10000000, y: 800000 }]}></MarkSeries>
+       <MarkSeries size={10} fill={props.theme.palette.red.chart} data={[{ x: 0, y: 0 }]}></MarkSeries>
       <LineSeries 
       // curve={'curveMonotoneX'}
         style={{ strokeLinejoin: 'round', stroke: props.theme.palette.red.chart, strokeWidth: '.4rem', boxShadow: '0px 0px 12px rgba(218, 255, 224, 0.65);' }} 
