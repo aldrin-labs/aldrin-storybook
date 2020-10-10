@@ -25,6 +25,7 @@ import {
   LineSeries,
   MarkSeries,
 } from 'react-vis'
+import { formatNumberToUSFormat } from '@core/utils/PortfolioTableUtils'
 
 export const BlockContainer = styled.div``
 
@@ -568,7 +569,9 @@ const RewardsRoute = (props) => {
           </RowContainer>
           <RowContainer style={{ height: '30%' }}>
             <Value theme={theme}>
-              {props.getTotalSerumVolumeQuery.getTotalSerumVolume.toFixed(1)}
+              {formatNumberToUSFormat(
+                +props.getTotalSerumVolumeQuery.getTotalSerumVolume.toFixed(1)
+              )}
             </Value>
           </RowContainer>
           <RowContainer style={{ height: '20%' }}>
