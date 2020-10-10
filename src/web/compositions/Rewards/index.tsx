@@ -5,7 +5,7 @@ import SvgIcon from '@sb/components/SvgIcon'
 import QueryRenderer from '@core/components/QueryRenderer'
 import { getTotalVolumeForSerumKey } from '@core/graphql/queries/chart/getTotalVolumeForSerumKey'
 
-import '~react-vis/dist/style'
+import './index'
 
 import serum from '@icons/Serum.svg'
 import decefi from '@icons/decefi.svg'
