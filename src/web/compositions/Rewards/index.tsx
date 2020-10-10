@@ -5,6 +5,8 @@ import SvgIcon from '@sb/components/SvgIcon'
 import QueryRenderer from '@core/components/QueryRenderer'
 import { getTotalVolumeForSerumKey } from '@core/graphql/queries/chart/getTotalVolumeForSerumKey'
 
+import '~react-vis/dist/style'
+
 import serum from '@icons/Serum.svg'
 import decefi from '@icons/decefi.svg'
 
@@ -206,12 +208,12 @@ const RewardsRoute = (props) => {
         <Title style={{ paddingBottom: '1rem' }} theme={theme}>
           Buy SRM and farm DCFI token
         </Title>
-        <Text theme={theme}>
+        {/* <Text theme={theme}>
           New farming algorithm designed by Cryptocurrencies.ai allows you
         </Text>
         <Text theme={theme}>
           to farm DCFI – token of our upcoming project. Stay tuned for news
-        </Text>
+        </Text> */}
       </RowContainer>
       <div
         style={{
@@ -287,9 +289,9 @@ const RewardsRoute = (props) => {
           >
             <Value theme={theme}>
               {(
-                getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey
+                +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey
                   .dcfiEarned +
-                getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey
+                +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey
                   .dcfiCurrentRoundEst
               ).toFixed(3)}
             </Value>{' '}

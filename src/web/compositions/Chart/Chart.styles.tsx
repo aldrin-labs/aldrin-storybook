@@ -268,13 +268,6 @@ export const ChartGridContainer = styled(({ MASTER_BUILD, ...rest }) => (
   && {
     padding: 0;
   }
-  @media screen and (max-width: 1440px) {
-    height: 4%;
-  }
-
-  @media screen and (max-width: 1140px) {
-    height: 2.5%;
-  }
 `
 
 export const TablesContainer = styled(Grid)`
