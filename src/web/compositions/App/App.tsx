@@ -77,6 +77,7 @@ const AppRaw = ({
   const isPNL = currentPage.includes('/portfolio/main')
   // TODO: Check this variable
   const pageIsRegistration = currentPage.includes('regist')
+  const isRewards = currentPage.includes('rewards')
 
   const searchParamsObject = getSearchParamsObject({ search })
   const isRefInUrlParamExist = !!searchParamsObject['ref']
@@ -104,6 +105,7 @@ const AppRaw = ({
                   <AppGridLayout
                     id={'react-notification'}
                     showFooter={showFooter}
+                    isRewards={isRewards}
                     isPNL={isPNL}
                     isChartPage={isChartPage}
                   >
@@ -113,13 +115,13 @@ const AppRaw = ({
                     <div
                       style={{
                         height: showFooter
-                          ? 'calc(96% - 7.7rem)'
-                          : 'calc(96% - 2rem)',
+                          ? 'calc(100% - 11.7rem)'
+                          : 'calc(100% - 6rem)',
                       }}
                     >
                       {children}
                     </div>
-                    {showFooter && <Footer />}
+                    {showFooter && <Footer isRewards={isRewards} />}
                     {/* 
                     <Footer
                       isChartPage={isChartPage}
@@ -141,7 +143,7 @@ const AppRaw = ({
 
 const Footer = (props) => {
   return (
-    <RowContainer style={{ height: '5.7rem' }}>
+    <RowContainer style={{ height: '5.7rem', ...(props.isRewards ? { position: 'absolute', bottom: '0' } : {}) }}>
       <Line bottom={'5.7rem'} />
       <Link
         target="_blank"

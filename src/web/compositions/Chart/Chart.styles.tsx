@@ -260,7 +260,7 @@ export const ChartGridContainer = styled(({ MASTER_BUILD, ...rest }) => (
   flex: auto;
   align-items: center;
   width: calc(100% - 2rem);
-  height: 4%;
+  height: 4rem;
   padding: 0;
   margin: 1rem;
   // background: ${(props) => props.theme.palette.grey.cream};

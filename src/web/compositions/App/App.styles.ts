@@ -13,7 +13,7 @@ export const AppGridLayout = styled.div`
   position: relative;
   overflow-x: hidden !important;
   height: ${(props) =>
-    props.isChartPage || !props.showFooter ? '100vh' : 'calc(100vh)'};
+    props.isRewards ? 'auto' : props.isChartPage || !props.showFooter ? '100vh' : 'calc(100vh)'};
 `
 
 // height: calc(100vh - 3rem)
@@ -22,12 +22,6 @@ export const AppGridLayout = styled.div`
 //     props.showFooter ? 'calc(100vh - 48px)' : '100vh'};
 //   max-height: ${(props) => (props.isPNL ? 'calc(100vh - 48px)' : '')};
 // }
-
-// todo
-
-// fix >5 acc
-// transactions layout
-// btc usdt switcher
 
 export const FontStyle = createGlobalStyle`
 /* latin */

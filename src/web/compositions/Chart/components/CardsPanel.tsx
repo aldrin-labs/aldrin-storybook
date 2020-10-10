@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import copy from 'clipboard-copy'
-import { useLocation, useHistory } from 'react-router-dom'
+import { useLocation, useHistory, Link } from 'react-router-dom'
 import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import { NavBarLink } from '@sb/components/PortfolioMainAllocation/PortfolioMainAllocation.styles'
 
@@ -303,6 +303,7 @@ export const CardsPanel = ({
             border: '0',
           }}
         >
+          <Link to={'/chart/spot/SRM_USDT'} style={{ width: '17rem' }}>
           <img
             style={{
               height: '100%',
@@ -311,6 +312,7 @@ export const CardsPanel = ({
             }}
             src={isDarkTheme ? SerumCCAILogo : LightLogo}
           />
+          </Link>
           <div
             style={{
               width: '25%',

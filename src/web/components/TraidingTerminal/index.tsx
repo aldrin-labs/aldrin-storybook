@@ -716,7 +716,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
               >
                 {isSPOTMarket
                   ? operationType === 'buy'
-                    ? `buy ${pair[0]}`
+                    ? priceType === 'market' && pair.join('_') === 'SRM_USDT' ? 'Buy SRM and earn DCFI' : `buy ${pair[0]}`
                     : `sell ${pair[0]}`
                   : operationType === 'buy'
                   ? 'long'
