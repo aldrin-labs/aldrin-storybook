@@ -15,8 +15,6 @@ import { TradeHistoryWrapper } from '../Chart.styles'
 export const TradeHistory = ({
   updateTerminalPriceFromOrderbook,
   showTableOnMobile,
-  pricePrecision,
-  quantityPrecision,
   isPairDataLoading,
   activeExchange,
   minPriceDigits,
@@ -39,7 +37,19 @@ export const TradeHistory = ({
         show: showTableOnMobile === 'TRADE',
       }}
     >
-      <TradeHistoryTable
+      <QueryRenderer
+        component={TradeHistoryTable}
+        withOutSpinner
+        query={MARKET_QUERY}
+        variables={{ symbol, exchange, marketType }}
+        fetchPolicy={'network-only'}
+        // subscriptionArgs={{
+        //   subscription: MARKET_TICKERS,
+        //   variables: { symbol, exchange, marketType: String(marketType) },
+        //   // subscription: MOCKED_MARKET_TICKERS,
+        //   // variables: { time: 10000 },
+        //   updateQueryFunction: updateTradeHistoryQuerryFunction,
+        // }}
         {...{
           quote,
           activeExchange,
@@ -47,8 +57,6 @@ export const TradeHistory = ({
           currencyPair: pair,
           showTableOnMobile,
           minPriceDigits,
-          pricePrecision,
-          quantityPrecision,
           changeTable,
           chartProps,
           marketType,

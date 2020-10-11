@@ -31,50 +31,51 @@ class TableContainer extends Component<IProps, IState> {
 
   subscription: { unsubscribe: Function } | null
 
-  // static getDerivedStateFromProps(newProps: IProps, state: IState) {
-  //   if (
-  //     !(
-  //       newProps.data &&
-  //       newProps.data.marketTickers &&
-  //       newProps.data.marketTickers.length > 0 &&
-  //       newProps.data.marketTickers.length !== state.data.length
-  //     )
-  //   ) {
-  //     //  if data is actually not a new data
-  //     return null
-  //   }
+  static getDerivedStateFromProps(newProps: IProps, state: IState) {
+    console.log('newProps.data.marketTickers', newProps.data)
+    if (
+      !(
+        newProps.data &&
+        newProps.data.marketTickers &&
+        newProps.data.marketTickers.length > 0 &&
+        newProps.data.marketTickers.length !== state.data.length
+      )
+    ) {
+      //  if data is actually not a new data
+      return null
+    }
 
-  //   // query data processing
-  //   if (
-  //     state.data.length === 0 &&
-  //     newProps.data &&
-  //     newProps.data.marketTickers &&
-  //     newProps.data.marketTickers.length > 0
-  //   ) {
-  //     const updatedData = newProps.data.marketTickers.map((trade, i) => ({
-  //       ...trade,
-  //       price: Number(trade.price).toFixed(
-  //         getNumberOfDecimalsFromNumber(
-  //           getAggregationsFromMinPriceDigits(newProps.minPriceDigits)[0].value
-  //         )
-  //       ),
-  //       time: dayjs.unix(+trade.timestamp).format('LTS'),
-  //       id: `${trade.price}${trade.size}${i}${trade.timestamp}`,
-  //     }))
+    // query data processing
+    if (
+      state.data.length === 0 &&
+      newProps.data &&
+      newProps.data.marketTickers &&
+      newProps.data.marketTickers.length > 0
+    ) {
+      const updatedData = newProps.data.marketTickers.map((trade, i) => ({
+        ...trade,
+        price: Number(trade.price).toFixed(
+          getNumberOfDecimalsFromNumber(
+            getAggregationsFromMinPriceDigits(newProps.minPriceDigits)[0].value
+          )
+        ),
+        time: dayjs.unix(+trade.timestamp).format('LTS'),
+        id: `${trade.price}${trade.size}${i}${trade.timestamp}`,
+      }))
 
-  //     const numbersAfterDecimalForPrice = getNumberOfDigitsAfterDecimal(
-  //       updatedData,
-  //       'price'
-  //     )
+      const numbersAfterDecimalForPrice = getNumberOfDigitsAfterDecimal(
+        updatedData,
+        'price'
+      )
 
-  //     return {
-  //       numbersAfterDecimalForPrice,
-  //       data: reduceArrayLength(updatedData),
-  //     }
-  //   }
+      return {
+        numbersAfterDecimalForPrice,
+        data: reduceArrayLength(updatedData),
+      }
+    }
 
-  //   return null
-  // }
+    return null
+  }
 
   subscribe = () => {
     const that = this
