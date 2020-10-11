@@ -41,7 +41,7 @@ export const TradeHistory = ({
         component={TradeHistoryTable}
         withOutSpinner
         query={MARKET_QUERY}
-        variables={{ symbol, exchange, marketType }}
+        variables={{ symbol, exchange: 'serum', marketType }}
         fetchPolicy={'network-only'}
         // subscriptionArgs={{
         //   subscription: MARKET_TICKERS,
