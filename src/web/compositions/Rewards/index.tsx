@@ -629,5 +629,6 @@ export default compose(
   queryRendererHoc({
     query: getTotalSerumVolume,
     name: 'getTotalSerumVolumeQuery',
+    fetchPolicy: 'cache-and-network'
   })
 )(Wrapper)
