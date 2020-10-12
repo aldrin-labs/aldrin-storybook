@@ -13,6 +13,8 @@ import {
   TOKEN_MINTS,
   TokenInstructions,
 } from '@project-serum/serum';
+
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { feeTiers } from '@sb/components/TradingTable/Fee/FeeTiers'
 
 export async function createTokenAccountTransaction({
@@ -470,7 +472,7 @@ async function sendTransaction({
       notify({ message: 'Create SRM account first', type: 'error' });
     } else {
       const userFeeTier = feeTiers[feeAccounts[0].feeTier]
-      const feeCost = params.size / 100 * userFeeTier.taker;
+      const feeCost = +stripDigitPlaces(params.size * params.price / 100 * userFeeTier.taker, 6);
 
       addSerumTransactionMutation({
         variables: {
