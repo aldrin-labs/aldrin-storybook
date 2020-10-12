@@ -474,7 +474,7 @@ async function sendTransaction({
 
       addSerumTransactionMutation({
         variables: {
-          fee: feeCost, amount: params.size, dexId: txid, publicKey: wallet.publicKey.toBase58()
+          fee: feeCost, amount: params.size, dexId: txid, publicKey: wallet.publicKey.toBase58(), price: params.price,
         }
       })
     }
