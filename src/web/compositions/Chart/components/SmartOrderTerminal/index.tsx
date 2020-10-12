@@ -4422,11 +4422,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
                       //   return
                       // }
-
                       this.setState({ showConfirmationPopup: true })
                     } else {
                       this.setState({ showErrors: true })
                     }
+                    
+
                   }}
                 >
                   create trade

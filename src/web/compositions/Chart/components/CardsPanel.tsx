@@ -216,7 +216,7 @@ export const CardsPanel = ({
         >
           <DarkTooltip
             title={
-              'Smart terminal is unique Cryptocurrencies.ai terminal with interface to place and manage smart orders. Click twice to learn more about the smart order.'
+              'Our unique terminal with smart orders and advanced trading features.'
             }
           >
             <ChangeTradeButton
@@ -271,7 +271,7 @@ export const CardsPanel = ({
             </ChangeTradeButton>
           </DarkTooltip>
 
-          <DarkTooltip title={'Trading terminal with basic exchange tool'}>
+          <DarkTooltip title={'Terminal with traditional order types.'}>
             <ChangeTradeButton
               theme={theme}
               style={{
@@ -292,7 +292,7 @@ export const CardsPanel = ({
                   return
                 }
 
-                updateTerminalViewMode('default')
+                updateTerminalViewMode('onlyTables')
               }}
             >
               <span
