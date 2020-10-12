@@ -6,7 +6,7 @@ import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getTotalVolumeForSerumKey } from '@core/graphql/queries/chart/getTotalVolumeForSerumKey'
 import { getTotalSerumVolume } from '@core/graphql/queries/chart/getTotalSerumVolume'
 
-import serum from '@icons/Serum.svg'
+import serum from '@icons/usdt.svg'
 import decefi from '@icons/decefi.svg'
 
 import { withTheme } from '@material-ui/styles'
@@ -163,7 +163,7 @@ const RewardsRoute = (props) => {
       >
         <Card theme={theme}>
           <RowContainer style={{ height: '50%' }}>
-            <SvgIcon src={serum} width="13%" height="auto" />
+            <SvgIcon src={serum} width="20%" height="auto" />
           </RowContainer>
           <RowContainer
             justify={'space-around'}
@@ -178,7 +178,7 @@ const RewardsRoute = (props) => {
               )}
             </Value>{' '}
             <CardText theme={theme} width={'auto'}>
-              SRM traded in $
+              SRM traded in USDT
             </CardText>
             <Link
               to={'/chart/spot/SRM_USDT'}
@@ -265,7 +265,7 @@ const RewardsRoute = (props) => {
           theme={theme}
         >
           <RowContainer style={{ height: '40%' }}>
-            <SvgIcon src={serum} width="13%" height="auto" />
+            <SvgIcon src={serum} width="20%" height="auto" />
           </RowContainer>
           <RowContainer style={{ height: '40%', position: 'relative', }}>
             <Line style={{ height: '50%', padding: '0 20% 4rem' }} gapDegree={90} percent={(tradedSerumInUSDT / currentPhaseMaxVolume * 100).toFixed(0)} strokeWidth="3" trailWidth="3" strokeColor="#C7FFD0" trailColor="#0E1016" />
@@ -282,7 +282,7 @@ const RewardsRoute = (props) => {
             </CardText>
           </RowContainer>
           <RowContainer style={{ height: '20%' }}>
-            <CardText theme={theme} >was already traded in SRM</CardText>
+            <CardText theme={theme} >was already traded in USDT</CardText>
           </RowContainer>
         </Card>
         <Card
