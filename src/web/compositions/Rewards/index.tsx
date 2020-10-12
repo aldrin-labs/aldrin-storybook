@@ -321,6 +321,7 @@ const Wrapper = (props) => {
       component={RewardsRoute}
       query={getTotalVolumeForSerumKey}
       name={'getTotalVolumeForSerumKeyQuery'}
+      fetchPolicy={'network-only'}
       withOutSpinner={false}
       variables={{
         publicKey,
