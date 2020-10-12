@@ -54,11 +54,10 @@ class TableContainer extends Component<IProps, IState> {
     ) {
       const updatedData = newProps.data.marketTickers.map((trade, i) => ({
         ...trade,
-        price: Number(trade.price).toFixed(
-          getNumberOfDecimalsFromNumber(
-            getAggregationsFromMinPriceDigits(newProps.minPriceDigits)[0].value
-          )
+        size: Number(trade.size).toFixed(
+          newProps.quantityPrecision
         ),
+        price: Number(trade.price).toFixed(newProps.pricePrecision),
         time: dayjs.unix(+trade.timestamp).format('LTS'),
         id: `${trade.price}${trade.size}${i}${trade.timestamp}`,
       }))
@@ -81,6 +80,8 @@ class TableContainer extends Component<IProps, IState> {
     const that = this
     this.subscription && this.subscription.unsubscribe()
 
+    console.log(that.props.pricePrecision)
+
     this.subscription = client
       .subscribe({
         query: MARKET_TICKERS,
@@ -93,6 +94,7 @@ class TableContainer extends Component<IProps, IState> {
       })
       .subscribe({
         next: ({ data }) => {
+          console.log('data', data)
           if (
             data &&
             data.listenMarketTickers &&
