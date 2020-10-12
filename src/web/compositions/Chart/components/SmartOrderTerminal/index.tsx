@@ -1262,7 +1262,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               padding={'0rem 1.5rem'}
               justify={'center'}
             >
-              <BlockHeader theme={theme}>take a profit</BlockHeader>
+              <BlockHeader theme={theme}>take profit</BlockHeader>
               {/* <GreenSwitcher
                 id="isTakeProfitOn"
                 checked={takeProfit.isTakeProfitOn}
@@ -2182,7 +2182,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     <DarkTooltip
                       maxWidth={'30rem'}
                       title={
-                        'Your smart order will be closed once first TAP order was executed.'
+                        'Your smart order will be closed once first TP order was executed.'
                       }
                     >
                       <AdditionalSettingsButton
@@ -2210,7 +2210,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           }
                         }}
                       >
-                        Close SM After First TAP
+                        Close trade After First TP
                       </AdditionalSettingsButton>
                     </DarkTooltip>
                     {entryPoint.averaging.enabled && (
@@ -2234,7 +2234,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             )
                           }}
                         >
-                          Place BEP
+                          Place Break-even SL
                         </AdditionalSettingsButton>
                       </DarkTooltip>
                     )}
@@ -3201,7 +3201,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           quantity
                         </TargetTitle>
                         <TargetTitle theme={theme} style={{ width: '40%' }}>
-                          place BEP
+                          place Break-even SLP
                         </TargetTitle>
                       </InputRowContainer>
                       <div
@@ -4520,7 +4520,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           })
                         }}
                       >
-                        Trailing take a profit
+                        Trailing take profit
                       </AdditionalSettingsButton>
                     </DarkTooltip>
                   )}
@@ -4577,8 +4577,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
                           this.updateBlockValue('takeProfit', 'external', false)
                         }}
-                      >
-Multiple targets                      </AdditionalSettingsButton>
+                      >Multiple targets</AdditionalSettingsButton>
                     </DarkTooltip>
                   )}
                   <DarkTooltip
@@ -4617,7 +4616,7 @@ Multiple targets                      </AdditionalSettingsButton>
                         }
                       }}
                     >
-                      TAP by TV Alert
+                      TP by TV Alert
                     </AdditionalSettingsButton>
                   </DarkTooltip>
                   {/* <AdditionalSettingsButton theme={theme}
@@ -4663,7 +4662,7 @@ Multiple targets                      </AdditionalSettingsButton>
                           </p>
                           <p>
                             <b>For example:</b>you bought 1 BTC and set 100%
-                            take a profit. Your unrealized profit should be 1
+                            take profit. Your unrealized profit should be 1
                             BTC and order will be executed.
                           </p>
                         </>
@@ -5536,7 +5535,7 @@ Multiple targets                      </AdditionalSettingsButton>
                         this.toggleBlock('takeProfit', 'isTakeProfitOn')
                       }
                     >
-                      show take a profit
+                      show take profit
                     </SendButton>
                   </div>
                 </BluredBackground>

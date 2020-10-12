@@ -73,9 +73,9 @@ export const activeTradesColumnNames = [
   { label: 'Size', id: 'quantity' },
   {
     label: (
-      <DarkTooltip title={`Take a profit`}>
+      <DarkTooltip title={`Take profit`}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          T-A-P
+          T-P
           <Help
             style={{
               height: '1.5rem',
@@ -135,9 +135,9 @@ export const strategiesHistoryColumnNames = [
   { label: 'Size', id: 'quantity' },
   {
     label: (
-      <DarkTooltip title={`Take a profit`}>
+      <DarkTooltip title={`Take profit`}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          T-A-P
+          T-P
           <Help
             style={{
               height: '1.5rem',
