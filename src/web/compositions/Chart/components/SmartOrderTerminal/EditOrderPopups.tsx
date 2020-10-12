@@ -283,7 +283,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                   )
                 }}
               >
-                Trailing take a profit
+                Trailing take profit
               </AdditionalSettingsButton>
 
               <AdditionalSettingsButton

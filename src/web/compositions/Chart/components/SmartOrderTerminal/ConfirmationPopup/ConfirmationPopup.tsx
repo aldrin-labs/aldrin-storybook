@@ -278,7 +278,7 @@ export default ({
                   style={{ width: '30%' }}
                 >
                   <TitleTypography theme={theme}>
-                    take a profit:
+                    take profit:
                   </TitleTypography>
                   <TitleTypography
                     theme={theme}
