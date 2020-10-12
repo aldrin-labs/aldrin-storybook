@@ -91,7 +91,6 @@ class TableContainer extends Component<IProps, IState> {
       })
       .subscribe({
         next: ({ data }) => {
-          console.log('data', data)
           if (
             data &&
             data.listenMarketTickers &&
