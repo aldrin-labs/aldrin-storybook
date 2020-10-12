@@ -13,6 +13,7 @@ import {
   TOKEN_MINTS,
   TokenInstructions,
 } from '@project-serum/serum';
+import { feeTiers } from '@sb/components/TradingTable/Fee/FeeTiers'
 
 export async function createTokenAccountTransaction({
   connection,
@@ -159,12 +160,16 @@ export async function placeOrder({
   side,
   price,
   size,
+  pair,
   orderType,
   market,
+  isMarketOrder,
   connection,
   wallet,
   baseCurrencyAccount,
   quoteCurrencyAccount,
+  feeAccounts,
+  addSerumTransactionMutation
 }) {
   let formattedMinOrderSize =
     market?.minOrderSize?.toFixed(getDecimalCount(market.minOrderSize)) ||
@@ -229,7 +234,9 @@ export async function placeOrder({
     side,
     price,
     size,
+    pair,
     orderType,
+    isMarketOrder
   };
   console.log(params);
 
@@ -252,6 +259,10 @@ export async function placeOrder({
     connection,
     signers,
     sendingMessage: 'Sending order...',
+    isOrderCreating: true,
+    params,
+    feeAccounts,
+    addSerumTransactionMutation
   });
 }
 
@@ -409,6 +420,10 @@ async function sendTransaction({
   sentMessage = 'Transaction sent',
   successMessage = 'Transaction confirmed',
   timeout = DEFAULT_TIMEOUT,
+  isOrderCreating = false,
+  params = {},
+  feeAccounts = [],
+  addSerumTransactionMutation = ({ variables: {}}) => {}
 }) {
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash('max')
@@ -447,7 +462,25 @@ async function sendTransaction({
   }
   notify({ message: successMessage, type: 'success', txid });
 
-  console.log('Latency', txid, getUnixTs() - startTime);
+  // only buy market SRM_USDT order
+  console.log("isOrderCreating", isOrderCreating, "params.pair === 'SRM_USDT'", params.pair === 'SRM_USDT', "params.isMarketOrder", params.isMarketOrder, " params.side === 'buy'", params.side === "buy")
+
+  if (isOrderCreating && params.pair === 'SRM_USDT' && params.isMarketOrder && params.side === "buy") {
+    if (feeAccounts.length === 0) {
+      notify({ message: 'Create SRM account first', type: 'error' });
+    } else {
+      const userFeeTier = feeTiers[feeAccounts[0].feeTier]
+      const feeCost = params.size / 100 * userFeeTier.taker;
+
+      addSerumTransactionMutation({
+        variables: {
+          fee: feeCost, amount: params.size, dexId: txid, publicKey: wallet.publicKey.toBase58()
+        }
+      })
+    }
+  }
+
+  console.log('Latency', txid, getUnixTs() - startTime, params, feeTiers, feeAccounts);
   return txid;
 }
 

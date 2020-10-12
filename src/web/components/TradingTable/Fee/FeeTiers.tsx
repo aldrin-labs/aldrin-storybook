@@ -8,15 +8,37 @@ import {
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
 
+export const feeTiers = [
+  { feeTier: 0, taker: 0.22, maker: -0.03, token: '', balance: '' },
+  { feeTier: 1, taker: 0.2, maker: -0.03, token: 'SRM', balance: 100 },
+  { feeTier: 2, taker: 0.18, maker: -0.03, token: 'SRM', balance: 1000 },
+  { feeTier: 3, taker: 0.16, maker: -0.03, token: 'SRM', balance: 10000 },
+  {
+    feeTier: 4,
+    taker: 0.14,
+    maker: -0.03,
+    token: 'SRM',
+    balance: 100000,
+  },
+  {
+    feeTier: 5,
+    taker: 0.12,
+    maker: -0.03,
+    token: 'SRM',
+    balance: 1000000,
+  },
+  { feeTier: 6, taker: 0.1, maker: -0.05, token: 'MSRM', balance: 1 },
+];
+
 
 export const combineFeeTiers = (
-    dataSource
+    feeTiers
   ) => {
-    const processedFundsData = dataSource
+    const processedFundsData = feeTiers
       .map((el) => {
         const {
-            feeTier,
-            taker,
+          feeTier,
+          taker,
           maker,
           token,
           balance,
@@ -48,34 +70,12 @@ const FeeTiers = (props) => {
     marketType,
   } = props
 
-  const dataSource = [
-    { feeTier: 0, taker: 0.22, maker: -0.03, token: '', balance: '' },
-    { feeTier: 1, taker: 0.2, maker: -0.03, token: 'SRM', balance: 100 },
-    { feeTier: 2, taker: 0.18, maker: -0.03, token: 'SRM', balance: 1000 },
-    { feeTier: 3, taker: 0.16, maker: -0.03, token: 'SRM', balance: 10000 },
-    {
-      feeTier: 4,
-      taker: 0.14,
-      maker: -0.03,
-      token: 'SRM',
-      balance: 100000,
-    },
-    {
-      feeTier: 5,
-      taker: 0.12,
-      maker: -0.03,
-      token: 'SRM',
-      balance: 1000000,
-    },
-    { feeTier: 6, taker: 0.1, maker: -0.05, token: 'MSRM', balance: 1 },
-  ];
-
   if (!show) {
     return null
   }
 
   const balancesProcessedData = combineFeeTiers(
-    dataSource
+    feeTiers
   )
 
   return (

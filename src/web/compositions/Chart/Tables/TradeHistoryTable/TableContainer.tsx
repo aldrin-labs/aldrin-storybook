@@ -32,7 +32,6 @@ class TableContainer extends Component<IProps, IState> {
   subscription: { unsubscribe: Function } | null
 
   static getDerivedStateFromProps(newProps: IProps, state: IState) {
-    console.log('newProps.data.marketTickers', newProps.data)
     if (
       !(
         newProps.data &&
@@ -79,8 +78,6 @@ class TableContainer extends Component<IProps, IState> {
   subscribe = () => {
     const that = this
     this.subscription && this.subscription.unsubscribe()
-
-    console.log(that.props.pricePrecision)
 
     this.subscription = client
       .subscribe({

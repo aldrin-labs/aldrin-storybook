@@ -911,6 +911,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
 
       const result = await props.confirmOperation(
         byType,
+        pair,
         priceType,
         filtredValues,
         'default',
