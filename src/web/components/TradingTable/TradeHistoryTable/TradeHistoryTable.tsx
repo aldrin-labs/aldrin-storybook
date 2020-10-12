@@ -1,4 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { compose } from 'recompose'
+import { graphql } from 'react-apollo'
+import { useLocation } from 'react-router-dom'
 import { withTheme } from '@material-ui/styles'
 
 import QueryRenderer from '@core/components/QueryRenderer'
@@ -11,6 +14,9 @@ import {
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
+
+import { addSerumTransaction } from '@core/graphql/mutations/chart/addSerumTransaction'
+
 import { PaginationBlock } from '../TradingTablePagination'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import TradingTitle from '@sb/components/TradingTable/TradingTitle/TradingTitle'
@@ -19,6 +25,7 @@ import { TRADE_HISTORY } from '@core/graphql/subscriptions/TRADE_HISTORY'
 // import { CSS_CONFIG } from '@sb/config/cssConfig'
 
 import { useFills } from '@sb/dexUtils/markets'
+import { useWallet } from '@sb/dexUtils/wallet';
 
 // @withTheme()
 const TradeHistoryTable = (props) => {
@@ -158,9 +165,19 @@ const TradeHistoryTable = (props) => {
     arrayOfMarketIds,
     handlePairChange,
     keys,
+    addSerumTransactionMutation
   } = props
 
+  const [savedIds, saveId] = useState<string[]>([])
   const fills = useFills();
+  const { wallet } = useWallet();
+  const location = useLocation()
+
+  const pair = location.pathname.split('/')[3]  ? location.pathname.split('/')[3] : null
+
+  if (!show || !pair) {
+    return null
+  }
 
   const dataSource = (fills || []).map((fill) => ({
     ...fill,
@@ -168,9 +185,17 @@ const TradeHistoryTable = (props) => {
     liquidity: fill.eventFlags.maker ? 'Maker' : 'Taker',
   }));
 
-  if (!show) {
-    return null
-  }
+  // if (dataSource.length > 0) {
+  //   dataSource.forEach((trade) => {
+  //     // we send mutation only for SRM_USDT trades with Taker comission
+  //     const isTradeAlreadySent = savedIds.includes(trade.orderId)
+  //     if (!isTradeAlreadySent && trade.liquidity === "Taker" && pair === "SRM_USDT" && trade.side === "buy") {
+  //       addSerumTransactionMutation({ variables: { fee: trade.feeCost, amount: trade.size, dexId: trade.orderId, publicKey: wallet.publicKey.toBase58() }})
+  //       saveId([...savedIds, trade.orderId ])
+  //     }
+  //   })
+  // }
+
 
   const {
     getTradeHistory: { count } = {
@@ -228,32 +253,32 @@ const TradeHistoryTable = (props) => {
           boxShadow: 'none',
         },
       }}
-      pagination={{
-        fakePagination: false,
-        enabled: true,
-        totalCount: count,
-        page: page,
-        rowsPerPage: perPage,
-        rowsPerPageOptions: [10, 20, 30, 50, 100],
-        handleChangePage: handleChangePage,
-        handleChangeRowsPerPage: handleChangeRowsPerPage,
-        additionalBlock: (
-          <PaginationBlock
-            {...{
-              theme,
-              allKeys,
-              specificPair,
-              handleToggleAllKeys,
-              handleToggleSpecificPair,
-            }}
-          />
-        ),
-        paginationStyles: {
-          width: 'calc(100%)',
-          backgroundColor: theme.palette.white.background,
-          border: theme.palette.border.main,
-        },
-      }}
+      // pagination={{
+      //   fakePagination: false,
+      //   enabled: true,
+      //   totalCount: count,
+      //   page: page,
+      //   rowsPerPage: perPage,
+      //   rowsPerPageOptions: [10, 20, 30, 50, 100],
+      //   handleChangePage: handleChangePage,
+      //   handleChangeRowsPerPage: handleChangeRowsPerPage,
+      //   additionalBlock: (
+      //     <PaginationBlock
+      //       {...{
+      //         theme,
+      //         allKeys,
+      //         specificPair,
+      //         handleToggleAllKeys,
+      //         handleToggleSpecificPair,
+      //       }}
+      //     />
+      //   ),
+      //   paginationStyles: {
+      //     width: 'calc(100%)',
+      //     backgroundColor: theme.palette.white.background,
+      //     border: theme.palette.border.main,
+      //   },
+      // }}
       emptyTableText={getEmptyTextPlaceholder(tab)}
       // title={
       //   <div>
@@ -333,7 +358,7 @@ const TradeHistoryTable = (props) => {
 //   )
 // }
 
-export default React.memo(TradeHistoryTable, (prevProps, nextProps) => {
+const MemoTable =  React.memo(TradeHistoryTable, (prevProps, nextProps) => {
   // TODO: Refactor isShowEqual --- not so clean
   const isShowEqual = !nextProps.show && !prevProps.show
   const showAllAccountsEqual =
@@ -369,3 +394,5 @@ export default React.memo(TradeHistoryTable, (prevProps, nextProps) => {
 
   return false
 })
+
+export default compose(graphql(addSerumTransaction, { name: "addSerumTransactionMutation" }))(MemoTable)

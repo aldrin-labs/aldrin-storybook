@@ -250,10 +250,11 @@ class SelectPairListComponent extends React.PureComponent<
       <Grid
         style={{
           top: '2.5rem',
+          fontFamily: 'DM Sans',
           left:
-            marketType === 0 ? 'calc(65% + 13.2rem)' : 'calc(69.33% + 14rem)',
+            'calc(0)',
           position: 'absolute',
-          transform: 'translateX(-100%)',
+          // transform: 'translateX(-100%)',
           zIndex: 900,
           background: theme.palette.white.background,
           minWidth: '35%',

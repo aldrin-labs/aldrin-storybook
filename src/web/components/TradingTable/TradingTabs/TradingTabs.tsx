@@ -125,10 +125,9 @@ const TradingTabs = ({
           active={tab === 'tradeHistory'}
           onClick={() => handleTabChange('tradeHistory')}
         >
-          Trade history
+          Recent Trade history
         </TitleTab>
 
-        {isSPOTMarketType(marketType) && (
           <TitleTab
             theme={theme}
             active={tab === 'balances'}
@@ -136,7 +135,21 @@ const TradingTabs = ({
           >
             Balances
           </TitleTab>
-        )}
+          <TitleTab
+            theme={theme}
+            active={tab === 'feeDiscounts'}
+            onClick={() => handleTabChange('feeDiscounts')}
+          >
+            Fee Discounts
+          </TitleTab>
+
+          <TitleTab
+            theme={theme}
+            active={tab === 'feeTiers'}
+            onClick={() => handleTabChange('feeTiers')}
+          >
+            Fee Tiers
+          </TitleTab>
       </TitleTabsGroup>
     </>
   )

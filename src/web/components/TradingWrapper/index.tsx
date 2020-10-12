@@ -216,7 +216,12 @@ class SimpleTabs extends React.Component {
               <TerminalModeButton
                 theme={theme}
                 active={mode === 'market'}
-                onClick={() => this.handleChangeMode('market')}
+                onClick={() => {
+                  this.handleChangeMode('market')
+                  this.setState({
+                    orderMode: 'ioc',
+                  })
+                }}
               >
                 Market
               </TerminalModeButton>
@@ -227,7 +232,7 @@ class SimpleTabs extends React.Component {
               >
                 Limit
               </TerminalModeButton>
-              <DarkTooltip
+              {/* <DarkTooltip
                 maxWidth={'35rem'}
                 title={
                   'Maker-only or post-only market order will place a post-only limit orders as close to the market price as possible until the last one is executed. This way you can enter the position at the market price by paying low maker fees.'
@@ -240,9 +245,9 @@ class SimpleTabs extends React.Component {
                 >
                   Maker-only
                 </TerminalModeButton>
-              </DarkTooltip>
+              </DarkTooltip> */}
 
-              {!isSPOTMarket ? (
+              {/* {!isSPOTMarket ? (
                 <TerminalModeButtonWithDropdown
                   theme={theme}
                   active={mode === 'stop-limit' || mode === 'stop-market'}
@@ -322,7 +327,7 @@ class SimpleTabs extends React.Component {
                   >
                     Stop-Limit
                   </TerminalModeButton>
-                )}
+                )} */}
             </div>
             {/* {marketType === 1 && (
               <div style={{ width: '35%' }}>
@@ -344,7 +349,7 @@ class SimpleTabs extends React.Component {
             )} */}
           </TerminalHeader>
 
-          {!isSPOTMarket ? (
+          {isSPOTMarket ? (
             <TerminalHeader
               key={'futuresTerminal'}
               style={{ display: 'flex' }}
@@ -353,13 +358,13 @@ class SimpleTabs extends React.Component {
               <SettingsContainer>
                 {mode === 'limit' && (
                   <FuturesSettings key="postOnlyTerminalController">
-                    <SRadio
+                    <SCheckbox
                       id="postOnly"
                       checked={orderMode === 'postOnly'}
                       style={{ padding: '0 1rem' }}
                       onChange={() =>
                         this.setState({
-                          orderMode: 'postOnly',
+                          orderMode: orderMode === 'postOnly' ? '' : 'postOnly',
                           TIFMode: 'GTX',
                         })
                       }
@@ -370,6 +375,24 @@ class SimpleTabs extends React.Component {
                   </FuturesSettings>
                 )}
 
+                {mode === 'limit' && (
+                  <FuturesSettings key="iocTerminalController" style={{ padding: '.4rem 0'}}>
+                    <SCheckbox
+                      id="ioc"
+                      checked={orderMode === 'ioc'}
+                      style={{ padding: '0 1rem' }}
+                      onChange={() =>
+                        this.setState({
+                          orderMode: orderMode === 'ioc' ? '' : 'ioc',
+                        })
+                      }
+                    />
+                    <SettingsLabel theme={theme} htmlFor="ioc">
+                      ioc
+                    </SettingsLabel>
+                  </FuturesSettings>
+                )}
+{/* 
                 {mode !== 'market' && ( //
                   <DarkTooltip
                     maxWidth={'35rem'}
@@ -433,9 +456,9 @@ class SimpleTabs extends React.Component {
                       </StyledSelect>
                     </FuturesSettings>
                   </DarkTooltip>
-                )}
+                )} */}
 
-                <FuturesSettings key="reduceTerminalController">
+                {/* <FuturesSettings key="reduceTerminalController">
                   <SCheckbox
                     id="reduceOnly"
                     checked={reduceOnly}
@@ -449,14 +472,13 @@ class SimpleTabs extends React.Component {
                   <SettingsLabel theme={theme} htmlFor="reduceOnly">
                     reduce only
                   </SettingsLabel>
-                </FuturesSettings>
+                </FuturesSettings> */}
 
-                {(mode === 'stop-limit' || mode === 'stop-market') && (
+                {/* {(mode === 'stop-limit' || mode === 'stop-market') && (
                   <FuturesSettings
                     key="triggerTerminalController"
                     style={{ padding: '0 1rem' }}
                   >
-                    {/* <SettingsLabel htmlFor="trigger">trigger</SettingsLabel> */}
                     <StyledSelect
                       theme={theme}
                       id="trigger"
@@ -468,7 +490,8 @@ class SimpleTabs extends React.Component {
                       <StyledOption>mark price</StyledOption>
                     </StyledSelect>
                   </FuturesSettings>
-                )}
+                )} */}
+
               </SettingsContainer>
               <LeverageContainer theme={theme}>
                 {/* <LeverageTitle>

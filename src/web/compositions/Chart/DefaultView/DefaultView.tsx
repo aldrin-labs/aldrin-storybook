@@ -25,16 +25,16 @@ const TerminalContainer = ({
   children: React.ReactChild
   theme: Theme
 }) => (
-    <TablesBlockWrapper
-      item
-      container
-      theme={theme}
-      xs={isDefaultTerminalViewMode ? 5 : 12}
-      isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-    >
-      {children}
-    </TablesBlockWrapper>
-  )
+  <TablesBlockWrapper
+    item
+    container
+    theme={theme}
+    xs={isDefaultTerminalViewMode ? 5 : 12}
+    isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+  >
+    {children}
+  </TablesBlockWrapper>
+)
 
 import {
   Container,
@@ -120,7 +120,7 @@ export const DefaultViewComponent = (
 
   return (
     <Container container spacing={8} theme={theme}>
-      <ChartGridContainer item xs={12} theme={theme}>
+      {/* <ChartGridContainer item xs={12} theme={theme}>
         <CardsPanel
           {...{
             _id: id,
@@ -142,14 +142,14 @@ export const DefaultViewComponent = (
             changeChartLayout,
           }}
         />
-      </ChartGridContainer>
+      </ChartGridContainer> */}
 
       <Grid
         item
         container
         xs={12}
         style={{
-          height: 'calc(96% - 2rem)',
+          height: 'calc(100%)',
           padding: '0',
           margin: 0,
         }}
@@ -227,13 +227,13 @@ export const DefaultViewComponent = (
                     flexBasis: hideOrderbook
                       ? '0%'
                       : hideDepthChart
-                        ? '50%'
-                        : '65%',
+                      ? '50%'
+                      : '65%',
                     maxWidth: hideOrderbook
                       ? '0%'
                       : hideDepthChart
-                        ? '50%'
-                        : '65%',
+                      ? '50%'
+                      : '65%',
                   }}
                 >
                   {!hideOrderbook && (
@@ -257,7 +257,7 @@ export const DefaultViewComponent = (
                         sizeDigits,
                         hideDepthChart,
                         hideOrderbook,
-                        pricePrecision
+                        pricePrecision,
                       }}
                     />
                   )}
@@ -270,13 +270,13 @@ export const DefaultViewComponent = (
                     flexBasis: hideOrderbook
                       ? '100%'
                       : hideDepthChart
-                        ? '50%'
-                        : '35%',
+                      ? '50%'
+                      : '35%',
                     maxWidth: hideOrderbook
                       ? '100%'
                       : hideDepthChart
-                        ? '50%'
-                        : '35%',
+                      ? '50%'
+                      : '35%',
                   }}
                 >
                   {!hideTradeHistory && (
@@ -288,6 +288,8 @@ export const DefaultViewComponent = (
                         quote,
                         theme,
                         minPriceDigits,
+                        pricePrecision,
+                        quantityPrecision,
                         updateTerminalPriceFromOrderbook,
                         marketType,
                         isPairDataLoading,
@@ -305,7 +307,7 @@ export const DefaultViewComponent = (
           </TopChartsContainer>
           {/* {!authenticated && <GuestMode />} */}
 
-          {(
+          {
             <TradingTabelContainer
               item
               theme={theme}
@@ -327,7 +329,7 @@ export const DefaultViewComponent = (
                 arrayOfMarketIds={arrayOfMarketIds}
               />
             </TradingTabelContainer>
-          )}
+          }
           {isDefaultTerminalViewMode && (
             <BalancesContainer
               item
@@ -346,7 +348,7 @@ export const DefaultViewComponent = (
             </BalancesContainer>
           )}
 
-          {(
+          {
             <TerminalContainer
               theme={theme}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
@@ -372,7 +374,7 @@ export const DefaultViewComponent = (
                 updateTerminalViewMode={updateTerminalViewMode}
               />
             </TerminalContainer>
-          )}
+          }
         </Grid>
       </Grid>
     </Container>

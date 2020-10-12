@@ -4,18 +4,63 @@ import { useSnackbar } from 'notistack'
 
 import {
   updateOpenOrderHistoryQuerryFunction,
-  combineBalancesTable,
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
 
-import { useTokenAccounts, getSelectedTokenAccountForMint, useBalances } from '@sb/dexUtils/markets'
-import { notify } from '@sb/dexUtils/notifications'
-import { useSendConnection } from '@sb/dexUtils/connection'
-import { useWallet } from '@sb/dexUtils/wallet'
-import { settleFunds } from '@sb/dexUtils/send'
+export const feeTiers = [
+  { feeTier: 0, taker: 0.22, maker: -0.03, token: '', balance: '' },
+  { feeTier: 1, taker: 0.2, maker: -0.03, token: 'SRM', balance: 100 },
+  { feeTier: 2, taker: 0.18, maker: -0.03, token: 'SRM', balance: 1000 },
+  { feeTier: 3, taker: 0.16, maker: -0.03, token: 'SRM', balance: 10000 },
+  {
+    feeTier: 4,
+    taker: 0.14,
+    maker: -0.03,
+    token: 'SRM',
+    balance: 100000,
+  },
+  {
+    feeTier: 5,
+    taker: 0.12,
+    maker: -0.03,
+    token: 'SRM',
+    balance: 1000000,
+  },
+  { feeTier: 6, taker: 0.1, maker: -0.05, token: 'MSRM', balance: 1 },
+];
 
-const BalancesTable = (props) => {
+
+export const combineFeeTiers = (
+    feeTiers
+  ) => {
+    const processedFundsData = feeTiers
+      .map((el) => {
+        const {
+          feeTier,
+          taker,
+          maker,
+          token,
+          balance,
+        } = el
+  
+        return {
+          id: `${feeTier}${balance}`,
+          feeTier: `${feeTier}`,
+          taker: `${taker} %`,
+          maker: `${maker} %`,
+          condition: {
+            render: balance > 0 ? `>= ${balance} ${token}` : 'None',
+            style: { textAlign: 'left' },
+            contentToSort: +balance,
+          },
+        }
+      })
+  
+    return processedFundsData.filter((el) => !!el)
+  }
+
+const FeeTiers = (props) => {
   const {
     tab,
     theme,
@@ -23,65 +68,14 @@ const BalancesTable = (props) => {
     page,
     perPage,
     marketType,
-    allKeys,
-    specificPair,
-    handleChangePage,
-    handleChangeRowsPerPage,
-    getOpenOrderHistoryQuery,
-    handleToggleAllKeys,
-    handleToggleSpecificPair,
-    arrayOfMarketIds,
-    canceledOrders,
-    handlePairChange,
-    keys
   } = props
-
-  const balances = useBalances();
-  const [accounts] = useTokenAccounts();
-  const connection = useSendConnection();
-  const { wallet } = useWallet();
-
-  async function onSettleFunds(market, openOrders) {
-    try {
-      await settleFunds({
-        market,
-        openOrders,
-        connection,
-        wallet,
-        baseCurrencyAccount: getSelectedTokenAccountForMint(
-          accounts,
-          market?.baseMintAddress,
-        ),
-        quoteCurrencyAccount: getSelectedTokenAccountForMint(
-          accounts,
-          market?.quoteMintAddress,
-        ),
-      });
-
-      notify({
-        message: 'Settling funds sucess',
-        description: 'No description',
-        type: 'success',
-      });
-
-    } catch (e) {
-      notify({
-        message: 'Error settling funds',
-        description: e.message,
-        type: 'error',
-      });
-      return;
-    }
-  }
 
   if (!show) {
     return null
   }
 
-  const balancesProcessedData = combineBalancesTable(
-    balances,
-    onSettleFunds,
-    theme
+  const balancesProcessedData = combineFeeTiers(
+    feeTiers
   )
 
   return (
@@ -132,7 +126,7 @@ const BalancesTable = (props) => {
   // }
 }
 
-const MemoizedWrapper = React.memo(BalancesTable, (prevProps, nextProps) => {
+const MemoizedWrapper = React.memo(FeeTiers, (prevProps, nextProps) => {
   // TODO: Refactor isShowEqual --- not so clean
   const isShowEqual = !nextProps.show && !prevProps.show
   const showAllAccountsEqual =

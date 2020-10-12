@@ -27,7 +27,7 @@ import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
 import { useBalances, useMarket,  useTokenAccounts,
-  getSelectedTokenAccountForMint, } from '@sb/dexUtils/markets'
+  getSelectedTokenAccountForMint, useUnmigratedOpenOrdersAccounts } from '@sb/dexUtils/markets'
 import { useSendConnection } from '@sb/dexUtils/connection';
 import { useWallet } from '@sb/dexUtils/wallet';
 import { settleFunds } from '@sb/dexUtils/send';
@@ -157,8 +157,13 @@ export const Balances = ({
   const [accounts] = useTokenAccounts();
   const connection = useSendConnection();
   const { wallet } = useWallet();
+  const { refresh } = useUnmigratedOpenOrdersAccounts();
 
-  async function onSettleSuccess() { console.log('settled funds success') }
+
+  async function onSettleSuccess() { 
+    console.log('settled funds success');
+    setTimeout(refresh, 5000);
+   }
 
   async function onSettleFunds(market, openOrders) {
     try {
@@ -176,13 +181,20 @@ export const Balances = ({
           market?.quoteMintAddress,
         ),
       });
+
+      notify({
+        message: 'Settling funds successfully done',
+        description: 'No description',
+        type: 'success',
+      });
+
     } catch (e) {
       console.log('onSettleFunds e', e)
-      // notify({
-      //   message: 'Error settling funds',
-      //   description: e.message,
-      //   type: 'error',
-      // });
+      notify({
+        message: 'Error settling funds',
+        description: e.message,
+        type: 'error',
+      });
       return;
     }
     onSettleSuccess && onSettleSuccess();

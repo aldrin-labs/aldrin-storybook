@@ -2,8 +2,9 @@ import React, { useState, useCallback } from 'react'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import copy from 'clipboard-copy'
-import { useLocation, useHistory } from 'react-router-dom'
+import { useLocation, useHistory, Link } from 'react-router-dom'
 import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
+import { NavBarLink } from '@sb/components/PortfolioMainAllocation/PortfolioMainAllocation.styles'
 
 import MarketStats from './MarketStats/MarketStats'
 import { TooltipCustom } from '@sb/components/index'
@@ -15,20 +16,64 @@ import { checkLoginStatus } from '@core/utils/loginUtils'
 import { PanelWrapper, CustomCard } from '../Chart.styles'
 import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
 import { updateThemeMode } from '@core/graphql/mutations/chart/updateThemeMode'
+import { useMarket } from '@sb/dexUtils/markets'
+import { getDecimalCount } from '@sb/dexUtils/utils'
+import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
 
-import { useWallet, WALLET_PROVIDERS } from '@sb/dexUtils/wallet';
-import { ENDPOINTS, useConnectionConfig } from '@sb/dexUtils/connection';
+import { useWallet, WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
+import { ENDPOINTS, useConnectionConfig } from '@sb/dexUtils/connection'
+import { Line } from '@sb/compositions/AnalyticsRoute/index'
 
 import OvalSelector from '@sb/components/OvalSelector'
 import SerumCCAILogo from '@icons/serumCCAILogo.svg'
+import LightLogo from '@icons/lightLogo.svg'
 import SvgIcon from '@sb/components/SvgIcon'
 
-import MenuItem from '@material-ui/core/MenuItem';
+import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
 import Button from '@material-ui/core/Button'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import HelpIcon from '@material-ui/icons/Help';
+import HelpIcon from '@material-ui/icons/Help'
+
+import SunDisabled from '@icons/sunDisabled.svg'
+import SunActive from '@icons/sunActive.svg'
+
+import MoonDisabled from '@icons/moonDisabled.svg'
+import MoonActive from '@icons/moonActive.svg'
+
+import IconButton from '@material-ui/core/IconButton'
+import TelegramIcon from '@icons/telegram.svg'
+import DiscordIcon from '@icons/discord.svg'
+import TwitterIcon from '@icons/twitter.svg'
+import { withTheme } from '@material-ui/core'
+
+const TelegramLink = (props) => (
+  <a
+    href="https://t.me/CryptocurrenciesAi"
+    target="_blank"
+    rel="noopener noreferrer"
+    {...props}
+  />
+)
+
+const DiscordLink = (props) => (
+  <a
+    href="https://discord.com/invite/2EaKvrs"
+    target="_blank"
+    rel="noopener noreferrer"
+    {...props}
+  />
+)
+
+const TwitterLink = (props) => (
+  <a
+    href="https://twitter.com/CCAI_Official"
+    target="_blank"
+    rel="noopener noreferrer"
+    {...props}
+  />
+)
 
 const selectStyles = (theme: Theme) => ({
   height: '100%',
@@ -62,43 +107,76 @@ const selectStyles = (theme: Theme) => ({
 })
 
 const TopBar = ({ theme }) => {
-  const { connected, wallet, providerUrl, providerName, setProvider } = useWallet();
-  const { endpoint, setEndpoint } = useConnectionConfig();
-  const location = useLocation();
-  const history = useHistory();
+  const {
+    connected,
+    wallet,
+    providerUrl,
+    providerName,
+    setProvider,
+  } = useWallet()
+  const { endpoint, setEndpoint } = useConnectionConfig()
+  const location = useLocation()
+  const history = useHistory()
   const [isOpenPopup, setPopupOpen] = useState(false)
 
   const publicKey = wallet?.publicKey?.toBase58();
 
   const handleClick = useCallback(
     (e) => {
-      history.push(e.key);
+      history.push(e.key)
     },
-    [history],
-  );
+    [history]
+  )
+
+  const isDarkTheme = theme.palette.type === 'dark'
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <SvgIcon
+        width={'auto'}
+        height={'100%'}
+        styledComponentsAdditionalStyle={{
+          padding: '0 2rem 0 0',
+          cursor: 'pointer',
+        }}
+        src={isDarkTheme ? SunDisabled : SunActive}
+        onClick={() => {
+          if (isDarkTheme) {
+            theme.updateMode('light')
+          }
+        }}
+      />
+      {/* </div> */}
+      {/* <div style={{ display: 'flex' }}> */}
+      <SvgIcon
+        width={'auto'}
+        height={'100%'}
+        styledComponentsAdditionalStyle={{
+          padding: '0 2rem 0 0',
+          cursor: 'pointer',
+        }}
+        src={isDarkTheme ? MoonActive : MoonDisabled}
+        onClick={() => {
+          if (!isDarkTheme) {
+            theme.updateMode('dark')
+          }
+        }}
+      />
       <div>
-        {/* <Select
-          onSelect={setEndpoint}
-          value={endpoint}
-          style={{ marginRight: 8 }}
-        >
-          {ENDPOINTS.map(({ name, endpoint }) => (
-            <MenuItem value={endpoint} key={endpoint}>
-              {name}
-            </MenuItem>
-          ))}
-        </Select> */}
         <OvalSelector
           theme={theme}
           selectStyles={selectStyles(theme)}
           onChange={({ value }) => {
             setEndpoint(value)
           }}
-          value={{ value: endpoint, label: ENDPOINTS.find(a => a.endpoint === endpoint).name }}
-          options={ENDPOINTS.map(endpoint => ({ value: endpoint.endpoint, label: endpoint.name }))}
+          value={{
+            value: endpoint,
+            label: ENDPOINTS.find((a) => a.endpoint === endpoint).name,
+          }}
+          options={ENDPOINTS.map((endpoint) => ({
+            value: endpoint.endpoint,
+            label: endpoint.name,
+          }))}
         />
       </div>
       <div>
@@ -109,7 +187,10 @@ const TopBar = ({ theme }) => {
             setProvider(value)
           }}
           value={{ value: providerUrl, label: providerName }}
-          options={WALLET_PROVIDERS.map(provider => ({ value: provider.url, label: provider.name }))}
+          options={WALLET_PROVIDERS.map((provider) => ({
+            value: provider.url,
+            label: provider.name,
+          }))}
         />
       </div>
       <div>
@@ -127,52 +208,77 @@ const TopBar = ({ theme }) => {
       </div>
       {connected && (
         <div
-          style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 1rem', cursor: 'pointer' }}
+          style={{
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '0 1rem',
+            cursor: 'pointer',
+          }}
         >
-          <HelpIcon onClick={() => setPopupOpen(!isOpenPopup)} style={{ color: theme.palette.blue.serum }} />
-          {
-            isOpenPopup && (
-          <div 
-            style={{ 
-              position: 'absolute', 
-              right: 0, 
-              top: '5rem', 
-              zIndex: 10, 
-              background: theme.palette.white.background, 
-              border: theme.palette.border.main, 
-              padding: '2rem 1rem', 
-              boxShadow: '0px 4px 8px rgba(10,19,43,0.1)' 
-          }}>
-            <a 
-              target={'_blank'}
-              rel={'noopener noreferrer'}
-               href={`https://explorer.solana.com/address/${publicKey}`} 
-              style={{ color: theme.palette.blue.serum, fontSize: '1.4rem', textDecoration: 'none' }}
-            >{publicKey}</a>
-          </div>)
-          }
+          <HelpIcon
+            onClick={() => setPopupOpen(!isOpenPopup)}
+            style={{ color: theme.palette.blue.serum }}
+          />
+          {isOpenPopup && (
+            <div
+              style={{
+                position: 'absolute',
+                right: 0,
+                top: '5rem',
+                zIndex: 10,
+                background: theme.palette.white.background,
+                border: theme.palette.border.main,
+                padding: '2rem 1rem',
+                boxShadow: '0px 4px 8px rgba(10,19,43,0.1)',
+              }}
+            >
+              <a
+                target={'_blank'}
+                rel={'noopener noreferrer'}
+                href={`https://explorer.solana.com/address/${publicKey}`}
+                style={{
+                  color: theme.palette.blue.serum,
+                  fontSize: '1.4rem',
+                  textDecoration: 'none',
+                }}
+              >
+                {publicKey}
+              </a>
+            </div>
+          )}
         </div>
       )}
     </div>
-  );
+  )
 }
 
-
 export const CardsPanel = ({
-  _id,
-  pair,
-  view,
+  view = 'default',
   theme,
-  marketType,
-  quantityPrecision,
-  pricePrecision,
-  changePositionModeMutation,
-  selectedKey,
-  showChangePositionModeResult,
-  activeExchange,
+  marketType = 0,
+  activeExchange = 'serum',
 }) => {
+  const { market } = useMarket()
+  const location = useLocation()
+  
+  const quantityPrecision = market?.minOrderSize && getDecimalCount(market.minOrderSize);
+  const pricePrecision = market?.tickSize && getDecimalCount(market.tickSize);
+
+  const isDarkTheme = theme.palette.type === 'dark'
+  const isAnalytics = location.pathname.includes('analytics')
+  const isChartPage = location.pathname.includes('chart')
+
+  const pair = isChartPage  ? location.pathname.split('/')[3] : 'SRM_USDT'
+
+  if ( isChartPage && !location.pathname.split('/')[3]) {
+    return null
+  }
+
+  console.log('pair', pair)
   return (
-    <>
+    <ChartGridContainer>
       <PanelWrapper>
         {/* {view === 'onlyCharts' && (
           <LayoutSelector userId={_id} themeMode={themeMode} />
@@ -191,181 +297,146 @@ export const CardsPanel = ({
           style={{
             // position: 'relative',
             display: 'flex',
-            maxWidth: '58.33333%',
+            maxWidth: '65%',
             marginRight: '.4rem',
             flexGrow: 1,
             border: '0',
           }}
         >
-          <img style={{ height: '100%', padding: '0 3rem', borderRight: theme.palette.border.main }} src={SerumCCAILogo} />
-
-          <AutoSuggestSelect
-            value={view === 'default' && pair}
-            id={'pairSelector'}
-            view={view}
-            style={{ width: '20rem' }}
-            activeExchange={activeExchange}
-            selectStyles={{ ...selectStyles(theme) }}
-            marketType={marketType}
-            quantityPrecision={quantityPrecision}
-            pricePrecision={pricePrecision}
+          <Link to={'/chart/spot/SRM_USDT'} style={{ width: '17rem' }}>
+          <img
+            style={{
+              height: '100%',
+              padding: '0 3rem',
+              borderRight: theme.palette.border.main,
+            }}
+            src={isDarkTheme ? SerumCCAILogo : LightLogo}
           />
+          </Link>
+          <div
+            style={{
+              width: '25%',
+              marginLeft: '4rem',
+              paddingRight: '4rem',
+              borderRight: theme.palette.border.main,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <NavBarLink
+              style={{
+                color: location.pathname.includes('chart')
+                  ? theme.palette.blue.serum
+                  : theme.palette.grey.text,
+              }}
+              to="/chart"
+            >
+              Trading
+            </NavBarLink>
+            <NavBarLink
+              to="/analytics"
+              style={{
+                color: location.pathname.includes('analytics')
+                  ? theme.palette.blue.serum
+                  : theme.palette.grey.text,
+              }}
+            >
+              {' '}
+              Analytics
+            </NavBarLink>
+            <NavBarLink
+              to="/rewards"
+              style={{
+                color: location.pathname.includes('rewards')
+                  ? theme.palette.blue.serum
+                  : theme.palette.grey.text,
+              }}
+            >
+              {' '}
+              Rewards
+            </NavBarLink>
+          </div>
+
+          {isChartPage && (
+            <AutoSuggestSelect
+              value={view === 'default' && pair}
+              id={'pairSelector'}
+              view={view}
+              style={{ width: '30rem' }}
+              activeExchange={activeExchange}
+              selectStyles={{ ...selectStyles(theme) }}
+              marketType={marketType}
+              quantityPrecision={quantityPrecision}
+              pricePrecision={pricePrecision}
+            />
+          )}
 
           {/* <TooltipCustom
             title="Cryptocurrencies.ai is a Binance partner exchange"
             enterDelay={250}
             component={ */}
-          <MarketStats
-            theme={theme}
-            symbol={pair}
-            marketType={marketType}
-            exchange={activeExchange}
-            quantityPrecision={quantityPrecision}
-            pricePrecision={pricePrecision}
-          />
+          {isChartPage && (
+            <MarketStats
+              theme={theme}
+              symbol={pair}
+              marketType={marketType}
+              exchange={activeExchange}
+              quantityPrecision={quantityPrecision}
+              pricePrecision={pricePrecision}
+            />
+          )}
+
           {/* }
           /> */}
         </CustomCard>
 
-        {/* {view === 'default' && (
-          <KeySelector
-            theme={theme}
-            exchange={activeExchange}
-            selectStyles={{
-              ...selectStyles(theme),
-              width: marketType === 1 ? '11%' : '15%',
-            }}
-            isAccountSelect={true}
-          />
-        )} */}
-
-
-
         <TopBar theme={theme} />
-
-        {/* <SmartTradeButton
-          theme={theme}
-          style={{
-            height: '100%',
-            maxWidth:
-              marketType === 0 ? 'calc(35% - 28.8rem)' : 'calc(30% - 28.8rem)',
-          }}
-          type={isDefaultTerminalViewMode ? 'buy' : 'sell'}
-          id="smartTradingButton"
-          onClick={() => {
-            // for guest mode
-            if (!authenticated) {
-              history.push(`/login?callbackURL=${pathname}`)
-              return
+        <Line top={'calc(100% + 1rem)'} />
+        {/*         
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <TooltipCustom
+            title={'Our Twitter'}
+            enterDelay={250}
+            component={
+              <TwitterLink>
+                <SvgIcon height={'80%'} width={'auto'} style={{ padding: '0 1rem', cursor: 'pointer'}} src={TwitterIcon} />
+              </TwitterLink>
             }
-
-            updateTerminalViewMode(
-              isDefaultTerminalViewMode ? 'smartOrderMode' : 'default'
-            )
-
-            const joyrideStep = document.getElementById('react-joyride-step-7')
-            const joyrideOverlay = document.getElementById(
-              'react-joyride-portal'
-            )
-
-            if (joyrideStep && joyrideOverlay) {
-              joyrideStep.style.display = 'none'
-              joyrideOverlay.style.display = 'none'
-            }
-          }}
-        >
-          {isDefaultTerminalViewMode
-            ? 'go to smart terminal'
-            : 'back to basic terminal'}
-        </SmartTradeButton> */}
-        {/* <PreferencesSelect
-          theme={theme}
-          style={{ width: '15%', minWidth: '0', marginLeft: '.8rem' }}
-          id={'preferencesSelector'}
-          value={'preferences'}
-          selectStyles={selectStyles(theme)}
-          hedgeMode={hedgeMode}
-          changePositionModeWithStatus={changePositionModeWithStatus}
-          themeMode={themeMode}
-          toggleThemeMode={async () => {
-            if (!authenticated) {
-              return
-            }
-            
-            theme.updateMode(themeMode === 'dark' ? 'light' : 'dark')
-            await writeQueryData(getThemeMode, {}, { getAccountSettings: { themeMode: themeMode === 'dark' ? 'light' : 'dark', __typename: 'getAccountSettings' }})
-            await persistorInstance.persist()
-            await updateThemeModeMutation({
-              variables: {
-                input: {
-                  themeMode: themeMode === 'dark' ? 'light' : 'dark',
-                }
-              },
-            })
-          }}
-          hideDepthChart={hideDepthChart}
-          hideOrderbook={hideOrderbook}
-          hideTradeHistory={hideTradeHistory}
-          changeChartLayout={changeChartLayout}
-          persistorInstance={persistorInstance}
-        /> */}
-        {/* <div style={{ width: '15.5%', margin: '0 .4rem 0 .6rem' }}>
-          <PillowButton
-            firstHalfText={'light'}
-            secondHalfText={'dark'}
-            secondHalfTooltip={
-              'You can open a long and short at the same time. Just turn on hedge mode and open opposite positions.'
-            }
-            activeHalf={hedgeMode ? 'second' : 'first'}
-            buttonAdditionalStyle={{
-              width: '50%',
-            }}
-            containerStyle={{ height: '100%', margin: 0 }}
-            changeHalf={async () => {
-              // for guest mode
-              if (!authenticated) {
-                return
-              }
-
-              await toggleThemeMode()
-              // persistorInstance.persist()
-            }}
           />
-        </div> */}
-        {/* {marketType === 1 && (
-          <div style={{ width: '15.5%', margin: '0 .4rem 0 .6rem' }}>
-            <PillowButton
-              firstHalfText={'one-way'}
-              secondHalfText={'hedge'}
-              secondHalfTooltip={
-                'You can open a long and short at the same time. Just turn on hedge mode and open opposite positions.'
-              }
-              activeHalf={hedgeMode ? 'second' : 'first'}
-              buttonAdditionalStyle={{
-                width: '50%',
-              }}
-              containerStyle={{ height: '100%', margin: 0 }}
-              changeHalf={() => {
-                // for guest mode
-                if (!authenticated) {
-                  return
-                }
 
-                changePositionModeWithStatus(hedgeMode ? false : true)
-              }}
-            />
-          </div>
-        )} */}
+
+          <TooltipCustom
+            title={'Discord chat'}
+            enterDelay={250}
+            component={
+              <DiscordLink>
+                <SvgIcon height={'80%'} width={'auto'} style={{ padding: '0 1rem', cursor: 'pointer'}} src={DiscordIcon} />
+              </DiscordLink>
+            }
+          />
+
+          <TooltipCustom
+            title={'Telegram chat'}
+            enterDelay={250}
+            component={
+              <TelegramLink>
+                <SvgIcon height={'80%'} width={'auto'} style={{ padding: '0 1rem', cursor: 'pointer' }} src={TelegramIcon} />
+              </TelegramLink>
+            }
+          />
+          </div> */}
       </PanelWrapper>
-    </>
+    </ChartGridContainer>
   )
 }
 
 export default compose(
+  withTheme(),
   withApolloPersist,
   graphql(TOGGLE_THEME_MODE, {
     name: 'toggleThemeMode',
   }),
   graphql(changePositionMode, { name: 'changePositionModeMutation' }),
-  graphql(updateThemeMode, { name: 'updateThemeModeMutation' }),
+  graphql(updateThemeMode, { name: 'updateThemeModeMutation' })
 )(CardsPanel)

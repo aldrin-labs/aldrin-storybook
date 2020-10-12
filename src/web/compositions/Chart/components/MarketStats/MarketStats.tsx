@@ -334,7 +334,7 @@ const MarketStats = (props) => {
         </PanelCardValue>
       </PanelCard>
 
-      <TooltipCustom
+      {/* <TooltipCustom
         title="Cryptocurrencies.ai is a Serum partner exchange"
         enterDelay={250}
         component={
@@ -351,13 +351,13 @@ const MarketStats = (props) => {
               {formatNumberToUSFormat(stripDigitPlaces(volume))}
               {` ${marketType === 0 ? quote : base}`}
             </PanelCardValue>
-            {/* <SvgIcon
+             <SvgIcon
                 style={{ position: 'absolute', right: '1rem' }}
                 src={BinanceLogo}
-              /> */}
+              /> 
           </PanelCard>
         }
-      />
+      /> */}
 
       {/* {marketType === 1 && (
           <PanelCard

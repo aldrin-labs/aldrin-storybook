@@ -45,7 +45,7 @@ export const TradeInputHeader = ({
   haveTooltip = false,
   tooltipText = '',
   tooltipStyles = {},
-  onValueClick = () => { },
+  onValueClick = () => {},
   theme,
 }) => {
   return (
@@ -75,15 +75,15 @@ export const TradeInputHeader = ({
           {/* </TooltipContainer> */}
         </>
       ) : (
-          <SeparateInputTitle
-            theme={theme}
-            style={{
-              borderBottom: haveTooltip ? '.1rem dashed #e0e5ec' : 'none',
-            }}
-          >
-            {title}
-          </SeparateInputTitle>
-        )}
+        <SeparateInputTitle
+          theme={theme}
+          style={{
+            borderBottom: haveTooltip ? '.1rem dashed #e0e5ec' : 'none',
+          }}
+        >
+          {title}
+        </SeparateInputTitle>
+      )}
       {/* <SeparateInputTitle
         style={{ borderBottom: haveTooltip ? '.1rem dashed #e0e5ec' : 'none' }}
       >
@@ -118,7 +118,7 @@ export const TradeInputContent = ({
   width = '100%',
   fontSize = '',
   textAlign = 'right',
-  onChange = () => { },
+  onChange = () => {},
   inputStyles,
   theme,
 }: {
@@ -182,8 +182,8 @@ export const TradeInputContent = ({
           !!symbolRightIndent
             ? symbolRightIndent
             : symbol.length <= 2
-              ? '2.5rem'
-              : '1rem'
+            ? '2.5rem'
+            : '1rem'
         }
       >
         {symbol}
@@ -230,10 +230,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     if (prevProps.marketPrice === null && this.props.marketPrice !== null) {
       this.setFormatted(
         'price',
-        stripDigitPlaces(
-          +marketPrice,
-          pricePrecision
-        ),
+        stripDigitPlaces(+marketPrice, pricePrecision),
         0
       )
     }
@@ -245,10 +242,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
           : marketPrice
       this.setFormatted(
         'amount',
-        stripDigitPlaces(
-          +total / +priceForCalculate,
-          isSPOTMarket ? 8 : quantityPrecision
-        ),
+        stripDigitPlaces(+total / +priceForCalculate, quantityPrecision),
         0
       )
     }
@@ -284,7 +278,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
         'amount',
         stripDigitPlaces(
           (margin * leverage) / priceForCalculate,
-          isSPOTMarket ? 8 : quantityPrecision
+          quantityPrecision
         ),
         0
       )
@@ -293,10 +287,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     if (marketPrice !== prevProps.marketPrice && priceType === 'market') {
       this.setFormatted(
         'amount',
-        stripDigitPlaces(
-          total / marketPrice,
-          isSPOTMarket ? 8 : quantityPrecision
-        ),
+        stripDigitPlaces(total / marketPrice, quantityPrecision),
         0
       )
     }
@@ -350,10 +341,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       const amount = e.target.value / priceForCalculate
       const margin = e.target.value / leverage
 
-      setFieldValue(
-        'amount',
-        stripDigitPlaces(amount, quantityPrecision)
-      )
+      setFieldValue('amount', stripDigitPlaces(amount, quantityPrecision))
 
       setFieldValue('margin', stripDigitPlaces(margin, 3))
     }
@@ -468,11 +456,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     const newTotal = value * leverage
 
     setFieldValue('margin', value)
-    setFieldValue(
-      'amount',
-      stripDigitPlaces(newAmount, isSPOTMarket ? 8 : quantityPrecision)
-    )
-    setFieldValue('total', stripDigitPlaces(newTotal, isSPOTMarket ? 8 : 2))
+    setFieldValue('amount', stripDigitPlaces(newAmount, quantityPrecision))
+    setFieldValue('total', stripDigitPlaces(newTotal, 2))
   }
 
   render() {
@@ -500,8 +485,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
     const priceForCalculate =
       priceType !== 'market' &&
-        priceType !== 'maker-only' &&
-        values.limit !== null
+      priceType !== 'maker-only' &&
+      values.limit !== null
         ? values.price
         : marketPrice
 
@@ -524,24 +509,24 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
               style={{ margin: 'auto 0', width: '100%' }}
             >
               {priceType !== 'market' &&
-                priceType !== 'stop-market' &&
-                priceType !== 'maker-only' ? (
-                  <InputRowContainer
-                    key={'limit-price'}
-                    padding={'.6rem 0'}
-                    direction={'column'}
-                  >
-                    <TradeInputContent
-                      theme={theme}
-                      needTitle
-                      type={'text'}
-                      title={`price (${pair[1]})`}
-                      value={values.price || ''}
-                      onChange={this.onPriceChange}
-                      symbol={pair[1]}
-                    />
-                  </InputRowContainer>
-                ) : null}
+              priceType !== 'stop-market' &&
+              priceType !== 'maker-only' ? (
+                <InputRowContainer
+                  key={'limit-price'}
+                  padding={'.6rem 0'}
+                  direction={'column'}
+                >
+                  <TradeInputContent
+                    theme={theme}
+                    needTitle
+                    type={'text'}
+                    title={`price (${pair[1]})`}
+                    value={values.price || ''}
+                    onChange={this.onPriceChange}
+                    symbol={pair[1]}
+                  />
+                </InputRowContainer>
+              ) : null}
 
               {priceType === 'stop-limit' || priceType === 'stop-market' ? (
                 <InputRowContainer
@@ -585,8 +570,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   <TradeInputContent
                     theme={theme}
                     needTitle
-                    title={`${isSPOTMarket ? 'amount' : 'order quantity'} (${pair[0]
-                      })`}
+                    title={`${isSPOTMarket ? 'amount' : 'order quantity'} (${
+                      pair[0]
+                    })`}
                     value={values.amount}
                     type={'text'}
                     pattern={
@@ -596,42 +582,42 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     symbol={pair[0]}
                   />
                 ) : (
-                    <InputRowContainer direction="row" padding={'0'}>
-                      <div style={{ width: '50%', paddingRight: '1%' }}>
-                        <TradeInputContent
-                          theme={theme}
-                          needTitle
-                          title={`size`}
-                          value={values.amount}
-                          type={'text'}
-                          pattern={
-                            isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'
-                          }
-                          onChange={this.onAmountChange}
-                          symbol={pair[0]}
-                        />
-                      </div>
-                      <div style={{ width: '50%', paddingLeft: '1%' }}>
-                        <TradeInputContent
-                          theme={theme}
-                          //disabled={false}
-                          needTitle
-                          title={`total`}
-                          type={'text'}
-                          value={values.total === '' ? '' : values.total}
-                          onChange={this.onTotalChange}
-                          symbol={pair[1]}
-                        />
-                      </div>
-                    </InputRowContainer>
-                  )}
+                  <InputRowContainer direction="row" padding={'0'}>
+                    <div style={{ width: '50%', paddingRight: '1%' }}>
+                      <TradeInputContent
+                        theme={theme}
+                        needTitle
+                        title={`size`}
+                        value={values.amount}
+                        type={'text'}
+                        pattern={
+                          isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'
+                        }
+                        onChange={this.onAmountChange}
+                        symbol={pair[0]}
+                      />
+                    </div>
+                    <div style={{ width: '50%', paddingLeft: '1%' }}>
+                      <TradeInputContent
+                        theme={theme}
+                        //disabled={false}
+                        needTitle
+                        title={`total`}
+                        type={'text'}
+                        value={values.total === '' ? '' : values.total}
+                        onChange={this.onTotalChange}
+                        symbol={pair[1]}
+                      />
+                    </div>
+                  </InputRowContainer>
+                )}
 
                 <BlueSlider
                   theme={theme}
                   showMarks
                   value={
                     isBuyType || !isSPOTMarket
-                      ? ((values.total) / maxAmount) * 100
+                      ? (values.total / maxAmount) * 100
                       : values.amount / (maxAmount / 100)
                   }
                   sliderContainerStyles={{
@@ -646,13 +632,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     const newAmount =
                       isBuyType || !isSPOTMarket
                         ? stripDigitPlaces(
-                          newValue / priceForCalculate,
-                          quantityPrecision
-                        )
-                        : stripDigitPlaces(
-                          newValue,
-                          quantityPrecision
-                        )
+                            newValue / priceForCalculate,
+                            quantityPrecision
+                          )
+                        : stripDigitPlaces(newValue, quantityPrecision)
 
                     const newTotal =
                       isBuyType || !isSPOTMarket
@@ -665,10 +648,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     )
 
                     setFieldValue('amount', newAmount)
-                    setFieldValue(
-                      'total',
-                      stripDigitPlaces(newTotal, 3)
-                    )
+                    setFieldValue('total', stripDigitPlaces(newTotal, 3))
                     setFieldValue('margin', newMargin)
                   }}
                 />
@@ -736,11 +716,11 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
               >
                 {isSPOTMarket
                   ? operationType === 'buy'
-                    ? `buy ${pair[0]}`
+                    ? priceType === 'market' && pair.join('_') === 'SRM_USDT' ? 'Buy SRM and earn DCFI' : `buy ${pair[0]}`
                     : `sell ${pair[0]}`
                   : operationType === 'buy'
-                    ? 'long'
-                    : 'short'}
+                  ? 'long'
+                  : 'short'}
               </SendButton>
             </Grid>
           </Grid>
@@ -756,55 +736,55 @@ const validate = (values: FormValues, props: IProps) => {
   const validationSchema =
     priceType === 'limit'
       ? Yup.object().shape({
-        price: Yup.number()
-          .nullable(true)
-          .required(traidingErrorMessages[0])
-          .moreThan(0, traidingErrorMessages[0]),
-        amount:
-          byType === 'sell'
-            ? Yup.number()
-              .nullable(true)
-              .required(traidingErrorMessages[0])
-              .moreThan(0, traidingErrorMessages[0])
-            : Yup.number()
-              .nullable(true)
-              .required(traidingErrorMessages[0])
-              .moreThan(0, traidingErrorMessages[0]),
-        total:
-          byType === 'buy'
-            ? Yup.number()
-              .nullable(true)
-              .required(traidingErrorMessages[0])
-              .moreThan(0, traidingErrorMessages[0])
-            : Yup.number()
-              .nullable(true)
-              .required(traidingErrorMessages[0])
-              .moreThan(0, traidingErrorMessages[0]),
-      })
-      : priceType === 'market' || priceType === 'maker-only'
-        ? Yup.object().shape({
+          price: Yup.number()
+            .nullable(true)
+            .required(traidingErrorMessages[0])
+            .moreThan(0, traidingErrorMessages[0]),
           amount:
             byType === 'sell'
               ? Yup.number()
-                .nullable(true)
-                .required(traidingErrorMessages[0])
-                .moreThan(0, traidingErrorMessages[0])
+                  .nullable(true)
+                  .required(traidingErrorMessages[0])
+                  .moreThan(0, traidingErrorMessages[0])
               : Yup.number()
-                .nullable(true)
-                .required(traidingErrorMessages[0])
-                .moreThan(0, traidingErrorMessages[0]),
+                  .nullable(true)
+                  .required(traidingErrorMessages[0])
+                  .moreThan(0, traidingErrorMessages[0]),
           total:
             byType === 'buy'
               ? Yup.number()
-                .nullable(true)
-                .required(traidingErrorMessages[0])
-                .moreThan(0, traidingErrorMessages[0])
+                  .nullable(true)
+                  .required(traidingErrorMessages[0])
+                  .moreThan(0, traidingErrorMessages[0])
               : Yup.number()
-                .nullable(true)
-                .required(traidingErrorMessages[0])
-                .moreThan(0, traidingErrorMessages[0]),
+                  .nullable(true)
+                  .required(traidingErrorMessages[0])
+                  .moreThan(0, traidingErrorMessages[0]),
         })
-        : Yup.object().shape({
+      : priceType === 'market' || priceType === 'maker-only'
+      ? Yup.object().shape({
+          amount:
+            byType === 'sell'
+              ? Yup.number()
+                  .nullable(true)
+                  .required(traidingErrorMessages[0])
+                  .moreThan(0, traidingErrorMessages[0])
+              : Yup.number()
+                  .nullable(true)
+                  .required(traidingErrorMessages[0])
+                  .moreThan(0, traidingErrorMessages[0]),
+          total:
+            byType === 'buy'
+              ? Yup.number()
+                  .nullable(true)
+                  .required(traidingErrorMessages[0])
+                  .moreThan(0, traidingErrorMessages[0])
+              : Yup.number()
+                  .nullable(true)
+                  .required(traidingErrorMessages[0])
+                  .moreThan(0, traidingErrorMessages[0]),
+        })
+      : Yup.object().shape({
           stop: Yup.number()
             .nullable(true)
             .required(traidingErrorMessages[0])
@@ -816,23 +796,23 @@ const validate = (values: FormValues, props: IProps) => {
           amount:
             byType === 'sell'
               ? Yup.number()
-                .nullable(true)
-                .required(traidingErrorMessages[0])
-                .moreThan(0, traidingErrorMessages[0])
+                  .nullable(true)
+                  .required(traidingErrorMessages[0])
+                  .moreThan(0, traidingErrorMessages[0])
               : Yup.number()
-                .nullable(true)
-                .required(traidingErrorMessages[0])
-                .moreThan(0, traidingErrorMessages[0]),
+                  .nullable(true)
+                  .required(traidingErrorMessages[0])
+                  .moreThan(0, traidingErrorMessages[0]),
           total:
             byType === 'buy'
               ? Yup.number()
-                .nullable(true)
-                .required(traidingErrorMessages[0])
-                .moreThan(0, traidingErrorMessages[0])
+                  .nullable(true)
+                  .required(traidingErrorMessages[0])
+                  .moreThan(0, traidingErrorMessages[0])
               : Yup.number()
-                .nullable(true)
-                .required(traidingErrorMessages[0])
-                .moreThan(0, traidingErrorMessages[0]),
+                  .nullable(true)
+                  .required(traidingErrorMessages[0])
+                  .moreThan(0, traidingErrorMessages[0]),
         })
 
   try {
@@ -908,8 +888,8 @@ const formikEnhancer = withFormik<IProps, FormValues>({
         priceType === 'limit'
           ? { limit: values.limit, price: values.price, amount: values.amount }
           : priceType === 'market'
-            ? { amount: values.amount }
-            : {
+          ? { amount: values.amount }
+          : {
               stop: values.stop,
               price: values.price,
               amount: values.amount,
@@ -921,16 +901,17 @@ const formikEnhancer = withFormik<IProps, FormValues>({
         orderId: '0',
       }
 
-      props.showOrderResult(
-        successResult,
-        props.cancelOrder,
-        isSPOTMarket ? 0 : 1
-      )
+      // props.showOrderResult(
+      //   successResult,
+      //   props.cancelOrder,
+      //   isSPOTMarket ? 0 : 1
+      // )
 
       // await props.addLoaderToButton(byType)
 
       const result = await props.confirmOperation(
         byType,
+        pair,
         priceType,
         filtredValues,
         'default',
@@ -942,26 +923,27 @@ const formikEnhancer = withFormik<IProps, FormValues>({
             ? orderMode === 'TIF' && priceType !== 'stop-market'
               ? { timeInForce: TIFMode, postOnly: false }
               : orderMode === 'postOnly'
-                ? { timeInForce: TIFMode, postOnly: true }
-                : { postOnly: true }
+              ? { timeInForce: TIFMode, postOnly: true }
+              : { postOnly: true }
             : {}),
           ...(priceType === 'stop-limit' || priceType === 'stop-market'
             ? {
-              workingType:
-                trigger === 'mark price' ? 'MARK_PRICE' : 'CONTRACT_PRICE',
-            }
+                workingType:
+                  trigger === 'mark price' ? 'MARK_PRICE' : 'CONTRACT_PRICE',
+              }
             : {}),
           ...{ reduceOnly },
+          orderMode,
         }
       )
 
-      if (result.status === 'error' || !result.orderId) {
-        await props.showOrderResult(
-          result,
-          props.cancelOrder,
-          isSPOTMarket ? 0 : 1
-        )
-      }
+      // if (result.status === 'error' || !result.orderId) {
+      //   await props.showOrderResult(
+      //     result,
+      //     props.cancelOrder,
+      //     isSPOTMarket ? 0 : 1
+      //   )
+      // }
       // await await props.addLoaderToButton(false)
       setSubmitting(false)
     }

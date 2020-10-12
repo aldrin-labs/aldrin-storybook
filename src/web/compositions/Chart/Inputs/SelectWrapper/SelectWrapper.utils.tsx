@@ -9,7 +9,6 @@ import {
   roundAndFormatNumber,
 } from '@core/utils/PortfolioTableUtils'
 
-
 import favoriteSelected from '@icons/favoriteSelected.svg'
 import favoriteUnselected from '@icons/favoriteUnselected.svg'
 
@@ -224,56 +223,56 @@ export const combineSelectWrapperData = ({
         onClick: () => onSelectPair({ value: symbol }),
         contentToSort: symbol,
       },
-    //   price: {
-    //     contentToSort: +price,
-    //     render: (
-    //       <span onClick={() => onSelectPair({ value: symbol })}>
-    //         {formatNumberToUSFormat(
-    //           stripDigitPlaces(price, pricePrecision)
-    //         )}
-    //       </span>
-    //     ),
-    //     // onClick: () => onSelectPair({ value: symbol }),
-    //     // color: priceColor,
-    //   },
-    //   price24hChange: {
-    //     isNumber: true,
-    //     render: (
-    //       <span
-    //         style={{
-    //           color:
-    //             +price24hChange === 0
-    //               ? ''
-    //               : +price24hChange > 0
-    //               ? theme.palette.green.main
-    //               : theme.palette.red.main,
-    //         }}
-    //         onClick={() => onSelectPair({ value: symbol })}
-    //       >
-    //         {`${formatNumberToUSFormat(stripDigitPlaces(price24hChange))}%`}
-    //       </span>
-    //     ),
-    //     // onClick: () => onSelectPair({ value: symbol }),
-    //     contentToSort: +price24hChange,
-    //     // color:
-    //     //   +price24hChange === 0
-    //     //     ? ''
-    //     //     : +price24hChange > 0
-    //     //     ? theme.customPalette.green.main
-    //     //     : theme.customPalette.red.main,
-    //   },
-    //   volume24hChange: {
-    //     isNumber: true,
-    //     contentToSort: +volume24hChange,
-    //     render: (
-    //       <span onClick={() => onSelectPair({ value: symbol })}>
-    //         {`${formatNumberToUSFormat(
-    //           roundAndFormatNumber(volume24hChange, 2, false)
-    //         )} ${quote}`}
-    //       </span>
-    //     ),
-    //     // onClick: () => onSelectPair({ value: symbol }),
-    //   },
+      //   price: {
+      //     contentToSort: +price,
+      //     render: (
+      //       <span onClick={() => onSelectPair({ value: symbol })}>
+      //         {formatNumberToUSFormat(
+      //           stripDigitPlaces(price, pricePrecision)
+      //         )}
+      //       </span>
+      //     ),
+      //     // onClick: () => onSelectPair({ value: symbol }),
+      //     // color: priceColor,
+      //   },
+      //   price24hChange: {
+      //     isNumber: true,
+      //     render: (
+      //       <span
+      //         style={{
+      //           color:
+      //             +price24hChange === 0
+      //               ? ''
+      //               : +price24hChange > 0
+      //               ? theme.palette.green.main
+      //               : theme.palette.red.main,
+      //         }}
+      //         onClick={() => onSelectPair({ value: symbol })}
+      //       >
+      //         {`${formatNumberToUSFormat(stripDigitPlaces(price24hChange))}%`}
+      //       </span>
+      //     ),
+      //     // onClick: () => onSelectPair({ value: symbol }),
+      //     contentToSort: +price24hChange,
+      //     // color:
+      //     //   +price24hChange === 0
+      //     //     ? ''
+      //     //     : +price24hChange > 0
+      //     //     ? theme.customPalette.green.main
+      //     //     : theme.customPalette.red.main,
+      //   },
+      //   volume24hChange: {
+      //     isNumber: true,
+      //     contentToSort: +volume24hChange,
+      //     render: (
+      //       <span onClick={() => onSelectPair({ value: symbol })}>
+      //         {`${formatNumberToUSFormat(
+      //           roundAndFormatNumber(volume24hChange, 2, false)
+      //         )} ${quote}`}
+      //       </span>
+      //     ),
+      //     // onClick: () => onSelectPair({ value: symbol }),
+      //   },
     }
   })
 

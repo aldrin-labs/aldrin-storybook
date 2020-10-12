@@ -5,6 +5,7 @@ import { Card, Grid, Button, Theme } from '@material-ui/core'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 
 export const MainContainer = styled.div`
+  height: 100%;
   ${(props: { fullscreen: boolean }) =>
     props.fullscreen && 'height: 100vh; position: relative; z-index: 10;'};
 `
@@ -117,12 +118,7 @@ export const PanelWrapper = styled.div`
 export const CustomCard = styled(Card)`
   width: 100%;
   height: 100%;
-  background-color: ${(props) =>
-    (props.theme &&
-      props.theme.palette &&
-      props.theme.palette.white &&
-      props.theme.palette.white.background) ||
-    '#fff'};
+  background-color: inherit;
   border: ${(props) =>
     (props.theme &&
       props.theme.palette &&
@@ -264,20 +260,13 @@ export const ChartGridContainer = styled(({ MASTER_BUILD, ...rest }) => (
   flex: auto;
   align-items: center;
   width: calc(100% - 2rem);
-  height: 4%;
+  height: 4rem;
   padding: 0;
   margin: 1rem;
-  // background: ${props => props.theme.palette.grey.cream};
+  // background: ${(props) => props.theme.palette.grey.cream};
 
   && {
     padding: 0;
-  }
-  @media screen and (max-width: 1440px) {
-    height: 4%;
-  }
-
-  @media screen and (max-width: 1140px) {
-    height: 2.5%;
   }
 `
 
@@ -314,12 +303,12 @@ export const TradingTerminalContainer = styled(
     props.MASTER_BUILD
       ? '30%'
       : props.hideTradeHistory
-        ? '0%'
-        : props.hideOrderbook
-          ? '17%'
-          : props.hideDepthChart
-            ? '35%'
-            : '41.66667%'};
+      ? '0%'
+      : props.hideOrderbook
+      ? '17%'
+      : props.hideDepthChart
+      ? '35%'
+      : '41.66667%'};
   overflow: hidden;
 
   flex-direction: column;
@@ -351,12 +340,12 @@ export const TopChartsContainer = styled(
     props.isDefaultTerminalViewMode ? 'calc(60%)' : 'calc(50%)'};
   @media screen and (max-width: 1440px) {
     height: ${(props) =>
-    props.isDefaultTerminalViewMode ? 'calc(60%)' : 'calc(50%)'};
+      props.isDefaultTerminalViewMode ? 'calc(60%)' : 'calc(50%)'};
   }
 
   @media screen and (max-width: 1140px) {
     height: ${(props) =>
-    props.isDefaultTerminalViewMode ? 'calc(61%)' : 'calc(51%)'};
+      props.isDefaultTerminalViewMode ? 'calc(61%)' : 'calc(51%)'};
   }
 `
 
@@ -378,12 +367,12 @@ export const ChartsContainer = styled(
     props.MASTER_BUILD
       ? '70%'
       : props.hideTradeHistory
-        ? '100%'
-        : props.hideOrderbook
-          ? '83%'
-          : props.hideDepthChart
-            ? '65%'
-            : '58.33333%'};
+      ? '100%'
+      : props.hideOrderbook
+      ? '83%'
+      : props.hideDepthChart
+      ? '65%'
+      : '58.33333%'};
   justify-content: flex-end;
   flex-direction: column;
   border-radius: 0;
@@ -430,7 +419,7 @@ export const StyledSwitch = styled(({ isActive, ...rest }) => (
 export const Container = styled(Grid)`
   display: flex;
   // - ( menu + margin )
-  height: calc(100vh);
+  height: calc(100%);
   width: 100%;
   margin: 0;
   padding: 0;

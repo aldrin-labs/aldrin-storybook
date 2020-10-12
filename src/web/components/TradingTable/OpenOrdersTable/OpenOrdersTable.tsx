@@ -17,7 +17,6 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { cancelOrder } from '@sb/dexUtils/send'
 
 const OpenOrdersTable = (props) => {
-
   const { wallet } = useWallet()
   const connection = useSendConnection()
 
@@ -28,21 +27,19 @@ const OpenOrdersTable = (props) => {
         market: order.market,
         connection,
         wallet,
-      });
+      })
     } catch (e) {
       notify({
         message: 'Error cancelling order',
         description: e.message,
         type: 'error',
-      });
+      })
 
-      return;
+      return
     }
   }
 
-  const cancelOrderWithStatus = async (
-    order
-  ) => {
+  const cancelOrderWithStatus = async (order) => {
     const { showCancelResult } = props
 
     // await props.addOrderToCanceled(orderId)
@@ -53,7 +50,7 @@ const OpenOrdersTable = (props) => {
       await props.clearCanceledOrders()
     }
 
-    showCancelResult(status)
+    // showCancelResult(status)
   }
 
   const {
@@ -73,10 +70,10 @@ const OpenOrdersTable = (props) => {
     arrayOfMarketIds,
     canceledOrders,
     handlePairChange,
-    keys
+    keys,
   } = props
 
-  const openOrders = useOpenOrders();
+  const openOrders = useOpenOrders()
 
   if (!show) {
     return null
@@ -107,33 +104,33 @@ const OpenOrdersTable = (props) => {
         sortDirection: 'desc',
       }}
       withCheckboxes={false}
-      pagination={{
-        fakePagination: false,
-        enabled: true,
-        totalCount: 0,
-        page: page,
-        rowsPerPage: perPage,
-        rowsPerPageOptions: [10, 20, 30, 50, 100],
-        handleChangePage: handleChangePage,
-        handleChangeRowsPerPage: handleChangeRowsPerPage,
-        additionalBlock: (
-          <PaginationBlock
-            {...{
-              theme,
-              allKeys,
-              specificPair,
-              handleToggleAllKeys,
-              handleToggleSpecificPair,
-            }}
-          />
-        ),
-        paginationStyles: {
-          width: 'calc(100%)',
-          backgroundColor: theme.palette.white.background,
-          border: theme.palette.border.main,
-          borderRight: 0,
-        },
-      }}
+      // pagination={{
+      //   fakePagination: false,
+      //   enabled: true,
+      //   totalCount: 0,
+      //   page: page,
+      //   rowsPerPage: perPage,
+      //   rowsPerPageOptions: [10, 20, 30, 50, 100],
+      //   handleChangePage: handleChangePage,
+      //   handleChangeRowsPerPage: handleChangeRowsPerPage,
+      //   additionalBlock: (
+      //     <PaginationBlock
+      //       {...{
+      //         theme,
+      //         allKeys,
+      //         specificPair,
+      //         handleToggleAllKeys,
+      //         handleToggleSpecificPair,
+      //       }}
+      //     />
+      //   ),
+      //   paginationStyles: {
+      //     width: 'calc(100%)',
+      //     backgroundColor: theme.palette.white.background,
+      //     border: theme.palette.border.main,
+      //     borderRight: 0,
+      //   },
+      // }}
       tableStyles={{
         headRow: {
           borderBottom: theme.palette.border.main,

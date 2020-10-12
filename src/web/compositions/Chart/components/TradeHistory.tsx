@@ -18,6 +18,8 @@ export const TradeHistory = ({
   isPairDataLoading,
   activeExchange,
   minPriceDigits,
+  pricePrecision,
+  quantityPrecision,
   changeTable,
   chartProps,
   sizeDigits,
@@ -37,11 +39,25 @@ export const TradeHistory = ({
         show: showTableOnMobile === 'TRADE',
       }}
     >
-      <TradeHistoryTable
+      <QueryRenderer
+        component={TradeHistoryTable}
+        withOutSpinner
+        query={MARKET_QUERY}
+        variables={{ symbol, exchange: 'serum', marketType }}
+        fetchPolicy={'network-only'}
+        // subscriptionArgs={{
+        //   subscription: MARKET_TICKERS,
+        //   variables: { symbol, exchange, marketType: String(marketType) },
+        //   // subscription: MOCKED_MARKET_TICKERS,
+        //   // variables: { time: 10000 },
+        //   updateQueryFunction: updateTradeHistoryQuerryFunction,
+        // }}
         {...{
           quote,
           activeExchange,
           exchange,
+          pricePrecision,
+          quantityPrecision,
           currencyPair: pair,
           showTableOnMobile,
           minPriceDigits,
