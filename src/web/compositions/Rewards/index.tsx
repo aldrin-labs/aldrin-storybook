@@ -15,16 +15,11 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Link } from 'react-router-dom'
+import { Line } from 'rc-progress';
 
-import {
-  FlexibleXYPlot,
-  XAxis,
-  YAxis,
-  VerticalGridLines,
-  HorizontalGridLines,
-  LineSeries,
-  MarkSeries,
-} from 'react-vis'
+import { Styles } from './index.styles'
+import { Chart } from './components/Chart'
+
 import { formatNumberToUSFormat } from '@core/utils/PortfolioTableUtils'
 
 export const BlockContainer = styled.div``
@@ -98,322 +93,19 @@ const ChartTitle = styled.span`
   text-transform: capitalize;
 `
 
-const Styles = createGlobalStyle`
-.react-vis-magic-css-import-rule {
-  display: inherit;
-}
-.rv-treemap {
-  font-size: 12px;
-  position: relative;
-}
-.rv-treemap__leaf {
-  overflow: hidden;
-  position: absolute;
-}
-.rv-treemap__leaf--circle {
-  align-items: center;
-  border-radius: 100%;
-  display: flex;
-  justify-content: center;
-}
-.rv-treemap__leaf__content {
-  overflow: hidden;
-  padding: 10px;
-  text-overflow: ellipsis;
-}
-.rv-xy-plot {
-  color: #c3c3c3;
-  position: relative;
-}
-.rv-xy-plot canvas {
-  pointer-events: none;
-}
-.rv-xy-plot .rv-xy-canvas {
-  pointer-events: none;
-  position: absolute;
-}
-.rv-xy-plot__inner {
-  display: block;
-}
-.rv-xy-plot__axis__line {
-  fill: none;
-  stroke-width: 2px;
-  stroke: #e6e6e9;
-}
-.rv-xy-plot__axis__tick__line {
-  stroke: #e6e6e9;
-}
-.rv-xy-plot__axis__tick__text {
-  fill: #6b6b76;
-  font-size: 11px;
-}
-.rv-xy-plot__axis__title text {
-  fill: #6b6b76;
-  font-size: 11px;
-}
-.rv-xy-plot__grid-lines__line {
-  stroke: #e6e6e9;
-}
-.rv-xy-plot__circular-grid-lines__line {
-  fill-opacity: 0;
-  stroke: #e6e6e9;
-}
-.rv-xy-plot__series,
-.rv-xy-plot__series path {
-  pointer-events: all;
-}
-.rv-xy-plot__series--line {
-  fill: none;
-  stroke: #000;
-  stroke-width: 2px;
-}
-.rv-crosshair {
-  position: absolute;
-  font-size: 11px;
-  pointer-events: none;
-}
-.rv-crosshair__line {
-  background: #47d3d9;
-  width: 1px;
-}
-.rv-crosshair__inner {
-  position: absolute;
-  text-align: left;
-  top: 0;
-}
-.rv-crosshair__inner__content {
-  border-radius: 4px;
-  background: #3a3a48;
-  color: #fff;
-  font-size: 12px;
-  padding: 7px 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-}
-.rv-crosshair__inner--left {
-  right: 4px;
-}
-.rv-crosshair__inner--right {
-  left: 4px;
-}
-.rv-crosshair__title {
-  font-weight: bold;
-  white-space: nowrap;
-}
-.rv-crosshair__item {
-  white-space: nowrap;
-}
-.rv-hint {
-  position: absolute;
-  pointer-events: none;
-}
-.rv-hint__content {
-  border-radius: 4px;
-  padding: 7px 10px;
-  font-size: 12px;
-  background: #3a3a48;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  color: #fff;
-  text-align: left;
-  white-space: nowrap;
-}
-.rv-discrete-color-legend {
-  box-sizing: border-box;
-  overflow-y: auto;
-  font-size: 12px;
-}
-.rv-discrete-color-legend.horizontal {
-  white-space: nowrap;
-}
-.rv-discrete-color-legend-item {
-  color: #3a3a48;
-  border-radius: 1px;
-  padding: 9px 10px;
-}
-.rv-discrete-color-legend-item.horizontal {
-  display: inline-block;
-}
-.rv-discrete-color-legend-item.horizontal
-  .rv-discrete-color-legend-item__title {
-  margin-left: 0;
-  display: block;
-}
-.rv-discrete-color-legend-item__color {
-  display: inline-block;
-  vertical-align: middle;
-  overflow: visible;
-}
-.rv-discrete-color-legend-item__color__path {
-  stroke: #dcdcdc;
-  stroke-width: 2px;
-}
-.rv-discrete-color-legend-item__title {
-  margin-left: 10px;
-}
-.rv-discrete-color-legend-item.disabled {
-  color: #b8b8b8;
-}
-.rv-discrete-color-legend-item.clickable {
-  cursor: pointer;
-}
-.rv-discrete-color-legend-item.clickable:hover {
-  background: #f9f9f9;
-}
-.rv-search-wrapper {
-  display: flex;
-  flex-direction: column;
-}
-.rv-search-wrapper__form {
-  flex: 0;
-}
-.rv-search-wrapper__form__input {
-  width: 100%;
-  color: #a6a6a5;
-  border: 1px solid #e5e5e4;
-  padding: 7px 10px;
-  font-size: 12px;
-  box-sizing: border-box;
-  border-radius: 2px;
-  margin: 0 0 9px;
-  outline: 0;
-}
-.rv-search-wrapper__contents {
-  flex: 1;
-  overflow: auto;
-}
-.rv-continuous-color-legend {
-  font-size: 12px;
-}
-.rv-continuous-color-legend .rv-gradient {
-  height: 4px;
-  border-radius: 2px;
-  margin-bottom: 5px;
-}
-.rv-continuous-size-legend {
-  font-size: 12px;
-}
-.rv-continuous-size-legend .rv-bubbles {
-  text-align: justify;
-  overflow: hidden;
-  margin-bottom: 5px;
-  width: 100%;
-}
-.rv-continuous-size-legend .rv-bubble {
-  background: #d8d9dc;
-  display: inline-block;
-  vertical-align: bottom;
-}
-.rv-continuous-size-legend .rv-spacer {
-  display: inline-block;
-  font-size: 0;
-  line-height: 0;
-  width: 100%;
-}
-.rv-legend-titles {
-  height: 16px;
-  position: relative;
-}
-.rv-legend-titles__left,
-.rv-legend-titles__right,
-.rv-legend-titles__center {
-  position: absolute;
-  white-space: nowrap;
-  overflow: hidden;
-}
-.rv-legend-titles__center {
-  display: block;
-  text-align: center;
-  width: 100%;
-}
-.rv-legend-titles__right {
-  right: 0;
-}
-.rv-radial-chart .rv-xy-plot__series--label {
-  pointer-events: none;
-}
+const volumes = [200000, 1000000, 2000000, 10000000]
+const volumeLabels = ['200k', '1m', '2m', '10m']
 
-`
+const getPhaseFromTotal = (total) => {  
+  let phase = 0
 
-const Example = (props) => {
-  const axisStyle = {
-    ticks: {
-      fontSize: '7px',
-      color: '#f65683',
-      fontFamily: 'DM Sans',
-    },
-    title: {
-      fontSize: '16px',
-      color: '#333',
-    },
-    stroke: {
-      background: '#f65683',
-      color: '#f65683',
-    },
-    text: {
-      fontSize: '7px',
-    },
-  }
+  volumes.forEach(volume => {
+    if (total > volume) {
+      phase++
+    }
+  })
 
-  return (
-    <FlexibleXYPlot
-      style={{ stroke: props.theme.palette.dark.main, fontSize: '9px' }}
-    >
-      <VerticalGridLines style={{ stroke: '#f65683', color: '#f65683' }} />
-      <HorizontalGridLines style={{ stroke: '#f65683', color: '#f65683' }} />
-      <XAxis
-        hideLine
-        // title="Volume of SRM market buy, $"
-        labelFormat={(v) => `Value is ${v}`}
-        labelValues={[2]}
-        // tickValues={[0, 200000, 1000000, 2000000, 10000000, 20000000, 50000000, 100000000, 150000000, 200000000, 400000000]}
-        tickValues={[0, 200000, 1000000, 2000000, 10000000]}
-        tickFormat={(v) => {
-          if (v >= 1000000) {
-            return `${v / 1000000} m`
-          } else {
-            return `${v / 1000} k`
-          }
-        }}
-        style={axisStyle}
-      />
-      <YAxis
-        // title="Reward DCFI"
-        hideLine
-        labelValues={[2]}
-        tickFormat={(v) => {
-          if (v >= 1000000) {
-            return `${v / 1000000} m`
-          } else {
-            return `${v / 1000} k`
-          }
-        }}
-        style={axisStyle}
-        tickValues={[0, 200000, 400000, 600000, 800000]}
-        // tickValues={[0, 200000, 400000, 600000, 800000, 1000000, 1200000, 1400000, 1600000, 1800000, 2000000, ]}
-      />
-      <MarkSeries
-        size={10}
-        fill={props.theme.palette.red.chart}
-        data={[{ x: 0, y: 0 }]}
-      />
-      <LineSeries
-        // curve={'curveMonotoneX'}
-        style={{
-          strokeLinejoin: 'round',
-          stroke: props.theme.palette.red.chart,
-          strokeWidth: '.4rem',
-          boxShadow: '0px 0px 12px rgba(218, 255, 224, 0.65);',
-        }}
-        data={[
-          { y: 0, x: 0 },
-          { y: 200000, x: 200000 },
-          { y: 400000, x: 1000000 },
-          { y: 600000, x: 2000000 },
-          { y: 800000, x: 10000000 },
-        ]}
-        // data={[{y: 0, x: 0}, {y: 200000, x: 200000}, {y: 400000, x: 1000000}, {y: 600000, x: 2000000}, {y: 800000, x: 10000000}, {y: 1000000, x: 20000000}, {y: 1200000, x: 50000000}, {y: 1400000, x: 100000000}, {y: 1600000, x: 150000000}, {y: 1800000, x: 200000000}, {y: 2000000, x: 400000000}]}
-      />
-    </FlexibleXYPlot>
-  )
+  return phase
 }
 
 const RewardsRoute = (props) => {
@@ -423,6 +115,9 @@ const RewardsRoute = (props) => {
     getTotalVolumeForSerumKeyQueryRefetch,
     publicKey,
   } = props
+
+  const currentPhaseMaxVolume = volumes[getPhaseFromTotal(props.getTotalSerumVolumeQuery.getTotalSerumVolume)]
+  const currentPhaseMaxVolumeLabel = volumeLabels[getPhaseFromTotal(props.getTotalSerumVolumeQuery.getTotalSerumVolume)]
 
   useEffect(() => {
     getTotalVolumeForSerumKeyQueryRefetch({ publicKey: publicKey || '' })
@@ -561,28 +256,35 @@ const RewardsRoute = (props) => {
       </div>
       <RowContainer style={{ paddingTop: '5rem', paddingBottom: '10rem' }}>
         <Card
-          style={{ width: 'calc(40% - 4rem)', height: '45rem' }}
+          style={{ width: 'calc(40% - 4rem)', height: '50rem' }}
           theme={theme}
         >
-          <RowContainer style={{ height: '50%' }}>
+          <RowContainer style={{ height: '40%' }}>
             <SvgIcon src={serum} width="13%" height="auto" />
           </RowContainer>
-          <RowContainer style={{ height: '30%' }}>
-            <Value theme={theme}>
+          <RowContainer style={{ height: '40%', position: 'relative', }}>
+            <Line style={{ height: '50%', padding: '0 20% 4rem' }} gapDegree={90} percent={(props.getTotalSerumVolumeQuery.getTotalSerumVolume / currentPhaseMaxVolume * 100).toFixed(0)} strokeWidth="3" trailWidth="3" strokeColor="#C7FFD0" trailColor="#0E1016" />
+            <Value theme={theme} style={{ position: 'relative', top: '2.5rem' }}>
               {formatNumberToUSFormat(
                 +props.getTotalSerumVolumeQuery.getTotalSerumVolume.toFixed(1)
-              )}
+              )} / {currentPhaseMaxVolumeLabel}
             </Value>
+            <CardText theme={theme} style={{ position: 'absolute', left: '20%' }}>
+              Phase {getPhaseFromTotal(props.getTotalSerumVolumeQuery.getTotalSerumVolume)}
+            </CardText>
+            <CardText theme={theme} style={{ position: 'absolute', right: '20%' }}>
+              Phase {getPhaseFromTotal(props.getTotalSerumVolumeQuery.getTotalSerumVolume) + 1}
+            </CardText>
           </RowContainer>
           <RowContainer style={{ height: '20%' }}>
-            <CardText theme={theme}>was already traded in SRM</CardText>
+            <CardText theme={theme} >was already traded in SRM</CardText>
           </RowContainer>
         </Card>
         <Card
           style={{
             position: 'relative',
             width: 'calc(60% - 4rem)',
-            height: '45rem',
+            height: '50rem',
             padding: '4rem 1rem 4rem 4rem',
           }}
           theme={theme}
@@ -592,7 +294,7 @@ const RewardsRoute = (props) => {
           >
             Reward DCFI
           </ChartTitle>
-          <Example theme={theme} />
+          <Chart theme={theme} />
           <ChartTitle
             style={{ position: 'absolute', bottom: '2rem', right: '1rem' }}
           >
