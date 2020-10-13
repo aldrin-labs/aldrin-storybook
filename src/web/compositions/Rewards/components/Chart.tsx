@@ -9,6 +9,8 @@ import {
     MarkSeries,
   } from 'react-vis'
 
+import { srmVolumesInUSDT, dcfiVolumes } from '../index'
+
 export const Chart = (props) => {
     const axisStyle = {
       ticks: {
@@ -41,7 +43,7 @@ export const Chart = (props) => {
           labelFormat={(v) => `Value is ${v}`}
           labelValues={[2]}
           // tickValues={[0, 200000, 1000000, 2000000, 10000000, 20000000, 50000000, 100000000, 150000000, 200000000, 400000000]}
-          tickValues={[0, 200000, 1000000, 2000000, 10000000]}
+          tickValues={[0, ...srmVolumesInUSDT]}
           tickFormat={(v) => {
             if (v >= 1000000) {
               return `${v / 1000000} m`
@@ -63,13 +65,13 @@ export const Chart = (props) => {
             }
           }}
           style={axisStyle}
-          tickValues={[0, 200000, 400000, 600000, 800000]}
+          tickValues={[0, ...dcfiVolumes]}
           // tickValues={[0, 200000, 400000, 600000, 800000, 1000000, 1200000, 1400000, 1600000, 1800000, 2000000, ]}
         />
         <MarkSeries
           size={10}
           fill={props.theme.palette.red.chart}
-          data={[{ x: 0, y: 0 }]}
+          data={[{ x: props.pointData.srmInUSDT, y: props.pointData.dcfi }]}
         />
         <LineSeries
           // curve={'curveMonotoneX'}

@@ -6,7 +6,7 @@ import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getTotalVolumeForSerumKey } from '@core/graphql/queries/chart/getTotalVolumeForSerumKey'
 import { getTotalSerumVolume } from '@core/graphql/queries/chart/getTotalSerumVolume'
 
-import serum from '@icons/Serum.svg'
+import serum from '@icons/usdt.svg'
 import decefi from '@icons/decefi.svg'
 
 import { withTheme } from '@material-ui/styles'
@@ -93,13 +93,14 @@ const ChartTitle = styled.span`
   text-transform: capitalize;
 `
 
-const volumes = [200000, 1000000, 2000000, 10000000]
+export const srmVolumesInUSDT = [200000, 1000000, 2000000, 10000000]
+export const dcfiVolumes = [200000, 400000, 600000, 800000]
 const volumeLabels = ['200k', '1m', '2m', '10m']
 
 const getPhaseFromTotal = (total) => {  
   let phase = 0
 
-  volumes.forEach(volume => {
+  srmVolumesInUSDT.forEach(volume => {
     if (total > volume) {
       phase++
     }
@@ -116,8 +117,12 @@ const RewardsRoute = (props) => {
     publicKey,
   } = props
 
-  const currentPhaseMaxVolume = volumes[getPhaseFromTotal(props.getTotalSerumVolumeQuery.getTotalSerumVolume)]
-  const currentPhaseMaxVolumeLabel = volumeLabels[getPhaseFromTotal(props.getTotalSerumVolumeQuery.getTotalSerumVolume)]
+  const tradedSerumInUSDT = props.getTotalSerumVolumeQuery.getTotalSerumVolume.usdVolume
+  const currentPhase = getPhaseFromTotal(tradedSerumInUSDT)
+  const currentPhaseMaxVolume = srmVolumesInUSDT[currentPhase]
+  const currentPhaseMaxVolumeLabel = volumeLabels[currentPhase]
+
+  const dcfiRewarded = tradedSerumInUSDT / currentPhaseMaxVolume * dcfiVolumes[currentPhase]
 
   useEffect(() => {
     getTotalVolumeForSerumKeyQueryRefetch({ publicKey: publicKey || '' })
@@ -158,7 +163,7 @@ const RewardsRoute = (props) => {
       >
         <Card theme={theme}>
           <RowContainer style={{ height: '50%' }}>
-            <SvgIcon src={serum} width="13%" height="auto" />
+            <SvgIcon src={serum} width="20%" height="auto" />
           </RowContainer>
           <RowContainer
             justify={'space-around'}
@@ -168,12 +173,12 @@ const RewardsRoute = (props) => {
             }}
           >
             <Value theme={theme}>
-              {getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.srmTraded.toFixed(
+              {getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.usdTraded.toFixed(
                 1
               )}
             </Value>{' '}
             <CardText theme={theme} width={'auto'}>
-              SRM traded
+              SRM traded in USDT
             </CardText>
             <Link
               to={'/chart/spot/SRM_USDT'}
@@ -260,24 +265,24 @@ const RewardsRoute = (props) => {
           theme={theme}
         >
           <RowContainer style={{ height: '40%' }}>
-            <SvgIcon src={serum} width="13%" height="auto" />
+            <SvgIcon src={serum} width="20%" height="auto" />
           </RowContainer>
           <RowContainer style={{ height: '40%', position: 'relative', }}>
-            <Line style={{ height: '50%', padding: '0 20% 4rem' }} gapDegree={90} percent={(props.getTotalSerumVolumeQuery.getTotalSerumVolume / currentPhaseMaxVolume * 100).toFixed(0)} strokeWidth="3" trailWidth="3" strokeColor="#C7FFD0" trailColor="#0E1016" />
+            <Line style={{ height: '50%', padding: '0 20% 4rem' }} gapDegree={90} percent={(tradedSerumInUSDT / currentPhaseMaxVolume * 100).toFixed(0)} strokeWidth="3" trailWidth="3" strokeColor="#C7FFD0" trailColor="#0E1016" />
             <Value theme={theme} style={{ position: 'relative', top: '2.5rem' }}>
               {formatNumberToUSFormat(
-                +props.getTotalSerumVolumeQuery.getTotalSerumVolume.toFixed(1)
+                +tradedSerumInUSDT.toFixed(1)
               )} / {currentPhaseMaxVolumeLabel}
             </Value>
             <CardText theme={theme} style={{ position: 'absolute', left: '20%' }}>
-              Phase {getPhaseFromTotal(props.getTotalSerumVolumeQuery.getTotalSerumVolume)}
+              Phase {getPhaseFromTotal(tradedSerumInUSDT)}
             </CardText>
             <CardText theme={theme} style={{ position: 'absolute', right: '20%' }}>
-              Phase {getPhaseFromTotal(props.getTotalSerumVolumeQuery.getTotalSerumVolume) + 1}
+              Phase {getPhaseFromTotal(tradedSerumInUSDT) + 1}
             </CardText>
           </RowContainer>
           <RowContainer style={{ height: '20%' }}>
-            <CardText theme={theme} >was already traded in SRM</CardText>
+            <CardText theme={theme} >was already traded in USDT</CardText>
           </RowContainer>
         </Card>
         <Card
@@ -294,7 +299,7 @@ const RewardsRoute = (props) => {
           >
             Reward DCFI
           </ChartTitle>
-          <Chart theme={theme} />
+          <Chart pointData={{ srmInUSDT: tradedSerumInUSDT, dcfi: dcfiRewarded }} theme={theme} />
           <ChartTitle
             style={{ position: 'absolute', bottom: '2rem', right: '1rem' }}
           >
@@ -316,6 +321,7 @@ const Wrapper = (props) => {
       component={RewardsRoute}
       query={getTotalVolumeForSerumKey}
       name={'getTotalVolumeForSerumKeyQuery'}
+      fetchPolicy={'network-only'}
       withOutSpinner={false}
       variables={{
         publicKey,
