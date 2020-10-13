@@ -49,7 +49,7 @@ import FirstVisitPopup from '@sb/compositions/Chart/components/FirstVisitPopup'
 class SimpleTabs extends React.Component {
   state = {
     operation: 'buy',
-    mode: 'limit',
+    mode: 'market',
     leverage: false,
     reduceOnly: false,
     orderMode: 'TIF',
