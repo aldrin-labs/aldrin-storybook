@@ -98,8 +98,6 @@ export const srmVolumesInUSDT = [100000, 500000, 1000000, 5000000]
 export const dcfiVolumes = [200000, 400000, 600000, 800000]
 const volumeLabels = ['100k', '500k', '1m', '5m']
 
-const twitterText = 'I%20have%20already%20farmed%20243%2C000%20%24DCFI%20on%20dex.cryptocurrencies.ai%0A%0A%40decefi_official%20%40CCAI_Official%20%40ProjectSerum%20'
-
 const getPhaseFromTotal = (total) => {  
   let phase = 0
 
@@ -130,6 +128,7 @@ const RewardsRoute = (props) => {
   const dcfiRewarded = ((tradedSerumInUSDT - prevPhaseMaxVolume) / (currentPhaseMaxVolume - prevPhaseMaxVolume) * (dcfiVolumes[currentPhase] - prevPhaseDCFIRewarded)) + prevPhaseDCFIRewarded
 
   const dcfiEarned = +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.dcfiEarned + +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.dcfiCurrentRoundEst
+  const dcfiEarnedForTwitter = formatNumberToUSFormat(dcfiEarned).replace(',', '%2C')
 
   useEffect(() => {
     getTotalVolumeForSerumKeyQueryRefetch({ publicKey: publicKey || '' })
@@ -238,12 +237,14 @@ const RewardsRoute = (props) => {
             <CardText theme={theme} width={'auto'}>
               DCFI earned
             </CardText>
+            <RowContainer>
             <Link
               to={'/chart'}
               style={{
-                width: '50%',
+                width: 'calc(50% - 2rem)',
                 textDecoration: 'none',
                 paddingBottom: '1.5rem',
+                margin: '0 1rem'
               }}
             >
               <BtnCustom
@@ -260,6 +261,29 @@ const RewardsRoute = (props) => {
                 Harvest (coming soon)
               </BtnCustom>
             </Link>
+            <a
+              style={{
+                width: 'calc(50% - 2rem)',
+                textDecoration: 'none',
+                paddingBottom: '1.5rem',
+                margin: '0 1rem'
+              }}
+              href={`https://twitter.com/intent/tweet?text=I%20have%20already%20farmed%20${dcfiEarnedForTwitter}%20%24DCFI%20on%20dex.cryptocurrencies.ai%0A%0A%40decefi_official%20%40CCAI_Official%20%40ProjectSerum%20`} rel="noopener noreferrel" target={'_blank'}> 
+              <BtnCustom
+                theme={theme}
+                btnColor={theme.palette.grey.main}
+                backgroundColor={theme.palette.blue.serum}
+                hoverBackground={theme.palette.blue.serum}
+                padding={'1.5rem 0'}
+                height={'5rem'}
+                fontSize={'1.6rem'}
+                btnWidth={'100%'}
+                textTransform={'none'}
+              >
+                Share in Twitter
+              </BtnCustom>
+            </a>
+            </RowContainer>
           </RowContainer>
         </Card>
       </div>
