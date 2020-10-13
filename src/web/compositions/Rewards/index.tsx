@@ -19,6 +19,7 @@ import { Line } from 'rc-progress';
 
 import { Styles } from './index.styles'
 import { Chart } from './components/Chart'
+import { Canvas } from './components/Canvas'
 
 import { formatNumberToUSFormat } from '@core/utils/PortfolioTableUtils'
 
@@ -122,7 +123,9 @@ const RewardsRoute = (props) => {
   const currentPhaseMaxVolume = srmVolumesInUSDT[currentPhase]
   const currentPhaseMaxVolumeLabel = volumeLabels[currentPhase]
 
-  const dcfiRewarded = tradedSerumInUSDT / currentPhaseMaxVolume * dcfiVolumes[currentPhase]
+  const prevPhaseMaxVolume = currentPhase >= 1 ? srmVolumesInUSDT[currentPhase - 1] : 0
+  const prevPhaseDCFIRewarded = currentPhase >= 1 ? dcfiVolumes[currentPhase - 1] : 0
+  const dcfiRewarded = ((tradedSerumInUSDT - prevPhaseMaxVolume) / (currentPhaseMaxVolume - prevPhaseMaxVolume) * (dcfiVolumes[currentPhase] - prevPhaseDCFIRewarded)) + prevPhaseDCFIRewarded
 
   useEffect(() => {
     getTotalVolumeForSerumKeyQueryRefetch({ publicKey: publicKey || '' })
@@ -306,6 +309,9 @@ const RewardsRoute = (props) => {
             Volume of SRM market buy, $
           </ChartTitle>
         </Card>
+        {/* <Card theme={theme}>
+          <Canvas  />
+        </Card> */}
       </RowContainer>
     </div>
   )
