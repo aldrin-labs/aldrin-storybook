@@ -21,7 +21,7 @@ import { Styles } from './index.styles'
 import { Chart } from './components/Chart'
 import { Canvas } from './components/Canvas'
 
-import { formatNumberToUSFormat } from '@core/utils/PortfolioTableUtils'
+import { formatNumberToUSFormat, stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 export const BlockContainer = styled.div``
 
@@ -94,9 +94,11 @@ const ChartTitle = styled.span`
   text-transform: capitalize;
 `
 
-export const srmVolumesInUSDT = [200000, 1000000, 2000000, 10000000]
+export const srmVolumesInUSDT = [100000, 500000, 1000000, 5000000]
 export const dcfiVolumes = [200000, 400000, 600000, 800000]
-const volumeLabels = ['200k', '1m', '2m', '10m']
+const volumeLabels = ['100k', '500k', '1m', '5m']
+
+const twitterText = 'I%20have%20already%20farmed%20243%2C000%20%24DCFI%20on%20dex.cryptocurrencies.ai%0A%0A%40decefi_official%20%40CCAI_Official%20%40ProjectSerum%20'
 
 const getPhaseFromTotal = (total) => {  
   let phase = 0
@@ -126,6 +128,8 @@ const RewardsRoute = (props) => {
   const prevPhaseMaxVolume = currentPhase >= 1 ? srmVolumesInUSDT[currentPhase - 1] : 0
   const prevPhaseDCFIRewarded = currentPhase >= 1 ? dcfiVolumes[currentPhase - 1] : 0
   const dcfiRewarded = ((tradedSerumInUSDT - prevPhaseMaxVolume) / (currentPhaseMaxVolume - prevPhaseMaxVolume) * (dcfiVolumes[currentPhase] - prevPhaseDCFIRewarded)) + prevPhaseDCFIRewarded
+
+  const dcfiEarned = +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.dcfiEarned + +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.dcfiCurrentRoundEst
 
   useEffect(() => {
     getTotalVolumeForSerumKeyQueryRefetch({ publicKey: publicKey || '' })
@@ -227,12 +231,9 @@ const RewardsRoute = (props) => {
             }}
           >
             <Value theme={theme}>
-              {(
-                +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey
-                  .dcfiEarned +
-                +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey
-                  .dcfiCurrentRoundEst
-              ).toFixed(3)}
+              {stripDigitPlaces(
+                dcfiEarned, 3
+              )}
             </Value>{' '}
             <CardText theme={theme} width={'auto'}>
               DCFI earned
@@ -310,7 +311,7 @@ const RewardsRoute = (props) => {
           </ChartTitle>
         </Card>
         {/* <Card theme={theme}>
-          <Canvas  />
+          <Canvas dcfiEarned={dcfiEarned} />
         </Card> */}
       </RowContainer>
     </div>

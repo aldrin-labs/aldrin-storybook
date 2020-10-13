@@ -1,5 +1,6 @@
 import styled, { createGlobalStyle } from 'styled-components'
 import DMSans from '@sb/fonts/DMSans.woff2'
+import Monaco from '@sb/fonts/Monaco.woff2'
 import DMSansMedium from '@sb/fonts/DMSans-Medium.woff2'
 import AvenirNextDemi from '@sb/fonts/AvenirNextCyr-Demi.woff2'
 import FontAwesome from '@sb/fonts/fontawesome-webfont.woff2'
@@ -35,6 +36,14 @@ export const FontStyle = createGlobalStyle`
   font-style: normal;
   font-weight: 400;
   src: local('DM Sans Regular'), local('DMSans-Regular'), url('${DMSans}') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Monaco';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Monaco'), local('Monaco'), url('${Monaco}') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
