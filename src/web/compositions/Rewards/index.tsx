@@ -14,7 +14,7 @@ import { withTheme } from '@material-ui/styles'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { notify } from '@sb/dexUtils/notifications'
 
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index'
+import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Link } from 'react-router-dom'
 // import { Circle } from 'rc-progress';
@@ -98,9 +98,27 @@ const ChartTitle = styled.span`
   text-transform: capitalize;
 `
 
-export const srmVolumesInUSDT = [100000, 500000, 1000000, 5000000]
+const CardSubTitle = styled.h3`
+  color: #9F9F9F;
+  font-family: DM Sans;
+  font-weight: bold;
+  font-size: 1.6rem;
+  text-transform: capitalize;
+  margin: 0;
+`
+
+const CardSubValue = styled.span`
+  color: #C7FFD0;
+  font-family: DM Sans;
+  font-weight: bold;
+  font-size: 2rem;
+  letter-spacing: .1rem;
+`
+
+
+export const srmVolumesInUSDT = [100000, 600000, 1600000, 6600000]
 export const dcfiVolumes = [200000, 400000, 600000, 800000]
-const volumeLabels = ['100k', '500k', '1m', '5m']
+const volumeLabels = ['100k', '600k', '1.6m', '6.6m']
 
 const getPhaseFromTotal = (total) => {  
   let phase = 0
@@ -122,19 +140,21 @@ const RewardsRoute = (props) => {
     publicKey,
   } = props
 
-  const tradedSerumInUSDT = props.getTotalSerumVolumeQuery.getTotalSerumVolume.usdVolume / 10000
+  const tradedSerumInUSDT = props.getTotalSerumVolumeQuery.getTotalSerumVolume.usdVolume / 1000
   const currentPhase = getPhaseFromTotal(tradedSerumInUSDT)
   const currentPhaseMaxVolume = srmVolumesInUSDT[currentPhase]
   const currentPhaseMaxVolumeLabel = volumeLabels[currentPhase]
 
   const prevPhaseMaxVolume = currentPhase >= 1 ? srmVolumesInUSDT[currentPhase - 1] : 0
   const prevPhaseDCFIRewarded = currentPhase >= 1 ? dcfiVolumes[currentPhase - 1] : 0
-  const dcfiRewarded = ((tradedSerumInUSDT - prevPhaseMaxVolume) / (currentPhaseMaxVolume - prevPhaseMaxVolume) * (dcfiVolumes[currentPhase] - prevPhaseDCFIRewarded)) + prevPhaseDCFIRewarded
 
+  const volumeTradedInThisPhase = (tradedSerumInUSDT - prevPhaseMaxVolume)
+  
+  const dcfiRewarded = (volumeTradedInThisPhase / currentPhaseMaxVolume) * (dcfiVolumes[currentPhase] - prevPhaseDCFIRewarded) + prevPhaseDCFIRewarded
   const dcfiEarned = +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.dcfiEarned + +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.dcfiCurrentRoundEst
   const dcfiEarnedForTwitter = formatNumberToUSFormat(stripDigitPlaces(dcfiEarned, 3)).replace(',', '%2C')
 
-  const progressBarSerumValue = +((tradedSerumInUSDT - prevPhaseMaxVolume) / (currentPhaseMaxVolume - prevPhaseMaxVolume) * 100).toFixed(0)
+  const progressBarSerumValue = +((volumeTradedInThisPhase / currentPhaseMaxVolume) * 100).toFixed(0)
 
   useEffect(() => {
     getTotalVolumeForSerumKeyQueryRefetch({ publicKey: publicKey || '' })
@@ -307,43 +327,70 @@ const RewardsRoute = (props) => {
       </div>
       <RowContainer style={{ paddingTop: '5rem', paddingBottom: '10rem' }}>
         <Card
-          style={{ width: 'calc(40% - 4rem)', height: '50rem' }}
+          style={{ width: 'calc(40% - 4rem)', height: '60rem', padding: '0 3rem' }}
           theme={theme}
         >
-          <RowContainer style={{ height: '40%' }}>
-            <SvgIcon src={serum} width="13%" height="auto" />
-          </RowContainer>
-          <RowContainer style={{ height: '40%', position: 'relative', }}>
+          <RowContainer style={{ height: '60%', position: 'relative', borderBottom: '.1rem solid #61D8E6', }}>
             <Circle 
-              styles={{ root: { height: '50%' } }} 
+              styles={{ 
+                root: { height: '100%', padding: '7rem 0 3rem 0' }, 
+                path: { stroke: '#C7FFD0', filter: 'drop-shadow(0px 0px 24px rgba(199, 255, 208, 0.67));' }, 
+                trail: { stroke: '#0E1016', }, 
+                text: { fill: '#C7FFD0', fontWeight: 'bold', transform: 'translateY(3%)' } 
+              }} 
               value={progressBarSerumValue} 
+              strokeWidth={16}
               text={`${progressBarSerumValue} %`}
-              // strokeWidth="16" 
-              // trailWidth="16" 
-              // strokeColor="#C7FFD0" 
-              // trailColor="#0E1016" 
             />
-            <Value theme={theme} style={{ position: 'relative', top: '2.5rem' }}>
+            {/* <Value theme={theme} style={{ position: 'relative', top: '2.5rem' }}>
               {formatNumberToUSFormat(
                 +tradedSerumInUSDT.toFixed(1)
               )} / {currentPhaseMaxVolumeLabel}
-            </Value>
-            <CardText theme={theme} style={{ position: 'absolute', left: '20%' }}>
-              Phase {getPhaseFromTotal(tradedSerumInUSDT)}
-            </CardText>
-            <CardText theme={theme} style={{ position: 'absolute', right: '20%' }}>
+            </Value> */}
+            <CardText theme={theme} style={{ position: 'absolute', left: '50%', top: '3.5rem', transform: 'translate(-50%, -50%)' }}>
               Phase {getPhaseFromTotal(tradedSerumInUSDT) + 1}
             </CardText>
           </RowContainer>
-          <RowContainer style={{ height: '20%' }}>
-            <CardText theme={theme} >was already traded in USDT</CardText>
+          <RowContainer style={{ height: '40%' }}>
+            <Row direction={'column'} align={'flex-start'} justify={'space-around'} style={{ width: '50%', height: '30%', paddingLeft: '1rem' }}>
+              <CardSubTitle>
+                Total Volume
+              </CardSubTitle>
+              <CardSubValue>
+                ${formatNumberToUSFormat(+tradedSerumInUSDT.toFixed(0))}
+              </CardSubValue>
+            </Row>
+            <Row direction={'column'} align={'flex-start'} justify={'space-around'} style={{ width: '50%', height: '30%' }}>
+              <CardSubTitle>
+                Volume until next phase
+              </CardSubTitle>
+              <CardSubValue>
+                ${formatNumberToUSFormat(+(currentPhaseMaxVolume - tradedSerumInUSDT).toFixed(0))}
+              </CardSubValue>
+            </Row>
+            <Row direction={'column'} align={'flex-start'} justify={'space-around'} style={{ width: '50%', height: '30%', paddingLeft: '1rem' }}>
+              <CardSubTitle>
+                Total DCFI farmed
+              </CardSubTitle>
+              <CardSubValue>
+                {formatNumberToUSFormat(+dcfiRewarded.toFixed(0))}
+              </CardSubValue>
+            </Row>
+            <Row direction={'column'} align={'flex-start'} justify={'space-around'} style={{ width: '50%', height: '30%' }}>
+              <CardSubTitle>
+                DCFI until next phase
+              </CardSubTitle>
+              <CardSubValue>
+              {formatNumberToUSFormat(+(dcfiVolumes[currentPhase] - dcfiRewarded).toFixed(0))}
+              </CardSubValue>
+            </Row>
           </RowContainer>
         </Card>
         <Card
           style={{
             position: 'relative',
             width: 'calc(60% - 4rem)',
-            height: '50rem',
+            height: '60rem',
             padding: '4rem 1rem 4rem 4rem',
           }}
           theme={theme}
