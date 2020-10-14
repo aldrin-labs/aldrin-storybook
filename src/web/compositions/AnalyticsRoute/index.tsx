@@ -29,8 +29,8 @@ export const RowContainer = styled(Row)`
   width: 100%;
 `
 export const Block = styled.div`
-  width: ${(props) => props.width || '15.7%'};
-  height: ${(props) => props.height || '15rem'};
+  width: ${(props) => props.width || 'calc((100% - 5rem) / 6)'};
+  height: ${(props) => props.height || '100%'};
   background-color: ${(props) =>
     props.backgroundColor || props.theme.palette.white.block};
   margin-right: 1rem;
@@ -47,7 +47,7 @@ export const Block = styled.div`
   flex-direction: column;
 
   &:last-child {
-    margin-right:none;
+    margin-right:0;
   }
 `
 export const BlockContainer = styled.div`
@@ -147,10 +147,10 @@ const AnalyticsRoute = ({ markets, setMarketAddress, ...props }) => {
       }}
       direction={'column'}
     >
-      <RowContainer>
+      <RowContainer style={{ height: '75%' }}>
         <Card
           theme={theme}
-          style={{ padding: '.5rem' }}
+          style={{ padding: '.5rem', height: '100%' }}
         >
           <SingleChart
             name=""
@@ -159,7 +159,7 @@ const AnalyticsRoute = ({ markets, setMarketAddress, ...props }) => {
           />
         </Card>
         </RowContainer>
-      <RowContainer><Block theme={theme}>
+      <RowContainer style={{ height: '25%', paddingBottom:'1.5rem',paddingTop:'1.5rem'}}><Block theme={theme}>
           srm marketcap{' '}
           <Text>
             {formatNumberToUSFormat(
