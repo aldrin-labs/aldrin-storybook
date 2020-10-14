@@ -89,6 +89,11 @@ export async function settleFunds({
     createAccountSigner = result?.signer;
   }
   let referrerQuoteWallet = null;
+
+  console.log('market.supportsReferralFees', market.supportsReferralFees)
+  console.log('process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS', process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS)
+  console.log('process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS', process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS)
+
   if (market.supportsReferralFees) {
     if (
       process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS &&
@@ -99,6 +104,7 @@ export async function settleFunds({
       referrerQuoteWallet = new PublicKey(
         process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS,
       );
+      console.log('referrerQuoteWallet USDT', referrerQuoteWallet)
     } else if (
       process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS &&
       market.quoteMintAddress.equals(
@@ -108,6 +114,7 @@ export async function settleFunds({
       referrerQuoteWallet = new PublicKey(
         process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS,
       );
+      console.log('referrerQuoteWallet USDC', referrerQuoteWallet)
     }
   }
   const {
