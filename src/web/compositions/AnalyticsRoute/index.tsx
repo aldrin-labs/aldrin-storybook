@@ -147,10 +147,10 @@ const AnalyticsRoute = ({ markets, setMarketAddress, ...props }) => {
       }}
       direction={'column'}
     >
-      <RowContainer style={{ height: '75%' }}>
+      <RowContainer style={{ height: '75%', padding: '1.5rem 0 0 0' }}>
         <Card
           theme={theme}
-          style={{ padding: '.5rem', height: '100%',marginTop:'1rem' }}
+          style={{ padding: '.5rem', height: '100%'  }}
         >
           <SingleChart
             name=""
