@@ -154,7 +154,7 @@ const RewardsRoute = (props) => {
   const dcfiEarned = +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.dcfiEarned + +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.dcfiCurrentRoundEst
   const dcfiEarnedForTwitter = formatNumberToUSFormat(stripDigitPlaces(dcfiEarned, 3)).replace(',', '%2C')
 
-  const progressBarSerumValue = +((volumeTradedInThisPhase / currentPhaseMaxVolume) * 100).toFixed(0)
+  const progressBarSerumValue = +((volumeTradedInThisPhase / currentPhaseMaxVolume - prevPhaseMaxVolume) * 100).toFixed(0)
 
   useEffect(() => {
     getTotalVolumeForSerumKeyQueryRefetch({ publicKey: publicKey || '' })
