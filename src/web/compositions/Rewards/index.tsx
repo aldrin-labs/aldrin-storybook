@@ -135,7 +135,7 @@ const RewardsRoute = (props) => {
   useEffect(() => {
     getTotalVolumeForSerumKeyQueryRefetch({ publicKey: publicKey || '' })
   }, [publicKey])
-  // console.log('getTotalVolumeForSerumKeyQuery', getTotalVolumeForSerumKeyQuery)
+
   return (
     <div
       style={{
