@@ -17,7 +17,9 @@ import { notify } from '@sb/dexUtils/notifications'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Link } from 'react-router-dom'
-import { Line } from 'rc-progress';
+// import { Circle } from 'rc-progress';
+import { CircularProgressbar as Circle } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 
 import { Styles } from './index.styles'
 import { Chart } from './components/Chart'
@@ -120,7 +122,7 @@ const RewardsRoute = (props) => {
     publicKey,
   } = props
 
-  const tradedSerumInUSDT = props.getTotalSerumVolumeQuery.getTotalSerumVolume.usdVolume
+  const tradedSerumInUSDT = props.getTotalSerumVolumeQuery.getTotalSerumVolume.usdVolume / 10000
   const currentPhase = getPhaseFromTotal(tradedSerumInUSDT)
   const currentPhaseMaxVolume = srmVolumesInUSDT[currentPhase]
   const currentPhaseMaxVolumeLabel = volumeLabels[currentPhase]
@@ -131,6 +133,8 @@ const RewardsRoute = (props) => {
 
   const dcfiEarned = +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.dcfiEarned + +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.dcfiCurrentRoundEst
   const dcfiEarnedForTwitter = formatNumberToUSFormat(stripDigitPlaces(dcfiEarned, 3)).replace(',', '%2C')
+
+  const progressBarSerumValue = +((tradedSerumInUSDT - prevPhaseMaxVolume) / (currentPhaseMaxVolume - prevPhaseMaxVolume) * 100).toFixed(0)
 
   useEffect(() => {
     getTotalVolumeForSerumKeyQueryRefetch({ publicKey: publicKey || '' })
@@ -310,7 +314,15 @@ const RewardsRoute = (props) => {
             <SvgIcon src={serum} width="13%" height="auto" />
           </RowContainer>
           <RowContainer style={{ height: '40%', position: 'relative', }}>
-            <Line style={{ height: '50%', padding: '0 20% 4rem' }} gapDegree={90} percent={((tradedSerumInUSDT - prevPhaseMaxVolume) / (currentPhaseMaxVolume - prevPhaseMaxVolume) * 100).toFixed(0)} strokeWidth="3" trailWidth="3" strokeColor="#C7FFD0" trailColor="#0E1016" />
+            <Circle 
+              styles={{ root: { height: '50%' } }} 
+              value={progressBarSerumValue} 
+              text={`${progressBarSerumValue} %`}
+              // strokeWidth="16" 
+              // trailWidth="16" 
+              // strokeColor="#C7FFD0" 
+              // trailColor="#0E1016" 
+            />
             <Value theme={theme} style={{ position: 'relative', top: '2.5rem' }}>
               {formatNumberToUSFormat(
                 +tradedSerumInUSDT.toFixed(1)
