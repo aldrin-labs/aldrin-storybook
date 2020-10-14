@@ -6,11 +6,13 @@ import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getTotalVolumeForSerumKey } from '@core/graphql/queries/chart/getTotalVolumeForSerumKey'
 import { getTotalSerumVolume } from '@core/graphql/queries/chart/getTotalSerumVolume'
 
-import serum from '@icons/usdt.svg'
+import serum from '@icons/Serum.svg'
 import decefi from '@icons/decefi.svg'
+import blackTwitter from '@icons/blackTwitter.svg'
 
 import { withTheme } from '@material-ui/styles'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { notify } from '@sb/dexUtils/notifications'
 
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
@@ -128,7 +130,7 @@ const RewardsRoute = (props) => {
   const dcfiRewarded = ((tradedSerumInUSDT - prevPhaseMaxVolume) / (currentPhaseMaxVolume - prevPhaseMaxVolume) * (dcfiVolumes[currentPhase] - prevPhaseDCFIRewarded)) + prevPhaseDCFIRewarded
 
   const dcfiEarned = +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.dcfiEarned + +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.dcfiCurrentRoundEst
-  const dcfiEarnedForTwitter = formatNumberToUSFormat(dcfiEarned).replace(',', '%2C')
+  const dcfiEarnedForTwitter = formatNumberToUSFormat(stripDigitPlaces(dcfiEarned, 3)).replace(',', '%2C')
 
   useEffect(() => {
     getTotalVolumeForSerumKeyQueryRefetch({ publicKey: publicKey || '' })
@@ -169,7 +171,7 @@ const RewardsRoute = (props) => {
       >
         <Card theme={theme}>
           <RowContainer style={{ height: '50%' }}>
-            <SvgIcon src={serum} width="20%" height="auto" />
+            <SvgIcon src={serum} width="13%" height="auto" />
           </RowContainer>
           <RowContainer
             justify={'space-around'}
@@ -181,7 +183,7 @@ const RewardsRoute = (props) => {
             <Value theme={theme}>
               {getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.usdTraded.toFixed(
                 1
-              )}
+              )} USDT
             </Value>{' '}
             <CardText theme={theme} width={'auto'}>
               SRM traded in USDT
@@ -268,7 +270,19 @@ const RewardsRoute = (props) => {
                 paddingBottom: '1.5rem',
                 margin: '0 1rem'
               }}
-              href={`https://twitter.com/intent/tweet?text=I%20have%20already%20farmed%20${dcfiEarnedForTwitter}%20%24DCFI%20on%20dex.cryptocurrencies.ai%0A%0A%40decefi_official%20%40CCAI_Official%20%40ProjectSerum%20`} rel="noopener noreferrel" target={'_blank'}> 
+              href={`https://twitter.com/intent/tweet?text=I%20have%20already%20farmed%20${dcfiEarnedForTwitter}%20%24DCFI%20on%20dex.cryptocurrencies.ai%0A%0AHow%20to%20farm%20%24DCFI%20by%20%24SRM%20trading%3A%0Ahttps%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3Dyz5uaN0aCyw%26feature%3Dyoutu.be%0A%0A%40decefi_official%20%40CCAI_Official%0A%0Apic.twitter.com%2FJmNK1mE4vx%20`} 
+              rel="noopener noreferrel" 
+              target={'_blank'}
+              onClick={(e) => {
+                if (publicKey === '') {
+                  e.preventDefault()
+                  notify({
+                    message: 'Connect your wallet first',
+                    type: 'error',
+                  })
+                }
+              }}
+            > 
               <BtnCustom
                 theme={theme}
                 btnColor={theme.palette.grey.main}
@@ -280,7 +294,7 @@ const RewardsRoute = (props) => {
                 btnWidth={'100%'}
                 textTransform={'none'}
               >
-                Share in Twitter
+               <SvgIcon src={blackTwitter} width={'2.5rem'} height={'2.5rem'} style={{ marginRight: '1rem' }} />  Share
               </BtnCustom>
             </a>
             </RowContainer>
@@ -293,10 +307,10 @@ const RewardsRoute = (props) => {
           theme={theme}
         >
           <RowContainer style={{ height: '40%' }}>
-            <SvgIcon src={serum} width="20%" height="auto" />
+            <SvgIcon src={serum} width="13%" height="auto" />
           </RowContainer>
           <RowContainer style={{ height: '40%', position: 'relative', }}>
-            <Line style={{ height: '50%', padding: '0 20% 4rem' }} gapDegree={90} percent={(tradedSerumInUSDT / currentPhaseMaxVolume * 100).toFixed(0)} strokeWidth="3" trailWidth="3" strokeColor="#C7FFD0" trailColor="#0E1016" />
+            <Line style={{ height: '50%', padding: '0 20% 4rem' }} gapDegree={90} percent={((tradedSerumInUSDT - prevPhaseMaxVolume) / (currentPhaseMaxVolume - prevPhaseMaxVolume) * 100).toFixed(0)} strokeWidth="3" trailWidth="3" strokeColor="#C7FFD0" trailColor="#0E1016" />
             <Value theme={theme} style={{ position: 'relative', top: '2.5rem' }}>
               {formatNumberToUSFormat(
                 +tradedSerumInUSDT.toFixed(1)
@@ -345,7 +359,6 @@ const RewardsRoute = (props) => {
 const Wrapper = (props) => {
   const { wallet } = useWallet()
   const publicKey = wallet.publicKey ? wallet.publicKey.toBase58() : ''
-  console.log('wallet.publicKey', publicKey)
 
   return (
     <QueryRenderer
@@ -354,6 +367,7 @@ const Wrapper = (props) => {
       name={'getTotalVolumeForSerumKeyQuery'}
       fetchPolicy={'network-only'}
       withOutSpinner={false}
+      pollInterval={15000}
       variables={{
         publicKey,
       }}
@@ -368,6 +382,7 @@ export default compose(
   queryRendererHoc({
     query: getTotalSerumVolume,
     name: 'getTotalSerumVolumeQuery',
+    pollInterval: 10000,
     fetchPolicy: 'cache-and-network'
   })
 )(Wrapper)
