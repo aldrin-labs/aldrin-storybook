@@ -150,7 +150,7 @@ const AnalyticsRoute = ({ markets, setMarketAddress, ...props }) => {
       <RowContainer style={{ height: '75%' }}>
         <Card
           theme={theme}
-          style={{ padding: '.5rem', height: '100%' }}
+          style={{ padding: '.5rem', height: '100%',marginTop:'1rem' }}
         >
           <SingleChart
             name=""
