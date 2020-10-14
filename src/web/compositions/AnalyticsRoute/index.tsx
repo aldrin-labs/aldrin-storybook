@@ -29,15 +29,15 @@ export const RowContainer = styled(Row)`
   width: 100%;
 `
 export const Block = styled.div`
-  width: ${(props) => props.width || '17.5%'};
-  height: ${(props) => props.height || 'calc(25% - 1.4rem)'};
+  width: ${(props) => props.width || 'calc((100% - 5rem) / 6)'};
+  height: ${(props) => props.height || '100%'};
   background-color: ${(props) =>
     props.backgroundColor || props.theme.palette.white.block};
-  margin: 0.7rem;
-  border-radius: 1.6rem;
+  margin-right: 1rem;
+  border-radius: 1.2rem;
   border: 1px solid ${(props) => props.border || props.theme.palette.grey.block};
   font-family: DM Sans;
-  font-size: 1.12rem;
+  font-size: 1rem;
   letter-spacing: 0.06rem;
   padding-left: 3rem;
   text-transform: uppercase;
@@ -45,15 +45,28 @@ export const Block = styled.div`
   display: flex;
   justify-content: space-around;
   flex-direction: column;
+
+  &:last-child {
+    margin-right:0;
+  }
 `
-export const BlockContainer = styled.div``
+export const BlockContainer = styled.div`
+display:flex;
+flex-direction:row`
 
 export const Text = styled.div`
-  font-family: DM Sans;
-  font-weight: bold;
-  font-size: 1.5rem;
-  text-transform: uppercase;
-  color: 'white';
+text-shadow: 0px 0px 12px rgba(199, 255, 208, 0.3);
+
+font-family: DM Sans;
+font-style: normal;
+font-weight: bold;
+font-size: 2rem;
+display: flex;
+align-items: flex-end;
+letter-spacing: 1px;
+text-transform: uppercase;
+
+color: #C7FFD0;
 `
 export const Title = styled.div`
   font-family: DM Sans;
@@ -93,12 +106,12 @@ const Link = styled.a`
 `
 
 const Card = styled.div`
-width: ${(props) => props.width || '17.5%'};
-height: ${(props) => props.height || 'calc(25% - 1.4rem)'};
+width: ${(props) => props.width || '100%'};
+height: ${(props) => props.height || '65rem'};
 background-color: ${(props) =>
   props.backgroundColor || props.theme.palette.white.card};
-margin: 0.7rem;
-border-radius: 1.6rem;
+margin-bottom: 1rem;
+border-radius: 1.2rem;
 border: 1px solid ${(props) => props.border || props.theme.palette.grey.block};
 color: ${(props) => props.color || props.theme.palette.text.grey};
 display: flex;
@@ -132,15 +145,21 @@ const AnalyticsRoute = ({ markets, setMarketAddress, ...props }) => {
         paddingLeft: '.8%',
         paddingRight: '.8%',
       }}
+      direction={'column'}
     >
-      <RowContainer
-        style={{
-          height: '100%',
-          flexDirection: 'column',
-          padding: '1.5rem 0 3rem 0',
-        }}
-      >
-        <Block theme={theme}>
+      <RowContainer style={{ height: '75%', padding: '1.5rem 0 0 0' }}>
+        <Card
+          theme={theme}
+          style={{ padding: '.5rem', height: '100%'  }}
+        >
+          <SingleChart
+            name=""
+            themeMode={theme.palette.type}
+            additionalUrl={`/?symbol=SRM/USDT_0&user_id=id`}
+          />
+        </Card>
+        </RowContainer>
+      <RowContainer style={{ height: '25%', paddingBottom:'1.5rem',paddingTop:'1.5rem'}}><Block theme={theme}>
           srm marketcap{' '}
           <Text>
             {formatNumberToUSFormat(
@@ -155,12 +174,6 @@ const AnalyticsRoute = ({ markets, setMarketAddress, ...props }) => {
             <Text>
               {formatNumberToUSFormat(totalySupply.toFixed(0))} SRM
             </Text>
-            <Title>
-              $
-              {formatNumberToUSFormat(
-                (totalySupply * markPrice).toFixed(0)
-              )}
-            </Title>
           </BlockContainer>
         </Block>
         <Block theme={theme}>
@@ -170,27 +183,6 @@ const AnalyticsRoute = ({ markets, setMarketAddress, ...props }) => {
             <Text>
               {formatNumberToUSFormat(serumData.getSerumData.burned.toFixed(0))} SRM
             </Text>
-            <Title>
-              $
-              {formatNumberToUSFormat(
-                (serumData.getSerumData.burned * markPrice).toFixed(0)
-              )}
-            </Title>
-          </BlockContainer>
-        </Block>
-        <Block style={{ visibility: 'hidden'}} theme={theme}>
-          srm burned
-          <BlockContainer>
-            {' '}
-            <Text>
-              {formatNumberToUSFormat(serumData.getSerumData.burned.toFixed(0))} SRM
-            </Text>
-            <Title>
-              $
-              {formatNumberToUSFormat(
-                (serumData.getSerumData.burned * markPrice).toFixed(0)
-              )}
-            </Title>
           </BlockContainer>
         </Block>
         <Block theme={theme}>
@@ -209,12 +201,6 @@ const AnalyticsRoute = ({ markets, setMarketAddress, ...props }) => {
               {formatNumberToUSFormat(circulatingSupply.toFixed(0))}{' '}
               SRM
             </Text>
-            <Title>
-              $
-              {formatNumberToUSFormat(
-                (circulatingSupply * markPrice).toFixed(0)
-              )}
-            </Title>
           </BlockContainer>
         </Block>
         <Block theme={theme}>
@@ -224,26 +210,8 @@ const AnalyticsRoute = ({ markets, setMarketAddress, ...props }) => {
             Soon
           </Text>
         </Block>
-        <Block style={{ visibility: 'hidden' }} theme={theme}>
-          srm pending burn
-          <Text>
-            {/* {formatNumberToUSFormat(serumData.getSerumData.pendingBurn)}  */}
-            soon
-          </Text>
-        </Block>
-        <Card
-          theme={theme}
-          width={'62.5%'}
-          height={'100%'}
-          style={{ padding: '.5rem' }}
-        >
-          <SingleChart
-            name=""
-            themeMode={theme.palette.type}
-            additionalUrl={`/?symbol=SRM/USDT_0&user_id=id`}
-          />
-        </Card>
-      </RowContainer>
+        </RowContainer>
+      
     </RowContainer>
   )
 }
