@@ -269,17 +269,17 @@ const NavBarRaw: SFC<Props> = ({
                   text: 'Exchange',
                   to: '/chart/spot/BTC_USDT',
                 },
-                // {
-                //   text: 'Portfolio',
-                //   to: '/portfolio/main/spot',
-                //   onMouseOver: () => {
-                //     if (notAuthPages || !loginStatus) {
-                //       return
-                //     }
+                {
+                  text: 'Portfolio',
+                  to: '/portfolio/main/spot',
+                  onMouseOver: () => {
+                    if (notAuthPages || !loginStatus) {
+                      return
+                    }
 
-                //     prefetchPortfolio()
-                //   },
-                // },
+                    prefetchPortfolio()
+                  },
+                },
                 {
                   text: 'Perfomance',
                   to: '/portfolio/transactions/spot',
@@ -333,10 +333,10 @@ const NavBarRaw: SFC<Props> = ({
                   text: 'Exchange',
                   to: '/chart/futures/BTC_USDT',
                 },
-                // {
-                //   text: 'Portfolio',
-                //   to: '/portfolio/main/futures',
-                // },
+                {
+                  text: 'Portfolio',
+                  to: '/portfolio/main/futures',
+                },
                 {
                   text: 'Perfomance',
                   to: '/portfolio/transactions/futures',
@@ -537,7 +537,7 @@ const NavBarRaw: SFC<Props> = ({
                 Exchange
               </NavLinkButton>
             </NavLinkButtonWrapper>
-            {/* <NavLinkButtonWrapper
+            <NavLinkButtonWrapper
               theme={theme}
               key="portfolio-wrapper"
               onMouseOver={() => {
@@ -556,7 +556,7 @@ const NavBarRaw: SFC<Props> = ({
               >
                 Portfolio
               </NavLinkButton>
-            </NavLinkButtonWrapper> */}
+            </NavLinkButtonWrapper>
             <NavLinkButtonWrapper
               theme={theme}
               key="performance-wrapper"
