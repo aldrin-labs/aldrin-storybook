@@ -152,6 +152,7 @@ const RewardsRoute = (props) => {
     currentPhase >= 1 ? srmVolumesInUSDT[currentPhase - 1] : 0
   const prevPhaseDCFIRewarded =
     currentPhase >= 1 ? dcfiVolumes[currentPhase - 1] : 0
+<<<<<<< HEAD
 
   const volumeTradedInThisPhase = tradedSerumInUSDT - prevPhaseMaxVolume
 
@@ -166,6 +167,24 @@ const RewardsRoute = (props) => {
   const dcfiEarnedForTwitter = formatNumberToUSFormat(
     stripDigitPlaces(dcfiEarned, 3)
   ).replace(',', '%2C')
+=======
+
+  const volumeTradedInThisPhase = tradedSerumInUSDT - prevPhaseMaxVolume
+
+  const dcfiRewarded =
+    (volumeTradedInThisPhase / (currentPhaseMaxVolume - prevPhaseMaxVolume)) *
+      (dcfiVolumes[currentPhase] - prevPhaseDCFIRewarded) +
+    prevPhaseDCFIRewarded
+  const dcfiEarned =
+    +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.dcfiEarned +
+    +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey
+      .dcfiCurrentRoundEst
+  const dcfiEarnedForTwitter = formatNumberToUSFormat(
+    stripDigitPlaces(dcfiEarned, 3)
+  ).replace(',', '%2C')
+
+  const percantangeTotalShareDcfi = (dcfiRewarded / 2000000) * 100
+>>>>>>> c0cac59f2f32a7f699649e8f2dda7e8797cbb726
 
   const progressBarSerumValue = +(
     (volumeTradedInThisPhase / (currentPhaseMaxVolume - prevPhaseMaxVolume)) *
@@ -188,16 +207,65 @@ const RewardsRoute = (props) => {
       }}
     >
       <Styles />
-      <RowContainer style={{ padding: '10rem 0' }} direction={'column'}>
+      <RowContainer
+        style={{ width: '100%', padding: '4rem 2rem' }}
+        direction={'row'}
+        justify={'space-between'}
+      >
         <Title style={{ paddingBottom: '1rem' }} theme={theme}>
           Buy SRM and farm DCFI token
         </Title>
-        {/* <Text theme={theme}>
-          New farming algorithm designed by Cryptocurrencies.ai allows you
-        </Text>
-        <Text theme={theme}>
-          to farm DCFI – token of our upcoming project. Stay tuned for news
-        </Text> */}
+        <RowContainer style={{ width: '32%' }}>
+          <a
+            rel="noopener noreferrel"
+            target={'_blank'}
+            href={'https://decefi.app/onePager'}
+            style={{
+              paddingBottom: '2rem',
+              width: 'calc((100% - 4rem) / 2)',
+              textDecoration: 'none',
+              marginRight: '2rem',
+            }}
+          >
+            <BtnCustom
+              theme={theme}
+              btnColor={theme.palette.grey.main}
+              backgroundColor={'#C7FFD0'}
+              hoverBackground={'#C7FFD0'}
+              height={'5rem'}
+              fontSize={'1.6rem'}
+              btnWidth={'100%'}
+              textTransform={'none'}
+            >
+              Decefi one-pager{' '}
+            </BtnCustom>
+          </a>
+          <a
+            rel="noopener noreferrel"
+            target={'_blank'}
+            href={
+              'https://www.youtube.com/watch?v=yz5uaN0aCyw&feature=youtu.be'
+            }
+            style={{
+              paddingBottom: '2rem',
+              width: 'calc((100% - 4rem) / 2)',
+              textDecoration: 'none',
+            }}
+          >
+            <BtnCustom
+              theme={theme}
+              btnColor={theme.palette.grey.main}
+              backgroundColor={'#C7FFD0'}
+              hoverBackground={'#C7FFD0'}
+              height={'5rem'}
+              fontSize={'1.6rem'}
+              btnWidth={'100%'}
+              textTransform={'none'}
+            >
+              How to farm DCFI
+            </BtnCustom>
+          </a>
+        </RowContainer>
       </RowContainer>
       <div
         style={{
@@ -343,7 +411,49 @@ const RewardsRoute = (props) => {
             </RowContainer>
           </RowContainer>
         </Card>
+        <Card theme={theme}>
+          <RowContainer
+            style={{ paddingTop: '3%', paddingBottom: '4%', height: '40%' }}
+          >
+            <SvgIcon src={decefi} width="30%" height="auto" />
+          </RowContainer>
+          <RowContainer
+            style={{
+              height: '34%',
+              position: 'relative',
+            }}
+          >
+            <Circle
+              styles={{
+                root: { height: '100%' },
+                path: {
+                  stroke: '#C7FFD0',
+                  filter:
+                    'drop-shadow(0px 0px 24px rgba(199, 255, 208, 0.67));',
+                },
+                trail: { stroke: '#0E1016' },
+                text: {
+                  fill: '#C7FFD0',
+                  fontWeight: 'bold',
+                  transform: 'translateY(3%)',
+                },
+              }}
+              value={percantangeTotalShareDcfi}
+              strokeWidth={21}
+              text={`${percantangeTotalShareDcfi.toFixed(0)} %`}
+            />
+          </RowContainer>
+          <RowContainer
+            justify={'space-around'}
+            style={{
+              height: '20%',
+            }}
+          >
+            <CardText theme={theme}>of total share</CardText>
+          </RowContainer>
+        </Card>
       </div>
+
       <RowContainer style={{ paddingTop: '5rem', paddingBottom: '10rem' }}>
         <Card
           style={{
