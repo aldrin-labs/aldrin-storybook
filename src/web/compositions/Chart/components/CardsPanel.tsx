@@ -292,7 +292,7 @@ export const CardsPanel = ({
                   return
                 }
 
-                updateTerminalViewMode('onlyTables')
+                updateTerminalViewMode('default')
               }}
             >
               <span
