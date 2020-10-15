@@ -150,7 +150,7 @@ const RewardsRoute = (props) => {
 
   const volumeTradedInThisPhase = (tradedSerumInUSDT - prevPhaseMaxVolume)
   
-  const dcfiRewarded = (volumeTradedInThisPhase / currentPhaseMaxVolume) * (dcfiVolumes[currentPhase] - prevPhaseDCFIRewarded) + prevPhaseDCFIRewarded
+  const dcfiRewarded = (volumeTradedInThisPhase / (currentPhaseMaxVolume - prevPhaseMaxVolume)) * (dcfiVolumes[currentPhase] - prevPhaseDCFIRewarded) + prevPhaseDCFIRewarded
   const dcfiEarned = +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.dcfiEarned + +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.dcfiCurrentRoundEst
   const dcfiEarnedForTwitter = formatNumberToUSFormat(stripDigitPlaces(dcfiEarned, 3)).replace(',', '%2C')
 
