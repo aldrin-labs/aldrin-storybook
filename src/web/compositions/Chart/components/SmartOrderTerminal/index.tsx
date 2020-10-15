@@ -742,7 +742,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     }
     showOrderResult(successResult, cancelOrder)
 
-    updateTerminalViewMode('default')
+    updateTerminalViewMode('onlyTables')
 
     const result = await placeOrder(
       entryPoint.order.side,
@@ -1894,9 +1894,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   </DarkTooltip>
                   <DarkTooltip
                     maxWidth={'30rem'}
-                    title={
-                      'Place multiple entry targets to average your lose'
-                    }
+                    title={'Place multiple entry targets to average your lose'}
                   >
                     <AdditionalSettingsButton
                       theme={theme}
@@ -4426,8 +4424,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     } else {
                       this.setState({ showErrors: true })
                     }
-                    
-
                   }}
                 >
                   create trade
@@ -4578,7 +4574,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
                           this.updateBlockValue('takeProfit', 'external', false)
                         }}
-                      >Multiple targets</AdditionalSettingsButton>
+                      >
+                        Multiple targets
+                      </AdditionalSettingsButton>
                     </DarkTooltip>
                   )}
                   <DarkTooltip
@@ -4663,8 +4661,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           </p>
                           <p>
                             <b>For example:</b>you bought 1 BTC and set 100%
-                            take profit. Your unrealized profit should be 1
-                            BTC and order will be executed.
+                            take profit. Your unrealized profit should be 1 BTC
+                            and order will be executed.
                           </p>
                         </>
                       }
