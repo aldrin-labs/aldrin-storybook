@@ -312,10 +312,11 @@ export const DefaultViewComponent = (
           </TopChartsContainer>
           {!authenticated && <GuestMode />}
 
-          {authenticated && !isSmartOrderMode && (
+          {authenticated && (
             <TradingTabelContainer
               item
               theme={theme}
+              isSmaerOrderMode={isSmartOrderMode}
               xs={
                 isDefaultOnlyTables
                   ? marketType === 0

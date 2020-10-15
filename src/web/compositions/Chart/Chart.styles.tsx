@@ -397,9 +397,10 @@ export const TradingTabelContainer = styled(
   ({ isDefaultTerminalViewMode, ...rest }) => <TablesContainer {...rest} />
 )`
   // 32vh was
+  display: ${(props) => (!props.isSmartOrderMode ? 'flex' : 'none')};
   background-color: ${(props) => props.theme.palette.white.background};
   position: relative;
-  height: ${(props) => props.isDefaultTerminalViewMode ? '40%' : '0%'};
+  height: ${(props) => (props.isDefaultTerminalViewMode ? '40%' : '0%')};
   justify-content: flex-start;
   flex-direction: column;
   overflow: hidden;
