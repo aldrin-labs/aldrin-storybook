@@ -35,7 +35,7 @@ import { syncStorage } from '@storage'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { useQuery } from 'react-apollo'
 
-const version = `10.5.54`
+const version = `10.5.55`
 const currentVersion = localStorage.getItem('version')
 if (currentVersion !== version) {
   localStorage.clear()
@@ -83,7 +83,6 @@ const AppRaw = ({
   // const isUserFromNotRestrictedCountry = !!syncStorage.getItem('IUFNRC')
   const isUserFromNotRestrictedCountry = false
 
-
   return (
     <ApolloPersistWrapper>
       <JssProvider jss={jss} generateClassName={generateClassName}>
@@ -91,13 +90,17 @@ const AppRaw = ({
           <SnackbarWrapper>
             <CssBaseline />
             <FontStyle />
-            <RestrictPopup open={isUserFromNotRestrictedCountry && authenticated} />
+            <RestrictPopup
+              open={isUserFromNotRestrictedCountry && authenticated}
+            />
             <AppGridLayout
               id={'react-notification'}
               showFooter={showFooter}
               isPNL={isPNL}
               isChartPage={isChartPage}
-              isUserFromNotRestrictedCountry={isUserFromNotRestrictedCountry && authenticated}
+              isUserFromNotRestrictedCountry={
+                isUserFromNotRestrictedCountry && authenticated
+              }
             >
               {!pageIsRegistration && (
                 <AnimatedNavBar pathname={currentPage} hide={fullscreen} />
