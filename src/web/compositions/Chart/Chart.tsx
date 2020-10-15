@@ -42,8 +42,8 @@ import { checkLoginStatus } from '@core/utils/loginUtils'
 import { MainContainer, GlobalStyles } from './Chart.styles'
 import { IProps } from './Chart.types'
 
-function ChartPageComponent(props: any) {
-  const [terminalViewMode, updateTerminalViewMode] = useState('default')
+export function ChartPageComponent(props: any) {
+  const [terminalViewMode, updateTerminalViewMode] = useState('onlyTables')
   const [stepIndex, updateStepIndex] = useState(0)
   const [key, updateKey] = useState(0)
 

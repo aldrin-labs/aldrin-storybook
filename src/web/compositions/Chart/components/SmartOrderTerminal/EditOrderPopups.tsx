@@ -244,7 +244,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
               theme={theme}
               firstHalfText={'limit'}
               secondHalfText={'market'}
-              buttonHeight={'2.5rem'}
+              buttonHeight={'3rem'}
               containerStyles={{ width: '100%' }}
               firstHalfStyleProperties={BlueSwitcherStyles(theme)}
               secondHalfStyleProperties={BlueSwitcherStyles(theme)}
@@ -283,7 +283,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                   )
                 }}
               >
-                Trailing take a profit
+                Trailing take profit
               </AdditionalSettingsButton>
 
               <AdditionalSettingsButton
@@ -922,7 +922,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
               theme={theme}
               firstHalfText={'limit'}
               secondHalfText={'market'}
-              buttonHeight={'2.5rem'}
+              buttonHeight={'3rem'}
               containerStyles={{ width: '100%' }}
               firstHalfStyleProperties={BlueSwitcherStyles(theme)}
               secondHalfStyleProperties={BlueSwitcherStyles(theme)}
@@ -1340,7 +1340,7 @@ export class EditHedgePopup extends React.Component<IProps, HedgeState> {
                 theme={theme}
                 firstHalfText={'long'}
                 secondHalfText={'short'}
-                buttonHeight={'2.5rem'}
+                buttonHeight={'3rem'}
                 containerStyles={{
                   width: '30%',
                   padding: '0 .4rem 0 0',
@@ -1569,6 +1569,8 @@ export class EditEntryOrderPopup extends React.Component<
       maxAmount = funds[1].quantity * leverage
     }
 
+    console.log('quantityPrecision', quantityPrecision)
+
     return (
       <Dialog
         theme={theme}
@@ -1671,7 +1673,7 @@ export class EditEntryOrderPopup extends React.Component<
             theme={theme}
             firstHalfText={'buy'}
             secondHalfText={'sell'}
-            buttonHeight={'2.5rem'}
+            buttonHeight={'3rem'}
             containerStyles={{ width: '100%', padding: '1.2rem 0 .6rem 0' }}
             firstHalfStyleProperties={GreenSwitcherStyles(theme)}
             secondHalfStyleProperties={RedSwitcherStyles(theme)}
@@ -1726,7 +1728,7 @@ export class EditEntryOrderPopup extends React.Component<
             theme={theme}
             firstHalfText={'limit'}
             secondHalfText={'market'}
-            buttonHeight={'2.5rem'}
+            buttonHeight={'3rem'}
             containerStyles={{
               width: '100%',
               paddingBottom: marketType === 1 ? '0' : '.6rem',

@@ -113,7 +113,37 @@ class DetailedExpansionPanel extends React.Component {
 
     return (
       <Grid style={{ width: '100%', minHeight: '65%', height: 'auto' }}>
-        <ExpansionPanel
+        <div
+          style={{
+            paddingLeft: '2.3rem',
+            borderTop: '1px solid #D1DDEF',
+          }}
+        >
+          <GridColumn
+            style={{
+              justifyContent: 'flex-start',
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <TypographyHeading textColor={theme.palette.text.primary}>
+              overview
+            </TypographyHeading>
+            <GridColumn>
+              <div>
+                <TypographyTitleCell textColor={theme.palette.text.primary}>
+                  Balance
+                </TypographyTitleCell>
+                <TypographyValueCell textColor={theme.palette.text.subPrimary}>
+                  {isSPOTCurrently
+                    ? format(totalKeyAssetsData.value, baseCoin)
+                    : format(getWalletTotal(getFuturesOverview), 'USDT')}
+                </TypographyValueCell>
+              </div>
+            </GridColumn>
+          </GridColumn>
+        </div>
+        {/* <ExpansionPanel
           CollapseProps={{ timeout: { enter: 425, exit: 350 } }}
           id="accordionOverview"
         >
@@ -122,8 +152,8 @@ class DetailedExpansionPanel extends React.Component {
               <TypographyHeading textColor={theme.palette.text.primary}>
                 overview
               </TypographyHeading>
-            </GridColumn>
-            <GridColumn gridBorder={gridBorder}>
+            </GridColumn> */}
+        {/* <GridColumn gridBorder={gridBorder}>
               <div>
                 <TypographyTitleCell textColor={theme.palette.text.primary}>
                   {isSPOTCurrently ? 'Value' : 'Balance'}
@@ -134,8 +164,8 @@ class DetailedExpansionPanel extends React.Component {
                     : format(getWalletTotal(getFuturesOverview), 'USDT')}
                 </TypographyValueCell>
               </div>
-            </GridColumn>
-            <GridColumn gridBorder={gridBorder}>
+            </GridColumn> */}
+        {/* <GridColumn gridBorder={gridBorder}>
               <div>
                 <TypographyTitleCell textColor={theme.palette.text.primary}>
                   {isSPOTCurrently ? 'unique assets' : 'Maintenance margin'}
@@ -146,8 +176,8 @@ class DetailedExpansionPanel extends React.Component {
                     : '-'}
                 </TypographyValueCell>
               </div>
-            </GridColumn>
-            <GridColumn gridBorder={gridBorder}>
+            </GridColumn> */}
+        {/* <GridColumn gridBorder={gridBorder}>
               <div>
                 <TypographyTitleCell textColor={theme.palette.text.primary}>
                   realized P{`&`}L
@@ -160,8 +190,8 @@ class DetailedExpansionPanel extends React.Component {
                     : format(totalRealizedPnl, 'USDT')}
                 </TypographyValueCell>
               </div>
-            </GridColumn>
-            <GridColumn gridBorder={gridBorder}>
+            </GridColumn> */}
+        {/* <GridColumn gridBorder={gridBorder}>
               <div>
                 <TypographyTitleCell textColor={theme.palette.text.primary}>
                   Unrealized P{`&`}L
@@ -176,8 +206,8 @@ class DetailedExpansionPanel extends React.Component {
                     : '-'}
                 </TypographyValueCell>
               </div>
-            </GridColumn>
-            <GridColumn>
+            </GridColumn> */}
+        {/* <GridColumn>
               <div>
                 <TypographyTitleCell textColor={theme.palette.text.primary}>
                   Total P{`&`}L
@@ -190,9 +220,10 @@ class DetailedExpansionPanel extends React.Component {
                     : format(totalTotalPnl, 'USDT')}
                 </TypographyValueCell>
               </div>
-            </GridColumn>
-          </ExpansionPanelSummaryCustom>
+            </GridColumn> */}
 
+        {/* </ExpansionPanelSummaryCustom> */}
+        {/* 
           <ExpansionPanelDetailsCustom>
             <Grid container justify="center">
               {assetsData.map((el, i) => {
@@ -306,8 +337,8 @@ class DetailedExpansionPanel extends React.Component {
                 )
               })}
             </Grid>
-          </ExpansionPanelDetailsCustom>
-        </ExpansionPanel>
+          </ExpansionPanelDetailsCustom> */}
+        {/* </ExpansionPanel> */}
       </Grid>
     )
   }

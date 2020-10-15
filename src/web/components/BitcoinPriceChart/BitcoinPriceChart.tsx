@@ -124,7 +124,8 @@ class BitcoinPriceChart extends Component {
                 {' '}
                 <span style={{ padding: '0 1.6rem' }}>
                   <SvgIcon src={bounce} width={24} />
-                </span>12.5%
+                </span>
+                12.5%
               </SideContainerData>
               <SideContainerDataDetail>
                 %Earned from TFees
@@ -139,7 +140,8 @@ class BitcoinPriceChart extends Component {
                 {' '}
                 <span style={{ padding: '0 1.6rem' }}>
                   <SvgIcon src={time} width={24} />
-                </span>8.33 Minutes
+                </span>
+                8.33 Minutes
               </SideContainerData>
               <SideContainerDataDetail>
                 Avg Time between blocks(24h)

@@ -51,7 +51,7 @@ export default function SelectProtfolioPeriod({
 
   return (
     <Wrapper>
-      <StyledButton
+      {/* <StyledButton
         disabled={isOpen && !isSPOTCurrently ? true : false}
         onClick={() => !isSPOTCurrently && openPeriods()}
       >
@@ -77,7 +77,7 @@ export default function SelectProtfolioPeriod({
         >
           {activePeriod}
         </Period>
-      )}
+      )} */}
     </Wrapper>
   )
 }

@@ -84,6 +84,7 @@ import {
   SwitcherContainer,
   AdditionalSettingsButton,
   StyledSwitch,
+  ChangeOrderTypeBtn,
   Switcher,
 } from './styles'
 
@@ -124,6 +125,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       },
       averaging: {
         enabled: false,
+        percentage: 0,
+        price: 0,
         closeStrategyAfterFirstTAP: false,
         placeWithoutLoss: false,
         entryLevels: [],
@@ -285,6 +288,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           closeStrategyAfterFirstTAP: false,
           placeWithoutLoss: false,
           entryLevels: [],
+          percentage: 0,
+          price: 0,
           ...result.entryPoint.averaging,
         },
         TVAlert: {
@@ -371,6 +376,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       result.entryPoint.order.amount
     )
     this.updateSubBlockValue('entryPoint', 'order', 'price', this.props.price)
+    this.updateSubBlockValue(
+      'entryPoint',
+      'averaging',
+      'price',
+      this.props.price
+    )
 
     this.updateSubBlockValue(
       'entryPoint',
@@ -565,11 +576,18 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
   addAverageTarget = () => {
     const {
-      averaging: { placeWithoutLoss, entryLevels },
+      averaging: {
+        placeWithoutLoss,
+        entryLevels,
+        percentage,
+        price: averagingPrice,
+      },
       order: { price, amount },
     } = this.state.entryPoint
 
-    console.log('price amount', price, amount)
+    const isAveragingAfterFirstTarget =
+      this.state.entryPoint.averaging.entryLevels.length > 0 &&
+      this.state.entryPoint.averaging.enabled
 
     if (price !== 0 && amount !== 0) {
       this.setState((prev) => ({
@@ -578,13 +596,21 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           averaging: {
             ...prev.entryPoint.averaging,
             placeWithoutLoss: false,
+            percentage: 0,
             entryLevels: [
               ...entryLevels,
-              { price: +price, amount: +amount, type: 0, placeWithoutLoss },
+              {
+                price: isAveragingAfterFirstTarget ? +percentage : +price,
+                amount: +amount,
+                type: isAveragingAfterFirstTarget ? 1 : 0,
+                placeWithoutLoss,
+              },
             ],
           },
         },
       }))
+
+      this.updateSubBlockValue('entryPoint', 'order', 'price', averagingPrice)
     }
   }
 
@@ -593,18 +619,50 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       averaging: { entryLevels },
     } = this.state.entryPoint
 
+    const { pricePrecision } = this.props
+
+    let price = entryLevels[0].price
+
+    let newEntryLevels =
+      index === 0
+        ? []
+        : [...entryLevels.slice(0, index), ...entryLevels.slice(index + 1)]
+
+    if (index !== 0) {
+      newEntryLevels.forEach((target, i) => {
+        if (i === 0) {
+          return
+        }
+        price =
+          this.state.entryPoint.order.side === 'buy'
+            ? +stripDigitPlaces(
+                this.state.entryPoint.order.price *
+                  (1 -
+                    target.price / 100 / this.state.entryPoint.order.leverage),
+                pricePrecision
+              )
+            : +stripDigitPlaces(
+                this.state.entryPoint.order.price *
+                  (1 +
+                    target.price / 100 / this.state.entryPoint.order.leverage),
+                pricePrecision
+              )
+      })
+    }
+
     this.setState({
       entryPoint: {
         ...this.state.entryPoint,
         averaging: {
           ...this.state.entryPoint.averaging,
-          entryLevels: [
-            ...entryLevels.slice(0, index),
-            ...entryLevels.slice(index + 1),
-          ],
+          price: price,
+          percentage: 0,
+          entryLevels: newEntryLevels,
         },
       },
     })
+
+    this.updateSubBlockValue('entryPoint', 'order', 'price', price)
   }
 
   toggleBlock = (blockName: string, booleanName: string) => {
@@ -672,6 +730,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
     this.handleCloseConfirmationPopup()
 
+    const isValid = validateSmartOrders(this.state, this.props.enqueueSnackbar)
+
+    if (!isValid) return
+
     // ux-improvement to see popup before result from the backend received
     const successResult = {
       status: 'success',
@@ -680,7 +742,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     }
     showOrderResult(successResult, cancelOrder)
 
-    updateTerminalViewMode('default')
+    updateTerminalViewMode('onlyTables')
 
     const result = await placeOrder(
       entryPoint.order.side,
@@ -866,6 +928,16 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       )
     }
 
+    if (entryPoint.averaging.entryLevels.length > 0) {
+      entryPoint.averaging.entryLevels.forEach((target) => {
+        if (marketType === 0) {
+          maxAmount -= target.amount
+        } else {
+          maxAmount -= target.amount * priceForCalculate
+        }
+      })
+    }
+
     const [amount, total] =
       entryPoint.order.side === 'buy' || marketType === 1
         ? [maxAmount / priceForCalculate, maxAmount]
@@ -966,6 +1038,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       marketType,
       updateLeverage,
       quantityPrecision,
+      updateTerminalViewMode,
+      isSmartOrderMode,
       pricePrecision,
       enqueueSnackbar,
       minSpotNotional,
@@ -987,6 +1061,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     const isMarketType =
       entryPoint.order.type === 'market' ||
       entryPoint.order.type === 'maker-only'
+    const isAveragingAfterFirstTarget =
+      entryPoint.averaging.entryLevels.length > 0 &&
+      entryPoint.averaging.enabled
+
     let maxAmount = 0
     let priceForCalculate =
       isMarketType && !entryPoint.trailing.isTrailingOn
@@ -998,6 +1076,16 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         entryPoint.order.side === 'buy' ? funds[1].quantity : funds[0].quantity
     } else if (marketType === 1) {
       maxAmount = funds[1].quantity * entryPoint.order.leverage
+    }
+
+    if (entryPoint.averaging.entryLevels.length > 0) {
+      entryPoint.averaging.entryLevels.forEach((target) => {
+        if (marketType === 0 && entryPoint.order.side === 'sell') {
+          maxAmount -= target.amount
+        } else {
+          maxAmount -= target.amount * priceForCalculate
+        }
+      })
     }
 
     return (
@@ -1174,7 +1262,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               padding={'0rem 1.5rem'}
               justify={'center'}
             >
-              <BlockHeader theme={theme}>take a profit</BlockHeader>
+              <BlockHeader theme={theme}>take profit</BlockHeader>
               {/* <GreenSwitcher
                 id="isTakeProfitOn"
                 checked={takeProfit.isTakeProfitOn}
@@ -1203,7 +1291,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       width: entryPoint.TVAlert.plotEnabled ? '70%' : '100%',
                       margin: 0,
                     }}
-                    buttonHeight={'2.5rem'}
+                    buttonHeight={'3rem'}
                     firstHalfStyleProperties={
                       entryPoint.TVAlert.plotEnabled &&
                       entryPoint.TVAlert.hedgeModePlotEnabled
@@ -1278,106 +1366,110 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                 </InputRowContainer>
               )} */}
               <InputRowContainer padding={'0 0 .6rem 0'}>
-                <CustomSwitcher
-                  theme={theme}
-                  firstHalfText={marketType === 1 ? 'long' : 'buy'}
-                  secondHalfText={marketType === 1 ? 'short' : 'sell'}
-                  buttonHeight={'2.5rem'}
-                  containerStyles={{
-                    width: entryPoint.TVAlert.plotEnabled ? '70%' : '100%',
-                    padding: 0,
-                  }}
-                  firstHalfStyleProperties={
-                    entryPoint.TVAlert.plotEnabled &&
-                    entryPoint.TVAlert.sidePlotEnabled
-                      ? DisabledSwitcherStyles(theme)
-                      : GreenSwitcherStyles(theme)
-                  }
-                  secondHalfStyleProperties={
-                    entryPoint.TVAlert.plotEnabled &&
-                    entryPoint.TVAlert.sidePlotEnabled
-                      ? DisabledSwitcherStyles(theme)
-                      : RedSwitcherStyles(theme)
-                  }
-                  firstHalfIsActive={entryPoint.order.side === 'buy'}
-                  changeHalf={() => {
-                    if (
+                {/* <div style={{ width: '50%' }}>
+                  {' '}
+                  <CustomSwitcher
+                    theme={theme}
+                    firstHalfText={marketType === 1 ? 'long' : 'buy'}
+                    secondHalfText={marketType === 1 ? 'short' : 'sell'}
+                    buttonHeight={'3rem'}
+                    containerStyles={{
+                      width: entryPoint.TVAlert.plotEnabled ? '70%' : '100%',
+                      padding: 0,
+                    }}
+                    firstHalfStyleProperties={
                       entryPoint.TVAlert.plotEnabled &&
                       entryPoint.TVAlert.sidePlotEnabled
-                    ) {
-                      return
+                        ? DisabledSwitcherStyles(theme)
+                        : GreenSwitcherStyles(theme)
                     }
-
-                    if (marketType === 0) {
-                      // disable sell option for spot
-                      const newSide = getSecondValueFromFirst(
-                        entryPoint.order.side
-                      )
-
-                      if (newSide === 'sell') {
+                    secondHalfStyleProperties={
+                      entryPoint.TVAlert.plotEnabled &&
+                      entryPoint.TVAlert.sidePlotEnabled
+                        ? DisabledSwitcherStyles(theme)
+                        : RedSwitcherStyles(theme)
+                    }
+                    firstHalfIsActive={entryPoint.order.side === 'buy'}
+                    changeHalf={() => {
+                      if (
+                        entryPoint.TVAlert.plotEnabled &&
+                        entryPoint.TVAlert.sidePlotEnabled
+                      ) {
                         return
                       }
 
-                      const amountPercentage =
-                        entryPoint.order.side === 'buy' || marketType === 1
-                          ? entryPoint.order.total / (maxAmount / 100)
-                          : entryPoint.order.amount / (maxAmount / 100)
+                      if (marketType === 0) {
+                        // disable sell option for spot
+                        const newSide = getSecondValueFromFirst(
+                          entryPoint.order.side
+                        )
 
-                      const newMaxAmount =
-                        newSide === 'buy'
-                          ? funds[1].quantity
-                          : funds[0].quantity
+                        if (newSide === 'sell') {
+                          return
+                        }
 
-                      let amount =
-                        newSide === 'buy'
-                          ? stripDigitPlaces(
-                              ((amountPercentage / 100) * newMaxAmount) /
-                                priceForCalculate,
-                              marketType === 1 ? quantityPrecision : 8
-                            )
-                          : stripDigitPlaces(
-                              (amountPercentage / 100) * newMaxAmount,
-                              marketType === 1 ? quantityPrecision : 8
-                            )
+                        const amountPercentage =
+                          entryPoint.order.side === 'buy' || marketType === 1
+                            ? entryPoint.order.total / (maxAmount / 100)
+                            : entryPoint.order.amount / (maxAmount / 100)
 
-                      if (!+amount || +amount === NaN) {
-                        amount = 0
+                        const newMaxAmount =
+                          newSide === 'buy'
+                            ? funds[1].quantity
+                            : funds[0].quantity
+
+                        let amount =
+                          newSide === 'buy'
+                            ? stripDigitPlaces(
+                                ((amountPercentage / 100) * newMaxAmount) /
+                                  priceForCalculate,
+                                marketType === 1 ? quantityPrecision : 8
+                              )
+                            : stripDigitPlaces(
+                                (amountPercentage / 100) * newMaxAmount,
+                                marketType === 1 ? quantityPrecision : 8
+                              )
+
+                        if (!+amount || +amount === NaN) {
+                          amount = 0
+                        }
+
+                        const total = stripDigitPlaces(
+                          amount * priceForCalculate,
+                          marketType === 1 ? 2 : 8
+                        )
+
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'order',
+                          'amount',
+                          amount
+                        )
+
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'order',
+                          'total',
+                          total
+                        )
                       }
 
-                      const total = stripDigitPlaces(
-                        amount * priceForCalculate,
-                        marketType === 1 ? 2 : 8
-                      )
+                      this.updateStopLossAndTakeProfitPrices({
+                        price: priceForCalculate,
+                        stopLossPercentage: stopLoss.pricePercentage,
+                        side: getSecondValueFromFirst(entryPoint.order.side),
+                      })
 
                       this.updateSubBlockValue(
                         'entryPoint',
                         'order',
-                        'amount',
-                        amount
+                        'side',
+                        getSecondValueFromFirst(entryPoint.order.side)
                       )
+                    }}
+                  />
+                </div> */}
 
-                      this.updateSubBlockValue(
-                        'entryPoint',
-                        'order',
-                        'total',
-                        total
-                      )
-                    }
-
-                    this.updateStopLossAndTakeProfitPrices({
-                      price: priceForCalculate,
-                      stopLossPercentage: stopLoss.pricePercentage,
-                      side: getSecondValueFromFirst(entryPoint.order.side),
-                    })
-
-                    this.updateSubBlockValue(
-                      'entryPoint',
-                      'order',
-                      'side',
-                      getSecondValueFromFirst(entryPoint.order.side)
-                    )
-                  }}
-                />
                 {entryPoint.TVAlert.plotEnabled && (
                   <>
                     <div
@@ -1434,7 +1526,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   theme={theme}
                   firstHalfText={'limit'}
                   secondHalfText={'market'}
-                  buttonHeight={'2.5rem'}
+                  buttonHeight={'3rem'}
                   containerStyles={{
                     width: entryPoint.TVAlert.plotEnabled ? '70%' : '100%',
                     padding: 0,
@@ -1564,11 +1656,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   </>
                 )}
               </InputRowContainer> */}
-              <InputRowContainer
+              {/* <InputRowContainer
                 justify="flex-start"
                 padding={'.6rem 0 0.6rem 0'}
               >
-                <AdditionalSettingsButton
+                <ChangeOrderTypeBtn
                   theme={theme}
                   isActive={entryPoint.order.type === 'market'}
                   onClick={() => {
@@ -1610,8 +1702,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   }}
                 >
                   Market
-                </AdditionalSettingsButton>
-                <AdditionalSettingsButton
+                </ChangeOrderTypeBtn>
+                <ChangeOrderTypeBtn
                   theme={theme}
                   isActive={entryPoint.order.type === 'limit'}
                   onClick={() => {
@@ -1631,14 +1723,14 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   }}
                 >
                   Limit
-                </AdditionalSettingsButton>
+                </ChangeOrderTypeBtn>
                 <DarkTooltip
                   maxWidth={'30rem'}
                   title={
                     'Maker-only or post-only market order will place a post-only limit orders as close to the market price as possible until the last one is executed. This way you can enter the position at the market price by paying low maker fees.'
                   }
                 >
-                  <AdditionalSettingsButton
+                  <ChangeOrderTypeBtn
                     theme={theme}
                     isActive={entryPoint.order.type === 'maker-only'}
                     onClick={() => {
@@ -1685,9 +1777,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     }}
                   >
                     Maker-only
-                  </AdditionalSettingsButton>
+                  </ChangeOrderTypeBtn>
                 </DarkTooltip>
-              </InputRowContainer>
+              </InputRowContainer> */}
 
               <div>
                 <InputRowContainer
@@ -1756,12 +1848,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             )
                           }
 
-                          if (entryPoint.order.type === "maker-only") {
+                          if (entryPoint.order.type === 'maker-only') {
                             this.updateSubBlockValue(
                               'entryPoint',
                               'order',
                               'type',
-                              "limit"
+                              'limit'
                             )
                           }
                         }}
@@ -1802,9 +1894,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   </DarkTooltip>
                   <DarkTooltip
                     maxWidth={'30rem'}
-                    title={
-                      'Your smart order will be placed once when there is a Trading View alert that you connected to smart order.'
-                    }
+                    title={'Place multiple entry targets to average your lose'}
                   >
                     <AdditionalSettingsButton
                       theme={theme}
@@ -1860,16 +1950,243 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   </DarkTooltip>
                 </InputRowContainer>
 
+                <InputRowContainer>
+                  {' '}
+                  <div style={{ width: '50%', marginRight: '2%' }}>
+                    {' '}
+                    <CustomSwitcher
+                      theme={theme}
+                      firstHalfText={marketType === 1 ? 'long' : 'buy'}
+                      secondHalfText={marketType === 1 ? 'short' : 'sell'}
+                      buttonHeight={'3rem'}
+                      containerStyles={{
+                        width: entryPoint.TVAlert.plotEnabled ? '70%' : '100%',
+                        padding: 0,
+                      }}
+                      firstHalfStyleProperties={
+                        entryPoint.TVAlert.plotEnabled &&
+                        entryPoint.TVAlert.sidePlotEnabled
+                          ? DisabledSwitcherStyles(theme)
+                          : GreenSwitcherStyles(theme)
+                      }
+                      secondHalfStyleProperties={
+                        entryPoint.TVAlert.plotEnabled &&
+                        entryPoint.TVAlert.sidePlotEnabled
+                          ? DisabledSwitcherStyles(theme)
+                          : RedSwitcherStyles(theme)
+                      }
+                      firstHalfIsActive={entryPoint.order.side === 'buy'}
+                      changeHalf={() => {
+                        if (
+                          entryPoint.TVAlert.plotEnabled &&
+                          entryPoint.TVAlert.sidePlotEnabled
+                        ) {
+                          return
+                        }
+
+                        if (marketType === 0) {
+                          // disable sell option for spot
+                          const newSide = getSecondValueFromFirst(
+                            entryPoint.order.side
+                          )
+
+                          if (newSide === 'sell') {
+                            return
+                          }
+
+                          const amountPercentage =
+                            entryPoint.order.side === 'buy' || marketType === 1
+                              ? entryPoint.order.total / (maxAmount / 100)
+                              : entryPoint.order.amount / (maxAmount / 100)
+
+                          const newMaxAmount =
+                            newSide === 'buy'
+                              ? funds[1].quantity
+                              : funds[0].quantity
+
+                          let amount =
+                            newSide === 'buy'
+                              ? stripDigitPlaces(
+                                  ((amountPercentage / 100) * newMaxAmount) /
+                                    priceForCalculate,
+                                  marketType === 1 ? quantityPrecision : 8
+                                )
+                              : stripDigitPlaces(
+                                  (amountPercentage / 100) * newMaxAmount,
+                                  marketType === 1 ? quantityPrecision : 8
+                                )
+
+                          if (!+amount || +amount === NaN) {
+                            amount = 0
+                          }
+
+                          const total = stripDigitPlaces(
+                            amount * priceForCalculate,
+                            marketType === 1 ? 2 : 8
+                          )
+
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'order',
+                            'amount',
+                            amount
+                          )
+
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'order',
+                            'total',
+                            total
+                          )
+                        }
+
+                        this.updateStopLossAndTakeProfitPrices({
+                          price: priceForCalculate,
+                          stopLossPercentage: stopLoss.pricePercentage,
+                          side: getSecondValueFromFirst(entryPoint.order.side),
+                        })
+
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'order',
+                          'side',
+                          getSecondValueFromFirst(entryPoint.order.side)
+                        )
+                      }}
+                    />
+                  </div>
+                  <ChangeOrderTypeBtn
+                    theme={theme}
+                    isActive={entryPoint.order.type === 'market'}
+                    onClick={() => {
+                      this.updateSubBlockValue(
+                        'entryPoint',
+                        'order',
+                        'type',
+                        'market'
+                      )
+
+                      if (!entryPoint.trailing.isTrailingOn) {
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'averaging',
+                          'enabled',
+                          false
+                        )
+
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'order',
+                          'total',
+                          stripDigitPlaces(
+                            this.props.price * entryPoint.order.amount,
+                            marketType === 1 ? 2 : 8
+                          )
+                        )
+
+                        this.updateBlockValue(
+                          'temp',
+                          'initialMargin',
+                          stripDigitPlaces(
+                            (this.props.price * entryPoint.order.amount) /
+                              entryPoint.order.leverage,
+                            2
+                          )
+                        )
+                      }
+                    }}
+                  >
+                    Market
+                  </ChangeOrderTypeBtn>
+                  <ChangeOrderTypeBtn
+                    theme={theme}
+                    isActive={entryPoint.order.type === 'limit'}
+                    onClick={() => {
+                      this.updateSubBlockValue(
+                        'entryPoint',
+                        'order',
+                        'type',
+                        'limit'
+                      )
+
+                      this.updateSubBlockValue(
+                        'entryPoint',
+                        'TVAlert',
+                        'immediateEntry',
+                        false
+                      )
+                    }}
+                  >
+                    Limit
+                  </ChangeOrderTypeBtn>
+                  <DarkTooltip
+                    maxWidth={'30rem'}
+                    title={
+                      'Maker-only or post-only market order will place a post-only limit orders as close to the market price as possible until the last one is executed. This way you can enter the position at the market price by paying low maker fees.'
+                    }
+                  >
+                    <ChangeOrderTypeBtn
+                      theme={theme}
+                      isActive={entryPoint.order.type === 'maker-only'}
+                      onClick={() => {
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'order',
+                          'type',
+                          'maker-only'
+                        )
+
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'averaging',
+                          'enabled',
+                          false
+                        )
+
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'order',
+                          'total',
+                          stripDigitPlaces(
+                            this.props.price * entryPoint.order.amount,
+                            marketType === 1 ? 2 : 8
+                          )
+                        )
+
+                        this.updateBlockValue(
+                          'temp',
+                          'initialMargin',
+                          stripDigitPlaces(
+                            (this.props.price * entryPoint.order.amount) /
+                              entryPoint.order.leverage,
+                            2
+                          )
+                        )
+
+                        this.updateSubBlockValue(
+                          'entryPoint',
+                          'trailing',
+                          'isTrailingOn',
+                          false
+                        )
+                      }}
+                    >
+                      Maker-only
+                    </ChangeOrderTypeBtn>
+                  </DarkTooltip>
+                </InputRowContainer>
                 {entryPoint.averaging.enabled && (
                   <InputRowContainer padding={'0 0 1.2rem 0'}>
                     <DarkTooltip
                       maxWidth={'30rem'}
                       title={
-                        'Your smart order will be closed once first TAP order was executed.'
+                        'Your smart order will be closed once first TP order was executed.'
                       }
                     >
                       <AdditionalSettingsButton
+                        width={'50%'}
                         theme={theme}
+                        margin={'0 2% 0 0'}
                         isActive={
                           entryPoint.averaging.closeStrategyAfterFirstTAP
                         }
@@ -1891,12 +2208,36 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           }
                         }}
                       >
-                        Close SM After First TAP
+                        Close trade After First TP
                       </AdditionalSettingsButton>
                     </DarkTooltip>
+                    {entryPoint.averaging.enabled && (
+                      <DarkTooltip
+                        title={
+                          'Place order at Break-Even Point for $0 net loss after fees'
+                        }
+                        maxWidth={'30rem'}
+                      >
+                        <AdditionalSettingsButton
+                          theme={theme}
+                          width={'50%'}
+                          padding={'0 0 0 0'}
+                          isActive={entryPoint.averaging.placeWithoutLoss}
+                          onClick={() => {
+                            this.updateSubBlockValue(
+                              'entryPoint',
+                              'averaging',
+                              'placeWithoutLoss',
+                              !entryPoint.averaging.placeWithoutLoss
+                            )
+                          }}
+                        >
+                          Place Break-even SL
+                        </AdditionalSettingsButton>
+                      </DarkTooltip>
+                    )}
                   </InputRowContainer>
                 )}
-
                 {entryPoint.TVAlert.isTVAlertOn && (
                   <>
                     <InputRowContainer padding={'.8rem 0 2rem 0'}>
@@ -2075,40 +2416,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   </>
                 )}
 
-                {entryPoint.averaging.enabled && (
-                  <FormInputContainer
-                    theme={theme}
-                    padding={'0 0 .8rem 0'}
-                    haveTooltip={false}
-                    tooltipText={''}
-                    title={'action when entry'}
-                  >
-                    <InputRowContainer>
-                      <DarkTooltip
-                        title={
-                          'Without loss order will be placed after entry order execution (mostly TAP order to have 0 profit + comissions).'
-                        }
-                        maxWidth={'30rem'}
-                      >
-                        <AdditionalSettingsButton
-                          theme={theme}
-                          isActive={entryPoint.averaging.placeWithoutLoss}
-                          onClick={() => {
-                            this.updateSubBlockValue(
-                              'entryPoint',
-                              'averaging',
-                              'placeWithoutLoss',
-                              !entryPoint.averaging.placeWithoutLoss
-                            )
-                          }}
-                        >
-                          Place Without Loss
-                        </AdditionalSettingsButton>
-                      </DarkTooltip>
-                    </InputRowContainer>
-                  </FormInputContainer>
-                )}
-
                 <FormInputContainer
                   theme={theme}
                   padding={'0 0 1.2rem 0'}
@@ -2121,7 +2428,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   <InputRowContainer>
                     <Input
                       theme={theme}
-                      width={entryPoint.TVAlert.plotEnabled ? '70%' : '100%'}
+                      width={
+                        isAveragingAfterFirstTarget
+                          ? '32.5%'
+                          : entryPoint.TVAlert.plotEnabled
+                          ? '70%'
+                          : '100%'
+                      }
                       symbol={pair[1]}
                       type={
                         entryPoint.order.type === 'limit'
@@ -2132,7 +2445,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       }
                       value={
                         entryPoint.order.type === 'limit'
-                          ? priceForCalculate
+                          ? isAveragingAfterFirstTarget
+                            ? entryPoint.averaging.price
+                            : priceForCalculate
                           : entryPoint.trailing.isTrailingOn
                           ? priceForCalculate
                           : 'MARKET'
@@ -2176,6 +2491,118 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         )
                       }}
                     />
+                    {isAveragingAfterFirstTarget && (
+                      <>
+                        <Input
+                          theme={theme}
+                          padding={'0 .8rem 0 .8rem'}
+                          width={'calc(17.5%)'}
+                          symbol={'%'}
+                          textAlign={'right'}
+                          pattern={'[0-9]+.[0-9]{3}'}
+                          type={'text'}
+                          value={entryPoint.averaging.percentage}
+                          inputStyles={{
+                            paddingLeft: 0,
+                            paddingRight: '2rem',
+                          }}
+                          symbolRightIndent={'1.5rem'}
+                          onChange={(e) => {
+                            // const value =
+                            //   e.target.value > 100 / entryPoint.order.leverage
+                            //     ? stripDigitPlaces(
+                            //       100 / entryPoint.order.leverage,
+                            //       3
+                            //     )
+                            //     : e.target.value
+                            const price =
+                              entryPoint.order.side === 'buy'
+                                ? stripDigitPlaces(
+                                    entryPoint.order.price *
+                                      (1 -
+                                        e.target.value /
+                                          100 /
+                                          entryPoint.order.leverage),
+                                    pricePrecision
+                                  )
+                                : stripDigitPlaces(
+                                    entryPoint.order.price *
+                                      (1 +
+                                        e.target.value /
+                                          100 /
+                                          entryPoint.order.leverage),
+                                    pricePrecision
+                                  )
+
+                            this.updateSubBlockValue(
+                              'entryPoint',
+                              'averaging',
+                              'percentage',
+                              e.target.value
+                            )
+
+                            this.updateSubBlockValue(
+                              'entryPoint',
+                              'averaging',
+                              'price',
+                              price
+                            )
+                          }}
+                        />
+
+                        <BlueSlider
+                          theme={theme}
+                          value={entryPoint.averaging.percentage}
+                          sliderContainerStyles={{
+                            width: entryPoint.TVAlert.plotEnabled
+                              ? '20%'
+                              : '50%',
+                            margin: '0 .8rem 0 .8rem',
+                          }}
+                          onChange={(value) => {
+                            if (
+                              entryPoint.averaging.percentage > 100 &&
+                              value === 100
+                            ) {
+                              return
+                            }
+
+                            const price =
+                              entryPoint.order.side === 'buy'
+                                ? stripDigitPlaces(
+                                    entryPoint.order.price *
+                                      (1 -
+                                        value /
+                                          100 /
+                                          entryPoint.order.leverage),
+                                    pricePrecision
+                                  )
+                                : stripDigitPlaces(
+                                    entryPoint.order.price *
+                                      (1 +
+                                        value /
+                                          100 /
+                                          entryPoint.order.leverage),
+                                    pricePrecision
+                                  )
+
+                            this.updateSubBlockValue(
+                              'entryPoint',
+                              'averaging',
+                              'percentage',
+                              value
+                            )
+
+                            this.updateSubBlockValue(
+                              'entryPoint',
+                              'averaging',
+                              'price',
+                              price
+                            )
+                          }}
+                        />
+                      </>
+                    )}
                     {entryPoint.TVAlert.plotEnabled && (
                       <>
                         <div
@@ -2745,7 +3172,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         borderColor={theme.palette.orange.main}
                         btnWidth={'100%'}
                         height={'auto'}
-                        borderRadius={'1rem'}
+                        borderRadius={'0.1rem'}
                         margin={'0'}
                         padding={'.1rem 0'}
                         fontSize={'1rem'}
@@ -2753,7 +3180,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         letterSpacing={'.05rem'}
                         onClick={this.addAverageTarget}
                       >
-                        add target
+                        add point
                       </BtnCustom>
                     </InputRowContainer>
 
@@ -2772,7 +3199,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           quantity
                         </TargetTitle>
                         <TargetTitle theme={theme} style={{ width: '40%' }}>
-                          place Without Loss
+                          place Break-even SLP
                         </TargetTitle>
                       </InputRowContainer>
                       <div
@@ -2799,7 +3226,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                               theme={theme}
                               style={{ width: '25%', paddingLeft: '2rem' }}
                             >
-                              {target.price} {pair[1]}
+                              {target.price} {i > 0 ? '%' : pair[1]}
                             </TargetValue>
                             <TargetValue theme={theme} style={{ width: '25%' }}>
                               {target.amount} {pair[0]}
@@ -2829,7 +3256,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         theme={theme}
                         firstHalfText={'long'}
                         secondHalfText={'short'}
-                        buttonHeight={'2.5rem'}
+                        buttonHeight={'3rem'}
                         containerStyles={{
                           width: '30%',
                           padding: '0 .4rem 0 0',
@@ -3046,7 +3473,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     theme={theme}
                     firstHalfText={'limit'}
                     secondHalfText={'market'}
-                    buttonHeight={'2.5rem'}
+                    buttonHeight={'3rem'}
                     containerStyles={{ width: '100%' }}
                     firstHalfStyleProperties={BlueSwitcherStyles(theme)}
                     secondHalfStyleProperties={BlueSwitcherStyles(theme)}
@@ -3639,6 +4066,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         <InputRowContainer>
                           <AdditionalSettingsButton
                             theme={theme}
+                            fontSize={'1rem'}
                             isActive={stopLoss.forcedStopByAlert}
                             onClick={() => {
                               this.updateBlockValue(
@@ -3663,6 +4091,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           </AdditionalSettingsButton>
                           <AdditionalSettingsButton
                             theme={theme}
+                            fontSize={'1rem'}
                             isActive={stopLoss.forcedStop.mandatoryForcedLoss}
                             onClick={() => {
                               this.updateSubBlockValue(
@@ -3680,7 +4109,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                               )
                             }}
                           >
-                            Forced Stop by Settings
+                            Settings Forced stop
                           </AdditionalSettingsButton>
                           <AdditionalSettingsButton
                             theme={theme}
@@ -3917,7 +4346,18 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   padding: '0rem 1rem 0rem 1.2rem',
                 }}
               >
+                {' '}
                 <SendButton
+                  theme={theme}
+                  type={entryPoint.order.side ? 'sell' : 'buy'}
+                  onClick={() => {
+                    updateTerminalViewMode('onlyTables')
+                  }}
+                >
+                  cancel
+                </SendButton>
+                <SendButton
+                  theme={theme}
                   type={entryPoint.order.side ? 'buy' : 'sell'}
                   onClick={async () => {
                     const isValid = validateSmartOrders(
@@ -3980,7 +4420,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
                       //   return
                       // }
-
                       this.setState({ showConfirmationPopup: true })
                     } else {
                       this.setState({ showErrors: true })
@@ -3999,7 +4438,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   theme={theme}
                   firstHalfText={'limit'}
                   secondHalfText={'market'}
-                  buttonHeight={'2.5rem'}
+                  buttonHeight={'3rem'}
                   containerStyles={{ width: '100%' }}
                   firstHalfStyleProperties={BlueSwitcherStyles(theme)}
                   secondHalfStyleProperties={BlueSwitcherStyles(theme)}
@@ -4078,7 +4517,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           })
                         }}
                       >
-                        Trailing take a profit
+                        Trailing take profit
                       </AdditionalSettingsButton>
                     </DarkTooltip>
                   )}
@@ -4136,7 +4575,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           this.updateBlockValue('takeProfit', 'external', false)
                         }}
                       >
-                        Split targets
+                        Multiple targets
                       </AdditionalSettingsButton>
                     </DarkTooltip>
                   )}
@@ -4176,7 +4615,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         }
                       }}
                     >
-                      TAP by TV Alert
+                      TP by TV Alert
                     </AdditionalSettingsButton>
                   </DarkTooltip>
                   {/* <AdditionalSettingsButton theme={theme}
@@ -4222,8 +4661,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           </p>
                           <p>
                             <b>For example:</b>you bought 1 BTC and set 100%
-                            take a profit. Your unrealized profit should be 1
-                            BTC and order will be executed.
+                            take profit. Your unrealized profit should be 1 BTC
+                            and order will be executed.
                           </p>
                         </>
                       }
@@ -4550,6 +4989,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       <InputRowContainer>
                         <AdditionalSettingsButton
                           theme={theme}
+                          btnWidth={'50%'}
                           isActive={takeProfit.forcedStopByAlert}
                           onClick={() => {
                             this.updateBlockValue(
@@ -4574,6 +5014,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         </AdditionalSettingsButton>
                         <AdditionalSettingsButton
                           theme={theme}
+                          btnWidth={'50%'}
                           isActive={takeProfit.plotEnabled}
                           onClick={() => {
                             this.updateBlockValue(
@@ -5093,7 +5534,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                         this.toggleBlock('takeProfit', 'isTakeProfitOn')
                       }
                     >
-                      show take a profit
+                      show take profit
                     </SendButton>
                   </div>
                 </BluredBackground>
@@ -5227,6 +5668,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               price={this.props.price}
               pair={pair}
               pricePrecision={pricePrecision}
+              quantityPrecision={quantityPrecision}
               side={entryPoint.order.side}
               marketType={marketType}
               leverage={entryPoint.order.leverage}

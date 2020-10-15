@@ -5,9 +5,18 @@ import { useLocation, useHistory } from 'react-router-dom'
 import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import PreferencesSelect from '../Inputs/PreferencesSelect'
 import LayoutSelector from '@core/components/LayoutSelector'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import KeySelector from '@core/components/KeySelector'
 import SelectExchange from '../Inputs/SelectExchange/SelectExchange'
-import { SmartTradeButton } from '@sb/components/TraidingTerminal/styles'
+import { getActiveStrategies } from '@core/graphql/queries/chart/getActiveStrategies'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { IProps, IQueryProps, INextQueryProps } from './TradingTabs.types'
+
+import {
+  SmartTradeButton,
+  ChangeTerminalButton,
+  ChangeTradeButton,
+} from '@sb/components/TraidingTerminal/styles'
 import MarketStats from './MarketStats/MarketStats'
 import { TooltipCustom } from '@sb/components/index'
 import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
@@ -21,6 +30,7 @@ import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { updateThemeMode } from '@core/graphql/mutations/chart/updateThemeMode'
 import { writeQueryData } from '@core/utils/TradingTable.utils'
 import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
+import { Button } from '@material-ui/core'
 
 const selectStyles = (theme: Theme) => ({
   height: '100%',
@@ -60,6 +70,7 @@ export const CardsPanel = ({
   theme,
   themeMode,
   activeExchange,
+  terminalViewMode,
   isDefaultTerminalViewMode,
   updateTerminalViewMode,
   marketType,
@@ -72,9 +83,15 @@ export const CardsPanel = ({
   hideDepthChart,
   hideOrderbook,
   hideTradeHistory,
+  isDefaultOnlyTables,
   changeChartLayout,
   persistorInstance,
-  updateThemeModeMutation
+  updateThemeModeMutation,
+  getActiveStrategiesQuery: {
+    getActiveStrategies = { strategies: [], count: 0 },
+  } = {
+    getActiveStrategies: { strategies: [], count: 0 },
+  },
 }) => {
   const hedgeMode = selectedKey.hedgeMode
 
@@ -116,11 +133,19 @@ export const CardsPanel = ({
     showChangePositionModeResult(result, 'Position mode')
   }
 
+  const activeTradesLength = getActiveStrategies.strategies.filter(
+    (a) =>
+      a !== null &&
+      (a.enabled ||
+        (a.conditions.isTemplate && a.conditions.templateStatus !== 'disabled'))
+  ).length
+
   const history = useHistory()
   const location = useLocation()
   const { pathname } = location
 
   const authenticated = checkLoginStatus()
+  const isSmartOrderMode = terminalViewMode === 'smartOrderMode'
 
   return (
     <>
@@ -148,10 +173,6 @@ export const CardsPanel = ({
             border: '0',
           }}
         >
-          {/* <TooltipCustom
-            title="Cryptocurrencies.ai is a Binance partner exchange"
-            enterDelay={250}
-            component={ */}
           <MarketStats
             theme={theme}
             symbol={pair}
@@ -160,8 +181,6 @@ export const CardsPanel = ({
             quantityPrecision={quantityPrecision}
             pricePrecision={pricePrecision}
           />
-          {/* }
-          /> */}
         </CustomCard>
 
         {view === 'default' && (
@@ -188,7 +207,106 @@ export const CardsPanel = ({
           pricePrecision={pricePrecision}
         />
 
-        <SmartTradeButton
+        <ChangeTerminalButton
+          style={{
+            border: theme.palette.border.main,
+            width: '30rem',
+            height: '100%',
+          }}
+        >
+          <DarkTooltip
+            title={
+              'Our unique terminal with smart orders and advanced trading features.'
+            }
+          >
+            <ChangeTradeButton
+              theme={theme}
+              style={{
+                //textDecoration: 'underline',
+                height: 'calc(100% - 1rem)',
+                //paddingRight: '6rem',
+                cursor: 'pointer',
+                borderRight: theme.palette.border.main,
+                backgroundColor: theme.palette.white.background,
+                color:
+                  isSmartOrderMode || isDefaultOnlyTables
+                    ? theme.palette.blue.main
+                    : theme.palette.grey.light,
+                // border: 'solid 1px black',
+                // width: '7rem',
+              }}
+              type={isDefaultTerminalViewMode ? 'buy' : 'sell'}
+              id="smartTradingButton"
+              onClick={() => {
+                // for guest mode
+                if (!authenticated) {
+                  history.push(`/login?callbackURL=${pathname}`)
+                  return
+                }
+
+                updateTerminalViewMode('onlyTables')
+              }}
+            >
+              <span
+                style={{
+                  borderBottom: `dashed 0.1rem ${theme.palette.grey.border}`,
+                }}
+              >
+                {'Smart'}
+              </span>
+              <span
+                style={{
+                  backgroundColor: theme.palette.red.main,
+                  marginLeft: '0.5rem',
+                  borderRadius: '0.5rem',
+                  fontSize: '1.5rem',
+                  width: '3.3rem',
+                  height: '1.6rem',
+                  alignItems: 'center',
+                  color: theme.palette.white.main,
+                }}
+              >
+                {activeTradesLength}
+              </span>
+            </ChangeTradeButton>
+          </DarkTooltip>
+
+          <DarkTooltip title={'Terminal with traditional order types.'}>
+            <ChangeTradeButton
+              theme={theme}
+              style={{
+                cursor: 'pointer',
+                height: '100%',
+                backgroundColor: theme.palette.white.background,
+                color:
+                  isDefaultTerminalViewMode && !isDefaultOnlyTables
+                    ? theme.palette.blue.main
+                    : theme.palette.grey.light,
+              }}
+              //type={isDefaultTerminalViewMode ? 'buy' : 'sell'}
+              id="basicTradingButton"
+              onClick={() => {
+                // for guest mode
+                if (!authenticated) {
+                  history.push(`/login?callbackURL=${pathname}`)
+                  return
+                }
+
+                updateTerminalViewMode('default')
+              }}
+            >
+              <span
+                style={{
+                  borderBottom: `dashed 0.1rem ${theme.palette.grey.border}`,
+                }}
+              >
+                {'Basic'}
+              </span>
+            </ChangeTradeButton>
+          </DarkTooltip>
+        </ChangeTerminalButton>
+
+        {/* <SmartTradeButton
           theme={theme}
           style={{
             height: '100%',
@@ -222,7 +340,7 @@ export const CardsPanel = ({
           {isDefaultTerminalViewMode
             ? 'go to smart terminal'
             : 'back to basic terminal'}
-        </SmartTradeButton>
+        </SmartTradeButton> */}
         <PreferencesSelect
           theme={theme}
           style={{ width: '15%', minWidth: '0', marginLeft: '.8rem' }}
@@ -236,15 +354,24 @@ export const CardsPanel = ({
             if (!authenticated) {
               return
             }
-            
+
             theme.updateMode(themeMode === 'dark' ? 'light' : 'dark')
-            await writeQueryData(getThemeMode, {}, { getAccountSettings: { themeMode: themeMode === 'dark' ? 'light' : 'dark', __typename: 'getAccountSettings' }})
+            await writeQueryData(
+              getThemeMode,
+              {},
+              {
+                getAccountSettings: {
+                  themeMode: themeMode === 'dark' ? 'light' : 'dark',
+                  __typename: 'getAccountSettings',
+                },
+              }
+            )
             await persistorInstance.persist()
             await updateThemeModeMutation({
               variables: {
                 input: {
                   themeMode: themeMode === 'dark' ? 'light' : 'dark',
-                }
+                },
               },
             })
           }}
@@ -311,6 +438,24 @@ export default compose(
   graphql(TOGGLE_THEME_MODE, {
     name: 'toggleThemeMode',
   }),
+  queryRendererHoc({
+    query: getActiveStrategies,
+    name: 'getActiveStrategiesQuery',
+    fetchPolicy: 'cache-only',
+    variables: (props: INextQueryProps) => ({
+      activeStrategiesInput: {
+        page: 0,
+        perPage: 30,
+        activeExchangeKey: props.selectedKey.keyId,
+        marketType: props.marketType,
+        allKeys: true,
+      },
+    }),
+    withOutSpinner: true,
+    withTableLoader: false,
+    withoutLoading: true,
+    showLoadingWhenQueryParamsChange: false,
+  }),
   graphql(changePositionMode, { name: 'changePositionModeMutation' }),
-  graphql(updateThemeMode, { name: 'updateThemeModeMutation'}),
+  graphql(updateThemeMode, { name: 'updateThemeModeMutation' })
 )(CardsPanel)

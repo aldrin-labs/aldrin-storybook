@@ -834,7 +834,7 @@ const validate = (values: FormValues, props: IProps) => {
 }
 
 const formikEnhancer = withFormik<IProps, FormValues>({
-  validate: validate,
+  // validate: validate,
   mapPropsToValues: (props) => ({
     price: props.marketPrice,
     stop: null,

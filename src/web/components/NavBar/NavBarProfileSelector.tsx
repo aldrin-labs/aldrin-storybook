@@ -56,7 +56,16 @@ const NavBarProfileSelector = ({
         page={`profile`}
         buttonText={
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <span style={{ maxWidth: '15rem', overflow: 'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>{accountData.email}</span>
+            <span
+              style={{
+                maxWidth: '15rem',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {accountData.email}
+            </span>
             <SvgIcon
               width="1rem"
               height="1rem"
@@ -69,17 +78,17 @@ const NavBarProfileSelector = ({
         selectActiveMenu={selectMenu}
         onMouseOver={onMouseOver}
         items={[
-          // {
-          //   text: 'Accounts',
-          //   to: '/profile/accounts',
-          //   onMouseOver: () => {
-          //     if (notAuthPages || !loginStatus) {
-          //       return
-          //     }
+          {
+            text: 'Accounts',
+            to: '/profile/accounts',
+            onMouseOver: () => {
+              if (notAuthPages || !loginStatus) {
+                return
+              }
 
-          //     prefetchProfileAccounts()
-          //   },
-          // },
+              prefetchProfileAccounts()
+            },
+          },
           {
             text: 'Settings',
             to: '/profile/settings',
@@ -100,14 +109,15 @@ const NavBarProfileSelector = ({
             text: 'API',
             to: '/profile/api',
           },
-          {
-            text: 'Telegram',
-            to: '/profile/telegram',
-          },
-          {
-            text: 'Referral',
-            to: '/profile/referral',
-          },
+
+          // {
+          //   text: 'Telegram',
+          //   to: '/profile/telegram',
+          // },
+          // {
+          //   text: 'Referral',
+          //   to: '/profile/referral',
+          // },
           // {
           //   text: 'Disable Account',
           //   to: '/profile/disableaccount',

@@ -47,20 +47,56 @@ class TradingTable extends React.PureComponent<IProps, IState> {
     perPageSmartTrades: 30,
   }
 
-  // componentDidMount() {
-  //   console.log('TradingTable componentDidMount')
-  // }
+  componentDidMount() {
+    if (
+      this.props.terminalViewMode === 'default' &&
+      (this.state.tab === 'activeTrades' ||
+        this.state.tab === 'strategiesHistory')
+    ) {
+      if (this.props.marketType === 0) {
+        this.setState({ tab: 'openOrders' })
+      } else {
+        this.setState({ tab: 'positions' })
+      }
+    }
+  }
 
   componentDidUpdate(prevProps) {
     // console.log('TradingTable componentDidUpdate prevProps', prevProps)
     // console.log('TradingTable componentDidUpdate this.props', this.props)
 
     if (prevProps.marketType !== this.props.marketType) {
+      // change from spot to futures when funds is open
+      if (this.props.marketType === 1 && this.state.tab === 'funds') {
+        if (this.props.terminalViewMode === 'onlyTables') {
+          this.setState({ tab: 'activeTrades' })
+        } else {
+          this.setState({ tab: 'positions' })
+        }
+      }
+
+      // change from futures to spot when positions is open
+      if (this.props.marketType === 0 && this.state.tab === 'positions') {
+        if (this.props.terminalViewMode === 'onlyTables') {
+          this.setState({ tab: 'activeTrades' })
+        } else {
+          this.setState({ tab: 'openOrders' })
+        }
+      }
+    }
+
+    // change from onlyTables to basic when SM tables is open
+    if (prevProps.terminalViewMode !== this.props.terminalViewMode) {
       if (
-        (this.props.marketType === 0 && this.state.tab === 'positions') ||
-        (this.props.marketType === 1 && this.state.tab === 'funds')
+        this.props.terminalViewMode === 'default' &&
+        (this.state.tab === 'activeTrades' ||
+          this.state.tab === 'strategiesHistory')
       ) {
-        this.setState({ tab: 'activeTrades' })
+        if (this.props.marketType === 0) {
+          this.setState({ tab: 'openOrders' })
+        } else {
+          this.setState({ tab: 'positions' })
+        }
       }
     }
   }
@@ -130,6 +166,11 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       currencyPair,
       arrayOfMarketIds,
       priceFromOrderbook,
+      updateTerminalViewMode,
+      isDefaultTerminalViewMode,
+      isDefaultOnlyTables,
+      isSmartOrderMode,
+      terminalViewMode,
       pricePrecision,
       quantityPrecision,
       getAllUserKeysQuery = {
@@ -164,6 +205,11 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       >
         <TradingTabs
           {...{
+            updateTerminalViewMode,
+            terminalViewMode,
+            isDefaultTerminalViewMode,
+            isDefaultOnlyTables,
+            isSmartOrderMode,
             tab,
             theme,
             marketType,
@@ -189,6 +235,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
         <ActiveTrades
           {...{
             tab,
+            updateTerminalViewMode,
+            isDefaultOnlyTables,
             keys,
             theme,
             selectedKey,
@@ -435,7 +483,11 @@ export default React.memo(
       prevProps.quantityPrecision === nextProps.quantityPrecision &&
       prevProps.priceFromOrderbook === nextProps.priceFromOrderbook &&
       prevProps.currencyPair === nextProps.currencyPair &&
-      prevProps.arrayOfMarketIds.length === nextProps.arrayOfMarketIds.length
+      prevProps.arrayOfMarketIds.length === nextProps.arrayOfMarketIds.length &&
+      prevProps.theme.palette.type === nextProps.theme.palette.type &&
+      prevProps.isDefaultOnlyTables === nextProps.isDefaultOnlyTables &&
+      prevProps.isDefaultTerminalViewMode ===
+        nextProps.isDefaultTerminalViewMode
     ) {
       return true
     }

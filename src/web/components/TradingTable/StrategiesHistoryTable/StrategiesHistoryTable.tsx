@@ -281,8 +281,8 @@ const TableDataWrapper = ({ ...props }) => {
           ...(!specificPair ? {} : { specificPair: props.currencyPair }),
         },
       }}
-      withOutSpinner={true}
-      withTableLoader={true}
+      withOutSpinner={false}
+      withTableLoader={false}
       query={getStrategiesHistory}
       showLoadingWhenQueryParamsChange={false}
       name={`getStrategiesHistoryQuery`}

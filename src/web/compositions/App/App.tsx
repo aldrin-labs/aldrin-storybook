@@ -20,6 +20,7 @@ import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Footer from '@sb/components/Footer'
 import AnimatedNavBar from '@sb/components/NavBar/AnimatedNavBar'
+import RestrictPopup from './RestrictPopup/RestrictPopup'
 import ThemeWrapper from './ThemeWrapper/ThemeWrapper'
 import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
 import SnackbarWrapper from './SnackbarWrapper/SnackbarWrapper'
@@ -34,7 +35,7 @@ import { syncStorage } from '@storage'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { useQuery } from 'react-apollo'
 
-const version = `10.5.51`
+const version = `10.5.55`
 const currentVersion = localStorage.getItem('version')
 if (currentVersion !== version) {
   localStorage.clear()
@@ -47,6 +48,7 @@ const AppRaw = ({
   getThemeModeQuery,
   getChartDataQuery,
   location: { pathname: currentPage, search },
+  authenticated,
   ...props
 }: any) => {
   const isChartPage = /chart/.test(currentPage)
@@ -78,6 +80,9 @@ const AppRaw = ({
     syncStorage.setItem('code', code)
   }
 
+  // const isUserFromNotRestrictedCountry = !!syncStorage.getItem('IUFNRC')
+  const isUserFromNotRestrictedCountry = false
+
   return (
     <ApolloPersistWrapper>
       <JssProvider jss={jss} generateClassName={generateClassName}>
@@ -85,11 +90,17 @@ const AppRaw = ({
           <SnackbarWrapper>
             <CssBaseline />
             <FontStyle />
+            <RestrictPopup
+              open={isUserFromNotRestrictedCountry && authenticated}
+            />
             <AppGridLayout
               id={'react-notification'}
               showFooter={showFooter}
               isPNL={isPNL}
               isChartPage={isChartPage}
+              isUserFromNotRestrictedCountry={
+                isUserFromNotRestrictedCountry && authenticated
+              }
             >
               {!pageIsRegistration && (
                 <AnimatedNavBar pathname={currentPage} hide={fullscreen} />
