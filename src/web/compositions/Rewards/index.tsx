@@ -18,14 +18,17 @@ import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Link } from 'react-router-dom'
 // import { Circle } from 'rc-progress';
-import { CircularProgressbar as Circle } from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
+import { CircularProgressbar as Circle } from 'react-circular-progressbar'
+import 'react-circular-progressbar/dist/styles.css'
 
 import { Styles } from './index.styles'
 import { Chart } from './components/Chart'
 import { Canvas } from './components/Canvas'
 
-import { formatNumberToUSFormat, stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 
 export const BlockContainer = styled.div``
 
@@ -99,7 +102,7 @@ const ChartTitle = styled.span`
 `
 
 const CardSubTitle = styled.h3`
-  color: #9F9F9F;
+  color: #9f9f9f;
   font-family: DM Sans;
   font-weight: bold;
   font-size: 1.6rem;
@@ -108,22 +111,21 @@ const CardSubTitle = styled.h3`
 `
 
 const CardSubValue = styled.span`
-  color: #C7FFD0;
+  color: #c7ffd0;
   font-family: DM Sans;
   font-weight: bold;
   font-size: 2rem;
-  letter-spacing: .1rem;
+  letter-spacing: 0.1rem;
 `
-
 
 export const srmVolumesInUSDT = [100000, 600000, 1600000, 6600000]
 export const dcfiVolumes = [200000, 400000, 600000, 800000]
 const volumeLabels = ['100k', '600k', '1.6m', '6.6m']
 
-const getPhaseFromTotal = (total) => {  
+const getPhaseFromTotal = (total) => {
   let phase = 0
 
-  srmVolumesInUSDT.forEach(volume => {
+  srmVolumesInUSDT.forEach((volume) => {
     if (total > volume) {
       phase++
     }
@@ -140,21 +142,35 @@ const RewardsRoute = (props) => {
     publicKey,
   } = props
 
-  const tradedSerumInUSDT = props.getTotalSerumVolumeQuery.getTotalSerumVolume.usdVolume
+  const tradedSerumInUSDT =
+    props.getTotalSerumVolumeQuery.getTotalSerumVolume.usdVolume
   const currentPhase = getPhaseFromTotal(tradedSerumInUSDT)
   const currentPhaseMaxVolume = srmVolumesInUSDT[currentPhase]
   const currentPhaseMaxVolumeLabel = volumeLabels[currentPhase]
 
-  const prevPhaseMaxVolume = currentPhase >= 1 ? srmVolumesInUSDT[currentPhase - 1] : 0
-  const prevPhaseDCFIRewarded = currentPhase >= 1 ? dcfiVolumes[currentPhase - 1] : 0
+  const prevPhaseMaxVolume =
+    currentPhase >= 1 ? srmVolumesInUSDT[currentPhase - 1] : 0
+  const prevPhaseDCFIRewarded =
+    currentPhase >= 1 ? dcfiVolumes[currentPhase - 1] : 0
 
-  const volumeTradedInThisPhase = (tradedSerumInUSDT - prevPhaseMaxVolume)
-  
-  const dcfiRewarded = (volumeTradedInThisPhase / (currentPhaseMaxVolume - prevPhaseMaxVolume)) * (dcfiVolumes[currentPhase] - prevPhaseDCFIRewarded) + prevPhaseDCFIRewarded
-  const dcfiEarned = +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.dcfiEarned + +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.dcfiCurrentRoundEst
-  const dcfiEarnedForTwitter = formatNumberToUSFormat(stripDigitPlaces(dcfiEarned, 3)).replace(',', '%2C')
+  const volumeTradedInThisPhase = tradedSerumInUSDT - prevPhaseMaxVolume
 
-  const progressBarSerumValue = +((volumeTradedInThisPhase / (currentPhaseMaxVolume - prevPhaseMaxVolume)) * 100).toFixed(0)
+  const dcfiRewarded =
+    (volumeTradedInThisPhase / (currentPhaseMaxVolume - prevPhaseMaxVolume)) *
+      (dcfiVolumes[currentPhase] - prevPhaseDCFIRewarded) +
+    prevPhaseDCFIRewarded
+  const dcfiEarned =
+    +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.dcfiEarned +
+    +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey
+      .dcfiCurrentRoundEst
+  const dcfiEarnedForTwitter = formatNumberToUSFormat(
+    stripDigitPlaces(dcfiEarned, 3)
+  ).replace(',', '%2C')
+
+  const progressBarSerumValue = +(
+    (volumeTradedInThisPhase / (currentPhaseMaxVolume - prevPhaseMaxVolume)) *
+    100
+  ).toFixed(0)
 
   useEffect(() => {
     getTotalVolumeForSerumKeyQueryRefetch({ publicKey: publicKey || '' })
@@ -207,7 +223,8 @@ const RewardsRoute = (props) => {
             <Value theme={theme}>
               {getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.usdTraded.toFixed(
                 1
-              )} USDT
+              )}{' '}
+              USDT
             </Value>{' '}
             <CardText theme={theme} width={'auto'}>
               SRM traded in USDT
@@ -255,90 +272,110 @@ const RewardsRoute = (props) => {
               flexDirection: 'column',
             }}
           >
-            <Value theme={theme}>
-              {stripDigitPlaces(
-                dcfiEarned, 3
-              )}
-            </Value>{' '}
+            <Value theme={theme}>{stripDigitPlaces(dcfiEarned, 3)}</Value>{' '}
             <CardText theme={theme} width={'auto'}>
               DCFI earned
             </CardText>
             <RowContainer>
-            <Link
-              to={'/chart'}
-              style={{
-                width: 'calc(50% - 2rem)',
-                textDecoration: 'none',
-                paddingBottom: '1.5rem',
-                margin: '0 1rem'
-              }}
-            >
-              <BtnCustom
-                theme={theme}
-                btnColor={theme.palette.grey.main}
-                backgroundColor={theme.palette.blue.serum}
-                hoverBackground={theme.palette.blue.serum}
-                padding={'1.5rem 0'}
-                height={'5rem'}
-                fontSize={'1.6rem'}
-                btnWidth={'100%'}
-                textTransform={'none'}
+              <Link
+                to={'/chart'}
+                style={{
+                  width: 'calc(50% - 2rem)',
+                  textDecoration: 'none',
+                  paddingBottom: '1.5rem',
+                  margin: '0 1rem',
+                }}
               >
-                Harvest (coming soon)
-              </BtnCustom>
-            </Link>
-            <a
-              style={{
-                width: 'calc(50% - 2rem)',
-                textDecoration: 'none',
-                paddingBottom: '1.5rem',
-                margin: '0 1rem'
-              }}
-              href={`https://twitter.com/intent/tweet?text=I%20have%20already%20farmed%20${dcfiEarnedForTwitter}%20%24DCFI%20on%20dex.cryptocurrencies.ai%0A%0AHow%20to%20farm%20%24DCFI%20by%20%24SRM%20trading%3A%0Ahttps%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3Dyz5uaN0aCyw%26feature%3Dyoutu.be%0A%0A%40decefi_official%20%40CCAI_Official%0A%0Apic.twitter.com%2FJmNK1mE4vx%20`} 
-              rel="noopener noreferrel" 
-              target={'_blank'}
-              onClick={(e) => {
-                if (publicKey === '') {
-                  e.preventDefault()
-                  notify({
-                    message: 'Connect your wallet first',
-                    type: 'error',
-                  })
-                }
-              }}
-            > 
-              <BtnCustom
-                theme={theme}
-                btnColor={theme.palette.grey.main}
-                backgroundColor={theme.palette.blue.serum}
-                hoverBackground={theme.palette.blue.serum}
-                padding={'1.5rem 0'}
-                height={'5rem'}
-                fontSize={'1.6rem'}
-                btnWidth={'100%'}
-                textTransform={'none'}
+                <BtnCustom
+                  theme={theme}
+                  btnColor={theme.palette.grey.main}
+                  backgroundColor={theme.palette.blue.serum}
+                  hoverBackground={theme.palette.blue.serum}
+                  padding={'1.5rem 0'}
+                  height={'5rem'}
+                  fontSize={'1.6rem'}
+                  btnWidth={'100%'}
+                  textTransform={'none'}
+                >
+                  Harvest (coming soon)
+                </BtnCustom>
+              </Link>
+              <a
+                style={{
+                  width: 'calc(50% - 2rem)',
+                  textDecoration: 'none',
+                  paddingBottom: '1.5rem',
+                  margin: '0 1rem',
+                }}
+                href={`https://twitter.com/intent/tweet?text=I%20have%20already%20farmed%20${dcfiEarnedForTwitter}%20%24DCFI%20on%20dex.cryptocurrencies.ai%0A%0AHow%20to%20farm%20%24DCFI%20by%20%24SRM%20trading%3A%0Ahttps%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3Dyz5uaN0aCyw%26feature%3Dyoutu.be%0A%0A%40decefi_official%20%40CCAI_Official%0A%0Apic.twitter.com%2FJmNK1mE4vx%20`}
+                rel="noopener noreferrel"
+                target={'_blank'}
+                onClick={(e) => {
+                  if (publicKey === '') {
+                    e.preventDefault()
+                    notify({
+                      message: 'Connect your wallet first',
+                      type: 'error',
+                    })
+                  }
+                }}
               >
-               <SvgIcon src={blackTwitter} width={'2.5rem'} height={'2.5rem'} style={{ marginRight: '1rem' }} />  Share
-              </BtnCustom>
-            </a>
+                <BtnCustom
+                  theme={theme}
+                  btnColor={theme.palette.grey.main}
+                  backgroundColor={theme.palette.blue.serum}
+                  hoverBackground={theme.palette.blue.serum}
+                  padding={'1.5rem 0'}
+                  height={'5rem'}
+                  fontSize={'1.6rem'}
+                  btnWidth={'100%'}
+                  textTransform={'none'}
+                >
+                  <SvgIcon
+                    src={blackTwitter}
+                    width={'2.5rem'}
+                    height={'2.5rem'}
+                    style={{ marginRight: '1rem' }}
+                  />{' '}
+                  Share
+                </BtnCustom>
+              </a>
             </RowContainer>
           </RowContainer>
         </Card>
       </div>
       <RowContainer style={{ paddingTop: '5rem', paddingBottom: '10rem' }}>
         <Card
-          style={{ width: 'calc(40% - 4rem)', height: '60rem', padding: '0 3rem' }}
+          style={{
+            width: 'calc(40% - 4rem)',
+            height: '60rem',
+            padding: '0 3rem',
+          }}
           theme={theme}
         >
-          <RowContainer style={{ height: '60%', position: 'relative', borderBottom: '.1rem solid #61D8E6', }}>
-            <Circle 
-              styles={{ 
-                root: { height: '100%', padding: '7rem 0 3rem 0' }, 
-                path: { stroke: '#C7FFD0', filter: 'drop-shadow(0px 0px 24px rgba(199, 255, 208, 0.67));' }, 
-                trail: { stroke: '#0E1016', }, 
-                text: { fill: '#C7FFD0', fontWeight: 'bold', transform: 'translateY(3%)' } 
-              }} 
-              value={progressBarSerumValue} 
+          <RowContainer
+            style={{
+              height: '60%',
+              position: 'relative',
+              borderBottom: '.1rem solid #61D8E6',
+            }}
+          >
+            <Circle
+              styles={{
+                root: { height: '100%', padding: '7rem 0 3rem 0' },
+                path: {
+                  stroke: '#C7FFD0',
+                  filter:
+                    'drop-shadow(0px 0px 24px rgba(199, 255, 208, 0.67));',
+                },
+                trail: { stroke: '#0E1016' },
+                text: {
+                  fill: '#C7FFD0',
+                  fontWeight: 'bold',
+                  transform: 'translateY(3%)',
+                },
+              }}
+              value={progressBarSerumValue}
               strokeWidth={16}
               text={`${progressBarSerumValue} %`}
             />
@@ -347,41 +384,66 @@ const RewardsRoute = (props) => {
                 +tradedSerumInUSDT.toFixed(1)
               )} / {currentPhaseMaxVolumeLabel}
             </Value> */}
-            <CardText theme={theme} style={{ position: 'absolute', left: '50%', top: '3.5rem', transform: 'translate(-50%, -50%)' }}>
+            <CardText
+              theme={theme}
+              style={{
+                position: 'absolute',
+                left: '50%',
+                top: '3.5rem',
+                transform: 'translate(-50%, -50%)',
+              }}
+            >
               Phase {getPhaseFromTotal(tradedSerumInUSDT) + 1}
             </CardText>
           </RowContainer>
           <RowContainer style={{ height: '40%' }}>
-            <Row direction={'column'} align={'flex-start'} justify={'space-around'} style={{ width: '50%', height: '30%', paddingLeft: '1rem' }}>
-              <CardSubTitle>
-                Total Volume
-              </CardSubTitle>
+            <Row
+              direction={'column'}
+              align={'flex-start'}
+              justify={'space-around'}
+              style={{ width: '50%', height: '30%', paddingLeft: '1rem' }}
+            >
+              <CardSubTitle>Total Volume</CardSubTitle>
               <CardSubValue>
                 ${formatNumberToUSFormat(+tradedSerumInUSDT.toFixed(0))}
               </CardSubValue>
             </Row>
-            <Row direction={'column'} align={'flex-start'} justify={'space-around'} style={{ width: '50%', height: '30%' }}>
-              <CardSubTitle>
-                Volume until next phase
-              </CardSubTitle>
+            <Row
+              direction={'column'}
+              align={'flex-start'}
+              justify={'space-around'}
+              style={{ width: '50%', height: '30%' }}
+            >
+              <CardSubTitle>Volume until next phase</CardSubTitle>
               <CardSubValue>
-                ${formatNumberToUSFormat(+(currentPhaseMaxVolume - tradedSerumInUSDT).toFixed(0))}
+                $
+                {formatNumberToUSFormat(
+                  +(currentPhaseMaxVolume - tradedSerumInUSDT).toFixed(0)
+                )}
               </CardSubValue>
             </Row>
-            <Row direction={'column'} align={'flex-start'} justify={'space-around'} style={{ width: '50%', height: '30%', paddingLeft: '1rem' }}>
-              <CardSubTitle>
-                Total DCFI farmed
-              </CardSubTitle>
+            <Row
+              direction={'column'}
+              align={'flex-start'}
+              justify={'space-around'}
+              style={{ width: '50%', height: '30%', paddingLeft: '1rem' }}
+            >
+              <CardSubTitle>Total DCFI farmed</CardSubTitle>
               <CardSubValue>
                 {formatNumberToUSFormat(+dcfiRewarded.toFixed(0))}
               </CardSubValue>
             </Row>
-            <Row direction={'column'} align={'flex-start'} justify={'space-around'} style={{ width: '50%', height: '30%' }}>
-              <CardSubTitle>
-                DCFI until next phase
-              </CardSubTitle>
+            <Row
+              direction={'column'}
+              align={'flex-start'}
+              justify={'space-around'}
+              style={{ width: '50%', height: '30%' }}
+            >
+              <CardSubTitle>DCFI until next phase</CardSubTitle>
               <CardSubValue>
-              {formatNumberToUSFormat(+(dcfiVolumes[currentPhase] - dcfiRewarded).toFixed(0))}
+                {formatNumberToUSFormat(
+                  +(dcfiVolumes[currentPhase] - dcfiRewarded).toFixed(0)
+                )}
               </CardSubValue>
             </Row>
           </RowContainer>
@@ -400,7 +462,10 @@ const RewardsRoute = (props) => {
           >
             Reward DCFI
           </ChartTitle>
-          <Chart pointData={{ srmInUSDT: tradedSerumInUSDT, dcfi: dcfiRewarded }} theme={theme} />
+          <Chart
+            pointData={{ srmInUSDT: tradedSerumInUSDT, dcfi: dcfiRewarded }}
+            theme={theme}
+          />
           <ChartTitle
             style={{ position: 'absolute', bottom: '2rem', right: '1rem' }}
           >
@@ -442,6 +507,6 @@ export default compose(
     query: getTotalSerumVolume,
     name: 'getTotalSerumVolumeQuery',
     pollInterval: 10000,
-    fetchPolicy: 'cache-and-network'
+    fetchPolicy: 'cache-and-network',
   })
 )(Wrapper)

@@ -31,8 +31,14 @@ import {
   AbsoluteInputTitle,
 } from './styles'
 import { SendButton } from '../TraidingTerminal/styles'
-import { Line } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
+import {
+  Line,
+  SCheckbox,
+} from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
+import {
+  InputRowContainer,
+  AdditionalSettingsButton,
+} from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 export const TradeInputHeader = ({
@@ -477,6 +483,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       lockedAmount,
       quantityPrecision,
       orderIsCreating,
+      takeProfit,
+      takeProfitPercentage,
+      breakEvenPoint,
+      updateState,
     } = this.props
 
     if (!funds) return null
@@ -527,6 +537,74 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   />
                 </InputRowContainer>
               ) : null}
+
+              {priceType === 'market' &&
+                isBuyType &&
+                pair.join('_') === 'SRM_USDT' && (
+                  <InputRowContainer>
+                    <AdditionalSettingsButton
+                      theme={theme}
+                      isActive={breakEvenPoint}
+                      fontSize={'1rem'}
+                      onClick={() => {
+                        updateState('takeProfit', false)
+                        updateState('breakEvenPoint', !breakEvenPoint)
+                      }}
+                    >
+                      <SCheckbox
+                        checked={breakEvenPoint}
+                        onChange={() => {}}
+                        style={{ padding: '0 0 0 1rem', color: '#fff' }}
+                      />
+                      <span style={{ margin: '0 auto' }}>Break-Even Point</span>
+                    </AdditionalSettingsButton>
+                    <AdditionalSettingsButton
+                      theme={theme}
+                      isActive={takeProfit}
+                      onClick={() => {
+                        updateState('takeProfit', !takeProfit)
+                        updateState('breakEvenPoint', false)
+                      }}
+                    >
+                      <SCheckbox
+                        checked={takeProfit}
+                        onChange={() => {}}
+                        style={{ padding: '0 0 0 1rem', color: '#fff' }}
+                      />
+                      <span style={{ margin: '0 auto' }}>Take Profit</span>
+                    </AdditionalSettingsButton>
+                  </InputRowContainer>
+                )}
+
+              {takeProfit && (
+                <InputRowContainer>
+                  <TradeInputContent
+                    theme={theme}
+                    padding={'0 1.5% 0 0'}
+                    width={'calc(50%)'}
+                    symbol={'%'}
+                    title={'TP'}
+                    textAlign={'right'}
+                    needTitle={true}
+                    value={takeProfitPercentage}
+                    onChange={(e) => {
+                      updateState('takeProfitPercentage', e.target.value)
+                    }}
+                  />
+
+                  <BlueSlider
+                    theme={theme}
+                    value={takeProfitPercentage * 20}
+                    sliderContainerStyles={{
+                      width: '50%',
+                      margin: '0 0 0 1.5%',
+                    }}
+                    onChange={(value) => {
+                      updateState('takeProfitPercentage', value / 20)
+                    }}
+                  />
+                </InputRowContainer>
+              )}
 
               {priceType === 'stop-limit' || priceType === 'stop-market' ? (
                 <InputRowContainer
@@ -716,7 +794,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
               >
                 {isSPOTMarket
                   ? operationType === 'buy'
-                    ? priceType === 'market' && pair.join('_') === 'SRM_USDT' ? 'Buy SRM and earn DCFI' : `buy ${pair[0]}`
+                    ? priceType === 'market' && pair.join('_') === 'SRM_USDT'
+                      ? 'Buy SRM and earn DCFI'
+                      : `buy ${pair[0]}`
                     : `sell ${pair[0]}`
                   : operationType === 'buy'
                   ? 'long'
@@ -848,6 +928,9 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       enqueueSnackbar,
       minSpotNotional,
       minFuturesStep,
+      takeProfit,
+      takeProfitPercentage,
+      breakEvenPoint,
     } = props
 
     // if (values.total < minSpotNotional && isSPOTMarket) {
@@ -934,6 +1017,9 @@ const formikEnhancer = withFormik<IProps, FormValues>({
             : {}),
           ...{ reduceOnly },
           orderMode,
+          takeProfit,
+          takeProfitPercentage,
+          breakEvenPoint,
         }
       )
 

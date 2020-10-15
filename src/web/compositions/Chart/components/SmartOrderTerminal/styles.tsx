@@ -149,22 +149,22 @@ export const BeforeCharacter = styled.span`
 export const AdditionalSettingsButton = styled(
   ({ isActive, children, theme, ...rest }) => (
     <BtnCustom
-      btnWidth="calc(94% / 3)"
-      height={'2.5rem'}
+      btnWidth="calc(48.5%)"
+      height={'3rem'}
       fontSize="1.2rem"
       fontWeight="normal"
       padding="0"
-      borderRadius="0"
+      borderRadius=".4rem"
       borderColor={
-        isActive ? theme.palette.blue.btnBackground : theme.palette.grey.border
+        isActive ? theme.palette.blue.serum : theme.palette.grey.border
       }
       btnColor={isActive ? theme.palette.white.main : theme.palette.grey.text}
       backgroundColor={
-        isActive ? theme.palette.blue.btnBackground : theme.palette.grey.main
+        isActive ? theme.palette.blue.serum : theme.palette.grey.main
       }
       hoverColor={theme.palette.white.main}
-      hoverBorderColor={theme.palette.blue.btnBackground}
-      hoverBackground={theme.palette.blue.btnBackground}
+      hoverBorderColor={theme.palette.blue.serum}
+      hoverBackground={theme.palette.blue.serum}
       transition={'all .25s ease-out'}
       textTransform="none"
       boxShadow={'0px .2rem .3rem rgba(8, 22, 58, 0.15)'}
@@ -175,6 +175,8 @@ export const AdditionalSettingsButton = styled(
     </BtnCustom>
   )
 )`
+  display: flex;
+  justify-content: flex-start;
   &:last-child {
     margin: 0;
   }
