@@ -152,22 +152,6 @@ const RewardsRoute = (props) => {
     currentPhase >= 1 ? srmVolumesInUSDT[currentPhase - 1] : 0
   const prevPhaseDCFIRewarded =
     currentPhase >= 1 ? dcfiVolumes[currentPhase - 1] : 0
-<<<<<<< HEAD
-
-  const volumeTradedInThisPhase = tradedSerumInUSDT - prevPhaseMaxVolume
-
-  const dcfiRewarded =
-    (volumeTradedInThisPhase / (currentPhaseMaxVolume - prevPhaseMaxVolume)) *
-      (dcfiVolumes[currentPhase] - prevPhaseDCFIRewarded) +
-    prevPhaseDCFIRewarded
-  const dcfiEarned =
-    +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.dcfiEarned +
-    +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey
-      .dcfiCurrentRoundEst
-  const dcfiEarnedForTwitter = formatNumberToUSFormat(
-    stripDigitPlaces(dcfiEarned, 3)
-  ).replace(',', '%2C')
-=======
 
   const volumeTradedInThisPhase = tradedSerumInUSDT - prevPhaseMaxVolume
 
@@ -184,7 +168,6 @@ const RewardsRoute = (props) => {
   ).replace(',', '%2C')
 
   const percantangeTotalShareDcfi = (dcfiRewarded / 2000000) * 100
->>>>>>> c0cac59f2f32a7f699649e8f2dda7e8797cbb726
 
   const progressBarSerumValue = +(
     (volumeTradedInThisPhase / (currentPhaseMaxVolume - prevPhaseMaxVolume)) *
