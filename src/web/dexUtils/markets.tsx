@@ -29,38 +29,44 @@ export function useMarketsList() {
   return USE_MARKETS.filter(({ deprecated }) => !deprecated);
 }
 
-export function useAllMarkets() {
+export function useAllMarkets(customMarkets) {
   const connection = useConnection();
-  const [markets, setMarkets] = useState([]);
 
-  useEffect(() => {
-    const getAllMarkets = async () => {
-      const markets = [];
-      let marketInfo;
-      for (marketInfo of USE_MARKETS) {
+  const getAllMarkets = async () => {
+    const markets: Array<{
+      market: Market;
+      marketName: string;
+      programId: PublicKey;
+    } | null> = await Promise.all(getMarketInfos(customMarkets).map(
+      async marketInfo => {
         try {
-          const market = await Market.load(
-            connection,
-            marketInfo.address,
-            {},
-            marketInfo.programId,
-          );
-          markets.push({ market, marketName: marketInfo.name });
+          const market = await Market.load(connection, marketInfo.address, {}, marketInfo.programId)
+          return {
+            market,
+            marketName: marketInfo.name,
+            programId: marketInfo.programId,
+          }
         } catch (e) {
           notify({
             message: 'Error loading all market',
             description: e.message,
             type: 'error',
           });
+          return null;
         }
       }
-      setMarkets(markets);
-    };
-
-    getAllMarkets();
-  }, [connection]);
-
-  return markets;
+    ))
+    return markets.filter((m): m is {market: Market; marketName: string; programId: PublicKey;} => !!m);
+  };
+  return useAsyncData(
+    getAllMarkets,
+    tuple(
+      'getAllMarkets',
+      customMarkets.length,
+      connection,
+    ),
+    {refreshInterval: _VERY_SLOW_REFRESH_INTERVAL}
+  )
 }
 
 export function useUnmigratedOpenOrdersAccounts() {
@@ -373,12 +379,17 @@ export function useTokenAccounts() {
   );
 }
 
-export function getSelectedTokenAccountForMint(accounts, mint) {
+export function getSelectedTokenAccountForMint(
+  accounts: TokenAccount[] | undefined | null,
+  mint: PublicKey | undefined,
+  selectedPubKey?: string | PublicKey | null,
+) {
   if (!accounts || !mint) {
     return null;
   }
-  const filtered = accounts.filter(({ effectiveMint }) =>
-    mint.equals(effectiveMint),
+  const filtered = accounts.filter(({ effectiveMint, pubkey }) =>
+    mint.equals(effectiveMint) && (!selectedPubKey ||
+    (typeof selectedPubKey === 'string' ? selectedPubKey : selectedPubKey.toBase58()) === pubkey.toBase58())
   );
   return filtered && filtered[0];
 }
@@ -386,13 +397,25 @@ export function getSelectedTokenAccountForMint(accounts, mint) {
 export function useSelectedQuoteCurrencyAccount() {
   const [accounts] = useTokenAccounts();
   const { market } = useMarket();
-  return getSelectedTokenAccountForMint(accounts, market?.quoteMintAddress);
+  const [selectedTokenAccounts] = useSelectedTokenAccounts();
+  const mintAddress =  market?.quoteMintAddress;
+  return getSelectedTokenAccountForMint(
+    accounts,
+    mintAddress,
+    mintAddress && selectedTokenAccounts[mintAddress.toBase58()]
+  );
 }
 
 export function useSelectedBaseCurrencyAccount() {
   const [accounts] = useTokenAccounts();
   const { market } = useMarket();
-  return getSelectedTokenAccountForMint(accounts, market?.baseMintAddress);
+  const [selectedTokenAccounts] = useSelectedTokenAccounts();
+  const mintAddress =  market?.baseMintAddress;
+  return getSelectedTokenAccountForMint(
+    accounts,
+    mintAddress,
+    mintAddress && selectedTokenAccounts[mintAddress.toBase58()]
+  );
 }
 
 // TODO: Update to use websocket
@@ -417,6 +440,38 @@ export function useBaseCurrencyBalances() {
   const { market } = useMarket();
   const [accountInfo, loaded] = useAccountInfo(baseCurrencyAccount?.pubkey);
   if (!market || !baseCurrencyAccount || !loaded) {
+    return null;
+  }
+  if (market.baseMintAddress.equals(TokenInstructions.WRAPPED_SOL_MINT)) {
+    return accountInfo?.lamports / 1e9 ?? 0;
+  }
+  return market.baseSplSizeToNumber(
+    new BN(accountInfo.data.slice(64, 72), 10, 'le'),
+  );
+}
+
+// TODO: Update to use websocket
+export function useSelectedQuoteCurrencyBalances() {
+  const quoteCurrencyAccount = useSelectedQuoteCurrencyAccount();
+  const { market } = useMarket();
+  const [accountInfo, loaded] = useAccountInfo(quoteCurrencyAccount?.pubkey);
+  if (!market || !quoteCurrencyAccount || !loaded || !accountInfo) {
+    return null;
+  }
+  if (market.quoteMintAddress.equals(TokenInstructions.WRAPPED_SOL_MINT)) {
+    return accountInfo?.lamports / 1e9 ?? 0;
+  }
+  return market.quoteSplSizeToNumber(
+    new BN(accountInfo.data.slice(64, 72), 10, 'le'),
+  );
+}
+
+// TODO: Update to use websocket
+export function useSelectedBaseCurrencyBalances() {
+  const baseCurrencyAccount = useSelectedBaseCurrencyAccount();
+  const { market } = useMarket();
+  const [accountInfo, loaded] = useAccountInfo(baseCurrencyAccount?.pubkey);
+  if (!market || !baseCurrencyAccount || !loaded || !accountInfo) {
     return null;
   }
   if (market.baseMintAddress.equals(TokenInstructions.WRAPPED_SOL_MINT)) {
@@ -1027,4 +1082,11 @@ export function getMarketInfos(customMarkets) {
   }));
 
   return [...customMarketsInfo, ...USE_MARKETS];
+}
+
+export function useSelectedTokenAccounts(): [SelectedTokenAccounts, (newSelectedTokenAccounts: SelectedTokenAccounts) => void] {
+  const [selectedTokenAccounts, setSelectedTokenAccounts] = useLocalStorageState<SelectedTokenAccounts>(
+    'selectedTokenAccounts', {}
+    );
+  return [selectedTokenAccounts, setSelectedTokenAccounts]
 }

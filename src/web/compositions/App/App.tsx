@@ -41,6 +41,7 @@ import CardsPanel from '@sb/compositions/Chart/components/CardsPanel'
 import { ConnectionProvider } from '@sb/dexUtils/connection'
 import { WalletProvider } from '@sb/dexUtils/wallet'
 import { MarketProvider } from '@sb/dexUtils/markets'
+import { PreferencesProvider } from '@sb/dexUtils/preferences'
 
 const version = `10.5.68`
 const currentVersion = localStorage.getItem('version')
@@ -102,6 +103,7 @@ const AppRaw = ({
             <ConnectionProvider>
               <MarketProvider>
                 <WalletProvider>
+                <PreferencesProvider>
                   <AppGridLayout
                     id={'react-notification'}
                     showFooter={showFooter}
@@ -130,6 +132,7 @@ const AppRaw = ({
                     /> */}
                   </AppGridLayout>
                   {/* <ShowWarningOnMoblieDevice /> */}
+                  </PreferencesProvider>
                 </WalletProvider>
               </MarketProvider>
             </ConnectionProvider>
