@@ -17,6 +17,7 @@ import {
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { feeTiers } from '@sb/components/TradingTable/Fee/FeeTiers'
+import { getSelectedTokenAccountForMint } from './markets'
 
 export async function createTokenAccountTransaction({
   connection,
