@@ -43,7 +43,7 @@ import { WalletProvider } from '@sb/dexUtils/wallet'
 import { MarketProvider } from '@sb/dexUtils/markets'
 import { PreferencesProvider } from '@sb/dexUtils/preferences'
 
-const version = `10.5.69`
+const version = `10.5.70`
 const currentVersion = localStorage.getItem('version')
 if (currentVersion !== version) {
   localStorage.clear()
