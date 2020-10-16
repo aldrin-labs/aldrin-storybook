@@ -538,26 +538,41 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 </InputRowContainer>
               ) : null}
 
-              {priceType === 'market' &&
-                isBuyType &&
-                pair.join('_') === 'SRM_USDT' && (
-                  <InputRowContainer>
-                    <AdditionalSettingsButton
-                      theme={theme}
-                      isActive={breakEvenPoint}
-                      fontSize={'1rem'}
-                      onClick={() => {
-                        updateState('takeProfit', false)
-                        updateState('breakEvenPoint', !breakEvenPoint)
-                      }}
+              {priceType === 'market' && isBuyType && (
+                <InputRowContainer>
+                  {pair.join('_') === 'SRM_USDT' && (
+                    <DarkTooltip
+                      maxWidth={'35rem'}
+                      title={
+                        'As soon as you purchase SRM, there are will be placed a limit order for sale at a price that will refund the fees you paid.'
+                      }
                     >
-                      <SCheckbox
-                        checked={breakEvenPoint}
-                        onChange={() => {}}
-                        style={{ padding: '0 0 0 1rem', color: '#fff' }}
-                      />
-                      <span style={{ margin: '0 auto' }}>Break-Even Point</span>
-                    </AdditionalSettingsButton>
+                      <AdditionalSettingsButton
+                        theme={theme}
+                        isActive={breakEvenPoint}
+                        fontSize={'1rem'}
+                        onClick={() => {
+                          updateState('takeProfit', false)
+                          updateState('breakEvenPoint', !breakEvenPoint)
+                        }}
+                      >
+                        <SCheckbox
+                          checked={breakEvenPoint}
+                          onChange={() => {}}
+                          style={{ padding: '0 0 0 1rem', color: '#fff' }}
+                        />
+                        <span style={{ margin: '0 auto' }}>
+                          Break-Even Point
+                        </span>
+                      </AdditionalSettingsButton>
+                    </DarkTooltip>
+                  )}
+                  <DarkTooltip
+                    maxWidth={'35rem'}
+                    title={
+                      'A limit order for a price higher than the purchase price of the percentage you specify will be placed immediately after purchase, so you will not only farm DCFI but also take profit from SRM trading.'
+                    }
+                  >
                     <AdditionalSettingsButton
                       theme={theme}
                       isActive={takeProfit}
@@ -573,8 +588,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                       />
                       <span style={{ margin: '0 auto' }}>Take Profit</span>
                     </AdditionalSettingsButton>
-                  </InputRowContainer>
-                )}
+                  </DarkTooltip>
+                </InputRowContainer>
+              )}
 
               {takeProfit && (
                 <InputRowContainer>

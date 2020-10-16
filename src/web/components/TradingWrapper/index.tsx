@@ -21,7 +21,6 @@ import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { SendButton } from '../TraidingTerminal/styles'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 import {
   TerminalContainer,
@@ -43,7 +42,7 @@ import {
 } from './styles'
 
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
-
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import FirstVisitPopup from '@sb/compositions/Chart/components/FirstVisitPopup'
 
 class SimpleTabs extends React.Component {

@@ -41,8 +41,9 @@ import CardsPanel from '@sb/compositions/Chart/components/CardsPanel'
 import { ConnectionProvider } from '@sb/dexUtils/connection'
 import { WalletProvider } from '@sb/dexUtils/wallet'
 import { MarketProvider } from '@sb/dexUtils/markets'
+import { PreferencesProvider } from '@sb/dexUtils/preferences'
 
-const version = `10.5.65`
+const version = `10.5.72`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
 const currentVersion = localStorage.getItem('version')
 if (currentVersion !== version) {
@@ -104,34 +105,36 @@ const AppRaw = ({
             <ConnectionProvider>
               <MarketProvider>
                 <WalletProvider>
-                  <AppGridLayout
-                    id={'react-notification'}
-                    showFooter={showFooter}
-                    isRewards={isRewards}
-                    isPNL={isPNL}
-                    isChartPage={isChartPage}
-                  >
-                    {!pageIsRegistration && (
-                      <CardsPanel pathname={currentPage} hide={fullscreen} />
-                    )}
-                    <div
-                      style={{
-                        height: showFooter
-                          ? 'calc(100% - 11.7rem)'
-                          : 'calc(100% - 6rem)',
-                      }}
+                  <PreferencesProvider>
+                    <AppGridLayout
+                      id={'react-notification'}
+                      showFooter={showFooter}
+                      isRewards={isRewards}
+                      isPNL={isPNL}
+                      isChartPage={isChartPage}
                     >
-                      {children}
-                    </div>
-                    {showFooter && <Footer isRewards={isRewards} />}
-                    {/* 
+                      {!pageIsRegistration && (
+                        <CardsPanel pathname={currentPage} hide={fullscreen} />
+                      )}
+                      <div
+                        style={{
+                          height: showFooter
+                            ? 'calc(100% - 11.7rem)'
+                            : 'calc(100% - 6rem)',
+                        }}
+                      >
+                        {children}
+                      </div>
+                      {showFooter && <Footer isRewards={isRewards} />}
+                      {/* 
                     <Footer
                       isChartPage={isChartPage}
                       fullscreenMode={fullscreen}
                       showFooter={showFooter}
                     /> */}
-                  </AppGridLayout>
-                  {/* <ShowWarningOnMoblieDevice /> */}
+                    </AppGridLayout>
+                    {/* <ShowWarningOnMoblieDevice /> */}
+                  </PreferencesProvider>
                 </WalletProvider>
               </MarketProvider>
             </ConnectionProvider>

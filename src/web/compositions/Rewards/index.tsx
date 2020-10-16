@@ -118,9 +118,42 @@ const CardSubValue = styled.span`
   letter-spacing: 0.1rem;
 `
 
-export const srmVolumesInUSDT = [100000, 600000, 1600000, 6600000]
-export const dcfiVolumes = [200000, 400000, 600000, 800000]
-const volumeLabels = ['100k', '600k', '1.6m', '6.6m']
+export const srmVolumesInUSDT = [
+  100000,
+  600000,
+  1600000,
+  6600000,
+  16600000,
+  41600000,
+  91600000,
+  166600000,
+  266600000,
+  466600000,
+]
+export const dcfiVolumes = [
+  200000,
+  400000,
+  600000,
+  800000,
+  1000000,
+  1200000,
+  1400000,
+  1600000,
+  1800000,
+  2000000,
+]
+const volumeLabels = [
+  '100k',
+  '600k',
+  '1.6m',
+  '6.6m',
+  '16.6m',
+  '41.6m',
+  '91.6m',
+  '166.6m',
+  '266.6m',
+  '466.6m',
+]
 
 const getPhaseFromTotal = (total) => {
   let phase = 0
