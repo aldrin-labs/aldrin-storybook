@@ -12,6 +12,7 @@ import {
   Market,
   TOKEN_MINTS,
   TokenInstructions,
+  OpenOrders,
 } from '@project-serum/serum';
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
@@ -42,6 +43,122 @@ export async function createTokenAccountTransaction({
     signer: newAccount,
     newAccountPubkey: newAccount.publicKey,
   };
+}
+
+export async function settleAllFunds({
+  connection,
+  wallet,
+  tokenAccounts,
+  markets,
+  selectedTokenAccounts,
+} : {
+  connection: Connection;
+  wallet: Wallet;
+  tokenAccounts: TokenAccount[];
+  markets: Market[];
+  selectedTokenAccounts?: SelectedTokenAccounts;
+}) {
+  if (!markets || !wallet || !connection || !tokenAccounts) {
+    return;
+  }
+
+  const programIds: PublicKey[] = [];
+  markets
+    .reduce((cumulative, m) => {
+      // @ts-ignore
+      cumulative.push(m._programId);
+      return cumulative;
+    }, [])
+    .forEach((programId) => {
+      if (!programIds.find((p) => p.equals(programId))) {
+        programIds.push(programId);
+      }
+    });
+
+  const getOpenOrdersAccountsForProgramId = async (programId) => {
+    const openOrdersAccounts = await OpenOrders.findForOwner(
+      connection,
+      wallet.publicKey,
+      programId,
+    );
+    return openOrdersAccounts.filter(
+      (openOrders) =>
+        openOrders.baseTokenFree.toNumber() ||
+        openOrders.quoteTokenFree.toNumber(),
+    );
+  };
+
+  const openOrdersAccountsForProgramIds = await Promise.all(
+    programIds.map((programId) => getOpenOrdersAccountsForProgramId(programId)),
+  );
+  const openOrdersAccounts = openOrdersAccountsForProgramIds.reduce(
+    (accounts, current) => accounts.concat(current),
+    [],
+  );
+
+  const settleTransactions = (await Promise.all(
+    openOrdersAccounts.map((openOrdersAccount) => {
+      const market = markets.find((m) =>
+        // @ts-ignore
+        m._decoded?.ownAddress?.equals(openOrdersAccount.market),
+      );
+      const baseMint = market?.baseMintAddress;
+      const quoteMint = market?.quoteMintAddress;
+
+      const selectedBaseTokenAccount = getSelectedTokenAccountForMint(
+        tokenAccounts,
+        baseMint,
+        baseMint && selectedTokenAccounts && selectedTokenAccounts[baseMint.toBase58()]
+      )?.pubkey;
+      const selectedQuoteTokenAccount = getSelectedTokenAccountForMint(
+        tokenAccounts,
+        quoteMint,
+        quoteMint && selectedTokenAccounts && selectedTokenAccounts[quoteMint.toBase58()]
+      )?.pubkey;
+      if (!selectedBaseTokenAccount || !selectedQuoteTokenAccount) {
+        return null;
+      }
+      return (
+        market &&
+        market.makeSettleFundsTransaction(
+          connection,
+          openOrdersAccount,
+          selectedBaseTokenAccount,
+          selectedQuoteTokenAccount,
+        )
+      );
+    }),
+  )).filter((x): x is {signers: [PublicKey | Account]; transaction: Transaction} => !!x);
+  if (!settleTransactions || settleTransactions.length === 0) return;
+
+  const transactions = settleTransactions.slice(0, 4).map((t) => t.transaction);
+  const signers: Array<Account | PublicKey> = [];
+  settleTransactions
+    .reduce((cumulative: Array<Account | PublicKey>, t) => cumulative.concat(t.signers), [])
+    .forEach((signer) => {
+      if (!signers.find((s) => {
+        if (s.constructor.name !== signer.constructor.name) {
+          return false;
+        } else if (s.constructor.name === 'PublicKey') {
+          // @ts-ignore
+          return s.equals(signer);
+        } else {
+          // @ts-ignore
+          return s.publicKey.equals(signer.publicKey);
+        }
+      })) {
+        signers.push(signer);
+      }
+    });
+
+  const transaction = mergeTransactions(transactions);
+
+  return await sendTransaction({
+    transaction,
+    signers,
+    wallet,
+    connection,
+  });
 }
 
 export async function settleFunds({
