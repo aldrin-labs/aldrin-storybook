@@ -176,7 +176,7 @@ const RewardsRoute = (props) => {
   } = props
 
   const tradedSerumInUSDT =
-    props.getTotalSerumVolumeQuery.getTotalSerumVolume.usdVolume / 1000
+    props.getTotalSerumVolumeQuery.getTotalSerumVolume.usdVolume
   const currentPhase = getPhaseFromTotal(tradedSerumInUSDT)
   const currentPhaseMaxVolume = srmVolumesInUSDT[currentPhase]
   const currentPhaseMaxVolumeLabel = volumeLabels[currentPhase]
