@@ -226,6 +226,7 @@ export const Balances = ({
 
   return (
     <>
+    
       <TransferPopup
         open={open}
         theme={theme}
@@ -245,7 +246,7 @@ export const Balances = ({
         baseOrQuote={coinForDepositPopup}
 
       />
-      <CustomCard theme={theme} style={{ borderRight: 'none', borderTop: '0' }}>
+      <CustomCard data-tut="balances" theme={theme} style={{ borderRight: 'none', borderTop: '0' }}>
         <ChartCardHeader
           theme={theme}
           style={{

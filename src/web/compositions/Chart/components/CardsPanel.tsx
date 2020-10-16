@@ -193,7 +193,7 @@ const TopBar = ({ theme }) => {
           }))}
         />
       </div>
-      <div>
+      <div  data-tut="wallet">
         <BtnCustom
           type="text"
           size="large"
@@ -335,6 +335,7 @@ export const CardsPanel = ({
               Trading
             </NavBarLink>
             <NavBarLink
+            data-tut="analytics"
               to="/analytics"
               style={{
                 color: location.pathname.includes('analytics')
@@ -346,6 +347,7 @@ export const CardsPanel = ({
               Analytics
             </NavBarLink>
             <NavBarLink
+            data-tut="farming"
               to="/rewards"
               style={{
                 color: location.pathname.includes('rewards')
@@ -354,12 +356,11 @@ export const CardsPanel = ({
               }}
             >
               {' '}
-              Rewards
+              Farming
             </NavBarLink>
           </div>
-
-          {isChartPage && (
-            <AutoSuggestSelect
+          {isChartPage && (<div data-tut="pairs"><AutoSuggestSelect
+            
               value={view === 'default' && pair}
               id={'pairSelector'}
               view={view}
@@ -369,7 +370,9 @@ export const CardsPanel = ({
               marketType={marketType}
               quantityPrecision={quantityPrecision}
               pricePrecision={pricePrecision}
-            />
+            /></div>
+          
+            
           )}
 
           {/* <TooltipCustom

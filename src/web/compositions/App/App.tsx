@@ -43,10 +43,12 @@ import { WalletProvider } from '@sb/dexUtils/wallet'
 import { MarketProvider } from '@sb/dexUtils/markets'
 
 const version = `10.5.65`
+const isOnboardingDone = localStorage.getItem('isOnboardingDone')
 const currentVersion = localStorage.getItem('version')
 if (currentVersion !== version) {
   localStorage.clear()
   localStorage.setItem('version', version)
+  localStorage.setItem('isOnboardingDone', isOnboardingDone)
 }
 
 const AppRaw = ({
