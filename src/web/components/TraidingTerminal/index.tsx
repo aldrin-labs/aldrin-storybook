@@ -540,22 +540,24 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
               {priceType === 'market' && isBuyType && (
                 <InputRowContainer>
-                  <AdditionalSettingsButton
-                    theme={theme}
-                    isActive={breakEvenPoint}
-                    fontSize={'1rem'}
-                    onClick={() => {
-                      updateState('takeProfit', false)
-                      updateState('breakEvenPoint', !breakEvenPoint)
-                    }}
-                  >
-                    <SCheckbox
-                      checked={breakEvenPoint}
-                      onChange={() => {}}
-                      style={{ padding: '0 0 0 1rem', color: '#fff' }}
-                    />
-                    <span style={{ margin: '0 auto' }}>Break-Even Point</span>
-                  </AdditionalSettingsButton>
+                  {pair.join('_') === 'SRM_USDT' && (
+                    <AdditionalSettingsButton
+                      theme={theme}
+                      isActive={breakEvenPoint}
+                      fontSize={'1rem'}
+                      onClick={() => {
+                        updateState('takeProfit', false)
+                        updateState('breakEvenPoint', !breakEvenPoint)
+                      }}
+                    >
+                      <SCheckbox
+                        checked={breakEvenPoint}
+                        onChange={() => {}}
+                        style={{ padding: '0 0 0 1rem', color: '#fff' }}
+                      />
+                      <span style={{ margin: '0 auto' }}>Break-Even Point</span>
+                    </AdditionalSettingsButton>
+                  )}
                   <AdditionalSettingsButton
                     theme={theme}
                     isActive={takeProfit}
