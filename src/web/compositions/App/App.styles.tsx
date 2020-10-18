@@ -1,3 +1,5 @@
+import React from 'react'
+
 import styled, { createGlobalStyle } from 'styled-components'
 import DMSans from '@sb/fonts/DMSans.woff2'
 import Monaco from '@sb/fonts/Monaco.woff2'
@@ -29,7 +31,7 @@ export const AppGridLayout = styled.div`
 //   max-height: ${(props) => (props.isPNL ? 'calc(100vh - 48px)' : '')};
 // }
 
-export const FontStyle = createGlobalStyle`
+export const FontStyle = React.memo(createGlobalStyle`
 /* latin */
 @font-face {
   font-family: 'DM Sans';
@@ -80,4 +82,4 @@ export const FontStyle = createGlobalStyle`
 }
 
 .fa{display:inline-block;font:normal normal normal 14px/1 FontAwesome;font-size:inherit;text-rendering:auto;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.fa-circle:before{content:"\f111"}.fa-usd:before{content:"\f155"}.fa-btc:before{content:"\f15a"}.fa-arrow-left:before{content:"\f060"}.fa-arrow-right:before{content:"\f061"}.fa-ellipsis-h:before{content:"\f141"}
-`
+`)
