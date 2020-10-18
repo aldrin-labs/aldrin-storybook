@@ -33,6 +33,7 @@ const TotalBalance = ({ portfolioAssets, theme }) => {
 
   return (
     <Grid
+      data-tut={'total'}
       item
       direction={'column'}
       alignItems={'center'}

@@ -222,6 +222,7 @@ const NavBarRaw: SFC<Props> = ({
             </Grid>
           </Hidden>
           <Grid
+            data-tut={'spot&futures'}
             item={true}
             container={true}
             style={{
@@ -391,6 +392,7 @@ const NavBarRaw: SFC<Props> = ({
           </NavLinkButtonWrapper> */}
         </Grid>
         <Grid
+          data-tut={'menu'}
           style={{
             height: '100%',
             width: '100%',

@@ -208,6 +208,7 @@ export const CardsPanel = ({
         />
 
         <ChangeTerminalButton
+          data-tut={'smart&basic'}
           style={{
             border: theme.palette.border.main,
             width: '30rem',

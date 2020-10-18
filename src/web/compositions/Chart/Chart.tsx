@@ -10,6 +10,10 @@ import { isEqual } from 'lodash'
 // import { Grid, Hidden } from '@material-ui/core'
 
 // import { CardsPanel } from './components'
+import {
+  tourConfig,
+  FinishBtn,
+} from '@sb/components/ReactourOnboarding/ReactourOnboarding'
 import OnlyCharts from './OnlyCharts/OnlyCharts'
 import DefaultView from './DefaultView/StatusWrapper'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
@@ -47,6 +51,7 @@ export function ChartPageComponent(props: any) {
   const [terminalViewMode, updateTerminalViewMode] = useState('onlyTables')
   const [stepIndex, updateStepIndex] = useState(0)
   const [key, updateKey] = useState(0)
+  const [isTourOpen, setIsTourOpen] = useState(true)
 
   useEffect(() => {
     const { marketType } = props
@@ -248,8 +253,26 @@ export function ChartPageComponent(props: any) {
     ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
     : { keyId: '', hedgeMode: false, isFuturesWarsKey: false }
 
+  const accentColor = '#09acc7'
+
   return (
     <MainContainer fullscreen={view !== 'default'}>
+      <Tour
+        showCloseButton={false}
+        nextButton={<FinishBtn>Next</FinishBtn>}
+        prevButton={<a />}
+        showNavigationNumber={true}
+        showNavigation={true}
+        lastStepNextButton={<FinishBtn>Finish</FinishBtn>}
+        steps={tourConfig}
+        accentColor={accentColor}
+        isOpen={isTourOpen}
+        onRequestClose={() => setIsTourOpen(false)}
+        // onRequestClose={() => {
+        //   setIsTourOpen(false)
+        //   localStorage.setItem('isOnboardingDone', 'true')
+        // }}
+      />
       <GlobalStyles />
       {view === 'default' && (
         <DefaultView

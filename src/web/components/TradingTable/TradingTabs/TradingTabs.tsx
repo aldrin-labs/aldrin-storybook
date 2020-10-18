@@ -75,6 +75,7 @@ const TradingTabs = ({
       <TitleTabsGroup theme={theme}>
         {isDefaultOnlyTables && (
           <TitleTab
+            data-tut={'smart-trades'}
             theme={theme}
             active={tab === 'activeTrades'}
             onClick={() => handleTabChange('activeTrades')}
@@ -151,6 +152,7 @@ const TradingTabs = ({
         )}
         {(isDefaultOnlyTables || isDefaultTerminalViewMode) && (
           <SmartTradeButton
+            data-tut={'createSM'}
             style={{ height: '3rem', backgroundColor: theme.palette.blue.main }}
             onClick={() => {
               updateTerminalViewMode('smartOrderMode')
