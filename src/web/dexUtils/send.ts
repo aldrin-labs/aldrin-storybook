@@ -208,6 +208,9 @@ export async function settleFunds({
   }
   let referrerQuoteWallet = null;
 
+  console.log('process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS: ', process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS)
+  console.log('process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS: ', process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS)
+
   if (market.supportsReferralFees) {
     if (
       process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS &&
