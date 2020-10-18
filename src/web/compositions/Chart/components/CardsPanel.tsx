@@ -364,7 +364,7 @@ export const CardsPanel = ({
               value={view === 'default' && pair}
               id={'pairSelector'}
               view={view}
-              style={{ width: '30rem' }}
+              style={{ width: '22rem' }}
               activeExchange={activeExchange}
               selectStyles={{ ...selectStyles(theme) }}
               marketType={marketType}

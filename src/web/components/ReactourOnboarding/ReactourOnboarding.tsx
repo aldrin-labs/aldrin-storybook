@@ -130,7 +130,7 @@ export const tourConfig = [
           trading.
         </Text>
         <Text padding={'1rem 1.5rem'}>
-          Note 2: there are should be some SOL in your wallet to trade on DEX.
+          Note 2: there should be some SOL in your wallet to trade on DEX.
         </Text>
       </Container>
     ),
