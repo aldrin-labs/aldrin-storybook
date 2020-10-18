@@ -119,6 +119,34 @@ export async function settleAllFunds({
       if (!selectedBaseTokenAccount || !selectedQuoteTokenAccount) {
         return null;
       }
+
+      let referrerQuoteWallet = null;
+
+      console.log('AUTO process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS: ', process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS)
+      console.log('AUTO process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS: ', process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS)
+    
+      if (market.supportsReferralFees) {
+        if (
+          process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS &&
+          market.quoteMintAddress.equals(
+            TOKEN_MINTS.find(({ name }) => name === 'USDT').address,
+          )
+        ) {
+          referrerQuoteWallet = new PublicKey(
+            process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS,
+          );
+        } else if (
+          process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS &&
+          market.quoteMintAddress.equals(
+            TOKEN_MINTS.find(({ name }) => name === 'USDC').address,
+          )
+        ) {
+          referrerQuoteWallet = new PublicKey(
+            process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS,
+          );
+        }
+      }
+
       return (
         market &&
         market.makeSettleFundsTransaction(
@@ -126,6 +154,7 @@ export async function settleAllFunds({
           openOrdersAccount,
           selectedBaseTokenAccount,
           selectedQuoteTokenAccount,
+          referrerQuoteWallet,
         )
       );
     }),
