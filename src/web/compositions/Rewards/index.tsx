@@ -71,6 +71,7 @@ export const Text = styled.div`
   font-weight: normal;
   font-size: 1.5rem;
   line-height: 2rem;
+  border-bottom: none;
   display: flex;
   align-items: center;
   text-align: center;
@@ -495,7 +496,7 @@ const RewardsRoute = (props) => {
                       variables: {
                         fee: 0,
                         amount: 0,
-                        dexId: linkFromTwitter.split('status/')[1],
+                        dexId: linkFromTwitter,
                         publicKey: wallet.publicKey.toBase58(),
                         price: 0,
                         fromTwitter: true,
@@ -508,6 +509,7 @@ const RewardsRoute = (props) => {
                         type: 'error',
                       })
                     }
+                    console.log('link', linkFromTwitter)
                   }}
                 >
                   Farm $DCFI for tweet
