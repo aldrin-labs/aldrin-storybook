@@ -24,7 +24,7 @@ import RestrictPopup from './RestrictPopup/RestrictPopup'
 import ThemeWrapper from './ThemeWrapper/ThemeWrapper'
 import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
 import SnackbarWrapper from './SnackbarWrapper/SnackbarWrapper'
-import { AppGridLayout, FontStyle } from './App.styles'
+import { AppGridLayout } from './App.styles'
 // import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
 import { GlobalStyle } from '@sb/styles/global.styles'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -89,7 +89,7 @@ const AppRaw = ({
         <ThemeWrapper themeMode={themeMode} isChartPage={isChartPage}>
           <SnackbarWrapper>
             <CssBaseline />
-            <FontStyle />
+            {/* <FontStyle /> */}
             <RestrictPopup
               open={isUserFromNotRestrictedCountry && authenticated}
             />
