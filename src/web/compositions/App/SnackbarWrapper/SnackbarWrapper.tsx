@@ -88,7 +88,7 @@ const IntegrationNotistack = ({ ...props }) => {
 			autoHideDuration={3000}
 			anchorOrigin={{
 				vertical: 'bottom',
-				horizontal: 'right'
+				horizontal: 'left'
 			}}
 			action={<CloseButton />}
 			classes={{

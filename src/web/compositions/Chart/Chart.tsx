@@ -6,8 +6,13 @@ import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { client } from '@core/graphql/apolloClient'
 import { isEqual } from 'lodash'
+import Tour from 'reactour'
 // import { Grid, Hidden } from '@material-ui/core'
 
+import {
+  tourConfig,
+  FinishBtn,
+} from '@sb/components/ReactourOnboarding/ReactourOnboarding'
 // import { CardsPanel } from './components'
 import OnlyCharts from './OnlyCharts/OnlyCharts'
 import DefaultView from './DefaultView/StatusWrapper'
@@ -42,18 +47,15 @@ import { checkLoginStatus } from '@core/utils/loginUtils'
 import { MainContainer, GlobalStyles } from './Chart.styles'
 import { IProps } from './Chart.types'
 
-import {
-  useMarket
-} from '@sb/dexUtils/markets'
+import { useMarket } from '@sb/dexUtils/markets'
 
-import {
-  getDecimalCount
-} from '@sb/dexUtils/utils'
+import { getDecimalCount } from '@sb/dexUtils/utils'
 
 function ChartPageComponent(props: any) {
   const [terminalViewMode, updateTerminalViewMode] = useState('default')
   const [stepIndex, updateStepIndex] = useState(0)
   const [key, updateKey] = useState(0)
+  const [isTourOpen, setIsTourOpen] = useState(localStorage.getItem('isOnboardingDone') == "null")
 
   useEffect(() => {
     const { marketType } = props
@@ -219,7 +221,7 @@ function ChartPageComponent(props: any) {
     !pairPropertiesQuery.marketByName[0] ||
     pairPropertiesQuery.networkStatus === 2 ||
     pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
-    selectedPair.replace('_', '')
+      selectedPair.replace('_', '')
 
   if (isPairDataLoading) {
     minPriceDigits = 0.00000001
@@ -261,8 +263,25 @@ function ChartPageComponent(props: any) {
     ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
     : { keyId: '', hedgeMode: false, isFuturesWarsKey: false }
 
+  const accentColor = '#09ACC7'
+
   return (
     <MainContainer fullscreen={view !== 'default'}>
+      <Tour
+        showCloseButton={false}
+        nextButton={<FinishBtn>Next</FinishBtn>}
+        prevButton={<a />}
+        showNavigationNumber={true}
+        showNavigation={true}
+        lastStepNextButton={<FinishBtn>Finish</FinishBtn>}
+        steps={tourConfig}
+        accentColor={accentColor}
+        isOpen={isTourOpen}
+        onRequestClose={() => {
+          setIsTourOpen(false)
+          localStorage.setItem('isOnboardingDone', "true")
+        }}
+      />
       <GlobalStyles />
       {view === 'default' && (
         <DefaultView
@@ -279,7 +298,9 @@ function ChartPageComponent(props: any) {
           minPriceDigits={minPriceDigits}
           minSpotNotional={minSpotNotional}
           minFuturesStep={minFuturesStep}
-          isPairDataLoading={isPairDataLoading || !pricePrecision || !quantityPrecision}
+          isPairDataLoading={
+            isPairDataLoading || !pricePrecision || !quantityPrecision
+          }
           themeMode={theme.palette.type}
           selectedKey={selectedKey}
           activeExchange={activeExchange}
@@ -336,7 +357,7 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
     !prev.pairPropertiesQuery.marketByName[0] ||
     prev.pairPropertiesQuery.networkStatus === 2 ||
     prev.pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
-    prev.selectedPair.replace('_', '')
+      prev.selectedPair.replace('_', '')
 
   const nextIsPairDataLoading =
     next.loading ||
@@ -344,17 +365,17 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
     !next.pairPropertiesQuery.marketByName[0] ||
     next.pairPropertiesQuery.networkStatus === 2 ||
     next.pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
-    next.selectedPair.replace('_', '')
+      next.selectedPair.replace('_', '')
 
   const tooltipQueryChanged =
     (prev.getTooltipSettingsQuery.getTooltipSettings &&
       prev.getTooltipSettingsQuery.getTooltipSettings.chartPage) ===
-    (next.getTooltipSettingsQuery.getTooltipSettings &&
-      next.getTooltipSettingsQuery.getTooltipSettings.chartPage) &&
+      (next.getTooltipSettingsQuery.getTooltipSettings &&
+        next.getTooltipSettingsQuery.getTooltipSettings.chartPage) &&
     (prev.getTooltipSettingsQuery.getTooltipSettings &&
       prev.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup) ===
-    (next.getTooltipSettingsQuery.getTooltipSettings &&
-      next.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup)
+      (next.getTooltipSettingsQuery.getTooltipSettings &&
+        next.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup)
 
   return (
     // prev.marketType === next.marketType &&
