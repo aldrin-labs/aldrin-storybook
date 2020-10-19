@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
 import { compose } from 'recompose'
+import { graphql } from 'react-apollo'
+
 import SvgIcon from '@sb/components/SvgIcon'
 import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getTotalVolumeForSerumKey } from '@core/graphql/queries/chart/getTotalVolumeForSerumKey'
 import { getTotalSerumVolume } from '@core/graphql/queries/chart/getTotalSerumVolume'
+
+import { addSerumTransaction } from '@core/graphql/mutations/chart/addSerumTransaction'
 
 import serum from '@icons/Serum.svg'
 import decefi from '@icons/decefi.svg'
@@ -21,6 +25,8 @@ import { Link } from 'react-router-dom'
 import { CircularProgressbar as Circle } from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css'
 
+import { useWallet } from '@sb/dexUtils/wallet'
+
 import { Styles } from './index.styles'
 import { Chart } from './components/Chart'
 import { Canvas } from './components/Canvas'
@@ -29,6 +35,7 @@ import {
   formatNumberToUSFormat,
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
+import { data } from '../Screener/Selector/selectsData'
 
 export const BlockContainer = styled.div``
 
@@ -118,6 +125,23 @@ const CardSubValue = styled.span`
   letter-spacing: 0.1rem;
 `
 
+const Form = styled.form`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+`
+
+const LinkInput = styled.input`
+  padding-left: 1.5rem;
+  border: 0.1rem solid #c7ffd0;
+  border-radius: 0.8rem;
+  background-color: transparent;
+  height: 5rem;
+  width: calc((100% - 4rem) / 2);
+  margin-right: 1rem;
+  color: ${(props) => props.color || theme.palette.grey.light};
+`
+
 export const srmVolumesInUSDT = [
   100000,
   600000,
@@ -168,11 +192,14 @@ const getPhaseFromTotal = (total) => {
 }
 
 const RewardsRoute = (props) => {
+  const [linkFromTwitter, setTwittersLink] = useState('')
+
   const {
     theme,
     getTotalVolumeForSerumKeyQuery,
     getTotalVolumeForSerumKeyQueryRefetch,
     publicKey,
+    addSerumTransactionMutation,
   } = props
 
   const tradedSerumInUSDT =
@@ -210,6 +237,12 @@ const RewardsRoute = (props) => {
   useEffect(() => {
     getTotalVolumeForSerumKeyQueryRefetch({ publicKey: publicKey || '' })
   }, [publicKey])
+
+  const { wallet } = useWallet()
+
+  const updateLink = (e) => {
+    setTwittersLink(e.target.value)
+  }
 
   return (
     <div
@@ -346,7 +379,7 @@ const RewardsRoute = (props) => {
           <Button></Button>
         </Card> */}
         <Card theme={theme}>
-          <RowContainer style={{ height: '50%' }}>
+          <RowContainer style={{ height: '30%' }}>
             <SvgIcon src={decefi} width="30%" height="auto" />
           </RowContainer>
           <RowContainer
@@ -357,7 +390,12 @@ const RewardsRoute = (props) => {
             }}
           >
             <Value theme={theme}>{stripDigitPlaces(dcfiEarned, 3)}</Value>{' '}
-            <CardText theme={theme} width={'auto'}>
+            <CardText
+              theme={theme}
+              width={'auto'}
+              avernikoz
+              style={{ paddingBottom: '1rem' }}
+            >
               DCFI earned
             </CardText>
             <RowContainer>
@@ -366,7 +404,7 @@ const RewardsRoute = (props) => {
                 style={{
                   width: 'calc(50% - 2rem)',
                   textDecoration: 'none',
-                  paddingBottom: '1.5rem',
+                  paddingBottom: '1rem',
                   margin: '0 1rem',
                 }}
               >
@@ -388,7 +426,7 @@ const RewardsRoute = (props) => {
                 style={{
                   width: 'calc(50% - 2rem)',
                   textDecoration: 'none',
-                  paddingBottom: '1.5rem',
+                  paddingBottom: '1rem',
                   margin: '0 1rem',
                 }}
                 href={`https://twitter.com/intent/tweet?text=I%20have%20already%20farmed%20${dcfiEarnedForTwitter}%20%24DCFI%20on%20dex.cryptocurrencies.ai%0A%0AHow%20to%20farm%20%24DCFI%20by%20%24SRM%20trading%3A%0Ahttps%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3Dyz5uaN0aCyw%26feature%3Dyoutu.be%0A%0A%40decefi_official%20%40CCAI_Official%0A%0Apic.twitter.com%2FJmNK1mE4vx%20`}
@@ -424,6 +462,57 @@ const RewardsRoute = (props) => {
                   Share
                 </BtnCustom>
               </a>
+            </RowContainer>
+            <RowContainer>
+              <Form>
+                <LinkInput
+                  value={linkFromTwitter}
+                  onChange={updateLink}
+                  theme={theme}
+                  type="text"
+                  placeholder="Your retweet link..."
+                />
+                <BtnCustom
+                  theme={theme}
+                  btnColor={theme.palette.grey.main}
+                  backgroundColor={'#C7FFD0'}
+                  height={'5rem'}
+                  btnWidth={'calc((100% - 4rem) / 2)'}
+                  fontSize={'1.6rem'}
+                  textTransform={'none'}
+                  btnHeight={'3rem'}
+                  margin={'0 0 0 1rem'}
+                  onClick={async (e) => {
+                    if (publicKey === '') {
+                      e.preventDefault()
+                      notify({
+                        message: 'Connect your wallet first',
+                        type: 'error',
+                      })
+                      return
+                    }
+                    const result = await addSerumTransactionMutation({
+                      variables: {
+                        fee: 0,
+                        amount: 0,
+                        dexId: linkFromTwitter.split('status/')[1],
+                        publicKey: wallet.publicKey.toBase58(),
+                        price: 0,
+                        fromTwitter: true,
+                      },
+                    })
+
+                    if (result.data.addSerumTransaction.status == 'ERR') {
+                      notify({
+                        message: result.data.addSerumTransaction.errorMessage,
+                        type: 'error',
+                      })
+                    }
+                  }}
+                >
+                  Farm $DCFI for tweet
+                </BtnCustom>
+              </Form>
             </RowContainer>
           </RowContainer>
         </Card>
@@ -629,6 +718,7 @@ const Wrapper = (props) => {
 
 export default compose(
   withTheme(),
+  graphql(addSerumTransaction, { name: 'addSerumTransactionMutation' }),
   queryRendererHoc({
     query: getTotalSerumVolume,
     name: 'getTotalSerumVolumeQuery',
