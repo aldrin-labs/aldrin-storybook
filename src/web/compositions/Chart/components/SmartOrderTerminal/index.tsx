@@ -730,7 +730,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
     this.handleCloseConfirmationPopup()
 
-    const isValid = validateSmartOrders(this.state, this.props.enqueueSnackbar)
+    const isValid = await validateSmartOrders(
+      this.state,
+      this.props.enqueueSnackbar
+    )
 
     if (!isValid) return
 
@@ -4383,7 +4386,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
                       if (
                         entryPoint.order.amount < minFuturesStep &&
-                        !isSPOTMarket
+                        !isSPOTMarket &&
+                        entryPoint.averaging.entryLevels.length === 0
                       ) {
                         enqueueSnackbar(
                           `Order amount should be at least ${minFuturesStep} ${

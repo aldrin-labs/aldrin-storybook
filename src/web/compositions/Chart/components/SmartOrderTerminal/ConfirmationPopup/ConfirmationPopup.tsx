@@ -277,9 +277,7 @@ export default ({
                   justify="space-between"
                   style={{ width: '30%' }}
                 >
-                  <TitleTypography theme={theme}>
-                    take profit:
-                  </TitleTypography>
+                  <TitleTypography theme={theme}>take profit:</TitleTypography>
                   <TitleTypography
                     theme={theme}
                     style={{
