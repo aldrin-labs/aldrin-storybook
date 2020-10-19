@@ -43,7 +43,7 @@ export const Chart = (props) => {
         labelFormat={(v) => `Value is ${v}`}
         labelValues={[2]}
         // tickValues={[0, 200000, 1000000, 2000000, 10000000, 20000000, 50000000, 100000000, 150000000, 200000000, 400000000]}
-        tickValues={[0, ...srmVolumesInUSDT.slice(1, 5)]}
+        tickValues={[0, ...srmVolumesInUSDT.slice(2, 6)]}
         tickFormat={(v) => {
           if (v >= 1000000) {
             return `${v / 1000000} m`
@@ -65,7 +65,7 @@ export const Chart = (props) => {
           }
         }}
         style={axisStyle}
-        tickValues={[0, ...dcfiVolumes.slice(0, 5)]}
+        tickValues={[0, ...dcfiVolumes.slice(0, 6)]}
         // tickValues={[0, 200000, 400000, 600000, 800000, 1000000, 1200000, 1400000, 1600000, 1800000, 2000000, ]}
       />
       <MarkSeries
@@ -83,7 +83,7 @@ export const Chart = (props) => {
         }}
         data={[
           { y: 0, x: 0 },
-          ...dcfiVolumes.slice(0, 5).map((dcfiVolume, i) => {
+          ...dcfiVolumes.slice(0, 6).map((dcfiVolume, i) => {
             return {
               x: srmVolumesInUSDT[i],
               y: dcfiVolume,
