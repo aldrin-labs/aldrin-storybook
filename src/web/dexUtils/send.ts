@@ -582,6 +582,8 @@ async function sendTransaction({
   const rawTransaction = (
     await wallet.signTransaction(transaction)
   ).serialize();
+
+  console.log('rawTransaction: ', rawTransaction)
   const startTime = getUnixTs();
   notify({ message: sendingMessage });
   const txid = await connection.sendRawTransaction(rawTransaction, {
@@ -594,14 +596,18 @@ async function sendTransaction({
   let done = false;
   (async () => {
     while (!done && getUnixTs() - startTime < timeout) {
-      connection.sendRawTransaction(rawTransaction, {
+      const resultOfSendingConfirm = connection.sendRawTransaction(rawTransaction, {
         skipPreflight: true,
       });
+
+      console.log('resultOfSendingConfirm', resultOfSendingConfirm)
       await sleep(300);
     }
   })();
   try {
-    await awaitTransactionSignatureConfirmation(txid, timeout, connection);
+    const resultOfSignature = await awaitTransactionSignatureConfirmation(txid, timeout, connection);
+
+    console.log('resultOfSignature', resultOfSignature)
   } catch (err) {
     if (err.timeout) {
       throw new Error('Timed out awaiting confirmation on transaction');
