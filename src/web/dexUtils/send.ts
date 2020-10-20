@@ -122,9 +122,6 @@ export async function settleAllFunds({
 
       let referrerQuoteWallet = null;
 
-      console.log('AUTO process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS: ', process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS)
-      console.log('AUTO process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS: ', process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS)
-    
       if (market.supportsReferralFees) {
         if (
           process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS &&
@@ -236,9 +233,6 @@ export async function settleFunds({
     createAccountSigner = result?.signer;
   }
   let referrerQuoteWallet = null;
-
-  console.log('process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS: ', process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS)
-  console.log('process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS: ', process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS)
 
   if (market.supportsReferralFees) {
     if (
