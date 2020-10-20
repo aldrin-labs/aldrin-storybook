@@ -3,6 +3,8 @@ import styled, { createGlobalStyle } from 'styled-components'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 
+import { Loading } from '@sb/components/Loading/Loading'
+
 import SvgIcon from '@sb/components/SvgIcon'
 import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getTotalVolumeForSerumKey } from '@core/graphql/queries/chart/getTotalVolumeForSerumKey'
@@ -194,7 +196,7 @@ const getPhaseFromTotal = (total) => {
 
 const RewardsRoute = (props) => {
   const [linkFromTwitter, setTwittersLink] = useState('')
-
+  const [isLoading, updateIsLoading] = useState(false)
   const {
     theme,
     getTotalVolumeForSerumKeyQuery,
@@ -228,7 +230,7 @@ const RewardsRoute = (props) => {
     stripDigitPlaces(dcfiEarned, 3)
   ).replace(',', '%2C')
 
-  const percantangeTotalShareDcfi = (dcfiRewarded / 2000000) * 100
+  const percantangeTotalShareDcfi = (dcfiEarned / dcfiRewarded) * 100
 
   const progressBarSerumValue = +(
     (volumeTradedInThisPhase / (currentPhaseMaxVolume - prevPhaseMaxVolume)) *
@@ -474,9 +476,12 @@ const RewardsRoute = (props) => {
                   placeholder="Your retweet link..."
                 />
                 <BtnCustom
+                  disabled={isLoading}
                   theme={theme}
                   btnColor={theme.palette.grey.main}
-                  backgroundColor={'#C7FFD0'}
+                  backgroundColor={
+                    isLoading ? theme.palette.grey.text : '#C7FFD0'
+                  }
                   height={'5rem'}
                   btnWidth={'calc((100% - 4rem) / 2)'}
                   fontSize={'1.6rem'}
@@ -492,6 +497,7 @@ const RewardsRoute = (props) => {
                       })
                       return
                     }
+                    updateIsLoading(true)
                     const result = await addSerumTransactionMutation({
                       variables: {
                         fee: 0,
@@ -502,7 +508,7 @@ const RewardsRoute = (props) => {
                         fromTwitter: true,
                       },
                     })
-
+                    await updateIsLoading(false)
                     if (result.data.addSerumTransaction.status == 'ERR') {
                       notify({
                         message: result.data.addSerumTransaction.errorMessage,
@@ -512,7 +518,15 @@ const RewardsRoute = (props) => {
                     console.log('link', linkFromTwitter)
                   }}
                 >
-                  Farm $DCFI for tweet
+                  {isLoading ? (
+                    <Loading
+                      style={{ paddingTop: '0.7rem' }}
+                      size={24}
+                      color={'#C7FFD0'}
+                    />
+                  ) : (
+                    'Farm $DCFI for tweet'
+                  )}
                 </BtnCustom>
               </Form>
             </RowContainer>
