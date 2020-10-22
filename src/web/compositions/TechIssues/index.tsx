@@ -36,7 +36,7 @@ const TechIssues = () => {
           marginTop: '5rem',
         }}
       >
-        Sorry, we support only Chrome and Chrome Canary browsers
+        Sorry, we support only Chrome and Chrome Canary browsers for now
       </h3>
       <div
         style={{
