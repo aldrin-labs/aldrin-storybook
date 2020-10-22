@@ -89,13 +89,14 @@ export const DefaultViewComponent = (
     return null
   }
 
-  const { hideDepthChart, hideOrderbook, hideTradeHistory } = layout
+  const { hideDepthChart, hideOrderbook, hideTradeHistory, hideTradingViewChart } = layout
 
   const changeChartLayout = async (newParams) => {
     const argObject = {
       hideDepthChart,
       hideTradeHistory,
       hideOrderbook,
+      hideTradingViewChart,
       ...newParams,
     }
     await changeChartLayoutMutation({
@@ -145,6 +146,7 @@ export const DefaultViewComponent = (
             hideDepthChart,
             hideOrderbook,
             hideTradeHistory,
+            hideTradingViewChart,
             changeChartLayout,
           }}
         />
@@ -180,6 +182,7 @@ export const DefaultViewComponent = (
               theme={theme}
               hideTradeHistory={hideTradeHistory}
             >
+            {!hideTradingViewChart && (
               <CustomCard
                 theme={theme}
                 id="tradingViewChart"
@@ -215,6 +218,7 @@ export const DefaultViewComponent = (
                   )}&user_id=${id}`}
                 />
               </CustomCard>
+            )}
             </ChartsContainer>
             <TradingTerminalContainer
               theme={theme}
@@ -423,6 +427,7 @@ export const DefaultView = React.memo(DefaultViewComponent, (prev, next) => {
     prev.layout.hideDepthChart === next.layout.hideDepthChart &&
     prev.layout.hideOrderbook === next.layout.hideOrderbook &&
     prev.layout.hideTradeHistory === next.layout.hideTradeHistory &&
+    prev.layout.hideTradingViewChart === next.layout.hideTradingViewChart &&
     isEqual(prev.theme, next.theme)
     // false
   )
