@@ -36,8 +36,29 @@ const TechIssues = () => {
           marginTop: '5rem',
         }}
       >
-        Sorry, we have tech issues. Please try again later.
+        Sorry, we support only Chrome and Chrome Canary browsers
       </h3>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginTop: '3rem',
+        }}
+      >
+        <ButtonLink
+          target="_blank"
+          rel="noopener noreferrer"
+          href={'https://www.google.com/chrome/'}
+          style={{ marginRight: '1.5rem' }}
+        >
+          <span
+            style={{ fontFamily: 'DM Sans', fontSize: '2rem', color: '#fff' }}
+          >
+            Download Chrome browser
+          </span>
+        </ButtonLink>
+      </div>
       <span
         style={{
           fontFamily: 'DM Sans',
