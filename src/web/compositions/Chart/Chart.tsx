@@ -177,6 +177,7 @@ export function ChartPageComponent(props: any) {
           hideDepthChart: false,
           hideOrderbook: false,
           hideTradeHistory: false,
+          hideTradingViewChart: false,
         },
       },
     } = {
@@ -185,6 +186,7 @@ export function ChartPageComponent(props: any) {
           hideDepthChart: false,
           hideOrderbook: false,
           hideTradeHistory: false,
+          hideTradingViewChart: false,
         },
       },
     },
