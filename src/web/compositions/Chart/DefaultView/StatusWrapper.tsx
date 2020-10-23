@@ -101,7 +101,8 @@ export default React.memo(OrderStatusWrapper, (prev, next) => {
       prev.theme.palette.type === next.theme.palette.type &&
       prev.layout.hideDepthChart === next.layout.hideDepthChart &&
       prev.layout.hideOrderbook === next.layout.hideOrderbook &&
-      prev.layout.hideTradeHistory === next.layout.hideTradeHistory
+      prev.layout.hideTradeHistory === next.layout.hideTradeHistory &&
+      prev.layout.hideTradingViewChart === next.layout.hideTradingViewChart
   )
 
   return (
@@ -124,6 +125,7 @@ export default React.memo(OrderStatusWrapper, (prev, next) => {
     prev.layout.hideDepthChart === next.layout.hideDepthChart &&
     prev.layout.hideOrderbook === next.layout.hideOrderbook &&
     prev.layout.hideTradeHistory === next.layout.hideTradeHistory &&
+    prev.layout.hideTradingViewChart === next.layout.hideTradingViewChart &&
     isEqual(prev.theme, next.theme)
     // false
   )

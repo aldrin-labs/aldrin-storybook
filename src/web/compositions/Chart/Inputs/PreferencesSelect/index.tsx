@@ -55,6 +55,7 @@ class IntegrationReactSelect extends React.PureComponent {
       hideDepthChart,
       hideOrderbook,
       hideTradeHistory,
+      hideTradingViewChart,
       changeChartLayout,
     } = this.props
 
@@ -198,6 +199,30 @@ class IntegrationReactSelect extends React.PureComponent {
               />
               <Text theme={theme} style={{ paddingBottom: '.15rem' }}>
                 trade history
+              </Text>
+            </Row>
+            <Row
+              justify="flex-start"
+              style={{
+                padding: '1rem',
+                borderBottom: theme.palette.border.main,
+                cursor: 'pointer',
+              }}
+              onClick={() =>
+                changeChartLayout({
+                  hideTradingViewChart: !hideTradingViewChart,
+                  // ...(!hideTradingViewChart
+                  //   ? { hideOrderbook, hideDepthChart, hideTradingViewChart, }
+                  //   : {}),
+                })
+              }
+            >
+              <SCheckbox
+                style={{ padding: '.4rem .8rem' }}
+                checked={!hideTradingViewChart}
+              />
+              <Text theme={theme} style={{ paddingBottom: '.15rem' }}>
+                Main Chart
               </Text>
             </Row>
             <Row

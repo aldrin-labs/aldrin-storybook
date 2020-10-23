@@ -43,10 +43,13 @@ export class EditMarginPopup extends React.Component {
       editMarginPosition,
       modifyIsolatedMarginWithStatus,
     } = this.props
+
     const { type, amount } = this.state
+    const [ USDT = { quantity: 0, value: 0 } ] = USDTFuturesFund || [{ quantity: 0, value: 0 }]
+
     const max =
       type === 1
-        ? stripDigitPlaces(USDTFuturesFund.value, 2)
+        ? stripDigitPlaces(USDT.value, 2)
         : stripDigitPlaces(
             editMarginPosition.isolatedMargin -
               (editMarginPosition.positionAmt / editMarginPosition.leverage) *
@@ -100,8 +103,8 @@ export class EditMarginPopup extends React.Component {
                 onChange={(e) =>
                   this.setState({
                     amount:
-                      e.target.value > USDTFuturesFund.value
-                        ? USDTFuturesFund.value
+                      e.target.value > USDT.value
+                        ? USDT.value
                         : e.target.value,
                   })
                 }
