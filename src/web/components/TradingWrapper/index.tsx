@@ -146,6 +146,8 @@ class SimpleTabs extends React.Component {
       maxLeverage,
     } = this.props
 
+    // console.log('TradingWrapper componentMarginType', componentMarginType)
+
     const isSPOTMarket = isSPOTMarketType(marketType)
     const maxAmount = [funds[1].quantity, funds[0].quantity]
 
@@ -205,7 +207,7 @@ class SimpleTabs extends React.Component {
                     <StyledSelect
                       theme={theme}
                       onChange={(e) =>
-                        changeMarginTypeWithStatus(e.target.value.toLowerCase())
+                        changeMarginTypeWithStatus(componentMarginType)
                       }
                       value={componentMarginType}
                       style={{ color: theme.palette.dark.main }}
