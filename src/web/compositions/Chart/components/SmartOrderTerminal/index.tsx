@@ -290,7 +290,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           entryLevels: [],
           percentage: 0,
           price: 0,
-          ...result.entryPoint.averaging,
+          // ...result.entryPoint.averaging,
         },
         TVAlert: {
           isTVAlertOn: false,
@@ -611,6 +611,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       }))
 
       this.updateSubBlockValue('entryPoint', 'order', 'price', averagingPrice)
+      this.updateSubBlockValue('entryPoint', 'order', 'amount', 0)
+      this.updateSubBlockValue('entryPoint', 'order', 'total', 0)
+      this.updateBlockValue('temp', 'initialMargin', 0)
     }
   }
 

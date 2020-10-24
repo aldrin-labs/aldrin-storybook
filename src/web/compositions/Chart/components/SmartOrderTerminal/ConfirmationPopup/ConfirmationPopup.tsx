@@ -533,7 +533,11 @@ export default ({
                 width: 'calc(100% - 6rem)',
               }}
             >
-              <SendButton type={'buy'} onClick={() => confirmTrade()}>
+              <SendButton
+                theme={theme}
+                type={'buy'}
+                onClick={() => confirmTrade()}
+              >
                 confirm
               </SendButton>
             </Grid>
