@@ -323,6 +323,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             page: pagePositions,
             perPage: perPagePositions,
             show: tab === 'positions',
+            allKeys: showSmartTradesFromAllAccounts,
+            specificPair: showAllSmartTradePairs,
             handleToggleAllKeys: () =>
               this.setState((prev) => ({
                 showPositionsFromAllAccounts: !prev.showPositionsFromAllAccounts,
