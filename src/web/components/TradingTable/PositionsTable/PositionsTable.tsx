@@ -794,50 +794,110 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
   }
 }
 
-const TableDataWrapper = ({ ...props }) => {
-  const {
-    showPositionsFromAllAccounts: allKeys,
-    showAllPositionPairs: specificPair,
-  } = props
+// const TableDataWrapper = ({ ...props }) => {
+//   const {
+//     showPositionsFromAllAccounts: allKeys,
+//     showAllPositionPairs: specificPair,
+//   } = props
 
-  return (
-    <QueryRenderer
-      component={PositionsTable}
-      variables={{
+//   return (
+//     <QueryRenderer
+//       component={PositionsTable}
+//       variables={{
+//         input: {
+//           keyId: props.selectedKey.keyId,
+//           allKeys: allKeys,
+//           ...(!specificPair ? {} : { specificPair: props.currencyPair }),
+//         },
+//       }}
+//       withOutSpinner={false}
+//       withTableLoader={false}
+//       showLoadingWhenQueryParamsChange={false}
+//       query={getActivePositions}
+//       name={`getActivePositionsQuery`}
+//       fetchPolicy="cache-and-network"
+//       // pollInterval={props.show ? 25000 : 0}
+//       subscriptionArgs={{
+//         subscription: FUTURES_POSITIONS,
+//         variables: {
+//           input: {
+//             keyId: props.selectedKey.keyId,
+//             allKeys: allKeys,
+//             ...(!specificPair ? {} : { specificPair: props.currencyPair }),
+//           },
+//         },
+//         updateQueryFunction: updateActivePositionsQuerryFunction,
+//       }}
+//       {...{
+//         allKeys,
+//         specificPair,
+//       }}
+//       {...props}
+//     />
+//   )
+// }
+
+
+// const {
+//   showPositionsFromAllAccounts: allKeys,
+//   showAllPositionPairs: specificPair,
+// } = props
+
+const PositionsTableWrapper = compose(
+  withSnackbar,
+  queryRendererHoc({
+    query: getActivePositions,
+    name: `getActivePositionsQuery`,
+    fetchPolicy: "cache-and-network",
+    withOutSpinner: false,
+    withTableLoader: false,
+    showLoadingWhenQueryParamsChange: false,
+    variables: (props: any) => ({
+      input: {
+        keyId: props.selectedKey.keyId,
+        allKeys: props.showPositionsFromAllAccounts,
+        ...(!props.showAllPositionPairs ? {} : { specificPair: props.currencyPair }),
+      },
+    }),
+    subscriptionArgs: {
+      subscription: FUTURES_POSITIONS,
+      variables: (props: any) => ({
         input: {
           keyId: props.selectedKey.keyId,
-          allKeys: allKeys,
-          ...(!specificPair ? {} : { specificPair: props.currencyPair }),
+          allKeys: props.showPositionsFromAllAccounts,
+          ...(!props.showAllPositionPairs ? {} : { specificPair: props.currencyPair }),
         },
-      }}
-      withOutSpinner={false}
-      withTableLoader={false}
-      showLoadingWhenQueryParamsChange={false}
-      query={getActivePositions}
-      name={`getActivePositionsQuery`}
-      fetchPolicy="cache-and-network"
-      // pollInterval={props.show ? 25000 : 0}
-      subscriptionArgs={{
-        subscription: FUTURES_POSITIONS,
-        variables: {
-          input: {
-            keyId: props.selectedKey.keyId,
-            allKeys: allKeys,
-            ...(!specificPair ? {} : { specificPair: props.currencyPair }),
-          },
-        },
-        updateQueryFunction: updateActivePositionsQuerryFunction,
-      }}
-      {...{
-        allKeys,
-        specificPair,
-      }}
-      {...props}
-    />
-  )
-}
+      }),
+      updateQueryFunction: updateActivePositionsQuerryFunction,
+    },
+  }),
+  queryRendererHoc({
+    query: getFunds,
+    name: 'getFundsQuery',
+    fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
+    variables: (props) => ({
+      fundsInput: { activeExchangeKey: props.selectedKey.keyId },
+    }),
+  }),
+  graphql(updatePosition, { name: 'updatePositionMutation' }),
+  graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' }),
+  graphql(createOrder, { name: 'createOrderMutation' }),
+  graphql(modifyIsolatedMargin, { name: 'modifyIsolatedMarginMutation' }),
+  graphql(setPositionWasClosed, { name: 'setPositionWasClosedMutation' }),
+  queryRendererHoc({
+    query: getAdlQuantile,
+    name: 'getAdlQuantileQuery',
+    fetchPolicy: 'cache-and-network',
+    pollInterval: 1000 * 60,
+    withoutLoading: true,
+    variables: (props) => ({
+      keyId: props.selectedKey.keyId,
+    }),
+  }),
+)(PositionsTable)
 
-const MemoizedWrapper = React.memo(TableDataWrapper, (prevProps, nextProps) => {
+export default React.memo(PositionsTableWrapper, (prevProps: any, nextProps: any) => {
   // TODO: Refactor isShowEqual --- not so clean
   const isShowEqual = !nextProps.show && !prevProps.show
   const showAllAccountsEqual =
@@ -870,30 +930,3 @@ const MemoizedWrapper = React.memo(TableDataWrapper, (prevProps, nextProps) => {
   return false
 })
 
-export default compose(
-  withSnackbar,
-  queryRendererHoc({
-    query: getFunds,
-    name: 'getFundsQuery',
-    fetchPolicy: 'cache-and-network',
-    withoutLoading: true,
-    variables: (props) => ({
-      fundsInput: { activeExchangeKey: props.selectedKey.keyId },
-    }),
-  }),
-  queryRendererHoc({
-    query: getAdlQuantile,
-    name: 'getAdlQuantileQuery',
-    fetchPolicy: 'cache-and-network',
-    pollInterval: 1000 * 60,
-    withoutLoading: true,
-    variables: (props) => ({
-      keyId: props.selectedKey.keyId,
-    }),
-  }),
-  graphql(updatePosition, { name: 'updatePositionMutation' }),
-  graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' }),
-  graphql(createOrder, { name: 'createOrderMutation' }),
-  graphql(modifyIsolatedMargin, { name: 'modifyIsolatedMarginMutation' }),
-  graphql(setPositionWasClosed, { name: 'setPositionWasClosedMutation' })
-)(MemoizedWrapper)
