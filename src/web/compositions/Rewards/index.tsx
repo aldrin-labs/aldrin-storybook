@@ -466,7 +466,7 @@ const RewardsRoute = (props) => {
                 </BtnCustom>
               </a>
             </RowContainer>
-            {/* <RowContainer>
+            <RowContainer>
               <Form>
                 <LinkInput
                   value={linkFromTwitter}
@@ -529,7 +529,7 @@ const RewardsRoute = (props) => {
                   )}
                 </BtnCustom>
               </Form>
-            </RowContainer> */}
+            </RowContainer>
           </RowContainer>
         </Card>
         <Card theme={theme}>
