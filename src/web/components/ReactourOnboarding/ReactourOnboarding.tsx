@@ -1,6 +1,15 @@
 import React from 'react'
 import Tour from 'reactour'
+import { withTheme } from '@sb/types/materialUI'
+
+import Onboard from '@icons/onboard.svg'
 import styled from 'styled-components'
+
+const Logo = styled.img`
+  width: 5rem;
+  height: auto;
+`
+
 export const FinishBtn = styled.button`
   width: 8rem;
   height: 3.5rem;
@@ -15,16 +24,16 @@ export const Block = styled.div`
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
   align-items: center;
-  padding: 0 0;
-  height: 20%;
+  padding: 0 2rem;
+  height: 35%;
   width: 100%;
   background: #09acc7;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   font-family: DM Sans;
   font-style: normal;
   font-weight: 500;
-  font-size: 20px;
+  font-size: 13px;
 `
 export const Container = styled.div`
   width: 100%;
@@ -70,9 +79,22 @@ export const tourConfig = [
     selector: '[data-tut="reactour__style"]',
     content: () => (
       <Container>
-        <Block>Welcome aboard!</Block>
-        <BolderText>Welcome to Cryptocurrencies.ai x Serum DEX!</BolderText>
-        <Text>Let us clarify some important points for trading here.</Text>
+        <Block>
+          <Logo src={Onboard} />
+          Denis from Cryptocurrencies.ai
+        </Block>
+        <BolderText>
+          Hey, welcome to Cryptocurrencies.ai smart trading terminal!
+        </BolderText>
+        <Text>
+          {' '}
+          If you want to trade on a classic terminal, you can switch to it in
+          one click.{' '}
+        </Text>
+        <Text padding={'1.5rem 1.5rem'}>
+          {' '}
+          Let us quickly show you our exchange.
+        </Text>
       </Container>
     ),
     style: Box({ height: '32rem' }),
@@ -81,128 +103,139 @@ export const tourConfig = [
     selector: '[data-tut="spot&futures"]',
     content: () => (
       <Container>
-        <Block>Analytics</Block>
-        <Text padding={'4rem 1.5rem'}>
-          You can watch $SRM analytics under this tab.
-        </Text>
+        <Block>
+          <Logo src={Onboard} />
+          Denis from Cryptocurrencies.ai
+        </Block>
+        <Text padding={'2rem 1.5rem'}>
+          You can switch between Spot and Futures.
+        </Text>{' '}
+        <BolderText>Currently you’re in the futures mode.</BolderText>
       </Container>
     ),
-    style: Box({ height: '27rem' }),
+    style: Box({ height: '30rem' }),
   },
   {
     selector: '[data-tut="menu"]',
     content: () => (
       <Container>
-        <Block>Farming</Block>
-        <Text padding={'4rem 1.5rem'}>
-          Here is info about your DCFI farming. Click here to learn more.
+        <Block>
+          <Logo src={Onboard} />
+          Denis from Cryptocurrencies.ai
+        </Block>
+        <Text padding={'2rem 1.5rem'}>
+          This menu offers other Cryptocurrencies.ai exchange features.
+        </Text>
+        <Text>
+          <em>
+            Data will be shown depending on your selection of spot or futures
+            mode.
+          </em>
         </Text>
       </Container>
     ),
-    style: Box({ height: '25rem' }),
+    style: Box({ height: '30rem' }),
   },
   {
     selector: '[data-tut="total"]',
     content: () => (
       <Container>
-        <Block>Pairs</Block>
-        <Text padding={'2.5rem 1.5rem'}>
-          Choose any available trading pair in this menu.
+        <Block>
+          <Logo src={Onboard} />
+          Denis from Cryptocurrencies.ai
+        </Block>
+        <Text padding={'2rem 1.5rem'}>
+          Total balance of all your spot and futures accounts.
         </Text>
-        <BolderText>Note: you can farm $DCFI when trading SRM/USDT.</BolderText>
       </Container>
     ),
-    style: Box({ height: '27rem' }),
+    style: Box({ height: '30rem' }),
   },
   {
     selector: '[data-tut="smart&basic"]',
     content: () => (
       <Container>
-        <Block>Wallet</Block>
-        <Text padding={'1rem 1.5rem'}>
-          Connect your Sollet.io wallet here to start trading.
-        </Text>
-        <Text padding={'1rem 1.5rem'}>
-          Note: remember to create the address of token you want to trade before
-          trading.
-        </Text>
-        <Text padding={'1rem 1.5rem'}>
-          Note 2: there are should be some SOL in your wallet to trade on DEX.
+        <Block>
+          <Logo src={Onboard} />
+          Denis from Cryptocurrencies.ai
+        </Block>
+        <Text padding={'2rem 1.5rem'}>
+          Easily switch between Smart and Basic terminal.
         </Text>
       </Container>
     ),
-    style: Box({ height: '37rem' }),
+    style: Box({ height: '30rem' }),
   },
   {
     selector: '[data-tut="createSM"]',
     content: () => (
       <Container>
-        <Block>Balances</Block>
-        <Text padding={'2.5rem 1.5rem'}>Here is your balances</Text>
-        <Text>
-          Unsettled balance is your funds that was traded already but didn’t
-          return to wallet. Press “Settle” to return it.
-        </Text>
-        <Text padding={'1rem 1.5rem'}>
-          To use auto settle, first enable auto approval in your wallet during
-          connection.
+        <Block>
+          <Logo src={Onboard} />
+          Denis from Cryptocurrencies.ai
+        </Block>
+        <Text padding={'2rem 1.5rem'}>
+          Create smart orders by clicking this button. Click here to learn more
+          about smart order.
         </Text>
       </Container>
     ),
-    style: Box({ height: '32rem' }),
+    style: Box({ height: '30rem' }),
   },
   {
     selector: '[data-tut="smart-trades"]',
     content: () => (
       <Container>
-        <Block>Balances</Block>
-        <Text padding={'2.5rem 1.5rem'}>Here is your balances</Text>
-        <Text>
-          Unsettled balance is your funds that was traded already but didn’t
-          return to wallet. Press “Settle” to return it.
-        </Text>
-        <Text padding={'1rem 1.5rem'}>
-          To use auto settle, first enable auto approval in your wallet during
-          connection.
+        <Block>
+          <Logo src={Onboard} />
+          Denis from Cryptocurrencies.ai
+        </Block>
+
+        <Text padding={'2rem 1.5rem'}>
+          Manage your open Smart trades in this table.
         </Text>
       </Container>
     ),
-    style: Box({ height: '32rem' }),
+    style: Box({ height: '30rem' }),
   },
   {
     selector: '[data-tut="balances"]',
     content: () => (
       <Container>
-        <Block>Balances</Block>
-        <Text padding={'2.5rem 1.5rem'}>Here is your balances</Text>
-        <Text>
-          Unsettled balance is your funds that was traded already but didn’t
-          return to wallet. Press “Settle” to return it.
-        </Text>
-        <Text padding={'1rem 1.5rem'}>
-          To use auto settle, first enable auto approval in your wallet during
-          connection.
+        <Block>
+          <Logo src={Onboard} />
+          Denis from Cryptocurrencies.ai
+        </Block>
+
+        <Text padding={'2rem 1.5rem'}>
+          View the balance of your account and deposit or withdraw funds.
         </Text>
       </Container>
     ),
-    style: Box({ height: '32rem' }),
+    style: Box({ height: '30rem' }),
   },
   {
     selector: '[data-tut="deposit"]',
     content: () => (
       <Container>
-        <Block>Balances</Block>
-        <Text padding={'2.5rem 1.5rem'}>Here is your balances</Text>
-        <Text>
-          Unsettled balance is your funds that was traded already but didn’t
-          return to wallet. Press “Settle” to return it.
+        <Block>
+          <Logo src={Onboard} />
+          Denis from Cryptocurrencies.ai
+        </Block>
+        <Text padding={'2.5rem 1.5rem 0 1.5rem'}>
+          All deposits are made into your spot wallet.
         </Text>
-        <Text padding={'1rem 1.5rem'}>
-          To use auto settle, first enable auto approval in your wallet during
-          connection.
+        <Text padding={'1.5rem 1.5rem'}>
+          <em>
+            To fund your futures account you have to transfer funds from spot to
+            futures on futures portfolio page, futures trading terminal or
+            accounts page in settings.
+          </em>
         </Text>
       </Container>
     ),
-    style: Box({ height: '32rem' }),
+    style: Box({ height: '33rem' }),
   },
 ]
+
+export default withTheme()

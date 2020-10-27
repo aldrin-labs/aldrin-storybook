@@ -215,63 +215,6 @@ export const CardsPanel = ({
             height: '100%',
           }}
         >
-          <DarkTooltip
-            title={
-              'Our unique terminal with smart orders and advanced trading features.'
-            }
-          >
-            <ChangeTradeButton
-              theme={theme}
-              style={{
-                //textDecoration: 'underline',
-                height: 'calc(100% - 1rem)',
-                //paddingRight: '6rem',
-                cursor: 'pointer',
-                borderRight: theme.palette.border.main,
-                backgroundColor: theme.palette.white.background,
-                color:
-                  isSmartOrderMode || isDefaultOnlyTables
-                    ? theme.palette.blue.main
-                    : theme.palette.grey.light,
-                // border: 'solid 1px black',
-                // width: '7rem',
-              }}
-              type={isDefaultTerminalViewMode ? 'buy' : 'sell'}
-              id="smartTradingButton"
-              onClick={() => {
-                // for guest mode
-                if (!authenticated) {
-                  history.push(`/login?callbackURL=${pathname}`)
-                  return
-                }
-
-                updateTerminalViewMode('onlyTables')
-              }}
-            >
-              <span
-                style={{
-                  borderBottom: `dashed 0.1rem ${theme.palette.grey.border}`,
-                }}
-              >
-                {'Smart'}
-              </span>
-              <span
-                style={{
-                  backgroundColor: theme.palette.red.main,
-                  marginLeft: '0.5rem',
-                  borderRadius: '0.5rem',
-                  fontSize: '1.5rem',
-                  width: '3.3rem',
-                  height: '1.6rem',
-                  alignItems: 'center',
-                  color: theme.palette.white.main,
-                }}
-              >
-                {activeTradesLength}
-              </span>
-            </ChangeTradeButton>
-          </DarkTooltip>
-
           <DarkTooltip title={'Terminal with traditional order types.'}>
             <ChangeTradeButton
               theme={theme}
@@ -302,6 +245,63 @@ export const CardsPanel = ({
                 }}
               >
                 {'Basic'}
+              </span>
+            </ChangeTradeButton>
+          </DarkTooltip>
+
+          <DarkTooltip
+            title={
+              'Our unique terminal with smart orders and advanced trading features.'
+            }
+          >
+            <ChangeTradeButton
+              theme={theme}
+              style={{
+                //textDecoration: 'underline',
+                height: 'calc(100% - 1rem)',
+                //paddingRight: '6rem',
+                cursor: 'pointer',
+                borderLeft: theme.palette.border.main,
+                backgroundColor: theme.palette.white.background,
+                color:
+                  isSmartOrderMode || isDefaultOnlyTables
+                    ? theme.palette.blue.main
+                    : theme.palette.grey.light,
+                // border: 'solid 1px black',
+                // width: '7rem',
+              }}
+              type={isDefaultTerminalViewMode ? 'buy' : 'sell'}
+              id="smartTradingButton"
+              onClick={() => {
+                // for guest mode
+                if (!authenticated) {
+                  history.push(`/login?callbackURL=${pathname}`)
+                  return
+                }
+
+                updateTerminalViewMode('onlyTables')
+              }}
+            >
+              <span
+                style={{
+                  borderBottom: `dashed 0.1rem ${theme.palette.grey.border}`,
+                }}
+              >
+                {'Advanced'}
+              </span>
+              <span
+                style={{
+                  backgroundColor: theme.palette.red.main,
+                  marginLeft: '0.5rem',
+                  borderRadius: '0.5rem',
+                  fontSize: '1.5rem',
+                  width: '3.3rem',
+                  height: '1.6rem',
+                  alignItems: 'center',
+                  color: theme.palette.white.main,
+                }}
+              >
+                {activeTradesLength}
               </span>
             </ChangeTradeButton>
           </DarkTooltip>
