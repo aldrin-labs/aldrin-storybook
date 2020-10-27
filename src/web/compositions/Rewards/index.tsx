@@ -203,6 +203,7 @@ const RewardsRoute = (props) => {
     getTotalVolumeForSerumKeyQueryRefetch,
     publicKey,
     addSerumTransactionMutation,
+    getTotalSerumVolumeQueryRefetch,
   } = props
 
   const tradedSerumInUSDT =
@@ -509,12 +510,25 @@ const RewardsRoute = (props) => {
                       },
                     })
                     await updateIsLoading(false)
-                    if (result.data.addSerumTransaction.status == 'ERR') {
+                    if (result.data.addSerumTransaction.status === 'ERR') {
                       notify({
                         message: result.data.addSerumTransaction.errorMessage,
                         type: 'error',
                       })
                     }
+
+                    if (result.data.addSerumTransaction.status === 'OK' || result.data.addSerumTransaction.status === 'SUCCESS') {
+                      notify({
+                        message: 'Your tweet farmed successfully!',
+                        type: 'success',
+                      })
+
+                      setTimeout(() => {
+                        getTotalVolumeForSerumKeyQueryRefetch && getTotalVolumeForSerumKeyQueryRefetch()
+                        getTotalSerumVolumeQueryRefetch && getTotalSerumVolumeQueryRefetch()
+                      }, 1000)
+                    }
+
                     console.log('link', linkFromTwitter)
                   }}
                 >
