@@ -498,6 +498,17 @@ const RewardsRoute = (props) => {
                       })
                       return
                     }
+
+                    if (linkFromTwitter === '') {
+                      e.preventDefault()
+                      notify({
+                        message: 'Your twitter link is empty',
+                        type: 'error',
+                      })
+
+                      return
+                    }
+
                     updateIsLoading(true)
                     const result = await addSerumTransactionMutation({
                       variables: {
