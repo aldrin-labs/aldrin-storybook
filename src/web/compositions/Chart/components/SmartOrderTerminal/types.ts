@@ -4,6 +4,7 @@ import { Theme } from '@material-ui/core'
 export interface IProps {
   price: number
   leverage: number
+  keyId: string
   marketType: 0 | 1
   quantityPrecision: number
   pricePrecision: number
@@ -11,10 +12,10 @@ export interface IProps {
   funds: {
     quantity: number
   }[]
-  pair: string
+  pair: [string, string]
   theme: Theme
   marketPriceAfterPairChange: number
-  hedgeMode: string
+  hedgeMode: boolean
   maxLeverage: number
   minFuturesStep: number
   minSpotNotional: number
@@ -31,7 +32,7 @@ export type EntryPointType = {
     amount: number
     total: number
     leverage: number
-    hedgeMode: string
+    hedgeMode: boolean
     isHedgeOn: boolean
     hedgePrice: number
     hedgeIncrease: number | string
