@@ -215,7 +215,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             currencyPair,
             canceledOrders,
             handleTabChange: this.handleTabChange,
-            arrayOfMarketIds,
             showAllPositionPairs,
             showAllOpenOrderPairs,
             showAllSmartTradePairs,
@@ -224,8 +223,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             showSmartTradesFromAllAccounts,
             pageOpenOrders,
             perPageOpenOrders,
-            pagePositions,
-            perPagePositions,
             pageSmartTrades,
             perPageSmartTrades,
           }}
