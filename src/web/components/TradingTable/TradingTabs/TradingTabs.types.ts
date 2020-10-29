@@ -9,7 +9,7 @@ export interface IQueryProps {
   marketType: 0 | 1
   arrayOfMarketIds: string[]
   currencyPair: string
-  theme?: Theme
+  theme: Theme
   selectedKey: Key
   variables?: any
   canceledOrders: string[]
@@ -36,7 +36,10 @@ export interface IProps extends INextQueryProps {
     getActivePositions: Position[]
   }
   getOpenOrderHistoryQuery: {
-    getOpenOrderHistory: OrderType[]
+    getOpenOrderHistory: {
+      orders: OrderType[]
+      count: number
+    }
   }
   getActiveStrategiesQuery: {
     getActiveStrategies: {
@@ -44,4 +47,7 @@ export interface IProps extends INextQueryProps {
       count: number
     }
   }
+  isDefaultTerminalViewMode: boolean
+  isDefaultOnlyTables: boolean
+  updateTerminalViewMode: (mode: string) => void
 }

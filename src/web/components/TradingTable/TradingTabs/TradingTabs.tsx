@@ -1,7 +1,7 @@
 import React from 'react'
 import { compose } from 'recompose'
 
-import { IProps, IQueryProps, INextQueryProps } from './TradingTabs.types'
+import { IProps, INextQueryProps } from './TradingTabs.types'
 import {
   TitleTab,
   TitleTabsGroup,
@@ -44,10 +44,8 @@ const TradingTabs = ({
   showAllSmartTradePairs,
   showSmartTradesFromAllAccounts,
   updateTerminalViewMode,
-  terminalViewMode,
   isDefaultTerminalViewMode,
   isDefaultOnlyTables,
-  isSmartOrderMode,
   ...props
 }: IProps) => {
   const openOrdersLength = getOpenOrderHistory.orders.filter((order) =>
@@ -70,6 +68,7 @@ const TradingTabs = ({
       (a.enabled ||
         (a.conditions.isTemplate && a.conditions.templateStatus !== 'disabled'))
   ).length
+
   return (
     <>
       <TitleTabsGroup theme={theme}>
