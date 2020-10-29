@@ -157,7 +157,7 @@ const TradingTabs = ({
   )
 }
 
-export default compose(
+const TradingTabsWrapper = compose(
   queryRendererHoc({
     query: getActiveStrategies,
     name: 'getActiveStrategiesQuery',
@@ -219,3 +219,29 @@ export default compose(
     showLoadingWhenQueryParamsChange: false,
   })
 )(TradingTabs)
+
+export default React.memo(TradingTabsWrapper, (prevProps: any, nextProps: any) => {
+
+  if (
+    prevProps.isDefaultTerminalViewMode === nextProps.isDefaultTerminalViewMode &&
+    prevProps.isDefaultOnlyTables === nextProps.isDefaultOnlyTables &&
+    prevProps.tab === nextProps.tab &&
+    prevProps.marketType === nextProps.marketType &&
+    prevProps.prevProps.selectedKey.keyId === nextProps.selectedKey.keyId &&
+    prevProps.currencyPair === nextProps.currencyPair &&
+    prevProps.showAllPositionPairs === nextProps.showAllPositionPairs &&
+    prevProps.showAllOpenOrderPairs === nextProps.showAllOpenOrderPairs &&
+    prevProps.showAllSmartTradePairs === nextProps.showAllSmartTradePairs &&
+    prevProps.showPositionsFromAllAccounts === nextProps.showPositionsFromAllAccounts &&
+    prevProps.showOpenOrdersFromAllAccounts === nextProps.showOpenOrdersFromAllAccounts &&
+    prevProps.showSmartTradesFromAllAccounts === nextProps.showSmartTradesFromAllAccounts &&
+    prevProps.pageOpenOrders === nextProps.pageOpenOrders &&
+    prevProps.perPageOpenOrders === nextProps.perPageOpenOrders &&
+    prevProps.pageSmartTrades === nextProps.pageSmartTrades &&
+    prevProps.perPageSmartTrades === nextProps.perPageSmartTrades
+  ) {
+    return true
+  }
+
+  return false
+})
