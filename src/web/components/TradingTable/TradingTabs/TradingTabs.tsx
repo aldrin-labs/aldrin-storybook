@@ -23,7 +23,11 @@ const TradingTabs = ({
   tab,
   theme,
   handleTabChange,
+  updateTerminalViewMode,
   marketType,
+  canceledOrders,
+  isDefaultTerminalViewMode,
+  isDefaultOnlyTables,
   getOpenOrderHistoryQuery: {
     getOpenOrderHistory = { orders: [], count: 0 },
   } = {
@@ -37,13 +41,6 @@ const TradingTabs = ({
   } = {
     getActiveStrategies: { strategies: [], count: 0 },
   },
-  canceledOrders,
-  currencyPair,
-  showSmartTradesFromAllAccounts,
-  updateTerminalViewMode,
-  isDefaultTerminalViewMode,
-  isDefaultOnlyTables,
-  ...props
 }: IProps) => {
   const openOrdersLength = getOpenOrderHistory.orders.filter((order) =>
     filterOpenOrders({
