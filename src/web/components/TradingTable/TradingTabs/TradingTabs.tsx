@@ -227,7 +227,7 @@ export default React.memo(TradingTabsWrapper, (prevProps: any, nextProps: any) =
     prevProps.isDefaultOnlyTables === nextProps.isDefaultOnlyTables &&
     prevProps.tab === nextProps.tab &&
     prevProps.marketType === nextProps.marketType &&
-    prevProps.prevProps.selectedKey.keyId === nextProps.selectedKey.keyId &&
+    prevProps.selectedKey.keyId === nextProps.selectedKey.keyId &&
     prevProps.currencyPair === nextProps.currencyPair &&
     prevProps.showAllPositionPairs === nextProps.showAllPositionPairs &&
     prevProps.showAllOpenOrderPairs === nextProps.showAllOpenOrderPairs &&
