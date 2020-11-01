@@ -182,6 +182,36 @@ const volumeLabels = [
   '466.6m',
 ]
 
+const Table = styled.table`
+  width: 100%;
+`
+const TableRow = styled.tr``
+
+const Cell = styled.td`
+  width: 25%;
+  color: #cad4d6;
+  border-bottom: 1px solid #c7ffd0;
+  border-right: 1px solid #c7ffd0;
+  height: 5rem;
+  margin: 3rem 1rem;
+  padding-left: 2rem;
+  &:last-child {
+    border-right: none;
+  }
+  &:first-child {
+    width: 6%;
+  }
+`
+const HeaderCell = styled.td`
+  height: 5rem;
+  padding-left: 2rem;
+  border: none;
+  font-size: 1.6rem;
+  text-transform: capitalize;
+  color: #9f9f9f;
+  font-size: bold;
+`
+
 const getPhaseFromTotal = (total) => {
   let phase = 0
 
@@ -528,15 +558,20 @@ const RewardsRoute = (props) => {
                       })
                     }
 
-                    if (result.data.addSerumTransaction.status === 'OK' || result.data.addSerumTransaction.status === 'SUCCESS') {
+                    if (
+                      result.data.addSerumTransaction.status === 'OK' ||
+                      result.data.addSerumTransaction.status === 'SUCCESS'
+                    ) {
                       notify({
                         message: 'Your tweet farmed successfully!',
                         type: 'success',
                       })
 
                       setTimeout(() => {
-                        getTotalVolumeForSerumKeyQueryRefetch && getTotalVolumeForSerumKeyQueryRefetch()
-                        getTotalSerumVolumeQueryRefetch && getTotalSerumVolumeQueryRefetch()
+                        getTotalVolumeForSerumKeyQueryRefetch &&
+                          getTotalVolumeForSerumKeyQueryRefetch()
+                        getTotalSerumVolumeQueryRefetch &&
+                          getTotalSerumVolumeQueryRefetch()
                       }, 1000)
                     }
 
@@ -731,6 +766,55 @@ const RewardsRoute = (props) => {
         {/* <Card theme={theme}>
           <Canvas dcfiEarned={dcfiEarned} />
         </Card> */}
+      </RowContainer>
+      <RowContainer style={{ paddingBottom: '10rem' }}>
+        <Card
+          style={{
+            width: 'calc(70% - 4rem)',
+            height: 'auto',
+            padding: '0 3rem',
+          }}
+          theme={theme}
+        >
+          <Table>
+            <TableRow>
+              <HeaderCell>#</HeaderCell>
+              <HeaderCell>Name</HeaderCell>
+              <HeaderCell>Followers</HeaderCell>
+              <HeaderCell>Earned DCFI</HeaderCell>
+            </TableRow>
+            <TableRow>
+              <Cell>fgh</Cell>
+              <Cell>bn</Cell>
+              <Cell>fgh</Cell>
+              <Cell>fgh</Cell>
+            </TableRow>
+            <TableRow>
+              <Cell>fgh</Cell>
+              <Cell>bn</Cell>
+              <Cell>fgh</Cell>
+              <Cell>fgh</Cell>
+            </TableRow>
+            <TableRow>
+              <Cell>fgh</Cell>
+              <Cell>bn</Cell>
+              <Cell>fgh</Cell>
+              <Cell>fgh</Cell>
+            </TableRow>
+            <TableRow>
+              <Cell>fgh</Cell>
+              <Cell>bn</Cell>
+              <Cell>fgh</Cell>
+              <Cell>fgh</Cell>
+            </TableRow>
+            <TableRow>
+              <Cell>fgh</Cell>
+              <Cell>bn</Cell>
+              <Cell>fgh</Cell>
+              <Cell>fgh</Cell>
+            </TableRow>
+          </Table>
+        </Card>
       </RowContainer>
     </div>
   )
