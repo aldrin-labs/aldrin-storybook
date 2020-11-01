@@ -138,12 +138,10 @@ export const TerminalModeButton = styled(
   letter-spacing: 0.05rem;
   width: 25%;
   color: ${(props: { active: boolean; theme: Theme }) =>
-    props.active
-      ? props.theme.palette.button.color
-      : props.theme.palette.dark.main};
+    props.active ? '#fff' : props.theme.palette.dark.main};
   background-color: ${(props: { active: boolean; theme: Theme }) =>
     props.active
-      ? props.theme.palette.grey.border
+      ? props.theme.palette.blue.tabs
       : props.theme.palette.grey.main};
   border: none;
   border-right: ${(props) => props.theme.palette.border.main};

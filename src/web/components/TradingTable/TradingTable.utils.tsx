@@ -13,7 +13,10 @@ import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHis
 import { getActiveStrategies } from '@core/graphql/queries/chart/getActiveStrategies'
 
 import { client } from '@core/graphql/apolloClient'
-import { filterCacheData, modifyCacheData } from '@core/utils/TradingTable.utils'
+import {
+  filterCacheData,
+  modifyCacheData,
+} from '@core/utils/TradingTable.utils'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components/index'
 import stableCoins from '@core/config/stableCoins'
@@ -339,6 +342,7 @@ export const combinePositionsTable = ({
   toogleEditMarginPopup,
   handlePairChange,
   enqueueSnackbar,
+  minFuturesStep,
 }: {
   data: Position[]
   createOrderWithStatus: (variables: any, positionId: any) => Promise<void>
@@ -347,6 +351,7 @@ export const combinePositionsTable = ({
   pair: string
   keyId: string
   canceledPositions: string[]
+  minFuturesStep
   priceFromOrderbook: number | string
   // pricePrecision: number
   // quantityPrecision: number
@@ -395,22 +400,34 @@ export const combinePositionsTable = ({
 
       const keyName = keys[keyId]
 
-      const getVariables = (type: String, price: Number) => ({
-        keyId: el.keyId,
-        keyParams: {
-          symbol,
-          side: positionAmt < 0 ? 'buy' : 'sell',
-          marketType: 1,
-          type,
-          reduceOnly: true,
-          ...(type === 'limit' ? { price, timeInForce: 'GTC' } : {}),
-          amount: Math.abs(positionAmt),
-          leverage,
-          params: {
+      const getVariables = (type: String, price: Number, amount: Number) => {
+        const calculatedAmount = Math.abs((positionAmt / 100) * amount)
+        console.log('positionAmount', Math.abs(positionAmt), amount)
+
+        const calcAmount =
+          amount === 0
+            ? Math.abs(positionAmt)
+            : calculatedAmount === 0
+            ? 0
+            : stripDigitPlaces(calculatedAmount, quantityPrecision)
+        console.log('calcAm', calcAmount)
+        return {
+          keyId: el.keyId,
+          keyParams: {
+            symbol,
+            side: positionAmt < 0 ? 'buy' : 'sell',
+            marketType: 1,
             type,
+            reduceOnly: true,
+            ...(type === 'limit' ? { price, timeInForce: 'GTC' } : {}),
+            amount: +calcAmount,
+            leverage,
+            params: {
+              type,
+            },
           },
-        },
-      })
+        }
+      }
 
       const side = positionAmt < 0 ? 'sell short' : 'buy long'
       const liqPrice =
@@ -619,6 +636,7 @@ export const combinePositionsTable = ({
                   getVariables={getVariables}
                   priceFromOrderbook={priceFromOrderbook}
                   createOrderWithStatus={createOrderWithStatus}
+                  minFuturesStep={minFuturesStep}
                 />
               </div>
             ),
@@ -658,8 +676,8 @@ export const combineActiveTradesTable = ({
   handlePairChange,
 }: {
   data: any[]
-  queryBody: string,
-  queryVariables: object,
+  queryBody: string
+  queryVariables: object
   cancelOrderFunc: (strategyId: string) => Promise<any>
   changeStatusWithStatus: (
     startegyId: string,
@@ -1056,35 +1074,39 @@ export const combineActiveTradesTable = ({
                 transition={'all .4s ease-out'}
                 onClick={(e) => {
                   e.stopPropagation()
-                  changeStatusWithStatus(el._id, el.accountId, 'disabled')
-                  .then((res) => {
-                    console.log('changeStatusWithStatus res', res)
+                  changeStatusWithStatus(el._id, el.accountId, 'disabled').then(
+                    (res) => {
+                      console.log('changeStatusWithStatus res', res)
 
-                    if (res.status === 'error') {
-                      modifyCacheData({
-                        _id: strategyId,
-                        name: 'getActiveStrategies',
-                        subName: 'strategies',
-                        typename: 'strategiesHistoryOutput',
-                        data: null,
-                        query: queryBody,
-                        variables: queryVariables,
-                        modifyFunc: 'map',
-                        modifyFuncCallBack: (elem) => {
-                          if (elem._id === strategyId) {
-                            elem.enabled = el.enabled
-                      
-                            if (elem.conditions.isTemplate && elem.conditions.templateStatus) {
-                              elem.conditions.templateStatus = el.conditions.templateStatus
+                      if (res.status === 'error') {
+                        modifyCacheData({
+                          _id: strategyId,
+                          name: 'getActiveStrategies',
+                          subName: 'strategies',
+                          typename: 'strategiesHistoryOutput',
+                          data: null,
+                          query: queryBody,
+                          variables: queryVariables,
+                          modifyFunc: 'map',
+                          modifyFuncCallBack: (elem) => {
+                            if (elem._id === strategyId) {
+                              elem.enabled = el.enabled
+
+                              if (
+                                elem.conditions.isTemplate &&
+                                elem.conditions.templateStatus
+                              ) {
+                                elem.conditions.templateStatus =
+                                  el.conditions.templateStatus
+                              }
                             }
-                          }
-                      
-                          return elem
-                        },
-                      })
-                    }
 
-                  })
+                            return elem
+                          },
+                        })
+                      }
+                    }
+                  )
 
                   modifyCacheData({
                     _id: strategyId,
@@ -1098,12 +1120,15 @@ export const combineActiveTradesTable = ({
                     modifyFuncCallBack: (elem) => {
                       if (elem._id === strategyId) {
                         elem.enabled = false
-                  
-                        if (elem.conditions.isTemplate && elem.conditions.templateStatus) {
+
+                        if (
+                          elem.conditions.isTemplate &&
+                          elem.conditions.templateStatus
+                        ) {
                           elem.conditions.templateStatus = 'disabled'
                         }
                       }
-                  
+
                       return elem
                     },
                   })
@@ -1129,8 +1154,7 @@ export const combineActiveTradesTable = ({
               transition={'all .4s ease-out'}
               onClick={(e) => {
                 e.stopPropagation()
-                cancelOrderFunc(el._id, el.accountId)
-                .then((res) => {
+                cancelOrderFunc(el._id, el.accountId).then((res) => {
                   console.log('changeStatusWithStatus res', res)
 
                   if (res.status === 'error') {
@@ -1146,17 +1170,20 @@ export const combineActiveTradesTable = ({
                       modifyFuncCallBack: (elem) => {
                         if (elem._id === strategyId) {
                           elem.enabled = el.enabled
-                    
-                          if (elem.conditions.isTemplate && elem.conditions.templateStatus) {
-                            elem.conditions.templateStatus = el.conditions.templateStatus
+
+                          if (
+                            elem.conditions.isTemplate &&
+                            elem.conditions.templateStatus
+                          ) {
+                            elem.conditions.templateStatus =
+                              el.conditions.templateStatus
                           }
                         }
-                    
+
                         return elem
                       },
                     })
                   }
-
                 })
 
                 modifyCacheData({
@@ -1171,12 +1198,15 @@ export const combineActiveTradesTable = ({
                   modifyFuncCallBack: (elem) => {
                     if (elem._id === strategyId) {
                       elem.enabled = false
-                
-                      if (elem.conditions.isTemplate && elem.conditions.templateStatus) {
+
+                      if (
+                        elem.conditions.isTemplate &&
+                        elem.conditions.templateStatus
+                      ) {
                         elem.conditions.templateStatus = 'disabled'
                       }
                     }
-                
+
                     return elem
                   },
                 })

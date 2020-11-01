@@ -221,10 +221,13 @@ export const CardsPanel = ({
               style={{
                 cursor: 'pointer',
                 height: '100%',
-                backgroundColor: theme.palette.white.background,
-                color:
+                backgroundColor:
                   isDefaultTerminalViewMode && !isDefaultOnlyTables
                     ? theme.palette.blue.main
+                    : theme.palette.white.background,
+                color:
+                  isDefaultTerminalViewMode && !isDefaultOnlyTables
+                    ? theme.palette.white.main
                     : theme.palette.grey.light,
               }}
               //type={isDefaultTerminalViewMode ? 'buy' : 'sell'}
@@ -258,14 +261,17 @@ export const CardsPanel = ({
               theme={theme}
               style={{
                 //textDecoration: 'underline',
-                height: 'calc(100% - 1rem)',
+                height: '100%',
                 //paddingRight: '6rem',
                 cursor: 'pointer',
                 borderLeft: theme.palette.border.main,
-                backgroundColor: theme.palette.white.background,
-                color:
+                backgroundColor:
                   isSmartOrderMode || isDefaultOnlyTables
                     ? theme.palette.blue.main
+                    : theme.palette.white.background,
+                color:
+                  isSmartOrderMode || isDefaultOnlyTables
+                    ? theme.palette.white.main
                     : theme.palette.grey.light,
                 // border: 'solid 1px black',
                 // width: '7rem',
@@ -295,7 +301,7 @@ export const CardsPanel = ({
                   marginLeft: '0.5rem',
                   borderRadius: '0.5rem',
                   fontSize: '1.5rem',
-                  width: '3.3rem',
+                  width: '2.7rem',
                   height: '1.6rem',
                   alignItems: 'center',
                   color: theme.palette.white.main,

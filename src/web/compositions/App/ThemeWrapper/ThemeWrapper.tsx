@@ -166,6 +166,7 @@ export default ({ themeMode, isChartPage, children }) => {
               btnBackground: '#3B63AF', // 165BE0
               switcherBackground: '#3B63AF', // 165BE0
               switcherBorder: '#2E2E2E',
+              tabs: '#2E2E2E',
             },
             green: {
               dark: '#377E21',
@@ -173,6 +174,7 @@ export default ({ themeMode, isChartPage, children }) => {
               custom: '#97C15C',
               main: '#39A74C',
               new: '#29AC80',
+              onboarding: '#1BA492',
             },
             grey: {
               custom: '#2E2E2E',
@@ -222,6 +224,7 @@ export default ({ themeMode, isChartPage, children }) => {
               main: '#fff',
               background: '#0B0B0E',
               inputBackground: '#14161B',
+              onboarding: '#0B0B0E',
             },
             dark: {
               main: '#D1DDEF',
@@ -361,12 +364,14 @@ export default ({ themeMode, isChartPage, children }) => {
               btnBackground: '#5C8CEA',
               switcherBackground: 'rgba(11, 31, 209, 0.5)',
               switcherBorder: '#0B1FD1',
+              tabs: '#6E98E9',
             },
             green: {
               dark: '#377E21',
               custom: '#97C15C',
-              main: '#5BC9BB',
+              main: '#1BA492',
               new: '#29AC80',
+              onboarding: '#1BA492',
             },
             grey: {
               custom: '#ABBAD1',
@@ -418,6 +423,7 @@ export default ({ themeMode, isChartPage, children }) => {
               background: '#fff',
               inputBackground: '#fff',
               btnBackground: '#F5F5FB',
+              onboarding: '#f5f5fb',
             },
             dark: {
               main: '#16253D',

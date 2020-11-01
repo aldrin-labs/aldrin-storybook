@@ -175,6 +175,7 @@ class SimpleTabs extends React.Component {
 
     return (
       <Grid
+        data-tut={'basic-terminal'}
         id="tradingTerminal"
         item
         xs={12}
@@ -659,7 +660,7 @@ class SimpleTabs extends React.Component {
             </TerminalHeader>
           ) : (
             <TerminalHeader style={{ display: 'flex' }} theme={theme}>
-              <div
+              {/* <div
                 style={{
                   width: '50%',
                   padding: '.5rem 0 .5rem 3rem',
@@ -698,7 +699,7 @@ class SimpleTabs extends React.Component {
                 >
                   {pair[0]}
                 </SpotBalanceSpan>
-              </div>
+              </div> */}
             </TerminalHeader>
           )}
 

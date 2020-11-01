@@ -124,6 +124,7 @@ export default React.memo(OrderStatusWrapper, (prev, next) => {
     prev.layout.hideDepthChart === next.layout.hideDepthChart &&
     prev.layout.hideOrderbook === next.layout.hideOrderbook &&
     prev.layout.hideTradeHistory === next.layout.hideTradeHistory &&
+    prev.isChartPageOnboardingDone === next.isChartPageOnboardingDone &&
     isEqual(prev.theme, next.theme)
     // false
   )

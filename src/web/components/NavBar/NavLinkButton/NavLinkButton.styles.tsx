@@ -34,7 +34,7 @@ export const SButton = styled(
     // padding: 0 8px;
 
     @media only screen and (max-width: 1100px) {
-      margin: 0;
+      margin: ${(props) => props.margin || '0'};
     }
 
     &:hover {

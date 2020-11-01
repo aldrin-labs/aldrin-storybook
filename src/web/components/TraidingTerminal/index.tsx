@@ -728,8 +728,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     ? `buy ${pair[0]}`
                     : `sell ${pair[0]}`
                   : operationType === 'buy'
-                  ? 'long'
-                  : 'short'}
+                  ? 'buy long'
+                  : 'sell short'}
               </SendButton>
             </Grid>
           </Grid>

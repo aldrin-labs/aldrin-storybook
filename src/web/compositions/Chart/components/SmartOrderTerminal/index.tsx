@@ -1,6 +1,7 @@
 import React from 'react'
 import copy from 'clipboard-copy'
 
+import { SmartOrderOnboarding } from '@sb/compositions/Chart/components/SmartOrderTerminal/SmartTerminalOnboarding/SmartTerminalOnboarding'
 import { IProps, IState } from './types'
 import {
   getSecondValueFromFirst,
@@ -1104,6 +1105,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           />
         )}
         <CustomCard theme={theme} style={{ borderTop: 0 }}>
+          <SmartOrderOnboarding />
           <TerminalHeaders>
             <TerminalHeader
               theme={theme}
@@ -1283,7 +1285,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           <TerminalBlocksContainer xs={12} container item>
             {/* ENTRY POINT */}
 
-            <TerminalBlock theme={theme} width={'calc(33% + 0.5%)'}>
+            <TerminalBlock
+              theme={theme}
+              width={'calc(33% + 0.5%)'}
+              data-tut={'step1'}
+            >
               {/* {marketType === 1 && (
                 <InputRowContainer padding={'0 0 0.6rem 0'}>
                   <CustomSwitcher theme={theme}
@@ -3457,6 +3463,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
             {/* STOP LOSS */}
             <TerminalBlock
+              data-tut={'step2'}
               theme={theme}
               width={'calc(32.5% + 1%)'}
               style={{ overflow: 'hidden', padding: 0 }}
@@ -4357,6 +4364,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   cancel
                 </SendButton>
                 <SendButton
+                  data-tut={'createBtn'}
                   theme={theme}
                   type={entryPoint.order.side ? 'buy' : 'sell'}
                   onClick={async () => {
@@ -4432,7 +4440,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             </TerminalBlock>
 
             {/* TAKE A PROFIT */}
-            <TerminalBlock theme={theme} width={'calc(33%)'} borderRight="0">
+            <TerminalBlock
+              theme={theme}
+              width={'calc(33%)'}
+              borderRight="0"
+              data-tut={'step3'}
+            >
               <InputRowContainer justify="center">
                 <CustomSwitcher
                   theme={theme}

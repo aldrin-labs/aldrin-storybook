@@ -2,8 +2,13 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Grid, Theme } from '@material-ui/core'
 
+import { NavLink as Link } from 'react-router-dom'
+
 import ChartCardHeader from '@sb/components/ChartCardHeader'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { selectProfileKey } from '@core/components/SelectKeyListDW/SelectKeyListDW'
+
+import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 
 import {
   formatNumberToUSFormat,
@@ -114,6 +119,8 @@ export const Balances = ({
   isAlreadyJoined = false,
   isFuturesWarsKey = false,
   futuresWarsRoundBet = 0,
+  updateWithdrawalSettings,
+  updateDepositSettings,
 }: {
   getFundsQuery: {
     getFunds: FundsType[]
@@ -131,6 +138,8 @@ export const Balances = ({
   isAlreadyJoined: boolean
   isFuturesWarsKey: boolean
   futuresWarsRoundBet: number
+  updateWithdrawalSettings: any
+  updateDepositSettings: any
 }) => {
   const [loading, setLoading] = useState(false)
   const [open, togglePopup] = useState(false)
@@ -167,6 +176,10 @@ export const Balances = ({
       ? funds[1].value
       : formatNumberToUSFormat(stripDigitPlaces(funds[1].value))
 
+  const Deposit = (props: any) => <Link to="/profile/deposit" {...props} />
+  const Withdrawal = (props: any) => (
+    <Link to="/profile/withdrawal" {...props} />
+  )
   return (
     <>
       <TransferPopup
@@ -216,7 +229,7 @@ export const Balances = ({
         >
           {isSPOTMarket ? (
             <>
-              <Grid
+              {/* <Grid
                 item
                 container
                 direction="column"
@@ -270,6 +283,158 @@ export const Balances = ({
                     {addMainSymbol(secondValuePair, true)}
                   </BalanceValue>
                 </BalanceValues>
+              </Grid> */}
+              <Grid
+                item
+                xs={9}
+                container
+                alignItems="center"
+                justify="flex-start"
+                style={{ maxWidth: '100%' }}
+              >
+                <div style={{ height: '100%', width: '100%' }}>
+                  <BalanceFuturesContainer theme={theme}>
+                    <BalanceFuturesTitle theme={theme}>
+                      BTC Avalible{' '}
+                    </BalanceFuturesTitle>
+                    <BalanceFuturesValue theme={theme}>
+                      <span style={{ color: theme.palette.blue.main }}>
+                        {funds[0].quantity.toFixed(8)}
+                      </span>{' '}
+                      <BalanceFuturesSymbol theme={theme}>
+                        BTC
+                      </BalanceFuturesSymbol>
+                    </BalanceFuturesValue>
+                  </BalanceFuturesContainer>
+                  <BalanceFuturesContainer theme={theme}>
+                    <BalanceFuturesTitle theme={theme}>
+                      USDT Availiable
+                    </BalanceFuturesTitle>
+                    <BalanceFuturesValue theme={theme}>
+                      <span style={{ color: theme.palette.blue.main }}>
+                        {funds[1].quantity.toFixed(8)}
+                      </span>{' '}
+                      <BalanceFuturesSymbol theme={theme}>
+                        USDT
+                      </BalanceFuturesSymbol>
+                    </BalanceFuturesValue>
+                  </BalanceFuturesContainer>
+                </div>
+              </Grid>
+              <Grid
+                item
+                xs={3}
+                container
+                direction="column"
+                alignItems="center"
+                justify="space-evenly"
+                style={{
+                  maxWidth: '100%',
+                  //borderTop: theme.palette.border.main,
+                }}
+              >
+                {isFuturesWarsKey && (
+                  <BtnCustom
+                    disabled={isAlreadyJoined}
+                    btnWidth="100%"
+                    height="auto"
+                    fontSize=".8rem"
+                    padding="1rem 0 .8rem 0;"
+                    borderRadius=".8rem"
+                    btnColor={theme.palette.blue.main}
+                    backgroundColor={theme.palette.white.background}
+                    hoverColor={theme.palette.white.background}
+                    hoverBackground={theme.palette.blue.main}
+                    transition={'all .4s ease-out'}
+                    onClick={() => {
+                      togglePopup(true)
+                    }}
+                  >
+                    {isAlreadyJoined ? 'Joined' : `Join`}
+                  </BtnCustom>
+                )}
+                {!isFuturesWarsKey && (
+                  <>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-evenly',
+                        flexDirection: 'column',
+                        width: '100%',
+                      }}
+                    >
+                      <NavLinkButton
+                        key="deposit"
+                        page={`deposit`}
+                        component={Deposit}
+                        style={{
+                          margin: '0.5rem auto',
+                          width: '92%',
+                          height: '4rem',
+                          borderRadius: '.8rem',
+                          border: '.1rem solid #7380EB',
+                          backgroundColor: theme.palette.white.background,
+                          color: theme.palette.blue.main,
+                          fontFamily: 'Avenir Next Demi',
+                          transition: 'all .4s ease-out',
+                          textTransform: 'capitalize',
+                          fontSize: '1.3rem',
+                          padding: '.5rem 0 .4rem 0;',
+                          '&:hover': {
+                            color: theme.palette.white.background,
+                            transition: 'all .4s ease-out',
+                            backgroundColor: theme.palette.blue.main,
+                            border: '.1rem solid #7380EB',
+                          },
+                        }}
+                        onClick={() => {
+                          selectProfileKey({
+                            keyId: selectedKey.keyId,
+                            isDeposit: true,
+                            mutation: updateDepositSettings,
+                          })
+                        }}
+                      >
+                        Deposit
+                      </NavLinkButton>
+
+                      <NavLinkButton
+                        key="withdrawal"
+                        page={`withdrawal`}
+                        component={Withdrawal}
+                        style={{
+                          margin: '0.5rem auto',
+                          width: '92%',
+                          height: '4rem',
+                          borderRadius: '.8rem',
+                          border: '.1rem solid #7380EB',
+                          backgroundColor: theme.palette.blue.main,
+                          color: theme.palette.white.background,
+                          fontFamily: 'Avenir Next Demi',
+                          transition: 'all .4s ease-out',
+                          textTransform: 'capitalize',
+                          fontSize: '1.3rem',
+                          padding: '.5rem 0 .4rem 0;',
+                          '&:hover': {
+                            color: theme.palette.blue.main,
+                            transition: 'all .4s ease-out',
+                            backgroundColor: theme.palette.white.background,
+                            border: '.1rem solid #7380EB',
+                          },
+                        }}
+                        onClick={() => {
+                          selectProfileKey({
+                            keyId: selectedKey.keyId,
+                            isDeposit: false,
+                            mutation: updateWithdrawalSettings,
+                          })
+                        }}
+                      >
+                        Withdrawal
+                      </NavLinkButton>
+                    </div>
+                  </>
+                )}
               </Grid>
             </>
           ) : (

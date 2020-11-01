@@ -153,12 +153,16 @@ const TradingTabs = ({
         {(isDefaultOnlyTables || isDefaultTerminalViewMode) && (
           <SmartTradeButton
             data-tut={'createSM'}
-            style={{ height: '3rem', backgroundColor: theme.palette.blue.main }}
+            style={{
+              height: '3rem',
+              width: '20rem',
+              backgroundColor: theme.palette.blue.main,
+            }}
             onClick={() => {
               updateTerminalViewMode('smartOrderMode')
             }}
           >
-            Create new smart trade
+            Advanced trade
           </SmartTradeButton>
         )}
       </TitleTabsGroup>

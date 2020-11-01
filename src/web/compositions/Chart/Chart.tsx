@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
 // import Joyride from 'react-joyride'
-import Tour from 'reactour'
 import { withTheme } from '@material-ui/styles'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
@@ -10,10 +9,7 @@ import { isEqual } from 'lodash'
 // import { Grid, Hidden } from '@material-ui/core'
 
 // import { CardsPanel } from './components'
-import {
-  tourConfig,
-  FinishBtn,
-} from '@sb/components/ReactourOnboarding/ReactourOnboarding'
+
 import OnlyCharts from './OnlyCharts/OnlyCharts'
 import DefaultView from './DefaultView/StatusWrapper'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
@@ -48,10 +44,9 @@ import { MainContainer, GlobalStyles } from './Chart.styles'
 import { IProps } from './Chart.types'
 
 export function ChartPageComponent(props: any) {
-  const [terminalViewMode, updateTerminalViewMode] = useState('onlyTables')
+  const [terminalViewMode, updateTerminalViewMode] = useState('default')
   const [stepIndex, updateStepIndex] = useState(0)
   const [key, updateKey] = useState(0)
-  const [isTourOpen, setIsTourOpen] = useState(true)
 
   useEffect(() => {
     const { marketType } = props
@@ -139,6 +134,14 @@ export function ChartPageComponent(props: any) {
       updateTooltipSettingsMutation: props.updateTooltipSettingsMutation,
       getTooltipSettings,
       name: 'chartPagePopup',
+    })
+  }
+
+  const closeChartPageOnboarding = () => {
+    finishJoyride({
+      updateTooltipSettingsMutation: props.updateTooltipSettingsMutation,
+      getTooltipSettings,
+      name: 'chartPage',
     })
   }
 
@@ -248,31 +251,15 @@ export function ChartPageComponent(props: any) {
       125
   }
 
+  let isChartPageOnboardingDone = getTooltipSettings.chartPage
+
   const arrayOfMarketIds = marketByMarketType.map((el) => el._id)
   const selectedKey = selectedTradingKey
     ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
     : { keyId: '', hedgeMode: false, isFuturesWarsKey: false }
 
-  const accentColor = '#09acc7'
-
   return (
     <MainContainer fullscreen={view !== 'default'}>
-      <Tour
-        showCloseButton={false}
-        nextButton={<FinishBtn>Next</FinishBtn>}
-        prevButton={<a />}
-        showNavigationNumber={true}
-        showNavigation={true}
-        lastStepNextButton={<FinishBtn>Finish</FinishBtn>}
-        steps={tourConfig}
-        accentColor={accentColor}
-        isOpen={isTourOpen}
-        onRequestClose={() => setIsTourOpen(false)}
-        // onRequestClose={() => {
-        //   setIsTourOpen(false)
-        //   localStorage.setItem('isOnboardingDone', 'true')
-        // }}
-      />
       <GlobalStyles />
       {view === 'default' && (
         <DefaultView
@@ -294,6 +281,8 @@ export function ChartPageComponent(props: any) {
           selectedKey={selectedKey}
           activeExchange={activeExchange}
           terminalViewMode={terminalViewMode}
+          closeChartPageOnboarding={closeChartPageOnboarding}
+          isChartPageOnboardingDone={isChartPageOnboardingDone}
           updateTerminalViewMode={(mode) => {
             if (mode === 'smartOrderMode') {
               finishJoyride({

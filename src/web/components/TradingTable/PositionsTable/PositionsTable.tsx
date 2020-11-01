@@ -139,10 +139,23 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       clearCanceledOrders,
       updatePositionMutation,
       enqueueSnackbar,
+      minFuturesStep,
     } = this.props
 
     let data = getActivePositionsQuery.getActivePositions
 
+    if (variables.keyParams.amount === 0) {
+      enqueueSnackbar(
+        `Order amount should be at least ${minFuturesStep} ${currencyPair}`,
+        {
+          variant: 'error',
+        }
+      )
+      console.log('variables', variables.keyParams)
+      return
+    }
+
+    // console.log('var', variables.keyParams)
     // if (variables.keyParams.type === 'market') {
     //   const position = getActivePositionsQuery.getActivePositions.find(
     //     (p) => p._id === positionId

@@ -740,12 +740,13 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
               style={{
                 backgroundColor: theme.palette.blue.main,
                 marginTop: '1.5rem',
+                width: '25rem',
               }}
               onClick={() => {
                 updateTerminalViewMode('smartOrderMode')
               }}
             >
-              Create new smart trade
+              Advanced trade
             </SmartTradeButton>
           )}
           expandableRows={true}

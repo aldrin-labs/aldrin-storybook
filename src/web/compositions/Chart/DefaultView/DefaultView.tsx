@@ -5,6 +5,13 @@ import { Fade, Grid, Theme } from '@material-ui/core'
 import MainDepthChart from '../DepthChart/MainDepthChart/MainDepthChart'
 import { SingleChart } from '@sb/components/Chart'
 
+import {
+  tourConfig,
+  FinishBtn,
+} from '@sb/components/ReactourOnboarding/ReactourOnboarding'
+
+import Tour from 'reactour'
+
 import Balances from '@core/components/Balances'
 import TradingComponent from '@core/components/TradingComponent'
 import TradingTable from '@sb/components/TradingTable/TradingTable'
@@ -83,6 +90,8 @@ export const DefaultViewComponent = (
     maxLeverage,
     layout,
     changeChartLayoutMutation,
+    isChartPageOnboardingDone,
+    closeChartPageOnboarding,
   } = props
 
   if (!currencyPair) {
@@ -106,6 +115,9 @@ export const DefaultViewComponent = (
   const [priceFromOrderbook, updateTerminalPriceFromOrderbook] = useState<
     null | number
   >(null)
+
+  const [isTourOpen, setIsTourOpen] = useState(true)
+
   const [base, quote] = currencyPair.split('_')
   const baseQuoteArr = [base, quote]
   const exchange = activeExchange.symbol
@@ -121,8 +133,29 @@ export const DefaultViewComponent = (
 
   console.log('default view rerender', props)
 
+  const accentColor = '#1BA492'
+
   return (
     <Container container spacing={8} theme={theme}>
+      <Tour
+        showCloseButton={false}
+        nextButton={<FinishBtn>Next</FinishBtn>}
+        prevButton={<a />}
+        showNavigationNumber={true}
+        showNavigation={true}
+        lastStepNextButton={<FinishBtn>Finish</FinishBtn>}
+        steps={tourConfig}
+        accentColor={accentColor}
+        isOpen={isTourOpen}
+        onRequestClose={() => {
+          setIsTourOpen(false)
+          closeChartPageOnboarding()
+        }}
+        // onRequestClose={() => {
+        //   setIsTourOpen(false)
+        //   localStorage.setItem('isOnboardingDone', 'true')
+        // }}
+      />
       <ChartGridContainer item xs={12} theme={theme}>
         <CardsPanel
           {...{
@@ -342,6 +375,7 @@ export const DefaultViewComponent = (
                 showOrderResult={showOrderResult}
                 showCancelResult={showCancelResult}
                 marketType={marketType}
+                minFuturesStep={minFuturesStep}
                 exchange={exchange}
                 pricePrecision={pricePrecision}
                 quantityPrecision={quantityPrecision}
@@ -351,7 +385,7 @@ export const DefaultViewComponent = (
               />
             </TradingTabelContainer>
           )}
-          {authenticated && !isSmartOrderMode && marketType === 1 && (
+          {authenticated && !isSmartOrderMode && (
             <BalancesContainer
               item
               xs={1}
@@ -423,6 +457,7 @@ export const DefaultView = React.memo(DefaultViewComponent, (prev, next) => {
     prev.layout.hideDepthChart === next.layout.hideDepthChart &&
     prev.layout.hideOrderbook === next.layout.hideOrderbook &&
     prev.layout.hideTradeHistory === next.layout.hideTradeHistory &&
+    prev.isChartPageOnboardingDone === next.isChartPageOnboardingDone &&
     isEqual(prev.theme, next.theme)
     // false
   )

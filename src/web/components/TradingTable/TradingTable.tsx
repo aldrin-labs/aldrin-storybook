@@ -156,7 +156,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       perPageSmartTrades,
     } = this.state
 
-    // console.log('TradingTable render')
+    console.log('min', minFuturesStep)
 
     const {
       theme,
@@ -169,6 +169,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       updateTerminalViewMode,
       isDefaultTerminalViewMode,
       isDefaultOnlyTables,
+      minFuturesStep,
       isSmartOrderMode,
       terminalViewMode,
       pricePrecision,
@@ -247,6 +248,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             arrayOfMarketIds,
             pricePrecision,
             quantityPrecision,
+            minFuturesStep,
             showAllPositionPairs,
             showAllOpenOrderPairs,
             showAllSmartTradePairs,
@@ -313,6 +315,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             arrayOfMarketIds,
             pricePrecision,
             quantityPrecision,
+            minFuturesStep,
             priceFromOrderbook,
             showAllPositionPairs,
             showAllOpenOrderPairs,

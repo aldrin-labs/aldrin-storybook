@@ -7,12 +7,10 @@ export const TitleTab = styled(({ active, theme, ...rest }) => {
 })`
   &&& {
     color: ${(props: { active: boolean; theme: Theme }) =>
-      props.active
-        ? props.theme.palette.button.color
-        : props.theme.palette.dark.main};
+      props.active ? '#fff' : props.theme.palette.dark.main};
     background-color: ${(props: { active: boolean; theme: Theme }) =>
       props.active
-        ? props.theme.palette.grey.border
+        ? props.theme.palette.blue.tabs
         : props.theme.palette.grey.main};
     font-size: 1.4rem;
     font-weight: normal;
@@ -61,10 +59,10 @@ export const SmartTradeButton = styled.button`
   width: 35rem;
   outline:none;
   height: 3.5rem;
-  margin: 0.5rem 0.5rem;
+  // margin: 0.5rem 0.5rem;
   //background-color: ${(props) => props.theme.palette.blue.main};
   border: none;
-  border-radius: 12px;
+  // border-radius: 12px;
   color: #f5f5fb;
   font-style: normal;
   font-weight: bold;

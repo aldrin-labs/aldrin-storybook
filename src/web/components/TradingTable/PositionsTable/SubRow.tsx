@@ -11,8 +11,10 @@ const SubRow = ({
   positionId,
   priceFromOrderbook,
   enqueueSnackbar,
+  minFuturesStep,
 }) => {
   const [price, updateClosePrice] = useState('')
+  const [amount, updateCloseAmount] = useState('')
   const [isClosingPositionProcessEnabled, closePosition] = useState(false)
   const [closingType, setClosingType] = useState('')
 
@@ -54,6 +56,21 @@ const SubRow = ({
             color: theme.palette.blue.main,
           }}
         />
+        <Input
+          theme={theme}
+          width={'30%'}
+          padding={'0 .5rem 0 1rem'}
+          value={amount}
+          placeholder={'amount'}
+          onChange={(e) => {
+            updateCloseAmount(e.target.value)
+          }}
+          inputStyles={{
+            textTransform: 'uppercase',
+            color: theme.palette.blue.main,
+          }}
+        />
+
         <BtnCustom
           btnWidth="30%"
           height="3rem"
@@ -88,7 +105,7 @@ const SubRow = ({
               setClosingType('limit')
               closePosition(true)
               const response = await createOrderWithStatus(
-                getVariables('limit', +price),
+                getVariables('limit', +price, +amount),
                 positionId
               )
 
@@ -117,7 +134,7 @@ const SubRow = ({
             setClosingType('market')
             closePosition(true)
             const response = await createOrderWithStatus(
-              getVariables('market'),
+              getVariables('market', +price, +amount),
               positionId
             )
 
@@ -125,6 +142,7 @@ const SubRow = ({
               setClosingType('')
               closePosition(false)
             }
+            console.log('amount', amount)
           }}
         >
           market
