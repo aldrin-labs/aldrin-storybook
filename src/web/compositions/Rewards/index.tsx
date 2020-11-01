@@ -792,9 +792,9 @@ const RewardsRoute = (props) => {
 
               return (
                 <TableRow>
-                <Cell>{index}</Cell>
+                <Cell>{index + 1}</Cell>
                 <Cell>{el.tweetUsername}</Cell>
-                <Cell>{el.tweetUsername}</Cell>
+                <Cell>{el.userFollowersCount}</Cell>
               </TableRow>
               )
             })}
