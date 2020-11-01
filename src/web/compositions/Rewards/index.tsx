@@ -9,7 +9,7 @@ import SvgIcon from '@sb/components/SvgIcon'
 import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getTotalVolumeForSerumKey } from '@core/graphql/queries/chart/getTotalVolumeForSerumKey'
 import { getTotalSerumVolume } from '@core/graphql/queries/chart/getTotalSerumVolume'
-
+import { getTopTwitterFarming } from '@core/graphql/queries/serum/getTopTwitterFarming'
 import { addSerumTransaction } from '@core/graphql/mutations/chart/addSerumTransaction'
 
 import serum from '@icons/Serum.svg'
@@ -234,6 +234,8 @@ const RewardsRoute = (props) => {
     publicKey,
     addSerumTransactionMutation,
     getTotalSerumVolumeQueryRefetch,
+    getTopTwitterFarmingQuery,
+    getTopTwitterFarmingQueryRefetch,
   } = props
 
   const tradedSerumInUSDT =
@@ -277,6 +279,8 @@ const RewardsRoute = (props) => {
   const updateLink = (e) => {
     setTwittersLink(e.target.value)
   }
+
+  const { getTopTwitterFarming: getTopTwitterFarmingData = [] } = getTopTwitterFarmingQuery
 
   return (
     <div
@@ -572,6 +576,8 @@ const RewardsRoute = (props) => {
                           getTotalVolumeForSerumKeyQueryRefetch()
                         getTotalSerumVolumeQueryRefetch &&
                           getTotalSerumVolumeQueryRefetch()
+                          getTopTwitterFarmingQueryRefetch &&
+                          getTopTwitterFarmingQueryRefetch()  
                       }, 1000)
                     }
 
@@ -781,38 +787,38 @@ const RewardsRoute = (props) => {
               <HeaderCell>#</HeaderCell>
               <HeaderCell>Name</HeaderCell>
               <HeaderCell>Followers</HeaderCell>
-              <HeaderCell>Earned DCFI</HeaderCell>
             </TableRow>
-            <TableRow>
+            {getTopTwitterFarmingData.map((el, index) => {
+
+              return (
+                <TableRow>
+                <Cell>{index}</Cell>
+                <Cell>{el.tweetUsername}</Cell>
+                <Cell>{el.tweetUsername}</Cell>
+              </TableRow>
+              )
+            })}
+
+            {/* <TableRow>
               <Cell>fgh</Cell>
               <Cell>bn</Cell>
-              <Cell>fgh</Cell>
-              <Cell>fgh</Cell>
-            </TableRow>
-            <TableRow>
-              <Cell>fgh</Cell>
-              <Cell>bn</Cell>
-              <Cell>fgh</Cell>
-              <Cell>fgh</Cell>
-            </TableRow>
-            <TableRow>
-              <Cell>fgh</Cell>
-              <Cell>bn</Cell>
-              <Cell>fgh</Cell>
-              <Cell>fgh</Cell>
-            </TableRow>
-            <TableRow>
-              <Cell>fgh</Cell>
-              <Cell>bn</Cell>
-              <Cell>fgh</Cell>
               <Cell>fgh</Cell>
             </TableRow>
             <TableRow>
               <Cell>fgh</Cell>
               <Cell>bn</Cell>
               <Cell>fgh</Cell>
+            </TableRow>
+            <TableRow>
+              <Cell>fgh</Cell>
+              <Cell>bn</Cell>
               <Cell>fgh</Cell>
             </TableRow>
+            <TableRow>
+              <Cell>fgh</Cell>
+              <Cell>bn</Cell>
+              <Cell>fgh</Cell>
+            </TableRow> */}
           </Table>
         </Card>
       </RowContainer>
@@ -848,6 +854,12 @@ export default compose(
     query: getTotalSerumVolume,
     name: 'getTotalSerumVolumeQuery',
     pollInterval: 10000,
+    fetchPolicy: 'cache-and-network',
+  }),
+  queryRendererHoc({
+    query: getTopTwitterFarming,
+    name: 'getTopTwitterFarmingQuery',
+    pollInterval: 60000,
     fetchPolicy: 'cache-and-network',
   })
 )(Wrapper)
