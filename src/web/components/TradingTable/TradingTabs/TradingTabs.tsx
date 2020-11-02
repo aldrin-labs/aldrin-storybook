@@ -228,6 +228,7 @@ export default React.memo(TradingTabsWrapper, (prevProps: any, nextProps: any) =
     prevProps.tab === nextProps.tab &&
     prevProps.marketType === nextProps.marketType &&
     prevProps.selectedKey.keyId === nextProps.selectedKey.keyId &&
+    prevProps.theme.palette.type === nextProps.theme.palette.type &&
     prevProps.currencyPair === nextProps.currencyPair &&
     prevProps.showAllPositionPairs === nextProps.showAllPositionPairs &&
     prevProps.showAllOpenOrderPairs === nextProps.showAllOpenOrderPairs &&
