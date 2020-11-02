@@ -1,7 +1,7 @@
 import React from 'react'
 import { compose } from 'recompose'
 
-import { IProps, IQueryProps, INextQueryProps } from './TradingTabs.types'
+import { IProps, INextQueryProps } from './TradingTabs.types'
 import {
   TitleTab,
   TitleTabsGroup,
@@ -23,7 +23,11 @@ const TradingTabs = ({
   tab,
   theme,
   handleTabChange,
+  updateTerminalViewMode,
   marketType,
+  canceledOrders,
+  isDefaultTerminalViewMode,
+  isDefaultOnlyTables,
   getOpenOrderHistoryQuery: {
     getOpenOrderHistory = { orders: [], count: 0 },
   } = {
@@ -37,18 +41,6 @@ const TradingTabs = ({
   } = {
     getActiveStrategies: { strategies: [], count: 0 },
   },
-  canceledOrders,
-  arrayOfMarketIds,
-  currencyPair,
-  subscribeToMore,
-  showAllSmartTradePairs,
-  showSmartTradesFromAllAccounts,
-  updateTerminalViewMode,
-  terminalViewMode,
-  isDefaultTerminalViewMode,
-  isDefaultOnlyTables,
-  isSmartOrderMode,
-  ...props
 }: IProps) => {
   const openOrdersLength = getOpenOrderHistory.orders.filter((order) =>
     filterOpenOrders({
@@ -70,6 +62,7 @@ const TradingTabs = ({
       (a.enabled ||
         (a.conditions.isTemplate && a.conditions.templateStatus !== 'disabled'))
   ).length
+
   return (
     <>
       <TitleTabsGroup theme={theme}>
@@ -170,7 +163,7 @@ const TradingTabs = ({
   )
 }
 
-export default compose(
+const TradingTabsWrapper = compose(
   queryRendererHoc({
     query: getActiveStrategies,
     name: 'getActiveStrategiesQuery',
@@ -232,3 +225,30 @@ export default compose(
     showLoadingWhenQueryParamsChange: false,
   })
 )(TradingTabs)
+
+export default React.memo(TradingTabsWrapper, (prevProps: any, nextProps: any) => {
+
+  if (
+    prevProps.isDefaultTerminalViewMode === nextProps.isDefaultTerminalViewMode &&
+    prevProps.isDefaultOnlyTables === nextProps.isDefaultOnlyTables &&
+    prevProps.tab === nextProps.tab &&
+    prevProps.marketType === nextProps.marketType &&
+    prevProps.selectedKey.keyId === nextProps.selectedKey.keyId &&
+    prevProps.theme.palette.type === nextProps.theme.palette.type &&
+    prevProps.currencyPair === nextProps.currencyPair &&
+    prevProps.showAllPositionPairs === nextProps.showAllPositionPairs &&
+    prevProps.showAllOpenOrderPairs === nextProps.showAllOpenOrderPairs &&
+    prevProps.showAllSmartTradePairs === nextProps.showAllSmartTradePairs &&
+    prevProps.showPositionsFromAllAccounts === nextProps.showPositionsFromAllAccounts &&
+    prevProps.showOpenOrdersFromAllAccounts === nextProps.showOpenOrdersFromAllAccounts &&
+    prevProps.showSmartTradesFromAllAccounts === nextProps.showSmartTradesFromAllAccounts &&
+    prevProps.pageOpenOrders === nextProps.pageOpenOrders &&
+    prevProps.perPageOpenOrders === nextProps.perPageOpenOrders &&
+    prevProps.pageSmartTrades === nextProps.pageSmartTrades &&
+    prevProps.perPageSmartTrades === nextProps.perPageSmartTrades
+  ) {
+    return true
+  }
+
+  return false
+})

@@ -207,10 +207,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
         <TradingTabs
           {...{
             updateTerminalViewMode,
-            terminalViewMode,
             isDefaultTerminalViewMode,
             isDefaultOnlyTables,
-            isSmartOrderMode,
             tab,
             theme,
             marketType,
@@ -218,7 +216,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             currencyPair,
             canceledOrders,
             handleTabChange: this.handleTabChange,
-            arrayOfMarketIds,
             showAllPositionPairs,
             showAllOpenOrderPairs,
             showAllSmartTradePairs,
@@ -227,8 +224,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             showSmartTradesFromAllAccounts,
             pageOpenOrders,
             perPageOpenOrders,
-            pagePositions,
-            perPagePositions,
             pageSmartTrades,
             perPageSmartTrades,
           }}
@@ -326,6 +321,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             page: pagePositions,
             perPage: perPagePositions,
             show: tab === 'positions',
+            allKeys: showSmartTradesFromAllAccounts,
+            specificPair: showAllSmartTradePairs,
             handleToggleAllKeys: () =>
               this.setState((prev) => ({
                 showPositionsFromAllAccounts: !prev.showPositionsFromAllAccounts,

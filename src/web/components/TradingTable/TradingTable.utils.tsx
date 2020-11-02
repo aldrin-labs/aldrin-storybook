@@ -66,8 +66,8 @@ export const CloseButton = ({
           <Loading size={16} style={{ height: '16px' }} />
         </div>
       ) : (
-        'Cancel'
-      )}
+          'Cancel'
+        )}
     </TableButton>
   )
 }
@@ -110,14 +110,14 @@ export const getTableBody = (tab: string) =>
   tab === 'openOrders'
     ? openOrdersBody
     : tab === 'orderHistory'
-    ? orderHistoryBody
-    : tab === 'tradeHistory'
-    ? tradeHistoryBody
-    : tab === 'funds'
-    ? fundsBody
-    : tab === 'positions'
-    ? positionsBody
-    : []
+      ? orderHistoryBody
+      : tab === 'tradeHistory'
+        ? tradeHistoryBody
+        : tab === 'funds'
+          ? fundsBody
+          : tab === 'positions'
+            ? positionsBody
+            : []
 
 export const getTableHead = (
   tab: string,
@@ -129,69 +129,69 @@ export const getTableHead = (
   tab === 'openOrders'
     ? openOrdersColumnNames(marketType)
     : tab === 'orderHistory'
-    ? orderHistoryColumnNames(marketType)
-    : tab === 'tradeHistory'
-    ? tradeHistoryColumnNames(marketType)
-    : tab === 'funds'
-    ? fundsColumnNames
-    : tab === 'positions'
-    ? positionsColumnNames(
-        refetch,
-        updatePositionsHandler,
-        positionsRefetchInProcess
-      )
-    : tab === 'activeTrades'
-    ? activeTradesColumnNames
-    : tab === 'strategiesHistory'
-    ? strategiesHistoryColumnNames
-    : []
+      ? orderHistoryColumnNames(marketType)
+      : tab === 'tradeHistory'
+        ? tradeHistoryColumnNames(marketType)
+        : tab === 'funds'
+          ? fundsColumnNames
+          : tab === 'positions'
+            ? positionsColumnNames(
+              refetch,
+              updatePositionsHandler,
+              positionsRefetchInProcess
+            )
+            : tab === 'activeTrades'
+              ? activeTradesColumnNames
+              : tab === 'strategiesHistory'
+                ? strategiesHistoryColumnNames
+                : []
 
 export const getStartDate = (stringDate: string): number =>
   stringDate === '1Day'
     ? dayjs()
-        .startOf('day')
-        .valueOf()
+      .startOf('day')
+      .valueOf()
     : stringDate === '1Week'
-    ? dayjs()
+      ? dayjs()
         .startOf('day')
         .subtract(1, 'week')
         .valueOf()
-    : stringDate === '2Weeks'
-    ? dayjs()
-        .startOf('day')
-        .subtract(2, 'week')
-        .valueOf()
-    : stringDate === '1Month'
-    ? dayjs()
-        .startOf('day')
-        .subtract(1, 'month')
-        .valueOf()
-    : stringDate === '3Month'
-    ? dayjs()
-        .startOf('day')
-        .subtract(3, 'month')
-        .valueOf()
-    : dayjs()
-        .startOf('day')
-        .subtract(6, 'month')
-        .valueOf()
+      : stringDate === '2Weeks'
+        ? dayjs()
+          .startOf('day')
+          .subtract(2, 'week')
+          .valueOf()
+        : stringDate === '1Month'
+          ? dayjs()
+            .startOf('day')
+            .subtract(1, 'month')
+            .valueOf()
+          : stringDate === '3Month'
+            ? dayjs()
+              .startOf('day')
+              .subtract(3, 'month')
+              .valueOf()
+            : dayjs()
+              .startOf('day')
+              .subtract(6, 'month')
+              .valueOf()
 
 export const getEmptyTextPlaceholder = (tab: string): string =>
   tab === 'openOrders'
     ? 'You have no open orders.'
     : tab === 'orderHistory'
-    ? 'You have no order history.'
-    : tab === 'tradeHistory'
-    ? 'You have no trades.'
-    : tab === 'funds'
-    ? 'You have no Funds.'
-    : tab === 'positions'
-    ? 'You have no open positions'
-    : tab === 'activeTrades'
-    ? 'You have no active smart trades'
-    : tab === 'strategiesHistory'
-    ? 'You have no smart trades'
-    : 'You have no assets'
+      ? 'You have no order history.'
+      : tab === 'tradeHistory'
+        ? 'You have no trades.'
+        : tab === 'funds'
+          ? 'You have no Funds.'
+          : tab === 'positions'
+            ? 'You have no open positions'
+            : tab === 'activeTrades'
+              ? 'You have no active smart trades'
+              : tab === 'strategiesHistory'
+                ? 'You have no smart trades'
+                : 'You have no assets'
 
 export const isBuyTypeOrder = (orderStringType: string): boolean =>
   /buy/gi.test(orderStringType.toLowerCase())
@@ -255,9 +255,9 @@ const getActiveOrderStatus = ({
   state,
   profitPercentage,
 }: IStatus): [
-  'Trailing entry' | 'In Profit' | 'In Loss' | 'Preparing' | 'Timeout',
-  string
-] => {
+    'Trailing entry' | 'In Profit' | 'In Loss' | 'Preparing' | 'Timeout',
+    string
+  ] => {
   if (strategy.conditions.isTemplate) {
     if (strategy.conditions.templateStatus === 'enabled') {
       return ['Waiting alert', theme.palette.green.main]
@@ -458,11 +458,11 @@ export const combinePositionsTable = ({
         adl =
           side === 'buy long'
             ? currentAdlData.adlQuantile.LONG ||
-              currentAdlData.adlQuantile.HEDGE ||
-              currentAdlData.adlQuantile.BOTH
+            currentAdlData.adlQuantile.HEDGE ||
+            currentAdlData.adlQuantile.BOTH
             : currentAdlData.adlQuantile.SHORT ||
-              currentAdlData.adlQuantile.HEDGE ||
-              currentAdlData.adlQuantile.BOTH
+            currentAdlData.adlQuantile.HEDGE ||
+            currentAdlData.adlQuantile.BOTH
       }
 
       return [
@@ -526,11 +526,11 @@ export const combinePositionsTable = ({
                   {marginType === 'isolated'
                     ? stripDigitPlaces(isolatedMargin, 2)
                     : stripDigitPlaces(
-                        (positionAmt / leverage) *
-                          entryPrice *
-                          (side === 'buy long' ? 1 : -1),
-                        2
-                      )}{' '}
+                      (positionAmt / leverage) *
+                      entryPrice *
+                      (side === 'buy long' ? 1 : -1),
+                      2
+                    )}{' '}
                   {pair[1]}
                 </span>
                 {marginType === 'isolated' && (
@@ -564,9 +564,8 @@ export const combinePositionsTable = ({
             contentToSort: entryPrice,
           },
           marketPrice: {
-            render: `${stripDigitPlaces(marketPrice, pricePrecision)} ${
-              pair[1]
-            }`,
+            render: `${stripDigitPlaces(marketPrice, pricePrecision)} ${pair[1]
+              }`,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
@@ -591,11 +590,10 @@ export const combinePositionsTable = ({
             ),
           },
           liqPrice: {
-            render: `${
-              liquidationPrice == 0
+            render: `${liquidationPrice == 0
                 ? '-'
                 : stripDigitPlaces(liquidationPrice, pricePrecision)
-            } ${liquidationPrice == 0 ? '' : pair[1]}`,
+              } ${liquidationPrice == 0 ? '' : pair[1]}`,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
@@ -618,8 +616,8 @@ export const combinePositionsTable = ({
                 )}%`}
               </SubColumnValue>
             ) : (
-              `0 ${pair[1]} / 0%`
-            ),
+                `0 ${pair[1]} / 0%`
+              ),
             style: { opacity: needOpacity ? 0.5 : 1, maxWidth: '100px' },
             colspan: 2,
           },
@@ -781,8 +779,6 @@ export const combineActiveTradesTable = ({
         },
       } = el
 
-      console.log('processedActiveTradesData arr :', arr)
-
       const { entryPrice, exitPrice, state, msg } = el.state || {
         entryPrice: 0,
         state: '-',
@@ -859,8 +855,8 @@ export const combineActiveTradesTable = ({
               {marketType === 0
                 ? side
                 : side === 'buy'
-                ? 'buy long'
-                : 'sell short'}
+                  ? 'buy long'
+                  : 'sell short'}
             </SubColumnValue>
           ),
           style: {
@@ -886,8 +882,8 @@ export const combineActiveTradesTable = ({
               {stripDigitPlaces(entryOrderPrice, pricePrecision)} {pairArr[1]}
             </SubColumnValue>
           ) : (
-            '-'
-          ),
+                  '-'
+                ),
           style: {
             opacity: needOpacity ? 0.6 : 1,
           },
@@ -908,37 +904,36 @@ export const combineActiveTradesTable = ({
           render: (
             <SubColumnValue theme={theme} color={green.main}>
               {exitLevels[0] &&
-              exitLevels[0].activatePrice &&
-              exitLevels[0].entryDeviation ? (
-                `${exitLevels[0].activatePrice}% / ${
-                  exitLevels[0].entryDeviation
-                }%`
-              ) : exitLevels.length > 1 ? (
-                <div>
+                exitLevels[0].activatePrice &&
+                exitLevels[0].entryDeviation ? (
+                  `${exitLevels[0].activatePrice}% / ${exitLevels[0].entryDeviation
+                  }%`
+                ) : exitLevels.length > 1 ? (
                   <div>
-                    {exitLevels.map((level, i) =>
-                      i < 4 ? (
-                        <span style={{ color: theme.palette.grey.light }}>
-                          {level.amount}%{' '}
-                          {i === 3 || i + 1 === exitLevels.length ? '' : '/ '}
-                        </span>
-                      ) : null
-                    )}
+                    <div>
+                      {exitLevels.map((level, i) =>
+                        i < 4 ? (
+                          <span style={{ color: theme.palette.grey.light }}>
+                            {level.amount}%{' '}
+                            {i === 3 || i + 1 === exitLevels.length ? '' : '/ '}
+                          </span>
+                        ) : null
+                      )}
+                    </div>
+                    <div>
+                      {exitLevels.map((level, i) =>
+                        i < 4 ? (
+                          <span>
+                            {level.price}%{' '}
+                            {i === 3 || i + 1 === exitLevels.length ? '' : '/ '}
+                          </span>
+                        ) : null
+                      )}
+                    </div>
                   </div>
-                  <div>
-                    {exitLevels.map((level, i) =>
-                      i < 4 ? (
-                        <span>
-                          {level.price}%{' '}
-                          {i === 3 || i + 1 === exitLevels.length ? '' : '/ '}
-                        </span>
-                      ) : null
-                    )}
-                  </div>
-                </div>
-              ) : (
-                `${exitLevels.length > 0 ? exitLevels[0].price : '-'}%`
-              )}
+                ) : (
+                    `${exitLevels.length > 0 ? exitLevels[0].price : '-'}%`
+                  )}
             </SubColumnValue>
           ),
           style: {
@@ -952,8 +947,8 @@ export const combineActiveTradesTable = ({
                 {stopLoss || hedgeLossDeviation}%
               </SubColumnValue>
             ) : (
-              '-'
-            ),
+                '-'
+              ),
           style: {
             opacity: needOpacity ? 0.6 : 1,
           },
@@ -962,32 +957,31 @@ export const combineActiveTradesTable = ({
         profit: {
           render:
             !isTemplate &&
-            (state &&
-              activeOrderStatus !== 'Preparing' &&
-              state !== 'WaitForEntry' &&
-              state !== 'TrailingEntry' &&
-              !!currentPrice &&
-              entryOrderPrice) ? (
-              <SubColumnValue
-                theme={theme}
-                color={
-                  profitPercentage > 0 || templatePnl > 0
-                    ? green.main
-                    : red.main
-                }
-              >
-                {' '}
-                {!!templatePnl
-                  ? `${stripDigitPlaces(templatePnl, 3)} ${pairArr[1]}`
-                  : `${profitAmount < 0 ? '-' : ''}${Math.abs(
+              (state &&
+                activeOrderStatus !== 'Preparing' &&
+                state !== 'WaitForEntry' &&
+                state !== 'TrailingEntry' &&
+                !!currentPrice &&
+                entryOrderPrice) ? (
+                <SubColumnValue
+                  theme={theme}
+                  color={
+                    profitPercentage > 0 || templatePnl > 0
+                      ? green.main
+                      : red.main
+                  }
+                >
+                  {' '}
+                  {!!templatePnl
+                    ? `${stripDigitPlaces(templatePnl, 3)} ${pairArr[1]}`
+                    : `${profitAmount < 0 ? '-' : ''}${Math.abs(
                       Number(profitAmount.toFixed(3))
-                    )} ${pairArr[1]} / ${
-                      profitPercentage < 0 ? '-' : ''
+                    )} ${pairArr[1]} / ${profitPercentage < 0 ? '-' : ''
                     }${Math.abs(Number(profitPercentage.toFixed(2)))}%`}
-              </SubColumnValue>
-            ) : (
-              `0 ${pairArr[1]} / 0%`
-            ),
+                </SubColumnValue>
+              ) : (
+                `0 ${pairArr[1]} / 0%`
+              ),
           style: {
             opacity: needOpacity ? 0.6 : 1,
             minWidth: '135px',
@@ -1074,8 +1068,13 @@ export const combineActiveTradesTable = ({
                 transition={'all .4s ease-out'}
                 onClick={(e) => {
                   e.stopPropagation()
+<<<<<<< HEAD
                   changeStatusWithStatus(el._id, el.accountId, 'disabled').then(
                     (res) => {
+=======
+                  changeStatusWithStatus(el._id, el.accountId, 'disabled')
+                    .then((res) => {
+>>>>>>> 51c5b8bcda740234e1519e66bd6f2fc6aa916afe
                       console.log('changeStatusWithStatus res', res)
 
                       if (res.status === 'error') {
@@ -1092,12 +1091,17 @@ export const combineActiveTradesTable = ({
                             if (elem._id === strategyId) {
                               elem.enabled = el.enabled
 
+<<<<<<< HEAD
                               if (
                                 elem.conditions.isTemplate &&
                                 elem.conditions.templateStatus
                               ) {
                                 elem.conditions.templateStatus =
                                   el.conditions.templateStatus
+=======
+                              if (elem.conditions.isTemplate && elem.conditions.templateStatus) {
+                                elem.conditions.templateStatus = el.conditions.templateStatus
+>>>>>>> 51c5b8bcda740234e1519e66bd6f2fc6aa916afe
                               }
                             }
 
@@ -1105,8 +1109,13 @@ export const combineActiveTradesTable = ({
                           },
                         })
                       }
+<<<<<<< HEAD
                     }
                   )
+=======
+
+                    })
+>>>>>>> 51c5b8bcda740234e1519e66bd6f2fc6aa916afe
 
                   modifyCacheData({
                     _id: strategyId,
@@ -1121,10 +1130,14 @@ export const combineActiveTradesTable = ({
                       if (elem._id === strategyId) {
                         elem.enabled = false
 
+<<<<<<< HEAD
                         if (
                           elem.conditions.isTemplate &&
                           elem.conditions.templateStatus
                         ) {
+=======
+                        if (elem.conditions.isTemplate && elem.conditions.templateStatus) {
+>>>>>>> 51c5b8bcda740234e1519e66bd6f2fc6aa916afe
                           elem.conditions.templateStatus = 'disabled'
                         }
                       }
@@ -1140,6 +1153,7 @@ export const combineActiveTradesTable = ({
               </BtnCustom>
             </div>
           ) : (
+<<<<<<< HEAD
             <BtnCustom
               btnWidth="100%"
               height="auto"
@@ -1156,8 +1170,52 @@ export const combineActiveTradesTable = ({
                 e.stopPropagation()
                 cancelOrderFunc(el._id, el.accountId).then((res) => {
                   console.log('changeStatusWithStatus res', res)
+=======
+                <BtnCustom
+                  btnWidth="100%"
+                  height="auto"
+                  fontSize=".9rem"
+                  padding=".2rem 0 .1rem 0"
+                  borderRadius=".8rem"
+                  btnColor={theme.palette.white.main}
+                  borderColor={red.main}
+                  backgroundColor={red.main}
+                  hoverColor={red.main}
+                  hoverBackground={theme.palette.white.main}
+                  transition={'all .4s ease-out'}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    cancelOrderFunc(el._id, el.accountId)
+                      .then((res) => {
+                        console.log('changeStatusWithStatus res', res)
 
-                  if (res.status === 'error') {
+                        if (res.status === 'error') {
+                          modifyCacheData({
+                            _id: strategyId,
+                            name: 'getActiveStrategies',
+                            subName: 'strategies',
+                            typename: 'strategiesHistoryOutput',
+                            data: null,
+                            query: queryBody,
+                            variables: queryVariables,
+                            modifyFunc: 'map',
+                            modifyFuncCallBack: (elem) => {
+                              if (elem._id === strategyId) {
+                                elem.enabled = el.enabled
+
+                                if (elem.conditions.isTemplate && elem.conditions.templateStatus) {
+                                  elem.conditions.templateStatus = el.conditions.templateStatus
+                                }
+                              }
+
+                              return elem
+                            },
+                          })
+                        }
+
+                      })
+>>>>>>> 51c5b8bcda740234e1519e66bd6f2fc6aa916afe
+
                     modifyCacheData({
                       _id: strategyId,
                       name: 'getActiveStrategies',
@@ -1169,6 +1227,7 @@ export const combineActiveTradesTable = ({
                       modifyFunc: 'map',
                       modifyFuncCallBack: (elem) => {
                         if (elem._id === strategyId) {
+<<<<<<< HEAD
                           elem.enabled = el.enabled
 
                           if (
@@ -1177,12 +1236,19 @@ export const combineActiveTradesTable = ({
                           ) {
                             elem.conditions.templateStatus =
                               el.conditions.templateStatus
+=======
+                          elem.enabled = false
+
+                          if (elem.conditions.isTemplate && elem.conditions.templateStatus) {
+                            elem.conditions.templateStatus = 'disabled'
+>>>>>>> 51c5b8bcda740234e1519e66bd6f2fc6aa916afe
                           }
                         }
 
                         return elem
                       },
                     })
+<<<<<<< HEAD
                   }
                 })
 
@@ -1218,6 +1284,16 @@ export const combineActiveTradesTable = ({
                 : 'market'}
             </BtnCustom>
           ),
+=======
+                  }}
+                >
+                  {activeOrderStatus === 'Preparing' ||
+                    activeOrderStatus === 'Trailing entry'
+                    ? 'cancel'
+                    : 'market'}
+                </BtnCustom>
+              ),
+>>>>>>> 51c5b8bcda740234e1519e66bd6f2fc6aa916afe
         },
         tooltipTitle: keyName,
         expandableContent: [
@@ -1453,8 +1529,8 @@ export const combineStrategiesHistoryTable = (
               {marketType === 0
                 ? side
                 : side === 'buy'
-                ? 'buy long'
-                : 'sell short'}
+                  ? 'buy long'
+                  : 'sell short'}
             </SubColumnValue>
           ),
           style: {
@@ -1488,37 +1564,36 @@ export const combineStrategiesHistoryTable = (
           render: (
             <SubColumnValue theme={theme} color={green.main}>
               {exitLevels[0] &&
-              exitLevels[0].activatePrice &&
-              exitLevels[0].entryDeviation ? (
-                `${exitLevels[0].activatePrice}% / ${
-                  exitLevels[0].entryDeviation
-                }%`
-              ) : exitLevels.length > 1 ? (
-                <div>
+                exitLevels[0].activatePrice &&
+                exitLevels[0].entryDeviation ? (
+                  `${exitLevels[0].activatePrice}% / ${exitLevels[0].entryDeviation
+                  }%`
+                ) : exitLevels.length > 1 ? (
                   <div>
-                    {exitLevels.map((level, i) =>
-                      i < 4 ? (
-                        <span style={{ color: theme.palette.grey.light }}>
-                          {level.amount}%{' '}
-                          {i === 3 || i + 1 === exitLevels.length ? '' : '/ '}
-                        </span>
-                      ) : null
-                    )}
+                    <div>
+                      {exitLevels.map((level, i) =>
+                        i < 4 ? (
+                          <span style={{ color: theme.palette.grey.light }}>
+                            {level.amount}%{' '}
+                            {i === 3 || i + 1 === exitLevels.length ? '' : '/ '}
+                          </span>
+                        ) : null
+                      )}
+                    </div>
+                    <div>
+                      {exitLevels.map((level, i) =>
+                        i < 4 ? (
+                          <span>
+                            {level.price}%{' '}
+                            {i === 3 || i + 1 === exitLevels.length ? '' : '/ '}
+                          </span>
+                        ) : null
+                      )}
+                    </div>
                   </div>
-                  <div>
-                    {exitLevels.map((level, i) =>
-                      i < 4 ? (
-                        <span>
-                          {level.price}%{' '}
-                          {i === 3 || i + 1 === exitLevels.length ? '' : '/ '}
-                        </span>
-                      ) : null
-                    )}
-                  </div>
-                </div>
-              ) : (
-                `${exitLevels.length > 0 ? exitLevels[0].price : '-'}%`
-              )}
+                ) : (
+                    `${exitLevels.length > 0 ? exitLevels[0].price : '-'}%`
+                  )}
             </SubColumnValue>
           ),
           style: {
@@ -1531,8 +1606,8 @@ export const combineStrategiesHistoryTable = (
               {stopLoss}%
             </SubColumnValue>
           ) : (
-            '-'
-          ),
+              '-'
+            ),
           style: {
             opacity: needOpacity ? 0.6 : 1,
           },
@@ -1546,15 +1621,14 @@ export const combineStrategiesHistoryTable = (
                 profitPercentage === 0 && !templatePnl
                   ? ''
                   : profitPercentage > 0 || (!!templatePnl && templatePnl > 0)
-                  ? green.main
-                  : red.main
+                    ? green.main
+                    : red.main
               }
             >
               {!!templatePnl
                 ? `${stripDigitPlaces(templatePnl, 3)} ${pairArr[1]}`
-                : `${stripDigitPlaces(profitAmount, 3)} ${
-                    pairArr[1]
-                  } / ${stripDigitPlaces(profitPercentage, 2)}%`}
+                : `${stripDigitPlaces(profitAmount, 3)} ${pairArr[1]
+                } / ${stripDigitPlaces(profitPercentage, 2)}%`}
             </SubColumnValue>
           ),
           style: {
@@ -1776,8 +1850,8 @@ export const combineOpenOrdersTable = (
             (!isBuyTypeOrder(orderSide) && type === 'take_profit_market') ||
             (!isBuyTypeOrder(orderSide) && type === 'take_profit_limit') ||
             (!isBuyTypeOrder(orderSide) && type === 'take_profit')
-          ? `>= ${triggerConditions}`
-          : `<= ${triggerConditions}`
+            ? `>= ${triggerConditions}`
+            : `<= ${triggerConditions}`
 
       const isMarketOrMakerOrder =
         price === 0 && (!!type.match(/market/) || isMakerOnlyOrder)
@@ -1841,8 +1915,8 @@ export const combineOpenOrdersTable = (
           render: isMarketOrMakerOrder
             ? 'market'
             : !+price
-            ? price
-            : `${stripDigitPlaces(price, pricePrecision)} ${pair[1]}`,
+              ? price
+              : `${stripDigitPlaces(price, pricePrecision)} ${pair[1]}`,
           style: {
             textAlign: 'left',
             whiteSpace: 'nowrap',
@@ -1864,17 +1938,16 @@ export const combineOpenOrdersTable = (
         // TODO: We should change "total" to total param from backend when it will be ready
         ...(marketType === 0
           ? {
-              amount: {
-                // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-                render: !+price
-                  ? '-'
-                  : `${stripDigitPlaces(+origQty * price, quantityPrecision)} ${
-                      pair[1]
-                    }`,
-                contentToSort: +origQty * price,
-                style: { opacity: needOpacity ? 0.75 : 1 },
-              },
-            }
+            amount: {
+              // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+              render: !+price
+                ? '-'
+                : `${stripDigitPlaces(+origQty * price, quantityPrecision)} ${pair[1]
+                }`,
+              contentToSort: +origQty * price,
+              style: { opacity: needOpacity ? 0.75 : 1 },
+            },
+          }
           : {}),
         // TODO: Not sure about triggerConditions
         triggerConditions: {
@@ -1884,23 +1957,23 @@ export const combineOpenOrdersTable = (
         },
         ...(marketType === 1
           ? {
-              reduceOnly: {
-                // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-                render: reduceOnly ? (
-                  <div
-                    style={{
-                      width: '.6rem',
-                      height: '.6rem',
-                      background: theme.palette.blue.background,
-                      borderRadius: '50%',
-                    }}
-                  />
-                ) : (
+            reduceOnly: {
+              // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+              render: reduceOnly ? (
+                <div
+                  style={{
+                    width: '.6rem',
+                    height: '.6rem',
+                    background: theme.palette.blue.background,
+                    borderRadius: '50%',
+                  }}
+                />
+              ) : (
                   '-'
                 ),
-                contentToSort: reduceOnly,
-              },
-            }
+              contentToSort: reduceOnly,
+            },
+          }
           : {}),
         date: {
           render: (
@@ -1926,33 +1999,33 @@ export const combineOpenOrdersTable = (
           render: needOpacity ? (
             '-'
           ) : (
-            <CloseButton
-              i={i}
-              onClick={() => {
-                cancelOrderFunc(
-                  keyId,
-                  orderType === 'maker-only' ? _id : orderId,
-                  orderSymbol,
-                  orderType
-                )
-                filterCacheData({
-                  data: null,
-                  name: 'getOpenOrderHistory',
-                  subName: 'orders',
-                  query: getOpenOrderHistory,
-                  variables: {
-                    openOrderInput: {
-                      activeExchangeKey: keyId,
-                      marketType,
+              <CloseButton
+                i={i}
+                onClick={() => {
+                  cancelOrderFunc(
+                    keyId,
+                    orderType === 'maker-only' ? _id : orderId,
+                    orderSymbol,
+                    orderType
+                  )
+                  filterCacheData({
+                    data: null,
+                    name: 'getOpenOrderHistory',
+                    subName: 'orders',
+                    query: getOpenOrderHistory,
+                    variables: {
+                      openOrderInput: {
+                        activeExchangeKey: keyId,
+                        marketType,
+                      },
                     },
-                  },
-                  filterData: (order) => order.info.orderId != orderId,
-                })
-              }}
-            >
-              Cancel
-            </CloseButton>
-          ),
+                    filterData: (order) => order.info.orderId != orderId,
+                  })
+                }}
+              >
+                Cancel
+              </CloseButton>
+            ),
         },
         tooltipTitle: keyName,
       }
@@ -2017,8 +2090,8 @@ export const combineOrderHistoryTable = (
             (!isBuyTypeOrder(side) && type === 'take_profit_market') ||
             (!isBuyTypeOrder(side) && type === 'take_profit_limit') ||
             (!isBuyTypeOrder(side) && type === 'take_profit')
-          ? `>= ${triggerConditions}`
-          : `<= ${triggerConditions}`
+            ? `>= ${triggerConditions}`
+            : `<= ${triggerConditions}`
 
       const isMarketOrMakerOrder =
         (!!type.match(/market/) && price === 0) || isMakerOnlyOrder
@@ -2101,17 +2174,17 @@ export const combineOrderHistoryTable = (
         // TODO: We should change "total" to total param from backend when it will be ready
         ...(marketType === 0
           ? {
-              amount: {
-                // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-                render: `${stripDigitPlaces(
-                  isMarketOrMakerOrder ? qty * average : qty * price,
-                  quantityPrecision
-                )} ${pair[1]}`,
-                contentToSort: isMarketOrMakerOrder
-                  ? qty * average
-                  : qty * price,
-              },
-            }
+            amount: {
+              // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+              render: `${stripDigitPlaces(
+                isMarketOrMakerOrder ? qty * average : qty * price,
+                quantityPrecision
+              )} ${pair[1]}`,
+              contentToSort: isMarketOrMakerOrder
+                ? qty * average
+                : qty * price,
+            },
+          }
           : {}),
         // TODO: Not sure about triggerConditions
         triggerConditions: {
@@ -2120,23 +2193,23 @@ export const combineOrderHistoryTable = (
         },
         ...(marketType === 1
           ? {
-              reduceOnly: {
-                // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-                render: reduceOnly ? (
-                  <div
-                    style={{
-                      width: '.6rem',
-                      height: '.6rem',
-                      background: theme.palette.blue.background,
-                      borderRadius: '50%',
-                    }}
-                  />
-                ) : (
+            reduceOnly: {
+              // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+              render: reduceOnly ? (
+                <div
+                  style={{
+                    width: '.6rem',
+                    height: '.6rem',
+                    background: theme.palette.blue.background,
+                    borderRadius: '50%',
+                  }}
+                />
+              ) : (
                   '-'
                 ),
-                contentToSort: reduceOnly,
-              },
-            }
+              contentToSort: reduceOnly,
+            },
+          }
           : {}),
         status: {
           render: status ? (
@@ -2152,8 +2225,8 @@ export const combineOrderHistoryTable = (
               {status.replace(/_/g, ' ')}
             </span>
           ) : (
-            '-'
-          ),
+              '-'
+            ),
           contentToSort: status,
         },
         date: {
@@ -2269,46 +2342,44 @@ export const combineTradeHistoryTable = (
         // TODO: We should change "total" to total param from backend when it will be ready
         ...(marketType === 0
           ? {
-              amount: {
-                // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-                render: `${stripDigitPlaces(
-                  amount * price,
-                  quantityPrecision
-                )} ${pair[1]}`,
-                contentToSort: amount * price,
-              },
-            }
+            amount: {
+              // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+              render: `${stripDigitPlaces(
+                amount * price,
+                quantityPrecision
+              )} ${pair[1]}`,
+              contentToSort: amount * price,
+            },
+          }
           : {}),
         ...(marketType === 1
           ? {
-              realizedPnl: {
-                render: (
-                  <span
-                    style={{
-                      color:
-                        realizedPnl > 0
-                          ? theme.palette.green.main
-                          : realizedPnl < 0
+            realizedPnl: {
+              render: (
+                <span
+                  style={{
+                    color:
+                      realizedPnl > 0
+                        ? theme.palette.green.main
+                        : realizedPnl < 0
                           ? theme.palette.red.main
                           : '',
-                    }}
-                  >
-                    {`${isSmallProfit ? '< ' : ''}${
-                      typeof realizedPnl === 'number' && realizedPnl < 0
-                        ? '-'
-                        : ''
-                    }${
-                      isSmallProfit && realizedPnl !== 0
-                        ? '0.01'
-                        : realizedPnl || realizedPnl === 0
+                  }}
+                >
+                  {`${isSmallProfit ? '< ' : ''}${typeof realizedPnl === 'number' && realizedPnl < 0
+                      ? '-'
+                      : ''
+                    }${isSmallProfit && realizedPnl !== 0
+                      ? '0.01'
+                      : realizedPnl || realizedPnl === 0
                         ? stripDigitPlaces(Math.abs(realizedPnl), 2)
                         : '-'
                     } ${realizedPnl || realizedPnl === 0 ? pair[1] : ''}`}
-                  </span>
-                ),
-                contentToSort: realizedPnl,
-              },
-            }
+                </span>
+              ),
+              contentToSort: realizedPnl,
+            },
+          }
           : {}),
         fee: {
           render: `${stripDigitPlaces(cost, quantityPrecision)} ${currency}`,
@@ -2363,8 +2434,8 @@ export const combineFundsTable = (
 
   const filtredFundsData = hideSmallAssets
     ? fundsData.filter(
-        (el: FundsType) => el.asset.priceBTC >= TRADING_CONFIG.smallAssetAmount
-      )
+      (el: FundsType) => el.asset.priceBTC >= TRADING_CONFIG.smallAssetAmount
+    )
     : fundsData
 
   const processedFundsData = filtredFundsData
@@ -2740,7 +2811,7 @@ export const updateOrderHistoryQuerryFunction = (
 export const updatePaginatedOrderHistoryQuerryFunction = (
   previous,
   { subscriptionData },
-  enqueueSnackbar = (msg: string, obj: { variant: string }) => {}
+  enqueueSnackbar = (msg: string, obj: { variant: string }) => { }
 ) => {
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenOrderHistory
@@ -2778,16 +2849,14 @@ export const updatePaginatedOrderHistoryQuerryFunction = (
       newDataElement.type !== 'market'
     ) {
       enqueueSnackbar(
-        `${
-          newDataElement.type
-            ? `${newDataElement.type
-                .charAt(0)
-                .toUpperCase()}${newDataElement.type.slice(1)} order`
-            : 'Order'
-        } ${
-          newDataElement.type === 'maker-only'
-            ? ''
-            : `with price ${newDataElement.price}`
+        `${newDataElement.type
+          ? `${newDataElement.type
+            .charAt(0)
+            .toUpperCase()}${newDataElement.type.slice(1)} order`
+          : 'Order'
+        } ${newDataElement.type === 'maker-only'
+          ? ''
+          : `with price ${newDataElement.price}`
         } was executed!`,
         {
           variant: 'success',
@@ -2823,16 +2892,14 @@ export const updatePaginatedOrderHistoryQuerryFunction = (
       newDataElement.type !== 'market'
     ) {
       enqueueSnackbar(
-        `${
-          newDataElement.type
-            ? `${newDataElement.type
-                .charAt(0)
-                .toUpperCase()}${newDataElement.type.slice(1)} order`
-            : 'Order'
-        } ${
-          newDataElement.type === 'maker-only'
-            ? ''
-            : `with price ${newDataElement.price}`
+        `${newDataElement.type
+          ? `${newDataElement.type
+            .charAt(0)
+            .toUpperCase()}${newDataElement.type.slice(1)} order`
+          : 'Order'
+        } ${newDataElement.type === 'maker-only'
+          ? ''
+          : `with price ${newDataElement.price}`
         } was executed!`,
         {
           variant: 'success',

@@ -35,6 +35,8 @@ import {
   prefetchPortfolioMainFutures,
   prefetchDeposit,
   prefetchWithdrawal,
+  prefetchFuturesTransactions,
+  prefetchSpotTransactions,
 } from '@core/utils/prefetching'
 import { checLoginStatusWrapper } from '@core/utils/loginUtils'
 
@@ -80,6 +82,14 @@ export function ChartPageComponent(props: any) {
 
     setTimeout(() => {
       // checLoginStatusWrapper(prefetchWithdrawal)
+    }, 95000)
+
+    setTimeout(() => {
+      if (marketType === 1) {
+        prefetchFuturesTransactions()
+      } else if (marketType === 0) {
+        prefetchSpotTransactions()
+      }
     }, 95000)
 
     return () => {
@@ -176,6 +186,7 @@ export function ChartPageComponent(props: any) {
           hideDepthChart: false,
           hideOrderbook: false,
           hideTradeHistory: false,
+          hideTradingViewChart: false,
         },
       },
     } = {
@@ -184,6 +195,7 @@ export function ChartPageComponent(props: any) {
           hideDepthChart: false,
           hideOrderbook: false,
           hideTradeHistory: false,
+          hideTradingViewChart: false,
         },
       },
     },

@@ -97,6 +97,7 @@ const TableDataWrapper = ({ ...props }) => {
       withoutLoading={true}
       query={getTransactionsInfo}
       fetchPolicy={`cache-and-network`}
+      pollInterval={45000}
       name={`getTransactionsInfo`}
       variables={{
         input: {

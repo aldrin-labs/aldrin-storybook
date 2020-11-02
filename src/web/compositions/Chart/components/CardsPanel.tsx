@@ -83,6 +83,7 @@ export const CardsPanel = ({
   hideDepthChart,
   hideOrderbook,
   hideTradeHistory,
+  hideTradingViewChart,
   isDefaultOnlyTables,
   changeChartLayout,
   persistorInstance,
@@ -385,6 +386,7 @@ export const CardsPanel = ({
           hideDepthChart={hideDepthChart}
           hideOrderbook={hideOrderbook}
           hideTradeHistory={hideTradeHistory}
+          hideTradingViewChart={hideTradingViewChart}
           changeChartLayout={changeChartLayout}
           persistorInstance={persistorInstance}
         />

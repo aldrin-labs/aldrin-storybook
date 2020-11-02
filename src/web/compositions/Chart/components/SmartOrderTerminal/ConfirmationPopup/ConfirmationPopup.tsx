@@ -277,9 +277,7 @@ export default ({
                   justify="space-between"
                   style={{ width: '30%' }}
                 >
-                  <TitleTypography theme={theme}>
-                    take profit:
-                  </TitleTypography>
+                  <TitleTypography theme={theme}>take profit:</TitleTypography>
                   <TitleTypography
                     theme={theme}
                     style={{
@@ -535,7 +533,11 @@ export default ({
                 width: 'calc(100% - 6rem)',
               }}
             >
-              <SendButton type={'buy'} onClick={() => confirmTrade()}>
+              <SendButton
+                theme={theme}
+                type={'buy'}
+                onClick={() => confirmTrade()}
+              >
                 confirm
               </SendButton>
             </Grid>
