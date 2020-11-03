@@ -1018,8 +1018,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         },
         order: { type, side, amount, price },
         trailing: { isTrailingOn, deviationPercentage },
+        averaging: { enabled: averagingEnabled, closeStrategyAfterFirstTAP, entryLevels }
       },
     } = this.state
+
+    const amountFromEntryLevels = entryLevels.reduce((prev, curr) => prev + curr.amount, 0)
 
     const typeJson =
       typePlotEnabled && plotEnabled
@@ -1052,7 +1055,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         : `\\"entryDeviation\\": \\"${deviationPercentage}\\"`
       : ''
 
-    return `{\\"token\\": \\"${templateToken}\\", ${typeJson}, ${hedgeModeJson}, ${sideJson}, ${priceJson}, ${amountJson}${isTrailingOn ? ', ' : ''
+    const averagingJson = averagingEnabled
+      ? `\\"entryLevels\\": [${entryLevels.map((level, i) => `{\\"type\\": ${level.type}, \\"amount\\": ${level.type === 0 ? level.amount : +stripDigitPlaces(level.amount / amountFromEntryLevels * 100, 2)}, \\"price\\":${level.price}, \\"placeWithoutLoss\\": ${level.placeWithoutLoss}}`)}], \\"closeStrategyAfterFirstTAP\\": ${closeStrategyAfterFirstTAP}`
+      : ''
+
+    return `{\\"token\\": \\"${templateToken}\\", ${typeJson}, ${hedgeModeJson}, ${sideJson}, ${priceJson}, ${averagingJson}, ${amountJson}${isTrailingOn ? ', ' : ''
       }${deviationJson}}`
   }
 
@@ -1113,8 +1120,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         }
       })
     }
-
-    console.log('this.total', entryPoint.order.total)
 
     return (
       <>
@@ -1251,13 +1256,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               key={'stopLoss'}
             >
               <BlockHeader theme={theme}>stop loss</BlockHeader>
-              {/* <GreenSwitcher
-                id="isStopLossOn"
-                checked={stopLoss.isStopLossOn}
-                handleToggle={() =>
-                  this.toggleBlock('stopLoss', 'isStopLossOn')
-                }
-              /> */}
             </TerminalHeader>
             <TerminalHeader
               theme={theme}
@@ -1267,21 +1265,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               justify={'center'}
             >
               <BlockHeader theme={theme}>take profit</BlockHeader>
-              {/* <GreenSwitcher
-                id="isTakeProfitOn"
-                checked={takeProfit.isTakeProfitOn}
-                handleToggle={() =>
-                  this.toggleBlock('takeProfit', 'isTakeProfitOn')
-                }
-              /> */}
             </TerminalHeader>
-            {/* <CloseHeader
-              key={'buttonToggleTerminalView'}
-              padding={'.55rem .5rem'}
-              onClick={() => updateTerminalViewMode('default')}
-            >
-              <StyledZoomIcon />
-            </CloseHeader> */}
           </TerminalHeaders>
 
           <TerminalBlocksContainer xs={12} container item>
@@ -2361,7 +2345,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       </InputRowContainer>
                     </InputRowContainer>
 
-                    <FormInputContainer
+                    {!entryPoint.averaging.enabled && (<FormInputContainer
                       theme={theme}
                       padding={'0 0 .8rem 0'}
                       haveTooltip={false}
@@ -2369,33 +2353,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       title={'action when alert'}
                     >
                       <InputRowContainer>
-                        {/* <AdditionalSettingsButton theme={theme}
-                          isActive={entryPoint.TVAlert.immediateEntry}
-                          onClick={() => {
-                            this.updateSubBlockValue(
-                              'entryPoint',
-                              'order',
-                              'type',
-                              'market'
-                            )
-
-                            this.updateSubBlockValue(
-                              'entryPoint',
-                              'trailing',
-                              'isTrailingOn',
-                              false
-                            )
-
-                            this.updateSubBlockValue(
-                              'entryPoint',
-                              'TVAlert',
-                              'immediateEntry',
-                              !entryPoint.TVAlert.immediateEntry
-                            )
-                          }}
-                        >
-                          Immediate entry
-                        </AdditionalSettingsButton> */}
                         <AdditionalSettingsButton
                           theme={theme}
                           isActive={entryPoint.TVAlert.plotEnabled}
@@ -2420,7 +2377,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                           Plot
                         </AdditionalSettingsButton>
                       </InputRowContainer>
-                    </FormInputContainer>
+                    </FormInputContainer>)}
                   </>
                 )}
 
