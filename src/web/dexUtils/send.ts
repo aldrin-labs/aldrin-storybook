@@ -638,13 +638,6 @@ async function sendTransaction({
       const userFeeTier = feeTiers[feeAccounts[0].feeTier]
       const feeCost = +stripDigitPlaces(params.size * params.price / 100 * userFeeTier.taker, 6);
 
-      try {
-      const openOrdersData = await getOpenOrdersAccountsCustom(wallet, connection, market)
-      console.log('openOrdersData: ', openOrdersData)
-      } catch (e) {
-        console.log('openOrdersData e', e)
-      }
-
       addSerumTransactionMutation({
         variables: {
           fee: feeCost, amount: params.size, dexId: txid, publicKey: wallet.publicKey.toBase58(), price: params.price,
