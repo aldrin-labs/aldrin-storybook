@@ -11,6 +11,7 @@ import { getTotalVolumeForSerumKey } from '@core/graphql/queries/chart/getTotalV
 import { getTotalSerumVolume } from '@core/graphql/queries/chart/getTotalSerumVolume'
 import { getTopTwitterFarming } from '@core/graphql/queries/serum/getTopTwitterFarming'
 import { addSerumTransaction } from '@core/graphql/mutations/chart/addSerumTransaction'
+import { getUserRetweetsHistory } from '@core/graphql/queries/serum/getUserRetweetsHistory'
 
 import serum from '@icons/Serum.svg'
 import decefi from '@icons/decefi.svg'
@@ -19,6 +20,8 @@ import blackTwitter from '@icons/blackTwitter.svg'
 import { withTheme } from '@material-ui/styles'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { notify } from '@sb/dexUtils/notifications'
+
+import { withPublicKey } from '@core/hoc/withPublicKey'
 
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
@@ -235,6 +238,8 @@ const RewardsRoute = (props) => {
     addSerumTransactionMutation,
     getTotalSerumVolumeQueryRefetch,
     getTopTwitterFarmingQuery,
+    getUserRetweetsHistoryQuery,
+    getUserRetweetsHistoryQueryRefetch,
     getTopTwitterFarmingQueryRefetch,
   } = props
 
@@ -280,7 +285,11 @@ const RewardsRoute = (props) => {
     setTwittersLink(e.target.value)
   }
 
-  const { getTopTwitterFarming: getTopTwitterFarmingData = [] } = getTopTwitterFarmingQuery
+  const {
+    getTopTwitterFarming: getTopTwitterFarmingData = [],
+  } = getTopTwitterFarmingQuery
+
+  console.log('getUserRetweetsHistory', getUserRetweetsHistoryQuery)
 
   return (
     <div
@@ -576,8 +585,10 @@ const RewardsRoute = (props) => {
                           getTotalVolumeForSerumKeyQueryRefetch()
                         getTotalSerumVolumeQueryRefetch &&
                           getTotalSerumVolumeQueryRefetch()
-                          getTopTwitterFarmingQueryRefetch &&
-                          getTopTwitterFarmingQueryRefetch()  
+                        getTopTwitterFarmingQueryRefetch &&
+                          getTopTwitterFarmingQueryRefetch()
+                        getUserRetweetsHistoryQueryRefetch &&
+                          getUserRetweetsHistoryQueryRefetch()
                       }, 1000)
                     }
 
@@ -776,7 +787,7 @@ const RewardsRoute = (props) => {
       <RowContainer style={{ paddingBottom: '10rem' }}>
         <Card
           style={{
-            width: 'calc(70% - 4rem)',
+            width: 'calc(50% - 4rem)',
             height: 'auto',
             padding: '0 3rem',
           }}
@@ -789,36 +800,41 @@ const RewardsRoute = (props) => {
               <HeaderCell>Followers</HeaderCell>
             </TableRow>
             {getTopTwitterFarmingData.map((el, index) => {
-
               return (
                 <TableRow>
-                <Cell>{index + 1}</Cell>
-                <Cell>{el.tweetUsername}</Cell>
-                <Cell>{el.userFollowersCount}</Cell>
-              </TableRow>
+                  <Cell>{index + 1}</Cell>
+                  <Cell>{el.tweetUsername}</Cell>
+                  <Cell>{el.userFollowersCount}</Cell>
+                </TableRow>
               )
             })}
-
-            {/* <TableRow>
-              <Cell>fgh</Cell>
-              <Cell>bn</Cell>
-              <Cell>fgh</Cell>
-            </TableRow>
+          </Table>
+        </Card>
+        <Card
+          style={{
+            width: 'calc(50% - 4rem)',
+            height: 'auto',
+            padding: '0 3rem',
+          }}
+          theme={theme}
+        >
+          <Table>
             <TableRow>
-              <Cell>fgh</Cell>
-              <Cell>bn</Cell>
-              <Cell>fgh</Cell>
+              <HeaderCell>#</HeaderCell>
+              <HeaderCell>Recent tweets</HeaderCell>
+              <HeaderCell>Received DCFI</HeaderCell>
             </TableRow>
-            <TableRow>
-              <Cell>fgh</Cell>
-              <Cell>bn</Cell>
-              <Cell>fgh</Cell>
-            </TableRow>
-            <TableRow>
-              <Cell>fgh</Cell>
-              <Cell>bn</Cell>
-              <Cell>fgh</Cell>
-            </TableRow> */}
+            {getUserRetweetsHistoryQuery.getUserRetweetsHistory.map(
+              (el, index) => {
+                return (
+                  <TableRow>
+                    <Cell>{index + 1}</Cell>
+                    <Cell>{el.tweetLink}</Cell>
+                    <Cell>{2000 / getTopTwitterFarmingData.length}</Cell>
+                  </TableRow>
+                )
+              }
+            )}
           </Table>
         </Card>
       </RowContainer>
@@ -826,29 +842,9 @@ const RewardsRoute = (props) => {
   )
 }
 
-const Wrapper = (props) => {
-  const { wallet } = useWallet()
-  const publicKey = wallet.publicKey ? wallet.publicKey.toBase58() : ''
-
-  return (
-    <QueryRenderer
-      component={RewardsRoute}
-      query={getTotalVolumeForSerumKey}
-      name={'getTotalVolumeForSerumKeyQuery'}
-      fetchPolicy={'network-only'}
-      withOutSpinner={false}
-      pollInterval={15000}
-      variables={{
-        publicKey,
-      }}
-      publicKey={publicKey}
-      {...props}
-    />
-  )
-}
-
 export default compose(
   withTheme(),
+  withPublicKey,
   graphql(addSerumTransaction, { name: 'addSerumTransactionMutation' }),
   queryRendererHoc({
     query: getTotalSerumVolume,
@@ -861,5 +857,23 @@ export default compose(
     name: 'getTopTwitterFarmingQuery',
     pollInterval: 60000,
     fetchPolicy: 'cache-and-network',
+  }),
+  queryRendererHoc({
+    query: getUserRetweetsHistory,
+    name: 'getUserRetweetsHistoryQuery',
+    pollInterval: 60000,
+    fetchPolicy: 'cache-and-network',
+    variables: (props) => ({
+      publicKey: props.publicKey,
+    }),
+  }),
+  queryRendererHoc({
+    query: getTotalVolumeForSerumKey,
+    name: 'getTotalVolumeForSerumKeyQuery',
+    pollInterval: 15000,
+    fetchPolicy: 'network-only',
+    variables: (props) => ({
+      publicKey: props.publicKey,
+    }),
   })
-)(Wrapper)
+)(RewardsRoute)
