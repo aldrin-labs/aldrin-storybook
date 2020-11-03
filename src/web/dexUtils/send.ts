@@ -391,6 +391,7 @@ export async function placeOrder({
   console.log(params);
 
   const transaction = market.makeMatchOrdersTransaction(5);
+  console.log('placeOrder transaction: ', transaction)
   let {
     transaction: placeOrderTx,
     signers,
@@ -400,8 +401,12 @@ export async function placeOrder({
     10_000,
     10_000,
   );
+
+  console.log('placeOrder placeOrderTx', placeOrderTx)
   transaction.add(placeOrderTx);
   transaction.add(market.makeMatchOrdersTransaction(5));
+
+  console.log('transaction after add', transaction)
 
   return await sendTransaction({
     transaction,
@@ -579,6 +584,9 @@ async function sendTransaction({
     await connection.getRecentBlockhash('max')
   ).blockhash;
   transaction.signPartial(...signers);
+
+  console.log('sendTransaction transaction: ', transaction)
+
   const rawTransaction = (
     await wallet.signTransaction(transaction)
   ).serialize();
