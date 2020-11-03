@@ -652,7 +652,7 @@ const RewardsRoute = (props) => {
         </Card>
       </div>
 
-      <RowContainer style={{ paddingTop: '5rem', paddingBottom: '10rem' }}>
+      <RowContainer style={{ paddingTop: '5rem', paddingBottom: '5rem' }}>
         <Card
           style={{
             width: 'calc(40% - 4rem)',
@@ -785,58 +785,84 @@ const RewardsRoute = (props) => {
         </Card> */}
       </RowContainer>
       <RowContainer style={{ paddingBottom: '10rem' }}>
-        <Card
+        <div
           style={{
-            width: 'calc(50% - 4rem)',
-            height: 'auto',
-            padding: '0 3rem',
+            width: '50%',
+            display: 'flex',
+            justifyContent: 'center',
+            flexDirection: 'column',
+            alignItems: 'center',
           }}
-          theme={theme}
         >
-          <Table>
-            <TableRow>
-              <HeaderCell>#</HeaderCell>
-              <HeaderCell>Name</HeaderCell>
-              <HeaderCell>Followers</HeaderCell>
-            </TableRow>
-            {getTopTwitterFarmingData.map((el, index) => {
-              return (
-                <TableRow>
-                  <Cell>{index + 1}</Cell>
-                  <Cell>{el.tweetUsername}</Cell>
-                  <Cell>{el.userFollowersCount}</Cell>
-                </TableRow>
-              )
-            })}
-          </Table>
-        </Card>
-        <Card
-          style={{
-            width: 'calc(50% - 4rem)',
-            height: 'auto',
-            padding: '0 3rem',
-          }}
-          theme={theme}
-        >
-          <Table>
-            <TableRow>
-              <HeaderCell>#</HeaderCell>
-              <HeaderCell>Recent tweets</HeaderCell>
-              <HeaderCell>Received DCFI</HeaderCell>
-            </TableRow>
-            {getUserRetweetsHistoryQuery.getUserRetweetsHistory.map(
-              (el, index) => {
+          <Title style={{ paddingBottom: '3rem' }} theme={theme}>
+            Top 20 users{' '}
+          </Title>
+          <Card
+            style={{
+              width: 'calc(100% - 4rem)',
+              height: 'auto',
+              padding: '0 3rem',
+            }}
+            theme={theme}
+          >
+            <Table>
+              <TableRow>
+                <HeaderCell>#</HeaderCell>
+                <HeaderCell>Name</HeaderCell>
+                <HeaderCell>Followers</HeaderCell>
+              </TableRow>
+              {getTopTwitterFarmingData.map((el, index) => {
                 return (
                   <TableRow>
                     <Cell>{index + 1}</Cell>
-                    <Cell>{el.tweetLink}</Cell>
-                    <Cell>{2000 / getTopTwitterFarmingData.length}</Cell>
+                    <Cell>{el.tweetUsername}</Cell>
+                    <Cell>{el.userFollowersCount}</Cell>
                   </TableRow>
                 )
-              }
-            )}
-          </Table>
-        </Card>
+              })}
+            </Table>
+          </Card>
+        </div>
+        <div
+          style={{
+            width: '50%',
+            display: 'flex',
+            justifyContent: 'center',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Title style={{ paddingBottom: '3rem' }} theme={theme}>
+            Your retweet history{' '}
+          </Title>
+          <Card
+            style={{
+              width: 'calc(100% - 4rem)',
+              height: 'auto',
+              padding: '0 3rem',
+            }}
+            theme={theme}
+          >
+            <Table>
+              <TableRow>
+                <HeaderCell>#</HeaderCell>
+                <HeaderCell>Recent tweets</HeaderCell>
+                <HeaderCell>Received DCFI</HeaderCell>
+              </TableRow>
+              {getUserRetweetsHistoryQuery.getUserRetweetsHistory.map(
+                (el, index) => {
+                  return (
+                    <TableRow>
+                      <Cell>{index + 1}</Cell>
+                      <Cell>{el.tweetLink}</Cell>
+                      <Cell>{el.farmedDCFI}</Cell>
+                    </TableRow>
+                  )
+                }
+              )}
+            </Table>
+          </Card>
+        </div>
       </RowContainer>
     </div>
   )
