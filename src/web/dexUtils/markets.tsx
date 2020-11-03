@@ -1091,23 +1091,11 @@ export function useSelectedTokenAccounts(): [SelectedTokenAccounts, (newSelected
   return [selectedTokenAccounts, setSelectedTokenAccounts]
 }
 
-export async function getOpenOrdersAccountsCustom(fast = false) {
-  const { market } = useMarket();
-  const { connected, wallet } = useWallet();
-  const connection = useConnection();
-  async function getOpenOrdersAccounts() {
-    if (!connected) {
-      return null;
-    }
-    if (!market) {
-      return null;
-    }
+export async function getOpenOrdersAccountsCustom(connection, wallet, market) {
+
     return await market.findOpenOrdersAccountsForOwner(
       connection,
       wallet.publicKey,
-    );
-  }
+    )
 
-  const data = await getOpenOrdersAccounts()
-  return data
 }

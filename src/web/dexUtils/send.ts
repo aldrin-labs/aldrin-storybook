@@ -417,7 +417,8 @@ export async function placeOrder({
     isOrderCreating: true,
     params,
     feeAccounts,
-    addSerumTransactionMutation
+    addSerumTransactionMutation,
+    market,
   });
 }
 
@@ -578,7 +579,8 @@ async function sendTransaction({
   isOrderCreating = false,
   params = {},
   feeAccounts = [],
-  addSerumTransactionMutation = ({ variables: {}}) => {}
+  addSerumTransactionMutation = ({ variables: {}}) => {},
+  market = {}
 }) {
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash('max')
@@ -636,8 +638,12 @@ async function sendTransaction({
       const userFeeTier = feeTiers[feeAccounts[0].feeTier]
       const feeCost = +stripDigitPlaces(params.size * params.price / 100 * userFeeTier.taker, 6);
 
-      const openOrdersData = getOpenOrdersAccountsCustom()
+      try {
+      const openOrdersData = await getOpenOrdersAccountsCustom(wallet, connection, market)
       console.log('openOrdersData: ', openOrdersData)
+      } catch (e) {
+        console.log('openOrdersData e', e)
+      }
 
       addSerumTransactionMutation({
         variables: {
