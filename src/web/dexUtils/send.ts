@@ -17,7 +17,7 @@ import {
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { feeTiers } from '@sb/components/TradingTable/Fee/FeeTiers'
-import { getSelectedTokenAccountForMint } from './markets'
+import { getSelectedTokenAccountForMint, getOpenOrdersAccountsCustom } from './markets'
 
 export async function createTokenAccountTransaction({
   connection,
@@ -635,6 +635,9 @@ async function sendTransaction({
     } else {
       const userFeeTier = feeTiers[feeAccounts[0].feeTier]
       const feeCost = +stripDigitPlaces(params.size * params.price / 100 * userFeeTier.taker, 6);
+
+      const openOrdersData = getOpenOrdersAccountsCustom()
+      console.log('openOrdersData: ', openOrdersData)
 
       addSerumTransactionMutation({
         variables: {
