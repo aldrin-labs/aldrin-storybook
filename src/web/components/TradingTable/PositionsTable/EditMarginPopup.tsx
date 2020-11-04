@@ -45,7 +45,9 @@ export class EditMarginPopup extends React.Component {
     } = this.props
 
     const { type, amount } = this.state
-    const [ USDT = { quantity: 0, value: 0 } ] = USDTFuturesFund || [{ quantity: 0, value: 0 }]
+    const [USDT = { quantity: 0, value: 0 }] = USDTFuturesFund || [
+      { quantity: 0, value: 0 },
+    ]
 
     const max =
       type === 1
@@ -89,7 +91,11 @@ export class EditMarginPopup extends React.Component {
             firstHalfIsActive={type === 1}
             changeHalf={this.toggleType}
           />
-          <FormInputContainer theme={theme} padding={'1.2rem 0 1.2rem 0'} title={`amount`}>
+          <FormInputContainer
+            theme={theme}
+            padding={'1.2rem 0 1.2rem 0'}
+            title={`amount`}
+          >
             <div style={{ position: 'relative', width: '100%' }}>
               <Input
                 needTitle
@@ -103,9 +109,7 @@ export class EditMarginPopup extends React.Component {
                 onChange={(e) =>
                   this.setState({
                     amount:
-                      e.target.value > USDT.value
-                        ? USDT.value
-                        : e.target.value,
+                      e.target.value > USDT.value ? USDT.value : e.target.value,
                   })
                 }
               />
@@ -126,14 +130,21 @@ export class EditMarginPopup extends React.Component {
                 }}
               >
                 MAX:{' '}
-                <span style={{ color: theme.palette.blue.main, textDecoration: 'underline' }}>
+                <span
+                  style={{
+                    color: theme.palette.blue.main,
+                    textDecoration: 'underline',
+                  }}
+                >
                   {max} USDT
                 </span>
               </span>
             </div>
           </FormInputContainer>
           <InputRowContainer padding={'2rem 0 0 0'} justify="space-between">
-            <span style={{ color: theme.palette.grey.light }}>currently assigned margin</span>
+            <span style={{ color: theme.palette.grey.light }}>
+              currently assigned margin
+            </span>
             <span style={{ color: theme.palette.dark.main }}>
               {stripDigitPlaces(editMarginPosition.isolatedMargin, 2)} USDT
             </span>

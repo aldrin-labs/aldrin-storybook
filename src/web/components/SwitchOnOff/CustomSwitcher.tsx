@@ -21,7 +21,7 @@ const SwitcherHalf = styled(
       btnWidth={width}
       fontSize="1.3rem"
       padding={padding}
-      btnColor={isDisabled ? theme.palette.grey.text : activeColor}
+      btnColor={isDisabled ? theme.palette.grey.text : theme.palette.white.main}
       backgroundColor={
         isDisabled ? theme.palette.white.background : activeBackgroundColor
       }
@@ -39,7 +39,8 @@ const SwitcherHalf = styled(
   min-width: 0;
 
   &:hover {
-    color: ${(props) => props.isDisabled && props.activeColor};
+    color: ${(props) =>
+      props.isDisabled && props.activeColor && theme.palette.white.main};
     background-color: ${(props) =>
       props.isDisabled && props.activeBackgroundColor};
     border: ${(props) =>

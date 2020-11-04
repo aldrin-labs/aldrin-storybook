@@ -372,7 +372,7 @@ export const Balances = ({
                           width: '92%',
                           height: '4rem',
                           borderRadius: '.8rem',
-                          border: '.1rem solid #7380EB',
+                          border: theme.palette.border.custom,
                           backgroundColor: theme.palette.white.background,
                           color: theme.palette.blue.main,
                           fontFamily: 'Avenir Next Demi',
@@ -384,7 +384,7 @@ export const Balances = ({
                             color: theme.palette.white.background,
                             transition: 'all .4s ease-out',
                             backgroundColor: theme.palette.blue.main,
-                            border: '.1rem solid #7380EB',
+                            border: theme.palette.border.custom,
                           },
                         }}
                         onClick={() => {
@@ -407,7 +407,7 @@ export const Balances = ({
                           width: '92%',
                           height: '4rem',
                           borderRadius: '.8rem',
-                          border: '.1rem solid #7380EB',
+                          border: theme.palette.border.custom,
                           backgroundColor: theme.palette.blue.main,
                           color: theme.palette.white.background,
                           fontFamily: 'Avenir Next Demi',
@@ -419,7 +419,7 @@ export const Balances = ({
                             color: theme.palette.blue.main,
                             transition: 'all .4s ease-out',
                             backgroundColor: theme.palette.white.background,
-                            border: '.1rem solid #7380EB',
+                            border: theme.palette.border.custom,
                           },
                         }}
                         onClick={() => {

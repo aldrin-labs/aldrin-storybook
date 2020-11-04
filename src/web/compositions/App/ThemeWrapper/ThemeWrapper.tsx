@@ -209,6 +209,7 @@ export default ({ themeMode, isChartPage, children }) => {
             },
             border: {
               main: '.1rem solid #2e2e2e',
+              custom: '.1rem solid #3B63AF',
             },
             price: {
               increase: '#2F7619',
@@ -396,6 +397,7 @@ export default ({ themeMode, isChartPage, children }) => {
             },
             border: {
               main: '.1rem solid #e0e5ec',
+              custom: '.1rem solid #7380EB',
             },
             hover: {
               dark: '#383a3d',
