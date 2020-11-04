@@ -289,7 +289,9 @@ const RewardsRoute = (props) => {
     getTopTwitterFarming: getTopTwitterFarmingData = [],
   } = getTopTwitterFarmingQuery
 
-  console.log('getUserRetweetsHistory', getUserRetweetsHistoryQuery)
+  const { getUserRetweetsHistory = [] } = getUserRetweetsHistoryQuery || {
+    getUserRetweetsHistory: [],
+  }
 
   return (
     <div
@@ -849,17 +851,15 @@ const RewardsRoute = (props) => {
                 <HeaderCell>Recent tweets</HeaderCell>
                 <HeaderCell>Received DCFI</HeaderCell>
               </TableRow>
-              {getUserRetweetsHistoryQuery.getUserRetweetsHistory.map(
-                (el, index) => {
-                  return (
-                    <TableRow>
-                      <Cell>{index + 1}</Cell>
-                      <Cell>{el.tweetLink}</Cell>
-                      <Cell>{el.farmedDCFI}</Cell>
-                    </TableRow>
-                  )
-                }
-              )}
+              {getUserRetweetsHistory.map((el, index) => {
+                return (
+                  <TableRow>
+                    <Cell>{index + 1}</Cell>
+                    <Cell>{el.tweetLink}</Cell>
+                    <Cell>{el.farmedDCFI}</Cell>
+                  </TableRow>
+                )
+              })}
             </Table>
           </Card>
         </div>
@@ -892,6 +892,7 @@ export default compose(
     variables: (props) => ({
       publicKey: props.publicKey,
     }),
+    skip: (props: any) => !props.publicKey,
   }),
   queryRendererHoc({
     query: getTotalVolumeForSerumKey,
@@ -901,5 +902,6 @@ export default compose(
     variables: (props) => ({
       publicKey: props.publicKey,
     }),
+    // skip: (props: any) => !props.publicKey,
   })
 )(RewardsRoute)
