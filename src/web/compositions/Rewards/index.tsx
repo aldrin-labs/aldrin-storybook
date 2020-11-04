@@ -467,7 +467,7 @@ const RewardsRoute = (props) => {
                   paddingBottom: '1rem',
                   margin: '0 1rem',
                 }}
-                href={`https://twitter.com/intent/tweet?text=I%20have%20already%20farmed%20${dcfiEarnedForTwitter}%20%24DCFI%20on%20dex.cryptocurrencies.ai%0A%0AHow%20to%20farm%20%24DCFI%20by%20%24SRM%20trading%3A%0Ahttps%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3Dyz5uaN0aCyw%26feature%3Dyoutu.be%0A%0A%40decefi_official%20%40CCAI_Official%0A%0Apic.twitter.com%2FJmNK1mE4vx%20`}
+                href={`https://twitter.com/intent/tweet?text=Here%20are%20some%20real%20numbers%20about%20%40projectserum%20trading%20on%20%40solana%20via%20%40CCAI_Official%20interface%0Afast%20DEX%20trading%20is%20here%20already%2C%20check%20it%20out%20at%20http%3A%2F%2Fdex.cryptocurrencies.ai%2F%0A%24DCFI%20%24SRM%20%24SOL%20%24UNI%20%24ETH%20%24DOT%20%24YFI%0Apic.twitter.com%2F9LCSqyXyEn`}
                 rel="noopener noreferrel"
                 target={'_blank'}
                 onClick={(e) => {
