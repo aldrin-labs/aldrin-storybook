@@ -129,6 +129,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         percentage: 0,
         price: 0,
         closeStrategyAfterFirstTAP: false,
+        placeEntryAfterTAP: false,
         placeWithoutLoss: false,
         entryLevels: [],
       },
@@ -301,6 +302,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         averaging: {
           enabled: false,
           closeStrategyAfterFirstTAP: false,
+          placeEntryAfterTAP: false,
           placeWithoutLoss: false,
           entryLevels: [],
           percentage: 0,
@@ -1017,7 +1019,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         },
         order: { type, side, amount, price },
         trailing: { isTrailingOn, deviationPercentage },
-        averaging: { enabled: averagingEnabled, closeStrategyAfterFirstTAP, entryLevels }
+        averaging: { enabled: averagingEnabled, closeStrategyAfterFirstTAP, placeEntryAfterTAP, entryLevels }
       },
     } = this.state
 
@@ -1037,7 +1039,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       ? pricePlotEnabled && plotEnabled
         ? `\\"activatePrice\\": {{plot_${pricePlot}}}`
         : `\\"activatePrice\\": ${price}`
-      : pricePlotEnabled && plotEnabled
+      : averagingEnabled ? '' : pricePlotEnabled && plotEnabled
         ? `\\"price\\": {{plot_${pricePlot}}}`
         : `\\"price\\": ${price}`
 
@@ -1055,10 +1057,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       : ''
 
     const averagingJson = averagingEnabled
-      ? `\\"entryLevels\\": [${entryLevels.map((level, i) => `{\\"type\\": ${level.type}, \\"amount\\": ${level.type === 0 ? level.amount : +stripDigitPlaces(level.amount / amountFromEntryLevels * 100, 2)}, \\"price\\":${level.price}, \\"placeWithoutLoss\\": ${level.placeWithoutLoss}}`)}], \\"closeStrategyAfterFirstTAP\\": ${closeStrategyAfterFirstTAP}`
+      ? `\\"entryLevels\\": [${entryLevels.map((level, i) => `{\\"type\\": ${level.type}, \\"amount\\": ${level.type === 0 ? level.amount : +stripDigitPlaces(level.amount / amountFromEntryLevels * 100, 2)}, \\"price\\":${level.price}, \\"placeWithoutLoss\\": ${level.placeWithoutLoss}}`)}], \\"closeStrategyAfterFirstTAP\\": ${closeStrategyAfterFirstTAP}, \\"placeEntryAfterTAP\\": ${placeEntryAfterTAP}`
       : ''
 
-    return `{\\"token\\": \\"${templateToken}\\", ${typeJson}, ${hedgeModeJson}, ${sideJson}, ${priceJson}, ${averagingJson}, ${amountJson}${isTrailingOn ? ', ' : ''
+    return `{\\"token\\": \\"${templateToken}\\", ${typeJson}, ${hedgeModeJson}, ${sideJson}, ${priceJson}${priceJson === '' ? '' : ','} ${averagingJson}, ${amountJson}${isTrailingOn ? ', ' : ''
       }${deviationJson}}`
   }
 
@@ -2170,12 +2172,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                       }
                     >
                       <AdditionalSettingsButton
-                        width={'50%'}
                         theme={theme}
-                        margin={'0 2% 0 0'}
                         isActive={
                           entryPoint.averaging.closeStrategyAfterFirstTAP
                         }
+                        width={'33%'}
                         onClick={() => {
                           this.updateSubBlockValue(
                             'entryPoint',
@@ -2184,44 +2185,92 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             !entryPoint.averaging.closeStrategyAfterFirstTAP
                           )
 
-                          if (entryPoint.averaging.closeStrategyAfterFirstTAP) {
-                            this.updateSubBlockValue(
-                              'entryPoint',
-                              'averaging',
-                              'closeStrategyAfterFirstTAP',
-                              false
-                            )
-                          }
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'averaging',
+                            'placeEntryAfterTAP',
+                            false
+                          )
                         }}
                       >
                         Close trade After First TP
                       </AdditionalSettingsButton>
                     </DarkTooltip>
-                    {entryPoint.averaging.enabled && (
-                      <DarkTooltip
-                        title={
-                          'Place order at Break-Even Point for $0 net loss after fees'
+                    <DarkTooltip
+                      maxWidth={'30rem'}
+                      title={
+                        'Your smart order will be closed once first TP order was executed.'
+                      }
+                    >
+                      <AdditionalSettingsButton
+                        theme={theme}
+                        isActive={
+                          entryPoint.averaging.placeEntryAfterTAP
                         }
-                        maxWidth={'30rem'}
+                        width={'33%'}
+                        onClick={() => {
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'averaging',
+                            'placeEntryAfterTAP',
+                            !entryPoint.averaging.placeEntryAfterTAP
+                          )
+
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'averaging',
+                            'closeStrategyAfterFirstTAP',
+                            false
+                          )
+
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'averaging',
+                            'placeWithoutLoss',
+                            false
+                          )
+
+
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'averaging',
+                            'entryLevels',
+                            entryPoint.averaging.entryLevels.map(level => ({ ...level, placeWithoutLoss: false }))
+                          )
+                        }}
                       >
-                        <AdditionalSettingsButton
-                          theme={theme}
-                          width={'50%'}
-                          padding={'0 0 0 0'}
-                          isActive={entryPoint.averaging.placeWithoutLoss}
-                          onClick={() => {
-                            this.updateSubBlockValue(
-                              'entryPoint',
-                              'averaging',
-                              'placeWithoutLoss',
-                              !entryPoint.averaging.placeWithoutLoss
-                            )
-                          }}
-                        >
-                          Place Break-even SL
+                        Place Entry After TAP
+                      </AdditionalSettingsButton>
+                    </DarkTooltip>
+                    <DarkTooltip
+                      title={
+                        'Place order at Break-Even Point for $0 net loss after fees'
+                      }
+                      maxWidth={'30rem'}
+                    >
+                      <AdditionalSettingsButton
+                        theme={theme}
+                        width={'33%'}
+                        isActive={entryPoint.averaging.placeWithoutLoss}
+                        onClick={() => {
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'averaging',
+                            'placeWithoutLoss',
+                            !entryPoint.averaging.placeWithoutLoss
+                          )
+
+                          this.updateSubBlockValue(
+                            'entryPoint',
+                            'averaging',
+                            'placeEntryAfterTAP',
+                            false
+                          )
+                        }}
+                      >
+                        Place Break-even SL
                         </AdditionalSettingsButton>
-                      </DarkTooltip>
-                    )}
+                    </DarkTooltip>
                   </InputRowContainer>
                 )}
                 {entryPoint.TVAlert.isTVAlertOn && (

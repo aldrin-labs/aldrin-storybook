@@ -41,6 +41,7 @@ export type EntryPointType = {
   averaging: {
     enabled: boolean
     closeStrategyAfterFirstTAP: boolean
+    placeEntryAfterTAP: boolean
     placeWithoutLoss: boolean
     percentage: number
     price: number
