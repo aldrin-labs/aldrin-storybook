@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
 import Tour from 'reactour'
+import { finishJoyride } from '@core/utils/joyride'
+
 import {
   tourConfig,
   FinishBtn,
   smartTerminal,
 } from '@sb/components/ReactourOnboarding/ReactourOnboarding'
 
-export const SmartOrderOnboarding = () => {
-  const [isTourOpen, setIsTourOpen] = useState(true)
+export const SmartOrderOnboarding = (props) => {
   return (
     <Tour
       showCloseButton={false}
@@ -18,12 +19,14 @@ export const SmartOrderOnboarding = () => {
       lastStepNextButton={<FinishBtn>Finish</FinishBtn>}
       steps={smartTerminal}
       accentColor={'#1BA492'}
-      isOpen={isTourOpen}
-      onRequestClose={() => setIsTourOpen(false)}
-      // onRequestClose={() => {
-      //   setIsTourOpen(false)
-      //   localStorage.setItem('isOnboardingDone', 'true')
-      // }}
+      isOpen={!props.smartTerminalOnboarding}
+      onRequestClose={() => {
+        finishJoyride({
+          updateTooltipSettingsMutation: props.updateTooltipSettingsMutation,
+          getTooltipSettings: props.getTooltipSettings,
+          name: 'smartTerminal',
+        })
+      }}
     />
   )
 }

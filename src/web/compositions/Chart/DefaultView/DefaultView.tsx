@@ -91,7 +91,11 @@ export const DefaultViewComponent = (
     layout,
     changeChartLayoutMutation,
     isChartPageOnboardingDone,
+    getTooltipSettingsQueryLoading,
     closeChartPageOnboarding,
+    smartTerminalOnboarding,
+    updateTooltipSettingsMutation,
+    getTooltipSettings,
   } = props
 
   if (!currencyPair) {
@@ -122,7 +126,7 @@ export const DefaultViewComponent = (
     null | number
   >(null)
 
-  const [isTourOpen, setIsTourOpen] = useState(true)
+  console.log('getTooltipSettingsQueryLoading', getTooltipSettingsQueryLoading, getTooltipSettings.chartPage)
 
   const [base, quote] = currencyPair.split('_')
   const baseQuoteArr = [base, quote]
@@ -143,7 +147,7 @@ export const DefaultViewComponent = (
 
   return (
     <Container container spacing={8} theme={theme}>
-      <Tour
+      {authenticated && !getTooltipSettingsQueryLoading && <Tour
         showCloseButton={false}
         nextButton={<FinishBtn>Next</FinishBtn>}
         prevButton={<a />}
@@ -152,16 +156,16 @@ export const DefaultViewComponent = (
         lastStepNextButton={<FinishBtn>Finish</FinishBtn>}
         steps={tourConfig}
         accentColor={accentColor}
-        isOpen={isTourOpen}
+        isOpen={!getTooltipSettings.chartPage}
         onRequestClose={() => {
-          setIsTourOpen(false)
+          // setIsTourOpen(false)
           closeChartPageOnboarding()
         }}
         // onRequestClose={() => {
         //   setIsTourOpen(false)
         //   localStorage.setItem('isOnboardingDone', 'true')
         // }}
-      />
+      />}
       <ChartGridContainer item xs={12} theme={theme}>
         <CardsPanel
           {...{
@@ -436,6 +440,9 @@ export const DefaultViewComponent = (
                 showChangePositionModeResult={showChangePositionModeResult}
                 isDefaultTerminalViewMode={isDefaultTerminalViewMode}
                 updateTerminalViewMode={updateTerminalViewMode}
+                getTooltipSettings={getTooltipSettings}
+                smartTerminalOnboarding={smartTerminalOnboarding}
+                updateTooltipSettingsMutation={updateTooltipSettingsMutation}
               />
             </TerminalContainer>
           )}
@@ -446,6 +453,16 @@ export const DefaultViewComponent = (
 }
 
 export const DefaultView = React.memo(DefaultViewComponent, (prev, next) => {
+  const tooltipQueryChanged =
+      prev.getTooltipSettings?.chartPage ===
+      next.getTooltipSettings?.chartPage &&
+      prev.getTooltipSettings?.chartPagePopup ===
+      next.getTooltipSettings?.chartPagePopup &&
+      prev.getTooltipSettings?.smartTerminal ===
+      next.getTooltipSettings?.smartTerminal &&
+      prev.getTooltipSettingsQueryLoading ===
+      next.getTooltipSettingsQueryLoading
+
   return (
     prev.marketType === next.marketType &&
     prev.selectedKey.keyId === next.selectedKey.keyId &&
@@ -468,7 +485,8 @@ export const DefaultView = React.memo(DefaultViewComponent, (prev, next) => {
     prev.layout.hideTradeHistory === next.layout.hideTradeHistory &&
     prev.isChartPageOnboardingDone === next.isChartPageOnboardingDone &&
     prev.layout.hideTradingViewChart === next.layout.hideTradingViewChart &&
-    isEqual(prev.theme, next.theme)
+    isEqual(prev.theme, next.theme) &&
+    tooltipQueryChanged
     // false
   )
 })

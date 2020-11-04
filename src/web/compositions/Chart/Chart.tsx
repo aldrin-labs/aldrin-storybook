@@ -157,6 +157,7 @@ export function ChartPageComponent(props: any) {
 
   const {
     theme,
+    updateTooltipSettingsMutation,
     getChartDataQuery: {
       getMyProfile: { _id } = { _id: '' },
       getTradingSettings: {
@@ -176,9 +177,49 @@ export function ChartPageComponent(props: any) {
       },
     },
     getTooltipSettingsQuery: {
-      getTooltipSettings = { chartPage: false, chartPagePopup: false },
+      loading: getTooltipSettingsQueryLoading = true,
+      getTooltipSettings = {
+        __typename: 'AccountSettingsTooltipSettings',
+        portfolioMain: false,
+        portfolioIndustry: false,
+        portfolioRebalance: false,
+        portfolioCorrelation: false,
+        portfolioOptimization: false,
+        chartPage: false,
+        chartPagePopup: false,
+        multiChartPage: false,
+        transactionPage: false,
+        smartTerminal: false,
+        onboarding: {
+          __typename: 'AccountSettingsTooltipSettingsOnboarding',
+          instructions: false,
+          portfolioName: false,
+          exchangeKey: false,
+          congratulations: false,
+        },
+      },
     } = {
-      getTooltipSettings: { chartPage: false, chartPagePopup: false },
+      loading: getTooltipSettingsQueryLoading = true,
+      getTooltipSettings: {
+        __typename: 'AccountSettingsTooltipSettings',
+        portfolioMain: false,
+        portfolioIndustry: false,
+        portfolioRebalance: false,
+        portfolioCorrelation: false,
+        portfolioOptimization: false,
+        chartPage: false,
+        chartPagePopup: false,
+        multiChartPage: false,
+        transactionPage: false,
+        smartTerminal: false,
+        onboarding: {
+          __typename: 'AccountSettingsTooltipSettingsOnboarding',
+          instructions: false,
+          portfolioName: false,
+          exchangeKey: false,
+          congratulations: false,
+        },
+      },
     },
     getChartLayoutQuery: {
       chart: { layout } = {
@@ -270,6 +311,8 @@ export function ChartPageComponent(props: any) {
     ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
     : { keyId: '', hedgeMode: false, isFuturesWarsKey: false }
 
+  console.log('getTooltipSettings in chart', getTooltipSettings)
+
   return (
     <MainContainer fullscreen={view !== 'default'}>
       <GlobalStyles />
@@ -289,18 +332,23 @@ export function ChartPageComponent(props: any) {
           minSpotNotional={minSpotNotional}
           minFuturesStep={minFuturesStep}
           isPairDataLoading={isPairDataLoading}
+          smartTerminalOnboarding={getTooltipSettings.smartTerminal}
+          updateTooltipSettingsMutation={updateTooltipSettingsMutation}
           themeMode={theme.palette.type}
           selectedKey={selectedKey}
+          getTooltipSettings={getTooltipSettings}
           activeExchange={activeExchange}
           terminalViewMode={terminalViewMode}
           closeChartPageOnboarding={closeChartPageOnboarding}
           isChartPageOnboardingDone={isChartPageOnboardingDone}
+          getTooltipSettingsQueryLoading={getTooltipSettingsQueryLoading}
           updateTerminalViewMode={(mode) => {
             if (mode === 'smartOrderMode') {
               finishJoyride({
                 updateTooltipSettingsMutation:
                   props.updateTooltipSettingsMutation,
-                getTooltipSettings,
+                // we have old value here after changing, it produce strange behavior
+                getTooltipSettings: null,
                 name: 'chartPagePopup',
               })
             }
@@ -318,7 +366,7 @@ export function ChartPageComponent(props: any) {
           changeChartLayoutMutation={changeChartLayoutMutation}
         />
       )}
-      <JoyrideOnboarding
+      {/* <JoyrideOnboarding
         continuous={true}
         stepIndex={stepIndex}
         showProgress={true}
@@ -327,7 +375,7 @@ export function ChartPageComponent(props: any) {
         steps={getChartSteps({ marketType })}
         open={getTooltipSettings.chartPage}
         handleJoyrideCallback={handleJoyrideCallback}
-      />
+      /> */}
     </MainContainer>
   )
 }
@@ -365,7 +413,11 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
     (prev.getTooltipSettingsQuery.getTooltipSettings &&
       prev.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup) ===
       (next.getTooltipSettingsQuery.getTooltipSettings &&
-        next.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup)
+        next.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup) &&
+    (prev.getTooltipSettingsQuery.getTooltipSettings &&
+      prev.getTooltipSettingsQuery.getTooltipSettings.smartTerminal) ===
+      (next.getTooltipSettingsQuery.getTooltipSettings &&
+        next.getTooltipSettingsQuery.getTooltipSettings.smartTerminal)
 
   return (
     // prev.marketType === next.marketType &&
@@ -412,7 +464,7 @@ export default compose(
     skip: (props: any) => !props.authenticated,
     query: GET_TOOLTIP_SETTINGS,
     name: 'getTooltipSettingsQuery',
-    fetchPolicy: 'cache-first',
+    fetchPolicy: 'cache-and-network',
     withOutSpinner: true,
     withoutLoading: true,
   }),

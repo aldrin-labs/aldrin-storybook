@@ -1079,6 +1079,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       minFuturesStep,
       maxLeverage,
       leverage: startLeverage,
+      smartTerminalOnboarding,
+      updateTooltipSettingsMutation,
+      getTooltipSettings
     } = this.props
 
     const {
@@ -1121,6 +1124,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       })
     }
 
+    console.log('getTooltipSettings', getTooltipSettings)
+
+
     return (
       <>
         {showConfirmationPopup && !editPopup && (
@@ -1137,7 +1143,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           />
         )}
         <CustomCard theme={theme} style={{ borderTop: 0 }}>
-          <SmartOrderOnboarding />
+          <SmartOrderOnboarding smartTerminalOnboarding={smartTerminalOnboarding} getTooltipSettings={getTooltipSettings} updateTooltipSettingsMutation={updateTooltipSettingsMutation}/>
           <TerminalHeaders>
             <TerminalHeader
               theme={theme}

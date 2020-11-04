@@ -102,8 +102,24 @@ export default React.memo(OrderStatusWrapper, (prev, next) => {
       prev.layout.hideDepthChart === next.layout.hideDepthChart &&
       prev.layout.hideOrderbook === next.layout.hideOrderbook &&
       prev.layout.hideTradeHistory === next.layout.hideTradeHistory &&
-      prev.layout.hideTradingViewChart === next.layout.hideTradingViewChart
+      prev.layout.hideTradingViewChart === next.layout.hideTradingViewChart &&
+      prev.smartTerminalOnboarding === next.smartTerminalOnboarding
   )
+  const tooltipQueryChanged =
+    (
+      prev.getTooltipSettings?.chartPage) ===
+      (
+        next.getTooltipSettings?.chartPage) &&
+    (
+      prev.getTooltipSettings?.chartPagePopup) ===
+      (
+        next.getTooltipSettings?.chartPagePopup) &&
+    (
+      prev.getTooltipSettings?.smartTerminal) ===
+      (
+        next.getTooltipSettings?.smartTerminal) &&
+        prev.getTooltipSettingsQueryLoading  ===
+        next.getTooltipSettingsQueryLoading
 
   return (
     prev.marketType === next.marketType &&
@@ -127,7 +143,9 @@ export default React.memo(OrderStatusWrapper, (prev, next) => {
     prev.layout.hideTradeHistory === next.layout.hideTradeHistory &&
     prev.isChartPageOnboardingDone === next.isChartPageOnboardingDone &&
     prev.layout.hideTradingViewChart === next.layout.hideTradingViewChart &&
-    isEqual(prev.theme, next.theme)
+    prev.smartTerminalOnboarding === next.smartTerminalOnboarding &&
+    isEqual(prev.theme, next.theme) &&
+    tooltipQueryChanged
     // false
   )
 })
