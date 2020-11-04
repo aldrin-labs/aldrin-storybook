@@ -1090,3 +1090,12 @@ export function useSelectedTokenAccounts(): [SelectedTokenAccounts, (newSelected
     );
   return [selectedTokenAccounts, setSelectedTokenAccounts]
 }
+
+export async function getOpenOrdersAccountsCustom(connection, wallet, market) {
+
+    return await market.findOpenOrdersAccountsForOwner(
+      connection,
+      wallet.publicKey,
+    )
+
+}

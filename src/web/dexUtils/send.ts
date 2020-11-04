@@ -17,7 +17,7 @@ import {
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { feeTiers } from '@sb/components/TradingTable/Fee/FeeTiers'
-import { getSelectedTokenAccountForMint } from './markets'
+import { getSelectedTokenAccountForMint, getOpenOrdersAccountsCustom } from './markets'
 
 export async function createTokenAccountTransaction({
   connection,
@@ -391,6 +391,7 @@ export async function placeOrder({
   console.log(params);
 
   const transaction = market.makeMatchOrdersTransaction(5);
+  console.log('placeOrder transaction: ', transaction)
   let {
     transaction: placeOrderTx,
     signers,
@@ -400,8 +401,12 @@ export async function placeOrder({
     10_000,
     10_000,
   );
+
+  console.log('placeOrder placeOrderTx', placeOrderTx)
   transaction.add(placeOrderTx);
   transaction.add(market.makeMatchOrdersTransaction(5));
+
+  console.log('transaction after add', transaction)
 
   return await sendTransaction({
     transaction,
@@ -412,7 +417,8 @@ export async function placeOrder({
     isOrderCreating: true,
     params,
     feeAccounts,
-    addSerumTransactionMutation
+    addSerumTransactionMutation,
+    market,
   });
 }
 
@@ -573,12 +579,16 @@ async function sendTransaction({
   isOrderCreating = false,
   params = {},
   feeAccounts = [],
-  addSerumTransactionMutation = ({ variables: {}}) => {}
+  addSerumTransactionMutation = ({ variables: {}}) => {},
+  market = {}
 }) {
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash('max')
   ).blockhash;
   transaction.signPartial(...signers);
+
+  console.log('sendTransaction transaction: ', transaction)
+
   const rawTransaction = (
     await wallet.signTransaction(transaction)
   ).serialize();
