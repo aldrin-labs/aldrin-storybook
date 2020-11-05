@@ -86,8 +86,16 @@ export class EditMarginPopup extends React.Component {
               width: '100%',
               padding: '0 0 .6rem 0',
             }}
-            firstHalfStyleProperties={SwitcherStyles(theme)}
-            secondHalfStyleProperties={SwitcherStyles(theme)}
+            firstHalfStyleProperties={{
+              ...SwitcherStyles(theme),
+              activeColor: theme.palette.white.main,
+              activeBorderColor: theme.palette.blue.tabs,
+            }}
+            secondHalfStyleProperties={{
+              ...SwitcherStyles(theme),
+              activeColor: theme.palette.white.main,
+              activeBorderColor: theme.palette.blue.tabs,
+            }}
             firstHalfIsActive={type === 1}
             changeHalf={this.toggleType}
           />

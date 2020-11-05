@@ -217,10 +217,10 @@ export const StyledSelect = styled.select`
   width: 100%;
   background: ${(props) =>
     (!props.disabled &&
-      (props.theme &&
+      props.theme &&
         props.theme.palette &&
         props.theme.palette.white &&
-        props.theme.palette.white.background)) ||
+        props.theme.palette.white.background) ||
     '#16253D'};
   border: ${(props) =>
     (props.theme &&
