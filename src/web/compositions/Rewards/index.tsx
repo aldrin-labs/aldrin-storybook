@@ -187,20 +187,21 @@ const volumeLabels = [
 
 const Table = styled.table`
   width: 100%;
+  border-collapse: collapse;
+
+  & tr:last-child td {
+    border-bottom: none;
+  }
 `
 const TableRow = styled.tr``
 
 const Cell = styled.td`
+  border-bottom: 0.1rem solid #61d8e6;
   width: 25%;
   color: #cad4d6;
-  border-bottom: 1px solid #c7ffd0;
-  border-right: 1px solid #c7ffd0;
   height: 5rem;
   margin: 3rem 1rem;
   padding-left: 2rem;
-  &:last-child {
-    border-right: none;
-  }
   &:first-child {
     width: 6%;
   }
@@ -786,22 +787,33 @@ const RewardsRoute = (props) => {
           <Canvas dcfiEarned={dcfiEarned} />
         </Card> */}
       </RowContainer>
-      <RowContainer align={'flex-start'} style={{ paddingBottom: '10rem' }}>
+      <RowContainer
+        direction={'column'}
+        align={'flex-start'}
+        style={{ paddingBottom: '10rem' }}
+      >
         <div
           style={{
-            width: '50%',
+            width: '100%',
             display: 'flex',
             justifyContent: 'center',
             flexDirection: 'column',
             alignItems: 'center',
           }}
         >
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              flexDirection: 'row',
+            }}
+          ></div>
           <Title style={{ paddingBottom: '3rem' }} theme={theme}>
             Top 20 users{' '}
           </Title>
           <Card
             style={{
-              width: 'calc(100% - 4rem)',
+              width: '70%',
               height: 'auto',
               padding: '0 3rem',
             }}
@@ -813,7 +825,7 @@ const RewardsRoute = (props) => {
                 <HeaderCell>Name</HeaderCell>
                 <HeaderCell>Followers</HeaderCell>
               </TableRow>
-              {getTopTwitterFarmingData.map((el, index) => {
+              {/* {getTopTwitterFarmingData.map((el, index) => {
                 return (
                   <TableRow>
                     <Cell>{index + 1}</Cell>
@@ -821,13 +833,33 @@ const RewardsRoute = (props) => {
                     <Cell>{el.userFollowersCount}</Cell>
                   </TableRow>
                 )
-              })}
+              })} */}
+              <TableRow>
+                <Cell>25.6.2020</Cell>
+                <Cell>http://flosssols.dfghjkl56789</Cell>
+                <Cell>200dcfi</Cell>
+              </TableRow>
+              <TableRow>
+                <Cell>25.6.2020</Cell>
+                <Cell>http://flosssols.dfghjkl56789</Cell>
+                <Cell>200dcfi</Cell>
+              </TableRow>
+              <TableRow>
+                <Cell>25.6.2020</Cell>
+                <Cell>http://flosssols.dfghjkl56789</Cell>
+                <Cell>200dcfi</Cell>
+              </TableRow>
+              <TableRow>
+                <Cell>25.6.2020</Cell>
+                <Cell>http://flosssols.dfghjkl56789</Cell>
+                <Cell>200dcfi</Cell>
+              </TableRow>
             </Table>
           </Card>
         </div>
         <div
           style={{
-            width: '50%',
+            width: '100%',
             display: 'flex',
             justifyContent: 'center',
             flexDirection: 'column',
@@ -839,7 +871,7 @@ const RewardsRoute = (props) => {
           </Title>
           <Card
             style={{
-              width: 'calc(100% - 4rem)',
+              width: '70%',
               height: 'auto',
               padding: '0 3rem',
             }}
@@ -851,7 +883,7 @@ const RewardsRoute = (props) => {
                 <HeaderCell>Recent tweets</HeaderCell>
                 <HeaderCell>Received DCFI</HeaderCell>
               </TableRow>
-              {getUserRetweetsHistory.map((el, index) => {
+              {/* {getUserRetweetsHistory.map((el, index) => {
                 return (
                   <TableRow>
                     <Cell>{index + 1}</Cell>
@@ -859,7 +891,35 @@ const RewardsRoute = (props) => {
                     <Cell>{el.farmedDCFI}</Cell>
                   </TableRow>
                 )
-              })}
+              })} */}
+              <TableRow>
+                <Cell>1</Cell>
+                <Cell>flosssols</Cell>
+                <Cell>@flosssols</Cell>
+                <Cell>1550</Cell>
+                <Cell>2000</Cell>
+              </TableRow>
+              <TableRow>
+                <Cell>1</Cell>
+                <Cell>flosssols</Cell>
+                <Cell>@flosssols</Cell>
+                <Cell>1550</Cell>
+                <Cell>2000</Cell>
+              </TableRow>
+              <TableRow>
+                <Cell>1</Cell>
+                <Cell>flosssols</Cell>
+                <Cell>@flosssols</Cell>
+                <Cell>1550</Cell>
+                <Cell>2000</Cell>
+              </TableRow>
+              <TableRow>
+                <Cell>1</Cell>
+                <Cell>flosssols</Cell>
+                <Cell>@flosssols</Cell>
+                <Cell>1550</Cell>
+                <Cell>2000</Cell>
+              </TableRow>
             </Table>
           </Card>
         </div>
