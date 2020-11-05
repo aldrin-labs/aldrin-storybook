@@ -786,7 +786,7 @@ const RewardsRoute = (props) => {
           <Canvas dcfiEarned={dcfiEarned} />
         </Card> */}
       </RowContainer>
-      <RowContainer style={{ paddingBottom: '10rem' }}>
+      <RowContainer align={'flex-start'} style={{ paddingBottom: '10rem' }}>
         <div
           style={{
             width: '50%',

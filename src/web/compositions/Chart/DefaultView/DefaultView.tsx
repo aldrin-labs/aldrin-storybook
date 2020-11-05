@@ -12,9 +12,10 @@ import { TablesBlockWrapper } from '@sb/components/TradingWrapper/styles'
 import { TradeHistory, OrderbookAndDepthChart } from '../components'
 import CardsPanel from '../components/CardsPanel'
 import { GuestMode } from '../components/GuestMode/GuestMode'
-import ChartCardHeader from '@sb/components/ChartCardHeader'
+import ChartCardHeader, { TriggerTitle } from '@sb/components/ChartCardHeader'
 import { HideArrow } from '../components/HideArrow/HideArrow'
 import { isEqual } from 'lodash'
+import { TerminalModeButton } from '@sb/components/TradingWrapper/styles'
 
 const TerminalContainer = ({
   isDefaultTerminalViewMode,
@@ -25,16 +26,16 @@ const TerminalContainer = ({
   children: React.ReactChild
   theme: Theme
 }) => (
-  <TablesBlockWrapper
-    item
-    container
-    theme={theme}
-    xs={isDefaultTerminalViewMode ? 5 : 12}
-    isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-  >
-    {children}
-  </TablesBlockWrapper>
-)
+    <TablesBlockWrapper
+      item
+      container
+      theme={theme}
+      xs={isDefaultTerminalViewMode ? 5 : 12}
+      isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+    >
+      {children}
+    </TablesBlockWrapper>
+  )
 
 import {
   Container,
@@ -84,6 +85,8 @@ export const DefaultViewComponent = (
     layout,
     changeChartLayoutMutation,
   } = props
+
+  const [chartExchange, updateChartExchange] = useState('binance')
 
   if (!currencyPair) {
     return null
@@ -183,30 +186,54 @@ export const DefaultViewComponent = (
                   borderRight: 'none',
                 }}
               >
-                <ChartCardHeader
+                <TriggerTitle
                   theme={theme}
                   style={{
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
+                    padding: 0
                   }}
                 >
                   <span
                     style={{
-                      width: '40%',
+                      width: 'calc(100% - 20rem)',
                       whiteSpace: 'pre-line',
                       textAlign: 'left',
+                      color: theme.palette.dark.main,
+                      textTransform: 'capitalize',
+                      fontSize: '1.3rem',
+                      lineHeight: '1rem',
+                      paddingLeft: '1rem'
                     }}
                   >
                     Chart
                   </span>
-                </ChartCardHeader>
+                  <TerminalModeButton
+                    theme={theme}
+                    active={chartExchange === 'binance'}
+                    style={{ width: '10rem' }}
+                    onClick={() => {
+                      updateChartExchange('binance')
+                    }}
+                  >
+                    Binance
+                  </TerminalModeButton>
+                  <TerminalModeButton
+                    theme={theme}
+                    active={chartExchange === 'serum'}
+                    style={{ width: '10rem', borderRight: 0 }}
+                    onClick={() => updateChartExchange('serum')}
+                  >
+                    Serum
+                  </TerminalModeButton>
+                </TriggerTitle>
                 <SingleChart
                   name=""
                   themeMode={themeMode}
                   additionalUrl={`/?symbol=${base}/${quote}_${String(
                     marketType
-                  )}&user_id=${id}`}
+                  )}_${chartExchange}&user_id=${id}`}
                 />
               </CustomCard>
             </ChartsContainer>
@@ -227,13 +254,13 @@ export const DefaultViewComponent = (
                     flexBasis: hideOrderbook
                       ? '0%'
                       : hideDepthChart
-                      ? '50%'
-                      : '65%',
+                        ? '50%'
+                        : '65%',
                     maxWidth: hideOrderbook
                       ? '0%'
                       : hideDepthChart
-                      ? '50%'
-                      : '65%',
+                        ? '50%'
+                        : '65%',
                   }}
                 >
                   {!hideOrderbook && (
@@ -270,13 +297,13 @@ export const DefaultViewComponent = (
                     flexBasis: hideOrderbook
                       ? '100%'
                       : hideDepthChart
-                      ? '50%'
-                      : '35%',
+                        ? '50%'
+                        : '35%',
                     maxWidth: hideOrderbook
                       ? '100%'
                       : hideDepthChart
-                      ? '50%'
-                      : '35%',
+                        ? '50%'
+                        : '35%',
                   }}
                 >
                   {!hideTradeHistory && (
