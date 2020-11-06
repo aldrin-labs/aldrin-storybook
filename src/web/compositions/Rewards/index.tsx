@@ -2,6 +2,14 @@ import React, { useState, useEffect } from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
+import Timer from 'react-compound-timer'
+
+import { HarvestPopup } from '@sb/compositions/Rewards/components/HarvestPopup'
+
+import dayjs from 'dayjs'
+
+const utc = require('dayjs/plugin/utc')
+dayjs.extend(utc)
 
 import { Loading } from '@sb/components/Loading/Loading'
 
@@ -12,10 +20,14 @@ import { getTotalSerumVolume } from '@core/graphql/queries/chart/getTotalSerumVo
 import { getTopTwitterFarming } from '@core/graphql/queries/serum/getTopTwitterFarming'
 import { addSerumTransaction } from '@core/graphql/mutations/chart/addSerumTransaction'
 import { getUserRetweetsHistory } from '@core/graphql/queries/serum/getUserRetweetsHistory'
+import { getAllRetweetsHistory } from '@core/graphql/queries/serum/getAllRetweetsHistory'
 
 import serum from '@icons/Serum.svg'
 import decefi from '@icons/decefi.svg'
 import blackTwitter from '@icons/blackTwitter.svg'
+import greenArrow from '@icons/greenArrow.svg'
+import greenTweet from '@icons/greenTweet.svg'
+import lightSub from '@icons/lightSub.svg'
 
 import { withTheme } from '@material-ui/styles'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -84,8 +96,19 @@ export const Text = styled.div`
   text-transform: none;
 `
 
-const CardText = styled(Text)`
-  font-weight: bold;
+export const CardText = styled(Text)`
+  font-weight: ${(props) => props.fontWeight || 'bold'};
+  font-size: ${(props) => props.fontSize || '1.5rem'};
+  .twitterRules {
+    visibility: hidden;
+    position: absolute;
+  }
+
+  &:hover .twitterRules {
+    z-index: 100;
+    visibility: visible;
+    position: absolute;
+  }
 `
 
 export const Value = styled.div`
@@ -104,7 +127,7 @@ export const Button = styled.button`
   font-weight: bold;
   text-transform: capitalize;
   background: ${(props) => props.color || theme.palette.blue.serum};
-  border-radius: 4px;
+  border-radius: 2px;
   border: none;
 `
 
@@ -139,7 +162,7 @@ const Form = styled.form`
 
 const LinkInput = styled.input`
   padding-left: 1.5rem;
-  border: 0.1rem solid #c7ffd0;
+  border: 0.1rem solid ${theme.palette.blue.serum};
   border-radius: 0.8rem;
   background-color: transparent;
   height: 5rem;
@@ -198,21 +221,24 @@ const TableRow = styled.tr``
 const Cell = styled.td`
   border-bottom: 0.1rem solid #61d8e6;
   width: 25%;
+  font-size: 15px;
   color: #cad4d6;
   height: 5rem;
+  text-transform: none;
   margin: 3rem 1rem;
   padding-left: 2rem;
   &:first-child {
-    width: 6%;
+    width: 15%;
   }
 `
 const HeaderCell = styled.td`
+  border-bottom: 0.1rem solid #61d8e6;
   height: 5rem;
   padding-left: 2rem;
-  border: none;
+  // border: none;
   font-size: 1.6rem;
   text-transform: capitalize;
-  color: #9f9f9f;
+  color: #fff;
   font-size: bold;
 `
 
@@ -230,6 +256,9 @@ const getPhaseFromTotal = (total) => {
 
 const RewardsRoute = (props) => {
   const [linkFromTwitter, setTwittersLink] = useState('')
+
+  const [isHarvestPopupOpen, setOpen] = useState(false)
+
   const [isLoading, updateIsLoading] = useState(false)
   const {
     theme,
@@ -240,6 +269,8 @@ const RewardsRoute = (props) => {
     getTotalSerumVolumeQueryRefetch,
     getTopTwitterFarmingQuery,
     getUserRetweetsHistoryQuery,
+    getAllRetweetsHistoryQuery,
+    getAllRetweetsHistoryQueryRefetch,
     getUserRetweetsHistoryQueryRefetch,
     getTopTwitterFarmingQueryRefetch,
   } = props
@@ -292,6 +323,14 @@ const RewardsRoute = (props) => {
 
   const { getUserRetweetsHistory = [] } = getUserRetweetsHistoryQuery || {
     getUserRetweetsHistory: [],
+  }
+
+  const { getAllRetweetsHistory = [] } = getAllRetweetsHistoryQuery || {
+    getAllRetweetsHistory: [],
+  }
+
+  const toggleIsOpen = () => {
+    setOpen(!isHarvestPopupOpen)
   }
 
   return (
@@ -429,13 +468,13 @@ const RewardsRoute = (props) => {
           <Button></Button>
         </Card> */}
         <Card theme={theme}>
-          <RowContainer style={{ height: '30%' }}>
+          <RowContainer style={{ height: '21%' }}>
             <SvgIcon src={decefi} width="30%" height="auto" />
           </RowContainer>
           <RowContainer
-            justify={'space-around'}
+            justify={'none'}
             style={{
-              height: '50%',
+              height: '55%',
               flexDirection: 'column',
             }}
           >
@@ -443,14 +482,16 @@ const RewardsRoute = (props) => {
             <CardText
               theme={theme}
               width={'auto'}
-              avernikoz
               style={{ paddingBottom: '1rem' }}
             >
               DCFI earned
             </CardText>
             <RowContainer>
-              <Link
-                to={'/chart'}
+              <HarvestPopup
+                isHarvestPopupOpen={isHarvestPopupOpen}
+                toggleIsOpen={toggleIsOpen}
+              ></HarvestPopup>
+              <a
                 style={{
                   width: 'calc(50% - 2rem)',
                   textDecoration: 'none',
@@ -461,17 +502,20 @@ const RewardsRoute = (props) => {
                 <BtnCustom
                   theme={theme}
                   btnColor={theme.palette.grey.main}
-                  backgroundColor={theme.palette.blue.serum}
-                  hoverBackground={theme.palette.blue.serum}
+                  backgroundColor={'#C7FFD0'}
+                  hoverBackground={'#C7FFD0'}
                   padding={'1.5rem 0'}
                   height={'5rem'}
                   fontSize={'1.6rem'}
                   btnWidth={'100%'}
                   textTransform={'none'}
+                  onClick={() => {
+                    toggleIsOpen()
+                  }}
                 >
-                  Harvest (coming soon)
+                  Harvest
                 </BtnCustom>
-              </Link>
+              </a>
               <a
                 style={{
                   width: 'calc(50% - 2rem)',
@@ -513,7 +557,7 @@ const RewardsRoute = (props) => {
                 </BtnCustom>
               </a>
             </RowContainer>
-            <RowContainer>
+            <RowContainer style={{ paddingBottom: '1rem' }}>
               <Form>
                 <LinkInput
                   value={linkFromTwitter}
@@ -527,7 +571,9 @@ const RewardsRoute = (props) => {
                   theme={theme}
                   btnColor={theme.palette.grey.main}
                   backgroundColor={
-                    isLoading ? theme.palette.grey.text : '#C7FFD0'
+                    isLoading
+                      ? theme.palette.grey.text
+                      : theme.palette.blue.serum
                   }
                   height={'5rem'}
                   btnWidth={'calc((100% - 4rem) / 2)'}
@@ -592,6 +638,8 @@ const RewardsRoute = (props) => {
                           getTopTwitterFarmingQueryRefetch()
                         getUserRetweetsHistoryQueryRefetch &&
                           getUserRetweetsHistoryQueryRefetch()
+                        getAllRetweetsHistoryQueryRefetch &&
+                          getAllRetweetsHistoryQueryRefetch()
                       }, 1000)
                     }
 
@@ -609,6 +657,110 @@ const RewardsRoute = (props) => {
                   )}
                 </BtnCustom>
               </Form>
+            </RowContainer>
+            <RowContainer style={{ position: 'absolute', top: '63rem' }}>
+              <CardText color={'#61D8E6'} theme={theme}>
+                Twitter farming rules
+                <div
+                  className="twitterRules"
+                  style={{ transform: 'translateX(-35.5%) translateY(52%)' }}
+                >
+                  <Card
+                    style={{ width: '60rem', height: '40rem' }}
+                    theme={theme}
+                  >
+                    <RowContainer
+                      style={{
+                        width: '90%',
+                        borderBottom: '2px solid #424B68',
+                        paddingBottom: '2rem',
+                      }}
+                    >
+                      <CardText fontWeight={'400'} theme={theme}>
+                        Share a tweet and earn $DCFI everyday
+                      </CardText>
+                    </RowContainer>
+
+                    <RowContainer>
+                      <CardText
+                        theme={theme}
+                        fontSize={'2rem'}
+                        fontWeight={'400'}
+                      >
+                        Requirements
+                      </CardText>
+                    </RowContainer>
+                    <RowContainer>
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          width: '50%',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <SvgIcon
+                          src={greenTweet}
+                          width={'3rem'}
+                          height={'3rem'}
+                          style={{ marginBottom: '2rem' }}
+                        />
+                        <CardText theme={theme} fontSize={'2rem'}>
+                          At least 200 DCFI
+                        </CardText>
+                        <CardText fontWeight={'400'} theme={theme}>
+                          should be farmed by trading SRM{' '}
+                        </CardText>
+                      </div>
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          width: '50%',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <SvgIcon
+                          src={lightSub}
+                          width={'3rem'}
+                          height={'3rem'}
+                          style={{ marginBottom: '2rem' }}
+                        />
+                        <CardText theme={theme} fontSize={'2rem'}>
+                          At least 100 followers
+                        </CardText>
+                        <CardText fontWeight={'400'} theme={theme}>
+                          should be on your Twitter account
+                        </CardText>
+                      </div>
+                    </RowContainer>
+                    <RowContainer
+                      style={{
+                        borderTop: '2px solid #424B68',
+                        paddingTop: '2rem',
+                        width: '90%',
+                      }}
+                    >
+                      <CardText
+                        fontWeight={'400'}
+                        theme={theme}
+                        style={{ width: '90%' }}
+                      >
+                        Every day 2000 $DCFI reward will be distributed between
+                        Top-20 accounts that made $DCFI retweet, ranked by
+                        followers count. If there were less than 20 retweets,
+                        the reward will be distributed among all
+                      </CardText>
+                    </RowContainer>
+                  </Card>
+                </div>
+              </CardText>
+              <SvgIcon
+                src={greenArrow}
+                width={'1.3rem'}
+                height={'1.3rem'}
+                style={{ marginLeft: '1rem' }}
+              />{' '}
             </RowContainer>
           </RowContainer>
         </Card>
@@ -803,14 +955,82 @@ const RewardsRoute = (props) => {
         >
           <div
             style={{
+              width: '69%',
               display: 'flex',
               justifyContent: 'space-between',
               flexDirection: 'row',
+              alignItems: 'flex-start',
             }}
-          ></div>
-          <Title style={{ paddingBottom: '3rem' }} theme={theme}>
-            Top 20 users{' '}
-          </Title>
+          >
+            {' '}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'flex-end',
+                flexDirection: 'row',
+                color: '#9f9f9f',
+                paddingBottom: '3rem',
+              }}
+            >
+              <Title theme={theme}>Twitter Farming Leaderboard </Title>
+              <a
+                style={{
+                  fontFamily: 'DM Sans',
+                  fontStyle: 'normal',
+                  fontWeight: 'bold',
+                  fontSize: '15px',
+                  paddingLeft: '.5rem',
+                }}
+              >
+                Today
+              </a>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <CardSubTitle>Until next round: </CardSubTitle>
+              <div
+                style={{
+                  color: '#c7ffd0',
+                  fontSize: '2.5rem',
+                  fontFamily: 'DM Sans',
+                  fontWeight: 'bold',
+                  marginLeft: '2rem',
+                }}
+              >
+                <Timer
+                  initialTime={
+                    +dayjs
+                      .utc()
+                      .endOf('day')
+                      .valueOf() - +dayjs.utc().valueOf()
+                  }
+                  formatValue={(value) => `${value < 10 ? `0${value}` : value}`}
+                  direction="backward"
+                  startImmediately={true}
+                  checkpoints={[
+                    {
+                      time: 0,
+                      callback: () => {
+                        console.log('funding rate finished')
+                        // getFundingRateQueryRefetch()
+                        // this.setState((prev) => ({ key: prev.key + 1 }))
+                      },
+                    },
+                  ]}
+                >
+                  {() => (
+                    <React.Fragment>
+                      <Timer.Hours />
+                      {':'}
+                      <Timer.Minutes />
+                      {':'}
+                      <Timer.Seconds />
+                    </React.Fragment>
+                  )}
+                </Timer>
+              </div>
+            </div>
+          </div>
+
           <Card
             style={{
               width: '70%',
@@ -823,37 +1043,31 @@ const RewardsRoute = (props) => {
               <TableRow>
                 <HeaderCell>#</HeaderCell>
                 <HeaderCell>Name</HeaderCell>
+                <HeaderCell>Twitter Id</HeaderCell>
                 <HeaderCell>Followers</HeaderCell>
+                <HeaderCell>Reward</HeaderCell>
               </TableRow>
-              {/* {getTopTwitterFarmingData.map((el, index) => {
+              {getTopTwitterFarmingData.map((el, index) => {
                 return (
                   <TableRow>
                     <Cell>{index + 1}</Cell>
                     <Cell>{el.tweetUsername}</Cell>
+                    <Cell>
+                      <a
+                        style={{ color: '#c7ffd0', textDecoration: 'none' }}
+                        href={'https://twitter.com/' + el.tweetUsername}
+                      >
+                        {'@' + el.tweetUsername}
+                      </a>
+                    </Cell>
                     <Cell>{el.userFollowersCount}</Cell>
+                    <Cell>
+                      {(2000 / getTopTwitterFarmingData.length).toFixed(0) +
+                        ' DCFI'}
+                    </Cell>
                   </TableRow>
                 )
-              })} */}
-              <TableRow>
-                <Cell>25.6.2020</Cell>
-                <Cell>http://flosssols.dfghjkl56789</Cell>
-                <Cell>200dcfi</Cell>
-              </TableRow>
-              <TableRow>
-                <Cell>25.6.2020</Cell>
-                <Cell>http://flosssols.dfghjkl56789</Cell>
-                <Cell>200dcfi</Cell>
-              </TableRow>
-              <TableRow>
-                <Cell>25.6.2020</Cell>
-                <Cell>http://flosssols.dfghjkl56789</Cell>
-                <Cell>200dcfi</Cell>
-              </TableRow>
-              <TableRow>
-                <Cell>25.6.2020</Cell>
-                <Cell>http://flosssols.dfghjkl56789</Cell>
-                <Cell>200dcfi</Cell>
-              </TableRow>
+              })}
             </Table>
           </Card>
         </div>
@@ -866,9 +1080,123 @@ const RewardsRoute = (props) => {
             alignItems: 'center',
           }}
         >
-          <Title style={{ paddingBottom: '3rem' }} theme={theme}>
-            Your retweet history{' '}
-          </Title>
+          <div
+            style={{
+              width: '69%',
+              display: 'flex',
+              justifyContent: 'space-between',
+              flexDirection: 'row',
+              paddingTop: '4rem',
+            }}
+          >
+            <Title style={{ paddingBottom: '3rem' }} theme={theme}>
+              Your retweet history{' '}
+            </Title>
+            <CardSubTitle style={{ display: 'flex', alignItems: 'center' }}>
+              Total farmed:{' '}
+              <div
+                style={{
+                  color: '#c7ffd0',
+                  fontSize: '2.5rem',
+                  fontFamily: 'DM Sans',
+                  fontWeight: 'bold',
+                  marginLeft: '2rem',
+                }}
+              >
+                {getUserRetweetsHistory
+                  .reduce((acc, currentEl) => acc + currentEl.farmedDCFI, 0)
+                  .toFixed(0)}
+              </div>
+            </CardSubTitle>
+          </div>
+
+          <Card
+            style={{
+              width: '70%',
+              height: 'auto',
+              padding: '0 3rem',
+            }}
+            theme={theme}
+          >
+            <Table>
+              <TableRow>
+                <HeaderCell>Date</HeaderCell>
+                <HeaderCell>Tweet</HeaderCell>
+                <HeaderCell>Reward</HeaderCell>
+              </TableRow>
+              {getUserRetweetsHistory.map((el, index) => {
+                return (
+                  <TableRow>
+                    <Cell>{dayjs.unix(el.timestamp).format('ll')}</Cell>
+                    <Cell style={{ color: '#c7ffd0', textDecoration: 'none' }}>
+                      {el.tweetLink}
+                    </Cell>
+                    <Cell>{el.farmedDCFI.toFixed(0)}</Cell>
+                  </TableRow>
+                )
+              })}
+            </Table>
+          </Card>
+        </div>
+        <div
+          style={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            flexDirection: 'column',
+            alignItems: 'center',
+            paddingTop: '3rem',
+          }}
+        >
+          <div
+            style={{
+              width: '69%',
+              display: 'flex',
+              justifyContent: 'space-between',
+              flexDirection: 'row',
+            }}
+          >
+            {' '}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'flex-end',
+                flexDirection: 'row',
+                color: '#9f9f9f',
+                paddingBottom: '3rem',
+              }}
+            >
+              <Title theme={theme}>Twitter Farming Leaderboard </Title>
+              <a
+                style={{
+                  fontFamily: 'DM Sans',
+                  fontStyle: 'normal',
+                  fontWeight: 'bold',
+                  fontSize: '15px',
+                  paddingLeft: '.5rem',
+                }}
+              >
+                All time
+              </a>
+            </div>
+            <CardSubTitle style={{ display: 'flex', alignItems: 'center' }}>
+              Total farmed:{' '}
+              <div
+                style={{
+                  color: '#c7ffd0',
+                  fontSize: '2.5rem',
+                  fontFamily: 'DM Sans',
+                  fontWeight: 'bold',
+                  marginLeft: '2rem',
+                }}
+              >
+                {getAllRetweetsHistory
+                  .reduce((acc, currentEl) => acc + currentEl.farmedDCFI, 0)
+                  .toFixed(0)}
+              </div>
+            </CardSubTitle>
+          </div>
+
           <Card
             style={{
               width: '70%',
@@ -880,46 +1208,29 @@ const RewardsRoute = (props) => {
             <Table>
               <TableRow>
                 <HeaderCell>#</HeaderCell>
-                <HeaderCell>Recent tweets</HeaderCell>
-                <HeaderCell>Received DCFI</HeaderCell>
+                <HeaderCell>Name</HeaderCell>
+                <HeaderCell>Twitter Id</HeaderCell>
+                <HeaderCell>Followers</HeaderCell>
+                <HeaderCell>Reward</HeaderCell>
               </TableRow>
-              {/* {getUserRetweetsHistory.map((el, index) => {
+              {getAllRetweetsHistory.map((el, index) => {
                 return (
                   <TableRow>
                     <Cell>{index + 1}</Cell>
-                    <Cell>{el.tweetLink}</Cell>
-                    <Cell>{el.farmedDCFI}</Cell>
+                    <Cell>{el.tweetUsername}</Cell>
+                    <Cell>
+                      <a
+                        style={{ color: '#c7ffd0', textDecoration: 'none' }}
+                        href={'https://twitter.com/' + el.tweetUsername}
+                      >
+                        {'@' + el.tweetUsername}
+                      </a>
+                    </Cell>
+                    <Cell>{el.userFollowersCount}</Cell>
+                    <Cell>{el.farmedDCFI.toFixed(0)}</Cell>
                   </TableRow>
                 )
-              })} */}
-              <TableRow>
-                <Cell>1</Cell>
-                <Cell>flosssols</Cell>
-                <Cell>@flosssols</Cell>
-                <Cell>1550</Cell>
-                <Cell>2000</Cell>
-              </TableRow>
-              <TableRow>
-                <Cell>1</Cell>
-                <Cell>flosssols</Cell>
-                <Cell>@flosssols</Cell>
-                <Cell>1550</Cell>
-                <Cell>2000</Cell>
-              </TableRow>
-              <TableRow>
-                <Cell>1</Cell>
-                <Cell>flosssols</Cell>
-                <Cell>@flosssols</Cell>
-                <Cell>1550</Cell>
-                <Cell>2000</Cell>
-              </TableRow>
-              <TableRow>
-                <Cell>1</Cell>
-                <Cell>flosssols</Cell>
-                <Cell>@flosssols</Cell>
-                <Cell>1550</Cell>
-                <Cell>2000</Cell>
-              </TableRow>
+              })}
             </Table>
           </Card>
         </div>
@@ -963,5 +1274,11 @@ export default compose(
       publicKey: props.publicKey,
     }),
     // skip: (props: any) => !props.publicKey,
+  }),
+  queryRendererHoc({
+    query: getAllRetweetsHistory,
+    name: 'getAllRetweetsHistoryQuery',
+    pollInterval: 60000,
+    fetchPolicy: 'cache-and-network',
   })
 )(RewardsRoute)
