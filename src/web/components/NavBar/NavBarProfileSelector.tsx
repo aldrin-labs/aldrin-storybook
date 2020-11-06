@@ -81,13 +81,13 @@ const NavBarProfileSelector = ({
           {
             text: 'Accounts',
             to: '/profile/accounts',
-            onMouseOver: () => {
-              if (notAuthPages || !loginStatus) {
-                return
-              }
+            // onMouseOver: () => {
+              // if (notAuthPages || !loginStatus) {
+              //   return
+              // }
 
-              prefetchProfileAccounts()
-            },
+              // prefetchProfileAccounts()
+            // },
           },
           {
             text: 'Settings',
