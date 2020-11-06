@@ -477,11 +477,13 @@ export const WatchSubvalue = styled.span`
 `
 
 export const BalancesContainer = styled(
-  ({ isDefaultTerminalViewMode, ...rest }) => <Grid {...rest} />
+  ({ isDefaultTerminalViewMode, isSmartOrderMode, ...rest }) => <Grid {...rest} />
 )`
+
   position: relative;
   padding: 0;
   height: ${(props) => (props.isDefaultTerminalViewMode ? '40%' : '50%')};
+  display: ${(props) => (props.isSmartOrderMode && 'none;')};
 `
 
 export const SmartTerminalContainer = styled(Grid)`
