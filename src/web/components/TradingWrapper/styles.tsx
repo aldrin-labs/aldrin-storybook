@@ -10,9 +10,13 @@ export const TablesBlockWrapper = styled(Grid)`
   position: relative;
   height: ${({
     isDefaultTerminalViewMode,
+    isDefaultOnlyTables,
   }: {
-    isDefaultTerminalViewMode: boolean
+    isDefaultTerminalViewMode: boolean,
+    isDefaultOnlyTables: boolean
   }) => (isDefaultTerminalViewMode ? '40%' : '50%')};
+
+  display: ${(props) => (props.isDefaultOnlyTables && 'none;')}; 
 
   && {
     box-shadow: none !important;

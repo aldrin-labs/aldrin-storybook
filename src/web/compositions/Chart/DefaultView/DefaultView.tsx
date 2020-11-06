@@ -25,10 +25,12 @@ import { isEqual } from 'lodash'
 
 const TerminalContainer = ({
   isDefaultTerminalViewMode,
+  isDefaultOnlyTables,
   children,
   theme,
 }: {
   isDefaultTerminalViewMode: boolean
+  isDefaultOnlyTables: boolean
   children: React.ReactChild
   theme: Theme
 }) => (
@@ -38,6 +40,7 @@ const TerminalContainer = ({
     theme={theme}
     xs={isDefaultTerminalViewMode ? 5 : 12}
     isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+    isDefaultOnlyTables={isDefaultOnlyTables}
   >
     {children}
   </TablesBlockWrapper>
@@ -398,13 +401,14 @@ export const DefaultViewComponent = (
               />
             </TradingTabelContainer>
           )}
-          {authenticated && !isSmartOrderMode && (
+          {authenticated && (
             <BalancesContainer
               item
               xs={1}
               theme={theme}
               id="balances"
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+              isSmartOrderMode={isSmartOrderMode}
             >
               <Balances
                 pair={currencyPair.split('_')}
@@ -416,10 +420,11 @@ export const DefaultViewComponent = (
             </BalancesContainer>
           )}
 
-          {authenticated && !isDefaultOnlyTables && (
+          {authenticated && (
             <TerminalContainer
               theme={theme}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+              isDefaultOnlyTables={isDefaultOnlyTables}
             >
               <TradingComponent
                 selectedKey={selectedKey}

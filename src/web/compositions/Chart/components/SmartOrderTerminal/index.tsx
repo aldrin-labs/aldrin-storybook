@@ -1126,7 +1126,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       })
     }
 
-    console.log('getTooltipSettings', getTooltipSettings)
+    // console.log('getTooltipSettings', getTooltipSettings)
 
 
     return (
