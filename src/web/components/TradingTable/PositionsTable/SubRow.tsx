@@ -56,20 +56,34 @@ const SubRow = ({
             color: theme.palette.blue.main,
           }}
         />
-        <Input
-          theme={theme}
-          width={'30%'}
-          padding={'0 .5rem 0 1rem'}
-          value={amount}
-          placeholder={'amount'}
-          onChange={(e) => {
-            updateCloseAmount(e.target.value)
-          }}
-          inputStyles={{
-            textTransform: 'uppercase',
-            color: theme.palette.blue.main,
-          }}
-        />
+        <div style={{ position: 'relative', width: '30%' }}>
+          <Input
+            theme={theme}
+            width={'100%'}
+            padding={'0 .5rem 0 1rem'}
+            value={amount}
+            placeholder={'amount'}
+            onChange={(e) => {
+              updateCloseAmount(e.target.value)
+            }}
+            inputStyles={{
+              textTransform: 'uppercase',
+              color: theme.palette.blue.main,
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              right: '2rem',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              color: theme.palette.grey.light,
+              fontSize: '1.6rem',
+            }}
+          >
+            %
+          </div>
+        </div>
 
         <BtnCustom
           btnWidth="30%"

@@ -295,7 +295,7 @@ export const Balances = ({
                 <div style={{ height: '100%', width: '100%' }}>
                   <BalanceFuturesContainer theme={theme}>
                     <BalanceFuturesTitle theme={theme}>
-                      BTC Avalible{' '}
+                      BTC Available{' '}
                     </BalanceFuturesTitle>
                     <BalanceFuturesValue theme={theme}>
                       <span style={{ color: theme.palette.blue.main }}>
@@ -308,7 +308,7 @@ export const Balances = ({
                   </BalanceFuturesContainer>
                   <BalanceFuturesContainer theme={theme}>
                     <BalanceFuturesTitle theme={theme}>
-                      USDT Availiable
+                      USDT Available
                     </BalanceFuturesTitle>
                     <BalanceFuturesValue theme={theme}>
                       <span style={{ color: theme.palette.blue.main }}>
@@ -515,7 +515,7 @@ export const Balances = ({
                       </BalanceFuturesContainer>
                       <BalanceFuturesContainer theme={theme}>
                         <BalanceFuturesTitle theme={theme}>
-                          Availiable
+                          Available
                         </BalanceFuturesTitle>
                         <BalanceFuturesValue theme={theme}>
                           <span style={{ color: theme.palette.blue.main }}>
