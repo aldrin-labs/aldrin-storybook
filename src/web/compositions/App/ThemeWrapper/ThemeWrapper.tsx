@@ -185,6 +185,7 @@ export default ({ themeMode, isChartPage, children }) => {
               text: '#7284A0',
               border: '#2E2E2E',
               cream: '#0B0B0E',
+              onboard: '#D1DDEF',
             },
             primary: {
               main: '#303037',
@@ -383,6 +384,7 @@ export default ({ themeMode, isChartPage, children }) => {
               text: '#7284A0',
               border: '#E0E5EC',
               cream: '#F9FBFD',
+              onboard: '#3A475C',
             },
             primary: {
               main: '#FEFEFE',

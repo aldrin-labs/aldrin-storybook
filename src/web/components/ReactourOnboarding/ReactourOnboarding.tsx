@@ -2,6 +2,8 @@ import React from 'react'
 import Tour from 'reactour'
 import { withTheme } from '@sb/types/materialUI'
 
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+
 import Onboard from '@icons/onboard.svg'
 import styled, { ThemeConsumer } from 'styled-components'
 
@@ -22,8 +24,8 @@ export const FinishBtn = styled.button`
   outline: none;
 `
 export const Block = styled.div`
-  border-top-left-radius: 0.5rem;
-  border-top-right-radius: 0.5rem;
+  border-top-left-radius: 0.3rem;
+  border-top-right-radius: 0.3rem;
   align-items: center;
   padding: 0 2rem;
   height: 35%;
@@ -66,12 +68,14 @@ const Box = ({ height = '30rem' }) => {
     width: '55rem',
     height,
     backgroundColor: theme.palette.white.onboarding,
-    color: theme.palette.grey.light,
-    borderRadius: '.5rem',
+    color: theme.palette.grey.onboard,
+    borderRadius: '.3rem',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+    border: '1px solid #ABBAD1',
+    boxShadow: '0px 0px 10px #D1D9E6',
     //border: '0.1rem solid #E0E5EC',
     //boxShadow: '0px 0px 1.5rem #D1D9E6',
   }
@@ -246,7 +250,7 @@ export const tourConfig = [
         <Text padding={'2rem 1.5rem'}>
           You can switch between Spot and Futures.
         </Text>{' '}
-        <BolderText>Currently you’re in the futures mode.</BolderText>
+        <BolderText>Currently you’re in the Spot mode.</BolderText>
       </Container>
     ),
     style: Box({ height: '30rem' }),
@@ -331,8 +335,36 @@ export const tourConfig = [
         <Text padding={'2rem 1.5rem'}>
           View the balance of your account and deposit or withdraw funds.
         </Text>
+
+        <a
+          href="https://develop.app.cryptocurrencies.ai/profile/deposit"
+          style={{
+            textDecoration: 'none',
+            marginLeft: '19rem',
+            marginTop: '2rem',
+          }}
+        >
+          <BtnCustom
+            btnWidth="10rem"
+            height="2.5rem"
+            fontSize=".9rem"
+            padding=".2rem 0 .1rem 0"
+            margin="0 0 .4rem 0"
+            borderRadius=".4rem"
+            textTransform="none"
+            btnColor={theme.palette.white.main}
+            borderColor={theme.palette.blue.main}
+            backgroundColor={theme.palette.blue.main}
+            hoverColor={theme.palette.white.main}
+            hoverBackground={theme.palette.blue.main}
+            transition={'all .4s ease-out'}
+          >
+            Deposit now
+          </BtnCustom>
+        </a>
       </Container>
     ),
+    showNavigation: false,
     style: Box({ height: '30rem' }),
   },
   {
