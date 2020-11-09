@@ -807,55 +807,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
   }
 }
 
-// const TableDataWrapper = ({ ...props }) => {
-//   const {
-//     showPositionsFromAllAccounts: allKeys,
-//     showAllPositionPairs: specificPair,
-//   } = props
-
-//   return (
-//     <QueryRenderer
-//       component={PositionsTable}
-//       variables={{
-//         input: {
-//           keyId: props.selectedKey.keyId,
-//           allKeys: allKeys,
-//           ...(!specificPair ? {} : { specificPair: props.currencyPair }),
-//         },
-//       }}
-//       withOutSpinner={false}
-//       withTableLoader={false}
-//       showLoadingWhenQueryParamsChange={false}
-//       query={getActivePositions}
-//       name={`getActivePositionsQuery`}
-//       fetchPolicy="cache-and-network"
-//       // pollInterval={props.show ? 25000 : 0}
-//       subscriptionArgs={{
-//         subscription: FUTURES_POSITIONS,
-//         variables: {
-//           input: {
-//             keyId: props.selectedKey.keyId,
-//             allKeys: allKeys,
-//             ...(!specificPair ? {} : { specificPair: props.currencyPair }),
-//           },
-//         },
-//         updateQueryFunction: updateActivePositionsQuerryFunction,
-//       }}
-//       {...{
-//         allKeys,
-//         specificPair,
-//       }}
-//       {...props}
-//     />
-//   )
-// }
-
-
-// const {
-//   showPositionsFromAllAccounts: allKeys,
-//   showAllPositionPairs: specificPair,
-// } = props
-
 const PositionsTableWrapper = compose(
   withSnackbar,
   queryRendererHoc({
@@ -914,10 +865,10 @@ export default React.memo(PositionsTableWrapper, (prevProps: any, nextProps: any
   // TODO: Refactor isShowEqual --- not so clean
   const isShowEqual = !nextProps.show && !prevProps.show
   const showAllAccountsEqual =
-    prevProps.showOpenOrdersFromAllAccounts ===
-    nextProps.showOpenOrdersFromAllAccounts
+    prevProps.showPositionsFromAllAccounts ===
+    nextProps.showPositionsFromAllAccounts
   const showAllPairsEqual =
-    prevProps.showAllOpenOrderPairs === nextProps.showAllOpenOrderPairs
+    prevProps.showAllPositionPairs === nextProps.showAllPositionPairs
   // TODO: here must be smart condition if specificPair is not changed
   const pairIsEqual = prevProps.currencyPair === nextProps.currencyPair
   // TODO: here must be smart condition if showAllAccountsEqual is true & is not changed
