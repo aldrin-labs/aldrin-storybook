@@ -1,8 +1,10 @@
 import React from 'react'
 import copy from 'clipboard-copy'
 import { withTheme } from '@material-ui/styles'
-import { useSnackbar } from 'notistack'
-import QueryRenderer from '@core/components/QueryRenderer'
+import { useSnackbar, withSnackbar } from 'notistack'
+import { compose } from 'recompose'
+
+import QueryRenderer, { queryRendererHoc }  from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
 import { PaginationBlock } from '../TradingTablePagination'
 import { IProps, IState } from './OrderHistoryTable.types'
