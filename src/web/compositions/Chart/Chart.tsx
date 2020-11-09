@@ -46,7 +46,7 @@ import { MainContainer, GlobalStyles } from './Chart.styles'
 import { IProps } from './Chart.types'
 
 export function ChartPageComponent(props: any) {
-  const [terminalViewMode, updateTerminalViewMode] = useState('default')
+  const [terminalViewMode, updateTerminalViewMode] = useState('onlyTables')
   const [stepIndex, updateStepIndex] = useState(0)
   const [key, updateKey] = useState(0)
 
