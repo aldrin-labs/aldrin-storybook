@@ -1,7 +1,8 @@
 import React from 'react'
+import { compose } from 'recompose'
 import { withTheme } from '@material-ui/styles'
 
-import QueryRenderer from '@core/components/QueryRenderer'
+import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
 
 import { IProps, IState } from './TradeHistoryTable.types'
@@ -240,52 +241,89 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
   }
 }
 
-const TableDataWrapper = ({ ...props }) => {
-  let { startDate, endDate, page, perPage, allKeys, specificPair } = props
+// const TableDataWrapper = ({ ...props }) => {
+//   let { startDate, endDate, page, perPage, allKeys, specificPair } = props
 
-  startDate = +startDate
-  endDate = +endDate
+//   startDate = +startDate
+//   endDate = +endDate
 
-  return (
-    <QueryRenderer
-      component={TradeHistoryTable}
-      withOutSpinner={false}
-      withTableLoader={false}
-      query={getTradeHistory}
-      name={`getTradeHistoryQuery`}
-      fetchPolicy="cache-and-network"
-      showLoadingWhenQueryParamsChange={false}
-      // pollInterval={props.show ? 60000 : 0}
-      variables={{
+//   return (
+//     <QueryRenderer
+//       component={TradeHistoryTable}
+//       withOutSpinner={false}
+//       withTableLoader={false}
+//       query={getTradeHistory}
+//       name={`getTradeHistoryQuery`}
+//       fetchPolicy="cache-and-network"
+//       showLoadingWhenQueryParamsChange={false}
+//       // pollInterval={props.show ? 60000 : 0}
+//       variables={{
+//         tradeHistoryInput: {
+//           page,
+//           perPage,
+//           startDate,
+//           endDate,
+//           activeExchangeKey: props.selectedKey.keyId,
+//           marketType: props.marketType,
+//           allKeys,
+//           ...(!specificPair ? {} : { specificPair: props.currencyPair }),
+//         },
+//       }}
+//       subscriptionArgs={{
+//         subscription: TRADE_HISTORY,
+//         variables: {
+//           tradeHistoryInput: {
+//             startDate,
+//             endDate,
+//             activeExchangeKey: props.selectedKey.keyId,
+//             marketType: props.marketType,
+//             allKeys,
+//             ...(!specificPair ? {} : { specificPair: props.currencyPair }),
+//           },
+//         },
+//         updateQueryFunction: updateTradeHistoryQuerryFunction,
+//       }}
+//       {...props}
+//     />
+//   )
+// }
+
+const TableDataWrapper = compose(
+  queryRendererHoc({
+    withOutSpinner: false,
+      withTableLoader: false,
+      query: getTradeHistory,
+      name:`getTradeHistoryQuery`,
+      fetchPolicy: "cache-and-network",
+      showLoadingWhenQueryParamsChange: false,
+      variables: (props: any) => ({
         tradeHistoryInput: {
-          page,
-          perPage,
-          startDate,
-          endDate,
+          page: props.page,
+          perPage: props.perPage,
+          startDate: +props.startDate,
+          endDate: +props.endDate,
           activeExchangeKey: props.selectedKey.keyId,
           marketType: props.marketType,
-          allKeys,
-          ...(!specificPair ? {} : { specificPair: props.currencyPair }),
+          allKeys: props.allKeys,
+          ...(!props.specificPair ? {} : { specificPair: props.currencyPair }),
         },
-      }}
-      subscriptionArgs={{
+      }),
+      subscriptionArgs: {
         subscription: TRADE_HISTORY,
-        variables: {
+        variables: (props: any) =>  ({
           tradeHistoryInput: {
-            startDate,
-            endDate,
+            startDate: +props.startDate,
+            endDate: +props.endDate,
             activeExchangeKey: props.selectedKey.keyId,
             marketType: props.marketType,
-            allKeys,
-            ...(!specificPair ? {} : { specificPair: props.currencyPair }),
+            allKeys: props.allKeys,
+            ...(!props.specificPair ? {} : { specificPair: props.currencyPair }),
           },
-        },
+        }),
         updateQueryFunction: updateTradeHistoryQuerryFunction,
-      }}
-      {...props}
-    />
-  )
-}
+      }
+  })
+)(TradeHistoryTable)
 
 export default React.memo(TableDataWrapper, (prevProps, nextProps) => {
   // TODO: Refactor isShowEqual --- not so clean
