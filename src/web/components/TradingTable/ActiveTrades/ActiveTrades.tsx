@@ -901,10 +901,10 @@ export default React.memo(
     // TODO: Refactor isShowEqual --- not so clean
     const isShowEqual = !nextProps.show && !prevProps.show
     const showAllAccountsEqual =
-      prevProps.showOpenOrdersFromAllAccounts ===
-      nextProps.showOpenOrdersFromAllAccounts
+      prevProps.allKeys ===
+      nextProps.allKeys
     const showAllPairsEqual =
-      prevProps.showAllOpenOrderPairs === nextProps.showAllOpenOrderPairs
+      prevProps.specificPair === nextProps.specificPair
     // TODO: here must be smart condition if specificPair is not changed
     const pairIsEqual = prevProps.currencyPair === nextProps.currencyPair
     // TODO: here must be smart condition if showAllAccountsEqual is true & is not changed
