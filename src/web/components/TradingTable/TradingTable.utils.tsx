@@ -831,7 +831,7 @@ export const combineActiveTradesTable = ({
       const strategyId = el._id
 
       return {
-        id: `${el._id}${i}`,
+        id: `${el._id}_${el.accountId}`,
         pair: {
           render: (
             <SubColumnValue
@@ -1426,7 +1426,7 @@ export const combineStrategiesHistoryTable = (
       })
 
       return {
-        id: el._id,
+        id: `${el._id}_${accountId}`,
         pair: {
           render: (
             <SubColumnValue
@@ -1782,7 +1782,7 @@ export const combineOpenOrdersTable = (
       })
 
       return {
-        id: `${orderId}${timestamp}${origQty}${marketId}`,
+        id: `${orderId}${keyId}${timestamp}${origQty}${marketId}`,
         pair: {
           render: (
             <div
@@ -2019,7 +2019,7 @@ export const combineOrderHistoryTable = (
       const qty = !!origQty ? origQty : filled
 
       return {
-        id: `${isMakerOnlyOrder ? _id : orderId}_${timestamp}_${qty}`,
+        id: `${isMakerOnlyOrder ? _id : orderId}_${keyId}_${timestamp}_${qty}`,
         pair: {
           render: (
             <div
@@ -2213,7 +2213,7 @@ export const combineTradeHistoryTable = (
       const isSmallProfit = Math.abs(realizedPnl) < 0.01 && realizedPnl !== 0
 
       return {
-        id: `${id}_${timestamp}_${amount}`,
+        id: `${id}_${keyId}_${timestamp}_${amount}`,
         pair: {
           render: (
             <div
