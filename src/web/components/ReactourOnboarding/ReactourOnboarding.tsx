@@ -2,6 +2,8 @@ import React from 'react'
 import Tour from 'reactour'
 import { withTheme } from '@sb/types/materialUI'
 
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+
 import Onboard from '@icons/onboard.svg'
 import styled, { ThemeConsumer } from 'styled-components'
 
@@ -22,8 +24,8 @@ export const FinishBtn = styled.button`
   outline: none;
 `
 export const Block = styled.div`
-  border-top-left-radius: 0.5rem;
-  border-top-right-radius: 0.5rem;
+  border-top-left-radius: 0.3rem;
+  border-top-right-radius: 0.3rem;
   align-items: center;
   padding: 0 2rem;
   height: 35%;
@@ -66,12 +68,14 @@ const Box = ({ height = '30rem' }) => {
     width: '55rem',
     height,
     backgroundColor: theme.palette.white.onboarding,
-    color: theme.palette.grey.light,
-    borderRadius: '.5rem',
+    color: theme.palette.grey.onboard,
+    borderRadius: '.3rem',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+    // border: '1px solid #ABBAD1',
+    // boxShadow: '0px 0px 10px #D1D9E6',
     //border: '0.1rem solid #E0E5EC',
     //boxShadow: '0px 0px 1.5rem #D1D9E6',
   }
@@ -85,14 +89,14 @@ export const smartTerminal = [
           <Logo src={Onboard} />
           Denis from Cryptocurrencies.ai
         </Block>
-        <BolderText padding={'2.5rem 1.5rem 0 1.5rem'}>
-          This is advanced mode!
+        <BolderText padding={'1.5rem 1.5rem 0 1.5rem'}>
+          This is the advanced mode!
         </BolderText>
-        <Text padding={'1.5rem 1.5rem'}>
+        <Text padding={'0.5rem 1.5rem'}>
           If you want to trade on the Basic terminal, you can switch to it in
           one click.
         </Text>
-        <Text padding={'1.5rem 1.5rem'}>
+        <Text padding={'0.5rem 1.5rem'}>
           Let us quickly show you how to use it.
         </Text>
       </Container>
@@ -109,12 +113,12 @@ export const smartTerminal = [
         </Block>
         <Text padding={'1.5rem 1.5rem'}>
           {' '}
-          Smart order was designed to automate your manual trading by
-          simultaneously setting the entry point, Stop Loss and Take Profit with
+          Smart order was designed to automate your manual trading, by
+          simultaneously setting the Entry point, Stop Loss and Take Profit with
           advanced options.
         </Text>
         <Text padding={'0.5rem 1.5rem'}>
-          To promote healthy trading behaviour it is a requirement to enter Stop
+          To promote healthy trading behavior it is a requirement to enter Stop
           Loss and Take Profit.
         </Text>
         <Text padding={'0.5rem 1.5rem'}>
@@ -141,7 +145,7 @@ export const smartTerminal = [
         </Text>
       </Container>
     ),
-    style: Box({ height: '37rem' }),
+    style: Box({ height: '35rem' }),
   },
   {
     selector: '[data-tut="step2"]',
@@ -159,7 +163,7 @@ export const smartTerminal = [
         </Text>
       </Container>
     ),
-    style: Box({ height: '37rem' }),
+    style: Box({ height: '35rem' }),
   },
   {
     selector: '[data-tut="step3"]',
@@ -178,7 +182,7 @@ export const smartTerminal = [
         </Text>
       </Container>
     ),
-    style: Box({ height: '37rem' }),
+    style: Box({ height: '35rem' }),
   },
   {
     selector: '[data-tut="createBtn"]',
@@ -188,11 +192,11 @@ export const smartTerminal = [
           <Logo src={Onboard} />
           Denis from Cryptocurrencies.ai
         </Block>
-        <Text padding={'0.5rem 1.5rem'}>
+        <Text padding={'1.5rem 1.5rem'}>
           When you set your entry conditions, Stop Loss and Take Profit – you
           can track the performance of your position in the smart trade tab.
         </Text>
-        <Text padding={'1.5rem 1.5rem'}>
+        <Text padding={'0.5rem 1.5rem'}>
           <a
             style={{
               color: '#7380eb',
@@ -206,7 +210,7 @@ export const smartTerminal = [
         </Text>
       </Container>
     ),
-    style: Box({ height: '37rem' }),
+    style: Box({ height: '35rem' }),
   },
 ]
 
@@ -219,7 +223,7 @@ export const tourConfig = [
           <Logo src={Onboard} />
           Denis from Cryptocurrencies.ai
         </Block>
-        <BolderText>
+        <BolderText padding={'1.5rem 1.5rem'}>
           Hey, welcome to Cryptocurrencies.Ai's smart trading terminal!
         </BolderText>
         <Text>
@@ -227,7 +231,7 @@ export const tourConfig = [
           If you want to trade on a basic terminal, you can switch to it in one
           click.{' '}
         </Text>
-        <Text padding={'1.5rem 1.5rem'}>
+        <Text padding={'0.5rem 1.5rem'}>
           {' '}
           Let us quickly show you our exchange.
         </Text>
@@ -243,10 +247,12 @@ export const tourConfig = [
           <Logo src={Onboard} />
           Denis from Cryptocurrencies.ai
         </Block>
-        <Text padding={'2rem 1.5rem'}>
+        <Text padding={'1.5rem 1.5rem'}>
           You can switch between Spot and Futures.
         </Text>{' '}
-        <BolderText>Currently you’re in the futures mode.</BolderText>
+        <BolderText padding={'0.5rem 1.5rem'}>
+          Currently you’re in the Spot mode.
+        </BolderText>
       </Container>
     ),
     style: Box({ height: '30rem' }),
@@ -259,10 +265,10 @@ export const tourConfig = [
           <Logo src={Onboard} />
           Denis from Cryptocurrencies.ai
         </Block>
-        <Text padding={'2rem 1.5rem'}>
+        <Text padding={'1.5rem 1.5rem'}>
           This menu offers other Cryptocurrencies.ai exchange features.
         </Text>
-        <Text>
+        <Text padding={'0.5rem 1.5rem'}>
           <em>
             Data will be shown depending on your selection of spot or futures
             mode.
@@ -280,7 +286,7 @@ export const tourConfig = [
           <Logo src={Onboard} />
           Denis from Cryptocurrencies.ai
         </Block>
-        <Text padding={'2rem 1.5rem'}>
+        <Text padding={'1.5rem 1.5rem'}>
           Total balance of all your spot and futures accounts.
         </Text>
       </Container>
@@ -295,7 +301,7 @@ export const tourConfig = [
           <Logo src={Onboard} />
           Denis from Cryptocurrencies.ai
         </Block>
-        <Text padding={'2rem 1.5rem'}>
+        <Text padding={'1.5rem 1.5rem'}>
           Easily switch between Basic and Advanced terminal. You can trade with
           Smart orders on Advanced terminal.
         </Text>
@@ -303,22 +309,22 @@ export const tourConfig = [
     ),
     style: Box({ height: '30rem' }),
   },
-  {
-    selector: '[data-tut="basic-terminal"]',
-    content: () => (
-      <Container>
-        <Block theme={theme}>
-          <Logo src={Onboard} />
-          Denis from Cryptocurrencies.ai
-        </Block>
+  // {
+  //   selector: '[data-tut="basic-terminal"]',
+  //   content: () => (
+  //     <Container>
+  //       <Block theme={theme}>
+  //         <Logo src={Onboard} />
+  //         Denis from Cryptocurrencies.ai
+  //       </Block>
 
-        <Text padding={'2rem 1.5rem'}>
-          Place orders with or without preset Stop Loss and Take Profit.
-        </Text>
-      </Container>
-    ),
-    style: Box({ height: '30rem' }),
-  },
+  //       <Text padding={'2rem 1.5rem'}>
+  //         Place orders with or without preset Stop Loss and Take Profit.
+  //       </Text>
+  //     </Container>
+  //   ),
+  //   style: Box({ height: '30rem' }),
+  // },
   {
     selector: '[data-tut="balances"]',
     content: () => (
@@ -328,11 +334,43 @@ export const tourConfig = [
           Denis from Cryptocurrencies.ai
         </Block>
 
-        <Text padding={'2rem 1.5rem'}>
+        <Text padding={'1.5rem 1.5rem'}>
           View the balance of your account and deposit or withdraw funds.
         </Text>
+
+        <a
+          href="https://develop.app.cryptocurrencies.ai/profile/deposit"
+          style={{
+            borderBottom: '0.1rem solid #7380EB',
+            textDecoration: 'none',
+            marginLeft: '19rem',
+            marginTop: '2rem',
+            color: '#7380EB',
+            fontSize: '1.5rem',
+            fontFamily: 'DM Sans',
+          }}
+        >
+          {/* <BtnCustom
+            btnWidth="12rem"
+            height="3.5rem"
+            fontSize="1.4rem"
+            padding=".2rem 0 .1rem 0"
+            margin="0 0 .4rem 0"
+            borderRadius=".4rem"
+            textTransform="none"
+            btnColor="#fff"
+            borderColor="#7380EB"
+            backgroundColor="#7380EB"
+            hoverColor="#7380EB"
+            hoverBackground="#7380EB"
+            transition={'all .4s ease-out'}
+          > */}
+          Deposit now
+          {/* </BtnCustom> */}
+        </a>
       </Container>
     ),
+    showNavigation: false,
     style: Box({ height: '30rem' }),
   },
   {
@@ -344,11 +382,10 @@ export const tourConfig = [
           Denis from Cryptocurrencies.ai
         </Block>
         <Text padding={'1.5rem 1.5rem'}>
-          The main point of advanced terminal is ability to place Smart orders.
-          Create it by this button and manage in the Smart Trades tab in the
-          table.
+          The main point of advanced terminal is the ability. Manage your Smart
+          trades in the Smart trade tab in the table.
         </Text>
-        <Text padding={'1.5rem 1.5rem'}>
+        <Text padding={'0.5rem 1.5rem'}>
           <a
             style={{
               color: '#7380eb',
@@ -372,10 +409,10 @@ export const tourConfig = [
           <Logo src={Onboard} />
           Denis from Cryptocurrencies.ai
         </Block>
-        <Text padding={'2.5rem 1.5rem 0 1.5rem'}>
+        <Text padding={'1.5rem 1.5rem 0 1.5rem'}>
           All deposits are made into your spot wallet.
         </Text>
-        <Text padding={'1.5rem 1.5rem'}>
+        <Text padding={'0.5rem 1.5rem'}>
           <em>
             To fund your futures account you have to transfer funds from spot to
             futures on futures portfolio page, futures trading terminal or

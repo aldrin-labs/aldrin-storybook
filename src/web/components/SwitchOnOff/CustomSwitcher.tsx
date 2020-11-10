@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Theme } from '@material-ui/core'
 
-const SwitcherHalf = styled(
+export const SwitcherHalf = styled(
   ({
     isDisabled,
     activeBackgroundColor,

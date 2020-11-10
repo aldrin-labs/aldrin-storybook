@@ -83,23 +83,11 @@ export const activeTradesColumnNames = [
   { label: 'Size', id: 'quantity' },
   {
     label: (
-      <DarkTooltip title={`Take profit`}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          T-P
-          <Help
-            style={{
-              height: '1.5rem',
-              width: '1.5rem',
-              color: 'rgb(0, 93, 217)',
-              marginLeft: '.5rem',
-            }}
-          />
-        </div>
-      </DarkTooltip>
+      <div style={{ display: 'flex', alignItems: 'center' }}>Take profit</div>
     ),
     id: 'takeProfit',
   },
-  { label: 'Stop', id: 'stopLoss' },
+  { label: 'Stop loss', id: 'stopLoss' },
   { label: 'Pnl/Roe', id: 'profit' },
   {
     label: (
@@ -114,16 +102,14 @@ export const activeTradesColumnNames = [
           </div>
         }
       >
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            borderBottom: `1px dashed rgb(46, 46, 46)`,
+          }}
+        >
           status
-          <Help
-            style={{
-              height: '1.5rem',
-              width: '1.5rem',
-              color: 'rgb(0, 93, 217)',
-              marginLeft: '.5rem',
-            }}
-          />
         </div>
       </DarkTooltip>
     ),

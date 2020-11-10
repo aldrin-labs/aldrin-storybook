@@ -44,7 +44,7 @@ const SubRow = ({
         <Typography theme={theme}>close:</Typography>
         <Input
           theme={theme}
-          width={'30%'}
+          width={'45%'}
           padding={'0 .5rem 0 1rem'}
           value={price}
           placeholder={'price'}
@@ -53,21 +53,23 @@ const SubRow = ({
           }}
           inputStyles={{
             textTransform: 'uppercase',
+            fontSize: '1rem',
             color: theme.palette.blue.main,
           }}
         />
-        <div style={{ position: 'relative', width: '30%' }}>
+        <div style={{ position: 'relative', width: '45%' }}>
           <Input
             theme={theme}
             width={'100%'}
             padding={'0 .5rem 0 1rem'}
             value={amount}
-            placeholder={'amount'}
+            placeholder={'amount   100'}
             onChange={(e) => {
               updateCloseAmount(e.target.value)
             }}
             inputStyles={{
               textTransform: 'uppercase',
+              fontSize: '1rem',
               color: theme.palette.blue.main,
             }}
           />
