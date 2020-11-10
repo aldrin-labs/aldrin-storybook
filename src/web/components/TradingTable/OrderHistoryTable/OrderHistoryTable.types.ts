@@ -20,6 +20,7 @@ export interface IProps extends WithTheme<Theme> {
       orders: OrderType[]
       count: number
     }
+    queryParamsWereChanged: boolean
   }
   theme: Theme
   keys: Key[]

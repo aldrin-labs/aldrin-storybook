@@ -144,13 +144,14 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       handleChangeRowsPerPage,
       handleToggleAllKeys,
       handleToggleSpecificPair,
+      getPaginatedOrderHistoryQuery,
     } = this.props
 
     if (!show) {
       return null
     }
 
-    const maxRows = this.props.getPaginatedOrderHistoryQuery
+    const maxRows = getPaginatedOrderHistoryQuery
       .getPaginatedOrderHistory.count
 
     return (
@@ -212,6 +213,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
                 specificPair,
                 handleToggleAllKeys,
                 handleToggleSpecificPair,
+                loading: getPaginatedOrderHistoryQuery.queryParamsWereChanged
               }}
             />
           ),
