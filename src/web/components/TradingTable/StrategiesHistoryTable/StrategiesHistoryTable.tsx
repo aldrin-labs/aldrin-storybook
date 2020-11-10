@@ -219,6 +219,7 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
                 specificPair,
                 handleToggleAllKeys,
                 handleToggleSpecificPair,
+                loading: getStrategiesHistoryQuery.queryParamsWereChanged,
               }}
             />
           ),
