@@ -698,6 +698,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       handleToggleAllKeys,
       handleToggleSpecificPair,
       getAdlQuantileQuery,
+      getActivePositionsQuery,
     } = this.props
 
     if (!show) {
@@ -739,6 +740,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
                   specificPair,
                   handleToggleAllKeys,
                   handleToggleSpecificPair,
+                  loading: getActivePositionsQuery.queryParamsWereChanged
                 }}
               />
             ),

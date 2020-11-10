@@ -22,6 +22,7 @@ export interface IProps {
   theme: Theme
   getActivePositionsQuery: {
     getActivePositions: Position[]
+    queryParamsWereChanged: boolean
   }
   selectedKey: Key
   keys: Key[]
