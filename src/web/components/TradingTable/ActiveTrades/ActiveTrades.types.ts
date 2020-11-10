@@ -56,6 +56,7 @@ export interface IProps {
       count: number
     }
     subscribeToMoreFunction: () => () => void
+    queryParamsWereChanged: boolean
   }
   getFundsQuery: {
     getFunds: Fund[]

@@ -786,6 +786,8 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
                   handleToggleSpecificPair: !!cachedOrder
                     ? () => {}
                     : handleToggleSpecificPair,
+                  loading: getActiveStrategiesQuery.queryParamsWereChanged,
+
                 }}
               />
             ),
