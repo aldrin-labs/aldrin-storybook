@@ -44,8 +44,10 @@ const BlueSlider = ({
       sliderContainerStyles={sliderContainerStyles}
       handleStyles={{
         width: '1.2rem',
-        height: '1.2rem',
+        height: '2rem',
+        top: '0.2rem',
         border: 'none',
+        borderRadius: '0',
         backgroundColor: theme.palette.blue.main,
         marginTop: '-.28rem',
         boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',

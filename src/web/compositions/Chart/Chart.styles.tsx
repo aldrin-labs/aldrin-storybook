@@ -31,7 +31,12 @@ html {
   html {
     font-size: 7px !important;
   }
+
+  .rc-slider-handle {
+    top: 1rem;
+  }
 }
+
 
 @media only screen and (max-width: 1100px) {
   html {
@@ -477,13 +482,14 @@ export const WatchSubvalue = styled.span`
 `
 
 export const BalancesContainer = styled(
-  ({ isDefaultTerminalViewMode, isSmartOrderMode, ...rest }) => <Grid {...rest} />
+  ({ isDefaultTerminalViewMode, isSmartOrderMode, ...rest }) => (
+    <Grid {...rest} />
+  )
 )`
-
   position: relative;
   padding: 0;
   height: ${(props) => (props.isDefaultTerminalViewMode ? '40%' : '50%')};
-  display: ${(props) => (props.isSmartOrderMode && 'none;')};
+  display: ${(props) => props.isSmartOrderMode && 'none;'};
 `
 
 export const SmartTerminalContainer = styled(Grid)`

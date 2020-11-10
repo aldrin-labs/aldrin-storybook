@@ -311,7 +311,7 @@ export function ChartPageComponent(props: any) {
     ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
     : { keyId: '', hedgeMode: false, isFuturesWarsKey: false }
 
-  console.log('getTooltipSettings in chart', getTooltipSettings)
+  console.log('pairPropertiesQuery', pairPropertiesQuery)
 
   return (
     <MainContainer fullscreen={view !== 'default'}>
@@ -381,8 +381,6 @@ export function ChartPageComponent(props: any) {
 }
 
 const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
-  console.log('memo func chart page', prev, next)
-
   const isAuthenticatedUser = checkLoginStatus()
 
   if (!isAuthenticatedUser) {

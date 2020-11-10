@@ -239,8 +239,9 @@ class SimpleTabs extends React.Component {
                     trackBeforeBackground={theme.palette.green.main}
                     handleStyles={{
                       width: '1.2rem',
-                      height: '1.2rem',
+                      height: '2rem',
                       border: 'none',
+                      // top: '0.2rem',
                       backgroundColor: '#036141',
                       marginTop: '-.28rem',
                       boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',

@@ -204,7 +204,7 @@ export const Balances = ({
           theme={theme}
           style={{
             display: 'flex',
-            justifyContent: 'flex-start',
+            justifyContent: 'center',
             alignItems: 'center',
             paddingLeft: '2rem',
           }}
@@ -373,17 +373,17 @@ export const Balances = ({
                           height: '4rem',
                           borderRadius: '.8rem',
                           border: theme.palette.border.custom,
-                          backgroundColor: theme.palette.white.background,
-                          color: theme.palette.blue.main,
+                          backgroundColor: theme.palette.blue.main,
+                          color: theme.palette.white.background,
                           fontFamily: 'Avenir Next Demi',
                           transition: 'all .4s ease-out',
                           textTransform: 'capitalize',
                           fontSize: '1.3rem',
                           padding: '.5rem 0 .4rem 0;',
                           '&:hover': {
-                            color: theme.palette.white.background,
+                            color: theme.palette.blue.main,
                             transition: 'all .4s ease-out',
-                            backgroundColor: theme.palette.blue.main,
+                            backgroundColor: theme.palette.white.background,
                             border: theme.palette.border.custom,
                           },
                         }}
@@ -408,17 +408,17 @@ export const Balances = ({
                           height: '4rem',
                           borderRadius: '.8rem',
                           border: theme.palette.border.custom,
-                          backgroundColor: theme.palette.blue.main,
-                          color: theme.palette.white.background,
+                          backgroundColor: theme.palette.white.background,
+                          color: theme.palette.blue.main,
                           fontFamily: 'Avenir Next Demi',
                           transition: 'all .4s ease-out',
                           textTransform: 'capitalize',
                           fontSize: '1.3rem',
                           padding: '.5rem 0 .4rem 0;',
                           '&:hover': {
-                            color: theme.palette.blue.main,
+                            color: theme.palette.white.background,
                             transition: 'all .4s ease-out',
-                            backgroundColor: theme.palette.white.background,
+                            backgroundColor: theme.palette.blue.main,
                             border: theme.palette.border.custom,
                           },
                         }}

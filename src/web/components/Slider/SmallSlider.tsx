@@ -28,7 +28,11 @@ const StyledSlider = styled(({ sliderContainerStyles, ...rest }) => (
 
       &-handle {
         ${(props) => props.handleStyles}
+        border-radius:none;
         background-color: ${(props) => props.disabled && '#ABBAD1;'};
+        @media only screen and (maxWidth: 1440px): {
+          top: 1.6rem,
+        },
       }
 
       &-dot {
@@ -82,7 +86,16 @@ const handle = (props) => {
         visible={dragging}
         key={index}
       >
-        <Handle value={value} {...restProps} />
+        <Handle
+          style={{
+            borderRadius: 'none',
+            width: '0.8rem',
+            top: '0.2rem',
+            height: '2rem',
+          }}
+          value={value}
+          {...restProps}
+        />
       </Tooltip>
       <TooltipStyles trackBeforeBackground={restProps.trackBeforeBackground} />
     </>
