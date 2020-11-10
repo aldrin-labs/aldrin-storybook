@@ -33,6 +33,7 @@ export interface IProps extends WithTheme<Theme> {
       trades: TradeType[]
       count: number
     }
+    queryParamsWereChanged: boolean
   }
   selectedKey: Key
   arrayOfMarketIds: string[]

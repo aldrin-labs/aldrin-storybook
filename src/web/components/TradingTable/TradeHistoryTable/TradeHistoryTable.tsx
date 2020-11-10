@@ -54,6 +54,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
   }
 
   componentDidUpdate(prevProps: IProps) {
+
     if (
       prevProps.selectedKey.keyId !== this.props.selectedKey.keyId ||
       prevProps.specificPair !== this.props.specificPair ||
@@ -98,6 +99,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
   }
 
   componentWillReceiveProps(nextProps: IProps) {
+
     const tradeHistoryProcessedData = combineTradeHistoryTable(
       nextProps.getTradeHistoryQuery.getTradeHistory.trades,
       nextProps.theme,
@@ -106,6 +108,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
       nextProps.keys,
       nextProps.handlePairChange
     )
+
     this.setState({
       tradeHistoryProcessedData,
     })
@@ -200,6 +203,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
                 specificPair,
                 handleToggleAllKeys,
                 handleToggleSpecificPair,
+                loading: getTradeHistoryQuery.queryParamsWereChanged,
               }}
             />
           ),
@@ -240,53 +244,6 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
     )
   }
 }
-
-// const TableDataWrapper = ({ ...props }) => {
-//   let { startDate, endDate, page, perPage, allKeys, specificPair } = props
-
-//   startDate = +startDate
-//   endDate = +endDate
-
-//   return (
-//     <QueryRenderer
-//       component={TradeHistoryTable}
-//       withOutSpinner={false}
-//       withTableLoader={false}
-//       query={getTradeHistory}
-//       name={`getTradeHistoryQuery`}
-//       fetchPolicy="cache-and-network"
-//       showLoadingWhenQueryParamsChange={false}
-//       // pollInterval={props.show ? 60000 : 0}
-//       variables={{
-//         tradeHistoryInput: {
-//           page,
-//           perPage,
-//           startDate,
-//           endDate,
-//           activeExchangeKey: props.selectedKey.keyId,
-//           marketType: props.marketType,
-//           allKeys,
-//           ...(!specificPair ? {} : { specificPair: props.currencyPair }),
-//         },
-//       }}
-//       subscriptionArgs={{
-//         subscription: TRADE_HISTORY,
-//         variables: {
-//           tradeHistoryInput: {
-//             startDate,
-//             endDate,
-//             activeExchangeKey: props.selectedKey.keyId,
-//             marketType: props.marketType,
-//             allKeys,
-//             ...(!specificPair ? {} : { specificPair: props.currencyPair }),
-//           },
-//         },
-//         updateQueryFunction: updateTradeHistoryQuerryFunction,
-//       }}
-//       {...props}
-//     />
-//   )
-// }
 
 const TableDataWrapper = compose(
   queryRendererHoc({
