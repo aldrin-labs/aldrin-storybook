@@ -455,6 +455,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
                 specificPair,
                 handleToggleAllKeys,
                 handleToggleSpecificPair,
+                loading: getOpenOrderHistoryQuery.queryParamsWereChanged
               }}
             />
           ),
