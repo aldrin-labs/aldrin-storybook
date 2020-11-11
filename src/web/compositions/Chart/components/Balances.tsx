@@ -180,6 +180,8 @@ export const Balances = ({
   const Withdrawal = (props: any) => (
     <Link to="/profile/withdrawal" {...props} />
   )
+
+  console.log('pair', pair)
   return (
     <>
       <TransferPopup
@@ -295,27 +297,27 @@ export const Balances = ({
                 <div style={{ height: '100%', width: '100%' }}>
                   <BalanceFuturesContainer theme={theme}>
                     <BalanceFuturesTitle theme={theme}>
-                      BTC Available{' '}
+                      {pair[0]} Available{' '}
                     </BalanceFuturesTitle>
                     <BalanceFuturesValue theme={theme}>
                       <span style={{ color: theme.palette.blue.main }}>
                         {funds[0].quantity.toFixed(8)}
                       </span>{' '}
                       <BalanceFuturesSymbol theme={theme}>
-                        BTC
+                        {pair[0]}
                       </BalanceFuturesSymbol>
                     </BalanceFuturesValue>
                   </BalanceFuturesContainer>
                   <BalanceFuturesContainer theme={theme}>
                     <BalanceFuturesTitle theme={theme}>
-                      USDT Available
+                      {pair[1]} Available
                     </BalanceFuturesTitle>
                     <BalanceFuturesValue theme={theme}>
                       <span style={{ color: theme.palette.blue.main }}>
                         {funds[1].quantity.toFixed(8)}
                       </span>{' '}
                       <BalanceFuturesSymbol theme={theme}>
-                        USDT
+                        {pair[1]}
                       </BalanceFuturesSymbol>
                     </BalanceFuturesValue>
                   </BalanceFuturesContainer>
