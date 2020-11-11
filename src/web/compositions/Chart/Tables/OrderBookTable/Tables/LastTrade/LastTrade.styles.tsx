@@ -14,7 +14,7 @@ export const LastTradeContainer = styled.div`
   background: ${(props) => props.theme.palette.white.background};
   border-top: ${(props) => props.theme.palette.border.main};
   border-bottom: ${(props) => props.theme.palette.border.main};
-  font-family: 'IBM Plex Sans Condensed', sans-serif;
+  font-family: 'DM Sans';
 `
 
 export const LastTradeValue = styled.div`

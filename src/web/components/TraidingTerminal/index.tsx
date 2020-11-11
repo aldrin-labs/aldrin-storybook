@@ -614,53 +614,57 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     </div>
                   </InputRowContainer>
                 )}
-
-                <BlueSlider
-                  theme={theme}
-                  showMarks
-                  value={
-                    isBuyType || !isSPOTMarket
-                      ? ((values.margin * leverage) / maxAmount) * 100
-                      : values.amount / (maxAmount / 100)
-                  }
-                  sliderContainerStyles={{
-                    width: 'calc(100% - 1rem)',
-                    margin: '0 .5rem',
-                    padding: '.9rem 0 0 0',
-                  }}
-                  onChange={(value) => {
-                    console.log('value in amount slider', value)
-                    const newValue = (maxAmount / 100) * value
-
-                    const newAmount =
+                <InputRowContainer
+                  style={{ height: '2rem', marginTop: '1rem' }}
+                >
+                  <BlueSlider
+                    theme={theme}
+                    showMarks
+                    handleStyles={{ top: '0.5rem' }}
+                    value={
                       isBuyType || !isSPOTMarket
-                        ? stripDigitPlaces(
-                            newValue / priceForCalculate,
-                            isSPOTMarket ? 8 : quantityPrecision
-                          )
-                        : stripDigitPlaces(
-                            newValue,
-                            isSPOTMarket ? 8 : quantityPrecision
-                          )
+                        ? ((values.margin * leverage) / maxAmount) * 100
+                        : values.amount / (maxAmount / 100)
+                    }
+                    sliderContainerStyles={{
+                      width: 'calc(100% - 1rem)',
+                      margin: '0 .5rem',
+                      padding: '.9rem 0 0 0',
+                    }}
+                    onChange={(value) => {
+                      console.log('value in amount slider', value)
+                      const newValue = (maxAmount / 100) * value
 
-                    const newTotal =
-                      isBuyType || !isSPOTMarket
-                        ? newValue
-                        : newValue * priceForCalculate
+                      const newAmount =
+                        isBuyType || !isSPOTMarket
+                          ? stripDigitPlaces(
+                              newValue / priceForCalculate,
+                              isSPOTMarket ? 8 : quantityPrecision
+                            )
+                          : stripDigitPlaces(
+                              newValue,
+                              isSPOTMarket ? 8 : quantityPrecision
+                            )
 
-                    const newMargin = stripDigitPlaces(
-                      (maxAmount * (value / 100)) / leverage,
-                      2
-                    )
+                      const newTotal =
+                        isBuyType || !isSPOTMarket
+                          ? newValue
+                          : newValue * priceForCalculate
 
-                    setFieldValue('amount', newAmount)
-                    setFieldValue(
-                      'total',
-                      stripDigitPlaces(newTotal, isSPOTMarket ? 8 : 3)
-                    )
-                    setFieldValue('margin', newMargin)
-                  }}
-                />
+                      const newMargin = stripDigitPlaces(
+                        (maxAmount * (value / 100)) / leverage,
+                        2
+                      )
+
+                      setFieldValue('amount', newAmount)
+                      setFieldValue(
+                        'total',
+                        stripDigitPlaces(newTotal, isSPOTMarket ? 8 : 3)
+                      )
+                      setFieldValue('margin', newMargin)
+                    }}
+                  />
+                </InputRowContainer>
               </InputRowContainer>
 
               {isSPOTMarket && (
@@ -957,7 +961,4 @@ const formikEnhancer = withFormik<IProps, FormValues>({
   },
 })
 
-export default compose(
-  withErrorFallback,
-  formikEnhancer
-)(TraidingTerminal)
+export default compose(withErrorFallback, formikEnhancer)(TraidingTerminal)
