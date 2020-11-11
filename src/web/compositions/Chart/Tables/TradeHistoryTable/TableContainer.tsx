@@ -58,7 +58,7 @@ class TableContainer extends Component<IProps, IState> {
             getAggregationsFromMinPriceDigits(newProps.minPriceDigits)[0].value
           )
         ),
-        time: dayjs.unix(+trade.timestamp).format('LTS'),
+        time: dayjs.unix(+trade.timestamp).format('h:mm:ss a'),
         id: `${trade.price}${trade.size}${i}${trade.timestamp}`,
       }))
 
@@ -119,7 +119,7 @@ class TableContainer extends Component<IProps, IState> {
                       )[0].value
                     )
                   ),
-                  time: new Date(trade.time).toLocaleTimeString(),
+                  time: dayjs.unix(+trade.timestamp).format('h:mm:ss a'),
                 }))
                 .concat(that.state.data)
             )

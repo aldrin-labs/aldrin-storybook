@@ -10,6 +10,7 @@ const BlueSlider = ({
   disabled = false,
   showMarks = false,
   sliderContainerStyles,
+  handleStyles,
   onChange,
 }: {
   theme: Theme
@@ -19,6 +20,7 @@ const BlueSlider = ({
   disabled?: boolean
   showMarks?: boolean
   sliderContainerStyles?: CSSProperties
+  handleStyles?: CSSProperties
   onChange: (value: number) => void
 }) => {
   return (
@@ -52,6 +54,7 @@ const BlueSlider = ({
         marginTop: '-.28rem',
         boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
         transform: 'translate(-50%, -15%) !important',
+        ...handleStyles,
       }}
       dotStyles={{
         border: 'none',

@@ -25,6 +25,9 @@ html {
   html {
     font-size: 8px !important;
   }
+  .rc-slider-handle.rc-slider-handle.rc-slider-handle {
+    top: 0.4rem;
+  }
 }
 
 @media only screen and (max-width: 1300px) {
@@ -32,8 +35,8 @@ html {
     font-size: 7px !important;
   }
 
-  .rc-slider-handle {
-    top: 1rem;
+  .rc-slider-handle.rc-slider-handle.rc-slider-handle {
+    top: 0.6rem;
   }
 }
 
@@ -63,13 +66,13 @@ html {
 }  
         
   .virtualized-row {
-    font-family: 'IBM Plex Sans Condensed', sans-serif;
+    font-family: 'Avenir Next Demi';
     font-size: 1.1rem;
     line-height: 35px;
-    font-weight: bold;
+    font-weight: 500;
     color: #16253D;
     padding: 0 .5rem;
-    letter-spacing: 0.075rem;
+    letter-spacing: 0.0rem;
     cursor: default;
     outline: none;
   }
