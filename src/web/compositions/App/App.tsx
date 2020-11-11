@@ -35,7 +35,7 @@ import { syncStorage } from '@storage'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { useQuery } from 'react-apollo'
 
-const version = `10.7.4`
+const version = `10.7.5`
 const currentVersion = localStorage.getItem('version')
 if (currentVersion !== version) {
   localStorage.clear()
@@ -53,11 +53,10 @@ const AppRaw = ({
 }: any) => {
   const isChartPage = /chart/.test(currentPage)
 
-  const themeMode = 'dark'
-  // (getThemeModeQuery &&
-  //   getThemeModeQuery.getAccountSettings &&
-  //   getThemeModeQuery.getAccountSettings.themeMode) ||
-  // 'light'
+  const themeMode = (getThemeModeQuery &&
+    getThemeModeQuery.getAccountSettings &&
+    getThemeModeQuery.getAccountSettings.themeMode) ||
+    'light'
   const chartPageView =
     getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
 
