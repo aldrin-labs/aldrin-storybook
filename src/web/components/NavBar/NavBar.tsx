@@ -65,9 +65,8 @@ const isSpotOrRebalance = (pathname: any) => {
 const Portfolio = (props: any) => {
   return (
     <Link
-      to={`/portfolio/main/${
-        isSpotOrRebalance(props.pathname) ? 'spot' : 'futures'
-      }`}
+      to={`/portfolio/main/${isSpotOrRebalance(props.pathname) ? 'spot' : 'futures'
+        }`}
       {...props}
     />
   )
@@ -86,9 +85,8 @@ const Rebalance = (props: any) => <Link to="/portfolio/rebalance" {...props} />
 const Transactions = (props: any) => {
   return (
     <Link
-      to={`/portfolio/transactions/${
-        isSpotOrRebalance(props.pathname) ? 'spot' : 'futures'
-      }`}
+      to={`/portfolio/transactions/${isSpotOrRebalance(props.pathname) ? 'spot' : 'futures'
+        }`}
       {...props}
     />
   )
@@ -102,12 +100,12 @@ const MarketType = (props: any) => {
 
   const chartPair = props.pathname.split('/')[3]
   const url = isChart
-    ? `/chart/${props.marketName}/${chartPair}`
+    ? `/chart/${props.marketName}`
     : isTransactions
-    ? `/portfolio/transactions/${props.marketName}`
-    : isPortfolio
-    ? `/portfolio/main/${props.marketName}`
-    : `/portfolio/main/${props.marketName}`
+      ? `/portfolio/transactions/${props.marketName}`
+      : isPortfolio
+        ? `/portfolio/main/${props.marketName}`
+        : `/portfolio/main/${props.marketName}`
 
   return <Link to={url} {...props} />
 }
@@ -268,7 +266,7 @@ const NavBarRaw: SFC<Props> = ({
               items={[
                 {
                   text: 'Exchange',
-                  to: '/chart/spot/BTC_USDT',
+                  to: '/chart/spot',
                 },
                 {
                   text: 'Portfolio',
@@ -332,7 +330,7 @@ const NavBarRaw: SFC<Props> = ({
               items={[
                 {
                   text: 'Exchange',
-                  to: '/chart/futures/BTC_USDT',
+                  to: '/chart/futures',
                 },
                 {
                   text: 'Portfolio',
