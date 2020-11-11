@@ -241,6 +241,7 @@ class SimpleTabs extends React.Component {
                       width: '1.2rem',
                       height: '2rem',
                       border: 'none',
+                      borderRadius: '0',
                       // top: '0.2rem',
                       backgroundColor: '#036141',
                       marginTop: '-.28rem',
