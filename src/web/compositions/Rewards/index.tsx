@@ -5,6 +5,7 @@ import { graphql } from 'react-apollo'
 import Timer from 'react-compound-timer'
 
 import { HarvestPopup } from '@sb/compositions/Rewards/components/HarvestPopup'
+import { SharePopup } from '@sb/compositions/Rewards/components/SharePopup'
 
 import dayjs from 'dayjs'
 
@@ -258,6 +259,7 @@ const RewardsRoute = (props) => {
   const [linkFromTwitter, setTwittersLink] = useState('')
 
   const [isHarvestPopupOpen, setOpen] = useState(false)
+  const [isSharePopupOpen, setSharePopupOpen] = useState(false)
 
   const [isLoading, updateIsLoading] = useState(false)
   const {
@@ -331,6 +333,10 @@ const RewardsRoute = (props) => {
 
   const toggleIsOpen = () => {
     setOpen(!isHarvestPopupOpen)
+  }
+
+  const toggleSharePopupIsOpen = () => {
+    setSharePopupOpen(!isSharePopupOpen)
   }
 
   return (
@@ -516,6 +522,11 @@ const RewardsRoute = (props) => {
                   Harvest
                 </BtnCustom>
               </a>
+              <SharePopup
+                theme={theme}
+                isSharePopupOpen={isSharePopupOpen}
+                toggleSharePopupIsOpen={toggleSharePopupIsOpen}
+              />
               <a
                 style={{
                   width: 'calc(50% - 2rem)',
@@ -523,18 +534,18 @@ const RewardsRoute = (props) => {
                   paddingBottom: '1rem',
                   margin: '0 1rem',
                 }}
-                href={`https://twitter.com/intent/tweet?text=Here%20are%20some%20real%20numbers%20about%20%40projectserum%20trading%20on%20%40solana%20via%20%40CCAI_Official%20interface.%0AFast%20DEX%20trading%20is%20here%20already%2C%20check%20it%20out%20at%20https%3A%2F%2Fdex.cryptocurrencies.ai%2F%0A%24DCFI%20%24SRM%20%24SOL%20%24UNI%20%24ETH%20%24DOT%20%24YFI%20%24BNB%20%24LINK%20%24EOS%20%24XTZ%20%24ADA%0Apic.twitter.com%2F9LCSqyXyEn`}
-                rel="noopener noreferrel"
-                target={'_blank'}
-                onClick={(e) => {
-                  if (publicKey === '') {
-                    e.preventDefault()
-                    notify({
-                      message: 'Connect your wallet first',
-                      type: 'error',
-                    })
-                  }
-                }}
+                // href={`https://twitter.com/intent/tweet?text=Here%20are%20some%20real%20numbers%20about%20%40projectserum%20trading%20on%20%40solana%20via%20%40CCAI_Official%20interface.%0AFast%20DEX%20trading%20is%20here%20already%2C%20check%20it%20out%20at%20https%3A%2F%2Fdex.cryptocurrencies.ai%2F%0A%24DCFI%20%24SRM%20%24SOL%20%24UNI%20%24ETH%20%24DOT%20%24YFI%20%24BNB%20%24LINK%20%24EOS%20%24XTZ%20%24ADA%0Apic.twitter.com%2F9LCSqyXyEn`}
+                // rel="noopener noreferrel"
+                // target={'_blank'}
+                // onClick={(e) => {
+                //   if (publicKey === '') {
+                //     e.preventDefault()
+                //     notify({
+                //       message: 'Connect your wallet first',
+                //       type: 'error',
+                //     })
+                //   }
+                // }}
               >
                 <BtnCustom
                   theme={theme}
@@ -546,6 +557,10 @@ const RewardsRoute = (props) => {
                   fontSize={'1.6rem'}
                   btnWidth={'100%'}
                   textTransform={'none'}
+                  onClick={() => {
+                    console.log('shrepopup')
+                    toggleSharePopupIsOpen()
+                  }}
                 >
                   <SvgIcon
                     src={blackTwitter}
