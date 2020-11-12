@@ -14,7 +14,7 @@ const SubRow = ({
   minFuturesStep,
 }) => {
   const [price, updateClosePrice] = useState('')
-  const [amount, updateCloseAmount] = useState('')
+  const [amount, updateCloseAmount] = useState('100')
   const [isClosingPositionProcessEnabled, closePosition] = useState(false)
   const [closingType, setClosingType] = useState('')
 
@@ -44,7 +44,7 @@ const SubRow = ({
         <Typography theme={theme}>close:</Typography>
         <Input
           theme={theme}
-          width={'45%'}
+          width={'30%'}
           padding={'0 .5rem 0 1rem'}
           value={price}
           placeholder={'price'}
@@ -53,26 +53,55 @@ const SubRow = ({
           }}
           inputStyles={{
             textTransform: 'uppercase',
-            fontSize: '1rem',
+            fontSize: '1.2rem',
             color: theme.palette.blue.main,
           }}
         />
-        <div style={{ position: 'relative', width: '45%' }}>
-          <Input
+        <div style={{ position: 'relative', width: '25rem' }}>
+          {/* <Input
             theme={theme}
-            width={'100%'}
-            padding={'0 .5rem 0 1rem'}
+            padding={'0'}
+            width={'45%'}
+            textAlign={'left'}
+            symbol={'%'}
             value={amount}
-            placeholder={'amount   100'}
-            onChange={(e) => {
-              updateCloseAmount(e.target.value)
-            }}
             inputStyles={{
               textTransform: 'uppercase',
               fontSize: '1rem',
               color: theme.palette.blue.main,
             }}
-          />
+            disabled={'none'}
+          /> */}
+          <Input
+            theme={theme}
+            width={'100%'}
+            padding={'0 .5rem 0 1rem'}
+            value={amount}
+            onChange={(e) => {
+              updateCloseAmount(e.target.value)
+            }}
+            inputStyles={{
+              textTransform: 'uppercase',
+              fontSize: '1.3rem',
+              color: theme.palette.blue.main,
+              paddingLeft: '7.5rem',
+            }}
+          />{' '}
+          <div
+            style={{
+              position: 'absolute',
+              left: '2rem',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              fontSize: '1rem',
+              letterSpacing: '0',
+              fontFamily: 'DM Sans',
+              color: '#abbad1',
+              // paddingBottom: '.3rem',
+            }}
+          >
+            AMOUNT
+          </div>
           <div
             style={{
               position: 'absolute',

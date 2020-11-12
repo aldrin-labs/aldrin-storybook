@@ -200,7 +200,7 @@ export const TradeInput = styled.input`
           props.theme.palette.white.inputBackground) ||
         '#fff'};
   font-size: 1.3rem;
-
+  font-family: Avenir Next Demi;
   font-weight: bold;
   padding-left: ${(props) => (props.needCharacter ? '2rem' : '0.6rem')};
   text-align: ${(props) => props.align};

@@ -1199,12 +1199,18 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               width={'33%'}
               justify={marketType === 0 ? 'flex-start' : 'space-around'}
             >
-              <BlockHeader
-                theme={theme}
-                style={{ textTransform: 'capitalize' }}
-              >
-                Start
-              </BlockHeader>
+              <DarkTooltip title={'Conditions for opening your position.'}>
+                <BlockHeader
+                  theme={theme}
+                  style={{
+                    textTransform: 'capitalize',
+                    borderBottom: `0.1rem dashed ${theme.palette.grey.light}`,
+                  }}
+                >
+                  Start
+                </BlockHeader>
+              </DarkTooltip>
+
               {marketType === 1 && (
                 <div
                   style={{
@@ -1336,26 +1342,55 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               justify={'flex-start'}
               key={'stopLoss'}
             >
-              <BlockHeader
-                style={{ textTransform: 'capitalize' }}
-                theme={theme}
+              <DarkTooltip
+                title={
+                  'Conditions for closing your position, provided that it is unprofitable.'
+                }
               >
-                stop loss
-              </BlockHeader>
+                <BlockHeader
+                  style={{
+                    textTransform: 'capitalize',
+                    borderBottom: `0.1rem dashed ${theme.palette.grey.light}`,
+                  }}
+                  theme={theme}
+                >
+                  stop loss
+                </BlockHeader>
+              </DarkTooltip>
             </TerminalHeader>
             <TerminalHeader
               theme={theme}
               key={'takeProfit'}
               width={'32.5%'}
               padding={'0rem 1.5rem'}
-              justify={'flex-start'}
+              justify={'space-between'}
             >
-              <BlockHeader
-                style={{ textTransform: 'capitalize' }}
-                theme={theme}
+              <DarkTooltip
+                title={
+                  'Conditions for closing your position, provided that it is profitable.'
+                }
               >
-                take profit
-              </BlockHeader>
+                <BlockHeader
+                  style={{
+                    textTransform: 'capitalize',
+                    borderBottom: `0.1rem dashed ${theme.palette.grey.light}`,
+                  }}
+                  theme={theme}
+                >
+                  take profit
+                </BlockHeader>
+              </DarkTooltip>
+              <a
+                href="https://cryptocurrencies.ai/smartTrading"
+                style={{
+                  color: theme.palette.blue.main,
+                  fontSize: '1.5rem',
+                  fontWeight: '500',
+                  textDecoration: 'none',
+                }}
+              >
+                Learn how to trade with Smart Order &rarr;
+              </a>
             </TerminalHeader>
           </TerminalHeaders>
 

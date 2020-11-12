@@ -447,9 +447,21 @@ class SimpleTabs extends React.Component {
                         })
                       }
                     />
-                    <SettingsLabel theme={theme} htmlFor="postOnly">
-                      post only
-                    </SettingsLabel>
+                    <DarkTooltip
+                      title={
+                        'Post-only order will be added to the order book and not execute with a pre-existing order immediately.'
+                      }
+                    >
+                      <SettingsLabel
+                        theme={theme}
+                        style={{
+                          borderBottom: `0.1rem dashed ${theme.palette.grey.text}`,
+                        }}
+                        htmlFor="postOnly"
+                      >
+                        post only
+                      </SettingsLabel>
+                    </DarkTooltip>
                   </FuturesSettings>
                 )}
 
@@ -474,11 +486,6 @@ class SimpleTabs extends React.Component {
                           <b>- FOK (Fill Or Kill):</b> the order must be filled
                           immediately in its entirety or not executed at all.
                         </p>
-                        <p>
-                          <b>- GTX Good Till Crossing (Post Only):</b> the order
-                          would immediately match and trade, and not be a pure
-                          maker order. Available only in post-only mode.
-                        </p>
                       </>
                     }
                   >
@@ -496,7 +503,13 @@ class SimpleTabs extends React.Component {
                           })
                         }
                       />
-                      <SettingsLabel theme={theme} htmlFor="TIF">
+                      <SettingsLabel
+                        theme={theme}
+                        style={{
+                          borderBottom: `0.1rem dashed ${theme.palette.grey.text}`,
+                        }}
+                        htmlFor="TIF"
+                      >
                         TIF
                       </SettingsLabel>
                       <StyledSelect
@@ -529,9 +542,21 @@ class SimpleTabs extends React.Component {
                       }))
                     }
                   />
-                  <SettingsLabel theme={theme} htmlFor="reduceOnly">
-                    reduce only
-                  </SettingsLabel>
+                  <DarkTooltip
+                    title={
+                      'Reduce-only order will only reduce your position, not increase it.'
+                    }
+                  >
+                    <SettingsLabel
+                      theme={theme}
+                      style={{
+                        borderBottom: `0.1rem dashed ${theme.palette.grey.text}`,
+                      }}
+                      htmlFor="reduceOnly"
+                    >
+                      reduce only
+                    </SettingsLabel>
+                  </DarkTooltip>
                 </FuturesSettings>
 
                 {(mode === 'stop-limit' || mode === 'stop-market') && (
