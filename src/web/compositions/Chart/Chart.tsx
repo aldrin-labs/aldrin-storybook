@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Redirect } from 'react-router-dom'
+import { Redirect, withRouter } from 'react-router-dom'
 // import Joyride from 'react-joyride'
 import { withTheme } from '@material-ui/styles'
 import { compose } from 'recompose'
@@ -17,11 +17,12 @@ import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
 import { getChartLayout } from '@core/graphql/queries/chart/getChartLayout'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
+import { selectTradingPair } from '@core/graphql/mutations/user/selectTradingPair'
 import { changeChartLayout } from '@core/graphql/mutations/chart/changeChartLayout'
 import { finishJoyride } from '@core/utils/joyride'
 import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 import { getChartSteps } from '@sb/config/joyrideSteps'
-
+import { withSelectedPair } from '@core/hoc/withSelectedPair'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -157,6 +158,7 @@ export function ChartPageComponent(props: any) {
 
   const {
     theme,
+    pathname,
     updateTooltipSettingsMutation,
     getChartDataQuery: {
       getMyProfile: { _id } = { _id: '' },
@@ -255,12 +257,13 @@ export function ChartPageComponent(props: any) {
   let initialLeverage
 
   // hacky way to redirect to default market if user selected wrong market in url
+  // or we have no pair in url
   if (
-    pairPropertiesQuery.loading === false &&
-    pairPropertiesQuery.marketByName.length === 0
+    (pairPropertiesQuery.loading === false &&
+      pairPropertiesQuery.marketByName.length === 0) || !pathname.split('/')[3]
   ) {
     const chartPageType = marketType === 0 ? 'spot' : 'futures'
-    const pathToRedirect = `/chart/${chartPageType}/BTC_USDT`
+    const pathToRedirect = `/chart/${chartPageType}/${selectedPair}`
     return <Redirect to={pathToRedirect} exact />
   }
 
@@ -271,7 +274,7 @@ export function ChartPageComponent(props: any) {
     !pairPropertiesQuery.marketByName[0] ||
     pairPropertiesQuery.networkStatus === 2 ||
     pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
-      selectedPair.replace('_', '')
+    selectedPair.replace('_', '')
 
   if (isPairDataLoading) {
     minPriceDigits = 0.00000001
@@ -393,7 +396,7 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
     !prev.pairPropertiesQuery.marketByName[0] ||
     prev.pairPropertiesQuery.networkStatus === 2 ||
     prev.pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
-      prev.selectedPair.replace('_', '')
+    prev.selectedPair.replace('_', '')
 
   const nextIsPairDataLoading =
     next.loading ||
@@ -401,21 +404,21 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
     !next.pairPropertiesQuery.marketByName[0] ||
     next.pairPropertiesQuery.networkStatus === 2 ||
     next.pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
-      next.selectedPair.replace('_', '')
+    next.selectedPair.replace('_', '')
 
   const tooltipQueryChanged =
     (prev.getTooltipSettingsQuery.getTooltipSettings &&
       prev.getTooltipSettingsQuery.getTooltipSettings.chartPage) ===
-      (next.getTooltipSettingsQuery.getTooltipSettings &&
-        next.getTooltipSettingsQuery.getTooltipSettings.chartPage) &&
+    (next.getTooltipSettingsQuery.getTooltipSettings &&
+      next.getTooltipSettingsQuery.getTooltipSettings.chartPage) &&
     (prev.getTooltipSettingsQuery.getTooltipSettings &&
       prev.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup) ===
-      (next.getTooltipSettingsQuery.getTooltipSettings &&
-        next.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup) &&
+    (next.getTooltipSettingsQuery.getTooltipSettings &&
+      next.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup) &&
     (prev.getTooltipSettingsQuery.getTooltipSettings &&
       prev.getTooltipSettingsQuery.getTooltipSettings.smartTerminal) ===
-      (next.getTooltipSettingsQuery.getTooltipSettings &&
-        next.getTooltipSettingsQuery.getTooltipSettings.smartTerminal)
+    (next.getTooltipSettingsQuery.getTooltipSettings &&
+      next.getTooltipSettingsQuery.getTooltipSettings.smartTerminal)
 
   return (
     // prev.marketType === next.marketType &&
@@ -447,6 +450,7 @@ export default compose(
   withErrorFallback,
   withAuthStatus,
   withTheme(),
+  withRouter,
   // withAuth,
   queryRendererHoc({
     skip: (props: any) => !props.authenticated,
@@ -458,6 +462,8 @@ export default compose(
       marketType: 1, // hardcode here to get only futures marketIds'
     },
   }),
+  graphql(selectTradingPair, { name: 'selectTradingPairMutation' }),
+  withSelectedPair,
   queryRendererHoc({
     skip: (props: any) => !props.authenticated,
     query: GET_TOOLTIP_SETTINGS,
