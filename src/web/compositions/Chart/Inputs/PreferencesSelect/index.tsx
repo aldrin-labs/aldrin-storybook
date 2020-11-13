@@ -261,7 +261,7 @@ class IntegrationReactSelect extends React.PureComponent {
           </Row>
         )}
         <ExchangePair
-          style={{ width: '14.4rem', marginLeft: '.8rem' }}
+          style={{ marginLeft: '.8rem' }}
           selectStyles={selectStyles}
           onClick={this.toggleMenu}
           // onMouseOver={this.openMenu}
