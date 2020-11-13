@@ -406,7 +406,7 @@ export const SeparateInputTitle = styled.span`
 `
 
 export const BlueInputTitle = styled(SeparateInputTitle)`
-  color: #5c8cea;
+  color: #ADD78E;
   cursor: pointer;
 `
 
