@@ -65,8 +65,9 @@ const isSpotOrRebalance = (pathname: any) => {
 const Portfolio = (props: any) => {
   return (
     <Link
-      to={`/portfolio/main/${isSpotOrRebalance(props.pathname) ? 'spot' : 'futures'
-        }`}
+      to={`/portfolio/main/${
+        isSpotOrRebalance(props.pathname) ? 'spot' : 'futures'
+      }`}
       {...props}
     />
   )
@@ -85,8 +86,9 @@ const Rebalance = (props: any) => <Link to="/portfolio/rebalance" {...props} />
 const Transactions = (props: any) => {
   return (
     <Link
-      to={`/portfolio/transactions/${isSpotOrRebalance(props.pathname) ? 'spot' : 'futures'
-        }`}
+      to={`/portfolio/transactions/${
+        isSpotOrRebalance(props.pathname) ? 'spot' : 'futures'
+      }`}
       {...props}
     />
   )
@@ -102,10 +104,10 @@ const MarketType = (props: any) => {
   const url = isChart
     ? `/chart/${props.marketName}`
     : isTransactions
-      ? `/portfolio/transactions/${props.marketName}`
-      : isPortfolio
-        ? `/portfolio/main/${props.marketName}`
-        : `/portfolio/main/${props.marketName}`
+    ? `/portfolio/transactions/${props.marketName}`
+    : isPortfolio
+    ? `/portfolio/main/${props.marketName}`
+    : `/portfolio/main/${props.marketName}`
 
   return <Link to={url} {...props} />
 }
@@ -200,7 +202,7 @@ const NavBarRaw: SFC<Props> = ({
                 display: 'flex',
                 height: '100%',
                 borderRight: theme.palette.border.main,
-                width: '22rem',
+                width: '20rem',
               }}
             >
               <Grid
@@ -208,18 +210,18 @@ const NavBarRaw: SFC<Props> = ({
                 alignItems={'center'}
                 wrap="nowrap"
                 style={{
-                  minWidth: '25rem',
+                  // minWidth: '25rem',
+                  height: '100%',
                   padding: '.5rem 1rem',
                   margin: 'auto auto',
-
-                  width: '20rem',
+                  width: '200px',
                 }}
               >
                 <Logo theme={theme} />
               </Grid>
             </Grid>
           </Hidden>
-          <Grid
+          {/* <Grid
             data-tut={'spot&futures'}
             item={true}
             container={true}
@@ -342,7 +344,7 @@ const NavBarRaw: SFC<Props> = ({
                 },
               ]}
             />
-          </Grid>
+          </Grid> */}
           {/* <NavLinkButtonWrapper
             theme={theme}
             key="spot-wrapper"
@@ -513,7 +515,7 @@ const NavBarRaw: SFC<Props> = ({
                   },
                 ]}
               /> */}
-            <NavLinkButtonWrapper
+            {/* <NavLinkButtonWrapper
               theme={theme}
               key="trading-wrapper"
               onMouseOver={() => {
@@ -577,7 +579,7 @@ const NavBarRaw: SFC<Props> = ({
               >
                 Performance
               </NavLinkButton>
-            </NavLinkButtonWrapper>
+            </NavLinkButtonWrapper> */}
             {/* {(isSpot || isRebalance) && (
               <NavLinkButtonWrapper
                 theme={theme}
@@ -605,7 +607,7 @@ const NavBarRaw: SFC<Props> = ({
 
         {loginStatus && (
           <>
-            <TotalBalance theme={theme} />
+            {/* <TotalBalance theme={theme} />
             <NavBarProfileSelector
               onMouseOver={() => {
                 if (notAuthPages || !loginStatus) {
@@ -617,9 +619,38 @@ const NavBarRaw: SFC<Props> = ({
               logout={logout}
               pathname={pathname}
               theme={theme}
-            />
+            /> */}
           </>
         )}
+
+        <NavLinkButtonWrapper
+          style={{
+            width: '28rem',
+            borderLeft: theme.palette.border.main,
+          }}
+          theme={theme}
+          key="trading-wrapper"
+          onMouseOver={() => {
+            if (notAuthPages || !loginStatus) {
+              return
+            }
+
+            client.query({
+              query: getPortfolioAssets,
+              fetchPolicy: 'cache-first',
+              variables: { baseCoin: 'USDT', innerSettings: true },
+            })
+          }}
+        >
+          <NavLinkButton
+            key="trading"
+            page={`chart`}
+            component={Chart}
+            pathname={pathname}
+          >
+            wallet connected
+          </NavLinkButton>
+        </NavLinkButtonWrapper>
 
         <Grid item={true} style={{ display: 'flex', height: '100%' }}>
           <Grid
