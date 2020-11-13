@@ -184,7 +184,7 @@ export const CardsPanel = ({
           />
         </CustomCard>
 
-        {view === 'default' && (
+        {/* {view === 'default' && (
           <KeySelector
             theme={theme}
             exchange={activeExchange}
@@ -194,7 +194,7 @@ export const CardsPanel = ({
             }}
             isAccountSelect={true}
           />
-        )}
+        )} */}
 
         <AutoSuggestSelect
           style={{ width: '15%', minWidth: '0' }}
@@ -216,7 +216,7 @@ export const CardsPanel = ({
             height: '100%',
           }}
         >
-          <DarkTooltip title={'Terminal with traditional order types.'}>
+          {/* <DarkTooltip title={'Terminal with traditional order types.'}>
             <ChangeTradeButton
               theme={theme}
               style={{
@@ -251,7 +251,7 @@ export const CardsPanel = ({
                 {'Basic'}
               </span>
             </ChangeTradeButton>
-          </DarkTooltip>
+          </DarkTooltip> */}
 
           <DarkTooltip
             title={
@@ -351,7 +351,7 @@ export const CardsPanel = ({
         </SmartTradeButton> */}
         <PreferencesSelect
           theme={theme}
-          style={{ width: '15%', minWidth: '0', marginLeft: '.8rem' }}
+          style={{ minWidth: '0', marginLeft: '.8rem', marginRight: 0, }}
           id={'preferencesSelector'}
           value={'preferences'}
           selectStyles={selectStyles(theme)}
