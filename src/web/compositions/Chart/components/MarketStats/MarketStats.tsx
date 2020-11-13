@@ -366,7 +366,7 @@ class MarketStats extends React.PureComponent<IProps> {
               <PanelCardValue
                 theme={theme}
                 style={{
-                  color: '#235DCF',
+                  color: theme.palette.blue.main,
                   whiteSpace: 'nowrap',
                 }}
               >
