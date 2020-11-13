@@ -2187,7 +2187,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                             backgroundColor: theme.palette.green.main,
                             borderRadius: '0rem',
                             border: theme.palette.border.main,
-                            color: theme.palette.white.main,
+                            color: '#0B0B0E',
                           }}
                           onClick={() => !firstHalfIsActive && changeHalf()}
                           height={'3rem'}

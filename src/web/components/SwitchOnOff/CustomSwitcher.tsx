@@ -21,7 +21,7 @@ export const SwitcherHalf = styled(
       btnWidth={width}
       fontSize="1.3rem"
       padding={padding}
-      btnColor={isDisabled ? theme.palette.grey.text : activeColor}
+      btnColor={isDisabled ? '#0B0B0E' : activeColor}
       backgroundColor={
         isDisabled ? theme.palette.white.background : activeBackgroundColor
       }

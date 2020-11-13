@@ -283,7 +283,7 @@ export const PercentageItem = styled(StyledTab)`
 export const SendButton = styled(StyledTab)`
   width: 100%;
   margin: auto 0.5rem;
-  color: #fff;
+  color: #0B0B0E;
   background-color: ${(props) =>
     props.type === 'buy'
       ? (props.theme &&
