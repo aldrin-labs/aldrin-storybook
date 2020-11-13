@@ -240,7 +240,7 @@ export default ({ themeMode, isChartPage, children }) => {
             },
 
             orderbook: {
-              greenBackground: '#rgba(205, 233, 203, 0.15)',
+              greenBackground: 'rgba(205, 233, 203, 0.15)',
               redBackground: 'rgba(234, 99, 118, 0.35)',
             },
             slider: {
