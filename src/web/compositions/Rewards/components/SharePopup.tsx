@@ -50,6 +50,19 @@ const StyledPaper = styled(Paper)`
   width: 90rem !important;
   max-width: 90rem !important;
 `
+const links = (dcfiEarnedForTwitter: number) => ({
+  ['pic.twitter.com/Q3f4242Zrb']: `%40solana%20Sealevel%20parallel%20smart%20contracts%20run-time%20allows%20it%20to%20execute%20transactions%20at%20lightning%20fast%20speed%2C%20checkout%20details%20here%3A%20https%3A%2F%2Fmedium.com%2Fsolana-labs%2Fsealevel-parallel-processing-thousands-of-smart-contracts-d814b378192%0A%24DCFI%20%24SRM%20%24SOL%20%24UNI%20%24ETH%20%24DOT%20%24BNB%20%24LINK%20%24ADA%0Apic.twitter.com/Q3f4242Zrb`,
+  ['pic.twitter.com/kxICFUi5qs']: `I%20have%20already%20farmed%20${dcfiEarnedForTwitter}%20%24DCFI%20on%20dex.cryptocurrencies.ai!%0A%0AFast%20DEX%20trading%20is%20here%20already%2C%20check%20it%20out%20at%20https%3A%2F%2Fdex.cryptocurrencies.ai%2F%0A%24DCFI%20%24SRM%20%24SOL%20%24UNI%20%24ETH%20%24DOT%20%24YFI%20%24BNB%20%24LINK%20%24EOS%20%24XTZ%20%24ADA%0Apic.twitter.com/kxICFUi5qs`,
+  ['pic.twitter.com/k7LIQlAI3w']: `I%20have%20already%20farmed%20${dcfiEarnedForTwitter}%20%24DCFI%20on%20dex.cryptocurrencies.ai!%0A%0AFast%20DEX%20trading%20is%20here%20already%2C%20check%20it%20out%20at%20https%3A%2F%2Fdex.cryptocurrencies.ai%2F%0A%24DCFI%20%24SRM%20%24SOL%20%24UNI%20%24ETH%20%24DOT%20%24YFI%20%24BNB%20%24LINK%20%24EOS%20%24XTZ%20%24ADA%0Apic.twitter.com/k7LIQlAI3w`,
+  ['pic.twitter.com/lDKbpqSqk9']: `I%20have%20already%20farmed%20${dcfiEarnedForTwitter}%20%24DCFI%20on%20dex.cryptocurrencies.ai!%0A%0AFast%20DEX%20trading%20is%20here%20already%2C%20check%20it%20out%20at%20https%3A%2F%2Fdex.cryptocurrencies.ai%2F%0A%24DCFI%20%24SRM%20%24SOL%20%24UNI%20%24ETH%20%24DOT%20%24YFI%20%24BNB%20%24LINK%20%24EOS%20%24XTZ%20%24ADA%0Apic.twitter.com/lDKbpqSqk9`,
+  ['pic.twitter.com/1eTKx8xVv6']: `I%20have%20already%20farmed%20${dcfiEarnedForTwitter}%20%24DCFI%20on%20dex.cryptocurrencies.ai!%0A%0AFast%20DEX%20trading%20is%20here%20already%2C%20check%20it%20out%20at%20https%3A%2F%2Fdex.cryptocurrencies.ai%2F%0A%24DCFI%20%24SRM%20%24SOL%20%24UNI%20%24ETH%20%24DOT%20%24YFI%20%24BNB%20%24LINK%20%24EOS%20%24XTZ%20%24ADA%0Apic.twitter.com/1eTKx8xVv6`,
+  ['pic.twitter.com/lFmV3DbndY']: `Here%20are%20some%20real%20numbers%20about%20%40projectserum%20trading%20on%20%40solana%20via%20%40CCAI_Official%20interface.%0AFast%20DEX%20trading%20is%20here%20already%2C%20check%20it%20out%20at%20https%3A%2F%2Fdex.cryptocurrencies.ai%2F%0A%24DCFI%20%24SRM%20%24SOL%20%24UNI%20%24ETH%20%24DOT%20%24YFI%20%24BNB%20%24LINK%20%24EOS%20%24XTZ%20%24ADA%0Apic.twitter.com/lFmV3DbndY`,
+})
+
+const getHrefFromGifLink = (
+  gifLink: string,
+  dcfiEarnedForTwitter: number
+): string => links(dcfiEarnedForTwitter)[gifLink]
 
 export const SharePopup = (props) => {
   const { theme, isSharePopupOpen, dcfiEarnedForTwitter, publicKey } = props
@@ -158,7 +171,10 @@ export const SharePopup = (props) => {
             fontSize={'1.6rem'}
             btnWidth={'34%'}
             textTransform={'none'}
-            href={`https://twitter.com/intent/tweet?text=I%20have%20already%20farmed%20${dcfiEarnedForTwitter}%20%24DCFI%20on%20dex.cryptocurrencies.ai!%0A%0AFast%20DEX%20trading%20is%20here%20already%2C%20check%20it%20out%20at%20https%3A%2F%2Fdex.cryptocurrencies.ai%2F%0A%24DCFI%20%24SRM%20%24SOL%20%24UNI%20%24ETH%20%24DOT%20%24YFI%20%24BNB%20%24LINK%20%24EOS%20%24XTZ%20%24ADA%0A${choosenPic}`}
+            href={`https://twitter.com/intent/tweet?text=${getHrefFromGifLink(
+              choosenPic,
+              dcfiEarnedForTwitter
+            )}`}
             rel="noopener noreferrel"
             target={'_blank'}
             onClick={(e) => {
