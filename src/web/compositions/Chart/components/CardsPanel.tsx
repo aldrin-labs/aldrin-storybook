@@ -292,6 +292,7 @@ export const CardsPanel = ({
               <span
                 style={{
                   borderBottom: `dashed 0.1rem ${theme.palette.grey.border}`,
+                  color: '#0B0B0E',
                 }}
               >
                 {'Advanced'}

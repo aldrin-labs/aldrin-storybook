@@ -17,7 +17,8 @@ const StyledLabel = styled.label`
 const StyledCheckox = styled(Checkbox)`
   & svg {
     width: 2rem;
-    height: 2rem;
+	height: 2rem;
+	fill: ${(props) => props.theme.palette.blue.main};
   }
 `;
 
@@ -29,6 +30,7 @@ export const PaginationBlock = ({ theme, allKeys, specificPair, handleToggleAllK
 					id="specPair"
 					checked={!specificPair}
 					onChange={handleToggleSpecificPair}
+					theme={theme}
 					style={{ padding: '0  .4rem 0 1.2rem' }}
 				/>
 				<StyledLabel theme={theme} htmlFor="specPair">
@@ -39,6 +41,7 @@ export const PaginationBlock = ({ theme, allKeys, specificPair, handleToggleAllK
 				<StyledCheckox
 					id="allKeys"
 					checked={allKeys}
+					theme={theme}
 					onChange={handleToggleAllKeys}
 					style={{ padding: '0 1.2rem' }}
 				/>
