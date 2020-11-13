@@ -121,7 +121,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
         )}
 
         <ExchangePair
-          style={{ width: '14.4rem' }}
+          // style={{ width: '14.4rem' }}
           border={divider}
           selectStyles={selectStyles}
           onClick={this.toggleMenu}

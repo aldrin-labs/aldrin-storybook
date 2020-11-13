@@ -7,9 +7,12 @@ import { client } from '@core/graphql/apolloClient'
 import IconButton from '@material-ui/core/IconButton'
 
 import HelpIcon from '@material-ui/icons/Help'
-import TelegramIcon from '@material-ui/icons/Telegram'
+// import TelegramIcon from '@material-ui/icons/Telegram'
+import telegramFly from '@icons/flyTelegram.svg'
+import tweetBird from '@icons/tweetBird.svg'
 
 import { writeQueryData } from '@core/utils/TradingTable.utils'
+import SvgIcon from '@sb/components/SvgIcon'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
@@ -126,27 +129,37 @@ class LoginMenuComponent extends React.Component {
               </IconButton>
             }
           /> */}
-
-          <TooltipCustom
-            title={'Telegram chat'}
-            enterDelay={250}
-            component={
-              <IconButton
-                color="default"
-                component={TelegramLink}
-                className="UserLink"
-                style={{
-                  padding: '0 12px',
-                  borderRadius: 0,
-                  height: '100%',
-                }}
-              >
-                <TelegramIcon
-                  style={{ fontSize: '2.75rem', fill: '#7284A0' }}
-                />
-              </IconButton>
-            }
-          />
+          <a
+            style={{ height: '100%' }}
+            href="https://twitter.com/decefi_official"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {' '}
+            <SvgIcon
+              src={tweetBird}
+              width="3.5rem"
+              height="auto"
+              style={{
+                margin: '1rem 1.5rem',
+              }}
+            />
+          </a>
+          <a
+            style={{ height: '100%' }}
+            href="https://t.me/decefi"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <SvgIcon
+              src={telegramFly}
+              width="3.5rem"
+              height="auto"
+              style={{
+                margin: '1rem 1.5rem',
+              }}
+            />{' '}
+          </a>
         </div>
         {/* <TooltipCustom
           title="Log out"

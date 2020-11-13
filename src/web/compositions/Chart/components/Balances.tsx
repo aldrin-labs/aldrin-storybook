@@ -592,7 +592,7 @@ export const Balances = ({
                               togglePopup(true)
                             }}
                           >
-                            Transfer in
+                            Lock funds
                           </BtnCustom>
 
                           <BtnCustom
@@ -615,7 +615,7 @@ export const Balances = ({
                               togglePopup(true)
                             }}
                           >
-                            Transfer out
+                            Unlock funds
                           </BtnCustom>
                         </div>
                       </>

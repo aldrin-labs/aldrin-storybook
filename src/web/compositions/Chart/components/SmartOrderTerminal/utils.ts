@@ -16,7 +16,7 @@ export const getSecondValueFromFirst = (value: string): string => {
 }
 
 const CommonSwitcherStyles = {
-  activeColor: '#fff',
+  activeColor: '#0B0B0E',
   borderRadius: '0',
 }
 

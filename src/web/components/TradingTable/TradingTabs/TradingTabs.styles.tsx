@@ -7,10 +7,10 @@ export const TitleTab = styled(({ active, theme, ...rest }) => {
 })`
   &&& {
     color: ${(props: { active: boolean; theme: Theme }) =>
-      props.active ? '#fff' : props.theme.palette.dark.main};
+      props.active ? '#0B0B0E' : props.theme.palette.dark.main};
     background-color: ${(props: { active: boolean; theme: Theme }) =>
       props.active
-        ? props.theme.palette.blue.tabs
+        ? props.theme.palette.blue.main
         : props.theme.palette.grey.main};
     font-size: 1.4rem;
     font-weight: normal;

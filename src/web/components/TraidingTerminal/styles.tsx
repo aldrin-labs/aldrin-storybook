@@ -283,7 +283,7 @@ export const PercentageItem = styled(StyledTab)`
 export const SendButton = styled(StyledTab)`
   width: 100%;
   margin: auto 0.5rem;
-  color: #fff;
+  color: #0B0B0E;
   background-color: ${(props) =>
     props.type === 'buy'
       ? (props.theme &&
@@ -319,7 +319,7 @@ export const SendButton = styled(StyledTab)`
 
 export const ChangeTradeButton = styled.button`
   border: none;
-  width: 50%;
+  width: 100%;
   // background: white;
   display: flex;
   justify-content: center;
@@ -406,7 +406,7 @@ export const SeparateInputTitle = styled.span`
 `
 
 export const BlueInputTitle = styled(SeparateInputTitle)`
-  color: #5c8cea;
+  color: #ADD78E;
   cursor: pointer;
 `
 

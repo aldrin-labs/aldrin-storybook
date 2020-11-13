@@ -741,6 +741,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
                 backgroundColor: theme.palette.blue.main,
                 marginTop: '1.5rem',
                 width: '25rem',
+                color: '#0B0B0E',
               }}
               onClick={() => {
                 updateTerminalViewMode('smartOrderMode')
