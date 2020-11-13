@@ -623,30 +623,45 @@ const NavBarRaw: SFC<Props> = ({
           </>
         )}
 
+        <div
+          style={{
+            fontFamily: 'Avenir Next Demi',
+            fontSize: '1.4rem',
+            alignItems: 'center',
+            textAlign: 'center',
+            width: '30rem',
+            color: '#CDE9CB',
+            marginRight: '8rem',
+            borderLeft: theme.palette.border.main,
+          }}
+        >
+          <a>6foEm3bCdAit5J9fyYnevS5FrMKd8c5D1LHDS5bvTnRw</a>
+        </div>
+
         <NavLinkButtonWrapper
           style={{
-            width: '28rem',
+            width: '37rem',
             borderLeft: theme.palette.border.main,
           }}
           theme={theme}
           key="trading-wrapper"
-          onMouseOver={() => {
-            if (notAuthPages || !loginStatus) {
-              return
-            }
+          // onMouseOver={() => {
+          //   if (notAuthPages || !loginStatus) {
+          //     return
+          //   }
 
-            client.query({
-              query: getPortfolioAssets,
-              fetchPolicy: 'cache-first',
-              variables: { baseCoin: 'USDT', innerSettings: true },
-            })
-          }}
+          //   client.query({
+          //     query: getPortfolioAssets,
+          //     fetchPolicy: 'cache-first',
+          //     variables: { baseCoin: 'USDT', innerSettings: true },
+          //   })
+          // }}
         >
           <NavLinkButton
-            key="trading"
-            page={`chart`}
-            component={Chart}
-            pathname={pathname}
+          // key="trading"
+          // page={`chart`}
+          // component={Chart}
+          // pathname={pathname}
           >
             wallet connected
           </NavLinkButton>
