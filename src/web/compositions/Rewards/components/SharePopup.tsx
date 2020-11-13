@@ -3,6 +3,7 @@ import { CardText, Card } from '@sb/compositions/Rewards/index'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index'
 import styled from 'styled-components'
 import { compose } from 'recompose'
+import { notify } from '@sb/dexUtils/notifications'
 
 import Clear from '@material-ui/icons/Clear'
 import { ClearButton } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
@@ -51,7 +52,7 @@ const StyledPaper = styled(Paper)`
 `
 
 export const SharePopup = (props) => {
-  const { theme, isSharePopupOpen, dcfiEarnedForTwitter } = props
+  const { theme, isSharePopupOpen, dcfiEarnedForTwitter, publicKey } = props
   const [choosenPic, setChoosenPic] = useState('pic.twitter.com/kxICFUi5qs')
   return (
     <DialogWrapper
@@ -157,9 +158,18 @@ export const SharePopup = (props) => {
             fontSize={'1.6rem'}
             btnWidth={'34%'}
             textTransform={'none'}
-            href={`https://twitter.com/intent/tweet?text=I%20have%20already%20farmed%20${dcfiEarnedForTwitter}%20%24DCFI%20on%20dex.cryptocurrencies.ai!%0A%3A%0AFast%20DEX%20trading%20is%20here%20already%2C%20check%20it%20out%20at%20https%3A%2F%2Fdex.cryptocurrencies.ai%2F%0A%24DCFI%20%24SRM%20%24SOL%20%24UNI%20%24ETH%20%24DOT%20%24YFI%20%24BNB%20%24LINK%20%24EOS%20%24XTZ%20%24ADA%0A${choosenPic}`}
+            href={`https://twitter.com/intent/tweet?text=I%20have%20already%20farmed%20${dcfiEarnedForTwitter}%20%24DCFI%20on%20dex.cryptocurrencies.ai!%0A%0AFast%20DEX%20trading%20is%20here%20already%2C%20check%20it%20out%20at%20https%3A%2F%2Fdex.cryptocurrencies.ai%2F%0A%24DCFI%20%24SRM%20%24SOL%20%24UNI%20%24ETH%20%24DOT%20%24YFI%20%24BNB%20%24LINK%20%24EOS%20%24XTZ%20%24ADA%0A${choosenPic}`}
             rel="noopener noreferrel"
             target={'_blank'}
+            onClick={(e) => {
+              if (publicKey === '') {
+                e.preventDefault()
+                notify({
+                  message: 'Connect your wallet first',
+                  type: 'error',
+                })
+              }
+            }}
           >
             <SvgIcon
               src={blackTwitter}
