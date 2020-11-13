@@ -20,8 +20,8 @@ export const SButton = styled(
 )`
   && {
     color: ${(props) => (props.isActivePage ? props.blue : props.grey)};
-    background: ${(props) =>
-      props.isActivePage ? props.borderColor : 'transparent'};
+    background: ${(props) => 'transparent'};
+    //  props.isActivePage ? props.borderColor : 'transparent'};
     font-family: Avenir Next Demi;
     letter-spacing: 0.05rem;
     font-size: 1.2rem;

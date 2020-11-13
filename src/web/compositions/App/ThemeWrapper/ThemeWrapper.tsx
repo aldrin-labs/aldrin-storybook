@@ -172,7 +172,7 @@ export default ({ themeMode, isChartPage, children }) => {
               dark: '#377E21',
               light: '#E7ECF3',
               custom: '#97C15C',
-              main: '#ADD78E',
+              main: 'rgb(205,233,203)',
               new: '#29AC80',
               onboarding: '#1BA492',
             },
@@ -227,19 +227,21 @@ export default ({ themeMode, isChartPage, children }) => {
               background: '#0B0B0E',
               inputBackground: '#14161B',
               onboarding: '#0B0B0E',
+              text: '#CDE9CB',
             },
             dark: {
               main: '#D1DDEF',
             },
             depthChart: {
-              redStroke: '#E55764',
+              redStroke: 'rgba(234, 99, 118)',
               greenStroke: '#39A74C',
-              greenBackground: 'rgba(57, 167, 76, 0.35)',
-              redBackground: 'rgba(255, 30, 62, 0.35)',
+              greenBackground: 'rgba(205, 233, 203, 0.15)',
+              redBackground: 'rgba(234, 99, 118, 0.35)',
             },
+
             orderbook: {
-              greenBackground: 'rgba(57, 167, 76, 0.35)',
-              redBackground: 'rgba(255, 30, 62, 0.35)',
+              greenBackground: '#rgba(205, 233, 203, 0.15)',
+              redBackground: 'rgba(234, 99, 118, 0.35)',
             },
             slider: {
               dots: '#2F3949',
@@ -428,23 +430,24 @@ export default ({ themeMode, isChartPage, children }) => {
               inputBackground: '#fff',
               btnBackground: '#F5F5FB',
               onboarding: '#f5f5fb',
+              text: '#CDE9CB',
             },
             dark: {
               main: '#16253D',
             },
             depthChart: {
-              redStroke: '#DD6956',
-              greenStroke: '#29AC80',
-              greenBackground: 'rgba(47, 118, 25, 0.5)',
-              redBackground: 'rgba(185, 59, 43, 0.5)',
+              redStroke: '#EA6376',
+              greenStroke: '#CDE9CB',
+              greenBackground: 'rgba(205, 233, 203, 0.15)',
+              redBackground: 'rgba(234, 99, 118, 0.35)',
             },
             slider: {
               dots: '#ABBAD1',
               rail: '#e0e5ec',
             },
             orderbook: {
-              greenBackground: '#AAF2C9',
-              redBackground: '#FFD1D1',
+              greenBackground: '#rgba(205, 233, 203, 0.15)',
+              redBackground: 'rgba(234, 99, 118, 0.35)',
             },
           },
           updateMode: (newMode) => {
