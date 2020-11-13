@@ -524,6 +524,7 @@ const RewardsRoute = (props) => {
               </a>
               <SharePopup
                 theme={theme}
+                dcfiEarnedForTwitter={dcfiEarnedForTwitter}
                 isSharePopupOpen={isSharePopupOpen}
                 toggleSharePopupIsOpen={toggleSharePopupIsOpen}
               />
