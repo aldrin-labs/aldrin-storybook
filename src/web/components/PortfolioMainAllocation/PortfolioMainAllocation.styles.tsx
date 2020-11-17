@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 import { NavLink } from 'react-router-dom'
 
@@ -77,7 +78,9 @@ export const ModeButton = styled.button`
     padding: 0.32rem 1rem;
   }
 `
-export const NavBarLink = styled(NavLink)`
+export const NavBarLink = styled(({ style, ...props }) => (
+  <NavLink {...props} />
+))`
   font-family: DM Sans;
   text-transform: uppercase;
   text-decoration: none;
@@ -88,6 +91,11 @@ export const NavBarLink = styled(NavLink)`
   height: 100%;
   display: flex;
   align-items: center;
+  ${(props) => props.style};
+
+  &:hover {
+    color: ${(props) => props.theme.palette.blue.serum};
+  }
 `
 
 export const Link = styled(NavLink)`

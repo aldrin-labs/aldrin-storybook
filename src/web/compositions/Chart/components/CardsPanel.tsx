@@ -49,6 +49,7 @@ import TelegramIcon from '@icons/telegram.svg'
 import DiscordIcon from '@icons/discord.svg'
 import TwitterIcon from '@icons/twitter.svg'
 import { withTheme } from '@material-ui/core'
+import color from '@material-ui/core/colors/amber'
 
 const WalletId = styled.div`
   position: relative;
@@ -314,7 +315,7 @@ export const CardsPanel = ({
           </Link>
           <div
             style={{
-              width: '25%',
+              width: '20%',
               marginLeft: '4rem',
               paddingRight: '4rem',
               borderRight: theme.palette.border.main,
@@ -324,6 +325,7 @@ export const CardsPanel = ({
             }}
           >
             <NavBarLink
+              theme={theme}
               style={{
                 color: location.pathname.includes('chart')
                   ? theme.palette.blue.serum
@@ -337,12 +339,14 @@ export const CardsPanel = ({
               Trading
             </NavBarLink>
             <NavBarLink
+              theme={theme}
               data-tut="analytics"
               to="/analytics"
               style={{
                 color: location.pathname.includes('analytics')
                   ? theme.palette.blue.serum
                   : theme.palette.grey.text,
+
                 textDecoration: location.pathname.includes('analytics')
                   ? 'underline'
                   : 'none',
@@ -352,6 +356,7 @@ export const CardsPanel = ({
               Analytics
             </NavBarLink>
             <NavBarLink
+              theme={theme}
               data-tut="farming"
               to="/rewards"
               style={{
