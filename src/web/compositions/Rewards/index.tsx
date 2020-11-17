@@ -1122,7 +1122,8 @@ const RewardsRoute = (props) => {
               >
                 {getUserRetweetsHistory
                   .reduce((acc, currentEl) => acc + currentEl.farmedDCFI, 0)
-                  .toFixed(0)}
+                  .toFixed(0)}{' '}
+                {'DCFI'}
               </div>
             </CardSubTitle>
           </div>
@@ -1183,7 +1184,7 @@ const RewardsRoute = (props) => {
                 paddingBottom: '3rem',
               }}
             >
-              <Title theme={theme}>Twitter Farming Leaderboard </Title>
+              <Title theme={theme}>Twitter Farming History </Title>
               <a
                 style={{
                   fontFamily: 'DM Sans',
@@ -1209,7 +1210,8 @@ const RewardsRoute = (props) => {
               >
                 {getAllRetweetsHistory
                   .reduce((acc, currentEl) => acc + currentEl.farmedDCFI, 0)
-                  .toFixed(0)}
+                  .toFixed(0)}{' '}
+                {'DCFI'}
               </div>
             </CardSubTitle>
           </div>

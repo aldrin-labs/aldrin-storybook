@@ -1,6 +1,8 @@
 import React, { useState, useCallback } from 'react'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
+import greenArrow from '@icons/greenArrow.svg'
+
 import copy from 'clipboard-copy'
 import { useLocation, useHistory, Link } from 'react-router-dom'
 import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
@@ -23,7 +25,7 @@ import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
 import { useWallet, WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
 import { ENDPOINTS, useConnectionConfig } from '@sb/dexUtils/connection'
 import { Line } from '@sb/compositions/AnalyticsRoute/index'
-
+import styled from 'styled-components'
 import OvalSelector from '@sb/components/OvalSelector'
 import SerumCCAILogo from '@icons/serumCCAILogo.svg'
 import LightLogo from '@icons/lightLogo.svg'
@@ -34,7 +36,7 @@ import Select from '@material-ui/core/Select'
 import Button from '@material-ui/core/Button'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import HelpIcon from '@material-ui/icons/Help'
+import Wallet from '@icons/Wallet.svg'
 
 import SunDisabled from '@icons/sunDisabled.svg'
 import SunActive from '@icons/sunActive.svg'
@@ -47,6 +49,25 @@ import TelegramIcon from '@icons/telegram.svg'
 import DiscordIcon from '@icons/discord.svg'
 import TwitterIcon from '@icons/twitter.svg'
 import { withTheme } from '@material-ui/core'
+
+const WalletId = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1rem;
+  cursor: pointer;
+  transition: 2s;
+
+  .wallet {
+    visibility: hidden;
+  }
+
+  &:hover .wallet {
+    transition: 2s;
+    visibility: visible;
+  }
+`
 
 const TelegramLink = (props) => (
   <a
@@ -119,7 +140,7 @@ const TopBar = ({ theme }) => {
   const history = useHistory()
   const [isOpenPopup, setPopupOpen] = useState(false)
 
-  const publicKey = wallet?.publicKey?.toBase58();
+  const publicKey = wallet?.publicKey?.toBase58()
 
   const handleClick = useCallback(
     (e) => {
@@ -132,36 +153,9 @@ const TopBar = ({ theme }) => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-      <SvgIcon
-        width={'auto'}
-        height={'100%'}
-        styledComponentsAdditionalStyle={{
-          padding: '0 2rem 0 0',
-          cursor: 'pointer',
-        }}
-        src={isDarkTheme ? SunDisabled : SunActive}
-        onClick={() => {
-          if (isDarkTheme) {
-            theme.updateMode('light')
-          }
-        }}
-      />
       {/* </div> */}
       {/* <div style={{ display: 'flex' }}> */}
-      <SvgIcon
-        width={'auto'}
-        height={'100%'}
-        styledComponentsAdditionalStyle={{
-          padding: '0 2rem 0 0',
-          cursor: 'pointer',
-        }}
-        src={isDarkTheme ? MoonActive : MoonDisabled}
-        onClick={() => {
-          if (!isDarkTheme) {
-            theme.updateMode('dark')
-          }
-        }}
-      />
+
       <div>
         <OvalSelector
           theme={theme}
@@ -193,7 +187,7 @@ const TopBar = ({ theme }) => {
           }))}
         />
       </div>
-      <div  data-tut="wallet">
+      <div data-tut="wallet">
         <BtnCustom
           type="text"
           size="large"
@@ -207,7 +201,8 @@ const TopBar = ({ theme }) => {
         </BtnCustom>
       </div>
       {connected && (
-        <div
+        <WalletId
+          theme={theme}
           style={{
             position: 'relative',
             display: 'flex',
@@ -217,38 +212,40 @@ const TopBar = ({ theme }) => {
             cursor: 'pointer',
           }}
         >
-          <HelpIcon
-            onClick={() => setPopupOpen(!isOpenPopup)}
-            style={{ color: theme.palette.blue.serum }}
-          />
-          {isOpenPopup && (
-            <div
+          <SvgIcon src={Wallet} />
+          <SvgIcon
+            src={greenArrow}
+            width={'1.3rem'}
+            height={'1.3rem'}
+            style={{ marginLeft: '1rem' }}
+          />{' '}
+          <div
+            style={{
+              position: 'absolute',
+              right: '0',
+              top: '5rem',
+              zIndex: '10',
+              background: theme.palette.white.background,
+              border: theme.palette.border.main,
+              padding: '2rem 1rem',
+              boxShadow: '0px 4px 8px rgba(10, 19, 43, 0.1)',
+            }}
+            className="wallet"
+          >
+            <a
+              target={'_blank'}
+              rel={'noopener noreferrer'}
+              href={`https://explorer.solana.com/address/${publicKey}`}
               style={{
-                position: 'absolute',
-                right: 0,
-                top: '5rem',
-                zIndex: 10,
-                background: theme.palette.white.background,
-                border: theme.palette.border.main,
-                padding: '2rem 1rem',
-                boxShadow: '0px 4px 8px rgba(10,19,43,0.1)',
+                color: theme.palette.blue.serum,
+                fontSize: '1.4rem',
+                textDecoration: 'none',
               }}
             >
-              <a
-                target={'_blank'}
-                rel={'noopener noreferrer'}
-                href={`https://explorer.solana.com/address/${publicKey}`}
-                style={{
-                  color: theme.palette.blue.serum,
-                  fontSize: '1.4rem',
-                  textDecoration: 'none',
-                }}
-              >
-                {publicKey}
-              </a>
-            </div>
-          )}
-        </div>
+              {publicKey}
+            </a>
+          </div>
+        </WalletId>
       )}
     </div>
   )
@@ -262,17 +259,18 @@ export const CardsPanel = ({
 }) => {
   const { market } = useMarket()
   const location = useLocation()
-  
-  const quantityPrecision = market?.minOrderSize && getDecimalCount(market.minOrderSize);
-  const pricePrecision = market?.tickSize && getDecimalCount(market.tickSize);
+
+  const quantityPrecision =
+    market?.minOrderSize && getDecimalCount(market.minOrderSize)
+  const pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
 
   const isDarkTheme = theme.palette.type === 'dark'
   const isAnalytics = location.pathname.includes('analytics')
   const isChartPage = location.pathname.includes('chart')
 
-  const pair = isChartPage  ? location.pathname.split('/')[3] : 'SRM_USDT'
+  const pair = isChartPage ? location.pathname.split('/')[3] : 'SRM_USDT'
 
-  if ( isChartPage && !location.pathname.split('/')[3]) {
+  if (isChartPage && !location.pathname.split('/')[3]) {
     return null
   }
 
@@ -297,21 +295,22 @@ export const CardsPanel = ({
           style={{
             // position: 'relative',
             display: 'flex',
-            maxWidth: '65%',
+            maxWidth: '75%',
+
             marginRight: '.4rem',
             flexGrow: 1,
             border: '0',
           }}
         >
           <Link to={'/chart/spot/SRM_USDT'} style={{ width: '17rem' }}>
-          <img
-            style={{
-              height: '100%',
-              padding: '0 3rem',
-              borderRight: theme.palette.border.main,
-            }}
-            src={isDarkTheme ? SerumCCAILogo : LightLogo}
-          />
+            <img
+              style={{
+                height: '100%',
+                padding: '0 3rem',
+                borderRight: theme.palette.border.main,
+              }}
+              src={isDarkTheme ? SerumCCAILogo : LightLogo}
+            />
           </Link>
           <div
             style={{
@@ -320,7 +319,7 @@ export const CardsPanel = ({
               paddingRight: '4rem',
               borderRight: theme.palette.border.main,
               display: 'flex',
-              justifyContent: 'center',
+              justifyContent: 'space-between',
               alignItems: 'center',
             }}
           >
@@ -329,50 +328,60 @@ export const CardsPanel = ({
                 color: location.pathname.includes('chart')
                   ? theme.palette.blue.serum
                   : theme.palette.grey.text,
+                textDecoration: location.pathname.includes('chart')
+                  ? 'underline'
+                  : 'none',
               }}
               to="/chart"
             >
               Trading
             </NavBarLink>
             <NavBarLink
-            data-tut="analytics"
+              data-tut="analytics"
               to="/analytics"
               style={{
                 color: location.pathname.includes('analytics')
                   ? theme.palette.blue.serum
                   : theme.palette.grey.text,
+                textDecoration: location.pathname.includes('analytics')
+                  ? 'underline'
+                  : 'none',
               }}
             >
               {' '}
               Analytics
             </NavBarLink>
             <NavBarLink
-            data-tut="farming"
+              data-tut="farming"
               to="/rewards"
               style={{
                 color: location.pathname.includes('rewards')
                   ? theme.palette.blue.serum
                   : theme.palette.grey.text,
+                textDecoration: location.pathname.includes('rewards')
+                  ? 'underline'
+                  : 'none',
+                whiteSpace: 'nowrap',
               }}
             >
               {' '}
-              Farming
+              Farming 👨‍🌾
             </NavBarLink>
           </div>
-          {isChartPage && (<div data-tut="pairs"><AutoSuggestSelect
-            
-              value={view === 'default' && pair}
-              id={'pairSelector'}
-              view={view}
-              style={{ width: '22rem' }}
-              activeExchange={activeExchange}
-              selectStyles={{ ...selectStyles(theme) }}
-              marketType={marketType}
-              quantityPrecision={quantityPrecision}
-              pricePrecision={pricePrecision}
-            /></div>
-          
-            
+          {isChartPage && (
+            <div data-tut="pairs">
+              <AutoSuggestSelect
+                value={view === 'default' && pair}
+                id={'pairSelector'}
+                view={view}
+                style={{ width: '13rem' }}
+                activeExchange={activeExchange}
+                selectStyles={{ ...selectStyles(theme) }}
+                marketType={marketType}
+                quantityPrecision={quantityPrecision}
+                pricePrecision={pricePrecision}
+              />
+            </div>
           )}
 
           {/* <TooltipCustom
