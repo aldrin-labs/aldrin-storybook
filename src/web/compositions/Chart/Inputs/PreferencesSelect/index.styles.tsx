@@ -7,6 +7,8 @@ export const Text = styled.span`
     props.active
       ? props.theme.palette.blue.main
       : props.theme.palette.grey.text};
+  font-weight: ${(props: { active?: boolean }) =>
+    props.active ? 'bold' : 'normal'};
   font-size: 1.4rem;
   font-family: 'DM Sans';
   text-transform: capitalize;

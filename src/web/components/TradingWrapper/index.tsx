@@ -5,6 +5,8 @@ import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { Grid } from '@material-ui/core'
 import { compose } from 'recompose'
 
+import BasicTPSL from '@sb/components/BasicTakeProfitStopLoss/index'
+
 import { isSPOTMarketType } from '@core/utils/chartPageUtils'
 import { isFuturesWarsKey } from '@core/graphql/queries/futureWars/isFuturesWarsKey'
 
@@ -759,7 +761,8 @@ class SimpleTabs extends React.Component {
 
                 <FullHeightGrid theme={theme} xs={6} item>
                   <TerminalContainer>
-                    <TraidingTerminal
+                    <BasicTPSL pair={pair} theme={theme}></BasicTPSL>
+                    {/* <TraidingTerminal
                       byType={'sell'}
                       operationType={'sell'}
                       priceType={mode}
@@ -798,7 +801,7 @@ class SimpleTabs extends React.Component {
                       orderMode={orderMode}
                       TIFMode={TIFMode}
                       trigger={trigger}
-                    />
+                    /> */}
                   </TerminalContainer>
                 </FullHeightGrid>
               </div>
