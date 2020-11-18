@@ -12,11 +12,11 @@ export const TablesBlockWrapper = styled(Grid)`
     isDefaultTerminalViewMode,
     isDefaultOnlyTables,
   }: {
-    isDefaultTerminalViewMode: boolean,
+    isDefaultTerminalViewMode: boolean
     isDefaultOnlyTables: boolean
   }) => (isDefaultTerminalViewMode ? '40%' : '50%')};
 
-  display: ${(props) => (props.isDefaultOnlyTables && 'none;')}; 
+  display: ${(props) => props.isDefaultOnlyTables && 'none;'};
 
   && {
     box-shadow: none !important;
@@ -140,7 +140,7 @@ export const TerminalModeButton = styled(
   font-size: 1.3rem;
   font-weight: normal;
   letter-spacing: 0.05rem;
-  width: 25%;
+  width: calc(100% / 3);
   color: ${(props: { active: boolean; theme: Theme }) =>
     props.active ? '#fff' : props.theme.palette.dark.main};
   background-color: ${(props: { active: boolean; theme: Theme }) =>
@@ -222,9 +222,9 @@ export const StyledSelect = styled.select`
   background: ${(props) =>
     (!props.disabled &&
       props.theme &&
-        props.theme.palette &&
-        props.theme.palette.white &&
-        props.theme.palette.white.background) ||
+      props.theme.palette &&
+      props.theme.palette.white &&
+      props.theme.palette.white.background) ||
     '#16253D'};
   border: ${(props) =>
     (props.theme &&

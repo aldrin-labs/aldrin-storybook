@@ -189,7 +189,7 @@ export const AdditionalSettingsButton = styled(
 export const ChangeOrderTypeBtn = styled(
   ({ isActive, children, theme, ...rest }) => (
     <BtnCustom
-      btnWidth="calc(50%/3)"
+      btnWidth="calc(50%/2)"
       height={'3rem'}
       fontSize={'1.2rem'}
       fontWeight={isActive ? '700' : '400'}
