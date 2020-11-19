@@ -53,9 +53,10 @@ const AppRaw = ({
 }: any) => {
   const isChartPage = /chart/.test(currentPage)
 
-  const themeMode = (getThemeModeQuery &&
-    getThemeModeQuery.getAccountSettings &&
-    getThemeModeQuery.getAccountSettings.themeMode) ||
+  const themeMode =
+    (getThemeModeQuery &&
+      getThemeModeQuery.getAccountSettings &&
+      getThemeModeQuery.getAccountSettings.themeMode) ||
     'light'
   const chartPageView =
     getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
@@ -81,7 +82,7 @@ const AppRaw = ({
 
   // const isUserFromNotRestrictedCountry = !!syncStorage.getItem('IUFNRC')
   const isUserFromNotRestrictedCountry = false
-
+  console.log('app.tsx')
   return (
     <ApolloPersistWrapper>
       <JssProvider jss={jss} generateClassName={generateClassName}>
@@ -126,6 +127,7 @@ export const App = compose(
   queryRendererHoc({
     query: GET_VIEW_MODE,
     name: 'getViewModeQuery',
+    skip: (props: any) => !props.authenticated,
     fetchPolicy: 'cache-and-network',
   }),
   // queryRendererHoc({
