@@ -269,6 +269,7 @@ const RewardsRoute = (props) => {
     publicKey,
     addSerumTransactionMutation,
     getTotalSerumVolumeQueryRefetch,
+    getTotalSerumVolumeQuery,
     getTopTwitterFarmingQuery,
     getUserRetweetsHistoryQuery,
     getAllRetweetsHistoryQuery,
@@ -277,8 +278,32 @@ const RewardsRoute = (props) => {
     getTopTwitterFarmingQueryRefetch,
   } = props
 
-  const tradedSerumInUSDT =
-    props.getTotalSerumVolumeQuery.getTotalSerumVolume.usdVolume
+  const {
+    getTotalSerumVolume = {
+      usdVolume: 0,
+      usdVolumeBounty: 0,
+      usdVolumeTwitter: 0,
+    },
+  } = getTotalSerumVolumeQuery || {
+    getTotalSerumVolume: {
+      usdVolume: 0,
+      usdVolumeBounty: 0,
+      usdVolumeTwitter: 0,
+    },
+  }
+
+  const {
+    usdVolume = 0,
+    usdVolumeBounty = 0,
+    usdVolumeTwitter = 0,
+  } = getTotalSerumVolume || {
+    usdVolume: 0,
+    usdVolumeBounty: 0,
+    usdVolumeTwitter: 0,
+  }
+
+  const tradedSerumInUSDT = usdVolume - (usdVolumeTwitter + usdVolumeBounty)
+
   const currentPhase = getPhaseFromTotal(tradedSerumInUSDT)
   const currentPhaseMaxVolume = srmVolumesInUSDT[currentPhase]
   const currentPhaseMaxVolumeLabel = volumeLabels[currentPhase]
