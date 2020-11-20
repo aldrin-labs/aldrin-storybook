@@ -173,7 +173,7 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
         }}
         onTrClick={(row) => {
           this.setExpandedRows(row.id)
-          copy(row.id)
+          copy(row.id.split('_')[0])
         }}
         withCheckboxes={false}
         tableStyles={{

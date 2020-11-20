@@ -1,4 +1,5 @@
 import React from 'react'
+import copy from 'clipboard-copy'
 import { compose } from 'recompose'
 import { withTheme } from '@material-ui/styles'
 
@@ -154,6 +155,9 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
           height: 'calc(100% - 6rem)',
           backgroundColor: theme.palette.white.background,
         }}
+        onTrClick={(row) => {
+          copy(row.id.split('_')[0])
+        }}
         stylesForTable={{ backgroundColor: theme.palette.white.background }}
         defaultSort={{
           sortColumn: 'date',
@@ -248,15 +252,27 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
 const TableDataWrapper = compose(
   queryRendererHoc({
     withOutSpinner: false,
-      withTableLoader: false,
-      query: getTradeHistory,
-      name:`getTradeHistoryQuery`,
-      fetchPolicy: "cache-and-network",
-      showLoadingWhenQueryParamsChange: false,
+    withTableLoader: false,
+    query: getTradeHistory,
+    name: `getTradeHistoryQuery`,
+    fetchPolicy: "cache-and-network",
+    showLoadingWhenQueryParamsChange: false,
+    variables: (props: any) => ({
+      tradeHistoryInput: {
+        page: props.page,
+        perPage: props.perPage,
+        startDate: +props.startDate,
+        endDate: +props.endDate,
+        activeExchangeKey: props.selectedKey.keyId,
+        marketType: props.marketType,
+        allKeys: props.allKeys,
+        ...(!props.specificPair ? {} : { specificPair: props.currencyPair }),
+      },
+    }),
+    subscriptionArgs: {
+      subscription: TRADE_HISTORY,
       variables: (props: any) => ({
         tradeHistoryInput: {
-          page: props.page,
-          perPage: props.perPage,
           startDate: +props.startDate,
           endDate: +props.endDate,
           activeExchangeKey: props.selectedKey.keyId,
@@ -265,20 +281,8 @@ const TableDataWrapper = compose(
           ...(!props.specificPair ? {} : { specificPair: props.currencyPair }),
         },
       }),
-      subscriptionArgs: {
-        subscription: TRADE_HISTORY,
-        variables: (props: any) =>  ({
-          tradeHistoryInput: {
-            startDate: +props.startDate,
-            endDate: +props.endDate,
-            activeExchangeKey: props.selectedKey.keyId,
-            marketType: props.marketType,
-            allKeys: props.allKeys,
-            ...(!props.specificPair ? {} : { specificPair: props.currencyPair }),
-          },
-        }),
-        updateQueryFunction: updateTradeHistoryQuerryFunction,
-      }
+      updateQueryFunction: updateTradeHistoryQuerryFunction,
+    }
   })
 )(TradeHistoryTable)
 
