@@ -16,6 +16,7 @@ import ChartCardHeader, { TriggerTitle } from '@sb/components/ChartCardHeader'
 import { HideArrow } from '../components/HideArrow/HideArrow'
 import { isEqual } from 'lodash'
 import { TerminalModeButton } from '@sb/components/TradingWrapper/styles'
+import { useWallet } from '@sb/dexUtils/wallet'
 
 const TerminalContainer = ({
   isDefaultTerminalViewMode,
@@ -88,11 +89,7 @@ export const DefaultViewComponent = (
 
   const [chartExchange, updateChartExchange] = useState('binance')
   const {
-    connected,
     wallet,
-    providerUrl,
-    providerName,
-    setProvider,
   } = useWallet()
   const publicKey = wallet?.publicKey?.toBase58()
 
