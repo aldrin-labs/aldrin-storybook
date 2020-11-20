@@ -302,7 +302,7 @@ class SimpleTabs extends React.Component {
               >
                 Limit
               </TerminalModeButton>
-              {!reduceOnly ? (
+              {/* {!reduceOnly ? (
                 <DarkTooltip
                   maxWidth={'35rem'}
                   title={
@@ -319,7 +319,7 @@ class SimpleTabs extends React.Component {
                 </DarkTooltip>
               ) : (
                 <></>
-              )}
+              )} */}
 
               {!isSPOTMarket ? (
                 <TerminalModeButtonWithDropdown
