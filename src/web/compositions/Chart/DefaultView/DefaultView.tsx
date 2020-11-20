@@ -87,6 +87,14 @@ export const DefaultViewComponent = (
   } = props
 
   const [chartExchange, updateChartExchange] = useState('binance')
+  const {
+    connected,
+    wallet,
+    providerUrl,
+    providerName,
+    setProvider,
+  } = useWallet()
+  const publicKey = wallet?.publicKey?.toBase58()
 
   if (!currencyPair) {
     return null
@@ -233,7 +241,7 @@ export const DefaultViewComponent = (
                   themeMode={themeMode}
                   additionalUrl={`/?symbol=${base}/${quote}_${String(
                     marketType
-                  )}_${chartExchange}&user_id=${id}`}
+                  )}_${chartExchange}&user_id=${publicKey}`}
                 />
               </CustomCard>
             </ChartsContainer>
