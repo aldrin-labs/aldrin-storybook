@@ -241,7 +241,7 @@ export const DefaultViewComponent = (
                   themeMode={themeMode}
                   additionalUrl={`/?symbol=${base}/${quote}_${String(
                     marketType
-                  )}_${chartExchange}&user_id=${publicKey}`}
+                  )}_${chartExchange}&user_id=${publicKey}&api_version=${2.1}`}
                 />
               </CustomCard>
             </ChartsContainer>
