@@ -395,6 +395,7 @@ export async function placeOrder({
   let {
     transaction: placeOrderTx,
     signers,
+    ...rest
   } = await market.makePlaceOrderTransaction(
     connection,
     params,
@@ -403,10 +404,13 @@ export async function placeOrder({
   );
 
   console.log('placeOrder placeOrderTx', placeOrderTx)
+  console.log('placeOrder signers', signers)
+  console.log('placeOrder rest', rest)
+
   transaction.add(placeOrderTx);
   transaction.add(market.makeMatchOrdersTransaction(5));
 
-  console.log('transaction after add', transaction)
+  console.log('placeOrder transaction after add', transaction)
 
   return await sendTransaction({
     transaction,
@@ -593,7 +597,7 @@ async function sendTransaction({
     await wallet.signTransaction(transaction)
   ).serialize();
 
-  console.log('rawTransaction: ', rawTransaction)
+  console.log('sendTransaction rawTransaction: ', rawTransaction)
   const startTime = getUnixTs();
   notify({ message: sendingMessage });
   const txid = await connection.sendRawTransaction(rawTransaction, {
@@ -610,14 +614,14 @@ async function sendTransaction({
         skipPreflight: true,
       });
 
-      console.log('resultOfSendingConfirm', resultOfSendingConfirm)
+      console.log('sendTransaction resultOfSendingConfirm', resultOfSendingConfirm)
       await sleep(300);
     }
   })();
   try {
     const resultOfSignature = await awaitTransactionSignatureConfirmation(txid, timeout, connection);
 
-    console.log('resultOfSignature', resultOfSignature)
+    console.log('sendTransaction resultOfSignature', resultOfSignature)
   } catch (err) {
     if (err.timeout) {
       throw new Error('Timed out awaiting confirmation on transaction');
