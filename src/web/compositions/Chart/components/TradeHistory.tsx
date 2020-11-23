@@ -31,6 +31,8 @@ export const TradeHistory = ({
   pair,
 }) => {
 
+  console.log('TradeHistory Render')
+
   return (
     <TradeHistoryWrapper
       theme={theme}
