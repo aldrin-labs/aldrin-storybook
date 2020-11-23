@@ -316,10 +316,10 @@ export function ChartPageComponent(props: any) {
     ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
     : { keyId: '', hedgeMode: false, isFuturesWarsKey: false }
 
-  console.log(
-    'getChartDataQuery',
-    props.getChartDataQuery.getTradingSettings.selectedTradingKey
-  )
+  // console.log(
+  //   'getChartDataQuery',
+  //   props.getChartDataQuery.getTradingSettings.selectedTradingKey
+  // )
 
   return (
     <MainContainer fullscreen={view !== 'default'}>
@@ -467,7 +467,7 @@ export default compose(
       marketType: 1, // hardcode here to get only futures marketIds'
     },
   }),
-  withKeyGenerating,
+  // withKeyGenerating,
   graphql(selectTradingPair, { name: 'selectTradingPairMutation' }),
   withSelectedPair,
   queryRendererHoc({

@@ -1,4 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component, PureComponent } from 'react'
+import { compose } from 'recompose'
+
 import dayjs from 'dayjs'
 import TradeHistoryTable from './Table/TradeHistoryTable'
 import ChartCardHeader from '@sb/components/ChartCardHeader'
@@ -20,10 +22,14 @@ import { client } from '@core/graphql/apolloClient'
 
 import { IProps, IState } from './TableContainer.types'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
+import { withWebsocket } from '@core/hoc/withWebsocket'
+import { getUrlForWebsocket } from '@core/utils/getUrlForWebsocket'
+import { combineTradeHistoryDataFromWebsocket } from './utils'
+
 
 let unsubscribe: Function | undefined
 
-class TableContainer extends Component<IProps, IState> {
+class TableContainer extends PureComponent<IProps, IState> {
   state: IState = {
     data: [],
     numbersAfterDecimalForPrice: 8,
@@ -32,26 +38,31 @@ class TableContainer extends Component<IProps, IState> {
   subscription: { unsubscribe: Function } | null
 
   static getDerivedStateFromProps(newProps: IProps, state: IState) {
-    if (
-      !(
-        newProps.data &&
-        newProps.data.marketTickers &&
-        newProps.data.marketTickers.length > 0 &&
-        newProps.data.marketTickers.length !== state.data.length
-      )
-    ) {
+    //TODO: Need this
+          // when change exchange delete all data and...
+          // this.setState({ data: [] })
+
+
+
+
+    // if (
+      // !(
+        // newProps.data &&
+        // newProps.data.length > 0 
+        // && newProps.data.length !== state.data.length
+      // )
+    // ) {
       //  if data is actually not a new data
-      return null
-    }
+      // return null
+    // }
 
     // query data processing
     if (
       state.data.length === 0 &&
       newProps.data &&
-      newProps.data.marketTickers &&
-      newProps.data.marketTickers.length > 0
+      newProps.data.length > 0
     ) {
-      const updatedData = newProps.data.marketTickers.map((trade, i) => ({
+      const updatedData = newProps.data.map((trade, i) => ({
         ...trade,
         price: Number(trade.price).toFixed(
           getNumberOfDecimalsFromNumber(
@@ -73,40 +84,23 @@ class TableContainer extends Component<IProps, IState> {
       }
     }
 
-    return null
-  }
+    if (
+      newProps.data &&
+      newProps.data.length > 0
+      ) {
 
-  subscribe = () => {
-    const that = this
-    this.subscription && this.subscription.unsubscribe()
+            const tickersData = newProps.data
 
-    this.subscription = client
-      .subscribe({
-        query: MARKET_TICKERS,
-        fetchPolicy: 'no-cache',
-        variables: {
-          marketType: String(this.props.marketType),
-          exchange: this.props.exchange,
-          symbol: this.props.symbol,
-        },
-      })
-      .subscribe({
-        next: ({ data }) => {
-          if (
-            data &&
-            data.listenMarketTickers &&
-            data.listenMarketTickers.length > 0
-          ) {
-            const tickersData = data.listenMarketTickers
-
-            if (
-              !tickersData ||
-              tickersData.length === 0 ||
-              tickersData[0].pair !== that.props.currencyPair ||
-              tickersData[0].marketType != that.props.marketType
-            ) {
-              return null
-            }
+            // if (
+              // !tickersData ||
+              // tickersData.length === 0 
+              // TODO: 
+              // ||
+              // tickersData[0].pair !== newProps.props.currencyPair ||
+              // tickersData[0].marketType != newProps.props.marketType
+            // ) {
+              // return null
+            // }
 
             const updatedData = reduceArrayLength(
               tickersData
@@ -115,26 +109,88 @@ class TableContainer extends Component<IProps, IState> {
                   price: Number(trade.price).toFixed(
                     getNumberOfDecimalsFromNumber(
                       getAggregationsFromMinPriceDigits(
-                        that.props.minPriceDigits
+                        newProps.minPriceDigits
                       )[0].value
                     )
                   ),
                   time: dayjs.unix(+trade.timestamp).format('h:mm:ss a'),
                 }))
-                .concat(that.state.data)
+                .concat(state.data)
             )
 
-            this.setState({
-              data: updatedData,
-            })
-          }
-        },
-      })
+            const numbersAfterDecimalForPrice = getNumberOfDigitsAfterDecimal(
+              updatedData,
+              'price'
+            )
+
+            return {
+              numbersAfterDecimalForPrice,
+              data: reduceArrayLength(updatedData),
+            }
+      }
+
+    return null
   }
 
-  componentDidMount() {
-    this.subscribe()
-  }
+  // subscribe = () => {
+  //   const that = this
+  //   this.subscription && this.subscription.unsubscribe()
+
+  //   this.subscription = client
+  //     .subscribe({
+  //       query: MARKET_TICKERS,
+  //       fetchPolicy: 'no-cache',
+  //       variables: {
+  //         marketType: String(this.props.marketType),
+  //         exchange: this.props.exchange,
+  //         symbol: this.props.symbol,
+  //       },
+  //     })
+  //     .subscribe({
+  //       next: ({ data }) => {
+  //         if (
+  //           data &&
+  //           data.listenMarketTickers &&
+  //           data.listenMarketTickers.length > 0
+  //         ) {
+  //           const tickersData = data.listenMarketTickers
+
+  //           if (
+  //             !tickersData ||
+  //             tickersData.length === 0 ||
+  //             tickersData[0].pair !== that.props.currencyPair ||
+  //             tickersData[0].marketType != that.props.marketType
+  //           ) {
+  //             return null
+  //           }
+
+  //           const updatedData = reduceArrayLength(
+  //             tickersData
+  //               .map((trade) => ({
+  //                 ...trade,
+  //                 price: Number(trade.price).toFixed(
+  //                   getNumberOfDecimalsFromNumber(
+  //                     getAggregationsFromMinPriceDigits(
+  //                       that.props.minPriceDigits
+  //                     )[0].value
+  //                   )
+  //                 ),
+  //                 time: dayjs.unix(+trade.timestamp).format('h:mm:ss a'),
+  //               }))
+  //               .concat(that.state.data)
+  //           )
+
+  //           this.setState({
+  //             data: updatedData,
+  //           })
+  //         }
+  //       },
+  //     })
+  // }
+
+  // componentDidMount() {
+    // this.subscribe()
+  // }
 
   componentDidUpdate(prevProps: IProps) {
     if (
@@ -146,10 +202,10 @@ class TableContainer extends Component<IProps, IState> {
       this.setState({ data: [] })
 
       //  unsubscribe from old exchange
-      this.subscription && this.subscription.unsubscribe()
+      // this.subscription && this.subscription.unsubscribe()
 
       //  subscribe to new exchange and create new unsub link
-      this.subscribe()
+      // this.subscribe()
     }
   }
 
@@ -181,4 +237,25 @@ class TableContainer extends Component<IProps, IState> {
   }
 }
 
-export default withErrorFallback(TableContainer)
+const TradeHistoryWrapper = compose(
+  // withWebsocket,
+  withErrorFallback,
+  withWebsocket({ url: (props: any) => getUrlForWebsocket('TH', props.marketType, props.symbol), onMessage: combineTradeHistoryDataFromWebsocket, pair: (props: any) => props.symbol })
+  )(TableContainer)
+
+export default React.memo(TradeHistoryWrapper, (prevProps, nextProps) => {
+
+    const symbolIsEqual = prevProps.symbol === nextProps.symbol
+    const marketTypeIsEqual = prevProps.marketType === nextProps.marketType
+    const currencyPairIsEqual = prevProps.currencyPair === nextProps.prevProps
+  
+    if (
+      symbolIsEqual &&
+      marketTypeIsEqual &&
+      currencyPairIsEqual
+    ) {
+      return true
+    }
+  
+    return false
+  })
