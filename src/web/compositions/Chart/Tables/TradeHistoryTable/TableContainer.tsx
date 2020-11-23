@@ -38,6 +38,13 @@ class TableContainer extends PureComponent<IProps, IState> {
   subscription: { unsubscribe: Function } | null
 
   static getDerivedStateFromProps(newProps: IProps, state: IState) {
+    //TODO: Need this
+          // when change exchange delete all data and...
+          // this.setState({ data: [] })
+
+
+
+
     // if (
       // !(
         // newProps.data &&
@@ -240,10 +247,12 @@ export default React.memo(TradeHistoryWrapper, (prevProps, nextProps) => {
 
     const symbolIsEqual = prevProps.symbol === nextProps.symbol
     const marketTypeIsEqual = prevProps.marketType === nextProps.marketType
+    const currencyPairIsEqual = prevProps.currencyPair === nextProps.prevProps
   
     if (
       symbolIsEqual &&
-      marketTypeIsEqual
+      marketTypeIsEqual &&
+      currencyPairIsEqual
     ) {
       return true
     }
