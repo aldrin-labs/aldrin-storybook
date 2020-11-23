@@ -35,7 +35,7 @@ import { syncStorage } from '@storage'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { useQuery } from 'react-apollo'
 
-const version = `10.7.9`
+const version = `11.0.1`
 const currentVersion = localStorage.getItem('version')
 if (currentVersion !== version) {
   localStorage.clear()
