@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import dayjs from 'dayjs'
+import copy from 'clipboard-copy'
 import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
 import { client } from '@core/graphql/apolloClient'
@@ -755,6 +756,10 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
           expandedRows={expandedRows}
           onChange={this.setExpandedRows}
           rowsWithHover={false}
+          onTrClick={(row) => {
+            this.setExpandedRows(row.id)
+            copy(row.id.split('_')[0])
+          }}
           style={{
             borderRadius: 0,
             height: 'calc(100% - 5.5rem)',

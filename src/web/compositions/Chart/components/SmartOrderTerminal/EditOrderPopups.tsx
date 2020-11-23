@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import copy from 'clipboard-copy'
 import { Dialog, Paper } from '@material-ui/core'
 import Clear from '@material-ui/icons/Clear'
 
@@ -26,6 +27,10 @@ import {
   TradeInputContent as Input,
   TradeInputHeader,
 } from '@sb/components/TraidingTerminal/index'
+
+import { API_URL } from '@core/utils/config'
+import WebHookImg from '@sb/images/WebHookImg.png'
+import MessageImg from '@sb/images/MessageImg.png'
 
 import { LeverageLabel } from '@sb/components/TradingWrapper/styles'
 
@@ -1432,12 +1437,15 @@ export class EditEntryOrderPopup extends React.Component<
     deviationPercentage: 0,
     leverage: 0,
     trailingDeviationPrice: 0,
+    templateAlertMessage: "",
   }
 
   static getDerivedStateFromProps(props, state) {
     // get values from state if empty
     if (state.side === '') {
-      const { side, price, pricePrecision, leverage } = props
+      const { side, price, pricePrecision, leverage, quantityPrecision } = props
+
+      console.log('props', props)
 
       let priceForCalculate =
         props.derivedState.type === 'market' && !props.derivedState.isTrailingOn
@@ -1461,6 +1469,7 @@ export class EditEntryOrderPopup extends React.Component<
 
       return {
         ...props.derivedState,
+        amount: stripDigitPlaces(props.derivedState.amount, quantityPrecision),
         price: props.derivedState.isTrailingOn
           ? props.derivedState.activatePrice
           : props.derivedState.price,
@@ -1558,6 +1567,7 @@ export class EditEntryOrderPopup extends React.Component<
       total,
       isTrailingOn,
       deviationPercentage,
+      templateAlertMessage
     } = this.state
 
     let maxAmount = 0
@@ -2060,6 +2070,133 @@ export class EditEntryOrderPopup extends React.Component<
                   />
                 </FormInputContainer>
               </InputRowContainer>
+            )}
+
+            {templateAlertMessage && (
+              <>
+                {' '}
+                <FormInputContainer
+                  theme={theme}
+                  padding={'0 0 .8rem 0'}
+                  haveTooltip={true}
+                  tooltipText={
+                    <img
+                      style={{ width: '35rem', height: '50rem' }}
+                      src={WebHookImg}
+                    />
+                  }
+                  title={
+                    <span>
+                      paste it into{' '}
+                      <span
+                        style={{ color: theme.palette.blue.background }}
+                      >
+                        web-hook url
+                          </span>{' '}
+                          field when creating tv alert
+                        </span>
+                  }
+                >
+                  <InputRowContainer>
+                    <Input
+                      theme={theme}
+                      width={'85%'}
+                      type={'text'}
+                      disabled={true}
+                      textAlign={'left'}
+                      value={`https://${API_URL}/createSmUsingTemplate`}
+                    />
+                    <BtnCustom
+                      btnWidth="calc(15% - .8rem)"
+                      height="auto"
+                      margin="0 0 0 .8rem"
+                      fontSize="1rem"
+                      padding=".5rem 0 .4rem 0"
+                      borderRadius=".8rem"
+                      btnColor={theme.palette.blue.main}
+                      backgroundColor={theme.palette.white.background}
+                      hoverColor={theme.palette.white.main}
+                      hoverBackground={theme.palette.blue.main}
+                      transition={'all .4s ease-out'}
+                      onClick={() => {
+                        copy(`https://${API_URL}/createSmUsingTemplate`)
+                      }}
+                    >
+                      copy
+                        </BtnCustom>
+                  </InputRowContainer>
+                </FormInputContainer>
+                <FormInputContainer
+                  theme={theme}
+                  padding={'0 0 .8rem 0'}
+                  haveTooltip={true}
+                  tooltipText={
+                    <img
+                      style={{ width: '40rem', height: '42rem' }}
+                      src={MessageImg}
+                    />
+                  }
+                  title={
+                    <span>
+                      paste it into{' '}
+                      <span
+                        style={{ color: theme.palette.blue.background }}
+                      >
+                        message
+                          </span>{' '}
+                          field when creating tv alert
+                        </span>
+                  }
+                >
+                  <InputRowContainer>
+                    <Input
+                      theme={theme}
+                      width={'65%'}
+                      type={'text'}
+                      disabled={true}
+                      textAlign={'left'}
+                      value={templateAlertMessage}
+                    />
+                    {/* entryPoint.TVAlert.templateToken */}
+                    <BtnCustom
+                      btnWidth="calc(15% - .8rem)"
+                      height="auto"
+                      margin="0 0 0 .8rem"
+                      fontSize="1rem"
+                      padding=".5rem 0 .4rem 0"
+                      borderRadius=".8rem"
+                      btnColor={theme.palette.blue.main}
+                      backgroundColor={theme.palette.white.background}
+                      hoverColor={theme.palette.white.main}
+                      hoverBackground={theme.palette.blue.main}
+                      transition={'all .4s ease-out'}
+                      onClick={() => {
+                        copy(templateAlertMessage)
+                      }}
+                    >
+                      copy
+                        </BtnCustom>
+                    <BtnCustom
+                      btnWidth="calc(20% - .8rem)"
+                      height="auto"
+                      margin="0 0 0 .8rem"
+                      fontSize="1rem"
+                      padding=".5rem 0 .4rem 0"
+                      borderRadius=".8rem"
+                      btnColor={theme.palette.blue.main}
+                      backgroundColor={theme.palette.white.background}
+                      hoverColor={theme.palette.white.main}
+                      hoverBackground={theme.palette.blue.main}
+                      transition={'all .4s ease-out'}
+                      onClick={() => {
+                        // redirect to full example page
+                      }}
+                    >
+                      example
+                        </BtnCustom>
+                  </InputRowContainer>
+                </FormInputContainer>
+              </>
             )}
 
             <InputRowContainer padding={'2rem 0 0 0'}>

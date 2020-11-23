@@ -262,6 +262,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       marketType,
       componentLeverage,
       hedgeMode,
+      quantityPrecision
     } = this.props
 
     this.updateSubBlockValue('entryPoint', 'order', 'price', this.props.price)
@@ -406,7 +407,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       'entryPoint',
       'order',
       'amount',
-      result.entryPoint.order.amount
+      stripDigitPlaces(result.entryPoint.order.amount, quantityPrecision)
     )
 
     this.updateSubBlockValue('entryPoint', 'order', 'price', this.props.price)
@@ -798,7 +799,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       entryPoint.order.type,
       {},
       'smart',
-      this.state
+      { ...this.state, templateAlertMessage: this.getEntryAlertJson() }
     )
 
     if (result.status === 'error' || !result.orderId) {
@@ -1180,6 +1181,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         {showConfirmationPopup && !editPopup && (
           <ConfirmationPopup
             theme={theme}
+            quantityPrecision={quantityPrecision}
             confirmTrade={this.confirmTrade}
             handleOpenEditPopup={this.handleOpenEditPopup}
             open={showConfirmationPopup}

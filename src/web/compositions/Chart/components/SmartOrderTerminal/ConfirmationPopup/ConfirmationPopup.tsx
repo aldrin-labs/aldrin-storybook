@@ -80,6 +80,7 @@ const ItemTypography = ({ children, ...props }) => (
 const Line = ({ theme }) => <div style={{ content: '', width: '100%', height: '.1rem', background: theme.palette.grey.border, margin: '0 1rem' }} />
 
 interface IProps {
+  quantityPrecision: number
   open: boolean
   handleClose: () => void
   confirmTrade: () => void
@@ -105,8 +106,11 @@ export default ({
   takeProfit,
   pair,
   theme,
+  quantityPrecision
 }: IProps) => {
   const { order, trailing, averaging } = entryPoint
+  const averagingAmount = averaging.enabled ? averaging.entryLevels.reduce((acc, cur) => acc + cur.amount, 0) : 0
+
   return (
     <>
       <DialogWrapper
@@ -203,8 +207,8 @@ export default ({
                   <ItemTypography style={{ whiteSpace: 'nowrap' }} theme={theme} color={theme.palette.dark.main}>
                     {averaging.enabled && 'sum: '}
                     {getArrowSymbol(
-                      `${order.amount} ${pair[0]}`,
-                      `${stripDigitPlaces(order.total, 2)} ${pair[1]}`,
+                      `${averaging.enabled ? stripDigitPlaces(averagingAmount, quantityPrecision) : order.amount} ${pair[0]}`,
+                      `${averaging.enabled ? stripDigitPlaces(averaging.entryLevels[0].price * averagingAmount, 2) : stripDigitPlaces(order.total, 2)} ${pair[1]}`,
                       true
                     )}
                   </ItemTypography>
