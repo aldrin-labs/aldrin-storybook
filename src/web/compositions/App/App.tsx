@@ -42,6 +42,7 @@ if (currentVersion !== version) {
   localStorage.setItem('version', version)
 }
 
+
 const AppRaw = ({
   children,
   getViewModeQuery,
