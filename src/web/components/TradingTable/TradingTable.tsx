@@ -302,6 +302,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             tab,
             keys,
             theme,
+            keysObjects,
             selectedKey,
             marketType,
             exchange,
@@ -487,7 +488,7 @@ export default React.memo(
       prevProps.theme.palette.type === nextProps.theme.palette.type &&
       prevProps.isDefaultOnlyTables === nextProps.isDefaultOnlyTables &&
       prevProps.isDefaultTerminalViewMode ===
-      nextProps.isDefaultTerminalViewMode &&
+        nextProps.isDefaultTerminalViewMode &&
       prevProps.terminalViewMode === nextProps.terminalViewMode &&
       prevProps.isSmartOrderMode === nextProps.isSmartOrderMode
     ) {

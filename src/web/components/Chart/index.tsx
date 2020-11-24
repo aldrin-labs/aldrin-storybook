@@ -31,7 +31,7 @@ export const SingleChart = ({
         src={`https://${CHARTS_API_URL}${additionalUrl}&theme=${themeMode}`}
         height={'100%'}
         id={`${name}${themeMode}`}
-        key={themeMode}
+        key={`${additionalUrl}${themeMode}`}
       />
     </Wrapper>
   )

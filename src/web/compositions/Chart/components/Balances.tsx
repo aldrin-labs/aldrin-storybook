@@ -181,7 +181,6 @@ export const Balances = ({
     <Link to="/profile/withdrawal" {...props} />
   )
 
-  console.log('pair', pair)
   return (
     <>
       <TransferPopup

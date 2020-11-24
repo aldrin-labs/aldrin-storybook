@@ -59,9 +59,11 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
 
   refetchPositionsIntervalId: null | Timeout = null
 
-  createOrder = async (variables) => {
-    const { createOrderMutation, selectedKey } = this.props
-    const hedgeMode = selectedKey.hedgeMode
+  createOrder = async (variables, positionKey) => {
+    const { createOrderMutation } = this.props
+
+    // we take hedgeMode from key that have position we should close
+    const hedgeMode = positionKey.hedgeMode
 
     const { reduceOnly, ...paramsForHedge } = variables.keyParams
 
@@ -140,8 +142,11 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       updatePositionMutation,
       enqueueSnackbar,
       minFuturesStep,
+      keysObjects,
     } = this.props
 
+    // console.log('keysObjects', keysObjects)
+    const positionKey = keysObjects.find((key) => key.keyId === variables.keyId)
     let data = getActivePositionsQuery.getActivePositions
 
     if (variables.keyParams.amount === 0) {
@@ -197,14 +202,14 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       positionsData,
     })
 
-    const result = await this.createOrder(variables)
+    const result = await this.createOrder(variables, positionKey)
     if (result.status === 'error') {
       const isReduceOrderIsRejected = /-2022/.test(result.message)
       if (isReduceOrderIsRejected) {
         updatePositionMutation({
           variables: {
             input: {
-              keyId: selectedKey.keyId,
+              keyId: positionKey.keyId,
             },
           },
         })
@@ -216,7 +221,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     // here we disable SM if you closed position manually
     setPositionWasClosedMutation({
       variables: {
-        keyId: selectedKey.keyId,
+        keyId: positionKey.keyId,
         pair: variables.keyParams.symbol,
         side: variables.keyParams.side === 'buy' ? 'sell' : 'buy',
       },
@@ -713,6 +718,8 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
         .map((el) => ({ quantity: el.free, value: el.free }))
     }
 
+    console.log('keysObjects', this.props.keysObjects)
+
     return (
       <>
         <TableWithSort
@@ -740,7 +747,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
                   specificPair,
                   handleToggleAllKeys,
                   handleToggleSpecificPair,
-                  loading: getActivePositionsQuery.queryParamsWereChanged
+                  loading: getActivePositionsQuery.queryParamsWereChanged,
                 }}
               />
             ),
@@ -814,7 +821,7 @@ const PositionsTableWrapper = compose(
   queryRendererHoc({
     query: getActivePositions,
     name: `getActivePositionsQuery`,
-    fetchPolicy: "cache-and-network",
+    fetchPolicy: 'cache-and-network',
     withOutSpinner: false,
     withTableLoader: false,
     showLoadingWhenQueryParamsChange: false,
@@ -822,7 +829,9 @@ const PositionsTableWrapper = compose(
       input: {
         keyId: props.selectedKey.keyId,
         allKeys: props.showPositionsFromAllAccounts,
-        ...(!props.showAllPositionPairs ? {} : { specificPair: props.currencyPair }),
+        ...(!props.showAllPositionPairs
+          ? {}
+          : { specificPair: props.currencyPair }),
       },
     }),
     subscriptionArgs: {
@@ -831,7 +840,9 @@ const PositionsTableWrapper = compose(
         input: {
           keyId: props.selectedKey.keyId,
           allKeys: props.showPositionsFromAllAccounts,
-          ...(!props.showAllPositionPairs ? {} : { specificPair: props.currencyPair }),
+          ...(!props.showAllPositionPairs
+            ? {}
+            : { specificPair: props.currencyPair }),
         },
       }),
       updateQueryFunction: updateActivePositionsQuerryFunction,
@@ -860,39 +871,41 @@ const PositionsTableWrapper = compose(
     variables: (props) => ({
       keyId: props.selectedKey.keyId,
     }),
-  }),
+  })
 )(PositionsTable)
 
-export default React.memo(PositionsTableWrapper, (prevProps: any, nextProps: any) => {
-  // TODO: Refactor isShowEqual --- not so clean
-  const isShowEqual = !nextProps.show && !prevProps.show
-  const showAllAccountsEqual =
-    prevProps.showPositionsFromAllAccounts ===
-    nextProps.showPositionsFromAllAccounts
-  const showAllPairsEqual =
-    prevProps.showAllPositionPairs === nextProps.showAllPositionPairs
-  // TODO: here must be smart condition if specificPair is not changed
-  const pairIsEqual = prevProps.currencyPair === nextProps.currencyPair
-  // TODO: here must be smart condition if showAllAccountsEqual is true & is not changed
-  const selectedKeyIsEqual =
-    prevProps.selectedKey.keyId === nextProps.selectedKey.keyId
-  const isMarketIsEqual = prevProps.marketType === nextProps.marketType
-  const pageIsEqual = prevProps.page === nextProps.page
-  const perPageIsEqual = prevProps.perPage === nextProps.perPage
+export default React.memo(
+  PositionsTableWrapper,
+  (prevProps: any, nextProps: any) => {
+    // TODO: Refactor isShowEqual --- not so clean
+    const isShowEqual = !nextProps.show && !prevProps.show
+    const showAllAccountsEqual =
+      prevProps.showPositionsFromAllAccounts ===
+      nextProps.showPositionsFromAllAccounts
+    const showAllPairsEqual =
+      prevProps.showAllPositionPairs === nextProps.showAllPositionPairs
+    // TODO: here must be smart condition if specificPair is not changed
+    const pairIsEqual = prevProps.currencyPair === nextProps.currencyPair
+    // TODO: here must be smart condition if showAllAccountsEqual is true & is not changed
+    const selectedKeyIsEqual =
+      prevProps.selectedKey.keyId === nextProps.selectedKey.keyId
+    const isMarketIsEqual = prevProps.marketType === nextProps.marketType
+    const pageIsEqual = prevProps.page === nextProps.page
+    const perPageIsEqual = prevProps.perPage === nextProps.perPage
 
-  if (
-    isShowEqual &&
-    showAllAccountsEqual &&
-    showAllPairsEqual &&
-    pairIsEqual &&
-    selectedKeyIsEqual &&
-    // isMarketIsEqual &&
-    pageIsEqual &&
-    perPageIsEqual
-  ) {
-    return true
+    if (
+      isShowEqual &&
+      showAllAccountsEqual &&
+      showAllPairsEqual &&
+      pairIsEqual &&
+      selectedKeyIsEqual &&
+      // isMarketIsEqual &&
+      pageIsEqual &&
+      perPageIsEqual
+    ) {
+      return true
+    }
+
+    return false
   }
-
-  return false
-})
-
+)
