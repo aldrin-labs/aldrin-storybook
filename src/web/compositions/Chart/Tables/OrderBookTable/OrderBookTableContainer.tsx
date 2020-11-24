@@ -167,7 +167,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           quote={quote}
         />
 
-        {/* <LastTrade
+        <LastTrade
           mode={mode}
           data={data}
           theme={theme}
@@ -178,7 +178,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           symbol={currencyPair}
           exchange={this.props.exchange}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
-        /> */}
+        />
 
         <SpreadTable
           data={data}
