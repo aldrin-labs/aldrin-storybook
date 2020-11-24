@@ -64,7 +64,7 @@ class TableContainer extends PureComponent<IProps, IState> {
     ) {
       const updatedData = newProps.data.map((trade, i) => ({
         ...trade,
-        price: trade.price.toFixed(
+        price: (+trade.price).toFixed(
           getNumberOfDecimalsFromNumber(
             getAggregationsFromMinPriceDigits(newProps.minPriceDigits)[0].value
           )
