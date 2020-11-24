@@ -4,30 +4,32 @@ import { compose } from 'recompose'
 import dayjs from 'dayjs'
 import TradeHistoryTable from './Table/TradeHistoryTable'
 import ChartCardHeader from '@sb/components/ChartCardHeader'
-var SortedMap = require('collections/sorted-map')
+// var SortedMap = require('collections/sorted-map')
 
 import {
   reduceArrayLength,
   getNumberOfDigitsAfterDecimal,
-  testJSON,
+  // testJSON,
   getNumberOfDecimalsFromNumber,
   getAggregationsFromMinPriceDigits,
 } from '@core/utils/chartPageUtils'
 
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+// import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
-import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
+// import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
 
-import { client } from '@core/graphql/apolloClient'
+// import { client } from '@core/graphql/apolloClient'
 
 import { IProps, IState } from './TableContainer.types'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { withWebsocket } from '@core/hoc/withWebsocket'
+import { withFetch } from '@core/hoc/withFetchHoc'
 import { getUrlForWebsocket } from '@core/utils/getUrlForWebsocket'
+import { getUrlForFetch } from '@core/utils/getUrlForFetch'
 import { combineTradeHistoryDataFromWebsocket } from './utils'
+import { combineTradeHistoryDataFromFetch } from './utils'
 
-
-let unsubscribe: Function | undefined
+// let unsubscribe: Function | undefined
 
 class TableContainer extends PureComponent<IProps, IState> {
   state: IState = {
@@ -35,34 +37,16 @@ class TableContainer extends PureComponent<IProps, IState> {
     numbersAfterDecimalForPrice: 8,
   }
 
-  subscription: { unsubscribe: Function } | null
+  // subscription: { unsubscribe: Function } | null
 
   static getDerivedStateFromProps(newProps: IProps, state: IState) {
-    //TODO: Need this
-    // when change exchange delete all data and...
-    // this.setState({ data: [] })
-
-
-
-
-    // if (
-    // !(
-    // newProps.data &&
-    // newProps.data.length > 0 
-    // && newProps.data.length !== state.data.length
-    // )
-    // ) {
-    //  if data is actually not a new data
-    // return null
-    // }
-
     // query data processing
     if (
       state.data.length === 0 &&
-      newProps.data &&
-      newProps.data.length > 0
+      newProps.fetchData &&
+      newProps.fetchData.length > 0
     ) {
-      const updatedData = newProps.data.map((trade, i) => ({
+      const updatedData = newProps.fetchData.map((trade, i) => ({
         ...trade,
         price: (+trade.price).toFixed(
           getNumberOfDecimalsFromNumber(
@@ -84,23 +68,24 @@ class TableContainer extends PureComponent<IProps, IState> {
       }
     }
 
+
+
+    // subscription data processing
     if (
       newProps.data &&
       newProps.data.length > 0
     ) {
-
       const tickersData = newProps.data
 
-      // if (
-      // !tickersData ||
-      // tickersData.length === 0 
-      // TODO: 
-      // ||
-      // tickersData[0].pair !== newProps.props.currencyPair ||
-      // tickersData[0].marketType != newProps.props.marketType
-      // ) {
-      // return null
-      // }
+      if ( 
+        !tickersData ||
+        tickersData.length === 0 ||
+        tickersData[0].symbol !== newProps.currencyPair ||
+        tickersData[0].marketType != newProps.marketType
+      ) {
+          // console.log('TableContainer SUBSCRIPTION DATA FOR WRONG PAIR')
+          return { numbersAfterDecimalForPrice: state.numbersAfterDecimalForPrice, data: [] }
+      }
 
       const updatedData = reduceArrayLength(
         tickersData
@@ -132,74 +117,18 @@ class TableContainer extends PureComponent<IProps, IState> {
     return null
   }
 
-  // subscribe = () => {
-  //   const that = this
-  //   this.subscription && this.subscription.unsubscribe()
-
-  //   this.subscription = client
-  //     .subscribe({
-  //       query: MARKET_TICKERS,
-  //       fetchPolicy: 'no-cache',
-  //       variables: {
-  //         marketType: String(this.props.marketType),
-  //         exchange: this.props.exchange,
-  //         symbol: this.props.symbol,
-  //       },
-  //     })
-  //     .subscribe({
-  //       next: ({ data }) => {
-  //         if (
-  //           data &&
-  //           data.listenMarketTickers &&
-  //           data.listenMarketTickers.length > 0
-  //         ) {
-  //           const tickersData = data.listenMarketTickers
-
-  //           if (
-  //             !tickersData ||
-  //             tickersData.length === 0 ||
-  //             tickersData[0].pair !== that.props.currencyPair ||
-  //             tickersData[0].marketType != that.props.marketType
-  //           ) {
-  //             return null
-  //           }
-
-  //           const updatedData = reduceArrayLength(
-  //             tickersData
-  //               .map((trade) => ({
-  //                 ...trade,
-  //                 price: Number(trade.price).toFixed(
-  //                   getNumberOfDecimalsFromNumber(
-  //                     getAggregationsFromMinPriceDigits(
-  //                       that.props.minPriceDigits
-  //                     )[0].value
-  //                   )
-  //                 ),
-  //                 time: dayjs.unix(+trade.timestamp).format('h:mm:ss a'),
-  //               }))
-  //               .concat(that.state.data)
-  //           )
-
-  //           this.setState({
-  //             data: updatedData,
-  //           })
-  //         }
-  //       },
-  //     })
-  // }
-
-  // componentDidMount() {
-  // this.subscribe()
-  // }
-
   componentDidUpdate(prevProps: IProps) {
     if (
       prevProps.activeExchange.symbol !== this.props.activeExchange.symbol ||
       prevProps.currencyPair !== this.props.currencyPair ||
       prevProps.marketType !== this.props.marketType
     ) {
+
+      // console.log('TableContainer componentDidUpdate cleanState')
       // when change exchange delete all data and...
-      this.setState({ data: [] })
+      this.setState({ data: [] }, () => {
+        // console.log('TableContainer componentDidUpdate cleanState SUCCESS')
+      })
 
       //  unsubscribe from old exchange
       // this.subscription && this.subscription.unsubscribe()
@@ -216,6 +145,7 @@ class TableContainer extends PureComponent<IProps, IState> {
       updateTerminalPriceFromOrderbook,
       theme,
     } = this.props
+
     const { data, numbersAfterDecimalForPrice } = this.state
     const amountForBackground =
       data.reduce((prev, curr) => prev + +curr.size, 0) / data.length
@@ -240,6 +170,12 @@ class TableContainer extends PureComponent<IProps, IState> {
 const TradeHistoryWrapper = compose(
   // withWebsocket,
   withErrorFallback,
+  withFetch({
+    url: (props: any) => getUrlForFetch('TH', props.marketType, props.symbol, 100),
+    onData: combineTradeHistoryDataFromFetch,
+    pair: (props: any) => props.symbol,
+    limit: 100,
+  }),
   withWebsocket({
     url: (props: any) => getUrlForWebsocket('TH', props.marketType, props.symbol),
     onMessage: combineTradeHistoryDataFromWebsocket,
@@ -247,7 +183,7 @@ const TradeHistoryWrapper = compose(
   })
 )(TableContainer)
 
-export default React.memo(TradeHistoryWrapper, (prevProps, nextProps) => {
+export default React.memo(TradeHistoryWrapper, (prevProps: any, nextProps: any) => {
 
   const symbolIsEqual = prevProps.symbol === nextProps.symbol
   const marketTypeIsEqual = prevProps.marketType === nextProps.marketType
