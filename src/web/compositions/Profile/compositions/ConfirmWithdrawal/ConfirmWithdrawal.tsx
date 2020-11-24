@@ -76,17 +76,7 @@ const ConfirmWithdrawal = ({ ...props }) => {
                 fontWeight: 'bold',
               }}
             >
-              To confirm your withdrawal please contact{' '}
-              <Link
-                style={{
-                  color: '#165BE0',
-                }}
-                target={'_blank'}
-                rel={'noreferrer noopener'}
-                href="https://t.me/customer_tech_support"
-              >
-                our tech support
-              </Link>
+              Withdrawal will be processed within 24 hours.
             </Typography>
           </Grid>
         </Grid>
