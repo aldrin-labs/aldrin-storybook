@@ -254,7 +254,7 @@ export default function defaultRowRenderer({
             side === 'bids' || rowData.fall === 0
               ? theme.palette.orderbook.greenBackground
               : theme.palette.orderbook.redBackground,
-          transform: `translateX(calc(100% - ${orderPercentage}%))`,
+          // transform: `translateX(calc(100% - ${orderPercentage}%))`,
           ...(rowData.fall === undefined
             ? {}
             : { transition: 'none', willChange: 'background-color' }),

@@ -462,7 +462,7 @@ export default compose(
       marketType: 1, // hardcode here to get only futures marketIds'
     },
   }),
-  withKeyGenerating,
+  // withKeyGenerating,
   graphql(selectTradingPair, { name: 'selectTradingPairMutation' }),
   withSelectedPair,
   queryRendererHoc({
