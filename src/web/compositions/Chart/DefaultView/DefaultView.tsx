@@ -293,7 +293,7 @@ export const DefaultViewComponent = (
                       : '65%',
                   }}
                 >
-                  {!hideOrderbook && (
+                  {/* {!hideOrderbook && (
                     <OrderbookAndDepthChart
                       {...{
                         symbol: currencyPair,
@@ -316,7 +316,7 @@ export const DefaultViewComponent = (
                         hideOrderbook,
                       }}
                     />
-                  )}
+                  )} */}
                 </Grid>
                 <Grid
                   item
@@ -335,7 +335,7 @@ export const DefaultViewComponent = (
                       : '35%',
                   }}
                 >
-                  {!hideTradeHistory && (
+                  {/* {!hideTradeHistory && (
                     <TradeHistory
                       {...{
                         symbol: currencyPair,
@@ -354,7 +354,7 @@ export const DefaultViewComponent = (
                         sizeDigits,
                       }}
                     />
-                  )}
+                  )} */}
                 </Grid>
               </Grid>
             </TradingTerminalContainer>
