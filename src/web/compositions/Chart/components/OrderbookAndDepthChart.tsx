@@ -229,7 +229,6 @@ class OrderbookAndDepthChart extends React.Component {
       const { asks, bids, readyForNewOrder, aggregation } = this.state
 
       const { sizeDigits, minPriceDigits, isPairDataLoading, data } = this.props
-      console.log('isPairDataLoading || !aggregation', isPairDataLoading)
       if (
         // (asks.getLength() === 0 && bids.getLength() === 0) ||
         isPairDataLoading || !aggregation
@@ -241,8 +240,8 @@ class OrderbookAndDepthChart extends React.Component {
       let newResubscribeTimer = null
       let updatedAggregatedData = this.state.aggregatedData
 
-      let ordersAsks = data.marketOrders.asks.map(([price, size]) => ({ price, size, side: 'asks', timestamp: 0 }))
-      let ordersBids = data.marketOrders.bids.map(([price, size]) => ({ price, size, side: 'bids', timestamp: 0 }))
+      let ordersAsks = data.marketOrders.asks
+      let ordersBids = data.marketOrders.bids
 
       const marketOrders = Object.assign(
         {
@@ -530,7 +529,10 @@ const OrderbookAndDepthChartComponent = withWebsocket({
   url: (props: any) => getUrlForWebsocket('OB', props.marketType, props.symbol),
   onMessage: (msg, updateData) => {
     const data = JSON.parse(msg.data)
-    updateData({ marketOrders: { asks: data.a, bids: data.b } })
+    const asks = data.a.map(([price, size]) => ({ price, size, side: 'asks', timestamp: data.E }))
+    const bids = data.b.map(([price, size]) => ({ price, size, side: 'bids', timestamp: data.E }))
+
+    updateData({ marketOrders: { asks, bids } })
   },
   pair: (props: any) => props.symbol
 })((OrderbookAndDepthChart))
