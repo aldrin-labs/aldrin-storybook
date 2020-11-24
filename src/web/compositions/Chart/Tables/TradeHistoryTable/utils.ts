@@ -10,23 +10,10 @@ export const combineTradeHistoryDataFromWebsocket = (message: MessageEvent<any>,
         const quantity = data.q;
         const eventid = data.t;
         const tickerTimestamp = Math.round(data.E / 1000);
-        const captureTimestamp = new Date().toISOString();
+        // const captureTimestamp = new Date().toISOString();
         const isBuyer = data.m ? 1 : 0
 
-
-        updateData([{ symbol, price, size: quantity, timestamp: tickerTimestamp, fall: isBuyer }])
-
-        // id
-        // pair
-        // exchange
-        // size
-        // marketType
-        // price
-        // time
-        // fall
-        // timestamp
-
-        // return [0, symbol, 0, 'binance', price, quantity, eventid, tickerTimestamp, captureTimestamp, isBuyer]
+        updateData([{ symbol, price, size: quantity, timestamp: tickerTimestamp, fall: isBuyer, eventid }])
     }
 
     return

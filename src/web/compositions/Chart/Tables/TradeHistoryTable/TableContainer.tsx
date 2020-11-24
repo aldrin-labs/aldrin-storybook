@@ -64,12 +64,12 @@ class TableContainer extends PureComponent<IProps, IState> {
     ) {
       const updatedData = newProps.data.map((trade, i) => ({
         ...trade,
-        price: Number(trade.price).toFixed(
+        price: trade.price.toFixed(
           getNumberOfDecimalsFromNumber(
             getAggregationsFromMinPriceDigits(newProps.minPriceDigits)[0].value
           )
         ),
-        time: dayjs.unix(+trade.timestamp).format('h:mm:ss a'),
+        time: dayjs.unix(trade.timestamp).format('h:mm:ss a'),
         id: `${trade.price}${trade.size}${i}${trade.timestamp}`,
       }))
 
