@@ -89,6 +89,10 @@ class OrderbookAndDepthChart extends React.Component {
       return {
         ...updatedData,
       }
+    } else if (!isPairDataLoading) {
+      return {
+        aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value
+      }
     }
 
     return {}
@@ -225,6 +229,7 @@ class OrderbookAndDepthChart extends React.Component {
       const { asks, bids, readyForNewOrder, aggregation } = this.state
 
       const { sizeDigits, minPriceDigits, isPairDataLoading, data } = this.props
+      console.log('isPairDataLoading || !aggregation', isPairDataLoading)
       if (
         // (asks.getLength() === 0 && bids.getLength() === 0) ||
         isPairDataLoading || !aggregation
@@ -521,7 +526,14 @@ class OrderbookAndDepthChart extends React.Component {
   }
 }
 
-const OrderbookAndDepthChartComponent = withWebsocket()((OrderbookAndDepthChart))
+const OrderbookAndDepthChartComponent = withWebsocket({
+  url: (props: any) => getUrlForWebsocket('OB', props.marketType, props.symbol),
+  onMessage: (msg, updateData) => {
+    const data = JSON.parse(msg.data)
+    updateData({ marketOrders: { asks: data.a, bids: data.b } })
+  },
+  pair: (props: any) => props.symbol
+})((OrderbookAndDepthChart))
 
 
 export const APIWrapper = ({
@@ -539,9 +551,6 @@ export const APIWrapper = ({
   quote,
   hideDepthChart,
 }) => {
-  const url = getUrlForWebsocket('OB', marketType, symbol)
-  console.log('url', url)
-
   return (
     <OrderbookAndDepthChartComponent
       component={OrderbookAndDepthChart}
@@ -576,13 +585,6 @@ export const APIWrapper = ({
       isDataLoading={isPairDataLoading}
       withoutLoading={true}
       key={`${symbol}${marketType}`}
-      url={url}
-      onMessage={(msg, updateData) => {
-
-        const data = JSON.parse(msg.data)
-
-        updateData({ marketOrders: { asks: data.a, bids: data.b } })
-      }}
     />
   )
 }

@@ -39,21 +39,21 @@ class TableContainer extends PureComponent<IProps, IState> {
 
   static getDerivedStateFromProps(newProps: IProps, state: IState) {
     //TODO: Need this
-          // when change exchange delete all data and...
-          // this.setState({ data: [] })
+    // when change exchange delete all data and...
+    // this.setState({ data: [] })
 
 
 
 
     // if (
-      // !(
-        // newProps.data &&
-        // newProps.data.length > 0 
-        // && newProps.data.length !== state.data.length
-      // )
+    // !(
+    // newProps.data &&
+    // newProps.data.length > 0 
+    // && newProps.data.length !== state.data.length
+    // )
     // ) {
-      //  if data is actually not a new data
-      // return null
+    //  if data is actually not a new data
+    // return null
     // }
 
     // query data processing
@@ -87,47 +87,47 @@ class TableContainer extends PureComponent<IProps, IState> {
     if (
       newProps.data &&
       newProps.data.length > 0
-      ) {
+    ) {
 
-            const tickersData = newProps.data
+      const tickersData = newProps.data
 
-            // if (
-              // !tickersData ||
-              // tickersData.length === 0 
-              // TODO: 
-              // ||
-              // tickersData[0].pair !== newProps.props.currencyPair ||
-              // tickersData[0].marketType != newProps.props.marketType
-            // ) {
-              // return null
-            // }
+      // if (
+      // !tickersData ||
+      // tickersData.length === 0 
+      // TODO: 
+      // ||
+      // tickersData[0].pair !== newProps.props.currencyPair ||
+      // tickersData[0].marketType != newProps.props.marketType
+      // ) {
+      // return null
+      // }
 
-            const updatedData = reduceArrayLength(
-              tickersData
-                .map((trade) => ({
-                  ...trade,
-                  price: Number(trade.price).toFixed(
-                    getNumberOfDecimalsFromNumber(
-                      getAggregationsFromMinPriceDigits(
-                        newProps.minPriceDigits
-                      )[0].value
-                    )
-                  ),
-                  time: dayjs.unix(+trade.timestamp).format('h:mm:ss a'),
-                }))
-                .concat(state.data)
-            )
+      const updatedData = reduceArrayLength(
+        tickersData
+          .map((trade) => ({
+            ...trade,
+            price: Number(trade.price).toFixed(
+              getNumberOfDecimalsFromNumber(
+                getAggregationsFromMinPriceDigits(
+                  newProps.minPriceDigits
+                )[0].value
+              )
+            ),
+            time: dayjs.unix(+trade.timestamp).format('h:mm:ss a'),
+          }))
+          .concat(state.data)
+      )
 
-            const numbersAfterDecimalForPrice = getNumberOfDigitsAfterDecimal(
-              updatedData,
-              'price'
-            )
+      const numbersAfterDecimalForPrice = getNumberOfDigitsAfterDecimal(
+        updatedData,
+        'price'
+      )
 
-            return {
-              numbersAfterDecimalForPrice,
-              data: reduceArrayLength(updatedData),
-            }
+      return {
+        numbersAfterDecimalForPrice,
+        data: reduceArrayLength(updatedData),
       }
+    }
 
     return null
   }
@@ -189,7 +189,7 @@ class TableContainer extends PureComponent<IProps, IState> {
   // }
 
   // componentDidMount() {
-    // this.subscribe()
+  // this.subscribe()
   // }
 
   componentDidUpdate(prevProps: IProps) {
@@ -240,22 +240,26 @@ class TableContainer extends PureComponent<IProps, IState> {
 const TradeHistoryWrapper = compose(
   // withWebsocket,
   withErrorFallback,
-  withWebsocket({ url: (props: any) => getUrlForWebsocket('TH', props.marketType, props.symbol), onMessage: combineTradeHistoryDataFromWebsocket, pair: (props: any) => props.symbol })
-  )(TableContainer)
+  withWebsocket({
+    url: (props: any) => getUrlForWebsocket('TH', props.marketType, props.symbol),
+    onMessage: combineTradeHistoryDataFromWebsocket,
+    pair: (props: any) => props.symbol
+  })
+)(TableContainer)
 
 export default React.memo(TradeHistoryWrapper, (prevProps, nextProps) => {
 
-    const symbolIsEqual = prevProps.symbol === nextProps.symbol
-    const marketTypeIsEqual = prevProps.marketType === nextProps.marketType
-    const currencyPairIsEqual = prevProps.currencyPair === nextProps.prevProps
-  
-    if (
-      symbolIsEqual &&
-      marketTypeIsEqual &&
-      currencyPairIsEqual
-    ) {
-      return true
-    }
-  
-    return false
-  })
+  const symbolIsEqual = prevProps.symbol === nextProps.symbol
+  const marketTypeIsEqual = prevProps.marketType === nextProps.marketType
+  const currencyPairIsEqual = prevProps.currencyPair === nextProps.prevProps
+
+  if (
+    symbolIsEqual &&
+    marketTypeIsEqual &&
+    currencyPairIsEqual
+  ) {
+    return true
+  }
+
+  return false
+})
