@@ -316,11 +316,6 @@ export function ChartPageComponent(props: any) {
     ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
     : { keyId: '', hedgeMode: false, isFuturesWarsKey: false }
 
-  // console.log(
-  //   'getChartDataQuery',
-  //   props.getChartDataQuery.getTradingSettings.selectedTradingKey
-  // )
-
   return (
     <MainContainer fullscreen={view !== 'default'}>
       <GlobalStyles />
