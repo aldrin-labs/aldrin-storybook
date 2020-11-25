@@ -221,7 +221,7 @@ class MarketStats extends React.PureComponent<IProps> {
 
     return (
       <div style={{ display: 'flex', width: '100%' }} key={this.state.key}>
-        {/* {marketType === 0 ? null : (
+        {marketType === 0 ? null : (
           <PanelCard marketType={marketType} theme={theme}>
             <PanelCardValue
               theme={theme}
@@ -236,14 +236,14 @@ class MarketStats extends React.PureComponent<IProps> {
               )}
             </PanelCardValue>
           </PanelCard>
-        )} */}
-        {/* <DarkTooltip
+        )} 
+        <DarkTooltip
           title={
             'Estimate of the true value of a contract (fair price) when compared to its actual trading price (last price).'
           }
-        > */}
-          {/* <PanelCard marketType={marketType} theme={theme}> */}
-            {/* <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        >
+          <PanelCard marketType={marketType} theme={theme}> */}
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               {marketType === 1 ? null : (
                 <PanelCardTitle theme={theme} style={{ whiteSpace: 'nowrap' }}>
                   Last price
@@ -260,8 +260,8 @@ class MarketStats extends React.PureComponent<IProps> {
                   Mark price
                 </PanelCardTitle>
               )}
-            </div> */}
-            {/* <span style={{ display: 'flex', justifyContent: 'space-between' }}>
+            </div>
+            <span style={{ display: 'flex', justifyContent: 'space-between' }}>
               {marketType === 1 ? null : (
                 <PanelCardValue theme={theme}>
                   {formatNumberToUSFormat(
@@ -279,7 +279,7 @@ class MarketStats extends React.PureComponent<IProps> {
               )}
             </span>
           </PanelCard>
-        </DarkTooltip> */}
+        </DarkTooltip>
 
         <PanelCard marketType={marketType} theme={theme}>
           <PanelCardTitle theme={theme}>24h change</PanelCardTitle>
