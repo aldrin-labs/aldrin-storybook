@@ -1,4 +1,6 @@
 import React from 'react'
+import { compose } from 'recompose'
+
 import 'treemap-js'
 var SortedMap = require('collections/sorted-map')
 
@@ -21,8 +23,6 @@ import {
 
 import { client } from '@core/graphql/apolloClient'
 
-import { withWebsocket } from '@core/hoc/withWebsocket'
-import { adaptTickerSymbolToExchangeFormat } from '@core/utils/symbolAdapter'
 import {
   transformOrderbookData,
   addOrdersToOrderbook,
@@ -31,9 +31,14 @@ import {
   testJSON,
   getAggregationsFromMinPriceDigits,
   getNumberOfDecimalsFromNumber,
+  combineOrderbookFromWebsocket,
+  combineOrderbookFromFetch
 } from '@core/utils/chartPageUtils'
+
+import { withWebsocket } from '@core/hoc/withWebsocket'
+import { withFetch } from '@core/hoc/withFetchHoc'
+import { getUrlForFetch } from '@core/utils/getUrlForFetch'
 import { getUrlForWebsocket } from '@core/utils/getUrlForWebsocket'
-import { compose } from 'recompose'
 
 let unsubscribe = Function
 
@@ -59,7 +64,7 @@ class OrderbookAndDepthChart extends React.Component {
     const {
       // BINANCE_TODO
       // here we should take data from binance OB query
-      data,
+      fetchData,
       sizeDigits,
       isPairDataLoading,
       minPriceDigits,
@@ -67,7 +72,7 @@ class OrderbookAndDepthChart extends React.Component {
 
     let updatedData = null
 
-    const marketOrders = data && data.marketOrders || []
+    const marketOrders = fetchData
 
     // first get data from query
     if (
@@ -76,13 +81,18 @@ class OrderbookAndDepthChart extends React.Component {
       marketOrders &&
       marketOrders.asks &&
       marketOrders.bids &&
-      testJSON(marketOrders.asks) &&
-      testJSON(marketOrders.bids) &&
       !isPairDataLoading
     ) {
-      updatedData = transformOrderbookData({
-        marketOrders,
-        aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
+      updatedData = addOrdersToOrderbook({
+        updatedData: { asks, bids },
+        ordersData: marketOrders,
+        aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0]
+          .value,
+        defaultAggregation: getAggregationsFromMinPriceDigits(
+          minPriceDigits
+        )[0].value,
+        originalOrderbookTree: { asks, bids },
+        isAggregatedData: false,
         sizeDigits,
       })
 
@@ -98,139 +108,13 @@ class OrderbookAndDepthChart extends React.Component {
     return {}
   }
 
-  subscribe = () => {
-    const that = this
-    // this.subscription = client
-    //   .subscribe({
-    //     query: ORDERBOOK,
-    //     fetchPolicy: 'no-cache',
-    //     variables: {
-    //       marketType: this.props.marketType,
-    //       exchange: this.props.exchange,
-    //       symbol: this.props.symbol,
-    //     },
-    //   })
-    //   .subscribe({
-    //     next: ({ data }) => {
-    //       const { asks, bids, readyForNewOrder, aggregation } = that.state
-
-    //       const { sizeDigits, minPriceDigits, isPairDataLoading } = that.props
-
-    //       if (
-    //         (asks.getLength() === 0 && bids.getLength() === 0) ||
-    //         isPairDataLoading
-    //       ) {
-    //         return
-    //       }
-
-    //       let updatedData = null
-    //       let newResubscribeTimer = null
-    //       let updatedAggregatedData = that.state.aggregatedData
-
-    //       const newOrders = data.listenOrderbook
-    //       // const newOrders = subscriptionData.data.listenMockedOrderbook
-
-    //       let ordersAsks = []
-    //       let ordersBids = []
-
-    //       if (newOrders.length > 0) {
-    //         newOrders.forEach((order, i) => {
-    //           const side = order.side.match(/ask/) ? 'asks' : 'bids'
-    //           if (side === 'asks') {
-    //             ordersAsks.push(order)
-    //           } else {
-    //             ordersBids.push(order)
-    //           }
-    //         })
-    //       }
-
-    //       const marketOrders = Object.assign(
-    //         {
-    //           asks: [],
-    //           bids: [],
-    //           __typename: 'orderbookOrder',
-    //         },
-    //         {
-    //           asks: ordersAsks,
-    //           bids: ordersBids,
-    //         }
-    //       )
-
-    //       if (
-    //         ((marketOrders.asks.length > 0 || marketOrders.bids.length > 0) &&
-    //           !(typeof marketOrders.asks === 'string')) ||
-    //         !(typeof marketOrders.bids === 'string')
-    //       ) {
-    //         const ordersData = marketOrders
-    //         const orderbookData = updatedData || { asks, bids }
-
-    //         // check that current pair and marketType === pair in new orders
-    //         // if (
-    //         //   (ordersData.bids.length > 0 &&
-    //         //     ordersData.bids[0].pair !==
-    //         //       `${that.props.symbol}_${that.props.marketType}`) ||
-    //         //   (ordersData.asks.length > 0 &&
-    //         //     ordersData.asks[0].pair !==
-    //         //       `${that.props.symbol}_${that.props.marketType}`)
-    //         // )
-    //         //   return null
-
-    //         if (
-    //           String(aggregation) !==
-    //           String(getAggregationsFromMinPriceDigits(minPriceDigits)[0].value)
-    //         ) {
-    //           updatedAggregatedData = addOrdersToOrderbook({
-    //             updatedData: updatedAggregatedData,
-    //             ordersData,
-    //             aggregation,
-    //             defaultAggregation: getAggregationsFromMinPriceDigits(
-    //               this.props.minPriceDigits
-    //             )[0].value,
-    //             originalOrderbookTree: { asks, bids },
-    //             isAggregatedData: true,
-    //             sizeDigits,
-    //           })
-    //         }
-
-    //         updatedData = addOrdersToOrderbook({
-    //           updatedData: orderbookData,
-    //           ordersData,
-    //           aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0]
-    //             .value,
-    //           defaultAggregation: getAggregationsFromMinPriceDigits(
-    //             this.props.minPriceDigits
-    //           )[0].value,
-    //           originalOrderbookTree: { asks, bids },
-    //           isAggregatedData: false,
-    //           sizeDigits,
-    //         })
-    //       }
-
-    //       that.setState({
-    //         dataWasUpdated: true,
-    //         resubscribeTimer: newResubscribeTimer,
-    //         readyForNewOrder:
-    //           readyForNewOrder === undefined ? true : readyForNewOrder,
-    //         aggregation:
-    //           aggregation === undefined || aggregation === 0
-    //             ? String(
-    //               getAggregationsFromMinPriceDigits(minPriceDigits)[0].value
-    //             )
-    //             : aggregation,
-    //         aggregatedData: updatedAggregatedData,
-    //         ...updatedData,
-    //       })
-    //     },
-    //   })
-  }
-
   componentDidUpdate(prevProps: IProps) {
     if (prevProps.data?.marketOrders?.asks.length !== this.props.data?.marketOrders?.asks.length) {
       const { asks, bids, readyForNewOrder, aggregation } = this.state
 
       const { sizeDigits, minPriceDigits, isPairDataLoading, data } = this.props
       if (
-        // (asks.getLength() === 0 && bids.getLength() === 0) ||
+        (asks.getLength() === 0 && bids.getLength() === 0) ||
         isPairDataLoading || !aggregation
       ) {
         return
@@ -525,17 +409,19 @@ class OrderbookAndDepthChart extends React.Component {
   }
 }
 
-const OrderbookAndDepthChartComponent = withWebsocket({
-  url: (props: any) => getUrlForWebsocket('OB', props.marketType, props.symbol),
-  onMessage: (msg, updateData) => {
-    const data = JSON.parse(msg.data)
-    const asks = data.a.map(([price, size]) => ({ price, size, side: 'asks', timestamp: data.E }))
-    const bids = data.b.map(([price, size]) => ({ price, size, side: 'bids', timestamp: data.E }))
-
-    updateData({ marketOrders: { asks, bids } })
-  },
-  pair: (props: any) => props.symbol
-})((OrderbookAndDepthChart))
+const OrderbookAndDepthChartComponent = compose(
+  withFetch({
+    url: (props: any) => getUrlForFetch('OB', props.marketType, props.symbol, 100),
+    onData: combineOrderbookFromFetch,
+    pair: (props: any) => props.symbol,
+    limit: 100,
+  }),
+  withWebsocket({
+    url: (props: any) => getUrlForWebsocket('OB', props.marketType, props.symbol),
+    onMessage: combineOrderbookFromWebsocket,
+    pair: (props: any) => props.symbol
+  })
+)((OrderbookAndDepthChart))
 
 
 export const APIWrapper = ({

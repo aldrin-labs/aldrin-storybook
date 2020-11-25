@@ -801,8 +801,6 @@ export const combineActiveTradesTable = ({
 
       const keyName = keys[accountId]
 
-      console.log('entryPrice', entryPrice)
-
       const entryOrderPrice =
         !entryDeviation && orderType === 'limit' && !entryPrice
           ? price
