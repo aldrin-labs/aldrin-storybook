@@ -126,7 +126,7 @@ export const ConfirmEmailContainerCss = css`
 
 export const SubmitButtonContainerCss = css`
   position: absolute;
-  bottom: -2.5rem;
+  bottom: ${(props) => props.bottom || '-2.5rem'};
 `
 
 export const SendVerificationEmailTextContainerCss = css`
