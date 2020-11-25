@@ -242,7 +242,7 @@ class MarketStats extends React.PureComponent<IProps> {
             'Estimate of the true value of a contract (fair price) when compared to its actual trading price (last price).'
           }
         >
-          <PanelCard marketType={marketType} theme={theme}> */}
+          <PanelCard marketType={marketType} theme={theme}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               {marketType === 1 ? null : (
                 <PanelCardTitle theme={theme} style={{ whiteSpace: 'nowrap' }}>
