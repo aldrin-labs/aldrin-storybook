@@ -47,7 +47,6 @@ import { useWallet } from '@sb/dexUtils/wallet'
 
 import { Styles } from './index.styles'
 import { Chart } from './components/Chart'
-import { Canvas } from './components/Canvas'
 
 import {
   formatNumberToUSFormat,
