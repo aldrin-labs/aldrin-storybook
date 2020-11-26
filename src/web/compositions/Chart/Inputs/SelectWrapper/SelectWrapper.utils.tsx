@@ -9,7 +9,6 @@ import {
   roundAndFormatNumber,
 } from '@core/utils/PortfolioTableUtils'
 
-
 import favoriteSelected from '@icons/favoriteSelected.svg'
 import favoriteUnselected from '@icons/favoriteUnselected.svg'
 
@@ -19,6 +18,7 @@ import {
   UpdateFavoritePairsMutationType,
   SelectTabType,
 } from './SelectWrapper.types'
+import { valueContainerCSS } from 'react-select/lib/components/containers'
 
 export const selectWrapperColumnNames = [
   { label: '', id: 'favorite', isSortable: false },
@@ -228,9 +228,7 @@ export const combineSelectWrapperData = ({
         contentToSort: +price,
         render: (
           <span onClick={() => onSelectPair({ value: symbol })}>
-            {formatNumberToUSFormat(
-              stripDigitPlaces(price, pricePrecision)
-            )}
+            {formatNumberToUSFormat(stripDigitPlaces(price, pricePrecision))}
           </span>
         ),
         // onClick: () => onSelectPair({ value: symbol }),
@@ -277,7 +275,31 @@ export const combineSelectWrapperData = ({
     }
   })
 
-  return filtredData.sort(
-    (a, b) => b.volume24hChange.contentToSort - a.volume24hChange.contentToSort
-  )
+  return filtredData.sort((pairObjectA, pairObjectB) => {
+    if (marketType === 0) {
+      const quoteA = pairObjectA.symbol.contentToSort.split('_')[1]
+      const quoteB = pairObjectB.symbol.contentToSort.split('_')[1]
+      if (quoteA === 'USDT' && quoteB === 'USDT') {
+        return (
+          pairObjectB.volume24hChange.contentToSort -
+          pairObjectA.volume24hChange.contentToSort
+        )
+      } else if (quoteA === 'USDT') {
+        return -1
+      } else if (quoteB === 'USDT') {
+        return 1
+      } else if (quoteA !== 'USDT' && quoteB !== 'USDT') {
+        return (
+          pairObjectB.volume24hChange.contentToSort -
+          pairObjectA.volume24hChange.contentToSort
+        )
+      }
+    } else {
+      return (
+        pairObjectB.volume24hChange.contentToSort -
+        pairObjectA.volume24hChange.contentToSort
+      )
+    }
+  })
 }
+//
