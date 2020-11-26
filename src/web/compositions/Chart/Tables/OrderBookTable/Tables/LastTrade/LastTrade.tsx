@@ -57,23 +57,23 @@ const LastTrade = (props: IProps) => {
     theme,
   } = props
 
-  const { getPrice: lastMarketPrice = 0 } = getPriceQuery || { getPrice: 0 }
-  const { getMarkPrice = { markPrice: 0 } } = getMarkPriceQuery || {
-    getMarkPrice: { markPrice: 0 },
-  }
-  const { markPrice = 0 } = getMarkPrice || { markPrice: 0 }
+  // const { getPrice: lastMarketPrice = 0 } = getPriceQuery || { getPrice: 0 }
+  // const { getMarkPrice = { markPrice: 0 } } = getMarkPriceQuery || {
+  //   getMarkPrice: { markPrice: 0 },
+  // }
+  // const { markPrice = 0 } = getMarkPrice || { markPrice: 0 }
 
-  const aggregation = getAggregationsFromMinPriceDigits(props.minPriceDigits)[0]
-    .value
+  // const aggregation = getAggregationsFromMinPriceDigits(props.minPriceDigits)[0]
+  //   .value
 
   return (
     <LastTradeContainer
       theme={theme}
-      onClick={() =>
-        updateTerminalPriceFromOrderbook(
-          Number(markPrice).toFixed(getNumberOfDecimalsFromNumber(aggregation))
-        )
-      }
+      // onClick={() =>
+      //   updateTerminalPriceFromOrderbook(
+      //     Number(markPrice).toFixed(getNumberOfDecimalsFromNumber(aggregation))
+      //   )
+      // }
     >
       <div
         style={{
@@ -88,15 +88,15 @@ const LastTrade = (props: IProps) => {
       </LastTradePrice> */}
         <LastTradePrice theme={theme}>
           {/* <ArrowIcon fall={fall} /> */}
-          {Number(lastMarketPrice).toFixed(
+          {/* {Number(lastMarketPrice).toFixed(
             getNumberOfDecimalsFromNumber(aggregation)
-          )}
+          )} */}
         </LastTradePrice>
         {marketType === 1 && (
           <LastTradePrice theme={theme} style={{ fontSize: '1.2rem' }}>
-            {Number(markPrice).toFixed(
+            {/* {Number(markPrice).toFixed(
               getNumberOfDecimalsFromNumber(aggregation)
-            )}
+            )} */}
           </LastTradePrice>
         )}
       </div>
@@ -105,48 +105,48 @@ const LastTrade = (props: IProps) => {
 }
 
 export default compose(
-  queryRendererHoc({
-    query: getMarkPrice,
-    name: 'getMarkPriceQuery',
-    variables: (props) => ({
-      input: {
-        exchange: props.exchange,
-        symbol: props.symbol,
-      },
-    }),
-    subscriptionArgs: {
-      subscription: LISTEN_MARK_PRICE,
-      variables: (props: any) => ({
-        input: {
-          exchange: props.exchange,
-          symbol: props.symbol,
-        },
-      }),
-      updateQueryFunction: updateMarkPriceQuerryFunction,
-    },
-    fetchPolicy: 'cache-and-network',
-    withOutSpinner: true,
-    withTableLoader: false,
-  }),
-  queryRendererHoc({
-    query: getPrice,
-    name: 'getPriceQuery',
-    variables: (props) => ({
-      exchange: props.exchange,
-      pair: `${props.symbol}:${props.marketType}`,
-    }),
-    subscriptionArgs: {
-      subscription: LISTEN_PRICE,
-      variables: (props: any) => ({
-        input: {
-          exchange: props.exchange,
-          pair: `${props.symbol}:${props.marketType}`,
-        },
-      }),
-      updateQueryFunction: updatePriceQuerryFunction,
-    },
-    fetchPolicy: 'cache-and-network',
-    withOutSpinner: true,
-    withTableLoader: false,
-  })
+  // queryRendererHoc({
+  //   query: getMarkPrice,
+  //   name: 'getMarkPriceQuery',
+  //   variables: (props) => ({
+  //     input: {
+  //       exchange: props.exchange,
+  //       symbol: props.symbol,
+  //     },
+  //   }),
+  //   subscriptionArgs: {
+  //     subscription: LISTEN_MARK_PRICE,
+  //     variables: (props: any) => ({
+  //       input: {
+  //         exchange: props.exchange,
+  //         symbol: props.symbol,
+  //       },
+  //     }),
+  //     updateQueryFunction: updateMarkPriceQuerryFunction,
+  //   },
+  //   fetchPolicy: 'cache-and-network',
+  //   withOutSpinner: true,
+  //   withTableLoader: false,
+  // }),
+  // queryRendererHoc({
+  //   query: getPrice,
+  //   name: 'getPriceQuery',
+  //   variables: (props) => ({
+  //     exchange: props.exchange,
+  //     pair: `${props.symbol}:${props.marketType}`,
+  //   }),
+  //   subscriptionArgs: {
+  //     subscription: LISTEN_PRICE,
+  //     variables: (props: any) => ({
+  //       input: {
+  //         exchange: props.exchange,
+  //         pair: `${props.symbol}:${props.marketType}`,
+  //       },
+  //     }),
+  //     updateQueryFunction: updatePriceQuerryFunction,
+  //   },
+  //   fetchPolicy: 'cache-and-network',
+  //   withOutSpinner: true,
+  //   withTableLoader: false,
+  // })
 )(LastTrade)

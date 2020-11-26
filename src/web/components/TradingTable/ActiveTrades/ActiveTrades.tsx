@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import dayjs from 'dayjs'
+import copy from 'clipboard-copy'
 import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
 import { client } from '@core/graphql/apolloClient'
@@ -337,10 +338,10 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
     status: string
   ): Promise<
     | {
-        data: {
-          changeTemplateStatus: { conditions: { templateStatus: string } }
-        }
+      data: {
+        changeTemplateStatus: { conditions: { templateStatus: string } }
       }
+    }
     | { errors: string; data: null }
   > => {
     const { changeTemplateStatusMutation } = this.props
@@ -383,17 +384,17 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       message: 'Smart order disabled' | 'Smart order disabling failed'
     } =
       result &&
-      result.data &&
-      result.data.disableStrategy &&
-      result.data.disableStrategy.enabled === false
+        result.data &&
+        result.data.disableStrategy &&
+        result.data.disableStrategy.enabled === false
         ? {
-            status: 'success',
-            message: 'Smart order disabled',
-          }
+          status: 'success',
+          message: 'Smart order disabled',
+        }
         : {
-            status: 'error',
-            message: 'Smart order disabling failed',
-          }
+          status: 'error',
+          message: 'Smart order disabling failed',
+        }
 
     showCancelResult(statusResult)
 
@@ -407,8 +408,8 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
   ): Promise<{
     status: 'success' | 'error'
     message:
-      | 'Smart order template status changed'
-      | 'Smart order template status change failed'
+    | 'Smart order template status changed'
+    | 'Smart order template status change failed'
   }> => {
     const { showCancelResult } = this.props
 
@@ -418,21 +419,21 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
     const statusResult: {
       status: 'success' | 'error'
       message:
-        | 'Smart order template status changed'
-        | 'Smart order template status change failed'
+      | 'Smart order template status changed'
+      | 'Smart order template status change failed'
     } =
       result &&
-      result.data &&
-      result.data.changeTemplateStatus &&
-      result.data.changeTemplateStatus.conditions.templateStatus
+        result.data &&
+        result.data.changeTemplateStatus &&
+        result.data.changeTemplateStatus.conditions.templateStatus
         ? {
-            status: 'success',
-            message: 'Smart order template status changed',
-          }
+          status: 'success',
+          message: 'Smart order template status changed',
+        }
         : {
-            status: 'error',
-            message: 'Smart order template status change failed',
-          }
+          status: 'error',
+          message: 'Smart order template status change failed',
+        }
 
     showCancelResult(statusResult)
 
@@ -460,8 +461,8 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
 
     let price =
       selectedTrade.conditions.entryOrder.orderType === 'market' &&
-      !!selectedTrade.conditions.entryOrder.activatePrice &&
-      selectedTrade.conditions.entryOrder.activatePrice !== 0
+        !!selectedTrade.conditions.entryOrder.activatePrice &&
+        selectedTrade.conditions.entryOrder.activatePrice !== 0
         ? currentPrice
         : selectedTrade.conditions.entryOrder.price
 
@@ -469,15 +470,15 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       price =
         selectedTrade.conditions.entryOrder.side === 'buy'
           ? price *
-            (1 +
-              selectedTrade.conditions.entryOrder.entryDeviation /
-                100 /
-                selectedTrade.conditions.leverage)
+          (1 +
+            selectedTrade.conditions.entryOrder.entryDeviation /
+            100 /
+            selectedTrade.conditions.leverage)
           : price *
-            (1 -
-              selectedTrade.conditions.entryOrder.entryDeviation /
-                100 /
-                selectedTrade.conditions.leverage)
+          (1 -
+            selectedTrade.conditions.entryOrder.entryDeviation /
+            100 /
+            selectedTrade.conditions.leverage)
     }
 
     // console.log('price', price)
@@ -524,6 +525,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       handleChangeRowsPerPage,
       updateTerminalViewMode,
       isDefaultOnlyTables,
+      maxLeverage
     } = this.props
 
     if (!show || !isDefaultOnlyTables) {
@@ -558,6 +560,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
           selectedTrade.conditions && (
             <EditEntryOrderPopup
               theme={theme}
+              maxLeverage={maxLeverage}
               price={this.getEntryPrice()}
               funds={processedFunds}
               quantityPrecision={quantityPrecision}
@@ -598,13 +601,13 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
                 const statusResult =
                   result && result.data && result.data.updateEntryPoint
                     ? {
-                        status: 'success',
-                        message: 'Smart order edit successful',
-                      }
+                      status: 'success',
+                      message: 'Smart order edit successful',
+                    }
                     : {
-                        status: 'error',
-                        message: 'Smart order edit failed',
-                      }
+                      status: 'error',
+                      message: 'Smart order edit failed',
+                    }
 
                 showCancelResult(statusResult)
               }}
@@ -658,13 +661,13 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
                 const statusResult =
                   result && result.data && result.data.updateTakeProfitStrategy
                     ? {
-                        status: 'success',
-                        message: 'Smart order edit successful',
-                      }
+                      status: 'success',
+                      message: 'Smart order edit successful',
+                    }
                     : {
-                        status: 'error',
-                        message: 'Smart order edit failed',
-                      }
+                      status: 'error',
+                      message: 'Smart order edit failed',
+                    }
 
                 showCancelResult(statusResult)
               }}
@@ -714,13 +717,13 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
               const statusResult =
                 result && result.data && result.data.updateStopLossStrategy
                   ? {
-                      status: 'success',
-                      message: 'Smart order edit successful',
-                    }
+                    status: 'success',
+                    message: 'Smart order edit successful',
+                  }
                   : {
-                      status: 'error',
-                      message: 'Smart order edit failed',
-                    }
+                    status: 'error',
+                    message: 'Smart order edit failed',
+                  }
 
               showCancelResult(statusResult)
             }}
@@ -753,6 +756,10 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
           expandedRows={expandedRows}
           onChange={this.setExpandedRows}
           rowsWithHover={false}
+          onTrClick={(row) => {
+            this.setExpandedRows(row.id)
+            copy(row.id.split('_')[0])
+          }}
           style={{
             borderRadius: 0,
             height: 'calc(100% - 5.5rem)',
@@ -781,10 +788,10 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
                   allKeys,
                   specificPair,
                   handleToggleAllKeys: !!cachedOrder
-                    ? () => {}
+                    ? () => { }
                     : handleToggleAllKeys,
                   handleToggleSpecificPair: !!cachedOrder
-                    ? () => {}
+                    ? () => { }
                     : handleToggleSpecificPair,
                   loading: getActiveStrategiesQuery.queryParamsWereChanged,
 

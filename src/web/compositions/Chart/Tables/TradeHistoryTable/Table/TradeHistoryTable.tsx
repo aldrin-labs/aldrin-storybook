@@ -7,7 +7,7 @@ import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
 import { Column, Table } from 'react-virtualized'
 import 'react-virtualized/styles.css'
 
-import { rowStyles } from '@core/utils/chartPageUtils'
+// import { rowStyles } from '@core/utils/chartPageUtils'
 
 import defaultRowRenderer from '../../OrderBookTable/utils'
 

@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import copy from 'clipboard-copy'
 import { Dialog, Paper } from '@material-ui/core'
 import Clear from '@material-ui/icons/Clear'
 
@@ -26,6 +27,10 @@ import {
   TradeInputContent as Input,
   TradeInputHeader,
 } from '@sb/components/TraidingTerminal/index'
+
+import { API_URL } from '@core/utils/config'
+import WebHookImg from '@sb/images/WebHookImg.png'
+import MessageImg from '@sb/images/MessageImg.png'
 
 import { LeverageLabel } from '@sb/components/TradingWrapper/styles'
 
@@ -155,13 +160,13 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
       const takeProfitPrice =
         side === 'sell'
           ? stripDigitPlaces(
-              price * (1 - percentage / 100 / leverage),
-              pricePrecision
-            )
+            price * (1 - percentage / 100 / leverage),
+            pricePrecision
+          )
           : stripDigitPlaces(
-              price * (1 + percentage / 100 / leverage),
-              pricePrecision
-            )
+            price * (1 + percentage / 100 / leverage),
+            pricePrecision
+          )
 
       return {
         takeProfitPrice,
@@ -187,13 +192,13 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
     const takeProfitPrice =
       side === 'sell'
         ? stripDigitPlaces(
-            price * (1 - percentage / 100 / leverage),
-            pricePrecision
-          )
+          price * (1 - percentage / 100 / leverage),
+          pricePrecision
+        )
         : stripDigitPlaces(
-            price * (1 + percentage / 100 / leverage),
-            pricePrecision
-          )
+          price * (1 + percentage / 100 / leverage),
+          pricePrecision
+        )
 
     this.setState({ takeProfitPrice })
   }
@@ -618,8 +623,8 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                         style={
                           this.state.targets.length - 1 !== i
                             ? {
-                                borderBottom: theme.palette.border.main,
-                              }
+                              borderBottom: theme.palette.border.main,
+                            }
                             : {}
                         }
                       >
@@ -825,26 +830,26 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
       const stopLossPrice =
         side === 'buy'
           ? stripDigitPlaces(
-              price * (1 - percentage / 100 / leverage),
-              pricePrecision
-            )
+            price * (1 - percentage / 100 / leverage),
+            pricePrecision
+          )
           : stripDigitPlaces(
-              price * (1 + percentage / 100 / leverage),
-              pricePrecision
-            )
+            price * (1 + percentage / 100 / leverage),
+            pricePrecision
+          )
 
       const forcedLossPrice =
         side === 'buy'
           ? stripDigitPlaces(
-              price *
-                (1 - props.derivedState.forcedPercentage / 100 / leverage),
-              pricePrecision
-            )
+            price *
+            (1 - props.derivedState.forcedPercentage / 100 / leverage),
+            pricePrecision
+          )
           : stripDigitPlaces(
-              price *
-                (1 + props.derivedState.forcedPercentage / 100 / leverage),
-              pricePrecision
-            )
+            price *
+            (1 + props.derivedState.forcedPercentage / 100 / leverage),
+            pricePrecision
+          )
 
       return {
         stopLossPrice,
@@ -867,13 +872,13 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
     const fieldPrice =
       side === 'buy'
         ? stripDigitPlaces(
-            price * (1 - percentage / 100 / leverage),
-            pricePrecision
-          )
+          price * (1 - percentage / 100 / leverage),
+          pricePrecision
+        )
         : stripDigitPlaces(
-            price * (1 + percentage / 100 / leverage),
-            pricePrecision
-          )
+          price * (1 + percentage / 100 / leverage),
+          pricePrecision
+        )
 
     this.setState({ [field]: fieldPrice })
   }
@@ -1132,7 +1137,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                           borderTopRightRadius: 0,
                           borderBottomRightRadius: 0,
                         }}
-                        // disabled={!this.state.whenLossableOn}
+                      // disabled={!this.state.whenLossableOn}
                       />
                       <Select
                         theme={theme}
@@ -1145,7 +1150,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                         onChange={(e) => {
                           this.setState({ whenLossableMode: e.target.value })
                         }}
-                        // isDisabled={!this.state.whenLossableOn}
+                      // isDisabled={!this.state.whenLossableOn}
                       >
                         <option>sec</option>
                         <option>min</option>
@@ -1420,7 +1425,7 @@ export class EditHedgePopup extends React.Component<IProps, HedgeState> {
 export class EditEntryOrderPopup extends React.Component<
   IProps,
   EntryOrderState
-> {
+  > {
   state = {
     type: '',
     side: '',
@@ -1432,12 +1437,15 @@ export class EditEntryOrderPopup extends React.Component<
     deviationPercentage: 0,
     leverage: 0,
     trailingDeviationPrice: 0,
+    templateAlertMessage: "",
   }
 
   static getDerivedStateFromProps(props, state) {
     // get values from state if empty
     if (state.side === '') {
-      const { side, price, pricePrecision, leverage } = props
+      const { side, price, pricePrecision, leverage, quantityPrecision } = props
+
+      console.log('props', props)
 
       let priceForCalculate =
         props.derivedState.type === 'market' && !props.derivedState.isTrailingOn
@@ -1451,16 +1459,17 @@ export class EditEntryOrderPopup extends React.Component<
       const trailingDeviationPrice =
         side === 'buy'
           ? stripDigitPlaces(
-              priceForCalculate * (1 + deviationPercentage / 100),
-              pricePrecision
-            )
+            priceForCalculate * (1 + deviationPercentage / 100),
+            pricePrecision
+          )
           : stripDigitPlaces(
-              priceForCalculate * (1 - deviationPercentage / 100),
-              pricePrecision
-            )
+            priceForCalculate * (1 - deviationPercentage / 100),
+            pricePrecision
+          )
 
       return {
         ...props.derivedState,
+        amount: stripDigitPlaces(props.derivedState.amount, quantityPrecision),
         price: props.derivedState.isTrailingOn
           ? props.derivedState.activatePrice
           : props.derivedState.price,
@@ -1485,13 +1494,13 @@ export class EditEntryOrderPopup extends React.Component<
     const trailingDeviationPrice =
       side === 'buy'
         ? stripDigitPlaces(
-            priceForCalculate * (1 + deviationPercentage / 100),
-            pricePrecision
-          )
+          priceForCalculate * (1 + deviationPercentage / 100),
+          pricePrecision
+        )
         : stripDigitPlaces(
-            priceForCalculate * (1 - deviationPercentage / 100),
-            pricePrecision
-          )
+          priceForCalculate * (1 - deviationPercentage / 100),
+          pricePrecision
+        )
 
     this.setState({ trailingDeviationPrice })
   }
@@ -1558,6 +1567,7 @@ export class EditEntryOrderPopup extends React.Component<
       total,
       isTrailingOn,
       deviationPercentage,
+      templateAlertMessage
     } = this.state
 
     let maxAmount = 0
@@ -1569,8 +1579,6 @@ export class EditEntryOrderPopup extends React.Component<
     } else if (marketType === 1) {
       maxAmount = funds[1].quantity * leverage
     }
-
-    console.log('quantityPrecision', quantityPrecision)
 
     return (
       <Dialog
@@ -1611,6 +1619,7 @@ export class EditEntryOrderPopup extends React.Component<
                 height: '2rem',
                 top: '0.1rem',
                 border: 'none',
+                borderRadius: '0',
                 backgroundColor: '#036141',
                 marginTop: '-.28rem',
                 boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
@@ -1672,12 +1681,12 @@ export class EditEntryOrderPopup extends React.Component<
                 let newAmount =
                   newSide === 'buy'
                     ? (
-                        ((amountPercentage / 100) * newMaxAmount) /
-                        price
-                      ).toFixed(marketType === 1 ? quantityPrecision : 8)
+                      ((amountPercentage / 100) * newMaxAmount) /
+                      price
+                    ).toFixed(marketType === 1 ? quantityPrecision : 8)
                     : ((amountPercentage / 100) * newMaxAmount).toFixed(
-                        marketType === 1 ? quantityPrecision : 8
-                      )
+                      marketType === 1 ? quantityPrecision : 8
+                    )
 
                 if (!+newAmount || +newAmount === NaN) {
                   newAmount = 0
@@ -1755,8 +1764,8 @@ export class EditEntryOrderPopup extends React.Component<
                     type === 'limit'
                       ? 'number'
                       : isTrailingOn
-                      ? 'number'
-                      : 'text'
+                        ? 'number'
+                        : 'text'
                   }
                   value={
                     type === 'limit' ? price : isTrailingOn ? price : 'MARKET'
@@ -1868,19 +1877,17 @@ export class EditEntryOrderPopup extends React.Component<
                   theme={theme}
                   needLine={false}
                   needRightValue={true}
-                  rightValue={`${
-                    side === 'buy' || marketType === 1
-                      ? (maxAmount / priceForCalculate).toFixed(
-                          marketType === 1 ? quantityPrecision : 8
-                        )
-                      : maxAmount.toFixed(
-                          marketType === 1 ? quantityPrecision : 8
-                        )
-                  } ${pair[0]}`}
+                  rightValue={`${side === 'buy' || marketType === 1
+                    ? (maxAmount / priceForCalculate).toFixed(
+                      marketType === 1 ? quantityPrecision : 8
+                    )
+                    : maxAmount.toFixed(
+                      marketType === 1 ? quantityPrecision : 8
+                    )
+                    } ${pair[0]}`}
                   onValueClick={this.setMaxAmount}
-                  title={`${marketType === 1 ? 'order quantity' : 'amount'} (${
-                    pair[0]
-                  })`}
+                  title={`${marketType === 1 ? 'order quantity' : 'amount'} (${pair[0]
+                    })`}
                 >
                   <Input
                     theme={theme}
@@ -1903,9 +1910,9 @@ export class EditEntryOrderPopup extends React.Component<
 
                       const strippedAmount = isAmountMoreThanMax
                         ? stripDigitPlaces(
-                            amountForUpdate,
-                            marketType === 1 ? quantityPrecision : 8
-                          )
+                          amountForUpdate,
+                          marketType === 1 ? quantityPrecision : 8
+                        )
                         : e.target.value
 
                       this.setState({
@@ -1942,14 +1949,13 @@ export class EditEntryOrderPopup extends React.Component<
                   theme={theme}
                   needLine={false}
                   needRightValue={true}
-                  rightValue={`${
-                    side === 'buy' || marketType === 1
-                      ? stripDigitPlaces(maxAmount, marketType === 1 ? 0 : 2)
-                      : stripDigitPlaces(
-                          maxAmount * priceForCalculate,
-                          marketType === 1 ? 0 : 2
-                        )
-                  } ${pair[1]}`}
+                  rightValue={`${side === 'buy' || marketType === 1
+                    ? stripDigitPlaces(maxAmount, marketType === 1 ? 0 : 2)
+                    : stripDigitPlaces(
+                      maxAmount * priceForCalculate,
+                      marketType === 1 ? 0 : 2
+                    )
+                    } ${pair[1]}`}
                   onValueClick={this.setMaxAmount}
                   title={`total (${pair[1]})`}
                 >
@@ -2001,11 +2007,11 @@ export class EditEntryOrderPopup extends React.Component<
                   const newAmount =
                     side === 'buy' || marketType === 1
                       ? (newValue / priceForCalculate).toFixed(
-                          marketType === 1 ? quantityPrecision : 8
-                        )
+                        marketType === 1 ? quantityPrecision : 8
+                      )
                       : newValue.toFixed(
-                          marketType === 1 ? quantityPrecision : 8
-                        )
+                        marketType === 1 ? quantityPrecision : 8
+                      )
 
                   const newTotal =
                     side === 'buy' || marketType === 1
@@ -2032,9 +2038,8 @@ export class EditEntryOrderPopup extends React.Component<
                   theme={theme}
                   needLine={false}
                   needRightValue={true}
-                  rightValue={`${stripDigitPlaces(funds[1].quantity, 2)} ${
-                    pair[1]
-                  }`}
+                  rightValue={`${stripDigitPlaces(funds[1].quantity, 2)} ${pair[1]
+                    }`}
                   onValueClick={this.setMaxAmount}
                   title={`cost / initial margin (${pair[1]})`}
                 >
@@ -2065,6 +2070,133 @@ export class EditEntryOrderPopup extends React.Component<
                   />
                 </FormInputContainer>
               </InputRowContainer>
+            )}
+
+            {templateAlertMessage && (
+              <>
+                {' '}
+                <FormInputContainer
+                  theme={theme}
+                  padding={'0 0 .8rem 0'}
+                  haveTooltip={true}
+                  tooltipText={
+                    <img
+                      style={{ width: '35rem', height: '50rem' }}
+                      src={WebHookImg}
+                    />
+                  }
+                  title={
+                    <span>
+                      paste it into{' '}
+                      <span
+                        style={{ color: theme.palette.blue.background }}
+                      >
+                        web-hook url
+                          </span>{' '}
+                          field when creating tv alert
+                        </span>
+                  }
+                >
+                  <InputRowContainer>
+                    <Input
+                      theme={theme}
+                      width={'85%'}
+                      type={'text'}
+                      disabled={true}
+                      textAlign={'left'}
+                      value={`https://${API_URL}/createSmUsingTemplate`}
+                    />
+                    <BtnCustom
+                      btnWidth="calc(15% - .8rem)"
+                      height="auto"
+                      margin="0 0 0 .8rem"
+                      fontSize="1rem"
+                      padding=".5rem 0 .4rem 0"
+                      borderRadius=".8rem"
+                      btnColor={theme.palette.blue.main}
+                      backgroundColor={theme.palette.white.background}
+                      hoverColor={theme.palette.white.main}
+                      hoverBackground={theme.palette.blue.main}
+                      transition={'all .4s ease-out'}
+                      onClick={() => {
+                        copy(`https://${API_URL}/createSmUsingTemplate`)
+                      }}
+                    >
+                      copy
+                        </BtnCustom>
+                  </InputRowContainer>
+                </FormInputContainer>
+                <FormInputContainer
+                  theme={theme}
+                  padding={'0 0 .8rem 0'}
+                  haveTooltip={true}
+                  tooltipText={
+                    <img
+                      style={{ width: '40rem', height: '42rem' }}
+                      src={MessageImg}
+                    />
+                  }
+                  title={
+                    <span>
+                      paste it into{' '}
+                      <span
+                        style={{ color: theme.palette.blue.background }}
+                      >
+                        message
+                          </span>{' '}
+                          field when creating tv alert
+                        </span>
+                  }
+                >
+                  <InputRowContainer>
+                    <Input
+                      theme={theme}
+                      width={'65%'}
+                      type={'text'}
+                      disabled={true}
+                      textAlign={'left'}
+                      value={templateAlertMessage}
+                    />
+                    {/* entryPoint.TVAlert.templateToken */}
+                    <BtnCustom
+                      btnWidth="calc(15% - .8rem)"
+                      height="auto"
+                      margin="0 0 0 .8rem"
+                      fontSize="1rem"
+                      padding=".5rem 0 .4rem 0"
+                      borderRadius=".8rem"
+                      btnColor={theme.palette.blue.main}
+                      backgroundColor={theme.palette.white.background}
+                      hoverColor={theme.palette.white.main}
+                      hoverBackground={theme.palette.blue.main}
+                      transition={'all .4s ease-out'}
+                      onClick={() => {
+                        copy(templateAlertMessage)
+                      }}
+                    >
+                      copy
+                        </BtnCustom>
+                    <BtnCustom
+                      btnWidth="calc(20% - .8rem)"
+                      height="auto"
+                      margin="0 0 0 .8rem"
+                      fontSize="1rem"
+                      padding=".5rem 0 .4rem 0"
+                      borderRadius=".8rem"
+                      btnColor={theme.palette.blue.main}
+                      backgroundColor={theme.palette.white.background}
+                      hoverColor={theme.palette.white.main}
+                      hoverBackground={theme.palette.blue.main}
+                      transition={'all .4s ease-out'}
+                      onClick={() => {
+                        // redirect to full example page
+                      }}
+                    >
+                      example
+                        </BtnCustom>
+                  </InputRowContainer>
+                </FormInputContainer>
+              </>
             )}
 
             <InputRowContainer padding={'2rem 0 0 0'}>

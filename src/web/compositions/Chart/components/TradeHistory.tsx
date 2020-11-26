@@ -11,6 +11,8 @@ import { updateTradeHistoryQuerryFunction } from '@core/utils/chartPageUtils'
 
 import { TradeHistoryTable } from '../Tables/Tables'
 import { TradeHistoryWrapper } from '../Chart.styles'
+import { getUrlForWebsocket } from '@core/utils/getUrlForWebsocket'
+import { combineTradeHistoryDataFromWebsocket } from '../Tables/TradeHistoryTable/utils'
 
 export const TradeHistory = ({
   updateTerminalPriceFromOrderbook,
@@ -28,6 +30,7 @@ export const TradeHistory = ({
   quote,
   pair,
 }) => {
+
   return (
     <TradeHistoryWrapper
       theme={theme}
@@ -37,19 +40,7 @@ export const TradeHistory = ({
         show: showTableOnMobile === 'TRADE',
       }}
     >
-      <QueryRenderer
-        component={TradeHistoryTable}
-        withOutSpinner
-        query={MARKET_QUERY}
-        variables={{ symbol, exchange, marketType }}
-        fetchPolicy={'network-only'}
-        // subscriptionArgs={{
-        //   subscription: MARKET_TICKERS,
-        //   variables: { symbol, exchange, marketType: String(marketType) },
-        //   // subscription: MOCKED_MARKET_TICKERS,
-        //   // variables: { time: 10000 },
-        //   updateQueryFunction: updateTradeHistoryQuerryFunction,
-        // }}
+      <TradeHistoryTable
         {...{
           quote,
           activeExchange,

@@ -23,6 +23,7 @@ import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboardin
 import { getChartSteps } from '@sb/config/joyrideSteps'
 import { withSelectedPair } from '@core/hoc/withSelectedPair'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
+import { withKeyGenerating } from '@core/hoc/withKeyGenerating'
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import { withRedirectToLogin } from '@core/hoc/withRedirectToLogin'
 
@@ -317,7 +318,6 @@ export function ChartPageComponent(props: any) {
     ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
     : { keyId: '', hedgeMode: false, isFuturesWarsKey: false }
 
-  console.log('chart.tsx')
   return (
     <MainContainer fullscreen={view !== 'default'}>
       <GlobalStyles />
@@ -465,6 +465,7 @@ export default compose(
       marketType: 1, // hardcode here to get only futures marketIds'
     },
   }),
+  // withKeyGenerating,
   graphql(selectTradingPair, { name: 'selectTradingPairMutation' }),
   withSelectedPair,
   queryRendererHoc({
