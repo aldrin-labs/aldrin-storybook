@@ -19,11 +19,11 @@ import { Link } from 'react-router-dom'
 export const StyledDialogContent = styled(DialogContent)`
   border-radius: none;
   border: ${(props) =>
-      (props.theme &&
-        props.theme.palette &&
-        props.theme.palette.border &&
-        props.theme.palette.border.main) ||
-      '.1rem solid #e0e5ec'};
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.border &&
+      props.theme.palette.border.main) ||
+    '.1rem solid #e0e5ec'};
   border-top: 0;
   padding: 0 2.4rem 2.4rem;
   font-family: DM Sans;
@@ -176,8 +176,8 @@ export const ClearButton = styled(IconButton)`
 export const Line = styled.div`
   content: '';
   width: 100%;
-  background-color: ${(props) => props.theme.palette.grey.border};
-  margin: ${(props) => props.lineMargin || '0 0 0 1rem'};
+  background-color: ${(props: { lineMargin: string }) => props.theme.palette.grey.border};
+  margin: ${(props: { lineMargin: string }) => props.lineMargin || '0 0 0 1rem'};
   height: 0.1rem;
 `
 
@@ -421,7 +421,7 @@ export const StyledInput = styled.input`
 
   @media (min-width: 1921px) {
     width: ${(props) =>
-      props.width === '100' ? props.width : props.width - 4}%;
+    props.width === '100' ? props.width : props.width - 4}%;
     font-size: 1.2rem;
     padding: 1.1rem;
 
