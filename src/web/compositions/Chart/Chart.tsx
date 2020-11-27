@@ -451,7 +451,6 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
 export default compose(
   withErrorFallback,
   withAuthStatus,
-  // withRedirectToLogin,
   withTheme(),
   withRouter,
   // withAuth,
