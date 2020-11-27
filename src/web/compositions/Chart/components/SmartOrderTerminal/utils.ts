@@ -1,5 +1,4 @@
 import { Theme } from '@material-ui/core'
-import jwtDecode from 'jwt-decode'
 import { getUserProfileFromAuthResult } from '@core/utils/loginUtils'
 const values = [['short', 'long'], ['sell', 'buy'], ['market', 'limit']]
 
