@@ -4,13 +4,13 @@ import { Theme } from '@material-ui/core';
 import { queryRendererHoc } from '@core/components/QueryRenderer/index';
 import { getMarketStatisticsByPair } from '@core/graphql/queries/chart/getMarketStatisticsByPair';
 import { getFundingRate } from '@core/graphql/queries/chart/getFundingRate';
-import { getMarkPrice } from '@core/graphql/queries/market/getMarkPrice';
-import { LISTEN_MARK_PRICE } from '@core/graphql/subscriptions/LISTEN_MARK_PRICE';
+// import { getMarkPrice } from '@core/graphql/queries/market/getMarkPrice';
+// import { LISTEN_MARK_PRICE } from '@core/graphql/subscriptions/LISTEN_MARK_PRICE';
 import { LISTEN_FUNDING_RATE } from '@core/graphql/subscriptions/LISTEN_FUNDING_RATE';
 import { getPrice } from '@core/graphql/queries/chart/getPrice';
 import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE';
 
-import { formatNumberToUSFormat, stripDigitPlaces, roundAndFormatNumber } from '@core/utils/PortfolioTableUtils';
+// import { formatNumberToUSFormat, stripDigitPlaces, roundAndFormatNumber } from '@core/utils/PortfolioTableUtils';
 
 import {
 	updateFundingRateQuerryFunction,
@@ -18,13 +18,13 @@ import {
 	updatePriceQuerryFunction
 } from './MarketStats.utils';
 
-import { PanelCard, PanelCardTitle, PanelCardValue, PanelCardSubValue } from '../../Chart.styles';
+// import { PanelCard, PanelCardTitle, PanelCardValue, PanelCardSubValue } from '../../Chart.styles';
 
 import MarkPriceBlock from './MarkPriceBlock/MarkPriceBlock';
 import PriceBlock from './PriceBlock/PriceBlock';
-import PriceChange from './PriceChange/PriceChange'
-import LowHighPrice from './LowHighPrice/LowHighPrice'
-import VolumeBlock from './VolumeBlock/VolumeBlock'
+import PriceChange from './PriceChange/PriceChange';
+import LowHighPrice from './LowHighPrice/LowHighPrice';
+import VolumeBlock from './VolumeBlock/VolumeBlock';
 import FundingRateBlock from './FundingRateBlock/FundingRateBlock';
 export interface IProps {
 	theme: Theme;
@@ -68,19 +68,18 @@ export interface IProps {
 }
 
 class MarketStats extends React.PureComponent<IProps> {
-	state: { key: number; refetching: boolean } = {
-		key: 0,
-		refetching: false
+	state: { key: number } = {
+		key: 0
 	};
 
-	getMarkPriceQueryUnsubscribe: null | (() => void) = null;
-	getPriceQueryUnsubscribe: null | (() => void) = null;
+	// getMarkPriceQueryUnsubscribe: null | (() => void) = null;
+	// getPriceQueryUnsubscribe: null | (() => void) = null;
 	getFundingRateQueryUnsubscribe: null | (() => void) = null;
 
 	componentDidMount() {
 		// subscribe
-		this.getMarkPriceQueryUnsubscribe = this.props.getMarkPriceQuery.subscribeToMoreFunction();
-		this.getPriceQueryUnsubscribe = this.props.getPriceQuery.subscribeToMoreFunction();
+		// this.getMarkPriceQueryUnsubscribe = this.props.getMarkPriceQuery.subscribeToMoreFunction();
+		// this.getPriceQueryUnsubscribe = this.props.getPriceQuery.subscribeToMoreFunction();
 		this.getFundingRateQueryUnsubscribe = this.props.getFundingRateQuery.subscribeToMoreFunction();
 	}
 
@@ -88,11 +87,11 @@ class MarketStats extends React.PureComponent<IProps> {
 		if (prevProps.symbol !== this.props.symbol || prevProps.marketType !== this.props.marketType) {
 			//  unsubscribe from old params
 			//  subscribe to new params and create new unsub link
-			this.getMarkPriceQueryUnsubscribe && this.getMarkPriceQueryUnsubscribe();
-			this.getMarkPriceQueryUnsubscribe = this.props.getMarkPriceQuery.subscribeToMoreFunction();
+			// this.getMarkPriceQueryUnsubscribe && this.getMarkPriceQueryUnsubscribe();
+			// this.getMarkPriceQueryUnsubscribe = this.props.getMarkPriceQuery.subscribeToMoreFunction();
 
-			this.getPriceQueryUnsubscribe && this.getPriceQueryUnsubscribe();
-			this.getPriceQueryUnsubscribe = this.props.getPriceQuery.subscribeToMoreFunction();
+			// this.getPriceQueryUnsubscribe && this.getPriceQueryUnsubscribe();
+			// this.getPriceQueryUnsubscribe = this.props.getPriceQuery.subscribeToMoreFunction();
 
 			this.getFundingRateQueryUnsubscribe && this.getFundingRateQueryUnsubscribe();
 			this.getFundingRateQueryUnsubscribe = this.props.getFundingRateQuery.subscribeToMoreFunction();
@@ -122,8 +121,8 @@ class MarketStats extends React.PureComponent<IProps> {
 
 	componentWillUnmount() {
 		//  unsubscribe
-		this.getMarkPriceQueryUnsubscribe && this.getMarkPriceQueryUnsubscribe();
-		this.getPriceQueryUnsubscribe && this.getPriceQueryUnsubscribe();
+		// this.getMarkPriceQueryUnsubscribe && this.getMarkPriceQueryUnsubscribe();
+		// this.getPriceQueryUnsubscribe && this.getPriceQueryUnsubscribe();
 		this.getFundingRateQueryUnsubscribe && this.getFundingRateQueryUnsubscribe();
 	}
 
@@ -138,16 +137,17 @@ class MarketStats extends React.PureComponent<IProps> {
 			getPriceQuery,
 			getMarkPriceQuery,
 			quantityPrecision,
-			pricePrecision: pricePrecisionRaw
+			pricePrecision: pricePrecisionRaw,
+			exchange,
 		} = this.props;
 
 		const pricePrecision = pricePrecisionRaw === 0 || pricePrecisionRaw < 0 ? 8 : pricePrecisionRaw;
 
 		const { getPrice: lastMarketPrice = 0 } = getPriceQuery || { getPrice: 0 };
-		const { getMarkPrice = { markPrice: 0 } } = getMarkPriceQuery || {
-			getMarkPrice: { markPrice: 0 }
-		};
-		const { markPrice = 0 } = getMarkPrice || { markPrice: 0 };
+		// const { getMarkPrice = { markPrice: 0 } } = getMarkPriceQuery || {
+		// 	getMarkPrice: { markPrice: 0 }
+		// };
+		// const { markPrice = 0 } = getMarkPrice || { markPrice: 0 };
 
 		const {
 			getMarketStatisticsByPair: {
@@ -191,21 +191,22 @@ class MarketStats extends React.PureComponent<IProps> {
 
 		return (
 			<div style={{ display: 'flex', width: '100%' }} key={this.state.key}>
-				{marketType === 1 && (
-					<MarkPriceBlock
-						theme={theme}
-						marketType={marketType}
-						lastMarketPrice={lastMarketPrice}
-						pricePrecision={pricePrecision}
-					/>
-				)}
-
 				<PriceBlock
-					theme={theme}
+					symbol={symbol}
+					exchange={exchange}
 					marketType={marketType}
 					pricePrecision={pricePrecision}
-					lastMarketPrice={lastMarketPrice}
-					markPrice={markPrice}
+					theme={theme}
+					// lastMarketPrice={lastMarketPrice}
+				/>
+
+				<MarkPriceBlock
+					marketType={marketType}
+					pricePrecision={pricePrecision}
+					// markPrice={markPrice}
+					symbol={symbol}
+					exchange={exchange}
+					theme={theme}
 				/>
 
 				<PriceChange
@@ -241,52 +242,52 @@ class MarketStats extends React.PureComponent<IProps> {
 }
 
 const MarketStatsDataWrapper = compose(
-	queryRendererHoc({
-		query: getMarkPrice,
-		name: 'getMarkPriceQuery',
-		variables: (props) => ({
-			input: {
-				exchange: props.exchange.symbol,
-				symbol: props.symbol
-			}
-		}),
-		subscriptionArgs: {
-			subscription: LISTEN_MARK_PRICE,
-			variables: (props: any) => ({
-				input: {
-					exchange: props.exchange.symbol,
-					symbol: props.symbol
-				}
-			}),
-			updateQueryFunction: updateMarkPriceQuerryFunction
-		},
-		fetchPolicy: 'cache-and-network',
-		withOutSpinner: true,
-		withTableLoader: true,
-		withoutLoading: true
-	}),
-	queryRendererHoc({
-		query: getPrice,
-		name: 'getPriceQuery',
-		variables: (props) => ({
-			exchange: props.exchange.symbol,
-			pair: `${props.symbol}:${props.marketType}`
-		}),
-		subscriptionArgs: {
-			subscription: LISTEN_PRICE,
-			variables: (props: any) => ({
-				input: {
-					exchange: props.exchange.symbol,
-					pair: `${props.symbol}:${props.marketType}`
-				}
-			}),
-			updateQueryFunction: updatePriceQuerryFunction
-		},
-		fetchPolicy: 'cache-and-network',
-		withOutSpinner: true,
-		withTableLoader: true,
-		withoutLoading: true
-	}),
+	// queryRendererHoc({
+	// 	query: getMarkPrice,
+	// 	name: 'getMarkPriceQuery',
+	// 	variables: (props) => ({
+	// 		input: {
+	// 			exchange: props.exchange.symbol,
+	// 			symbol: props.symbol
+	// 		}
+	// 	}),
+	// 	subscriptionArgs: {
+	// 		subscription: LISTEN_MARK_PRICE,
+	// 		variables: (props: any) => ({
+	// 			input: {
+	// 				exchange: props.exchange.symbol,
+	// 				symbol: props.symbol
+	// 			}
+	// 		}),
+	// 		updateQueryFunction: updateMarkPriceQuerryFunction
+	// 	},
+	// 	fetchPolicy: 'cache-and-network',
+	// 	withOutSpinner: true,
+	// 	withTableLoader: true,
+	// 	withoutLoading: true
+	// }),
+	// queryRendererHoc({
+	// 	query: getPrice,
+	// 	name: 'getPriceQuery',
+	// 	variables: (props) => ({
+	// 		exchange: props.exchange.symbol,
+	// 		pair: `${props.symbol}:${props.marketType}`
+	// 	}),
+	// 	subscriptionArgs: {
+	// 		subscription: LISTEN_PRICE,
+	// 		variables: (props: any) => ({
+	// 			input: {
+	// 				exchange: props.exchange.symbol,
+	// 				pair: `${props.symbol}:${props.marketType}`
+	// 			}
+	// 		}),
+	// 		updateQueryFunction: updatePriceQuerryFunction
+	// 	},
+	// 	fetchPolicy: 'cache-and-network',
+	// 	withOutSpinner: true,
+	// 	withTableLoader: true,
+	// 	withoutLoading: true
+	// }),
 	queryRendererHoc({
 		query: getMarketStatisticsByPair,
 		name: 'getMarketStatisticsByPairQuery',

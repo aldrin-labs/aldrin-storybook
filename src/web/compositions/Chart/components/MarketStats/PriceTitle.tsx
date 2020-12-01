@@ -1,7 +1,7 @@
 import React from 'react'
 import { Theme } from '@material-ui/core';
 
-import { PanelCardTitle } from '../../../Chart.styles';
+import { PanelCardTitle } from '@sb/compositions/Chart/Chart.styles';
 
 const PriceTitle = ({ marketType, theme }: { marketType: number, theme: Theme }) => (
 	<div style={{ display: 'flex', justifyContent: 'space-between' }}>
