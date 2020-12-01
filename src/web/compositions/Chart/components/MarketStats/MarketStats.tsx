@@ -4,21 +4,10 @@ import { Theme } from '@material-ui/core';
 import { queryRendererHoc } from '@core/components/QueryRenderer/index';
 import { getMarketStatisticsByPair } from '@core/graphql/queries/chart/getMarketStatisticsByPair';
 import { getFundingRate } from '@core/graphql/queries/chart/getFundingRate';
-// import { getMarkPrice } from '@core/graphql/queries/market/getMarkPrice';
-// import { LISTEN_MARK_PRICE } from '@core/graphql/subscriptions/LISTEN_MARK_PRICE';
 import { LISTEN_FUNDING_RATE } from '@core/graphql/subscriptions/LISTEN_FUNDING_RATE';
-import { getPrice } from '@core/graphql/queries/chart/getPrice';
-import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE';
-
-// import { formatNumberToUSFormat, stripDigitPlaces, roundAndFormatNumber } from '@core/utils/PortfolioTableUtils';
-
 import {
 	updateFundingRateQuerryFunction,
-	updateMarkPriceQuerryFunction,
-	updatePriceQuerryFunction
 } from './MarketStats.utils';
-
-// import { PanelCard, PanelCardTitle, PanelCardValue, PanelCardSubValue } from '../../Chart.styles';
 
 import MarkPriceBlock from './MarkPriceBlock/MarkPriceBlock';
 import PriceBlock from './PriceBlock/PriceBlock';
@@ -65,34 +54,25 @@ export interface IProps {
 	};
 	quantityPrecision: number;
 	pricePrecision: number;
+	exchange: {
+		symbol: string
+	}
 }
 
 class MarketStats extends React.PureComponent<IProps> {
-	state: { key: number } = {
-		key: 0
+	state: { key: number, refetching: boolean } = {
+		key: 0,
+		refetching: false,
 	};
-
-	// getMarkPriceQueryUnsubscribe: null | (() => void) = null;
-	// getPriceQueryUnsubscribe: null | (() => void) = null;
 	getFundingRateQueryUnsubscribe: null | (() => void) = null;
 
 	componentDidMount() {
 		// subscribe
-		// this.getMarkPriceQueryUnsubscribe = this.props.getMarkPriceQuery.subscribeToMoreFunction();
-		// this.getPriceQueryUnsubscribe = this.props.getPriceQuery.subscribeToMoreFunction();
 		this.getFundingRateQueryUnsubscribe = this.props.getFundingRateQuery.subscribeToMoreFunction();
 	}
 
 	componentDidUpdate(prevProps: IProps) {
 		if (prevProps.symbol !== this.props.symbol || prevProps.marketType !== this.props.marketType) {
-			//  unsubscribe from old params
-			//  subscribe to new params and create new unsub link
-			// this.getMarkPriceQueryUnsubscribe && this.getMarkPriceQueryUnsubscribe();
-			// this.getMarkPriceQueryUnsubscribe = this.props.getMarkPriceQuery.subscribeToMoreFunction();
-
-			// this.getPriceQueryUnsubscribe && this.getPriceQueryUnsubscribe();
-			// this.getPriceQueryUnsubscribe = this.props.getPriceQuery.subscribeToMoreFunction();
-
 			this.getFundingRateQueryUnsubscribe && this.getFundingRateQueryUnsubscribe();
 			this.getFundingRateQueryUnsubscribe = this.props.getFundingRateQuery.subscribeToMoreFunction();
 		}
@@ -120,10 +100,15 @@ class MarketStats extends React.PureComponent<IProps> {
 	}
 
 	componentWillUnmount() {
-		//  unsubscribe
-		// this.getMarkPriceQueryUnsubscribe && this.getMarkPriceQueryUnsubscribe();
-		// this.getPriceQueryUnsubscribe && this.getPriceQueryUnsubscribe();
 		this.getFundingRateQueryUnsubscribe && this.getFundingRateQueryUnsubscribe();
+	}
+
+	setKey(key: number) {
+		this.setState({ key })
+	}
+
+	setRefetching(refetching: boolean) {
+		this.setState({ refetching })
 	}
 
 	render() {
@@ -134,20 +119,12 @@ class MarketStats extends React.PureComponent<IProps> {
 			theme,
 			marketType,
 			getFundingRateQueryRefetch,
-			getPriceQuery,
-			getMarkPriceQuery,
-			quantityPrecision,
 			pricePrecision: pricePrecisionRaw,
 			exchange,
 		} = this.props;
 
+		const { refetching, key } = this.state
 		const pricePrecision = pricePrecisionRaw === 0 || pricePrecisionRaw < 0 ? 8 : pricePrecisionRaw;
-
-		const { getPrice: lastMarketPrice = 0 } = getPriceQuery || { getPrice: 0 };
-		// const { getMarkPrice = { markPrice: 0 } } = getMarkPriceQuery || {
-		// 	getMarkPrice: { markPrice: 0 }
-		// };
-		// const { markPrice = 0 } = getMarkPrice || { markPrice: 0 };
 
 		const {
 			getMarketStatisticsByPair: {
@@ -173,10 +150,6 @@ class MarketStats extends React.PureComponent<IProps> {
 			}
 		};
 
-		// const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
-		// const isStableCoinInPair = stableCoinsRegexp.test(symbol)
-		// const roundingPrecision = isStableCoinInPair ? 2 : 8
-
 		const {
 			getFundingRate: { fundingTime = 0, fundingRate = 0 } = {
 				fundingTime: 0,
@@ -197,13 +170,11 @@ class MarketStats extends React.PureComponent<IProps> {
 					marketType={marketType}
 					pricePrecision={pricePrecision}
 					theme={theme}
-					// lastMarketPrice={lastMarketPrice}
 				/>
 
 				<MarkPriceBlock
 					marketType={marketType}
 					pricePrecision={pricePrecision}
-					// markPrice={markPrice}
 					symbol={symbol}
 					exchange={exchange}
 					theme={theme}
@@ -229,11 +200,16 @@ class MarketStats extends React.PureComponent<IProps> {
 
 				{marketType === 1 && (
 					<FundingRateBlock
+						key={key}
 						marketType={marketType}
 						theme={theme}
 						fundingRate={fundingRate}
 						fundingTime={fundingTime}
 						getFundingRateQueryRefetch={getFundingRateQueryRefetch}
+						setKey={this.setKey}
+						setRefetching={this.setRefetching}
+						refetching={refetching}
+
 					/>
 				)}
 			</div>
@@ -242,52 +218,6 @@ class MarketStats extends React.PureComponent<IProps> {
 }
 
 const MarketStatsDataWrapper = compose(
-	// queryRendererHoc({
-	// 	query: getMarkPrice,
-	// 	name: 'getMarkPriceQuery',
-	// 	variables: (props) => ({
-	// 		input: {
-	// 			exchange: props.exchange.symbol,
-	// 			symbol: props.symbol
-	// 		}
-	// 	}),
-	// 	subscriptionArgs: {
-	// 		subscription: LISTEN_MARK_PRICE,
-	// 		variables: (props: any) => ({
-	// 			input: {
-	// 				exchange: props.exchange.symbol,
-	// 				symbol: props.symbol
-	// 			}
-	// 		}),
-	// 		updateQueryFunction: updateMarkPriceQuerryFunction
-	// 	},
-	// 	fetchPolicy: 'cache-and-network',
-	// 	withOutSpinner: true,
-	// 	withTableLoader: true,
-	// 	withoutLoading: true
-	// }),
-	// queryRendererHoc({
-	// 	query: getPrice,
-	// 	name: 'getPriceQuery',
-	// 	variables: (props) => ({
-	// 		exchange: props.exchange.symbol,
-	// 		pair: `${props.symbol}:${props.marketType}`
-	// 	}),
-	// 	subscriptionArgs: {
-	// 		subscription: LISTEN_PRICE,
-	// 		variables: (props: any) => ({
-	// 			input: {
-	// 				exchange: props.exchange.symbol,
-	// 				pair: `${props.symbol}:${props.marketType}`
-	// 			}
-	// 		}),
-	// 		updateQueryFunction: updatePriceQuerryFunction
-	// 	},
-	// 	fetchPolicy: 'cache-and-network',
-	// 	withOutSpinner: true,
-	// 	withTableLoader: true,
-	// 	withoutLoading: true
-	// }),
 	queryRendererHoc({
 		query: getMarketStatisticsByPair,
 		name: 'getMarketStatisticsByPairQuery',

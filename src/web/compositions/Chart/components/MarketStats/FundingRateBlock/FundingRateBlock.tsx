@@ -10,13 +10,14 @@ export interface IProps {
 	theme: Theme;
 	fundingTime: number;
     fundingRate: number;
-    getFundingRateQueryRefetch: () => Promise<void>
+	getFundingRateQueryRefetch: () => Promise<void>
+	refetching: boolean
+	setRefetching: (refetching: boolean) => void
+	key: number
+	setKey: (key: number) => void
 }
 
-const FundingRateBlock = ({ marketType, theme, fundingRate, fundingTime, getFundingRateQueryRefetch }: IProps) => { 
-
-    const [ key, setKey ] = useState(0)
-    const [ refetching, setRefetching ] = useState(false)
+const FundingRateBlock = ({ marketType, theme, fundingRate, fundingTime, refetching, setRefetching, key, setKey, getFundingRateQueryRefetch }: IProps) => { 
 
     if ((fundingTime == 0 || +dayjs(fundingTime) - Date.now() < 0) && !refetching) {
         setRefetching(true)
