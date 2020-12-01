@@ -149,7 +149,9 @@ const TradingTabs = ({
             style={{
               height: '3rem',
               width: '30rem',
-              backgroundColor: theme.palette.blue.main,
+              borderRadius: '.8rem',
+              margin: '0.4rem 0.4rem',
+              backgroundColor: theme.palette.green.onboarding,
             }}
             onClick={() => {
               updateTerminalViewMode('smartOrderMode')

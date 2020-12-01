@@ -188,7 +188,7 @@ export const getEmptyTextPlaceholder = (tab: string): string =>
     : tab === 'positions'
     ? 'You have no open positions'
     : tab === 'activeTrades'
-    ? 'You have no active smart trades'
+    ? 'You don’t have active trades now.'
     : tab === 'strategiesHistory'
     ? 'You have no smart trades'
     : 'You have no assets'

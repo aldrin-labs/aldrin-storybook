@@ -44,7 +44,13 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
   }
 
   onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ searchValue: e.target.value })
+    const allowedToEnter = /\w/g
+    const matchResult = e.target.value.match(allowedToEnter)
+    if (matchResult === null) {
+      this.setState({ searchValue: '' })
+    } else {
+      this.setState({ searchValue: matchResult?.join('') || '' })
+    }
   }
 
   onTabChange = (tab: SelectTabType) => {

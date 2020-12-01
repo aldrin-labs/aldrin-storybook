@@ -738,9 +738,11 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
           AdditionalComponent={() => (
             <SmartTradeButton
               style={{
-                backgroundColor: theme.palette.blue.main,
+                backgroundColor: theme.palette.green.onboarding,
                 marginTop: '1.5rem',
                 width: '25rem',
+                borderRadius: '.8rem',
+                margin: '0.4rem 0.4rem',
               }}
               onClick={() => {
                 updateTerminalViewMode('smartOrderMode')
@@ -787,7 +789,6 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
                     ? () => {}
                     : handleToggleSpecificPair,
                   loading: getActiveStrategiesQuery.queryParamsWereChanged,
-
                 }}
               />
             ),
@@ -902,11 +903,8 @@ export default React.memo(
   (prevProps: any, nextProps: any) => {
     // TODO: Refactor isShowEqual --- not so clean
     const isShowEqual = !nextProps.show && !prevProps.show
-    const showAllAccountsEqual =
-      prevProps.allKeys ===
-      nextProps.allKeys
-    const showAllPairsEqual =
-      prevProps.specificPair === nextProps.specificPair
+    const showAllAccountsEqual = prevProps.allKeys === nextProps.allKeys
+    const showAllPairsEqual = prevProps.specificPair === nextProps.specificPair
     // TODO: here must be smart condition if specificPair is not changed
     const pairIsEqual = prevProps.currencyPair === nextProps.currencyPair
     // TODO: here must be smart condition if showAllAccountsEqual is true & is not changed

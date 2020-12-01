@@ -1157,6 +1157,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                       <BlueSlider
                         theme={theme}
                         max={60}
+                        valueSymbol={'sec'}
                         value={this.state.whenLossableSec}
                         sliderContainerStyles={{
                           width: '100%',
