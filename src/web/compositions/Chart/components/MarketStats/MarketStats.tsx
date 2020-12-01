@@ -64,17 +64,17 @@ class MarketStats extends React.PureComponent<IProps> {
 		key: 0,
 		refetching: false,
 	};
-	getFundingRateQueryUnsubscribe: null | (() => void) = null;
+	// getFundingRateQueryUnsubscribe: null | (() => void) = null;
 
 	componentDidMount() {
 		// subscribe
-		this.getFundingRateQueryUnsubscribe = this.props.getFundingRateQuery.subscribeToMoreFunction();
+		// this.getFundingRateQueryUnsubscribe = this.props.getFundingRateQuery.subscribeToMoreFunction();
 	}
 
 	componentDidUpdate(prevProps: IProps) {
 		if (prevProps.symbol !== this.props.symbol || prevProps.marketType !== this.props.marketType) {
-			this.getFundingRateQueryUnsubscribe && this.getFundingRateQueryUnsubscribe();
-			this.getFundingRateQueryUnsubscribe = this.props.getFundingRateQuery.subscribeToMoreFunction();
+			// this.getFundingRateQueryUnsubscribe && this.getFundingRateQueryUnsubscribe();
+			// this.getFundingRateQueryUnsubscribe = this.props.getFundingRateQuery.subscribeToMoreFunction();
 		}
 
 		// for funding ime
@@ -100,7 +100,7 @@ class MarketStats extends React.PureComponent<IProps> {
 	}
 
 	componentWillUnmount() {
-		this.getFundingRateQueryUnsubscribe && this.getFundingRateQueryUnsubscribe();
+		// this.getFundingRateQueryUnsubscribe && this.getFundingRateQueryUnsubscribe();
 	}
 
 	setKey(key: number) {
@@ -243,16 +243,16 @@ const MarketStatsDataWrapper = compose(
 				symbol: props.symbol
 			}
 		}),
-		subscriptionArgs: {
-			subscription: LISTEN_FUNDING_RATE,
-			variables: (props: any) => ({
-				input: {
-					exchange: props.exchange.symbol,
-					symbol: props.symbol
-				}
-			}),
-			updateQueryFunction: updateFundingRateQuerryFunction
-		},
+		// subscriptionArgs: {
+		// 	subscription: LISTEN_FUNDING_RATE,
+		// 	variables: (props: any) => ({
+		// 		input: {
+		// 			exchange: props.exchange.symbol,
+		// 			symbol: props.symbol
+		// 		}
+		// 	}),
+		// 	updateQueryFunction: updateFundingRateQuerryFunction
+		// },
 		fetchPolicy: 'cache-and-network',
 		withOutSpinner: true,
 		withTableLoader: true,
