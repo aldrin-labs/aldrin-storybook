@@ -109,7 +109,9 @@ export default ({
   quantityPrecision
 }: IProps) => {
   const { order, trailing, averaging } = entryPoint
-  const averagingAmount = averaging.enabled ? averaging.entryLevels.reduce((acc, cur) => acc + cur.amount, 0) : 0
+  const averagingAmount = averaging.enabled
+    ? +averaging.entryLevels.reduce((acc, cur) => acc + cur.amount, 0).toFixed(quantityPrecision)
+    : 0
 
   return (
     <>
@@ -378,7 +380,7 @@ export default ({
                         >
                           {takeProfit.splitTargets.targets.map((target, i) => (
                             <InputRowContainer
-                              key={`${target.price}${target.quantity}${i}`}
+                              key={`${target.price}${target.amount}${i}`}
                               padding=".2rem .5rem"
                               style={{ borderBottom: '.1rem solid #e0e5ec' }}
                             >
@@ -395,7 +397,7 @@ export default ({
                                 theme={theme}
                                 style={{ width: '50%' }}
                               >
-                                {target.quantity}%
+                                {target.amount}%
                               </TargetValue>
                             </InputRowContainer>
                           ))}

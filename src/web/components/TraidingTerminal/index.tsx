@@ -47,6 +47,18 @@ export const TradeInputHeader = ({
   tooltipStyles = {},
   onValueClick = () => { },
   theme,
+}: {
+  title: string | JSX.Element,
+  padding?: string
+  needLine?: boolean
+  lineMargin?: string
+  needRightValue?: boolean
+  rightValue?: string
+  haveTooltip?: boolean
+  tooltipText?: string | React.ReactChild
+  tooltipStyles?: CSSProperties
+  onValueClick?: () => void
+  theme: Theme
 }) => {
   return (
     <InputRowContainer
@@ -140,7 +152,7 @@ export const TradeInputContent = ({
   width?: string | number
   fontSize?: string
   textAlign?: string
-  onChange: any
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
   inputStyles?: CSSProperties
   theme?: Theme
 }) => {

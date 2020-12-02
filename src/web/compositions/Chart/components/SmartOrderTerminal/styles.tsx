@@ -8,6 +8,7 @@ import Switch from '@material-ui/core/Switch'
 export const TerminalBlocksContainer = styled(Grid)`
   padding-top: 1rem;
   height: 90%;
+  display: flex;
 `
 
 export const TerminalHeaders = styled.div`
@@ -96,12 +97,12 @@ export const FieldsContainer = styled.div`
 `
 
 export const SubBlocksContainer = styled.div`
-  width: ${(props) => props.width || '50%'};
-  border-right: ${(props) => props.needBorder && '.1rem solid #e0e5ec'};
+  width: ${(props: { width?: string, needBorder?: boolean }) => props.width || '50%'};
+  border-right: ${(props: { width?: string, needBorder?: boolean }) => props.needBorder && '.1rem solid #e0e5ec'};
   padding-right: 0.4rem;
 `
 
-export const InputRowContainer = styled.div`
+export const InputRowContainer = React.memo(styled.div`
   display: flex;
   align-items: center;
   position: relative;
@@ -113,7 +114,7 @@ export const InputRowContainer = styled.div`
   @media (min-width: 1921px) {
     padding-bottom: ${(props) => props.padding || '0 0 .8rem 0'};
   }
-`
+`)
 
 export const SwitcherContainer = styled.div`
   align-items: center;
@@ -141,9 +142,9 @@ export const BeforeCharacter = styled.span`
   top: 50%;
   z-index: 10;
   transform: translateY(-55%);
-  display: ${(props) => (props.needCharacter ? 'block' : 'none')};
+  display: ${(props: { needCharacter: boolean, beforeSymbol: string }) => (props.needCharacter ? 'block' : 'none')};
   font-size: 1.2rem;
-  color: ${(props) => (props.beforeSymbol === '+' ? '#29AC80' : '#DD6956')};
+  color: ${(props: { needCharacter: boolean, beforeSymbol: string }) => (props.beforeSymbol === '+' ? '#29AC80' : '#DD6956')};
 `
 
 export const AdditionalSettingsButton = styled(

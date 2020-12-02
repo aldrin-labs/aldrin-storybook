@@ -112,6 +112,7 @@ const RCSlider = ({
   value: number
   onChange: any
   trackBeforeBackground?: string
+  style?: CSSProperties
 }) => {
   return (
     <>

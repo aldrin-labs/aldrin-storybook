@@ -57,9 +57,7 @@ class OrderbookAndDepthChart extends React.Component {
   static getDerivedStateFromProps(newProps, state) {
     const { asks, bids } = state
     const {
-      // BINANCE_TODO
-      // here we should take data from binance OB query
-      data,
+      fetchData,
       sizeDigits,
       isPairDataLoading,
       minPriceDigits,
@@ -88,9 +86,6 @@ class OrderbookAndDepthChart extends React.Component {
 
       return {
         ...updatedData,
-      }
-    } else if (!isPairDataLoading) {
-      return {
         aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value
       }
     }
@@ -262,7 +257,6 @@ class OrderbookAndDepthChart extends React.Component {
       ) {
         const ordersData = marketOrders
         const orderbookData = updatedData || { asks, bids }
-
         // check this current pair and marketType === pair in new orders
         // if (
         //   (ordersData.bids.length > 0 &&
@@ -559,15 +553,7 @@ export const APIWrapper = ({
       withOutSpinner
       withTableLoader={false}
       fetchPolicy="network-only"
-      // query={ORDERS_MARKET_QUERY}
       variables={{ symbol: symbol, exchange, marketType }}
-      // subscriptionArgs={{
-      //   subscription: ORDERBOOK,
-      //   variables: { symbol, exchange, marketType },
-      //   // subscription: MOCKED_ORDERBOOK,
-      //   // variables: { time: 10000, ordersPerTime: 100 },
-      //   updateQueryFunction: updateOrderBookQuerryFunction,
-      // }}
       {...{
         quote,
         symbol,

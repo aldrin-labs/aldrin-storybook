@@ -583,27 +583,7 @@ class SimpleTabs extends React.Component {
                 )}
               </SettingsContainer>
             </TerminalHeader>
-          ) : (
-              <TerminalHeader style={{ display: 'flex' }} theme={theme}>
-                {/* <div
-                style={{
-                  width: '50%',
-                  padding: '.5rem 0 .5rem 3rem',
-                  borderRight: theme.palette.border.main,
-                }}
-              >
-                <SpotBalanceSpan
-                  style={{
-                    width: '50%',
-                    padding: '.5rem 0 .5rem 3rem',
-                    borderRight: theme.palette.border.main,
-                  }}
-                >
-                  {pair[0]}
-                </SpotBalanceSpan>
-              </div> */}
-              </TerminalHeader>
-            )}
+          ) : null}
 
           <TerminalMainGrid item xs={12} container marketType={marketType}>
             {this.props.isFuturesWarsKey && false ? (

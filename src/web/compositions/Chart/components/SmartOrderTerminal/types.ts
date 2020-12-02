@@ -33,9 +33,9 @@ export interface IProps {
   quantityPrecision: number
   pricePrecision: number
   componentLeverage: number
-  funds: {
-    quantity: number
-  }[]
+  getStrategySettingsQuery: any
+  getTooltipSettings: any
+  funds: [{ quantity: number, value: number}, { quantity: number, value: number}]
   pair: [string, string]
   theme: Theme
   marketPriceAfterPairChange: number
@@ -43,9 +43,36 @@ export interface IProps {
   maxLeverage: number
   minFuturesStep: number
   minSpotNotional: number
+  smartTerminalOnboarding: boolean
+  componentMarginType: 'cross' | 'isolated'
+  cancelOrder: CancelOrder,
+  placeOrder: (
+    side: string,
+    type: string,
+    futuresValues: any,
+    typeOfOrder: 'smart',
+    stateOfSM: StateOfSMForPlaceOrder
+  ) => PlaceOrderResult,
+  showOrderResult: (res: PlaceOrderResult, cancelOrder: CancelOrder) => void
+  changeMarginTypeWithStatus: (marginType: 'cross' | 'isolated') => void
+  updateLeverage: (lev: number) => void
+  updateTooltipSettingsMutation: (obj: { variables: any}) => void
   updateTerminalViewMode: (mode: string) => void
   priceFromOrderbook: null | number
   enqueueSnackbar: (msg: string, obj: { variant: string }) => void
+}
+
+export type EntryLevel = {
+  type: number
+  price: number
+  amount: number
+  placeWithoutLoss?: boolean
+}
+
+export type ExitLevel = {
+  type: string
+  price: number
+  amount: number
 }
 
 export type EntryPointType = {
@@ -69,12 +96,7 @@ export type EntryPointType = {
     placeWithoutLoss: boolean
     percentage: number
     price: number
-    entryLevels: {
-      type: number
-      price: number
-      amount: number
-      placeWithoutLoss: boolean
-    }[]
+    entryLevels: EntryLevel[]
   }
   trailing: {
     isTrailingOn: boolean
@@ -91,8 +113,6 @@ export type EntryPointType = {
     sidePlot: string | number
     typePlotEnabled: boolean
     typePlot: string | number
-    hedgeModePlotEnabled: boolean
-    hedgeModePlot: string | number
     pricePlotEnabled: boolean
     pricePlot: string | number
     amountPlotEnabled: boolean
@@ -110,10 +130,7 @@ export type TakeProfitType = {
   splitTargets: {
     isSplitTargetsOn: boolean
     volumePercentage: number
-    targets: {
-      price: number
-      quantity: number
-    }[]
+    targets: ExitLevel[]
   }
   timeout: {
     isTimeoutOn: boolean
@@ -186,6 +203,7 @@ export type BlockProperties = {
 
 export type InputProps = {
   symbol?: string
+  theme: Theme
   value: number | string
   width: string
   padding?: string
@@ -194,9 +212,11 @@ export type InputProps = {
   type?: string
   list?: string
   min?: string
+  max?: string
   needCharacter?: boolean
+  children: JSX.Element | React.ReactNode
   beforeSymbol?: string
-  onChange: (e: ChangeEvent) => void
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void
   isDisabled?: boolean
   isValid?: boolean
   showErrors?: boolean
