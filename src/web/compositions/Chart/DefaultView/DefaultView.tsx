@@ -129,7 +129,11 @@ export const DefaultViewComponent = (
     null | number
   >(null)
 
-  console.log('getTooltipSettingsQueryLoading', getTooltipSettingsQueryLoading, getTooltipSettings.chartPage)
+  console.log(
+    'getTooltipSettingsQueryLoading',
+    getTooltipSettingsQueryLoading,
+    getTooltipSettings.chartPage
+  )
 
   const [base, quote] = currencyPair.split('_')
   const baseQuoteArr = [base, quote]
@@ -147,28 +151,29 @@ export const DefaultViewComponent = (
   console.log('default view rerender', props)
 
   const accentColor = '#1BA492'
-
   return (
     <Container container spacing={8} theme={theme}>
-      {authenticated && !getTooltipSettingsQueryLoading && <Tour
-        showCloseButton={false}
-        nextButton={<FinishBtn>Next</FinishBtn>}
-        prevButton={<a />}
-        showNavigationNumber={true}
-        showNavigation={true}
-        lastStepNextButton={<FinishBtn>Finish</FinishBtn>}
-        steps={tourConfig}
-        accentColor={accentColor}
-        isOpen={!getTooltipSettings.chartPage}
-        onRequestClose={() => {
-          // setIsTourOpen(false)
-          closeChartPageOnboarding()
-        }}
-        // onRequestClose={() => {
-        //   setIsTourOpen(false)
-        //   localStorage.setItem('isOnboardingDone', 'true')
-        // }}
-      />}
+      {authenticated && !getTooltipSettingsQueryLoading && (
+        <Tour
+          showCloseButton={false}
+          nextButton={<FinishBtn>Next</FinishBtn>}
+          prevButton={<a />}
+          showNavigationNumber={true}
+          showNavigation={true}
+          lastStepNextButton={<FinishBtn>Finish</FinishBtn>}
+          steps={tourConfig}
+          accentColor={accentColor}
+          isOpen={!getTooltipSettings.chartPage}
+          onRequestClose={() => {
+            // setIsTourOpen(false)
+            closeChartPageOnboarding()
+          }}
+          // onRequestClose={() => {
+          //   setIsTourOpen(false)
+          //   localStorage.setItem('isOnboardingDone', 'true')
+          // }}
+        />
+      )}
       <ChartGridContainer item xs={12} theme={theme}>
         <CardsPanel
           {...{
@@ -459,14 +464,12 @@ export const DefaultViewComponent = (
 
 export const DefaultView = React.memo(DefaultViewComponent, (prev, next) => {
   const tooltipQueryChanged =
-      prev.getTooltipSettings?.chartPage ===
-      next.getTooltipSettings?.chartPage &&
-      prev.getTooltipSettings?.chartPagePopup ===
+    prev.getTooltipSettings?.chartPage === next.getTooltipSettings?.chartPage &&
+    prev.getTooltipSettings?.chartPagePopup ===
       next.getTooltipSettings?.chartPagePopup &&
-      prev.getTooltipSettings?.smartTerminal ===
+    prev.getTooltipSettings?.smartTerminal ===
       next.getTooltipSettings?.smartTerminal &&
-      prev.getTooltipSettingsQueryLoading ===
-      next.getTooltipSettingsQueryLoading
+    prev.getTooltipSettingsQueryLoading === next.getTooltipSettingsQueryLoading
 
   return (
     prev.marketType === next.marketType &&

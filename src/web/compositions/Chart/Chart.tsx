@@ -9,7 +9,6 @@ import { isEqual } from 'lodash'
 // import { Grid, Hidden } from '@material-ui/core'
 
 // import { CardsPanel } from './components'
-
 import OnlyCharts from './OnlyCharts/OnlyCharts'
 import DefaultView from './DefaultView/StatusWrapper'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
@@ -26,7 +25,10 @@ import { withSelectedPair } from '@core/hoc/withSelectedPair'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { withKeyGenerating } from '@core/hoc/withKeyGenerating'
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
+import { withRedirectToLogin } from '@core/hoc/withRedirectToLogin'
+
 import { queryRendererHoc } from '@core/components/QueryRenderer'
+
 import { getChartData } from '@core/graphql/queries/chart/getChartData'
 import { pairProperties } from '@core/graphql/queries/chart/getPairProperties'
 import {
