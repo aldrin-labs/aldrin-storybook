@@ -1,7 +1,7 @@
 import React, { Component, ChangeEvent } from 'react'
 
 import ChartCardHeader from '@sb/components/ChartCardHeader'
-import OrderBookModesContainer from './OrderbookModesContainer'
+import OrderBookModesContainer from './OrderBookModesContainer'
 
 const OrderBookCardHeader = ({ theme, mode, setOrderbookMode }) => (
 	<ChartCardHeader
