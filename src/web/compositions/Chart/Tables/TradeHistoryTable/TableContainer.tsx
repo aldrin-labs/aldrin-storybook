@@ -31,6 +31,8 @@ import { combineTradeHistoryDataFromFetch } from './utils'
 
 // let unsubscribe: Function | undefined
 
+const MemoizedChartCardHeader = React.memo(ChartCardHeader)
+
 class TableContainer extends PureComponent<IProps, IState> {
   state: IState = {
     data: [],
@@ -77,14 +79,14 @@ class TableContainer extends PureComponent<IProps, IState> {
     ) {
       const tickersData = newProps.data
 
-      if ( 
+      if (
         !tickersData ||
         tickersData.length === 0 ||
         tickersData[0].symbol !== newProps.currencyPair ||
         tickersData[0].marketType != newProps.marketType
       ) {
-          // console.log('TableContainer SUBSCRIPTION DATA FOR WRONG PAIR')
-          return { numbersAfterDecimalForPrice: state.numbersAfterDecimalForPrice, data: [] }
+        // console.log('TableContainer SUBSCRIPTION DATA FOR WRONG PAIR')
+        return { numbersAfterDecimalForPrice: state.numbersAfterDecimalForPrice, data: [] }
       }
 
       const updatedData = reduceArrayLength(
@@ -152,7 +154,7 @@ class TableContainer extends PureComponent<IProps, IState> {
 
     return (
       <>
-        <ChartCardHeader theme={theme}>Trade history</ChartCardHeader>
+        <MemoizedChartCardHeader theme={theme}>Trade history</MemoizedChartCardHeader>
         <TradeHistoryTable
           data={data}
           theme={theme}
@@ -179,7 +181,9 @@ const TradeHistoryWrapper = compose(
   withWebsocket({
     url: (props: any) => getUrlForWebsocket('TH', props.marketType, props.symbol),
     onMessage: combineTradeHistoryDataFromWebsocket,
-    pair: (props: any) => props.symbol
+    pair: (props: any) => props.symbol,
+    // throttling: true,
+    // throttlingTime: 0.33,
   })
 )(TableContainer)
 

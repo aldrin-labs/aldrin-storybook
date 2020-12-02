@@ -121,7 +121,7 @@ export const PanelWrapper = styled.div`
   height: 100%;
 `
 
-export const CustomCard = styled(Card)`
+export const CustomCard = React.memo(styled(Card)`
   width: 100%;
   height: 100%;
   background-color: ${(props) =>
@@ -138,7 +138,7 @@ export const CustomCard = styled(Card)`
     '.1rem solid #e0e5ec'};
   border-radius: 0;
   box-shadow: none;
-`
+`)
 
 export const PanelCard = styled.div`
   display: flex;
@@ -320,12 +320,12 @@ export const TradingTerminalContainer = styled(
     props.MASTER_BUILD
       ? '30%'
       : props.hideTradeHistory
-      ? '0%'
-      : props.hideOrderbook
-      ? '17%'
-      : props.hideDepthChart
-      ? '35%'
-      : '41.66667%'};
+        ? '0%'
+        : props.hideOrderbook
+          ? '17%'
+          : props.hideDepthChart
+            ? '35%'
+            : '41.66667%'};
   overflow: hidden;
 
   flex-direction: column;
@@ -357,12 +357,12 @@ export const TopChartsContainer = styled(
     props.isDefaultTerminalViewMode ? 'calc(60%)' : 'calc(50%)'};
   @media screen and (max-width: 1440px) {
     height: ${(props) =>
-      props.isDefaultTerminalViewMode ? 'calc(60%)' : 'calc(50%)'};
+    props.isDefaultTerminalViewMode ? 'calc(60%)' : 'calc(50%)'};
   }
 
   @media screen and (max-width: 1140px) {
     height: ${(props) =>
-      props.isDefaultTerminalViewMode ? 'calc(61%)' : 'calc(51%)'};
+    props.isDefaultTerminalViewMode ? 'calc(61%)' : 'calc(51%)'};
   }
 `
 
@@ -384,12 +384,12 @@ export const ChartsContainer = styled(
     props.MASTER_BUILD
       ? '70%'
       : props.hideTradeHistory
-      ? '100%'
-      : props.hideOrderbook
-      ? '83%'
-      : props.hideDepthChart
-      ? '65%'
-      : '58.33333%'};
+        ? '100%'
+        : props.hideOrderbook
+          ? '83%'
+          : props.hideDepthChart
+            ? '65%'
+            : '58.33333%'};
   justify-content: flex-end;
   flex-direction: column;
   border-radius: 0;

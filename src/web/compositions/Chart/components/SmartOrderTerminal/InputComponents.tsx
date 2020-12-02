@@ -100,7 +100,6 @@ export const Select = ({
         disabled={isDisabled}
         style={inputStyles}
         isValid={isValid}
-        showErrors={showErrors}
       >
         {children}
       </TradeSelect>
@@ -119,14 +118,15 @@ export const FormInputContainer = ({
   haveTooltip = false,
   tooltipText = '',
   tooltipStyles = {},
-  onValueClick = () => {},
+  onValueClick = () => { },
   theme,
 }: {
-  title: string
+  title: string | JSX.Element
   children: ReactNode
   padding?: string
   needLine?: boolean
   lineWidth?: string
+  lineMargin?: string
   needRightValue?: boolean
   rightValue?: string
   haveTooltip?: boolean

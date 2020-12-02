@@ -74,10 +74,10 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
           keyParams: {
             ...(hedgeMode
               ? {
-                  ...paramsForHedge,
-                  positionSide:
-                    paramsForHedge.side === 'buy' ? 'SHORT' : 'LONG',
-                }
+                ...paramsForHedge,
+                positionSide:
+                  paramsForHedge.side === 'buy' ? 'SHORT' : 'LONG',
+              }
               : variables.keyParams),
           },
         },
@@ -145,7 +145,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       keysObjects,
     } = this.props
 
-    // console.log('keysObjects', keysObjects)
     const positionKey = keysObjects.find((key) => key.keyId === variables.keyId)
     let data = getActivePositionsQuery.getActivePositions
 
@@ -717,8 +716,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
         .filter((el) => +el.assetType === 1 && el.asset.symbol === 'USDT')
         .map((el) => ({ quantity: el.free, value: el.free }))
     }
-
-    console.log('keysObjects', this.props.keysObjects)
 
     return (
       <>
