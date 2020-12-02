@@ -1,6 +1,8 @@
 import React from 'react';
+import dayjs from 'dayjs';
 import { compose } from 'recompose';
 import { Theme } from '@material-ui/core';
+
 import { queryRendererHoc } from '@core/components/QueryRenderer/index';
 import { getMarketStatisticsByPair } from '@core/graphql/queries/chart/getMarketStatisticsByPair';
 import { getFundingRate } from '@core/graphql/queries/chart/getFundingRate';
@@ -65,7 +67,6 @@ class MarketStats extends React.PureComponent<IProps> {
 		refetching: false,
 	};
 	// getFundingRateQueryUnsubscribe: null | (() => void) = null;
-
 	componentDidMount() {
 		// subscribe
 		// this.getFundingRateQueryUnsubscribe = this.props.getFundingRateQuery.subscribeToMoreFunction();
@@ -162,6 +163,16 @@ class MarketStats extends React.PureComponent<IProps> {
 			}
 		};
 
+		if ((fundingTime == 0 || +dayjs(fundingTime) - Date.now() < 0) && !refetching) {
+			this.setRefetching(true)
+	
+			setTimeout(() => {
+				getFundingRateQueryRefetch();
+				this.setKey(key + 1)
+				this.setRefetching(false)
+			}, 3000);
+		}
+
 		return (
 			<div style={{ display: 'flex', width: '100%' }} key={this.state.key}>
 				<PriceBlock
@@ -206,7 +217,7 @@ class MarketStats extends React.PureComponent<IProps> {
 						fundingRate={fundingRate}
 						fundingTime={fundingTime}
 						getFundingRateQueryRefetch={getFundingRateQueryRefetch}
-						setKey={this.setKey}
+						setKey={this.setKey.bind(this)}
 						setRefetching={this.setRefetching}
 						refetching={refetching}
 

@@ -17,18 +17,7 @@ export interface IProps {
 	setKey: (key: number) => void
 }
 
-const FundingRateBlock = ({ marketType, theme, fundingRate, fundingTime, refetching, setRefetching, key, setKey, getFundingRateQueryRefetch }: IProps) => { 
-
-    if ((fundingTime == 0 || +dayjs(fundingTime) - Date.now() < 0) && !refetching) {
-        setRefetching(true)
-
-        setTimeout(() => {
-            getFundingRateQueryRefetch();
-            setKey(key + 1)
-            setRefetching(false)
-        }, 3000);
-    }
-    
+const FundingRateBlock = ({ marketType, theme, fundingRate, fundingTime, refetching, setRefetching, key, setKey, getFundingRateQueryRefetch }: IProps) => {     
     return (
 	<PanelCard
 		marketType={marketType}
