@@ -1,7 +1,7 @@
 import 'rc-slider/assets/index.css'
 import 'rc-tooltip/assets/bootstrap.css'
 
-import React from 'react'
+import React, { CSSProperties } from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
 import Tooltip from 'rc-tooltip'
 import Slider from 'rc-slider'
@@ -22,7 +22,7 @@ const StyledSlider = styled(({ sliderContainerStyles, ...rest }) => (
 
       &-track {
         background-color: ${(props) =>
-          props.trackBeforeBackground || '#5C8CEA'};
+    props.trackBeforeBackground || '#5C8CEA'};
           background-color: ${(props) => props.disabled && '#ABBAD1;'};
       }
 
@@ -119,6 +119,7 @@ const RCSlider = ({
   value: number
   onChange: any
   trackBeforeBackground?: string
+  style?: CSSProperties
 }) => {
   return (
     <StyledSlider
