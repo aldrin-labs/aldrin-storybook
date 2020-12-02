@@ -10,7 +10,10 @@ import DepthChartComponent from '../DepthChart/DepthChart'
 
 import { DepthChartContainer } from '../Chart.styles'
 
-export const DepthChart = ({
+const MemoizedChartCardHeader = React.memo(ChartCardHeader)
+const MemoizedDepthChartContainer = React.memo(DepthChartContainer)
+
+const DepthChartRaw = ({
   theme,
   chartProps,
   changeTable,
@@ -19,8 +22,8 @@ export const DepthChart = ({
   data,
 }) => {
   return (
-    <DepthChartContainer theme={theme}>
-      <ChartCardHeader theme={theme}>Depth chart</ChartCardHeader>
+    <MemoizedDepthChartContainer theme={theme}>
+      <MemoizedChartCardHeader theme={theme}>Depth chart</MemoizedChartCardHeader>
       <DepthChartComponent
         {...{
           onButtonClick: changeTable,
@@ -29,6 +32,8 @@ export const DepthChart = ({
           key: 'depth_chart_query_render',
         }}
       />
-    </DepthChartContainer>
+    </MemoizedDepthChartContainer>
   )
 }
+
+export const DepthChart = React.memo(DepthChartRaw)
