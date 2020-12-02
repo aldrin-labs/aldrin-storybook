@@ -1,18 +1,40 @@
 import 'rc-slider/assets/index.css'
 import 'rc-tooltip/assets/bootstrap.css'
 
-import React, { CSSProperties } from 'react'
-import styled, { createGlobalStyle } from 'styled-components'
-import Tooltip from 'rc-tooltip'
-import Slider from 'rc-slider'
+import React from 'react'
+import styled from 'styled-components'
+import Slider, { createSliderWithTooltip } from 'rc-slider'
 const Handle = Slider.Handle
+const SliderWithTooltip = createSliderWithTooltip(Slider)
 
 const StyledSlider = styled(({ sliderContainerStyles, ...rest }) => (
-  <Slider {...rest} />
+  <SliderWithTooltip {...rest} />
 ))`
   && {
     ${(props) => props.sliderContainerStyles}
     background-color: ${(props) => props.disabled && 'inherit;'};
+
+    .rc-slider-tooltip-inner.rc-slider-tooltip-inner {
+      background-color: ${(props) => props.trackBeforeBackground || '#5C8CEA'} !important;
+      border: .1rem solid #e0e5ec;
+      min-height: auto;
+      font-family: DM Sans;
+      padding: .2rem .4rem;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+    }
+
+    .rc-slider-tooltip {
+      z-index: 2070 !important;
+      align-items: center;
+    }
+  
+    .rc-slider-tooltip-arrow.rc-slider-tooltip-arrow {
+      display: none;
+    }
 
     .rc-slider {
       &-rail {
@@ -29,6 +51,7 @@ const StyledSlider = styled(({ sliderContainerStyles, ...rest }) => (
       &-handle {
         ${(props) => props.handleStyles}
         border-radius:none;
+        cursor: pointer;
         background-color: ${(props) => props.disabled && '#ABBAD1;'};
         @media only screen and (maxWidth: 1440px): {
           top: 1.6rem,
@@ -53,51 +76,21 @@ const StyledSlider = styled(({ sliderContainerStyles, ...rest }) => (
   }
 `
 
-const TooltipStyles = createGlobalStyle`
-  .rc-tooltip {
-    z-index: 2070 !important;
-  }
-
-  .rc-tooltip-inner.rc-tooltip-inner {
-    background-color: ${(props) => props.trackBeforeBackground || '#5C8CEA'};
-    border: .1rem solid #e0e5ec;
-    min-height: auto;
-    font-family: DM Sans;
-    padding: .2rem .4rem;
-    font-size: 1.2rem;
-  }
-
-  .rc-tooltip-arrow.rc-tooltip-arrow {
-    display: none;
-  }
-`
-
 const handle = (props) => {
   const { value, valueSymbol, dragging, index, ...restProps } = props
   return (
     <>
-      <Tooltip
-        overlay={
-          <span>
-            {value} {valueSymbol}
-          </span>
-        }
-        placement="top"
-        visible={dragging}
-        key={index}
-      >
-        <Handle
-          style={{
-            borderRadius: 'none',
-            width: '0.8rem',
-            top: '0.2rem',
-            height: '2rem',
-          }}
-          value={value}
-          {...restProps}
-        />
-      </Tooltip>
-      <TooltipStyles trackBeforeBackground={restProps.trackBeforeBackground} />
+      <Handle
+        style={{
+          borderRadius: 'none',
+          width: '0.8rem',
+          top: '0.2rem',
+          height: '2rem',
+          cursor: 'pointer'
+        }}
+        value={value}
+        {...restProps}
+      />
     </>
   )
 }
@@ -106,7 +99,7 @@ const RCSlider = ({
   min,
   max,
   defaultValue,
-  valueSymbol,
+  valueSymbol = '%',
   value,
   onChange,
   trackBeforeBackground,
@@ -122,18 +115,21 @@ const RCSlider = ({
   style?: CSSProperties
 }) => {
   return (
-    <StyledSlider
-      min={min}
-      max={max}
-      value={value}
-      defaultValue={defaultValue}
-      onChange={onChange}
-      trackBeforeBackground={trackBeforeBackground}
-      handle={(props) =>
-        handle({ ...props, valueSymbol, trackBeforeBackground })
-      }
-      {...rest}
-    />
+    <>
+      <StyledSlider
+        min={min}
+        max={max}
+        value={value}
+        defaultValue={defaultValue}
+        onChange={onChange}
+        trackBeforeBackground={trackBeforeBackground}
+        tipFormatter={v => `${v} ${valueSymbol}`}
+        handle={(props) =>
+          handle({ ...props, valueSymbol, trackBeforeBackground })
+        }
+        {...rest}
+      />
+    </>
   )
 }
 

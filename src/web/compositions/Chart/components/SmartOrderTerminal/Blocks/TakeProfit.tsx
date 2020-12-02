@@ -31,6 +31,7 @@ import {
 
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
+import { SliderWithPriceFieldRowComponent } from './SliderComponents'
 
 export const TakeProfitBlock = ({
   pair,
@@ -43,6 +44,7 @@ export const TakeProfitBlock = ({
   isMarketType,
   deleteTarget,
   validateField,
+  pricePrecision,
   updateBlockValue,
   priceForCalculate,
   updateSubBlockValue,
@@ -280,99 +282,74 @@ export const TakeProfitBlock = ({
               title={'stop price'}
             >
               <InputRowContainer>
-                <Input
-                  theme={theme}
-                  textAlign={'left'}
-                  padding={'0'}
-                  width={'calc(32.5%)'}
-                  symbol={pair[1]}
-                  value={takeProfit.takeProfitPrice}
-                  disabled={isMarketType && !entryPoint.trailing.isTrailingOn}
-                  showErrors={
-                    showErrors &&
-                    takeProfit.isTakeProfitOn &&
-                    !takeProfit.external &&
-                    !takeProfit.splitTargets.isSplitTargetsOn &&
-                    !takeProfit.trailingTAP.isTrailingOn
-                  }
-                  isValid={validateField(true, takeProfit.takeProfitPrice)}
-                  inputStyles={{
-                    paddingRight: '0',
-                    paddingLeft: '1rem',
-                  }}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    const percentage =
-                      entryPoint.order.side === 'sell'
-                        ? (1 - +e.target.value / priceForCalculate) *
-                        100 *
-                        entryPoint.order.leverage
-                        : -(1 - +e.target.value / priceForCalculate) *
-                        100 *
-                        entryPoint.order.leverage
+                <SliderWithPriceFieldRowComponent
+                  {...{
+                    pair,
+                    theme,
+                    entryPoint,
+                    showErrors,
+                    isMarketType,
+                    validateField,
+                    pricePrecision,
+                    updateBlockValue,
+                    priceForCalculate,
+                    approximatePrice: takeProfit.takeProfitPrice,
+                    pricePercentage: takeProfit.pricePercentage,
+                    getApproximatePrice: (value: number) => {
+                      return value === 0 ? priceForCalculate : entryPoint.order.side === 'sell'
+                        ? stripDigitPlaces(
+                          priceForCalculate * (1 - value / 100 / entryPoint.order.leverage),
+                          pricePrecision
+                        )
+                        : stripDigitPlaces(
+                          priceForCalculate * (1 + value / 100 / entryPoint.order.leverage),
+                          pricePrecision
+                        )
+                    },
+                    onAfterSliderChange: (value: number) => {
+                      updateStopLossAndTakeProfitPrices({
+                        takeProfitPercentage: value,
+                      })
 
-                    updateBlockValue(
-                      'takeProfit',
-                      'pricePercentage',
-                      stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
-                    )
+                      updateBlockValue('takeProfit', 'pricePercentage', value)
+                    },
+                    onApproximatePriceChange: (e: React.ChangeEvent<HTMLInputElement>, updateValue: (v: any) => void) => {
+                      const percentage =
+                        entryPoint.order.side === 'sell'
+                          ? (1 - +e.target.value / priceForCalculate) *
+                          100 *
+                          entryPoint.order.leverage
+                          : -(1 - +e.target.value / priceForCalculate) *
+                          100 *
+                          entryPoint.order.leverage
 
-                    updateBlockValue(
-                      'takeProfit',
-                      'takeProfitPrice',
-                      e.target.value
-                    )
-                  }}
-                />
+                      updateBlockValue(
+                        'takeProfit',
+                        'pricePercentage',
+                        stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
+                      )
 
-                <Input
-                  theme={theme}
-                  padding={'0 .8rem 0 .8rem'}
-                  width={'calc(17.5%)'}
-                  symbol={'%'}
-                  preSymbol={'+'}
-                  textAlign={'left'}
-                  needPreSymbol={true}
-                  value={takeProfit.pricePercentage}
-                  showErrors={showErrors && takeProfit.isTakeProfitOn}
-                  isValid={validateField(true, takeProfit.pricePercentage)}
-                  inputStyles={{
-                    paddingRight: '0',
-                    paddingLeft: '2rem',
-                  }}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    updateStopLossAndTakeProfitPrices({
-                      takeProfitPercentage: +e.target.value,
-                    })
+                      updateValue(stripDigitPlaces(percentage < 0 ? 0 : percentage, 2))
 
-                    updateBlockValue(
-                      'takeProfit',
-                      'pricePercentage',
-                      e.target.value
-                    )
-                  }}
-                />
+                      updateBlockValue(
+                        'takeProfit',
+                        'takeProfitPrice',
+                        e.target.value
+                      )
+                    },
+                    onPricePercentageChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                      updateStopLossAndTakeProfitPrices({
+                        takeProfitPercentage: +e.target.value,
+                      })
 
-                <BlueSlider
-                  theme={theme}
-                  value={
-                    takeProfit.pricePercentage > 100
-                      ? 100
-                      : takeProfit.pricePercentage
-                  }
-                  sliderContainerStyles={{
-                    width: '50%',
-                    margin: '0 .8rem 0 .8rem',
-                  }}
-                  onChange={(value) => {
-                    if (takeProfit.pricePercentage > 100 && value === 100) {
-                      return
-                    }
-
-                    updateBlockValue('takeProfit', 'pricePercentage', value)
-
-                    updateStopLossAndTakeProfitPrices({
-                      takeProfitPercentage: value,
-                    })
+                      updateBlockValue(
+                        'takeProfit',
+                        'pricePercentage',
+                        e.target.value
+                      )
+                    },
+                    updateSubBlockValue,
+                    updateStopLossAndTakeProfitPrices,
                   }}
                 />
               </InputRowContainer>
@@ -394,110 +371,79 @@ export const TakeProfitBlock = ({
                 title={!takeProfit.external ? 'activation price' : 'stop price'}
               >
                 <InputRowContainer>
-                  <Input
-                    theme={theme}
-                    textAlign={'left'}
-                    padding={'0'}
-                    width={'calc(32.5%)'}
-                    symbol={pair[1]}
-                    value={takeProfit.takeProfitPrice}
-                    disabled={isMarketType && !entryPoint.trailing.isTrailingOn}
-                    showErrors={
-                      false &&
-                      showErrors &&
-                      takeProfit.isTakeProfitOn &&
-                      !takeProfit.splitTargets.isSplitTargetsOn &&
-                      !takeProfit.external
-                    }
-                    isValid={validateField(true, takeProfit.takeProfitPrice)}
-                    inputStyles={{
-                      paddingRight: '0',
-                      paddingLeft: '1rem',
-                    }}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      const percentage =
-                        entryPoint.order.side === 'sell'
-                          ? (1 - +e.target.value / priceForCalculate) *
-                          100 *
-                          entryPoint.order.leverage
-                          : -(1 - +e.target.value / priceForCalculate) *
-                          100 *
-                          entryPoint.order.leverage
+                  <SliderWithPriceFieldRowComponent
+                    {...{
+                      pair,
+                      theme,
+                      entryPoint,
+                      showErrors,
+                      isMarketType,
+                      validateField,
+                      pricePrecision,
+                      updateBlockValue,
+                      priceForCalculate,
+                      approximatePrice: takeProfit.takeProfitPrice,
+                      pricePercentage: takeProfit.trailingTAP.activatePrice,
+                      getApproximatePrice: (value: number) => {
+                        return value === 0 ? priceForCalculate : entryPoint.order.side === 'sell'
+                          ? stripDigitPlaces(
+                            priceForCalculate * (1 - value / 100 / entryPoint.order.leverage),
+                            pricePrecision
+                          )
+                          : stripDigitPlaces(
+                            priceForCalculate * (1 + value / 100 / entryPoint.order.leverage),
+                            pricePrecision
+                          )
+                      },
+                      onAfterSliderChange: (value: number) => {
+                        updateSubBlockValue(
+                          'takeProfit',
+                          'trailingTAP',
+                          'activatePrice',
+                          value
+                        )
 
-                      updateSubBlockValue(
-                        'takeProfit',
-                        'trailingTAP',
-                        'activatePrice',
-                        stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
-                      )
+                        updateStopLossAndTakeProfitPrices({
+                          takeProfitPercentage: value,
+                        })
+                      },
+                      onApproximatePriceChange: (e: React.ChangeEvent<HTMLInputElement>, updateValue: (v: any) => void) => {
+                        const percentage =
+                          entryPoint.order.side === 'sell'
+                            ? (1 - +e.target.value / priceForCalculate) *
+                            100 *
+                            entryPoint.order.leverage
+                            : -(1 - +e.target.value / priceForCalculate) *
+                            100 *
+                            entryPoint.order.leverage
 
-                      updateBlockValue(
-                        'takeProfit',
-                        'takeProfitPrice',
-                        e.target.value
-                      )
-                    }}
-                  />
-                  <Input
-                    theme={theme}
-                    symbol={'%'}
-                    padding={'0 .8rem 0 .8rem'}
-                    width={'calc(17.5%)'}
-                    preSymbol={'+'}
-                    textAlign={'left'}
-                    needPreSymbol={true}
-                    value={takeProfit.trailingTAP.activatePrice}
-                    showErrors={
-                      showErrors &&
-                      takeProfit.isTakeProfitOn &&
-                      !takeProfit.external
-                    }
-                    isValid={validateField(
-                      takeProfit.trailingTAP.isTrailingOn,
-                      takeProfit.trailingTAP.activatePrice
-                    )}
-                    inputStyles={{
-                      paddingRight: '0',
-                      paddingLeft: '2rem',
-                    }}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      updateSubBlockValue(
-                        'takeProfit',
-                        'trailingTAP',
-                        'activatePrice',
-                        e.target.value
-                      )
+                        updateSubBlockValue(
+                          'takeProfit',
+                          'trailingTAP',
+                          'activatePrice',
+                          stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
+                        )
 
-                      updateStopLossAndTakeProfitPrices({
-                        takeProfitPercentage: +e.target.value,
-                      })
-                    }}
-                  />
-                  <BlueSlider
-                    theme={theme}
-                    value={takeProfit.trailingTAP.activatePrice}
-                    sliderContainerStyles={{
-                      width: '50%',
-                      margin: '0 .8rem 0 .8rem',
-                    }}
-                    onChange={(value) => {
-                      if (
-                        takeProfit.trailingTAP.activatePrice > 100 &&
-                        value === 100
-                      ) {
-                        return
-                      }
+                        updateValue(stripDigitPlaces(percentage < 0 ? 0 : percentage, 2))
 
-                      updateSubBlockValue(
-                        'takeProfit',
-                        'trailingTAP',
-                        'activatePrice',
-                        value
-                      )
+                        updateStopLossAndTakeProfitPrices({
+                          takeProfitPercentage: +e.target.value,
+                        })
+                      },
+                      onPricePercentageChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                        updateSubBlockValue(
+                          'takeProfit',
+                          'trailingTAP',
+                          'activatePrice',
+                          +e.target.value
+                        )
 
-                      updateStopLossAndTakeProfitPrices({
-                        takeProfitPercentage: value,
-                      })
+                        updateStopLossAndTakeProfitPrices({
+                          takeProfitPercentage: +e.target.value,
+                        })
+                      },
+                      updateSubBlockValue,
+                      updateStopLossAndTakeProfitPrices,
                     }}
                   />
                 </InputRowContainer>
@@ -1058,3 +1004,5 @@ export const TakeProfitBlock = ({
     </TerminalBlock>
   )
 }
+
+export const TakeProfitBlockMemo = React.memo(TakeProfitBlock)

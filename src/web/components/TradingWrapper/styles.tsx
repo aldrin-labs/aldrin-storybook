@@ -49,7 +49,9 @@ export const TabsTypeContainer = styled(TabsContainer)`
   border: none;
 `
 
-export const StyledTab = React.memo(styled(({ active, ...rest }) => <Button {...rest} />)`
+const MemoButton = React.memo(Button);
+
+export const StyledTab = React.memo(styled(({ active, ...rest }) => <MemoButton {...rest} />)`
   min-width: auto;
   width: 30%;
   height: 4rem;

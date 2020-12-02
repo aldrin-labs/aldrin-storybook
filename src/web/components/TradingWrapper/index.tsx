@@ -125,6 +125,7 @@ class SimpleTabs extends React.Component {
       funds,
       price,
       theme,
+      keyId,
       placeOrder,
       decimals,
       showOrderResult,
@@ -133,6 +134,8 @@ class SimpleTabs extends React.Component {
       hedgeMode,
       enqueueSnackbar,
       chartPagePopup,
+      selectedKey,
+      currentPosition,
       closeChartPagePopup,
       leverage: startLeverage,
       componentMarginType,
@@ -156,7 +159,7 @@ class SimpleTabs extends React.Component {
     const lockedPositionBothAmount = isSPOTMarket
       ? 0
       : (
-        funds[2].find((position) => position.positionSide === 'BOTH') || {
+        currentPosition.find((position) => position.positionSide === 'BOTH') || {
           positionAmt: 0,
         }
       ).positionAmt
@@ -164,7 +167,7 @@ class SimpleTabs extends React.Component {
     const lockedPositionShortAmount = isSPOTMarket
       ? 0
       : (
-        funds[2].find((position) => position.positionSide === 'SHORT') || {
+        currentPosition.find((position) => position.positionSide === 'SHORT') || {
           positionAmt: 0,
         }
       ).positionAmt
@@ -172,7 +175,7 @@ class SimpleTabs extends React.Component {
     const lockedPositionLongAmount = isSPOTMarket
       ? 0
       : (
-        funds[2].find((position) => position.positionSide === 'LONG') || {
+        currentPosition.find((position) => position.positionSide === 'LONG') || {
           positionAmt: 0,
         }
       ).positionAmt
@@ -210,7 +213,7 @@ class SimpleTabs extends React.Component {
                     <StyledSelect
                       theme={theme}
                       onChange={(e) =>
-                        changeMarginTypeWithStatus(componentMarginType)
+                        changeMarginTypeWithStatus(componentMarginType, selectedKey, pair)
                       }
                       value={componentMarginType}
                       style={{ color: theme.palette.dark.main }}
@@ -230,7 +233,8 @@ class SimpleTabs extends React.Component {
                       this.setState({ leverage })
                     }}
                     onAfterChange={(leverage: number) => {
-                      updateLeverage(leverage)
+                      // add args
+                      updateLeverage(leverage, keyId, pair)
                     }}
                     sliderContainerStyles={{
                       width: '65%',
@@ -578,93 +582,6 @@ class SimpleTabs extends React.Component {
                   </FuturesSettings>
                 )}
               </SettingsContainer>
-              {/* <LeverageContainer theme={theme}>
-                <LeverageTitle>
-                  <StyledSelect
-                    theme={theme}
-                    onChange={(e) =>
-                      changeMarginTypeWithStatus(e.target.value.toLowerCase())
-                    }
-                    value={componentMarginType}
-                    style={{ color: theme.palette.dark.main }}
-                  >
-                    <StyledOption>cross</StyledOption>
-                    <StyledOption>isolated</StyledOption>
-                  </StyledSelect>
-                </LeverageTitle>
-                <SmallSlider
-                  min={1}
-                  max={maxLeverage}
-                  defaultValue={startLeverage}
-                  value={leverage}
-                  valueSymbol={'X'}
-                  marks={
-                    maxLeverage === 125
-                      ? {
-                          1: {},
-                          25: {},
-                          50: {},
-                          75: {},
-                          100: {},
-                          125: {},
-                        }
-                      : maxLeverage === 75
-                      ? {
-                          1: {},
-                          15: {},
-                          30: {},
-                          45: {},
-                          60: {},
-                          75: {},
-                        }
-                      : {
-                          1: {},
-                          10: {},
-                          20: {},
-                          30: {},
-                          40: {},
-                          50: {},
-                        }
-                  }
-                  onChange={(leverage: number) => {
-                    this.setState({ leverage })
-                  }}
-                  onAfterChange={(leverage: number) => {
-                    updateLeverage(leverage)
-                  }}
-                  sliderContainerStyles={{
-                    width: '65%',
-                    margin: '0 auto',
-                  }}
-                  trackBeforeBackground={theme.palette.green.main}
-                  handleStyles={{
-                    width: '1.2rem',
-                    height: '1.2rem',
-                    border: 'none',
-                    backgroundColor: '#036141',
-                    marginTop: '-.28rem',
-                    boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
-                    transform: 'translate(-50%, -15%) !important',
-                  }}
-                  dotStyles={{
-                    border: 'none',
-                    backgroundColor: theme.palette.slider.dots,
-                  }}
-                  activeDotStyles={{
-                    backgroundColor: theme.palette.green.main,
-                  }}
-                  markTextSlyles={{
-                    color: theme.palette.grey.light,
-                    fontSize: '1rem',
-                  }}
-                  railStyle={{
-                    backgroundColor: theme.palette.slider.rail,
-                  }}
-                />
-                <LeverageLabel theme={theme} style={{ width: '12.5%' }}>
-                  {leverage}x
-                </LeverageLabel>
-              </LeverageContainer> */}
             </TerminalHeader>
           ) : null}
 
@@ -699,6 +616,7 @@ class SimpleTabs extends React.Component {
                         theme={theme}
                         operationType={'buy'}
                         priceType={mode}
+                        keyId={keyId}
                         hedgeMode={hedgeMode}
                         quantityPrecision={quantityPrecision}
                         minSpotNotional={minSpotNotional}
@@ -719,12 +637,12 @@ class SimpleTabs extends React.Component {
                               ? 0
                               : -lockedPositionBothAmount
                         }
-                        key={[pair, funds]}
                         walletValue={funds && funds[1]}
                         marketPrice={price}
                         confirmOperation={placeOrder}
                         cancelOrder={cancelOrder}
                         decimals={decimals}
+                        marketType={marketType}
                         addLoaderToButton={this.addLoaderToButton}
                         orderIsCreating={orderIsCreating}
                         showOrderResult={showOrderResult}
@@ -744,12 +662,14 @@ class SimpleTabs extends React.Component {
                         operationType={'sell'}
                         priceType={mode}
                         theme={theme}
+                        keyId={keyId}
                         hedgeMode={hedgeMode}
                         quantityPrecision={quantityPrecision}
                         minSpotNotional={minSpotNotional}
                         minFuturesStep={minFuturesStep}
                         priceFromOrderbook={priceFromOrderbook}
                         marketPriceAfterPairChange={marketPriceAfterPairChange}
+                        marketType={marketType}
                         isSPOTMarket={isSPOTMarket}
                         enqueueSnackbar={enqueueSnackbar}
                         changePercentage={(value) =>
@@ -764,7 +684,6 @@ class SimpleTabs extends React.Component {
                               ? 0
                               : lockedPositionBothAmount
                         }
-                        key={[pair, funds]}
                         walletValue={funds && funds[1]}
                         marketPrice={price}
                         confirmOperation={placeOrder}

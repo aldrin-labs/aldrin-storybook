@@ -52,7 +52,6 @@ export const EntryOrderBlock = ({
   pair,
   funds,
   theme,
-  price,
   maxAmount,
   entryPoint,
   showErrors,
@@ -68,6 +67,7 @@ export const EntryOrderBlock = ({
   priceForCalculate,
   quantityPrecision,
   getEntryAlertJson,
+  updatePriceToMarket,
   deleteAverageTarget,
   updateSubBlockValue,
   isCloseOrderExternal,
@@ -349,29 +349,7 @@ export const EntryOrderBlock = ({
             onClick={() => {
               updateSubBlockValue('entryPoint', 'order', 'type', 'market')
 
-              if (!entryPoint.trailing.isTrailingOn) {
-                updateSubBlockValue('entryPoint', 'averaging', 'enabled', false)
-
-                updateSubBlockValue(
-                  'entryPoint',
-                  'order',
-                  'total',
-                  stripDigitPlaces(
-                    price * entryPoint.order.amount,
-                    marketType === 1 ? 2 : 8
-                  )
-                )
-
-                updateBlockValue(
-                  'temp',
-                  'initialMargin',
-                  stripDigitPlaces(
-                    (price * entryPoint.order.amount) /
-                    entryPoint.order.leverage,
-                    2
-                  )
-                )
-              }
+              updatePriceToMarket()
             }}
           >
             Market
@@ -1623,3 +1601,5 @@ export const EntryOrderBlock = ({
     </TerminalBlock>
   )
 }
+
+export const EntryOrderBlockMemo = React.memo(EntryOrderBlock)

@@ -34,7 +34,7 @@ export const Tooltip = styled(({ ...props }) => (
 
 import { Tooltip as MUTooltip } from '@material-ui/core'
 
-export const DarkTooltip = styled((props) => (
+export const DarkTooltip = React.memo(styled((props) => (
   <MUTooltip
     classes={{ popper: props.className, tooltip: 'tooltip' }}
     enterDelay={500}
@@ -48,4 +48,4 @@ export const DarkTooltip = styled((props) => (
     font-size: 1.2rem;
     max-width: ${(props) => props.maxWidth || 'auto'};
   }
-`
+`)

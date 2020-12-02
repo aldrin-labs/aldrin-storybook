@@ -15,6 +15,12 @@ type CancelOrder = (obj: { variables: { cancelOrderInput: {
   type: string
 }}}) => void
 
+type SelectedKey = {
+  keyId: string
+  isFuturesWarsKey: boolean
+  hedgeMode: boolean
+}
+
 interface StateOfSMForPlaceOrder extends IState {
   templateAlertMessage: string
 }
@@ -237,12 +243,12 @@ export type CommonForBlocks = {
     stopLossPercentage?: number
     forcedStopPercentage?: number
     takeProfitPercentage?: number
+    leverage?: number
   }) => void,
 }
 
 export interface EntryOrderBlockProps extends CommonForBlocks {
   funds: [{ quantity: number, value: number}, { quantity: number, value: number}],
-  price: number,
   maxAmount: number
   entryPoint: EntryPointType,
   showErrors: boolean,
@@ -255,6 +261,7 @@ export interface EntryOrderBlockProps extends CommonForBlocks {
   addAverageTarget: () => void,
   priceForCalculate: number,
   quantityPrecision: number,
+  updatePriceToMarket: () => void
   getEntryAlertJson: () => string,
   deleteAverageTarget: (i: number) => void,
   isCloseOrderExternal: boolean,
@@ -267,6 +274,7 @@ export interface StopLossBlockProps extends CommonForBlocks {
   stopLoss: StopLossType,
   isMarketType: boolean,
   priceForCalculate: number,
+  pricePrecision: number
   showConfirmationPopup: () => void,
   updateTerminalViewMode: (newMode: string) => void
 }
@@ -280,4 +288,30 @@ export interface TakeProfitBlockProps extends CommonForBlocks {
   isMarketType: boolean,
   priceForCalculate: number,
   deleteTarget: (i: number) => void
+}
+
+export interface TerminalHeaderBlockProps extends CommonForBlocks {
+  marketType: 0 | 1,
+  entryPoint: EntryPointType,
+  isMarketType: boolean,
+  initialMargin: number
+  selectedKey: SelectedKey
+  maxLeverage: number
+  startLeverage: number
+  componentMarginType: string
+  priceForCalculate: number
+  quantityPrecision: number
+  updateLeverage: (leverage: number, selectedKey: SelectedKey) => void
+  changeMarginTypeWithStatus: (marginType: string, selectedKey: SelectedKey, pair: [string, string]) => void
+}
+
+export interface SliderWithPriceFieldRowComponentProps extends CommonForBlocks {
+  entryPoint: EntryPointType,
+  showErrors: boolean,
+  stopLoss?: StopLossType,
+  isMarketType: boolean,
+  priceForCalculate: number,
+  pricePrecision: number
+  showConfirmationPopup?: () => void,
+  updateTerminalViewMode?: (newMode: string) => void
 }

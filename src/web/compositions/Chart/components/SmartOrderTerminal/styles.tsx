@@ -16,7 +16,7 @@ export const TerminalHeaders = styled.div`
   position: relative;
 `
 
-export const TerminalHeader = styled.div`
+export const TerminalHeader = React.memo(styled.div`
   display: flex;
   align-items: center;
   justify-content: ${(props: HeaderProperties) => props.justify};
@@ -29,7 +29,7 @@ export const TerminalHeader = styled.div`
   border: ${(props) => props.theme.palette.border.main};
   border-top: 0;
   border-radius: 0.2rem;
-`
+`)
 
 export const HeaderLabel = styled.label`
   font-size: 1rem;
@@ -47,11 +47,11 @@ export const HeaderTitle = styled.span`
   color: ${(props) => props.theme.palette.dark.main};
 `
 
-export const BlockHeader = styled(HeaderTitle)`
+export const BlockHeader = React.memo(styled(HeaderTitle)`
   color: ${(props) => props.theme.palette.grey.light};
   font-size: 1.5rem;
   letter-spacing: 0.1rem;
-`
+`)
 
 export const InputTitle = styled(HeaderTitle)`
   color: ${(props) => props.theme.palette.grey.light};

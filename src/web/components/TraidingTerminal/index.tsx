@@ -262,7 +262,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
       this.setFormatted('price', priceFromOrderbook, 1)
       this.setFormatted('stop', priceFromOrderbook, 1)
-      this.setFormatted('total', amount * priceFromOrderbook, 1)
+      this.setFormatted('total', stripDigitPlaces(amount * priceFromOrderbook, isSPOTMarket ? 8 : quantityPrecision), 0)
       this.setFormatted(
         'margin',
         stripDigitPlaces((amount * priceFromOrderbook) / leverage, 3),
@@ -862,6 +862,8 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       byType,
       priceType,
       pair,
+      keyId,
+      marketType,
       isSPOTMarket,
       reduceOnly,
       orderMode,
@@ -871,6 +873,8 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       enqueueSnackbar,
       minSpotNotional,
       minFuturesStep,
+      quantityPrecision,
+      marketPrice
     } = props
 
     if (values.total < minSpotNotional && isSPOTMarket) {
@@ -932,13 +936,14 @@ const formikEnhancer = withFormik<IProps, FormValues>({
 
       // await props.addLoaderToButton(byType)
 
-      const result = await props.confirmOperation(
-        byType,
+      const result = await props.confirmOperation({
+        side: byType,
         priceType,
-        filtredValues,
-        'default',
-        {},
-        {
+        pair,
+        values: filtredValues,
+        terminalMode: 'default',
+        state: {},
+        futuresValues: {
           leverage,
           marketType: isSPOTMarket ? 0 : 1,
           ...(priceType !== 'market' && priceType !== 'maker-only'
@@ -955,8 +960,12 @@ const formikEnhancer = withFormik<IProps, FormValues>({
             }
             : {}),
           ...{ reduceOnly },
-        }
-      )
+        },
+        keyId,
+        marketType,
+        lastMarketPrice: marketPrice,
+        quantityPrecision,
+      })
 
       if (result.status === 'error' || !result.orderId) {
         await props.showOrderResult(

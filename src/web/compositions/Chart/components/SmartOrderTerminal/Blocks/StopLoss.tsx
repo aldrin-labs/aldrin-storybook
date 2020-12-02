@@ -31,6 +31,7 @@ import {
 } from '../styles'
 
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { SliderWithPriceFieldRowComponent } from './SliderComponents'
 
 export const StopLossBlock = ({
   pair,
@@ -40,6 +41,7 @@ export const StopLossBlock = ({
   showErrors,
   isMarketType,
   validateField,
+  pricePrecision,
   updateBlockValue,
   priceForCalculate,
   updateSubBlockValue,
@@ -178,19 +180,6 @@ export const StopLossBlock = ({
                 SL by TV Alert
               </AdditionalSettingsButton>
             </DarkTooltip>
-            {/* <AdditionalSettingsButton theme={theme}
-                    isActive={stopLoss.forcedStop.isForcedStopOn}
-                    onClick={() =>
-                      updateSubBlockValue(
-                        'stopLoss',
-                        'forcedStop',
-                        'isForcedStopOn',
-                        !stopLoss.forcedStop.isForcedStopOn
-                      )
-                    }
-                  >
-                    Forced stop
-                  </AdditionalSettingsButton> */}
           </InputRowContainer>
 
           {((stopLoss.external &&
@@ -205,100 +194,85 @@ export const StopLossBlock = ({
                     <p>The unrealized loss/ROE for closing trade.</p>
                     <p>
                       <b>For example:</b> you bought 1 BTC and set 10% stop loss.
-                    Your unrealized loss should be 0.1 BTC and order will be
-                    executed.
-                  </p>
+                            Your unrealized loss should be 0.1 BTC and order will be
+                            executed.
+                          </p>
                   </>
                 }
                 title={'stop price'}
               >
                 <InputRowContainer>
-                  <Input
-                    theme={theme}
-                    padding={'0'}
-                    width={'calc(32.5%)'}
-                    textAlign={'left'}
-                    symbol={pair[1]}
-                    value={stopLoss.stopLossPrice}
-                    disabled={isMarketType && !entryPoint.trailing.isTrailingOn}
-                    showErrors={showErrors && stopLoss.isStopLossOn}
-                    isValid={validateField(true, stopLoss.pricePercentage)}
-                    inputStyles={{
-                      paddingLeft: '1rem',
-                    }}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      const percentage =
-                        entryPoint.order.side === 'buy'
-                          ? (1 - +e.target.value / priceForCalculate) *
-                          100 *
-                          entryPoint.order.leverage
-                          : -(1 - +e.target.value / priceForCalculate) *
-                          100 *
-                          entryPoint.order.leverage
+                  <SliderWithPriceFieldRowComponent
+                    {...{
+                      pair,
+                      theme,
+                      entryPoint,
+                      stopLoss,
+                      showErrors,
+                      isMarketType,
+                      validateField,
+                      pricePrecision,
+                      updateBlockValue,
+                      priceForCalculate,
+                      approximatePrice: stopLoss.stopLossPrice,
+                      pricePercentage: stopLoss.pricePercentage,
+                      getApproximatePrice: (value: number) => {
+                        return value === 0 ? priceForCalculate : entryPoint.order.side === 'buy'
+                          ? stripDigitPlaces(
+                            priceForCalculate * (1 - value / 100 / entryPoint.order.leverage),
+                            pricePrecision
+                          )
+                          : stripDigitPlaces(
+                            priceForCalculate * (1 + value / 100 / entryPoint.order.leverage),
+                            pricePrecision
+                          )
+                      },
+                      onAfterSliderChange: (value: number) => {
+                        updateStopLossAndTakeProfitPrices({
+                          stopLossPercentage: value,
+                        })
 
-                      updateBlockValue(
-                        'stopLoss',
-                        'pricePercentage',
-                        stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
-                      )
+                        updateBlockValue('stopLoss', 'pricePercentage', value)
+                      },
+                      onApproximatePriceChange: (e: React.ChangeEvent<HTMLInputElement>, updateValue: (v: any) => void) => {
+                        const percentage =
+                          entryPoint.order.side === 'buy'
+                            ? (1 - +e.target.value / priceForCalculate) *
+                            100 *
+                            entryPoint.order.leverage
+                            : -(1 - +e.target.value / priceForCalculate) *
+                            100 *
+                            entryPoint.order.leverage
 
-                      updateBlockValue(
-                        'stopLoss',
-                        'stopLossPrice',
-                        e.target.value
-                      )
-                    }}
-                  />
+                        updateBlockValue(
+                          'stopLoss',
+                          'pricePercentage',
+                          stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
+                        )
 
-                  <Input
-                    theme={theme}
-                    padding={'0 .8rem 0 .8rem'}
-                    width={'calc(17.5%)'}
-                    symbol={'%'}
-                    preSymbol={'-'}
-                    textAlign={'left'}
-                    needPreSymbol={true}
-                    value={
-                      stopLoss.pricePercentage > 100
-                        ? 100
-                        : stopLoss.pricePercentage
-                    }
-                    showErrors={showErrors && stopLoss.isStopLossOn}
-                    isValid={validateField(true, stopLoss.pricePercentage)}
-                    inputStyles={{
-                      paddingRight: '0',
-                      paddingLeft: '2rem',
-                    }}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      updateStopLossAndTakeProfitPrices({
-                        stopLossPercentage: +e.target.value,
-                      })
+                        updateValue(stripDigitPlaces(percentage < 0 ? 0 : percentage, 2))
 
-                      updateBlockValue(
-                        'stopLoss',
-                        'pricePercentage',
-                        e.target.value
-                      )
-                    }}
-                  />
+                        updateBlockValue(
+                          'stopLoss',
+                          'stopLossPrice',
+                          e.target.value
+                        )
+                      },
+                      onPricePercentageChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                        updateStopLossAndTakeProfitPrices({
+                          stopLossPercentage: +e.target.value,
+                        })
 
-                  <BlueSlider
-                    theme={theme}
-                    value={stopLoss.pricePercentage}
-                    sliderContainerStyles={{
-                      width: '50%',
-                      margin: '0 .8rem 0 .8rem',
-                    }}
-                    onChange={(value) => {
-                      if (stopLoss.pricePercentage > 100 && value === 100) {
-                        return
-                      }
-
-                      updateStopLossAndTakeProfitPrices({
-                        stopLossPercentage: value,
-                      })
-
-                      updateBlockValue('stopLoss', 'pricePercentage', value)
+                        updateBlockValue(
+                          'stopLoss',
+                          'pricePercentage',
+                          e.target.value
+                        )
+                      },
+                      updateSubBlockValue,
+                      showConfirmationPopup,
+                      updateTerminalViewMode,
+                      updateStopLossAndTakeProfitPrices,
                     }}
                   />
                 </InputRowContainer>
@@ -871,3 +845,5 @@ export const StopLossBlock = ({
     </TerminalBlock>
   )
 }
+
+export const StopLossBlockMemo = React.memo(StopLossBlock)
