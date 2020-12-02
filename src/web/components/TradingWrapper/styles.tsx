@@ -9,12 +9,12 @@ export const TablesBlockWrapper = styled(Grid)`
   border: none;
   position: relative;
   height: ${({
-    isDefaultTerminalViewMode,
-    isDefaultOnlyTables,
-  }: {
-    isDefaultTerminalViewMode: boolean
-    isDefaultOnlyTables: boolean
-  }) => (isDefaultTerminalViewMode ? '40%' : '50%')};
+  isDefaultTerminalViewMode,
+  isDefaultOnlyTables,
+}: {
+  isDefaultTerminalViewMode: boolean
+  isDefaultOnlyTables: boolean
+}) => (isDefaultTerminalViewMode ? '40%' : '50%')};
 
   display: ${(props) => props.isDefaultOnlyTables && 'none;'};
 
@@ -49,7 +49,9 @@ export const TabsTypeContainer = styled(TabsContainer)`
   border: none;
 `
 
-export const StyledTab = styled(({ active, ...rest }) => <Button {...rest} />)`
+const MemoButton = React.memo(Button);
+
+export const StyledTab = React.memo(styled(({ active, ...rest }) => <MemoButton {...rest} />)`
   min-width: auto;
   width: 30%;
   height: 4rem;
@@ -71,7 +73,7 @@ export const StyledTab = styled(({ active, ...rest }) => <Button {...rest} />)`
   @media (max-width: 1400px) {
     padding: 7px 0 5px 0;
   }
-`
+`)
 
 export const BuyTab = styled(StyledTab)`
   width: 47.5%;

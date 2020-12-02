@@ -317,6 +317,8 @@ export const SendButton = styled(StyledTab)`
   }
 `
 
+export const MemoSendButton = React.memo((props) => console.log('props button', props) || <SendButton {...props} />, () => false);
+
 export const ChangeTradeButton = styled.button`
   border: none;
   width: 50%;
