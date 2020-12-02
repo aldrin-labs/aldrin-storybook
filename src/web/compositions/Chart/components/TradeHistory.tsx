@@ -1,57 +1,56 @@
-import React from 'react'
+import React from 'react';
 
-import { TradeHistoryTable } from '../Tables/Tables'
-import { TradeHistoryWrapper } from '../Chart.styles'
+import { TradeHistoryTable } from '../Tables/Tables';
+import { TradeHistoryWrapper } from '../Chart.styles';
 
-const MemoizedTradeHistoryWrapper = React.memo(TradeHistoryWrapper)
+const MemoizedTradeHistoryWrapper = React.memo(TradeHistoryWrapper);
 
 const TradeHistoryWrapperVariant = {
-  show: showTableOnMobile === 'TRADE',
-}
+	show: showTableOnMobile === 'TRADE'
+};
 
-export const TradeHistory = ({
-  updateTerminalPriceFromOrderbook,
-  showTableOnMobile,
-  isPairDataLoading,
-  activeExchange,
-  minPriceDigits,
-  changeTable,
-  chartProps,
-  sizeDigits,
-  marketType,
-  exchange,
-  theme,
-  symbol,
-  quote,
-  pair,
+const TradeHistoryRaw = ({
+	updateTerminalPriceFromOrderbook,
+	showTableOnMobile,
+	isPairDataLoading,
+	activeExchange,
+	minPriceDigits,
+	changeTable,
+	chartProps,
+	sizeDigits,
+	marketType,
+	exchange,
+	theme,
+	symbol,
+	quote,
+	pair
 }) => {
+	return (
+		<MemoizedTradeHistoryWrapper
+			theme={theme}
+			key={`tradehistory_table`}
+			className="ExchangesTable"
+			variant={TradeHistoryWrapperVariant}
+		>
+			<TradeHistoryTable
+				key={'tradeyistory_table_query_render'}
+				quote={quote}
+				activeExchange={activeExchange}
+				exchange={exchange}
+				currencyPair={pair}
+				showTableOnMobile={showTableOnMobile}
+				minPriceDigits={minPriceDigits}
+				changeTable={changeTable}
+				chartProps={chartProps}
+				marketType={marketType}
+				sizeDigits={sizeDigits}
+				symbol={symbol}
+				theme={theme}
+				updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
+				isDataLoading={isPairDataLoading}
+			/>
+		</MemoizedTradeHistoryWrapper>
+	);
+};
 
-  return (
-    <MemoizedTradeHistoryWrapper
-      theme={theme}
-      key={`tradehistory_table`}
-      className="ExchangesTable"
-      variant={TradeHistoryWrapperVariant}
-    >
-      <TradeHistoryTable
-        {...{
-          quote,
-          activeExchange,
-          exchange,
-          currencyPair: pair,
-          showTableOnMobile,
-          minPriceDigits,
-          changeTable,
-          chartProps,
-          marketType,
-          sizeDigits,
-          symbol,
-          theme,
-          updateTerminalPriceFromOrderbook,
-          key: 'tradeyistory_table_query_render',
-        }}
-        isDataLoading={isPairDataLoading}
-      />
-    </TradeHistoryWrapper>
-  )
-}
+export const TradeHistory = React.memo(TradeHistoryRaw);
