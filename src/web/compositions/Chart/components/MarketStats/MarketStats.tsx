@@ -243,16 +243,16 @@ const MarketStatsDataWrapper = compose(
 				symbol: props.symbol
 			}
 		}),
-		// subscriptionArgs: {
-		// 	subscription: LISTEN_FUNDING_RATE,
-		// 	variables: (props: any) => ({
-		// 		input: {
-		// 			exchange: props.exchange.symbol,
-		// 			symbol: props.symbol
-		// 		}
-		// 	}),
-		// 	updateQueryFunction: updateFundingRateQuerryFunction
-		// },
+		subscriptionArgs: {
+			subscription: LISTEN_FUNDING_RATE,
+			variables: (props: any) => ({
+				input: {
+					exchange: props.exchange.symbol,
+					symbol: props.symbol
+				}
+			}),
+			updateQueryFunction: updateFundingRateQuerryFunction
+		},
 		fetchPolicy: 'cache-and-network',
 		withOutSpinner: true,
 		withTableLoader: true,
