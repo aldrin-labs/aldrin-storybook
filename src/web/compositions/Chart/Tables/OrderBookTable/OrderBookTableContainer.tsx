@@ -163,7 +163,7 @@ const APIWrapper = (props) => {
       skip={!authenticated}
       query={getOpenOrderHistory}
       name={`getOpenOrderHistoryQuery`}
-      fetchPolicy="cache-and-network"
+      fetchPolicy="cache-fisrt"
       subscriptionArgs={{
         subscription: OPEN_ORDER_HISTORY,
         variables: {

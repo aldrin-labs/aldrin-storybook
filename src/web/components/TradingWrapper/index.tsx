@@ -125,6 +125,7 @@ class SimpleTabs extends React.Component {
       funds,
       price,
       theme,
+      keyId,
       placeOrder,
       decimals,
       showOrderResult,
@@ -133,6 +134,8 @@ class SimpleTabs extends React.Component {
       hedgeMode,
       enqueueSnackbar,
       chartPagePopup,
+      selectedKey,
+      currentPosition,
       closeChartPagePopup,
       leverage: startLeverage,
       componentMarginType,
@@ -156,26 +159,26 @@ class SimpleTabs extends React.Component {
     const lockedPositionBothAmount = isSPOTMarket
       ? 0
       : (
-          funds[2].find((position) => position.positionSide === 'BOTH') || {
-            positionAmt: 0,
-          }
-        ).positionAmt
+        currentPosition.find((position) => position.positionSide === 'BOTH') || {
+          positionAmt: 0,
+        }
+      ).positionAmt
 
     const lockedPositionShortAmount = isSPOTMarket
       ? 0
       : (
-          funds[2].find((position) => position.positionSide === 'SHORT') || {
-            positionAmt: 0,
-          }
-        ).positionAmt
+        currentPosition.find((position) => position.positionSide === 'SHORT') || {
+          positionAmt: 0,
+        }
+      ).positionAmt
 
     const lockedPositionLongAmount = isSPOTMarket
       ? 0
       : (
-          funds[2].find((position) => position.positionSide === 'LONG') || {
-            positionAmt: 0,
-          }
-        ).positionAmt
+        currentPosition.find((position) => position.positionSide === 'LONG') || {
+          positionAmt: 0,
+        }
+      ).positionAmt
 
     return (
       <Grid
@@ -210,7 +213,7 @@ class SimpleTabs extends React.Component {
                     <StyledSelect
                       theme={theme}
                       onChange={(e) =>
-                        changeMarginTypeWithStatus(componentMarginType)
+                        changeMarginTypeWithStatus(componentMarginType, selectedKey, pair)
                       }
                       value={componentMarginType}
                       style={{ color: theme.palette.dark.main }}
@@ -230,7 +233,8 @@ class SimpleTabs extends React.Component {
                       this.setState({ leverage })
                     }}
                     onAfterChange={(leverage: number) => {
-                      updateLeverage(leverage)
+                      // add args
+                      updateLeverage(leverage, keyId, pair)
                     }}
                     sliderContainerStyles={{
                       width: '65%',
@@ -329,8 +333,8 @@ class SimpleTabs extends React.Component {
                   {mode === 'stop-limit'
                     ? 'Stop-Limit'
                     : mode === 'stop-market'
-                    ? 'Stop-Market'
-                    : 'Stop-Limit'}
+                      ? 'Stop-Market'
+                      : 'Stop-Limit'}
                   <ExpandMoreIcon
                     style={{
                       position: 'relative',
@@ -391,17 +395,17 @@ class SimpleTabs extends React.Component {
                   </DropdownItemsBlock>
                 </TerminalModeButtonWithDropdown>
               ) : (
-                <TerminalModeButton
-                  theme={theme}
-                  active={mode === 'stop-limit'}
-                  onClick={() => {
-                    this.handleChangeMode('stop-limit')
-                    this.setState({ orderMode: 'TIF' })
-                  }}
-                >
-                  Stop-Limit
-                </TerminalModeButton>
-              )}
+                  <TerminalModeButton
+                    theme={theme}
+                    active={mode === 'stop-limit'}
+                    onClick={() => {
+                      this.handleChangeMode('stop-limit')
+                      this.setState({ orderMode: 'TIF' })
+                    }}
+                  >
+                    Stop-Limit
+                  </TerminalModeButton>
+                )}
             </div>
             {/* {marketType === 1 && (
               <div style={{ width: '35%' }}>
@@ -578,115 +582,8 @@ class SimpleTabs extends React.Component {
                   </FuturesSettings>
                 )}
               </SettingsContainer>
-              {/* <LeverageContainer theme={theme}>
-                <LeverageTitle>
-                  <StyledSelect
-                    theme={theme}
-                    onChange={(e) =>
-                      changeMarginTypeWithStatus(e.target.value.toLowerCase())
-                    }
-                    value={componentMarginType}
-                    style={{ color: theme.palette.dark.main }}
-                  >
-                    <StyledOption>cross</StyledOption>
-                    <StyledOption>isolated</StyledOption>
-                  </StyledSelect>
-                </LeverageTitle>
-                <SmallSlider
-                  min={1}
-                  max={maxLeverage}
-                  defaultValue={startLeverage}
-                  value={leverage}
-                  valueSymbol={'X'}
-                  marks={
-                    maxLeverage === 125
-                      ? {
-                          1: {},
-                          25: {},
-                          50: {},
-                          75: {},
-                          100: {},
-                          125: {},
-                        }
-                      : maxLeverage === 75
-                      ? {
-                          1: {},
-                          15: {},
-                          30: {},
-                          45: {},
-                          60: {},
-                          75: {},
-                        }
-                      : {
-                          1: {},
-                          10: {},
-                          20: {},
-                          30: {},
-                          40: {},
-                          50: {},
-                        }
-                  }
-                  onChange={(leverage: number) => {
-                    this.setState({ leverage })
-                  }}
-                  onAfterChange={(leverage: number) => {
-                    updateLeverage(leverage)
-                  }}
-                  sliderContainerStyles={{
-                    width: '65%',
-                    margin: '0 auto',
-                  }}
-                  trackBeforeBackground={theme.palette.green.main}
-                  handleStyles={{
-                    width: '1.2rem',
-                    height: '1.2rem',
-                    border: 'none',
-                    backgroundColor: '#036141',
-                    marginTop: '-.28rem',
-                    boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
-                    transform: 'translate(-50%, -15%) !important',
-                  }}
-                  dotStyles={{
-                    border: 'none',
-                    backgroundColor: theme.palette.slider.dots,
-                  }}
-                  activeDotStyles={{
-                    backgroundColor: theme.palette.green.main,
-                  }}
-                  markTextSlyles={{
-                    color: theme.palette.grey.light,
-                    fontSize: '1rem',
-                  }}
-                  railStyle={{
-                    backgroundColor: theme.palette.slider.rail,
-                  }}
-                />
-                <LeverageLabel theme={theme} style={{ width: '12.5%' }}>
-                  {leverage}x
-                </LeverageLabel>
-              </LeverageContainer> */}
             </TerminalHeader>
-          ) : (
-            <TerminalHeader style={{ display: 'flex' }} theme={theme}>
-              {/* <div
-                style={{
-                  width: '50%',
-                  padding: '.5rem 0 .5rem 3rem',
-                  borderRight: theme.palette.border.main,
-                }}
-              >
-                <SpotBalanceSpan
-                  style={{
-                    width: '50%',
-                    padding: '.5rem 0 .5rem 3rem',
-                    borderRight: theme.palette.border.main,
-                  }}
-                >
-                  {pair[0]}
-                </SpotBalanceSpan>
-              </div> */}
-            </TerminalHeader>
-          )}
+          ) : null}
 
           <TerminalMainGrid item xs={12} container marketType={marketType}>
             {this.props.isFuturesWarsKey && false ? (
@@ -711,98 +608,100 @@ class SimpleTabs extends React.Component {
                 </SendButton>
               </div>
             ) : (
-              <div style={{ display: 'flex', width: '100%', height: '100%' }}>
-                <FullHeightGrid theme={theme} xs={6} item needBorderRight>
-                  <TerminalContainer>
-                    <TraidingTerminal
-                      byType={'buy'}
-                      theme={theme}
-                      operationType={'buy'}
-                      priceType={mode}
-                      hedgeMode={hedgeMode}
-                      quantityPrecision={quantityPrecision}
-                      minSpotNotional={minSpotNotional}
-                      minFuturesStep={minFuturesStep}
-                      priceFromOrderbook={priceFromOrderbook}
-                      marketPriceAfterPairChange={marketPriceAfterPairChange}
-                      isSPOTMarket={isSPOTMarket}
-                      enqueueSnackbar={enqueueSnackbar}
-                      changePercentage={(value) =>
-                        this.handleChangePercentage(value, 'Buy')
-                      }
-                      pair={pair}
-                      funds={funds}
-                      lockedAmount={
-                        hedgeMode
-                          ? -lockedPositionShortAmount
-                          : lockedPositionBothAmount >= 0
-                          ? 0
-                          : -lockedPositionBothAmount
-                      }
-                      key={[pair, funds]}
-                      walletValue={funds && funds[1]}
-                      marketPrice={price}
-                      confirmOperation={placeOrder}
-                      cancelOrder={cancelOrder}
-                      decimals={decimals}
-                      addLoaderToButton={this.addLoaderToButton}
-                      orderIsCreating={orderIsCreating}
-                      showOrderResult={showOrderResult}
-                      leverage={leverage}
-                      reduceOnly={reduceOnly}
-                      orderMode={orderMode}
-                      TIFMode={TIFMode}
-                      trigger={trigger}
-                    />
-                  </TerminalContainer>
-                </FullHeightGrid>
+                <div style={{ display: 'flex', width: '100%', height: '100%' }}>
+                  <FullHeightGrid theme={theme} xs={6} item needBorderRight>
+                    <TerminalContainer>
+                      <TraidingTerminal
+                        byType={'buy'}
+                        theme={theme}
+                        operationType={'buy'}
+                        priceType={mode}
+                        keyId={keyId}
+                        hedgeMode={hedgeMode}
+                        quantityPrecision={quantityPrecision}
+                        minSpotNotional={minSpotNotional}
+                        minFuturesStep={minFuturesStep}
+                        priceFromOrderbook={priceFromOrderbook}
+                        marketPriceAfterPairChange={marketPriceAfterPairChange}
+                        isSPOTMarket={isSPOTMarket}
+                        enqueueSnackbar={enqueueSnackbar}
+                        changePercentage={(value) =>
+                          this.handleChangePercentage(value, 'Buy')
+                        }
+                        pair={pair}
+                        funds={funds}
+                        lockedAmount={
+                          hedgeMode
+                            ? -lockedPositionShortAmount
+                            : lockedPositionBothAmount >= 0
+                              ? 0
+                              : -lockedPositionBothAmount
+                        }
+                        walletValue={funds && funds[1]}
+                        marketPrice={price}
+                        confirmOperation={placeOrder}
+                        cancelOrder={cancelOrder}
+                        decimals={decimals}
+                        marketType={marketType}
+                        addLoaderToButton={this.addLoaderToButton}
+                        orderIsCreating={orderIsCreating}
+                        showOrderResult={showOrderResult}
+                        leverage={leverage}
+                        reduceOnly={reduceOnly}
+                        orderMode={orderMode}
+                        TIFMode={TIFMode}
+                        trigger={trigger}
+                      />
+                    </TerminalContainer>
+                  </FullHeightGrid>
 
-                <FullHeightGrid theme={theme} xs={6} item>
-                  <TerminalContainer>
-                    <TraidingTerminal
-                      byType={'sell'}
-                      operationType={'sell'}
-                      priceType={mode}
-                      theme={theme}
-                      hedgeMode={hedgeMode}
-                      quantityPrecision={quantityPrecision}
-                      minSpotNotional={minSpotNotional}
-                      minFuturesStep={minFuturesStep}
-                      priceFromOrderbook={priceFromOrderbook}
-                      marketPriceAfterPairChange={marketPriceAfterPairChange}
-                      isSPOTMarket={isSPOTMarket}
-                      enqueueSnackbar={enqueueSnackbar}
-                      changePercentage={(value) =>
-                        this.handleChangePercentage(value, 'Sell')
-                      }
-                      pair={pair}
-                      funds={funds}
-                      lockedAmount={
-                        hedgeMode
-                          ? lockedPositionLongAmount
-                          : lockedPositionBothAmount <= 0
-                          ? 0
-                          : lockedPositionBothAmount
-                      }
-                      key={[pair, funds]}
-                      walletValue={funds && funds[1]}
-                      marketPrice={price}
-                      confirmOperation={placeOrder}
-                      cancelOrder={cancelOrder}
-                      decimals={decimals}
-                      addLoaderToButton={this.addLoaderToButton}
-                      orderIsCreating={orderIsCreating}
-                      showOrderResult={showOrderResult}
-                      leverage={leverage}
-                      reduceOnly={reduceOnly}
-                      orderMode={orderMode}
-                      TIFMode={TIFMode}
-                      trigger={trigger}
-                    />
-                  </TerminalContainer>
-                </FullHeightGrid>
-              </div>
-            )}
+                  <FullHeightGrid theme={theme} xs={6} item>
+                    <TerminalContainer>
+                      <TraidingTerminal
+                        byType={'sell'}
+                        operationType={'sell'}
+                        priceType={mode}
+                        theme={theme}
+                        keyId={keyId}
+                        hedgeMode={hedgeMode}
+                        quantityPrecision={quantityPrecision}
+                        minSpotNotional={minSpotNotional}
+                        minFuturesStep={minFuturesStep}
+                        priceFromOrderbook={priceFromOrderbook}
+                        marketPriceAfterPairChange={marketPriceAfterPairChange}
+                        marketType={marketType}
+                        isSPOTMarket={isSPOTMarket}
+                        enqueueSnackbar={enqueueSnackbar}
+                        changePercentage={(value) =>
+                          this.handleChangePercentage(value, 'Sell')
+                        }
+                        pair={pair}
+                        funds={funds}
+                        lockedAmount={
+                          hedgeMode
+                            ? lockedPositionLongAmount
+                            : lockedPositionBothAmount <= 0
+                              ? 0
+                              : lockedPositionBothAmount
+                        }
+                        walletValue={funds && funds[1]}
+                        marketPrice={price}
+                        confirmOperation={placeOrder}
+                        cancelOrder={cancelOrder}
+                        decimals={decimals}
+                        addLoaderToButton={this.addLoaderToButton}
+                        orderIsCreating={orderIsCreating}
+                        showOrderResult={showOrderResult}
+                        leverage={leverage}
+                        reduceOnly={reduceOnly}
+                        orderMode={orderMode}
+                        TIFMode={TIFMode}
+                        trigger={trigger}
+                      />
+                    </TerminalContainer>
+                  </FullHeightGrid>
+                </div>
+              )}
           </TerminalMainGrid>
         </CustomCard>
         {/* {chartPagePopup && (

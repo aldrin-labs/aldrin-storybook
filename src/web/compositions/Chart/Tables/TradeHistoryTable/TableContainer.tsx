@@ -79,14 +79,14 @@ class TableContainer extends PureComponent<IProps, IState> {
     ) {
       const tickersData = newProps.data
 
-      if ( 
+      if (
         !tickersData ||
         tickersData.length === 0 ||
         tickersData[0].symbol !== newProps.currencyPair ||
         tickersData[0].marketType != newProps.marketType
       ) {
-          // console.log('TableContainer SUBSCRIPTION DATA FOR WRONG PAIR')
-          return { numbersAfterDecimalForPrice: state.numbersAfterDecimalForPrice, data: [] }
+        // console.log('TableContainer SUBSCRIPTION DATA FOR WRONG PAIR')
+        return { numbersAfterDecimalForPrice: state.numbersAfterDecimalForPrice, data: [] }
       }
 
       const updatedData = reduceArrayLength(
@@ -181,7 +181,9 @@ const TradeHistoryWrapper = compose(
   withWebsocket({
     url: (props: any) => getUrlForWebsocket('TH', props.marketType, props.symbol),
     onMessage: combineTradeHistoryDataFromWebsocket,
-    pair: (props: any) => props.symbol
+    pair: (props: any) => props.symbol,
+    // throttling: true,
+    // throttlingTime: 0.33,
   })
 )(TableContainer)
 

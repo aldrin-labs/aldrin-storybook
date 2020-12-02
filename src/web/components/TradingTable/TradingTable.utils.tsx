@@ -318,7 +318,8 @@ export const filterOpenOrders = ({
     !canceledOrders.includes(orderId) &&
     // sometimes we don't have order.type, also we want to filter market orders
     (!type || (type && type !== 'market')) &&
-    (status === 'open' || status === 'placing') && orderId
+    (status === 'open' || status === 'placing') &&
+    orderId
   )
 }
 
@@ -779,10 +780,21 @@ export const combineActiveTradesTable = ({
         },
       } = el
 
-      const { entryPrice, exitPrice, state, msg } = el.state || {
+      const {
+        entryPrice,
+        exitPrice,
+        state,
+        msg,
+        positionAmount,
+        receivedProfitAmount,
+        receivedProfitPercentage,
+      } = el.state || {
         entryPrice: 0,
         state: '-',
         msg: null,
+        positionAmount: 0,
+        receivedProfitAmount: 0,
+        receivedProfitPercentage: 0,
       }
 
       const pairArr = pair.split('_')
@@ -801,20 +813,30 @@ export const combineActiveTradesTable = ({
 
       const keyName = keys[accountId]
 
-      console.log('entryPrice', entryPrice)
-
       const entryOrderPrice =
         !entryDeviation && orderType === 'limit' && !entryPrice
           ? price
           : entryPrice
 
-      const profitPercentage =
+      let profitPercentage =
         ((currentPrice / entryOrderPrice) * 100 - 100) *
         leverage *
         (isBuyTypeOrder(side) ? 1 : -1)
 
-      const profitAmount =
-        (amount / leverage) * entryOrderPrice * (profitPercentage / 100)
+      let profitAmount =
+        (positionAmount / leverage) * entryOrderPrice * (profitPercentage / 100)
+
+      // pnl for averaging
+      if (entryLevels && entryLevels.length > 0) {
+        // if no entry price then we have no entry level 
+        if (!entryPrice) {
+          profitAmount = receivedProfitPercentage
+          profitPercentage = receivedProfitPercentage
+        } else {
+          profitPercentage += receivedProfitPercentage
+          profitAmount += receivedProfitAmount
+        }
+      }
 
       const [activeOrderStatus, statusColor] = getActiveOrderStatus({
         strategy: el,
@@ -967,7 +989,7 @@ export const combineActiveTradesTable = ({
                 <SubColumnValue
                   theme={theme}
                   color={
-                    profitPercentage > 0 || templatePnl > 0
+                    +profitPercentage > 0 || templatePnl > 0
                       ? green.main
                       : red.main
                   }
@@ -1357,11 +1379,20 @@ export const combineStrategiesHistoryTable = (
         },
       } = el
 
-      const { entryPrice, exitPrice, state, msg } = el.state || {
+      const {
+        entryPrice,
+        exitPrice,
+        state,
+        msg,
+        receivedProfitAmount,
+        receivedProfitPercentage,
+      } = el.state || {
         entryPrice: 0,
         state: '',
         msg: null,
         exitPrice: 0,
+        receivedProfitAmount: 0,
+        receivedProfitPercentage: 0,
       }
 
       const keyName = keys[accountId]
@@ -1538,17 +1569,17 @@ export const combineStrategiesHistoryTable = (
             <SubColumnValue
               theme={theme}
               color={
-                profitPercentage === 0 && !templatePnl
+                receivedProfitPercentage === 0 && !templatePnl
                   ? ''
-                  : profitPercentage > 0 || (!!templatePnl && templatePnl > 0)
+                  : receivedProfitPercentage > 0 || (!!templatePnl && templatePnl > 0)
                     ? green.main
                     : red.main
               }
             >
               {!!templatePnl
                 ? `${stripDigitPlaces(templatePnl, 3)} ${pairArr[1]}`
-                : `${stripDigitPlaces(profitAmount, 3)} ${pairArr[1]
-                } / ${stripDigitPlaces(profitPercentage, 2)}%`}
+                : `${stripDigitPlaces(receivedProfitAmount, 3)} ${pairArr[1]
+                } / ${stripDigitPlaces(receivedProfitPercentage, 2)}%`}
             </SubColumnValue>
           ),
           style: {
