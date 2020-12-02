@@ -13,19 +13,10 @@ import {
 import OrderBookTable from './Tables/Asks/OrderBookTable'
 import SpreadTable from './Tables/Bids/SpreadTable'
 import LastTrade from './Tables/LastTrade/LastTrade'
-import ChartCardHeader from '@sb/components/ChartCardHeader'
-import {
-  StyledSelect,
-  StyledOption,
-} from '@sb/components/TradingWrapper/styles'
-
-import SortByBoth from '@icons/SortByBoth.svg'
-import SortByAsks from '@icons/SortByAsks.svg'
-import SortByBids from '@icons/SortByBids.svg'
+import OrderBookCardHeader from './OrderBookCardHeader'
 
 import { IProps, IState, OrderbookMode } from './OrderBookTableContainer.types'
 
-import { ModesContainer, SvgMode } from './OrderBookTableContainer.styles'
 import { getAggregationsFromMinPriceDigits } from '@core/utils/chartPageUtils'
 
 class OrderBookTableContainer extends Component<IProps, IState> {
@@ -104,53 +95,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
 
     return (
       <>
-        <ChartCardHeader
-          theme={theme}
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <span
-            style={{ width: '40%', whiteSpace: 'pre-line', textAlign: 'left' }}
-          >
-            Order book
-          </span>
-          <ModesContainer>
-            <SvgMode
-              src={SortByBoth}
-              isActive={mode === 'both'}
-              onClick={() => this.setOrderbookMode('both')}
-            />
-            <SvgMode
-              src={SortByBids}
-              isActive={mode === 'bids'}
-              onClick={() => this.setOrderbookMode('bids')}
-            />
-            <SvgMode
-              src={SortByAsks}
-              isActive={mode === 'asks'}
-              onClick={() => this.setOrderbookMode('asks')}
-            />
-            <div style={{ width: '60%', padding: '0 1rem' }}>
-              {/* <StyledSelect
-                theme={theme}
-                onChange={(e: ChangeEvent) => {
-                  setOrderbookAggregation(
-                    aggregationModes.find(
-                      (mode) => String(mode.label) === e.target.value
-                    ).value
-                  )
-                }}
-              >
-                {aggregationModes.map((option) => (
-                  <StyledOption key={option.label}>{option.label}</StyledOption>
-                ))}
-              </StyledSelect> */}
-            </div>
-          </ModesContainer>
-        </ChartCardHeader>
+        <OrderBookCardHeader theme={theme} mode={mode} setOrderbookMode={this.setOrderbookMode} />
 
         <OrderBookTable
           data={data}
