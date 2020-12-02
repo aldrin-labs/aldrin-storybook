@@ -31,6 +31,8 @@ import { combineTradeHistoryDataFromFetch } from './utils'
 
 // let unsubscribe: Function | undefined
 
+const MemoizedChartCardHeader = React.memo(ChartCardHeader)
+
 class TableContainer extends PureComponent<IProps, IState> {
   state: IState = {
     data: [],
@@ -152,7 +154,7 @@ class TableContainer extends PureComponent<IProps, IState> {
 
     return (
       <>
-        <ChartCardHeader theme={theme}>Trade history</ChartCardHeader>
+        <MemoizedChartCardHeader theme={theme}>Trade history</MemoizedChartCardHeader>
         <TradeHistoryTable
           data={data}
           theme={theme}
