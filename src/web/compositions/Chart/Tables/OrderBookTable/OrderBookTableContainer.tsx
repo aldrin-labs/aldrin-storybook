@@ -1,4 +1,4 @@
-import React, { Component, ChangeEvent } from 'react'
+import React, { Component, ChangeEvent, PureComponent } from 'react'
 
 // import QueryRenderer from '@core/components/QueryRenderer'
 
@@ -19,7 +19,7 @@ import { IProps, IState, OrderbookMode } from './OrderBookTableContainer.types'
 
 // import { getAggregationsFromMinPriceDigits } from '@core/utils/chartPageUtils'
 
-class OrderBookTableContainer extends Component<IProps, IState> {
+class OrderBookTableContainer extends PureComponent<IProps, IState> {
   state: IState = {
     mode: 'both',
   }
@@ -113,13 +113,10 @@ class OrderBookTableContainer extends Component<IProps, IState> {
         />
 
         <LastTrade
-          mode={mode}
-          data={data}
+          // mode={mode}
           theme={theme}
           minPriceDigits={minPriceDigits}
           marketType={marketType}
-          marketOrders={marketOrders}
-          aggregation={aggregation}
           symbol={symbol}
           exchange={exchange}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
