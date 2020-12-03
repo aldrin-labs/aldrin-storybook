@@ -13,7 +13,7 @@ const OrderBookCardHeader = ({ theme, mode, setOrderbookMode }) => (
 		}}
 	>
 		<span style={{ width: '40%', whiteSpace: 'pre-line', textAlign: 'left' }}>Order book</span>
-        <OrderBookModesContainer mode={mode} setOrderbookMode={setOrderbookMode} />
+		<OrderBookModesContainer mode={mode} setOrderbookMode={setOrderbookMode} />
 	</ChartCardHeader>
 );
 

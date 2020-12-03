@@ -228,6 +228,7 @@ export type InputRowProps = {
   justify?: string
   padding?: string
   width?: string
+  wrap?: string
 }
 
 export type CommonForBlocks = {
@@ -305,7 +306,7 @@ export interface TerminalHeaderBlockProps extends CommonForBlocks {
   changeMarginTypeWithStatus: (marginType: string, selectedKey: SelectedKey, pair: [string, string]) => void
 }
 
-export interface SliderWithPriceFieldRowComponentProps extends CommonForBlocks {
+export interface SliderWithPriceAndPercentageFieldRowProps extends CommonForBlocks {
   entryPoint: EntryPointType,
   showErrors: boolean,
   stopLoss?: StopLossType,

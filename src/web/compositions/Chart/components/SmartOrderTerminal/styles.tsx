@@ -109,6 +109,7 @@ export const InputRowContainer = React.memo(styled.div`
   width: ${(props: InputRowProps) => props.width || '100%'};
   flex-direction: ${(props: InputRowProps) => props.direction || 'row'};
   justify-content: ${(props: InputRowProps) => props.justify};
+  flex-wrap: ${(props: InputRowProps) => props.wrap || 'nowrap'};
   padding: ${(props: InputRowProps) => props.padding || '0 0 .6rem 0'};
 
   @media (min-width: 1921px) {

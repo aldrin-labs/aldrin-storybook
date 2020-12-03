@@ -45,7 +45,7 @@ const generateToken = () =>
     .toString(36)
     .substring(2, 15)
 
-export class SmartOrderTerminal extends React.PureComponent<{}, IState> {
+export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
   state: IState = {
     showConfirmationPopup: false,
     showErrors: false,
@@ -951,8 +951,6 @@ export class SmartOrderTerminal extends React.PureComponent<{}, IState> {
           price * (1 + takeProfitPercentage / 100 / leverage),
           pricePrecision
         )
-
-    console.log('takeProfitPrice', takeProfitPrice, takeProfitPrice, leverage, price)
 
     this.updateBlockValue('stopLoss', 'stopLossPrice', stopLossPrice)
     this.updateBlockValue('takeProfit', 'takeProfitPrice', takeProfitPrice)
