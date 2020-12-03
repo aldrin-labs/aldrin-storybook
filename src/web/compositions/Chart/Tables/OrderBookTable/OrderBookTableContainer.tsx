@@ -64,6 +64,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
     const {
       data,
       quote,
+      base,
       theme,
       exchange,
       marketType,
@@ -108,6 +109,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           amountForBackground={amountForBackground}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
           quote={quote}
+          base={base}
         />
 
         <LastTrade
@@ -135,6 +137,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           amountForBackground={amountForBackground}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
           quote={quote}
+          base={base}
         />
       </>
     )
