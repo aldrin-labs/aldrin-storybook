@@ -229,7 +229,7 @@ export function ChartPageComponent(props: any) {
     getChartLayoutQuery: {
       chart: { layout } = {
         layout: {
-          hideDepthChart: false,
+          hideDepthChart: true,
           hideOrderbook: false,
           hideTradeHistory: false,
           hideTradingViewChart: false,
@@ -238,7 +238,7 @@ export function ChartPageComponent(props: any) {
     } = {
       chart: {
         layout: {
-          hideDepthChart: false,
+          hideDepthChart: true,
           hideOrderbook: false,
           hideTradeHistory: false,
           hideTradingViewChart: false,
