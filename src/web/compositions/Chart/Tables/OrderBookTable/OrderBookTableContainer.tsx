@@ -1,13 +1,13 @@
 import React, { Component, ChangeEvent } from 'react'
 
-import QueryRenderer from '@core/components/QueryRenderer'
+// import QueryRenderer from '@core/components/QueryRenderer'
 
-import { checkLoginStatus } from '@core/utils/loginUtils'
-import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
-import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
+// import { checkLoginStatus } from '@core/utils/loginUtils'
+// import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
+// import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
 import {
   filterOpenOrders,
-  updateOpenOrderHistoryQuerryFunction,
+  // updateOpenOrderHistoryQuerryFunction,
 } from '@sb/components/TradingTable/TradingTable.utils'
 
 import OrderBookTable from './Tables/Asks/OrderBookTable'
@@ -17,14 +17,11 @@ import OrderBookCardHeader from './OrderBookCardHeader'
 
 import { IProps, IState, OrderbookMode } from './OrderBookTableContainer.types'
 
-import { getAggregationsFromMinPriceDigits } from '@core/utils/chartPageUtils'
+// import { getAggregationsFromMinPriceDigits } from '@core/utils/chartPageUtils'
 
 class OrderBookTableContainer extends Component<IProps, IState> {
   state: IState = {
-    // will use to compare data and update from query
-    lastQueryData: null,
     mode: 'both',
-    i: 0,
   }
 
   componentDidUpdate(prevProps) {
@@ -68,10 +65,11 @@ class OrderBookTableContainer extends Component<IProps, IState> {
       data,
       quote,
       theme,
+      exchange,
       marketType,
       marketOrders,
       aggregation,
-      currencyPair,
+      symbol,
       onButtonClick,
       minPriceDigits,
       arrayOfMarketIds,
@@ -91,7 +89,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
     const openOrders = getOpenOrderHistory.orders.filter((order) =>
       filterOpenOrders({ order, canceledOrders: [] })
     )
-    const aggregationModes = getAggregationsFromMinPriceDigits(minPriceDigits)
+    // const aggregationModes = getAggregationsFromMinPriceDigits(minPriceDigits)
 
     return (
       <>
@@ -106,7 +104,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           aggregation={aggregation}
           onButtonClick={onButtonClick}
           openOrderHistory={openOrders}
-          currencyPair={currencyPair}
+          currencyPair={symbol}
           amountForBackground={amountForBackground}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
           quote={quote}
@@ -120,8 +118,8 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           marketType={marketType}
           marketOrders={marketOrders}
           aggregation={aggregation}
-          symbol={currencyPair}
-          exchange={this.props.exchange}
+          symbol={symbol}
+          exchange={exchange}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
         />
 
@@ -133,7 +131,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
           arrayOfMarketIds={arrayOfMarketIds}
           aggregation={aggregation}
           openOrderHistory={openOrders}
-          currencyPair={currencyPair}
+          currencyPair={symbol}
           amountForBackground={amountForBackground}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
           quote={quote}
@@ -143,42 +141,5 @@ class OrderBookTableContainer extends Component<IProps, IState> {
   }
 }
 
-const APIWrapper = (props) => {
-  const authenticated = checkLoginStatus()
 
-  return (
-    <QueryRenderer
-      component={OrderBookTableContainer}
-      variables={{
-        openOrderInput: {
-          activeExchangeKey: props.selectedKey.keyId,
-          marketType: props.marketType,
-          allKeys: true,
-          page: 0,
-          perPage: 30,
-        },
-      }}
-      withOutSpinner={true}
-      withTableLoader={false}
-      skip={!authenticated}
-      query={getOpenOrderHistory}
-      name={`getOpenOrderHistoryQuery`}
-      fetchPolicy="cache-fisrt"
-      subscriptionArgs={{
-        subscription: OPEN_ORDER_HISTORY,
-        variables: {
-          openOrderInput: {
-            marketType: props.marketType,
-            activeExchangeKey: props.selectedKey.keyId,
-            allKeys: true,
-          },
-        },
-        updateQueryFunction: updateOpenOrderHistoryQuerryFunction,
-      }}
-      withoutLoading={true}
-      {...props}
-    />
-  )
-}
-
-export default APIWrapper
+export default OrderBookTableContainer
