@@ -230,22 +230,6 @@ class MarketStats extends React.PureComponent<IProps> {
 
 const MarketStatsDataWrapper = compose(
 	queryRendererHoc({
-		query: getMarketStatisticsByPair,
-		name: 'getMarketStatisticsByPairQuery',
-		variables: (props) => ({
-			input: {
-				exchange: props.exchange.symbol,
-				symbol: props.symbol,
-				marketType: props.marketType
-			}
-		}),
-		fetchPolicy: 'cache-and-network',
-		pollInterval: 30000,
-		withOutSpinner: true,
-		withTableLoader: true,
-		withoutLoading: true
-	}),
-	queryRendererHoc({
 		query: getFundingRate,
 		name: 'getFundingRateQuery',
 		variables: (props) => ({
@@ -265,6 +249,22 @@ const MarketStatsDataWrapper = compose(
 			updateQueryFunction: updateFundingRateQuerryFunction
 		},
 		fetchPolicy: 'cache-and-network',
+		withOutSpinner: true,
+		withTableLoader: true,
+		withoutLoading: true
+	}),
+	queryRendererHoc({
+		query: getMarketStatisticsByPair,
+		name: 'getMarketStatisticsByPairQuery',
+		variables: (props) => ({
+			input: {
+				exchange: props.exchange.symbol,
+				symbol: props.symbol,
+				marketType: props.marketType
+			}
+		}),
+		fetchPolicy: 'cache-and-network',
+		pollInterval: 30000,
 		withOutSpinner: true,
 		withTableLoader: true,
 		withoutLoading: true
