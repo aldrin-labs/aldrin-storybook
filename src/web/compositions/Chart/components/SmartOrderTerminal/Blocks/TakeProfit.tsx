@@ -31,7 +31,7 @@ import {
 
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-import { SliderWithPriceFieldRowComponent } from './SliderComponents'
+import { SliderWithPriceAndPercentageFieldRow } from './SliderComponents'
 
 export const TakeProfitBlock = ({
   pair,
@@ -282,7 +282,7 @@ export const TakeProfitBlock = ({
               title={'stop price'}
             >
               <InputRowContainer>
-                <SliderWithPriceFieldRowComponent
+                <SliderWithPriceAndPercentageFieldRow
                   {...{
                     pair,
                     theme,
@@ -293,6 +293,7 @@ export const TakeProfitBlock = ({
                     pricePrecision,
                     updateBlockValue,
                     priceForCalculate,
+                    percentagePreSymbol: '+',
                     approximatePrice: takeProfit.takeProfitPrice,
                     pricePercentage: takeProfit.pricePercentage,
                     getApproximatePrice: (value: number) => {
@@ -371,7 +372,7 @@ export const TakeProfitBlock = ({
                 title={!takeProfit.external ? 'activation price' : 'stop price'}
               >
                 <InputRowContainer>
-                  <SliderWithPriceFieldRowComponent
+                  <SliderWithPriceAndPercentageFieldRow
                     {...{
                       pair,
                       theme,
@@ -382,6 +383,7 @@ export const TakeProfitBlock = ({
                       pricePrecision,
                       updateBlockValue,
                       priceForCalculate,
+                      percentagePreSymbol: '+',
                       approximatePrice: takeProfit.takeProfitPrice,
                       pricePercentage: takeProfit.trailingTAP.activatePrice,
                       getApproximatePrice: (value: number) => {
@@ -458,45 +460,39 @@ export const TakeProfitBlock = ({
                   title={'trailing deviation (%)'}
                 >
                   <InputRowContainer>
-                    <Input
-                      theme={theme}
-                      padding={'0 .8rem 0 0'}
-                      width={'calc(50%)'}
-                      symbol={'%'}
-                      value={takeProfit.trailingTAP.deviationPercentage}
-                      showErrors={
-                        showErrors &&
-                        takeProfit.isTakeProfitOn &&
-                        !takeProfit.external
-                      }
-                      isValid={validateField(
-                        takeProfit.trailingTAP.isTrailingOn,
-                        takeProfit.trailingTAP.deviationPercentage
-                      )}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        updateSubBlockValue(
-                          'takeProfit',
-                          'trailingTAP',
-                          'deviationPercentage',
-                          e.target.value
-                        )
-                      }}
-                    />
-
-                    <BlueSlider
-                      theme={theme}
-                      value={takeProfit.trailingTAP.deviationPercentage}
-                      sliderContainerStyles={{
-                        width: '50%',
-                        margin: '0 .8rem 0 .8rem',
-                      }}
-                      onChange={(value) => {
-                        updateSubBlockValue(
-                          'takeProfit',
-                          'trailingTAP',
-                          'deviationPercentage',
-                          value
-                        )
+                    <SliderWithPriceAndPercentageFieldRow
+                      {...{
+                        pair,
+                        theme,
+                        entryPoint,
+                        showErrors,
+                        isMarketType,
+                        validateField,
+                        pricePrecision,
+                        updateBlockValue,
+                        priceForCalculate,
+                        needPriceField: false,
+                        percentagePreSymbol: '',
+                        percentageTextAlign: 'right',
+                        pricePercentage: takeProfit.trailingTAP.deviationPercentage,
+                        onAfterSliderChange: (value: number) => {
+                          updateSubBlockValue(
+                            'takeProfit',
+                            'trailingTAP',
+                            'deviationPercentage',
+                            value
+                          )
+                        },
+                        onPricePercentageChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                          updateSubBlockValue(
+                            'takeProfit',
+                            'trailingTAP',
+                            'deviationPercentage',
+                            e.target.value
+                          )
+                        },
+                        updateSubBlockValue,
+                        updateStopLossAndTakeProfitPrices,
                       }}
                     />
                   </InputRowContainer>
@@ -723,50 +719,53 @@ export const TakeProfitBlock = ({
           <>
             <FormInputContainer theme={theme} title={'amount (%)'}>
               <InputRowContainer>
-                <Input
-                  theme={theme}
-                  padding={'0 .8rem 0 0'}
-                  width={'calc(50%)'}
-                  symbol={'%'}
-                  value={takeProfit.splitTargets.volumePercentage}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    const occupiedVolume = takeProfit.splitTargets.targets.reduce(
-                      (prev, curr) => prev + curr.amount,
-                      0
-                    )
+                <SliderWithPriceAndPercentageFieldRow
+                  {...{
+                    pair,
+                    theme,
+                    entryPoint,
+                    showErrors,
+                    isMarketType,
+                    validateField,
+                    pricePrecision,
+                    updateBlockValue,
+                    priceForCalculate,
+                    needPriceField: false,
+                    percentagePreSymbol: '',
+                    percentageTextAlign: 'right',
+                    pricePercentage: takeProfit.trailingTAP.deviationPercentage,
+                    onAfterSliderChange: (value) => {
+                      const occupiedVolume = takeProfit.splitTargets.targets.reduce(
+                        (prev, curr) => prev + curr.amount,
+                        0
+                      )
 
-                    updateSubBlockValue(
-                      'takeProfit',
-                      'splitTargets',
-                      'volumePercentage',
-                      occupiedVolume + +e.target.value < 100
-                        ? e.target.value
-                        : 100 - occupiedVolume
-                    )
-                  }}
-                />
+                      updateSubBlockValue(
+                        'takeProfit',
+                        'splitTargets',
+                        'volumePercentage',
+                        occupiedVolume + value < 100
+                          ? value
+                          : 100 - occupiedVolume
+                      )
+                    },
+                    onPricePercentageChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                      const occupiedVolume = takeProfit.splitTargets.targets.reduce(
+                        (prev, curr) => prev + curr.amount,
+                        0
+                      )
 
-                <BlueSlider
-                  theme={theme}
-                  value={takeProfit.splitTargets.volumePercentage}
-                  sliderContainerStyles={{
-                    width: '50%',
-                    margin: '0 .8rem 0 .8rem',
-                  }}
-                  onChange={(value) => {
-                    const occupiedVolume = takeProfit.splitTargets.targets.reduce(
-                      (prev, curr) => prev + curr.amount,
-                      0
-                    )
-
-                    updateSubBlockValue(
-                      'takeProfit',
-                      'splitTargets',
-                      'volumePercentage',
-                      occupiedVolume + value < 100
-                        ? value
-                        : 100 - occupiedVolume
-                    )
+                      updateSubBlockValue(
+                        'takeProfit',
+                        'splitTargets',
+                        'volumePercentage',
+                        occupiedVolume + +e.target.value < 100
+                          ? e.target.value
+                          : 100 - occupiedVolume
+                      )
+                    },
+                    updateSubBlockValue,
+                    updateStopLossAndTakeProfitPrices,
                   }}
                 />
               </InputRowContainer>

@@ -45,7 +45,7 @@ import {
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 
 import FirstVisitPopup from '@sb/compositions/Chart/components/FirstVisitPopup'
-
+import { SliderForLeverage } from '@sb/compositions/Chart/components/SmartOrderTerminal/Blocks/SliderComponents'
 import { getMarks } from '@core/utils/chartPageUtils'
 
 class SimpleTabs extends React.Component {
