@@ -297,6 +297,7 @@ export const DefaultViewComponent = (
                       symbol={currencyPair}
                       exchange={exchange}
                       quote={quote}
+                      base={base}
                       marketType={marketType}
                       hideDepthChart={hideDepthChart}
                       theme={theme}
