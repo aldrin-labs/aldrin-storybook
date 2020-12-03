@@ -77,7 +77,7 @@ export const DefaultViewComponent = (
     showFuturesTransfer,
     showTableOnMobile,
     selectedKey,
-    chartProps,
+    // chartProps,
     showChangePositionModeResult,
     terminalViewMode,
     updateTerminalViewMode,
@@ -294,26 +294,19 @@ export const DefaultViewComponent = (
                 >
                   {!hideOrderbook && (
                     <OrderbookAndDepthChart
-                      {...{
-                        symbol: currencyPair,
-                        pair: currencyPair,
-                        exchange,
-                        quote,
-                        theme,
-                        isPairDataLoading,
-                        minPriceDigits,
-                        arrayOfMarketIds,
-                        updateTerminalPriceFromOrderbook,
-                        activeExchange,
-                        selectedKey,
-                        showTableOnMobile,
-                        changeTable,
-                        chartProps,
-                        marketType,
-                        sizeDigits,
-                        hideDepthChart,
-                        hideOrderbook,
-                      }}
+                      symbol={currencyPair}
+                      exchange={exchange}
+                      quote={quote}
+                      marketType={marketType}
+                      hideDepthChart={hideDepthChart}
+                      theme={theme}
+                      isPairDataLoading={isPairDataLoading}
+                      minPriceDigits={minPriceDigits}
+                      selectedKey={selectedKey}
+                      arrayOfMarketIds={arrayOfMarketIds}
+                      updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
+                      changeTable={changeTable}
+                      sizeDigits={sizeDigits}
                     />
                   )}
                 </Grid>
@@ -336,22 +329,19 @@ export const DefaultViewComponent = (
                 >
                   {!hideTradeHistory && (
                     <TradeHistory
-                      {...{
-                        symbol: currencyPair,
-                        pair: currencyPair,
-                        exchange,
-                        quote,
-                        theme,
-                        minPriceDigits,
-                        updateTerminalPriceFromOrderbook,
-                        marketType,
-                        isPairDataLoading,
-                        activeExchange,
-                        showTableOnMobile,
-                        changeTable,
-                        chartProps,
-                        sizeDigits,
-                      }}
+                      symbol={currencyPair}
+                      pair={currencyPair}
+                      exchange={exchange}
+                      activeExchange={activeExchange}
+                      quote={quote}
+                      theme={theme}
+                      minPriceDigits={minPriceDigits}
+                      updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
+                      marketType={marketType}
+                      isPairDataLoading={isPairDataLoading}
+                      showTableOnMobile={showTableOnMobile}
+                      changeTable={changeTable}
+                      sizeDigits={sizeDigits}
                     />
                   )}
                 </Grid>
