@@ -1,4 +1,5 @@
 import React, { Component, PureComponent, CSSProperties } from 'react';
+import memoizeOne from 'memoize-one';
 import { withTheme } from '@material-ui/styles';
 
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
@@ -13,7 +14,7 @@ import { getDataFromTree } from '@core/utils/chartPageUtils';
 import defaultRowRenderer from '../../utils';
 import { AsksWrapper } from '../../OrderBookTableContainer.styles';
 
-const getHeaderStyle = (theme) => ({
+const getHeaderStyle = memoizeOne((theme) => ({
   color: theme.palette.grey.text,
   paddingLeft: '.5rem',
   paddingTop: '.25rem',
@@ -22,7 +23,7 @@ const getHeaderStyle = (theme) => ({
   letterSpacing: '.075rem',
   borderBottom: theme.palette.border.main,
   fontSize: '1rem'
-})
+}))
 
 const gridStyle = {
 	// overflow: mode !== 'asks' ? 'hidden' : 'hidden auto',
@@ -37,14 +38,14 @@ const columnTotalHeaderStyle = {
 	paddingRight: 'calc(.5rem + 10px)',
 	textAlign: 'right'
 };
-const getTotalStyles = (theme): CSSProperties => ({ textAlign: 'right', color: theme.palette.dark.main });
-const getSizeStyles = (theme): CSSProperties => ({
+const getTotalStyles = memoizeOne((theme): CSSProperties => ({ textAlign: 'right', color: theme.palette.dark.main }));
+const getSizeStyles = memoizeOne((theme): CSSProperties => ({
 	textAlign: 'right',
 	color: theme.palette.dark.main
-});
-const getPriceStyles = (theme): CSSProperties => ({ color: theme.palette.red.main });
+}));
+const getPriceStyles = memoizeOne((theme): CSSProperties => ({ color: theme.palette.red.main }));
 
-@withTheme()
+// @withTheme()
 class OrderBookTable extends PureComponent<IProps> {
 	render() {
 		const {
@@ -62,7 +63,6 @@ class OrderBookTable extends PureComponent<IProps> {
 		const tableData = getDataFromTree(data.asks, 'asks').reverse();
 		const amountForBackground = tableData.reduce((acc, curr) => acc + +curr.size, 0) / tableData.length;
 
-		// Add memo
 		const headerStyle = getHeaderStyle(theme);
 		const totalStyles = getTotalStyles(theme);
 		const sizeStyles = getSizeStyles(theme);

@@ -1,4 +1,5 @@
 import React, { PureComponent, useMemo } from 'react';
+import memoizeOne from 'memoize-one'
 import styled from 'styled-components';
 import { withTheme } from '@material-ui/styles';
 import { IProps, IState } from './TradeHistoryTable.types';
@@ -21,8 +22,8 @@ const Wrapper = styled.div`
 
 const priceColor = { color: '' };
 const headerStyle = { paddingLeft: 'calc(.5rem + 10px)' };
-const getSizeTimeColor = (theme) => ({ color: theme.palette.dark.main });
-const getHeaderStyles = (theme) => ({
+const getSizeTimeColor = memoizeOne((theme) => ({ color: theme.palette.dark.main }))
+const getHeaderStyles = memoizeOne((theme) => ({
 	color: theme.palette.grey.text,
 	paddingLeft: '.5rem',
 	marginLeft: 0,
@@ -31,7 +32,7 @@ const getHeaderStyles = (theme) => ({
 	letterSpacing: '.075rem',
 	borderBottom: theme.palette.border.main,
 	fontSize: '1rem'
-});
+}))
 const gridStyles = {
 	overflow: 'hidden'
 };
@@ -65,9 +66,8 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
 	render() {
 		const { data, theme } = this.props;
 
-		// TODO: Add memo
-		const sizeTimeColor = getSizeTimeColor(theme);
-		const headerStyles = getHeaderStyles(theme);
+		const sizeTimeColor = getSizeTimeColor(theme)
+		const headerStyles = getHeaderStyles(theme)
 
 		return (
 			<MemoizedWrapper>

@@ -1,5 +1,5 @@
 import React, { Component, PureComponent, CSSProperties } from 'react'
-import styled from 'styled-components'
+import memoizeOne from 'memoize-one';
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
 import { Column, Table } from 'react-virtualized'
 import 'react-virtualized/styles.css'
@@ -17,7 +17,7 @@ import {
 import defaultRowRenderer from '../../utils'
 import { BidsWrapper } from '../../OrderBookTableContainer.styles'
 
-const getHeaderStyle = (theme): CSSProperties => ({
+const getHeaderStyle = memoizeOne((theme): CSSProperties => ({
   color: '#7284A0',
   paddingLeft: '.5rem',
   marginLeft: 0,
@@ -26,7 +26,7 @@ const getHeaderStyle = (theme): CSSProperties => ({
   letterSpacing: '.075rem',
   borderBottom: theme.palette.border.main,
   fontSize: '1rem',
-})
+}))
 
 const gridStyle = {
   // overflow: mode !== 'bids' ? 'hidden' : 'hidden auto',
@@ -41,13 +41,13 @@ const columnTotalHeaderStyle = {
   paddingRight: 'calc(.5rem + 10px)',
   textAlign: 'right',
 }
-const getTotalStyles = (theme): CSSProperties => ({ textAlign: 'right', color: theme.palette.dark.main })
-const getSizeStyles = (theme): CSSProperties => ({
+const getTotalStyles = memoizeOne((theme): CSSProperties => ({ textAlign: 'right', color: theme.palette.dark.main }))
+const getSizeStyles = memoizeOne((theme): CSSProperties => ({
   textAlign: 'right',
   color: theme.palette.dark.main,
-})
-const getPriceStyles = (theme): CSSProperties => ({ color: theme.palette.green.main })
-@withTheme()
+}))
+const getPriceStyles = memoizeOne((theme): CSSProperties => ({ color: theme.palette.green.main }))
+// @withTheme()
 class SpreadTable extends PureComponent<IProps> {
   onRowClick = ({ event, index, rowData }) => {
 		const { updateTerminalPriceFromOrderbook } = this.props;
@@ -89,7 +89,6 @@ class SpreadTable extends PureComponent<IProps> {
     const amountForBackground =
       tableData.reduce((acc, curr) => acc + +curr.size, 0) / tableData.length
 
-    // Add memo  
     const headerStyle = getHeaderStyle(theme)  
     const totalStyles = getTotalStyles(theme)
     const sizeStyles = getSizeStyles(theme)

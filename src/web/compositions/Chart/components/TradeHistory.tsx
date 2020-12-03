@@ -1,13 +1,14 @@
 import React from 'react';
+import memoizeOne from 'memoize-one'
 
 import { TradeHistoryTable } from '../Tables/Tables';
 import { TradeHistoryWrapper } from '../Chart.styles';
 
 const MemoizedTradeHistoryWrapper = React.memo(TradeHistoryWrapper);
 
-const getTradeHistoryWrapperVariant = (showTableOnMobile) => ({
+const getTradeHistoryWrapperVariant = memoizeOne((showTableOnMobile) => ({
 	show: showTableOnMobile === 'TRADE'
-})
+}))
 
 const TradeHistoryRaw = ({
 	updateTerminalPriceFromOrderbook,
@@ -25,7 +26,6 @@ const TradeHistoryRaw = ({
 	quote,
 	pair
 }) => {
-  // TODO: Add memo
   const variant = getTradeHistoryWrapperVariant(showTableOnMobile)
 
 	return (
