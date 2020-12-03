@@ -59,6 +59,7 @@ export const updateFundingRateQuerryFunction = (
     return previous
   }
 
+  console.log('updateFundingRateQuerryFunction: ', subscriptionData.data.listenFundingRate)
   const fundingRateNewElement = subscriptionData.data.listenFundingRate
   const fundingRateOldElement = previous.getFundingRate
 

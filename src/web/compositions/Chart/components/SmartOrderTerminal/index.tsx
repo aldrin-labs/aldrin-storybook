@@ -1,20 +1,8 @@
 import React from 'react'
-import copy from 'clipboard-copy'
 
-import { SmartOrderOnboarding } from '@sb/compositions/Chart/components/SmartOrderTerminal/SmartTerminalOnboarding/SmartTerminalOnboarding'
 import { IProps, IState } from './types'
-import {
-  getSecondValueFromFirst,
-  GreenSwitcherStyles,
-  RedSwitcherStyles,
-  BlueSwitcherStyles,
-  DisabledSwitcherStyles,
-} from './utils'
 
-import {
-  StyledSelect,
-  StyledOption,
-} from '@sb/components/TradingWrapper/styles'
+import _ from 'lodash'
 
 import {
   getTakeProfitObject,
@@ -28,76 +16,29 @@ import {
   validateTakeProfit,
   validateEntryOrder,
   getDefaultStateFromStrategySettings,
-  getMarks,
 } from '@core/utils/chartPageUtils'
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-import { API_URL } from '@core/utils/config'
-import WebHookImg from '@sb/images/WebHookImg.png'
-import MessageImg from '@sb/images/MessageImg.png'
 
 import { CustomCard } from '../../Chart.styles'
-import { SendButton } from '@sb/components/TraidingTerminal/styles'
 
-import {
-  StyledZoomIcon,
-  LeverageLabel,
-  LeverageTitle,
-  SettingsLabel,
-} from '@sb/components/TradingWrapper/styles'
-import GreenSwitcher from '@sb/components/SwitchOnOff/GreenSwitcher'
-import CloseIcon from '@material-ui/icons/Close'
-
-import {
-  SCheckbox,
-  SRadio,
-} from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { FormInputContainer, Select } from './InputComponents'
 import {
   EditTakeProfitPopup,
   EditStopLossPopup,
-  EditHedgePopup,
   EditEntryOrderPopup,
 } from './EditOrderPopups'
 
-import HeightIcon from '@material-ui/icons/Height'
-import CustomSwitcher, {
-  SwitcherHalf,
-} from '@sb/components/SwitchOnOff/CustomSwitcher'
-import BlueSlider from '@sb/components/Slider/BlueSlider'
-import SmallSlider from '@sb/components/Slider/SmallSlider'
+import { SmartOrderOnboarding } from '@sb/compositions/Chart/components/SmartOrderTerminal/SmartTerminalOnboarding/SmartTerminalOnboarding'
 import ConfirmationPopup from '@sb/compositions/Chart/components/SmartOrderTerminal/ConfirmationPopup/ConfirmationPopup'
-import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
+
+import { TerminalBlocksContainer } from './styles'
 
 import {
-  TradeInputContent as Input,
-  TradeInputHeader,
-} from '@sb/components/TraidingTerminal/index'
-
-import {
-  TerminalBlocksContainer,
-  TerminalHeaders,
-  TerminalBlock,
-  TerminalHeader,
-  HeaderTitle,
-  BlockHeader,
-  HeaderLabel,
-  CloseHeader,
-  SubBlocksContainer,
-  InputRowContainer,
-  TimeoutTitle,
-  TargetTitle,
-  TargetValue,
-  BluredBackground,
-  SwitcherContainer,
-  AdditionalSettingsButton,
-  StyledSwitch,
-  ChangeOrderTypeBtn,
-  Switcher,
-} from './styles'
-
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+  EntryOrderBlock,
+  StopLossBlock,
+  TakeProfitBlock,
+  TerminalHeadersBlock,
+} from './Blocks'
 
 const generateToken = () =>
   Math.random()
@@ -107,7 +48,7 @@ const generateToken = () =>
     .toString(36)
     .substring(2, 15)
 
-export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
+export class SmartOrderTerminal extends React.PureComponent<{}, IState> {
   state: IState = {
     showConfirmationPopup: false,
     showErrors: false,
@@ -119,7 +60,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         price: 0,
         amount: 0,
         total: 0,
-        leverage: false,
+        leverage: 1,
         hedgeMode: false,
         isHedgeOn: false,
         hedgePrice: 0,
@@ -218,50 +159,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     },
   }
 
-  static getDerivedStateFromProps(props: IProps, state: IState) {
-    const isMarketType =
-      state.entryPoint.order.type === 'market' ||
-      state.entryPoint.order.type === 'maker-only'
-
-    // TODO: check this condition later
-    if (
-      state.priceForCalculate === 0 ||
-      (isMarketType && !state.entryPoint.trailing.isTrailingOn)
-    ) {
-      return {
-        ...state,
-        entryPoint: {
-          ...state.entryPoint,
-          order: {
-            ...state.entryPoint.order,
-            price: props.price,
-          },
-        },
-      }
-    }
-
-    if (!state.entryPoint.order.leverage) {
-      return {
-        ...state,
-        entryPoint: {
-          ...state.entryPoint,
-          order: {
-            ...state.entryPoint.order,
-            leverage: props.componentLeverage,
-          },
-        },
-      }
-    }
-
-    return null
-  }
-
   componentDidMount() {
     const {
       getStrategySettingsQuery,
       marketType,
       componentLeverage,
       hedgeMode,
+      quantityPrecision,
     } = this.props
 
     this.updateSubBlockValue('entryPoint', 'order', 'price', this.props.price)
@@ -346,7 +250,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         trailing: {
           trailingDeviationPrice: 0,
           deviationPercentage: 0,
-          isTrailingOn: false,
           ...(marketType === 1 ? { ...prevState.entryPoint.trailing } : {}),
           ...(result.entryPoint && marketType === 1
             ? {
@@ -357,7 +260,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                   3
                 ),
               }
-            : {}),
+            : {
+                isTrailingOn: false,
+              }),
         },
       },
       takeProfit: {
@@ -406,7 +311,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       'entryPoint',
       'order',
       'amount',
-      result.entryPoint.order.amount
+      stripDigitPlaces(result.entryPoint.order.amount, quantityPrecision)
     )
 
     this.updateSubBlockValue('entryPoint', 'order', 'price', this.props.price)
@@ -432,6 +337,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
     this.updateStopLossAndTakeProfitPrices({
       price,
+      leverage: this.props.leverage,
+      side: result.entryPoint.order.side,
       stopLossPercentage: result.stopLoss.pricePercentage,
       forcedStopPercentage: result.stopLoss.forcedStop.pricePercentage,
       takeProfitPercentage: result.takeProfit.trailingTAP.isTrailingOn
@@ -444,6 +351,23 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
   }
 
   componentDidUpdate(prevProps: IProps) {
+    // function difference(object, base) {
+    //   function changes(object, base) {
+    //     return _.transform(object, function (result, value, key) {
+    //       if (!_.isEqual(value, base[key])) {
+    //         result[key] = (_.isObject(value) && _.isObject(base[key])) ? changes(value, base[key]) : value;
+    //       }
+    //     });
+    //   }
+    //   return changes(object, base);
+    // }
+
+    // console.log(difference(prevProps, this.props))
+
+    const isMarketType =
+      this.state.entryPoint.order.type === 'market' ||
+      this.state.entryPoint.order.type === 'maker-only'
+
     if (
       prevProps.priceFromOrderbook !== this.props.priceFromOrderbook &&
       this.props.priceFromOrderbook &&
@@ -468,9 +392,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     }
 
     if (prevProps.componentLeverage !== this.props.componentLeverage) {
-      const isMarketType =
-        this.state.entryPoint.order.type === 'market' ||
-        this.state.entryPoint.order.type === 'maker-only'
       const total = this.state.temp.initialMargin * this.props.componentLeverage
       const price =
         isMarketType && !this.state.entryPoint.trailing.isTrailingOn
@@ -508,21 +429,23 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
     if (
       this.props.price !== prevProps.price &&
-      this.state.entryPoint.order.type === 'market' &&
+      isMarketType &&
       !this.state.entryPoint.trailing.isTrailingOn
     ) {
       const { price, marketType } = this.props
       const total = this.state.temp.initialMargin * this.props.componentLeverage
 
-      this.updateSubBlockValue(
-        'entryPoint',
-        'order',
-        'amount',
-        stripDigitPlaces(
-          total / this.props.price,
-          marketType === 1 ? this.props.quantityPrecision : 8
+      if (total > 0) {
+        this.updateSubBlockValue(
+          'entryPoint',
+          'order',
+          'amount',
+          stripDigitPlaces(
+            total / this.props.price,
+            marketType === 1 ? this.props.quantityPrecision : 8
+          )
         )
-      )
+      }
 
       this.updateStopLossAndTakeProfitPrices({
         price,
@@ -585,7 +508,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             volumePercentage: 0,
             targets: [
               ...targets,
-              { price: pricePercentage, quantity: volumePercentage, type },
+              { price: pricePercentage, amount: volumePercentage, type },
             ],
           },
         },
@@ -645,8 +568,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           },
         },
       }))
-
-      console.log('averagingPrice', averagingPrice)
 
       this.updateSubBlockValue(
         'entryPoint',
@@ -711,15 +632,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     this.updateSubBlockValue('entryPoint', 'order', 'price', price)
   }
 
-  toggleBlock = (blockName: string, booleanName: string) => {
-    this.setState((prev: IState) => ({
-      [blockName]: {
-        ...prev[blockName],
-        [booleanName]: !prev[blockName][booleanName],
-      },
-    }))
-  }
-
   updateBlockValue = (
     blockName: string,
     valueName: string,
@@ -768,9 +680,14 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
   confirmTrade = async () => {
     const { entryPoint } = this.state
     const {
+      pair,
+      keyId,
+      price,
+      marketType,
       placeOrder,
       showOrderResult,
       cancelOrder,
+      quantityPrecision,
       updateTerminalViewMode,
     } = this.props
 
@@ -793,13 +710,19 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
     updateTerminalViewMode('onlyTables')
 
-    const result = await placeOrder(
-      entryPoint.order.side,
-      entryPoint.order.type,
-      {},
-      'smart',
-      this.state
-    )
+    const result = await placeOrder({
+      side: entryPoint.order.side,
+      priceType: entryPoint.order.type,
+      pair,
+      values: {},
+      terminalMode: 'smart',
+      state: { ...this.state, templateAlertMessage: this.getEntryAlertJson() },
+      futuresValues: {},
+      keyId,
+      marketType,
+      lastMarketPrice: price,
+      quantityPrecision,
+    })
 
     if (result.status === 'error' || !result.orderId) {
       await showOrderResult(result, cancelOrder)
@@ -809,6 +732,59 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     //   updateTerminalViewMode('default')
   }
 
+  showConfirmationPopup = async () => {
+    const { entryPoint } = this.state
+    const {
+      pair,
+      enqueueSnackbar,
+      quantityPrecision,
+      minSpotNotional,
+      minFuturesStep,
+      marketType,
+    } = this.props
+
+    const isSPOTMarket = marketType === 0
+    const isValid = validateSmartOrders(this.state, this.props.enqueueSnackbar)
+    if (isValid) {
+      if (entryPoint.order.total < minSpotNotional && isSPOTMarket) {
+        enqueueSnackbar(
+          `Order total should be at least ${minSpotNotional} ${pair[1]}`,
+          {
+            variant: 'error',
+          }
+        )
+
+        return
+      }
+
+      if (
+        entryPoint.order.amount < minFuturesStep &&
+        !isSPOTMarket &&
+        entryPoint.averaging.entryLevels.length === 0
+      ) {
+        enqueueSnackbar(
+          `Order amount should be at least ${minFuturesStep} ${pair[0]}`,
+          {
+            variant: 'error',
+          }
+        )
+
+        return
+      }
+
+      this.updateSubBlockValue(
+        'entryPoint',
+        'order',
+        'amount',
+        stripDigitPlaces(entryPoint.order.amount, quantityPrecision)
+      )
+
+      this.setState({ showConfirmationPopup: true })
+    } else {
+      this.setState({ showErrors: true })
+    }
+  }
+
   getEntryPrice = () => {
     const { entryPoint } = this.state
     const isMarketType =
@@ -816,7 +792,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       entryPoint.order.type === 'maker-only'
 
     let price =
-      entryPoint.order.type === 'market' && !entryPoint.trailing.isTrailingOn
+      isMarketType && !entryPoint.trailing.isTrailingOn
         ? this.props.price
         : entryPoint.order.price
 
@@ -828,6 +804,34 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     }
 
     return price
+  }
+
+  updatePriceToMarket = () => {
+    const { entryPoint } = this.state
+    const { price, marketType } = this.props
+
+    if (!entryPoint.trailing.isTrailingOn) {
+      this.updateSubBlockValue('entryPoint', 'averaging', 'enabled', false)
+
+      this.updateSubBlockValue(
+        'entryPoint',
+        'order',
+        'total',
+        stripDigitPlaces(
+          price * entryPoint.order.amount,
+          marketType === 1 ? 2 : 8
+        )
+      )
+
+      this.updateBlockValue(
+        'temp',
+        'initialMargin',
+        stripDigitPlaces(
+          (price * entryPoint.order.amount) / entryPoint.order.leverage,
+          2
+        )
+      )
+    }
   }
 
   updateStopLossAndTakeProfitPrices = ({
@@ -866,23 +870,28 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
     leverage = !!leverage ? leverage : entryPoint.order.leverage
 
-    stopLossPercentage = !!stopLossPercentage
-      ? stopLossPercentage
-      : stopLoss.pricePercentage
+    // we can pass 0 => !stopLossPercentage wont work for this case
+    stopLossPercentage =
+      stopLossPercentage != undefined
+        ? stopLossPercentage
+        : stopLoss.pricePercentage
 
-    takeProfitPercentage = !!takeProfitPercentage
-      ? takeProfitPercentage
-      : takeProfit.trailingTAP.isTrailingOn
-      ? takeProfit.trailingTAP.activatePrice
-      : takeProfit.pricePercentage
+    takeProfitPercentage =
+      takeProfitPercentage != undefined
+        ? takeProfitPercentage
+        : takeProfit.trailingTAP.isTrailingOn
+        ? takeProfit.trailingTAP.activatePrice
+        : takeProfit.pricePercentage
 
-    forcedStopPercentage = !!forcedStopPercentage
-      ? forcedStopPercentage
-      : stopLoss.forcedStop.pricePercentage
+    forcedStopPercentage =
+      forcedStopPercentage != undefined
+        ? forcedStopPercentage
+        : stopLoss.forcedStop.pricePercentage
 
-    deviationPercentage = !!deviationPercentage
-      ? deviationPercentage
-      : entryPoint.trailing.deviationPercentage
+    deviationPercentage =
+      deviationPercentage != undefined
+        ? deviationPercentage
+        : entryPoint.trailing.deviationPercentage
 
     const trailingDeviationPrice =
       side === 'buy'
@@ -935,6 +944,14 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             pricePrecision
           )
 
+    console.log(
+      'takeProfitPrice',
+      takeProfitPrice,
+      takeProfitPrice,
+      leverage,
+      price
+    )
+
     this.updateBlockValue('stopLoss', 'stopLossPrice', stopLossPrice)
     this.updateBlockValue('takeProfit', 'takeProfitPrice', takeProfitPrice)
     this.updateSubBlockValue(
@@ -951,7 +968,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     )
   }
 
-  getMaxValues = (): number[] => {
+  getMaxValues = (): [number, number] => {
     const { entryPoint } = this.state
     const { funds, marketType, quantityPrecision } = this.props
 
@@ -1105,7 +1122,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
     return `{\\"token\\": \\"${templateToken}\\", ${typeJson}, ${hedgeModeJson}, ${sideJson}, ${priceJson}${
       priceJson === '' ? '' : ','
-    } ${averagingJson}, ${amountJson}${
+    } ${averagingJson} ${averagingJson === '' ? '' : ','} ${amountJson}${
       isTrailingOn ? ', ' : ''
     }${deviationJson}}`
   }
@@ -1113,17 +1130,15 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
   render() {
     const {
       pair,
+      keyId,
       funds,
       theme,
+      selectedKey,
       marketType,
       updateLeverage,
       quantityPrecision,
       updateTerminalViewMode,
-      isSmartOrderMode,
       pricePrecision,
-      enqueueSnackbar,
-      minSpotNotional,
-      minFuturesStep,
       maxLeverage,
       leverage: startLeverage,
       smartTerminalOnboarding,
@@ -1132,6 +1147,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       changeMarginTypeWithStatus,
       componentMarginType,
     } = this.props
+
+    // console.log('sm props', this.props)
 
     const {
       entryPoint,
@@ -1142,13 +1159,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       editPopup,
     } = this.state
 
-    const isSPOTMarket = marketType === 0
     const isMarketType =
       entryPoint.order.type === 'market' ||
       entryPoint.order.type === 'maker-only'
     const isAveragingAfterFirstTarget =
       entryPoint.averaging.entryLevels.length > 0 &&
       entryPoint.averaging.enabled
+    const isCloseOrderExternal = stopLoss.external || takeProfit.external
 
     let maxAmount = 0
     let priceForCalculate =
@@ -1173,13 +1190,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       })
     }
 
-    // console.log('getTooltipSettings', getTooltipSettings)
-
     return (
       <>
         {showConfirmationPopup && !editPopup && (
           <ConfirmationPopup
             theme={theme}
+            quantityPrecision={quantityPrecision}
             confirmTrade={this.confirmTrade}
             handleOpenEditPopup={this.handleOpenEditPopup}
             open={showConfirmationPopup}
@@ -1196,4500 +1212,109 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             getTooltipSettings={getTooltipSettings}
             updateTooltipSettingsMutation={updateTooltipSettingsMutation}
           />
-          <TerminalHeaders>
-            <TerminalHeader
-              theme={theme}
-              key={'entryPoint'}
-              width={'33%'}
-              justify={marketType === 0 ? 'flex-start' : 'space-around'}
-            >
-              <DarkTooltip title={'Conditions for opening your position.'}>
-                <BlockHeader
-                  theme={theme}
-                  style={{
-                    textTransform: 'capitalize',
-                    borderBottom: `0.1rem dashed ${theme.palette.grey.light}`,
-                  }}
-                >
-                  Start
-                </BlockHeader>
-              </DarkTooltip>
 
-              {marketType === 1 && (
-                <div
-                  style={{
-                    display: 'flex',
-                    width: '85%',
-                    alignItems: 'center',
-                  }}
-                >
-                  <StyledSelect
-                    theme={theme}
-                    onChange={(e) => {
-                      console.log('componentMarginType', componentMarginType)
-                      changeMarginTypeWithStatus(componentMarginType)
-                    }}
-                    value={componentMarginType}
-                    style={{
-                      color: theme.palette.dark.main,
-                      width: '30%',
-                      marginRight: '1rem',
-                    }}
-                  >
-                    <StyledOption value={'cross'}>cross leverage:</StyledOption>
-                    <StyledOption value={'isolated'}>
-                      isolated leverage:
-                    </StyledOption>
-                  </StyledSelect>
+          <TerminalHeadersBlock
+            pair={pair}
+            theme={theme}
+            entryPoint={entryPoint}
+            marketType={marketType}
+            selectedKey={selectedKey}
+            maxLeverage={maxLeverage}
+            isMarketType={isMarketType}
+            startLeverage={startLeverage}
+            updateLeverage={updateLeverage}
+            validateField={this.validateField}
+            priceForCalculate={priceForCalculate}
+            quantityPrecision={quantityPrecision}
+            updateBlockValue={this.updateBlockValue}
+            componentMarginType={componentMarginType}
+            initialMargin={this.state.temp.initialMargin}
+            updateSubBlockValue={this.updateSubBlockValue}
+            changeMarginTypeWithStatus={changeMarginTypeWithStatus}
+            updateStopLossAndTakeProfitPrices={
+              this.updateStopLossAndTakeProfitPrices
+            }
+          />
 
-                  <SmallSlider
-                    style={{ height: '2rem', width: '60%' }}
-                    min={1}
-                    max={maxLeverage}
-                    defaultValue={startLeverage}
-                    value={
-                      !entryPoint.order.leverage
-                        ? startLeverage
-                        : entryPoint.order.leverage
-                    }
-                    valueSymbol={'X'}
-                    marks={getMarks(maxLeverage)}
-                    onChange={(leverage) => {
-                      this.updateSubBlockValue(
-                        'entryPoint',
-                        'order',
-                        'leverage',
-                        leverage
-                      )
-
-                      const total = this.state.temp.initialMargin * leverage
-
-                      const price =
-                        isMarketType && !entryPoint.trailing.isTrailingOn
-                          ? this.props.price
-                          : entryPoint.order.price
-
-                      this.updateSubBlockValue(
-                        'entryPoint',
-                        'order',
-                        'total',
-                        stripDigitPlaces(
-                          total,
-                          this.props.marketType === 1 ? 2 : 8
-                        )
-                      )
-
-                      this.updateSubBlockValue(
-                        'entryPoint',
-                        'order',
-                        'amount',
-                        stripDigitPlaces(
-                          total / price,
-                          this.props.marketType === 1
-                            ? this.props.quantityPrecision
-                            : 8
-                        )
-                      )
-
-                      this.updateStopLossAndTakeProfitPrices({
-                        leverage,
-                      })
-                    }}
-                    onAfterChange={(leverage: number) => {
-                      updateLeverage(leverage)
-                    }}
-                    sliderContainerStyles={{
-                      width: '65%',
-                      margin: '0 auto',
-                    }}
-                    trackBeforeBackground={theme.palette.green.main}
-                    handleStyles={{
-                      width: '1.2rem',
-                      height: '2rem',
-                      // top: '.3rem',
-                      border: 'none',
-                      borderRadius: '0',
-                      backgroundColor: '#036141',
-                      // marginTop: '-.28rem',
-                      boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
-                      transform: 'translate(-50%, -15%) !important',
-                      '@media only screen and (maxWidth: 1440px)': {
-                        top: '1.3rem',
-                      },
-                    }}
-                    dotStyles={{
-                      border: 'none',
-                      backgroundColor: theme.palette.slider.dots,
-                    }}
-                    activeDotStyles={{
-                      backgroundColor: theme.palette.green.main,
-                    }}
-                    markTextSlyles={{
-                      color: theme.palette.grey.light,
-                      fontSize: '1rem',
-                    }}
-                    railStyle={{
-                      backgroundColor: theme.palette.slider.rail,
-                    }}
-                  />
-                  <LeverageLabel theme={theme} style={{ width: '12.5%' }}>
-                    {entryPoint.order.leverage || 1}x
-                  </LeverageLabel>
-                </div>
-              )}
-            </TerminalHeader>
-            <TerminalHeader
-              theme={theme}
-              width={'32.5%'}
-              margin={'0 1%'}
-              padding={'0rem 1.5rem'}
-              justify={'flex-start'}
-              key={'stopLoss'}
-            >
-              <DarkTooltip
-                title={
-                  'Conditions for closing your position, provided that it is unprofitable.'
-                }
-              >
-                <BlockHeader
-                  style={{
-                    textTransform: 'capitalize',
-                    borderBottom: `0.1rem dashed ${theme.palette.grey.light}`,
-                  }}
-                  theme={theme}
-                >
-                  stop loss
-                </BlockHeader>
-              </DarkTooltip>
-            </TerminalHeader>
-            <TerminalHeader
-              theme={theme}
-              key={'takeProfit'}
-              width={'32.5%'}
-              padding={'0rem 1.5rem'}
-              justify={'space-between'}
-            >
-              <DarkTooltip
-                title={
-                  'Conditions for closing your position, provided that it is profitable.'
-                }
-              >
-                <BlockHeader
-                  style={{
-                    textTransform: 'capitalize',
-                    borderBottom: `0.1rem dashed ${theme.palette.grey.light}`,
-                  }}
-                  theme={theme}
-                >
-                  take profit
-                </BlockHeader>
-              </DarkTooltip>
-              <a
-                href="https://cryptocurrencies.ai/smartTrading"
-                style={{
-                  color: theme.palette.blue.main,
-                  fontSize: '1.5rem',
-                  fontWeight: '500',
-                  textDecoration: 'none',
-                }}
-              >
-                Learn how to trade with Smart Order &rarr;
-              </a>
-            </TerminalHeader>
-          </TerminalHeaders>
-
+          {/* entry order */}
           <TerminalBlocksContainer xs={12} container item>
-            {/* ENTRY POINT */}
-
-            <TerminalBlock
+            <EntryOrderBlock
+              pair={pair}
+              addAverageTarget={this.addAverageTarget}
+              deleteAverageTarget={this.deleteAverageTarget}
+              entryPoint={entryPoint}
+              funds={funds}
+              getEntryAlertJson={this.getEntryAlertJson}
+              getMaxValues={this.getMaxValues}
+              initialMargin={this.state.temp.initialMargin}
+              isAveragingAfterFirstTarget={isAveragingAfterFirstTarget}
+              isCloseOrderExternal={isCloseOrderExternal}
+              isMarketType={isMarketType}
+              marketType={marketType}
+              maxAmount={maxAmount}
+              priceForCalculate={priceForCalculate}
+              pricePrecision={pricePrecision}
+              quantityPrecision={quantityPrecision}
+              setMaxAmount={this.setMaxAmount}
+              showErrors={showErrors}
               theme={theme}
-              width={'calc(33% + 0.5%)'}
-              data-tut={'step1'}
-            >
-              {/* {marketType === 1 && (
-                <InputRowContainer padding={'0 0 0.6rem 0'}>
-                  <CustomSwitcher theme={theme}
-                    containerStyles={{
-                      width: entryPoint.TVAlert.plotEnabled ? '70%' : '100%',
-                      margin: 0,
-                    }}
-                    buttonHeight={'3rem'}
-                    firstHalfStyleProperties={
-                      entryPoint.TVAlert.plotEnabled &&
-                      entryPoint.TVAlert.hedgeModePlotEnabled
-                        ? DisabledSwitcherStyles
-                        : BlueSwitcherStyles
-                    }
-                    secondHalfStyleProperties={
-                      entryPoint.TVAlert.plotEnabled &&
-                      entryPoint.TVAlert.hedgeModePlotEnabled
-                        ? DisabledSwitcherStyles
-                        : BlueSwitcherStyles
-                    }
-                    firstHalfText={'one-way'}
-                    secondHalfText={'hedge'}
-                    firstHalfIsActive={!entryPoint.order.hedgeMode}
-                    changeHalf={() => {
-                      this.updateSubBlockValue(
-                        'entryPoint',
-                        'order',
-                        'hedgeMode',
-                        !entryPoint.order.hedgeMode
-                      )
-                    }}
-                  />
-                  {entryPoint.TVAlert.plotEnabled && (
-                    <>
-                      <div
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'center',
-                          width: '10%',
-                        }}
-                      >
-                        <Switcher
-                          checked={entryPoint.TVAlert.hedgeModePlotEnabled}
-                          onChange={() => {
-                            this.updateSubBlockValue(
-                              'entryPoint',
-                              'TVAlert',
-                              'hedgeModePlotEnabled',
-                              !entryPoint.TVAlert.hedgeModePlotEnabled
-                            )
-                          }}
-                        />
-                      </div>
-                      <Input theme={theme}                        type={'number'}
-                        needTitle
-                        title={`plot_`}
-                        textAlign="left"
-                        width={'calc(20% - .8rem)'}
-                        inputStyles={{
-                          paddingLeft: '4rem',
-                        }}
-                        disabled={!entryPoint.TVAlert.hedgeModePlotEnabled}
-                        value={entryPoint.TVAlert.hedgeModePlot}
-                        showErrors={showErrors}
-                        isValid={this.validateField(
-                          true,
-                          entryPoint.TVAlert.hedgeModePlot
-                        )}
-                        onChange={(e) => {
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'TVAlert',
-                            'hedgeModePlot',
-                            e.target.value
-                          )
-                        }}
-                      />
-                    </>
-                  )}
-                </InputRowContainer>
-              )} */}
-              <InputRowContainer padding={'0 0 .6rem 0'}>
-                {/* <div style={{ width: '50%' }}>
-                  {' '}
-                  <CustomSwitcher
-                    theme={theme}
-                    firstHalfText={marketType === 1 ? 'long' : 'buy'}
-                    secondHalfText={marketType === 1 ? 'short' : 'sell'}
-                    buttonHeight={'3rem'}
-                    containerStyles={{
-                      width: entryPoint.TVAlert.plotEnabled ? '70%' : '100%',
-                      padding: 0,
-                    }}
-                    firstHalfStyleProperties={
-                      entryPoint.TVAlert.plotEnabled &&
-                      entryPoint.TVAlert.sidePlotEnabled
-                        ? DisabledSwitcherStyles(theme)
-                        : GreenSwitcherStyles(theme)
-                    }
-                    secondHalfStyleProperties={
-                      entryPoint.TVAlert.plotEnabled &&
-                      entryPoint.TVAlert.sidePlotEnabled
-                        ? DisabledSwitcherStyles(theme)
-                        : RedSwitcherStyles(theme)
-                    }
-                    firstHalfIsActive={entryPoint.order.side === 'buy'}
-                    changeHalf={() => {
-                      if (
-                        entryPoint.TVAlert.plotEnabled &&
-                        entryPoint.TVAlert.sidePlotEnabled
-                      ) {
-                        return
-                      }
-
-                      if (marketType === 0) {
-                        // disable sell option for spot
-                        const newSide = getSecondValueFromFirst(
-                          entryPoint.order.side
-                        )
-
-                        if (newSide === 'sell') {
-                          return
-                        }
-
-                        const amountPercentage =
-                          entryPoint.order.side === 'buy' || marketType === 1
-                            ? entryPoint.order.total / (maxAmount / 100)
-                            : entryPoint.order.amount / (maxAmount / 100)
-
-                        const newMaxAmount =
-                          newSide === 'buy'
-                            ? funds[1].quantity
-                            : funds[0].quantity
-
-                        let amount =
-                          newSide === 'buy'
-                            ? stripDigitPlaces(
-                                ((amountPercentage / 100) * newMaxAmount) /
-                                  priceForCalculate,
-                                marketType === 1 ? quantityPrecision : 8
-                              )
-                            : stripDigitPlaces(
-                                (amountPercentage / 100) * newMaxAmount,
-                                marketType === 1 ? quantityPrecision : 8
-                              )
-
-                        if (!+amount || +amount === NaN) {
-                          amount = 0
-                        }
-
-                        const total = stripDigitPlaces(
-                          amount * priceForCalculate,
-                          marketType === 1 ? 2 : 8
-                        )
-
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'order',
-                          'amount',
-                          amount
-                        )
-
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'order',
-                          'total',
-                          total
-                        )
-                      }
-
-                      this.updateStopLossAndTakeProfitPrices({
-                        price: priceForCalculate,
-                        stopLossPercentage: stopLoss.pricePercentage,
-                        side: getSecondValueFromFirst(entryPoint.order.side),
-                      })
-
-                      this.updateSubBlockValue(
-                        'entryPoint',
-                        'order',
-                        'side',
-                        getSecondValueFromFirst(entryPoint.order.side)
-                      )
-                    }}
-                  />
-                </div> */}
-
-                {entryPoint.TVAlert.plotEnabled && (
-                  <>
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        width: '10%',
-                      }}
-                    >
-                      <Switcher
-                        checked={entryPoint.TVAlert.sidePlotEnabled}
-                        onChange={() => {
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'TVAlert',
-                            'sidePlotEnabled',
-                            !entryPoint.TVAlert.sidePlotEnabled
-                          )
-                        }}
-                      />
-                    </div>
-                    <Input
-                      theme={theme}
-                      type={'number'}
-                      needTitle
-                      title={`plot_`}
-                      textAlign="left"
-                      width={'calc(20% - .8rem)'}
-                      inputStyles={{
-                        paddingLeft: '4rem',
-                      }}
-                      disabled={!entryPoint.TVAlert.sidePlotEnabled}
-                      value={entryPoint.TVAlert.sidePlot}
-                      showErrors={showErrors}
-                      isValid={this.validateField(
-                        true,
-                        entryPoint.TVAlert.sidePlot
-                      )}
-                      onChange={(e) => {
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'TVAlert',
-                          'sidePlot',
-                          e.target.value
-                        )
-                      }}
-                    />
-                  </>
-                )}
-              </InputRowContainer>
-
-              {/* <InputRowContainer padding={'0 0 0.6rem 0'}>
-                <CustomSwitcher
-                  theme={theme}
-                  firstHalfText={'limit'}
-                  secondHalfText={'market'}
-                  buttonHeight={'3rem'}
-                  containerStyles={{
-                    width: entryPoint.TVAlert.plotEnabled ? '70%' : '100%',
-                    padding: 0,
-                  }}
-                  firstHalfStyleProperties={
-                    entryPoint.TVAlert.plotEnabled &&
-                    entryPoint.TVAlert.typePlotEnabled
-                      ? DisabledSwitcherStyles(theme)
-                      : BlueSwitcherStyles(theme)
-                  }
-                  secondHalfStyleProperties={
-                    entryPoint.TVAlert.plotEnabled &&
-                    entryPoint.TVAlert.typePlotEnabled
-                      ? DisabledSwitcherStyles(theme)
-                      : BlueSwitcherStyles(theme)
-                  }
-                  firstHalfIsActive={entryPoint.order.type === 'limit'}
-                  changeHalf={() => {
-                    this.updateSubBlockValue(
-                      'entryPoint',
-                      'order',
-                      'type',
-                      getSecondValueFromFirst(entryPoint.order.type)
-                    )
-
-                    if (
-                      getSecondValueFromFirst(entryPoint.order.type) ===
-                        'market' &&
-                      !entryPoint.trailing.isTrailingOn
-                    ) {
-                      this.updateSubBlockValue(
-                        'entryPoint',
-                        'averaging',
-                        'enabled',
-                        false
-                      )
-
-                      this.updateSubBlockValue(
-                        'entryPoint',
-                        'order',
-                        'total',
-                        stripDigitPlaces(
-                          this.props.price * entryPoint.order.amount,
-                          marketType === 1 ? 2 : 8
-                        )
-                      )
-
-                      this.updateBlockValue(
-                        'temp',
-                        'initialMargin',
-                        stripDigitPlaces(
-                          (this.props.price * entryPoint.order.amount) /
-                            entryPoint.order.leverage,
-                          2
-                        )
-                      )
-                    }
-
-                    if (
-                      getSecondValueFromFirst(entryPoint.order.type) === 'limit'
-                    ) {
-                      this.updateSubBlockValue(
-                        'entryPoint',
-                        'TVAlert',
-                        'immediateEntry',
-                        false
-                      )
-                    }
-
-                    // if (entryPoint.trailing.isTrailingOn) {
-                    //   this.updateSubBlockValue(
-                    //     'entryPoint',
-                    //     'trailing',
-                    //     'isTrailingOn',
-                    //     getSecondValueFromFirst(entryPoint.order.type) !== 'limit'
-                    //   )
-                    // }
-                  }}
-                />
-                {entryPoint.TVAlert.plotEnabled && (
-                  <>
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        width: '10%',
-                      }}
-                    >
-                      <Switcher
-                        checked={entryPoint.TVAlert.typePlotEnabled}
-                        onChange={() => {
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'TVAlert',
-                            'typePlotEnabled',
-                            !entryPoint.TVAlert.typePlotEnabled
-                          )
-                        }}
-                      />
-                    </div>
-                    <Input
-                      theme={theme}
-                      type={'number'}
-                      needTitle
-                      title={`plot_`}
-                      textAlign="left"
-                      width={'calc(20% - .8rem)'}
-                      inputStyles={{
-                        paddingLeft: '4rem',
-                      }}
-                      disabled={!entryPoint.TVAlert.typePlotEnabled}
-                      value={entryPoint.TVAlert.typePlot}
-                      showErrors={showErrors}
-                      isValid={this.validateField(
-                        true,
-                        entryPoint.TVAlert.typePlot
-                      )}
-                      onChange={(e) => {
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'TVAlert',
-                          'typePlot',
-                          e.target.value
-                        )
-                      }}
-                    />
-                  </>
-                )}
-              </InputRowContainer> */}
-              {/* <InputRowContainer
-                justify="flex-start"
-                padding={'.6rem 0 0.6rem 0'}
-              >
-                <ChangeOrderTypeBtn
-                  theme={theme}
-                  isActive={entryPoint.order.type === 'market'}
-                  onClick={() => {
-                    this.updateSubBlockValue(
-                      'entryPoint',
-                      'order',
-                      'type',
-                      'market'
-                    )
-
-                    if (!entryPoint.trailing.isTrailingOn) {
-                      this.updateSubBlockValue(
-                        'entryPoint',
-                        'averaging',
-                        'enabled',
-                        false
-                      )
-
-                      this.updateSubBlockValue(
-                        'entryPoint',
-                        'order',
-                        'total',
-                        stripDigitPlaces(
-                          this.props.price * entryPoint.order.amount,
-                          marketType === 1 ? 2 : 8
-                        )
-                      )
-
-                      this.updateBlockValue(
-                        'temp',
-                        'initialMargin',
-                        stripDigitPlaces(
-                          (this.props.price * entryPoint.order.amount) /
-                            entryPoint.order.leverage,
-                          2
-                        )
-                      )
-                    }
-                  }}
-                >
-                  Market
-                </ChangeOrderTypeBtn>
-                <ChangeOrderTypeBtn
-                  theme={theme}
-                  isActive={entryPoint.order.type === 'limit'}
-                  onClick={() => {
-                    this.updateSubBlockValue(
-                      'entryPoint',
-                      'order',
-                      'type',
-                      'limit'
-                    )
-
-                    this.updateSubBlockValue(
-                      'entryPoint',
-                      'TVAlert',
-                      'immediateEntry',
-                      false
-                    )
-                  }}
-                >
-                  Limit
-                </ChangeOrderTypeBtn>
-                <DarkTooltip
-                  maxWidth={'30rem'}
-                  title={
-                    'Maker-only or post-only market order will place a post-only limit orders as close to the market price as possible until the last one is executed. This way you can enter the position at the market price by paying low maker fees.'
-                  }
-                >
-                  <ChangeOrderTypeBtn
-                    theme={theme}
-                    isActive={entryPoint.order.type === 'maker-only'}
-                    onClick={() => {
-                      this.updateSubBlockValue(
-                        'entryPoint',
-                        'order',
-                        'type',
-                        'maker-only'
-                      )
-
-                      this.updateSubBlockValue(
-                        'entryPoint',
-                        'averaging',
-                        'enabled',
-                        false
-                      )
-
-                      this.updateSubBlockValue(
-                        'entryPoint',
-                        'order',
-                        'total',
-                        stripDigitPlaces(
-                          this.props.price * entryPoint.order.amount,
-                          marketType === 1 ? 2 : 8
-                        )
-                      )
-
-                      this.updateBlockValue(
-                        'temp',
-                        'initialMargin',
-                        stripDigitPlaces(
-                          (this.props.price * entryPoint.order.amount) /
-                            entryPoint.order.leverage,
-                          2
-                        )
-                      )
-
-                      this.updateSubBlockValue(
-                        'entryPoint',
-                        'trailing',
-                        'isTrailingOn',
-                        false
-                      )
-                    }}
-                  >
-                    Maker-only
-                  </ChangeOrderTypeBtn>
-                </DarkTooltip>
-              </InputRowContainer> */}
-
-              <div>
-                <InputRowContainer
-                  justify="flex-start"
-                  padding={'.6rem 0 1.2rem 0'}
-                >
-                  {marketType === 1 && (
-                    <DarkTooltip
-                      maxWidth={'40rem'}
-                      title={
-                        <>
-                          <p>
-                            The algorithm which will wait for the trend to
-                            reverse to place the order.
-                          </p>
-
-                          <p>
-                            <b>Activation price:</b> The price at which the
-                            algorithm is enabled.
-                          </p>
-
-                          <p>
-                            <b>Deviation:</b> The level of price change after
-                            the trend reversal, at which the order will be
-                            executed.
-                          </p>
-
-                          <p>
-                            <b>For example:</b> you set 7500 USDT activation
-                            price and 1% deviation to buy BTC. Trailing will
-                            start when price will be 7500 and then after
-                            activation there will be a buy when the price moves
-                            upward by 1% from its lowest point. If for instance
-                            it drops to $7,300, then the trend will reverse and
-                            start to rise, the order will be executed when the
-                            price reaches 7373, i.e. by 1% from the moment the
-                            trend reversed.
-                          </p>
-                        </>
-                      }
-                    >
-                      <AdditionalSettingsButton
-                        theme={theme}
-                        isActive={entryPoint.trailing.isTrailingOn}
-                        onClick={() => {
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'trailing',
-                            'isTrailingOn',
-                            !entryPoint.trailing.isTrailingOn
-                          )
-
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'TVAlert',
-                            'immediateEntry',
-                            false
-                          )
-
-                          if (!entryPoint.trailing.isTrailingOn) {
-                            this.updateSubBlockValue(
-                              'entryPoint',
-                              'averaging',
-                              'enabled',
-                              false
-                            )
-                          }
-
-                          if (entryPoint.order.type === 'maker-only') {
-                            this.updateSubBlockValue(
-                              'entryPoint',
-                              'order',
-                              'type',
-                              'limit'
-                            )
-                          }
-                        }}
-                      >
-                        Trailing {entryPoint.order.side}
-                      </AdditionalSettingsButton>
-                    </DarkTooltip>
-                  )}
-                  <DarkTooltip
-                    maxWidth={'30rem'}
-                    title={
-                      'Your smart order will be placed once when there is a Trading View alert that you connected to smart order.'
-                    }
-                  >
-                    <AdditionalSettingsButton
-                      theme={theme}
-                      isActive={entryPoint.TVAlert.isTVAlertOn}
-                      onClick={() => {
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'TVAlert',
-                          'isTVAlertOn',
-                          !entryPoint.TVAlert.isTVAlertOn
-                        )
-
-                        if (entryPoint.TVAlert.isTVAlertOn) {
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'TVAlert',
-                            'plotEnabled',
-                            false
-                          )
-                        }
-                      }}
-                    >
-                      Entry by TV Alert
-                    </AdditionalSettingsButton>
-                  </DarkTooltip>
-                  <DarkTooltip
-                    maxWidth={'30rem'}
-                    title={'Place multiple entry targets to average your lose'}
-                  >
-                    <AdditionalSettingsButton
-                      theme={theme}
-                      isActive={entryPoint.averaging.enabled}
-                      onClick={() => {
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'averaging',
-                          'enabled',
-                          !entryPoint.averaging.enabled
-                        )
-
-                        if (!entryPoint.averaging.enabled) {
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'order',
-                            'type',
-                            'limit'
-                          )
-
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'trailing',
-                            'isTrailingOn',
-                            false
-                          )
-
-                          this.updateSubBlockValue(
-                            'takeProfit',
-                            'trailingTAP',
-                            'isTrailingOn',
-                            false
-                          )
-
-                          this.updateSubBlockValue(
-                            'takeProfit',
-                            'splitTargets',
-                            'isSplitTargetsOn',
-                            false
-                          )
-
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'TVAlert',
-                            'plotEnabled',
-                            false
-                          )
-                        }
-                      }}
-                    >
-                      Averaging
-                    </AdditionalSettingsButton>
-                  </DarkTooltip>
-                </InputRowContainer>
-
-                <InputRowContainer>
-                  {' '}
-                  <div style={{ width: '50%', marginRight: '2%' }}>
-                    {' '}
-                    {marketType === 1 ? (
-                      <CustomSwitcher
-                        theme={theme}
-                        firstHalfText={marketType === 1 ? 'long' : 'buy'}
-                        secondHalfText={marketType === 1 ? 'short' : 'sell'}
-                        buttonHeight={'3rem'}
-                        containerStyles={{
-                          width: entryPoint.TVAlert.plotEnabled
-                            ? '70%'
-                            : '100%',
-                          padding: 0,
-                        }}
-                        firstHalfStyleProperties={
-                          entryPoint.TVAlert.plotEnabled &&
-                          entryPoint.TVAlert.sidePlotEnabled
-                            ? DisabledSwitcherStyles(theme)
-                            : GreenSwitcherStyles(theme)
-                        }
-                        secondHalfStyleProperties={
-                          entryPoint.TVAlert.plotEnabled &&
-                          entryPoint.TVAlert.sidePlotEnabled
-                            ? DisabledSwitcherStyles(theme)
-                            : RedSwitcherStyles(theme)
-                        }
-                        firstHalfIsActive={entryPoint.order.side === 'buy'}
-                        changeHalf={() => {
-                          if (
-                            entryPoint.TVAlert.plotEnabled &&
-                            entryPoint.TVAlert.sidePlotEnabled
-                          ) {
-                            return
-                          }
-
-                          if (marketType === 0) {
-                            // disable sell option for spot
-                            const newSide = getSecondValueFromFirst(
-                              entryPoint.order.side
-                            )
-
-                            if (newSide === 'sell') {
-                              return
-                            }
-
-                            const amountPercentage =
-                              entryPoint.order.side === 'buy' ||
-                              marketType === 1
-                                ? entryPoint.order.total / (maxAmount / 100)
-                                : entryPoint.order.amount / (maxAmount / 100)
-
-                            const newMaxAmount =
-                              newSide === 'buy'
-                                ? funds[1].quantity
-                                : funds[0].quantity
-
-                            let amount =
-                              newSide === 'buy'
-                                ? stripDigitPlaces(
-                                    ((amountPercentage / 100) * newMaxAmount) /
-                                      priceForCalculate,
-                                    marketType === 1 ? quantityPrecision : 8
-                                  )
-                                : stripDigitPlaces(
-                                    (amountPercentage / 100) * newMaxAmount,
-                                    marketType === 1 ? quantityPrecision : 8
-                                  )
-
-                            if (!+amount || +amount === NaN) {
-                              amount = 0
-                            }
-
-                            const total = stripDigitPlaces(
-                              amount * priceForCalculate,
-                              marketType === 1 ? 2 : 8
-                            )
-
-                            this.updateSubBlockValue(
-                              'entryPoint',
-                              'order',
-                              'amount',
-                              amount
-                            )
-
-                            this.updateSubBlockValue(
-                              'entryPoint',
-                              'order',
-                              'total',
-                              total
-                            )
-                          }
-
-                          this.updateStopLossAndTakeProfitPrices({
-                            price: priceForCalculate,
-                            stopLossPercentage: stopLoss.pricePercentage,
-                            side: getSecondValueFromFirst(
-                              entryPoint.order.side
-                            ),
-                          })
-
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'order',
-                            'side',
-                            getSecondValueFromFirst(entryPoint.order.side)
-                          )
-                        }}
-                      />
-                    ) : (
-                      <SwitcherHalf
-                        isFirstHalf
-                        theme={theme}
-                        key={'firstHalf'}
-                        style={{
-                          backgroundColor: theme.palette.green.main,
-                          borderRadius: '0rem',
-                          border: theme.palette.border.main,
-                          color: theme.palette.white.main,
-                        }}
-                        onClick={() => !firstHalfIsActive && changeHalf()}
-                        height={'3rem'}
-                        width={'100%'}
-                      >
-                        buy{' '}
-                      </SwitcherHalf>
-                    )}
-                  </div>
-                  <ChangeOrderTypeBtn
-                    theme={theme}
-                    isActive={entryPoint.order.type === 'market'}
-                    onClick={() => {
-                      this.updateSubBlockValue(
-                        'entryPoint',
-                        'order',
-                        'type',
-                        'market'
-                      )
-
-                      if (!entryPoint.trailing.isTrailingOn) {
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'averaging',
-                          'enabled',
-                          false
-                        )
-
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'order',
-                          'total',
-                          stripDigitPlaces(
-                            this.props.price * entryPoint.order.amount,
-                            marketType === 1 ? 2 : 8
-                          )
-                        )
-
-                        this.updateBlockValue(
-                          'temp',
-                          'initialMargin',
-                          stripDigitPlaces(
-                            (this.props.price * entryPoint.order.amount) /
-                              entryPoint.order.leverage,
-                            2
-                          )
-                        )
-                      }
-                    }}
-                  >
-                    Market
-                  </ChangeOrderTypeBtn>
-                  <ChangeOrderTypeBtn
-                    theme={theme}
-                    isActive={entryPoint.order.type === 'limit'}
-                    onClick={() => {
-                      this.updateSubBlockValue(
-                        'entryPoint',
-                        'order',
-                        'type',
-                        'limit'
-                      )
-
-                      this.updateSubBlockValue(
-                        'entryPoint',
-                        'TVAlert',
-                        'immediateEntry',
-                        false
-                      )
-                    }}
-                  >
-                    Limit
-                  </ChangeOrderTypeBtn>
-                  <DarkTooltip
-                    maxWidth={'30rem'}
-                    title={
-                      'Maker-only or post-only market order will place a post-only limit orders as close to the market price as possible until the last one is executed. This way you can enter the position at the market price by paying low maker fees.'
-                    }
-                  >
-                    <ChangeOrderTypeBtn
-                      theme={theme}
-                      isActive={entryPoint.order.type === 'maker-only'}
-                      onClick={() => {
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'order',
-                          'type',
-                          'maker-only'
-                        )
-
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'averaging',
-                          'enabled',
-                          false
-                        )
-
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'order',
-                          'total',
-                          stripDigitPlaces(
-                            this.props.price * entryPoint.order.amount,
-                            marketType === 1 ? 2 : 8
-                          )
-                        )
-
-                        this.updateBlockValue(
-                          'temp',
-                          'initialMargin',
-                          stripDigitPlaces(
-                            (this.props.price * entryPoint.order.amount) /
-                              entryPoint.order.leverage,
-                            2
-                          )
-                        )
-
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'trailing',
-                          'isTrailingOn',
-                          false
-                        )
-                      }}
-                    >
-                      Maker-only
-                    </ChangeOrderTypeBtn>
-                  </DarkTooltip>
-                </InputRowContainer>
-                {entryPoint.averaging.enabled && (
-                  <InputRowContainer padding={'0 0 1.2rem 0'}>
-                    <DarkTooltip
-                      maxWidth={'30rem'}
-                      title={
-                        'Your smart order will be closed once first TP order was executed.'
-                      }
-                    >
-                      <AdditionalSettingsButton
-                        theme={theme}
-                        isActive={
-                          entryPoint.averaging.closeStrategyAfterFirstTAP
-                        }
-                        width={'33%'}
-                        onClick={() => {
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'averaging',
-                            'closeStrategyAfterFirstTAP',
-                            !entryPoint.averaging.closeStrategyAfterFirstTAP
-                          )
-
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'averaging',
-                            'placeEntryAfterTAP',
-                            false
-                          )
-                        }}
-                      >
-                        Close trade After First TP
-                      </AdditionalSettingsButton>
-                    </DarkTooltip>
-                    <DarkTooltip
-                      maxWidth={'30rem'}
-                      title={
-                        'Your smart order will be closed once first TP order was executed.'
-                      }
-                    >
-                      <AdditionalSettingsButton
-                        theme={theme}
-                        isActive={entryPoint.averaging.placeEntryAfterTAP}
-                        width={'33%'}
-                        onClick={() => {
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'averaging',
-                            'placeEntryAfterTAP',
-                            !entryPoint.averaging.placeEntryAfterTAP
-                          )
-
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'averaging',
-                            'closeStrategyAfterFirstTAP',
-                            false
-                          )
-
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'averaging',
-                            'placeWithoutLoss',
-                            false
-                          )
-
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'averaging',
-                            'entryLevels',
-                            entryPoint.averaging.entryLevels.map((level) => ({
-                              ...level,
-                              placeWithoutLoss: false,
-                            }))
-                          )
-                        }}
-                      >
-                        Place Entry After TAP
-                      </AdditionalSettingsButton>
-                    </DarkTooltip>
-                    <DarkTooltip
-                      title={
-                        'Place order at Break-Even Point for $0 net loss after fees'
-                      }
-                      maxWidth={'30rem'}
-                    >
-                      <AdditionalSettingsButton
-                        theme={theme}
-                        width={'33%'}
-                        isActive={entryPoint.averaging.placeWithoutLoss}
-                        onClick={() => {
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'averaging',
-                            'placeWithoutLoss',
-                            !entryPoint.averaging.placeWithoutLoss
-                          )
-
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'averaging',
-                            'placeEntryAfterTAP',
-                            false
-                          )
-                        }}
-                      >
-                        Place Break-even SL
-                      </AdditionalSettingsButton>
-                    </DarkTooltip>
-                  </InputRowContainer>
-                )}
-                {entryPoint.TVAlert.isTVAlertOn && (
-                  <>
-                    <InputRowContainer padding={'.8rem 0 2rem 0'}>
-                      <InputRowContainer justify="flex-start">
-                        <DarkTooltip
-                          title={
-                            'Trade will be placed once when there is an alert.'
-                          }
-                          maxWidth={'30rem'}
-                        >
-                          <div>
-                            <SRadio
-                              id="once"
-                              checked={
-                                entryPoint.TVAlert.templateMode === 'once'
-                              }
-                              style={{ padding: '0 1rem' }}
-                              onChange={() => {
-                                this.updateSubBlockValue(
-                                  'entryPoint',
-                                  'TVAlert',
-                                  'templateMode',
-                                  'once'
-                                )
-                              }}
-                            />
-                            <SettingsLabel
-                              style={{
-                                color: theme.palette.dark.main,
-                                textDecoration: 'underline',
-                              }}
-                              htmlFor={'once'}
-                            >
-                              once
-                            </SettingsLabel>
-                          </div>
-                        </DarkTooltip>
-                      </InputRowContainer>
-
-                      <InputRowContainer justify={'center'}>
-                        <DarkTooltip
-                          title={
-                            'Trade will be placed every time when there is an alert but no open position.'
-                          }
-                          maxWidth={'30rem'}
-                        >
-                          <div>
-                            <SRadio
-                              id="ifNoActive"
-                              checked={
-                                entryPoint.TVAlert.templateMode === 'ifNoActive'
-                              }
-                              style={{ padding: '0 1rem' }}
-                              onChange={() => {
-                                this.updateSubBlockValue(
-                                  'entryPoint',
-                                  'TVAlert',
-                                  'templateMode',
-                                  'ifNoActive'
-                                )
-                              }}
-                            />
-                            <SettingsLabel
-                              style={{
-                                color: theme.palette.dark.main,
-                                textDecoration: 'underline',
-                              }}
-                              htmlFor={'ifNoActive'}
-                            >
-                              If no trade exists
-                            </SettingsLabel>
-                          </div>
-                        </DarkTooltip>
-                      </InputRowContainer>
-
-                      <InputRowContainer justify="flex-end">
-                        <DarkTooltip
-                          title={
-                            'Trade will be placed every time there is an alert.'
-                          }
-                          maxWidth={'30rem'}
-                        >
-                          <div>
-                            <SRadio
-                              id="always"
-                              checked={
-                                entryPoint.TVAlert.templateMode === 'always'
-                              }
-                              style={{ padding: '0 1rem' }}
-                              disabled={
-                                stopLoss.external || takeProfit.external
-                              }
-                              onChange={() => {
-                                this.updateSubBlockValue(
-                                  'entryPoint',
-                                  'TVAlert',
-                                  'templateMode',
-                                  'always'
-                                )
-                              }}
-                            />
-                            <SettingsLabel
-                              style={{
-                                color: theme.palette.dark.main,
-                                textDecoration: 'underline',
-                              }}
-                              htmlFor={'always'}
-                            >
-                              Every time
-                            </SettingsLabel>
-                          </div>
-                        </DarkTooltip>
-                      </InputRowContainer>
-                    </InputRowContainer>
-
-                    {!entryPoint.averaging.enabled && (
-                      <FormInputContainer
-                        theme={theme}
-                        padding={'0 0 .8rem 0'}
-                        haveTooltip={false}
-                        tooltipText={''}
-                        title={'action when alert'}
-                      >
-                        <InputRowContainer>
-                          <AdditionalSettingsButton
-                            theme={theme}
-                            isActive={entryPoint.TVAlert.plotEnabled}
-                            onClick={() => {
-                              this.updateSubBlockValue(
-                                'entryPoint',
-                                'TVAlert',
-                                'plotEnabled',
-                                !entryPoint.TVAlert.plotEnabled
-                              )
-
-                              if (!entryPoint.TVAlert.plotEnabled) {
-                                this.updateSubBlockValue(
-                                  'entryPoint',
-                                  'averaging',
-                                  'enabled',
-                                  false
-                                )
-                              }
-                            }}
-                          >
-                            Plot
-                          </AdditionalSettingsButton>
-                        </InputRowContainer>
-                      </FormInputContainer>
-                    )}
-                  </>
-                )}
-
-                <FormInputContainer
-                  theme={theme}
-                  padding={'0 0 1.2rem 0'}
-                  haveTooltip={entryPoint.trailing.isTrailingOn}
-                  tooltipText={
-                    'The price at which the trailing algorithm is enabled.'
-                  }
-                  title={`price (${pair[1]})`}
-                >
-                  <InputRowContainer>
-                    <Input
-                      theme={theme}
-                      width={
-                        isAveragingAfterFirstTarget
-                          ? '32.5%'
-                          : entryPoint.TVAlert.plotEnabled
-                          ? '70%'
-                          : '100%'
-                      }
-                      symbol={pair[1]}
-                      type={
-                        entryPoint.order.type === 'limit'
-                          ? 'number'
-                          : entryPoint.trailing.isTrailingOn
-                          ? 'number'
-                          : 'text'
-                      }
-                      value={
-                        entryPoint.order.type === 'limit'
-                          ? isAveragingAfterFirstTarget
-                            ? entryPoint.averaging.price
-                            : priceForCalculate
-                          : entryPoint.trailing.isTrailingOn
-                          ? priceForCalculate
-                          : 'MARKET'
-                      }
-                      showErrors={showErrors}
-                      isValid={
-                        entryPoint.TVAlert.pricePlotEnabled ||
-                        priceForCalculate != 0
-                      }
-                      disabled={
-                        (isMarketType && !entryPoint.trailing.isTrailingOn) ||
-                        (entryPoint.TVAlert.pricePlotEnabled &&
-                          entryPoint.TVAlert.plotEnabled)
-                      }
-                      onChange={(e) => {
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'order',
-                          'price',
-                          e.target.value
-                        )
-
-                        this.updateSubBlockValue(
-                          'entryPoint',
-                          'order',
-                          'total',
-                          stripDigitPlaces(
-                            e.target.value * entryPoint.order.amount,
-                            marketType === 1 ? 2 : 8
-                          )
-                        )
-
-                        this.updateBlockValue(
-                          'temp',
-                          'initialMargin',
-                          stripDigitPlaces(
-                            (e.target.value * entryPoint.order.amount) /
-                              entryPoint.order.leverage,
-                            2
-                          )
-                        )
-                      }}
-                    />
-                    {isAveragingAfterFirstTarget && (
-                      <>
-                        <Input
-                          theme={theme}
-                          padding={'0 .8rem 0 .8rem'}
-                          width={'calc(17.5%)'}
-                          symbol={'%'}
-                          textAlign={'left'}
-                          pattern={'[0-9]+.[0-9]{3}'}
-                          type={'text'}
-                          value={entryPoint.averaging.percentage}
-                          inputStyles={{
-                            paddingLeft: '2rem',
-                            paddingRight: '0rem',
-                          }}
-                          needPreSymbol={true}
-                          preSymbol={'-'}
-                          symbolRightIndent={'1.5rem'}
-                          onChange={(e) => {
-                            // const value =
-                            //   e.target.value > 100 / entryPoint.order.leverage
-                            //     ? stripDigitPlaces(
-                            //       100 / entryPoint.order.leverage,
-                            //       3
-                            //     )
-                            //     : e.target.value
-                            const price =
-                              entryPoint.order.side === 'buy'
-                                ? stripDigitPlaces(
-                                    entryPoint.order.price *
-                                      (1 -
-                                        e.target.value /
-                                          100 /
-                                          entryPoint.order.leverage),
-                                    pricePrecision
-                                  )
-                                : stripDigitPlaces(
-                                    entryPoint.order.price *
-                                      (1 +
-                                        e.target.value /
-                                          100 /
-                                          entryPoint.order.leverage),
-                                    pricePrecision
-                                  )
-
-                            this.updateSubBlockValue(
-                              'entryPoint',
-                              'averaging',
-                              'percentage',
-                              e.target.value
-                            )
-
-                            this.updateSubBlockValue(
-                              'entryPoint',
-                              'averaging',
-                              'price',
-                              price
-                            )
-                          }}
-                        />
-
-                        <BlueSlider
-                          theme={theme}
-                          value={entryPoint.averaging.percentage}
-                          sliderContainerStyles={{
-                            width: entryPoint.TVAlert.plotEnabled
-                              ? '20%'
-                              : '50%',
-                            margin: '0 .8rem 0 .8rem',
-                          }}
-                          onChange={(value) => {
-                            if (
-                              entryPoint.averaging.percentage > 100 &&
-                              value === 100
-                            ) {
-                              return
-                            }
-
-                            const price =
-                              entryPoint.order.side === 'buy'
-                                ? stripDigitPlaces(
-                                    entryPoint.order.price *
-                                      (1 -
-                                        value /
-                                          100 /
-                                          entryPoint.order.leverage),
-                                    pricePrecision
-                                  )
-                                : stripDigitPlaces(
-                                    entryPoint.order.price *
-                                      (1 +
-                                        value /
-                                          100 /
-                                          entryPoint.order.leverage),
-                                    pricePrecision
-                                  )
-
-                            this.updateSubBlockValue(
-                              'entryPoint',
-                              'averaging',
-                              'percentage',
-                              value
-                            )
-
-                            this.updateSubBlockValue(
-                              'entryPoint',
-                              'averaging',
-                              'price',
-                              price
-                            )
-                          }}
-                        />
-                      </>
-                    )}
-                    {entryPoint.TVAlert.plotEnabled && (
-                      <>
-                        <div
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            width: '10%',
-                          }}
-                        >
-                          <Switcher
-                            checked={entryPoint.TVAlert.pricePlotEnabled}
-                            onChange={() => {
-                              this.updateSubBlockValue(
-                                'entryPoint',
-                                'TVAlert',
-                                'pricePlotEnabled',
-                                !entryPoint.TVAlert.pricePlotEnabled
-                              )
-                            }}
-                          />
-                        </div>
-                        <Input
-                          theme={theme}
-                          type={'number'}
-                          needTitle
-                          title={`plot_`}
-                          textAlign="left"
-                          width={'calc(20% - .8rem)'}
-                          inputStyles={{
-                            paddingLeft: '4rem',
-                          }}
-                          disabled={!entryPoint.TVAlert.pricePlotEnabled}
-                          value={entryPoint.TVAlert.pricePlot}
-                          showErrors={showErrors}
-                          isValid={this.validateField(
-                            true,
-                            entryPoint.TVAlert.pricePlot
-                          )}
-                          onChange={(e) => {
-                            this.updateSubBlockValue(
-                              'entryPoint',
-                              'TVAlert',
-                              'pricePlot',
-                              e.target.value
-                            )
-                          }}
-                        />
-                      </>
-                    )}
-                  </InputRowContainer>
-                </FormInputContainer>
-
-                {entryPoint.trailing.isTrailingOn && marketType !== 0 && (
-                  <FormInputContainer
-                    theme={theme}
-                    haveTooltip
-                    tooltipText={
-                      'The level of price change after the trend reversal, at which the order will be executed.'
-                    }
-                    title={'price deviation (%)'}
-                  >
-                    <InputRowContainer>
-                      <Input
-                        theme={theme}
-                        padding={'0'}
-                        width={'calc(32.5%)'}
-                        textAlign={'left'}
-                        symbol={pair[1]}
-                        value={entryPoint.trailing.trailingDeviationPrice}
-                        showErrors={showErrors}
-                        isValid={this.validateField(
-                          true,
-                          entryPoint.trailing.trailingDeviationPrice
-                        )}
-                        disabled={
-                          (isMarketType && !entryPoint.trailing.isTrailingOn) ||
-                          (entryPoint.TVAlert.deviationPlotEnabled &&
-                            entryPoint.TVAlert.plotEnabled)
-                        }
-                        inputStyles={{
-                          paddingLeft: '1rem',
-                        }}
-                        onChange={(e) => {
-                          const percentage =
-                            entryPoint.order.side === 'sell'
-                              ? (1 - e.target.value / priceForCalculate) * 100
-                              : -(1 - e.target.value / priceForCalculate) * 100
-
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'trailing',
-                            'deviationPercentage',
-                            stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
-                          )
-
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'trailing',
-                            'trailingDeviationPrice',
-                            e.target.value
-                          )
-                        }}
-                      />
-
-                      <Input
-                        theme={theme}
-                        padding={'0 .8rem 0 .8rem'}
-                        width={'calc(17.5%)'}
-                        symbol={'%'}
-                        textAlign={'right'}
-                        pattern={'[0-9]+.[0-9]{3}'}
-                        type={'text'}
-                        value={entryPoint.trailing.deviationPercentage}
-                        // showErrors={showErrors}
-                        // isValid={this.validateField(
-                        //   entryPoint.trailing.isTrailingOn,
-                        //   entryPoint.trailing.deviationPercentage
-                        // )}
-                        inputStyles={{
-                          paddingLeft: 0,
-                          paddingRight: '2rem',
-                        }}
-                        symbolRightIndent={'1.5rem'}
-                        onChange={(e) => {
-                          const value =
-                            e.target.value > 100 / entryPoint.order.leverage
-                              ? stripDigitPlaces(
-                                  100 / entryPoint.order.leverage,
-                                  3
-                                )
-                              : e.target.value
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'trailing',
-                            'deviationPercentage',
-                            value
-                          )
-
-                          this.updateStopLossAndTakeProfitPrices({
-                            deviationPercentage: value,
-                          })
-                        }}
-                      />
-
-                      <BlueSlider
-                        theme={theme}
-                        disabled={!entryPoint.trailing.isTrailingOn}
-                        value={
-                          +stripDigitPlaces(
-                            entryPoint.trailing.deviationPercentage *
-                              entryPoint.order.leverage,
-                            3
-                          )
-                        }
-                        sliderContainerStyles={{
-                          width: entryPoint.TVAlert.plotEnabled ? '20%' : '50%',
-                          margin: '0 .8rem 0 .8rem',
-                        }}
-                        onChange={(value) => {
-                          if (
-                            stripDigitPlaces(
-                              entryPoint.trailing.deviationPercentage *
-                                entryPoint.order.leverage,
-                              3
-                            ) > 100 &&
-                            value === 100
-                          ) {
-                            return
-                          }
-
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'trailing',
-                            'deviationPercentage',
-                            stripDigitPlaces(
-                              value / entryPoint.order.leverage,
-                              3
-                            )
-                          )
-                          this.updateStopLossAndTakeProfitPrices({
-                            deviationPercentage: stripDigitPlaces(
-                              value / entryPoint.order.leverage,
-                              3
-                            ),
-                          })
-                        }}
-                      />
-                      {entryPoint.TVAlert.plotEnabled && (
-                        <>
-                          <div
-                            style={{
-                              display: 'flex',
-                              justifyContent: 'center',
-                              width: '10%',
-                            }}
-                          >
-                            <Switcher
-                              checked={entryPoint.TVAlert.deviationPlotEnabled}
-                              onChange={() => {
-                                this.updateSubBlockValue(
-                                  'entryPoint',
-                                  'TVAlert',
-                                  'deviationPlotEnabled',
-                                  !entryPoint.TVAlert.deviationPlotEnabled
-                                )
-                              }}
-                            />
-                          </div>
-                          <Input
-                            theme={theme}
-                            type={'number'}
-                            needTitle
-                            title={`plot_`}
-                            textAlign="left"
-                            width={'calc(20% - .8rem)'}
-                            inputStyles={{
-                              paddingLeft: '4rem',
-                            }}
-                            disabled={!entryPoint.TVAlert.deviationPlotEnabled}
-                            value={entryPoint.TVAlert.deviationPlot}
-                            showErrors={showErrors}
-                            isValid={this.validateField(
-                              true,
-                              entryPoint.TVAlert.deviationPlot
-                            )}
-                            onChange={(e) => {
-                              this.updateSubBlockValue(
-                                'entryPoint',
-                                'TVAlert',
-                                'deviationPlot',
-                                e.target.value
-                              )
-                            }}
-                          />
-                        </>
-                      )}
-                    </InputRowContainer>
-                  </FormInputContainer>
-                )}
-
-                <InputRowContainer>
-                  <div
-                    style={{
-                      width: entryPoint.TVAlert.plotEnabled ? '32%' : '47%',
-                    }}
-                  >
-                    <FormInputContainer
-                      theme={theme}
-                      needLine={false}
-                      needRightValue={true}
-                      rightValue={`${
-                        entryPoint.order.side === 'buy' || marketType === 1
-                          ? stripDigitPlaces(
-                              maxAmount / priceForCalculate,
-                              marketType === 1 ? quantityPrecision : 8
-                            )
-                          : stripDigitPlaces(
-                              maxAmount,
-                              marketType === 1 ? quantityPrecision : 8
-                            )
-                      } ${pair[0]}`}
-                      onValueClick={this.setMaxAmount}
-                      title={`${
-                        marketType === 1 ? 'order quantity' : 'amount'
-                      } (${pair[0]})`}
-                    >
-                      <Input
-                        theme={theme}
-                        type={'text'}
-                        pattern={
-                          marketType === 0
-                            ? '[0-9]+.[0-9]{8}'
-                            : '[0-9]+.[0-9]{3}'
-                        }
-                        symbol={pair[0]}
-                        value={entryPoint.order.amount}
-                        showErrors={showErrors}
-                        disabled={
-                          entryPoint.TVAlert.amountPlotEnabled &&
-                          entryPoint.TVAlert.plotEnabled
-                        }
-                        isValid={this.validateField(
-                          true,
-                          +entryPoint.order.amount
-                        )}
-                        onChange={(e) => {
-                          const [maxAmount] = this.getMaxValues()
-                          const isAmountMoreThanMax = e.target.value > maxAmount
-                          const amountForUpdate = isAmountMoreThanMax
-                            ? maxAmount
-                            : e.target.value
-
-                          const strippedAmount = isAmountMoreThanMax
-                            ? stripDigitPlaces(
-                                amountForUpdate,
-                                marketType === 1 ? quantityPrecision : 8
-                              )
-                            : e.target.value
-
-                          const newTotal = strippedAmount * priceForCalculate
-
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'order',
-                            'amount',
-                            strippedAmount
-                          )
-
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'order',
-                            'total',
-                            stripDigitPlaces(newTotal, marketType === 1 ? 2 : 8)
-                          )
-
-                          this.updateBlockValue(
-                            'temp',
-                            'initialMargin',
-                            stripDigitPlaces(
-                              (newTotal || 0) / entryPoint.order.leverage,
-                              2
-                            )
-                          )
-                        }}
-                      />
-                    </FormInputContainer>
-                  </div>
-                  <div
-                    style={{
-                      width: '6%',
-                      display: 'flex',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <HeightIcon
-                      style={{
-                        color: theme.palette.grey.text,
-                        transform: 'rotate(-90deg) translateX(-30%)',
-                      }}
-                    />
-                  </div>
-                  <div
-                    style={{
-                      width: entryPoint.TVAlert.plotEnabled ? '32%' : '47%',
-                    }}
-                  >
-                    <FormInputContainer
-                      theme={theme}
-                      needLine={false}
-                      needRightValue={true}
-                      rightValue={`${
-                        entryPoint.order.side === 'buy' || marketType === 1
-                          ? stripDigitPlaces(
-                              maxAmount,
-                              marketType === 1 ? 0 : 2
-                            )
-                          : stripDigitPlaces(
-                              maxAmount * priceForCalculate,
-                              marketType === 1 ? 0 : 2
-                            )
-                      } ${pair[1]}`}
-                      onValueClick={this.setMaxAmount}
-                      title={`total (${pair[1]})`}
-                    >
-                      <Input
-                        theme={theme}
-                        symbol={pair[1]}
-                        value={entryPoint.order.total}
-                        disabled={
-                          entryPoint.trailing.isTrailingOn ||
-                          isMarketType ||
-                          (entryPoint.TVAlert.amountPlotEnabled &&
-                            entryPoint.TVAlert.plotEnabled)
-                        }
-                        onChange={(e) => {
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'order',
-                            'total',
-                            e.target.value
-                          )
-
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'order',
-                            'amount',
-                            stripDigitPlaces(
-                              e.target.value / priceForCalculate,
-                              marketType === 1 ? quantityPrecision : 8
-                            )
-                          )
-
-                          this.updateBlockValue(
-                            'temp',
-                            'initialMargin',
-                            stripDigitPlaces(
-                              e.target.value / entryPoint.order.leverage,
-                              2
-                            )
-                          )
-                        }}
-                      />
-                    </FormInputContainer>
-                  </div>
-                  {entryPoint.TVAlert.plotEnabled && (
-                    <>
-                      <div
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'center',
-                          width: '10%',
-                        }}
-                      >
-                        <Switcher
-                          checked={entryPoint.TVAlert.amountPlotEnabled}
-                          onChange={() => {
-                            this.updateSubBlockValue(
-                              'entryPoint',
-                              'TVAlert',
-                              'amountPlotEnabled',
-                              !entryPoint.TVAlert.amountPlotEnabled
-                            )
-                          }}
-                        />
-                      </div>
-                      <Input
-                        theme={theme}
-                        type={'number'}
-                        needTitle
-                        title={`plot_`}
-                        textAlign="left"
-                        width={'calc(20% - .8rem)'}
-                        inputStyles={{
-                          paddingLeft: '4rem',
-                        }}
-                        disabled={!entryPoint.TVAlert.amountPlotEnabled}
-                        value={entryPoint.TVAlert.amountPlot}
-                        showErrors={showErrors}
-                        isValid={this.validateField(
-                          true,
-                          entryPoint.TVAlert.amountPlot
-                        )}
-                        onChange={(e) => {
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'TVAlert',
-                            'amountPlot',
-                            e.target.value
-                          )
-                        }}
-                      />
-                    </>
-                  )}
-                </InputRowContainer>
-
-                <InputRowContainer>
-                  <BlueSlider
-                    theme={theme}
-                    showMarks
-                    value={
-                      entryPoint.order.side === 'buy' || marketType === 1
-                        ? (entryPoint.order.total / maxAmount) * 100
-                        : entryPoint.order.amount / (maxAmount / 100)
-                    }
-                    sliderContainerStyles={{
-                      width: 'calc(100% - .8rem)',
-                      margin: '0 .8rem 0 auto',
-                    }}
-                    onChange={(value) => {
-                      const newValue = (maxAmount / 100) * value
-
-                      const newAmount =
-                        entryPoint.order.side === 'buy' || marketType === 1
-                          ? newValue / priceForCalculate
-                          : newValue
-
-                      const newTotal = newAmount * priceForCalculate
-
-                      const newMargin = stripDigitPlaces(
-                        (newTotal || 0) / entryPoint.order.leverage,
-                        2
-                      )
-
-                      this.updateSubBlockValue(
-                        'entryPoint',
-                        'order',
-                        'amount',
-                        stripDigitPlaces(
-                          newAmount,
-                          marketType === 1 ? quantityPrecision : 8
-                        )
-                      )
-
-                      this.updateSubBlockValue(
-                        'entryPoint',
-                        'order',
-                        'total',
-                        stripDigitPlaces(newTotal, marketType === 1 ? 2 : 8)
-                      )
-
-                      this.updateBlockValue('temp', 'initialMargin', newMargin)
-                    }}
-                  />
-                </InputRowContainer>
-
-                {marketType === 1 && (
-                  <InputRowContainer>
-                    <FormInputContainer
-                      theme={theme}
-                      needLine={false}
-                      needRightValue={true}
-                      rightValue={`${stripDigitPlaces(funds[1].quantity, 2)} ${
-                        pair[1]
-                      }`}
-                      onValueClick={this.setMaxAmount}
-                      title={`cost / initial margin (${pair[1]})`}
-                    >
-                      <Input
-                        theme={theme}
-                        symbol={pair[1]}
-                        value={this.state.temp.initialMargin}
-                        disabled={
-                          entryPoint.trailing.isTrailingOn || isMarketType
-                        }
-                        onChange={(e) => {
-                          const inputInitialMargin = e.target.value
-                          const newTotal =
-                            inputInitialMargin * entryPoint.order.leverage
-                          const newAmount = newTotal / priceForCalculate
-
-                          const fixedAmount = stripDigitPlaces(
-                            newAmount,
-                            marketType === 1 ? quantityPrecision : 8
-                          )
-
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'order',
-                            'total',
-                            stripDigitPlaces(newTotal, marketType === 1 ? 2 : 8)
-                          )
-
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'order',
-                            'amount',
-                            fixedAmount
-                          )
-
-                          this.updateBlockValue(
-                            'temp',
-                            'initialMargin',
-                            inputInitialMargin
-                          )
-                        }}
-                      />
-                    </FormInputContainer>
-                  </InputRowContainer>
-                )}
-
-                {entryPoint.averaging.enabled && (
-                  <>
-                    <InputRowContainer padding="0 0 .6rem 0">
-                      <BtnCustom
-                        btnColor={theme.palette.white.main}
-                        backgroundColor={theme.palette.orange.main}
-                        borderColor={theme.palette.orange.main}
-                        btnWidth={'100%'}
-                        height={'auto'}
-                        borderRadius={'0.1rem'}
-                        margin={'0'}
-                        padding={'.1rem 0'}
-                        fontSize={'1rem'}
-                        boxShadow={'0px .2rem .3rem rgba(8, 22, 58, 0.15)'}
-                        letterSpacing={'.05rem'}
-                        onClick={this.addAverageTarget}
-                      >
-                        add point
-                      </BtnCustom>
-                    </InputRowContainer>
-
-                    <InputRowContainer
-                      padding=".6rem 1rem 1.2rem .4rem"
-                      direction="column"
-                    >
-                      <InputRowContainer padding=".2rem .5rem">
-                        <TargetTitle
-                          theme={theme}
-                          style={{ width: '25%', paddingLeft: '2rem' }}
-                        >
-                          price
-                        </TargetTitle>
-                        <TargetTitle theme={theme} style={{ width: '25%' }}>
-                          quantity
-                        </TargetTitle>
-                        <TargetTitle theme={theme} style={{ width: '40%' }}>
-                          place Break-even SLP
-                        </TargetTitle>
-                      </InputRowContainer>
-                      <div
-                        style={{
-                          width: '100%',
-                          background: theme.palette.grey.main,
-                          borderRadius: '.8rem',
-                          border: theme.palette.border.main,
-                        }}
-                      >
-                        {entryPoint.averaging.entryLevels.map((target, i) => (
-                          <InputRowContainer
-                            key={`${target.price}${target.amount}${i}`}
-                            padding=".2rem .5rem"
-                            style={
-                              entryPoint.averaging.entryLevels.length - 1 !== i
-                                ? {
-                                    borderBottom: theme.palette.border.main,
-                                  }
-                                : {}
-                            }
-                          >
-                            <TargetValue
-                              theme={theme}
-                              style={{ width: '25%', paddingLeft: '2rem' }}
-                            >
-                              {target.price} {i > 0 ? '%' : pair[1]}
-                            </TargetValue>
-                            <TargetValue theme={theme} style={{ width: '25%' }}>
-                              {target.amount} {pair[0]}
-                            </TargetValue>
-                            <TargetValue theme={theme} style={{ width: '40%' }}>
-                              {target.placeWithoutLoss ? '+' : '-'}
-                            </TargetValue>
-                            <CloseIcon
-                              onClick={() => this.deleteAverageTarget(i)}
-                              style={{
-                                color: theme.palette.red.main,
-                                fontSize: '1.8rem',
-                                cursor: 'pointer',
-                              }}
-                            />
-                          </InputRowContainer>
-                        ))}
-                      </div>
-                    </InputRowContainer>
-                  </>
-                )}
-
-                {entryPoint.order.isHedgeOn && (
-                  <InputRowContainer>
-                    <FormInputContainer theme={theme} title={'hedge'}>
-                      <CustomSwitcher
-                        theme={theme}
-                        firstHalfText={'long'}
-                        secondHalfText={'short'}
-                        buttonHeight={'3rem'}
-                        containerStyles={{
-                          width: '30%',
-                          padding: '0 .4rem 0 0',
-                          whiteSpace: 'nowrap',
-                        }}
-                        firstHalfStyleProperties={GreenSwitcherStyles(theme)}
-                        secondHalfStyleProperties={RedSwitcherStyles(theme)}
-                        firstHalfIsActive={
-                          entryPoint.order.hedgeSide === 'long'
-                        }
-                        changeHalf={() =>
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'order',
-                            'hedgeSide',
-                            getSecondValueFromFirst(entryPoint.order.hedgeSide)
-                          )
-                        }
-                      />
-                      <Input
-                        theme={theme}
-                        padding="0 .8rem 0 .8rem"
-                        width={'calc(40% - 1.6rem)'}
-                        symbol={pair[1]}
-                        value={entryPoint.order.hedgePrice}
-                        showErrors={showErrors}
-                        isValid={this.validateField(
-                          entryPoint.order.isHedgeOn,
-                          entryPoint.order.hedgePrice
-                        )}
-                        onChange={(e) => {
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'order',
-                            'hedgePrice',
-                            e.target.value
-                          )
-                        }}
-                      />
-                      <Select
-                        theme={theme}
-                        width={'18%'}
-                        symbol={'LVRG.'}
-                        value={entryPoint.order.hedgeIncrease}
-                        showErrors={showErrors}
-                        isValid={this.validateField(
-                          entryPoint.order.isHedgeOn,
-                          entryPoint.order.hedgeIncrease
-                        )}
-                        onChange={(e) => {
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'order',
-                            'hedgeIncrease',
-                            e.target.value
-                          )
-                        }}
-                      >
-                        <option>1</option>
-                        <option>25</option>
-                        <option>50</option>
-                        <option>75</option>
-                        <option>100</option>
-                        <option>125</option>
-                      </Select>
-                    </FormInputContainer>
-                  </InputRowContainer>
-                )}
-
-                {entryPoint.TVAlert.isTVAlertOn && (
-                  <>
-                    {' '}
-                    <FormInputContainer
-                      theme={theme}
-                      padding={'0 0 .8rem 0'}
-                      haveTooltip={true}
-                      tooltipText={
-                        <img
-                          style={{ width: '35rem', height: '50rem' }}
-                          src={WebHookImg}
-                        />
-                      }
-                      title={
-                        <span>
-                          paste it into{' '}
-                          <span
-                            style={{ color: theme.palette.blue.background }}
-                          >
-                            web-hook url
-                          </span>{' '}
-                          field when creating tv alert
-                        </span>
-                      }
-                    >
-                      <InputRowContainer>
-                        <Input
-                          theme={theme}
-                          width={'85%'}
-                          type={'text'}
-                          disabled={true}
-                          textAlign={'left'}
-                          value={`https://${API_URL}/createSmUsingTemplate`}
-                        />
-                        <BtnCustom
-                          btnWidth="calc(15% - .8rem)"
-                          height="auto"
-                          margin="0 0 0 .8rem"
-                          fontSize="1rem"
-                          padding=".5rem 0 .4rem 0"
-                          borderRadius=".8rem"
-                          btnColor={theme.palette.blue.main}
-                          backgroundColor={theme.palette.white.background}
-                          hoverColor={theme.palette.white.main}
-                          hoverBackground={theme.palette.blue.main}
-                          transition={'all .4s ease-out'}
-                          onClick={() => {
-                            copy(`https://${API_URL}/createSmUsingTemplate`)
-                          }}
-                        >
-                          copy
-                        </BtnCustom>
-                      </InputRowContainer>
-                    </FormInputContainer>
-                    <FormInputContainer
-                      theme={theme}
-                      padding={'0 0 .8rem 0'}
-                      haveTooltip={true}
-                      tooltipText={
-                        <img
-                          style={{ width: '40rem', height: '42rem' }}
-                          src={MessageImg}
-                        />
-                      }
-                      title={
-                        <span>
-                          paste it into{' '}
-                          <span
-                            style={{ color: theme.palette.blue.background }}
-                          >
-                            message
-                          </span>{' '}
-                          field when creating tv alert
-                        </span>
-                      }
-                    >
-                      <InputRowContainer>
-                        <Input
-                          theme={theme}
-                          width={'65%'}
-                          type={'text'}
-                          disabled={true}
-                          textAlign={'left'}
-                          value={this.getEntryAlertJson()}
-                        />
-                        {/* entryPoint.TVAlert.templateToken */}
-                        <BtnCustom
-                          btnWidth="calc(15% - .8rem)"
-                          height="auto"
-                          margin="0 0 0 .8rem"
-                          fontSize="1rem"
-                          padding=".5rem 0 .4rem 0"
-                          borderRadius=".8rem"
-                          btnColor={theme.palette.blue.main}
-                          backgroundColor={theme.palette.white.background}
-                          hoverColor={theme.palette.white.main}
-                          hoverBackground={theme.palette.blue.main}
-                          transition={'all .4s ease-out'}
-                          onClick={() => {
-                            copy(this.getEntryAlertJson())
-                          }}
-                        >
-                          copy
-                        </BtnCustom>
-                        <BtnCustom
-                          btnWidth="calc(20% - .8rem)"
-                          height="auto"
-                          margin="0 0 0 .8rem"
-                          fontSize="1rem"
-                          padding=".5rem 0 .4rem 0"
-                          borderRadius=".8rem"
-                          btnColor={theme.palette.blue.main}
-                          backgroundColor={theme.palette.white.background}
-                          hoverColor={theme.palette.white.main}
-                          hoverBackground={theme.palette.blue.main}
-                          transition={'all .4s ease-out'}
-                          onClick={() => {
-                            // redirect to full example page
-                          }}
-                        >
-                          example
-                        </BtnCustom>
-                      </InputRowContainer>
-                    </FormInputContainer>
-                  </>
-                )}
-              </div>
-            </TerminalBlock>
-
+              updateBlockValue={this.updateBlockValue}
+              updateStopLossAndTakeProfitPrices={
+                this.updateStopLossAndTakeProfitPrices
+              }
+              updateSubBlockValue={this.updateSubBlockValue}
+              updatePriceToMarket={this.updatePriceToMarket}
+              validateField={this.validateField}
+            />
             {/* STOP LOSS */}
-            <TerminalBlock
-              data-tut={'step2'}
+            <StopLossBlock
+              pair={pair}
               theme={theme}
-              width={'calc(32.5% + 1%)'}
-              style={{ overflow: 'hidden', padding: 0 }}
-            >
-              <div
-                style={{
-                  overflow: 'hidden scroll',
-                  height: 'calc(100% - 6rem)',
-                  padding: '0rem 1rem 0rem 1.2rem',
-                }}
-              >
-                <InputRowContainer justify="center">
-                  <CustomSwitcher
-                    theme={theme}
-                    firstHalfText={'limit'}
-                    secondHalfText={'market'}
-                    buttonHeight={'3rem'}
-                    containerStyles={{ width: '100%' }}
-                    firstHalfStyleProperties={BlueSwitcherStyles(theme)}
-                    secondHalfStyleProperties={BlueSwitcherStyles(theme)}
-                    firstHalfIsActive={stopLoss.type === 'limit'}
-                    changeHalf={() =>
-                      this.updateBlockValue(
-                        'stopLoss',
-                        'type',
-                        getSecondValueFromFirst(stopLoss.type)
-                      )
-                    }
-                  />
-                </InputRowContainer>
-                <div>
-                  <InputRowContainer
-                    justify="flex-start"
-                    padding={'.6rem 0 1.2rem 0'}
-                  >
-                    <DarkTooltip
-                      maxWidth={'30rem'}
-                      title={
-                        <>
-                          <p>
-                            Waiting after unrealized P&L will reach set target.
-                          </p>
-                          <p>
-                            <b>For example:</b> you set 10% stop loss and 1
-                            minute timeout. When your unrealized loss is 10%
-                            timeout will give a minute for a chance to reverse
-                            trend and loss to go below 10% before stop loss
-                            order executes.
-                          </p>
-                        </>
-                      }
-                    >
-                      <AdditionalSettingsButton
-                        theme={theme}
-                        isActive={stopLoss.timeout.isTimeoutOn}
-                        onClick={() => {
-                          if (!stopLoss.external) {
-                            this.updateBlockValue('stopLoss', 'external', false)
-                            this.updateSubBlockValue(
-                              'stopLoss',
-                              'forcedStop',
-                              'mandatoryForcedLoss',
-                              false
-                            )
-                          }
-                          this.updateSubBlockValue(
-                            'stopLoss',
-                            'timeout',
-                            'isTimeoutOn',
-                            !stopLoss.timeout.isTimeoutOn
-                          )
-
-                          this.updateSubBlockValue(
-                            'stopLoss',
-                            'timeout',
-                            'whenLossableOn',
-                            !stopLoss.timeout.whenLossableOn
-                          )
-
-                          this.updateSubBlockValue(
-                            'stopLoss',
-                            'forcedStop',
-                            'isForcedStopOn',
-                            !stopLoss.forcedStop.isForcedStopOn
-                          )
-                        }}
-                      >
-                        Timeout
-                      </AdditionalSettingsButton>
-                    </DarkTooltip>
-                    <DarkTooltip
-                      maxWidth={'30rem'}
-                      title={
-                        'Your stop loss order will be placed once when there is a Trading View alert with params that you sent.'
-                      }
-                    >
-                      <AdditionalSettingsButton
-                        theme={theme}
-                        isActive={stopLoss.external}
-                        onClick={() => {
-                          this.updateBlockValue(
-                            'stopLoss',
-                            'external',
-                            !stopLoss.external
-                          )
-
-                          if (!stopLoss.external) {
-                            this.updateSubBlockValue(
-                              'stopLoss',
-                              'timeout',
-                              'isTimeoutOn',
-                              false
-                            )
-                          } else {
-                            this.updateSubBlockValue(
-                              'stopLoss',
-                              'forcedStop',
-                              'mandatoryForcedLoss',
-                              false
-                            )
-                          }
-
-                          if (
-                            !stopLoss.external &&
-                            entryPoint.TVAlert.templateMode === 'always'
-                          ) {
-                            this.updateSubBlockValue(
-                              'entryPoint',
-                              'TVAlert',
-                              'templateMode',
-                              'ifNoActive'
-                            )
-                          }
-                        }}
-                      >
-                        SL by TV Alert
-                      </AdditionalSettingsButton>
-                    </DarkTooltip>
-                    {/* <AdditionalSettingsButton theme={theme}
-                    isActive={stopLoss.forcedStop.isForcedStopOn}
-                    onClick={() =>
-                      this.updateSubBlockValue(
-                        'stopLoss',
-                        'forcedStop',
-                        'isForcedStopOn',
-                        !stopLoss.forcedStop.isForcedStopOn
-                      )
-                    }
-                  >
-                    Forced stop
-                  </AdditionalSettingsButton> */}
-                  </InputRowContainer>
-
-                  {((stopLoss.external &&
-                    !stopLoss.forcedStopByAlert &&
-                    !stopLoss.plotEnabled) ||
-                    !stopLoss.external) && (
-                    <FormInputContainer
-                      theme={theme}
-                      haveTooltip
-                      tooltipText={
-                        <>
-                          <p>The unrealized loss/ROE for closing trade.</p>
-                          <p>
-                            <b>For example:</b> you bought 1 BTC and set 10%
-                            stop loss. Your unrealized loss should be 0.1 BTC
-                            and order will be executed.
-                          </p>
-                        </>
-                      }
-                      title={'stop price'}
-                    >
-                      <InputRowContainer>
-                        <Input
-                          theme={theme}
-                          padding={'0'}
-                          width={'calc(32.5%)'}
-                          textAlign={'left'}
-                          symbol={pair[1]}
-                          value={stopLoss.stopLossPrice}
-                          disabled={
-                            isMarketType && !entryPoint.trailing.isTrailingOn
-                          }
-                          showErrors={showErrors && stopLoss.isStopLossOn}
-                          isValid={this.validateField(
-                            true,
-                            stopLoss.pricePercentage
-                          )}
-                          inputStyles={{
-                            paddingLeft: '1rem',
-                          }}
-                          onChange={(e) => {
-                            const percentage =
-                              entryPoint.order.side === 'buy'
-                                ? (1 - e.target.value / priceForCalculate) *
-                                  100 *
-                                  entryPoint.order.leverage
-                                : -(1 - e.target.value / priceForCalculate) *
-                                  100 *
-                                  entryPoint.order.leverage
-
-                            this.updateBlockValue(
-                              'stopLoss',
-                              'pricePercentage',
-                              stripDigitPlaces(
-                                percentage < 0 ? 0 : percentage,
-                                2
-                              )
-                            )
-
-                            this.updateBlockValue(
-                              'stopLoss',
-                              'stopLossPrice',
-                              e.target.value
-                            )
-                          }}
-                        />
-
-                        <Input
-                          theme={theme}
-                          padding={'0 .8rem 0 .8rem'}
-                          width={'calc(17.5%)'}
-                          symbol={'%'}
-                          preSymbol={'-'}
-                          textAlign={'left'}
-                          needPreSymbol={true}
-                          value={
-                            stopLoss.pricePercentage > 100
-                              ? 100
-                              : stopLoss.pricePercentage
-                          }
-                          showErrors={showErrors && stopLoss.isStopLossOn}
-                          isValid={this.validateField(
-                            true,
-                            stopLoss.pricePercentage
-                          )}
-                          inputStyles={{
-                            paddingRight: '0',
-                            paddingLeft: '2rem',
-                          }}
-                          onChange={(e) => {
-                            this.updateStopLossAndTakeProfitPrices({
-                              stopLossPercentage: e.target.value,
-                            })
-
-                            this.updateBlockValue(
-                              'stopLoss',
-                              'pricePercentage',
-                              e.target.value
-                            )
-                          }}
-                        />
-
-                        <BlueSlider
-                          theme={theme}
-                          value={stopLoss.pricePercentage}
-                          sliderContainerStyles={{
-                            width: '50%',
-                            margin: '0 .8rem 0 .8rem',
-                          }}
-                          onChange={(value) => {
-                            if (
-                              stopLoss.pricePercentage > 100 &&
-                              value === 100
-                            ) {
-                              return
-                            }
-
-                            this.updateStopLossAndTakeProfitPrices({
-                              stopLossPercentage: value,
-                            })
-
-                            this.updateBlockValue(
-                              'stopLoss',
-                              'pricePercentage',
-                              value
-                            )
-                          }}
-                        />
-                      </InputRowContainer>
-                    </FormInputContainer>
-                  )}
-
-                  {(stopLoss.timeout.isTimeoutOn ||
-                    (stopLoss.forcedStop.isForcedStopOn &&
-                      stopLoss.forcedStop.mandatoryForcedLoss)) &&
-                    (!stopLoss.external ||
-                      (stopLoss.external &&
-                        stopLoss.forcedStop.mandatoryForcedLoss)) && (
-                      <>
-                        <InputRowContainer>
-                          {stopLoss.timeout.isTimeoutOn && (
-                            <SubBlocksContainer>
-                              <FormInputContainer
-                                theme={theme}
-                                haveTooltip
-                                tooltipText={
-                                  <>
-                                    <p>
-                                      Waiting after unrealized P&L will reach
-                                      set target.
-                                    </p>
-                                    <p>
-                                      <b>For example:</b> you set 10% stop loss
-                                      and 1 minute timeout. When your unrealized
-                                      loss is 10% timeout will give a minute for
-                                      a chance to reverse trend and loss to go
-                                      below 10% before stop loss order executes.
-                                    </p>
-                                  </>
-                                }
-                                title={'timeout'}
-                                lineMargin={'0 1.2rem 0 1rem'}
-                              >
-                                <InputRowContainer>
-                                  <Input
-                                    theme={theme}
-                                    haveSelector
-                                    // width={'calc(55% - .4rem)'}
-                                    width={'calc(75% - .4rem)'}
-                                    showErrors={
-                                      showErrors && stopLoss.isStopLossOn
-                                    }
-                                    isValid={this.validateField(
-                                      stopLoss.timeout.whenLossableOn,
-                                      stopLoss.timeout.whenLossableSec
-                                    )}
-                                    value={stopLoss.timeout.whenLossableSec}
-                                    onChange={(e) => {
-                                      this.updateSubBlockValue(
-                                        'stopLoss',
-                                        'timeout',
-                                        'whenLossableSec',
-                                        e.target.value
-                                      )
-                                    }}
-                                    inputStyles={{
-                                      borderTopRightRadius: 0,
-                                      borderBottomRightRadius: 0,
-                                    }}
-                                    // disabled={!stopLoss.timeout.whenLossableOn}
-                                  />
-                                  <Select
-                                    theme={theme}
-                                    width={'calc(25% - .8rem)'}
-                                    // width={'calc(30% - .4rem)'}
-                                    value={stopLoss.timeout.whenLossableMode}
-                                    inputStyles={{
-                                      borderTopLeftRadius: 0,
-                                      borderBottomLeftRadius: 0,
-                                    }}
-                                    onChange={(e) => {
-                                      this.updateSubBlockValue(
-                                        'stopLoss',
-                                        'timeout',
-                                        'whenLossableMode',
-                                        e.target.value
-                                      )
-                                    }}
-                                    // isDisabled={!stopLoss.timeout.whenLossableOn}
-                                  >
-                                    <option>sec</option>
-                                    <option>min</option>
-                                  </Select>
-                                </InputRowContainer>
-                              </FormInputContainer>
-                            </SubBlocksContainer>
-                          )}
-                          <SubBlocksContainer
-                            width={
-                              stopLoss.forcedStop.mandatoryForcedLoss
-                                ? '100%'
-                                : '50%'
-                            }
-                          >
-                            <FormInputContainer
-                              theme={theme}
-                              haveTooltip
-                              tooltipText={
-                                <>
-                                  <p>
-                                    How much should the price change to ignore
-                                    timeout.
-                                  </p>
-
-                                  <p>
-                                    <b>For example:</b> You bought BTC and set
-                                    10% stop loss with 1 minute timeout and 15%
-                                    forced stop. But the price continued to fall
-                                    during the timeout. Your trade will be
-                                    closed when loss will be 15% regardless of
-                                    timeout.
-                                  </p>
-                                </>
-                              }
-                              title={'forced stop price'}
-                            >
-                              <InputRowContainer>
-                                <Input
-                                  theme={theme}
-                                  padding={'0'}
-                                  width={
-                                    stopLoss.forcedStop.mandatoryForcedLoss
-                                      ? '32.5%'
-                                      : '65%'
-                                  }
-                                  textAlign={'left'}
-                                  symbol={pair[1]}
-                                  value={stopLoss.forcedStop.forcedStopPrice}
-                                  disabled={
-                                    isMarketType &&
-                                    !entryPoint.trailing.isTrailingOn
-                                  }
-                                  showErrors={
-                                    showErrors && stopLoss.isStopLossOn
-                                  }
-                                  isValid={this.validateField(
-                                    true,
-                                    stopLoss.forcedStop.forcedStopPrice
-                                  )}
-                                  inputStyles={{
-                                    paddingLeft: '1rem',
-                                  }}
-                                  onChange={(e) => {
-                                    const percentage =
-                                      entryPoint.order.side === 'buy'
-                                        ? (1 -
-                                            e.target.value /
-                                              priceForCalculate) *
-                                          100 *
-                                          entryPoint.order.leverage
-                                        : -(
-                                            1 -
-                                            e.target.value / priceForCalculate
-                                          ) *
-                                          100 *
-                                          entryPoint.order.leverage
-
-                                    this.updateSubBlockValue(
-                                      'stopLoss',
-                                      'forcedStop',
-                                      'pricePercentage',
-                                      stripDigitPlaces(
-                                        percentage < 0 ? 0 : percentage,
-                                        2
-                                      )
-                                    )
-
-                                    this.updateSubBlockValue(
-                                      'stopLoss',
-                                      'forcedStop',
-                                      'forcedStopPrice',
-                                      e.target.value
-                                    )
-                                  }}
-                                />
-                                <Input
-                                  theme={theme}
-                                  showErrors={
-                                    showErrors && stopLoss.isStopLossOn
-                                  }
-                                  isValid={this.validateField(
-                                    stopLoss.forcedStop.isForcedStopOn,
-                                    stopLoss.forcedStop.pricePercentage
-                                  )}
-                                  padding={'0 .8rem 0 .8rem'}
-                                  width={
-                                    stopLoss.forcedStop.mandatoryForcedLoss
-                                      ? '17.5%'
-                                      : 'calc(35%)'
-                                  }
-                                  symbol={'%'}
-                                  preSymbol={'-'}
-                                  textAlign={'left'}
-                                  needPreSymbol={true}
-                                  inputStyles={{
-                                    paddingRight: 0,
-                                    paddingLeft: '2rem',
-                                  }}
-                                  value={
-                                    stopLoss.forcedStop.pricePercentage > 100
-                                      ? 100
-                                      : stopLoss.forcedStop.pricePercentage
-                                  }
-                                  onChange={(e) => {
-                                    this.updateSubBlockValue(
-                                      'stopLoss',
-                                      'forcedStop',
-                                      'pricePercentage',
-                                      e.target.value
-                                    )
-
-                                    this.updateStopLossAndTakeProfitPrices({
-                                      forcedStopPercentage: e.target.value,
-                                    })
-                                  }}
-                                />
-                                {stopLoss.external &&
-                                  stopLoss.forcedStop.mandatoryForcedLoss && (
-                                    <BlueSlider
-                                      theme={theme}
-                                      value={
-                                        stopLoss.forcedStop.pricePercentage
-                                      }
-                                      sliderContainerStyles={{
-                                        width: 'calc(50%)',
-                                        margin: '0 .8rem 0 .8rem',
-                                      }}
-                                      onChange={(value) => {
-                                        if (
-                                          stopLoss.forcedStop.pricePercentage >
-                                            100 &&
-                                          value === 100
-                                        ) {
-                                          return
-                                        }
-
-                                        this.updateSubBlockValue(
-                                          'stopLoss',
-                                          'forcedStop',
-                                          'pricePercentage',
-                                          value
-                                        )
-
-                                        this.updateStopLossAndTakeProfitPrices({
-                                          forcedStopPercentage: value,
-                                        })
-                                      }}
-                                    />
-                                  )}
-                              </InputRowContainer>
-                            </FormInputContainer>
-                          </SubBlocksContainer>
-                        </InputRowContainer>
-                      </>
-                    )}
-
-                  {stopLoss.timeout.isTimeoutOn && !stopLoss.external && (
-                    <>
-                      <InputRowContainer>
-                        <SubBlocksContainer>
-                          <BlueSlider
-                            theme={theme}
-                            max={60}
-                            value={
-                              stopLoss.timeout.whenLossableSec > 60
-                                ? 60
-                                : stopLoss.timeout.whenLossableSec
-                            }
-                            sliderContainerStyles={{
-                              width: 'calc(100% - 1.2rem)',
-                              margin: '0 1.2rem 0 0rem',
-                            }}
-                            onChange={(value) => {
-                              this.updateSubBlockValue(
-                                'stopLoss',
-                                'timeout',
-                                'whenLossableSec',
-                                value
-                              )
-                            }}
-                          />
-                        </SubBlocksContainer>
-
-                        <SubBlocksContainer>
-                          <BlueSlider
-                            theme={theme}
-                            value={stopLoss.forcedStop.pricePercentage}
-                            sliderContainerStyles={{
-                              width: 'calc(100%)',
-                              margin: '0 0rem 0 0',
-                            }}
-                            onChange={(value) => {
-                              if (
-                                stopLoss.forcedStop.pricePercentage > 100 &&
-                                value === 100
-                              ) {
-                                return
-                              }
-
-                              this.updateSubBlockValue(
-                                'stopLoss',
-                                'forcedStop',
-                                'pricePercentage',
-                                value
-                              )
-
-                              this.updateStopLossAndTakeProfitPrices({
-                                forcedStopPercentage: value,
-                              })
-                            }}
-                          />
-                        </SubBlocksContainer>
-                      </InputRowContainer>
-                    </>
-                  )}
-
-                  {stopLoss.external && (
-                    <>
-                      <FormInputContainer
-                        theme={theme}
-                        padding={'0 0 .8rem 0'}
-                        haveTooltip={false}
-                        tooltipText={''}
-                        title={'action when alert'}
-                      >
-                        <InputRowContainer>
-                          <AdditionalSettingsButton
-                            theme={theme}
-                            fontSize={'1rem'}
-                            isActive={stopLoss.forcedStopByAlert}
-                            onClick={() => {
-                              this.updateBlockValue(
-                                'stopLoss',
-                                'forcedStopByAlert',
-                                !stopLoss.forcedStopByAlert
-                              )
-                              this.updateBlockValue(
-                                'stopLoss',
-                                'plotEnabled',
-                                false
-                              )
-
-                              this.updateBlockValue(
-                                'stopLoss',
-                                'type',
-                                'market'
-                              )
-                            }}
-                          >
-                            Forced Stop by Alert
-                          </AdditionalSettingsButton>
-                          <AdditionalSettingsButton
-                            theme={theme}
-                            fontSize={'1rem'}
-                            isActive={stopLoss.forcedStop.mandatoryForcedLoss}
-                            onClick={() => {
-                              this.updateSubBlockValue(
-                                'stopLoss',
-                                'forcedStop',
-                                'isForcedStopOn',
-                                !stopLoss.forcedStop.mandatoryForcedLoss
-                              )
-
-                              this.updateSubBlockValue(
-                                'stopLoss',
-                                'forcedStop',
-                                'mandatoryForcedLoss',
-                                !stopLoss.forcedStop.mandatoryForcedLoss
-                              )
-                            }}
-                          >
-                            Settings Forced stop
-                          </AdditionalSettingsButton>
-                          <AdditionalSettingsButton
-                            theme={theme}
-                            isActive={stopLoss.plotEnabled}
-                            onClick={() => {
-                              this.updateBlockValue(
-                                'stopLoss',
-                                'forcedStopByAlert',
-                                false
-                              )
-
-                              this.updateBlockValue(
-                                'stopLoss',
-                                'plotEnabled',
-                                !stopLoss.plotEnabled
-                              )
-                            }}
-                          >
-                            Plot
-                          </AdditionalSettingsButton>
-                        </InputRowContainer>
-                      </FormInputContainer>
-
-                      {stopLoss.plotEnabled && (
-                        <InputRowContainer padding={'0 0 .8rem 0'}>
-                          <Input
-                            theme={theme}
-                            type={'number'}
-                            needTitle
-                            title={`plot_`}
-                            textAlign="left"
-                            inputStyles={{
-                              paddingLeft: '4rem',
-                            }}
-                            value={stopLoss.plot}
-                            showErrors={showErrors}
-                            isValid={this.validateField(true, stopLoss.plot)}
-                            onChange={(e) => {
-                              this.updateBlockValue(
-                                'stopLoss',
-                                'plot',
-                                e.target.value
-                              )
-                            }}
-                          />
-                        </InputRowContainer>
-                      )}
-
-                      <FormInputContainer
-                        theme={theme}
-                        padding={'0 0 .8rem 0'}
-                        haveTooltip={true}
-                        tooltipText={
-                          <img
-                            style={{ width: '35rem', height: '50rem' }}
-                            src={WebHookImg}
-                          />
-                        }
-                        title={
-                          <span>
-                            paste it into{' '}
-                            <span
-                              style={{ color: theme.palette.blue.background }}
-                            >
-                              web-hook url
-                            </span>{' '}
-                            field when creating tv alert
-                          </span>
-                        }
-                      >
-                        <InputRowContainer>
-                          <Input
-                            theme={theme}
-                            width={'85%'}
-                            type={'text'}
-                            disabled={true}
-                            textAlign={'left'}
-                            value={`https://${API_URL}/editStopLossByAlert`}
-                          />
-                          <BtnCustom
-                            btnWidth="calc(15% - .8rem)"
-                            height="auto"
-                            margin="0 0 0 .8rem"
-                            fontSize="1rem"
-                            padding=".5rem 0 .4rem 0"
-                            borderRadius=".8rem"
-                            btnColor={theme.palette.blue.main}
-                            backgroundColor={theme.palette.white.background}
-                            hoverColor={theme.palette.white.main}
-                            hoverBackground={theme.palette.blue.main}
-                            transition={'all .4s ease-out'}
-                            onClick={() => {
-                              copy(`https://${API_URL}/editStopLossByAlert`)
-                            }}
-                          >
-                            copy
-                          </BtnCustom>
-                        </InputRowContainer>
-                      </FormInputContainer>
-                      <FormInputContainer
-                        theme={theme}
-                        padding={'0 0 .8rem 0'}
-                        haveTooltip={true}
-                        tooltipText={
-                          <img
-                            style={{ width: '40rem', height: '42rem' }}
-                            src={MessageImg}
-                          />
-                        }
-                        title={
-                          <span>
-                            paste it into{' '}
-                            <span
-                              style={{ color: theme.palette.blue.background }}
-                            >
-                              message
-                            </span>{' '}
-                            field when creating tv alert
-                          </span>
-                        }
-                      >
-                        <InputRowContainer>
-                          <Input
-                            theme={theme}
-                            width={'65%'}
-                            type={'text'}
-                            disabled={true}
-                            textAlign={'left'}
-                            value={`{\\"token\\": \\"${
-                              entryPoint.TVAlert.templateToken
-                            }\\", \\"orderType\\": ${
-                              stopLoss.forcedStopByAlert
-                                ? `\\"market\\"`
-                                : `\\"${stopLoss.type}\\"`
-                            } ${
-                              stopLoss.plotEnabled
-                                ? `, \\"stopLossPrice\\": {{plot_${stopLoss.plot}}}`
-                                : !stopLoss.forcedStopByAlert
-                                ? `, \\"stopLossPrice\\": ${stopLoss.stopLossPrice}`
-                                : ''
-                            }}`}
-                          />
-                          {/* entryPoint.TVAlert.templateToken */}
-                          <BtnCustom
-                            btnWidth="calc(15% - .8rem)"
-                            height="auto"
-                            margin="0 0 0 .8rem"
-                            fontSize="1rem"
-                            padding=".5rem 0 .4rem 0"
-                            borderRadius=".8rem"
-                            btnColor={theme.palette.blue.main}
-                            backgroundColor={theme.palette.white.background}
-                            hoverColor={theme.palette.white.main}
-                            hoverBackground={theme.palette.blue.main}
-                            transition={'all .4s ease-out'}
-                            onClick={() => {
-                              copy(
-                                `{\\"token\\": \\"${
-                                  entryPoint.TVAlert.templateToken
-                                }\\", \\"orderType\\": ${
-                                  stopLoss.forcedStopByAlert
-                                    ? `\\"market\\"`
-                                    : `\\"${stopLoss.type}\\"`
-                                } ${
-                                  stopLoss.plotEnabled
-                                    ? `, \\"stopLossPrice\\": {{plot_${stopLoss.plot}}}`
-                                    : !stopLoss.forcedStopByAlert
-                                    ? `, \\"stopLossPrice\\": ${stopLoss.stopLossPrice}`
-                                    : ''
-                                }}`
-                              )
-                            }}
-                          >
-                            copy
-                          </BtnCustom>
-                          <BtnCustom
-                            btnWidth="calc(20% - .8rem)"
-                            height="auto"
-                            margin="0 0 0 .8rem"
-                            fontSize="1rem"
-                            padding=".5rem 0 .4rem 0"
-                            borderRadius=".8rem"
-                            btnColor={theme.palette.blue.main}
-                            backgroundColor={theme.palette.white.background}
-                            hoverColor={theme.palette.white.main}
-                            hoverBackground={theme.palette.blue.main}
-                            transition={'all .4s ease-out'}
-                            onClick={() => {
-                              // redirect to full example page
-                            }}
-                          >
-                            example
-                          </BtnCustom>
-                        </InputRowContainer>
-                      </FormInputContainer>
-                    </>
-                  )}
-                </div>
-
-                {!stopLoss.isStopLossOn && (
-                  <BluredBackground>
-                    <div
-                      style={{
-                        width: '50%',
-                      }}
-                    >
-                      <SendButton
-                        type={'buy'}
-                        onClick={() =>
-                          this.toggleBlock('stopLoss', 'isStopLossOn')
-                        }
-                      >
-                        show stop loss
-                      </SendButton>
-                    </div>
-                  </BluredBackground>
-                )}
-              </div>
-              <InputRowContainer
-                style={{
-                  width: 'calc(100%)',
-                  height: '4rem',
-                  margin: '0 auto',
-                  position: 'absolute',
-                  bottom: '1rem',
-                  padding: '0rem 1rem 0rem 1.2rem',
-                }}
-              >
-                {' '}
-                <SendButton
-                  theme={theme}
-                  type={entryPoint.order.side ? 'sell' : 'buy'}
-                  onClick={() => {
-                    updateTerminalViewMode('onlyTables')
-                  }}
-                >
-                  cancel
-                </SendButton>
-                <SendButton
-                  data-tut={'createBtn'}
-                  theme={theme}
-                  type={entryPoint.order.side ? 'buy' : 'sell'}
-                  onClick={async () => {
-                    const isValid = validateSmartOrders(
-                      this.state,
-                      this.props.enqueueSnackbar
-                    )
-                    if (isValid) {
-                      if (
-                        entryPoint.order.total < minSpotNotional &&
-                        isSPOTMarket
-                      ) {
-                        enqueueSnackbar(
-                          `Order total should be at least ${minSpotNotional} ${pair[1]}`,
-                          {
-                            variant: 'error',
-                          }
-                        )
-
-                        return
-                      }
-
-                      if (
-                        entryPoint.order.amount < minFuturesStep &&
-                        !isSPOTMarket &&
-                        entryPoint.averaging.entryLevels.length === 0
-                      ) {
-                        enqueueSnackbar(
-                          `Order amount should be at least ${minFuturesStep} ${pair[0]}`,
-                          {
-                            variant: 'error',
-                          }
-                        )
-
-                        return
-                      }
-
-                      this.updateSubBlockValue(
-                        'entryPoint',
-                        'order',
-                        'amount',
-                        stripDigitPlaces(
-                          entryPoint.order.amount,
-                          quantityPrecision
-                        )
-                      )
-
-                      // if (
-                      //   entryPoint.order.amount % minFuturesStep !== 0 &&
-                      //   !isSPOTMarket
-                      // ) {
-                      //   enqueueSnackbar(
-                      //     `Order amount should divided without remainder on ${minFuturesStep}`,
-                      //     {
-                      //       variant: 'error',
-                      //     }
-                      //   )
-
-                      //   return
-                      // }
-                      this.setState({ showConfirmationPopup: true })
-                    } else {
-                      this.setState({ showErrors: true })
-                    }
-                  }}
-                >
-                  create trade
-                </SendButton>
-              </InputRowContainer>
-            </TerminalBlock>
+              stopLoss={stopLoss}
+              showErrors={showErrors}
+              entryPoint={entryPoint}
+              isMarketType={isMarketType}
+              pricePrecision={pricePrecision}
+              validateField={this.validateField}
+              priceForCalculate={
+                entryPoint.trailing.isTrailingOn
+                  ? entryPoint.trailing.trailingDeviationPrice
+                  : priceForCalculate
+              }
+              updateBlockValue={this.updateBlockValue}
+              updateSubBlockValue={this.updateSubBlockValue}
+              updateTerminalViewMode={updateTerminalViewMode}
+              showConfirmationPopup={this.showConfirmationPopup}
+              updateStopLossAndTakeProfitPrices={
+                this.updateStopLossAndTakeProfitPrices
+              }
+            />
 
             {/* TAKE A PROFIT */}
-            <TerminalBlock
+
+            <TakeProfitBlock
+              pair={pair}
               theme={theme}
-              width={'calc(33%)'}
-              borderRight="0"
-              data-tut={'step3'}
-            >
-              <InputRowContainer justify="center">
-                <CustomSwitcher
-                  theme={theme}
-                  firstHalfText={'limit'}
-                  secondHalfText={'market'}
-                  buttonHeight={'3rem'}
-                  containerStyles={{ width: '100%' }}
-                  firstHalfStyleProperties={BlueSwitcherStyles(theme)}
-                  secondHalfStyleProperties={BlueSwitcherStyles(theme)}
-                  firstHalfIsActive={takeProfit.type === 'limit'}
-                  changeHalf={() => {
-                    this.updateBlockValue(
-                      'takeProfit',
-                      'type',
-                      getSecondValueFromFirst(takeProfit.type)
-                    )
-                  }}
-                />
-              </InputRowContainer>
-              <div>
-                <InputRowContainer
-                  justify="flex-start"
-                  padding={'.6rem 0 1.2rem 0'}
-                >
-                  {!entryPoint.averaging.enabled && (
-                    <DarkTooltip
-                      maxWidth={'40rem'}
-                      title={
-                        <>
-                          <p>
-                            The algorithm which will wait for the trend to
-                            reverse to place the order.
-                          </p>
-                          <p>
-                            <b>Deviation:</b> The level of price change after
-                            the trend reversal, at which the order will be
-                            executed.
-                          </p>
-                          <p>
-                            <b>For example:</b> you bought BTC at 7500 USDT
-                            price and set 1% trailing deviation to take a
-                            profit. Trailing will start right after you buy.
-                            Then the price goes to 7700 and the trend reverses
-                            and begins to fall. The order will be executed when
-                            the price reaches 7633, i.e. by 1% from the moment
-                            the trend reversed.
-                          </p>
-                        </>
-                      }
-                    >
-                      <AdditionalSettingsButton
-                        theme={theme}
-                        style={{ fontSize: '1rem' }}
-                        isActive={takeProfit.trailingTAP.isTrailingOn}
-                        onClick={() => {
-                          this.updateSubBlockValue(
-                            'takeProfit',
-                            'trailingTAP',
-                            'isTrailingOn',
-                            !takeProfit.trailingTAP.isTrailingOn
-                          )
-
-                          this.updateSubBlockValue(
-                            'takeProfit',
-                            'splitTargets',
-                            'isSplitTargetsOn',
-                            false
-                          )
-
-                          this.updateSubBlockValue(
-                            'takeProfit',
-                            'timeout',
-                            'isTimeoutOn',
-                            false
-                          )
-
-                          this.updateStopLossAndTakeProfitPrices({
-                            takeProfitPercentage: !takeProfit.trailingTAP
-                              .isTrailingOn
-                              ? takeProfit.trailingTAP.activatePrice
-                              : takeProfit.pricePercentage,
-                          })
-                        }}
-                      >
-                        Trailing take profit
-                      </AdditionalSettingsButton>
-                    </DarkTooltip>
-                  )}
-                  {!takeProfit.external && !entryPoint.averaging.enabled && (
-                    <DarkTooltip
-                      maxWidth={'40rem'}
-                      title={
-                        <>
-                          <p>
-                            Partial closing of a trade when a certain level of
-                            profit is reached.
-                          </p>
-
-                          <p>
-                            Set up the price and amount, then click "Add
-                            target". Distribute 100% of the total trading
-                            amount.
-                          </p>
-
-                          <p>
-                            <b>For example:</b> you bought BTC and set that at
-                            5% profit sell 25% of your amount, at 10% profit
-                            sell 60% amount and at 15% profit sell remaining 15%
-                            amount. When the price reaches each profit level, it
-                            will place the order for specified amount.
-                          </p>
-                        </>
-                      }
-                    >
-                      <AdditionalSettingsButton
-                        theme={theme}
-                        isActive={takeProfit.splitTargets.isSplitTargetsOn}
-                        onClick={() => {
-                          this.updateSubBlockValue(
-                            'takeProfit',
-                            'splitTargets',
-                            'isSplitTargetsOn',
-                            !takeProfit.splitTargets.isSplitTargetsOn
-                          )
-
-                          this.updateSubBlockValue(
-                            'takeProfit',
-                            'trailingTAP',
-                            'isTrailingOn',
-                            false
-                          )
-
-                          this.updateSubBlockValue(
-                            'takeProfit',
-                            'timeout',
-                            'isTimeoutOn',
-                            false
-                          )
-
-                          this.updateBlockValue('takeProfit', 'external', false)
-                        }}
-                      >
-                        Multiple targets
-                      </AdditionalSettingsButton>
-                    </DarkTooltip>
-                  )}
-                  <DarkTooltip
-                    maxWidth={'30rem'}
-                    title={
-                      'Your take profit order will be placed once when there is a Trading View alert with params that you sent.'
-                    }
-                  >
-                    <AdditionalSettingsButton
-                      theme={theme}
-                      isActive={takeProfit.external}
-                      onClick={() => {
-                        this.updateSubBlockValue(
-                          'takeProfit',
-                          'splitTargets',
-                          'isSplitTargetsOn',
-                          false
-                        )
-
-                        this.updateBlockValue(
-                          'takeProfit',
-                          'external',
-                          !takeProfit.external
-                        )
-
-                        if (
-                          !takeProfit.external &&
-                          entryPoint.TVAlert.templateMode === 'always'
-                        ) {
-                          this.updateSubBlockValue(
-                            'entryPoint',
-                            'TVAlert',
-                            'templateMode',
-                            'ifNoActive'
-                          )
-                        }
-                      }}
-                    >
-                      TP by TV Alert
-                    </AdditionalSettingsButton>
-                  </DarkTooltip>
-                  {/* <AdditionalSettingsButton theme={theme}
-                    isActive={takeProfit.timeout.isTimeoutOn}
-                    onClick={() => {
-                      this.updateSubBlockValue(
-                        'takeProfit',
-                        'timeout',
-                        'isTimeoutOn',
-                        !takeProfit.timeout.isTimeoutOn
-                      )
-
-                      this.updateSubBlockValue(
-                        'takeProfit',
-                        'trailingTAP',
-                        'isTrailingOn',
-                        false
-                      )
-
-                      this.updateSubBlockValue(
-                        'takeProfit',
-                        'splitTargets',
-                        'isSplitTargetsOn',
-                        false
-                      )
-                    }}
-                  >
-                    Timeout
-                  </AdditionalSettingsButton> */}
-                </InputRowContainer>
-                {!takeProfit.trailingTAP.isTrailingOn &&
-                  ((takeProfit.external &&
-                    !takeProfit.forcedStopByAlert &&
-                    !takeProfit.plotEnabled) ||
-                    !takeProfit.external) && (
-                    <FormInputContainer
-                      theme={theme}
-                      haveTooltip
-                      tooltipText={
-                        <>
-                          <p>
-                            The unrealized profit/ROE for closing the trade.
-                          </p>
-                          <p>
-                            <b>For example:</b>you bought 1 BTC and set 100%
-                            take profit. Your unrealized profit should be 1 BTC
-                            and order will be executed.
-                          </p>
-                        </>
-                      }
-                      title={'stop price'}
-                    >
-                      <InputRowContainer>
-                        <Input
-                          theme={theme}
-                          textAlign={'left'}
-                          padding={'0'}
-                          width={'calc(32.5%)'}
-                          symbol={pair[1]}
-                          value={takeProfit.takeProfitPrice}
-                          disabled={
-                            isMarketType && !entryPoint.trailing.isTrailingOn
-                          }
-                          showErrors={
-                            showErrors &&
-                            takeProfit.isTakeProfitOn &&
-                            !takeProfit.external &&
-                            !takeProfit.splitTargets.isSplitTargetsOn &&
-                            !takeProfit.trailingTAP.isTrailingOn
-                          }
-                          isValid={this.validateField(
-                            true,
-                            takeProfit.takeProfitPrice
-                          )}
-                          inputStyles={{
-                            paddingRight: '0',
-                            paddingLeft: '1rem',
-                          }}
-                          onChange={(e) => {
-                            const percentage =
-                              entryPoint.order.side === 'sell'
-                                ? (1 - e.target.value / priceForCalculate) *
-                                  100 *
-                                  entryPoint.order.leverage
-                                : -(1 - e.target.value / priceForCalculate) *
-                                  100 *
-                                  entryPoint.order.leverage
-
-                            this.updateBlockValue(
-                              'takeProfit',
-                              'pricePercentage',
-                              stripDigitPlaces(
-                                percentage < 0 ? 0 : percentage,
-                                2
-                              )
-                            )
-
-                            this.updateBlockValue(
-                              'takeProfit',
-                              'takeProfitPrice',
-                              e.target.value
-                            )
-                          }}
-                        />
-
-                        <Input
-                          theme={theme}
-                          padding={'0 .8rem 0 .8rem'}
-                          width={'calc(17.5%)'}
-                          symbol={'%'}
-                          preSymbol={'+'}
-                          textAlign={'left'}
-                          needPreSymbol={true}
-                          value={takeProfit.pricePercentage}
-                          showErrors={showErrors && takeProfit.isTakeProfitOn}
-                          isValid={this.validateField(
-                            true,
-                            takeProfit.pricePercentage
-                          )}
-                          inputStyles={{
-                            paddingRight: '0',
-                            paddingLeft: '2rem',
-                          }}
-                          onChange={(e) => {
-                            this.updateStopLossAndTakeProfitPrices({
-                              takeProfitPercentage: e.target.value,
-                            })
-
-                            this.updateBlockValue(
-                              'takeProfit',
-                              'pricePercentage',
-                              e.target.value
-                            )
-                          }}
-                        />
-
-                        <BlueSlider
-                          theme={theme}
-                          value={
-                            takeProfit.pricePercentage > 100
-                              ? 100
-                              : takeProfit.pricePercentage
-                          }
-                          sliderContainerStyles={{
-                            width: '50%',
-                            margin: '0 .8rem 0 .8rem',
-                          }}
-                          onChange={(value) => {
-                            if (
-                              takeProfit.pricePercentage > 100 &&
-                              value === 100
-                            ) {
-                              return
-                            }
-
-                            this.updateBlockValue(
-                              'takeProfit',
-                              'pricePercentage',
-                              value
-                            )
-
-                            this.updateStopLossAndTakeProfitPrices({
-                              takeProfitPercentage: value,
-                            })
-                          }}
-                        />
-                      </InputRowContainer>
-                    </FormInputContainer>
-                  )}
-
-                {takeProfit.trailingTAP.isTrailingOn &&
-                  ((takeProfit.external &&
-                    !takeProfit.forcedStopByAlert &&
-                    !takeProfit.plotEnabled) ||
-                    !takeProfit.external) && (
-                    <>
-                      <FormInputContainer
-                        theme={theme}
-                        haveTooltip
-                        tooltipText={
-                          'The price at which the trailing algorithm is enabled.'
-                        }
-                        title={
-                          !takeProfit.external
-                            ? 'activation price'
-                            : 'stop price'
-                        }
-                      >
-                        <InputRowContainer>
-                          <Input
-                            theme={theme}
-                            textAlign={'left'}
-                            padding={'0'}
-                            width={'calc(32.5%)'}
-                            symbol={pair[1]}
-                            value={takeProfit.takeProfitPrice}
-                            disabled={
-                              isMarketType && !entryPoint.trailing.isTrailingOn
-                            }
-                            showErrors={
-                              false &&
-                              showErrors &&
-                              takeProfit.isTakeProfitOn &&
-                              !takeProfit.splitTargets.isSplitTargetsOn &&
-                              !takeProfit.external
-                            }
-                            isValid={this.validateField(
-                              true,
-                              takeProfit.takeProfitPrice
-                            )}
-                            inputStyles={{
-                              paddingRight: '0',
-                              paddingLeft: '1rem',
-                            }}
-                            onChange={(e) => {
-                              const percentage =
-                                entryPoint.order.side === 'sell'
-                                  ? (1 - e.target.value / priceForCalculate) *
-                                    100 *
-                                    entryPoint.order.leverage
-                                  : -(1 - e.target.value / priceForCalculate) *
-                                    100 *
-                                    entryPoint.order.leverage
-
-                              this.updateSubBlockValue(
-                                'takeProfit',
-                                'trailingTAP',
-                                'activatePrice',
-                                stripDigitPlaces(
-                                  percentage < 0 ? 0 : percentage,
-                                  2
-                                )
-                              )
-
-                              this.updateBlockValue(
-                                'takeProfit',
-                                'takeProfitPrice',
-                                e.target.value
-                              )
-                            }}
-                          />
-                          <Input
-                            theme={theme}
-                            symbol={'%'}
-                            padding={'0 .8rem 0 .8rem'}
-                            width={'calc(17.5%)'}
-                            preSymbol={'+'}
-                            textAlign={'left'}
-                            needPreSymbol={true}
-                            value={takeProfit.trailingTAP.activatePrice}
-                            showErrors={
-                              showErrors &&
-                              takeProfit.isTakeProfitOn &&
-                              !takeProfit.external
-                            }
-                            isValid={this.validateField(
-                              takeProfit.trailingTAP.isTrailingOn,
-                              takeProfit.trailingTAP.activatePrice
-                            )}
-                            inputStyles={{
-                              paddingRight: '0',
-                              paddingLeft: '2rem',
-                            }}
-                            onChange={(e) => {
-                              this.updateSubBlockValue(
-                                'takeProfit',
-                                'trailingTAP',
-                                'activatePrice',
-                                e.target.value
-                              )
-
-                              this.updateStopLossAndTakeProfitPrices({
-                                takeProfitPercentage: e.target.value,
-                              })
-                            }}
-                          />
-                          <BlueSlider
-                            theme={theme}
-                            value={takeProfit.trailingTAP.activatePrice}
-                            sliderContainerStyles={{
-                              width: '50%',
-                              margin: '0 .8rem 0 .8rem',
-                            }}
-                            onChange={(value) => {
-                              if (
-                                takeProfit.trailingTAP.activatePrice > 100 &&
-                                value === 100
-                              ) {
-                                return
-                              }
-
-                              this.updateSubBlockValue(
-                                'takeProfit',
-                                'trailingTAP',
-                                'activatePrice',
-                                value
-                              )
-
-                              this.updateStopLossAndTakeProfitPrices({
-                                takeProfitPercentage: value,
-                              })
-                            }}
-                          />
-                        </InputRowContainer>
-                      </FormInputContainer>
-                      {!takeProfit.external && (
-                        <FormInputContainer
-                          theme={theme}
-                          haveTooltip
-                          tooltipText={
-                            'The level of price change after the trend reversal, at which the order will be executed.'
-                          }
-                          title={'trailing deviation (%)'}
-                        >
-                          <InputRowContainer>
-                            <Input
-                              theme={theme}
-                              padding={'0 .8rem 0 0'}
-                              width={'calc(50%)'}
-                              symbol={'%'}
-                              value={takeProfit.trailingTAP.deviationPercentage}
-                              showErrors={
-                                showErrors &&
-                                takeProfit.isTakeProfitOn &&
-                                !takeProfit.external
-                              }
-                              isValid={this.validateField(
-                                takeProfit.trailingTAP.isTrailingOn,
-                                takeProfit.trailingTAP.deviationPercentage
-                              )}
-                              onChange={(e) => {
-                                this.updateSubBlockValue(
-                                  'takeProfit',
-                                  'trailingTAP',
-                                  'deviationPercentage',
-                                  e.target.value
-                                )
-                              }}
-                            />
-
-                            <BlueSlider
-                              theme={theme}
-                              value={takeProfit.trailingTAP.deviationPercentage}
-                              sliderContainerStyles={{
-                                width: '50%',
-                                margin: '0 .8rem 0 .8rem',
-                              }}
-                              onChange={(value) => {
-                                this.updateSubBlockValue(
-                                  'takeProfit',
-                                  'trailingTAP',
-                                  'deviationPercentage',
-                                  value
-                                )
-                              }}
-                            />
-                          </InputRowContainer>
-                        </FormInputContainer>
-                      )}
-                    </>
-                  )}
-                {takeProfit.external && (
-                  <>
-                    <FormInputContainer
-                      theme={theme}
-                      padding={'0 0 .8rem 0'}
-                      haveTooltip={false}
-                      tooltipText={''}
-                      title={'action when alert'}
-                    >
-                      <InputRowContainer>
-                        <AdditionalSettingsButton
-                          theme={theme}
-                          btnWidth={'50%'}
-                          isActive={takeProfit.forcedStopByAlert}
-                          onClick={() => {
-                            this.updateBlockValue(
-                              'takeProfit',
-                              'forcedStopByAlert',
-                              !takeProfit.forcedStopByAlert
-                            )
-                            this.updateBlockValue(
-                              'takeProfit',
-                              'plotEnabled',
-                              false
-                            )
-
-                            this.updateBlockValue(
-                              'takeProfit',
-                              'type',
-                              'market'
-                            )
-                          }}
-                        >
-                          Forced Stop by Alert
-                        </AdditionalSettingsButton>
-                        <AdditionalSettingsButton
-                          theme={theme}
-                          btnWidth={'50%'}
-                          isActive={takeProfit.plotEnabled}
-                          onClick={() => {
-                            this.updateBlockValue(
-                              'takeProfit',
-                              'forcedStopByAlert',
-                              false
-                            )
-
-                            this.updateBlockValue(
-                              'takeProfit',
-                              'plotEnabled',
-                              !takeProfit.plotEnabled
-                            )
-                          }}
-                        >
-                          Plot
-                        </AdditionalSettingsButton>
-                      </InputRowContainer>
-                    </FormInputContainer>
-
-                    {takeProfit.plotEnabled && (
-                      <InputRowContainer padding={'0 0 .8rem 0'}>
-                        <Input
-                          theme={theme}
-                          type={'number'}
-                          needTitle
-                          title={`plot_`}
-                          textAlign="left"
-                          inputStyles={{
-                            paddingLeft: '4rem',
-                          }}
-                          value={takeProfit.plot}
-                          showErrors={showErrors}
-                          isValid={this.validateField(true, takeProfit.plot)}
-                          onChange={(e) => {
-                            this.updateBlockValue(
-                              'takeProfit',
-                              'plot',
-                              e.target.value
-                            )
-                          }}
-                        />
-                      </InputRowContainer>
-                    )}
-                    <FormInputContainer
-                      theme={theme}
-                      padding={'0 0 .8rem 0'}
-                      haveTooltip={true}
-                      tooltipText={
-                        <img
-                          style={{ width: '35rem', height: '50rem' }}
-                          src={WebHookImg}
-                        />
-                      }
-                      title={
-                        <span>
-                          paste it into{' '}
-                          <span
-                            style={{ color: theme.palette.blue.background }}
-                          >
-                            web-hook url
-                          </span>{' '}
-                          field when creating tv alert
-                        </span>
-                      }
-                    >
-                      <InputRowContainer>
-                        <Input
-                          theme={theme}
-                          width={'85%'}
-                          type={'text'}
-                          disabled={true}
-                          textAlign={'left'}
-                          value={`https://${API_URL}/editTakeProfitByAlert`}
-                        />
-                        {/* entryPoint.TVAlert.templateToken */}
-                        <BtnCustom
-                          btnWidth="calc(15% - .8rem)"
-                          height="auto"
-                          margin="0 0 0 .8rem"
-                          fontSize="1rem"
-                          padding=".5rem 0 .4rem 0"
-                          borderRadius=".8rem"
-                          btnColor={theme.palette.blue.main}
-                          backgroundColor={theme.palette.white.background}
-                          hoverColor={theme.palette.white.main}
-                          hoverBackground={theme.palette.blue.main}
-                          transition={'all .4s ease-out'}
-                          onClick={() => {
-                            copy(`https://${API_URL}/editTakeProfitByAlert`)
-                          }}
-                        >
-                          copy
-                        </BtnCustom>
-                      </InputRowContainer>
-                    </FormInputContainer>
-                    <FormInputContainer
-                      theme={theme}
-                      padding={'0 0 .8rem 0'}
-                      haveTooltip={true}
-                      tooltipText={
-                        <img
-                          style={{ width: '40rem', height: '42rem' }}
-                          src={MessageImg}
-                        />
-                      }
-                      title={
-                        <span>
-                          paste it into{' '}
-                          <span
-                            style={{ color: theme.palette.blue.background }}
-                          >
-                            message
-                          </span>{' '}
-                          field when creating tv alert
-                        </span>
-                      }
-                    >
-                      <InputRowContainer>
-                        <Input
-                          theme={theme}
-                          width={'65%'}
-                          type={'text'}
-                          disabled={true}
-                          textAlign={'left'}
-                          value={`{\\"token\\": \\"${
-                            entryPoint.TVAlert.templateToken
-                          }\\", \\"orderType\\": ${
-                            takeProfit.forcedStopByAlert
-                              ? `\\"market\\"`
-                              : `\\"${takeProfit.type}\\"`
-                          } ${
-                            takeProfit.plotEnabled
-                              ? takeProfit.trailingTAP.isTrailingOn
-                                ? `, \\"trailingExitPrice\\": {{plot_${takeProfit.plot}}}`
-                                : `, \\"takeProfitPrice\\": {{plot_${takeProfit.plot}}}`
-                              : !takeProfit.forcedStopByAlert
-                              ? takeProfit.trailingTAP.isTrailingOn
-                                ? `, \\"trailingExitPrice\\": ${takeProfit.takeProfitPrice}`
-                                : `, \\"takeProfitPrice\\": ${takeProfit.takeProfitPrice}`
-                              : ''
-                          }}`}
-                        />
-                        {/* entryPoint.TVAlert.templateToken */}
-                        <BtnCustom
-                          btnWidth="calc(15% - .8rem)"
-                          height="auto"
-                          margin="0 0 0 .8rem"
-                          fontSize="1rem"
-                          padding=".5rem 0 .4rem 0"
-                          borderRadius=".8rem"
-                          btnColor={theme.palette.blue.main}
-                          backgroundColor={theme.palette.white.background}
-                          hoverColor={theme.palette.white.main}
-                          hoverBackground={theme.palette.blue.main}
-                          transition={'all .4s ease-out'}
-                          onClick={() => {
-                            copy(
-                              `{\\"token\\": \\"${
-                                entryPoint.TVAlert.templateToken
-                              }\\", \\"orderType\\": ${
-                                takeProfit.forcedStopByAlert
-                                  ? `\\"market\\"`
-                                  : `\\"${takeProfit.type}\\"`
-                              } ${
-                                takeProfit.plotEnabled
-                                  ? takeProfit.trailingTAP.isTrailingOn
-                                    ? `, \\"trailingExitPrice\\": {{plot_${takeProfit.plot}}}`
-                                    : `, \\"takeProfitPrice\\": {{plot_${takeProfit.plot}}}`
-                                  : !takeProfit.forcedStopByAlert
-                                  ? takeProfit.trailingTAP.isTrailingOn
-                                    ? `, \\"trailingExitPrice\\": ${takeProfit.takeProfitPrice}`
-                                    : `, \\"takeProfitPrice\\": ${takeProfit.takeProfitPrice}`
-                                  : ''
-                              }}`
-                            )
-                          }}
-                        >
-                          copy
-                        </BtnCustom>
-                        <BtnCustom
-                          btnWidth="calc(20% - .8rem)"
-                          height="auto"
-                          margin="0 0 0 .8rem"
-                          fontSize="1rem"
-                          padding=".5rem 0 .4rem 0"
-                          borderRadius=".8rem"
-                          btnColor={theme.palette.blue.main}
-                          backgroundColor={theme.palette.white.background}
-                          hoverColor={theme.palette.white.main}
-                          hoverBackground={theme.palette.blue.main}
-                          transition={'all .4s ease-out'}
-                          onClick={() => {
-                            // redirect to full example page
-                          }}
-                        >
-                          example
-                        </BtnCustom>
-                      </InputRowContainer>
-                    </FormInputContainer>
-                  </>
-                )}
-
-                {takeProfit.splitTargets.isSplitTargetsOn && (
-                  <>
-                    <FormInputContainer theme={theme} title={'amount (%)'}>
-                      <InputRowContainer>
-                        <Input
-                          theme={theme}
-                          padding={'0 .8rem 0 0'}
-                          width={'calc(50%)'}
-                          symbol={'%'}
-                          value={takeProfit.splitTargets.volumePercentage}
-                          onChange={(e) => {
-                            const occupiedVolume = takeProfit.splitTargets.targets.reduce(
-                              (prev, curr) => prev + curr.quantity,
-                              0
-                            )
-
-                            this.updateSubBlockValue(
-                              'takeProfit',
-                              'splitTargets',
-                              'volumePercentage',
-                              occupiedVolume + e.target.value < 100
-                                ? e.target.value
-                                : 100 - occupiedVolume
-                            )
-                          }}
-                        />
-
-                        <BlueSlider
-                          theme={theme}
-                          value={takeProfit.splitTargets.volumePercentage}
-                          sliderContainerStyles={{
-                            width: '50%',
-                            margin: '0 .8rem 0 .8rem',
-                          }}
-                          onChange={(value) => {
-                            const occupiedVolume = takeProfit.splitTargets.targets.reduce(
-                              (prev, curr) => prev + curr.quantity,
-                              0
-                            )
-
-                            this.updateSubBlockValue(
-                              'takeProfit',
-                              'splitTargets',
-                              'volumePercentage',
-                              occupiedVolume + value < 100
-                                ? value
-                                : 100 - occupiedVolume
-                            )
-                          }}
-                        />
-                      </InputRowContainer>
-                    </FormInputContainer>
-
-                    <InputRowContainer padding="0 0 .6rem 0">
-                      <BtnCustom
-                        btnColor={theme.palette.white.main}
-                        backgroundColor={theme.palette.orange.main}
-                        borderColor={theme.palette.orange.main}
-                        btnWidth={'100%'}
-                        height={'auto'}
-                        borderRadius={'1rem'}
-                        margin={'0'}
-                        padding={'.1rem 0'}
-                        fontSize={'1rem'}
-                        boxShadow={'0px .2rem .3rem rgba(8, 22, 58, 0.15)'}
-                        letterSpacing={'.05rem'}
-                        onClick={this.addTarget}
-                      >
-                        add target
-                      </BtnCustom>
-                    </InputRowContainer>
-
-                    <InputRowContainer
-                      padding=".6rem 1rem 1.2rem .4rem"
-                      direction="column"
-                    >
-                      <InputRowContainer padding=".2rem .5rem">
-                        <TargetTitle
-                          theme={theme}
-                          style={{ width: '50%', paddingLeft: '2rem' }}
-                        >
-                          profit
-                        </TargetTitle>
-                        <TargetTitle theme={theme} style={{ width: '50%' }}>
-                          quantity
-                        </TargetTitle>
-                      </InputRowContainer>
-                      <div
-                        style={{
-                          width: '100%',
-                          background: theme.palette.grey.main,
-                          borderRadius: '.8rem',
-                          border: theme.palette.border.main,
-                        }}
-                      >
-                        {takeProfit.splitTargets.targets.map((target, i) => (
-                          <InputRowContainer
-                            key={`${target.price}${target.quantity}${i}`}
-                            padding=".2rem .5rem"
-                            style={
-                              takeProfit.splitTargets.targets.length - 1 !== i
-                                ? {
-                                    borderBottom: theme.palette.border.main,
-                                  }
-                                : {}
-                            }
-                          >
-                            <TargetValue
-                              theme={theme}
-                              style={{ width: '50%', paddingLeft: '2rem' }}
-                            >
-                              +{target.price}%
-                            </TargetValue>
-                            <TargetValue theme={theme} style={{ width: '40%' }}>
-                              {target.quantity}%
-                            </TargetValue>
-                            <CloseIcon
-                              onClick={() => this.deleteTarget(i)}
-                              style={{
-                                color: theme.palette.red.main,
-                                fontSize: '1.8rem',
-                                cursor: 'pointer',
-                              }}
-                            />
-                          </InputRowContainer>
-                        ))}
-                      </div>
-                    </InputRowContainer>
-                  </>
-                )}
-
-                {takeProfit.timeout.isTimeoutOn && (
-                  <>
-                    <TradeInputHeader
-                      theme={theme}
-                      title={`timeout`}
-                      needLine={true}
-                    />
-                    <InputRowContainer>
-                      <SubBlocksContainer>
-                        <InputRowContainer>
-                          <TimeoutTitle> When profit</TimeoutTitle>
-                        </InputRowContainer>
-                        <InputRowContainer>
-                          <SCheckbox
-                            checked={takeProfit.timeout.whenProfitOn}
-                            onChange={() => {
-                              this.updateSubBlockValue(
-                                'takeProfit',
-                                'timeout',
-                                'whenProfitOn',
-                                !takeProfit.timeout.whenProfitOn
-                              )
-
-                              this.updateSubBlockValue(
-                                'takeProfit',
-                                'timeout',
-                                'whenProfitableOn',
-                                false
-                              )
-                            }}
-                            style={{ padding: '0 .4rem 0 0' }}
-                          />
-                          <Input
-                            theme={theme}
-                            haveSelector
-                            width={'calc(55% - .4rem)'}
-                            value={takeProfit.timeout.whenProfitSec}
-                            showErrors={showErrors && takeProfit.isTakeProfitOn}
-                            isValid={this.validateField(
-                              takeProfit.timeout.whenProfitOn,
-                              takeProfit.timeout.whenProfitSec
-                            )}
-                            onChange={(e) => {
-                              this.updateSubBlockValue(
-                                'takeProfit',
-                                'timeout',
-                                'whenProfitSec',
-                                e.target.value
-                              )
-                            }}
-                            inputStyles={{
-                              borderTopRightRadius: 0,
-                              borderBottomRightRadius: 0,
-                            }}
-                            disabled={!takeProfit.timeout.whenProfitOn}
-                          />
-                          <Select
-                            theme={theme}
-                            width={'calc(30% - .4rem)'}
-                            value={takeProfit.timeout.whenProfitMode}
-                            inputStyles={{
-                              borderTopLeftRadius: 0,
-                              borderBottomLeftRadius: 0,
-                            }}
-                            onChange={(e) => {
-                              this.updateSubBlockValue(
-                                'takeProfit',
-                                'timeout',
-                                'whenProfitMode',
-                                e.target.value
-                              )
-                            }}
-                            isDisabled={!takeProfit.timeout.whenProfitOn}
-                          >
-                            <option>sec</option>
-                            <option>min</option>
-                          </Select>
-                        </InputRowContainer>
-                      </SubBlocksContainer>
-
-                      <SubBlocksContainer>
-                        <InputRowContainer>
-                          <TimeoutTitle>When profitable</TimeoutTitle>
-                        </InputRowContainer>
-                        <InputRowContainer>
-                          <SCheckbox
-                            checked={takeProfit.timeout.whenProfitableOn}
-                            onChange={() => {
-                              this.updateSubBlockValue(
-                                'takeProfit',
-                                'timeout',
-                                'whenProfitableOn',
-                                !takeProfit.timeout.whenProfitableOn
-                              )
-
-                              this.updateSubBlockValue(
-                                'takeProfit',
-                                'timeout',
-                                'whenProfitOn',
-                                false
-                              )
-                            }}
-                            style={{ padding: '0 .4rem 0 0' }}
-                          />
-                          <Input
-                            theme={theme}
-                            haveSelector
-                            width={'calc(55% - .4rem)'}
-                            value={takeProfit.timeout.whenProfitableSec}
-                            showErrors={showErrors && takeProfit.isTakeProfitOn}
-                            isValid={this.validateField(
-                              takeProfit.timeout.whenProfitableOn,
-                              takeProfit.timeout.whenProfitableSec
-                            )}
-                            onChange={(e) => {
-                              this.updateSubBlockValue(
-                                'takeProfit',
-                                'timeout',
-                                'whenProfitableSec',
-                                e.target.value
-                              )
-                            }}
-                            inputStyles={{
-                              borderTopRightRadius: 0,
-                              borderBottomRightRadius: 0,
-                            }}
-                            disabled={!takeProfit.timeout.whenProfitableOn}
-                          />
-                          <Select
-                            theme={theme}
-                            width={'calc(30% - .4rem)'}
-                            value={takeProfit.timeout.whenProfitableMode}
-                            inputStyles={{
-                              borderTopLeftRadius: 0,
-                              borderBottomLeftRadius: 0,
-                            }}
-                            onChange={(e) => {
-                              this.updateSubBlockValue(
-                                'takeProfit',
-                                'timeout',
-                                'whenProfitableMode',
-                                e.target.value
-                              )
-                            }}
-                            isDisabled={!takeProfit.timeout.whenProfitableOn}
-                          >
-                            <option>sec</option>
-                            <option>min</option>
-                          </Select>
-                        </InputRowContainer>
-                      </SubBlocksContainer>
-                    </InputRowContainer>
-                  </>
-                )}
-              </div>
-
-              {!takeProfit.isTakeProfitOn && (
-                <BluredBackground>
-                  <div
-                    style={{
-                      width: '50%',
-                    }}
-                  >
-                    <SendButton
-                      type={'buy'}
-                      onClick={() =>
-                        this.toggleBlock('takeProfit', 'isTakeProfitOn')
-                      }
-                    >
-                      show take profit
-                    </SendButton>
-                  </div>
-                </BluredBackground>
-              )}
-            </TerminalBlock>
+              takeProfit={takeProfit}
+              showErrors={showErrors}
+              entryPoint={entryPoint}
+              marketType={marketType}
+              addTarget={this.addTarget}
+              isMarketType={isMarketType}
+              pricePrecision={pricePrecision}
+              deleteTarget={this.deleteTarget}
+              validateField={this.validateField}
+              priceForCalculate={
+                entryPoint.trailing.isTrailingOn
+                  ? entryPoint.trailing.trailingDeviationPrice
+                  : priceForCalculate
+              }
+              updateBlockValue={this.updateBlockValue}
+              updateSubBlockValue={this.updateSubBlockValue}
+              updateStopLossAndTakeProfitPrices={
+                this.updateStopLossAndTakeProfitPrices
+              }
+            />
           </TerminalBlocksContainer>
           {editPopup === 'takeProfit' && (
             <EditTakeProfitPopup
@@ -5870,3 +1495,5 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     )
   }
 }
+
+export const SmartOrderTerminalMemo = SmartOrderTerminal

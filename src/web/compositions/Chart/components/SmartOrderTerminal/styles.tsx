@@ -8,6 +8,7 @@ import Switch from '@material-ui/core/Switch'
 export const TerminalBlocksContainer = styled(Grid)`
   padding-top: 1rem;
   height: 90%;
+  display: flex;
 `
 
 export const TerminalHeaders = styled.div`
@@ -15,7 +16,7 @@ export const TerminalHeaders = styled.div`
   position: relative;
 `
 
-export const TerminalHeader = styled.div`
+export const TerminalHeader = React.memo(styled.div`
   display: flex;
   align-items: center;
   justify-content: ${(props: HeaderProperties) => props.justify};
@@ -28,7 +29,7 @@ export const TerminalHeader = styled.div`
   border: ${(props) => props.theme.palette.border.main};
   border-top: 0;
   border-radius: 0.2rem;
-`
+`)
 
 export const HeaderLabel = styled.label`
   font-size: 1rem;
@@ -46,11 +47,11 @@ export const HeaderTitle = styled.span`
   color: ${(props) => props.theme.palette.dark.main};
 `
 
-export const BlockHeader = styled(HeaderTitle)`
+export const BlockHeader = React.memo(styled(HeaderTitle)`
   color: ${(props) => props.theme.palette.grey.light};
   font-size: 1.5rem;
   letter-spacing: 0.1rem;
-`
+`)
 
 export const InputTitle = styled(HeaderTitle)`
   color: ${(props) => props.theme.palette.grey.light};
@@ -96,12 +97,12 @@ export const FieldsContainer = styled.div`
 `
 
 export const SubBlocksContainer = styled.div`
-  width: ${(props) => props.width || '50%'};
-  border-right: ${(props) => props.needBorder && '.1rem solid #e0e5ec'};
+  width: ${(props: { width?: string, needBorder?: boolean }) => props.width || '50%'};
+  border-right: ${(props: { width?: string, needBorder?: boolean }) => props.needBorder && '.1rem solid #e0e5ec'};
   padding-right: 0.4rem;
 `
 
-export const InputRowContainer = styled.div`
+export const InputRowContainer = React.memo(styled.div`
   display: flex;
   align-items: center;
   position: relative;
@@ -113,7 +114,7 @@ export const InputRowContainer = styled.div`
   @media (min-width: 1921px) {
     padding-bottom: ${(props) => props.padding || '0 0 .8rem 0'};
   }
-`
+`)
 
 export const SwitcherContainer = styled.div`
   align-items: center;
@@ -141,9 +142,9 @@ export const BeforeCharacter = styled.span`
   top: 50%;
   z-index: 10;
   transform: translateY(-55%);
-  display: ${(props) => (props.needCharacter ? 'block' : 'none')};
+  display: ${(props: { needCharacter: boolean, beforeSymbol: string }) => (props.needCharacter ? 'block' : 'none')};
   font-size: 1.2rem;
-  color: ${(props) => (props.beforeSymbol === '+' ? '#29AC80' : '#DD6956')};
+  color: ${(props: { needCharacter: boolean, beforeSymbol: string }) => (props.beforeSymbol === '+' ? '#29AC80' : '#DD6956')};
 `
 
 export const AdditionalSettingsButton = styled(
@@ -189,7 +190,7 @@ export const AdditionalSettingsButton = styled(
 export const ChangeOrderTypeBtn = styled(
   ({ isActive, children, theme, ...rest }) => (
     <BtnCustom
-      btnWidth="calc(50%/3)"
+      btnWidth="calc(50%/2)"
       height={'3rem'}
       fontSize={'1.2rem'}
       fontWeight={isActive ? '700' : '400'}

@@ -35,12 +35,13 @@ import { syncStorage } from '@storage'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { useQuery } from 'react-apollo'
 
-const version = `10.7.5`
+const version = `11.0.14`
 const currentVersion = localStorage.getItem('version')
 if (currentVersion !== version) {
   localStorage.clear()
   localStorage.setItem('version', version)
 }
+
 
 const AppRaw = ({
   children,
@@ -53,9 +54,10 @@ const AppRaw = ({
 }: any) => {
   const isChartPage = /chart/.test(currentPage)
 
-  const themeMode = (getThemeModeQuery &&
-    getThemeModeQuery.getAccountSettings &&
-    getThemeModeQuery.getAccountSettings.themeMode) ||
+  const themeMode =
+    (getThemeModeQuery &&
+      getThemeModeQuery.getAccountSettings &&
+      getThemeModeQuery.getAccountSettings.themeMode) ||
     'light'
   const chartPageView =
     getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
@@ -126,6 +128,7 @@ export const App = compose(
   queryRendererHoc({
     query: GET_VIEW_MODE,
     name: 'getViewModeQuery',
+    skip: (props: any) => !props.authenticated,
     fetchPolicy: 'cache-and-network',
   }),
   // queryRendererHoc({

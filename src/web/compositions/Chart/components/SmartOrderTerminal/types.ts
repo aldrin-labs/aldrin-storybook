@@ -1,6 +1,30 @@
 import { ChangeEvent, CSSProperties } from 'react'
 import { Theme } from '@material-ui/core'
 
+type PlaceOrderResult = {
+  status: string
+  message: string
+  orderId: string
+}
+
+type CancelOrder = (obj: { variables: { cancelOrderInput: {
+  keyId: string,
+  orderId: string,
+  pair: string,
+  marketType: 0 | 1,
+  type: string
+}}}) => void
+
+type SelectedKey = {
+  keyId: string
+  isFuturesWarsKey: boolean
+  hedgeMode: boolean
+}
+
+interface StateOfSMForPlaceOrder extends IState {
+  templateAlertMessage: string
+}
+
 export interface IProps {
   price: number
   leverage: number
@@ -9,9 +33,9 @@ export interface IProps {
   quantityPrecision: number
   pricePrecision: number
   componentLeverage: number
-  funds: {
-    quantity: number
-  }[]
+  getStrategySettingsQuery: any
+  getTooltipSettings: any
+  funds: [{ quantity: number, value: number}, { quantity: number, value: number}]
   pair: [string, string]
   theme: Theme
   marketPriceAfterPairChange: number
@@ -19,9 +43,36 @@ export interface IProps {
   maxLeverage: number
   minFuturesStep: number
   minSpotNotional: number
+  smartTerminalOnboarding: boolean
+  componentMarginType: 'cross' | 'isolated'
+  cancelOrder: CancelOrder,
+  placeOrder: (
+    side: string,
+    type: string,
+    futuresValues: any,
+    typeOfOrder: 'smart',
+    stateOfSM: StateOfSMForPlaceOrder
+  ) => PlaceOrderResult,
+  showOrderResult: (res: PlaceOrderResult, cancelOrder: CancelOrder) => void
+  changeMarginTypeWithStatus: (marginType: 'cross' | 'isolated') => void
+  updateLeverage: (lev: number) => void
+  updateTooltipSettingsMutation: (obj: { variables: any}) => void
   updateTerminalViewMode: (mode: string) => void
   priceFromOrderbook: null | number
   enqueueSnackbar: (msg: string, obj: { variant: string }) => void
+}
+
+export type EntryLevel = {
+  type: number
+  price: number
+  amount: number
+  placeWithoutLoss?: boolean
+}
+
+export type ExitLevel = {
+  type: string
+  price: number
+  amount: number
 }
 
 export type EntryPointType = {
@@ -45,12 +96,7 @@ export type EntryPointType = {
     placeWithoutLoss: boolean
     percentage: number
     price: number
-    entryLevels: {
-      type: number
-      price: number
-      amount: number
-      placeWithoutLoss: boolean
-    }[]
+    entryLevels: EntryLevel[]
   }
   trailing: {
     isTrailingOn: boolean
@@ -67,8 +113,6 @@ export type EntryPointType = {
     sidePlot: string | number
     typePlotEnabled: boolean
     typePlot: string | number
-    hedgeModePlotEnabled: boolean
-    hedgeModePlot: string | number
     pricePlotEnabled: boolean
     pricePlot: string | number
     amountPlotEnabled: boolean
@@ -86,10 +130,7 @@ export type TakeProfitType = {
   splitTargets: {
     isSplitTargetsOn: boolean
     volumePercentage: number
-    targets: {
-      price: number
-      quantity: number
-    }[]
+    targets: ExitLevel[]
   }
   timeout: {
     isTimeoutOn: boolean
@@ -162,6 +203,7 @@ export type BlockProperties = {
 
 export type InputProps = {
   symbol?: string
+  theme: Theme
   value: number | string
   width: string
   padding?: string
@@ -170,9 +212,11 @@ export type InputProps = {
   type?: string
   list?: string
   min?: string
+  max?: string
   needCharacter?: boolean
+  children: JSX.Element | React.ReactNode
   beforeSymbol?: string
-  onChange: (e: ChangeEvent) => void
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void
   isDisabled?: boolean
   isValid?: boolean
   showErrors?: boolean
@@ -184,4 +228,90 @@ export type InputRowProps = {
   justify?: string
   padding?: string
   width?: string
+}
+
+export type CommonForBlocks = {
+  pair: [string, string]
+  theme: Theme,
+  validateField: (needValidate: boolean, value: any) => boolean,
+  updateBlockValue: (blockName: string, valueName: string, value: any) => void,
+  updateSubBlockValue: (blockName: string, subBlockName: string, valueName: string, value: any) => void,
+  updateStopLossAndTakeProfitPrices: (obj: { 
+    side?: string,
+    price?: number,
+    deviationPercentage?: number
+    stopLossPercentage?: number
+    forcedStopPercentage?: number
+    takeProfitPercentage?: number
+    leverage?: number
+  }) => void,
+}
+
+export interface EntryOrderBlockProps extends CommonForBlocks {
+  funds: [{ quantity: number, value: number}, { quantity: number, value: number}],
+  maxAmount: number
+  entryPoint: EntryPointType,
+  showErrors: boolean,
+  marketType: 0 | 1,
+  getMaxValues: () => [number, number],
+  setMaxAmount: () => void,
+  isMarketType: boolean,
+  initialMargin: number,
+  pricePrecision: number,
+  addAverageTarget: () => void,
+  priceForCalculate: number,
+  quantityPrecision: number,
+  updatePriceToMarket: () => void
+  getEntryAlertJson: () => string,
+  deleteAverageTarget: (i: number) => void,
+  isCloseOrderExternal: boolean,
+  isAveragingAfterFirstTarget: boolean,
+}
+
+export interface StopLossBlockProps extends CommonForBlocks {
+  entryPoint: EntryPointType,
+  showErrors: boolean,
+  stopLoss: StopLossType,
+  isMarketType: boolean,
+  priceForCalculate: number,
+  pricePrecision: number
+  showConfirmationPopup: () => void,
+  updateTerminalViewMode: (newMode: string) => void
+}
+
+export interface TakeProfitBlockProps extends CommonForBlocks {
+  marketType: 0 | 1,
+  addTarget: () => void,
+  entryPoint: EntryPointType,
+  showErrors: boolean,
+  takeProfit: TakeProfitType,
+  isMarketType: boolean,
+  priceForCalculate: number,
+  deleteTarget: (i: number) => void
+}
+
+export interface TerminalHeaderBlockProps extends CommonForBlocks {
+  marketType: 0 | 1,
+  entryPoint: EntryPointType,
+  isMarketType: boolean,
+  initialMargin: number
+  selectedKey: SelectedKey
+  maxLeverage: number
+  startLeverage: number
+  componentMarginType: string
+  priceForCalculate: number
+  quantityPrecision: number
+  updateLeverage: (leverage: number, selectedKey: SelectedKey) => void
+  changeMarginTypeWithStatus: (marginType: string, selectedKey: SelectedKey, pair: [string, string]) => void
+}
+
+export interface SliderWithPriceFieldRowComponentProps extends CommonForBlocks {
+  entryPoint: EntryPointType,
+  showErrors: boolean,
+  stopLoss?: StopLossType,
+  isMarketType: boolean,
+  priceForCalculate: number,
+  pricePrecision: number
+  showConfirmationPopup?: () => void,
+  updateTerminalViewMode?: (newMode: string) => void
 }

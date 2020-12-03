@@ -42,6 +42,9 @@ const ConfirmEmail = ({
   accessToken: string
 }) => {
   useEffect(() => {
+    // we need it right away to prevent infinity loader after transition to another page
+    onLogout()
+
     onbeforeunload = async () => {
       await onLogout()
     }

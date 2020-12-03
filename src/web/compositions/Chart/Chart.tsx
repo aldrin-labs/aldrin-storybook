@@ -9,7 +9,6 @@ import { isEqual } from 'lodash'
 // import { Grid, Hidden } from '@material-ui/core'
 
 // import { CardsPanel } from './components'
-
 import OnlyCharts from './OnlyCharts/OnlyCharts'
 import DefaultView from './DefaultView/StatusWrapper'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
@@ -24,8 +23,12 @@ import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboardin
 import { getChartSteps } from '@sb/config/joyrideSteps'
 import { withSelectedPair } from '@core/hoc/withSelectedPair'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
+import { withKeyGenerating } from '@core/hoc/withKeyGenerating'
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
+import { withRedirectToLogin } from '@core/hoc/withRedirectToLogin'
+
 import { queryRendererHoc } from '@core/components/QueryRenderer'
+
 import { getChartData } from '@core/graphql/queries/chart/getChartData'
 import { pairProperties } from '@core/graphql/queries/chart/getPairProperties'
 import {
@@ -260,7 +263,8 @@ export function ChartPageComponent(props: any) {
   // or we have no pair in url
   if (
     (pairPropertiesQuery.loading === false &&
-      pairPropertiesQuery.marketByName.length === 0) || !pathname.split('/')[3]
+      pairPropertiesQuery.marketByName.length === 0) ||
+    !pathname.split('/')[3]
   ) {
     const chartPageType = marketType === 0 ? 'spot' : 'futures'
     const pathToRedirect = `/chart/${chartPageType}/${selectedPair}`
@@ -274,7 +278,7 @@ export function ChartPageComponent(props: any) {
     !pairPropertiesQuery.marketByName[0] ||
     pairPropertiesQuery.networkStatus === 2 ||
     pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
-    selectedPair.replace('_', '')
+      selectedPair.replace('_', '')
 
   if (isPairDataLoading) {
     minPriceDigits = 0.00000001
@@ -313,8 +317,6 @@ export function ChartPageComponent(props: any) {
   const selectedKey = selectedTradingKey
     ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
     : { keyId: '', hedgeMode: false, isFuturesWarsKey: false }
-
-  console.log('pairPropertiesQuery', pairPropertiesQuery)
 
   return (
     <MainContainer fullscreen={view !== 'default'}>
@@ -396,7 +398,7 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
     !prev.pairPropertiesQuery.marketByName[0] ||
     prev.pairPropertiesQuery.networkStatus === 2 ||
     prev.pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
-    prev.selectedPair.replace('_', '')
+      prev.selectedPair.replace('_', '')
 
   const nextIsPairDataLoading =
     next.loading ||
@@ -404,21 +406,21 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
     !next.pairPropertiesQuery.marketByName[0] ||
     next.pairPropertiesQuery.networkStatus === 2 ||
     next.pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
-    next.selectedPair.replace('_', '')
+      next.selectedPair.replace('_', '')
 
   const tooltipQueryChanged =
     (prev.getTooltipSettingsQuery.getTooltipSettings &&
       prev.getTooltipSettingsQuery.getTooltipSettings.chartPage) ===
-    (next.getTooltipSettingsQuery.getTooltipSettings &&
-      next.getTooltipSettingsQuery.getTooltipSettings.chartPage) &&
+      (next.getTooltipSettingsQuery.getTooltipSettings &&
+        next.getTooltipSettingsQuery.getTooltipSettings.chartPage) &&
     (prev.getTooltipSettingsQuery.getTooltipSettings &&
       prev.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup) ===
-    (next.getTooltipSettingsQuery.getTooltipSettings &&
-      next.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup) &&
+      (next.getTooltipSettingsQuery.getTooltipSettings &&
+        next.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup) &&
     (prev.getTooltipSettingsQuery.getTooltipSettings &&
       prev.getTooltipSettingsQuery.getTooltipSettings.smartTerminal) ===
-    (next.getTooltipSettingsQuery.getTooltipSettings &&
-      next.getTooltipSettingsQuery.getTooltipSettings.smartTerminal)
+      (next.getTooltipSettingsQuery.getTooltipSettings &&
+        next.getTooltipSettingsQuery.getTooltipSettings.smartTerminal)
 
   return (
     // prev.marketType === next.marketType &&
@@ -462,6 +464,7 @@ export default compose(
       marketType: 1, // hardcode here to get only futures marketIds'
     },
   }),
+  // withKeyGenerating,
   graphql(selectTradingPair, { name: 'selectTradingPairMutation' }),
   withSelectedPair,
   queryRendererHoc({

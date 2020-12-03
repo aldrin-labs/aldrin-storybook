@@ -34,17 +34,17 @@ const TerminalContainer = ({
   children: React.ReactChild
   theme: Theme
 }) => (
-  <TablesBlockWrapper
-    item
-    container
-    theme={theme}
-    xs={isDefaultTerminalViewMode ? 5 : 12}
-    isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-    isDefaultOnlyTables={isDefaultOnlyTables}
-  >
-    {children}
-  </TablesBlockWrapper>
-)
+    <TablesBlockWrapper
+      item
+      container
+      theme={theme}
+      xs={isDefaultTerminalViewMode ? 5 : 12}
+      isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+      isDefaultOnlyTables={isDefaultOnlyTables}
+    >
+      {children}
+    </TablesBlockWrapper>
+  )
 
 import {
   Container,
@@ -129,8 +129,6 @@ export const DefaultViewComponent = (
     null | number
   >(null)
 
-  console.log('getTooltipSettingsQueryLoading', getTooltipSettingsQueryLoading, getTooltipSettings.chartPage)
-
   const [base, quote] = currencyPair.split('_')
   const baseQuoteArr = [base, quote]
   const exchange = activeExchange.symbol
@@ -147,28 +145,29 @@ export const DefaultViewComponent = (
   console.log('default view rerender', props)
 
   const accentColor = '#1BA492'
-
   return (
     <Container container spacing={8} theme={theme}>
-      {authenticated && !getTooltipSettingsQueryLoading && <Tour
-        showCloseButton={false}
-        nextButton={<FinishBtn>Next</FinishBtn>}
-        prevButton={<a />}
-        showNavigationNumber={true}
-        showNavigation={true}
-        lastStepNextButton={<FinishBtn>Finish</FinishBtn>}
-        steps={tourConfig}
-        accentColor={accentColor}
-        isOpen={!getTooltipSettings.chartPage}
-        onRequestClose={() => {
-          // setIsTourOpen(false)
-          closeChartPageOnboarding()
-        }}
-        // onRequestClose={() => {
-        //   setIsTourOpen(false)
-        //   localStorage.setItem('isOnboardingDone', 'true')
-        // }}
-      />}
+      {authenticated && !getTooltipSettingsQueryLoading && (
+        <Tour
+          showCloseButton={false}
+          nextButton={<FinishBtn>Next</FinishBtn>}
+          prevButton={<a />}
+          showNavigationNumber={true}
+          showNavigation={true}
+          lastStepNextButton={<FinishBtn>Finish</FinishBtn>}
+          steps={tourConfig}
+          accentColor={accentColor}
+          isOpen={!getTooltipSettings.chartPage}
+          onRequestClose={() => {
+            // setIsTourOpen(false)
+            closeChartPageOnboarding()
+          }}
+          // onRequestClose={() => {
+          //   setIsTourOpen(false)
+          //   localStorage.setItem('isOnboardingDone', 'true')
+          // }}
+        />
+      )}
       <ChartGridContainer item xs={12} theme={theme}>
         <CardsPanel
           {...{
@@ -284,13 +283,13 @@ export const DefaultViewComponent = (
                     flexBasis: hideOrderbook
                       ? '0%'
                       : hideDepthChart
-                      ? '50%'
-                      : '65%',
+                        ? '50%'
+                        : '65%',
                     maxWidth: hideOrderbook
                       ? '0%'
                       : hideDepthChart
-                      ? '50%'
-                      : '65%',
+                        ? '50%'
+                        : '65%',
                   }}
                 >
                   {!hideOrderbook && (
@@ -326,13 +325,13 @@ export const DefaultViewComponent = (
                     flexBasis: hideOrderbook
                       ? '100%'
                       : hideDepthChart
-                      ? '50%'
-                      : '35%',
+                        ? '50%'
+                        : '35%',
                     maxWidth: hideOrderbook
                       ? '100%'
                       : hideDepthChart
-                      ? '50%'
-                      : '35%',
+                        ? '50%'
+                        : '35%',
                   }}
                 >
                   {!hideTradeHistory && (
@@ -372,8 +371,8 @@ export const DefaultViewComponent = (
                     ? 12
                     : 11
                   : marketType === 0
-                  ? 7
-                  : 6
+                    ? 7
+                    : 6
               }
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
               updateTerminalViewMode={updateTerminalViewMode}
@@ -459,14 +458,12 @@ export const DefaultViewComponent = (
 
 export const DefaultView = React.memo(DefaultViewComponent, (prev, next) => {
   const tooltipQueryChanged =
-      prev.getTooltipSettings?.chartPage ===
-      next.getTooltipSettings?.chartPage &&
-      prev.getTooltipSettings?.chartPagePopup ===
+    prev.getTooltipSettings?.chartPage === next.getTooltipSettings?.chartPage &&
+    prev.getTooltipSettings?.chartPagePopup ===
       next.getTooltipSettings?.chartPagePopup &&
-      prev.getTooltipSettings?.smartTerminal ===
+    prev.getTooltipSettings?.smartTerminal ===
       next.getTooltipSettings?.smartTerminal &&
-      prev.getTooltipSettingsQueryLoading ===
-      next.getTooltipSettingsQueryLoading
+    prev.getTooltipSettingsQueryLoading === next.getTooltipSettingsQueryLoading
 
   return (
     prev.marketType === next.marketType &&

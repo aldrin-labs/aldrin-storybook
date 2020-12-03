@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import dayjs from 'dayjs'
+import copy from 'clipboard-copy'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { withTheme } from '@material-ui/styles'
@@ -319,8 +320,8 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     const newOrderFromSubscription =
       cachedOrder !== null
         ? data.getOpenOrderHistory.orders.find((order: OrderType) => {
-            return order.price == cachedOrder.price
-          })
+          return order.price == cachedOrder.price
+        })
         : null
 
     // console.log(
@@ -344,8 +345,8 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     const ordersToDisplay =
       !newOrderFromSubscription && !!cachedOrder
         ? nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory.orders.concat(
-            cachedOrder
-          )
+          cachedOrder
+        )
         : nextProps.getOpenOrderHistoryQuery.getOpenOrderHistory.orders
 
     // console.log('ordersToDisplay in receive props', ordersToDisplay)
@@ -436,6 +437,9 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
         defaultSort={{
           sortColumn: 'date',
           sortDirection: 'desc',
+        }}
+        onTrClick={(row) => {
+          copy(row.id.split('_')[0])
         }}
         withCheckboxes={false}
         pagination={{
