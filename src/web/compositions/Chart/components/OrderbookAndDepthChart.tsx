@@ -335,6 +335,7 @@ class OrderbookAndDepthChart extends React.PureComponent {
       marketType,
       exchange,
       quote,
+      base,
       selectedKey,
       data,
       minPriceDigits,
@@ -387,6 +388,7 @@ class OrderbookAndDepthChart extends React.PureComponent {
               data={dataToSend}
               getOpenOrderHistoryQuery={getOpenOrderHistoryQuery}
               quote={quote}
+              base={base}
               symbol={symbol}
               exchange={exchange}
               aggregation={aggregation}
