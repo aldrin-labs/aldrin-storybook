@@ -5,9 +5,9 @@ import { TradeHistoryWrapper } from '../Chart.styles';
 
 const MemoizedTradeHistoryWrapper = React.memo(TradeHistoryWrapper);
 
-const TradeHistoryWrapperVariant = {
+const getTradeHistoryWrapperVariant = (showTableOnMobile) => ({
 	show: showTableOnMobile === 'TRADE'
-};
+})
 
 const TradeHistoryRaw = ({
 	updateTerminalPriceFromOrderbook,
@@ -16,7 +16,7 @@ const TradeHistoryRaw = ({
 	activeExchange,
 	minPriceDigits,
 	changeTable,
-	chartProps,
+	// chartProps,
 	sizeDigits,
 	marketType,
 	exchange,
@@ -25,12 +25,15 @@ const TradeHistoryRaw = ({
 	quote,
 	pair
 }) => {
+  // TODO: Add memo
+  const variant = getTradeHistoryWrapperVariant(showTableOnMobile)
+
 	return (
 		<MemoizedTradeHistoryWrapper
 			theme={theme}
 			key={`tradehistory_table`}
 			className="ExchangesTable"
-			variant={TradeHistoryWrapperVariant}
+			variant={variant}
 		>
 			<TradeHistoryTable
 				key={'tradeyistory_table_query_render'}
@@ -41,7 +44,7 @@ const TradeHistoryRaw = ({
 				showTableOnMobile={showTableOnMobile}
 				minPriceDigits={minPriceDigits}
 				changeTable={changeTable}
-				chartProps={chartProps}
+				// chartProps={chartProps}
 				marketType={marketType}
 				sizeDigits={sizeDigits}
 				symbol={symbol}

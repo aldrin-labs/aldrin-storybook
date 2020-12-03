@@ -1,12 +1,18 @@
 import React from 'react'
 import { compose } from 'recompose'
+import { Grid } from '@material-ui/core'
 
 import 'treemap-js'
-var SortedMap = require('collections/sorted-map')
+// var SortedMap = require('collections/sorted-map')
 
 import { client } from '@core/graphql/apolloClient'
-import { Grid } from '@material-ui/core'
-import QueryRenderer from '@core/components/QueryRenderer'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { checkLoginStatus } from '@core/utils/loginUtils'
+import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
+import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
+import {
+  updateOpenOrderHistoryQuerryFunction,
+} from '@sb/components/TradingTable/TradingTable.utils'
 import { ORDERS_MARKET_QUERY } from '@core/graphql/queries/chart/ORDERS_MARKET_QUERY'
 import { getTerminalData } from '@core/graphql/queries/chart/getTerminalData'
 
@@ -14,14 +20,12 @@ import {
   MOCKED_ORDERBOOK,
   ORDERBOOK,
 } from '@core/graphql/subscriptions/ORDERBOOK'
-import { updateOrderBookQuerryFunction } from '@core/utils/chartPageUtils'
-import { OrderBook, DepthChart } from '../components'
+import { OrderBookTableContainer, DepthChart } from '../components'
+import { OrderbookContainer } from '../Chart.styles'
 import {
   IProps,
   OrderbookGroup,
 } from '../Tables/OrderBookTable/OrderBookTableContainer.types'
-
-import { client } from '@core/graphql/apolloClient'
 
 import {
   transformOrderbookData,
@@ -40,9 +44,12 @@ import { withFetch } from '@core/hoc/withFetchHoc'
 import { getUrlForFetch } from '@core/utils/getUrlForFetch'
 import { getUrlForWebsocket } from '@core/utils/getUrlForWebsocket'
 
-let unsubscribe = Function
+const gridStyles = { height: '100%' }
+const obAndDepthChartContainerStyles = { display: 'flex', width: '100%', height: '100%' }
+const MemoizedGrid = React.memo(Grid)
+const MemoizedOrderbookContainer = React.memo(OrderbookContainer)
 
-class OrderbookAndDepthChart extends React.Component {
+class OrderbookAndDepthChart extends React.PureComponent {
   state = {
     readyForNewOrder: true,
     aggregation: 0,
@@ -323,22 +330,23 @@ class OrderbookAndDepthChart extends React.Component {
   render() {
     const {
       theme,
-      chartProps,
       changeTable,
       symbol,
       marketType,
       exchange,
       quote,
+      base,
       selectedKey,
       data,
       minPriceDigits,
       arrayOfMarketIds,
       updateTerminalPriceFromOrderbook,
       hideDepthChart,
+      sizeDigits,
+      getOpenOrderHistoryQuery,
     } = this.props
 
     const marketOrders = data && data.marketOrders || []
-
     const { asks, bids, aggregation, aggregatedData } = this.state
 
     const dataToSend =
@@ -350,62 +358,90 @@ class OrderbookAndDepthChart extends React.Component {
     return (
       <div
         id="depthChartAndOB"
-        style={{ display: 'flex', width: '100%', height: '100%' }}
+        style={obAndDepthChartContainerStyles}
       >
         {!hideDepthChart && (
-          <Grid
+          <MemoizedGrid
             item
             xs={5}
-            style={{
-              height: '100%',
-            }}
+            style={gridStyles}
           >
             <DepthChart
               theme={theme}
-              chartProps={chartProps}
-              changeTable={changeTable}
-              exchange={exchange}
-              symbol={symbol}
               data={{
                 asks,
                 bids,
               }}
             />
-          </Grid>
+          </MemoizedGrid>
         )}
 
-        <Grid
+        <MemoizedGrid
           item
           xs={hideDepthChart ? 12 : 7}
           id="orderbook"
-          style={{ height: '100%' }}
+          style={gridStyles}
         >
-          <OrderBook
-            theme={theme}
-            exchange={exchange}
-            aggregation={aggregation}
-            chartProps={chartProps}
-            changeTable={changeTable}
-            symbol={symbol}
-            marketOrders={marketOrders}
-            minPriceDigits={minPriceDigits}
-            selectedKey={selectedKey}
-            marketType={marketType}
-            // amountForBackground={amountForBackground}
-            arrayOfMarketIds={arrayOfMarketIds}
-            updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
-            setOrderbookAggregation={this.setOrderbookAggregation}
-            addOrderToOrderbookTree={this.addOrderToOrderbookTree}
-            quote={quote}
-            data={dataToSend}
-          />
-        </Grid>
+          <MemoizedOrderbookContainer key={`orderbook_table`} theme={theme}>
+            <OrderBookTableContainer
+              key={'orderbook_table_query_render'}
+              data={dataToSend}
+              getOpenOrderHistoryQuery={getOpenOrderHistoryQuery}
+              quote={quote}
+              base={base}
+              symbol={symbol}
+              exchange={exchange}
+              aggregation={aggregation}
+              sizeDigits={sizeDigits}
+              minPriceDigits={minPriceDigits}
+              selectedKey={selectedKey}
+              arrayOfMarketIds={arrayOfMarketIds}
+              marketType={marketType}
+              marketOrders={marketOrders}
+              theme={theme}
+              onButtonClick={changeTable}
+              setOrderbookAggregation={this.setOrderbookAggregation}
+              addOrderToOrderbookTree={this.addOrderToOrderbookTree}
+              updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
+              // amountForBackground={amountForBackground}
+            />
+          </MemoizedOrderbookContainer>
+        </MemoizedGrid>
       </div>
     )
   }
 }
 
-const OrderbookAndDepthChartComponent = compose(
+const OrderbookAndDepthChartDataWrapper = compose(
+  queryRendererHoc({
+    variables: (props) => ({
+      openOrderInput: {
+        activeExchangeKey: props.selectedKey.keyId,
+        marketType: props.marketType,
+        allKeys: true,
+        page: 0,
+        perPage: 30,
+      },
+    }),
+    withOutSpinner: true,
+    withTableLoader: false,
+    withoutLoading: true,
+    skip: !checkLoginStatus(),
+    query: getOpenOrderHistory,
+    name: `getOpenOrderHistoryQuery`,
+    fetchPolicy: `cache-first`,
+    subscriptionArgs: {
+      subscription: OPEN_ORDER_HISTORY,
+      variables: (props) => ({
+        openOrderInput: {
+          marketType: props.marketType,
+          activeExchangeKey: props.selectedKey.keyId,
+          allKeys: true,
+        },
+      }),
+      updateQueryFunction: updateOpenOrderHistoryQuerryFunction,
+    }
+  }),
   withFetch({
     url: (props: any) => getUrlForFetch('OB', props.marketType, props.symbol, 100),
     onData: combineOrderbookFromFetch,
@@ -417,51 +453,9 @@ const OrderbookAndDepthChartComponent = compose(
     onMessage: combineOrderbookFromWebsocket,
     pair: (props: any) => props.symbol
   })
-)((OrderbookAndDepthChart))
+)(OrderbookAndDepthChart)
 
 
-export const APIWrapper = ({
-  chartProps,
-  changeTable,
-  isPairDataLoading,
-  marketType,
-  exchange,
-  minPriceDigits,
-  arrayOfMarketIds,
-  selectedKey,
-  updateTerminalPriceFromOrderbook,
-  symbol,
-  sizeDigits,
-  quote,
-  hideDepthChart,
-}) => {
-  return (
-    <OrderbookAndDepthChartComponent
-      component={OrderbookAndDepthChart}
-      withOutSpinner
-      withTableLoader={false}
-      fetchPolicy="network-only"
-      variables={{ symbol: symbol, exchange, marketType }}
-      {...{
-        quote,
-        symbol,
-        exchange,
-        marketType,
-        sizeDigits,
-        selectedKey,
-        minPriceDigits,
-        arrayOfMarketIds,
-        onButtonClick: changeTable,
-        setOrders: chartProps.setOrders,
-        updateTerminalPriceFromOrderbook,
-        isPairDataLoading,
-        ...chartProps,
-        hideDepthChart,
-      }}
-      isDataLoading={isPairDataLoading}
-      withoutLoading={true}
-      key={`${symbol}${marketType}`}
-    />
-  )
-}
+const MemoizedOrderbookAndDepthChartDataWrapper = React.memo(OrderbookAndDepthChartDataWrapper)
 
+export default MemoizedOrderbookAndDepthChartDataWrapper

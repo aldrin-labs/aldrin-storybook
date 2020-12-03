@@ -65,6 +65,7 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
 	render() {
 		const { data, theme } = this.props;
 
+		// TODO: Add memo
 		const sizeTimeColor = getSizeTimeColor(theme);
 		const headerStyles = getHeaderStyles(theme);
 
