@@ -39,7 +39,7 @@ const gridStyles = {
 
 const MemoizedWrapper = React.memo(Wrapper);
 
-@withTheme()
+// @withTheme()
 class TradeHistoryTable extends PureComponent<IProps, IState> {
 	onRowClick = ({ event, index, rowData }) => {
 		const { updateTerminalPriceFromOrderbook } = this.props;
