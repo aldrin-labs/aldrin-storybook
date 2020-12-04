@@ -3,8 +3,9 @@ import { compose } from 'recompose'
 import { Grid, Input, InputAdornment } from '@material-ui/core'
 import { withTheme } from '@material-ui/core/styles'
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
-import { Column, Table } from 'react-virtualized'
+import { Column, Table, SortDirection } from 'react-virtualized'
 import 'react-virtualized/styles.css'
+import _ from 'lodash'
 
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSettings'
@@ -153,6 +154,8 @@ class SelectPairListComponent extends React.PureComponent<
 > {
   state: IStateSelectPairListComponent = {
     processedSelectData: [],
+    sortBy: 'volume24hChange',
+    sortDirection: SortDirection.DESC,
   }
 
   componentDidMount() {
@@ -170,6 +173,7 @@ class SelectPairListComponent extends React.PureComponent<
       favoritePairsMap,
       marketType,
     } = this.props
+    const { sortBy, sortDirection } = this.state
 
     const processedSelectData = combineSelectWrapperData({
       data,
@@ -187,7 +191,11 @@ class SelectPairListComponent extends React.PureComponent<
     })
 
     this.setState({
-      processedSelectData,
+      processedSelectData: this._sortList({
+        sortBy,
+        sortDirection,
+        data: processedSelectData,
+      }),
     })
   }
 
@@ -207,6 +215,7 @@ class SelectPairListComponent extends React.PureComponent<
       marketType,
     } = nextProps
     const { data: prevPropsData } = this.props
+    const { sortBy, sortDirection } = this.state
 
     const processedSelectData = combineSelectWrapperData({
       data,
@@ -225,8 +234,60 @@ class SelectPairListComponent extends React.PureComponent<
     })
 
     this.setState({
-      processedSelectData,
+      processedSelectData: this._sortList({
+        sortBy,
+        sortDirection,
+        data: processedSelectData,
+      }),
     })
+  }
+
+  _sortList = ({ sortBy, sortDirection, data }) => {
+    let dataToSort = data
+
+    if (!dataToSort) {
+      dataToSort = this.state.processedSelectData
+    }
+
+    let newList = [...dataToSort]
+
+    if (this.props.marketType === 0 && sortBy === 'volume24hChange') {
+      console.log('here')
+      newList.sort((pairObjectA, pairObjectB) => {
+        const quoteA = pairObjectA.symbol.contentToSort.split('_')[1]
+        const quoteB = pairObjectB.symbol.contentToSort.split('_')[1]
+        if (quoteA === 'USDT' && quoteB === 'USDT') {
+          return (
+            pairObjectB.volume24hChange.contentToSort -
+            pairObjectA.volume24hChange.contentToSort
+          )
+        } else if (quoteA === 'USDT') {
+          return -1
+        } else if (quoteB === 'USDT') {
+          return 1
+        } else if (quoteA !== 'USDT' && quoteB !== 'USDT') {
+          return (
+            pairObjectB.volume24hChange.contentToSort -
+            pairObjectA.volume24hChange.contentToSort
+          )
+        }
+      })
+      if (sortDirection === SortDirection.DESC) {
+        newList.reverse()
+      }
+    } else {
+      newList = _.sortBy(dataToSort, [`${sortBy}.contentToSort`])
+      if (sortDirection === SortDirection.DESC) {
+        newList.reverse()
+      }
+    }
+
+    return newList
+  }
+
+  _sort = ({ sortBy, sortDirection }) => {
+    const processedSelectData = this._sortList({ sortBy, sortDirection })
+    this.setState({ sortBy, sortDirection, processedSelectData })
   }
 
   render() {
@@ -426,6 +487,9 @@ class SelectPairListComponent extends React.PureComponent<
               <Table
                 width={width}
                 height={height}
+                sort={this._sort}
+                sortBy={this.state.sortBy}
+                sortDirection={this.state.sortDirection}
                 rowCount={processedSelectData.length}
                 onRowClick={({ event, index, rowData }) => {
                   rowData.symbol.onClick()
@@ -473,6 +537,7 @@ class SelectPairListComponent extends React.PureComponent<
                     textAlign: 'left',
                     paddingRight: '6px',
                     paddingLeft: '1rem',
+                    outline: 'none',
                   }}
                   width={width}
                   style={{
@@ -488,6 +553,7 @@ class SelectPairListComponent extends React.PureComponent<
                   headerStyle={{
                     paddingRight: 'calc(10px)',
                     textAlign: 'left',
+                    outline: 'none',
                   }}
                   width={width}
                   style={{
@@ -503,6 +569,7 @@ class SelectPairListComponent extends React.PureComponent<
                   headerStyle={{
                     paddingRight: 'calc(10px)',
                     textAlign: 'right',
+                    outline: 'none',
                   }}
                   width={width}
                   style={{
@@ -518,6 +585,7 @@ class SelectPairListComponent extends React.PureComponent<
                   headerStyle={{
                     paddingRight: 'calc(10px)',
                     textAlign: 'right',
+                    outline: 'none',
                   }}
                   width={width}
                   style={{
