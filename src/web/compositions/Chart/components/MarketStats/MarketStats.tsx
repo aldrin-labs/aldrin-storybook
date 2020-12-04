@@ -12,7 +12,7 @@ import {
 } from './MarketStats.utils';
 
 import MarkPriceBlock from './MarkPriceBlock/MarkPriceBlock';
-import PriceBlock from './PriceBlock/PriceBlock';
+import PriceBlock from '@sb/compositions/Chart/components/MarketStats/PriceBlock/PriceBlock';
 import PriceChange from './PriceChange/PriceChange';
 import LowHighPrice from './LowHighPrice/LowHighPrice';
 import VolumeBlock from './VolumeBlock/VolumeBlock';
@@ -165,7 +165,7 @@ class MarketStats extends React.PureComponent<IProps> {
 
 		if ((fundingTime == 0 || +dayjs(fundingTime) - Date.now() < 0) && !refetching) {
 			this.setRefetching(true)
-	
+
 			setTimeout(() => {
 				getFundingRateQueryRefetch();
 				this.setKey(key + 1)

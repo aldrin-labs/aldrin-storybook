@@ -358,76 +358,76 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     return []
   }
 
-  subscribe() {
-    const that = this
+  // subscribe() {
+  //   const that = this
 
-    // console.log('subscribe', this.getPairsWithPositions())
-    this.subscription = client
-      .subscribe({
-        query: LISTEN_MARK_PRICES,
-        variables: {
-          input: {
-            exchange: this.props.exchange,
-            pairs: this.getPairsWithPositions(),
-          },
-        },
-        fetchPolicy: 'cache-and-network',
-      })
-      .subscribe({
-        next: (data) => {
-          const positions = that.props.getActivePositionsQuery.getActivePositions.filter(
-            (position) => position.positionAmt !== 0
-          )
+  //   // console.log('subscribe', this.getPairsWithPositions())
+  //   this.subscription = client
+  //     .subscribe({
+  //       query: LISTEN_MARK_PRICES,
+  //       variables: {
+  //         input: {
+  //           exchange: this.props.exchange,
+  //           pairs: this.getPairsWithPositions(),
+  //         },
+  //       },
+  //       fetchPolicy: 'cache-and-network',
+  //     })
+  //     .subscribe({
+  //       next: (data) => {
+  //         const positions = that.props.getActivePositionsQuery.getActivePositions.filter(
+  //           (position) => position.positionAmt !== 0
+  //         )
 
-          if (
-            !data ||
-            data.loading ||
-            !that.props.show ||
-            positions.length === 0
-          ) {
-            return
-          }
+  //         if (
+  //           !data ||
+  //           data.loading ||
+  //           !that.props.show ||
+  //           positions.length === 0
+  //         ) {
+  //           return
+  //         }
 
-          const {
-            getActivePositionsQuery,
-            currencyPair,
-            selectedKey,
-            canceledOrders,
-            priceFromOrderbook,
-            pricePrecision,
-            quantityPrecision,
-            theme,
-            keys,
-            getAdlQuantileQuery,
-            handlePairChange,
-            enqueueSnackbar,
-          } = that.props
+  //         const {
+  //           getActivePositionsQuery,
+  //           currencyPair,
+  //           selectedKey,
+  //           canceledOrders,
+  //           priceFromOrderbook,
+  //           pricePrecision,
+  //           quantityPrecision,
+  //           theme,
+  //           keys,
+  //           getAdlQuantileQuery,
+  //           handlePairChange,
+  //           enqueueSnackbar,
+  //         } = that.props
 
-          const positionsData = combinePositionsTable({
-            data: getActivePositionsQuery.getActivePositions,
-            createOrderWithStatus: that.createOrderWithStatus,
-            toogleEditMarginPopup: that.toogleEditMarginPopup,
-            theme,
-            keys,
-            prices: data.data.listenMarkPrices,
-            adlData: this.getAdlData(),
-            pair: currencyPair,
-            keyId: selectedKey.keyId,
-            canceledPositions: canceledOrders,
-            priceFromOrderbook,
-            pricePrecision,
-            quantityPrecision,
-            handlePairChange,
-            enqueueSnackbar,
-          })
+  //         const positionsData = combinePositionsTable({
+  //           data: getActivePositionsQuery.getActivePositions,
+  //           createOrderWithStatus: that.createOrderWithStatus,
+  //           toogleEditMarginPopup: that.toogleEditMarginPopup,
+  //           theme,
+  //           keys,
+  //           prices: data.data.listenMarkPrices,
+  //           adlData: this.getAdlData(),
+  //           pair: currencyPair,
+  //           keyId: selectedKey.keyId,
+  //           canceledPositions: canceledOrders,
+  //           priceFromOrderbook,
+  //           pricePrecision,
+  //           quantityPrecision,
+  //           handlePairChange,
+  //           enqueueSnackbar,
+  //         })
 
-          that.setState({
-            positionsData,
-            prices: data.data.listenMarkPrices,
-          })
-        },
-      })
-  }
+  //         that.setState({
+  //           positionsData,
+  //           prices: data.data.listenMarkPrices,
+  //         })
+  //       },
+  //     })
+  // }
 
   subscribeFunds = () => {
     const { getFundsQuery, selectedKey } = this.props
@@ -458,7 +458,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       enqueueSnackbar,
     } = this.props
 
-    this.subscribe()
+    // this.subscribe()
     this.subscribeFunds()
 
     const positionsData = combinePositionsTable({
@@ -515,14 +515,15 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       prevProps.marketType !== this.props.marketType ||
       prevPositions.length < newPositions.length
     ) {
-      this.subscription && this.subscription.unsubscribe()
-      this.subscribe()
+      // this.subscription && this.subscription.unsubscribe()
+      // this.subscribe()
     }
 
-    if (prevProps.selectedKey.keyId !== this.props.selectedKey.keyId) {
-      this.unsubscribeFundsFunction && this.unsubscribeFundsFunction()
-      this.subscribeFunds()
-    }
+    // funds
+    // if (prevProps.selectedKey.keyId !== this.props.selectedKey.keyId) {
+    //   this.unsubscribeFundsFunction && this.unsubscribeFundsFunction()
+    //   this.subscribeFunds()
+    // }
 
     if (prevPositions.length !== newPositions.length) {
       const crossPositionsNew = newPositions.filter(
@@ -589,8 +590,9 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       clearInterval(this.refetchPositionsIntervalId)
     }
 
-    this.unsubscribeFundsFunction && this.unsubscribeFundsFunction()
-    this.subscription && this.subscription.unsubscribe()
+    // funds
+    // this.unsubscribeFundsFunction && this.unsubscribeFundsFunction()
+    // this.subscription && this.subscription.unsubscribe()
   }
 
   componentWillReceiveProps(nextProps: IProps) {
