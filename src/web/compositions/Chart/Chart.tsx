@@ -90,9 +90,9 @@ export function ChartPageComponent(props: any) {
 
     setTimeout(() => {
       if (marketType === 1) {
-        prefetchFuturesTransactions()
+        checLoginStatusWrapper(prefetchFuturesTransactions)
       } else if (marketType === 0) {
-        prefetchSpotTransactions()
+        checLoginStatusWrapper(prefetchSpotTransactions)
       }
     }, 95000)
 

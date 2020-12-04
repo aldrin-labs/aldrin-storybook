@@ -60,15 +60,20 @@ class SimpleTabs extends React.Component {
     TIFMode: 'GTC',
     trigger: 'last price',
     orderIsCreating: false,
+    price: 0,
+    takeProfitPercentage: 0,
+    stopLossPercentage: 0,
+    isSLTPOn: false,
   }
 
   static getDerivedStateFromProps(props, state) {
     const { componentLeverage } = props
-    const { leverage: stateLeverage } = state
+    const { leverage: stateLeverage, price: updatedPrice } = state
 
-    if (!stateLeverage) {
+    if (!stateLeverage && updatedPrice === 0) {
       return {
         leverage: componentLeverage,
+        price: props.price,
       }
     } else {
       return null
@@ -83,11 +88,11 @@ class SimpleTabs extends React.Component {
     return true
   }
 
-  componentDidMount() {
-    this.setState({
-      leverage: this.props.componentLeverage,
-    })
-  }
+  // componentDidMount() {
+  //   this.setState({
+  //     leverage: this.props.componentLeverage,
+  //   })
+  // }
 
   componentDidUpdate(prevProps) {
     if (prevProps.componentLeverage !== this.props.componentLeverage) {
@@ -97,6 +102,10 @@ class SimpleTabs extends React.Component {
 
   handleChangeMode = (mode: string) => {
     this.setState({ mode })
+  }
+
+  handleStopLossTakeProfitOn = (isSLTPOn: boolean) => {
+    this.setState({ isSLTPOn })
   }
 
   handleChangeOperation = (operation: string) => {
@@ -111,6 +120,18 @@ class SimpleTabs extends React.Component {
     this.setState({ orderIsCreating: side })
   }
 
+  updatePrice = (price) => {
+    this.setState({ price })
+  }
+
+  setStopLossPercentage = (stopLossPercentage) => {
+    this.setState({ stopLossPercentage })
+  }
+
+  setTakeProfitPercentage = (takeProfitPercentage) => {
+    this.setState({ takeProfitPercentage })
+  }
+
   render() {
     const {
       mode,
@@ -119,7 +140,12 @@ class SimpleTabs extends React.Component {
       orderMode,
       TIFMode,
       trigger,
+      operation,
       orderIsCreating,
+      price: updatedPrice,
+      takeProfitPercentage,
+      stopLossPercentage,
+      isSLTPOn,
     } = this.state
 
     const {
@@ -151,10 +177,10 @@ class SimpleTabs extends React.Component {
       changePositionModeWithStatus,
       changeMarginTypeWithStatus,
       maxLeverage,
+      pricePrecision,
     } = this.props
 
     // console.log('TradingWrapper componentMarginType', componentMarginType)
-
     const isSPOTMarket = isSPOTMarketType(marketType)
     const maxAmount = [funds[1].quantity, funds[0].quantity]
 
@@ -188,13 +214,14 @@ class SimpleTabs extends React.Component {
           }
         ).positionAmt
 
+    console.log('isSLTPOnTW', isSLTPOn)
     return (
       <Grid
         data-tut={'basic-terminal'}
         id="tradingTerminal"
         item
         xs={12}
-        style={{ height: '100%', padding: '0 0 0 0' }}
+        style={{ height: '100%', padding: '0 0 0 0', position: 'relative' }}
       >
         <CustomCard theme={theme} style={{ borderTop: 0 }}>
           <TerminalHeader
@@ -621,12 +648,17 @@ class SimpleTabs extends React.Component {
               </div>
             ) : (
               <div style={{ display: 'flex', width: '100%', height: '100%' }}>
-                <FullHeightGrid theme={theme} xs={6} item needBorderRight>
+                <FullHeightGrid theme={theme} xs={6} item>
                   <TerminalContainer>
                     <TraidingTerminal
+                      updatedPrice={mode === 'market' ? price : updatedPrice}
+                      operationType={operation}
+                      updatePrice={this.updatePrice}
+                      stopLossPercentage={stopLossPercentage}
+                      takeProfitPercentage={takeProfitPercentage}
+                      updateOperationType={this.handleChangeOperation}
                       byType={'buy'}
                       theme={theme}
-                      operationType={'buy'}
                       priceType={mode}
                       hedgeMode={hedgeMode}
                       quantityPrecision={quantityPrecision}
@@ -662,53 +694,28 @@ class SimpleTabs extends React.Component {
                       orderMode={orderMode}
                       TIFMode={TIFMode}
                       trigger={trigger}
+                      isSLTPOn={isSLTPOn}
                     />
                   </TerminalContainer>
                 </FullHeightGrid>
 
                 <FullHeightGrid theme={theme} xs={6} item>
                   <TerminalContainer>
-                    <BasicTPSL pair={pair} theme={theme}></BasicTPSL>
-                    {/* <TraidingTerminal
-                      byType={'sell'}
-                      operationType={'sell'}
-                      priceType={mode}
-                      theme={theme}
-                      hedgeMode={hedgeMode}
-                      quantityPrecision={quantityPrecision}
-                      minSpotNotional={minSpotNotional}
-                      minFuturesStep={minFuturesStep}
-                      priceFromOrderbook={priceFromOrderbook}
-                      marketPriceAfterPairChange={marketPriceAfterPairChange}
-                      isSPOTMarket={isSPOTMarket}
-                      enqueueSnackbar={enqueueSnackbar}
-                      changePercentage={(value) =>
-                        this.handleChangePercentage(value, 'Sell')
-                      }
+                    <BasicTPSL
+                      isSLTPOn={isSLTPOn}
+                      setSLTPOn={this.handleStopLossTakeProfitOn}
+                      updatedPrice={mode === 'market' ? price : updatedPrice}
                       pair={pair}
-                      funds={funds}
-                      lockedAmount={
-                        hedgeMode
-                          ? lockedPositionLongAmount
-                          : lockedPositionBothAmount <= 0
-                          ? 0
-                          : lockedPositionBothAmount
-                      }
-                      key={[pair, funds]}
-                      walletValue={funds && funds[1]}
-                      marketPrice={price}
-                      confirmOperation={placeOrder}
-                      cancelOrder={cancelOrder}
-                      decimals={decimals}
-                      addLoaderToButton={this.addLoaderToButton}
-                      orderIsCreating={orderIsCreating}
-                      showOrderResult={showOrderResult}
+                      operationType={operation}
+                      pricePrecision={pricePrecision}
+                      theme={theme}
                       leverage={leverage}
-                      reduceOnly={reduceOnly}
-                      orderMode={orderMode}
-                      TIFMode={TIFMode}
-                      trigger={trigger}
-                    /> */}
+                      takeProfitPercentage={takeProfitPercentage}
+                      stopLossPercentage={stopLossPercentage}
+                      setStopLossPercentage={this.setStopLossPercentage}
+                      setTakeProfitPercentage={this.setTakeProfitPercentage}
+                    />
+                    {/* */}
                   </TerminalContainer>
                 </FullHeightGrid>
               </div>

@@ -1,32 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { compose } from 'recompose'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { SendButton } from '../TraidingTerminal/styles'
-import TradeInputContent from '@sb/components/TraidingTerminal/index'
 import {
   StyledCheckox,
   StyledLabel,
 } from '@sb/components/TradingTable/TradingTablePagination'
-import {
-  TradeInputContent as Input,
-  TradeInputHeader,
-} from '@sb/components/TraidingTerminal/index'
+import { TradeInputContent as Input } from '@sb/components/TraidingTerminal/index'
 
 import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 import { withTheme } from '@material-ui/styles'
-import {
-  Container,
-  GridContainer,
-  Coin,
-  UpdatedCoin,
-  InputTitle,
-  InputWrapper,
-  TradeInputBlock,
-  TradeInput,
-  BlueInputTitle,
-  SeparateInputTitle,
-  AbsoluteInputTitle,
-} from '@sb/components/TraidingTerminal/styles'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
 
 const UnderlinedTitle = styled.a`
@@ -40,18 +24,57 @@ margin-right: 1rem;
 white-space: nowrap`
 
 const BasicTPSL = (props) => {
-  const [stopLossPercentage, setStopLossPercentage] = useState('')
-  const [stopLossPrice, setStopLossPrice] = useState('')
-  const [takeProfitPercentage, setTakeProfitPercentage] = useState('')
-  const [takeProfitPrice, setTakeProfitPrice] = useState('')
-  const [isStopLossOn, setStopLossOn] = useState('')
-  const [isTakeProfitOn, setTakeProfitOn] = useState('')
+  const {
+    pair,
+    theme,
+    updatedPrice,
+    leverage,
+    operationType,
+    takeProfitPercentage,
+    stopLossPercentage,
+    setStopLossPercentage,
+    setTakeProfitPercentage,
+    pricePrecision,
+    isSLTPOn,
+    setSLTPOn,
+  } = props
 
-  const { pair, theme } = props
+  const [stopLossPrice, setStopLossPrice] = useState(updatedPrice)
+  const [takeProfitPrice, setTakeProfitPrice] = useState(updatedPrice)
+
+  useEffect(() => {
+    const calcStopLossPrice =
+      operationType === 'buy'
+        ? stripDigitPlaces(
+            updatedPrice * (1 - +stopLossPercentage / 100 / leverage),
+            pricePrecision
+          )
+        : stripDigitPlaces(
+            updatedPrice * (1 + +stopLossPercentage / 100 / leverage),
+            pricePrecision
+          )
+    setStopLossPrice(calcStopLossPrice)
+  }, [updatedPrice, operationType, leverage])
+
+  useEffect(() => {
+    const calcTakeProfitPrice =
+      operationType === 'sell'
+        ? stripDigitPlaces(
+            updatedPrice * (1 - +takeProfitPercentage / 100 / leverage),
+            pricePrecision
+          )
+        : stripDigitPlaces(
+            updatedPrice * (1 + +takeProfitPercentage / 100 / leverage),
+            pricePrecision
+          )
+    setTakeProfitPrice(calcTakeProfitPrice)
+  }, [updatedPrice, operationType, leverage])
+
+  console.log('isSLTPOnB', isSLTPOn)
   return (
     <div
       style={{
-        padding: '2rem 1rem',
+        padding: '1rem 0',
         display: 'flex',
         width: '100%',
         height: '100%',
@@ -64,6 +87,8 @@ const BasicTPSL = (props) => {
         style={{
           height: '66.6667%',
           width: '100%',
+          padding: '1rem 2rem',
+          borderLeft: '0.1rem solid rgb(226, 224, 229)',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -77,21 +102,24 @@ const BasicTPSL = (props) => {
             justifyContent: 'center',
             alignItems: 'center',
             width: '100%',
+            margin: '0 auto 1.5rem auto',
           }}
         >
-          <UnderlinedTitle> stop loss</UnderlinedTitle>
+          <UnderlinedTitle>stop loss</UnderlinedTitle>
 
           <hr
             style={{ height: '0.1rem' }}
             size={'3px'}
-            width={'200px'}
+            width={'70%'}
             align={'left'}
           />
           <div>
             <StyledCheckox
               id="specPair"
-              // checked={}
-              // onChange={handleToggleSpecificPair}
+              checked={isSLTPOn}
+              onChange={() => {
+                setSLTPOn(!isSLTPOn)
+              }}
               style={{ padding: '0  .4rem 0 1.2rem' }}
             />
             <StyledLabel theme={theme} htmlFor="specPair"></StyledLabel>
@@ -101,13 +129,13 @@ const BasicTPSL = (props) => {
           <Input
             theme={theme}
             padding={'0'}
-            width={'30%'}
+            width={'35%'}
             textAlign={'left'}
             symbol={pair[1]}
+            disabled={!isSLTPOn}
             value={stopLossPrice}
             // disabled={isMarketType && !entryPoint.trailing.isTrailingOn}
-            disabled={false}
-            //   showErrors={showErrors && isStopLossOn}
+            //showErrors={showErrors && isStopLossOn}
             showErrors={undefined}
             inputStyles={{
               paddingLeft: '1rem',
@@ -130,12 +158,16 @@ const BasicTPSL = (props) => {
 
             // this.updateBlockValue('stopLoss', 'stopLossPrice', e.target.value)
             //   }}
-            onChange={() => {
-              //   updateStopLossAndTakeProfitPrices({
-              //     stopLossPercentage: e.target.value,
-              //   })
-              console.log('fgh')
-              //     updateBlockValue('stopLoss', 'pricePercentage', e.target.value)
+            onChange={(e) => {
+              const percentage =
+                operationType === 'buy'
+                  ? (1 - e.target.value / updatedPrice) * 100 * leverage
+                  : -(1 - e.target.value / updatedPrice) * 100 * leverage
+
+              setStopLossPrice(e.target.value)
+              setStopLossPercentage(
+                stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
+              )
             }}
           />
 
@@ -148,36 +180,52 @@ const BasicTPSL = (props) => {
             textAlign={'left'}
             needPreSymbol={true}
             value={+stopLossPercentage > 100 ? 100 : stopLossPercentage}
-            disabled={false}
+            disabled={!isSLTPOn}
             // showErrors={showErrors && isStopLossOn}
             showErrors={undefined}
             inputStyles={{
               paddingRight: '0',
               paddingLeft: '2rem',
             }}
-            onChange={() => {
-              //   updateStopLossAndTakeProfitPrices({
-              //     stopLossPercentage: e.target.value,
-              //   })
-              console.log('fgh')
-              //     updateBlockValue('stopLoss', 'pricePercentage', e.target.value)
+            onChange={(e) => {
+              const calcStopLossPrice =
+                operationType === 'buy'
+                  ? stripDigitPlaces(
+                      updatedPrice * (1 - +e.target.value / 100 / leverage),
+                      pricePrecision
+                    )
+                  : stripDigitPlaces(
+                      updatedPrice * (1 + +e.target.value / 100 / leverage),
+                      pricePrecision
+                    )
+              setStopLossPrice(calcStopLossPrice)
+              setStopLossPercentage(e.target.value)
             }}
           />
 
           <BlueSlider
             theme={theme}
-            // value={stopLoss.pricePercentage}
-            value={2}
+            value={stopLossPercentage}
+            min={0}
+            max={100}
+            disabled={!isSLTPOn}
             sliderContainerStyles={{
-              width: '50%',
+              width: '35%',
               margin: '0 .8rem 0 .8rem',
             }}
-            onChange={() => {
-              //   updateStopLossAndTakeProfitPrices({
-              //     stopLossPercentage: e.target.value,
-              //   })
-              console.log('fgh')
-              //     updateBlockValue('stopLoss', 'pricePercentage', e.target.value)
+            onChange={(value) => {
+              const calcStopLossPrice =
+                operationType === 'buy'
+                  ? stripDigitPlaces(
+                      updatedPrice * (1 - +value / 100 / leverage),
+                      pricePrecision
+                    )
+                  : stripDigitPlaces(
+                      updatedPrice * (1 + +value / 100 / leverage),
+                      pricePrecision
+                    )
+              setStopLossPrice(calcStopLossPrice)
+              setStopLossPercentage(value)
             }}
             //   onChange={(value) => {
             //     if (stopLoss.pricePercentage > 100 && value === 100) {
@@ -198,20 +246,24 @@ const BasicTPSL = (props) => {
             flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'center',
+            width: '100%',
+            margin: '1.5rem auto',
           }}
         >
           <UnderlinedTitle>take profit</UnderlinedTitle>
           <hr
             style={{ height: '0.1rem' }}
             size={'3px'}
-            width={'200px'}
+            width={'70%'}
             align={'left'}
           />
           <div>
             <StyledCheckox
               id="specPair"
-              // checked={}
-              // onChange={handleToggleSpecificPair}
+              checked={isSLTPOn}
+              onChange={() => {
+                setSLTPOn(!isSLTPOn)
+              }}
               style={{ padding: '0  .4rem 0 1.2rem' }}
             />
             <StyledLabel theme={theme} htmlFor="specPair"></StyledLabel>
@@ -222,11 +274,10 @@ const BasicTPSL = (props) => {
             theme={theme}
             textAlign={'left'}
             padding={'0'}
-            width={'30%'}
+            width={'35%'}
             symbol={pair[1]}
             value={takeProfitPrice}
-            //   disabled={isMarketType && !entryPoint.trailing.isTrailingOn}
-            disabled={undefined}
+            disabled={!isSLTPOn}
             //   showErrors={
             //     false &&
             //     showErrors &&
@@ -267,24 +318,28 @@ const BasicTPSL = (props) => {
             //     e.target.value
             //   )
             // }}
-            onChange={() => {
-              //   updateStopLossAndTakeProfitPrices({
-              //     stopLossPercentage: e.target.value,
-              //   })
-              console.log('fgh')
-              //     updateBlockValue('stopLoss', 'pricePercentage', e.target.value)
+            onChange={(e) => {
+              const percentage =
+                operationType === 'sell'
+                  ? (1 - e.target.value / updatedPrice) * 100 * leverage
+                  : -(1 - e.target.value / updatedPrice) * 100 * leverage
+
+              setTakeProfitPrice(e.target.value)
+              setTakeProfitPercentage(
+                stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
+              )
             }}
           />
           <Input
             theme={theme}
             symbol={'%'}
+            disabled={!isSLTPOn}
             padding={'0 .8rem 0 .8rem'}
             width={'30%'}
             preSymbol={'+'}
             textAlign={'left'}
             needPreSymbol={true}
-            //   value={takeProfit.trailingTAP.activatePrice}
-            value={''}
+            value={+takeProfitPercentage > 100 ? 100 : takeProfitPercentage}
             // showErrors={
             //   showErrors &&
             //   isTakeProfitOn &&
@@ -298,12 +353,19 @@ const BasicTPSL = (props) => {
               paddingRight: '0',
               paddingLeft: '2rem',
             }}
-            onChange={() => {
-              //   updateStopLossAndTakeProfitPrices({
-              //     stopLossPercentage: e.target.value,
-              //   })
-              console.log('fgh')
-              //     updateBlockValue('stopLoss', 'pricePercentage', e.target.value)
+            onChange={(e) => {
+              const calcTakeProfitPrice =
+                operationType === 'sell'
+                  ? stripDigitPlaces(
+                      updatedPrice * (1 - +e.target.value / 100 / leverage),
+                      pricePrecision
+                    )
+                  : stripDigitPlaces(
+                      updatedPrice * (1 + +e.target.value / 100 / leverage),
+                      pricePrecision
+                    )
+              setTakeProfitPrice(calcTakeProfitPrice)
+              setTakeProfitPercentage(e.target.value)
             }}
             // onChange={(e) => {
             //   this.updateSubBlockValue(
@@ -320,12 +382,12 @@ const BasicTPSL = (props) => {
           />
           <BlueSlider
             theme={theme}
-            // value={takeProfit.trailingTAP.activatePrice}
+            disabled={!isSLTPOn}
+            value={takeProfitPercentage}
             sliderContainerStyles={{
-              width: '50%',
+              width: '35%',
               margin: '0 .8rem 0 .8rem',
             }}
-            value={2}
             // onChange={(value) => {
             //   if (
             //     takeProfit.trailingTAP.activatePrice > 100 &&
@@ -345,12 +407,19 @@ const BasicTPSL = (props) => {
             //     takeProfitPercentage: value,
             //   })
             // }}
-            onChange={() => {
-              //   updateStopLossAndTakeProfitPrices({
-              //     stopLossPercentage: e.target.value,
-              //   })
-              console.log('fgh')
-              //     updateBlockValue('stopLoss', 'pricePercentage', e.target.value)
+            onChange={(value) => {
+              const calcTakeProfitPrice =
+                operationType === 'sell'
+                  ? stripDigitPlaces(
+                      updatedPrice * (1 - +value / 100 / leverage),
+                      pricePrecision
+                    )
+                  : stripDigitPlaces(
+                      updatedPrice * (1 + +value / 100 / leverage),
+                      pricePrecision
+                    )
+              setTakeProfitPrice(calcTakeProfitPrice)
+              setTakeProfitPercentage(value)
             }}
           />
         </InputRowContainer>
@@ -362,29 +431,36 @@ const BasicTPSL = (props) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          paddingTop: '1rem',
         }}
       >
-        <SendButton
-          theme={theme}
+        {/* <SendButton */}
+        {/* style={{
+            position: 'absolute',
+            width: '94%',
+            right: '2rem',
+            bottom: '3rem',
+          }} */}
+        {/* theme={theme}
           // disabled={orderIsCreating === operationType}
-          // type={operationType}
-          // onClick={async () => {
-          //   const result = await validateForm()
+          type={operationType}
+          // onClick={async () => { */}
+        {/* //   const result = await validateForm()
           //   console.log('result', result)
-          //   if (Object.keys(result).length === 0 || !isSPOTMarket) {
-          //     handleSubmit(values)
+          //   if (Object.keys(result).length === 0 || !isSPOTMarket) { */}
+        {/* //     handleSubmit(values)
           //   }
           // }}
-        >
-          {/* {isSPOTMarket
+        > */}
+        {/* {isSPOTMarket
           ? operationType === 'buy'
             ? `buy ${pair[0]}`
             : `sell ${pair[0]}`
           : operationType === 'buy'
           ? 'buy long'
           : 'sell short'} */}
-          sell short
-        </SendButton>
+        {/* {operationType === 'buy' ? 'buy long' : 'sell short'}
+        </SendButton> */}
       </div>
     </div>
   )
