@@ -25,8 +25,7 @@ import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurren
 import { AdlIndicator } from './TradingTable.styles'
 import { getPrecisionItem } from '@core/utils/getPrecisionItem'
 
-import MarkPriceBlock from '@sb/compositions/Chart/components/MarketStats/MarkPriceBlock/MarkPriceBlock';
-
+import MarkPriceBlock from '@sb/components/TradingTable/PositionsTable/MarkPriceBlock';
 
 const changePairToSelected = (pair: string) => {
   console.log('client mutate', client)
@@ -108,6 +107,7 @@ import { SubColumnValue } from './ActiveTrades/Columns'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 import { addMainSymbol } from '@sb/components'
 import TooltipCustom from '../TooltipCustom/TooltipCustom'
+import PnlBlock from './PositionsTable/PnlBlock'
 
 export const getTableBody = (tab: string) =>
   tab === 'openOrders'
@@ -629,12 +629,17 @@ export const combinePositionsTable = ({
             // ) : (
             //     `0 ${pair[1]} / 0%`
             //   ),
-            render: <MarkPriceBlock
+            render: <PnlBlock
               symbol={symbol}
               exchange={{ symbol: "binance" }}
               marketType={1}
               pricePrecision={pricePrecision}
               theme={theme}
+              pair={pair}
+              entryPrice={entryPrice}
+              leverage={leverage}
+              side={side}
+              positionAmt={positionAmt}
             />,
             style: { opacity: needOpacity ? 0.5 : 1, maxWidth: '100px' },
             colspan: 2,

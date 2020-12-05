@@ -166,6 +166,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     } = this.props
 
     this.updateSubBlockValue('entryPoint', 'order', 'price', this.props.price)
+    console.log(' this.props.componentLeverage', this.props.componentLeverage)
+    this.updateSubBlockValue('entryPoint', 'order', 'leverage', this.props.componentLeverage)
 
     console.log('getStrategySettingsQuery', getStrategySettingsQuery)
     const result = getDefaultStateFromStrategySettings({
