@@ -39,8 +39,6 @@ export interface IProps {
     byType: 'buy' | 'sell',
     priceType: 'limit' | 'market' | 'stop-limit',
     filtredValues: Partial<FormValues>,
-    mode: string,
-    state: any,
     futuresValues: any
   ) => IResult
 
