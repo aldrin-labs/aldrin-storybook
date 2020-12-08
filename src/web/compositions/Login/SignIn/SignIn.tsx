@@ -73,27 +73,20 @@ const SignIn = ({
 
   return (
     <LoginContainer forWithdrawal={forWithdrawal}>
-      <Grid container>
-        <WithGoogleButton
-          onClick={() => {
-            addGAEvent({
-              action: 'Sign in',
-              category: 'App - Sign in with google',
-              label: `sign_in_with_google_app`,
-            })
-
-            onLoginWithGoogleClick()
-          }}
-        >
-          <Grid container alignItems="center" justify="center" wrap="nowrap">
-            <SvgIcon src={GoogleLogo} width="2rem" height="auto" />
-            <WithGoogleButtonText>Log in with Google</WithGoogleButtonText>
-          </Grid>
-        </WithGoogleButton>
-      </Grid>
-      <OrContainerText>
+      {/* <OrContainerText>
         <OrText>Or</OrText>
-      </OrContainerText>
+      </OrContainerText> */}
+      <a
+        style={{
+          bottom: '-10.5rem',
+          fontFamily: 'Avenir Next Demi',
+          fontSize: '3rem',
+          color: '#757679',
+          marginBottom: '3rem',
+        }}
+      >
+        Log in
+      </a>
       <FormContainer
         action=""
         onSubmit={async (e: React.ChangeEvent<HTMLFormElement>) => {
@@ -204,6 +197,7 @@ const SignIn = ({
             variant="contained"
             color="secondary"
             type="submit"
+            style={{ bottom: '0.5rem' }}
           >
             {loading ? (
               <Loading size={16} style={{ height: '16px' }} />
@@ -212,6 +206,36 @@ const SignIn = ({
             )}
           </SubmitLoginButton>
         </SubmitButtonContainer>
+        <Grid
+          container
+          style={{
+            position: 'absolute',
+            bottom: '-6rem',
+            display: 'flex',
+            justifyContent: 'center',
+            cursor: 'pointer',
+          }}
+        >
+          <a
+            style={{
+              bottom: '-10.5rem',
+              fontFamily: 'Avenir Next Demi',
+              fontSize: '1.4rem',
+              color: '#165BE0',
+            }}
+            onClick={() => {
+              addGAEvent({
+                action: 'Sign in',
+                category: 'App - Sign in with google',
+                label: `sign_in_with_google_app`,
+              })
+
+              onLoginWithGoogleClick()
+            }}
+          >
+            Log in with Google
+          </a>
+        </Grid>
       </FormContainer>
     </LoginContainer>
   )
