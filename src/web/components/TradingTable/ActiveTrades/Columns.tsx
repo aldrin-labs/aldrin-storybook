@@ -25,6 +25,16 @@ export const SubColumnValue = styled(InputTitle)`
   padding: 0.4rem 0rem 0.4rem 0rem;
   color: ${(props: { textAlign?: string; color?: string }) =>
     props.color || props.theme.palette.dark.main};
+
+  .errorMsg {
+    display: none;
+  }
+
+  @media only screen and (max-width: 1000px) {
+    .errorMsg {
+      display: block;
+    }
+  }
 `
 
 export const BlockContainer = styled.div`
