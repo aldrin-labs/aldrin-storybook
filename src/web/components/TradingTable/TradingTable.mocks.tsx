@@ -25,45 +25,64 @@ export const positionsColumnNames = (
   updatePositionsHandler,
   positionsRefetchInProcess
 ) => [
-    { label: '#', id: 'index' },
-    { label: 'Pair/Side', id: 'pair' },
-    // { label: 'Type', id: 'type' },
-    { label: 'Size', id: 'size', style: { textAlign: 'right' } },
-    { label: 'Margin', id: 'margin' },
-    // { label: 'M. Ratio', id: 'marginRation' },
-    { label: 'Leverage', id: 'leverage' },
-    { label: 'Entry Price', id: 'entryPrice' },
-    { label: 'Mark Price', id: 'marketPrice' },
-    { label: <DarkTooltip maxWidth={'30rem'} title={`This indicator shows your position in the auto-deleverage queue. If all lights are lit, in the event of a liquidation, your position may be reduced.`}><span>adl</span></DarkTooltip>, id: 'adl' },
-    { label: 'Liq. Price', id: 'liqPrice' },
-    { label: 'Pnl/Roe', id: 'pnlRoe' },
-    {
-      label: (
-        <DarkTooltip title={`Update positions`}>
-          <div
-            style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
-          >
-            {positionsRefetchInProcess ? (
-              <Loading size={16} style={{ height: '16px' }} />
-            ) : (
-                <SvgIcon
-                  alt="Update positions"
-                  src={Reimport}
-                  width="26px"
-                  height="17px"
-                  onClick={async () => {
-                    refetch()
-                    updatePositionsHandler()
-                  }}
-                />
-              )}
-          </div>
-        </DarkTooltip>
-      ),
-      id: 'refetch',
-      isSortable: false,
-    },
-  ]
+  { label: '#', id: 'index' },
+  { label: 'Pair/Side', id: 'pair' },
+  // { label: 'Type', id: 'type' },
+  { label: 'Size', id: 'size', style: { textAlign: 'right' } },
+  { label: 'Margin', id: 'margin' },
+  // { label: 'M. Ratio', id: 'marginRation' },
+  { label: 'Leverage', id: 'leverage' },
+  { label: 'Entry Price', id: 'entryPrice' },
+  { label: 'Mark Price', id: 'marketPrice' },
+  {
+    label: (
+      <DarkTooltip
+        maxWidth={'30rem'}
+        title={`This indicator shows your position in the auto-deleverage queue. If all lights are lit, in the event of a liquidation, your position may be reduced.`}
+      >
+        <span>adl</span>
+      </DarkTooltip>
+    ),
+    id: 'adl',
+  },
+  { label: 'Liq. Price', id: 'liqPrice' },
+  { label: 'Pnl/Roe', id: 'pnlRoe' },
+  {
+    label: (
+      <DarkTooltip title={`Update positions`}>
+        <div
+          style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+        >
+          {positionsRefetchInProcess ? (
+            <Loading size={16} style={{ height: '16px' }} />
+          ) : (
+            <SvgIcon
+              alt="Update positions"
+              src={Reimport}
+              width="26px"
+              height="17px"
+              onClick={async () => {
+                refetch()
+                updatePositionsHandler()
+              }}
+            />
+          )}
+        </div>
+      </DarkTooltip>
+    ),
+    id: 'refetch',
+    isSortable: false,
+  },
+]
+
+export const addressBookColumnNames = [
+  { label: ' ', id: 'blank' },
+  { label: 'Name', id: 'Name' },
+  { label: 'Date added', id: 'dateAdded' },
+  { label: 'Contact', id: 'contact' },
+  { label: 'Public Address', id: 'publicAddress' },
+  { label: 'Addresses', id: 'addresses' },
+]
 
 export const activeTradesColumnNames = [
   { label: ' ', id: 'blank' },

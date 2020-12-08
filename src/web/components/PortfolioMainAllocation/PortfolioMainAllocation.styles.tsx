@@ -81,11 +81,11 @@ export const ModeButton = styled.button`
 export const NavBarLink = styled(({ style, ...props }) => (
   <NavLink {...props} />
 ))`
-  font-family: DM Sans;
-  text-transform: uppercase;
+  font-family: Avenir Next Demi;
+  text-transform: capitalize;
   text-decoration: none;
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   padding-left: 1rem;
   padding-right: 1rem;
   height: 100%;

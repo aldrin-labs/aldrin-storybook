@@ -62,7 +62,7 @@ export const Card = styled.div`
   background-color: ${(props) =>
     props.backgroundColor || props.theme.palette.white.block};
   margin: 0.7rem 1rem;
-  border-radius: 1.6rem;
+  border-radius: 0.8rem;
   border: 1px solid ${(props) => props.border || props.theme.palette.grey.block};
   font-family: DM Sans;
   font-size: 1.12rem;
@@ -208,7 +208,7 @@ const volumeLabels = [
   '466.6m',
 ]
 
-const Table = styled.table`
+export const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
 
@@ -216,10 +216,10 @@ const Table = styled.table`
     border-bottom: none;
   }
 `
-const TableRow = styled.tr``
+export const TableRow = styled.tr``
 
-const Cell = styled.td`
-  border-bottom: 0.1rem solid #61d8e6;
+export const Cell = styled.td`
+  border-bottom: 0.1rem solid ${(props) => props.borderBottom || '#61d8e6'};
   width: 25%;
   font-size: 15px;
   color: #cad4d6;
@@ -231,8 +231,8 @@ const Cell = styled.td`
     width: 15%;
   }
 `
-const HeaderCell = styled.td`
-  border-bottom: 0.1rem solid #61d8e6;
+export const HeaderCell = styled.td`
+  border-bottom: 0.1rem solid ${(props) => props.borderBottom || '#61d8e6'};
   height: 5rem;
   padding-left: 2rem;
   // border: none;
