@@ -12,7 +12,7 @@ const BlueSlider = ({
   sliderContainerStyles,
   handleStyles,
   onChange,
-  onAfterChange
+  onAfterChange,
 }: {
   theme: Theme
   max?: number
@@ -36,12 +36,12 @@ const BlueSlider = ({
       marks={
         showMarks
           ? {
-            0: {},
-            25: {},
-            50: {},
-            75: {},
-            100: {},
-          }
+              0: {},
+              25: {},
+              50: {},
+              75: {},
+              100: {},
+            }
           : {}
       }
       onChange={onChange}
@@ -52,8 +52,8 @@ const BlueSlider = ({
         height: '2rem',
         top: '0.2rem',
         border: 'none',
-        borderRadius: '0',
-        backgroundColor: theme.palette.blue.main,
+        borderRadius: '0.1rem',
+        backgroundColor: theme.palette.blue.slider,
         marginTop: '-.28rem',
         boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
         transform: 'translate(-50%, -15%) !important',
@@ -64,7 +64,7 @@ const BlueSlider = ({
         backgroundColor: theme.palette.slider.dots,
       }}
       activeDotStyles={{
-        backgroundColor: theme.palette.blue.main,
+        backgroundColor: theme.palette.blue.slider,
       }}
       markTextSlyles={{
         color: theme.palette.grey.light,
@@ -75,7 +75,7 @@ const BlueSlider = ({
           ? theme.palette.slider.rail
           : theme.palette.slider.dots,
       }}
-      trackBeforeBackground={theme.palette.blue.main}
+      trackBeforeBackground={theme.palette.blue.slider}
     />
   )
 }

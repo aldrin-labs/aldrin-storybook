@@ -20,6 +20,40 @@ const styles = {
   },
 }
 
+export const TitleForInput = styled.div`
+  width: auto;
+  min-height: 3rem;
+  white-space: nowrap;
+  border: ${(props) =>
+    props.theme &&
+    props.theme.palette &&
+    props.theme.palette.border &&
+    props.theme.palette.border.main};
+  border-top-left-radius: 0.3rem;
+  border-bottom-left-radius: 0.3rem;
+  border-right: none;
+  box-shadow: inset 0px 0px 0.2rem rgba(0, 0, 0, 0.15);
+  color: #7284a0;
+  background-color: #f1f6f9;
+  font-size: 1.1rem;
+  font-family: Avenir Next Demi;
+  text-transform: uppercase;
+  font-weight: bold;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 0.05rem;
+  padding: 0.8rem 1rem;
+  &::placeholder {
+    color: #abbad1;
+  }
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+`
+
 export const ButtonContainer = styled.div`
   padding-top: 5px;
   text-align: center;
@@ -172,14 +206,13 @@ export const TradeInput = styled.input`
   border: ${(props) =>
     props.isValid
       ? (props.theme &&
-        props.theme.palette &&
-        props.theme.palette.border &&
-        props.theme.palette.border.main) ||
-      '.1rem solid #e0e5ec'
+          props.theme.palette &&
+          props.theme.palette.border &&
+          props.theme.palette.border.main) ||
+        '.1rem solid #e0e5ec'
       : '.1rem solid #DD6956'};
-  border-radius: 4px;
-  border-top-right-radius: ${(props) => props.haveSelector && '0'};
-  border-bottom-right-radius: ${(props) => props.haveSelector && '0'};
+  border-top-right-radius: 0.2rem;
+  border-bottom-right-radius: 0.2rem;
   box-shadow: inset 0px 0px 0.2rem rgba(0, 0, 0, 0.15);
   color: ${(props) =>
     (props.theme &&
@@ -190,15 +223,15 @@ export const TradeInput = styled.input`
   background-color: ${(props) =>
     props.disabled
       ? (props.theme &&
-        props.theme.palette &&
-        props.theme.palette.grey &&
-        props.theme.palette.grey.background) ||
-      '#f2f4f6'
+          props.theme.palette &&
+          props.theme.palette.grey &&
+          props.theme.palette.grey.background) ||
+        '#f2f4f6'
       : (props.theme &&
-        props.theme.palette &&
-        props.theme.palette.white &&
-        props.theme.palette.white.inputBackground) ||
-      '#fff'};
+          props.theme.palette &&
+          props.theme.palette.white &&
+          props.theme.palette.white.inputBackground) ||
+        '#fff'};
   font-size: 1.3rem;
   font-family: Avenir Next Demi;
   font-weight: bold;
@@ -223,28 +256,28 @@ export const TradeSelect = styled.select`
   width: 100%;
   min-height: 3rem;
   border: ${(props: {
-  isValid: boolean
-  theme: Theme
-  disabled: boolean
-  needCharacter: boolean
-}) =>
+    isValid: boolean
+    theme: Theme
+    disabled: boolean
+    needCharacter: boolean
+  }) =>
     props.isValid
       ? props.theme.palette.border.main
       : `.1rem solid ${props.theme.palette.red.main}`};
   border-radius: 4px;
   box-shadow: inset 0px 0px 0.2rem rgba(0, 0, 0, 0.15);
   color: ${(props: {
-        isValid: boolean
-        theme: Theme
-        disabled: boolean
-        needCharacter: boolean
-      }) => props.theme.palette.grey.light};
+    isValid: boolean
+    theme: Theme
+    disabled: boolean
+    needCharacter: boolean
+  }) => props.theme.palette.grey.light};
   background-color: ${(props: {
-        isValid: boolean
-        theme: Theme
-        disabled: boolean
-        needCharacter: boolean
-      }) =>
+    isValid: boolean
+    theme: Theme
+    disabled: boolean
+    needCharacter: boolean
+  }) =>
     props.disabled
       ? props.theme.palette.grey.background
       : props.theme.palette.white.inputBackground};
@@ -253,11 +286,11 @@ export const TradeSelect = styled.select`
   text-transform: uppercase;
   font-weight: bold;
   padding-left: ${(props: {
-        isValid: boolean
-        theme: Theme
-        disabled: boolean
-        needCharacter: boolean
-      }) => (props.needCharacter ? '2rem' : '0.6rem')};
+    isValid: boolean
+    theme: Theme
+    disabled: boolean
+    needCharacter: boolean
+  }) => (props.needCharacter ? '2rem' : '0.6rem')};
   outline: none;
 `
 
@@ -307,15 +340,15 @@ export const SendButton = React.memo(styled(StyledTab)`
   background-color: ${(props) =>
     props.type === 'buy'
       ? (props.theme &&
-        props.theme.palette &&
-        props.theme.palette.green &&
-        props.theme.palette.green.main) ||
-      '#5BC9BB'
+          props.theme.palette &&
+          props.theme.palette.green &&
+          props.theme.palette.green.main) ||
+        '#5BC9BB'
       : (props.theme &&
-        props.theme.palette &&
-        props.theme.palette.red &&
-        props.theme.palette.red.main) ||
-      '#F07878'};
+          props.theme.palette &&
+          props.theme.palette.red &&
+          props.theme.palette.red.main) ||
+        '#F07878'};
   box-shadow: 0px 0.7rem 1rem rgba(8, 22, 58, 0.3);
   border-radius: 0;
   border: none;
@@ -323,21 +356,24 @@ export const SendButton = React.memo(styled(StyledTab)`
   &:hover {
     color: #fff;
     background-color: ${(props) =>
-    props.type === 'buy'
-      ? (props.theme &&
-        props.theme.palette &&
-        props.theme.palette.green &&
-        props.theme.palette.green.main) ||
-      '#29AC80'
-      : (props.theme &&
-        props.theme.palette &&
-        props.theme.palette.red &&
-        props.theme.palette.red.main) ||
-      '#DD6956'};
+      props.type === 'buy'
+        ? (props.theme &&
+            props.theme.palette &&
+            props.theme.palette.green &&
+            props.theme.palette.green.main) ||
+          '#29AC80'
+        : (props.theme &&
+            props.theme.palette &&
+            props.theme.palette.red &&
+            props.theme.palette.red.main) ||
+          '#DD6956'};
   }
 `)
 
-export const MemoSendButton = React.memo((props) => console.log('props button', props) || <SendButton {...props} />, () => false);
+export const MemoSendButton = React.memo(
+  (props) => console.log('props button', props) || <SendButton {...props} />,
+  () => false
+)
 
 export const ChangeTradeButton = styled.button`
   border: none;
@@ -371,29 +407,29 @@ export const SmartTradeButton = styled(SendButton)`
   background-color: ${(props) =>
     props.type === 'buy'
       ? (props.theme &&
-        props.theme.palette &&
-        props.theme.palette.blue &&
-        props.theme.palette.blue.main) ||
-      '#165BE0'
+          props.theme.palette &&
+          props.theme.palette.blue &&
+          props.theme.palette.blue.main) ||
+        '#165BE0'
       : (props.theme &&
-        props.theme.palette &&
-        props.theme.palette.red &&
-        props.theme.palette.red.main) ||
-      '#DD6956'};
+          props.theme.palette &&
+          props.theme.palette.red &&
+          props.theme.palette.red.main) ||
+        '#DD6956'};
 
   &:hover {
     background-color: ${(props) =>
-    props.type === 'buy'
-      ? (props.theme &&
-        props.theme.palette &&
-        props.theme.palette.blue &&
-        props.theme.palette.blue.main) ||
-      '#165BE0'
-      : (props.theme &&
-        props.theme.palette &&
-        props.theme.palette.red &&
-        props.theme.palette.red.main) ||
-      '#DD6956'};
+      props.type === 'buy'
+        ? (props.theme &&
+            props.theme.palette &&
+            props.theme.palette.blue &&
+            props.theme.palette.blue.main) ||
+          '#165BE0'
+        : (props.theme &&
+            props.theme.palette &&
+            props.theme.palette.red &&
+            props.theme.palette.red.main) ||
+          '#DD6956'};
   }
 
   @media (max-width: 1600px) {

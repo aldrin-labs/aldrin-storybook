@@ -160,13 +160,13 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
       const takeProfitPrice =
         side === 'sell'
           ? stripDigitPlaces(
-            price * (1 - percentage / 100 / leverage),
-            pricePrecision
-          )
+              price * (1 - percentage / 100 / leverage),
+              pricePrecision
+            )
           : stripDigitPlaces(
-            price * (1 + percentage / 100 / leverage),
-            pricePrecision
-          )
+              price * (1 + percentage / 100 / leverage),
+              pricePrecision
+            )
 
       return {
         takeProfitPrice,
@@ -192,13 +192,13 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
     const takeProfitPrice =
       side === 'sell'
         ? stripDigitPlaces(
-          price * (1 - percentage / 100 / leverage),
-          pricePrecision
-        )
+            price * (1 - percentage / 100 / leverage),
+            pricePrecision
+          )
         : stripDigitPlaces(
-          price * (1 + percentage / 100 / leverage),
-          pricePrecision
-        )
+            price * (1 + percentage / 100 / leverage),
+            pricePrecision
+          )
 
     this.setState({ takeProfitPrice })
   }
@@ -623,8 +623,8 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                         style={
                           this.state.targets.length - 1 !== i
                             ? {
-                              borderBottom: theme.palette.border.main,
-                            }
+                                borderBottom: theme.palette.border.main,
+                              }
                             : {}
                         }
                       >
@@ -830,26 +830,26 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
       const stopLossPrice =
         side === 'buy'
           ? stripDigitPlaces(
-            price * (1 - percentage / 100 / leverage),
-            pricePrecision
-          )
+              price * (1 - percentage / 100 / leverage),
+              pricePrecision
+            )
           : stripDigitPlaces(
-            price * (1 + percentage / 100 / leverage),
-            pricePrecision
-          )
+              price * (1 + percentage / 100 / leverage),
+              pricePrecision
+            )
 
       const forcedLossPrice =
         side === 'buy'
           ? stripDigitPlaces(
-            price *
-            (1 - props.derivedState.forcedPercentage / 100 / leverage),
-            pricePrecision
-          )
+              price *
+                (1 - props.derivedState.forcedPercentage / 100 / leverage),
+              pricePrecision
+            )
           : stripDigitPlaces(
-            price *
-            (1 + props.derivedState.forcedPercentage / 100 / leverage),
-            pricePrecision
-          )
+              price *
+                (1 + props.derivedState.forcedPercentage / 100 / leverage),
+              pricePrecision
+            )
 
       return {
         stopLossPrice,
@@ -872,13 +872,13 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
     const fieldPrice =
       side === 'buy'
         ? stripDigitPlaces(
-          price * (1 - percentage / 100 / leverage),
-          pricePrecision
-        )
+            price * (1 - percentage / 100 / leverage),
+            pricePrecision
+          )
         : stripDigitPlaces(
-          price * (1 + percentage / 100 / leverage),
-          pricePrecision
-        )
+            price * (1 + percentage / 100 / leverage),
+            pricePrecision
+          )
 
     this.setState({ [field]: fieldPrice })
   }
@@ -1137,7 +1137,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                           borderTopRightRadius: 0,
                           borderBottomRightRadius: 0,
                         }}
-                      // disabled={!this.state.whenLossableOn}
+                        // disabled={!this.state.whenLossableOn}
                       />
                       <Select
                         theme={theme}
@@ -1150,7 +1150,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                         onChange={(e) => {
                           this.setState({ whenLossableMode: e.target.value })
                         }}
-                      // isDisabled={!this.state.whenLossableOn}
+                        // isDisabled={!this.state.whenLossableOn}
                       >
                         <option>sec</option>
                         <option>min</option>
@@ -1425,7 +1425,7 @@ export class EditHedgePopup extends React.Component<IProps, HedgeState> {
 export class EditEntryOrderPopup extends React.Component<
   IProps,
   EntryOrderState
-  > {
+> {
   state = {
     type: '',
     side: '',
@@ -1437,7 +1437,7 @@ export class EditEntryOrderPopup extends React.Component<
     deviationPercentage: 0,
     leverage: 0,
     trailingDeviationPrice: 0,
-    templateAlertMessage: "",
+    templateAlertMessage: '',
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -1459,13 +1459,13 @@ export class EditEntryOrderPopup extends React.Component<
       const trailingDeviationPrice =
         side === 'buy'
           ? stripDigitPlaces(
-            priceForCalculate * (1 + deviationPercentage / 100),
-            pricePrecision
-          )
+              priceForCalculate * (1 + deviationPercentage / 100),
+              pricePrecision
+            )
           : stripDigitPlaces(
-            priceForCalculate * (1 - deviationPercentage / 100),
-            pricePrecision
-          )
+              priceForCalculate * (1 - deviationPercentage / 100),
+              pricePrecision
+            )
 
       return {
         ...props.derivedState,
@@ -1494,13 +1494,13 @@ export class EditEntryOrderPopup extends React.Component<
     const trailingDeviationPrice =
       side === 'buy'
         ? stripDigitPlaces(
-          priceForCalculate * (1 + deviationPercentage / 100),
-          pricePrecision
-        )
+            priceForCalculate * (1 + deviationPercentage / 100),
+            pricePrecision
+          )
         : stripDigitPlaces(
-          priceForCalculate * (1 - deviationPercentage / 100),
-          pricePrecision
-        )
+            priceForCalculate * (1 - deviationPercentage / 100),
+            pricePrecision
+          )
 
     this.setState({ trailingDeviationPrice })
   }
@@ -1567,7 +1567,7 @@ export class EditEntryOrderPopup extends React.Component<
       total,
       isTrailingOn,
       deviationPercentage,
-      templateAlertMessage
+      templateAlertMessage,
     } = this.state
 
     let maxAmount = 0
@@ -1681,12 +1681,12 @@ export class EditEntryOrderPopup extends React.Component<
                 let newAmount =
                   newSide === 'buy'
                     ? (
-                      ((amountPercentage / 100) * newMaxAmount) /
-                      price
-                    ).toFixed(marketType === 1 ? quantityPrecision : 8)
+                        ((amountPercentage / 100) * newMaxAmount) /
+                        price
+                      ).toFixed(marketType === 1 ? quantityPrecision : 8)
                     : ((amountPercentage / 100) * newMaxAmount).toFixed(
-                      marketType === 1 ? quantityPrecision : 8
-                    )
+                        marketType === 1 ? quantityPrecision : 8
+                      )
 
                 if (!+newAmount || +newAmount === NaN) {
                   newAmount = 0
@@ -1764,8 +1764,8 @@ export class EditEntryOrderPopup extends React.Component<
                     type === 'limit'
                       ? 'number'
                       : isTrailingOn
-                        ? 'number'
-                        : 'text'
+                      ? 'number'
+                      : 'text'
                   }
                   value={
                     type === 'limit' ? price : isTrailingOn ? price : 'MARKET'
@@ -1873,62 +1873,64 @@ export class EditEntryOrderPopup extends React.Component<
 
             <InputRowContainer>
               <div style={{ width: '47%' }}>
-                <FormInputContainer
+                {/* <FormInputContainer
                   theme={theme}
                   needLine={false}
                   needRightValue={true}
-                  rightValue={`${side === 'buy' || marketType === 1
-                    ? (maxAmount / priceForCalculate).toFixed(
-                      marketType === 1 ? quantityPrecision : 8
-                    )
-                    : maxAmount.toFixed(
-                      marketType === 1 ? quantityPrecision : 8
-                    )
-                    } ${pair[0]}`}
+                  rightValue={`${
+                    side === 'buy' || marketType === 1
+                      ? (maxAmount / priceForCalculate).toFixed(
+                          marketType === 1 ? quantityPrecision : 8
+                        )
+                      : maxAmount.toFixed(
+                          marketType === 1 ? quantityPrecision : 8
+                        )
+                  } ${pair[0]}`}
                   onValueClick={this.setMaxAmount}
-                  title={`${marketType === 1 ? 'order quantity' : 'amount'} (${pair[0]
-                    })`}
-                >
-                  <Input
-                    theme={theme}
-                    type={'text'}
-                    pattern={
-                      marketType === 0 ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'
-                    }
-                    symbol={pair[0]}
-                    value={amount}
-                    showErrors={true}
-                    isValid={this.props.validateField(true, +amount)}
-                    onChange={(e) => {
-                      const [maxAmount] = this.getMaxValues()
-                      const isAmountMoreThanMax = e.target.value > maxAmount
-                      const amountForUpdate = isAmountMoreThanMax
-                        ? maxAmount
-                        : e.target.value
+                  title={`${marketType === 1 ? 'order quantity' : 'amount'} (${
+                    pair[0]
+                  })`}
+                > */}
+                <Input
+                  theme={theme}
+                  type={'text'}
+                  pattern={
+                    marketType === 0 ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'
+                  }
+                  symbol={pair[0]}
+                  value={amount}
+                  showErrors={true}
+                  isValid={this.props.validateField(true, +amount)}
+                  onChange={(e) => {
+                    const [maxAmount] = this.getMaxValues()
+                    const isAmountMoreThanMax = e.target.value > maxAmount
+                    const amountForUpdate = isAmountMoreThanMax
+                      ? maxAmount
+                      : e.target.value
 
-                      const newTotal = amountForUpdate * priceForCalculate
+                    const newTotal = amountForUpdate * priceForCalculate
 
-                      const strippedAmount = isAmountMoreThanMax
-                        ? stripDigitPlaces(
+                    const strippedAmount = isAmountMoreThanMax
+                      ? stripDigitPlaces(
                           amountForUpdate,
                           marketType === 1 ? quantityPrecision : 8
                         )
-                        : e.target.value
+                      : e.target.value
 
-                      this.setState({
-                        amount: strippedAmount,
-                        total: stripDigitPlaces(
-                          newTotal,
-                          marketType === 1 ? 2 : 8
-                        ),
-                        initialMargin: stripDigitPlaces(
-                          (newTotal || 0) / leverage,
-                          2
-                        ),
-                      })
-                    }}
-                  />
-                </FormInputContainer>
+                    this.setState({
+                      amount: strippedAmount,
+                      total: stripDigitPlaces(
+                        newTotal,
+                        marketType === 1 ? 2 : 8
+                      ),
+                      initialMargin: stripDigitPlaces(
+                        (newTotal || 0) / leverage,
+                        2
+                      ),
+                    })
+                  }}
+                />
+                {/* </FormInputContainer> */}
               </div>
               <div
                 style={{
@@ -1949,13 +1951,14 @@ export class EditEntryOrderPopup extends React.Component<
                   theme={theme}
                   needLine={false}
                   needRightValue={true}
-                  rightValue={`${side === 'buy' || marketType === 1
-                    ? stripDigitPlaces(maxAmount, marketType === 1 ? 0 : 2)
-                    : stripDigitPlaces(
-                      maxAmount * priceForCalculate,
-                      marketType === 1 ? 0 : 2
-                    )
-                    } ${pair[1]}`}
+                  rightValue={`${
+                    side === 'buy' || marketType === 1
+                      ? stripDigitPlaces(maxAmount, marketType === 1 ? 0 : 2)
+                      : stripDigitPlaces(
+                          maxAmount * priceForCalculate,
+                          marketType === 1 ? 0 : 2
+                        )
+                  } ${pair[1]}`}
                   onValueClick={this.setMaxAmount}
                   title={`total (${pair[1]})`}
                 >
@@ -2007,11 +2010,11 @@ export class EditEntryOrderPopup extends React.Component<
                   const newAmount =
                     side === 'buy' || marketType === 1
                       ? (newValue / priceForCalculate).toFixed(
-                        marketType === 1 ? quantityPrecision : 8
-                      )
+                          marketType === 1 ? quantityPrecision : 8
+                        )
                       : newValue.toFixed(
-                        marketType === 1 ? quantityPrecision : 8
-                      )
+                          marketType === 1 ? quantityPrecision : 8
+                        )
 
                   const newTotal =
                     side === 'buy' || marketType === 1
@@ -2038,8 +2041,9 @@ export class EditEntryOrderPopup extends React.Component<
                   theme={theme}
                   needLine={false}
                   needRightValue={true}
-                  rightValue={`${stripDigitPlaces(funds[1].quantity, 2)} ${pair[1]
-                    }`}
+                  rightValue={`${stripDigitPlaces(funds[1].quantity, 2)} ${
+                    pair[1]
+                  }`}
                   onValueClick={this.setMaxAmount}
                   title={`cost / initial margin (${pair[1]})`}
                 >
@@ -2088,13 +2092,11 @@ export class EditEntryOrderPopup extends React.Component<
                   title={
                     <span>
                       paste it into{' '}
-                      <span
-                        style={{ color: theme.palette.blue.background }}
-                      >
+                      <span style={{ color: theme.palette.blue.background }}>
                         web-hook url
-                          </span>{' '}
-                          field when creating tv alert
-                        </span>
+                      </span>{' '}
+                      field when creating tv alert
+                    </span>
                   }
                 >
                   <InputRowContainer>
@@ -2123,7 +2125,7 @@ export class EditEntryOrderPopup extends React.Component<
                       }}
                     >
                       copy
-                        </BtnCustom>
+                    </BtnCustom>
                   </InputRowContainer>
                 </FormInputContainer>
                 <FormInputContainer
@@ -2139,13 +2141,11 @@ export class EditEntryOrderPopup extends React.Component<
                   title={
                     <span>
                       paste it into{' '}
-                      <span
-                        style={{ color: theme.palette.blue.background }}
-                      >
+                      <span style={{ color: theme.palette.blue.background }}>
                         message
-                          </span>{' '}
-                          field when creating tv alert
-                        </span>
+                      </span>{' '}
+                      field when creating tv alert
+                    </span>
                   }
                 >
                   <InputRowContainer>
@@ -2175,7 +2175,7 @@ export class EditEntryOrderPopup extends React.Component<
                       }}
                     >
                       copy
-                        </BtnCustom>
+                    </BtnCustom>
                     <BtnCustom
                       btnWidth="calc(20% - .8rem)"
                       height="auto"
@@ -2193,7 +2193,7 @@ export class EditEntryOrderPopup extends React.Component<
                       }}
                     >
                       example
-                        </BtnCustom>
+                    </BtnCustom>
                   </InputRowContainer>
                 </FormInputContainer>
               </>

@@ -74,10 +74,10 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
           keyParams: {
             ...(hedgeMode
               ? {
-                ...paramsForHedge,
-                positionSide:
-                  paramsForHedge.side === 'buy' ? 'SHORT' : 'LONG',
-              }
+                  ...paramsForHedge,
+                  positionSide:
+                    paramsForHedge.side === 'buy' ? 'SHORT' : 'LONG',
+                }
               : variables.keyParams),
           },
         },

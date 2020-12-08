@@ -7,25 +7,16 @@ import {
   StyledOption,
 } from '@sb/components/TradingWrapper/styles'
 
-import {
-  getMarks,
-} from '@core/utils/chartPageUtils'
+import { getMarks } from '@core/utils/chartPageUtils'
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
-import {
-  LeverageLabel,
-} from '@sb/components/TradingWrapper/styles'
+import { LeverageLabel } from '@sb/components/TradingWrapper/styles'
 
 import SmallSlider from '@sb/components/Slider/SmallSlider'
-import {
-  TerminalHeaders,
-  TerminalHeader,
-  BlockHeader,
-} from '../styles'
+import { TerminalHeaders, TerminalHeader, BlockHeader } from '../styles'
 
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-
 
 export const TerminalHeadersBlock = ({
   pair,
@@ -61,7 +52,7 @@ export const TerminalHeadersBlock = ({
             }}
           >
             Start
-                </BlockHeader>
+          </BlockHeader>
         </DarkTooltip>
 
         {marketType === 1 && (
@@ -76,7 +67,11 @@ export const TerminalHeadersBlock = ({
               theme={theme}
               onChange={() => {
                 console.log('componentMarginType', componentMarginType)
-                changeMarginTypeWithStatus(componentMarginType, selectedKey, pair)
+                changeMarginTypeWithStatus(
+                  componentMarginType,
+                  selectedKey,
+                  pair
+                )
               }}
               value={componentMarginType}
               style={{
@@ -86,9 +81,7 @@ export const TerminalHeadersBlock = ({
               }}
             >
               <StyledOption value={'cross'}>cross leverage:</StyledOption>
-              <StyledOption value={'isolated'}>
-                isolated leverage:
-                    </StyledOption>
+              <StyledOption value={'isolated'}>isolated leverage:</StyledOption>
             </StyledSelect>
 
             <SmallSlider
@@ -104,12 +97,7 @@ export const TerminalHeadersBlock = ({
               valueSymbol={'X'}
               marks={getMarks(maxLeverage)}
               onChange={(leverage: number) => {
-                updateSubBlockValue(
-                  'entryPoint',
-                  'order',
-                  'leverage',
-                  leverage
-                )
+                updateSubBlockValue('entryPoint', 'order', 'leverage', leverage)
 
                 const total = initialMargin * leverage
 
@@ -117,10 +105,7 @@ export const TerminalHeadersBlock = ({
                   'entryPoint',
                   'order',
                   'total',
-                  stripDigitPlaces(
-                    total,
-                    marketType === 1 ? 2 : 8
-                  )
+                  stripDigitPlaces(total, marketType === 1 ? 2 : 8)
                 )
 
                 updateSubBlockValue(
@@ -129,9 +114,7 @@ export const TerminalHeadersBlock = ({
                   'amount',
                   stripDigitPlaces(
                     total / priceForCalculate,
-                    marketType === 1
-                      ? quantityPrecision
-                      : 8
+                    marketType === 1 ? quantityPrecision : 8
                   )
                 )
 
@@ -179,7 +162,7 @@ export const TerminalHeadersBlock = ({
             />
             <LeverageLabel theme={theme} style={{ width: '12.5%' }}>
               {entryPoint.order.leverage || 1}x
-                  </LeverageLabel>
+            </LeverageLabel>
           </div>
         )}
       </TerminalHeader>
@@ -204,7 +187,7 @@ export const TerminalHeadersBlock = ({
             theme={theme}
           >
             stop loss
-                </BlockHeader>
+          </BlockHeader>
         </DarkTooltip>
       </TerminalHeader>
       <TerminalHeader
@@ -227,10 +210,12 @@ export const TerminalHeadersBlock = ({
             theme={theme}
           >
             take profit
-                </BlockHeader>
+          </BlockHeader>
         </DarkTooltip>
         <a
           href="https://cryptocurrencies.ai/smartTrading"
+          target={'_blank'}
+          rel={'noreferrer noopener'}
           style={{
             color: theme.palette.blue.main,
             fontSize: '1.5rem',
@@ -239,7 +224,7 @@ export const TerminalHeadersBlock = ({
           }}
         >
           Learn how to trade with Smart Order &rarr;
-              </a>
+        </a>
       </TerminalHeader>
     </TerminalHeaders>
   )

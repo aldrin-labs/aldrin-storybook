@@ -1,5 +1,5 @@
 import React, { Component, PureComponent, CSSProperties } from 'react'
-import memoizeOne from 'memoize-one';
+import memoizeOne from 'memoize-one'
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
 import { Column, Table } from 'react-virtualized'
 import 'react-virtualized/styles.css'
@@ -17,16 +17,18 @@ import {
 import defaultRowRenderer from '../../utils'
 import { BidsWrapper } from '../../OrderBookTableContainer.styles'
 
-const getHeaderStyle = memoizeOne((theme): CSSProperties => ({
-  color: '#7284A0',
-  paddingLeft: '.5rem',
-  marginLeft: 0,
-  marginRight: 0,
-  paddingTop: '.25rem',
-  letterSpacing: '.075rem',
-  borderBottom: theme.palette.border.main,
-  fontSize: '1rem',
-}))
+const getHeaderStyle = memoizeOne(
+  (theme): CSSProperties => ({
+    color: '#7284A0',
+    paddingLeft: '.5rem',
+    marginLeft: 0,
+    marginRight: 0,
+    paddingTop: '.25rem',
+    letterSpacing: '.075rem',
+    borderBottom: theme.palette.border.main,
+    fontSize: '1rem',
+  })
+)
 
 const gridStyle = {
   // overflow: mode !== 'bids' ? 'hidden' : 'hidden auto',
@@ -41,35 +43,52 @@ const columnTotalHeaderStyle = {
   paddingRight: 'calc(.5rem + 10px)',
   textAlign: 'right',
 }
-const getTotalStyles = memoizeOne((theme): CSSProperties => ({ textAlign: 'right', color: theme.palette.dark.main }))
-const getSizeStyles = memoizeOne((theme): CSSProperties => ({
-  textAlign: 'right',
-  color: theme.palette.dark.main,
-}))
-const getPriceStyles = memoizeOne((theme): CSSProperties => ({ color: theme.palette.green.main }))
+const getTotalStyles = memoizeOne(
+  (theme): CSSProperties => ({
+    fontFamily: 'Avenir Next Medium',
+    letterSpacing: '0.1rem',
+    textAlign: 'right',
+    color: theme.palette.dark.main,
+  })
+)
+const getSizeStyles = memoizeOne(
+  (theme): CSSProperties => ({
+    fontFamily: 'Avenir Next Medium',
+    letterSpacing: '0.1rem',
+    textAlign: 'right',
+    color: theme.palette.dark.main,
+  })
+)
+const getPriceStyles = memoizeOne(
+  (theme): CSSProperties => ({
+    fontFamily: 'Avenir Next Medium',
+    letterSpacing: '0.1rem',
+    color: theme.palette.green.main,
+  })
+)
 // @withTheme()
 class SpreadTable extends PureComponent<IProps> {
   onRowClick = ({ event, index, rowData }) => {
-		const { updateTerminalPriceFromOrderbook } = this.props;
+    const { updateTerminalPriceFromOrderbook } = this.props
 
-    updateTerminalPriceFromOrderbook(+rowData.price);
-	};
+    updateTerminalPriceFromOrderbook(+rowData.price)
+  }
 
-	// rowRenderer = (...rest) => {
-	// 	const { amountForBackground, theme } = this.props;
-	// 	return defaultRowRenderer({
-	// 		...rest[0],
-	// 		theme,
-	// 		amountForBackground,
-	// 		openOrderHistory: []
-	// 	});
-	// };
+  // rowRenderer = (...rest) => {
+  // 	const { amountForBackground, theme } = this.props;
+  // 	return defaultRowRenderer({
+  // 		...rest[0],
+  // 		theme,
+  // 		amountForBackground,
+  // 		openOrderHistory: []
+  // 	});
+  // };
 
-	// rowGetter = ({ index }) => {
-	// 	const { data } = this.props;
+  // rowGetter = ({ index }) => {
+  // 	const { data } = this.props;
 
-	// 	return data[index];
-	// };
+  // 	return data[index];
+  // };
 
   render() {
     const {
@@ -89,7 +108,7 @@ class SpreadTable extends PureComponent<IProps> {
     const amountForBackground =
       tableData.reduce((acc, curr) => acc + +curr.size, 0) / tableData.length
 
-    const headerStyle = getHeaderStyle(theme)  
+    const headerStyle = getHeaderStyle(theme)
     const totalStyles = getTotalStyles(theme)
     const sizeStyles = getSizeStyles(theme)
     const priceStyles = getPriceStyles(theme)

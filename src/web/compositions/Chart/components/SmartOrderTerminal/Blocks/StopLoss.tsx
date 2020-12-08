@@ -1,10 +1,7 @@
 import React from 'react'
 import copy from 'clipboard-copy'
 
-import {
-  getSecondValueFromFirst,
-  BlueSwitcherStyles,
-} from '../utils'
+import { getSecondValueFromFirst, BlueSwitcherStyles } from '../utils'
 
 import { StopLossBlockProps } from '../types'
 
@@ -31,7 +28,10 @@ import {
 } from '../styles'
 
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { SliderWithPriceAndPercentageFieldRow, SliderWithTimeoutFieldRow } from './SliderComponents'
+import {
+  SliderWithPriceAndPercentageFieldRow,
+  SliderWithTimeoutFieldRow,
+} from './SliderComponents'
 
 export const StopLossBlock = ({
   pair,
@@ -186,99 +186,110 @@ export const StopLossBlock = ({
             !stopLoss.forcedStopByAlert &&
             !stopLoss.plotEnabled) ||
             !stopLoss.external) && (
-              <FormInputContainer
-                theme={theme}
-                haveTooltip
-                tooltipText={
-                  <>
-                    <p>The unrealized loss/ROE for closing trade.</p>
-                    <p>
-                      <b>For example:</b> you bought 1 BTC and set 10% stop loss.
-                            Your unrealized loss should be 0.1 BTC and order will be
-                            executed.
-                          </p>
-                  </>
-                }
-                title={'stop price'}
-              >
-                <InputRowContainer>
-                  <SliderWithPriceAndPercentageFieldRow
-                    {...{
-                      pair,
-                      theme,
-                      entryPoint,
-                      stopLoss,
-                      showErrors,
-                      isMarketType,
-                      validateField,
-                      pricePrecision,
-                      updateBlockValue,
-                      priceForCalculate,
-                      percentagePreSymbol: '-',
-                      approximatePrice: stopLoss.stopLossPrice,
-                      pricePercentage: stopLoss.pricePercentage,
-                      getApproximatePrice: (value: number) => {
-                        return value === 0 ? priceForCalculate : entryPoint.order.side === 'buy'
-                          ? stripDigitPlaces(
-                            priceForCalculate * (1 - value / 100 / entryPoint.order.leverage),
-                            pricePrecision
-                          )
-                          : stripDigitPlaces(
-                            priceForCalculate * (1 + value / 100 / entryPoint.order.leverage),
-                            pricePrecision
-                          )
-                      },
-                      onAfterSliderChange: (value: number) => {
-                        updateStopLossAndTakeProfitPrices({
-                          stopLossPercentage: value,
-                        })
-
-                        updateBlockValue('stopLoss', 'pricePercentage', value)
-                      },
-                      onApproximatePriceChange: (e: React.ChangeEvent<HTMLInputElement>, updateValue: (v: any) => void) => {
-                        const percentage =
-                          entryPoint.order.side === 'buy'
-                            ? (1 - +e.target.value / priceForCalculate) *
-                            100 *
-                            entryPoint.order.leverage
-                            : -(1 - +e.target.value / priceForCalculate) *
-                            100 *
-                            entryPoint.order.leverage
-
-                        updateBlockValue(
-                          'stopLoss',
-                          'pricePercentage',
-                          stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
+            // <FormInputContainer
+            //   theme={theme}
+            //   haveTooltip
+            //   tooltipText={
+            //     <>
+            //       <p>The unrealized loss/ROE for closing trade.</p>
+            //       <p>
+            //         <b>For example:</b> you bought 1 BTC and set 10% stop loss.
+            //         Your unrealized loss should be 0.1 BTC and order will be
+            //         executed.
+            //       </p>
+            //     </>
+            //   }
+            //   title={'stop price'}
+            // >
+            <InputRowContainer>
+              <SliderWithPriceAndPercentageFieldRow
+                {...{
+                  pair,
+                  theme,
+                  entryPoint,
+                  stopLoss,
+                  showErrors,
+                  isMarketType,
+                  validateField,
+                  pricePrecision,
+                  updateBlockValue,
+                  priceForCalculate,
+                  percentagePreSymbol: '-',
+                  approximatePrice: stopLoss.stopLossPrice,
+                  pricePercentage: stopLoss.pricePercentage,
+                  getApproximatePrice: (value: number) => {
+                    return value === 0
+                      ? priceForCalculate
+                      : entryPoint.order.side === 'buy'
+                      ? stripDigitPlaces(
+                          priceForCalculate *
+                            (1 - value / 100 / entryPoint.order.leverage),
+                          pricePrecision
                         )
-
-                        updateValue(stripDigitPlaces(percentage < 0 ? 0 : percentage, 2))
-
-                        updateBlockValue(
-                          'stopLoss',
-                          'stopLossPrice',
-                          e.target.value
+                      : stripDigitPlaces(
+                          priceForCalculate *
+                            (1 + value / 100 / entryPoint.order.leverage),
+                          pricePrecision
                         )
-                      },
-                      onPricePercentageChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-                        updateStopLossAndTakeProfitPrices({
-                          stopLossPercentage: +e.target.value,
-                        })
+                  },
+                  onAfterSliderChange: (value: number) => {
+                    updateStopLossAndTakeProfitPrices({
+                      stopLossPercentage: value,
+                    })
 
-                        updateBlockValue(
-                          'stopLoss',
-                          'pricePercentage',
-                          e.target.value
-                        )
-                      },
-                      updateSubBlockValue,
-                      showConfirmationPopup,
-                      updateTerminalViewMode,
-                      updateStopLossAndTakeProfitPrices,
-                    }}
-                  />
-                </InputRowContainer>
-              </FormInputContainer>
-            )}
+                    updateBlockValue('stopLoss', 'pricePercentage', value)
+                  },
+                  onApproximatePriceChange: (
+                    e: React.ChangeEvent<HTMLInputElement>,
+                    updateValue: (v: any) => void
+                  ) => {
+                    const percentage =
+                      entryPoint.order.side === 'buy'
+                        ? (1 - +e.target.value / priceForCalculate) *
+                          100 *
+                          entryPoint.order.leverage
+                        : -(1 - +e.target.value / priceForCalculate) *
+                          100 *
+                          entryPoint.order.leverage
+
+                    updateBlockValue(
+                      'stopLoss',
+                      'pricePercentage',
+                      stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
+                    )
+
+                    updateValue(
+                      stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
+                    )
+
+                    updateBlockValue(
+                      'stopLoss',
+                      'stopLossPrice',
+                      e.target.value
+                    )
+                  },
+                  onPricePercentageChange: (
+                    e: React.ChangeEvent<HTMLInputElement>
+                  ) => {
+                    updateStopLossAndTakeProfitPrices({
+                      stopLossPercentage: +e.target.value,
+                    })
+
+                    updateBlockValue(
+                      'stopLoss',
+                      'pricePercentage',
+                      e.target.value
+                    )
+                  },
+                  updateSubBlockValue,
+                  showConfirmationPopup,
+                  updateTerminalViewMode,
+                  updateStopLossAndTakeProfitPrices,
+                }}
+              />
+            </InputRowContainer>
+            // </FormInputContainer>
+          )}
 
           {(stopLoss.timeout.isTimeoutOn ||
             (stopLoss.forcedStop.isForcedStopOn &&
@@ -376,7 +387,13 @@ export const StopLossBlock = ({
                       }
                       title={'forced stop price'}
                     >
-                      <InputRowContainer wrap={!stopLoss.forcedStop.mandatoryForcedLoss ? 'wrap' : 'nowrap'}>
+                      <InputRowContainer
+                        wrap={
+                          !stopLoss.forcedStop.mandatoryForcedLoss
+                            ? 'wrap'
+                            : 'nowrap'
+                        }
+                      >
                         <SliderWithPriceAndPercentageFieldRow
                           {...{
                             pair,
@@ -389,20 +406,33 @@ export const StopLossBlock = ({
                             pricePrecision,
                             updateBlockValue,
                             priceForCalculate,
-                            percentagePreSymbol: '-',
-                            sliderInTheBottom: !stopLoss.forcedStop.mandatoryForcedLoss,
-                            approximatePrice: stopLoss.forcedStop.forcedStopPrice,
-                            pricePercentage: stopLoss.forcedStop.pricePercentage,
+                            percentagePreSymbol: '../?5',
+                            sliderInTheBottom: !stopLoss.forcedStop
+                              .mandatoryForcedLoss,
+                            approximatePrice:
+                              stopLoss.forcedStop.forcedStopPrice,
+                            pricePercentage:
+                              stopLoss.forcedStop.pricePercentage,
                             getApproximatePrice: (value: number) => {
-                              return value === 0 ? priceForCalculate : entryPoint.order.side === 'buy'
+                              return value === 0
+                                ? priceForCalculate
+                                : entryPoint.order.side === 'buy'
                                 ? stripDigitPlaces(
-                                  priceForCalculate * (1 - value / 100 / entryPoint.order.leverage),
-                                  pricePrecision
-                                )
+                                    priceForCalculate *
+                                      (1 -
+                                        value /
+                                          100 /
+                                          entryPoint.order.leverage),
+                                    pricePrecision
+                                  )
                                 : stripDigitPlaces(
-                                  priceForCalculate * (1 + value / 100 / entryPoint.order.leverage),
-                                  pricePrecision
-                                )
+                                    priceForCalculate *
+                                      (1 +
+                                        value /
+                                          100 /
+                                          entryPoint.order.leverage),
+                                    pricePrecision
+                                  )
                             },
                             onAfterSliderChange: (value: number) => {
                               updateSubBlockValue(
@@ -416,15 +446,18 @@ export const StopLossBlock = ({
                                 forcedStopPercentage: value,
                               })
                             },
-                            onApproximatePriceChange: (e: React.ChangeEvent<HTMLInputElement>, updateValue: (v: any) => void) => {
+                            onApproximatePriceChange: (
+                              e: React.ChangeEvent<HTMLInputElement>,
+                              updateValue: (v: any) => void
+                            ) => {
                               const percentage =
                                 entryPoint.order.side === 'buy'
                                   ? (1 - +e.target.value / priceForCalculate) *
-                                  100 *
-                                  entryPoint.order.leverage
+                                    100 *
+                                    entryPoint.order.leverage
                                   : -(1 - +e.target.value / priceForCalculate) *
-                                  100 *
-                                  entryPoint.order.leverage
+                                    100 *
+                                    entryPoint.order.leverage
 
                               updateSubBlockValue(
                                 'stopLoss',
@@ -442,9 +475,16 @@ export const StopLossBlock = ({
                                 'forcedStopPrice',
                                 e.target.value
                               )
-                              updateValue(stripDigitPlaces(percentage < 0 ? 0 : percentage, 2))
+                              updateValue(
+                                stripDigitPlaces(
+                                  percentage < 0 ? 0 : percentage,
+                                  2
+                                )
+                              )
                             },
-                            onPricePercentageChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                            onPricePercentageChange: (
+                              e: React.ChangeEvent<HTMLInputElement>
+                            ) => {
                               updateSubBlockValue(
                                 'stopLoss',
                                 'forcedStop',
@@ -583,7 +623,7 @@ export const StopLossBlock = ({
                     type={'text'}
                     disabled={true}
                     textAlign={'left'}
-                    onChange={() => { }}
+                    onChange={() => {}}
                     value={`https://${API_URL}/editStopLossByAlert`}
                   />
                   <BtnCustom
@@ -633,17 +673,20 @@ export const StopLossBlock = ({
                     type={'text'}
                     disabled={true}
                     textAlign={'left'}
-                    onChange={() => { }}
-                    value={`{\\"token\\": \\"${entryPoint.TVAlert.templateToken
-                      }\\", \\"orderType\\": ${stopLoss.forcedStopByAlert
+                    onChange={() => {}}
+                    value={`{\\"token\\": \\"${
+                      entryPoint.TVAlert.templateToken
+                    }\\", \\"orderType\\": ${
+                      stopLoss.forcedStopByAlert
                         ? `\\"market\\"`
                         : `\\"${stopLoss.type}\\"`
-                      } ${stopLoss.plotEnabled
+                    } ${
+                      stopLoss.plotEnabled
                         ? `, \\"stopLossPrice\\": {{plot_${stopLoss.plot}}}`
                         : !stopLoss.forcedStopByAlert
-                          ? `, \\"stopLossPrice\\": ${stopLoss.stopLossPrice}`
-                          : ''
-                      }}`}
+                        ? `, \\"stopLossPrice\\": ${stopLoss.stopLossPrice}`
+                        : ''
+                    }}`}
                   />
                   {/* entryPoint.TVAlert.templateToken */}
                   <BtnCustom
@@ -660,13 +703,16 @@ export const StopLossBlock = ({
                     transition={'all .4s ease-out'}
                     onClick={() => {
                       copy(
-                        `{\\"token\\": \\"${entryPoint.TVAlert.templateToken
-                        }\\", \\"orderType\\": ${stopLoss.forcedStopByAlert
-                          ? `\\"market\\"`
-                          : `\\"${stopLoss.type}\\"`
-                        } ${stopLoss.plotEnabled
-                          ? `, \\"stopLossPrice\\": {{plot_${stopLoss.plot}}}`
-                          : !stopLoss.forcedStopByAlert
+                        `{\\"token\\": \\"${
+                          entryPoint.TVAlert.templateToken
+                        }\\", \\"orderType\\": ${
+                          stopLoss.forcedStopByAlert
+                            ? `\\"market\\"`
+                            : `\\"${stopLoss.type}\\"`
+                        } ${
+                          stopLoss.plotEnabled
+                            ? `, \\"stopLossPrice\\": {{plot_${stopLoss.plot}}}`
+                            : !stopLoss.forcedStopByAlert
                             ? `, \\"stopLossPrice\\": ${stopLoss.stopLossPrice}`
                             : ''
                         }}`
