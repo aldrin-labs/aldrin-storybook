@@ -25,7 +25,7 @@ import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurren
 import { AdlIndicator } from './TradingTable.styles'
 import { getPrecisionItem } from '@core/utils/getPrecisionItem'
 
-import MarkPriceBlock from '@sb/components/TradingTable/PositionsTable/MarkPriceBlock';
+import MarkPriceBlock from '@sb/components/TradingTable/PriceBlocks/PositionsPriceBlock';
 
 const changePairToSelected = (pair: string) => {
   console.log('client mutate', client)
@@ -107,7 +107,7 @@ import { SubColumnValue } from './ActiveTrades/Columns'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 import { addMainSymbol } from '@sb/components'
 import TooltipCustom from '../TooltipCustom/TooltipCustom'
-import PnlBlock from './PositionsTable/PnlBlock'
+import PnlBlock from './PriceBlocks/PositionsPnlBlock'
 
 export const getTableBody = (tab: string) =>
   tab === 'openOrders'
