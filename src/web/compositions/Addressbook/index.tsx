@@ -4,6 +4,8 @@ import styled from 'styled-components'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import SubColumn from './SubColumn'
+import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
+
 import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
 import {
   Card,
@@ -168,6 +170,8 @@ const AddressbookRoute = ({
   console.log('getUserAddressbookQuery', getUserAddressbookQuery)
   return (
     <RowContainer style={{ height: '100%' }}>
+      {' '}
+      <GlobalStyles />
       <Card
         style={{
           display: 'flex',
