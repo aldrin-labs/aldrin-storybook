@@ -21,6 +21,7 @@ import {
   TableRow,
   Table,
 } from '@sb/compositions/Rewards/index'
+import { notify } from '@sb/dexUtils/notifications'
 
 const SubColumn = ({
   theme,
@@ -99,7 +100,13 @@ const SubColumn = ({
                   width={'auto'}
                   padding={'0 1rem'}
                   style={{ marginLeft: '2rem' }}
-                  onClick={copy(el.address)}
+                  onClick={() => {
+                    copy(el.address)
+                    notify({
+                      type: 'success',
+                      message: 'Copied!'
+                    })
+                  }}
                 >
                   copy
                 </AddBtn>
