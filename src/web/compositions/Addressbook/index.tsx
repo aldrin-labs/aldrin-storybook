@@ -65,7 +65,7 @@ export const Input = styled.input`
   color: #fff;
 
   &::placeholder {
-    color: #ABBAD1;
+    color: #abbad1;
   }
 `
 
@@ -245,108 +245,110 @@ const AddressbookRoute = ({
             </BtnCustom>
           </>
         ) : (
-              <>
-                <div
-                  style={{
-                    width: '100%',
-                    borderBottom: '0.1rem solid #424B68',
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  {' '}
-                  <div
-                    style={{
-                      width: '100%',
-                      height: '5rem',
-                      fontFamily: 'Avenir Next Demi',
-                      color: '#7284A0',
-                      textTransform: 'capitalize',
-                      fontSize: '1.5rem',
-                      alignItems: 'center',
-                      display: 'flex',
-                      paddingLeft: '4rem',
-                    }}
-                  >
-                    Addressbook
+          <>
+            <div
+              style={{
+                width: '100%',
+                borderBottom: '0.1rem solid #424B68',
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              {' '}
+              <div
+                style={{
+                  width: '100%',
+                  height: '5rem',
+                  fontFamily: 'Avenir Next Demi',
+                  color: '#7284A0',
+                  textTransform: 'capitalize',
+                  fontSize: '1.5rem',
+                  alignItems: 'center',
+                  display: 'flex',
+                  paddingLeft: '4rem',
+                }}
+              >
+                Addressbook
               </div>
-                  <div>
-                    <AddBtn onClick={() => setShowNewContactPopup(true)}>+ add new contact</AddBtn>
-                  </div>
-                </div>
+              <div>
+                <AddBtn onClick={() => setShowNewContactPopup(true)}>
+                  + add new contact
+                </AddBtn>
+              </div>
+            </div>
 
-                <TableWithSort
-                  hideCommonCheckbox
-                  expandableRows={true}
-                  rowsWithHover={false}
-                  expandedRows={expandedRows}
-                  onChange={(id) =>
-                    setExpandedRows(onCheckBoxClick(expandedRows, id))
-                  }
-                  style={{
-                    borderRadius: 0,
-                    height: 'calc(100% - 6rem)',
-                    overflowX: 'hidden',
-                    backgroundColor: theme.palette.white.background,
-                  }}
-                  stylesForTable={{
-                    backgroundColor: theme.palette.white.background,
-                  }}
-                  defaultSort={{
-                    sortColumn: 'date',
-                    sortDirection: 'desc',
-                  }}
-                  withCheckboxes={false}
-                  tableStyles={{
-                    headRow: {
-                      //   borderBottom: theme.palette.border.main,
-                      boxShadow: 'none',
-                      width: 'calc(100%)',
-                    },
-                    heading: {
-                      height: '5rem',
-                      color: '#ABBAD1',
-                      fontWeight: 'bold',
-                      letterSpacing: '.1rem',
-                      fontFamily: 'Avenir Next Demi',
-                      textTransform: 'capitalize',
-                      fontSize: '1.5rem',
-                      borderBottom: '0.1rem solid #424B68',
-                      boxShadow: 'none',
-                      background: 'none',
-                      paddingLeft: '2rem',
-                      alignItems: 'center',
-                    },
-                    cell: {
-                      height: '5rem',
-                      color: '#f5f5fb',
-                      letterSpacing: '.1rem',
-                      fontFamily: 'Avenir Next Demi',
-                      textTransform: 'none',
-                      fontSize: '1.5rem',
-                      borderBottom: '0.1rem solid #424B68',
-                      boxShadow: 'none',
-                      background: 'none',
-                      paddingLeft: '2rem',
-                      alignItems: 'center',
-                    },
-                    tab: {
-                      padding: 0,
-                      boxShadow: 'none',
-                    },
-                  }}
-                  //   emptyTableText={getEmptyTextPlaceholder(tab)}
-                  data={{
-                    body: combineContactsData(
-                      getUserAddressbookQuery.getUserAddressbook
-                    ),
-                  }}
-                  columnNames={addressBookColumnNames}
-                />
-              </>
-            )}
+            <TableWithSort
+              hideCommonCheckbox
+              expandableRows={true}
+              rowsWithHover={false}
+              expandedRows={expandedRows}
+              onChange={(id) =>
+                setExpandedRows(onCheckBoxClick(expandedRows, id))
+              }
+              style={{
+                borderRadius: 0,
+                height: 'calc(100% - 6rem)',
+                overflowX: 'hidden',
+                backgroundColor: theme.palette.white.background,
+              }}
+              stylesForTable={{
+                backgroundColor: theme.palette.white.background,
+              }}
+              defaultSort={{
+                sortColumn: 'date',
+                sortDirection: 'desc',
+              }}
+              withCheckboxes={false}
+              tableStyles={{
+                headRow: {
+                  //   borderBottom: theme.palette.border.main,
+                  boxShadow: 'none',
+                  width: 'calc(100%)',
+                },
+                heading: {
+                  height: '5rem',
+                  color: '#ABBAD1',
+                  fontWeight: 'bold',
+                  letterSpacing: '.1rem',
+                  fontFamily: 'Avenir Next Demi',
+                  textTransform: 'capitalize',
+                  fontSize: '1.5rem',
+                  borderBottom: '0.1rem solid #424B68',
+                  boxShadow: 'none',
+                  background: 'none',
+                  paddingLeft: '2rem',
+                  alignItems: 'center',
+                },
+                cell: {
+                  height: '5rem',
+                  color: '#f5f5fb',
+                  letterSpacing: '.1rem',
+                  fontFamily: 'Avenir Next Demi',
+                  textTransform: 'none',
+                  fontSize: '1.5rem',
+                  borderBottom: '0.1rem solid #424B68',
+                  boxShadow: 'none',
+                  background: 'none',
+                  paddingLeft: '2rem',
+                  alignItems: 'center',
+                },
+                tab: {
+                  padding: 0,
+                  boxShadow: 'none',
+                },
+              }}
+              //   emptyTableText={getEmptyTextPlaceholder(tab)}
+              data={{
+                body: combineContactsData(
+                  getUserAddressbookQuery.getUserAddressbook
+                ),
+              }}
+              columnNames={addressBookColumnNames}
+            />
+          </>
+        )}
       </Card>
       <NewContactPopup
         theme={theme}
