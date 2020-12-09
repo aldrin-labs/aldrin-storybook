@@ -44,13 +44,18 @@ import { WalletProvider } from '@sb/dexUtils/wallet'
 import { MarketProvider } from '@sb/dexUtils/markets'
 import { PreferencesProvider } from '@sb/dexUtils/preferences'
 
-const version = `10.9.6`
+const version = `10.9.10`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
+const addressbookPassword = localStorage.getItem('addressbookPassword')
 const currentVersion = localStorage.getItem('version')
+
 if (currentVersion !== version) {
   localStorage.clear()
   localStorage.setItem('version', version)
   localStorage.setItem('isOnboardingDone', isOnboardingDone)
+  if (addressbookPassword !== null) {
+    localStorage.setItem('addressbookPassword', addressbookPassword)
+  }
 }
 
 const AppRaw = ({
