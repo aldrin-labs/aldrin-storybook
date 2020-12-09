@@ -31,6 +31,7 @@ import { getUserAddressbook } from '@core/graphql/queries/chart/getUserAddressbo
 import { useWallet } from '@sb/dexUtils/wallet'
 import { BlueSwitcherStyles } from '../Chart/components/SmartOrderTerminal/utils'
 import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
+import { NewContactPopup } from './NewContactPopup'
 
 export const AddBtn = styled.button`
   background: ${props => props.background || '#1ba492'};
@@ -57,7 +58,7 @@ const Text = styled.span`
   color: #ECF0F3;
 `
 
-const Input = styled.input`
+export const Input = styled.input`
   width: 100%;
   height: 5rem;
   margin-bottom: 1rem;
@@ -66,6 +67,10 @@ const Input = styled.input`
   border-radius: .4rem;
   padding-left: 1rem;
   color: #fff;
+
+  &::placeholder {
+    color: #ABBAD1;
+  }
 `
 
 const onConfirmPassword = (addressbookPassword: string, addressbookConfirmPassword: string, isLoginStep: boolean, forceUpdatePassword: () => void) => {
@@ -93,6 +98,7 @@ const AddressbookRoute = ({
   const [step, updateStep] = useState('login')
   const [password, updatePassword] = useState('')
   const [confirmPassword, updateConfirmPassword] = useState('')
+  const [showNewContactPopup, setShowNewContactPopup] = useState(false)
 
   const { wallet } = useWallet()
 
@@ -232,7 +238,7 @@ const AddressbookRoute = ({
                     Addressbook
               </div>
                   <div>
-                    <AddBtn>+ add new contact</AddBtn>
+                    <AddBtn onClick={() => setShowNewContactPopup(true)}>+ add new contact</AddBtn>
                   </div>
                 </div>
 
@@ -316,6 +322,11 @@ const AddressbookRoute = ({
               </>
             )}
       </Card>
+      <NewContactPopup
+        theme={theme}
+        open={showNewContactPopup}
+        handleClose={() => setShowNewContactPopup(false)}
+      />
     </RowContainer>
   )
 }
@@ -332,6 +343,6 @@ export default compose(
       publicKey: 'a',
     }),
     fetchPolicy: 'cache-and-network',
-    // skip: (props: any) => !props.publicKey || !props.addressbookPassword,
+    skip: (props: any) => !props.publicKey || !props.addressbookPassword,
   })
 )(AddressbookRoute)
