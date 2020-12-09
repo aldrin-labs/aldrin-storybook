@@ -176,13 +176,19 @@ const AddressbookRoute = ({
             <Text>Connect your wallet to create or get addressbook</Text>
             {/* connect wallet */}
             <BtnCustom
-              type="text"
-              size="large"
               onClick={wallet.connect}
-              btnColor={theme.palette.blue.serum}
-              btnWidth={'14rem'}
-              height={'4rem'}
+              needMinWidth={false}
+              btnWidth="auto"
+              height="auto"
+              fontSize="1.4rem"
+              padding="1rem 2rem"
+              borderRadius=".8rem"
+              borderColor={'#7380EB'}
+              btnColor={'#fff'}
+              backgroundColor={'#7380EB'}
+              textTransform={'none'}
               margin={'4rem 0 0 0'}
+              transition={'all .4s ease-out'}
             >
               Connect wallet
             </BtnCustom>
