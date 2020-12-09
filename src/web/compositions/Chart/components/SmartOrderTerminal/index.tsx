@@ -28,8 +28,9 @@ import {
   EditEntryOrderPopup,
 } from './EditOrderPopups'
 
-import { SmartOrderOnboarding } from '@sb/compositions/Chart/components/SmartOrderTerminal/SmartTerminalOnboarding/SmartTerminalOnboarding'
+import SmartOrderOnboarding from '@sb/compositions/Chart/components/SmartOrderTerminal/SmartTerminalOnboarding/SmartTerminalOnboarding'
 import ConfirmationPopup from '@sb/compositions/Chart/components/SmartOrderTerminal/ConfirmationPopup/ConfirmationPopup'
+import { showOrderResult } from '@sb/compositions/Chart/Chart.utils'
 
 import {
   TerminalBlocksContainer,
@@ -683,7 +684,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       price,
       marketType,
       placeOrder,
-      showOrderResult,
       cancelOrder,
       quantityPrecision,
       updateTerminalViewMode,
@@ -1137,9 +1137,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       pricePrecision,
       maxLeverage,
       leverage: startLeverage,
-      smartTerminalOnboarding,
-      updateTooltipSettingsMutation,
-      getTooltipSettings,
       changeMarginTypeWithStatus,
       componentMarginType,
     } = this.props
@@ -1203,11 +1200,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           />
         )}
         <CustomCard theme={theme} style={{ borderTop: 0 }}>
-          <SmartOrderOnboarding
-            smartTerminalOnboarding={smartTerminalOnboarding}
-            getTooltipSettings={getTooltipSettings}
-            updateTooltipSettingsMutation={updateTooltipSettingsMutation}
-          />
+          <SmartOrderOnboarding />
 
           <TerminalHeadersBlock
             pair={pair}
