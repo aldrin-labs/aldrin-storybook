@@ -840,6 +840,7 @@ const CustomTable = (props: Props) => {
                             padding="checkbox"
                             style={{
                               backgroundColor: tableStyles.cell.backgroundColor,
+                              width: '4rem'
                             }}
                           >
                             {renderCheckBox({

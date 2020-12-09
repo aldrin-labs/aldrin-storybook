@@ -26,7 +26,7 @@ import { getUserAddressbook } from '@core/graphql/queries/chart/getUserAddressbo
 import { useWallet } from '@sb/dexUtils/wallet'
 import { BlueSwitcherStyles } from '../Chart/components/SmartOrderTerminal/utils'
 import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
-import { NewContactPopup } from './NewContactPopup'
+import NewContactPopup from './NewContactPopup'
 
 export const AddBtn = styled.button`
   background: ${(props) => props.background || '#1ba492'};
@@ -104,6 +104,7 @@ const combineContactsData = (data) => {
   const proccesedData = data.map((el) => {
     console.log('el', el)
     return {
+      id: `${el.name}${el.publicKey}`,
       name: el.name,
       dateAdded: {
         render: (
@@ -142,6 +143,7 @@ const combineContactsData = (data) => {
 const AddressbookRoute = ({
   theme,
   getUserAddressbookQuery,
+  getUserAddressbookQueryRefetch,
   publicKey,
   addressbookPassword,
   forceUpdatePassword,
@@ -358,6 +360,9 @@ const AddressbookRoute = ({
         theme={theme}
         open={showNewContactPopup}
         handleClose={() => setShowNewContactPopup(false)}
+        publicKey={publicKey}
+        password={addressbookPassword}
+        getUserAddressbookQueryRefetch={getUserAddressbookQueryRefetch}
       />
     </RowContainer>
   )
@@ -371,8 +376,8 @@ export default compose(
     query: getUserAddressbook,
     name: 'getUserAddressbookQuery',
     variables: (props) => ({
-      password: 'd',
-      publicKey: 'b',
+      password: props.addressbookPassword,
+      publicKey: props.publicKey,
     }),
     fetchPolicy: 'cache-and-network',
     skip: (props: any) => !props.publicKey || !props.addressbookPassword,
