@@ -315,7 +315,7 @@ export const CardsPanel = ({
           </Link>
           <div
             style={{
-              width: '20%',
+              width: '30%',
               marginLeft: '4rem',
               paddingRight: '4rem',
               borderRight: theme.palette.border.main,
@@ -371,6 +371,23 @@ export const CardsPanel = ({
             >
               {' '}
               Farming 👨‍🌾
+            </NavBarLink>
+            <NavBarLink
+              theme={theme}
+              data-tut="farming"
+              to="/addressbook"
+              style={{
+                color: location.pathname.includes('addressbook')
+                  ? theme.palette.blue.serum
+                  : theme.palette.grey.text,
+                textDecoration: location.pathname.includes('addressbook')
+                  ? 'underline'
+                  : 'none',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {' '}
+              Addressbook
             </NavBarLink>
           </div>
           {isChartPage && (
