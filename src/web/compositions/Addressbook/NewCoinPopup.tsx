@@ -118,6 +118,8 @@ const NewCoinPopup = ({
             menuPortalStyles={{
               zIndex: 11111,
             }}
+            // menuIsOpen={true}
+            // isOpen={true}
             value={selectedCoin}
             needAdditionalFiltering={true}
             additionalFiltering={(a: { symbol: string }) =>
@@ -144,6 +146,7 @@ const NewCoinPopup = ({
             }}
             menuListStyles={{
               height: '20rem',
+              background: '#303743',
             }}
             optionStyles={{
               color: '#f5f5fb',

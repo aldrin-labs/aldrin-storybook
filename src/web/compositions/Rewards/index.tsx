@@ -63,7 +63,8 @@ export const Card = styled.div`
     props.backgroundColor || props.theme.palette.white.block};
   margin: 0.7rem 1rem;
   border-radius: 0.8rem;
-  border: .1rem solid ${(props) => props.border || props.theme.palette.grey.block};
+  border: 0.1rem solid
+    ${(props) => props.border || props.theme.palette.grey.block};
   font-family: DM Sans;
   font-size: 1.12rem;
   letter-spacing: 0.06rem;
@@ -221,12 +222,16 @@ export const TableRow = styled.tr``
 export const Cell = styled.td`
   border-bottom: 0.1rem solid ${(props) => props.borderBottom || '#61d8e6'};
   width: 25%;
-  font-size: 15px;
+
   color: #cad4d6;
   height: 5rem;
   text-transform: none;
   margin: 3rem 1rem;
   padding-left: 2rem;
+
+  font-size: 1.5rem;
+  white-space: nowrap;
+
   &:first-child {
     width: 15%;
   }
@@ -316,7 +321,7 @@ const RewardsRoute = (props) => {
 
   const dcfiRewarded =
     (volumeTradedInThisPhase / (currentPhaseMaxVolume - prevPhaseMaxVolume)) *
-    (dcfiVolumes[currentPhase] - prevPhaseDCFIRewarded) +
+      (dcfiVolumes[currentPhase] - prevPhaseDCFIRewarded) +
     prevPhaseDCFIRewarded
   const dcfiEarned =
     +getTotalVolumeForSerumKeyQuery.getTotalVolumeForSerumKey.dcfiEarned +
@@ -560,18 +565,18 @@ const RewardsRoute = (props) => {
                   paddingBottom: '1rem',
                   margin: '0 1rem',
                 }}
-              // href={`https://twitter.com/intent/tweet?text=Here%20are%20some%20real%20numbers%20about%20%40projectserum%20trading%20on%20%40solana%20via%20%40CCAI_Official%20interface.%0AFast%20DEX%20trading%20is%20here%20already%2C%20check%20it%20out%20at%20https%3A%2F%2Fdex.cryptocurrencies.ai%2F%0A%24DCFI%20%24SRM%20%24SOL%20%24UNI%20%24ETH%20%24DOT%20%24YFI%20%24BNB%20%24LINK%20%24EOS%20%24XTZ%20%24ADA%0Apic.twitter.com%2F9LCSqyXyEn`}
-              // rel="noopener noreferrel"
-              // target={'_blank'}
-              // onClick={(e) => {
-              //   if (publicKey === '') {
-              //     e.preventDefault()
-              //     notify({
-              //       message: 'Connect your wallet first',
-              //       type: 'error',
-              //     })
-              //   }
-              // }}
+                // href={`https://twitter.com/intent/tweet?text=Here%20are%20some%20real%20numbers%20about%20%40projectserum%20trading%20on%20%40solana%20via%20%40CCAI_Official%20interface.%0AFast%20DEX%20trading%20is%20here%20already%2C%20check%20it%20out%20at%20https%3A%2F%2Fdex.cryptocurrencies.ai%2F%0A%24DCFI%20%24SRM%20%24SOL%20%24UNI%20%24ETH%20%24DOT%20%24YFI%20%24BNB%20%24LINK%20%24EOS%20%24XTZ%20%24ADA%0Apic.twitter.com%2F9LCSqyXyEn`}
+                // rel="noopener noreferrel"
+                // target={'_blank'}
+                // onClick={(e) => {
+                //   if (publicKey === '') {
+                //     e.preventDefault()
+                //     notify({
+                //       message: 'Connect your wallet first',
+                //       type: 'error',
+                //     })
+                //   }
+                // }}
               >
                 <BtnCustom
                   theme={theme}
@@ -694,8 +699,8 @@ const RewardsRoute = (props) => {
                       color={'#C7FFD0'}
                     />
                   ) : (
-                      'Farm $DCFI for tweet'
-                    )}
+                    'Farm $DCFI for tweet'
+                  )}
                 </BtnCustom>
               </Form>
             </RowContainer>
@@ -922,8 +927,8 @@ const RewardsRoute = (props) => {
               <CardSubValue>
                 $
                 {formatNumberToUSFormat(
-                +(currentPhaseMaxVolume - tradedSerumInUSDT).toFixed(0)
-              )}
+                  +(currentPhaseMaxVolume - tradedSerumInUSDT).toFixed(0)
+                )}
               </CardSubValue>
             </Row>
             <Row
