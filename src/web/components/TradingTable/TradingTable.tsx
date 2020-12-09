@@ -1,9 +1,10 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
-import { compose } from 'recompose'
-import { isEqual } from 'lodash'
+import { compose, shallowEqual } from 'recompose'
 import { withTheme } from '@material-ui/styles'
+const isEqual = require("react-fast-compare");
 
+import { difference, shallowDifference } from '@core/utils/difference'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import withAuth from '@core/hoc/withAuth'
 
@@ -64,6 +65,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
   componentDidUpdate(prevProps) {
     // console.log('TradingTable componentDidUpdate prevProps', prevProps)
     // console.log('TradingTable componentDidUpdate this.props', this.props)
+
+    console.log('TradingTable diff: ', difference(prevProps, this.props))
 
     if (prevProps.marketType !== this.props.marketType) {
       // change from spot to futures when funds is open
@@ -156,6 +159,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       perPageSmartTrades,
     } = this.state
 
+    console.log('TradingTable RENDER')
+
     const {
       theme,
       selectedKey,
@@ -171,8 +176,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       minFuturesStep,
       isSmartOrderMode,
       terminalViewMode,
-      pricePrecision,
-      quantityPrecision,
       getAllUserKeysQuery = {
         myPortfolios: [],
       },
@@ -241,8 +244,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             currencyPair,
             canceledOrders,
             arrayOfMarketIds,
-            pricePrecision,
-            quantityPrecision,
             minFuturesStep,
             showAllPositionPairs,
             showAllOpenOrderPairs,
@@ -269,7 +270,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
               event: React.ChangeEvent<HTMLSelectElement>
             ) => this.handleChangeRowsPerPage('perPageSmartTrades', event),
             handleTabChange: this.handleTabChange,
-            showCancelResult: this.props.showCancelResult,
             addOrderToCanceled: this.addOrderToCanceled,
             handlePairChange: this.handlePairChange,
           }}
@@ -293,7 +293,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             showSmartTradesFromAllAccounts,
             show: tab === 'strategiesHistory',
             handleTabChange: this.handleTabChange,
-            showCancelResult: this.props.showCancelResult,
             handlePairChange: this.handlePairChange,
           }}
         />
@@ -309,8 +308,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             currencyPair,
             canceledOrders,
             arrayOfMarketIds,
-            pricePrecision,
-            quantityPrecision,
             minFuturesStep,
             priceFromOrderbook,
             showAllPositionPairs,
@@ -338,8 +335,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
               event: React.ChangeEvent<HTMLSelectElement>
             ) => this.handleChangeRowsPerPage('perPagePositions', event),
             handleTabChange: this.handleTabChange,
-            showOrderResult: this.props.showOrderResult,
-            showCancelResult: this.props.showCancelResult,
             clearCanceledOrders: this.clearCanceledOrders,
             addOrderToCanceled: this.addOrderToCanceled,
             handlePairChange: this.handlePairChange,
@@ -378,7 +373,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
               event: React.ChangeEvent<HTMLSelectElement>
             ) => this.handleChangeRowsPerPage('perPageOpenOrders', event),
             handleTabChange: this.handleTabChange,
-            showCancelResult: this.props.showCancelResult,
             clearCanceledOrders: this.clearCanceledOrders,
             addOrderToCanceled: this.addOrderToCanceled,
             handlePairChange: this.handlePairChange,
@@ -451,6 +445,15 @@ class TradingTable extends React.PureComponent<IProps, IState> {
   }
 }
 
+const MemoizedTradingTable = React.memo(TradingTable, (prev, next) => {
+  console.log('TradingTable INSIDE memo diff: ', difference(prev, next))
+  console.log('TradingTable INSIDE memo diff: ', shallowDifference(prev, next))
+  console.log('TradingTable INSIDE memo shallowEqual diff', shallowEqual(prev, next))
+  console.log('TradingTable INSIDE memo react-fast-compare', isEqual(prev, next))
+
+  return isEqual(prev, next)
+})
+
 const TradingTableWrapper = compose(
   withAuth,
   withRouter,
@@ -464,37 +467,19 @@ const TradingTableWrapper = compose(
     withoutLoading: true,
     fetchPolicy: 'cache-only',
   })
-)(TradingTable)
+)(MemoizedTradingTable)
 
 export default React.memo(
   TradingTableWrapper,
   (
-    prevProps: IPropsTradingTableWrapper,
-    nextProps: IPropsTradingTableWrapper
+    prev: IPropsTradingTableWrapper,
+    next: IPropsTradingTableWrapper
   ) => {
-    // console.log('prevProps: ', prevProps)
-    // console.log('nextProps: ', nextProps)
 
-    if (
-      prevProps.maxLeverage === nextProps.maxLeverage &&
-      isEqual(prevProps.selectedKey, nextProps.selectedKey) &&
-      prevProps.marketType === nextProps.marketType &&
-      prevProps.exchange === nextProps.exchange &&
-      prevProps.pricePrecision === nextProps.pricePrecision &&
-      prevProps.quantityPrecision === nextProps.quantityPrecision &&
-      prevProps.priceFromOrderbook === nextProps.priceFromOrderbook &&
-      prevProps.currencyPair === nextProps.currencyPair &&
-      prevProps.arrayOfMarketIds.length === nextProps.arrayOfMarketIds.length &&
-      prevProps.theme.palette.type === nextProps.theme.palette.type &&
-      prevProps.isDefaultOnlyTables === nextProps.isDefaultOnlyTables &&
-      prevProps.isDefaultTerminalViewMode ===
-        nextProps.isDefaultTerminalViewMode &&
-      prevProps.terminalViewMode === nextProps.terminalViewMode &&
-      prevProps.isSmartOrderMode === nextProps.isSmartOrderMode
-    ) {
-      return true
-    }
+    console.log('TradingTable MEMO diff: ', difference(prev, next))
+    console.log('TradingTable MEMO shallowDifference: ', shallowDifference(prev, next))
+    console.log('TradingTable shallowEqual MEMO diff', shallowEqual(prev, next))
 
-    return false
+    return isEqual(prev, next)
   }
 )
