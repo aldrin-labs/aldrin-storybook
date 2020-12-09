@@ -17,8 +17,6 @@ export interface IProps {
   currencyPair: string
   arrayOfMarketIds: string[]
   priceFromOrderbook: number
-  quantityPrecision: number
-  pricePrecision: number
   theme: Theme
   getActivePositionsQuery: {
     getActivePositions: Position[]
@@ -41,18 +39,6 @@ export interface IProps {
   cancelOrderMutation: (variables: any) => void
   cancelOrder: (id: string) => void
   updatePositionMutation: (variables: any) => Promise<void>
-  showCancelResult: ({
-    status,
-    message,
-  }: {
-    status: string
-    message: string
-  }) => void
-  showOrderResult: (
-    status: any,
-    cancelOrder: (id: string) => void,
-    marketType: number
-  ) => void
   handleTabChange: (tab: string) => void
   enqueueSnackbar: (message: string, variant: { variant: string }) => void
   getActivePositionsQueryRefetch: () => void
