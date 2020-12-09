@@ -22,8 +22,13 @@ import {
   Table,
 } from '@sb/compositions/Rewards/index'
 
-const SubColumn = ({ theme, coins, setShowNewCoinPopup }) => {
-  console.log('coins', coins)
+const SubColumn = ({
+  theme,
+  coins,
+  contactPublicKey,
+  setContactPublicKey,
+  setShowNewCoinPopup,
+}) => {
   return (
     <Card
       style={{
@@ -47,13 +52,16 @@ const SubColumn = ({ theme, coins, setShowNewCoinPopup }) => {
           <HeaderCell style={{ paddingLeft: '2rem' }} borderBottom={'#424B68'}>
             Coin
           </HeaderCell>
-          <HeaderCell style={{ textAlign: 'center' }} borderBottom={'#424B68'}>
+          <HeaderCell style={{ textAlign: 'left' }} borderBottom={'#424B68'}>
             Address
           </HeaderCell>
           <HeaderCell style={{ textAlign: 'right' }} borderBottom={'#424B68'}>
             <AddBtn
               style={{ fontFamily: 'Avenir Next Demi' }}
-              onClick={() => setShowNewCoinPopup(true)}
+              onClick={() => {
+                setContactPublicKey(contactPublicKey)
+                setShowNewCoinPopup(true)
+              }}
             >
               + add new address
             </AddBtn>
@@ -82,7 +90,7 @@ const SubColumn = ({ theme, coins, setShowNewCoinPopup }) => {
                 {el.symbol}
               </Cell>
               <Cell
-                style={{ textAlign: 'center', fontSize: '2rem' }}
+                style={{ textAlign: 'left', fontSize: '2rem' }}
                 borderBottom={'#424B68'}
               >
                 {el.address}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Dialog, Paper } from '@material-ui/core'
-
+import { notify } from '@sb/dexUtils/notifications'
 import SelectCoinList from '@core/components/SelectCoinList/SelectCoinList'
 import {
   CoinOption,
@@ -14,10 +14,15 @@ import {
   ClearButton,
   StyledDialogTitle,
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
+import { addContactCoin } from '@core/graphql/mutations/chart/addContactCoin'
 
 import { Input } from './index'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { Loading } from '@sb/components/index'
+
+import { compose } from 'recompose'
+import { graphql } from 'react-apollo'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -35,8 +40,18 @@ export const PasteButton = styled.button`
   padding: 1.5rem;
 `
 
-export const NewCoinPopup = ({ theme, open, handleClose }) => {
+const NewCoinPopup = ({
+  theme,
+  open,
+  handleClose,
+  contactPublicKey,
+  publicKey,
+  password,
+  addContactCoinMutation,
+  getUserAddressbookQueryRefetch,
+}) => {
   const [address, updateAddress] = useState('')
+  const [showLoader, updateShowLoader] = useState(false)
   const [selectedCoin, setSelectedCoin] = useState({
     label: 'BTC',
     value: 'BTC',
@@ -204,8 +219,8 @@ export const NewCoinPopup = ({ theme, open, handleClose }) => {
           <BtnCustom
             // disable={!enableEdit}
             needMinWidth={false}
-            btnWidth="auto"
-            height="auto"
+            btnWidth="15rem"
+            height="4.5rem"
             fontSize="1.4rem"
             padding="1rem 2rem"
             borderRadius=".8rem"
@@ -215,9 +230,61 @@ export const NewCoinPopup = ({ theme, open, handleClose }) => {
             textTransform={'none'}
             margin={'1rem 0 0 0'}
             transition={'all .4s ease-out'}
-            onClick={() => {}}
+            onClick={async () => {
+              if (selectedCoin.label === '') {
+                notify({
+                  type: 'error',
+                  message: 'Name field should not be empty',
+                })
+
+                return
+              }
+
+              if (address === '') {
+                notify({
+                  type: 'error',
+                  message: 'SOL address field should not be empty',
+                })
+
+                return
+              }
+
+              await updateShowLoader(true)
+
+              const result = await addContactCoinMutation({
+                variables: {
+                  publicKey,
+                  password,
+                  symbol: selectedCoin.label,
+                  address,
+                  contactPublicKey,
+                },
+              })
+
+              await getUserAddressbookQueryRefetch()
+
+              notify({
+                type:
+                  result.data.addContactCoin.status === 'ERR'
+                    ? 'error'
+                    : 'success',
+                message: result.data.addContactCoin.message,
+              })
+
+              await updateShowLoader(false)
+              await handleClose()
+            }}
           >
-            Add contact
+            {showLoader ? (
+              <Loading
+                color={'#fff'}
+                size={16}
+                height={'16px'}
+                style={{ height: '16px' }}
+              />
+            ) : (
+              'Add coin'
+            )}
           </BtnCustom>
         </div>
       </StyledDialogContent>
@@ -225,4 +292,6 @@ export const NewCoinPopup = ({ theme, open, handleClose }) => {
   )
 }
 
-// add mutation with graphql
+export default compose(
+  graphql(addContactCoin, { name: 'addContactCoinMutation' })
+)(NewCoinPopup)

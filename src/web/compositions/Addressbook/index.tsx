@@ -26,7 +26,7 @@ import { getUserAddressbook } from '@core/graphql/queries/chart/getUserAddressbo
 import { useWallet } from '@sb/dexUtils/wallet'
 import { BlueSwitcherStyles } from '../Chart/components/SmartOrderTerminal/utils'
 import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
-import { NewCoinPopup } from './NewCoinPopup'
+import NewCoinPopup from './NewCoinPopup'
 import NewContactPopup from './NewContactPopup'
 
 export const AddBtn = styled.button`
@@ -89,21 +89,12 @@ const onConfirmPassword = (
   forceUpdatePassword()
 }
 
-const combineContactsData = (data, setShowNewCoinPopup) => {
-  // [
-  //   {
-  //     name: 'flosssolis',
-  //     dateAdded: '04 Dec 1903',
-  //     contact: 'flosssolis@gmail.com',
-  //     publicAddress: 'fkdjs4kjgha43rljsdfjlef',
-  //     expandableContent: [
-  //       { row: { render: <SubColumn></SubColumn>, colspan: 5 } },
-  //     ],
-  //   },
-  // ],
-
+const combineContactsData = (
+  data,
+  setShowNewCoinPopup,
+  setContactPublicKey
+) => {
   const proccesedData = data.map((el) => {
-    console.log('el', el)
     return {
       id: `${el.name}${el.publicKey}`,
       name: el.name,
@@ -139,6 +130,8 @@ const combineContactsData = (data, setShowNewCoinPopup) => {
               <SubColumn
                 setShowNewCoinPopup={setShowNewCoinPopup}
                 coins={el.coins}
+                setContactPublicKey={setContactPublicKey}
+                contactPublicKey={el.publicKey}
               />
             ),
             colspan: 5,
@@ -165,6 +158,7 @@ const AddressbookRoute = ({
   const [confirmPassword, updateConfirmPassword] = useState('')
   const [showNewContactPopup, setShowNewContactPopup] = useState(false)
   const [showNewCoinPopup, setShowNewCoinPopup] = useState(false)
+  const [contactPublicKey, setContactPublicKey] = useState('')
 
   const { wallet } = useWallet()
 
@@ -366,7 +360,8 @@ const AddressbookRoute = ({
               data={{
                 body: combineContactsData(
                   getUserAddressbookQuery.getUserAddressbook,
-                  setShowNewCoinPopup
+                  setShowNewCoinPopup,
+                  setContactPublicKey
                 ),
               }}
               columnNames={addressBookColumnNames}
@@ -386,6 +381,10 @@ const AddressbookRoute = ({
         theme={theme}
         open={showNewCoinPopup}
         handleClose={() => setShowNewCoinPopup(false)}
+        publicKey={publicKey}
+        password={addressbookPassword}
+        getUserAddressbookQueryRefetch={getUserAddressbookQueryRefetch}
+        contactPublicKey={contactPublicKey}
       />
     </RowContainer>
   )
