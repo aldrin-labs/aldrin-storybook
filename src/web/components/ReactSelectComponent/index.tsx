@@ -78,7 +78,7 @@ class ReactSelectComponent extends Component<IProps> {
           height: '6px',
         },
         ['::-webkit-scrollbar-track']: {
-          background: 'transparent',
+          background: '#303743',
         },
         ['::-webkit-scrollbar-thumb']: {
           background: theme.palette.secondary.main,
