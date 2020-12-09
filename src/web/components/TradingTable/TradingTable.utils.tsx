@@ -25,6 +25,8 @@ import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurren
 import AdlComponent from './AdlComponent/AdlComponent'
 import { getPrecisionItem } from '@core/utils/getPrecisionItem'
 
+import MarkPriceBlock from '@sb/components/TradingTable/PriceBlocks/PositionsPriceBlock';
+
 const changePairToSelected = (pair: string) => {
   console.log('client mutate', client)
   client.mutate({
@@ -105,6 +107,7 @@ import { SubColumnValue } from './ActiveTrades/Columns'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 import { addMainSymbol } from '@sb/components'
 import TooltipCustom from '../TooltipCustom/TooltipCustom'
+import PnlBlock from './PriceBlocks/PositionsPnlBlock'
 
 export const getTableBody = (tab: string) =>
   tab === 'openOrders'
@@ -387,11 +390,11 @@ export const combinePositionsTable = ({
 
       const needOpacity = el._id === '0'
 
-      const marketPrice = (
-        prices.find((price) => price.pair === `${el.symbol}:1:binance`) || {
-          price: 0,
-        }
-      ).price
+      // const marketPrice = (
+      //   prices.find((price) => price.pair === `${el.symbol}:1:binance`) || {
+      //     price: 0,
+      //   }
+      // ).price
 
       const keyName = keys[keyId]
 
@@ -431,16 +434,16 @@ export const combinePositionsTable = ({
           ? 1 + 100 / leverage / 100
           : 1 - 100 / leverage / 100)
 
-      const profitPercentage =
-        ((marketPrice / entryPrice) * 100 - 100) *
-        leverage *
-        (side === 'buy long' ? 1 : -1)
+      // const profitPercentage =
+      //   ((marketPrice / entryPrice) * 100 - 100) *
+      //   leverage *
+      //   (side === 'buy long' ? 1 : -1)
 
-      const profitAmount =
-        (positionAmt / leverage) *
-        entryPrice *
-        (profitPercentage / 100) *
-        (side === 'buy long' ? 1 : -1)
+      // const profitAmount =
+      //   (positionAmt / leverage) *
+      //   entryPrice *
+      //   (profitPercentage / 100) *
+      //   (side === 'buy long' ? 1 : -1)
 
       const pair = symbol.split('_')
 
@@ -543,15 +546,22 @@ export const combinePositionsTable = ({
             contentToSort: entryPrice,
           },
           marketPrice: {
-            render: `${stripDigitPlaces(marketPrice, pricePrecision)} ${pair[1]
-              }`,
+            // render: `${stripDigitPlaces(marketPrice, pricePrecision)} ${pair[1]
+            //   }`,
+            render: <MarkPriceBlock
+              symbol={symbol}
+              exchange={{ symbol: "binance" }}
+              marketType={1}
+              pricePrecision={pricePrecision}
+              theme={theme}
+            />,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
               opacity: needOpacity ? 0.5 : 1,
               maxWidth: '70px',
             },
-            contentToSort: marketPrice,
+            // contentToSort: marketPrice,
           },
           adl: {
             render: <AdlComponent symbol={symbol} theme={theme} keyId={keyId} side={side} />,
@@ -570,21 +580,33 @@ export const combinePositionsTable = ({
           },
 
           profit: {
-            render: marketPrice ? (
-              <SubColumnValue
-                theme={theme}
-                style={{ whiteSpace: 'nowrap' }}
-                color={profitPercentage > 0 ? green.main : red.main}
-              >
-                {`${profitAmount < 0 ? '-' : ''}${Math.abs(
-                  Number(profitAmount.toFixed(3))
-                )} ${pair[1]} / ${profitPercentage < 0 ? '-' : ''}${Math.abs(
-                  Number(profitPercentage.toFixed(2))
-                )}%`}
-              </SubColumnValue>
-            ) : (
-                `0 ${pair[1]} / 0%`
-              ),
+            // render: marketPrice ? (
+            //   <SubColumnValue
+            //     theme={theme}
+            //     style={{ whiteSpace: 'nowrap' }}
+            //     color={profitPercentage > 0 ? green.main : red.main}
+            //   >
+            //     {`${profitAmount < 0 ? '-' : ''}${Math.abs(
+            //       Number(profitAmount.toFixed(3))
+            //     )} ${pair[1]} / ${profitPercentage < 0 ? '-' : ''}${Math.abs(
+            //       Number(profitPercentage.toFixed(2))
+            //     )}%`}
+            //   </SubColumnValue>
+            // ) : (
+            //     `0 ${pair[1]} / 0%`
+            //   ),
+            render: <PnlBlock
+              symbol={symbol}
+              exchange={{ symbol: "binance" }}
+              marketType={1}
+              pricePrecision={pricePrecision}
+              theme={theme}
+              pair={pair}
+              entryPrice={entryPrice}
+              leverage={leverage}
+              side={side}
+              positionAmt={positionAmt}
+            />,
             style: { opacity: needOpacity ? 0.5 : 1, maxWidth: '100px' },
             colspan: 2,
           },
@@ -2534,10 +2556,10 @@ export const updateActivePositionsQuerryFunction = (
   previous,
   { subscriptionData }
 ) => {
-  // console.log(
-  //   'updateActivePositionsQuerryFunction subscriptionData',
-  //   subscriptionData
-  // )
+  console.log(
+    'updateActivePositionsQuerryFunction subscriptionData',
+    subscriptionData
+  )
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenFuturesPositions
 
