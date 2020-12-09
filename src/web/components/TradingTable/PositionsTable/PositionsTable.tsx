@@ -181,7 +181,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       toogleEditMarginPopup: this.toogleEditMarginPopup,
       theme,
       keys,
-      prices: this.state.prices,
       pair: currencyPair,
       keyId: selectedKey.keyId,
       canceledPositions: canceledOrders,
@@ -331,7 +330,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       toogleEditMarginPopup: this.toogleEditMarginPopup,
       theme,
       keys,
-      prices: this.state.prices,
       pair: currencyPair,
       keyId: selectedKey.keyId,
       canceledPositions: canceledOrders,
@@ -344,7 +342,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       positionsData,
     })
 
-    this.unsubscribeFunction = subscribeToMore()
+    this.unsubscribeFunction = this.props.getActivePositionsQuery.subscribeToMoreFunction()
 
     const crossPositionsNew = this.props.getActivePositionsQuery.getActivePositions.filter(
       (position) =>
@@ -400,28 +398,9 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       prevProps.specificPair !== this.props.specificPair ||
       prevProps.allKeys !== this.props.allKeys
     ) {
-      const {
-        marketType,
-        selectedKey,
-        allKeys,
-        currencyPair,
-        specificPair,
-      } = this.props
 
       this.unsubscribeFunction && this.unsubscribeFunction()
-      this.unsubscribeFunction = this.props.getActivePositionsQuery.subscribeToMore(
-        {
-          document: FUTURES_POSITIONS,
-          variables: {
-            input: {
-              keyId: selectedKey.keyId,
-              allKeys,
-              ...(!specificPair ? {} : { specificPair: currencyPair }),
-            },
-          },
-          updateQuery: updateActivePositionsQuerryFunction,
-        }
-      )
+      this.unsubscribeFunction = this.props.getActivePositionsQuery.subscribeToMoreFunction()
     }
   }
 
@@ -455,7 +434,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       toogleEditMarginPopup: this.toogleEditMarginPopup,
       theme,
       keys,
-      prices: this.state.prices,
       pair: currencyPair,
       keyId: selectedKey.keyId,
       canceledPositions: canceledOrders,
