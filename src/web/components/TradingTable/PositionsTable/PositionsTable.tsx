@@ -46,7 +46,6 @@ import { showOrderResult } from '@sb/compositions/Chart/Chart.utils'
 class PositionsTable extends React.PureComponent<IProps, IState> {
   state: IState = {
     positionsData: [],
-    prices: [],
     positionsRefetchInProcess: false,
     editMarginPosition: {},
     editMarginPopup: false,
