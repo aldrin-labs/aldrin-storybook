@@ -20,8 +20,13 @@ const StyledPaper = styled(Paper)`
 
 export const PasteButton = styled.button`
   position: absolute;
+  font-size: 1.8rem;
   right: 0.5rem;
-  transform: translate(0, 50%);
+  background: inherit;
+  border: 0;
+  color: #7380EB;
+  cursor: pointer;
+  padding: 1.5rem;
 `
 
 export const NewContactPopup = ({ theme, open, handleClose }) => {
@@ -48,8 +53,11 @@ export const NewContactPopup = ({ theme, open, handleClose }) => {
           <Input type={'text'} placeholder={'Name'} value={name} onChange={e => updateName(e.target.value)} />
           <Input type={'email'} placeholder={'Email'} value={email} onChange={e => updateEmail(e.target.value)} />
           <div style={{ position: 'relative' }}>
-            <Input type={'text'} placeholder={'SOL Address'} value={address} onChange={e => updateAddress(e.target.value)} />
-            <PasteButton>paste</PasteButton>
+            <Input id={'address'} type={'text'} placeholder={'SOL Address'} value={address} onChange={e => updateAddress(e.target.value)} />
+            <PasteButton onClick={() => {
+              navigator.clipboard.readText().then(clipText =>
+                updateAddress(clipText));
+            }}>Paste</PasteButton>
           </div>
           <BtnCustom
             // disable={!enableEdit}
@@ -64,7 +72,6 @@ export const NewContactPopup = ({ theme, open, handleClose }) => {
             backgroundColor={'#7380EB'}
             textTransform={'none'}
             margin={'1rem 0 0 0'}
-            // hoverBackground={enableEdit ? blue.main : '#e0e5ec'}
             transition={'all .4s ease-out'}
             onClick={() => { }}
           >Add contact</BtnCustom>
