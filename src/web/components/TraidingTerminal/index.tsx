@@ -35,6 +35,7 @@ import { Line } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.s
 import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { SliderWithAmountFieldRowForBasic } from '@sb/compositions/Chart/components/SmartOrderTerminal/Blocks/SliderComponents'
+import { showOrderResult } from '@sb/compositions/Chart/Chart.utils'
 
 export const TradeInputHeader = ({
   title = 'Input',
@@ -826,7 +827,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
         orderId: '0',
       }
 
-      props.showOrderResult(
+      showOrderResult(
         successResult,
         props.cancelOrder,
         isSPOTMarket ? 0 : 1
@@ -866,7 +867,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       })
 
       if (result.status === 'error' || !result.orderId) {
-        await props.showOrderResult(
+        await showOrderResult(
           result,
           props.cancelOrder,
           isSPOTMarket ? 0 : 1
