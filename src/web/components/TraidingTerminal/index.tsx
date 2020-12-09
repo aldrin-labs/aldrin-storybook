@@ -41,6 +41,7 @@ import {
 } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { FormInputContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
+import { SliderWithAmountFieldRowForBasic } from './AmountSlider'
 
 export const TradeInputHeader = ({
   title = 'Input',
@@ -734,95 +735,36 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   </InputRowContainer>
                 </FormInputContainer>}
 
-              <InputRowContainer
-                direction="column"
-                key={'amount'}
-                padding={tradingBotEnabled ? '1.6rem 0 .6rem 0' : '.6rem 0'}
-                justify={priceType === 'market' ? 'flex-end' : 'center'}
-              >
-                {/* <TradeInputHeader
-                  title={`${isSPOTMarket ? `Amount` : 'qtty'} (${pair[0]})`}
-                  needLine={false}
-                  needRightValue={true}
-                  rightValue={`${maxSpotAmount} ${pair[0]}`}
-                  onValueClick={() =>
-                    this.onAmountChange({
-                      target: {
-                        value: maxSpotAmount,
-                      },
-                    })
-                  }
-                /> */}
-
-                {isSPOTMarket ? (
-                  <TradeInputContent
-                    theme={theme}
-                    needTitle
-                    title={`${isSPOTMarket ? 'amount' : 'order quantity'} (${pair[0]
-                      })`}
-                    value={values.amount}
-                    type={'text'}
-                    pattern={
-                      isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'
-                    }
-                    onChange={this.onAmountChange}
-                    symbol={pair[0]}
-                  />
-                ) : (
-                    <InputRowContainer direction="row" padding={'0'}>
-                      <div style={{ width: '50%', paddingRight: '1%' }}>
-                        <TradeInputContent
-                          theme={theme}
-                          needTitle
-                          title={`size`}
-                          value={values.amount}
-                          type={'text'}
-                          pattern={
-                            isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'
-                          }
-                          onChange={this.onAmountChange}
-                          symbol={pair[0]}
-                        />
-                      </div>
-                      <div style={{ width: '50%', paddingLeft: '1%' }}>
-                        <TradeInputContent
-                          theme={theme}
-                          //disabled={false}
-                          needTitle
-                          title={`total`}
-                          type={'text'}
-                          value={values.total === '' ? '' : values.total}
-                          onChange={this.onTotalChange}
-                          symbol={pair[1]}
-                        />
-                      </div>
-                    </InputRowContainer>
-                  )}
-
-                <BlueSlider
-                  theme={theme}
-                  showMarks
-                  value={
-                    isBuyType
-                      ? (values.total / maxAmount) * 100
-                      : values.amount / (maxAmount / 100)
-                  }
-                  sliderContainerStyles={{
-                    width: 'calc(100% - 1rem)',
-                    margin: '0 .5rem',
-                    padding: '.9rem 0 0 0',
-                  }}
-                  onChange={(value) => {
-                    console.log('value in amount slider', value)
+                <SliderWithAmountFieldRowForBasic
+                {...{
+                  pair,
+                  theme,
+                  maxAmount,
+                  priceType,
+                  onAmountChange: this.onAmountChange,
+                  onTotalChange: this.onTotalChange,
+                  isSPOTMarket,
+                  quantityPrecision,
+                  priceForCalculate,
+                  onMarginChange: this.onMarginChange,
+                  initialMargin: values.margin,
+                  amount: values.amount,
+                  total: values.total,
+                  leverage,
+                  isBuyType,
+                  onAfterSliderChange: (value) => {
                     const newValue = (maxAmount / 100) * value
 
                     const newAmount =
-                      isBuyType || !isSPOTMarket
-                        ? stripDigitPlaces(
+                      !isSPOTMarket || isBuyType
+                        ? +stripDigitPlaces(
                           newValue / priceForCalculate,
-                          quantityPrecision
+                          isSPOTMarket ? 8 : quantityPrecision
                         )
-                        : stripDigitPlaces(newValue, quantityPrecision)
+                        : +stripDigitPlaces(
+                          newValue,
+                          isSPOTMarket ? 8 : quantityPrecision
+                        )
 
                     const newTotal =
                       isBuyType || !isSPOTMarket
@@ -835,50 +777,15 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     )
 
                     setFieldValue('amount', newAmount)
-                    setFieldValue('total', stripDigitPlaces(newTotal, 3))
+                    setFieldValue(
+                      'total',
+                      stripDigitPlaces(newTotal, isSPOTMarket ? 8 : 3)
+                    )
                     setFieldValue('margin', newMargin)
-                  }}
-                />
-              </InputRowContainer>
-
-              {isSPOTMarket && (
-                <InputRowContainer
-                  key={'total'}
-                  padding={'.6rem 0'}
-                  direction={'column'}
-                >
-                  <TradeInputContent
-                    theme={theme}
-                    needTitle
-                    type={'text'}
-                    title={`total (${pair[1]})`}
-                    value={values.total || ''}
-                    onChange={this.onTotalChange}
-                    symbol={pair[1]}
-                  />
-                </InputRowContainer>
-              )}
-
-              {!isSPOTMarket && (
-                <InputRowContainer
-                  key={'cost'}
-                  padding={'.6rem 0'}
-                  direction={'column'}
-                  justify="flex-end"
-                >
-                  <TradeInputContent
-                    theme={theme}
-                    needTitle
-                    //disabled={priceType === 'market'}
-                    title={`margin (${pair[1]})`}
-                    value={values.margin || ''}
-                    type={'text'}
-                    pattern={'[0-9]+.[0-9]{2}'}
-                    onChange={this.onMarginChange}
-                    symbol={pair[1]}
-                  />
-                </InputRowContainer>
-              )}
+                  }
+                }
+                }
+              />
             </InputRowContainer>
           </Grid>
 

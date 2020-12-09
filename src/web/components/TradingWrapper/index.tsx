@@ -54,6 +54,7 @@ import {
   AdditionalSettingsButton,
 } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
+import TradingViewBotTerminal from './TradingViewBotTerminal'
 
 class SimpleTabs extends React.Component {
   state = {
@@ -69,6 +70,7 @@ class SimpleTabs extends React.Component {
     takeProfitPercentage: 0,
     breakEvenPoint: true,
     tradingBotEnabled: false,
+    TVAlersBotEnabled: false,
     tradingBotIsActive: false,
     tradingBotInterval: 45,
     tradingBotTotalTime: 60,
@@ -144,6 +146,7 @@ class SimpleTabs extends React.Component {
       breakEvenPoint,
       takeProfitPercentage,
       tradingBotEnabled,
+      TVAlersBotEnabled,
       tradingBotIsActive,
       tradingBotInterval,
       tradingBotTotalTime
@@ -246,6 +249,18 @@ class SimpleTabs extends React.Component {
               >
                 Limit
               </TerminalModeButton>
+              <TerminalModeButton
+                theme={theme}
+                active={mode === 'market'}
+                onClick={() => {
+                  this.handleChangeMode('market')
+                  this.setState(prev => ({
+                    TVAlersBotEnabled: !prev.TVAlersBotEnabled,
+                  }))
+                }}
+              >
+                TV Alerts
+              </TerminalModeButton>
               {pair.join('_') === 'SRM_USDT' && <TerminalModeButton
                 theme={theme}
                 active={tradingBotEnabled}
@@ -347,6 +362,7 @@ class SimpleTabs extends React.Component {
 
           <TerminalMainGrid item xs={12} container marketType={marketType}>
             <div style={{ display: 'flex', width: '100%', height: '100%' }}>
+              {TVAlersBotEnabled ? <TradingViewBotTerminal {...this.props} /> : <>
               <FullHeightGrid
                 theme={theme}
                 xs={6}
@@ -683,6 +699,7 @@ class SimpleTabs extends React.Component {
                     </TerminalContainer>
                   </FullHeightGrid>
                 )}
+                </>}
             </div>
           </TerminalMainGrid>
         </CustomCard>

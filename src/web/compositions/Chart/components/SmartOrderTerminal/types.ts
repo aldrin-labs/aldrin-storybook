@@ -183,3 +183,31 @@ export type InputRowProps = {
   padding?: string
   width?: string
 }
+
+export type CommonForBlocks = {
+  pair: [string, string]
+  theme: Theme,
+  validateField: (needValidate: boolean, value: any) => boolean,
+  updateBlockValue: (blockName: string, valueName: string, value: any) => void,
+  updateSubBlockValue: (blockName: string, subBlockName: string, valueName: string, value: any) => void,
+  updateStopLossAndTakeProfitPrices: (obj: { 
+    side?: string,
+    price?: number,
+    deviationPercentage?: number
+    stopLossPercentage?: number
+    forcedStopPercentage?: number
+    takeProfitPercentage?: number
+    leverage?: number
+  }) => void,
+}
+
+export interface SliderWithPriceAndPercentageFieldRowProps extends CommonForBlocks {
+  entryPoint: EntryPointType,
+  showErrors: boolean,
+  stopLoss?: StopLossType,
+  isMarketType: boolean,
+  priceForCalculate: number,
+  pricePrecision: number
+  showConfirmationPopup?: () => void,
+  updateTerminalViewMode?: (newMode: string) => void
+}
