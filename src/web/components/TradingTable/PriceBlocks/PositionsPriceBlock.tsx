@@ -1,20 +1,13 @@
 import React from 'react';
 import { compose } from 'recompose';
-import { Theme } from '@material-ui/core';
 
 import { formatNumberToUSFormat, roundAndFormatNumber } from '@core/utils/PortfolioTableUtils';
 
 import { queryRendererHoc } from '@core/components/QueryRenderer';
 import { getMarkPrice } from '@core/graphql/queries/market/getMarkPrice';
-import { LISTEN_MARK_PRICE } from '@core/graphql/subscriptions/LISTEN_MARK_PRICE';
-import {
-  updateMarkPriceQuerryFunction,
-} from '@sb/compositions/Chart/components/MarketStats/MarketStats.utils';
 
 export interface IProps {
-  marketType: 0 | 1;
-  theme: Theme;
-  markPrice: number;
+  price: number;
   pricePrecision: number;
 }
 
@@ -22,33 +15,27 @@ export interface IPropsDataWrapper {
   symbol: string;
   exchange: string;
   props: any[];
+  getMarkPriceQuery: {
+    getMarkPrice: {
+      markPrice: number,
+    }
+  }
+  pricePrecision: number
 }
 
 const PriceBlock = ({ pricePrecision, price }: IProps) => (
   <>
-    <div>
+    <>
       {formatNumberToUSFormat(
         roundAndFormatNumber(price, pricePrecision, false)
       )}
-    </div>
+    </>
   </>
 )
 
 const MemoizedMarkPriceBlock = React.memo(PriceBlock);
 
-const MarkPriceDataWrapper = ({ symbol, exchange, ...props }: IPropsDataWrapper) => {
-  React.useEffect(
-    () => {
-      const unsubscribePrice = props.getMarkPriceQuery.subscribeToMoreFunction();
-
-      return () => {
-        unsubscribePrice && unsubscribePrice();
-      };
-    },
-    [symbol, exchange]
-  );
-
-  const { getMarkPriceQuery, marketType, theme, pricePrecision } = props;
+const MarkPriceDataWrapper = ({ getMarkPriceQuery, pricePrecision  }: IPropsDataWrapper) => {
   const { getMarkPrice = { markPrice: 0 } } = getMarkPriceQuery || {
     getMarkPrice: { markPrice: 0 }
   };
@@ -75,19 +62,9 @@ export default React.memo(compose(
         symbol: props.symbol
       }
     }),
-    subscriptionArgs: {
-      subscription: LISTEN_MARK_PRICE,
-      variables: (props: any) => ({
-        input: {
-          exchange: props.exchange.symbol,
-          symbol: props.symbol
-        }
-      }),
-      updateQueryFunction: updateMarkPriceQuerryFunction
-    },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
     withOutSpinner: true,
-    withTableLoader: true,
+    withTableLoader: false,
     withoutLoading: true
   })
 )(MemoizedMarkPriceDataWrapper));
