@@ -2,8 +2,6 @@ import React from 'react';
 import { compose } from 'recompose';
 import { Theme } from '@material-ui/core';
 
-import { formatNumberToUSFormat, roundAndFormatNumber } from '@core/utils/PortfolioTableUtils';
-
 import { queryRendererHoc } from '@core/components/QueryRenderer';
 import { getMarkPrice } from '@core/graphql/queries/market/getMarkPrice';
 import { LISTEN_MARK_PRICE } from '@core/graphql/subscriptions/LISTEN_MARK_PRICE';
@@ -13,17 +11,33 @@ import {
 
 import { SubColumnValue } from '../ActiveTrades/Columns'
 
+const subColumnStyle = { whiteSpace: 'nowrap' }
 export interface IProps {
-  marketType: 0 | 1;
   theme: Theme;
-  markPrice: number;
-  pricePrecision: number;
+  price: number;
+  pair: [string, string]
+  entryPrice: number
+  leverage: number
+  side: 'buy long' | 'sell short'
+  positionAmt: number
 }
 
 export interface IPropsDataWrapper {
   symbol: string;
   exchange: string;
-  props: any[];
+  getMarkPriceQuery: {
+    getMarkPrice: {
+      markPrice: number,
+    }
+    subscribeToMoreFunction: () => () => void
+  }
+  pricePrecision: number
+  theme: Theme;
+  pair: [string, string]
+  entryPrice: number
+  leverage: number
+  side: 'buy long' | 'sell short'
+  positionAmt: number
 }
 
 const MarkPnlBlock = ({ theme, price, pair, entryPrice, leverage, side, positionAmt }: IProps) => {
@@ -41,7 +55,7 @@ const MarkPnlBlock = ({ theme, price, pair, entryPrice, leverage, side, position
   return price ? (
     <SubColumnValue
       theme={theme}
-      style={{ whiteSpace: 'nowrap' }}
+      style={subColumnStyle}
       color={profitPercentage > 0 ? theme.palette.green.main : theme.palette.red.main}
     >
       {`${profitAmount < 0 ? '-' : ''}${Math.abs(
@@ -56,10 +70,10 @@ const MarkPnlBlock = ({ theme, price, pair, entryPrice, leverage, side, position
 }
 const MemoizedMarkPriceBlock = React.memo(MarkPnlBlock);
 
-const MarkPriceDataWrapper = ({ symbol, exchange, ...props }: IPropsDataWrapper) => {
+const MarkPriceDataWrapper = ({ symbol, exchange, getMarkPriceQuery, theme, pricePrecision, pair, entryPrice, leverage, side, positionAmt }: IPropsDataWrapper) => {
   React.useEffect(
     () => {
-      const unsubscribePrice = props.getMarkPriceQuery.subscribeToMoreFunction();
+      const unsubscribePrice = getMarkPriceQuery.subscribeToMoreFunction();
 
       return () => {
         unsubscribePrice && unsubscribePrice();
@@ -68,7 +82,6 @@ const MarkPriceDataWrapper = ({ symbol, exchange, ...props }: IPropsDataWrapper)
     [symbol, exchange]
   );
 
-  const { getMarkPriceQuery, marketType, theme, pricePrecision, pair, entryPrice, leverage, side, positionAmt } = props;
   const { getMarkPrice = { markPrice: 0 } } = getMarkPriceQuery || {
     getMarkPrice: { markPrice: 0 }
   };
@@ -109,9 +122,9 @@ export default React.memo(compose(
       }),
       updateQueryFunction: updateMarkPriceQuerryFunction
     },
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
     withOutSpinner: true,
-    withTableLoader: true,
+    withTableLoader: false,
     withoutLoading: true
-  })
+  }),
 )(MemoizedMarkPriceDataWrapper));
