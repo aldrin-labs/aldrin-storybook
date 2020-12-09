@@ -18,6 +18,7 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { addWalletContact } from '@core/graphql/mutations/chart/addWalletContact'
 
 import { notify } from '@sb/dexUtils/notifications'
+import { encrypt, createHash } from './index'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -42,6 +43,7 @@ const NewContactPopup = ({
   addWalletContactMutation,
   publicKey,
   password,
+  localPassword,
   getUserAddressbookQueryRefetch,
 }) => {
   const [name, updateName] = useState('')
@@ -150,17 +152,16 @@ const NewContactPopup = ({
 
               await updateShowLoader(true)
 
+              // encrypt each field
               const result = await addWalletContactMutation({
                 variables: {
-                  publicKey,
-                  password,
-                  name,
-                  email,
-                  contactPublicKey: address,
+                  publicKey: createHash(publicKey, localPassword),
+                  password: createHash(password, localPassword), // not encrypting for auth
+                  name: encrypt(name, localPassword),
+                  email: email !== '' ? encrypt(email, localPassword) : '',
+                  contactPublicKey: encrypt(address, localPassword),
                 },
               })
-
-              console.log('result', result.data.addWalletContact)
 
               await getUserAddressbookQueryRefetch()
 
@@ -170,6 +171,9 @@ const NewContactPopup = ({
               })
 
               await updateShowLoader(false)
+              await updateName('')
+              await updateEmail('')
+              await updateAddress('')
               await handleClose()
             }}
           >

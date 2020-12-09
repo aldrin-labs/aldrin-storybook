@@ -22,13 +22,15 @@ import {
   Table,
 } from '@sb/compositions/Rewards/index'
 import { notify } from '@sb/dexUtils/notifications'
+import { decrypt } from './index'
 
 const SubColumn = ({
   theme,
   coins,
-  contactPublicKey,
-  setContactPublicKey,
+  contactId,
+  setContactId,
   setShowNewCoinPopup,
+  localPassword
 }) => {
   return (
     <Card
@@ -60,7 +62,7 @@ const SubColumn = ({
             <AddBtn
               style={{ fontFamily: 'Avenir Next Demi' }}
               onClick={() => {
-                setContactPublicKey(contactPublicKey)
+                setContactId(contactId)
                 setShowNewCoinPopup(true)
               }}
             >
@@ -68,7 +70,7 @@ const SubColumn = ({
             </AddBtn>
           </HeaderCell>
         </TableRow>
-        {coins.map((el, index) => {
+        {coins.map((el) => {
           return (
             <TableRow>
               <Cell
@@ -84,24 +86,24 @@ const SubColumn = ({
                     }}
                     width={`1.7rem`}
                     height={`1.7rem`}
-                    src={importCoinIcon(el.symbol)}
+                    src={importCoinIcon(decrypt(el.symbol, localPassword))}
                     onError={onErrorImportCoinUrl}
                   />
                 </LazyLoad>
-                {el.symbol}
+                {el.symbol === 'SOL' ? 'SOL' : decrypt(el.symbol, localPassword)}
               </Cell>
               <Cell
                 style={{ textAlign: 'left', fontSize: '2rem' }}
                 borderBottom={'#424B68'}
               >
-                {el.address}
+                {decrypt(el.address, localPassword)}
                 <AddBtn
                   background={'#7380EB'}
                   width={'auto'}
                   padding={'0 1rem'}
                   style={{ marginLeft: '2rem' }}
                   onClick={() => {
-                    copy(el.address)
+                    copy(decrypt(el.address, localPassword))
                     notify({
                       type: 'success',
                       message: 'Copied!',

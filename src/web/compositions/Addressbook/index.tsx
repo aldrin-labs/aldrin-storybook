@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { TableWithSort } from '@sb/components'
 import styled from 'styled-components'
+import { AES, enc, MD5 } from 'crypto-js'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import SubColumn from './SubColumn'
@@ -78,28 +79,38 @@ const onConfirmPassword = (
   isLoginStep: boolean,
   forceUpdatePassword: () => void
 ) => {
-  if (!isLoginStep && addressbookPassword !== addressbookConfirmPassword) {
-    notify({
-      type: 'error',
-      message: 'Passwords should match',
-    })
+  // if (!isLoginStep && addressbookPassword !== addressbookConfirmPassword) {
+  //   notify({
+  //     type: 'error',
+  //     message: 'Passwords should match',
+  //   })
 
-    return
-  }
+  //   return
+  // }
 
   localStorage.setItem('addressbookPassword', addressbookPassword)
+  localStorage.setItem('localPassword', addressbookConfirmPassword)
   forceUpdatePassword()
 }
+
+export const createHash = (value, password) => MD5(value + password).toString()
+export const decrypt = (value, password) => AES.decrypt(value, password).toString(enc.Utf8)
+export const encrypt = (value, password) => AES.encrypt(value, password).toString()
 
 const combineContactsData = (
   data,
   setShowNewCoinPopup,
-  setContactPublicKey
+  setContactId,
+  localPassword
 ) => {
+  if (!data) {
+    return []
+  }
+  // decrypt each field
   const proccesedData = data.map((el) => {
     return {
       id: `${el.name}${el.publicKey}`,
-      name: el.name,
+      name: decrypt(el.name, localPassword),
       dateAdded: {
         render: (
           <div>
@@ -123,8 +134,8 @@ const combineContactsData = (
         },
         // contentToSort: createdAt ? +new Date(createdAt) : -1,
       },
-      contact: el.email || '-',
-      publicAddress: el.publicKey,
+      contact: decrypt(el.email, localPassword) || '-',
+      publicAddress: decrypt(el.publicKey, localPassword),
       expandableContent: [
         {
           row: {
@@ -132,8 +143,9 @@ const combineContactsData = (
               <SubColumn
                 setShowNewCoinPopup={setShowNewCoinPopup}
                 coins={el.coins}
-                setContactPublicKey={setContactPublicKey}
-                contactPublicKey={el.publicKey}
+                setContactId={setContactId}
+                contactId={el._id}
+                localPassword={localPassword}
               />
             ),
             colspan: 5,
@@ -152,6 +164,7 @@ const AddressbookRoute = ({
   getUserAddressbookQueryRefetch,
   publicKey,
   addressbookPassword,
+  localPassword,
   forceUpdatePassword,
 }) => {
   const [expandedRows, setExpandedRows] = useState([])
@@ -160,14 +173,15 @@ const AddressbookRoute = ({
   const [confirmPassword, updateConfirmPassword] = useState('')
   const [showNewContactPopup, setShowNewContactPopup] = useState(false)
   const [showNewCoinPopup, setShowNewCoinPopup] = useState(false)
-  const [contactPublicKey, setContactPublicKey] = useState('')
+  const [contactId, setContactId] = useState('')
 
   const { wallet } = useWallet()
 
-  const isPasswordStep = !publicKey || !addressbookPassword
+  const isNoPassword = !addressbookPassword || !localPassword
+
+  const isPasswordStep = !publicKey || isNoPassword
   const isLoginStep = step === 'login'
 
-  console.log('getUserAddressbookQuery', getUserAddressbookQuery)
   return (
     <RowContainer style={{ height: '100%' }}>
       {' '}
@@ -205,7 +219,7 @@ const AddressbookRoute = ({
               Connect wallet
             </BtnCustom>
           </>
-        ) : !addressbookPassword ? (
+        ) : isNoPassword ? (
           <>
             <CustomSwitcher
               theme={theme}
@@ -223,25 +237,23 @@ const AddressbookRoute = ({
             />
             <Text paddingBottom={isLoginStep ? '2rem' : '4rem'}>
               {isLoginStep
-                ? 'Enter your password to get addressbook'
-                : 'Create password to protect your addressbook'}
+                ? 'Enter your passwords to get addressbook'
+                : 'Create passwords to protect your addressbook'}
             </Text>
 
             <Input
               value={password}
               type={'password'}
               onChange={(e) => updatePassword(e.target.value)}
-              placeholder={'Password'}
+              placeholder={'Auth password'}
             />
 
-            {!isLoginStep && (
-              <Input
-                type={'password'}
-                value={confirmPassword}
-                onChange={(e) => updateConfirmPassword(e.target.value)}
-                placeholder={'Confirm password'}
-              />
-            )}
+            <Input
+              type={'password'}
+              value={confirmPassword}
+              onChange={(e) => updateConfirmPassword(e.target.value)}
+              placeholder={'Encrypt password'}
+            />
 
             <BtnCustom
               type="text"
@@ -365,7 +377,8 @@ const AddressbookRoute = ({
                 body: combineContactsData(
                   getUserAddressbookQuery.getUserAddressbook,
                   setShowNewCoinPopup,
-                  setContactPublicKey
+                  setContactId,
+                  localPassword
                 ),
               }}
               columnNames={addressBookColumnNames}
@@ -379,6 +392,7 @@ const AddressbookRoute = ({
         handleClose={() => setShowNewContactPopup(false)}
         publicKey={publicKey}
         password={addressbookPassword}
+        localPassword={localPassword}
         getUserAddressbookQueryRefetch={getUserAddressbookQueryRefetch}
       />
       <NewCoinPopup
@@ -387,8 +401,9 @@ const AddressbookRoute = ({
         handleClose={() => setShowNewCoinPopup(false)}
         publicKey={publicKey}
         password={addressbookPassword}
+        localPassword={localPassword}
         getUserAddressbookQueryRefetch={getUserAddressbookQueryRefetch}
-        contactPublicKey={contactPublicKey}
+        contactId={contactId}
       />
     </RowContainer>
   )
@@ -402,10 +417,10 @@ export default compose(
     query: getUserAddressbook,
     name: 'getUserAddressbookQuery',
     variables: (props) => ({
-      password: props.addressbookPassword,
-      publicKey: props.publicKey,
+      password: createHash(props.addressbookPassword, props.localPassword),
+      publicKey: createHash(props.publicKey, props.localPassword),
     }),
     fetchPolicy: 'cache-and-network',
-    skip: (props: any) => !props.publicKey || !props.addressbookPassword,
+    skip: (props: any) => !props.publicKey || !props.addressbookPassword || !props.localPassword,
   })
 )(AddressbookRoute)

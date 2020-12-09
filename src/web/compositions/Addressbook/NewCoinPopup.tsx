@@ -16,13 +16,15 @@ import {
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { addContactCoin } from '@core/graphql/mutations/chart/addContactCoin'
 
-import { Input } from './index'
+import { createHash, Input } from './index'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components/index'
 
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
+import { encrypt, createHash } from './index'
+import { updateSelectedKey } from '@core/graphql/mutations/chart/updateSelectedKey'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -44,9 +46,10 @@ const NewCoinPopup = ({
   theme,
   open,
   handleClose,
-  contactPublicKey,
+  contactId,
   publicKey,
   password,
+  localPassword,
   addContactCoinMutation,
   getUserAddressbookQueryRefetch,
 }) => {
@@ -254,13 +257,15 @@ const NewCoinPopup = ({
 
               await updateShowLoader(true)
 
+              // encrypt each field
               const result = await addContactCoinMutation({
                 variables: {
-                  publicKey,
-                  password,
-                  symbol: selectedCoin.label,
-                  address,
-                  contactPublicKey,
+                  publicKey: createHash(publicKey, localPassword),
+                  password: createHash(password, localPassword), // not encrypting to auth
+                  symbol: encrypt(selectedCoin.label, localPassword),
+                  address: encrypt(address, localPassword),
+                  // contactPublicKey: encrypt(contactPublicKey, localPassword),
+                  contactId,
                 },
               })
 
@@ -275,6 +280,8 @@ const NewCoinPopup = ({
               })
 
               await updateShowLoader(false)
+              await updateAddress('')
+              await setSelectedCoin({ label: 'BTC', value: 'BTC' })
               await handleClose()
             }}
           >
