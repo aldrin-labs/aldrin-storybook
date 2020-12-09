@@ -77,11 +77,10 @@ export const positionsColumnNames = (
 
 export const addressBookColumnNames = [
   { label: ' ', id: 'blank' },
-  { label: 'Name', id: 'Name' },
+  { label: 'Name', id: 'name' },
   { label: 'Date added', id: 'dateAdded' },
   { label: 'Contact', id: 'contact' },
   { label: 'Public Address', id: 'publicAddress' },
-  { label: 'Addresses', id: 'addresses' },
 ]
 
 export const activeTradesColumnNames = [

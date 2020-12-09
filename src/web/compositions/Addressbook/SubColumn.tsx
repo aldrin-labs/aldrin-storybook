@@ -2,6 +2,15 @@ import React from 'react'
 import styled from 'styled-components'
 import { compose } from 'recompose'
 import { withTheme } from '@material-ui/styles'
+import LazyLoad from 'react-lazyload'
+
+import copy from 'clipboard-copy'
+import SvgIcon from '@sb/components/SvgIcon'
+
+import {
+  importCoinIcon,
+  onErrorImportCoinUrl,
+} from '@core/utils/MarketCapUtils'
 
 import { AddBtn } from '@sb/compositions/Addressbook/index'
 
@@ -13,7 +22,8 @@ import {
   Table,
 } from '@sb/compositions/Rewards/index'
 
-const SubColumn = ({ theme }) => {
+const SubColumn = ({ theme, coins }) => {
+  console.log('coins', coins)
   return (
     <Card
       style={{
@@ -34,17 +44,65 @@ const SubColumn = ({ theme }) => {
         }}
       >
         <TableRow>
-          <HeaderCell borderBottom={'#424B68'}>Coin</HeaderCell>
-          <HeaderCell borderBottom={'#424B68'}>Address</HeaderCell>
-          <HeaderCell borderBottom={'#424B68'}>
-            <AddBtn>+ add new contact</AddBtn>
+          <HeaderCell style={{ paddingLeft: '2rem' }} borderBottom={'#424B68'}>
+            Coin
+          </HeaderCell>
+          <HeaderCell style={{ textAlign: 'center' }} borderBottom={'#424B68'}>
+            Address
+          </HeaderCell>
+          <HeaderCell style={{ textAlign: 'right' }} borderBottom={'#424B68'}>
+            <AddBtn>+ add new address</AddBtn>
           </HeaderCell>
         </TableRow>
-        <TableRow>
-          <Cell borderBottom={'#424B68'}>jk</Cell>
-          <Cell borderBottom={'#424B68'}>k,k</Cell>
-          <Cell borderBottom={'#424B68'}>kl</Cell>
-        </TableRow>
+        {coins.map((el, index) => {
+          return (
+            <TableRow>
+              <Cell
+                style={{ paddingLeft: '2rem', fontSize: '2rem' }}
+                borderBottom={'#424B68'}
+              >
+                <LazyLoad once height={`1.7rem`}>
+                  <SvgIcon
+                    style={{
+                      marginRight: '1rem',
+                      position: 'relative',
+                      top: '0.275rem',
+                    }}
+                    width={`1.7rem`}
+                    height={`1.7rem`}
+                    src={importCoinIcon(el.symbol)}
+                    onError={onErrorImportCoinUrl}
+                  />
+                </LazyLoad>
+                {el.symbol}
+              </Cell>
+              <Cell
+                style={{ textAlign: 'center', fontSize: '2rem' }}
+                borderBottom={'#424B68'}
+              >
+                {el.address}
+                <AddBtn
+                  background={'#7380EB'}
+                  width={'auto'}
+                  padding={'0 1rem'}
+                  style={{ marginLeft: '2rem' }}
+                  onClick={copy(el.address)}
+                >
+                  copy
+                </AddBtn>
+              </Cell>
+              <Cell style={{ textAlign: 'right' }} borderBottom={'#424B68'}>
+                <AddBtn
+                  background={'#7380EB'}
+                  width={'auto'}
+                  padding={'0 2rem'}
+                >
+                  send
+                </AddBtn>
+              </Cell>
+            </TableRow>
+          )
+        })}
       </Table>
     </Card>
   )
