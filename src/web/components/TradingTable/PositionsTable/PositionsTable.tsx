@@ -1,12 +1,10 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { withTheme } from '@material-ui/styles'
 import { withSnackbar } from 'notistack'
-import { client } from '@core/graphql/apolloClient'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 
-import QueryRenderer from '@core/components/QueryRenderer'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
 
 import {
@@ -19,25 +17,15 @@ import {
 import { IProps, IState } from './PositionsTable.types'
 import { PaginationBlock } from '../TradingTablePagination'
 
-import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { getFunds } from '@core/graphql/queries/chart/getFunds'
 import { modifyIsolatedMargin } from '@core/graphql/mutations/chart/modifyIsolatedMargin'
 import { setPositionWasClosed } from '@core/graphql/mutations/strategies/setPositionWasClosed'
-import { FUNDS } from '@core/graphql/subscriptions/FUNDS'
 import { getActivePositions } from '@core/graphql/queries/chart/getActivePositions'
-import { getAdlQuantile } from '@core/graphql/queries/chart/getAdlQuantile'
 import { FUTURES_POSITIONS } from '@core/graphql/subscriptions/FUTURES_POSITIONS'
-import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
-
-import { getKeysQuery } from '@core/graphql/queries/user/getKeysQuery'
-import { getPrice } from '@core/graphql/queries/chart/getPrice'
 import { CANCEL_ORDER_MUTATION } from '@core/graphql/mutations/chart/cancelOrderMutation'
 
 import { createOrder } from '@core/graphql/mutations/chart/createOrder'
 import { updatePosition } from '@core/graphql/mutations/chart/updatePosition'
-
-import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
-import { LISTEN_MARK_PRICES } from '@core/graphql/subscriptions/LISTEN_MARK_PRICES'
 
 import { EditMarginPopup } from './EditMarginPopup'
 import { showOrderResult } from '@sb/compositions/Chart/Chart.utils'
