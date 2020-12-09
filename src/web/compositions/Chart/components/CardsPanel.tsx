@@ -315,7 +315,7 @@ export const CardsPanel = ({
           </Link>
           <div
             style={{
-              width: '20%',
+              width: '30%',
               marginLeft: '4rem',
               paddingRight: '4rem',
               borderRight: theme.palette.border.main,
