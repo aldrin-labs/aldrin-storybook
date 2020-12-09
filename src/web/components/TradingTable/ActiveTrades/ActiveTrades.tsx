@@ -8,7 +8,7 @@ import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { withSnackbar } from 'notistack'
 
 import { withTheme } from '@material-ui/styles'
-
+import { getPrecisionItem } from '@core/utils/getPrecisionItem'
 import {
   getTakeProfitFromStrategy,
   getStopLossFromStrategy,
@@ -60,6 +60,7 @@ import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
 import { LISTEN_TABLE_PRICE } from '@core/graphql/subscriptions/LISTEN_TABLE_PRICE'
 import { LISTEN_MARK_PRICES } from '@core/graphql/subscriptions/LISTEN_MARK_PRICES'
 import { SmartTradeButton } from '@sb/components/TradingTable/TradingTabs/TradingTabs.styles'
+import { showCancelResult } from '@sb/compositions/Chart/Chart.utils'
 
 @withTheme()
 class ActiveTradesTable extends React.Component<IProps, IState> {
@@ -87,8 +88,6 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       theme,
       marketType,
       currencyPair,
-      pricePrecision,
-      quantityPrecision,
       addOrderToCanceled,
       canceledOrders,
       handlePairChange,
@@ -108,8 +107,6 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       prices: this.state.prices,
       marketType,
       currencyPair,
-      pricePrecision,
-      quantityPrecision,
       handlePairChange,
     })
 
@@ -119,7 +116,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
 
     this.subscribe()
     this.unsubscribeFunctionGetActiveStrategies = getActiveStrategiesQuery.subscribeToMoreFunction()
-    this.unsubscribeFunctionGetFunds = getFundsQuery.subscribeToMoreFunction()
+    // this.unsubscribeFunctionGetFunds = getFundsQuery.subscribeToMoreFunction()
   }
 
   componentDidUpdate(prevProps: IProps) {
@@ -151,7 +148,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
         this.unsubscribeFunctionGetActiveStrategies()
       this.unsubscribeFunctionGetFunds && this.unsubscribeFunctionGetFunds()
 
-      this.unsubscribeFunctionGetFunds = this.props.getFundsQuery.subscribeToMoreFunction()
+      // this.unsubscribeFunctionGetFunds = this.props.getFundsQuery.subscribeToMoreFunction()
       this.unsubscribeFunctionGetActiveStrategies = this.props.getActiveStrategiesQuery.subscribeToMoreFunction()
     }
   }
@@ -176,8 +173,6 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       theme,
       marketType,
       currencyPair,
-      quantityPrecision,
-      pricePrecision,
       getActiveStrategiesQuery,
       addOrderToCanceled,
       canceledOrders,
@@ -200,8 +195,6 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       keys,
       marketType,
       currencyPair,
-      pricePrecision,
-      quantityPrecision,
       handlePairChange,
     })
 
@@ -270,8 +263,6 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
             marketType,
             currencyPair,
             keys,
-            quantityPrecision,
-            pricePrecision,
             addOrderToCanceled,
             canceledOrders,
             handlePairChange,
@@ -295,8 +286,6 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
             prices: data.data[subscriptionPropertyKey],
             marketType,
             currencyPair,
-            pricePrecision,
-            quantityPrecision,
             handlePairChange,
           })
           that.setState({
@@ -374,8 +363,6 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
     status: 'success' | 'error'
     message: 'Smart order disabled' | 'Smart order disabling failed'
   }> => {
-    const { showCancelResult } = this.props
-
     const result = await this.onCancelOrder(keyId, strategyId)
 
     // TODO: move to utils
@@ -411,8 +398,6 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
     | 'Smart order template status changed'
     | 'Smart order template status change failed'
   }> => {
-    const { showCancelResult } = this.props
-
     const result = await this.onChangeStatus(keyId, strategyId, status)
 
     // TODO: move to utils
@@ -509,12 +494,9 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       marketType,
       allKeys,
       specificPair,
-      pricePrecision,
-      quantityPrecision,
       updateEntryPointStrategyMutation,
       updateStopLossStrategyMutation,
       updateTakeProfitStrategyMutation,
-      showCancelResult,
       getFundsQuery = {
         getFunds: [],
       },
@@ -530,6 +512,18 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
 
     if (!show || !isDefaultOnlyTables) {
       return null
+    }
+
+    let pricePrecision = 8, quantityPrecision = 8
+
+    if (selectedTrade && selectedTrade.conditions) {
+      const precisionObject = getPrecisionItem({
+        marketType,
+        symbol: selectedTrade.conditions.pair,
+      })
+
+      pricePrecision = precisionObject.pricePrecision
+      quantityPrecision = precisionObject.quantityPrecision
     }
 
     const pair = currencyPair.split('_')
@@ -888,19 +882,10 @@ const ActiveTradesTableWrapper = compose(
   queryRendererHoc({
     query: getFunds,
     name: `getFundsQuery`,
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
     variables: (props: any) => ({
       fundsInput: { activeExchangeKey: props.selectedKey.keyId },
     }),
-    withOutSpinner: false,
-    withTableLoader: false,
-    subscriptionArgs: {
-      subscription: FUNDS,
-      variables: (props: any) => ({
-        listenFundsInput: { activeExchangeKey: props.selectedKey.keyId },
-      }),
-      updateQueryFunction: updateFundsQuerryFunction,
-    },
   })
 )(ActiveTradesTable)
 
