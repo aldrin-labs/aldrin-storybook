@@ -370,25 +370,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       (position) => position.positionAmt !== 0
     )
 
-    if (
-      prevProps.exchange !== this.props.exchange ||
-      prevProps.currencyPair !== this.props.currencyPair ||
-      prevProps.marketType !== this.props.marketType ||
-      prevPositions.length < newPositions.length
-    ) {
-      // this.subscription && this.subscription.unsubscribe()
-      // this.subscribe()
-    }
-
-<<<<<<< HEAD
-=======
-    // funds
-    // if (prevProps.selectedKey.keyId !== this.props.selectedKey.keyId) {
-    //   this.unsubscribeFundsFunction && this.unsubscribeFundsFunction()
-    //   this.subscribeFunds()
-    // }
-
->>>>>>> positions-table-re-renders-fix
     if (prevPositions.length !== newPositions.length) {
       const crossPositionsNew = newPositions.filter(
         (position) => position.marginType === 'cross'
@@ -453,14 +434,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     if (this.refetchPositionsIntervalId) {
       clearInterval(this.refetchPositionsIntervalId)
     }
-
-<<<<<<< HEAD
-    this.subscription && this.subscription.unsubscribe()
-=======
-    // funds
-    // this.unsubscribeFundsFunction && this.unsubscribeFundsFunction()
-    // this.subscription && this.subscription.unsubscribe()
->>>>>>> positions-table-re-renders-fix
   }
 
   componentWillReceiveProps(nextProps: IProps) {
