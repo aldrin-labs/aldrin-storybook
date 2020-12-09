@@ -15,22 +15,35 @@ import {
 
 const SubColumn = ({ theme }) => {
   return (
-    <Card style={{ width: '100%', height: 'auto' }} theme={theme}>
-      <Table style={{ width: '100%', height: 'auto' }}>
-        <TableRow
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <HeaderCell style={{ display: 'flex', alignItems: 'center' }}>
-            Coin
+    <Card
+      style={{
+        width: '100%',
+        height: 'auto',
+        border: '0',
+        borderRadius: '0.8rem',
+      }}
+      theme={theme}
+    >
+      <Table
+        style={{
+          width: '100%',
+          height: 'auto',
+          border: '0',
+          borderRadius: '0.8rem',
+          background: '#303743',
+        }}
+      >
+        <TableRow>
+          <HeaderCell borderBottom={'#424B68'}>Coin</HeaderCell>
+          <HeaderCell borderBottom={'#424B68'}>Address</HeaderCell>
+          <HeaderCell borderBottom={'#424B68'}>
+            <AddBtn>+ add new contact</AddBtn>
           </HeaderCell>
-          <HeaderCell style={{ display: 'flex', alignItems: 'center' }}>
-            Address
-          </HeaderCell>
-          <AddBtn>+ add new contact</AddBtn>
+        </TableRow>
+        <TableRow>
+          <Cell borderBottom={'#424B68'}>jk</Cell>
+          <Cell borderBottom={'#424B68'}>k,k</Cell>
+          <Cell borderBottom={'#424B68'}>kl</Cell>
         </TableRow>
       </Table>
     </Card>

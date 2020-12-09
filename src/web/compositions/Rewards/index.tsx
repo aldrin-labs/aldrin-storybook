@@ -231,7 +231,7 @@ export const Cell = styled.td`
     width: 15%;
   }
 `
-export const HeaderCell = styled.td`
+export const HeaderCell = styled.th`
   border-bottom: 0.1rem solid ${(props) => props.borderBottom || '#61d8e6'};
   height: 5rem;
   padding-left: 2rem;
