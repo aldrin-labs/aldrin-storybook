@@ -27,6 +27,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { BlueSwitcherStyles } from '../Chart/components/SmartOrderTerminal/utils'
 import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
 import { NewContactPopup } from './NewContactPopup'
+import { NewCoinPopup } from './NewCoinPopup'
 
 export const AddBtn = styled.button`
   background: ${(props) => props.background || '#1ba492'};
@@ -88,7 +89,7 @@ const onConfirmPassword = (
   forceUpdatePassword()
 }
 
-const combineContactsData = (data) => {
+const combineContactsData = (data, setShowNewCoinPopup) => {
   // [
   //   {
   //     name: 'flosssolis',
@@ -131,7 +132,17 @@ const combineContactsData = (data) => {
       contact: el.email || '-',
       publicAddress: el.publicKey,
       expandableContent: [
-        { row: { render: <SubColumn coins={el.coins} />, colspan: 5 } },
+        {
+          row: {
+            render: (
+              <SubColumn
+                setShowNewCoinPopup={setShowNewCoinPopup}
+                coins={el.coins}
+              />
+            ),
+            colspan: 5,
+          },
+        },
       ],
     }
   })
@@ -151,6 +162,7 @@ const AddressbookRoute = ({
   const [password, updatePassword] = useState('')
   const [confirmPassword, updateConfirmPassword] = useState('')
   const [showNewContactPopup, setShowNewContactPopup] = useState(false)
+  const [showNewCoinPopup, setShowNewCoinPopup] = useState(false)
 
   const { wallet } = useWallet()
 
@@ -279,7 +291,10 @@ const AddressbookRoute = ({
                 Addressbook
               </div>
               <div>
-                <AddBtn onClick={() => setShowNewContactPopup(true)}>
+                <AddBtn
+                  style={{ fontFamily: 'Avenir Next Demi' }}
+                  onClick={() => setShowNewContactPopup(true)}
+                >
                   + add new contact
                 </AddBtn>
               </div>
@@ -348,7 +363,8 @@ const AddressbookRoute = ({
               //   emptyTableText={getEmptyTextPlaceholder(tab)}
               data={{
                 body: combineContactsData(
-                  getUserAddressbookQuery.getUserAddressbook
+                  getUserAddressbookQuery.getUserAddressbook,
+                  setShowNewCoinPopup
                 ),
               }}
               columnNames={addressBookColumnNames}
@@ -360,6 +376,11 @@ const AddressbookRoute = ({
         theme={theme}
         open={showNewContactPopup}
         handleClose={() => setShowNewContactPopup(false)}
+      />
+      <NewCoinPopup
+        theme={theme}
+        open={showNewCoinPopup}
+        handleClose={() => setShowNewCoinPopup(false)}
       />
     </RowContainer>
   )

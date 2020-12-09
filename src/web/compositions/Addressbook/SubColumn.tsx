@@ -22,7 +22,7 @@ import {
   Table,
 } from '@sb/compositions/Rewards/index'
 
-const SubColumn = ({ theme, coins }) => {
+const SubColumn = ({ theme, coins, setShowNewCoinPopup }) => {
   console.log('coins', coins)
   return (
     <Card
@@ -51,7 +51,12 @@ const SubColumn = ({ theme, coins }) => {
             Address
           </HeaderCell>
           <HeaderCell style={{ textAlign: 'right' }} borderBottom={'#424B68'}>
-            <AddBtn>+ add new address</AddBtn>
+            <AddBtn
+              style={{ fontFamily: 'Avenir Next Demi' }}
+              onClick={() => setShowNewCoinPopup(true)}
+            >
+              + add new address
+            </AddBtn>
           </HeaderCell>
         </TableRow>
         {coins.map((el, index) => {
