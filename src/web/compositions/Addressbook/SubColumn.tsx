@@ -104,7 +104,7 @@ const SubColumn = ({
                     copy(el.address)
                     notify({
                       type: 'success',
-                      message: 'Copied!'
+                      message: 'Copied!',
                     })
                   }}
                 >
@@ -117,7 +117,22 @@ const SubColumn = ({
                   width={'auto'}
                   padding={'0 2rem'}
                 >
-                  send
+                  <a
+                    href={'https://www.sollet.io/'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      textDecoration: 'none',
+                      color: 'fff',
+                      fontFamily: 'Avenir Next Demi',
+                      fontSize: '1.5rem',
+                      color: '#fff',
+                      outline: 'none',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    send
+                  </a>
                 </AddBtn>
               </Cell>
             </TableRow>

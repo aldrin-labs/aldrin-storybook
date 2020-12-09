@@ -33,7 +33,7 @@ export const AddBtn = styled.button`
   background: ${(props) => props.background || '#1ba492'};
   width: ${(props) => props.width || '20rem'};
   padding: ${(props) => props.padding || '0'};
-  font-samily: Avenir Next Demi;
+  font-family: Avenir Next Demi;
   font-size: 1.5rem;
   color: #fff;
   outline: none;
