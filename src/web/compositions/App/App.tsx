@@ -16,6 +16,7 @@ const jss = create(jssPreset())
 jss.options.insertionPoint = document.getElementById('jss-insertion-point')
 //
 
+import { difference } from '@core/utils/difference'
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Footer from '@sb/components/Footer'
@@ -33,6 +34,7 @@ import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 import { syncStorage } from '@storage'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
+import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
 import { useQuery } from 'react-apollo'
 
 const version = `11.0.18`
@@ -84,11 +86,14 @@ const AppRaw = ({
   // const isUserFromNotRestrictedCountry = !!syncStorage.getItem('IUFNRC')
   const isUserFromNotRestrictedCountry = false
 
+  console.log('App RENDER')
+
   return (
     <ApolloPersistWrapper>
       <JssProvider jss={jss} generateClassName={generateClassName}>
         <ThemeWrapper themeMode={themeMode} isChartPage={isChartPage}>
           <SnackbarWrapper>
+            <SnackbarUtilsConfigurator />
             <CssBaseline />
             {/* <FontStyle /> */}
             <RestrictPopup
@@ -122,26 +127,33 @@ const AppRaw = ({
   )
 }
 
-export const App = compose(
+const AppDataWrapper = compose(
   withRouter,
   withAuthStatus,
   queryRendererHoc({
     query: GET_VIEW_MODE,
     name: 'getViewModeQuery',
     skip: (props: any) => !props.authenticated,
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
   }),
-  // queryRendererHoc({
-  //   query: GET_THEME_MODE,
-  //   name: 'getThemeModeQuery',
-  //   fetchPolicy: 'cache-and-network',
-  // }),
   queryRendererHoc({
-    skip: (props: any) => {
-      return !props.authenticated
-    },
     query: getThemeMode,
     name: 'getThemeModeQuery',
-    fetchPolicy: 'cache-and-network',
+    skip: (props: any) => !props.authenticated,
+    fetchPolicy: 'cache-first',
   })
 )(AppRaw)
+
+// export const App = React.memo(AppDataWrapper, (prev, next) => {
+
+//   console.log('diff for App', difference(prev, next))
+
+//   return false
+// })
+
+export const App = AppDataWrapper
+
+//   console.log('diff for App', difference(prev, next))
+
+//   return false
+// })
