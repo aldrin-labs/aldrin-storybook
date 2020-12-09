@@ -22,7 +22,7 @@ import { Loading } from '@sb/components/index'
 import stableCoins from '@core/config/stableCoins'
 import { cloneDeep } from 'lodash-es'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
-import { AdlIndicator } from './TradingTable.styles'
+import AdlComponent from './AdlComponent/AdlComponent'
 import { getPrecisionItem } from '@core/utils/getPrecisionItem'
 
 const changePairToSelected = (pair: string) => {
@@ -337,9 +337,6 @@ export const combinePositionsTable = ({
   keys,
   canceledPositions,
   priceFromOrderbook,
-  // pricePrecision,
-  // quantityPrecision,
-  adlData,
   toogleEditMarginPopup,
   handlePairChange,
   enqueueSnackbar,
@@ -354,10 +351,7 @@ export const combinePositionsTable = ({
   canceledPositions: string[]
   minFuturesStep
   priceFromOrderbook: number | string
-  // pricePrecision: number
-  // quantityPrecision: number
   keys: Key[]
-  adlData: { symbol: string; adlQuantile: any }[]
   toogleEditMarginPopup: (position: Position) => void
   handlePairChange: (pair: string) => void
   enqueueSnackbar: (message: string, { variant: string }) => void
@@ -449,22 +443,6 @@ export const combinePositionsTable = ({
         (side === 'buy long' ? 1 : -1)
 
       const pair = symbol.split('_')
-
-      let adl = 0
-      const currentAdlData = adlData.find(
-        (adl) => adl.symbol === symbol.replace('_', '')
-      )
-
-      if (currentAdlData && currentAdlData.adlQuantile) {
-        adl =
-          side === 'buy long'
-            ? currentAdlData.adlQuantile.LONG ||
-            currentAdlData.adlQuantile.HEDGE ||
-            currentAdlData.adlQuantile.BOTH
-            : currentAdlData.adlQuantile.SHORT ||
-            currentAdlData.adlQuantile.HEDGE ||
-            currentAdlData.adlQuantile.BOTH
-      }
 
       return [
         {
@@ -576,19 +554,7 @@ export const combinePositionsTable = ({
             contentToSort: marketPrice,
           },
           adl: {
-            render: (
-              <div style={{ display: 'flex', height: '2rem' }}>
-                <AdlIndicator
-                  color={theme.palette.green.main}
-                  adl={adl}
-                  i={0}
-                />
-                <AdlIndicator color={'#A2AC29'} adl={adl} i={1} />
-                <AdlIndicator color={'#F3BA2F'} adl={adl} i={2} />
-                <AdlIndicator color={'#F38D2F'} adl={adl} i={3} />
-                <AdlIndicator color={theme.palette.red.main} adl={adl} i={4} />
-              </div>
-            ),
+            render: <AdlComponent symbol={symbol} theme={theme} keyId={keyId} side={side} />,
           },
           liqPrice: {
             render: `${liquidationPrice == 0
@@ -667,8 +633,6 @@ export const combineActiveTradesTable = ({
   prices = [],
   marketType,
   currencyPair,
-  // pricePrecision,
-  // quantityPrecision,
   addOrderToCanceled,
   canceledOrders,
   keys,
@@ -688,8 +652,6 @@ export const combineActiveTradesTable = ({
   prices: { pair: string; price: number }[]
   marketType: number
   currencyPair: string
-  // pricePrecision: number
-  // quantityPrecision: number
   addOrderToCanceled: (id: string) => void
   canceledOrders: string[]
   keys: Key[]
