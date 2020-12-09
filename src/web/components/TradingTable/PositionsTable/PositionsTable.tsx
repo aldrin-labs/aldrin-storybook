@@ -174,6 +174,9 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       marketType
     )
 
+
+    // WTF ???
+
     const positionsData = combinePositionsTable({
       data,
       createOrderWithStatus: this.createOrderWithStatus,
@@ -216,27 +219,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
         side: variables.keyParams.side === 'buy' ? 'sell' : 'buy',
       },
     })
-  }
-
-  onCancelOrder = async (keyId: string, orderId: string, pair: string) => {
-    const { cancelOrderMutation, marketType } = this.props
-
-    try {
-      const responseResult = await cancelOrderMutation({
-        variables: {
-          cancelOrderInput: {
-            keyId,
-            orderId,
-            pair,
-            marketType,
-          },
-        },
-      })
-
-      return responseResult
-    } catch (err) {
-      return { errors: err }
-    }
   }
 
   modifyIsolatedMargin = async ({
