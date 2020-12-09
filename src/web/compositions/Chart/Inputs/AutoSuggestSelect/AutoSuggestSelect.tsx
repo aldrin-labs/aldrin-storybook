@@ -51,7 +51,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       getCharts,
       getViewModeQuery: {
         chart: { view },
-      },
+      } = { chart: { view: 'default' } },
       addChartMutation,
       changeCurrencyPairMutation,
       history,
@@ -59,7 +59,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
     } = this.props
     const {
       multichart: { charts },
-    } = getCharts
+    } = getCharts || { multichart: { charts: [] } }
 
     if (!value) {
       return
@@ -142,19 +142,19 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
 export default compose(
   withRouter,
   withTheme(),
-  queryRendererHoc({
-    query: GET_VIEW_MODE,
-    name: 'getViewModeQuery',
-  }),
-  queryRendererHoc({
-    query: GET_CHARTS,
-    name: 'getCharts',
-  }),
+  // queryRendererHoc({
+  //   query: GET_VIEW_MODE,
+  //   name: 'getViewModeQuery',
+  // }),
+  // queryRendererHoc({
+  //   query: GET_CHARTS,
+  //   name: 'getCharts',
+  // }),
   graphql(CHANGE_CURRENCY_PAIR, {
     name: 'changeCurrencyPairMutation',
   }),
   graphql(updateFavoritePairs, {
     name: 'updateFavoritePairsMutation',
   }),
-  graphql(ADD_CHART, { name: 'addChartMutation' })
+  // graphql(ADD_CHART, { name: 'addChartMutation' })
 )(IntegrationReactSelect)
