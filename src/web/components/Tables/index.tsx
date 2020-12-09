@@ -214,14 +214,10 @@ const styles = (theme: Theme) =>
     row: {
       height: '2rem',
       boxShadow: 'none',
-      transition: `background-color ${theme.transitions.duration.short}ms  ${
-        theme.transitions.easing.easeOut
-      }`,
+      transition: `background-color ${theme.transitions.duration.short}ms  ${theme.transitions.easing.easeOut}`,
       borderBottom: '0',
       '&:hover td': {
-        transition: `background-color ${theme.transitions.duration.short}ms  ${
-          theme.transitions.easing.easeOut
-        }`,
+        transition: `background-color ${theme.transitions.duration.short}ms  ${theme.transitions.easing.easeOut}`,
       },
     },
     rowWithHover: {
@@ -777,9 +773,7 @@ const CustomTable = (props: Props) => {
 
                 const rowHoverClassName = rowsWithHover
                   ? rowWithHoverBorderRadius
-                    ? `${rowClassName} + ${classes.rowWithHover} + ${
-                        classes.rowWithHoverBorderRadius
-                      }`
+                    ? `${rowClassName} + ${classes.rowWithHover} + ${classes.rowWithHoverBorderRadius}`
                     : `${classes.rowWithHover}`
                   : rowClassName
 
