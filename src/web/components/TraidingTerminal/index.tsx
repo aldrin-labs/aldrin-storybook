@@ -226,7 +226,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       isSPOTMarket,
       pricePrecision,
       quantityPrecision,
-      operationType,
+      sideType,
       marketPriceAfterPairChange,
       values: { amount, price, total, margin },
     } = this.props
@@ -361,7 +361,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     const {
       funds,
       priceType,
-      operationType,
+      sideType,
       isSPOTMarket,
       leverage,
       marketPrice,
@@ -373,7 +373,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
     const priceForCalculate =
       priceType !== 'market' && priceType !== 'maker-only' ? price : marketPrice
-    const isBuyType = operationType === 'buy'
+    const isBuyType = sideType === 'buy'
 
     let maxAmount = 0
 
@@ -475,7 +475,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       marketPrice,
       funds,
       leverage,
-      operationType,
+      sideType,
       priceType,
       isSPOTMarket,
       values,
@@ -496,7 +496,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
     if (!funds) return null
 
-    const isBuyType = operationType === 'buy'
+    const isBuyType = sideType === 'buy'
 
     const priceForCalculate =
       priceType !== 'market' &&
@@ -517,6 +517,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     } else {
       maxAmount = funds[1].quantity * leverage
     }
+
+    console.log('props', this.props)
 
     return (
       <Container background={'transparent'}>
@@ -798,11 +800,11 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
             <Grid xs={12} item container alignItems="center">
               <SendButton
                 theme={theme}
-                // disabled={orderIsCreating === operationType}
+                // disabled={orderIsCreating === sideType}
                 style={{
                   ...(tradingBotEnabled && !tradingBotIsActive ? { position: 'absolute', width: '95%' } : {}),
                 }}
-                type={operationType}
+                type={sideType}
                 onClick={async () => {
                   const result = await validateForm()
                   console.log('result', result)
@@ -812,12 +814,12 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 }}
               >
                 {isSPOTMarket
-                  ? operationType === 'buy'
+                  ? sideType === 'buy'
                     ? priceType === 'market' && pair.join('_') === 'SRM_USDT'
                       ? tradingBotEnabled && !tradingBotIsActive ? 'Start Cycle Bot' : 'Buy SRM and earn DCFI'
                       : `buy ${pair[0]}`
                     : `sell ${pair[0]}`
-                  : operationType === 'buy'
+                  : sideType === 'buy'
                     ? 'long'
                     : 'short'}
               </SendButton>
