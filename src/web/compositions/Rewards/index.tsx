@@ -85,7 +85,7 @@ export const Title = styled.div`
   font-size: 2.5rem;
 `
 export const Text = styled.div`
-  color: ${(props) => props.color || props.theme.palette.text.grey};
+  color: ${(props) => props.color || props.theme.palette.text.black};
   font-family: DM Sans;
   font-style: normal;
   font-weight: normal;
@@ -115,7 +115,7 @@ export const CardText = styled(Text)`
 `
 
 export const Value = styled.div`
-  color: ${(props) => props.color || props.theme.palette.text.grey};
+  color: ${(props) => props.color || props.theme.palette.text.black};
 
   font-family: DM Sans;
   font-style: normal;
@@ -225,7 +225,7 @@ export const Cell = styled.td`
   border-bottom: 0.1rem solid ${(props) => props.borderBottom || '#61d8e6'};
   width: 25%;
 
-  color: ${theme.palette.grey.text};
+  color: ${theme.palette.text.light};
   height: 5rem;
   text-transform: none;
   margin: 3rem 1rem;

@@ -54,7 +54,10 @@ const NewContactPopup = ({
     <DialogWrapper
       theme={theme}
       PaperComponent={StyledPaper}
-      style={{ width: '85rem', margin: 'auto' }}
+      style={{
+        width: '85rem',
+        margin: 'auto',
+      }}
       fullScreen={false}
       onClose={handleClose}
       maxWidth={'md'}
@@ -66,14 +69,14 @@ const NewContactPopup = ({
         theme={theme}
         style={{
           justifyContent: 'center',
-          background: '#303743',
-          borderBottom: '.1rem solid #424b68',
+          background: theme.palette.grey.input,
+          border: `0.1rem solid ${theme.palette.text.white}`,
         }}
       >
         <span
           style={{
             fontSize: '1.8rem',
-            color: '#fff',
+            color: theme.palette.text.light,
             fontFamily: 'Avenir Next Demi',
           }}
         >
@@ -81,18 +84,30 @@ const NewContactPopup = ({
         </span>
       </StyledDialogTitle>
       <StyledDialogContent
-        style={{ background: '#303743' }}
+        style={{ background: theme.palette.grey.input }}
         theme={theme}
         id="share-dialog-content"
       >
         <div style={{ paddingTop: '2.5rem', textAlign: 'center' }}>
           <Input
+            style={{
+              background: theme.palette.grey.input,
+              color: theme.palette.text.light,
+              border: `0.1rem solid ${theme.palette.text.white}`,
+              outline: 'none',
+            }}
             type={'text'}
             placeholder={'Name'}
             value={name}
             onChange={(e) => updateName(e.target.value)}
           />
           <Input
+            style={{
+              background: theme.palette.grey.input,
+              color: theme.palette.text.light,
+              border: `0.1rem solid ${theme.palette.text.white}`,
+              outline: 'none',
+            }}
             type={'email'}
             placeholder={'Email'}
             value={email}
@@ -100,6 +115,12 @@ const NewContactPopup = ({
           />
           <div style={{ position: 'relative' }}>
             <Input
+              style={{
+                background: theme.palette.grey.input,
+                color: theme.palette.text.light,
+                border: `0.1rem solid ${theme.palette.text.white}`,
+                outline: 'none',
+              }}
               id={'address'}
               type={'text'}
               placeholder={'SOL Address'}
@@ -134,7 +155,7 @@ const NewContactPopup = ({
               if (name === '') {
                 notify({
                   type: 'error',
-                  message: 'Name field should not be empty'
+                  message: 'Name field should not be empty',
                 })
 
                 return
@@ -143,7 +164,7 @@ const NewContactPopup = ({
               if (address === '') {
                 notify({
                   type: 'error',
-                  message: 'SOL address field should not be empty'
+                  message: 'SOL address field should not be empty',
                 })
 
                 return
@@ -158,14 +179,17 @@ const NewContactPopup = ({
                   name: encrypt(name, localPassword),
                   email: email !== '' ? encrypt(email, localPassword) : '',
                   contactPublicKey: encrypt(address, localPassword),
-                  symbol: encrypt("SOL", localPassword),
+                  symbol: encrypt('SOL', localPassword),
                 },
               })
 
               await getUserAddressbookQueryRefetch()
 
               notify({
-                type: result.data.addWalletContact.status === 'ERR' ? 'error' : 'success',
+                type:
+                  result.data.addWalletContact.status === 'ERR'
+                    ? 'error'
+                    : 'success',
                 message: result.data.addWalletContact.message,
               })
 
@@ -176,7 +200,16 @@ const NewContactPopup = ({
               await handleClose()
             }}
           >
-            {showLoader ? <Loading color={'#fff'} size={16} height={'16px'} style={{ height: '16px' }} /> : 'Add contact'}
+            {showLoader ? (
+              <Loading
+                color={'#fff'}
+                size={16}
+                height={'16px'}
+                style={{ height: '16px' }}
+              />
+            ) : (
+              'Add contact'
+            )}
           </BtnCustom>
         </div>
       </StyledDialogContent>

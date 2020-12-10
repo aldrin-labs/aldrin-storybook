@@ -143,6 +143,8 @@ export default ({ themeMode, isChartPage, children }) => {
               subPrimary: 'white',
               grey: '#fff',
               light: '#fff',
+              white: '#424b68',
+              black: '#fff',
             },
             orange: {
               main: '#F29C38',
@@ -196,6 +198,7 @@ export default ({ themeMode, isChartPage, children }) => {
               circle: '#0E1016',
               chart: '#f65683',
               input: '#303743',
+              back: '#303743',
             },
             primary: {
               main: '#303037',
@@ -355,6 +358,8 @@ export default ({ themeMode, isChartPage, children }) => {
               subPrimary: '#16253D',
               grey: '#2E2E2E',
               light: '#9F9F9F',
+              black: '#3A475C',
+              white: '#9F9F9F',
             },
             orange: {
               main: '#F29C38',
@@ -407,6 +412,7 @@ export default ({ themeMode, isChartPage, children }) => {
               circle: '#E0E0E8',
               chart: '#e0e0e8',
               input: '#F6F8FA',
+              back: '#e0e0e8',
             },
             primary: {
               main: '#FEFEFE',
