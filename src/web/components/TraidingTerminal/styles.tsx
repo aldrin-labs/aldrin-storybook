@@ -24,6 +24,7 @@ export const TitleForInput = styled.div`
   width: auto;
   min-height: 3rem;
   white-space: nowrap;
+  text-decoration: ${(props) => props.textDecoration || 'none'};
   border: ${(props) =>
     props.theme &&
     props.theme.palette &&
@@ -233,7 +234,7 @@ export const TradeInput = styled.input`
           props.theme.palette.white.inputBackground) ||
         '#fff'};
   font-size: 1.3rem;
-  font-family: Avenir Next Demi;
+  font-family: Avenir Next Medium;
   font-weight: bold;
   padding-left: ${(props) => (props.needCharacter ? '2rem' : '0.6rem')};
   text-align: ${(props) => props.align};

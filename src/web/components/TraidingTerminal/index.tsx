@@ -126,6 +126,7 @@ export const TradeInputContent = ({
   header = '',
   symbol = '',
   value = '',
+  needChain = true,
   pattern = '',
   step = '',
   type = 'number',
@@ -136,6 +137,9 @@ export const TradeInputContent = ({
   onChange = () => {},
   inputStyles,
   theme,
+  needTooltip = false,
+  titleForTooltip = '',
+  textDecoration = '',
 }: {
   isValid?: boolean
   showErrors?: boolean
@@ -159,6 +163,9 @@ export const TradeInputContent = ({
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
   inputStyles?: CSSProperties
   theme?: Theme
+  needTooltip?: boolean
+  titleForTooltip?: string
+  textDecoration?: string
 }) => {
   return (
     <InputRowContainer
@@ -178,8 +185,18 @@ export const TradeInputContent = ({
           {preSymbol}
         </UpdatedCoin>
       ) : null}
-      <TitleForInput>{header}</TitleForInput>
+      {needTooltip ? (
+        <DarkTooltip title={titleForTooltip}>
+          <TitleForInput textDecoration={textDecoration}>
+            {header}
+          </TitleForInput>
+        </DarkTooltip>
+      ) : (
+        <TitleForInput textDecoration={textDecoration}>{header}</TitleForInput>
+      )}
+
       <TradeInput
+        needChain={needChain}
         title={title}
         theme={theme}
         align={textAlign}

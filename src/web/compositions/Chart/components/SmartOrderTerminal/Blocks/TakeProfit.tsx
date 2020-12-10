@@ -87,27 +87,23 @@ export const TakeProfitBlock = ({
               title={
                 <>
                   <p>
-                    The algorithm which will wait for the trend to reverse to
-                    place the order.
+                    The algorithm, which will wait for the most favorable price
+                    for the order until the trend is reversed.
                   </p>
                   <p>
-                    <b>Deviation:</b> The level of price change after the trend
-                    reversal, at which the order will be executed.
-                  </p>
-                  <p>
-                    <b>For example:</b> you bought BTC at 7500 USDT price and
-                    set 1% trailing deviation to take a profit. Trailing will
-                    start right after you buy. Then the price goes to 7700 and
-                    the trend reverses and begins to fall. The order will be
+                    For example: you bought BTC by 7500 USDT price and set 1%
+                    trailing deviation to take a profit. Trailing will start
+                    right after enter and then the price will grow to 7700, then
+                    the trend will reverse and start to fall. The order will be
                     executed when the price reaches 7633, i.e. by 1% from the
-                    moment the trend reversed.
+                    moment the trend reversal.
                   </p>
                 </>
               }
             >
               <AdditionalSettingsButton
                 theme={theme}
-                style={{ fontSize: '1rem' }}
+                style={{ fontSize: '1rem', textDecoration: 'underline' }}
                 isActive={takeProfit.trailingTAP.isTrailingOn}
                 onClick={() => {
                   updateSubBlockValue(
@@ -138,7 +134,7 @@ export const TakeProfitBlock = ({
                   })
                 }}
               >
-                Trailing take profit
+                Trailing TAP
               </AdditionalSettingsButton>
             </DarkTooltip>
           )}
@@ -149,27 +145,12 @@ export const TakeProfitBlock = ({
                 maxWidth={'40rem'}
                 title={
                   <>
-                    <p>
-                      Partial closing of a trade when a certain level of profit
-                      is reached.
-                    </p>
-
-                    <p>
-                      Set up the price and amount, then click "Add target".
-                      Distribute 100% of the total trading amount.
-                    </p>
-
-                    <p>
-                      <b>For example:</b> you bought BTC and set that at 5%
-                      profit sell 25% of your amount, at 10% profit sell 60%
-                      amount and at 15% profit sell remaining 15% amount. When
-                      the price reaches each profit level, it will place the
-                      order for specified amount.
-                    </p>
+                    <p>Take a partial profit on several rising points.</p>
                   </>
                 }
               >
                 <AdditionalSettingsButton
+                  style={{ textDecoration: 'underline' }}
                   theme={theme}
                   isActive={takeProfit.splitTargets.isSplitTargetsOn}
                   onClick={() => {
@@ -197,18 +178,19 @@ export const TakeProfitBlock = ({
                     updateBlockValue('takeProfit', 'external', false)
                   }}
                 >
-                  Multiple targets
+                  Split targets
                 </AdditionalSettingsButton>
               </DarkTooltip>
             )}
           <DarkTooltip
             maxWidth={'30rem'}
             title={
-              'Your take profit order will be placed once when there is a Trading View alert with params that you sent.'
+              'Advanced Take a Profit using your Alerts from TradingView.com.'
             }
           >
             <AdditionalSettingsButton
               theme={theme}
+              style={{ textDecoration: 'underline' }}
               isActive={takeProfit.external}
               onClick={() => {
                 updateSubBlockValue(
@@ -269,21 +251,122 @@ export const TakeProfitBlock = ({
             !takeProfit.forcedStopByAlert &&
             !takeProfit.plotEnabled) ||
             !takeProfit.external) && (
-            <FormInputContainer
-              theme={theme}
-              haveTooltip
-              tooltipText={
-                <>
-                  <p>The unrealized profit/ROE for closing the trade.</p>
-                  <p>
-                    <b>For example:</b>you bought 1 BTC and set 100% take
-                    profit. Your unrealized profit should be 1 BTC and order
-                    will be executed.
-                  </p>
-                </>
-              }
-              title={'stop price'}
-            >
+            // <FormInputContainer
+            //   theme={theme}
+            //   haveTooltip
+            //   tooltipText={
+            //     <>
+            //       <p>The unrealized profit/ROE for closing the trade.</p>
+            //       <p>
+            //         <b>For example:</b>you bought 1 BTC and set 100% take
+            //         profit. Your unrealized profit should be 1 BTC and order
+            //         will be executed.
+            //       </p>
+            //     </>
+            //   }
+            //   title={'stop price'}
+            // >
+            <InputRowContainer>
+              <SliderWithPriceAndPercentageFieldRow
+                {...{
+                  pair,
+                  theme,
+                  entryPoint,
+                  showErrors,
+                  isMarketType,
+                  validateField,
+                  pricePrecision,
+                  updateBlockValue,
+                  priceForCalculate,
+                  percentagePreSymbol: '+',
+                  approximatePrice: takeProfit.takeProfitPrice,
+                  pricePercentage: takeProfit.pricePercentage,
+                  getApproximatePrice: (value: number) => {
+                    return value === 0
+                      ? priceForCalculate
+                      : entryPoint.order.side === 'sell'
+                      ? stripDigitPlaces(
+                          priceForCalculate *
+                            (1 - value / 100 / entryPoint.order.leverage),
+                          pricePrecision
+                        )
+                      : stripDigitPlaces(
+                          priceForCalculate *
+                            (1 + value / 100 / entryPoint.order.leverage),
+                          pricePrecision
+                        )
+                  },
+                  onAfterSliderChange: (value: number) => {
+                    updateStopLossAndTakeProfitPrices({
+                      takeProfitPercentage: value,
+                    })
+
+                    updateBlockValue('takeProfit', 'pricePercentage', value)
+                  },
+                  onApproximatePriceChange: (
+                    e: React.ChangeEvent<HTMLInputElement>,
+                    updateValue: (v: any) => void
+                  ) => {
+                    const percentage =
+                      entryPoint.order.side === 'sell'
+                        ? (1 - +e.target.value / priceForCalculate) *
+                          100 *
+                          entryPoint.order.leverage
+                        : -(1 - +e.target.value / priceForCalculate) *
+                          100 *
+                          entryPoint.order.leverage
+
+                    updateBlockValue(
+                      'takeProfit',
+                      'pricePercentage',
+                      stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
+                    )
+
+                    updateValue(
+                      stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
+                    )
+
+                    updateBlockValue(
+                      'takeProfit',
+                      'takeProfitPrice',
+                      e.target.value
+                    )
+                  },
+                  onPricePercentageChange: (
+                    e: React.ChangeEvent<HTMLInputElement>
+                  ) => {
+                    updateStopLossAndTakeProfitPrices({
+                      takeProfitPercentage: +e.target.value,
+                    })
+
+                    updateBlockValue(
+                      'takeProfit',
+                      'pricePercentage',
+                      e.target.value
+                    )
+                  },
+                  updateSubBlockValue,
+                  updateStopLossAndTakeProfitPrices,
+                }}
+              />
+            </InputRowContainer>
+            // </FormInputContainer>
+          )}
+
+        {takeProfit.trailingTAP.isTrailingOn &&
+          ((takeProfit.external &&
+            !takeProfit.forcedStopByAlert &&
+            !takeProfit.plotEnabled) ||
+            !takeProfit.external) && (
+            <>
+              {/* <FormInputContainer
+                theme={theme}
+                haveTooltip
+                tooltipText={
+                  'The price at which the trailing algorithm is enabled.'
+                }
+                title={!takeProfit.external ? 'activation price' : 'stop price'}
+              > */}
               <InputRowContainer>
                 <SliderWithPriceAndPercentageFieldRow
                   {...{
@@ -298,7 +381,7 @@ export const TakeProfitBlock = ({
                     priceForCalculate,
                     percentagePreSymbol: '+',
                     approximatePrice: takeProfit.takeProfitPrice,
-                    pricePercentage: takeProfit.pricePercentage,
+                    pricePercentage: takeProfit.trailingTAP.activatePrice,
                     getApproximatePrice: (value: number) => {
                       return value === 0
                         ? priceForCalculate
@@ -315,11 +398,16 @@ export const TakeProfitBlock = ({
                           )
                     },
                     onAfterSliderChange: (value: number) => {
+                      updateSubBlockValue(
+                        'takeProfit',
+                        'trailingTAP',
+                        'activatePrice',
+                        value
+                      )
+
                       updateStopLossAndTakeProfitPrices({
                         takeProfitPercentage: value,
                       })
-
-                      updateBlockValue('takeProfit', 'pricePercentage', value)
                     },
                     onApproximatePriceChange: (
                       e: React.ChangeEvent<HTMLInputElement>,
@@ -334,9 +422,10 @@ export const TakeProfitBlock = ({
                             100 *
                             entryPoint.order.leverage
 
-                      updateBlockValue(
+                      updateSubBlockValue(
                         'takeProfit',
-                        'pricePercentage',
+                        'trailingTAP',
+                        'activatePrice',
                         stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
                       )
 
@@ -344,137 +433,30 @@ export const TakeProfitBlock = ({
                         stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
                       )
 
-                      updateBlockValue(
-                        'takeProfit',
-                        'takeProfitPrice',
-                        e.target.value
-                      )
+                      updateStopLossAndTakeProfitPrices({
+                        takeProfitPercentage: +e.target.value,
+                      })
                     },
                     onPricePercentageChange: (
                       e: React.ChangeEvent<HTMLInputElement>
                     ) => {
+                      updateSubBlockValue(
+                        'takeProfit',
+                        'trailingTAP',
+                        'activatePrice',
+                        +e.target.value
+                      )
+
                       updateStopLossAndTakeProfitPrices({
                         takeProfitPercentage: +e.target.value,
                       })
-
-                      updateBlockValue(
-                        'takeProfit',
-                        'pricePercentage',
-                        e.target.value
-                      )
                     },
                     updateSubBlockValue,
                     updateStopLossAndTakeProfitPrices,
                   }}
                 />
               </InputRowContainer>
-            </FormInputContainer>
-          )}
-
-        {takeProfit.trailingTAP.isTrailingOn &&
-          ((takeProfit.external &&
-            !takeProfit.forcedStopByAlert &&
-            !takeProfit.plotEnabled) ||
-            !takeProfit.external) && (
-            <>
-              <FormInputContainer
-                theme={theme}
-                haveTooltip
-                tooltipText={
-                  'The price at which the trailing algorithm is enabled.'
-                }
-                title={!takeProfit.external ? 'activation price' : 'stop price'}
-              >
-                <InputRowContainer>
-                  <SliderWithPriceAndPercentageFieldRow
-                    {...{
-                      pair,
-                      theme,
-                      entryPoint,
-                      showErrors,
-                      isMarketType,
-                      validateField,
-                      pricePrecision,
-                      updateBlockValue,
-                      priceForCalculate,
-                      percentagePreSymbol: '+',
-                      approximatePrice: takeProfit.takeProfitPrice,
-                      pricePercentage: takeProfit.trailingTAP.activatePrice,
-                      getApproximatePrice: (value: number) => {
-                        return value === 0
-                          ? priceForCalculate
-                          : entryPoint.order.side === 'sell'
-                          ? stripDigitPlaces(
-                              priceForCalculate *
-                                (1 - value / 100 / entryPoint.order.leverage),
-                              pricePrecision
-                            )
-                          : stripDigitPlaces(
-                              priceForCalculate *
-                                (1 + value / 100 / entryPoint.order.leverage),
-                              pricePrecision
-                            )
-                      },
-                      onAfterSliderChange: (value: number) => {
-                        updateSubBlockValue(
-                          'takeProfit',
-                          'trailingTAP',
-                          'activatePrice',
-                          value
-                        )
-
-                        updateStopLossAndTakeProfitPrices({
-                          takeProfitPercentage: value,
-                        })
-                      },
-                      onApproximatePriceChange: (
-                        e: React.ChangeEvent<HTMLInputElement>,
-                        updateValue: (v: any) => void
-                      ) => {
-                        const percentage =
-                          entryPoint.order.side === 'sell'
-                            ? (1 - +e.target.value / priceForCalculate) *
-                              100 *
-                              entryPoint.order.leverage
-                            : -(1 - +e.target.value / priceForCalculate) *
-                              100 *
-                              entryPoint.order.leverage
-
-                        updateSubBlockValue(
-                          'takeProfit',
-                          'trailingTAP',
-                          'activatePrice',
-                          stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
-                        )
-
-                        updateValue(
-                          stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
-                        )
-
-                        updateStopLossAndTakeProfitPrices({
-                          takeProfitPercentage: +e.target.value,
-                        })
-                      },
-                      onPricePercentageChange: (
-                        e: React.ChangeEvent<HTMLInputElement>
-                      ) => {
-                        updateSubBlockValue(
-                          'takeProfit',
-                          'trailingTAP',
-                          'activatePrice',
-                          +e.target.value
-                        )
-
-                        updateStopLossAndTakeProfitPrices({
-                          takeProfitPercentage: +e.target.value,
-                        })
-                      },
-                      updateSubBlockValue,
-                      updateStopLossAndTakeProfitPrices,
-                    }}
-                  />
-                </InputRowContainer>
-              </FormInputContainer>
+              {/* </FormInputContainer> */}
               {!takeProfit.external && (
                 // <FormInputContainer
                 //   theme={theme}
@@ -488,7 +470,10 @@ export const TakeProfitBlock = ({
                   <SliderWithPriceAndPercentageFieldRow
                     {...{
                       pair,
+                      needChain: false,
                       theme,
+                      header: 'deviation',
+                      percentageInputWidth: '61.5%',
                       entryPoint,
                       showErrors,
                       isMarketType,
@@ -496,6 +481,7 @@ export const TakeProfitBlock = ({
                       pricePrecision,
                       updateBlockValue,
                       priceForCalculate,
+
                       needPriceField: false,
                       percentagePreSymbol: '',
                       percentageTextAlign: 'right',
@@ -757,11 +743,12 @@ export const TakeProfitBlock = ({
                 {...{
                   pair,
                   header: 'deviation',
+                  needChain: false,
                   theme,
                   entryPoint,
                   showErrors,
                   isMarketType,
-                  percentageInputWidth: '57%',
+                  percentageInputWidth: '61.5%',
                   validateField,
                   pricePrecision,
                   updateBlockValue,

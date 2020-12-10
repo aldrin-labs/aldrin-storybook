@@ -1,6 +1,10 @@
 import React from 'react'
 import copy from 'clipboard-copy'
 
+import SvgIcon from '@sb/components/SvgIcon'
+
+import Chain from '@icons/chain.svg'
+
 import { getSecondValueFromFirst, BlueSwitcherStyles } from '../utils'
 
 import { StopLossBlockProps } from '../types'
@@ -87,20 +91,13 @@ export const StopLossBlock = ({
             <DarkTooltip
               maxWidth={'30rem'}
               title={
-                <>
-                  <p>Waiting after unrealized P&L will reach set target.</p>
-                  <p>
-                    <b>For example:</b> you set 10% stop loss and 1 minute
-                    timeout. When your unrealized loss is 10% timeout will give
-                    a minute for a chance to reverse trend and loss to go below
-                    10% before stop loss order executes.
-                  </p>
-                </>
+                'Waiting before executing a stop order with the expectation that the trend will reverse.'
               }
             >
               <AdditionalSettingsButton
                 theme={theme}
                 isActive={stopLoss.timeout.isTimeoutOn}
+                style={{ textDecoration: 'underline' }}
                 onClick={() => {
                   if (!stopLoss.external) {
                     updateBlockValue('stopLoss', 'external', false)
@@ -139,10 +136,11 @@ export const StopLossBlock = ({
             <DarkTooltip
               maxWidth={'30rem'}
               title={
-                'Your stop loss order will be placed once when there is a Trading View alert with params that you sent.'
+                'Advanced Stop Loss using your Alerts from TradingView.com.'
               }
             >
               <AdditionalSettingsButton
+                style={{ textDecoration: 'underline' }}
                 theme={theme}
                 isActive={stopLoss.external}
                 onClick={() => {
@@ -177,7 +175,7 @@ export const StopLossBlock = ({
                   }
                 }}
               >
-                SL by TV Alert
+                Use TV Alert
               </AdditionalSettingsButton>
             </DarkTooltip>
           </InputRowContainer>
@@ -300,211 +298,193 @@ export const StopLossBlock = ({
               <>
                 <InputRowContainer>
                   {stopLoss.timeout.isTimeoutOn && (
-                    <SubBlocksContainer>
-                      <FormInputContainer
-                        theme={theme}
-                        haveTooltip
-                        tooltipText={
-                          <>
-                            <p>
-                              Waiting after unrealized P&L will reach set
-                              target.
-                            </p>
-                            <p>
-                              <b>For example:</b> you set 10% stop loss and 1
-                              minute timeout. When your unrealized loss is 10%
-                              timeout will give a minute for a chance to reverse
-                              trend and loss to go below 10% before stop loss
-                              order executes.
-                            </p>
-                          </>
-                        }
-                        title={'timeout'}
-                        lineMargin={'0 1.2rem 0 1rem'}
-                      >
-                        <InputRowContainer wrap={'wrap'}>
-                          <SliderWithTimeoutFieldRow
-                            theme={theme}
-                            showErrors={showErrors}
-                            validateField={validateField}
-                            timeoutMode={stopLoss.timeout.whenLossableMode}
-                            timeoutValue={stopLoss.timeout.whenLossableSec}
-                            onAfterSliderChange={(value) => {
-                              updateSubBlockValue(
-                                'stopLoss',
-                                'timeout',
-                                'whenLossableSec',
-                                value
-                              )
-                            }}
-                            onTimeoutChange={(
-                              e: React.ChangeEvent<HTMLInputElement>
-                            ) => {
-                              updateSubBlockValue(
-                                'stopLoss',
-                                'timeout',
-                                'whenLossableSec',
-                                e.target.value
-                              )
-                            }}
-                            onChangeTimeoutMode={(
-                              e: React.ChangeEvent<HTMLInputElement>
-                            ) => {
-                              updateSubBlockValue(
-                                'stopLoss',
-                                'timeout',
-                                'whenLossableMode',
-                                e.target.value
-                              )
-                            }}
-                          />
-                        </InputRowContainer>
-                      </FormInputContainer>
-                    </SubBlocksContainer>
-                  )}
-                  <SubBlocksContainer
-                    width={
-                      stopLoss.forcedStop.mandatoryForcedLoss ? '100%' : '50%'
-                    }
-                  >
+                    // <SubBlocksContainer style={{ width: '100%' }}>
                     <FormInputContainer
                       theme={theme}
                       haveTooltip
                       tooltipText={
                         <>
                           <p>
-                            How much should the price change to ignore timeout.
+                            Waiting after unrealized P&L will reach set target.
                           </p>
-
                           <p>
-                            <b>For example:</b> You bought BTC and set 10% stop
-                            loss with 1 minute timeout and 15% forced stop. But
-                            the price continued to fall during the timeout. Your
-                            trade will be closed when loss will be 15%
-                            regardless of timeout.
+                            <b>For example:</b> you set 10% stop loss and 1
+                            minute timeout. When your unrealized loss is 10%
+                            timeout will give a minute for a chance to reverse
+                            trend and loss to go below 10% before stop loss
+                            order executes.
                           </p>
                         </>
                       }
-                      title={'forced stop price'}
+                      title={'timeout'}
+                      lineMargin={'0 1.2rem 0 1rem'}
                     >
-                      <InputRowContainer
-                        wrap={
-                          !stopLoss.forcedStop.mandatoryForcedLoss
-                            ? 'wrap'
-                            : 'nowrap'
-                        }
-                      >
-                        <SliderWithPriceAndPercentageFieldRow
-                          {...{
-                            pair,
-                            theme,
-                            entryPoint,
-                            stopLoss,
-                            showErrors,
-                            isMarketType,
-                            validateField,
-                            pricePrecision,
-                            updateBlockValue,
-                            priceForCalculate,
-                            percentagePreSymbol: '../?5',
-                            sliderInTheBottom: !stopLoss.forcedStop
-                              .mandatoryForcedLoss,
-                            approximatePrice:
-                              stopLoss.forcedStop.forcedStopPrice,
-                            pricePercentage:
-                              stopLoss.forcedStop.pricePercentage,
-                            getApproximatePrice: (value: number) => {
-                              return value === 0
-                                ? priceForCalculate
-                                : entryPoint.order.side === 'buy'
-                                ? stripDigitPlaces(
-                                    priceForCalculate *
-                                      (1 -
-                                        value /
-                                          100 /
-                                          entryPoint.order.leverage),
-                                    pricePrecision
-                                  )
-                                : stripDigitPlaces(
-                                    priceForCalculate *
-                                      (1 +
-                                        value /
-                                          100 /
-                                          entryPoint.order.leverage),
-                                    pricePrecision
-                                  )
-                            },
-                            onAfterSliderChange: (value: number) => {
-                              updateSubBlockValue(
-                                'stopLoss',
-                                'forcedStop',
-                                'pricePercentage',
-                                value
-                              )
-
-                              updateStopLossAndTakeProfitPrices({
-                                forcedStopPercentage: value,
-                              })
-                            },
-                            onApproximatePriceChange: (
-                              e: React.ChangeEvent<HTMLInputElement>,
-                              updateValue: (v: any) => void
-                            ) => {
-                              const percentage =
-                                entryPoint.order.side === 'buy'
-                                  ? (1 - +e.target.value / priceForCalculate) *
-                                    100 *
-                                    entryPoint.order.leverage
-                                  : -(1 - +e.target.value / priceForCalculate) *
-                                    100 *
-                                    entryPoint.order.leverage
-
-                              updateSubBlockValue(
-                                'stopLoss',
-                                'forcedStop',
-                                'pricePercentage',
-                                stripDigitPlaces(
-                                  percentage < 0 ? 0 : percentage,
-                                  2
-                                )
-                              )
-
-                              updateSubBlockValue(
-                                'stopLoss',
-                                'forcedStop',
-                                'forcedStopPrice',
-                                e.target.value
-                              )
-                              updateValue(
-                                stripDigitPlaces(
-                                  percentage < 0 ? 0 : percentage,
-                                  2
-                                )
-                              )
-                            },
-                            onPricePercentageChange: (
-                              e: React.ChangeEvent<HTMLInputElement>
-                            ) => {
-                              updateSubBlockValue(
-                                'stopLoss',
-                                'forcedStop',
-                                'pricePercentage',
-                                e.target.value
-                              )
-
-                              updateStopLossAndTakeProfitPrices({
-                                forcedStopPercentage: +e.target.value,
-                              })
-                            },
-                            updateSubBlockValue,
-                            showConfirmationPopup,
-                            updateTerminalViewMode,
-                            updateStopLossAndTakeProfitPrices,
+                      <InputRowContainer wrap={'wrap'}>
+                        <SliderWithTimeoutFieldRow
+                          theme={theme}
+                          showErrors={showErrors}
+                          validateField={validateField}
+                          timeoutMode={stopLoss.timeout.whenLossableMode}
+                          timeoutValue={stopLoss.timeout.whenLossableSec}
+                          onAfterSliderChange={(value) => {
+                            updateSubBlockValue(
+                              'stopLoss',
+                              'timeout',
+                              'whenLossableSec',
+                              value
+                            )
+                          }}
+                          onTimeoutChange={(
+                            e: React.ChangeEvent<HTMLInputElement>
+                          ) => {
+                            updateSubBlockValue(
+                              'stopLoss',
+                              'timeout',
+                              'whenLossableSec',
+                              e.target.value
+                            )
+                          }}
+                          onChangeTimeoutMode={(
+                            e: React.ChangeEvent<HTMLInputElement>
+                          ) => {
+                            updateSubBlockValue(
+                              'stopLoss',
+                              'timeout',
+                              'whenLossableMode',
+                              e.target.value
+                            )
                           }}
                         />
                       </InputRowContainer>
                     </FormInputContainer>
-                  </SubBlocksContainer>
+                    // </SubBlocksContainer>
+                  )}
+                </InputRowContainer>
+                <InputRowContainer>
+                  <FormInputContainer
+                    theme={theme}
+                    haveTooltip
+                    tooltipText={
+                      <>
+                        <p>
+                          How much should the price change to ignore timeout.
+                        </p>
+
+                        <p>
+                          <b>For example:</b> You bought BTC and set 10% stop
+                          loss with 1 minute timeout and 15% forced stop. But
+                          the price continued to fall during the timeout. Your
+                          trade will be closed when loss will be 15% regardless
+                          of timeout.
+                        </p>
+                      </>
+                    }
+                    title={'forced stop price'}
+                  >
+                    <InputRowContainer wrap={'nowrap'}>
+                      <SliderWithPriceAndPercentageFieldRow
+                        {...{
+                          pair,
+                          theme,
+                          entryPoint,
+                          stopLoss,
+                          showErrors,
+                          isMarketType,
+                          validateField,
+                          pricePrecision,
+                          updateBlockValue,
+                          priceForCalculate,
+                          percentagePreSymbol: '%',
+                          sliderInTheBottom: false,
+                          approximatePrice: stopLoss.forcedStop.forcedStopPrice,
+                          pricePercentage: stopLoss.forcedStop.pricePercentage,
+                          getApproximatePrice: (value: number) => {
+                            return value === 0
+                              ? priceForCalculate
+                              : entryPoint.order.side === 'buy'
+                              ? stripDigitPlaces(
+                                  priceForCalculate *
+                                    (1 -
+                                      value / 100 / entryPoint.order.leverage),
+                                  pricePrecision
+                                )
+                              : stripDigitPlaces(
+                                  priceForCalculate *
+                                    (1 +
+                                      value / 100 / entryPoint.order.leverage),
+                                  pricePrecision
+                                )
+                          },
+                          onAfterSliderChange: (value: number) => {
+                            updateSubBlockValue(
+                              'stopLoss',
+                              'forcedStop',
+                              'pricePercentage',
+                              value
+                            )
+
+                            updateStopLossAndTakeProfitPrices({
+                              forcedStopPercentage: value,
+                            })
+                          },
+                          onApproximatePriceChange: (
+                            e: React.ChangeEvent<HTMLInputElement>,
+                            updateValue: (v: any) => void
+                          ) => {
+                            const percentage =
+                              entryPoint.order.side === 'buy'
+                                ? (1 - +e.target.value / priceForCalculate) *
+                                  100 *
+                                  entryPoint.order.leverage
+                                : -(1 - +e.target.value / priceForCalculate) *
+                                  100 *
+                                  entryPoint.order.leverage
+
+                            updateSubBlockValue(
+                              'stopLoss',
+                              'forcedStop',
+                              'pricePercentage',
+                              stripDigitPlaces(
+                                percentage < 0 ? 0 : percentage,
+                                2
+                              )
+                            )
+
+                            updateSubBlockValue(
+                              'stopLoss',
+                              'forcedStop',
+                              'forcedStopPrice',
+                              e.target.value
+                            )
+                            updateValue(
+                              stripDigitPlaces(
+                                percentage < 0 ? 0 : percentage,
+                                2
+                              )
+                            )
+                          },
+                          onPricePercentageChange: (
+                            e: React.ChangeEvent<HTMLInputElement>
+                          ) => {
+                            updateSubBlockValue(
+                              'stopLoss',
+                              'forcedStop',
+                              'pricePercentage',
+                              e.target.value
+                            )
+
+                            updateStopLossAndTakeProfitPrices({
+                              forcedStopPercentage: +e.target.value,
+                            })
+                          },
+                          updateSubBlockValue,
+                          showConfirmationPopup,
+                          updateTerminalViewMode,
+                          updateStopLossAndTakeProfitPrices,
+                        }}
+                      />
+                    </InputRowContainer>
+                  </FormInputContainer>
                 </InputRowContainer>
               </>
             )}

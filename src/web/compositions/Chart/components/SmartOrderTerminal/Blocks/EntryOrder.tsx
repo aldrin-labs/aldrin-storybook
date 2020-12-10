@@ -146,16 +146,6 @@ export const EntryOrderBlock = ({
                   </p>
 
                   <p>
-                    <b>Activation price:</b> The price at which the algorithm is
-                    enabled.
-                  </p>
-
-                  <p>
-                    <b>Deviation:</b> The level of price change after the trend
-                    reversal, at which the order will be executed.
-                  </p>
-
-                  <p>
                     <b>For example:</b> you set 7500 USDT activation price and
                     1% deviation to buy BTC. Trailing will start when price will
                     be 7500 and then after activation there will be a buy when
@@ -168,6 +158,7 @@ export const EntryOrderBlock = ({
               }
             >
               <AdditionalSettingsButton
+                style={{ textDecoration: 'underline' }}
                 theme={theme}
                 isActive={entryPoint.trailing.isTrailingOn}
                 onClick={() => {
@@ -205,11 +196,10 @@ export const EntryOrderBlock = ({
           )}
           <DarkTooltip
             maxWidth={'30rem'}
-            title={
-              'Your smart order will be placed once when there is a Trading View alert that you connected to smart order.'
-            }
+            title={'Advanced entry using your Alerts from TradingView.com.'}
           >
             <AdditionalSettingsButton
+              style={{ textDecoration: 'underline' }}
               theme={theme}
               isActive={entryPoint.TVAlert.isTVAlertOn}
               onClick={() => {
@@ -230,7 +220,7 @@ export const EntryOrderBlock = ({
                 }
               }}
             >
-              Entry by TV Alert
+              Use TV Alert
             </AdditionalSettingsButton>
           </DarkTooltip>
           <DarkTooltip
@@ -238,6 +228,7 @@ export const EntryOrderBlock = ({
             title={'Place multiple entry targets to average your lose'}
           >
             <AdditionalSettingsButton
+              style={{ textDecoration: 'underline' }}
               theme={theme}
               isActive={entryPoint.averaging.enabled}
               onClick={() => {
@@ -353,7 +344,7 @@ export const EntryOrderBlock = ({
             )}
           </div>
         </InputRowContainer>
-        <InputRowContainer>
+        <InputRowContainer style={{ marginBottom: '1rem' }}>
           <ChangeOrderTypeBtn
             theme={theme}
             isActive={entryPoint.order.type === 'market'}
@@ -699,7 +690,7 @@ export const EntryOrderBlock = ({
           tooltipText={'The price at which the trailing algorithm is enabled.'}
           title={`price (${pair[1]})`}
         > */}
-        <InputRowContainer>
+        <InputRowContainer style={{ marginBottom: '1rem' }}>
           {isAveragingAfterFirstTarget ? (
             <>
               {/* slider */}
@@ -970,6 +961,10 @@ export const EntryOrderBlock = ({
                   ? '70%'
                   : '100%'
               }
+              needTooltip={entryPoint.trailing.isTrailingOn}
+              titleForTooltip={
+                'The price at which the trailing algorithm will be triggered.'
+              }
               header={'price'}
               symbol={pair[1]}
               type={
@@ -1087,10 +1082,14 @@ export const EntryOrderBlock = ({
           // >
           <InputRowContainer style={{ margin: '1rem auto' }}>
             <Input
-              header={'price'}
+              header={'deviation'}
+              needTooltip
+              titleForTooltip={
+                'The level of price change after the trend reversal, at which the trailing order will be executed.'
+              }
               theme={theme}
               padding={'0'}
-              width={'calc(32.5%)'}
+              width={'45%'}
               textAlign={'left'}
               symbol={pair[1]}
               value={entryPoint.trailing.trailingDeviationPrice}
@@ -1132,8 +1131,9 @@ export const EntryOrderBlock = ({
             <Input
               theme={theme}
               padding={'0 .8rem 0 .8rem'}
-              width={'calc(17.5%)'}
+              width={'24%'}
               symbol={'%'}
+              header={'level'}
               textAlign={'right'}
               pattern={'[0-9]+.[0-9]{3}'}
               type={'text'}
@@ -1177,7 +1177,7 @@ export const EntryOrderBlock = ({
                 )
               }
               sliderContainerStyles={{
-                width: entryPoint.TVAlert.plotEnabled ? '20%' : '50%',
+                width: entryPoint.TVAlert.plotEnabled ? '20%' : '45%',
                 margin: '0 .8rem 0 .8rem',
               }}
               onChange={(value) => {

@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react'
+import SvgIcon from '@sb/components/SvgIcon'
+
+import Chain from '@icons/chain.svg'
 
 import { InputRowContainer } from '../styles'
 
@@ -18,6 +21,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
   pair,
   header = 'level',
   theme,
+  needChain = true,
   entryPoint,
   showErrors,
   isMarketType,
@@ -45,6 +49,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
       {needPriceField && (
         <Input
           theme={theme}
+          needChain={needChain}
           header={'price'}
           padding={'0'}
           width={sliderInTheBottom ? '65%' : 'calc(32.5%)'}
@@ -64,14 +69,14 @@ export const SliderWithPriceAndPercentageFieldRow = ({
           onChange={(e) => onApproximatePriceChange(e, updateValue)}
         />
       )}
-
+      {needChain && <SvgIcon src={Chain} style={{ margin: 'auto 0.5rem' }} />}
       <Input
         theme={theme}
         padding={
           sliderInTheBottom
             ? '0 0 0 .8rem'
             : needPriceField
-            ? '0 .8rem 0 .8rem'
+            ? '0 .8rem 0 0rem'
             : '0 .8rem 0 0rem'
         }
         width={
@@ -153,7 +158,7 @@ export const SliderWithTimeoutFieldRow = ({
       <Input
         theme={theme}
         haveSelector
-        width={'calc(75% - .4rem)'}
+        width={'calc(90% - .4rem)'}
         showErrors={showErrors}
         isValid={validateField(true, timeoutValue)}
         value={value}
@@ -166,7 +171,7 @@ export const SliderWithTimeoutFieldRow = ({
       />
       <Select
         theme={theme}
-        width={'calc(25% - .8rem)'}
+        width={'calc(10% - .8rem)'}
         value={timeoutMode}
         inputStyles={{
           borderTopLeftRadius: 0,
@@ -177,19 +182,19 @@ export const SliderWithTimeoutFieldRow = ({
         <option>sec</option>
         <option>min</option>
       </Select>
-      <InputRowContainer padding={'1.6rem 0 .8rem 0'}>
-        <BlueSlider
-          theme={theme}
-          max={60}
-          value={value}
-          sliderContainerStyles={{
-            width: 'calc(100% - 1.2rem)',
-            margin: '0 1.2rem 0 0rem',
-          }}
-          onChange={(v) => updateValue(v)}
-          onAfterChange={onAfterSliderChange}
-        />
-      </InputRowContainer>
+      {/* <InputRowContainer padding={'1.6rem 0 .8rem 0'}> */}
+      <BlueSlider
+        theme={theme}
+        max={60}
+        value={value}
+        sliderContainerStyles={{
+          width: 'calc(100%-2rem)',
+          margin: '1rem 1.5rem 0 1rem',
+        }}
+        onChange={(v) => updateValue(v)}
+        onAfterChange={onAfterSliderChange}
+      />
+      {/* </InputRowContainer> */}
     </>
   )
 }
@@ -215,6 +220,7 @@ export const SliderWithAmountFieldRow = ({
   funds,
   amount,
   total,
+  needChain = false,
 }: SliderWithPriceAndPercentageFieldRowProps) => {
   const [localAmount, updateLocalAmount] = useState(amount)
   const [localTotal, updateLocalTotal] = useState(total)
@@ -234,10 +240,10 @@ export const SliderWithAmountFieldRow = ({
 
   return (
     <>
-      <InputRowContainer>
+      <InputRowContainer style={{ marginBottom: '2rem' }}>
         <div
           style={{
-            width: entryPoint.TVAlert.plotEnabled ? '32%' : '47%',
+            width: 'calc((100% - 2rem - 32px) / 3)',
           }}
         >
           {/* <FormInputContainer
@@ -266,6 +272,9 @@ export const SliderWithAmountFieldRow = ({
             pattern={marketType === 0 ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'}
             symbol={pair[0]}
             header={'size'}
+            needTooltip
+            textDecoration={'underline'}
+            titleForTooltip={'The leveraged amount of your position.'}
             value={localAmount}
             showErrors={showErrors}
             disabled={
@@ -275,25 +284,12 @@ export const SliderWithAmountFieldRow = ({
             isValid={validateField(true, +entryPoint.order.amount)}
             onChange={onAmountChange}
           />
-          {/* </FormInputContainer> */}
+          {/* </FormInputContainer><< */}
         </div>
+        <SvgIcon src={Chain} style={{ margin: 'auto 0.5rem' }} />
         <div
           style={{
-            width: '6%',
-            display: 'flex',
-            justifyContent: 'center',
-          }}
-        >
-          <HeightIcon
-            style={{
-              color: theme.palette.grey.text,
-              transform: 'rotate(-90deg) translateX(-30%)',
-            }}
-          />
-        </div>
-        <div
-          style={{
-            width: entryPoint.TVAlert.plotEnabled ? '32%' : '47%',
+            width: 'calc((100% - 2rem - 32px) / 3)',
           }}
         >
           {/* <FormInputContainer
@@ -315,7 +311,7 @@ export const SliderWithAmountFieldRow = ({
             theme={theme}
             symbol={pair[1]}
             value={localTotal}
-            header={`total (${pair[1]})`}
+            header={`total`}
             disabled={
               entryPoint.trailing.isTrailingOn ||
               isMarketType ||
@@ -324,7 +320,28 @@ export const SliderWithAmountFieldRow = ({
             }
             onChange={onTotalChange}
           />
+
           {/* </FormInputContainer> */}
+        </div>
+        <SvgIcon src={Chain} style={{ margin: 'auto 0.5rem' }} />
+        <div
+          style={{
+            width: 'calc((100% - 2rem - 32px) / 3)',
+          }}
+        >
+          <Input
+            theme={theme}
+            needTooltip
+            titleForTooltip={
+              'The actual amount of your position excluding leverage.'
+            }
+            header={'margin'}
+            textDecoration={'underline'}
+            symbol={pair[1]}
+            value={localMargin}
+            disabled={entryPoint.trailing.isTrailingOn || isMarketType}
+            onChange={onMarginChange}
+          />
         </div>
         {/* plot */}
         {/* {entryPoint.TVAlert.plotEnabled && (
@@ -421,27 +438,24 @@ export const SliderWithAmountFieldRow = ({
         />
       </InputRowContainer>
 
-      {marketType === 1 && (
+      {/* {marketType === 1 && (
         <InputRowContainer padding={'.8rem 0 1rem 0'}>
-          {/* <FormInputContainer
-            theme={theme}
-            needLine={false}
-            needRightValue={true}
-            rightValue={`${stripDigitPlaces(funds[1].quantity, 2)} ${pair[1]}`}
-            onValueClick={setMaxAmount}
-            title={`cost / initial margin (${pair[1]})`}
-          > */}
+        
           <Input
             theme={theme}
+            needTooltip
+            titleForTooltip={
+              'The actual amount of your position excluding leverage.'
+            }
             header={'margin'}
             symbol={pair[1]}
             value={localMargin}
             disabled={entryPoint.trailing.isTrailingOn || isMarketType}
             onChange={onMarginChange}
           />
-          {/* </FormInputContainer> */}
+          
         </InputRowContainer>
-      )}
+      )} */}
     </>
   )
 }
@@ -510,6 +524,7 @@ export const SliderWithAmountFieldRowForBasic = ({
                 // needTitle
                 // title={`size`}
                 header={'size'}
+                textDecoration={'outline'}
                 value={localAmount}
                 type={'text'}
                 pattern={isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'}
@@ -519,6 +534,7 @@ export const SliderWithAmountFieldRowForBasic = ({
             </div>
             <div style={{ width: '50%', paddingLeft: '1%' }}>
               <Input
+                inputStyles={{ textDecoration: 'none' }}
                 theme={theme}
                 //disabled={false}
                 // needTitle

@@ -14,7 +14,7 @@ import {
   filterOpenOrders,
   filterPositions,
 } from '@sb/components/TradingTable/TradingTable.utils'
-
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { getActivePositions } from '@core/graphql/queries/chart/getActivePositions'
 import { getActiveStrategies } from '@core/graphql/queries/chart/getActiveStrategies'
@@ -67,19 +67,23 @@ const TradingTabs = ({
     <>
       <TitleTabsGroup theme={theme}>
         {isDefaultOnlyTables && (
-          <TitleTab
-            data-tut={'smart-trades'}
-            theme={theme}
-            active={tab === 'activeTrades'}
-            onClick={() => handleTabChange('activeTrades')}
+          <DarkTooltip
+            title={'Watch and manage your active Smart trades from here.'}
           >
-            Smart trades{' '}
-            {activeTradesLength > 0
-              ? `(
+            <TitleTab
+              data-tut={'smart-trades'}
+              theme={theme}
+              active={tab === 'activeTrades'}
+              onClick={() => handleTabChange('activeTrades')}
+            >
+              Smart trades{' '}
+              {activeTradesLength > 0
+                ? `(
           ${activeTradesLength}
           )`
-              : ''}
-          </TitleTab>
+                : ''}
+            </TitleTab>
+          </DarkTooltip>
         )}
         {isDefaultOnlyTables && (
           <TitleTab

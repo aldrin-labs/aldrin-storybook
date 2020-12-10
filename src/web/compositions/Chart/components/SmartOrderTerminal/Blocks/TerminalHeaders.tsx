@@ -48,7 +48,7 @@ export const TerminalHeadersBlock = ({
             theme={theme}
             style={{
               textTransform: 'capitalize',
-              borderBottom: `0.1rem dashed ${theme.palette.grey.light}`,
+              textDecoration: 'underline',
             }}
           >
             Start
@@ -182,7 +182,7 @@ export const TerminalHeadersBlock = ({
           <BlockHeader
             style={{
               textTransform: 'capitalize',
-              borderBottom: `0.1rem dashed ${theme.palette.grey.light}`,
+              textDecoration: 'underline',
             }}
             theme={theme}
           >
@@ -205,7 +205,7 @@ export const TerminalHeadersBlock = ({
           <BlockHeader
             style={{
               textTransform: 'capitalize',
-              borderBottom: `0.1rem dashed ${theme.palette.grey.light}`,
+              textDecoration: 'underline',
             }}
             theme={theme}
           >
