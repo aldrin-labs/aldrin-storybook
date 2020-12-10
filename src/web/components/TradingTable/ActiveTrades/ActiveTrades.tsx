@@ -74,17 +74,11 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
   }
 
   unsubscribeFunctionGetActiveStrategies: null | Function = null
-  unsubscribeFunctionGetFunds: null | Function = null
-
-  subscription: null | { unsubscribe: () => void } = null
-
-  interval: undefined | number = undefined
 
   componentDidMount() {
     const {
       keys,
       getActiveStrategiesQuery,
-      getFundsQuery,
       theme,
       marketType,
       currencyPair,
@@ -104,7 +98,6 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       canceledOrders,
       theme,
       keys,
-      prices: this.state.prices,
       marketType,
       currencyPair,
       handlePairChange,
@@ -114,30 +107,10 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       activeStrategiesProcessedData,
     })
 
-    // this.subscribe()
     this.unsubscribeFunctionGetActiveStrategies = getActiveStrategiesQuery.subscribeToMoreFunction()
-    // this.unsubscribeFunctionGetFunds = getFundsQuery.subscribeToMoreFunction()
   }
 
   componentDidUpdate(prevProps: IProps) {
-    const newOrders = this.props.getActiveStrategiesQuery.getActiveStrategies.strategies.filter(
-      (order) => order.enabled && order._id !== '-1'
-    )
-
-    const prevOrders = prevProps.getActiveStrategiesQuery.getActiveStrategies.strategies.filter(
-      (order) => order.enabled && order._id !== '-1'
-    )
-
-    if (
-      prevProps.exchange !== this.props.exchange ||
-      prevProps.currencyPair !== this.props.currencyPair ||
-      prevProps.marketType !== this.props.marketType ||
-      newOrders.length > prevOrders.length
-    ) {
-      // this.subscription && this.subscription.unsubscribe()
-      // this.subscribe()
-    }
-
     if (
       prevProps.selectedKey.keyId !== this.props.selectedKey.keyId ||
       prevProps.specificPair !== this.props.specificPair ||
@@ -146,9 +119,7 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
     ) {
       this.unsubscribeFunctionGetActiveStrategies &&
         this.unsubscribeFunctionGetActiveStrategies()
-      this.unsubscribeFunctionGetFunds && this.unsubscribeFunctionGetFunds()
 
-      // this.unsubscribeFunctionGetFunds = this.props.getFundsQuery.subscribeToMoreFunction()
       this.unsubscribeFunctionGetActiveStrategies = this.props.getActiveStrategiesQuery.subscribeToMoreFunction()
     }
   }
@@ -158,13 +129,6 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
     if (this.unsubscribeFunctionGetActiveStrategies !== null) {
       this.unsubscribeFunctionGetActiveStrategies()
     }
-
-    if (this.unsubscribeFunctionGetFunds !== null) {
-      this.unsubscribeFunctionGetFunds()
-    }
-
-    this.subscription && this.subscription.unsubscribe()
-    clearInterval(this.interval)
   }
 
   componentWillReceiveProps(nextProps: IProps) {
@@ -179,8 +143,6 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       handlePairChange,
     } = nextProps
 
-    const { prices } = this.state
-
     const activeStrategiesProcessedData = combineActiveTradesTable({
       data: getActiveStrategiesQuery.getActiveStrategies.strategies,
       queryVariables: getActiveStrategiesQuery.variables,
@@ -191,7 +153,6 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
       addOrderToCanceled,
       canceledOrders,
       theme,
-      prices,
       keys,
       marketType,
       currencyPair,
@@ -203,192 +164,6 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
     })
 
     return null
-  }
-
-  subscribe() {
-<<<<<<< HEAD
-    const that = this
-    const pairs = this.props.getActiveStrategiesQuery.getActiveStrategies.strategies
-      .map((strategy) => {
-        if (strategy.enabled) {
-          return `${strategy.conditions.pair}:${this.props.marketType}`
-        }
-        return
-      })
-      .filter((pair, i, arr) => arr.indexOf(pair) === i && !!pair)
-    const pairsWithoutMarketType = this.props.getActiveStrategiesQuery.getActiveStrategies.strategies
-      .map((strategy) => {
-        if (strategy.enabled) {
-          return `${strategy.conditions.pair}`
-        }
-        return
-      })
-      .filter((pair, i, arr) => arr.indexOf(pair) === i && !!pair)
-    this.subscription = client
-      .subscribe({
-        query:
-          this.props.marketType === 1 ? LISTEN_MARK_PRICES : LISTEN_TABLE_PRICE,
-        variables: {
-          input: {
-            exchange: this.props.exchange,
-            pairs: this.props.marketType === 1 ? pairsWithoutMarketType : pairs,
-          },
-        },
-        fetchPolicy: 'cache-only',
-      })
-      .subscribe({
-        next: (data: {
-          loading: boolean
-          data: { listenTablePrice: Price[]; listenMarkPrices: Price[] }
-        }) => {
-          const orders = that.props.getActiveStrategiesQuery.getActiveStrategies.strategies
-            .filter(
-              (strategy: SmartOrder) =>
-                (strategy.enabled ||
-                  (strategy.conditions.isTemplate &&
-                    strategy.conditions.templateStatus !== 'disabled')) &&
-                strategy._id !== '-1'
-            )
-            .concat(that.state.cachedOrder)
-          if (
-            !data ||
-            data.loading ||
-            !that.props.show ||
-            // we always have cachedOrder at least
-            orders.length === 1
-          ) {
-            return
-          }
-          const {
-            theme,
-            marketType,
-            currencyPair,
-            keys,
-            addOrderToCanceled,
-            canceledOrders,
-            handlePairChange,
-            getActiveStrategiesQuery,
-          } = that.props
-
-          const subscriptionPropertyKey =
-            marketType === 1 ? `listenMarkPrices` : `listenTablePrice`
-
-          const activeStrategiesProcessedData = combineActiveTradesTable({
-            data: orders,
-            queryVariables: getActiveStrategiesQuery.variables,
-            queryBody: getActiveStrategiesQuery.query,
-            cancelOrderFunc: this.cancelOrderWithStatus,
-            changeStatusWithStatus: this.changeStatusWithStatus,
-            addOrderToCanceled,
-            canceledOrders,
-            editTrade: this.editTrade,
-            theme,
-            keys,
-            prices: data.data[subscriptionPropertyKey],
-            marketType,
-            currencyPair,
-            handlePairChange,
-          })
-          that.setState({
-            activeStrategiesProcessedData,
-            prices: data.data[subscriptionPropertyKey],
-          })
-        },
-      })
-=======
-    // const that = this
-    // const pairs = this.props.getActiveStrategiesQuery.getActiveStrategies.strategies
-    //   .map((strategy) => {
-    //     if (strategy.enabled) {
-    //       return `${strategy.conditions.pair}:${this.props.marketType}`
-    //     }
-    //     return
-    //   })
-    //   .filter((pair, i, arr) => arr.indexOf(pair) === i && !!pair)
-    // const pairsWithoutMarketType = this.props.getActiveStrategiesQuery.getActiveStrategies.strategies
-    //   .map((strategy) => {
-    //     if (strategy.enabled) {
-    //       return `${strategy.conditions.pair}`
-    //     }
-    //     return
-    //   })
-    //   .filter((pair, i, arr) => arr.indexOf(pair) === i && !!pair)
-    // this.subscription = client
-    //   .subscribe({
-    //     query:
-    //       this.props.marketType === 1 ? LISTEN_MARK_PRICES : LISTEN_TABLE_PRICE,
-    //     variables: {
-    //       input: {
-    //         exchange: this.props.exchange,
-    //         pairs: this.props.marketType === 1 ? pairsWithoutMarketType : pairs,
-    //       },
-    //     },
-    //     fetchPolicy: 'cache-only',
-    //   })
-    //   .subscribe({
-    //     next: (data: {
-    //       loading: boolean
-    //       data: { listenTablePrice: Price[]; listenMarkPrices: Price[] }
-    //     }) => {
-    //       const orders = that.props.getActiveStrategiesQuery.getActiveStrategies.strategies
-    //         .filter(
-    //           (strategy: SmartOrder) =>
-    //             (strategy.enabled ||
-    //               (strategy.conditions.isTemplate &&
-    //                 strategy.conditions.templateStatus !== 'disabled')) &&
-    //             strategy._id !== '-1'
-    //         )
-    //         .concat(that.state.cachedOrder)
-    //       if (
-    //         !data ||
-    //         data.loading ||
-    //         !that.props.show ||
-    //         // we always have cachedOrder at least
-    //         orders.length === 1
-    //       ) {
-    //         return
-    //       }
-    //       const {
-    //         theme,
-    //         marketType,
-    //         currencyPair,
-    //         keys,
-    //         quantityPrecision,
-    //         pricePrecision,
-    //         addOrderToCanceled,
-    //         canceledOrders,
-    //         handlePairChange,
-    //         getActiveStrategiesQuery,
-    //       } = that.props
-
-    //       const subscriptionPropertyKey =
-    //         marketType === 1 ? `listenMarkPrices` : `listenTablePrice`
-
-    //       const activeStrategiesProcessedData = combineActiveTradesTable({
-    //         data: orders,
-    //         queryVariables: getActiveStrategiesQuery.variables,
-    //         queryBody: getActiveStrategiesQuery.query,
-    //         cancelOrderFunc: this.cancelOrderWithStatus,
-    //         changeStatusWithStatus: this.changeStatusWithStatus,
-    //         addOrderToCanceled,
-    //         canceledOrders,
-    //         editTrade: this.editTrade,
-    //         theme,
-    //         keys,
-    //         prices: data.data[subscriptionPropertyKey],
-    //         marketType,
-    //         currencyPair,
-    //         pricePrecision,
-    //         quantityPrecision,
-    //         handlePairChange,
-    //       })
-    //       that.setState({
-    //         activeStrategiesProcessedData,
-    //         prices: data.data[subscriptionPropertyKey],
-    //       })
-    //     },
-    //   })
->>>>>>> positions-table-re-renders-fix
   }
 
   onCancelOrder = async (
