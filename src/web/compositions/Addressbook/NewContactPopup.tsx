@@ -158,7 +158,6 @@ const NewContactPopup = ({
                   name: encrypt(name, localPassword),
                   email: email !== '' ? encrypt(email, localPassword) : '',
                   contactPublicKey: encrypt(address, localPassword),
-                  contactPublicKeyHash: encrypt(address, localPassword),
                   symbol: encrypt("SOL", localPassword),
                 },
               })

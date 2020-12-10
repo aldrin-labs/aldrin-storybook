@@ -100,7 +100,7 @@ export const encrypt = (value, password) => AES.encrypt(value, password).toStrin
 const combineContactsData = (
   data,
   setShowNewCoinPopup,
-  setContactHash,
+  setContactPublicKey,
   localPassword
 ) => {
   if (!data) {
@@ -143,8 +143,8 @@ const combineContactsData = (
               <SubColumn
                 setShowNewCoinPopup={setShowNewCoinPopup}
                 coins={el.coins}
-                setContactHash={setContactHash}
-                contactHash={el.publicKeyHash}
+                setContactPublicKey={setContactPublicKey}
+                contactPublicKey={el.publicKey}
                 localPassword={localPassword}
               />
             ),
@@ -172,7 +172,7 @@ const AddressbookRoute = ({
   const [confirmPassword, updateConfirmPassword] = useState('')
   const [showNewContactPopup, setShowNewContactPopup] = useState(false)
   const [showNewCoinPopup, setShowNewCoinPopup] = useState(false)
-  const [contactHash, setContactHash] = useState('')
+  const [contactPublicKey, setContactPublicKey] = useState('')
 
   const { wallet } = useWallet()
 
@@ -377,7 +377,7 @@ const AddressbookRoute = ({
                 body: combineContactsData(
                   getUserAddressbookQuery.getUserAddressbook,
                   setShowNewCoinPopup,
-                  setContactHash,
+                  setContactPublicKey,
                   localPassword
                 ),
               }}
@@ -401,7 +401,7 @@ const AddressbookRoute = ({
         publicKey={publicKey}
         localPassword={localPassword}
         getUserAddressbookQueryRefetch={getUserAddressbookQueryRefetch}
-        contactHash={contactHash}
+        contactPublicKey={contactPublicKey}
       />
     </RowContainer>
   )

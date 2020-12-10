@@ -45,7 +45,7 @@ const NewCoinPopup = ({
   theme,
   open,
   handleClose,
-  contactHash,
+  contactPublicKey,
   publicKey,
   localPassword,
   addContactCoinMutation,
@@ -261,7 +261,7 @@ const NewCoinPopup = ({
                   publicKey: createHash(publicKey, localPassword),
                   symbol: encrypt(selectedCoin.label, localPassword),
                   address: encrypt(address, localPassword),
-                  contactHash,
+                  contactPublicKey,
                 },
               })
 
