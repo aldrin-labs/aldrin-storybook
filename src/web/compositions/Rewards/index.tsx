@@ -29,6 +29,8 @@ import blackTwitter from '@icons/blackTwitter.svg'
 import greenArrow from '@icons/greenArrow.svg'
 import greenTweet from '@icons/greenTweet.svg'
 import lightSub from '@icons/lightSub.svg'
+import lightBird from '@icons/lightBird.svg'
+import shape from '@icons/shape.svg'
 
 import { withTheme } from '@material-ui/styles'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -148,7 +150,7 @@ const CardSubTitle = styled.h3`
 `
 
 const CardSubValue = styled.span`
-  color: #c7ffd0;
+  color: ${theme.palette.green.shine};
   font-family: DM Sans;
   font-weight: bold;
   font-size: 2rem;
@@ -223,7 +225,7 @@ export const Cell = styled.td`
   border-bottom: 0.1rem solid ${(props) => props.borderBottom || '#61d8e6'};
   width: 25%;
 
-  color: #cad4d6;
+  color: ${theme.palette.grey.text};
   height: 5rem;
   text-transform: none;
   margin: 3rem 1rem;
@@ -239,11 +241,12 @@ export const Cell = styled.td`
 export const HeaderCell = styled.th`
   border-bottom: 0.1rem solid ${(props) => props.borderBottom || '#61d8e6'};
   height: 5rem;
+
   padding-left: 2rem;
   // border: none;
   font-size: 1.6rem;
   text-transform: capitalize;
-  color: #fff;
+  color: ${theme.palette.grey.text};
   font-size: bold;
 `
 
@@ -368,6 +371,8 @@ const RewardsRoute = (props) => {
     setSharePopupOpen(!isSharePopupOpen)
   }
 
+  const isDarkTheme = theme.palette.type === 'dark'
+
   return (
     <div
       style={{
@@ -403,8 +408,8 @@ const RewardsRoute = (props) => {
             <BtnCustom
               theme={theme}
               btnColor={theme.palette.grey.main}
-              backgroundColor={'#C7FFD0'}
-              hoverBackground={'#C7FFD0'}
+              backgroundColor={theme.palette.green.shine}
+              hoverBackground={theme.palette.green.shine}
               height={'5rem'}
               fontSize={'1.6rem'}
               btnWidth={'100%'}
@@ -428,8 +433,8 @@ const RewardsRoute = (props) => {
             <BtnCustom
               theme={theme}
               btnColor={theme.palette.grey.main}
-              backgroundColor={'#C7FFD0'}
-              hoverBackground={'#C7FFD0'}
+              backgroundColor={theme.palette.green.shine}
+              hoverBackground={theme.palette.green.shine}
               height={'5rem'}
               fontSize={'1.6rem'}
               btnWidth={'100%'}
@@ -504,7 +509,12 @@ const RewardsRoute = (props) => {
         </Card> */}
         <Card theme={theme}>
           <RowContainer style={{ height: '21%' }}>
-            <SvgIcon src={decefi} width="30%" height="auto" />
+            <SvgIcon
+              src={isDarkTheme ? decefi : shape}
+              width={isDarkTheme ? '30%' : '14%'}
+              style={{ marginTop: isDarkTheme ? 'auto' : '4rem' }}
+              height="auto"
+            />
           </RowContainer>
           <RowContainer
             justify={'none'}
@@ -537,8 +547,8 @@ const RewardsRoute = (props) => {
                 <BtnCustom
                   theme={theme}
                   btnColor={theme.palette.grey.main}
-                  backgroundColor={'#C7FFD0'}
-                  hoverBackground={'#C7FFD0'}
+                  backgroundColor={theme.palette.green.acid}
+                  hoverBackground={theme.palette.green.acid}
                   padding={'1.5rem 0'}
                   height={'5rem'}
                   fontSize={'1.6rem'}
@@ -594,7 +604,7 @@ const RewardsRoute = (props) => {
                   }}
                 >
                   <SvgIcon
-                    src={blackTwitter}
+                    src={isDarkTheme ? blackTwitter : lightBird}
                     width={'2.5rem'}
                     height={'2.5rem'}
                     style={{ marginRight: '1rem' }}
@@ -705,7 +715,7 @@ const RewardsRoute = (props) => {
               </Form>
             </RowContainer>
             <RowContainer style={{ position: 'absolute', top: '63rem' }}>
-              <CardText color={'#61D8E6'} theme={theme}>
+              <CardText color={theme.palette.green.descrip} theme={theme}>
                 Twitter farming rules
                 <div
                   className="twitterRules"
@@ -814,7 +824,12 @@ const RewardsRoute = (props) => {
           <RowContainer
             style={{ paddingTop: '3%', paddingBottom: '4%', height: '40%' }}
           >
-            <SvgIcon src={decefi} width="30%" height="auto" />
+            <SvgIcon
+              src={isDarkTheme ? decefi : shape}
+              width={isDarkTheme ? '30%' : '14%'}
+              style={{ marginTop: isDarkTheme ? 'auto' : '4rem' }}
+              height="auto"
+            />
           </RowContainer>
           <RowContainer
             style={{
@@ -826,13 +841,13 @@ const RewardsRoute = (props) => {
               styles={{
                 root: { height: '100%' },
                 path: {
-                  stroke: '#C7FFD0',
+                  stroke: theme.palette.green.shine,
                   filter:
                     'drop-shadow(0px 0px 24px rgba(199, 255, 208, 0.67));',
                 },
-                trail: { stroke: '#0E1016' },
+                trail: { stroke: theme.palette.grey.circle },
                 text: {
-                  fill: '#C7FFD0',
+                  fill: theme.palette.green.shine,
                   fontWeight: 'bold',
                   transform: 'translateY(3%)',
                 },
@@ -873,13 +888,13 @@ const RewardsRoute = (props) => {
               styles={{
                 root: { height: '100%', padding: '7rem 0 3rem 0' },
                 path: {
-                  stroke: '#C7FFD0',
+                  stroke: theme.palette.green.shine,
                   filter:
                     'drop-shadow(0px 0px 24px rgba(199, 255, 208, 0.67));',
                 },
-                trail: { stroke: '#0E1016' },
+                trail: { stroke: theme.palette.grey.circle },
                 text: {
-                  fill: '#C7FFD0',
+                  fill: theme.palette.green.shine,
                   fontWeight: 'bold',
                   transform: 'translateY(3%)',
                 },
@@ -913,7 +928,7 @@ const RewardsRoute = (props) => {
               style={{ width: '50%', height: '30%', paddingLeft: '1rem' }}
             >
               <CardSubTitle>Total Volume</CardSubTitle>
-              <CardSubValue>
+              <CardSubValue theme={theme}>
                 ${formatNumberToUSFormat(+tradedSerumInUSDT.toFixed(0))}
               </CardSubValue>
             </Row>
@@ -924,7 +939,7 @@ const RewardsRoute = (props) => {
               style={{ width: '50%', height: '30%' }}
             >
               <CardSubTitle>Volume until next phase</CardSubTitle>
-              <CardSubValue>
+              <CardSubValue theme={theme}>
                 $
                 {formatNumberToUSFormat(
                   +(currentPhaseMaxVolume - tradedSerumInUSDT).toFixed(0)
@@ -938,7 +953,7 @@ const RewardsRoute = (props) => {
               style={{ width: '50%', height: '30%', paddingLeft: '1rem' }}
             >
               <CardSubTitle>Total DCFI farmed</CardSubTitle>
-              <CardSubValue>
+              <CardSubValue theme={theme}>
                 {formatNumberToUSFormat(+dcfiRewarded.toFixed(0))}
               </CardSubValue>
             </Row>
@@ -949,7 +964,7 @@ const RewardsRoute = (props) => {
               style={{ width: '50%', height: '30%' }}
             >
               <CardSubTitle>DCFI until next phase</CardSubTitle>
-              <CardSubValue>
+              <CardSubValue theme={theme}>
                 {formatNumberToUSFormat(
                   +(dcfiVolumes[currentPhase] - dcfiRewarded).toFixed(0)
                 )}
@@ -1035,7 +1050,7 @@ const RewardsRoute = (props) => {
               <CardSubTitle>Until next round: </CardSubTitle>
               <div
                 style={{
-                  color: '#c7ffd0',
+                  color: theme.palette.green.shine,
                   fontSize: '2.5rem',
                   fontFamily: 'DM Sans',
                   fontWeight: 'bold',
@@ -1087,27 +1102,30 @@ const RewardsRoute = (props) => {
           >
             <Table>
               <TableRow>
-                <HeaderCell>#</HeaderCell>
-                <HeaderCell>Name</HeaderCell>
-                <HeaderCell>Twitter Id</HeaderCell>
-                <HeaderCell>Followers</HeaderCell>
-                <HeaderCell>Reward</HeaderCell>
+                <HeaderCell theme={theme}>#</HeaderCell>
+                <HeaderCell theme={theme}>Name</HeaderCell>
+                <HeaderCell theme={theme}>Twitter Id</HeaderCell>
+                <HeaderCell theme={theme}>Followers</HeaderCell>
+                <HeaderCell theme={theme}>Reward</HeaderCell>
               </TableRow>
               {getTopTwitterFarmingData.map((el, index) => {
                 return (
                   <TableRow>
-                    <Cell>{index + 1}</Cell>
-                    <Cell>{el.tweetUsername}</Cell>
-                    <Cell>
+                    <Cell theme={theme}>{index + 1}</Cell>
+                    <Cell theme={theme}>{el.tweetUsername}</Cell>
+                    <Cell theme={theme}>
                       <a
-                        style={{ color: '#c7ffd0', textDecoration: 'none' }}
+                        style={{
+                          color: theme.palette.green.shine,
+                          textDecoration: 'none',
+                        }}
                         href={'https://twitter.com/' + el.tweetUsername}
                       >
                         {'@' + el.tweetUsername}
                       </a>
                     </Cell>
-                    <Cell>{el.userFollowersCount}</Cell>
-                    <Cell>
+                    <Cell theme={theme}>{el.userFollowersCount}</Cell>
+                    <Cell theme={theme}>
                       {(2000 / getTopTwitterFarmingData.length).toFixed(0) +
                         ' DCFI'}
                     </Cell>
@@ -1142,7 +1160,7 @@ const RewardsRoute = (props) => {
               Total farmed:{' '}
               <div
                 style={{
-                  color: '#c7ffd0',
+                  color: theme.palette.green.shine,
                   fontSize: '2.5rem',
                   fontFamily: 'DM Sans',
                   fontWeight: 'bold',
@@ -1167,18 +1185,25 @@ const RewardsRoute = (props) => {
           >
             <Table>
               <TableRow>
-                <HeaderCell>Date</HeaderCell>
-                <HeaderCell>Tweet</HeaderCell>
-                <HeaderCell>Reward</HeaderCell>
+                <HeaderCell theme={theme}>Date</HeaderCell>
+                <HeaderCell theme={theme}>Tweet</HeaderCell>
+                <HeaderCell theme={theme}>Reward</HeaderCell>
               </TableRow>
               {getUserRetweetsHistory.map((el, index) => {
                 return (
                   <TableRow>
-                    <Cell>{dayjs.unix(el.timestamp).format('ll')}</Cell>
-                    <Cell style={{ color: '#c7ffd0', textDecoration: 'none' }}>
+                    <Cell theme={theme}>
+                      {dayjs.unix(el.timestamp).format('ll')}
+                    </Cell>
+                    <Cell
+                      style={{
+                        color: theme.palette.green.shine,
+                        textDecoration: 'none',
+                      }}
+                    >
                       {el.tweetLink}
                     </Cell>
-                    <Cell>{el.farmedDCFI.toFixed(0)}</Cell>
+                    <Cell theme={theme}>{el.farmedDCFI.toFixed(0)}</Cell>
                   </TableRow>
                 )
               })}
@@ -1230,7 +1255,7 @@ const RewardsRoute = (props) => {
               Total farmed:{' '}
               <div
                 style={{
-                  color: '#c7ffd0',
+                  color: theme.palette.green.shine,
                   fontSize: '2.5rem',
                   fontFamily: 'DM Sans',
                   fontWeight: 'bold',
@@ -1255,27 +1280,30 @@ const RewardsRoute = (props) => {
           >
             <Table>
               <TableRow>
-                <HeaderCell>#</HeaderCell>
-                <HeaderCell>Name</HeaderCell>
-                <HeaderCell>Twitter Id</HeaderCell>
-                <HeaderCell>Followers</HeaderCell>
-                <HeaderCell>Reward</HeaderCell>
+                <HeaderCell theme={theme}>#</HeaderCell>
+                <HeaderCell theme={theme}>Name</HeaderCell>
+                <HeaderCell theme={theme}>Twitter Id</HeaderCell>
+                <HeaderCell theme={theme}>Followers</HeaderCell>
+                <HeaderCell theme={theme}>Reward</HeaderCell>
               </TableRow>
               {getAllRetweetsHistory.map((el, index) => {
                 return (
                   <TableRow>
-                    <Cell>{index + 1}</Cell>
-                    <Cell>{el.tweetUsername}</Cell>
-                    <Cell>
+                    <Cell theme={theme}>{index + 1}</Cell>
+                    <Cell theme={theme}>{el.tweetUsername}</Cell>
+                    <Cell theme={theme}>
                       <a
-                        style={{ color: '#c7ffd0', textDecoration: 'none' }}
+                        style={{
+                          color: theme.palette.green.shine,
+                          textDecoration: 'none',
+                        }}
                         href={'https://twitter.com/' + el.tweetUsername}
                       >
                         {'@' + el.tweetUsername}
                       </a>
                     </Cell>
-                    <Cell>{el.userFollowersCount}</Cell>
-                    <Cell>{el.farmedDCFI.toFixed(0)}</Cell>
+                    <Cell theme={theme}>{el.userFollowersCount}</Cell>
+                    <Cell theme={theme}>{el.farmedDCFI.toFixed(0)}</Cell>
                   </TableRow>
                 )
               })}

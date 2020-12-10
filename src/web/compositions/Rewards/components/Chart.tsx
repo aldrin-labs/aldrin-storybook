@@ -33,10 +33,20 @@ export const Chart = (props) => {
 
   return (
     <FlexibleXYPlot
-      style={{ stroke: props.theme.palette.dark.main, fontSize: '9px' }}
+      style={{ stroke: props.theme.palette.text.light, fontSize: '9px' }}
     >
-      <VerticalGridLines style={{ stroke: '#f65683', color: '#f65683' }} />
-      <HorizontalGridLines style={{ stroke: '#f65683', color: '#f65683' }} />
+      <VerticalGridLines
+        style={{
+          stroke: props.theme.palette.grey.chart,
+          color: props.theme.palette.grey.chart,
+        }}
+      />
+      <HorizontalGridLines
+        style={{
+          stroke: props.theme.palette.grey.chart,
+          color: props.theme.palette.grey.chart,
+        }}
+      />
       <XAxis
         hideLine
         // title="Volume of SRM market buy, $"
