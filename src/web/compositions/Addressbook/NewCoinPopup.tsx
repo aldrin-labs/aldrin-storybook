@@ -74,14 +74,14 @@ const NewCoinPopup = ({
         theme={theme}
         style={{
           justifyContent: 'center',
-          background: '#303743',
-          borderBottom: '.1rem solid #424b68',
+          background: theme.palette.grey.input,
+          borderBottom: `.1rem solid ${theme.palette.text.white}`,
         }}
       >
         <span
           style={{
             fontSize: '1.8rem',
-            color: '#fff',
+            color: theme.palette.text.light,
             fontFamily: 'Avenir Next Demi',
           }}
         >
@@ -89,7 +89,7 @@ const NewCoinPopup = ({
         </span>
       </StyledDialogTitle>
       <StyledDialogContent
-        style={{ background: '#303743' }}
+        style={{ background: theme.palette.grey.input }}
         theme={theme}
         id="share-dialog-content"
       >
@@ -138,35 +138,35 @@ const NewCoinPopup = ({
               fontWeight: 'bold',
               padding: '0',
               overflowY: 'hidden',
-              borderRadius: '0.2rem',
+              borderRadius: '0',
               textAlign: 'center',
               background: '303743',
               position: 'relative',
               boxShadow: '-1px 3px 22px -16px rgba(127,139,148,1)',
-              border: 'solid 1px #424b68',
+              border: `0.1rem solid ${theme.palette.text.white}`,
             }}
             menuListStyles={{
               height: '20rem',
-              background: '#303743',
+              background: theme.palette.grey.input,
             }}
             optionStyles={{
-              color: '#f5f5fb',
+              color: theme.palette.text.light,
               outline: 'none',
               height: '4rem',
-              background: '#303743',
+              background: theme.palette.grey.input,
               fontSize: '1.4rem',
               textTransform: 'uppercase',
               padding: '0',
-              borderRadius: '0.4rem',
+              // borderRadius: '0.4rem',
               margin: '0 0',
-              borderBottom: '2px solid #424B68',
+              border: `0.1rem solid ${theme.palette.text.white}`,
               width: 'calc(100%)',
 
-              '&:hover': {
-                borderRadius: '0.2rem',
-                color: '#fff',
-                background: '#424B68',
-              },
+              // '&:hover': {
+              //   borderRadius: '0.2rem',
+              //   color: '#fff',
+              //   background: '#424B68',
+              // },
             }}
             clearIndicatorStyles={{
               padding: '2px',
@@ -177,9 +177,9 @@ const NewCoinPopup = ({
               marginBottom: '2rem',
             }}
             valueContainerStyles={{
-              border: '0.1rem solid #424B68',
+              border: `0.1rem solid ${theme.palette.text.white}`,
               borderRadius: '0.4rem',
-              background: '#303743',
+              background: theme.palette.grey.input,
               paddingLeft: '15px',
               height: '5rem',
             }}
@@ -203,7 +203,12 @@ const NewCoinPopup = ({
           />
           <div style={{ position: 'relative', marginTop: '1.5rem' }}>
             <Input
-              style={{}}
+              style={{
+                background: theme.palette.grey.input,
+                color: theme.palette.text.light,
+                border: `0.1rem solid ${theme.palette.text.white}`,
+                outline: 'none',
+              }}
               id={'address'}
               type={'text'}
               placeholder={`${selectedCoin.label} Address`}

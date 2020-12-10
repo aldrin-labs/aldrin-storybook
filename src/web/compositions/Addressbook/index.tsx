@@ -94,8 +94,10 @@ const onConfirmPassword = (
 }
 
 export const createHash = (value, password) => MD5(value + password).toString()
-export const decrypt = (value, password) => AES.decrypt(value, password).toString(enc.Utf8)
-export const encrypt = (value, password) => AES.encrypt(value, password).toString()
+export const decrypt = (value, password) =>
+  AES.decrypt(value, password).toString(enc.Utf8)
+export const encrypt = (value, password) =>
+  AES.encrypt(value, password).toString()
 
 const combineContactsData = (
   data,
@@ -117,13 +119,18 @@ const combineContactsData = (
             <span
               style={{
                 display: 'block',
-                color: '#F5F5FB',
+                color: theme.palette.grey.text,
                 fontFamily: 'DM Sans Medium',
               }}
             >
               {String(dayjs.unix(el.timestamp).format('ll'))}
             </span>
-            <span style={{ color: '#F5F5FB', fontFamily: 'DM Sans Medium' }}>
+            <span
+              style={{
+                color: theme.palette.grey.text,
+                fontFamily: 'DM Sans Medium',
+              }}
+            >
               {dayjs.unix(el.timestamp).format('LT')}
             </span>
           </div>
@@ -197,7 +204,9 @@ const AddressbookRoute = ({
       >
         {!publicKey ? (
           <>
-            <Text>Connect your wallet to create or get addressbook</Text>
+            <Text style={{ color: theme.palette.text.light }}>
+              Connect your wallet to create or get addressbook
+            </Text>
             {/* connect wallet */}
             <BtnCustom
               onClick={wallet.connect}
@@ -233,26 +242,38 @@ const AddressbookRoute = ({
               firstHalfIsActive={isLoginStep}
               changeHalf={() => updateStep(isLoginStep ? 'sign_up' : 'login')}
             />
-            <Text paddingBottom={isLoginStep ? '2rem' : '4rem'}>
+            <Text
+              style={{ color: theme.palette.text.light }}
+              paddingBottom={isLoginStep ? '2rem' : '4rem'}
+            >
               {isLoginStep
                 ? 'Enter your passwords to get addressbook'
                 : 'Create passwords to protect your addressbook'}
             </Text>
 
             <Input
+              style={{
+                background: theme.palette.grey.input,
+                color: theme.palette.text.light,
+              }}
               value={password}
               type={'password'}
               onChange={(e) => updatePassword(e.target.value)}
               placeholder={'Password'}
             />
 
-            {!isLoginStep &&
-            <Input
-              type={'password'}
-              value={confirmPassword}
-              onChange={(e) => updateConfirmPassword(e.target.value)}
-              placeholder={'Confirm password'}
-            />}
+            {!isLoginStep && (
+              <Input
+                type={'password'}
+                style={{
+                  background: theme.palette.grey.input,
+                  color: theme.palette.text.light,
+                }}
+                value={confirmPassword}
+                onChange={(e) => updateConfirmPassword(e.target.value)}
+                placeholder={'Confirm password'}
+              />
+            )}
 
             <BtnCustom
               type="text"
@@ -264,8 +285,7 @@ const AddressbookRoute = ({
                   isLoginStep,
                   forceUpdatePassword
                 )
-              }
-              }
+              }}
               btnColor={theme.palette.blue.serum}
               btnWidth={isLoginStep ? '14rem' : '18rem'}
               height={'4rem'}
@@ -279,7 +299,7 @@ const AddressbookRoute = ({
             <div
               style={{
                 width: '100%',
-                borderBottom: '0.1rem solid #424B68',
+                borderBottom: `0.1rem solid ${theme.palette.text.white}`,
                 display: 'flex',
                 flexDirection: 'row',
                 alignItems: 'center',
@@ -342,13 +362,13 @@ const AddressbookRoute = ({
                 },
                 heading: {
                   height: '5rem',
-                  color: '#ABBAD1',
+                  color: theme.palette.text.light,
                   fontWeight: 'bold',
                   letterSpacing: '.1rem',
                   fontFamily: 'Avenir Next Demi',
                   textTransform: 'capitalize',
                   fontSize: '1.5rem',
-                  borderBottom: '0.1rem solid #424B68',
+                  borderBottom: `0.1rem solid ${theme.palette.text.white}`,
                   boxShadow: 'none',
                   background: theme.palette.white.background,
                   paddingLeft: '2rem',
@@ -356,12 +376,12 @@ const AddressbookRoute = ({
                 },
                 cell: {
                   height: '5rem',
-                  color: '#f5f5fb',
+                  color: theme.palette.grey.text,
                   letterSpacing: '.1rem',
                   fontFamily: 'Avenir Next Demi',
                   textTransform: 'none',
                   fontSize: '1.5rem',
-                  borderBottom: '0.1rem solid #424B68',
+                  borderBottom: `0.1rem solid ${theme.palette.text.white}`,
                   boxShadow: 'none',
                   background: 'none',
                   paddingLeft: '2rem',
@@ -372,7 +392,7 @@ const AddressbookRoute = ({
                   boxShadow: 'none',
                 },
               }}
-              emptyTableText={"No contacts"}
+              emptyTableText={'No contacts'}
               data={{
                 body: combineContactsData(
                   getUserAddressbookQuery.getUserAddressbook,
@@ -418,6 +438,6 @@ export default compose(
       publicKey: createHash(props.publicKey, props.localPassword),
     }),
     fetchPolicy: 'cache-and-network',
-    skip: (props: any) => !props.publicKey  || !props.localPassword,
+    skip: (props: any) => !props.publicKey || !props.localPassword,
   })
 )(AddressbookRoute)

@@ -142,6 +142,9 @@ export default ({ themeMode, isChartPage, children }) => {
               dark: '#7284A0',
               subPrimary: 'white',
               grey: '#fff',
+              light: '#fff',
+              white: '#424b68',
+              black: '#fff',
             },
             orange: {
               main: '#F29C38',
@@ -176,6 +179,10 @@ export default ({ themeMode, isChartPage, children }) => {
               main: '#55BB7C',
               new: '#29AC80',
               tab: '#09ACC7',
+              shine: '#c7ffd0',
+              acid: '#c7ffd0',
+              descrip: '#61D8E6',
+              border: '#61D8E6',
             },
             grey: {
               custom: '#2E2E2E',
@@ -188,6 +195,10 @@ export default ({ themeMode, isChartPage, children }) => {
               cream: '#0E1016',
               additional: '#0E1016',
               block: '#424b68',
+              circle: '#0E1016',
+              chart: '#f65683',
+              input: '#303743',
+              back: '#303743',
             },
             primary: {
               main: '#303037',
@@ -346,6 +357,9 @@ export default ({ themeMode, isChartPage, children }) => {
               blue: '#165BE0',
               subPrimary: '#16253D',
               grey: '#2E2E2E',
+              light: '#9F9F9F',
+              black: '#3A475C',
+              white: '#9F9F9F',
             },
             orange: {
               main: '#F29C38',
@@ -379,6 +393,10 @@ export default ({ themeMode, isChartPage, children }) => {
               main: '#39A74C',
               new: '#29AC80',
               tab: '#7380EB',
+              shine: '#7380eb',
+              descrip: '#1BA492',
+              acid: '#1BA492',
+              border: '#7380eb',
             },
             grey: {
               custom: '#ABBAD1',
@@ -391,6 +409,10 @@ export default ({ themeMode, isChartPage, children }) => {
               cream: '#F9FBFD',
               additional: '#fff',
               block: '#e0e5ec',
+              circle: '#E0E0E8',
+              chart: '#e0e0e8',
+              input: '#F6F8FA',
+              back: '#e0e0e8',
             },
             primary: {
               main: '#FEFEFE',

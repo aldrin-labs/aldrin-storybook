@@ -15,7 +15,7 @@ import {
 
 import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
 
-import { getDecimalCount } from '@sb/dexUtils/utils' 
+import { getDecimalCount } from '@sb/dexUtils/utils'
 // import { Link } from '@sb/components/PortfolioMainAllocation/PortfolioMainAllocation.styles'
 
 export const Row = styled.div`
@@ -39,7 +39,7 @@ export const Block = styled.div`
   border-radius: 1.2rem;
   border: 1px solid ${(props) => props.border || props.theme.palette.grey.block};
   font-family: DM Sans;
-  font-size: 1rem;
+  font-size: 1.3rem;
   letter-spacing: 0.06rem;
   padding-left: 3rem;
   text-transform: uppercase;
@@ -49,26 +49,27 @@ export const Block = styled.div`
   flex-direction: column;
 
   &:last-child {
-    margin-right:0;
+    margin-right: 0;
   }
 `
 export const BlockContainer = styled.div`
-display:flex;
-flex-direction:row`
+  display: flex;
+  flex-direction: row;
+`
 
 export const Text = styled.div`
-text-shadow: 0px 0px 12px rgba(199, 255, 208, 0.3);
+  text-shadow: 0px 0px 12px rgba(199, 255, 208, 0.3);
 
-font-family: DM Sans;
-font-style: normal;
-font-weight: bold;
-font-size: 2rem;
-display: flex;
-align-items: flex-end;
-letter-spacing: 1px;
-text-transform: uppercase;
+  font-family: DM Sans;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 2rem;
+  display: flex;
+  align-items: flex-end;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 
-color: #C7FFD0;
+  color: ${(props) => props.theme.palette.green.shine};
 `
 export const Title = styled.div`
   font-family: DM Sans;
@@ -108,17 +109,17 @@ const Link = styled.a`
 `
 
 const Card = styled.div`
-width: ${(props) => props.width || '100%'};
-height: ${(props) => props.height || '65rem'};
-background-color: ${(props) =>
-  props.backgroundColor || props.theme.palette.white.card};
-margin-bottom: 1rem;
-border-radius: 1.2rem;
-border: 1px solid ${(props) => props.border || props.theme.palette.grey.block};
-color: ${(props) => props.color || props.theme.palette.text.grey};
-display: flex;
-justify-content: space-around;
-flex-direction: column;
+  width: ${(props) => props.width || '100%'};
+  height: ${(props) => props.height || '65rem'};
+  background-color: ${(props) =>
+    props.backgroundColor || props.theme.palette.white.card};
+  margin-bottom: 1rem;
+  border-radius: 1.2rem;
+  border: 1px solid ${(props) => props.border || props.theme.palette.grey.block};
+  color: ${(props) => props.color || props.theme.palette.text.grey};
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
 `
 
 const AnalyticsRoute = ({ markets, setMarketAddress, ...props }) => {
@@ -134,10 +135,12 @@ const AnalyticsRoute = ({ markets, setMarketAddress, ...props }) => {
     setMarketAddress(selectedMarketFromUrl.address.toBase58())
   }, [])
 
-  let circulatingSupply = serumData.getSerumData.circulatingSupply - serumData.getSerumData.burned;
-  let totalySupply = serumData.getSerumData.totalySupply - serumData.getSerumData.burned;
+  let circulatingSupply =
+    serumData.getSerumData.circulatingSupply - serumData.getSerumData.burned
+  let totalySupply =
+    serumData.getSerumData.totalySupply - serumData.getSerumData.burned
 
-  let pricePrecision = market?.tickSize && getDecimalCount(market.tickSize);
+  let pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
 
   return (
     <RowContainer
@@ -150,30 +153,28 @@ const AnalyticsRoute = ({ markets, setMarketAddress, ...props }) => {
       direction={'column'}
     >
       <RowContainer style={{ height: '75%', padding: '1.5rem 0 0 0' }}>
-        <Card
-          theme={theme}
-          style={{ padding: '.5rem', height: '100%'  }}
-        >
+        <Card theme={theme} style={{ padding: '.5rem', height: '100%' }}>
           <SingleChart
             name=""
             themeMode={theme.palette.type}
             additionalUrl={`/?symbol=SRM/USDT_0&user_id=id`}
           />
         </Card>
-        </RowContainer>
-      <RowContainer style={{ height: '25%', paddingBottom:'1.5rem',paddingTop:'1.5rem'}}><Block theme={theme}>
+      </RowContainer>
+      <RowContainer
+        style={{ height: '25%', paddingBottom: '1.5rem', paddingTop: '1.5rem' }}
+      >
+        <Block theme={theme}>
           srm marketcap{' '}
-          <Text>
-            {formatNumberToUSFormat(
-              (markPrice * circulatingSupply).toFixed(0)
-            )}
+          <Text theme={theme}>
+            {formatNumberToUSFormat((markPrice * circulatingSupply).toFixed(0))}
             $
           </Text>
         </Block>
         <Block theme={theme}>
           srm total supply
           <BlockContainer>
-            <Text>
+            <Text theme={theme}>
               {formatNumberToUSFormat(totalySupply.toFixed(0))} SRM
             </Text>
           </BlockContainer>
@@ -182,14 +183,15 @@ const AnalyticsRoute = ({ markets, setMarketAddress, ...props }) => {
           srm burned
           <BlockContainer>
             {' '}
-            <Text>
-              {formatNumberToUSFormat(serumData.getSerumData.burned.toFixed(0))} SRM
+            <Text theme={theme}>
+              {formatNumberToUSFormat(serumData.getSerumData.burned.toFixed(0))}{' '}
+              SRM
             </Text>
           </BlockContainer>
         </Block>
         <Block theme={theme}>
           srm last price
-          <Text>
+          <Text theme={theme}>
             $
             {formatNumberToUSFormat(
               stripDigitPlaces(markPrice, pricePrecision)
@@ -199,21 +201,19 @@ const AnalyticsRoute = ({ markets, setMarketAddress, ...props }) => {
         <Block theme={theme}>
           srm circulating supply
           <BlockContainer>
-            <Text>
-              {formatNumberToUSFormat(circulatingSupply.toFixed(0))}{' '}
-              SRM
+            <Text theme={theme}>
+              {formatNumberToUSFormat(circulatingSupply.toFixed(0))} SRM
             </Text>
           </BlockContainer>
         </Block>
         <Block theme={theme}>
           srm pending burn
-          <Text>
+          <Text theme={theme}>
             {/* {formatNumberToUSFormat(serumData.getSerumData.pendingBurn)}  */}
             Soon
           </Text>
         </Block>
-        </RowContainer>
-      
+      </RowContainer>
     </RowContainer>
   )
 }

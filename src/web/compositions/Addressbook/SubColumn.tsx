@@ -30,7 +30,7 @@ const SubColumn = ({
   contactPublicKey,
   setContactPublicKey,
   setShowNewCoinPopup,
-  localPassword
+  localPassword,
 }) => {
   return (
     <Card
@@ -48,17 +48,26 @@ const SubColumn = ({
           height: 'auto',
           border: '0',
           borderRadius: '0.8rem',
-          background: '#303743',
+          background: theme.palette.grey.input,
         }}
       >
         <TableRow>
-          <HeaderCell style={{ paddingLeft: '2rem' }} borderBottom={'#424B68'}>
+          <HeaderCell
+            style={{ paddingLeft: '2rem' }}
+            borderBottom={theme.palette.text.white}
+          >
             Coin
           </HeaderCell>
-          <HeaderCell style={{ textAlign: 'left' }} borderBottom={'#424B68'}>
+          <HeaderCell
+            style={{ textAlign: 'left' }}
+            borderBottom={theme.palette.text.white}
+          >
             Address
           </HeaderCell>
-          <HeaderCell style={{ textAlign: 'right' }} borderBottom={'#424B68'}>
+          <HeaderCell
+            style={{ textAlign: 'right' }}
+            borderBottom={theme.palette.text.white}
+          >
             <AddBtn
               style={{ fontFamily: 'Avenir Next Demi' }}
               onClick={() => {
@@ -75,7 +84,7 @@ const SubColumn = ({
             <TableRow>
               <Cell
                 style={{ paddingLeft: '2rem', fontSize: '2rem' }}
-                borderBottom={'#424B68'}
+                borderBottom={theme.palette.text.white}
               >
                 <LazyLoad once height={`1.7rem`}>
                   <SvgIcon
@@ -90,11 +99,13 @@ const SubColumn = ({
                     onError={onErrorImportCoinUrl}
                   />
                 </LazyLoad>
-                {el.symbol === 'SOL' ? 'SOL' : decrypt(el.symbol, localPassword)}
+                {el.symbol === 'SOL'
+                  ? 'SOL'
+                  : decrypt(el.symbol, localPassword)}
               </Cell>
               <Cell
                 style={{ textAlign: 'left', fontSize: '2rem' }}
-                borderBottom={'#424B68'}
+                borderBottom={theme.palette.text.white}
               >
                 {decrypt(el.address, localPassword)}
                 <AddBtn
@@ -113,7 +124,10 @@ const SubColumn = ({
                   copy
                 </AddBtn>
               </Cell>
-              <Cell style={{ textAlign: 'right' }} borderBottom={'#424B68'}>
+              <Cell
+                style={{ textAlign: 'right' }}
+                borderBottom={theme.palette.text.white}
+              >
                 <AddBtn
                   background={'#7380EB'}
                   width={'auto'}
