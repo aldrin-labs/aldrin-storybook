@@ -42,7 +42,6 @@ const NewContactPopup = ({
   handleClose,
   addWalletContactMutation,
   publicKey,
-  password,
   localPassword,
   getUserAddressbookQueryRefetch,
 }) => {
@@ -118,7 +117,7 @@ const NewContactPopup = ({
             </PasteButton>
           </div>
           <BtnCustom
-            // disable={!enableEdit}
+            disabled={showLoader}
             needMinWidth={false}
             btnWidth="15rem"
             height="4.5rem"
@@ -156,10 +155,10 @@ const NewContactPopup = ({
               const result = await addWalletContactMutation({
                 variables: {
                   publicKey: createHash(publicKey, localPassword),
-                  password: createHash(password, localPassword), // not encrypting for auth
                   name: encrypt(name, localPassword),
                   email: email !== '' ? encrypt(email, localPassword) : '',
                   contactPublicKey: encrypt(address, localPassword),
+                  symbol: encrypt("SOL", localPassword),
                 },
               })
 

@@ -27,8 +27,8 @@ import { decrypt } from './index'
 const SubColumn = ({
   theme,
   coins,
-  contactId,
-  setContactId,
+  contactPublicKey,
+  setContactPublicKey,
   setShowNewCoinPopup,
   localPassword
 }) => {
@@ -62,7 +62,7 @@ const SubColumn = ({
             <AddBtn
               style={{ fontFamily: 'Avenir Next Demi' }}
               onClick={() => {
-                setContactId(contactId)
+                setContactPublicKey(contactPublicKey)
                 setShowNewCoinPopup(true)
               }}
             >

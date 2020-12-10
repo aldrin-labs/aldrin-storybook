@@ -79,17 +79,17 @@ const onConfirmPassword = (
   isLoginStep: boolean,
   forceUpdatePassword: () => void
 ) => {
-  // if (!isLoginStep && addressbookPassword !== addressbookConfirmPassword) {
-  //   notify({
-  //     type: 'error',
-  //     message: 'Passwords should match',
-  //   })
+  if (!isLoginStep && addressbookPassword !== addressbookConfirmPassword) {
+    notify({
+      type: 'error',
+      message: 'Passwords should match',
+    })
 
-  //   return
-  // }
+    return
+  }
 
-  localStorage.setItem('addressbookPassword', addressbookPassword)
-  localStorage.setItem('localPassword', addressbookConfirmPassword)
+  // localStorage.setItem('addressbookPassword', addressbookPassword)
+  localStorage.setItem('localPassword', addressbookPassword)
   forceUpdatePassword()
 }
 
@@ -102,7 +102,7 @@ export const encrypt = (value, password) =>
 const combineContactsData = (
   data,
   setShowNewCoinPopup,
-  setContactId,
+  setContactPublicKey,
   localPassword
 ) => {
   if (!data) {
@@ -145,8 +145,8 @@ const combineContactsData = (
               <SubColumn
                 setShowNewCoinPopup={setShowNewCoinPopup}
                 coins={el.coins}
-                setContactId={setContactId}
-                contactId={el._id}
+                setContactPublicKey={setContactPublicKey}
+                contactPublicKey={el.publicKey}
                 localPassword={localPassword}
               />
             ),
@@ -165,7 +165,6 @@ const AddressbookRoute = ({
   getUserAddressbookQuery,
   getUserAddressbookQueryRefetch,
   publicKey,
-  addressbookPassword,
   localPassword,
   forceUpdatePassword,
 }) => {
@@ -175,12 +174,11 @@ const AddressbookRoute = ({
   const [confirmPassword, updateConfirmPassword] = useState('')
   const [showNewContactPopup, setShowNewContactPopup] = useState(false)
   const [showNewCoinPopup, setShowNewCoinPopup] = useState(false)
-  const [contactId, setContactId] = useState('')
+  const [contactPublicKey, setContactPublicKey] = useState('')
 
   const { wallet } = useWallet()
 
-  const isNoPassword = !addressbookPassword || !localPassword
-
+  const isNoPassword = !localPassword
   const isPasswordStep = !publicKey || isNoPassword
   const isLoginStep = step === 'login'
 
@@ -256,9 +254,10 @@ const AddressbookRoute = ({
               value={password}
               type={'password'}
               onChange={(e) => updatePassword(e.target.value)}
-              placeholder={'Auth password'}
+              placeholder={'Password'}
             />
 
+            {!isLoginStep &&
             <Input
               type={'password'}
               style={{
@@ -267,19 +266,20 @@ const AddressbookRoute = ({
               }}
               value={confirmPassword}
               onChange={(e) => updateConfirmPassword(e.target.value)}
-              placeholder={'Encrypt password'}
-            />
+              placeholder={'Confirm password'}
+            />}
 
             <BtnCustom
               type="text"
               size="large"
-              onClick={() =>
+              onClick={() => {
                 onConfirmPassword(
                   password,
                   confirmPassword,
                   isLoginStep,
                   forceUpdatePassword
                 )
+              }
               }
               btnColor={theme.palette.blue.serum}
               btnWidth={isLoginStep ? '14rem' : '18rem'}
@@ -365,7 +365,7 @@ const AddressbookRoute = ({
                   fontSize: '1.5rem',
                   borderBottom: '0.1rem solid #424B68',
                   boxShadow: 'none',
-                  background: 'none',
+                  background: theme.palette.white.background,
                   paddingLeft: '2rem',
                   alignItems: 'center',
                 },
@@ -387,12 +387,12 @@ const AddressbookRoute = ({
                   boxShadow: 'none',
                 },
               }}
-              //   emptyTableText={getEmptyTextPlaceholder(tab)}
+              emptyTableText={"No contacts"}
               data={{
                 body: combineContactsData(
                   getUserAddressbookQuery.getUserAddressbook,
                   setShowNewCoinPopup,
-                  setContactId,
+                  setContactPublicKey,
                   localPassword
                 ),
               }}
@@ -406,7 +406,6 @@ const AddressbookRoute = ({
         open={showNewContactPopup}
         handleClose={() => setShowNewContactPopup(false)}
         publicKey={publicKey}
-        password={addressbookPassword}
         localPassword={localPassword}
         getUserAddressbookQueryRefetch={getUserAddressbookQueryRefetch}
       />
@@ -415,10 +414,9 @@ const AddressbookRoute = ({
         open={showNewCoinPopup}
         handleClose={() => setShowNewCoinPopup(false)}
         publicKey={publicKey}
-        password={addressbookPassword}
         localPassword={localPassword}
         getUserAddressbookQueryRefetch={getUserAddressbookQueryRefetch}
-        contactId={contactId}
+        contactPublicKey={contactPublicKey}
       />
     </RowContainer>
   )
@@ -432,11 +430,9 @@ export default compose(
     query: getUserAddressbook,
     name: 'getUserAddressbookQuery',
     variables: (props) => ({
-      password: createHash(props.addressbookPassword, props.localPassword),
       publicKey: createHash(props.publicKey, props.localPassword),
     }),
     fetchPolicy: 'cache-and-network',
-    skip: (props: any) =>
-      !props.publicKey || !props.addressbookPassword || !props.localPassword,
+    skip: (props: any) => !props.publicKey  || !props.localPassword,
   })
 )(AddressbookRoute)

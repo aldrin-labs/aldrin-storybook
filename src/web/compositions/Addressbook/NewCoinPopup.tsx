@@ -24,7 +24,6 @@ import { Loading } from '@sb/components/index'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { encrypt, createHash } from './index'
-import { updateSelectedKey } from '@core/graphql/mutations/chart/updateSelectedKey'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -46,9 +45,8 @@ const NewCoinPopup = ({
   theme,
   open,
   handleClose,
-  contactId,
+  contactPublicKey,
   publicKey,
-  password,
   localPassword,
   addContactCoinMutation,
   getUserAddressbookQueryRefetch,
@@ -223,7 +221,7 @@ const NewCoinPopup = ({
             </PasteButton>
           </div>
           <BtnCustom
-            // disable={!enableEdit}
+            disabled={showLoader}
             needMinWidth={false}
             btnWidth="15rem"
             height="4.5rem"
@@ -249,7 +247,7 @@ const NewCoinPopup = ({
               if (address === '') {
                 notify({
                   type: 'error',
-                  message: 'SOL address field should not be empty',
+                  message: `${selectedCoin.label} address field should not be empty`,
                 })
 
                 return
@@ -261,11 +259,9 @@ const NewCoinPopup = ({
               const result = await addContactCoinMutation({
                 variables: {
                   publicKey: createHash(publicKey, localPassword),
-                  password: createHash(password, localPassword), // not encrypting to auth
                   symbol: encrypt(selectedCoin.label, localPassword),
                   address: encrypt(address, localPassword),
-                  // contactPublicKey: encrypt(contactPublicKey, localPassword),
-                  contactId,
+                  contactPublicKey,
                 },
               })
 
