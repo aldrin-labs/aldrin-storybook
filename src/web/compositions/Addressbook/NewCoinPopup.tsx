@@ -24,7 +24,6 @@ import { Loading } from '@sb/components/index'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { encrypt, createHash } from './index'
-import { updateSelectedKey } from '@core/graphql/mutations/chart/updateSelectedKey'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -46,9 +45,8 @@ const NewCoinPopup = ({
   theme,
   open,
   handleClose,
-  contactId,
+  contactHash,
   publicKey,
-  password,
   localPassword,
   addContactCoinMutation,
   getUserAddressbookQueryRefetch,
@@ -261,11 +259,9 @@ const NewCoinPopup = ({
               const result = await addContactCoinMutation({
                 variables: {
                   publicKey: createHash(publicKey, localPassword),
-                  password: createHash(password, localPassword), // not encrypting to auth
                   symbol: encrypt(selectedCoin.label, localPassword),
                   address: encrypt(address, localPassword),
-                  // contactPublicKey: encrypt(contactPublicKey, localPassword),
-                  contactId,
+                  contactHash,
                 },
               })
 

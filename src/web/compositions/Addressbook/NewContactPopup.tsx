@@ -42,7 +42,6 @@ const NewContactPopup = ({
   handleClose,
   addWalletContactMutation,
   publicKey,
-  password,
   localPassword,
   getUserAddressbookQueryRefetch,
 }) => {
@@ -156,10 +155,11 @@ const NewContactPopup = ({
               const result = await addWalletContactMutation({
                 variables: {
                   publicKey: createHash(publicKey, localPassword),
-                  password: createHash(password, localPassword), // not encrypting for auth
                   name: encrypt(name, localPassword),
                   email: email !== '' ? encrypt(email, localPassword) : '',
                   contactPublicKey: encrypt(address, localPassword),
+                  contactPublicKeyHash: encrypt(address, localPassword),
+                  symbol: encrypt("SOL", localPassword),
                 },
               })
 
