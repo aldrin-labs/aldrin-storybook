@@ -343,7 +343,7 @@ export const CardsPanel = ({
           </Link>
           <div
             style={{
-              width: '40%',
+              width: '35%',
               marginLeft: '4rem',
               paddingRight: '4rem',
               display: 'flex',
@@ -419,7 +419,7 @@ export const CardsPanel = ({
               Addressbook
             </NavBarLink>
           </div>
-          {isChartPage && (
+          {/* {isChartPage && (
             <div data-tut="pairs">
               <AutoSuggestSelect
                 value={view === 'default' && pair}
@@ -433,13 +433,13 @@ export const CardsPanel = ({
                 pricePrecision={pricePrecision}
               />
             </div>
-          )}
+          )} */}
 
           {/* <TooltipCustom
             title="Cryptocurrencies.ai is a Binance partner exchange"
             enterDelay={250}
             component={ */}
-          {isChartPage && (
+          {/* {isChartPage && (
             <MarketStats
               theme={theme}
               symbol={pair}
@@ -448,7 +448,7 @@ export const CardsPanel = ({
               quantityPrecision={quantityPrecision}
               pricePrecision={pricePrecision}
             />
-          )}
+          )} */}
 
           {/* }
           /> */}
