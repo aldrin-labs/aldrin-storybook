@@ -162,27 +162,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       marketType
     )
 
-
-    // WTF ???
-
-    const positionsData = combinePositionsTable({
-      data,
-      createOrderWithStatus: this.createOrderWithStatus,
-      toogleEditMarginPopup: this.toogleEditMarginPopup,
-      theme,
-      keys,
-      pair: currencyPair,
-      keyId: selectedKey.keyId,
-      canceledPositions: canceledOrders,
-      priceFromOrderbook,
-      handlePairChange,
-      enqueueSnackbar,
-    })
-
-    this.setState({
-      positionsData,
-    })
-
     const result = await this.createOrder(variables, positionKey)
     if (result.status === 'error') {
       const isReduceOrderIsRejected = /-2022/.test(result.message)
