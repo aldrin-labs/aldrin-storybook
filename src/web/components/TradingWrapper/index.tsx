@@ -54,7 +54,7 @@ import {
   AdditionalSettingsButton,
 } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
-import TradingViewBotTerminal from './TradingViewBotTerminal'
+import { TradingViewBotTerminalMemo } from './TradingViewBotTerminal'
 
 class SimpleTabs extends React.Component {
   state = {
@@ -251,9 +251,9 @@ class SimpleTabs extends React.Component {
               </TerminalModeButton>
               <TerminalModeButton
                 theme={theme}
-                active={mode === 'market'}
+                active={TVAlersBotEnabled}
                 onClick={() => {
-                  this.handleChangeMode('market')
+                  this.handleChangeMode('')
                   this.setState(prev => ({
                     TVAlersBotEnabled: !prev.TVAlersBotEnabled,
                   }))
@@ -362,7 +362,7 @@ class SimpleTabs extends React.Component {
 
           <TerminalMainGrid item xs={12} container marketType={marketType}>
             <div style={{ display: 'flex', width: '100%', height: '100%' }}>
-              {TVAlersBotEnabled ? <TradingViewBotTerminal {...this.props} /> : <>
+              {TVAlersBotEnabled ? <TradingViewBotTerminalMemo {...this.props} /> : <>
               <FullHeightGrid
                 theme={theme}
                 xs={6}
