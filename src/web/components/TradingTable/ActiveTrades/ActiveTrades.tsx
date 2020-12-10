@@ -63,7 +63,7 @@ import { SmartTradeButton } from '@sb/components/TradingTable/TradingTabs/Tradin
 import { showCancelResult } from '@sb/compositions/Chart/Chart.utils'
 
 @withTheme()
-class ActiveTradesTable extends React.Component<IProps, IState> {
+class ActiveTradesTable extends React.PureComponent<IProps, IState> {
   state: IState = {
     editTrade: null,
     selectedTrade: {},
