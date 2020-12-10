@@ -154,8 +154,36 @@ const TopBar = ({ theme }) => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <SvgIcon
+        width={'auto'}
+        height={'100%'}
+        styledComponentsAdditionalStyle={{
+          padding: '0 2rem 0 0',
+          cursor: 'pointer',
+        }}
+        src={isDarkTheme ? SunDisabled : SunActive}
+        onClick={() => {
+          if (isDarkTheme) {
+            theme.updateMode('light')
+          }
+        }}
+      />
       {/* </div> */}
       {/* <div style={{ display: 'flex' }}> */}
+      <SvgIcon
+        width={'auto'}
+        height={'100%'}
+        styledComponentsAdditionalStyle={{
+          padding: '0 2rem 0 0',
+          cursor: 'pointer',
+        }}
+        src={isDarkTheme ? MoonActive : MoonDisabled}
+        onClick={() => {
+          if (!isDarkTheme) {
+            theme.updateMode('dark')
+          }
+        }}
+      />
 
       <div>
         <OvalSelector

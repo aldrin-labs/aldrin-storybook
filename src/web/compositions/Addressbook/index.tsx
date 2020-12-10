@@ -94,8 +94,10 @@ const onConfirmPassword = (
 }
 
 export const createHash = (value, password) => MD5(value + password).toString()
-export const decrypt = (value, password) => AES.decrypt(value, password).toString(enc.Utf8)
-export const encrypt = (value, password) => AES.encrypt(value, password).toString()
+export const decrypt = (value, password) =>
+  AES.decrypt(value, password).toString(enc.Utf8)
+export const encrypt = (value, password) =>
+  AES.encrypt(value, password).toString()
 
 const combineContactsData = (
   data,
@@ -197,7 +199,9 @@ const AddressbookRoute = ({
       >
         {!publicKey ? (
           <>
-            <Text>Connect your wallet to create or get addressbook</Text>
+            <Text style={{ color: theme.palette.text.light }}>
+              Connect your wallet to create or get addressbook
+            </Text>
             {/* connect wallet */}
             <BtnCustom
               onClick={wallet.connect}
@@ -233,13 +237,20 @@ const AddressbookRoute = ({
               firstHalfIsActive={isLoginStep}
               changeHalf={() => updateStep(isLoginStep ? 'sign_up' : 'login')}
             />
-            <Text paddingBottom={isLoginStep ? '2rem' : '4rem'}>
+            <Text
+              style={{ color: theme.palette.text.light }}
+              paddingBottom={isLoginStep ? '2rem' : '4rem'}
+            >
               {isLoginStep
                 ? 'Enter your passwords to get addressbook'
                 : 'Create passwords to protect your addressbook'}
             </Text>
 
             <Input
+              style={{
+                background: theme.palette.grey.input,
+                color: theme.palette.text.light,
+              }}
               value={password}
               type={'password'}
               onChange={(e) => updatePassword(e.target.value)}
@@ -249,6 +260,10 @@ const AddressbookRoute = ({
             {!isLoginStep &&
             <Input
               type={'password'}
+              style={{
+                background: theme.palette.grey.input,
+                color: theme.palette.text.light,
+              }}
               value={confirmPassword}
               onChange={(e) => updateConfirmPassword(e.target.value)}
               placeholder={'Confirm password'}
