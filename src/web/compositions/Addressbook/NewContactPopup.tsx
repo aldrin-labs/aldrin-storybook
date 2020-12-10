@@ -117,7 +117,7 @@ const NewContactPopup = ({
             </PasteButton>
           </div>
           <BtnCustom
-            // disable={!enableEdit}
+            disabled={showLoader}
             needMinWidth={false}
             btnWidth="15rem"
             height="4.5rem"

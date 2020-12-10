@@ -221,7 +221,7 @@ const NewCoinPopup = ({
             </PasteButton>
           </div>
           <BtnCustom
-            // disable={!enableEdit}
+            disabled={showLoader}
             needMinWidth={false}
             btnWidth="15rem"
             height="4.5rem"
@@ -247,7 +247,7 @@ const NewCoinPopup = ({
               if (address === '') {
                 notify({
                   type: 'error',
-                  message: 'SOL address field should not be empty',
+                  message: `${selectedCoin.label} address field should not be empty`,
                 })
 
                 return
