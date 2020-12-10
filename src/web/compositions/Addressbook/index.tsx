@@ -350,7 +350,7 @@ const AddressbookRoute = ({
                   fontSize: '1.5rem',
                   borderBottom: '0.1rem solid #424B68',
                   boxShadow: 'none',
-                  background: 'none',
+                  background: theme.palette.white.background,
                   paddingLeft: '2rem',
                   alignItems: 'center',
                 },
