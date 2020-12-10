@@ -140,7 +140,7 @@ const NewCoinPopup = ({
               overflowY: 'hidden',
               borderRadius: '0',
               textAlign: 'center',
-              background: '303743',
+              background: '#303743',
               position: 'relative',
               boxShadow: '-1px 3px 22px -16px rgba(127,139,148,1)',
               border: `0.1rem solid ${theme.palette.text.white}`,
@@ -187,7 +187,7 @@ const NewCoinPopup = ({
               textAlign: 'left',
             }}
             singleValueStyles={{
-              color: '#f5f5fb',
+              color: theme.palette.dark.main,
               fontSize: '1.4rem',
               fontWeight: 'bold',
               textTransform: 'uppercase',

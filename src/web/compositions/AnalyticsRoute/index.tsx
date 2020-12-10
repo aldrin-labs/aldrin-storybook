@@ -24,6 +24,8 @@ export const Row = styled.div`
   justify-content: ${(props) => props.justify || 'center'};
   flex-direction: ${(props) => props.direction || 'row'};
   align-items: ${(props) => props.align || 'center'};
+  width: ${(props) => props.width || 'auto'};
+  height: ${(props) => props.height || 'auto'};
 `
 export const RowContainer = styled(Row)`
   width: 100%;
