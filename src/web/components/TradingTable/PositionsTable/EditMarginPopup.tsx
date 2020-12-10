@@ -25,7 +25,7 @@ const StyledPaper = styled(Paper)`
   width: 65rem;
 `;
 
-class EditMarginPopup extends React.Component {
+class EditMarginPopup extends React.PureComponent {
 	state = {
 		// 1 for increasing
 		// 2 for decresing
