@@ -185,7 +185,7 @@ const TopBar = ({ theme }) => {
         }}
       />
 
-      <div>
+      {/* <div>
         <OvalSelector
           theme={theme}
           selectStyles={selectStyles(theme)}
@@ -215,7 +215,7 @@ const TopBar = ({ theme }) => {
             label: provider.name,
           }))}
         />
-      </div>
+      </div> */}
       <div data-tut="wallet">
         <BtnCustom
           type="text"
@@ -419,7 +419,7 @@ export const CardsPanel = ({
               Addressbook
             </NavBarLink>
           </div>
-          {/* {isChartPage && (
+          {isChartPage && (
             <div data-tut="pairs">
               <AutoSuggestSelect
                 value={view === 'default' && pair}
@@ -433,13 +433,13 @@ export const CardsPanel = ({
                 pricePrecision={pricePrecision}
               />
             </div>
-          )} */}
+          )}
 
           {/* <TooltipCustom
             title="Cryptocurrencies.ai is a Binance partner exchange"
             enterDelay={250}
             component={ */}
-          {/* {isChartPage && (
+          {isChartPage && (
             <MarketStats
               theme={theme}
               symbol={pair}
@@ -448,7 +448,7 @@ export const CardsPanel = ({
               quantityPrecision={quantityPrecision}
               pricePrecision={pricePrecision}
             />
-          )} */}
+          )}
 
           {/* }
           /> */}
