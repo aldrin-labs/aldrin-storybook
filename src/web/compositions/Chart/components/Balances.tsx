@@ -179,7 +179,7 @@ export const Balances = ({
     <Link to="/profile/withdrawal" {...props} />
   )
 
-  console.log('Balances layout container RENDER')
+  // console.log('Balances layout container RENDER')
 
   return (
     <>

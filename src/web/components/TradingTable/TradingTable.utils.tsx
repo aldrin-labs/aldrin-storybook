@@ -689,8 +689,6 @@ export const combineActiveTradesTable = ({
 
   const { green, red, blue } = theme.palette
 
-  console.log('combineActiveTradesTable data: ', data)
-
   const processedActiveTradesData = data
     .filter(
       (a) =>
@@ -787,7 +785,6 @@ export const combineActiveTradesTable = ({
         receivedProfitPercentage: 0,
       }
 
-      console.log('map inside element combineActiveTrades: ', el)
       const pairArr = pair.split('_')
       const needOpacity = false
       const date = isNaN(dayjs(+createdAt).unix()) ? createdAt : +createdAt
@@ -2537,10 +2534,10 @@ export const updateActivePositionsQuerryFunction = (
   previous,
   { subscriptionData }
 ) => {
-  console.log(
-    'updateActivePositionsQuerryFunction subscriptionData',
-    subscriptionData
-  )
+  // console.log(
+  //   'updateActivePositionsQuerryFunction subscriptionData',
+  //   subscriptionData
+  // )
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenFuturesPositions
 
