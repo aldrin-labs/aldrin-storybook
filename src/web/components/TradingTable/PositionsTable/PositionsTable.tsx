@@ -27,7 +27,7 @@ import { CANCEL_ORDER_MUTATION } from '@core/graphql/mutations/chart/cancelOrder
 import { createOrder } from '@core/graphql/mutations/chart/createOrder'
 import { updatePosition } from '@core/graphql/mutations/chart/updatePosition'
 
-import { EditMarginPopup } from './EditMarginPopup'
+import EditMarginPopup from './EditMarginPopup'
 import { showOrderResult } from '@sb/compositions/Chart/Chart.utils'
 
 @withTheme()
@@ -492,14 +492,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       return null
     }
 
-    let USDTFuturesFund = { quantity: 0, value: 0 }
-
-    if (getFundsQuery && getFundsQuery.getFunds) {
-      USDTFuturesFund = getFundsQuery.getFunds
-        .filter((el) => +el.assetType === 1 && el.asset.symbol === 'USDT')
-        .map((el) => ({ quantity: el.free, value: el.free }))
-    }
-
     return (
       <>
         <TableWithSort
@@ -583,12 +575,12 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
         />
         {this.state.editMarginPopup && (
           <EditMarginPopup
+            selectedKey={this.props.selectedKey}
             theme={theme}
             open={true}
             editMarginPosition={this.state.editMarginPosition}
             handleClose={this.toogleEditMarginPopup}
             modifyIsolatedMarginWithStatus={this.modifyIsolatedMarginWithStatus}
-            USDTFuturesFund={USDTFuturesFund}
           />
         )}
       </>
@@ -603,15 +595,6 @@ const PositionsTableWrapper = compose(
   graphql(createOrder, { name: 'createOrderMutation' }),
   graphql(modifyIsolatedMargin, { name: 'modifyIsolatedMarginMutation' }),
   graphql(setPositionWasClosed, { name: 'setPositionWasClosedMutation' }),
-  queryRendererHoc({
-    query: getFunds,
-    name: 'getFundsQuery',
-    fetchPolicy: 'cache-first',
-    withoutLoading: true,
-    variables: (props) => ({
-      fundsInput: { activeExchangeKey: props.selectedKey.keyId },
-    }),
-  }),
   queryRendererHoc({
     query: getActivePositions,
     name: `getActivePositionsQuery`,
