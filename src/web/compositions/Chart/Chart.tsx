@@ -263,9 +263,9 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
     return false
   }
 
-  console.log('Chart diff: ', difference(prev, next))
-  console.log('Chart shallowDifference: ', shallowDifference(prev, next))
-  console.log('Chart shallowEqual diff result:', shallowEqual(prev, next))
+  // console.log('Chart diff: ', difference(prev, next))
+  // console.log('Chart shallowDifference: ', shallowDifference(prev, next))
+  // console.log('Chart shallowEqual diff result:', shallowEqual(prev, next))
 
   return shallowEqual(prev, next)
 })
