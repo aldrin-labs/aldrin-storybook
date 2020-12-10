@@ -335,6 +335,20 @@ class OrderbookAndDepthChart extends React.Component {
         ),
       })
     }
+
+    if (
+      prevProps.exchange !== this.props.exchange ||
+      prevProps.symbol !== this.props.symbol ||
+      prevProps.marketType !== this.props.marketType
+    ) {
+      // console.log('OrderbookAndDepthChart componentDidUpdate cleanState')
+      // when change exchange delete all data and...
+      this.setState({ asks: new TreeMap(), bids: new TreeMap() }, () => {
+        // console.log('OrderbookAndDepthChart componentDidUpdate cleanState SUCCESS')
+      })
+    }
+
+
   }
 
   componentWillUnmount() {
