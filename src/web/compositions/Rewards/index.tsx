@@ -26,6 +26,8 @@ import { getAllRetweetsHistory } from '@core/graphql/queries/serum/getAllRetweet
 import serum from '@icons/Serum.svg'
 import decefi from '@icons/decefi.svg'
 import blackTwitter from '@icons/blackTwitter.svg'
+import greenTwitter from '@icons/greenTwitter.svg'
+import greenDollar from '@icons/greenDollar.svg'
 import greenArrow from '@icons/greenArrow.svg'
 import greenTweet from '@icons/greenTweet.svg'
 import lightSub from '@icons/lightSub.svg'
@@ -38,6 +40,8 @@ import { withPublicKey } from '@core/hoc/withPublicKey'
 
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+
 import { Link } from 'react-router-dom'
 // import { Circle } from 'rc-progress';
 import { CircularProgressbar as Circle } from 'react-circular-progressbar'
@@ -145,6 +149,7 @@ const CardSubTitle = styled.h3`
   font-size: 1.6rem;
   text-transform: capitalize;
   margin: 0;
+  padding-bottom: .5rem;
 `
 
 const CardSubValue = styled.span`
@@ -153,6 +158,16 @@ const CardSubValue = styled.span`
   font-weight: bold;
   font-size: 2rem;
   letter-spacing: 0.1rem;
+`
+
+const CardSubValueForVolume = styled.span`
+  color: #c7ffd0;
+  font-family: DM Sans;
+  font-weight: bold;
+  font-size: 2rem;
+  letter-spacing: 0.1rem;
+  display: flex;
+  flex-direction: column;
 `
 
 const Form = styled.form`
@@ -306,7 +321,7 @@ const RewardsRoute = (props) => {
     usdVolumeTwitter: 0,
   }
 
-  const tradedSerumInUSDT = usdVolume - (usdVolumeTwitter + usdVolumeBounty)
+  const tradedSerumInUSDT = usdVolume
 
   const currentPhase = getPhaseFromTotal(tradedSerumInUSDT)
   const currentPhaseMaxVolume = srmVolumesInUSDT[currentPhase]
@@ -909,19 +924,41 @@ const RewardsRoute = (props) => {
             <Row
               direction={'column'}
               align={'flex-start'}
-              justify={'space-around'}
-              style={{ width: '50%', height: '30%', paddingLeft: '1rem' }}
+              justify={'flex-start'}
+              wrap={'nowrap'}
+              width={'50%'}
+              height={'35%'} 
+              style={{ paddingLeft: '1rem' }}
             >
-              <CardSubTitle>Total Volume</CardSubTitle>
-              <CardSubValue>
-                ${formatNumberToUSFormat(+tradedSerumInUSDT.toFixed(0))}
-              </CardSubValue>
+              <DarkTooltip delay={'50'} placement={'top'} title={'Farming Volume = Trade Volume + Twitter Points'}><CardSubTitle>Total Volume</CardSubTitle></DarkTooltip>
+              <CardSubValueForVolume>
+                <Row justify={'flex-start'} style={{ paddingBottom: '.5rem' }}>
+                <SvgIcon
+                    src={greenDollar}
+                    width={'2.5rem'}
+                    height={'2.5rem'}
+                    style={{ marginRight: '1rem' }}
+                  /><span>{formatNumberToUSFormat(+(usdVolume - (usdVolumeTwitter + usdVolumeBounty)).toFixed(0))}</span>
+                </Row>
+                <DarkTooltip delay={500} title={`+ $${formatNumberToUSFormat(usdVolumeBounty.toFixed(0))} bounty`}>
+                <Row>
+                  <SvgIcon
+                    src={greenTwitter}
+                    width={'2.5rem'}
+                    height={'2.5rem'}
+                    style={{ marginRight: '1rem' }}
+                  /> <span>{formatNumberToUSFormat(+(usdVolumeTwitter + usdVolumeBounty).toFixed(0))}</span>
+                </Row>
+                </DarkTooltip>
+                {/* twitter + bounty */}
+              </CardSubValueForVolume>
             </Row>
             <Row
               direction={'column'}
               align={'flex-start'}
-              justify={'space-around'}
-              style={{ width: '50%', height: '30%' }}
+              justify={'flex-start'}
+              width={'50%'}
+              height={'35%'} 
             >
               <CardSubTitle>Volume until next phase</CardSubTitle>
               <CardSubValue>
@@ -934,8 +971,10 @@ const RewardsRoute = (props) => {
             <Row
               direction={'column'}
               align={'flex-start'}
-              justify={'space-around'}
-              style={{ width: '50%', height: '30%', paddingLeft: '1rem' }}
+              justify={'flex-start'}
+              width={'50%'}
+              height={'35%'} 
+              style={{ paddingLeft: '1rem' }}
             >
               <CardSubTitle>Total DCFI farmed</CardSubTitle>
               <CardSubValue>
@@ -945,8 +984,9 @@ const RewardsRoute = (props) => {
             <Row
               direction={'column'}
               align={'flex-start'}
-              justify={'space-around'}
-              style={{ width: '50%', height: '30%' }}
+              justify={'flex-start'}
+              width={'50%'}
+              height={'35%'} 
             >
               <CardSubTitle>DCFI until next phase</CardSubTitle>
               <CardSubValue>
