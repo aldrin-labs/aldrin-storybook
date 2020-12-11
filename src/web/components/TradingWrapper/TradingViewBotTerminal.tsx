@@ -46,6 +46,8 @@ import {
   SliderWithAmountFieldRow,
 } from '@sb/compositions/Chart/components/SmartOrderTerminal/SliderComponents'
 
+import TradingViewConfirmPopup from './TradingViewConfirmPopup'
+
 const generateToken = () =>
   Math.random()
     .toString(36)
@@ -87,6 +89,8 @@ export const TradingViewBotTerminal = ({
   // isCloseOrderExternal,
   // isAveragingAfterFirstTarget,
 }) => {
+  const [showPopup, changeShowPopup] = useState(false)
+
   const [sidePlot, updateSidePlot] = useState('')
   const [sidePlotEnabled, changeSidePlotEnabled] = useState(false)
 
@@ -94,8 +98,23 @@ export const TradingViewBotTerminal = ({
   const [orderTypePlot, updateOrderTypePlot] = useState('')
   const [orderTypePlotEnabled, changeOrderTypePlotEnabled] = useState(false)
 
+  const startTradingViewBot = () => {
+    changeShowPopup(true)
+    updateState('token', generateToken())
+    window.onbeforeunload = function(){
+      return 'Are you sure you want to leave?';
+    };
+  }
+
+  // subscribe to updates
+
   return (
     <TerminalBlock theme={theme} width={'100%'} data-tut={'step1'}>
+      <TradingViewConfirmPopup 
+        theme={theme}
+        open={showPopup}
+        handleClose={() => changeShowPopup(false)}
+      />
       <div>
         <InputRowContainer padding={'1.2rem 0 .6rem 0'}>
           <CustomSwitcher

@@ -70,10 +70,12 @@ class SimpleTabs extends React.Component {
     takeProfitPercentage: 0,
     breakEvenPoint: true,
     tradingBotEnabled: false,
-    TVAlersBotEnabled: false,
     tradingBotIsActive: false,
     tradingBotInterval: 45,
     tradingBotTotalTime: 60,
+
+    TVAlersBotEnabled: false,
+    token: '',
   }
 
   static getDerivedStateFromProps(props, state) {
