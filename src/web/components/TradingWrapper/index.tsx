@@ -372,6 +372,7 @@ class SimpleTabs extends React.Component {
                 <TradingViewBotTerminalMemo
                   theme={theme}
                   side={side}
+                  pair={pair}
                   orderType={mode}
                   updateState={this.updateState}
                 />
