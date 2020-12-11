@@ -102,10 +102,10 @@ export const TradingViewBotTerminal = ({
   }
 
   const getEntryAlertJson = () => {
-    // const typeJson =
-    //   typePlotEnabled
-    //     ? `\\"orderType\\": {{plot_${typePlot}}}`
-    //     : `\\"orderType\\": \\"${type}\\"`
+    const typeJson =
+      false
+        ? `\\"type\\": {{plot_${typePlot}}}`
+        : `\\"type\\": \\"${orderType}\\"`
 
     const sideJson =
       sidePlotEnabled
