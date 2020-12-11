@@ -74,9 +74,9 @@ export const TradeInputHeader = ({
             <SeparateInputTitle
               theme={theme}
               haveTooltip={haveTooltip}
-              style={{
-                borderBottom: haveTooltip ? '.1rem dashed #e0e5ec' : 'none',
-              }}
+              // style={{
+              //   borderBottom: haveTooltip ? '.1rem solid #e0e5ec' : 'none',
+              // }}
             >
               {title}
             </SeparateInputTitle>
@@ -86,9 +86,9 @@ export const TradeInputHeader = ({
       ) : (
         <SeparateInputTitle
           theme={theme}
-          style={{
-            borderBottom: haveTooltip ? '.1rem dashed #e0e5ec' : 'none',
-          }}
+          // style={{
+          //   borderBottom: haveTooltip ? '.1rem solid #e0e5ec' : 'none',
+          // }}
         >
           {title}
         </SeparateInputTitle>

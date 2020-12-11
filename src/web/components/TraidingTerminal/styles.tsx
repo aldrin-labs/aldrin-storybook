@@ -405,9 +405,9 @@ export const TradeInputBlock = styled.div`
 
 export const SeparateInputTitle = styled.span`
   color: ${(props) => props.theme.palette.dark.main};
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: bold;
-  text-transform: uppercase;
+  text-transform: capitalize;
   letter-spacing: 0.1rem;
   white-space: nowrap;
   cursor: ${(props) => (props.haveTooltip ? 'pointer' : 'normal')};

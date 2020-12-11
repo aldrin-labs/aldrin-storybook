@@ -17,6 +17,7 @@ import {
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
 import RoboHead from '@icons/roboHead.svg'
+import Bell from '@icons/bell.svg'
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
@@ -70,7 +71,7 @@ class SimpleTabs extends React.Component {
     takeProfitPercentage: 0,
     breakEvenPoint: true,
     tradingBotEnabled: false,
-    TVAlersBotEnabled: false,
+    TVAlertsBotEnabled: false,
     tradingBotIsActive: false,
     tradingBotInterval: 45,
     tradingBotTotalTime: 60,
@@ -146,7 +147,7 @@ class SimpleTabs extends React.Component {
       breakEvenPoint,
       takeProfitPercentage,
       tradingBotEnabled,
-      TVAlersBotEnabled,
+      TVAlertsBotEnabled,
       tradingBotIsActive,
       tradingBotInterval,
       tradingBotTotalTime,
@@ -223,80 +224,103 @@ class SimpleTabs extends React.Component {
             style={{ display: 'flex' }}
             theme={theme}
           >
-            <div style={{ width: '100%' }}>
-              <TerminalModeButton
-                theme={theme}
-                active={mode === 'market'}
-                onClick={() => {
-                  this.handleChangeMode('market')
-                  this.setState({
-                    orderMode: 'ioc',
-                  })
-                }}
-              >
-                Market
-              </TerminalModeButton>
-              <TerminalModeButton
-                theme={theme}
-                active={mode === 'limit'}
-                onClick={() => {
-                  this.handleChangeMode('limit')
-                  this.setState({
-                    orderMode: 'TIF',
-                    tradingBotEnabled: false,
-                  })
-                }}
-              >
-                Limit
-              </TerminalModeButton>
-              <TerminalModeButton
-                theme={theme}
-                active={TVAlersBotEnabled}
-                onClick={() => {
-                  this.handleChangeMode('')
-                  this.setState((prev) => ({
-                    TVAlersBotEnabled: !prev.TVAlersBotEnabled,
-                  }))
-                }}
-              >
-                TV Alerts
-              </TerminalModeButton>
-              {pair.join('_') === 'SRM_USDT' && (
+            <div
+              style={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'space-between',
+              }}
+            >
+              <div>
+                <TerminalModeButton
+                  style={{ width: '10rem' }}
+                  theme={theme}
+                  active={mode === 'market'}
+                  onClick={() => {
+                    this.handleChangeMode('market')
+                    this.setState({
+                      orderMode: 'ioc',
+                      TVAlertsBotEnabled: false,
+                    })
+                  }}
+                >
+                  Market
+                </TerminalModeButton>
+                <TerminalModeButton
+                  style={{ width: '10rem' }}
+                  theme={theme}
+                  active={mode === 'limit'}
+                  onClick={() => {
+                    this.handleChangeMode('limit')
+                    this.setState({
+                      orderMode: 'TIF',
+                      tradingBotEnabled: false,
+                      TVAlertsBotEnabled: false,
+                    })
+                  }}
+                >
+                  Limit
+                </TerminalModeButton>
+              </div>
+              <div>
                 <TerminalModeButton
                   theme={theme}
-                  active={tradingBotEnabled}
                   style={{
-                    width: '25%',
-                    position: 'absolute',
-                    right: 0,
-                    ...(tradingBotIsActive
-                      ? { backgroundColor: '#F07878' }
-                      : {}),
+                    width: '14rem',
+                    borderLeft: theme.palette.border.main,
                   }}
+                  active={TVAlertsBotEnabled}
                   onClick={() => {
-                    if (tradingBotIsActive) {
-                      clearInterval(intervalId)
-                      updateIntervalId(null)
-                      this.setState({ tradingBotIsActive: false })
-                    } else {
-                      this.setState((prev) => ({
-                        tradingBotEnabled: !prev.tradingBotEnabled,
-                        tradingBotIsActive: false,
-                        orderMode: 'ioc',
-                        mode: 'market',
-                      }))
-                    }
+                    this.handleChangeMode('')
+                    this.setState((prev) => ({
+                      TVAlertsBotEnabled: !prev.TVAlertsBotEnabled,
+                    }))
                   }}
                 >
                   <SvgIcon
-                    src={RoboHead}
+                    src={Bell}
                     height={'100%'}
-                    width={'2rem'}
-                    style={{ position: 'absolute', left: '1rem', top: 0 }}
+                    width={'1.5rem'}
+                    style={{ position: 'absolute', right: '27.5rem', top: 0 }}
                   />
-                  {tradingBotIsActive ? 'Stop Cycle BOT' : 'Use Cycle BOT'}
+                  Alert Bot
                 </TerminalModeButton>
-              )}
+                {pair.join('_') === 'SRM_USDT' && (
+                  <TerminalModeButton
+                    theme={theme}
+                    active={tradingBotEnabled}
+                    style={{
+                      width: '17rem',
+                      ...(tradingBotIsActive
+                        ? { backgroundColor: '#F07878' }
+                        : {}),
+                    }}
+                    onClick={() => {
+                      if (tradingBotIsActive) {
+                        clearInterval(intervalId)
+                        updateIntervalId(null)
+                        this.setState({ tradingBotIsActive: false })
+                      } else {
+                        this.setState((prev) => ({
+                          tradingBotEnabled: !prev.tradingBotEnabled,
+                          tradingBotIsActive: false,
+                          orderMode: 'ioc',
+                          mode: 'market',
+                        }))
+                      }
+                    }}
+                  >
+                    <SvgIcon
+                      src={RoboHead}
+                      height={'100%'}
+                      width={'2rem'}
+                      style={{ position: 'absolute', right: '14rem', top: 0 }}
+                    />
+                    {tradingBotIsActive ? 'Stop Cycle BOT' : 'Use Cycle BOT'}
+                  </TerminalModeButton>
+                )}
+              </div>
+
               {/* <DarkTooltip
                 maxWidth={'35rem'}
                 title={
@@ -366,7 +390,7 @@ class SimpleTabs extends React.Component {
 
           <TerminalMainGrid item xs={12} container marketType={marketType}>
             <div style={{ display: 'flex', width: '100%', height: '100%' }}>
-              {TVAlersBotEnabled ? (
+              {TVAlertsBotEnabled ? (
                 <TradingViewBotTerminalMemo
                   theme={theme}
                   side={side}

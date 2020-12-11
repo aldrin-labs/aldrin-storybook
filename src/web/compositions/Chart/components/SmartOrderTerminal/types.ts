@@ -180,6 +180,7 @@ export type InputProps = {
 export type InputRowProps = {
   direction?: string
   justify?: string
+  align?:string
   padding?: string
   width?: string
 }

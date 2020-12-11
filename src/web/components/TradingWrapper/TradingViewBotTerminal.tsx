@@ -10,6 +10,8 @@ import {
   BlueSwitcherStyles,
 } from '@sb/compositions/Chart/components/SmartOrderTerminal/utils'
 
+import { SendButton } from '../TraidingTerminal/styles'
+
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { API_URL } from '@core/utils/config'
 import WebHookImg from '@sb/images/WebHookImg.png'
@@ -45,6 +47,7 @@ import {
   SliderWithPriceAndPercentageFieldRow,
   SliderWithAmountFieldRow,
 } from '@sb/compositions/Chart/components/SmartOrderTerminal/SliderComponents'
+import { Send } from '@material-ui/icons'
 
 const generateToken = () =>
   Math.random()
@@ -135,10 +138,10 @@ export const TradingViewBotTerminal = ({
             />
           </SwitcherContainer>
           <Input
+            needTitleBlock
+            header={'plot_'}
             theme={theme}
             type={'number'}
-            needTitle
-            title={`plot_`}
             textAlign="left"
             width={'calc(20% - .8rem)'}
             inputStyles={{
@@ -182,7 +185,7 @@ export const TradingViewBotTerminal = ({
               changeOrderType(orderType === 'limit' ? 'market' : 'limit')
             }}
           />
-          <div style={{ width: 'calc(35% - 2rem)', marginLeft: '2rem' }}>
+          <div style={{ width: 'calc(35% - 1rem)', marginLeft: '1rem' }}>
             <Input
               theme={theme}
               padding={'0'}
@@ -231,10 +234,10 @@ export const TradingViewBotTerminal = ({
             />
           </SwitcherContainer>
           <Input
+            needTitleBlock
+            header={'plot_'}
             theme={theme}
             type={'number'}
-            needTitle
-            title={`plot_`}
             textAlign="left"
             width={'calc(20% - .8rem)'}
             inputStyles={{
@@ -476,25 +479,34 @@ export const TradingViewBotTerminal = ({
           }}
         /> */}
 
-        <FormInputContainer
-          theme={theme}
-          padding={'0 0 .8rem 0'}
-          haveTooltip={true}
-          tooltipText={
-            <img style={{ width: '35rem', height: '50rem' }} src={WebHookImg} />
-          }
-          title={
-            <span>
-              paste it into{' '}
-              <span style={{ color: theme.palette.blue.background }}>
-                web-hook url
-              </span>{' '}
-              field when creating tv alert
-            </span>
-          }
-        >
-          <InputRowContainer>
-            <Input
+        <InputRowContainer align={'flex-end'}>
+          <FormInputContainer
+            theme={theme}
+            padding={'0 0 0 0'}
+            haveTooltip={true}
+            style={{ width: 'calc(35% - 1rem)', marginRight: '1rem' }}
+            tooltipText={
+              <img
+                style={{ width: '35rem', height: '50rem' }}
+                src={WebHookImg}
+              />
+            }
+            title={
+              <span>
+                paste it into alert{' '}
+                <span
+                  style={{
+                    color: '#7380EB',
+                    textDecoration: 'underline',
+                  }}
+                >
+                  web-hook
+                </span>{' '}
+                URL field
+              </span>
+            }
+          >
+            {/* <Input
               theme={theme}
               width={'85%'}
               type={'text'}
@@ -502,46 +514,55 @@ export const TradingViewBotTerminal = ({
               textAlign={'left'}
               value={`https://${API_URL}/createSmUsingTemplate`}
               onChange={() => {}}
-            />
+            /> */}
             <BtnCustom
-              btnWidth="calc(15% - .8rem)"
-              height="auto"
-              margin="0 0 0 .8rem"
-              fontSize="1rem"
-              padding=".5rem 0 .4rem 0"
+              needMinWidth={false}
+              btnWidth="100%"
+              height="3rem"
+              fontSize="1.4rem"
+              padding="1rem 2rem"
               borderRadius=".8rem"
-              btnColor={theme.palette.blue.main}
-              backgroundColor={theme.palette.white.background}
-              hoverColor={theme.palette.white.main}
-              hoverBackground={theme.palette.blue.main}
+              borderColor={'#7380EB'}
+              btnColor={'#fff'}
+              backgroundColor={'#7380EB'}
+              textTransform={'none'}
+              margin={'1rem 0 0 0'}
               transition={'all .4s ease-out'}
               onClick={() => {
                 copy(`https://${API_URL}/createSmUsingTemplate`)
               }}
             >
-              copy
+              Copy web-hook URL
             </BtnCustom>
-          </InputRowContainer>
-        </FormInputContainer>
-        <FormInputContainer
-          theme={theme}
-          padding={'0 0 .8rem 0'}
-          haveTooltip={true}
-          tooltipText={
-            <img style={{ width: '40rem', height: '42rem' }} src={MessageImg} />
-          }
-          title={
-            <span>
-              paste it into{' '}
-              <span style={{ color: theme.palette.blue.background }}>
-                message
-              </span>{' '}
-              field when creating tv alert
-            </span>
-          }
-        >
-          <InputRowContainer>
-            <Input
+            {/* </InputRowContainer> */}
+          </FormInputContainer>
+          <FormInputContainer
+            theme={theme}
+            style={{ width: 'calc(35%)' }}
+            padding={'0 0 0 0'}
+            haveTooltip={true}
+            tooltipText={
+              <img
+                style={{ width: '40rem', height: '42rem' }}
+                src={MessageImg}
+              />
+            }
+            title={
+              <span>
+                Paste it into alert{' '}
+                <span
+                  style={{
+                    color: '#7380EB',
+                    textDecoration: 'underline',
+                  }}
+                >
+                  message
+                </span>{' '}
+                URL field
+              </span>
+            }
+          >
+            {/* <Input
               theme={theme}
               width={'65%'}
               type={'text'}
@@ -549,27 +570,29 @@ export const TradingViewBotTerminal = ({
               textAlign={'left'}
               // value={getEntryAlertJson()}
               onChange={() => {}}
-            />
+            /> */}
             {/* entryPoint.TVAlert.templateToken */}
             <BtnCustom
-              btnWidth="calc(15% - .8rem)"
-              height="auto"
-              margin="0 0 0 .8rem"
-              fontSize="1rem"
-              padding=".5rem 0 .4rem 0"
+              needMinWidth={false}
+              btnWidth="100%"
+              height="3rem"
+              fontSize="1.4rem"
+              padding="1rem 2rem"
               borderRadius=".8rem"
-              btnColor={theme.palette.blue.main}
-              backgroundColor={theme.palette.white.background}
-              hoverColor={theme.palette.white.main}
-              hoverBackground={theme.palette.blue.main}
+              borderColor={'#7380EB'}
+              btnColor={'#fff'}
+              backgroundColor={'#7380EB'}
+              textTransform={'none'}
+              margin={'1rem 0 0 0'}
               transition={'all .4s ease-out'}
               onClick={() => {
                 // copy(getEntryAlertJson())
               }}
             >
-              copy
+              Copy message
             </BtnCustom>
-            <BtnCustom
+
+            {/* <BtnCustom
               btnWidth="calc(20% - .8rem)"
               height="auto"
               margin="0 0 0 .8rem"
@@ -586,9 +609,17 @@ export const TradingViewBotTerminal = ({
               }}
             >
               example
-            </BtnCustom>
+            </BtnCustom> */}
+          </FormInputContainer>
+          <InputRowContainer
+            padding={'0'}
+            style={{ marginLeft: '1rem' }}
+            width={'30%'}
+          >
+            {' '}
+            <SendButton type={'buy'}>Start</SendButton>
           </InputRowContainer>
-        </FormInputContainer>
+        </InputRowContainer>
       </div>
     </TerminalBlock>
   )
