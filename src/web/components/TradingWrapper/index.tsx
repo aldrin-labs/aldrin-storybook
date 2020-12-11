@@ -117,7 +117,6 @@ class SimpleTabs extends React.Component {
   }
 
   componentDidMount() {
-    this.subscribe()
     this.setState({
       leverage: this.props.componentLeverage,
     })
@@ -141,17 +140,39 @@ class SimpleTabs extends React.Component {
   }
 
   subscribe = () => {
+    const that = this
+
     this.subscription = client
       .subscribe({
         query: SERUM_ORDERS_BY_TV_ALERTS,
         variables: {
-          input: { publicKey: this.props.publicKey, token: this.state.token },
+          serumOrdersByTVAlertsInput: { publicKey: this.props.publicKey, token: this.state.token },
         },
-        fetchPolicy: 'cache-only',
+        fetchPolicy: 'cache-first',
       })
       .subscribe({
-        next: (data: { loading: boolean; data }) => {
-          console.log('SERUM_ORDERS_BY_TV_ALERTS', data)
+        next: (data: { loading: boolean, data: any }) => {
+          const { type, side, amount, price } = data.data.listenSerumOrdersByTVAlerts
+
+          const variables = type === 'limit'
+            ? { limit: price, price, amount: amount }
+            : type === 'market'
+            ? { amount: amount } : {}
+
+          that.placeOrder(
+            side,
+            type,
+            variables,
+            {
+              orderMode: type === 'market' ? 'ioc' : 'limit',
+              takeProfit: false,
+              takeProfitPercentage: 0,
+              breakEvenPoint: false,
+              tradingBotEnabled: false,
+              tradingBotInterval: 0,
+              tradingBotTotalTime: 0,
+            }
+          )
         },
       })
   }
@@ -450,6 +471,7 @@ class SimpleTabs extends React.Component {
                   marketPrice={price}
                   maxAmount={maxAmount}
                   publicKey={publicKey}
+                  subscribeToTVAlert={this.subscribe}
                   quantityPrecision={quantityPrecision}
                   updateState={this.updateState}
                 />
