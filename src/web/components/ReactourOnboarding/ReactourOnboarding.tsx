@@ -127,10 +127,7 @@ export const tourConfig = [
         </Text>
         <Text padding={'1rem 1.5rem'}>
           Note: remember to create the address of token you want to trade before
-          trading.
-        </Text>
-        <Text padding={'1rem 1.5rem'}>
-          Note 2: there should be some SOL in your wallet to trade on DEX.
+          trading.There should be some SOL in your wallet to trade on DEX.
         </Text>
       </Container>
     ),
@@ -141,10 +138,10 @@ export const tourConfig = [
     content: () => (
       <Container>
         <Block>Balances</Block>
-        <Text padding={'2.5rem 1.5rem'}>Here is your balances</Text>
+        <Text padding={'2.5rem 1.5rem'}>Here is your balance</Text>
         <Text>
-          Unsettled balance is your funds that was traded already but didn’t
-          return to wallet. Press “Settle” to return it.
+          Unsettled balance are funds were traded but haven't returned to your
+          wallet. Press "Settle" to transfer the funds back to your wallet.
         </Text>
         <Text padding={'1rem 1.5rem'}>
           To use auto settle, first enable auto approval in your wallet during
