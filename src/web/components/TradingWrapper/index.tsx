@@ -332,9 +332,9 @@ class SimpleTabs extends React.Component {
                   style={{
                     width: TVAlertsBotIsActive ? '16rem' : '14rem',
                     borderLeft: theme.palette.border.main,
-                    backgroundColor: TVAlertsBotIsActive
-                      ? '#F07878'
-                      : theme.palette.green.shine,
+                    ...(TVAlertsBotIsActive
+                      ? { backgroundColor: '#F07878' }
+                      : {}),
                   }}
                   active={TVAlertsBotEnabled}
                   onClick={() => {
