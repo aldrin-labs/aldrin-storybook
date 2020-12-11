@@ -136,7 +136,7 @@ class SimpleTabs extends React.Component {
   }
 
   componentWillUnmount() {
-    this.subscription && this.subscription.unsubscribe()
+    this.unsubscribe()
   }
 
   subscribe = () => {
@@ -175,6 +175,10 @@ class SimpleTabs extends React.Component {
           })
         },
       })
+  }
+
+  unsubscribe = () => {
+    this.subscription && this.subscription.unsubscribe()
   }
 
   handleChangeMode = (mode: string) => {
@@ -334,6 +338,7 @@ class SimpleTabs extends React.Component {
                   active={TVAlertsBotEnabled}
                   onClick={() => {
                     if (TVAlertsBotIsActive) {
+                      this.unsubscribe()
                       this.setState({
                         TVAlertsBotIsActive: false,
                       })
