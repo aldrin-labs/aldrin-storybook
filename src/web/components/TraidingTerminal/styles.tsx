@@ -20,6 +20,41 @@ const styles = {
   },
 }
 
+export const TitleForInput = styled.div`
+  width: auto;
+  min-height: 3rem;
+  white-space: nowrap;
+  text-decoration: ${(props) => props.textDecoration || 'none'};
+  border: ${(props) =>
+    props.theme &&
+    props.theme.palette &&
+    props.theme.palette.border &&
+    props.theme.palette.border.main};
+  border-top-left-radius: 0.3rem;
+  border-bottom-left-radius: 0.3rem;
+  border-right: none;
+  box-shadow: inset 0px 0px 0.2rem rgba(0, 0, 0, 0.15);
+  color: ${(props) => props.theme.palette.white.text};
+  background-color: ${(props) => props.theme.palette.grey.block};
+  font-size: 1.1rem;
+  font-family: Avenir Next Demi;
+  text-transform: uppercase;
+  font-weight: bold;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 0.05rem;
+  padding: 0.8rem 1rem;
+  &::placeholder {
+    color: #abbad1;
+  }
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+`
+
 export const ButtonContainer = styled.div`
   padding-top: 5px;
   text-align: center;
@@ -370,9 +405,9 @@ export const TradeInputBlock = styled.div`
 
 export const SeparateInputTitle = styled.span`
   color: ${(props) => props.theme.palette.dark.main};
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: bold;
-  text-transform: uppercase;
+  text-transform: capitalize;
   letter-spacing: 0.1rem;
   white-space: nowrap;
   cursor: ${(props) => (props.haveTooltip ? 'pointer' : 'normal')};
