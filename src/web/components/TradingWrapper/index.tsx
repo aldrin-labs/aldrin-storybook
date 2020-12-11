@@ -136,7 +136,7 @@ class SimpleTabs extends React.Component {
   }
 
   componentWillUnmount() {
-    this.subscription && this.subscription.unsubscribe()
+    this.unsubscribe()
   }
 
   subscribe = () => {
@@ -154,13 +154,8 @@ class SimpleTabs extends React.Component {
         fetchPolicy: 'cache-first',
       })
       .subscribe({
-        next: (data: { loading: boolean; data: any }) => {
-          const {
-            type,
-            side,
-            amount,
-            price,
-          } = data.data.listenSerumOrdersByTVAlerts
+        next: (data: { loading: boolean, data: any }) => {
+          const { type, side, amount, price } = data.data.listenSerumOrdersByTVAlerts
 
           const variables =
             type === 'limit'
@@ -169,7 +164,7 @@ class SimpleTabs extends React.Component {
               ? { amount: amount }
               : {}
 
-          that.placeOrder(side, type, variables, {
+          that.props.placeOrder(side, type, variables, {
             orderMode: type === 'market' ? 'ioc' : 'limit',
             takeProfit: false,
             takeProfitPercentage: 0,
@@ -180,6 +175,10 @@ class SimpleTabs extends React.Component {
           })
         },
       })
+  }
+
+  unsubscribe = () => {
+    this.subscription && this.subscription.unsubscribe()
   }
 
   handleChangeMode = (mode: string) => {
@@ -339,6 +338,7 @@ class SimpleTabs extends React.Component {
                   active={TVAlertsBotEnabled}
                   onClick={() => {
                     if (TVAlertsBotIsActive) {
+                      this.unsubscribe()
                       this.setState({
                         TVAlertsBotIsActive: false,
                       })
