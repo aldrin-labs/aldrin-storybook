@@ -70,6 +70,7 @@ export const SliderWithAmountFieldRow = ({
           <InputRowContainer>
             <Input
               theme={theme}
+              type={'text'}
               header={'total'}
               needTitleBlock
               symbol={pair[1]}

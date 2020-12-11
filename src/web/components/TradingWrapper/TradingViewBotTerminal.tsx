@@ -282,10 +282,35 @@ export const TradingViewBotTerminal = ({
           showErrors={false}
           validateField={(v) => !!v}
           onAmountChange={(e) => {
-            changeAmount(e.target.value)
+            const isAmountMoreThanMax = +e.target.value > maxAmount
+            const priceForCalculate =
+              orderType === 'market' ? marketPrice : price
+
+            const amountForUpdate = isAmountMoreThanMax
+              ? maxAmount
+              : e.target.value
+
+            const total = stripDigitPlaces(amountForUpdate * priceForCalculate, 3)
+
+            changeAmount(amountForUpdate)
+            changeTotal(total)
           }}
           onTotalChange={(e) => {
-            changeTotal(e.target.value)
+
+            const priceForCalculate =
+              orderType === 'market' ? marketPrice : price
+
+            const isTotalMoreThanMax = +e.target.value > maxAmount * priceForCalculate
+
+            const totalForUpdate = isTotalMoreThanMax ? maxAmount * priceForCalculate : e.target.value
+
+            console.log('totalForUpdate', totalForUpdate)
+
+            changeTotal(totalForUpdate)
+            changeAmount(stripDigitPlaces(
+              +totalForUpdate / priceForCalculate,
+              8
+            ))
           }}
           marketType={0}
           priceForCalculate={orderType === 'market' ? marketPrice : price}
