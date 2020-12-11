@@ -117,7 +117,6 @@ class SimpleTabs extends React.Component {
   }
 
   componentDidMount() {
-    this.subscribe()
     this.setState({
       leverage: this.props.componentLeverage,
     })
@@ -141,7 +140,6 @@ class SimpleTabs extends React.Component {
   }
 
   subscribe = () => {
-    console.log('token', this.state.token, 'publicKey', this.props.publicKey)
     const that = this
 
     this.subscription = client
@@ -150,11 +148,10 @@ class SimpleTabs extends React.Component {
         variables: {
           serumOrdersByTVAlertsInput: { publicKey: this.props.publicKey, token: this.state.token },
         },
-        fetchPolicy: 'cache-only',
+        fetchPolicy: 'cache-first',
       })
       .subscribe({
         next: (data: { loading: boolean, data: any }) => {
-          console.log('SERUM_ORDERS_BY_TV_ALERTS', data)
           const { type, side, amount, price } = data.data.listenSerumOrdersByTVAlerts
 
           const variables = type === 'limit'
@@ -474,6 +471,7 @@ class SimpleTabs extends React.Component {
                   marketPrice={price}
                   maxAmount={maxAmount}
                   publicKey={publicKey}
+                  subscribeToTVAlert={this.subscribe}
                   quantityPrecision={quantityPrecision}
                   updateState={this.updateState}
                 />

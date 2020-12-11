@@ -12,6 +12,7 @@ const BlueSlider = ({
   showMarks = false,
   sliderContainerStyles,
   onChange,
+  onAfterChange
 }: {
   theme: Theme
   max?: number
@@ -22,6 +23,7 @@ const BlueSlider = ({
   showMarks?: boolean
   sliderContainerStyles?: CSSProperties
   onChange: (value: number) => void
+  onAfterChange?: (value: number) => void
 }) => {
   return (
     <SmallSlider
@@ -43,6 +45,7 @@ const BlueSlider = ({
           : {}
       }
       onChange={onChange}
+      onAfterChange={onAfterChange}
       sliderContainerStyles={sliderContainerStyles}
       handleStyles={{
         width: '1.2rem',

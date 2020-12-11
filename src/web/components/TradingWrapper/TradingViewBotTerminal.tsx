@@ -74,6 +74,8 @@ export const TradingViewBotTerminal = ({
   publicKey,
   maxAmount: maxAmountArray,
   quantityPrecision,
+  subscribeToTVAlert,
+  pricePrecision,
 }) => {
   const [showPopup, changeShowPopup] = useState(false)
 
@@ -82,7 +84,7 @@ export const TradingViewBotTerminal = ({
 
   const [orderType, changeOrderType] = useState('market')
 
-  const [price, updatePrice] = useState(marketPrice)
+  const [price, updatePrice] = useState(stripDigitPlaces(marketPrice, pricePrecision))
   const [pricePlot, updatePricePlot] = useState('')
   const [pricePlotEnabled, changePricePlotEnabled] = useState(false)
 
@@ -91,9 +93,10 @@ export const TradingViewBotTerminal = ({
   const [amountPlot, updateAmountPlot] = useState('')
   const [amountPlotEnabled, changeAmountPlotEnabled] = useState(false)
 
-  const maxAmount = side === 'buy' ? maxAmountArray[1] : maxAmountArray[0]
+  const maxAmount = side === 'sell' ? maxAmountArray[1] : maxAmountArray[0]
 
   const startTradingViewBot = () => {
+    subscribeToTVAlert()
     changeShowPopup(true)
     updateState('token', generateToken())
     window.onbeforeunload = function() {
@@ -123,8 +126,7 @@ export const TradingViewBotTerminal = ({
 
     return `{\\"token\\": \\"${token}\\", ${sideJson}, ${typeJson}, ${priceJson}, ${amountJson}, \\"publicKey\\": \\"${publicKey}\\"}`
   }
-  // subscribe to updates
-
+  
   return (
     <TerminalBlock style={{ display: 'flex' }} theme={theme} width={'100%'} data-tut={'step1'}>
       <TradingViewConfirmPopup
