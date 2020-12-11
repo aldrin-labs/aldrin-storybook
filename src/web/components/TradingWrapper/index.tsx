@@ -85,6 +85,7 @@ class SimpleTabs extends React.Component {
     tradingBotEnabled: false,
     TVAlertsBotEnabled: false,
     tradingBotIsActive: false,
+    TVAlertsBotIsActive: false,
     tradingBotInterval: 45,
     tradingBotTotalTime: 60,
     token: generateToken(),
@@ -208,6 +209,7 @@ class SimpleTabs extends React.Component {
       tradingBotEnabled,
       TVAlertsBotEnabled,
       tradingBotIsActive,
+      TVAlertsBotIsActive,
       tradingBotInterval,
       tradingBotTotalTime,
     } = this.state
@@ -326,11 +328,19 @@ class SimpleTabs extends React.Component {
                 <TerminalModeButton
                   theme={theme}
                   style={{
-                    width: '14rem',
+                    width: TVAlertsBotIsActive ? '16rem' : '14rem',
                     borderLeft: theme.palette.border.main,
+                    backgroundColor: TVAlertsBotIsActive
+                      ? '#F07878'
+                      : theme.palette.green.shine,
                   }}
                   active={TVAlertsBotEnabled}
                   onClick={() => {
+                    if (TVAlertsBotIsActive) {
+                      this.setState({
+                        TVAlertsBotIsActive: false,
+                      })
+                    }
                     this.handleChangeMode('')
                     this.setState((prev) => ({
                       TVAlertsBotEnabled: !prev.TVAlertsBotEnabled,
@@ -341,9 +351,13 @@ class SimpleTabs extends React.Component {
                     src={Bell}
                     height={'100%'}
                     width={'1.5rem'}
-                    style={{ position: 'absolute', right: '27.5rem', top: 0 }}
+                    style={{
+                      position: 'absolute',
+                      right: TVAlertsBotIsActive ? '30.5rem' : '27.5rem',
+                      top: 0,
+                    }}
                   />
-                  Alert Bot
+                  {TVAlertsBotIsActive ? 'Stop Alert BOT' : 'Alert BOT'}
                 </TerminalModeButton>
                 {pair.join('_') === 'SRM_USDT' && (
                   <TerminalModeButton

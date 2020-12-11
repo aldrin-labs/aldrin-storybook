@@ -18,12 +18,7 @@ const StyledPaper = styled(Paper)`
   width: 65rem;
 `
 
-const TradingViewConfirmPopup = ({
-  theme,
-  open,
-  handleClose,
-}) => {
-
+const TradingViewConfirmPopup = ({ theme, open, handleClose, updateState }) => {
   return (
     <DialogWrapper
       theme={theme}
@@ -40,7 +35,7 @@ const TradingViewConfirmPopup = ({
         theme={theme}
         id="share-dialog-content"
       >
-        <div style={{ paddingTop: '3rem'}}>
+        <div style={{ paddingTop: '3rem' }}>
           <SvgIcon src={Warning} width={'10rem'} height={'10rem'} />
         </div>
         <div
@@ -48,31 +43,33 @@ const TradingViewConfirmPopup = ({
             fontSize: '1.8rem',
             color: '#fff',
             fontFamily: 'DM Sans',
-            padding: '6rem 4rem 4rem 4rem'
+            padding: '6rem 4rem 4rem 4rem',
           }}
         >
-          The bot will stop when you close the tab. Do not close the tab if you want the bot to work properly.
+          The bot will stop when you close the tab. Do not close the tab if you
+          want the bot to work properly.
         </div>
-          <BtnCustom
-            // disable={!enableEdit}
-            needMinWidth={false}
-            btnWidth="15rem"
-            height="4.5rem"
-            fontSize="1.4rem"
-            padding="1rem 2rem"
-            borderRadius=".8rem"
-            borderColor={'#7380EB'}
-            btnColor={'#fff'}
-            backgroundColor={'#7380EB'}
-            textTransform={'none'}
-            margin={'1rem 0 0 0'}
-            transition={'all .4s ease-out'}
-            onClick={() => {
-              handleClose()
-            }}
-          >
-            OK
-          </BtnCustom>
+        <BtnCustom
+          // disable={!enableEdit}
+          needMinWidth={false}
+          btnWidth="15rem"
+          height="4.5rem"
+          fontSize="1.4rem"
+          padding="1rem 2rem"
+          borderRadius=".8rem"
+          borderColor={'#7380EB'}
+          btnColor={'#fff'}
+          backgroundColor={'#7380EB'}
+          textTransform={'none'}
+          margin={'1rem 0 0 0'}
+          transition={'all .4s ease-out'}
+          onClick={() => {
+            handleClose()
+            updateState('TVAlertsBotEnabled', false)
+          }}
+        >
+          OK
+        </BtnCustom>
       </StyledDialogContent>
     </DialogWrapper>
   )

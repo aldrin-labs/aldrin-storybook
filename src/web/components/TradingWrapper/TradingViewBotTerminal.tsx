@@ -131,6 +131,7 @@ export const TradingViewBotTerminal = ({
         theme={theme}
         open={showPopup}
         handleClose={() => changeShowPopup(false)}
+        updateState={updateState}
       />
       <div style={{ margin: 'auto 0'}}>
         <InputRowContainer padding={'1.2rem 0 .6rem 0'}>
@@ -405,6 +406,7 @@ export const TradingViewBotTerminal = ({
               type={'buy'}
               onClick={() => {
                 startTradingViewBot()
+                updateState('TVAlertsBotIsActive', true)
               }}
             >
               Start
