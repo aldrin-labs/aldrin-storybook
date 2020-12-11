@@ -303,7 +303,6 @@ export const CardsPanel = ({
     return null
   }
 
-  console.log('pair', pair)
   return (
     <ChartGridContainer>
       <PanelWrapper>
