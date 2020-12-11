@@ -159,7 +159,7 @@ class SimpleTabs extends React.Component {
             : type === 'market'
             ? { amount: amount } : {}
 
-          that.placeOrder(
+          that.props.placeOrder(
             side,
             type,
             variables,
