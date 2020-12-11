@@ -104,7 +104,7 @@ export const TradingViewBotTerminal = ({
   const getEntryAlertJson = () => {
     const typeJson =
       false
-        ? `\\"type\\": {{plot_${typePlot}}}`
+        ? `\\"type\\": {{plot_}}`
         : `\\"type\\": \\"${orderType}\\"`
 
     const sideJson =
@@ -121,7 +121,7 @@ export const TradingViewBotTerminal = ({
         ? `\\"amount\\": {{plot_${amountPlot}}}`
         : `\\"amount\\": ${amount}`
 
-    return `{\\"token\\": \\"${token}\\", ${sideJson}, ${priceJson}, ${amountJson}, \\"publicKey\\": \\"${publicKey}\\"}`
+    return `{\\"token\\": \\"${token}\\", ${sideJson}, ${typeJson}, ${priceJson}, ${amountJson}, \\"publicKey\\": \\"${publicKey}\\"}`
   }
   // subscribe to updates
 

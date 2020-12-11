@@ -140,17 +140,41 @@ class SimpleTabs extends React.Component {
   }
 
   subscribe = () => {
+    console.log('token', this.state.token, 'publicKey', this.props.publicKey)
+    const that = this
+
     this.subscription = client
       .subscribe({
         query: SERUM_ORDERS_BY_TV_ALERTS,
         variables: {
-          input: { publicKey: this.props.publicKey, token: this.state.token },
+          serumOrdersByTVAlertsInput: { publicKey: this.props.publicKey, token: this.state.token },
         },
         fetchPolicy: 'cache-only',
       })
       .subscribe({
-        next: (data: { loading: boolean; data }) => {
+        next: (data: { loading: boolean, data: any }) => {
           console.log('SERUM_ORDERS_BY_TV_ALERTS', data)
+          const { type, side, amount, price } = data.data.listenSerumOrdersByTVAlerts
+
+          const variables = type === 'limit'
+            ? { limit: price, price, amount: amount }
+            : type === 'market'
+            ? { amount: amount } : {}
+
+          that.placeOrder(
+            side,
+            type,
+            variables,
+            {
+              orderMode: type === 'market' ? 'ioc' : 'limit',
+              takeProfit: false,
+              takeProfitPercentage: 0,
+              breakEvenPoint: false,
+              tradingBotEnabled: false,
+              tradingBotInterval: 0,
+              tradingBotTotalTime: 0,
+            }
+          )
         },
       })
   }
