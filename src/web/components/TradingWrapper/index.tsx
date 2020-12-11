@@ -374,6 +374,9 @@ class SimpleTabs extends React.Component {
                   side={side}
                   pair={pair}
                   orderType={mode}
+                  marketPrice={price}
+                  maxAmount={maxAmount}
+                  quantityPrecision={quantityPrecision}
                   updateState={this.updateState}
                 />
               ) : (

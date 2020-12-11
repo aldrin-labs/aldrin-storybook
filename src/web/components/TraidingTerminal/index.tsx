@@ -553,8 +553,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       maxAmount = funds[1].quantity * leverage
     }
 
-    console.log('props', this.props)
-
     return (
       <Container background={'transparent'}>
         <GridContainer isBuyType={isBuyType} key={`${pair[0]}/${pair[1]}`}>

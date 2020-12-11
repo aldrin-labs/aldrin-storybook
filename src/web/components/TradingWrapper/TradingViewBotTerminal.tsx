@@ -41,12 +41,10 @@ import {
 } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import {
-  SliderWithPriceAndPercentageFieldRow,
-  SliderWithAmountFieldRow,
-} from '@sb/compositions/Chart/components/SmartOrderTerminal/SliderComponents'
+import { SliderWithPriceAndPercentageFieldRow } from '@sb/compositions/Chart/components/SmartOrderTerminal/SliderComponents'
 
 import TradingViewConfirmPopup from './TradingViewConfirmPopup'
+import { SliderWithAmountFieldRow } from './AmountSlider'
 
 const generateToken = () =>
   Math.random()
@@ -68,6 +66,8 @@ export const TradingViewBotTerminal = ({
   theme,
   side,
   updateState,
+  marketPrice,
+  maxAmount: maxAmountArray,
   // maxAmount,
   // entryPoint,
   // showErrors,
@@ -81,7 +81,7 @@ export const TradingViewBotTerminal = ({
   // addAverageTarget,
   // updateBlockValue,
   // priceForCalculate,
-  // quantityPrecision,
+  quantityPrecision,
   // getEntryAlertJson,
   // updatePriceToMarket,
   // deleteAverageTarget,
@@ -95,22 +95,31 @@ export const TradingViewBotTerminal = ({
   const [sidePlotEnabled, changeSidePlotEnabled] = useState(false)
 
   const [orderType, changeOrderType] = useState('market')
+
+  const [price, updatePrice] = useState(marketPrice)
   const [pricePlot, updatePricePlot] = useState('')
   const [pricePlotEnabled, changePricePlotEnabled] = useState(false)
+
+  const [amount, changeAmount] = useState(0)
+  const [total, changeTotal] = useState(0)
+  const [amountPlot, updateAmountPlot] = useState('')
+  const [amountPlotEnabled, changeAmountPlotEnabled] = useState(false)
 
   const startTradingViewBot = () => {
     changeShowPopup(true)
     updateState('token', generateToken())
-    window.onbeforeunload = function(){
-      return 'Are you sure you want to leave?';
-    };
+    window.onbeforeunload = function() {
+      return 'Are you sure you want to leave?'
+    }
   }
+
+  const maxAmount = side === 'buy' ? maxAmountArray[1] : maxAmountArray[0]
 
   // subscribe to updates
 
   return (
     <TerminalBlock theme={theme} width={'100%'} data-tut={'step1'}>
-      <TradingViewConfirmPopup 
+      <TradingViewConfirmPopup
         theme={theme}
         open={showPopup}
         handleClose={() => changeShowPopup(false)}
@@ -208,39 +217,16 @@ export const TradingViewBotTerminal = ({
               width={'calc(100%)'}
               textAlign={'right'}
               symbol={pair[1]}
-              value={''}
+              value={orderType === 'market' ? 'Market' : price}
               header={'price'}
+              type={'text'}
               needTitleBlock={true}
-              // showErrors={showErrors}
-              // isValid={this.validateField(
-              //   true,
-              //   entryPoint.trailing.trailingDeviationPrice
-              // )}
-              disabled={pricePlotEnabled}
-
-              // onChange={(e) => {
-              //   const percentage =
-              //     entryPoint.order.side === 'sell'
-              //       ? (1 - e.target.value / priceForCalculate) * 100
-              //       : -(1 - e.target.value / priceForCalculate) * 100
-
-              //   this.updateSubBlockValue(
-              //     'entryPoint',
-              //     'trailing',
-              //     'deviationPercentage',
-              //     stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
-              //   )
-
-              //   this.updateSubBlockValue(
-              //     'entryPoint',
-              //     'trailing',
-              //     'trailingDeviationPrice',
-              //     e.target.value
-              //   )
-              // }}
+              disabled={pricePlotEnabled || orderType === 'market'}
+              onChange={(e) => {
+                updatePrice(e.target.value)
+              }}
             />
           </div>
-          {/* <div style={{ width: '25%' }}> */}
           <SwitcherContainer>
             <Switcher
               checked={pricePlotEnabled}
@@ -259,7 +245,7 @@ export const TradingViewBotTerminal = ({
             inputStyles={{
               paddingLeft: '4rem',
             }}
-            disabled={!pricePlotEnabled}
+            disabled={!pricePlotEnabled || orderType === 'market'}
             value={pricePlot}
             // showErrors={showErrors}
             // isValid={validateField(true, sidePlot)}
@@ -267,39 +253,45 @@ export const TradingViewBotTerminal = ({
               updatePricePlot(e.target.value)
             }}
           />
-          {/* </div> */}
-        </InputRowContainer>
-        <InputRowContainer>
-          {/* <ChangeOrderTypeBtn
-            theme={theme}
-            isActive={entryPoint.order.type === 'market'}
-            onClick={() => {
-              updateSubBlockValue('entryPoint', 'order', 'type', 'market')
-
-              updatePriceToMarket()
-            }}
-          >
-            Market
-          </ChangeOrderTypeBtn>
-          <ChangeOrderTypeBtn
-            theme={theme}
-            isActive={entryPoint.order.type === 'limit'}
-            onClick={() => {
-              updateSubBlockValue('entryPoint', 'order', 'type', 'limit')
-
-              updateSubBlockValue(
-                'entryPoint',
-                'TVAlert',
-                'immediateEntry',
-                false
-              )
-            }}
-          >
-            Limit
-          </ChangeOrderTypeBtn> */}
         </InputRowContainer>
 
-        {/* price */}
+        <SliderWithAmountFieldRow
+          pair={pair}
+          theme={theme}
+          side={side}
+          amountPlotEnabled={amountPlotEnabled}
+          maxAmount={maxAmount}
+          showErrors={false}
+          validateField={(v) => !!v}
+          onAmountChange={(e) => {
+            changeAmount(e.target.value)
+          }}
+          onTotalChange={(e) => {
+            changeTotal(e.target.value)
+          }}
+          marketType={0}
+          priceForCalculate={orderType === 'market' ? marketPrice : price}
+          quantityPrecision={quantityPrecision}
+          onAfterSliderChange={(value) => {
+            const newValue = (maxAmount / 100) * value
+            const priceForCalculate =
+              orderType === 'market' ? marketPrice : price
+
+            const newAmount =
+              side === 'buy' ? newValue / priceForCalculate : newValue
+
+            const newTotal = newAmount * priceForCalculate
+
+            changeAmount(stripDigitPlaces(newAmount, 8))
+
+            changeTotal(stripDigitPlaces(newTotal, 3))
+          }}
+          amount={amount}
+          amountPlot={amountPlot}
+          total={total}
+          togglePlot={() => changeAmountPlotEnabled(!amountPlotEnabled)}
+          changePlot={e => updateAmountPlot(e.target.value)}
+        />
 
         {/* {entryPoint.TVAlert.plotEnabled && (
               <>
