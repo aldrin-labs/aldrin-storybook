@@ -102,38 +102,41 @@ export const TradingViewBotTerminal = ({
   }
 
   const getEntryAlertJson = () => {
-    const typeJson =
-      false
-        ? `\\"type\\": {{plot_${typePlot}}}`
-        : `\\"type\\": \\"${orderType}\\"`
+    const typeJson = false
+      ? `\\"type\\": {{plot_${typePlot}}}`
+      : `\\"type\\": \\"${orderType}\\"`
 
-    const sideJson =
-      sidePlotEnabled
-        ? `\\"side\\": {{plot_${sidePlot}}}`
-        : `\\"side\\": \\"${side}\\"`
+    const sideJson = sidePlotEnabled
+      ? `\\"side\\": {{plot_${sidePlot}}}`
+      : `\\"side\\": \\"${side}\\"`
 
-    const priceJson = pricePlotEnabled
+    const priceJson =
+      pricePlotEnabled && orderType === 'limit'
         ? `\\"price\\": {{plot_${pricePlot}}}`
-        : `\\"price\\": ${price}`
+        : `\\"price\\": ${orderType === 'market' ? 0 : price}`
 
-    const amountJson =
-      amountPlotEnabled
-        ? `\\"amount\\": {{plot_${amountPlot}}}`
-        : `\\"amount\\": ${amount}`
+    const amountJson = amountPlotEnabled
+      ? `\\"amount\\": {{plot_${amountPlot}}}`
+      : `\\"amount\\": ${amount}`
 
     return `{\\"token\\": \\"${token}\\", ${sideJson}, ${priceJson}, ${amountJson}, \\"publicKey\\": \\"${publicKey}\\"}`
   }
   // subscribe to updates
 
   return (
-    <TerminalBlock style={{ display: 'flex' }} theme={theme} width={'100%'} data-tut={'step1'}>
+    <TerminalBlock
+      style={{ display: 'flex' }}
+      theme={theme}
+      width={'100%'}
+      data-tut={'step1'}
+    >
       <TradingViewConfirmPopup
         theme={theme}
         open={showPopup}
         handleClose={() => changeShowPopup(false)}
         updateState={updateState}
       />
-      <div style={{ margin: 'auto 0'}}>
+      <div style={{ margin: 'auto 0' }}>
         <InputRowContainer padding={'1.2rem 0 .6rem 0'}>
           <CustomSwitcher
             theme={theme}
@@ -233,6 +236,7 @@ export const TradingViewBotTerminal = ({
               disabled={pricePlotEnabled || orderType === 'market'}
               onChange={(e) => {
                 updatePrice(e.target.value)
+                changeTotal(amount * e.target.value)
               }}
             />
           </div>

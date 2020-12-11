@@ -205,7 +205,7 @@ const IOSSwitcherContainer = styled.div`
     .el-switch-style {
       height: 1.6em;
       left: 0;
-      background: #c0ccda;
+      background: #abbad1;
       -webkit-border-radius: 0.8em;
       border-radius: 0.8em;
       display: inline-block;
@@ -237,7 +237,7 @@ const IOSSwitcherContainer = styled.div`
         background-color: #d3dce6;
       }
       &:checked + .el-switch-style {
-        background-color: #20a0fd;
+        background-color: #9ba6ff;
         &:before {
           left: 50%;
         }
