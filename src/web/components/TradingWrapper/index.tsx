@@ -75,6 +75,7 @@ class SimpleTabs extends React.Component {
     tradingBotIsActive: false,
     tradingBotInterval: 45,
     tradingBotTotalTime: 60,
+    token: '',
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -396,6 +397,9 @@ class SimpleTabs extends React.Component {
                   side={side}
                   pair={pair}
                   orderType={mode}
+                  marketPrice={price}
+                  maxAmount={maxAmount}
+                  quantityPrecision={quantityPrecision}
                   updateState={this.updateState}
                 />
               ) : (
