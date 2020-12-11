@@ -241,6 +241,7 @@ export default ({ themeMode, isChartPage, children }) => {
               greyish: '#f5f5fb',
               block: '#1B2028',
               card: '#1B2028',
+              text: '#F5F5FB',
             },
             dark: {
               main: '#D1DDEF',
@@ -456,6 +457,7 @@ export default ({ themeMode, isChartPage, children }) => {
               greyish: '#f5f5fb',
               block: '#F6F8FA',
               card: '#fff',
+              text: '#93A0B2',
             },
             dark: {
               main: '#16253D',

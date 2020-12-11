@@ -957,8 +957,17 @@ const RewardsRoute = (props) => {
               </DarkTooltip>
               <CardSubValueForVolume>
                 <Row justify={'flex-start'} style={{ paddingBottom: '.5rem' }}>
-                  <SvgIcon
+                <SvgIcon
                     src={greenDollar}
+                    width={'2.5rem'}
+                    height={'2.5rem'}
+                    style={{ marginRight: '1rem' }}
+                  /><span>{formatNumberToUSFormat(+(usdVolume - (usdVolumeTwitter + usdVolumeBounty)).toFixed(0))}</span>
+                </Row>
+                <DarkTooltip delay={500} title={`+ ${formatNumberToUSFormat(usdVolumeBounty.toFixed(0))} bounty`}>
+                <Row>
+                  <SvgIcon
+                    src={greenTwitter}
                     width={'2.5rem'}
                     height={'2.5rem'}
                     style={{ marginRight: '1rem' }}
@@ -966,31 +975,11 @@ const RewardsRoute = (props) => {
                   <span style={{ color: theme.palette.green.shine }}>
                     {formatNumberToUSFormat(
                       +(
-                        usdVolume -
                         (usdVolumeTwitter + usdVolumeBounty)
                       ).toFixed(0)
                     )}
                   </span>
                 </Row>
-                <DarkTooltip
-                  delay={500}
-                  title={`+ $${formatNumberToUSFormat(
-                    usdVolumeBounty.toFixed(0)
-                  )} bounty`}
-                >
-                  <Row>
-                    <SvgIcon
-                      src={greenTwitter}
-                      width={'2.5rem'}
-                      height={'2.5rem'}
-                      style={{ marginRight: '1rem' }}
-                    />{' '}
-                    <span style={{ color: theme.palette.green.shine }}>
-                      {formatNumberToUSFormat(
-                        +(usdVolumeTwitter + usdVolumeBounty).toFixed(0)
-                      )}
-                    </span>
-                  </Row>
                 </DarkTooltip>
                 {/* twitter + bounty */}
               </CardSubValueForVolume>
