@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import copy from 'clipboard-copy'
 import styled from 'styled-components'
 
+import { SERUM_ORDERS_BY_TV_ALERTS } from '@core/graphql/subscriptions/SERUM_ORDERS_BY_TV_ALERTS'
+
 import {
   getSecondValueFromFirst,
   GreenSwitcherStyles,
@@ -399,7 +401,14 @@ export const TradingViewBotTerminal = ({
             width={'30%'}
           >
             {' '}
-            <SendButton type={'buy'}>Start</SendButton>
+            <SendButton
+              type={'buy'}
+              onClick={() => {
+                startTradingViewBot()
+              }}
+            >
+              Start
+            </SendButton>
           </InputRowContainer>
         </InputRowContainer>
       </div>

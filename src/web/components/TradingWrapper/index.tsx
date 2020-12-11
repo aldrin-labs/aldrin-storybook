@@ -1,4 +1,5 @@
 import React from 'react'
+import { SERUM_ORDERS_BY_TV_ALERTS } from '@core/graphql/subscriptions/SERUM_ORDERS_BY_TV_ALERTS'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
@@ -10,6 +11,8 @@ import { isFuturesWarsKey } from '@core/graphql/queries/futureWars/isFuturesWars
 
 import TraidingTerminal from '../TraidingTerminal'
 import SmallSlider from '@sb/components/Slider/SmallSlider'
+
+import { client } from '@core/graphql/apolloClient'
 
 import {
   SRadio,
@@ -113,6 +116,7 @@ class SimpleTabs extends React.Component {
   }
 
   componentDidMount() {
+    this.subscribe()
     this.setState({
       leverage: this.props.componentLeverage,
     })
@@ -129,6 +133,26 @@ class SimpleTabs extends React.Component {
     ) {
       this.setState({ tradingBotEnabled: false, tradingBotIsActive: false })
     }
+  }
+
+  componentWillUnmount() {
+    this.subscription && this.subscription.unsubscribe()
+  }
+
+  subscribe = () => {
+    this.subscription = client
+      .subscribe({
+        query: SERUM_ORDERS_BY_TV_ALERTS,
+        variables: {
+          input: { publicKey: this.props.publicKey, token: this.state.token },
+        },
+        fetchPolicy: 'cache-only',
+      })
+      .subscribe({
+        next: (data: { loading: boolean; data }) => {
+          console.log('SERUM_ORDERS_BY_TV_ALERTS', data)
+        },
+      })
   }
 
   handleChangeMode = (mode: string) => {
