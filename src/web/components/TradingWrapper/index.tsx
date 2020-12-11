@@ -146,33 +146,38 @@ class SimpleTabs extends React.Component {
       .subscribe({
         query: SERUM_ORDERS_BY_TV_ALERTS,
         variables: {
-          serumOrdersByTVAlertsInput: { publicKey: this.props.publicKey, token: this.state.token },
+          serumOrdersByTVAlertsInput: {
+            publicKey: this.props.publicKey,
+            token: this.state.token,
+          },
         },
         fetchPolicy: 'cache-first',
       })
       .subscribe({
-        next: (data: { loading: boolean, data: any }) => {
-          const { type, side, amount, price } = data.data.listenSerumOrdersByTVAlerts
-
-          const variables = type === 'limit'
-            ? { limit: price, price, amount: amount }
-            : type === 'market'
-            ? { amount: amount } : {}
-
-          that.placeOrder(
-            side,
+        next: (data: { loading: boolean; data: any }) => {
+          const {
             type,
-            variables,
-            {
-              orderMode: type === 'market' ? 'ioc' : 'limit',
-              takeProfit: false,
-              takeProfitPercentage: 0,
-              breakEvenPoint: false,
-              tradingBotEnabled: false,
-              tradingBotInterval: 0,
-              tradingBotTotalTime: 0,
-            }
-          )
+            side,
+            amount,
+            price,
+          } = data.data.listenSerumOrdersByTVAlerts
+
+          const variables =
+            type === 'limit'
+              ? { limit: price, price, amount: amount }
+              : type === 'market'
+              ? { amount: amount }
+              : {}
+
+          that.placeOrder(side, type, variables, {
+            orderMode: type === 'market' ? 'ioc' : 'limit',
+            takeProfit: false,
+            takeProfitPercentage: 0,
+            breakEvenPoint: false,
+            tradingBotEnabled: false,
+            tradingBotInterval: 0,
+            tradingBotTotalTime: 0,
+          })
         },
       })
   }
@@ -240,7 +245,7 @@ class SimpleTabs extends React.Component {
       maxLeverage,
       intervalId,
       updateIntervalId,
-      publicKey
+      publicKey,
     } = this.props
 
     const isSPOTMarket = isSPOTMarketType(marketType)
@@ -350,7 +355,16 @@ class SimpleTabs extends React.Component {
                     width={'1.5rem'}
                     style={{
                       position: 'absolute',
-                      right: TVAlertsBotIsActive ? '30.5rem' : '27.5rem',
+                      right:
+                        pair.join('_') === 'SRM_USDT' && TVAlertsBotIsActive
+                          ? '30.5rem'
+                          : pair.join('_') === 'SRM_USDT' &&
+                            !TVAlertsBotIsActive
+                          ? '27.5rem'
+                          : pair.join('_') !== 'SRM_USDT' &&
+                            !TVAlertsBotIsActive
+                          ? '11rem'
+                          : '13rem',
                       top: 0,
                     }}
                   />
