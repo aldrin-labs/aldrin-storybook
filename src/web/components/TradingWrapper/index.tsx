@@ -341,11 +341,13 @@ class SimpleTabs extends React.Component {
                       this.unsubscribe()
                       this.setState({
                         TVAlertsBotIsActive: false,
+                        
                       })
                     }
                     this.handleChangeMode('')
                     this.setState((prev) => ({
                       TVAlertsBotEnabled: !prev.TVAlertsBotEnabled,
+                      tradingBotEnabled: false
                     }))
                   }}
                 >
@@ -388,6 +390,7 @@ class SimpleTabs extends React.Component {
                       } else {
                         this.setState((prev) => ({
                           tradingBotEnabled: !prev.tradingBotEnabled,
+                          TVAlertsBotEnabled: false,
                           tradingBotIsActive: false,
                           orderMode: 'ioc',
                           mode: 'market',
@@ -504,6 +507,7 @@ class SimpleTabs extends React.Component {
                         sideType={'buy'}
                         priceType={mode}
                         hedgeMode={hedgeMode}
+                        publicKey={publicKey}
                         pricePrecision={pricePrecision}
                         quantityPrecision={quantityPrecision}
                         minSpotNotional={minSpotNotional}

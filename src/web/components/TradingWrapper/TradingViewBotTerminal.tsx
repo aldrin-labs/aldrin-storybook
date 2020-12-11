@@ -49,6 +49,7 @@ import { SliderWithPriceAndPercentageFieldRow } from '@sb/compositions/Chart/com
 
 import TradingViewConfirmPopup from './TradingViewConfirmPopup'
 import { SliderWithAmountFieldRow } from './AmountSlider'
+import { notify } from '@sb/dexUtils/notifications'
 
 const generateToken = () =>
   Math.random()
@@ -413,6 +414,27 @@ export const TradingViewBotTerminal = ({
             <SendButton
               type={'buy'}
               onClick={() => {
+
+                // publicKey check
+                if (publicKey === '') {
+                  notify({
+                    type: 'error',
+                    message: 'Connect wallet first'
+                  })
+
+                  return
+                }
+
+                if (amount === 0) {
+                  notify({
+                    type: 'error',
+                    message: 'Your amount is 0'
+                  })
+                  
+                  return
+                }
+                // amount check 
+
                 startTradingViewBot()
                 updateState('TVAlertsBotIsActive', true)
               }}

@@ -16,6 +16,7 @@ import { IProps, FormValues, IPropsWithFormik, priceType } from './types'
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
+import { notify } from '@sb/dexUtils/notifications'
 
 import {
   Container,
@@ -894,6 +895,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       tradingBotInterval,
       tradingBotTotalTime,
       updateState,
+      publicKey
     } = props
 
     // if (values.total < minSpotNotional && isSPOTMarket) {
@@ -928,6 +930,24 @@ const formikEnhancer = withFormik<IProps, FormValues>({
 
     //   return
     // }
+
+    if (publicKey === '') {
+      notify({
+        type: 'error',
+        message: 'Connect wallet first'
+      })
+
+      return
+    }
+
+    if (values.amount === 0 || values.amount === '') {
+      notify({
+        type: 'error',
+        message: 'Your amount is 0'
+      })
+      
+      return
+    }
 
     if (priceType || byType) {
       const filtredValues =
