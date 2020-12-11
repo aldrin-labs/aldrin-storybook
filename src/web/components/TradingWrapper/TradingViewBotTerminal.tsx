@@ -61,7 +61,7 @@ const SwitcherContainer = styled.div`
 `
 
 export const TradingViewBotTerminal = ({
-  // pair,
+  pair,
   // funds,
   theme,
   side,
@@ -91,8 +91,8 @@ export const TradingViewBotTerminal = ({
   const [sidePlotEnabled, changeSidePlotEnabled] = useState(false)
 
   const [orderType, changeOrderType] = useState('market')
-  const [orderTypePlot, updateOrderTypePlot] = useState('')
-  const [orderTypePlotEnabled, changeOrderTypePlotEnabled] = useState(false)
+  const [pricePlot, updatePricePlot] = useState('')
+  const [pricePlotEnabled, changePricePlotEnabled] = useState(false)
 
   return (
     <TerminalBlock theme={theme} width={'100%'} data-tut={'step1'}>
@@ -160,33 +160,73 @@ export const TradingViewBotTerminal = ({
             secondHalfText={'market'}
             buttonHeight={'3rem'}
             containerStyles={{
-              width: '70%',
+              width: '35%',
               padding: 0,
             }}
             firstHalfStyleProperties={
-              orderTypePlotEnabled
-                ? DisabledSwitcherStyles(theme)
-                : BlueSwitcherStyles(theme)
+              // pricePlotEnabled
+              //   ? DisabledSwitcherStyles(theme)
+              BlueSwitcherStyles(theme)
             }
             secondHalfStyleProperties={
-              orderTypePlotEnabled
-                ? DisabledSwitcherStyles(theme)
-                : BlueSwitcherStyles(theme)
+              // pricePlotEnabled
+              //   ? DisabledSwitcherStyles(theme)
+              BlueSwitcherStyles(theme)
             }
             firstHalfIsActive={orderType === 'limit'}
             changeHalf={() => {
-              if (orderTypePlotEnabled) {
+              if (pricePlotEnabled) {
                 return
               }
 
               changeOrderType(orderType === 'limit' ? 'market' : 'limit')
             }}
           />
+          <div style={{ width: 'calc(35% - 2rem)', marginLeft: '2rem' }}>
+            <Input
+              theme={theme}
+              padding={'0'}
+              width={'calc(100%)'}
+              textAlign={'right'}
+              symbol={pair[1]}
+              value={''}
+              header={'price'}
+              needTitleBlock={true}
+              // showErrors={showErrors}
+              // isValid={this.validateField(
+              //   true,
+              //   entryPoint.trailing.trailingDeviationPrice
+              // )}
+              disabled={pricePlotEnabled}
+
+              // onChange={(e) => {
+              //   const percentage =
+              //     entryPoint.order.side === 'sell'
+              //       ? (1 - e.target.value / priceForCalculate) * 100
+              //       : -(1 - e.target.value / priceForCalculate) * 100
+
+              //   this.updateSubBlockValue(
+              //     'entryPoint',
+              //     'trailing',
+              //     'deviationPercentage',
+              //     stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
+              //   )
+
+              //   this.updateSubBlockValue(
+              //     'entryPoint',
+              //     'trailing',
+              //     'trailingDeviationPrice',
+              //     e.target.value
+              //   )
+              // }}
+            />
+          </div>
+          {/* <div style={{ width: '25%' }}> */}
           <SwitcherContainer>
             <Switcher
-              checked={orderTypePlotEnabled}
+              checked={pricePlotEnabled}
               onChange={() => {
-                changeOrderTypePlotEnabled(!orderTypePlotEnabled)
+                changePricePlotEnabled(!pricePlotEnabled)
               }}
             />
           </SwitcherContainer>
@@ -200,14 +240,15 @@ export const TradingViewBotTerminal = ({
             inputStyles={{
               paddingLeft: '4rem',
             }}
-            disabled={!orderTypePlot}
-            value={orderTypePlot}
+            disabled={!pricePlotEnabled}
+            value={pricePlot}
             // showErrors={showErrors}
             // isValid={validateField(true, sidePlot)}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              updateOrderTypePlot(e.target.value)
+              updatePricePlot(e.target.value)
             }}
           />
+          {/* </div> */}
         </InputRowContainer>
         <InputRowContainer>
           {/* <ChangeOrderTypeBtn

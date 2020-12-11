@@ -25,6 +25,7 @@ import {
   InputTitle,
   InputWrapper,
   TradeInputBlock,
+  TitleForInput,
   TradeInput,
   BlueInputTitle,
   SeparateInputTitle,
@@ -53,7 +54,7 @@ export const TradeInputHeader = ({
   haveTooltip = false,
   tooltipText = '',
   tooltipStyles = {},
-  onValueClick = () => { },
+  onValueClick = () => {},
   theme,
 }) => {
   return (
@@ -83,15 +84,15 @@ export const TradeInputHeader = ({
           {/* </TooltipContainer> */}
         </>
       ) : (
-          <SeparateInputTitle
-            theme={theme}
-            style={{
-              borderBottom: haveTooltip ? '.1rem dashed #e0e5ec' : 'none',
-            }}
-          >
-            {title}
-          </SeparateInputTitle>
-        )}
+        <SeparateInputTitle
+          theme={theme}
+          style={{
+            borderBottom: haveTooltip ? '.1rem dashed #e0e5ec' : 'none',
+          }}
+        >
+          {title}
+        </SeparateInputTitle>
+      )}
       {/* <SeparateInputTitle
         style={{ borderBottom: haveTooltip ? '.1rem dashed #e0e5ec' : 'none' }}
       >
@@ -126,9 +127,14 @@ export const TradeInputContent = ({
   width = '100%',
   fontSize = '',
   textAlign = 'right',
-  onChange = () => { },
+  onChange = () => {},
   inputStyles,
+  header = '',
   theme,
+  needTooltip = false,
+  textDecoration,
+  titleForTooltip = '',
+  needTitleBlock = false,
 }: {
   isValid?: boolean
   showErrors?: boolean
@@ -149,8 +155,13 @@ export const TradeInputContent = ({
   fontSize?: string
   textAlign?: string
   onChange: any
+  header?: any
   inputStyles?: CSSProperties
   theme?: Theme
+  textDecoration?: string
+  needTooltip?: boolean
+  titleForTooltip?: string
+  needTitleBlock?: boolean
 }) => {
   return (
     <InputRowContainer
@@ -170,6 +181,22 @@ export const TradeInputContent = ({
           {preSymbol}
         </UpdatedCoin>
       ) : null}
+      {needTitleBlock ? (
+        <>
+          {needTooltip ? (
+            <DarkTooltip title={titleForTooltip}>
+              <TitleForInput theme={theme} textDecoration={textDecoration}>
+                {header}
+              </TitleForInput>
+            </DarkTooltip>
+          ) : (
+            <TitleForInput theme={theme} textDecoration={textDecoration}>
+              {header}
+            </TitleForInput>
+          )}
+        </>
+      ) : null}
+
       <TradeInput
         theme={theme}
         align={textAlign}
@@ -190,8 +217,8 @@ export const TradeInputContent = ({
           !!symbolRightIndent
             ? symbolRightIndent
             : symbol.length <= 2
-              ? '2.5rem'
-              : '1rem'
+            ? '2.5rem'
+            : '1rem'
         }
       >
         {symbol}
@@ -262,9 +289,17 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     ) {
       const { priceFromOrderbook, leverage } = this.props
 
-      this.setFormatted('price', stripDigitPlaces(priceFromOrderbook, pricePrecision), 0)
+      this.setFormatted(
+        'price',
+        stripDigitPlaces(priceFromOrderbook, pricePrecision),
+        0
+      )
       this.setFormatted('stop', priceFromOrderbook, 1)
-      this.setFormatted('total', stripDigitPlaces(amount * priceFromOrderbook, 3), 0)
+      this.setFormatted(
+        'total',
+        stripDigitPlaces(amount * priceFromOrderbook, 3),
+        0
+      )
       this.setFormatted(
         'margin',
         stripDigitPlaces((amount * priceFromOrderbook) / leverage, 3),
@@ -491,7 +526,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       updateState,
       tradingBotEnabled,
       tradingBotInterval,
-      tradingBotIsActive
+      tradingBotIsActive,
     } = this.props
 
     if (!funds) return null
@@ -500,8 +535,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
     const priceForCalculate =
       priceType !== 'market' &&
-        priceType !== 'maker-only' &&
-        values.limit !== null
+      priceType !== 'maker-only' &&
+      values.limit !== null
         ? values.price
         : marketPrice
 
@@ -529,24 +564,24 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
               style={{ margin: 'auto 0', width: '100%' }}
             >
               {priceType !== 'market' &&
-                priceType !== 'stop-market' &&
-                priceType !== 'maker-only' ? (
-                  <InputRowContainer
-                    key={'limit-price'}
-                    padding={'.6rem 0'}
-                    direction={'column'}
-                  >
-                    <TradeInputContent
-                      theme={theme}
-                      needTitle
-                      type={'text'}
-                      title={`price (${pair[1]})`}
-                      value={values.price || ''}
-                      onChange={this.onPriceChange}
-                      symbol={pair[1]}
-                    />
-                  </InputRowContainer>
-                ) : null}
+              priceType !== 'stop-market' &&
+              priceType !== 'maker-only' ? (
+                <InputRowContainer
+                  key={'limit-price'}
+                  padding={'.6rem 0'}
+                  direction={'column'}
+                >
+                  <TradeInputContent
+                    theme={theme}
+                    needTitle
+                    type={'text'}
+                    title={`price (${pair[1]})`}
+                    value={values.price || ''}
+                    onChange={this.onPriceChange}
+                    symbol={pair[1]}
+                  />
+                </InputRowContainer>
+              ) : null}
 
               {priceType === 'market' && isBuyType && !tradingBotEnabled && (
                 <InputRowContainer>
@@ -568,7 +603,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                       >
                         <SCheckbox
                           checked={breakEvenPoint}
-                          onChange={() => { }}
+                          onChange={() => {}}
                           style={{ padding: '0 0 0 1rem', color: '#fff' }}
                         />
                         <span style={{ margin: '0 auto' }}>
@@ -593,7 +628,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     >
                       <SCheckbox
                         checked={takeProfit}
-                        onChange={() => { }}
+                        onChange={() => {}}
                         style={{ padding: '0 0 0 1rem', color: '#fff' }}
                       />
                       <span style={{ margin: '0 auto' }}>Take Profit</span>
@@ -650,28 +685,27 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 </InputRowContainer>
               ) : null}
 
-              {tradingBotEnabled && !tradingBotIsActive &&
+              {tradingBotEnabled && !tradingBotIsActive && (
                 <FormInputContainer
                   theme={theme}
                   haveTooltip={false}
                   tooltipText={
                     <>
+                      <p>Waiting after unrealized P&L will reach set target.</p>
                       <p>
-                        Waiting after unrealized P&L will reach
-                        set target.
-                  </p>
-                      <p>
-                        <b>For example:</b> you set 10% stop loss
-                    and 1 minute timeout. When your unrealized
-                    loss is 10% timeout will give a minute for
-                    a chance to reverse trend and loss to go
-                    below 10% before stop loss order executes.
-                  </p>
+                        <b>For example:</b> you set 10% stop loss and 1 minute
+                        timeout. When your unrealized loss is 10% timeout will
+                        give a minute for a chance to reverse trend and loss to
+                        go below 10% before stop loss order executes.
+                      </p>
                     </>
                   }
                   title={'Buy SRM Each'}
                   lineMargin={'0 1.2rem 0 1rem'}
-                  style={{ borderBottom: theme.palette.border.main, padding: '1rem 0' }}
+                  style={{
+                    borderBottom: theme.palette.border.main,
+                    padding: '1rem 0',
+                  }}
                 >
                   <InputRowContainer>
                     <TradeInputContent
@@ -681,7 +715,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                       // width={'calc(55% - .4rem)'}
                       width={'calc(50% - .4rem)'}
                       value={tradingBotInterval}
-
                       onChange={(e) => {
                         if (+e.target.value > 600) {
                           updateState('tradingBotInterval', 600)
@@ -693,7 +726,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                         borderTopRightRadius: 0,
                         borderBottomRightRadius: 0,
                       }}
-                    // disabled={!stopLoss.timeout.whenLossableOn}
+                      // disabled={!stopLoss.timeout.whenLossableOn}
                     />
                     {/* <Select
                   theme={theme}
@@ -720,9 +753,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     <BlueSlider
                       theme={theme}
                       showMarks={false}
-                      value={
-                        tradingBotInterval
-                      }
+                      value={tradingBotInterval}
                       valueSymbol={'sec'}
                       min={45}
                       max={600}
@@ -735,9 +766,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                       }}
                     />
                   </InputRowContainer>
-                </FormInputContainer>}
+                </FormInputContainer>
+              )}
 
-                <SliderWithAmountFieldRowForBasic
+              <SliderWithAmountFieldRowForBasic
                 {...{
                   pair,
                   theme,
@@ -760,13 +792,13 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     const newAmount =
                       !isSPOTMarket || isBuyType
                         ? +stripDigitPlaces(
-                          newValue / priceForCalculate,
-                          isSPOTMarket ? 8 : quantityPrecision
-                        )
+                            newValue / priceForCalculate,
+                            isSPOTMarket ? 8 : quantityPrecision
+                          )
                         : +stripDigitPlaces(
-                          newValue,
-                          isSPOTMarket ? 8 : quantityPrecision
-                        )
+                            newValue,
+                            isSPOTMarket ? 8 : quantityPrecision
+                          )
 
                     const newTotal =
                       isBuyType || !isSPOTMarket
@@ -784,9 +816,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                       stripDigitPlaces(newTotal, isSPOTMarket ? 8 : 3)
                     )
                     setFieldValue('margin', newMargin)
-                  }
-                }
-                }
+                  },
+                }}
               />
             </InputRowContainer>
           </Grid>
@@ -802,7 +833,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 theme={theme}
                 // disabled={orderIsCreating === sideType}
                 style={{
-                  ...(tradingBotEnabled && !tradingBotIsActive ? { position: 'absolute', width: '95%' } : {}),
+                  ...(tradingBotEnabled && !tradingBotIsActive
+                    ? { position: 'absolute', width: '95%' }
+                    : {}),
                 }}
                 type={sideType}
                 onClick={async () => {
@@ -816,12 +849,14 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 {isSPOTMarket
                   ? sideType === 'buy'
                     ? priceType === 'market' && pair.join('_') === 'SRM_USDT'
-                      ? tradingBotEnabled && !tradingBotIsActive ? 'Start Cycle Bot' : 'Buy SRM and earn DCFI'
+                      ? tradingBotEnabled && !tradingBotIsActive
+                        ? 'Start Cycle Bot'
+                        : 'Buy SRM and earn DCFI'
                       : `buy ${pair[0]}`
                     : `sell ${pair[0]}`
                   : sideType === 'buy'
-                    ? 'long'
-                    : 'short'}
+                  ? 'long'
+                  : 'short'}
               </SendButton>
             </Grid>
           </Grid>
@@ -860,7 +895,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       tradingBotEnabled,
       tradingBotInterval,
       tradingBotTotalTime,
-      updateState
+      updateState,
     } = props
 
     // if (values.total < minSpotNotional && isSPOTMarket) {
@@ -901,8 +936,8 @@ const formikEnhancer = withFormik<IProps, FormValues>({
         priceType === 'limit'
           ? { limit: values.limit, price: values.price, amount: values.amount }
           : priceType === 'market'
-            ? { amount: values.amount }
-            : {
+          ? { amount: values.amount }
+          : {
               stop: values.stop,
               price: values.price,
               amount: values.amount,
@@ -936,14 +971,14 @@ const formikEnhancer = withFormik<IProps, FormValues>({
             ? orderMode === 'TIF' && priceType !== 'stop-market'
               ? { timeInForce: TIFMode, postOnly: false }
               : orderMode === 'postOnly'
-                ? { timeInForce: TIFMode, postOnly: true }
-                : { postOnly: true }
+              ? { timeInForce: TIFMode, postOnly: true }
+              : { postOnly: true }
             : {}),
           ...(priceType === 'stop-limit' || priceType === 'stop-market'
             ? {
-              workingType:
-                trigger === 'mark price' ? 'MARK_PRICE' : 'CONTRACT_PRICE',
-            }
+                workingType:
+                  trigger === 'mark price' ? 'MARK_PRICE' : 'CONTRACT_PRICE',
+              }
             : {}),
           ...{ reduceOnly },
           orderMode,
@@ -952,7 +987,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
           breakEvenPoint,
           tradingBotEnabled,
           tradingBotInterval,
-          tradingBotTotalTime
+          tradingBotTotalTime,
         }
       )
 
@@ -969,7 +1004,4 @@ const formikEnhancer = withFormik<IProps, FormValues>({
   },
 })
 
-export default compose(
-  withErrorFallback,
-  formikEnhancer
-)(TraidingTerminal)
+export default compose(withErrorFallback, formikEnhancer)(TraidingTerminal)
