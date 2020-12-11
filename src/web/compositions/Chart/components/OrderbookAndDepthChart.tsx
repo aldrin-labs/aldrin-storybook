@@ -118,7 +118,7 @@ class OrderbookAndDepthChart extends React.PureComponent {
 
       const { sizeDigits, minPriceDigits, isPairDataLoading, data } = this.props
       if (
-        (asks.getLength() === 0 && bids.getLength() === 0) ||
+        // (asks.getLength() === 0 && bids.getLength() === 0) ||
         isPairDataLoading || !aggregation
       ) {
         return
@@ -222,6 +222,20 @@ class OrderbookAndDepthChart extends React.PureComponent {
         ),
       })
     }
+
+    if (
+      prevProps.exchange !== this.props.exchange ||
+      prevProps.symbol !== this.props.symbol ||
+      prevProps.marketType !== this.props.marketType
+    ) {
+      // console.log('OrderbookAndDepthChart componentDidUpdate cleanState')
+      // when change exchange delete all data and...
+      this.setState({ asks: new TreeMap(), bids: new TreeMap() }, () => {
+        // console.log('OrderbookAndDepthChart componentDidUpdate cleanState SUCCESS')
+      })
+    }
+
+
   }
 
   componentWillUnmount() {
