@@ -59,6 +59,15 @@ import {
 } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
 import { TradingViewBotTerminalMemo } from './TradingViewBotTerminal'
+import { withPublicKey } from '@core/hoc/withPublicKey'
+
+const generateToken = () =>
+  Math.random()
+    .toString(36)
+    .substring(2, 15) +
+  Math.random()
+    .toString(36)
+    .substring(2, 15)
 
 class SimpleTabs extends React.Component {
   state = {
@@ -79,7 +88,7 @@ class SimpleTabs extends React.Component {
     TVAlertsBotIsActive: false,
     tradingBotInterval: 45,
     tradingBotTotalTime: 60,
-    token: '',
+    token: generateToken(),
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -170,6 +179,7 @@ class SimpleTabs extends React.Component {
       orderIsCreating,
       takeProfit,
       side,
+      token,
       breakEvenPoint,
       takeProfitPercentage,
       tradingBotEnabled,
@@ -209,6 +219,7 @@ class SimpleTabs extends React.Component {
       maxLeverage,
       intervalId,
       updateIntervalId,
+      publicKey
     } = this.props
 
     const isSPOTMarket = isSPOTMarketType(marketType)
@@ -434,9 +445,11 @@ class SimpleTabs extends React.Component {
                   theme={theme}
                   side={side}
                   pair={pair}
+                  token={token}
                   orderType={mode}
                   marketPrice={price}
                   maxAmount={maxAmount}
+                  publicKey={publicKey}
                   quantityPrecision={quantityPrecision}
                   updateState={this.updateState}
                 />
@@ -778,4 +791,4 @@ class SimpleTabs extends React.Component {
   }
 }
 
-export default compose(withErrorFallback)(SimpleTabs)
+export default compose(withErrorFallback, withPublicKey)(SimpleTabs)

@@ -66,32 +66,14 @@ const SwitcherContainer = styled.div`
 
 export const TradingViewBotTerminal = ({
   pair,
-  // funds,
   theme,
   side,
+  token,
   updateState,
   marketPrice,
+  publicKey,
   maxAmount: maxAmountArray,
-  // maxAmount,
-  // entryPoint,
-  // showErrors,
-  // marketType,
-  // getMaxValues,
-  // setMaxAmount,
-  // isMarketType,
-  // initialMargin,
-  // validateField,
-  // pricePrecision,
-  // addAverageTarget,
-  // updateBlockValue,
-  // priceForCalculate,
   quantityPrecision,
-  // getEntryAlertJson,
-  // updatePriceToMarket,
-  // deleteAverageTarget,
-  // updateSubBlockValue,
-  // isCloseOrderExternal,
-  // isAveragingAfterFirstTarget,
 }) => {
   const [showPopup, changeShowPopup] = useState(false)
 
@@ -109,6 +91,8 @@ export const TradingViewBotTerminal = ({
   const [amountPlot, updateAmountPlot] = useState('')
   const [amountPlotEnabled, changeAmountPlotEnabled] = useState(false)
 
+  const maxAmount = side === 'buy' ? maxAmountArray[1] : maxAmountArray[0]
+
   const startTradingViewBot = () => {
     changeShowPopup(true)
     updateState('token', generateToken())
@@ -117,19 +101,39 @@ export const TradingViewBotTerminal = ({
     }
   }
 
-  const maxAmount = side === 'buy' ? maxAmountArray[1] : maxAmountArray[0]
+  const getEntryAlertJson = () => {
+    const typeJson =
+      false
+        ? `\\"type\\": {{plot_${typePlot}}}`
+        : `\\"type\\": \\"${orderType}\\"`
 
+    const sideJson =
+      sidePlotEnabled
+        ? `\\"side\\": {{plot_${sidePlot}}}`
+        : `\\"side\\": \\"${side}\\"`
+
+    const priceJson = pricePlotEnabled
+        ? `\\"price\\": {{plot_${pricePlot}}}`
+        : `\\"price\\": ${price}`
+
+    const amountJson =
+      amountPlotEnabled
+        ? `\\"amount\\": {{plot_${amountPlot}}}`
+        : `\\"amount\\": ${amount}`
+
+    return `{\\"token\\": \\"${token}\\", ${sideJson}, ${priceJson}, ${amountJson}, \\"publicKey\\": \\"${publicKey}\\"}`
+  }
   // subscribe to updates
 
   return (
-    <TerminalBlock theme={theme} width={'100%'} data-tut={'step1'}>
+    <TerminalBlock style={{ display: 'flex' }} theme={theme} width={'100%'} data-tut={'step1'}>
       <TradingViewConfirmPopup
         theme={theme}
         open={showPopup}
         handleClose={() => changeShowPopup(false)}
         updateState={updateState}
       />
-      <div>
+      <div style={{ margin: 'auto 0'}}>
         <InputRowContainer padding={'1.2rem 0 .6rem 0'}>
           <CustomSwitcher
             theme={theme}
@@ -298,200 +302,6 @@ export const TradingViewBotTerminal = ({
           changePlot={(e) => updateAmountPlot(e.target.value)}
         />
 
-        {/* {entryPoint.TVAlert.plotEnabled && (
-              <>
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    width: '10%',
-                  }}
-                >
-                  <Switcher
-                    checked={entryPoint.TVAlert.pricePlotEnabled}
-                    onChange={() => {
-                      updateSubBlockValue(
-                        'entryPoint',
-                        'TVAlert',
-                        'pricePlotEnabled',
-                        !entryPoint.TVAlert.pricePlotEnabled
-                      )
-                    }}
-                  />
-                </div>
-                <Input
-                  theme={theme}
-                  type={'number'}
-                  needTitle
-                  title={`plot_`}
-                  textAlign="left"
-                  width={'calc(20% - .8rem)'}
-                  inputStyles={{
-                    paddingLeft: '4rem',
-                  }}
-                  disabled={!entryPoint.TVAlert.pricePlotEnabled}
-                  value={entryPoint.TVAlert.pricePlot}
-                  showErrors={showErrors}
-                  isValid={validateField(true, entryPoint.TVAlert.pricePlot)}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    updateSubBlockValue(
-                      'entryPoint',
-                      'TVAlert',
-                      'pricePlot',
-                      e.target.value
-                    )
-                  }}
-                />
-              </>
-            )} */}
-
-        {/* <SliderWithAmountFieldRow
-          onAmountChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            const [maxAmount] = getMaxValues()
-            const isAmountMoreThanMax = +e.target.value > maxAmount
-            const amountForUpdate = isAmountMoreThanMax
-              ? maxAmount
-              : e.target.value
-
-            const strippedAmount = isAmountMoreThanMax
-              ? stripDigitPlaces(
-                amountForUpdate,
-                marketType === 1 ? quantityPrecision : 8
-              )
-              : e.target.value
-
-            const newTotal = +strippedAmount * priceForCalculate
-
-            updateSubBlockValue(
-              'entryPoint',
-              'order',
-              'amount',
-              strippedAmount
-            )
-
-            updateSubBlockValue(
-              'entryPoint',
-              'order',
-              'total',
-              stripDigitPlaces(newTotal, marketType === 1 ? 2 : 8)
-            )
-
-            updateBlockValue(
-              'temp',
-              'initialMargin',
-              stripDigitPlaces(
-                (newTotal || 0) / entryPoint.order.leverage,
-                2
-              )
-            )
-          }}
-          onTotalChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            updateSubBlockValue(
-              'entryPoint',
-              'order',
-              'total',
-              e.target.value
-            )
-
-            updateSubBlockValue(
-              'entryPoint',
-              'order',
-              'amount',
-              stripDigitPlaces(
-                +e.target.value / priceForCalculate,
-                marketType === 1 ? quantityPrecision : 8
-              )
-            )
-
-            updateBlockValue(
-              'temp',
-              'initialMargin',
-              stripDigitPlaces(
-                +e.target.value / entryPoint.order.leverage,
-                2
-              )
-            )
-          }}
-          onAfterSliderChange={(value) => {
-            const newValue = (maxAmount / 100) * value
-
-            const newAmount =
-              entryPoint.order.side === 'buy' || marketType === 1
-                ? newValue / priceForCalculate
-                : newValue
-
-            const newTotal = newAmount * priceForCalculate
-
-            const newMargin = stripDigitPlaces(
-              (newTotal || 0) / entryPoint.order.leverage,
-              2
-            )
-
-            updateSubBlockValue(
-              'entryPoint',
-              'order',
-              'amount',
-              stripDigitPlaces(
-                newAmount,
-                marketType === 1 ? quantityPrecision : 8
-              )
-            )
-
-            updateSubBlockValue(
-              'entryPoint',
-              'order',
-              'total',
-              stripDigitPlaces(newTotal, marketType === 1 ? 2 : 8)
-            )
-
-            updateBlockValue('temp', 'initialMargin', newMargin)
-          }}
-          onMarginChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            const inputInitialMargin = +e.target.value
-            const newTotal =
-              inputInitialMargin * entryPoint.order.leverage
-            const newAmount = newTotal / priceForCalculate
-
-            const fixedAmount = stripDigitPlaces(
-              newAmount,
-              marketType === 1 ? quantityPrecision : 8
-            )
-
-            updateSubBlockValue(
-              'entryPoint',
-              'order',
-              'total',
-              stripDigitPlaces(newTotal, marketType === 1 ? 2 : 8)
-            )
-
-            updateSubBlockValue(
-              'entryPoint',
-              'order',
-              'amount',
-              fixedAmount
-            )
-
-            updateBlockValue('temp', 'initialMargin', inputInitialMargin)
-          }}
-          {...{
-            pair,
-            theme,
-            maxAmount,
-            entryPoint,
-            showErrors,
-            setMaxAmount,
-            isMarketType,
-            validateField,
-            marketType,
-            priceForCalculate,
-            quantityPrecision,
-            initialMargin,
-            funds,
-            amount: entryPoint.order.amount,
-            total: entryPoint.order.total
-          }}
-        /> */}
-
         <InputRowContainer align={'flex-end'}>
           <FormInputContainer
             theme={theme}
@@ -519,15 +329,6 @@ export const TradingViewBotTerminal = ({
               </span>
             }
           >
-            {/* <Input
-              theme={theme}
-              width={'85%'}
-              type={'text'}
-              disabled={true}
-              textAlign={'left'}
-              value={`https://${API_URL}/createSmUsingTemplate`}
-              onChange={() => {}}
-            /> */}
             <BtnCustom
               needMinWidth={false}
               btnWidth="100%"
@@ -542,7 +343,7 @@ export const TradingViewBotTerminal = ({
               margin={'1rem 0 0 0'}
               transition={'all .4s ease-out'}
               onClick={() => {
-                copy(`https://${API_URL}/createSmUsingTemplate`)
+                copy(`https://${API_URL}/createSerumOrderByTVAlert`)
               }}
             >
               Copy web-hook URL
@@ -575,16 +376,6 @@ export const TradingViewBotTerminal = ({
               </span>
             }
           >
-            {/* <Input
-              theme={theme}
-              width={'65%'}
-              type={'text'}
-              disabled={true}
-              textAlign={'left'}
-              // value={getEntryAlertJson()}
-              onChange={() => {}}
-            /> */}
-            {/* entryPoint.TVAlert.templateToken */}
             <BtnCustom
               needMinWidth={false}
               btnWidth="100%"
@@ -599,30 +390,11 @@ export const TradingViewBotTerminal = ({
               margin={'1rem 0 0 0'}
               transition={'all .4s ease-out'}
               onClick={() => {
-                // copy(getEntryAlertJson())
+                copy(getEntryAlertJson())
               }}
             >
               Copy message
             </BtnCustom>
-
-            {/* <BtnCustom
-              btnWidth="calc(20% - .8rem)"
-              height="auto"
-              margin="0 0 0 .8rem"
-              fontSize="1rem"
-              padding=".5rem 0 .4rem 0"
-              borderRadius=".8rem"
-              btnColor={theme.palette.blue.main}
-              backgroundColor={theme.palette.white.background}
-              hoverColor={theme.palette.white.main}
-              hoverBackground={theme.palette.blue.main}
-              transition={'all .4s ease-out'}
-              onClick={() => {
-                // redirect to full example page
-              }}
-            >
-              example
-            </BtnCustom> */}
           </FormInputContainer>
           <InputRowContainer
             padding={'0'}

@@ -90,8 +90,8 @@ export const SliderWithAmountFieldRow = ({
                 : localAmount / (maxAmount / 100)
             }
             sliderContainerStyles={{
-              width: 'calc(100% - 2.8rem)',
-              margin: '0 .8rem 0 2rem',
+              width: 'calc(100% - 2.2rem)',
+              margin: '0 .8rem 0 1.4rem',
             }}
             onAfterChange={onAfterSliderChange}
             // extra logic
