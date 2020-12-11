@@ -955,7 +955,7 @@ const RewardsRoute = (props) => {
                     style={{ marginRight: '1rem' }}
                   /><span>{formatNumberToUSFormat(+(usdVolume - (usdVolumeTwitter + usdVolumeBounty)).toFixed(0))}</span>
                 </Row>
-                <DarkTooltip delay={500} title={`+ $${formatNumberToUSFormat(usdVolumeBounty.toFixed(0))} bounty`}>
+                <DarkTooltip delay={500} title={`+ ${formatNumberToUSFormat(usdVolumeBounty.toFixed(0))} bounty`}>
                 <Row>
                   <SvgIcon
                     src={greenTwitter}
