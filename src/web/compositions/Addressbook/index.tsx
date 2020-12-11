@@ -255,6 +255,7 @@ const AddressbookRoute = ({
               style={{
                 background: theme.palette.grey.input,
                 color: theme.palette.text.light,
+                outline: 'none',
               }}
               value={password}
               type={'password'}

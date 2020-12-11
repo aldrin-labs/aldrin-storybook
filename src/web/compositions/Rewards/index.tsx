@@ -151,7 +151,7 @@ const CardSubTitle = styled.h3`
   font-size: 1.6rem;
   text-transform: capitalize;
   margin: 0;
-  padding-bottom: .5rem;
+  padding-bottom: 0.5rem;
 `
 
 const CardSubValue = styled.span`
@@ -405,7 +405,10 @@ const RewardsRoute = (props) => {
         direction={'row'}
         justify={'space-between'}
       >
-        <Title style={{ paddingBottom: '1rem' }} theme={theme}>
+        <Title
+          style={{ paddingBottom: '1rem', color: theme.palette.text.black }}
+          theme={theme}
+        >
           Buy SRM and farm DCFI token
         </Title>
         <RowContainer style={{ width: '32%' }}>
@@ -942,10 +945,16 @@ const RewardsRoute = (props) => {
               justify={'flex-start'}
               wrap={'nowrap'}
               width={'50%'}
-              height={'35%'} 
+              height={'35%'}
               style={{ paddingLeft: '1rem' }}
             >
-              <DarkTooltip delay={'50'} placement={'top'} title={'Farming Volume = Trade Volume + Twitter Points'}><CardSubTitle>Total Volume</CardSubTitle></DarkTooltip>
+              <DarkTooltip
+                delay={'50'}
+                placement={'top'}
+                title={'Farming Volume = Trade Volume + Twitter Points'}
+              >
+                <CardSubTitle>Total Volume</CardSubTitle>
+              </DarkTooltip>
               <CardSubValueForVolume>
                 <Row justify={'flex-start'} style={{ paddingBottom: '.5rem' }}>
                 <SvgIcon
@@ -958,11 +967,19 @@ const RewardsRoute = (props) => {
                 <DarkTooltip delay={500} title={`+ ${formatNumberToUSFormat(usdVolumeBounty.toFixed(0))} bounty`}>
                 <Row>
                   <SvgIcon
-                    src={greenTwitter}
+                    src={greenDollar}
                     width={'2.5rem'}
                     height={'2.5rem'}
                     style={{ marginRight: '1rem' }}
-                  /> <span>{formatNumberToUSFormat(+(usdVolumeTwitter + usdVolumeBounty).toFixed(0))}</span>
+                  />
+                  <span style={{ color: theme.palette.green.shine }}>
+                    {formatNumberToUSFormat(
+                      +(
+                        usdVolume -
+                        (usdVolumeTwitter + usdVolumeBounty)
+                      ).toFixed(0)
+                    )}
+                  </span>
                 </Row>
                 </DarkTooltip>
                 {/* twitter + bounty */}
@@ -973,7 +990,7 @@ const RewardsRoute = (props) => {
               align={'flex-start'}
               justify={'flex-start'}
               width={'50%'}
-              height={'35%'} 
+              height={'35%'}
             >
               <CardSubTitle>Volume until next phase</CardSubTitle>
               <CardSubValue theme={theme}>
@@ -988,7 +1005,7 @@ const RewardsRoute = (props) => {
               align={'flex-start'}
               justify={'flex-start'}
               width={'50%'}
-              height={'35%'} 
+              height={'35%'}
               style={{ paddingLeft: '1rem' }}
             >
               <CardSubTitle>Total DCFI farmed</CardSubTitle>
@@ -1001,7 +1018,7 @@ const RewardsRoute = (props) => {
               align={'flex-start'}
               justify={'flex-start'}
               width={'50%'}
-              height={'35%'} 
+              height={'35%'}
             >
               <CardSubTitle>DCFI until next phase</CardSubTitle>
               <CardSubValue theme={theme}>
@@ -1073,7 +1090,9 @@ const RewardsRoute = (props) => {
                 paddingBottom: '3rem',
               }}
             >
-              <Title theme={theme}>Twitter Farming Leaderboard </Title>
+              <Title style={{ color: theme.palette.text.black }} theme={theme}>
+                Twitter Farming Leaderboard{' '}
+              </Title>
               <a
                 style={{
                   fontFamily: 'DM Sans',
@@ -1193,7 +1212,10 @@ const RewardsRoute = (props) => {
               paddingTop: '4rem',
             }}
           >
-            <Title style={{ paddingBottom: '3rem' }} theme={theme}>
+            <Title
+              style={{ paddingBottom: '3rem', color: theme.palette.text.black }}
+              theme={theme}
+            >
               Your retweet history{' '}
             </Title>
             <CardSubTitle style={{ display: 'flex', alignItems: 'center' }}>
@@ -1278,7 +1300,9 @@ const RewardsRoute = (props) => {
                 paddingBottom: '3rem',
               }}
             >
-              <Title theme={theme}>Twitter Farming History </Title>
+              <Title style={{ color: theme.palette.text.black }} theme={theme}>
+                Twitter Farming History{' '}
+              </Title>
               <a
                 style={{
                   fontFamily: 'DM Sans',

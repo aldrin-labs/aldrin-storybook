@@ -185,7 +185,7 @@ const TopBar = ({ theme }) => {
         }}
       />
 
-      <div>
+      {/* <div>
         <OvalSelector
           theme={theme}
           selectStyles={selectStyles(theme)}
@@ -215,7 +215,7 @@ const TopBar = ({ theme }) => {
             label: provider.name,
           }))}
         />
-      </div>
+      </div> */}
       <div data-tut="wallet">
         <BtnCustom
           type="text"
@@ -343,10 +343,9 @@ export const CardsPanel = ({
           </Link>
           <div
             style={{
-              width: '30%',
+              width: '35%',
               marginLeft: '4rem',
               paddingRight: '4rem',
-              borderRight: theme.palette.border.main,
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
@@ -405,6 +404,8 @@ export const CardsPanel = ({
               data-tut="farming"
               to="/addressbook"
               style={{
+                borderRight: theme.palette.border.main,
+                paddingRight: '4rem',
                 color: location.pathname.includes('addressbook')
                   ? theme.palette.blue.serum
                   : theme.palette.grey.text,
