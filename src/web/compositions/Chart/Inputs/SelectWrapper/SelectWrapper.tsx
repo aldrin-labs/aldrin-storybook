@@ -60,7 +60,13 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
   }
   render() {
     const { searchValue, tab, tabSpecificCoin } = this.state
-    const { marketsByExchangeQuery, getSelectorSettingsQuery, markets = [] } = this.props
+    const {
+      marketsByExchangeQuery,
+      getSelectorSettingsQuery,
+      markets,
+      AWESOME_MARKETS,
+      AWESOME_TOKENS = [],
+    } = this.props
 
     const {
       getAccountSettings: {
@@ -80,15 +86,19 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
 
     const fiatRegexp = new RegExp(fiatPairs.join('|'), 'gi')
 
-    const dexMarketSymbols = markets.map(el => ({ symbol: el.name }))
+    console.log('markets', markets)
+
+    const dexMarketSymbols = markets.map((el) => ({
+      symbol: el.name,
+    }))
 
     const filtredMarketsByExchange = dexMarketSymbols.filter(
       (el) =>
         el.symbol &&
         // +el.volume24hChange &&
         // +el.price &&
-        !Array.isArray(el.symbol.match(fiatRegexp)) 
-        // dexMarketSymbols.includes(el.symbol)
+        !Array.isArray(el.symbol.match(fiatRegexp))
+      // dexMarketSymbols.includes(el.symbol)
     )
 
     const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
@@ -251,8 +261,7 @@ class SelectPairListComponent extends React.PureComponent<
         style={{
           top: '2.5rem',
           fontFamily: 'DM Sans',
-          left:
-            'calc(0)',
+          left: 'calc(0)',
           position: 'absolute',
           // transform: 'translateX(-100%)',
           zIndex: 900,

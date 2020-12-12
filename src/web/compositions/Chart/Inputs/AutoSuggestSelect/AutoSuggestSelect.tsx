@@ -34,7 +34,9 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
 
     // Need to refactor this, address of a coin should be in the value, not name
     // console.log('value: ', value)
-    const selectedMarketFromUrl = markets.find((el) => el.name.split('/').join('_') === value)
+    const selectedMarketFromUrl = markets.find(
+      (el) => el.name.split('/').join('_') === value
+    )
     // console.log('selectedMarketFormSelector', selectedMarketFormSelector)
     setMarketAddress(selectedMarketFromUrl.address.toBase58())
   }
@@ -45,7 +47,9 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
 
       // Need to refactor this, address of a coin should be in the value, not name
       // console.log('value: ', value)
-      const selectedMarketFromUrl = markets.find((el) => el.name.split('/').join('_') === value)
+      const selectedMarketFromUrl = markets.find(
+        (el) => el.name.split('/').join('_') === value
+      )
       // console.log('selectedMarketFormSelector', selectedMarketFormSelector)
       setMarketAddress(selectedMarketFromUrl.address.toBase58())
     }
@@ -95,11 +99,10 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
     this.closeMenu()
 
     if (view === 'default') {
-
       // Need to refactor this, address of a coin should be in the value, not name
       // console.log('value: ', value)
       const selectedMarketFormSelector = markets.find((el) => el.name === value)
-      // console.log('selectedMarketFormSelector', selectedMarketFormSelector)
+      console.log('selectedMarketFormSelector', selectedMarketFormSelector)
       setMarketAddress(selectedMarketFormSelector.address.toBase58())
 
       const chartPageType = marketType === 0 ? 'spot' : 'futures'
@@ -143,7 +146,8 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       addMarketVisible,
       setAddMarketVisible,
       deprecatedMarkets,
-      getMarketInfos, } = this.props
+      getMarketInfos,
+    } = this.props
 
     const { isClosed, isMenuOpen } = this.state
 
@@ -197,6 +201,5 @@ export default compose(
     name: 'updateFavoritePairsMutation',
   }),
   graphql(ADD_CHART, { name: 'addChartMutation' }),
-  withMarketUtilsHOC,
-
+  withMarketUtilsHOC
 )(IntegrationReactSelect)
