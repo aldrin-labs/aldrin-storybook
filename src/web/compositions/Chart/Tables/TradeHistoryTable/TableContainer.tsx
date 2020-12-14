@@ -47,7 +47,7 @@ class TableContainer extends PureComponent<IProps, IState> {
       newProps.fetchData.length > 0 &&
       !newProps.isPairDataLoading
     ) {
-      const updatedData = newProps.fetchData.map((trade, i) => ({
+      const updatedData = newProps.fetchData.reverse().map((trade, i) => ({
         ...trade,
         price: (+trade.price).toFixed(
           getNumberOfDecimalsFromNumber(
