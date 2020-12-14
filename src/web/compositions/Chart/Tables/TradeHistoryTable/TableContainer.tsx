@@ -49,13 +49,13 @@ class TableContainer extends Component<IProps, IState> {
       state.data.length === 0 &&
       newProps.data &&
       newProps.data.marketTickers &&
-      newProps.data.marketTickers.length > 0
+      newProps.data.marketTickers.length > 0 &&
+      newProps.pricePrecision !== undefined &&
+      newProps.sizeDigits !== undefined
     ) {
       const updatedData = newProps.data.marketTickers.map((trade, i) => ({
         ...trade,
-        size: Number(trade.size).toFixed(
-          newProps.quantityPrecision
-        ),
+        size: Number(trade.size).toFixed(newProps.quantityPrecision),
         price: Number(trade.price).toFixed(newProps.pricePrecision),
         time: dayjs.unix(+trade.timestamp).format('LTS'),
         id: `${trade.price}${trade.size}${i}${trade.timestamp}`,

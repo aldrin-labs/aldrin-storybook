@@ -30,6 +30,7 @@ export const TradeHistory = ({
   quote,
   pair,
 }) => {
+  console.log('isPairDataLoading', isPairDataLoading)
   return (
     <TradeHistoryWrapper
       theme={theme}
@@ -70,7 +71,7 @@ export const TradeHistory = ({
           updateTerminalPriceFromOrderbook,
           key: 'tradeyistory_table_query_render',
         }}
-        isDataLoading={isPairDataLoading}
+        // isDataLoading={isPairDataLoading}
       />
     </TradeHistoryWrapper>
   )

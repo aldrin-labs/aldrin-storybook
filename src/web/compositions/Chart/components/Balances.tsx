@@ -26,16 +26,19 @@ import DepositPopup from '@sb/compositions/Chart/components/DepositPopup'
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
-import { useBalances, useMarket,  useTokenAccounts,
-  getSelectedTokenAccountForMint, useUnmigratedOpenOrdersAccounts } from '@sb/dexUtils/markets'
-import { useSendConnection } from '@sb/dexUtils/connection';
-import { useWallet } from '@sb/dexUtils/wallet';
-import { settleFunds } from '@sb/dexUtils/send';
-import { notify } from '@sb/dexUtils/notifications';
-
 import {
-  getDecimalCount
-} from '@sb/dexUtils/utils'
+  useBalances,
+  useMarket,
+  useTokenAccounts,
+  getSelectedTokenAccountForMint,
+  useUnmigratedOpenOrdersAccounts,
+} from '@sb/dexUtils/markets'
+import { useSendConnection } from '@sb/dexUtils/connection'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { settleFunds } from '@sb/dexUtils/send'
+import { notify } from '@sb/dexUtils/notifications'
+
+import { getDecimalCount } from '@sb/dexUtils/utils'
 
 export const BalanceTitle = styled.div`
   display: flex;
@@ -56,7 +59,7 @@ export const BalanceValues = styled.div`
 `
 
 export const BalanceQuantity = styled.span`
-  color: ${props => props.theme.palette.dark.main};
+  color: ${(props) => props.theme.palette.dark.main};
   font-size: 1rem;
   font-weight: bold;
   letter-spacing: 0.075rem;
@@ -95,7 +98,7 @@ export const BalanceFuturesContainer = styled.div`
 `
 
 export const BalanceFuturesTypography = styled.span`
-  font-size: .9rem;
+  font-size: 0.9rem;
   font-weight: bold;
   padding: 1rem 0 0.35rem 0;
   letter-spacing: 0.1rem;
@@ -154,16 +157,15 @@ export const Balances = ({
 
   const { market } = useMarket()
   const balances = useBalances()
-  const [accounts] = useTokenAccounts();
-  const connection = useSendConnection();
-  const { wallet } = useWallet();
-  const { refresh } = useUnmigratedOpenOrdersAccounts();
+  const [accounts] = useTokenAccounts()
+  const connection = useSendConnection()
+  const { wallet } = useWallet()
+  const { refresh } = useUnmigratedOpenOrdersAccounts()
 
-
-  async function onSettleSuccess() { 
-    console.log('settled funds success');
-    setTimeout(refresh, 5000);
-   }
+  async function onSettleSuccess() {
+    console.log('settled funds success')
+    setTimeout(refresh, 5000)
+  }
 
   async function onSettleFunds(market, openOrders) {
     try {
@@ -174,36 +176,36 @@ export const Balances = ({
         wallet,
         baseCurrencyAccount: getSelectedTokenAccountForMint(
           accounts,
-          market?.baseMintAddress,
+          market?.baseMintAddress
         ),
         quoteCurrencyAccount: getSelectedTokenAccountForMint(
           accounts,
-          market?.quoteMintAddress,
+          market?.quoteMintAddress
         ),
-      });
+      })
 
       notify({
         message: 'Settling funds successfully done',
         description: 'No description',
         type: 'success',
-      });
-
+      })
     } catch (e) {
       console.log('onSettleFunds e', e)
       notify({
         message: 'Error settling funds',
         description: e.message,
         type: 'error',
-      });
-      return;
+      })
+      return
     }
-    onSettleSuccess && onSettleSuccess();
+    onSettleSuccess && onSettleSuccess()
   }
 
   const [baseBalances, quoteBalances] = balances
 
-  let pricePrecision = market?.tickSize && getDecimalCount(market.tickSize);
-  let quantityPrecision = market?.minOrderSize && getDecimalCount(market.minOrderSize);
+  let pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
+  let quantityPrecision =
+    market?.minOrderSize && getDecimalCount(market.minOrderSize)
 
   // getting values for the trading terminal pair
   const funds = pair.map((coin, index) => {
@@ -226,7 +228,6 @@ export const Balances = ({
 
   return (
     <>
-    
       <TransferPopup
         open={open}
         theme={theme}
@@ -242,11 +243,17 @@ export const Balances = ({
       />
       <DepositPopup
         open={openDepositPopup}
-        handleClose={() => { toggleOpeningDepositPopup(false); chooseCoinForDeposit('') }}
+        handleClose={() => {
+          toggleOpeningDepositPopup(false)
+          chooseCoinForDeposit('')
+        }}
         baseOrQuote={coinForDepositPopup}
-
       />
-      <CustomCard data-tut="balances" theme={theme} style={{ borderRight: 'none', borderTop: '0' }}>
+      <CustomCard
+        data-tut="balances"
+        theme={theme}
+        style={{ borderRight: 'none', borderTop: '0' }}
+      >
         <ChartCardHeader
           theme={theme}
           style={{
@@ -300,63 +307,69 @@ export const Balances = ({
                 <BalanceValues>
                   <BalanceFuturesTitle theme={theme}>
                     Wallet balance
-                    </BalanceFuturesTitle>
+                  </BalanceFuturesTitle>
                   <BalanceQuantity theme={theme}>
-                    {balances[0]?.wallet ? stripDigitPlaces(balances[0].wallet, 8) : 0} {pair[0]}
+                    {balances[0]?.wallet
+                      ? stripDigitPlaces(balances[0].wallet, 8)
+                      : 0}{' '}
+                    {pair[0]}
                   </BalanceQuantity>
                   <BalanceFuturesTitle theme={theme}>
                     Unsettled balance
-                    </BalanceFuturesTitle>
+                  </BalanceFuturesTitle>
                   <BalanceQuantity theme={theme}>
-                    {balances[0]?.wallet ? stripDigitPlaces(balances[0].unsettled, 8) : 0} {pair[0]}
+                    {balances[0]?.wallet
+                      ? stripDigitPlaces(balances[0].unsettled, 8)
+                      : 0}{' '}
+                    {pair[0]}
                   </BalanceQuantity>
                 </BalanceValues>
                 <div
-                
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'space-evenly',
-                          width: '100%',
-                          paddingBottom: '0.8rem',
-                        }}
-                      >
-                        <BtnCustom
-                          btnWidth="45%"
-                          height="auto"
-                          fontSize=".8rem"
-                          padding=".5rem 0 .4rem 0;"
-                          borderRadius=".8rem"
-                          btnColor={theme.palette.white.background}
-                          backgroundColor="#57bc7c"
-                          hoverColor={theme.palette.white.background}
-                          hoverBackground="#50ad72"
-                          transition={'all .4s ease-out'}
-                          onClick={() => {
-                            toggleOpeningDepositPopup(true);
-                            chooseCoinForDeposit('base')
-                          }}
-                        >
-                          deposit
-                      </BtnCustom>
-                        <BtnCustom
-                          btnWidth="45%"
-                          height="auto"
-                          fontSize=".8rem"
-                          padding=".5rem 0 .4rem 0;"
-                          borderRadius=".8rem"
-                          btnColor={theme.palette.white.background}
-                          backgroundColor="#46adc7"
-                          hoverColor={theme.palette.white.background}
-                          hoverBackground="#3992a9"
-                          transition={'all .4s ease-out'}
-                          onClick={() => {
-                            const { market, openOrders } = baseBalances
-                            onSettleFunds(market, openOrders)
-                          }}
-                        >
-                          settle
-                      </BtnCustom>
-                      </div>
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-evenly',
+                    width: '100%',
+                    paddingBottom: '0.8rem',
+                  }}
+                >
+                  <BtnCustom
+                    btnWidth="45%"
+                    height="auto"
+                    fontSize=".8rem"
+                    padding=".5rem 0 .4rem 0;"
+                    borderRadius=".8rem"
+                    btnColor={theme.palette.white.background}
+                    backgroundColor="#57bc7c"
+                    hoverColor={theme.palette.white.background}
+                    hoverBackground="#50ad72"
+                    transition={'all .4s ease-out'}
+                    onClick={() => {
+                      toggleOpeningDepositPopup(true)
+                      chooseCoinForDeposit('base')
+                    }}
+                  >
+                    deposit
+                  </BtnCustom>
+                  <BtnCustom
+                    btnWidth="45%"
+                    height="auto"
+                    fontSize=".8rem"
+                    padding=".5rem 0 .4rem 0;"
+                    borderRadius=".8rem"
+                    btnColor={theme.palette.white.background}
+                    backgroundColor="#46adc7"
+                    hoverColor={theme.palette.white.background}
+                    hoverBackground="#3992a9"
+                    transition={'all .4s ease-out'}
+                    onClick={() => {
+                      console.log('balnces', baseBalances, balances)
+                      const { market, openOrders } = baseBalances
+                      onSettleFunds(market, openOrders)
+                    }}
+                  >
+                    settle
+                  </BtnCustom>
+                </div>
               </Grid>
               <Grid
                 container
@@ -378,189 +391,195 @@ export const Balances = ({
                 <BalanceValues>
                   <BalanceFuturesTitle theme={theme}>
                     Wallet balance
-                    </BalanceFuturesTitle>
+                  </BalanceFuturesTitle>
                   <BalanceQuantity theme={theme}>
-                    {balances[1]?.wallet ? stripDigitPlaces(balances[1].wallet, 8) : 0} {pair[1]}
+                    {balances[1]?.wallet
+                      ? stripDigitPlaces(balances[1].wallet, 8)
+                      : 0}{' '}
+                    {pair[1]}
                   </BalanceQuantity>
                   <BalanceFuturesTitle theme={theme}>
                     Unsettled balance
-                    </BalanceFuturesTitle>
+                  </BalanceFuturesTitle>
                   <BalanceQuantity theme={theme}>
-                    {balances[1]?.unsettled ? stripDigitPlaces(balances[1].unsettled, 8) : 0} {pair[1]}
+                    {balances[1]?.unsettled
+                      ? stripDigitPlaces(balances[1].unsettled, 8)
+                      : 0}{' '}
+                    {pair[1]}
                   </BalanceQuantity>
                 </BalanceValues>
                 <div
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'space-evenly',
-                          width: '100%',
-                        }}
-                      >
-                        <BtnCustom
-                          btnWidth="45%"
-                          height="auto"
-                          fontSize=".8rem"
-                          padding=".5rem 0 .4rem 0;"
-                          borderRadius=".8rem"
-                          btnColor={theme.palette.white.background}
-                          backgroundColor="#57bc7c"
-                          hoverColor={theme.palette.white.background}
-                          hoverBackground="#50ad72"
-                          transition={'all .4s ease-out'}
-                          onClick={() => {
-                            toggleOpeningDepositPopup(true);
-                            chooseCoinForDeposit('quote')
-                          }}
-                        >
-                          deposit
-                      </BtnCustom>
-                        <BtnCustom
-                          btnWidth="45%"
-                          height="auto"
-                          fontSize=".8rem"
-                          padding=".5rem 0 .4rem 0;"
-                          borderRadius=".8rem"
-                          btnColor={theme.palette.white.background}
-                          backgroundColor="#46adc7"
-                          hoverColor={theme.palette.white.background}
-                          hoverBackground="#3992a9"
-                          transition={'all .4s ease-out'}
-                          onClick={() => {
-                            const { market, openOrders } = quoteBalances
-                            onSettleFunds(market, openOrders)
-                          }}
-                        >
-                          settle
-                      </BtnCustom>
-                      </div>
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-evenly',
+                    width: '100%',
+                  }}
+                >
+                  <BtnCustom
+                    btnWidth="45%"
+                    height="auto"
+                    fontSize=".8rem"
+                    padding=".5rem 0 .4rem 0;"
+                    borderRadius=".8rem"
+                    btnColor={theme.palette.white.background}
+                    backgroundColor="#57bc7c"
+                    hoverColor={theme.palette.white.background}
+                    hoverBackground="#50ad72"
+                    transition={'all .4s ease-out'}
+                    onClick={() => {
+                      toggleOpeningDepositPopup(true)
+                      chooseCoinForDeposit('quote')
+                    }}
+                  >
+                    deposit
+                  </BtnCustom>
+                  <BtnCustom
+                    btnWidth="45%"
+                    height="auto"
+                    fontSize=".8rem"
+                    padding=".5rem 0 .4rem 0;"
+                    borderRadius=".8rem"
+                    btnColor={theme.palette.white.background}
+                    backgroundColor="#46adc7"
+                    hoverColor={theme.palette.white.background}
+                    hoverBackground="#3992a9"
+                    transition={'all .4s ease-out'}
+                    onClick={() => {
+                      const { market, openOrders } = quoteBalances
+                      onSettleFunds(market, openOrders)
+                    }}
+                  >
+                    settle
+                  </BtnCustom>
+                </div>
               </Grid>
             </>
           ) : (
-              <>
-                <Grid
-                  item
-                  xs={9}
-                  container
-                  alignItems="center"
-                  justify="flex-start"
-                  style={{ maxWidth: '100%' }}
-                >
-                  <div style={{ height: '100%', width: '100%' }}>
-                    <BalanceFuturesContainer theme={theme}>
-                      <BalanceFuturesTitle theme={theme}>
-                        Wallet balance
+            <>
+              <Grid
+                item
+                xs={9}
+                container
+                alignItems="center"
+                justify="flex-start"
+                style={{ maxWidth: '100%' }}
+              >
+                <div style={{ height: '100%', width: '100%' }}>
+                  <BalanceFuturesContainer theme={theme}>
+                    <BalanceFuturesTitle theme={theme}>
+                      Wallet balance
                     </BalanceFuturesTitle>
-                      <BalanceFuturesValue theme={theme}>
-                        <span style={{ color: theme.palette.blue.main }}>
-                          {stripDigitPlaces(USDTFuturesFund.quantity)}
-                        </span>{' '}
-                        <BalanceFuturesSymbol theme={theme}>
-                          USDT
+                    <BalanceFuturesValue theme={theme}>
+                      <span style={{ color: theme.palette.blue.main }}>
+                        {stripDigitPlaces(USDTFuturesFund.quantity)}
+                      </span>{' '}
+                      <BalanceFuturesSymbol theme={theme}>
+                        USDT
                       </BalanceFuturesSymbol>
-                      </BalanceFuturesValue>
-                    </BalanceFuturesContainer>
-                    <BalanceFuturesContainer theme={theme}>
-                      <BalanceFuturesTitle theme={theme}>
-                        Availiable
+                    </BalanceFuturesValue>
+                  </BalanceFuturesContainer>
+                  <BalanceFuturesContainer theme={theme}>
+                    <BalanceFuturesTitle theme={theme}>
+                      Availiable
                     </BalanceFuturesTitle>
-                      <BalanceFuturesValue theme={theme}>
-                        <span style={{ color: theme.palette.blue.main }}>
-                          {stripDigitPlaces(USDTFuturesFund.free)}
-                        </span>{' '}
-                        <BalanceFuturesSymbol theme={theme}>
-                          USDT
+                    <BalanceFuturesValue theme={theme}>
+                      <span style={{ color: theme.palette.blue.main }}>
+                        {stripDigitPlaces(USDTFuturesFund.free)}
+                      </span>{' '}
+                      <BalanceFuturesSymbol theme={theme}>
+                        USDT
                       </BalanceFuturesSymbol>
-                      </BalanceFuturesValue>
-                    </BalanceFuturesContainer>
-                  </div>
-                </Grid>
-                <Grid
-                  item
-                  xs={3}
-                  container
-                  direction="column"
-                  alignItems="center"
-                  justify="space-evenly"
-                  style={{
-                    maxWidth: '100%',
-                    borderTop: theme.palette.border.main,
-                  }}
-                >
-                  {isFuturesWarsKey && (
-                    <BtnCustom
-                      disabled={isAlreadyJoined}
-                      btnWidth="100%"
-                      height="auto"
-                      fontSize=".8rem"
-                      padding="1rem 0 .8rem 0;"
-                      borderRadius=".8rem"
-                      btnColor={theme.palette.blue.main}
-                      backgroundColor={theme.palette.white.background}
-                      hoverColor={theme.palette.white.background}
-                      hoverBackground={theme.palette.blue.main}
-                      transition={'all .4s ease-out'}
-                      onClick={() => {
-                        togglePopup(true)
+                    </BalanceFuturesValue>
+                  </BalanceFuturesContainer>
+                </div>
+              </Grid>
+              <Grid
+                item
+                xs={3}
+                container
+                direction="column"
+                alignItems="center"
+                justify="space-evenly"
+                style={{
+                  maxWidth: '100%',
+                  borderTop: theme.palette.border.main,
+                }}
+              >
+                {isFuturesWarsKey && (
+                  <BtnCustom
+                    disabled={isAlreadyJoined}
+                    btnWidth="100%"
+                    height="auto"
+                    fontSize=".8rem"
+                    padding="1rem 0 .8rem 0;"
+                    borderRadius=".8rem"
+                    btnColor={theme.palette.blue.main}
+                    backgroundColor={theme.palette.white.background}
+                    hoverColor={theme.palette.white.background}
+                    hoverBackground={theme.palette.blue.main}
+                    transition={'all .4s ease-out'}
+                    onClick={() => {
+                      togglePopup(true)
+                    }}
+                  >
+                    {isAlreadyJoined ? 'Joined' : `Join`}
+                  </BtnCustom>
+                )}
+                {!isFuturesWarsKey && (
+                  <>
+                    <BalanceFuturesTitle theme={theme}>
+                      transfer
+                    </BalanceFuturesTitle>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-evenly',
+                        width: '100%',
+                        paddingBottom: '0.8rem',
                       }}
                     >
-                      {isAlreadyJoined ? 'Joined' : `Join`}
-                    </BtnCustom>
-                  )}
-                  {!isFuturesWarsKey && (
-                    <>
-                      <BalanceFuturesTitle theme={theme}>
-                        transfer
-                    </BalanceFuturesTitle>
-                      <div
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'space-evenly',
-                          width: '100%',
-                          paddingBottom: '0.8rem',
+                      <BtnCustom
+                        btnWidth="45%"
+                        height="auto"
+                        fontSize=".8rem"
+                        padding=".5rem 0 .4rem 0;"
+                        borderRadius=".8rem"
+                        btnColor={theme.palette.blue.main}
+                        backgroundColor={theme.palette.white.background}
+                        hoverColor={theme.palette.white.background}
+                        hoverBackground={theme.palette.blue.main}
+                        transition={'all .4s ease-out'}
+                        onClick={() => {
+                          setTransferFromSpotToFutures(true)
+                          togglePopup(true)
                         }}
                       >
-                        <BtnCustom
-                          btnWidth="45%"
-                          height="auto"
-                          fontSize=".8rem"
-                          padding=".5rem 0 .4rem 0;"
-                          borderRadius=".8rem"
-                          btnColor={theme.palette.blue.main}
-                          backgroundColor={theme.palette.white.background}
-                          hoverColor={theme.palette.white.background}
-                          hoverBackground={theme.palette.blue.main}
-                          transition={'all .4s ease-out'}
-                          onClick={() => {
-                            setTransferFromSpotToFutures(true)
-                            togglePopup(true)
-                          }}
-                        >
-                          in
+                        in
                       </BtnCustom>
-                        <BtnCustom
-                          btnWidth="45%"
-                          height="auto"
-                          fontSize=".8rem"
-                          padding=".5rem 0 .4rem 0;"
-                          borderRadius=".8rem"
-                          btnColor={theme.palette.blue.main}
-                          backgroundColor={theme.palette.white.background}
-                          hoverColor={theme.palette.white.background}
-                          hoverBackground={theme.palette.blue.main}
-                          transition={'all .4s ease-out'}
-                          onClick={() => {
-                            setTransferFromSpotToFutures(false)
-                            togglePopup(true)
-                          }}
-                        >
-                          out
+                      <BtnCustom
+                        btnWidth="45%"
+                        height="auto"
+                        fontSize=".8rem"
+                        padding=".5rem 0 .4rem 0;"
+                        borderRadius=".8rem"
+                        btnColor={theme.palette.blue.main}
+                        backgroundColor={theme.palette.white.background}
+                        hoverColor={theme.palette.white.background}
+                        hoverBackground={theme.palette.blue.main}
+                        transition={'all .4s ease-out'}
+                        onClick={() => {
+                          setTransferFromSpotToFutures(false)
+                          togglePopup(true)
+                        }}
+                      >
+                        out
                       </BtnCustom>
-                      </div>
-                    </>
-                  )}
-                </Grid>
-              </>
-            )}
+                    </div>
+                  </>
+                )}
+              </Grid>
+            </>
+          )}
         </Grid>
       </CustomCard>
     </>

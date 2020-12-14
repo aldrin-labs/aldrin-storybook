@@ -17,7 +17,7 @@ import {
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { feeTiers } from '@sb/components/TradingTable/Fee/FeeTiers'
-import { getSelectedTokenAccountForMint, getOpenOrdersAccountsCustom } from './markets'
+import { getSelectedTokenAccountForMint, getOpenOrdersAccountsCustom, ALL_TOKENS_MINTS } from './markets'
 
 export async function createTokenAccountTransaction({
   connection,
@@ -126,7 +126,7 @@ export async function settleAllFunds({
         if (
           process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS &&
           market.quoteMintAddress.equals(
-            TOKEN_MINTS.find(({ name }) => name === 'USDT').address,
+            ALL_TOKENS_MINTS.find(({ name }) => name === 'USDT').address,
           )
         ) {
           referrerQuoteWallet = new PublicKey(
@@ -135,7 +135,7 @@ export async function settleAllFunds({
         } else if (
           process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS &&
           market.quoteMintAddress.equals(
-            TOKEN_MINTS.find(({ name }) => name === 'USDC').address,
+            ALL_TOKENS_MINTS.find(({ name }) => name === 'USDC').address,
           )
         ) {
           referrerQuoteWallet = new PublicKey(
@@ -238,7 +238,7 @@ export async function settleFunds({
     if (
       process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS &&
       market.quoteMintAddress.equals(
-        TOKEN_MINTS.find(({ name }) => name === 'USDT').address,
+        ALL_TOKENS_MINTS.find(({ name }) => name === 'USDT').address,
       )
     ) {
       referrerQuoteWallet = new PublicKey(
@@ -247,7 +247,7 @@ export async function settleFunds({
     } else if (
       process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS &&
       market.quoteMintAddress.equals(
-        TOKEN_MINTS.find(({ name }) => name === 'USDC').address,
+        ALL_TOKENS_MINTS.find(({ name }) => name === 'USDC').address,
       )
     ) {
       referrerQuoteWallet = new PublicKey(

@@ -17,8 +17,12 @@ import tuple from 'immutable-tuple'
 import { notify } from './notifications'
 import { BN } from 'bn.js'
 import { getTokenAccountInfo } from './tokens'
+import { AWESOME_MARKETS, AWESOME_TOKENS } from '@dr497/awesome-serum-markets'
+
+export const ALL_TOKENS_MINTS = [...TOKEN_MINTS, ...AWESOME_TOKENS]
 
 // Used in debugging, should be false in production
+
 const _IGNORE_DEPRECATED = false
 
 const USE_MARKETS = _IGNORE_DEPRECATED
@@ -26,7 +30,10 @@ const USE_MARKETS = _IGNORE_DEPRECATED
   : MARKETS
 
 export function useMarketsList() {
-  return USE_MARKETS.filter(({ deprecated }) => !deprecated)
+  const updatedUSE_MARKETS = USE_MARKETS.filter(
+    ({ deprecated }) => !deprecated
+  ).concat(AWESOME_MARKETS)
+  return updatedUSE_MARKETS
 }
 
 export function useAllMarkets(customMarkets) {
@@ -163,14 +170,16 @@ function getMarketDetails(market, customMarkets) {
   )
   const baseCurrency =
     (market?.baseMintAddress &&
-      TOKEN_MINTS.find((token) => token.address.equals(market.baseMintAddress))
-        ?.name) ||
+      ALL_TOKENS_MINTS.find((token) =>
+        token.address.equals(market.baseMintAddress)
+      )?.name) ||
     (marketInfo?.baseLabel && `${marketInfo?.baseLabel}*`) ||
     'UNKNOWN'
   const quoteCurrency =
     (market?.quoteMintAddress &&
-      TOKEN_MINTS.find((token) => token.address.equals(market.quoteMintAddress))
-        ?.name) ||
+      ALL_TOKENS_MINTS.find((token) =>
+        token.address.equals(market.quoteMintAddress)
+      )?.name) ||
     (marketInfo?.quoteLabel && `${marketInfo?.quoteLabel}*`) ||
     'UNKNOWN'
 
@@ -1081,11 +1090,10 @@ export function useBalancesForDeprecatedMarkets() {
 }
 
 export function getMarketInfos(customMarkets) {
-  console.log('customMarkets', customMarkets, USE_MARKETS)
   const customMarketsInfo = customMarkets.map((m) => ({
     ...m,
-    address: new PublicKey(m.address._bn),
-    programId: new PublicKey(m.programId._bn),
+    address: new PublicKey(m.address),
+    programId: new PublicKey(m.programId),
   }))
 
   return [...customMarketsInfo, ...USE_MARKETS]
