@@ -48,7 +48,7 @@ import {
   prefetchFuturesChart,
   prefetchSpotTransactions,
 } from '@core/utils/prefetching'
-import { checLoginStatusWrapper } from '@core/utils/loginUtils'
+import { checkLoginStatusWrapper } from '@core/utils/loginUtils'
 
 // Padding based on navbar padding (3rem on sides)
 // TODO: Fix this. Find the way to remove sidebar and get rid of these hacks
@@ -72,15 +72,15 @@ class PortfolioMainPage extends React.Component<IProps, IState> {
 
   componentDidMount() {
     setTimeout(() => {
-      checLoginStatusWrapper(prefetchFuturesChart)
+      checkLoginStatusWrapper(prefetchFuturesChart)
     }, 15000)
 
     setTimeout(() => {
-      checLoginStatusWrapper(prefetchFuturesTransactions)
+      checkLoginStatusWrapper(prefetchFuturesTransactions)
     }, 30000)
 
     setTimeout(() => {
-      checLoginStatusWrapper(prefetchSpotTransactions)
+      checkLoginStatusWrapper(prefetchSpotTransactions)
     }, 45000)
   }
 

@@ -42,7 +42,7 @@ import {
   prefetchFuturesTransactions,
   prefetchSpotTransactions,
 } from '@core/utils/prefetching'
-import { checLoginStatusWrapper } from '@core/utils/loginUtils'
+import { checkLoginStatusWrapper } from '@core/utils/loginUtils'
 
 import withAuth from '@core/hoc/withAuth'
 import { checkLoginStatus } from '@core/utils/loginUtils'
@@ -69,23 +69,23 @@ export function ChartPageComponent(props: any) {
     }, 15000)
 
     setTimeout(() => {
-      checLoginStatusWrapper(prefetchPortfolio)
+      checkLoginStatusWrapper(prefetchPortfolio)
     }, 30000)
 
     setTimeout(() => {
-      checLoginStatusWrapper(prefetchPortfolioMainSpot)
+      checkLoginStatusWrapper(prefetchPortfolioMainSpot)
     }, 45000)
 
     setTimeout(() => {
-      checLoginStatusWrapper(prefetchPortfolioMainFutures)
+      checkLoginStatusWrapper(prefetchPortfolioMainFutures)
     }, 55000)
 
     setTimeout(() => {
-      checLoginStatusWrapper(prefetchDeposit)
+      checkLoginStatusWrapper(prefetchDeposit)
     }, 75000)
 
     setTimeout(() => {
-      // checLoginStatusWrapper(prefetchWithdrawal)
+      // checkLoginStatusWrapper(prefetchWithdrawal)
     }, 95000)
 
     setTimeout(() => {
