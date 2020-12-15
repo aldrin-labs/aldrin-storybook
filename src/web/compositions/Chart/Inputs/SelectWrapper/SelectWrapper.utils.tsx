@@ -161,14 +161,22 @@ export const combineSelectWrapperData = ({
       )
     }
     if (tab === 'usdc') {
-      processedData = processedData.filter((el) => usdcPairsMap.has(el.symbol))
+      processedData = processedData.filter(
+        (el) => !el.isAwesomeMarket && usdcPairsMap.has(el.symbol)
+      )
     }
     if (tab === 'usdt') {
-      processedData = processedData.filter((el) => usdtPairsMap.has(el.symbol))
+      processedData = processedData.filter(
+        (el) => !el.isAwesomeMarket && usdtPairsMap.has(el.symbol)
+      )
     }
     if (tab === 'leveraged') {
       console.log('proc', processedData)
-      processedData = processedData.filter((el) => el.isAwesomeMarket)
+      processedData = processedData.filter(
+        (el) =>
+          (el.symbol.includes('BULL') || el.symbol.includes('BEAR')) &&
+          el.isAwesomeMarket
+      )
     }
   }
 
