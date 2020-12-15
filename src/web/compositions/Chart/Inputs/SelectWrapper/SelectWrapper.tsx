@@ -254,8 +254,9 @@ class SelectPairListComponent extends React.PureComponent<
       marketType,
       closeMenu,
       onSpecificCoinChange,
+      marketsByExchangeQuery,
     } = this.props
-
+    console.log('marketsByExchangeQuery', this.props.marketsByExchangeQuery)
     return (
       <Grid
         style={{
@@ -271,7 +272,7 @@ class SelectPairListComponent extends React.PureComponent<
           marginTop: '3rem',
           borderRadius: '.4rem',
           overflow: 'hidden',
-          border: theme.palette.border.main,
+          border: `1px solid ${theme.palette.grey.newborder}`,
           boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
         }}
       >
@@ -282,6 +283,8 @@ class SelectPairListComponent extends React.PureComponent<
             justifyContent: 'space-around',
             flexDirection: 'row',
             flexWrap: 'nowrap',
+            alignItems: 'center',
+            borderBottom: `1px solid ${theme.palette.grey.newborder}`,
           }}
         >
           {/* <Grid
@@ -300,14 +303,15 @@ class SelectPairListComponent extends React.PureComponent<
               padding: '1rem',
               background: tab === 'all' ? theme.palette.grey.input : '',
               display: 'flex',
-              borderRadius: '0.8rem',
+              // borderRadius: '0.3rem',
               alignItems: 'center',
               cursor: 'pointer',
-              fontSize: '1.2rem',
-              height: 'fit-content',
-              color: theme.palette.grey.light,
+              height: '2rem',
+              fontFamily: 'Avenir Next Demi',
+              fontSize: '1.4rem',
+              color: theme.palette.grey.text,
               fontWeight: 'bold',
-              borderLeft: `.1rem solid ${theme.palette.grey.input}`,
+              borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
             }}
             onClick={() => onTabChange('all')}
           >
@@ -319,12 +323,14 @@ class SelectPairListComponent extends React.PureComponent<
               background: tab === 'usdt' ? theme.palette.grey.input : '',
               display: 'flex',
               alignItems: 'center',
+              // borderRadius: '0.3rem',
               cursor: 'pointer',
-              fontSize: '1.2rem',
-              height: 'fit-content',
-              color: theme.palette.grey.light,
+              fontFamily: 'Avenir Next Demi',
+              fontSize: '1.4rem',
+              height: '2rem',
+              color: theme.palette.grey.text,
               fontWeight: 'bold',
-              borderLeft: `.1rem solid ${theme.palette.grey.input}`,
+              borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
             }}
             // onClick={() => onTabChange('all')}
           >
@@ -337,11 +343,13 @@ class SelectPairListComponent extends React.PureComponent<
               display: 'flex',
               alignItems: 'center',
               cursor: 'pointer',
-              fontSize: '1.2rem',
-              height: 'fit-content',
-              color: theme.palette.grey.light,
+              // borderRadius: '0.3rem',
+              fontFamily: 'Avenir Next Demi',
+              fontSize: '1.4rem',
+              height: '2rem',
+              color: theme.palette.grey.text,
               fontWeight: 'bold',
-              borderLeft: `.1rem solid ${theme.palette.grey.input}`,
+              borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
             }}
             // onClick={() => onTabChange('all')}
           >
@@ -350,33 +358,37 @@ class SelectPairListComponent extends React.PureComponent<
           <Grid
             style={{
               padding: '1rem',
+              height: '2rem',
               background:
                 tab === 'leveragedTokens' ? theme.palette.grey.main : '',
               display: 'flex',
               alignItems: 'center',
               cursor: 'pointer',
-              fontSize: '1.2rem',
+              // borderRadius: '0.3rem',
+              fontFamily: 'Avenir Next Demi',
+              fontSize: '1.4rem',
               whiteSpace: 'nowrap',
-              height: 'fit-content',
-              color: theme.palette.grey.light,
+              color: theme.palette.grey.text,
               fontWeight: 'bold',
-              borderLeft: `.1rem solid ${theme.palette.grey.input}`,
-              borderRight: `.1rem solid ${theme.palette.grey.input}`,
+              borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
+              borderRight: `.1rem solid ${theme.palette.grey.newborder}`,
             }}
             // onClick={() => onTabChange('all')}
           >
             Leveraged tokens
           </Grid>
 
-          <Grid container style={{ justifyContent: 'flex-end', width: '50%' }}>
+          <Grid container style={{ justifyContent: 'flex-end', width: '45%' }}>
             <Input
-              placeholder="  Search..."
+              placeholder="  Search"
               disableUnderline={true}
               style={{
-                width: '90%',
-                background: theme.palette.grey.main,
-                borderTop: theme.palette.border.main,
-                borderBottom: theme.palette.border.main,
+                width: '100%',
+                height: '3rem',
+                background: theme.palette.white.background,
+                borderRadius: '0.3rem',
+                color: theme.palette.grey.placeholder,
+                border: `.1rem solid ${theme.palette.grey.newborder}`,
               }}
               value={searchValue}
               onChange={onChangeSearch}
@@ -516,7 +528,7 @@ class SelectPairListComponent extends React.PureComponent<
                   outline: 'none',
                   cursor: 'pointer',
                   color: theme.palette.grey.light,
-                  borderBottom: theme.palette.border.main,
+                  borderBottom: `0.05rem solid ${theme.palette.grey.newborder}`,
                 }}
                 headerHeight={window.outerHeight / 40}
                 headerStyle={{
@@ -552,29 +564,35 @@ class SelectPairListComponent extends React.PureComponent<
                     textAlign: 'left',
                     paddingRight: '6px',
                     paddingLeft: '1rem',
+                    color: theme.palette.grey.text,
                   }}
                   width={width}
                   style={{
+                    color: theme.palette.grey.text,
+
                     textAlign: 'left',
                     fontSize: '1.2rem',
                     fontWeight: 'bold',
                   }}
                   cellRenderer={({ cellData }) => cellData.render}
                 />
-                {/* <Column
+                <Column
                   label={`last price`}
                   dataKey="price"
                   headerStyle={{
                     paddingRight: 'calc(10px)',
                     textAlign: 'left',
+                    color: theme.palette.grey.text,
                   }}
                   width={width}
                   style={{
+                    color: theme.palette.grey.text,
+
                     textAlign: 'left',
                     fontSize: '1.2rem',
                     fontWeight: 'bold',
                   }}
-                  cellRenderer={({ cellData }) => cellData.render}
+                  // cellRenderer={({ cellData }) => cellData.render}
                 />
                 <Column
                   label={`24H CHANGE`}
@@ -582,14 +600,17 @@ class SelectPairListComponent extends React.PureComponent<
                   headerStyle={{
                     paddingRight: 'calc(10px)',
                     textAlign: 'right',
+                    color: theme.palette.grey.text,
                   }}
                   width={width}
                   style={{
+                    color: theme.palette.grey.text,
+
                     textAlign: 'right',
                     fontSize: '1.2rem',
                     fontWeight: 'bold',
                   }}
-                  cellRenderer={({ cellData }) => cellData.render}
+                  // cellRenderer={({ cellData }) => cellData.render}
                 />
                 <Column
                   label={`24H VOLUME`}
@@ -597,15 +618,18 @@ class SelectPairListComponent extends React.PureComponent<
                   headerStyle={{
                     paddingRight: 'calc(10px)',
                     textAlign: 'right',
+                    color: theme.palette.grey.text,
                   }}
                   width={width}
                   style={{
+                    color: theme.palette.grey.text,
+
                     textAlign: 'right',
                     fontSize: '1.2rem',
                     fontWeight: 'bold',
                   }}
-                  cellRenderer={({ cellData }) => cellData.render}
-                /> */}
+                  // cellRenderer={({ cellData }) => cellData.render}
+                />
               </Table>
             )}
           </AutoSizer>
@@ -634,19 +658,19 @@ class SelectPairListComponent extends React.PureComponent<
 export default compose(
   withAuthStatus,
   withTheme(),
-  // queryRendererHoc({
-  //   query: MARKETS_BY_EXCHANE_QUERY,
-  //   name: 'marketsByExchangeQuery',
-  //   variables: (props) => ({
-  //     splitter: '_',
-  //     exchange: props.activeExchange.symbol,
-  //     marketType: props.marketType,
-  //     includeAdditionalMarketData: true,
-  //   }),
-  //   fetchPolicy: 'cache-and-network',
-  //   withOutSpinner: true,
-  //   withTableLoader: false,
-  // }),
+  queryRendererHoc({
+    query: MARKETS_BY_EXCHANE_QUERY,
+    name: 'marketsByExchangeQuery',
+    variables: (props) => ({
+      splitter: '_',
+      exchange: 'binance',
+      marketType: props.marketType,
+      includeAdditionalMarketData: true,
+    }),
+    fetchPolicy: 'cache-and-network',
+    withOutSpinner: true,
+    withTableLoader: false,
+  }),
   queryRendererHoc({
     query: getSelectorSettings,
     skip: (props: any) => !props.authenticated,
