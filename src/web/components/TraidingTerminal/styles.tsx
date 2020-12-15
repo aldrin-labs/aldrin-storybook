@@ -240,7 +240,7 @@ export const TradeInput = styled.input`
   padding-left: ${(props) => (props.needCharacter ? '2rem' : '0.6rem')};
   text-align: ${(props) => props.align};
   outline: none;
-  padding-right: ${(props) => (props.needPadding ? '4rem' : '1.5rem')};
+  padding-right: ${(props) => (props.needPadding ? '6rem' : '1.5rem')};
 
   &::placeholder {
     color: #abbad1;
