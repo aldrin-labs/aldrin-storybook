@@ -155,7 +155,7 @@ const CardSubTitle = styled.h3`
 `
 
 const CardSubValue = styled.span`
-  color: ${theme.palette.green.shine};
+  color: ${props => props.theme.palette.green.shine};
   font-family: DM Sans;
   font-weight: bold;
   font-size: 2rem;
@@ -180,7 +180,7 @@ const Form = styled.form`
 
 const LinkInput = styled.input`
   padding-left: 1.5rem;
-  border: 0.1rem solid ${theme.palette.blue.serum};
+  border: 0.1rem solid ${props => props.theme.palette.blue.serum};
   border-radius: 0.8rem;
   background-color: transparent;
   height: 5rem;
@@ -240,7 +240,7 @@ export const Cell = styled.td`
   border-bottom: 0.1rem solid ${(props) => props.borderBottom || '#61d8e6'};
   width: 25%;
 
-  color: ${theme.palette.text.light};
+  color: ${props => props.theme.palette.text.light};
   height: 5rem;
   text-transform: none;
   margin: 3rem 1rem;
@@ -955,7 +955,7 @@ const RewardsRoute = (props) => {
               >
                 <CardSubTitle>Total Volume</CardSubTitle>
               </DarkTooltip>
-              <CardSubValueForVolume>
+              <CardSubValueForVolume theme={theme}>
                 <Row justify={'flex-start'} style={{ paddingBottom: '.5rem' }}>
                 <SvgIcon
                     src={greenDollar}
@@ -1257,6 +1257,7 @@ const RewardsRoute = (props) => {
                       {dayjs.unix(el.timestamp).format('ll')}
                     </Cell>
                     <Cell
+                      theme={theme}
                       style={{
                         color: theme.palette.green.shine,
                         textDecoration: 'none',
