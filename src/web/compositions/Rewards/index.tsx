@@ -261,7 +261,7 @@ export const HeaderCell = styled.th`
   // border: none;
   font-size: 1.6rem;
   text-transform: capitalize;
-  color: ${theme.palette.grey.text};
+  color: ${props => props.theme.palette.grey.text};
   font-size: bold;
 `
 

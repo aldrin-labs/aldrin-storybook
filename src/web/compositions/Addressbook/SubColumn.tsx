@@ -53,18 +53,21 @@ const SubColumn = ({
       >
         <TableRow>
           <HeaderCell
+            theme={theme}
             style={{ paddingLeft: '2rem' }}
             borderBottom={theme.palette.text.white}
           >
             Coin
           </HeaderCell>
           <HeaderCell
+          theme={theme}
             style={{ textAlign: 'left' }}
             borderBottom={theme.palette.text.white}
           >
             Address
           </HeaderCell>
           <HeaderCell
+          theme={theme}
             style={{ textAlign: 'right' }}
             borderBottom={theme.palette.text.white}
           >

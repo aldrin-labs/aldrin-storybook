@@ -15,6 +15,7 @@ import stableCoins, {
   stableCoinsWithoutFiatPairs,
 } from '@core/config/stableCoins'
 import ReactSelectComponent from '@sb/components/ReactSelectComponent'
+import CustomMarketDialog from '@sb/compositions/Chart/Inputs/SelectWrapper/AddCustomMarketPopup'
 import favoriteSelected from '@icons/favoriteSelected.svg'
 import search from '@icons/search.svg'
 
@@ -650,6 +651,7 @@ class SelectPairListComponent extends React.PureComponent<
         >
           {/* Binance liquidity data */}
         </Grid>
+        <CustomMarketDialog theme={theme} visible={true} />
       </Grid>
     )
   }
