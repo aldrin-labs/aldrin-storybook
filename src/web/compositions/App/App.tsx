@@ -6,7 +6,11 @@ import { withRouter } from 'react-router-dom'
 // https://material-ui.com/customization/css-in-js/#other-html-element
 import JssProvider from 'react-jss/lib/JssProvider'
 import { create } from 'jss'
-import { createGenerateClassName, jssPreset, withTheme } from '@material-ui/core/styles'
+import {
+  createGenerateClassName,
+  jssPreset,
+  withTheme,
+} from '@material-ui/core/styles'
 
 const generateClassName = createGenerateClassName({
   dangerouslyUseGlobalCSS: false,
@@ -44,7 +48,7 @@ import { WalletProvider } from '@sb/dexUtils/wallet'
 import { MarketProvider } from '@sb/dexUtils/markets'
 import { PreferencesProvider } from '@sb/dexUtils/preferences'
 
-const version = `10.9.14`
+const version = `10.9.15`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
 const localPassword = localStorage.getItem('localPassword')
 const currentVersion = localStorage.getItem('version')
