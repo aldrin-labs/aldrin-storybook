@@ -6,7 +6,7 @@ import { withTheme } from '@material-ui/styles'
 import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
 import { getSerumData } from '@core/graphql/queries/chart/getSerumData'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
-import { SingleChart } from '@sb/components/Chart'
+import SingleChart from '@sb/components/Chart'
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import {
   formatNumberToUSFormat,

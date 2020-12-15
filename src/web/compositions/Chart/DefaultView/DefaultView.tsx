@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react'
 import { Fade, Grid, Theme } from '@material-ui/core'
 
 import MainDepthChart from '../DepthChart/MainDepthChart/MainDepthChart'
-import { SingleChart } from '@sb/components/Chart'
+import SingleChartWithButtons from '@sb/components/Chart'
+import { TriggerTitle } from '@sb/components/ChartCardHeader'
 
 import Balances from '@core/components/Balances'
 import TradingComponent from '@core/components/TradingComponent'
@@ -12,7 +13,6 @@ import { TablesBlockWrapper } from '@sb/components/TradingWrapper/styles'
 import { TradeHistory, OrderbookAndDepthChart } from '../components'
 import CardsPanel from '../components/CardsPanel'
 import { GuestMode } from '../components/GuestMode/GuestMode'
-import ChartCardHeader, { TriggerTitle } from '@sb/components/ChartCardHeader'
 import { HideArrow } from '../components/HideArrow/HideArrow'
 import { isEqual } from 'lodash'
 import { TerminalModeButton } from '@sb/components/TradingWrapper/styles'
@@ -27,16 +27,16 @@ const TerminalContainer = ({
   children: React.ReactChild
   theme: Theme
 }) => (
-    <TablesBlockWrapper
-      item
-      container
-      theme={theme}
-      xs={isDefaultTerminalViewMode ? 5 : 12}
-      isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-    >
-      {children}
-    </TablesBlockWrapper>
-  )
+  <TablesBlockWrapper
+    item
+    container
+    theme={theme}
+    xs={isDefaultTerminalViewMode ? 5 : 12}
+    isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+  >
+    {children}
+  </TablesBlockWrapper>
+)
 
 import {
   Container,
@@ -88,9 +88,7 @@ export const DefaultViewComponent = (
   } = props
 
   const [chartExchange, updateChartExchange] = useState('binance')
-  const {
-    wallet,
-  } = useWallet()
+  const { wallet } = useWallet()
   const publicKey = wallet?.publicKey?.toBase58()
 
   if (!currencyPair) {
@@ -182,7 +180,14 @@ export const DefaultViewComponent = (
               theme={theme}
               hideTradeHistory={hideTradeHistory}
             >
-              <CustomCard
+              <SingleChartWithButtons
+                currencyPair={currencyPair}
+                base={base}
+                quote={quote}
+                marketType={marketType}
+                publicKey={publicKey}
+              />
+              {/* <CustomCard
                 theme={theme}
                 id="tradingViewChart"
                 style={{
@@ -197,7 +202,7 @@ export const DefaultViewComponent = (
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    padding: 0
+                    padding: 0,
                   }}
                 >
                   <span
@@ -209,7 +214,7 @@ export const DefaultViewComponent = (
                       textTransform: 'capitalize',
                       fontSize: '1.3rem',
                       lineHeight: '1rem',
-                      paddingLeft: '1rem'
+                      paddingLeft: '1rem',
                     }}
                   >
                     Chart
@@ -240,7 +245,7 @@ export const DefaultViewComponent = (
                     marketType
                   )}_${chartExchange}&user_id=${publicKey}&api_version=${2.1}`}
                 />
-              </CustomCard>
+              </CustomCard> */}
             </ChartsContainer>
             <TradingTerminalContainer
               theme={theme}
@@ -259,13 +264,13 @@ export const DefaultViewComponent = (
                     flexBasis: hideOrderbook
                       ? '0%'
                       : hideDepthChart
-                        ? '50%'
-                        : '65%',
+                      ? '50%'
+                      : '65%',
                     maxWidth: hideOrderbook
                       ? '0%'
                       : hideDepthChart
-                        ? '50%'
-                        : '65%',
+                      ? '50%'
+                      : '65%',
                   }}
                 >
                   {!hideOrderbook && (
@@ -302,13 +307,13 @@ export const DefaultViewComponent = (
                     flexBasis: hideOrderbook
                       ? '100%'
                       : hideDepthChart
-                        ? '50%'
-                        : '35%',
+                      ? '50%'
+                      : '35%',
                     maxWidth: hideOrderbook
                       ? '100%'
                       : hideDepthChart
-                        ? '50%'
-                        : '35%',
+                      ? '50%'
+                      : '35%',
                   }}
                 >
                   {!hideTradeHistory && (
