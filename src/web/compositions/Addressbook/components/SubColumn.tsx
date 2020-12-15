@@ -22,7 +22,7 @@ import {
   Table,
 } from '@sb/compositions/Rewards/index'
 import { notify } from '@sb/dexUtils/notifications'
-import { decrypt } from './index'
+import { decrypt } from '../index'
 
 const SubColumn = ({
   theme,
@@ -86,6 +86,7 @@ const SubColumn = ({
           return (
             <TableRow>
               <Cell
+                theme={theme}
                 style={{ paddingLeft: '2rem', fontSize: '2rem' }}
                 borderBottom={theme.palette.text.white}
               >
@@ -107,6 +108,7 @@ const SubColumn = ({
                   : decrypt(el.symbol, localPassword)}
               </Cell>
               <Cell
+                theme={theme}
                 style={{ textAlign: 'left', fontSize: '2rem' }}
                 borderBottom={theme.palette.text.white}
               >
@@ -128,6 +130,7 @@ const SubColumn = ({
                 </AddBtn>
               </Cell>
               <Cell
+                theme={theme}
                 style={{ textAlign: 'right' }}
                 borderBottom={theme.palette.text.white}
               >

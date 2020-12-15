@@ -259,15 +259,11 @@ export const ChartGridContainer = styled(({ MASTER_BUILD, ...rest }) => (
   display: flex;
   flex: auto;
   align-items: center;
-  width: calc(100% - 2rem);
-  height: 4rem;
-  padding: 0;
-  margin: 1rem;
-  // background: ${(props) => props.theme.palette.grey.cream};
-
-  && {
-    padding: 0;
-  }
+  width: calc(100%);
+  height: 6rem;
+  padding: 1rem 3rem 1rem 1rem;
+  margin: 0rem;
+  background: ${(props) => props.theme.palette.grey.additional};
 `
 
 export const TablesContainer = styled(Grid)`

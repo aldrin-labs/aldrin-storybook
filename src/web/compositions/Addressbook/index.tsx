@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { AES, enc, MD5 } from 'crypto-js'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
-import SubColumn from './SubColumn'
+import SubColumn from './components/SubColumn'
 import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
 
 import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
@@ -119,7 +119,7 @@ const combineContactsData = (
             <span
               style={{
                 display: 'block',
-                color: theme.palette.grey.text,
+                color: theme.palette.dark.main,
                 fontFamily: 'DM Sans Medium',
               }}
             >
@@ -127,7 +127,7 @@ const combineContactsData = (
             </span>
             <span
               style={{
-                color: theme.palette.grey.text,
+                color: theme.palette.dark.main,
                 fontFamily: 'DM Sans Medium',
               }}
             >
@@ -188,7 +188,7 @@ const AddressbookRoute = ({
   const isLoginStep = step === 'login'
 
   return (
-    <RowContainer style={{ height: '100%' }}>
+    <RowContainer style={{ height: '100%',background: theme.palette.grey.additional, }}>
       {' '}
       <GlobalStyles />
       <Card
@@ -377,7 +377,7 @@ const AddressbookRoute = ({
                 },
                 cell: {
                   height: '5rem',
-                  color: theme.palette.grey.text,
+                  color: theme.palette.dark.main,
                   letterSpacing: '.1rem',
                   fontFamily: 'Avenir Next Demi',
                   textTransform: 'none',
