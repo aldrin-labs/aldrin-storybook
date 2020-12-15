@@ -51,7 +51,7 @@ const OrderbookAndDepthChart = (props) => {
     hideDepthChart,
     isPairDataLoading,
     sizeDigits,
-    pricePrecision,
+    pricePrecision: serumPricePrecision,
   } = props
 
   const { marketOrders = {} } = props.data || {
@@ -60,6 +60,9 @@ const OrderbookAndDepthChart = (props) => {
 
   const markPrice = useMarkPrice()
   const [orderbook] = useOrderbook()
+
+  const pricePrecision = serumPricePrecision === undefined ? sizeDigits !== undefined ? 8 : undefined : serumPricePrecision
+
   const [orderbookData, setOrderbookData] = useState({
     asks: new TreeMap(),
     bids: new TreeMap(),

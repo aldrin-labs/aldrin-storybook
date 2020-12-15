@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-// import { Row, Input, Modal, Row, Typography } from 'antd';
-import { notify } from '@sb/dexUtils//notifications'
-import { isValidPublicKey } from '@sb/dexUtils//utils'
+import { withRouter } from 'react-router'
+import { compose } from 'recompose'
+import { Dialog, Paper } from '@material-ui/core'
 import { PublicKey } from '@solana/web3.js'
 import { Market, MARKETS, TOKEN_MINTS } from '@project-serum/serum'
+
+import { notify } from '@sb/dexUtils//notifications'
+import { isValidPublicKey } from '@sb/dexUtils//utils'
 import { useAccountInfo, useConnection } from '@sb/dexUtils/connection'
 import { Loading } from '@sb/components/index'
-import { Dialog, Paper } from '@material-ui/core'
+
 
 // const { Text } = Typography;
 import {
@@ -22,6 +25,8 @@ import { Input } from '@sb/compositions/Addressbook/index'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { PurpleButton } from '@sb/compositions/Addressbook/NewCoinPopup'
+import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index'
+
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -36,12 +41,15 @@ const Text = styled.span`
   font-size: 1.5rem;
   padding-bottom: ${(props) => props.paddingBottom};
   text-transform: none;
-  color: ${props => props.type === 'danger' ? '#E04D6B' : props.type === 'warning' ? '#f4d413' : '#ecf0f3'};
+  color: ${(props) =>
+    props.type === 'danger'
+      ? '#E04D6B'
+      : props.type === 'warning'
+      ? '#f4d413'
+      : '#ecf0f3'};
 `
 
-import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index'
-
-const CustomMarketDialog = ({ visible, onAddCustomMarket, onClose, theme }) => {
+const CustomMarketDialog = ({ open, onAddCustomMarket, onClose, theme, history }) => {
   const connection = useConnection()
 
   const [marketId, setMarketId] = useState('')
@@ -137,8 +145,10 @@ const CustomMarketDialog = ({ visible, onAddCustomMarket, onClose, theme }) => {
     if (!knownQuoteCurrency) {
       params.quoteLabel = quoteLabel
     }
+    console.log('params', params)
     onAddCustomMarket(params)
     onDoClose()
+    history.push(`/chart/spot/${baseLabel}_${quoteLabel}`)
   }
 
   const onDoClose = () => {
@@ -228,7 +238,11 @@ const CustomMarketDialog = ({ visible, onAddCustomMarket, onClose, theme }) => {
           />
         </RowContainer>
         <RowContainer margin={'1rem 0 2rem 0'} align={'flex-start'}>
-          <Row width={'calc(50% - .5rem)'} margin={'0 .5rem 0 0'} justify={'flex-start'}>
+          <Row
+            width={'calc(50% - .5rem)'}
+            margin={'0 .5rem 0 0'}
+            justify={'flex-start'}
+          >
             <StyledInput
               theme={theme}
               placeholder="Base label"
@@ -237,12 +251,16 @@ const CustomMarketDialog = ({ visible, onAddCustomMarket, onClose, theme }) => {
               onChange={(e) => setBaseLabel(e.target.value)}
             />
             {market && !knownBaseCurrency && (
-              <div style={{ marginTop: 8 }}>
+              <div>
                 <Text type="warning">Warning: unknown token</Text>
               </div>
             )}
           </Row>
-          <Row width={'calc(50% - .5rem)'} margin={'0 0 0 .5rem'} justify={'flex-start'}>
+          <Row
+            width={'calc(50% - .5rem)'}
+            margin={'0 0 0 .5rem'}
+            justify={'flex-start'}
+          >
             <StyledInput
               theme={theme}
               placeholder="Quote label"
@@ -251,19 +269,31 @@ const CustomMarketDialog = ({ visible, onAddCustomMarket, onClose, theme }) => {
               onChange={(e) => setQuoteLabel(e.target.value)}
             />
             {market && !knownQuoteCurrency && (
-              <div style={{ marginTop: 8 }}>
+              <div>
                 <Text type="warning">Warning: unknown token</Text>
               </div>
             )}
           </Row>
         </RowContainer>
         <RowContainer justify={'flex-end'}>
-          <PurpleButton margin={'0'} text={'Cancel'} width={'12rem'} height={'4rem'} onClick={onClose} />
-          <PurpleButton margin={'0 0 0 2rem'} text={'Add'}  width={'12rem'} height={'4rem'} onClick={onSubmit} />
-          </RowContainer>
+          <PurpleButton
+            margin={'0'}
+            text={'Cancel'}
+            width={'12rem'}
+            height={'4rem'}
+            onClick={onClose}
+          />
+          <PurpleButton
+            margin={'0 0 0 2rem'}
+            text={'Add'}
+            width={'12rem'}
+            height={'4rem'}
+            onClick={onSubmit}
+          />
+        </RowContainer>
       </StyledDialogContent>
     </DialogWrapper>
   )
 }
 
-export default CustomMarketDialog
+export default compose(withRouter)(CustomMarketDialog)
