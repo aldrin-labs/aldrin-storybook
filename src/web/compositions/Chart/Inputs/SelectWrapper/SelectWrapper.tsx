@@ -275,7 +275,15 @@ class SelectPairListComponent extends React.PureComponent<
           boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
         }}
       >
-        <Grid container style={{ padding: '0.5rem' }}>
+        <Grid
+          container
+          style={{
+            padding: '0.5rem',
+            justifyContent: 'space-around',
+            flexDirection: 'row',
+            flexWrap: 'nowrap',
+          }}
+        >
           {/* <Grid
             style={{
               display: 'flex',
@@ -290,17 +298,108 @@ class SelectPairListComponent extends React.PureComponent<
           <Grid
             style={{
               padding: '1rem',
-              background: tab === 'all' ? theme.palette.grey.main : '',
+              background: tab === 'all' ? theme.palette.grey.input : '',
               display: 'flex',
+              borderRadius: '0.8rem',
               alignItems: 'center',
               cursor: 'pointer',
               fontSize: '1.2rem',
+              height: 'fit-content',
               color: theme.palette.grey.light,
               fontWeight: 'bold',
+              borderLeft: `.1rem solid ${theme.palette.grey.input}`,
             }}
             onClick={() => onTabChange('all')}
           >
             ALL
+          </Grid>
+          <Grid
+            style={{
+              padding: '1rem',
+              background: tab === 'usdt' ? theme.palette.grey.input : '',
+              display: 'flex',
+              alignItems: 'center',
+              cursor: 'pointer',
+              fontSize: '1.2rem',
+              height: 'fit-content',
+              color: theme.palette.grey.light,
+              fontWeight: 'bold',
+              borderLeft: `.1rem solid ${theme.palette.grey.input}`,
+            }}
+            // onClick={() => onTabChange('all')}
+          >
+            USDT
+          </Grid>
+          <Grid
+            style={{
+              padding: '1rem',
+              background: tab === 'usdc' ? theme.palette.grey.main : '',
+              display: 'flex',
+              alignItems: 'center',
+              cursor: 'pointer',
+              fontSize: '1.2rem',
+              height: 'fit-content',
+              color: theme.palette.grey.light,
+              fontWeight: 'bold',
+              borderLeft: `.1rem solid ${theme.palette.grey.input}`,
+            }}
+            // onClick={() => onTabChange('all')}
+          >
+            USDC
+          </Grid>
+          <Grid
+            style={{
+              padding: '1rem',
+              background:
+                tab === 'leveragedTokens' ? theme.palette.grey.main : '',
+              display: 'flex',
+              alignItems: 'center',
+              cursor: 'pointer',
+              fontSize: '1.2rem',
+              whiteSpace: 'nowrap',
+              height: 'fit-content',
+              color: theme.palette.grey.light,
+              fontWeight: 'bold',
+              borderLeft: `.1rem solid ${theme.palette.grey.input}`,
+              borderRight: `.1rem solid ${theme.palette.grey.input}`,
+            }}
+            // onClick={() => onTabChange('all')}
+          >
+            Leveraged tokens
+          </Grid>
+
+          <Grid container style={{ justifyContent: 'flex-end', width: '50%' }}>
+            <Input
+              placeholder="  Search..."
+              disableUnderline={true}
+              style={{
+                width: '90%',
+                background: theme.palette.grey.main,
+                borderTop: theme.palette.border.main,
+                borderBottom: theme.palette.border.main,
+              }}
+              value={searchValue}
+              onChange={onChangeSearch}
+              // inputProps={{
+              //   style: {
+              //     paddingLeft: '1rem',
+              //   },
+              // }}
+              endAdornment={
+                <InputAdornment
+                  style={{
+                    width: '10%',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                  }}
+                  disableTypography={true}
+                  position="end"
+                  autoComplete="off"
+                >
+                  <SvgIcon src={search} width="1.5rem" height="auto" />
+                </InputAdornment>
+              }
+            />
           </Grid>
           {marketType === 0 && (
             <>
@@ -399,39 +498,6 @@ class SelectPairListComponent extends React.PureComponent<
               </Grid>
             </>
           )}
-        </Grid>
-        <Grid container style={{ padding: '1rem 0' }}>
-          <Input
-            placeholder="Search..."
-            disableUnderline={true}
-            style={{
-              width: '100%',
-              background: theme.palette.grey.main,
-              borderTop: theme.palette.border.main,
-              borderBottom: theme.palette.border.main,
-            }}
-            value={searchValue}
-            onChange={onChangeSearch}
-            inputProps={{
-              style: {
-                paddingLeft: '1rem',
-              },
-            }}
-            endAdornment={
-              <InputAdornment
-                style={{
-                  width: '10%',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                }}
-                disableTypography={true}
-                position="end"
-                autoComplete="off"
-              >
-                <SvgIcon src={search} width="1.5rem" height="auto" />
-              </InputAdornment>
-            }
-          />
         </Grid>
         <Grid style={{ overflow: 'hidden', height: 'calc(69% - 2rem)' }}>
           <AutoSizer>
