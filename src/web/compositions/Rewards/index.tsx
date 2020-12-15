@@ -133,7 +133,7 @@ export const Button = styled.button`
   font-style: normal;
   font-weight: bold;
   text-transform: capitalize;
-  background: ${(props) => props.color || theme.palette.blue.serum};
+  background: ${(props) => props.color || props.theme.palette.blue.serum};
   border-radius: 2px;
   border: none;
 `
@@ -155,7 +155,7 @@ const CardSubTitle = styled.h3`
 `
 
 const CardSubValue = styled.span`
-  color: ${theme.palette.green.shine};
+  color: ${props => props.theme.palette.green.shine};
   font-family: DM Sans;
   font-weight: bold;
   font-size: 2rem;
@@ -180,13 +180,13 @@ const Form = styled.form`
 
 const LinkInput = styled.input`
   padding-left: 1.5rem;
-  border: 0.1rem solid ${theme.palette.blue.serum};
+  border: 0.1rem solid ${props => props.theme.palette.blue.serum};
   border-radius: 0.8rem;
   background-color: transparent;
   height: 5rem;
   width: calc((100% - 4rem) / 2);
   margin-right: 1rem;
-  color: ${(props) => props.color || theme.palette.grey.light};
+  color: ${(props) => props.color || props.theme.palette.grey.light};
 `
 
 export const srmVolumesInUSDT = [
@@ -240,7 +240,7 @@ export const Cell = styled.td`
   border-bottom: 0.1rem solid ${(props) => props.borderBottom || '#61d8e6'};
   width: 25%;
 
-  color: ${theme.palette.text.light};
+  color: ${props => props.theme.palette.dark.main};
   height: 5rem;
   text-transform: none;
   margin: 3rem 1rem;

@@ -304,7 +304,7 @@ export const CardsPanel = ({
   }
 
   return (
-    <ChartGridContainer>
+    <ChartGridContainer theme={theme}>
       <PanelWrapper>
         {/* {view === 'onlyCharts' && (
           <LayoutSelector userId={_id} themeMode={themeMode} />
@@ -454,7 +454,7 @@ export const CardsPanel = ({
         </CustomCard>
 
         <TopBar theme={theme} />
-        <Line top={'calc(100% + 1rem)'} />
+        <Line top={'calc(100%)'} />
         {/*         
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <TooltipCustom

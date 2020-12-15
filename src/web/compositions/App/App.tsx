@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom'
 // https://material-ui.com/customization/css-in-js/#other-html-element
 import JssProvider from 'react-jss/lib/JssProvider'
 import { create } from 'jss'
-import { createGenerateClassName, jssPreset } from '@material-ui/core/styles'
+import { createGenerateClassName, jssPreset, withTheme } from '@material-ui/core/styles'
 
 const generateClassName = createGenerateClassName({
   dangerouslyUseGlobalCSS: false,
@@ -132,7 +132,7 @@ const AppRaw = ({
                       >
                         {children}
                       </div>
-                      {showFooter && <Footer isRewards={isRewards} />}
+                      {showFooter && <FooterWithTheme isRewards={isRewards} />}
                       {/* 
                     <Footer
                       isChartPage={isChartPage}
@@ -157,6 +157,7 @@ const Footer = (props) => {
   return (
     <RowContainer
       style={{
+        background: props.theme.palette.grey.additional,
         height: '5.7rem',
         ...(props.isRewards ? { position: 'absolute', bottom: '0' } : {}),
       }}
@@ -193,6 +194,8 @@ const Footer = (props) => {
     </RowContainer>
   )
 }
+
+const FooterWithTheme = compose(withTheme())(Footer)
 
 const Row = styled.div`
   display: flex;
