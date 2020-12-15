@@ -51,40 +51,47 @@ const OrderbookAndDepthChart = (props) => {
     hideDepthChart,
     isPairDataLoading,
     sizeDigits,
-    pricePrecision
+    pricePrecision,
   } = props
 
-  const {
-    marketOrders = {},
-  } = props.data || {
+  const { marketOrders = {} } = props.data || {
     marketOrders: {},
   }
 
-  const markPrice = useMarkPrice();
+  const markPrice = useMarkPrice()
   const [orderbook] = useOrderbook()
   const [orderbookData, setOrderbookData] = useState({
     asks: new TreeMap(),
-    bids: new TreeMap()
-  });
+    bids: new TreeMap(),
+  })
 
   const [aggregatedOrderbookData, setAggregatedOrderbookData] = useState({
     asks: new TreeMap(),
-    bids: new TreeMap()
-  });
+    bids: new TreeMap(),
+  })
 
-  const [aggregation, setAggregation] = useState(String(getAggregationsFromPricePrecision(pricePrecision)[0].value))
+  const [aggregation, setAggregation] = useState(
+    String(getAggregationsFromPricePrecision(pricePrecision)[0].value)
+  )
 
-  useEffect(() => setAggregation(String(getAggregationsFromPricePrecision(pricePrecision)[0].value)), [pricePrecision])
+  useEffect(
+    () =>
+      setAggregation(
+        String(getAggregationsFromPricePrecision(pricePrecision)[0].value)
+      ),
+    [pricePrecision]
+  )
 
   useInterval(() => {
-    if (!pricePrecision || !sizeDigits) return
+    if (pricePrecision === undefined || sizeDigits === undefined) return
 
-    const asks = orderbook?.asks?.map(row => [row[0], [row[1], Date.now()]])
-    const bids = orderbook?.bids?.map(row => [row[0], [row[1], Date.now()]])
+    const asks = orderbook?.asks?.map((row) => [row[0], [row[1], Date.now()]])
+    const bids = orderbook?.bids?.map((row) => [row[0], [row[1], Date.now()]])
 
     const updatedData = transformOrderbookData({
       marketOrders: {
-        asks, bids
+        asks,
+        bids,
       },
       aggregation: +getAggregationsFromPricePrecision(pricePrecision)[0].value,
       sizeDigits: props.sizeDigits,
@@ -110,25 +117,27 @@ const OrderbookAndDepthChart = (props) => {
 
       setAggregatedOrderbookData({
         asks: aggregatedAsks,
-        bids: aggregatedBids
+        bids: aggregatedBids,
       })
     }
 
     setOrderbookData({
       asks: updatedData.asks,
-      bids: updatedData.bids
+      bids: updatedData.bids,
     })
 
-    return () => setOrderbookData({
-      asks: new TreeMap(),
-      bids: new TreeMap()
-    })
+    return () =>
+      setOrderbookData({
+        asks: new TreeMap(),
+        bids: new TreeMap(),
+      })
   }, 250)
 
-  const dataToSend = String(aggregation) ===
+  const dataToSend =
+    String(aggregation) ===
     String(getAggregationsFromPricePrecision(pricePrecision)[0].value)
-    ? orderbookData
-    : aggregatedOrderbookData
+      ? orderbookData
+      : aggregatedOrderbookData
 
   return (
     <div
@@ -149,12 +158,10 @@ const OrderbookAndDepthChart = (props) => {
             changeTable={changeTable}
             exchange={exchange}
             symbol={symbol}
-            data={
-              {
-                asks: orderbookData.asks,
-                bids: orderbookData.bids
-              }
-            }
+            data={{
+              asks: orderbookData.asks,
+              bids: orderbookData.bids,
+            }}
           />
         </Grid>
       )}
