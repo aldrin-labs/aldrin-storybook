@@ -3,11 +3,8 @@ import styled from 'styled-components'
 import { IconButton as Button, Switch, Grow, Paper } from '@material-ui/core'
 import MdClear from '@material-ui/icons/Clear'
 
-import { SingleChart } from '@sb/components/Chart'
-import {
-  IChartProps,
-  IChartState,
-} from './IndividualChart.types'
+import SingleChart from '@sb/components/Chart'
+import { IChartProps, IChartState } from './IndividualChart.types'
 import DepthChartContainer from '../DepthChartContainer/DepthChartContainer'
 import { CustomError } from '@sb/components/index'
 import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/TypographyWithCustomColor'
@@ -26,7 +23,7 @@ export default class Charts extends Component<IChartProps, IChartState> {
       theme,
       userId,
       themeMode,
-      activeLayout
+      activeLayout,
     } = this.props
     const { palette } = theme
     const { primary } = palette
@@ -80,8 +77,7 @@ export default class Charts extends Component<IChartProps, IChartState> {
           </ChartsSwitcher>
           {activeChart === 'candle' ? (
             <SingleChart
-              additionalUrl={
-                `/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}`}
+              additionalUrl={`/?symbol=${base}/${quote}&user_id=${userId}&theme=${themeMode}`}
               name={`name${index}`}
             />
           ) : (

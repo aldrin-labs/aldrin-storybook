@@ -15,8 +15,13 @@ import stableCoins, {
   stableCoinsWithoutFiatPairs,
 } from '@core/config/stableCoins'
 import ReactSelectComponent from '@sb/components/ReactSelectComponent'
+import CustomMarketDialog from '@sb/compositions/Chart/Inputs/SelectWrapper/AddCustomMarketPopup'
 import favoriteSelected from '@icons/favoriteSelected.svg'
 import search from '@icons/search.svg'
+import AddCircleIcon from '@material-ui/icons/AddCircle'
+
+import { notify } from '@sb/dexUtils/notifications'
+import { getMarketInfos } from '@sb/dexUtils/markets'
 
 import {
   // TableWithSort,
@@ -35,6 +40,7 @@ import {
   // selectWrapperColumnNames,
   combineSelectWrapperData,
 } from './SelectWrapper.utils'
+import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 
 class SelectWrapper extends React.PureComponent<IProps, IState> {
   state: IState = {
@@ -66,6 +72,9 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
       markets,
       AWESOME_MARKETS,
       AWESOME_TOKENS = [],
+      setCustomMarkets,
+      setMarketAddress,
+      customMarkets,
     } = this.props
 
     const {
@@ -181,6 +190,7 @@ class SelectPairListComponent extends React.PureComponent<
 > {
   state: IStateSelectPairListComponent = {
     processedSelectData: [],
+    showAddMarketPopup: false,
   }
 
   componentDidMount() {
@@ -266,7 +276,7 @@ class SelectPairListComponent extends React.PureComponent<
   }
 
   render() {
-    const { processedSelectData } = this.state
+    const { processedSelectData, showAddMarketPopup } = this.state
     const {
       theme,
       searchValue,
@@ -278,11 +288,27 @@ class SelectPairListComponent extends React.PureComponent<
       closeMenu,
       onSpecificCoinChange,
       marketsByExchangeQuery,
+      setCustomMarkets,
+      setMarketAddress,
+      customMarkets,
     } = this.props
-    console.log(
-      'marketsByExchangeQuery',
-      this.props.marketsByExchangeQuery.getMarketsByExchange
-    )
+
+    const onAddCustomMarket = (customMarket: any) => {
+      const marketInfo = getMarketInfos(customMarkets).some(
+        (m) => m.address.toBase58() === customMarket.address
+      )
+      if (marketInfo) {
+        notify({
+          message: `A market with the given ID already exists`,
+          type: 'error',
+        })
+        return
+      }
+      const newCustomMarkets = [...customMarkets, customMarket]
+      setCustomMarkets(newCustomMarkets)
+      setMarketAddress(customMarket.address)
+    }
+
     return (
       <Grid
         style={{
@@ -438,6 +464,16 @@ class SelectPairListComponent extends React.PureComponent<
               }
             />
           </Grid>
+          <AddCircleIcon
+            onClick={() => this.setState({ showAddMarketPopup: true })}
+            style={{
+              width: '3rem',
+              height: '3rem',
+              padding: '.5rem',
+              color: '#55BB7C',
+              cursor: 'pointer',
+            }}
+          />
           {marketType === 0 && (
             <>
               <Grid
@@ -676,12 +712,19 @@ class SelectPairListComponent extends React.PureComponent<
         >
           {/* Binance liquidity data */}
         </Grid>
+        <CustomMarketDialog
+          theme={theme}
+          open={showAddMarketPopup}
+          onClose={() => this.setState({ showAddMarketPopup: false })}
+          onAddCustomMarket={onAddCustomMarket}
+        />
       </Grid>
     )
   }
 }
 
 export default compose(
+  withMarketUtilsHOC,
   withAuthStatus,
   withTheme(),
   queryRendererHoc({

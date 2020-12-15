@@ -44,19 +44,23 @@ class TableContainer extends Component<IProps, IState> {
       return null
     }
 
+    const pricePrecision = newProps.pricePrecision === undefined ? newProps.sizeDigits !== undefined ? 8 : undefined : newProps.pricePrecision
+
     // query data processing
     if (
       state.data.length === 0 &&
       newProps.data &&
       newProps.data.marketTickers &&
       newProps.data.marketTickers.length > 0 &&
-      newProps.pricePrecision !== undefined &&
+      pricePrecision !== undefined &&
       newProps.sizeDigits !== undefined
     ) {
-      const updatedData = newProps.data.marketTickers.map((trade, i) => ({
+      const tickersData = [ ...newProps.data.marketTickers ]
+
+      const updatedData = tickersData.map((trade, i) => ({
         ...trade,
         size: Number(trade.size).toFixed(newProps.quantityPrecision),
-        price: Number(trade.price).toFixed(newProps.pricePrecision),
+        price: Number(trade.price).toFixed(pricePrecision),
         time: dayjs.unix(+trade.timestamp).format('LTS'),
         id: `${trade.price}${trade.size}${i}${trade.timestamp}`,
       }))
@@ -78,6 +82,7 @@ class TableContainer extends Component<IProps, IState> {
   subscribe = () => {
     const that = this
     this.subscription && this.subscription.unsubscribe()
+    const pricePrecision = this.props.pricePrecision === undefined ? this.props.sizeDigits !== undefined ? 8 : undefined : this.props.pricePrecision
 
     this.subscription = client
       .subscribe({
@@ -112,9 +117,9 @@ class TableContainer extends Component<IProps, IState> {
                 .map((trade) => ({
                   ...trade,
                   size: Number(trade.size).toFixed(
-                    that.props.quantityPrecision
+                    that.props.sizeDigits
                   ),
-                  price: Number(trade.price).toFixed(that.props.pricePrecision),
+                  price: Number(trade.price).toFixed(pricePrecision),
                   time: new Date(trade.time).toLocaleTimeString(),
                 }))
                 .concat(that.state.data)
@@ -155,7 +160,7 @@ class TableContainer extends Component<IProps, IState> {
       currencyPair,
       updateTerminalPriceFromOrderbook,
       theme,
-      quantityPrecision,
+      sizeDigits,
     } = this.props
     const { data, numbersAfterDecimalForPrice } = this.state
     const amountForBackground =
@@ -170,7 +175,7 @@ class TableContainer extends Component<IProps, IState> {
           numbersAfterDecimalForPrice={numbersAfterDecimalForPrice}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
           quote={quote}
-          quantityPrecision={quantityPrecision}
+          quantityPrecision={sizeDigits}
           amountForBackground={amountForBackground}
           currencyPair={currencyPair}
         />
