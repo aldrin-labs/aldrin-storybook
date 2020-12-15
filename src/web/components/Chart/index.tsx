@@ -64,11 +64,11 @@ export const SingleChartWithButtons = ({
   )
 
   const [chartExchange, updateChartExchange] = useState(
-    isCustomMarkets ? 'serum' : 'binance'
+    isCustomMarkets ? 'ftx' : 'binance'
   )
 
   useEffect(() => {
-    updateChartExchange(isCustomMarkets ? 'serum' : 'binance')
+    updateChartExchange(isCustomMarkets ? 'ftx' : 'binance')
   }, [isCustomMarkets])
 
   return (
@@ -118,10 +118,18 @@ export const SingleChartWithButtons = ({
         <TerminalModeButton
           theme={theme}
           active={chartExchange === 'serum'}
-          style={{ width: '10rem', borderRight: 0 }}
+          style={{ width: '10rem'}}
           onClick={() => updateChartExchange('serum')}
         >
           Serum
+        </TerminalModeButton>
+        <TerminalModeButton
+          theme={theme}
+          active={chartExchange === 'ftx'}
+          style={{ width: '10rem', borderRight: 0 }}
+          onClick={() => updateChartExchange('ftx')}
+        >
+          Ftx
         </TerminalModeButton>
       </TriggerTitle>
       <SingleChart
