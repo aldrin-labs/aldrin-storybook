@@ -26,6 +26,7 @@ export const Row = styled.div`
   align-items: ${(props) => props.align || 'center'};
   width: ${(props) => props.width || 'auto'};
   height: ${(props) => props.height || 'auto'};
+  margin: ${props => props.margin || '0'};
 `
 export const RowContainer = styled(Row)`
   width: 100%;

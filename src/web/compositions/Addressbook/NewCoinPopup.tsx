@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Dialog, Paper } from '@material-ui/core'
+import { compose } from 'recompose'
+import { graphql } from 'react-apollo'
+
 import { notify } from '@sb/dexUtils/notifications'
 import SelectCoinList from '@core/components/SelectCoinList/SelectCoinList'
 import {
@@ -16,14 +19,10 @@ import {
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { addContactCoin } from '@core/graphql/mutations/chart/addContactCoin'
 
-import { createHash, Input } from './index'
+import { createHash, Input, encrypt } from '@sb/compositions/Addressbook/index'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components/index'
-
-import { compose } from 'recompose'
-import { graphql } from 'react-apollo'
-import { encrypt, createHash } from './index'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -40,6 +39,36 @@ export const PasteButton = styled.button`
   cursor: pointer;
   padding: 1.5rem;
 `
+
+export const PurpleButton = ({ onClick, showLoader, text, width, height, margin }) => (
+  <BtnCustom
+    disabled={showLoader}
+    needMinWidth={false}
+    btnWidth={width || "15rem"}
+    height={height || "4.5rem"}
+    fontSize="1.4rem"
+    padding="1rem 2rem"
+    borderRadius=".8rem"
+    borderColor={'#7380EB'}
+    btnColor={'#fff'}
+    backgroundColor={'#7380EB'}
+    textTransform={'none'}
+    margin={margin || '1rem 0 0 0'}
+    transition={'all .4s ease-out'}
+    onClick={onClick}
+  >
+    {showLoader ? (
+      <Loading
+        color={'#fff'}
+        size={16}
+        height={'16px'}
+        style={{ height: '16px' }}
+      />
+    ) : (
+      text
+    )}
+  </BtnCustom>
+)
 
 const NewCoinPopup = ({
   theme,

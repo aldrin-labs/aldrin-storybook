@@ -261,7 +261,7 @@ export const HeaderCell = styled.th`
   // border: none;
   font-size: 1.6rem;
   text-transform: capitalize;
-  color: ${theme.palette.grey.text};
+  color: ${props => props.theme.palette.grey.text};
   font-size: bold;
 `
 
@@ -955,7 +955,7 @@ const RewardsRoute = (props) => {
               >
                 <CardSubTitle>Total Volume</CardSubTitle>
               </DarkTooltip>
-              <CardSubValueForVolume>
+              <CardSubValueForVolume theme={theme}>
                 <Row justify={'flex-start'} style={{ paddingBottom: '.5rem' }}>
                 <SvgIcon
                     src={greenDollar}
@@ -1257,6 +1257,7 @@ const RewardsRoute = (props) => {
                       {dayjs.unix(el.timestamp).format('ll')}
                     </Cell>
                     <Cell
+                      theme={theme}
                       style={{
                         color: theme.palette.green.shine,
                         textDecoration: 'none',

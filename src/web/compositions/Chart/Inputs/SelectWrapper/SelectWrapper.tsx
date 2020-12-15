@@ -15,8 +15,13 @@ import stableCoins, {
   stableCoinsWithoutFiatPairs,
 } from '@core/config/stableCoins'
 import ReactSelectComponent from '@sb/components/ReactSelectComponent'
+import CustomMarketDialog from '@sb/compositions/Chart/Inputs/SelectWrapper/AddCustomMarketPopup'
 import favoriteSelected from '@icons/favoriteSelected.svg'
 import search from '@icons/search.svg'
+import AddCircleIcon from '@material-ui/icons/AddCircle'
+
+import { notify } from '@sb/dexUtils/notifications'
+import { getMarketInfos } from '@sb/dexUtils/markets'
 
 import {
   // TableWithSort,
@@ -35,6 +40,7 @@ import {
   // selectWrapperColumnNames,
   combineSelectWrapperData,
 } from './SelectWrapper.utils'
+import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 
 class SelectWrapper extends React.PureComponent<IProps, IState> {
   state: IState = {
@@ -66,6 +72,9 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
       markets,
       AWESOME_MARKETS,
       AWESOME_TOKENS = [],
+      setCustomMarkets,
+      setMarketAddress,
+      customMarkets,
     } = this.props
 
     const {
@@ -90,6 +99,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
 
     const dexMarketSymbols = markets.map((el) => ({
       symbol: el.name,
+      isAwesomeMarket: el.isAwesomeMarket,
     }))
 
     const filtredMarketsByExchange = dexMarketSymbols.filter(
@@ -103,10 +113,11 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
 
     const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
     const altCoinsRegexp = new RegExp(`${stableCoins.join('|')}|BTC`, 'g')
-
+    let altCoinsPairsMap = new Map()
     let stableCoinsPairsMap = new Map()
     let btcCoinsPairsMap = new Map()
-    let altCoinsPairsMap = new Map()
+    let usdcPairsMap = new Map()
+    let usdtPairsMap = new Map()
     const favoritePairsMap = favoritePairs.reduce(
       (acc: Map<string, string>, el: string) => {
         acc.set(el, el)
@@ -131,7 +142,18 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
       ) {
         btcCoinsPairsMap.set(el.symbol, el.price)
       }
-
+      if (
+        /USDC/g.test(el.symbol.split('_')[0]) ||
+        /USDC/g.test(el.symbol.split('_')[1])
+      ) {
+        usdcPairsMap.set(el.symbol, el.price)
+      }
+      if (
+        /USDT/g.test(el.symbol.split('_')[0]) ||
+        /USDT/g.test(el.symbol.split('_')[1])
+      ) {
+        usdtPairsMap.set(el.symbol, el.price)
+      }
       if (
         !altCoinsRegexp.test(el.symbol) &&
         !stableCoinsRegexp.test(el.symbol.split('_')[0]) &&
@@ -140,7 +162,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
         altCoinsPairsMap.set(el.symbol, el.price)
       }
     })
-
+    console.log('usdcPairsMap')
     return (
       <SelectPairListComponent
         data={filtredMarketsByExchange}
@@ -148,6 +170,8 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
         stableCoinsPairsMap={stableCoinsPairsMap}
         btcCoinsPairsMap={btcCoinsPairsMap}
         altCoinsPairsMap={altCoinsPairsMap}
+        usdcPairsMap={usdcPairsMap}
+        usdtPairsMap={usdtPairsMap}
         searchValue={searchValue}
         tab={tab}
         tabSpecificCoin={tabSpecificCoin}
@@ -166,6 +190,7 @@ class SelectPairListComponent extends React.PureComponent<
 > {
   state: IStateSelectPairListComponent = {
     processedSelectData: [],
+    showAddMarketPopup: false,
   }
 
   componentDidMount() {
@@ -181,6 +206,8 @@ class SelectPairListComponent extends React.PureComponent<
       btcCoinsPairsMap,
       altCoinsPairsMap,
       favoritePairsMap,
+      usdcPairsMap,
+      usdtPairsMap,
       marketType,
     } = this.props
 
@@ -196,6 +223,8 @@ class SelectPairListComponent extends React.PureComponent<
       btcCoinsPairsMap,
       altCoinsPairsMap,
       favoritePairsMap,
+      usdcPairsMap,
+      usdtPairsMap,
       marketType,
     })
 
@@ -216,6 +245,8 @@ class SelectPairListComponent extends React.PureComponent<
       stableCoinsPairsMap,
       btcCoinsPairsMap,
       altCoinsPairsMap,
+      usdcPairsMap,
+      usdtPairsMap,
       favoritePairsMap,
       marketType,
     } = nextProps
@@ -233,6 +264,8 @@ class SelectPairListComponent extends React.PureComponent<
       stableCoinsPairsMap,
       btcCoinsPairsMap,
       altCoinsPairsMap,
+      usdcPairsMap,
+      usdtPairsMap,
       favoritePairsMap,
       marketType,
     })
@@ -243,7 +276,7 @@ class SelectPairListComponent extends React.PureComponent<
   }
 
   render() {
-    const { processedSelectData } = this.state
+    const { processedSelectData, showAddMarketPopup } = this.state
     const {
       theme,
       searchValue,
@@ -254,7 +287,27 @@ class SelectPairListComponent extends React.PureComponent<
       marketType,
       closeMenu,
       onSpecificCoinChange,
+      marketsByExchangeQuery,
+      setCustomMarkets,
+      setMarketAddress,
+      customMarkets,
     } = this.props
+
+    const onAddCustomMarket = (customMarket: any) => {
+      const marketInfo = getMarketInfos(customMarkets).some(
+        (m) => m.address.toBase58() === customMarket.address
+      )
+      if (marketInfo) {
+        notify({
+          message: `A market with the given ID already exists`,
+          type: 'error',
+        })
+        return
+      }
+      const newCustomMarkets = [...customMarkets, customMarket]
+      setCustomMarkets(newCustomMarkets)
+      setMarketAddress(customMarket.address)
+    }
 
     return (
       <Grid
@@ -271,12 +324,23 @@ class SelectPairListComponent extends React.PureComponent<
           marginTop: '3rem',
           borderRadius: '.4rem',
           overflow: 'hidden',
-          border: theme.palette.border.main,
+          border: `1px solid ${theme.palette.grey.newborder}`,
           boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
         }}
       >
-        <Grid container style={{ padding: '0.5rem' }}>
-          {/* <Grid
+        <Grid
+          container
+          style={{
+            height: '5rem',
+            padding: '0.5rem',
+            justifyContent: 'space-around',
+            flexDirection: 'row',
+            flexWrap: 'nowrap',
+            alignItems: 'center',
+            borderBottom: `1px solid ${theme.palette.grey.newborder}`,
+          }}
+        >
+          <Grid
             style={{
               display: 'flex',
               padding: '1rem',
@@ -286,22 +350,130 @@ class SelectPairListComponent extends React.PureComponent<
             onClick={() => onTabChange('favorite')}
           >
             <SvgIcon src={favoriteSelected} width="2rem" height="auto" />
-          </Grid> */}
+          </Grid>
           <Grid
             style={{
               padding: '1rem',
-              background: tab === 'all' ? theme.palette.grey.main : '',
+              background: tab === 'all' ? theme.palette.grey.input : '',
               display: 'flex',
+              // borderRadius: '0.3rem',
               alignItems: 'center',
               cursor: 'pointer',
-              fontSize: '1.2rem',
-              color: theme.palette.grey.light,
+              height: '2rem',
+              fontFamily: 'Avenir Next Demi',
+              fontSize: '1.4rem',
+              color: theme.palette.grey.text,
               fontWeight: 'bold',
+              borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
             }}
             onClick={() => onTabChange('all')}
           >
             ALL
           </Grid>
+          <Grid
+            style={{
+              padding: '1rem',
+              background: tab === 'usdt' ? theme.palette.grey.input : '',
+              display: 'flex',
+              alignItems: 'center',
+              // borderRadius: '0.3rem',
+              cursor: 'pointer',
+              fontFamily: 'Avenir Next Demi',
+              fontSize: '1.4rem',
+              height: '2rem',
+              color: theme.palette.grey.text,
+              fontWeight: 'bold',
+              borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
+            }}
+            onClick={() => onTabChange('usdt')}
+          >
+            USDT
+          </Grid>
+          <Grid
+            style={{
+              padding: '1rem',
+              background: tab === 'usdc' ? theme.palette.grey.input : '',
+              display: 'flex',
+              alignItems: 'center',
+              cursor: 'pointer',
+              // borderRadius: '0.3rem',
+              fontFamily: 'Avenir Next Demi',
+              fontSize: '1.4rem',
+              height: '2rem',
+              color: theme.palette.grey.text,
+              fontWeight: 'bold',
+              borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
+            }}
+            onClick={() => onTabChange('usdc')}
+          >
+            USDC
+          </Grid>
+          <Grid
+            style={{
+              padding: '1rem',
+              height: '2rem',
+              background: tab === 'leveraged' ? theme.palette.grey.input : '',
+              display: 'flex',
+              alignItems: 'center',
+              cursor: 'pointer',
+              // borderRadius: '0.3rem',
+              fontFamily: 'Avenir Next Demi',
+              fontSize: '1.4rem',
+              whiteSpace: 'nowrap',
+              color: theme.palette.grey.text,
+              fontWeight: 'bold',
+              borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
+            }}
+            onClick={() => onTabChange('leveraged')}
+          >
+            Leveraged tokens
+          </Grid>
+
+          <Grid container style={{ justifyContent: 'flex-end', width: '45%' }}>
+            <Input
+              placeholder="  Search"
+              disableUnderline={true}
+              style={{
+                width: '100%',
+                height: '3rem',
+                background: theme.palette.white.background,
+                borderRadius: '0.3rem',
+                color: theme.palette.grey.placeholder,
+                border: `.1rem solid ${theme.palette.grey.newborder}`,
+              }}
+              value={searchValue}
+              onChange={onChangeSearch}
+              // inputProps={{
+              //   style: {
+              //     paddingLeft: '1rem',
+              //   },
+              // }}
+              endAdornment={
+                <InputAdornment
+                  style={{
+                    width: '10%',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                  }}
+                  disableTypography={true}
+                  position="end"
+                  autoComplete="off"
+                >
+                  <SvgIcon src={search} width="1.5rem" height="auto" />
+                </InputAdornment>
+              }
+            />
+          </Grid>
+          <AddCircleIcon
+            onClick={() => this.setState({ showAddMarketPopup: true })}
+            style={{
+              width: '3rem',
+              height: '3rem',
+              padding: '.5rem',
+              color: '#55BB7C',
+              cursor: 'pointer',
+            }}
+          />
           {marketType === 0 && (
             <>
               <Grid
@@ -319,6 +491,7 @@ class SelectPairListComponent extends React.PureComponent<
               >
                 BTC
               </Grid>
+
               <Grid
                 style={{
                   display: 'flex',
@@ -400,40 +573,7 @@ class SelectPairListComponent extends React.PureComponent<
             </>
           )}
         </Grid>
-        <Grid container style={{ padding: '1rem 0' }}>
-          <Input
-            placeholder="Search..."
-            disableUnderline={true}
-            style={{
-              width: '100%',
-              background: theme.palette.grey.main,
-              borderTop: theme.palette.border.main,
-              borderBottom: theme.palette.border.main,
-            }}
-            value={searchValue}
-            onChange={onChangeSearch}
-            inputProps={{
-              style: {
-                paddingLeft: '1rem',
-              },
-            }}
-            endAdornment={
-              <InputAdornment
-                style={{
-                  width: '10%',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                }}
-                disableTypography={true}
-                position="end"
-                autoComplete="off"
-              >
-                <SvgIcon src={search} width="1.5rem" height="auto" />
-              </InputAdornment>
-            }
-          />
-        </Grid>
-        <Grid style={{ overflow: 'hidden', height: 'calc(69% - 2rem)' }}>
+        <Grid style={{ overflow: 'hidden', height: 'calc(100% - 5rem)' }}>
           <AutoSizer>
             {({ width, height }: { width: number; height: number }) => (
               <Table
@@ -450,7 +590,7 @@ class SelectPairListComponent extends React.PureComponent<
                   outline: 'none',
                   cursor: 'pointer',
                   color: theme.palette.grey.light,
-                  borderBottom: theme.palette.border.main,
+                  borderBottom: `0.05rem solid ${theme.palette.grey.newborder}`,
                 }}
                 headerHeight={window.outerHeight / 40}
                 headerStyle={{
@@ -486,9 +626,12 @@ class SelectPairListComponent extends React.PureComponent<
                     textAlign: 'left',
                     paddingRight: '6px',
                     paddingLeft: '1rem',
+                    color: theme.palette.grey.text,
                   }}
                   width={width}
                   style={{
+                    color: theme.palette.grey.text,
+
                     textAlign: 'left',
                     fontSize: '1.2rem',
                     fontWeight: 'bold',
@@ -501,39 +644,48 @@ class SelectPairListComponent extends React.PureComponent<
                   headerStyle={{
                     paddingRight: 'calc(10px)',
                     textAlign: 'left',
+                    color: theme.palette.grey.text,
                   }}
                   width={width}
                   style={{
+                    color: theme.palette.grey.text,
+
                     textAlign: 'left',
                     fontSize: '1.2rem',
                     fontWeight: 'bold',
                   }}
                   cellRenderer={({ cellData }) => cellData.render}
-                />
-                <Column
+                /> */}
+                {/* <Column
                   label={`24H CHANGE`}
                   dataKey="price24hChange"
                   headerStyle={{
                     paddingRight: 'calc(10px)',
                     textAlign: 'right',
+                    color: theme.palette.grey.text,
                   }}
                   width={width}
                   style={{
+                    color: theme.palette.grey.text,
+
                     textAlign: 'right',
                     fontSize: '1.2rem',
                     fontWeight: 'bold',
                   }}
                   cellRenderer={({ cellData }) => cellData.render}
-                />
-                <Column
+                /> */}
+                {/* <Column
                   label={`24H VOLUME`}
                   dataKey="volume24hChange"
                   headerStyle={{
                     paddingRight: 'calc(10px)',
                     textAlign: 'right',
+                    color: theme.palette.grey.text,
                   }}
                   width={width}
                   style={{
+                    color: theme.palette.grey.text,
+
                     textAlign: 'right',
                     fontSize: '1.2rem',
                     fontWeight: 'bold',
@@ -560,27 +712,34 @@ class SelectPairListComponent extends React.PureComponent<
         >
           {/* Binance liquidity data */}
         </Grid>
+        <CustomMarketDialog
+          theme={theme}
+          open={showAddMarketPopup}
+          onClose={() => this.setState({ showAddMarketPopup: false })}
+          onAddCustomMarket={onAddCustomMarket}
+        />
       </Grid>
     )
   }
 }
 
 export default compose(
+  withMarketUtilsHOC,
   withAuthStatus,
   withTheme(),
-  // queryRendererHoc({
-  //   query: MARKETS_BY_EXCHANE_QUERY,
-  //   name: 'marketsByExchangeQuery',
-  //   variables: (props) => ({
-  //     splitter: '_',
-  //     exchange: props.activeExchange.symbol,
-  //     marketType: props.marketType,
-  //     includeAdditionalMarketData: true,
-  //   }),
-  //   fetchPolicy: 'cache-and-network',
-  //   withOutSpinner: true,
-  //   withTableLoader: false,
-  // }),
+  queryRendererHoc({
+    query: MARKETS_BY_EXCHANE_QUERY,
+    name: 'marketsByExchangeQuery',
+    variables: (props) => ({
+      splitter: '_',
+      exchange: 'binance',
+      marketType: 0,
+      includeAdditionalMarketData: true,
+    }),
+    fetchPolicy: 'cache-and-network',
+    withOutSpinner: true,
+    withTableLoader: false,
+  }),
   queryRendererHoc({
     query: getSelectorSettings,
     skip: (props: any) => !props.authenticated,

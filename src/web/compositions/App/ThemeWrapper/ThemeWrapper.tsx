@@ -199,6 +199,8 @@ export default ({ themeMode, isChartPage, children }) => {
               chart: '#f65683',
               input: '#303743',
               back: '#303743',
+              newborder: '#3A475C',
+              placeholder: '#abbad1',
             },
             primary: {
               main: '#303037',
@@ -414,6 +416,8 @@ export default ({ themeMode, isChartPage, children }) => {
               chart: '#e0e0e8',
               input: '#F6F8FA',
               back: '#e0e0e8',
+              newborder: '#F6F8FA',
+              placeholder: '#7284A0',
             },
             primary: {
               main: '#FEFEFE',
