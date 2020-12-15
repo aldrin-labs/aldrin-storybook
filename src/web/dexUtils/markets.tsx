@@ -30,10 +30,15 @@ const USE_MARKETS = _IGNORE_DEPRECATED
   : MARKETS
 
 export function useMarketsList() {
-  const updatedUSE_MARKETS = USE_MARKETS.filter(
+  const UPDATED_USE_MARKETS = USE_MARKETS.filter(
     ({ deprecated }) => !deprecated
-  ).concat(AWESOME_MARKETS)
-  return updatedUSE_MARKETS
+  ).concat(
+    AWESOME_MARKETS.map((el) => ({
+      ...el,
+      isAwesomeMarket: true,
+    }))
+  )
+  return UPDATED_USE_MARKETS
 }
 
 export function useAllMarkets(customMarkets) {

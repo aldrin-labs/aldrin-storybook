@@ -100,6 +100,8 @@ export const combineSelectWrapperData = ({
   stableCoinsPairsMap,
   btcCoinsPairsMap,
   altCoinsPairsMap,
+  usdcPairsMap,
+  usdtPairsMap,
   favoritePairsMap,
   marketType,
 }: {
@@ -121,6 +123,8 @@ export const combineSelectWrapperData = ({
   stableCoinsPairsMap: Map<string, string>
   btcCoinsPairsMap: Map<string, string>
   altCoinsPairsMap: Map<string, string>
+  usdcPairsMap: Map<string, string>
+  usdtPairsMap: Map<string, string>
   marketType: number
 }) => {
   if (!data && !Array.isArray(data)) {
@@ -155,6 +159,16 @@ export const combineSelectWrapperData = ({
       processedData = processedData.filter((el) =>
         favoritePairsMap.has(el.symbol)
       )
+    }
+    if (tab === 'usdc') {
+      processedData = processedData.filter((el) => usdcPairsMap.has(el.symbol))
+    }
+    if (tab === 'usdt') {
+      processedData = processedData.filter((el) => usdtPairsMap.has(el.symbol))
+    }
+    if (tab === 'leveraged') {
+      console.log('proc', processedData)
+      processedData = processedData.filter((el) => el.isAwesomeMarket)
     }
   }
 
@@ -200,22 +214,22 @@ export const combineSelectWrapperData = ({
     const priceColor = !!previousData ? '' : ''
 
     const [base, quote] = symbol.split('_')
-
+    console.log('filtredData', el)
     return {
       id: `${symbol}`,
-      // favorite: {
-      //   isSortable: false,
-      //   render: (
-      //     <SvgIcon
-      //       onClick={() =>
-      //         updateFavoritePairsHandler(updateFavoritePairsMutation, symbol)
-      //       }
-      //       src={isInFavoriteAlready ? favoriteSelected : favoriteUnselected}
-      //       width="2rem"
-      //       height="auto"
-      //     />
-      //   ),
-      // },
+      favorite: {
+        isSortable: false,
+        render: (
+          <SvgIcon
+            onClick={() =>
+              updateFavoritePairsHandler(updateFavoritePairsMutation, symbol)
+            }
+            src={isInFavoriteAlready ? favoriteSelected : favoriteUnselected}
+            width="2rem"
+            height="auto"
+          />
+        ),
+      },
       symbol: {
         render: (
           <span onClick={() => onSelectPair({ value: symbol })}>{symbol}</span>
@@ -223,62 +237,58 @@ export const combineSelectWrapperData = ({
         onClick: () => onSelectPair({ value: symbol }),
         contentToSort: symbol,
       },
-      //   price: {
-      //     contentToSort: +price,
-      //     render: (
-      //       <span onClick={() => onSelectPair({ value: symbol })}>
-      //         {formatNumberToUSFormat(
-      //           stripDigitPlaces(price, pricePrecision)
-      //         )}
-      //       </span>
-      //     ),
-      //     // onClick: () => onSelectPair({ value: symbol }),
-      //     // color: priceColor,
-      //   },
-      //   price24hChange: {
-      //     isNumber: true,
-      //     render: (
-      //       <span
-      //         style={{
-      //           color:
-      //             +price24hChange === 0
-      //               ? ''
-      //               : +price24hChange > 0
-      //               ? theme.palette.green.main
-      //               : theme.palette.red.main,
-      //         }}
-      //         onClick={() => onSelectPair({ value: symbol })}
-      //       >
-      //         {`${formatNumberToUSFormat(stripDigitPlaces(price24hChange))}%`}
-      //       </span>
-      //     ),
-      //     // onClick: () => onSelectPair({ value: symbol }),
-      //     contentToSort: +price24hChange,
-      //     // color:
-      //     //   +price24hChange === 0
-      //     //     ? ''
-      //     //     : +price24hChange > 0
-      //     //     ? theme.customPalette.green.main
-      //     //     : theme.customPalette.red.main,
-      //   },
-      //   volume24hChange: {
-      //     isNumber: true,
-      //     contentToSort: +volume24hChange,
-      //     render: (
-      //       <span onClick={() => onSelectPair({ value: symbol })}>
-      //         {`${formatNumberToUSFormat(
-      //           roundAndFormatNumber(volume24hChange, 2, false)
-      //         )} ${quote}`}
-      //       </span>
-      //     ),
-      //     // onClick: () => onSelectPair({ value: symbol }),
-      //   },
+      price: {
+        contentToSort: +price,
+        render: (
+          <span onClick={() => onSelectPair({ value: symbol })}>
+            {formatNumberToUSFormat(stripDigitPlaces(price, pricePrecision))}
+          </span>
+        ),
+        onClick: () => onSelectPair({ value: symbol }),
+        color: priceColor,
+      },
+      price24hChange: {
+        isNumber: true,
+        render: (
+          <span
+            style={{
+              color:
+                +price24hChange === 0
+                  ? ''
+                  : +price24hChange > 0
+                  ? theme.palette.green.main
+                  : theme.palette.red.main,
+            }}
+            onClick={() => onSelectPair({ value: symbol })}
+          >
+            {`${formatNumberToUSFormat(stripDigitPlaces(price24hChange))}%`}
+          </span>
+        ),
+        onClick: () => onSelectPair({ value: symbol }),
+        contentToSort: +price24hChange,
+        color:
+          +price24hChange === 0
+            ? ''
+            : +price24hChange > 0
+            ? theme.customPalette.green.main
+            : theme.customPalette.red.main,
+      },
+      volume24hChange: {
+        isNumber: true,
+        contentToSort: +volume24hChange,
+        render: (
+          <span onClick={() => onSelectPair({ value: symbol })}>
+            {`${formatNumberToUSFormat(
+              roundAndFormatNumber(volume24hChange, 2, false)
+            )} ${quote}`}
+          </span>
+        ),
+        onClick: () => onSelectPair({ value: symbol }),
+      },
     }
   })
 
-  // return filtredData.sort(
-  //   (a, b) => b.volume24hChange.contentToSort - a.volume24hChange.contentToSort
-  // )
-
-  return filtredData
+  return filtredData.sort((a, b) =>
+    a.symbol.contentToSort.localeCompare(b.symbol.contentToSort)
+  )
 }

@@ -16,6 +16,8 @@ import { LISTEN_FUNDING_RATE } from '@core/graphql/subscriptions/LISTEN_FUNDING_
 import { getPrice } from '@core/graphql/queries/chart/getPrice'
 import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE'
 
+import { marketDataByTickers } from '@core/graphql/queries/chart/marketDataByTickers'
+
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
@@ -28,15 +30,9 @@ import {
   updatePriceQuerryFunction,
 } from './MarketStats.utils'
 
+import { useMarkPrice, useMarket } from '@sb/dexUtils/markets'
 
-import {
-  useMarkPrice,
-  useMarket
-} from '@sb/dexUtils/markets'
-
-import {
-  getDecimalCount
-} from '@sb/dexUtils/utils'
+import { getDecimalCount } from '@sb/dexUtils/utils'
 
 import {
   PanelCard,
@@ -201,9 +197,9 @@ const MarketStats = (props) => {
   // const isStableCoinInPair = stableCoinsRegexp.test(symbol)
   // const roundingPrecision = isStableCoinInPair ? 2 : 8
 
-  const markPrice = useMarkPrice();
-  const { market } = useMarket();
-  let priceDecimalCount = market?.tickSize && getDecimalCount(market.tickSize);
+  const markPrice = useMarkPrice()
+  const { market } = useMarket()
+  let priceDecimalCount = market?.tickSize && getDecimalCount(market.tickSize)
 
   const [base, quote] = symbol.split('_')
 
@@ -233,7 +229,7 @@ const MarketStats = (props) => {
   const sign24hChange = +priceChangePercent > 0 ? `+` : ``
 
   return (
-    <div style={{ display: 'flex', width: '100%' }} >
+    <div style={{ display: 'flex', width: '100%' }}>
       {marketType === 0 ? null : (
         <PanelCard marketType={marketType} theme={theme}>
           <PanelCardValue
@@ -310,8 +306,8 @@ const MarketStats = (props) => {
           >
             {`${sign24hChange}
               ${formatNumberToUSFormat(
-              stripDigitPlaces(+priceChangePercent)
-            )}%`}
+                stripDigitPlaces(+priceChangePercent)
+              )}%`}
           </PanelCardSubValue>
         </span>
       </PanelCard>
@@ -482,7 +478,7 @@ export default compose(
     withOutSpinner: true,
     withTableLoader: true,
     withoutLoading: true,
-  }),
+  })
   // queryRendererHoc({
   //   query: getFundingRate,
   //   name: 'getFundingRateQuery',

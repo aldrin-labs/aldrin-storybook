@@ -90,6 +90,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
 
     const dexMarketSymbols = markets.map((el) => ({
       symbol: el.name,
+      isAwesomeMarket: el.isAwesomeMarket,
     }))
 
     const filtredMarketsByExchange = dexMarketSymbols.filter(
@@ -103,10 +104,11 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
 
     const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
     const altCoinsRegexp = new RegExp(`${stableCoins.join('|')}|BTC`, 'g')
-
+    let altCoinsPairsMap = new Map()
     let stableCoinsPairsMap = new Map()
     let btcCoinsPairsMap = new Map()
-    let altCoinsPairsMap = new Map()
+    let usdcPairsMap = new Map()
+    let usdtPairsMap = new Map()
     const favoritePairsMap = favoritePairs.reduce(
       (acc: Map<string, string>, el: string) => {
         acc.set(el, el)
@@ -131,7 +133,18 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
       ) {
         btcCoinsPairsMap.set(el.symbol, el.price)
       }
-
+      if (
+        /USDC/g.test(el.symbol.split('_')[0]) ||
+        /USDC/g.test(el.symbol.split('_')[1])
+      ) {
+        usdcPairsMap.set(el.symbol, el.price)
+      }
+      if (
+        /USDT/g.test(el.symbol.split('_')[0]) ||
+        /USDT/g.test(el.symbol.split('_')[1])
+      ) {
+        usdtPairsMap.set(el.symbol, el.price)
+      }
       if (
         !altCoinsRegexp.test(el.symbol) &&
         !stableCoinsRegexp.test(el.symbol.split('_')[0]) &&
@@ -140,7 +153,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
         altCoinsPairsMap.set(el.symbol, el.price)
       }
     })
-
+    console.log('usdcPairsMap')
     return (
       <SelectPairListComponent
         data={filtredMarketsByExchange}
@@ -148,6 +161,8 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
         stableCoinsPairsMap={stableCoinsPairsMap}
         btcCoinsPairsMap={btcCoinsPairsMap}
         altCoinsPairsMap={altCoinsPairsMap}
+        usdcPairsMap={usdcPairsMap}
+        usdtPairsMap={usdtPairsMap}
         searchValue={searchValue}
         tab={tab}
         tabSpecificCoin={tabSpecificCoin}
@@ -181,6 +196,8 @@ class SelectPairListComponent extends React.PureComponent<
       btcCoinsPairsMap,
       altCoinsPairsMap,
       favoritePairsMap,
+      usdcPairsMap,
+      usdtPairsMap,
       marketType,
     } = this.props
 
@@ -196,6 +213,8 @@ class SelectPairListComponent extends React.PureComponent<
       btcCoinsPairsMap,
       altCoinsPairsMap,
       favoritePairsMap,
+      usdcPairsMap,
+      usdtPairsMap,
       marketType,
     })
 
@@ -216,6 +235,8 @@ class SelectPairListComponent extends React.PureComponent<
       stableCoinsPairsMap,
       btcCoinsPairsMap,
       altCoinsPairsMap,
+      usdcPairsMap,
+      usdtPairsMap,
       favoritePairsMap,
       marketType,
     } = nextProps
@@ -233,6 +254,8 @@ class SelectPairListComponent extends React.PureComponent<
       stableCoinsPairsMap,
       btcCoinsPairsMap,
       altCoinsPairsMap,
+      usdcPairsMap,
+      usdtPairsMap,
       favoritePairsMap,
       marketType,
     })
@@ -256,7 +279,10 @@ class SelectPairListComponent extends React.PureComponent<
       onSpecificCoinChange,
       marketsByExchangeQuery,
     } = this.props
-    console.log('marketsByExchangeQuery', this.props.marketsByExchangeQuery)
+    console.log(
+      'marketsByExchangeQuery',
+      this.props.marketsByExchangeQuery.getMarketsByExchange
+    )
     return (
       <Grid
         style={{
@@ -279,6 +305,7 @@ class SelectPairListComponent extends React.PureComponent<
         <Grid
           container
           style={{
+            height: '5rem',
             padding: '0.5rem',
             justifyContent: 'space-around',
             flexDirection: 'row',
@@ -287,7 +314,7 @@ class SelectPairListComponent extends React.PureComponent<
             borderBottom: `1px solid ${theme.palette.grey.newborder}`,
           }}
         >
-          {/* <Grid
+          <Grid
             style={{
               display: 'flex',
               padding: '1rem',
@@ -297,7 +324,7 @@ class SelectPairListComponent extends React.PureComponent<
             onClick={() => onTabChange('favorite')}
           >
             <SvgIcon src={favoriteSelected} width="2rem" height="auto" />
-          </Grid> */}
+          </Grid>
           <Grid
             style={{
               padding: '1rem',
@@ -332,14 +359,14 @@ class SelectPairListComponent extends React.PureComponent<
               fontWeight: 'bold',
               borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
             }}
-            // onClick={() => onTabChange('all')}
+            onClick={() => onTabChange('usdt')}
           >
             USDT
           </Grid>
           <Grid
             style={{
               padding: '1rem',
-              background: tab === 'usdc' ? theme.palette.grey.main : '',
+              background: tab === 'usdc' ? theme.palette.grey.input : '',
               display: 'flex',
               alignItems: 'center',
               cursor: 'pointer',
@@ -351,7 +378,7 @@ class SelectPairListComponent extends React.PureComponent<
               fontWeight: 'bold',
               borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
             }}
-            // onClick={() => onTabChange('all')}
+            onClick={() => onTabChange('usdc')}
           >
             USDC
           </Grid>
@@ -359,8 +386,7 @@ class SelectPairListComponent extends React.PureComponent<
             style={{
               padding: '1rem',
               height: '2rem',
-              background:
-                tab === 'leveragedTokens' ? theme.palette.grey.main : '',
+              background: tab === 'leveraged' ? theme.palette.grey.input : '',
               display: 'flex',
               alignItems: 'center',
               cursor: 'pointer',
@@ -371,9 +397,8 @@ class SelectPairListComponent extends React.PureComponent<
               color: theme.palette.grey.text,
               fontWeight: 'bold',
               borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
-              borderRight: `.1rem solid ${theme.palette.grey.newborder}`,
             }}
-            // onClick={() => onTabChange('all')}
+            onClick={() => onTabChange('leveraged')}
           >
             Leveraged tokens
           </Grid>
@@ -430,6 +455,7 @@ class SelectPairListComponent extends React.PureComponent<
               >
                 BTC
               </Grid>
+
               <Grid
                 style={{
                   display: 'flex',
@@ -511,7 +537,7 @@ class SelectPairListComponent extends React.PureComponent<
             </>
           )}
         </Grid>
-        <Grid style={{ overflow: 'hidden', height: 'calc(69% - 2rem)' }}>
+        <Grid style={{ overflow: 'hidden', height: 'calc(100% - 5rem)' }}>
           <AutoSizer>
             {({ width, height }: { width: number; height: number }) => (
               <Table
@@ -576,7 +602,7 @@ class SelectPairListComponent extends React.PureComponent<
                   }}
                   cellRenderer={({ cellData }) => cellData.render}
                 />
-                <Column
+                {/* <Column
                   label={`last price`}
                   dataKey="price"
                   headerStyle={{
@@ -592,9 +618,9 @@ class SelectPairListComponent extends React.PureComponent<
                     fontSize: '1.2rem',
                     fontWeight: 'bold',
                   }}
-                  // cellRenderer={({ cellData }) => cellData.render}
-                />
-                <Column
+                  cellRenderer={({ cellData }) => cellData.render}
+                /> */}
+                {/* <Column
                   label={`24H CHANGE`}
                   dataKey="price24hChange"
                   headerStyle={{
@@ -610,9 +636,9 @@ class SelectPairListComponent extends React.PureComponent<
                     fontSize: '1.2rem',
                     fontWeight: 'bold',
                   }}
-                  // cellRenderer={({ cellData }) => cellData.render}
-                />
-                <Column
+                  cellRenderer={({ cellData }) => cellData.render}
+                /> */}
+                {/* <Column
                   label={`24H VOLUME`}
                   dataKey="volume24hChange"
                   headerStyle={{
@@ -628,8 +654,8 @@ class SelectPairListComponent extends React.PureComponent<
                     fontSize: '1.2rem',
                     fontWeight: 'bold',
                   }}
-                  // cellRenderer={({ cellData }) => cellData.render}
-                />
+                  cellRenderer={({ cellData }) => cellData.render}
+                /> */}
               </Table>
             )}
           </AutoSizer>
@@ -664,7 +690,7 @@ export default compose(
     variables: (props) => ({
       splitter: '_',
       exchange: 'binance',
-      marketType: props.marketType,
+      marketType: 0,
       includeAdditionalMarketData: true,
     }),
     fetchPolicy: 'cache-and-network',
