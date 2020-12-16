@@ -129,7 +129,7 @@ export const SingleChartWithButtons = ({
           style={{ width: '10rem', borderRight: 0 }}
           onClick={() => updateChartExchange('ftx')}
         >
-          Ftx
+          FTX
         </TerminalModeButton>
       </TriggerTitle>
       <SingleChart
