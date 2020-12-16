@@ -45,6 +45,9 @@ export interface IProps {
   theme: Theme
   symbol: string
   marketType: number
+  marketDataByTickersQuery: {
+    marketDataByTickers: {}
+  }
   getMarketStatisticsByPairQuery: {
     getMarketStatisticsByPair: {
       exchange: string
@@ -80,6 +83,27 @@ export interface IProps {
   }
   quantityPrecision: number
   pricePrecision: number
+}
+
+const datesForQuery = {
+  startOfTime: dayjs()
+    .startOf('hour')
+    .subtract(24, 'hour')
+    .valueOf(),
+
+  endOfTime: dayjs()
+    .startOf('hour')
+    .valueOf(),
+
+  prevStartTimestamp: dayjs()
+    .startOf('hour')
+    .subtract(48, 'hour')
+    .valueOf(),
+
+  prevEndTimestamp: dayjs()
+    .startOf('hour')
+    .subtract(24, 'hour')
+    .valueOf(),
 }
 
 const MarketStats = (props) => {
@@ -149,6 +173,7 @@ const MarketStats = (props) => {
   // render() {
   const {
     getMarketStatisticsByPairQuery,
+    marketDataByTickersQuery,
     getFundingRateQuery,
     symbol = ' _ ',
     theme,
@@ -169,29 +194,29 @@ const MarketStats = (props) => {
   // }
   // const { markPrice = 0 } = getMarkPrice || { markPrice: 0 }
 
-  const {
-    getMarketStatisticsByPair: {
-      volume = 0,
-      priceChange = 0,
-      priceChangePercent = 0,
-      highPrice = 0,
-      lowPrice = 0,
-    } = {
-      volume: 0,
-      priceChange: 0,
-      priceChangePercent: 0,
-      highPrice: 0,
-      lowPrice: 0,
-    },
-  } = getMarketStatisticsByPairQuery || {
-    getMarketStatisticsByPair: {
-      volume: 0,
-      priceChange: 0,
-      priceChangePercent: 0,
-      highPrice: 0,
-      lowPrice: 0,
-    },
-  }
+  // const {
+  //   getMarketStatisticsByPair: {
+  //     volume = 0,
+  //     priceChange = 0,
+  //     priceChangePercent = 0,
+  //     highPrice = 0,
+  //     lowPrice = 0,
+  //   } = {
+  //     volume: 0,
+  //     priceChange: 0,
+  //     priceChangePercent: 0,
+  //     highPrice: 0,
+  //     lowPrice: 0,
+  //   },
+  // } = getMarketStatisticsByPairQuery || {
+  //   getMarketStatisticsByPair: {
+  //     volume: 0,
+  //     priceChange: 0,
+  //     priceChangePercent: 0,
+  //     highPrice: 0,
+  //     lowPrice: 0,
+  //   },
+  // }
 
   // const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
   // const isStableCoinInPair = stableCoinsRegexp.test(symbol)
@@ -226,8 +251,11 @@ const MarketStats = (props) => {
   //   }, 3000)
   // }
 
-  const sign24hChange = +priceChangePercent > 0 ? `+` : ``
-
+  // const sign24hChange = +priceChangePercent > 0 ? `+` : ``
+  console.log(
+    'marketDataByTickersQuery',
+    marketDataByTickersQuery.marketDataByTickers
+  )
   return (
     <div style={{ display: 'flex', width: '100%' }}>
       {marketType === 0 ? null : (
@@ -284,30 +312,30 @@ const MarketStats = (props) => {
         <span style={{ display: 'flex', justifyContent: 'space-between' }}>
           <PanelCardValue
             theme={theme}
-            style={{
-              color:
-                +priceChange > 0
-                  ? theme.palette.green.main
-                  : theme.palette.red.main,
-            }}
+            // style={{
+            //   color:
+            //     +priceChange > 0
+            //       ? theme.palette.green.main
+            //       : theme.palette.red.main,
+            // }}
           >
-            {formatNumberToUSFormat(
+            {/* {formatNumberToUSFormat(
               stripDigitPlaces(priceChange, priceDecimalCount)
-            )}
+            )} */}
           </PanelCardValue>
           <PanelCardSubValue
             theme={theme}
-            style={{
-              color:
-                +priceChangePercent > 0
-                  ? theme.palette.green.main
-                  : theme.palette.red.main,
-            }}
+            // style={{
+            //   color:
+            //     +priceChangePercent > 0
+            //       ? theme.palette.green.main
+            //       : theme.palette.red.main,
+            // }}
           >
-            {`${sign24hChange}
+            {/* {`${sign24hChange}
               ${formatNumberToUSFormat(
                 stripDigitPlaces(+priceChangePercent)
-              )}%`}
+              )}%`} */}
           </PanelCardSubValue>
         </span>
       </PanelCard>
@@ -316,7 +344,11 @@ const MarketStats = (props) => {
         <PanelCardTitle theme={theme}>24h high</PanelCardTitle>
         <PanelCardValue theme={theme}>
           {formatNumberToUSFormat(
-            roundAndFormatNumber(highPrice, priceDecimalCount, false)
+            roundAndFormatNumber(
+              marketDataByTickersQuery.marketDataByTickers.maxPrice,
+              priceDecimalCount,
+              false
+            )
           )}
         </PanelCardValue>
       </PanelCard>
@@ -325,7 +357,11 @@ const MarketStats = (props) => {
         <PanelCardTitle theme={theme}>24h low</PanelCardTitle>
         <PanelCardValue theme={theme}>
           {formatNumberToUSFormat(
-            roundAndFormatNumber(lowPrice, priceDecimalCount, false)
+            roundAndFormatNumber(
+              marketDataByTickersQuery.marketDataByTickers.minPrice,
+              priceDecimalCount,
+              false
+            )
           )}
         </PanelCardValue>
       </PanelCard>
@@ -463,15 +499,33 @@ export default compose(
   //   withTableLoader: true,
   //   withoutLoading: true,
   // }),
+  // queryRendererHoc({
+  //   query: getMarketStatisticsByPair,
+  //   name: 'getMarketStatisticsByPairQuery',
+  //   variables: (props) => ({
+  //     input: {
+  //       exchange: props.exchange.symbol,
+  //       symbol: props.symbol,
+  //       marketType: props.marketType,
+  //     },
+  //   }),
+  //   fetchPolicy: 'cache-and-network',
+  //   pollInterval: 30000,
+  //   withOutSpinner: true,
+  //   withTableLoader: true,
+  //   withoutLoading: true,
+  // }),
   queryRendererHoc({
-    query: getMarketStatisticsByPair,
-    name: 'getMarketStatisticsByPairQuery',
+    query: marketDataByTickers,
+    name: 'marketDataByTickersQuery',
     variables: (props) => ({
-      input: {
-        exchange: props.exchange.symbol,
-        symbol: props.symbol,
-        marketType: props.marketType,
-      },
+      symbol: props.symbol,
+      exchange: 'serum',
+      marketType: props.marketType,
+      startTimestamp: `${datesForQuery.startOfTime}`,
+      endTimestamp: `${datesForQuery.endOfTime}`,
+      prevStartTimestamp: `${datesForQuery.prevStartTimestamp}`,
+      prevEndTimestamp: `${datesForQuery.prevEndTimestamp}`,
     }),
     fetchPolicy: 'cache-and-network',
     pollInterval: 30000,
@@ -479,6 +533,7 @@ export default compose(
     withTableLoader: true,
     withoutLoading: true,
   })
+
   // queryRendererHoc({
   //   query: getFundingRate,
   //   name: 'getFundingRateQuery',

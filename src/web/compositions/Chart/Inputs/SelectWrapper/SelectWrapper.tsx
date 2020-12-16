@@ -5,10 +5,14 @@ import { withTheme } from '@material-ui/core/styles'
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
 import { Column, Table } from 'react-virtualized'
 import 'react-virtualized/styles.css'
+import dayjs from 'dayjs'
 
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSettings'
 import { MARKETS_BY_EXCHANE_QUERY } from '@core/graphql/queries/chart/MARKETS_BY_EXCHANE_QUERY'
+
+import { getSerumMarketData } from '@core/graphql/queries/chart/getSerumMarketData'
+
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import stableCoins, {
   fiatPairs,
@@ -42,6 +46,26 @@ import {
 } from './SelectWrapper.utils'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 
+const datesForQuery = {
+  startOfTime: dayjs()
+    .startOf('hour')
+    .subtract(24, 'hour')
+    .valueOf(),
+
+  endOfTime: dayjs()
+    .startOf('hour')
+    .valueOf(),
+
+  prevStartTimestamp: dayjs()
+    .startOf('hour')
+    .subtract(48, 'hour')
+    .valueOf(),
+
+  prevEndTimestamp: dayjs()
+    .startOf('hour')
+    .subtract(24, 'hour')
+    .valueOf(),
+}
 class SelectWrapper extends React.PureComponent<IProps, IState> {
   state: IState = {
     searchValue: '',
@@ -75,6 +99,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
       setCustomMarkets,
       setMarketAddress,
       customMarkets,
+      getSerumMarketDataQuery,
     } = this.props
 
     const {
@@ -102,7 +127,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
       isAwesomeMarket: el.isAwesomeMarket,
     }))
 
-    const filtredMarketsByExchange = dexMarketSymbols.filter(
+    const filtredMarketsByExchange = getSerumMarketDataQuery.getSerumMarketData.filter(
       (el) =>
         el.symbol &&
         // +el.volume24hChange &&
@@ -162,7 +187,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
         altCoinsPairsMap.set(el.symbol, el.price)
       }
     })
-    console.log('usdcPairsMap')
+    console.log('getSerumMarketDataQuery', getSerumMarketDataQuery)
     return (
       <SelectPairListComponent
         data={filtredMarketsByExchange}
@@ -209,6 +234,7 @@ class SelectPairListComponent extends React.PureComponent<
       usdcPairsMap,
       usdtPairsMap,
       marketType,
+      getSerumMarketDataQuery,
     } = this.props
 
     const processedSelectData = combineSelectWrapperData({
@@ -638,7 +664,7 @@ class SelectPairListComponent extends React.PureComponent<
                   }}
                   cellRenderer={({ cellData }) => cellData.render}
                 />
-                {/* <Column
+                <Column
                   label={`last price`}
                   dataKey="price"
                   headerStyle={{
@@ -655,8 +681,8 @@ class SelectPairListComponent extends React.PureComponent<
                     fontWeight: 'bold',
                   }}
                   cellRenderer={({ cellData }) => cellData.render}
-                /> */}
-                {/* <Column
+                />
+                <Column
                   label={`24H CHANGE`}
                   dataKey="price24hChange"
                   headerStyle={{
@@ -673,8 +699,8 @@ class SelectPairListComponent extends React.PureComponent<
                     fontWeight: 'bold',
                   }}
                   cellRenderer={({ cellData }) => cellData.render}
-                /> */}
-                {/* <Column
+                />
+                <Column
                   label={`24H VOLUME`}
                   dataKey="volume24hChange"
                   headerStyle={{
@@ -691,7 +717,7 @@ class SelectPairListComponent extends React.PureComponent<
                     fontWeight: 'bold',
                   }}
                   cellRenderer={({ cellData }) => cellData.render}
-                /> */}
+                />
               </Table>
             )}
           </AutoSizer>
@@ -727,14 +753,29 @@ export default compose(
   withMarketUtilsHOC,
   withAuthStatus,
   withTheme(),
+  // queryRendererHoc({
+  //   query: MARKETS_BY_EXCHANE_QUERY,
+  //   name: 'marketsByExchangeQuery',
+  //   variables: (props) => ({
+  //     splitter: '_',
+  //     exchange: 'binance',
+  //     marketType: 0,
+  //     includeAdditionalMarketData: true,
+  //   }),
+  //   fetchPolicy: 'cache-and-network',
+  //   withOutSpinner: true,
+  //   withTableLoader: false,
+  // }),
   queryRendererHoc({
-    query: MARKETS_BY_EXCHANE_QUERY,
-    name: 'marketsByExchangeQuery',
+    query: getSerumMarketData,
+    name: 'getSerumMarketDataQuery',
     variables: (props) => ({
-      splitter: '_',
-      exchange: 'binance',
-      marketType: 0,
-      includeAdditionalMarketData: true,
+      exchange: 'serum',
+      marketType: props.marketType,
+      startTimestamp: `${datesForQuery.startOfTime}`,
+      endTimestamp: `${datesForQuery.endOfTime}`,
+      prevStartTimestamp: `${datesForQuery.prevStartTimestamp}`,
+      prevEndTimestamp: `${datesForQuery.prevEndTimestamp}`,
     }),
     fetchPolicy: 'cache-and-network',
     withOutSpinner: true,

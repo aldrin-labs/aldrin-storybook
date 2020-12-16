@@ -162,20 +162,23 @@ export const combineSelectWrapperData = ({
     }
     if (tab === 'usdc') {
       processedData = processedData.filter(
-        (el) => !el.isAwesomeMarket && usdcPairsMap.has(el.symbol)
+        (el) =>
+          !el.symbol.includes('BULL') &&
+          !el.symbol.includes('BEAR') &&
+          usdcPairsMap.has(el.symbol)
       )
     }
     if (tab === 'usdt') {
       processedData = processedData.filter(
-        (el) => !el.isAwesomeMarket && usdtPairsMap.has(el.symbol)
+        (el) =>
+          !el.symbol.includes('BULL') &&
+          !el.symbol.includes('BEAR') &&
+          usdtPairsMap.has(el.symbol)
       )
     }
     if (tab === 'leveraged') {
-      console.log('proc', processedData)
       processedData = processedData.filter(
-        (el) =>
-          (el.symbol.includes('BULL') || el.symbol.includes('BEAR')) &&
-          el.isAwesomeMarket
+        (el) => el.symbol.includes('BULL') || el.symbol.includes('BEAR')
       )
     }
   }
@@ -221,7 +224,7 @@ export const combineSelectWrapperData = ({
 
     const priceColor = !!previousData ? '' : ''
 
-    const [base, quote] = symbol.split('_')
+    const [base, quote] = symbol.split('/')
     console.log('filtredData', el)
     return {
       id: `${symbol}`,
