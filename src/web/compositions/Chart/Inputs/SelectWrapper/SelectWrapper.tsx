@@ -727,19 +727,19 @@ export default compose(
   withMarketUtilsHOC,
   withAuthStatus,
   withTheme(),
-  queryRendererHoc({
-    query: MARKETS_BY_EXCHANE_QUERY,
-    name: 'marketsByExchangeQuery',
-    variables: (props) => ({
-      splitter: '_',
-      exchange: 'binance',
-      marketType: 0,
-      includeAdditionalMarketData: true,
-    }),
-    fetchPolicy: 'cache-and-network',
-    withOutSpinner: true,
-    withTableLoader: false,
-  }),
+  // queryRendererHoc({
+  //   query: MARKETS_BY_EXCHANE_QUERY,
+  //   name: 'marketsByExchangeQuery',
+  //   variables: (props) => ({
+  //     splitter: '_',
+  //     exchange: 'binance',
+  //     marketType: 0,
+  //     includeAdditionalMarketData: true,
+  //   }),
+  //   fetchPolicy: 'cache-and-network',
+  //   withOutSpinner: true,
+  //   withTableLoader: false,
+  // }),
   queryRendererHoc({
     query: getSelectorSettings,
     skip: (props: any) => !props.authenticated,
