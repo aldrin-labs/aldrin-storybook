@@ -225,7 +225,8 @@ function ChartPageComponent(props: any) {
 
   if (isPairDataLoading) {
     minPriceDigits = 0.00000001
-    quantityPrecision = 3
+    quantityPrecision = (market?.minOrderSize && getDecimalCount(market.minOrderSize)) || 3
+    pricePrecision = (market?.tickSize && getDecimalCount(market.tickSize)) || 8
     minSpotNotional = 10
     minFuturesStep = 0.001
     initialLeverage = 125

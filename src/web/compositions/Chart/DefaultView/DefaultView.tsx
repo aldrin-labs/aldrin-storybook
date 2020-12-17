@@ -401,6 +401,7 @@ export const DefaultViewComponent = (
                 pricePrecision={pricePrecision}
                 minSpotNotional={minSpotNotional}
                 minFuturesStep={minFuturesStep}
+                sizeDigits={sizeDigits}
                 priceFromOrderbook={priceFromOrderbook}
                 marketType={marketType}
                 maxLeverage={maxLeverage}
