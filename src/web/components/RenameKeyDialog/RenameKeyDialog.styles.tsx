@@ -7,7 +7,7 @@ export const OpenRenameButton = styled(Button)`
   border-top-right-radius: 1rem;
   border-bottom: .1rem solid ${props => props.theme.palette.text.white};
   padding: 1rem 8rem;
-  margin: 0 1rem;
   text-transform: capitalize;
   display: block;
+  width: 100%;
 `

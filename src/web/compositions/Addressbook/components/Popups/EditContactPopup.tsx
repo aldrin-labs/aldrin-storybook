@@ -47,7 +47,6 @@ const EditContactPopup = ({
   data
 }) => {
   
-
   const [name, updateName] = useState(decrypt(data.name, localPassword))
   const [email, updateEmail] = useState(decrypt(data.email, localPassword))
   const [address, updateAddress] = useState(decrypt(data.publicKey, localPassword))
@@ -143,7 +142,7 @@ const EditContactPopup = ({
           <BtnCustom
             disabled={showLoader}
             needMinWidth={false}
-            btnWidth="15rem"
+            btnWidth="20rem"
             height="4.5rem"
             fontSize="1.4rem"
             padding="1rem 2rem"
