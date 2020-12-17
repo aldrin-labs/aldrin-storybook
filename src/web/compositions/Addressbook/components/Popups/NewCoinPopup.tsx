@@ -40,18 +40,18 @@ export const PasteButton = styled.button`
   padding: 1.5rem;
 `
 
-export const PurpleButton = ({ onClick, showLoader, text, width, height, margin }) => (
+export const PurpleButton = ({ onClick, showLoader, text, width, height, margin, disabled, background }) => (
   <BtnCustom
-    disabled={showLoader}
+    disabled={showLoader || disabled}
     needMinWidth={false}
     btnWidth={width || "15rem"}
     height={height || "4.5rem"}
     fontSize="1.4rem"
     padding="1rem 2rem"
     borderRadius=".8rem"
-    borderColor={'#7380EB'}
+    borderColor={background || '#7380EB'}
     btnColor={'#fff'}
-    backgroundColor={'#7380EB'}
+    backgroundColor={background ||'#7380EB'}
     textTransform={'none'}
     margin={margin || '1rem 0 0 0'}
     transition={'all .4s ease-out'}

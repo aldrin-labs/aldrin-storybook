@@ -13,6 +13,7 @@ import { Loading } from '@sb/components/index'
 
 
 // const { Text } = Typography;
+import Clear from '@material-ui/icons/Clear'
 import {
   TypographyTitle,
   StyledDialogContent,
@@ -26,6 +27,7 @@ import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { PurpleButton } from '@sb/compositions/Addressbook/components/Popups/NewCoinPopup'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index'
+import ListNewMarketPopup from './ListNewMarketPopup'
 
 
 const StyledPaper = styled(Paper)`
@@ -50,6 +52,7 @@ const Text = styled.span`
 `
 
 const CustomMarketDialog = ({ open, onAddCustomMarket, onClose, theme, history }) => {
+  const [showCreateMarketPopup, changeShowCreateMarketPopup] = useState(false)
   const connection = useConnection()
 
   const [marketId, setMarketId] = useState('')
@@ -173,7 +176,7 @@ const CustomMarketDialog = ({ open, onAddCustomMarket, onClose, theme, history }
         disableTypography
         theme={theme}
         style={{
-          justifyContent: 'center',
+          justifyContent: 'space-between',
           background: theme.palette.grey.input,
           borderBottom: `.1rem solid ${theme.palette.text.white}`,
         }}
@@ -187,12 +190,28 @@ const CustomMarketDialog = ({ open, onAddCustomMarket, onClose, theme, history }
         >
           Add custom market
         </Text>
+        <ClearButton>
+            <Clear
+              style={{ fontSize: '2rem' }}
+              color="inherit"
+              onClick={onClose}
+            />
+          </ClearButton>
       </StyledDialogTitle>
       <StyledDialogContent
         style={{ background: theme.palette.grey.input }}
         theme={theme}
         id="share-dialog-content"
       >
+        <RowContainer margin={'2rem 0 0 0'}>
+          <PurpleButton 
+            text={'List New Market'}
+            width={'20rem'}
+            height={'3.5rem'}
+            background={theme.palette.green.main}
+            onClick={() => changeShowCreateMarketPopup(true)}
+          />
+        </RowContainer>
         {wellFormedMarketId ? (
           <>
             <RowContainer margin={'2rem 0 0 0'}>
@@ -275,23 +294,21 @@ const CustomMarketDialog = ({ open, onAddCustomMarket, onClose, theme, history }
             )}
           </Row>
         </RowContainer>
-        <RowContainer justify={'flex-end'}>
+        <RowContainer justify={'center'}>
           <PurpleButton
-            margin={'0'}
-            text={'Cancel'}
-            width={'12rem'}
-            height={'4rem'}
-            onClick={onClose}
-          />
-          <PurpleButton
-            margin={'0 0 0 2rem'}
-            text={'Add'}
-            width={'12rem'}
+            margin={'0 0 0 0rem'}
+            text={'Add Market'}
+            width={'20rem'}
             height={'4rem'}
             onClick={onSubmit}
           />
         </RowContainer>
       </StyledDialogContent>
+      <ListNewMarketPopup 
+        open={showCreateMarketPopup}
+        onClose={() => changeShowCreateMarketPopup(false)} 
+        theme={theme} 
+      />
     </DialogWrapper>
   )
 }

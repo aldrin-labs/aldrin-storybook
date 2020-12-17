@@ -63,7 +63,7 @@ const Text = styled.span`
 
 export const Input = styled.input`
   width: 100%;
-  height: 5rem;
+  height: ${props => props.height ||'5rem'};
   margin-bottom: 1rem;
   background: ${(props) => (props.disabled ? 'rgb(46, 46, 46)' : '#303743')};
   border: 0.1rem solid #424b68;
@@ -73,6 +73,7 @@ export const Input = styled.input`
 
   &::placeholder {
     color: #abbad1;
+    font-weight: normal;
   }
 `
 
