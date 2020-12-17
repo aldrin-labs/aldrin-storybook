@@ -81,6 +81,7 @@ export const addressBookColumnNames = [
   { label: 'Date added', id: 'dateAdded' },
   { label: 'Contact', id: 'contact' },
   { label: 'Public Address', id: 'publicAddress' },
+  { label: ' ', id: 'updatePopupDots'}
 ]
 
 export const activeTradesColumnNames = [
