@@ -258,7 +258,7 @@ const EditContactCoinPopup = ({
           <BtnCustom
             disabled={showLoader}
             needMinWidth={false}
-            btnWidth="15rem"
+            btnWidth="20rem"
             height="4.5rem"
             fontSize="1.4rem"
             padding="1rem 2rem"
