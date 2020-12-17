@@ -345,7 +345,7 @@ class SelectPairListComponent extends React.PureComponent<
           // transform: 'translateX(-100%)',
           zIndex: 900,
           background: theme.palette.white.background,
-          minWidth: '35%',
+          minWidth: '43%',
           height: '35rem',
           marginTop: '3rem',
           borderRadius: '.4rem',
@@ -366,7 +366,7 @@ class SelectPairListComponent extends React.PureComponent<
             borderBottom: `1px solid ${theme.palette.grey.newborder}`,
           }}
         >
-          <Grid
+          {/* <Grid
             style={{
               display: 'flex',
               padding: '1rem',
@@ -376,7 +376,7 @@ class SelectPairListComponent extends React.PureComponent<
             onClick={() => onTabChange('favorite')}
           >
             <SvgIcon src={favoriteSelected} width="2rem" height="auto" />
-          </Grid>
+          </Grid> */}
           <Grid
             style={{
               padding: '1rem',
@@ -652,6 +652,8 @@ class SelectPairListComponent extends React.PureComponent<
                     textAlign: 'left',
                     paddingRight: '6px',
                     paddingLeft: '1rem',
+                    fontSize: '1rem',
+
                     color: theme.palette.grey.text,
                   }}
                   width={width}
@@ -670,6 +672,8 @@ class SelectPairListComponent extends React.PureComponent<
                   headerStyle={{
                     paddingRight: 'calc(10px)',
                     textAlign: 'left',
+                    fontSize: '1rem',
+
                     color: theme.palette.grey.text,
                   }}
                   width={width}
@@ -687,14 +691,16 @@ class SelectPairListComponent extends React.PureComponent<
                   dataKey="price24hChange"
                   headerStyle={{
                     paddingRight: 'calc(10px)',
-                    textAlign: 'right',
+                    textAlign: 'left',
+                    fontSize: '1rem',
+
                     color: theme.palette.grey.text,
                   }}
                   width={width}
                   style={{
                     color: theme.palette.grey.text,
 
-                    textAlign: 'right',
+                    textAlign: 'left',
                     fontSize: '1.2rem',
                     fontWeight: 'bold',
                   }}
@@ -705,14 +711,56 @@ class SelectPairListComponent extends React.PureComponent<
                   dataKey="volume24hChange"
                   headerStyle={{
                     paddingRight: 'calc(10px)',
-                    textAlign: 'right',
+                    textAlign: 'left',
+                    fontSize: '1rem',
+
                     color: theme.palette.grey.text,
                   }}
                   width={width}
                   style={{
                     color: theme.palette.grey.text,
 
-                    textAlign: 'right',
+                    textAlign: 'left',
+                    fontSize: '1.2rem',
+                    fontWeight: 'bold',
+                  }}
+                  cellRenderer={({ cellData }) => cellData.render}
+                />
+                <Column
+                  label={`trades change 24h`}
+                  dataKey="tradesChange24h"
+                  headerStyle={{
+                    paddingRight: 'calc(10px)',
+                    textAlign: 'left',
+                    fontSize: '1rem',
+
+                    color: theme.palette.grey.text,
+                  }}
+                  width={width}
+                  style={{
+                    color: theme.palette.grey.text,
+
+                    textAlign: 'left',
+                    fontSize: '1.2rem',
+                    fontWeight: 'bold',
+                  }}
+                  cellRenderer={({ cellData }) => cellData.render}
+                />
+                <Column
+                  label={`trades 24h`}
+                  dataKey="trades24h"
+                  headerStyle={{
+                    paddingRight: 'calc(10px)',
+                    textAlign: 'left',
+                    fontSize: '1rem',
+
+                    color: theme.palette.grey.text,
+                  }}
+                  width={width}
+                  style={{
+                    color: theme.palette.grey.text,
+
+                    textAlign: 'left',
                     fontSize: '1.2rem',
                     fontWeight: 'bold',
                   }}
