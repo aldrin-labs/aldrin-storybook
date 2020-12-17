@@ -222,7 +222,7 @@ export const combineSelectWrapperData = ({
     const priceColor = !!previousData ? '' : ''
 
     const [base, quote] = symbol.split('_')
-    console.log('filtredData', el)
+    
     return {
       id: `${symbol}`,
       favorite: {

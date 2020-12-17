@@ -431,7 +431,7 @@ class SelectPairListComponent extends React.PureComponent<
 
           <Grid container style={{ justifyContent: 'flex-end', width: '45%' }}>
             <Input
-              placeholder="  Search"
+              placeholder="Search"
               disableUnderline={true}
               style={{
                 width: '100%',
@@ -440,6 +440,7 @@ class SelectPairListComponent extends React.PureComponent<
                 borderRadius: '0.3rem',
                 color: theme.palette.grey.placeholder,
                 border: `.1rem solid ${theme.palette.grey.newborder}`,
+                paddingLeft: '1rem'
               }}
               value={searchValue}
               onChange={onChangeSearch}
