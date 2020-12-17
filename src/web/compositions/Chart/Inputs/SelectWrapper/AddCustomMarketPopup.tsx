@@ -24,7 +24,7 @@ import { addContactCoin } from '@core/graphql/mutations/chart/addContactCoin'
 import { Input } from '@sb/compositions/Addressbook/index'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { PurpleButton } from '@sb/compositions/Addressbook/NewCoinPopup'
+import { PurpleButton } from '@sb/compositions/Addressbook/components/Popups/NewCoinPopup'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index'
 
 
