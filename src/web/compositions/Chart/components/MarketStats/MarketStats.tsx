@@ -194,29 +194,38 @@ const MarketStats = (props) => {
   // }
   // const { markPrice = 0 } = getMarkPrice || { markPrice: 0 }
 
-  // const {
-  //   getMarketStatisticsByPair: {
-  //     volume = 0,
-  //     priceChange = 0,
-  //     priceChangePercent = 0,
-  //     highPrice = 0,
-  //     lowPrice = 0,
-  //   } = {
-  //     volume: 0,
-  //     priceChange: 0,
-  //     priceChangePercent: 0,
-  //     highPrice: 0,
-  //     lowPrice: 0,
-  //   },
-  // } = getMarketStatisticsByPairQuery || {
-  //   getMarketStatisticsByPair: {
-  //     volume: 0,
-  //     priceChange: 0,
-  //     priceChangePercent: 0,
-  //     highPrice: 0,
-  //     lowPrice: 0,
-  //   },
-  // }
+  const {
+    marketDataByTickers: {
+      // symbol = '',
+      tradesCount = 0,
+      tradesDiff = 0,
+      volume = 0,
+      volumeChange = 0,
+      minPrice = 0,
+      maxPrice = 0,
+      // closePrice = 0
+    } = {
+      // symbol: '',
+      tradesCount: 0,
+      tradesDiff: 0,
+      volume: 0,
+      volumeChange: 0,
+      minPrice: 0,
+      maxPrice: 0,
+      // closePrice: 0
+    },
+  } = marketDataByTickersQuery || {
+    marketDataByTickers: {
+      // symbol: '',
+      tradesCount: 0,
+      tradesDiff: 0,
+      volume: 0,
+      volumeChange: 0,
+      minPrice: 0,
+      maxPrice: 0,
+      // closePrice: 0
+    },
+  }
 
   // const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
   // const isStableCoinInPair = stableCoinsRegexp.test(symbol)
@@ -252,10 +261,7 @@ const MarketStats = (props) => {
   // }
 
   // const sign24hChange = +priceChangePercent > 0 ? `+` : ``
-  console.log(
-    'marketDataByTickersQuery',
-    marketDataByTickersQuery.marketDataByTickers
-  )
+
   return (
     <div style={{ display: 'flex', width: '100%' }}>
       {marketType === 0 ? null : (
@@ -345,7 +351,7 @@ const MarketStats = (props) => {
         <PanelCardValue theme={theme}>
           {formatNumberToUSFormat(
             roundAndFormatNumber(
-              marketDataByTickersQuery.marketDataByTickers.maxPrice,
+              maxPrice,
               priceDecimalCount,
               false
             )
@@ -358,7 +364,7 @@ const MarketStats = (props) => {
         <PanelCardValue theme={theme}>
           {formatNumberToUSFormat(
             roundAndFormatNumber(
-              marketDataByTickersQuery.marketDataByTickers.minPrice,
+              minPrice,
               priceDecimalCount,
               false
             )
