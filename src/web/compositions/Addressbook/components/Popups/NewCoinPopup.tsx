@@ -114,7 +114,7 @@ const NewCoinPopup = ({
             fontFamily: 'Avenir Next Demi',
           }}
         >
-          Add new contact
+          Add new coin
         </span>
       </StyledDialogTitle>
       <StyledDialogContent

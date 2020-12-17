@@ -23,6 +23,7 @@ const RenameKeyDialogComponent = ({
   renameMutation,
   closeMainPopup,
   isPortfolio = false,
+  theme
 }) => {
   const { name, _id: id } = data
   const target = isPortfolio ? 'portfolio' : 'account'
@@ -71,7 +72,7 @@ const RenameKeyDialogComponent = ({
 
   return (
     <>
-      <OpenRenameButton onClick={openDialog}>Rename</OpenRenameButton>
+      <OpenRenameButton theme={theme} onClick={openDialog}>Rename</OpenRenameButton>
       <Dialog
         PaperComponent={StyledPaper}
         style={{ width: '75rem', margin: 'auto' }}

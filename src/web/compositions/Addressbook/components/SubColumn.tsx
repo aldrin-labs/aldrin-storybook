@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { compose } from 'recompose'
 import { withTheme } from '@material-ui/styles'
 import LazyLoad from 'react-lazyload'
+import { Icon } from '@sb/styles/cssUtils'
 
 import copy from 'clipboard-copy'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -31,6 +32,7 @@ const SubColumn = ({
   setContactPublicKey,
   setShowNewCoinPopup,
   localPassword,
+  changeUpdatePopupData,
 }) => {
   return (
     <Card
@@ -60,19 +62,19 @@ const SubColumn = ({
             Coin
           </HeaderCell>
           <HeaderCell
-          theme={theme}
+            theme={theme}
             style={{ textAlign: 'left' }}
             borderBottom={theme.palette.text.white}
           >
             Address
           </HeaderCell>
           <HeaderCell
-          theme={theme}
+            theme={theme}
             style={{ textAlign: 'right' }}
             borderBottom={theme.palette.text.white}
           >
             <AddBtn
-              style={{ fontFamily: 'Avenir Next Demi' }}
+              style={{ fontFamily: 'Avenir Next Demi', marginRight: '2rem' }}
               onClick={() => {
                 setContactPublicKey(contactPublicKey)
                 setShowNewCoinPopup(true)
@@ -84,7 +86,7 @@ const SubColumn = ({
         </TableRow>
         {coins.map((el) => {
           return (
-            <TableRow>
+            <TableRow key={`${el.address}${el.symbol}`}>
               <Cell
                 theme={theme}
                 style={{ paddingLeft: '2rem', fontSize: '2rem' }}
@@ -128,12 +130,6 @@ const SubColumn = ({
                 >
                   copy
                 </AddBtn>
-              </Cell>
-              <Cell
-                theme={theme}
-                style={{ textAlign: 'right' }}
-                borderBottom={theme.palette.text.white}
-              >
                 <AddBtn
                   background={'#7380EB'}
                   width={'auto'}
@@ -156,6 +152,44 @@ const SubColumn = ({
                     send
                   </a>
                 </AddBtn>
+              </Cell>
+              <Cell
+                theme={theme}
+                style={{ textAlign: 'right' }}
+                borderBottom={theme.palette.text.white}
+              >
+                <span
+                  style={{ paddingRight: '3rem', cursor: 'pointer' }}
+                  onClick={(e) => {
+                    e.stopPropagation()
+
+                    const buttonElem = document.getElementById(
+                      `${el.address}${el.symbol}popup`
+                    )
+                    const position = buttonElem.getBoundingClientRect()
+
+                    changeUpdatePopupData({
+                      isPopupOpen: true,
+                      isUpdateContact: false,
+                      top: Math.floor(position.top),
+                      left: Math.floor(position.left),
+                      data: el,
+                    })
+
+                    setContactPublicKey(contactPublicKey)
+                    
+                    return
+                  }}
+                >
+                  <Icon
+                    id={`${el.address}${el.symbol}popup`}
+                    className="fa fa-ellipsis-h"
+                    style={{
+                      fontSize: '1.5rem',
+                      color: theme.palette.text.dark,
+                    }}
+                  />
+                </span>
               </Cell>
             </TableRow>
           )

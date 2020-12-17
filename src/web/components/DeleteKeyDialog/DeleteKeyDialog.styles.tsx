@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { OpenRenameButton } from '@sb/components/RenameKeyDialog/RenameKeyDialog.styles'
 
 export const OpenDeleteButton = styled(OpenRenameButton)`
-  color: #b93b2b;
+  color: ${props => props.theme.palette.red.main};
   padding: 1rem 8.5rem;
   border-bottom: 0;
   border-radius: 0;
