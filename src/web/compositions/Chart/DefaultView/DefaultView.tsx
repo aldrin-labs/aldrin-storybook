@@ -186,6 +186,7 @@ export const DefaultViewComponent = (
                 quote={quote}
                 marketType={marketType}
                 publicKey={publicKey}
+                themeMode={themeMode}
               />
               {/* <CustomCard
                 theme={theme}

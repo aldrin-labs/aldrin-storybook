@@ -52,6 +52,7 @@ export const SingleChart = ({
 
 export const SingleChartWithButtons = ({
   theme,
+  themeMode,
   currencyPair,
   base,
   quote,
@@ -63,9 +64,7 @@ export const SingleChartWithButtons = ({
     (el) => el.name.split('/').join('_') === currencyPair
   )
 
-  const [chartExchange, updateChartExchange] = useState(
-    'index'
-  )
+  const [chartExchange, updateChartExchange] = useState('index')
 
   return (
     <CustomCard
@@ -114,7 +113,7 @@ export const SingleChartWithButtons = ({
         <TerminalModeButton
           theme={theme}
           active={chartExchange === 'serum'}
-          style={{ width: '10rem'}}
+          style={{ width: '10rem' }}
           onClick={() => updateChartExchange('serum')}
         >
           Serum
@@ -122,11 +121,15 @@ export const SingleChartWithButtons = ({
       </TriggerTitle>
       <SingleChart
         name=""
-        themeMode={}
+        themeMode={themeMode}
         currencyPair={currencyPair}
-        additionalUrl={`/?symbol=${base}/${quote}_${String(
-          marketType
-        )}_${chartExchange === 'index' ? isCustomMarkets ? 'ftx' : 'binance' : 'serum'}&user_id=${publicKey}&api_version=${2.1}`}
+        additionalUrl={`/?symbol=${base}/${quote}_${String(marketType)}_${
+          chartExchange === 'index'
+            ? isCustomMarkets
+              ? 'ftx'
+              : 'binance'
+            : 'serum'
+        }&user_id=${publicKey}&api_version=${2.1}`}
       />
     </CustomCard>
   )
