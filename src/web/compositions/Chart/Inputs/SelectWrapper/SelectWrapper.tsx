@@ -329,11 +329,14 @@ class SelectPairListComponent extends React.PureComponent<
           message: `A market with the given ID already exists`,
           type: 'error',
         })
-        return
+
+        return false
       }
       const newCustomMarkets = [...customMarkets, customMarket]
       setCustomMarkets(newCustomMarkets)
       setMarketAddress(customMarket.address)
+      
+      return true
     }
 
     return (
