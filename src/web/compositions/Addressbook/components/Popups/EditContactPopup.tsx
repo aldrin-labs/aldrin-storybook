@@ -11,14 +11,14 @@ import {
   StyledDialogTitle,
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
-import { Input } from './index'
+import { Input } from '../../index'
 import { Loading } from '@sb/components/index'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { addWalletContact } from '@core/graphql/mutations/chart/addWalletContact'
+import { editContact } from '@core/graphql/mutations/chart/editContact'
 
 import { notify } from '@sb/dexUtils/notifications'
-import { encrypt, createHash } from './index'
+import { encrypt, decrypt, createHash } from '../../index'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -36,18 +36,20 @@ export const PasteButton = styled.button`
   padding: 1.5rem;
 `
 
-const NewContactPopup = ({
+const EditContactPopup = ({
   theme,
   open,
   handleClose,
-  addWalletContactMutation,
+  editContactMutation,
   publicKey,
   localPassword,
   getUserAddressbookQueryRefetch,
+  data
 }) => {
-  const [name, updateName] = useState('')
-  const [email, updateEmail] = useState('')
-  const [address, updateAddress] = useState('')
+  
+  const [name, updateName] = useState(decrypt(data.name, localPassword))
+  const [email, updateEmail] = useState(decrypt(data.email, localPassword))
+  const [address, updateAddress] = useState(decrypt(data.publicKey, localPassword))
   const [showLoader, updateShowLoader] = useState(false)
 
   return (
@@ -80,7 +82,7 @@ const NewContactPopup = ({
             fontFamily: 'Avenir Next Demi',
           }}
         >
-          Add new contact
+          Edit contact
         </span>
       </StyledDialogTitle>
       <StyledDialogContent
@@ -140,7 +142,7 @@ const NewContactPopup = ({
           <BtnCustom
             disabled={showLoader}
             needMinWidth={false}
-            btnWidth="15rem"
+            btnWidth="20rem"
             height="4.5rem"
             fontSize="1.4rem"
             padding="1rem 2rem"
@@ -173,13 +175,13 @@ const NewContactPopup = ({
               await updateShowLoader(true)
 
               // encrypt each field
-              const result = await addWalletContactMutation({
+              const result = await editContactMutation({
                 variables: {
                   publicKey: createHash(publicKey, localPassword),
                   name: encrypt(name, localPassword),
                   email: email !== '' ? encrypt(email, localPassword) : '',
                   contactPublicKey: encrypt(address, localPassword),
-                  symbol: encrypt('SOL', localPassword),
+                  prevContactPublicKey: data.publicKey,
                 },
               })
 
@@ -187,10 +189,10 @@ const NewContactPopup = ({
 
               notify({
                 type:
-                  result.data.addWalletContact.status === 'ERR'
+                  result.data.editContact.status === 'ERR'
                     ? 'error'
                     : 'success',
-                message: result.data.addWalletContact.message,
+                message: result.data.editContact.message,
               })
 
               await updateShowLoader(false)
@@ -208,7 +210,7 @@ const NewContactPopup = ({
                 style={{ height: '16px' }}
               />
             ) : (
-              'Add contact'
+              'Update contact'
             )}
           </BtnCustom>
         </div>
@@ -219,5 +221,5 @@ const NewContactPopup = ({
 
 // add mutation with graphql
 export default compose(
-  graphql(addWalletContact, { name: 'addWalletContactMutation' })
-)(NewContactPopup)
+  graphql(editContact, { name: 'editContactMutation' })
+)(EditContactPopup)

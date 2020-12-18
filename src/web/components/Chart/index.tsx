@@ -64,12 +64,8 @@ export const SingleChartWithButtons = ({
   )
 
   const [chartExchange, updateChartExchange] = useState(
-    isCustomMarkets ? 'index' : 'serum'
+    'index'
   )
-
-  useEffect(() => {
-    updateChartExchange(isCustomMarkets ? 'index' : 'serum')
-  }, [isCustomMarkets])
 
   return (
     <CustomCard

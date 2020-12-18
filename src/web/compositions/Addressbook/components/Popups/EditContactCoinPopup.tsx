@@ -17,9 +17,9 @@ import {
   ClearButton,
   StyledDialogTitle,
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-import { addContactCoin } from '@core/graphql/mutations/chart/addContactCoin'
+import { editContactCoin } from '@core/graphql/mutations/chart/editContactCoin'
 
-import { createHash, Input, encrypt } from '@sb/compositions/Addressbook/index'
+import { createHash, Input, encrypt, decrypt } from '@sb/compositions/Addressbook/index'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components/index'
@@ -70,21 +70,22 @@ export const PurpleButton = ({ onClick, showLoader, text, width, height, margin 
   </BtnCustom>
 )
 
-const NewCoinPopup = ({
+const EditContactCoinPopup = ({
   theme,
   open,
+  data,
   handleClose,
   contactPublicKey,
   publicKey,
   localPassword,
-  addContactCoinMutation,
+  editContactCoinMutation,
   getUserAddressbookQueryRefetch,
 }) => {
-  const [address, updateAddress] = useState('')
+  const [address, updateAddress] = useState(decrypt(data.address, localPassword))
   const [showLoader, updateShowLoader] = useState(false)
   const [selectedCoin, setSelectedCoin] = useState({
-    label: 'BTC',
-    value: 'BTC',
+    label: decrypt(data.symbol, localPassword),
+    value: decrypt(data.symbol, localPassword),
   })
 
   return (
@@ -114,7 +115,7 @@ const NewCoinPopup = ({
             fontFamily: 'Avenir Next Demi',
           }}
         >
-          Add new contact
+          Edit coin
         </span>
       </StyledDialogTitle>
       <StyledDialogContent
@@ -257,7 +258,7 @@ const NewCoinPopup = ({
           <BtnCustom
             disabled={showLoader}
             needMinWidth={false}
-            btnWidth="15rem"
+            btnWidth="20rem"
             height="4.5rem"
             fontSize="1.4rem"
             padding="1rem 2rem"
@@ -290,12 +291,13 @@ const NewCoinPopup = ({
               await updateShowLoader(true)
 
               // encrypt each field
-              const result = await addContactCoinMutation({
+              const result = await editContactCoinMutation({
                 variables: {
                   publicKey: createHash(publicKey, localPassword),
                   symbol: encrypt(selectedCoin.label, localPassword),
                   address: encrypt(address, localPassword),
                   contactPublicKey,
+                  prevCoinAddress: data.address,
                 },
               })
 
@@ -303,10 +305,10 @@ const NewCoinPopup = ({
 
               notify({
                 type:
-                  result.data.addContactCoin.status === 'ERR'
+                  result.data.editContactCoin.status === 'ERR'
                     ? 'error'
                     : 'success',
-                message: result.data.addContactCoin.message,
+                message: result.data.editContactCoin.message,
               })
 
               await updateShowLoader(false)
@@ -323,7 +325,7 @@ const NewCoinPopup = ({
                 style={{ height: '16px' }}
               />
             ) : (
-              'Add coin'
+              'Update coin'
             )}
           </BtnCustom>
         </div>
@@ -333,5 +335,5 @@ const NewCoinPopup = ({
 }
 
 export default compose(
-  graphql(addContactCoin, { name: 'addContactCoinMutation' })
-)(NewCoinPopup)
+  graphql(editContactCoin, { name: 'editContactCoinMutation' })
+)(EditContactCoinPopup)

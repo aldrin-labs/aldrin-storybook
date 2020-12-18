@@ -319,7 +319,7 @@ export async function placeOrder({
   addSerumTransactionMutation
 }) {
 
-  console.log('place ORDER')
+  console.log('place ORDER', market?.minOrderSize)
   
   let formattedMinOrderSize =
     market?.minOrderSize?.toFixed(getDecimalCount(market.minOrderSize)) ||

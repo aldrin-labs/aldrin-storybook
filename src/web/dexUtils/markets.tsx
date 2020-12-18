@@ -41,14 +41,20 @@ export function useMarketsList() {
   return UPDATED_USE_MARKETS
 }
 
-export function useAllMarkets(customMarkets) {
-  const connection = useConnection()
+export function useCustomMarkets() {
+  const [customMarkets, setCustomMarkets] = useLocalStorageState('customMarkets', []);
+  return { customMarkets, setCustomMarkets };
+}
+
+export function useAllMarkets() {
+  const connection = useConnection();
+  const { customMarkets } = useCustomMarkets();
 
   const getAllMarkets = async () => {
     const markets: Array<{
-      market: Market
-      marketName: string
-      programId: PublicKey
+      market: Market;
+      marketName: string;
+      programId: PublicKey;
     } | null> = await Promise.all(
       getMarketInfos(customMarkets).map(async (marketInfo) => {
         try {
@@ -56,33 +62,33 @@ export function useAllMarkets(customMarkets) {
             connection,
             marketInfo.address,
             {},
-            marketInfo.programId
-          )
+            marketInfo.programId,
+          );
           return {
             market,
             marketName: marketInfo.name,
             programId: marketInfo.programId,
-          }
+          };
         } catch (e) {
           notify({
             message: 'Error loading all market',
             description: e.message,
             type: 'error',
-          })
-          return null
+          });
+          return null;
         }
-      })
-    )
+      }),
+    );
     return markets.filter(
       (m): m is { market: Market; marketName: string; programId: PublicKey } =>
-        !!m
-    )
-  }
+        !!m,
+    );
+  };
   return useAsyncData(
     getAllMarkets,
     tuple('getAllMarkets', customMarkets.length, connection),
-    { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
-  )
+    { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL },
+  );
 }
 
 export function useUnmigratedOpenOrdersAccounts() {

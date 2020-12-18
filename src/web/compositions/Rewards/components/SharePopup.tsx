@@ -21,6 +21,7 @@ import { Paper } from '@material-ui/core'
 import farmDistrub from '@icons/farmDistrub.png'
 import speedGif from '@icons/speedGif.gif'
 import Subtract from '@icons/subtract.gif'
+import Bonfida from '@icons/bonfida.png'
 import TwitterPost from '@icons/TwitterPost4.png'
 import Solana from '@icons/Solana.gif'
 
@@ -143,6 +144,15 @@ export const SharePopup = (props) => {
           </GifContainer>
           <GifContainer
             theme={theme}
+            isChoosen={choosenPic === 'pic.twitter.com/fJa0vq3Of0'}
+            onClick={() => {
+              setChoosenPic('pic.twitter.com/fJa0vq3Of0')
+            }}
+          >
+            <Gif src={Bonfida}></Gif>
+          </GifContainer>
+          {/* <GifContainer
+            theme={theme}
             isChoosen={choosenPic === 'pic.twitter.com/lDKbpqSqk9'}
             onClick={() => {
               setChoosenPic('pic.twitter.com/lDKbpqSqk9')
@@ -150,7 +160,7 @@ export const SharePopup = (props) => {
           >
             {' '}
             <Gif src={Subtract}></Gif>
-          </GifContainer>
+          </GifContainer> */}
           <GifContainer
             theme={theme}
             isChoosen={choosenPic === 'pic.twitter.com/1eTKx8xVv6'}

@@ -15,6 +15,7 @@ import {
   TableRow,
   Table,
 } from '@sb/compositions/Rewards/index'
+import { Icon } from '@sb/styles/cssUtils'
 import dayjs from 'dayjs'
 import { notify } from '@sb/dexUtils/notifications'
 import { withTheme } from '@material-ui/styles'
@@ -29,8 +30,10 @@ import { getUserAddressbook } from '@core/graphql/queries/chart/getUserAddressbo
 import { useWallet } from '@sb/dexUtils/wallet'
 import { BlueSwitcherStyles } from '../Chart/components/SmartOrderTerminal/utils'
 import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
-import NewCoinPopup from './NewCoinPopup'
-import NewContactPopup from './NewContactPopup'
+
+import NewCoinPopup from './components/Popups/NewCoinPopup'
+import NewContactPopup from './components/Popups/NewContactPopup'
+import UpdatePopup from './components/Popups/ChooseActionPopup'
 
 export const AddBtn = styled.button`
   background: ${(props) => props.background || '#1ba492'};
@@ -60,9 +63,9 @@ const Text = styled.span`
 
 export const Input = styled.input`
   width: 100%;
-  height: 5rem;
+  height: ${props => props.height ||'5rem'};
   margin-bottom: 1rem;
-  background: ${props => props.disabled ? 'rgb(46, 46, 46)' : '#303743'};
+  background: ${(props) => (props.disabled ? 'rgb(46, 46, 46)' : '#303743')};
   border: 0.1rem solid #424b68;
   border-radius: 0.4rem;
   padding-left: 1rem;
@@ -70,6 +73,7 @@ export const Input = styled.input`
 
   &::placeholder {
     color: #abbad1;
+    font-weight: normal;
   }
 `
 
@@ -103,7 +107,8 @@ const combineContactsData = (
   data,
   setShowNewCoinPopup,
   setContactPublicKey,
-  localPassword
+  localPassword,
+  changeUpdatePopupData
 ) => {
   if (!data) {
     return []
@@ -143,6 +148,45 @@ const combineContactsData = (
       },
       contact: decrypt(el.email, localPassword) || '-',
       publicAddress: decrypt(el.publicKey, localPassword),
+      updatePopupDots: {
+        render: (
+          <span
+            style={{ paddingRight: '2rem', cursor: 'pointer' }}
+            onClick={(e) => {
+              e.stopPropagation()
+              const buttonElem = document.getElementById(
+                `${el.name}${el.publicKey}popup`
+              )
+              const position = buttonElem.getBoundingClientRect()
+
+              changeUpdatePopupData({
+                isPopupOpen: true,
+                isUpdateContact: true,
+                top: Math.floor(position.top),
+                left: Math.floor(position.left),
+                data: el,
+              })
+
+              setContactPublicKey(el.publicKey)
+
+              return
+            }}
+          >
+            <Icon
+              id={`${el.name}${el.publicKey}popup`}
+              className="fa fa-ellipsis-h"
+              style={{
+                fontSize: '1.5rem',
+                color: theme.palette.text.dark,
+              }}
+            />
+          </span>
+        ),
+        style: {
+          // opacity: needOpacity ? 0.6 : 1,
+          textAlign: 'right',
+        },
+      },
       expandableContent: [
         {
           row: {
@@ -153,6 +197,7 @@ const combineContactsData = (
                 setContactPublicKey={setContactPublicKey}
                 contactPublicKey={el.publicKey}
                 localPassword={localPassword}
+                changeUpdatePopupData={changeUpdatePopupData}
               />
             ),
             colspan: 5,
@@ -180,6 +225,13 @@ const AddressbookRoute = ({
   const [showNewContactPopup, setShowNewContactPopup] = useState(false)
   const [showNewCoinPopup, setShowNewCoinPopup] = useState(false)
   const [contactPublicKey, setContactPublicKey] = useState('')
+  const [updatePopupData, changeUpdatePopupData] = useState({
+    top: 0,
+    left: 0,
+    isPopupOpen: false,
+    isUpdateContact: false,
+    data: {}
+  })
 
   const { wallet } = useWallet()
 
@@ -188,7 +240,9 @@ const AddressbookRoute = ({
   const isLoginStep = step === 'login'
 
   return (
-    <RowContainer style={{ height: '100%',background: theme.palette.grey.additional, }}>
+    <RowContainer
+      style={{ height: '100%', background: theme.palette.grey.additional }}
+    >
       {' '}
       <GlobalStyles />
       <Card
@@ -399,7 +453,8 @@ const AddressbookRoute = ({
                   getUserAddressbookQuery.getUserAddressbook,
                   setShowNewCoinPopup,
                   setContactPublicKey,
-                  localPassword
+                  localPassword,
+                  changeUpdatePopupData
                 ),
               }}
               columnNames={addressBookColumnNames}
@@ -423,6 +478,27 @@ const AddressbookRoute = ({
         localPassword={localPassword}
         getUserAddressbookQueryRefetch={getUserAddressbookQueryRefetch}
         contactPublicKey={contactPublicKey}
+      />
+      <UpdatePopup 
+          theme={theme}
+          data={updatePopupData.data}
+          isContact={updatePopupData.isUpdateContact}
+          needPortalPopup={true}
+          needPortalMask={true}
+          isPopupOpen={updatePopupData.isPopupOpen}
+          closePopup={() => changeUpdatePopupData({
+            isPopupOpen: false,
+            data: {},
+            isUpdateContact: true,
+            left: 0,
+            top: 0,
+          })}
+          top={updatePopupData.top}
+          left={updatePopupData.left}
+          localPassword={localPassword}
+          publicKey={publicKey}
+          contactPublicKey={contactPublicKey}
+          getUserAddressbookQueryRefetch={getUserAddressbookQueryRefetch}
       />
     </RowContainer>
   )
