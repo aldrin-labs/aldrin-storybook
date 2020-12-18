@@ -92,6 +92,8 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       multichart: { charts },
     } = getCharts
 
+    console.log('onSelectPair', value, markets)
+
     if (!value) {
       return
     }
@@ -99,14 +101,15 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
     this.closeMenu()
 
     if (view === 'default') {
+      const pair = value.split('_').join('/')
       // Need to refactor this, address of a coin should be in the value, not name
       // console.log('value: ', value)
-      const selectedMarketFormSelector = markets.find((el) => el.name === value)
+      const selectedMarketFormSelector = markets.find((el) => el.name === pair)
       console.log('selectedMarketFormSelector', selectedMarketFormSelector)
       setMarketAddress(selectedMarketFormSelector.address.toBase58())
 
       const chartPageType = marketType === 0 ? 'spot' : 'futures'
-      history.push(`/chart/${chartPageType}/${value.split('/').join('_')}`)
+      history.push(`/chart/${chartPageType}/${value}`)
 
       return
     } else if (charts.length < 8 && view === 'onlyCharts') {

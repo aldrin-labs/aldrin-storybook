@@ -5,12 +5,22 @@ import { compose } from 'recompose'
 import { Dialog, Paper } from '@material-ui/core'
 import { PublicKey } from '@solana/web3.js'
 import { Market, MARKETS, TOKEN_MINTS } from '@project-serum/serum'
+import { graphql } from 'react-apollo'
+import {
+  getSecondValueFromFirst,
+  GreenSwitcherStyles,
+  RedSwitcherStyles,
+  DisabledSwitcherStyles,
+  BlueSwitcherStyles,
+} from '@sb/compositions/Chart/components/SmartOrderTerminal/utils'
+import CustomSwitcher, {
+  SwitcherHalf,
+} from '@sb/components/SwitchOnOff/CustomSwitcher'
 
 import { notify } from '@sb/dexUtils//notifications'
 import { isValidPublicKey } from '@sb/dexUtils//utils'
 import { useAccountInfo, useConnection } from '@sb/dexUtils/connection'
 import { Loading } from '@sb/components/index'
-
 
 // const { Text } = Typography;
 import Clear from '@material-ui/icons/Clear'
@@ -28,7 +38,8 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { PurpleButton } from '@sb/compositions/Addressbook/components/Popups/NewCoinPopup'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index'
 import ListNewMarketPopup from './ListNewMarketPopup'
-
+import { addSerumCustomMarket } from '@core/graphql/mutations/chart/addSerumCustomMarket'
+import { withPublicKey } from '@core/hoc/withPublicKey'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -51,7 +62,15 @@ const Text = styled.span`
       : '#ecf0f3'};
 `
 
-const CustomMarketDialog = ({ open, onAddCustomMarket, onClose, theme, history }) => {
+const CustomMarketDialog = ({
+  open,
+  onAddCustomMarket,
+  onClose,
+  theme,
+  history,
+  addSerumCustomMarketMutation,
+  publicKey,
+}) => {
   const [showCreateMarketPopup, changeShowCreateMarketPopup] = useState(false)
   const connection = useConnection()
 
@@ -60,6 +79,7 @@ const CustomMarketDialog = ({ open, onAddCustomMarket, onClose, theme, history }
   const [marketLabel, setMarketLabel] = useState('')
   const [baseLabel, setBaseLabel] = useState('')
   const [quoteLabel, setQuoteLabel] = useState('')
+  const [isPrivate, setAsPrivate] = useState(false)
 
   const [market, setMarket] = useState(null)
   const [loadingMarket, setLoadingMarket] = useState(false)
@@ -137,6 +157,15 @@ const CustomMarketDialog = ({ open, onAddCustomMarket, onClose, theme, history }
       return
     }
 
+    addSerumCustomMarketMutation({
+      variables: {
+        publicKey: publicKey,
+        symbol: `${baseLabel}_${quoteLabel}`,
+        isPrivate: isPrivate,
+        marketId: marketId,
+      },
+    })
+
     let params = {
       address: marketId,
       programId,
@@ -191,12 +220,12 @@ const CustomMarketDialog = ({ open, onAddCustomMarket, onClose, theme, history }
           Add custom market
         </Text>
         <ClearButton>
-            <Clear
-              style={{ fontSize: '2rem' }}
-              color="inherit"
-              onClick={onClose}
-            />
-          </ClearButton>
+          <Clear
+            style={{ fontSize: '2rem' }}
+            color="inherit"
+            onClick={onClose}
+          />
+        </ClearButton>
       </StyledDialogTitle>
       <StyledDialogContent
         style={{ background: theme.palette.grey.input }}
@@ -204,12 +233,39 @@ const CustomMarketDialog = ({ open, onAddCustomMarket, onClose, theme, history }
         id="share-dialog-content"
       >
         <RowContainer margin={'2rem 0 0 0'}>
-          <PurpleButton 
+          <PurpleButton
             text={'List New Market'}
             width={'20rem'}
             height={'3.5rem'}
             background={theme.palette.green.main}
             onClick={() => changeShowCreateMarketPopup(true)}
+          />
+        </RowContainer>
+        <RowContainer>
+          <CustomSwitcher
+            theme={theme}
+            firstHalfText={'private'}
+            secondHalfText={'public'}
+            buttonHeight={'3rem'}
+            containerStyles={{
+              width: '100%',
+              marginTop: '2rem',
+              padding: 0,
+            }}
+            firstHalfStyleProperties={
+              // pricePlotEnabled
+              //   ? DisabledSwitcherStyles(theme)
+              BlueSwitcherStyles(theme)
+            }
+            secondHalfStyleProperties={
+              // pricePlotEnabled
+              //   ? DisabledSwitcherStyles(theme)
+              BlueSwitcherStyles(theme)
+            }
+            firstHalfIsActive={isPrivate}
+            changeHalf={() => {
+              setAsPrivate(!isPrivate)
+            }}
           />
         </RowContainer>
         {wellFormedMarketId ? (
@@ -304,13 +360,17 @@ const CustomMarketDialog = ({ open, onAddCustomMarket, onClose, theme, history }
           />
         </RowContainer>
       </StyledDialogContent>
-      <ListNewMarketPopup 
+      <ListNewMarketPopup
         open={showCreateMarketPopup}
-        onClose={() => changeShowCreateMarketPopup(false)} 
-        theme={theme} 
+        onClose={() => changeShowCreateMarketPopup(false)}
+        theme={theme}
       />
     </DialogWrapper>
   )
 }
 
-export default compose(withRouter)(CustomMarketDialog)
+export default compose(
+  withRouter,
+  withPublicKey,
+  graphql(addSerumCustomMarket, { name: 'addSerumCustomMarketMutation' })
+)(CustomMarketDialog)
