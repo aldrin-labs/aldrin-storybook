@@ -871,7 +871,8 @@ export default compose(
       prevStartTimestamp: `${datesForQuery.prevStartTimestamp}`,
       prevEndTimestamp: `${datesForQuery.prevEndTimestamp}`,
     }),
-    fetchPolicy: 'cache-first',
+    // TODO: make chache-first here and in CHART by refetching this after adding market
+    fetchPolicy: 'cache-and-network',
     withOutSpinner: true,
     withTableLoader: false,
   }),

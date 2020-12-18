@@ -92,7 +92,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
 
     if (view === 'default') {
       const pair = value.split('_').join('/')
-      const selectedMarketFormSelector = markets.find((el) => el.name === pair)
+      let selectedMarketFormSelector = markets.find((el) => el.name === pair)
       // Need to refactor this, address of a coin should be in the value, not name
       // console.log('value: ', value)
       if (selectedMarketFormSelector) {
@@ -100,7 +100,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
         setMarketAddress(selectedMarketFormSelector.address.toBase58())
       } else {
         console.log('customMarkets', customMarkets, pair)
-        const selectedMarketFormSelector = customMarkets.find((el) => el.name === pair)
+        selectedMarketFormSelector = customMarkets.find((el) => el.name === pair)
         console.log('selectedMarketFormSelector', selectedMarketFormSelector)
         setMarketAddress(selectedMarketFormSelector.address)
       }

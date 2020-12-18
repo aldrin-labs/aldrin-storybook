@@ -107,7 +107,9 @@ function ChartPageComponent(props: any) {
     setCustomMarkets,
     getUserCustomMarketsQuery,
     setMarketAddress,
-    location
+    location,
+    history,
+    customMarkets
   } = props
 
   const [terminalViewMode, updateTerminalViewMode] = useState('default')
@@ -156,6 +158,26 @@ function ChartPageComponent(props: any) {
     }
   }, [props.marketType])
 
+  useEffect(() => {
+    const userMarkets = getUserCustomMarketsQuery.getUserCustomMarkets.map(
+      ({ publicKey, marketId, isPrivate, ...rest }) => ({
+        ...rest,
+        name: rest.symbol,
+        address: marketId,
+        isCustomUserMarket: true,
+        isPrivateCustomMarket: isPrivate,
+      })
+    )
+    const updatedMarkets = AWESOME_MARKETS.map((el) => ({
+      ...el,
+      address: el.address.toString(),
+      programId: el.programId.toString(),
+      isCustomUserMarket: true,
+    }))
+
+    setCustomMarkets([...updatedMarkets, ...userMarkets])
+  }, [getUserCustomMarketsQuery?.getUserCustomMarkets?.length])
+
   console.log('getUserCustomMarketsQuery', getUserCustomMarketsQuery)
 
   useEffect(() => {
@@ -178,34 +200,23 @@ function ChartPageComponent(props: any) {
     }))
 
     const allMarkets = [...props.markets, ...userMarkets, ...updatedMarkets]
-    console.log('allMarkets', allMarkets)
+    console.log('allMarkets', allMarkets, customMarkets)
 
     const selectedMarketFromUrl = allMarkets.find(
       (el) => el.name.split('/').join('_') === pair
     )
 
+    if (!selectedMarketFromUrl) {
+      setMarketAddress(allMarkets.find(
+        (el) => el.name.split('/').join('_') === "SRM_USDT"
+      ).address.toBase58())
+      history.push('/chart/spot/SRM_USDT')
+
+      return
+    }
+
     setMarketAddress(selectedMarketFromUrl.isCustomUserMarket ? selectedMarketFromUrl.address : selectedMarketFromUrl.address.toBase58())
   }, [])
-
-  useEffect(() => {
-    const userMarkets = getUserCustomMarketsQuery.getUserCustomMarkets.map(
-      ({ publicKey, marketId, isPrivate, ...rest }) => ({
-        ...rest,
-        name: rest.symbol,
-        address: marketId,
-        isCustomUserMarket: true,
-        isPrivateCustomMarket: isPrivate,
-      })
-    )
-    const updatedMarkets = AWESOME_MARKETS.map((el) => ({
-      ...el,
-      address: el.address.toString(),
-      programId: el.programId.toString(),
-      isCustomUserMarket: true,
-    }))
-
-    setCustomMarkets([...updatedMarkets, ...userMarkets])
-  }, [getUserCustomMarketsQuery?.getUserCustomMarkets?.length])
 
   const handleJoyrideCallback = (data) => {
     if (
@@ -489,7 +500,7 @@ export default compose(
   queryRendererHoc({
     query: getUserCustomMarkets,
     name: 'getUserCustomMarketsQuery',
-    fetchPolicy: 'cache-first',
+    fetchPolicy: 'cache-and-network',
     variables: (props) => ({
       publicKey: props.publicKey,
     }),
