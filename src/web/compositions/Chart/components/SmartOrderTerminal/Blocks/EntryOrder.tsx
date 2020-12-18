@@ -967,6 +967,7 @@ export const EntryOrderBlock = ({
               }
               header={'price'}
               symbol={pair[1]}
+              needTitleBlock
               type={
                 entryPoint.order.type === 'limit'
                   ? 'number'
@@ -1084,6 +1085,7 @@ export const EntryOrderBlock = ({
             <Input
               header={'deviation'}
               needTooltip
+              needTitleBlock
               titleForTooltip={
                 'The level of price change after the trend reversal, at which the trailing order will be executed.'
               }
@@ -1132,6 +1134,7 @@ export const EntryOrderBlock = ({
               theme={theme}
               padding={'0 .8rem 0 .8rem'}
               width={'24%'}
+              needTitleBlock
               symbol={'%'}
               header={'level'}
               textAlign={'right'}
@@ -1233,6 +1236,7 @@ export const EntryOrderBlock = ({
                   // needTitle
                   // title={`plot_`}
                   header={'price'}
+                  needTitleBlock
                   textAlign="left"
                   width={'calc(20% - .8rem)'}
                   inputStyles={{

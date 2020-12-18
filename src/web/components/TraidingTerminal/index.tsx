@@ -140,6 +140,7 @@ export const TradeInputContent = ({
   needTooltip = false,
   titleForTooltip = '',
   textDecoration = '',
+  needTitleBlock = false,
 }: {
   isValid?: boolean
   showErrors?: boolean
@@ -166,6 +167,7 @@ export const TradeInputContent = ({
   needTooltip?: boolean
   titleForTooltip?: string
   textDecoration?: string
+  needTitleBlock?: boolean
 }) => {
   return (
     <InputRowContainer
@@ -185,15 +187,21 @@ export const TradeInputContent = ({
           {preSymbol}
         </UpdatedCoin>
       ) : null}
-      {needTooltip ? (
-        <DarkTooltip title={titleForTooltip}>
-          <TitleForInput textDecoration={textDecoration}>
-            {header}
-          </TitleForInput>
-        </DarkTooltip>
-      ) : (
-        <TitleForInput textDecoration={textDecoration}>{header}</TitleForInput>
-      )}
+      {needTitleBlock ? (
+        <>
+          {needTooltip ? (
+            <DarkTooltip title={titleForTooltip}>
+              <TitleForInput theme={theme} textDecoration={textDecoration}>
+                {header}
+              </TitleForInput>
+            </DarkTooltip>
+          ) : (
+            <TitleForInput theme={theme} textDecoration={textDecoration}>
+              {header}
+            </TitleForInput>
+          )}
+        </>
+      ) : null}
 
       <TradeInput
         needChain={needChain}
@@ -564,8 +572,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 >
                   <TradeInputContent
                     theme={theme}
-                    // needTitle
-                    header={'price'}
+                    needTitle
+                    // needTitleBlock
+                    // header={'price'}
                     type={'text'}
                     title={`price (${pair[1]})`}
                     value={values.price || ''}
@@ -583,8 +592,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 >
                   <TradeInputContent
                     theme={theme}
-                    // needTitle
-                    header={'trigger price'}
+                    // needTitleBlock
+                    needTitle
+                    // header={'trigger price'}
                     type={'text'}
                     title={`trigger price (${pair[1]})`}
                     value={values.stop || ''}

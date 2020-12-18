@@ -197,6 +197,7 @@ export default ({ themeMode, isChartPage, children }) => {
               border: '#2E2E2E',
               cream: '#0B0B0E',
               onboard: '#e0e2e5',
+              titleForInput: '#2E2E2E',
             },
             primary: {
               main: '#303037',
@@ -245,6 +246,10 @@ export default ({ themeMode, isChartPage, children }) => {
             depthChart: {
               redStroke: '#E55764',
               greenStroke: '#39A74C',
+              greenBackground: 'rgba(57, 167, 76, 0.35)',
+              redBackground: 'rgba(255, 30, 62, 0.35)',
+            },
+            tradeHistory: {
               greenBackground: 'rgba(57, 167, 76, 0.35)',
               redBackground: 'rgba(255, 30, 62, 0.35)',
             },
@@ -397,6 +402,7 @@ export default ({ themeMode, isChartPage, children }) => {
               border: '#E0E5EC',
               cream: '#F9FBFD',
               onboard: '#3A475C',
+              titleForInput: '#f1f6f9',
             },
             primary: {
               main: '#FEFEFE',

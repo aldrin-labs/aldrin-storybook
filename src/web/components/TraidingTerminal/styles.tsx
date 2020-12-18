@@ -22,7 +22,8 @@ const styles = {
 
 export const TitleForInput = styled.div`
   width: auto;
-  min-height: 3rem;
+  // min-height: 3rem;
+  height: 3rem;
   white-space: nowrap;
   text-decoration: ${(props) => props.textDecoration || 'none'};
   border: ${(props) =>
@@ -34,8 +35,16 @@ export const TitleForInput = styled.div`
   border-bottom-left-radius: 0.3rem;
   border-right: none;
   box-shadow: inset 0px 0px 0.2rem rgba(0, 0, 0, 0.15);
-  color: #7284a0;
-  background-color: #f1f6f9;
+  color: ${(props) =>
+    props.theme &&
+    props.theme.palette &&
+    props.theme.palette.grey &&
+    props.theme.palette.grey.text};
+  background-color: ${(props) =>
+    props.theme &&
+    props.theme.palette &&
+    props.theme.palette.grey &&
+    props.theme.palette.grey.titleForInput};
   font-size: 1.1rem;
   font-family: Avenir Next Demi;
   text-transform: uppercase;

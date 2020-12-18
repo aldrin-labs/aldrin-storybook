@@ -51,6 +51,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
           theme={theme}
           needChain={needChain}
           header={'price'}
+          needTitleBlock
           padding={'0'}
           width={sliderInTheBottom ? '65%' : 'calc(32.5%)'}
           textAlign={'left'}
@@ -91,6 +92,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
         textAlign={percentageTextAlign}
         needPreSymbol={false}
         value={value}
+        needTitleBlock
         header={header}
         showErrors={showErrors}
         isValid={validateField(true, pricePercentage)}
@@ -164,6 +166,7 @@ export const SliderWithTimeoutFieldRow = ({
         value={value}
         onChange={onTimeoutChange}
         header={'price'}
+        needTitleBlock
         inputStyles={{
           borderTopRightRadius: 0,
           borderBottomRightRadius: 0,
@@ -272,6 +275,7 @@ export const SliderWithAmountFieldRow = ({
             pattern={marketType === 0 ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'}
             symbol={pair[0]}
             header={'size'}
+            needTitleBlock
             needTooltip
             textDecoration={'underline'}
             titleForTooltip={'The leveraged amount of your position.'}
@@ -312,6 +316,7 @@ export const SliderWithAmountFieldRow = ({
             symbol={pair[1]}
             value={localTotal}
             header={`total`}
+            needTitleBlock
             disabled={
               entryPoint.trailing.isTrailingOn ||
               isMarketType ||
@@ -336,6 +341,7 @@ export const SliderWithAmountFieldRow = ({
               'The actual amount of your position excluding leverage.'
             }
             header={'margin'}
+            needTitleBlock
             textDecoration={'underline'}
             symbol={pair[1]}
             value={localMargin}
@@ -505,11 +511,12 @@ export const SliderWithAmountFieldRowForBasic = ({
         {isSPOTMarket ? (
           <Input
             theme={theme}
-            // needTitle
-            header={`${isSPOTMarket ? 'amount' : 'order quantity'} (${
-              pair[0]
-            })`}
-            // title=
+            needTitle
+            // header={`${isSPOTMarket ? 'amount' : 'order quantity'} (${
+            //   pair[0]
+            // })`}
+            // needTitleBlock
+            title={`${isSPOTMarket ? 'amount' : 'order quantity'} (${pair[0]})`}
             value={localAmount}
             type={'text'}
             pattern={isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'}
@@ -521,9 +528,10 @@ export const SliderWithAmountFieldRowForBasic = ({
             <div style={{ width: '50%', paddingRight: '1%' }}>
               <Input
                 theme={theme}
-                // needTitle
-                // title={`size`}
-                header={'size'}
+                needTitle
+                title={`size`}
+                // header={'size'}
+                // needTitleBlock
                 textDecoration={'outline'}
                 value={localAmount}
                 type={'text'}
@@ -537,10 +545,11 @@ export const SliderWithAmountFieldRowForBasic = ({
                 inputStyles={{ textDecoration: 'none' }}
                 theme={theme}
                 //disabled={false}
-                // needTitle
-                // title={`total`}
-                header={'total'}
+                needTitle
+                title={`total`}
+                // header={'total'}
                 type={'text'}
+                // needTitleBlocks
                 value={localTotal === '' ? '' : localTotal}
                 onChange={onTotalChange}
                 symbol={pair[1]}
@@ -608,9 +617,10 @@ export const SliderWithAmountFieldRowForBasic = ({
             theme={theme}
             needTitle
             type={'text'}
-            // title={`total (${pair[1]})`}
-            header={`total (${pair[1]})`}
+            title={`total (${pair[1]})`}
+            // header={`total (${pair[1]})`}
             value={localTotal || ''}
+            // needTitleBlock
             onChange={onTotalChange}
             symbol={pair[1]}
           />
@@ -632,6 +642,7 @@ export const SliderWithAmountFieldRowForBasic = ({
             // title={`margin (${pair[1]})`}
             value={localMargin || ''}
             type={'text'}
+            heedTitleBlock
             pattern={'[0-9]+.[0-9]{2}'}
             onChange={onMarginChange}
             symbol={pair[1]}
