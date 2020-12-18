@@ -170,7 +170,7 @@ const CustomMarketDialog = ({
     }
 
     const resultOfAdding = await onAddCustomMarket(params)
-    if (resultOfAdding){
+    if (resultOfAdding) {
       await addSerumCustomMarketMutation({
         variables: {
           publicKey: publicKey,
@@ -184,7 +184,10 @@ const CustomMarketDialog = ({
 
     await onDoClose()
 
-    history.push(`/chart/spot/${knownBaseCurrency || baseLabel}_${knownQuoteCurrency || quoteLabel}`)
+    history.push(
+      `/chart/spot/${knownBaseCurrency || baseLabel}_${knownQuoteCurrency ||
+        quoteLabel}`
+    )
   }
 
   const onDoClose = () => {
@@ -242,7 +245,9 @@ const CustomMarketDialog = ({
             width={'20rem'}
             height={'3.5rem'}
             background={theme.palette.green.main}
-            onClick={() => changeShowCreateMarketPopup(true)}
+            onClick={() => {
+              changeShowCreateMarketPopup(true)
+            }}
           />
         </RowContainer>
         <RowContainer>
@@ -360,7 +365,17 @@ const CustomMarketDialog = ({
             text={'Add Market'}
             width={'20rem'}
             height={'4rem'}
-            onClick={onSubmit}
+            onClick={(e) => {
+              if (publicKey === '') {
+                e.preventDefault()
+                notify({
+                  message: 'Connect your wallet first',
+                  type: 'error',
+                })
+              }
+
+              onSubmit
+            }}
           />
         </RowContainer>
       </StyledDialogContent>

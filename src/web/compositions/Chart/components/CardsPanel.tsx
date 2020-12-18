@@ -241,7 +241,18 @@ const TopBar = ({ theme }) => {
             cursor: 'pointer',
           }}
         >
-          <SvgIcon src={Wallet} />
+          <a
+            target={'_blank'}
+            rel={'noopener noreferrer'}
+            href={`https://explorer.solana.com/address/${publicKey}`}
+            style={{
+              color: theme.palette.blue.serum,
+              fontSize: '1.4rem',
+              textDecoration: 'none',
+            }}
+          >
+            <SvgIcon src={Wallet} />
+          </a>
           <SvgIcon
             src={greenArrow}
             width={'1.3rem'}
