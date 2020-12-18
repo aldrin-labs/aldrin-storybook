@@ -688,7 +688,7 @@ class SelectPairListComponent extends React.PureComponent<
                   }}
                   cellRenderer={({ cellData }) => cellData.render}
                 />
-                <Column
+                {/* <Column
                   label={`24H CHANGE`}
                   dataKey="price24hChange"
                   headerStyle={{
@@ -707,7 +707,7 @@ class SelectPairListComponent extends React.PureComponent<
                     fontWeight: 'bold',
                   }}
                   cellRenderer={({ cellData }) => cellData.render}
-                />
+                /> */}
                 <Column
                   label={`24H VOLUME`}
                   dataKey="volume24hChange"
@@ -728,7 +728,7 @@ class SelectPairListComponent extends React.PureComponent<
                   }}
                   cellRenderer={({ cellData }) => cellData.render}
                 />
-                <Column
+                {/* <Column
                   label={`trades change 24h`}
                   dataKey="tradesChange24h"
                   headerStyle={{
@@ -747,7 +747,7 @@ class SelectPairListComponent extends React.PureComponent<
                     fontWeight: 'bold',
                   }}
                   cellRenderer={({ cellData }) => cellData.render}
-                />
+                /> */}
                 <Column
                   label={`trades 24h`}
                   dataKey="trades24h"
