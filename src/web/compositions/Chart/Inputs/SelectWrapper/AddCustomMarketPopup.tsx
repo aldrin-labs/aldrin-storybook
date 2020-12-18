@@ -184,7 +184,7 @@ const CustomMarketDialog = ({
 
     await onDoClose()
 
-    history.push(
+    await history.push(
       `/chart/spot/${knownBaseCurrency || baseLabel}_${knownQuoteCurrency ||
         quoteLabel}`
     )
@@ -366,15 +366,17 @@ const CustomMarketDialog = ({
             width={'20rem'}
             height={'4rem'}
             onClick={(e) => {
-              if (publicKey === '') {
-                e.preventDefault()
+              e.preventDefault()
+              if (publicKey === '') {    
                 notify({
                   message: 'Connect your wallet first',
                   type: 'error',
                 })
+
+                return
               }
 
-              onSubmit
+              onSubmit()
             }}
           />
         </RowContainer>

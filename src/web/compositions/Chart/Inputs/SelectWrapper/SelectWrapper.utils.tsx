@@ -165,7 +165,8 @@ export const combineSelectWrapperData = ({
         (el) =>
           !el.symbol.includes('BULL') &&
           !el.symbol.includes('BEAR') &&
-          usdcPairsMap.has(el.symbol)
+          usdcPairsMap.has(el.symbol) &&
+          !el.isCustomUserMarket
       )
     }
     if (tab === 'usdt') {
@@ -173,12 +174,13 @@ export const combineSelectWrapperData = ({
         (el) =>
           !el.symbol.includes('BULL') &&
           !el.symbol.includes('BEAR') &&
-          usdtPairsMap.has(el.symbol)
+          usdtPairsMap.has(el.symbol) &&
+          !el.isCustomUserMarket
       )
     }
     if (tab === 'leveraged') {
       processedData = processedData.filter(
-        (el) => el.symbol.includes('BULL') || el.symbol.includes('BEAR')
+        (el) => el.symbol.includes('BULL') || el.symbol.includes('BEAR') && !el.isCustomUserMarket
       )
     }
 
@@ -190,6 +192,10 @@ export const combineSelectWrapperData = ({
         (el) => el.isCustomUserMarket && !el.isPrivateCustomMarket
       )
     }
+  } else {
+    processedData = processedData.filter(
+      (el) => !el.isCustomUserMarket
+    )
   }
 
   if (searchValue) {
@@ -234,7 +240,7 @@ export const combineSelectWrapperData = ({
     const priceColor = !!previousData ? '' : ''
 
     const [base, quote] = el.symbol.split('_')
-    console.log('filtredData', el)
+    // console.log('filtredData', el)
     return {
       id: `${el.symbol}`,
       favorite: {

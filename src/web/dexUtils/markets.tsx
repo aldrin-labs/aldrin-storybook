@@ -32,12 +32,8 @@ const USE_MARKETS = _IGNORE_DEPRECATED
 export function useMarketsList() {
   const UPDATED_USE_MARKETS = USE_MARKETS.filter(
     ({ deprecated }) => !deprecated
-  ).concat(
-    AWESOME_MARKETS.map((el) => ({
-      ...el,
-      isAwesomeMarket: true,
-    }))
   )
+  
   return UPDATED_USE_MARKETS
 }
 
@@ -1101,6 +1097,7 @@ export function useBalancesForDeprecatedMarkets() {
 }
 
 export function getMarketInfos(customMarkets) {
+  console.log('customMarkets', customMarkets)
   const customMarketsInfo = customMarkets.map((m) => ({
     ...m,
     address: new PublicKey(m.address),

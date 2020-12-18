@@ -121,7 +121,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
 
     const fiatRegexp = new RegExp(fiatPairs.join('|'), 'gi')
 
-    console.log('markets', markets)
+    // console.log('markets', markets)
 
     const dexMarketSymbols = markets.map((el) => ({
       symbol: el.name,

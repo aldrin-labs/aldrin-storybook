@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Redirect } from 'react-router-dom'
+import { Redirect, withRouter } from 'react-router-dom'
 // import Joyride from 'react-joyride'
 import { withTheme } from '@material-ui/styles'
 import { compose } from 'recompose'
@@ -105,13 +105,17 @@ function ChartPageComponent(props: any) {
     authenticated,
     changeChartLayoutMutation,
     setCustomMarkets,
-    getUserCustomMarketsQuery
+    getUserCustomMarketsQuery,
+    setMarketAddress,
+    location
   } = props
 
   const [terminalViewMode, updateTerminalViewMode] = useState('default')
   const [stepIndex, updateStepIndex] = useState(0)
   const [key, updateKey] = useState(0)
-  const [isTourOpen, setIsTourOpen] = useState(localStorage.getItem('isOnboardingDone') == "null")
+  const [isTourOpen, setIsTourOpen] = useState(
+    localStorage.getItem('isOnboardingDone') == 'null'
+  )
 
   useEffect(() => {
     const { marketType } = props
@@ -155,11 +159,49 @@ function ChartPageComponent(props: any) {
   console.log('getUserCustomMarketsQuery', getUserCustomMarketsQuery)
 
   useEffect(() => {
-    const userMarkets = getUserCustomMarkets.map(({ publicKey, ...rest }) => ({ ...rest }))
+    const pair = !!location.pathname.split('/')[3] ? location.pathname.split('/')[3] : 'SRM_USDT'
+
+    const userMarkets = getUserCustomMarketsQuery.getUserCustomMarkets.map(
+      ({ publicKey, marketId, isPrivate, ...rest }) => ({
+        ...rest,
+        name: rest.symbol,
+        address: marketId,
+        isCustomUserMarket: true,
+        isPrivateCustomMarket: isPrivate,
+      })
+    )
     const updatedMarkets = AWESOME_MARKETS.map((el) => ({
       ...el,
       address: el.address.toString(),
       programId: el.programId.toString(),
+      isCustomUserMarket: true,
+    }))
+
+    const allMarkets = [...props.markets, ...userMarkets, ...updatedMarkets]
+    console.log('allMarkets', allMarkets)
+
+    const selectedMarketFromUrl = allMarkets.find(
+      (el) => el.name.split('/').join('_') === pair
+    )
+
+    setMarketAddress(selectedMarketFromUrl.isCustomUserMarket ? selectedMarketFromUrl.address : selectedMarketFromUrl.address.toBase58())
+  }, [])
+
+  useEffect(() => {
+    const userMarkets = getUserCustomMarketsQuery.getUserCustomMarkets.map(
+      ({ publicKey, marketId, isPrivate, ...rest }) => ({
+        ...rest,
+        name: rest.symbol,
+        address: marketId,
+        isCustomUserMarket: true,
+        isPrivateCustomMarket: isPrivate,
+      })
+    )
+    const updatedMarkets = AWESOME_MARKETS.map((el) => ({
+      ...el,
+      address: el.address.toString(),
+      programId: el.programId.toString(),
+      isCustomUserMarket: true,
     }))
 
     setCustomMarkets([...updatedMarkets, ...userMarkets])
@@ -245,7 +287,8 @@ function ChartPageComponent(props: any) {
 
   if (isPairDataLoading) {
     minPriceDigits = 0.00000001
-    quantityPrecision = (market?.minOrderSize && getDecimalCount(market.minOrderSize)) || 3
+    quantityPrecision =
+      (market?.minOrderSize && getDecimalCount(market.minOrderSize)) || 3
     pricePrecision = (market?.tickSize && getDecimalCount(market.tickSize)) || 8
     minSpotNotional = 10
     minFuturesStep = 0.001
@@ -257,12 +300,13 @@ function ChartPageComponent(props: any) {
     quantityPrecision = +props.pairPropertiesQuery.marketByName[0].properties
       .binance.quantityPrecision
 
-    quantityPrecision = market?.minOrderSize && getDecimalCount(market.minOrderSize);
+    quantityPrecision =
+      market?.minOrderSize && getDecimalCount(market.minOrderSize)
 
     pricePrecision = +props.pairPropertiesQuery.marketByName[0].properties
       .binance.pricePrecision
 
-    pricePrecision = market?.tickSize && getDecimalCount(market.tickSize);
+    pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
 
     minSpotNotional =
       +props.pairPropertiesQuery.marketByName[0].properties.binance.filters[3]
@@ -300,7 +344,7 @@ function ChartPageComponent(props: any) {
         isOpen={isTourOpen}
         onRequestClose={() => {
           setIsTourOpen(false)
-          localStorage.setItem('isOnboardingDone', "true")
+          localStorage.setItem('isOnboardingDone', 'true')
         }}
       />
       <GlobalStyles />
@@ -430,6 +474,7 @@ export default compose(
   withAuthStatus,
   withTheme(),
   withPublicKey,
+  withRouter,
   // withAuth,
   queryRendererHoc({
     skip: (props: any) => !props.authenticated,
