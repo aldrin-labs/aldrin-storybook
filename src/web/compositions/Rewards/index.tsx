@@ -263,6 +263,7 @@ export const HeaderCell = styled.th`
   text-transform: capitalize;
   color: ${props => props.theme.palette.grey.text};
   font-size: bold;
+  text-align: left;
 `
 
 const getPhaseFromTotal = (total) => {
@@ -1163,7 +1164,7 @@ const RewardsRoute = (props) => {
                 <HeaderCell theme={theme}>#</HeaderCell>
                 <HeaderCell theme={theme}>Name</HeaderCell>
                 <HeaderCell theme={theme}>Twitter Id</HeaderCell>
-                <HeaderCell theme={theme}>Followers</HeaderCell>
+                {/* <HeaderCell theme={theme}>Followers</HeaderCell> */}
                 <HeaderCell theme={theme}>Reward</HeaderCell>
               </TableRow>
               {getTopTwitterFarmingData.map((el, index) => {
@@ -1182,7 +1183,7 @@ const RewardsRoute = (props) => {
                         {'@' + el.tweetUsername}
                       </a>
                     </Cell>
-                    <Cell theme={theme}>{el.userFollowersCount}</Cell>
+                    {/* <Cell theme={theme}>{el.userFollowersCount}</Cell> */}
                     <Cell theme={theme}>
                       {(2000 / getTopTwitterFarmingData.length).toFixed(0) +
                         ' DCFI'}
@@ -1246,6 +1247,7 @@ const RewardsRoute = (props) => {
           >
             <Table>
               <TableRow>
+              <HeaderCell theme={theme}>#</HeaderCell>
                 <HeaderCell theme={theme}>Date</HeaderCell>
                 <HeaderCell theme={theme}>Tweet</HeaderCell>
                 <HeaderCell theme={theme}>Reward</HeaderCell>
@@ -1253,6 +1255,7 @@ const RewardsRoute = (props) => {
               {getUserRetweetsHistory.map((el, index) => {
                 return (
                   <TableRow>
+                    <Cell theme={theme}>{index + 1}</Cell>
                     <Cell theme={theme}>
                       {dayjs.unix(el.timestamp).format('ll')}
                     </Cell>
@@ -1347,7 +1350,7 @@ const RewardsRoute = (props) => {
                 <HeaderCell theme={theme}>#</HeaderCell>
                 <HeaderCell theme={theme}>Name</HeaderCell>
                 <HeaderCell theme={theme}>Twitter Id</HeaderCell>
-                <HeaderCell theme={theme}>Followers</HeaderCell>
+                {/* <HeaderCell theme={theme}>Followers</HeaderCell> */}
                 <HeaderCell theme={theme}>Reward</HeaderCell>
               </TableRow>
               {getAllRetweetsHistory.map((el, index) => {
@@ -1366,7 +1369,7 @@ const RewardsRoute = (props) => {
                         {'@' + el.tweetUsername}
                       </a>
                     </Cell>
-                    <Cell theme={theme}>{el.userFollowersCount}</Cell>
+                    {/* <Cell theme={theme}>{el.userFollowersCount}</Cell> */}
                     <Cell theme={theme}>{el.farmedDCFI.toFixed(0)}</Cell>
                   </TableRow>
                 )
