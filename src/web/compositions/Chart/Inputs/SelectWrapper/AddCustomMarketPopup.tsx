@@ -148,7 +148,7 @@ const CustomMarketDialog = ({
     (knownQuoteCurrency || quoteLabel) &&
     wellFormedMarketId
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     if (!canSubmit) {
       notify({
         message: 'Please fill in all fields with valid values',
@@ -156,15 +156,6 @@ const CustomMarketDialog = ({
       })
       return
     }
-
-    addSerumCustomMarketMutation({
-      variables: {
-        publicKey: publicKey,
-        symbol: `${baseLabel}_${quoteLabel}`,
-        isPrivate: isPrivate,
-        marketId: marketId,
-      },
-    })
 
     let params = {
       address: marketId,
@@ -177,10 +168,22 @@ const CustomMarketDialog = ({
     if (!knownQuoteCurrency) {
       params.quoteLabel = quoteLabel
     }
-    console.log('params', params)
-    onAddCustomMarket(params)
-    onDoClose()
-    history.push(`/chart/spot/${baseLabel}_${quoteLabel}`)
+
+    const resultOfAdding = await onAddCustomMarket(params)
+    if (resultOfAdding){
+      await addSerumCustomMarketMutation({
+        variables: {
+          publicKey: publicKey,
+          symbol: `${baseLabel}_${quoteLabel}`,
+          isPrivate: isPrivate,
+          marketId: marketId,
+        },
+      })
+    }
+
+    await onDoClose()
+
+    history.push(`/chart/spot/${knownBaseCurrency || baseLabel}_${knownQuoteCurrency || quoteLabel}`)
   }
 
   const onDoClose = () => {
