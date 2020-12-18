@@ -162,20 +162,23 @@ export const combineSelectWrapperData = ({
     }
     if (tab === 'usdc') {
       processedData = processedData.filter(
-        (el) => !el.isAwesomeMarket && usdcPairsMap.has(el.symbol)
+        (el) =>
+          !el.symbol.includes('BULL') &&
+          !el.symbol.includes('BEAR') &&
+          usdcPairsMap.has(el.symbol)
       )
     }
     if (tab === 'usdt') {
       processedData = processedData.filter(
-        (el) => !el.isAwesomeMarket && usdtPairsMap.has(el.symbol)
+        (el) =>
+          !el.symbol.includes('BULL') &&
+          !el.symbol.includes('BEAR') &&
+          usdtPairsMap.has(el.symbol)
       )
     }
     if (tab === 'leveraged') {
-      console.log('proc', processedData)
       processedData = processedData.filter(
-        (el) =>
-          (el.symbol.includes('BULL') || el.symbol.includes('BEAR')) &&
-          el.isAwesomeMarket
+        (el) => el.symbol.includes('BULL') || el.symbol.includes('BEAR')
       )
     }
   }
@@ -194,43 +197,43 @@ export const combineSelectWrapperData = ({
   }
 
   const filtredData = processedData.map((el) => {
-    const {
-      symbol = '',
-      price = 0,
-      price24hChange = 0,
-      volume24hChange = 0,
-      pricePrecision: pricePrecisionRaw = 0,
-      quantityPrecision: quantityPrecisionRaw = 0,
-    } = el || {
-      symbol: '',
-      price: 0,
-      price24hChange: 0,
-      volume24hChange: 0,
-      pricePrecision: 0,
-      quantityPrecision: 0,
-    }
+    // const {
+    //   symbol = '',
+    //   price = 0,
+    //   price24hChange = 0,
+    //   volume24hChange = 0,
+    //   pricePrecision: pricePrecisionRaw = 0,
+    //   quantityPrecision: quantityPrecisionRaw = 0,
+    // } = el || {
+    //   symbol: '',
+    //   price: 0,
+    //   price24hChange: 0,
+    //   volume24hChange: 0,
+    //   pricePrecision: 0,
+    //   quantityPrecision: 0,
+    // }
 
-    const pricePrecision =
-      pricePrecisionRaw === 0 || pricePrecisionRaw < 0 ? 8 : pricePrecisionRaw
-    const quantityPrecision =
-      quantityPrecisionRaw === 0 || quantityPrecisionRaw < 0
-        ? 8
-        : quantityPrecisionRaw
+    // const pricePrecision =
+    //   pricePrecisionRaw === 0 || pricePrecisionRaw < 0 ? 8 : pricePrecisionRaw
+    // const quantityPrecision =
+    //   quantityPrecisionRaw === 0 || quantityPrecisionRaw < 0
+    //     ? 8
+    //     : quantityPrecisionRaw
 
-    const isInFavoriteAlready = favoritePairsMap.has(symbol)
+    const isInFavoriteAlready = favoritePairsMap.has(el.symbol)
 
     const priceColor = !!previousData ? '' : ''
 
-    const [base, quote] = symbol.split('_')
-    
+    const [base, quote] = el.symbol.split('_')
+    console.log('filtredData', el)
     return {
-      id: `${symbol}`,
+      id: `${el.symbol}`,
       favorite: {
         isSortable: false,
         render: (
           <SvgIcon
             onClick={() =>
-              updateFavoritePairsHandler(updateFavoritePairsMutation, symbol)
+              updateFavoritePairsHandler(updateFavoritePairsMutation, el.symbol)
             }
             src={isInFavoriteAlready ? favoriteSelected : favoriteUnselected}
             width="2rem"
@@ -240,58 +243,84 @@ export const combineSelectWrapperData = ({
       },
       symbol: {
         render: (
-          <span onClick={() => onSelectPair({ value: symbol })}>{symbol}</span>
+          <span onClick={() => onSelectPair({ value: el.symbol })}>
+            {el.symbol}
+          </span>
         ),
-        onClick: () => onSelectPair({ value: symbol }),
-        contentToSort: symbol,
+        onClick: () => onSelectPair({ value: el.symbol }),
+        contentToSort: el.symbol,
       },
       price: {
-        contentToSort: +price,
+        contentToSort: +el.closePrice,
         render: (
-          <span onClick={() => onSelectPair({ value: symbol })}>
-            {formatNumberToUSFormat(stripDigitPlaces(price, pricePrecision))}
+          <span onClick={() => onSelectPair({ value: el.symbol })}>
+            {formatNumberToUSFormat(stripDigitPlaces(el.closePrice, 2))}
           </span>
         ),
-        onClick: () => onSelectPair({ value: symbol }),
+        onClick: () => onSelectPair({ value: el.symbol }),
         color: priceColor,
       },
-      price24hChange: {
-        isNumber: true,
-        render: (
-          <span
-            style={{
-              color:
-                +price24hChange === 0
-                  ? ''
-                  : +price24hChange > 0
-                  ? theme.palette.green.main
-                  : theme.palette.red.main,
-            }}
-            onClick={() => onSelectPair({ value: symbol })}
-          >
-            {`${formatNumberToUSFormat(stripDigitPlaces(price24hChange))}%`}
-          </span>
-        ),
-        onClick: () => onSelectPair({ value: symbol }),
-        contentToSort: +price24hChange,
-        color:
-          +price24hChange === 0
-            ? ''
-            : +price24hChange > 0
-            ? theme.customPalette.green.main
-            : theme.customPalette.red.main,
-      },
+      // price24hChange: {
+      //   isNumber: true,
+      //   render: (
+      //     <span
+      //       style={{
+      //         color:
+      //           +el.closePrice === 0
+      //             ? ''
+      //             : +el.closePrice > 0
+      //             ? theme.palette.green.main
+      //             : theme.palette.red.main,
+      //       }}
+      //       onClick={() => onSelectPair({ value: el.symbol })}
+      //     >
+      //       {`${formatNumberToUSFormat(stripDigitPlaces(el.closePrice))}%`}
+      //     </span>
+      //   ),
+      //   onClick: () => onSelectPair({ value: el.symbol }),
+      //   contentToSort: +el.closePrice,
+      //   color:
+      //     +el.closePrice === 0
+      //       ? ''
+      //       : +el.closePrice > 0
+      //       ? theme.customPalette.green.main
+      //       : theme.customPalette.red.main,
+      // },
       volume24hChange: {
         isNumber: true,
-        contentToSort: +volume24hChange,
+        contentToSort: +el.volume,
         render: (
-          <span onClick={() => onSelectPair({ value: symbol })}>
+          <span onClick={() => onSelectPair({ value: el.symbol })}>
             {`${formatNumberToUSFormat(
-              roundAndFormatNumber(volume24hChange, 2, false)
+              roundAndFormatNumber(el.volume, 2, false)
             )} ${quote}`}
           </span>
         ),
-        onClick: () => onSelectPair({ value: symbol }),
+        onClick: () => onSelectPair({ value: el.symbol }),
+      },
+      // tradesChange24h: {
+      //   isNumber: true,
+      //   contentToSort: +el.tradesDiff,
+      //   render: (
+      //     <span onClick={() => onSelectPair({ value: el.symbol })}>
+      //       {`${formatNumberToUSFormat(
+      //         roundAndFormatNumber(el.tradesDiff, 2, false)
+      //       )} ${quote}`}
+      //     </span>
+      //   ),
+      //   onClick: () => onSelectPair({ value: el.symbol }),
+      // },
+      trades24h: {
+        isNumber: true,
+        contentToSort: +el.tradesCount,
+        render: (
+          <span onClick={() => onSelectPair({ value: el.symbol })}>
+            {`${formatNumberToUSFormat(
+              roundAndFormatNumber(el.tradesCount, 2, false)
+            )} ${quote}`}
+          </span>
+        ),
+        onClick: () => onSelectPair({ value: el.symbol }),
       },
     }
   })
