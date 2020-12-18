@@ -181,6 +181,18 @@ export const combineSelectWrapperData = ({
         (el) => el.symbol.includes('BULL') || el.symbol.includes('BEAR')
       )
     }
+
+    if (tab === 'public') {
+      processedData = processedData.filter(
+        (el) => el.symbol.includes('BULL') || el.symbol.includes('BEAR')
+      )
+    }
+
+    if (tab === 'private') {
+      processedData = processedData.filter(
+        (el) => el.symbol.includes('BULL') || el.symbol.includes('BEAR')
+      )
+    }
   }
 
   if (searchValue) {

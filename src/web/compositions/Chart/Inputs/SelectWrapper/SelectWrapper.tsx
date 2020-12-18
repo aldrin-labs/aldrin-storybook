@@ -383,7 +383,7 @@ class SelectPairListComponent extends React.PureComponent<
               padding: '1rem',
               background: tab === 'all' ? theme.palette.grey.input : '',
               display: 'flex',
-              // borderRadius: '0.3rem',
+              borderRadius: '0.3rem',
               alignItems: 'center',
               cursor: 'pointer',
               height: '2rem',
@@ -391,7 +391,7 @@ class SelectPairListComponent extends React.PureComponent<
               fontSize: '1.4rem',
               color: theme.palette.grey.text,
               fontWeight: 'bold',
-              borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
+              // borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
             }}
             onClick={() => onTabChange('all')}
           >
@@ -403,14 +403,14 @@ class SelectPairListComponent extends React.PureComponent<
               background: tab === 'usdt' ? theme.palette.grey.input : '',
               display: 'flex',
               alignItems: 'center',
-              // borderRadius: '0.3rem',
+              borderRadius: '0.3rem',
               cursor: 'pointer',
               fontFamily: 'Avenir Next Demi',
               fontSize: '1.4rem',
               height: '2rem',
               color: theme.palette.grey.text,
               fontWeight: 'bold',
-              borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
+              // borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
             }}
             onClick={() => onTabChange('usdt')}
           >
@@ -423,13 +423,13 @@ class SelectPairListComponent extends React.PureComponent<
               display: 'flex',
               alignItems: 'center',
               cursor: 'pointer',
-              // borderRadius: '0.3rem',
+              borderRadius: '0.3rem',
               fontFamily: 'Avenir Next Demi',
               fontSize: '1.4rem',
               height: '2rem',
               color: theme.palette.grey.text,
               fontWeight: 'bold',
-              borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
+              // borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
             }}
             onClick={() => onTabChange('usdc')}
           >
@@ -443,54 +443,57 @@ class SelectPairListComponent extends React.PureComponent<
               display: 'flex',
               alignItems: 'center',
               cursor: 'pointer',
-              // borderRadius: '0.3rem',
+              borderRadius: '0.3rem',
               fontFamily: 'Avenir Next Demi',
               fontSize: '1.4rem',
               whiteSpace: 'nowrap',
               color: theme.palette.grey.text,
               fontWeight: 'bold',
-              borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
+              // borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
             }}
             onClick={() => onTabChange('leveraged')}
           >
             Leveraged tokens
           </Grid>
-
-          <Grid container style={{ justifyContent: 'flex-end', width: '45%' }}>
-            <Input
-              placeholder="Search"
-              disableUnderline={true}
-              style={{
-                width: '100%',
-                height: '3rem',
-                background: theme.palette.white.background,
-                borderRadius: '0.3rem',
-                color: theme.palette.grey.placeholder,
-                border: `.1rem solid ${theme.palette.grey.newborder}`,
-                paddingLeft: '1rem',
-              }}
-              value={searchValue}
-              onChange={onChangeSearch}
-              // inputProps={{
-              //   style: {
-              //     paddingLeft: '1rem',
-              //   },
-              // }}
-              endAdornment={
-                <InputAdornment
-                  style={{
-                    width: '10%',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                  }}
-                  disableTypography={true}
-                  position="end"
-                  autoComplete="off"
-                >
-                  <SvgIcon src={search} width="1.5rem" height="auto" />
-                </InputAdornment>
-              }
-            />
+          <Grid
+            style={{
+              padding: '1rem',
+              height: '2rem',
+              background: tab === 'public' ? theme.palette.grey.input : '',
+              display: 'flex',
+              alignItems: 'center',
+              cursor: 'pointer',
+              borderRadius: '0.3rem',
+              fontFamily: 'Avenir Next Demi',
+              fontSize: '1.4rem',
+              whiteSpace: 'nowrap',
+              color: theme.palette.grey.text,
+              fontWeight: 'bold',
+              // borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
+            }}
+            onClick={() => onTabChange('public')}
+          >
+            Public markets
+          </Grid>
+          <Grid
+            style={{
+              padding: '1rem',
+              height: '2rem',
+              background: tab === 'private' ? theme.palette.grey.input : '',
+              display: 'flex',
+              alignItems: 'center',
+              cursor: 'pointer',
+              borderRadius: '0.3rem',
+              fontFamily: 'Avenir Next Demi',
+              fontSize: '1.4rem',
+              whiteSpace: 'nowrap',
+              color: theme.palette.grey.text,
+              fontWeight: 'bold',
+              // borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
+            }}
+            onClick={() => onTabChange('private')}
+          >
+            Private markets{' '}
           </Grid>
           <AddCircleIcon
             onClick={() => this.setState({ showAddMarketPopup: true })}
@@ -601,7 +604,43 @@ class SelectPairListComponent extends React.PureComponent<
             </>
           )}
         </Grid>
-        <Grid style={{ overflow: 'hidden', height: 'calc(100% - 5rem)' }}>
+        <Grid container style={{ justifyContent: 'flex-end', width: '100%' }}>
+          <Input
+            placeholder="Search"
+            disableUnderline={true}
+            style={{
+              width: '100%',
+              height: '3rem',
+              background: theme.palette.white.background,
+              // borderRadius: '0.3rem',
+              color: theme.palette.grey.placeholder,
+              borderBottom: `.1rem solid ${theme.palette.grey.newborder}`,
+              paddingLeft: '1rem',
+            }}
+            value={searchValue}
+            onChange={onChangeSearch}
+            // inputProps={{
+            //   style: {
+            //     paddingLeft: '1rem',
+            //   },
+            // }}
+            endAdornment={
+              <InputAdornment
+                style={{
+                  width: '10%',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                }}
+                disableTypography={true}
+                position="end"
+                autoComplete="off"
+              >
+                <SvgIcon src={search} width="1.5rem" height="auto" />
+              </InputAdornment>
+            }
+          />
+        </Grid>
+        <Grid style={{ overflow: 'hidden', height: 'calc(100% - 8rem)' }}>
           <AutoSizer>
             {({ width, height }: { width: number; height: number }) => (
               <Table
@@ -651,7 +690,7 @@ class SelectPairListComponent extends React.PureComponent<
                   label={`Pair`}
                   dataKey="symbol"
                   headerStyle={{
-                    textAlign: 'left',
+                    textAlign: 'center',
                     paddingRight: '6px',
                     paddingLeft: '1rem',
                     fontSize: '1rem',
@@ -673,7 +712,7 @@ class SelectPairListComponent extends React.PureComponent<
                   dataKey="price"
                   headerStyle={{
                     paddingRight: 'calc(10px)',
-                    textAlign: 'left',
+                    textAlign: 'center',
                     fontSize: '1rem',
 
                     color: theme.palette.grey.text,
@@ -713,7 +752,7 @@ class SelectPairListComponent extends React.PureComponent<
                   dataKey="volume24hChange"
                   headerStyle={{
                     paddingRight: 'calc(10px)',
-                    textAlign: 'left',
+                    textAlign: 'center',
                     fontSize: '1rem',
 
                     color: theme.palette.grey.text,
@@ -753,7 +792,7 @@ class SelectPairListComponent extends React.PureComponent<
                   dataKey="trades24h"
                   headerStyle={{
                     paddingRight: 'calc(10px)',
-                    textAlign: 'left',
+                    textAlign: 'center',
                     fontSize: '1rem',
 
                     color: theme.palette.grey.text,
