@@ -75,7 +75,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
     this.setState({ isMenuOpen: true })
   }
 
-  handleChange = async ({ value }: { value: string }) => {
+  handleChange = async ({ value, isCustomUserMarket, address }: { value: string, isCustomUserMarket: boolean, address: string }) => {
     const {
       getCharts,
       getViewModeQuery: {
@@ -92,7 +92,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       multichart: { charts },
     } = getCharts
 
-    console.log('onSelectPair', value, markets)
+    console.log('onSelectPair', value, markets, isCustomUserMarket)
 
     if (!value) {
       return
@@ -104,9 +104,14 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       const pair = value.split('_').join('/')
       // Need to refactor this, address of a coin should be in the value, not name
       // console.log('value: ', value)
-      const selectedMarketFormSelector = markets.find((el) => el.name === pair)
-      console.log('selectedMarketFormSelector', selectedMarketFormSelector)
-      setMarketAddress(selectedMarketFormSelector.address.toBase58())
+      if (!isCustomUserMarket) {
+        const selectedMarketFormSelector = markets.find((el) => el.name === pair)
+        console.log('selectedMarketFormSelector', selectedMarketFormSelector)
+        setMarketAddress(selectedMarketFormSelector.address.toBase58())
+      } else {
+        console.log('address', address)
+        setMarketAddress(address)
+      }
 
       const chartPageType = marketType === 0 ? 'spot' : 'futures'
       history.push(`/chart/${chartPageType}/${value}`)

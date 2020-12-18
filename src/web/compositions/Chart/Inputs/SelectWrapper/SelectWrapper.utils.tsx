@@ -255,21 +255,21 @@ export const combineSelectWrapperData = ({
       },
       symbol: {
         render: (
-          <span onClick={() => onSelectPair({ value: el.symbol })}>
+          <span>
             {el.symbol}
           </span>
         ),
-        onClick: () => onSelectPair({ value: el.symbol }),
+        onClick: () => onSelectPair({ value: el.symbol, isCustomUserMarket: el.isCustomUserMarket, address: el.address, programId: el.programId, }),
         contentToSort: el.symbol,
       },
       price: {
         contentToSort: +el.closePrice,
         render: (
-          <span onClick={() => onSelectPair({ value: el.symbol })}>
+          <span >
             {formatNumberToUSFormat(stripDigitPlaces(el.closePrice, 2))}
           </span>
         ),
-        onClick: () => onSelectPair({ value: el.symbol }),
+        
         color: priceColor,
       },
       // price24hChange: {
@@ -284,12 +284,12 @@ export const combineSelectWrapperData = ({
       //             ? theme.palette.green.main
       //             : theme.palette.red.main,
       //       }}
-      //       onClick={() => onSelectPair({ value: el.symbol })}
+      //       
       //     >
       //       {`${formatNumberToUSFormat(stripDigitPlaces(el.closePrice))}%`}
       //     </span>
       //   ),
-      //   onClick: () => onSelectPair({ value: el.symbol }),
+      //   
       //   contentToSort: +el.closePrice,
       //   color:
       //     +el.closePrice === 0
@@ -302,37 +302,37 @@ export const combineSelectWrapperData = ({
         isNumber: true,
         contentToSort: +el.volume,
         render: (
-          <span onClick={() => onSelectPair({ value: el.symbol })}>
+          <span >
             {`${formatNumberToUSFormat(
               roundAndFormatNumber(el.volume, 2, false)
             )} ${quote}`}
           </span>
         ),
-        onClick: () => onSelectPair({ value: el.symbol }),
+        
       },
       // tradesChange24h: {
       //   isNumber: true,
       //   contentToSort: +el.tradesDiff,
       //   render: (
-      //     <span onClick={() => onSelectPair({ value: el.symbol })}>
+      //     <span >
       //       {`${formatNumberToUSFormat(
       //         roundAndFormatNumber(el.tradesDiff, 2, false)
       //       )} ${quote}`}
       //     </span>
       //   ),
-      //   onClick: () => onSelectPair({ value: el.symbol }),
+      //   
       // },
       trades24h: {
         isNumber: true,
         contentToSort: +el.tradesCount,
         render: (
-          <span onClick={() => onSelectPair({ value: el.symbol })}>
+          <span >
             {`${formatNumberToUSFormat(
               roundAndFormatNumber(el.tradesCount, 2, false)
             )} ${quote}`}
           </span>
         ),
-        onClick: () => onSelectPair({ value: el.symbol }),
+        
       },
     }
   })

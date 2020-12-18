@@ -176,7 +176,8 @@ const CustomMarketDialog = ({
           publicKey: publicKey,
           symbol: `${baseLabel}_${quoteLabel}`,
           isPrivate: isPrivate,
-          marketId: marketId,
+          marketId,
+          programId
         },
       })
     }

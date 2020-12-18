@@ -31,6 +31,8 @@ import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getChartData } from '@core/graphql/queries/chart/getChartData'
 import { pairProperties } from '@core/graphql/queries/chart/getPairProperties'
+import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
+
 import {
   prefetchCoinSelector,
   prefetchDifferentMarketForCoinSelector,
@@ -50,8 +52,62 @@ import { IProps } from './Chart.types'
 import { useMarket } from '@sb/dexUtils/markets'
 
 import { getDecimalCount } from '@sb/dexUtils/utils'
+import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
+import { AWESOME_MARKETS } from '@dr497/awesome-serum-markets'
+import { withPublicKey } from '@core/hoc/withPublicKey'
 
 function ChartPageComponent(props: any) {
+  const {
+    theme,
+    getChartDataQuery: {
+      getMyProfile: { _id } = { _id: '' },
+      getTradingSettings: {
+        selectedTradingKey,
+        hedgeMode,
+        isFuturesWarsKey,
+      } = {
+        selectedTradingKey: '',
+        hedgeMode: false,
+        isFuturesWarsKey: false,
+      },
+      marketByMarketType = [],
+      chart: { activeExchange, currencyPair: { pair }, view } = {
+        currencyPair: { pair: 'BTC_USDT' },
+        activeExchange: { name: 'Binance', symbol: 'binance' },
+        view: 'default',
+      },
+    },
+    getTooltipSettingsQuery: {
+      getTooltipSettings = { chartPage: false, chartPagePopup: false },
+    } = {
+      getTooltipSettings: { chartPage: false, chartPagePopup: false },
+    },
+    getChartLayoutQuery: {
+      chart: { layout } = {
+        layout: {
+          hideDepthChart: false,
+          hideOrderbook: false,
+          hideTradeHistory: false,
+        },
+      },
+    } = {
+      chart: {
+        layout: {
+          hideDepthChart: false,
+          hideOrderbook: false,
+          hideTradeHistory: false,
+        },
+      },
+    },
+    pairPropertiesQuery,
+    marketType,
+    selectedPair,
+    authenticated,
+    changeChartLayoutMutation,
+    setCustomMarkets,
+    getUserCustomMarketsQuery
+  } = props
+
   const [terminalViewMode, updateTerminalViewMode] = useState('default')
   const [stepIndex, updateStepIndex] = useState(0)
   const [key, updateKey] = useState(0)
@@ -95,6 +151,19 @@ function ChartPageComponent(props: any) {
       document.title = 'Cryptocurrencies AI'
     }
   }, [props.marketType])
+
+  console.log('getUserCustomMarketsQuery', getUserCustomMarketsQuery)
+
+  useEffect(() => {
+    const userMarkets = getUserCustomMarkets.map(({ publicKey, ...rest }) => ({ ...rest }))
+    const updatedMarkets = AWESOME_MARKETS.map((el) => ({
+      ...el,
+      address: el.address.toString(),
+      programId: el.programId.toString(),
+    }))
+
+    setCustomMarkets([...updatedMarkets, ...userMarkets])
+  }, [getUserCustomMarketsQuery?.getUserCustomMarkets?.length])
 
   const handleJoyrideCallback = (data) => {
     if (
@@ -145,55 +214,6 @@ function ChartPageComponent(props: any) {
       name: 'chartPagePopup',
     })
   }
-
-  const {
-    theme,
-    getChartDataQuery: {
-      getMyProfile: { _id } = { _id: '' },
-      getTradingSettings: {
-        selectedTradingKey,
-        hedgeMode,
-        isFuturesWarsKey,
-      } = {
-        selectedTradingKey: '',
-        hedgeMode: false,
-        isFuturesWarsKey: false,
-      },
-      marketByMarketType = [],
-      chart: { activeExchange, currencyPair: { pair }, view } = {
-        currencyPair: { pair: 'BTC_USDT' },
-        activeExchange: { name: 'Binance', symbol: 'binance' },
-        view: 'default',
-      },
-    },
-    getTooltipSettingsQuery: {
-      getTooltipSettings = { chartPage: false, chartPagePopup: false },
-    } = {
-      getTooltipSettings: { chartPage: false, chartPagePopup: false },
-    },
-    getChartLayoutQuery: {
-      chart: { layout } = {
-        layout: {
-          hideDepthChart: false,
-          hideOrderbook: false,
-          hideTradeHistory: false,
-        },
-      },
-    } = {
-      chart: {
-        layout: {
-          hideDepthChart: false,
-          hideOrderbook: false,
-          hideTradeHistory: false,
-        },
-      },
-    },
-    pairPropertiesQuery,
-    marketType,
-    selectedPair,
-    authenticated,
-    changeChartLayoutMutation,
-  } = props
 
   const { market } = useMarket()
 
@@ -405,9 +425,11 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
 
 // TODO: combine all queries to one
 export default compose(
+  withMarketUtilsHOC,
   withErrorFallback,
   withAuthStatus,
   withTheme(),
+  withPublicKey,
   // withAuth,
   queryRendererHoc({
     skip: (props: any) => !props.authenticated,
@@ -418,6 +440,14 @@ export default compose(
     variables: {
       marketType: 1, // hardcode here to get only futures marketIds'
     },
+  }),
+  queryRendererHoc({
+    query: getUserCustomMarkets,
+    name: 'getUserCustomMarketsQuery',
+    fetchPolicy: 'cache-first',
+    variables: (props) => ({
+      publicKey: props.publicKey,
+    }),
   }),
   queryRendererHoc({
     skip: (props: any) => !props.authenticated,

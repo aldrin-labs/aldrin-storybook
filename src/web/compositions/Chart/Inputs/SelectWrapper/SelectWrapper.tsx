@@ -697,7 +697,7 @@ class SelectPairListComponent extends React.PureComponent<
                     paddingRight: '6px',
                     paddingLeft: '1rem',
                     fontSize: '1rem',
-
+                    textAlign: 'left',
                     color: theme.palette.grey.text,
                   }}
                   width={width}
@@ -717,7 +717,7 @@ class SelectPairListComponent extends React.PureComponent<
                     paddingRight: 'calc(10px)',
                     textAlign: 'center',
                     fontSize: '1rem',
-
+                    textAlign: 'left',
                     color: theme.palette.grey.text,
                   }}
                   width={width}
@@ -737,7 +737,7 @@ class SelectPairListComponent extends React.PureComponent<
                     paddingRight: 'calc(10px)',
                     textAlign: 'left',
                     fontSize: '1rem',
-
+                    textAlign: 'left',
                     color: theme.palette.grey.text,
                   }}
                   width={width}
@@ -757,7 +757,7 @@ class SelectPairListComponent extends React.PureComponent<
                     paddingRight: 'calc(10px)',
                     textAlign: 'center',
                     fontSize: '1rem',
-
+                    textAlign: 'left',
                     color: theme.palette.grey.text,
                   }}
                   width={width}
@@ -777,7 +777,7 @@ class SelectPairListComponent extends React.PureComponent<
                     paddingRight: 'calc(10px)',
                     textAlign: 'left',
                     fontSize: '1rem',
-
+                    textAlign: 'left',
                     color: theme.palette.grey.text,
                   }}
                   width={width}
@@ -797,7 +797,7 @@ class SelectPairListComponent extends React.PureComponent<
                     paddingRight: 'calc(10px)',
                     textAlign: 'center',
                     fontSize: '1rem',
-
+                    textAlign: 'left',
                     color: theme.palette.grey.text,
                   }}
                   width={width}
@@ -871,7 +871,7 @@ export default compose(
       prevStartTimestamp: `${datesForQuery.prevStartTimestamp}`,
       prevEndTimestamp: `${datesForQuery.prevEndTimestamp}`,
     }),
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
     withOutSpinner: true,
     withTableLoader: false,
   }),
