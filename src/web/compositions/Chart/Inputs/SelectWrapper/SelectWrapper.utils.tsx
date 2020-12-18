@@ -182,15 +182,12 @@ export const combineSelectWrapperData = ({
       )
     }
 
+    if (tab === 'private') {
+      processedData = processedData.filter((el) => el.isPrivateCustomMarket)
+    }
     if (tab === 'public') {
       processedData = processedData.filter(
-        (el) => el.symbol.includes('BULL') || el.symbol.includes('BEAR')
-      )
-    }
-
-    if (tab === 'private') {
-      processedData = processedData.filter(
-        (el) => el.symbol.includes('BULL') || el.symbol.includes('BEAR')
+        (el) => el.isCustomUserMarket && !el.isPrivateCustomMarket
       )
     }
   }
@@ -237,7 +234,7 @@ export const combineSelectWrapperData = ({
     const priceColor = !!previousData ? '' : ''
 
     const [base, quote] = el.symbol.split('_')
-    // console.log('filtredData', el)
+    console.log('filtredData', el)
     return {
       id: `${el.symbol}`,
       favorite: {
