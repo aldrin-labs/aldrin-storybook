@@ -106,10 +106,12 @@ function ChartPageComponent(props: any) {
     changeChartLayoutMutation,
     setCustomMarkets,
     getUserCustomMarketsQuery,
+    getUserCustomMarketsQueryRefetch,
     setMarketAddress,
     location,
     history,
-    customMarkets
+    customMarkets,
+    publicKey
   } = props
 
   const [terminalViewMode, updateTerminalViewMode] = useState('default')
@@ -159,6 +161,10 @@ function ChartPageComponent(props: any) {
   }, [props.marketType])
 
   useEffect(() => {
+    getUserCustomMarketsQueryRefetch()
+  }, [publicKey])
+
+  useEffect(() => {
     const userMarkets = getUserCustomMarketsQuery.getUserCustomMarkets.map(
       ({ publicKey, marketId, isPrivate, ...rest }) => ({
         ...rest,
@@ -176,9 +182,7 @@ function ChartPageComponent(props: any) {
     }))
 
     setCustomMarkets([...updatedMarkets, ...userMarkets])
-  }, [getUserCustomMarketsQuery?.getUserCustomMarkets?.length])
-
-  console.log('getUserCustomMarketsQuery', getUserCustomMarketsQuery)
+  }, [getUserCustomMarketsQuery.getUserCustomMarkets.length])
 
   useEffect(() => {
     const pair = !!location.pathname.split('/')[3] ? location.pathname.split('/')[3] : 'SRM_USDT'
@@ -200,7 +204,6 @@ function ChartPageComponent(props: any) {
     }))
 
     const allMarkets = [...props.markets, ...userMarkets, ...updatedMarkets]
-    console.log('allMarkets', allMarkets, customMarkets)
 
     const selectedMarketFromUrl = allMarkets.find(
       (el) => el.name.split('/').join('_') === pair
@@ -500,7 +503,7 @@ export default compose(
   queryRendererHoc({
     query: getUserCustomMarkets,
     name: 'getUserCustomMarketsQuery',
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
     variables: (props) => ({
       publicKey: props.publicKey,
     }),

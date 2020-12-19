@@ -99,10 +99,9 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
         console.log('selectedMarketFormSelector', selectedMarketFormSelector)
         setMarketAddress(selectedMarketFormSelector.address.toBase58())
       } else {
-        console.log('customMarkets', customMarkets, pair)
         selectedMarketFormSelector = customMarkets.find((el) => el.name === pair)
         console.log('selectedMarketFormSelector', selectedMarketFormSelector)
-        setMarketAddress(selectedMarketFormSelector.address)
+        setMarketAddress(selectedMarketFormSelector ? selectedMarketFormSelector.address : address)
       }
 
       const chartPageType = marketType === 0 ? 'spot' : 'futures'

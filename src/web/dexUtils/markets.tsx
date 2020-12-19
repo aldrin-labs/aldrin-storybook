@@ -1097,7 +1097,6 @@ export function useBalancesForDeprecatedMarkets() {
 }
 
 export function getMarketInfos(customMarkets) {
-  console.log('customMarkets', customMarkets)
   const customMarketsInfo = customMarkets.map((m) => ({
     ...m,
     address: new PublicKey(m.address),

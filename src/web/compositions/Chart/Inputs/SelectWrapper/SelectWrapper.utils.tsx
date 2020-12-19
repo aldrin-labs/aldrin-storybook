@@ -131,7 +131,12 @@ export const combineSelectWrapperData = ({
     return []
   }
 
-  let processedData = data
+  let processedData = data.filter(
+    (market, index, arr) =>
+      arr.findIndex(
+        (marketInFindIndex) => marketInFindIndex.symbol === market.symbol
+      ) === index
+  )
 
   if (tabSpecificCoin !== '' && tabSpecificCoin !== 'ALL') {
     processedData = processedData.filter((el) =>
@@ -180,22 +185,22 @@ export const combineSelectWrapperData = ({
     }
     if (tab === 'leveraged') {
       processedData = processedData.filter(
-        (el) => el.symbol.includes('BULL') || el.symbol.includes('BEAR') && !el.isCustomUserMarket
+        (el) =>
+          el.symbol.includes('BULL') ||
+          (el.symbol.includes('BEAR') && !el.isCustomUserMarket)
       )
     }
 
     if (tab === 'private') {
-      processedData = processedData.filter((el) => el.isPrivateCustomMarket)
+      processedData = data.filter((el) => el.isPrivateCustomMarket)
     }
     if (tab === 'public') {
-      processedData = processedData.filter(
+      processedData = data.filter(
         (el) => el.isCustomUserMarket && !el.isPrivateCustomMarket
       )
     }
   } else {
-    processedData = processedData.filter(
-      (el) => !el.isCustomUserMarket
-    )
+    processedData = processedData.filter((el) => !el.isCustomUserMarket)
   }
 
   if (searchValue) {
@@ -257,22 +262,24 @@ export const combineSelectWrapperData = ({
         ),
       },
       symbol: {
-        render: (
-          <span>
-            {el.symbol}
-          </span>
-        ),
-        onClick: () => onSelectPair({ value: el.symbol, isCustomUserMarket: el.isCustomUserMarket, address: el.address, programId: el.programId, }),
+        render: <span>{el.symbol}</span>,
+        onClick: () =>
+          onSelectPair({
+            value: el.symbol,
+            isCustomUserMarket: el.isCustomUserMarket,
+            address: el.address,
+            programId: el.programId,
+          }),
         contentToSort: el.symbol,
       },
       price: {
         contentToSort: +el.closePrice,
         render: (
-          <span >
+          <span>
             {formatNumberToUSFormat(stripDigitPlaces(el.closePrice, 2))}
           </span>
         ),
-        
+
         color: priceColor,
       },
       // price24hChange: {
@@ -287,12 +294,12 @@ export const combineSelectWrapperData = ({
       //             ? theme.palette.green.main
       //             : theme.palette.red.main,
       //       }}
-      //       
+      //
       //     >
       //       {`${formatNumberToUSFormat(stripDigitPlaces(el.closePrice))}%`}
       //     </span>
       //   ),
-      //   
+      //
       //   contentToSort: +el.closePrice,
       //   color:
       //     +el.closePrice === 0
@@ -305,13 +312,12 @@ export const combineSelectWrapperData = ({
         isNumber: true,
         contentToSort: +el.volume,
         render: (
-          <span >
+          <span>
             {`${formatNumberToUSFormat(
               roundAndFormatNumber(el.volume, 2, false)
             )} ${quote}`}
           </span>
         ),
-        
       },
       // tradesChange24h: {
       //   isNumber: true,
@@ -323,19 +329,18 @@ export const combineSelectWrapperData = ({
       //       )} ${quote}`}
       //     </span>
       //   ),
-      //   
+      //
       // },
       trades24h: {
         isNumber: true,
         contentToSort: +el.tradesCount,
         render: (
-          <span >
+          <span>
             {`${formatNumberToUSFormat(
               roundAndFormatNumber(el.tradesCount, 2, false)
             )} ${quote}`}
           </span>
         ),
-        
       },
     }
   })

@@ -72,7 +72,8 @@ const CustomMarketDialog = ({
   history,
   addSerumCustomMarketMutation,
   publicKey,
-  getUserCustomMarketsQueryRefetch
+  getUserCustomMarketsQueryRefetch,
+  getSerumMarketDataQueryRefetch
 }) => {
   const [showCreateMarketPopup, changeShowCreateMarketPopup] = useState(false)
   const connection = useConnection()
@@ -193,6 +194,7 @@ const CustomMarketDialog = ({
     }
 
     await getUserCustomMarketsQueryRefetch()
+    await getSerumMarketDataQueryRefetch()
 
     await changeLoading(false)
 

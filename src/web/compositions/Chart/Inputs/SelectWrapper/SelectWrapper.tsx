@@ -101,6 +101,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
       setMarketAddress,
       customMarkets,
       getSerumMarketDataQuery,
+      getSerumMarketDataQueryRefetch
     } = this.props
 
     const {
@@ -318,6 +319,7 @@ class SelectPairListComponent extends React.PureComponent<
       setCustomMarkets,
       setMarketAddress,
       customMarkets,
+      getSerumMarketDataQueryRefetch
     } = this.props
 
     const onAddCustomMarket = (customMarket: any) => {
@@ -835,6 +837,7 @@ class SelectPairListComponent extends React.PureComponent<
           open={showAddMarketPopup}
           onClose={() => this.setState({ showAddMarketPopup: false })}
           onAddCustomMarket={onAddCustomMarket}
+          getSerumMarketDataQueryRefetch={getSerumMarketDataQueryRefetch}
         />
       </Grid>
     )
@@ -872,7 +875,7 @@ export default compose(
       prevEndTimestamp: `${datesForQuery.prevEndTimestamp}`,
     }),
     // TODO: make chache-first here and in CHART by refetching this after adding market
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
     withOutSpinner: true,
     withTableLoader: false,
   }),
