@@ -1,6 +1,6 @@
 import React, { ReactElement, useMemo, useState } from 'react'
 // import { Button, Form, Input, Tooltip, Typography } from 'antd';
-import { copy } from 'clipboard-copy'
+import copy from 'clipboard-copy'
 import { PublicKey } from '@solana/web3.js'
 import { notify } from '@sb/dexUtils/notifications'
 import { MARKETS } from '@project-serum/serum'
