@@ -49,6 +49,7 @@ export const TradeInputHeader = ({
   tooltipStyles = {},
   onValueClick = () => {},
   theme,
+  width,
 }: {
   title: string | JSX.Element
   padding?: string
@@ -61,11 +62,13 @@ export const TradeInputHeader = ({
   tooltipStyles?: CSSProperties
   onValueClick?: () => void
   theme: Theme
+  width
 }) => {
   return (
     <InputRowContainer
       justify={needRightValue ? 'space-between' : 'flex-start'}
       padding={padding}
+      // width={width}
     >
       {haveTooltip ? (
         <>
@@ -79,9 +82,9 @@ export const TradeInputHeader = ({
             <SeparateInputTitle
               theme={theme}
               haveTooltip={haveTooltip}
-              style={{
-                borderBottom: haveTooltip ? '.1rem dashed #e0e5ec' : 'none',
-              }}
+              // style={{
+              //   borderBottom: haveTooltip ? '.1rem dashed #e0e5ec' : 'none',
+              // }}
             >
               {title}
             </SeparateInputTitle>
@@ -103,7 +106,7 @@ export const TradeInputHeader = ({
       >
         {title}
       </SeparateInputTitle> */}
-      {needLine && <Line theme={theme} lineMargin={lineMargin} />}
+      {needLine && <Line theme={theme} width={'18%'} lineMargin={lineMargin} />}
       {needRightValue && (
         <BlueInputTitle theme={theme} onClick={() => onValueClick()}>
           {rightValue}

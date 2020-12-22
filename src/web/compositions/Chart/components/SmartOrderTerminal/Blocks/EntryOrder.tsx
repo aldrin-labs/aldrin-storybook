@@ -196,35 +196,6 @@ export const EntryOrderBlock = ({
           )}
           <DarkTooltip
             maxWidth={'30rem'}
-            title={'Advanced entry using your Alerts from TradingView.com.'}
-          >
-            <AdditionalSettingsButton
-              style={{ textDecoration: 'underline' }}
-              theme={theme}
-              isActive={entryPoint.TVAlert.isTVAlertOn}
-              onClick={() => {
-                updateSubBlockValue(
-                  'entryPoint',
-                  'TVAlert',
-                  'isTVAlertOn',
-                  !entryPoint.TVAlert.isTVAlertOn
-                )
-
-                if (entryPoint.TVAlert.isTVAlertOn) {
-                  updateSubBlockValue(
-                    'entryPoint',
-                    'TVAlert',
-                    'plotEnabled',
-                    false
-                  )
-                }
-              }}
-            >
-              Use TV Alert
-            </AdditionalSettingsButton>
-          </DarkTooltip>
-          <DarkTooltip
-            maxWidth={'30rem'}
             title={'Place multiple entry targets to average your lose'}
           >
             <AdditionalSettingsButton
@@ -273,6 +244,35 @@ export const EntryOrderBlock = ({
               }}
             >
               Averaging
+            </AdditionalSettingsButton>
+          </DarkTooltip>
+          <DarkTooltip
+            maxWidth={'30rem'}
+            title={'Advanced entry using your Alerts from TradingView.com.'}
+          >
+            <AdditionalSettingsButton
+              style={{ textDecoration: 'underline' }}
+              theme={theme}
+              isActive={entryPoint.TVAlert.isTVAlertOn}
+              onClick={() => {
+                updateSubBlockValue(
+                  'entryPoint',
+                  'TVAlert',
+                  'isTVAlertOn',
+                  !entryPoint.TVAlert.isTVAlertOn
+                )
+
+                if (entryPoint.TVAlert.isTVAlertOn) {
+                  updateSubBlockValue(
+                    'entryPoint',
+                    'TVAlert',
+                    'plotEnabled',
+                    false
+                  )
+                }
+              }}
+            >
+              Use TV Alert
             </AdditionalSettingsButton>
           </DarkTooltip>
         </InputRowContainer>
@@ -509,35 +509,6 @@ export const EntryOrderBlock = ({
                 }}
               >
                 Place Entry After TP
-              </AdditionalSettingsButton>
-            </DarkTooltip>
-            <DarkTooltip
-              title={
-                'Place order at Break-Even Point for $0 net loss after fees'
-              }
-              maxWidth={'30rem'}
-            >
-              <AdditionalSettingsButton
-                theme={theme}
-                width={'33%'}
-                isActive={entryPoint.averaging.placeWithoutLoss}
-                onClick={() => {
-                  updateSubBlockValue(
-                    'entryPoint',
-                    'averaging',
-                    'placeWithoutLoss',
-                    !entryPoint.averaging.placeWithoutLoss
-                  )
-
-                  updateSubBlockValue(
-                    'entryPoint',
-                    'averaging',
-                    'placeEntryAfterTAP',
-                    false
-                  )
-                }}
-              >
-                Place Break-even SL
               </AdditionalSettingsButton>
             </DarkTooltip>
           </InputRowContainer>
@@ -1081,7 +1052,7 @@ export const EntryOrderBlock = ({
           //   }
           //   title={'price deviation (%)'}
           // >
-          <InputRowContainer style={{ margin: '1rem auto' }}>
+          <InputRowContainer style={{ margin: '1rem 0 1rem 0' }}>
             <Input
               header={'deviation'}
               needTooltip
@@ -1091,8 +1062,8 @@ export const EntryOrderBlock = ({
               }
               theme={theme}
               padding={'0'}
-              width={'45%'}
-              textAlign={'left'}
+              width={'38%'}
+              textAlign={'right'}
               symbol={pair[1]}
               value={entryPoint.trailing.trailingDeviationPrice}
               showErrors={showErrors}
@@ -1129,10 +1100,11 @@ export const EntryOrderBlock = ({
                 )
               }}
             />
+            <SvgIcon src={Chain} style={{ margin: 'auto 0.5rem' }} />
 
             <Input
               theme={theme}
-              padding={'0 .8rem 0 .8rem'}
+              padding={'0 .8rem 0 0'}
               width={'24%'}
               needTitleBlock
               symbol={'%'}
@@ -1180,7 +1152,7 @@ export const EntryOrderBlock = ({
                 )
               }
               sliderContainerStyles={{
-                width: entryPoint.TVAlert.plotEnabled ? '20%' : '45%',
+                width: entryPoint.TVAlert.plotEnabled ? '20%' : '36%',
                 margin: '0 .8rem 0 .8rem',
               }}
               onChange={(value) => {
@@ -1689,7 +1661,7 @@ export const EntryOrderBlock = ({
 
         {entryPoint.averaging.enabled && (
           <>
-            <InputRowContainer padding="0 0 .6rem 0">
+            <InputRowContainer padding="1rem 0 .6rem 0">
               <BtnCustom
                 btnColor={theme.palette.white.main}
                 backgroundColor={theme.palette.orange.main}
@@ -1777,8 +1749,114 @@ export const EntryOrderBlock = ({
 
         {entryPoint.TVAlert.isTVAlertOn && (
           <>
-            {' '}
-            <FormInputContainer
+            <InputRowContainer style={{ marginTop: '1rem' }}>
+              {' '}
+              <FormInputContainer
+                style={{
+                  width: 'calc(50% - 1rem)',
+                  margin: '0 1rem 0 0',
+                  alignItems: 'flex-start',
+                }}
+                theme={theme}
+                padding={'0 0 0 0'}
+                title={
+                  <DarkTooltip
+                    title={
+                      <img
+                        style={{ width: '35rem', height: '50rem' }}
+                        src={WebHookImg}
+                      />
+                    }
+                  >
+                    <span>
+                      paste it into alert{' '}
+                      <span
+                        style={{
+                          color: '#7380EB',
+                          textDecoration: 'underline',
+                        }}
+                      >
+                        web-hook
+                      </span>{' '}
+                      URL field
+                    </span>
+                  </DarkTooltip>
+                }
+              >
+                <BtnCustom
+                  needMinWidth={false}
+                  btnWidth="calc(100%)"
+                  height="3rem"
+                  fontSize="1.4rem"
+                  padding="1rem 2rem"
+                  borderRadius=".8rem"
+                  borderColor={'#7380EB'}
+                  btnColor={'#fff'}
+                  backgroundColor={'#7380EB'}
+                  textTransform={'none'}
+                  margin={'1rem 0 0 0'}
+                  transition={'all .4s ease-out'}
+                  onClick={() => {
+                    copy(`https://${API_URL}/createSmUsingTemplate`)
+                  }}
+                >
+                  Copy web-hook URL
+                </BtnCustom>
+              </FormInputContainer>
+              <FormInputContainer
+                style={{
+                  width: 'calc(50% - 1rem)',
+                  margin: '0 0 0 1rem',
+                  alignItems: 'flex-start',
+                }}
+                theme={theme}
+                padding={'0 0 0 0'}
+                title={
+                  <DarkTooltip
+                    title={
+                      <img
+                        style={{ width: '40rem', height: '42rem' }}
+                        src={MessageImg}
+                      />
+                    }
+                  >
+                    <span>
+                      paste it into alert{' '}
+                      <span
+                        style={{
+                          color: '#7380EB',
+                          textDecoration: 'underline',
+                        }}
+                      >
+                        message
+                      </span>{' '}
+                      URL field
+                    </span>
+                  </DarkTooltip>
+                }
+              >
+                <BtnCustom
+                  needMinWidth={false}
+                  btnWidth="calc(100%)"
+                  height="3rem"
+                  fontSize="1.4rem"
+                  padding="1rem 2rem"
+                  borderRadius=".8rem"
+                  borderColor={'#7380EB'}
+                  btnColor={'#fff'}
+                  backgroundColor={'#7380EB'}
+                  textTransform={'none'}
+                  margin={'1rem 0 0 0'}
+                  transition={'all .4s ease-out'}
+                  onClick={() => {
+                    copy(getEntryAlertJson())
+                  }}
+                >
+                  Copy message
+                </BtnCustom>
+              </FormInputContainer>
+            </InputRowContainer>{' '}
+            {/* <FormInputContainer
               theme={theme}
               padding={'0 0 .8rem 0'}
               haveTooltip={true}
@@ -1807,8 +1885,8 @@ export const EntryOrderBlock = ({
                   textAlign={'left'}
                   value={`https://${API_URL}/createSmUsingTemplate`}
                   onChange={() => {}}
-                />
-                <BtnCustom
+                /> */}
+            {/* <BtnCustom
                   btnWidth="calc(15% - .8rem)"
                   height="auto"
                   margin="0 0 0 .8rem"
@@ -1837,8 +1915,8 @@ export const EntryOrderBlock = ({
                   style={{ width: '40rem', height: '42rem' }}
                   src={MessageImg}
                 />
-              }
-              title={
+              } */}
+            {/* title={
                 <span>
                   paste it into{' '}
                   <span style={{ color: theme.palette.blue.background }}>
@@ -1857,9 +1935,9 @@ export const EntryOrderBlock = ({
                   textAlign={'left'}
                   value={getEntryAlertJson()}
                   onChange={() => {}}
-                />
-                {/* entryPoint.TVAlert.templateToken */}
-                <BtnCustom
+                /> */}
+            {/* entryPoint.TVAlert.templateToken */}
+            {/* <BtnCustom
                   btnWidth="calc(15% - .8rem)"
                   height="auto"
                   margin="0 0 0 .8rem"
@@ -1889,14 +1967,14 @@ export const EntryOrderBlock = ({
                   hoverColor={theme.palette.white.main}
                   hoverBackground={theme.palette.blue.main}
                   transition={'all .4s ease-out'}
-                  onClick={() => {
-                    // redirect to full example page
-                  }}
+                  onClick={() => { */}
+            {/* // redirect to full example page */}
+            {/* }}
                 >
                   example
                 </BtnCustom>
               </InputRowContainer>
-            </FormInputContainer>
+            </FormInputContainer> */}
           </>
         )}
       </div>

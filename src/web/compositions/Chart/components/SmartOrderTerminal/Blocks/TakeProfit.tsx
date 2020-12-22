@@ -80,7 +80,11 @@ export const TakeProfitBlock = ({
         />
       </InputRowContainer>
       <div>
-        <InputRowContainer justify="flex-start" padding={'.6rem 0 1.2rem 0'}>
+        <InputRowContainer
+          justify="flex-start"
+          padding={'.6rem 0 1.2rem 0'}
+          style={{ margin: '1rem auto 0.5rem auto' }}
+        >
           {!entryPoint.averaging.enabled && (
             <DarkTooltip
               maxWidth={'40rem'}
@@ -266,7 +270,7 @@ export const TakeProfitBlock = ({
             //   }
             //   title={'stop price'}
             // >
-            <InputRowContainer>
+            <InputRowContainer style={{ marginBottom: '1rem' }}>
               <SliderWithPriceAndPercentageFieldRow
                 {...{
                   pair,
@@ -367,7 +371,7 @@ export const TakeProfitBlock = ({
                 }
                 title={!takeProfit.external ? 'activation price' : 'stop price'}
               > */}
-              <InputRowContainer>
+              <InputRowContainer style={{ marginBottom: '1rem' }}>
                 <SliderWithPriceAndPercentageFieldRow
                   {...{
                     pair,
@@ -523,7 +527,8 @@ export const TakeProfitBlock = ({
               tooltipText={''}
               title={'action when alert'}
             >
-              <InputRowContainer>
+              <InputRowContainer style={{ marginTop: '0.5rem' }}>
+                {' '}
                 <AdditionalSettingsButton
                   theme={theme}
                   btnWidth={'50%'}
@@ -580,113 +585,105 @@ export const TakeProfitBlock = ({
                 />
               </InputRowContainer>
             )}
-            <FormInputContainer
-              theme={theme}
-              padding={'0 0 .8rem 0'}
-              haveTooltip={true}
-              tooltipText={
-                <img
-                  style={{ width: '35rem', height: '50rem' }}
-                  src={WebHookImg}
-                />
-              }
-              title={
-                <span>
-                  paste it into{' '}
-                  <span style={{ color: theme.palette.blue.background }}>
-                    web-hook url
-                  </span>{' '}
-                  field when creating tv alert
-                </span>
-              }
-            >
-              <InputRowContainer>
-                <Input
-                  theme={theme}
-                  width={'85%'}
-                  type={'text'}
-                  disabled={true}
-                  textAlign={'left'}
-                  value={`https://${API_URL}/editTakeProfitByAlert`}
-                />
-                {/* entryPoint.TVAlert.templateToken */}
+            <InputRowContainer style={{ marginTop: '0.5rem' }}>
+              {' '}
+              <FormInputContainer
+                style={{
+                  width: 'calc(50% - 1rem)',
+                  margin: '0 1rem 0 0',
+                  alignItems: 'flex-start',
+                }}
+                theme={theme}
+                width={'95%'}
+                padding={'0 0 0 0'}
+                title={
+                  <DarkTooltip
+                    title={
+                      <img
+                        style={{ width: '35rem', height: '50rem' }}
+                        src={WebHookImg}
+                      />
+                    }
+                  >
+                    <span>
+                      paste it into alert{' '}
+                      <span
+                        style={{
+                          color: '#7380EB',
+                          textDecoration: 'underline',
+                        }}
+                      >
+                        web-hook
+                      </span>{' '}
+                      URL field
+                    </span>
+                  </DarkTooltip>
+                }
+              >
                 <BtnCustom
-                  btnWidth="calc(15% - .8rem)"
-                  height="auto"
-                  margin="0 0 0 .8rem"
-                  fontSize="1rem"
-                  padding=".5rem 0 .4rem 0"
+                  needMinWidth={false}
+                  btnWidth="calc(100%)"
+                  height="3rem"
+                  fontSize="1.4rem"
+                  padding="1rem 2rem"
                   borderRadius=".8rem"
-                  btnColor={theme.palette.blue.main}
-                  backgroundColor={theme.palette.white.background}
-                  hoverColor={theme.palette.white.main}
-                  hoverBackground={theme.palette.blue.main}
+                  borderColor={'#7380EB'}
+                  btnColor={'#fff'}
+                  backgroundColor={'#7380EB'}
+                  textTransform={'none'}
+                  margin={'1rem 0 0 0'}
                   transition={'all .4s ease-out'}
                   onClick={() => {
                     copy(`https://${API_URL}/editTakeProfitByAlert`)
                   }}
                 >
-                  copy
+                  Copy web-hook URL
                 </BtnCustom>
-              </InputRowContainer>
-            </FormInputContainer>
-            <FormInputContainer
-              theme={theme}
-              padding={'0 0 .8rem 0'}
-              haveTooltip={true}
-              tooltipText={
-                <img
-                  style={{ width: '40rem', height: '42rem' }}
-                  src={MessageImg}
-                />
-              }
-              title={
-                <span>
-                  paste it into{' '}
-                  <span style={{ color: theme.palette.blue.background }}>
-                    message
-                  </span>{' '}
-                  field when creating tv alert
-                </span>
-              }
-            >
-              <InputRowContainer>
-                <Input
-                  theme={theme}
-                  width={'65%'}
-                  type={'text'}
-                  disabled={true}
-                  textAlign={'left'}
-                  value={`{\\"token\\": \\"${
-                    entryPoint.TVAlert.templateToken
-                  }\\", \\"orderType\\": ${
-                    takeProfit.forcedStopByAlert
-                      ? `\\"market\\"`
-                      : `\\"${takeProfit.type}\\"`
-                  } ${
-                    takeProfit.plotEnabled
-                      ? takeProfit.trailingTAP.isTrailingOn
-                        ? `, \\"trailingExitPrice\\": {{plot_${takeProfit.plot}}}`
-                        : `, \\"takeProfitPrice\\": {{plot_${takeProfit.plot}}}`
-                      : !takeProfit.forcedStopByAlert
-                      ? takeProfit.trailingTAP.isTrailingOn
-                        ? `, \\"trailingExitPrice\\": ${takeProfit.takeProfitPrice}`
-                        : `, \\"takeProfitPrice\\": ${takeProfit.takeProfitPrice}`
-                      : ''
-                  }}`}
-                />
-                {/* entryPoint.TVAlert.templateToken */}
+              </FormInputContainer>
+              <FormInputContainer
+                style={{
+                  width: 'calc(50% - 1rem)',
+                  margin: '0 0 0 1rem',
+                  alignItems: 'flex-start',
+                }}
+                theme={theme}
+                padding={'0 0 0 0'}
+                title={
+                  <DarkTooltip
+                    title={
+                      <img
+                        style={{ width: '40rem', height: '42rem' }}
+                        src={MessageImg}
+                      />
+                    }
+                  >
+                    <span>
+                      paste it into alert{' '}
+                      <span
+                        style={{
+                          color: '#7380EB',
+                          textDecoration: 'underline',
+                        }}
+                      >
+                        message
+                      </span>{' '}
+                      URL field
+                    </span>
+                  </DarkTooltip>
+                }
+              >
                 <BtnCustom
-                  btnWidth="calc(15% - .8rem)"
-                  height="auto"
-                  margin="0 0 0 .8rem"
-                  fontSize="1rem"
-                  padding=".5rem 0 .4rem 0"
+                  needMinWidth={false}
+                  btnWidth="calc(100%)"
+                  height="3rem"
+                  fontSize="1.4rem"
+                  padding="1rem 2rem"
                   borderRadius=".8rem"
-                  btnColor={theme.palette.blue.main}
-                  backgroundColor={theme.palette.white.background}
-                  hoverColor={theme.palette.white.main}
-                  hoverBackground={theme.palette.blue.main}
+                  borderColor={'#7380EB'}
+                  btnColor={'#fff'}
+                  backgroundColor={'#7380EB'}
+                  textTransform={'none'}
+                  margin={'1rem 0 0 0'}
                   transition={'all .4s ease-out'}
                   onClick={() => {
                     copy(
@@ -710,39 +707,21 @@ export const TakeProfitBlock = ({
                     )
                   }}
                 >
-                  copy
+                  Copy message
                 </BtnCustom>
-                <BtnCustom
-                  btnWidth="calc(20% - .8rem)"
-                  height="auto"
-                  margin="0 0 0 .8rem"
-                  fontSize="1rem"
-                  padding=".5rem 0 .4rem 0"
-                  borderRadius=".8rem"
-                  btnColor={theme.palette.blue.main}
-                  backgroundColor={theme.palette.white.background}
-                  hoverColor={theme.palette.white.main}
-                  hoverBackground={theme.palette.blue.main}
-                  transition={'all .4s ease-out'}
-                  onClick={() => {
-                    // redirect to full example page
-                  }}
-                >
-                  example
-                </BtnCustom>
-              </InputRowContainer>
-            </FormInputContainer>
+              </FormInputContainer>
+            </InputRowContainer>
           </>
         )}
 
         {takeProfit.splitTargets.isSplitTargetsOn && (
           <>
             {/* <FormInputContainer theme={theme} title={'amount (%)'}> */}
-            <InputRowContainer>
+            <InputRowContainer style={{ margin: '1rem auto 1rem auto' }}>
               <SliderWithPriceAndPercentageFieldRow
                 {...{
                   pair,
-                  header: 'deviation',
+                  header: 'quantity',
                   needChain: false,
                   theme,
                   entryPoint,

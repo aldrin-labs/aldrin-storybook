@@ -32,7 +32,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
   getApproximatePrice,
   onAfterSliderChange,
   percentagePreSymbol,
-  percentageTextAlign = 'left',
+  percentageTextAlign = 'right',
   needPriceField = true,
   sliderInTheBottom = false,
   onPricePercentageChange,
@@ -53,8 +53,8 @@ export const SliderWithPriceAndPercentageFieldRow = ({
           header={'price'}
           needTitleBlock
           padding={'0'}
-          width={sliderInTheBottom ? '65%' : 'calc(32.5%)'}
-          textAlign={'left'}
+          width={sliderInTheBottom ? '65%' : 'calc(31.5%)'}
+          textAlign={'right'}
           symbol={pair[1]}
           value={
             pricePercentage !== value
@@ -127,7 +127,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
             value={value}
             sliderContainerStyles={{
               width: sliderInTheBottom ? '100%' : '50%',
-              margin: '0 .4rem 0 0rem',
+              margin: '0 .4rem 0 0.5rem',
             }}
             onChange={(v) => updateValue(v)}
             onAfterChange={onAfterSliderChange}
@@ -160,12 +160,25 @@ export const SliderWithTimeoutFieldRow = ({
       <Input
         theme={theme}
         haveSelector
-        width={'calc(90% - .4rem)'}
+        width={'calc(46%)'}
         showErrors={showErrors}
         isValid={validateField(true, timeoutValue)}
         value={value}
         onChange={onTimeoutChange}
-        header={'price'}
+        needTooltip
+        textDecoration={'underline'}
+        titleForTooltip={
+          <>
+            <p>Waiting after unrealized P&L will reach set target.</p>
+            <p>
+              <b>For example:</b> you set 10% stop loss and 1 minute timeout.
+              When your unrealized loss is 10% timeout will give a minute for a
+              chance to reverse trend and loss to go below 10% before stop loss
+              order executes.
+            </p>
+          </>
+        }
+        header={'timeout'}
         needTitleBlock
         inputStyles={{
           borderTopRightRadius: 0,
@@ -174,7 +187,7 @@ export const SliderWithTimeoutFieldRow = ({
       />
       <Select
         theme={theme}
-        width={'calc(10% - .8rem)'}
+        width={'calc(13% - .8rem)'}
         value={timeoutMode}
         inputStyles={{
           borderTopLeftRadius: 0,
@@ -191,8 +204,8 @@ export const SliderWithTimeoutFieldRow = ({
         max={60}
         value={value}
         sliderContainerStyles={{
-          width: 'calc(100%-2rem)',
-          margin: '1rem 1.5rem 0 1rem',
+          width: 'calc(38%)',
+          margin: '1rem 0rem 0 1.5rem',
         }}
         onChange={(v) => updateValue(v)}
         onAfterChange={onAfterSliderChange}
@@ -409,7 +422,7 @@ export const SliderWithAmountFieldRow = ({
           }
           sliderContainerStyles={{
             width: 'calc(100% - .8rem)',
-            margin: '0 .8rem 0 auto',
+            margin: '0 .8rem 0 0.5rem',
           }}
           onAfterChange={onAfterSliderChange}
           // extra logic

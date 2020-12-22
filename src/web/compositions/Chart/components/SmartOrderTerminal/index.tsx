@@ -498,6 +498,28 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       type,
     } = this.state.takeProfit
 
+    if (+pricePercentage === 0) {
+      this.props.enqueueSnackbar(
+        `Your split target price percentage should be greater than 0`,
+        {
+          variant: 'error',
+        }
+      )
+
+      return
+    }
+
+    if (+volumePercentage === 0) {
+      this.props.enqueueSnackbar(
+        `Your split target quantity percentage should be greater than 0`,
+        {
+          variant: 'error',
+        }
+      )
+
+      return
+    }
+
     if (pricePercentage !== 0 && volumePercentage !== 0) {
       this.setState((prev) => ({
         takeProfit: {
@@ -546,6 +568,28 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     const isAveragingAfterFirstTarget =
       this.state.entryPoint.averaging.entryLevels.length > 0 &&
       this.state.entryPoint.averaging.enabled
+
+    if (+amount === 0) {
+      this.props.enqueueSnackbar(
+        `Your averaging target amount should be greater than 0`,
+        {
+          variant: 'error',
+        }
+      )
+
+      return
+    }
+
+    if (+percentage === 0 && isAveragingAfterFirstTarget) {
+      this.props.enqueueSnackbar(
+        `Your averaging target price percentage should be greater than 0`,
+        {
+          variant: 'error',
+        }
+      )
+
+      return
+    }
 
     if (price !== 0 && amount !== 0) {
       this.setState((prev) => ({
