@@ -60,67 +60,122 @@ export const TakeProfitBlock = ({
       borderRight="0"
       data-tut={'step3'}
     >
-      <InputRowContainer justify="center">
-        <CustomSwitcher
-          theme={theme}
-          firstHalfText={'limit'}
-          secondHalfText={'market'}
-          buttonHeight={'3rem'}
-          containerStyles={{ width: '100%' }}
-          firstHalfStyleProperties={BlueSwitcherStyles(theme)}
-          secondHalfStyleProperties={BlueSwitcherStyles(theme)}
-          firstHalfIsActive={takeProfit.type === 'limit'}
-          changeHalf={() => {
-            updateBlockValue(
-              'takeProfit',
-              'type',
-              getSecondValueFromFirst(takeProfit.type)
-            )
-          }}
-        />
-      </InputRowContainer>
-      <div>
-        <InputRowContainer
-          justify="flex-start"
-          padding={'.6rem 0 1.2rem 0'}
-          style={{ margin: '1rem auto 0.5rem auto' }}
-        >
-          {!entryPoint.averaging.enabled && (
+      <InputRowContainer justify="flex-start" padding={'0 0 1.2rem 0'}>
+        {entryPoint.averaging.enabled && (
+          <DarkTooltip
+            maxWidth={'30rem'}
+            title={
+              'Your smart order will be closed once first TP order was executed.'
+            }
+          >
+            <AdditionalSettingsButton
+              theme={theme}
+              isActive={entryPoint.averaging.closeStrategyAfterFirstTAP}
+              width={'22.75%'}
+              onClick={() => {
+                updateSubBlockValue(
+                  'entryPoint',
+                  'averaging',
+                  'closeStrategyAfterFirstTAP',
+                  !entryPoint.averaging.closeStrategyAfterFirstTAP
+                )
+
+                updateSubBlockValue(
+                  'entryPoint',
+                  'averaging',
+                  'placeEntryAfterTAP',
+                  false
+                )
+              }}
+            >
+              Averaging 1 TP
+            </AdditionalSettingsButton>
+          </DarkTooltip>
+        )}
+        {!entryPoint.averaging.enabled && (
+          <DarkTooltip
+            maxWidth={'40rem'}
+            title={
+              <>
+                <p>
+                  The algorithm, which will wait for the most favorable price
+                  for the order until the trend is reversed.
+                </p>
+                <p>
+                  For example: you bought BTC by 7500 USDT price and set 1%
+                  trailing deviation to take a profit. Trailing will start right
+                  after enter and then the price will grow to 7700, then the
+                  trend will reverse and start to fall. The order will be
+                  executed when the price reaches 7633, i.e. by 1% from the
+                  moment the trend reversal.
+                </p>
+              </>
+            }
+          >
+            <AdditionalSettingsButton
+              theme={theme}
+              style={{ fontSize: '1rem', textDecoration: 'underline' }}
+              isActive={takeProfit.trailingTAP.isTrailingOn}
+              onClick={() => {
+                updateSubBlockValue(
+                  'takeProfit',
+                  'trailingTAP',
+                  'isTrailingOn',
+                  !takeProfit.trailingTAP.isTrailingOn
+                )
+
+                updateSubBlockValue(
+                  'takeProfit',
+                  'splitTargets',
+                  'isSplitTargetsOn',
+                  false
+                )
+
+                updateSubBlockValue(
+                  'takeProfit',
+                  'timeout',
+                  'isTimeoutOn',
+                  false
+                )
+
+                updateStopLossAndTakeProfitPrices({
+                  takeProfitPercentage: !takeProfit.trailingTAP.isTrailingOn
+                    ? takeProfit.trailingTAP.activatePrice
+                    : takeProfit.pricePercentage,
+                })
+              }}
+            >
+              Trailing TAP
+            </AdditionalSettingsButton>
+          </DarkTooltip>
+        )}
+        {!takeProfit.external &&
+          !entryPoint.averaging.enabled &&
+          marketType === 1 && (
             <DarkTooltip
               maxWidth={'40rem'}
               title={
                 <>
-                  <p>
-                    The algorithm, which will wait for the most favorable price
-                    for the order until the trend is reversed.
-                  </p>
-                  <p>
-                    For example: you bought BTC by 7500 USDT price and set 1%
-                    trailing deviation to take a profit. Trailing will start
-                    right after enter and then the price will grow to 7700, then
-                    the trend will reverse and start to fall. The order will be
-                    executed when the price reaches 7633, i.e. by 1% from the
-                    moment the trend reversal.
-                  </p>
+                  <p>Take a partial profit on several rising points.</p>
                 </>
               }
             >
               <AdditionalSettingsButton
+                style={{ textDecoration: 'underline' }}
                 theme={theme}
-                style={{ fontSize: '1rem', textDecoration: 'underline' }}
-                isActive={takeProfit.trailingTAP.isTrailingOn}
+                isActive={takeProfit.splitTargets.isSplitTargetsOn}
                 onClick={() => {
-                  updateSubBlockValue(
-                    'takeProfit',
-                    'trailingTAP',
-                    'isTrailingOn',
-                    !takeProfit.trailingTAP.isTrailingOn
-                  )
-
                   updateSubBlockValue(
                     'takeProfit',
                     'splitTargets',
                     'isSplitTargetsOn',
+                    !takeProfit.splitTargets.isSplitTargetsOn
+                  )
+
+                  updateSubBlockValue(
+                    'takeProfit',
+                    'trailingTAP',
+                    'isTrailingOn',
                     false
                   )
 
@@ -131,125 +186,101 @@ export const TakeProfitBlock = ({
                     false
                   )
 
-                  updateStopLossAndTakeProfitPrices({
-                    takeProfitPercentage: !takeProfit.trailingTAP.isTrailingOn
-                      ? takeProfit.trailingTAP.activatePrice
-                      : takeProfit.pricePercentage,
-                  })
+                  updateBlockValue('takeProfit', 'external', false)
                 }}
               >
-                Trailing TAP
+                Split targets
               </AdditionalSettingsButton>
             </DarkTooltip>
           )}
-          {!takeProfit.external &&
-            !entryPoint.averaging.enabled &&
-            marketType === 1 && (
-              <DarkTooltip
-                maxWidth={'40rem'}
-                title={
-                  <>
-                    <p>Take a partial profit on several rising points.</p>
-                  </>
-                }
-              >
-                <AdditionalSettingsButton
-                  style={{ textDecoration: 'underline' }}
-                  theme={theme}
-                  isActive={takeProfit.splitTargets.isSplitTargetsOn}
-                  onClick={() => {
-                    updateSubBlockValue(
-                      'takeProfit',
-                      'splitTargets',
-                      'isSplitTargetsOn',
-                      !takeProfit.splitTargets.isSplitTargetsOn
-                    )
+        <DarkTooltip
+          maxWidth={'30rem'}
+          title={
+            'Advanced Take a Profit using your Alerts from TradingView.com.'
+          }
+        >
+          <AdditionalSettingsButton
+            theme={theme}
+            style={{ textDecoration: 'underline' }}
+            isActive={takeProfit.external}
+            onClick={() => {
+              updateSubBlockValue(
+                'takeProfit',
+                'splitTargets',
+                'isSplitTargetsOn',
+                false
+              )
 
-                    updateSubBlockValue(
-                      'takeProfit',
-                      'trailingTAP',
-                      'isTrailingOn',
-                      false
-                    )
+              updateBlockValue('takeProfit', 'external', !takeProfit.external)
 
-                    updateSubBlockValue(
-                      'takeProfit',
-                      'timeout',
-                      'isTimeoutOn',
-                      false
-                    )
-
-                    updateBlockValue('takeProfit', 'external', false)
-                  }}
-                >
-                  Split targets
-                </AdditionalSettingsButton>
-              </DarkTooltip>
-            )}
-          <DarkTooltip
-            maxWidth={'30rem'}
-            title={
-              'Advanced Take a Profit using your Alerts from TradingView.com.'
-            }
+              if (
+                !takeProfit.external &&
+                entryPoint.TVAlert.templateMode === 'always'
+              ) {
+                updateSubBlockValue(
+                  'entryPoint',
+                  'TVAlert',
+                  'templateMode',
+                  'ifNoActive'
+                )
+              }
+            }}
           >
-            <AdditionalSettingsButton
-              theme={theme}
-              style={{ textDecoration: 'underline' }}
-              isActive={takeProfit.external}
+            TP by TV Alert
+          </AdditionalSettingsButton>
+        </DarkTooltip>
+        {/* <AdditionalSettingsButton theme={theme}
+              isActive={takeProfit.timeout.isTimeoutOn}
               onClick={() => {
+                updateSubBlockValue(
+                  'takeProfit',
+                  'timeout',
+                  'isTimeoutOn',
+                  !takeProfit.timeout.isTimeoutOn
+                )
+
+                updateSubBlockValue(
+                  'takeProfit',
+                  'trailingTAP',
+                  'isTrailingOn',
+                  false
+                )
+
                 updateSubBlockValue(
                   'takeProfit',
                   'splitTargets',
                   'isSplitTargetsOn',
                   false
                 )
-
-                updateBlockValue('takeProfit', 'external', !takeProfit.external)
-
-                if (
-                  !takeProfit.external &&
-                  entryPoint.TVAlert.templateMode === 'always'
-                ) {
-                  updateSubBlockValue(
-                    'entryPoint',
-                    'TVAlert',
-                    'templateMode',
-                    'ifNoActive'
-                  )
-                }
               }}
             >
-              TP by TV Alert
-            </AdditionalSettingsButton>
-          </DarkTooltip>
-          {/* <AdditionalSettingsButton theme={theme}
-                    isActive={takeProfit.timeout.isTimeoutOn}
-                    onClick={() => {
-                      updateSubBlockValue(
-                        'takeProfit',
-                        'timeout',
-                        'isTimeoutOn',
-                        !takeProfit.timeout.isTimeoutOn
-                      )
-
-                      updateSubBlockValue(
-                        'takeProfit',
-                        'trailingTAP',
-                        'isTrailingOn',
-                        false
-                      )
-
-                      updateSubBlockValue(
-                        'takeProfit',
-                        'splitTargets',
-                        'isSplitTargetsOn',
-                        false
-                      )
-                    }}
-                  >
-                    Timeout
-                  </AdditionalSettingsButton> */}
+              Timeout
+            </AdditionalSettingsButton> */}
+      </InputRowContainer>
+      <div>
+        <InputRowContainer
+          style={{ margin: '1rem auto 0rem 0' }}
+          justify="center"
+        >
+          <CustomSwitcher
+            theme={theme}
+            firstHalfText={'limit'}
+            secondHalfText={'market'}
+            buttonHeight={'3rem'}
+            containerStyles={{ width: '100%' }}
+            firstHalfStyleProperties={BlueSwitcherStyles(theme)}
+            secondHalfStyleProperties={BlueSwitcherStyles(theme)}
+            firstHalfIsActive={takeProfit.type === 'limit'}
+            changeHalf={() => {
+              updateBlockValue(
+                'takeProfit',
+                'type',
+                getSecondValueFromFirst(takeProfit.type)
+              )
+            }}
+          />
         </InputRowContainer>
+
         {!takeProfit.trailingTAP.isTrailingOn &&
           ((takeProfit.external &&
             !takeProfit.forcedStopByAlert &&
@@ -270,7 +301,7 @@ export const TakeProfitBlock = ({
             //   }
             //   title={'stop price'}
             // >
-            <InputRowContainer style={{ marginBottom: '1rem' }}>
+            <InputRowContainer style={{ margin: '1rem auto 1rem auto' }}>
               <SliderWithPriceAndPercentageFieldRow
                 {...{
                   pair,
@@ -371,7 +402,7 @@ export const TakeProfitBlock = ({
                 }
                 title={!takeProfit.external ? 'activation price' : 'stop price'}
               > */}
-              <InputRowContainer style={{ marginBottom: '1rem' }}>
+              <InputRowContainer style={{ margin: '1rem auto 1rem auto' }}>
                 <SliderWithPriceAndPercentageFieldRow
                   {...{
                     pair,
@@ -724,6 +755,7 @@ export const TakeProfitBlock = ({
                   header: 'quantity',
                   needChain: false,
                   theme,
+                  showMarks: true,
                   entryPoint,
                   showErrors,
                   isMarketType,

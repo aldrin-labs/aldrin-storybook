@@ -153,14 +153,23 @@ export const BeforeCharacter = styled.span`
 `
 
 export const AdditionalSettingsButton = styled(
-  ({ isActive, children, theme, width, margin, fontSize, ...rest }) => (
+  ({
+    isActive,
+    children,
+    theme,
+    width,
+    margin,
+    fontSize,
+    borderRadius,
+    ...rest
+  }) => (
     <BtnCustom
       btnWidth={width || '22.75%'}
       height={'3.125rem'}
       fontSize={fontSize || '1.2rem'}
       fontWeight={isActive ? '700' : '400'}
       padding="0"
-      borderRadius="3.125rem"
+      borderRadius={borderRadius || '3.125rem'}
       borderColor={
         isActive ? theme.palette.blue.main : theme.palette.grey.border
       }

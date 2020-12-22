@@ -63,7 +63,7 @@ const getPriceStyles = memoizeOne(
   (theme): CSSProperties => ({
     fontFamily: 'Avenir Next Medium',
     letterSpacing: '0.1rem',
-    color: theme.palette.green.main,
+    color: theme.palette.green.orderbook,
   })
 )
 // @withTheme()

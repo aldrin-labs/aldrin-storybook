@@ -68,31 +68,12 @@ export const StopLossBlock = ({
           padding: '0rem 1rem 0rem 1.2rem',
         }}
       >
-        <InputRowContainer justify="center">
-          <CustomSwitcher
-            theme={theme}
-            firstHalfText={'limit'}
-            secondHalfText={'market'}
-            buttonHeight={'3rem'}
-            containerStyles={{ width: '100%' }}
-            firstHalfStyleProperties={BlueSwitcherStyles(theme)}
-            secondHalfStyleProperties={BlueSwitcherStyles(theme)}
-            firstHalfIsActive={stopLoss.type === 'limit'}
-            changeHalf={() =>
-              updateBlockValue(
-                'stopLoss',
-                'type',
-                getSecondValueFromFirst(stopLoss.type)
-              )
-            }
-          />
-        </InputRowContainer>
-        <div>
-          <InputRowContainer
-            style={{ margin: '1rem auto 0 auto' }}
-            justify="flex-start"
-            padding={'.6rem 0 1.2rem 0'}
-          >
+        <InputRowContainer
+          style={{ margin: '0 auto 0 auto' }}
+          justify="flex-start"
+          padding={'0rem 0 1.2rem 0'}
+        >
+          {entryPoint.averaging.enabled && (
             <DarkTooltip
               title={
                 'Place order at Break-Even Point for $0 net loss after fees'
@@ -101,7 +82,7 @@ export const StopLossBlock = ({
             >
               <AdditionalSettingsButton
                 theme={theme}
-                width={'25%'}
+                width={'22.75%'}
                 isActive={entryPoint.averaging.placeWithoutLoss}
                 onClick={() => {
                   updateSubBlockValue(
@@ -122,6 +103,8 @@ export const StopLossBlock = ({
                 Break-Even Point
               </AdditionalSettingsButton>
             </DarkTooltip>
+          )}
+          {!entryPoint.averaging.enabled && (
             <DarkTooltip
               maxWidth={'30rem'}
               title={
@@ -167,51 +150,73 @@ export const StopLossBlock = ({
                 Timeout
               </AdditionalSettingsButton>
             </DarkTooltip>
-            <DarkTooltip
-              maxWidth={'30rem'}
-              title={
-                'Advanced Stop Loss using your Alerts from TradingView.com.'
-              }
+          )}
+          <DarkTooltip
+            maxWidth={'30rem'}
+            title={'Advanced Stop Loss using your Alerts from TradingView.com.'}
+          >
+            <AdditionalSettingsButton
+              style={{ textDecoration: 'underline' }}
+              theme={theme}
+              isActive={stopLoss.external}
+              onClick={() => {
+                updateBlockValue('stopLoss', 'external', !stopLoss.external)
+
+                if (!stopLoss.external) {
+                  updateSubBlockValue(
+                    'stopLoss',
+                    'timeout',
+                    'isTimeoutOn',
+                    false
+                  )
+                } else {
+                  updateSubBlockValue(
+                    'stopLoss',
+                    'forcedStop',
+                    'mandatoryForcedLoss',
+                    false
+                  )
+                }
+
+                if (
+                  !stopLoss.external &&
+                  entryPoint.TVAlert.templateMode === 'always'
+                ) {
+                  updateSubBlockValue(
+                    'entryPoint',
+                    'TVAlert',
+                    'templateMode',
+                    'ifNoActive'
+                  )
+                }
+              }}
             >
-              <AdditionalSettingsButton
-                style={{ textDecoration: 'underline' }}
-                theme={theme}
-                isActive={stopLoss.external}
-                onClick={() => {
-                  updateBlockValue('stopLoss', 'external', !stopLoss.external)
-
-                  if (!stopLoss.external) {
-                    updateSubBlockValue(
-                      'stopLoss',
-                      'timeout',
-                      'isTimeoutOn',
-                      false
-                    )
-                  } else {
-                    updateSubBlockValue(
-                      'stopLoss',
-                      'forcedStop',
-                      'mandatoryForcedLoss',
-                      false
-                    )
-                  }
-
-                  if (
-                    !stopLoss.external &&
-                    entryPoint.TVAlert.templateMode === 'always'
-                  ) {
-                    updateSubBlockValue(
-                      'entryPoint',
-                      'TVAlert',
-                      'templateMode',
-                      'ifNoActive'
-                    )
-                  }
-                }}
-              >
-                Use TV Alert
-              </AdditionalSettingsButton>
-            </DarkTooltip>
+              Use TV Alert
+            </AdditionalSettingsButton>
+          </DarkTooltip>
+        </InputRowContainer>
+        <div>
+          <InputRowContainer
+            style={{ margin: '1rem auto 1rem 0' }}
+            justify="center"
+          >
+            <CustomSwitcher
+              theme={theme}
+              firstHalfText={'limit'}
+              secondHalfText={'market'}
+              buttonHeight={'3rem'}
+              containerStyles={{ width: '100%' }}
+              firstHalfStyleProperties={BlueSwitcherStyles(theme)}
+              secondHalfStyleProperties={BlueSwitcherStyles(theme)}
+              firstHalfIsActive={stopLoss.type === 'limit'}
+              changeHalf={() =>
+                updateBlockValue(
+                  'stopLoss',
+                  'type',
+                  getSecondValueFromFirst(stopLoss.type)
+                )
+              }
+            />
           </InputRowContainer>
 
           {((stopLoss.external &&
@@ -355,7 +360,7 @@ export const StopLossBlock = ({
                     //   lineMargin={'0 1.2rem 0 1rem'}
                     // >
                     <InputRowContainer
-                      wrap={'wrap'}
+                      wrap={'nowrap'}
                       style={{
                         display: 'flex',
                         flexDirection: 'row',

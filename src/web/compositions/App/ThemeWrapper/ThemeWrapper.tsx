@@ -198,6 +198,7 @@ export default ({ themeMode, isChartPage, children }) => {
               cream: '#0B0B0E',
               onboard: '#e0e2e5',
               titleForInput: '#2E2E2E',
+              marketStats: '#21212',
             },
             primary: {
               main: '#303037',
@@ -371,6 +372,7 @@ export default ({ themeMode, isChartPage, children }) => {
               bright: '#ED6337',
               new: '#DD6956',
               primary: '#F07878',
+              orderbook: '#FF0000',
             },
             blue: {
               custom: '#5085EC',
@@ -391,6 +393,7 @@ export default ({ themeMode, isChartPage, children }) => {
               main: '#1BA492',
               new: '#29AC80',
               onboarding: '#1BA492',
+              orderbook: '#007C0C',
             },
             grey: {
               custom: '#ABBAD1',
@@ -403,6 +406,7 @@ export default ({ themeMode, isChartPage, children }) => {
               cream: '#F9FBFD',
               onboard: '#3A475C',
               titleForInput: '#f1f6f9',
+              marketStats: '#ECF0F3',
             },
             primary: {
               main: '#FEFEFE',

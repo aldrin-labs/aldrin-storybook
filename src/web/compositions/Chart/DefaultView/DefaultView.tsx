@@ -34,17 +34,17 @@ const TerminalContainer = ({
   children: React.ReactChild
   theme: Theme
 }) => (
-    <TablesBlockWrapper
-      item
-      container
-      theme={theme}
-      xs={isDefaultTerminalViewMode ? 5 : 12}
-      isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-      isDefaultOnlyTables={isDefaultOnlyTables}
-    >
-      {children}
-    </TablesBlockWrapper>
-  )
+  <TablesBlockWrapper
+    item
+    container
+    theme={theme}
+    xs={isDefaultTerminalViewMode ? 5 : 12}
+    isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+    isDefaultOnlyTables={isDefaultOnlyTables}
+  >
+    {children}
+  </TablesBlockWrapper>
+)
 
 import {
   Container,
@@ -283,13 +283,13 @@ export const DefaultViewComponent = (
                     flexBasis: hideOrderbook
                       ? '0%'
                       : hideDepthChart
-                        ? '50%'
-                        : '65%',
+                      ? '50%'
+                      : '65%',
                     maxWidth: hideOrderbook
                       ? '0%'
                       : hideDepthChart
-                        ? '50%'
-                        : '65%',
+                      ? '50%'
+                      : '65%',
                   }}
                 >
                   {!hideOrderbook && (
@@ -305,7 +305,9 @@ export const DefaultViewComponent = (
                       minPriceDigits={minPriceDigits}
                       selectedKey={selectedKey}
                       arrayOfMarketIds={arrayOfMarketIds}
-                      updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
+                      updateTerminalPriceFromOrderbook={
+                        updateTerminalPriceFromOrderbook
+                      }
                       changeTable={changeTable}
                       sizeDigits={sizeDigits}
                     />
@@ -319,13 +321,13 @@ export const DefaultViewComponent = (
                     flexBasis: hideOrderbook
                       ? '100%'
                       : hideDepthChart
-                        ? '50%'
-                        : '35%',
+                      ? '50%'
+                      : '35%',
                     maxWidth: hideOrderbook
                       ? '100%'
                       : hideDepthChart
-                        ? '50%'
-                        : '35%',
+                      ? '50%'
+                      : '35%',
                   }}
                 >
                   {!hideTradeHistory && (
@@ -337,7 +339,9 @@ export const DefaultViewComponent = (
                       quote={quote}
                       theme={theme}
                       minPriceDigits={minPriceDigits}
-                      updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
+                      updateTerminalPriceFromOrderbook={
+                        updateTerminalPriceFromOrderbook
+                      }
                       marketType={marketType}
                       isPairDataLoading={isPairDataLoading}
                       showTableOnMobile={showTableOnMobile}
@@ -362,8 +366,8 @@ export const DefaultViewComponent = (
                     ? 12
                     : 11
                   : marketType === 0
-                    ? 7
-                    : 6
+                  ? 7
+                  : 6
               }
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
               updateTerminalViewMode={updateTerminalViewMode}
