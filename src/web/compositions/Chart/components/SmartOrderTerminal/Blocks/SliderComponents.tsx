@@ -71,7 +71,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
           onChange={(e) => onApproximatePriceChange(e, updateValue)}
         />
       )}
-      {needChain && <SvgIcon src={Chain} style={{ margin: 'auto 0.5rem' }} />}
+      {needChain && <SvgIcon src={Chain} width={'1.6rem'} height={'1.6rem'} style={{ margin: 'auto 0.5rem' }} />}
       <Input
         theme={theme}
         padding={
@@ -191,8 +191,9 @@ export const SliderWithTimeoutFieldRow = ({
       />
       <Select
         theme={theme}
-        width={'calc(13% - .8rem)'}
+        width={'calc(14.5% + 0rem)'}
         value={timeoutMode}
+        padding={'0 .8rem 0 0'}
         inputStyles={{
           borderTopLeftRadius: 0,
           borderBottomLeftRadius: 0,
@@ -208,8 +209,8 @@ export const SliderWithTimeoutFieldRow = ({
         max={60}
         value={value}
         sliderContainerStyles={{
-          width: 'calc(38%)',
-          margin: '1rem 0rem 0 1.5rem',
+          width: 'calc(40%)',
+          margin: '0 .8rem',
         }}
         onChange={(v) => updateValue(v)}
         onAfterChange={onAfterSliderChange}
@@ -307,7 +308,7 @@ export const SliderWithAmountFieldRow = ({
           />
           {/* </FormInputContainer><< */}
         </div>
-        <SvgIcon src={Chain} style={{ margin: 'auto 0.5rem' }} />
+        <SvgIcon src={Chain} width={'1.6rem'} height={'1.6rem'} style={{ margin: 'auto 0.5rem' }} />
         <div
           style={{
             width: 'calc((100% - 2rem - 32px) / 3)',
@@ -345,7 +346,7 @@ export const SliderWithAmountFieldRow = ({
 
           {/* </FormInputContainer> */}
         </div>
-        <SvgIcon src={Chain} style={{ margin: 'auto 0.5rem' }} />
+        <SvgIcon width={'1.6rem'} height={'1.6rem'} src={Chain} style={{ margin: 'auto 0.5rem' }} />
         <div
           style={{
             width: 'calc((100% - 2rem - 32px) / 3)',

@@ -360,7 +360,7 @@ export const StopLossBlock = ({
                     //   lineMargin={'0 1.2rem 0 1rem'}
                     // >
                     <InputRowContainer
-                      wrap={'wrap'}
+                      wrap={'nowrap'}
                       style={{
                         display: 'flex',
                         flexDirection: 'row',
