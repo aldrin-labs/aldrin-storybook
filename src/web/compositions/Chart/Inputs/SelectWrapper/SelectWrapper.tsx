@@ -101,6 +101,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
     let stableCoinsPairsMap = new Map()
     let btcCoinsPairsMap = new Map()
     let altCoinsPairsMap = new Map()
+    let usdcCoinsPairsMap = new Map()
     const favoritePairsMap = favoritePairs.reduce(
       (acc: Map<string, string>, el: string) => {
         acc.set(el, el)
@@ -127,6 +128,13 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
       }
 
       if (
+        /USDC/g.test(el.symbol.split('_')[0]) &&
+        /USDC/g.test(el.symbol.split('_')[1])
+      ) {
+        usdcCoinsPairsMap.set(el.symbol, el.price)
+      }
+
+      if (
         !altCoinsRegexp.test(el.symbol) &&
         !stableCoinsRegexp.test(el.symbol.split('_')[0]) &&
         !stableCoinsRegexp.test(el.symbol.split('_')[1])
@@ -142,6 +150,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
         stableCoinsPairsMap={stableCoinsPairsMap}
         btcCoinsPairsMap={btcCoinsPairsMap}
         altCoinsPairsMap={altCoinsPairsMap}
+        usdcCoinsPairsMap={usdcCoinsPairsMap}
         searchValue={searchValue}
         tab={tab}
         tabSpecificCoin={tabSpecificCoin}
@@ -176,6 +185,7 @@ class SelectPairListComponent extends React.PureComponent<
       stableCoinsPairsMap,
       btcCoinsPairsMap,
       altCoinsPairsMap,
+      usdcCoinsPairsMap,
       favoritePairsMap,
       marketType,
     } = this.props
@@ -192,6 +202,7 @@ class SelectPairListComponent extends React.PureComponent<
       stableCoinsPairsMap,
       btcCoinsPairsMap,
       altCoinsPairsMap,
+      usdcCoinsPairsMap,
       favoritePairsMap,
       marketType,
     })
@@ -217,6 +228,7 @@ class SelectPairListComponent extends React.PureComponent<
       stableCoinsPairsMap,
       btcCoinsPairsMap,
       altCoinsPairsMap,
+      usdcCoinsPairsMap,
       favoritePairsMap,
       marketType,
     } = nextProps
@@ -235,6 +247,7 @@ class SelectPairListComponent extends React.PureComponent<
       stableCoinsPairsMap,
       btcCoinsPairsMap,
       altCoinsPairsMap,
+      usdcCoinsPairsMap,
       favoritePairsMap,
       marketType,
     })

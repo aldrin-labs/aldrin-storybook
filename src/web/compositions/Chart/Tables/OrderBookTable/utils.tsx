@@ -251,9 +251,14 @@ export default function defaultRowRenderer({
         className="amountForBackground"
         style={{
           backgroundColor:
-            side === 'bids' || rowData.fall === 0
+            side === 'bids'
               ? theme.palette.orderbook.greenBackground
-              : theme.palette.orderbook.redBackground,
+              : side === 'asks'
+              ? theme.palette.orderbook.redBackground
+              : rowData.fall === 0
+              ? theme.palette.tradeHistory.greenBackground
+              : theme.palette.tradeHistory.redBackground,
+
           // transform: `translateX(calc(100% - ${orderPercentage}%))`,
           ...(rowData.fall === undefined
             ? {}
