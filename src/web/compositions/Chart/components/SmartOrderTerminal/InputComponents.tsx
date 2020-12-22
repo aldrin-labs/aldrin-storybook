@@ -47,7 +47,7 @@ export const Input = ({
   isValid = true,
   showErrors = false,
   inputStyles,
-  theme
+  theme,
 }: InputProps) => {
   return (
     <div
@@ -118,8 +118,10 @@ export const FormInputContainer = ({
   haveTooltip = false,
   tooltipText = '',
   tooltipStyles = {},
-  onValueClick = () => { },
+  onValueClick = () => {},
   theme,
+  width,
+  style = {},
 }: {
   title: string | JSX.Element
   children: ReactNode
@@ -134,9 +136,11 @@ export const FormInputContainer = ({
   tooltipStyles?: React.CSSProperties
   onValueClick?: any
   theme: Theme
+  width
+  style?: React.CSSProperties
 }) => {
   return (
-    <InputRowContainer padding={padding} direction="column">
+    <InputRowContainer style={style} padding={padding} direction="column">
       {/* {haveTooltip ? (
         <TooltipContainer
           style={{ display: 'flex', width: '100%', cursor: 'pointer' }}
@@ -145,6 +149,7 @@ export const FormInputContainer = ({
       <TradeInputHeader
         theme={theme}
         title={title}
+        width={width}
         haveTooltip={haveTooltip}
         needLine={needLine}
         lineMargin={lineMargin}

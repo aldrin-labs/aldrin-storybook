@@ -97,8 +97,10 @@ export const FieldsContainer = styled.div`
 `
 
 export const SubBlocksContainer = styled.div`
-  width: ${(props: { width?: string, needBorder?: boolean }) => props.width || '50%'};
-  border-right: ${(props: { width?: string, needBorder?: boolean }) => props.needBorder && '.1rem solid #e0e5ec'};
+  width: ${(props: { width?: string; needBorder?: boolean }) =>
+    props.width || '50%'};
+  border-right: ${(props: { width?: string; needBorder?: boolean }) =>
+    props.needBorder && '.1rem solid #e0e5ec'};
   padding-right: 0.4rem;
 `
 
@@ -143,9 +145,11 @@ export const BeforeCharacter = styled.span`
   top: 50%;
   z-index: 10;
   transform: translateY(-55%);
-  display: ${(props: { needCharacter: boolean, beforeSymbol: string }) => (props.needCharacter ? 'block' : 'none')};
+  display: ${(props: { needCharacter: boolean; beforeSymbol: string }) =>
+    props.needCharacter ? 'block' : 'none'};
   font-size: 1.2rem;
-  color: ${(props: { needCharacter: boolean, beforeSymbol: string }) => (props.beforeSymbol === '+' ? '#29AC80' : '#DD6956')};
+  color: ${(props: { needCharacter: boolean; beforeSymbol: string }) =>
+    props.beforeSymbol === '+' ? '#29AC80' : '#DD6956'};
 `
 
 export const AdditionalSettingsButton = styled(
@@ -191,7 +195,7 @@ export const AdditionalSettingsButton = styled(
 export const ChangeOrderTypeBtn = styled(
   ({ isActive, children, theme, ...rest }) => (
     <BtnCustom
-      btnWidth="calc(50%/2)"
+      btnWidth="calc(50%)"
       height={'3rem'}
       fontSize={'1.2rem'}
       fontWeight={isActive ? '700' : '400'}

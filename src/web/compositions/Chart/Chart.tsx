@@ -85,14 +85,14 @@ export function ChartPageComponent(props: any) {
     }, 75000)
 
     setTimeout(() => {
-      // checkLoginStatusWrapper(prefetchWithdrawal)
+      checkLoginStatusWrapper(prefetchWithdrawal)
     }, 95000)
 
     setTimeout(() => {
       if (marketType === 1) {
-        prefetchFuturesTransactions()
+        checkLoginStatusWrapper(prefetchFuturesTransactions)
       } else if (marketType === 0) {
-        prefetchSpotTransactions()
+        checkLoginStatusWrapper(prefetchSpotTransactions)
       }
     }, 95000)
 

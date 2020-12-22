@@ -15,7 +15,8 @@ const StyledSlider = styled(({ sliderContainerStyles, ...rest }) => (
     background-color: ${(props) => props.disabled && 'inherit;'};
 
     .rc-slider-tooltip-inner.rc-slider-tooltip-inner {
-      background-color: ${(props) => props.trackBeforeBackground || '#5C8CEA'} !important;
+      background-color: ${(props) =>
+        props.trackBeforeBackground || '#5C8CEA'} !important;
       border: .1rem solid #e0e5ec;
       min-height: auto;
       font-family: DM Sans;
@@ -39,12 +40,12 @@ const StyledSlider = styled(({ sliderContainerStyles, ...rest }) => (
     .rc-slider {
       &-rail {
         background-color: ${(props) => props.trackAfterBackground || '#E0E5EC'};
-        background-color: ${(props) => props.disabled && '#ABBAD1;'};
+        background-color: ${(props) => props.disabled && '#ABBAD1'};
       }
 
       &-track {
         background-color: ${(props) =>
-    props.trackBeforeBackground || '#5C8CEA'};
+          props.trackBeforeBackground || '#5C8CEA'};
           background-color: ${(props) => props.disabled && '#ABBAD1;'};
       }
 
@@ -86,7 +87,7 @@ const handle = (props) => {
           width: '0.8rem',
           top: '0.2rem',
           height: '2rem',
-          cursor: 'pointer'
+          cursor: 'pointer',
         }}
         value={value}
         {...restProps}
@@ -123,7 +124,7 @@ const RCSlider = ({
         defaultValue={defaultValue}
         onChange={onChange}
         trackBeforeBackground={trackBeforeBackground}
-        tipFormatter={v => `${v} ${valueSymbol}`}
+        tipFormatter={(v) => `${v} ${valueSymbol}`}
         handle={(props) =>
           handle({ ...props, valueSymbol, trackBeforeBackground })
         }
