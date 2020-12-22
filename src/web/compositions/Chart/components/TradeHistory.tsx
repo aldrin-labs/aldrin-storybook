@@ -50,7 +50,7 @@ const TradeHistoryRaw = ({
 				symbol={symbol}
 				theme={theme}
 				updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
-				isDataLoading={isPairDataLoading}
+				isPairDataLoading={isPairDataLoading}
 			/>
 		</MemoizedTradeHistoryWrapper>
 	);

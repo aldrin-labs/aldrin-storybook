@@ -39,16 +39,15 @@ class TableContainer extends PureComponent<IProps, IState> {
     numbersAfterDecimalForPrice: 8,
   }
 
-  // subscription: { unsubscribe: Function } | null
-
   static getDerivedStateFromProps(newProps: IProps, state: IState) {
     // query data processing
     if (
       state.data.length === 0 &&
       newProps.fetchData &&
-      newProps.fetchData.length > 0
+      newProps.fetchData.length > 0 &&
+      !newProps.isPairDataLoading
     ) {
-      const updatedData = newProps.fetchData.map((trade, i) => ({
+      const updatedData = newProps.fetchData.reverse().map((trade, i) => ({
         ...trade,
         price: (+trade.price).toFixed(
           getNumberOfDecimalsFromNumber(
@@ -121,7 +120,7 @@ class TableContainer extends PureComponent<IProps, IState> {
 
   componentDidUpdate(prevProps: IProps) {
     if (
-      prevProps.activeExchange.symbol !== this.props.activeExchange.symbol ||
+      prevProps.exchange !== this.props.exchange ||
       prevProps.currencyPair !== this.props.currencyPair ||
       prevProps.marketType !== this.props.marketType
     ) {
@@ -131,12 +130,6 @@ class TableContainer extends PureComponent<IProps, IState> {
       this.setState({ data: [] }, () => {
         // console.log('TableContainer componentDidUpdate cleanState SUCCESS')
       })
-
-      //  unsubscribe from old exchange
-      // this.subscription && this.subscription.unsubscribe()
-
-      //  subscribe to new exchange and create new unsub link
-      // this.subscribe()
     }
   }
 
