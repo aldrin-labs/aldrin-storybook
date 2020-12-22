@@ -190,15 +190,21 @@ export const CardsPanel = ({
         </CustomCard>
 
         {view === 'default' && (
-          <KeySelector
-            theme={theme}
-            exchange={activeExchange}
-            selectStyles={{
-              ...selectStyles(theme),
-              width: marketType === 1 ? '11%' : '15%',
-            }}
-            isAccountSelect={true}
-          />
+          <DarkTooltip
+            title={
+              'You can create an unlimited number of portfolios and accounts, but to trade within one window you will have to choose only one of them.'
+            }
+          >
+            <KeySelector
+              theme={theme}
+              exchange={activeExchange}
+              selectStyles={{
+                ...selectStyles(theme),
+                width: marketType === 1 ? '11%' : '15%',
+              }}
+              isAccountSelect={true}
+            />
+          </DarkTooltip>
         )}
 
         <AutoSuggestSelect

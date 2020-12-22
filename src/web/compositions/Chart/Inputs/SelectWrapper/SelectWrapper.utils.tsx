@@ -102,6 +102,7 @@ export const combineSelectWrapperData = ({
   btcCoinsPairsMap,
   altCoinsPairsMap,
   favoritePairsMap,
+  usdcCoinsPairsMap,
   marketType,
 }: {
   data: ISelectData
@@ -122,6 +123,7 @@ export const combineSelectWrapperData = ({
   stableCoinsPairsMap: Map<string, string>
   btcCoinsPairsMap: Map<string, string>
   altCoinsPairsMap: Map<string, string>
+  usdcCoinsPairsMap: Map<string, string>
   marketType: number
 }) => {
   if (!data && !Array.isArray(data)) {
@@ -155,6 +157,11 @@ export const combineSelectWrapperData = ({
     if (tab === 'favorite') {
       processedData = processedData.filter((el) =>
         favoritePairsMap.has(el.symbol)
+      )
+    }
+    if (tab === 'usdc') {
+      processedData = processedData.filter((el) =>
+        usdcCoinsPairsMap.has(el.symbol)
       )
     }
   }

@@ -1,7 +1,7 @@
 import { Theme } from '@material-ui/core'
 import { IExchange, IGetMarketsByExchangeQuery } from '@core/types/ChartTypes'
 
-export type SelectTabType = 'favorite' | 'btc' | 'alts' | 'fiat' | 'all'
+export type SelectTabType = 'favorite' | 'btc' | 'alts' | 'fiat' | 'all' | 'usdc'
 
 export interface IState {
   searchValue: string
@@ -32,6 +32,7 @@ export interface IPropsSelectPairListComponent extends IProps {
   stableCoinsPairsMap: Map<string, string>
   btcCoinsPairsMap: Map<string, string>
   altCoinsPairsMap: Map<string, string>
+  usdcCoinsPairsMap: Map<string, string>
   searchValue: string
   tab: SelectTabType
   tabSpecificCoin: string
