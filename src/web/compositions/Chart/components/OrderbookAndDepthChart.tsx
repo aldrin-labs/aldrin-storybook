@@ -27,6 +27,8 @@ import {
   OrderbookGroup,
 } from '../Tables/OrderBookTable/OrderBookTableContainer.types'
 
+import { client } from '@core/graphql/apolloClient'
+
 import {
   transformOrderbookData,
   addOrdersToOrderbook,

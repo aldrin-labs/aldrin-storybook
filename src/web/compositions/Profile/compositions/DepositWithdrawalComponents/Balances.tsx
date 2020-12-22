@@ -24,7 +24,7 @@ const Balances = ({ selectedCoin, getFundsQuery, selectedAccount }: IProps) => {
     getFunds: [],
   }
   const [currentElement] = getFunds.filter(
-    (el: FundsType) => el.asset.symbol === selectedCoin
+    (el: FundsType) => el.asset.symbol === selectedCoin && el.assetType === 0
   )
 
   const { quantity, locked, free } = currentElement || {
