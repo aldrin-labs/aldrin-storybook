@@ -25,6 +25,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
   entryPoint,
   showErrors,
   isMarketType,
+  showMarks,
   percentageInputWidth = '50%',
   validateField,
   pricePercentage,
@@ -111,6 +112,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
       />
       {!sliderInTheBottom ? (
         <BlueSlider
+          showMarks={showMarks}
           theme={theme}
           value={value}
           sliderContainerStyles={{
@@ -123,6 +125,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
       ) : (
         <InputRowContainer padding={'1.6rem 0 .8rem 0'}>
           <BlueSlider
+            showMarks={showMarks}
             theme={theme}
             value={value}
             sliderContainerStyles={{
@@ -143,6 +146,7 @@ export const SliderWithTimeoutFieldRow = ({
   theme,
   showErrors,
   validateField,
+  showMarks,
   timeoutMode,
   timeoutValue,
   onAfterSliderChange,
@@ -358,7 +362,6 @@ export const SliderWithAmountFieldRow = ({
             textDecoration={'underline'}
             symbol={pair[1]}
             value={localMargin}
-            disabled={entryPoint.trailing.isTrailingOn || isMarketType}
             onChange={onMarginChange}
           />
         </div>

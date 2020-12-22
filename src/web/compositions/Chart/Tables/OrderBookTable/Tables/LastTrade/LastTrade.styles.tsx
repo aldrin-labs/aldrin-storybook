@@ -14,21 +14,21 @@ export const LastTradeContainer = styled.div`
   background: ${(props) => props.theme.palette.white.background};
   border-top: ${(props) => props.theme.palette.border.main};
   border-bottom: ${(props) => props.theme.palette.border.main};
-  font-family: 'DM Sans';
+  font-family: 'Avenir Next Medium';
 `
 
 export const LastTradeValue = styled.div`
   letter-spacing: 0.075rem;
   color: ${({ fall }: { fall: boolean }) => (fall ? '#DD6956' : '#29AC80')};
-  font-size: 1.6rem;
-  font-weight: bold;
+  font-size: 2rem;
+  font-weight: normal;
 `
 
 export const LastTradePrice = styled.span`
   /* position: relative;
   top: 0.4rem; */
 
-  font-size: 1.6rem;
+  font-size: 2rem;
   font-weight: bold;
   color: ${(props) => props.theme.palette.dark.main};
   letter-spacing: 0.075rem;

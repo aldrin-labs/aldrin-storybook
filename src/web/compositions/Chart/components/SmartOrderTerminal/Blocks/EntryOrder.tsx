@@ -429,40 +429,11 @@ export const EntryOrderBlock = ({
                     </ChangeOrderTypeBtn>
                   </DarkTooltip> */}
 
-        {entryPoint.averaging.enabled && (
+        {/* {entryPoint.averaging.enabled && (
           <InputRowContainer
             padding={'.6rem 0 1.2rem 0'}
             style={{ margin: '1rem  auto' }}
           >
-            <DarkTooltip
-              maxWidth={'30rem'}
-              title={
-                'Your smart order will be closed once first TP order was executed.'
-              }
-            >
-              <AdditionalSettingsButton
-                theme={theme}
-                isActive={entryPoint.averaging.closeStrategyAfterFirstTAP}
-                width={'33%'}
-                onClick={() => {
-                  updateSubBlockValue(
-                    'entryPoint',
-                    'averaging',
-                    'closeStrategyAfterFirstTAP',
-                    !entryPoint.averaging.closeStrategyAfterFirstTAP
-                  )
-
-                  updateSubBlockValue(
-                    'entryPoint',
-                    'averaging',
-                    'placeEntryAfterTAP',
-                    false
-                  )
-                }}
-              >
-                Close trade After First TP
-              </AdditionalSettingsButton>
-            </DarkTooltip>
             <DarkTooltip
               maxWidth={'30rem'}
               title={
@@ -512,12 +483,12 @@ export const EntryOrderBlock = ({
               </AdditionalSettingsButton>
             </DarkTooltip>
           </InputRowContainer>
-        )}
+        )} */}
         {entryPoint.TVAlert.isTVAlertOn && (
           <>
-            <InputRowContainer padding={'.8rem 0 2rem 0'}>
+            <InputRowContainer padding={'0rem 0 0.5rem 0'}>
               <InputRowContainer justify="flex-start">
-                <DarkTooltip
+                {/* <DarkTooltip
                   title={'Trade will be placed once when there is an alert.'}
                   maxWidth={'30rem'}
                 >
@@ -545,11 +516,50 @@ export const EntryOrderBlock = ({
                       once
                     </SettingsLabel>
                   </div>
-                </DarkTooltip>
+                </DarkTooltip> */}
+                <AdditionalSettingsButton
+                  theme={theme}
+                  borderRadius={'0'}
+                  width={'100%'}
+                  isActive={entryPoint.TVAlert.templateMode === 'once'}
+                  onClick={() => {
+                    updateSubBlockValue(
+                      'entryPoint',
+                      'TVAlert',
+                      'templateMode',
+                      'once'
+                    )
+                  }}
+                >
+                  Place Once
+                </AdditionalSettingsButton>
               </InputRowContainer>
 
               <InputRowContainer justify={'center'}>
                 <DarkTooltip
+                  title={
+                    'Trade will be placed every time when there is an alert but no open position.'
+                  }
+                  maxWidth={'30rem'}
+                >
+                  <AdditionalSettingsButton
+                    theme={theme}
+                    borderRadius={'0'}
+                    width={'100%'}
+                    isActive={entryPoint.TVAlert.templateMode === 'ifNoActive'}
+                    onClick={() => {
+                      updateSubBlockValue(
+                        'entryPoint',
+                        'TVAlert',
+                        'templateMode',
+                        'ifNoActive'
+                      )
+                    }}
+                  >
+                    Place if no trades exists
+                  </AdditionalSettingsButton>
+                </DarkTooltip>
+                {/* <DarkTooltip
                   title={
                     'Trade will be placed every time when there is an alert but no open position.'
                   }
@@ -576,14 +586,37 @@ export const EntryOrderBlock = ({
                       }}
                       htmlFor={'ifNoActive'}
                     >
-                      If no trade exists
-                    </SettingsLabel>
+Place if no trades exists                    </SettingsLabel>
                   </div>
-                </DarkTooltip>
+                </DarkTooltip> */}
               </InputRowContainer>
 
               <InputRowContainer justify="flex-end">
                 <DarkTooltip
+                  title={
+                    'Trade will be placed every time when there is an alert but no open position.'
+                  }
+                  maxWidth={'30rem'}
+                >
+                  <AdditionalSettingsButton
+                    theme={theme}
+                    disabled={isCloseOrderExternal}
+                    borderRadius={'0'}
+                    width={'100%'}
+                    isActive={entryPoint.TVAlert.templateMode === 'always'}
+                    onClick={() => {
+                      updateSubBlockValue(
+                        'entryPoint',
+                        'TVAlert',
+                        'templateMode',
+                        'always'
+                      )
+                    }}
+                  >
+                    Place everytime
+                  </AdditionalSettingsButton>
+                </DarkTooltip>
+                {/* <DarkTooltip
                   title={'Trade will be placed every time there is an alert.'}
                   maxWidth={'30rem'}
                 >
@@ -609,17 +642,16 @@ export const EntryOrderBlock = ({
                       }}
                       htmlFor={'always'}
                     >
-                      Every time
-                    </SettingsLabel>
+Place everytime                    </SettingsLabel>
                   </div>
-                </DarkTooltip>
+                </DarkTooltip> */}
               </InputRowContainer>
             </InputRowContainer>
 
             {!entryPoint.averaging.enabled && (
               <FormInputContainer
                 theme={theme}
-                padding={'0 0 .8rem 0'}
+                padding={'0 0 1rem 0'}
                 haveTooltip={false}
                 tooltipText={''}
                 title={'action when alert'}
