@@ -48,7 +48,7 @@ const TotalBalance = ({ portfolioAssets, theme }) => {
       }}
     >
       <Title theme={theme}>total balance</Title>
-      <Value theme={theme}>
+      <Value style={{ color: theme.palette.blue.main }} theme={theme}>
         ${formatNumberToUSFormat(stripDigitPlaces(totalKeyAssetsData.value, 2))}
       </Value>
     </Grid>

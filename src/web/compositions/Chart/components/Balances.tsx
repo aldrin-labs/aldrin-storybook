@@ -207,7 +207,7 @@ export const Balances = ({
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            paddingLeft: '2rem',
+            height: '2rem',
           }}
         >
           <>

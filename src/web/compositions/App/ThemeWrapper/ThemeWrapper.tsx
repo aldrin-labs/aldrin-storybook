@@ -198,7 +198,7 @@ export default ({ themeMode, isChartPage, children }) => {
               cream: '#0B0B0E',
               onboard: '#e0e2e5',
               titleForInput: '#2E2E2E',
-              marketStats: '#21212',
+              marketStats: 'rgb(11, 11, 14)',
             },
             primary: {
               main: '#303037',

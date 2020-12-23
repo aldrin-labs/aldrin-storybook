@@ -210,11 +210,11 @@ const NavBarRaw: SFC<Props> = ({
                 alignItems={'center'}
                 wrap="nowrap"
                 style={{
-                  minWidth: '25rem',
-                  padding: '.5rem 1rem',
+                  minWidth: '20rem',
+                  // padding: '.5rem 1rem',
                   margin: 'auto auto',
 
-                  width: '20rem',
+                  width: '21rem',
                 }}
               >
                 <Logo theme={theme} />
@@ -247,6 +247,7 @@ const NavBarRaw: SFC<Props> = ({
                       alignItems: 'center',
                       width: '10rem',
                       justifyContent: 'center',
+                      color: theme.palette.blue.main,
                     }}
                   >
                     {'Spot'}
@@ -315,6 +316,7 @@ const NavBarRaw: SFC<Props> = ({
                       alignItems: 'center',
                       width: '10rem',
                       justifyContent: 'center',
+                      color: theme.palette.blue.main,
                     }}
                   >
                     {'Futures'}
@@ -539,6 +541,7 @@ const NavBarRaw: SFC<Props> = ({
                   page={`chart`}
                   component={Chart}
                   pathname={pathname}
+                  style={{ color: theme.palette.blue.main }}
                 >
                   Exchange
                 </NavLinkButton>
@@ -559,6 +562,7 @@ const NavBarRaw: SFC<Props> = ({
                   page={`main`}
                   component={Portfolio}
                   pathname={pathname}
+                  style={{ color: theme.palette.blue.main }}
                 >
                   Portfolio
                 </NavLinkButton>
@@ -580,6 +584,7 @@ const NavBarRaw: SFC<Props> = ({
                   page={`transactions`}
                   component={Transactions}
                   pathname={pathname}
+                  style={{ color: theme.palette.blue.main }}
                 >
                   Performance
                 </NavLinkButton>

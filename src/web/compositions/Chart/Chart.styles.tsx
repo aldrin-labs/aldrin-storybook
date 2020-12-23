@@ -116,6 +116,11 @@ html {
 
 export const PanelWrapper = styled.div`
   display: flex;
+  background-color: ${(props) =>
+    props.theme &&
+    props.theme.palette &&
+    props.theme.palette.grey &&
+    props.theme.palette.grey.marketStats};
   justify-content: flex-start;
   width: 100%;
   height: 100%;
@@ -442,7 +447,7 @@ export const Container = styled(Grid)`
   margin: 0;
   padding: 0;
   font-family: DM Sans;
-  background-color: ${(props) => props.theme.palette.white.background};
+  background-color: ${(props) => props.theme.palette.grey.marketStats};
 
   @media (max-width: 1400px) {
     height: calc(100vh - 5.4vh);

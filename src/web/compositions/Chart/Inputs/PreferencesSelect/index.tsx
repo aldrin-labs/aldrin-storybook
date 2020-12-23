@@ -261,12 +261,17 @@ class IntegrationReactSelect extends React.PureComponent {
           </Row>
         )}
         <ExchangePair
-          style={{ width: '14.4rem', marginLeft: '.8rem' }}
+          style={{
+            width: '14.4rem',
+            marginLeft: '.8rem',
+            borderRadius: '0.3rem',
+          }}
           selectStyles={selectStyles}
           onClick={this.toggleMenu}
           // onMouseOver={this.openMenu}
         >
           <SelectR
+            theme={theme}
             id={this.props.id}
             style={{ width: '100%' }}
             value={isClosed && value && { value, label: value }}

@@ -45,9 +45,9 @@ const selectStyles = (theme: Theme) => ({
   width: '20%',
   '& div': {
     cursor: 'pointer',
-    color: theme.palette.dark.main,
-    textTransform: 'uppercase',
-    fontWeight: 'bold',
+    color: theme.palette.text.grey,
+    textTransform: 'capitalize',
+    fontSize: '1.4rem',
   },
   '& svg': {
     color: theme.palette.grey.light,
@@ -150,7 +150,7 @@ export const CardsPanel = ({
 
   return (
     <>
-      <PanelWrapper>
+      <PanelWrapper theme={theme}>
         {/* {view === 'onlyCharts' && (
           <LayoutSelector userId={_id} themeMode={themeMode} />
         )} */}
@@ -162,28 +162,6 @@ export const CardsPanel = ({
           currencyPair={pair}
           selectStyles={selectStyles}
         /> */}
-
-        <CustomCard
-          theme={theme}
-          style={{
-            position: 'relative',
-            display: 'flex',
-            maxWidth: marketType === 0 ? '50%' : '58.33333%',
-            marginRight: '.4rem',
-            flexGrow: 1,
-            border: '0',
-          }}
-        >
-          <MarketStats
-            theme={theme}
-            symbol={pair}
-            marketType={marketType}
-            exchange={activeExchange}
-            quantityPrecision={quantityPrecision}
-            pricePrecision={pricePrecision}
-          />
-        </CustomCard>
-
         {view === 'default' && (
           <DarkTooltip
             title={
@@ -208,11 +186,36 @@ export const CardsPanel = ({
           id={'pairSelector'}
           view={view}
           activeExchange={activeExchange}
-          selectStyles={selectStyles(theme)}
+          selectStyles={{
+            ...selectStyles(theme),
+            fontWeight: 'bold',
+            border: `0.17rem solid ${theme.palette.blue.main}`,
+          }}
           marketType={marketType}
           quantityPrecision={quantityPrecision}
           pricePrecision={pricePrecision}
         />
+        <CustomCard
+          theme={theme}
+          style={{
+            position: 'relative',
+            display: 'flex',
+            maxWidth: marketType === 0 ? '50%' : '58.33333%',
+            marginRight: '.4rem',
+            flexGrow: 1,
+            backgroundColor: theme.palette.grey.marketStats,
+            border: '0',
+          }}
+        >
+          <MarketStats
+            theme={theme}
+            symbol={pair}
+            marketType={marketType}
+            exchange={activeExchange}
+            quantityPrecision={quantityPrecision}
+            pricePrecision={pricePrecision}
+          />
+        </CustomCard>
 
         <ChangeTerminalButton
           data-tut={'smart&basic'}
@@ -228,6 +231,8 @@ export const CardsPanel = ({
               style={{
                 cursor: 'pointer',
                 height: '100%',
+                borderTopLeftRadius: '0.3rem',
+                borderBottomLeftRadius: '0.3rem',
                 backgroundColor:
                   isDefaultTerminalViewMode && !isDefaultOnlyTables
                     ? theme.palette.blue.main
@@ -251,7 +256,7 @@ export const CardsPanel = ({
             >
               <span
                 style={{
-                  borderBottom: `dashed 0.1rem ${theme.palette.grey.border}`,
+                  textDecoration: 'underline',
                 }}
               >
                 {'Basic'}
@@ -269,6 +274,8 @@ export const CardsPanel = ({
               style={{
                 //textDecoration: 'underline',
                 height: '100%',
+                borderTopRightRadius: '0.3rem',
+                borderBottomRightRadius: '0.3rem',
                 //paddingRight: '6rem',
                 cursor: 'pointer',
                 borderLeft: theme.palette.border.main,
@@ -297,7 +304,7 @@ export const CardsPanel = ({
             >
               <span
                 style={{
-                  borderBottom: `dashed 0.1rem ${theme.palette.grey.border}`,
+                  textDecoration: 'underline',
                 }}
               >
                 {'Advanced'}

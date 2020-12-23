@@ -121,14 +121,24 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
         )}
 
         <ExchangePair
-          style={{ width: '14.4rem' }}
+          style={{
+            width: '14.4rem',
+            borderRadius: '0.3rem',
+            fontWeight: 'bold',
+          }}
           border={divider}
           selectStyles={selectStyles}
           onClick={this.toggleMenu}
         >
           <SelectR
             id={this.props.id}
-            style={{ width: '100%' }}
+            style={{
+              width: '100%',
+            }}
+            singleValueStyles={{
+              color: theme.palette.grey.onboard,
+              fontFamily: 'Avenir Next Demi',
+            }}
             value={isClosed && value && { value, label: value }}
             fullWidth={true}
             isDisabled={true}

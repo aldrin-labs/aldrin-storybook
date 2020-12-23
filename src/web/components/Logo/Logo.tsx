@@ -3,7 +3,7 @@ import { StyledLogo } from './Logo.styles'
 import { Theme } from '@material-ui/core'
 import { withTheme } from '@material-ui/styles'
 
-import MainLogo from '@icons/Logo.svg'
+import MainLogo from '@icons/newLogo.svg'
 import MainLogoDark from '@icons/lightLogo.svg'
 import { Link } from 'react-router-dom'
 

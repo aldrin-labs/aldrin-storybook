@@ -23,8 +23,7 @@ export const Nav = styled(AppBar)`
       (props.theme &&
         props.theme.palette &&
         props.theme.palette.grey &&
-        props.theme.palette.grey.cream) ||
-      '#f9fbfd'};
+        props.theme.palette.grey.marketStats)};
     @media only screen and (max-width: 1024px) {
       /* padding: 0 2rem 0 4rem; */
     }

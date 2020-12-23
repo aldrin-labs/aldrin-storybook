@@ -5,7 +5,7 @@ import { ChartSelectStyles } from '@sb/styles/cssUtils'
 
 export const SelectR = styled(ReactSelectComponent)`
   width: 100%;
-  font-size: 1.28rem;
+  font-size: 1rem;
   display: flex;
 
   @media (max-width: 1440px) {
