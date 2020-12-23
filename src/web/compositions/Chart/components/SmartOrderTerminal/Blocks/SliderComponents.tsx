@@ -71,7 +71,14 @@ export const SliderWithPriceAndPercentageFieldRow = ({
           onChange={(e) => onApproximatePriceChange(e, updateValue)}
         />
       )}
-      {needChain && <SvgIcon src={Chain} width={'1.6rem'} height={'1.6rem'} style={{ margin: 'auto 0.5rem' }} />}
+      {needChain && (
+        <SvgIcon
+          src={Chain}
+          width={'1.6rem'}
+          height={'1.6rem'}
+          style={{ margin: 'auto 0.5rem' }}
+        />
+      )}
       <Input
         theme={theme}
         padding={
@@ -264,7 +271,10 @@ export const SliderWithAmountFieldRow = ({
       <InputRowContainer style={{ marginBottom: '2rem' }}>
         <div
           style={{
-            width: 'calc((100% - 2rem - 32px) / 3)',
+            width:
+              marketType === 1
+                ? 'calc((100% - 2rem - 32px) / 3)'
+                : 'calc((100% - 16px) / 2)',
           }}
         >
           {/* <FormInputContainer
@@ -308,10 +318,18 @@ export const SliderWithAmountFieldRow = ({
           />
           {/* </FormInputContainer><< */}
         </div>
-        <SvgIcon src={Chain} width={'1.6rem'} height={'1.6rem'} style={{ margin: 'auto 0.5rem' }} />
+        <SvgIcon
+          src={Chain}
+          width={'1.6rem'}
+          height={'1.6rem'}
+          style={{ margin: 'auto 0.5rem' }}
+        />
         <div
           style={{
-            width: 'calc((100% - 2rem - 32px) / 3)',
+            width:
+              marketType === 1
+                ? 'calc((100% - 2rem - 32px) / 3)'
+                : 'calc((100% - 16px) / 2)',
           }}
         >
           {/* <FormInputContainer
@@ -346,26 +364,36 @@ export const SliderWithAmountFieldRow = ({
 
           {/* </FormInputContainer> */}
         </div>
-        <SvgIcon width={'1.6rem'} height={'1.6rem'} src={Chain} style={{ margin: 'auto 0.5rem' }} />
-        <div
-          style={{
-            width: 'calc((100% - 2rem - 32px) / 3)',
-          }}
-        >
-          <Input
-            theme={theme}
-            needTooltip
-            titleForTooltip={
-              'The actual amount of your position excluding leverage.'
-            }
-            header={'margin'}
-            needTitleBlock
-            textDecoration={'underline'}
-            symbol={pair[1]}
-            value={localMargin}
-            onChange={onMarginChange}
-          />
-        </div>
+        {marketType === 1 && (
+          <>
+            <SvgIcon
+              width={'1.6rem'}
+              height={'1.6rem'}
+              src={Chain}
+              style={{ margin: 'auto 0.5rem' }}
+            />
+            <div
+              style={{
+                width: 'calc((100% - 2rem - 32px) / 3)',
+              }}
+            >
+              <Input
+                theme={theme}
+                needTooltip
+                titleForTooltip={
+                  'The actual amount of your position excluding leverage.'
+                }
+                header={'margin'}
+                needTitleBlock
+                textDecoration={'underline'}
+                symbol={pair[1]}
+                value={localMargin}
+                onChange={onMarginChange}
+              />
+            </div>
+          </>
+        )}
+
         {/* plot */}
         {/* {entryPoint.TVAlert.plotEnabled && (
             <>
