@@ -23,6 +23,7 @@ import {
 import { IProps, IState } from './TableContainer.types'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { withWebsocket } from '@core/hoc/withWebsocket'
+import { withBatching } from '@core/hoc/withBatching'
 import { withFetch } from '@core/hoc/withFetchHoc'
 import { getUrlForWebsocket } from '@core/utils/getUrlForWebsocket'
 import { getUrlForFetch } from '@core/utils/getUrlForFetch'
@@ -69,23 +70,31 @@ class TableContainer extends PureComponent<IProps, IState> {
       }
     }
 
+    return null
+  }
 
+  componentDidUpdate(prevProps: IProps) {
+    const prevPropsData = (prevProps.data && prevProps.data.length > 0 && prevProps.data[0]) || { size: 0, price: 0, timestamp: 0 }
 
     // subscription data processing
     if (
-      newProps.data &&
-      newProps.data.length > 0
+      this.props.data &&
+      this.props.data.length > 0 &&
+      (this.props.data[0].timestamp !== prevPropsData.timestamp || 
+      this.props.data[0].size !== prevPropsData.size ||
+      this.props.data[0].price !== prevPropsData.price)
     ) {
-      const tickersData = newProps.data
+      console.log('subscription data processing')
+      const tickersData = this.props.data
 
       if (
         !tickersData ||
         tickersData.length === 0 ||
-        tickersData[0].symbol !== newProps.currencyPair ||
-        tickersData[0].marketType != newProps.marketType
+        tickersData[0].symbol !== this.props.currencyPair ||
+        tickersData[0].marketType != this.props.marketType
       ) {
         // console.log('TableContainer SUBSCRIPTION DATA FOR WRONG PAIR')
-        return { numbersAfterDecimalForPrice: state.numbersAfterDecimalForPrice, data: [] }
+        this.setState({ numbersAfterDecimalForPrice: state.numbersAfterDecimalForPrice, data: [] });
       }
 
       const updatedData = reduceArrayLength(
@@ -95,13 +104,13 @@ class TableContainer extends PureComponent<IProps, IState> {
             price: Number(trade.price).toFixed(
               getNumberOfDecimalsFromNumber(
                 getAggregationsFromMinPriceDigits(
-                  newProps.minPriceDigits
+                  this.props.minPriceDigits
                 )[0].value
               )
             ),
             time: dayjs.unix(+trade.timestamp).format('h:mm:ss a'),
           }))
-          .concat(state.data)
+          .concat(this.state.data)
       )
 
       const numbersAfterDecimalForPrice = getNumberOfDigitsAfterDecimal(
@@ -109,16 +118,13 @@ class TableContainer extends PureComponent<IProps, IState> {
         'price'
       )
 
-      return {
+      this.setState({
         numbersAfterDecimalForPrice,
         data: reduceArrayLength(updatedData),
-      }
+      })
     }
 
-    return null
-  }
 
-  componentDidUpdate(prevProps: IProps) {
     if (
       prevProps.exchange !== this.props.exchange ||
       prevProps.currencyPair !== this.props.currencyPair ||
@@ -177,7 +183,10 @@ const TradeHistoryWrapper = compose(
     pair: (props: any) => props.symbol,
     // throttling: true,
     // throttlingTime: 0.33,
-  })
+  }),
+  withBatching({
+    data: (props: any) => props.data
+  }),
 )(TableContainer)
 
 export default React.memo(TradeHistoryWrapper, (prevProps: any, nextProps: any) => {
