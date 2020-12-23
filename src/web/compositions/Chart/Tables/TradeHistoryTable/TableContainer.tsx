@@ -90,11 +90,10 @@ class TableContainer extends PureComponent<IProps, IState> {
       if (
         !tickersData ||
         tickersData.length === 0 ||
-        tickersData[0].symbol !== this.props.currencyPair ||
-        tickersData[0].marketType != this.props.marketType
+        tickersData[0].symbol !== this.props.currencyPair
       ) {
         // console.log('TableContainer SUBSCRIPTION DATA FOR WRONG PAIR')
-        this.setState({ numbersAfterDecimalForPrice: state.numbersAfterDecimalForPrice, data: [] });
+        this.setState({ data: [] });
       }
 
       const updatedData = reduceArrayLength(
