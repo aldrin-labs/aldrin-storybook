@@ -214,6 +214,11 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
         })
       }
 
+      const isPositionSideError = /Position side cannot be changed if there exists position/.test(result.message)
+      if (isPositionSideError) {
+        this.props.refetchKeys()
+      }
+
       showOrderResult(result, cancelOrder, marketType)
       await this.props.clearCanceledOrders()
     }
