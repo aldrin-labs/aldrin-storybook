@@ -78,13 +78,13 @@ class TableContainer extends PureComponent<IProps, IState> {
 
     // subscription data processing
     if (
+      this.state.data.length > 0 &&
       this.props.data &&
       this.props.data.length > 0 &&
       (this.props.data[0].timestamp !== prevPropsData.timestamp || 
       this.props.data[0].size !== prevPropsData.size ||
       this.props.data[0].price !== prevPropsData.price)
     ) {
-      console.log('subscription data processing')
       const tickersData = this.props.data
 
       if (

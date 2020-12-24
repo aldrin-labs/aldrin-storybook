@@ -1,5 +1,5 @@
 import React from 'react'
-
+import styled from 'styled-components'
 import SunSvg from '@icons/sun.svg'
 import MoonSvg from '@icons/moon.svg'
 
@@ -13,6 +13,10 @@ import {
 } from '../AutoSuggestSelect/AutoSuggestSelect.styles'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { Text, Row } from './index.styles'
+
+const StyledRow = styled(Row)`
+  display: none;
+`
 
 class IntegrationReactSelect extends React.PureComponent {
   state = {
@@ -63,17 +67,34 @@ class IntegrationReactSelect extends React.PureComponent {
 
     return (
       <>
-        {isMenuOpen && (
-          <Row
+        <ExchangePair
+          style={{
+            width: '14.4rem',
+            marginLeft: '.8rem',
+            borderRadius: '0.3rem',
+          }}
+          selectStyles={selectStyles}
+          onClick={this.toggleMenu}
+          // onMouseOver={this.openMenu}
+        >
+          <SelectR
+            theme={theme}
+            id={this.props.id}
+            style={{ width: '100%' }}
+            value={isClosed && value && { value, label: value }}
+            fullWidth={true}
+            isDisabled={true}
+          />
+          <StyledRow
+            id={'preferences'}
             direction="column"
             style={{
-              top: '2.5rem',
+              top: '100%',
               right: '.8rem',
               position: 'absolute',
               zIndex: 900,
               background: theme.palette.white.background,
               width: '22rem',
-              marginTop: '3rem',
               borderRadius: '.4rem',
               overflow: 'hidden',
               border: theme.palette.border.main,
@@ -258,26 +279,7 @@ class IntegrationReactSelect extends React.PureComponent {
                 </Text>
               </Row>
             </Row>
-          </Row>
-        )}
-        <ExchangePair
-          style={{
-            width: '14.4rem',
-            marginLeft: '.8rem',
-            borderRadius: '0.3rem',
-          }}
-          selectStyles={selectStyles}
-          onClick={this.toggleMenu}
-          // onMouseOver={this.openMenu}
-        >
-          <SelectR
-            theme={theme}
-            id={this.props.id}
-            style={{ width: '100%' }}
-            value={isClosed && value && { value, label: value }}
-            fullWidth={true}
-            isDisabled={true}
-          />
+          </StyledRow>
         </ExchangePair>
       </>
     )
