@@ -790,7 +790,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     const isSPOTMarket = marketType === 0
     const isValid = validateSmartOrders(this.state, this.props.enqueueSnackbar)
     if (isValid) {
-      if (entryPoint.order.total < minSpotNotional && isSPOTMarket) {
+      if (entryPoint.order.total < minSpotNotional && isSPOTMarket &&
+        entryPoint.averaging.entryLevels.length === 0) {
         enqueueSnackbar(
           `Order total should be at least ${minSpotNotional} ${pair[1]}`,
           {
