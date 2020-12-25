@@ -98,6 +98,19 @@ export function ChartPageComponent(props: any) {
     }
   }, [props.marketType])
 
+  const memoizatedUpdateTerminalViewMode = useMemo(() => (mode: string) => { /// need to replace it
+    if (mode === 'smartOrderMode') {
+      finishJoyride({
+        updateTooltipSettingsMutation:
+          props.updateTooltipSettingsMutation,
+        // we have old value here after changing, it produce strange behavior
+        getTooltipSettings: null,
+        name: 'chartPagePopup',
+      })
+    }
+
+    updateTerminalViewMode(mode)
+  }, [])  
 
   const {
     theme,
@@ -208,21 +221,6 @@ export function ChartPageComponent(props: any) {
   const selectedKey = selectedTradingKey
     ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
     : { keyId: '', hedgeMode: false, isFuturesWarsKey: false }
-
-
-  const memoizatedUpdateTerminalViewMode = useMemo(() => (mode: string) => { /// need to replace it
-    if (mode === 'smartOrderMode') {
-      finishJoyride({
-        updateTooltipSettingsMutation:
-          props.updateTooltipSettingsMutation,
-        // we have old value here after changing, it produce strange behavior
-        getTooltipSettings: null,
-        name: 'chartPagePopup',
-      })
-    }
-
-    updateTerminalViewMode(mode)
-  }, [])  
   
   console.log('Chart RENDER')  
 

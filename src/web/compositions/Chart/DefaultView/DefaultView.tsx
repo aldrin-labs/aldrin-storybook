@@ -82,6 +82,10 @@ export const DefaultViewComponent = (
     changeChartLayoutMutation,
   } = props
 
+  useEffect(() => {
+    updateTerminalPriceFromOrderbook(null)
+  }, [currencyPair])
+
   if (!currencyPair) {
     return null
   }
@@ -120,10 +124,6 @@ export const DefaultViewComponent = (
   const isSmartOrderMode = terminalViewMode === 'smartOrderMode'
 
   const sizeDigits = marketType === 0 ? 8 : 3
-
-  useEffect(() => {
-    updateTerminalPriceFromOrderbook(null)
-  }, [currencyPair])
 
   return (
     <Container container spacing={8} theme={theme}>
