@@ -22,12 +22,12 @@ const MarkPriceDataWrapper = ({ symbol, exchange, ...props }: IPropsDataWrapper)
     [symbol, exchange]
   );
 
-  const { getMarkPriceQuery, theme, pair, entryPrice, leverage, side, positionAmt } = props;
+  const { getMarkPriceQuery, theme, pair, entryPrice, leverage, side, positionAmount } = props;
   const { getMarkPrice = { markPrice: 0 } } = getMarkPriceQuery || {
     getMarkPrice: { markPrice: 0 }
   };
   const { markPrice = 0 } = getMarkPrice || { markPrice: 0 };
-
+  
   return (
     <MemoizedPnlBlock
       price={markPrice}
@@ -36,7 +36,7 @@ const MarkPriceDataWrapper = ({ symbol, exchange, ...props }: IPropsDataWrapper)
       entryPrice={entryPrice}
       leverage={leverage}
       side={side}
-      positionAmt={positionAmt}
+      positionAmount={positionAmount}
       {...props}
     />
   );

@@ -17,8 +17,8 @@ const PnlBlock = ({
 	entryLevels,
 	receivedProfitPercentage,
 	receivedProfitAmount,
-    positionAmount,
-    templatePnl,
+	positionAmount,
+	templatePnl,
 }: IProps) => {
     const { green, red, blue } = theme.palette
 	let currentPrice = price;

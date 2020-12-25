@@ -61,6 +61,7 @@ import { LISTEN_TABLE_PRICE } from '@core/graphql/subscriptions/LISTEN_TABLE_PRI
 import { LISTEN_MARK_PRICES } from '@core/graphql/subscriptions/LISTEN_MARK_PRICES'
 import { SmartTradeButton } from '@sb/components/TradingTable/TradingTabs/TradingTabs.styles'
 import { showCancelResult } from '@sb/compositions/Chart/Chart.utils'
+import { EditEntryPopupWithFuturesPrice, EditEntryPopupWithSpotPrice } from '../PriceBlocks/EditEntryPopupWithPrice'
 
 @withTheme()
 class ActiveTradesTable extends React.PureComponent<IProps, IState> {
@@ -308,17 +309,17 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
     const { selectedTrade } = this.state
     const { currencyPair, marketType } = this.props
 
-    const currentPrice = (
-      this.state.prices.find(
-        (priceObj) => priceObj.pair === `${currencyPair}:${marketType}:binance`
-      ) || { price: 0 }
-    ).price
+    // const currentPrice = (
+    //   this.state.prices.find(
+    //     (priceObj) => priceObj.pair === `${currencyPair}:${marketType}:binance`
+    //   ) || { price: 0 }
+    // ).price
 
     let price =
       selectedTrade.conditions.entryOrder.orderType === 'market' &&
       !!selectedTrade.conditions.entryOrder.activatePrice &&
       selectedTrade.conditions.entryOrder.activatePrice !== 0
-        ? currentPrice
+        ? 0
         : selectedTrade.conditions.entryOrder.price
 
     if (selectedTrade.conditions.entryOrder.activatePrice >= 0) {
@@ -396,11 +397,13 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
       quantityPrecision = precisionObject.quantityPrecision
     }
 
-    const pair = currencyPair.split('_')
+    const pair = editTrade === 'entryOrder' &&
+      selectedTrade &&
+      selectedTrade.conditions ? selectedTrade.conditions.pair.split('_') : currencyPair.split('_')
 
     const funds = pair.map((coin, index) => {
       const asset = getFundsQuery.getFunds.find(
-        (el) => el.asset.symbol === pair[index]
+        (el) => el.asset.symbol === pair[index] && el.assetType === marketType
       )
       const quantity = asset !== undefined ? asset.free : 0
       const value = asset !== undefined ? asset.free * asset.asset.priceUSD : 0
@@ -417,12 +420,14 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
     const processedFunds =
       marketType === 0 ? funds : [funds[0], USDTFuturesFund]
 
+    const EditEntryPopup = marketType === 0 ? EditEntryPopupWithSpotPrice : EditEntryPopupWithFuturesPrice
+
     return (
       <>
         {editTrade === 'entryOrder' &&
           selectedTrade &&
           selectedTrade.conditions && (
-            <EditEntryOrderPopup
+            <EditEntryPopup
               theme={theme}
               maxLeverage={maxLeverage}
               price={this.getEntryPrice()}
@@ -430,6 +435,7 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
               quantityPrecision={quantityPrecision}
               pricePrecision={pricePrecision}
               open={editTrade === 'entryOrder'}
+              exchange={{ symbol: 'binance' }}
               pair={selectedTrade.conditions.pair.split('_')}
               side={selectedTrade.conditions.entryOrder.side}
               leverage={selectedTrade.conditions.leverage}

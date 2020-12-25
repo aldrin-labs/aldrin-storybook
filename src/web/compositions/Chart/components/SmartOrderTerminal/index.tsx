@@ -438,7 +438,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       const { price, marketType } = this.props
       const total = this.state.temp.initialMargin * this.props.componentLeverage
 
-      if (total > 0) {
+      if (total > 0 && +stripDigitPlaces(total / this.props.price, this.props.quantityPrecision) > 0) {
         this.updateSubBlockValue(
           'entryPoint',
           'order',

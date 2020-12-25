@@ -177,16 +177,6 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
     return null
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.price !== this.props.price) {
-      this.updateTakeProfit(
-        this.state.isTrailingOn
-          ? this.state.activatePrice
-          : this.state.pricePercentage
-      )
-    }
-  }
-
   updateTakeProfit = (percentage) => {
     const { side, price, pricePrecision, leverage } = this.props
     const takeProfitPrice =
@@ -860,13 +850,6 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
     return null
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.price !== this.props.price) {
-      this.updateStopLoss(this.state.pricePercentage)
-      this.updateStopLoss(this.state.forcedPercentage, 'forcedLossPrice')
-    }
-  }
-
   updateStopLoss = (percentage, field = 'stopLossPrice') => {
     const { side, price, pricePrecision, leverage } = this.props
     const fieldPrice =
@@ -1445,11 +1428,11 @@ export class EditEntryOrderPopup extends React.Component<
     if (state.side === '') {
       const { side, price, pricePrecision, leverage, quantityPrecision } = props
 
-      console.log('props', props)
+      const marketPrice = props.getPriceQuery?.getPrice || props.getPriceQuery?.getMarkPrice?.markPrice
 
       let priceForCalculate =
         props.derivedState.type === 'market' && !props.derivedState.isTrailingOn
-          ? props.price
+          ? marketPrice
           : price
 
       const deviationPercentage = props.openFromTerminal
@@ -1488,8 +1471,10 @@ export class EditEntryOrderPopup extends React.Component<
     const { type, isTrailingOn } = this.state
     const { side, price, pricePrecision } = this.props
 
+    const marketPrice = this.props.getPriceQuery?.getPrice || this.props.getPriceQuery?.getMarkPrice?.markPrice
+
     let priceForCalculate =
-      type === 'market' && !isTrailingOn ? this.props.price : price
+      type === 'market' && !isTrailingOn ? marketPrice : price
 
     const trailingDeviationPrice =
       side === 'buy'
@@ -1510,9 +1495,10 @@ export class EditEntryOrderPopup extends React.Component<
     const { funds, marketType, leverage } = this.props
 
     let maxAmount = 0
+    const marketPrice = this.props.getPriceQuery?.getPrice || this.props.getPriceQuery?.getMarkPrice?.markPrice
 
     let priceForCalculate =
-      type === 'market' && !isTrailingOn ? this.props.price : price
+      type === 'market' && !isTrailingOn ? marketPrice : price
 
     if (marketType === 0) {
       maxAmount = side === 'buy' ? funds[1].quantity : funds[0].quantity
@@ -1570,9 +1556,11 @@ export class EditEntryOrderPopup extends React.Component<
       templateAlertMessage,
     } = this.state
 
+    const marketPrice = this.props.getPriceQuery?.getPrice || this.props.getPriceQuery?.getMarkPrice?.markPrice
+
     let maxAmount = 0
     let priceForCalculate =
-      type === 'market' && !isTrailingOn ? this.props.price : price
+      type === 'market' && !isTrailingOn ? marketPrice : price
 
     if (marketType === 0) {
       maxAmount = side === 'buy' ? funds[1].quantity : funds[0].quantity
@@ -1598,6 +1586,7 @@ export class EditEntryOrderPopup extends React.Component<
         >
           <TypographyTitle theme={theme}>{`Edit entry point`}</TypographyTitle>
           <div style={{ display: 'flex', alignItems: 'center', width: '60%' }}>
+            {marketType === 1 && <>
             <SmallSlider
               theme={theme}
               min={1}
@@ -1643,6 +1632,8 @@ export class EditEntryOrderPopup extends React.Component<
             <LeverageLabel theme={theme} style={{ fontFamily: 'DM Sans' }}>
               {this.state.leverage}X
             </LeverageLabel>
+            </>
+  }
           </div>
           <ClearButton>
             <Clear
@@ -1726,7 +1717,7 @@ export class EditEntryOrderPopup extends React.Component<
               }))
 
               if (getSecondValueFromFirst(type) === 'market' && !isTrailingOn) {
-                const total = this.props.price * amount
+                const total = priceForCalculate * amount
                 this.setState({
                   total: stripDigitPlaces(total, marketType === 1 ? 2 : 8),
                   initialMargin: stripDigitPlaces(total / leverage, 2),

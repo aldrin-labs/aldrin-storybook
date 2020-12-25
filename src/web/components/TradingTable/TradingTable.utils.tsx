@@ -961,7 +961,7 @@ export const combineActiveTradesTable = ({
                 entryLevels={entryLevels}
                 receivedProfitPercentage={receivedProfitPercentage}
                 receivedProfitAmount={receivedProfitAmount}
-                positionAmount={positionAmount}
+                positionAmount={+(stripDigitPlaces(amount, quantityPrecision))}
                 templatePnl={templatePnl}
                 theme={theme} 
               /> 

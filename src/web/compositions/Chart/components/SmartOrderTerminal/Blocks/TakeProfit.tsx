@@ -158,6 +158,15 @@ export const TakeProfitBlock = ({
                   theme={theme}
                   isActive={takeProfit.splitTargets.isSplitTargetsOn}
                   onClick={() => {
+                    if (takeProfit.splitTargets.isSplitTargetsOn) {
+                      updateSubBlockValue(
+                        'takeProfit',
+                        'splitTargets',
+                        'targets',
+                        []
+                      )
+                    }
+
                     updateSubBlockValue(
                       'takeProfit',
                       'splitTargets',
