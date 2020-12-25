@@ -22,7 +22,7 @@ class FundsTable extends React.PureComponent<IProps> {
     hideSmallAssets: false,
   }
 
-  unsubscribeFunction: null | Function = null
+  // unsubscribeFunction: null | Function = null
 
   handleSmallAssetsCheckboxChange = (event, checked) => {
     const { marketType } = this.props
@@ -50,14 +50,14 @@ class FundsTable extends React.PureComponent<IProps> {
       fundsProcessedData,
     })
 
-    this.unsubscribeFunction = subscribeToMore()
+    // this.unsubscribeFunction = subscribeToMore()
   }
 
   componentWillUnmount = () => {
     // unsubscribe subscription
-    if (this.unsubscribeFunction !== null) {
-      this.unsubscribeFunction()
-    }
+    // if (this.unsubscribeFunction !== null) {
+    //   this.unsubscribeFunction()
+    // }
   }
 
   componentWillReceiveProps(nextProps: IProps) {
@@ -149,6 +149,8 @@ class FundsTable extends React.PureComponent<IProps> {
 const TableDataWrapper = ({ ...props }) => {
   const { selectedKey } = props
 
+  console.log('FundsTable TableDataWrapper RENDER')
+
   return (
     <QueryRenderer
       component={FundsTable}
@@ -157,15 +159,7 @@ const TableDataWrapper = ({ ...props }) => {
       query={getFunds}
       variables={{ fundsInput: { activeExchangeKey: selectedKey.keyId } }}
       name={`getFundsQuery`}
-      fetchPolicy="cache-and-network"
-      // pollInterval={props.show ? 60000 : 0}
-      subscriptionArgs={{
-        subscription: FUNDS,
-        variables: {
-          listenFundsInput: { activeExchangeKey: selectedKey.keyId },
-        },
-        updateQueryFunction: updateFundsQuerryFunction,
-      }}
+      fetchPolicy="cache-first"
       {...props}
     />
   )

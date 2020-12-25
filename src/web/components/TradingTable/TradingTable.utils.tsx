@@ -12,6 +12,9 @@ import { ArrowForward as Arrow } from '@material-ui/icons'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { getActiveStrategies } from '@core/graphql/queries/chart/getActiveStrategies'
 
+import { ActiveSmartTradePnlFutures } from './PriceBlocks/ActiveSmartTradePnlFutures'
+import { ActiveSmartTradePnlSpot } from './PriceBlocks/ActiveSmartTradePnlSpot'
+
 import { client } from '@core/graphql/apolloClient'
 import {
   filterCacheData,
@@ -22,8 +25,12 @@ import { Loading } from '@sb/components/index'
 import stableCoins from '@core/config/stableCoins'
 import { cloneDeep } from 'lodash-es'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
-import { AdlIndicator } from './TradingTable.styles'
+import AdlComponent from './AdlComponent/AdlComponent'
 import { getPrecisionItem } from '@core/utils/getPrecisionItem'
+
+import MarkPriceBlock from '@sb/components/TradingTable/PriceBlocks/PositionsPriceBlock';
+
+const activeExchange = { symbol: 'binance' }
 
 const changePairToSelected = (pair: string) => {
   console.log('client mutate', client)
@@ -105,6 +112,7 @@ import { SubColumnValue } from './ActiveTrades/Columns'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 import { addMainSymbol } from '@sb/components'
 import TooltipCustom from '../TooltipCustom/TooltipCustom'
+import PnlBlock from './PriceBlocks/PositionsPnlBlock'
 
 export const getTableBody = (tab: string) =>
   tab === 'openOrders'
@@ -253,7 +261,6 @@ const getActiveOrderStatus = ({
   theme,
   strategy,
   state,
-  profitPercentage,
 }: IStatus): [
   'Trailing entry' | 'In Profit' | 'In Loss' | 'Preparing' | 'Timeout',
   string
@@ -286,14 +293,14 @@ const getActiveOrderStatus = ({
     }
 
     // if (status === 'InEntry') {
-    //   return ['Active', theme.palette.green.main]
+      return ['Active', theme.palette.green.main]
     // }
 
-    if (profitPercentage > 0) {
-      return ['In Profit', theme.palette.green.main]
-    } else {
-      return ['In Loss', theme.palette.red.main]
-    }
+    // if (profitPercentage > 0) {
+    //   return ['In Profit', theme.palette.green.main]
+    // } else {
+    //   return ['In Loss', theme.palette.red.main]
+    // }
   } else {
     return ['Preparing', theme.palette.blue.background]
   }
@@ -337,9 +344,6 @@ export const combinePositionsTable = ({
   keys,
   canceledPositions,
   priceFromOrderbook,
-  // pricePrecision,
-  // quantityPrecision,
-  adlData,
   toogleEditMarginPopup,
   handlePairChange,
   enqueueSnackbar,
@@ -354,10 +358,7 @@ export const combinePositionsTable = ({
   canceledPositions: string[]
   minFuturesStep
   priceFromOrderbook: number | string
-  // pricePrecision: number
-  // quantityPrecision: number
   keys: Key[]
-  adlData: { symbol: string; adlQuantile: any }[]
   toogleEditMarginPopup: (position: Position) => void
   handlePairChange: (pair: string) => void
   enqueueSnackbar: (message: string, { variant: string }) => void
@@ -393,11 +394,11 @@ export const combinePositionsTable = ({
 
       const needOpacity = el._id === '0'
 
-      const marketPrice = (
-        prices.find((price) => price.pair === `${el.symbol}:1:binance`) || {
-          price: 0,
-        }
-      ).price
+      // const marketPrice = (
+      //   prices.find((price) => price.pair === `${el.symbol}:1:binance`) || {
+      //     price: 0,
+      //   }
+      // ).price
 
       const keyName = keys[keyId]
 
@@ -437,34 +438,18 @@ export const combinePositionsTable = ({
           ? 1 + 100 / leverage / 100
           : 1 - 100 / leverage / 100)
 
-      const profitPercentage =
-        ((marketPrice / entryPrice) * 100 - 100) *
-        leverage *
-        (side === 'buy long' ? 1 : -1)
+      // const profitPercentage =
+      //   ((marketPrice / entryPrice) * 100 - 100) *
+      //   leverage *
+      //   (side === 'buy long' ? 1 : -1)
 
-      const profitAmount =
-        (positionAmt / leverage) *
-        entryPrice *
-        (profitPercentage / 100) *
-        (side === 'buy long' ? 1 : -1)
+      // const profitAmount =
+      //   (positionAmt / leverage) *
+      //   entryPrice *
+      //   (profitPercentage / 100) *
+      //   (side === 'buy long' ? 1 : -1)
 
       const pair = symbol.split('_')
-
-      let adl = 0
-      const currentAdlData = adlData.find(
-        (adl) => adl.symbol === symbol.replace('_', '')
-      )
-
-      if (currentAdlData && currentAdlData.adlQuantile) {
-        adl =
-          side === 'buy long'
-            ? currentAdlData.adlQuantile.LONG ||
-              currentAdlData.adlQuantile.HEDGE ||
-              currentAdlData.adlQuantile.BOTH
-            : currentAdlData.adlQuantile.SHORT ||
-              currentAdlData.adlQuantile.HEDGE ||
-              currentAdlData.adlQuantile.BOTH
-      }
 
       return [
         {
@@ -565,31 +550,25 @@ export const combinePositionsTable = ({
             contentToSort: entryPrice,
           },
           marketPrice: {
-            render: `${stripDigitPlaces(marketPrice, pricePrecision)} ${
-              pair[1]
-            }`,
+            // render: `${stripDigitPlaces(marketPrice, pricePrecision)} ${pair[1]
+            //   }`,
+            render: <MarkPriceBlock
+              symbol={symbol}
+              exchange={activeExchange}
+              marketType={1}
+              pricePrecision={pricePrecision}
+              theme={theme}
+            />,
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
               opacity: needOpacity ? 0.5 : 1,
               maxWidth: '70px',
             },
-            contentToSort: marketPrice,
+            // contentToSort: marketPrice,
           },
           adl: {
-            render: (
-              <div style={{ display: 'flex', height: '2rem' }}>
-                <AdlIndicator
-                  color={theme.palette.green.main}
-                  adl={adl}
-                  i={0}
-                />
-                <AdlIndicator color={'#A2AC29'} adl={adl} i={1} />
-                <AdlIndicator color={'#F3BA2F'} adl={adl} i={2} />
-                <AdlIndicator color={'#F38D2F'} adl={adl} i={3} />
-                <AdlIndicator color={theme.palette.red.main} adl={adl} i={4} />
-              </div>
-            ),
+            render: <AdlComponent symbol={symbol} theme={theme} keyId={keyId} side={side} />,
           },
           liqPrice: {
             render: `${
@@ -606,21 +585,33 @@ export const combinePositionsTable = ({
           },
 
           profit: {
-            render: marketPrice ? (
-              <SubColumnValue
-                theme={theme}
-                style={{ whiteSpace: 'nowrap' }}
-                color={profitPercentage > 0 ? green.main : red.main}
-              >
-                {`${profitAmount < 0 ? '-' : ''}${Math.abs(
-                  Number(profitAmount.toFixed(3))
-                )} ${pair[1]} / ${profitPercentage < 0 ? '-' : ''}${Math.abs(
-                  Number(profitPercentage.toFixed(2))
-                )}%`}
-              </SubColumnValue>
-            ) : (
-              `0 ${pair[1]} / 0%`
-            ),
+            // render: marketPrice ? (
+            //   <SubColumnValue
+            //     theme={theme}
+            //     style={{ whiteSpace: 'nowrap' }}
+            //     color={profitPercentage > 0 ? green.main : red.main}
+            //   >
+            //     {`${profitAmount < 0 ? '-' : ''}${Math.abs(
+            //       Number(profitAmount.toFixed(3))
+            //     )} ${pair[1]} / ${profitPercentage < 0 ? '-' : ''}${Math.abs(
+            //       Number(profitPercentage.toFixed(2))
+            //     )}%`}
+            //   </SubColumnValue>
+            // ) : (
+            //     `0 ${pair[1]} / 0%`
+            //   ),
+            render: <PnlBlock
+              symbol={symbol}
+              exchange={activeExchange}
+              marketType={1}
+              pricePrecision={pricePrecision}
+              theme={theme}
+              pair={pair}
+              entryPrice={entryPrice}
+              leverage={leverage}
+              side={side}
+              positionAmt={positionAmt}
+            />,
             style: { opacity: needOpacity ? 0.5 : 1, maxWidth: '100px' },
             colspan: 2,
           },
@@ -669,8 +660,6 @@ export const combineActiveTradesTable = ({
   prices = [],
   marketType,
   currencyPair,
-  // pricePrecision,
-  // quantityPrecision,
   addOrderToCanceled,
   canceledOrders,
   keys,
@@ -690,8 +679,6 @@ export const combineActiveTradesTable = ({
   prices: { pair: string; price: number }[]
   marketType: number
   currencyPair: string
-  // pricePrecision: number
-  // quantityPrecision: number
   addOrderToCanceled: (id: string) => void
   canceledOrders: string[]
   keys: Key[]
@@ -802,16 +789,6 @@ export const combineActiveTradesTable = ({
       const pairArr = pair.split('_')
       const needOpacity = false
       const date = isNaN(dayjs(+createdAt).unix()) ? createdAt : +createdAt
-      let currentPrice = (
-        prices.find(
-          (priceObj) => priceObj.pair === `${pair}:${marketType}:binance`
-        ) || { price: 0 }
-      ).price
-
-      // for waitLossHedge for example
-      if (exitPrice > 0) {
-        currentPrice = exitPrice
-      }
 
       const keyName = keys[accountId]
 
@@ -820,30 +797,9 @@ export const combineActiveTradesTable = ({
           ? price
           : entryPrice
 
-      let profitPercentage =
-        ((currentPrice / entryOrderPrice) * 100 - 100) *
-        leverage *
-        (isBuyTypeOrder(side) ? 1 : -1)
-
-      let profitAmount =
-        (positionAmount / leverage) * entryOrderPrice * (profitPercentage / 100)
-
-      // pnl for averaging
-      if (entryLevels && entryLevels.length > 0) {
-        // if no entry price then we have no entry level
-        if (!entryPrice) {
-          profitAmount = receivedProfitPercentage
-          profitPercentage = receivedProfitPercentage
-        } else {
-          profitPercentage += receivedProfitPercentage
-          profitAmount += receivedProfitAmount
-        }
-      }
-
       const [activeOrderStatus, statusColor] = getActiveOrderStatus({
         strategy: el,
         state: el.state,
-        profitPercentage,
         theme,
       })
 
@@ -855,6 +811,14 @@ export const combineActiveTradesTable = ({
       })
 
       const strategyId = el._id
+
+      const isSMIsAlreadyInEntry = !isTemplate &&
+      state &&
+      activeOrderStatus !== 'Preparing' &&
+      state !== 'WaitForEntry' &&
+      state !== 'TrailingEntry'
+
+      const SMPnlComponent = marketType === 1 ? ActiveSmartTradePnlFutures : ActiveSmartTradePnlSpot
 
       return {
         id: `${el._id}_${el.accountId}`,
@@ -981,38 +945,34 @@ export const combineActiveTradesTable = ({
         },
         profit: {
           render:
-            !isTemplate &&
-            state &&
-            activeOrderStatus !== 'Preparing' &&
-            state !== 'WaitForEntry' &&
-            state !== 'TrailingEntry' &&
-            !!currentPrice &&
-            entryOrderPrice ? (
-              <SubColumnValue
-                theme={theme}
-                color={
-                  +profitPercentage > 0 || templatePnl > 0
-                    ? green.main
-                    : red.main
-                }
-              >
-                {' '}
-                {!!templatePnl
-                  ? `${stripDigitPlaces(templatePnl, 3)} ${pairArr[1]}`
-                  : `${profitAmount < 0 ? '-' : ''}${Math.abs(
-                      Number(profitAmount.toFixed(3))
-                    )} ${pairArr[1]} / ${
-                      profitPercentage < 0 ? '-' : ''
-                    }${Math.abs(Number(profitPercentage.toFixed(2)))}%`}
-              </SubColumnValue>
-            ) : (
-              `0 ${pairArr[1]} / 0%`
-            ),
+              isSMIsAlreadyInEntry && 
+              // currentPrice &&
+              entryOrderPrice ?
+              <SMPnlComponent 
+                exchange={activeExchange}
+                symbol={pair}
+                marketType={marketType}
+                pairArr={pairArr}
+                entryPrice={entryPrice}
+                leverage={leverage}
+                side={side}
+                exitPrice={exitPrice}
+                entryOrderPrice={entryOrderPrice}
+                entryLevels={entryLevels}
+                receivedProfitPercentage={receivedProfitPercentage}
+                receivedProfitAmount={receivedProfitAmount}
+                positionAmount={+(stripDigitPlaces(amount, quantityPrecision))}
+                templatePnl={templatePnl}
+                theme={theme} 
+              /> 
+              : (
+                `0 ${pairArr[1]} / 0%`
+              ),
           style: {
             opacity: needOpacity ? 0.6 : 1,
             minWidth: '135px',
           },
-          contentToSort: profitAmount,
+          // contentToSort: profitAmount,
         },
         status: {
           render: (

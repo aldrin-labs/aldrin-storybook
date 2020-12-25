@@ -43,7 +43,6 @@ export interface IProps {
   maxLeverage: number
   minFuturesStep: number
   minSpotNotional: number
-  smartTerminalOnboarding: boolean
   componentMarginType: 'cross' | 'isolated'
   cancelOrder: CancelOrder,
   placeOrder: (
@@ -53,7 +52,6 @@ export interface IProps {
     typeOfOrder: 'smart',
     stateOfSM: StateOfSMForPlaceOrder
   ) => PlaceOrderResult,
-  showOrderResult: (res: PlaceOrderResult, cancelOrder: CancelOrder) => void
   changeMarginTypeWithStatus: (marginType: 'cross' | 'isolated') => void
   updateLeverage: (lev: number) => void
   updateTooltipSettingsMutation: (obj: { variables: any}) => void

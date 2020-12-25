@@ -23,12 +23,6 @@ export interface IProps extends WithTheme<Theme> {
   addOrderToCanceled: (id: string) => void
   clearCanceledOrders: () => void
   ordersHealthcheckMutation: (variables: any) => void
-  showCancelResult: ({
-    status,
-    message,
-  }: {
-    status: string
-    message: string
   }) => void
   theme: Theme
   selectedKey: Key

@@ -7,20 +7,19 @@ import { updateTooltipSettings } from '@core/graphql/mutations/user/updateToolti
 import { queryRendererHoc } from '@core/components/QueryRenderer';
 import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings';
 import { finishJoyride } from '@core/utils/joyride';
-
-import { FinishBtn, smartTerminal } from '@sb/components/ReactourOnboarding/ReactourOnboarding';
+import { tourConfig, FinishBtn } from '@sb/components/ReactourOnboarding/ReactourOnboarding';
 
 const accentColor = '#1BA492';
 
-const closeSmartTerminalOnboarding = ({ updateTooltipSettingsMutation, getTooltipSettings }) => {
+const closeChartPageOnboarding = ({ updateTooltipSettingsMutation, getTooltipSettings }) => {
 	finishJoyride({
 		updateTooltipSettingsMutation: updateTooltipSettingsMutation,
-		getTooltipSettings: getTooltipSettings,
-		name: 'smartTerminal'
+		getTooltipSettings,
+		name: 'chartPage'
 	});
 };
 
-const SmartOrderOnboarding = ({ updateTooltipSettingsMutation, getTooltipSettingsQuery }) => {
+const ChartOnboarding = ({ getTooltipSettingsQuery, updateTooltipSettingsMutation }) => {
 	const {
 		getTooltipSettings = {
 			__typename: 'AccountSettingsTooltipSettings',
@@ -63,9 +62,9 @@ const SmartOrderOnboarding = ({ updateTooltipSettingsMutation, getTooltipSetting
 				congratulations: false
 			}
 		}
-  };
-  
-  const shouldRunOnboarding = getTooltipSettings.smartTerminalOnboarding
+    };
+
+    const shouldRunOnboarding = getTooltipSettings.chartPage
 
 	return shouldRunOnboarding && (
 		<Tour
@@ -75,19 +74,19 @@ const SmartOrderOnboarding = ({ updateTooltipSettingsMutation, getTooltipSetting
 			showNavigationNumber={true}
 			showNavigation={true}
 			lastStepNextButton={<FinishBtn>Finish</FinishBtn>}
-			steps={smartTerminal}
+			steps={tourConfig}
 			accentColor={accentColor}
-      isOpen={shouldRunOnboarding}
-      onRequestClose={() => {
-				closeSmartTerminalOnboarding({ getTooltipSettings, updateTooltipSettingsMutation });
+			isOpen={shouldRunOnboarding}
+			onRequestClose={() => {
+				closeChartPageOnboarding({ getTooltipSettings, updateTooltipSettingsMutation });
 			}}
 		/>
 	);
 };
 
-const MemoizedSmartOrderOnboarding = React.memo(SmartOrderOnboarding);
+const MemoizedChartOnboarding = React.memo(ChartOnboarding);
 
-const SmartOrderOnboardingDataWrapper = compose(
+const ChartOnboardingDataWrapper = compose(
 	queryRendererHoc({
 		skip: (props: any) => !props.authenticated,
 		query: GET_TOOLTIP_SETTINGS,
@@ -97,8 +96,8 @@ const SmartOrderOnboardingDataWrapper = compose(
 	graphql(updateTooltipSettings, {
 		name: 'updateTooltipSettingsMutation'
 	})
-)(MemoizedSmartOrderOnboarding);
+)(MemoizedChartOnboarding);
 
-const MemoizedSmartOrderOnboardingDataWrapper = React.memo(SmartOrderOnboardingDataWrapper);
+const MemoizedChartOnboardingDataWrapper = React.memo(ChartOnboardingDataWrapper);
 
-export default MemoizedSmartOrderOnboardingDataWrapper;
+export default MemoizedChartOnboardingDataWrapper;

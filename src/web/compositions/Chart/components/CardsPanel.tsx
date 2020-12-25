@@ -12,6 +12,7 @@ import { getActiveStrategies } from '@core/graphql/queries/chart/getActiveStrate
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { IProps, IQueryProps, INextQueryProps } from './TradingTabs.types'
 
+import { getPrecisionItem } from '@core/utils/getPrecisionItem'
 import {
   SmartTradeButton,
   ChangeTerminalButton,
@@ -31,6 +32,9 @@ import { updateThemeMode } from '@core/graphql/mutations/chart/updateThemeMode'
 import { writeQueryData } from '@core/utils/TradingTable.utils'
 import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
 import { Button } from '@material-ui/core'
+
+import { showChangePositionModeResult } from '@sb/compositions/Chart/Chart.utils'
+
 
 const selectStyles = (theme: Theme) => ({
   height: '100%',
@@ -74,11 +78,8 @@ export const CardsPanel = ({
   isDefaultTerminalViewMode,
   updateTerminalViewMode,
   marketType,
-  quantityPrecision,
-  pricePrecision,
   changePositionModeMutation,
   selectedKey,
-  showChangePositionModeResult,
   toggleThemeMode,
   hideDepthChart,
   hideOrderbook,
@@ -94,6 +95,12 @@ export const CardsPanel = ({
     getActiveStrategies: { strategies: [], count: 0 },
   },
 }) => {
+
+  const { pricePrecision, quantityPrecision } = getPrecisionItem({
+    marketType,
+    symbol: pair,
+  })
+
   const hedgeMode = selectedKey.hedgeMode
 
   const changePositionMode = async (hedgeMode: boolean) => {
