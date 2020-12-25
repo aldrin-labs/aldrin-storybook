@@ -128,15 +128,12 @@ class SimpleTabs extends React.Component {
       keyId,
       placeOrder,
       decimals,
-      showOrderResult,
       cancelOrder,
       marketType,
       hedgeMode,
       enqueueSnackbar,
-      chartPagePopup,
       selectedKey,
       currentPosition,
-      closeChartPagePopup,
       leverage: startLeverage,
       componentMarginType,
       priceFromOrderbook,
@@ -645,7 +642,6 @@ class SimpleTabs extends React.Component {
                         marketType={marketType}
                         addLoaderToButton={this.addLoaderToButton}
                         orderIsCreating={orderIsCreating}
-                        showOrderResult={showOrderResult}
                         leverage={leverage}
                         reduceOnly={reduceOnly}
                         orderMode={orderMode}
@@ -691,7 +687,6 @@ class SimpleTabs extends React.Component {
                         decimals={decimals}
                         addLoaderToButton={this.addLoaderToButton}
                         orderIsCreating={orderIsCreating}
-                        showOrderResult={showOrderResult}
                         leverage={leverage}
                         reduceOnly={reduceOnly}
                         orderMode={orderMode}
@@ -704,9 +699,6 @@ class SimpleTabs extends React.Component {
               )}
           </TerminalMainGrid>
         </CustomCard>
-        {/* {chartPagePopup && (
-          <FirstVisitPopup closeChartPagePopup={closeChartPagePopup} />
-        )} */}
       </Grid>
     )
   }

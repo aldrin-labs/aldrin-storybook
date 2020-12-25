@@ -2,21 +2,6 @@ import { Key } from '@core/types/ChartTypes'
 
 export interface IProps extends IPropsTradingTableWrapper {
   history: History
-  showCancelResult: ({
-    status,
-    message,
-  }: {
-    status: string
-    message: string
-  }) => void
-  showOrderResult: ({
-    status,
-    message,
-  }: {
-    status: string
-    message: string
-  }) => void
-
   getSelectedKeyQuery: { chart: { selectedKey: Key } }
   getAllUserKeysQuery: { myPortfolios: { keys: Key[] }[] }
 }
@@ -28,8 +13,6 @@ export interface ReadOnly<IPropsTradingTableWrapper> {
   currencyPair: string
   arrayOfMarketIds: string[]
   priceFromOrderbook: number
-  pricePrecision: number
-  quantityPrecision: number
 }
 
 export interface IState {

@@ -1,31 +1,21 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { Redirect, withRouter } from 'react-router-dom'
-// import Joyride from 'react-joyride'
 import { withTheme } from '@material-ui/styles'
-import { compose } from 'recompose'
+import { compose, shallowEqual } from 'recompose'
 import { graphql } from 'react-apollo'
-import { client } from '@core/graphql/apolloClient'
 import { isEqual } from 'lodash'
-// import { Grid, Hidden } from '@material-ui/core'
+import { difference, shallowDifference } from '@core/utils/difference'
 
-// import { CardsPanel } from './components'
-import OnlyCharts from './OnlyCharts/OnlyCharts'
-import DefaultView from './DefaultView/StatusWrapper'
-import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
-import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
-import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
+import { DefaultView } from './DefaultView/DefaultView'
+
 import { getChartLayout } from '@core/graphql/queries/chart/getChartLayout'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { selectTradingPair } from '@core/graphql/mutations/user/selectTradingPair'
 import { changeChartLayout } from '@core/graphql/mutations/chart/changeChartLayout'
 import { finishJoyride } from '@core/utils/joyride'
-import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
-import { getChartSteps } from '@sb/config/joyrideSteps'
 import { withSelectedPair } from '@core/hoc/withSelectedPair'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import { withKeyGenerating } from '@core/hoc/withKeyGenerating'
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
-import { withRedirectToLogin } from '@core/hoc/withRedirectToLogin'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 
@@ -41,6 +31,7 @@ import {
   prefetchWithdrawal,
   prefetchFuturesTransactions,
   prefetchSpotTransactions,
+  prefetchTooltips,
 } from '@core/utils/prefetching'
 import { checkLoginStatusWrapper } from '@core/utils/loginUtils'
 
@@ -51,14 +42,20 @@ import { IProps } from './Chart.types'
 
 export function ChartPageComponent(props: any) {
   const [terminalViewMode, updateTerminalViewMode] = useState('onlyTables')
-  const [stepIndex, updateStepIndex] = useState(0)
-  const [key, updateKey] = useState(0)
+
+  const { authenticated } = props
 
   useEffect(() => {
     const { marketType } = props
     setTimeout(() => {
       prefetchCoinSelector({ marketType, exchangeSymbol: 'binance' })
     }, 5000)
+
+    setTimeout(() => {
+       if (authenticated) {
+          prefetchTooltips()
+       }
+    }, 6500)
 
     // prefetch different market for coin selector
     setTimeout(() => {
@@ -101,68 +98,23 @@ export function ChartPageComponent(props: any) {
     }
   }, [props.marketType])
 
-  const handleJoyrideCallback = (data) => {
-    if (
-      data.action === 'close' ||
-      data.action === 'skip' ||
-      data.status === 'finished'
-    ) {
-      const {
-        updateTooltipSettingsMutation,
-        getTooltipSettingsQuery: { getTooltipSettings },
-      } = props
-
+  const memoizatedUpdateTerminalViewMode = useMemo(() => (mode: string) => { /// need to replace it
+    if (mode === 'smartOrderMode') {
       finishJoyride({
-        updateTooltipSettingsMutation,
-        getTooltipSettings,
-        name: 'chartPage',
+        updateTooltipSettingsMutation:
+          props.updateTooltipSettingsMutation,
+        // we have old value here after changing, it produce strange behavior
+        getTooltipSettings: null,
+        name: 'chartPagePopup',
       })
     }
 
-    switch (data.action) {
-      case 'next': {
-        if (data.lifecycle === 'complete') {
-          updateStepIndex(stepIndex + 1)
-        }
-        break
-      }
-      case 'prev': {
-        if (data.lifecycle === 'complete') {
-          updateStepIndex(stepIndex - 1)
-        }
-        break
-      }
-    }
-
-    if (
-      data.status === 'finished' ||
-      (data.status === 'stop' && data.index !== data.size - 1) ||
-      data.status === 'reset'
-    ) {
-      updateKey(key + 1)
-    }
-  }
-
-  const closeChartPagePopup = () => {
-    finishJoyride({
-      updateTooltipSettingsMutation: props.updateTooltipSettingsMutation,
-      getTooltipSettings,
-      name: 'chartPagePopup',
-    })
-  }
-
-  const closeChartPageOnboarding = () => {
-    finishJoyride({
-      updateTooltipSettingsMutation: props.updateTooltipSettingsMutation,
-      getTooltipSettings,
-      name: 'chartPage',
-    })
-  }
+    updateTerminalViewMode(mode)
+  }, [])  
 
   const {
     theme,
     pathname,
-    updateTooltipSettingsMutation,
     getChartDataQuery: {
       getMyProfile: { _id } = { _id: '' },
       getTradingSettings: {
@@ -179,51 +131,6 @@ export function ChartPageComponent(props: any) {
         currencyPair: { pair: 'BTC_USDT' },
         activeExchange: { name: 'Binance', symbol: 'binance' },
         view: 'default',
-      },
-    },
-    getTooltipSettingsQuery: {
-      loading: getTooltipSettingsQueryLoading = true,
-      getTooltipSettings = {
-        __typename: 'AccountSettingsTooltipSettings',
-        portfolioMain: false,
-        portfolioIndustry: false,
-        portfolioRebalance: false,
-        portfolioCorrelation: false,
-        portfolioOptimization: false,
-        chartPage: false,
-        chartPagePopup: false,
-        multiChartPage: false,
-        transactionPage: false,
-        smartTerminal: false,
-        onboarding: {
-          __typename: 'AccountSettingsTooltipSettingsOnboarding',
-          instructions: false,
-          portfolioName: false,
-          exchangeKey: false,
-          congratulations: false,
-        },
-      },
-    } = {
-      loading: getTooltipSettingsQueryLoading = true,
-      getTooltipSettings: {
-        __typename: 'AccountSettingsTooltipSettings',
-        portfolioMain: false,
-        portfolioIndustry: false,
-        portfolioRebalance: false,
-        portfolioCorrelation: false,
-        portfolioOptimization: false,
-        chartPage: false,
-        chartPagePopup: false,
-        multiChartPage: false,
-        transactionPage: false,
-        smartTerminal: false,
-        onboarding: {
-          __typename: 'AccountSettingsTooltipSettingsOnboarding',
-          instructions: false,
-          portfolioName: false,
-          exchangeKey: false,
-          congratulations: false,
-        },
       },
     },
     getChartLayoutQuery: {
@@ -248,7 +155,6 @@ export function ChartPageComponent(props: any) {
     pairPropertiesQuery,
     marketType,
     selectedPair,
-    authenticated,
     changeChartLayoutMutation,
   } = props
 
@@ -311,12 +217,12 @@ export function ChartPageComponent(props: any) {
       125
   }
 
-  let isChartPageOnboardingDone = getTooltipSettings.chartPage
-
-  const arrayOfMarketIds = marketByMarketType.map((el) => el._id)
+  const arrayOfMarketIds = marketByMarketType.map((el: { _id: string }) => el._id)
   const selectedKey = selectedTradingKey
     ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
     : { keyId: '', hedgeMode: false, isFuturesWarsKey: false }
+  
+  console.log('Chart RENDER')  
 
   return (
     <MainContainer fullscreen={view !== 'default'}>
@@ -331,56 +237,19 @@ export function ChartPageComponent(props: any) {
           marketType={marketType}
           currencyPair={selectedPair}
           maxLeverage={initialLeverage}
-          pricePrecision={pricePrecision}
-          quantityPrecision={quantityPrecision}
           minPriceDigits={minPriceDigits}
           minSpotNotional={minSpotNotional}
           minFuturesStep={minFuturesStep}
           isPairDataLoading={isPairDataLoading}
-          smartTerminalOnboarding={getTooltipSettings.smartTerminal}
-          updateTooltipSettingsMutation={updateTooltipSettingsMutation}
           themeMode={theme.palette.type}
           selectedKey={selectedKey}
-          getTooltipSettings={getTooltipSettings}
           activeExchange={activeExchange}
           terminalViewMode={terminalViewMode}
-          closeChartPageOnboarding={closeChartPageOnboarding}
-          isChartPageOnboardingDone={isChartPageOnboardingDone}
-          getTooltipSettingsQueryLoading={getTooltipSettingsQueryLoading}
-          updateTerminalViewMode={(mode) => {
-            if (mode === 'smartOrderMode') {
-              finishJoyride({
-                updateTooltipSettingsMutation:
-                  props.updateTooltipSettingsMutation,
-                // we have old value here after changing, it produce strange behavior
-                getTooltipSettings: null,
-                name: 'chartPagePopup',
-              })
-            }
-
-            updateTerminalViewMode(mode)
-          }}
-          chartProps={props}
+          updateTerminalViewMode={memoizatedUpdateTerminalViewMode}
           arrayOfMarketIds={arrayOfMarketIds}
-          chartPagePopup={
-            (getTooltipSettings.chartPagePopup === null ||
-              getTooltipSettings.chartPagePopup) &&
-            !getTooltipSettings.chartPage
-          }
-          closeChartPagePopup={closeChartPagePopup}
           changeChartLayoutMutation={changeChartLayoutMutation}
         />
       )}
-      {/* <JoyrideOnboarding
-        continuous={true}
-        stepIndex={stepIndex}
-        showProgress={true}
-        showSkipButton={true}
-        key={key}
-        steps={getChartSteps({ marketType })}
-        open={getTooltipSettings.chartPage}
-        handleJoyrideCallback={handleJoyrideCallback}
-      /> */}
     </MainContainer>
   )
 }
@@ -392,60 +261,14 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
     return false
   }
 
-  const prevIsPairDataLoading =
-    prev.loading ||
-    !prev.pairPropertiesQuery.marketByName ||
-    !prev.pairPropertiesQuery.marketByName[0] ||
-    prev.pairPropertiesQuery.networkStatus === 2 ||
-    prev.pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
-      prev.selectedPair.replace('_', '')
+  // console.log('Chart diff: ', difference(prev, next))
+  // console.log('Chart shallowDifference: ', shallowDifference(prev, next))
+  // console.log('Chart shallowEqual diff result:', shallowEqual(prev, next))
 
-  const nextIsPairDataLoading =
-    next.loading ||
-    !next.pairPropertiesQuery.marketByName ||
-    !next.pairPropertiesQuery.marketByName[0] ||
-    next.pairPropertiesQuery.networkStatus === 2 ||
-    next.pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
-      next.selectedPair.replace('_', '')
-
-  const tooltipQueryChanged =
-    (prev.getTooltipSettingsQuery.getTooltipSettings &&
-      prev.getTooltipSettingsQuery.getTooltipSettings.chartPage) ===
-      (next.getTooltipSettingsQuery.getTooltipSettings &&
-        next.getTooltipSettingsQuery.getTooltipSettings.chartPage) &&
-    (prev.getTooltipSettingsQuery.getTooltipSettings &&
-      prev.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup) ===
-      (next.getTooltipSettingsQuery.getTooltipSettings &&
-        next.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup) &&
-    (prev.getTooltipSettingsQuery.getTooltipSettings &&
-      prev.getTooltipSettingsQuery.getTooltipSettings.smartTerminal) ===
-      (next.getTooltipSettingsQuery.getTooltipSettings &&
-        next.getTooltipSettingsQuery.getTooltipSettings.smartTerminal)
-
-  return (
-    // prev.marketType === next.marketType &&
-    // prev.selectedPair === next.selectedPair &&
-    // prev.getChartDataQuery.getTradingSettings.selectedTradingKey ===
-    //   next.getChartDataQuery.getTradingSettings.selectedTradingKey &&
-    // prev.getChartDataQuery.getTradingSettings.hedgeMode ===
-    //   next.getChartDataQuery.getTradingSettings.hedgeMode &&
-    // prevIsPairDataLoading === nextIsPairDataLoading &&
-    // tooltipQueryChanged &&
-    // prev.getChartLayoutQuery.chart.layout.hideDepthChart ===
-    //   next.getChartLayoutQuery.chart.layout.hideDepthChart &&
-    // prev.getChartLayoutQuery.chart.layout.hideOrderbook ===
-    //   next.getChartLayoutQuery.chart.layout.hideOrderbook &&
-    // prev.getChartLayoutQuery.chart.layout.hideTradeHistory ===
-    //   next.getChartLayoutQuery.chart.layout.hideTradeHistory &&
-    // prev.theme.palette.type === next.theme.palette.type &&
-    // isEqual(prev.theme, next.theme) &&
-    // isEqual(
-    //   prev.pairPropertiesQuery.marketByName[0].properties,
-    //   next.pairPropertiesQuery.marketByName[0].properties
-    // )
-    false
-  )
+  return shallowEqual(prev, next)
 })
+
+// const MemoizedChartPage = React.memo(ChartPage)
 
 // TODO: combine all queries to one
 export default compose(
@@ -453,26 +276,20 @@ export default compose(
   withAuthStatus,
   withTheme(),
   withRouter,
-  // withAuth,
   queryRendererHoc({
     skip: (props: any) => !props.authenticated,
     query: getChartData,
     name: 'getChartDataQuery',
-    // fetchPolicy: 'cache-and-network',
     fetchPolicy: 'cache-first',
     variables: {
       marketType: 1, // hardcode here to get only futures marketIds'
     },
   }),
-  // withKeyGenerating,
   graphql(selectTradingPair, { name: 'selectTradingPairMutation' }),
   withSelectedPair,
   queryRendererHoc({
-    skip: (props: any) => !props.authenticated,
-    query: GET_TOOLTIP_SETTINGS,
-    name: 'getTooltipSettingsQuery',
-    fetchPolicy: 'cache-and-network',
-    withOutSpinner: true,
+    query: getChartLayout,
+    name: 'getChartLayoutQuery',
     withoutLoading: true,
   }),
   queryRendererHoc({
@@ -484,12 +301,6 @@ export default compose(
       marketName: props.selectedPair,
       marketType: props.marketType,
     }),
-  }),
-  queryRendererHoc({
-    query: getChartLayout,
-    name: 'getChartLayoutQuery',
-    fetchPolicy: 'cache-and-network',
-    withoutLoading: true,
   }),
   graphql(updateTooltipSettings, {
     name: 'updateTooltipSettingsMutation',

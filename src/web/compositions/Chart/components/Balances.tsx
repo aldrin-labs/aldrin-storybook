@@ -108,13 +108,12 @@ export const BalanceFuturesSymbol = styled(BalanceFuturesTypography)`
 `
 
 export const Balances = ({
-  getFundsQuery,
+  getFundsQuery = { getFunds: [] },
   pair,
   theme,
   marketType,
   selectedKey,
   subscribeToMore,
-  showFuturesTransfer = false,
   timerForFuturesWars = {},
   isAlreadyJoined = false,
   isFuturesWarsKey = false,
@@ -130,7 +129,6 @@ export const Balances = ({
   marketType: 0 | 1
   selectedKey: Key
   subscribeToMore: () => () => void
-  showFuturesTransfer: boolean
   timerForFuturesWars: {
     isEnabled: boolean
     startedAt: number
@@ -181,6 +179,8 @@ export const Balances = ({
     <Link to="/profile/withdrawal" {...props} />
   )
 
+  // console.log('Balances layout container RENDER')
+
   return (
     <>
       <TransferPopup
@@ -189,7 +189,6 @@ export const Balances = ({
         handleClose={() => togglePopup(false)}
         transferFromSpotToFutures={transferFromSpotToFutures}
         selectedAccount={selectedKey.keyId}
-        showFuturesTransfer={showFuturesTransfer}
         isFuturesWarsKey={isFuturesWarsKey}
         futuresWarsRoundBet={futuresWarsRoundBet}
         timerForFuturesWars={timerForFuturesWars}

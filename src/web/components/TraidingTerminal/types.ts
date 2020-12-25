@@ -43,11 +43,6 @@ export interface IProps {
   //   state: any,
   //   futuresValues: any
   // ) => IResult
-
-  showOrderResult: (
-    result: IResult,
-    cancelOrderFunction: (arg: any) => void
-  ) => null
 }
 
 export interface IPropsWithFormik extends FormikProps<FormValues>, IProps {}

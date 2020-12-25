@@ -92,6 +92,9 @@ const Balances = ({
 }
 
 const BalancesWrapper = (props: any) => {
+
+  console.log('BalancesWrapper InputAmount RENDER')
+
   return (
     <QueryRenderer
       component={Balances}

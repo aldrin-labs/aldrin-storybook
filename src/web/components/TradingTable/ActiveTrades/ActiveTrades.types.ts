@@ -47,8 +47,6 @@ export interface IProps {
   currencyPair: string
   arrayOfMarketIds: string[]
   priceFromOrderbook: number
-  quantityPrecision: number
-  pricePrecision: number
   theme: Theme
   getActiveStrategiesQuery: {
     getActiveStrategies: {
@@ -78,18 +76,6 @@ export interface IProps {
   addOrderToCanceled: (id: string) => void
   handleToggleAllKeys: (newValue: boolean) => void
   handleToggleSpecificPair: (newValue: boolean) => void
-  showCancelResult: ({
-    status,
-    message,
-  }: {
-    status: string
-    message: string
-  }) => void
-  showOrderResult: (
-    status: any,
-    cancelOrder: (id: string) => void,
-    marketType: number
-  ) => void
   handleTabChange: (tab: string) => void
   handlePairChange: (pair: string) => void
   enqueueSnackbar: (message: string, variant: { variant: string }) => void

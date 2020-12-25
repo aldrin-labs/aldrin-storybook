@@ -28,8 +28,9 @@ import {
   EditEntryOrderPopup,
 } from './EditOrderPopups'
 
-import { SmartOrderOnboarding } from '@sb/compositions/Chart/components/SmartOrderTerminal/SmartTerminalOnboarding/SmartTerminalOnboarding'
+import SmartOrderOnboarding from '@sb/compositions/Chart/components/SmartOrderTerminal/SmartTerminalOnboarding/SmartTerminalOnboarding'
 import ConfirmationPopup from '@sb/compositions/Chart/components/SmartOrderTerminal/ConfirmationPopup/ConfirmationPopup'
+import { showOrderResult } from '@sb/compositions/Chart/Chart.utils'
 
 import { TerminalBlocksContainer } from './styles'
 
@@ -169,6 +170,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     } = this.props
 
     this.updateSubBlockValue('entryPoint', 'order', 'price', this.props.price)
+    console.log(' this.props.componentLeverage', this.props.componentLeverage)
+    this.updateSubBlockValue('entryPoint', 'order', 'leverage', this.props.componentLeverage)
 
     console.log('getStrategySettingsQuery', getStrategySettingsQuery)
     const result = getDefaultStateFromStrategySettings({
@@ -435,7 +438,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       const { price, marketType } = this.props
       const total = this.state.temp.initialMargin * this.props.componentLeverage
 
-      if (total > 0) {
+      if (total > 0 && +stripDigitPlaces(total / this.props.price, this.props.quantityPrecision) > 0) {
         this.updateSubBlockValue(
           'entryPoint',
           'order',
@@ -729,7 +732,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       price,
       marketType,
       placeOrder,
-      showOrderResult,
       cancelOrder,
       quantityPrecision,
       updateTerminalViewMode,
@@ -1178,9 +1180,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       pricePrecision,
       maxLeverage,
       leverage: startLeverage,
-      smartTerminalOnboarding,
-      updateTooltipSettingsMutation,
-      getTooltipSettings,
       changeMarginTypeWithStatus,
       componentMarginType,
     } = this.props
@@ -1244,11 +1243,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           />
         )}
         <CustomCard theme={theme} style={{ borderTop: 0 }}>
-          <SmartOrderOnboarding
-            smartTerminalOnboarding={smartTerminalOnboarding}
-            getTooltipSettings={getTooltipSettings}
-            updateTooltipSettingsMutation={updateTooltipSettingsMutation}
-          />
+          <SmartOrderOnboarding />
 
           <TerminalHeadersBlock
             pair={pair}

@@ -30,6 +30,7 @@ import { ordersHealthcheck } from '@core/graphql/mutations/chart/ordersHealthche
 
 import { client } from '@core/graphql/apolloClient'
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
+import { showCancelResult } from '@sb/compositions/Chart/Chart.utils'
 
 @withTheme()
 class OpenOrdersTable extends React.PureComponent<IProps> {
@@ -79,8 +80,6 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     pair: string,
     type: string
   ) => {
-    const { showCancelResult } = this.props
-
     await this.props.addOrderToCanceled(orderId)
     const result = await this.onCancelOrder(keyId, orderId, pair, type)
     const status = await cancelOrderStatus(result)

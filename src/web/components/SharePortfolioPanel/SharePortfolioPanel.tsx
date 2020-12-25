@@ -19,6 +19,7 @@ import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
 import { StyledInputLabel } from '@sb/compositions/Optimization/Import/Import.styles'
 import { pink } from '@material-ui/core/colors'
 
+
 const SharePortfolioPanel = ({
   portfolioName,
   onToggleUSDBTC,
@@ -36,19 +37,6 @@ const SharePortfolioPanel = ({
     false
   )
   const { enqueueSnackbar } = useSnackbar()
-
-  const showFuturesTransfer = (result) => {
-    if (result.status === 'OK' && result.data && result.data.tranId) {
-      enqueueSnackbar('Funds transfered!', {
-        variant: 'success',
-        // action: <CloseButton />,
-      })
-    } else {
-      enqueueSnackbar('Something went wrong during transfering funds', {
-        variant: 'error',
-      })
-    }
-  }
 
   return (
     <Grid
@@ -169,7 +157,6 @@ const SharePortfolioPanel = ({
         handleClose={() => togglePopup(false)}
         transferFromSpotToFutures={transferFromSpotToFutures}
         haveSelectedAccount={false}
-        showFuturesTransfer={showFuturesTransfer}
         isFuturesWarsKey={false}
         loading={loading}
         setLoading={setLoading}

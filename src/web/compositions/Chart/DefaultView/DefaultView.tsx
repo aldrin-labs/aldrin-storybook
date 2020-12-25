@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react'
-
+import { shallowEqual } from 'recompose'
 import { Fade, Grid, Theme } from '@material-ui/core'
 
-import MainDepthChart from '../DepthChart/MainDepthChart/MainDepthChart'
+// import MainDepthChart from '../DepthChart/MainDepthChart/MainDepthChart'
 import { SingleChart } from '@sb/components/Chart'
+import { difference, shallowDifference } from '@core/utils/difference'
 
-import {
-  tourConfig,
-  FinishBtn,
-} from '@sb/components/ReactourOnboarding/ReactourOnboarding'
 
-import Tour from 'reactour'
-
-import Balances from '@core/components/Balances'
+import ChartOnboarding from '@sb/compositions/Chart/components/ChartOnboarding/ChartOnboarding'
+import Balances from '@core/components/Balances/BalancesWrapper'
 import TradingComponent from '@core/components/TradingComponent'
 import TradingTable from '@sb/components/TradingTable/TradingTable'
 import { TablesBlockWrapper } from '@sb/components/TradingWrapper/styles'
@@ -20,8 +16,8 @@ import { TradeHistory, OrderbookAndDepthChart } from '../components'
 import CardsPanel from '../components/CardsPanel'
 import { GuestMode } from '../components/GuestMode/GuestMode'
 import ChartCardHeader from '@sb/components/ChartCardHeader'
-import { HideArrow } from '../components/HideArrow/HideArrow'
-import { isEqual } from 'lodash'
+// import { HideArrow } from '../components/HideArrow/HideArrow'
+// import { isEqual } from 'lodash'
 
 const TerminalContainer = ({
   isDefaultTerminalViewMode,
@@ -72,38 +68,29 @@ export const DefaultViewComponent = (
     activeExchange,
     changeTable,
     minPriceDigits,
-    showOrderResult,
-    showCancelResult,
-    showFuturesTransfer,
     showTableOnMobile,
     selectedKey,
-    // chartProps,
-    showChangePositionModeResult,
     terminalViewMode,
     updateTerminalViewMode,
     arrayOfMarketIds,
     isPairDataLoading,
-    quantityPrecision,
-    pricePrecision,
     minSpotNotional,
     minFuturesStep,
-    chartPagePopup,
-    closeChartPagePopup,
     authenticated,
     maxLeverage,
     layout,
     changeChartLayoutMutation,
-    isChartPageOnboardingDone,
-    getTooltipSettingsQueryLoading,
-    closeChartPageOnboarding,
-    smartTerminalOnboarding,
-    updateTooltipSettingsMutation,
-    getTooltipSettings,
   } = props
+
+  useEffect(() => {
+    updateTerminalPriceFromOrderbook(null)
+  }, [currencyPair])
 
   if (!currencyPair) {
     return null
   }
+
+  console.log('DefaultView RENDER')
 
   const {
     hideDepthChart,
@@ -138,35 +125,10 @@ export const DefaultViewComponent = (
 
   const sizeDigits = marketType === 0 ? 8 : 3
 
-  useEffect(() => {
-    updateTerminalPriceFromOrderbook(null)
-  }, [currencyPair])
-
-  console.log('default view rerender', props)
-
-  const accentColor = '#1BA492'
   return (
     <Container container spacing={8} theme={theme}>
-      {authenticated && !getTooltipSettingsQueryLoading && (
-        <Tour
-          showCloseButton={false}
-          nextButton={<FinishBtn>Next</FinishBtn>}
-          prevButton={<a />}
-          showNavigationNumber={true}
-          showNavigation={true}
-          lastStepNextButton={<FinishBtn>Finish</FinishBtn>}
-          steps={tourConfig}
-          accentColor={accentColor}
-          isOpen={!getTooltipSettings.chartPage}
-          onRequestClose={() => {
-            // setIsTourOpen(false)
-            closeChartPageOnboarding()
-          }}
-          // onRequestClose={() => {
-          //   setIsTourOpen(false)
-          //   localStorage.setItem('isOnboardingDone', 'true')
-          // }}
-        />
+      {authenticated && (
+        <ChartOnboarding />
       )}
       <ChartGridContainer item xs={12} theme={theme}>
         <CardsPanel
@@ -178,15 +140,12 @@ export const DefaultViewComponent = (
             themeMode,
             activeExchange,
             selectedKey,
-            showChangePositionModeResult,
             isDefaultTerminalViewMode,
             isDefaultOnlyTables,
             isSmartOrderMode,
             updateTerminalViewMode,
             marketType,
             terminalViewMode,
-            quantityPrecision,
-            pricePrecision,
             hideDepthChart,
             hideOrderbook,
             hideTradeHistory,
@@ -382,13 +341,9 @@ export const DefaultViewComponent = (
                 theme={theme}
                 maxLeverage={maxLeverage}
                 selectedKey={selectedKey}
-                showOrderResult={showOrderResult}
-                showCancelResult={showCancelResult}
                 marketType={marketType}
                 minFuturesStep={minFuturesStep}
                 exchange={exchange}
-                pricePrecision={pricePrecision}
-                quantityPrecision={quantityPrecision}
                 priceFromOrderbook={priceFromOrderbook}
                 currencyPair={currencyPair}
                 arrayOfMarketIds={arrayOfMarketIds}
@@ -409,7 +364,6 @@ export const DefaultViewComponent = (
                 selectedKey={selectedKey}
                 marketType={marketType}
                 theme={theme}
-                showFuturesTransfer={showFuturesTransfer}
               />
             </BalancesContainer>
           )}
@@ -425,23 +379,13 @@ export const DefaultViewComponent = (
                 activeExchange={activeExchange}
                 pair={baseQuoteArr}
                 theme={theme}
-                chartPagePopup={chartPagePopup}
-                closeChartPagePopup={closeChartPagePopup}
-                quantityPrecision={quantityPrecision}
-                pricePrecision={pricePrecision}
                 minSpotNotional={minSpotNotional}
                 minFuturesStep={minFuturesStep}
                 priceFromOrderbook={priceFromOrderbook}
                 marketType={marketType}
                 maxLeverage={maxLeverage}
-                showOrderResult={showOrderResult}
-                showCancelResult={showCancelResult}
-                showChangePositionModeResult={showChangePositionModeResult}
                 isDefaultTerminalViewMode={isDefaultTerminalViewMode}
                 updateTerminalViewMode={updateTerminalViewMode}
-                getTooltipSettings={getTooltipSettings}
-                smartTerminalOnboarding={smartTerminalOnboarding}
-                updateTooltipSettingsMutation={updateTooltipSettingsMutation}
               />
             </TerminalContainer>
           )}
@@ -452,38 +396,12 @@ export const DefaultViewComponent = (
 }
 
 export const DefaultView = React.memo(DefaultViewComponent, (prev, next) => {
-  const tooltipQueryChanged =
-    prev.getTooltipSettings?.chartPage === next.getTooltipSettings?.chartPage &&
-    prev.getTooltipSettings?.chartPagePopup ===
-      next.getTooltipSettings?.chartPagePopup &&
-    prev.getTooltipSettings?.smartTerminal ===
-      next.getTooltipSettings?.smartTerminal &&
-    prev.getTooltipSettingsQueryLoading === next.getTooltipSettingsQueryLoading
 
-  return (
-    prev.marketType === next.marketType &&
-    prev.selectedKey.keyId === next.selectedKey.keyId &&
-    prev.currencyPair === next.currencyPair &&
-    prev.terminalViewMode === next.terminalViewMode &&
-    prev.selectedKey.hedgeMode === next.selectedKey.hedgeMode &&
-    prev.isPairDataLoading === next.isPairDataLoading &&
-    prev.chartPagePopup === next.chartPagePopup &&
-    prev.maxLeverage === next.maxLeverage &&
-    prev.themeMode === next.themeMode &&
-    prev.minPriceDigits === next.minPriceDigits &&
-    prev.pricePrecision === next.pricePrecision &&
-    prev.quantityPrecision === next.quantityPrecision &&
-    prev.minSpotNotional === next.minSpotNotional &&
-    prev.minFuturesStep === next.minFuturesStep &&
-    prev.initialLeverage === next.initialLeverage &&
-    prev.theme.palette.type === next.theme.palette.type &&
-    prev.layout.hideDepthChart === next.layout.hideDepthChart &&
-    prev.layout.hideOrderbook === next.layout.hideOrderbook &&
-    prev.layout.hideTradeHistory === next.layout.hideTradeHistory &&
-    prev.isChartPageOnboardingDone === next.isChartPageOnboardingDone &&
-    prev.layout.hideTradingViewChart === next.layout.hideTradingViewChart &&
-    isEqual(prev.theme, next.theme) &&
-    tooltipQueryChanged
-    // false
-  )
+  console.log('DefaultView diff: ', difference(prev, next))
+  console.log('DefaultView shallowDifference: ', shallowDifference(prev, next))
+  console.log('DefaultView shallowEqual diff', shallowEqual(prev, next))
+
+
+  return shallowEqual(prev, next)
+
 })
