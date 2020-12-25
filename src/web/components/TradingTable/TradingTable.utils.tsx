@@ -3,6 +3,9 @@ import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 dayjs.extend(localizedFormat)
 
+import ArrowBottom from '@icons/arrowBottom.svg'
+import SvgIcon from '@sb/components/SvgIcon'
+
 import { OrderType, TradeType, FundsType, Key } from '@core/types/ChartTypes'
 import ErrorIcon from '@material-ui/icons/Error'
 
@@ -856,6 +859,9 @@ export const combineActiveTradesTable = ({
 
       const strategyId = el._id
 
+      let avgPrice =
+        entryLevels && entryLevels.length !== 0 ? entryLevels[0].price : 0
+      console.log('{entryLevels}', { entryLevels })
       return {
         id: `${el._id}_${el.accountId}`,
         pair: {
@@ -865,38 +871,67 @@ export const combineActiveTradesTable = ({
               onClick={(e) => {
                 handlePairChange(pair)
               }}
-            >{`${pairArr[0]}/${pairArr[1]}`}</SubColumnValue>
+              style={{ fontSize: '1.3rem', fontFamily: 'Avenir Next Demi' }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                <a
+                  style={{ color: theme.palette.grey.onboard }}
+                >{`${pairArr[0]}/${pairArr[1]}`}</a>
+                <a
+                  style={{
+                    color: side === 'buy' ? green.main : red.main,
+
+                    textTransform: 'capitalize',
+                  }}
+                >
+                  {marketType === 0
+                    ? side
+                    : side === 'buy'
+                    ? 'buy long'
+                    : 'sell short'}
+                </a>
+                <a
+                  style={{
+                    color: theme.palette.grey.light,
+                    textTransform: 'capitalize',
+                  }}
+                >
+                  {keyName}
+                </a>
+              </div>
+            </SubColumnValue>
           ),
           style: {
             opacity: needOpacity ? 0.6 : 1,
             cursor: 'pointer',
           },
         },
-        side: {
-          render: (
-            <SubColumnValue
-              theme={theme}
-              color={side === 'buy' ? green.main : red.main}
-            >
-              {marketType === 0
-                ? side
-                : side === 'buy'
-                ? 'buy long'
-                : 'sell short'}
-            </SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-          contentToSort: side,
-        },
         entryPrice: {
           render: entryPrice ? (
-            <SubColumnValue theme={theme}>
+            <SubColumnValue
+              style={{
+                fontSize: '1.3rem',
+                fontFamily: 'Avenir Next Demi',
+                color: theme.palette.grey.onboard,
+              }}
+              theme={theme}
+            >
               {stripDigitPlaces(entryPrice, pricePrecision)} {pairArr[1]}
             </SubColumnValue>
           ) : !!entryDeviation ? (
-            <SubColumnValue theme={theme}>
+            <SubColumnValue
+              style={{
+                fontSize: '1.3rem',
+                fontFamily: 'Avenir Next Demi',
+                color: theme.palette.grey.onboard,
+              }}
+              theme={theme}
+            >
               <div style={{ color: theme.palette.grey.light }}>trailing</div>{' '}
               <div>
                 <span style={{ color: theme.palette.grey.light }}>from</span>{' '}
@@ -904,7 +939,14 @@ export const combineActiveTradesTable = ({
               </div>
             </SubColumnValue>
           ) : !!entryOrderPrice ? (
-            <SubColumnValue theme={theme}>
+            <SubColumnValue
+              style={{
+                fontSize: '1.3rem',
+                fontFamily: 'Avenir Next Demi',
+                color: theme.palette.grey.onboard,
+              }}
+              theme={theme}
+            >
               {stripDigitPlaces(entryOrderPrice, pricePrecision)} {pairArr[1]}
             </SubColumnValue>
           ) : (
@@ -915,10 +957,82 @@ export const combineActiveTradesTable = ({
           },
           contentToSort: entryOrderPrice,
         },
+        // side: {
+        //   render: (
+        //     <SubColumnValue
+        //       theme={theme}
+        //       color={side === 'buy' ? green.main : red.main}
+        //     >
+        //       {marketType === 0
+        //         ? side
+        //         : side === 'buy'
+        //         ? 'buy long'
+        //         : 'sell short'}
+        //     </SubColumnValue>
+        //   ),
+        //   style: {
+        //     opacity: needOpacity ? 0.6 : 1,
+        //   },
+        //   contentToSort: side,
+        // },
+        leverage: {
+          render: (
+            <SubColumnValue
+              style={{
+                fontSize: '1.3rem',
+                fontFamily: 'Avenir Next Demi',
+                textTransform: 'lowercase',
+                color: theme.palette.grey.onboard,
+              }}
+              theme={theme}
+            >
+              {' '}
+              {'x'}
+              {leverage}
+            </SubColumnValue>
+          ),
+          style: {
+            opacity: needOpacity ? 0.6 : 1,
+          },
+          contentToSort: leverage,
+        },
         quantity: {
           render: (
-            <SubColumnValue theme={theme}>
-              {amount.toFixed(quantityPrecision)} {pairArr[0]}{' '}
+            <SubColumnValue
+              style={{
+                fontSize: '1.3rem',
+                fontFamily: 'Avenir Next Demi',
+                color: theme.palette.grey.onboard,
+              }}
+              theme={theme}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                <a>
+                  {((amount * entryOrderPrice) / leverage).toFixed(2)}{' '}
+                  {pairArr[1]}
+                </a>
+                <a
+                  style={{
+                    color: theme.palette.grey.light,
+                    fontSize: '1.2rem',
+                  }}
+                >
+                  {amount.toFixed(quantityPrecision)} {pairArr[0]}
+                </a>
+                <a
+                  style={{
+                    color: theme.palette.grey.light,
+                    fontSize: '1.2rem',
+                  }}
+                >
+                  {(amount * entryOrderPrice).toFixed(2)} {pairArr[1]}
+                </a>
+              </div>
             </SubColumnValue>
           ),
           style: {
@@ -926,9 +1040,69 @@ export const combineActiveTradesTable = ({
           },
           contentToSort: amount,
         },
+        averaging: {
+          render: (
+            <SubColumnValue
+              style={{
+                fontSize: '1.3rem',
+                fontFamily: 'Avenir Next Demi',
+                textTransform: 'lowercase',
+                color: theme.palette.grey.onboard,
+              }}
+              theme={theme}
+            >
+              {entryLevels && entryLevels.length > 0 ? (
+                <>
+                  {entryLevels.length}
+                  {' points'}{' '}
+                  <SvgIcon src={ArrowBottom} width={'1rem'} height={'1rem'} />
+                </>
+              ) : (
+                '-'
+              )}
+              <div>
+                {/* <table>
+                  <tr>
+                    <td>price</td>
+                    <td>amount</td>
+                    <td>margin</td>
+                  </tr>
+
+                  {entryLevels.map((el, index) => (
+                    <tr>
+                      <td>
+                        {index === 0
+                          ? avgPrice
+                          : side === 'sell'
+                          ? (
+                              (avgPrice * (100 + el.price / leverage)) /
+                              100
+                            ).toFixed(pricePrecision)
+                          : (
+                              (avgPrice * (100 - el.price / leverage)) /
+                              100
+                            ).toFixed(pricePrecision)}
+                      </td>
+                      <td>{el.amount}</td>
+                      <td></td>
+                    </tr>
+                  ))}
+                </table> */}
+              </div>
+            </SubColumnValue>
+          ),
+          style: {
+            opacity: needOpacity ? 0.6 : 1,
+          },
+          contentToSort: entryLevels ? entryLevels.length : 0,
+        },
         takeProfit: {
           render: (
-            <SubColumnValue theme={theme} color={green.main}>
+            <SubColumnValue
+              style={{ fontSize: '1.3rem', fontFamily: 'Avenir Next Demi' }}
+              theme={theme}
+              color={green.main}
+            >
               {exitLevels[0] &&
               exitLevels[0].activatePrice &&
               exitLevels[0].entryDeviation ? (
@@ -968,7 +1142,11 @@ export const combineActiveTradesTable = ({
         stopLoss: {
           render:
             stopLoss || hedgeLossDeviation ? (
-              <SubColumnValue theme={theme} color={red.main}>
+              <SubColumnValue
+                style={{ fontSize: '1.3rem', fontFamily: 'Avenir Next Demi' }}
+                theme={theme}
+                color={red.main}
+              >
                 {stopLoss || hedgeLossDeviation}%
               </SubColumnValue>
             ) : (
@@ -989,6 +1167,7 @@ export const combineActiveTradesTable = ({
             !!currentPrice &&
             entryOrderPrice ? (
               <SubColumnValue
+                style={{ fontSize: '1.3rem', fontFamily: 'Avenir Next Demi' }}
                 theme={theme}
                 color={
                   +profitPercentage > 0 || templatePnl > 0
@@ -1025,6 +1204,8 @@ export const combineActiveTradesTable = ({
                 alignItems: 'center',
                 whiteSpace: 'normal',
                 flexDirection: 'column',
+                fontSize: '1.3rem',
+                fontFamily: 'Avenir Next Demi',
               }}
               color={isErrorInOrder ? red.main : statusColor}
             >
@@ -1253,7 +1434,6 @@ export const combineActiveTradesTable = ({
             </BtnCustom>
           ),
         },
-        tooltipTitle: keyName,
         expandableContent: [
           {
             row: {
@@ -1262,7 +1442,7 @@ export const combineActiveTradesTable = ({
                   <EntryOrderColumn
                     theme={theme}
                     haveEdit={true}
-                    entryLevels={entryLevels}
+                    entryLevels={entryLevels} // avg
                     editTrade={() => editTrade('entryOrder', el)}
                     enableEdit={activeOrderStatus === 'Preparing' || isTemplate}
                     pair={`${pairArr[0]}/${pairArr[1]}`}

@@ -165,6 +165,7 @@ export default ({ themeMode, isChartPage, children }) => {
               bright: '#ED6337',
               new: '#DD6956',
               primary: '#F07878',
+              orderbook: '#FF0000',
             },
             blue: {
               custom: '#5085EC',
@@ -186,6 +187,7 @@ export default ({ themeMode, isChartPage, children }) => {
               main: '#39A74C',
               new: '#29AC80',
               onboarding: '#1BA492',
+              orderbook: '#007C0C',
             },
             grey: {
               custom: '#2E2E2E',

@@ -122,7 +122,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
 
         <ExchangePair
           style={{
-            width: '14.4rem',
+            width: '16rem',
             borderRadius: '0.3rem',
             fontWeight: 'bold',
           }}
@@ -137,7 +137,6 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
             }}
             singleValueStyles={{
               color: theme.palette.grey.onboard,
-              fontFamily: 'Avenir Next Demi',
             }}
             value={isClosed && value && { value, label: value }}
             fullWidth={true}

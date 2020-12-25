@@ -812,11 +812,12 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
               boxShadow: 'none',
             },
             heading: {
-              fontSize: '1rem',
+              fontSize: '1.4rem',
               fontWeight: 'bold',
               backgroundColor: theme.palette.white.background,
-              color: theme.palette.dark.main,
+              color: theme.palette.grey.light,
               boxShadow: 'none',
+              textTransform: 'capitalize',
             },
             cell: {
               color: theme.palette.dark.main,
