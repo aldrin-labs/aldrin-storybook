@@ -21,6 +21,7 @@ export interface IProps {
   getActivePositionsQuery: {
     getActivePositions: Position[]
     queryParamsWereChanged: boolean
+    subscribeToMoreFunction: () => () => void
   }
   selectedKey: Key
   keys: Key[]
@@ -42,7 +43,6 @@ export interface IProps {
   handleTabChange: (tab: string) => void
   enqueueSnackbar: (message: string, variant: { variant: string }) => void
   getActivePositionsQueryRefetch: () => void
-  subscribeToMore: () => () => void
 }
 
 export interface IState {

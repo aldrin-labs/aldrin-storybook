@@ -37,7 +37,7 @@ import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
 import { useQuery } from 'react-apollo'
 
-const version = `11.0.18`
+const version = `11.0.19`
 const currentVersion = localStorage.getItem('version')
 if (currentVersion !== version) {
   localStorage.clear()
