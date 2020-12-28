@@ -820,9 +820,9 @@ class ActiveTradesTable extends React.Component<IProps, IState> {
               textTransform: 'capitalize',
             },
             cell: {
-              color: theme.palette.dark.main,
-              fontSize: '1rem', // 1.2 if bold
-              fontWeight: 'bold',
+              color: theme.palette.grey.onboard,
+              fontSize: '1.3rem', // 1.2 if bold
+              fontFamily: 'Avenir Next Demi',
               letterSpacing: '.1rem',
               borderBottom: theme.palette.border.main,
               backgroundColor: theme.palette.white.background,

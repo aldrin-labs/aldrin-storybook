@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import OvalSelector from '@sb/components/OvalSelector'
 
@@ -12,11 +12,14 @@ const KeySelector = ({ ...props }: IProps) => {
     handleChange,
     selectStyles,
     isAccountSelect,
-    // singleValueStyles,
+    menuIsOpen,
+    onMouseOver,
+    onMouseOut,
   } = props
 
   return (
     <OvalSelector
+      menuIsOpen={menuIsOpen}
       theme={theme}
       placeholder="Select key"
       id="accountSelector"

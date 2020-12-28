@@ -4,7 +4,7 @@ import { withTheme } from '@material-ui/styles'
 import { useSnackbar, withSnackbar } from 'notistack'
 import { compose } from 'recompose'
 
-import QueryRenderer, { queryRendererHoc }  from '@core/components/QueryRenderer'
+import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
 import { PaginationBlock } from '../TradingTablePagination'
 import { IProps, IState } from './OrderHistoryTable.types'
@@ -151,8 +151,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       return null
     }
 
-    const maxRows = getPaginatedOrderHistoryQuery
-      .getPaginatedOrderHistory.count
+    const maxRows = getPaginatedOrderHistoryQuery.getPaginatedOrderHistory.count
 
     return (
       <TableWithSort
@@ -176,16 +175,17 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
             boxShadow: 'none',
           },
           heading: {
-            fontSize: '1rem',
+            fontSize: '1.4rem',
             fontWeight: 'bold',
             backgroundColor: theme.palette.white.background,
-            color: theme.palette.dark.main,
+            color: theme.palette.grey.light,
             boxShadow: 'none',
+            textTransform: 'capitalize',
           },
           cell: {
-            color: theme.palette.dark.main,
-            fontSize: '1rem', // 1.2 if bold
-            fontWeight: 'bold',
+            color: theme.palette.grey.onboard,
+            fontSize: '1.3rem', // 1.2 if bold
+            fontFamily: 'Avenir Next Demi',
             letterSpacing: '.1rem',
             borderBottom: theme.palette.border.main,
             backgroundColor: theme.palette.white.background,
@@ -213,7 +213,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
                 specificPair,
                 handleToggleAllKeys,
                 handleToggleSpecificPair,
-                loading: getPaginatedOrderHistoryQuery.queryParamsWereChanged
+                loading: getPaginatedOrderHistoryQuery.queryParamsWereChanged,
               }}
             />
           ),
@@ -322,11 +322,8 @@ const TableDataWrapper = ({ ...props }) => {
 export default React.memo(TableDataWrapper, (prevProps, nextProps) => {
   // TODO: Refactor isShowEqual --- not so clean
   const isShowEqual = !nextProps.show && !prevProps.show
-  const showAllAccountsEqual =
-    prevProps.allKeys ===
-    nextProps.allKeys
-  const showAllPairsEqual =
-    prevProps.specificPair === nextProps.specificPair
+  const showAllAccountsEqual = prevProps.allKeys === nextProps.allKeys
+  const showAllPairsEqual = prevProps.specificPair === nextProps.specificPair
   // TODO: here must be smart condition if specificPair is not changed
   const pairIsEqual = prevProps.currencyPair === nextProps.currencyPair
   // TODO: here must be smart condition if showAllAccountsEqual is true & is not changed

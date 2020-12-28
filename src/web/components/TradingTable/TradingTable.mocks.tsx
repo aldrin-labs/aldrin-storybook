@@ -135,16 +135,22 @@ export const strategiesHistoryColumnNames = [
   {
     label: (
       <DarkTooltip title={`Take profit`}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            textDecoration: 'underline',
+          }}
+        >
           T-P
-          <Help
+          {/* <Help
             style={{
               height: '1.5rem',
               width: '1.5rem',
               color: 'rgb(0, 93, 217)',
               marginLeft: '.5rem',
             }}
-          />
+          /> */}
         </div>
       </DarkTooltip>
     ),

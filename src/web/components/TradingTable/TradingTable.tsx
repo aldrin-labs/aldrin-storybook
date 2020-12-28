@@ -175,9 +175,10 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       quantityPrecision,
       getAllUserKeysQuery = {
         myPortfolios: [],
+        refetch: () => {},
       },
     } = this.props
-    const { myPortfolios = [] } = getAllUserKeysQuery || { myPortfolios: [] }
+    const { refetch, myPortfolios = [] } = getAllUserKeysQuery || { refetch: () => {}, myPortfolios: [] }
 
     const keysObjects: Key[] = []
 
@@ -343,6 +344,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             clearCanceledOrders: this.clearCanceledOrders,
             addOrderToCanceled: this.addOrderToCanceled,
             handlePairChange: this.handlePairChange,
+            refetchKeys: refetch,
           }}
         />
         <OpenOrdersTable
@@ -462,7 +464,7 @@ const TradingTableWrapper = compose(
     withOutSpinner: true,
     withTableLoader: false,
     withoutLoading: true,
-    fetchPolicy: 'cache-only',
+    fetchPolicy: 'cache-first',
   })
 )(TradingTable)
 

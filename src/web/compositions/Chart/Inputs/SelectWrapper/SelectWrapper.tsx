@@ -1,4 +1,5 @@
 import React from 'react'
+import styled from 'styled-components'
 import { compose } from 'recompose'
 import { Grid, Input, InputAdornment } from '@material-ui/core'
 import { withTheme } from '@material-ui/core/styles'
@@ -36,6 +37,10 @@ import {
   // selectWrapperColumnNames,
   combineSelectWrapperData,
 } from './SelectWrapper.utils'
+
+const StyledGrid = styled(Grid)`
+  display: none;
+`
 
 class SelectWrapper extends React.PureComponent<IProps, IState> {
   state: IState = {
@@ -171,6 +176,7 @@ class SelectPairListComponent extends React.PureComponent<
     processedSelectData: [],
     sortBy: 'volume24hChange',
     sortDirection: SortDirection.DESC,
+    left: 0,
   }
 
   componentDidMount() {
@@ -190,6 +196,8 @@ class SelectPairListComponent extends React.PureComponent<
       marketType,
     } = this.props
     const { sortBy, sortDirection } = this.state
+
+    const { left } = document.getElementById('ExchangePair')?.getBoundingClientRect()
 
     const processedSelectData = combineSelectWrapperData({
       data,
@@ -213,6 +221,7 @@ class SelectPairListComponent extends React.PureComponent<
         sortDirection,
         data: processedSelectData,
       }),
+      left
     })
   }
 
@@ -271,7 +280,6 @@ class SelectPairListComponent extends React.PureComponent<
     let newList = [...dataToSort]
 
     if (this.props.marketType === 0 && sortBy === 'volume24hChange') {
-      console.log('here')
       newList.sort((pairObjectA, pairObjectB) => {
         const quoteA = pairObjectA.symbol.contentToSort.split('_')[1]
         const quoteB = pairObjectB.symbol.contentToSort.split('_')[1]
@@ -290,14 +298,11 @@ class SelectPairListComponent extends React.PureComponent<
             pairObjectA.volume24hChange.contentToSort
           )
         }
-      })
-      if (sortDirection === SortDirection.DESC) {
-        newList.reverse()
-      }
+      })     
     } else {
       newList = _.sortBy(dataToSort, [`${sortBy}.contentToSort`])
       if (sortDirection === SortDirection.DESC) {
-        newList.reverse()
+        newList = newList.reverse()
       }
     }
 
@@ -312,6 +317,7 @@ class SelectPairListComponent extends React.PureComponent<
   render() {
     const { processedSelectData } = this.state
     const {
+      id,
       theme,
       searchValue,
       tab,
@@ -324,17 +330,16 @@ class SelectPairListComponent extends React.PureComponent<
     } = this.props
 
     return (
-      <Grid
+      <StyledGrid
+        id={id}
         style={{
-          top: '2.5rem',
-          left: marketType === 0 ? 'calc(42% + 13.2rem)' : 'calc(36% + 15rem)',
+          top: `100%`,
+          left: `calc(${this.state.left}px - 0.8rem)`,
           position: 'absolute',
-          transform: 'translateX(-100%)',
           zIndex: 900,
           background: theme.palette.white.background,
           minWidth: '35%',
           height: '35rem',
-          marginTop: '3rem',
           borderRadius: '.4rem',
           overflow: 'hidden',
           border: theme.palette.border.main,
@@ -633,7 +638,7 @@ class SelectPairListComponent extends React.PureComponent<
         >
           Binance liquidity data
         </Grid>
-      </Grid>
+      </StyledGrid>
     )
   }
 }

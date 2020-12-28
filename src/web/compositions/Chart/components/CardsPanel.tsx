@@ -171,9 +171,10 @@ export const CardsPanel = ({
             <KeySelector
               theme={theme}
               exchange={activeExchange}
+              marketType={marketType}
               selectStyles={{
                 ...selectStyles(theme),
-                width: marketType === 1 ? '11%' : '15%',
+                width:'100%',
               }}
               isAccountSelect={true}
             />
