@@ -21,7 +21,6 @@ import { Paper } from '@material-ui/core'
 import farmDistrub from '@icons/farmDistrub.png'
 import speedGif from '@icons/speedGif.gif'
 import Subtract from '@icons/subtract.gif'
-import Bonfida from '@icons/bonfida.png'
 import TwitterPost from '@icons/TwitterPost4.png'
 import Solana from '@icons/Solana.gif'
 
@@ -48,8 +47,8 @@ const Gif = styled.img`
 `
 
 const StyledPaper = styled(Paper)`
-  width: 90rem !important;
-  max-width: 90rem !important;
+  width: 95rem !important;
+  max-width: 95rem !important;
 `
 const links = (dcfiEarnedForTwitter: number) => ({
   ['pic.twitter.com/Q3f4242Zrb']: `Sealevel%20parallel%20smart%20contracts%20run-time%20allows%20%40solana%20to%20execute%20transactions%20at%20lightning%20fast%20speed%2C%20checkout%20details%20here%3A%20https%3A%2F%2Fmedium.com%2Fsolana-labs%2Fsealevel-parallel-processing-thousands-of-smart-contracts-d814b378192%0A%24DCFI%20%24SRM%20%24SOL%20%24UNI%20%24ETH%20%24DOT%20%24BNB%20%24LINK%20%24ADA%0Apic.twitter.com/Q3f4242Zrb`,
@@ -58,7 +57,6 @@ const links = (dcfiEarnedForTwitter: number) => ({
   ['pic.twitter.com/lDKbpqSqk9']: `First+ever+%23NFT+by+%24DCFI+placed+at+price+420+%24SRM+to+celebrate+our+expected+public+release+in+Q4%2F20+%F0%9F%9A%80+%F0%9F%91%A8%E2%80%8D%F0%9F%8C%BE+%0D%0A%0D%0Ahttps%3A%2F%2Fsolible.com%2F%23%2Fsearch%2Fdecefi%2F%0D%0A%24DCFI%20%24SRM%20%24SOL%20%24UNI%20%24ETH%20%24DOT%20%24BNB%20%24LINK%20%24ADA%0Apic.twitter.com/lDKbpqSqk9`,
   ['pic.twitter.com/1eTKx8xVv6']: `Farm+tokens+by+trading.%0D%0A%0D%0AHow+to+farm+%24DCFI+https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3Dyz5uaN0aCyw%0D%0A%0D%0AFarm+%24DCFI+by+%24SRM+market+buy+on+https%3A%2F%2Fdex.cryptocurrencies.ai%2F%0D%0A%24DCFI%20%24SRM%20%24SOL%20%24UNI%20%24ETH%20%24DOT%20%24BNB%20%24LINK%20%24ADA%0Apic.twitter.com/1eTKx8xVv6`,
   ['pic.twitter.com/lFmV3DbndY']: `Here%20are%20some%20real%20numbers%20about%20%40projectserum%20trading%20on%20%40solana%20via%20%40CCAI_Official%20interface.%0AFast%20DEX%20trading%20is%20here%20already%2C%20check%20it%20out%20at%20https%3A%2F%2Fdex.cryptocurrencies.ai%2F%0D%0A%24DCFI%20%24SRM%20%24SOL%20%24UNI%20%24ETH%20%24DOT%20%24BNB%20%24LINK%20%24ADA%0Apic.twitter.com/lFmV3DbndY`,
-  ['pic.twitter.com/fJa0vq3Of0']: `How%20to%20participate%20in%20%24FIDA%20IEO%3A%0AOn%20FTX%3A%20https%3A%2F%2Fhelp.ftx.com%2Fhc%2Fen-us%2Farticles%2F360053224912-How-to-participate-in-the-Bonfida-IEO%0AOn%20Bitmax%3A%20https%3A%2F%2Fwww.coinspeaker.com%2Fbitmax-io-announces-the-joint-primary-listing-auction-of-bonfida-fida-in-support-of-the-serum-ecosystem%2F%0A%40decefi_official%20%40bonfida%20%40ProjectSerum%20%24DCFI%20%24SRM%20%24SOL%20%24UNI%20%24ETH%20%24DOT%20%24FIDA%0Apic.twitter.com/fJa0vq3Of0`,
 })
 
 const getHrefFromGifLink = (
@@ -144,15 +142,6 @@ export const SharePopup = (props) => {
           </GifContainer>
           <GifContainer
             theme={theme}
-            isChoosen={choosenPic === 'pic.twitter.com/fJa0vq3Of0'}
-            onClick={() => {
-              setChoosenPic('pic.twitter.com/fJa0vq3Of0')
-            }}
-          >
-            <Gif src={Bonfida}></Gif>
-          </GifContainer>
-          {/* <GifContainer
-            theme={theme}
             isChoosen={choosenPic === 'pic.twitter.com/lDKbpqSqk9'}
             onClick={() => {
               setChoosenPic('pic.twitter.com/lDKbpqSqk9')
@@ -160,7 +149,7 @@ export const SharePopup = (props) => {
           >
             {' '}
             <Gif src={Subtract}></Gif>
-          </GifContainer> */}
+          </GifContainer>
           <GifContainer
             theme={theme}
             isChoosen={choosenPic === 'pic.twitter.com/1eTKx8xVv6'}
