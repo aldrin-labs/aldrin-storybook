@@ -98,6 +98,7 @@ html {
     left: 0;
     z-index: -1;
     will-change: transform;
+    // transition: transform .4s ease-out;
   }
 
   .needHover {

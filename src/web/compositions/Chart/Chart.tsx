@@ -225,9 +225,8 @@ export function ChartPageComponent(props: any) {
   console.log('Chart RENDER')  
 
   return (
-    <MainContainer fullscreen={view !== 'default'}>
+    <MainContainer>
       <GlobalStyles />
-      {view === 'default' && (
         <DefaultView
           id={_id}
           view={view}
@@ -249,7 +248,6 @@ export function ChartPageComponent(props: any) {
           arrayOfMarketIds={arrayOfMarketIds}
           changeChartLayoutMutation={changeChartLayoutMutation}
         />
-      )}
     </MainContainer>
   )
 }

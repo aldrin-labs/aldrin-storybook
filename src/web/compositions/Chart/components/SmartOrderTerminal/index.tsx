@@ -4,6 +4,9 @@ import { IProps, IState } from './types'
 
 import _ from 'lodash'
 
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getStrategySettings } from '@core/graphql/queries/user/getStrategySettings'
+
 import {
   getTakeProfitObject,
   getStopLossObject,
@@ -40,6 +43,7 @@ import {
   TakeProfitBlock,
   TerminalHeadersBlock,
 } from './Blocks'
+import { compose } from 'recompose'
 
 const generateToken = () =>
   Math.random()
@@ -1528,4 +1532,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
   }
 }
 
-export const SmartOrderTerminalMemo = SmartOrderTerminal
+export const SmartOrderTerminalMemo = compose(queryRendererHoc({
+  query: getStrategySettings,
+  name: 'getStrategySettingsQuery',
+  fetchPolicy: 'cache-and-network',
+  variables: (props) => ({
+    pair: `${props.pair[0]}_${props.pair[1]}`,
+  }),
+}))(SmartOrderTerminal)

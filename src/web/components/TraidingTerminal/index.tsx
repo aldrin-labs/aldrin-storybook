@@ -263,6 +263,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       priceType,
       marketPrice,
       isSPOTMarket,
+      pricePrecision,
       quantityPrecision,
       operationType,
       marketPriceAfterPairChange,
@@ -312,28 +313,32 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
     if (leverage !== prevProps.leverage) {
       const priceForCalculate =
-        priceType !== 'market' && priceType !== 'maker-only'
+        priceType !== 'market' && priceType !== 'maker-only' && price !== 0
           ? price
           : marketPrice
       const maxTotal = funds[1].quantity * leverage
 
-      this.setFormatted(
-        'total',
-        stripDigitPlaces(margin * leverage, isSPOTMarket ? 8 : 3),
-        0
-      )
+      if (leverage !== undefined) {
+        this.setFormatted(
+          'total',
+          stripDigitPlaces(margin * leverage, isSPOTMarket ? 8 : 3),
+          0
+        )
+  
+        this.setFormatted(
+          'amount',
+          stripDigitPlaces(
+            (margin * leverage) / priceForCalculate,
+            isSPOTMarket ? 8 : quantityPrecision
+          ),
+          0
+        )
 
-      this.setFormatted(
-        'amount',
-        stripDigitPlaces(
-          (margin * leverage) / priceForCalculate,
-          isSPOTMarket ? 8 : quantityPrecision
-        ),
-        0
-      )
+        }
     }
 
-    if (marketPrice !== prevProps.marketPrice && priceType === 'market') {
+    if (marketPrice !== prevProps.marketPrice && (priceType === 'market' || prevProps.marketPrice === 0)) {
+      this.setFormatted('price', stripDigitPlaces(marketPrice, pricePrecision), 0)
       this.setFormatted(
         'amount',
         stripDigitPlaces(
@@ -796,9 +801,9 @@ const formikEnhancer = withFormik<IProps, FormValues>({
     price: props.marketPrice,
     stop: null,
     limit: props.marketPrice,
-    amount: null,
-    total: null,
-    margin: null,
+    amount: 0,
+    total: 0,
+    margin: 0,
   }),
   handleSubmit: async (values, { props, setSubmitting, resetForm }) => {
     const {

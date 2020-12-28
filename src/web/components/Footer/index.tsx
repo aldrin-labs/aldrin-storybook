@@ -16,18 +16,22 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { TOGGLE_THEME_MODE } from '@core/graphql/mutations/app/toggleThemeMode'
 import Props from './index.types'
+import { withRouter } from 'react-router'
 
 const Footer = ({
   fullscreenMode,
   getThemeModeQuery,
   toggleThemeModeMutation,
-  showFooter,
-  isChartPage,
+  location: { pathname: currentPage },
 }: Props) => {
   const themeMode =
     getThemeModeQuery &&
     getThemeModeQuery.app &&
     getThemeModeQuery.app.themeMode
+
+    const isChartPage = /chart/.test(currentPage)
+  const showFooter =
+    currentPage !== '/registration' && currentPage !== '/tech_issues'
 
   const [showPrivacyPolicy, togglePrivacyPolicy] = useState(false)
 
@@ -138,6 +142,7 @@ const Block = styled.div`
 `
 
 export default compose(
+  withRouter,
   withTheme(),
   queryRendererHoc({
     query: GET_THEME_MODE,

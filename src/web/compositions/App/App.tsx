@@ -32,8 +32,8 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
-import { syncStorage } from '@storage'
-import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
+
+
 import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
 import { useQuery } from 'react-apollo'
 
@@ -47,51 +47,25 @@ if (currentVersion !== version) {
 
 const AppRaw = ({
   children,
-  getViewModeQuery,
   getThemeModeQuery,
-  getChartDataQuery,
-  location: { pathname: currentPage, search },
   authenticated,
-  ...props
 }: any) => {
-  const isChartPage = /chart/.test(currentPage)
 
   const themeMode =
     (getThemeModeQuery &&
       getThemeModeQuery.getAccountSettings &&
       getThemeModeQuery.getAccountSettings.themeMode) ||
     'light'
-  const chartPageView =
-    getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
-
-  const fullscreen: boolean = isChartPage && chartPageView !== 'default'
-  const showFooter =
-    currentPage !== '/registration' && currentPage !== '/tech_issues'
-  const isPNL = currentPage.includes('/portfolio/main')
-  // TODO: Check this variable
-  const pageIsRegistration = currentPage.includes('regist')
-
-  const searchParamsObject = getSearchParamsObject({ search })
-  const isRefInUrlParamExist = !!searchParamsObject['ref']
-  if (isRefInUrlParamExist) {
-    const ref = searchParamsObject['ref']
-    syncStorage.setItem('ref', ref)
-  }
-  const isDiscountCodeExist = !!searchParamsObject['code']
-  if (isDiscountCodeExist) {
-    const code = searchParamsObject['code']
-    syncStorage.setItem('code', code)
-  }
 
   // const isUserFromNotRestrictedCountry = !!syncStorage.getItem('IUFNRC')
   const isUserFromNotRestrictedCountry = false
 
-  console.log('App RENDER')
+  console.log('App RENDER ararar')
 
   return (
     <ApolloPersistWrapper>
       <JssProvider jss={jss} generateClassName={generateClassName}>
-        <ThemeWrapper themeMode={themeMode} isChartPage={isChartPage}>
+        <ThemeWrapper themeMode={themeMode}>
           <SnackbarWrapper>
             <SnackbarUtilsConfigurator />
             <CssBaseline />
@@ -101,22 +75,13 @@ const AppRaw = ({
             />
             <AppGridLayout
               id={'react-notification'}
-              showFooter={showFooter}
-              isPNL={isPNL}
-              isChartPage={isChartPage}
               isUserFromNotRestrictedCountry={
                 isUserFromNotRestrictedCountry && authenticated
               }
             >
-              {!pageIsRegistration && (
-                <AnimatedNavBar pathname={currentPage} hide={fullscreen} />
-              )}
+              <AnimatedNavBar />
               {children}
-              <Footer
-                isChartPage={isChartPage}
-                fullscreenMode={fullscreen}
-                showFooter={showFooter}
-              />
+              <Footer />
             </AppGridLayout>
             {/* <ShowWarningOnMoblieDevice /> */}
             <GlobalStyle />
@@ -128,14 +93,13 @@ const AppRaw = ({
 }
 
 const AppDataWrapper = compose(
-  withRouter,
   withAuthStatus,
-  queryRendererHoc({
-    query: GET_VIEW_MODE,
-    name: 'getViewModeQuery',
-    skip: (props: any) => !props.authenticated,
-    fetchPolicy: 'cache-first',
-  }),
+  // queryRendererHoc({
+  //   query: GET_VIEW_MODE,
+  //   name: 'getViewModeQuery',
+  //   skip: (props: any) => !props.authenticated,
+  //   fetchPolicy: 'cache-first',
+  // }),
   queryRendererHoc({
     query: getThemeMode,
     name: 'getThemeModeQuery',
@@ -144,14 +108,16 @@ const AppDataWrapper = compose(
   })
 )(AppRaw)
 
-// export const App = React.memo(AppDataWrapper, (prev, next) => {
+export const App = React.memo(AppDataWrapper, (prev, next) => {
 
-//   console.log('diff for App', difference(prev, next))
+  console.log('diff for App', difference(prev, next))
 
-//   return false
-// })
+  if (prev.cacheBusterProp !== next.cacheBusterProp) return true
 
-export const App = AppDataWrapper
+  return false
+})
+
+// export const App = AppDataWrapper
 
 //   console.log('diff for App', difference(prev, next))
 
