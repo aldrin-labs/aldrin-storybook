@@ -19,6 +19,7 @@ import { ExchangePair, SelectR } from './AutoSuggestSelect.styles'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
 import { updateFavoritePairs } from '@core/graphql/mutations/chart/updateFavoritePairs'
+import { useAllMarkets, useCustomMarkets } from '@sb/dexUtils/markets'
 import SelectWrapper from '../SelectWrapper/SelectWrapper'
 
 class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
@@ -27,31 +28,19 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
     isMenuOpen: false,
   }
 
-  componentDidMount() {
-    const { value, markets, setMarketAddress } = this.props
-    console.log('componentDidMount value: ', value)
-    console.log('componentDidMount markets: ', markets)
-
-    // Need to refactor this, address of a coin should be in the value, not name
-    // console.log('value: ', value)
-    const selectedMarketFromUrl = markets.find(
-      (el) => el.name.split('/').join('_') === value
-    )
-    // console.log('selectedMarketFormSelector', selectedMarketFormSelector)
-    setMarketAddress(selectedMarketFromUrl.address.toBase58())
-  }
-
   componentDidUpdate(prevProps) {
     if (prevProps.value !== this.props.value) {
-      const { value, markets, setMarketAddress } = this.props
+      const { value, markets, customMarkets, setMarketAddress } = this.props
+      const allMarkets = [...markets, ...customMarkets]
+  
 
       // Need to refactor this, address of a coin should be in the value, not name
       // console.log('value: ', value)
-      const selectedMarketFromUrl = markets.find(
+      const selectedMarketFromUrl = allMarkets.find(
         (el) => el.name.split('/').join('_') === value
       )
       // console.log('selectedMarketFormSelector', selectedMarketFormSelector)
-      setMarketAddress(selectedMarketFromUrl.address.toBase58())
+      setMarketAddress(selectedMarketFromUrl.isCustomUserMarket ? selectedMarketFromUrl.address : selectedMarketFromUrl.address.toBase58())
     }
   }
 
@@ -75,7 +64,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
     this.setState({ isMenuOpen: true })
   }
 
-  handleChange = async ({ value }: { value: string }) => {
+  handleChange = async ({ value, isCustomUserMarket, address }: { value: string, isCustomUserMarket: boolean, address: string }) => {
     const {
       getCharts,
       getViewModeQuery: {
@@ -87,12 +76,13 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       marketType,
       setMarketAddress,
       markets,
+      customMarkets
     } = this.props
     const {
       multichart: { charts },
     } = getCharts
 
-    console.log('onSelectPair', value, markets)
+    console.log('onSelectPair', value, markets, isCustomUserMarket)
 
     if (!value) {
       return
@@ -102,11 +92,17 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
 
     if (view === 'default') {
       const pair = value.split('_').join('/')
+      let selectedMarketFormSelector = markets.find((el) => el.name === pair)
       // Need to refactor this, address of a coin should be in the value, not name
       // console.log('value: ', value)
-      const selectedMarketFormSelector = markets.find((el) => el.name === pair)
-      console.log('selectedMarketFormSelector', selectedMarketFormSelector)
-      setMarketAddress(selectedMarketFormSelector.address.toBase58())
+      if (selectedMarketFormSelector) {
+        console.log('selectedMarketFormSelector', selectedMarketFormSelector)
+        setMarketAddress(selectedMarketFormSelector.address.toBase58())
+      } else {
+        selectedMarketFormSelector = customMarkets.find((el) => el.name === pair)
+        console.log('selectedMarketFormSelector', selectedMarketFormSelector)
+        setMarketAddress(selectedMarketFormSelector ? selectedMarketFormSelector.address : address)
+      }
 
       const chartPageType = marketType === 0 ? 'spot' : 'futures'
       history.push(`/chart/${chartPageType}/${value}`)

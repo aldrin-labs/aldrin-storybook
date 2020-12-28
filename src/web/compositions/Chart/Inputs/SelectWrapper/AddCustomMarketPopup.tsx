@@ -40,6 +40,8 @@ import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index'
 import ListNewMarketPopup from './ListNewMarketPopup'
 import { addSerumCustomMarket } from '@core/graphql/mutations/chart/addSerumCustomMarket'
 import { withPublicKey } from '@core/hoc/withPublicKey'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -70,11 +72,14 @@ const CustomMarketDialog = ({
   history,
   addSerumCustomMarketMutation,
   publicKey,
+  getUserCustomMarketsQueryRefetch,
+  getSerumMarketDataQueryRefetch
 }) => {
   const [showCreateMarketPopup, changeShowCreateMarketPopup] = useState(false)
   const connection = useConnection()
 
   const [marketId, setMarketId] = useState('')
+  const [loading, changeLoading] = useState(false)
 
   const [marketLabel, setMarketLabel] = useState('')
   const [baseLabel, setBaseLabel] = useState('')
@@ -169,21 +174,33 @@ const CustomMarketDialog = ({
       params.quoteLabel = quoteLabel
     }
 
+    await changeLoading(true)
+
     const resultOfAdding = await onAddCustomMarket(params)
     if (resultOfAdding) {
       await addSerumCustomMarketMutation({
         variables: {
           publicKey: publicKey,
-          symbol: `${baseLabel}_${quoteLabel}`,
+          symbol: `${baseLabel}/${quoteLabel}`,
           isPrivate: isPrivate,
-          marketId: marketId,
+          marketId,
+          programId
         },
       })
+    } else {
+      await changeLoading(false)
+      await onDoClose()
+      return
     }
+
+    await getUserCustomMarketsQueryRefetch()
+    await getSerumMarketDataQueryRefetch()
+
+    await changeLoading(false)
 
     await onDoClose()
 
-    history.push(
+    await history.push(
       `/chart/spot/${knownBaseCurrency || baseLabel}_${knownQuoteCurrency ||
         quoteLabel}`
     )
@@ -364,16 +381,19 @@ const CustomMarketDialog = ({
             text={'Add Market'}
             width={'20rem'}
             height={'4rem'}
+            showLoader={loading}
             onClick={(e) => {
-              if (publicKey === '') {
-                e.preventDefault()
+              e.preventDefault()
+              if (publicKey === '') {    
                 notify({
                   message: 'Connect your wallet first',
                   type: 'error',
                 })
+
+                return
               }
 
-              onSubmit
+              onSubmit()
             }}
           />
         </RowContainer>
@@ -390,5 +410,13 @@ const CustomMarketDialog = ({
 export default compose(
   withRouter,
   withPublicKey,
+  queryRendererHoc({
+    query: getUserCustomMarkets,
+    name: 'getUserCustomMarketsQuery',
+    fetchPolicy: 'cache-first',
+    variables: (props) => ({
+      publicKey: props.publicKey,
+    }),
+  }),
   graphql(addSerumCustomMarket, { name: 'addSerumCustomMarketMutation' })
 )(CustomMarketDialog)

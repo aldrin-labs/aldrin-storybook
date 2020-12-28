@@ -313,7 +313,7 @@ const MarketStats = (props) => {
         </span>
       </PanelCard>
 
-      <PanelCard marketType={marketType} theme={theme}>
+      {/* <PanelCard marketType={marketType} theme={theme}>
         <PanelCardTitle theme={theme}>24h change</PanelCardTitle>
         <span style={{ display: 'flex', justifyContent: 'space-between' }}>
           <PanelCardValue
@@ -325,9 +325,9 @@ const MarketStats = (props) => {
             //       : theme.palette.red.main,
             // }}
           >
-            {/* {formatNumberToUSFormat(
+             {formatNumberToUSFormat(
               stripDigitPlaces(priceChange, priceDecimalCount)
-            )} */}
+            )} 
           </PanelCardValue>
           <PanelCardSubValue
             theme={theme}
@@ -338,13 +338,13 @@ const MarketStats = (props) => {
             //       : theme.palette.red.main,
             // }}
           >
-            {/* {`${sign24hChange}
+             {`${sign24hChange}
               ${formatNumberToUSFormat(
                 stripDigitPlaces(+priceChangePercent)
-              )}%`} */}
+              )}%`} 
           </PanelCardSubValue>
         </span>
-      </PanelCard>
+      </PanelCard> */}
 
       <PanelCard marketType={marketType} theme={theme}>
         <PanelCardTitle theme={theme}>24h high</PanelCardTitle>

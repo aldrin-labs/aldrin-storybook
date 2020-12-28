@@ -101,6 +101,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
       setMarketAddress,
       customMarkets,
       getSerumMarketDataQuery,
+      getSerumMarketDataQueryRefetch
     } = this.props
 
     const {
@@ -121,7 +122,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
 
     const fiatRegexp = new RegExp(fiatPairs.join('|'), 'gi')
 
-    console.log('markets', markets)
+    // console.log('markets', markets)
 
     const dexMarketSymbols = markets.map((el) => ({
       symbol: el.name,
@@ -318,6 +319,7 @@ class SelectPairListComponent extends React.PureComponent<
       setCustomMarkets,
       setMarketAddress,
       customMarkets,
+      getSerumMarketDataQueryRefetch
     } = this.props
 
     const onAddCustomMarket = (customMarket: any) => {
@@ -697,7 +699,7 @@ class SelectPairListComponent extends React.PureComponent<
                     paddingRight: '6px',
                     paddingLeft: '1rem',
                     fontSize: '1rem',
-
+                    textAlign: 'left',
                     color: theme.palette.grey.text,
                   }}
                   width={width}
@@ -717,7 +719,7 @@ class SelectPairListComponent extends React.PureComponent<
                     paddingRight: 'calc(10px)',
                     textAlign: 'center',
                     fontSize: '1rem',
-
+                    textAlign: 'left',
                     color: theme.palette.grey.text,
                   }}
                   width={width}
@@ -737,7 +739,7 @@ class SelectPairListComponent extends React.PureComponent<
                     paddingRight: 'calc(10px)',
                     textAlign: 'left',
                     fontSize: '1rem',
-
+                    textAlign: 'left',
                     color: theme.palette.grey.text,
                   }}
                   width={width}
@@ -757,7 +759,7 @@ class SelectPairListComponent extends React.PureComponent<
                     paddingRight: 'calc(10px)',
                     textAlign: 'center',
                     fontSize: '1rem',
-
+                    textAlign: 'left',
                     color: theme.palette.grey.text,
                   }}
                   width={width}
@@ -777,7 +779,7 @@ class SelectPairListComponent extends React.PureComponent<
                     paddingRight: 'calc(10px)',
                     textAlign: 'left',
                     fontSize: '1rem',
-
+                    textAlign: 'left',
                     color: theme.palette.grey.text,
                   }}
                   width={width}
@@ -797,7 +799,7 @@ class SelectPairListComponent extends React.PureComponent<
                     paddingRight: 'calc(10px)',
                     textAlign: 'center',
                     fontSize: '1rem',
-
+                    textAlign: 'left',
                     color: theme.palette.grey.text,
                   }}
                   width={width}
@@ -835,6 +837,7 @@ class SelectPairListComponent extends React.PureComponent<
           open={showAddMarketPopup}
           onClose={() => this.setState({ showAddMarketPopup: false })}
           onAddCustomMarket={onAddCustomMarket}
+          getSerumMarketDataQueryRefetch={getSerumMarketDataQueryRefetch}
         />
       </Grid>
     )
@@ -871,7 +874,8 @@ export default compose(
       prevStartTimestamp: `${datesForQuery.prevStartTimestamp}`,
       prevEndTimestamp: `${datesForQuery.prevEndTimestamp}`,
     }),
-    fetchPolicy: 'cache-and-network',
+    // TODO: make chache-first here and in CHART by refetching this after adding market
+    fetchPolicy: 'cache-first',
     withOutSpinner: true,
     withTableLoader: false,
   }),
