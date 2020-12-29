@@ -60,8 +60,6 @@ const AppRaw = ({
   // const isUserFromNotRestrictedCountry = !!syncStorage.getItem('IUFNRC')
   const isUserFromNotRestrictedCountry = false
 
-  console.log('App RENDER ararar')
-
   return (
     <ApolloPersistWrapper>
       <JssProvider jss={jss} generateClassName={generateClassName}>
