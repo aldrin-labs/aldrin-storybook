@@ -157,9 +157,6 @@ export const CardsPanel = ({
   const authenticated = checkLoginStatus()
   const isSmartOrderMode = terminalViewMode === 'smartOrderMode'
 
-  console.log('market stats',   pricePrecision, 
-  quantityPrecision,)
-
   return (
     <>
       <PanelWrapper theme={theme}>

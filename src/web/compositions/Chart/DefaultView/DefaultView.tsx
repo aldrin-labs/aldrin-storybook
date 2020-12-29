@@ -127,8 +127,6 @@ export const DefaultViewComponent = (
 
   const sizeDigits = marketType === 0 ? 8 : 3
 
-  console.log('ararararara', pricePrecision, quantityPrecision)
-
   return (
     <Container container spacing={8} theme={theme}>
       {authenticated && (
