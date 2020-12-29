@@ -155,7 +155,7 @@ const CardSubTitle = styled.h3`
 `
 
 const CardSubValue = styled.span`
-  color: ${props => props.theme.palette.green.shine};
+  color: ${(props) => props.theme.palette.green.shine};
   font-family: DM Sans;
   font-weight: bold;
   font-size: 2rem;
@@ -180,7 +180,7 @@ const Form = styled.form`
 
 const LinkInput = styled.input`
   padding-left: 1.5rem;
-  border: 0.1rem solid ${props => props.theme.palette.blue.serum};
+  border: 0.1rem solid ${(props) => props.theme.palette.blue.serum};
   border-radius: 0.8rem;
   background-color: transparent;
   height: 5rem;
@@ -240,7 +240,7 @@ export const Cell = styled.td`
   border-bottom: 0.1rem solid ${(props) => props.borderBottom || '#61d8e6'};
   width: 25%;
 
-  color: ${props => props.theme.palette.dark.main};
+  color: ${(props) => props.theme.palette.dark.main};
   height: 5rem;
   text-transform: none;
   margin: 3rem 1rem;
@@ -261,7 +261,7 @@ export const HeaderCell = styled.th`
   // border: none;
   font-size: 1.6rem;
   text-transform: capitalize;
-  color: ${props => props.theme.palette.grey.text};
+  color: ${(props) => props.theme.palette.grey.text};
   font-size: bold;
 `
 
@@ -281,7 +281,7 @@ const RewardsRoute = (props) => {
   const [linkFromTwitter, setTwittersLink] = useState('')
 
   const [isHarvestPopupOpen, setOpen] = useState(false)
-  const [isSharePopupOpen, setSharePopupOpen] = useState(false)
+  // const [isSharePopupOpen, setSharePopupOpen] = useState(false)
 
   const [isLoading, updateIsLoading] = useState(false)
   const {
@@ -382,9 +382,9 @@ const RewardsRoute = (props) => {
     setOpen(!isHarvestPopupOpen)
   }
 
-  const toggleSharePopupIsOpen = () => {
-    setSharePopupOpen(!isSharePopupOpen)
-  }
+  // const toggleSharePopupIsOpen = () => {
+  //   setSharePopupOpen(!isSharePopupOpen)
+  // }
 
   const isDarkTheme = theme.palette.type === 'dark'
 
@@ -579,13 +579,13 @@ const RewardsRoute = (props) => {
                   Harvest
                 </BtnCustom>
               </a>
-              <SharePopup
+              {/* <SharePopup
                 theme={theme}
                 dcfiEarnedForTwitter={dcfiEarnedForTwitter}
                 isSharePopupOpen={isSharePopupOpen}
                 toggleSharePopupIsOpen={toggleSharePopupIsOpen}
                 publicKey={publicKey}
-              />
+              /> */}
               <a
                 style={{
                   width: 'calc(50% - 2rem)',
@@ -593,18 +593,18 @@ const RewardsRoute = (props) => {
                   paddingBottom: '1rem',
                   margin: '0 1rem',
                 }}
-                // href={`https://twitter.com/intent/tweet?text=Here%20are%20some%20real%20numbers%20about%20%40projectserum%20trading%20on%20%40solana%20via%20%40CCAI_Official%20interface.%0AFast%20DEX%20trading%20is%20here%20already%2C%20check%20it%20out%20at%20https%3A%2F%2Fdex.cryptocurrencies.ai%2F%0A%24DCFI%20%24SRM%20%24SOL%20%24UNI%20%24ETH%20%24DOT%20%24YFI%20%24BNB%20%24LINK%20%24EOS%20%24XTZ%20%24ADA%0Apic.twitter.com%2F9LCSqyXyEn`}
-                // rel="noopener noreferrel"
-                // target={'_blank'}
-                // onClick={(e) => {
-                //   if (publicKey === '') {
-                //     e.preventDefault()
-                //     notify({
-                //       message: 'Connect your wallet first',
-                //       type: 'error',
-                //     })
-                //   }
-                // }}
+                href={`https://twitter.com/intent/tweet?text=%E2%80%A2+Coinbase+to+Suspend+%24XRP+Trading%0D%0A%E2%80%A2+Coinbase+Pre-IPO+listed+on+FTX%0D%0A%E2%80%A2+MicroStrategy+has+purchased+an+29%2C646+%24BTC%0D%0ARead+the+news%2C+develop+strategies+and+trade+with+Cryptocurrencies.ai+Smart+Order%3A+cryptocurrencies.ai%2FsmartTrading%0D%0A%24CCAI+%24DCFI+%24SRM+%24FTT+%24SOL%0Apic.twitter.com/3lqOwWL8JW`}
+                rel="noopener noreferrel"
+                target={'_blank'}
+                onClick={(e) => {
+                  if (publicKey === '') {
+                    e.preventDefault()
+                    notify({
+                      message: 'Connect your wallet first',
+                      type: 'error',
+                    })
+                  }
+                }}
               >
                 <BtnCustom
                   theme={theme}
@@ -618,7 +618,7 @@ const RewardsRoute = (props) => {
                   textTransform={'none'}
                   onClick={() => {
                     console.log('shrepopup')
-                    toggleSharePopupIsOpen()
+                    // toggleSharePopupIsOpen()
                   }}
                 >
                   <SvgIcon
@@ -957,29 +957,40 @@ const RewardsRoute = (props) => {
               </DarkTooltip>
               <CardSubValueForVolume theme={theme}>
                 <Row justify={'flex-start'} style={{ paddingBottom: '.5rem' }}>
-                <SvgIcon
+                  <SvgIcon
                     src={greenDollar}
                     width={'2.5rem'}
                     height={'2.5rem'}
                     style={{ marginRight: '1rem' }}
-                  /><span>{formatNumberToUSFormat(+(usdVolume - (usdVolumeTwitter + usdVolumeBounty)).toFixed(0))}</span>
-                </Row>
-                <DarkTooltip delay={500} title={`+ ${formatNumberToUSFormat(usdVolumeBounty.toFixed(0))} bounty`}>
-                <Row>
-                  <SvgIcon
-                    src={greenTwitter}
-                    width={'2.5rem'}
-                    height={'2.5rem'}
-                    style={{ marginRight: '1rem' }}
                   />
-                  <span style={{ color: theme.palette.green.shine }}>
+                  <span>
                     {formatNumberToUSFormat(
                       +(
+                        usdVolume -
                         (usdVolumeTwitter + usdVolumeBounty)
                       ).toFixed(0)
                     )}
                   </span>
                 </Row>
+                <DarkTooltip
+                  delay={500}
+                  title={`+ ${formatNumberToUSFormat(
+                    usdVolumeBounty.toFixed(0)
+                  )} bounty`}
+                >
+                  <Row>
+                    <SvgIcon
+                      src={greenTwitter}
+                      width={'2.5rem'}
+                      height={'2.5rem'}
+                      style={{ marginRight: '1rem' }}
+                    />
+                    <span style={{ color: theme.palette.green.shine }}>
+                      {formatNumberToUSFormat(
+                        +(usdVolumeTwitter + usdVolumeBounty).toFixed(0)
+                      )}
+                    </span>
+                  </Row>
                 </DarkTooltip>
                 {/* twitter + bounty */}
               </CardSubValueForVolume>
