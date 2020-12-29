@@ -77,7 +77,17 @@ const ItemTypography = ({ children, ...props }) => (
   </StyledTypography>
 )
 
-const Line = ({ theme }) => <div style={{ content: '', width: '100%', height: '.1rem', background: theme.palette.grey.border, margin: '0 1rem' }} />
+const Line = ({ theme }) => (
+  <div
+    style={{
+      content: '',
+      width: '100%',
+      height: '.1rem',
+      background: theme.palette.grey.border,
+      margin: '0 1rem',
+    }}
+  />
+)
 
 interface IProps {
   quantityPrecision: number
@@ -106,11 +116,13 @@ export default ({
   takeProfit,
   pair,
   theme,
-  quantityPrecision
+  quantityPrecision,
 }: IProps) => {
   const { order, trailing, averaging } = entryPoint
   const averagingAmount = averaging.enabled
-    ? +averaging.entryLevels.reduce((acc, cur) => acc + cur.amount, 0).toFixed(quantityPrecision)
+    ? +averaging.entryLevels
+        .reduce((acc, cur) => acc + cur.amount, 0)
+        .toFixed(quantityPrecision)
     : 0
 
   return (
@@ -175,20 +187,18 @@ export default ({
                 </EditButton>
               </Grid>
               <Grid container style={{ padding: '1rem 0rem' }}>
-                <Grid style={{ textAlign: 'right', width: '25%', position: 'relative' }}>
+                <Grid
+                  style={{
+                    textAlign: 'right',
+                    width: '25%',
+                    position: 'relative',
+                  }}
+                >
                   <ItemTypography theme={theme}>Side:</ItemTypography>
                   <ItemTypography theme={theme}>price:</ItemTypography>
                   <ItemTypography theme={theme}>amount:</ItemTypography>
-                  <ItemTypography
-                    theme={theme}
-                  >
-                    Trailing:
-                  </ItemTypography>
-                  <ItemTypography
-                    theme={theme}
-                  >
-                    Averaging:
-                  </ItemTypography>
+                  <ItemTypography theme={theme}>Trailing:</ItemTypography>
+                  <ItemTypography theme={theme}>Averaging:</ItemTypography>
                 </Grid>
                 <Grid style={{ paddingLeft: '4rem', width: '65%' }}>
                   <ItemTypography
@@ -197,20 +207,46 @@ export default ({
                   >
                     {order.side}
                   </ItemTypography>
-                  <ItemTypography style={{ whiteSpace: 'nowrap', display: 'flex' }} theme={theme} color={theme.palette.dark.main}>
-                    {averaging.enabled && <ItemTypography style={{ padding: 0 }} theme={theme}>averaging from:&nbsp;</ItemTypography>}
-                    {`${averaging.enabled ? ` ${averaging.entryLevels[0].price}` : order.type === 'limit'
-                      ? order.price
-                      : trailing.isTrailingOn
+                  <ItemTypography
+                    style={{ whiteSpace: 'nowrap', display: 'flex' }}
+                    theme={theme}
+                    color={theme.palette.dark.main}
+                  >
+                    {averaging.enabled && (
+                      <ItemTypography style={{ padding: 0 }} theme={theme}>
+                        averaging from:&nbsp;
+                      </ItemTypography>
+                    )}
+                    {`${
+                      averaging.enabled
+                        ? ` ${averaging.entryLevels[0].price}`
+                        : order.type === 'limit'
+                        ? order.price
+                        : trailing.isTrailingOn
                         ? order.price
                         : 'MARKET'
-                      } ${pair[1]}`}
+                    } ${pair[1]}`}
                   </ItemTypography>
-                  <ItemTypography style={{ whiteSpace: 'nowrap' }} theme={theme} color={theme.palette.dark.main}>
+                  <ItemTypography
+                    style={{ whiteSpace: 'nowrap' }}
+                    theme={theme}
+                    color={theme.palette.dark.main}
+                  >
                     {averaging.enabled && 'sum: '}
                     {getArrowSymbol(
-                      `${averaging.enabled ? stripDigitPlaces(averagingAmount, quantityPrecision) : order.amount} ${pair[0]}`,
-                      `${averaging.enabled ? stripDigitPlaces(averaging.entryLevels[0].price * averagingAmount, 2) : stripDigitPlaces(order.total, 2)} ${pair[1]}`,
+                      `${
+                        averaging.enabled
+                          ? stripDigitPlaces(averagingAmount, quantityPrecision)
+                          : order.amount
+                      } ${pair[0]}`,
+                      `${
+                        averaging.enabled
+                          ? stripDigitPlaces(
+                              averaging.entryLevels[0].price * averagingAmount,
+                              2
+                            )
+                          : stripDigitPlaces(order.total, 2)
+                      } ${pair[1]}`,
                       true
                     )}
                   </ItemTypography>
@@ -241,15 +277,22 @@ export default ({
                   </Grid>
                   <ItemTypography
                     theme={theme}
-                    color={averaging.enabled ? theme.palette.dark.main : getColor(trailing.isTrailingOn, theme)}
+                    color={
+                      averaging.enabled
+                        ? theme.palette.dark.main
+                        : getColor(trailing.isTrailingOn, theme)
+                    }
                   >
-                    {averaging.enabled ?
+                    {averaging.enabled ? (
                       <>
                         <InputRowContainer padding=".2rem .5rem">
                           <TargetTitle theme={theme} style={{ width: '50%' }}>
                             price
                           </TargetTitle>
-                          <TargetTitle theme={theme} style={{ width: '50%', textAlign: 'right' }}>
+                          <TargetTitle
+                            theme={theme}
+                            style={{ width: '50%', textAlign: 'right' }}
+                          >
                             amount
                           </TargetTitle>
                         </InputRowContainer>
@@ -268,10 +311,15 @@ export default ({
                                 theme={theme}
                                 style={{
                                   width: '50%',
-                                  color: i === 0 ? theme.palette.dark.main : getColor(false, theme),
+                                  color:
+                                    i === 0
+                                      ? theme.palette.dark.main
+                                      : getColor(false, theme),
                                 }}
                               >
-                                {i === 0 ? `${target.price} ${pair[1]}` : `-${target.price}%`}
+                                {i === 0
+                                  ? `${target.price} ${pair[1]}`
+                                  : `-${target.price}%`}
                               </TargetValue>
                               <TargetValue
                                 theme={theme}
@@ -282,7 +330,10 @@ export default ({
                             </InputRowContainer>
                           ))}
                         </div>
-                      </> : getOnOffText(averaging.enabled)}
+                      </>
+                    ) : (
+                      getOnOffText(averaging.enabled)
+                    )}
                   </ItemTypography>
                 </Grid>
               </Grid>
@@ -305,7 +356,9 @@ export default ({
               </Grid>
               <Grid container style={{ padding: '1rem 0rem 1rem 0rem' }}>
                 <Grid style={{ textAlign: 'right', width: '25%' }}>
-                  {averaging.enabled && <ItemTypography theme={theme}>1st tp only:</ItemTypography>}
+                  {averaging.enabled && (
+                    <ItemTypography theme={theme}>1st tp only:</ItemTypography>
+                  )}
                   {!takeProfit.trailingTAP.isTrailingOn && (
                     <>
                       <ItemTypography theme={theme}>
@@ -346,10 +399,17 @@ export default ({
                   )} */}
                 </Grid>
                 <Grid style={{ paddingLeft: '4rem', width: '55%' }}>
-                  {averaging.enabled && <ItemTypography color={getColor(
-                    averaging.closeStrategyAfterFirstTAP,
-                    theme
-                  )} theme={theme}>{getOnOffText(averaging.closeStrategyAfterFirstTAP)}</ItemTypography>}
+                  {averaging.enabled && (
+                    <ItemTypography
+                      color={getColor(
+                        averaging.closeStrategyAfterFirstTAP,
+                        theme
+                      )}
+                      theme={theme}
+                    >
+                      {getOnOffText(averaging.closeStrategyAfterFirstTAP)}
+                    </ItemTypography>
+                  )}
                   {!takeProfit.trailingTAP.isTrailingOn && (
                     <ItemTypography
                       theme={theme}
@@ -477,7 +537,9 @@ export default ({
               </Grid>
               <Grid container style={{ padding: '1rem 0 3rem 0rem' }}>
                 <Grid style={{ textAlign: 'right', width: '25%' }}>
-                  {averaging.enabled && <ItemTypography theme={theme}>bep:</ItemTypography>}
+                  {averaging.enabled && (
+                    <ItemTypography theme={theme}>bep:</ItemTypography>
+                  )}
                   <ItemTypography theme={theme}>price:</ItemTypography>
                   <ItemTypography theme={theme}>timeout:</ItemTypography>
                   {stopLoss.timeout.isTimeoutOn && (
@@ -491,10 +553,23 @@ export default ({
                   <ItemTypography theme={theme}>forced stop:</ItemTypography>
                 </Grid>
                 <Grid style={{ paddingLeft: '4rem' }}>
-                  {averaging.enabled && <ItemTypography color={getColor(
-                    averaging.entryLevels.some(level => level.placeWithoutLoss),
-                    theme
-                  )} theme={theme}>{getOnOffText(averaging.entryLevels.some(level => level.placeWithoutLoss))}</ItemTypography>}
+                  {averaging.enabled && (
+                    <ItemTypography
+                      color={getColor(
+                        averaging.entryLevels.some(
+                          (level) => level.placeWithoutLoss
+                        ),
+                        theme
+                      )}
+                      theme={theme}
+                    >
+                      {getOnOffText(
+                        averaging.entryLevels.some(
+                          (level) => level.placeWithoutLoss
+                        )
+                      )}
+                    </ItemTypography>
+                  )}
                   <ItemTypography theme={theme} color={getColor(false, theme)}>
                     -{stopLoss.pricePercentage}%
                   </ItemTypography>
@@ -515,8 +590,7 @@ export default ({
                         theme={theme}
                         color={theme.palette.dark.main}
                       >
-                        {`${stopLoss.timeout.whenLossableSec} ${stopLoss.timeout.whenLossableMode
-                          }`}
+                        {`${stopLoss.timeout.whenLossableSec} ${stopLoss.timeout.whenLossableMode}`}
                       </ItemTypography>
                     </>
                   )}
@@ -524,8 +598,9 @@ export default ({
                     theme={theme}
                     color={getColor(stopLoss.forcedStop.isForcedStopOn, theme)}
                   >
-                    {`${getOnOffText(stopLoss.forcedStop.isForcedStopOn)} / ${stopLoss.forcedStop.pricePercentage
-                      }%`}
+                    {`${getOnOffText(stopLoss.forcedStop.isForcedStopOn)} / ${
+                      stopLoss.forcedStop.pricePercentage
+                    }%`}
                   </ItemTypography>
                 </Grid>
               </Grid>
