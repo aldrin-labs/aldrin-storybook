@@ -353,7 +353,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       prevProps.specificPair !== this.props.specificPair ||
       prevProps.allKeys !== this.props.allKeys
     ) {
-
       this.unsubscribeFunction && this.unsubscribeFunction()
       this.unsubscribeFunction = this.props.getActivePositionsQuery.subscribeToMoreFunction()
     }
@@ -530,7 +529,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
             },
             cell: {
               color: theme.palette.grey.onboard,
-              fontSize: '1.3rem', // 1.2 if bold
+              fontSize: '1.1rem', // 1.2 if bold
               fontFamily: 'Avenir Next Demi',
               letterSpacing: '.1rem',
               borderBottom: theme.palette.border.main,
@@ -610,14 +609,12 @@ const PositionsTableWrapper = compose(
       }),
       updateQueryFunction: updateActivePositionsQuerryFunction,
     },
-  }),
+  })
 )(PositionsTable)
 
 export default React.memo(
   PositionsTableWrapper,
   (prevProps: any, nextProps: any) => {
-
-
     // TODO: Refactor isShowEqual --- not so clean
     const isShowEqual = !nextProps.show && !prevProps.show
     const showAllAccountsEqual =

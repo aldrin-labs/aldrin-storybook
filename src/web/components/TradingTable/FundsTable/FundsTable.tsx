@@ -105,7 +105,7 @@ class FundsTable extends React.PureComponent<IProps> {
           },
           cell: {
             color: theme.palette.grey.onboard,
-            fontSize: '1.3rem', // 1.2 if bold
+            fontSize: '1.1rem', // 1.2 if bold
             fontFamily: 'Avenir Next Demi',
             letterSpacing: '.1rem',
             borderBottom: theme.palette.border.main,

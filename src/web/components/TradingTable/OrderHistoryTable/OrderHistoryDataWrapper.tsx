@@ -16,20 +16,6 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
     endDate: dayjs().endOf('day'),
     focusedInput: null,
     activeDateButton: '1Day',
-    allKeys: true,
-    specificPair: false,
-  }
-
-  handleToggleAllKeys = () => {
-    this.setState((prev) => ({ allKeys: !prev.allKeys }))
-  }
-
-  handleToggleSpecificPair = () => {
-    const { currencyPair } = this.props
-
-    this.setState((prev) => ({
-      specificPair: !prev.specificPair ? currencyPair : false,
-    }))
   }
 
   handleChangePage = (page: number) => {
@@ -82,6 +68,8 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
       handlePairChange,
       selectedKey,
       marketType,
+      allKeys,
+      specificPair,
       canceledOrders,
       currencyPair,
       arrayOfMarketIds,
@@ -91,6 +79,8 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
       showPositionsFromAllAccounts,
       showOpenOrdersFromAllAccounts,
       showSmartTradesFromAllAccounts,
+      handleToggleSpecificPair,
+      handleToggleAllKeys,
     } = this.props
 
     const {
@@ -100,8 +90,6 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
       endDate,
       activeDateButton,
       startDate,
-      allKeys,
-      specificPair,
     } = this.state
 
     const maximumDate = dayjs().endOf('day')
@@ -137,14 +125,14 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
           showOpenOrdersFromAllAccounts,
           showSmartTradesFromAllAccounts,
           handlePairChange,
+          handleToggleSpecificPair,
+          handleToggleAllKeys,
           handleChangePage: this.handleChangePage,
           handleChangeRowsPerPage: this.handleChangeRowsPerPage,
           onClearDateButtonClick: this.onClearDateButtonClick,
           onDateButtonClick: this.onDateButtonClick,
           onDatesChange: this.onDatesChange,
           onFocusChange: this.onFocusChange,
-          handleToggleAllKeys: this.handleToggleAllKeys,
-          handleToggleSpecificPair: this.handleToggleSpecificPair,
         }}
       />
     )

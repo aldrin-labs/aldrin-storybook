@@ -1377,7 +1377,7 @@ export const combineActiveTradesTable = ({
                         >
                           <TableRow style={{ fontSize: '1.2rem' }}>
                             <TableCell theme={theme}>price</TableCell>
-                            <TableCell theme={theme}>quontity</TableCell>
+                            <TableCell theme={theme}>quantity</TableCell>
                           </TableRow>
 
                           {exitLevels.map((el, index) => {
