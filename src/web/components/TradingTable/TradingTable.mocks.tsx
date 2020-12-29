@@ -77,18 +77,21 @@ export const positionsColumnNames = (
 
 export const activeTradesColumnNames = [
   { label: ' ', id: 'blank' },
-  { label: 'pair', id: 'pair' },
-  { label: 'Side', id: 'side' },
-  { label: 'Entry Price', id: 'entryPrice' },
-  { label: 'Size', id: 'quantity' },
+  { label: 'Position', id: 'pair' },
+  { label: 'Entry price', id: 'entryPrice' },
+  // { label: 'Side', id: 'side' },
+  { label: 'Lvg.', id: 'leverage' },
+  { label: 'Margin/Size', id: 'quantity' },
+  { label: 'Averaging', id: 'averaging' },
+  { label: 'Stop loss', id: 'stopLoss' },
   {
     label: (
       <div style={{ display: 'flex', alignItems: 'center' }}>Take profit</div>
     ),
     id: 'takeProfit',
   },
-  { label: 'Stop loss', id: 'stopLoss' },
-  { label: 'Pnl/Roe', id: 'profit' },
+  ,
+  { label: 'P&L/ROE', id: 'profit' },
   {
     label: (
       <DarkTooltip
@@ -106,7 +109,7 @@ export const activeTradesColumnNames = [
           style={{
             display: 'flex',
             alignItems: 'center',
-            borderBottom: `1px dashed rgb(46, 46, 46)`,
+            textDecoration: 'underline',
           }}
         >
           status
@@ -115,7 +118,7 @@ export const activeTradesColumnNames = [
     ),
     id: 'status',
   },
-  { label: 'close', id: 'close', isSortable: false },
+  { label: 'Action', id: 'close', isSortable: false },
   // { label: 'Entry point', id: 'entryOrder' },
   // { label: 'Take a profit', id: 'takeProfit' },
   // { label: 'Stop loss', id: 'stopLoss' },
@@ -132,16 +135,22 @@ export const strategiesHistoryColumnNames = [
   {
     label: (
       <DarkTooltip title={`Take profit`}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            textDecoration: 'underline',
+          }}
+        >
           T-P
-          <Help
+          {/* <Help
             style={{
               height: '1.5rem',
               width: '1.5rem',
               color: 'rgb(0, 93, 217)',
               marginLeft: '.5rem',
             }}
-          />
+          /> */}
         </div>
       </DarkTooltip>
     ),

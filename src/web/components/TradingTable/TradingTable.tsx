@@ -2,7 +2,7 @@ import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { compose, shallowEqual } from 'recompose'
 import { withTheme } from '@material-ui/styles'
-const isEqual = require("react-fast-compare");
+const isEqual = require('react-fast-compare')
 
 import { difference, shallowDifference } from '@core/utils/difference'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -46,6 +46,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
     perPagePositions: 30,
     pageSmartTrades: 0,
     perPageSmartTrades: 30,
+    allKeys: true,
+    specificPair: true,
   }
 
   componentDidMount() {
@@ -131,6 +133,18 @@ class TradingTable extends React.PureComponent<IProps, IState> {
     })
   }
 
+  handleToggleAllKeys = () => {
+    this.setState((prev) => ({ allKeys: !prev.allKeys }))
+  }
+
+  handleToggleSpecificPair = () => {
+    const { currencyPair } = this.props
+
+    this.setState((prev) => ({
+      specificPair: !prev.specificPair ? currencyPair : false,
+    }))
+  }
+
   addOrderToCanceled = (orderId: string) => {
     this.setState((prev) => {
       return { canceledOrders: [...prev.canceledOrders].concat([orderId]) }
@@ -157,12 +171,15 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       perPagePositions,
       pageSmartTrades,
       perPageSmartTrades,
+      allKeys,
+      specificPair,
     } = this.state
 
     const {
       theme,
       selectedKey,
       marketType,
+
       exchange,
       currencyPair,
       maxLeverage,
@@ -181,8 +198,10 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       pricePrecision,
       quantityPrecision,
     } = this.props
-
-    const { refetch, myPortfolios = [] } = getAllUserKeysQuery || { refetch: () => {}, myPortfolios: [] }
+    const { refetch, myPortfolios = [] } = getAllUserKeysQuery || {
+      refetch: () => {},
+      myPortfolios: [],
+    }
 
     const keysObjects: Key[] = []
 
@@ -260,18 +279,12 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             show: tab === 'activeTrades',
             page: pageSmartTrades,
             perPage: perPageSmartTrades,
-            allKeys: showSmartTradesFromAllAccounts,
-            specificPair: showAllSmartTradePairs,
             pricePrecision,
             quantityPrecision,
-            handleToggleAllKeys: () =>
-              this.setState((prev) => ({
-                showSmartTradesFromAllAccounts: !prev.showSmartTradesFromAllAccounts,
-              })),
-            handleToggleSpecificPair: () =>
-              this.setState((prev) => ({
-                showAllSmartTradePairs: !prev.showAllSmartTradePairs,
-              })),
+            allKeys,
+            specificPair,
+            handleToggleSpecificPair: this.handleToggleSpecificPair,
+            handleToggleAllKeys: this.handleToggleAllKeys,
             handleChangePage: (value: number) =>
               this.handleChangePage('pageSmartTrades', value),
             handleChangeRowsPerPage: (
@@ -287,6 +300,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             tab,
             keys,
             theme,
+            allKeys,
+            specificPair,
             selectedKey,
             marketType,
             exchange,
@@ -301,6 +316,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             showPositionsFromAllAccounts,
             showOpenOrdersFromAllAccounts,
             showSmartTradesFromAllAccounts,
+            handleToggleSpecificPair: this.handleToggleSpecificPair,
+            handleToggleAllKeys: this.handleToggleAllKeys,
             show: tab === 'strategiesHistory',
             handleTabChange: this.handleTabChange,
             handlePairChange: this.handlePairChange,
@@ -321,6 +338,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             minFuturesStep,
             pricePrecision,
             quantityPrecision,
+            allKeys,
+            specificPair,
             priceFromOrderbook,
             showAllPositionPairs,
             showAllOpenOrderPairs,
@@ -331,16 +350,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             page: pagePositions,
             perPage: perPagePositions,
             show: tab === 'positions',
-            allKeys: showPositionsFromAllAccounts,
-            specificPair: showAllPositionPairs,
-            handleToggleAllKeys: () =>
-              this.setState((prev) => ({
-                showPositionsFromAllAccounts: !prev.showPositionsFromAllAccounts,
-              })),
-            handleToggleSpecificPair: () =>
-              this.setState((prev) => ({
-                showAllPositionPairs: !prev.showAllPositionPairs,
-              })),
+            handleToggleSpecificPair: this.handleToggleSpecificPair,
+            handleToggleAllKeys: this.handleToggleSpecificPair,
             handleChangePage: (value: number) =>
               this.handleChangePage('pagePositions', value),
             handleChangeRowsPerPage: (
@@ -365,6 +376,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             currencyPair,
             pricePrecision,
             quantityPrecision,
+            allKeys,
+            specificPair,
             showAllPositionPairs,
             showAllOpenOrderPairs,
             showAllSmartTradePairs,
@@ -374,14 +387,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             page: pageOpenOrders,
             perPage: perPageOpenOrders,
             show: tab === 'openOrders',
-            handleToggleAllKeys: () =>
-              this.setState((prev) => ({
-                showOpenOrdersFromAllAccounts: !prev.showOpenOrdersFromAllAccounts,
-              })),
-            handleToggleSpecificPair: () =>
-              this.setState((prev) => ({
-                showAllOpenOrderPairs: !prev.showAllOpenOrderPairs,
-              })),
+            handleToggleSpecificPair: this.handleToggleSpecificPair,
+            handleToggleAllKeys: this.handleToggleSpecificPair,
             handleChangePage: (value: number) =>
               this.handleChangePage('pageOpenOrders', value),
             handleChangeRowsPerPage: (
@@ -398,6 +405,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             tab,
             keys,
             theme,
+            allKeys,
+            specificPair,
             selectedKey,
             marketType,
             arrayOfMarketIds,
@@ -412,6 +421,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             showOpenOrdersFromAllAccounts,
             showSmartTradesFromAllAccounts,
             show: tab === 'orderHistory',
+            handleToggleSpecificPair: this.handleToggleSpecificPair,
+            handleToggleAllKeys: this.handleToggleSpecificPair,
             handleTabChange: this.handleTabChange,
             handlePairChange: this.handlePairChange,
           }}
@@ -420,6 +431,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
           {...{
             tab,
             keys,
+            allKeys,
+            specificPair,
             theme,
             selectedKey,
             marketType,
@@ -437,6 +450,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             show: tab === 'tradeHistory',
             handleTabChange: this.handleTabChange,
             handlePairChange: this.handlePairChange,
+            handleToggleSpecificPair: this.handleToggleSpecificPair,
+            handleToggleAllKeys: this.handleToggleSpecificPair,
           }}
         />
         <Funds
@@ -469,8 +484,14 @@ class TradingTable extends React.PureComponent<IProps, IState> {
 const MemoizedTradingTable = React.memo(TradingTable, (prev, next) => {
   console.log('TradingTable INSIDE memo diff: ', difference(prev, next))
   console.log('TradingTable INSIDE memo diff: ', shallowDifference(prev, next))
-  console.log('TradingTable INSIDE memo shallowEqual diff', shallowEqual(prev, next))
-  console.log('TradingTable INSIDE memo react-fast-compare', isEqual(prev, next))
+  console.log(
+    'TradingTable INSIDE memo shallowEqual diff',
+    shallowEqual(prev, next)
+  )
+  console.log(
+    'TradingTable INSIDE memo react-fast-compare',
+    isEqual(prev, next)
+  )
 
   return isEqual(prev, next)
 })
@@ -492,13 +513,12 @@ const TradingTableWrapper = compose(
 
 export default React.memo(
   TradingTableWrapper,
-  (
-    prev: IPropsTradingTableWrapper,
-    next: IPropsTradingTableWrapper
-  ) => {
-
+  (prev: IPropsTradingTableWrapper, next: IPropsTradingTableWrapper) => {
     console.log('TradingTable MEMO diff: ', difference(prev, next))
-    console.log('TradingTable MEMO shallowDifference: ', shallowDifference(prev, next))
+    console.log(
+      'TradingTable MEMO shallowDifference: ',
+      shallowDifference(prev, next)
+    )
     console.log('TradingTable shallowEqual MEMO diff', shallowEqual(prev, next))
 
     return isEqual(prev, next)

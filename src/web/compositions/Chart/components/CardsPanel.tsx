@@ -49,7 +49,7 @@ const selectStyles = (theme: Theme) => ({
   width: '20%',
   '& div': {
     cursor: 'pointer',
-    color: theme.palette.text.grey,
+    // color: theme.palette.text.grey,
     textTransform: 'capitalize',
     fontSize: '1.4rem',
   },
@@ -194,7 +194,7 @@ export const CardsPanel = ({
         )}
 
         <AutoSuggestSelect
-          style={{ width: '15%', minWidth: '0' }}
+          style={{ width: '16rem', minWidth: '0' }}
           value={view === 'default' && pair}
           id={'pairSelector'}
           view={view}
@@ -213,7 +213,7 @@ export const CardsPanel = ({
           style={{
             position: 'relative',
             display: 'flex',
-            maxWidth: marketType === 0 ? '50%' : '58.33333%',
+            maxWidth: marketType === 0 ? '50%' : '56.33333%',
             marginRight: '.4rem',
             flexGrow: 1,
             backgroundColor: theme.palette.grey.marketStats,
@@ -234,7 +234,7 @@ export const CardsPanel = ({
           data-tut={'smart&basic'}
           style={{
             border: theme.palette.border.main,
-            width: '30rem',
+            width: '25rem',
             height: '100%',
           }}
         >

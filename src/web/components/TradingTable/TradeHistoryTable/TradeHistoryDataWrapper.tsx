@@ -16,20 +16,6 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
     endDate: dayjs().endOf('day'),
     focusedInput: null,
     activeDateButton: '1Day',
-    allKeys: true,
-    specificPair: false,
-  }
-
-  handleToggleAllKeys = () => {
-    this.setState((prev) => ({ allKeys: !prev.allKeys }))
-  }
-
-  handleToggleSpecificPair = () => {
-    const { currencyPair } = this.props
-
-    this.setState((prev) => ({
-      specificPair: !prev.specificPair ? currencyPair : false,
-    }))
   }
 
   handleChangePage = (page: number) => {
@@ -91,6 +77,10 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
       showPositionsFromAllAccounts,
       showOpenOrdersFromAllAccounts,
       showSmartTradesFromAllAccounts,
+      allKeys,
+      specificPair,
+      handleToggleAllKeys,
+      handleToggleSpecificPair,
     } = this.props
 
     const {
@@ -100,8 +90,6 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
       endDate,
       activeDateButton,
       startDate,
-      allKeys,
-      specificPair,
     } = this.state
 
     const maximumDate = dayjs().endOf('day')
@@ -130,6 +118,8 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
           minimumDate,
           allKeys,
           specificPair,
+          handleToggleAllKeys,
+          handleToggleSpecificPair,
           showAllPositionPairs,
           showAllOpenOrderPairs,
           showAllSmartTradePairs,
@@ -143,8 +133,6 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
           onDateButtonClick: this.onDateButtonClick,
           onDatesChange: this.onDatesChange,
           onFocusChange: this.onFocusChange,
-          handleToggleAllKeys: this.handleToggleAllKeys,
-          handleToggleSpecificPair: this.handleToggleSpecificPair,
         }}
       />
     )

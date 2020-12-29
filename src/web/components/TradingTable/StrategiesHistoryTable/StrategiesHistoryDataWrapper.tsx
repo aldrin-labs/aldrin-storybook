@@ -16,20 +16,6 @@ export default class StrategiesHistoryDataWrapper extends React.PureComponent<
     endDate: dayjs().endOf('day'),
     focusedInput: null,
     activeDateButton: '1Day',
-    allKeys: true,
-    specificPair: false,
-  }
-
-  handleToggleAllKeys = () => {
-    this.setState((prev) => ({ allKeys: !prev.allKeys }))
-  }
-
-  handleToggleSpecificPair = () => {
-    const { currencyPair } = this.props
-
-    this.setState((prev) => ({
-      specificPair: !prev.specificPair ? currencyPair : false,
-    }))
   }
 
   handleChangePage = (page: number) => {
@@ -79,6 +65,8 @@ export default class StrategiesHistoryDataWrapper extends React.PureComponent<
       tabIndex,
       show,
       keys,
+      allKeys,
+      specificPair,
       handleTabChange,
       selectedKey,
       currencyPair,
@@ -89,6 +77,8 @@ export default class StrategiesHistoryDataWrapper extends React.PureComponent<
       showAllPositionPairs,
       showAllOpenOrderPairs,
       showAllSmartTradePairs,
+      handleToggleSpecificPair,
+      handleToggleAllKeys,
       showPositionsFromAllAccounts,
       showOpenOrdersFromAllAccounts,
       showSmartTradesFromAllAccounts,
@@ -101,8 +91,6 @@ export default class StrategiesHistoryDataWrapper extends React.PureComponent<
       startDate,
       page,
       perPage,
-      allKeys,
-      specificPair,
     } = this.state
 
     const maximumDate = dayjs().endOf('day')
@@ -145,8 +133,8 @@ export default class StrategiesHistoryDataWrapper extends React.PureComponent<
           onDateButtonClick: this.onDateButtonClick,
           onDatesChange: this.onDatesChange,
           onFocusChange: this.onFocusChange,
-          handleToggleAllKeys: this.handleToggleAllKeys,
-          handleToggleSpecificPair: this.handleToggleSpecificPair,
+          handleToggleSpecificPair,
+          handleToggleAllKeys,
         }}
       />
     )

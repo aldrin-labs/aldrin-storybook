@@ -30,6 +30,19 @@ export const SubColumnValue = styled(InputTitle)`
     display: none;
   }
 
+  .avgTable {
+    display: none;
+  }
+  .splitTargetsTable {
+    display: none;
+  }
+  &:hover .splitTargetsTable {
+    display: flex;
+  }
+
+  &:hover .avgTable {
+    display: flex;
+  }
   @media only screen and (max-width: 1000px) {
     .errorMsg {
       display: block;
@@ -97,20 +110,20 @@ export const EntryOrderColumn = ({
         }}
       >
         <SubColumnValue theme={theme}>entry point</SubColumnValue>
-        {haveEdit && (
+        {/* {haveEdit && (
           <SubColumnTitle theme={theme} style={{ width: 'auto', padding: '0' }}>
             <BtnCustom
               disable={!enableEdit}
               needMinWidth={false}
               btnWidth="auto"
-              height="auto"
+              height="1.5rem"
               fontSize=".9rem"
-              padding=".1rem .5rem 0 .5rem"
-              borderRadius=".8rem"
-              borderColor={enableEdit ? blue.main : '#e0e5ec'}
+              padding=".1rem 1rem 0 1rem"
+              borderRadius="0.5rem"
+              borderColor={enableEdit ? blue.tabs : '#e0e5ec'}
               btnColor={'#fff'}
-              backgroundColor={enableEdit ? blue.main : '#e0e5ec'}
-              hoverBackground={enableEdit ? blue.main : '#e0e5ec'}
+              backgroundColor={enableEdit ? blue.tabs : '#e0e5ec'}
+              hoverBackground={enableEdit ? blue.tabs : '#e0e5ec'}
               transition={'all .4s ease-out'}
               onClick={enableEdit ? editTrade : () => {}}
               style={enableEdit ? {} : { cursor: 'default' }}
@@ -118,7 +131,7 @@ export const EntryOrderColumn = ({
               edit
             </BtnCustom>
           </SubColumnTitle>
-        )}
+        )} */}
       </div>
 
       <div>
@@ -281,27 +294,27 @@ export const TakeProfitColumn = ({
         }}
       >
         <SubColumnValue theme={theme}>take profit</SubColumnValue>
-        {haveEdit && (
+        {/* {haveEdit && (
           <SubColumnTitle theme={theme} style={{ width: 'auto', padding: '0' }}>
             <BtnCustom
               disable={!enableEdit}
               needMinWidth={false}
               btnWidth="auto"
-              height="auto"
+              height="1.5rem"
               fontSize=".9rem"
-              padding=".1rem .5rem 0 .5rem"
-              borderRadius=".8rem"
-              borderColor={enableEdit ? blue.main : '#e0e5ec'}
+              padding=".1rem 1rem 0 1rem"
+              borderRadius="0.5rem"
+              borderColor={enableEdit ? blue.tabs : '#e0e5ec'}
               btnColor={'#fff'}
-              backgroundColor={enableEdit ? blue.main : '#e0e5ec'}
-              hoverBackground={blue.main}
+              backgroundColor={enableEdit ? blue.tabs : '#e0e5ec'}
+              hoverBackground={enableEdit ? blue.tabs : '#e0e5ec'}
               transition={'all .4s ease-out'}
               onClick={editTrade}
             >
               edit
             </BtnCustom>
           </SubColumnTitle>
-        )}
+        )} */}
       </div>
       <div>
         <SubColumnTitle theme={theme}>profit</SubColumnTitle>
@@ -394,27 +407,27 @@ export const StopLossColumn = ({
         }}
       >
         <SubColumnValue theme={theme}>stop loss</SubColumnValue>
-        {haveEdit && (
+        {/* {haveEdit && (
           <SubColumnTitle theme={theme} style={{ width: 'auto', padding: '0' }}>
             <BtnCustom
               disabled={!enableEdit}
               needMinWidth={false}
               btnWidth="auto"
-              height="auto"
+              height="1.5rem"
               fontSize=".9rem"
-              padding=".1rem .5rem 0 .5rem"
-              borderRadius=".8rem"
-              borderColor={enableEdit ? blue.main : '#e0e5ec'}
+              padding=".1rem 1rem 0 1rem"
+              borderRadius="0.5rem"
+              borderColor={enableEdit ? blue.tabs : '#e0e5ec'}
               btnColor={'#fff'}
-              backgroundColor={enableEdit ? blue.main : '#e0e5ec'}
-              hoverBackground={blue.main}
+              backgroundColor={enableEdit ? blue.tabs : '#e0e5ec'}
+              hoverBackground={enableEdit ? blue.tabs : '#e0e5ec'}
               transition={'all .4s ease-out'}
               onClick={editTrade}
             >
               edit
             </BtnCustom>
           </SubColumnTitle>
-        )}
+        )} */}
       </div>
       <div>
         <SubColumnTitle theme={theme}>loss</SubColumnTitle>

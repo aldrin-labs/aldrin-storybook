@@ -61,7 +61,10 @@ import { LISTEN_TABLE_PRICE } from '@core/graphql/subscriptions/LISTEN_TABLE_PRI
 import { LISTEN_MARK_PRICES } from '@core/graphql/subscriptions/LISTEN_MARK_PRICES'
 import { SmartTradeButton } from '@sb/components/TradingTable/TradingTabs/TradingTabs.styles'
 import { showCancelResult } from '@sb/compositions/Chart/Chart.utils'
-import { EditEntryPopupWithFuturesPrice, EditEntryPopupWithSpotPrice } from '../PriceBlocks/EditEntryPopupWithPrice'
+import {
+  EditEntryPopupWithFuturesPrice,
+  EditEntryPopupWithSpotPrice,
+} from '../PriceBlocks/EditEntryPopupWithPrice'
 
 @withTheme()
 class ActiveTradesTable extends React.PureComponent<IProps, IState> {
@@ -371,29 +374,30 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
       page,
       perPage,
       marketType,
-      allKeys,
-      specificPair,
       updateEntryPointStrategyMutation,
       updateStopLossStrategyMutation,
       updateTakeProfitStrategyMutation,
       getFundsQuery = {
         getFunds: [],
       },
-      handleToggleAllKeys,
-      handleToggleSpecificPair,
       getActiveStrategiesQuery,
       handleChangePage,
       handleChangeRowsPerPage,
       updateTerminalViewMode,
       isDefaultOnlyTables,
       maxLeverage,
+      allKeys,
+      specificPair,
+      handleToggleAllKeys,
+      handleToggleSpecificPair,
     } = this.props
 
     if (!show || !isDefaultOnlyTables) {
       return null
     }
 
-    let pricePrecision = 8, quantityPrecision = 8
+    let pricePrecision = 8,
+      quantityPrecision = 8
 
     if (selectedTrade && selectedTrade.conditions) {
       const precisionObject = getPrecisionItem({
@@ -405,9 +409,10 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
       quantityPrecision = precisionObject.quantityPrecision
     }
 
-    const pair = editTrade === 'entryOrder' &&
-      selectedTrade &&
-      selectedTrade.conditions ? selectedTrade.conditions.pair.split('_') : currencyPair.split('_')
+    const pair =
+      editTrade === 'entryOrder' && selectedTrade && selectedTrade.conditions
+        ? selectedTrade.conditions.pair.split('_')
+        : currencyPair.split('_')
 
     const funds = pair.map((coin, index) => {
       const asset = getFundsQuery.getFunds.find(
@@ -428,7 +433,10 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
     const processedFunds =
       marketType === 0 ? funds : [funds[0], USDTFuturesFund]
 
-    const EditEntryPopup = marketType === 0 ? EditEntryPopupWithSpotPrice : EditEntryPopupWithFuturesPrice
+    const EditEntryPopup =
+      marketType === 0
+        ? EditEntryPopupWithSpotPrice
+        : EditEntryPopupWithFuturesPrice
 
     return (
       <>
@@ -690,16 +698,17 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
               boxShadow: 'none',
             },
             heading: {
-              fontSize: '1rem',
+              fontSize: '1.4rem',
               fontWeight: 'bold',
               backgroundColor: theme.palette.white.background,
-              color: theme.palette.dark.main,
+              color: theme.palette.grey.light,
               boxShadow: 'none',
+              textTransform: 'capitalize',
             },
             cell: {
-              color: theme.palette.dark.main,
-              fontSize: '1rem', // 1.2 if bold
-              fontWeight: 'bold',
+              color: theme.palette.grey.onboard,
+              fontSize: '1.3rem', // 1.2 if bold
+              fontFamily: 'Avenir Next Demi',
               letterSpacing: '.1rem',
               borderBottom: theme.palette.border.main,
               backgroundColor: theme.palette.white.background,

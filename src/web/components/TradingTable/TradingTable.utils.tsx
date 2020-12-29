@@ -3,14 +3,20 @@ import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 dayjs.extend(localizedFormat)
 
+import { SubColumnTitle } from '@sb/components/TradingTable/ActiveTrades/Columns'
+import ArrowBottom from '@icons/arrowBottom.svg'
+import SvgIcon from '@sb/components/SvgIcon'
+
 import { OrderType, TradeType, FundsType, Key } from '@core/types/ChartTypes'
 import ErrorIcon from '@material-ui/icons/Error'
+import Timer from '@icons/clock.svg'
 
 import { Position } from './PositionsTable/PositionsTable.types'
-import { TableButton } from './TradingTable.styles'
+import { TableButton, TableCell, TableRow } from './TradingTable.styles'
 import { ArrowForward as Arrow } from '@material-ui/icons'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { getActiveStrategies } from '@core/graphql/queries/chart/getActiveStrategies'
+import { Metrics } from '@core/utils/metrics'
 
 import { ActiveSmartTradePnlFutures } from './PriceBlocks/ActiveSmartTradePnlFutures'
 import { ActiveSmartTradePnlSpot } from './PriceBlocks/ActiveSmartTradePnlSpot'
@@ -26,9 +32,10 @@ import stableCoins from '@core/config/stableCoins'
 import { cloneDeep } from 'lodash-es'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
 import AdlComponent from './AdlComponent/AdlComponent'
+
 import { getPrecisionItem } from '@core/utils/getPrecisionItem'
 
-import MarkPriceBlock from '@sb/components/TradingTable/PriceBlocks/PositionsPriceBlock';
+import MarkPriceBlock from '@sb/components/TradingTable/PriceBlocks/PositionsPriceBlock'
 
 const activeExchange = { symbol: 'binance' }
 
@@ -93,6 +100,7 @@ import {
   orderHistoryBody,
   tradeHistoryBody,
 } from '@sb/components/TradingTable/TradingTable.mocks'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 import SubRow from './PositionsTable/SubRow'
 import {
@@ -293,7 +301,7 @@ const getActiveOrderStatus = ({
     }
 
     // if (status === 'InEntry') {
-      return ['Active', theme.palette.green.main]
+    return ['Active', theme.palette.green.main]
     // }
 
     // if (profitPercentage > 0) {
@@ -530,13 +538,15 @@ export const combinePositionsTable = ({
           marketPrice: {
             // render: `${stripDigitPlaces(marketPrice, pricePrecision)} ${pair[1]
             //   }`,
-            render: <MarkPriceBlock
-              symbol={symbol}
-              exchange={activeExchange}
-              marketType={1}
-              pricePrecision={pricePrecision}
-              theme={theme}
-            />,
+            render: (
+              <MarkPriceBlock
+                symbol={symbol}
+                exchange={activeExchange}
+                marketType={1}
+                pricePrecision={pricePrecision}
+                theme={theme}
+              />
+            ),
             style: {
               textAlign: 'left',
               whiteSpace: 'nowrap',
@@ -546,7 +556,14 @@ export const combinePositionsTable = ({
             // contentToSort: marketPrice,
           },
           adl: {
-            render: <AdlComponent symbol={symbol} theme={theme} keyId={keyId} side={side} />,
+            render: (
+              <AdlComponent
+                symbol={symbol}
+                theme={theme}
+                keyId={keyId}
+                side={side}
+              />
+            ),
           },
           liqPrice: {
             render: `${
@@ -775,15 +792,40 @@ export const combineActiveTradesTable = ({
       })
 
       const isErrorInOrder = !!msg
+<<<<<<< HEAD
+=======
+
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({
+        marketType,
+        symbol: pair,
+      })
+
+      const takeProfitPercentage =
+        exitLevels[0] &&
+        exitLevels[0].activatePrice &&
+        exitLevels[0].entryDeviation
+          ? exitLevels[0].activatePrice
+          : exitLevels[0].price
+
+>>>>>>> de08a714b310eecfad29bbb708987b12bd47dc03
       const strategyId = el._id
+      const enableEdit = !entryPrice
+      let avgPrice =
+        entryLevels && entryLevels.length !== 0 ? entryLevels[0].price : 0
 
-      const isSMIsAlreadyInEntry = !isTemplate &&
-      state &&
-      activeOrderStatus !== 'Preparing' &&
-      state !== 'WaitForEntry' &&
-      state !== 'TrailingEntry'
+      let estPrice = 0
+      let sumAmount = 0
+      let margin = 0
 
-      const SMPnlComponent = marketType === 1 ? ActiveSmartTradePnlFutures : ActiveSmartTradePnlSpot
+      const isSMIsAlreadyInEntry =
+        !isTemplate &&
+        state &&
+        activeOrderStatus !== 'Preparing' &&
+        state !== 'WaitForEntry' &&
+        state !== 'TrailingEntry'
+
+      const SMPnlComponent =
+        marketType === 1 ? ActiveSmartTradePnlFutures : ActiveSmartTradePnlSpot
 
       return {
         id: `${el._id}_${el.accountId}`,
@@ -794,47 +836,78 @@ export const combineActiveTradesTable = ({
               onClick={(e) => {
                 handlePairChange(pair)
               }}
-            >{`${pairArr[0]}/${pairArr[1]}`}</SubColumnValue>
+              style={{ fontSize: '1.3rem', fontFamily: 'Avenir Next Demi' }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                <a
+                  style={{ color: theme.palette.grey.onboard }}
+                >{`${pairArr[0]}/${pairArr[1]}`}</a>
+                <a
+                  style={{
+                    color: side === 'buy' ? green.main : red.main,
+
+                    textTransform: 'capitalize',
+                  }}
+                >
+                  {marketType === 0
+                    ? side
+                    : side === 'buy'
+                    ? 'buy long'
+                    : 'sell short'}
+                </a>
+                <a
+                  style={{
+                    color: theme.palette.grey.light,
+                    textTransform: 'capitalize',
+                  }}
+                >
+                  {keyName}
+                </a>
+              </div>
+            </SubColumnValue>
           ),
           style: {
             opacity: needOpacity ? 0.6 : 1,
             cursor: 'pointer',
           },
         },
-        side: {
-          render: (
-            <SubColumnValue
-              theme={theme}
-              color={side === 'buy' ? green.main : red.main}
-            >
-              {marketType === 0
-                ? side
-                : side === 'buy'
-                ? 'buy long'
-                : 'sell short'}
-            </SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-          contentToSort: side,
-        },
         entryPrice: {
-          render: entryPrice ? (
-            <SubColumnValue theme={theme}>
-              {stripDigitPlaces(entryPrice, pricePrecision)} {pairArr[1]}
+          render: !!entryOrderPrice ? (
+            <SubColumnValue
+              style={{
+                fontSize: '1.3rem',
+                fontFamily: 'Avenir Next Demi',
+                color: theme.palette.grey.onboard,
+              }}
+              theme={theme}
+            >
+              {stripDigitPlaces(entryOrderPrice, pricePrecision)} {pairArr[1]}
             </SubColumnValue>
           ) : !!entryDeviation ? (
-            <SubColumnValue theme={theme}>
-              <div style={{ color: theme.palette.grey.light }}>trailing</div>{' '}
-              <div>
-                <span style={{ color: theme.palette.grey.light }}>from</span>{' '}
-                {stripDigitPlaces(activatePrice, pricePrecision)}
-              </div>
-            </SubColumnValue>
-          ) : !!entryOrderPrice ? (
-            <SubColumnValue theme={theme}>
-              {stripDigitPlaces(entryOrderPrice, pricePrecision)} {pairArr[1]}
+            <SubColumnValue
+              style={{
+                fontSize: '1.3rem',
+                fontFamily: 'Avenir Next Demi',
+                color: theme.palette.grey.onboard,
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+              theme={theme}
+            >
+              <div
+                style={{
+                  color: theme.palette.grey.light,
+                  textTransform: 'none',
+                }}
+              >
+                Trailing from
+              </div>{' '}
+              <div>{stripDigitPlaces(activatePrice, pricePrecision)}</div>
             </SubColumnValue>
           ) : (
             '-'
@@ -844,10 +917,112 @@ export const combineActiveTradesTable = ({
           },
           contentToSort: entryOrderPrice,
         },
+        // side: {
+        //   render: (
+        //     <SubColumnValue
+        //       theme={theme}
+        //       color={side === 'buy' ? green.main : red.main}
+        //     >
+        //       {marketType === 0
+        //         ? side
+        //         : side === 'buy'
+        //         ? 'buy long'
+        //         : 'sell short'}
+        //     </SubColumnValue>
+        //   ),
+        //   style: {
+        //     opacity: needOpacity ? 0.6 : 1,
+        //   },
+        //   contentToSort: side,
+        // },
+        leverage: {
+          render: (
+            <SubColumnValue
+              style={{
+                fontSize: '1.3rem',
+                fontFamily: 'Avenir Next Demi',
+                textTransform: 'lowercase',
+                color: theme.palette.grey.onboard,
+              }}
+              theme={theme}
+            >
+              {' '}
+              {'x'}
+              {leverage}
+            </SubColumnValue>
+          ),
+          style: {
+            opacity: needOpacity ? 0.6 : 1,
+          },
+          contentToSort: leverage,
+        },
         quantity: {
           render: (
-            <SubColumnValue theme={theme}>
-              {amount.toFixed(quantityPrecision)} {pairArr[0]}{' '}
+            <SubColumnValue
+              style={{
+                fontSize: '1.3rem',
+                fontFamily: 'Avenir Next Demi',
+                color: theme.palette.grey.onboard,
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+              theme={theme}
+            >
+              <SubColumnTitle
+                theme={theme}
+                style={{ width: 'auto', padding: '0 1rem 0 0' }}
+              >
+                <BtnCustom
+                  disable={!enableEdit}
+                  needMinWidth={false}
+                  btnWidth="auto"
+                  height="1.5rem"
+                  fontSize=".9rem"
+                  padding=".1rem 1rem 0 1rem"
+                  borderRadius="0.5rem"
+                  borderColor={enableEdit ? blue.tabs : '#e0e5ec'}
+                  btnColor={'#fff'}
+                  backgroundColor={enableEdit ? blue.tabs : '#e0e5ec'}
+                  hoverBackground={enableEdit ? blue.tabs : '#e0e5ec'}
+                  transition={'all .4s ease-out'}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    editTrade('entryOrder', el)
+                  }}
+                  style={enableEdit ? {} : { cursor: 'default' }}
+                >
+                  edit
+                </BtnCustom>
+              </SubColumnTitle>
+
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                <a>
+                  {((amount * entryOrderPrice) / leverage).toFixed(2)}{' '}
+                  {pairArr[1]}
+                </a>
+                <a
+                  style={{
+                    color: theme.palette.grey.light,
+                    fontSize: '1.2rem',
+                  }}
+                >
+                  {amount.toFixed(quantityPrecision)} {pairArr[0]}
+                </a>
+                <a
+                  style={{
+                    color: theme.palette.grey.light,
+                    fontSize: '1.2rem',
+                  }}
+                >
+                  {(amount * entryOrderPrice).toFixed(2)} {pairArr[1]}
+                </a>
+              </div>
             </SubColumnValue>
           ),
           style: {
@@ -855,50 +1030,212 @@ export const combineActiveTradesTable = ({
           },
           contentToSort: amount,
         },
-        takeProfit: {
+        averaging: {
           render: (
-            <SubColumnValue theme={theme} color={green.main}>
-              {exitLevels[0] &&
-              exitLevels[0].activatePrice &&
-              exitLevels[0].entryDeviation ? (
-                `${exitLevels[0].activatePrice}% / ${exitLevels[0].entryDeviation}%`
-              ) : exitLevels.length > 1 ? (
-                <div>
-                  <div>
-                    {exitLevels.map((level, i) =>
-                      i < 4 ? (
-                        <span style={{ color: theme.palette.grey.light }}>
-                          {level.amount}%{' '}
-                          {i === 3 || i + 1 === exitLevels.length ? '' : '/ '}
-                        </span>
-                      ) : null
-                    )}
-                  </div>
-                  <div>
-                    {exitLevels.map((level, i) =>
-                      i < 4 ? (
-                        <span>
-                          {level.price}%{' '}
-                          {i === 3 || i + 1 === exitLevels.length ? '' : '/ '}
-                        </span>
-                      ) : null
-                    )}
-                  </div>
-                </div>
+            <SubColumnValue
+              style={{
+                fontSize: '1.3rem',
+                fontFamily: 'Avenir Next Demi',
+                textTransform: 'lowercase',
+                color: theme.palette.grey.onboard,
+                position: 'relative',
+              }}
+              theme={theme}
+            >
+              {entryLevels && entryLevels.length > 0 ? (
+                <>
+                  {entryLevels.length}
+                  {' points'}{' '}
+                  <SvgIcon src={ArrowBottom} width={'1rem'} height={'1rem'} />
+                </>
               ) : (
-                `${exitLevels.length > 0 ? exitLevels[0].price : '-'}%`
+                '-'
+              )}
+              {entryLevels.length > 0 && (
+                <div
+                  className="avgTable"
+                  style={{
+                    position: 'absolute',
+                    height: 'auto',
+                    left: '45%',
+                    width: '50rem',
+                    top: '100%',
+                    background: theme.palette.background.default,
+                    zIndex: '100',
+                    borderRadius: '0.1rem',
+                    justifyContent: 'center',
+                    border: theme.palette.border.main,
+                  }}
+                >
+                  <table
+                    style={{
+                      width: '95%',
+                      color: theme.palette.grey.light,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0',
+                    }}
+                  >
+                    <TableRow style={{ fontSize: '1.2rem' }}>
+                      <TableCell theme={theme}>price</TableCell>
+                      <TableCell theme={theme}>amount / margin</TableCell>
+                      <TableCell theme={theme}>
+                        est. averaged entry price
+                      </TableCell>
+                    </TableRow>
+
+                    {entryLevels.map((el, index) => {
+                      const currentPrice =
+                        index === 0
+                          ? avgPrice
+                          : side === 'sell'
+                          ? (avgPrice * (100 + el.price / leverage)) / 100
+                          : (avgPrice * (100 - el.price / leverage)) / 100
+                      if (index === 0) {
+                        estPrice = el.price
+                        sumAmount = el.amount
+                        margin =
+                          (estPrice * sumAmount +
+                            currentPrice * ((el.amount / 100) * amount)) /
+                          leverage
+                      } else {
+                        const exactAmount = (el.amount / 100) * amount
+
+                        const total =
+                          estPrice * sumAmount + currentPrice * exactAmount
+
+                        estPrice = total / (sumAmount + exactAmount)
+                        sumAmount += exactAmount
+                        margin = total / leverage
+                      }
+
+                      //currentEstPrice = total / (prevTarget.amount + currentTarget.amount)
+
+                      return (
+                        <TableRow>
+                          <TableCell theme={theme}>
+                            {currentPrice.toFixed(pricePrecision)} {pairArr[1]}
+                          </TableCell>
+                          <TableCell theme={theme}>
+                            {el.amount} {index === 0 ? pairArr[0] : '%'} /{' '}
+                            {margin.toFixed(pricePrecision)} {pairArr[1]}
+                          </TableCell>
+                          <TableCell theme={theme}>
+                            {estPrice.toFixed(pricePrecision)} {pairArr[1]}
+                          </TableCell>
+                        </TableRow>
+                      )
+                    })}
+                  </table>{' '}
+                </div>
               )}
             </SubColumnValue>
           ),
           style: {
             opacity: needOpacity ? 0.6 : 1,
           },
+          contentToSort: entryLevels ? entryLevels.length : 0,
         },
         stopLoss: {
           render:
             stopLoss || hedgeLossDeviation ? (
-              <SubColumnValue theme={theme} color={red.main}>
-                {stopLoss || hedgeLossDeviation}%
+              <SubColumnValue
+                style={{
+                  fontSize: '1.3rem',
+                  fontFamily: 'Avenir Next Demi',
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+                theme={theme}
+                color={red.main}
+              >
+                <SubColumnTitle
+                  theme={theme}
+                  style={{ width: 'auto', padding: '0 1rem 0 0' }}
+                >
+                  <BtnCustom
+                    // disabled={!enableEdit}
+                    needMinWidth={false}
+                    btnWidth="auto"
+                    height="1.5rem"
+                    fontSize=".9rem"
+                    padding=".1rem 1rem 0 1rem"
+                    borderRadius="0.5rem"
+                    borderColor={blue.tabs}
+                    btnColor={'#fff'}
+                    backgroundColor={blue.tabs}
+                    hoverBackground={blue.tabs}
+                    transition={'all .4s ease-out'}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      editTrade('takeProfit', el)
+                    }}
+                  >
+                    edit
+                  </BtnCustom>
+                </SubColumnTitle>{' '}
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <div style={{ alignSelf: 'start' }}>
+                    {' '}
+                    <a> {stopLoss || hedgeLossDeviation}% </a>{' '}
+                    <a>
+                      {timeoutLoss && (
+                        <>
+                          {' '}
+                          <a style={{ color: theme.palette.grey.onboard }}>
+                            {' '}
+                            /{' '}
+                          </a>{' '}
+                          <SvgIcon src={Timer} height="13px" />
+                          <a
+                            style={{
+                              textTransform: 'lowercase',
+                              color: theme.palette.grey.onboard,
+                            }}
+                          >
+                            {' '}
+                            {timeoutLoss} sec
+                          </a>
+                        </>
+                      )}
+                    </a>
+                  </div>
+                  <a
+                    style={{
+                      color: theme.palette.grey.light,
+                      fontSize: '1.2rem',
+                      alignSelf: 'baseline',
+                    }}
+                  >
+                    {' '}
+                    {entryOrderPrice ? (
+                      side === 'buy' ? (
+                        (
+                          entryOrderPrice *
+                          (1 - stopLoss / 100 / leverage)
+                        ).toFixed(pricePrecision) + ` ${pairArr[1]}`
+                      ) : (
+                        (
+                          entryOrderPrice *
+                          (1 + stopLoss / 100 / leverage)
+                        ).toFixed(pricePrecision) + ` ${pairArr[1]}`
+                      )
+                    ) : (
+                      <a
+                        style={{ textTransform: 'none', alignSelf: 'baseline' }}
+                      >
+                        Processing...
+                      </a>
+                    )}{' '}
+                  </a>
+                </div>
               </SubColumnValue>
             ) : (
               '-'
@@ -908,12 +1245,209 @@ export const combineActiveTradesTable = ({
           },
           contentToSort: stopLoss,
         },
+        takeProfit: {
+          render: (
+            <SubColumnValue
+              style={{
+                fontSize: '1.3rem',
+                fontFamily: 'Avenir Next Demi',
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+              theme={theme}
+              color={green.main}
+            >
+              <SubColumnTitle
+                theme={theme}
+                style={{ width: 'auto', padding: '0 1rem 0 0' }}
+              >
+                <BtnCustom
+                  disable={!enableEdit}
+                  needMinWidth={false}
+                  btnWidth="auto"
+                  height="1.5rem"
+                  fontSize=".9rem"
+                  padding=".1rem 1rem 0 1rem"
+                  borderRadius="0.5rem"
+                  borderColor={blue.tabs}
+                  btnColor={'#fff'}
+                  backgroundColor={blue.tabs}
+                  hoverBackground={blue.tabs}
+                  transition={'all .4s ease-out'}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    editTrade('takeProfit', el)
+                  }}
+                >
+                  edit
+                </BtnCustom>
+              </SubColumnTitle>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flexDirection: 'column',
+                }}
+              >
+                <div style={{ alignSelf: 'start' }}>
+                  {exitLevels[0] &&
+                  exitLevels[0].activatePrice &&
+                  exitLevels[0].entryDeviation ? (
+                    entryOrderPrice ? (
+                      <div>
+                        {' '}
+                        <a
+                          style={{
+                            fontSize: '1.2rem',
+                            textTransform: 'none',
+                            alignSelf: 'baseline',
+                          }}
+                        >
+                          Trailing from
+                        </a>{' '}
+                        +{exitLevels[0].entryDeviation}%
+                      </div>
+                    ) : (
+                      `${exitLevels[0].activatePrice}% / ${exitLevels[0].entryDeviation}%` // trailing
+                    )
+                  ) : exitLevels.length > 1 ? ( // split targets
+                    <div
+                      style={{
+                        fontSize: '1.3rem',
+                        fontFamily: 'Avenir Next Demi',
+                        textTransform: 'lowercase',
+                        color: theme.palette.grey.onboard,
+                        position: 'relative',
+                      }}
+                    >
+                      {' '}
+                      {exitLevels.length} targets{' '}
+                      <div
+                        className="splitTargetsTable"
+                        style={{
+                          position: 'absolute',
+                          height: 'auto',
+                          left: '45%',
+                          width: '25rem',
+                          top: '100%',
+                          background: theme.palette.background.default,
+                          zIndex: '100',
+                          borderRadius: '0.1rem',
+                          justifyContent: 'center',
+                          border: theme.palette.border.main,
+                        }}
+                      >
+                        <table
+                          style={{
+                            width: '95%',
+                            color: theme.palette.grey.light,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0',
+                          }}
+                        >
+                          <TableRow style={{ fontSize: '1.2rem' }}>
+                            <TableCell theme={theme}>price</TableCell>
+                            <TableCell theme={theme}>quantity</TableCell>
+                          </TableRow>
+
+                          {exitLevels.map((el, index) => {
+                            return (
+                              <TableRow>
+                                <TableCell theme={theme}>{el.price}%</TableCell>
+                                <TableCell theme={theme}>
+                                  {el.amount}%
+                                </TableCell>
+                              </TableRow>
+                            )
+                          })}
+                        </table>{' '}
+                      </div>
+                      <SvgIcon
+                        src={ArrowBottom}
+                        width={'1rem'}
+                        height={'1rem'}
+                      />
+                      {/* <div>
+                        {exitLevels.map((level, i) =>
+                          i < 4 ? (
+                            <span style={{ color: theme.palette.grey.light }}>
+                              {level.amount}%{' '}
+                              {i === 3 || i + 1 === exitLevels.length
+                                ? ''
+                                : '/ '}
+                            </span>
+                          ) : null
+                        )}
+                      </div>
+                      <div>
+                        {exitLevels.map((level, i) =>
+                          i < 4 ? (
+                            <span>
+                              {level.price}%{' '}
+                              {i === 3 || i + 1 === exitLevels.length
+                                ? ''
+                                : '/ '}
+                            </span>
+                          ) : null
+                        )}
+                      </div> */}
+                      {/* {exitLevels.length} targets{' '} */}
+                      {/* <SvgIcon
+                        src={ArrowBottom}
+                        width={'1rem'}
+                        height={'1rem'}
+                      /> */}
+                    </div>
+                  ) : (
+                    `${exitLevels.length > 0 ? exitLevels[0].price : '-'}%` // tp
+                  )}
+                </div>
+                {exitLevels.length > 1 ? null : (
+                  <a
+                    style={{
+                      color: theme.palette.grey.light,
+                      fontSize: '1.2rem',
+                      alignSelf: 'baseline',
+                    }}
+                  >
+                    {' '}
+                    {entryOrderPrice ? (
+                      side === 'buy' ? (
+                        (
+                          entryOrderPrice *
+                          (1 + takeProfitPercentage / 100 / leverage)
+                        ).toFixed(pricePrecision) + ` ${pairArr[1]}`
+                      ) : (
+                        (
+                          entryOrderPrice *
+                          (1 - takeProfitPercentage / 100 / leverage)
+                        ).toFixed(pricePrecision) + ` ${pairArr[1]}`
+                      )
+                    ) : (
+                      <a
+                        style={{ textTransform: 'none', alignSelf: 'baseline' }}
+                      >
+                        Processing...
+                      </a>
+                    )}{' '}
+                  </a>
+                )}
+              </div>
+            </SubColumnValue>
+          ),
+          style: {
+            opacity: needOpacity ? 0.6 : 1,
+          },
+        },
+
         profit: {
           render:
-              isSMIsAlreadyInEntry && 
-              // currentPrice &&
-              entryOrderPrice ?
-              <SMPnlComponent 
+            isSMIsAlreadyInEntry &&
+            // currentPrice &&
+            entryOrderPrice ? (
+              <SMPnlComponent
                 exchange={activeExchange}
                 symbol={pair}
                 marketType={marketType}
@@ -926,13 +1460,15 @@ export const combineActiveTradesTable = ({
                 entryLevels={entryLevels}
                 receivedProfitPercentage={receivedProfitPercentage}
                 receivedProfitAmount={receivedProfitAmount}
-                positionAmount={+(stripDigitPlaces(amount, quantityPrecision))}
+                positionAmount={+stripDigitPlaces(amount, quantityPrecision)}
                 templatePnl={templatePnl}
-                theme={theme} 
-              /> 
-              : (
-                `0 ${pairArr[1]} / 0%`
-              ),
+                theme={theme}
+              />
+            ) : (
+              <a style={{ color: theme.palette.grey.light }}>
+                0 {pairArr[1]} / 0%
+              </a>
+            ),
           style: {
             opacity: needOpacity ? 0.6 : 1,
             minWidth: '135px',
@@ -945,11 +1481,14 @@ export const combineActiveTradesTable = ({
               theme={theme}
               style={{
                 textTransform: 'none',
-                width: '7rem',
+                width: '8.5rem',
                 display: 'flex',
                 alignItems: 'center',
                 whiteSpace: 'normal',
                 flexDirection: 'column',
+                fontSize: '1.3rem',
+                fontFamily: 'Avenir Next Demi',
+                whiteSpace: 'nowrap',
               }}
               color={isErrorInOrder ? red.main : statusColor}
             >
@@ -1178,7 +1717,6 @@ export const combineActiveTradesTable = ({
             </BtnCustom>
           ),
         },
-        tooltipTitle: keyName,
         expandableContent: [
           {
             row: {
@@ -1187,7 +1725,7 @@ export const combineActiveTradesTable = ({
                   <EntryOrderColumn
                     theme={theme}
                     haveEdit={true}
-                    entryLevels={entryLevels}
+                    entryLevels={entryLevels} // avg
                     editTrade={() => editTrade('entryOrder', el)}
                     enableEdit={activeOrderStatus === 'Preparing' || isTemplate}
                     pair={`${pairArr[0]}/${pairArr[1]}`}
@@ -2579,6 +3117,32 @@ export const updateActivePositionsQuerryFunction = (
     return previous
   }
 
+  // metrics
+  const timestamp = Date.now()
+  const { positions } = Metrics
+  // getting data from order
+  const {
+    keyId,
+    symbol,
+    positionSide,
+  } = subscriptionData.data.listenFuturesPositions
+  const key = `${keyId}_${symbol}_${positionSide}`
+
+  if (positions[key]) {
+    const prevTimestamp = positions[key]
+    const diff = timestamp - prevTimestamp
+    console.log(
+      `Collecting metrics data (positions) for key: ${key}, diff time is: ${diff}`
+    )
+    delete positions[key]
+
+    Metrics.sendMetrics({
+      metricName: 'createPosition',
+      metricScope: 'Frontend',
+      metricTimingData: diff,
+    })
+  }
+
   const prev = cloneDeep(previous)
 
   const positionHasTheSameIndex = prev.getActivePositions.findIndex(
@@ -2758,11 +3322,35 @@ export const updatePaginatedOrderHistoryQuerryFunction = (
   { subscriptionData },
   enqueueSnackbar = (msg: string, obj: { variant: string }) => {}
 ) => {
+  // console.log('updatePaginatedOrderHistoryQuerryFunction subscriptionData', subscriptionData)
+
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenOrderHistory
 
   if (isEmptySubscription) {
     return previous
+  }
+
+  // metrics
+  const timestamp = Date.now()
+  const { orders } = Metrics
+  // getting data from order
+  const { keyId, symbol, side, type } = subscriptionData.data.listenOrderHistory
+  const key = `${keyId}_${symbol}_${side.toLowerCase()}_${type.toLowerCase()}`
+
+  if (orders[key]) {
+    const prevTimestamp = orders[key]
+    const diff = timestamp - prevTimestamp
+    console.log(
+      `Collecting metrics data (orders) for key: ${key}, diff time is: ${diff}`
+    )
+    delete orders[key]
+
+    Metrics.sendMetrics({
+      metricName: 'createOrder',
+      metricScope: 'Frontend',
+      metricTimingData: diff,
+    })
   }
 
   const prev = cloneDeep(previous)
