@@ -57,6 +57,16 @@ export const ClearButton = styled(TitleButton)`
   border-radius: 4px;
 `
 
+export const TableCell = styled.td`
+  border-bottom: 0.1rem solid ${(props) => props.theme.palette.grey.border};
+  color: ${(props) => props.theme.palette.grey.onboard};
+`
+export const TableRow = styled.tr`
+  &:last-child td {
+    border: none;
+  }
+`
+
 export const PaginationBlock = styled.div`
   font-family: 'DM Sans';
   display: flex;

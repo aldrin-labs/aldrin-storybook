@@ -166,6 +166,7 @@ export default ({ themeMode, isChartPage, children }) => {
               new: '#DD6956',
               primary: '#F07878',
               orderbook: '#FF0000',
+              marketStats: '#FF0000',
             },
             blue: {
               custom: '#5085EC',
@@ -188,6 +189,7 @@ export default ({ themeMode, isChartPage, children }) => {
               new: '#29AC80',
               onboarding: '#1BA492',
               orderbook: '#007C0C',
+              marketStats: '#39A74C',
             },
             grey: {
               custom: '#2E2E2E',
@@ -375,6 +377,7 @@ export default ({ themeMode, isChartPage, children }) => {
               new: '#DD6956',
               primary: '#F07878',
               orderbook: '#FF0000',
+              marketStats: '#FF0000',
             },
             blue: {
               custom: '#5085EC',
@@ -396,6 +399,7 @@ export default ({ themeMode, isChartPage, children }) => {
               new: '#29AC80',
               onboarding: '#1BA492',
               orderbook: '#007C0C',
+              marketStats: '#39A74C',
             },
             grey: {
               custom: '#ABBAD1',

@@ -33,6 +33,12 @@ export const SubColumnValue = styled(InputTitle)`
   .avgTable {
     display: none;
   }
+  .splitTargetsTable {
+    display: none;
+  }
+  &:hover .splitTargetsTable {
+    display: flex;
+  }
 
   &:hover .avgTable {
     display: flex;

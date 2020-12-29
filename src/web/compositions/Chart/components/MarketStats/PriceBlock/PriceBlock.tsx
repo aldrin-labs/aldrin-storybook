@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { compose } from 'recompose'
 import { Theme } from '@material-ui/core'
 
@@ -43,43 +43,52 @@ const PriceBlock = ({
   theme,
   pricePrecision,
   lastMarketPrice,
-}: IProps) => (
-  <>
-    {marketType === 1 && (
-      <PanelCard
-        marketType={marketType}
+}: IProps) => {
+  const [previousPrice, savePreviousPrice] = useState(0)
+  const [showGreen, updateToGreen] = useState(false)
+
+  useEffect(() => {
+    if (lastMarketPrice > previousPrice) {
+      updateToGreen(true)
+    } else {
+      updateToGreen(false)
+    }
+
+    savePreviousPrice(lastMarketPrice)
+  }, [lastMarketPrice])
+
+  return marketType === 1 ? (
+    <PanelCard marketType={marketType} theme={theme} style={{ width: '12rem' }}>
+      <PanelCardValue
         theme={theme}
-        style={{ width: '12rem' }}
+        style={{
+          color: showGreen
+            ? theme.palette.green.marketStats
+            : theme.palette.red.marketStats,
+          fontSize: '2.3rem',
+          letterSpacing: '0.2rem',
+          fontWeight: 'bolder',
+          fontFamily: 'DM Sans',
+        }}
       >
-        <PanelCardValue
-          theme={theme}
-          style={{
-            whiteSpace: 'nowrap',
-            fontSize: '2rem',
-            textAlign: 'center',
-          }}
-        >
+        {formatNumberToUSFormat(
+          roundAndFormatNumber(lastMarketPrice, pricePrecision, false)
+        )}
+      </PanelCardValue>
+    </PanelCard>
+  ) : (
+    <PanelCard marketType={marketType} theme={theme}>
+      <PriceTitle marketType={marketType} theme={theme} />
+      <span style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <PanelCardValue theme={theme}>
           {formatNumberToUSFormat(
             roundAndFormatNumber(lastMarketPrice, pricePrecision, false)
           )}
         </PanelCardValue>
-      </PanelCard>
-    )}
-
-    {marketType === 0 && (
-      <PanelCard marketType={marketType} theme={theme}>
-        <PriceTitle marketType={marketType} theme={theme} />
-        <span style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <PanelCardValue theme={theme}>
-            {formatNumberToUSFormat(
-              roundAndFormatNumber(lastMarketPrice, pricePrecision, false)
-            )}
-          </PanelCardValue>
-        </span>
-      </PanelCard>
-    )}
-  </>
-)
+      </span>
+    </PanelCard>
+  )
+}
 
 const MemoizedPriceBlock = React.memo(PriceBlock)
 

@@ -27,7 +27,7 @@ import { Loading } from '@sb/components/index'
 import stableCoins from '@core/config/stableCoins'
 import { cloneDeep } from 'lodash-es'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
-import { AdlIndicator } from './TradingTable.styles'
+import { AdlIndicator, TableCell, TableRow } from './TradingTable.styles'
 import { getPrecisionItem } from '@core/utils/getPrecisionItem'
 
 const changePairToSelected = (pair: string) => {
@@ -860,8 +860,15 @@ export const combineActiveTradesTable = ({
         symbol: pair,
       })
 
+      const takeProfitPercentage =
+        exitLevels[0] &&
+        exitLevels[0].activatePrice &&
+        exitLevels[0].entryDeviation
+          ? exitLevels[0].activatePrice
+          : exitLevels[0].price
+
       const strategyId = el._id
-      const enableEdit = activeOrderStatus === 'Preparing' || isTemplate
+      const enableEdit = !entryPrice
       let avgPrice =
         entryLevels && entryLevels.length !== 0 ? entryLevels[0].price : 0
 
@@ -869,7 +876,7 @@ export const combineActiveTradesTable = ({
       let sumAmount = 0
       let margin = 0
 
-      console.log('entryLevels', entryLevels)
+      console.log('exitLevels', exitLevels)
       return {
         id: `${el._id}_${el.accountId}`,
         pair: {
@@ -920,33 +927,7 @@ export const combineActiveTradesTable = ({
           },
         },
         entryPrice: {
-          render: entryPrice ? (
-            <SubColumnValue
-              style={{
-                fontSize: '1.3rem',
-                fontFamily: 'Avenir Next Demi',
-                color: theme.palette.grey.onboard,
-              }}
-              theme={theme}
-            >
-              {stripDigitPlaces(entryPrice, pricePrecision)} {pairArr[1]}
-            </SubColumnValue>
-          ) : !!entryDeviation ? (
-            <SubColumnValue
-              style={{
-                fontSize: '1.3rem',
-                fontFamily: 'Avenir Next Demi',
-                color: theme.palette.grey.onboard,
-              }}
-              theme={theme}
-            >
-              <div style={{ color: theme.palette.grey.light }}>trailing</div>{' '}
-              <div>
-                <span style={{ color: theme.palette.grey.light }}>from</span>{' '}
-                {stripDigitPlaces(activatePrice, pricePrecision)}
-              </div>
-            </SubColumnValue>
-          ) : !!entryOrderPrice ? (
+          render: !!entryOrderPrice ? (
             <SubColumnValue
               style={{
                 fontSize: '1.3rem',
@@ -956,6 +937,27 @@ export const combineActiveTradesTable = ({
               theme={theme}
             >
               {stripDigitPlaces(entryOrderPrice, pricePrecision)} {pairArr[1]}
+            </SubColumnValue>
+          ) : !!entryDeviation ? (
+            <SubColumnValue
+              style={{
+                fontSize: '1.3rem',
+                fontFamily: 'Avenir Next Demi',
+                color: theme.palette.grey.onboard,
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+              theme={theme}
+            >
+              <div
+                style={{
+                  color: theme.palette.grey.light,
+                  textTransform: 'none',
+                }}
+              >
+                Trailing from
+              </div>{' '}
+              <div>{stripDigitPlaces(activatePrice, pricePrecision)}</div>
             </SubColumnValue>
           ) : (
             '-'
@@ -1086,6 +1088,7 @@ export const combineActiveTradesTable = ({
                 fontFamily: 'Avenir Next Demi',
                 textTransform: 'lowercase',
                 color: theme.palette.grey.onboard,
+                position: 'relative',
               }}
               theme={theme}
             >
@@ -1098,111 +1101,83 @@ export const combineActiveTradesTable = ({
               ) : (
                 '-'
               )}
-
-              <div
-                className="avgTable"
-                style={{
-                  position: 'absolute',
-                  height: 'auto',
-                  left: '45%',
-                  width: '50rem',
-                  bottom: '34%',
-                  background: '#F9FBFD',
-                  zIndex: '100',
-                  justifyContent: 'center',
-                }}
-              >
-                <table
+              {entryLevels.length > 0 && (
+                <div
+                  className="avgTable"
                   style={{
-                    width: '95%',
-                    color: theme.palette.grey.light,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0',
+                    position: 'absolute',
+                    height: 'auto',
+                    left: '45%',
+                    width: '50rem',
+                    top: '100%',
+                    background: theme.palette.background.default,
+                    zIndex: '100',
+                    borderRadius: '0.1rem',
+                    justifyContent: 'center',
+                    border: theme.palette.border.main,
                   }}
                 >
-                  <tr style={{ fontSize: '1.2rem' }}>
-                    <td
-                      style={{
-                        borderBottom: `0.1rem solid ${theme.palette.grey.border}`,
-                      }}
-                    >
-                      price
-                    </td>
-                    <td
-                      style={{
-                        borderBottom: `0.1rem solid ${theme.palette.grey.border}`,
-                      }}
-                    >
-                      amount (margin)
-                    </td>
-                    <td
-                      style={{
-                        borderBottom: `0.1rem solid ${theme.palette.grey.border}`,
-                      }}
-                    >
-                      est. averaged entry price
-                    </td>
-                  </tr>
+                  <table
+                    style={{
+                      width: '95%',
+                      color: theme.palette.grey.light,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0',
+                    }}
+                  >
+                    <TableRow style={{ fontSize: '1.2rem' }}>
+                      <TableCell theme={theme}>price</TableCell>
+                      <TableCell theme={theme}>amount / margin</TableCell>
+                      <TableCell theme={theme}>
+                        est. averaged entry price
+                      </TableCell>
+                    </TableRow>
 
-                  {entryLevels.map((el, index) => {
-                    const currentPrice =
-                      index === 0
-                        ? avgPrice
-                        : side === 'sell'
-                        ? (avgPrice * (100 + el.price / leverage)) / 100
-                        : (avgPrice * (100 - el.price / leverage)) / 100
-                    if (index === 0) {
-                      estPrice = el.price
-                      sumAmount = el.amount
-                      margin =
-                        (estPrice * sumAmount +
-                          currentPrice * ((el.amount / 100) * amount)) /
-                        leverage
-                    } else {
-                      const exactAmount = (el.amount / 100) * amount
+                    {entryLevels.map((el, index) => {
+                      const currentPrice =
+                        index === 0
+                          ? avgPrice
+                          : side === 'sell'
+                          ? (avgPrice * (100 + el.price / leverage)) / 100
+                          : (avgPrice * (100 - el.price / leverage)) / 100
+                      if (index === 0) {
+                        estPrice = el.price
+                        sumAmount = el.amount
+                        margin =
+                          (estPrice * sumAmount +
+                            currentPrice * ((el.amount / 100) * amount)) /
+                          leverage
+                      } else {
+                        const exactAmount = (el.amount / 100) * amount
 
-                      const total =
-                        estPrice * sumAmount + currentPrice * exactAmount
+                        const total =
+                          estPrice * sumAmount + currentPrice * exactAmount
 
-                      estPrice = total / (sumAmount + exactAmount)
-                      sumAmount += exactAmount
-                      margin = total / leverage
-                    }
+                        estPrice = total / (sumAmount + exactAmount)
+                        sumAmount += exactAmount
+                        margin = total / leverage
+                      }
 
-                    //currentEstPrice = total / (prevTarget.amount + currentTarget.amount)
+                      //currentEstPrice = total / (prevTarget.amount + currentTarget.amount)
 
-                    return (
-                      <tr>
-                        <td
-                          style={{
-                            borderBottom: `0.1rem solid ${theme.palette.grey.border}`,
-                            color: theme.palette.grey.onboard,
-                          }}
-                        >
-                          {currentPrice.toFixed(pricePrecision)} {pairArr[1]}
-                        </td>
-                        <td
-                          style={{
-                            borderBottom: `0.1rem solid ${theme.palette.grey.border}`,
-                            color: theme.palette.grey.onboard,
-                          }}
-                        >
-                          {el.amount} {index === 0 ? pairArr[0] : '%'} /{' '}
-                          {margin.toFixed(pricePrecision)} {pairArr[1]}
-                        </td>
-                        <td
-                          style={{
-                            borderBottom: `0.1rem solid ${theme.palette.grey.border}`,
-                            color: theme.palette.grey.onboard,
-                          }}
-                        >
-                          {estPrice.toFixed(pricePrecision)} {pairArr[1]}
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </table>{' '}
-              </div>
+                      return (
+                        <TableRow>
+                          <TableCell theme={theme}>
+                            {currentPrice.toFixed(pricePrecision)} {pairArr[1]}
+                          </TableCell>
+                          <TableCell theme={theme}>
+                            {el.amount} {index === 0 ? pairArr[0] : '%'} /{' '}
+                            {margin.toFixed(pricePrecision)} {pairArr[1]}
+                          </TableCell>
+                          <TableCell theme={theme}>
+                            {estPrice.toFixed(pricePrecision)} {pairArr[1]}
+                          </TableCell>
+                        </TableRow>
+                      )
+                    })}
+                  </table>{' '}
+                </div>
+              )}
             </SubColumnValue>
           ),
           style: {
@@ -1236,10 +1211,10 @@ export const combineActiveTradesTable = ({
                     fontSize=".9rem"
                     padding=".1rem 1rem 0 1rem"
                     borderRadius="0.5rem"
-                    borderColor={enableEdit ? blue.tabs : '#e0e5ec'}
+                    borderColor={blue.tabs}
                     btnColor={'#fff'}
-                    backgroundColor={enableEdit ? blue.tabs : '#e0e5ec'}
-                    hoverBackground={enableEdit ? blue.tabs : '#e0e5ec'}
+                    backgroundColor={blue.tabs}
+                    hoverBackground={blue.tabs}
                     transition={'all .4s ease-out'}
                     onClick={(e) => {
                       e.stopPropagation()
@@ -1286,19 +1261,29 @@ export const combineActiveTradesTable = ({
                     style={{
                       color: theme.palette.grey.light,
                       fontSize: '1.2rem',
+                      alignSelf: 'baseline',
                     }}
                   >
                     {' '}
-                    {side === 'buy'
-                      ? (
+                    {entryOrderPrice ? (
+                      side === 'buy' ? (
+                        (
                           entryOrderPrice *
                           (1 - stopLoss / 100 / leverage)
-                        ).toFixed(pricePrecision)
-                      : (
+                        ).toFixed(pricePrecision) + ` ${pairArr[1]}`
+                      ) : (
+                        (
                           entryOrderPrice *
                           (1 + stopLoss / 100 / leverage)
-                        ).toFixed(pricePrecision)}{' '}
-                    {pairArr[1]}
+                        ).toFixed(pricePrecision) + ` ${pairArr[1]}`
+                      )
+                    ) : (
+                      <a
+                        style={{ textTransform: 'none', alignSelf: 'baseline' }}
+                      >
+                        Processing...
+                      </a>
+                    )}{' '}
                   </a>
                 </div>
               </SubColumnValue>
@@ -1328,17 +1313,17 @@ export const combineActiveTradesTable = ({
                 style={{ width: 'auto', padding: '0 1rem 0 0' }}
               >
                 <BtnCustom
-                  // disable={!enableEdit}
+                  disable={!enableEdit}
                   needMinWidth={false}
                   btnWidth="auto"
                   height="1.5rem"
                   fontSize=".9rem"
                   padding=".1rem 1rem 0 1rem"
                   borderRadius="0.5rem"
-                  borderColor={enableEdit ? blue.tabs : '#e0e5ec'}
+                  borderColor={blue.tabs}
                   btnColor={'#fff'}
-                  backgroundColor={enableEdit ? blue.tabs : '#e0e5ec'}
-                  hoverBackground={enableEdit ? blue.tabs : '#e0e5ec'}
+                  backgroundColor={blue.tabs}
+                  hoverBackground={blue.tabs}
                   transition={'all .4s ease-out'}
                   onClick={(e) => {
                     e.stopPropagation()
@@ -1360,10 +1345,81 @@ export const combineActiveTradesTable = ({
                   {exitLevels[0] &&
                   exitLevels[0].activatePrice &&
                   exitLevels[0].entryDeviation ? (
-                    `${exitLevels[0].activatePrice}% / ${exitLevels[0].entryDeviation}%`
-                  ) : exitLevels.length > 1 ? (
-                    <div>
+                    entryOrderPrice ? (
                       <div>
+                        {' '}
+                        <a
+                          style={{
+                            fontSize: '1.2rem',
+                            textTransform: 'none',
+                            alignSelf: 'baseline',
+                          }}
+                        >
+                          Trailing from
+                        </a>{' '}
+                        +{exitLevels[0].entryDeviation}%
+                      </div>
+                    ) : (
+                      `${exitLevels[0].activatePrice}% / ${exitLevels[0].entryDeviation}%` // trailing
+                    )
+                  ) : exitLevels.length > 1 ? ( // split targets
+                    <div
+                      style={{
+                        fontSize: '1.3rem',
+                        fontFamily: 'Avenir Next Demi',
+                        textTransform: 'lowercase',
+                        color: theme.palette.grey.onboard,
+                        position: 'relative',
+                      }}
+                    >
+                      {' '}
+                      {exitLevels.length} targets{' '}
+                      <div
+                        className="splitTargetsTable"
+                        style={{
+                          position: 'absolute',
+                          height: 'auto',
+                          left: '45%',
+                          width: '25rem',
+                          top: '100%',
+                          background: theme.palette.background.default,
+                          zIndex: '100',
+                          borderRadius: '0.1rem',
+                          justifyContent: 'center',
+                          border: theme.palette.border.main,
+                        }}
+                      >
+                        <table
+                          style={{
+                            width: '95%',
+                            color: theme.palette.grey.light,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0',
+                          }}
+                        >
+                          <TableRow style={{ fontSize: '1.2rem' }}>
+                            <TableCell theme={theme}>price</TableCell>
+                            <TableCell theme={theme}>quontity</TableCell>
+                          </TableRow>
+
+                          {exitLevels.map((el, index) => {
+                            return (
+                              <TableRow>
+                                <TableCell theme={theme}>{el.price}%</TableCell>
+                                <TableCell theme={theme}>
+                                  {el.amount}%
+                                </TableCell>
+                              </TableRow>
+                            )
+                          })}
+                        </table>{' '}
+                      </div>
+                      <SvgIcon
+                        src={ArrowBottom}
+                        width={'1rem'}
+                        height={'1rem'}
+                      />
+                      {/* <div>
                         {exitLevels.map((level, i) =>
                           i < 4 ? (
                             <span style={{ color: theme.palette.grey.light }}>
@@ -1386,30 +1442,48 @@ export const combineActiveTradesTable = ({
                             </span>
                           ) : null
                         )}
-                      </div>
+                      </div> */}
+                      {/* {exitLevels.length} targets{' '} */}
+                      {/* <SvgIcon
+                        src={ArrowBottom}
+                        width={'1rem'}
+                        height={'1rem'}
+                      /> */}
                     </div>
                   ) : (
-                    `${exitLevels.length > 0 ? exitLevels[0].price : '-'}%`
+                    `${exitLevels.length > 0 ? exitLevels[0].price : '-'}%` // tp
                   )}
                 </div>
-                <a
-                  style={{
-                    color: theme.palette.grey.light,
-                    fontSize: '1.2rem',
-                  }}
-                >
-                  {' '}
-                  {side === 'buy'
-                    ? (
-                        entryOrderPrice *
-                        (1 + stopLoss / 100 / leverage)
-                      ).toFixed(pricePrecision)
-                    : (
-                        entryOrderPrice *
-                        (1 - stopLoss / 100 / leverage)
-                      ).toFixed(pricePrecision)}{' '}
-                  {pairArr[1]}
-                </a>
+                {exitLevels.length > 1 ? null : (
+                  <a
+                    style={{
+                      color: theme.palette.grey.light,
+                      fontSize: '1.2rem',
+                      alignSelf: 'baseline',
+                    }}
+                  >
+                    {' '}
+                    {entryOrderPrice ? (
+                      side === 'buy' ? (
+                        (
+                          entryOrderPrice *
+                          (1 + takeProfitPercentage / 100 / leverage)
+                        ).toFixed(pricePrecision) + ` ${pairArr[1]}`
+                      ) : (
+                        (
+                          entryOrderPrice *
+                          (1 - takeProfitPercentage / 100 / leverage)
+                        ).toFixed(pricePrecision) + ` ${pairArr[1]}`
+                      )
+                    ) : (
+                      <a
+                        style={{ textTransform: 'none', alignSelf: 'baseline' }}
+                      >
+                        Processing...
+                      </a>
+                    )}{' '}
+                  </a>
+                )}
               </div>
             </SubColumnValue>
           ),
