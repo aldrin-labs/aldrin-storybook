@@ -53,18 +53,7 @@ const ProfileAccounts = ({
   updateWithdrawalSettings,
   updateDepositSettings,
 }: IProps) => {
-  const showFuturesTransfer = (result) => {
-    if (result.status === 'OK' && result.data && result.data.tranId) {
-      enqueueSnackbar('Funds transfered!', {
-        variant: 'success',
-        // action: <CloseButton />,
-      })
-    } else {
-      enqueueSnackbar('Something went wrong during transfering funds', {
-        variant: 'error',
-      })
-    }
-  }
+
   const [transferFromSpotToFutures, setTransferFromSpotToFutures] = useState(
     false
   )
@@ -236,7 +225,6 @@ const ProfileAccounts = ({
         transferFromSpotToFutures={transferFromSpotToFutures}
         haveSelectedAccount={true}
         selectedAccount={selectedAccount}
-        showFuturesTransfer={showFuturesTransfer}
         isFuturesWarsKey={false}
         loading={loading}
         setLoading={setLoading}

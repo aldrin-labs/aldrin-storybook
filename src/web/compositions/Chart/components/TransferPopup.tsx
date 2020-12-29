@@ -7,6 +7,7 @@ import Timer from 'react-compound-timer'
 import { Loading } from '@sb/components/index'
 import { WithTheme } from '@sb/types/materialUI'
 
+import { showFuturesTransfer } from '@sb/compositions/Chart/Chart.utils'
 import { joinFuturesWarsRound } from '@core/graphql/mutations/futuresWars/joinFuturesWarsRound'
 import { futuresTransfer } from '@core/graphql/mutations/keys/futuresTransfer'
 import SelectCoinList from '@core/components/SelectCoinList/SelectCoinList'
@@ -49,7 +50,6 @@ interface IProps {
   }) => Promise<any>
   open: boolean
   handleClose: () => void
-  showFuturesTransfer: (result: any) => void
   theme: Theme
 }
 
@@ -60,7 +60,6 @@ const TransferPopup = ({
   open,
   handleClose,
   futuresTransferMutation,
-  showFuturesTransfer,
   isFuturesWarsKey,
   futuresWarsRoundBet,
   joinFuturesWarsRoundMutation,

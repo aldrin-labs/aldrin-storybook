@@ -7,6 +7,8 @@ import { Props } from './ThemeWrapper.types'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { useQuery } from 'react-apollo'
 import { Palette } from '@material-ui/core/styles/createPalette'
+import { compose } from 'recompose'
+import { withRouter } from 'react-router'
 
 interface PaletteWithCustom extends Palette {
   orange: {
@@ -43,8 +45,10 @@ function createMyTheme(options: ThemeOptions) {
   })
 }
 
-export default ({ themeMode, isChartPage, children }) => {
+const ThemeWrapper = ({ themeMode, location, children }) => {
   const [mode, updateMode] = useState(themeMode)
+
+  const isChartPage = location.pathname.includes('chart')
 
   useEffect(() => {
     updateMode(themeMode)
@@ -488,3 +492,5 @@ export default ({ themeMode, isChartPage, children }) => {
 
   return <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>
 }
+
+export default compose(withRouter)(ThemeWrapper)

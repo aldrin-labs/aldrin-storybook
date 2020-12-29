@@ -1,12 +1,10 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { withTheme } from '@material-ui/styles'
 import { withSnackbar } from 'notistack'
-import { client } from '@core/graphql/apolloClient'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 
-import QueryRenderer from '@core/components/QueryRenderer'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
 
 import {
@@ -19,41 +17,29 @@ import {
 import { IProps, IState } from './PositionsTable.types'
 import { PaginationBlock } from '../TradingTablePagination'
 
-import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { getFunds } from '@core/graphql/queries/chart/getFunds'
 import { modifyIsolatedMargin } from '@core/graphql/mutations/chart/modifyIsolatedMargin'
 import { setPositionWasClosed } from '@core/graphql/mutations/strategies/setPositionWasClosed'
-import { FUNDS } from '@core/graphql/subscriptions/FUNDS'
 import { getActivePositions } from '@core/graphql/queries/chart/getActivePositions'
-import { getAdlQuantile } from '@core/graphql/queries/chart/getAdlQuantile'
 import { FUTURES_POSITIONS } from '@core/graphql/subscriptions/FUTURES_POSITIONS'
-import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
-
-import { getKeysQuery } from '@core/graphql/queries/user/getKeysQuery'
-import { getPrice } from '@core/graphql/queries/chart/getPrice'
 import { CANCEL_ORDER_MUTATION } from '@core/graphql/mutations/chart/cancelOrderMutation'
 
 import { createOrder } from '@core/graphql/mutations/chart/createOrder'
 import { updatePosition } from '@core/graphql/mutations/chart/updatePosition'
 
-import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
-import { LISTEN_MARK_PRICES } from '@core/graphql/subscriptions/LISTEN_MARK_PRICES'
-
-import { EditMarginPopup } from './EditMarginPopup'
+import EditMarginPopup from './EditMarginPopup'
+import { showOrderResult } from '@sb/compositions/Chart/Chart.utils'
 
 @withTheme()
 class PositionsTable extends React.PureComponent<IProps, IState> {
   state: IState = {
     positionsData: [],
-    prices: [],
     positionsRefetchInProcess: false,
     editMarginPosition: {},
     editMarginPopup: false,
   }
 
   unsubscribeFunction: null | Function = null
-
-  unsubscribeFundsFunction: null | Function = null
 
   subscription: null | { unsubscribe: () => void } = null
 
@@ -128,13 +114,10 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       selectedKey,
       canceledOrders,
       priceFromOrderbook,
-      pricePrecision,
-      quantityPrecision,
       theme,
       keys,
       cancelOrder,
       marketType,
-      showOrderResult,
       setPositionWasClosedMutation,
       handlePairChange,
       addOrderToCanceled,
@@ -179,28 +162,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       marketType
     )
 
-    const positionsData = combinePositionsTable({
-      data,
-      createOrderWithStatus: this.createOrderWithStatus,
-      toogleEditMarginPopup: this.toogleEditMarginPopup,
-      theme,
-      keys,
-      adlData: this.getAdlData(),
-      prices: this.state.prices,
-      pair: currencyPair,
-      keyId: selectedKey.keyId,
-      canceledPositions: canceledOrders,
-      priceFromOrderbook,
-      pricePrecision,
-      quantityPrecision,
-      handlePairChange,
-      enqueueSnackbar,
-    })
-
-    this.setState({
-      positionsData,
-    })
-
     const result = await this.createOrder(variables, positionKey)
     if (result.status === 'error') {
       const isReduceOrderIsRejected = /-2022/.test(result.message)
@@ -232,27 +193,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
         side: variables.keyParams.side === 'buy' ? 'sell' : 'buy',
       },
     })
-  }
-
-  onCancelOrder = async (keyId: string, orderId: string, pair: string) => {
-    const { cancelOrderMutation, marketType } = this.props
-
-    try {
-      const responseResult = await cancelOrderMutation({
-        variables: {
-          cancelOrderInput: {
-            keyId,
-            orderId,
-            pair,
-            marketType,
-          },
-        },
-      })
-
-      return responseResult
-    } catch (err) {
-      return { errors: err }
-    }
   }
 
   modifyIsolatedMargin = async ({
@@ -325,129 +265,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     }
   }
 
-  getPairsWithPositions = () => {
-    return this.props.getActivePositionsQuery.getActivePositions
-      .map((position) => {
-        if (position.positionAmt !== 0) {
-          return `${position.symbol}`
-        }
-
-        return
-      })
-      .filter((a) => !!a)
-      .filter((v, i, arr) => arr.indexOf(v) === i)
-  }
-
-  getAdlData = () => {
-    const pairs = this.props.getActivePositionsQuery.getActivePositions
-      .map((position) => {
-        if (position.positionAmt !== 0) {
-          return `${position.symbol.replace('_', '')}`
-        }
-
-        return
-      })
-      .filter((a) => !!a)
-
-    if (
-      this.props.getAdlQuantileQuery &&
-      this.props.getAdlQuantileQuery.getAdlQuantile &&
-      this.props.getAdlQuantileQuery.getAdlQuantile.data &&
-      this.props.getAdlQuantileQuery.getAdlQuantile.data.length
-    ) {
-      const adlData = this.props.getAdlQuantileQuery.getAdlQuantile.data.filter(
-        (adl) => pairs.includes(adl.symbol)
-      )
-
-      return adlData
-    }
-
-    return []
-  }
-
-  subscribe() {
-    const that = this
-
-    // console.log('subscribe', this.getPairsWithPositions())
-    this.subscription = client
-      .subscribe({
-        query: LISTEN_MARK_PRICES,
-        variables: {
-          input: {
-            exchange: this.props.exchange,
-            pairs: this.getPairsWithPositions(),
-          },
-        },
-        fetchPolicy: 'cache-and-network',
-      })
-      .subscribe({
-        next: (data) => {
-          const positions = that.props.getActivePositionsQuery.getActivePositions.filter(
-            (position) => position.positionAmt !== 0
-          )
-
-          if (
-            !data ||
-            data.loading ||
-            !that.props.show ||
-            positions.length === 0
-          ) {
-            return
-          }
-
-          const {
-            getActivePositionsQuery,
-            currencyPair,
-            selectedKey,
-            canceledOrders,
-            priceFromOrderbook,
-            pricePrecision,
-            quantityPrecision,
-            theme,
-            keys,
-            getAdlQuantileQuery,
-            handlePairChange,
-            enqueueSnackbar,
-          } = that.props
-
-          const positionsData = combinePositionsTable({
-            data: getActivePositionsQuery.getActivePositions,
-            createOrderWithStatus: that.createOrderWithStatus,
-            toogleEditMarginPopup: that.toogleEditMarginPopup,
-            theme,
-            keys,
-            prices: data.data.listenMarkPrices,
-            adlData: this.getAdlData(),
-            pair: currencyPair,
-            keyId: selectedKey.keyId,
-            canceledPositions: canceledOrders,
-            priceFromOrderbook,
-            pricePrecision,
-            quantityPrecision,
-            handlePairChange,
-            enqueueSnackbar,
-          })
-
-          that.setState({
-            positionsData,
-            prices: data.data.listenMarkPrices,
-          })
-        },
-      })
-  }
-
-  subscribeFunds = () => {
-    const { getFundsQuery, selectedKey } = this.props
-
-    this.unsubscribeFundsFunction = getFundsQuery.subscribeToMore({
-      document: FUNDS,
-      variables: {
-        listenFundsInput: { activeExchangeKey: selectedKey.keyId },
-      },
-      updateQuery: updateFundsQuerryFunction,
-    })
-  }
-
   componentDidMount() {
     const {
       getActivePositionsQuery,
@@ -455,18 +272,12 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       selectedKey,
       canceledOrders,
       priceFromOrderbook,
-      pricePrecision,
-      quantityPrecision,
       subscribeToMore,
       theme,
       keys,
-      getAdlQuantileQuery,
       handlePairChange,
       enqueueSnackbar,
     } = this.props
-
-    this.subscribe()
-    this.subscribeFunds()
 
     const positionsData = combinePositionsTable({
       data: getActivePositionsQuery.getActivePositions,
@@ -474,14 +285,10 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       toogleEditMarginPopup: this.toogleEditMarginPopup,
       theme,
       keys,
-      adlData: this.getAdlData(),
-      prices: this.state.prices,
       pair: currencyPair,
       keyId: selectedKey.keyId,
       canceledPositions: canceledOrders,
       priceFromOrderbook,
-      pricePrecision,
-      quantityPrecision,
       handlePairChange,
       enqueueSnackbar,
     })
@@ -490,7 +297,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       positionsData,
     })
 
-    this.unsubscribeFunction = subscribeToMore()
+    this.unsubscribeFunction = this.props.getActivePositionsQuery.subscribeToMoreFunction()
 
     const crossPositionsNew = this.props.getActivePositionsQuery.getActivePositions.filter(
       (position) =>
@@ -515,21 +322,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     const prevPositions = prevProps.getActivePositionsQuery.getActivePositions.filter(
       (position) => position.positionAmt !== 0
     )
-
-    if (
-      prevProps.exchange !== this.props.exchange ||
-      prevProps.currencyPair !== this.props.currencyPair ||
-      prevProps.marketType !== this.props.marketType ||
-      prevPositions.length < newPositions.length
-    ) {
-      this.subscription && this.subscription.unsubscribe()
-      this.subscribe()
-    }
-
-    if (prevProps.selectedKey.keyId !== this.props.selectedKey.keyId) {
-      this.unsubscribeFundsFunction && this.unsubscribeFundsFunction()
-      this.subscribeFunds()
-    }
 
     if (prevPositions.length !== newPositions.length) {
       const crossPositionsNew = newPositions.filter(
@@ -561,28 +353,9 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       prevProps.specificPair !== this.props.specificPair ||
       prevProps.allKeys !== this.props.allKeys
     ) {
-      const {
-        marketType,
-        selectedKey,
-        allKeys,
-        currencyPair,
-        specificPair,
-      } = this.props
 
       this.unsubscribeFunction && this.unsubscribeFunction()
-      this.unsubscribeFunction = this.props.getActivePositionsQuery.subscribeToMore(
-        {
-          document: FUTURES_POSITIONS,
-          variables: {
-            input: {
-              keyId: selectedKey.keyId,
-              allKeys,
-              ...(!specificPair ? {} : { specificPair: currencyPair }),
-            },
-          },
-          updateQuery: updateActivePositionsQuerryFunction,
-        }
-      )
+      this.unsubscribeFunction = this.props.getActivePositionsQuery.subscribeToMoreFunction()
     }
   }
 
@@ -595,9 +368,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     if (this.refetchPositionsIntervalId) {
       clearInterval(this.refetchPositionsIntervalId)
     }
-
-    this.unsubscribeFundsFunction && this.unsubscribeFundsFunction()
-    this.subscription && this.subscription.unsubscribe()
   }
 
   componentWillReceiveProps(nextProps: IProps) {
@@ -609,9 +379,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       selectedKey,
       canceledOrders,
       priceFromOrderbook,
-      pricePrecision,
-      quantityPrecision,
-      getAdlQuantileQuery,
       handlePairChange,
       enqueueSnackbar,
     } = nextProps
@@ -622,14 +389,10 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       toogleEditMarginPopup: this.toogleEditMarginPopup,
       theme,
       keys,
-      adlData: this.getAdlData(),
-      prices: this.state.prices,
       pair: currencyPair,
       keyId: selectedKey.keyId,
       canceledPositions: canceledOrders,
       priceFromOrderbook,
-      pricePrecision,
-      quantityPrecision,
       handlePairChange,
       enqueueSnackbar,
     })
@@ -708,20 +471,11 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       getFundsQuery,
       handleToggleAllKeys,
       handleToggleSpecificPair,
-      getAdlQuantileQuery,
       getActivePositionsQuery,
     } = this.props
 
     if (!show) {
       return null
-    }
-
-    let USDTFuturesFund = { quantity: 0, value: 0 }
-
-    if (getFundsQuery && getFundsQuery.getFunds) {
-      USDTFuturesFund = getFundsQuery.getFunds
-        .filter((el) => +el.assetType === 1 && el.asset.symbol === 'USDT')
-        .map((el) => ({ quantity: el.free, value: el.free }))
     }
 
     return (
@@ -807,12 +561,12 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
         />
         {this.state.editMarginPopup && (
           <EditMarginPopup
+            selectedKey={this.props.selectedKey}
             theme={theme}
             open={true}
             editMarginPosition={this.state.editMarginPosition}
             handleClose={this.toogleEditMarginPopup}
             modifyIsolatedMarginWithStatus={this.modifyIsolatedMarginWithStatus}
-            USDTFuturesFund={USDTFuturesFund}
           />
         )}
       </>
@@ -822,6 +576,11 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
 
 const PositionsTableWrapper = compose(
   withSnackbar,
+  graphql(updatePosition, { name: 'updatePositionMutation' }),
+  graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' }),
+  graphql(createOrder, { name: 'createOrderMutation' }),
+  graphql(modifyIsolatedMargin, { name: 'modifyIsolatedMarginMutation' }),
+  graphql(setPositionWasClosed, { name: 'setPositionWasClosedMutation' }),
   queryRendererHoc({
     query: getActivePositions,
     name: `getActivePositionsQuery`,
@@ -852,35 +611,13 @@ const PositionsTableWrapper = compose(
       updateQueryFunction: updateActivePositionsQuerryFunction,
     },
   }),
-  queryRendererHoc({
-    query: getFunds,
-    name: 'getFundsQuery',
-    fetchPolicy: 'cache-and-network',
-    withoutLoading: true,
-    variables: (props) => ({
-      fundsInput: { activeExchangeKey: props.selectedKey.keyId },
-    }),
-  }),
-  graphql(updatePosition, { name: 'updatePositionMutation' }),
-  graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' }),
-  graphql(createOrder, { name: 'createOrderMutation' }),
-  graphql(modifyIsolatedMargin, { name: 'modifyIsolatedMarginMutation' }),
-  graphql(setPositionWasClosed, { name: 'setPositionWasClosedMutation' }),
-  queryRendererHoc({
-    query: getAdlQuantile,
-    name: 'getAdlQuantileQuery',
-    fetchPolicy: 'cache-and-network',
-    pollInterval: 1000 * 60,
-    withoutLoading: true,
-    variables: (props) => ({
-      keyId: props.selectedKey.keyId,
-    }),
-  })
 )(PositionsTable)
 
 export default React.memo(
   PositionsTableWrapper,
   (prevProps: any, nextProps: any) => {
+
+
     // TODO: Refactor isShowEqual --- not so clean
     const isShowEqual = !nextProps.show && !prevProps.show
     const showAllAccountsEqual =

@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import { compose } from 'recompose';
 import { Theme } from '@material-ui/core';
 
+import { getPrecisionItem } from '@core/utils/getPrecisionItem'
 import { queryRendererHoc } from '@core/components/QueryRenderer/index';
 import { getMarketStatisticsByPair } from '@core/graphql/queries/chart/getMarketStatisticsByPair';
 import { getFundingRate } from '@core/graphql/queries/chart/getFundingRate';
@@ -12,7 +13,7 @@ import {
 } from './MarketStats.utils';
 
 import MarkPriceBlock from './MarkPriceBlock/MarkPriceBlock';
-import PriceBlock from './PriceBlock/PriceBlock';
+import PriceBlock from '@sb/compositions/Chart/components/MarketStats/PriceBlock/PriceBlock';
 import PriceChange from './PriceChange/PriceChange';
 import LowHighPrice from './LowHighPrice/LowHighPrice';
 import VolumeBlock from './VolumeBlock/VolumeBlock';
@@ -54,8 +55,6 @@ export interface IProps {
 		};
 		subscribeToMoreFunction: () => () => void;
 	};
-	quantityPrecision: number;
-	pricePrecision: number;
 	exchange: {
 		symbol: string
 	}
@@ -66,16 +65,16 @@ class MarketStats extends React.PureComponent<IProps> {
 		key: 0,
 		refetching: false,
 	};
-	// getFundingRateQueryUnsubscribe: null | (() => void) = null;
+	getFundingRateQueryUnsubscribe: null | (() => void) = null;
 	componentDidMount() {
 		// subscribe
-		// this.getFundingRateQueryUnsubscribe = this.props.getFundingRateQuery.subscribeToMoreFunction();
+		this.getFundingRateQueryUnsubscribe = this.props.getFundingRateQuery.subscribeToMoreFunction();
 	}
 
 	componentDidUpdate(prevProps: IProps) {
 		if (prevProps.symbol !== this.props.symbol || prevProps.marketType !== this.props.marketType) {
-			// this.getFundingRateQueryUnsubscribe && this.getFundingRateQueryUnsubscribe();
-			// this.getFundingRateQueryUnsubscribe = this.props.getFundingRateQuery.subscribeToMoreFunction();
+			this.getFundingRateQueryUnsubscribe && this.getFundingRateQueryUnsubscribe();
+			this.getFundingRateQueryUnsubscribe = this.props.getFundingRateQuery.subscribeToMoreFunction();
 		}
 
 		// for funding ime
@@ -101,7 +100,7 @@ class MarketStats extends React.PureComponent<IProps> {
 	}
 
 	componentWillUnmount() {
-		// this.getFundingRateQueryUnsubscribe && this.getFundingRateQueryUnsubscribe();
+		this.getFundingRateQueryUnsubscribe && this.getFundingRateQueryUnsubscribe();
 	}
 
 	setKey(key: number) {
@@ -120,9 +119,14 @@ class MarketStats extends React.PureComponent<IProps> {
 			theme,
 			marketType,
 			getFundingRateQueryRefetch,
-			pricePrecision: pricePrecisionRaw,
 			exchange,
 		} = this.props;
+
+		// TODO: should be fixed
+		const { pricePrecision: pricePrecisionRaw } = getPrecisionItem({
+			marketType,
+			symbol,
+		  })
 
 		const { refetching, key } = this.state
 		const pricePrecision = pricePrecisionRaw === 0 || pricePrecisionRaw < 0 ? 8 : pricePrecisionRaw;
@@ -165,7 +169,7 @@ class MarketStats extends React.PureComponent<IProps> {
 
 		if ((fundingTime == 0 || +dayjs(fundingTime) - Date.now() < 0) && !refetching) {
 			this.setRefetching(true)
-	
+
 			setTimeout(() => {
 				getFundingRateQueryRefetch();
 				this.setKey(key + 1)

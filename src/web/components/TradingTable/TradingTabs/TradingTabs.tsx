@@ -193,24 +193,6 @@ const TradingTabsWrapper = compose(
     showLoadingWhenQueryParamsChange: false,
   }),
   queryRendererHoc({
-    query: getActivePositions,
-    name: `getActivePositionsQuery`,
-    fetchPolicy: 'cache-only',
-    variables: (props: INextQueryProps) => ({
-      input: {
-        keyId: props.selectedKey.keyId,
-        allKeys: props.showPositionsFromAllAccounts,
-        ...(!props.showAllPositionPairs
-          ? {}
-          : { specificPair: props.currencyPair }),
-      },
-    }),
-    withOutSpinner: true,
-    withTableLoader: false,
-    withoutLoading: true,
-    showLoadingWhenQueryParamsChange: false,
-  }),
-  queryRendererHoc({
     query: getOpenOrderHistory,
     name: `getOpenOrderHistoryQuery`,
     fetchPolicy: 'cache-and-network',
@@ -230,7 +212,25 @@ const TradingTabsWrapper = compose(
     withTableLoader: false,
     withoutLoading: true,
     showLoadingWhenQueryParamsChange: false,
-  })
+  }),
+  queryRendererHoc({
+    query: getActivePositions,
+    name: `getActivePositionsQuery`,
+    fetchPolicy: 'cache-only',
+    variables: (props: INextQueryProps) => ({
+      input: {
+        keyId: props.selectedKey.keyId,
+        allKeys: props.showPositionsFromAllAccounts,
+        ...(!props.showAllPositionPairs
+          ? {}
+          : { specificPair: props.currencyPair }),
+      },
+    }),
+    withOutSpinner: true,
+    withTableLoader: false,
+    withoutLoading: true,
+    showLoadingWhenQueryParamsChange: false,
+  }),
 )(TradingTabs)
 
 export default React.memo(

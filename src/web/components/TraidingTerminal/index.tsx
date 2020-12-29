@@ -36,6 +36,7 @@ import { Line } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.s
 import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { SliderWithAmountFieldRowForBasic } from '@sb/compositions/Chart/components/SmartOrderTerminal/Blocks/SliderComponents'
+import { showOrderResult } from '@sb/compositions/Chart/Chart.utils'
 
 export const TradeInputHeader = ({
   title = 'Input',
@@ -262,6 +263,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       priceType,
       marketPrice,
       isSPOTMarket,
+      pricePrecision,
       quantityPrecision,
       operationType,
       marketPriceAfterPairChange,
@@ -311,28 +313,32 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
     if (leverage !== prevProps.leverage) {
       const priceForCalculate =
-        priceType !== 'market' && priceType !== 'maker-only'
+        priceType !== 'market' && priceType !== 'maker-only' && price !== 0
           ? price
           : marketPrice
       const maxTotal = funds[1].quantity * leverage
 
-      this.setFormatted(
-        'total',
-        stripDigitPlaces(margin * leverage, isSPOTMarket ? 8 : 3),
-        0
-      )
+      if (leverage !== undefined) {
+        this.setFormatted(
+          'total',
+          stripDigitPlaces(margin * leverage, isSPOTMarket ? 8 : 3),
+          0
+        )
+  
+        this.setFormatted(
+          'amount',
+          stripDigitPlaces(
+            (margin * leverage) / priceForCalculate,
+            isSPOTMarket ? 8 : quantityPrecision
+          ),
+          0
+        )
 
-      this.setFormatted(
-        'amount',
-        stripDigitPlaces(
-          (margin * leverage) / priceForCalculate,
-          isSPOTMarket ? 8 : quantityPrecision
-        ),
-        0
-      )
+        }
     }
 
-    if (marketPrice !== prevProps.marketPrice && priceType === 'market') {
+    if (marketPrice !== prevProps.marketPrice && (priceType === 'market' || prevProps.marketPrice === 0)) {
+      this.setFormatted('price', stripDigitPlaces(marketPrice, pricePrecision), 0)
       this.setFormatted(
         'amount',
         stripDigitPlaces(
@@ -795,9 +801,9 @@ const formikEnhancer = withFormik<IProps, FormValues>({
     price: props.marketPrice,
     stop: null,
     limit: props.marketPrice,
-    amount: null,
-    total: null,
-    margin: null,
+    amount: 0,
+    total: 0,
+    margin: 0,
   }),
   handleSubmit: async (values, { props, setSubmitting, resetForm }) => {
     const {
@@ -870,7 +876,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
         orderId: '0',
       }
 
-      props.showOrderResult(
+      showOrderResult(
         successResult,
         props.cancelOrder,
         isSPOTMarket ? 0 : 1
@@ -910,7 +916,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       })
 
       if (result.status === 'error' || !result.orderId) {
-        await props.showOrderResult(
+        await showOrderResult(
           result,
           props.cancelOrder,
           isSPOTMarket ? 0 : 1
