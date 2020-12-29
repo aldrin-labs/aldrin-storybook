@@ -11,6 +11,7 @@ import { TableButton } from './TradingTable.styles'
 import { ArrowForward as Arrow } from '@material-ui/icons'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { getActiveStrategies } from '@core/graphql/queries/chart/getActiveStrategies'
+import { Metrics } from '@core/utils/metrics'
 
 import { ActiveSmartTradePnlFutures } from './PriceBlocks/ActiveSmartTradePnlFutures'
 import { ActiveSmartTradePnlSpot } from './PriceBlocks/ActiveSmartTradePnlSpot'
@@ -2576,6 +2577,22 @@ export const updateActivePositionsQuerryFunction = (
     return previous
   }
 
+  // metrics
+  const timestamp = Date.now()
+  const { positions } = Metrics
+  // getting data from order
+  const { keyId, symbol, positionSide } = subscriptionData.data.listenFuturesPositions
+  const key = `${keyId}_${symbol}_${positionSide}`
+  
+  if (positions[key]) {
+    const prevTimestamp = positions[key]
+    const diff = timestamp - prevTimestamp
+    console.log(`Collecting metrics data (positions) for key: ${key}, diff time is: ${diff}`)
+    delete positions[key]
+
+    Metrics.sendMetrics({ metricName: 'createPosition', metricScope: 'Frontend', metricTimingData: diff })
+  }
+
   const prev = cloneDeep(previous)
 
   const positionHasTheSameIndex = prev.getActivePositions.findIndex(
@@ -2755,11 +2772,29 @@ export const updatePaginatedOrderHistoryQuerryFunction = (
   { subscriptionData },
   enqueueSnackbar = (msg: string, obj: { variant: string }) => {}
 ) => {
+  // console.log('updatePaginatedOrderHistoryQuerryFunction subscriptionData', subscriptionData)
+
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenOrderHistory
 
   if (isEmptySubscription) {
     return previous
+  }
+
+  // metrics
+  const timestamp = Date.now()
+  const { orders } = Metrics
+  // getting data from order
+  const { keyId, symbol, side, type, } = subscriptionData.data.listenOrderHistory
+  const key = `${keyId}_${symbol}_${side.toLowerCase()}_${type.toLowerCase()}`
+  
+  if (orders[key]) {
+    const prevTimestamp = orders[key]
+    const diff = timestamp - prevTimestamp
+    console.log(`Collecting metrics data (orders) for key: ${key}, diff time is: ${diff}`)
+    delete orders[key]
+
+    Metrics.sendMetrics({ metricName: 'createOrder', metricScope: 'Frontend', metricTimingData: diff })
   }
 
   const prev = cloneDeep(previous)
