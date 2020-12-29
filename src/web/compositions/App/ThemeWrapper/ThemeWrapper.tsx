@@ -262,6 +262,9 @@ export default ({ themeMode, isChartPage, children }) => {
               dots: '#2F3949',
               rail: '#2E2E2E',
             },
+            purple: {
+              main: '#7380EB',
+            }
           },
           updateMode: (newMode) => {
             localStorage.setItem('themeMode', newMode)
@@ -376,7 +379,7 @@ export default ({ themeMode, isChartPage, children }) => {
               custom: '#D93B28',
               bright: '#ED6337',
               new: '#DD6956',
-              chart: '#7380EB',
+              chart: theme.palette.purple.main,
             },
             blue: {
               custom: '#5085EC',
@@ -480,6 +483,9 @@ export default ({ themeMode, isChartPage, children }) => {
               greenBackground: '#AAF2C9',
               redBackground: '#FFD1D1',
             },
+            purple: {
+              main: '#7380EB',
+            }
           },
           updateMode: (newMode) => {
             localStorage.setItem('themeMode', newMode)

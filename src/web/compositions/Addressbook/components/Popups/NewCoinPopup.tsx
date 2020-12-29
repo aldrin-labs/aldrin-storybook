@@ -24,7 +24,7 @@ import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components/index'
 
-const StyledPaper = styled(Paper)`
+export const StyledPaper = styled(Paper)`
   border-radius: 2rem;
   width: 55rem;
 `
@@ -40,18 +40,40 @@ export const PasteButton = styled.button`
   padding: 1.5rem;
 `
 
-export const PurpleButton = ({ onClick, showLoader, text, width, height, margin, disabled, background }) => (
+export const PurpleButton = ({
+  onClick,
+  showLoader,
+  text,
+  width,
+  height,
+  margin,
+  padding,
+  fontSize,
+  disabled,
+  background,
+}: {
+  onClick?: any
+  showLoader?: boolean
+  text: string
+  width?: string 
+  height?: string
+  margin?: string
+  padding?: string
+  fontSize?: string
+  disabled?: boolean
+  background?: string
+}) => (
   <BtnCustom
     disabled={showLoader || disabled}
     needMinWidth={false}
-    btnWidth={width || "15rem"}
-    height={height || "4.5rem"}
-    fontSize="1.4rem"
-    padding="1rem 2rem"
+    btnWidth={width || '15rem'}
+    height={height || '4.5rem'}
+    fontSize={fontSize || '1.4rem'}
+    padding={padding || '1rem 2rem'}
     borderRadius=".8rem"
-    borderColor={background || '#7380EB'}
+    borderColor={background || theme.palette.purple.main}
     btnColor={'#fff'}
-    backgroundColor={background ||'#7380EB'}
+    backgroundColor={background || theme.palette.purple.main}
     textTransform={'none'}
     margin={margin || '1rem 0 0 0'}
     transition={'all .4s ease-out'}
@@ -262,9 +284,9 @@ const NewCoinPopup = ({
             fontSize="1.4rem"
             padding="1rem 2rem"
             borderRadius=".8rem"
-            borderColor={'#7380EB'}
+            borderColor={theme.palette.purple.main}
             btnColor={'#fff'}
-            backgroundColor={'#7380EB'}
+            backgroundColor={theme.palette.purple.main}
             textTransform={'none'}
             margin={'1rem 0 0 0'}
             transition={'all .4s ease-out'}

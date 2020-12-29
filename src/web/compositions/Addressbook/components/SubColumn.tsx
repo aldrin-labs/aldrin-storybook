@@ -116,7 +116,7 @@ const SubColumn = ({
               >
                 {decrypt(el.address, localPassword)}
                 <AddBtn
-                  background={'#7380EB'}
+                  background={theme.palette.purple.main}
                   width={'auto'}
                   padding={'0 1rem'}
                   style={{ marginLeft: '2rem' }}
@@ -131,7 +131,7 @@ const SubColumn = ({
                   copy
                 </AddBtn>
                 <AddBtn
-                  background={'#7380EB'}
+                  background={theme.palette.purple.main}
                   width={'auto'}
                   padding={'0 2rem'}
                 >

@@ -20,7 +20,6 @@ import CustomSwitcher, {
 import { notify } from '@sb/dexUtils//notifications'
 import { isValidPublicKey } from '@sb/dexUtils//utils'
 import { useAccountInfo, useConnection } from '@sb/dexUtils/connection'
-import { Loading } from '@sb/components/index'
 
 // const { Text } = Typography;
 import Clear from '@material-ui/icons/Clear'
@@ -30,23 +29,16 @@ import {
   ClearButton,
   StyledDialogTitle,
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-import { addContactCoin } from '@core/graphql/mutations/chart/addContactCoin'
 
 import { Input } from '@sb/compositions/Addressbook/index'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { PurpleButton } from '@sb/compositions/Addressbook/components/Popups/NewCoinPopup'
+import { PurpleButton, StyledPaper } from '@sb/compositions/Addressbook/components/Popups/NewCoinPopup'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index'
 import ListNewMarketPopup from './ListNewMarketPopup'
 import { addSerumCustomMarket } from '@core/graphql/mutations/chart/addSerumCustomMarket'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
-
-const StyledPaper = styled(Paper)`
-  border-radius: 2rem;
-  width: 55rem;
-`
 
 const StyledInput = styled(Input)`
   height: 4rem;

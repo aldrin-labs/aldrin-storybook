@@ -54,7 +54,7 @@ export const AddBtn = styled.button`
   }
 `
 
-const Text = styled.span`
+export const Text = styled.span`
   font-size: 1.5rem;
   padding-bottom: ${(props) => props.paddingBottom};
   text-transform: none;
@@ -70,6 +70,7 @@ export const Input = styled.input`
   border-radius: 0.4rem;
   padding-left: 1rem;
   color: #fff;
+  font-size: 1.4rem;
 
   &::placeholder {
     color: #abbad1;
@@ -270,9 +271,9 @@ const AddressbookRoute = ({
               fontSize="1.4rem"
               padding="1rem 2rem"
               borderRadius=".8rem"
-              borderColor={'#7380EB'}
+              borderColor={theme.palette.purple.main}
               btnColor={'#fff'}
-              backgroundColor={'#7380EB'}
+              backgroundColor={theme.palette.purple.main}
               textTransform={'none'}
               margin={'4rem 0 0 0'}
               transition={'all .4s ease-out'}

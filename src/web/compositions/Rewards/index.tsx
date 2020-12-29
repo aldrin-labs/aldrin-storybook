@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import styled, { createGlobalStyle } from 'styled-components'
+import styled from 'styled-components'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import Timer from 'react-compound-timer'
@@ -15,7 +15,7 @@ dayjs.extend(utc)
 import { Loading } from '@sb/components/Loading/Loading'
 
 import SvgIcon from '@sb/components/SvgIcon'
-import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getTotalVolumeForSerumKey } from '@core/graphql/queries/chart/getTotalVolumeForSerumKey'
 import { getTotalSerumVolume } from '@core/graphql/queries/chart/getTotalSerumVolume'
 import { getTopTwitterFarming } from '@core/graphql/queries/serum/getTopTwitterFarming'
@@ -35,7 +35,6 @@ import lightBird from '@icons/lightBird.svg'
 import shape from '@icons/shape.svg'
 
 import { withTheme } from '@material-ui/styles'
-import { useWallet } from '@sb/dexUtils/wallet'
 import { notify } from '@sb/dexUtils/notifications'
 
 import { withPublicKey } from '@core/hoc/withPublicKey'
@@ -43,6 +42,10 @@ import { withPublicKey } from '@core/hoc/withPublicKey'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { PurpleButton } from '@sb/compositions/Addressbook/components/Popups/NewCoinPopup'
+import WebServerUrlPopup from './components/WebServerUrlPopup'
+import TwitterValidatorTweetConfirmPopup from './components/TwitterValidatorTweetConfirmPopup'
+import CongratulationsPopup from './components/CongratulationsPopup'
 
 import { Link } from 'react-router-dom'
 // import { Circle } from 'rc-progress';
@@ -51,7 +54,7 @@ import 'react-circular-progressbar/dist/styles.css'
 
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import { Styles } from './index.styles'
+import { Styles } from './index.styles.tsx'
 import { Chart } from './components/Chart'
 
 import {
@@ -187,6 +190,7 @@ const LinkInput = styled.input`
   width: calc((100% - 4rem) / 2);
   margin-right: 1rem;
   color: ${(props) => props.color || props.theme.palette.grey.light};
+  font-size: 1.4rem;
 `
 
 export const srmVolumesInUSDT = [
@@ -263,6 +267,7 @@ export const HeaderCell = styled.th`
   text-transform: capitalize;
   color: ${props => props.theme.palette.grey.text};
   font-size: bold;
+  text-align: left;
 `
 
 const getPhaseFromTotal = (total) => {
@@ -282,8 +287,12 @@ const RewardsRoute = (props) => {
 
   const [isHarvestPopupOpen, setOpen] = useState(false)
   const [isSharePopupOpen, setSharePopupOpen] = useState(false)
+  const [isWebServerUrlPopupOpen, setWebServerUrlPopupOpen] = useState(false)
+  const [isTwitterValidatorTweetConfirmPopupOpen, setTwitterValidatorTweetConfirmPopupOpen] = useState(false)
+  const [isCongratulationsPopupOpen, setCongratulationsPopupOpen] = useState(false)
 
   const [isLoading, updateIsLoading] = useState(false)
+
   const {
     theme,
     getTotalVolumeForSerumKeyQuery,
@@ -400,6 +409,24 @@ const RewardsRoute = (props) => {
       }}
     >
       <Styles />
+      <WebServerUrlPopup 
+        open={isWebServerUrlPopupOpen}
+        openNextPopup={() => setTwitterValidatorTweetConfirmPopupOpen(true)}
+        handleClose={() => setWebServerUrlPopupOpen(false)}
+        theme={theme}
+      />
+      <TwitterValidatorTweetConfirmPopup 
+        isDarkTheme={isDarkTheme}
+        open={isTwitterValidatorTweetConfirmPopupOpen}
+        openNextPopup={() => setCongratulationsPopupOpen(true)}
+        handleClose={() => setTwitterValidatorTweetConfirmPopupOpen(false)}
+        theme={theme}
+      />
+      <CongratulationsPopup
+        open={isCongratulationsPopupOpen}
+        handleClose={() => setCongratulationsPopupOpen(false)}
+        theme={theme}
+      />
       <RowContainer
         style={{ width: '100%', padding: '4rem 2rem' }}
         direction={'row'}
@@ -411,16 +438,16 @@ const RewardsRoute = (props) => {
         >
           Buy SRM and farm DCFI token
         </Title>
-        <RowContainer style={{ width: '32%' }}>
+        <RowContainer style={{ width: '55%', paddingBottom: '2rem', }}>
           <a
             rel="noopener noreferrel"
             target={'_blank'}
             href={'https://decefi.app/onePager'}
             style={{
-              paddingBottom: '2rem',
-              width: 'calc((100% - 4rem) / 2)',
+              
+              width: 'calc((100% - 2rem) / 3)',
               textDecoration: 'none',
-              marginRight: '2rem',
+              marginRight: '1rem',
             }}
           >
             <BtnCustom
@@ -443,9 +470,9 @@ const RewardsRoute = (props) => {
               'https://www.youtube.com/watch?v=yz5uaN0aCyw&feature=youtu.be'
             }
             style={{
-              paddingBottom: '2rem',
-              width: 'calc((100% - 4rem) / 2)',
+              width: 'calc((100% - 2rem) / 3)',
               textDecoration: 'none',
+              marginRight: '1rem',
             }}
           >
             <BtnCustom
@@ -461,6 +488,15 @@ const RewardsRoute = (props) => {
               How to farm DCFI
             </BtnCustom>
           </a>
+          <PurpleButton
+            margin={'0 0 0 0'}
+            padding={'0'}
+            text={'Became Twitter Farming Validator'}
+            width={'calc((100% - 2rem) / 3)'}
+            height={'5rem'}
+            fontSize={'1.2rem'}
+            onClick={() => setWebServerUrlPopupOpen(true)}
+          />
         </RowContainer>
       </RowContainer>
       <div

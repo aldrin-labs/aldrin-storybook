@@ -1,6 +1,4 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
-import { Dialog, Paper } from '@material-ui/core'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 
@@ -23,52 +21,7 @@ import { createHash, Input, encrypt, decrypt } from '@sb/compositions/Addressboo
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components/index'
-
-const StyledPaper = styled(Paper)`
-  border-radius: 2rem;
-  width: 55rem;
-`
-
-export const PasteButton = styled.button`
-  position: absolute;
-  font-size: 1.8rem;
-  right: 0.5rem;
-  background: inherit;
-  border: 0;
-  color: #7380eb;
-  cursor: pointer;
-  padding: 1.5rem;
-`
-
-export const PurpleButton = ({ onClick, showLoader, text, width, height, margin }) => (
-  <BtnCustom
-    disabled={showLoader}
-    needMinWidth={false}
-    btnWidth={width || "15rem"}
-    height={height || "4.5rem"}
-    fontSize="1.4rem"
-    padding="1rem 2rem"
-    borderRadius=".8rem"
-    borderColor={'#7380EB'}
-    btnColor={'#fff'}
-    backgroundColor={'#7380EB'}
-    textTransform={'none'}
-    margin={margin || '1rem 0 0 0'}
-    transition={'all .4s ease-out'}
-    onClick={onClick}
-  >
-    {showLoader ? (
-      <Loading
-        color={'#fff'}
-        size={16}
-        height={'16px'}
-        style={{ height: '16px' }}
-      />
-    ) : (
-      text
-    )}
-  </BtnCustom>
-)
+import { StyledPaper, PasteButton } from '@sb/compositions/Addressbook/components/Popups/NewCoinPopup'
 
 const EditContactCoinPopup = ({
   theme,
@@ -263,9 +216,9 @@ const EditContactCoinPopup = ({
             fontSize="1.4rem"
             padding="1rem 2rem"
             borderRadius=".8rem"
-            borderColor={'#7380EB'}
+            borderColor={theme.palette.purple.main}
             btnColor={'#fff'}
-            backgroundColor={'#7380EB'}
+            backgroundColor={theme.palette.purple.main}
             textTransform={'none'}
             margin={'1rem 0 0 0'}
             transition={'all .4s ease-out'}
