@@ -181,18 +181,20 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
             borderBottom: theme.palette.border.main,
             boxShadow: 'none',
           },
+
           heading: {
-            fontSize: '1rem',
+            fontSize: '1.4rem',
             fontWeight: 'bold',
             backgroundColor: theme.palette.white.background,
-            color: theme.palette.dark.main,
+            color: theme.palette.grey.light,
             boxShadow: 'none',
+            textTransform: 'capitalize',
           },
           cell: {
-            color: theme.palette.dark.main,
+            color: theme.palette.grey.onboard,
+            fontSize: '1.5rem', // 1.2 if bold
+            fontFamily: 'Avenir Next Demi',
             backgroundColor: theme.palette.white.background,
-            fontSize: '1rem', // 1.2 if bold
-            fontWeight: 'bold',
             letterSpacing: '.1rem',
             borderBottom: theme.palette.border.main,
             boxShadow: 'none',
@@ -309,11 +311,8 @@ const TableDataWrapper = ({ ...props }) => {
 export default React.memo(TableDataWrapper, (prevProps, nextProps) => {
   // TODO: Refactor isShowEqual --- not so clean
   const isShowEqual = !nextProps.show && !prevProps.show
-  const showAllAccountsEqual =
-    prevProps.allKeys ===
-    nextProps.allKeys
-  const showAllPairsEqual =
-    prevProps.specificPair === nextProps.specificPair
+  const showAllAccountsEqual = prevProps.allKeys === nextProps.allKeys
+  const showAllPairsEqual = prevProps.specificPair === nextProps.specificPair
   // TODO: here must be smart condition if specificPair is not changed
   const pairIsEqual = prevProps.currencyPair === nextProps.currencyPair
   // TODO: here must be smart condition if showAllAccountsEqual is true & is not changed

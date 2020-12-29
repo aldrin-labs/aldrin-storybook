@@ -682,16 +682,17 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
               boxShadow: 'none',
             },
             heading: {
-              fontSize: '1rem',
+              fontSize: '1.4rem',
               fontWeight: 'bold',
               backgroundColor: theme.palette.white.background,
-              color: theme.palette.dark.main,
+              color: theme.palette.grey.light,
               boxShadow: 'none',
+              textTransform: 'capitalize',
             },
             cell: {
-              color: theme.palette.dark.main,
-              fontSize: '1rem', // 1.2 if bold
-              fontWeight: 'bold',
+              color: theme.palette.grey.onboard,
+              fontSize: '1.3rem', // 1.2 if bold
+              fontFamily: 'Avenir Next Demi',
               letterSpacing: '.1rem',
               borderBottom: theme.palette.border.main,
               backgroundColor: theme.palette.white.background,

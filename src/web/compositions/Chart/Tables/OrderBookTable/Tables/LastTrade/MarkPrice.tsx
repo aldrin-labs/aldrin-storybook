@@ -1,57 +1,70 @@
-import React from 'react';
-import { compose } from 'recompose';
-import { Theme } from '@material-ui/core';
+import React from 'react'
+import { compose } from 'recompose'
+import { Theme } from '@material-ui/core'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer';
-import { getMarkPrice } from '@core/graphql/queries/market/getMarkPrice';
-import { getNumberOfDecimalsFromNumber } from '@core/utils/chartPageUtils';
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getMarkPrice } from '@core/graphql/queries/market/getMarkPrice'
+import { getNumberOfDecimalsFromNumber } from '@core/utils/chartPageUtils'
 
-import { LastTradeContainer, LastTradeValue, LastTradePrice } from './LastTrade.styles';
+import {
+  LastTradeContainer,
+  LastTradeValue,
+  LastTradePrice,
+} from './LastTrade.styles'
 const MemoizedLastTradePrice = React.memo(LastTradePrice)
 
-const lastTradePriceStyles = { fontSize: '1.2rem' }
-
-export interface IProps {
-	theme: Theme;
-	markPrice: number;
-	aggregation: any;
-	getMarkPriceQuery: {
-		getMarkPrice: {
-			markPrice: number;
-		};
-	};
+const lastTradePriceStyles = {
+  fontSize: '1.1rem',
+  color: theme.palette.grey.onboard,
+  fontFamily: 'DM Sans',
+  fontWeight: 'normal',
 }
 
-const MarkPriceBlockOrderBook = ({ theme, aggregation, getMarkPriceQuery }: IProps) => {
-	const { getMarkPrice = { markPrice: 0 } } = getMarkPriceQuery || {
-		getMarkPrice: { markPrice: 0 }
-	};
-	const { markPrice = 0 } = getMarkPrice || { markPrice: 0 };
+export interface IProps {
+  theme: Theme
+  markPrice: number
+  aggregation: any
+  getMarkPriceQuery: {
+    getMarkPrice: {
+      markPrice: number
+    }
+  }
+}
 
-	return (
-		<MemoizedLastTradePrice theme={theme} style={lastTradePriceStyles}>
-			{Number(markPrice).toFixed(getNumberOfDecimalsFromNumber(aggregation))}
-		</MemoizedLastTradePrice>
-	);
-};
+const MarkPriceBlockOrderBook = ({
+  theme,
+  aggregation,
+  getMarkPriceQuery,
+}: IProps) => {
+  const { getMarkPrice = { markPrice: 0 } } = getMarkPriceQuery || {
+    getMarkPrice: { markPrice: 0 },
+  }
+  const { markPrice = 0 } = getMarkPrice || { markPrice: 0 }
 
-const MemoizedMarkPriceBlock = React.memo(MarkPriceBlockOrderBook);
+  return (
+    <MemoizedLastTradePrice theme={theme} style={lastTradePriceStyles}>
+      {Number(markPrice).toFixed(getNumberOfDecimalsFromNumber(aggregation))}
+    </MemoizedLastTradePrice>
+  )
+}
+
+const MemoizedMarkPriceBlock = React.memo(MarkPriceBlockOrderBook)
 
 export default React.memo(
-	compose(
-		queryRendererHoc({
-			query: getMarkPrice,
-			name: 'getMarkPriceQuery',
-			fetchPolicy: 'cache-only',
-			withOutSpinner: true,
-			withTableLoader: true,
-			withoutLoading: true,
-			variables: (props) => ({
-				input: {
-					exchange: props.exchange,
-					symbol: props.symbol
-				}
-			})
-		})
-	)(MemoizedMarkPriceBlock)
-);
+  compose(
+    queryRendererHoc({
+      query: getMarkPrice,
+      name: 'getMarkPriceQuery',
+      fetchPolicy: 'cache-only',
+      withOutSpinner: true,
+      withTableLoader: true,
+      withoutLoading: true,
+      variables: (props) => ({
+        input: {
+          exchange: props.exchange,
+          symbol: props.symbol,
+        },
+      }),
+    })
+  )(MemoizedMarkPriceBlock)
+)

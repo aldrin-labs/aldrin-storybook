@@ -1,5 +1,5 @@
 import React from 'react'
-import { Theme } from '@material-ui/core';
+import { Theme } from '@material-ui/core'
 
 import {
   LastTradeContainer,
@@ -10,10 +10,7 @@ import {
 
 import { OrderbookMode } from '../../OrderBookTableContainer.types'
 
-import {
-  getAggregationsFromMinPriceDigits,
-} from '@core/utils/chartPageUtils'
-
+import { getAggregationsFromMinPriceDigits } from '@core/utils/chartPageUtils'
 
 import MarkPrice from './MarkPrice'
 import Price from './Price'
@@ -45,10 +42,9 @@ interface IProps {
 const lastTradeStylesContainer = {
   width: '100%',
   display: 'flex',
-  justifyContent: 'flex-start',
-  alignItems: 'flex-end',
+  justifyContent: 'center',
+  alignItems: 'baseline',
 }
-
 
 const LastTrade = (props: IProps) => {
   const {
@@ -61,13 +57,13 @@ const LastTrade = (props: IProps) => {
 
   console.log('LastTrade exchange', exchange)
 
-
   const aggregation = getAggregationsFromMinPriceDigits(props.minPriceDigits)[0]
     .value
 
   return (
     <LastTradeContainer
       theme={theme}
+
       // TODO: I'm not sure that these arrow function should exists here
       // onClick={() =>
       //   updateTerminalPriceFromOrderbook(
@@ -75,13 +71,22 @@ const LastTrade = (props: IProps) => {
       //   )
       // }
     >
-      <div
-        style={lastTradeStylesContainer}
-      >
-          {/* <ArrowIcon fall={fall} /> */}
-          <Price theme={theme} symbol={symbol} exchange={exchange} aggregation={aggregation} marketType={marketType} />
+      <div style={lastTradeStylesContainer}>
+        {/* <ArrowIcon fall={fall} /> */}
+        <Price
+          theme={theme}
+          symbol={symbol}
+          exchange={exchange}
+          aggregation={aggregation}
+          marketType={marketType}
+        />
         {marketType === 1 && (
-          <MarkPrice theme={theme} symbol={symbol} exchange={exchange} aggregation={aggregation} />
+          <MarkPrice
+            theme={theme}
+            symbol={symbol}
+            exchange={exchange}
+            aggregation={aggregation}
+          />
         )}
       </div>
     </LastTradeContainer>
