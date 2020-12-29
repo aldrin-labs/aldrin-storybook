@@ -792,14 +792,7 @@ export const combineActiveTradesTable = ({
       })
 
       const isErrorInOrder = !!msg
-<<<<<<< HEAD
-=======
-
-      const { pricePrecision, quantityPrecision } = getPrecisionItem({
-        marketType,
-        symbol: pair,
-      })
-
+      
       const takeProfitPercentage =
         exitLevels[0] &&
         exitLevels[0].activatePrice &&
@@ -807,7 +800,6 @@ export const combineActiveTradesTable = ({
           ? exitLevels[0].activatePrice
           : exitLevels[0].price
 
->>>>>>> de08a714b310eecfad29bbb708987b12bd47dc03
       const strategyId = el._id
       const enableEdit = !entryPrice
       let avgPrice =

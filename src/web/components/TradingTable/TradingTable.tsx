@@ -216,10 +216,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       }),
       {}
     )
-
-    console.log('TradingTable RENDER',       pricePrecision,
-    quantityPrecision,)
-
+    
     return (
       <div
         id="tables"
