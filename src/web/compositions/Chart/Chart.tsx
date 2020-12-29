@@ -188,6 +188,7 @@ export function ChartPageComponent(props: any) {
 
   if (isPairDataLoading) {
     minPriceDigits = 0.00000001
+    pricePrecision = 2
     quantityPrecision = 3
     minSpotNotional = 10
     minFuturesStep = 0.001
@@ -247,6 +248,9 @@ export function ChartPageComponent(props: any) {
           updateTerminalViewMode={memoizatedUpdateTerminalViewMode}
           arrayOfMarketIds={arrayOfMarketIds}
           changeChartLayoutMutation={changeChartLayoutMutation}
+          pricePrecision={pricePrecision}
+          quantityPrecision={quantityPrecision}
+
         />
     </MainContainer>
   )

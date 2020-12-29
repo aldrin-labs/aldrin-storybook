@@ -271,7 +271,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     } = this.props
 
     if (marketPriceAfterPairChange !== prevProps.marketPriceAfterPairChange) {
-      this.onPriceChange({ target: { value: marketPriceAfterPairChange } })
+      if (leverage !== undefined) {
+        this.onPriceChange({ target: { value: marketPriceAfterPairChange } })
+      }
     }
 
     if (prevProps.priceType !== priceType) {
@@ -562,6 +564,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     } else {
       maxAmount = funds[1].quantity * leverage
     }
+
+    console.log('arararra', values, leverage)
 
     return (
       <Container background={'transparent'}>

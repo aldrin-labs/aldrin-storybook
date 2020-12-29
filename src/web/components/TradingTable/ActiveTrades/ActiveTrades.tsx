@@ -86,6 +86,8 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
       addOrderToCanceled,
       canceledOrders,
       handlePairChange,
+      pricePrecision,
+      quantityPrecision
     } = this.props
 
     const activeStrategiesProcessedData = combineActiveTradesTable({
@@ -102,6 +104,8 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
       marketType,
       currencyPair,
       handlePairChange,
+      pricePrecision,
+      quantityPrecision
     })
 
     this.setState({
@@ -142,6 +146,8 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
       addOrderToCanceled,
       canceledOrders,
       handlePairChange,
+      pricePrecision,
+      quantityPrecision
     } = nextProps
 
     const activeStrategiesProcessedData = combineActiveTradesTable({
@@ -158,6 +164,8 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
       marketType,
       currencyPair,
       handlePairChange,
+      pricePrecision,
+      quantityPrecision
     })
 
     this.setState({

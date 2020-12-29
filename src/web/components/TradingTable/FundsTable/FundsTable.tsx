@@ -25,27 +25,37 @@ class FundsTable extends React.PureComponent<IProps> {
   // unsubscribeFunction: null | Function = null
 
   handleSmallAssetsCheckboxChange = (event, checked) => {
-    const { marketType } = this.props
+    const { marketType, pricePrecision, quantityPrecision } = this.props
 
     this.setState({
       hideSmallAssets: checked,
-      fundsProcessedData: combineFundsTable(
-        this.props.getFundsQuery.getFunds,
-        checked,
-        marketType
-      ),
+      fundsProcessedData: combineFundsTable({
+        data: this.props.getFundsQuery.getFunds,
+        hideSmallAssets: checked,
+        marketType,
+        pricePrecision,
+        quantityPrecision,
+      }),
     })
   }
 
   componentDidMount() {
-    const { getFundsQuery, subscribeToMore, marketType } = this.props
+    const {
+      getFundsQuery,
+      subscribeToMore,
+      marketType,
+      pricePrecision,
+      quantityPrecision,
+    } = this.props
     const { hideSmallAssets } = this.state
 
-    const fundsProcessedData = combineFundsTable(
-      getFundsQuery.getFunds,
+    const fundsProcessedData = combineFundsTable({
+      data: getFundsQuery.getFunds,
       hideSmallAssets,
-      marketType
-    )
+      marketType,
+      pricePrecision,
+      quantityPrecision,
+    })
     this.setState({
       fundsProcessedData,
     })
@@ -61,13 +71,15 @@ class FundsTable extends React.PureComponent<IProps> {
   }
 
   componentWillReceiveProps(nextProps: IProps) {
-    const { hideSmallAssets } = this.state
+    const { hideSmallAssets, pricePrecision, quantityPrecision } = this.state
 
-    const fundsProcessedData = combineFundsTable(
-      nextProps.getFundsQuery.getFunds,
+    const fundsProcessedData = combineFundsTable({
+      data: nextProps.getFundsQuery.getFunds,
       hideSmallAssets,
-      nextProps.marketType
-    )
+      marketType: nextProps.marketType,
+      pricePrecision,
+      quantityPrecision,
+    })
     this.setState({
       fundsProcessedData,
     })

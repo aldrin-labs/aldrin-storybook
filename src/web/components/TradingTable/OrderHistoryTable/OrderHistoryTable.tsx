@@ -34,19 +34,22 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       subscribeToMore,
       theme,
       keys,
-      arrayOfMarketIds,
       marketType,
       handlePairChange,
+      pricePrecision,
+      quantityPrecision
     } = this.props
 
-    const orderHistoryProcessedData = combineOrderHistoryTable(
-      getPaginatedOrderHistoryQuery.getPaginatedOrderHistory.orders,
+    const orderHistoryProcessedData = combineOrderHistoryTable({
+      data: getPaginatedOrderHistoryQuery.getPaginatedOrderHistory.orders,
       theme,
-      arrayOfMarketIds,
       marketType,
       keys,
-      handlePairChange
-    )
+      handlePairChange,
+      pricePrecision,
+      quantityPrecision
+    })
+
     this.setState({
       orderHistoryProcessedData,
     })
@@ -105,14 +108,25 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
   }
 
   componentWillReceiveProps(nextProps: IProps) {
-    const orderHistoryProcessedData = combineOrderHistoryTable(
-      nextProps.getPaginatedOrderHistoryQuery.getPaginatedOrderHistory.orders,
-      nextProps.theme,
-      nextProps.arrayOfMarketIds,
-      nextProps.marketType,
-      nextProps.keys,
-      nextProps.handlePairChange
-    )
+    const {
+      getPaginatedOrderHistoryQuery,
+      theme,
+      marketType,
+      keys,
+      handlePairChange,
+      pricePrecision,
+      quantityPrecision
+    } = nextProps
+
+    const orderHistoryProcessedData = combineOrderHistoryTable({
+      data: getPaginatedOrderHistoryQuery.getPaginatedOrderHistory.orders,
+      theme,
+      marketType,
+      keys,
+      handlePairChange,
+      pricePrecision,
+      quantityPrecision
+    })
 
     this.setState({
       orderHistoryProcessedData,

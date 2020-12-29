@@ -120,16 +120,18 @@ class MarketStats extends React.PureComponent<IProps> {
 			marketType,
 			getFundingRateQueryRefetch,
 			exchange,
+			pricePrecision, 
+			// quantityPrecision,
 		} = this.props;
 
 		// TODO: should be fixed
-		const { pricePrecision: pricePrecisionRaw } = getPrecisionItem({
-			marketType,
-			symbol,
-		  })
+		// const { pricePrecision: pricePrecisionRaw } = getPrecisionItem({
+		// 	marketType,
+		// 	symbol,
+		//   })
 
 		const { refetching, key } = this.state
-		const pricePrecision = pricePrecisionRaw === 0 || pricePrecisionRaw < 0 ? 8 : pricePrecisionRaw;
+		// const pricePrecision = pricePrecisionRaw === 0 || pricePrecisionRaw < 0 ? 8 : pricePrecisionRaw;
 
 		const {
 			getMarketStatisticsByPair: {

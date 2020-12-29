@@ -39,15 +39,19 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
       marketType,
       keys,
       handlePairChange,
+      pricePrecision,
+      quantityPrecision
     } = this.props
 
-    const strategiesHistoryProcessedData = combineStrategiesHistoryTable(
-      getStrategiesHistoryQuery.getStrategiesHistory.strategies,
+    const strategiesHistoryProcessedData = combineStrategiesHistoryTable({
+      data: getStrategiesHistoryQuery.getStrategiesHistory.strategies,
       theme,
       marketType,
       keys,
-      handlePairChange
-    )
+      handlePairChange,
+      pricePrecision,
+      quantityPrecision
+    })
 
     this.setState({
       strategiesHistoryProcessedData,
@@ -99,13 +103,25 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
   }
 
   componentWillReceiveProps(nextProps: IProps) {
-    const strategiesHistoryProcessedData = combineStrategiesHistoryTable(
-      nextProps.getStrategiesHistoryQuery.getStrategiesHistory.strategies,
-      nextProps.theme,
-      nextProps.marketType,
-      nextProps.keys,
-      nextProps.handlePairChange
-    )
+    const {
+      getStrategiesHistoryQuery,
+      theme,
+      marketType,
+      keys,
+      handlePairChange,
+      pricePrecision,
+      quantityPrecision
+    } = nextProps
+
+    const strategiesHistoryProcessedData = combineStrategiesHistoryTable({
+      data: getStrategiesHistoryQuery.getStrategiesHistory.strategies,
+      theme,
+      marketType,
+      keys,
+      handlePairChange,
+      pricePrecision,
+      quantityPrecision
+    })
 
     this.setState({
       strategiesHistoryProcessedData,

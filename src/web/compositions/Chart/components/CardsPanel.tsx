@@ -75,6 +75,8 @@ export const CardsPanel = ({
   themeMode,
   activeExchange,
   terminalViewMode,
+  pricePrecision, 
+  quantityPrecision,
   isDefaultTerminalViewMode,
   updateTerminalViewMode,
   marketType,
@@ -96,10 +98,10 @@ export const CardsPanel = ({
   },
 }) => {
 
-  const { pricePrecision, quantityPrecision } = getPrecisionItem({
-    marketType,
-    symbol: pair,
-  })
+  // const { pricePrecision, quantityPrecision } = getPrecisionItem({
+  //   marketType,
+  //   symbol: pair,
+  // })
 
   const hedgeMode = selectedKey.hedgeMode
 
@@ -154,6 +156,9 @@ export const CardsPanel = ({
 
   const authenticated = checkLoginStatus()
   const isSmartOrderMode = terminalViewMode === 'smartOrderMode'
+
+  console.log('market stats',   pricePrecision, 
+  quantityPrecision,)
 
   return (
     <>

@@ -259,7 +259,7 @@ export default function defaultRowRenderer({
               ? theme.palette.tradeHistory.greenBackground
               : theme.palette.tradeHistory.redBackground,
 
-          transform: `translateX(calc(100% - ${orderPercentage}%))`,
+          // transform: `translateX(calc(100% - ${orderPercentage}%))`,
           // ...(rowData.fall === undefined
           //   ? {}
           //   : { transition: 'none', willChange: 'background-color' }),

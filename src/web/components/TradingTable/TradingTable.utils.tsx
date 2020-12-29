@@ -338,7 +338,6 @@ export const combinePositionsTable = ({
   data,
   createOrderWithStatus,
   theme,
-  prices,
   pair,
   keyId,
   keys,
@@ -348,20 +347,23 @@ export const combinePositionsTable = ({
   handlePairChange,
   enqueueSnackbar,
   minFuturesStep,
+  // pricePrecision,
+  // quantityPrecision
 }: {
   data: Position[]
   createOrderWithStatus: (variables: any, positionId: any) => Promise<void>
   theme: Theme
-  prices: { price: number; pair: string }[]
   pair: string
   keyId: string
   canceledPositions: string[]
-  minFuturesStep
+  minFuturesStep: number
   priceFromOrderbook: number | string
   keys: Key[]
   toogleEditMarginPopup: (position: Position) => void
   handlePairChange: (pair: string) => void
   enqueueSnackbar: (message: string, { variant: string }) => void
+  // pricePrecision: number
+  // quantityPrecision: number
 }) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -394,17 +396,10 @@ export const combinePositionsTable = ({
 
       const needOpacity = el._id === '0'
 
-      // const marketPrice = (
-      //   prices.find((price) => price.pair === `${el.symbol}:1:binance`) || {
-      //     price: 0,
-      //   }
-      // ).price
-
       const keyName = keys[keyId]
 
       const getVariables = (type: String, price: Number, amount: Number) => {
         const calculatedAmount = Math.abs((positionAmt / 100) * amount)
-        console.log('positionAmount', positionAmt, amount, calculatedAmount)
 
         const calcAmount =
           amount === 0
@@ -432,23 +427,6 @@ export const combinePositionsTable = ({
       }
 
       const side = positionAmt < 0 ? 'sell short' : 'buy long'
-      const liqPrice =
-        entryPrice *
-        (side === 'sell short'
-          ? 1 + 100 / leverage / 100
-          : 1 - 100 / leverage / 100)
-
-      // const profitPercentage =
-      //   ((marketPrice / entryPrice) * 100 - 100) *
-      //   leverage *
-      //   (side === 'buy long' ? 1 : -1)
-
-      // const profitAmount =
-      //   (positionAmt / leverage) *
-      //   entryPrice *
-      //   (profitPercentage / 100) *
-      //   (side === 'buy long' ? 1 : -1)
-
       const pair = symbol.split('_')
 
       return [
@@ -585,21 +563,6 @@ export const combinePositionsTable = ({
           },
 
           profit: {
-            // render: marketPrice ? (
-            //   <SubColumnValue
-            //     theme={theme}
-            //     style={{ whiteSpace: 'nowrap' }}
-            //     color={profitPercentage > 0 ? green.main : red.main}
-            //   >
-            //     {`${profitAmount < 0 ? '-' : ''}${Math.abs(
-            //       Number(profitAmount.toFixed(3))
-            //     )} ${pair[1]} / ${profitPercentage < 0 ? '-' : ''}${Math.abs(
-            //       Number(profitPercentage.toFixed(2))
-            //     )}%`}
-            //   </SubColumnValue>
-            // ) : (
-            //     `0 ${pair[1]} / 0%`
-            //   ),
             render: <PnlBlock
               symbol={symbol}
               exchange={activeExchange}
@@ -657,13 +620,14 @@ export const combineActiveTradesTable = ({
   changeStatusWithStatus,
   editTrade,
   theme,
-  prices = [],
   marketType,
   currencyPair,
   addOrderToCanceled,
   canceledOrders,
   keys,
   handlePairChange,
+  // pricePrecision,
+  // quantityPrecision
 }: {
   data: any[]
   queryBody: string
@@ -676,13 +640,14 @@ export const combineActiveTradesTable = ({
   ) => Promise<any>
   editTrade: (block: string, trade: any) => void
   theme: Theme
-  prices: { pair: string; price: number }[]
   marketType: number
   currencyPair: string
   addOrderToCanceled: (id: string) => void
   canceledOrders: string[]
   keys: Key[]
   handlePairChange: (pair: string) => void
+  // pricePrecision: number
+  // quantityPrecision: number
 }) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -786,6 +751,12 @@ export const combineActiveTradesTable = ({
         receivedProfitPercentage: 0,
       }
 
+
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({
+        marketType,
+        symbol: pair,
+      })
+
       const pairArr = pair.split('_')
       const needOpacity = false
       const date = isNaN(dayjs(+createdAt).unix()) ? createdAt : +createdAt
@@ -804,12 +775,6 @@ export const combineActiveTradesTable = ({
       })
 
       const isErrorInOrder = !!msg
-
-      const { pricePrecision, quantityPrecision } = getPrecisionItem({
-        marketType,
-        symbol: pair,
-      })
-
       const strategyId = el._id
 
       const isSMIsAlreadyInEntry = !isTemplate &&
@@ -1287,13 +1252,23 @@ export const combineActiveTradesTable = ({
   return processedActiveTradesData
 }
 
-export const combineStrategiesHistoryTable = (
-  data: OrderType[],
-  theme: Theme,
-  marketType: number,
-  keys: Key[],
-  handlePairChange
-) => {
+export const combineStrategiesHistoryTable = ({
+  data,
+  theme,
+  marketType,
+  keys,
+  handlePairChange,
+  // pricePrecision,
+  // quantityPrecision
+}: {
+  data: OrderType[]
+  theme: Theme
+  marketType: number
+  keys: Key[]
+  handlePairChange: any
+  // pricePrecision: number
+  // quantityPrecision: number
+}) => {
   if (!data && !Array.isArray(data)) {
     return []
   }
@@ -1384,10 +1359,11 @@ export const combineStrategiesHistoryTable = (
         !entryDeviation && orderType === 'limit' && !entryPrice
           ? price
           : entryPrice
-      // ? entryPrice
-      // : !!entryDeviation
-      // ? activatePrice * (1 + entryDeviation / leverage / 100)
-      // : price
+
+          const { pricePrecision, quantityPrecision } = getPrecisionItem({
+            marketType,
+            symbol: pair,
+          })
 
       const [profitAmount, profitPercentage] = getPnlFromState({
         state: el.state,
@@ -1428,11 +1404,6 @@ export const combineStrategiesHistoryTable = (
       if (orderState === 'End') orderState = 'Closed'
 
       if (isTemplate) orderState = 'Template'
-
-      const { pricePrecision, quantityPrecision } = getPrecisionItem({
-        marketType,
-        symbol: pair,
-      })
 
       return {
         id: `${el._id}_${accountId}`,
@@ -1702,8 +1673,19 @@ export const combineStrategiesHistoryTable = (
   return processedStrategiesHistoryData
 }
 
-export const combineOpenOrdersTable = (
-  openOrdersData: OrderType[],
+export const combineOpenOrdersTable = ({
+  data: openOrdersData,
+  cancelOrderFunc,
+  theme,
+  arrayOfMarketIds,
+  marketType,
+  canceledOrders,
+  keys,
+  handlePairChange,
+  // pricePrecision,
+  // quantityPrecision
+}: {
+  data: OrderType[],
   cancelOrderFunc: (
     keyId: string,
     orderId: string,
@@ -1716,7 +1698,9 @@ export const combineOpenOrdersTable = (
   canceledOrders: string[],
   keys: Key[],
   handlePairChange: (pair: string) => void
-) => {
+  // pricePrecision: number
+  // quantityPrecision: number
+}) => {
   if (!openOrdersData && !Array.isArray(openOrdersData)) {
     return []
   }
@@ -1764,6 +1748,11 @@ export const combineOpenOrdersTable = (
         stopPrice: '',
       }
 
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({
+        marketType,
+        symbol,
+      })
+
       const timestamp = orderTimestamp || updateTime
       const keyName = keys ? keys[keyId] : ''
 
@@ -1794,11 +1783,6 @@ export const combineOpenOrdersTable = (
 
       const isMarketOrMakerOrder =
         price === 0 && (!!type.match(/market/) || isMakerOnlyOrder)
-
-      const { pricePrecision, quantityPrecision } = getPrecisionItem({
-        marketType,
-        symbol: symbol,
-      })
 
       return {
         id: `${orderId}_${keyId}${timestamp}${origQty}${marketId}`,
@@ -1974,14 +1958,23 @@ export const combineOpenOrdersTable = (
   return processedOpenOrdersData
 }
 
-export const combineOrderHistoryTable = (
+export const combineOrderHistoryTable = ({
+  orderData,
+  theme,
+  marketType,
+  keys,
+  handlePairChange,
+  // pricePrecision,
+  // quantityPrecision
+}: {
   orderData: OrderType[],
   theme: Theme,
-  arrayOfMarketIds: string[],
   marketType: 0 | 1,
   keys,
   handlePairChange: (pair: string) => void
-) => {
+  // pricePrecision: number
+  // quantityPrecision: number
+}) => {
   if (!orderData || !orderData) {
     return []
   }
@@ -2192,14 +2185,25 @@ export const combineOrderHistoryTable = (
   return processedOrderHistoryData
 }
 
-export const combineTradeHistoryTable = (
+export const combineTradeHistoryTable = ({
+  data: tradeData,
+  theme,
+  arrayOfMarketIds,
+  marketType,
+  keys,
+  handlePairChange,
+  // pricePrecision,
+  // quantityPrecision
+}: {
   tradeData: TradeType[],
   theme: Theme,
   arrayOfMarketIds: string[],
   marketType: 0 | 1,
   keys,
   handlePairChange: (pair: string) => void
-) => {
+  // pricePrecision: number
+  // quantityPrecision: number
+}) => {
   if (!tradeData && !Array.isArray(tradeData)) {
     return []
   }
@@ -2365,11 +2369,15 @@ export const combineTradeHistoryTable = (
   return processedTradeHistoryData
 }
 
-export const combineFundsTable = (
-  fundsData: FundsType[],
+export const combineFundsTable = ({
+  data: fundsData,
+  hideSmallAssets,
+  marketType,
+}: {
+  data: FundsType[],
   hideSmallAssets: boolean,
-  marketType: 0 | 1
-) => {
+  marketType: 0 | 1,
+}) => {
   if (!fundsData && !Array.isArray(fundsData)) {
     return []
   }
@@ -2389,11 +2397,6 @@ export const combineFundsTable = (
         free,
         asset: { symbol, priceBTC, priceUSD },
       } = el
-
-      const { pricePrecision, quantityPrecision } = getPrecisionItem({
-        marketType,
-        symbol,
-      })
 
       if (!quantity || quantity === 0) {
         return
