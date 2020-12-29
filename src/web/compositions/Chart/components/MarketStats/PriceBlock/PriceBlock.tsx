@@ -58,7 +58,7 @@ const PriceBlock = ({
   }, [lastMarketPrice])
 
   return marketType === 1 ? (
-    <PanelCard marketType={marketType} theme={theme} style={{ width: '12rem' }}>
+    <PanelCard marketType={marketType} theme={theme} style={{ width: '14rem' }}>
       <PanelCardValue
         theme={theme}
         style={{
