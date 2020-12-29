@@ -175,8 +175,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       specificPair,
     } = this.state
 
-    console.log('TradingTable RENDER')
-
     const {
       theme,
       selectedKey,
@@ -197,6 +195,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
         myPortfolios: [],
         refetch: () => {},
       },
+      pricePrecision,
+      quantityPrecision,
     } = this.props
     const { refetch, myPortfolios = [] } = getAllUserKeysQuery || {
       refetch: () => {},
@@ -216,7 +216,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       }),
       {}
     )
-
+    
     return (
       <div
         id="tables"
@@ -249,6 +249,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             perPageOpenOrders,
             pageSmartTrades,
             perPageSmartTrades,
+            
           }}
         />
         <ActiveTrades
@@ -275,6 +276,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             show: tab === 'activeTrades',
             page: pageSmartTrades,
             perPage: perPageSmartTrades,
+            pricePrecision,
+            quantityPrecision,
             allKeys,
             specificPair,
             handleToggleSpecificPair: this.handleToggleSpecificPair,
@@ -302,6 +305,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             currencyPair,
             canceledOrders,
             arrayOfMarketIds,
+            pricePrecision,
+            quantityPrecision,
             showAllPositionPairs,
             showAllOpenOrderPairs,
             showAllSmartTradePairs,
@@ -328,6 +333,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             canceledOrders,
             arrayOfMarketIds,
             minFuturesStep,
+            pricePrecision,
+            quantityPrecision,
             allKeys,
             specificPair,
             priceFromOrderbook,
@@ -364,6 +371,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             arrayOfMarketIds,
             canceledOrders,
             currencyPair,
+            pricePrecision,
+            quantityPrecision,
             allKeys,
             specificPair,
             showAllPositionPairs,
@@ -400,6 +409,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             arrayOfMarketIds,
             canceledOrders,
             currencyPair,
+            pricePrecision,
+            quantityPrecision,
             showAllPositionPairs,
             showAllOpenOrderPairs,
             showAllSmartTradePairs,
@@ -425,6 +436,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             arrayOfMarketIds,
             canceledOrders,
             currencyPair,
+            pricePrecision,
+            quantityPrecision,
             showAllPositionPairs,
             showAllOpenOrderPairs,
             showAllSmartTradePairs,
@@ -447,6 +460,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             canceledOrders,
             arrayOfMarketIds,
             currencyPair,
+            pricePrecision,
+            quantityPrecision,
             showAllPositionPairs,
             showAllOpenOrderPairs,
             showAllSmartTradePairs,

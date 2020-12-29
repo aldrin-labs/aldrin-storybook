@@ -271,7 +271,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     } = this.props
 
     if (marketPriceAfterPairChange !== prevProps.marketPriceAfterPairChange) {
-      this.onPriceChange({ target: { value: marketPriceAfterPairChange } })
+      if (leverage !== undefined) {
+        this.onPriceChange({ target: { value: marketPriceAfterPairChange } })
+      }
     }
 
     if (prevProps.priceType !== priceType) {

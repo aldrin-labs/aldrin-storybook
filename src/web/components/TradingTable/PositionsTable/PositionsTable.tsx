@@ -277,6 +277,8 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       keys,
       handlePairChange,
       enqueueSnackbar,
+      pricePrecision,
+      quantityPrecision
     } = this.props
 
     const positionsData = combinePositionsTable({
@@ -291,6 +293,8 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       priceFromOrderbook,
       handlePairChange,
       enqueueSnackbar,
+      pricePrecision,
+      quantityPrecision
     })
 
     this.setState({
@@ -380,6 +384,9 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       priceFromOrderbook,
       handlePairChange,
       enqueueSnackbar,
+      pricePrecision,
+      quantityPrecision,
+      minFuturesStep
     } = nextProps
 
     const positionsData = combinePositionsTable({
@@ -394,6 +401,9 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       priceFromOrderbook,
       handlePairChange,
       enqueueSnackbar,
+      pricePrecision,
+      quantityPrecision,
+      minFuturesStep
     })
 
     this.setState({

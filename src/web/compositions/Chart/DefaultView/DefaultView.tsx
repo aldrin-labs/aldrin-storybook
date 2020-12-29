@@ -80,6 +80,8 @@ export const DefaultViewComponent = (
     maxLeverage,
     layout,
     changeChartLayoutMutation,
+    pricePrecision,
+    quantityPrecision
   } = props
 
   useEffect(() => {
@@ -132,6 +134,8 @@ export const DefaultViewComponent = (
       )}
       <ChartGridContainer item xs={12} theme={theme}>
         <CardsPanel
+          pricePrecision={pricePrecision}
+          quantityPrecision={quantityPrecision}
           {...{
             _id: id,
             pair: currencyPair,
@@ -269,6 +273,8 @@ export const DefaultViewComponent = (
                       }
                       changeTable={changeTable}
                       sizeDigits={sizeDigits}
+                      pricePrecision={pricePrecision}
+                      quantityPrecision={quantityPrecision}
                     />
                   )}
                 </Grid>
@@ -306,6 +312,8 @@ export const DefaultViewComponent = (
                       showTableOnMobile={showTableOnMobile}
                       changeTable={changeTable}
                       sizeDigits={sizeDigits}
+                      pricePrecision={pricePrecision}
+                      quantityPrecision={quantityPrecision}
                     />
                   )}
                 </Grid>
@@ -347,6 +355,8 @@ export const DefaultViewComponent = (
                 priceFromOrderbook={priceFromOrderbook}
                 currencyPair={currencyPair}
                 arrayOfMarketIds={arrayOfMarketIds}
+                pricePrecision={pricePrecision}
+                quantityPrecision={quantityPrecision}
               />
             </TradingTabelContainer>
           )}
@@ -364,6 +374,8 @@ export const DefaultViewComponent = (
                 selectedKey={selectedKey}
                 marketType={marketType}
                 theme={theme}
+                pricePrecision={pricePrecision}
+                quantityPrecision={quantityPrecision}
               />
             </BalancesContainer>
           )}
@@ -386,6 +398,8 @@ export const DefaultViewComponent = (
                 maxLeverage={maxLeverage}
                 isDefaultTerminalViewMode={isDefaultTerminalViewMode}
                 updateTerminalViewMode={updateTerminalViewMode}
+                pricePrecision={pricePrecision}
+                quantityPrecision={quantityPrecision}
               />
             </TerminalContainer>
           )}
