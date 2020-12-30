@@ -13,12 +13,12 @@ import {
 } from './LastTrade.styles'
 const MemoizedLastTradePrice = React.memo(LastTradePrice)
 
-const lastTradePriceStyles = {
+const lastTradePriceStyles = (theme) => ({
   fontSize: '1.1rem',
   color: theme.palette.grey.onboard,
   fontFamily: 'DM Sans',
   fontWeight: 'normal',
-}
+})
 
 export interface IProps {
   theme: Theme
@@ -42,7 +42,7 @@ const MarkPriceBlockOrderBook = ({
   const { markPrice = 0 } = getMarkPrice || { markPrice: 0 }
 
   return (
-    <MemoizedLastTradePrice theme={theme} style={lastTradePriceStyles}>
+    <MemoizedLastTradePrice theme={theme} style={lastTradePriceStyles(theme)}>
       {Number(markPrice).toFixed(getNumberOfDecimalsFromNumber(aggregation))}
     </MemoizedLastTradePrice>
   )

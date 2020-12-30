@@ -179,7 +179,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       theme,
       selectedKey,
       marketType,
-
+      isFullScreenTablesMode,
       exchange,
       currencyPair,
       maxLeverage,
@@ -216,7 +216,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       }),
       {}
     )
-    
+
     return (
       <div
         id="tables"
@@ -233,6 +233,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             isDefaultTerminalViewMode,
             isDefaultOnlyTables,
             tab,
+            isFullScreenTablesMode,
             theme,
             marketType,
             selectedKey,
@@ -249,7 +250,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             perPageOpenOrders,
             pageSmartTrades,
             perPageSmartTrades,
-            
           }}
         />
         <ActiveTrades
@@ -257,6 +257,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             tab,
             updateTerminalViewMode,
             isDefaultOnlyTables,
+            isFullScreenTablesMode,
             keys,
             theme,
             selectedKey,

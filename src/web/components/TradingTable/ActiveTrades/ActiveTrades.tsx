@@ -90,7 +90,7 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
       canceledOrders,
       handlePairChange,
       pricePrecision,
-      quantityPrecision
+      quantityPrecision,
     } = this.props
 
     const activeStrategiesProcessedData = combineActiveTradesTable({
@@ -108,7 +108,7 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
       currencyPair,
       handlePairChange,
       pricePrecision,
-      quantityPrecision
+      quantityPrecision,
     })
 
     this.setState({
@@ -150,7 +150,7 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
       canceledOrders,
       handlePairChange,
       pricePrecision,
-      quantityPrecision
+      quantityPrecision,
     } = nextProps
 
     const activeStrategiesProcessedData = combineActiveTradesTable({
@@ -168,7 +168,7 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
       currencyPair,
       handlePairChange,
       pricePrecision,
-      quantityPrecision
+      quantityPrecision,
     })
 
     this.setState({
@@ -384,6 +384,7 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
       handleChangePage,
       handleChangeRowsPerPage,
       updateTerminalViewMode,
+      isFullScreenTablesMode,
       isDefaultOnlyTables,
       maxLeverage,
       allKeys,
@@ -392,7 +393,7 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
       handleToggleSpecificPair,
     } = this.props
 
-    if (!show || !isDefaultOnlyTables) {
+    if (!show) {
       return null
     }
 

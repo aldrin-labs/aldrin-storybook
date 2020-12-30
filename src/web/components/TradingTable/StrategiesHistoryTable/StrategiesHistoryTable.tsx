@@ -208,7 +208,7 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
           },
           cell: {
             color: theme.palette.grey.onboard,
-            fontSize: '1.1rem', // 1.2 if bold
+            fontSize: '1.3rem', // 1.2 if bold
             fontFamily: 'Avenir Next Demi',
             backgroundColor: theme.palette.white.background,
             letterSpacing: '.1rem',

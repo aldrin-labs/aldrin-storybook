@@ -23,6 +23,8 @@ export const SliderWithPriceAndPercentageFieldRow = ({
   theme,
   needChain = true,
   entryPoint,
+  titleForTooltip,
+  needTooltip = false,
   showErrors,
   isMarketType,
   showMarks,
@@ -100,6 +102,8 @@ export const SliderWithPriceAndPercentageFieldRow = ({
         textAlign={percentageTextAlign}
         needPreSymbol={false}
         value={value}
+        needTooltip
+        titleForTooltip={titleForTooltip}
         needTitleBlock
         header={header}
         showErrors={showErrors}

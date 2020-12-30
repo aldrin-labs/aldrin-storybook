@@ -344,6 +344,7 @@ export const TradingTerminalContainer = styled(
 export const TopChartsContainer = styled(
   ({
     isDefaultTerminalViewMode,
+    isFullScreenTablesMode,
     MASTER_BUILD,
     hideDepthChart,
     hideOrderbook,
@@ -354,11 +355,11 @@ export const TopChartsContainer = styled(
   transition: all 0.5s ease;
   position: relative;
   width: 100%;
-  display: flex;
   flex-wrap: wrap;
   flex-grow: 0;
   max-width: 100%;
   flex-basis: 100%;
+  display: ${(props) => (props.isFullScreenTablesMode ? 'none' : 'flex')};
   height: ${(props) =>
     props.isDefaultTerminalViewMode ? 'calc(60%)' : 'calc(50%)'};
   @media screen and (max-width: 1440px) {
@@ -407,13 +408,20 @@ export const ChartsContainer = styled(
 `
 
 export const TradingTabelContainer = styled(
-  ({ isDefaultTerminalViewMode, ...rest }) => <TablesContainer {...rest} />
+  ({ isDefaultTerminalViewMode, isFullScreenTablesMode, ...rest }) => (
+    <TablesContainer {...rest} />
+  )
 )`
   // 32vh was
   display: ${(props) => (!props.isSmartOrderMode ? 'flex' : 'none')};
   background-color: ${(props) => props.theme.palette.white.background};
   position: relative;
-  height: ${(props) => (props.isDefaultTerminalViewMode ? '40%' : '0%')};
+  height: ${(props) =>
+    props.isDefaultTerminalViewMode
+      ? '40%'
+      : props.isFullScreenTablesMode
+      ? '100%'
+      : '0%'};
   justify-content: flex-start;
   flex-direction: column;
   overflow: hidden;
@@ -490,16 +498,19 @@ export const WatchSubvalue = styled.span`
 `
 
 export const BalancesContainer = styled(
-  ({ isDefaultTerminalViewMode, isSmartOrderMode, ...rest }) => (
-    <Grid {...rest} />
-  )
+  ({
+    isFullScreenTablesMode,
+    isDefaultTerminalViewMode,
+    isSmartOrderMode,
+    ...rest
+  }) => <Grid {...rest} />
 )`
   position: relative;
   padding: 0;
   height: ${(props) => (props.isDefaultTerminalViewMode ? '40%' : '50%')};
-  display: ${(props) => props.isSmartOrderMode && 'none;'};
+  display: ${(props) =>
+    props.isSmartOrderMode || props.isFullScreenTablesMode ? 'none' : 'flex'};
 `
-
 export const SmartTerminalContainer = styled(Grid)`
   position: relative;
   height: 48%;

@@ -196,7 +196,24 @@ export const EntryOrderBlock = ({
           )}
           <DarkTooltip
             maxWidth={'30rem'}
-            title={'Place multiple entry targets to average your lose'}
+            title={
+              <>
+                <p>
+                  <a>
+                    Ability to set several points of entry to a position at once
+                    for averaging when reaching a certain price.
+                  </a>
+                </p>
+                <p>
+                  {' '}
+                  <a>
+                    Your stop loss and take profit will be rearranged each time
+                    you reach a new entry point based on the new calculated
+                    entry price.
+                  </a>
+                </p>
+              </>
+            }
           >
             <AdditionalSettingsButton
               style={{ textDecoration: 'underline' }}
@@ -594,7 +611,7 @@ Place if no trades exists                    </SettingsLabel>
               <InputRowContainer justify="flex-end">
                 <DarkTooltip
                   title={
-                    'Trade will be placed every time when there is an alert but no open position.'
+                    'Your trade will be placed every time alert be reached.'
                   }
                   maxWidth={'30rem'}
                 >

@@ -6,7 +6,6 @@ import { Fade, Grid, Theme } from '@material-ui/core'
 import { SingleChart } from '@sb/components/Chart'
 import { difference, shallowDifference } from '@core/utils/difference'
 
-
 import ChartOnboarding from '@sb/compositions/Chart/components/ChartOnboarding/ChartOnboarding'
 import Balances from '@core/components/Balances/BalancesWrapper'
 import TradingComponent from '@core/components/TradingComponent'
@@ -22,10 +21,12 @@ import ChartCardHeader from '@sb/components/ChartCardHeader'
 const TerminalContainer = ({
   isDefaultTerminalViewMode,
   isDefaultOnlyTables,
+  isFullScreenTablesMode,
   children,
   theme,
 }: {
   isDefaultTerminalViewMode: boolean
+  isFullScreenTablesMode: boolean
   isDefaultOnlyTables: boolean
   children: React.ReactChild
   theme: Theme
@@ -37,6 +38,7 @@ const TerminalContainer = ({
     xs={isDefaultTerminalViewMode ? 5 : 12}
     isDefaultTerminalViewMode={isDefaultTerminalViewMode}
     isDefaultOnlyTables={isDefaultOnlyTables}
+    isFullScreenTablesMode={isFullScreenTablesMode}
   >
     {children}
   </TablesBlockWrapper>
@@ -81,7 +83,7 @@ export const DefaultViewComponent = (
     layout,
     changeChartLayoutMutation,
     pricePrecision,
-    quantityPrecision
+    quantityPrecision,
   } = props
 
   useEffect(() => {
@@ -121,17 +123,20 @@ export const DefaultViewComponent = (
   const [base, quote] = currencyPair.split('_')
   const baseQuoteArr = [base, quote]
   const exchange = activeExchange.symbol
-  const isDefaultTerminalViewMode = terminalViewMode !== 'smartOrderMode'
+  const isDefaultTerminalViewMode =
+    terminalViewMode !== 'smartOrderMode' &&
+    terminalViewMode !== 'fullScreenTables'
   const isDefaultOnlyTables = terminalViewMode === 'onlyTables'
   const isSmartOrderMode = terminalViewMode === 'smartOrderMode'
+  const isFullScreenTablesMode =
+    terminalViewMode === 'fullScreenTables' &&
+    terminalViewMode !== 'smartOrderMode'
 
   const sizeDigits = marketType === 0 ? 8 : 3
 
   return (
     <Container container spacing={8} theme={theme}>
-      {authenticated && (
-        <ChartOnboarding />
-      )}
+      {authenticated && <ChartOnboarding />}
       <ChartGridContainer item xs={12} theme={theme}>
         <CardsPanel
           pricePrecision={pricePrecision}
@@ -180,6 +185,7 @@ export const DefaultViewComponent = (
         >
           <TopChartsContainer
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+            isFullScreenTablesMode={isFullScreenTablesMode}
             theme={theme}
           >
             <ChartsContainer
@@ -328,7 +334,9 @@ export const DefaultViewComponent = (
               theme={theme}
               isSmaerOrderMode={isSmartOrderMode}
               xs={
-                isDefaultOnlyTables
+                isFullScreenTablesMode
+                  ? 12
+                  : isDefaultOnlyTables
                   ? marketType === 0
                     ? 12
                     : 11
@@ -339,8 +347,10 @@ export const DefaultViewComponent = (
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
               updateTerminalViewMode={updateTerminalViewMode}
               isDefaultOnlyTables={isDefaultOnlyTables}
+              isFullScreenTablesMode={isFullScreenTablesMode}
             >
               <TradingTable
+                isFullScreenTablesMode={isFullScreenTablesMode}
                 isDefaultOnlyTables={isDefaultOnlyTables}
                 isSmartOrderMode={isSmartOrderMode}
                 updateTerminalViewMode={updateTerminalViewMode}
@@ -363,6 +373,7 @@ export const DefaultViewComponent = (
           {authenticated && (
             <BalancesContainer
               item
+              isFullScreenTablesMode={isFullScreenTablesMode}
               xs={1}
               theme={theme}
               id="balances"
@@ -385,6 +396,7 @@ export const DefaultViewComponent = (
               theme={theme}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
               isDefaultOnlyTables={isDefaultOnlyTables}
+              isFullScreenTablesMode={isFullScreenTablesMode}
             >
               <TradingComponent
                 selectedKey={selectedKey}
@@ -410,12 +422,9 @@ export const DefaultViewComponent = (
 }
 
 export const DefaultView = React.memo(DefaultViewComponent, (prev, next) => {
-
   console.log('DefaultView diff: ', difference(prev, next))
   console.log('DefaultView shallowDifference: ', shallowDifference(prev, next))
   console.log('DefaultView shallowEqual diff', shallowEqual(prev, next))
 
-
   return shallowEqual(prev, next)
-
 })

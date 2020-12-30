@@ -507,6 +507,9 @@ export const TakeProfitBlock = ({
                       pair,
                       needChain: false,
                       theme,
+                      needTooltip: true,
+                      titleForTooltip:
+                        'The level of price change after the trend reversal, at which the trailing order will be executed.',
                       header: 'deviation',
                       percentageInputWidth: '61.5%',
                       entryPoint,
