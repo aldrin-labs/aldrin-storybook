@@ -74,6 +74,7 @@ const CustomSwitcher = ({
   buttonHeight,
   containerStyles,
   theme,
+  isDisabled
 }: {
   firstHalfIsActive: boolean
   changeHalf: () => void
@@ -84,6 +85,7 @@ const CustomSwitcher = ({
   buttonHeight: string
   containerStyles: CSSProperties
   theme: Theme
+  isDisabled: boolean
 }) => {
   return (
     <div style={{ display: 'inline-block', ...containerStyles }}>
@@ -91,7 +93,7 @@ const CustomSwitcher = ({
         isFirstHalf
         theme={theme}
         key={'firstHalf'}
-        isDisabled={!firstHalfIsActive}
+        isDisabled={!firstHalfIsActive || isDisabled}
         onClick={() => !firstHalfIsActive && changeHalf()}
         height={buttonHeight}
         width={'50%'}
@@ -102,7 +104,7 @@ const CustomSwitcher = ({
       <SwitcherHalf
         theme={theme}
         key={'secondHalf'}
-        isDisabled={firstHalfIsActive}
+        isDisabled={firstHalfIsActive || isDisabled}
         onClick={() => firstHalfIsActive && changeHalf()}
         height={buttonHeight}
         width={'50%'}

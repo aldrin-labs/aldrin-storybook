@@ -202,9 +202,9 @@ export const AdditionalSettingsButton = styled(
 `
 
 export const ChangeOrderTypeBtn = styled(
-  ({ isActive, children, theme, ...rest }) => (
+  ({ isActive, isPlotEnabled, children, disabled, theme, ...rest }) => (
     <BtnCustom
-      btnWidth="calc(50%)"
+      btnWidth={isPlotEnabled ? '35%' : 'calc(50%)'}
       height={'3rem'}
       fontSize={'1.2rem'}
       fontWeight={isActive ? '700' : '400'}
@@ -221,6 +221,7 @@ export const ChangeOrderTypeBtn = styled(
       textTransform="none"
       boxShadow={isActive ? '0px .2rem .3rem rgba(8, 22, 58, 0.15)' : 'none'}
       margin={'0 0 0 0'}
+      disabled={disabled}
       {...rest}
     >
       {children}

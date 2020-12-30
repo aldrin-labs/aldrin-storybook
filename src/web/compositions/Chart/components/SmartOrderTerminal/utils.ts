@@ -29,7 +29,7 @@ export const GreenSwitcherStyles = (theme: Theme) => ({
 export const DisabledSwitcherStyles = (theme: Theme) => ({
   ...CommonSwitcherStyles,
   activeColor: theme.palette.grey.text,
-  activeBorderColor: theme.palette.border.main,
+  activeBorderColor: theme.palette.grey.border,
 })
 
 export const RedSwitcherStyles = (theme: Theme) => ({

@@ -2489,7 +2489,7 @@ export const combineOpenOrdersTable = ({
 }
 
 export const combineOrderHistoryTable = ({
-  orderData,
+  data: orderData,
   theme,
   marketType,
   keys,
@@ -2497,7 +2497,7 @@ export const combineOrderHistoryTable = ({
   // pricePrecision,
   // quantityPrecision
 }: {
-  orderData: OrderType[],
+  data: OrderType[],
   theme: Theme,
   marketType: 0 | 1,
   keys,
