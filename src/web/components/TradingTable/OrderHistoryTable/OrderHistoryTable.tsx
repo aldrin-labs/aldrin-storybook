@@ -171,7 +171,6 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       <TableWithSort
         style={{
           borderRadius: 0,
-          height: 'calc(100% - 6rem)',
           backgroundColor: theme.palette.white.background,
         }}
         stylesForTable={{ backgroundColor: theme.palette.white.background }}

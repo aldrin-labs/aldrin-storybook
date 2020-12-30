@@ -47,7 +47,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
     pageSmartTrades: 0,
     perPageSmartTrades: 30,
     allKeys: true,
-    specificPair: true,
+    specificPair: false,
   }
 
   componentDidMount() {

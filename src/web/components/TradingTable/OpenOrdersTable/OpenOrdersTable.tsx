@@ -432,7 +432,6 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       <TableWithSort
         style={{
           borderRadius: 0,
-          height: 'calc(100% - 6rem)',
           overflowX: 'hidden',
           backgroundColor: theme.palette.white.background,
         }}
