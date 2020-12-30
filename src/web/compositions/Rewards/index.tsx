@@ -593,7 +593,7 @@ const RewardsRoute = (props) => {
                   paddingBottom: '1rem',
                   margin: '0 1rem',
                 }}
-                href={`https://twitter.com/intent/tweet?text=%E2%80%A2+Coinbase+to+Suspend+%24XRP+Trading%0D%0A%E2%80%A2+Coinbase+Pre-IPO+listed+on+FTX%0D%0A%E2%80%A2+MicroStrategy+has+purchased+an+29%2C646+%24BTC%0D%0ARead+the+news%2C+develop+strategies+and+trade+with+Cryptocurrencies.ai+Smart+Order%3A+cryptocurrencies.ai%2FsmartTrading%0D%0A%24CCAI+%24DCFI+%24SRM+%24FTT+%24SOL%0Apic.twitter.com/yQAELll0xh`}
+                href={`https://twitter.com/intent/tweet?text=%E2%80%A2+The+600+millionth+transaction+was+recorded+on+the+%24BTC+blockchain%0D%0A%E2%80%A2+SEC+vs.+%24XRP+case%3A+Initial+pretrial+conference+set+for+February+22%0D%0A%E2%80%A2+%23Bitcoin+reached+a+new+ATH+of+over+%2428%2C5k.%0D%0ALong+it+with+%40CCAI_Official+smart+order%21%0D%0A%24CCAI+%24DCFI+%24SRM+%24SOL%0Apic.twitter.com/3ZRqjuJwdY`}
                 rel="noopener noreferrel"
                 target={'_blank'}
                 onClick={(e) => {
