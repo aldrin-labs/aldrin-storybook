@@ -33,24 +33,17 @@ import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 
-
 import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
 import { useQuery } from 'react-apollo'
 
-const version = `11.0.25`
+const version = `11.0.26`
 const currentVersion = localStorage.getItem('version')
 if (currentVersion !== version) {
   localStorage.clear()
   localStorage.setItem('version', version)
 }
 
-
-const AppRaw = ({
-  children,
-  getThemeModeQuery,
-  authenticated,
-}: any) => {
-
+const AppRaw = ({ children, getThemeModeQuery, authenticated }: any) => {
   const themeMode =
     (getThemeModeQuery &&
       getThemeModeQuery.getAccountSettings &&
@@ -107,7 +100,6 @@ const AppDataWrapper = compose(
 )(AppRaw)
 
 export const App = React.memo(AppDataWrapper, (prev, next) => {
-
   console.log('diff for App', difference(prev, next))
 
   if (prev.cacheBusterProp !== next.cacheBusterProp) return true
