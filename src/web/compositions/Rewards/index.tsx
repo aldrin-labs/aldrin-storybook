@@ -283,6 +283,7 @@ const getPhaseFromTotal = (total) => {
 }
 
 const RewardsRoute = (props) => {
+  const [encryptedTweetText, updateEncryptedTweetText] = useState('')
   const [linkFromTwitter, setTwittersLink] = useState('')
 
   const [isHarvestPopupOpen, setOpen] = useState(false)
@@ -413,10 +414,13 @@ const RewardsRoute = (props) => {
         open={isWebServerUrlPopupOpen}
         openNextPopup={() => setTwitterValidatorTweetConfirmPopupOpen(true)}
         handleClose={() => setWebServerUrlPopupOpen(false)}
+        updateEncryptedTweetText={updateEncryptedTweetText}
         theme={theme}
       />
       <TwitterValidatorTweetConfirmPopup 
         isDarkTheme={isDarkTheme}
+        publicKey={publicKey}
+        encryptedTweetText={encryptedTweetText}
         open={isTwitterValidatorTweetConfirmPopupOpen}
         openNextPopup={() => setCongratulationsPopupOpen(true)}
         handleClose={() => setTwitterValidatorTweetConfirmPopupOpen(false)}

@@ -1,21 +1,20 @@
 import React, { useState } from 'react'
 
 import { notify } from '@sb/dexUtils/notifications'
-
+import { getEncryptedValidatorDNS } from '@core/graphql/mutations/chart/getEncryptedValidatorDNS'
+import { StyledDialogContent } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import {
-  StyledDialogContent,
-} from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-import { PurpleButton, StyledPaper, PasteButton } from '@sb/compositions/Addressbook/components/Popups/NewCoinPopup'
+  PurpleButton,
+  StyledPaper,
+  PasteButton,
+} from '@sb/compositions/Addressbook/components/Popups/NewCoinPopup'
 import { Input, Text } from '@sb/compositions/Addressbook/index'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute'
+import { compose } from 'recompose'
+import { graphql } from 'react-apollo'
 
-const WebServerUrlPopup = ({
-  theme,
-  open,
-  handleClose,
-  openNextPopup
-}) => {
+const WebServerUrlPopup = ({ theme, open, handleClose, openNextPopup, getEncryptedValidatorDNSMutation, updateEncryptedTweetText }) => {
   const [address, updateAddress] = useState('')
   const [showLoader, updateShowLoader] = useState(false)
 
@@ -60,8 +59,7 @@ const WebServerUrlPopup = ({
               Paste
             </PasteButton>
           </div>
-          <RowContainer> 
-            
+          <RowContainer>
             <PurpleButton
               text={'Confirm'}
               showLoader={showLoader}
@@ -78,6 +76,18 @@ const WebServerUrlPopup = ({
                   return
                 }
 
+                await updateShowLoader(true)
+
+                const result = await getEncryptedValidatorDNSMutation({
+                  variables: {
+                    plainTextDNS: address
+                  }
+                })
+
+                await updateEncryptedTweetText(result.data.getEncryptedValidatorDNS)
+
+                await updateShowLoader(false)
+
                 await updateAddress('')
                 await openNextPopup()
                 await handleClose()
@@ -90,4 +100,8 @@ const WebServerUrlPopup = ({
   )
 }
 
-export default WebServerUrlPopup
+export default compose(
+  graphql(getEncryptedValidatorDNS, {
+    name: 'getEncryptedValidatorDNSMutation',
+  })
+)(WebServerUrlPopup)
