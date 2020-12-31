@@ -593,7 +593,7 @@ const RewardsRoute = (props) => {
                   paddingBottom: '1rem',
                   margin: '0 1rem',
                 }}
-                href={`https://twitter.com/intent/tweet?text=%E2%80%A2+%24BTC+another+ATH%2C+29k%0D%0A%E2%80%A2+The+amount+of+%24ETH+on+exchanges+is+at+a+yearly+low%0D%0A%E2%80%A2+VanEck+refiles+with+SEC+for+bitcoin+ETF%0D%0Ahttps%3A%2F%2Fcryptocurrencies.ai%2F+%E2%80%93+trade+spot+and+up+to+125x+leverage+futures+with+high+liquidity+and+advanced+trading+tools.%0D%0A%24CCAI+%24DCFI+%24SRM%0Apic.twitter.com/osR8gtV0Ce`}
+                href={`https://twitter.com/intent/tweet?text=%E2%80%A2+%24BTC+another+ATH%2C+29k%0D%0A%E2%80%A2+The+amount+of+%24ETH+on+exchanges+hits+a+year+low%0D%0A%E2%80%A2+VanEck+refiles+with+SEC+for+bitcoin+ETF%0D%0Ahttps%3A%2F%2Fcryptocurrencies.ai%2F+%E2%80%93+trade+spot+and+up+to+125x+leverage+futures+with+high+liquidity+and+advanced+trading+tools.%0D%0A%24CCAI+%24DCFI+%24SRM%0Apic.twitter.com/osR8gtV0Ce`}
                 rel="noopener noreferrel"
                 target={'_blank'}
                 onClick={(e) => {
