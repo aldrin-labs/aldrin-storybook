@@ -61,6 +61,7 @@ export default compose(
     name: 'portfolioAssets',
     withOutSpinner: true,
     fetchPolicy: 'cache-and-network',
+    pollInterval: 90000,
     variables: (props) => ({
       baseCoin: 'USDT',
       innerSettings: true,
