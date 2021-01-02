@@ -346,7 +346,7 @@ const MarketStats = (props) => {
         </span>
       </PanelCard> */}
 
-      <PanelCard marketType={marketType} theme={theme}>
+      {/* <PanelCard marketType={marketType} theme={theme}>
         <PanelCardTitle theme={theme}>24h high</PanelCardTitle>
         <PanelCardValue theme={theme}>
           {formatNumberToUSFormat(
@@ -357,9 +357,9 @@ const MarketStats = (props) => {
             )
           )}
         </PanelCardValue>
-      </PanelCard>
+      </PanelCard> */}
 
-      <PanelCard marketType={marketType} theme={theme}>
+      {/* <PanelCard marketType={marketType} theme={theme}>
         <PanelCardTitle theme={theme}>24h low</PanelCardTitle>
         <PanelCardValue theme={theme}>
           {formatNumberToUSFormat(
@@ -370,7 +370,7 @@ const MarketStats = (props) => {
             )
           )}
         </PanelCardValue>
-      </PanelCard>
+      </PanelCard> */}
 
       {/* <TooltipCustom
         title="Cryptocurrencies.ai is a Serum partner exchange"
@@ -521,24 +521,24 @@ export default compose(
   //   withTableLoader: true,
   //   withoutLoading: true,
   // }),
-  queryRendererHoc({
-    query: marketDataByTickers,
-    name: 'marketDataByTickersQuery',
-    variables: (props) => ({
-      symbol: props.symbol,
-      exchange: 'serum',
-      marketType: props.marketType,
-      startTimestamp: `${datesForQuery.startOfTime}`,
-      endTimestamp: `${datesForQuery.endOfTime}`,
-      prevStartTimestamp: `${datesForQuery.prevStartTimestamp}`,
-      prevEndTimestamp: `${datesForQuery.prevEndTimestamp}`,
-    }),
-    fetchPolicy: 'cache-and-network',
-    pollInterval: 30000,
-    withOutSpinner: true,
-    withTableLoader: true,
-    withoutLoading: true,
-  })
+  // queryRendererHoc({
+  //   query: marketDataByTickers,
+  //   name: 'marketDataByTickersQuery',
+  //   variables: (props) => ({
+  //     symbol: props.symbol,
+  //     exchange: 'serum',
+  //     marketType: props.marketType,
+  //     startTimestamp: `${datesForQuery.startOfTime}`,
+  //     endTimestamp: `${datesForQuery.endOfTime}`,
+  //     prevStartTimestamp: `${datesForQuery.prevStartTimestamp}`,
+  //     prevEndTimestamp: `${datesForQuery.prevEndTimestamp}`,
+  //   }),
+  //   fetchPolicy: 'cache-and-network',
+  //   pollInterval: 30000,
+  //   withOutSpinner: true,
+  //   withTableLoader: true,
+  //   withoutLoading: true,
+  // })
 
   // queryRendererHoc({
   //   query: getFundingRate,
