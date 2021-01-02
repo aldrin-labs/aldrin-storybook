@@ -100,7 +100,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
       setCustomMarkets,
       setMarketAddress,
       customMarkets,
-      getSerumMarketDataQuery,
+      getSerumMarketDataQuery = { getSerumMarketData: [] },
       getSerumMarketDataQueryRefetch
     } = this.props
 
@@ -125,11 +125,11 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
     // console.log('markets', markets)
 
     const dexMarketSymbols = markets.map((el) => ({
-      symbol: el.name,
+      symbol: el.name.replace('/', '_'),
       isAwesomeMarket: el.isAwesomeMarket,
     }))
 
-    const filtredMarketsByExchange = getSerumMarketDataQuery.getSerumMarketData.filter(
+    const filtredMarketsByExchange = dexMarketSymbols.filter(
       (el) =>
         el.symbol &&
         // +el.volume24hChange &&
@@ -862,28 +862,28 @@ export default compose(
   //   withOutSpinner: true,
   //   withTableLoader: false,
   // }),
-  queryRendererHoc({
-    query: getSerumMarketData,
-    name: 'getSerumMarketDataQuery',
-    variables: (props) => ({
-      exchange: 'serum',
-      publicKey: props.publicKey,
-      marketType: 0,
-      startTimestamp: `${datesForQuery.startOfTime}`,
-      endTimestamp: `${datesForQuery.endOfTime}`,
-      prevStartTimestamp: `${datesForQuery.prevStartTimestamp}`,
-      prevEndTimestamp: `${datesForQuery.prevEndTimestamp}`,
-    }),
-    // TODO: make chache-first here and in CHART by refetching this after adding market
-    fetchPolicy: 'cache-first',
-    withOutSpinner: true,
-    withTableLoader: false,
-  }),
-  queryRendererHoc({
-    query: getSelectorSettings,
-    skip: (props: any) => !props.authenticated,
-    withOutSpinner: true,
-    withTableLoader: false,
-    name: 'getSelectorSettingsQuery',
-  })
+  // queryRendererHoc({
+  //   query: getSerumMarketData,
+  //   name: 'getSerumMarketDataQuery',
+  //   variables: (props) => ({
+  //     exchange: 'serum',
+  //     publicKey: props.publicKey,
+  //     marketType: 0,
+  //     startTimestamp: `${datesForQuery.startOfTime}`,
+  //     endTimestamp: `${datesForQuery.endOfTime}`,
+  //     prevStartTimestamp: `${datesForQuery.prevStartTimestamp}`,
+  //     prevEndTimestamp: `${datesForQuery.prevEndTimestamp}`,
+  //   }),
+  //   // TODO: make chache-first here and in CHART by refetching this after adding market
+  //   fetchPolicy: 'cache-first',
+  //   withOutSpinner: true,
+  //   withTableLoader: false,
+  // }),
+  // queryRendererHoc({
+  //   query: getSelectorSettings,
+  //   skip: (props: any) => !props.authenticated,
+  //   withOutSpinner: true,
+  //   withTableLoader: false,
+  //   name: 'getSelectorSettingsQuery',
+  // })
 )(SelectWrapper)
