@@ -95,7 +95,9 @@ export const DefaultViewComponent = (
     return null
   }
 
-  const { hideDepthChart, hideOrderbook, hideTradeHistory } = layout
+  const { hideDepthChart, hideOrderbook } = layout
+
+  const hideTradeHistory = false
 
   const changeChartLayout = async (newParams) => {
     const argObject = {
@@ -266,12 +268,12 @@ export const DefaultViewComponent = (
                       ? '0%'
                       : hideDepthChart
                       ? '50%'
-                      : '65%',
+                      : '100%',
                     maxWidth: hideOrderbook
                       ? '0%'
                       : hideDepthChart
                       ? '50%'
-                      : '65%',
+                      : '100%',
                   }}
                 >
                   {!hideOrderbook && (
@@ -300,7 +302,7 @@ export const DefaultViewComponent = (
                     />
                   )}
                 </Grid>
-                <Grid
+                {/* <Grid
                   item
                   xs={5}
                   style={{
@@ -339,7 +341,7 @@ export const DefaultViewComponent = (
                       }}
                     />
                   )}
-                </Grid>
+                </Grid> */}
               </Grid>
             </TradingTerminalContainer>
           </TopChartsContainer>
