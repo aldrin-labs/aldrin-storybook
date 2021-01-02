@@ -193,8 +193,8 @@ const CustomMarketDialog = ({
       return
     }
 
-    await getUserCustomMarketsQueryRefetch()
-    await getSerumMarketDataQueryRefetch()
+    // await getUserCustomMarketsQueryRefetch()
+    // await getSerumMarketDataQueryRefetch()
 
     await changeLoading(false)
 
@@ -410,13 +410,13 @@ const CustomMarketDialog = ({
 export default compose(
   withRouter,
   withPublicKey,
-  queryRendererHoc({
-    query: getUserCustomMarkets,
-    name: 'getUserCustomMarketsQuery',
-    fetchPolicy: 'cache-first',
-    variables: (props) => ({
-      publicKey: props.publicKey,
-    }),
-  }),
+  // queryRendererHoc({
+  //   query: getUserCustomMarkets,
+  //   name: 'getUserCustomMarketsQuery',
+  //   fetchPolicy: 'cache-first',
+  //   variables: (props) => ({
+  //     publicKey: props.publicKey,
+  //   }),
+  // }),
   graphql(addSerumCustomMarket, { name: 'addSerumCustomMarketMutation' })
 )(CustomMarketDialog)

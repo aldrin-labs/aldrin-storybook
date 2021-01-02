@@ -276,7 +276,8 @@ export const combineSelectWrapperData = ({
         contentToSort: +el.closePrice,
         render: (
           <span>
-            {formatNumberToUSFormat(stripDigitPlaces(el.closePrice, 2))}
+            -
+            {/* {formatNumberToUSFormat(stripDigitPlaces(el.closePrice, 2))} */}
           </span>
         ),
 
@@ -313,9 +314,10 @@ export const combineSelectWrapperData = ({
         contentToSort: +el.volume,
         render: (
           <span>
-            {`${formatNumberToUSFormat(
+            -
+            {/* {`${formatNumberToUSFormat(
               roundAndFormatNumber(el.volume, 2, false)
-            )} ${quote}`}
+            )} ${quote}`} */}
           </span>
         ),
       },
@@ -333,12 +335,13 @@ export const combineSelectWrapperData = ({
       // },
       trades24h: {
         isNumber: true,
-        contentToSort: +el.tradesCount,
+        contentToSort: +el.tradesCount || 0,
         render: (
           <span>
-            {`${formatNumberToUSFormat(
+            -
+            {/* {`${formatNumberToUSFormat(
               roundAndFormatNumber(el.tradesCount, 2, false)
-            )} ${quote}`}
+            )} ${quote}`} */}
           </span>
         ),
       },
