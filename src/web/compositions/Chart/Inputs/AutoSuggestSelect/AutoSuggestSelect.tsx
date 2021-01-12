@@ -40,7 +40,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
         (el) => el.name.split('/').join('_') === value
       )
       // console.log('selectedMarketFormSelector', selectedMarketFormSelector)
-      setMarketAddress(selectedMarketFromUrl.isCustomUserMarket ? selectedMarketFromUrl.address : selectedMarketFromUrl.address.toBase58())
+      // setMarketAddress(selectedMarketFromUrl.isCustomUserMarket ? selectedMarketFromUrl.address : selectedMarketFromUrl.address.toBase58())
     }
   }
 

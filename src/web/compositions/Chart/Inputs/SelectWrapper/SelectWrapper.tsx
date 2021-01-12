@@ -111,7 +111,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
       setCustomMarkets,
       setMarketAddress,
       customMarkets,
-      getSerumMarketDataQuery,
+      getSerumMarketDataQuery = { getSerumMarketData: [] },
       getSerumMarketDataQueryRefetch
     } = this.props
 
@@ -136,7 +136,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
     // console.log('markets', markets)
 
     const dexMarketSymbols = markets.map((el) => ({
-      symbol: el.name,
+      symbol: el.name.replace('/', '_'),
       isAwesomeMarket: el.isAwesomeMarket,
     }))
 

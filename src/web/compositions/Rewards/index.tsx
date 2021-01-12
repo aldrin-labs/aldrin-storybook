@@ -593,7 +593,7 @@ const RewardsRoute = (props) => {
                   paddingBottom: '1rem',
                   margin: '0 1rem',
                 }}
-                href={`https://twitter.com/intent/tweet?text=%E2%80%A2+The+600+millionth+transaction+was+recorded+on+the+%24BTC+blockchain%0D%0A%E2%80%A2+SEC+vs.+%24XRP+case%3A+Initial+pretrial+conference+set+for+February+22%0D%0A%E2%80%A2+%23Bitcoin+reached+a+new+ATH+of+over+%2428%2C5k.%0D%0ALong+it+with+%40CCAI_Official+smart+order%21%0D%0A%24CCAI+%24DCFI+%24SRM+%24SOL%0Apic.twitter.com/3ZRqjuJwdY`}
+                href={`https://twitter.com/intent/tweet?text=%E2%80%A2%20%24BTC%20fell%20almost%2029%25%20over%20the%20last%20days%0A%E2%80%A2%20%40bytemaster7%20has%20left%20%40block_one_%0A%E2%80%A2%20%23Bitcoin%20ETF%20might%20depress%20price%20in%20the%20short-term%20%40JPMorgan%0ADevelop%20strategies%20and%20trade%20with%20http%3A%2F%2FCryptocurrencies.ai%0A%24CCAI%20%24DCFI%20%24SRM%20%24FTT%20%24SOL%0Apic.twitter.com/5RnyHw9Lw4`}
                 rel="noopener noreferrel"
                 target={'_blank'}
                 onClick={(e) => {
