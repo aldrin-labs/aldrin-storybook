@@ -227,6 +227,22 @@ const MarketStats = (props) => {
     },
   }
 
+  // const { getMarketStatisticsByPair: {
+  //   lastPrice,
+  //   priceChange,
+  //   priceChangePercent,
+  //   highPrice,
+  //   lowPrice,
+  // } } = getMarketStatisticsByPairQuery || {
+  //   getMarketStatisticsByPair: {
+  //     lastPrice: 0,
+  //     priceChange: 0,
+  //     priceChangePercent: 0,
+  //     highPrice: 0,
+  //     lowPrice: 0,
+  //   }
+  // }
+
   // const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
   // const isStableCoinInPair = stableCoinsRegexp.test(symbol)
   // const roundingPrecision = isStableCoinInPair ? 2 : 8

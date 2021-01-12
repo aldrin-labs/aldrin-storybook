@@ -19,6 +19,27 @@ const Wrapper = styled(Card)`
   border-radius: 0;
 `
 
+const marketsWithoutIndexChart = [
+  'ALEPH_USDT',
+  'KEEP_USDT',
+  'KIN_USDT',
+  'MSRM_USDT',
+  'SWAG_USDT',
+  'SRM_SOL',
+]
+
+const marketsWithoutBinanceChart = [
+  'CREAM_USDT',
+  'FIDA_USDT',
+  'FRONT_USDT',
+  'HGET_USDT',
+  'HXRO_USDT',
+  'MATH_USDT',
+  'UBXT_USDT'
+]
+
+const marketsWithUSDCCharts = ['BTC', 'LINK']
+
 export const SingleChart = ({
   additionalUrl,
   name,
@@ -44,7 +65,7 @@ export const SingleChart = ({
         }`}
         height={'100%'}
         id={`${name}${themeMode}`}
-        key={themeMode}
+        key={`${themeMode}${additionalUrl}`}
       />
     </Wrapper>
   )
@@ -60,11 +81,20 @@ export const SingleChartWithButtons = ({
   marketType,
   customMarkets,
 }) => {
+  const isWithoutIndexChart = 
+  (!marketsWithUSDCCharts.includes(currencyPair.split('_')[0]) && currencyPair.split('_')[1] === 'USDC') 
+  || marketsWithoutIndexChart.includes(currencyPair)
+
+  const [chartExchange, updateChartExchange] = useState(isWithoutIndexChart ? 'serum' : 'index')
+
   const isCustomMarkets = customMarkets.find(
     (el) => el.name.split('/').join('_') === currencyPair
-  )
+  ) || marketsWithoutBinanceChart.includes(currencyPair)
 
-  const [chartExchange, updateChartExchange] = useState('index')
+  useEffect(() => {
+    updateChartExchange(isWithoutIndexChart ? 'serum' : 'index')
+    return () => {}
+  }, [currencyPair])
 
   return (
     <CustomCard
@@ -99,6 +129,7 @@ export const SingleChartWithButtons = ({
         >
           Chart
         </span>
+        {isWithoutIndexChart ? null :
         <TerminalModeButton
           theme={theme}
           active={chartExchange === 'index'}
@@ -110,6 +141,7 @@ export const SingleChartWithButtons = ({
         >
           Index
         </TerminalModeButton>
+}
         <TerminalModeButton
           theme={theme}
           active={chartExchange === 'serum'}
@@ -121,6 +153,7 @@ export const SingleChartWithButtons = ({
       </TriggerTitle>
       <SingleChart
         name=""
+        key={`${themeMode}${base}/${quote}`}
         themeMode={themeMode}
         currencyPair={currencyPair}
         additionalUrl={`/?symbol=${base}/${quote}_${String(marketType)}_${
