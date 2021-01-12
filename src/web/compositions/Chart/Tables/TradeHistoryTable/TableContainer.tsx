@@ -134,7 +134,7 @@ class TableContainer extends Component<IProps, IState> {
   }
 
   componentDidMount() {
-    this.subscribe()
+    // this.subscribe()
   }
 
   componentDidUpdate(prevProps: IProps) {
@@ -150,7 +150,7 @@ class TableContainer extends Component<IProps, IState> {
       this.subscription && this.subscription.unsubscribe()
 
       //  subscribe to new exchange and create new unsub link
-      this.subscribe()
+      // this.subscribe()
     }
   }
 
@@ -162,7 +162,7 @@ class TableContainer extends Component<IProps, IState> {
       theme,
       sizeDigits,
     } = this.props
-    const { data, numbersAfterDecimalForPrice } = this.state
+    const { data = [], numbersAfterDecimalForPrice } = this.state
     const amountForBackground =
       data.reduce((prev, curr) => prev + +curr.size, 0) / data.length
 

@@ -304,7 +304,7 @@ export const TradingTerminalContainer = styled(
       ? '17%'
       : props.hideDepthChart
       ? '35%'
-      : '41.66667%'};
+      : '32%'};
   overflow: hidden;
 
   flex-direction: column;
@@ -368,7 +368,7 @@ export const ChartsContainer = styled(
       ? '83%'
       : props.hideDepthChart
       ? '65%'
-      : '58.33333%'};
+      : '68%'};
   justify-content: flex-end;
   flex-direction: column;
   border-radius: 0;

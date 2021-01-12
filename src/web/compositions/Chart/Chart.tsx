@@ -105,7 +105,7 @@ function ChartPageComponent(props: any) {
     authenticated,
     changeChartLayoutMutation,
     setCustomMarkets,
-    getUserCustomMarketsQuery,
+    getUserCustomMarketsQuery = { getUserCustomMarkets: [] },
     getUserCustomMarketsQueryRefetch,
     setMarketAddress,
     location,
@@ -122,47 +122,47 @@ function ChartPageComponent(props: any) {
   )
 
   useEffect(() => {
-    const { marketType } = props
-    setTimeout(() => {
-      prefetchCoinSelector({ marketType, exchangeSymbol: 'binance' })
-    }, 5000)
+    // const { marketType } = props
+    // setTimeout(() => {
+    //   prefetchCoinSelector({ marketType, exchangeSymbol: 'binance' })
+    // }, 5000)
 
-    // prefetch different market for coin selector
-    setTimeout(() => {
-      prefetchDifferentMarketForCoinSelector({
-        marketType: marketType === 1 ? 0 : 1,
-        exchangeSymbol: 'binance',
-      })
-    }, 15000)
+    // // prefetch different market for coin selector
+    // setTimeout(() => {
+    //   prefetchDifferentMarketForCoinSelector({
+    //     marketType: marketType === 1 ? 0 : 1,
+    //     exchangeSymbol: 'binance',
+    //   })
+    // }, 15000)
 
-    setTimeout(() => {
-      checLoginStatusWrapper(prefetchPortfolio)
-    }, 30000)
+    // setTimeout(() => {
+    //   checLoginStatusWrapper(prefetchPortfolio)
+    // }, 30000)
 
-    setTimeout(() => {
-      checLoginStatusWrapper(prefetchPortfolioMainSpot)
-    }, 45000)
+    // setTimeout(() => {
+    //   checLoginStatusWrapper(prefetchPortfolioMainSpot)
+    // }, 45000)
 
-    setTimeout(() => {
-      checLoginStatusWrapper(prefetchPortfolioMainFutures)
-    }, 55000)
+    // setTimeout(() => {
+    //   checLoginStatusWrapper(prefetchPortfolioMainFutures)
+    // }, 55000)
 
-    setTimeout(() => {
-      checLoginStatusWrapper(prefetchDeposit)
-    }, 75000)
+    // setTimeout(() => {
+    //   checLoginStatusWrapper(prefetchDeposit)
+    // }, 75000)
 
-    setTimeout(() => {
-      // checLoginStatusWrapper(prefetchWithdrawal)
-    }, 95000)
+    // setTimeout(() => {
+    //   // checLoginStatusWrapper(prefetchWithdrawal)
+    // }, 95000)
 
     return () => {
       document.title = 'Cryptocurrencies AI'
     }
   }, [props.marketType])
 
-  useEffect(() => {
-    getUserCustomMarketsQueryRefetch()
-  }, [publicKey])
+  // useEffect(() => {
+  //   getUserCustomMarketsQueryRefetch()
+  // }, [publicKey])
 
   useEffect(() => {
     const userMarkets = getUserCustomMarketsQuery.getUserCustomMarkets.map(
@@ -293,6 +293,7 @@ function ChartPageComponent(props: any) {
   const isPairDataLoading =
     !pair ||
     props.loading ||
+    !pairPropertiesQuery ||
     !pairPropertiesQuery.marketByName ||
     !pairPropertiesQuery.marketByName[0] ||
     pairPropertiesQuery.networkStatus === 2 ||
@@ -500,32 +501,32 @@ export default compose(
       marketType: 1, // hardcode here to get only futures marketIds'
     },
   }),
-  queryRendererHoc({
-    query: getUserCustomMarkets,
-    name: 'getUserCustomMarketsQuery',
-    fetchPolicy: 'cache-first',
-    variables: (props) => ({
-      publicKey: props.publicKey,
-    }),
-  }),
-  queryRendererHoc({
-    skip: (props: any) => !props.authenticated,
-    query: GET_TOOLTIP_SETTINGS,
-    name: 'getTooltipSettingsQuery',
-    fetchPolicy: 'cache-first',
-    withOutSpinner: true,
-    withoutLoading: true,
-  }),
-  queryRendererHoc({
-    query: pairProperties,
-    name: 'pairPropertiesQuery',
-    fetchPolicy: 'cache-first',
-    withoutLoading: true,
-    variables: (props: IProps) => ({
-      marketName: props.selectedPair,
-      marketType: props.marketType,
-    }),
-  }),
+  // queryRendererHoc({
+  //   query: getUserCustomMarkets,
+  //   name: 'getUserCustomMarketsQuery',
+  //   fetchPolicy: 'cache-first',
+  //   variables: (props) => ({
+  //     publicKey: props.publicKey,
+  //   }),
+  // }),
+  // queryRendererHoc({
+  //   skip: (props: any) => !props.authenticated,
+  //   query: GET_TOOLTIP_SETTINGS,
+  //   name: 'getTooltipSettingsQuery',
+  //   fetchPolicy: 'cache-first',
+  //   withOutSpinner: true,
+  //   withoutLoading: true,
+  // }),
+  // queryRendererHoc({
+  //   query: pairProperties,
+  //   name: 'pairPropertiesQuery',
+  //   fetchPolicy: 'cache-first',
+  //   withoutLoading: true,
+  //   variables: (props: IProps) => ({
+  //     marketName: props.selectedPair,
+  //     marketType: props.marketType,
+  //   }),
+  // }),
   queryRendererHoc({
     query: getChartLayout,
     name: 'getChartLayoutQuery',

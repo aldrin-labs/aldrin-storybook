@@ -40,7 +40,7 @@ export const TradeHistory = ({
         show: showTableOnMobile === 'TRADE',
       }}
     >
-      <QueryRenderer
+      <TradeHistoryTable
         component={TradeHistoryTable}
         withOutSpinner
         query={MARKET_QUERY}
