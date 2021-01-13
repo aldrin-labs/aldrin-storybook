@@ -175,7 +175,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
     this.updateSubBlockValue('entryPoint', 'order', 'price', this.props.price)
     console.log(' this.props.componentLeverage', this.props.componentLeverage)
-    this.updateSubBlockValue('entryPoint', 'order', 'leverage', this.props.componentLeverage)
+    this.updateSubBlockValue(
+      'entryPoint',
+      'order',
+      'leverage',
+      this.props.componentLeverage
+    )
 
     console.log('getStrategySettingsQuery', getStrategySettingsQuery)
     const result = getDefaultStateFromStrategySettings({
@@ -275,6 +280,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       takeProfit: {
         takeProfitPrice: 0,
         ...result.takeProfit,
+        plotEnabled: false,
         trailingTAP: {
           ...result.takeProfit.trailingTAP,
         },
@@ -282,6 +288,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       stopLoss: {
         stopLossPrice: 0,
         ...result.stopLoss,
+        plotEnabled: false,
         forcedStop: {
           forcedStopPrice: 0,
           ...result.stopLoss.forcedStop,
@@ -442,7 +449,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       const { price, marketType } = this.props
       const total = this.state.temp.initialMargin * this.props.componentLeverage
 
-      if (total > 0 && +stripDigitPlaces(total / this.props.price, this.props.quantityPrecision) > 0) {
+      if (
+        total > 0 &&
+        +stripDigitPlaces(
+          total / this.props.price,
+          this.props.quantityPrecision
+        ) > 0
+      ) {
         this.updateSubBlockValue(
           'entryPoint',
           'order',
@@ -796,8 +809,11 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     const isSPOTMarket = marketType === 0
     const isValid = validateSmartOrders(this.state, this.props.enqueueSnackbar)
     if (isValid) {
-      if (entryPoint.order.total < minSpotNotional && isSPOTMarket &&
-        entryPoint.averaging.entryLevels.length === 0) {
+      if (
+        entryPoint.order.total < minSpotNotional &&
+        isSPOTMarket &&
+        entryPoint.averaging.entryLevels.length === 0
+      ) {
         enqueueSnackbar(
           `Order total should be at least ${minSpotNotional} ${pair[1]}`,
           {
@@ -1230,6 +1246,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       })
     }
 
+    console.log('state', this.state)
+
     return (
       <>
         {showConfirmationPopup && !editPopup && (
@@ -1532,11 +1550,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
   }
 }
 
-export const SmartOrderTerminalMemo = compose(queryRendererHoc({
-  query: getStrategySettings,
-  name: 'getStrategySettingsQuery',
-  fetchPolicy: 'cache-and-network',
-  variables: (props) => ({
-    pair: `${props.pair[0]}_${props.pair[1]}`,
-  }),
-}))(SmartOrderTerminal)
+export const SmartOrderTerminalMemo = compose(
+  queryRendererHoc({
+    query: getStrategySettings,
+    name: 'getStrategySettingsQuery',
+    fetchPolicy: 'cache-and-network',
+    variables: (props) => ({
+      pair: `${props.pair[0]}_${props.pair[1]}`,
+    }),
+  })
+)(SmartOrderTerminal)

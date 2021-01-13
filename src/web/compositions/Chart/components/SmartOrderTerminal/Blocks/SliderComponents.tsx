@@ -26,6 +26,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
   titleForTooltip,
   needTooltip = false,
   showErrors,
+  isPlotActive = false,
   isMarketType,
   showMarks,
   percentageInputWidth = '50%',
@@ -36,6 +37,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
   onAfterSliderChange,
   percentagePreSymbol,
   percentageTextAlign = 'right',
+  tvAlertsEnable = false,
   needPriceField = true,
   sliderInTheBottom = false,
   onPricePercentageChange,
@@ -56,7 +58,9 @@ export const SliderWithPriceAndPercentageFieldRow = ({
           header={'price'}
           needTitleBlock
           padding={'0'}
-          width={sliderInTheBottom ? '65%' : 'calc(31.5%)'}
+          width={
+            sliderInTheBottom ? '65%' : tvAlertsEnable ? '55%' : 'calc(31.5%)'
+          }
           textAlign={'right'}
           symbol={pair[1]}
           value={
@@ -64,7 +68,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
               ? getApproximatePrice(value)
               : approximatePrice
           }
-          disabled={false}
+          disabled={isPlotActive}
           showErrors={showErrors}
           isValid={validateField(true, pricePercentage)}
           inputStyles={{
@@ -86,15 +90,17 @@ export const SliderWithPriceAndPercentageFieldRow = ({
         padding={
           sliderInTheBottom
             ? '0 0 0 .8rem'
-            : needPriceField
+            : needChain
             ? '0 .8rem 0 0rem'
-            : '0 .8rem 0 0rem'
+            : '0 .8rem 0 .8rem'
         }
         width={
           sliderInTheBottom
             ? '35%'
-            : needPriceField
+            : needPriceField && !tvAlertsEnable
             ? 'calc(24.5%)'
+            : tvAlertsEnable
+            ? '42%'
             : percentageInputWidth
         }
         symbol={'%'}
@@ -103,6 +109,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
         needPreSymbol={false}
         value={value}
         needTooltip
+        disabled={isPlotActive}
         titleForTooltip={titleForTooltip}
         needTitleBlock
         header={header}
@@ -125,6 +132,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
         <BlueSlider
           showMarks={showMarks}
           theme={theme}
+          disabled={isPlotActive}
           value={value}
           sliderContainerStyles={{
             width: '40%',
@@ -137,6 +145,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
         <InputRowContainer padding={'1.6rem 0 .8rem 0'}>
           <BlueSlider
             showMarks={showMarks}
+            disabled={isPlotActive}
             theme={theme}
             value={value}
             sliderContainerStyles={{

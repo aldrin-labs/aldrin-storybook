@@ -209,6 +209,13 @@ export const EntryOrderBlock = ({
                     'plotEnabled',
                     false
                   )
+
+                  updateSubBlockValue(
+                    'entryPoint',
+                    'TVAlert',
+                    'isTVAlertOn',
+                    false
+                  )
                 }
               }}
             >
@@ -243,204 +250,6 @@ export const EntryOrderBlock = ({
             </AdditionalSettingsButton>
           </DarkTooltip>
         </InputRowContainer>
-
-        <InputRowContainer style={{ margin: '1rem  auto' }}>
-          {' '}
-          <InputRowContainer>
-            {' '}
-            {marketType === 1 ? (
-              <CustomSwitcher
-                theme={theme}
-                firstHalfText={marketType === 1 ? 'long' : 'buy'}
-                secondHalfText={marketType === 1 ? 'short' : 'sell'}
-                buttonHeight={'3rem'}
-                containerStyles={{
-                  width: entryPoint.TVAlert.plotEnabled ? '70%' : '100%',
-                  padding: 0,
-                }}
-                isDisabled={
-                  entryPoint.TVAlert.plotEnabled &&
-                  entryPoint.TVAlert.sidePlotEnabled
-                }
-                firstHalfStyleProperties={
-                  entryPoint.TVAlert.plotEnabled &&
-                  entryPoint.TVAlert.sidePlotEnabled
-                    ? DisabledSwitcherStyles(theme)
-                    : GreenSwitcherStyles(theme)
-                }
-                secondHalfStyleProperties={
-                  entryPoint.TVAlert.plotEnabled &&
-                  entryPoint.TVAlert.sidePlotEnabled
-                    ? DisabledSwitcherStyles(theme)
-                    : RedSwitcherStyles(theme)
-                }
-                firstHalfIsActive={entryPoint.order.side === 'buy'}
-                changeHalf={() => {
-                  if (
-                    entryPoint.TVAlert.plotEnabled &&
-                    entryPoint.TVAlert.sidePlotEnabled
-                  ) {
-                    return
-                  }
-
-                  updateStopLossAndTakeProfitPrices({
-                    price: priceForCalculate,
-                    side: getSecondValueFromFirst(entryPoint.order.side),
-                  })
-
-                  updateSubBlockValue(
-                    'entryPoint',
-                    'order',
-                    'side',
-                    getSecondValueFromFirst(entryPoint.order.side)
-                  )
-                }}
-              />
-            ) : (
-              <SwitcherHalf
-                isFirstHalf
-                theme={theme}
-                key={'firstHalf'}
-                style={{
-                  backgroundColor: theme.palette.green.main,
-                  borderRadius: '0rem',
-                  border: theme.palette.border.main,
-                  color: theme.palette.white.main,
-                }}
-                height={'3rem'}
-                width={entryPoint.TVAlert.plotEnabled ? '70%' : '100%'}
-              >
-                buy{' '}
-              </SwitcherHalf>
-            )}
-            {entryPoint.TVAlert.plotEnabled && (
-              <>
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    width: '10%',
-                  }}
-                >
-                  <Switcher
-                    checked={entryPoint.TVAlert.sidePlotEnabled}
-                    onChange={() => {
-                      updateSubBlockValue(
-                        'entryPoint',
-                        'TVAlert',
-                        'sidePlotEnabled',
-                        !entryPoint.TVAlert.sidePlotEnabled
-                      )
-                    }}
-                  />
-                </div>
-                <Input
-                  theme={theme}
-                  type={'number'}
-                  needTitleBlock
-                  header={'plot_'}
-                  textAlign="left"
-                  width={'calc(20%)'}
-                  disabled={!entryPoint.TVAlert.sidePlotEnabled}
-                  value={entryPoint.TVAlert.sidePlot}
-                  showErrors={showErrors}
-                  isValid={validateField(true, entryPoint.TVAlert.sidePlot)}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    updateSubBlockValue(
-                      'entryPoint',
-                      'TVAlert',
-                      'sidePlot',
-                      e.target.value
-                    )
-                  }}
-                />
-              </>
-            )}
-          </InputRowContainer>
-        </InputRowContainer>
-        <InputRowContainer style={{ marginBottom: '1rem' }}>
-          <ChangeOrderTypeBtn
-            theme={theme}
-            isActive={
-              entryPoint.order.type === 'market' &&
-              !entryPoint.TVAlert.typePlotEnabled
-            }
-            isPlotEnabled={entryPoint.TVAlert.plotEnabled}
-            disabled={entryPoint.TVAlert.typePlotEnabled}
-            onClick={() => {
-              updateSubBlockValue('entryPoint', 'order', 'type', 'market')
-
-              updatePriceToMarket()
-            }}
-          >
-            Market
-          </ChangeOrderTypeBtn>
-          <ChangeOrderTypeBtn
-            theme={theme}
-            isActive={
-              entryPoint.order.type === 'limit' &&
-              !entryPoint.TVAlert.typePlotEnabled
-            }
-            isPlotEnabled={entryPoint.TVAlert.plotEnabled}
-            disabled={entryPoint.TVAlert.typePlotEnabled}
-            onClick={() => {
-              updateSubBlockValue('entryPoint', 'order', 'type', 'limit')
-
-              updateSubBlockValue(
-                'entryPoint',
-                'TVAlert',
-                'immediateEntry',
-                false
-              )
-            }}
-          >
-            Limit
-          </ChangeOrderTypeBtn>
-          {entryPoint.TVAlert.plotEnabled && (
-            <>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  width: '10%',
-                }}
-              >
-                <Switcher
-                  checked={entryPoint.TVAlert.typePlotEnabled}
-                  onChange={() => {
-                    updateSubBlockValue(
-                      'entryPoint',
-                      'TVAlert',
-                      'typePlotEnabled',
-                      !entryPoint.TVAlert.typePlotEnabled
-                    )
-                  }}
-                />
-              </div>
-              <Input
-                theme={theme}
-                type={'number'}
-                needTitleBlock
-                header={'plot_'}
-                textAlign="left"
-                width={'calc(20%)'}
-                disabled={!entryPoint.TVAlert.typePlotEnabled}
-                value={entryPoint.TVAlert.typePlot}
-                showErrors={showErrors}
-                isValid={validateField(true, entryPoint.TVAlert.typePlot)}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  updateSubBlockValue(
-                    'entryPoint',
-                    'TVAlert',
-                    'typePlot',
-                    e.target.value
-                  )
-                }}
-              />
-            </>
-          )}
-        </InputRowContainer>
-
         {entryPoint.TVAlert.isTVAlertOn && (
           <>
             <InputRowContainer padding={'0rem 0 0.5rem 0'}>
@@ -554,7 +363,214 @@ export const EntryOrderBlock = ({
             )} */}
           </>
         )}
+        <InputRowContainer style={{ margin: '1rem  auto' }}>
+          {' '}
+          <InputRowContainer>
+            {' '}
+            {marketType === 1 ? (
+              <CustomSwitcher
+                theme={theme}
+                firstHalfText={marketType === 1 ? 'long' : 'buy'}
+                secondHalfText={marketType === 1 ? 'short' : 'sell'}
+                buttonHeight={'3rem'}
+                containerStyles={{
+                  width: entryPoint.TVAlert.plotEnabled ? '70%' : '100%',
+                  padding: 0,
+                }}
+                isDisabled={
+                  entryPoint.TVAlert.plotEnabled &&
+                  entryPoint.TVAlert.sidePlotEnabled
+                }
+                firstHalfStyleProperties={
+                  entryPoint.TVAlert.plotEnabled &&
+                  entryPoint.TVAlert.sidePlotEnabled
+                    ? DisabledSwitcherStyles(theme)
+                    : GreenSwitcherStyles(theme)
+                }
+                secondHalfStyleProperties={
+                  entryPoint.TVAlert.plotEnabled &&
+                  entryPoint.TVAlert.sidePlotEnabled
+                    ? DisabledSwitcherStyles(theme)
+                    : RedSwitcherStyles(theme)
+                }
+                firstHalfIsActive={entryPoint.order.side === 'buy'}
+                changeHalf={() => {
+                  if (
+                    entryPoint.TVAlert.plotEnabled &&
+                    entryPoint.TVAlert.sidePlotEnabled
+                  ) {
+                    return
+                  }
 
+                  updateStopLossAndTakeProfitPrices({
+                    price: priceForCalculate,
+                    side: getSecondValueFromFirst(entryPoint.order.side),
+                  })
+
+                  updateSubBlockValue(
+                    'entryPoint',
+                    'order',
+                    'side',
+                    getSecondValueFromFirst(entryPoint.order.side)
+                  )
+                }}
+              />
+            ) : (
+              <SwitcherHalf
+                isFirstHalf
+                theme={theme}
+                key={'firstHalf'}
+                style={{
+                  backgroundColor: theme.palette.green.main,
+                  borderRadius: '0rem',
+                  border: theme.palette.border.main,
+                  color: theme.palette.white.main,
+                }}
+                height={'3rem'}
+                width={entryPoint.TVAlert.plotEnabled ? '70%' : '100%'}
+              >
+                buy{' '}
+              </SwitcherHalf>
+            )}
+            {entryPoint.TVAlert.plotEnabled && (
+              <>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    width: '10%',
+                  }}
+                >
+                  <Switcher
+                    checked={entryPoint.TVAlert.sidePlotEnabled}
+                    onChange={() => {
+                      updateSubBlockValue(
+                        'entryPoint',
+                        'TVAlert',
+                        'sidePlotEnabled',
+                        !entryPoint.TVAlert.sidePlotEnabled
+                      )
+                    }}
+                  />
+                </div>
+                <Input
+                  theme={theme}
+                  type={'number'}
+                  needTitleBlock
+                  header={'plot_'}
+                  textAlign="left"
+                  width={'calc(20%)'}
+                  disabled={!entryPoint.TVAlert.sidePlotEnabled}
+                  value={entryPoint.TVAlert.sidePlot}
+                  showErrors={showErrors}
+                  isValid={validateField(true, entryPoint.TVAlert.sidePlot)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    updateSubBlockValue(
+                      'entryPoint',
+                      'TVAlert',
+                      'sidePlot',
+                      e.target.value
+                    )
+                  }}
+                />
+              </>
+            )}
+          </InputRowContainer>
+        </InputRowContainer>{' '}
+        <InputRowContainer style={{ marginBottom: '1rem' }}>
+          <ChangeOrderTypeBtn
+            theme={theme}
+            isActive={
+              entryPoint.TVAlert.plotEnabled
+                ? entryPoint.TVAlert.typePlotEnabled
+                  ? false
+                  : entryPoint.order.type === 'market'
+                : entryPoint.order.type === 'market'
+            }
+            isPlotEnabled={entryPoint.TVAlert.plotEnabled}
+            disabled={
+              entryPoint.TVAlert.plotEnabled &&
+              entryPoint.TVAlert.typePlotEnabled
+            }
+            onClick={() => {
+              updateSubBlockValue('entryPoint', 'order', 'type', 'market')
+
+              updatePriceToMarket()
+            }}
+          >
+            Market
+          </ChangeOrderTypeBtn>
+          <ChangeOrderTypeBtn
+            theme={theme}
+            isActive={
+              entryPoint.TVAlert.plotEnabled
+                ? entryPoint.TVAlert.typePlotEnabled
+                  ? false
+                  : entryPoint.order.type === 'limit'
+                : entryPoint.order.type === 'limit'
+            }
+            isPlotEnabled={entryPoint.TVAlert.plotEnabled}
+            disabled={
+              entryPoint.TVAlert.plotEnabled &&
+              entryPoint.TVAlert.typePlotEnabled
+            }
+            onClick={() => {
+              updateSubBlockValue('entryPoint', 'order', 'type', 'limit')
+
+              updateSubBlockValue(
+                'entryPoint',
+                'TVAlert',
+                'immediateEntry',
+                false
+              )
+            }}
+          >
+            Limit
+          </ChangeOrderTypeBtn>
+          {entryPoint.TVAlert.plotEnabled && (
+            <>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  width: '10%',
+                }}
+              >
+                <Switcher
+                  checked={entryPoint.TVAlert.typePlotEnabled}
+                  onChange={() => {
+                    updateSubBlockValue(
+                      'entryPoint',
+                      'TVAlert',
+                      'typePlotEnabled',
+                      !entryPoint.TVAlert.typePlotEnabled
+                    )
+                  }}
+                />
+              </div>
+              <Input
+                theme={theme}
+                type={'number'}
+                needTitleBlock
+                header={'plot_'}
+                textAlign="left"
+                width={'calc(20%)'}
+                disabled={!entryPoint.TVAlert.typePlotEnabled}
+                value={entryPoint.TVAlert.typePlot}
+                showErrors={showErrors}
+                isValid={validateField(true, entryPoint.TVAlert.typePlot)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  updateSubBlockValue(
+                    'entryPoint',
+                    'TVAlert',
+                    'typePlot',
+                    e.target.value
+                  )
+                }}
+              />
+            </>
+          )}
+        </InputRowContainer>
         <InputRowContainer style={{ marginBottom: '1rem' }}>
           {isAveragingAfterFirstTarget ? (
             <>
@@ -805,7 +821,6 @@ export const EntryOrderBlock = ({
             </>
           )}
         </InputRowContainer>
-
         {entryPoint.trailing.isTrailingOn && marketType !== 0 && (
           <InputRowContainer style={{ margin: '1rem 0 1rem 0' }}>
             <Input
@@ -987,7 +1002,6 @@ export const EntryOrderBlock = ({
             )}
           </InputRowContainer>
         )}
-
         <SliderWithAmountFieldRow
           onAmountChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             const [maxAmount] = getMaxValues()
@@ -1131,7 +1145,6 @@ export const EntryOrderBlock = ({
             total: entryPoint.order.total,
           }}
         />
-
         {entryPoint.averaging.enabled && (
           <>
             <InputRowContainer padding="1rem 0 .6rem 0">
@@ -1219,7 +1232,6 @@ export const EntryOrderBlock = ({
             </InputRowContainer>
           </>
         )}
-
         {entryPoint.TVAlert.isTVAlertOn && (
           <>
             <InputRowContainer style={{ marginTop: '1rem' }}>

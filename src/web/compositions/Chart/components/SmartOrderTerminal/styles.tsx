@@ -250,32 +250,33 @@ const IOSSwitcherContainer = styled.div`
   .el-switch {
     display: inline-block;
     font-size: 100%;
-    height: 1.6em;
+    height: 2.1rem;
     position: relative;
     .el-switch-style {
-      height: 1.6em;
+      height: 2.1rem;
       left: 0;
-      background: #c0ccda;
-      -webkit-border-radius: 0.8em;
-      border-radius: 0.8em;
+      background: ${(props) => props.theme.palette.white.btnBackground};
+      -webkit-border-radius: 1rem;
+      border-radius: 1rem;
+      border: ${(props) => props.theme.palette.border.main};
       display: inline-block;
       position: relative;
       top: 0;
       -webkit-transition: all 0.3s ease-in-out;
       transition: all 0.3s ease-in-out;
-      width: 3em;
+      width: 4em;
       cursor: pointer;
       &:before {
         display: block;
         content: '';
-        height: 1.4em;
+        height: 2.3rem;
         position: absolute;
-        width: 1.4em;
-        background-color: #fff;
+        width: 2.3rem;
+        background-color: ${(props) => props.theme.palette.grey.text};
         -webkit-border-radius: 50%;
         border-radius: 50%;
-        left: 0.1em;
-        top: 0.1em;
+        // left: 0.1em;
+        top: -0.2em;
         -webkit-transition: all 0.3s ease-in-out;
         transition: all 0.3s ease-in-out;
       }
@@ -287,9 +288,10 @@ const IOSSwitcherContainer = styled.div`
         background-color: #d3dce6;
       }
       &:checked + .el-switch-style {
-        background-color: #20a0fd;
+        background: ${(props) => props.theme.palette.white.btnBackground};
         &:before {
-          left: 50%;
+          left: 40%;
+          background-color: ${(props) => props.theme.palette.blue.main};
         }
       }
     }
@@ -304,7 +306,7 @@ export const Switcher = ({
   onChange: () => void
 }) => {
   return (
-    <IOSSwitcherContainer>
+    <IOSSwitcherContainer theme={theme}>
       <label className="el-switch">
         <input
           checked={checked}
