@@ -299,6 +299,7 @@ export async function cancelOrders({ market, wallet, connection, orders }) {
     transaction,
     wallet,
     connection,
+    signers: [],
     sendingMessage: 'Sending cancel...',
   });
 }
@@ -591,7 +592,7 @@ async function sendTransaction({
   ).blockhash;
 
   transaction.setSigners(wallet.publicKey, ...signers.map((s) => s.publicKey));
-  
+
   if (signers.length > 0) {
     transaction.partialSign(...signers);
   }
