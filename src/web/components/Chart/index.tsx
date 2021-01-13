@@ -21,6 +21,10 @@ const Wrapper = styled(Card)`
 
 const marketsWithoutIndexChart = [
   'ALEPH_USDT',
+  'ALTBEAR_USDT',
+  'ALTBULL_USDT',
+  'BEARSHIT_USDT',
+  'BULLSHIT_USDT',
   'KEEP_USDT',
   'KIN_USDT',
   'MSRM_USDT',
@@ -34,6 +38,7 @@ const marketsWithoutBinanceChart = [
   'FRONT_USDT',
   'HGET_USDT',
   'HXRO_USDT',
+  'LUA_USDT',
   'MATH_USDT',
   'UBXT_USDT'
 ]
