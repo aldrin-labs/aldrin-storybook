@@ -291,7 +291,7 @@ export const TakeProfitBlock = ({
       </InputRowContainer>
       <div>
         <InputRowContainer
-          style={{ margin: '1rem auto 0rem 0' }}
+          style={{ margin: '1rem auto 1.6rem 0' }}
           justify="center"
         >
           <CustomSwitcher
@@ -333,7 +333,7 @@ export const TakeProfitBlock = ({
           //   }
           //   title={'stop price'}
           // >
-          <InputRowContainer style={{ margin: '1rem auto 1rem auto' }}>
+          <InputRowContainer style={{ margin: '1.6rem auto 1rem auto' }}>
             <SliderWithPriceAndPercentageFieldRow
               {...{
                 pair,
@@ -582,7 +582,7 @@ export const TakeProfitBlock = ({
         {takeProfit.external && (
           <>
             {!takeProfit.forcedStopByAlert && (
-              <InputRowContainer style={{ marginTop: '0.5rem' }}>
+              <InputRowContainer style={{ marginTop: '1.5rem' }}>
                 <SliderWithPriceAndPercentageFieldRow
                   {...{
                     pair,
@@ -739,7 +739,7 @@ export const TakeProfitBlock = ({
                 />
               </InputRowContainer>
             )} */}
-            <InputRowContainer style={{ marginTop: '0.5rem' }}>
+            <InputRowContainer style={{ marginTop: '1.5rem' }}>
               {' '}
               <FormInputContainer
                 style={{
@@ -871,7 +871,7 @@ export const TakeProfitBlock = ({
         {takeProfit.splitTargets.isSplitTargetsOn && (
           <>
             {/* <FormInputContainer theme={theme} title={'amount (%)'}> */}
-            <InputRowContainer style={{ margin: '1rem auto 1rem auto' }}>
+            <InputRowContainer style={{ margin: '1.6rem auto 1rem auto' }}>
               <SliderWithPriceAndPercentageFieldRow
                 {...{
                   pair,

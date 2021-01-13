@@ -92,7 +92,9 @@ export const SliderWithPriceAndPercentageFieldRow = ({
             ? '0 0 0 .8rem'
             : needChain
             ? '0 .8rem 0 0rem'
-            : '0 .8rem 0 .8rem'
+            : tvAlertsEnable
+            ? '0 .8rem 0 .8rem'
+            : '0 .8rem 0 0rem'
         }
         width={
           sliderInTheBottom

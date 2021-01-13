@@ -219,7 +219,7 @@ export const StopLossBlock = ({
         </InputRowContainer>
         <div>
           <InputRowContainer
-            style={{ margin: '1rem auto 1rem 0' }}
+            style={{ margin: '1rem auto 1.7rem 0' }}
             justify="center"
           >
             <CustomSwitcher
@@ -681,8 +681,8 @@ export const StopLossBlock = ({
                 tooltipText={''}
                 title={'action when alert'}
               > */}
-              <InputRowContainer style={{ marginTop: '0.5rem' }}>
-                {/* <AdditionalSettingsButton
+
+              {/* <AdditionalSettingsButton
                     theme={theme}
                     fontSize={'1rem'}
                     isActive={stopLoss.forcedStopByAlert}
@@ -700,7 +700,7 @@ export const StopLossBlock = ({
                     Forced Stop by Alert
                   </AdditionalSettingsButton> */}
 
-                {/* <AdditionalSettingsButton
+              {/* <AdditionalSettingsButton
                     theme={theme}
                     isActive={stopLoss.plotEnabled}
                     onClick={() => {
@@ -715,10 +715,10 @@ export const StopLossBlock = ({
                   >
                     Plot
                   </AdditionalSettingsButton> */}
-              </InputRowContainer>
+
               {/* </FormInputContainer> */}
 
-              <InputRowContainer style={{ marginTop: '0.5rem' }}>
+              <InputRowContainer style={{ marginTop: '0rem' }}>
                 {' '}
                 <FormInputContainer
                   style={{
