@@ -156,18 +156,8 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
 
     return (
       <>
-        {isMenuOpen && (
-          <SelectWrapper
-            theme={theme}
-            updateFavoritePairsMutation={updateFavoritePairsMutation}
-            onSelectPair={this.handleChange}
-            closeMenu={this.closeMenu}
-            marketType={1}
-            activeExchange={activeExchange}
-            markets={markets}
-          />
-        )}
         <ExchangePair
+          id={'ExchangePair'}
           style={{ width: '14.4rem', ...style }}
           border={divider}
           selectStyles={selectStyles}
@@ -179,6 +169,16 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
             value={isClosed && marketName && { marketName, label: marketName }}
             fullWidth={true}
             isDisabled={true}
+          />
+          <SelectWrapper
+            id={'selectWrapper'}
+            theme={theme}
+            updateFavoritePairsMutation={updateFavoritePairsMutation}
+            onSelectPair={this.handleChange}
+            closeMenu={this.closeMenu}
+            marketType={1}
+            activeExchange={activeExchange}
+            markets={markets}
           />
         </ExchangePair>
       </>

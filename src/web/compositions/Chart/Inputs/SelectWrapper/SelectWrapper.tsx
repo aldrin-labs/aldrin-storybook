@@ -1,5 +1,6 @@
 import React from 'react'
 import { compose } from 'recompose'
+import styled from 'styled-components'
 import { Grid, Input, InputAdornment } from '@material-ui/core'
 import { withTheme } from '@material-ui/core/styles'
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
@@ -77,6 +78,11 @@ const datesForQuery = {
     .subtract(24, 'hour')
     .valueOf(),
 }
+
+const StyledGrid = styled(Grid)`
+  display: none;
+`
+
 class SelectWrapper extends React.PureComponent<IProps, IState> {
   state: IState = {
     searchValue: '',
@@ -231,6 +237,7 @@ class SelectPairListComponent extends React.PureComponent<
   state: IStateSelectPairListComponent = {
     processedSelectData: [],
     showAddMarketPopup: false,
+    left: 0,
   }
 
   componentDidMount() {
@@ -252,6 +259,8 @@ class SelectPairListComponent extends React.PureComponent<
       getSerumMarketDataQuery,
     } = this.props
 
+    const { left } = document.getElementById('ExchangePair')?.getBoundingClientRect()
+
     const processedSelectData = combineSelectWrapperData({
       data,
       updateFavoritePairsMutation,
@@ -270,6 +279,7 @@ class SelectPairListComponent extends React.PureComponent<
     })
 
     this.setState({
+      left,
       processedSelectData,
     })
   }
@@ -322,6 +332,7 @@ class SelectPairListComponent extends React.PureComponent<
       theme,
       searchValue,
       tab,
+      id,
       tabSpecificCoin,
       onChangeSearch,
       onTabChange,
@@ -355,18 +366,18 @@ class SelectPairListComponent extends React.PureComponent<
     }
 
     return (
-      <Grid
+      <StyledGrid
+        id={id}
         style={{
-          top: '2.5rem',
+          top: `calc(100% - 0.9rem)`,
+          left: `calc(${this.state.left}px - 0rem)`,
           fontFamily: 'DM Sans',
-          left: 'calc(0)',
           position: 'absolute',
           // transform: 'translateX(-100%)',
           zIndex: 900,
           background: theme.palette.white.background,
           minWidth: '43%',
           height: '35rem',
-          marginTop: '3rem',
           borderRadius: '.4rem',
           overflow: 'hidden',
           border: `1px solid ${theme.palette.grey.newborder}`,
@@ -853,7 +864,7 @@ class SelectPairListComponent extends React.PureComponent<
           onAddCustomMarket={onAddCustomMarket}
           getSerumMarketDataQueryRefetch={getSerumMarketDataQueryRefetch}
         />
-      </Grid>
+      </StyledGrid>
     )
   }
 }
