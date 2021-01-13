@@ -47,6 +47,17 @@ import {
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 
+const excludedPairs = [
+  'ALTBEAR_USDT',
+  'ALTBULL_USDT',
+  'BCHBEAR_USDT',
+  'USDC_ODOP',
+  'MIDBEAR_USDT',
+  'MIDBULL_USDT',
+  'XRPBEAR_USDT',
+  'XRPBULL_USDT'
+]
+
 const datesForQuery = {
   startOfTime: dayjs()
     .startOf('hour')
@@ -129,12 +140,15 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
       isAwesomeMarket: el.isAwesomeMarket,
     }))
 
+    // const filtredMarketsByExchange = getSerumMarketDataQuery.getSerumMarketData.filter(
     const filtredMarketsByExchange = dexMarketSymbols.filter(
       (el) =>
         el.symbol &&
         // +el.volume24hChange &&
         // +el.price &&
-        !Array.isArray(el.symbol.match(fiatRegexp))
+        !Array.isArray(el.symbol.match(fiatRegexp)) &&
+        !el.symbol.includes('USDC') &&
+        !excludedPairs.includes(el.symbol)
       // dexMarketSymbols.includes(el.symbol)
     )
 
@@ -365,7 +379,8 @@ class SelectPairListComponent extends React.PureComponent<
           style={{
             height: '5rem',
             padding: '0.5rem',
-            justifyContent: 'space-around',
+            justifyContent: 'flex-start',
+            // justifyContent: 'space-around',
             flexDirection: 'row',
             flexWrap: 'nowrap',
             alignItems: 'center',
@@ -421,7 +436,7 @@ class SelectPairListComponent extends React.PureComponent<
           >
             USDT
           </Grid>
-          <Grid
+          {/* <Grid
             style={{
               padding: '1rem',
               background: tab === 'usdc' ? theme.palette.grey.input : '',
@@ -499,7 +514,7 @@ class SelectPairListComponent extends React.PureComponent<
             onClick={() => onTabChange('private')}
           >
             Private markets{' '}
-          </Grid>
+          </Grid> */}
           <AddCircleIcon
             onClick={() => this.setState({ showAddMarketPopup: true })}
             style={{

@@ -82,7 +82,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       multichart: { charts },
     } = getCharts
 
-    console.log('onSelectPair', value, markets, isCustomUserMarket)
+    console.log('onSelectPair', value, markets, customMarkets, isCustomUserMarket)
 
     if (!value) {
       return
@@ -92,15 +92,19 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
 
     if (view === 'default') {
       const pair = value.split('_').join('/')
+      console.log('markets', markets)
       let selectedMarketFormSelector = markets.find((el) => el.name === pair)
       // Need to refactor this, address of a coin should be in the value, not name
       // console.log('value: ', value)
+
+      console.log('selectedMarketFormSelector before', selectedMarketFormSelector)
+
       if (selectedMarketFormSelector) {
-        console.log('selectedMarketFormSelector', selectedMarketFormSelector)
+        console.log('selectedMarketFormSelector in first', selectedMarketFormSelector)
         setMarketAddress(selectedMarketFormSelector.address.toBase58())
       } else {
         selectedMarketFormSelector = customMarkets.find((el) => el.name === pair)
-        console.log('selectedMarketFormSelector', selectedMarketFormSelector)
+        console.log('selectedMarketFormSelector in second', selectedMarketFormSelector)
         setMarketAddress(selectedMarketFormSelector ? selectedMarketFormSelector.address : address)
       }
 

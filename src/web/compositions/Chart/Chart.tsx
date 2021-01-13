@@ -184,7 +184,7 @@ function ChartPageComponent(props: any) {
     setCustomMarkets([...updatedMarkets, ...userMarkets])
   }, [getUserCustomMarketsQuery.getUserCustomMarkets.length])
 
-  useEffect(() => {
+  useEffect(async () => {
     const pair = !!location.pathname.split('/')[3] ? location.pathname.split('/')[3] : 'SRM_USDT'
 
     const userMarkets = getUserCustomMarketsQuery.getUserCustomMarkets.map(
@@ -210,15 +210,16 @@ function ChartPageComponent(props: any) {
     )
 
     if (!selectedMarketFromUrl) {
-      setMarketAddress(allMarkets.find(
+      await setMarketAddress(allMarkets.find(
         (el) => el.name.split('/').join('_') === "SRM_USDT"
       ).address.toBase58())
-      history.push('/chart/spot/SRM_USDT')
+
+      await history.push('/chart/spot/SRM_USDT')
 
       return
     }
 
-    setMarketAddress(selectedMarketFromUrl.isCustomUserMarket ? selectedMarketFromUrl.address : selectedMarketFromUrl.address.toBase58())
+    await setMarketAddress(selectedMarketFromUrl.isCustomUserMarket ? selectedMarketFromUrl.address : selectedMarketFromUrl.address.toBase58())
   }, [])
 
   const handleJoyrideCallback = (data) => {
