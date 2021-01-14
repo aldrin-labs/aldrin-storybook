@@ -593,7 +593,7 @@ const RewardsRoute = (props) => {
                   paddingBottom: '1rem',
                   margin: '0 1rem',
                 }}
-                href={`https://twitter.com/intent/tweet?text=%E2%80%A2%20Exchange%20Issues%20and%20Downtime%0A%E2%80%A2%20Crypto%20Prices%20Recover%0A%E2%80%A2%20More%20Financial%20Advisors%20Allocating%20Funds%20To%20%23Cryptocurrency%0A%0ADevelop%20strategies%20and%20trade%20with%20http%3A%2F%2FCryptocurrencies.ai%0A%0A%24CCAI%20%24DCFI%20%24SRM%20%24FTT%20%24SOL%0Apic.twitter.com/Kp6dzhQfm5`}
+                href={`https://twitter.com/intent/tweet?text=%E2%80%A2%20%24BTC%20Received%2025%25%20In%20Two%20Days%20After%20Largest%20Correction%20In%20Months%0A%E2%80%A2%20%40Anchorage%20Becomes%20First%20National%20Crypto%20Bank%0A%E2%80%A2%20%40ECB%20Demands%20Global%20Regulation%20for%20%23Bitcoin%0A%0ADevelop%20Strategies%20And%20Trade%20With%20http%3A%2F%2FCryptocurrencies.ai%0A%0A%24CCAI%20%24DCFI%20%24SRM%20%24FTT%20%24SOL%0Apic.twitter.com/Vp1ROqRsPp`}
                 rel="noopener noreferrel"
                 target={'_blank'}
                 onClick={(e) => {
