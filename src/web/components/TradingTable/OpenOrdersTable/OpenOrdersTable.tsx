@@ -27,6 +27,7 @@ const OpenOrdersTable = (props) => {
         market: order.market,
         connection,
         wallet,
+        signers: []
       })
     } catch (e) {
       notify({
@@ -44,11 +45,11 @@ const OpenOrdersTable = (props) => {
 
     // await props.addOrderToCanceled(orderId)
     const result = await onCancelOrder(order)
-    const status = await cancelOrderStatus(result)
+    // const status = await cancelOrderStatus(result)
 
-    if (status.result === 'error') {
-      await props.clearCanceledOrders()
-    }
+    // if (status.result === 'error') {
+    //   await props.clearCanceledOrders()
+    // }
 
     // showCancelResult(status)
   }

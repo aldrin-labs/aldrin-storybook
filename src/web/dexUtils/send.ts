@@ -299,6 +299,7 @@ export async function cancelOrders({ market, wallet, connection, orders }) {
     transaction,
     wallet,
     connection,
+    signers: [],
     sendingMessage: 'Sending cancel...',
   });
 }
@@ -589,7 +590,12 @@ async function sendTransaction({
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash('max')
   ).blockhash;
-  transaction.signPartial(...signers);
+
+  transaction.setSigners(wallet.publicKey, ...signers.map((s) => s.publicKey));
+
+  if (signers.length > 0) {
+    transaction.partialSign(...signers);
+  }
 
   console.log('sendTransaction transaction: ', transaction)
 
@@ -735,3 +741,39 @@ function mergeTransactions(transactions) {
     });
   return transaction;
 }
+
+// export async function sendTransaction({
+//   transaction,
+//   wallet,
+//   signers = [],
+//   connection,
+//   sendingMessage = 'Sending transaction...',
+//   sentMessage = 'Transaction sent',
+//   successMessage = 'Transaction confirmed',
+//   timeout = DEFAULT_TIMEOUT,
+// }: {
+//   transaction: Transaction;
+//   wallet: Wallet;
+//   signers?: Array<Account>;
+//   connection: Connection;
+//   sendingMessage?: string;
+//   sentMessage?: string;
+//   successMessage?: string;
+//   timeout?: number;
+// }) {
+//   const signedTransaction = await signTransaction({
+//     transaction,
+//     wallet,
+//     signers,
+//     connection,
+//   });
+
+//   return await sendSignedTransaction({
+//     signedTransaction,
+//     connection,
+//     sendingMessage,
+//     sentMessage,
+//     successMessage,
+//     timeout,
+//   });
+// }
