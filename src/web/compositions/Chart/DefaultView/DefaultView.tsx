@@ -95,9 +95,10 @@ export const DefaultViewComponent = (
     return null
   }
 
-  const { hideDepthChart, hideOrderbook } = layout
+  const { hideOrderbook } = layout
 
   const hideTradeHistory = false
+  const hideDepthChart = true
 
   const changeChartLayout = async (newParams) => {
     const argObject = {
@@ -190,65 +191,6 @@ export const DefaultViewComponent = (
                 publicKey={publicKey}
                 themeMode={themeMode}
               />
-              {/* <CustomCard
-                theme={theme}
-                id="tradingViewChart"
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  borderRight: 'none',
-                }}
-              >
-                <TriggerTitle
-                  theme={theme}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: 0,
-                  }}
-                >
-                  <span
-                    style={{
-                      width: 'calc(100% - 20rem)',
-                      whiteSpace: 'pre-line',
-                      textAlign: 'left',
-                      color: theme.palette.dark.main,
-                      textTransform: 'capitalize',
-                      fontSize: '1.3rem',
-                      lineHeight: '1rem',
-                      paddingLeft: '1rem',
-                    }}
-                  >
-                    Chart
-                  </span>
-                  <TerminalModeButton
-                    theme={theme}
-                    active={chartExchange === 'binance'}
-                    style={{ width: '10rem' }}
-                    onClick={() => {
-                      updateChartExchange('binance')
-                    }}
-                  >
-                    Binance
-                  </TerminalModeButton>
-                  <TerminalModeButton
-                    theme={theme}
-                    active={chartExchange === 'serum'}
-                    style={{ width: '10rem', borderRight: 0 }}
-                    onClick={() => updateChartExchange('serum')}
-                  >
-                    Serum
-                  </TerminalModeButton>
-                </TriggerTitle>
-                <SingleChart
-                  name=""
-                  themeMode={themeMode}
-                  additionalUrl={`/?symbol=${base}/${quote}_${String(
-                    marketType
-                  )}_${chartExchange}&user_id=${publicKey}&api_version=${2.1}`}
-                />
-              </CustomCard> */}
             </ChartsContainer>
             <TradingTerminalContainer
               theme={theme}
@@ -302,7 +244,7 @@ export const DefaultViewComponent = (
                     />
                   )}
                 </Grid>
-                {/* <Grid
+                <Grid
                   item
                   xs={5}
                   style={{
@@ -341,7 +283,7 @@ export const DefaultViewComponent = (
                       }}
                     />
                   )}
-                </Grid> */}
+                </Grid>
               </Grid>
             </TradingTerminalContainer>
           </TopChartsContainer>

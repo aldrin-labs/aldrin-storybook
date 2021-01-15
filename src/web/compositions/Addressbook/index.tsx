@@ -65,11 +65,11 @@ export const Input = styled.input`
   width: 100%;
   height: ${props => props.height ||'5rem'};
   margin-bottom: 1rem;
-  background: ${(props) => (props.disabled ? 'rgb(46, 46, 46)' : '#303743')};
-  border: 0.1rem solid #424b68;
+  background: ${(props) => (props.disabled ? props.theme.palette.grey.disabledInput : props.theme.palette.grey.input)};
+  border: ${props => `0.1rem solid ${props.theme.palette.text.white}`};
   border-radius: 0.4rem;
   padding-left: 1rem;
-  color: #fff;
+  color: ${props => props.theme.palette.text.light};
 
   &::placeholder {
     color: #abbad1;
@@ -306,6 +306,7 @@ const AddressbookRoute = ({
             </Text>
 
             <Input
+              theme={theme}
               style={{
                 background: theme.palette.grey.input,
                 color: theme.palette.text.light,
@@ -319,6 +320,7 @@ const AddressbookRoute = ({
 
             {!isLoginStep && (
               <Input
+                theme={theme}
                 type={'password'}
                 style={{
                   background: theme.palette.grey.input,

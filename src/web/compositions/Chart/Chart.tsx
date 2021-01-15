@@ -291,15 +291,7 @@ function ChartPageComponent(props: any) {
   //   return <Redirect to={pathToRedirect} exact />
   // }
 
-  const isPairDataLoading =
-    !pair ||
-    props.loading ||
-    !pairPropertiesQuery ||
-    !pairPropertiesQuery.marketByName ||
-    !pairPropertiesQuery.marketByName[0] ||
-    pairPropertiesQuery.networkStatus === 2 ||
-    pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
-      selectedPair.replace('_', '')
+  const isPairDataLoading = false
 
   if (isPairDataLoading) {
     minPriceDigits = 0.00000001
@@ -310,33 +302,33 @@ function ChartPageComponent(props: any) {
     minFuturesStep = 0.001
     initialLeverage = 125
   } else {
-    minPriceDigits = +props.pairPropertiesQuery.marketByName[0].properties
-      .binance.filters[0].minPrice
+    // minPriceDigits = +props.pairPropertiesQuery.marketByName[0].properties
+    //   .binance.filters[0].minPrice
 
-    quantityPrecision = +props.pairPropertiesQuery.marketByName[0].properties
-      .binance.quantityPrecision
+    // quantityPrecision = +props.pairPropertiesQuery.marketByName[0].properties
+    //   .binance.quantityPrecision
 
     quantityPrecision =
       market?.minOrderSize && getDecimalCount(market.minOrderSize)
 
-    pricePrecision = +props.pairPropertiesQuery.marketByName[0].properties
-      .binance.pricePrecision
+    // pricePrecision = +props.pairPropertiesQuery.marketByName[0].properties
+    //   .binance.pricePrecision
 
     pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
 
-    minSpotNotional =
-      +props.pairPropertiesQuery.marketByName[0].properties.binance.filters[3]
-        .minNotional || 10
+    // minSpotNotional =
+    //   +props.pairPropertiesQuery.marketByName[0].properties.binance.filters[3]
+    //     .minNotional || 10
 
-    minFuturesStep =
-      +props.pairPropertiesQuery.marketByName[0].properties.binance.filters[1]
-        .stepSize || 0.001
+    // minFuturesStep =
+    //   +props.pairPropertiesQuery.marketByName[0].properties.binance.filters[1]
+    //     .stepSize || 0.001
 
-    initialLeverage =
-      (props.pairPropertiesQuery.marketByName[0].leverageBrackets &&
-        +props.pairPropertiesQuery.marketByName[0].leverageBrackets.binance[0]
-          .initialLeverage) ||
-      125
+    // initialLeverage =
+    //   (props.pairPropertiesQuery.marketByName[0].leverageBrackets &&
+    //     +props.pairPropertiesQuery.marketByName[0].leverageBrackets.binance[0]
+    //       .initialLeverage) ||
+    //   125
   }
 
   const arrayOfMarketIds = marketByMarketType.map((el) => el._id)

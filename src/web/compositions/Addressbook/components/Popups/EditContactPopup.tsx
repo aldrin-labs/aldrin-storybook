@@ -92,10 +92,9 @@ const EditContactPopup = ({
       >
         <div style={{ paddingTop: '2.5rem', textAlign: 'center' }}>
           <Input
+            theme={theme}
             style={{
               background: theme.palette.grey.input,
-              color: theme.palette.text.light,
-              border: `0.1rem solid ${theme.palette.text.white}`,
               outline: 'none',
             }}
             type={'text'}
@@ -104,8 +103,8 @@ const EditContactPopup = ({
             onChange={(e) => updateName(e.target.value)}
           />
           <Input
+          theme={theme}
             style={{
-              background: theme.palette.grey.input,
               color: theme.palette.text.light,
               border: `0.1rem solid ${theme.palette.text.white}`,
               outline: 'none',

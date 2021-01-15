@@ -233,6 +233,7 @@ const EditContactCoinPopup = ({
           />
           <div style={{ position: 'relative', marginTop: '1.5rem' }}>
             <Input
+              theme={theme}
               style={{
                 background: theme.palette.grey.input,
                 color: theme.palette.text.light,

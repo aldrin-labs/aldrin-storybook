@@ -44,6 +44,8 @@ class TableContainer extends Component<IProps, IState> {
       return null
     }
 
+    console.log('newProps.data.marketTickers', newProps.data.marketTickers)
+
     const pricePrecision = newProps.pricePrecision === undefined ? newProps.sizeDigits !== undefined ? 8 : undefined : newProps.pricePrecision
 
     // query data processing
@@ -165,6 +167,8 @@ class TableContainer extends Component<IProps, IState> {
     const { data = [], numbersAfterDecimalForPrice } = this.state
     const amountForBackground =
       data.reduce((prev, curr) => prev + +curr.size, 0) / data.length
+
+    console.log('666', data)
 
     return (
       <>
