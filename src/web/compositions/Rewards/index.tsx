@@ -595,7 +595,7 @@ const RewardsRoute = (props) => {
                   paddingBottom: '1rem',
                   margin: '0 1rem',
                 }}
-                href={`https://twitter.com/intent/tweet?text=%E2%80%A2%20Exchange%20Issues%20and%20Downtime%0A%E2%80%A2%20Crypto%20Prices%20Recover%0A%E2%80%A2%20More%20Financial%20Advisors%20Allocating%20Funds%20To%20%23Cryptocurrency%0A%0ADevelop%20strategies%20and%20trade%20with%20http%3A%2F%2FCryptocurrencies.ai%0A%0A%24CCAI%20%24DCFI%20%24SRM%20%24FTT%20%24SOL%0Apic.twitter.com/Kp6dzhQfm5`}
+                href={`https://twitter.com/intent/tweet?text=%E2%80%A2+Biden+to+name+Gary+Gensler+%24ETH+and+%24XRP+sceptic+as+U.S.+SEC+chair%0D%0A%E2%80%A2+MIT+Blockchain+Professor+also+Was+Nominated+To+Become+SEC+Chairmen%0D%0A%E2%80%A2+%23Bitcoin+Finds+Support+Around+%2439k%0D%0A%0D%0ADevelop+Strategies+And+Trade+With+%40ccai_official%0D%0A%0D%0A%24CCAI+%24DCFI+%24SRM+%24FTT+%24SOL%0Apic.twitter.com/h1R10YlLLf`}
                 rel="noopener noreferrel"
                 target={'_blank'}
                 onClick={(e) => {
