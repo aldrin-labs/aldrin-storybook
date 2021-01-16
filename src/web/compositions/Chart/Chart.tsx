@@ -47,51 +47,51 @@ export function ChartPageComponent(props: any) {
 
   useEffect(() => {
     const { marketType } = props
-    setTimeout(() => {
-      prefetchCoinSelector({ marketType, exchangeSymbol: 'binance' })
-    }, 5000)
+    // setTimeout(() => {
+    //   prefetchCoinSelector({ marketType, exchangeSymbol: 'binance' })
+    // }, 5000)
 
-    setTimeout(() => {
-       if (authenticated) {
-          prefetchTooltips()
-       }
-    }, 6500)
+    // setTimeout(() => {
+    //    if (authenticated) {
+    //       prefetchTooltips()
+    //    }
+    // }, 6500)
 
     // prefetch different market for coin selector
-    setTimeout(() => {
-      prefetchDifferentMarketForCoinSelector({
-        marketType: marketType === 1 ? 0 : 1,
-        exchangeSymbol: 'binance',
-      })
-    }, 15000)
+    // setTimeout(() => {
+    //   prefetchDifferentMarketForCoinSelector({
+    //     marketType: marketType === 1 ? 0 : 1,
+    //     exchangeSymbol: 'binance',
+    //   })
+    // }, 15000)
 
-    setTimeout(() => {
-      checkLoginStatusWrapper(prefetchPortfolio)
-    }, 30000)
+    // setTimeout(() => {
+    //   checkLoginStatusWrapper(prefetchPortfolio)
+    // }, 30000)
 
-    setTimeout(() => {
-      checkLoginStatusWrapper(prefetchPortfolioMainSpot)
-    }, 45000)
+    // setTimeout(() => {
+    //   checkLoginStatusWrapper(prefetchPortfolioMainSpot)
+    // }, 45000)
 
-    setTimeout(() => {
-      checkLoginStatusWrapper(prefetchPortfolioMainFutures)
-    }, 55000)
+    // setTimeout(() => {
+    //   checkLoginStatusWrapper(prefetchPortfolioMainFutures)
+    // }, 55000)
 
-    setTimeout(() => {
-      checkLoginStatusWrapper(prefetchDeposit)
-    }, 75000)
+    // setTimeout(() => {
+    //   checkLoginStatusWrapper(prefetchDeposit)
+    // }, 75000)
 
-    setTimeout(() => {
-      checkLoginStatusWrapper(prefetchWithdrawal)
-    }, 95000)
+    // setTimeout(() => {
+    //   checkLoginStatusWrapper(prefetchWithdrawal)
+    // }, 95000)
 
-    setTimeout(() => {
-      if (marketType === 1) {
-        checkLoginStatusWrapper(prefetchFuturesTransactions)
-      } else if (marketType === 0) {
-        checkLoginStatusWrapper(prefetchSpotTransactions)
-      }
-    }, 95000)
+    // setTimeout(() => {
+    //   if (marketType === 1) {
+    //     checkLoginStatusWrapper(prefetchFuturesTransactions)
+    //   } else if (marketType === 0) {
+    //     checkLoginStatusWrapper(prefetchSpotTransactions)
+    //   }
+    // }, 95000)
 
     return () => {
       document.title = 'Cryptocurrencies AI'

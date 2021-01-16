@@ -25,11 +25,11 @@ const Value = styled(Title)`
 `
 
 const TotalBalance = ({ portfolioAssets, theme }) => {
-  const filteredData = combineTableData(
-    portfolioAssets.myPortfolios[0].portfolioAssets || []
-  )
+  // const filteredData = combineTableData(
+  //   portfolioAssets.myPortfolios[0].portfolioAssets || []
+  // )
 
-  const { totalKeyAssetsData } = getPortfolioAssetsData(filteredData, 'USDT')
+  // const { totalKeyAssetsData } = getPortfolioAssetsData(filteredData, 'USDT')
 
   return (
     <Grid
@@ -49,22 +49,22 @@ const TotalBalance = ({ portfolioAssets, theme }) => {
     >
       <Title theme={theme}>total balance</Title>
       <Value style={{ color: theme.palette.blue.main }} theme={theme}>
-        ${formatNumberToUSFormat(stripDigitPlaces(totalKeyAssetsData.value, 2))}
+        0
       </Value>
     </Grid>
   )
 }
 
 export default compose(
-  queryRendererHoc({
-    query: getPortfolioAssets,
-    name: 'portfolioAssets',
-    withOutSpinner: true,
-    fetchPolicy: 'cache-and-network',
-    pollInterval: 90000,
-    variables: (props) => ({
-      baseCoin: 'USDT',
-      innerSettings: true,
-    }),
-  })
+  // queryRendererHoc({
+  //   query: getPortfolioAssets,
+  //   name: 'portfolioAssets',
+  //   withOutSpinner: true,
+  //   fetchPolicy: 'cache-and-network',
+  //   pollInterval: 90000,
+  //   variables: (props) => ({
+  //     baseCoin: 'USDT',
+  //     innerSettings: true,
+  //   }),
+  // })
 )(TotalBalance)

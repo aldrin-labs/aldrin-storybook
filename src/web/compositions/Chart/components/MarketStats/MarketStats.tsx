@@ -118,7 +118,7 @@ class MarketStats extends React.PureComponent<IProps> {
 			symbol = ' _ ',
 			theme,
 			marketType,
-			getFundingRateQueryRefetch,
+			getFundingRateQuery: { refetch = () => {} },
 			exchange,
 			pricePrecision, 
 			// quantityPrecision,
@@ -173,7 +173,7 @@ class MarketStats extends React.PureComponent<IProps> {
 			this.setRefetching(true)
 
 			setTimeout(() => {
-				getFundingRateQueryRefetch();
+				refetch();
 				this.setKey(key + 1)
 				this.setRefetching(false)
 			}, 3000);
@@ -222,7 +222,7 @@ class MarketStats extends React.PureComponent<IProps> {
 						theme={theme}
 						fundingRate={fundingRate}
 						fundingTime={fundingTime}
-						getFundingRateQueryRefetch={getFundingRateQueryRefetch}
+						getFundingRateQueryRefetch={refetch}
 						setKey={this.setKey.bind(this)}
 						setRefetching={this.setRefetching}
 						refetching={refetching}
