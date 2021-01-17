@@ -82,9 +82,7 @@ export const EntryOrderBlock = ({
         <InputRowContainer
           justify="flex-start"
           padding={
-            entryPoint.TVAlert.plotEnabled
-              ? '.6rem 0 1.2rem 0'
-              : '0rem 0 1.2rem 0'
+              '0rem 0 1.2rem 0'
           }
         >
           {marketType === 1 && (
@@ -227,7 +225,7 @@ export const EntryOrderBlock = ({
           </DarkTooltip>
         </InputRowContainer>
 
-        <InputRowContainer style={{ margin: '1rem  auto' }}>
+        <InputRowContainer style={{ margin: '1rem  auto .4rem auto' }}>
           {' '}
           <InputRowContainer>
             {' '}

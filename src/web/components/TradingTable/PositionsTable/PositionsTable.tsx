@@ -30,6 +30,8 @@ import { updatePosition } from '@core/graphql/mutations/chart/updatePosition'
 import EditMarginPopup from './EditMarginPopup'
 import { showOrderResult } from '@sb/compositions/Chart/Chart.utils'
 
+const isEqual = require('react-fast-compare')
+
 @withTheme()
 class PositionsTable extends React.PureComponent<IProps, IState> {
   state: IState = {
@@ -626,34 +628,6 @@ export default React.memo(
   PositionsTableWrapper,
   (prevProps: any, nextProps: any) => {
     // TODO: Refactor isShowEqual --- not so clean
-    const isShowEqual = !nextProps.show && !prevProps.show
-    const showAllAccountsEqual =
-      prevProps.showPositionsFromAllAccounts ===
-      nextProps.showPositionsFromAllAccounts
-    const showAllPairsEqual =
-      prevProps.showAllPositionPairs === nextProps.showAllPositionPairs
-    // TODO: here must be smart condition if specificPair is not changed
-    const pairIsEqual = prevProps.currencyPair === nextProps.currencyPair
-    // TODO: here must be smart condition if showAllAccountsEqual is true & is not changed
-    const selectedKeyIsEqual =
-      prevProps.selectedKey.keyId === nextProps.selectedKey.keyId
-    const isMarketIsEqual = prevProps.marketType === nextProps.marketType
-    const pageIsEqual = prevProps.page === nextProps.page
-    const perPageIsEqual = prevProps.perPage === nextProps.perPage
-
-    if (
-      isShowEqual &&
-      showAllAccountsEqual &&
-      showAllPairsEqual &&
-      pairIsEqual &&
-      selectedKeyIsEqual &&
-      // isMarketIsEqual &&
-      pageIsEqual &&
-      perPageIsEqual
-    ) {
-      return true
-    }
-
-    return false
+    return isEqual(prevProps, nextProps)
   }
 )
