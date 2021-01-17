@@ -1177,8 +1177,8 @@ export const combineActiveTradesTable = ({
                   <div style={{ alignSelf: 'start' }}>
                     {' '}
                     <a> {stopLoss || hedgeLossDeviation}% </a>{' '}
-                    <a>
-                      {timeoutLoss && (
+                    {timeoutLoss ? (
+                      <a>
                         <>
                           {' '}
                           <a style={{ color: theme.palette.grey.onboard }}>
@@ -1196,8 +1196,8 @@ export const combineActiveTradesTable = ({
                             {timeoutLoss} sec
                           </a>
                         </>
-                      )}
-                    </a>
+                      </a>
+                    ) : null}
                   </div>
                   <a
                     style={{

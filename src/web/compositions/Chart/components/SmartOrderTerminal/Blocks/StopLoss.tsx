@@ -29,6 +29,7 @@ import {
   InputRowContainer,
   AdditionalSettingsButton,
   SubBlocksContainer,
+  Switcher,
 } from '../styles'
 
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
@@ -194,10 +195,31 @@ export const StopLossBlock = ({
               Use TV Alert
             </AdditionalSettingsButton>
           </DarkTooltip>
+          <AdditionalSettingsButton
+            theme={theme}
+            isActive={stopLoss.forcedStop.mandatoryForcedLoss}
+            onClick={() => {
+              updateSubBlockValue(
+                'stopLoss',
+                'forcedStop',
+                'isForcedStopOn',
+                !stopLoss.forcedStop.mandatoryForcedLoss
+              )
+
+              updateSubBlockValue(
+                'stopLoss',
+                'forcedStop',
+                'mandatoryForcedLoss',
+                !stopLoss.forcedStop.mandatoryForcedLoss
+              )
+            }}
+          >
+            Forced stop
+          </AdditionalSettingsButton>
         </InputRowContainer>
         <div>
           <InputRowContainer
-            style={{ margin: '1rem auto 1rem 0' }}
+            style={{ margin: '1rem auto 1.7rem 0' }}
             justify="center"
           >
             <CustomSwitcher
@@ -209,20 +231,24 @@ export const StopLossBlock = ({
               firstHalfStyleProperties={BlueSwitcherStyles(theme)}
               secondHalfStyleProperties={BlueSwitcherStyles(theme)}
               firstHalfIsActive={stopLoss.type === 'limit'}
-              changeHalf={() =>
+              changeHalf={() => {
                 updateBlockValue(
                   'stopLoss',
                   'type',
                   getSecondValueFromFirst(stopLoss.type)
                 )
-              }
+                if (getSecondValueFromFirst(stopLoss.type) === 'limit') {
+                  updateBlockValue('stopLoss', 'forcedStopByAlert', false)
+                }
+              }}
             />
           </InputRowContainer>
 
           {((stopLoss.external &&
             !stopLoss.forcedStopByAlert &&
             !stopLoss.plotEnabled) ||
-            !stopLoss.external) && (
+            !stopLoss.external ||
+            (stopLoss.external && stopLoss.plotEnabled)) && (
             // <FormInputContainer
             //   theme={theme}
             //   haveTooltip
@@ -245,7 +271,10 @@ export const StopLossBlock = ({
                   pair,
                   theme,
                   entryPoint,
+                  tvAlertsEnable: stopLoss.external,
+                  needChain: !stopLoss.external,
                   stopLoss,
+                  isPlotActive: stopLoss.plotEnabled,
                   showErrors,
                   isMarketType,
                   validateField,
@@ -325,6 +354,47 @@ export const StopLossBlock = ({
                   updateStopLossAndTakeProfitPrices,
                 }}
               />
+              {stopLoss.external && (
+                <>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      width: '10%',
+                      margin: 'auto 0.8rem auto 0.3rem',
+                    }}
+                  >
+                    <Switcher
+                      checked={stopLoss.plotEnabled}
+                      onChange={() => {
+                        updateBlockValue('stopLoss', 'forcedStopByAlert', false)
+
+                        updateBlockValue(
+                          'stopLoss',
+                          'plotEnabled',
+                          !stopLoss.plotEnabled
+                        )
+                      }}
+                    />
+                  </div>
+
+                  <Input
+                    theme={theme}
+                    type={'number'}
+                    needTitleBlock
+                    header={'plot_'}
+                    textAlign="left"
+                    width={'35%'}
+                    disabled={!stopLoss.plotEnabled}
+                    value={stopLoss.plot}
+                    showErrors={showErrors}
+                    isValid={validateField(true, stopLoss.plot)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      updateBlockValue('stopLoss', 'plot', e.target.value)
+                    }}
+                  />
+                </>
+              )}
             </InputRowContainer>
             // </FormInputContainer>
           )}
@@ -426,7 +496,7 @@ export const StopLossBlock = ({
                         </p>
                       </>
                     }
-                    title={'forced stop price'}
+                    title={'forced stop'}
                   >
                     <InputRowContainer wrap={'nowrap'}>
                       <SliderWithPriceAndPercentageFieldRow
@@ -435,8 +505,11 @@ export const StopLossBlock = ({
                           theme,
                           entryPoint,
                           stopLoss,
+                          tvAlertsEnable: true,
                           showErrors,
+                          needChain: false,
                           isMarketType,
+                          isPlotActive: stopLoss.forcedStopByAlert,
                           validateField,
                           pricePrecision,
                           updateBlockValue,
@@ -530,6 +603,70 @@ export const StopLossBlock = ({
                           updateStopLossAndTakeProfitPrices,
                         }}
                       />
+                      <>
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            width: '10%',
+                            margin: 'auto 0.8rem auto 0.3rem',
+                          }}
+                        >
+                          <Switcher
+                            checked={stopLoss.forcedStopByAlert}
+                            onChange={() => {
+                              updateBlockValue(
+                                'stopLoss',
+                                'forcedStopByAlert',
+                                !stopLoss.forcedStopByAlert
+                              )
+                              if (!stopLoss.forcedStopByAlert) {
+                                updateBlockValue(
+                                  'stopLoss',
+                                  'plotEnabled',
+                                  false
+                                )
+                              }
+
+                              updateBlockValue('stopLoss', 'type', 'market')
+                            }}
+                          />
+                        </div>
+
+                        <BtnCustom
+                          needMinWidth={false}
+                          btnWidth="35%"
+                          height="3rem"
+                          fontWeight={'500'}
+                          fontSize="1.1rem"
+                          fontFamily="Avenir Next Medium"
+                          padding="0 0"
+                          borderRadius=".3rem"
+                          style={{
+                            border: stopLoss.forcedStopByAlert
+                              ? `0.1rem solid ${theme.palette.blue.main}`
+                              : theme.palette.border.main,
+                            lineHeight: 'inherit',
+                          }}
+                          btnColor={theme.palette.grey.text}
+                          backgroundColor={theme.palette.grey.titleForInput}
+                          textTransform={'none'}
+                          margin={'0 0 0 0'}
+                          transition={'all .4s ease-out'}
+                          onClick={() => {
+                            updateBlockValue(
+                              'stopLoss',
+                              'forcedStopByAlert',
+                              !stopLoss.forcedStopByAlert
+                            )
+                            updateBlockValue('stopLoss', 'plotEnabled', false)
+
+                            updateBlockValue('stopLoss', 'type', 'market')
+                          }}
+                        >
+                          Immediately when alert
+                        </BtnCustom>
+                      </>
                     </InputRowContainer>
                   </FormInputContainer>
                 </InputRowContainer>
@@ -537,15 +674,15 @@ export const StopLossBlock = ({
             )}
           {stopLoss.external && (
             <>
-              <FormInputContainer
+              {/* <FormInputContainer
                 theme={theme}
                 padding={'0 0 .8rem 0'}
                 haveTooltip={false}
                 tooltipText={''}
                 title={'action when alert'}
-              >
-                <InputRowContainer style={{ marginTop: '0.5rem' }}>
-                  <AdditionalSettingsButton
+              > */}
+
+              {/* <AdditionalSettingsButton
                     theme={theme}
                     fontSize={'1rem'}
                     isActive={stopLoss.forcedStopByAlert}
@@ -561,30 +698,9 @@ export const StopLossBlock = ({
                     }}
                   >
                     Forced Stop by Alert
-                  </AdditionalSettingsButton>
-                  <AdditionalSettingsButton
-                    theme={theme}
-                    fontSize={'1rem'}
-                    isActive={stopLoss.forcedStop.mandatoryForcedLoss}
-                    onClick={() => {
-                      updateSubBlockValue(
-                        'stopLoss',
-                        'forcedStop',
-                        'isForcedStopOn',
-                        !stopLoss.forcedStop.mandatoryForcedLoss
-                      )
+                  </AdditionalSettingsButton> */}
 
-                      updateSubBlockValue(
-                        'stopLoss',
-                        'forcedStop',
-                        'mandatoryForcedLoss',
-                        !stopLoss.forcedStop.mandatoryForcedLoss
-                      )
-                    }}
-                  >
-                    Settings Forced stop
-                  </AdditionalSettingsButton>
-                  <AdditionalSettingsButton
+              {/* <AdditionalSettingsButton
                     theme={theme}
                     isActive={stopLoss.plotEnabled}
                     onClick={() => {
@@ -598,31 +714,11 @@ export const StopLossBlock = ({
                     }}
                   >
                     Plot
-                  </AdditionalSettingsButton>
-                </InputRowContainer>
-              </FormInputContainer>
+                  </AdditionalSettingsButton> */}
 
-              {stopLoss.plotEnabled && (
-                <InputRowContainer padding={'0 0 .8rem 0'}>
-                  <Input
-                    theme={theme}
-                    type={'number'}
-                    needTitle
-                    title={`plot_`}
-                    textAlign="left"
-                    inputStyles={{
-                      paddingLeft: '4rem',
-                    }}
-                    value={stopLoss.plot}
-                    showErrors={showErrors}
-                    isValid={validateField(true, stopLoss.plot)}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      updateBlockValue('stopLoss', 'plot', e.target.value)
-                    }}
-                  />
-                </InputRowContainer>
-              )}
-              <InputRowContainer style={{ marginTop: '0.5rem' }}>
+              {/* </FormInputContainer> */}
+
+              <InputRowContainer style={{ marginTop: '0rem' }}>
                 {' '}
                 <FormInputContainer
                   style={{

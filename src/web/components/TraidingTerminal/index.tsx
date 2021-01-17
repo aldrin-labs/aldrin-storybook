@@ -374,6 +374,11 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
   onStopChange = (
     e: SyntheticEvent<Element> | { target: { value: number } }
   ) => {
+    // validation for letters
+    if (`${e.target.value}`.match(/[a-zA-Z]/)){
+      return
+    }
+
     const { setFieldValue } = this.props
     setFieldValue('stop', e.target.value)
   }
@@ -390,6 +395,11 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       leverage,
       setFieldValue,
     } = this.props
+
+    // validation for letters
+    if (`${e.target.value}`.match(/[a-zA-Z]/)){
+      return
+    }
 
     const priceForCalculate =
       priceType !== 'market' && priceType !== 'maker-only' ? price : marketPrice
@@ -424,6 +434,11 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       setFieldTouched,
       quantityPrecision,
     } = this.props
+
+    // validation for letters
+    if (`${e.target.value}`.match(/[a-zA-Z]/)){
+      return
+    }
 
     const priceForCalculate =
       priceType !== 'market' && priceType !== 'maker-only' ? price : marketPrice
@@ -474,6 +489,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       setFieldValue,
     } = this.props
 
+    if (`${e.target.value}`.match(/[a-zA-Z]/)){
+      return
+    }
+
     const priceForCalculate =
       priceType !== 'market' && priceType !== 'maker-only'
         ? e.target.value
@@ -505,6 +524,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       funds,
       isSPOTMarket,
     } = this.props
+
+    if (`${e.target.value}`.match(/[a-zA-Z]/)){
+      return
+    }
 
     const value =
       e.target.value > funds[1].quantity

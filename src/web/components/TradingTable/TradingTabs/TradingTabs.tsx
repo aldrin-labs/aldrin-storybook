@@ -18,9 +18,12 @@ import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { getActivePositions } from '@core/graphql/queries/chart/getActivePositions'
 import { getActiveStrategies } from '@core/graphql/queries/chart/getActiveStrategies'
+import SvgIcon from '@sb/components/SvgIcon'
+import FullScreen from '@icons/fullscreen.svg'
 
 const TradingTabs = ({
   tab,
+  isFullScreenTablesMode,
   theme,
   handleTabChange,
   updateTerminalViewMode,
@@ -65,8 +68,21 @@ const TradingTabs = ({
 
   return (
     <>
+      {' '}
       <TitleTabsGroup theme={theme}>
-        {isDefaultOnlyTables && (
+        {isDefaultOnlyTables || isFullScreenTablesMode ? (
+          <TitleTab
+            onClick={() => {
+              updateTerminalViewMode('fullScreenTables')
+              isFullScreenTablesMode && updateTerminalViewMode('onlyTables')
+            }}
+            style={{ width: '8rem' }}
+            theme={theme}
+          >
+            <SvgIcon src={FullScreen} width="2.5rem" height="2.5rem" />
+          </TitleTab>
+        ) : null}
+        {isDefaultOnlyTables || isFullScreenTablesMode ? (
           <DarkTooltip
             title={'Watch and manage your active Smart trades from here.'}
           >
@@ -84,8 +100,8 @@ const TradingTabs = ({
                 : ''}
             </TitleTab>
           </DarkTooltip>
-        )}
-        {isDefaultOnlyTables && (
+        ) : null}
+        {isDefaultOnlyTables || isFullScreenTablesMode ? (
           <TitleTab
             theme={theme}
             active={tab === 'strategiesHistory'}
@@ -93,7 +109,7 @@ const TradingTabs = ({
           >
             Smart Trades History
           </TitleTab>
-        )}
+        ) : null}
         {!isSPOTMarketType(marketType) && (
           <TitleTab
             theme={theme}
@@ -147,7 +163,9 @@ const TradingTabs = ({
             Funds
           </TitleTab>
         )}
-        {(isDefaultOnlyTables || isDefaultTerminalViewMode) && (
+        {(isDefaultOnlyTables ||
+          isDefaultTerminalViewMode ||
+          isFullScreenTablesMode) && (
           <SmartTradeButton
             data-tut={'createSM'}
             style={{
@@ -230,7 +248,7 @@ const TradingTabsWrapper = compose(
     withTableLoader: false,
     withoutLoading: true,
     showLoadingWhenQueryParamsChange: false,
-  }),
+  })
 )(TradingTabs)
 
 export default React.memo(

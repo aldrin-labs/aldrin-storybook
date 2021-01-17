@@ -146,7 +146,24 @@ export const EntryOrderBlock = ({
           )}
           <DarkTooltip
             maxWidth={'30rem'}
-            title={'Place multiple entry targets to average your lose'}
+            title={
+              <>
+                <p>
+                  <a>
+                    Ability to set several points of entry to a position at once
+                    for averaging when reaching a certain price.
+                  </a>
+                </p>
+                <p>
+                  {' '}
+                  <a>
+                    Your stop loss and take profit will be rearranged each time
+                    you reach a new entry point based on the new calculated
+                    entry price.
+                  </a>
+                </p>
+              </>
+            }
           >
             <AdditionalSettingsButton
               style={{ textDecoration: 'underline' }}
@@ -190,6 +207,13 @@ export const EntryOrderBlock = ({
                     'plotEnabled',
                     false
                   )
+
+                  updateSubBlockValue(
+                    'entryPoint',
+                    'TVAlert',
+                    'isTVAlertOn',
+                    false
+                  )
                 }
               }}
             >
@@ -224,8 +248,120 @@ export const EntryOrderBlock = ({
             </AdditionalSettingsButton>
           </DarkTooltip>
         </InputRowContainer>
+        {entryPoint.TVAlert.isTVAlertOn && (
+          <>
+            <InputRowContainer padding={'0rem 0 0.5rem 0'}>
+              <InputRowContainer justify="flex-start">
+                <AdditionalSettingsButton
+                  theme={theme}
+                  borderRadius={'0'}
+                  width={'100%'}
+                  isActive={entryPoint.TVAlert.templateMode === 'once'}
+                  onClick={() => {
+                    updateSubBlockValue(
+                      'entryPoint',
+                      'TVAlert',
+                      'templateMode',
+                      'once'
+                    )
+                  }}
+                >
+                  Place Once
+                </AdditionalSettingsButton>
+              </InputRowContainer>
 
-        <InputRowContainer style={{ margin: '1rem  auto .4rem auto' }}>
+              <InputRowContainer justify={'center'}>
+                <DarkTooltip
+                  title={
+                    'Trade will be placed every time when there is an alert but no open position.'
+                  }
+                  maxWidth={'30rem'}
+                >
+                  <AdditionalSettingsButton
+                    theme={theme}
+                    borderRadius={'0'}
+                    width={'100%'}
+                    isActive={entryPoint.TVAlert.templateMode === 'ifNoActive'}
+                    onClick={() => {
+                      updateSubBlockValue(
+                        'entryPoint',
+                        'TVAlert',
+                        'templateMode',
+                        'ifNoActive'
+                      )
+                    }}
+                  >
+                    Place if no trades exists
+                  </AdditionalSettingsButton>
+                </DarkTooltip>
+              </InputRowContainer>
+
+              <InputRowContainer justify="flex-end">
+                <DarkTooltip
+                  title={
+                    'Your trade will be placed every time alert be reached.'
+                  }
+                  maxWidth={'30rem'}
+                >
+                  <AdditionalSettingsButton
+                    theme={theme}
+                    disabled={isCloseOrderExternal}
+                    borderRadius={'0'}
+                    width={'100%'}
+                    isActive={entryPoint.TVAlert.templateMode === 'always'}
+                    onClick={() => {
+                      updateSubBlockValue(
+                        'entryPoint',
+                        'TVAlert',
+                        'templateMode',
+                        'always'
+                      )
+                    }}
+                  >
+                    Place everytime
+                  </AdditionalSettingsButton>
+                </DarkTooltip>
+              </InputRowContainer>
+            </InputRowContainer>
+
+            {/* {!entryPoint.averaging.enabled && (
+              <FormInputContainer
+                theme={theme}
+                padding={'0 0 1rem 0'}
+                haveTooltip={false}
+                tooltipText={''}
+                title={'action when alert'}
+              >
+                <InputRowContainer>
+                  <AdditionalSettingsButton
+                    theme={theme}
+                    isActive={entryPoint.TVAlert.plotEnabled}
+                    onClick={() => {
+                      updateSubBlockValue(
+                        'entryPoint',
+                        'TVAlert',
+                        'plotEnabled',
+                        !entryPoint.TVAlert.plotEnabled
+                      )
+
+                      if (!entryPoint.TVAlert.plotEnabled) {
+                        updateSubBlockValue(
+                          'entryPoint',
+                          'averaging',
+                          'enabled',
+                          false
+                        )
+                      }
+                    }}
+                  >
+                    Plot
+                  </AdditionalSettingsButton>
+                </InputRowContainer>
+              </FormInputContainer>
+            )} */}
+          </>
+        )}
+        <InputRowContainer style={{ margin: '1rem  auto' }}>
           {' '}
           <InputRowContainer>
             {' '}
@@ -338,16 +474,22 @@ export const EntryOrderBlock = ({
               </>
             )}
           </InputRowContainer>
-        </InputRowContainer>
+        </InputRowContainer>{' '}
         <InputRowContainer style={{ marginBottom: '1rem' }}>
           <ChangeOrderTypeBtn
             theme={theme}
             isActive={
-              entryPoint.order.type === 'market' &&
-              !entryPoint.TVAlert.typePlotEnabled
+              entryPoint.TVAlert.plotEnabled
+                ? entryPoint.TVAlert.typePlotEnabled
+                  ? false
+                  : entryPoint.order.type === 'market'
+                : entryPoint.order.type === 'market'
             }
             isPlotEnabled={entryPoint.TVAlert.plotEnabled}
-            disabled={entryPoint.TVAlert.typePlotEnabled}
+            disabled={
+              entryPoint.TVAlert.plotEnabled &&
+              entryPoint.TVAlert.typePlotEnabled
+            }
             onClick={() => {
               updateSubBlockValue('entryPoint', 'order', 'type', 'market')
 
@@ -359,11 +501,17 @@ export const EntryOrderBlock = ({
           <ChangeOrderTypeBtn
             theme={theme}
             isActive={
-              entryPoint.order.type === 'limit' &&
-              !entryPoint.TVAlert.typePlotEnabled
+              entryPoint.TVAlert.plotEnabled
+                ? entryPoint.TVAlert.typePlotEnabled
+                  ? false
+                  : entryPoint.order.type === 'limit'
+                : entryPoint.order.type === 'limit'
             }
             isPlotEnabled={entryPoint.TVAlert.plotEnabled}
-            disabled={entryPoint.TVAlert.typePlotEnabled}
+            disabled={
+              entryPoint.TVAlert.plotEnabled &&
+              entryPoint.TVAlert.typePlotEnabled
+            }
             onClick={() => {
               updateSubBlockValue('entryPoint', 'order', 'type', 'limit')
 
@@ -421,121 +569,6 @@ export const EntryOrderBlock = ({
             </>
           )}
         </InputRowContainer>
-
-        {entryPoint.TVAlert.isTVAlertOn && (
-          <>
-            <InputRowContainer padding={'0rem 0 0.5rem 0'}>
-              <InputRowContainer justify="flex-start">
-                <AdditionalSettingsButton
-                  theme={theme}
-                  borderRadius={'0'}
-                  width={'100%'}
-                  isActive={entryPoint.TVAlert.templateMode === 'once'}
-                  onClick={() => {
-                    updateSubBlockValue(
-                      'entryPoint',
-                      'TVAlert',
-                      'templateMode',
-                      'once'
-                    )
-                  }}
-                >
-                  Place Once
-                </AdditionalSettingsButton>
-              </InputRowContainer>
-
-              <InputRowContainer justify={'center'}>
-                <DarkTooltip
-                  title={
-                    'Trade will be placed every time when there is an alert but no open position.'
-                  }
-                  maxWidth={'30rem'}
-                >
-                  <AdditionalSettingsButton
-                    theme={theme}
-                    borderRadius={'0'}
-                    width={'100%'}
-                    isActive={entryPoint.TVAlert.templateMode === 'ifNoActive'}
-                    onClick={() => {
-                      updateSubBlockValue(
-                        'entryPoint',
-                        'TVAlert',
-                        'templateMode',
-                        'ifNoActive'
-                      )
-                    }}
-                  >
-                    Place if no trades exists
-                  </AdditionalSettingsButton>
-                </DarkTooltip>
-              </InputRowContainer>
-
-              <InputRowContainer justify="flex-end">
-                <DarkTooltip
-                  title={
-                    'Trade will be placed every time when there is an alert but no open position.'
-                  }
-                  maxWidth={'30rem'}
-                >
-                  <AdditionalSettingsButton
-                    theme={theme}
-                    disabled={isCloseOrderExternal}
-                    borderRadius={'0'}
-                    width={'100%'}
-                    isActive={entryPoint.TVAlert.templateMode === 'always'}
-                    onClick={() => {
-                      updateSubBlockValue(
-                        'entryPoint',
-                        'TVAlert',
-                        'templateMode',
-                        'always'
-                      )
-                    }}
-                  >
-                    Place everytime
-                  </AdditionalSettingsButton>
-                </DarkTooltip>
-              </InputRowContainer>
-            </InputRowContainer>
-
-            {/* {!entryPoint.averaging.enabled && (
-              <FormInputContainer
-                theme={theme}
-                padding={'0 0 1rem 0'}
-                haveTooltip={false}
-                tooltipText={''}
-                title={'action when alert'}
-              >
-                <InputRowContainer>
-                  <AdditionalSettingsButton
-                    theme={theme}
-                    isActive={entryPoint.TVAlert.plotEnabled}
-                    onClick={() => {
-                      updateSubBlockValue(
-                        'entryPoint',
-                        'TVAlert',
-                        'plotEnabled',
-                        !entryPoint.TVAlert.plotEnabled
-                      )
-
-                      if (!entryPoint.TVAlert.plotEnabled) {
-                        updateSubBlockValue(
-                          'entryPoint',
-                          'averaging',
-                          'enabled',
-                          false
-                        )
-                      }
-                    }}
-                  >
-                    Plot
-                  </AdditionalSettingsButton>
-                </InputRowContainer>
-              </FormInputContainer>
-            )} */}
-          </>
-        )}
-
         <InputRowContainer style={{ marginBottom: '1rem' }}>
           {isAveragingAfterFirstTarget ? (
             <>
@@ -786,7 +819,6 @@ export const EntryOrderBlock = ({
             </>
           )}
         </InputRowContainer>
-
         {entryPoint.trailing.isTrailingOn && marketType !== 0 && (
           <InputRowContainer style={{ margin: '1rem 0 1rem 0' }}>
             <Input
@@ -968,7 +1000,6 @@ export const EntryOrderBlock = ({
             )}
           </InputRowContainer>
         )}
-
         <SliderWithAmountFieldRow
           onAmountChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             const [maxAmount] = getMaxValues()
@@ -1112,7 +1143,6 @@ export const EntryOrderBlock = ({
             total: entryPoint.order.total,
           }}
         />
-
         {entryPoint.averaging.enabled && (
           <>
             <InputRowContainer padding="1rem 0 .6rem 0">
@@ -1200,7 +1230,6 @@ export const EntryOrderBlock = ({
             </InputRowContainer>
           </>
         )}
-
         {entryPoint.TVAlert.isTVAlertOn && (
           <>
             <InputRowContainer style={{ marginTop: '1rem' }}>
