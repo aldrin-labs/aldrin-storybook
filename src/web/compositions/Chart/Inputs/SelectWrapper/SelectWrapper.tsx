@@ -51,10 +51,10 @@ import { withPublicKey } from '@core/hoc/withPublicKey'
 const excludedPairs = [
   'USDC_ODOP',
   'KIN_USDT',
-  'MIDBEAR_USDT',
-  'MIDBULL_USDT',
-  'XRPBEAR_USDT',
-  'XRPBULL_USDT',
+  // 'MIDBEAR_USDT',
+  // 'MIDBULL_USDT',
+  // 'XRPBEAR_USDT',
+  // 'XRPBULL_USDT',
   'SWAG_USDT'
 ]
 

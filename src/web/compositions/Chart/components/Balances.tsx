@@ -318,7 +318,7 @@ export const Balances = ({
                     Unsettled balance
                   </BalanceFuturesTitle>
                   <BalanceQuantity theme={theme}>
-                    {balances[0]?.wallet
+                    {balances[0]?.unsettled
                       ? stripDigitPlaces(balances[0].unsettled, 8)
                       : 0}{' '}
                     {pair[0]}

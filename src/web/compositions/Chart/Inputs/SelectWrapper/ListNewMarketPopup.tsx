@@ -138,6 +138,7 @@ export function useMintInput({
     <>
     <FormInputContainer theme={theme} padding={'1.2rem 0 0 0'} title={title}>
       <StyledInput
+        theme={theme}
         height={'4rem'}
         value={address}
         onChange={(e) => setAddress(e.target.value.trim())}
@@ -296,6 +297,7 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
                     title={`Minimum Order Size (Lot size in e.g. BTC)`}
                   >
                     <StyledInput
+                    theme={theme}
                       height={'4rem'}
                       value={lotSize}
                       onChange={(e) => setLotSize(e.target.value.trim())}
@@ -316,6 +318,7 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
                     title={`Tick Size (Price increment in e.g. USDT)`}
                   >
                     <StyledInput
+                    theme={theme}
                       height={'4rem'}
                       value={tickSize}
                       onChange={(e) => setTickSize(e.target.value.trim())}
@@ -344,6 +347,7 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
                   style={{ marginLeft: '1rem' }}
                 >
                   <StyledInput
+                  theme={theme}
                     height={'4rem'}
                     value={listedMarket ? listedMarket.toBase58() : ''}
                     type="text"

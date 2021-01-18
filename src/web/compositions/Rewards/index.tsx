@@ -254,6 +254,7 @@ export const Cell = styled.td`
   }
 `
 export const HeaderCell = styled.th`
+  text-align: left;
   border-bottom: 0.1rem solid ${(props) => props.borderBottom || '#61d8e6'};
   height: 5rem;
 
@@ -391,6 +392,7 @@ const RewardsRoute = (props) => {
   return (
     <div
       style={{
+        background: theme.palette.grey.additional,
         height: '100%',
         width: '100%',
         display: 'flex',
@@ -1174,7 +1176,7 @@ const RewardsRoute = (props) => {
                 <HeaderCell theme={theme}>#</HeaderCell>
                 <HeaderCell theme={theme}>Name</HeaderCell>
                 <HeaderCell theme={theme}>Twitter Id</HeaderCell>
-                <HeaderCell theme={theme}>Followers</HeaderCell>
+                {/* <HeaderCell theme={theme}>Followers</HeaderCell> */}
                 <HeaderCell theme={theme}>Reward</HeaderCell>
               </TableRow>
               {getTopTwitterFarmingData.map((el, index) => {
@@ -1193,7 +1195,7 @@ const RewardsRoute = (props) => {
                         {'@' + el.tweetUsername}
                       </a>
                     </Cell>
-                    <Cell theme={theme}>{el.userFollowersCount}</Cell>
+                    {/* <Cell theme={theme}>{el.userFollowersCount}</Cell> */}
                     <Cell theme={theme}>
                       {(2000 / getTopTwitterFarmingData.length).toFixed(0) +
                         ' DCFI'}
@@ -1358,7 +1360,7 @@ const RewardsRoute = (props) => {
                 <HeaderCell theme={theme}>#</HeaderCell>
                 <HeaderCell theme={theme}>Name</HeaderCell>
                 <HeaderCell theme={theme}>Twitter Id</HeaderCell>
-                <HeaderCell theme={theme}>Followers</HeaderCell>
+                {/* <HeaderCell theme={theme}>Followers</HeaderCell> */}
                 <HeaderCell theme={theme}>Reward</HeaderCell>
               </TableRow>
               {getAllRetweetsHistory.map((el, index) => {
@@ -1377,7 +1379,7 @@ const RewardsRoute = (props) => {
                         {'@' + el.tweetUsername}
                       </a>
                     </Cell>
-                    <Cell theme={theme}>{el.userFollowersCount}</Cell>
+                    {/* <Cell theme={theme}>{el.userFollowersCount}</Cell> */}
                     <Cell theme={theme}>{el.farmedDCFI.toFixed(0)}</Cell>
                   </TableRow>
                 )
