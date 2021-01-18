@@ -593,7 +593,7 @@ const RewardsRoute = (props) => {
                   paddingBottom: '1rem',
                   margin: '0 1rem',
                 }}
-                href={`https://twitter.com/intent/tweet?text=%E2%80%A2+Biden+to+name+Gary+Gensler+%24ETH+and+%24XRP+sceptic+as+U.S.+SEC+chair%0D%0A%E2%80%A2+MIT+Blockchain+Professor+also+Was+Nominated+To+Become+SEC+Chairmen%0D%0A%E2%80%A2+%23Bitcoin+Finds+Support+Around+%2439k%0D%0A%0D%0ADevelop+Strategies+And+Trade+With+%40ccai_official%0D%0A%0D%0A%24CCAI+%24DCFI+%24SRM+%24FTT+%24SOL%0Apic.twitter.com/h1R10YlLLf`}
+                href={`https://twitter.com/intent/tweet?text=%E2%80%A2%20%24INCNT%20token%20briefly%20outperformed%20%24ETH%20on%20%23Coinmarketcap%0A%E2%80%A2%20%24DAO%20closed%20IEO%20on%20%23Gate%20with%202%2C500%25%20oversubscription%0A%E2%80%A2%20%23Maps%20will%20conduct%20an%20%23IEO%20on%20%23FTX!%0A%0ADevelop%20Strategies%20And%20Trade%20With%20Cryptocurrencies.ai%0A%0A%24CCAI%20%24DCFI%20%24SRM%20%24FTT%20%24SOL%0Apic.twitter.com/oDio8TS3BG`}
                 rel="noopener noreferrel"
                 target={'_blank'}
                 onClick={(e) => {
