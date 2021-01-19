@@ -109,8 +109,6 @@ const PriceDataWrapper = ({
   const { getPriceQuery, theme, pricePrecision } = props
   const { getPrice: lastMarketPrice = 0 } = getPriceQuery || { getPrice: 0 }
 
-  console.log('lastMarketPrice', lastMarketPrice)
-
   return (
     <MemoizedPriceBlock
       theme={theme}

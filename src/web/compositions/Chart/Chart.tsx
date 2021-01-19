@@ -223,7 +223,7 @@ export function ChartPageComponent(props: any) {
     ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
     : { keyId: '', hedgeMode: false, isFuturesWarsKey: false }
   
-  console.log('Chart RENDER')  
+  console.log('Chart RENDER', selectedKey)  
 
   return (
     <MainContainer>

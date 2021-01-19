@@ -55,20 +55,24 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
 
     const { reduceOnly, ...paramsForHedge } = variables.keyParams
 
+    const variablesToSend = {
+      ...variables,
+      keyParams: {
+        ...(hedgeMode
+          ? {
+              ...paramsForHedge,
+              positionSide:
+                paramsForHedge.side === 'buy' ? 'SHORT' : 'LONG',
+            }
+          : variables.keyParams),
+      },
+    }
+
+    console.log('variablesToSend', variablesToSend)
+
     try {
       const result = await createOrderMutation({
-        variables: {
-          ...variables,
-          keyParams: {
-            ...(hedgeMode
-              ? {
-                  ...paramsForHedge,
-                  positionSide:
-                    paramsForHedge.side === 'buy' ? 'SHORT' : 'LONG',
-                }
-              : variables.keyParams),
-          },
-        },
+        variables: variablesToSend
       })
 
       if (result.errors) {
