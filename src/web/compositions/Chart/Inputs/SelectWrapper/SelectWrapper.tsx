@@ -197,7 +197,9 @@ class SelectPairListComponent extends React.PureComponent<
     } = this.props
     const { sortBy, sortDirection } = this.state
 
-    const { left } = document.getElementById('ExchangePair')?.getBoundingClientRect()
+    const { left } = document
+      .getElementById('ExchangePair')
+      ?.getBoundingClientRect()
 
     const processedSelectData = combineSelectWrapperData({
       data,
@@ -221,7 +223,7 @@ class SelectPairListComponent extends React.PureComponent<
         sortDirection,
         data: processedSelectData,
       }),
-      left
+      left,
     })
   }
 
@@ -298,7 +300,7 @@ class SelectPairListComponent extends React.PureComponent<
             pairObjectA.volume24hChange.contentToSort
           )
         }
-      })     
+      })
     } else {
       newList = _.sortBy(dataToSort, [`${sortBy}.contentToSort`])
       if (sortDirection === SortDirection.DESC) {
@@ -621,22 +623,6 @@ class SelectPairListComponent extends React.PureComponent<
               </Table>
             )}
           </AutoSizer>
-        </Grid>
-        <Grid
-          style={{
-            display: 'flex',
-            padding: '1rem',
-            background: tab === 'fiat' ? theme.palette.grey.main : '',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            cursor: 'pointer',
-            fontSize: '1.4rem',
-            color: theme.palette.grey.light,
-            height: '3rem',
-          }}
-          onClick={() => onTabChange('fiat')}
-        >
-          Binance liquidity data
         </Grid>
       </StyledGrid>
     )

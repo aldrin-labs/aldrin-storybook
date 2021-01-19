@@ -18,6 +18,7 @@ import {
   combineOpenOrdersTable,
   getEmptyTextPlaceholder,
   getTableHead,
+  filterOpenOrders,
 } from '@sb/components/TradingTable/TradingTable.utils'
 
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
@@ -74,6 +75,24 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     }
   }
 
+  // onCancelAllOrders
+  // take array of orders that currently in table
+  // by loop execute onCancelOrder for each of them
+
+  onCancelAllOrders = async () => {
+    const filteredOpenOrders = this.props.getOpenOrderHistoryQuery.getOpenOrderHistory.orders.filter(
+      (order) => filterOpenOrders({ order, canceledOrders: [] })
+    )
+    filteredOpenOrders.forEach((order) => {
+      this.onCancelOrder(
+        order.keyId,
+        order.info.orderId,
+        order.pair,
+        order.type
+      )
+    })
+  }
+
   cancelOrderWithStatus = async (
     keyId: string,
     orderId: string,
@@ -121,7 +140,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       keys,
       handlePairChange,
       pricePrecision,
-      quantityPrecision
+      quantityPrecision,
     })
 
     // client.writeQuery({
@@ -307,7 +326,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       currencyPair,
       specificPair,
       pricePrecision,
-      quantityPrecision
+      quantityPrecision,
     } = nextProps
 
     const { cachedOrder } = this.state
@@ -323,9 +342,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
             page: page,
             perPage: perPage,
             allKeys: allKeys,
-            ...(!specificPair
-              ? {}
-              : { specificPair: currencyPair }),
+            ...(!specificPair ? {} : { specificPair: currencyPair }),
           },
         },
       })
@@ -364,7 +381,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       keys,
       handlePairChange,
       pricePrecision,
-      quantityPrecision
+      quantityPrecision,
     })
 
     this.setState({
@@ -501,7 +518,14 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
         }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
         data={{ body: openOrdersProcessedData }}
-        columnNames={getTableHead(tab, marketType)}
+        columnNames={getTableHead(
+          tab,
+          marketType,
+          () => {},
+          () => {},
+          () => {},
+          this.onCancelAllOrders
+        )}
       />
     )
   }
@@ -514,7 +538,6 @@ const TableDataWrapper = ({ ...props }) => {
     showOpenOrdersFromAllAccounts: allKeys,
     showAllOpenOrderPairs: specificPair,
   } = props
-
   return (
     <QueryRenderer
       page={page}

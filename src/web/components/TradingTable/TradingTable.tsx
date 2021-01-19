@@ -336,6 +336,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             minFuturesStep,
             pricePrecision,
             quantityPrecision,
+            isDefaultOnlyTables,
             allKeys,
             specificPair,
             priceFromOrderbook,

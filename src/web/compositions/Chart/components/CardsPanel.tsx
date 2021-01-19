@@ -35,7 +35,6 @@ import { Button } from '@material-ui/core'
 
 import { showChangePositionModeResult } from '@sb/compositions/Chart/Chart.utils'
 
-
 const selectStyles = (theme: Theme) => ({
   height: '100%',
   background: theme.palette.white.background,
@@ -75,7 +74,7 @@ export const CardsPanel = ({
   themeMode,
   activeExchange,
   terminalViewMode,
-  pricePrecision, 
+  pricePrecision,
   quantityPrecision,
   isDefaultTerminalViewMode,
   updateTerminalViewMode,
@@ -97,7 +96,6 @@ export const CardsPanel = ({
     getActiveStrategies: { strategies: [], count: 0 },
   },
 }) => {
-
   // const { pricePrecision, quantityPrecision } = getPrecisionItem({
   //   marketType,
   //   symbol: pair,
@@ -183,7 +181,7 @@ export const CardsPanel = ({
               marketType={marketType}
               selectStyles={{
                 ...selectStyles(theme),
-                width:'100%',
+                width: '100%',
               }}
               isAccountSelect={true}
             />
@@ -210,10 +208,10 @@ export const CardsPanel = ({
           style={{
             position: 'relative',
             display: 'flex',
-            maxWidth: marketType === 0 ? '50%' : '56.33333%',
+            maxWidth: marketType === 0 ? '50%' : '52.33333%',
             marginRight: '.4rem',
             flexGrow: 1,
-            backgroundColor: theme.palette.grey.marketStats,
+            backgroundColor: theme.palette.white.background,
             border: '0',
           }}
         >

@@ -14,7 +14,7 @@ const SubRow = ({
   minFuturesStep,
 }) => {
   const [price, updateClosePrice] = useState('')
-  const [amount, updateCloseAmount] = useState('100')
+  const [amount, updateCloseAmount] = useState('')
   const [isClosingPositionProcessEnabled, closePosition] = useState(false)
   const [closingType, setClosingType] = useState('')
 
@@ -41,23 +41,10 @@ const SubRow = ({
           justifyContent: 'flex-end',
         }}
       >
-        <Typography theme={theme}>close:</Typography>
-        <Input
-          theme={theme}
-          width={'30%'}
-          padding={'0 .5rem 0 1rem'}
-          value={price}
-          placeholder={'price'}
-          onChange={(e) => {
-            updateClosePrice(e.target.value)
-          }}
-          inputStyles={{
-            textTransform: 'uppercase',
-            fontSize: '1.2rem',
-            color: theme.palette.blue.main,
-          }}
-        />
-        <div style={{ position: 'relative', width: '25rem' }}>
+        <Typography theme={theme} style={{ color: theme.palette.grey.light }}>
+          close:
+        </Typography>{' '}
+        <div style={{ position: 'relative', width: '13rem' }}>
           {/* <Input
             theme={theme}
             padding={'0'}
@@ -77,31 +64,32 @@ const SubRow = ({
             width={'100%'}
             padding={'0 .5rem 0 1rem'}
             value={amount}
+            placeholder={'amount'}
             onChange={(e) => {
               updateCloseAmount(e.target.value)
             }}
             inputStyles={{
               textTransform: 'uppercase',
-              fontSize: '1.3rem',
+              fontSize: '1.2rem',
               color: theme.palette.blue.main,
-              paddingLeft: '7.5rem',
+              borderRadius: '0.7rem',
             }}
           />{' '}
-          <div
+          {/* <div
             style={{
               position: 'absolute',
               left: '2rem',
+              fontSize: '1.1rem',
+              fontFamily: 'Avenir Next Medium',
               top: '50%',
-              transform: 'translateY(-50%)',
-              fontSize: '1rem',
               letterSpacing: '0',
-              fontFamily: 'DM Sans',
+              transform: 'translateY(-50%)',
               color: '#abbad1',
               // paddingBottom: '.3rem',
             }}
           >
             AMOUNT
-          </div>
+          </div> */}
           <div
             style={{
               position: 'absolute',
@@ -115,9 +103,24 @@ const SubRow = ({
             %
           </div>
         </div>
-
+        <Input
+          theme={theme}
+          width={'22%'}
+          padding={'0 .5rem 0 1rem'}
+          value={price}
+          placeholder={'price'}
+          onChange={(e) => {
+            updateClosePrice(e.target.value)
+          }}
+          inputStyles={{
+            textTransform: 'uppercase',
+            fontSize: '1.2rem',
+            color: theme.palette.blue.main,
+            borderRadius: '0.7rem',
+          }}
+        />
         <BtnCustom
-          btnWidth="30%"
+          btnWidth="15%"
           height="3rem"
           fontSize="1rem"
           padding=".5rem 0 .4rem 0"
@@ -126,18 +129,12 @@ const SubRow = ({
           btnColor={
             isPriceFieldEmpty
               ? theme.palette.grey.text
-              : theme.palette.blue.main
+              : theme.palette.white.background
           }
-          backgroundColor={theme.palette.white.background}
-          hoverColor={
+          backgroundColor={
             isPriceFieldEmpty
-              ? theme.palette.grey.text
-              : theme.palette.white.main
-          }
-          hoverBackground={
-            isPriceFieldEmpty
-              ? theme.palette.white.background
-              : theme.palette.blue.main
+              ? theme.palette.white.backgrond
+              : theme.palette.red.main
           }
           transition={'all .4s ease-out'}
           disabled={isClosingPositionProcessEnabled && closingType === 'limit'}
@@ -164,15 +161,13 @@ const SubRow = ({
           limit
         </BtnCustom>
         <BtnCustom
-          btnWidth="30%"
+          btnWidth="15%"
           height="3rem"
           fontSize="1rem"
           padding=".5rem 0 .4rem 0"
           borderRadius=".8rem"
-          btnColor={theme.palette.blue.main}
-          backgroundColor={theme.palette.white.background}
-          hoverColor={'#fff'}
-          hoverBackground={theme.palette.blue.main}
+          btnColor={theme.palette.white.background}
+          backgroundColor={theme.palette.red.main}
           transition={'all .4s ease-out'}
           disabled={isClosingPositionProcessEnabled && closingType === 'market'}
           onClick={async () => {

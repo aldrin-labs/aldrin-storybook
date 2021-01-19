@@ -118,8 +118,8 @@ export default function defaultRowRenderer({
       ? // ? { color: rowData.fall ? '#DD6956' : '#29AC80' }
         {
           color: rowData.fall
-            ? theme.palette.red.main
-            : theme.palette.green.main,
+            ? theme.palette.red.orderbook
+            : theme.palette.green.orderbook,
         }
       : {}
   let needHighlightPrice = false
@@ -252,17 +252,17 @@ export default function defaultRowRenderer({
         style={{
           backgroundColor:
             side === 'bids'
-              ? theme.palette.orderbook.greenBackground
+              ? theme.palette.tradeHistory.greenBackground
               : side === 'asks'
-              ? theme.palette.orderbook.redBackground
+              ? theme.palette.tradeHistory.redBackground
               : rowData.fall === 0
               ? theme.palette.tradeHistory.greenBackground
               : theme.palette.tradeHistory.redBackground,
 
-          // transform: `translateX(calc(100% - ${orderPercentage}%))`,
-          // ...(rowData.fall === undefined
-          //   ? {}
-          //   : { transition: 'none', willChange: 'background-color' }),
+          transform: `translateX(calc(100% - ${orderPercentage}%))`,
+          ...(rowData.fall === undefined
+            ? {}
+            : { transition: 'none', willChange: 'background-color' }),
         }}
       />
       <div className="needHover" />

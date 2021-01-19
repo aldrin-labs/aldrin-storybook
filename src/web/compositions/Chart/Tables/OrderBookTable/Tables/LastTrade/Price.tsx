@@ -55,7 +55,11 @@ const PriceBlockOrderBook = ({ theme, aggregation, getPriceQuery }: IProps) => {
       {Number(lastMarketPrice).toFixed(
         getNumberOfDecimalsFromNumber(aggregation)
       )}{' '}
-      {showGreen ? <SvgIcon src={GreenArrow} /> : <SvgIcon src={RedArrow} />}
+      {showGreen ? (
+        <SvgIcon src={GreenArrow} height="12px" width="12px" />
+      ) : (
+        <SvgIcon src={RedArrow} height="12px" width="12px" />
+      )}
     </MemoizedLastTradePrice>
   )
 }

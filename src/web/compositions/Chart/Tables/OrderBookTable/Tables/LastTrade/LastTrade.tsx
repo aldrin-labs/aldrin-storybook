@@ -42,7 +42,7 @@ interface IProps {
 const lastTradeStylesContainer = {
   width: '100%',
   display: 'flex',
-  justifyContent: 'center',
+  justifyContent: 'space-between',
   alignItems: 'baseline',
 }
 
