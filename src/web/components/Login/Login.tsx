@@ -61,7 +61,7 @@ class LoginClassComponent extends React.Component<Props> {
             >
               Log in
             </Button>
-            <SignUpButton
+            {/* <SignUpButton
               component={SignUpLink}
               pathname={pathname}
               color="secondary"
@@ -75,7 +75,7 @@ class LoginClassComponent extends React.Component<Props> {
               }}
             >
               Sign Up
-            </SignUpButton>
+            </SignUpButton> */}
           </>
         </Grow>
         <Slide

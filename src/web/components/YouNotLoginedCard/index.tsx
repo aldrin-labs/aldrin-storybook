@@ -68,7 +68,7 @@ const LoginCard = ({ open, children }: IProps) => {
             >
               Log in
             </Button>
-            <SignUpButton
+            {/* <SignUpButton
               component={SignUpLink}
               pathname={pathname}
               color="secondary"
@@ -84,7 +84,7 @@ const LoginCard = ({ open, children }: IProps) => {
               }}
             >
               Sign Up
-            </SignUpButton>
+            </SignUpButton> */}
           </Grid>
         </Grid>
       </Grid>

@@ -32,6 +32,7 @@ import { updateThemeMode } from '@core/graphql/mutations/chart/updateThemeMode'
 import { writeQueryData } from '@core/utils/TradingTable.utils'
 import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
 import { Button } from '@material-ui/core'
+import { getAllUserKeys } from '@core/graphql/queries/user/getAllUserKeys'
 
 import { showChangePositionModeResult } from '@sb/compositions/Chart/Chart.utils'
 
@@ -486,6 +487,6 @@ export default compose(
     withoutLoading: true,
     showLoadingWhenQueryParamsChange: false,
   }),
-  graphql(changePositionMode, { name: 'changePositionModeMutation' }),
+  graphql(changePositionMode, { name: 'changePositionModeMutation', options: { refetchQueries: [{ query: getAllUserKeys }]} }),
   graphql(updateThemeMode, { name: 'updateThemeModeMutation' })
 )(CardsPanel)
