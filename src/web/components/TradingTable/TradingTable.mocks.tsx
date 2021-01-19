@@ -23,7 +23,8 @@ export const tradingTableTabConfig = [
 export const positionsColumnNames = (
   refetch,
   updatePositionsHandler,
-  positionsRefetchInProcess
+  positionsRefetchInProcess,
+  isDefaultOnlyTables
 ) => [
   { label: '#', id: 'index' },
   { label: 'Pair/Side', id: 'pair' },

@@ -147,7 +147,8 @@ export const getTableHead = (
   refetch?: () => void,
   updatePositionsHandler?: () => void,
   positionsRefetchInProcess?: boolean,
-  onCancelAllOrders?: () => void
+  onCancelAllOrders?: () => void,
+  isDefaultOnlyTables?: boolean
 ): any[] =>
   tab === 'openOrders'
     ? openOrdersColumnNames(marketType, onCancelAllOrders)
@@ -161,7 +162,8 @@ export const getTableHead = (
     ? positionsColumnNames(
         refetch,
         updatePositionsHandler,
-        positionsRefetchInProcess
+        positionsRefetchInProcess,
+        isDefaultOnlyTables
       )
     : tab === 'activeTrades'
     ? activeTradesColumnNames
@@ -605,6 +607,7 @@ export const combinePositionsTable = ({
             style: { opacity: needOpacity ? 0.5 : 1, maxWidth: '100px' },
             colspan: 2,
           },
+
           action: {
             render: isDefaultOnlyTables && (
               <div>
@@ -624,28 +627,28 @@ export const combinePositionsTable = ({
           refetch: '',
           tooltipTitle: keyName,
         },
-        // {
-        //   pair: {
-        //     render: (
-        //       <div>
-        //         <SubRow
-        //           theme={theme}
-        //           positionId={el._id}
-        //           enqueueSnackbar={enqueueSnackbar}
-        //           getVariables={getVariables}
-        //           priceFromOrderbook={priceFromOrderbook}
-        //           createOrderWithStatus={createOrderWithStatus}
-        //           minFuturesStep={minFuturesStep}
-        //         />
-        //       </div>
-        //     ),
-        //     colspan: 10,
-        //     style: {
-        //       opacity: needOpacity ? 0.5 : 1,
-        //       visibility: needOpacity ? 'hidden' : 'visible',
-        //     },
-        //   },
-        // },
+        !isDefaultOnlyTables && {
+          pair: {
+            render: (
+              <div>
+                <SubRow
+                  theme={theme}
+                  positionId={el._id}
+                  enqueueSnackbar={enqueueSnackbar}
+                  getVariables={getVariables}
+                  priceFromOrderbook={priceFromOrderbook}
+                  createOrderWithStatus={createOrderWithStatus}
+                  minFuturesStep={minFuturesStep}
+                />
+              </div>
+            ),
+            colspan: 10,
+            style: {
+              opacity: needOpacity ? 0.5 : 1,
+              visibility: needOpacity ? 'hidden' : 'visible',
+            },
+          },
+        },
       ]
     })
 
