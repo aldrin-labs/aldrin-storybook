@@ -180,7 +180,7 @@ const TradingTabs = ({
               updateTerminalViewMode('smartOrderMode')
             }}
           >
-            Create an advanced trade
+            Create a Smart Trade
           </SmartTradeButton>
         )}
       </TitleTabsGroup>

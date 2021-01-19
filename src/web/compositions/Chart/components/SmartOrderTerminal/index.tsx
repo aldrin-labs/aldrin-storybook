@@ -1323,6 +1323,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             {/* STOP LOSS */}
             <StopLossBlock
               pair={pair}
+              marketType={marketType}
               theme={theme}
               stopLoss={stopLoss}
               showErrors={showErrors}

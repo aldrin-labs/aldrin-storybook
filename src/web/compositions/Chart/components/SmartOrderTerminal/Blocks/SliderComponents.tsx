@@ -26,6 +26,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
   titleForTooltip,
   needTooltip = false,
   showErrors,
+  isTrailingOn = false,
   isPlotActive = false,
   isMarketType,
   showMarks,
@@ -59,7 +60,13 @@ export const SliderWithPriceAndPercentageFieldRow = ({
           needTitleBlock
           padding={'0'}
           width={
-            sliderInTheBottom ? '65%' : tvAlertsEnable ? '55%' : 'calc(31.5%)'
+            sliderInTheBottom
+              ? '65%'
+              : tvAlertsEnable
+              ? '55%'
+              : isTrailingOn
+              ? '27%'
+              : 'calc(31.5%)'
           }
           textAlign={'right'}
           symbol={pair[1]}
@@ -99,6 +106,8 @@ export const SliderWithPriceAndPercentageFieldRow = ({
         width={
           sliderInTheBottom
             ? '35%'
+            : isTrailingOn
+            ? '33%'
             : needPriceField && !tvAlertsEnable
             ? 'calc(24.5%)'
             : tvAlertsEnable
@@ -137,7 +146,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
           disabled={isPlotActive}
           value={value}
           sliderContainerStyles={{
-            width: '40%',
+            width: isTrailingOn ? '33%' : '40%',
             margin: '0 .8rem 0 .8rem',
           }}
           onChange={(v) => updateValue(v)}

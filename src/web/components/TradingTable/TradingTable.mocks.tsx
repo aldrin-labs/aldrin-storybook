@@ -23,7 +23,8 @@ export const tradingTableTabConfig = [
 export const positionsColumnNames = (
   refetch,
   updatePositionsHandler,
-  positionsRefetchInProcess
+  positionsRefetchInProcess,
+  isDefaultOnlyTables
 ) => [
   { label: '#', id: 'index' },
   { label: 'Pair/Side', id: 'pair' },
@@ -40,13 +41,15 @@ export const positionsColumnNames = (
         maxWidth={'30rem'}
         title={`This indicator shows your position in the auto-deleverage queue. If all lights are lit, in the event of a liquidation, your position may be reduced.`}
       >
-        <span>adl</span>
+        <span style={{ textDecoration: 'underline' }}>ADL</span>
       </DarkTooltip>
     ),
     id: 'adl',
   },
   { label: 'Liq. Price', id: 'liqPrice' },
-  { label: 'Pnl/Roe', id: 'pnlRoe' },
+  { label: 'PNL/ROE', id: 'pnlRoe', colspan: 2 },
+  // { label: ' ', id: 'pnlRoe' },
+  { label: 'Action', id: 'action', style: { textAlign: 'right' } },
   {
     label: (
       <DarkTooltip title={`Update positions`}>
@@ -90,7 +93,6 @@ export const activeTradesColumnNames = [
     ),
     id: 'takeProfit',
   },
-  ,
   { label: 'P&L/ROE', id: 'profit' },
   {
     label: (
@@ -128,36 +130,15 @@ export const activeTradesColumnNames = [
 
 export const strategiesHistoryColumnNames = [
   { label: ' ', id: 'blank' },
-  { label: 'pair', id: 'pair' },
-  { label: 'Side', id: 'side' },
+  { label: 'Position', id: 'position' },
   { label: 'Entry Price', id: 'entryPrice' },
-  { label: 'Size', id: 'quantity' },
+  { label: 'Margin/Size', id: 'quantity' },
   {
-    label: (
-      <DarkTooltip title={`Take profit`}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            textDecoration: 'underline',
-          }}
-        >
-          T-P
-          {/* <Help
-            style={{
-              height: '1.5rem',
-              width: '1.5rem',
-              color: 'rgb(0, 93, 217)',
-              marginLeft: '.5rem',
-            }}
-          /> */}
-        </div>
-      </DarkTooltip>
-    ),
+    label: 'Take Profit',
     id: 'takeProfit',
   },
-  { label: 'Stop', id: 'stopLoss' },
-  { label: 'Pnl/Roe', id: 'profit' },
+  { label: 'Stop Loss', id: 'stopLoss' },
+  { label: 'PNL/ROE', id: 'profit' },
   { label: 'status', id: 'status' },
   { label: 'date', isNumber: true, id: 'date' },
 ]
@@ -184,7 +165,11 @@ export const positionsBody = new Array(13).fill(undefined).map((el, i) => ({
   },
 }))
 
-export const openOrdersColumnNames = (marketType: number) =>
+export const openOrdersColumnNames = (
+  marketType: number,
+  onCancelAllOrders: () => void,
+  theme
+) =>
   [
     { label: 'Pair', id: 'pair' },
     // { label: 'Type', id: 'type' },
@@ -197,11 +182,25 @@ export const openOrdersColumnNames = (marketType: number) =>
     marketType === 1 ? { label: 'Reduce Only', id: 'reduceOnly' } : {},
     { label: 'date', isNumber: true, id: 'date' },
     {
-      label:
-        // <TableButton size="small" variant="outlined">
-        //   Cancel all
-        // </TableButton>
-        ' ',
+      label: (
+        <TableButton
+          size="small"
+          onClick={() => onCancelAllOrders()}
+          style={{
+            color: '#fff',
+            // backgroundColor: theme.palette.red.main,
+            border: 'none',
+            margin: '.5rem auto .5rem 10rem',
+            borderRadius: '0.5rem',
+            height: '2.7rem',
+            width: '9rem',
+            fontFamily: 'Avenir Next Demi',
+          }}
+          variant="outlined"
+        >
+          Cancel all
+        </TableButton>
+      ),
       id: 'cancel',
       isSortable: false,
     },

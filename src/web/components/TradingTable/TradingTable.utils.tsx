@@ -67,8 +67,14 @@ export const CloseButton = ({
       size={`small`}
       disabled={isCancelled}
       style={{
-        color: isCancelled ? 'grey' : theme.palette.red.main,
-        borderColor: isCancelled ? 'grey' : theme.palette.red.main,
+        color: '#fff',
+        backgroundColor: isCancelled ? 'grey' : theme.palette.red.main,
+        border: 'none',
+        margin: '0.5rem auto 0.5rem 10rem',
+        borderRadius: '0.5rem',
+        height: '2.7rem',
+        fontFamily: 'Avenir Next Demi',
+        width: '9rem',
       }}
       onClick={() => {
         onClick()
@@ -140,10 +146,12 @@ export const getTableHead = (
   marketType: number = 0,
   refetch?: () => void,
   updatePositionsHandler?: () => void,
-  positionsRefetchInProcess?: boolean
+  positionsRefetchInProcess?: boolean,
+  onCancelAllOrders?: () => void,
+  isDefaultOnlyTables?: boolean
 ): any[] =>
   tab === 'openOrders'
-    ? openOrdersColumnNames(marketType)
+    ? openOrdersColumnNames(marketType, onCancelAllOrders)
     : tab === 'orderHistory'
     ? orderHistoryColumnNames(marketType)
     : tab === 'tradeHistory'
@@ -154,7 +162,8 @@ export const getTableHead = (
     ? positionsColumnNames(
         refetch,
         updatePositionsHandler,
-        positionsRefetchInProcess
+        positionsRefetchInProcess,
+        isDefaultOnlyTables
       )
     : tab === 'activeTrades'
     ? activeTradesColumnNames
@@ -349,15 +358,16 @@ export const combinePositionsTable = ({
   pair,
   keyId,
   keys,
+  isDefaultOnlyTables,
   canceledPositions,
   priceFromOrderbook,
   toogleEditMarginPopup,
   handlePairChange,
   enqueueSnackbar,
   minFuturesStep,
-  // pricePrecision,
-  // quantityPrecision
-}: {
+}: // pricePrecision,
+// quantityPrecision
+{
   data: Position[]
   createOrderWithStatus: (variables: any, positionId: any) => Promise<void>
   theme: Theme
@@ -579,25 +589,45 @@ export const combinePositionsTable = ({
             contentToSort: liquidationPrice,
           },
 
-          profit: {
-            render: <PnlBlock
-              symbol={symbol}
-              exchange={activeExchange}
-              marketType={1}
-              pricePrecision={pricePrecision}
-              theme={theme}
-              pair={pair}
-              entryPrice={entryPrice}
-              leverage={leverage}
-              side={side}
-              positionAmt={positionAmt}
-            />,
+          pnlRoe: {
+            render: (
+              <PnlBlock
+                symbol={symbol}
+                exchange={activeExchange}
+                marketType={1}
+                pricePrecision={pricePrecision}
+                theme={theme}
+                pair={pair}
+                entryPrice={entryPrice}
+                leverage={leverage}
+                side={side}
+                positionAmt={positionAmt}
+              />
+            ),
             style: { opacity: needOpacity ? 0.5 : 1, maxWidth: '100px' },
             colspan: 2,
           },
+
+          action: {
+            render: isDefaultOnlyTables && (
+              <div>
+                <SubRow
+                  theme={theme}
+                  positionId={el._id}
+                  enqueueSnackbar={enqueueSnackbar}
+                  getVariables={getVariables}
+                  priceFromOrderbook={priceFromOrderbook}
+                  createOrderWithStatus={createOrderWithStatus}
+                  minFuturesStep={minFuturesStep}
+                />
+              </div>
+            ),
+            // colspan: 10,
+          },
+          refetch: '',
           tooltipTitle: keyName,
         },
-        {
+        !isDefaultOnlyTables && {
           pair: {
             render: (
               <div>
@@ -643,9 +673,9 @@ export const combineActiveTradesTable = ({
   canceledOrders,
   keys,
   handlePairChange,
-  // pricePrecision,
-  // quantityPrecision
-}: {
+}: // pricePrecision,
+// quantityPrecision
+{
   data: any[]
   queryBody: string
   queryVariables: object
@@ -768,7 +798,6 @@ export const combineActiveTradesTable = ({
         receivedProfitPercentage: 0,
       }
 
-
       const { pricePrecision, quantityPrecision } = getPrecisionItem({
         marketType,
         symbol: pair,
@@ -792,7 +821,7 @@ export const combineActiveTradesTable = ({
       })
 
       const isErrorInOrder = !!msg
-      
+
       const takeProfitPercentage =
         exitLevels[0] &&
         exitLevels[0].activatePrice &&
@@ -1068,6 +1097,7 @@ export const combineActiveTradesTable = ({
                     }}
                   >
                     <TableRow style={{ fontSize: '1.2rem' }}>
+                      <TableCell theme={theme}>status</TableCell>
                       <TableCell theme={theme}>price</TableCell>
                       <TableCell theme={theme}>amount / margin</TableCell>
                       <TableCell theme={theme}>
@@ -1104,6 +1134,7 @@ export const combineActiveTradesTable = ({
 
                       return (
                         <TableRow>
+                          <TableCell theme={theme}>O</TableCell>
                           <TableCell theme={theme}>
                             {currentPrice.toFixed(pricePrecision)} {pairArr[1]}
                           </TableCell>
@@ -1160,7 +1191,7 @@ export const combineActiveTradesTable = ({
                     transition={'all .4s ease-out'}
                     onClick={(e) => {
                       e.stopPropagation()
-                      editTrade('takeProfit', el)
+                      editTrade('stopLoss', el)
                     }}
                   >
                     edit
@@ -1709,73 +1740,73 @@ export const combineActiveTradesTable = ({
             </BtnCustom>
           ),
         },
-        expandableContent: [
-          {
-            row: {
-              render: (
-                <div style={{ position: 'relative' }}>
-                  <EntryOrderColumn
-                    theme={theme}
-                    haveEdit={true}
-                    entryLevels={entryLevels} // avg
-                    editTrade={() => editTrade('entryOrder', el)}
-                    enableEdit={activeOrderStatus === 'Preparing' || isTemplate}
-                    pair={`${pairArr[0]}/${pairArr[1]}`}
-                    side={side}
-                    price={entryOrderPrice}
-                    order={orderType}
-                    amount={
-                      // I use toFixed instead of stripDigitPlaces
-                      // coz in strategy-service we're rounding amount in this way
-                      amount.toFixed(quantityPrecision)
-                    }
-                    total={entryOrderPrice * amount}
-                    trailing={
-                      entryDeviation
-                        ? stripDigitPlaces(entryDeviation / leverage, 3)
-                        : false
-                    }
-                    activatePrice={activatePrice}
-                    red={red.main}
-                    green={green.main}
-                    blue={blue}
-                  />
-                  <TakeProfitColumn
-                    haveEdit={true}
-                    theme={theme}
-                    enableEdit={true}
-                    editTrade={() => editTrade('takeProfit', el)}
-                    price={exitLevels.length > 0 && exitLevels[0].price}
-                    order={exitLevels.length > 0 && exitLevels[0].orderType}
-                    targets={exitLevels ? exitLevels : []}
-                    timeoutProfit={timeoutWhenProfit}
-                    timeoutProfitable={timeoutIfProfitable}
-                    trailing={trailingExit}
-                    red={red.main}
-                    green={green.main}
-                    blue={blue}
-                  />
-                  <StopLossColumn
-                    theme={theme}
-                    haveEdit={true}
-                    enableEdit={true}
-                    editTrade={() => editTrade('stopLoss', el)}
-                    price={stopLoss}
-                    order={stopLossType}
-                    forced={forcedLoss}
-                    timeoutWhenLoss={timeoutWhenLoss}
-                    timeoutLoss={timeoutLoss}
-                    red={red.main}
-                    green={green.main}
-                    blue={blue}
-                  />
-                  <DateColumn theme={theme} createdAt={date} />
-                </div>
-              ),
-              colspan: 9,
-            },
-          },
-        ],
+        // expandableContent: [
+        //   {
+        //     row: {
+        //       render: (
+        //         <div style={{ position: 'relative' }}>
+        //           <EntryOrderColumn
+        //             theme={theme}
+        //             haveEdit={true}
+        //             entryLevels={entryLevels} // avg
+        //             editTrade={() => editTrade('entryOrder', el)}
+        //             enableEdit={activeOrderStatus === 'Preparing' || isTemplate}
+        //             pair={`${pairArr[0]}/${pairArr[1]}`}
+        //             side={side}
+        //             price={entryOrderPrice}
+        //             order={orderType}
+        //             amount={
+        //               // I use toFixed instead of stripDigitPlaces
+        //               // coz in strategy-service we're rounding amount in this way
+        //               amount.toFixed(quantityPrecision)
+        //             }
+        //             total={entryOrderPrice * amount}
+        //             trailing={
+        //               entryDeviation
+        //                 ? stripDigitPlaces(entryDeviation / leverage, 3)
+        //                 : false
+        //             }
+        //             activatePrice={activatePrice}
+        //             red={red.main}
+        //             green={green.main}
+        //             blue={blue}
+        //           />
+        //           <TakeProfitColumn
+        //             haveEdit={true}
+        //             theme={theme}
+        //             enableEdit={true}
+        //             editTrade={() => editTrade('takeProfit', el)}
+        //             price={exitLevels.length > 0 && exitLevels[0].price}
+        //             order={exitLevels.length > 0 && exitLevels[0].orderType}
+        //             targets={exitLevels ? exitLevels : []}
+        //             timeoutProfit={timeoutWhenProfit}
+        //             timeoutProfitable={timeoutIfProfitable}
+        //             trailing={trailingExit}
+        //             red={red.main}
+        //             green={green.main}
+        //             blue={blue}
+        //           />
+        //           <StopLossColumn
+        //             theme={theme}
+        //             haveEdit={true}
+        //             enableEdit={true}
+        //             editTrade={() => editTrade('stopLoss', el)}
+        //             price={stopLoss}
+        //             order={stopLossType}
+        //             forced={forcedLoss}
+        //             timeoutWhenLoss={timeoutWhenLoss}
+        //             timeoutLoss={timeoutLoss}
+        //             red={red.main}
+        //             green={green.main}
+        //             blue={blue}
+        //           />
+        //           <DateColumn theme={theme} createdAt={date} />
+        //         </div>
+        //       ),
+        //       colspan: 9,
+        //     },
+        //   },
+        // ],
       }
     })
 
@@ -1788,9 +1819,9 @@ export const combineStrategiesHistoryTable = ({
   marketType,
   keys,
   handlePairChange,
-  // pricePrecision,
-  // quantityPrecision
-}: {
+}: // pricePrecision,
+// quantityPrecision
+{
   data: OrderType[]
   theme: Theme
   marketType: number
@@ -1890,10 +1921,10 @@ export const combineStrategiesHistoryTable = ({
           ? price
           : entryPrice
 
-          const { pricePrecision, quantityPrecision } = getPrecisionItem({
-            marketType,
-            symbol: pair,
-          })
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({
+        marketType,
+        symbol: pair,
+      })
 
       const [profitAmount, profitPercentage] = getPnlFromState({
         state: el.state,
@@ -2212,21 +2243,21 @@ export const combineOpenOrdersTable = ({
   canceledOrders,
   keys,
   handlePairChange,
-  // pricePrecision,
-  // quantityPrecision
-}: {
-  data: OrderType[],
+}: // pricePrecision,
+// quantityPrecision
+{
+  data: OrderType[]
   cancelOrderFunc: (
     keyId: string,
     orderId: string,
     pair: string,
     type: string
-  ) => Promise<any>,
-  theme: Theme,
-  arrayOfMarketIds: string[],
-  marketType: 0 | 1,
-  canceledOrders: string[],
-  keys: Key[],
+  ) => Promise<any>
+  theme: Theme
+  arrayOfMarketIds: string[]
+  marketType: 0 | 1
+  canceledOrders: string[]
+  keys: Key[]
   handlePairChange: (pair: string) => void
   // pricePrecision: number
   // quantityPrecision: number
@@ -2480,6 +2511,9 @@ export const combineOpenOrdersTable = ({
               Cancel
             </CloseButton>
           ),
+          style: {
+            width: '15rem',
+          },
         },
         tooltipTitle: keyName,
       }
@@ -2494,13 +2528,13 @@ export const combineOrderHistoryTable = ({
   marketType,
   keys,
   handlePairChange,
-  // pricePrecision,
-  // quantityPrecision
-}: {
-  data: OrderType[],
-  theme: Theme,
-  marketType: 0 | 1,
-  keys,
+}: // pricePrecision,
+// quantityPrecision
+{
+  data: OrderType[]
+  theme: Theme
+  marketType: 0 | 1
+  keys
   handlePairChange: (pair: string) => void
   // pricePrecision: number
   // quantityPrecision: number
@@ -2722,14 +2756,14 @@ export const combineTradeHistoryTable = ({
   marketType,
   keys,
   handlePairChange,
-  // pricePrecision,
-  // quantityPrecision
-}: {
-  tradeData: TradeType[],
-  theme: Theme,
-  arrayOfMarketIds: string[],
-  marketType: 0 | 1,
-  keys,
+}: // pricePrecision,
+// quantityPrecision
+{
+  tradeData: TradeType[]
+  theme: Theme
+  arrayOfMarketIds: string[]
+  marketType: 0 | 1
+  keys
   handlePairChange: (pair: string) => void
   // pricePrecision: number
   // quantityPrecision: number
@@ -2904,9 +2938,9 @@ export const combineFundsTable = ({
   hideSmallAssets,
   marketType,
 }: {
-  data: FundsType[],
-  hideSmallAssets: boolean,
-  marketType: 0 | 1,
+  data: FundsType[]
+  hideSmallAssets: boolean
+  marketType: 0 | 1
 }) => {
   if (!fundsData && !Array.isArray(fundsData)) {
     return []

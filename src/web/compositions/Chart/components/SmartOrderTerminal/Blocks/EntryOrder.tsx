@@ -713,11 +713,11 @@ export const EntryOrderBlock = ({
                   ? '70%'
                   : '100%'
               }
-              needTooltip={entryPoint.trailing.isTrailingOn}
+              needTooltip={true}
               titleForTooltip={
                 'The price at which the trailing algorithm will be triggered.'
               }
-              header={'price'}
+              header={'activation price'}
               symbol={pair[1]}
               needTitleBlock
               type={

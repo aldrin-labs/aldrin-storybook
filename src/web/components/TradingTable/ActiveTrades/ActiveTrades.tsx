@@ -638,7 +638,7 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
                 updateTerminalViewMode('smartOrderMode')
               }}
             >
-              Create an advanced trade
+              Create a Smart Trade
             </SmartTradeButton>
           )}
           expandableRows={true}

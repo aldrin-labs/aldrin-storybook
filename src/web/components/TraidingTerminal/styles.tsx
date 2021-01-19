@@ -24,6 +24,7 @@ export const TitleForInput = styled.div`
   width: auto;
   // min-height: 3rem;
   height: 3rem;
+  cursor: default;
   white-space: nowrap;
   text-decoration: ${(props) => props.textDecoration || 'none'};
   border: ${(props) =>
@@ -244,7 +245,6 @@ export const TradeInput = styled.input`
         '#fff'};
   font-size: 1.3rem;
   font-family: Avenir Next Medium;
-  font-weight: bold;
   padding-left: ${(props) => (props.needCharacter ? '2rem' : '0.6rem')};
   text-align: ${(props) => props.align};
   outline: none;

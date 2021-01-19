@@ -195,7 +195,10 @@ export const TradeInputContent = ({
         <>
           {needTooltip ? (
             <DarkTooltip title={titleForTooltip}>
-              <TitleForInput theme={theme} textDecoration={textDecoration}>
+              <TitleForInput
+                theme={theme}
+                style={{ textDecoration: 'underline' }}
+              >
                 {header}
               </TitleForInput>
             </DarkTooltip>
@@ -326,7 +329,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
           stripDigitPlaces(margin * leverage, isSPOTMarket ? 8 : 3),
           0
         )
-  
+
         this.setFormatted(
           'amount',
           stripDigitPlaces(
@@ -335,12 +338,18 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
           ),
           0
         )
-
-        }
+      }
     }
 
-    if (marketPrice !== prevProps.marketPrice && (priceType === 'market' || prevProps.marketPrice === 0)) {
-      this.setFormatted('price', stripDigitPlaces(marketPrice, pricePrecision), 0)
+    if (
+      marketPrice !== prevProps.marketPrice &&
+      (priceType === 'market' || prevProps.marketPrice === 0)
+    ) {
+      this.setFormatted(
+        'price',
+        stripDigitPlaces(marketPrice, pricePrecision),
+        0
+      )
       this.setFormatted(
         'amount',
         stripDigitPlaces(
@@ -375,7 +384,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     e: SyntheticEvent<Element> | { target: { value: number } }
   ) => {
     // validation for letters
-    if (`${e.target.value}`.match(/[a-zA-Z]/)){
+    if (`${e.target.value}`.match(/[a-zA-Z]/)) {
       return
     }
 
@@ -397,7 +406,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     } = this.props
 
     // validation for letters
-    if (`${e.target.value}`.match(/[a-zA-Z]/)){
+    if (`${e.target.value}`.match(/[a-zA-Z]/)) {
       return
     }
 
@@ -436,7 +445,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     } = this.props
 
     // validation for letters
-    if (`${e.target.value}`.match(/[a-zA-Z]/)){
+    if (`${e.target.value}`.match(/[a-zA-Z]/)) {
       return
     }
 
@@ -489,7 +498,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       setFieldValue,
     } = this.props
 
-    if (`${e.target.value}`.match(/[a-zA-Z]/)){
+    if (`${e.target.value}`.match(/[a-zA-Z]/)) {
       return
     }
 
@@ -525,7 +534,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       isSPOTMarket,
     } = this.props
 
-    if (`${e.target.value}`.match(/[a-zA-Z]/)){
+    if (`${e.target.value}`.match(/[a-zA-Z]/)) {
       return
     }
 
@@ -901,11 +910,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
         orderId: '0',
       }
 
-      showOrderResult(
-        successResult,
-        props.cancelOrder,
-        isSPOTMarket ? 0 : 1
-      )
+      showOrderResult(successResult, props.cancelOrder, isSPOTMarket ? 0 : 1)
 
       // await props.addLoaderToButton(byType)
 
@@ -941,11 +946,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       })
 
       if (result.status === 'error' || !result.orderId) {
-        await showOrderResult(
-          result,
-          props.cancelOrder,
-          isSPOTMarket ? 0 : 1
-        )
+        await showOrderResult(result, props.cancelOrder, isSPOTMarket ? 0 : 1)
       }
       // await await props.addLoaderToButton(false)
       setSubmitting(false)

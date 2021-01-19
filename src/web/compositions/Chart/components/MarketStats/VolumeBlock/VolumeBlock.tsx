@@ -43,10 +43,10 @@ const VolumeBlock = ({ volume, theme, marketType, symbol }: IProps) => {
           {formatNumberToUSFormat(stripDigitPlaces(volume))}
           {` ${marketType === 0 ? quote : base}`}
         </PanelCardValue>
-        <SvgIcon
+        {/* <SvgIcon
           style={{ position: 'absolute', right: '1rem' }}
           src={BinanceLogo}
-        />
+        /> */}
       </PanelCard>
     </DarkTooltip>
   )

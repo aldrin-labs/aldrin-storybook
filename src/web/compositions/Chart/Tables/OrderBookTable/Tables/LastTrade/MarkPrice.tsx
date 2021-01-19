@@ -18,6 +18,7 @@ const lastTradePriceStyles = (theme) => ({
   color: theme.palette.grey.onboard,
   fontFamily: 'DM Sans',
   fontWeight: 'normal',
+  paddingRight: '1rem',
 })
 
 export interface IProps {
