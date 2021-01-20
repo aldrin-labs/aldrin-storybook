@@ -595,7 +595,7 @@ const RewardsRoute = (props) => {
                   paddingBottom: '1rem',
                   margin: '0 1rem',
                 }}
-                href={`https://twitter.com/intent/tweet?text=%E2%80%A2+Biden+to+name+Gary+Gensler+%24ETH+and+%24XRP+sceptic+as+U.S.+SEC+chair%0D%0A%E2%80%A2+MIT+Blockchain+Professor+also+Was+Nominated+To+Become+SEC+Chairmen%0D%0A%E2%80%A2+%23Bitcoin+Finds+Support+Around+%2439k%0D%0A%0D%0ADevelop+Strategies+And+Trade+With+%40ccai_official%0D%0A%0D%0A%24CCAI+%24DCFI+%24SRM+%24FTT+%24SOL%0Apic.twitter.com/h1R10YlLLf`}
+                href={`https://twitter.com/intent/tweet?text=%E2%80%A2+%23Poloniex+exchange+suddenly+down.+Justin+Sun+said+funds+are+%23SAFU.%0D%0A%E2%80%A2+The+new+payment+option+on+%23Pornhub+is+%24BNB%0D%0A%E2%80%A2+%24ETH+open+interest+at+an+ATH.%0D%0A%0D%0ATrade+And+Develop+Strategies+With+%40CCAI_Official%0D%0A%0D%0A%24CCAI+%24DCFI+%24SRM+%24FTT+%24SOL%0Apic.twitter.com/PfXdzteXYo`}
                 rel="noopener noreferrel"
                 target={'_blank'}
                 onClick={(e) => {
