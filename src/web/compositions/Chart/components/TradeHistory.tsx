@@ -30,7 +30,6 @@ export const TradeHistory = ({
   quote,
   pair,
 }) => {
-  console.log('isPairDataLoading', isPairDataLoading)
   return (
     <TradeHistoryWrapper
       theme={theme}
@@ -45,13 +44,14 @@ export const TradeHistory = ({
         withOutSpinner
         query={MARKET_QUERY}
         variables={{ symbol, exchange: 'serum', marketType }}
-        fetchPolicy={'network-only'}
+        fetchPolicy={'cache-and-network'}
         // subscriptionArgs={{
-          // subscription: MARKET_TICKERS,
-          // variables: { symbol, exchange, marketType: String(marketType) },
+        //   subscription: MARKET_TICKERS,
+        //   variables: { symbol, exchange: 'serum', marketType: String(marketType) },
           // subscription: MOCKED_MARKET_TICKERS,
           // variables: { time: 10000 },
-          // updateQueryFunction: updateTradeHistoryQuerryFunction,
+        //   updateQueryFunction: updateTradeHistoryQuerryFunction,
+        //   fetchPolicy: 'cache-and-network'
         // }}
         {...{
           quote,

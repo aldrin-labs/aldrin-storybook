@@ -20,6 +20,8 @@ import { client } from '@core/graphql/apolloClient'
 
 import { IProps, IState } from './TableContainer.types'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
+import { updateTradeHistoryQuerryFunction } from '@core/utils/chartPageUtils'
+
 
 let unsubscribe: Function | undefined
 
@@ -43,8 +45,6 @@ class TableContainer extends Component<IProps, IState> {
       //  if data is actually not a new data
       return null
     }
-
-    console.log('newProps.data.marketTickers', newProps.data.marketTickers)
 
     const pricePrecision = newProps.pricePrecision === undefined ? newProps.sizeDigits !== undefined ? 8 : undefined : newProps.pricePrecision
 
@@ -84,8 +84,7 @@ class TableContainer extends Component<IProps, IState> {
   subscribe = () => {
     const that = this
     this.subscription && this.subscription.unsubscribe()
-    const pricePrecision = this.props.pricePrecision === undefined ? this.props.sizeDigits !== undefined ? 8 : undefined : this.props.pricePrecision
-
+    
     this.subscription = client
       .subscribe({
         query: MARKET_TICKERS,
@@ -98,13 +97,14 @@ class TableContainer extends Component<IProps, IState> {
       })
       .subscribe({
         next: ({ data }) => {
-          console.log('data', data)
           if (
             data &&
             data.listenMarketTickers &&
             data.listenMarketTickers.length > 0
           ) {
             const tickersData = data.listenMarketTickers
+            const pricePrecision = that.props.pricePrecision === undefined ? that.props.sizeDigits !== undefined ? 8 : undefined : that.props.pricePrecision
+
 
             if (
               !tickersData ||
@@ -128,7 +128,7 @@ class TableContainer extends Component<IProps, IState> {
                 .concat(that.state.data)
             )
 
-            this.setState({
+            that.setState({
               data: updatedData,
             })
           }
