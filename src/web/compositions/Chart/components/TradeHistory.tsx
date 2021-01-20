@@ -26,8 +26,6 @@ const TradeHistoryRaw = ({
 	quote,
 	pair
 }) => {
-  const variant = getTradeHistoryWrapperVariant(showTableOnMobile)
-
 	return (
 		<MemoizedTradeHistoryWrapper
 			theme={theme}

@@ -84,6 +84,7 @@ export const StopLossBlock = ({
             >
               <AdditionalSettingsButton
                 theme={theme}
+                style={{textDecoration:'underline'}}
                 width={'22.75%'}
                 isActive={entryPoint.averaging.placeWithoutLoss}
                 onClick={() => {
@@ -667,7 +668,7 @@ export const StopLossBlock = ({
                               updateBlockValue('stopLoss', 'type', 'market')
                             }}
                           >
-                            Immediately when alert
+                            After Alert
                           </BtnCustom>
                         </>
                       )}
