@@ -43,6 +43,9 @@ import { withWebsocket } from '@core/hoc/withWebsocket'
 import { withFetch } from '@core/hoc/withFetchHoc'
 import { getUrlForFetch } from '@core/utils/getUrlForFetch'
 import { getUrlForWebsocket } from '@core/utils/getUrlForWebsocket'
+// import Worker from 'worker-loader!./worker.js';
+import worker from './worker.js';
+import WebWorker from './workerSetup';
 
 const gridStyles = { height: '100%' }
 const obAndDepthChartContainerStyles = {
@@ -55,16 +58,21 @@ const MemoizedOrderbookContainer = React.memo(OrderbookContainer)
 
 class OrderbookAndDepthChart extends React.PureComponent {
   state = {
-    readyForNewOrder: true,
     aggregation: 0,
-    resubscribeTimer: null,
-    dataWasUpdated: true,
     asks: new TreeMap(),
     bids: new TreeMap(),
     aggregatedData: {
       asks: new TreeMap(),
       bids: new TreeMap(),
     },
+    webWorkerData: {
+      asks: [],
+      bids: [],
+      aggregatedData: {
+        asks: [],
+        bids: [],
+      },
+    }
   }
 
   subscription: { unsubscribe: Function } | null
@@ -114,12 +122,30 @@ class OrderbookAndDepthChart extends React.PureComponent {
     return null
   }
 
+  componentDidMount() {
+    this.worker = new WebWorker(worker);
+
+    this.worker.addEventListener('message', e => {
+      const isAggregatedData = e.data.isAggregatedData
+			this.setState(prev => ({
+        webWorkerData: {
+          ...prev,
+          ...(isAggregatedData ? {} : { asks: e.data.asks, bids: e.data.bids }),
+          aggregatedData: {
+            ...prev.aggregatedData,
+            ...(!isAggregatedData ? {} : { asks: e.data.asks, bids: e.data.bids }),
+          }
+        }
+      }))
+		});
+  }
+
   componentDidUpdate(prevProps: IProps) {
     if (
       prevProps.data?.marketOrders?.asks.length !==
       this.props.data?.marketOrders?.asks.length
     ) {
-      const { asks, bids, readyForNewOrder, aggregation } = this.state
+      const { asks, bids, aggregation, aggregatedData } = this.state
 
       const { sizeDigits, minPriceDigits, isPairDataLoading, data } = this.props
       if (
@@ -130,86 +156,23 @@ class OrderbookAndDepthChart extends React.PureComponent {
         return
       }
 
-      let updatedData = null
-      let newResubscribeTimer = null
-      let updatedAggregatedData = this.state.aggregatedData
+      // console.log(asks, bids)
 
-      let ordersAsks = data.marketOrders.asks
-      let ordersBids = data.marketOrders.bids
-
-      const marketOrders = Object.assign(
-        {
-          asks: [],
-          bids: [],
-          __typename: 'orderbookOrder',
-        },
-        {
-          asks: ordersAsks,
-          bids: ordersBids,
-        }
+      const message = JSON.parse(
+        JSON.stringify({
+          asks,
+          bids,
+          aggregation,
+          sizeDigits,
+          data,
+          minPriceDigits,
+          aggregatedData
+        })
       )
 
-      if (
-        ((marketOrders.asks.length > 0 || marketOrders.bids.length > 0) &&
-          !(typeof marketOrders.asks === 'string')) ||
-        !(typeof marketOrders.bids === 'string')
-      ) {
-        const ordersData = marketOrders
-        const orderbookData = updatedData || { asks, bids }
-        // check this current pair and marketType === pair in new orders
-        // if (
-        //   (ordersData.bids.length > 0 &&
-        //     ordersData.bids[0].pair !==
-        //       `${this.props.symbol}_${this.props.marketType}`) ||
-        //   (ordersData.asks.length > 0 &&
-        //     ordersData.asks[0].pair !==
-        //       `${this.props.symbol}_${this.props.marketType}`)
-        // )
-        //   return null
+      // console.log('message', message)
 
-        if (
-          String(aggregation) !==
-          String(getAggregationsFromMinPriceDigits(minPriceDigits)[0].value)
-        ) {
-          updatedAggregatedData = addOrdersToOrderbook({
-            updatedData: updatedAggregatedData,
-            ordersData,
-            aggregation,
-            defaultAggregation: getAggregationsFromMinPriceDigits(
-              this.props.minPriceDigits
-            )[0].value,
-            originalOrderbookTree: { asks, bids },
-            isAggregatedData: true,
-            sizeDigits,
-          })
-        }
-
-        updatedData = addOrdersToOrderbook({
-          updatedData: orderbookData,
-          ordersData,
-          aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0]
-            .value,
-          defaultAggregation: getAggregationsFromMinPriceDigits(
-            this.props.minPriceDigits
-          )[0].value,
-          originalOrderbookTree: { asks, bids },
-          isAggregatedData: false,
-          sizeDigits,
-        })
-      }
-
-      this.setState({
-        dataWasUpdated: true,
-        resubscribeTimer: newResubscribeTimer,
-        readyForNewOrder:
-          readyForNewOrder === undefined ? true : readyForNewOrder,
-        aggregation:
-          aggregation === undefined || aggregation === 0
-            ? String(getAggregationsFromMinPriceDigits(minPriceDigits)[0].value)
-            : aggregation,
-        aggregatedData: updatedAggregatedData,
-        ...updatedData,
-      })
+      this.worker.postMessage(message);
     }
 
     if (
@@ -241,9 +204,7 @@ class OrderbookAndDepthChart extends React.PureComponent {
   }
 
   componentWillUnmount() {
-    this.setState({ readyForNewOrder: false })
     this.subscription && this.subscription.unsubscribe()
-    // clearInterval(this.state.resubscribeTimer)
   }
 
   setOrderbookAggregation = (aggregation: OrderbookGroup) => {
@@ -363,7 +324,8 @@ class OrderbookAndDepthChart extends React.PureComponent {
     } = this.props
 
     const marketOrders = (data && data.marketOrders) || []
-    const { asks, bids, aggregation, aggregatedData } = this.state
+    const { aggregation } = this.state
+    const { asks, bids, aggregatedData } = this.state.webWorkerData
 
     const dataToSend =
       String(aggregation) ===
