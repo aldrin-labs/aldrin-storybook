@@ -6,10 +6,6 @@ import { TradeHistoryWrapper } from '../Chart.styles';
 
 const MemoizedTradeHistoryWrapper = React.memo(TradeHistoryWrapper);
 
-const getTradeHistoryWrapperVariant = memoizeOne((showTableOnMobile) => ({
-	show: showTableOnMobile === 'TRADE'
-}))
-
 const TradeHistoryRaw = ({
 	updateTerminalPriceFromOrderbook,
 	showTableOnMobile,
@@ -31,7 +27,6 @@ const TradeHistoryRaw = ({
 			theme={theme}
 			key={`tradehistory_table`}
 			className="ExchangesTable"
-			variant={variant}
 		>
 			<TradeHistoryTable
 				key={'tradeyistory_table_query_render'}
