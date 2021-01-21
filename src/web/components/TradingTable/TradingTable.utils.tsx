@@ -451,7 +451,7 @@ export const combinePositionsTable = ({
         {
           index: {
             render: i + 1,
-            rowspan: 2,
+            rowspan: 1,
             color: theme.palette.grey.light,
           },
           id: el._id,
@@ -627,8 +627,8 @@ export const combinePositionsTable = ({
           refetch: '',
           tooltipTitle: keyName,
         },
-        !isDefaultOnlyTables && {
-          pair: {
+        ...(!isDefaultOnlyTables ? [{
+          index: {
             render: (
               <div>
                 <SubRow
@@ -648,7 +648,7 @@ export const combinePositionsTable = ({
               visibility: needOpacity ? 'hidden' : 'visible',
             },
           },
-        },
+        }] : []),
       ]
     })
 
