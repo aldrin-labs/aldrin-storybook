@@ -20,6 +20,8 @@ import { client } from '@core/graphql/apolloClient'
 
 import { IProps, IState } from './TableContainer.types'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
+import { updateTradeHistoryQuerryFunction } from '@core/utils/chartPageUtils'
+
 
 let unsubscribe: Function | undefined
 
@@ -43,8 +45,6 @@ class TableContainer extends Component<IProps, IState> {
       //  if data is actually not a new data
       return null
     }
-
-    console.log('newProps.data.marketTickers', newProps.data.marketTickers)
 
     const pricePrecision = newProps.pricePrecision === undefined ? newProps.sizeDigits !== undefined ? 8 : undefined : newProps.pricePrecision
 
@@ -84,8 +84,7 @@ class TableContainer extends Component<IProps, IState> {
   subscribe = () => {
     const that = this
     this.subscription && this.subscription.unsubscribe()
-    const pricePrecision = this.props.pricePrecision === undefined ? this.props.sizeDigits !== undefined ? 8 : undefined : this.props.pricePrecision
-
+    
     this.subscription = client
       .subscribe({
         query: MARKET_TICKERS,
@@ -104,6 +103,8 @@ class TableContainer extends Component<IProps, IState> {
             data.listenMarketTickers.length > 0
           ) {
             const tickersData = data.listenMarketTickers
+            const pricePrecision = that.props.pricePrecision === undefined ? that.props.sizeDigits !== undefined ? 8 : undefined : that.props.pricePrecision
+
 
             if (
               !tickersData ||
@@ -127,7 +128,7 @@ class TableContainer extends Component<IProps, IState> {
                 .concat(that.state.data)
             )
 
-            this.setState({
+            that.setState({
               data: updatedData,
             })
           }
@@ -136,7 +137,7 @@ class TableContainer extends Component<IProps, IState> {
   }
 
   componentDidMount() {
-    // this.subscribe()
+    this.subscribe()
   }
 
   componentDidUpdate(prevProps: IProps) {
@@ -152,7 +153,7 @@ class TableContainer extends Component<IProps, IState> {
       this.subscription && this.subscription.unsubscribe()
 
       //  subscribe to new exchange and create new unsub link
-      // this.subscribe()
+      this.subscribe()
     }
   }
 
@@ -167,8 +168,6 @@ class TableContainer extends Component<IProps, IState> {
     const { data = [], numbersAfterDecimalForPrice } = this.state
     const amountForBackground =
       data.reduce((prev, curr) => prev + +curr.size, 0) / data.length
-
-    console.log('666', data)
 
     return (
       <>
