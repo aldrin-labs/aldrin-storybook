@@ -585,6 +585,10 @@ export default () => {
     }
   }
 
+  const socket = new WebSocket("wss://fstream.binance.com/ws/BTCUSDT@depth");
+
+
+
   self.addEventListener('message', (e) => {
     // eslint-disable-line no-restricted-globals
     // console.log('e in worker', e)
@@ -596,7 +600,7 @@ export default () => {
       aggregatedData,
     } = e.data
     let updatedData = null
-    let updatedAggregatedData = aggregatedData
+    let updatedAggregatedData = state.aggregatedData
 
     let ordersAsks = data.marketOrders.asks
     let ordersBids = data.marketOrders.bids

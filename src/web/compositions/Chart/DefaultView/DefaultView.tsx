@@ -301,7 +301,7 @@ export const DefaultViewComponent = (
                       : '35%',
                   }}
                 >
-                  {!hideTradeHistory && (
+                  {/* {!hideTradeHistory && (
                     <TradeHistory
                       symbol={currencyPair}
                       pair={currencyPair}
@@ -321,7 +321,7 @@ export const DefaultViewComponent = (
                       pricePrecision={pricePrecision}
                       quantityPrecision={quantityPrecision}
                     />
-                  )}
+                  )} */}
                 </Grid>
               </Grid>
             </TradingTerminalContainer>
