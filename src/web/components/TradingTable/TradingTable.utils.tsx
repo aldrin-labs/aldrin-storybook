@@ -642,12 +642,13 @@ export const combinePositionsTable = ({
                 />
               </div>
             ),
-            colspan: 10,
+            colspan: 12,
             style: {
               opacity: needOpacity ? 0.5 : 1,
               visibility: needOpacity ? 'hidden' : 'visible',
             },
           },
+          refetch: ''
         }] : []),
       ]
     })
