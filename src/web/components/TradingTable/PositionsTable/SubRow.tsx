@@ -25,6 +25,7 @@ const SubRow = ({
   }, [priceFromOrderbook])
 
   const isPriceFieldEmpty = price == ''
+  const amountIsZero = amount === '0'
 
   return (
     <div
@@ -139,6 +140,14 @@ const SubRow = ({
           transition={'all .4s ease-out'}
           disabled={isClosingPositionProcessEnabled && closingType === 'limit'}
           onClick={async () => {
+            if (amountIsZero) {
+              enqueueSnackbar(`Zero amount can't be used for closing position`, {
+                variant: 'error',
+              })
+
+              return
+            }
+
             if (isPriceFieldEmpty) {
               enqueueSnackbar('Enter limit price for closing position', {
                 variant: 'error',
@@ -171,6 +180,14 @@ const SubRow = ({
           transition={'all .4s ease-out'}
           disabled={isClosingPositionProcessEnabled && closingType === 'market'}
           onClick={async () => {
+            if (amountIsZero) {
+              enqueueSnackbar(`Zero amount can't be used for closing position`, {
+                variant: 'error',
+              })
+
+              return
+            }
+
             setClosingType('market')
             closePosition(true)
             const response = await createOrderWithStatus(

@@ -425,7 +425,7 @@ export const combinePositionsTable = ({
             : calculatedAmount === 0
             ? 0
             : stripDigitPlaces(calculatedAmount, quantityPrecision)
-        console.log('calcAm', calcAmount)
+
         return {
           keyId: el.keyId,
           keyParams: {

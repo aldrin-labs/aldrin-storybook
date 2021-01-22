@@ -94,14 +94,15 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
           orderId: result.data.createOrder.orderId,
         }
       }
+
       return {
         status: 'error',
-        message: 'Something went wrong',
+        message: `Something went wrong on api side, raw response: ${JSON.stringify(result)}`,
       }
     } catch (err) {
       return {
         status: 'error',
-        message: 'Something went wrong',
+        message: `Something went wrong on frontend side: ${err.name} ${err.message} `,
       }
     }
   }
@@ -135,7 +136,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     } = this.props
 
     const positionKey = keysObjects.find((key) => key.keyId === variables.keyId)
-    let data = getActivePositionsQuery.getActivePositions
 
     if (variables.keyParams.amount === 0) {
       enqueueSnackbar(
@@ -169,6 +169,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     )
 
     const result = await this.createOrder(variables, positionKey)
+    
     if (result.status === 'error') {
       const isReduceOrderIsRejected = /-2022/.test(result.message)
       if (isReduceOrderIsRejected) {
@@ -191,14 +192,28 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       showOrderResult(result, cancelOrder, marketType)
       await this.props.clearCanceledOrders()
     }
-    // here we disable SM if you closed position manually
-    setPositionWasClosedMutation({
-      variables: {
-        keyId: positionKey.keyId,
-        pair: variables.keyParams.symbol,
-        side: variables.keyParams.side === 'buy' ? 'sell' : 'buy',
-      },
-    })
+
+    const isMarketOrder = variables.keyParams.type === 'market'
+    const position = getActivePositionsQuery.getActivePositions.find(
+      (p) => p._id === positionId) || { positionAmt: 0 }
+    const positionAmt = position.positionAmt
+    const orderAmount = variables.keyParams.amount
+    const isOrderCoverFullPositionAmount = orderAmount === positionAmt
+
+
+    if (result.status === 'success' && isMarketOrder && isOrderCoverFullPositionAmount) {
+      // here we disable SM if you closed position manually
+      setPositionWasClosedMutation({
+        variables: {
+          keyId: positionKey.keyId,
+          pair: variables.keyParams.symbol,
+          side: variables.keyParams.side === 'buy' ? 'sell' : 'buy',
+        },
+      })
+
+
+   }
+
   }
 
   modifyIsolatedMargin = async ({
