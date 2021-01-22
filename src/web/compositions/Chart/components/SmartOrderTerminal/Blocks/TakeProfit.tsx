@@ -81,6 +81,7 @@ export const TakeProfitBlock = ({
               theme={theme}
               isActive={entryPoint.averaging.closeStrategyAfterFirstTAP}
               width={'22.75%'}
+              style={{textDecoration:'underline'}}
               onClick={() => {
                 updateSubBlockValue(
                   'entryPoint',

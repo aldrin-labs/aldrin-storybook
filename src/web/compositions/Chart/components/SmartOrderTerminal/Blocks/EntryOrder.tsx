@@ -1018,7 +1018,7 @@ export const EntryOrderBlock = ({
             const strippedAmount = isAmountMoreThanMax
               ? stripDigitPlaces(
                   amountForUpdate,
-                  marketType === 1 ? quantityPrecision : 8
+                  quantityPrecision 
                 )
               : e.target.value
 
@@ -1048,7 +1048,7 @@ export const EntryOrderBlock = ({
               'amount',
               stripDigitPlaces(
                 +e.target.value / priceForCalculate,
-                marketType === 1 ? quantityPrecision : 8
+                quantityPrecision
               )
             )
 
@@ -1079,7 +1079,7 @@ export const EntryOrderBlock = ({
               'amount',
               stripDigitPlaces(
                 newAmount,
-                marketType === 1 ? quantityPrecision : 8
+                quantityPrecision
               )
             )
 
@@ -1099,7 +1099,7 @@ export const EntryOrderBlock = ({
 
             const fixedAmount = stripDigitPlaces(
               newAmount,
-              marketType === 1 ? quantityPrecision : 8
+              quantityPrecision
             )
 
             updateSubBlockValue(

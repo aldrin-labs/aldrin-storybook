@@ -425,7 +425,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         'amount',
         stripDigitPlaces(
           total / price,
-          this.props.marketType === 1 ? this.props.quantityPrecision : 8
+          this.props.quantityPrecision
         )
       )
 
@@ -462,7 +462,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           'amount',
           stripDigitPlaces(
             total / this.props.price,
-            marketType === 1 ? this.props.quantityPrecision : 8
+            this.props.quantityPrecision
           )
         )
       }
@@ -1080,7 +1080,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       'entryPoint',
       'order',
       'amount',
-      stripDigitPlaces(amount, marketType === 1 ? quantityPrecision : 8)
+      stripDigitPlaces(amount, quantityPrecision)
     )
 
     this.updateSubBlockValue(

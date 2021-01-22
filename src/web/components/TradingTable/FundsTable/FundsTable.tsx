@@ -153,7 +153,7 @@ class FundsTable extends React.PureComponent<IProps> {
           },
         ]}
         data={{ body: fundsProcessedData }}
-        columnNames={getTableHead(tab)}
+        columnNames={getTableHead({ tab })}
       />
     )
   }

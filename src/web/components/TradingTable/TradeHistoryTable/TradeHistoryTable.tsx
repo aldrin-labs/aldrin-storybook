@@ -38,7 +38,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
       keys,
       handlePairChange,
       pricePrecision,
-      quantityPrecision
+      quantityPrecision,
     } = this.props
 
     const tradeHistoryProcessedData = combineTradeHistoryTable({
@@ -49,7 +49,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
       keys,
       handlePairChange,
       pricePrecision,
-      quantityPrecision
+      quantityPrecision,
     })
 
     this.setState({
@@ -104,7 +104,6 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
   }
 
   componentWillReceiveProps(nextProps: IProps) {
-
     const {
       getTradeHistoryQuery,
       theme,
@@ -113,7 +112,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
       keys,
       handlePairChange,
       pricePrecision,
-      quantityPrecision
+      quantityPrecision,
     } = nextProps
 
     const tradeHistoryProcessedData = combineTradeHistoryTable({
@@ -124,7 +123,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
       keys,
       handlePairChange,
       pricePrecision,
-      quantityPrecision
+      quantityPrecision,
     })
 
     this.setState({
@@ -260,7 +259,7 @@ class TradeHistoryTable extends React.PureComponent<IProps> {
           </div>
         }
         data={{ body: tradeHistoryProcessedData }}
-        columnNames={getTableHead(tab, marketType)}
+        columnNames={getTableHead({ tab, marketType })}
       />
     )
   }

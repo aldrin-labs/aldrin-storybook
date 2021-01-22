@@ -177,6 +177,8 @@ export function ChartPageComponent(props: any) {
     return <Redirect to={pathToRedirect} exact />
   }
 
+  // console.log('props.pairPropertiesQuery', props.pairPropertiesQuery)
+
   const isPairDataLoading =
     !pair ||
     props.loading ||
@@ -223,7 +225,7 @@ export function ChartPageComponent(props: any) {
     ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
     : { keyId: '', hedgeMode: false, isFuturesWarsKey: false }
   
-  console.log('Chart RENDER')  
+  console.log('Chart RENDER', selectedKey)  
 
   return (
     <MainContainer>

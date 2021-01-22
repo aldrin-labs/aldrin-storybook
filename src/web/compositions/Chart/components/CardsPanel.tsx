@@ -488,9 +488,6 @@ export default compose(
     withoutLoading: true,
     showLoadingWhenQueryParamsChange: false,
   }),
-  graphql(changePositionMode, {
-    name: 'changePositionModeMutation',
-    options: { refetchQueries: [{ query: getAllUserKeys }] },
-  }),
+  graphql(changePositionMode, { name: 'changePositionModeMutation' }),
   graphql(updateThemeMode, { name: 'updateThemeModeMutation' })
 )(CardsPanel)

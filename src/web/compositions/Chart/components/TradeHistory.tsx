@@ -26,14 +26,12 @@ const TradeHistoryRaw = ({
 	quote,
 	pair
 }) => {
-  const variant = getTradeHistoryWrapperVariant(showTableOnMobile)
-
 	return (
 		<MemoizedTradeHistoryWrapper
 			theme={theme}
 			key={`tradehistory_table`}
 			className="ExchangesTable"
-			variant={variant}
+			// variant={variant}
 		>
 			<TradeHistoryTable
 				key={'tradeyistory_table_query_render'}

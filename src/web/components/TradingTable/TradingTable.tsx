@@ -217,6 +217,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       {}
     )
 
+    console.log('keysObjects', keysObjects)
+
     return (
       <div
         id="tables"
@@ -501,6 +503,7 @@ const TradingTableWrapper = compose(
   withErrorFallback,
   withTheme(),
   queryRendererHoc({
+    // HEDGE MODE CHANGE 
     query: getAllUserKeys,
     name: 'getAllUserKeysQuery',
     withOutSpinner: true,

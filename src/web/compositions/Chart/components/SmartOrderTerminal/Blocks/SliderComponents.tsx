@@ -449,7 +449,7 @@ export const SliderWithAmountFieldRow = ({
             updateLocalAmount(
               stripDigitPlaces(
                 newAmount,
-                marketType === 1 ? quantityPrecision : 8
+                quantityPrecision
               )
             )
 
@@ -580,11 +580,11 @@ export const SliderWithAmountFieldRowForBasic = ({
                 !isSPOTMarket || isBuyType
                   ? +stripDigitPlaces(
                       newValue / priceForCalculate,
-                      isSPOTMarket ? 8 : quantityPrecision
+                      quantityPrecision
                     )
                   : +stripDigitPlaces(
                       newValue,
-                      isSPOTMarket ? 8 : quantityPrecision
+                      quantityPrecision
                     )
 
               const newTotal =

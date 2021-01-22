@@ -724,7 +724,7 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
           }}
           emptyTableText={getEmptyTextPlaceholder(tab)}
           data={{ body: activeStrategiesProcessedData }}
-          columnNames={getTableHead(tab, marketType)}
+          columnNames={getTableHead({ tab, marketType })}
         />
       </>
     )

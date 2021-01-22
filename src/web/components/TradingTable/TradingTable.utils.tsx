@@ -141,17 +141,33 @@ export const getTableBody = (tab: string) =>
     ? positionsBody
     : []
 
-export const getTableHead = (
-  tab: string,
-  marketType: number = 0,
-  refetch?: () => void,
-  updatePositionsHandler?: () => void,
-  positionsRefetchInProcess?: boolean,
-  onCancelAllOrders?: () => void,
+export const getTableHead = ({
+  tab,
+  marketType = 0,
+  refetch,
+  updatePositionsHandler,
+  positionsRefetchInProcess,
+  onCancelAllOrders,
+  isDefaultOnlyTables,
+  filteredOpenOrders,
+  theme,
+}: {
+  tab: string
+  marketType: number
+  refetch?: () => void
+  updatePositionsHandler?: () => void
+  positionsRefetchInProcess?: boolean
+  onCancelAllOrders?: () => void
   isDefaultOnlyTables?: boolean
-): any[] =>
+  theme: Theme
+}): any[] =>
   tab === 'openOrders'
-    ? openOrdersColumnNames(marketType, onCancelAllOrders)
+    ? openOrdersColumnNames(
+        marketType,
+        onCancelAllOrders,
+        filteredOpenOrders,
+        theme
+      )
     : tab === 'orderHistory'
     ? orderHistoryColumnNames(marketType)
     : tab === 'tradeHistory'
@@ -425,7 +441,7 @@ export const combinePositionsTable = ({
             : calculatedAmount === 0
             ? 0
             : stripDigitPlaces(calculatedAmount, quantityPrecision)
-        console.log('calcAm', calcAmount)
+
         return {
           keyId: el.keyId,
           keyParams: {
@@ -451,7 +467,7 @@ export const combinePositionsTable = ({
         {
           index: {
             render: i + 1,
-            rowspan: 2,
+            rowspan: 1,
             color: theme.palette.grey.light,
           },
           id: el._id,
@@ -627,28 +643,33 @@ export const combinePositionsTable = ({
           refetch: '',
           tooltipTitle: keyName,
         },
-        !isDefaultOnlyTables && {
-          pair: {
-            render: (
-              <div>
-                <SubRow
-                  theme={theme}
-                  positionId={el._id}
-                  enqueueSnackbar={enqueueSnackbar}
-                  getVariables={getVariables}
-                  priceFromOrderbook={priceFromOrderbook}
-                  createOrderWithStatus={createOrderWithStatus}
-                  minFuturesStep={minFuturesStep}
-                />
-              </div>
-            ),
-            colspan: 10,
-            style: {
-              opacity: needOpacity ? 0.5 : 1,
-              visibility: needOpacity ? 'hidden' : 'visible',
-            },
-          },
-        },
+        ...(!isDefaultOnlyTables
+          ? [
+              {
+                index: {
+                  render: (
+                    <div>
+                      <SubRow
+                        theme={theme}
+                        positionId={el._id}
+                        enqueueSnackbar={enqueueSnackbar}
+                        getVariables={getVariables}
+                        priceFromOrderbook={priceFromOrderbook}
+                        createOrderWithStatus={createOrderWithStatus}
+                        minFuturesStep={minFuturesStep}
+                      />
+                    </div>
+                  ),
+                  colspan: 12,
+                  style: {
+                    opacity: needOpacity ? 0.5 : 1,
+                    visibility: needOpacity ? 'hidden' : 'visible',
+                  },
+                },
+                refetch: '',
+              },
+            ]
+          : []),
       ]
     })
 
@@ -865,10 +886,10 @@ export const combineActiveTradesTable = ({
                   flexDirection: 'column',
                 }}
               >
-                <a
+                <span
                   style={{ color: theme.palette.grey.onboard }}
-                >{`${pairArr[0]}/${pairArr[1]}`}</a>
-                <a
+                >{`${pairArr[0]}/${pairArr[1]}`}</span>
+                <span
                   style={{
                     color: side === 'buy' ? green.main : red.main,
 
@@ -880,15 +901,15 @@ export const combineActiveTradesTable = ({
                     : side === 'buy'
                     ? 'buy long'
                     : 'sell short'}
-                </a>
-                <a
+                </span>
+                <span
                   style={{
                     color: theme.palette.grey.light,
                     textTransform: 'capitalize',
                   }}
                 >
                   {keyName}
-                </a>
+                </span>
               </div>
             </SubColumnValue>
           ),
@@ -1972,32 +1993,49 @@ export const combineStrategiesHistoryTable = ({
           render: (
             <SubColumnValue
               theme={theme}
-              onClick={() => handlePairChange(pair)}
-            >{`${pairArr[0]}/${pairArr[1]}`}</SubColumnValue>
+              onClick={(e) => {
+                handlePairChange(pair)
+              }}
+              style={{ fontSize: '1.3rem', fontFamily: 'Avenir Next Demi' }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                <span
+                  style={{ color: theme.palette.grey.onboard }}
+                >{`${pairArr[0]}/${pairArr[1]}`}</span>
+                <span
+                  style={{
+                    color: side === 'buy' ? green.main : red.main,
+
+                    textTransform: 'capitalize',
+                  }}
+                >
+                  {marketType === 0
+                    ? side
+                    : side === 'buy'
+                    ? 'buy long'
+                    : 'sell short'}
+                </span>
+                <span
+                  style={{
+                    color: theme.palette.grey.light,
+                    textTransform: 'capitalize',
+                  }}
+                >
+                  {keyName}
+                </span>
+              </div>
+            </SubColumnValue>
           ),
           style: {
             opacity: needOpacity ? 0.6 : 1,
             cursor: 'pointer',
           },
           contentToSort: `${pairArr[0]}/${pairArr[1]}`,
-        },
-        side: {
-          render: (
-            <SubColumnValue
-              theme={theme}
-              color={side === 'buy' ? green.main : red.main}
-            >
-              {marketType === 0
-                ? side
-                : side === 'buy'
-                ? 'buy long'
-                : 'sell short'}
-            </SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-          contentToSort: side,
         },
         entryPrice: {
           render: (

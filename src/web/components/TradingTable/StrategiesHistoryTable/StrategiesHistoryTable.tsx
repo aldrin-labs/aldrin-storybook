@@ -40,7 +40,7 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
       keys,
       handlePairChange,
       pricePrecision,
-      quantityPrecision
+      quantityPrecision,
     } = this.props
 
     const strategiesHistoryProcessedData = combineStrategiesHistoryTable({
@@ -50,7 +50,7 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
       keys,
       handlePairChange,
       pricePrecision,
-      quantityPrecision
+      quantityPrecision,
     })
 
     this.setState({
@@ -110,7 +110,7 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
       keys,
       handlePairChange,
       pricePrecision,
-      quantityPrecision
+      quantityPrecision,
     } = nextProps
 
     const strategiesHistoryProcessedData = combineStrategiesHistoryTable({
@@ -120,7 +120,7 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
       keys,
       handlePairChange,
       pricePrecision,
-      quantityPrecision
+      quantityPrecision,
     })
 
     this.setState({
@@ -272,7 +272,7 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
           </div>
         }
         data={{ body: strategiesHistoryProcessedData }}
-        columnNames={getTableHead(tab, marketType)}
+        columnNames={getTableHead({ tab, marketType })}
       />
     )
   }

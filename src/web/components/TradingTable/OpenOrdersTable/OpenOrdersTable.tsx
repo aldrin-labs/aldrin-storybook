@@ -445,6 +445,9 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       return null
     }
 
+    const filteredOpenOrders = this.props.getOpenOrderHistoryQuery.getOpenOrderHistory.orders.filter(
+      (order) => filterOpenOrders({ order, canceledOrders: [] })
+    )
     return (
       <TableWithSort
         style={{
@@ -518,14 +521,13 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
         }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
         data={{ body: openOrdersProcessedData }}
-        columnNames={getTableHead(
+        columnNames={getTableHead({
           tab,
           marketType,
-          () => {},
-          () => {},
-          () => {},
-          this.onCancelAllOrders
-        )}
+          theme,
+          filteredOpenOrders,
+          onCancelAllOrders: this.onCancelAllOrders,
+        })}
       />
     )
   }
