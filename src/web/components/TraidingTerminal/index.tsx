@@ -362,13 +362,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     const { decimals = [8, 8], setFieldValue } = this.props
     const numberValue = toNumber(value)
 
-    console.log(
-      `setFormatted fild ${fild} index ${index} value ${value}`,
-      value
-    )
-
-    if (value === '') setFieldValue(fild, '', false)
-    else if (numberValue.toString().includes('e')) {
+    if (value === '' || value === null) {
+      setFieldValue(fild, '', false)
+    } else if (numberValue.toString().includes('e')) {
       setFieldValue(fild, stripDigitPlaces(numberValue, 8), false)
     } else if (
       value.toString().split('.')[1] &&
