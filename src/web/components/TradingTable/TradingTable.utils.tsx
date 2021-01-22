@@ -70,7 +70,7 @@ export const CloseButton = ({
         color: '#fff',
         backgroundColor: isCancelled ? 'grey' : theme.palette.red.main,
         border: 'none',
-        margin: '0.5rem auto 0.5rem 10rem',
+        margin: '0.5rem auto 0.5rem 0',
         borderRadius: '0.5rem',
         height: '2.7rem',
         fontFamily: 'Avenir Next Demi',
