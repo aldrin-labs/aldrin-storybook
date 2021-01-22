@@ -595,7 +595,7 @@ const RewardsRoute = (props) => {
                   paddingBottom: '1rem',
                   margin: '0 1rem',
                 }}
-                href={`https://twitter.com/intent/tweet?text=%E2%80%A2%20%40Janetyellen%3A%20%23Cryptocurrencies%20Mainly%20For%20Illicit%20Financing%0A%E2%80%A2%20%23Bitcoin%20Is%20Down%2C%20Despite%20Whale%20Wallets%20Rising%0A%E2%80%A2%20%40Tether_to%20Needs%20More%20Time%20To%20Hand%20In%20Court%20Documents%0A%0ATrade%20And%20Develop%20Strategies%20With%20%40ccai_official%0A%0A%24CCAI%20%24DCFI%20%24SRM%20%24FTT%20%24SOL%0Apic.twitter.com/pfIBom3SSm`}
+                href={`https://twitter.com/intent/tweet?text=%E2%80%A2%20Double%20Spending%20FUD%20Sends%20%23Bitcoin%20Briefly%20Below%2029k%0A%E2%80%A2%20%40JanetYellen%20Believes%20Crypto%20Can%20Improve%20Financial%20System%0A%E2%80%A2%20Number%20Of%20Bitcoin%20Whale%20Wallets%20HItting%20ATH%0A%0ATrade%20And%20Develop%20Strategies%20With%20%40ccai_official%0A%24CCAI%20%24DCFI%20%24SRM%20%24FTT%20%24SOL%0Apic.twitter.com/bVJlI00baP`}
                 rel="noopener noreferrel"
                 target={'_blank'}
                 onClick={(e) => {
