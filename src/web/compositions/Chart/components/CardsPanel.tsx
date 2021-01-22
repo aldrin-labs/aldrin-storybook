@@ -155,7 +155,7 @@ export const CardsPanel = ({
 
   const authenticated = checkLoginStatus()
   const isSmartOrderMode = terminalViewMode === 'smartOrderMode'
-
+  console.log('marketType', marketType)
   return (
     <>
       <PanelWrapper theme={theme}>
@@ -373,6 +373,7 @@ export const CardsPanel = ({
         </SmartTradeButton> */}
         <PreferencesSelect
           theme={theme}
+          marketType={marketType}
           style={{ width: '15%', minWidth: '0', marginLeft: '.8rem' }}
           id={'preferencesSelector'}
           value={'preferences'}
@@ -487,6 +488,9 @@ export default compose(
     withoutLoading: true,
     showLoadingWhenQueryParamsChange: false,
   }),
-  graphql(changePositionMode, { name: 'changePositionModeMutation', options: { refetchQueries: [{ query: getAllUserKeys }]} }),
+  graphql(changePositionMode, {
+    name: 'changePositionModeMutation',
+    options: { refetchQueries: [{ query: getAllUserKeys }] },
+  }),
   graphql(updateThemeMode, { name: 'updateThemeModeMutation' })
 )(CardsPanel)

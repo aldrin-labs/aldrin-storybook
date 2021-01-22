@@ -265,6 +265,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       leverage,
       priceType,
       marketPrice,
+      setFieldValue,
       isSPOTMarket,
       pricePrecision,
       quantityPrecision,
@@ -284,13 +285,13 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
         priceType !== 'market' && priceType !== 'maker-only'
           ? price
           : marketPrice
-      this.setFormatted(
+
+      setFieldValue(
         'amount',
         stripDigitPlaces(
           +total / +priceForCalculate,
           isSPOTMarket ? 8 : quantityPrecision
-        ),
-        0
+        )
       )
     }
 
