@@ -37,7 +37,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       marketType,
       handlePairChange,
       pricePrecision,
-      quantityPrecision
+      quantityPrecision,
     } = this.props
 
     const orderHistoryProcessedData = combineOrderHistoryTable({
@@ -47,7 +47,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       keys,
       handlePairChange,
       pricePrecision,
-      quantityPrecision
+      quantityPrecision,
     })
 
     this.setState({
@@ -115,7 +115,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       keys,
       handlePairChange,
       pricePrecision,
-      quantityPrecision
+      quantityPrecision,
     } = nextProps
 
     const orderHistoryProcessedData = combineOrderHistoryTable({
@@ -125,7 +125,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       keys,
       handlePairChange,
       pricePrecision,
-      quantityPrecision
+      quantityPrecision,
     })
 
     this.setState({
@@ -263,7 +263,7 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
           </div>
         }
         data={{ body: orderHistoryProcessedData }}
-        columnNames={getTableHead(tab, marketType)}
+        columnNames={getTableHead({ tab, marketType })}
       />
     )
   }

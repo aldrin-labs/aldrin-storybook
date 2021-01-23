@@ -75,14 +75,11 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     }
   }
 
-  // onCancelAllOrders
-  // take array of orders that currently in table
-  // by loop execute onCancelOrder for each of them
-
   onCancelAllOrders = async () => {
     const filteredOpenOrders = this.props.getOpenOrderHistoryQuery.getOpenOrderHistory.orders.filter(
       (order) => filterOpenOrders({ order, canceledOrders: [] })
     )
+
     filteredOpenOrders.forEach((order) => {
       this.onCancelOrder(
         order.keyId,
@@ -445,6 +442,9 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       return null
     }
 
+    const filteredOpenOrders = this.props.getOpenOrderHistoryQuery.getOpenOrderHistory.orders.filter(
+      (order) => filterOpenOrders({ order, canceledOrders: [] })
+    )
     return (
       <TableWithSort
         style={{
@@ -518,14 +518,13 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
         }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
         data={{ body: openOrdersProcessedData }}
-        columnNames={getTableHead(
+        columnNames={getTableHead({
           tab,
           marketType,
-          () => {},
-          () => {},
-          () => {},
-          this.onCancelAllOrders
-        )}
+          theme,
+          filteredOpenOrders,
+          onCancelAllOrders: this.onCancelAllOrders,
+        })}
       />
     )
   }

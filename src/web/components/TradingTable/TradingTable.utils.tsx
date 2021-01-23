@@ -70,7 +70,7 @@ export const CloseButton = ({
         color: '#fff',
         backgroundColor: isCancelled ? 'grey' : theme.palette.red.main,
         border: 'none',
-        margin: '0.5rem auto 0.5rem 10rem',
+        margin: '0.5rem auto 0.5rem 0',
         borderRadius: '0.5rem',
         height: '2.7rem',
         fontFamily: 'Avenir Next Demi',
@@ -141,17 +141,33 @@ export const getTableBody = (tab: string) =>
     ? positionsBody
     : []
 
-export const getTableHead = (
-  tab: string,
-  marketType: number = 0,
-  refetch?: () => void,
-  updatePositionsHandler?: () => void,
-  positionsRefetchInProcess?: boolean,
-  onCancelAllOrders?: () => void,
+export const getTableHead = ({
+  tab,
+  marketType = 0,
+  refetch,
+  updatePositionsHandler,
+  positionsRefetchInProcess,
+  onCancelAllOrders,
+  isDefaultOnlyTables,
+  filteredOpenOrders,
+  theme,
+}: {
+  tab: string
+  marketType: number
+  refetch?: () => void
+  updatePositionsHandler?: () => void
+  positionsRefetchInProcess?: boolean
+  onCancelAllOrders?: () => void
   isDefaultOnlyTables?: boolean
-): any[] =>
+  theme: Theme
+}): any[] =>
   tab === 'openOrders'
-    ? openOrdersColumnNames(marketType, onCancelAllOrders)
+    ? openOrdersColumnNames(
+        marketType,
+        onCancelAllOrders,
+        filteredOpenOrders,
+        theme
+      )
     : tab === 'orderHistory'
     ? orderHistoryColumnNames(marketType)
     : tab === 'tradeHistory'
@@ -627,29 +643,33 @@ export const combinePositionsTable = ({
           refetch: '',
           tooltipTitle: keyName,
         },
-        ...(!isDefaultOnlyTables ? [{
-          index: {
-            render: (
-              <div>
-                <SubRow
-                  theme={theme}
-                  positionId={el._id}
-                  enqueueSnackbar={enqueueSnackbar}
-                  getVariables={getVariables}
-                  priceFromOrderbook={priceFromOrderbook}
-                  createOrderWithStatus={createOrderWithStatus}
-                  minFuturesStep={minFuturesStep}
-                />
-              </div>
-            ),
-            colspan: 12,
-            style: {
-              opacity: needOpacity ? 0.5 : 1,
-              visibility: needOpacity ? 'hidden' : 'visible',
-            },
-          },
-          refetch: ''
-        }] : []),
+        ...(!isDefaultOnlyTables
+          ? [
+              {
+                index: {
+                  render: (
+                    <div>
+                      <SubRow
+                        theme={theme}
+                        positionId={el._id}
+                        enqueueSnackbar={enqueueSnackbar}
+                        getVariables={getVariables}
+                        priceFromOrderbook={priceFromOrderbook}
+                        createOrderWithStatus={createOrderWithStatus}
+                        minFuturesStep={minFuturesStep}
+                      />
+                    </div>
+                  ),
+                  colspan: 12,
+                  style: {
+                    opacity: needOpacity ? 0.5 : 1,
+                    visibility: needOpacity ? 'hidden' : 'visible',
+                  },
+                },
+                refetch: '',
+              },
+            ]
+          : []),
       ]
     })
 

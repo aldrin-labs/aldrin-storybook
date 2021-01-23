@@ -64,7 +64,7 @@ class IntegrationReactSelect extends React.PureComponent {
     } = this.props
 
     const { isClosed, isMenuOpen } = this.state
-
+    console.log('marketType', marketType)
     return (
       <>
         <ExchangePair
@@ -246,39 +246,41 @@ class IntegrationReactSelect extends React.PureComponent {
                 Main Chart
               </Text>
             </Row>
-            <Row
-              width={'100%'}
-              style={{
-                padding: '.5rem 0',
-              }}
-            >
+            {marketType === 1 && (
               <Row
-                width="50%"
+                width={'100%'}
                 style={{
-                  borderRight: theme.palette.border.main,
-                  padding: '1rem 0',
-                  cursor: 'pointer',
+                  padding: '.5rem 0',
                 }}
-                onClick={
-                  hedgeMode ? () => changePositionModeWithStatus(false) : null
-                }
               >
-                <Text active={!hedgeMode} theme={theme}>
-                  one-way
-                </Text>
+                <Row
+                  width="50%"
+                  style={{
+                    borderRight: theme.palette.border.main,
+                    padding: '1rem 0',
+                    cursor: 'pointer',
+                  }}
+                  onClick={
+                    hedgeMode ? () => changePositionModeWithStatus(false) : null
+                  }
+                >
+                  <Text active={!hedgeMode} theme={theme}>
+                    one-way
+                  </Text>
+                </Row>
+                <Row
+                  width="50%"
+                  style={{ padding: '.8rem 0', cursor: 'pointer' }}
+                  onClick={
+                    !hedgeMode ? () => changePositionModeWithStatus(true) : null
+                  }
+                >
+                  <Text active={hedgeMode} theme={theme}>
+                    hedge
+                  </Text>
+                </Row>
               </Row>
-              <Row
-                width="50%"
-                style={{ padding: '.8rem 0', cursor: 'pointer' }}
-                onClick={
-                  !hedgeMode ? () => changePositionModeWithStatus(true) : null
-                }
-              >
-                <Text active={hedgeMode} theme={theme}>
-                  hedge
-                </Text>
-              </Row>
-            </Row>
+            )}
           </StyledRow>
         </ExchangePair>
       </>

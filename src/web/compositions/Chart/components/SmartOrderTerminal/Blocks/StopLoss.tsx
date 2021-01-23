@@ -84,7 +84,7 @@ export const StopLossBlock = ({
             >
               <AdditionalSettingsButton
                 theme={theme}
-                style={{textDecoration:'underline'}}
+                style={{ textDecoration: 'underline' }}
                 width={'22.75%'}
                 isActive={entryPoint.averaging.placeWithoutLoss}
                 onClick={() => {
@@ -880,7 +880,9 @@ export const StopLossBlock = ({
           type={entryPoint.order.side}
           onClick={showConfirmationPopup}
         >
-          {entryPoint.order.side === 'buy'
+          {entryPoint.order.side === 'buy' && marketType === 0
+            ? 'Start Smart Buy'
+            : entryPoint.order.side === 'buy'
             ? 'Start Smart Long'
             : 'Start Smart Short'}
         </SendButton>

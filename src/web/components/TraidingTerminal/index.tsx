@@ -265,6 +265,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       leverage,
       priceType,
       marketPrice,
+      setFieldValue,
       isSPOTMarket,
       pricePrecision,
       quantityPrecision,
@@ -284,13 +285,13 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
         priceType !== 'market' && priceType !== 'maker-only'
           ? price
           : marketPrice
-      this.setFormatted(
+
+      setFieldValue(
         'amount',
         stripDigitPlaces(
           +total / +priceForCalculate,
-          quantityPrecision
-        ),
-        0
+          isSPOTMarket ? 8 : quantityPrecision
+        )
       )
     }
 
@@ -351,10 +352,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       )
       this.setFormatted(
         'amount',
-        stripDigitPlaces(
-          total / marketPrice,
-          quantityPrecision
-        ),
+        stripDigitPlaces(total / marketPrice, quantityPrecision),
         0
       )
     }
@@ -364,10 +362,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     const { decimals = [8, 8], setFieldValue } = this.props
     const numberValue = toNumber(value)
 
-    console.log(`setFormatted fild ${fild} index ${index} value ${value}`, value)
-
-    if (value === '') setFieldValue(fild, '', false)
-    else if (numberValue.toString().includes('e')) {
+    if (value === '' || value === null) {
+      setFieldValue(fild, '', false)
+    } else if (numberValue.toString().includes('e')) {
       setFieldValue(fild, stripDigitPlaces(numberValue, 8), false)
     } else if (
       value.toString().split('.')[1] &&
@@ -420,10 +417,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       const amount = e.target.value / priceForCalculate
       const margin = e.target.value / leverage
 
-      setFieldValue(
-        'amount',
-        stripDigitPlaces(amount, quantityPrecision)
-      )
+      setFieldValue('amount', stripDigitPlaces(amount, quantityPrecision))
 
       setFieldValue('margin', stripDigitPlaces(margin, 3))
     }
@@ -551,10 +545,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     const newTotal = value * leverage
 
     setFieldValue('margin', value)
-    setFieldValue(
-      'amount',
-      stripDigitPlaces(newAmount, quantityPrecision)
-    )
+    setFieldValue('amount', stripDigitPlaces(newAmount, quantityPrecision))
     setFieldValue('total', stripDigitPlaces(newTotal, isSPOTMarket ? 8 : 2))
   }
 
@@ -674,10 +665,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                             newValue / priceForCalculate,
                             quantityPrecision
                           )
-                        : +stripDigitPlaces(
-                            newValue,
-                            quantityPrecision
-                          )
+                        : +stripDigitPlaces(newValue, quantityPrecision)
 
                     const newTotal =
                       isBuyType || !isSPOTMarket

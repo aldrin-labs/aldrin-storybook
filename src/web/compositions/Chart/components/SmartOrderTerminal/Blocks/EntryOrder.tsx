@@ -76,15 +76,19 @@ export const EntryOrderBlock = ({
   isAveragingAfterFirstTarget,
   updateStopLossAndTakeProfitPrices,
 }: EntryOrderBlockProps) => {
+  let avgPrice =
+    entryPoint.averaging.entryLevels &&
+    entryPoint.averaging.entryLevels.length !== 0
+      ? entryPoint.averaging.entryLevels[0].price
+      : 0
+  console.log('entryPoint', entryPoint)
+  let estPrice = 0
+  let sumAmount = 0
+  let margin = 0
   return (
     <TerminalBlock theme={theme} width={'calc(33% + 0.5%)'} data-tut={'step1'}>
       <div>
-        <InputRowContainer
-          justify="flex-start"
-          padding={
-              '0rem 0 1.2rem 0'
-          }
-        >
+        <InputRowContainer justify="flex-start" padding={'0rem 0 1.2rem 0'}>
           {marketType === 1 && (
             <DarkTooltip
               maxWidth={'40rem'}
@@ -717,7 +721,9 @@ export const EntryOrderBlock = ({
               titleForTooltip={
                 'The price at which the trailing algorithm will be triggered.'
               }
-              header={'activation price'}
+              header={
+                entryPoint.trailing.isTrailingOn ? 'activation price' : 'price'
+              }
               symbol={pair[1]}
               needTitleBlock
               type={
@@ -956,6 +962,7 @@ export const EntryOrderBlock = ({
                     display: 'flex',
                     justifyContent: 'center',
                     width: '10%',
+                    marginRight: '0.7rem',
                   }}
                 >
                   <Switcher
@@ -1175,11 +1182,11 @@ export const EntryOrderBlock = ({
                 >
                   price
                 </TargetTitle>
+                <TargetTitle theme={theme} style={{ width: '40%' }}>
+                  est. averaged entry price{' '}
+                </TargetTitle>
                 <TargetTitle theme={theme} style={{ width: '25%' }}>
                   quantity
-                </TargetTitle>
-                <TargetTitle theme={theme} style={{ width: '40%' }}>
-                  place Break-even SLP
                 </TargetTitle>
               </InputRowContainer>
               <div
@@ -1190,13 +1197,40 @@ export const EntryOrderBlock = ({
                   border: theme.palette.border.main,
                 }}
               >
-                {entryPoint.averaging.entryLevels.map(
-                  (target: EntryLevel, i: number) => (
+                {entryPoint.averaging.entryLevels.map((el, index) => {
+                  const currentPrice =
+                    index === 0
+                      ? avgPrice
+                      : entryPoint.order.side === 'sell'
+                      ? (avgPrice *
+                          (100 + el.price / entryPoint.order.leverage)) /
+                        100
+                      : (avgPrice *
+                          (100 - el.price / entryPoint.order.leverage)) /
+                        100
+                  if (index === 0) {
+                    estPrice = el.price
+                    sumAmount = el.amount
+                    margin =
+                      (estPrice * sumAmount +
+                        currentPrice * ((el.amount / 100) * el.amount)) /
+                      entryPoint.order.leverage
+                  } else {
+                    const exactAmount = (el.amount / 100) * el.amount
+
+                    const total =
+                      estPrice * sumAmount + currentPrice * exactAmount
+
+                    estPrice = total / (sumAmount + exactAmount)
+                    sumAmount += exactAmount
+                    margin = total / entryPoint.order.leverage
+                  }
+                  return (
                     <InputRowContainer
-                      key={`${target.price}${target.amount}${i}`}
+                      key={`${el.price}${el.amount}${index}`}
                       padding=".2rem .5rem"
                       style={
-                        entryPoint.averaging.entryLevels.length - 1 !== i
+                        entryPoint.averaging.entryLevels.length - 1 !== index
                           ? {
                               borderBottom: theme.palette.border.main,
                             }
@@ -1207,16 +1241,16 @@ export const EntryOrderBlock = ({
                         theme={theme}
                         style={{ width: '25%', paddingLeft: '2rem' }}
                       >
-                        {target.price} {i > 0 ? '%' : pair[1]}
-                      </TargetValue>
-                      <TargetValue theme={theme} style={{ width: '25%' }}>
-                        {target.amount} {pair[0]}
+                        {el.price} {index > 0 ? '%' : pair[1]}
                       </TargetValue>
                       <TargetValue theme={theme} style={{ width: '40%' }}>
-                        {target.placeWithoutLoss ? '+' : '-'}
+                        {currentPrice}
+                      </TargetValue>{' '}
+                      <TargetValue theme={theme} style={{ width: '25%' }}>
+                        {el.amount} {pair[0]}
                       </TargetValue>
                       <CloseIcon
-                        onClick={() => deleteAverageTarget(i)}
+                        onClick={() => deleteAverageTarget(index)}
                         style={{
                           color: theme.palette.red.main,
                           fontSize: '1.8rem',
@@ -1225,7 +1259,7 @@ export const EntryOrderBlock = ({
                       />
                     </InputRowContainer>
                   )
-                )}
+                })}
               </div>
             </InputRowContainer>
           </>

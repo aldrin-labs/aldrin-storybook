@@ -168,6 +168,7 @@ export const positionsBody = new Array(13).fill(undefined).map((el, i) => ({
 export const openOrdersColumnNames = (
   marketType: number,
   onCancelAllOrders: () => void,
+  filteredOpenOrders,
   theme
 ) =>
   [
@@ -181,29 +182,39 @@ export const openOrdersColumnNames = (
     { label: 'Trigger', id: 'triggerConditions' },
     marketType === 1 ? { label: 'Reduce Only', id: 'reduceOnly' } : {},
     { label: 'date', isNumber: true, id: 'date' },
-    {
-      label: (
-        <TableButton
-          size="small"
-          onClick={() => onCancelAllOrders()}
-          style={{
-            color: '#fff',
-            // backgroundColor: theme.palette.red.main,
-            border: 'none',
-            margin: '.5rem auto .5rem 10rem',
-            borderRadius: '0.5rem',
-            height: '2.7rem',
-            width: '9rem',
-            fontFamily: 'Avenir Next Demi',
-          }}
-          variant="outlined"
-        >
-          Cancel all
-        </TableButton>
-      ),
-      id: 'cancel',
-      isSortable: false,
-    },
+    { label: ' ', id: 'cancel' },
+
+    // ...(filteredOpenOrders.length !== 0
+    //   ? [
+    //       {
+    //         label: (
+    //           <TableButton
+    //             size="small"
+    //             theme={theme}
+    //             onClick={() => {
+    //               onCancelAllOrders()
+    //               console.log('fghgj')
+    //             }}
+    //             style={{
+    //               color: '#fff',
+    //               backgroundColor: theme.palette.red.main,
+    //               border: 'none',
+    //               // margin: '.5rem auto .5rem 10rem',
+    //               borderRadius: '0.5rem',
+    //               height: '2.7rem',
+    //               width: '9rem',
+    //               fontFamily: 'Avenir Next Demi',
+    //             }}
+    //             variant="outlined"
+    //           >
+    //             Cancel all
+    //           </TableButton>
+    //         ),
+    //         id: 'cancel',
+    //         isSortable: false,
+    //       },
+    //     ]
+    //   : []),
   ].filter((x) => x.label)
 
 export const openOrdersBody = new Array(13).fill(undefined).map((el, i) => ({
