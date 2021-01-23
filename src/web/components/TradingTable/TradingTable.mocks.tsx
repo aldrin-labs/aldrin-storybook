@@ -49,7 +49,7 @@ export const positionsColumnNames = (
   { label: 'Liq. Price', id: 'liqPrice' },
   { label: 'PNL/ROE', id: 'pnlRoe', colspan: 2 },
   // { label: ' ', id: 'pnlRoe' },
-  { label: 'Action', id: 'action', style: { textAlign: 'right' } },
+  ...(isDefaultOnlyTables ? [{ label: 'Action', id: 'action', style: { textAlign: 'right' } }] : []),
   {
     label: (
       <DarkTooltip title={`Update positions`}>
@@ -75,6 +75,7 @@ export const positionsColumnNames = (
     ),
     id: 'refetch',
     isSortable: false,
+    style: { paddingRight: '1.2rem' }
   },
 ]
 
