@@ -119,14 +119,8 @@ export const StopLossBlock = ({
                 isActive={stopLoss.timeout.isTimeoutOn}
                 style={{ textDecoration: 'underline' }}
                 onClick={() => {
-                  if (!stopLoss.external) {
-                    updateBlockValue('stopLoss', 'external', false)
-                    updateSubBlockValue(
-                      'stopLoss',
-                      'forcedStop',
-                      'mandatoryForcedLoss',
-                      true
-                    )
+                  if (stopLoss.external) {
+                    return
                   }
                   updateSubBlockValue(
                     'stopLoss',
@@ -141,13 +135,6 @@ export const StopLossBlock = ({
                     'whenLossableOn',
                     !stopLoss.timeout.whenLossableOn
                   )
-
-                  updateSubBlockValue(
-                    'stopLoss',
-                    'forcedStop',
-                    'isForcedStopOn',
-                    !stopLoss.forcedStop.isForcedStopOn
-                  )
                 }}
               >
                 Timeout
@@ -157,13 +144,13 @@ export const StopLossBlock = ({
 
           <AdditionalSettingsButton
             theme={theme}
-            isActive={stopLoss.forcedStop.mandatoryForcedLoss}
+            isActive={stopLoss.forcedStop.isForcedStopOn}
             onClick={() => {
               updateSubBlockValue(
                 'stopLoss',
                 'forcedStop',
                 'isForcedStopOn',
-                !stopLoss.forcedStop.mandatoryForcedLoss
+                !stopLoss.forcedStop.isForcedStopOn
               )
 
               updateSubBlockValue(
@@ -252,22 +239,6 @@ export const StopLossBlock = ({
             !stopLoss.plotEnabled) ||
             !stopLoss.external ||
             (stopLoss.external && stopLoss.plotEnabled)) && (
-            // <FormInputContainer
-            //   theme={theme}
-            //   haveTooltip
-            //   tooltipText={
-            //     <>
-            //       <p>The unrealized loss/ROE for closing trade.</p>
-            //       <p>
-            //         <b>For example:</b> you bought 1 BTC and set 10% stop loss.
-            //         Your unrealized loss should be 0.1 BTC and order will be
-            //         executed.
-            //       </p>
-            //     </>
-            //   }
-            //   title={'stop price'}
-            // >
-
             <InputRowContainer style={{ margin: '.5rem auto 1rem auto' }}>
               <SliderWithPriceAndPercentageFieldRow
                 {...{
@@ -402,327 +373,269 @@ export const StopLossBlock = ({
             // </FormInputContainer>
           )}
 
-          {(stopLoss.timeout.isTimeoutOn ||
-            (stopLoss.forcedStop.isForcedStopOn &&
-              stopLoss.forcedStop.mandatoryForcedLoss)) &&
-            (!stopLoss.external ||
-              (stopLoss.external &&
-                stopLoss.forcedStop.mandatoryForcedLoss)) && (
-              <>
-                <InputRowContainer>
-                  {stopLoss.timeout.isTimeoutOn && (
-                    // <SubBlocksContainer style={{ width: '100%' }}>
-                    // <FormInputContainer
-                    //   theme={theme}
-                    //   haveTooltip
-                    //   tooltipText={
-                    //     <>
-                    //       <p>
-                    //         Waiting after unrealized P&L will reach set target.
-                    //       </p>
-                    //       <p>
-                    //         <b>For example:</b> you set 10% stop loss and 1
-                    //         minute timeout. When your unrealized loss is 10%
-                    //         timeout will give a minute for a chance to reverse
-                    //         trend and loss to go below 10% before stop loss
-                    //         order executes.
-                    //       </p>
-                    //     </>
-                    //   }
-                    //   title={'timeout'}
-                    //   lineMargin={'0 1.2rem 0 1rem'}
-                    // >
-                    <InputRowContainer
-                      wrap={'nowrap'}
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        width: '100%',
-                      }}
-                    >
-                      <SliderWithTimeoutFieldRow
-                        theme={theme}
-                        showErrors={showErrors}
-                        validateField={validateField}
-                        timeoutMode={stopLoss.timeout.whenLossableMode}
-                        timeoutValue={stopLoss.timeout.whenLossableSec}
-                        onAfterSliderChange={(value) => {
-                          updateSubBlockValue(
-                            'stopLoss',
-                            'timeout',
-                            'whenLossableSec',
-                            value
-                          )
+          {stopLoss.timeout.isTimeoutOn && !stopLoss.external && (
+            <InputRowContainer>
+              <InputRowContainer
+                wrap={'nowrap'}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  width: '100%',
+                }}
+              >
+                <SliderWithTimeoutFieldRow
+                  theme={theme}
+                  showErrors={showErrors}
+                  validateField={validateField}
+                  timeoutMode={stopLoss.timeout.whenLossableMode}
+                  timeoutValue={stopLoss.timeout.whenLossableSec}
+                  onAfterSliderChange={(value) => {
+                    updateSubBlockValue(
+                      'stopLoss',
+                      'timeout',
+                      'whenLossableSec',
+                      value
+                    )
+                  }}
+                  onTimeoutChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    updateSubBlockValue(
+                      'stopLoss',
+                      'timeout',
+                      'whenLossableSec',
+                      e.target.value
+                    )
+                  }}
+                  onChangeTimeoutMode={(
+                    e: React.ChangeEvent<HTMLInputElement>
+                  ) => {
+                    updateSubBlockValue(
+                      'stopLoss',
+                      'timeout',
+                      'whenLossableMode',
+                      e.target.value
+                    )
+                  }}
+                />
+              </InputRowContainer>
+            </InputRowContainer>
+          )}
+
+          {(stopLoss.forcedStop.isForcedStopOn ||
+            stopLoss.forcedStop.mandatoryForcedLoss) && (
+            <InputRowContainer>
+              <FormInputContainer
+                theme={theme}
+                haveTooltip
+                tooltipText={
+                  <>
+                    <p>How much should the price change to ignore timeout.</p>
+
+                    <p>
+                      <b>For example:</b> You bought BTC and set 10% stop loss
+                      with 1 minute timeout and 15% forced stop. But the price
+                      continued to fall during the timeout. Your trade will be
+                      closed when loss will be 15% regardless of timeout.
+                    </p>
+                  </>
+                }
+                title={'forced stop'}
+              >
+                <InputRowContainer wrap={'nowrap'}>
+                  <SliderWithPriceAndPercentageFieldRow
+                    {...{
+                      pair,
+                      theme,
+                      entryPoint,
+                      stopLoss,
+                      tvAlertsEnable: stopLoss.external,
+                      showErrors,
+                      needChain: !stopLoss.external,
+                      isMarketType,
+                      isPlotActive: stopLoss.forcedStopByAlert,
+                      validateField,
+                      pricePrecision,
+                      updateBlockValue,
+                      priceForCalculate,
+                      percentagePreSymbol: '%',
+                      sliderInTheBottom: false,
+                      approximatePrice: stopLoss.forcedStop.forcedStopPrice,
+                      pricePercentage: stopLoss.forcedStop.pricePercentage,
+                      getApproximatePrice: (value: number) => {
+                        return value === 0
+                          ? priceForCalculate
+                          : entryPoint.order.side === 'buy'
+                          ? stripDigitPlaces(
+                              priceForCalculate *
+                                (1 - value / 100 / entryPoint.order.leverage),
+                              pricePrecision
+                            )
+                          : stripDigitPlaces(
+                              priceForCalculate *
+                                (1 + value / 100 / entryPoint.order.leverage),
+                              pricePrecision
+                            )
+                      },
+                      onAfterSliderChange: (value: number) => {
+                        updateSubBlockValue(
+                          'stopLoss',
+                          'forcedStop',
+                          'pricePercentage',
+                          value
+                        )
+
+                        updateStopLossAndTakeProfitPrices({
+                          forcedStopPercentage: value,
+                        })
+                      },
+                      onApproximatePriceChange: (
+                        e: React.ChangeEvent<HTMLInputElement>,
+                        updateValue: (v: any) => void
+                      ) => {
+                        const percentage =
+                          entryPoint.order.side === 'buy'
+                            ? (1 - +e.target.value / priceForCalculate) *
+                              100 *
+                              entryPoint.order.leverage
+                            : -(1 - +e.target.value / priceForCalculate) *
+                              100 *
+                              entryPoint.order.leverage
+
+                        updateSubBlockValue(
+                          'stopLoss',
+                          'forcedStop',
+                          'pricePercentage',
+                          stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
+                        )
+
+                        updateSubBlockValue(
+                          'stopLoss',
+                          'forcedStop',
+                          'forcedStopPrice',
+                          e.target.value
+                        )
+                        updateValue(
+                          stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
+                        )
+                      },
+                      onPricePercentageChange: (
+                        e: React.ChangeEvent<HTMLInputElement>
+                      ) => {
+                        updateSubBlockValue(
+                          'stopLoss',
+                          'forcedStop',
+                          'pricePercentage',
+                          e.target.value
+                        )
+
+                        updateStopLossAndTakeProfitPrices({
+                          forcedStopPercentage: +e.target.value,
+                        })
+                      },
+                      updateSubBlockValue,
+                      showConfirmationPopup,
+                      updateTerminalViewMode,
+                      updateStopLossAndTakeProfitPrices,
+                    }}
+                  />
+                  {stopLoss.external && (
+                    <>
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          width: '10%',
+                          margin: 'auto 0.8rem auto 0.3rem',
                         }}
-                        onTimeoutChange={(
-                          e: React.ChangeEvent<HTMLInputElement>
-                        ) => {
-                          updateSubBlockValue(
-                            'stopLoss',
-                            'timeout',
-                            'whenLossableSec',
-                            e.target.value
-                          )
+                      >
+                        <Switcher
+                          checked={stopLoss.forcedStopByAlert}
+                          onChange={() => {
+                            updateBlockValue(
+                              'stopLoss',
+                              'forcedStopByAlert',
+                              !stopLoss.forcedStopByAlert
+                            )
+
+                            if (!stopLoss.forcedStopByAlert) {
+                              updateBlockValue('stopLoss', 'plotEnabled', false)
+                               updateSubBlockValue(
+                                'stopLoss',
+                                'forcedStop',
+                                'mandatoryForcedLoss',
+                                false
+                              )
+                            } else {
+                              updateSubBlockValue(
+                                'stopLoss',
+                                'forcedStop',
+                                'mandatoryForcedLoss',
+                                true
+                              )
+                            }
+
+                            updateBlockValue('stopLoss', 'type', 'market')
+                          }}
+                        />
+                      </div>
+
+                      <BtnCustom
+                        needMinWidth={false}
+                        btnWidth="35%"
+                        height="3rem"
+                        fontWeight={'500'}
+                        fontSize="1.1rem"
+                        fontFamily="Avenir Next Medium"
+                        padding="0 0"
+                        borderRadius=".3rem"
+                        style={{
+                          border: stopLoss.forcedStopByAlert
+                            ? `0.1rem solid ${theme.palette.blue.main}`
+                            : theme.palette.border.main,
+                          lineHeight: 'inherit',
                         }}
-                        onChangeTimeoutMode={(
-                          e: React.ChangeEvent<HTMLInputElement>
-                        ) => {
-                          updateSubBlockValue(
+                        btnColor={theme.palette.grey.text}
+                        backgroundColor={theme.palette.grey.titleForInput}
+                        textTransform={'none'}
+                        margin={'0 0 0 0'}
+                        transition={'all .4s ease-out'}
+                        onClick={() => {
+                          updateBlockValue(
                             'stopLoss',
-                            'timeout',
-                            'whenLossableMode',
-                            e.target.value
+                            'forcedStopByAlert',
+                            !stopLoss.forcedStopByAlert
                           )
+                          if (!stopLoss.forcedStopByAlert) {
+                            updateBlockValue('stopLoss', 'plotEnabled', false)
+                             updateSubBlockValue(
+                              'stopLoss',
+                              'forcedStop',
+                              'mandatoryForcedLoss',
+                              false
+                            )
+                          } else {
+                            updateSubBlockValue(
+                              'stopLoss',
+                              'forcedStop',
+                              'mandatoryForcedLoss',
+                              true
+                            )
+                          }
+
+                          updateBlockValue('stopLoss', 'plotEnabled', false)
+
+                          updateBlockValue('stopLoss', 'type', 'market')
                         }}
-                      />
-                    </InputRowContainer>
-                    // </FormInputContainer>
-                    // </SubBlocksContainer>
+                      >
+                        After Alert
+                      </BtnCustom>
+                    </>
                   )}
                 </InputRowContainer>
-                <InputRowContainer>
-                  <FormInputContainer
-                    theme={theme}
-                    haveTooltip
-                    tooltipText={
-                      <>
-                        <p>
-                          How much should the price change to ignore timeout.
-                        </p>
-
-                        <p>
-                          <b>For example:</b> You bought BTC and set 10% stop
-                          loss with 1 minute timeout and 15% forced stop. But
-                          the price continued to fall during the timeout. Your
-                          trade will be closed when loss will be 15% regardless
-                          of timeout.
-                        </p>
-                      </>
-                    }
-                    title={'forced stop'}
-                  >
-                    <InputRowContainer wrap={'nowrap'}>
-                      <SliderWithPriceAndPercentageFieldRow
-                        {...{
-                          pair,
-                          theme,
-                          entryPoint,
-                          stopLoss,
-                          tvAlertsEnable: stopLoss.external,
-                          showErrors,
-                          needChain: !stopLoss.external,
-                          isMarketType,
-                          isPlotActive: stopLoss.forcedStopByAlert,
-                          validateField,
-                          pricePrecision,
-                          updateBlockValue,
-                          priceForCalculate,
-                          percentagePreSymbol: '%',
-                          sliderInTheBottom: false,
-                          approximatePrice: stopLoss.forcedStop.forcedStopPrice,
-                          pricePercentage: stopLoss.forcedStop.pricePercentage,
-                          getApproximatePrice: (value: number) => {
-                            return value === 0
-                              ? priceForCalculate
-                              : entryPoint.order.side === 'buy'
-                              ? stripDigitPlaces(
-                                  priceForCalculate *
-                                    (1 -
-                                      value / 100 / entryPoint.order.leverage),
-                                  pricePrecision
-                                )
-                              : stripDigitPlaces(
-                                  priceForCalculate *
-                                    (1 +
-                                      value / 100 / entryPoint.order.leverage),
-                                  pricePrecision
-                                )
-                          },
-                          onAfterSliderChange: (value: number) => {
-                            updateSubBlockValue(
-                              'stopLoss',
-                              'forcedStop',
-                              'pricePercentage',
-                              value
-                            )
-
-                            updateStopLossAndTakeProfitPrices({
-                              forcedStopPercentage: value,
-                            })
-                          },
-                          onApproximatePriceChange: (
-                            e: React.ChangeEvent<HTMLInputElement>,
-                            updateValue: (v: any) => void
-                          ) => {
-                            const percentage =
-                              entryPoint.order.side === 'buy'
-                                ? (1 - +e.target.value / priceForCalculate) *
-                                  100 *
-                                  entryPoint.order.leverage
-                                : -(1 - +e.target.value / priceForCalculate) *
-                                  100 *
-                                  entryPoint.order.leverage
-
-                            updateSubBlockValue(
-                              'stopLoss',
-                              'forcedStop',
-                              'pricePercentage',
-                              stripDigitPlaces(
-                                percentage < 0 ? 0 : percentage,
-                                2
-                              )
-                            )
-
-                            updateSubBlockValue(
-                              'stopLoss',
-                              'forcedStop',
-                              'forcedStopPrice',
-                              e.target.value
-                            )
-                            updateValue(
-                              stripDigitPlaces(
-                                percentage < 0 ? 0 : percentage,
-                                2
-                              )
-                            )
-                          },
-                          onPricePercentageChange: (
-                            e: React.ChangeEvent<HTMLInputElement>
-                          ) => {
-                            updateSubBlockValue(
-                              'stopLoss',
-                              'forcedStop',
-                              'pricePercentage',
-                              e.target.value
-                            )
-
-                            updateStopLossAndTakeProfitPrices({
-                              forcedStopPercentage: +e.target.value,
-                            })
-                          },
-                          updateSubBlockValue,
-                          showConfirmationPopup,
-                          updateTerminalViewMode,
-                          updateStopLossAndTakeProfitPrices,
-                        }}
-                      />
-                      {stopLoss.external && (
-                        <>
-                          <div
-                            style={{
-                              display: 'flex',
-                              justifyContent: 'center',
-                              width: '10%',
-                              margin: 'auto 0.8rem auto 0.3rem',
-                            }}
-                          >
-                            <Switcher
-                              checked={stopLoss.forcedStopByAlert}
-                              onChange={() => {
-                                updateBlockValue(
-                                  'stopLoss',
-                                  'forcedStopByAlert',
-                                  !stopLoss.forcedStopByAlert
-                                )
-                                if (!stopLoss.forcedStopByAlert) {
-                                  updateBlockValue(
-                                    'stopLoss',
-                                    'plotEnabled',
-                                    false
-                                  )
-                                }
-
-                                updateBlockValue('stopLoss', 'type', 'market')
-                              }}
-                            />
-                          </div>
-
-                          <BtnCustom
-                            needMinWidth={false}
-                            btnWidth="35%"
-                            height="3rem"
-                            fontWeight={'500'}
-                            fontSize="1.1rem"
-                            fontFamily="Avenir Next Medium"
-                            padding="0 0"
-                            borderRadius=".3rem"
-                            style={{
-                              border: stopLoss.forcedStopByAlert
-                                ? `0.1rem solid ${theme.palette.blue.main}`
-                                : theme.palette.border.main,
-                              lineHeight: 'inherit',
-                            }}
-                            btnColor={theme.palette.grey.text}
-                            backgroundColor={theme.palette.grey.titleForInput}
-                            textTransform={'none'}
-                            margin={'0 0 0 0'}
-                            transition={'all .4s ease-out'}
-                            onClick={() => {
-                              updateBlockValue(
-                                'stopLoss',
-                                'forcedStopByAlert',
-                                !stopLoss.forcedStopByAlert
-                              )
-                              updateBlockValue('stopLoss', 'plotEnabled', false)
-
-                              updateBlockValue('stopLoss', 'type', 'market')
-                            }}
-                          >
-                            After Alert
-                          </BtnCustom>
-                        </>
-                      )}
-                    </InputRowContainer>
-                  </FormInputContainer>
-                </InputRowContainer>
-              </>
-            )}
+              </FormInputContainer>
+            </InputRowContainer>
+          )}
           {stopLoss.external && (
             <>
-              {/* <FormInputContainer
-                theme={theme}
-                padding={'0 0 .8rem 0'}
-                haveTooltip={false}
-                tooltipText={''}
-                title={'action when alert'}
-              > */}
-
-              {/* <AdditionalSettingsButton
-                    theme={theme}
-                    fontSize={'1rem'}
-                    isActive={stopLoss.forcedStopByAlert}
-                    onClick={() => {
-                      updateBlockValue(
-                        'stopLoss',
-                        'forcedStopByAlert',
-                        !stopLoss.forcedStopByAlert
-                      )
-                      updateBlockValue('stopLoss', 'plotEnabled', false)
-
-                      updateBlockValue('stopLoss', 'type', 'market')
-                    }}
-                  >
-                    Forced Stop by Alert
-                  </AdditionalSettingsButton> */}
-
-              {/* <AdditionalSettingsButton
-                    theme={theme}
-                    isActive={stopLoss.plotEnabled}
-                    onClick={() => {
-                      updateBlockValue('stopLoss', 'forcedStopByAlert', false)
-
-                      updateBlockValue(
-                        'stopLoss',
-                        'plotEnabled',
-                        !stopLoss.plotEnabled
-                      )
-                    }}
-                  >
-                    Plot
-                  </AdditionalSettingsButton> */}
-
-              {/* </FormInputContainer> */}
-
               <InputRowContainer style={{ marginTop: '0rem' }}>
                 {' '}
                 <FormInputContainer
