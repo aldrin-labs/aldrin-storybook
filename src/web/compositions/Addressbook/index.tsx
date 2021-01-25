@@ -63,13 +63,16 @@ const Text = styled.span`
 
 export const Input = styled.input`
   width: 100%;
-  height: ${props => props.height ||'5rem'};
+  height: ${(props) => props.height || '5rem'};
   margin-bottom: 1rem;
-  background: ${(props) => (props.disabled ? props.theme.palette.grey.disabledInput : props.theme.palette.grey.input)};
-  border: ${props => `0.1rem solid ${props.theme.palette.text.white}`};
+  background: ${(props) =>
+    props.disabled
+      ? props.theme.palette.grey.disabledInput
+      : props.theme.palette.grey.input};
+  border: ${(props) => `0.1rem solid ${props.theme.palette.text.white}`};
   border-radius: 0.4rem;
   padding-left: 1rem;
-  color: ${props => props.theme.palette.text.light};
+  color: ${(props) => props.theme.palette.text.light};
 
   &::placeholder {
     color: #abbad1;
@@ -230,7 +233,7 @@ const AddressbookRoute = ({
     left: 0,
     isPopupOpen: false,
     isUpdateContact: false,
-    data: {}
+    data: {},
   })
 
   const { wallet } = useWallet()
@@ -481,26 +484,28 @@ const AddressbookRoute = ({
         getUserAddressbookQueryRefetch={getUserAddressbookQueryRefetch}
         contactPublicKey={contactPublicKey}
       />
-      <UpdatePopup 
-          theme={theme}
-          data={updatePopupData.data}
-          isContact={updatePopupData.isUpdateContact}
-          needPortalPopup={true}
-          needPortalMask={true}
-          isPopupOpen={updatePopupData.isPopupOpen}
-          closePopup={() => changeUpdatePopupData({
+      <UpdatePopup
+        theme={theme}
+        data={updatePopupData.data}
+        isContact={updatePopupData.isUpdateContact}
+        needPortalPopup={true}
+        needPortalMask={true}
+        isPopupOpen={updatePopupData.isPopupOpen}
+        closePopup={() =>
+          changeUpdatePopupData({
             isPopupOpen: false,
             data: {},
             isUpdateContact: true,
             left: 0,
             top: 0,
-          })}
-          top={updatePopupData.top}
-          left={updatePopupData.left}
-          localPassword={localPassword}
-          publicKey={publicKey}
-          contactPublicKey={contactPublicKey}
-          getUserAddressbookQueryRefetch={getUserAddressbookQueryRefetch}
+          })
+        }
+        top={updatePopupData.top}
+        left={updatePopupData.left}
+        localPassword={localPassword}
+        publicKey={publicKey}
+        contactPublicKey={contactPublicKey}
+        getUserAddressbookQueryRefetch={getUserAddressbookQueryRefetch}
       />
     </RowContainer>
   )

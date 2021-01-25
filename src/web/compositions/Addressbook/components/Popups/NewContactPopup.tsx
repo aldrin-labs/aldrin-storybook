@@ -84,12 +84,13 @@ const NewContactPopup = ({
         </span>
       </StyledDialogTitle>
       <StyledDialogContent
-        style={{ background: theme.palette.grey.input }}
         theme={theme}
+        style={{ background: theme.palette.grey.input }}
         id="share-dialog-content"
       >
         <div style={{ paddingTop: '2.5rem', textAlign: 'center' }}>
           <Input
+            theme={theme}
             style={{
               background: theme.palette.grey.input,
               color: theme.palette.text.light,
@@ -102,6 +103,7 @@ const NewContactPopup = ({
             onChange={(e) => updateName(e.target.value)}
           />
           <Input
+            theme={theme}
             style={{
               background: theme.palette.grey.input,
               color: theme.palette.text.light,
@@ -115,6 +117,7 @@ const NewContactPopup = ({
           />
           <div style={{ position: 'relative' }}>
             <Input
+              theme={theme}
               style={{
                 background: theme.palette.grey.input,
                 color: theme.palette.text.light,
