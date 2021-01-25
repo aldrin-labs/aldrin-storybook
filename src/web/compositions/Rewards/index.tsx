@@ -595,7 +595,7 @@ const RewardsRoute = (props) => {
                   paddingBottom: '1rem',
                   margin: '0 1rem',
                 }}
-                href={`https://twitter.com/intent/tweet?text=%E2%80%A2+%23Poloniex+exchange+suddenly+down.+Justin+Sun+said+funds+are+%23SAFU.%0D%0A%E2%80%A2+The+new+payment+option+on+%23Pornhub+is+%24BNB%0D%0A%E2%80%A2+%24ETH+open+interest+at+an+ATH.%0D%0A%0D%0ATrade+And+Develop+Strategies+With+%40CCAI_Official%0D%0A%0D%0A%24CCAI+%24DCFI+%24SRM+%24FTT+%24SOL%0Apic.twitter.com/PfXdzteXYo`}
+                href={`https://twitter.com/intent/tweet?text=%E2%80%A2%20Double%20Spending%20FUD%20Sends%20%23Bitcoin%20Briefly%20Below%2029k%0A%E2%80%A2%20%40JanetYellen%20Believes%20Crypto%20Can%20Improve%20Financial%20System%0A%E2%80%A2%20Number%20Of%20Bitcoin%20Whale%20Wallets%20HItting%20ATH%0A%0ATrade%20And%20Develop%20Strategies%20With%20%40ccai_official%0A%24CCAI%20%24DCFI%20%24SRM%20%24FTT%20%24SOL%0Apic.twitter.com/bVJlI00baP`}
                 rel="noopener noreferrel"
                 target={'_blank'}
                 onClick={(e) => {
