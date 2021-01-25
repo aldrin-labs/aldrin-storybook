@@ -28,7 +28,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
   showErrors,
   isTrailingOn = false,
   isPlotActive = false,
-  isMarketType,
+  maxSliderValue,
   showMarks,
   percentageInputWidth = '50%',
   validateField,
@@ -149,7 +149,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
             width: isTrailingOn ? '33%' : '40%',
             margin: '0 .8rem 0 .8rem',
           }}
-          onChange={(v) => updateValue(v)}
+          onChange={(v) => v > maxSliderValue ? updateValue(maxSliderValue) : updateValue(v)}
           onAfterChange={onAfterSliderChange}
         />
       ) : (
@@ -163,7 +163,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
               width: sliderInTheBottom ? '100%' : '50%',
               margin: '0 .4rem 0 0.5rem',
             }}
-            onChange={(v) => updateValue(v)}
+            onChange={(v) => v > maxSliderValue ? updateValue(maxSliderValue) : updateValue(v)}
             onAfterChange={onAfterSliderChange}
           />
         </InputRowContainer>

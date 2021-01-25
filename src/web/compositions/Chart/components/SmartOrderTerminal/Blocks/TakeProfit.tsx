@@ -62,6 +62,11 @@ export const TakeProfitBlock = ({
   updateSubBlockValue,
   updateStopLossAndTakeProfitPrices,
 }: TakeProfitBlockProps) => {
+  const occupiedVolume = takeProfit.splitTargets.targets.reduce(
+    (prev, curr) => prev + curr.amount,
+    0
+  )
+
   return (
     <TerminalBlock
       theme={theme}
@@ -895,13 +900,9 @@ export const TakeProfitBlock = ({
                   needPriceField: false,
                   percentagePreSymbol: '',
                   percentageTextAlign: 'right',
-                  pricePercentage: takeProfit.trailingTAP.deviationPercentage,
+                  maxSliderValue: 100 - occupiedVolume,
+                  pricePercentage: takeProfit.splitTargets.volumePercentage,
                   onAfterSliderChange: (value) => {
-                    const occupiedVolume = takeProfit.splitTargets.targets.reduce(
-                      (prev, curr) => prev + curr.amount,
-                      0
-                    )
-
                     updateSubBlockValue(
                       'takeProfit',
                       'splitTargets',
@@ -914,11 +915,6 @@ export const TakeProfitBlock = ({
                   onPricePercentageChange: (
                     e: React.ChangeEvent<HTMLInputElement>
                   ) => {
-                    const occupiedVolume = takeProfit.splitTargets.targets.reduce(
-                      (prev, curr) => prev + curr.amount,
-                      0
-                    )
-
                     updateSubBlockValue(
                       'takeProfit',
                       'splitTargets',
