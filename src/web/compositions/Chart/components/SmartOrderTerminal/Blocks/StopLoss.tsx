@@ -194,7 +194,7 @@ export const StopLossBlock = ({
                     'isTimeoutOn',
                     false
                   )
-                  if(stopLoss.forcedStop.isForcedStopOn) {
+                  if (stopLoss.forcedStop.isForcedStopOn) {
                     updateSubBlockValue(
                       'stopLoss',
                       'forcedStop',
@@ -579,7 +579,7 @@ export const StopLossBlock = ({
 
                             if (!stopLoss.forcedStopByAlert) {
                               updateBlockValue('stopLoss', 'plotEnabled', false)
-                               updateSubBlockValue(
+                              updateSubBlockValue(
                                 'stopLoss',
                                 'forcedStop',
                                 'mandatoryForcedLoss',
@@ -627,7 +627,7 @@ export const StopLossBlock = ({
                           )
                           if (!stopLoss.forcedStopByAlert) {
                             updateBlockValue('stopLoss', 'plotEnabled', false)
-                             updateSubBlockValue(
+                            updateSubBlockValue(
                               'stopLoss',
                               'forcedStop',
                               'mandatoryForcedLoss',
@@ -652,8 +652,9 @@ export const StopLossBlock = ({
                     </>
                   )}
                 </InputRowContainer>
-              </>
-            )}
+              </FormInputContainer>
+            </InputRowContainer>
+          )}
 
           {entryPoint.averaging.placeWithoutLoss &&
             entryPoint.averaging.entryLevels.map((el, index) => {
