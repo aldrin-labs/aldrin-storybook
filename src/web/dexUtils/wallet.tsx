@@ -1,11 +1,13 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import Wallet from '@project-serum/sol-wallet-adapter';
+import MathWallet from '@sb/dexUtils/MathWallet/MathWallet';
 import { notify } from './notifications';
 import { useConnectionConfig } from './connection';
 import { useLocalStorageState } from './utils';
 
 export const WALLET_PROVIDERS = [
   { name: 'sollet.io', url: 'https://www.sollet.io' },
+  { name: 'mathwallet.org', url: 'https://www.mathwallet.org' }
 ];
 
 const WalletContext = React.createContext(null);
@@ -14,9 +16,13 @@ export function WalletProvider({ children }) {
   const { endpoint } = useConnectionConfig();
   const [providerUrl, setProviderUrl] = useLocalStorageState(
     'walletProvider',
-    'https://www.sollet.io',
+    'https://www.mathwallet.org',
   );
-  const wallet = useMemo(() => new Wallet(providerUrl, endpoint), [
+
+  const isMathWallet = !!providerUrl.match('https://www.mathwallet.org')
+  const WalletClass = isMathWallet ? MathWallet : Wallet
+  
+  const wallet = useMemo(() => new WalletClass(providerUrl, endpoint), [
     providerUrl,
     endpoint,
   ]);

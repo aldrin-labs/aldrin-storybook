@@ -216,6 +216,20 @@ const TopBar = ({ theme }) => {
           }))}
         />
       </div> */}
+      <div>
+        <OvalSelector
+          theme={theme}
+          selectStyles={selectStyles(theme)}
+          onChange={({ value }) => {
+            setProvider(value)
+          }}
+          value={{ value: providerUrl, label: providerName }}
+          options={WALLET_PROVIDERS.map((provider) => ({
+            value: provider.url,
+            label: provider.name,
+          }))}
+        />
+      </div>
       <div data-tut="wallet">
         <BtnCustom
           type="text"
