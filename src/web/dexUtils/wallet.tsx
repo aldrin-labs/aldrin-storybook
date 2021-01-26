@@ -21,15 +21,11 @@ export function WalletProvider({ children }) {
 
   const isMathWallet = !!providerUrl.match('https://www.mathwallet.org')
   const WalletClass = isMathWallet ? MathWallet : Wallet
-
-  console.log('isMathWallet: ', isMathWallet)
   
   const wallet = useMemo(() => new WalletClass(providerUrl, endpoint), [
     providerUrl,
     endpoint,
   ]);
-
-  console.log('wallet: ', wallet)
 
   const [connected, setConnected] = useState(false);
   useEffect(() => {

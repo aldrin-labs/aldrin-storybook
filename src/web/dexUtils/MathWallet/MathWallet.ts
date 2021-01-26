@@ -110,7 +110,6 @@ export default class MathWallet extends EventEmitter {
     const { signRawTransaction } = window.solana
 
     const response = await signRawTransaction(bs58.encode(transaction.serializeMessage()))
-    console.log('signTransaction response: ', response)
 
     const signature = bs58.decode(response.signature)
     const publicKey = new PublicKey(response.publicKey)
