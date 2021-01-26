@@ -153,12 +153,14 @@ export const StopLossBlock = ({
                 !stopLoss.forcedStop.isForcedStopOn
               )
 
-              updateSubBlockValue(
-                'stopLoss',
-                'forcedStop',
-                'mandatoryForcedLoss',
-                !stopLoss.forcedStop.mandatoryForcedLoss
-              )
+              if (stopLoss.external) {
+                updateSubBlockValue(
+                  'stopLoss',
+                  'forcedStop',
+                  'mandatoryForcedLoss',
+                  !stopLoss.forcedStop.mandatoryForcedLoss
+                )
+              }
             }}
           >
             Forced stop
@@ -181,6 +183,14 @@ export const StopLossBlock = ({
                     'isTimeoutOn',
                     false
                   )
+                  if(stopLoss.forcedStop.isForcedStopOn) {
+                    updateSubBlockValue(
+                      'stopLoss',
+                      'forcedStop',
+                      'mandatoryForcedLoss',
+                      true
+                    )
+                  }
                 } else {
                   updateSubBlockValue(
                     'stopLoss',

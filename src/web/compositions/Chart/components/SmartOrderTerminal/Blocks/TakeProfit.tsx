@@ -442,8 +442,7 @@ export const TakeProfitBlock = ({
                   pair,
                   theme,
                   entryPoint,
-                  isTrailingOn: true,
-                  header: 'activation price',
+                  header: 'level',
                   titleForTooltip:
                     'The price at which the trailing algorithm will be triggered.',
                   showErrors,

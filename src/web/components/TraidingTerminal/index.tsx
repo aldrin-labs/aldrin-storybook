@@ -14,6 +14,7 @@ import { toNumber, toPairs } from 'lodash-es'
 import { traidingErrorMessages } from '@core/config/errorMessages'
 import { IProps, FormValues, IPropsWithFormik, priceType } from './types'
 
+import { getPrecisionItem } from '@core/utils/getPrecisionItem'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
 
@@ -261,6 +262,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
   componentDidUpdate(prevProps) {
     const {
+      pair,
       funds,
       leverage,
       priceType,
@@ -278,6 +280,16 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       if (leverage !== undefined) {
         this.onPriceChange({ target: { value: marketPriceAfterPairChange } })
       }
+      
+      if (total !== 0) {
+        const { quantityPrecision: qp } = getPrecisionItem({
+          marketType: isSPOTMarket ? 0 : 1,
+          symbol: pair.join('_'),
+        })
+
+        setFieldValue('total', +total)
+        setFieldValue('amount', stripDigitPlaces(+total / marketPriceAfterPairChange, qp))
+      }
     }
 
     if (prevProps.priceType !== priceType) {
@@ -290,7 +302,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
         'amount',
         stripDigitPlaces(
           +total / +priceForCalculate,
-          isSPOTMarket ? 8 : quantityPrecision
+          quantityPrecision
         )
       )
     }
@@ -588,7 +600,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     } else {
       maxAmount = funds[1].quantity * leverage
     }
-
+  
     return (
       <Container background={'transparent'}>
         <GridContainer isBuyType={isBuyType} key={`${pair[0]}/${pair[1]}`}>
