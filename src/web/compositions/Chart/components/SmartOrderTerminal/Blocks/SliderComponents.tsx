@@ -26,9 +26,8 @@ export const SliderWithPriceAndPercentageFieldRow = ({
   titleForTooltip,
   needTooltip = false,
   showErrors,
-  isTrailingOn = false,
   isPlotActive = false,
-  isMarketType,
+  maxSliderValue,
   showMarks,
   percentageInputWidth = '50%',
   validateField,
@@ -64,8 +63,6 @@ export const SliderWithPriceAndPercentageFieldRow = ({
               ? '65%'
               : tvAlertsEnable
               ? '55%'
-              : isTrailingOn
-              ? '27%'
               : 'calc(31.5%)'
           }
           textAlign={'right'}
@@ -106,8 +103,6 @@ export const SliderWithPriceAndPercentageFieldRow = ({
         width={
           sliderInTheBottom
             ? '35%'
-            : isTrailingOn
-            ? '33%'
             : needPriceField && !tvAlertsEnable
             ? 'calc(24.5%)'
             : tvAlertsEnable
@@ -146,10 +141,10 @@ export const SliderWithPriceAndPercentageFieldRow = ({
           disabled={isPlotActive}
           value={value}
           sliderContainerStyles={{
-            width: isTrailingOn ? '33%' : '40%',
+            width: '40%',
             margin: '0 .8rem 0 .8rem',
           }}
-          onChange={(v) => updateValue(v)}
+          onChange={(v) => v > maxSliderValue ? updateValue(maxSliderValue) : updateValue(v)}
           onAfterChange={onAfterSliderChange}
         />
       ) : (
@@ -163,7 +158,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
               width: sliderInTheBottom ? '100%' : '50%',
               margin: '0 .4rem 0 0.5rem',
             }}
-            onChange={(v) => updateValue(v)}
+            onChange={(v) => v > maxSliderValue ? updateValue(maxSliderValue) : updateValue(v)}
             onAfterChange={onAfterSliderChange}
           />
         </InputRowContainer>

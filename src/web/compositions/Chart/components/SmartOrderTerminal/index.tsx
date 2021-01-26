@@ -292,7 +292,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         forcedStop: {
           forcedStopPrice: 0,
           ...result.stopLoss.forcedStop,
-          isForcedStopOn: result.stopLoss.timeout.isTimeoutOn,
+          isForcedStopOn: !!result.stopLoss.forcedStop.isForcedStopOn,
           mandatoryForcedLoss: !!result.stopLoss.forcedStop.mandatoryForcedLoss,
         },
       },

@@ -62,6 +62,11 @@ export const TakeProfitBlock = ({
   updateSubBlockValue,
   updateStopLossAndTakeProfitPrices,
 }: TakeProfitBlockProps) => {
+  const occupiedVolume = takeProfit.splitTargets.targets.reduce(
+    (prev, curr) => prev + curr.amount,
+    0
+  )
+
   return (
     <TerminalBlock
       theme={theme}
@@ -319,21 +324,6 @@ export const TakeProfitBlock = ({
         </InputRowContainer>
 
         {!takeProfit.trailingTAP.isTrailingOn && !takeProfit.external && (
-          // <FormInputContainer
-          //   theme={theme}
-          //   haveTooltip
-          //   tooltipText={
-          //     <>
-          //       <p>The unrealized profit/ROE for closing the trade.</p>
-          //       <p>
-          //         <b>For example:</b>you bought 1 BTC and set 100% take
-          //         profit. Your unrealized profit should be 1 BTC and order
-          //         will be executed.
-          //       </p>
-          //     </>
-          //   }
-          //   title={'stop price'}
-          // >
           <InputRowContainer style={{ margin: '1.6rem auto 1rem auto' }}>
             <SliderWithPriceAndPercentageFieldRow
               {...{
@@ -423,22 +413,13 @@ export const TakeProfitBlock = ({
 
         {takeProfit.trailingTAP.isTrailingOn && !takeProfit.external && (
           <>
-            {/* <FormInputContainer
-                theme={theme}
-                haveTooltip
-                tooltipText={
-                  'The price at which the trailing algorithm is enabled.'
-                }
-                title={!takeProfit.external ? 'activation price' : 'stop price'}
-              > */}
             <InputRowContainer style={{ margin: '1rem auto 1rem auto' }}>
               <SliderWithPriceAndPercentageFieldRow
                 {...{
                   pair,
                   theme,
                   entryPoint,
-                  isTrailingOn: true,
-                  header: 'activation price',
+                  header: 'level',
                   titleForTooltip:
                     'The price at which the trailing algorithm will be triggered.',
                   showErrors,
@@ -895,13 +876,9 @@ export const TakeProfitBlock = ({
                   needPriceField: false,
                   percentagePreSymbol: '',
                   percentageTextAlign: 'right',
-                  pricePercentage: takeProfit.trailingTAP.deviationPercentage,
+                  maxSliderValue: 100 - occupiedVolume,
+                  pricePercentage: takeProfit.splitTargets.volumePercentage,
                   onAfterSliderChange: (value) => {
-                    const occupiedVolume = takeProfit.splitTargets.targets.reduce(
-                      (prev, curr) => prev + curr.amount,
-                      0
-                    )
-
                     updateSubBlockValue(
                       'takeProfit',
                       'splitTargets',
@@ -914,11 +891,6 @@ export const TakeProfitBlock = ({
                   onPricePercentageChange: (
                     e: React.ChangeEvent<HTMLInputElement>
                   ) => {
-                    const occupiedVolume = takeProfit.splitTargets.targets.reduce(
-                      (prev, curr) => prev + curr.amount,
-                      0
-                    )
-
                     updateSubBlockValue(
                       'takeProfit',
                       'splitTargets',

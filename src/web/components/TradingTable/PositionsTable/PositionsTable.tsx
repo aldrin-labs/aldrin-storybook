@@ -503,6 +503,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       allKeys,
       specificPair,
       getFundsQuery,
+      isDefaultOnlyTables,
       handleToggleAllKeys,
       handleToggleSpecificPair,
       getActivePositionsQuery,
@@ -588,10 +589,11 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
           columnNames={getTableHead({
             tab,
             marketType,
-            positionsRefetchInProcess: this.props
+            refetch: this.props
               .getActivePositionsQueryRefetch,
             updatePositionsHandler: this.updatePositionsHandler,
             positionsRefetchInProcess,
+            isDefaultOnlyTables,
           })}
         />
         {this.state.editMarginPopup && (

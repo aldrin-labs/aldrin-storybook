@@ -286,12 +286,13 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                 theme={theme}
                 isActive={this.state.isSplitTargetsOn}
                 onClick={() => {
+                  if (this.state.isSplitTargetsOn) {
+                    this.setState({ targets: [] })
+                  }
+
                   this.setState((prev) => ({
                     isSplitTargetsOn: !prev.isSplitTargetsOn,
                     isTrailingOn: false,
-                  }))
-
-                  this.setState((prev) => ({
                     isTimeoutOn: false,
                   }))
                 }}
@@ -508,7 +509,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                         value={this.state.volumePercentage}
                         onChange={(e) => {
                           const occupiedVolume = this.state.targets.reduce(
-                            (prev, curr) => prev + curr.quantity,
+                            (prev, curr) => prev + curr.amount,
                             0
                           )
 
@@ -530,7 +531,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                         }}
                         onChange={(value) => {
                           const occupiedVolume = this.state.targets.reduce(
-                            (prev, curr) => prev + curr.quantity,
+                            (prev, curr) => prev + curr.amount,
                             0
                           )
 
@@ -572,7 +573,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                           ...prev.targets,
                           {
                             price: prev.pricePercentage,
-                            quantity: prev.volumePercentage,
+                            amount: prev.volumePercentage,
                             type: prev.type,
                           },
                         ],
@@ -595,7 +596,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                       profit
                     </TargetTitle>
                     <TargetTitle theme={theme} style={{ width: '50%' }}>
-                      quantity
+                      amount
                     </TargetTitle>
                   </InputRowContainer>
                   <div
@@ -608,7 +609,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                   >
                     {this.state.targets.map((target, i) => (
                       <InputRowContainer
-                        key={`${target.price}${target.quantity}${i}`}
+                        key={`${target.price}${target.amount}${i}`}
                         padding=".2rem .5rem"
                         style={
                           this.state.targets.length - 1 !== i
@@ -625,7 +626,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                           +{target.price}%
                         </TargetValue>
                         <TargetValue theme={theme} style={{ width: '40%' }}>
-                          {target.quantity}%
+                          {target.amount}%
                         </TargetValue>
                         <CloseIcon
                           onClick={() =>

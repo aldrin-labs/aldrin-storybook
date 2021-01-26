@@ -641,7 +641,7 @@ export const combinePositionsTable = ({
             ),
             // colspan: 10,
           },
-          refetch: '',
+          ...(isDefaultOnlyTables ? { refetch: '' } : {}),
           tooltipTitle: keyName,
         },
         ...(!isDefaultOnlyTables
@@ -667,7 +667,7 @@ export const combinePositionsTable = ({
                     visibility: needOpacity ? 'hidden' : 'visible',
                   },
                 },
-                refetch: '',
+                // refetch: '',
               },
             ]
           : []),
