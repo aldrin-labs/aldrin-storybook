@@ -70,10 +70,18 @@ const TradingTabs = ({
     <>
       {' '}
       <TitleTabsGroup theme={theme}>
-        {isDefaultOnlyTables || isFullScreenTablesMode ? (
+        {isDefaultOnlyTables ||
+        isFullScreenTablesMode ||
+        isDefaultTerminalViewMode ? (
           <TitleTab
             onClick={() => {
-              updateTerminalViewMode('fullScreenTables')
+              isDefaultOnlyTables
+                ? updateTerminalViewMode('fullScreenTables')
+                : isDefaultTerminalViewMode
+                ? updateTerminalViewMode('fullScreenTables')
+                : null
+
+              // return back
               isFullScreenTablesMode && updateTerminalViewMode('onlyTables')
             }}
             style={{ width: '8rem' }}

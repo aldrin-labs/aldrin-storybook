@@ -503,7 +503,7 @@ const TradingTableWrapper = compose(
   withErrorFallback,
   withTheme(),
   queryRendererHoc({
-    // HEDGE MODE CHANGE 
+    // HEDGE MODE CHANGE
     query: getAllUserKeys,
     name: 'getAllUserKeysQuery',
     withOutSpinner: true,

@@ -1428,7 +1428,9 @@ export class EditEntryOrderPopup extends React.Component<
     if (state.side === '') {
       const { side, price, pricePrecision, leverage, quantityPrecision } = props
 
-      const marketPrice = props.getPriceQuery?.getPrice || props.getPriceQuery?.getMarkPrice?.markPrice
+      const marketPrice =
+        props.getPriceQuery?.getPrice ||
+        props.getPriceQuery?.getMarkPrice?.markPrice
 
       let priceForCalculate =
         props.derivedState.type === 'market' && !props.derivedState.isTrailingOn
@@ -1471,7 +1473,9 @@ export class EditEntryOrderPopup extends React.Component<
     const { type, isTrailingOn } = this.state
     const { side, price, pricePrecision } = this.props
 
-    const marketPrice = this.props.getPriceQuery?.getPrice || this.props.getPriceQuery?.getMarkPrice?.markPrice
+    const marketPrice =
+      this.props.getPriceQuery?.getPrice ||
+      this.props.getPriceQuery?.getMarkPrice?.markPrice
 
     let priceForCalculate =
       type === 'market' && !isTrailingOn ? marketPrice : price
@@ -1495,7 +1499,9 @@ export class EditEntryOrderPopup extends React.Component<
     const { funds, marketType, leverage } = this.props
 
     let maxAmount = 0
-    const marketPrice = this.props.getPriceQuery?.getPrice || this.props.getPriceQuery?.getMarkPrice?.markPrice
+    const marketPrice =
+      this.props.getPriceQuery?.getPrice ||
+      this.props.getPriceQuery?.getMarkPrice?.markPrice
 
     let priceForCalculate =
       type === 'market' && !isTrailingOn ? marketPrice : price
@@ -1556,7 +1562,9 @@ export class EditEntryOrderPopup extends React.Component<
       templateAlertMessage,
     } = this.state
 
-    const marketPrice = this.props.getPriceQuery?.getPrice || this.props.getPriceQuery?.getMarkPrice?.markPrice
+    const marketPrice =
+      this.props.getPriceQuery?.getPrice ||
+      this.props.getPriceQuery?.getMarkPrice?.markPrice
 
     let maxAmount = 0
     let priceForCalculate =
@@ -1586,54 +1594,55 @@ export class EditEntryOrderPopup extends React.Component<
         >
           <TypographyTitle theme={theme}>{`Edit entry point`}</TypographyTitle>
           <div style={{ display: 'flex', alignItems: 'center', width: '60%' }}>
-            {marketType === 1 && <>
-            <SmallSlider
-              theme={theme}
-              min={1}
-              max={maxLeverage}
-              defaultValue={this.state.leverage}
-              value={this.state.leverage}
-              valueSymbol={'X'}
-              marks={getMarks(maxLeverage)}
-              onChange={(leverage: number) => {
-                this.setState({ leverage })
-              }}
-              sliderContainerStyles={{
-                width: '80%',
-                margin: '0 auto',
-              }}
-              trackBeforeBackground={theme.palette.green.main}
-              handleStyles={{
-                width: '1.2rem',
-                height: '2rem',
-                top: '0.1rem',
-                border: 'none',
-                borderRadius: '0',
-                backgroundColor: '#036141',
-                marginTop: '-.28rem',
-                boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
-                transform: 'translate(-50%, -15%) !important',
-              }}
-              dotStyles={{
-                border: 'none',
-                backgroundColor: theme.palette.slider.dots,
-              }}
-              activeDotStyles={{
-                backgroundColor: theme.palette.green.main,
-              }}
-              markTextSlyles={{
-                color: theme.palette.grey.light,
-                fontSize: '1rem',
-              }}
-              railStyle={{
-                backgroundColor: theme.palette.slider.rail,
-              }}
-            />
-            <LeverageLabel theme={theme} style={{ fontFamily: 'DM Sans' }}>
-              {this.state.leverage}X
-            </LeverageLabel>
-            </>
-  }
+            {marketType === 1 && (
+              <>
+                <SmallSlider
+                  theme={theme}
+                  min={1}
+                  max={maxLeverage}
+                  defaultValue={this.state.leverage}
+                  value={this.state.leverage}
+                  valueSymbol={'X'}
+                  marks={getMarks(maxLeverage)}
+                  onChange={(leverage: number) => {
+                    this.setState({ leverage })
+                  }}
+                  sliderContainerStyles={{
+                    width: '80%',
+                    margin: '0 auto',
+                  }}
+                  trackBeforeBackground={theme.palette.green.main}
+                  handleStyles={{
+                    width: '1.2rem',
+                    height: '2rem',
+                    top: '0.1rem',
+                    border: 'none',
+                    borderRadius: '0',
+                    backgroundColor: '#036141',
+                    marginTop: '-.28rem',
+                    boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
+                    transform: 'translate(-50%, -15%) !important',
+                  }}
+                  dotStyles={{
+                    border: 'none',
+                    backgroundColor: theme.palette.slider.dots,
+                  }}
+                  activeDotStyles={{
+                    backgroundColor: theme.palette.green.main,
+                  }}
+                  markTextSlyles={{
+                    color: theme.palette.grey.light,
+                    fontSize: '1rem',
+                  }}
+                  railStyle={{
+                    backgroundColor: theme.palette.slider.rail,
+                  }}
+                />
+                <LeverageLabel theme={theme} style={{ fontFamily: 'DM Sans' }}>
+                  {this.state.leverage}X
+                </LeverageLabel>
+              </>
+            )}
           </div>
           <ClearButton>
             <Clear

@@ -207,6 +207,7 @@ const ThemeWrapper = ({ themeMode, location, children }) => {
               onboard: '#e0e2e5',
               titleForInput: '#2E2E2E',
               marketStats: 'rgb(11, 11, 14)',
+              disabled: '#e0e2e5',
             },
             primary: {
               main: '#303037',

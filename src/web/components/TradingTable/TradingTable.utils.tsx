@@ -127,6 +127,7 @@ import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 import { addMainSymbol } from '@sb/components'
 import TooltipCustom from '../TooltipCustom/TooltipCustom'
 import PnlBlock from './PriceBlocks/PositionsPnlBlock'
+import { grey } from '@material-ui/core/colors'
 
 export const getTableBody = (tab: string) =>
   tab === 'openOrders'
@@ -1023,10 +1024,13 @@ export const combineActiveTradesTable = ({
                   fontSize=".9rem"
                   padding=".1rem 1rem 0 1rem"
                   borderRadius="0.5rem"
-                  borderColor={enableEdit ? blue.tabs : '#e0e5ec'}
+                  borderColor={
+                    enableEdit ? blue.tabs : theme.palette.grey.disabled
+                  }
                   btnColor={'#fff'}
-                  backgroundColor={enableEdit ? blue.tabs : '#e0e5ec'}
-                  hoverBackground={enableEdit ? blue.tabs : '#e0e5ec'}
+                  backgroundColor={
+                    enableEdit ? blue.tabs : theme.palette.grey.disabled
+                  }
                   transition={'all .4s ease-out'}
                   onClick={(e) => {
                     e.stopPropagation()
@@ -1100,7 +1104,7 @@ export const combineActiveTradesTable = ({
                     position: 'absolute',
                     height: 'auto',
                     left: '45%',
-                    width: '50rem',
+                    width: '60rem',
                     top: '100%',
                     background: theme.palette.background.default,
                     zIndex: '100',
@@ -1118,7 +1122,6 @@ export const combineActiveTradesTable = ({
                     }}
                   >
                     <TableRow style={{ fontSize: '1.2rem' }}>
-                      <TableCell theme={theme}>status</TableCell>
                       <TableCell theme={theme}>price</TableCell>
                       <TableCell theme={theme}>amount / margin</TableCell>
                       <TableCell theme={theme}>
@@ -1155,7 +1158,6 @@ export const combineActiveTradesTable = ({
 
                       return (
                         <TableRow>
-                          <TableCell theme={theme}>O</TableCell>
                           <TableCell theme={theme}>
                             {currentPrice.toFixed(pricePrecision)} {pairArr[1]}
                           </TableCell>

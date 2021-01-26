@@ -55,7 +55,18 @@ export const StopLossBlock = ({
   showConfirmationPopup,
   updateTerminalViewMode,
   updateStopLossAndTakeProfitPrices,
+  togglePlaceWithoutLoss,
 }: StopLossBlockProps) => {
+  console.log('entryPoint', entryPoint)
+  let avgPrice =
+    entryPoint.averaging.entryLevels &&
+    entryPoint.averaging.entryLevels.length !== 0
+      ? entryPoint.averaging.entryLevels[0].price
+      : 0
+  console.log('entryPoint', entryPoint)
+  let estPrice = 0
+  let sumAmount = 0
+  let margin = 0
   return (
     <TerminalBlock
       data-tut={'step2'}
@@ -677,6 +688,49 @@ export const StopLossBlock = ({
                 </InputRowContainer>
               </>
             )}
+
+          {entryPoint.averaging.placeWithoutLoss &&
+            entryPoint.averaging.entryLevels.map((el, index) => {
+              const currentPrice =
+                index === 0
+                  ? avgPrice
+                  : entryPoint.order.side === 'sell'
+                  ? (avgPrice * (100 + el.price / entryPoint.order.leverage)) /
+                    100
+                  : (avgPrice * (100 - el.price / entryPoint.order.leverage)) /
+                    100
+              if (index === 0) {
+                estPrice = el.price
+                sumAmount = el.amount
+                margin =
+                  (estPrice * sumAmount +
+                    currentPrice * ((el.amount / 100) * el.amount)) /
+                  entryPoint.order.leverage
+              } else {
+                const exactAmount = (el.amount / 100) * el.amount
+
+                const total = estPrice * sumAmount + currentPrice * exactAmount
+
+                estPrice = total / (sumAmount + exactAmount)
+                sumAmount += exactAmount
+                margin = total / entryPoint.order.leverage
+              }
+              return (
+                <AdditionalSettingsButton
+                  theme={theme}
+                  style={{ textDecoration: 'underline' }}
+                  width={'22.75%'}
+                  isActive={
+                    entryPoint.averaging.entryLevels[index].placeWithoutLoss
+                  }
+                  onClick={() => {
+                    togglePlaceWithoutLoss(index)
+                  }}
+                >
+                  {currentPrice.toFixed(pricePrecision)}
+                </AdditionalSettingsButton>
+              )
+            })}
           {stopLoss.external && (
             <>
               {/* <FormInputContainer

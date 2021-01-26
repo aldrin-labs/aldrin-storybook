@@ -423,10 +423,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         'entryPoint',
         'order',
         'amount',
-        stripDigitPlaces(
-          total / price,
-          this.props.quantityPrecision
-        )
+        stripDigitPlaces(total / price, this.props.quantityPrecision)
       )
 
       this.updateSubBlockValue(
@@ -556,6 +553,26 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         },
       }))
     }
+  }
+
+  togglePlaceWithoutLoss = (index: number) => {
+    this.setState((prev) => ({
+      entryPoint: {
+        ...prev.entryPoint,
+        averaging: {
+          ...prev.entryPoint.averaging,
+          entryLevels: [
+            ...prev.entryPoint.averaging.entryLevels.slice(0, index),
+            {
+              ...prev.entryPoint.averaging.entryLevels[index],
+              placeWithoutLoss: !prev.entryPoint.averaging.entryLevels[index]
+                .placeWithoutLoss,
+            },
+            ...prev.entryPoint.averaging.entryLevels.slice(index + 1),
+          ],
+        },
+      },
+    }))
   }
 
   deleteTarget = (index: number) => {
@@ -1323,6 +1340,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             {/* STOP LOSS */}
             <StopLossBlock
               pair={pair}
+              togglePlaceWithoutLoss={this.togglePlaceWithoutLoss}
               marketType={marketType}
               theme={theme}
               stopLoss={stopLoss}

@@ -384,7 +384,6 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
       handleChangePage,
       handleChangeRowsPerPage,
       updateTerminalViewMode,
-      isFullScreenTablesMode,
       isDefaultOnlyTables,
       maxLeverage,
       allKeys,
