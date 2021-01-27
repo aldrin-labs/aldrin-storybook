@@ -208,7 +208,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
         altCoinsPairsMap.set(el.symbol, el.price)
       }
     })
-    console.log('getSerumMarketDataQuery', getSerumMarketDataQuery)
+    // console.log('getSerumMarketDataQuery', getSerumMarketDataQuery)
     return (
       <SelectPairListComponent
         data={filtredMarketsByExchange}
