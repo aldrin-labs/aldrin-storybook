@@ -6,6 +6,7 @@ import { useConnectionConfig } from './connection';
 import { useLocalStorageState } from './utils';
 
 export const WALLET_PROVIDERS = [
+  { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },
   { name: 'sollet.io', url: 'https://www.sollet.io' },
   { name: 'mathwallet.org', url: 'https://www.mathwallet.org' }
 ];
@@ -16,7 +17,7 @@ export function WalletProvider({ children }) {
   const { endpoint } = useConnectionConfig();
   const [providerUrl, setProviderUrl] = useLocalStorageState(
     'walletProvider',
-    'https://www.sollet.io',
+    'https://solflare.com/access-wallet',
   );
 
   const isMathWallet = !!providerUrl.match('https://www.mathwallet.org')
