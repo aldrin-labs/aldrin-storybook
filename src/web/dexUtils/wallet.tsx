@@ -16,7 +16,7 @@ export function WalletProvider({ children }) {
   const { endpoint } = useConnectionConfig();
   const [providerUrl, setProviderUrl] = useLocalStorageState(
     'walletProvider',
-    'https://www.mathwallet.org',
+    'https://www.sollet.io',
   );
 
   const isMathWallet = !!providerUrl.match('https://www.mathwallet.org')
