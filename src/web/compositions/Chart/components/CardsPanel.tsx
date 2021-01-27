@@ -143,7 +143,7 @@ const TopBar = ({ theme }) => {
   const history = useHistory()
   const [isOpenPopup, setPopupOpen] = useState(false)
 
-  const [isSolletActive, chooseSollet] = useState(false)
+  const [isSolletActive, chooseSollet] = useState(true)
   const [isMathWalletActive, chooseMathWallet] = useState(false)
 
   const publicKey = wallet?.publicKey?.toBase58()
