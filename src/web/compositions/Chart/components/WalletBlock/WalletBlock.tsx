@@ -32,7 +32,7 @@ const WalletBlockComponent = () => {
           textTransform: 'none',
         }}
         onClick={() => {
-          updateProviderUrl('https://www.sollet.io/')
+          updateProviderUrl('https://www.sollet.io')
         }}
       >
         <SvgIcon src={Sollet} width={'20%'} height={'70%'} /> Sollet.io
