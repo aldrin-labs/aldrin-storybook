@@ -14,7 +14,7 @@ const WalletBlockComponent = () => {
   const [providerUrl, updateProviderUrl] = useStateWithCallback(baseProviderUrl, (value: string) => {
     setTimeout(() => setProvider(value), 200)
   })
-  const isSolletActive = providerUrl === 'https://www.sollet.io/'
+  const isSolletActive = providerUrl === 'https://www.sollet.io'
   const isMathWalletActive = providerUrl === 'https://www.mathwallet.org'
 
   return (
