@@ -31,6 +31,8 @@ import SerumCCAILogo from '@icons/serumCCAILogo.svg'
 import LightLogo from '@icons/lightLogo.svg'
 import SvgIcon from '@sb/components/SvgIcon'
 
+import Sollet from '@icons/sollet.svg'
+import Mathwallet from '@icons/mathwallet.svg'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
 import Button from '@material-ui/core/Button'
@@ -141,6 +143,9 @@ const TopBar = ({ theme }) => {
   const history = useHistory()
   const [isOpenPopup, setPopupOpen] = useState(false)
 
+  const [isSolletActive, chooseSollet] = useState(false)
+  const [isMathWalletActive, chooseMathWallet] = useState(false)
+
   const publicKey = wallet?.publicKey?.toBase58()
 
   const handleClick = useCallback(
@@ -216,12 +221,13 @@ const TopBar = ({ theme }) => {
           }))}
         />
       </div> */}
-      <div>
+      {/* <div>
         <OvalSelector
           theme={theme}
           selectStyles={selectStyles(theme)}
           onChange={({ value }) => {
             setProvider(value)
+            console.log('value', value)
           }}
           value={{ value: providerUrl, label: providerName }}
           options={WALLET_PROVIDERS.map((provider) => ({
@@ -229,6 +235,48 @@ const TopBar = ({ theme }) => {
             label: provider.name,
           }))}
         />
+      </div> */}
+      <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <BtnCustom
+          btnWidth={'12.5rem'}
+          height={'4rem'}
+          btnColor={isSolletActive ? '#AAF2C9' : '#ECF0F3'}
+          fontSize={'1.2rem'}
+          margin={'0 0.5rem 0 1rem'}
+          borderColor={isSolletActive ? '#AAF2C9' : '#3A475C'}
+          style={{
+            display: 'flex',
+            justifyContent: 'space-around',
+            textTransform: 'none',
+          }}
+          onClick={() => {
+            setProvider('https://www.sollet.io/')
+            chooseSollet(!isSolletActive)
+            chooseMathWallet(false)
+          }}
+        >
+          <SvgIcon src={Sollet} width={'20%'} height={'70%'} /> Sollet.io
+        </BtnCustom>
+        <BtnCustom
+          btnWidth={'12.5rem'}
+          height={'4rem'}
+          btnColor={isMathWalletActive ? '#AAF2C9' : '#ECF0F3'}
+          fontSize={'1.2rem'}
+          margin={'0 1rem 0 0.5rem'}
+          borderColor={isMathWalletActive ? '#AAF2C9' : '#3A475C'}
+          style={{
+            display: 'flex',
+            justifyContent: 'space-around',
+            textTransform: 'none',
+          }}
+          onClick={() => {
+            setProvider('https://www.mathwallet.org')
+            chooseMathWallet(!isMathWalletActive)
+            chooseSollet(false)
+          }}
+        >
+          <SvgIcon src={Mathwallet} width={'20%'} height={'70%'} /> Math Wallet
+        </BtnCustom>
       </div>
       <div data-tut="wallet">
         <BtnCustom
