@@ -51,15 +51,22 @@ export default class MathWallet extends EventEmitter {
         }
       }
     })
+    .catch((err) => {
+      alert(err.message)
+    })
 
   }
 
   _handleDisconnect = () => {
     if (this._publicKey) {
-      window.solana.forgetAccounts().then(() => {
+      window.solana.forgetAccounts()
+      .then(() => {
         this._publicKey = null
         
         this.emit('disconnect')
+      })
+      .catch((err) => {
+        alert(err.message)
       })
     }
 
