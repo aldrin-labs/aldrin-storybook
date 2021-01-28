@@ -49,7 +49,9 @@ export const positionsColumnNames = (
   { label: 'Liq. Price', id: 'liqPrice' },
   { label: 'PNL/ROE', id: 'pnlRoe', colspan: 2 },
   // { label: ' ', id: 'pnlRoe' },
-  ...(isDefaultOnlyTables ? [{ label: 'Action', id: 'action', style: { textAlign: 'right' } }] : []),
+  ...(isDefaultOnlyTables
+    ? [{ label: 'Action', id: 'action', style: { textAlign: 'right' } }]
+    : []),
   {
     label: (
       <DarkTooltip title={`Update positions`}>
@@ -75,7 +77,7 @@ export const positionsColumnNames = (
     ),
     id: 'refetch',
     isSortable: false,
-    style: { paddingRight: '1.2rem' }
+    style: { paddingRight: '1.2rem' },
   },
 ]
 
@@ -183,39 +185,38 @@ export const openOrdersColumnNames = (
     { label: 'Trigger', id: 'triggerConditions' },
     marketType === 1 ? { label: 'Reduce Only', id: 'reduceOnly' } : {},
     { label: 'date', isNumber: true, id: 'date' },
-    { label: ' ', id: 'cancel' },
+    { label: ' ', id: 'cancelSpace' },
 
-    // ...(filteredOpenOrders.length !== 0
-    //   ? [
-    //       {
-    //         label: (
-    //           <TableButton
-    //             size="small"
-    //             theme={theme}
-    //             onClick={() => {
-    //               onCancelAllOrders()
-    //               console.log('fghgj')
-    //             }}
-    //             style={{
-    //               color: '#fff',
-    //               backgroundColor: theme.palette.red.main,
-    //               border: 'none',
-    //               // margin: '.5rem auto .5rem 10rem',
-    //               borderRadius: '0.5rem',
-    //               height: '2.7rem',
-    //               width: '9rem',
-    //               fontFamily: 'Avenir Next Demi',
-    //             }}
-    //             variant="outlined"
-    //           >
-    //             Cancel all
-    //           </TableButton>
-    //         ),
-    //         id: 'cancel',
-    //         isSortable: false,
-    //       },
-    //     ]
-    //   : []),
+    ...(filteredOpenOrders.length !== 0
+      ? [
+          {
+            label: (
+              <TableButton
+                size="small"
+                theme={theme}
+                onClick={() => {
+                  onCancelAllOrders()
+                }}
+                style={{
+                  color: '#fff',
+                  backgroundColor: theme.palette.red.main,
+                  border: 'none',
+                  // margin: '.5rem auto .5rem 10rem',
+                  borderRadius: '0.5rem',
+                  height: '2.7rem',
+                  width: '9rem',
+                  fontFamily: 'Avenir Next Demi',
+                }}
+                variant="outlined"
+              >
+                Cancel all
+              </TableButton>
+            ),
+            id: 'cancel',
+            isSortable: false,
+          },
+        ]
+      : []),
   ].filter((x) => x.label)
 
 export const openOrdersBody = new Array(13).fill(undefined).map((el, i) => ({

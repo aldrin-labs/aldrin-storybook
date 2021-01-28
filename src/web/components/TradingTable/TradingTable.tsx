@@ -352,7 +352,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             perPage: perPagePositions,
             show: tab === 'positions',
             handleToggleSpecificPair: this.handleToggleSpecificPair,
-            handleToggleAllKeys: this.handleToggleSpecificPair,
+            handleToggleAllKeys: this.handleToggleAllKeys,
             handleChangePage: (value: number) =>
               this.handleChangePage('pagePositions', value),
             handleChangeRowsPerPage: (
@@ -389,7 +389,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             perPage: perPageOpenOrders,
             show: tab === 'openOrders',
             handleToggleSpecificPair: this.handleToggleSpecificPair,
-            handleToggleAllKeys: this.handleToggleSpecificPair,
+            handleToggleAllKeys: this.handleToggleAllKeys,
             handleChangePage: (value: number) =>
               this.handleChangePage('pageOpenOrders', value),
             handleChangeRowsPerPage: (
@@ -423,7 +423,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             showSmartTradesFromAllAccounts,
             show: tab === 'orderHistory',
             handleToggleSpecificPair: this.handleToggleSpecificPair,
-            handleToggleAllKeys: this.handleToggleSpecificPair,
+            handleToggleAllKeys: this.handleToggleAllKeys,
             handleTabChange: this.handleTabChange,
             handlePairChange: this.handlePairChange,
           }}
@@ -452,7 +452,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             handleTabChange: this.handleTabChange,
             handlePairChange: this.handlePairChange,
             handleToggleSpecificPair: this.handleToggleSpecificPair,
-            handleToggleAllKeys: this.handleToggleSpecificPair,
+            handleToggleAllKeys: this.handleToggleAllKeys,
           }}
         />
         <Funds

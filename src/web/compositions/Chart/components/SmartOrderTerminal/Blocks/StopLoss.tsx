@@ -656,48 +656,63 @@ export const StopLossBlock = ({
             </InputRowContainer>
           )}
 
-          {entryPoint.averaging.placeWithoutLoss &&
-            entryPoint.averaging.entryLevels.map((el, index) => {
-              const currentPrice =
-                index === 0
-                  ? avgPrice
-                  : entryPoint.order.side === 'sell'
-                  ? (avgPrice * (100 + el.price / entryPoint.order.leverage)) /
-                    100
-                  : (avgPrice * (100 - el.price / entryPoint.order.leverage)) /
-                    100
-              if (index === 0) {
-                estPrice = el.price
-                sumAmount = el.amount
-                margin =
-                  (estPrice * sumAmount +
-                    currentPrice * ((el.amount / 100) * el.amount)) /
-                  entryPoint.order.leverage
-              } else {
-                const exactAmount = (el.amount / 100) * el.amount
+          {entryPoint.averaging.placeWithoutLoss && (
+            <FormInputContainer
+              theme={theme}
+              title={'Place break-even point for next entries:'}
+            >
+              <div style={{ width: '100%' }}>
+                {entryPoint.averaging.entryLevels.map((el, index) => {
+                  const currentPrice =
+                    index === 0
+                      ? avgPrice
+                      : entryPoint.order.side === 'sell'
+                      ? (avgPrice *
+                          (100 + el.price / entryPoint.order.leverage)) /
+                        100
+                      : (avgPrice *
+                          (100 - el.price / entryPoint.order.leverage)) /
+                        100
+                  if (index === 0) {
+                    estPrice = el.price
+                    sumAmount = el.amount
+                    margin =
+                      (estPrice * sumAmount +
+                        currentPrice * ((el.amount / 100) * el.amount)) /
+                      entryPoint.order.leverage
+                  } else {
+                    const exactAmount = (el.amount / 100) * el.amount
 
-                const total = estPrice * sumAmount + currentPrice * exactAmount
+                    const total =
+                      estPrice * sumAmount + currentPrice * exactAmount
 
-                estPrice = total / (sumAmount + exactAmount)
-                sumAmount += exactAmount
-                margin = total / entryPoint.order.leverage
-              }
-              return (
-                <AdditionalSettingsButton
-                  theme={theme}
-                  style={{ textDecoration: 'underline' }}
-                  width={'22.75%'}
-                  isActive={
-                    entryPoint.averaging.entryLevels[index].placeWithoutLoss
+                    estPrice = total / (sumAmount + exactAmount)
+                    sumAmount += exactAmount
+                    margin = total / entryPoint.order.leverage
                   }
-                  onClick={() => {
-                    togglePlaceWithoutLoss(index)
-                  }}
-                >
-                  {currentPrice.toFixed(pricePrecision)}
-                </AdditionalSettingsButton>
-              )
-            })}
+
+                  return (
+                    <AdditionalSettingsButton
+                      theme={theme}
+                      style={{
+                        textDecoration: 'underline',
+                        marginBottom: '1rem',
+                      }}
+                      width={'30%'}
+                      isActive={
+                        entryPoint.averaging.entryLevels[index].placeWithoutLoss
+                      }
+                      onClick={() => {
+                        togglePlaceWithoutLoss(index)
+                      }}
+                    >
+                      {currentPrice.toFixed(pricePrecision)}
+                    </AdditionalSettingsButton>
+                  )
+                })}
+              </div>
+            </FormInputContainer>
+          )}
           {stopLoss.external && (
             <>
               <InputRowContainer style={{ marginTop: '0rem' }}>

@@ -152,6 +152,7 @@ export const getTableHead = ({
   isDefaultOnlyTables,
   filteredOpenOrders,
   theme,
+  enqueueSnackbar,
 }: {
   tab: string
   marketType: number
@@ -2519,6 +2520,9 @@ export const combineOpenOrdersTable = ({
             textAlign: 'right',
           },
           contentToSort: timestamp,
+        },
+        cancelSpace: {
+          colspan: 1,
         },
         cancel: {
           render: needOpacity ? (

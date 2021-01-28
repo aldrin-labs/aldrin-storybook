@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React from 'react'
 import dayjs from 'dayjs'
 import copy from 'clipboard-copy'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { withTheme } from '@material-ui/styles'
+import { withSnackbar } from 'notistack'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
@@ -54,6 +55,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       cancelOrderMutation,
       marketType,
       disableStrategyMutation,
+      enqueueSnackbar,
     } = this.props
 
     try {
@@ -80,13 +82,24 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       (order) => filterOpenOrders({ order, canceledOrders: [] })
     )
 
-    filteredOpenOrders.forEach((order) => {
-      this.onCancelOrder(
-        order.keyId,
-        order.info.orderId,
-        order.pair,
-        order.type
+    Promise.all(
+      filteredOpenOrders.map(async (order) =>
+        this.onCancelOrder(
+          order.keyId,
+          order.info.orderId,
+          order.symbol,
+          order.type
+        )
       )
+    ).then((results) => {
+      if (results[0].data.cancelOrder.status === 'OK') {
+        this.props.enqueueSnackbar(`Your orders successful canceled`, {
+          variant: 'success',
+        })
+      } else {
+        this.props.enqueueSnackbar(`Error`, { variant: 'error' })
+      }
+      console.log('results', results)
     })
   }
 
@@ -615,6 +628,7 @@ const MemoizedWrapper = React.memo(TableDataWrapper, (prevProps, nextProps) => {
 })
 
 export default compose(
+  withSnackbar,
   graphql(disableStrategy, { name: 'disableStrategyMutation' }),
   graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' }),
   graphql(ordersHealthcheck, { name: 'ordersHealthcheckMutation' })
