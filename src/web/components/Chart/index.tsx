@@ -9,6 +9,8 @@ import { CHARTS_API_URL } from '@core/utils/config'
 import { TerminalModeButton } from '@sb/components/TradingWrapper/styles'
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 
+import { useWallet } from '@sb/dexUtils/wallet'
+
 const Wrapper = styled(Card)`
   display: flex;
   flex-direction: column;
@@ -58,7 +60,7 @@ export const SingleChart = ({
   customMarkets: []
   currencyPair: string
 }) => {
-  console.log('customMark', currencyPair)
+  // console.log('customMark', currencyPair)
 
   return (
     <Wrapper>
@@ -82,10 +84,12 @@ export const SingleChartWithButtons = ({
   currencyPair,
   base,
   quote,
-  publicKey,
   marketType,
   customMarkets,
 }) => {
+  const { wallet } = useWallet()
+  const publicKey = wallet?.publicKey?.toBase58()
+
   const isWithoutIndexChart = 
   (!marketsWithUSDCCharts.includes(currencyPair.split('_')[0]) && currencyPair.split('_')[1] === 'USDC') 
   || marketsWithoutIndexChart.includes(currencyPair)

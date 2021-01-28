@@ -16,7 +16,6 @@ import { GuestMode } from '../components/GuestMode/GuestMode'
 import { HideArrow } from '../components/HideArrow/HideArrow'
 import { isEqual } from 'lodash'
 import { TerminalModeButton } from '@sb/components/TradingWrapper/styles'
-import { useWallet } from '@sb/dexUtils/wallet'
 
 const TerminalContainer = ({
   isDefaultTerminalViewMode,
@@ -88,8 +87,6 @@ export const DefaultViewComponent = (
   } = props
 
   const [chartExchange, updateChartExchange] = useState('binance')
-  const { wallet } = useWallet()
-  const publicKey = wallet?.publicKey?.toBase58()
 
   if (!currencyPair) {
     return null
@@ -188,7 +185,6 @@ export const DefaultViewComponent = (
                 base={base}
                 quote={quote}
                 marketType={marketType}
-                publicKey={publicKey}
                 themeMode={themeMode}
               />
             </ChartsContainer>

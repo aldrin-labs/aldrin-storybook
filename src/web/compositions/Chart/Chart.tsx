@@ -416,7 +416,7 @@ function ChartPageComponent(props: any) {
 }
 
 const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
-  console.log('memo func chart page', prev, next)
+  // console.log('memo func chart page', prev, next)
 
   const isAuthenticatedUser = checkLoginStatus()
 
@@ -481,7 +481,7 @@ export default compose(
   withErrorFallback,
   withAuthStatus,
   withTheme(),
-  withPublicKey,
+  // withPublicKey,
   withRouter,
   // withAuth,
   queryRendererHoc({
