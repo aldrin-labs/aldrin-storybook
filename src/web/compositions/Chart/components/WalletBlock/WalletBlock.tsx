@@ -5,6 +5,8 @@ import SvgIcon from '@sb/components/SvgIcon'
 
 import Sollet from '@icons/sollet.svg'
 import Mathwallet from '@icons/mathwallet.svg'
+import Solong from '@icons/solong.svg'
+
 
 import useStateWithCallback from '@sb/utils/useStateWithCallback'
 
@@ -20,27 +22,28 @@ const WalletBlockComponent = () => {
   const isSolletActive = providerUrl === 'https://www.sollet.io'
   const isMathWalletActive = providerUrl === 'https://www.mathwallet.org'
   const isSolflareActive = providerUrl === 'https://solflare.com/access-wallet'
+  const isSolongWallet = providerUrl === 'https://solongwallet.com'
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
       <BtnCustom
         btnWidth={'12.5rem'}
         height={'4rem'}
-        btnColor={isSolflareActive ? '#AAF2C9' : '#ECF0F3'}
+        btnColor={isSolongWallet ? '#AAF2C9' : '#ECF0F3'}
         fontSize={'1.2rem'}
         margin={'0 0.5rem 0 1rem'}
-        borderColor={isSolflareActive ? '#AAF2C9' : '#3A475C'}
+        borderColor={isSolongWallet ? '#AAF2C9' : '#3A475C'}
         style={{
           display: 'flex',
           justifyContent: 'space-around',
           textTransform: 'none',
         }}
         onClick={() => {
-          updateProviderUrl('https://solflare.com/access-wallet')
+          updateProviderUrl('https://solongwallet.com')
         }}
       >
-        {/* <SvgIcon src={Sollet} width={'20%'} height={'70%'} /> */}
-         Solflare
+        <SvgIcon src={Solong} width={'20%'} height={'70%'} />
+        Solong
       </BtnCustom>
       <BtnCustom
         btnWidth={'12.5rem'}
