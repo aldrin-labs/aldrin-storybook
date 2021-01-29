@@ -75,12 +75,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       },
       trailing: {
         isTrailingOn: false,
-        deviationPercentage: 0,
+        deviationPercentage: 0.1,
         trailingDeviationPrice: 0,
       },
       averaging: {
         enabled: false,
-        percentage: 0,
+        percentage: 1,
         price: 0,
         closeStrategyAfterFirstTAP: false,
         placeEntryAfterTAP: false,
@@ -108,7 +108,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     takeProfit: {
       isTakeProfitOn: true,
       type: 'limit',
-      pricePercentage: 0,
+      pricePercentage: 1,
       takeProfitPrice: 0,
       splitTargets: {
         isSplitTargetsOn: false,
@@ -137,7 +137,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     stopLoss: {
       isStopLossOn: true,
       type: 'limit',
-      pricePercentage: 0,
+      pricePercentage: 1,
       stopLossPrice: 0,
       timeout: {
         isTimeoutOn: false,
@@ -151,7 +151,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       forcedStop: {
         mandatoryForcedLoss: false,
         isForcedStopOn: false,
-        pricePercentage: 0,
+        pricePercentage: 1,
         forcedStopPrice: 0,
       },
       external: false,
@@ -237,7 +237,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           placeEntryAfterTAP: false,
           placeWithoutLoss: false,
           entryLevels: [],
-          percentage: 0,
+          percentage: 1,
           price: 0,
           ...savedAveraging,
         },
@@ -261,7 +261,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         },
         trailing: {
           trailingDeviationPrice: 0,
-          deviationPercentage: 0,
+          deviationPercentage: 0.1,
           ...(marketType === 1 ? { ...prevState.entryPoint.trailing } : {}),
           ...(result.entryPoint && marketType === 1
             ? {
@@ -278,6 +278,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       },
       takeProfit: {
         takeProfitPrice: 0,
+
         ...result.takeProfit,
         plotEnabled: false,
         trailingTAP: {
@@ -635,7 +636,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             ...prev.entryPoint.averaging,
             ...(isAveragingAfterFirstTarget ? {} : { price }),
             placeWithoutLoss: false,
-            percentage: 0,
+            percentage: 1,
             entryLevels: [
               ...entryLevels,
               {
@@ -1313,6 +1314,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               addAverageTarget={this.addAverageTarget}
               deleteAverageTarget={this.deleteAverageTarget}
               entryPoint={entryPoint}
+              enqueueSnackbar={this.props.enqueueSnackbar}
               funds={funds}
               getEntryAlertJson={this.getEntryAlertJson}
               getMaxValues={this.getMaxValues}
@@ -1341,6 +1343,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               pair={pair}
               togglePlaceWithoutLoss={this.togglePlaceWithoutLoss}
               marketType={marketType}
+              enqueueSnackbar={this.props.enqueueSnackbar}
               theme={theme}
               stopLoss={stopLoss}
               showErrors={showErrors}
@@ -1369,6 +1372,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               theme={theme}
               takeProfit={takeProfit}
               showErrors={showErrors}
+              enqueueSnackbar={this.props.enqueueSnackbar}
               entryPoint={entryPoint}
               marketType={marketType}
               addTarget={this.addTarget}
