@@ -828,7 +828,7 @@ export const EntryOrderBlock = ({
         {entryPoint.trailing.isTrailingOn && marketType !== 0 && (
           <InputRowContainer style={{ margin: '1rem 0 1rem 0' }}>
             <Input
-              header={'deviation'}
+              header={'price'}
               needTooltip
               needTitleBlock
               titleForTooltip={
@@ -836,7 +836,7 @@ export const EntryOrderBlock = ({
               }
               theme={theme}
               padding={'0'}
-              width={'38%'}
+              width={'30%'}
               textAlign={'right'}
               symbol={pair[1]}
               value={entryPoint.trailing.trailingDeviationPrice}
@@ -874,12 +874,15 @@ export const EntryOrderBlock = ({
                 )
               }}
             />
-            <SvgIcon src={Chain} style={{ margin: 'auto 0.5rem' }} />
+
+            {!(
+              entryPoint.TVAlert.isTVAlertOn
+            ) && <SvgIcon src={Chain} style={{ margin: 'auto 0.5rem' }} />}
 
             <Input
               theme={theme}
-              padding={'0 .8rem 0 0'}
-              width={'24%'}
+              padding={entryPoint.TVAlert.isTVAlertOn ? '0 .8rem 0 0.8rem' : '0 .8rem 0 0'}
+              width={'20%'}
               needTitleBlock
               symbol={'%'}
               header={'level'}
@@ -917,25 +920,20 @@ export const EntryOrderBlock = ({
 
             <BlueSlider
               theme={theme}
+              step={0.1}
+              max={10}
               disabled={!entryPoint.trailing.isTrailingOn}
               value={
-                +stripDigitPlaces(
-                  entryPoint.trailing.deviationPercentage *
-                    entryPoint.order.leverage,
-                  3
-                )
+                +stripDigitPlaces(entryPoint.trailing.deviationPercentage, 3)
               }
               sliderContainerStyles={{
-                width: entryPoint.TVAlert.plotEnabled ? '20%' : '36%',
+                width: entryPoint.TVAlert.plotEnabled ? 'calc(20% - 1.6rem)' : '36%',
                 margin: '0 .8rem 0 .8rem',
               }}
               onChange={(value) => {
                 if (
-                  stripDigitPlaces(
-                    entryPoint.trailing.deviationPercentage *
-                      entryPoint.order.leverage,
-                    3
-                  ) > 100 &&
+                  stripDigitPlaces(entryPoint.trailing.deviationPercentage, 3) >
+                    100 &&
                   value === 100
                 ) {
                   return
@@ -945,13 +943,10 @@ export const EntryOrderBlock = ({
                   'entryPoint',
                   'trailing',
                   'deviationPercentage',
-                  stripDigitPlaces(value / entryPoint.order.leverage, 3)
+                  stripDigitPlaces(value, 3)
                 )
                 updateStopLossAndTakeProfitPrices({
-                  deviationPercentage: +stripDigitPlaces(
-                    value / entryPoint.order.leverage,
-                    3
-                  ),
+                  deviationPercentage: +stripDigitPlaces(value, 3),
                 })
               }}
             />
@@ -962,7 +957,6 @@ export const EntryOrderBlock = ({
                     display: 'flex',
                     justifyContent: 'center',
                     width: '10%',
-                    marginRight: '0.7rem',
                   }}
                 >
                   <Switcher
@@ -980,7 +974,7 @@ export const EntryOrderBlock = ({
                 <Input
                   theme={theme}
                   type={'number'}
-                  header={'price'}
+                  header={'plot_'}
                   needTitleBlock
                   textAlign="left"
                   width={'calc(20%)'}
@@ -1016,10 +1010,7 @@ export const EntryOrderBlock = ({
               : e.target.value
 
             const strippedAmount = isAmountMoreThanMax
-              ? stripDigitPlaces(
-                  amountForUpdate,
-                  quantityPrecision 
-                )
+              ? stripDigitPlaces(amountForUpdate, quantityPrecision)
               : e.target.value
 
             const newTotal = +strippedAmount * priceForCalculate
@@ -1077,10 +1068,7 @@ export const EntryOrderBlock = ({
               'entryPoint',
               'order',
               'amount',
-              stripDigitPlaces(
-                newAmount,
-                quantityPrecision
-              )
+              stripDigitPlaces(newAmount, quantityPrecision)
             )
 
             updateSubBlockValue(
@@ -1097,10 +1085,7 @@ export const EntryOrderBlock = ({
             const newTotal = inputInitialMargin * entryPoint.order.leverage
             const newAmount = newTotal / priceForCalculate
 
-            const fixedAmount = stripDigitPlaces(
-              newAmount,
-              quantityPrecision
-            )
+            const fixedAmount = stripDigitPlaces(newAmount, quantityPrecision)
 
             updateSubBlockValue(
               'entryPoint',

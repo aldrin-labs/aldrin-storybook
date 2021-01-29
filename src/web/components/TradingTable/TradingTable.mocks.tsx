@@ -85,7 +85,6 @@ export const activeTradesColumnNames = [
   { label: ' ', id: 'blank' },
   { label: 'Position', id: 'pair' },
   { label: 'Entry price', id: 'entryPrice' },
-  // { label: 'Side', id: 'side' },
   { label: 'Lvg.', id: 'leverage' },
   { label: 'Margin/Size', id: 'quantity' },
   { label: 'Averaging', id: 'averaging' },
@@ -124,25 +123,49 @@ export const activeTradesColumnNames = [
     id: 'status',
   },
   { label: 'Action', id: 'close', isSortable: false },
-  // { label: 'Entry point', id: 'entryOrder' },
-  // { label: 'Take a profit', id: 'takeProfit' },
-  // { label: 'Stop loss', id: 'stopLoss' },
-  // { label: 'status', id: 'status' },
-  // { label: 'close', id: 'close' },
 ]
 
 export const strategiesHistoryColumnNames = [
   { label: ' ', id: 'blank' },
-  { label: 'Position', id: 'position' },
-  { label: 'Entry Price', id: 'entryPrice' },
+  { label: 'Position', id: 'pair' },
+  { label: 'Entry price', id: 'entryPrice' },
+  { label: 'Lvg.', id: 'leverage' },
   { label: 'Margin/Size', id: 'quantity' },
+  { label: 'Averaging', id: 'averaging' },
+  { label: 'Stop loss', id: 'stopLoss' },
   {
-    label: 'Take Profit',
+    label: (
+      <div style={{ display: 'flex', alignItems: 'center' }}>Take profit</div>
+    ),
     id: 'takeProfit',
   },
-  { label: 'Stop Loss', id: 'stopLoss' },
-  { label: 'PNL/ROE', id: 'profit' },
-  { label: 'status', id: 'status' },
+  { label: 'P&L/ROE', id: 'profit' },
+  {
+    label: (
+      <DarkTooltip
+        title={
+          <div>
+            <p>Preparing (while placing orders/waiting for act price)</p>
+            <p>Trailing entry (When trailing activated)</p>
+            <p>In loss (pnl less than 0)</p>
+            <p>In Profit (profit greater than 0)</p>
+            <p>Error (error has occured)</p>
+          </div>
+        }
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            textDecoration: 'underline',
+          }}
+        >
+          status
+        </div>
+      </DarkTooltip>
+    ),
+    id: 'status',
+  },
   { label: 'date', isNumber: true, id: 'date' },
 ]
 

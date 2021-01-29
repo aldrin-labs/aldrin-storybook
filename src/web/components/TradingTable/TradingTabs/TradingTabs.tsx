@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { compose } from 'recompose'
 
 import { IProps, INextQueryProps } from './TradingTabs.types'
@@ -23,6 +23,7 @@ import FullScreen from '@icons/fullscreen.svg'
 
 const TradingTabs = ({
   tab,
+  terminalViewMode,
   isFullScreenTablesMode,
   theme,
   handleTabChange,
@@ -45,6 +46,9 @@ const TradingTabs = ({
     getActiveStrategies: { strategies: [], count: 0 },
   },
 }: IProps) => {
+
+  const [modeBeforeExpand, saveModeBeforeExpand] = useState('')
+
   const openOrdersLength = getOpenOrderHistory.orders.filter((order) =>
     filterOpenOrders({
       order,
@@ -75,14 +79,27 @@ const TradingTabs = ({
         isDefaultTerminalViewMode ? (
           <TitleTab
             onClick={() => {
-              isDefaultOnlyTables
-                ? updateTerminalViewMode('fullScreenTables')
-                : isDefaultTerminalViewMode
-                ? updateTerminalViewMode('fullScreenTables')
-                : null
+              if (!modeBeforeExpand) {
+                saveModeBeforeExpand(terminalViewMode)
+              }
 
-              // return back
-              isFullScreenTablesMode && updateTerminalViewMode('onlyTables')
+              // depend which state should be after click
+              switch (true) {
+                case isDefaultTerminalViewMode: {
+                  updateTerminalViewMode('fullScreenTables')
+                  break;
+                }
+                case isDefaultTerminalViewMode: {
+                  updateTerminalViewMode('fullScreenTables')
+                  break;
+                }
+                case isFullScreenTablesMode: {
+                  updateTerminalViewMode(modeBeforeExpand)
+                  saveModeBeforeExpand("")
+                  break;
+                }
+                default: {}
+              }
             }}
             style={{ width: '8rem' }}
             theme={theme}
@@ -283,7 +300,8 @@ export default React.memo(
       prevProps.pageOpenOrders === nextProps.pageOpenOrders &&
       prevProps.perPageOpenOrders === nextProps.perPageOpenOrders &&
       prevProps.pageSmartTrades === nextProps.pageSmartTrades &&
-      prevProps.perPageSmartTrades === nextProps.perPageSmartTrades
+      prevProps.perPageSmartTrades === nextProps.perPageSmartTrades &&
+      prevProps.terminalViewMode === nextProps.terminalViewMode
     ) {
       return true
     }

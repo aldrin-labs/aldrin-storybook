@@ -5,6 +5,7 @@ import { Theme } from '@material-ui/core'
 const BlueSlider = ({
   theme,
   value = 0,
+  step = 1,
   max = 100,
   valueSymbol = '%',
   disabled = false,
@@ -17,6 +18,7 @@ const BlueSlider = ({
   theme: Theme
   max?: number
   value: number
+  step?: number
   valueSymbol?: string
   disabled?: boolean
   showMarks?: boolean
@@ -29,6 +31,7 @@ const BlueSlider = ({
     <SmallSlider
       defaultValue={0}
       min={0}
+      step={step}
       max={max}
       disabled={disabled}
       value={value}

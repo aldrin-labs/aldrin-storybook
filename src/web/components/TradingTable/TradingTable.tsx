@@ -103,6 +103,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
           this.setState({ tab: 'positions' })
         }
       }
+
+      //
     }
   }
 
@@ -231,6 +233,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       >
         <TradingTabs
           {...{
+            terminalViewMode,
             updateTerminalViewMode,
             isDefaultTerminalViewMode,
             isDefaultOnlyTables,

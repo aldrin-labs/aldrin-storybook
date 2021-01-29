@@ -267,8 +267,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             ? {
                 ...result.entryPoint.trailing,
                 deviationPercentage: +stripDigitPlaces(
-                  result.entryPoint.trailing.deviationPercentage /
-                    componentLeverage,
+                  result.entryPoint.trailing.deviationPercentage,
                   3
                 ),
               }
@@ -359,7 +358,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         ? result.takeProfit.trailingTAP.activatePrice
         : result.takeProfit.pricePercentage,
       deviationPercentage:
-        result.entryPoint.trailing.deviationPercentage / componentLeverage,
+        result.entryPoint.trailing.deviationPercentage,
       includeDeviation: true,
     })
   }
@@ -974,8 +973,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
     deviationPercentage =
       deviationPercentage != undefined
-        ? deviationPercentage
-        : entryPoint.trailing.deviationPercentage
+        ? deviationPercentage / leverage
+        : entryPoint.trailing.deviationPercentage / leverage
 
     const trailingDeviationPrice =
       side === 'buy'
@@ -1529,15 +1528,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     ? stripDigitPlaces(
                         priceForCalculate *
                           (1 +
-                            entryOrderProperties.trailing.deviationPercentage /
-                              100),
+                            entryOrderProperties.trailing.deviationPercentage),
                         pricePrecision
                       )
                     : stripDigitPlaces(
                         priceForCalculate *
                           (1 -
-                            entryOrderProperties.trailing.deviationPercentage /
-                              100),
+                            entryOrderProperties.trailing.deviationPercentage),
                         pricePrecision
                       )
 

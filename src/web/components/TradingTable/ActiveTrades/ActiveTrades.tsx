@@ -33,9 +33,10 @@ import {
 import { TableWithSort } from '@sb/components'
 import { PaginationBlock } from '../TradingTablePagination'
 
+import { combineActiveTradesTable } from './ActiveTrades.utils'
+
 import {
   updateActiveStrategiesQuerryFunction,
-  combineActiveTradesTable,
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
@@ -56,9 +57,6 @@ import { FUNDS } from '@core/graphql/subscriptions/FUNDS'
 import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
 
 import { getFunds } from '@core/graphql/queries/chart/getFunds'
-import { updateFundsQuerryFunction } from '@core/utils/TradingTable.utils'
-import { LISTEN_TABLE_PRICE } from '@core/graphql/subscriptions/LISTEN_TABLE_PRICE'
-import { LISTEN_MARK_PRICES } from '@core/graphql/subscriptions/LISTEN_MARK_PRICES'
 import { SmartTradeButton } from '@sb/components/TradingTable/TradingTabs/TradingTabs.styles'
 import { showCancelResult } from '@sb/compositions/Chart/Chart.utils'
 import {
