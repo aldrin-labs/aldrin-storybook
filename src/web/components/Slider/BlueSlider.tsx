@@ -4,7 +4,7 @@ import { Theme } from '@material-ui/core'
 
 const BlueSlider = ({
   theme,
-  value = 0,
+  value = 1,
   max = 100,
   valueSymbol = '%',
   disabled = false,
@@ -27,8 +27,8 @@ const BlueSlider = ({
 }) => {
   return (
     <SmallSlider
-      defaultValue={0}
-      min={0}
+      defaultValue={1}
+      min={1}
       max={max}
       disabled={disabled}
       value={value}

@@ -103,6 +103,12 @@ class TradingTable extends React.PureComponent<IProps, IState> {
           this.setState({ tab: 'positions' })
         }
       }
+
+      if (this.props.terminalViewMode === 'onlyTables') {
+        this.setState({
+          tab: 'activeTrades',
+        })
+      }
     }
   }
 

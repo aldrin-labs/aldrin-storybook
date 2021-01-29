@@ -56,6 +56,7 @@ export const StopLossBlock = ({
   updateTerminalViewMode,
   updateStopLossAndTakeProfitPrices,
   togglePlaceWithoutLoss,
+  enqueueSnackbar,
 }: StopLossBlockProps) => {
   console.log('entryPoint', entryPoint)
   let avgPrice =
@@ -176,6 +177,54 @@ export const StopLossBlock = ({
           >
             Forced stop
           </AdditionalSettingsButton>
+
+          {stopLoss.external && stopLoss.forcedStop.isForcedStopOn && (
+            <AdditionalSettingsButton
+              theme={theme}
+              style={{
+                border: stopLoss.forcedStopByAlert
+                  ? `0.1rem solid ${theme.palette.blue.main}`
+                  : theme.palette.border.main,
+                color: stopLoss.forcedStopByAlert
+                  ? theme.palette.blue.main
+                  : theme.palette.border.main,
+                lineHeight: 'inherit',
+                fontSize: '1rem',
+              }}
+              width={'22.75%'}
+              isActive={entryPoint.averaging.placeWithoutLoss}
+              onClick={() => {
+                updateBlockValue(
+                  'stopLoss',
+                  'forcedStopByAlert',
+                  !stopLoss.forcedStopByAlert
+                )
+                if (!stopLoss.forcedStopByAlert) {
+                  updateBlockValue('stopLoss', 'plotEnabled', false)
+                  updateSubBlockValue(
+                    'stopLoss',
+                    'forcedStop',
+                    'mandatoryForcedLoss',
+                    false
+                  )
+                } else {
+                  updateSubBlockValue(
+                    'stopLoss',
+                    'forcedStop',
+                    'mandatoryForcedLoss',
+                    true
+                  )
+                }
+
+                updateBlockValue('stopLoss', 'plotEnabled', false)
+
+                updateBlockValue('stopLoss', 'type', 'market')
+              }}
+            >
+              Immediately when alert
+            </AdditionalSettingsButton>
+          )}
+
           <DarkTooltip
             maxWidth={'30rem'}
             title={'Advanced Stop Loss using your Alerts from TradingView.com.'}
@@ -187,6 +236,7 @@ export const StopLossBlock = ({
               onClick={() => {
                 updateBlockValue('stopLoss', 'external', !stopLoss.external)
 
+                updateBlockValue('stopLoss', 'plotEnabled', false)
                 if (!stopLoss.external) {
                   updateSubBlockValue(
                     'stopLoss',
@@ -613,6 +663,9 @@ export const StopLossBlock = ({
                             ? `0.1rem solid ${theme.palette.blue.main}`
                             : theme.palette.border.main,
                           lineHeight: 'inherit',
+                          color: stopLoss.forcedStopByAlert
+                            ? theme.palette.blue.main
+                            : theme.palette.border.main,
                         }}
                         btnColor={theme.palette.grey.text}
                         backgroundColor={theme.palette.grey.titleForInput}
@@ -656,63 +709,65 @@ export const StopLossBlock = ({
             </InputRowContainer>
           )}
 
-          {entryPoint.averaging.placeWithoutLoss && (
-            <FormInputContainer
-              theme={theme}
-              title={'Place break-even point for next entries:'}
-            >
-              <div style={{ width: '100%' }}>
-                {entryPoint.averaging.entryLevels.map((el, index) => {
-                  const currentPrice =
-                    index === 0
-                      ? avgPrice
-                      : entryPoint.order.side === 'sell'
-                      ? (avgPrice *
-                          (100 + el.price / entryPoint.order.leverage)) /
-                        100
-                      : (avgPrice *
-                          (100 - el.price / entryPoint.order.leverage)) /
-                        100
-                  if (index === 0) {
-                    estPrice = el.price
-                    sumAmount = el.amount
-                    margin =
-                      (estPrice * sumAmount +
-                        currentPrice * ((el.amount / 100) * el.amount)) /
-                      entryPoint.order.leverage
-                  } else {
-                    const exactAmount = (el.amount / 100) * el.amount
+          {entryPoint.averaging.enabled &&
+            entryPoint.averaging.placeWithoutLoss && (
+              <FormInputContainer
+                theme={theme}
+                title={'Place break-even point for next entries:'}
+              >
+                <div style={{ width: '100%' }}>
+                  {entryPoint.averaging.entryLevels.map((el, index) => {
+                    const currentPrice =
+                      index === 0
+                        ? avgPrice
+                        : entryPoint.order.side === 'sell'
+                        ? (avgPrice *
+                            (100 + el.price / entryPoint.order.leverage)) /
+                          100
+                        : (avgPrice *
+                            (100 - el.price / entryPoint.order.leverage)) /
+                          100
+                    if (index === 0) {
+                      estPrice = el.price
+                      sumAmount = el.amount
+                      margin =
+                        (estPrice * sumAmount +
+                          currentPrice * ((el.amount / 100) * el.amount)) /
+                        entryPoint.order.leverage
+                    } else {
+                      const exactAmount = (el.amount / 100) * el.amount
 
-                    const total =
-                      estPrice * sumAmount + currentPrice * exactAmount
+                      const total =
+                        estPrice * sumAmount + currentPrice * exactAmount
 
-                    estPrice = total / (sumAmount + exactAmount)
-                    sumAmount += exactAmount
-                    margin = total / entryPoint.order.leverage
-                  }
+                      estPrice = total / (sumAmount + exactAmount)
+                      sumAmount += exactAmount
+                      margin = total / entryPoint.order.leverage
+                    }
 
-                  return (
-                    <AdditionalSettingsButton
-                      theme={theme}
-                      style={{
-                        textDecoration: 'underline',
-                        marginBottom: '1rem',
-                      }}
-                      width={'30%'}
-                      isActive={
-                        entryPoint.averaging.entryLevels[index].placeWithoutLoss
-                      }
-                      onClick={() => {
-                        togglePlaceWithoutLoss(index)
-                      }}
-                    >
-                      {currentPrice.toFixed(pricePrecision)}
-                    </AdditionalSettingsButton>
-                  )
-                })}
-              </div>
-            </FormInputContainer>
-          )}
+                    return (
+                      <AdditionalSettingsButton
+                        theme={theme}
+                        style={{
+                          textDecoration: 'underline',
+                          marginBottom: '1rem',
+                        }}
+                        width={'30%'}
+                        isActive={
+                          entryPoint.averaging.entryLevels[index]
+                            .placeWithoutLoss
+                        }
+                        onClick={() => {
+                          togglePlaceWithoutLoss(index)
+                        }}
+                      >
+                        {currentPrice.toFixed(pricePrecision)}
+                      </AdditionalSettingsButton>
+                    )
+                  })}
+                </div>
+              </FormInputContainer>
+            )}
           {stopLoss.external && (
             <>
               <InputRowContainer style={{ marginTop: '0rem' }}>
@@ -763,6 +818,9 @@ export const StopLossBlock = ({
                     margin={'1rem 0 0 0'}
                     transition={'all .4s ease-out'}
                     onClick={() => {
+                      enqueueSnackbar('Copied!', {
+                        variant: 'success',
+                      })
                       copy(`https://${API_URL}/editStopLossByAlert`)
                     }}
                   >
@@ -815,6 +873,9 @@ export const StopLossBlock = ({
                     margin={'1rem 0 0 0'}
                     transition={'all .4s ease-out'}
                     onClick={() => {
+                      enqueueSnackbar('Copied!', {
+                        variant: 'success',
+                      })
                       copy(
                         `{\\"token\\": \\"${
                           entryPoint.TVAlert.templateToken

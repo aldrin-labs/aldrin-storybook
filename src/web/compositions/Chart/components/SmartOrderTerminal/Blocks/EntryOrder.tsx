@@ -72,6 +72,7 @@ export const EntryOrderBlock = ({
   updatePriceToMarket,
   deleteAverageTarget,
   updateSubBlockValue,
+  enqueueSnackbar,
   isCloseOrderExternal,
   isAveragingAfterFirstTarget,
   updateStopLossAndTakeProfitPrices,
@@ -1016,10 +1017,7 @@ export const EntryOrderBlock = ({
               : e.target.value
 
             const strippedAmount = isAmountMoreThanMax
-              ? stripDigitPlaces(
-                  amountForUpdate,
-                  quantityPrecision 
-                )
+              ? stripDigitPlaces(amountForUpdate, quantityPrecision)
               : e.target.value
 
             const newTotal = +strippedAmount * priceForCalculate
@@ -1077,10 +1075,7 @@ export const EntryOrderBlock = ({
               'entryPoint',
               'order',
               'amount',
-              stripDigitPlaces(
-                newAmount,
-                quantityPrecision
-              )
+              stripDigitPlaces(newAmount, quantityPrecision)
             )
 
             updateSubBlockValue(
@@ -1097,10 +1092,7 @@ export const EntryOrderBlock = ({
             const newTotal = inputInitialMargin * entryPoint.order.leverage
             const newAmount = newTotal / priceForCalculate
 
-            const fixedAmount = stripDigitPlaces(
-              newAmount,
-              quantityPrecision
-            )
+            const fixedAmount = stripDigitPlaces(newAmount, quantityPrecision)
 
             updateSubBlockValue(
               'entryPoint',
@@ -1241,10 +1233,10 @@ export const EntryOrderBlock = ({
                         theme={theme}
                         style={{ width: '25%', paddingLeft: '2rem' }}
                       >
-                        {el.price} {index > 0 ? '%' : pair[1]}
+                        {currentPrice.toFixed(pricePrecision)} {pair[1]}
                       </TargetValue>
                       <TargetValue theme={theme} style={{ width: '40%' }}>
-                        {currentPrice}
+                        {estPrice.toFixed(pricePrecision)}
                       </TargetValue>{' '}
                       <TargetValue theme={theme} style={{ width: '25%' }}>
                         {el.amount} {pair[0]}
@@ -1314,6 +1306,9 @@ export const EntryOrderBlock = ({
                   margin={'1rem 0 0 0'}
                   transition={'all .4s ease-out'}
                   onClick={() => {
+                    enqueueSnackbar('Copied!', {
+                      variant: 'success',
+                    })
                     copy(`https://${API_URL}/createSmUsingTemplate`)
                   }}
                 >
@@ -1366,6 +1361,9 @@ export const EntryOrderBlock = ({
                   margin={'1rem 0 0 0'}
                   transition={'all .4s ease-out'}
                   onClick={() => {
+                    enqueueSnackbar('Copied!', {
+                      variant: 'success',
+                    })
                     copy(getEntryAlertJson())
                   }}
                 >

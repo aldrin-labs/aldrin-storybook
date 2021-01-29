@@ -91,16 +91,30 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
           order.type
         )
       )
-    ).then((results) => {
-      if (results[0].data.cancelOrder.status === 'OK') {
-        this.props.enqueueSnackbar(`Your orders successful canceled`, {
-          variant: 'success',
+    )
+      .then((results) => {
+        // проверять каждый на статус
+        // если он ок, переходить к следующему
+        //если нет, isAllOrdersCancelled менять
+        let isAllOrdersCancelled = true
+        results.forEach((el, index) => {
+          if (el.data.cancelOrder.status === 'OK') {
+            return
+          } else {
+            isAllOrdersCancelled = false
+          }
         })
-      } else {
-        this.props.enqueueSnackbar(`Error`, { variant: 'error' })
-      }
-      console.log('results', results)
-    })
+        if (isAllOrdersCancelled) {
+          this.props.enqueueSnackbar(`Your orders canceled successfully`, {
+            variant: 'success',
+          })
+        }
+      })
+      .catch((e) => {
+        this.props.enqueueSnackbar(`Error canceling all your orders`, {
+          variant: 'error',
+        })
+      })
   }
 
   cancelOrderWithStatus = async (

@@ -60,6 +60,7 @@ export const TakeProfitBlock = ({
   updateBlockValue,
   priceForCalculate,
   updateSubBlockValue,
+  enqueueSnackbar,
   updateStopLossAndTakeProfitPrices,
 }: TakeProfitBlockProps) => {
   const occupiedVolume = takeProfit.splitTargets.targets.reduce(
@@ -86,7 +87,7 @@ export const TakeProfitBlock = ({
               theme={theme}
               isActive={entryPoint.averaging.closeStrategyAfterFirstTAP}
               width={'22.75%'}
-              style={{textDecoration:'underline'}}
+              style={{ textDecoration: 'underline' }}
               onClick={() => {
                 updateSubBlockValue(
                   'entryPoint',
@@ -774,6 +775,9 @@ export const TakeProfitBlock = ({
                   margin={'1rem 0 0 0'}
                   transition={'all .4s ease-out'}
                   onClick={() => {
+                    enqueueSnackbar('Copied!', {
+                      variant: 'success',
+                    })
                     copy(`https://${API_URL}/editTakeProfitByAlert`)
                   }}
                 >
@@ -826,6 +830,9 @@ export const TakeProfitBlock = ({
                   margin={'1rem 0 0 0'}
                   transition={'all .4s ease-out'}
                   onClick={() => {
+                    enqueueSnackbar('Copied!', {
+                      variant: 'success',
+                    })
                     copy(
                       `{\\"token\\": \\"${
                         entryPoint.TVAlert.templateToken
