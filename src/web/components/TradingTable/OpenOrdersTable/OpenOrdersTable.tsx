@@ -93,9 +93,6 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       )
     )
       .then((results) => {
-        // проверять каждый на статус
-        // если он ок, переходить к следующему
-        //если нет, isAllOrdersCancelled менять
         let isAllOrdersCancelled = true
         results.forEach((el, index) => {
           if (el.data.cancelOrder.status === 'OK') {
@@ -578,7 +575,7 @@ const TableDataWrapper = ({ ...props }) => {
           allKeys: allKeys,
           page,
           perPage,
-          ...(!specificPair ? {} : { specificPair: props.currencyPair }),
+          ...(!props.specificPair ? {} : { specificPair: props.currencyPair }),
         },
       }}
       withOutSpinner={false}
@@ -594,7 +591,9 @@ const TableDataWrapper = ({ ...props }) => {
             activeExchangeKey: props.selectedKey.keyId,
             marketType: props.marketType,
             allKeys: allKeys,
-            ...(!specificPair ? {} : { specificPair: props.currencyPair }),
+            ...(!props.specificPair
+              ? {}
+              : { specificPair: props.currencyPair }),
           },
         },
         updateQueryFunction: updateOpenOrderHistoryQuerryFunction,

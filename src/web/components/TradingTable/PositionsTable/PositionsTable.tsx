@@ -589,8 +589,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
           columnNames={getTableHead({
             tab,
             marketType,
-            refetch: this.props
-              .getActivePositionsQueryRefetch,
+            refetch: this.props.getActivePositionsQueryRefetch,
             updatePositionsHandler: this.updatePositionsHandler,
             positionsRefetchInProcess,
             isDefaultOnlyTables,
@@ -629,9 +628,7 @@ const PositionsTableWrapper = compose(
       input: {
         keyId: props.selectedKey.keyId,
         allKeys: props.showPositionsFromAllAccounts,
-        ...(!props.showAllPositionPairs
-          ? {}
-          : { specificPair: props.currencyPair }),
+        ...(!props.specificPair ? {} : { specificPair: props.currencyPair }),
       },
     }),
     subscriptionArgs: {
@@ -640,9 +637,7 @@ const PositionsTableWrapper = compose(
         input: {
           keyId: props.selectedKey.keyId,
           allKeys: props.showPositionsFromAllAccounts,
-          ...(!props.showAllPositionPairs
-            ? {}
-            : { specificPair: props.currencyPair }),
+          ...(!props.specificPair ? {} : { specificPair: props.currencyPair }),
         },
       }),
       updateQueryFunction: updateActivePositionsQuerryFunction,
