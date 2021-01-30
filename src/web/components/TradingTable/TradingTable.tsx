@@ -237,6 +237,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       >
         <TradingTabs
           {...{
+            terminalViewMode,
             updateTerminalViewMode,
             isDefaultTerminalViewMode,
             isDefaultOnlyTables,

@@ -1440,16 +1440,16 @@ export class EditEntryOrderPopup extends React.Component<
 
       const deviationPercentage = props.openFromTerminal
         ? props.derivedState.deviationPercentage
-        : (props.derivedState.deviationPercentage / props.leverage).toFixed(3)
+        : (props.derivedState.deviationPercentage).toFixed(3)
 
       const trailingDeviationPrice =
         side === 'buy'
           ? stripDigitPlaces(
-              priceForCalculate * (1 + deviationPercentage / 100),
+              priceForCalculate * (1 + deviationPercentage / leverage / 100),
               pricePrecision
             )
           : stripDigitPlaces(
-              priceForCalculate * (1 - deviationPercentage / 100),
+              priceForCalculate * (1 - deviationPercentage / leverage / 100),
               pricePrecision
             )
 
@@ -1472,7 +1472,7 @@ export class EditEntryOrderPopup extends React.Component<
   }
   updateTrailingPrice = (deviationPercentage) => {
     const { type, isTrailingOn } = this.state
-    const { side, price, pricePrecision } = this.props
+    const { side, price, pricePrecision, leverage } = this.props
 
     const marketPrice =
       this.props.getPriceQuery?.getPrice ||
@@ -1484,11 +1484,11 @@ export class EditEntryOrderPopup extends React.Component<
     const trailingDeviationPrice =
       side === 'buy'
         ? stripDigitPlaces(
-            priceForCalculate * (1 + deviationPercentage / 100),
+            priceForCalculate * (1 + deviationPercentage / leverage / 100),
             pricePrecision
           )
         : stripDigitPlaces(
-            priceForCalculate * (1 - deviationPercentage / 100),
+            priceForCalculate * (1 - deviationPercentage / leverage / 100),
             pricePrecision
           )
 
@@ -1839,19 +1839,18 @@ export class EditEntryOrderPopup extends React.Component<
                       paddingRight: 0,
                     }}
                     onChange={(e) => {
-                      const value =
-                        e.target.value > 100 / leverage
-                          ? stripDigitPlaces(100 / leverage, 3)
-                          : e.target.value
+                      const value = e.target.value
                       this.setState({ deviationPercentage: value })
                       this.updateTrailingPrice(+value)
                     }}
                   />
 
                   <BlueSlider
+                    max={10}
+                    step={0.1}
                     theme={theme}
                     disabled={!isTrailingOn}
-                    value={stripDigitPlaces(deviationPercentage * leverage, 3)}
+                    value={stripDigitPlaces(deviationPercentage, 3)}
                     sliderContainerStyles={{
                       width: '50%',
                       margin: '0 .8rem 0 .8rem',
@@ -1859,12 +1858,12 @@ export class EditEntryOrderPopup extends React.Component<
                     onChange={(value) => {
                       this.setState({
                         deviationPercentage: stripDigitPlaces(
-                          value / leverage,
+                          value,
                           3
                         ),
                       })
                       this.updateTrailingPrice(
-                        +stripDigitPlaces(value / leverage, 3)
+                        +stripDigitPlaces(value, 3)
                       )
                     }}
                   />

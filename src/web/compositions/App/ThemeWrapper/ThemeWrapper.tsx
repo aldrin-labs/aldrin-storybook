@@ -2,35 +2,17 @@ import React, { useState, useEffect } from 'react'
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles'
 import { ThemeOptions } from '@material-ui/core/styles/createMuiTheme'
 import { fade } from '@material-ui/core/styles/colorManipulator'
-import { client } from '@core/graphql/apolloClient'
-import { Props } from './ThemeWrapper.types'
-import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
-import { useQuery } from 'react-apollo'
-import { Palette } from '@material-ui/core/styles/createPalette'
+import { Palette, PaletteOptions } from '@material-ui/core/styles/createPalette'
 import { compose } from 'recompose'
 import { withRouter } from 'react-router'
 
-interface PaletteWithCustom extends Palette {
-  orange: {
-    main: string
-  }
-}
-
 declare module '@material-ui/core/styles/createMuiTheme' {
   interface Theme {
-    palette: PaletteWithCustom
-    customPalette: {
-      red: { main: string }
-      green: { main: string }
-    }
+    palette: Palette
   }
   // allow configuration using `createMuiTheme`
   interface ThemeOptions {
-    palette: PaletteWithCustom
-    customPalette: {
-      red: { main: string }
-      green: { main: string }
-    }
+    palette?: PaletteOptions
     updateMode: (newMode: string) => void
   }
 }
