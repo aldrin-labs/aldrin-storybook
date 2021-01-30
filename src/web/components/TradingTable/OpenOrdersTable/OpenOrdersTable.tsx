@@ -572,7 +572,7 @@ const TableDataWrapper = ({ ...props }) => {
         openOrderInput: {
           activeExchangeKey: props.selectedKey.keyId,
           marketType: props.marketType,
-          allKeys: allKeys,
+          allKeys: props.allKeys,
           page,
           perPage,
           ...(!props.specificPair ? {} : { specificPair: props.currencyPair }),
@@ -590,7 +590,7 @@ const TableDataWrapper = ({ ...props }) => {
           openOrderInput: {
             activeExchangeKey: props.selectedKey.keyId,
             marketType: props.marketType,
-            allKeys: allKeys,
+            allKeys: props.allKeys,
             ...(!props.specificPair
               ? {}
               : { specificPair: props.currencyPair }),

@@ -627,7 +627,7 @@ const PositionsTableWrapper = compose(
     variables: (props: any) => ({
       input: {
         keyId: props.selectedKey.keyId,
-        allKeys: props.showPositionsFromAllAccounts,
+        allKeys: props.allKeys,
         ...(!props.specificPair ? {} : { specificPair: props.currencyPair }),
       },
     }),
@@ -636,7 +636,7 @@ const PositionsTableWrapper = compose(
       variables: (props: any) => ({
         input: {
           keyId: props.selectedKey.keyId,
-          allKeys: props.showPositionsFromAllAccounts,
+          allKeys: props.allKeys,
           ...(!props.specificPair ? {} : { specificPair: props.currencyPair }),
         },
       }),
