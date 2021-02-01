@@ -833,185 +833,191 @@ export const EntryOrderBlock = ({
           </InputRowContainer>
         )}
         {entryPoint.trailing.isTrailingOn && marketType !== 0 && (
-          <InputRowContainer style={{ margin: '1rem 0 1rem 0' }}>
-            <Input
-              header={entryPoint.trailing.isTrailingOn ? 'est. price' : 'price'}
-              needTooltip
-              needTitleBlock
-              titleForTooltip={
-                'The level of price change after the trend reversal, at which the trailing order will be executed.'
-              }
-              theme={theme}
-              padding={'0'}
-              width={entryPoint.trailing.isTrailingOn ? '36.5%' : '30%'}
-              textAlign={'right'}
-              symbol={pair[1]}
-              value={entryPoint.trailing.trailingDeviationPrice}
-              showErrors={showErrors}
-              isValid={validateField(
-                true,
-                entryPoint.trailing.trailingDeviationPrice
-              )}
-              disabled={
-                (isMarketType && !entryPoint.trailing.isTrailingOn) ||
-                (entryPoint.TVAlert.deviationPlotEnabled &&
-                  entryPoint.TVAlert.plotEnabled)
-              }
-              inputStyles={{
-                paddingLeft: '1rem',
-              }}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                const percentage =
-                  entryPoint.order.side === 'sell'
-                    ? (1 - +e.target.value / priceForCalculate) * 100
-                    : -(1 - +e.target.value / priceForCalculate) * 100
-
-                updateSubBlockValue(
-                  'entryPoint',
-                  'trailing',
-                  'deviationPercentage',
-                  stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
-                )
-
-                updateSubBlockValue(
-                  'entryPoint',
-                  'trailing',
-                  'trailingDeviationPrice',
-                  e.target.value
-                )
-              }}
-            />
-
-            {!entryPoint.TVAlert.isTVAlertOn && (
-              <SvgIcon src={Chain} style={{ margin: 'auto 0.5rem' }} />
-            )}
-
-            <Input
-              theme={theme}
-              padding={
-                entryPoint.TVAlert.isTVAlertOn
-                  ? '0 .8rem 0 0.8rem'
-                  : '0 .8rem 0 0'
-              }
-              width={entryPoint.trailing.isTrailingOn ? '24.5%' : '20%'}
-              needTitleBlock
-              symbol={'%'}
-              header={'level'}
-              textAlign={'right'}
-              pattern={'[0-9]+.[0-9]{3}'}
-              type={'text'}
-              value={entryPoint.trailing.deviationPercentage}
-              // showErrors={showErrors}
-              // isValid={validateField(
-              //   entryPoint.trailing.isTrailingOn,
-              //   entryPoint.trailing.deviationPercentage
-              // )}
-              inputStyles={{
-                paddingLeft: 0,
-                paddingRight: '2rem',
-              }}
-              symbolRightIndent={'1.5rem'}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                const value = e.target.value
-                updateSubBlockValue(
-                  'entryPoint',
-                  'trailing',
-                  'deviationPercentage',
-                  value
-                )
-
-                updateStopLossAndTakeProfitPrices({
-                  deviationPercentage: +value,
-                })
-              }}
-            />
-
-            <BlueSlider
-              theme={theme}
-              step={0.1}
-              max={10}
-              disabled={!entryPoint.trailing.isTrailingOn}
-              value={
-                +stripDigitPlaces(entryPoint.trailing.deviationPercentage, 3)
-              }
-              sliderContainerStyles={{
-                width: entryPoint.TVAlert.plotEnabled
-                  ? 'calc(20% - 1.6rem)'
-                  : entryPoint.trailing.isTrailingOn
-                  ? '30%'
-                  : '36%',
-                margin: '0 .8rem 0 .8rem',
-              }}
-              onChange={(value) => {
-                if (
-                  stripDigitPlaces(entryPoint.trailing.deviationPercentage, 3) >
-                    100 &&
-                  value === 100
-                ) {
-                  return
+          <FormInputContainer theme={theme} title={'Deviation'}>
+            <InputRowContainer style={{ margin: '1rem 0 1rem 0' }}>
+              <Input
+                header={
+                  entryPoint.trailing.isTrailingOn ? 'est. price' : 'price'
                 }
+                needTooltip
+                needTitleBlock
+                titleForTooltip={
+                  'The level of price change after the trend reversal, at which the trailing order will be executed.'
+                }
+                theme={theme}
+                padding={'0'}
+                width={entryPoint.trailing.isTrailingOn ? '36.5%' : '30%'}
+                textAlign={'right'}
+                symbol={pair[1]}
+                value={entryPoint.trailing.trailingDeviationPrice}
+                showErrors={showErrors}
+                isValid={validateField(
+                  true,
+                  entryPoint.trailing.trailingDeviationPrice
+                )}
+                disabled={
+                  (isMarketType && !entryPoint.trailing.isTrailingOn) ||
+                  (entryPoint.TVAlert.deviationPlotEnabled &&
+                    entryPoint.TVAlert.plotEnabled)
+                }
+                inputStyles={{
+                  paddingLeft: '1rem',
+                }}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const percentage =
+                    entryPoint.order.side === 'sell'
+                      ? (1 - +e.target.value / priceForCalculate) * 100
+                      : -(1 - +e.target.value / priceForCalculate) * 100
 
-                updateSubBlockValue(
-                  'entryPoint',
-                  'trailing',
-                  'deviationPercentage',
-                  stripDigitPlaces(value, 3)
-                )
-                updateStopLossAndTakeProfitPrices({
-                  deviationPercentage: +stripDigitPlaces(value, 3),
-                })
-              }}
-            />
-            {entryPoint.TVAlert.plotEnabled && (
-              <>
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    width: '10%',
-                  }}
-                >
-                  <Switcher
-                    checked={entryPoint.TVAlert.deviationPlotEnabled}
-                    onChange={() => {
+                  updateSubBlockValue(
+                    'entryPoint',
+                    'trailing',
+                    'deviationPercentage',
+                    stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
+                  )
+
+                  updateSubBlockValue(
+                    'entryPoint',
+                    'trailing',
+                    'trailingDeviationPrice',
+                    e.target.value
+                  )
+                }}
+              />
+
+              {!entryPoint.TVAlert.isTVAlertOn && (
+                <SvgIcon src={Chain} style={{ margin: 'auto 0.5rem' }} />
+              )}
+
+              <Input
+                theme={theme}
+                padding={
+                  entryPoint.TVAlert.isTVAlertOn
+                    ? '0 .8rem 0 0.8rem'
+                    : '0 .8rem 0 0'
+                }
+                width={entryPoint.trailing.isTrailingOn ? '24.5%' : '20%'}
+                needTitleBlock
+                symbol={'%'}
+                header={'level'}
+                textAlign={'right'}
+                pattern={'[0-9]+.[0-9]{3}'}
+                type={'text'}
+                value={entryPoint.trailing.deviationPercentage}
+                // showErrors={showErrors}
+                // isValid={validateField(
+                //   entryPoint.trailing.isTrailingOn,
+                //   entryPoint.trailing.deviationPercentage
+                // )}
+                inputStyles={{
+                  paddingLeft: 0,
+                  paddingRight: '2rem',
+                }}
+                symbolRightIndent={'1.5rem'}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const value = e.target.value
+                  updateSubBlockValue(
+                    'entryPoint',
+                    'trailing',
+                    'deviationPercentage',
+                    value
+                  )
+
+                  updateStopLossAndTakeProfitPrices({
+                    deviationPercentage: +value,
+                  })
+                }}
+              />
+
+              <BlueSlider
+                theme={theme}
+                step={0.1}
+                max={10}
+                disabled={!entryPoint.trailing.isTrailingOn}
+                value={
+                  +stripDigitPlaces(entryPoint.trailing.deviationPercentage, 3)
+                }
+                sliderContainerStyles={{
+                  width: entryPoint.TVAlert.plotEnabled
+                    ? 'calc(20% - 1.6rem)'
+                    : entryPoint.trailing.isTrailingOn
+                    ? '30%'
+                    : '36%',
+                  margin: '0 .8rem 0 .8rem',
+                }}
+                onChange={(value) => {
+                  if (
+                    stripDigitPlaces(
+                      entryPoint.trailing.deviationPercentage,
+                      3
+                    ) > 100 &&
+                    value === 100
+                  ) {
+                    return
+                  }
+
+                  updateSubBlockValue(
+                    'entryPoint',
+                    'trailing',
+                    'deviationPercentage',
+                    stripDigitPlaces(value, 3)
+                  )
+                  updateStopLossAndTakeProfitPrices({
+                    deviationPercentage: +stripDigitPlaces(value, 3),
+                  })
+                }}
+              />
+              {entryPoint.TVAlert.plotEnabled && (
+                <>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      width: '10%',
+                    }}
+                  >
+                    <Switcher
+                      checked={entryPoint.TVAlert.deviationPlotEnabled}
+                      onChange={() => {
+                        updateSubBlockValue(
+                          'entryPoint',
+                          'TVAlert',
+                          'deviationPlotEnabled',
+                          !entryPoint.TVAlert.deviationPlotEnabled
+                        )
+                      }}
+                    />
+                  </div>
+                  <Input
+                    theme={theme}
+                    type={'number'}
+                    header={'plot_'}
+                    needTitleBlock
+                    textAlign="left"
+                    width={'calc(20%)'}
+                    inputStyles={{
+                      paddingLeft: '4rem',
+                    }}
+                    disabled={!entryPoint.TVAlert.deviationPlotEnabled}
+                    value={entryPoint.TVAlert.deviationPlot}
+                    showErrors={showErrors}
+                    isValid={validateField(
+                      true,
+                      entryPoint.TVAlert.deviationPlot
+                    )}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       updateSubBlockValue(
                         'entryPoint',
                         'TVAlert',
-                        'deviationPlotEnabled',
-                        !entryPoint.TVAlert.deviationPlotEnabled
+                        'deviationPlot',
+                        e.target.value
                       )
                     }}
                   />
-                </div>
-                <Input
-                  theme={theme}
-                  type={'number'}
-                  header={'plot_'}
-                  needTitleBlock
-                  textAlign="left"
-                  width={'calc(20%)'}
-                  inputStyles={{
-                    paddingLeft: '4rem',
-                  }}
-                  disabled={!entryPoint.TVAlert.deviationPlotEnabled}
-                  value={entryPoint.TVAlert.deviationPlot}
-                  showErrors={showErrors}
-                  isValid={validateField(
-                    true,
-                    entryPoint.TVAlert.deviationPlot
-                  )}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    updateSubBlockValue(
-                      'entryPoint',
-                      'TVAlert',
-                      'deviationPlot',
-                      e.target.value
-                    )
-                  }}
-                />
-              </>
-            )}
-          </InputRowContainer>
+                </>
+              )}
+            </InputRowContainer>
+          </FormInputContainer>
         )}
         <SliderWithAmountFieldRow
           onAmountChange={(e: React.ChangeEvent<HTMLInputElement>) => {

@@ -252,6 +252,10 @@ export const TakeProfitBlock = ({
         {takeProfit.external && (
           <AdditionalSettingsButton
             theme={theme}
+            style={{
+              lineHeight: 'inherit',
+              fontSize: '1rem',
+            }}
             btnWidth={'22.75%'}
             isActive={takeProfit.forcedStopByAlert}
             onClick={() => {
@@ -265,7 +269,7 @@ export const TakeProfitBlock = ({
               updateBlockValue('takeProfit', 'type', 'market')
             }}
           >
-            Forced Stop
+            Immediately when alert
           </AdditionalSettingsButton>
         )}
         {/* <AdditionalSettingsButton theme={theme}
@@ -544,6 +548,22 @@ export const TakeProfitBlock = ({
                       percentageTextAlign: 'right',
                       pricePercentage:
                         takeProfit.trailingTAP.deviationPercentage,
+                      approximatePrice: takeProfit.trailingTAP.activatePrice,
+                      getApproximatePrice: (value: number) => {
+                        return value === 0
+                          ? priceForCalculate
+                          : entryPoint.order.side === 'sell'
+                          ? stripDigitPlaces(
+                              priceForCalculate *
+                                (1 - value / 100 / entryPoint.order.leverage),
+                              pricePrecision
+                            )
+                          : stripDigitPlaces(
+                              priceForCalculate *
+                                (1 + value / 100 / entryPoint.order.leverage),
+                              pricePrecision
+                            )
+                      },
                       onAfterSliderChange: (value: number) => {
                         updateSubBlockValue(
                           'takeProfit',
