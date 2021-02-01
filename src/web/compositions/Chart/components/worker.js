@@ -585,25 +585,34 @@ export default () => {
     }
   }
 
-  const socket = new WebSocket("wss://fstream.binance.com/ws/BTCUSDT@depth");
+  let globalAggregation = null || 0.01
+  let globalSizeDigits = null || 3
+  let globalMinPriceDigits = null || 0.01
 
+  console.log('init websocket in worker')
 
+  const socket = new WebSocket("wss://fstream.binance.com/ws/btcusdt@depth");
 
-  self.addEventListener('message', (e) => {
-    // eslint-disable-line no-restricted-globals
-    // console.log('e in worker', e)
-    const {
-      aggregation,
-      sizeDigits,
-      minPriceDigits,
-      data,
-      aggregatedData,
-    } = e.data
+  socket.onopen = () => {
+    console.log(`Binance websoket opened connection for`); // eslint-disable-line
+  }
+
+  socket.onmessage = (msg) => {
+
+    console.log('onmessage', msg)
+
+    // if (!globalAggregation || !globalMinPriceDigits || !globalSizeDigits) return 
+
+    const data = JSON.parse(msg.data)
+
+    const asks = data.a.map(([price, size]) => ({ price, size, side: 'asks', timestamp: data.E }))
+    const bids = data.b.map(([price, size]) => ({ price, size, side: 'bids', timestamp: data.E }))
+  
     let updatedData = null
     let updatedAggregatedData = state.aggregatedData
 
-    let ordersAsks = data.marketOrders.asks
-    let ordersBids = data.marketOrders.bids
+    let ordersAsks = asks
+    let ordersBids = bids
 
     const marketOrders = Object.assign(
       {
@@ -627,31 +636,31 @@ export default () => {
       const orderbookData = updatedData || originalOrderbookTree
 
       if (
-        String(aggregation) !==
-        String(getAggregationsFromMinPriceDigits(minPriceDigits)[0].value)
+        String(globalAggregation) !==
+        String(getAggregationsFromMinPriceDigits(globalMinPriceDigits)[0].value)
       ) {
         updatedAggregatedData = addOrdersToOrderbook({
           updatedData: updatedAggregatedData,
           ordersData,
-          aggregation,
+          aggregation: globalAggregation,
           defaultAggregation: getAggregationsFromMinPriceDigits(
-            minPriceDigits
+            globalMinPriceDigits
           )[0].value,
           originalOrderbookTree,
           isAggregatedData: true,
-          sizeDigits,
+          globalSizeDigits,
         })
       }
 
       updatedData = addOrdersToOrderbook({
         updatedData: orderbookData,
         ordersData,
-        aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
-        defaultAggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0]
+        aggregation: getAggregationsFromMinPriceDigits(globalMinPriceDigits)[0].value,
+        defaultAggregation: getAggregationsFromMinPriceDigits(globalMinPriceDigits)[0]
           .value,
         originalOrderbookTree,
         isAggregatedData: false,
-        sizeDigits,
+        globalSizeDigits,
       })
     }
 
@@ -663,12 +672,36 @@ export default () => {
     state = result
 
     const dataToSend =
-      String(aggregation) ===
-      String(getAggregationsFromMinPriceDigits(minPriceDigits)[0].value)
+      String(globalAggregation) ===
+      String(getAggregationsFromMinPriceDigits(globalMinPriceDigits)[0].value)
         ? { asks: getDataFromTree(state.asks, 'asks').reverse(), bids: getDataFromTree(state.bids, 'bids').reverse(), isAggregatedData: false }
         : { asks: getDataFromTree(state.aggregatedData.asks, 'asks').reverse(), bids: getDataFromTree(state.aggregatedData.bids, 'bids').reverse(), isAggregatedData: true }
 
 
     postMessage(JSON.parse(JSON.stringify(dataToSend)))
+  }
+
+  socket.onclose = () => {
+    console.log(`Binance websoket ONCLOSE stream:`); // eslint-disable-line
+  }
+
+  socket.onerror = (err) => {
+    console.log(`Binance websoket - ERROR for :`, err); // eslint-disable-line
+  }
+
+  self.addEventListener('message', (e) => {
+    const {
+      aggregation,
+      sizeDigits,
+      minPriceDigits,
+    } = e.data
+
+    console.log('data in worker', {       aggregation,
+      sizeDigits,
+      minPriceDigits,})
+
+    globalAggregation = aggregation
+    globalSizeDigits = sizeDigits
+    globalMinPriceDigits = minPriceDigits
   })
 }

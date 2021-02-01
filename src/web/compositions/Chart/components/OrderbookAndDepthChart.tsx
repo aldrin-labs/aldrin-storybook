@@ -124,6 +124,7 @@ class OrderbookAndDepthChart extends React.PureComponent {
 
   componentDidMount() {
     this.worker = new WebWorker(worker);
+    console.log('init worker')
 
     this.worker.addEventListener('message', e => {
       const isAggregatedData = e.data.isAggregatedData
@@ -137,10 +138,25 @@ class OrderbookAndDepthChart extends React.PureComponent {
           }
         }
       }))
-		});
+    });
   }
 
   componentDidUpdate(prevProps: IProps) {
+    console.log('this.props.isPairDataLoading', this.props.isPairDataLoading)
+    if (this.props.isPairDataLoading !== prevProps.isPairDataLoading ) {
+      const { sizeDigits, minPriceDigits, isPairDataLoading, data } = this.props
+
+      const message = JSON.parse(
+        JSON.stringify({
+          aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
+          sizeDigits,
+          minPriceDigits,
+        })
+      )
+  
+      this.worker.postMessage(message);
+    }
+
     if (
       prevProps.data?.marketOrders?.asks.length !==
       this.props.data?.marketOrders?.asks.length
@@ -158,21 +174,21 @@ class OrderbookAndDepthChart extends React.PureComponent {
 
       // console.log(asks, bids)
 
-      const message = JSON.parse(
-        JSON.stringify({
-          asks,
-          bids,
-          aggregation,
-          sizeDigits,
-          data,
-          minPriceDigits,
-          aggregatedData
-        })
-      )
+      // const message = JSON.parse(
+      //   JSON.stringify({
+      //     asks,
+      //     bids,
+      //     aggregation,
+      //     sizeDigits,
+      //     data,
+      //     minPriceDigits,
+      //     aggregatedData
+      //   })
+      // )
 
-      // console.log('message', message)
+      // // console.log('message', message)
 
-      this.worker.postMessage(message);
+      // this.worker.postMessage(message);
     }
 
     if (
@@ -422,12 +438,12 @@ const OrderbookAndDepthChartDataWrapper = compose(
     pair: (props: any) => props.symbol,
     limit: 100,
   }),
-  withWebsocket({
-    url: (props: any) =>
-      getUrlForWebsocket('OB', props.marketType, props.symbol),
-    onMessage: combineOrderbookFromWebsocket,
-    pair: (props: any) => props.symbol,
-  })
+  // withWebsocket({
+  //   url: (props: any) =>
+  //     getUrlForWebsocket('OB', props.marketType, props.symbol),
+  //   onMessage: combineOrderbookFromWebsocket,
+  //   pair: (props: any) => props.symbol,
+  // })
 )(OrderbookAndDepthChart)
 
 const MemoizedOrderbookAndDepthChartDataWrapper = React.memo(

@@ -186,6 +186,8 @@ export function ChartPageComponent(props: any) {
     pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
       selectedPair.replace('_', '')
 
+  console.log('isPairDataLoading', isPairDataLoading)
+
   if (isPairDataLoading) {
     minPriceDigits = 0.00000001
     pricePrecision = 2
