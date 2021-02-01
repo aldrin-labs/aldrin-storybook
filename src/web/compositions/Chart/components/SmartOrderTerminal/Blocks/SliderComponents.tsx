@@ -31,6 +31,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
   showMarks,
   percentageInputWidth = '50%',
   validateField,
+  isTrailingOn = false,
   pricePercentage,
   approximatePrice,
   getApproximatePrice,
@@ -55,7 +56,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
         <Input
           theme={theme}
           needChain={needChain}
-          header={'price'}
+          header={header}
           needTitleBlock
           padding={'0'}
           width={
@@ -63,6 +64,8 @@ export const SliderWithPriceAndPercentageFieldRow = ({
               ? '65%'
               : tvAlertsEnable
               ? '55%'
+              : isTrailingOn
+              ? 'calc(36.5%)'
               : 'calc(31.5%)'
           }
           textAlign={'right'}
@@ -118,7 +121,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
         disabled={isPlotActive}
         titleForTooltip={titleForTooltip}
         needTitleBlock
-        header={header}
+        header={'level'}
         showErrors={showErrors}
         isValid={validateField(true, pricePercentage)}
         inputStyles={
@@ -141,10 +144,12 @@ export const SliderWithPriceAndPercentageFieldRow = ({
           disabled={isPlotActive}
           value={value}
           sliderContainerStyles={{
-            width: '40%',
+            width: isTrailingOn ? '30%' : '40%',
             margin: '0 .8rem 0 .8rem',
           }}
-          onChange={(v) => v > maxSliderValue ? updateValue(maxSliderValue) : updateValue(v)}
+          onChange={(v) =>
+            v > maxSliderValue ? updateValue(maxSliderValue) : updateValue(v)
+          }
           onAfterChange={onAfterSliderChange}
         />
       ) : (
@@ -158,7 +163,9 @@ export const SliderWithPriceAndPercentageFieldRow = ({
               width: sliderInTheBottom ? '100%' : '50%',
               margin: '0 .4rem 0 0.5rem',
             }}
-            onChange={(v) => v > maxSliderValue ? updateValue(maxSliderValue) : updateValue(v)}
+            onChange={(v) =>
+              v > maxSliderValue ? updateValue(maxSliderValue) : updateValue(v)
+            }
             onAfterChange={onAfterSliderChange}
           />
         </InputRowContainer>
@@ -441,12 +448,7 @@ export const SliderWithAmountFieldRow = ({
               2
             )
 
-            updateLocalAmount(
-              stripDigitPlaces(
-                newAmount,
-                quantityPrecision
-              )
-            )
+            updateLocalAmount(stripDigitPlaces(newAmount, quantityPrecision))
 
             updateLocalTotal(
               stripDigitPlaces(newTotal, marketType === 1 ? 2 : 8)
@@ -577,10 +579,7 @@ export const SliderWithAmountFieldRowForBasic = ({
                       newValue / priceForCalculate,
                       quantityPrecision
                     )
-                  : +stripDigitPlaces(
-                      newValue,
-                      quantityPrecision
-                    )
+                  : +stripDigitPlaces(newValue, quantityPrecision)
 
               const newTotal =
                 isBuyType || !isSPOTMarket

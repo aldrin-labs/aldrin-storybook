@@ -119,7 +119,7 @@ export const StopLossBlock = ({
               </AdditionalSettingsButton>
             </DarkTooltip>
           )}
-          {!entryPoint.averaging.enabled && (
+          {entryPoint.averaging.enabled ? null : stopLoss.external ? null : (
             <DarkTooltip
               maxWidth={'30rem'}
               title={
@@ -129,7 +129,10 @@ export const StopLossBlock = ({
               <AdditionalSettingsButton
                 theme={theme}
                 isActive={stopLoss.timeout.isTimeoutOn}
-                style={{ textDecoration: 'underline' }}
+                style={{
+                  textDecoration: 'underline',
+                  marginRight: stopLoss.timeout.isTimeoutOn ? '0' : '3%',
+                }}
                 onClick={() => {
                   if (stopLoss.external) {
                     return
@@ -153,75 +156,37 @@ export const StopLossBlock = ({
               </AdditionalSettingsButton>
             </DarkTooltip>
           )}
-
-          <AdditionalSettingsButton
-            theme={theme}
-            isActive={stopLoss.forcedStop.isForcedStopOn}
-            onClick={() => {
-              updateSubBlockValue(
-                'stopLoss',
-                'forcedStop',
-                'isForcedStopOn',
-                !stopLoss.forcedStop.isForcedStopOn
-              )
-
-              if (stopLoss.external) {
+          {stopLoss.timeout.isTimeoutOn && (
+            <SvgIcon
+              src={Chain}
+              style={{ margin: 'auto 0.5rem' }}
+              width="1.6rem"
+              height="1.6rem"
+            />
+          )}
+          {stopLoss.timeout.isTimeoutOn && (
+            <AdditionalSettingsButton
+              theme={theme}
+              isActive={stopLoss.forcedStop.isForcedStopOn}
+              onClick={() => {
                 updateSubBlockValue(
                   'stopLoss',
                   'forcedStop',
-                  'mandatoryForcedLoss',
-                  !stopLoss.forcedStop.mandatoryForcedLoss
+                  'isForcedStopOn',
+                  !stopLoss.forcedStop.isForcedStopOn
                 )
-              }
-            }}
-          >
-            Forced stop
-          </AdditionalSettingsButton>
 
-          {stopLoss.external && stopLoss.forcedStop.isForcedStopOn && (
-            <AdditionalSettingsButton
-              theme={theme}
-              style={{
-                border: stopLoss.forcedStopByAlert
-                  ? `0.1rem solid ${theme.palette.blue.main}`
-                  : theme.palette.border.main,
-                color: stopLoss.forcedStopByAlert
-                  ? theme.palette.blue.main
-                  : theme.palette.border.main,
-                lineHeight: 'inherit',
-                fontSize: '1rem',
-              }}
-              width={'22.75%'}
-              isActive={entryPoint.averaging.placeWithoutLoss}
-              onClick={() => {
-                updateBlockValue(
-                  'stopLoss',
-                  'forcedStopByAlert',
-                  !stopLoss.forcedStopByAlert
-                )
-                if (!stopLoss.forcedStopByAlert) {
-                  updateBlockValue('stopLoss', 'plotEnabled', false)
+                if (stopLoss.external) {
                   updateSubBlockValue(
                     'stopLoss',
                     'forcedStop',
                     'mandatoryForcedLoss',
-                    false
-                  )
-                } else {
-                  updateSubBlockValue(
-                    'stopLoss',
-                    'forcedStop',
-                    'mandatoryForcedLoss',
-                    true
+                    !stopLoss.forcedStop.mandatoryForcedLoss
                   )
                 }
-
-                updateBlockValue('stopLoss', 'plotEnabled', false)
-
-                updateBlockValue('stopLoss', 'type', 'market')
               }}
             >
-              Immediately when alert
+              Forced stop
             </AdditionalSettingsButton>
           )}
 
@@ -235,7 +200,7 @@ export const StopLossBlock = ({
               isActive={stopLoss.external}
               onClick={() => {
                 updateBlockValue('stopLoss', 'external', !stopLoss.external)
-
+                updateSubBlockValue('stopLoss', 'timeout', 'isTimeoutOn', false)
                 updateBlockValue('stopLoss', 'plotEnabled', false)
                 if (!stopLoss.external) {
                   updateSubBlockValue(
@@ -277,6 +242,46 @@ export const StopLossBlock = ({
               Use TV Alert
             </AdditionalSettingsButton>
           </DarkTooltip>
+          {stopLoss.external && (
+            <AdditionalSettingsButton
+              theme={theme}
+              style={{
+                lineHeight: 'inherit',
+                fontSize: '1rem',
+              }}
+              width={'22.75%'}
+              isActive={stopLoss.forcedStopByAlert}
+              onClick={() => {
+                updateBlockValue(
+                  'stopLoss',
+                  'forcedStopByAlert',
+                  !stopLoss.forcedStopByAlert
+                )
+                if (!stopLoss.forcedStopByAlert) {
+                  updateBlockValue('stopLoss', 'plotEnabled', false)
+                  updateSubBlockValue(
+                    'stopLoss',
+                    'forcedStop',
+                    'mandatoryForcedLoss',
+                    false
+                  )
+                } else {
+                  updateSubBlockValue(
+                    'stopLoss',
+                    'forcedStop',
+                    'mandatoryForcedLoss',
+                    true
+                  )
+                }
+
+                updateBlockValue('stopLoss', 'plotEnabled', false)
+
+                updateBlockValue('stopLoss', 'type', 'market')
+              }}
+            >
+              Immediately when alert
+            </AdditionalSettingsButton>
+          )}
         </InputRowContainer>
         <div>
           <InputRowContainer

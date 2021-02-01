@@ -420,7 +420,10 @@ export const TakeProfitBlock = ({
                   pair,
                   theme,
                   entryPoint,
-                  header: 'level',
+                  isTrailingOn: takeProfit.trailingTAP.isTrailingOn,
+                  header: takeProfit.trailingTAP.isTrailingOn
+                    ? 'act.price'
+                    : 'price',
                   titleForTooltip:
                     'The price at which the trailing algorithm will be triggered.',
                   showErrors,
@@ -516,52 +519,55 @@ export const TakeProfitBlock = ({
               //   }
               //   title={'trailing deviation (%)'}
               // >
-              <InputRowContainer>
-                <SliderWithPriceAndPercentageFieldRow
-                  {...{
-                    pair,
-                    needChain: false,
-                    theme,
-                    needTooltip: true,
-                    titleForTooltip:
-                      'The level of price change after the trend reversal, at which the trailing order will be executed.',
-                    header: 'deviation',
-                    percentageInputWidth: '61.5%',
-                    entryPoint,
-                    showErrors,
-                    isMarketType,
-                    validateField,
-                    pricePrecision,
-                    updateBlockValue,
-                    priceForCalculate,
-
-                    needPriceField: false,
-                    percentagePreSymbol: '',
-                    percentageTextAlign: 'right',
-                    pricePercentage: takeProfit.trailingTAP.deviationPercentage,
-                    onAfterSliderChange: (value: number) => {
-                      updateSubBlockValue(
-                        'takeProfit',
-                        'trailingTAP',
-                        'deviationPercentage',
-                        value
-                      )
-                    },
-                    onPricePercentageChange: (
-                      e: React.ChangeEvent<HTMLInputElement>
-                    ) => {
-                      updateSubBlockValue(
-                        'takeProfit',
-                        'trailingTAP',
-                        'deviationPercentage',
-                        e.target.value
-                      )
-                    },
-                    updateSubBlockValue,
-                    updateStopLossAndTakeProfitPrices,
-                  }}
-                />
-              </InputRowContainer>
+              <FormInputContainer theme={theme} title={'Deviation'}>
+                <InputRowContainer>
+                  <SliderWithPriceAndPercentageFieldRow
+                    {...{
+                      pair,
+                      needChain: takeProfit.trailingTAP.isTrailingOn,
+                      theme,
+                      needTooltip: true,
+                      titleForTooltip:
+                        'The level of price change after the trend reversal, at which the trailing order will be executed.',
+                      header: 'est.price',
+                      percentageInputWidth: '61.5%',
+                      entryPoint,
+                      showErrors,
+                      isTrailingOn: takeProfit.trailingTAP.isTrailingOn,
+                      isMarketType,
+                      validateField,
+                      pricePrecision,
+                      updateBlockValue,
+                      priceForCalculate,
+                      needPriceField: takeProfit.trailingTAP.isTrailingOn,
+                      percentagePreSymbol: '',
+                      percentageTextAlign: 'right',
+                      pricePercentage:
+                        takeProfit.trailingTAP.deviationPercentage,
+                      onAfterSliderChange: (value: number) => {
+                        updateSubBlockValue(
+                          'takeProfit',
+                          'trailingTAP',
+                          'deviationPercentage',
+                          value
+                        )
+                      },
+                      onPricePercentageChange: (
+                        e: React.ChangeEvent<HTMLInputElement>
+                      ) => {
+                        updateSubBlockValue(
+                          'takeProfit',
+                          'trailingTAP',
+                          'deviationPercentage',
+                          e.target.value
+                        )
+                      },
+                      updateSubBlockValue,
+                      updateStopLossAndTakeProfitPrices,
+                    }}
+                  />
+                </InputRowContainer>
+              </FormInputContainer>
               // </FormInputContainer>
             )}
           </>
