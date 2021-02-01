@@ -143,6 +143,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
           theme={theme}
           disabled={isPlotActive}
           value={value}
+          max={maxSliderValue}
           sliderContainerStyles={{
             width: isTrailingOn ? '30%' : '40%',
             margin: '0 .8rem 0 .8rem',
@@ -157,6 +158,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
           <BlueSlider
             showMarks={showMarks}
             disabled={isPlotActive}
+            max={maxSliderValue}
             theme={theme}
             value={value}
             sliderContainerStyles={{
