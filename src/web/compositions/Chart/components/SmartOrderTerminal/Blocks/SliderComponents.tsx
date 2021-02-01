@@ -21,6 +21,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
   pair,
   header = 'level',
   theme,
+  step,
   needChain = true,
   entryPoint,
   titleForTooltip,
@@ -143,6 +144,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
           theme={theme}
           disabled={isPlotActive}
           value={value}
+          step={step}
           max={maxSliderValue}
           sliderContainerStyles={{
             width: isTrailingOn ? '30%' : '40%',

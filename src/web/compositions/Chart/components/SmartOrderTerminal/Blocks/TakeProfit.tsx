@@ -538,6 +538,7 @@ export const TakeProfitBlock = ({
                       entryPoint,
                       showErrors,
                       maxSliderValue: 10,
+                      step: 0.1,
                       isTrailingOn: takeProfit.trailingTAP.isTrailingOn,
                       isMarketType,
                       validateField,
