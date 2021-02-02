@@ -86,6 +86,7 @@ export const EntryOrderBlock = ({
   let estPrice = 0
   let sumAmount = 0
   let margin = 0
+  console.log('typeplot', entryPoint.TVAlert)
   return (
     <TerminalBlock theme={theme} width={'calc(33% + 0.5%)'} data-tut={'step1'}>
       <div>
@@ -328,42 +329,6 @@ export const EntryOrderBlock = ({
                 </DarkTooltip>
               </InputRowContainer>
             </InputRowContainer>
-
-            {/* {!entryPoint.averaging.enabled && (
-              <FormInputContainer
-                theme={theme}
-                padding={'0 0 1rem 0'}
-                haveTooltip={false}
-                tooltipText={''}
-                title={'action when alert'}
-              >
-                <InputRowContainer>
-                  <AdditionalSettingsButton
-                    theme={theme}
-                    isActive={entryPoint.TVAlert.plotEnabled}
-                    onClick={() => {
-                      updateSubBlockValue(
-                        'entryPoint',
-                        'TVAlert',
-                        'plotEnabled',
-                        !entryPoint.TVAlert.plotEnabled
-                      )
-
-                      if (!entryPoint.TVAlert.plotEnabled) {
-                        updateSubBlockValue(
-                          'entryPoint',
-                          'averaging',
-                          'enabled',
-                          false
-                        )
-                      }
-                    }}
-                  >
-                    Plot
-                  </AdditionalSettingsButton>
-                </InputRowContainer>
-              </FormInputContainer>
-            )} */}
           </>
         )}
         <InputRowContainer style={{ margin: '1rem  auto' }}>
@@ -445,8 +410,10 @@ export const EntryOrderBlock = ({
                   }}
                 >
                   <Switcher
+                    theme={theme}
                     checked={entryPoint.TVAlert.sidePlotEnabled}
                     onChange={() => {
+                      console.log('change sidePlot')
                       updateSubBlockValue(
                         'entryPoint',
                         'TVAlert',
@@ -466,7 +433,10 @@ export const EntryOrderBlock = ({
                   disabled={!entryPoint.TVAlert.sidePlotEnabled}
                   value={entryPoint.TVAlert.sidePlot}
                   showErrors={showErrors}
-                  isValid={validateField(true, entryPoint.TVAlert.sidePlot)}
+                  isValid={validateField(
+                    entryPoint.TVAlert.sidePlotEnabled,
+                    entryPoint.TVAlert.sidePlot
+                  )}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     updateSubBlockValue(
                       'entryPoint',
@@ -541,8 +511,10 @@ export const EntryOrderBlock = ({
                   }}
                 >
                   <Switcher
+                    theme={theme}
                     checked={entryPoint.TVAlert.typePlotEnabled}
                     onChange={() => {
+                      console.log('change typePlotEnabled')
                       updateSubBlockValue(
                         'entryPoint',
                         'TVAlert',
@@ -562,7 +534,10 @@ export const EntryOrderBlock = ({
                   disabled={!entryPoint.TVAlert.typePlotEnabled}
                   value={entryPoint.TVAlert.typePlot}
                   showErrors={showErrors}
-                  isValid={validateField(true, entryPoint.TVAlert.typePlot)}
+                  isValid={validateField(
+                    entryPoint.TVAlert.typePlotEnabled,
+                    entryPoint.TVAlert.typePlot
+                  )}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     updateSubBlockValue(
                       'entryPoint',
@@ -586,8 +561,11 @@ export const EntryOrderBlock = ({
                     theme,
                     entryPoint,
                     showErrors,
+
                     isMarketType,
+                    header: 'price',
                     validateField,
+
                     pricePrecision,
                     updateBlockValue,
                     priceForCalculate,
@@ -717,7 +695,8 @@ export const EntryOrderBlock = ({
                 width={
                   isAveragingAfterFirstTarget
                     ? '32.5%'
-                    : entryPoint.TVAlert.plotEnabled
+                    : entryPoint.TVAlert.plotEnabled &&
+                      !entryPoint.averaging.enabled
                     ? '70%'
                     : '100%'
                 }
@@ -787,7 +766,7 @@ export const EntryOrderBlock = ({
                 }}
               />
             )}
-            {entryPoint.TVAlert.plotEnabled && (
+            {entryPoint.TVAlert.plotEnabled && !entryPoint.averaging.enabled && (
               <>
                 <div
                   style={{
@@ -797,6 +776,7 @@ export const EntryOrderBlock = ({
                   }}
                 >
                   <Switcher
+                    theme={theme}
                     checked={entryPoint.TVAlert.pricePlotEnabled}
                     onChange={() => {
                       updateSubBlockValue(
@@ -818,7 +798,10 @@ export const EntryOrderBlock = ({
                   disabled={!entryPoint.TVAlert.pricePlotEnabled}
                   value={entryPoint.TVAlert.pricePlot}
                   showErrors={showErrors}
-                  isValid={validateField(true, entryPoint.TVAlert.pricePlot)}
+                  isValid={validateField(
+                    entryPoint.TVAlert.pricePlotEnabled,
+                    entryPoint.TVAlert.pricePlot
+                  )}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     updateSubBlockValue(
                       'entryPoint',
@@ -977,6 +960,7 @@ export const EntryOrderBlock = ({
                     }}
                   >
                     <Switcher
+                      theme={theme}
                       checked={entryPoint.TVAlert.deviationPlotEnabled}
                       onChange={() => {
                         updateSubBlockValue(
@@ -1002,7 +986,7 @@ export const EntryOrderBlock = ({
                     value={entryPoint.TVAlert.deviationPlot}
                     showErrors={showErrors}
                     isValid={validateField(
-                      true,
+                      entryPoint.TVAlert.deviationPlotEnabled,
                       entryPoint.TVAlert.deviationPlot
                     )}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1132,7 +1116,9 @@ export const EntryOrderBlock = ({
               e.target.value
             )
           }}
-          plotEnabled={entryPoint.TVAlert.plotEnabled}
+          plotEnabled={
+            entryPoint.TVAlert.plotEnabled && !entryPoint.averaging.enabled
+          }
           amountPlot={entryPoint.TVAlert.amountPlot}
           amountPlotEnabled={entryPoint.TVAlert.amountPlotEnabled}
           {...{

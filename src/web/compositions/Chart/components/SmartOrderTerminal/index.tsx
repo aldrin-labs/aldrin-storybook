@@ -174,7 +174,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     } = this.props
 
     this.updateSubBlockValue('entryPoint', 'order', 'price', this.props.price)
-    console.log(' this.props.componentLeverage', this.props.componentLeverage)
+    console.log(
+      ' this.props.componentLeverage',
+      this.props.componentLeverage,
+      'this.props.price',
+      this.props.price
+    )
     this.updateSubBlockValue(
       'entryPoint',
       'order',
@@ -210,6 +215,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           ...result.entryPoint?.averaging.entryLevels.slice(1),
         ],
       }
+      console.log('stateResult', result)
     }
 
     this.setState((prevState) => ({
@@ -358,8 +364,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       takeProfitPercentage: result.takeProfit.trailingTAP.isTrailingOn
         ? result.takeProfit.trailingTAP.activatePrice
         : result.takeProfit.pricePercentage,
-      deviationPercentage:
-        result.entryPoint.trailing.deviationPercentage,
+      deviationPercentage: result.entryPoint.trailing.deviationPercentage,
       includeDeviation: true,
     })
   }

@@ -29,6 +29,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
   showErrors,
   isPlotActive = false,
   maxSliderValue,
+  levelFieldTitle = 'level',
   showMarks,
   percentageInputWidth = '50%',
   validateField,
@@ -122,7 +123,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
         disabled={isPlotActive}
         titleForTooltip={titleForTooltip}
         needTitleBlock
-        header={'level'}
+        header={levelFieldTitle}
         showErrors={showErrors}
         isValid={validateField(true, pricePercentage)}
         inputStyles={
@@ -164,7 +165,11 @@ export const SliderWithPriceAndPercentageFieldRow = ({
             theme={theme}
             value={value}
             sliderContainerStyles={{
-              width: sliderInTheBottom ? '100%' : '50%',
+              width: sliderInTheBottom
+                ? '100%'
+                : isAveragingPoint
+                ? '8%'
+                : '50%',
               margin: '0 .4rem 0 0.5rem',
             }}
             onChange={(v) =>
@@ -400,6 +405,7 @@ export const SliderWithAmountFieldRow = ({
               }}
             >
               <Switcher
+                theme={theme}
                 checked={amountPlotEnabled}
                 onChange={toggleAmountPlotEnabled}
               />
@@ -414,7 +420,7 @@ export const SliderWithAmountFieldRow = ({
               disabled={!amountPlotEnabled}
               value={amountPlot}
               showErrors={showErrors}
-              isValid={validateField(true, amountPlot)}
+              isValid={validateField(amountPlotEnabled, amountPlot)}
               onChange={onAmountPlotChange}
             />
           </>

@@ -339,6 +339,8 @@ export const TakeProfitBlock = ({
                 isMarketType,
                 validateField,
                 pricePrecision,
+                header: 'price',
+                levelFieldTitle: 'profit',
                 updateBlockValue,
                 priceForCalculate,
                 percentagePreSymbol: '+',
@@ -605,6 +607,7 @@ export const TakeProfitBlock = ({
                     entryPoint,
                     needChain: false,
                     showErrors,
+                    header: 'price',
                     isMarketType,
                     isPlotActive: takeProfit.plotEnabled,
                     tvAlertsEnable: true,
@@ -693,6 +696,7 @@ export const TakeProfitBlock = ({
                     }}
                   >
                     <Switcher
+                      theme={theme}
                       checked={takeProfit.plotEnabled}
                       onChange={() => {
                         updateBlockValue(

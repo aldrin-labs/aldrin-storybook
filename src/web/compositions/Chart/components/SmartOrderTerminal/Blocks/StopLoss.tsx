@@ -327,6 +327,8 @@ export const StopLossBlock = ({
                   isPlotActive: stopLoss.plotEnabled,
                   showErrors,
                   isMarketType,
+                  header: 'price',
+                  levelFieldTitle: 'stop',
                   validateField,
                   pricePrecision,
                   updateBlockValue,
@@ -415,6 +417,7 @@ export const StopLossBlock = ({
                     }}
                   >
                     <Switcher
+                      theme={theme}
                       checked={stopLoss.plotEnabled}
                       onChange={() => {
                         updateBlockValue('stopLoss', 'forcedStopByAlert', false)
@@ -523,6 +526,7 @@ export const StopLossBlock = ({
                       theme,
                       entryPoint,
                       stopLoss,
+                      header: 'price',
                       tvAlertsEnable: stopLoss.external,
                       showErrors,
                       needChain: !stopLoss.external,
@@ -624,6 +628,7 @@ export const StopLossBlock = ({
                         }}
                       >
                         <Switcher
+                          theme={theme}
                           checked={stopLoss.forcedStopByAlert}
                           onChange={() => {
                             updateBlockValue(
