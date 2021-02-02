@@ -657,7 +657,7 @@ export default () => {
     let ordersAsks = asks
     let ordersBids = bids
 
-    console.log('asks bids and minPriceDigits', asks, bids, globalMinPriceDigits, globalIsPairDataLoading)
+    // console.log('asks bids and minPriceDigits', asks, bids, globalMinPriceDigits, globalIsPairDataLoading)
 
     const marketOrders = Object.assign(
       {
