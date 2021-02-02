@@ -78,8 +78,7 @@ class OrderBookTable extends PureComponent<IProps> {
       quote,
     } = this.props
 
-    const tableData = data.asks
-    // const tableData = getDataFromTree(data.asks, 'asks').reverse()
+    const tableData = data?.asks || []
     const amountForBackground =
       tableData.reduce((acc, curr) => acc + +curr.size, 0) / tableData.length
 

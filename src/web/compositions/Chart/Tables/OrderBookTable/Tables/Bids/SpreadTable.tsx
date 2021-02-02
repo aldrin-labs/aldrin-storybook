@@ -104,8 +104,7 @@ class SpreadTable extends PureComponent<IProps> {
       quote,
     } = this.props
 
-    const tableData = data.bids
-    // const tableData = getDataFromTree(data.bids, 'bids').reverse()
+    const tableData = data?.bids || []
     const amountForBackground =
       tableData.reduce((acc, curr) => acc + +curr.size, 0) / tableData.length
 

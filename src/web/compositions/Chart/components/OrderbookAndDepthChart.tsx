@@ -25,14 +25,12 @@ import {
   OrderbookGroup,
 } from '../Tables/OrderBookTable/OrderBookTableContainer.types'
 
-import { client } from '@core/graphql/apolloClient'
-
 import {
   transformOrderbookData,
   addOrdersToOrderbook,
   addOrderToOrderbook,
   getAggregatedData,
-  testJSON,
+  getDataFromTree,
   getAggregationsFromMinPriceDigits,
   getNumberOfDecimalsFromNumber,
   combineOrderbookFromWebsocket,
@@ -58,13 +56,14 @@ const MemoizedOrderbookContainer = React.memo(OrderbookContainer)
 
 class OrderbookAndDepthChart extends React.PureComponent {
   state = {
+    queryDataLoaded: false,
     aggregation: 0,
-    asks: new TreeMap(),
-    bids: new TreeMap(),
-    aggregatedData: {
-      asks: new TreeMap(),
-      bids: new TreeMap(),
-    },
+    // asks: new TreeMap(),
+    // bids: new TreeMap(),
+    // aggregatedData: {
+    //   asks: new TreeMap(),
+    //   bids: new TreeMap(),
+    // },
     webWorkerData: {
       asks: [],
       bids: [],
@@ -79,10 +78,8 @@ class OrderbookAndDepthChart extends React.PureComponent {
 
   // transforming data
   static getDerivedStateFromProps(newProps, state) {
-    const { asks, bids } = state
+    const { webWorkerData } = state
     const {
-      // BINANCE_TODO
-      // here we should take data from binance OB query
       fetchData,
       sizeDigits,
       isPairDataLoading,
@@ -95,26 +92,31 @@ class OrderbookAndDepthChart extends React.PureComponent {
 
     // first get data from query
     if (
-      asks.getLength() === 0 &&
-      bids.getLength() === 0 &&
+      webWorkerData.asks.length === 0 &&
+      webWorkerData.bids.length === 0 &&
       marketOrders &&
       marketOrders.asks &&
       marketOrders.bids &&
       !isPairDataLoading
     ) {
       updatedData = addOrdersToOrderbook({
-        updatedData: { asks, bids },
+        updatedData: { asks: new TreeMap(), bids: new TreeMap() },
         ordersData: marketOrders,
         aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
         defaultAggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0]
           .value,
-        originalOrderbookTree: { asks, bids },
+        originalOrderbookTree: { asks: new TreeMap(), bids: new TreeMap() },
         isAggregatedData: false,
         sizeDigits,
       })
 
+      // transform treemap to array
       return {
-        ...updatedData,
+        webWorkerData: {
+          asks: getDataFromTree(updatedData.asks, 'asks').reverse(),
+          bids: getDataFromTree(updatedData.bids, 'bids').reverse(),
+        },
+        queryDataLoaded: true,
         aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
       }
     }
@@ -124,7 +126,6 @@ class OrderbookAndDepthChart extends React.PureComponent {
 
   componentDidMount() {
     this.worker = new WebWorker(worker);
-    console.log('init worker')
 
     this.worker.addEventListener('message', e => {
       const isAggregatedData = e.data.isAggregatedData
@@ -139,56 +140,65 @@ class OrderbookAndDepthChart extends React.PureComponent {
         }
       }))
     });
-  }
 
-  componentDidUpdate(prevProps: IProps) {
-    console.log('this.props.isPairDataLoading', this.props.isPairDataLoading)
-    if (this.props.isPairDataLoading !== prevProps.isPairDataLoading ) {
-      const { sizeDigits, minPriceDigits, isPairDataLoading, data } = this.props
+    if (!this.props.isPairDataLoading) {
+      const { queryDataLoaded } = this.state
+      const { sizeDigits, minPriceDigits, isPairDataLoading, data, marketType, symbol } = this.props
 
       const message = JSON.parse(
         JSON.stringify({
           aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
           sizeDigits,
           minPriceDigits,
+          isPairDataLoading,
+          queryDataLoaded,
+          marketType,
+          symbol
         })
       )
   
       this.worker.postMessage(message);
     }
+  }
 
-    if (
-      prevProps.data?.marketOrders?.asks.length !==
-      this.props.data?.marketOrders?.asks.length
-    ) {
-      const { asks, bids, aggregation, aggregatedData } = this.state
+  componentDidUpdate(prevProps: IProps, prevState) {
+    const { queryDataLoaded } = this.state
+    const { sizeDigits, minPriceDigits, isPairDataLoading, data, marketType, symbol, fetchData } = this.props
 
-      const { sizeDigits, minPriceDigits, isPairDataLoading, data } = this.props
-      if (
-        // (asks.getLength() === 0 && bids.getLength() === 0) ||
-        isPairDataLoading ||
-        !aggregation
-      ) {
-        return
-      }
+    const message = JSON.parse(
+      JSON.stringify({
+        aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
+        sizeDigits,
+        minPriceDigits,
+        isPairDataLoading,
+        queryDataLoaded,
+        marketType,
+        symbol,
+        marketOrders: fetchData,
+      })
+    )
 
-      // console.log(asks, bids)
+    // update globalQueryDataLoaded in webworker when query data loaded
+    if (this.state.queryDataLoaded !== prevState.queryDataLoaded) {
+      const messageWithFirstData = JSON.parse(
+        JSON.stringify({
+          aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
+          sizeDigits,
+          minPriceDigits,
+          isPairDataLoading,
+          queryDataLoaded,
+          marketType,
+          symbol,
+          marketOrders: fetchData,
+        })
+      )
 
-      // const message = JSON.parse(
-      //   JSON.stringify({
-      //     asks,
-      //     bids,
-      //     aggregation,
-      //     sizeDigits,
-      //     data,
-      //     minPriceDigits,
-      //     aggregatedData
-      //   })
-      // )
+      this.worker.postMessage(messageWithFirstData);
+    }
 
-      // // console.log('message', message)
-
-      // this.worker.postMessage(message);
+    // update sizeDigits + aggregation + minPriceDigits once pair data loaded
+    if (this.props.isPairDataLoading !== prevProps.isPairDataLoading ) {
+      this.worker.postMessage(message);
     }
 
     if (
@@ -204,6 +214,8 @@ class OrderbookAndDepthChart extends React.PureComponent {
           getAggregationsFromMinPriceDigits(this.props.minPriceDigits)[0].value
         ),
       })
+
+      this.worker.postMessage(message);
     }
 
     if (
@@ -211,16 +223,55 @@ class OrderbookAndDepthChart extends React.PureComponent {
       prevProps.symbol !== this.props.symbol ||
       prevProps.marketType !== this.props.marketType
     ) {
-      // console.log('OrderbookAndDepthChart componentDidUpdate cleanState')
-      // when change exchange delete all data and...
-      this.setState({ asks: new TreeMap(), bids: new TreeMap() }, () => {
-        // console.log('OrderbookAndDepthChart componentDidUpdate cleanState SUCCESS')
+      // add first data
+      // not new webworker but new socket
+      this.worker.terminate();
+      this.worker = new WebWorker(worker);
+
+      this.setState({
+        webWorkerData: {
+          asks: [],
+          bids: [],
+          aggregatedData: {
+            asks: [],
+            bids: [],
+          },
+        },
+        queryDataLoaded: false,
       })
+
+      this.worker.addEventListener('message', e => {
+        const isAggregatedData = e.data.isAggregatedData;
+        this.setState(prev => ({
+          webWorkerData: {
+            ...prev,
+            ...(isAggregatedData ? {} : { asks: e.data.asks, bids: e.data.bids }),
+            aggregatedData: {
+              ...prev.aggregatedData,
+              ...(!isAggregatedData ? {} : { asks: e.data.asks, bids: e.data.bids }),
+            }
+          }
+        }))
+      });
+
+      const messageForNewWebsocket = JSON.parse(
+        JSON.stringify({
+          aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
+          sizeDigits,
+          minPriceDigits,
+          isPairDataLoading,
+          queryDataLoaded,
+          marketType,
+          symbol
+        })
+      )
+
+      this.worker.postMessage(messageForNewWebsocket)
     }
   }
 
   componentWillUnmount() {
-    this.subscription && this.subscription.unsubscribe()
+    this.worker.terminate()
   }
 
   setOrderbookAggregation = (aggregation: OrderbookGroup) => {
