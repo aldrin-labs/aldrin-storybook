@@ -44,6 +44,7 @@ import {
   TerminalHeadersBlock,
 } from './Blocks'
 import { compose } from 'recompose'
+import { thirdDataSet } from '@sb/components/BitcoinPriceChart/barChartDataMock'
 
 const generateToken = () =>
   Math.random()
@@ -187,6 +188,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       this.props.componentLeverage
     )
 
+    const isMarketType =
+      this.state.entryPoint.order.type === 'market' ||
+      this.state.entryPoint.order.type === 'maker-only'
+
     console.log('getStrategySettingsQuery', getStrategySettingsQuery)
     const result = getDefaultStateFromStrategySettings({
       getStrategySettingsQuery,
@@ -215,7 +220,45 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           ...result.entryPoint?.averaging.entryLevels.slice(1),
         ],
       }
-      console.log('stateResult', result)
+
+      let maxAmount = 0
+
+      let priceForCalculate = this.props.price
+
+      if (marketType === 0) {
+        maxAmount =
+          result.entryPoint?.order.side === 'buy'
+            ? +stripDigitPlaces(this.props.funds[1].quantity, 8)
+            : +stripDigitPlaces(this.props.funds[0].quantity, 8)
+      } else if (marketType === 1) {
+        maxAmount = +stripDigitPlaces(
+          this.props.funds[1].quantity * this.props.leverage,
+          quantityPrecision
+        )
+      }
+
+      if (result.entryPoint?.averaging.entryLevels.length > 0) {
+        result.entryPoint.averaging.entryLevels.forEach((target) => {
+          if (marketType === 0) {
+            maxAmount -= target.amount
+          } else {
+            maxAmount -= target.amount * priceForCalculate
+          }
+        })
+      }
+
+      const [amount, total] =
+        result.entryPoint.order.side === 'buy' || marketType === 1
+          ? [maxAmount / priceForCalculate, maxAmount]
+          : [maxAmount, maxAmount / priceForCalculate]
+
+      if (total < 0) {
+        savedAveraging = {
+          ...savedAveraging,
+          entryLevels: [],
+        }
+      }
+      console.log('stateResult', amount, total, this.props.funds)
     }
 
     this.setState((prevState) => ({
@@ -314,10 +357,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     ) {
       return
     }
-
-    const isMarketType =
-      result.entryPoint.order.type === 'market' ||
-      result.entryPoint.order.type === 'maker-only'
 
     let price =
       (isMarketType && !result.entryPoint.trailing.isTrailingOn) ||
@@ -770,8 +809,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       keyId,
       price,
       marketType,
+      funds,
       placeOrder,
       cancelOrder,
+      enqueueSnackbar,
       quantityPrecision,
       updateTerminalViewMode,
     } = this.props
@@ -784,7 +825,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     )
 
     if (!isValid) return
-
     // ux-improvement to see popup before result from the backend received
     const successResult = {
       status: 'success',
@@ -831,6 +871,15 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     const isSPOTMarket = marketType === 0
     const isValid = validateSmartOrders(this.state, this.props.enqueueSnackbar)
     if (isValid) {
+      // negative avaliable balance
+      // avg, then changed leverage
+      if (this.getMaxValues()[0] < 0) {
+        enqueueSnackbar(`Your amount in averaging more than your funds`, {
+          variant: 'error',
+        })
+        return
+      }
+
       if (
         entryPoint.order.total < minSpotNotional &&
         isSPOTMarket &&
