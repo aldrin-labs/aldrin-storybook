@@ -1,4 +1,7 @@
 export default () => {
+
+  // UTILS
+
   function TreeMap() {
     var root = null
     var keyType = void 0
@@ -197,15 +200,6 @@ export default () => {
       }
 
       return node
-    }
-  }
-
-  let state = {
-    asks: new TreeMap(),
-    bids: new TreeMap(),
-    aggregatedData: {
-      asks: new TreeMap(),
-      bids: new TreeMap(),
     }
   }
 
@@ -562,57 +556,108 @@ export default () => {
     return resultData
   }
 
-  const sortAsc = (orders) => orders.sort(({ price: priceA }, { price: priceB }) => priceA - priceB)
+  const sortAsc = (orders) =>
+    orders.sort(({ price: priceA }, { price: priceB }) => priceA - priceB)
 
   const getDataFromTree = (tree, table) => {
     if (table === 'asks') {
       if (!tree.getTree()) return []
-  
+
       const sortedData = travers(tree.getTree(), [])
       const limitedData = sortedData.slice(0, 30)
-  
+
       return sortAsc(limitedData)
     } else {
       if (!tree.getTree()) return []
-  
+
       const updatedBids = travers(tree.getTree(), [])
-  
+
       const limitedData = updatedBids.slice(
         updatedBids.length > 30 && updatedBids.length - 30
       )
-  
+
       return sortAsc(limitedData)
     }
+  }
+
+  // IMPLEMENTATION -- need refactoring
+  // add closing websocket not webworker
+
+  let state = {
+    asks: new TreeMap(),
+    bids: new TreeMap(),
+    aggregatedData: {
+      asks: new TreeMap(),
+      bids: new TreeMap(),
+    },
   }
 
   let globalAggregation = null || 0.01
   let globalSizeDigits = null || 3
   let globalMinPriceDigits = null || 0.01
+  let globalQueryDataLoaded = null
+  let webSocketUrl = null
+  let globalIsPairDataLoading = true
 
-  console.log('init websocket in worker')
+  const startSocket = () => {
+    console.log('init websocket in worker')
 
-  const socket = new WebSocket("wss://fstream.binance.com/ws/btcusdt@depth");
+    const socket = new WebSocket(webSocketUrl)
 
-  socket.onopen = () => {
-    console.log(`Binance websoket opened connection for`); // eslint-disable-line
+    socket.onopen = () => {
+      console.log(`Binance websoket opened connection for`) // eslint-disable-line
+    }
+
+    socket.onmessage = (msg) => {
+      if (
+        !globalAggregation ||
+        !globalMinPriceDigits ||
+        !globalSizeDigits ||
+        !globalQueryDataLoaded ||
+        globalIsPairDataLoading ||
+        state.asks.getLength() === 0 ||
+        state.bids.getLength() === 0
+      )
+        return
+
+      const data = JSON.parse(msg.data)
+
+      const asks = data.a.map(([price, size]) => ({
+        price,
+        size,
+        side: 'asks',
+        timestamp: data.E,
+      }))
+      const bids = data.b.map(([price, size]) => ({
+        price,
+        size,
+        side: 'bids',
+        timestamp: data.E,
+      }))
+
+      processData({
+        asks,
+        bids,
+      })
+    }
+
+    socket.onclose = () => {
+      console.log(`Binance websoket ONCLOSE stream:`) // eslint-disable-line
+    }
+
+    socket.onerror = (err) => {
+      console.log(`Binance websoket - ERROR for :`, err) // eslint-disable-line
+    }
   }
 
-  socket.onmessage = (msg) => {
-
-    console.log('onmessage', msg)
-
-    // if (!globalAggregation || !globalMinPriceDigits || !globalSizeDigits) return 
-
-    const data = JSON.parse(msg.data)
-
-    const asks = data.a.map(([price, size]) => ({ price, size, side: 'asks', timestamp: data.E }))
-    const bids = data.b.map(([price, size]) => ({ price, size, side: 'bids', timestamp: data.E }))
-  
+  const processData = ({ asks, bids }) => {
     let updatedData = null
     let updatedAggregatedData = state.aggregatedData
 
     let ordersAsks = asks
     let ordersBids = bids
+
+    console.log('asks bids and minPriceDigits', asks, bids, globalMinPriceDigits, globalIsPairDataLoading)
 
     const marketOrders = Object.assign(
       {
@@ -627,9 +672,7 @@ export default () => {
     )
 
     if (
-      ((marketOrders.asks.length > 0 || marketOrders.bids.length > 0) &&
-        !(typeof marketOrders.asks === 'string')) ||
-      !(typeof marketOrders.bids === 'string')
+      marketOrders.asks.length > 0 || marketOrders.bids.length > 0
     ) {
       const ordersData = marketOrders
       const originalOrderbookTree = { asks: state.asks, bids: state.bids }
@@ -655,9 +698,11 @@ export default () => {
       updatedData = addOrdersToOrderbook({
         updatedData: orderbookData,
         ordersData,
-        aggregation: getAggregationsFromMinPriceDigits(globalMinPriceDigits)[0].value,
-        defaultAggregation: getAggregationsFromMinPriceDigits(globalMinPriceDigits)[0]
+        aggregation: getAggregationsFromMinPriceDigits(globalMinPriceDigits)[0]
           .value,
+        defaultAggregation: getAggregationsFromMinPriceDigits(
+          globalMinPriceDigits
+        )[0].value,
         originalOrderbookTree,
         isAggregatedData: false,
         globalSizeDigits,
@@ -674,19 +719,18 @@ export default () => {
     const dataToSend =
       String(globalAggregation) ===
       String(getAggregationsFromMinPriceDigits(globalMinPriceDigits)[0].value)
-        ? { asks: getDataFromTree(state.asks, 'asks').reverse(), bids: getDataFromTree(state.bids, 'bids').reverse(), isAggregatedData: false }
-        : { asks: getDataFromTree(state.aggregatedData.asks, 'asks').reverse(), bids: getDataFromTree(state.aggregatedData.bids, 'bids').reverse(), isAggregatedData: true }
-
+        ? {
+            asks: getDataFromTree(state.asks, 'asks').reverse(),
+            bids: getDataFromTree(state.bids, 'bids').reverse(),
+            isAggregatedData: false,
+          }
+        : {
+            asks: getDataFromTree(state.aggregatedData.asks, 'asks').reverse(),
+            bids: getDataFromTree(state.aggregatedData.bids, 'bids').reverse(),
+            isAggregatedData: true,
+          }
 
     postMessage(JSON.parse(JSON.stringify(dataToSend)))
-  }
-
-  socket.onclose = () => {
-    console.log(`Binance websoket ONCLOSE stream:`); // eslint-disable-line
-  }
-
-  socket.onerror = (err) => {
-    console.log(`Binance websoket - ERROR for :`, err); // eslint-disable-line
   }
 
   self.addEventListener('message', (e) => {
@@ -694,14 +738,44 @@ export default () => {
       aggregation,
       sizeDigits,
       minPriceDigits,
+      queryDataLoaded,
+      isPairDataLoading,
+      symbol,
+      marketType,
+      marketOrders,
     } = e.data
 
-    console.log('data in worker', {       aggregation,
-      sizeDigits,
-      minPriceDigits,})
+    if (!webSocketUrl) {
+      const pair = symbol
+        .split('_')
+        .join('')
+        .toLowerCase()
+      const binanceStreamUrl = {
+        0: 'wss://stream.binance.com:9443/ws/',
+        1: 'wss://fstream.binance.com/ws/',
+      }
+      webSocketUrl = `${binanceStreamUrl[marketType]}${pair}@depth`
+      startSocket()
+    }
 
     globalAggregation = aggregation
     globalSizeDigits = sizeDigits
     globalMinPriceDigits = minPriceDigits
+    globalQueryDataLoaded = queryDataLoaded
+    globalIsPairDataLoading = isPairDataLoading
+
+    if (
+      state.asks.getLength() === 0 &&
+      state.bids.getLength() === 0 &&
+      marketOrders &&
+      marketOrders.asks &&
+      marketOrders.bids &&
+      !isPairDataLoading
+    ) {
+      processData({
+        asks: marketOrders.asks,
+        bids: marketOrders.bids,
+      })
+    }
   })
 }
