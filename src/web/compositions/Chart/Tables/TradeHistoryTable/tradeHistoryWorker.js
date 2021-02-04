@@ -1,7 +1,9 @@
 export default () => {
-  let data = []
-
-  const reduceArrayLength = (arr, maxArrayLengh = 60, elementsToDelete = 10) => {
+  const reduceArrayLength = (
+    arr,
+    maxArrayLengh = 60,
+    elementsToDelete = 10
+  ) => {
     if (arr.length > maxArrayLengh) {
       arr.length = arr.length - elementsToDelete
     }
@@ -11,36 +13,42 @@ export default () => {
 
   const ccaiToBinanceMap = {
     BCH: 'BCH',
-  };
-  
+  }
+
   const binanceToCcaiMap = Object.keys(ccaiToBinanceMap).reduce((acc, cur) => {
-    acc[ccaiToBinanceMap[cur]] = cur;
-    return acc;
-  }, {});
+    acc[ccaiToBinanceMap[cur]] = cur
+    return acc
+  }, {})
 
   const adapt = (symbol, adapterMap) => {
-    const ccaiSymbol = adapterMap[symbol];
-    return `${ccaiSymbol || symbol}`;
-  };
+    const ccaiSymbol = adapterMap[symbol]
+    return `${ccaiSymbol || symbol}`
+  }
 
   const adaptTickerSymbolToCCAIFormat = (symbol) => {
     const delimiter = symbol.includes('/') ? '/' : ''
     if (delimiter === '') {
-      const regexp = /(.*)(BTC|ETH|USDT|BNB|XRP|PAX|USDC|TUSD|BUSD|USDS|USDS|NGN|RUB|TRY|EUR|ZAR|BKRW|TRX|IDRT|GBP|BIDR|UAH|DAI|AUD|BRL)/;
-      const [full, base, quote] = regexp.exec(symbol);
+      const regexp = /(.*)(BTC|ETH|USDT|BNB|XRP|PAX|USDC|TUSD|BUSD|USDS|USDS|NGN|RUB|TRY|EUR|ZAR|BKRW|TRX|IDRT|GBP|BIDR|UAH|DAI|AUD|BRL)/
+      const [full, base, quote] = regexp.exec(symbol)
       if (!quote || !base) {
-        console.log('cant parse market', symbol);
-        return;
+        console.log('cant parse market', symbol)
+        return
       }
-      const pair = `${adapt(base, binanceToCcaiMap)}_${adapt(quote, binanceToCcaiMap)}`;
+      const pair = `${adapt(base, binanceToCcaiMap)}_${adapt(
+        quote,
+        binanceToCcaiMap
+      )}`
       return pair
     } else {
-      const [base, quote] = symbol.split(delimiter);
+      const [base, quote] = symbol.split(delimiter)
       if (!quote || !base) {
-        console.log('cant parse market', symbol);
-        return;
+        console.log('cant parse market', symbol)
+        return
       }
-      const pair = `${adapt(base, binanceToCcaiMap)}_${adapt(quote, binanceToCcaiMap)}`;
+      const pair = `${adapt(base, binanceToCcaiMap)}_${adapt(
+        quote,
+        binanceToCcaiMap
+      )}`
       return pair
     }
   }
@@ -71,23 +79,42 @@ export default () => {
     return []
   }
 
-  
+  let recentlySavedData = []
+  let ordersTimestamp
+  let data = []
+  let webSocketUrl = null
+  let pastWebsocketClose = () => {}
+  let globalIsDataLoaded = null
 
   const startSocket = () => {
-    const socket = new WebSocket(
-      'wss://fstream.binance.com/ws/btcusdt@aggTrade'
-    )
+    // console.log('webSocketUrl', webSocketUrl)
+    const socket = new WebSocket(webSocketUrl)
+
     socket.onopen = () => {
-        console.log(`Binance websoket opened connection for`) // eslint-disable-line
+      console.log(`Binance websoket opened connection for`) // eslint-disable-line
     }
 
     socket.onmessage = (msg) => {
+      if (!globalIsDataLoaded) return 
+
       const tickersData = combineTradeHistoryDataFromWebsocket(msg)
-      const updatedData = reduceArrayLength(tickersData.concat(data), 40)
-      
-      data = updatedData
-      postMessage(data);
+      const updatedData = tickersData.concat(recentlySavedData)
+
+      const currentTimestamp = Date.now()
+      if (updatedData.length === 1) {
+        ordersTimestamp = currentTimestamp
+      }
+
+      recentlySavedData = updatedData
+
+      if (currentTimestamp - ordersTimestamp >= 333) {
+        data = reduceArrayLength(recentlySavedData.concat(data), 40)
+        recentlySavedData = []
+        postMessage(data)
+      }
     }
+
+    pastWebsocketClose = () => socket.close()
 
     socket.onclose = () => {
       console.log(`Binance websoket ONCLOSE stream:`) // eslint-disable-line
@@ -98,10 +125,32 @@ export default () => {
     }
   }
 
-  startSocket()
-
   self.addEventListener('message', (e) => {
-    console.log('workerdata', e)
-    postMessage('postedmessage')
+    globalIsDataLoaded = e.data.isDataLoaded
+    data = e.data.data
+
+    if (e.data.shouldChangeWebsocketUrl) {
+      console.log('pastWebsocketClose', pastWebsocketClose)
+      pastWebsocketClose()
+      webSocketUrl = null
+      data = []
+      recentlySavedData = []
+    };
+    
+    globalIsDataLoaded = e.data.isDataLoaded
+
+    if (!webSocketUrl) {
+      const pair = e.data.pair
+        .split('_')
+        .join('')
+        .toLowerCase()
+      const binanceStreamUrl = {
+        0: 'wss://stream.binance.com:9443/ws/',
+        1: 'wss://fstream.binance.com/ws/',
+      }
+      webSocketUrl = `${binanceStreamUrl[e.data.marketType]}${pair}@aggTrade`
+
+      startSocket()
+    }
   })
 }

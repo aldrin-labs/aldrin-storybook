@@ -38,17 +38,19 @@ const MemoizedChartCardHeader = React.memo(ChartCardHeader)
 class TableContainer extends PureComponent<IProps, IState> {
   state: IState = {
     data: [],
-    numbersAfterDecimalForPrice: 8,
   }
 
   static getDerivedStateFromProps(newProps: IProps, state: IState) {
     // query data processing
+
     if (
       state.data.length === 0 &&
       newProps.fetchData &&
       newProps.fetchData.length > 0 &&
-      !newProps.isPairDataLoading
+      !newProps.isPairDataLoading &&
+      newProps.fetchData[0].symbol === newProps.symbol
     ) {
+      console.log('newProps.fetchData', newProps, state)
       const updatedData = newProps.fetchData.reverse().map((trade, i) => ({
         ...trade,
         price: (+trade.price).toFixed(
@@ -60,13 +62,10 @@ class TableContainer extends PureComponent<IProps, IState> {
         id: `${trade.price}${trade.size}${i}${trade.timestamp}`,
       }))
 
-      const numbersAfterDecimalForPrice = getNumberOfDigitsAfterDecimal(
-        updatedData,
-        'price'
-      )
+      console.log('set new data', updatedData)
 
       return {
-        numbersAfterDecimalForPrice,
+        isDataLoaded: true,
         data: reduceArrayLength(updatedData),
       }
     }
@@ -78,7 +77,7 @@ class TableContainer extends PureComponent<IProps, IState> {
     this.tradeHistoryWorker = new WebWorker(tradeHistoryWorker)
 
     this.tradeHistoryWorker.addEventListener('message', (e) => {
-      console.log('th received data', e)
+      if (!e.data) return
 
       const proccesedData = e.data.map((trade) => ({
         ...trade,
@@ -90,62 +89,27 @@ class TableContainer extends PureComponent<IProps, IState> {
         ),
         time: dayjs.unix(+trade.timestamp).format('h:mm:ss a'),
       }))
+
       this.setState({ data: proccesedData })
     })
-
-    const message = 'message'
-    this.tradeHistoryWorker.postMessage(message)
   }
 
-  componentDidUpdate(prevProps: IProps) {
-    const prevPropsData = (prevProps.data &&
-      prevProps.data.length > 0 &&
-      prevProps.data[0]) || { size: 0, price: 0, timestamp: 0 }
-
-    // subscription data processing
+  componentDidUpdate(prevProps: IProps, prevState) {
+    // update globalQueryDataLoaded in webworker when query data loaded
     if (
-      this.state.data.length > 0 &&
-      this.props.data &&
-      this.props.data.length > 0 &&
-      (this.props.data[0].timestamp !== prevPropsData.timestamp ||
-        this.props.data[0].size !== prevPropsData.size ||
-        this.props.data[0].price !== prevPropsData.price)
+      this.state.isDataLoaded !== prevState.isDataLoaded &&
+      this.state.isDataLoaded
     ) {
-      const tickersData = this.props.data
-
-      if (
-        !tickersData ||
-        tickersData.length === 0 ||
-        tickersData[0].symbol !== this.props.currencyPair
-      ) {
-        // console.log('TableContainer SUBSCRIPTION DATA FOR WRONG PAIR')
-        this.setState({ data: [] })
-      }
-
-      const updatedData = reduceArrayLength(
-        tickersData
-          .map((trade) => ({
-            ...trade,
-            price: Number(trade.price).toFixed(
-              getNumberOfDecimalsFromNumber(
-                getAggregationsFromMinPriceDigits(this.props.minPriceDigits)[0]
-                  .value
-              )
-            ),
-            time: dayjs.unix(+trade.timestamp).format('h:mm:ss a'),
-          }))
-          .concat(this.state.data)
+      const messageWithFirstData = JSON.parse(
+        JSON.stringify({
+          isDataLoaded: this.state.isDataLoaded,
+          marketType: this.props.marketType,
+          pair: this.props.symbol,
+          data: this.state.data,
+        })
       )
 
-      const numbersAfterDecimalForPrice = getNumberOfDigitsAfterDecimal(
-        updatedData,
-        'price'
-      )
-
-      this.setState({
-        numbersAfterDecimalForPrice,
-        data: reduceArrayLength(updatedData),
-      })
+      this.tradeHistoryWorker.postMessage(messageWithFirstData)
     }
 
     if (
@@ -153,11 +117,18 @@ class TableContainer extends PureComponent<IProps, IState> {
       prevProps.currencyPair !== this.props.currencyPair ||
       prevProps.marketType !== this.props.marketType
     ) {
-      // console.log('TableContainer componentDidUpdate cleanState')
-      // when change exchange delete all data and...
-      this.setState({ data: [] }, () => {
-        // console.log('TableContainer componentDidUpdate cleanState SUCCESS')
-      })
+      const message = JSON.parse(
+        JSON.stringify({
+          isDataLoaded: false,
+          marketType: this.props.marketType,
+          pair: this.props.symbol,
+          data: [],
+          shouldChangeWebsocketUrl: true,
+        })
+      )
+
+      this.setState({ data: [], isDataLoaded: false })
+      this.tradeHistoryWorker.postMessage(message)
     }
   }
 
@@ -169,7 +140,7 @@ class TableContainer extends PureComponent<IProps, IState> {
       theme,
     } = this.props
 
-    const { data, numbersAfterDecimalForPrice } = this.state
+    const { data } = this.state
     const amountForBackground =
       data.reduce((prev, curr) => prev + +curr.size, 0) / data.length
 
@@ -181,7 +152,6 @@ class TableContainer extends PureComponent<IProps, IState> {
         <TradeHistoryTable
           data={data}
           theme={theme}
-          numbersAfterDecimalForPrice={numbersAfterDecimalForPrice}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
           quote={quote}
           amountForBackground={amountForBackground}
@@ -201,9 +171,6 @@ const TradeHistoryWrapper = compose(
     onData: combineTradeHistoryDataFromFetch,
     pair: (props: any) => props.symbol,
     limit: 100,
-  }),
-  withBatching({
-    data: (props: any) => props.data,
   })
 )(TableContainer)
 
