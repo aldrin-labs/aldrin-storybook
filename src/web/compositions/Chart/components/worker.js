@@ -628,6 +628,7 @@ export default () => {
         side: 'asks',
         timestamp: data.E,
       }))
+      
       const bids = data.b.map(([price, size]) => ({
         price,
         size,
