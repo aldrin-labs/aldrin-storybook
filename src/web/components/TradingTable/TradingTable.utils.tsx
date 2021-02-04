@@ -1808,10 +1808,10 @@ export const updateActivePositionsQuerryFunction = (
   previous,
   { subscriptionData }
 ) => {
-  console.log(
-    'updateActivePositionsQuerryFunction subscriptionData',
-    subscriptionData
-  )
+  // console.log(
+  //   'updateActivePositionsQuerryFunction subscriptionData',
+  //   subscriptionData
+  // )
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenFuturesPositions
 
