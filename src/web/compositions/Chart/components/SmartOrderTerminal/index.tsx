@@ -1241,7 +1241,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         if (marketType === 0 && entryPoint.order.side === 'sell') {
           maxAmount -= target.amount
         } else {
-          maxAmount -= target.amount * priceForCalculate
+          maxAmount -= target.amount * priceForCalculate // price in entryLevel
         }
       })
     }
