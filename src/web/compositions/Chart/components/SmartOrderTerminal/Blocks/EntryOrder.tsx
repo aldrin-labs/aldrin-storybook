@@ -5,6 +5,8 @@ import SvgIcon from '@sb/components/SvgIcon'
 
 import Chain from '@icons/chain.svg'
 
+import { processEntryLevels } from '@core/utils/chartPageUtils'
+
 import {
   getSecondValueFromFirst,
   GreenSwitcherStyles,
@@ -77,15 +79,6 @@ export const EntryOrderBlock = ({
   isAveragingAfterFirstTarget,
   updateStopLossAndTakeProfitPrices,
 }: EntryOrderBlockProps) => {
-  let avgPrice =
-    entryPoint.averaging.entryLevels &&
-    entryPoint.averaging.entryLevels.length !== 0
-      ? entryPoint.averaging.entryLevels[0].price
-      : 0
-  console.log('entryPoint', entryPoint)
-  let estPrice = 0
-  let sumAmount = 0
-  let margin = 0
   console.log('typeplot', entryPoint.TVAlert)
   return (
     <TerminalBlock theme={theme} width={'calc(33% + 0.5%)'} data-tut={'step1'}>
@@ -1186,37 +1179,14 @@ export const EntryOrderBlock = ({
                   border: theme.palette.border.main,
                 }}
               >
-                {entryPoint.averaging.entryLevels.map((el, index) => {
-                  const currentPrice =
-                    index === 0
-                      ? avgPrice
-                      : entryPoint.order.side === 'sell'
-                      ? (avgPrice *
-                          (100 + el.price / entryPoint.order.leverage)) /
-                        100
-                      : (avgPrice *
-                          (100 - el.price / entryPoint.order.leverage)) /
-                        100
-                  if (index === 0) {
-                    estPrice = el.price
-                    sumAmount = el.amount
-                    margin =
-                      (estPrice * sumAmount +
-                        currentPrice * ((el.amount / 100) * el.amount)) /
-                      entryPoint.order.leverage
-                  } else {
-                    const exactAmount = (el.amount / 100) * el.amount
-
-                    const total =
-                      estPrice * sumAmount + currentPrice * exactAmount
-
-                    estPrice = total / (sumAmount + exactAmount)
-                    sumAmount += exactAmount
-                    margin = total / entryPoint.order.leverage
-                  }
+                {processEntryLevels(
+                  entryPoint.averaging.entryLevels,
+                  entryPoint.order.leverage,
+                  entryPoint.order.side
+                ).map((level, index) => {
                   return (
                     <InputRowContainer
-                      key={`${el.price}${el.amount}${index}`}
+                      key={`${level.price}${level.quantity}${index}`}
                       padding=".2rem .5rem"
                       style={
                         entryPoint.averaging.entryLevels.length - 1 !== index
@@ -1230,13 +1200,13 @@ export const EntryOrderBlock = ({
                         theme={theme}
                         style={{ width: '25%', paddingLeft: '2rem' }}
                       >
-                        {currentPrice.toFixed(pricePrecision)} {pair[1]}
+                        {level.price.toFixed(pricePrecision)} {pair[1]}
                       </TargetValue>
                       <TargetValue theme={theme} style={{ width: '40%' }}>
-                        {estPrice.toFixed(pricePrecision)}
+                        {level.estimatedAveragingPrice.toFixed(pricePrecision)}
                       </TargetValue>{' '}
                       <TargetValue theme={theme} style={{ width: '25%' }}>
-                        {el.amount} {pair[0]}
+                        {level.quantity} {pair[0]}
                       </TargetValue>
                       <CloseIcon
                         onClick={() => deleteAverageTarget(index)}

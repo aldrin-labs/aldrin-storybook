@@ -433,6 +433,7 @@ export const TakeProfitBlock = ({
                   titleForTooltip:
                     'The price at which the trailing algorithm will be triggered.',
                   showErrors,
+                  levelFieldTitle: 'profit',
                   isMarketType,
                   validateField,
                   pricePrecision,
@@ -530,13 +531,13 @@ export const TakeProfitBlock = ({
                   <SliderWithPriceAndPercentageFieldRow
                     {...{
                       pair,
-                      needChain: takeProfit.trailingTAP.isTrailingOn,
+                      needChain: false,
                       theme,
                       needTooltip: true,
                       titleForTooltip:
                         'The level of price change after the trend reversal, at which the trailing order will be executed.',
                       header: 'est.price',
-                      percentageInputWidth: '61.5%',
+                      percentageInputWidth: '65.5%',
                       entryPoint,
                       showErrors,
                       maxSliderValue: 10,
@@ -547,27 +548,27 @@ export const TakeProfitBlock = ({
                       pricePrecision,
                       updateBlockValue,
                       priceForCalculate,
-                      needPriceField: takeProfit.trailingTAP.isTrailingOn,
+                      needPriceField: false,
                       percentagePreSymbol: '',
                       percentageTextAlign: 'right',
                       pricePercentage:
                         takeProfit.trailingTAP.deviationPercentage,
                       approximatePrice: takeProfit.trailingTAP.activatePrice,
-                      getApproximatePrice: (value: number) => {
-                        return value === 0
-                          ? priceForCalculate
-                          : entryPoint.order.side === 'sell'
-                          ? stripDigitPlaces(
-                              priceForCalculate *
-                                (1 - value / 100 / entryPoint.order.leverage),
-                              pricePrecision
-                            )
-                          : stripDigitPlaces(
-                              priceForCalculate *
-                                (1 + value / 100 / entryPoint.order.leverage),
-                              pricePrecision
-                            )
-                      },
+                      // getApproximatePrice: (value: number) => {
+                      //   return value === 0
+                      //     ? priceForCalculate
+                      //     : entryPoint.order.side === 'sell'
+                      //     ? stripDigitPlaces(
+                      //         priceForCalculate *
+                      //           (1 - value / 100 / entryPoint.order.leverage),
+                      //         pricePrecision
+                      //       )
+                      //     : stripDigitPlaces(
+                      //         priceForCalculate *
+                      //           (1 + value / 100 / entryPoint.order.leverage),
+                      //         pricePrecision
+                      //       )
+                      // },
                       onAfterSliderChange: (value: number) => {
                         updateSubBlockValue(
                           'takeProfit',

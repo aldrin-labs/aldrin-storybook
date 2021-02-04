@@ -7,6 +7,7 @@ import ErrorIcon from '@material-ui/icons/Error'
 import ArrowBottom from '@icons/arrowBottom.svg'
 import SvgIcon from '@sb/components/SvgIcon'
 import Timer from '@icons/clock.svg'
+import { processEntryLevels } from '@core/utils/chartPageUtils'
 
 import { Theme } from '@material-ui/core'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
@@ -399,46 +400,27 @@ export const getStrategyFields = ({
                   <TableCell theme={theme}>est. averaged entry price</TableCell>
                 </TableRow>
 
-                {entryLevels.map((el: EntryLevel, index: number) => {
-                  const currentPrice =
-                    index === 0
-                      ? avgPrice
-                      : side === 'sell'
-                      ? (avgPrice * (100 + el.price / leverage)) / 100
-                      : (avgPrice * (100 - el.price / leverage)) / 100
-                  if (index === 0) {
-                    estPrice = el.price
-                    sumAmount = el.amount
-                    margin =
-                      (estPrice * sumAmount +
-                        currentPrice * ((el.amount / 100) * amount)) /
-                      leverage
-                  } else {
-                    const exactAmount = (el.amount / 100) * amount
-
-                    const total =
-                      estPrice * sumAmount + currentPrice * exactAmount
-
-                    estPrice = total / (sumAmount + exactAmount)
-                    sumAmount += exactAmount
-                    margin = total / leverage
+                {processEntryLevels(entryLevels, leverage, side).map(
+                  (level, index) => {
+                    return (
+                      <TableRow>
+                        <TableCell theme={theme}>
+                          {level.price.toFixed(pricePrecision)} {pairArr[1]}
+                        </TableCell>
+                        <TableCell theme={theme}>
+                          {level.quantity} {index === 0 ? pairArr[0] : '%'} /{' '}
+                          {level.margin.toFixed(pricePrecision)} {pairArr[1]}
+                        </TableCell>
+                        <TableCell theme={theme}>
+                          {level.estimatedAveragingPrice.toFixed(
+                            pricePrecision
+                          )}{' '}
+                          {pairArr[1]}
+                        </TableCell>
+                      </TableRow>
+                    )
                   }
-
-                  return (
-                    <TableRow>
-                      <TableCell theme={theme}>
-                        {currentPrice.toFixed(pricePrecision)} {pairArr[1]}
-                      </TableCell>
-                      <TableCell theme={theme}>
-                        {el.amount} {index === 0 ? pairArr[0] : '%'} /{' '}
-                        {margin.toFixed(pricePrecision)} {pairArr[1]}
-                      </TableCell>
-                      <TableCell theme={theme}>
-                        {estPrice.toFixed(pricePrecision)} {pairArr[1]}
-                      </TableCell>
-                    </TableRow>
-                  )
-                })}
+                )}
               </table>{' '}
             </div>
           )}
@@ -460,32 +442,32 @@ export const getStrategyFields = ({
             theme={theme}
             color={theme.palette.red.main}
           >
-            {isActiveTable &&
-            <SubColumnTitle
-              theme={theme}
-              style={{ width: 'auto', padding: '0 1rem 0 0' }}
-            >
-              <BtnCustom
-                needMinWidth={false}
-                btnWidth="auto"
-                height="1.5rem"
-                fontSize=".9rem"
-                padding=".1rem 1rem 0 1rem"
-                borderRadius="0.5rem"
-                borderColor={theme.palette.blue.tabs}
-                btnColor={'#fff'}
-                backgroundColor={theme.palette.blue.tabs}
-                hoverBackground={theme.palette.blue.tabs}
-                transition={'all .4s ease-out'}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  editTrade('stopLoss', el)
-                }}
+            {isActiveTable && (
+              <SubColumnTitle
+                theme={theme}
+                style={{ width: 'auto', padding: '0 1rem 0 0' }}
               >
-                edit
-              </BtnCustom>
-            </SubColumnTitle>
-    }
+                <BtnCustom
+                  needMinWidth={false}
+                  btnWidth="auto"
+                  height="1.5rem"
+                  fontSize=".9rem"
+                  padding=".1rem 1rem 0 1rem"
+                  borderRadius="0.5rem"
+                  borderColor={theme.palette.blue.tabs}
+                  btnColor={'#fff'}
+                  backgroundColor={theme.palette.blue.tabs}
+                  hoverBackground={theme.palette.blue.tabs}
+                  transition={'all .4s ease-out'}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    editTrade('stopLoss', el)
+                  }}
+                >
+                  edit
+                </BtnCustom>
+              </SubColumnTitle>
+            )}
             <div
               style={{
                 display: 'flex',
