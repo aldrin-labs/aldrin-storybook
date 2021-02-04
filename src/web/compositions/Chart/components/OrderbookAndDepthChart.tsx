@@ -11,13 +11,7 @@ import { checkLoginStatus } from '@core/utils/loginUtils'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
 import { updateOpenOrderHistoryQuerryFunction } from '@sb/components/TradingTable/TradingTable.utils'
-import { ORDERS_MARKET_QUERY } from '@core/graphql/queries/chart/ORDERS_MARKET_QUERY'
 import { getTerminalData } from '@core/graphql/queries/chart/getTerminalData'
-
-import {
-  MOCKED_ORDERBOOK,
-  ORDERBOOK,
-} from '@core/graphql/subscriptions/ORDERBOOK'
 import { OrderBookTableContainer, DepthChart } from '../components'
 import { OrderbookContainer } from '../Chart.styles'
 import {
@@ -26,22 +20,18 @@ import {
 } from '../Tables/OrderBookTable/OrderBookTableContainer.types'
 
 import {
-  transformOrderbookData,
   addOrdersToOrderbook,
   addOrderToOrderbook,
   getAggregatedData,
   getDataFromTree,
   getAggregationsFromMinPriceDigits,
   getNumberOfDecimalsFromNumber,
-  combineOrderbookFromWebsocket,
   combineOrderbookFromFetch,
 } from '@core/utils/chartPageUtils'
 
-import { withWebsocket } from '@core/hoc/withWebsocket'
 import { withFetch } from '@core/hoc/withFetchHoc'
 import { getUrlForFetch } from '@core/utils/getUrlForFetch'
-import { getUrlForWebsocket } from '@core/utils/getUrlForWebsocket'
-// import Worker from 'worker-loader!./worker.js';
+
 import worker from './worker.js';
 import WebWorker from './workerSetup';
 
