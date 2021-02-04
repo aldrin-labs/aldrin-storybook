@@ -5,7 +5,8 @@ import dayjs from 'dayjs'
 import TradeHistoryTable from './Table/TradeHistoryTable'
 import ChartCardHeader from '@sb/components/ChartCardHeader'
 // var SortedMap = require('collections/sorted-map')
-
+import tradeHistoryWorker from './tradeHistoryWorker'
+import WebWorker from '@sb/compositions/Chart/components/workerSetup'
 import {
   reduceArrayLength,
   getNumberOfDigitsAfterDecimal,
@@ -73,17 +74,42 @@ class TableContainer extends PureComponent<IProps, IState> {
     return null
   }
 
+  componentDidMount() {
+    this.tradeHistoryWorker = new WebWorker(tradeHistoryWorker)
+
+    this.tradeHistoryWorker.addEventListener('message', (e) => {
+      console.log('th received data', e)
+
+      const proccesedData = e.data.map((trade) => ({
+        ...trade,
+        price: Number(trade.price).toFixed(
+          getNumberOfDecimalsFromNumber(
+            getAggregationsFromMinPriceDigits(this.props.minPriceDigits)[0]
+              .value
+          )
+        ),
+        time: dayjs.unix(+trade.timestamp).format('h:mm:ss a'),
+      }))
+      this.setState({ data: proccesedData })
+    })
+
+    const message = 'message'
+    this.tradeHistoryWorker.postMessage(message)
+  }
+
   componentDidUpdate(prevProps: IProps) {
-    const prevPropsData = (prevProps.data && prevProps.data.length > 0 && prevProps.data[0]) || { size: 0, price: 0, timestamp: 0 }
+    const prevPropsData = (prevProps.data &&
+      prevProps.data.length > 0 &&
+      prevProps.data[0]) || { size: 0, price: 0, timestamp: 0 }
 
     // subscription data processing
     if (
       this.state.data.length > 0 &&
       this.props.data &&
       this.props.data.length > 0 &&
-      (this.props.data[0].timestamp !== prevPropsData.timestamp || 
-      this.props.data[0].size !== prevPropsData.size ||
-      this.props.data[0].price !== prevPropsData.price)
+      (this.props.data[0].timestamp !== prevPropsData.timestamp ||
+        this.props.data[0].size !== prevPropsData.size ||
+        this.props.data[0].price !== prevPropsData.price)
     ) {
       const tickersData = this.props.data
 
@@ -93,7 +119,7 @@ class TableContainer extends PureComponent<IProps, IState> {
         tickersData[0].symbol !== this.props.currencyPair
       ) {
         // console.log('TableContainer SUBSCRIPTION DATA FOR WRONG PAIR')
-        this.setState({ data: [] });
+        this.setState({ data: [] })
       }
 
       const updatedData = reduceArrayLength(
@@ -102,9 +128,8 @@ class TableContainer extends PureComponent<IProps, IState> {
             ...trade,
             price: Number(trade.price).toFixed(
               getNumberOfDecimalsFromNumber(
-                getAggregationsFromMinPriceDigits(
-                  this.props.minPriceDigits
-                )[0].value
+                getAggregationsFromMinPriceDigits(this.props.minPriceDigits)[0]
+                  .value
               )
             ),
             time: dayjs.unix(+trade.timestamp).format('h:mm:ss a'),
@@ -123,13 +148,11 @@ class TableContainer extends PureComponent<IProps, IState> {
       })
     }
 
-
     if (
       prevProps.exchange !== this.props.exchange ||
       prevProps.currencyPair !== this.props.currencyPair ||
       prevProps.marketType !== this.props.marketType
     ) {
-
       // console.log('TableContainer componentDidUpdate cleanState')
       // when change exchange delete all data and...
       this.setState({ data: [] }, () => {
@@ -152,7 +175,9 @@ class TableContainer extends PureComponent<IProps, IState> {
 
     return (
       <>
-        <MemoizedChartCardHeader theme={theme}>Trade history</MemoizedChartCardHeader>
+        <MemoizedChartCardHeader theme={theme}>
+          Trade history
+        </MemoizedChartCardHeader>
         <TradeHistoryTable
           data={data}
           theme={theme}
@@ -171,36 +196,28 @@ const TradeHistoryWrapper = compose(
   // withWebsocket,
   withErrorFallback,
   withFetch({
-    url: (props: any) => getUrlForFetch('TH', props.marketType, props.symbol, 100),
+    url: (props: any) =>
+      getUrlForFetch('TH', props.marketType, props.symbol, 100),
     onData: combineTradeHistoryDataFromFetch,
     pair: (props: any) => props.symbol,
     limit: 100,
   }),
-  withWebsocket({
-    url: (props: any) => getUrlForWebsocket('TH', props.marketType, props.symbol),
-    onMessage: combineTradeHistoryDataFromWebsocket,
-    pair: (props: any) => props.symbol,
-    // throttling: true,
-    // throttlingTime: 0.33,
-  }),
   withBatching({
-    data: (props: any) => props.data
-  }),
+    data: (props: any) => props.data,
+  })
 )(TableContainer)
 
-export default React.memo(TradeHistoryWrapper, (prevProps: any, nextProps: any) => {
+export default React.memo(
+  TradeHistoryWrapper,
+  (prevProps: any, nextProps: any) => {
+    const symbolIsEqual = prevProps.symbol === nextProps.symbol
+    const marketTypeIsEqual = prevProps.marketType === nextProps.marketType
+    const currencyPairIsEqual = prevProps.currencyPair === nextProps.prevProps
 
-  const symbolIsEqual = prevProps.symbol === nextProps.symbol
-  const marketTypeIsEqual = prevProps.marketType === nextProps.marketType
-  const currencyPairIsEqual = prevProps.currencyPair === nextProps.prevProps
+    if (symbolIsEqual && marketTypeIsEqual && currencyPairIsEqual) {
+      return true
+    }
 
-  if (
-    symbolIsEqual &&
-    marketTypeIsEqual &&
-    currencyPairIsEqual
-  ) {
-    return true
+    return false
   }
-
-  return false
-})
+)
