@@ -11,13 +11,7 @@ import { checkLoginStatus } from '@core/utils/loginUtils'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
 import { updateOpenOrderHistoryQuerryFunction } from '@sb/components/TradingTable/TradingTable.utils'
-import { ORDERS_MARKET_QUERY } from '@core/graphql/queries/chart/ORDERS_MARKET_QUERY'
 import { getTerminalData } from '@core/graphql/queries/chart/getTerminalData'
-
-import {
-  MOCKED_ORDERBOOK,
-  ORDERBOOK,
-} from '@core/graphql/subscriptions/ORDERBOOK'
 import { OrderBookTableContainer, DepthChart } from '../components'
 import { OrderbookContainer } from '../Chart.styles'
 import {
@@ -25,24 +19,21 @@ import {
   OrderbookGroup,
 } from '../Tables/OrderBookTable/OrderBookTableContainer.types'
 
-import { client } from '@core/graphql/apolloClient'
-
 import {
-  transformOrderbookData,
   addOrdersToOrderbook,
   addOrderToOrderbook,
   getAggregatedData,
-  testJSON,
+  getDataFromTree,
   getAggregationsFromMinPriceDigits,
   getNumberOfDecimalsFromNumber,
-  combineOrderbookFromWebsocket,
   combineOrderbookFromFetch,
 } from '@core/utils/chartPageUtils'
 
-import { withWebsocket } from '@core/hoc/withWebsocket'
 import { withFetch } from '@core/hoc/withFetchHoc'
 import { getUrlForFetch } from '@core/utils/getUrlForFetch'
-import { getUrlForWebsocket } from '@core/utils/getUrlForWebsocket'
+
+import worker from './worker.js';
+import WebWorker from './workerSetup';
 
 const gridStyles = { height: '100%' }
 const obAndDepthChartContainerStyles = {
@@ -55,26 +46,30 @@ const MemoizedOrderbookContainer = React.memo(OrderbookContainer)
 
 class OrderbookAndDepthChart extends React.PureComponent {
   state = {
-    readyForNewOrder: true,
+    queryDataLoaded: false,
     aggregation: 0,
-    resubscribeTimer: null,
-    dataWasUpdated: true,
-    asks: new TreeMap(),
-    bids: new TreeMap(),
-    aggregatedData: {
-      asks: new TreeMap(),
-      bids: new TreeMap(),
-    },
+    // asks: new TreeMap(),
+    // bids: new TreeMap(),
+    // aggregatedData: {
+    //   asks: new TreeMap(),
+    //   bids: new TreeMap(),
+    // },
+    webWorkerData: {
+      asks: [],
+      bids: [],
+      aggregatedData: {
+        asks: [],
+        bids: [],
+      },
+    }
   }
 
   subscription: { unsubscribe: Function } | null
 
   // transforming data
   static getDerivedStateFromProps(newProps, state) {
-    const { asks, bids } = state
+    const { webWorkerData } = state
     const {
-      // BINANCE_TODO
-      // here we should take data from binance OB query
       fetchData,
       sizeDigits,
       isPairDataLoading,
@@ -87,26 +82,31 @@ class OrderbookAndDepthChart extends React.PureComponent {
 
     // first get data from query
     if (
-      asks.getLength() === 0 &&
-      bids.getLength() === 0 &&
+      webWorkerData.asks.length === 0 &&
+      webWorkerData.bids.length === 0 &&
       marketOrders &&
       marketOrders.asks &&
       marketOrders.bids &&
       !isPairDataLoading
     ) {
       updatedData = addOrdersToOrderbook({
-        updatedData: { asks, bids },
+        updatedData: { asks: new TreeMap(), bids: new TreeMap() },
         ordersData: marketOrders,
         aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
         defaultAggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0]
           .value,
-        originalOrderbookTree: { asks, bids },
+        originalOrderbookTree: { asks: new TreeMap(), bids: new TreeMap() },
         isAggregatedData: false,
         sizeDigits,
       })
 
+      // transform treemap to array
       return {
-        ...updatedData,
+        webWorkerData: {
+          asks: getDataFromTree(updatedData.asks, 'asks').reverse(),
+          bids: getDataFromTree(updatedData.bids, 'bids').reverse(),
+        },
+        queryDataLoaded: true,
         aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
       }
     }
@@ -114,102 +114,81 @@ class OrderbookAndDepthChart extends React.PureComponent {
     return null
   }
 
-  componentDidUpdate(prevProps: IProps) {
-    if (
-      prevProps.data?.marketOrders?.asks.length !==
-      this.props.data?.marketOrders?.asks.length
-    ) {
-      const { asks, bids, readyForNewOrder, aggregation } = this.state
+  componentDidMount() {
+    this.worker = new WebWorker(worker);
 
-      const { sizeDigits, minPriceDigits, isPairDataLoading, data } = this.props
-      if (
-        // (asks.getLength() === 0 && bids.getLength() === 0) ||
-        isPairDataLoading ||
-        !aggregation
-      ) {
-        return
-      }
-
-      let updatedData = null
-      let newResubscribeTimer = null
-      let updatedAggregatedData = this.state.aggregatedData
-
-      let ordersAsks = data.marketOrders.asks
-      let ordersBids = data.marketOrders.bids
-
-      const marketOrders = Object.assign(
-        {
-          asks: [],
-          bids: [],
-          __typename: 'orderbookOrder',
-        },
-        {
-          asks: ordersAsks,
-          bids: ordersBids,
+    this.worker.addEventListener('message', e => {
+      const isAggregatedData = e.data.isAggregatedData
+			this.setState(prev => ({
+        webWorkerData: {
+          ...prev,
+          ...(isAggregatedData ? {} : { asks: e.data.asks, bids: e.data.bids }),
+          aggregatedData: {
+            ...prev.aggregatedData,
+            ...(!isAggregatedData ? {} : { asks: e.data.asks, bids: e.data.bids }),
+          }
         }
+      }))
+    });
+
+    if (!this.props.isPairDataLoading) {
+      const { queryDataLoaded } = this.state
+      const { sizeDigits, minPriceDigits, isPairDataLoading, data, marketType, symbol } = this.props
+
+      const message = JSON.parse(
+        JSON.stringify({
+          aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
+          sizeDigits,
+          minPriceDigits,
+          isPairDataLoading,
+          queryDataLoaded,
+          marketType,
+          symbol
+        })
+      )
+  
+      this.worker.postMessage(message);
+    }
+  }
+
+  componentDidUpdate(prevProps: IProps, prevState) {
+    const { queryDataLoaded } = this.state
+    const { sizeDigits, minPriceDigits, isPairDataLoading, data, marketType, symbol, fetchData } = this.props
+
+    const message = JSON.parse(
+      JSON.stringify({
+        aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
+        sizeDigits,
+        minPriceDigits,
+        isPairDataLoading,
+        queryDataLoaded,
+        marketType,
+        symbol,
+        marketOrders: fetchData,
+      })
+    )
+
+    // update globalQueryDataLoaded in webworker when query data loaded
+    if (this.state.queryDataLoaded !== prevState.queryDataLoaded) {
+      const messageWithFirstData = JSON.parse(
+        JSON.stringify({
+          aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
+          sizeDigits,
+          minPriceDigits,
+          isPairDataLoading,
+          queryDataLoaded,
+          marketType,
+          symbol,
+          marketOrders: fetchData,
+        })
       )
 
-      if (
-        ((marketOrders.asks.length > 0 || marketOrders.bids.length > 0) &&
-          !(typeof marketOrders.asks === 'string')) ||
-        !(typeof marketOrders.bids === 'string')
-      ) {
-        const ordersData = marketOrders
-        const orderbookData = updatedData || { asks, bids }
-        // check this current pair and marketType === pair in new orders
-        // if (
-        //   (ordersData.bids.length > 0 &&
-        //     ordersData.bids[0].pair !==
-        //       `${this.props.symbol}_${this.props.marketType}`) ||
-        //   (ordersData.asks.length > 0 &&
-        //     ordersData.asks[0].pair !==
-        //       `${this.props.symbol}_${this.props.marketType}`)
-        // )
-        //   return null
+      this.worker.postMessage(messageWithFirstData);
+    }
 
-        if (
-          String(aggregation) !==
-          String(getAggregationsFromMinPriceDigits(minPriceDigits)[0].value)
-        ) {
-          updatedAggregatedData = addOrdersToOrderbook({
-            updatedData: updatedAggregatedData,
-            ordersData,
-            aggregation,
-            defaultAggregation: getAggregationsFromMinPriceDigits(
-              this.props.minPriceDigits
-            )[0].value,
-            originalOrderbookTree: { asks, bids },
-            isAggregatedData: true,
-            sizeDigits,
-          })
-        }
-
-        updatedData = addOrdersToOrderbook({
-          updatedData: orderbookData,
-          ordersData,
-          aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0]
-            .value,
-          defaultAggregation: getAggregationsFromMinPriceDigits(
-            this.props.minPriceDigits
-          )[0].value,
-          originalOrderbookTree: { asks, bids },
-          isAggregatedData: false,
-          sizeDigits,
-        })
-      }
-
-      this.setState({
-        dataWasUpdated: true,
-        resubscribeTimer: newResubscribeTimer,
-        readyForNewOrder:
-          readyForNewOrder === undefined ? true : readyForNewOrder,
-        aggregation:
-          aggregation === undefined || aggregation === 0
-            ? String(getAggregationsFromMinPriceDigits(minPriceDigits)[0].value)
-            : aggregation,
-        aggregatedData: updatedAggregatedData,
-        ...updatedData,
-      })
+    // update sizeDigits + aggregation + minPriceDigits once pair data loaded
+    if (this.props.isPairDataLoading !== prevProps.isPairDataLoading ) {
+      this.worker.postMessage(message);
     }
 
     if (
@@ -225,6 +204,8 @@ class OrderbookAndDepthChart extends React.PureComponent {
           getAggregationsFromMinPriceDigits(this.props.minPriceDigits)[0].value
         ),
       })
+
+      this.worker.postMessage(message);
     }
 
     if (
@@ -232,18 +213,55 @@ class OrderbookAndDepthChart extends React.PureComponent {
       prevProps.symbol !== this.props.symbol ||
       prevProps.marketType !== this.props.marketType
     ) {
-      // console.log('OrderbookAndDepthChart componentDidUpdate cleanState')
-      // when change exchange delete all data and...
-      this.setState({ asks: new TreeMap(), bids: new TreeMap() }, () => {
-        // console.log('OrderbookAndDepthChart componentDidUpdate cleanState SUCCESS')
+      // add first data
+      // not new webworker but new socket
+      this.worker.terminate();
+      this.worker = new WebWorker(worker);
+
+      this.setState({
+        webWorkerData: {
+          asks: [],
+          bids: [],
+          aggregatedData: {
+            asks: [],
+            bids: [],
+          },
+        },
+        queryDataLoaded: false,
       })
+
+      this.worker.addEventListener('message', e => {
+        const isAggregatedData = e.data.isAggregatedData;
+        this.setState(prev => ({
+          webWorkerData: {
+            ...prev,
+            ...(isAggregatedData ? {} : { asks: e.data.asks, bids: e.data.bids }),
+            aggregatedData: {
+              ...prev.aggregatedData,
+              ...(!isAggregatedData ? {} : { asks: e.data.asks, bids: e.data.bids }),
+            }
+          }
+        }))
+      });
+
+      const messageForNewWebsocket = JSON.parse(
+        JSON.stringify({
+          aggregation: getAggregationsFromMinPriceDigits(minPriceDigits)[0].value,
+          sizeDigits,
+          minPriceDigits,
+          isPairDataLoading,
+          queryDataLoaded,
+          marketType,
+          symbol
+        })
+      )
+
+      this.worker.postMessage(messageForNewWebsocket)
     }
   }
 
   componentWillUnmount() {
-    this.setState({ readyForNewOrder: false })
-    this.subscription && this.subscription.unsubscribe()
-    // clearInterval(this.state.resubscribeTimer)
+    this.worker.terminate()
   }
 
   setOrderbookAggregation = (aggregation: OrderbookGroup) => {
@@ -363,7 +381,8 @@ class OrderbookAndDepthChart extends React.PureComponent {
     } = this.props
 
     const marketOrders = (data && data.marketOrders) || []
-    const { asks, bids, aggregation, aggregatedData } = this.state
+    const { aggregation } = this.state
+    const { asks, bids, aggregatedData } = this.state.webWorkerData
 
     const dataToSend =
       String(aggregation) ===
@@ -460,12 +479,12 @@ const OrderbookAndDepthChartDataWrapper = compose(
     pair: (props: any) => props.symbol,
     limit: 100,
   }),
-  withWebsocket({
-    url: (props: any) =>
-      getUrlForWebsocket('OB', props.marketType, props.symbol),
-    onMessage: combineOrderbookFromWebsocket,
-    pair: (props: any) => props.symbol,
-  })
+  // withWebsocket({
+  //   url: (props: any) =>
+  //     getUrlForWebsocket('OB', props.marketType, props.symbol),
+  //   onMessage: combineOrderbookFromWebsocket,
+  //   pair: (props: any) => props.symbol,
+  // })
 )(OrderbookAndDepthChart)
 
 const MemoizedOrderbookAndDepthChartDataWrapper = React.memo(

@@ -68,7 +68,6 @@ class OrderBookTableContainer extends PureComponent<IProps, IState> {
       theme,
       exchange,
       marketType,
-      marketOrders,
       aggregation,
       symbol,
       onButtonClick,
