@@ -108,7 +108,6 @@ export default () => {
 
       if (currentTimestamp - ordersTimestamp >= 333) {
         data = reduceArrayLength(recentlySavedData.concat(data), 40)
-        console.log('data in worker', data)
         recentlySavedData = []
         postMessage(data)
       }
@@ -130,7 +129,6 @@ export default () => {
     data = e.data.data
 
     if (e.data.shouldChangeWebsocketUrl) {
-      console.log('pastWebsocketClose', pastWebsocketClose)
       pastWebsocketClose()
       webSocketUrl = null
       data = []
