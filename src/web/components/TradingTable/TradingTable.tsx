@@ -103,6 +103,12 @@ class TradingTable extends React.PureComponent<IProps, IState> {
           this.setState({ tab: 'positions' })
         }
       }
+
+      if (this.props.terminalViewMode === 'onlyTables') {
+        this.setState({
+          tab: 'activeTrades',
+        })
+      }
     }
   }
 
@@ -231,6 +237,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       >
         <TradingTabs
           {...{
+            terminalViewMode,
             updateTerminalViewMode,
             isDefaultTerminalViewMode,
             isDefaultOnlyTables,
@@ -352,7 +359,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             perPage: perPagePositions,
             show: tab === 'positions',
             handleToggleSpecificPair: this.handleToggleSpecificPair,
-            handleToggleAllKeys: this.handleToggleSpecificPair,
+            handleToggleAllKeys: this.handleToggleAllKeys,
             handleChangePage: (value: number) =>
               this.handleChangePage('pagePositions', value),
             handleChangeRowsPerPage: (
@@ -389,7 +396,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             perPage: perPageOpenOrders,
             show: tab === 'openOrders',
             handleToggleSpecificPair: this.handleToggleSpecificPair,
-            handleToggleAllKeys: this.handleToggleSpecificPair,
+            handleToggleAllKeys: this.handleToggleAllKeys,
             handleChangePage: (value: number) =>
               this.handleChangePage('pageOpenOrders', value),
             handleChangeRowsPerPage: (
@@ -423,7 +430,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             showSmartTradesFromAllAccounts,
             show: tab === 'orderHistory',
             handleToggleSpecificPair: this.handleToggleSpecificPair,
-            handleToggleAllKeys: this.handleToggleSpecificPair,
+            handleToggleAllKeys: this.handleToggleAllKeys,
             handleTabChange: this.handleTabChange,
             handlePairChange: this.handlePairChange,
           }}
@@ -452,7 +459,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             handleTabChange: this.handleTabChange,
             handlePairChange: this.handlePairChange,
             handleToggleSpecificPair: this.handleToggleSpecificPair,
-            handleToggleAllKeys: this.handleToggleSpecificPair,
+            handleToggleAllKeys: this.handleToggleAllKeys,
           }}
         />
         <Funds
@@ -503,7 +510,7 @@ const TradingTableWrapper = compose(
   withErrorFallback,
   withTheme(),
   queryRendererHoc({
-    // HEDGE MODE CHANGE 
+    // HEDGE MODE CHANGE
     query: getAllUserKeys,
     name: 'getAllUserKeysQuery',
     withOutSpinner: true,

@@ -464,7 +464,12 @@ export const TradeInputBlock = styled.div`
 `
 
 export const SeparateInputTitle = styled.span`
-  color: ${(props) => props.theme.palette.dark.main};
+  color: ${(props) =>
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.dark &&
+      props.theme.palette.dark.main) ||
+    '#16253D'};
   font-size: 0.9rem;
   font-weight: bold;
   text-transform: uppercase;

@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React from 'react'
 import dayjs from 'dayjs'
 import copy from 'clipboard-copy'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { withTheme } from '@material-ui/styles'
+import { withSnackbar } from 'notistack'
 
 import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
@@ -54,6 +55,7 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       cancelOrderMutation,
       marketType,
       disableStrategyMutation,
+      enqueueSnackbar,
     } = this.props
 
     try {
@@ -75,22 +77,41 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
     }
   }
 
-  // onCancelAllOrders
-  // take array of orders that currently in table
-  // by loop execute onCancelOrder for each of them
-
   onCancelAllOrders = async () => {
     const filteredOpenOrders = this.props.getOpenOrderHistoryQuery.getOpenOrderHistory.orders.filter(
       (order) => filterOpenOrders({ order, canceledOrders: [] })
     )
-    filteredOpenOrders.forEach((order) => {
-      this.onCancelOrder(
-        order.keyId,
-        order.info.orderId,
-        order.pair,
-        order.type
+
+    Promise.all(
+      filteredOpenOrders.map(async (order) =>
+        this.onCancelOrder(
+          order.keyId,
+          order.info.orderId,
+          order.symbol,
+          order.type
+        )
       )
-    })
+    )
+      .then((results) => {
+        let isAllOrdersCancelled = true
+        results.forEach((el, index) => {
+          if (el.data.cancelOrder.status === 'OK') {
+            return
+          } else {
+            isAllOrdersCancelled = false
+          }
+        })
+        if (isAllOrdersCancelled) {
+          this.props.enqueueSnackbar(`Your orders canceled successfully`, {
+            variant: 'success',
+          })
+        }
+      })
+      .catch((e) => {
+        this.props.enqueueSnackbar(`Error canceling all your orders`, {
+          variant: 'error',
+        })
+      })
   }
 
   cancelOrderWithStatus = async (
@@ -445,6 +466,9 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
       return null
     }
 
+    const filteredOpenOrders = this.props.getOpenOrderHistoryQuery.getOpenOrderHistory.orders.filter(
+      (order) => filterOpenOrders({ order, canceledOrders: [] })
+    )
     return (
       <TableWithSort
         style={{
@@ -518,14 +542,13 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
         }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
         data={{ body: openOrdersProcessedData }}
-        columnNames={getTableHead(
+        columnNames={getTableHead({
           tab,
           marketType,
-          () => {},
-          () => {},
-          () => {},
-          this.onCancelAllOrders
-        )}
+          theme,
+          filteredOpenOrders,
+          onCancelAllOrders: this.onCancelAllOrders,
+        })}
       />
     )
   }
@@ -549,10 +572,10 @@ const TableDataWrapper = ({ ...props }) => {
         openOrderInput: {
           activeExchangeKey: props.selectedKey.keyId,
           marketType: props.marketType,
-          allKeys: allKeys,
+          allKeys: props.allKeys,
           page,
           perPage,
-          ...(!specificPair ? {} : { specificPair: props.currencyPair }),
+          ...(!props.specificPair ? {} : { specificPair: props.currencyPair }),
         },
       }}
       withOutSpinner={false}
@@ -567,8 +590,10 @@ const TableDataWrapper = ({ ...props }) => {
           openOrderInput: {
             activeExchangeKey: props.selectedKey.keyId,
             marketType: props.marketType,
-            allKeys: allKeys,
-            ...(!specificPair ? {} : { specificPair: props.currencyPair }),
+            allKeys: props.allKeys,
+            ...(!props.specificPair
+              ? {}
+              : { specificPair: props.currencyPair }),
           },
         },
         updateQueryFunction: updateOpenOrderHistoryQuerryFunction,
@@ -616,6 +641,7 @@ const MemoizedWrapper = React.memo(TableDataWrapper, (prevProps, nextProps) => {
 })
 
 export default compose(
+  withSnackbar,
   graphql(disableStrategy, { name: 'disableStrategyMutation' }),
   graphql(CANCEL_ORDER_MUTATION, { name: 'cancelOrderMutation' }),
   graphql(ordersHealthcheck, { name: 'ordersHealthcheckMutation' })

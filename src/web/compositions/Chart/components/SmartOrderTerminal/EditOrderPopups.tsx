@@ -286,12 +286,13 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                 theme={theme}
                 isActive={this.state.isSplitTargetsOn}
                 onClick={() => {
+                  if (this.state.isSplitTargetsOn) {
+                    this.setState({ targets: [] })
+                  }
+
                   this.setState((prev) => ({
                     isSplitTargetsOn: !prev.isSplitTargetsOn,
                     isTrailingOn: false,
-                  }))
-
-                  this.setState((prev) => ({
                     isTimeoutOn: false,
                   }))
                 }}
@@ -508,7 +509,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                         value={this.state.volumePercentage}
                         onChange={(e) => {
                           const occupiedVolume = this.state.targets.reduce(
-                            (prev, curr) => prev + curr.quantity,
+                            (prev, curr) => prev + curr.amount,
                             0
                           )
 
@@ -530,7 +531,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                         }}
                         onChange={(value) => {
                           const occupiedVolume = this.state.targets.reduce(
-                            (prev, curr) => prev + curr.quantity,
+                            (prev, curr) => prev + curr.amount,
                             0
                           )
 
@@ -572,7 +573,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                           ...prev.targets,
                           {
                             price: prev.pricePercentage,
-                            quantity: prev.volumePercentage,
+                            amount: prev.volumePercentage,
                             type: prev.type,
                           },
                         ],
@@ -595,7 +596,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                       profit
                     </TargetTitle>
                     <TargetTitle theme={theme} style={{ width: '50%' }}>
-                      quantity
+                      amount
                     </TargetTitle>
                   </InputRowContainer>
                   <div
@@ -608,7 +609,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                   >
                     {this.state.targets.map((target, i) => (
                       <InputRowContainer
-                        key={`${target.price}${target.quantity}${i}`}
+                        key={`${target.price}${target.amount}${i}`}
                         padding=".2rem .5rem"
                         style={
                           this.state.targets.length - 1 !== i
@@ -625,7 +626,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                           +{target.price}%
                         </TargetValue>
                         <TargetValue theme={theme} style={{ width: '40%' }}>
-                          {target.quantity}%
+                          {target.amount}%
                         </TargetValue>
                         <CloseIcon
                           onClick={() =>
@@ -1428,7 +1429,9 @@ export class EditEntryOrderPopup extends React.Component<
     if (state.side === '') {
       const { side, price, pricePrecision, leverage, quantityPrecision } = props
 
-      const marketPrice = props.getPriceQuery?.getPrice || props.getPriceQuery?.getMarkPrice?.markPrice
+      const marketPrice =
+        props.getPriceQuery?.getPrice ||
+        props.getPriceQuery?.getMarkPrice?.markPrice
 
       let priceForCalculate =
         props.derivedState.type === 'market' && !props.derivedState.isTrailingOn
@@ -1437,16 +1440,16 @@ export class EditEntryOrderPopup extends React.Component<
 
       const deviationPercentage = props.openFromTerminal
         ? props.derivedState.deviationPercentage
-        : (props.derivedState.deviationPercentage / props.leverage).toFixed(3)
+        : (props.derivedState.deviationPercentage).toFixed(3)
 
       const trailingDeviationPrice =
         side === 'buy'
           ? stripDigitPlaces(
-              priceForCalculate * (1 + deviationPercentage / 100),
+              priceForCalculate * (1 + deviationPercentage / leverage / 100),
               pricePrecision
             )
           : stripDigitPlaces(
-              priceForCalculate * (1 - deviationPercentage / 100),
+              priceForCalculate * (1 - deviationPercentage / leverage / 100),
               pricePrecision
             )
 
@@ -1469,9 +1472,11 @@ export class EditEntryOrderPopup extends React.Component<
   }
   updateTrailingPrice = (deviationPercentage) => {
     const { type, isTrailingOn } = this.state
-    const { side, price, pricePrecision } = this.props
+    const { side, price, pricePrecision, leverage } = this.props
 
-    const marketPrice = this.props.getPriceQuery?.getPrice || this.props.getPriceQuery?.getMarkPrice?.markPrice
+    const marketPrice =
+      this.props.getPriceQuery?.getPrice ||
+      this.props.getPriceQuery?.getMarkPrice?.markPrice
 
     let priceForCalculate =
       type === 'market' && !isTrailingOn ? marketPrice : price
@@ -1479,11 +1484,11 @@ export class EditEntryOrderPopup extends React.Component<
     const trailingDeviationPrice =
       side === 'buy'
         ? stripDigitPlaces(
-            priceForCalculate * (1 + deviationPercentage / 100),
+            priceForCalculate * (1 + deviationPercentage / leverage / 100),
             pricePrecision
           )
         : stripDigitPlaces(
-            priceForCalculate * (1 - deviationPercentage / 100),
+            priceForCalculate * (1 - deviationPercentage / leverage / 100),
             pricePrecision
           )
 
@@ -1495,7 +1500,9 @@ export class EditEntryOrderPopup extends React.Component<
     const { funds, marketType, leverage } = this.props
 
     let maxAmount = 0
-    const marketPrice = this.props.getPriceQuery?.getPrice || this.props.getPriceQuery?.getMarkPrice?.markPrice
+    const marketPrice =
+      this.props.getPriceQuery?.getPrice ||
+      this.props.getPriceQuery?.getMarkPrice?.markPrice
 
     let priceForCalculate =
       type === 'market' && !isTrailingOn ? marketPrice : price
@@ -1556,7 +1563,9 @@ export class EditEntryOrderPopup extends React.Component<
       templateAlertMessage,
     } = this.state
 
-    const marketPrice = this.props.getPriceQuery?.getPrice || this.props.getPriceQuery?.getMarkPrice?.markPrice
+    const marketPrice =
+      this.props.getPriceQuery?.getPrice ||
+      this.props.getPriceQuery?.getMarkPrice?.markPrice
 
     let maxAmount = 0
     let priceForCalculate =
@@ -1586,54 +1595,55 @@ export class EditEntryOrderPopup extends React.Component<
         >
           <TypographyTitle theme={theme}>{`Edit entry point`}</TypographyTitle>
           <div style={{ display: 'flex', alignItems: 'center', width: '60%' }}>
-            {marketType === 1 && <>
-            <SmallSlider
-              theme={theme}
-              min={1}
-              max={maxLeverage}
-              defaultValue={this.state.leverage}
-              value={this.state.leverage}
-              valueSymbol={'X'}
-              marks={getMarks(maxLeverage)}
-              onChange={(leverage: number) => {
-                this.setState({ leverage })
-              }}
-              sliderContainerStyles={{
-                width: '80%',
-                margin: '0 auto',
-              }}
-              trackBeforeBackground={theme.palette.green.main}
-              handleStyles={{
-                width: '1.2rem',
-                height: '2rem',
-                top: '0.1rem',
-                border: 'none',
-                borderRadius: '0',
-                backgroundColor: '#036141',
-                marginTop: '-.28rem',
-                boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
-                transform: 'translate(-50%, -15%) !important',
-              }}
-              dotStyles={{
-                border: 'none',
-                backgroundColor: theme.palette.slider.dots,
-              }}
-              activeDotStyles={{
-                backgroundColor: theme.palette.green.main,
-              }}
-              markTextSlyles={{
-                color: theme.palette.grey.light,
-                fontSize: '1rem',
-              }}
-              railStyle={{
-                backgroundColor: theme.palette.slider.rail,
-              }}
-            />
-            <LeverageLabel theme={theme} style={{ fontFamily: 'DM Sans' }}>
-              {this.state.leverage}X
-            </LeverageLabel>
-            </>
-  }
+            {marketType === 1 && (
+              <>
+                <SmallSlider
+                  theme={theme}
+                  min={1}
+                  max={maxLeverage}
+                  defaultValue={this.state.leverage}
+                  value={this.state.leverage}
+                  valueSymbol={'X'}
+                  marks={getMarks(maxLeverage)}
+                  onChange={(leverage: number) => {
+                    this.setState({ leverage })
+                  }}
+                  sliderContainerStyles={{
+                    width: '80%',
+                    margin: '0 auto',
+                  }}
+                  trackBeforeBackground={theme.palette.green.main}
+                  handleStyles={{
+                    width: '1.2rem',
+                    height: '2rem',
+                    top: '0.1rem',
+                    border: 'none',
+                    borderRadius: '0',
+                    backgroundColor: '#036141',
+                    marginTop: '-.28rem',
+                    boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
+                    transform: 'translate(-50%, -15%) !important',
+                  }}
+                  dotStyles={{
+                    border: 'none',
+                    backgroundColor: theme.palette.slider.dots,
+                  }}
+                  activeDotStyles={{
+                    backgroundColor: theme.palette.green.main,
+                  }}
+                  markTextSlyles={{
+                    color: theme.palette.grey.light,
+                    fontSize: '1rem',
+                  }}
+                  railStyle={{
+                    backgroundColor: theme.palette.slider.rail,
+                  }}
+                />
+                <LeverageLabel theme={theme} style={{ fontFamily: 'DM Sans' }}>
+                  {this.state.leverage}X
+                </LeverageLabel>
+              </>
+            )}
           </div>
           <ClearButton>
             <Clear
@@ -1829,19 +1839,18 @@ export class EditEntryOrderPopup extends React.Component<
                       paddingRight: 0,
                     }}
                     onChange={(e) => {
-                      const value =
-                        e.target.value > 100 / leverage
-                          ? stripDigitPlaces(100 / leverage, 3)
-                          : e.target.value
+                      const value = e.target.value
                       this.setState({ deviationPercentage: value })
                       this.updateTrailingPrice(+value)
                     }}
                   />
 
                   <BlueSlider
+                    max={10}
+                    step={0.1}
                     theme={theme}
                     disabled={!isTrailingOn}
-                    value={stripDigitPlaces(deviationPercentage * leverage, 3)}
+                    value={stripDigitPlaces(deviationPercentage, 3)}
                     sliderContainerStyles={{
                       width: '50%',
                       margin: '0 .8rem 0 .8rem',
@@ -1849,12 +1858,12 @@ export class EditEntryOrderPopup extends React.Component<
                     onChange={(value) => {
                       this.setState({
                         deviationPercentage: stripDigitPlaces(
-                          value / leverage,
+                          value,
                           3
                         ),
                       })
                       this.updateTrailingPrice(
-                        +stripDigitPlaces(value / leverage, 3)
+                        +stripDigitPlaces(value, 3)
                       )
                     }}
                   />

@@ -23,7 +23,7 @@ export interface IProps extends WithTheme<Theme> {
   addOrderToCanceled: (id: string) => void
   clearCanceledOrders: () => void
   ordersHealthcheckMutation: (variables: any) => void
-  }) => void
+  } => void
   theme: Theme
   selectedKey: Key
   keys: Key[]
@@ -41,7 +41,7 @@ export interface IProps extends WithTheme<Theme> {
   showSmartTradesFromAllAccounts: boolean
   handleToggleAllKeys: (newValue: boolean) => void
   handleToggleSpecificPair: (newValue: boolean) => void
-}
+
 
 export interface IState {
   openOrdersProcessedData: any[]

@@ -1,15 +1,55 @@
 import { ChangeEvent } from 'react'
 import { Theme } from '@material-ui/core'
 import { Key } from '@core/types/ChartTypes'
+import { EntryLevel as TerminalEntryLevel, ExitLevel as TerminalExitLevel } from '@sb/compositions/Chart/components/SmartOrderTerminal/types'
+
+interface EntryLevel extends TerminalEntryLevel {
+  entryDeviation: number
+  activatePrice: number
+}
+
+interface ExitLevel extends TerminalExitLevel {
+  entryDeviation: number
+  activatePrice: number
+}
 
 type SmartOrderConditions = {
   pair: string
   side: string
-  marketType: number
+  marketType: 0 | 1
   leverage: number
+  templateStatus: string
+  entryOrder: {
+    side: string,
+    orderType: string,
+    amount: number,
+    price: number,
+    entryDeviation: number
+    activatePrice: number
+  },
+  exitLevels: ExitLevel[],
+  entryLevels: EntryLevel[],
+  stopLoss: number,
+  stopLossType: string,
+  forcedLoss: number,
+  trailingExit: number,
+  timeoutIfProfitable: number,
+  timeoutWhenLoss: number,
+  timeoutLoss: number,
+  timeoutWhenProfit: number,
+  isTemplate: boolean,
+  templatePnl: number,
+  hedgeLossDeviation: number
 }
 
-type SmartOrderState = {}
+type SmartOrderState = {
+  entryPrice: number,
+  exitPrice: number,
+  state: string,
+  msg: string,
+  receivedProfitAmount: number,
+  receivedProfitPercentage: number,
+}
 
 export type Price = {
   pair: string
@@ -28,6 +68,7 @@ export type Fund = {
 
 export type SmartOrder = {
   _id: string
+  accountId: string
   enabled: boolean
   createdAt: number | string
   conditions: SmartOrderConditions

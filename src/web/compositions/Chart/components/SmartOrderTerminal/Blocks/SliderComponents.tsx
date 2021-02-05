@@ -21,17 +21,19 @@ export const SliderWithPriceAndPercentageFieldRow = ({
   pair,
   header = 'level',
   theme,
+  step,
   needChain = true,
   entryPoint,
   titleForTooltip,
   needTooltip = false,
   showErrors,
-  isTrailingOn = false,
   isPlotActive = false,
-  isMarketType,
+  maxSliderValue,
+  levelFieldTitle = 'level',
   showMarks,
   percentageInputWidth = '50%',
   validateField,
+  isTrailingOn = false,
   pricePercentage,
   approximatePrice,
   getApproximatePrice,
@@ -56,7 +58,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
         <Input
           theme={theme}
           needChain={needChain}
-          header={'price'}
+          header={header}
           needTitleBlock
           padding={'0'}
           width={
@@ -65,7 +67,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
               : tvAlertsEnable
               ? '55%'
               : isTrailingOn
-              ? '27%'
+              ? 'calc(36.5%)'
               : 'calc(31.5%)'
           }
           textAlign={'right'}
@@ -106,8 +108,6 @@ export const SliderWithPriceAndPercentageFieldRow = ({
         width={
           sliderInTheBottom
             ? '35%'
-            : isTrailingOn
-            ? '33%'
             : needPriceField && !tvAlertsEnable
             ? 'calc(24.5%)'
             : tvAlertsEnable
@@ -123,7 +123,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
         disabled={isPlotActive}
         titleForTooltip={titleForTooltip}
         needTitleBlock
-        header={header}
+        header={levelFieldTitle}
         showErrors={showErrors}
         isValid={validateField(true, pricePercentage)}
         inputStyles={
@@ -145,11 +145,15 @@ export const SliderWithPriceAndPercentageFieldRow = ({
           theme={theme}
           disabled={isPlotActive}
           value={value}
+          step={step}
+          max={maxSliderValue}
           sliderContainerStyles={{
-            width: isTrailingOn ? '33%' : '40%',
+            width: isTrailingOn ? '30%' : '40%',
             margin: '0 .8rem 0 .8rem',
           }}
-          onChange={(v) => updateValue(v)}
+          onChange={(v) =>
+            v > maxSliderValue ? updateValue(maxSliderValue) : updateValue(v)
+          }
           onAfterChange={onAfterSliderChange}
         />
       ) : (
@@ -157,13 +161,20 @@ export const SliderWithPriceAndPercentageFieldRow = ({
           <BlueSlider
             showMarks={showMarks}
             disabled={isPlotActive}
+            max={maxSliderValue}
             theme={theme}
             value={value}
             sliderContainerStyles={{
-              width: sliderInTheBottom ? '100%' : '50%',
+              width: sliderInTheBottom
+                ? '100%'
+                : isAveragingPoint
+                ? '8%'
+                : '50%',
               margin: '0 .4rem 0 0.5rem',
             }}
-            onChange={(v) => updateValue(v)}
+            onChange={(v) =>
+              v > maxSliderValue ? updateValue(maxSliderValue) : updateValue(v)
+            }
             onAfterChange={onAfterSliderChange}
           />
         </InputRowContainer>
@@ -394,6 +405,7 @@ export const SliderWithAmountFieldRow = ({
               }}
             >
               <Switcher
+                theme={theme}
                 checked={amountPlotEnabled}
                 onChange={toggleAmountPlotEnabled}
               />
@@ -408,7 +420,7 @@ export const SliderWithAmountFieldRow = ({
               disabled={!amountPlotEnabled}
               value={amountPlot}
               showErrors={showErrors}
-              isValid={validateField(true, amountPlot)}
+              isValid={validateField(amountPlotEnabled, amountPlot)}
               onChange={onAmountPlotChange}
             />
           </>
@@ -446,12 +458,7 @@ export const SliderWithAmountFieldRow = ({
               2
             )
 
-            updateLocalAmount(
-              stripDigitPlaces(
-                newAmount,
-                marketType === 1 ? quantityPrecision : 8
-              )
-            )
+            updateLocalAmount(stripDigitPlaces(newAmount, quantityPrecision))
 
             updateLocalTotal(
               stripDigitPlaces(newTotal, marketType === 1 ? 2 : 8)
@@ -580,12 +587,9 @@ export const SliderWithAmountFieldRowForBasic = ({
                 !isSPOTMarket || isBuyType
                   ? +stripDigitPlaces(
                       newValue / priceForCalculate,
-                      isSPOTMarket ? 8 : quantityPrecision
+                      quantityPrecision
                     )
-                  : +stripDigitPlaces(
-                      newValue,
-                      isSPOTMarket ? 8 : quantityPrecision
-                    )
+                  : +stripDigitPlaces(newValue, quantityPrecision)
 
               const newTotal =
                 isBuyType || !isSPOTMarket

@@ -61,8 +61,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
         ...(hedgeMode
           ? {
               ...paramsForHedge,
-              positionSide:
-                paramsForHedge.side === 'buy' ? 'SHORT' : 'LONG',
+              positionSide: paramsForHedge.side === 'buy' ? 'SHORT' : 'LONG',
             }
           : variables.keyParams),
       },
@@ -72,7 +71,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
 
     try {
       const result = await createOrderMutation({
-        variables: variablesToSend
+        variables: variablesToSend,
       })
 
       if (result.errors) {
@@ -94,14 +93,17 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
           orderId: result.data.createOrder.orderId,
         }
       }
+
       return {
         status: 'error',
-        message: 'Something went wrong',
+        message: `Something went wrong on api side, raw response: ${JSON.stringify(
+          result
+        )}`,
       }
     } catch (err) {
       return {
         status: 'error',
-        message: 'Something went wrong',
+        message: `Something went wrong on frontend side: ${err.name} ${err.message} `,
       }
     }
   }
@@ -135,7 +137,6 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     } = this.props
 
     const positionKey = keysObjects.find((key) => key.keyId === variables.keyId)
-    let data = getActivePositionsQuery.getActivePositions
 
     if (variables.keyParams.amount === 0) {
       enqueueSnackbar(
@@ -169,6 +170,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
     )
 
     const result = await this.createOrder(variables, positionKey)
+
     if (result.status === 'error') {
       const isReduceOrderIsRejected = /-2022/.test(result.message)
       if (isReduceOrderIsRejected) {
@@ -191,14 +193,29 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       showOrderResult(result, cancelOrder, marketType)
       await this.props.clearCanceledOrders()
     }
-    // here we disable SM if you closed position manually
-    setPositionWasClosedMutation({
-      variables: {
-        keyId: positionKey.keyId,
-        pair: variables.keyParams.symbol,
-        side: variables.keyParams.side === 'buy' ? 'sell' : 'buy',
-      },
-    })
+
+    const isMarketOrder = variables.keyParams.type === 'market'
+    const position = getActivePositionsQuery.getActivePositions.find(
+      (p) => p._id === positionId
+    ) || { positionAmt: 0 }
+    const positionAmt = position.positionAmt
+    const orderAmount = variables.keyParams.amount
+    const isOrderCoverFullPositionAmount = orderAmount === positionAmt
+
+    if (
+      result.status === 'success' &&
+      isMarketOrder &&
+      isOrderCoverFullPositionAmount
+    ) {
+      // here we disable SM if you closed position manually
+      setPositionWasClosedMutation({
+        variables: {
+          keyId: positionKey.keyId,
+          pair: variables.keyParams.symbol,
+          side: variables.keyParams.side === 'buy' ? 'sell' : 'buy',
+        },
+      })
+    }
   }
 
   modifyIsolatedMargin = async ({
@@ -486,6 +503,7 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
       allKeys,
       specificPair,
       getFundsQuery,
+      isDefaultOnlyTables,
       handleToggleAllKeys,
       handleToggleSpecificPair,
       getActivePositionsQuery,
@@ -568,13 +586,14 @@ class PositionsTable extends React.PureComponent<IProps, IState> {
           emptyTableText={getEmptyTextPlaceholder(tab)}
           rowsWithHover={false}
           data={{ body: positionsData }}
-          columnNames={getTableHead(
+          columnNames={getTableHead({
             tab,
             marketType,
-            this.props.getActivePositionsQueryRefetch,
-            this.updatePositionsHandler,
-            positionsRefetchInProcess
-          )}
+            refetch: this.props.getActivePositionsQueryRefetch,
+            updatePositionsHandler: this.updatePositionsHandler,
+            positionsRefetchInProcess,
+            isDefaultOnlyTables,
+          })}
         />
         {this.state.editMarginPopup && (
           <EditMarginPopup
@@ -608,10 +627,8 @@ const PositionsTableWrapper = compose(
     variables: (props: any) => ({
       input: {
         keyId: props.selectedKey.keyId,
-        allKeys: props.showPositionsFromAllAccounts,
-        ...(!props.showAllPositionPairs
-          ? {}
-          : { specificPair: props.currencyPair }),
+        allKeys: props.allKeys,
+        ...(!props.specificPair ? {} : { specificPair: props.currencyPair }),
       },
     }),
     subscriptionArgs: {
@@ -619,10 +636,8 @@ const PositionsTableWrapper = compose(
       variables: (props: any) => ({
         input: {
           keyId: props.selectedKey.keyId,
-          allKeys: props.showPositionsFromAllAccounts,
-          ...(!props.showAllPositionPairs
-            ? {}
-            : { specificPair: props.currencyPair }),
+          allKeys: props.allKeys,
+          ...(!props.specificPair ? {} : { specificPair: props.currencyPair }),
         },
       }),
       updateQueryFunction: updateActivePositionsQuerryFunction,

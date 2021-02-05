@@ -44,6 +44,7 @@ import {
   TerminalHeadersBlock,
 } from './Blocks'
 import { compose } from 'recompose'
+import { thirdDataSet } from '@sb/components/BitcoinPriceChart/barChartDataMock'
 
 const generateToken = () =>
   Math.random()
@@ -75,12 +76,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       },
       trailing: {
         isTrailingOn: false,
-        deviationPercentage: 0,
+        deviationPercentage: 0.1,
         trailingDeviationPrice: 0,
       },
       averaging: {
         enabled: false,
-        percentage: 0,
+        percentage: 1,
         price: 0,
         closeStrategyAfterFirstTAP: false,
         placeEntryAfterTAP: false,
@@ -108,7 +109,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     takeProfit: {
       isTakeProfitOn: true,
       type: 'limit',
-      pricePercentage: 0,
+      pricePercentage: 1,
       takeProfitPrice: 0,
       splitTargets: {
         isSplitTargetsOn: false,
@@ -137,7 +138,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     stopLoss: {
       isStopLossOn: true,
       type: 'limit',
-      pricePercentage: 0,
+      pricePercentage: 1,
       stopLossPrice: 0,
       timeout: {
         isTimeoutOn: false,
@@ -151,7 +152,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       forcedStop: {
         mandatoryForcedLoss: false,
         isForcedStopOn: false,
-        pricePercentage: 0,
+        pricePercentage: 1,
         forcedStopPrice: 0,
       },
       external: false,
@@ -174,13 +175,22 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     } = this.props
 
     this.updateSubBlockValue('entryPoint', 'order', 'price', this.props.price)
-    console.log(' this.props.componentLeverage', this.props.componentLeverage)
+    console.log(
+      ' this.props.componentLeverage',
+      this.props.componentLeverage,
+      'this.props.price',
+      this.props.price
+    )
     this.updateSubBlockValue(
       'entryPoint',
       'order',
       'leverage',
       this.props.componentLeverage
     )
+
+    const isMarketType =
+      this.state.entryPoint.order.type === 'market' ||
+      this.state.entryPoint.order.type === 'maker-only'
 
     console.log('getStrategySettingsQuery', getStrategySettingsQuery)
     const result = getDefaultStateFromStrategySettings({
@@ -210,6 +220,45 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           ...result.entryPoint?.averaging.entryLevels.slice(1),
         ],
       }
+
+      let maxAmount = 0
+
+      let priceForCalculate = this.props.price
+
+      if (marketType === 0) {
+        maxAmount =
+          result.entryPoint?.order.side === 'buy'
+            ? +stripDigitPlaces(this.props.funds[1].quantity, 8)
+            : +stripDigitPlaces(this.props.funds[0].quantity, 8)
+      } else if (marketType === 1) {
+        maxAmount = +stripDigitPlaces(
+          this.props.funds[1].quantity * this.props.leverage,
+          quantityPrecision
+        )
+      }
+
+      if (result.entryPoint?.averaging.entryLevels.length > 0) {
+        result.entryPoint.averaging.entryLevels.forEach((target) => {
+          if (marketType === 0) {
+            maxAmount -= target.amount
+          } else {
+            maxAmount -= target.amount * priceForCalculate
+          }
+        })
+      }
+
+      const [amount, total] =
+        result.entryPoint.order.side === 'buy' || marketType === 1
+          ? [maxAmount / priceForCalculate, maxAmount]
+          : [maxAmount, maxAmount / priceForCalculate]
+
+      if (total < 0) {
+        savedAveraging = {
+          ...savedAveraging,
+          entryLevels: [],
+        }
+      }
+      console.log('stateResult', amount, total, this.props.funds)
     }
 
     this.setState((prevState) => ({
@@ -237,7 +286,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           placeEntryAfterTAP: false,
           placeWithoutLoss: false,
           entryLevels: [],
-          percentage: 0,
+          percentage: 1,
           price: 0,
           ...savedAveraging,
         },
@@ -261,14 +310,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         },
         trailing: {
           trailingDeviationPrice: 0,
-          deviationPercentage: 0,
+          deviationPercentage: 0.1,
           ...(marketType === 1 ? { ...prevState.entryPoint.trailing } : {}),
           ...(result.entryPoint && marketType === 1
             ? {
                 ...result.entryPoint.trailing,
                 deviationPercentage: +stripDigitPlaces(
-                  result.entryPoint.trailing.deviationPercentage /
-                    componentLeverage,
+                  result.entryPoint.trailing.deviationPercentage,
                   3
                 ),
               }
@@ -279,6 +327,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       },
       takeProfit: {
         takeProfitPrice: 0,
+
         ...result.takeProfit,
         plotEnabled: false,
         trailingTAP: {
@@ -292,7 +341,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         forcedStop: {
           forcedStopPrice: 0,
           ...result.stopLoss.forcedStop,
-          isForcedStopOn: result.stopLoss.timeout.isTimeoutOn,
+          isForcedStopOn: !!result.stopLoss.forcedStop.isForcedStopOn,
           mandatoryForcedLoss: !!result.stopLoss.forcedStop.mandatoryForcedLoss,
         },
       },
@@ -308,10 +357,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     ) {
       return
     }
-
-    const isMarketType =
-      result.entryPoint.order.type === 'market' ||
-      result.entryPoint.order.type === 'maker-only'
 
     let price =
       (isMarketType && !result.entryPoint.trailing.isTrailingOn) ||
@@ -358,8 +403,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       takeProfitPercentage: result.takeProfit.trailingTAP.isTrailingOn
         ? result.takeProfit.trailingTAP.activatePrice
         : result.takeProfit.pricePercentage,
-      deviationPercentage:
-        result.entryPoint.trailing.deviationPercentage / componentLeverage,
+      deviationPercentage: result.entryPoint.trailing.deviationPercentage,
       includeDeviation: true,
     })
   }
@@ -423,10 +467,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         'entryPoint',
         'order',
         'amount',
-        stripDigitPlaces(
-          total / price,
-          this.props.marketType === 1 ? this.props.quantityPrecision : 8
-        )
+        stripDigitPlaces(total / price, this.props.quantityPrecision)
       )
 
       this.updateSubBlockValue(
@@ -462,7 +503,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           'amount',
           stripDigitPlaces(
             total / this.props.price,
-            marketType === 1 ? this.props.quantityPrecision : 8
+            this.props.quantityPrecision
           )
         )
       }
@@ -558,6 +599,26 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     }
   }
 
+  togglePlaceWithoutLoss = (index: number) => {
+    this.setState((prev) => ({
+      entryPoint: {
+        ...prev.entryPoint,
+        averaging: {
+          ...prev.entryPoint.averaging,
+          entryLevels: [
+            ...prev.entryPoint.averaging.entryLevels.slice(0, index),
+            {
+              ...prev.entryPoint.averaging.entryLevels[index],
+              placeWithoutLoss: !prev.entryPoint.averaging.entryLevels[index]
+                .placeWithoutLoss,
+            },
+            ...prev.entryPoint.averaging.entryLevels.slice(index + 1),
+          ],
+        },
+      },
+    }))
+  }
+
   deleteTarget = (index: number) => {
     const {
       splitTargets: { targets },
@@ -619,7 +680,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             ...prev.entryPoint.averaging,
             ...(isAveragingAfterFirstTarget ? {} : { price }),
             placeWithoutLoss: false,
-            percentage: 0,
+            percentage: 1,
             entryLevels: [
               ...entryLevels,
               {
@@ -748,8 +809,10 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       keyId,
       price,
       marketType,
+      funds,
       placeOrder,
       cancelOrder,
+      enqueueSnackbar,
       quantityPrecision,
       updateTerminalViewMode,
     } = this.props
@@ -762,7 +825,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     )
 
     if (!isValid) return
-
     // ux-improvement to see popup before result from the backend received
     const successResult = {
       status: 'success',
@@ -809,6 +871,15 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     const isSPOTMarket = marketType === 0
     const isValid = validateSmartOrders(this.state, this.props.enqueueSnackbar)
     if (isValid) {
+      // negative avaliable balance
+      // avg, then changed leverage
+      if (this.getMaxValues()[0] < 0) {
+        enqueueSnackbar(`Your amount in averaging more than your funds`, {
+          variant: 'error',
+        })
+        return
+      }
+
       if (
         entryPoint.order.total < minSpotNotional &&
         isSPOTMarket &&
@@ -957,8 +1028,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
 
     deviationPercentage =
       deviationPercentage != undefined
-        ? deviationPercentage
-        : entryPoint.trailing.deviationPercentage
+        ? deviationPercentage / leverage
+        : entryPoint.trailing.deviationPercentage / leverage
 
     const trailingDeviationPrice =
       side === 'buy'
@@ -1080,7 +1151,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       'entryPoint',
       'order',
       'amount',
-      stripDigitPlaces(amount, marketType === 1 ? quantityPrecision : 8)
+      stripDigitPlaces(amount, quantityPrecision)
     )
 
     this.updateSubBlockValue(
@@ -1297,6 +1368,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               addAverageTarget={this.addAverageTarget}
               deleteAverageTarget={this.deleteAverageTarget}
               entryPoint={entryPoint}
+              enqueueSnackbar={this.props.enqueueSnackbar}
               funds={funds}
               getEntryAlertJson={this.getEntryAlertJson}
               getMaxValues={this.getMaxValues}
@@ -1323,7 +1395,9 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             {/* STOP LOSS */}
             <StopLossBlock
               pair={pair}
+              togglePlaceWithoutLoss={this.togglePlaceWithoutLoss}
               marketType={marketType}
+              enqueueSnackbar={this.props.enqueueSnackbar}
               theme={theme}
               stopLoss={stopLoss}
               showErrors={showErrors}
@@ -1352,6 +1426,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               theme={theme}
               takeProfit={takeProfit}
               showErrors={showErrors}
+              enqueueSnackbar={this.props.enqueueSnackbar}
               entryPoint={entryPoint}
               marketType={marketType}
               addTarget={this.addTarget}
@@ -1511,15 +1586,13 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                     ? stripDigitPlaces(
                         priceForCalculate *
                           (1 +
-                            entryOrderProperties.trailing.deviationPercentage /
-                              100),
+                            entryOrderProperties.trailing.deviationPercentage),
                         pricePrecision
                       )
                     : stripDigitPlaces(
                         priceForCalculate *
                           (1 -
-                            entryOrderProperties.trailing.deviationPercentage /
-                              100),
+                            entryOrderProperties.trailing.deviationPercentage),
                         pricePrecision
                       )
 

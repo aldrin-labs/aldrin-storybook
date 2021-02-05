@@ -1,26 +1,26 @@
-import React from 'react';
+import React from 'react'
 import memoizeOne from 'memoize-one'
 
-import { TradeHistoryTable } from '../Tables/Tables';
-import { TradeHistoryWrapper } from '../Chart.styles';
+import { TradeHistoryTable } from '../Tables/Tables'
+import { TradeHistoryWrapper } from '../Chart.styles'
 
 const MemoizedTradeHistoryWrapper = React.memo(TradeHistoryWrapper);
 
 const TradeHistoryRaw = ({
-	updateTerminalPriceFromOrderbook,
-	showTableOnMobile,
-	isPairDataLoading,
-	activeExchange,
-	minPriceDigits,
-	changeTable,
-	// chartProps,
-	sizeDigits,
-	marketType,
-	exchange,
-	theme,
-	symbol,
-	quote,
-	pair
+  updateTerminalPriceFromOrderbook,
+  showTableOnMobile,
+  isPairDataLoading,
+  activeExchange,
+  minPriceDigits,
+  changeTable,
+  // chartProps,
+  sizeDigits,
+  marketType,
+  exchange,
+  theme,
+  symbol,
+  quote,
+  pair,
 }) => {
 	return (
 		<MemoizedTradeHistoryWrapper
@@ -49,4 +49,4 @@ const TradeHistoryRaw = ({
 	);
 };
 
-export const TradeHistory = React.memo(TradeHistoryRaw);
+export const TradeHistory = React.memo(TradeHistoryRaw)

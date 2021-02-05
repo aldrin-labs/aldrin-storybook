@@ -337,11 +337,7 @@ export const DefaultViewComponent = (
                 isFullScreenTablesMode
                   ? 12
                   : isDefaultOnlyTables
-                  ? marketType === 0
-                    ? 12
-                    : 11
-                  : marketType === 0
-                  ? 7
+                  ? 11
                   : 6
               }
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}

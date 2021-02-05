@@ -3,53 +3,30 @@ import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 dayjs.extend(localizedFormat)
 
-import { SubColumnTitle } from '@sb/components/TradingTable/ActiveTrades/Columns'
-import ArrowBottom from '@icons/arrowBottom.svg'
-import SvgIcon from '@sb/components/SvgIcon'
-
 import { OrderType, TradeType, FundsType, Key } from '@core/types/ChartTypes'
 import ErrorIcon from '@material-ui/icons/Error'
-import Timer from '@icons/clock.svg'
 
 import { Position } from './PositionsTable/PositionsTable.types'
 import { TableButton, TableCell, TableRow } from './TradingTable.styles'
-import { ArrowForward as Arrow } from '@material-ui/icons'
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
-import { getActiveStrategies } from '@core/graphql/queries/chart/getActiveStrategies'
 import { Metrics } from '@core/utils/metrics'
 
-import { ActiveSmartTradePnlFutures } from './PriceBlocks/ActiveSmartTradePnlFutures'
-import { ActiveSmartTradePnlSpot } from './PriceBlocks/ActiveSmartTradePnlSpot'
-
-import { client } from '@core/graphql/apolloClient'
 import {
   filterCacheData,
   modifyCacheData,
 } from '@core/utils/TradingTable.utils'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components/index'
-import stableCoins from '@core/config/stableCoins'
 import { cloneDeep } from 'lodash-es'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
 import AdlComponent from './AdlComponent/AdlComponent'
 
 import { getPrecisionItem } from '@core/utils/getPrecisionItem'
+import { getStrategyFields } from './ActiveTrades/ActiveTrades.utils'
 
 import MarkPriceBlock from '@sb/components/TradingTable/PriceBlocks/PositionsPriceBlock'
 
-const activeExchange = { symbol: 'binance' }
-
-const changePairToSelected = (pair: string) => {
-  console.log('client mutate', client)
-  client.mutate({
-    mutation: CHANGE_CURRENCY_PAIR,
-    variables: {
-      pairInput: {
-        pair,
-      },
-    },
-  })
-}
+export const activeExchange = { symbol: 'binance' }
 
 export const CloseButton = ({
   i,
@@ -70,7 +47,7 @@ export const CloseButton = ({
         color: '#fff',
         backgroundColor: isCancelled ? 'grey' : theme.palette.red.main,
         border: 'none',
-        margin: '0.5rem auto 0.5rem 10rem',
+        margin: '0.5rem auto 0.5rem 0',
         borderRadius: '0.5rem',
         height: '2.7rem',
         fontFamily: 'Avenir Next Demi',
@@ -106,15 +83,8 @@ import {
   orderHistoryBody,
   tradeHistoryBody,
 } from '@sb/components/TradingTable/TradingTable.mocks'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 import SubRow from './PositionsTable/SubRow'
-import {
-  EntryOrderColumn,
-  StopLossColumn,
-  DateColumn,
-  TakeProfitColumn,
-} from './ActiveTrades/Columns'
 
 import { Theme } from '@material-ui/core'
 import EditIcon from '@material-ui/icons/Edit'
@@ -127,6 +97,7 @@ import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 import { addMainSymbol } from '@sb/components'
 import TooltipCustom from '../TooltipCustom/TooltipCustom'
 import PnlBlock from './PriceBlocks/PositionsPnlBlock'
+import { SmartOrder } from './ActiveTrades/ActiveTrades.types'
 
 export const getTableBody = (tab: string) =>
   tab === 'openOrders'
@@ -141,17 +112,34 @@ export const getTableBody = (tab: string) =>
     ? positionsBody
     : []
 
-export const getTableHead = (
-  tab: string,
-  marketType: number = 0,
-  refetch?: () => void,
-  updatePositionsHandler?: () => void,
-  positionsRefetchInProcess?: boolean,
-  onCancelAllOrders?: () => void,
+export const getTableHead = ({
+  tab,
+  marketType = 0,
+  refetch,
+  updatePositionsHandler,
+  positionsRefetchInProcess,
+  onCancelAllOrders,
+  isDefaultOnlyTables,
+  filteredOpenOrders,
+  theme,
+  enqueueSnackbar,
+}: {
+  tab: string
+  marketType: number
+  refetch?: () => void
+  updatePositionsHandler?: () => void
+  positionsRefetchInProcess?: boolean
+  onCancelAllOrders?: () => void
   isDefaultOnlyTables?: boolean
-): any[] =>
+  theme: Theme
+}): any[] =>
   tab === 'openOrders'
-    ? openOrdersColumnNames(marketType, onCancelAllOrders)
+    ? openOrdersColumnNames(
+        marketType,
+        onCancelAllOrders,
+        filteredOpenOrders,
+        theme
+      )
     : tab === 'orderHistory'
     ? orderHistoryColumnNames(marketType)
     : tab === 'tradeHistory'
@@ -269,60 +257,6 @@ export const getPnlFromState = ({ state, amount, side, leverage }) => {
   return [0, 0]
 }
 
-type IStatus = {
-  state: { state: string }
-  profitPercentage: number
-}
-
-const getActiveOrderStatus = ({
-  theme,
-  strategy,
-  state,
-}: IStatus): [
-  'Trailing entry' | 'In Profit' | 'In Loss' | 'Preparing' | 'Timeout',
-  string
-] => {
-  if (strategy.conditions.isTemplate) {
-    if (strategy.conditions.templateStatus === 'enabled') {
-      return ['Waiting alert', theme.palette.green.main]
-    }
-    if (strategy.conditions.templateStatus === 'paused') {
-      return ['On pause', theme.palette.blue.background]
-    }
-  }
-
-  if (
-    strategy.conditions.hedging &&
-    strategy.conditions.hedgeStrategyId === null
-  ) {
-    return ['Waiting hedge', theme.palette.green.main]
-  }
-
-  if (state && state.state && state.state !== 'WaitForEntry') {
-    const { state: status } = state
-
-    if (status === 'TrailingEntry') {
-      return ['Trailing entry', theme.palette.green.main]
-    }
-
-    if (status === 'Timeout') {
-      return ['Timeout', theme.palette.green.main]
-    }
-
-    // if (status === 'InEntry') {
-    return ['Active', theme.palette.green.main]
-    // }
-
-    // if (profitPercentage > 0) {
-    //   return ['In Profit', theme.palette.green.main]
-    // } else {
-    //   return ['In Loss', theme.palette.red.main]
-    // }
-  } else {
-    return ['Preparing', theme.palette.blue.background]
-  }
-}
-
 export const filterOpenOrders = ({
   order,
   canceledOrders,
@@ -425,7 +359,7 @@ export const combinePositionsTable = ({
             : calculatedAmount === 0
             ? 0
             : stripDigitPlaces(calculatedAmount, quantityPrecision)
-        console.log('calcAm', calcAmount)
+
         return {
           keyId: el.keyId,
           keyParams: {
@@ -451,7 +385,7 @@ export const combinePositionsTable = ({
         {
           index: {
             render: i + 1,
-            rowspan: 2,
+            rowspan: 1,
             color: theme.palette.grey.light,
           },
           id: el._id,
@@ -528,9 +462,6 @@ export const combinePositionsTable = ({
               </div>
             ),
           },
-          // marginRation: {
-          //   render: `40%`,
-          // },
           leverage: {
             render: `X${leverage}`,
             contentToSort: leverage,
@@ -546,8 +477,6 @@ export const combinePositionsTable = ({
             contentToSort: entryPrice,
           },
           marketPrice: {
-            // render: `${stripDigitPlaces(marketPrice, pricePrecision)} ${pair[1]
-            //   }`,
             render: (
               <MarkPriceBlock
                 symbol={symbol}
@@ -563,7 +492,6 @@ export const combinePositionsTable = ({
               opacity: needOpacity ? 0.5 : 1,
               maxWidth: '70px',
             },
-            // contentToSort: marketPrice,
           },
           adl: {
             render: (
@@ -622,33 +550,37 @@ export const combinePositionsTable = ({
                 />
               </div>
             ),
-            // colspan: 10,
           },
-          refetch: '',
+          ...(isDefaultOnlyTables ? { refetch: '' } : {}),
           tooltipTitle: keyName,
         },
-        !isDefaultOnlyTables && {
-          pair: {
-            render: (
-              <div>
-                <SubRow
-                  theme={theme}
-                  positionId={el._id}
-                  enqueueSnackbar={enqueueSnackbar}
-                  getVariables={getVariables}
-                  priceFromOrderbook={priceFromOrderbook}
-                  createOrderWithStatus={createOrderWithStatus}
-                  minFuturesStep={minFuturesStep}
-                />
-              </div>
-            ),
-            colspan: 10,
-            style: {
-              opacity: needOpacity ? 0.5 : 1,
-              visibility: needOpacity ? 'hidden' : 'visible',
-            },
-          },
-        },
+        // show only for basic mode
+        ...(!isDefaultOnlyTables
+          ? [
+              {
+                index: {
+                  render: (
+                    <div>
+                      <SubRow
+                        theme={theme}
+                        positionId={el._id}
+                        enqueueSnackbar={enqueueSnackbar}
+                        getVariables={getVariables}
+                        priceFromOrderbook={priceFromOrderbook}
+                        createOrderWithStatus={createOrderWithStatus}
+                        minFuturesStep={minFuturesStep}
+                      />
+                    </div>
+                  ),
+                  colspan: 12,
+                  style: {
+                    opacity: needOpacity ? 0.5 : 1,
+                    visibility: needOpacity ? 'hidden' : 'visible',
+                  },
+                },
+              },
+            ]
+          : []),
       ]
     })
 
@@ -657,1160 +589,6 @@ export const combinePositionsTable = ({
   })
 
   return positions
-}
-
-export const combineActiveTradesTable = ({
-  data,
-  queryBody,
-  queryVariables,
-  cancelOrderFunc,
-  changeStatusWithStatus,
-  editTrade,
-  theme,
-  marketType,
-  currencyPair,
-  addOrderToCanceled,
-  canceledOrders,
-  keys,
-  handlePairChange,
-}: // pricePrecision,
-// quantityPrecision
-{
-  data: any[]
-  queryBody: string
-  queryVariables: object
-  cancelOrderFunc: (strategyId: string) => Promise<any>
-  changeStatusWithStatus: (
-    startegyId: string,
-    keyId: string,
-    status: string
-  ) => Promise<any>
-  editTrade: (block: string, trade: any) => void
-  theme: Theme
-  marketType: number
-  currencyPair: string
-  addOrderToCanceled: (id: string) => void
-  canceledOrders: string[]
-  keys: Key[]
-  handlePairChange: (pair: string) => void
-  // pricePrecision: number
-  // quantityPrecision: number
-}) => {
-  if (!data && !Array.isArray(data)) {
-    return []
-  }
-
-  const { green, red, blue } = theme.palette
-
-  const processedActiveTradesData = data
-    .filter(
-      (a) =>
-        !!a &&
-        (a.enabled ||
-          (a.conditions.isTemplate &&
-            a.conditions.templateStatus !== 'disabled')) &&
-        !canceledOrders.includes(a._id)
-    )
-    .sort((a, b) => {
-      // sometimes in db we receive createdAt as timestamp
-      // so using this we understand type of value that in createdAt field
-
-      const aDate = isNaN(dayjs(+a.createdAt).unix())
-        ? a.createdAt
-        : +a.createdAt
-
-      const bDate = isNaN(dayjs(+b.createdAt).unix())
-        ? b.createdAt
-        : +b.createdAt
-
-      // TODO: maybe I'm wrong here with replacing with dayjs
-      return dayjs(bDate).valueOf() - dayjs(aDate).valueOf()
-    })
-    .map((el: OrderType, i: number, arr) => {
-      const {
-        createdAt,
-        accountId,
-        conditions: {
-          pair,
-          leverage,
-          marketType,
-          entryOrder: {
-            side,
-            orderType,
-            amount,
-            entryDeviation,
-            price,
-            activatePrice,
-          },
-          exitLevels,
-          entryLevels,
-          stopLoss,
-          stopLossType,
-          forcedLoss,
-          trailingExit,
-          timeoutIfProfitable,
-          timeoutLoss,
-          timeoutWhenLoss,
-          timeoutWhenProfit,
-          hedgeLossDeviation,
-          isTemplate,
-          templatePnl,
-          templateStatus,
-        } = {
-          pair: '-',
-          marketType: 0,
-          entryOrder: {
-            side: '-',
-            orderType: '-',
-            amount: '-',
-          },
-          exitLevels: [],
-          entryLevels: [],
-          stopLoss: '-',
-          stopLossType: '-',
-          forcedLoss: false,
-          trailingExit: false,
-          timeoutIfProfitable: '-',
-          timeoutLoss: '-',
-          timeoutWhenLoss: '-',
-          timeoutWhenProfit: '-',
-          hedgeLossDeviation: '-',
-          isTemplate: false,
-          templatePnl: 0,
-          templateStatus: '-',
-        },
-      } = el
-
-      const {
-        entryPrice,
-        exitPrice,
-        state,
-        msg,
-        positionAmount,
-        receivedProfitAmount,
-        receivedProfitPercentage,
-      } = el.state || {
-        entryPrice: 0,
-        state: '-',
-        msg: null,
-        positionAmount: 0,
-        receivedProfitAmount: 0,
-        receivedProfitPercentage: 0,
-      }
-
-      const { pricePrecision, quantityPrecision } = getPrecisionItem({
-        marketType,
-        symbol: pair,
-      })
-
-      const pairArr = pair.split('_')
-      const needOpacity = false
-      const date = isNaN(dayjs(+createdAt).unix()) ? createdAt : +createdAt
-
-      const keyName = keys[accountId]
-
-      const entryOrderPrice =
-        !entryDeviation && orderType === 'limit' && !entryPrice
-          ? price
-          : entryPrice
-
-      const [activeOrderStatus, statusColor] = getActiveOrderStatus({
-        strategy: el,
-        state: el.state,
-        theme,
-      })
-
-      const isErrorInOrder = !!msg
-
-      const takeProfitPercentage =
-        exitLevels[0] &&
-        exitLevels[0].activatePrice &&
-        exitLevels[0].entryDeviation
-          ? exitLevels[0].activatePrice
-          : exitLevels[0].price
-
-      const strategyId = el._id
-      const enableEdit = !entryPrice
-      let avgPrice =
-        entryLevels && entryLevels.length !== 0 ? entryLevels[0].price : 0
-
-      let estPrice = 0
-      let sumAmount = 0
-      let margin = 0
-
-      const isSMIsAlreadyInEntry =
-        !isTemplate &&
-        state &&
-        activeOrderStatus !== 'Preparing' &&
-        state !== 'WaitForEntry' &&
-        state !== 'TrailingEntry'
-
-      const SMPnlComponent =
-        marketType === 1 ? ActiveSmartTradePnlFutures : ActiveSmartTradePnlSpot
-
-      return {
-        id: `${el._id}_${el.accountId}`,
-        pair: {
-          render: (
-            <SubColumnValue
-              theme={theme}
-              onClick={(e) => {
-                handlePairChange(pair)
-              }}
-              style={{ fontSize: '1.3rem', fontFamily: 'Avenir Next Demi' }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}
-              >
-                <a
-                  style={{ color: theme.palette.grey.onboard }}
-                >{`${pairArr[0]}/${pairArr[1]}`}</a>
-                <a
-                  style={{
-                    color: side === 'buy' ? green.main : red.main,
-
-                    textTransform: 'capitalize',
-                  }}
-                >
-                  {marketType === 0
-                    ? side
-                    : side === 'buy'
-                    ? 'buy long'
-                    : 'sell short'}
-                </a>
-                <a
-                  style={{
-                    color: theme.palette.grey.light,
-                    textTransform: 'capitalize',
-                  }}
-                >
-                  {keyName}
-                </a>
-              </div>
-            </SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-            cursor: 'pointer',
-          },
-        },
-        entryPrice: {
-          render: !!entryOrderPrice ? (
-            <SubColumnValue
-              style={{
-                fontSize: '1.3rem',
-                fontFamily: 'Avenir Next Demi',
-                color: theme.palette.grey.onboard,
-              }}
-              theme={theme}
-            >
-              {stripDigitPlaces(entryOrderPrice, pricePrecision)} {pairArr[1]}
-            </SubColumnValue>
-          ) : !!entryDeviation ? (
-            <SubColumnValue
-              style={{
-                fontSize: '1.3rem',
-                fontFamily: 'Avenir Next Demi',
-                color: theme.palette.grey.onboard,
-                display: 'flex',
-                flexDirection: 'column',
-              }}
-              theme={theme}
-            >
-              <div
-                style={{
-                  color: theme.palette.grey.light,
-                  textTransform: 'none',
-                }}
-              >
-                Trailing from
-              </div>{' '}
-              <div>{stripDigitPlaces(activatePrice, pricePrecision)}</div>
-            </SubColumnValue>
-          ) : (
-            '-'
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-          contentToSort: entryOrderPrice,
-        },
-        // side: {
-        //   render: (
-        //     <SubColumnValue
-        //       theme={theme}
-        //       color={side === 'buy' ? green.main : red.main}
-        //     >
-        //       {marketType === 0
-        //         ? side
-        //         : side === 'buy'
-        //         ? 'buy long'
-        //         : 'sell short'}
-        //     </SubColumnValue>
-        //   ),
-        //   style: {
-        //     opacity: needOpacity ? 0.6 : 1,
-        //   },
-        //   contentToSort: side,
-        // },
-        leverage: {
-          render: (
-            <SubColumnValue
-              style={{
-                fontSize: '1.3rem',
-                fontFamily: 'Avenir Next Demi',
-                textTransform: 'lowercase',
-                color: theme.palette.grey.onboard,
-              }}
-              theme={theme}
-            >
-              {' '}
-              {'x'}
-              {leverage}
-            </SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-          contentToSort: leverage,
-        },
-        quantity: {
-          render: (
-            <SubColumnValue
-              style={{
-                fontSize: '1.3rem',
-                fontFamily: 'Avenir Next Demi',
-                color: theme.palette.grey.onboard,
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}
-              theme={theme}
-            >
-              <SubColumnTitle
-                theme={theme}
-                style={{ width: 'auto', padding: '0 1rem 0 0' }}
-              >
-                <BtnCustom
-                  disable={!enableEdit}
-                  needMinWidth={false}
-                  btnWidth="auto"
-                  height="1.5rem"
-                  fontSize=".9rem"
-                  padding=".1rem 1rem 0 1rem"
-                  borderRadius="0.5rem"
-                  borderColor={enableEdit ? blue.tabs : '#e0e5ec'}
-                  btnColor={'#fff'}
-                  backgroundColor={enableEdit ? blue.tabs : '#e0e5ec'}
-                  hoverBackground={enableEdit ? blue.tabs : '#e0e5ec'}
-                  transition={'all .4s ease-out'}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    editTrade('entryOrder', el)
-                  }}
-                  style={enableEdit ? {} : { cursor: 'default' }}
-                >
-                  edit
-                </BtnCustom>
-              </SubColumnTitle>
-
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}
-              >
-                <a>
-                  {((amount * entryOrderPrice) / leverage).toFixed(2)}{' '}
-                  {pairArr[1]}
-                </a>
-                <a
-                  style={{
-                    color: theme.palette.grey.light,
-                    fontSize: '1.2rem',
-                  }}
-                >
-                  {amount.toFixed(quantityPrecision)} {pairArr[0]}
-                </a>
-                <a
-                  style={{
-                    color: theme.palette.grey.light,
-                    fontSize: '1.2rem',
-                  }}
-                >
-                  {(amount * entryOrderPrice).toFixed(2)} {pairArr[1]}
-                </a>
-              </div>
-            </SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-          contentToSort: amount,
-        },
-        averaging: {
-          render: (
-            <SubColumnValue
-              style={{
-                fontSize: '1.3rem',
-                fontFamily: 'Avenir Next Demi',
-                textTransform: 'lowercase',
-                color: theme.palette.grey.onboard,
-                position: 'relative',
-              }}
-              theme={theme}
-            >
-              {entryLevels && entryLevels.length > 0 ? (
-                <>
-                  {entryLevels.length}
-                  {' points'}{' '}
-                  <SvgIcon src={ArrowBottom} width={'1rem'} height={'1rem'} />
-                </>
-              ) : (
-                '-'
-              )}
-              {entryLevels.length > 0 && (
-                <div
-                  className="avgTable"
-                  style={{
-                    position: 'absolute',
-                    height: 'auto',
-                    left: '45%',
-                    width: '50rem',
-                    top: '100%',
-                    background: theme.palette.background.default,
-                    zIndex: '100',
-                    borderRadius: '0.1rem',
-                    justifyContent: 'center',
-                    border: theme.palette.border.main,
-                  }}
-                >
-                  <table
-                    style={{
-                      width: '95%',
-                      color: theme.palette.grey.light,
-                      textTransform: 'uppercase',
-                      letterSpacing: '0',
-                    }}
-                  >
-                    <TableRow style={{ fontSize: '1.2rem' }}>
-                      <TableCell theme={theme}>status</TableCell>
-                      <TableCell theme={theme}>price</TableCell>
-                      <TableCell theme={theme}>amount / margin</TableCell>
-                      <TableCell theme={theme}>
-                        est. averaged entry price
-                      </TableCell>
-                    </TableRow>
-
-                    {entryLevels.map((el, index) => {
-                      const currentPrice =
-                        index === 0
-                          ? avgPrice
-                          : side === 'sell'
-                          ? (avgPrice * (100 + el.price / leverage)) / 100
-                          : (avgPrice * (100 - el.price / leverage)) / 100
-                      if (index === 0) {
-                        estPrice = el.price
-                        sumAmount = el.amount
-                        margin =
-                          (estPrice * sumAmount +
-                            currentPrice * ((el.amount / 100) * amount)) /
-                          leverage
-                      } else {
-                        const exactAmount = (el.amount / 100) * amount
-
-                        const total =
-                          estPrice * sumAmount + currentPrice * exactAmount
-
-                        estPrice = total / (sumAmount + exactAmount)
-                        sumAmount += exactAmount
-                        margin = total / leverage
-                      }
-
-                      //currentEstPrice = total / (prevTarget.amount + currentTarget.amount)
-
-                      return (
-                        <TableRow>
-                          <TableCell theme={theme}>O</TableCell>
-                          <TableCell theme={theme}>
-                            {currentPrice.toFixed(pricePrecision)} {pairArr[1]}
-                          </TableCell>
-                          <TableCell theme={theme}>
-                            {el.amount} {index === 0 ? pairArr[0] : '%'} /{' '}
-                            {margin.toFixed(pricePrecision)} {pairArr[1]}
-                          </TableCell>
-                          <TableCell theme={theme}>
-                            {estPrice.toFixed(pricePrecision)} {pairArr[1]}
-                          </TableCell>
-                        </TableRow>
-                      )
-                    })}
-                  </table>{' '}
-                </div>
-              )}
-            </SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-          contentToSort: entryLevels ? entryLevels.length : 0,
-        },
-        stopLoss: {
-          render:
-            stopLoss || hedgeLossDeviation ? (
-              <SubColumnValue
-                style={{
-                  fontSize: '1.3rem',
-                  fontFamily: 'Avenir Next Demi',
-                  display: 'flex',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
-                theme={theme}
-                color={red.main}
-              >
-                <SubColumnTitle
-                  theme={theme}
-                  style={{ width: 'auto', padding: '0 1rem 0 0' }}
-                >
-                  <BtnCustom
-                    // disabled={!enableEdit}
-                    needMinWidth={false}
-                    btnWidth="auto"
-                    height="1.5rem"
-                    fontSize=".9rem"
-                    padding=".1rem 1rem 0 1rem"
-                    borderRadius="0.5rem"
-                    borderColor={blue.tabs}
-                    btnColor={'#fff'}
-                    backgroundColor={blue.tabs}
-                    hoverBackground={blue.tabs}
-                    transition={'all .4s ease-out'}
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      editTrade('stopLoss', el)
-                    }}
-                  >
-                    edit
-                  </BtnCustom>
-                </SubColumnTitle>{' '}
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    flexDirection: 'column',
-                  }}
-                >
-                  <div style={{ alignSelf: 'start' }}>
-                    {' '}
-                    <a> {stopLoss || hedgeLossDeviation}% </a>{' '}
-                    {timeoutLoss ? (
-                      <a>
-                        <>
-                          {' '}
-                          <a style={{ color: theme.palette.grey.onboard }}>
-                            {' '}
-                            /{' '}
-                          </a>{' '}
-                          <SvgIcon src={Timer} height="13px" />
-                          <a
-                            style={{
-                              textTransform: 'lowercase',
-                              color: theme.palette.grey.onboard,
-                            }}
-                          >
-                            {' '}
-                            {timeoutLoss} sec
-                          </a>
-                        </>
-                      </a>
-                    ) : null}
-                  </div>
-                  <a
-                    style={{
-                      color: theme.palette.grey.light,
-                      fontSize: '1.2rem',
-                      alignSelf: 'baseline',
-                    }}
-                  >
-                    {' '}
-                    {entryOrderPrice ? (
-                      side === 'buy' ? (
-                        (
-                          entryOrderPrice *
-                          (1 - stopLoss / 100 / leverage)
-                        ).toFixed(pricePrecision) + ` ${pairArr[1]}`
-                      ) : (
-                        (
-                          entryOrderPrice *
-                          (1 + stopLoss / 100 / leverage)
-                        ).toFixed(pricePrecision) + ` ${pairArr[1]}`
-                      )
-                    ) : (
-                      <a
-                        style={{ textTransform: 'none', alignSelf: 'baseline' }}
-                      >
-                        Processing...
-                      </a>
-                    )}{' '}
-                  </a>
-                </div>
-              </SubColumnValue>
-            ) : (
-              '-'
-            ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-          contentToSort: stopLoss,
-        },
-        takeProfit: {
-          render: (
-            <SubColumnValue
-              style={{
-                fontSize: '1.3rem',
-                fontFamily: 'Avenir Next Demi',
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}
-              theme={theme}
-              color={green.main}
-            >
-              <SubColumnTitle
-                theme={theme}
-                style={{ width: 'auto', padding: '0 1rem 0 0' }}
-              >
-                <BtnCustom
-                  disable={!enableEdit}
-                  needMinWidth={false}
-                  btnWidth="auto"
-                  height="1.5rem"
-                  fontSize=".9rem"
-                  padding=".1rem 1rem 0 1rem"
-                  borderRadius="0.5rem"
-                  borderColor={blue.tabs}
-                  btnColor={'#fff'}
-                  backgroundColor={blue.tabs}
-                  hoverBackground={blue.tabs}
-                  transition={'all .4s ease-out'}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    editTrade('takeProfit', el)
-                  }}
-                >
-                  edit
-                </BtnCustom>
-              </SubColumnTitle>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  flexDirection: 'column',
-                }}
-              >
-                <div style={{ alignSelf: 'start' }}>
-                  {exitLevels[0] &&
-                  exitLevels[0].activatePrice &&
-                  exitLevels[0].entryDeviation ? (
-                    entryOrderPrice ? (
-                      <div>
-                        {' '}
-                        <a
-                          style={{
-                            fontSize: '1.2rem',
-                            textTransform: 'none',
-                            alignSelf: 'baseline',
-                          }}
-                        >
-                          Trailing from
-                        </a>{' '}
-                        +{exitLevels[0].entryDeviation}%
-                      </div>
-                    ) : (
-                      `${exitLevels[0].activatePrice}% / ${exitLevels[0].entryDeviation}%` // trailing
-                    )
-                  ) : exitLevels.length > 1 ? ( // split targets
-                    <div
-                      style={{
-                        fontSize: '1.3rem',
-                        fontFamily: 'Avenir Next Demi',
-                        textTransform: 'lowercase',
-                        color: theme.palette.grey.onboard,
-                        position: 'relative',
-                      }}
-                    >
-                      {' '}
-                      {exitLevels.length} targets{' '}
-                      <div
-                        className="splitTargetsTable"
-                        style={{
-                          position: 'absolute',
-                          height: 'auto',
-                          left: '45%',
-                          width: '25rem',
-                          top: '100%',
-                          background: theme.palette.background.default,
-                          zIndex: '100',
-                          borderRadius: '0.1rem',
-                          justifyContent: 'center',
-                          border: theme.palette.border.main,
-                        }}
-                      >
-                        <table
-                          style={{
-                            width: '95%',
-                            color: theme.palette.grey.light,
-                            textTransform: 'uppercase',
-                            letterSpacing: '0',
-                          }}
-                        >
-                          <TableRow style={{ fontSize: '1.2rem' }}>
-                            <TableCell theme={theme}>price</TableCell>
-                            <TableCell theme={theme}>quantity</TableCell>
-                          </TableRow>
-
-                          {exitLevels.map((el, index) => {
-                            return (
-                              <TableRow>
-                                <TableCell theme={theme}>{el.price}%</TableCell>
-                                <TableCell theme={theme}>
-                                  {el.amount}%
-                                </TableCell>
-                              </TableRow>
-                            )
-                          })}
-                        </table>{' '}
-                      </div>
-                      <SvgIcon
-                        src={ArrowBottom}
-                        width={'1rem'}
-                        height={'1rem'}
-                      />
-                      {/* <div>
-                        {exitLevels.map((level, i) =>
-                          i < 4 ? (
-                            <span style={{ color: theme.palette.grey.light }}>
-                              {level.amount}%{' '}
-                              {i === 3 || i + 1 === exitLevels.length
-                                ? ''
-                                : '/ '}
-                            </span>
-                          ) : null
-                        )}
-                      </div>
-                      <div>
-                        {exitLevels.map((level, i) =>
-                          i < 4 ? (
-                            <span>
-                              {level.price}%{' '}
-                              {i === 3 || i + 1 === exitLevels.length
-                                ? ''
-                                : '/ '}
-                            </span>
-                          ) : null
-                        )}
-                      </div> */}
-                      {/* {exitLevels.length} targets{' '} */}
-                      {/* <SvgIcon
-                        src={ArrowBottom}
-                        width={'1rem'}
-                        height={'1rem'}
-                      /> */}
-                    </div>
-                  ) : (
-                    `${exitLevels.length > 0 ? exitLevels[0].price : '-'}%` // tp
-                  )}
-                </div>
-                {exitLevels.length > 1 ? null : (
-                  <a
-                    style={{
-                      color: theme.palette.grey.light,
-                      fontSize: '1.2rem',
-                      alignSelf: 'baseline',
-                    }}
-                  >
-                    {' '}
-                    {entryOrderPrice ? (
-                      side === 'buy' ? (
-                        (
-                          entryOrderPrice *
-                          (1 + takeProfitPercentage / 100 / leverage)
-                        ).toFixed(pricePrecision) + ` ${pairArr[1]}`
-                      ) : (
-                        (
-                          entryOrderPrice *
-                          (1 - takeProfitPercentage / 100 / leverage)
-                        ).toFixed(pricePrecision) + ` ${pairArr[1]}`
-                      )
-                    ) : (
-                      <a
-                        style={{ textTransform: 'none', alignSelf: 'baseline' }}
-                      >
-                        Processing...
-                      </a>
-                    )}{' '}
-                  </a>
-                )}
-              </div>
-            </SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-        },
-
-        profit: {
-          render:
-            isSMIsAlreadyInEntry &&
-            // currentPrice &&
-            entryOrderPrice ? (
-              <SMPnlComponent
-                exchange={activeExchange}
-                symbol={pair}
-                marketType={marketType}
-                pairArr={pairArr}
-                entryPrice={entryPrice}
-                leverage={leverage}
-                side={side}
-                exitPrice={exitPrice}
-                entryOrderPrice={entryOrderPrice}
-                entryLevels={entryLevels}
-                receivedProfitPercentage={receivedProfitPercentage}
-                receivedProfitAmount={receivedProfitAmount}
-                positionAmount={+stripDigitPlaces(amount, quantityPrecision)}
-                templatePnl={templatePnl}
-                theme={theme}
-              />
-            ) : (
-              <a style={{ color: theme.palette.grey.light }}>
-                0 {pairArr[1]} / 0%
-              </a>
-            ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-            minWidth: '135px',
-          },
-          // contentToSort: profitAmount,
-        },
-        status: {
-          render: (
-            <SubColumnValue
-              theme={theme}
-              style={{
-                textTransform: 'none',
-                width: '8.5rem',
-                display: 'flex',
-                alignItems: 'center',
-                whiteSpace: 'normal',
-                flexDirection: 'column',
-                fontSize: '1.3rem',
-                fontFamily: 'Avenir Next Demi',
-                whiteSpace: 'nowrap',
-              }}
-              color={isErrorInOrder ? red.main : statusColor}
-            >
-              {isErrorInOrder ? 'Error' : activeOrderStatus}
-              {isErrorInOrder ? (
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                  }}
-                >
-                  <TooltipCustom
-                    title={msg}
-                    component={
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <ErrorIcon
-                          style={{
-                            height: '1.5rem',
-                            width: '1.5rem',
-                            color: red.main,
-                            marginLeft: '.5rem',
-                          }}
-                        />
-                      </div>
-                    }
-                  />
-                  <a className={'errorMsg'} style={{}}>
-                    {msg}
-                  </a>
-                </div>
-              ) : null}
-            </SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-          contentToSort: activeOrderStatus,
-        },
-        close: {
-          render: needOpacity ? (
-            ' '
-          ) : isTemplate ? (
-            <div>
-              <BtnCustom
-                btnWidth="100%"
-                height="auto"
-                fontSize=".9rem"
-                padding=".2rem 0 .1rem 0"
-                margin="0 0 .4rem 0"
-                borderRadius=".8rem"
-                btnColor={theme.palette.white.main}
-                borderColor={theme.palette.blue.main}
-                backgroundColor={theme.palette.blue.main}
-                hoverColor={theme.palette.white.main}
-                hoverBackground={theme.palette.blue.main}
-                transition={'all .4s ease-out'}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  changeStatusWithStatus(
-                    el._id,
-                    el.accountId,
-                    templateStatus === 'paused' ? 'enabled' : 'paused'
-                  )
-                }}
-              >
-                {templateStatus === 'paused' ? 'continue' : 'pause'}
-              </BtnCustom>
-              <BtnCustom
-                btnWidth="100%"
-                height="auto"
-                fontSize=".9rem"
-                margin=".4rem 0 0 0"
-                padding=".2rem 0 .1rem 0"
-                borderRadius=".8rem"
-                btnColor={theme.palette.white.main}
-                borderColor={red.main}
-                backgroundColor={red.main}
-                hoverColor={theme.palette.white.main}
-                hoverBackground={red.main}
-                transition={'all .4s ease-out'}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  changeStatusWithStatus(el._id, el.accountId, 'disabled').then(
-                    (res) => {
-                      console.log('changeStatusWithStatus res', res)
-
-                      if (res.status === 'error') {
-                        modifyCacheData({
-                          _id: strategyId,
-                          name: 'getActiveStrategies',
-                          subName: 'strategies',
-                          typename: 'strategiesHistoryOutput',
-                          data: null,
-                          query: queryBody,
-                          variables: queryVariables,
-                          modifyFunc: 'map',
-                          modifyFuncCallBack: (elem) => {
-                            if (elem._id === strategyId) {
-                              elem.enabled = el.enabled
-
-                              if (
-                                elem.conditions.isTemplate &&
-                                elem.conditions.templateStatus
-                              ) {
-                                elem.conditions.templateStatus =
-                                  el.conditions.templateStatus
-                              }
-                            }
-
-                            return elem
-                          },
-                        })
-                      }
-                    }
-                  )
-
-                  modifyCacheData({
-                    _id: strategyId,
-                    name: 'getActiveStrategies',
-                    subName: 'strategies',
-                    typename: 'strategiesHistoryOutput',
-                    data: null,
-                    query: queryBody,
-                    variables: queryVariables,
-                    modifyFunc: 'map',
-                    modifyFuncCallBack: (elem) => {
-                      if (elem._id === strategyId) {
-                        elem.enabled = false
-
-                        if (
-                          elem.conditions.isTemplate &&
-                          elem.conditions.templateStatus
-                        ) {
-                          elem.conditions.templateStatus = 'disabled'
-                        }
-                      }
-
-                      return elem
-                    },
-                  })
-
-                  // addOrderToCanceled(el._id)
-                }}
-              >
-                stop
-              </BtnCustom>
-            </div>
-          ) : (
-            <BtnCustom
-              btnWidth="100%"
-              height="auto"
-              fontSize=".9rem"
-              padding=".2rem 0 .1rem 0"
-              borderRadius=".8rem"
-              btnColor={theme.palette.white.main}
-              borderColor={red.main}
-              backgroundColor={red.main}
-              hoverColor={red.main}
-              hoverBackground={theme.palette.white.main}
-              transition={'all .4s ease-out'}
-              onClick={(e) => {
-                e.stopPropagation()
-                cancelOrderFunc(el._id, el.accountId).then((res) => {
-                  console.log('changeStatusWithStatus res', res)
-
-                  if (res.status === 'error') {
-                    modifyCacheData({
-                      _id: strategyId,
-                      name: 'getActiveStrategies',
-                      subName: 'strategies',
-                      typename: 'strategiesHistoryOutput',
-                      data: null,
-                      query: queryBody,
-                      variables: queryVariables,
-                      modifyFunc: 'map',
-                      modifyFuncCallBack: (elem) => {
-                        if (elem._id === strategyId) {
-                          elem.enabled = el.enabled
-
-                          if (
-                            elem.conditions.isTemplate &&
-                            elem.conditions.templateStatus
-                          ) {
-                            elem.conditions.templateStatus =
-                              el.conditions.templateStatus
-                          }
-                        }
-
-                        return elem
-                      },
-                    })
-                  }
-                })
-
-                modifyCacheData({
-                  _id: strategyId,
-                  name: 'getActiveStrategies',
-                  subName: 'strategies',
-                  typename: 'strategiesHistoryOutput',
-                  data: null,
-                  query: queryBody,
-                  variables: queryVariables,
-                  modifyFunc: 'map',
-                  modifyFuncCallBack: (elem) => {
-                    if (elem._id === strategyId) {
-                      elem.enabled = false
-
-                      if (
-                        elem.conditions.isTemplate &&
-                        elem.conditions.templateStatus
-                      ) {
-                        elem.conditions.templateStatus = 'disabled'
-                      }
-                    }
-
-                    return elem
-                  },
-                })
-              }}
-            >
-              {activeOrderStatus === 'Preparing' ||
-              activeOrderStatus === 'Trailing entry'
-                ? 'cancel'
-                : 'market'}
-            </BtnCustom>
-          ),
-        },
-        // expandableContent: [
-        //   {
-        //     row: {
-        //       render: (
-        //         <div style={{ position: 'relative' }}>
-        //           <EntryOrderColumn
-        //             theme={theme}
-        //             haveEdit={true}
-        //             entryLevels={entryLevels} // avg
-        //             editTrade={() => editTrade('entryOrder', el)}
-        //             enableEdit={activeOrderStatus === 'Preparing' || isTemplate}
-        //             pair={`${pairArr[0]}/${pairArr[1]}`}
-        //             side={side}
-        //             price={entryOrderPrice}
-        //             order={orderType}
-        //             amount={
-        //               // I use toFixed instead of stripDigitPlaces
-        //               // coz in strategy-service we're rounding amount in this way
-        //               amount.toFixed(quantityPrecision)
-        //             }
-        //             total={entryOrderPrice * amount}
-        //             trailing={
-        //               entryDeviation
-        //                 ? stripDigitPlaces(entryDeviation / leverage, 3)
-        //                 : false
-        //             }
-        //             activatePrice={activatePrice}
-        //             red={red.main}
-        //             green={green.main}
-        //             blue={blue}
-        //           />
-        //           <TakeProfitColumn
-        //             haveEdit={true}
-        //             theme={theme}
-        //             enableEdit={true}
-        //             editTrade={() => editTrade('takeProfit', el)}
-        //             price={exitLevels.length > 0 && exitLevels[0].price}
-        //             order={exitLevels.length > 0 && exitLevels[0].orderType}
-        //             targets={exitLevels ? exitLevels : []}
-        //             timeoutProfit={timeoutWhenProfit}
-        //             timeoutProfitable={timeoutIfProfitable}
-        //             trailing={trailingExit}
-        //             red={red.main}
-        //             green={green.main}
-        //             blue={blue}
-        //           />
-        //           <StopLossColumn
-        //             theme={theme}
-        //             haveEdit={true}
-        //             enableEdit={true}
-        //             editTrade={() => editTrade('stopLoss', el)}
-        //             price={stopLoss}
-        //             order={stopLossType}
-        //             forced={forcedLoss}
-        //             timeoutWhenLoss={timeoutWhenLoss}
-        //             timeoutLoss={timeoutLoss}
-        //             red={red.main}
-        //             green={green.main}
-        //             blue={blue}
-        //           />
-        //           <DateColumn theme={theme} createdAt={date} />
-        //         </div>
-        //       ),
-        //       colspan: 9,
-        //     },
-        //   },
-        // ],
-      }
-    })
-
-  return processedActiveTradesData
 }
 
 export const combineStrategiesHistoryTable = ({
@@ -1822,7 +600,7 @@ export const combineStrategiesHistoryTable = ({
 }: // pricePrecision,
 // quantityPrecision
 {
-  data: OrderType[]
+  data: SmartOrder[]
   theme: Theme
   marketType: number
   keys: Key[]
@@ -1834,11 +612,9 @@ export const combineStrategiesHistoryTable = ({
     return []
   }
 
-  const { green, red, blue } = theme.palette
-
   const processedStrategiesHistoryData = data
     .filter((el) => el.conditions.marketType === marketType)
-    .map((el: OrderType, i: number) => {
+    .map((el: SmartOrder, i: number) => {
       const {
         createdAt,
         enabled,
@@ -1856,15 +632,7 @@ export const combineStrategiesHistoryTable = ({
             activatePrice,
           },
           exitLevels,
-          entryLevels,
           stopLoss,
-          stopLossType,
-          forcedLoss,
-          trailingExit,
-          timeoutIfProfitable,
-          timeoutWhenLoss,
-          timeoutLoss,
-          timeoutWhenProfit,
           isTemplate,
           templatePnl,
           templateStatus,
@@ -1928,7 +696,6 @@ export const combineStrategiesHistoryTable = ({
 
       const [profitAmount, profitPercentage] = getPnlFromState({
         state: el.state,
-        pair: pairArr,
         side,
         amount,
         leverage,
@@ -1968,111 +735,17 @@ export const combineStrategiesHistoryTable = ({
 
       return {
         id: `${el._id}_${accountId}`,
-        pair: {
-          render: (
-            <SubColumnValue
-              theme={theme}
-              onClick={() => handlePairChange(pair)}
-            >{`${pairArr[0]}/${pairArr[1]}`}</SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-            cursor: 'pointer',
-          },
-          contentToSort: `${pairArr[0]}/${pairArr[1]}`,
-        },
-        side: {
-          render: (
-            <SubColumnValue
-              theme={theme}
-              color={side === 'buy' ? green.main : red.main}
-            >
-              {marketType === 0
-                ? side
-                : side === 'buy'
-                ? 'buy long'
-                : 'sell short'}
-            </SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-          contentToSort: side,
-        },
-        entryPrice: {
-          render: (
-            <SubColumnValue theme={theme}>
-              {stripDigitPlaces(entryOrderPrice, pricePrecision)} {pairArr[1]}
-            </SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-          contentToSort: entryOrderPrice,
-        },
-        quantity: {
-          render: (
-            <SubColumnValue theme={theme}>
-              {amount.toFixed(quantityPrecision)} {pairArr[0]}{' '}
-            </SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-          contentToSort: amount,
-        },
-        takeProfit: {
-          render: (
-            <SubColumnValue theme={theme} color={green.main}>
-              {exitLevels[0] &&
-              exitLevels[0].activatePrice &&
-              exitLevels[0].entryDeviation ? (
-                `${exitLevels[0].activatePrice}% / ${exitLevels[0].entryDeviation}%`
-              ) : exitLevels.length > 1 ? (
-                <div>
-                  <div>
-                    {exitLevels.map((level, i) =>
-                      i < 4 ? (
-                        <span style={{ color: theme.palette.grey.light }}>
-                          {level.amount}%{' '}
-                          {i === 3 || i + 1 === exitLevels.length ? '' : '/ '}
-                        </span>
-                      ) : null
-                    )}
-                  </div>
-                  <div>
-                    {exitLevels.map((level, i) =>
-                      i < 4 ? (
-                        <span>
-                          {level.price}%{' '}
-                          {i === 3 || i + 1 === exitLevels.length ? '' : '/ '}
-                        </span>
-                      ) : null
-                    )}
-                  </div>
-                </div>
-              ) : (
-                `${exitLevels.length > 0 ? exitLevels[0].price : '-'}%`
-              )}
-            </SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-        },
-        stopLoss: {
-          render: stopLoss ? (
-            <SubColumnValue theme={theme} color={red.main}>
-              {stopLoss}%
-            </SubColumnValue>
-          ) : (
-            '-'
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-          contentToSort: stopLoss,
-        },
+        ...getStrategyFields({
+          el,
+          theme,
+          keyName,
+          pairArr,
+          pricePrecision,
+          entryOrderPrice,
+          handlePairChange,
+          quantityPrecision,
+          isActiveTable: false,
+        }),
         profit: {
           render: (
             <SubColumnValue
@@ -2082,8 +755,8 @@ export const combineStrategiesHistoryTable = ({
                   ? ''
                   : receivedProfitPercentage > 0 ||
                     (!!templatePnl && templatePnl > 0)
-                  ? green.main
-                  : red.main
+                  ? theme.palette.green.main
+                  : theme.palette.red.main
               }
             >
               {!!templatePnl
@@ -2110,9 +783,9 @@ export const combineStrategiesHistoryTable = ({
               color={
                 state || isTemplate
                   ? !isErrorInOrder && orderState !== 'Canceled'
-                    ? green.main
-                    : red.main
-                  : red.main
+                    ? theme.palette.green.main
+                    : theme.palette.red.main
+                  : theme.palette.red.main
               }
             >
               {isErrorInOrder ? 'Error' : orderState}
@@ -2132,14 +805,14 @@ export const combineStrategiesHistoryTable = ({
                           style={{
                             height: '1.5rem',
                             width: '1.5rem',
-                            color: red.main,
+                            color: theme.palette.red.main,
                             marginLeft: '.5rem',
                           }}
                         />{' '}
                       </div>
                     }
                   />
-                  <a className={'errorMsg'} style={{}}>
+                  <a className={'errorMsg'}>
                     {msg}
                   </a>
                 </div>
@@ -2171,63 +844,63 @@ export const combineStrategiesHistoryTable = ({
           contentToSort: createdAt ? +new Date(createdAt) : -1,
         },
         tooltipTitle: keyName,
-        expandableContent: [
-          {
-            row: {
-              render: (
-                <div style={{ position: 'relative' }}>
-                  <EntryOrderColumn
-                    theme={theme}
-                    haveEdit={false}
-                    enableEdit={!!entryPrice}
-                    entryLevels={entryLevels}
-                    pair={`${pairArr[0]}/${pairArr[1]}`}
-                    side={side}
-                    price={entryOrderPrice}
-                    order={orderType}
-                    amount={amount.toFixed(quantityPrecision)}
-                    total={entryOrderPrice * amount}
-                    trailing={
-                      entryDeviation
-                        ? stripDigitPlaces(entryDeviation / leverage, 3)
-                        : false
-                    }
-                    activatePrice={activatePrice}
-                    red={red.main}
-                    green={green.main}
-                    blue={blue}
-                  />
-                  <TakeProfitColumn
-                    theme={theme}
-                    haveEdit={false}
-                    price={exitLevels.length > 0 && exitLevels[0].price}
-                    order={exitLevels.length > 0 && exitLevels[0].orderType}
-                    targets={exitLevels ? exitLevels : []}
-                    timeoutProfit={timeoutWhenProfit}
-                    timeoutProfitable={timeoutIfProfitable}
-                    trailing={trailingExit}
-                    red={red.main}
-                    green={green.main}
-                    blue={blue}
-                  />
-                  <StopLossColumn
-                    theme={theme}
-                    haveEdit={false}
-                    price={stopLoss}
-                    order={stopLossType}
-                    forced={forcedLoss}
-                    timeoutWhenLoss={timeoutWhenLoss}
-                    timeoutLoss={timeoutLoss}
-                    red={red.main}
-                    green={green.main}
-                    blue={blue}
-                  />
-                </div>
-              ),
-              colspan: 9,
-            },
-          },
-        ],
+      //   expandableContent: [
+      //     {
+      //       row: {
+      //         render: (
+      //           <div style={{ position: 'relative' }}>
+      //             <EntryOrderColumn
+      //               theme={theme}
+      //               haveEdit={false}
+      //               enableEdit={!!entryPrice}
+      //               entryLevels={entryLevels}
+      //               pair={`${pairArr[0]}/${pairArr[1]}`}
+      //               side={side}
+      //               price={entryOrderPrice}
+      //               order={orderType}
+      //               amount={amount.toFixed(quantityPrecision)}
+      //               total={entryOrderPrice * amount}
+      //               trailing={
+      //                 entryDeviation
+      //                   ? stripDigitPlaces(entryDeviation / leverage, 3)
+      //                   : false
+      //               }
+      //               activatePrice={activatePrice}
+      //               red={red.main}
+      //               green={green.main}
+      //               blue={blue}
+      //             />
+      //             <TakeProfitColumn
+      //               theme={theme}
+      //               haveEdit={false}
+      //               price={exitLevels.length > 0 && exitLevels[0].price}
+      //               order={exitLevels.length > 0 && exitLevels[0].orderType}
+      //               targets={exitLevels ? exitLevels : []}
+      //               timeoutProfit={timeoutWhenProfit}
+      //               timeoutProfitable={timeoutIfProfitable}
+      //               trailing={trailingExit}
+      //               red={red.main}
+      //               green={green.main}
+      //               blue={blue}
+      //             />
+      //             <StopLossColumn
+      //               theme={theme}
+      //               haveEdit={false}
+      //               price={stopLoss}
+      //               order={stopLossType}
+      //               forced={forcedLoss}
+      //               timeoutWhenLoss={timeoutWhenLoss}
+      //               timeoutLoss={timeoutLoss}
+      //               red={red.main}
+      //               green={green.main}
+      //               blue={blue}
+      //             />
+      //           </div>
+      //         ),
+      //         colspan: 9,
+      //       },
+      //     },
+      //   ],
       }
     })
 
@@ -2479,6 +1152,9 @@ export const combineOpenOrdersTable = ({
             textAlign: 'right',
           },
           contentToSort: timestamp,
+        },
+        cancelSpace: {
+          colspan: 1,
         },
         cancel: {
           render: needOpacity ? (
@@ -3132,10 +1808,10 @@ export const updateActivePositionsQuerryFunction = (
   previous,
   { subscriptionData }
 ) => {
-  console.log(
-    'updateActivePositionsQuerryFunction subscriptionData',
-    subscriptionData
-  )
+  // console.log(
+  //   'updateActivePositionsQuerryFunction subscriptionData',
+  //   subscriptionData
+  // )
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenFuturesPositions
 

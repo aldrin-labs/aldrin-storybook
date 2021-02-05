@@ -301,9 +301,11 @@ const IOSSwitcherContainer = styled.div`
 export const Switcher = ({
   checked,
   onChange,
+  theme,
 }: {
   checked: boolean
   onChange: () => void
+  theme: any
 }) => {
   return (
     <IOSSwitcherContainer theme={theme}>

@@ -5,6 +5,8 @@ import SvgIcon from '@sb/components/SvgIcon'
 
 import Chain from '@icons/chain.svg'
 
+import { processEntryLevels } from '@core/utils/chartPageUtils'
+
 import {
   getSecondValueFromFirst,
   GreenSwitcherStyles,
@@ -72,19 +74,16 @@ export const EntryOrderBlock = ({
   updatePriceToMarket,
   deleteAverageTarget,
   updateSubBlockValue,
+  enqueueSnackbar,
   isCloseOrderExternal,
   isAveragingAfterFirstTarget,
   updateStopLossAndTakeProfitPrices,
 }: EntryOrderBlockProps) => {
+  console.log('typeplot', entryPoint.TVAlert)
   return (
     <TerminalBlock theme={theme} width={'calc(33% + 0.5%)'} data-tut={'step1'}>
       <div>
-        <InputRowContainer
-          justify="flex-start"
-          padding={
-              '0rem 0 1.2rem 0'
-          }
-        >
+        <InputRowContainer justify="flex-start" padding={'0rem 0 1.2rem 0'}>
           {marketType === 1 && (
             <DarkTooltip
               maxWidth={'40rem'}
@@ -323,42 +322,6 @@ export const EntryOrderBlock = ({
                 </DarkTooltip>
               </InputRowContainer>
             </InputRowContainer>
-
-            {/* {!entryPoint.averaging.enabled && (
-              <FormInputContainer
-                theme={theme}
-                padding={'0 0 1rem 0'}
-                haveTooltip={false}
-                tooltipText={''}
-                title={'action when alert'}
-              >
-                <InputRowContainer>
-                  <AdditionalSettingsButton
-                    theme={theme}
-                    isActive={entryPoint.TVAlert.plotEnabled}
-                    onClick={() => {
-                      updateSubBlockValue(
-                        'entryPoint',
-                        'TVAlert',
-                        'plotEnabled',
-                        !entryPoint.TVAlert.plotEnabled
-                      )
-
-                      if (!entryPoint.TVAlert.plotEnabled) {
-                        updateSubBlockValue(
-                          'entryPoint',
-                          'averaging',
-                          'enabled',
-                          false
-                        )
-                      }
-                    }}
-                  >
-                    Plot
-                  </AdditionalSettingsButton>
-                </InputRowContainer>
-              </FormInputContainer>
-            )} */}
           </>
         )}
         <InputRowContainer style={{ margin: '1rem  auto' }}>
@@ -440,8 +403,10 @@ export const EntryOrderBlock = ({
                   }}
                 >
                   <Switcher
+                    theme={theme}
                     checked={entryPoint.TVAlert.sidePlotEnabled}
                     onChange={() => {
+                      console.log('change sidePlot')
                       updateSubBlockValue(
                         'entryPoint',
                         'TVAlert',
@@ -461,7 +426,10 @@ export const EntryOrderBlock = ({
                   disabled={!entryPoint.TVAlert.sidePlotEnabled}
                   value={entryPoint.TVAlert.sidePlot}
                   showErrors={showErrors}
-                  isValid={validateField(true, entryPoint.TVAlert.sidePlot)}
+                  isValid={validateField(
+                    entryPoint.TVAlert.sidePlotEnabled,
+                    entryPoint.TVAlert.sidePlot
+                  )}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     updateSubBlockValue(
                       'entryPoint',
@@ -475,480 +443,57 @@ export const EntryOrderBlock = ({
             )}
           </InputRowContainer>
         </InputRowContainer>{' '}
-        <InputRowContainer style={{ marginBottom: '1rem' }}>
-          <ChangeOrderTypeBtn
-            theme={theme}
-            isActive={
-              entryPoint.TVAlert.plotEnabled
-                ? entryPoint.TVAlert.typePlotEnabled
-                  ? false
+        {!entryPoint.averaging.enabled && (
+          <InputRowContainer style={{ marginBottom: '1rem' }}>
+            <ChangeOrderTypeBtn
+              theme={theme}
+              isActive={
+                entryPoint.TVAlert.plotEnabled
+                  ? entryPoint.TVAlert.typePlotEnabled
+                    ? false
+                    : entryPoint.order.type === 'market'
                   : entryPoint.order.type === 'market'
-                : entryPoint.order.type === 'market'
-            }
-            isPlotEnabled={entryPoint.TVAlert.plotEnabled}
-            disabled={
-              entryPoint.TVAlert.plotEnabled &&
-              entryPoint.TVAlert.typePlotEnabled
-            }
-            onClick={() => {
-              updateSubBlockValue('entryPoint', 'order', 'type', 'market')
+              }
+              isPlotEnabled={entryPoint.TVAlert.plotEnabled}
+              disabled={
+                entryPoint.TVAlert.plotEnabled &&
+                entryPoint.TVAlert.typePlotEnabled
+              }
+              onClick={() => {
+                updateSubBlockValue('entryPoint', 'order', 'type', 'market')
 
-              updatePriceToMarket()
-            }}
-          >
-            Market
-          </ChangeOrderTypeBtn>
-          <ChangeOrderTypeBtn
-            theme={theme}
-            isActive={
-              entryPoint.TVAlert.plotEnabled
-                ? entryPoint.TVAlert.typePlotEnabled
-                  ? false
+                updatePriceToMarket()
+              }}
+            >
+              Market
+            </ChangeOrderTypeBtn>
+            <ChangeOrderTypeBtn
+              theme={theme}
+              isActive={
+                entryPoint.TVAlert.plotEnabled
+                  ? entryPoint.TVAlert.typePlotEnabled
+                    ? false
+                    : entryPoint.order.type === 'limit'
                   : entryPoint.order.type === 'limit'
-                : entryPoint.order.type === 'limit'
-            }
-            isPlotEnabled={entryPoint.TVAlert.plotEnabled}
-            disabled={
-              entryPoint.TVAlert.plotEnabled &&
-              entryPoint.TVAlert.typePlotEnabled
-            }
-            onClick={() => {
-              updateSubBlockValue('entryPoint', 'order', 'type', 'limit')
-
-              updateSubBlockValue(
-                'entryPoint',
-                'TVAlert',
-                'immediateEntry',
-                false
-              )
-            }}
-          >
-            Limit
-          </ChangeOrderTypeBtn>
-          {entryPoint.TVAlert.plotEnabled && (
-            <>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  width: '10%',
-                }}
-              >
-                <Switcher
-                  checked={entryPoint.TVAlert.typePlotEnabled}
-                  onChange={() => {
-                    updateSubBlockValue(
-                      'entryPoint',
-                      'TVAlert',
-                      'typePlotEnabled',
-                      !entryPoint.TVAlert.typePlotEnabled
-                    )
-                  }}
-                />
-              </div>
-              <Input
-                theme={theme}
-                type={'number'}
-                needTitleBlock
-                header={'plot_'}
-                textAlign="left"
-                width={'calc(20%)'}
-                disabled={!entryPoint.TVAlert.typePlotEnabled}
-                value={entryPoint.TVAlert.typePlot}
-                showErrors={showErrors}
-                isValid={validateField(true, entryPoint.TVAlert.typePlot)}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  updateSubBlockValue(
-                    'entryPoint',
-                    'TVAlert',
-                    'typePlot',
-                    e.target.value
-                  )
-                }}
-              />
-            </>
-          )}
-        </InputRowContainer>
-        <InputRowContainer style={{ marginBottom: '1rem' }}>
-          {isAveragingAfterFirstTarget ? (
-            <>
-              <SliderWithPriceAndPercentageFieldRow
-                {...{
-                  pair,
-                  theme,
-                  entryPoint,
-                  showErrors,
-                  isMarketType,
-                  validateField,
-                  pricePrecision,
-                  updateBlockValue,
-                  priceForCalculate,
-                  percentagePreSymbol: '-',
-                  approximatePrice: entryPoint.averaging.price,
-                  pricePercentage: entryPoint.averaging.percentage,
-                  getApproximatePrice: (value: number) => {
-                    return value === 0
-                      ? priceForCalculate
-                      : entryPoint.order.side === 'buy'
-                      ? stripDigitPlaces(
-                          priceForCalculate *
-                            (1 - value / 100 / entryPoint.order.leverage),
-                          pricePrecision
-                        )
-                      : stripDigitPlaces(
-                          priceForCalculate *
-                            (1 + value / 100 / entryPoint.order.leverage),
-                          pricePrecision
-                        )
-                  },
-                  onAfterSliderChange: (value: number) => {
-                    const price =
-                      entryPoint.order.side === 'buy'
-                        ? stripDigitPlaces(
-                            entryPoint.order.price *
-                              (1 - value / 100 / entryPoint.order.leverage),
-                            pricePrecision
-                          )
-                        : stripDigitPlaces(
-                            entryPoint.order.price *
-                              (1 + value / 100 / entryPoint.order.leverage),
-                            pricePrecision
-                          )
-
-                    updateSubBlockValue(
-                      'entryPoint',
-                      'averaging',
-                      'percentage',
-                      value
-                    )
-
-                    updateSubBlockValue(
-                      'entryPoint',
-                      'averaging',
-                      'price',
-                      price
-                    )
-                  },
-                  onApproximatePriceChange: (
-                    e: React.ChangeEvent<HTMLInputElement>,
-                    updateValue: (v: any) => void
-                  ) => {
-                    // calc perc correctly
-                    const percentage =
-                      entryPoint.order.side === 'buy'
-                        ? (1 - +e.target.value / priceForCalculate) *
-                          100 *
-                          entryPoint.order.leverage
-                        : -(1 - +e.target.value / priceForCalculate) *
-                          100 *
-                          entryPoint.order.leverage
-
-                    updateSubBlockValue(
-                      'entryPoint',
-                      'averaging',
-                      'percentage',
-                      stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
-                    )
-
-                    console.log('new price', e.target.value)
-                    updateSubBlockValue(
-                      'entryPoint',
-                      'averaging',
-                      'price',
-                      e.target.value
-                    )
-
-                    updateValue(
-                      stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
-                    )
-                  },
-                  onPricePercentageChange: (
-                    e: React.ChangeEvent<HTMLInputElement>
-                  ) => {
-                    const price =
-                      entryPoint.order.side === 'buy'
-                        ? stripDigitPlaces(
-                            entryPoint.order.price *
-                              (1 -
-                                +e.target.value /
-                                  100 /
-                                  entryPoint.order.leverage),
-                            pricePrecision
-                          )
-                        : stripDigitPlaces(
-                            entryPoint.order.price *
-                              (1 +
-                                +e.target.value /
-                                  100 /
-                                  entryPoint.order.leverage),
-                            pricePrecision
-                          )
-
-                    updateSubBlockValue(
-                      'entryPoint',
-                      'averaging',
-                      'percentage',
-                      e.target.value
-                    )
-
-                    updateSubBlockValue(
-                      'entryPoint',
-                      'averaging',
-                      'price',
-                      price
-                    )
-                  },
-                  updateSubBlockValue,
-                  updateStopLossAndTakeProfitPrices,
-                }}
-              />
-            </>
-          ) : (
-            <Input
-              theme={theme}
-              width={
-                isAveragingAfterFirstTarget
-                  ? '32.5%'
-                  : entryPoint.TVAlert.plotEnabled
-                  ? '70%'
-                  : '100%'
               }
-              needTooltip={true}
-              titleForTooltip={
-                'The price at which the trailing algorithm will be triggered.'
-              }
-              header={'activation price'}
-              symbol={pair[1]}
-              needTitleBlock
-              type={
-                entryPoint.order.type === 'limit'
-                  ? 'number'
-                  : entryPoint.trailing.isTrailingOn
-                  ? 'number'
-                  : 'text'
-              }
-              value={
-                entryPoint.order.type === 'limit'
-                  ? isAveragingAfterFirstTarget
-                    ? entryPoint.averaging.price
-                    : priceForCalculate
-                  : entryPoint.trailing.isTrailingOn
-                  ? priceForCalculate
-                  : 'MARKET'
-              }
-              showErrors={showErrors}
-              isValid={
-                entryPoint.TVAlert.pricePlotEnabled || priceForCalculate != 0
-              }
+              isPlotEnabled={entryPoint.TVAlert.plotEnabled}
               disabled={
-                (isMarketType && !entryPoint.trailing.isTrailingOn) ||
-                (entryPoint.TVAlert.pricePlotEnabled &&
-                  entryPoint.TVAlert.plotEnabled)
+                entryPoint.TVAlert.plotEnabled &&
+                entryPoint.TVAlert.typePlotEnabled
               }
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                updateSubBlockValue(
-                  'entryPoint',
-                  'order',
-                  'price',
-                  e.target.value
-                )
+              onClick={() => {
+                updateSubBlockValue('entryPoint', 'order', 'type', 'limit')
 
                 updateSubBlockValue(
                   'entryPoint',
-                  'order',
-                  'total',
-                  stripDigitPlaces(
-                    +e.target.value * entryPoint.order.amount,
-                    marketType === 1 ? 2 : 8
-                  )
-                )
-
-                updateBlockValue(
-                  'temp',
-                  'initialMargin',
-                  stripDigitPlaces(
-                    (+e.target.value * entryPoint.order.amount) /
-                      entryPoint.order.leverage,
-                    2
-                  )
+                  'TVAlert',
+                  'immediateEntry',
+                  false
                 )
               }}
-            />
-          )}
-          {entryPoint.TVAlert.plotEnabled && (
-            <>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  width: '10%',
-                }}
-              >
-                <Switcher
-                  checked={entryPoint.TVAlert.pricePlotEnabled}
-                  onChange={() => {
-                    updateSubBlockValue(
-                      'entryPoint',
-                      'TVAlert',
-                      'pricePlotEnabled',
-                      !entryPoint.TVAlert.pricePlotEnabled
-                    )
-                  }}
-                />
-              </div>
-              <Input
-                theme={theme}
-                type={'number'}
-                needTitleBlock
-                header={'plot_'}
-                textAlign="left"
-                width={'calc(20%)'}
-                disabled={!entryPoint.TVAlert.pricePlotEnabled}
-                value={entryPoint.TVAlert.pricePlot}
-                showErrors={showErrors}
-                isValid={validateField(true, entryPoint.TVAlert.pricePlot)}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  updateSubBlockValue(
-                    'entryPoint',
-                    'TVAlert',
-                    'pricePlot',
-                    e.target.value
-                  )
-                }}
-              />
-            </>
-          )}
-        </InputRowContainer>
-        {entryPoint.trailing.isTrailingOn && marketType !== 0 && (
-          <InputRowContainer style={{ margin: '1rem 0 1rem 0' }}>
-            <Input
-              header={'deviation'}
-              needTooltip
-              needTitleBlock
-              titleForTooltip={
-                'The level of price change after the trend reversal, at which the trailing order will be executed.'
-              }
-              theme={theme}
-              padding={'0'}
-              width={'38%'}
-              textAlign={'right'}
-              symbol={pair[1]}
-              value={entryPoint.trailing.trailingDeviationPrice}
-              showErrors={showErrors}
-              isValid={validateField(
-                true,
-                entryPoint.trailing.trailingDeviationPrice
-              )}
-              disabled={
-                (isMarketType && !entryPoint.trailing.isTrailingOn) ||
-                (entryPoint.TVAlert.deviationPlotEnabled &&
-                  entryPoint.TVAlert.plotEnabled)
-              }
-              inputStyles={{
-                paddingLeft: '1rem',
-              }}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                const percentage =
-                  entryPoint.order.side === 'sell'
-                    ? (1 - +e.target.value / priceForCalculate) * 100
-                    : -(1 - +e.target.value / priceForCalculate) * 100
-
-                updateSubBlockValue(
-                  'entryPoint',
-                  'trailing',
-                  'deviationPercentage',
-                  stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
-                )
-
-                updateSubBlockValue(
-                  'entryPoint',
-                  'trailing',
-                  'trailingDeviationPrice',
-                  e.target.value
-                )
-              }}
-            />
-            <SvgIcon src={Chain} style={{ margin: 'auto 0.5rem' }} />
-
-            <Input
-              theme={theme}
-              padding={'0 .8rem 0 0'}
-              width={'24%'}
-              needTitleBlock
-              symbol={'%'}
-              header={'level'}
-              textAlign={'right'}
-              pattern={'[0-9]+.[0-9]{3}'}
-              type={'text'}
-              value={entryPoint.trailing.deviationPercentage}
-              // showErrors={showErrors}
-              // isValid={validateField(
-              //   entryPoint.trailing.isTrailingOn,
-              //   entryPoint.trailing.deviationPercentage
-              // )}
-              inputStyles={{
-                paddingLeft: 0,
-                paddingRight: '2rem',
-              }}
-              symbolRightIndent={'1.5rem'}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                const value =
-                  +e.target.value > 100 / entryPoint.order.leverage
-                    ? stripDigitPlaces(100 / entryPoint.order.leverage, 3)
-                    : e.target.value
-                updateSubBlockValue(
-                  'entryPoint',
-                  'trailing',
-                  'deviationPercentage',
-                  value
-                )
-
-                updateStopLossAndTakeProfitPrices({
-                  deviationPercentage: +value,
-                })
-              }}
-            />
-
-            <BlueSlider
-              theme={theme}
-              disabled={!entryPoint.trailing.isTrailingOn}
-              value={
-                +stripDigitPlaces(
-                  entryPoint.trailing.deviationPercentage *
-                    entryPoint.order.leverage,
-                  3
-                )
-              }
-              sliderContainerStyles={{
-                width: entryPoint.TVAlert.plotEnabled ? '20%' : '36%',
-                margin: '0 .8rem 0 .8rem',
-              }}
-              onChange={(value) => {
-                if (
-                  stripDigitPlaces(
-                    entryPoint.trailing.deviationPercentage *
-                      entryPoint.order.leverage,
-                    3
-                  ) > 100 &&
-                  value === 100
-                ) {
-                  return
-                }
-
-                updateSubBlockValue(
-                  'entryPoint',
-                  'trailing',
-                  'deviationPercentage',
-                  stripDigitPlaces(value / entryPoint.order.leverage, 3)
-                )
-                updateStopLossAndTakeProfitPrices({
-                  deviationPercentage: +stripDigitPlaces(
-                    value / entryPoint.order.leverage,
-                    3
-                  ),
-                })
-              }}
-            />
+            >
+              Limit
+            </ChangeOrderTypeBtn>
             {entryPoint.TVAlert.plotEnabled && (
               <>
                 <div
@@ -959,13 +504,15 @@ export const EntryOrderBlock = ({
                   }}
                 >
                   <Switcher
-                    checked={entryPoint.TVAlert.deviationPlotEnabled}
+                    theme={theme}
+                    checked={entryPoint.TVAlert.typePlotEnabled}
                     onChange={() => {
+                      console.log('change typePlotEnabled')
                       updateSubBlockValue(
                         'entryPoint',
                         'TVAlert',
-                        'deviationPlotEnabled',
-                        !entryPoint.TVAlert.deviationPlotEnabled
+                        'typePlotEnabled',
+                        !entryPoint.TVAlert.typePlotEnabled
                       )
                     }}
                   />
@@ -973,25 +520,22 @@ export const EntryOrderBlock = ({
                 <Input
                   theme={theme}
                   type={'number'}
-                  header={'price'}
                   needTitleBlock
+                  header={'plot_'}
                   textAlign="left"
                   width={'calc(20%)'}
-                  inputStyles={{
-                    paddingLeft: '4rem',
-                  }}
-                  disabled={!entryPoint.TVAlert.deviationPlotEnabled}
-                  value={entryPoint.TVAlert.deviationPlot}
+                  disabled={!entryPoint.TVAlert.typePlotEnabled}
+                  value={entryPoint.TVAlert.typePlot}
                   showErrors={showErrors}
                   isValid={validateField(
-                    true,
-                    entryPoint.TVAlert.deviationPlot
+                    entryPoint.TVAlert.typePlotEnabled,
+                    entryPoint.TVAlert.typePlot
                   )}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     updateSubBlockValue(
                       'entryPoint',
                       'TVAlert',
-                      'deviationPlot',
+                      'typePlot',
                       e.target.value
                     )
                   }}
@@ -999,6 +543,458 @@ export const EntryOrderBlock = ({
               </>
             )}
           </InputRowContainer>
+        )}
+        {entryPoint.order.type == 'market' ? null : (
+          <InputRowContainer style={{ marginBottom: '1rem' }}>
+            {isAveragingAfterFirstTarget ? (
+              <>
+                <SliderWithPriceAndPercentageFieldRow
+                  {...{
+                    pair,
+                    theme,
+                    entryPoint,
+                    showErrors,
+
+                    isMarketType,
+                    header: 'price',
+                    validateField,
+
+                    pricePrecision,
+                    updateBlockValue,
+                    priceForCalculate,
+                    percentagePreSymbol: '-',
+                    approximatePrice: entryPoint.averaging.price,
+                    pricePercentage: entryPoint.averaging.percentage,
+                    getApproximatePrice: (value: number) => {
+                      return value === 0
+                        ? priceForCalculate
+                        : entryPoint.order.side === 'buy'
+                        ? stripDigitPlaces(
+                            priceForCalculate *
+                              (1 - value / 100 / entryPoint.order.leverage),
+                            pricePrecision
+                          )
+                        : stripDigitPlaces(
+                            priceForCalculate *
+                              (1 + value / 100 / entryPoint.order.leverage),
+                            pricePrecision
+                          )
+                    },
+                    onAfterSliderChange: (value: number) => {
+                      const price =
+                        entryPoint.order.side === 'buy'
+                          ? stripDigitPlaces(
+                              entryPoint.order.price *
+                                (1 - value / 100 / entryPoint.order.leverage),
+                              pricePrecision
+                            )
+                          : stripDigitPlaces(
+                              entryPoint.order.price *
+                                (1 + value / 100 / entryPoint.order.leverage),
+                              pricePrecision
+                            )
+
+                      updateSubBlockValue(
+                        'entryPoint',
+                        'averaging',
+                        'percentage',
+                        value
+                      )
+
+                      updateSubBlockValue(
+                        'entryPoint',
+                        'averaging',
+                        'price',
+                        price
+                      )
+                    },
+                    onApproximatePriceChange: (
+                      e: React.ChangeEvent<HTMLInputElement>,
+                      updateValue: (v: any) => void
+                    ) => {
+                      // calc perc correctly
+                      const percentage =
+                        entryPoint.order.side === 'buy'
+                          ? (1 - +e.target.value / priceForCalculate) *
+                            100 *
+                            entryPoint.order.leverage
+                          : -(1 - +e.target.value / priceForCalculate) *
+                            100 *
+                            entryPoint.order.leverage
+
+                      updateSubBlockValue(
+                        'entryPoint',
+                        'averaging',
+                        'percentage',
+                        stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
+                      )
+
+                      console.log('new price', e.target.value)
+                      updateSubBlockValue(
+                        'entryPoint',
+                        'averaging',
+                        'price',
+                        e.target.value
+                      )
+
+                      updateValue(
+                        stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
+                      )
+                    },
+                    onPricePercentageChange: (
+                      e: React.ChangeEvent<HTMLInputElement>
+                    ) => {
+                      const price =
+                        entryPoint.order.side === 'buy'
+                          ? stripDigitPlaces(
+                              entryPoint.order.price *
+                                (1 -
+                                  +e.target.value /
+                                    100 /
+                                    entryPoint.order.leverage),
+                              pricePrecision
+                            )
+                          : stripDigitPlaces(
+                              entryPoint.order.price *
+                                (1 +
+                                  +e.target.value /
+                                    100 /
+                                    entryPoint.order.leverage),
+                              pricePrecision
+                            )
+
+                      updateSubBlockValue(
+                        'entryPoint',
+                        'averaging',
+                        'percentage',
+                        e.target.value
+                      )
+
+                      updateSubBlockValue(
+                        'entryPoint',
+                        'averaging',
+                        'price',
+                        price
+                      )
+                    },
+                    updateSubBlockValue,
+                    updateStopLossAndTakeProfitPrices,
+                  }}
+                />
+              </>
+            ) : (
+              <Input
+                theme={theme}
+                width={
+                  isAveragingAfterFirstTarget
+                    ? '32.5%'
+                    : entryPoint.TVAlert.plotEnabled &&
+                      !entryPoint.averaging.enabled
+                    ? '70%'
+                    : '100%'
+                }
+                needTooltip={true}
+                titleForTooltip={
+                  'The price at which the trailing algorithm will be triggered.'
+                }
+                header={
+                  entryPoint.trailing.isTrailingOn
+                    ? 'activation price'
+                    : 'price'
+                }
+                symbol={pair[1]}
+                needTitleBlock
+                type={
+                  entryPoint.order.type === 'limit'
+                    ? 'number'
+                    : entryPoint.trailing.isTrailingOn
+                    ? 'number'
+                    : 'text'
+                }
+                value={
+                  entryPoint.order.type === 'limit'
+                    ? isAveragingAfterFirstTarget
+                      ? entryPoint.averaging.price
+                      : priceForCalculate
+                    : entryPoint.trailing.isTrailingOn
+                    ? priceForCalculate
+                    : 'MARKET'
+                }
+                showErrors={showErrors}
+                isValid={
+                  entryPoint.TVAlert.pricePlotEnabled || priceForCalculate != 0
+                }
+                disabled={
+                  (isMarketType && !entryPoint.trailing.isTrailingOn) ||
+                  (entryPoint.TVAlert.pricePlotEnabled &&
+                    entryPoint.TVAlert.plotEnabled)
+                }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  updateSubBlockValue(
+                    'entryPoint',
+                    'order',
+                    'price',
+                    e.target.value
+                  )
+
+                  updateSubBlockValue(
+                    'entryPoint',
+                    'order',
+                    'total',
+                    stripDigitPlaces(
+                      +e.target.value * entryPoint.order.amount,
+                      marketType === 1 ? 2 : 8
+                    )
+                  )
+
+                  updateBlockValue(
+                    'temp',
+                    'initialMargin',
+                    stripDigitPlaces(
+                      (+e.target.value * entryPoint.order.amount) /
+                        entryPoint.order.leverage,
+                      2
+                    )
+                  )
+                }}
+              />
+            )}
+            {entryPoint.TVAlert.plotEnabled && !entryPoint.averaging.enabled && (
+              <>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    width: '10%',
+                  }}
+                >
+                  <Switcher
+                    theme={theme}
+                    checked={entryPoint.TVAlert.pricePlotEnabled}
+                    onChange={() => {
+                      updateSubBlockValue(
+                        'entryPoint',
+                        'TVAlert',
+                        'pricePlotEnabled',
+                        !entryPoint.TVAlert.pricePlotEnabled
+                      )
+                    }}
+                  />
+                </div>
+                <Input
+                  theme={theme}
+                  type={'number'}
+                  needTitleBlock
+                  header={'plot_'}
+                  textAlign="left"
+                  width={'calc(20%)'}
+                  disabled={!entryPoint.TVAlert.pricePlotEnabled}
+                  value={entryPoint.TVAlert.pricePlot}
+                  showErrors={showErrors}
+                  isValid={validateField(
+                    entryPoint.TVAlert.pricePlotEnabled,
+                    entryPoint.TVAlert.pricePlot
+                  )}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    updateSubBlockValue(
+                      'entryPoint',
+                      'TVAlert',
+                      'pricePlot',
+                      e.target.value
+                    )
+                  }}
+                />
+              </>
+            )}
+          </InputRowContainer>
+        )}
+        {entryPoint.trailing.isTrailingOn && marketType !== 0 && (
+          <FormInputContainer theme={theme} title={'Deviation'}>
+            <InputRowContainer style={{ margin: '1rem 0 1rem 0' }}>
+              <Input
+                header={
+                  entryPoint.trailing.isTrailingOn ? 'est. price' : 'price'
+                }
+                needTooltip
+                needTitleBlock
+                titleForTooltip={
+                  'The level of price change after the trend reversal, at which the trailing order will be executed.'
+                }
+                theme={theme}
+                padding={'0'}
+                width={entryPoint.trailing.isTrailingOn ? '36.5%' : '30%'}
+                textAlign={'right'}
+                symbol={pair[1]}
+                value={entryPoint.trailing.trailingDeviationPrice}
+                showErrors={showErrors}
+                isValid={validateField(
+                  true,
+                  entryPoint.trailing.trailingDeviationPrice
+                )}
+                disabled={
+                  (isMarketType && !entryPoint.trailing.isTrailingOn) ||
+                  (entryPoint.TVAlert.deviationPlotEnabled &&
+                    entryPoint.TVAlert.plotEnabled)
+                }
+                inputStyles={{
+                  paddingLeft: '1rem',
+                }}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const percentage =
+                    entryPoint.order.side === 'sell'
+                      ? (1 - +e.target.value / priceForCalculate) * 100
+                      : -(1 - +e.target.value / priceForCalculate) * 100
+
+                  updateSubBlockValue(
+                    'entryPoint',
+                    'trailing',
+                    'deviationPercentage',
+                    stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
+                  )
+
+                  updateSubBlockValue(
+                    'entryPoint',
+                    'trailing',
+                    'trailingDeviationPrice',
+                    e.target.value
+                  )
+                }}
+              />
+
+              {!entryPoint.TVAlert.isTVAlertOn && (
+                <SvgIcon src={Chain} style={{ margin: 'auto 0.5rem' }} />
+              )}
+
+              <Input
+                theme={theme}
+                padding={
+                  entryPoint.TVAlert.isTVAlertOn
+                    ? '0 .8rem 0 0.8rem'
+                    : '0 .8rem 0 0'
+                }
+                width={entryPoint.trailing.isTrailingOn ? '24.5%' : '20%'}
+                needTitleBlock
+                symbol={'%'}
+                header={'level'}
+                textAlign={'right'}
+                pattern={'[0-9]+.[0-9]{3}'}
+                type={'text'}
+                value={entryPoint.trailing.deviationPercentage}
+                // showErrors={showErrors}
+                // isValid={validateField(
+                //   entryPoint.trailing.isTrailingOn,
+                //   entryPoint.trailing.deviationPercentage
+                // )}
+                inputStyles={{
+                  paddingLeft: 0,
+                  paddingRight: '2rem',
+                }}
+                symbolRightIndent={'1.5rem'}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const value = e.target.value
+                  updateSubBlockValue(
+                    'entryPoint',
+                    'trailing',
+                    'deviationPercentage',
+                    value
+                  )
+
+                  updateStopLossAndTakeProfitPrices({
+                    deviationPercentage: +value,
+                  })
+                }}
+              />
+
+              <BlueSlider
+                theme={theme}
+                step={0.1}
+                max={10}
+                disabled={!entryPoint.trailing.isTrailingOn}
+                value={
+                  +stripDigitPlaces(entryPoint.trailing.deviationPercentage, 3)
+                }
+                sliderContainerStyles={{
+                  width: entryPoint.TVAlert.plotEnabled
+                    ? 'calc(20% - 1.6rem)'
+                    : entryPoint.trailing.isTrailingOn
+                    ? '30%'
+                    : '36%',
+                  margin: '0 .8rem 0 .8rem',
+                }}
+                onChange={(value) => {
+                  if (
+                    stripDigitPlaces(
+                      entryPoint.trailing.deviationPercentage,
+                      3
+                    ) > 100 &&
+                    value === 100
+                  ) {
+                    return
+                  }
+
+                  updateSubBlockValue(
+                    'entryPoint',
+                    'trailing',
+                    'deviationPercentage',
+                    stripDigitPlaces(value, 3)
+                  )
+                  updateStopLossAndTakeProfitPrices({
+                    deviationPercentage: +stripDigitPlaces(value, 3),
+                  })
+                }}
+              />
+              {entryPoint.TVAlert.plotEnabled && (
+                <>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      width: '10%',
+                    }}
+                  >
+                    <Switcher
+                      theme={theme}
+                      checked={entryPoint.TVAlert.deviationPlotEnabled}
+                      onChange={() => {
+                        updateSubBlockValue(
+                          'entryPoint',
+                          'TVAlert',
+                          'deviationPlotEnabled',
+                          !entryPoint.TVAlert.deviationPlotEnabled
+                        )
+                      }}
+                    />
+                  </div>
+                  <Input
+                    theme={theme}
+                    type={'number'}
+                    header={'plot_'}
+                    needTitleBlock
+                    textAlign="left"
+                    width={'calc(20%)'}
+                    inputStyles={{
+                      paddingLeft: '4rem',
+                    }}
+                    disabled={!entryPoint.TVAlert.deviationPlotEnabled}
+                    value={entryPoint.TVAlert.deviationPlot}
+                    showErrors={showErrors}
+                    isValid={validateField(
+                      entryPoint.TVAlert.deviationPlotEnabled,
+                      entryPoint.TVAlert.deviationPlot
+                    )}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      updateSubBlockValue(
+                        'entryPoint',
+                        'TVAlert',
+                        'deviationPlot',
+                        e.target.value
+                      )
+                    }}
+                  />
+                </>
+              )}
+            </InputRowContainer>
+          </FormInputContainer>
         )}
         <SliderWithAmountFieldRow
           onAmountChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1009,10 +1005,7 @@ export const EntryOrderBlock = ({
               : e.target.value
 
             const strippedAmount = isAmountMoreThanMax
-              ? stripDigitPlaces(
-                  amountForUpdate,
-                  marketType === 1 ? quantityPrecision : 8
-                )
+              ? stripDigitPlaces(amountForUpdate, quantityPrecision)
               : e.target.value
 
             const newTotal = +strippedAmount * priceForCalculate
@@ -1041,7 +1034,7 @@ export const EntryOrderBlock = ({
               'amount',
               stripDigitPlaces(
                 +e.target.value / priceForCalculate,
-                marketType === 1 ? quantityPrecision : 8
+                quantityPrecision
               )
             )
 
@@ -1070,10 +1063,7 @@ export const EntryOrderBlock = ({
               'entryPoint',
               'order',
               'amount',
-              stripDigitPlaces(
-                newAmount,
-                marketType === 1 ? quantityPrecision : 8
-              )
+              stripDigitPlaces(newAmount, quantityPrecision)
             )
 
             updateSubBlockValue(
@@ -1090,10 +1080,7 @@ export const EntryOrderBlock = ({
             const newTotal = inputInitialMargin * entryPoint.order.leverage
             const newAmount = newTotal / priceForCalculate
 
-            const fixedAmount = stripDigitPlaces(
-              newAmount,
-              marketType === 1 ? quantityPrecision : 8
-            )
+            const fixedAmount = stripDigitPlaces(newAmount, quantityPrecision)
 
             updateSubBlockValue(
               'entryPoint',
@@ -1122,7 +1109,9 @@ export const EntryOrderBlock = ({
               e.target.value
             )
           }}
-          plotEnabled={entryPoint.TVAlert.plotEnabled}
+          plotEnabled={
+            entryPoint.TVAlert.plotEnabled && !entryPoint.averaging.enabled
+          }
           amountPlot={entryPoint.TVAlert.amountPlot}
           amountPlotEnabled={entryPoint.TVAlert.amountPlotEnabled}
           {...{
@@ -1175,11 +1164,11 @@ export const EntryOrderBlock = ({
                 >
                   price
                 </TargetTitle>
+                <TargetTitle theme={theme} style={{ width: '40%' }}>
+                  est. averaged entry price{' '}
+                </TargetTitle>
                 <TargetTitle theme={theme} style={{ width: '25%' }}>
                   quantity
-                </TargetTitle>
-                <TargetTitle theme={theme} style={{ width: '40%' }}>
-                  place Break-even SLP
                 </TargetTitle>
               </InputRowContainer>
               <div
@@ -1190,13 +1179,17 @@ export const EntryOrderBlock = ({
                   border: theme.palette.border.main,
                 }}
               >
-                {entryPoint.averaging.entryLevels.map(
-                  (target: EntryLevel, i: number) => (
+                {processEntryLevels(
+                  entryPoint.averaging.entryLevels,
+                  entryPoint.order.leverage,
+                  entryPoint.order.side
+                ).map((level, index) => {
+                  return (
                     <InputRowContainer
-                      key={`${target.price}${target.amount}${i}`}
+                      key={`${level.price}${level.quantity}${index}`}
                       padding=".2rem .5rem"
                       style={
-                        entryPoint.averaging.entryLevels.length - 1 !== i
+                        entryPoint.averaging.entryLevels.length - 1 !== index
                           ? {
                               borderBottom: theme.palette.border.main,
                             }
@@ -1207,16 +1200,16 @@ export const EntryOrderBlock = ({
                         theme={theme}
                         style={{ width: '25%', paddingLeft: '2rem' }}
                       >
-                        {target.price} {i > 0 ? '%' : pair[1]}
-                      </TargetValue>
-                      <TargetValue theme={theme} style={{ width: '25%' }}>
-                        {target.amount} {pair[0]}
+                        {level.price.toFixed(pricePrecision)} {pair[1]}
                       </TargetValue>
                       <TargetValue theme={theme} style={{ width: '40%' }}>
-                        {target.placeWithoutLoss ? '+' : '-'}
+                        {level.estimatedAveragingPrice.toFixed(pricePrecision)}
+                      </TargetValue>{' '}
+                      <TargetValue theme={theme} style={{ width: '25%' }}>
+                        {level.quantity} {pair[0]}
                       </TargetValue>
                       <CloseIcon
-                        onClick={() => deleteAverageTarget(i)}
+                        onClick={() => deleteAverageTarget(index)}
                         style={{
                           color: theme.palette.red.main,
                           fontSize: '1.8rem',
@@ -1225,7 +1218,7 @@ export const EntryOrderBlock = ({
                       />
                     </InputRowContainer>
                   )
-                )}
+                })}
               </div>
             </InputRowContainer>
           </>
@@ -1280,6 +1273,9 @@ export const EntryOrderBlock = ({
                   margin={'1rem 0 0 0'}
                   transition={'all .4s ease-out'}
                   onClick={() => {
+                    enqueueSnackbar('Copied!', {
+                      variant: 'success',
+                    })
                     copy(`https://${API_URL}/createSmUsingTemplate`)
                   }}
                 >
@@ -1332,6 +1328,9 @@ export const EntryOrderBlock = ({
                   margin={'1rem 0 0 0'}
                   transition={'all .4s ease-out'}
                   onClick={() => {
+                    enqueueSnackbar('Copied!', {
+                      variant: 'success',
+                    })
                     copy(getEntryAlertJson())
                   }}
                 >

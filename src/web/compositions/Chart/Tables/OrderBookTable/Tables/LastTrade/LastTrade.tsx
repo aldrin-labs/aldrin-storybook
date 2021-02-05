@@ -55,8 +55,6 @@ const LastTrade = (props: IProps) => {
     theme,
   } = props
 
-  console.log('LastTrade exchange', exchange)
-
   const aggregation = getAggregationsFromMinPriceDigits(props.minPriceDigits)[0]
     .value
 
