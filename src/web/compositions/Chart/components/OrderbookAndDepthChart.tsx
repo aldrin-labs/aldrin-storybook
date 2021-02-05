@@ -477,14 +477,8 @@ const OrderbookAndDepthChartDataWrapper = compose(
       getUrlForFetch('OB', props.marketType, props.symbol, 100),
     onData: combineOrderbookFromFetch,
     pair: (props: any) => props.symbol,
-    limit: 100,
+    limit: 50,
   }),
-  // withWebsocket({
-  //   url: (props: any) =>
-  //     getUrlForWebsocket('OB', props.marketType, props.symbol),
-  //   onMessage: combineOrderbookFromWebsocket,
-  //   pair: (props: any) => props.symbol,
-  // })
 )(OrderbookAndDepthChart)
 
 const MemoizedOrderbookAndDepthChartDataWrapper = React.memo(
