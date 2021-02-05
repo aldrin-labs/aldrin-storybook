@@ -72,7 +72,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
   }
   render() {
     const { searchValue, tab, tabSpecificCoin } = this.state
-    const { marketsByExchangeQuery, getSelectorSettingsQuery } = this.props
+    const { marketsByExchangeQuery, getSelectorSettingsQuery, marketType } = this.props
 
     const {
       getAccountSettings: {
@@ -97,7 +97,8 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
         el.symbol &&
         +el.volume24hChange &&
         +el.price &&
-        !Array.isArray(el.symbol.match(fiatRegexp))
+        !Array.isArray(el.symbol.match(fiatRegexp)) 
+        && !(el.symbol.split('_')[1] === 'BUSD' && marketType === 1)
     )
 
     const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')

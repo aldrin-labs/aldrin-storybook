@@ -32,7 +32,6 @@ class TableContainer extends PureComponent<IProps, IState> {
   static getDerivedStateFromProps(newProps: IProps, state: IState) {
     // query data processing
 
-    console.log('newProps.fetchData out', newProps, state)
     if (
       state.data.length === 0 &&
       newProps.fetchData &&
@@ -40,7 +39,6 @@ class TableContainer extends PureComponent<IProps, IState> {
       !newProps.isPairDataLoading &&
       newProps.fetchData[0].symbol === newProps.symbol
     ) {
-      console.log('newProps.fetchData in', newProps, state)
       const updatedData = newProps.fetchData.reverse().map((trade, i) => ({
         ...trade,
         price: (+trade.price).toFixed(
@@ -51,8 +49,6 @@ class TableContainer extends PureComponent<IProps, IState> {
         time: dayjs.unix(trade.timestamp).format('h:mm:ss a'),
         id: `${trade.price}${trade.size}${i}${trade.timestamp}`,
       }))
-
-      console.log('set new data', updatedData)
 
       return {
         isDataLoaded: true,
@@ -108,7 +104,6 @@ class TableContainer extends PureComponent<IProps, IState> {
       prevProps.symbol !== this.props.symbol ||
       prevProps.marketType !== this.props.marketType
     ) {
-      console.log('smth changed')
 
       const message = JSON.parse(
         JSON.stringify({
