@@ -1026,14 +1026,24 @@ export const EntryOrderBlock = ({
             )
           }}
           onTotalChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            updateSubBlockValue('entryPoint', 'order', 'total', e.target.value)
+            const [_, maxTotal] = getMaxValues()
+            const isTotalMoreThanMax = +e.target.value > maxTotal
+            const totalForUpdate = isTotalMoreThanMax
+              ? maxTotal
+              : e.target.value
+
+            const strippedTotal = isTotalMoreThanMax
+              ? stripDigitPlaces(totalForUpdate, quantityPrecision)
+              : e.target.value
+
+            updateSubBlockValue('entryPoint', 'order', 'total', strippedTotal)
 
             updateSubBlockValue(
               'entryPoint',
               'order',
               'amount',
               stripDigitPlaces(
-                +e.target.value / priceForCalculate,
+                +totalForUpdate / priceForCalculate,
                 quantityPrecision
               )
             )
@@ -1041,7 +1051,7 @@ export const EntryOrderBlock = ({
             updateBlockValue(
               'temp',
               'initialMargin',
-              stripDigitPlaces(+e.target.value / entryPoint.order.leverage, 2)
+              stripDigitPlaces(+totalForUpdate / entryPoint.order.leverage, 2)
             )
           }}
           onAfterSliderChange={(value) => {
@@ -1076,22 +1086,31 @@ export const EntryOrderBlock = ({
             updateBlockValue('temp', 'initialMargin', newMargin)
           }}
           onMarginChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            const inputInitialMargin = +e.target.value
+            const inputInitialMargin = e.target.value
             const newTotal = inputInitialMargin * entryPoint.order.leverage
-            const newAmount = newTotal / priceForCalculate
 
+            const [_, maxTotal] = getMaxValues()
+            const isMarginMoreThanMax = +e.target.value * entryPoint.order.leverage > maxTotal
+            const totalForUpdate = isMarginMoreThanMax
+              ? maxTotal
+              : newTotal
+            
+            const newAmount = totalForUpdate / priceForCalculate
             const fixedAmount = stripDigitPlaces(newAmount, quantityPrecision)
+            const marginForUpdate = isMarginMoreThanMax 
+              ? stripDigitPlaces(maxTotal / entryPoint.order.leverage, 2) 
+              : inputInitialMargin
 
             updateSubBlockValue(
               'entryPoint',
               'order',
               'total',
-              stripDigitPlaces(newTotal, marketType === 1 ? 2 : 8)
+              stripDigitPlaces(totalForUpdate, marketType === 1 ? 2 : 8)
             )
 
             updateSubBlockValue('entryPoint', 'order', 'amount', fixedAmount)
 
-            updateBlockValue('temp', 'initialMargin', inputInitialMargin)
+            updateBlockValue('temp', 'initialMargin', marginForUpdate)
           }}
           toggleAmountPlotEnabled={() => {
             updateSubBlockValue(
@@ -1338,125 +1357,6 @@ export const EntryOrderBlock = ({
                 </BtnCustom>
               </FormInputContainer>
             </InputRowContainer>{' '}
-            {/* <FormInputContainer
-              theme={theme}
-              padding={'0 0 .8rem 0'}
-              haveTooltip={true}
-              tooltipText={
-                <img
-                  style={{ width: '35rem', height: '50rem' }}
-                  src={WebHookImg}
-                />
-              }
-              title={
-                <span>
-                  paste it into{' '}
-                  <span style={{ color: theme.palette.blue.background }}>
-                    web-hook url
-                  </span>{' '}
-                  field when creating tv alert
-                </span>
-              }
-            >
-              <InputRowContainer>
-                <Input
-                  theme={theme}
-                  width={'85%'}
-                  type={'text'}
-                  disabled={true}
-                  textAlign={'left'}
-                  value={`https://${API_URL}/createSmUsingTemplate`}
-                  onChange={() => {}}
-                /> */}
-            {/* <BtnCustom
-                  btnWidth="calc(15% - .8rem)"
-                  height="auto"
-                  margin="0 0 0 .8rem"
-                  fontSize="1rem"
-                  padding=".5rem 0 .4rem 0"
-                  borderRadius=".8rem"
-                  btnColor={theme.palette.blue.main}
-                  backgroundColor={theme.palette.white.background}
-                  hoverColor={theme.palette.white.main}
-                  hoverBackground={theme.palette.blue.main}
-                  transition={'all .4s ease-out'}
-                  onClick={() => {
-                    copy(`https://${API_URL}/createSmUsingTemplate`)
-                  }}
-                >
-                  copy
-                </BtnCustom>
-              </InputRowContainer>
-            </FormInputContainer>
-            <FormInputContainer
-              theme={theme}
-              padding={'0 0 .8rem 0'}
-              haveTooltip={true}
-              tooltipText={
-                <img
-                  style={{ width: '40rem', height: '42rem' }}
-                  src={MessageImg}
-                />
-              } */}
-            {/* title={
-                <span>
-                  paste it into{' '}
-                  <span style={{ color: theme.palette.blue.background }}>
-                    message
-                  </span>{' '}
-                  field when creating tv alert
-                </span>
-              }
-            >
-              <InputRowContainer>
-                <Input
-                  theme={theme}
-                  width={'65%'}
-                  type={'text'}
-                  disabled={true}
-                  textAlign={'left'}
-                  value={getEntryAlertJson()}
-                  onChange={() => {}}
-                /> */}
-            {/* entryPoint.TVAlert.templateToken */}
-            {/* <BtnCustom
-                  btnWidth="calc(15% - .8rem)"
-                  height="auto"
-                  margin="0 0 0 .8rem"
-                  fontSize="1rem"
-                  padding=".5rem 0 .4rem 0"
-                  borderRadius=".8rem"
-                  btnColor={theme.palette.blue.main}
-                  backgroundColor={theme.palette.white.background}
-                  hoverColor={theme.palette.white.main}
-                  hoverBackground={theme.palette.blue.main}
-                  transition={'all .4s ease-out'}
-                  onClick={() => {
-                    copy(getEntryAlertJson())
-                  }}
-                >
-                  copy
-                </BtnCustom>
-                <BtnCustom
-                  btnWidth="calc(20%)"
-                  height="auto"
-                  margin="0 0 0 .8rem"
-                  fontSize="1rem"
-                  padding=".5rem 0 .4rem 0"
-                  borderRadius=".8rem"
-                  btnColor={theme.palette.blue.main}
-                  backgroundColor={theme.palette.white.background}
-                  hoverColor={theme.palette.white.main}
-                  hoverBackground={theme.palette.blue.main}
-                  transition={'all .4s ease-out'}
-                  onClick={() => { */}
-            {/* // redirect to full example page */}
-            {/* }}
-                >
-                  example
-                </BtnCustom>
-              </InputRowContainer>
-            </FormInputContainer> */}
           </>
         )}
       </div>

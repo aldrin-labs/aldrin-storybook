@@ -357,8 +357,6 @@ export const SliderWithAmountFieldRow = ({
             header={`total`}
             needTitleBlock
             disabled={
-              entryPoint.trailing.isTrailingOn ||
-              isMarketType ||
               (amountPlotEnabled && plotEnabled)
             }
             onChange={onTotalChange}

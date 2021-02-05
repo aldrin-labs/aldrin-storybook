@@ -373,6 +373,7 @@ class OrderbookAndDepthChart extends React.PureComponent {
       selectedKey,
       data,
       minPriceDigits,
+      isPairDataLoading,
       arrayOfMarketIds,
       updateTerminalPriceFromOrderbook,
       hideDepthChart,
@@ -427,6 +428,7 @@ class OrderbookAndDepthChart extends React.PureComponent {
               marketType={marketType}
               marketOrders={marketOrders}
               theme={theme}
+              isPairDataLoading={isPairDataLoading}
               onButtonClick={changeTable}
               setOrderbookAggregation={this.setOrderbookAggregation}
               addOrderToOrderbookTree={this.addOrderToOrderbookTree}

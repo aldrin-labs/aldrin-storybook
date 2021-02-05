@@ -36,15 +36,16 @@ const MarkPriceBlockOrderBook = ({
   theme,
   aggregation,
   getMarkPriceQuery,
+  isPairDataLoading
 }: IProps) => {
   const { getMarkPrice = { markPrice: 0 } } = getMarkPriceQuery || {
     getMarkPrice: { markPrice: 0 },
   }
-  const { markPrice = 0 } = getMarkPrice || { markPrice: 0 }
+  let { markPrice = 0 } = getMarkPrice || { markPrice: 0 }
 
   return (
     <MemoizedLastTradePrice theme={theme} style={lastTradePriceStyles(theme)}>
-      {Number(markPrice).toFixed(getNumberOfDecimalsFromNumber(aggregation))}
+      {isPairDataLoading ? '--' : Number(markPrice).toFixed(getNumberOfDecimalsFromNumber(aggregation))}
     </MemoizedLastTradePrice>
   )
 }

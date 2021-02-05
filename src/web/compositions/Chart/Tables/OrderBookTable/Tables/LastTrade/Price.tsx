@@ -26,7 +26,7 @@ export interface IProps {
   }
 }
 
-const PriceBlockOrderBook = ({ theme, aggregation, getPriceQuery }: IProps) => {
+const PriceBlockOrderBook = ({ theme, aggregation, getPriceQuery, isPairDataLoading }: IProps) => {
   const { getPrice: lastMarketPrice = 0 } = getPriceQuery || { getPrice: 0 }
   const [previousPrice, savePreviousPrice] = useState(0)
   const [showGreen, updateToGreen] = useState(false)
@@ -52,7 +52,7 @@ const PriceBlockOrderBook = ({ theme, aggregation, getPriceQuery }: IProps) => {
         fontFamily: 'DM Sans',
       }}
     >
-      {Number(lastMarketPrice).toFixed(
+      {isPairDataLoading ? '--' : Number(lastMarketPrice).toFixed(
         getNumberOfDecimalsFromNumber(aggregation)
       )}{' '}
       {showGreen ? (

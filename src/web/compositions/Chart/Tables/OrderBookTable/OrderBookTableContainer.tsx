@@ -70,6 +70,7 @@ class OrderBookTableContainer extends PureComponent<IProps, IState> {
       marketType,
       aggregation,
       symbol,
+      isPairDataLoading,
       onButtonClick,
       minPriceDigits,
       arrayOfMarketIds,
@@ -118,6 +119,7 @@ class OrderBookTableContainer extends PureComponent<IProps, IState> {
           marketType={marketType}
           symbol={symbol}
           exchange={exchange}
+          isPairDataLoading={isPairDataLoading}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
         />
 

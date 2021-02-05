@@ -3,9 +3,6 @@ import { Theme } from '@material-ui/core'
 
 import {
   LastTradeContainer,
-  LastTradeValue,
-  LastTradePrice,
-  ArrowIcon,
 } from './LastTrade.styles'
 
 import { OrderbookMode } from '../../OrderBookTableContainer.types'
@@ -48,11 +45,11 @@ const lastTradeStylesContainer = {
 
 const LastTrade = (props: IProps) => {
   const {
-    updateTerminalPriceFromOrderbook,
     marketType,
     exchange,
     symbol,
     theme,
+    isPairDataLoading
   } = props
 
   const aggregation = getAggregationsFromMinPriceDigits(props.minPriceDigits)[0]
@@ -77,6 +74,7 @@ const LastTrade = (props: IProps) => {
           exchange={exchange}
           aggregation={aggregation}
           marketType={marketType}
+          isPairDataLoading={isPairDataLoading}
         />
         {marketType === 1 && (
           <MarkPrice
@@ -84,6 +82,7 @@ const LastTrade = (props: IProps) => {
             symbol={symbol}
             exchange={exchange}
             aggregation={aggregation}
+            isPairDataLoading={isPairDataLoading}
           />
         )}
       </div>
