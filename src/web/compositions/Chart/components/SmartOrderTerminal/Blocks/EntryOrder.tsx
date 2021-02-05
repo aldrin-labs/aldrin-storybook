@@ -1086,22 +1086,31 @@ export const EntryOrderBlock = ({
             updateBlockValue('temp', 'initialMargin', newMargin)
           }}
           onMarginChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            const inputInitialMargin = +e.target.value
+            const inputInitialMargin = e.target.value
             const newTotal = inputInitialMargin * entryPoint.order.leverage
-            const newAmount = newTotal / priceForCalculate
 
+            const [_, maxTotal] = getMaxValues()
+            const isMarginMoreThanMax = +e.target.value * entryPoint.order.leverage > maxTotal
+            const totalForUpdate = isMarginMoreThanMax
+              ? maxTotal
+              : newTotal
+            
+            const newAmount = totalForUpdate / priceForCalculate
             const fixedAmount = stripDigitPlaces(newAmount, quantityPrecision)
+            const marginForUpdate = isMarginMoreThanMax 
+              ? stripDigitPlaces(maxTotal / entryPoint.order.leverage, 2) 
+              : inputInitialMargin
 
             updateSubBlockValue(
               'entryPoint',
               'order',
               'total',
-              stripDigitPlaces(newTotal, marketType === 1 ? 2 : 8)
+              stripDigitPlaces(totalForUpdate, marketType === 1 ? 2 : 8)
             )
 
             updateSubBlockValue('entryPoint', 'order', 'amount', fixedAmount)
 
-            updateBlockValue('temp', 'initialMargin', inputInitialMargin)
+            updateBlockValue('temp', 'initialMargin', marginForUpdate)
           }}
           toggleAmountPlotEnabled={() => {
             updateSubBlockValue(
