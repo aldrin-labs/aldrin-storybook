@@ -595,7 +595,7 @@ const RewardsRoute = (props) => {
                   paddingBottom: '1rem',
                   margin: '0 1rem',
                 }}
-                href={`https://twitter.com/intent/tweet?text=%E2%80%A2%20%24ETH%20new%20ATH%20of%20%241700%0A%E2%80%A2%20%24DOGE%20went%20up%2047%25%20after%20Elon%20Musk%E2%80%99s%20tweet%0A%E2%80%A2%20%24LIT%20went%20up%207430%25%20in%20one%20minute%20after%20listing%20on%20%40Binance%0A%0ATrade%20and%20develop%20strategies%20with%20www.cryptocurrencies.ai%0A%0A%24CCAI%20%24SRM%20%24SOL%20%24FTT%20%24BNB%20%24DCFI%0Apic.twitter.com/rXU1KJKfp7`}
+                href={`https://twitter.com/intent/tweet?text=%E2%80%A2%20%24YFI%20lost%20%2411%20million%20due%20to%20hacker%20attack%0A%E2%80%A2%20%24ETH%20daily%20transaction%20fees%20topped%20%2422M%2C%20a%20new%20ATH%20for%20crypto%20fees%0A%E2%80%A2%20%23Twitter%20CEO%2C%20has%20launched%20a%20node%20on%20the%20Bitcoin%20network%0A%0ATrade%20and%20develop%20strategies%20with%20%40CCAI_Official%0A%0A%24CCAI%20%24SRM%20%24SOL%20%24FTT%20%24DCFI%0Apic.twitter.com/GzSSWNNlnd`}
                 rel="noopener noreferrel"
                 target={'_blank'}
                 onClick={(e) => {
