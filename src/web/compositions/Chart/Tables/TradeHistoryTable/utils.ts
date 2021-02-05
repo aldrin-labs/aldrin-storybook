@@ -21,15 +21,14 @@ export const combineTradeHistoryDataFromWebsocket = (message: MessageEvent<any>,
 
 }
 
-export const combineTradeHistoryDataFromFetch = (data: any): any => {
-
-
+export const combineTradeHistoryDataFromFetch = (data: any, symbol: string): any => {
     const processedData = data.map(el => ({
         price: el.p,
         size: el.q,
         timestamp: Math.round(el.T / 1000),
         fall: el.m ? 1 : 0,
         eventid: el.a,
+        symbol
     }))
 
     return processedData
