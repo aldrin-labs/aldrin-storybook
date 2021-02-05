@@ -105,6 +105,10 @@ class OpenOrdersTable extends React.PureComponent<IProps> {
           this.props.enqueueSnackbar(`Your orders canceled successfully`, {
             variant: 'success',
           })
+        } else {
+          this.props.enqueueSnackbar(`Error canceling all your orders`, {
+            variant: 'error',
+          })
         }
       })
       .catch((e) => {
