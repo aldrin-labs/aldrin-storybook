@@ -600,8 +600,6 @@ export default () => {
   let globalIsPairDataLoading = true
 
   const startSocket = () => {
-    console.log('init websocket in worker')
-
     const socket = new WebSocket(webSocketUrl)
 
     socket.onopen = () => {

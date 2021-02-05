@@ -87,7 +87,6 @@ export default () => {
   let globalIsDataLoaded = null
 
   const startSocket = () => {
-    console.log('webSocketUrl', webSocketUrl)
     const socket = new WebSocket(webSocketUrl)
 
     socket.onopen = () => {

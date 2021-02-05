@@ -5,30 +5,19 @@ import dayjs from 'dayjs'
 import TradeHistoryTable from './Table/TradeHistoryTable'
 import ChartCardHeader from '@sb/components/ChartCardHeader'
 // var SortedMap = require('collections/sorted-map')
-import tradeHistoryWorker from './tradeHistoryWorker'
+import tradeHistoryWorker from './tradeHistoryWorker.js'
 import WebWorker from '@sb/compositions/Chart/components/workerSetup'
 import {
   reduceArrayLength,
-  getNumberOfDigitsAfterDecimal,
   // testJSON,
   getNumberOfDecimalsFromNumber,
   getAggregationsFromMinPriceDigits,
 } from '@core/utils/chartPageUtils'
 
-// import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-
-// import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
-
-// import { client } from '@core/graphql/apolloClient'
-
 import { IProps, IState } from './TableContainer.types'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import { withWebsocket } from '@core/hoc/withWebsocket'
-import { withBatching } from '@core/hoc/withBatching'
 import { withFetch } from '@core/hoc/withFetchHoc'
-import { getUrlForWebsocket } from '@core/utils/getUrlForWebsocket'
 import { getUrlForFetch } from '@core/utils/getUrlForFetch'
-import { combineTradeHistoryDataFromWebsocket } from './utils'
 import { combineTradeHistoryDataFromFetch } from './utils'
 
 // let unsubscribe: Function | undefined
@@ -172,9 +161,9 @@ const TradeHistoryWrapper = compose(
   withFetch({
     url: (props: any) =>
       getUrlForFetch('TH', props.marketType, props.symbol, 100),
-    onData: combineTradeHistoryDataFromFetch,
+    onData: (data: any, symbol: string) => combineTradeHistoryDataFromFetch(data, symbol),
     pair: (props: any) => props.symbol,
-    limit: 100,
+    limit: 60,
   })
 )(TableContainer)
 
