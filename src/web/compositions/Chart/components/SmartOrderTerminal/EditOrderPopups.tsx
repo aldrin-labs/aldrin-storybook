@@ -1438,9 +1438,7 @@ export class EditEntryOrderPopup extends React.Component<
           ? marketPrice
           : price
 
-      const deviationPercentage = props.openFromTerminal
-        ? props.derivedState.deviationPercentage
-        : (props.derivedState.deviationPercentage).toFixed(3)
+      const deviationPercentage = props.derivedState.deviationPercentage
 
       const trailingDeviationPrice =
         side === 'buy'
@@ -1462,10 +1460,10 @@ export class EditEntryOrderPopup extends React.Component<
         trailingDeviationPrice,
         deviationPercentage,
         leverage,
-        initialMargin: (
+        initialMargin: stripDigitPlaces(
           (props.derivedState.amount * props.derivedState.price) /
-          props.leverage
-        ).toFixed(2),
+          props.leverage || 0, 2
+        ),
       }
     }
     return null
