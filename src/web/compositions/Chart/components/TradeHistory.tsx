@@ -4,7 +4,7 @@ import memoizeOne from 'memoize-one'
 import { TradeHistoryTable } from '../Tables/Tables'
 import { TradeHistoryWrapper } from '../Chart.styles'
 
-const MemoizedTradeHistoryWrapper = React.memo(TradeHistoryWrapper)
+const MemoizedTradeHistoryWrapper = React.memo(TradeHistoryWrapper);
 
 const TradeHistoryRaw = ({
   updateTerminalPriceFromOrderbook,
