@@ -87,7 +87,7 @@ export default () => {
   let globalIsDataLoaded = null
 
   const startSocket = () => {
-    // console.log('webSocketUrl', webSocketUrl)
+    console.log('webSocketUrl', webSocketUrl)
     const socket = new WebSocket(webSocketUrl)
 
     socket.onopen = () => {
@@ -109,6 +109,7 @@ export default () => {
 
       if (currentTimestamp - ordersTimestamp >= 333) {
         data = reduceArrayLength(recentlySavedData.concat(data), 40)
+        console.log('data in worker', data)
         recentlySavedData = []
         postMessage(data)
       }
@@ -137,13 +138,12 @@ export default () => {
       recentlySavedData = []
     };
     
-    globalIsDataLoaded = e.data.isDataLoaded
-
     if (!webSocketUrl) {
       const pair = e.data.pair
         .split('_')
         .join('')
         .toLowerCase()
+
       const binanceStreamUrl = {
         0: 'wss://stream.binance.com:9443/ws/',
         1: 'wss://fstream.binance.com/ws/',

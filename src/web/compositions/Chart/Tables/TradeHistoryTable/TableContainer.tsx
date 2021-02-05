@@ -1,5 +1,5 @@
 import React, { Component, PureComponent } from 'react'
-import { compose } from 'recompose'
+import { compose, shallowEqual } from 'recompose'
 
 import dayjs from 'dayjs'
 import TradeHistoryTable from './Table/TradeHistoryTable'
@@ -43,6 +43,7 @@ class TableContainer extends PureComponent<IProps, IState> {
   static getDerivedStateFromProps(newProps: IProps, state: IState) {
     // query data processing
 
+    console.log('newProps.fetchData out', newProps, state)
     if (
       state.data.length === 0 &&
       newProps.fetchData &&
@@ -50,7 +51,7 @@ class TableContainer extends PureComponent<IProps, IState> {
       !newProps.isPairDataLoading &&
       newProps.fetchData[0].symbol === newProps.symbol
     ) {
-      console.log('newProps.fetchData', newProps, state)
+      console.log('newProps.fetchData in', newProps, state)
       const updatedData = newProps.fetchData.reverse().map((trade, i) => ({
         ...trade,
         price: (+trade.price).toFixed(
@@ -74,23 +75,24 @@ class TableContainer extends PureComponent<IProps, IState> {
   }
 
   componentDidMount() {
+    const that = this
     this.tradeHistoryWorker = new WebWorker(tradeHistoryWorker)
 
     this.tradeHistoryWorker.addEventListener('message', (e) => {
-      if (!e.data) return
+      if (!e.data || !that.state.isDataLoaded) return
 
       const proccesedData = e.data.map((trade) => ({
         ...trade,
         price: Number(trade.price).toFixed(
           getNumberOfDecimalsFromNumber(
-            getAggregationsFromMinPriceDigits(this.props.minPriceDigits)[0]
+            getAggregationsFromMinPriceDigits(that.props.minPriceDigits)[0]
               .value
           )
         ),
         time: dayjs.unix(+trade.timestamp).format('h:mm:ss a'),
       }))
 
-      this.setState({ data: proccesedData })
+      that.setState({ data: proccesedData })
     })
   }
 
@@ -114,9 +116,11 @@ class TableContainer extends PureComponent<IProps, IState> {
 
     if (
       prevProps.exchange !== this.props.exchange ||
-      prevProps.currencyPair !== this.props.currencyPair ||
+      prevProps.symbol !== this.props.symbol ||
       prevProps.marketType !== this.props.marketType
     ) {
+      console.log('smth changed')
+
       const message = JSON.parse(
         JSON.stringify({
           isDataLoaded: false,
@@ -177,14 +181,6 @@ const TradeHistoryWrapper = compose(
 export default React.memo(
   TradeHistoryWrapper,
   (prevProps: any, nextProps: any) => {
-    const symbolIsEqual = prevProps.symbol === nextProps.symbol
-    const marketTypeIsEqual = prevProps.marketType === nextProps.marketType
-    const currencyPairIsEqual = prevProps.currencyPair === nextProps.prevProps
-
-    if (symbolIsEqual && marketTypeIsEqual && currencyPairIsEqual) {
-      return true
-    }
-
-    return false
+    return shallowEqual(prevProps, nextProps)
   }
 )
