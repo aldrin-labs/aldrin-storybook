@@ -511,6 +511,7 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
               open={editTrade === 'takeProfit'}
               price={this.getEntryPrice()}
               pricePrecision={pricePrecision}
+              enqueueSnackbar={this.props.enqueueSnackbar}
               pair={selectedTrade.conditions.pair.split('_')}
               side={selectedTrade.conditions.entryOrder.side}
               leverage={selectedTrade.conditions.leverage}

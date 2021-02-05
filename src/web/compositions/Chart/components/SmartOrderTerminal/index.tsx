@@ -1453,6 +1453,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               price={this.getEntryPrice()}
               pair={pair}
               pricePrecision={pricePrecision}
+              enqueueSnackbar={this.props.enqueueSnackbar}
               side={entryPoint.order.side}
               leverage={entryPoint.order.leverage}
               open={editPopup === 'takeProfit'}
