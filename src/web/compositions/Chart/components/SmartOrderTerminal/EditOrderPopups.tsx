@@ -200,6 +200,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
       updateState,
       validate,
       transformProperties,
+      enqueueSnackbar,
       pair,
       side,
       price,
@@ -566,6 +567,28 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                     boxShadow={'0px .2rem .3rem rgba(8, 22, 58, 0.15)'}
                     letterSpacing={'.05rem'}
                     onClick={() => {
+                      console.log('enqueueSnackbar', this.props)
+                      if (+this.state.pricePercentage === 0) {
+                        enqueueSnackbar(
+                          `Your split target price percentage should be greater than 0`,
+                          {
+                            variant: 'error',
+                          }
+                        )
+
+                        return
+                      }
+
+                      if (+this.state.volumePercentage === 0) {
+                        enqueueSnackbar(
+                          `Your split target quantity percentage should be greater than 0`,
+                          {
+                            variant: 'error',
+                          }
+                        )
+
+                        return
+                      }
                       this.setState((prev) => ({
                         volumePercentage: 0,
                         pricePercentage: 0,
@@ -1855,14 +1878,9 @@ export class EditEntryOrderPopup extends React.Component<
                     }}
                     onChange={(value) => {
                       this.setState({
-                        deviationPercentage: stripDigitPlaces(
-                          value,
-                          3
-                        ),
+                        deviationPercentage: stripDigitPlaces(value, 3),
                       })
-                      this.updateTrailingPrice(
-                        +stripDigitPlaces(value, 3)
-                      )
+                      this.updateTrailingPrice(+stripDigitPlaces(value, 3))
                     }}
                   />
                 </InputRowContainer>

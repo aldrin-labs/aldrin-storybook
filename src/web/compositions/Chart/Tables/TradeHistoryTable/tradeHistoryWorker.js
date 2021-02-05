@@ -107,7 +107,7 @@ export default () => {
       recentlySavedData = updatedData
 
       if (currentTimestamp - ordersTimestamp >= 333) {
-        data = reduceArrayLength(recentlySavedData.concat(data), 40)
+        data = recentlySavedData.concat(data).slice(0, 40)
         recentlySavedData = []
         postMessage(data)
       }
