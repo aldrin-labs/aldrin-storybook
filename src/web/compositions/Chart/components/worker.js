@@ -690,7 +690,7 @@ export default () => {
           )[0].value,
           originalOrderbookTree,
           isAggregatedData: true,
-          globalSizeDigits,
+          sizeDigits: globalSizeDigits,
         })
       }
 
@@ -704,7 +704,7 @@ export default () => {
         )[0].value,
         originalOrderbookTree,
         isAggregatedData: false,
-        globalSizeDigits,
+        sizeDigits: globalSizeDigits,
       })
     }
 
