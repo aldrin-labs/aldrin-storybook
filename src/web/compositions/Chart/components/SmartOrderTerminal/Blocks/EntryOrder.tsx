@@ -461,6 +461,12 @@ export const EntryOrderBlock = ({
               }
               onClick={() => {
                 updateSubBlockValue('entryPoint', 'order', 'type', 'market')
+                updateSubBlockValue(
+                  'entryPoint',
+                  'TVAlert',
+                  'pricePlotEnabled',
+                  false
+                )
 
                 updatePriceToMarket()
               }}
@@ -787,10 +793,7 @@ export const EntryOrderBlock = ({
                   header={'plot_'}
                   textAlign="left"
                   width={'calc(20%)'}
-                  disabled={
-                    entryPoint.order.type.market ||
-                    !entryPoint.TVAlert.pricePlotEnabled
-                  }
+                  disabled={!entryPoint.TVAlert.pricePlotEnabled}
                   value={entryPoint.TVAlert.pricePlot}
                   showErrors={showErrors}
                   isValid={validateField(
