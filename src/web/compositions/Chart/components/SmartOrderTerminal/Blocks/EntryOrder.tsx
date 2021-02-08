@@ -388,12 +388,16 @@ export const EntryOrderBlock = ({
                   color: theme.palette.white.main,
                 }}
                 height={'3rem'}
-                width={entryPoint.TVAlert.plotEnabled ? '70%' : '100%'}
+                width={
+                  entryPoint.TVAlert.plotEnabled && marketType === 1
+                    ? '70%'
+                    : '100%'
+                }
               >
                 buy{' '}
               </SwitcherHalf>
             )}
-            {entryPoint.TVAlert.plotEnabled && (
+            {entryPoint.TVAlert.plotEnabled && marketType === 1 && (
               <>
                 <div
                   style={{
