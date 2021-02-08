@@ -507,7 +507,6 @@ export const EntryOrderBlock = ({
                     theme={theme}
                     checked={entryPoint.TVAlert.typePlotEnabled}
                     onChange={() => {
-                      console.log('change typePlotEnabled')
                       updateSubBlockValue(
                         'entryPoint',
                         'TVAlert',
@@ -772,6 +771,7 @@ export const EntryOrderBlock = ({
                     theme={theme}
                     checked={entryPoint.TVAlert.pricePlotEnabled}
                     onChange={() => {
+                      console.log('entryPoint.TVAlert', entryPoint.TVAlert)
                       updateSubBlockValue(
                         'entryPoint',
                         'TVAlert',
@@ -788,7 +788,10 @@ export const EntryOrderBlock = ({
                   header={'plot_'}
                   textAlign="left"
                   width={'calc(20%)'}
-                  disabled={!entryPoint.TVAlert.pricePlotEnabled}
+                  disabled={
+                    entryPoint.order.type.market ||
+                    !entryPoint.TVAlert.pricePlotEnabled
+                  }
                   value={entryPoint.TVAlert.pricePlot}
                   showErrors={showErrors}
                   isValid={validateField(
@@ -1090,15 +1093,14 @@ export const EntryOrderBlock = ({
             const newTotal = inputInitialMargin * entryPoint.order.leverage
 
             const [_, maxTotal] = getMaxValues()
-            const isMarginMoreThanMax = +e.target.value * entryPoint.order.leverage > maxTotal
-            const totalForUpdate = isMarginMoreThanMax
-              ? maxTotal
-              : newTotal
-            
+            const isMarginMoreThanMax =
+              +e.target.value * entryPoint.order.leverage > maxTotal
+            const totalForUpdate = isMarginMoreThanMax ? maxTotal : newTotal
+
             const newAmount = totalForUpdate / priceForCalculate
             const fixedAmount = stripDigitPlaces(newAmount, quantityPrecision)
-            const marginForUpdate = isMarginMoreThanMax 
-              ? stripDigitPlaces(maxTotal / entryPoint.order.leverage, 2) 
+            const marginForUpdate = isMarginMoreThanMax
+              ? stripDigitPlaces(maxTotal / entryPoint.order.leverage, 2)
               : inputInitialMargin
 
             updateSubBlockValue(
