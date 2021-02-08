@@ -427,9 +427,7 @@ export const EntryOrderBlock = ({
                   header={'plot_'}
                   textAlign="left"
                   width={'calc(20%)'}
-                  disabled={
-                    !entryPoint.TVAlert.sidePlotEnabled || marketType === 0
-                  }
+                  disabled={!entryPoint.TVAlert.sidePlotEnabled}
                   value={entryPoint.TVAlert.sidePlot}
                   showErrors={showErrors}
                   isValid={validateField(

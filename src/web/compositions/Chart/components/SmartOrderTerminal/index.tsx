@@ -310,6 +310,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           ...(result.entryPoint?.order.type === 'market'
             ? { pricePlotEnabled: false }
             : {}),
+          ...(marketType === 0 ? { pricePlotEnabled: false } : {}),
           templateToken: generateToken(),
         },
         trailing: {
