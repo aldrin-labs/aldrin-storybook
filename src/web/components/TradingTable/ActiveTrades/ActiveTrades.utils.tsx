@@ -152,13 +152,6 @@ export const getStrategyFields = ({
     },
   } = el
 
-  let avgPrice =
-    entryLevels && entryLevels.length !== 0 ? entryLevels[0].price : 0
-
-  let estPrice = 0
-  let sumAmount = 0
-  let margin = 0
-
   const takeProfitPercentage =
     exitLevels[0] && exitLevels[0].activatePrice && exitLevels[0].entryDeviation
       ? exitLevels[0].activatePrice
@@ -283,13 +276,13 @@ export const getStrategyFields = ({
           }}
           theme={theme}
         >
-          {isActiveTable && (
+          {isActiveTable && enableEdit && (
             <SubColumnTitle
               theme={theme}
               style={{ width: 'auto', padding: '0 1rem 0 0' }}
             >
               <BtnCustom
-                disable={!enableEdit}
+                disabled={!enableEdit}
                 needMinWidth={false}
                 btnWidth="auto"
                 height="1.5rem"
@@ -299,13 +292,13 @@ export const getStrategyFields = ({
                 borderColor={
                   enableEdit
                     ? theme.palette.blue.tabs
-                    : theme.palette.grey.disabled
+                    : theme.palette.grey.main
                 }
                 btnColor={'#fff'}
                 backgroundColor={
                   enableEdit
                     ? theme.palette.blue.tabs
-                    : theme.palette.grey.disabled
+                    : theme.palette.grey.main
                 }
                 transition={'all .4s ease-out'}
                 onClick={(e) => {
