@@ -771,7 +771,6 @@ export const EntryOrderBlock = ({
                     theme={theme}
                     checked={entryPoint.TVAlert.pricePlotEnabled}
                     onChange={() => {
-                      console.log('entryPoint.TVAlert', entryPoint.TVAlert)
                       updateSubBlockValue(
                         'entryPoint',
                         'TVAlert',
