@@ -388,12 +388,16 @@ export const EntryOrderBlock = ({
                   color: theme.palette.white.main,
                 }}
                 height={'3rem'}
-                width={entryPoint.TVAlert.plotEnabled ? '70%' : '100%'}
+                width={
+                  entryPoint.TVAlert.plotEnabled && marketType === 1
+                    ? '70%'
+                    : '100%'
+                }
               >
                 buy{' '}
               </SwitcherHalf>
             )}
-            {entryPoint.TVAlert.plotEnabled && (
+            {entryPoint.TVAlert.plotEnabled && marketType === 1 && (
               <>
                 <div
                   style={{
@@ -461,6 +465,12 @@ export const EntryOrderBlock = ({
               }
               onClick={() => {
                 updateSubBlockValue('entryPoint', 'order', 'type', 'market')
+                updateSubBlockValue(
+                  'entryPoint',
+                  'TVAlert',
+                  'pricePlotEnabled',
+                  false
+                )
 
                 updatePriceToMarket()
               }}
@@ -507,7 +517,6 @@ export const EntryOrderBlock = ({
                     theme={theme}
                     checked={entryPoint.TVAlert.typePlotEnabled}
                     onChange={() => {
-                      console.log('change typePlotEnabled')
                       updateSubBlockValue(
                         'entryPoint',
                         'TVAlert',
@@ -1090,15 +1099,14 @@ export const EntryOrderBlock = ({
             const newTotal = inputInitialMargin * entryPoint.order.leverage
 
             const [_, maxTotal] = getMaxValues()
-            const isMarginMoreThanMax = +e.target.value * entryPoint.order.leverage > maxTotal
-            const totalForUpdate = isMarginMoreThanMax
-              ? maxTotal
-              : newTotal
-            
+            const isMarginMoreThanMax =
+              +e.target.value * entryPoint.order.leverage > maxTotal
+            const totalForUpdate = isMarginMoreThanMax ? maxTotal : newTotal
+
             const newAmount = totalForUpdate / priceForCalculate
             const fixedAmount = stripDigitPlaces(newAmount, quantityPrecision)
-            const marginForUpdate = isMarginMoreThanMax 
-              ? stripDigitPlaces(maxTotal / entryPoint.order.leverage, 2) 
+            const marginForUpdate = isMarginMoreThanMax
+              ? stripDigitPlaces(maxTotal / entryPoint.order.leverage, 2)
               : inputInitialMargin
 
             updateSubBlockValue(
