@@ -26,6 +26,7 @@ import { getStrategyFields } from './ActiveTrades/ActiveTrades.utils'
 
 import MarkPriceBlock from '@sb/components/TradingTable/PriceBlocks/PositionsPriceBlock'
 
+
 export const activeExchange = { symbol: 'binance' }
 
 export const CloseButton = ({
@@ -476,7 +477,7 @@ export const combinePositionsTable = ({
             },
             contentToSort: entryPrice,
           },
-          marketPrice: {
+          lastPrice: {
             render: (
               <MarkPriceBlock
                 symbol={symbol}

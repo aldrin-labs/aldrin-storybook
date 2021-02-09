@@ -589,7 +589,7 @@ export const getStrategyFields = ({
                     >
                       Trailing from
                     </a>{' '}
-                    +{exitLevels[0].entryDeviation}%
+                    +{exitLevels[0].activatePrice}%
                   </div>
                 ) : (
                   `${exitLevels[0].activatePrice}% / ${exitLevels[0].entryDeviation}%` // trailing
@@ -827,8 +827,7 @@ export const combineActiveTradesTable = ({
         state !== 'WaitForEntry' &&
         state !== 'TrailingEntry'
 
-      const SMPnlComponent =
-        marketType === 1 ? ActiveSmartTradePnlFutures : ActiveSmartTradePnlSpot
+      const SMPnlComponent = ActiveSmartTradePnlSpot
 
       return {
         id: `${el._id}_${el.accountId}`,

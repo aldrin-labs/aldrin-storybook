@@ -4,7 +4,9 @@ import { compose } from 'recompose';
 import { formatNumberToUSFormat, roundAndFormatNumber } from '@core/utils/PortfolioTableUtils';
 
 import { queryRendererHoc } from '@core/components/QueryRenderer';
-import { getMarkPrice } from '@core/graphql/queries/market/getMarkPrice';
+import { getPrice } from '@core/graphql/queries/chart/getPrice'
+import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE'
+import { updatePriceQuerryFunction } from '@sb/compositions/Chart/components/MarketStats/MarketStats.utils'
 
 export interface IProps {
   price: number;
@@ -15,10 +17,8 @@ export interface IPropsDataWrapper {
   symbol: string;
   exchange: string;
   props: any[];
-  getMarkPriceQuery: {
-    getMarkPrice: {
-      markPrice: number,
-    }
+  getPriceQuery: {
+    getPrice: number | string
   }
   pricePrecision: number
 }
@@ -26,7 +26,7 @@ export interface IPropsDataWrapper {
 const PriceBlock = ({ pricePrecision, price }: IProps) => (
   <>
     <>
-      {formatNumberToUSFormat(
+      {price === 0 ? '--' : formatNumberToUSFormat(
         roundAndFormatNumber(price, pricePrecision, false)
       )}
     </>
@@ -35,15 +35,16 @@ const PriceBlock = ({ pricePrecision, price }: IProps) => (
 
 const MemoizedMarkPriceBlock = React.memo(PriceBlock);
 
-const MarkPriceDataWrapper = ({ getMarkPriceQuery, pricePrecision  }: IPropsDataWrapper) => {
-  const { getMarkPrice = { markPrice: 0 } } = getMarkPriceQuery || {
-    getMarkPrice: { markPrice: 0 }
+const MarkPriceDataWrapper = ({ getPriceQuery, pricePrecision  }: IPropsDataWrapper) => {
+  const { getPrice: price = 0 } = getPriceQuery || {
+    getPrice: price = 0
   };
-  const { markPrice = 0 } = getMarkPrice || { markPrice: 0 };
+
+  console.log('getPrice', getPriceQuery)
 
   return (
     <MemoizedMarkPriceBlock
-      price={markPrice}
+      price={price}
       pricePrecision={pricePrecision}
     />
   );
@@ -54,13 +55,11 @@ const MemoizedMarkPriceDataWrapper = React.memo(MarkPriceDataWrapper)
 
 export default React.memo(compose(
   queryRendererHoc({
-    query: getMarkPrice,
-    name: 'getMarkPriceQuery',
+    query: getPrice,
+    name: 'getPriceQuery',
     variables: (props) => ({
-      input: {
-        exchange: props.exchange.symbol,
-        symbol: props.symbol
-      }
+      exchange: props.exchange.symbol,
+      pair: `${props.symbol}:${props.marketType}`,
     }),
     fetchPolicy: 'cache-first',
     withOutSpinner: true,

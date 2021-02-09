@@ -34,7 +34,7 @@ export const positionsColumnNames = (
   // { label: 'M. Ratio', id: 'marginRation' },
   { label: 'Leverage', id: 'leverage' },
   { label: 'Entry Price', id: 'entryPrice' },
-  { label: 'Mark Price', id: 'marketPrice' },
+  { label: 'Last Price', id: 'lastPrice' },
   {
     label: (
       <DarkTooltip
