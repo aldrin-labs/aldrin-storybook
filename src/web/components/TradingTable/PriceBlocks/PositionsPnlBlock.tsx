@@ -2,12 +2,10 @@ import React from 'react';
 import { compose } from 'recompose';
 import { Theme } from '@material-ui/core';
 
+import { getPrice } from '@core/graphql/queries/chart/getPrice'
 import { queryRendererHoc } from '@core/components/QueryRenderer';
-import { getMarkPrice } from '@core/graphql/queries/market/getMarkPrice';
-import { LISTEN_MARK_PRICE } from '@core/graphql/subscriptions/LISTEN_MARK_PRICE';
-import {
-  updateMarkPriceQuerryFunction,
-} from '@sb/compositions/Chart/components/MarketStats/MarketStats.utils';
+import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE'
+import { updatePriceQuerryFunction } from '@sb/compositions/Chart/components/MarketStats/MarketStats.utils'
 
 import { SubColumnValue } from '../ActiveTrades/Columns'
 
@@ -25,9 +23,9 @@ export interface IProps {
 export interface IPropsDataWrapper {
   symbol: string;
   exchange: string;
-  getMarkPriceQuery: {
-    getMarkPrice: {
-      markPrice: number,
+  getPriceQuery: {
+    getPrice: {
+      lastMarketPrice: number,
     }
     subscribeToMoreFunction: () => () => void
   }
@@ -40,7 +38,7 @@ export interface IPropsDataWrapper {
   positionAmt: number
 }
 
-const MarkPnlBlock = ({ theme, price, pair, entryPrice, leverage, side, positionAmt }: IProps) => {
+const PnlBlock = ({ theme, price, pair, entryPrice, leverage, side, positionAmt }: IProps) => {
   const profitPercentage =
     ((price / entryPrice) * 100 - 100) *
     leverage *
@@ -68,28 +66,27 @@ const MarkPnlBlock = ({ theme, price, pair, entryPrice, leverage, side, position
       `0 ${pair[1]} / 0%`
     );
 }
-const MemoizedMarkPriceBlock = React.memo(MarkPnlBlock);
+const MemoizedPnlBlock = React.memo(PnlBlock);
 
-const MarkPriceDataWrapper = ({ symbol, exchange, getMarkPriceQuery, theme, pricePrecision, pair, entryPrice, leverage, side, positionAmt }: IPropsDataWrapper) => {
-  React.useEffect(
-    () => {
-      const unsubscribePrice = getMarkPriceQuery.subscribeToMoreFunction();
+const PriceDataWrapper = ({ symbol, exchange, getPriceQuery, theme, pair, entryPrice, leverage, side, positionAmt }: IPropsDataWrapper) => {
+  // React.useEffect(
+  //   () => {
+  //     const unsubscribePrice = getPriceQuery.subscribeToMoreFunction();
 
-      return () => {
-        unsubscribePrice && unsubscribePrice();
-      };
-    },
-    [symbol, exchange]
-  );
+  //     return () => {
+  //       unsubscribePrice && unsubscribePrice();
+  //     };
+  //   },
+  //   [symbol, exchange]
+  // );
 
-  const { getMarkPrice = { markPrice: 0 } } = getMarkPriceQuery || {
-    getMarkPrice: { markPrice: 0 }
+  const { getPrice: lastMarketPrice = 0 } = getPriceQuery || {
+    getPrice: lastMarketPrice = 0
   };
-  const { markPrice = 0 } = getMarkPrice || { markPrice: 0 };
 
   return (
-    <MemoizedMarkPriceBlock
-      price={markPrice}
+    <MemoizedPnlBlock
+      price={lastMarketPrice}
       theme={theme}
       pair={pair}
       entryPrice={entryPrice}
@@ -100,31 +97,19 @@ const MarkPriceDataWrapper = ({ symbol, exchange, getMarkPriceQuery, theme, pric
   );
 };
 
-const MemoizedMarkPriceDataWrapper = React.memo(MarkPriceDataWrapper)
+const MemoizedPriceDataWrapper = React.memo(PriceDataWrapper)
 
 export default React.memo(compose(
   queryRendererHoc({
-    query: getMarkPrice,
-    name: 'getMarkPriceQuery',
-    variables: (props) => ({
-      input: {
-        exchange: props.exchange.symbol,
-        symbol: props.symbol
-      }
-    }),
-    subscriptionArgs: {
-      subscription: LISTEN_MARK_PRICE,
-      variables: (props: any) => ({
-        input: {
-          exchange: props.exchange.symbol,
-          symbol: props.symbol
-        }
-      }),
-      updateQueryFunction: updateMarkPriceQuerryFunction
-    },
+    query: getPrice,
+    name: 'getPriceQuery',
     fetchPolicy: 'cache-first',
+    variables: (props: any) => ({
+      exchange: props.exchange.symbol,
+      pair: `${props.symbol}:${props.marketType}`,
+    }),
     withOutSpinner: true,
-    withTableLoader: false,
-    withoutLoading: true
-  }),
-)(MemoizedMarkPriceDataWrapper));
+    withTableLoader: true,
+    withoutLoading: true,
+  })
+)(MemoizedPriceDataWrapper));
