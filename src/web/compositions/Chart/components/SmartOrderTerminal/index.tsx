@@ -915,6 +915,17 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         return
       }
 
+      if (
+        entryPoint.averaging.enabled &&
+        entryPoint.averaging.entryLevels.length === 0
+      ) {
+        enqueueSnackbar(`You should have at least 1 averaging entry point.`, {
+          variant: 'error',
+        })
+
+        return
+      }
+
       this.updateSubBlockValue(
         'entryPoint',
         'order',
