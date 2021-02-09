@@ -40,8 +40,6 @@ const MarkPriceDataWrapper = ({ getPriceQuery, pricePrecision  }: IPropsDataWrap
     getPrice: price = 0
   };
 
-  console.log('getPrice', getPriceQuery)
-
   return (
     <MemoizedMarkPriceBlock
       price={price}
