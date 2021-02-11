@@ -595,7 +595,7 @@ const RewardsRoute = (props) => {
                   paddingBottom: '1rem',
                   margin: '0 1rem',
                 }}
-                href={`https://twitter.com/intent/tweet?text=%E2%80%A2%20%40CMEGroup%20started%20trading%20%24ETH%20futures%0A%E2%80%A2%20%40FTX_Official%20to%20donate%201%25%20of%20fee%20revenue%20to%20charities%0A%E2%80%A2%20%40bitfinex%20has%20repaid%20%24USDT%20the%20remaining%20loan%20of%20%24550m%0A%0ATrade%20and%20develop%20strategies%20with%20%40CCAI_Official%0A%0A%24CCAI%20%24SRM%20%24SOL%20%24FTT%20%24BNB%20%24DCFI%0Apic.twitter.com/qc6ry6Qdwj`}
+                href={`https://twitter.com/intent/tweet?text=%E2%80%A2%20%40Mastercard%20adopted%20cryptocurrencies%20as%20part%20of%20its%20payment%20system%0A%E2%80%A2%20%24BTC%20hashrate%20hits%20an%20all-time%20high%0A%E2%80%A2%20%24DOGE%20pumped%20after%20%40elonmusk%20tweet%0A%0ATrade%20and%20develop%20strategies%20with%20%40CCAI_Official%0A%24CCAI%20%24SRM%20%24SOL%20%24FTT%20%24BNB%20%24DCFI%0Apic.twitter.com/g3d359kAix`}
                 rel="noopener noreferrel"
                 target={'_blank'}
                 onClick={(e) => {
