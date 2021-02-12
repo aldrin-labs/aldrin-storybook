@@ -595,7 +595,7 @@ const RewardsRoute = (props) => {
                   paddingBottom: '1rem',
                   margin: '0 1rem',
                 }}
-                href={`https://twitter.com/intent/tweet?text=%24BTC%20rose%20to%20%2449k%20for%20the%20first%20time%0A%24DOGE%20founder%20sold%20his%20crypto%20for%20next%20to%20nothing%20in%202015%0AFirst%20%24Bitcoin%20%23ETF%20in%20North%20America%20Approved%0A%0ATrade%20and%20develop%20strategies%20with%20%40CCAI_Official%0A%0A%24CCAI%20%24SRM%20%24SOL%20%24FTT%20%24BNB%20%24DCFI%0Apic.twitter.com/NZs4KMzcn4`}
+                href={`https://twitter.com/intent/tweet?text=%E2%80%A2%20%24BTC%20rose%20to%20%2449k%20for%20the%20first%20time%0A%E2%80%A2%20%24DOGE%20founder%20sold%20his%20crypto%20for%20next%20to%20nothing%20in%202015%0A%E2%80%A2%20First%20%24Bitcoin%20%23ETF%20in%20North%20America%20Approved%0A%0ATrade%20and%20develop%20strategies%20with%20%40CCAI_Official%0A%0A%24CCAI%20%24SRM%20%24SOL%20%24FTT%20%24BNB%20%24DCFI%0Apic.twitter.com/NZs4KMzcn4`}
                 rel="noopener noreferrel"
                 target={'_blank'}
                 onClick={(e) => {
