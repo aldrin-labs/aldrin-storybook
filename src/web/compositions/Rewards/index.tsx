@@ -595,7 +595,7 @@ const RewardsRoute = (props) => {
                   paddingBottom: '1rem',
                   margin: '0 1rem',
                 }}
-                href={`https://twitter.com/intent/tweet?text=%E2%80%A2%20%24BTC%20rose%20to%20%2449k%20for%20the%20first%20time%0A%E2%80%A2%20%24DOGE%20founder%20sold%20his%20crypto%20for%20next%20to%20nothing%20in%202015%0A%E2%80%A2%20First%20%24Bitcoin%20%23ETF%20in%20North%20America%20Approved%0A%0ATrade%20and%20develop%20strategies%20with%20%40CCAI_Official%0A%0A%24CCAI%20%24SRM%20%24SOL%20%24FTT%20%24BNB%20%24DCFI%0Apic.twitter.com/NZs4KMzcn4`}
+                href={`https://twitter.com/intent/tweet?text=A%20little%20more%20than%20a%20week%20until%20the%20phase%205%20of%20the%20%24DCFI%20promo%20farming.%20Follow%20%40decefi_offical%20to%20stay%20tuned.%20%0A%0AJoin%20%23Decefi%20farming%20or%20%40talkwthme%20will%20take%20all%20the%20reward.%F0%9F%91%A8%E2%80%8D%F0%9F%8C%BE%0A%0Ahttps%3A%2F%2Ftwitter.com%2Ftalkwthme%2Fstatus%2F1355705291652820995%0A%0A%24SRM%20%24SOL%20%24BNB%20%24CCAI%20%24FTT`}
                 rel="noopener noreferrel"
                 target={'_blank'}
                 onClick={(e) => {
