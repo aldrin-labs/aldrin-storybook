@@ -40,7 +40,7 @@ import { notify } from '@sb/dexUtils/notifications'
 
 import { withPublicKey } from '@core/hoc/withPublicKey'
 
-import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index'
+import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 

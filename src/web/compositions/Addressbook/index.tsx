@@ -22,7 +22,7 @@ import { withTheme } from '@material-ui/styles'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { withAddressbookPassword } from '@core/hoc/withAddressbookPassword'
 
-import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index'
+import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { compose } from 'recompose'
 import { addressBookColumnNames } from '@sb/components/TradingTable/TradingTable.mocks'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'

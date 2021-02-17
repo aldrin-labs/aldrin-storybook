@@ -1,6 +1,6 @@
 import React from 'react'
 import { CardText, Card } from '@sb/compositions/Rewards/index'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import styled from 'styled-components'
 import { compose } from 'recompose'
 

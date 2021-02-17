@@ -201,6 +201,7 @@ const MarketStats = (props) => {
       tradesDiff = 0,
       volume = 0,
       volumeChange = 0,
+      lastPriceDiff = 0,
       minPrice = 0,
       maxPrice = 0,
       // closePrice = 0
@@ -247,7 +248,7 @@ const MarketStats = (props) => {
   // const isStableCoinInPair = stableCoinsRegexp.test(symbol)
   // const roundingPrecision = isStableCoinInPair ? 2 : 8
 
-  const markPrice = useMarkPrice()
+  const markPrice = useMarkPrice() || 0
   const { market } = useMarket()
   let priceDecimalCount = market?.tickSize && getDecimalCount(market.tickSize)
 
@@ -276,7 +277,10 @@ const MarketStats = (props) => {
   //   }, 3000)
   // }
 
-  // const sign24hChange = +priceChangePercent > 0 ? `+` : ``
+
+  const prevClosePrice = markPrice + (lastPriceDiff * -1)
+  const priceChangePercentage = (markPrice - prevClosePrice) / (prevClosePrice / 100)
+  const sign24hChange = +priceChangePercentage > 0 ? `+` : ``
 
   return (
     <div style={{ display: 'flex', width: '100%' }}>
@@ -329,40 +333,40 @@ const MarketStats = (props) => {
         </span>
       </PanelCard>
 
-      {/* <PanelCard marketType={marketType} theme={theme}>
+      <PanelCard marketType={marketType} theme={theme}>
         <PanelCardTitle theme={theme}>24h change</PanelCardTitle>
         <span style={{ display: 'flex', justifyContent: 'space-between' }}>
           <PanelCardValue
             theme={theme}
-            // style={{
-            //   color:
-            //     +priceChange > 0
-            //       ? theme.palette.green.main
-            //       : theme.palette.red.main,
-            // }}
+            style={{
+              color:
+                +priceChangePercentage > 0
+                  ? theme.palette.green.main
+                  : theme.palette.red.main,
+            }}
           >
              {formatNumberToUSFormat(
-              stripDigitPlaces(priceChange, priceDecimalCount)
+              stripDigitPlaces(lastPriceDiff, priceDecimalCount)
             )} 
           </PanelCardValue>
           <PanelCardSubValue
             theme={theme}
-            // style={{
-            //   color:
-            //     +priceChangePercent > 0
-            //       ? theme.palette.green.main
-            //       : theme.palette.red.main,
-            // }}
+            style={{
+              color:
+                +priceChangePercentage > 0
+                  ? theme.palette.green.main
+                  : theme.palette.red.main,
+            }}
           >
              {`${sign24hChange}
               ${formatNumberToUSFormat(
-                stripDigitPlaces(+priceChangePercent)
+                stripDigitPlaces(+priceChangePercentage)
               )}%`} 
           </PanelCardSubValue>
         </span>
-      </PanelCard> */}
+      </PanelCard>
 
-      {/* <PanelCard marketType={marketType} theme={theme}>
+      <PanelCard marketType={marketType} theme={theme}>
         <PanelCardTitle theme={theme}>24h high</PanelCardTitle>
         <PanelCardValue theme={theme}>
           {formatNumberToUSFormat(
@@ -373,9 +377,9 @@ const MarketStats = (props) => {
             )
           )}
         </PanelCardValue>
-      </PanelCard> */}
+      </PanelCard>
 
-      {/* <PanelCard marketType={marketType} theme={theme}>
+      <PanelCard marketType={marketType} theme={theme}>
         <PanelCardTitle theme={theme}>24h low</PanelCardTitle>
         <PanelCardValue theme={theme}>
           {formatNumberToUSFormat(
@@ -386,7 +390,7 @@ const MarketStats = (props) => {
             )
           )}
         </PanelCardValue>
-      </PanelCard> */}
+      </PanelCard>
 
       {/* <TooltipCustom
         title="Cryptocurrencies.ai is a Serum partner exchange"
@@ -537,24 +541,24 @@ export default compose(
   //   withTableLoader: true,
   //   withoutLoading: true,
   // }),
-  // queryRendererHoc({
-  //   query: marketDataByTickers,
-  //   name: 'marketDataByTickersQuery',
-  //   variables: (props) => ({
-  //     symbol: props.symbol,
-  //     exchange: 'serum',
-  //     marketType: props.marketType,
-  //     startTimestamp: `${datesForQuery.startOfTime}`,
-  //     endTimestamp: `${datesForQuery.endOfTime}`,
-  //     prevStartTimestamp: `${datesForQuery.prevStartTimestamp}`,
-  //     prevEndTimestamp: `${datesForQuery.prevEndTimestamp}`,
-  //   }),
-  //   fetchPolicy: 'cache-and-network',
-  //   pollInterval: 30000,
-  //   withOutSpinner: true,
-  //   withTableLoader: true,
-  //   withoutLoading: true,
-  // })
+  queryRendererHoc({
+    query: marketDataByTickers,
+    name: 'marketDataByTickersQuery',
+    variables: (props) => ({
+      symbol: props.symbol,
+      exchange: 'serum',
+      marketType: props.marketType,
+      startTimestamp: `${datesForQuery.startOfTime}`,
+      endTimestamp: `${datesForQuery.endOfTime}`,
+      prevStartTimestamp: `${datesForQuery.prevStartTimestamp}`,
+      prevEndTimestamp: `${datesForQuery.prevEndTimestamp}`,
+    }),
+    fetchPolicy: 'cache-and-network',
+    pollInterval: 30000,
+    withOutSpinner: true,
+    withTableLoader: true,
+    withoutLoading: true,
+  })
 
   // queryRendererHoc({
   //   query: getFundingRate,
