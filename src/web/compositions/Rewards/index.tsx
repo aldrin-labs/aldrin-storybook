@@ -282,7 +282,7 @@ const RewardsRoute = (props) => {
   const [linkFromTwitter, setTwittersLink] = useState('')
 
   const [isHarvestPopupOpen, setOpen] = useState(false)
-  // const [isSharePopupOpen, setSharePopupOpen] = useState(false)
+  const [isSharePopupOpen, setSharePopupOpen] = useState(false)
 
   const [isLoading, updateIsLoading] = useState(false)
   const {
@@ -383,9 +383,9 @@ const RewardsRoute = (props) => {
     setOpen(!isHarvestPopupOpen)
   }
 
-  // const toggleSharePopupIsOpen = () => {
-  //   setSharePopupOpen(!isSharePopupOpen)
-  // }
+  const toggleSharePopupIsOpen = () => {
+    setSharePopupOpen(!isSharePopupOpen)
+  }
 
   const isDarkTheme = theme.palette.type === 'dark'
 
@@ -581,13 +581,13 @@ const RewardsRoute = (props) => {
                   Harvest
                 </BtnCustom>
               </a>
-              {/* <SharePopup
+              <SharePopup
                 theme={theme}
                 dcfiEarnedForTwitter={dcfiEarnedForTwitter}
                 isSharePopupOpen={isSharePopupOpen}
                 toggleSharePopupIsOpen={toggleSharePopupIsOpen}
                 publicKey={publicKey}
-              /> */}
+              />
               <a
                 style={{
                   width: 'calc(50% - 2rem)',
@@ -595,9 +595,9 @@ const RewardsRoute = (props) => {
                   paddingBottom: '1rem',
                   margin: '0 1rem',
                 }}
-                href={`https://twitter.com/intent/tweet?text=A%20little%20more%20than%20a%20week%20until%20the%20phase%205%20of%20the%20%24DCFI%20promo%20farming.%20Follow%20%40decefi_offical%20to%20stay%20tuned.%20%0A%0AJoin%20%23Decefi%20farming%20or%20%40talkwthme%20will%20take%20all%20the%20reward.%F0%9F%91%A8%E2%80%8D%F0%9F%8C%BE%0A%0Ahttps%3A%2F%2Ftwitter.com%2Ftalkwthme%2Fstatus%2F1355705291652820995%0A%0A%24SRM%20%24SOL%20%24BNB%20%24CCAI%20%24FTT`}
-                rel="noopener noreferrel"
-                target={'_blank'}
+                // href={`https://twitter.com/intent/tweet?text=A%20little%20more%20than%20a%20week%20until%20the%20phase%205%20of%20the%20%24DCFI%20promo%20farming.%20Follow%20%40decefi_offical%20to%20stay%20tuned.%20%0A%0AJoin%20%23Decefi%20farming%20or%20%40talkwthme%20will%20take%20all%20the%20reward.%F0%9F%91%A8%E2%80%8D%F0%9F%8C%BE%0A%0Ahttps%3A%2F%2Ftwitter.com%2Ftalkwthme%2Fstatus%2F1355705291652820995%0A%0A%24SRM%20%24SOL%20%24BNB%20%24CCAI%20%24FTT`}
+                // rel="noopener noreferrel"
+                // target={'_blank'}
                 onClick={(e) => {
                   if (publicKey === '') {
                     e.preventDefault()
@@ -620,7 +620,7 @@ const RewardsRoute = (props) => {
                   textTransform={'none'}
                   onClick={() => {
                     console.log('shrepopup')
-                    // toggleSharePopupIsOpen()
+                    toggleSharePopupIsOpen()
                   }}
                 >
                   <SvgIcon
