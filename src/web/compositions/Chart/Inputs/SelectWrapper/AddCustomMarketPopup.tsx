@@ -174,6 +174,17 @@ const CustomMarketDialog = ({
       params.quoteLabel = quoteLabel
     }
 
+    console.log('knownBaseCurrency || baseLabel', )
+    console.log('knownQuoteCurrency || quoteLabel', )
+
+    if (!marketLabel.includes('_')) {
+      notify({
+        message: 'Please use "_" for devider',
+        type: 'error',
+      })
+      return
+    }
+
     await changeLoading(true)
 
     const resultOfAdding = await onAddCustomMarket(params)
@@ -181,7 +192,7 @@ const CustomMarketDialog = ({
       await addSerumCustomMarketMutation({
         variables: {
           publicKey: publicKey,
-          symbol: `${params.baseLabel}/${params.quoteLabel}`,
+          symbol: `${knownBaseCurrency || baseLabel}/${knownQuoteCurrency || quoteLabel}`,
           isPrivate: isPrivate,
           marketId,
           programId

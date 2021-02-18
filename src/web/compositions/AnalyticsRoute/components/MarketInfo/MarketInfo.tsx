@@ -16,6 +16,7 @@ import { Link } from 'react-router-dom'
 import FeesInfo from './FeesInfo'
 import { marketDataByTickers } from '@core/graphql/queries/chart/marketDataByTickers'
 import { datesForQuery } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
+import { notify } from '@sb/dexUtils/notifications'
 
 import {
   Row,
@@ -35,12 +36,12 @@ import {
 
 const PairNameTitle = styled((props) => <WhiteTitle {...props} />)`
   font-size: 2.2rem;
-  font-family: Avenir Next Demi;
+  font-family: Avenir Next Bold;
 `
 
 const LastPrice = styled((props) => <WhiteTitle {...props} />)`
   font-size: 3.5rem;
-  font-family: Avenir Next Demi;
+  font-family: Avenir Next Bold;
   margin: 1rem 0;
 
   @media (min-width: 1440px) and (max-width: 1540px) {
@@ -75,7 +76,7 @@ const ValueBlock = styled((props) => <Row {...props} />)`
   border-left: ${(props) => props.theme.palette.border.new};
 `
 
-const BlockTitle = styled((props) => <WhiteTitle {...props} />)`
+export const BlockTitle = styled((props) => <WhiteTitle {...props} />)`
   font-size: 1.4rem;
   color: #949494;
   margin-bottom: 1rem;
@@ -95,16 +96,17 @@ const PurpleTitle = styled((props) => <a {...props} />)`
   margin-left: 1rem;
 `
 
-const PurpleLinkButton = styled(Link)`
+const PurpleLinkButton = styled.a`
   min-width: 8rem;
   font-size: 1.4rem;
-  color: ${props => props.theme.palette.white.main};
+  color: ${(props) => props.theme.palette.white.main};
   text-align: center;
   text-decoration: none;
   background: #9ba6ff;
-  border-radius: .4rem;
-  padding: .5rem 0;
+  border-radius: 0.4rem;
+  padding: 0.5rem 0;
   font-family: Avenir Next;
+  margin-left: 2rem;
 `
 
 const MarketInfo = ({
@@ -163,6 +165,11 @@ const MarketInfo = ({
     : 0
   const sign24hChange = +priceChangePercentage > 0 ? `+` : ``
 
+  // console.log('market', market)
+  // if (market) {
+  //   console.log(market._decoded.ownAddress.toBase58(), market._decoded.baseMint.toBase58(), market._decoded.baseVault.toBase58(), )
+  // }
+
   return (
     <BlockTemplate
       theme={theme}
@@ -185,7 +192,14 @@ const MarketInfo = ({
               />
               <PairNameTitle theme={theme}>{pair}</PairNameTitle>
             </Row>
-            <PurpleLinkButton theme={theme} to={`/chart/spot/${selectedPair}`}>Trade</PurpleLinkButton>
+            <PurpleLinkButton
+              theme={theme}
+              target="_blank"
+              rel="noopener noreferrer"
+              href={`/chart/spot/${selectedPair}`}
+            >
+              Trade
+            </PurpleLinkButton>
           </RowContainer>
 
           <RowContainer justify="space-between">
@@ -259,9 +273,8 @@ const MarketInfo = ({
               <BlockValue theme={theme}>28.95</BlockValue>
             </ValueBlock>
           </Row> */}
-          <Row padding="2rem 0">
+          <Row padding="2rem 0" style={{ position: 'relative' }}>
             <ValueBlock theme={theme} align={'flex-start'} direction={'column'}>
-              <BlockTitle theme={theme}>Fees (24h)</BlockTitle>
               <FeesInfo theme={theme} selectedPair={selectedPair} />
             </ValueBlock>
           </Row>
@@ -285,8 +298,13 @@ const MarketInfo = ({
                   {market ? market.address.toBase58() : '--'}
                 </Address>
                 <img
-                  onClick={() =>
+                  onClick={() => {
+                    notify({
+                      message: 'Copied!',
+                      type: 'success',
+                    });
                     copy(market ? market.address.toBase58() : '--')
+                  }
                   }
                   style={{
                     marginLeft: '1rem',
