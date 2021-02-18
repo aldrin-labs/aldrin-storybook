@@ -149,7 +149,6 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
       (el) =>
         el.symbol &&
         !Array.isArray(el.symbol.match(fiatRegexp)) &&
-        !el.symbol.includes('USDC') &&
         !excludedPairs.includes(el.symbol)
     )
 

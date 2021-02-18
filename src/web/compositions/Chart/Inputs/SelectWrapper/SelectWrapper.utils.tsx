@@ -211,13 +211,19 @@ export const combineSelectWrapperData = ({
 
   if (searchValue) {
     processedData = processedData.filter((el) => {
-      const underlineInSearch = searchValue.includes('_')
-      const symbolBase = el.symbol.split('_')[0]
-      const withReplacedWhitespace = searchValue.replace(/\s/g, '_')
-      const withRevertedWord = reverseFor(withReplacedWhitespace)
+      let updatedSearchValue = searchValue
 
-      return new RegExp(`${searchValue}`, 'gi').test(
-        underlineInSearch ? el.symbol : symbolBase
+      const slashInSearch = updatedSearchValue.includes('/')
+      if (slashInSearch) updatedSearchValue = updatedSearchValue.replace('/', '_')
+      const spaceInSeach = updatedSearchValue.includes(' ')
+      if (spaceInSeach) updatedSearchValue = updatedSearchValue.replace(' ', '_')
+      const dashInSeach = updatedSearchValue.includes(' ')
+      if (dashInSeach) updatedSearchValue = updatedSearchValue.replace('-', '_')
+
+      const underlineInSearch = updatedSearchValue.includes('_')
+
+      return new RegExp(`${updatedSearchValue}`, 'gi').test(
+        underlineInSearch ? el.symbol : el.symbol.replace('_', '')
       )
     })
   }
@@ -344,7 +350,7 @@ export const combineSelectWrapperData = ({
                 : +el.precentageTradesDiff > 0
                 ? '+'
                 : '-'
-            } ${formatNumberToUSFormat(
+            }${formatNumberToUSFormat(
               stripDigitPlaces(Math.abs(el.precentageTradesDiff))
             )}%`}
           </span>

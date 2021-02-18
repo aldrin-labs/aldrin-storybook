@@ -174,6 +174,9 @@ function ChartPageComponent(props: any) {
         isPrivateCustomMarket: isPrivate,
       })
     )
+
+    console.log('userMarkets', userMarkets)
+
     const updatedMarkets = AWESOME_MARKETS.map((el) => ({
       ...el,
       address: el.address.toString(),
@@ -481,7 +484,7 @@ export default compose(
   withErrorFallback,
   withAuthStatus,
   withTheme(),
-  // withPublicKey,
+  withPublicKey,
   withRouter,
   // withAuth,
   queryRendererHoc({
@@ -494,14 +497,14 @@ export default compose(
       marketType: 1, // hardcode here to get only futures marketIds'
     },
   }),
-  // queryRendererHoc({
-  //   query: getUserCustomMarkets,
-  //   name: 'getUserCustomMarketsQuery',
-  //   fetchPolicy: 'cache-first',
-  //   variables: (props) => ({
-  //     publicKey: props.publicKey,
-  //   }),
-  // }),
+  queryRendererHoc({
+    query: getUserCustomMarkets,
+    name: 'getUserCustomMarketsQuery',
+    fetchPolicy: 'cache-first',
+    variables: (props) => ({
+      publicKey: props.publicKey,
+    }),
+  }),
   // queryRendererHoc({
   //   skip: (props: any) => !props.authenticated,
   //   query: GET_TOOLTIP_SETTINGS,

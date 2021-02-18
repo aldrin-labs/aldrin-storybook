@@ -122,5 +122,6 @@ export default compose(
     withOutSpinner: false,
     withTableLoader: false,
     fetchPolicy: 'network-only',
+    loaderSize: 32,
   })
 )(TopBar)
