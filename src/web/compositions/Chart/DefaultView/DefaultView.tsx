@@ -126,30 +126,6 @@ export const DefaultViewComponent = (
 
   return (
     <Container container spacing={8} theme={theme}>
-      {/* <ChartGridContainer item xs={12} theme={theme}>
-        <CardsPanel
-          {...{
-            _id: id,
-            pair: currencyPair,
-            view,
-            theme,
-            themeMode,
-            activeExchange,
-            selectedKey,
-            showChangePositionModeResult,
-            isDefaultTerminalViewMode,
-            updateTerminalViewMode,
-            marketType,
-            quantityPrecision,
-            pricePrecision,
-            hideDepthChart,
-            hideOrderbook,
-            hideTradeHistory,
-            changeChartLayout,
-          }}
-        />
-      </ChartGridContainer> */}
-
       <Grid
         item
         container

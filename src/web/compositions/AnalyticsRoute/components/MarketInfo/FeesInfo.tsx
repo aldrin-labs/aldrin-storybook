@@ -9,7 +9,7 @@ import {
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 
-import { BlockValue } from './MarketInfo'
+import { BlockValue, BlockTitle } from './MarketInfo'
 
 const FeesBlock = ({ theme, getSerumQuoteTradeVolumeStatsQuery }) => {
   const dataForToday =
@@ -17,9 +17,12 @@ const FeesBlock = ({ theme, getSerumQuoteTradeVolumeStatsQuery }) => {
       getSerumQuoteTradeVolumeStatsQuery.getSerumQuoteTradeVolumeStats.length - 1
     ]
   return (
+    <>
+    <BlockTitle theme={theme}>Fees (24h)</BlockTitle>
     <BlockValue theme={theme}>{`$${formatNumberToUSFormat(
       stripDigitPlaces(dataForToday.buy * 0.0022 - dataForToday.buy * 0.0003, 2)
     )}`}</BlockValue>
+    </>
   )
 }
 
@@ -36,5 +39,6 @@ export default compose(
     withOutSpinner: false,
     withTableLoader: false,
     withoutLoading: false,
+    loaderSize: 16,
   })
 )(FeesBlock)
