@@ -45,6 +45,7 @@ const PnlBlock = ({
   entryPrice,
   leverage,
   side,
+  isDefaultOnlyTables,
   positionAmt,
 }: IProps) => {
   const profitPercentage =
@@ -68,15 +69,27 @@ const PnlBlock = ({
         profitPercentage > 0 ? theme.palette.green.main : theme.palette.red.main
       }
     >
-      <span style={{ whiteSpace: 'nowrap' }}>
-        {`${profitAmount < 0 ? '-' : ''}${Math.abs(
-          Number(profitAmount.toFixed(3))
-        )} ${pair[1]}`}{' '}
-        /
-      </span>{' '}
-      {`${profitPercentage < 0 ? '-' : ''}${Math.abs(
-        Number(profitPercentage.toFixed(2))
-      )}%`}
+      {isDefaultOnlyTables ? (
+        <span style={{ whiteSpace: 'nowrap' }}>
+          {`${profitAmount < 0 ? '-' : ''}${Math.abs(
+            Number(profitAmount.toFixed(3))
+          )} ${pair[1]} / ${profitPercentage < 0 ? '-' : ''}${Math.abs(
+            Number(profitPercentage.toFixed(2))
+          )}%`}
+        </span>
+      ) : (
+        <span>
+          <span style={{ whiteSpace: 'nowrap' }}>
+            {`${profitAmount < 0 ? '-' : ''}${Math.abs(
+              Number(profitAmount.toFixed(3))
+            )} ${pair[1]}`}{' '}
+            /
+          </span>{' '}
+          {`${profitPercentage < 0 ? '-' : ''}${Math.abs(
+            Number(profitPercentage.toFixed(2))
+          )}%`}
+        </span>
+      )}
     </SubColumnValue>
   ) : (
     `0 ${pair[1]} / 0%`
@@ -92,6 +105,7 @@ const PriceDataWrapper = ({
   pair,
   entryPrice,
   leverage,
+  isDefaultOnlyTables,
   side,
   positionAmt,
 }: IPropsDataWrapper) => {
@@ -116,6 +130,7 @@ const PriceDataWrapper = ({
       theme={theme}
       pair={pair}
       entryPrice={entryPrice}
+      isDefaultOnlyTables={isDefaultOnlyTables}
       leverage={leverage}
       side={side}
       positionAmt={positionAmt}

@@ -380,7 +380,6 @@ export const combinePositionsTable = ({
 
       const side = positionAmt < 0 ? 'sell short' : 'buy long'
       const pair = symbol.split('_')
-
       return [
         {
           index: {
@@ -521,6 +520,7 @@ export const combinePositionsTable = ({
             render: (
               <PnlBlock
                 symbol={symbol}
+                isDefaultOnlyTables={isDefaultOnlyTables}
                 exchange={activeExchange}
                 marketType={1}
                 pricePrecision={pricePrecision}
