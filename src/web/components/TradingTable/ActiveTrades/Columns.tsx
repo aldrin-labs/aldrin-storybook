@@ -21,7 +21,7 @@ export const SubColumnValue = styled(InputTitle)`
   text-align: ${(props: { textAlign?: string; color?: string }) =>
     props.textAlign || 'left'};
   display: inline-block;
-  width: 50%;
+  width: ${(props) => props.width || '50%'};
   padding: 0.4rem 0rem 0.4rem 0rem;
   font-size: 1.2rem;
   color: ${(props: { textAlign?: string; color?: string }) =>

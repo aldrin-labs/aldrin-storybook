@@ -26,7 +26,6 @@ import { getStrategyFields } from './ActiveTrades/ActiveTrades.utils'
 
 import MarkPriceBlock from '@sb/components/TradingTable/PriceBlocks/PositionsPriceBlock'
 
-
 export const activeExchange = { symbol: 'binance' }
 
 export const CloseButton = ({
@@ -472,24 +471,25 @@ export const combinePositionsTable = ({
             render: `${entryPrice} ${pair[1]}`,
             style: {
               textAlign: 'left',
-              whiteSpace: 'nowrap',
               opacity: needOpacity ? 0.5 : 1,
             },
             contentToSort: entryPrice,
           },
           lastPrice: {
             render: (
-              <MarkPriceBlock
-                symbol={symbol}
-                exchange={activeExchange}
-                marketType={1}
-                pricePrecision={pricePrecision}
-                theme={theme}
-              />
+              <div>
+                <MarkPriceBlock
+                  symbol={symbol}
+                  exchange={activeExchange}
+                  marketType={1}
+                  pricePrecision={pricePrecision}
+                  theme={theme}
+                />{' '}
+                {pair[1]}
+              </div>
             ),
             style: {
               textAlign: 'left',
-              whiteSpace: 'nowrap',
               opacity: needOpacity ? 0.5 : 1,
               maxWidth: '70px',
             },
@@ -512,7 +512,6 @@ export const combinePositionsTable = ({
             } ${liquidationPrice == 0 ? '' : pair[1]}`,
             style: {
               textAlign: 'left',
-              whiteSpace: 'nowrap',
               opacity: needOpacity ? 0.5 : 1,
             },
             contentToSort: liquidationPrice,
@@ -533,7 +532,11 @@ export const combinePositionsTable = ({
                 positionAmt={positionAmt}
               />
             ),
-            style: { opacity: needOpacity ? 0.5 : 1, maxWidth: '100px' },
+            style: {
+              opacity: needOpacity ? 0.5 : 1,
+              maxWidth: '100px',
+              whiteSpace: 'normal',
+            },
             colspan: 2,
           },
 
@@ -813,9 +816,7 @@ export const combineStrategiesHistoryTable = ({
                       </div>
                     }
                   />
-                  <a className={'errorMsg'}>
-                    {msg}
-                  </a>
+                  <a className={'errorMsg'}>{msg}</a>
                 </div>
               ) : null}
             </SubColumnValue>
@@ -845,63 +846,63 @@ export const combineStrategiesHistoryTable = ({
           contentToSort: createdAt ? +new Date(createdAt) : -1,
         },
         tooltipTitle: keyName,
-      //   expandableContent: [
-      //     {
-      //       row: {
-      //         render: (
-      //           <div style={{ position: 'relative' }}>
-      //             <EntryOrderColumn
-      //               theme={theme}
-      //               haveEdit={false}
-      //               enableEdit={!!entryPrice}
-      //               entryLevels={entryLevels}
-      //               pair={`${pairArr[0]}/${pairArr[1]}`}
-      //               side={side}
-      //               price={entryOrderPrice}
-      //               order={orderType}
-      //               amount={amount.toFixed(quantityPrecision)}
-      //               total={entryOrderPrice * amount}
-      //               trailing={
-      //                 entryDeviation
-      //                   ? stripDigitPlaces(entryDeviation / leverage, 3)
-      //                   : false
-      //               }
-      //               activatePrice={activatePrice}
-      //               red={red.main}
-      //               green={green.main}
-      //               blue={blue}
-      //             />
-      //             <TakeProfitColumn
-      //               theme={theme}
-      //               haveEdit={false}
-      //               price={exitLevels.length > 0 && exitLevels[0].price}
-      //               order={exitLevels.length > 0 && exitLevels[0].orderType}
-      //               targets={exitLevels ? exitLevels : []}
-      //               timeoutProfit={timeoutWhenProfit}
-      //               timeoutProfitable={timeoutIfProfitable}
-      //               trailing={trailingExit}
-      //               red={red.main}
-      //               green={green.main}
-      //               blue={blue}
-      //             />
-      //             <StopLossColumn
-      //               theme={theme}
-      //               haveEdit={false}
-      //               price={stopLoss}
-      //               order={stopLossType}
-      //               forced={forcedLoss}
-      //               timeoutWhenLoss={timeoutWhenLoss}
-      //               timeoutLoss={timeoutLoss}
-      //               red={red.main}
-      //               green={green.main}
-      //               blue={blue}
-      //             />
-      //           </div>
-      //         ),
-      //         colspan: 9,
-      //       },
-      //     },
-      //   ],
+        //   expandableContent: [
+        //     {
+        //       row: {
+        //         render: (
+        //           <div style={{ position: 'relative' }}>
+        //             <EntryOrderColumn
+        //               theme={theme}
+        //               haveEdit={false}
+        //               enableEdit={!!entryPrice}
+        //               entryLevels={entryLevels}
+        //               pair={`${pairArr[0]}/${pairArr[1]}`}
+        //               side={side}
+        //               price={entryOrderPrice}
+        //               order={orderType}
+        //               amount={amount.toFixed(quantityPrecision)}
+        //               total={entryOrderPrice * amount}
+        //               trailing={
+        //                 entryDeviation
+        //                   ? stripDigitPlaces(entryDeviation / leverage, 3)
+        //                   : false
+        //               }
+        //               activatePrice={activatePrice}
+        //               red={red.main}
+        //               green={green.main}
+        //               blue={blue}
+        //             />
+        //             <TakeProfitColumn
+        //               theme={theme}
+        //               haveEdit={false}
+        //               price={exitLevels.length > 0 && exitLevels[0].price}
+        //               order={exitLevels.length > 0 && exitLevels[0].orderType}
+        //               targets={exitLevels ? exitLevels : []}
+        //               timeoutProfit={timeoutWhenProfit}
+        //               timeoutProfitable={timeoutIfProfitable}
+        //               trailing={trailingExit}
+        //               red={red.main}
+        //               green={green.main}
+        //               blue={blue}
+        //             />
+        //             <StopLossColumn
+        //               theme={theme}
+        //               haveEdit={false}
+        //               price={stopLoss}
+        //               order={stopLossType}
+        //               forced={forcedLoss}
+        //               timeoutWhenLoss={timeoutWhenLoss}
+        //               timeoutLoss={timeoutLoss}
+        //               red={red.main}
+        //               green={green.main}
+        //               blue={blue}
+        //             />
+        //           </div>
+        //         ),
+        //         colspan: 9,
+        //       },
+        //     },
+        //   ],
       }
     })
 

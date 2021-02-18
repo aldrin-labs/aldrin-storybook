@@ -306,7 +306,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           deviationPlotEnabled: true,
           deviationPlot: '',
           ...result.entryTVAlert,
-          //
           ...(result.entryPoint?.order.type === 'market'
             ? { pricePlotEnabled: false }
             : {}),
