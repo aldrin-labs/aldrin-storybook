@@ -62,11 +62,19 @@ export type GetSelectorSettingsType = {
 
 export type ISelectData = {
   symbol: string
-  price: number
-  price24hChange: number
-  volume24hChange: number
-  pricePrecision: number
-  quantityPrecision: number
+  volume: number,
+  tradesCount: number
+  tradesDiff: number
+  volumeChange: number
+  minPrice: number
+  maxPrice: number
+  closePrice: number
+  precentageTradesDiff: number
+  lastPriceDiff: number
+  isCustomUserMarket: boolean
+  isPrivateCustomMarket: boolean
+  address: string
+  programId: string
 }[]
 
 export type UpdateFavoritePairsMutationType = (variableObj: {
