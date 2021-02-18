@@ -18,11 +18,12 @@ export function WalletProvider({ children }) {
     'walletProvider',
     'https://www.sollet.io',
   );
-
-  const isMathWallet = !!providerUrl.match('https://www.mathwallet.org')
-  const WalletClass = isMathWallet ? MathWallet : Wallet
   
-  const wallet = useMemo(() => new WalletClass(providerUrl, endpoint), [
+  const wallet = useMemo(() => { 
+    const isMathWallet = !!providerUrl.match('https://www.mathwallet.org')
+    const WalletClass = isMathWallet ? MathWallet : Wallet
+    
+    return new WalletClass(providerUrl, endpoint)} , [
     providerUrl,
     endpoint,
   ]);
@@ -30,6 +31,10 @@ export function WalletProvider({ children }) {
   const [connected, setConnected] = useState(false);
   useEffect(() => {
     console.log('trying to connect');
+
+    console.log('Connecting Wallet: ', wallet)
+    wallet.connect()
+
     wallet.on('connect', () => {
       console.log('connected');
       setConnected(true);
