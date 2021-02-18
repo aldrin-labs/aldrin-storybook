@@ -79,13 +79,13 @@ const AppRaw = ({
     themeMode = 'dark'
     localStorage.setItem('themeMode', 'dark')
   }
-  console.log('theme', themeMode)
+
   const chartPageView =
     getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
 
   const fullscreen: boolean = isChartPage && chartPageView !== 'default'
   const showFooter =
-    currentPage !== '/registration' &&
+    !currentPage.includes('/analytics') &&
     currentPage !== '/tech_issues' &&
     !isChartPage
   const isPNL = currentPage.includes('/portfolio/main')
@@ -131,7 +131,7 @@ const AppRaw = ({
                         style={{
                           height: showFooter
                             ? 'calc(100% - 11.7rem)'
-                            : 'calc(100% - 6rem)',
+                            : 'calc(100% - 6rem)'
                         }}
                       >
                         {children}

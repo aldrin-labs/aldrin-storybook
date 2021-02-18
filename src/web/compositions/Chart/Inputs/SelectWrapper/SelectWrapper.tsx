@@ -13,8 +13,8 @@ import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSett
 import { MARKETS_BY_EXCHANE_QUERY } from '@core/graphql/queries/chart/MARKETS_BY_EXCHANE_QUERY'
 
 import { getSerumMarketData } from '@core/graphql/queries/chart/getSerumMarketData'
-
 import { queryRendererHoc } from '@core/components/QueryRenderer'
+
 import stableCoins, {
   fiatPairs,
   stableCoinsWithoutFiatPairs,
@@ -48,7 +48,7 @@ import {
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 
-const excludedPairs = [
+export const excludedPairs = [
   'USDC_ODOP',
   'KIN_USDT',
   // 'MIDBEAR_USDT',
@@ -58,7 +58,7 @@ const excludedPairs = [
   'SWAG_USDT'
 ]
 
-const datesForQuery = {
+export const datesForQuery = {
   startOfTime: dayjs()
     .startOf('hour')
     .subtract(24, 'hour')
@@ -78,6 +78,8 @@ const datesForQuery = {
     .subtract(24, 'hour')
     .valueOf(),
 }
+
+export const fiatRegexp = new RegExp(fiatPairs.join('|'), 'gi')
 
 const StyledGrid = styled(Grid)`
   display: none;
@@ -132,29 +134,22 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
       },
     }
 
-    const { getMarketsByExchange = [] } = marketsByExchangeQuery || {
-      getMarketsByExchange: [],
-    }
-
-    const fiatRegexp = new RegExp(fiatPairs.join('|'), 'gi')
+    // const { getMarketsByExchange = [] } = marketsByExchangeQuery || {
+    //   getMarketsByExchange: [],
+    // }
 
     // console.log('markets', markets)
 
-    const dexMarketSymbols = markets.map((el) => ({
-      symbol: el.name.replace('/', '_'),
-      isAwesomeMarket: el.isAwesomeMarket,
-    }))
+    // const dexMarketSymbols = markets.map((el) => ({
+    //   symbol: el.name.replace('/', '_'),
+    //   isAwesomeMarket: el.isAwesomeMarket,
+    // }))
 
     const filtredMarketsByExchange = getSerumMarketDataQuery.getSerumMarketData.filter(
-    // const filtredMarketsByExchange = dexMarketSymbols.filter(
       (el) =>
         el.symbol &&
-        // +el.volume24hChange &&
-        // +el.price &&
         !Array.isArray(el.symbol.match(fiatRegexp)) &&
-        !el.symbol.includes('USDC') &&
         !excludedPairs.includes(el.symbol)
-      // dexMarketSymbols.includes(el.symbol)
     )
 
     const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
@@ -208,7 +203,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
         altCoinsPairsMap.set(el.symbol, el.price)
       }
     })
-    // console.log('getSerumMarketDataQuery', getSerumMarketDataQuery)
+
     return (
       <SelectPairListComponent
         data={filtredMarketsByExchange}
@@ -686,12 +681,12 @@ class SelectPairListComponent extends React.PureComponent<
                 rowStyle={{
                   outline: 'none',
                   cursor: 'pointer',
-                  color: theme.palette.grey.light,
+                  // color: theme.palette.dark.main,
                   borderBottom: `0.05rem solid ${theme.palette.grey.newborder}`,
                 }}
                 headerHeight={window.outerHeight / 40}
                 headerStyle={{
-                  color: theme.palette.dark.main,
+                  color: theme.palette.grey.title,
                   paddingLeft: '.5rem',
                   paddingTop: '.25rem',
                   marginLeft: 0,
@@ -720,16 +715,14 @@ class SelectPairListComponent extends React.PureComponent<
                   label={`Pair`}
                   dataKey="symbol"
                   headerStyle={{
-                    textAlign: 'center',
+                    color: theme.palette.grey.title,
                     paddingRight: '6px',
                     paddingLeft: '1rem',
                     fontSize: '1rem',
                     textAlign: 'left',
-                    color: theme.palette.grey.text,
                   }}
                   width={width}
                   style={{
-                    color: theme.palette.grey.text,
 
                     textAlign: 'left',
                     fontSize: '1.2rem',
@@ -741,15 +734,13 @@ class SelectPairListComponent extends React.PureComponent<
                   label={`last price`}
                   dataKey="price"
                   headerStyle={{
+                    color: theme.palette.grey.title,
                     paddingRight: 'calc(10px)',
-                    textAlign: 'center',
                     fontSize: '1rem',
                     textAlign: 'left',
-                    color: theme.palette.grey.text,
                   }}
                   width={width}
                   style={{
-                    color: theme.palette.grey.text,
 
                     textAlign: 'left',
                     fontSize: '1.2rem',
@@ -757,39 +748,35 @@ class SelectPairListComponent extends React.PureComponent<
                   }}
                   cellRenderer={({ cellData }) => cellData.render}
                 />
-                {/* <Column
+                <Column
                   label={`24H CHANGE`}
                   dataKey="price24hChange"
                   headerStyle={{
+                    color: theme.palette.grey.title,
                     paddingRight: 'calc(10px)',
-                    textAlign: 'left',
                     fontSize: '1rem',
                     textAlign: 'left',
-                    color: theme.palette.grey.text,
                   }}
                   width={width}
                   style={{
-                    color: theme.palette.grey.text,
 
                     textAlign: 'left',
                     fontSize: '1.2rem',
                     fontWeight: 'bold',
                   }}
                   cellRenderer={({ cellData }) => cellData.render}
-                /> */}
+                />
                 <Column
                   label={`24H VOLUME`}
                   dataKey="volume24hChange"
                   headerStyle={{
+                    color: theme.palette.grey.title,
                     paddingRight: 'calc(10px)',
-                    textAlign: 'center',
                     fontSize: '1rem',
                     textAlign: 'left',
-                    color: theme.palette.grey.text,
                   }}
                   width={width}
                   style={{
-                    color: theme.palette.grey.text,
 
                     textAlign: 'left',
                     fontSize: '1.2rem',
@@ -797,39 +784,34 @@ class SelectPairListComponent extends React.PureComponent<
                   }}
                   cellRenderer={({ cellData }) => cellData.render}
                 />
-                {/* <Column
+                <Column
                   label={`trades change 24h`}
                   dataKey="tradesChange24h"
                   headerStyle={{
+                    color: theme.palette.grey.title,
                     paddingRight: 'calc(10px)',
-                    textAlign: 'left',
                     fontSize: '1rem',
                     textAlign: 'left',
-                    color: theme.palette.grey.text,
                   }}
                   width={width}
                   style={{
-                    color: theme.palette.grey.text,
-
                     textAlign: 'left',
                     fontSize: '1.2rem',
                     fontWeight: 'bold',
                   }}
                   cellRenderer={({ cellData }) => cellData.render}
-                /> */}
+                />
                 <Column
                   label={`trades 24h`}
                   dataKey="trades24h"
                   headerStyle={{
+                    color: theme.palette.grey.title,
                     paddingRight: 'calc(10px)',
-                    textAlign: 'center',
                     fontSize: '1rem',
                     textAlign: 'left',
-                    color: theme.palette.grey.text,
                   }}
                   width={width}
                   style={{
-                    color: theme.palette.grey.text,
 
                     textAlign: 'left',
                     fontSize: '1.2rem',
@@ -874,19 +856,6 @@ export default compose(
   withAuthStatus,
   withPublicKey,
   withTheme(),
-  // queryRendererHoc({
-  //   query: MARKETS_BY_EXCHANE_QUERY,
-  //   name: 'marketsByExchangeQuery',
-  //   variables: (props) => ({
-  //     splitter: '_',
-  //     exchange: 'binance',
-  //     marketType: 0,
-  //     includeAdditionalMarketData: true,
-  //   }),
-  //   fetchPolicy: 'cache-and-network',
-  //   withOutSpinner: true,
-  //   withTableLoader: false,
-  // }),
   queryRendererHoc({
     query: getSerumMarketData,
     name: 'getSerumMarketDataQuery',
@@ -900,7 +869,7 @@ export default compose(
       prevEndTimestamp: `${datesForQuery.prevEndTimestamp}`,
     }),
     // TODO: make chache-first here and in CHART by refetching this after adding market
-    fetchPolicy: 'cache-first',
+    fetchPolicy: 'cache-and-network',
     withOutSpinner: true,
     withTableLoader: false,
   }),

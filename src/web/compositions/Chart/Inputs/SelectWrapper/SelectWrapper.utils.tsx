@@ -12,6 +12,9 @@ import {
 import favoriteSelected from '@icons/favoriteSelected.svg'
 import favoriteUnselected from '@icons/favoriteUnselected.svg'
 
+import LessVolumeArrow from '@icons/lessVolumeArrow.svg'
+import MoreVolumeArrow from '@icons/moreVolumeArrow.svg'
+
 import {
   GetSelectorSettingsType,
   ISelectData,
@@ -90,7 +93,7 @@ export const updateFavoritePairsHandler = async (
 
 export const combineSelectWrapperData = ({
   data,
-  updateFavoritePairsMutation,
+  // updateFavoritePairsMutation,
   previousData,
   onSelectPair,
   theme,
@@ -104,15 +107,16 @@ export const combineSelectWrapperData = ({
   usdtPairsMap,
   favoritePairsMap,
   marketType,
+  needFiltrations = true,
 }: {
   data: ISelectData
-  updateFavoritePairsMutation: (variableObj: {
-    variables: {
-      input: {
-        favoritePairs: string[]
-      }
-    }
-  }) => Promise<void>
+  // updateFavoritePairsMutation: (variableObj: {
+  //   variables: {
+  //     input: {
+  //       favoritePairs: tabSpecificCoin[]
+  //     }
+  //   }
+  // }) => Promise<void>
   previousData?: ISelectData
   onSelectPair: ({ value }: { value: string }) => void
   theme: any
@@ -126,25 +130,27 @@ export const combineSelectWrapperData = ({
   usdcPairsMap: Map<string, string>
   usdtPairsMap: Map<string, string>
   marketType: number
+  needFiltrations?: boolean
 }) => {
   if (!data && !Array.isArray(data)) {
     return []
   }
 
-  let processedData = data.filter(
+  let processedData = data
+  .filter(
     (market, index, arr) =>
       arr.findIndex(
         (marketInFindIndex) => marketInFindIndex.symbol === market.symbol
       ) === index
   )
 
-  if (tabSpecificCoin !== '' && tabSpecificCoin !== 'ALL') {
+  if (tabSpecificCoin !== '' && tabSpecificCoin !== 'ALL' && needFiltrations) {
     processedData = processedData.filter((el) =>
       new RegExp(`${tabSpecificCoin}`, 'gi').test(el.symbol)
     )
   }
 
-  if (tab !== 'all') {
+  if (tab !== 'all' && needFiltrations) {
     if (tab === 'alts') {
       processedData = processedData.filter((el) =>
         altCoinsPairsMap.has(el.symbol)
@@ -199,19 +205,25 @@ export const combineSelectWrapperData = ({
         (el) => el.isCustomUserMarket && !el.isPrivateCustomMarket
       )
     }
-  } else {
+  } else if (needFiltrations) {
     processedData = processedData.filter((el) => !el.isCustomUserMarket)
   }
 
   if (searchValue) {
     processedData = processedData.filter((el) => {
-      const underlineInSearch = searchValue.includes('_')
-      const symbolBase = el.symbol.split('_')[0]
-      const withReplacedWhitespace = searchValue.replace(/\s/g, '_')
-      const withRevertedWord = reverseFor(withReplacedWhitespace)
+      let updatedSearchValue = searchValue
 
-      return new RegExp(`${searchValue}`, 'gi').test(
-        underlineInSearch ? el.symbol : symbolBase
+      const slashInSearch = updatedSearchValue.includes('/')
+      if (slashInSearch) updatedSearchValue = updatedSearchValue.replace('/', '_')
+      const spaceInSeach = updatedSearchValue.includes(' ')
+      if (spaceInSeach) updatedSearchValue = updatedSearchValue.replace(' ', '_')
+      const dashInSeach = updatedSearchValue.includes(' ')
+      if (dashInSeach) updatedSearchValue = updatedSearchValue.replace('-', '_')
+
+      const underlineInSearch = updatedSearchValue.includes('_')
+
+      return new RegExp(`${updatedSearchValue}`, 'gi').test(
+        underlineInSearch ? el.symbol : el.symbol.replace('_', '')
       )
     })
   }
@@ -248,21 +260,21 @@ export const combineSelectWrapperData = ({
     // console.log('filtredData', el)
     return {
       id: `${el.symbol}`,
-      favorite: {
-        isSortable: false,
-        render: (
-          <SvgIcon
-            onClick={() =>
-              updateFavoritePairsHandler(updateFavoritePairsMutation, el.symbol)
-            }
-            src={isInFavoriteAlready ? favoriteSelected : favoriteUnselected}
-            width="2rem"
-            height="auto"
-          />
-        ),
-      },
+      // favorite: {
+      //   isSortable: false,
+      //   render: (
+      //     <SvgIcon
+      //       onClick={() =>
+      //         updateFavoritePairsHandler(updateFavoritePairsMutation, el.symbol)
+      //       }
+      //       src={isInFavoriteAlready ? favoriteSelected : favoriteUnselected}
+      //       width="2rem"
+      //       height="auto"
+      //     />
+      //   ),
+      // },
       symbol: {
-        render: <span>{el.symbol}</span>,
+        render: <span>{el.symbol.replace('_', '/')}</span>,
         onClick: () =>
           onSelectPair({
             value: el.symbol,
@@ -271,79 +283,105 @@ export const combineSelectWrapperData = ({
             programId: el.programId,
           }),
         contentToSort: el.symbol,
+        color: theme.palette.dark.main,
       },
       price: {
         contentToSort: +el.closePrice,
         render: (
           <span>
-            -
-            {/* {formatNumberToUSFormat(stripDigitPlaces(el.closePrice, 2))} */}
+            {formatNumberToUSFormat(stripDigitPlaces(el.closePrice, 2))}
           </span>
         ),
 
-        color: priceColor,
+        color: theme.palette.dark.main,
       },
-      // price24hChange: {
-      //   isNumber: true,
-      //   render: (
-      //     <span
-      //       style={{
-      //         color:
-      //           +el.closePrice === 0
-      //             ? ''
-      //             : +el.closePrice > 0
-      //             ? theme.palette.green.main
-      //             : theme.palette.red.main,
-      //       }}
-      //
-      //     >
-      //       {`${formatNumberToUSFormat(stripDigitPlaces(el.closePrice))}%`}
-      //     </span>
-      //   ),
-      //
-      //   contentToSort: +el.closePrice,
-      //   color:
-      //     +el.closePrice === 0
-      //       ? ''
-      //       : +el.closePrice > 0
-      //       ? theme.customPalette.green.main
-      //       : theme.customPalette.red.main,
-      // },
+      price24hChange: {
+        isNumber: true,
+        render: (
+          <span
+            style={{
+              color:
+                +el.lastPriceDiff === 0
+                  ? ''
+                  : +el.lastPriceDiff > 0
+                  ? theme.palette.green.main
+                  : theme.palette.red.main,
+            }}
+          >
+            {`${formatNumberToUSFormat(stripDigitPlaces(el.lastPriceDiff))}`}
+          </span>
+        ),
+
+        contentToSort: +el.lastPriceDiff,
+        color:
+          +el.lastPriceDiff === 0
+            ? ''
+            : +el.lastPriceDiff > 0
+            ? theme.customPalette.green.main
+            : theme.customPalette.red.main,
+      },
       volume24hChange: {
         isNumber: true,
-        contentToSort: +el.volume,
+        contentToSort: +el.volume || 0,
         render: (
           <span>
-            -
-            {/* {`${formatNumberToUSFormat(
+            {`$${formatNumberToUSFormat(
               roundAndFormatNumber(el.volume, 2, false)
-            )} ${quote}`} */}
+            )}`}
           </span>
         ),
       },
-      // tradesChange24h: {
-      //   isNumber: true,
-      //   contentToSort: +el.tradesDiff,
-      //   render: (
-      //     <span >
-      //       {`${formatNumberToUSFormat(
-      //         roundAndFormatNumber(el.tradesDiff, 2, false)
-      //       )} ${quote}`}
-      //     </span>
-      //   ),
-      //
-      // },
+      tradesChange24h: {
+        isNumber: true,
+        render: (
+          <span
+            style={{
+              color:
+                +el.precentageTradesDiff === 0
+                  ? ''
+                  : +el.precentageTradesDiff > 0
+                  ? theme.palette.green.main
+                  : theme.palette.red.main,
+            }}
+          >
+            {`${
+              +el.precentageTradesDiff === 0
+                ? ''
+                : +el.precentageTradesDiff > 0
+                ? '+'
+                : '-'
+            }${formatNumberToUSFormat(
+              stripDigitPlaces(Math.abs(el.precentageTradesDiff))
+            )}%`}
+          </span>
+        ),
+
+        contentToSort: +el.precentageTradesDiff,
+        color:
+          +el.precentageTradesDiff === 0
+            ? ''
+            : +el.precentageTradesDiff > 0
+            ? theme.customPalette.green.main
+            : theme.customPalette.red.main,
+      },
       trades24h: {
         isNumber: true,
         contentToSort: +el.tradesCount || 0,
         render: (
           <span>
-            -
-            {/* {`${formatNumberToUSFormat(
-              roundAndFormatNumber(el.tradesCount, 2, false)
-            )} ${quote}`} */}
+            {`${formatNumberToUSFormat(
+              roundAndFormatNumber(el.tradesCount, 0, false)
+            )}`}
           </span>
         ),
+      },
+      volume24hChangeIcon: {
+        render:
+          +el.volumeChange > 0 ? (
+            <SvgIcon src={MoreVolumeArrow} width="1rem" height="auto" />
+          ) : (
+            <SvgIcon src={LessVolumeArrow} width="1rem" height="auto" />
+          ),
       },
     }
   })

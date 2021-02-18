@@ -36,7 +36,7 @@ import { Input } from '@sb/compositions/Addressbook/index'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { PurpleButton } from '@sb/compositions/Addressbook/components/Popups/NewCoinPopup'
-import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index'
+import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import ListNewMarketPopup from './ListNewMarketPopup'
 import { addSerumCustomMarket } from '@core/graphql/mutations/chart/addSerumCustomMarket'
 import { withPublicKey } from '@core/hoc/withPublicKey'
@@ -174,6 +174,17 @@ const CustomMarketDialog = ({
       params.quoteLabel = quoteLabel
     }
 
+    console.log('knownBaseCurrency || baseLabel', )
+    console.log('knownQuoteCurrency || quoteLabel', )
+
+    if (!marketLabel.includes('_')) {
+      notify({
+        message: 'Please use "_" for devider',
+        type: 'error',
+      })
+      return
+    }
+
     await changeLoading(true)
 
     const resultOfAdding = await onAddCustomMarket(params)
@@ -181,7 +192,7 @@ const CustomMarketDialog = ({
       await addSerumCustomMarketMutation({
         variables: {
           publicKey: publicKey,
-          symbol: `${baseLabel}/${quoteLabel}`,
+          symbol: `${knownBaseCurrency || baseLabel}/${knownQuoteCurrency || quoteLabel}`,
           isPrivate: isPrivate,
           marketId,
           programId
