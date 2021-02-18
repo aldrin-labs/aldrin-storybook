@@ -152,6 +152,7 @@ export default ({ themeMode, isChartPage, children }) => {
             black: {
               custom: '#16253D',
               registration: '#000000',
+              card: '#1C1D22',
             },
             red: {
               main: '#DD6956',
@@ -183,6 +184,7 @@ export default ({ themeMode, isChartPage, children }) => {
               acid: '#c7ffd0',
               descrip: '#61D8E6',
               border: '#61D8E6',
+              analytics: '#A5E898',
             },
             grey: {
               custom: '#2E2E2E',
@@ -202,6 +204,7 @@ export default ({ themeMode, isChartPage, children }) => {
               newborder: '#3A475C',
               placeholder: '#abbad1',
               disabledInput: 'rgb(46,46,46)',
+              title: '#93A0B2',
             },
             primary: {
               main: '#303037',
@@ -225,7 +228,8 @@ export default ({ themeMode, isChartPage, children }) => {
               main: '#E0E5EC',
             },
             border: {
-              main: '.1rem solid #2e2e2e',
+              main: '.2rem solid #2e2e2e',
+              new: '.1rem solid #3A475C',
             },
             price: {
               increase: '#2F7619',
@@ -371,6 +375,7 @@ export default ({ themeMode, isChartPage, children }) => {
             black: {
               custom: '#16253D',
               registration: '#000000',
+              card: '#1C1D22',
             },
             red: {
               main: '#DD6956',
@@ -401,6 +406,7 @@ export default ({ themeMode, isChartPage, children }) => {
               descrip: '#1BA492',
               acid: '#1BA492',
               border: '#7380eb',
+              analytics: '#A5E898'
             },
             grey: {
               custom: '#ABBAD1',
@@ -419,7 +425,8 @@ export default ({ themeMode, isChartPage, children }) => {
               back: '#e0e0e8',
               newborder: '#F6F8FA',
               placeholder: '#7284A0',
-              disabledInput: '#F2F4F6'
+              disabledInput: '#F2F4F6',
+              title: '#93A0B2',
             },
             primary: {
               main: '#FEFEFE',
@@ -433,7 +440,8 @@ export default ({ themeMode, isChartPage, children }) => {
               selected: 'rgba(255, 255, 255, 0.05)',
             },
             border: {
-              main: '.1rem solid #e0e5ec',
+              main: '.2rem solid #e0e5ec',
+              new: '.1rem solid #3A475C',
             },
             hover: {
               dark: '#383a3d',

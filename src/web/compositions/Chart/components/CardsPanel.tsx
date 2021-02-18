@@ -24,7 +24,7 @@ import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
 
 import { useWallet, WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
 import { ENDPOINTS, useConnectionConfig } from '@sb/dexUtils/connection'
-import { Line } from '@sb/compositions/AnalyticsRoute/index'
+import { Line } from '@sb/compositions/AnalyticsRoute/index.styles'
 import styled from 'styled-components'
 import OvalSelector from '@sb/components/OvalSelector'
 import SerumCCAILogo from '@icons/serumCCAILogo.svg'
@@ -334,7 +334,7 @@ export const CardsPanel = ({
   }
 
   return (
-    <ChartGridContainer theme={theme}>
+    <ChartGridContainer isChartPage={isChartPage} theme={theme}>
       <PanelWrapper>
         {/* {view === 'onlyCharts' && (
           <LayoutSelector userId={_id} themeMode={themeMode} />
@@ -484,7 +484,7 @@ export const CardsPanel = ({
         </CustomCard>
 
         <TopBar theme={theme} />
-        <Line top={'calc(100%)'} />
+        {/* <Line theme={theme} top={'calc(100%)'} /> */}
         {/*         
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <TooltipCustom
