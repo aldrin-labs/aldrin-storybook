@@ -1,8 +1,8 @@
 import { NavLink } from 'react-router-dom'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Paper, MenuItem, Button } from '@material-ui/core'
 
-export const StyledLink = styled(NavLink)`
+export const StyledLinkCss = css`
   color: ${(props) => props.theme.palette.grey.text};
   padding: 1.5rem 0 1.5rem 10%;
   font-size: 1.2rem;
@@ -30,6 +30,14 @@ export const StyledLink = styled(NavLink)`
   }
 `
 
+// export const StyledSpan = styled(<span>)`
+// ${StyledLinkCss}
+// `
+
+export const StyledLink = styled(NavLink)`
+  ${StyledLinkCss}
+`
+
 export const StyledButton = styled(Button)`
   font-size: 12px;
   letter-spacing: 1px;
@@ -52,25 +60,16 @@ export const StyledDropdown = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  /* margin: 0 1rem;
-  padding: 0rem 0.5rem; */
   width: auto;
   height: 100%;
-  padding: 0.8rem 1.2rem;
   &:hover > div {
     display: block !important;
   }
-  /* @media (min-width: 1921px) {
-    padding: 0rem 0.5rem;
-  }
-
-  @media (min-width: 2560px) {
-    padding: 0rem 0.5rem;
-  } */
 `
 
 export const StyledPaper = styled(Paper)`
   && {
+    z-index: 1;
     position: absolute;
     top: calc(5.4vh - 1px);
     left: calc(50% - 0.5px);

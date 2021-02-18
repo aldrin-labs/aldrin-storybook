@@ -53,6 +53,8 @@ import TwitterIcon from '@icons/twitter.svg'
 import { withTheme } from '@material-ui/core'
 import color from '@material-ui/core/colors/amber'
 
+import Dropdown from '@sb/components/Dropdown'
+
 const WalletId = styled.div`
   position: relative;
   display: flex;
@@ -142,7 +144,6 @@ const TopBar = ({ theme }) => {
   const location = useLocation()
   const history = useHistory()
   const [isOpenPopup, setPopupOpen] = useState(false)
-
 
   const publicKey = wallet?.publicKey?.toBase58()
 
@@ -234,19 +235,15 @@ const TopBar = ({ theme }) => {
           }))}
         />
       </div> */}
-      <WalletBlock />
+      {/* <WalletBlock /> */}
       <div data-tut="wallet">
-        <BtnCustom
-          type="text"
-          size="large"
-          onClick={connected ? wallet.disconnect : wallet.connect}
-          btnColor={theme.palette.blue.serum}
-          btnWidth={'14rem'}
-          height={'100%'}
-        >
-          {/* <UserOutlined /> */}
-          {!connected ? 'Connect wallet' : 'Disconnect'}
-        </BtnCustom>
+        <Dropdown
+          wallet={wallet}
+          connected={connected}
+          theme={theme}
+          setProvider={setProvider}
+          providerUrl={providerUrl}
+        />
       </div>
       {connected && (
         <WalletId
