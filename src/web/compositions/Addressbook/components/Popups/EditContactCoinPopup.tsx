@@ -125,6 +125,7 @@ const EditContactCoinPopup = ({
       >
         <div style={{ paddingTop: '2.5rem', textAlign: 'center' }}>
           <SelectCoinList
+            theme={theme}
             dropdownIndicatorStyles={{
               position: 'absolute',
               right: '.5rem',
@@ -247,6 +248,7 @@ const EditContactCoinPopup = ({
               onChange={(e) => updateAddress(e.target.value)}
             />
             <PasteButton
+              theme={theme}
               onClick={() => {
                 navigator.clipboard
                   .readText()
@@ -257,6 +259,7 @@ const EditContactCoinPopup = ({
             </PasteButton>
           </div>
           <BtnCustom
+            theme={theme}
             disabled={showLoader}
             needMinWidth={false}
             btnWidth="20rem"
