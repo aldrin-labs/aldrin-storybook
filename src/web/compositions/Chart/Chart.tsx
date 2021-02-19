@@ -187,7 +187,7 @@ function ChartPageComponent(props: any) {
     setCustomMarkets([...updatedMarkets, ...userMarkets])
   }, [getUserCustomMarketsQuery.getUserCustomMarkets.length])
 
-  useEffect(async () => {
+  const setCorrectMarketAddress = async () => {
     const pair = !!location.pathname.split('/')[3] ? location.pathname.split('/')[3] : 'SRM_USDT'
 
     const userMarkets = getUserCustomMarketsQuery.getUserCustomMarkets.map(
@@ -223,6 +223,11 @@ function ChartPageComponent(props: any) {
     }
 
     await setMarketAddress(selectedMarketFromUrl.isCustomUserMarket ? selectedMarketFromUrl.address : selectedMarketFromUrl.address.toBase58())
+    
+  }
+
+  useEffect(() => {
+    setCorrectMarketAddress()
   }, [])
 
   const handleJoyrideCallback = (data) => {
