@@ -52,6 +52,7 @@ export default class MathWallet extends EventEmitter {
       }
     })
     .catch((err) => {
+      this._handleDisconnect()
       alert(err.message)
     })
 

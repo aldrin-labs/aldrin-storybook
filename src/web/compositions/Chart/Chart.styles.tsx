@@ -261,7 +261,7 @@ export const ChartGridContainer = styled(({ MASTER_BUILD, ...rest }) => (
   width: calc(100%);
   height: 6rem;
   position: relative;
-  padding: 1rem 3rem 1rem 0rem;
+  padding: 0rem 3rem 0rem 0rem;
   border: ${(props) => props.isChartPage ? '' : props.theme.palette.border.new};
   margin: 0rem;
   background: ${(props) => props.theme.palette.grey.additional};

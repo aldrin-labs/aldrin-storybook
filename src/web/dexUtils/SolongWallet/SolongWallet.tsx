@@ -48,8 +48,9 @@ export default class SolongWallet extends EventEmitter {
     }
 
     this._onProcess = true
-    console.log('solong helper select account')
-    ;(window as any).solong
+    console.log('solong helper select account');
+    
+    (window as any).solong
       .selectAccount()
       .then((account: any) => {
         this._publicKey = new PublicKey(account)
