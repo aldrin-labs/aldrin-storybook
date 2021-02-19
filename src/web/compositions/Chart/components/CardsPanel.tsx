@@ -55,6 +55,8 @@ import TwitterIcon from '@icons/twitter.svg'
 import { withTheme } from '@material-ui/core'
 import color from '@material-ui/core/colors/amber'
 
+import Dropdown from '@sb/components/Dropdown'
+
 const WalletId = styled.div`
   position: relative;
   display: flex;
@@ -162,7 +164,7 @@ const TopBar = ({ theme }) => {
         width={'auto'}
         height={'100%'}
         styledComponentsAdditionalStyle={{
-          padding: '0 2rem 0 0',
+          padding: '1rem 2rem 1rem 0',
           cursor: 'pointer',
         }}
         src={isDarkTheme ? SunDisabled : SunActive}
@@ -178,7 +180,7 @@ const TopBar = ({ theme }) => {
         width={'auto'}
         height={'100%'}
         styledComponentsAdditionalStyle={{
-          padding: '0 2rem 0 0',
+          padding: '1rem 2rem 1rem 0',
           cursor: 'pointer',
         }}
         src={isDarkTheme ? MoonActive : MoonDisabled}
@@ -235,19 +237,15 @@ const TopBar = ({ theme }) => {
           }))}
         />
       </div> */}
-      <WalletBlock />
+      {/* <WalletBlock /> */}
       <div data-tut="wallet">
-        <BtnCustom
-          type="text"
-          size="large"
-          onClick={connected ? wallet.disconnect : wallet.connect}
-          btnColor={theme.palette.blue.serum}
-          btnWidth={'14rem'}
-          height={'100%'}
-        >
-          {/* <UserOutlined /> */}
-          {!connected ? 'Connect wallet' : 'Disconnect'}
-        </BtnCustom>
+        <Dropdown
+          wallet={wallet}
+          connected={connected}
+          theme={theme}
+          setProvider={setProvider}
+          providerUrl={providerUrl}
+        />
       </div>
       {connected && (
         <WalletId
@@ -360,6 +358,7 @@ export const CardsPanel = ({
             marginRight: '.4rem',
             flexGrow: 1,
             border: '0',
+            padding: '1rem 0',
           }}
         >
           <Link
