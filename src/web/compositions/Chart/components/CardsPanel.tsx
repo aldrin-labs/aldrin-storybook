@@ -2,11 +2,11 @@ import React, { useState, useCallback } from 'react'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import greenArrow from '@icons/greenArrow.svg'
+import { NavLink } from 'react-router-dom'
 
 import copy from 'clipboard-copy'
 import { useLocation, useHistory, Link } from 'react-router-dom'
 import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
-import { NavBarLink } from '@sb/components/PortfolioMainAllocation/PortfolioMainAllocation.styles'
 
 import MarketStats from './MarketStats/MarketStats'
 import { TooltipCustom } from '@sb/components/index'
@@ -33,13 +33,6 @@ import SerumCCAILogo from '@icons/serumCCAILogo.svg'
 import LightLogo from '@icons/lightLogo.svg'
 import SvgIcon from '@sb/components/SvgIcon'
 
-import { WalletBlock } from '@sb/compositions/Chart/components/WalletBlock/WalletBlock'
-
-import MenuItem from '@material-ui/core/MenuItem'
-import Select from '@material-ui/core/Select'
-import Button from '@material-ui/core/Button'
-
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import Wallet from '@icons/Wallet.svg'
 
 import SunDisabled from '@icons/sunDisabled.svg'
@@ -53,9 +46,28 @@ import TelegramIcon from '@icons/telegram.svg'
 import DiscordIcon from '@icons/discord.svg'
 import TwitterIcon from '@icons/twitter.svg'
 import { withTheme } from '@material-ui/core'
-import color from '@material-ui/core/colors/amber'
 
 import Dropdown from '@sb/components/Dropdown'
+
+export const NavBarLink = styled(({ style, ...props }) => (
+  <NavLink {...props} />
+))`
+  font-family: Avenir Next Demi;
+  text-transform: capitalize;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.4rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  ${(props) => props.style};
+
+  &:hover {
+    color: ${(props) => props.theme.palette.blue.serum};
+  }
+`
 
 const WalletId = styled.div`
   position: relative;
@@ -336,18 +348,6 @@ export const CardsPanel = ({
   return (
     <ChartGridContainer isChartPage={isChartPage} theme={theme}>
       <PanelWrapper>
-        {/* {view === 'onlyCharts' && (
-          <LayoutSelector userId={_id} themeMode={themeMode} />
-        )} */}
-
-        {/* <SelectExchange
-          style={{ height: '100%', width: '20%' }}
-          changeActiveExchangeMutation={changeActiveExchangeMutation}
-          activeExchange={activeExchange}
-          currencyPair={pair}
-          selectStyles={selectStyles}
-        /> */}
-
         <CustomCard
           theme={theme}
           style={{

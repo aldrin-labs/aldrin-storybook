@@ -2,7 +2,7 @@ import React from 'react'
 import { Dialog, Grid, FormControl } from '@material-ui/core'
 
 import Clear from '@material-ui/icons/Clear'
-import MiniSuccessPopup from '@sb/components/MiniSuccessPopup'
+// import MiniSuccessPopup from '@sb/components/MiniSuccessPopup'
 
 import { IProps, IState } from './SharePortfolioDialog.types'
 import { withTheme } from '@material-ui/styles'
@@ -625,7 +625,7 @@ export default class SharePortfolioDialog extends React.Component<
           </TypographyFooter>
         </DialogFooter>
 
-        <MiniSuccessPopup
+        {/* <MiniSuccessPopup
           isOpen={openLinkPopup}
           text="Link copied to clipboard"
         />
@@ -635,7 +635,7 @@ export default class SharePortfolioDialog extends React.Component<
           text={`Invite link sent to ${
             selectedUsername ? selectedUsername.label : 'unchoosen user'
           }`}
-        />
+        /> */}
       </Dialog>
     )
   }
