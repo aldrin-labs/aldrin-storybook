@@ -10,7 +10,6 @@ import {
   StyledLink,
 } from './SharePortfolioPanel.style'
 import SelectPortfolioPeriod from '@sb/components/SelectPortfolioPeriod'
-import TransferPopup from '@sb/compositions/Chart/components/TransferPopup'
 import Dropdown from '@sb/components/Dropdown'
 import { IProps } from './SharePortfolio.types'
 import { MASTER_BUILD } from '@core/utils/config'
@@ -106,7 +105,7 @@ const SharePortfolioPanel = ({
                   position: 'absolute',
                   top: '0',
                   right: '-1rem',
-                  transform: 'translateY(-150%)'
+                  transform: 'translateY(-150%)',
                 }}
               >
                 Transfer between your spot and futures accounts
@@ -163,17 +162,6 @@ const SharePortfolioPanel = ({
           </Grid>
         </Grid>
       </Grid>
-      <TransferPopup
-        open={open}
-        theme={theme}
-        handleClose={() => togglePopup(false)}
-        transferFromSpotToFutures={transferFromSpotToFutures}
-        haveSelectedAccount={false}
-        showFuturesTransfer={showFuturesTransfer}
-        isFuturesWarsKey={false}
-        loading={loading}
-        setLoading={setLoading}
-      />
     </Grid>
   )
 }

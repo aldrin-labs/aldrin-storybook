@@ -4,7 +4,7 @@ export { default as BarChart } from './BarChart'
 // export { default as CoinsList } from "./Chart"
 // export { default as ComingSoon } from "./ComingSoon"
 // export { default as DominanceChart } from "./DominanceChart"
-export { DonutChart } from './DonutChart'
+
 export { default as Table } from './Tables'
 // export { default as TableTypes } from './Tables/index.types'
 export { default as TableWithSort } from './Tables/WithSort'
@@ -21,7 +21,6 @@ export { addMainSymbol } from './AddMainSymbol'
 export { default as PrivacyPolicy } from './PrivacyPolicy'
 export { default as TermsOfUse } from './TermsOfUse/TermsOfUse'
 export { default as CardHeader } from './CardHeader'
-export { LoginComponent } from './Login'
 export {
   default as TradeOrderHistoryTable,
 } from './TradeOrderHistoryTable/TraderOrderHistoryTable'
@@ -49,11 +48,5 @@ export {
   default as PortfolioRebalanceTable,
 } from './PortfolioRebalanceTable/PortfolioRebalanceTable'
 export { default as SwitchButtons } from './SwitchButtons/SwitchButtons'
-export { SignUpButton } from './SignUpButton/SignUpButton'
-export { OnboardingPlaceholder as OnboardingPlaceholder } from './OnboardingPlaceholder/OnboardingPlaceholder'
-export { OnboardingPromoPlaceholder } from './OnboardingPromoPlaceholder/OnboardingPromoPlaceholder'
 export { LightGreenButton } from './LightGreenButton/LightGreenButton'
-export { OrangeButton } from './OrangeButton/OrangeButton'
 export { LinearProgressCustom } from './LinearProgressCustom/LinearProgressCustom'
-export { SignUpLink } from './SignUpLink/SignUpLink'
-export { SignInLink } from './SignInLink/SignInLink'
