@@ -160,7 +160,7 @@ const TopBar = ({ theme }) => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-      <SvgIcon
+      {/* <SvgIcon
         width={'auto'}
         height={'100%'}
         styledComponentsAdditionalStyle={{
@@ -174,8 +174,7 @@ const TopBar = ({ theme }) => {
           }
         }}
       />
-      {/* </div> */}
-      {/* <div style={{ display: 'flex' }}> */}
+
       <SvgIcon
         width={'auto'}
         height={'100%'}
@@ -189,7 +188,7 @@ const TopBar = ({ theme }) => {
             theme.updateMode('dark')
           }
         }}
-      />
+      /> */}
 
       {/* <div>
         <OvalSelector

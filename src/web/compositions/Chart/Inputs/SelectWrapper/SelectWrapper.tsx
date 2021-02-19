@@ -332,7 +332,8 @@ class SelectPairListComponent extends React.PureComponent<
       onChangeSearch,
       onTabChange,
       marketType,
-      closeMenu,
+      publicKey,
+      wallet,
       onSpecificCoinChange,
       marketsByExchangeQuery,
       setCustomMarkets,
@@ -521,7 +522,18 @@ class SelectPairListComponent extends React.PureComponent<
             Private markets{' '}
           </Grid>
           <AddCircleIcon
-            onClick={() => this.setState({ showAddMarketPopup: true })}
+            onClick={async () => {
+              if (publicKey === '') {    
+                notify({
+                  message: 'Connect your wallet first',
+                  type: 'error',
+                })
+                wallet.connect() 
+                return
+              }
+              
+              this.setState({ showAddMarketPopup: true })
+            }}
             style={{
               width: '3rem',
               height: '3rem',
