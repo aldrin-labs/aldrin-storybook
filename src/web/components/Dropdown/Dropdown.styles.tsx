@@ -56,7 +56,6 @@ export const StyledButton = styled(Button)`
 `
 
 export const StyledDropdown = styled.div`
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -65,31 +64,26 @@ export const StyledDropdown = styled.div`
   &:hover > div {
     display: block !important;
   }
+  padding: 1rem 0;
 `
 
 export const StyledPaper = styled(Paper)`
-  && {
+  display: none;
+  &&& {
     z-index: 1;
     position: absolute;
-    top: calc(5.4vh - 1px);
-    left: calc(50% - 0.5px);
-    width: calc(100% + 0.15rem);
+    top: calc(6rem);
+    right: 3rem;
+    width: calc(14rem);
     height: auto;
-    box-shadow: 0px 8px 16px rgba(10, 19, 43, 0.1);
+    box-shadow: 0px .4rem .8rem rgba(10, 19, 43, 0.1);
     border: ${(props) => props.theme.palette.border.main};
     background: ${(props) => props.theme.palette.white.background};
-    transform: translateX(-50%);
     border-radius: 0rem;
     /* border-top-left-radius: 0;
     border-top-right-radius: 0; */
     /* padding-left: 8px;
     padding-right: 8px; */
-  }
-
-  @media screen and (max-width: 1400px) {
-    && {
-      width: calc(100% + 0.2rem);
-    }
   }
 `
 

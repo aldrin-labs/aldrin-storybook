@@ -164,7 +164,7 @@ const TopBar = ({ theme }) => {
         width={'auto'}
         height={'100%'}
         styledComponentsAdditionalStyle={{
-          padding: '0 2rem 0 0',
+          padding: '1rem 2rem 1rem 0',
           cursor: 'pointer',
         }}
         src={isDarkTheme ? SunDisabled : SunActive}
@@ -180,7 +180,7 @@ const TopBar = ({ theme }) => {
         width={'auto'}
         height={'100%'}
         styledComponentsAdditionalStyle={{
-          padding: '0 2rem 0 0',
+          padding: '1rem 2rem 1rem 0',
           cursor: 'pointer',
         }}
         src={isDarkTheme ? MoonActive : MoonDisabled}
@@ -358,6 +358,7 @@ export const CardsPanel = ({
             marginRight: '.4rem',
             flexGrow: 1,
             border: '0',
+            padding: '1rem 0',
           }}
         >
           <Link
