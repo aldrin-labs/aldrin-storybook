@@ -82,7 +82,6 @@
     "moment": "^2.24.0",
     "nanoid": "^2.0.0",
     "notistack": "^0.6.1",
-    "papaparse": "^4.6.3",
     "react": "^16.7.0-alpha.2",
     "react-apollo": "^2.4.0",
     "react-calendar-heatmap": "^1.8.0",
@@ -92,7 +91,6 @@
     "react-dates": "^18.4.1",
     "react-dom": "16.7.0-alpha.2",
     "react-fullscreen-crossbrowser": "^1.0.9",
-    "react-joyride": "^2.0.3",
     "react-jss": "^8.6.1",
     "react-loadable": "^5.4.0",
     "react-pose": "3.3.3",
@@ -210,5 +208,8 @@
     "webpack-jarvis": "^0.3.0",
     "webpack-merge": "^4.1.2",
     "yup": "^0.24.1"
+  },
+  "resolutions": {
+    "bn.js": "5.1.3"
   }
 }

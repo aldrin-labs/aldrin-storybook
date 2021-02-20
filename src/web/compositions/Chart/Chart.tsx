@@ -22,7 +22,7 @@ import { getChartLayout } from '@core/graphql/queries/chart/getChartLayout'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { changeChartLayout } from '@core/graphql/mutations/chart/changeChartLayout'
 import { finishJoyride } from '@core/utils/joyride'
-import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
+// import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 import { getChartSteps } from '@sb/config/joyrideSteps'
 
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
@@ -415,7 +415,7 @@ function ChartPageComponent(props: any) {
           changeChartLayoutMutation={changeChartLayoutMutation}
         />
       )}
-      <JoyrideOnboarding
+      {/* <JoyrideOnboarding
         continuous={true}
         stepIndex={stepIndex}
         showProgress={true}
@@ -424,7 +424,7 @@ function ChartPageComponent(props: any) {
         steps={getChartSteps({ marketType })}
         open={getTooltipSettings.chartPage}
         handleJoyrideCallback={handleJoyrideCallback}
-      />
+      /> */}
     </MainContainer>
   )
 }
