@@ -73,7 +73,7 @@ export const StyledPaper = styled(Paper)`
     z-index: 1;
     position: absolute;
     top: calc(6rem);
-    right: 3rem;
+    right: ${props => props.isWalletConnected ? '9rem' : '3rem'};
     width: calc(14rem);
     height: auto;
     box-shadow: 0px .4rem .8rem rgba(10, 19, 43, 0.1);

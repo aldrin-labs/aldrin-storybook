@@ -20,6 +20,7 @@ import CustomSwitcher, {
 import { notify } from '@sb/dexUtils//notifications'
 import { isValidPublicKey } from '@sb/dexUtils//utils'
 import { useAccountInfo, useConnection } from '@sb/dexUtils/connection'
+import { useWallet } from '@sb/dexUtils/wallet'
 import { Loading } from '@sb/components/index'
 
 // const { Text } = Typography;
@@ -75,6 +76,8 @@ const CustomMarketDialog = ({
   getUserCustomMarketsQueryRefetch,
   getSerumMarketDataQueryRefetch
 }) => {
+  const { wallet } = useWallet();
+
   const [showCreateMarketPopup, changeShowCreateMarketPopup] = useState(false)
   const connection = useConnection()
 
@@ -393,14 +396,14 @@ const CustomMarketDialog = ({
             width={'20rem'}
             height={'4rem'}
             showLoader={loading}
-            onClick={(e) => {
+            onClick={async (e) => {
               e.preventDefault()
-              if (publicKey === '') {    
+              if (publicKey === '') {   
                 notify({
                   message: 'Connect your wallet first',
                   type: 'error',
-                })
-
+                }) 
+                wallet.connect()
                 return
               }
 

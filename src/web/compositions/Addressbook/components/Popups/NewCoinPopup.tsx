@@ -124,6 +124,7 @@ const NewCoinPopup = ({
       >
         <div style={{ paddingTop: '2.5rem', textAlign: 'center' }}>
           <SelectCoinList
+            theme={theme}
             dropdownIndicatorStyles={{
               position: 'absolute',
               right: '.5rem',
@@ -232,6 +233,7 @@ const NewCoinPopup = ({
           />
           <div style={{ position: 'relative', marginTop: '1.5rem' }}>
             <Input
+              theme={theme}
               style={{
                 background: theme.palette.grey.input,
                 color: theme.palette.text.light,
@@ -245,6 +247,7 @@ const NewCoinPopup = ({
               onChange={(e) => updateAddress(e.target.value)}
             />
             <PasteButton
+              theme={theme}
               onClick={() => {
                 navigator.clipboard
                   .readText()

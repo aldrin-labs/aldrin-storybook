@@ -73,6 +73,7 @@ export default class Dropdown extends React.Component<IProps> {
         <StyledPaper
           style={{ display: isSelected ? 'none' : '' }}
           theme={theme}
+          isWalletConnected={isWalletConnected}
         >
           <MenuList style={{ padding: 0 }}>
             <StyledMenuItem
@@ -98,12 +99,12 @@ export default class Dropdown extends React.Component<IProps> {
                 onClick={() => {
                   console.log('CLICK ON SOLLET')
 
-                  updateProviderUrl('https://www.sollet.io')
-
                   if (isSolletActive && !isWalletConnected) {
                     wallet.connect()
                     return
                   }
+
+                  updateProviderUrl('https://www.sollet.io')
                 }}
               >
                 <SvgIcon src={Sollet} width={'20%'} height={'70%'} />
@@ -133,12 +134,12 @@ export default class Dropdown extends React.Component<IProps> {
                 onClick={() => {
                   console.log('CLICK ON MATHWALLET')
 
-                  updateProviderUrl('https://www.mathwallet.org')
-
                   if (isMathWalletActive && !isWalletConnected) {
                     wallet.connect()
                     return
                   }
+
+                  updateProviderUrl('https://www.mathwallet.org')
                 }}
               >
                 <SvgIcon src={Mathwallet} width={'20%'} height={'70%'} />
@@ -166,6 +167,11 @@ export default class Dropdown extends React.Component<IProps> {
                 padding: '1rem',
               }}
                 onClick={() => {
+                  if (isSolongWallet && !isWalletConnected) {
+                    wallet.connect()
+                    return
+                  }
+
                   updateProviderUrl('https://solongwallet.com')
                 }}
               >

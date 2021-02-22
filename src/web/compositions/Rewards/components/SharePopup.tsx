@@ -66,7 +66,7 @@ const getHrefFromGifLink = (
 ): string => links(dcfiEarnedForTwitter)[gifLink]
 
 export const SharePopup = (props) => {
-  const { theme, isSharePopupOpen, dcfiEarnedForTwitter, publicKey } = props
+  const { theme, isSharePopupOpen, dcfiEarnedForTwitter, publicKey, wallet } = props
   const [choosenPic, setChoosenPic] = useState('pic.twitter.com/upH1Fp3hkn')
   return (
     <DialogWrapper
@@ -181,6 +181,7 @@ export const SharePopup = (props) => {
                   message: 'Connect your wallet first',
                   type: 'error',
                 })
+                wallet.connect()
               }
             }}
           >

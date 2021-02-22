@@ -244,6 +244,7 @@ const AddressbookRoute = ({
 
   return (
     <RowContainer
+      theme={theme}
       style={{ height: '100%', background: theme.palette.grey.additional }}
     >
       {' '}
@@ -261,11 +262,12 @@ const AddressbookRoute = ({
       >
         {!publicKey ? (
           <>
-            <Text style={{ color: theme.palette.text.light }}>
+            <Text theme={theme} style={{ color: theme.palette.text.light }}>
               Connect your wallet to create or get addressbook
             </Text>
             {/* connect wallet */}
             <BtnCustom
+              theme={theme}
               onClick={wallet.connect}
               needMinWidth={false}
               btnWidth="auto"
@@ -300,6 +302,7 @@ const AddressbookRoute = ({
               changeHalf={() => updateStep(isLoginStep ? 'sign_up' : 'login')}
             />
             <Text
+              theme={theme}
               style={{ color: theme.palette.text.light }}
               paddingBottom={isLoginStep ? '2rem' : '4rem'}
             >
@@ -338,6 +341,7 @@ const AddressbookRoute = ({
             <BtnCustom
               type="text"
               size="large"
+              theme={theme}
               onClick={() => {
                 onConfirmPassword(
                   password,
@@ -384,6 +388,7 @@ const AddressbookRoute = ({
               </div>
               <div>
                 <AddBtn
+                  theme={theme}
                   style={{ fontFamily: 'Avenir Next Demi' }}
                   onClick={() => setShowNewContactPopup(true)}
                 >
@@ -393,6 +398,7 @@ const AddressbookRoute = ({
             </div>
 
             <TableWithSort
+
               hideCommonCheckbox
               expandableRows={true}
               rowsWithHover={false}

@@ -116,6 +116,7 @@ const EditContactPopup = ({
           />
           <div style={{ position: 'relative' }}>
             <Input
+              theme={theme}
               style={{
                 background: theme.palette.grey.input,
                 color: theme.palette.text.light,
@@ -129,6 +130,7 @@ const EditContactPopup = ({
               onChange={(e) => updateAddress(e.target.value)}
             />
             <PasteButton
+              theme={theme}
               onClick={() => {
                 navigator.clipboard
                   .readText()
@@ -139,6 +141,7 @@ const EditContactPopup = ({
             </PasteButton>
           </div>
           <BtnCustom
+            theme={theme}
             disabled={showLoader}
             needMinWidth={false}
             btnWidth="20rem"
