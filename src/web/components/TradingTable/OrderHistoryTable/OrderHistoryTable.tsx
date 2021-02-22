@@ -13,7 +13,7 @@ import {
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
-import TradingTitle from '@sb/components/TradingTable/TradingTitle/TradingTitle'
+// import TradingTitle from '@sb/components/TradingTable/TradingTitle/TradingTitle'
 import { getPaginatedOrderHistory } from '@core/graphql/queries/chart/getPaginatedOrderHistory'
 import { ORDER_HISTORY } from '@core/graphql/subscriptions/ORDER_HISTORY'
 // import { CSS_CONFIG } from '@sb/config/cssConfig'
@@ -77,7 +77,6 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
       //   specificPair,
       //   enqueueSnackbar,
       // } = this.props
-
       // this.unsubscribeFunction && this.unsubscribeFunction()
       // this.unsubscribeFunction = this.props.getPaginatedOrderHistoryQuery.subscribeToMore(
       //   {
@@ -242,30 +241,30 @@ class OrderHistoryTable extends React.PureComponent<IProps> {
           },
         }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
-        title={
-          <div>
-            <TradingTitle
-              {...{
-                page,
-                perPage,
-                startDate,
-                endDate,
-                theme,
-                maxRows: count,
-                focusedInput,
-                activeDateButton,
-                minimumDate,
-                maximumDate,
-                onDateButtonClick,
-                onDatesChange,
-                onFocusChange,
-                onClearDateButtonClick,
-                handleChangePage,
-                handleChangeRowsPerPage,
-              }}
-            />
-          </div>
-        }
+        // title={
+        //   <div>
+        //     <TradingTitle
+        //       {...{
+        //         page,
+        //         perPage,
+        //         startDate,
+        //         endDate,
+        //         theme,
+        //         maxRows: count,
+        //         focusedInput,
+        //         activeDateButton,
+        //         minimumDate,
+        //         maximumDate,
+        //         onDateButtonClick,
+        //         onDatesChange,
+        //         onFocusChange,
+        //         onClearDateButtonClick,
+        //         handleChangePage,
+        //         handleChangeRowsPerPage,
+        //       }}
+        //     />
+        //   </div>
+        // }
         data={{ body: orderHistoryProcessedData }}
         columnNames={getTableHead(tab, marketType)}
       />

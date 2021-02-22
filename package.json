@@ -95,7 +95,6 @@
     "react-loadable": "^5.4.0",
     "react-pose": "3.3.3",
     "react-select": "^2.3.0",
-    "react-vis": "1.11.1",
     "styled-components": "^4.0.3",
     "ts-loader": "^5.3.3",
     "typescript": "^3.1.6",
@@ -208,8 +207,5 @@
     "webpack-jarvis": "^0.3.0",
     "webpack-merge": "^4.1.2",
     "yup": "^0.24.1"
-  },
-  "resolutions": {
-    "bn.js": "5.1.3"
   }
 }

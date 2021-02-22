@@ -52,7 +52,7 @@ import { useMarket } from '@sb/dexUtils/markets'
 
 import { getDecimalCount } from '@sb/dexUtils/utils'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
-import { AWESOME_MARKETS } from '@dr497/awesome-serum-markets'
+import { AWESOME_MARKETS } from '@sb/dexUtils/serum'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 
 function ChartPageComponent(props: any) {

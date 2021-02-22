@@ -16,7 +16,7 @@ import {
 import { PaginationBlock } from '../TradingTablePagination'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 import { getStrategiesHistory } from '@core/graphql/queries/chart/getStrategiesHistory'
-import TradingTitle from '@sb/components/TradingTable/TradingTitle/TradingTitle'
+// import TradingTitle from '@sb/components/TradingTable/TradingTitle/TradingTitle'
 import { ACTIVE_STRATEGIES } from '@core/graphql/subscriptions/ACTIVE_STRATEGIES'
 import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
 
@@ -229,30 +229,30 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
           },
         }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
-        title={
-          <div>
-            <TradingTitle
-              {...{
-                page,
-                perPage,
-                startDate,
-                endDate,
-                theme,
-                focusedInput,
-                activeDateButton,
-                minimumDate,
-                maximumDate,
-                onDateButtonClick,
-                onDatesChange,
-                onFocusChange,
-                onClearDateButtonClick,
-                handleChangePage,
-                handleChangeRowsPerPage,
-                maxRows: getStrategiesHistoryQuery.getStrategiesHistory.count,
-              }}
-            />
-          </div>
-        }
+        // title={
+        //   <div>
+        //     <TradingTitle
+        //       {...{
+        //         page,
+        //         perPage,
+        //         startDate,
+        //         endDate,
+        //         theme,
+        //         focusedInput,
+        //         activeDateButton,
+        //         minimumDate,
+        //         maximumDate,
+        //         onDateButtonClick,
+        //         onDatesChange,
+        //         onFocusChange,
+        //         onClearDateButtonClick,
+        //         handleChangePage,
+        //         handleChangeRowsPerPage,
+        //         maxRows: getStrategiesHistoryQuery.getStrategiesHistory.count,
+        //       }}
+        //     />
+        //   </div>
+        // }
         data={{ body: strategiesHistoryProcessedData }}
         columnNames={getTableHead(tab, marketType)}
       />
