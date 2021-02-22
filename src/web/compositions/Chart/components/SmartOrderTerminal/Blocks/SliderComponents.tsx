@@ -62,13 +62,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
           needTitleBlock
           padding={'0'}
           width={
-            sliderInTheBottom
-              ? '65%'
-              : tvAlertsEnable
-              ? '55%'
-              : isTrailingOn
-              ? 'calc(36.5%)'
-              : 'calc(31.5%)'
+            sliderInTheBottom ? '65%' : tvAlertsEnable ? '55%' : 'calc(36.5%)'
           }
           textAlign={'right'}
           symbol={pair[1]}
@@ -109,7 +103,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
           sliderInTheBottom
             ? '35%'
             : needPriceField && !tvAlertsEnable
-            ? 'calc(24.5%)'
+            ? 'calc(28.5%)'
             : tvAlertsEnable
             ? '42%'
             : percentageInputWidth
@@ -148,7 +142,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
           step={step}
           max={maxSliderValue}
           sliderContainerStyles={{
-            width: isTrailingOn ? '30%' : '40%',
+            width: '30%',
             margin: '0 .8rem 0 .8rem',
           }}
           onChange={(v) =>
@@ -356,9 +350,7 @@ export const SliderWithAmountFieldRow = ({
             value={localTotal}
             header={`total`}
             needTitleBlock
-            disabled={
-              (amountPlotEnabled && plotEnabled)
-            }
+            disabled={amountPlotEnabled && plotEnabled}
             onChange={onTotalChange}
           />
         </div>

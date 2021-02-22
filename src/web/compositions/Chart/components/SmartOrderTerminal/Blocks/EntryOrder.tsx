@@ -194,6 +194,13 @@ export const EntryOrderBlock = ({
                   )
 
                   updateSubBlockValue(
+                    'stopLoss',
+                    'timeout',
+                    'isTimeoutOn',
+                    false
+                  )
+
+                  updateSubBlockValue(
                     'takeProfit',
                     'splitTargets',
                     'isSplitTargetsOn',

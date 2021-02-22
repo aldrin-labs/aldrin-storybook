@@ -306,7 +306,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
           deviationPlotEnabled: true,
           deviationPlot: '',
           ...result.entryTVAlert,
-          //
           ...(result.entryPoint?.order.type === 'market'
             ? { pricePlotEnabled: false }
             : {}),
@@ -911,6 +910,17 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             variant: 'error',
           }
         )
+
+        return
+      }
+
+      if (
+        entryPoint.averaging.enabled &&
+        entryPoint.averaging.entryLevels.length === 0
+      ) {
+        enqueueSnackbar(`You should have at least 1 averaging entry point.`, {
+          variant: 'error',
+        })
 
         return
       }

@@ -143,7 +143,14 @@ export const StopLossBlock = ({
                     'isTimeoutOn',
                     !stopLoss.timeout.isTimeoutOn
                   )
-
+                  if (stopLoss.timeout.isTimeoutOn) {
+                    updateSubBlockValue(
+                      'stopLoss',
+                      'forcedStop',
+                      'isForcedStopOn',
+                      false
+                    )
+                  }
                   updateSubBlockValue(
                     'stopLoss',
                     'timeout',

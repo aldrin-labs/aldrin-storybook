@@ -173,7 +173,7 @@ export const TradingItemTitle = styled.span`
 export const InputTitle = styled(TradingItemTitle)`
   color: ${(props) => props.color || '#7284a0'};
   font-size: 1rem;
-  white-space: nowrap;
+  white-space: ${(props) => props.whiteSpace || 'nowrap'};
   text-transform: uppercase;
   padding: 0 1rem;
   width: 30%;
