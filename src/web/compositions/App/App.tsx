@@ -36,7 +36,7 @@ import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
 import { useQuery } from 'react-apollo'
 
-const version = `11.0.51-fix-subscription`
+const version = `11.0.52-remove-optimizations`
 const currentVersion = localStorage.getItem('version')
 if (currentVersion !== version) {
   localStorage.clear()
