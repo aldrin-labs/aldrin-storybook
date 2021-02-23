@@ -100,6 +100,7 @@ const MemoizedPnlBlock = React.memo(PnlBlock)
 const PriceDataWrapper = ({
   symbol,
   exchange,
+  marketType,
   getPriceQuery,
   theme,
   pair,
@@ -109,16 +110,13 @@ const PriceDataWrapper = ({
   side,
   positionAmt,
 }: IPropsDataWrapper) => {
-  // React.useEffect(
-  //   () => {
-  //     const unsubscribePrice = getPriceQuery.subscribeToMoreFunction();
+  React.useEffect(() => {
+    const unsubscribePrice = getPriceQuery.subscribeToMoreFunction()
 
-  //     return () => {
-  //       unsubscribePrice && unsubscribePrice();
-  //     };
-  //   },
-  //   [symbol, exchange]
-  // );
+    return () => {
+      unsubscribePrice && unsubscribePrice()
+    }
+  }, [symbol, exchange, marketType])
 
   const { getPrice: lastMarketPrice = 0 } = getPriceQuery || {
     getPrice: lastMarketPrice = 0,
@@ -150,6 +148,16 @@ export default React.memo(
         exchange: props.exchange.symbol,
         pair: `${props.symbol}:${props.marketType}`,
       }),
+      subscriptionArgs: {
+        subscription: LISTEN_PRICE,
+        variables: (props: any) => ({
+          input: {
+            exchange: props.exchange.symbol,
+            pair: `${props.symbol}:${props.marketType}`,
+          },
+        }),
+        updateQueryFunction: updatePriceQuerryFunction,
+      },
       withOutSpinner: true,
       withTableLoader: true,
       withoutLoading: true,
