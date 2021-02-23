@@ -19,13 +19,13 @@ import { addSerumTransaction } from '@core/graphql/mutations/chart/addSerumTrans
 
 import { PaginationBlock } from '../TradingTablePagination'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
-import TradingTitle from '@sb/components/TradingTable/TradingTitle/TradingTitle'
+// import TradingTitle from '@sb/components/TradingTable/TradingTitle/TradingTitle'
 import { getTradeHistory } from '@core/graphql/queries/chart/getTradeHistory'
 import { TRADE_HISTORY } from '@core/graphql/subscriptions/TRADE_HISTORY'
 // import { CSS_CONFIG } from '@sb/config/cssConfig'
 
 import { useFills } from '@sb/dexUtils/markets'
-import { useWallet } from '@sb/dexUtils/wallet';
+import { useWallet } from '@sb/dexUtils/wallet'
 
 // @withTheme()
 const TradeHistoryTable = (props) => {
@@ -165,15 +165,17 @@ const TradeHistoryTable = (props) => {
     arrayOfMarketIds,
     handlePairChange,
     keys,
-    addSerumTransactionMutation
+    addSerumTransactionMutation,
   } = props
 
   const [savedIds, saveId] = useState<string[]>([])
-  const fills = useFills();
-  const { wallet } = useWallet();
+  const fills = useFills()
+  const { wallet } = useWallet()
   const location = useLocation()
 
-  const pair = location.pathname.split('/')[3]  ? location.pathname.split('/')[3] : null
+  const pair = location.pathname.split('/')[3]
+    ? location.pathname.split('/')[3]
+    : null
 
   if (!show || !pair) {
     return null
@@ -183,7 +185,7 @@ const TradeHistoryTable = (props) => {
     ...fill,
     key: `${fill.orderId}${fill.side}`,
     liquidity: fill.eventFlags.maker ? 'Maker' : 'Taker',
-  }));
+  }))
 
   // if (dataSource.length > 0) {
   //   dataSource.forEach((trade) => {
@@ -195,7 +197,6 @@ const TradeHistoryTable = (props) => {
   //     }
   //   })
   // }
-
 
   const {
     getTradeHistory: { count } = {
@@ -358,7 +359,7 @@ const TradeHistoryTable = (props) => {
 //   )
 // }
 
-const MemoTable =  React.memo(TradeHistoryTable, (prevProps, nextProps) => {
+const MemoTable = React.memo(TradeHistoryTable, (prevProps, nextProps) => {
   // TODO: Refactor isShowEqual --- not so clean
   const isShowEqual = !nextProps.show && !prevProps.show
   const showAllAccountsEqual =
@@ -395,4 +396,6 @@ const MemoTable =  React.memo(TradeHistoryTable, (prevProps, nextProps) => {
   return false
 })
 
-export default compose(graphql(addSerumTransaction, { name: "addSerumTransactionMutation" }))(MemoTable)
+export default compose(
+  graphql(addSerumTransaction, { name: 'addSerumTransactionMutation' })
+)(MemoTable)

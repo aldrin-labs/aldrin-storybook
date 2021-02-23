@@ -109,13 +109,13 @@ export const HeaderContainer = styled((props) => <RowContainer {...props} />)`
 `
 
 export const PairSelectorContainerGrid = styled((props) => <Grid {...props} />)`
-  .pairSelectorRow:hover{
+  .pairSelectorRow:hover {
     background: rgba(55, 56, 62, 0.75);
   }
 `
 
 export const ChartContainer = styled((props) => <RowContainer {...props} />)`
-  height: calc(100% - 5rem);
+  height: ${(props) => props.height || 'calc(100% - 5rem)'};
   position: relative;
 
   @media (min-width: 1921px) {

@@ -17,7 +17,7 @@ import tuple from 'immutable-tuple'
 import { notify } from './notifications'
 import { BN } from 'bn.js'
 import { getTokenAccountInfo } from './tokens'
-import { AWESOME_MARKETS, AWESOME_TOKENS } from '@dr497/awesome-serum-markets'
+import { AWESOME_TOKENS } from '@sb/dexUtils/serum'
 
 export const ALL_TOKENS_MINTS = [...TOKEN_MINTS, ...AWESOME_TOKENS]
 
@@ -33,24 +33,27 @@ export function useMarketsList() {
   const UPDATED_USE_MARKETS = USE_MARKETS.filter(
     ({ deprecated }) => !deprecated
   )
-  
+
   return UPDATED_USE_MARKETS
 }
 
 export function useCustomMarkets() {
-  const [customMarkets, setCustomMarkets] = useLocalStorageState('customMarkets', []);
-  return { customMarkets, setCustomMarkets };
+  const [customMarkets, setCustomMarkets] = useLocalStorageState(
+    'customMarkets',
+    []
+  )
+  return { customMarkets, setCustomMarkets }
 }
 
 export function useAllMarkets() {
-  const connection = useConnection();
-  const { customMarkets } = useCustomMarkets();
+  const connection = useConnection()
+  const { customMarkets } = useCustomMarkets()
 
   const getAllMarkets = async () => {
     const markets: Array<{
-      market: Market;
-      marketName: string;
-      programId: PublicKey;
+      market: Market
+      marketName: string
+      programId: PublicKey
     } | null> = await Promise.all(
       getMarketInfos(customMarkets).map(async (marketInfo) => {
         try {
@@ -58,33 +61,33 @@ export function useAllMarkets() {
             connection,
             marketInfo.address,
             {},
-            marketInfo.programId,
-          );
+            marketInfo.programId
+          )
           return {
             market,
             marketName: marketInfo.name,
             programId: marketInfo.programId,
-          };
+          }
         } catch (e) {
           notify({
             message: 'Error loading all market',
             description: e.message,
             type: 'error',
-          });
-          return null;
+          })
+          return null
         }
-      }),
-    );
+      })
+    )
     return markets.filter(
       (m): m is { market: Market; marketName: string; programId: PublicKey } =>
-        !!m,
-    );
-  };
+        !!m
+    )
+  }
   return useAsyncData(
     getAllMarkets,
     tuple('getAllMarkets', customMarkets.length, connection),
-    { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL },
-  );
+    { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
+  )
 }
 
 export function useUnmigratedOpenOrdersAccounts() {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import { Fade, Grid, Theme } from '@material-ui/core'
 
-import MainDepthChart from '../DepthChart/MainDepthChart/MainDepthChart'
+// import MainDepthChart from '../DepthChart/MainDepthChart/MainDepthChart'
 import SingleChartWithButtons from '@sb/components/Chart'
 import { TriggerTitle } from '@sb/components/ChartCardHeader'
 
