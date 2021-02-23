@@ -79,7 +79,6 @@ export const EntryOrderBlock = ({
   isAveragingAfterFirstTarget,
   updateStopLossAndTakeProfitPrices,
 }: EntryOrderBlockProps) => {
-  console.log('typeplot', entryPoint.TVAlert)
   return (
     <TerminalBlock theme={theme} width={'calc(33% + 0.5%)'} data-tut={'step1'}>
       <div>
@@ -218,6 +217,12 @@ export const EntryOrderBlock = ({
                     'entryPoint',
                     'TVAlert',
                     'isTVAlertOn',
+                    false
+                  )
+                  updateSubBlockValue(
+                    'stopLoss',
+                    'forcedStop',
+                    'isForcedStopOn',
                     false
                   )
                 }
