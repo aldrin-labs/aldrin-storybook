@@ -58,24 +58,24 @@ import { withPublicKey } from '@core/hoc/withPublicKey'
 function ChartPageComponent(props: any) {
   const {
     theme,
-    getChartDataQuery: {
-      getMyProfile: { _id } = { _id: '' },
-      getTradingSettings: {
-        selectedTradingKey,
-        hedgeMode,
-        isFuturesWarsKey,
-      } = {
-        selectedTradingKey: '',
-        hedgeMode: false,
-        isFuturesWarsKey: false,
-      },
-      marketByMarketType = [],
-      chart: { activeExchange, currencyPair: { pair }, view } = {
-        currencyPair: { pair: 'BTC_USDT' },
-        activeExchange: { name: 'Binance', symbol: 'binance' },
-        view: 'default',
-      },
-    },
+    // getChartDataQuery: {
+    //   getMyProfile: { _id } = { _id: '' },
+    //   getTradingSettings: {
+    //     selectedTradingKey,
+    //     hedgeMode,
+    //     isFuturesWarsKey,
+    //   } = {
+    //     selectedTradingKey: '',
+    //     hedgeMode: false,
+    //     isFuturesWarsKey: false,
+    //   },
+    //   marketByMarketType = [],
+    //   chart: { activeExchange, currencyPair: { pair }, view } = {
+    //     currencyPair: { pair: 'BTC_USDT' },
+    //     activeExchange: { name: 'Binance', symbol: 'binance' },
+    //     view: 'default',
+    //   },
+    // },
     getTooltipSettingsQuery: {
       getTooltipSettings = { chartPage: false, chartPagePopup: false },
     } = {
@@ -345,15 +345,15 @@ function ChartPageComponent(props: any) {
     //   125
   }
 
-  const arrayOfMarketIds = marketByMarketType.map((el) => el._id)
-  const selectedKey = selectedTradingKey
-    ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
-    : { keyId: '', hedgeMode: false, isFuturesWarsKey: false }
+  // const arrayOfMarketIds = marketByMarketType.map((el) => el._id)
+  // const selectedKey = selectedTradingKey
+  //   ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
+  //   : { keyId: '', hedgeMode: false, isFuturesWarsKey: false }
 
   const accentColor = '#09ACC7'
 
   return (
-    <MainContainer fullscreen={view !== 'default'}>
+    <MainContainer fullscreen={true}>
       <Tour
         showCloseButton={false}
         nextButton={<FinishBtn>Next</FinishBtn>}
@@ -370,51 +370,51 @@ function ChartPageComponent(props: any) {
         }}
       />
       <GlobalStyles />
-      {view === 'default' && (
-        <DefaultView
-          id={_id}
-          view={view}
-          layout={layout}
-          theme={theme}
-          authenticated={authenticated}
-          marketType={marketType}
-          currencyPair={selectedPair}
-          maxLeverage={initialLeverage}
-          pricePrecision={pricePrecision}
-          quantityPrecision={quantityPrecision}
-          minPriceDigits={minPriceDigits}
-          minSpotNotional={minSpotNotional}
-          minFuturesStep={minFuturesStep}
-          isPairDataLoading={
-            isPairDataLoading || !pricePrecision || !quantityPrecision
+      {/* {view === 'default' && ( */}
+      <DefaultView
+        id={'_id'}
+        view={'default'}
+        layout={layout}
+        theme={theme}
+        authenticated={authenticated}
+        marketType={marketType}
+        currencyPair={selectedPair}
+        maxLeverage={initialLeverage}
+        pricePrecision={pricePrecision}
+        quantityPrecision={quantityPrecision}
+        minPriceDigits={minPriceDigits}
+        minSpotNotional={minSpotNotional}
+        minFuturesStep={minFuturesStep}
+        isPairDataLoading={
+          isPairDataLoading || !pricePrecision || !quantityPrecision
+        }
+        themeMode={theme.palette.type}
+        selectedKey={{ hedgeMode: false }}
+        activeExchange={'serum'}
+        terminalViewMode={terminalViewMode}
+        updateTerminalViewMode={(mode) => {
+          if (mode === 'smartOrderMode') {
+            finishJoyride({
+              updateTooltipSettingsMutation:
+                props.updateTooltipSettingsMutation,
+              getTooltipSettings,
+              name: 'chartPagePopup',
+            })
           }
-          themeMode={theme.palette.type}
-          selectedKey={selectedKey}
-          activeExchange={activeExchange}
-          terminalViewMode={terminalViewMode}
-          updateTerminalViewMode={(mode) => {
-            if (mode === 'smartOrderMode') {
-              finishJoyride({
-                updateTooltipSettingsMutation:
-                  props.updateTooltipSettingsMutation,
-                getTooltipSettings,
-                name: 'chartPagePopup',
-              })
-            }
 
-            updateTerminalViewMode(mode)
-          }}
-          chartProps={props}
-          arrayOfMarketIds={arrayOfMarketIds}
-          chartPagePopup={
-            (getTooltipSettings.chartPagePopup === null ||
-              getTooltipSettings.chartPagePopup) &&
-            !getTooltipSettings.chartPage
-          }
-          closeChartPagePopup={closeChartPagePopup}
-          changeChartLayoutMutation={changeChartLayoutMutation}
-        />
-      )}
+          updateTerminalViewMode(mode)
+        }}
+        chartProps={props}
+        arrayOfMarketIds={[]}
+        chartPagePopup={
+          (getTooltipSettings.chartPagePopup === null ||
+            getTooltipSettings.chartPagePopup) &&
+          !getTooltipSettings.chartPage
+        }
+        closeChartPagePopup={closeChartPagePopup}
+        changeChartLayoutMutation={changeChartLayoutMutation}
+      />
+      {/* )} */}
       {/* <JoyrideOnboarding
         continuous={true}
         stepIndex={stepIndex}
@@ -498,16 +498,16 @@ export default compose(
   withPublicKey,
   withRouter,
   // withAuth,
-  queryRendererHoc({
-    skip: (props: any) => !props.authenticated,
-    query: getChartData,
-    name: 'getChartDataQuery',
-    // fetchPolicy: 'cache-and-network',
-    fetchPolicy: 'cache-first',
-    variables: {
-      marketType: 1, // hardcode here to get only futures marketIds'
-    },
-  }),
+  // queryRendererHoc({
+  //   skip: (props: any) => !props.authenticated,
+  //   query: getChartData,
+  //   name: 'getChartDataQuery',
+  //   // fetchPolicy: 'cache-and-network',
+  //   fetchPolicy: 'cache-first',
+  //   variables: {
+  //     marketType: 1, // hardcode here to get only futures marketIds'
+  //   },
+  // }),
   queryRendererHoc({
     query: getUserCustomMarkets,
     name: 'getUserCustomMarketsQuery',

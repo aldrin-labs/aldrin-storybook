@@ -353,7 +353,6 @@ export const CardsPanel = ({
             // position: 'relative',
             display: 'flex',
             maxWidth: '75%',
-
             marginRight: '.4rem',
             flexGrow: 1,
             border: '0',
@@ -369,6 +368,7 @@ export const CardsPanel = ({
           >
             <img
               style={{
+                width: '17rem',
                 height: '100%',
                 padding: '0 3rem',
                 borderRight: theme.palette.border.main,
