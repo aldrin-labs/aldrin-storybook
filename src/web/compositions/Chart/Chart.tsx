@@ -14,7 +14,6 @@ import {
   FinishBtn,
 } from '@sb/components/ReactourOnboarding/ReactourOnboarding'
 // import { CardsPanel } from './components'
-import OnlyCharts from './OnlyCharts/OnlyCharts'
 import DefaultView from './DefaultView/StatusWrapper'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
@@ -23,7 +22,7 @@ import { getChartLayout } from '@core/graphql/queries/chart/getChartLayout'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { changeChartLayout } from '@core/graphql/mutations/chart/changeChartLayout'
 import { finishJoyride } from '@core/utils/joyride'
-import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
+// import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 import { getChartSteps } from '@sb/config/joyrideSteps'
 
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
@@ -53,7 +52,7 @@ import { useMarket } from '@sb/dexUtils/markets'
 
 import { getDecimalCount } from '@sb/dexUtils/utils'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
-import { AWESOME_MARKETS } from '@dr497/awesome-serum-markets'
+import { AWESOME_MARKETS } from '@sb/dexUtils/serum'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 
 function ChartPageComponent(props: any) {
@@ -111,7 +110,7 @@ function ChartPageComponent(props: any) {
     location,
     history,
     customMarkets,
-    publicKey
+    publicKey,
   } = props
 
   const [terminalViewMode, updateTerminalViewMode] = useState('default')
@@ -188,7 +187,9 @@ function ChartPageComponent(props: any) {
   }, [getUserCustomMarketsQuery.getUserCustomMarkets.length])
 
   const setCorrectMarketAddress = async () => {
-    const pair = !!location.pathname.split('/')[3] ? location.pathname.split('/')[3] : 'SRM_USDT'
+    const pair = !!location.pathname.split('/')[3]
+      ? location.pathname.split('/')[3]
+      : 'SRM_USDT'
 
     const userMarkets = getUserCustomMarketsQuery.getUserCustomMarkets.map(
       ({ publicKey, marketId, isPrivate, ...rest }) => ({
@@ -213,17 +214,22 @@ function ChartPageComponent(props: any) {
     )
 
     if (!selectedMarketFromUrl) {
-      await setMarketAddress(allMarkets.find(
-        (el) => el.name.split('/').join('_') === "SRM_USDT"
-      ).address.toBase58())
+      await setMarketAddress(
+        allMarkets
+          .find((el) => el.name.split('/').join('_') === 'SRM_USDT')
+          .address.toBase58()
+      )
 
       await history.push('/chart/spot/SRM_USDT')
 
       return
     }
 
-    await setMarketAddress(selectedMarketFromUrl.isCustomUserMarket ? selectedMarketFromUrl.address : selectedMarketFromUrl.address.toBase58())
-    
+    await setMarketAddress(
+      selectedMarketFromUrl.isCustomUserMarket
+        ? selectedMarketFromUrl.address
+        : selectedMarketFromUrl.address.toBase58()
+    )
   }
 
   useEffect(() => {
@@ -409,7 +415,7 @@ function ChartPageComponent(props: any) {
           changeChartLayoutMutation={changeChartLayoutMutation}
         />
       )}
-      <JoyrideOnboarding
+      {/* <JoyrideOnboarding
         continuous={true}
         stepIndex={stepIndex}
         showProgress={true}
@@ -418,7 +424,7 @@ function ChartPageComponent(props: any) {
         steps={getChartSteps({ marketType })}
         open={getTooltipSettings.chartPage}
         handleJoyrideCallback={handleJoyrideCallback}
-      />
+      /> */}
     </MainContainer>
   )
 }

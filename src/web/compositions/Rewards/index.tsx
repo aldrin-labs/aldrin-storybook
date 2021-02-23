@@ -52,7 +52,7 @@ import 'react-circular-progressbar/dist/styles.css'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { Styles } from './index.styles'
-import { Chart } from './components/Chart'
+import LinearChart from './components/Chart'
 
 import {
   formatNumberToUSFormat,
@@ -1046,7 +1046,7 @@ const RewardsRoute = (props) => {
           >
             Reward DCFI
           </ChartTitle>
-          <Chart
+          <LinearChart
             pointData={{ srmInUSDT: tradedSerumInUSDT, dcfi: dcfiRewarded }}
             theme={theme}
           />

@@ -136,7 +136,6 @@ export type StopLossType = {
 }
 
 export interface IState {
-  showConfirmationPopup: boolean
   showErrors: boolean
   editPopup: null | string
   entryPoint: EntryPointType
@@ -209,6 +208,5 @@ export interface SliderWithPriceAndPercentageFieldRowProps extends CommonForBloc
   isMarketType: boolean,
   priceForCalculate: number,
   pricePrecision: number
-  showConfirmationPopup?: () => void,
   updateTerminalViewMode?: (newMode: string) => void
 }

@@ -1,5 +1,4 @@
 import React, { PureComponent, SyntheticEvent, CSSProperties } from 'react'
-import Yup from 'yup'
 
 import { compose } from 'recompose'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
@@ -895,7 +894,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       tradingBotInterval,
       tradingBotTotalTime,
       updateState,
-      publicKey
+      publicKey,
     } = props
 
     // if (values.total < minSpotNotional && isSPOTMarket) {
@@ -934,7 +933,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
     if (publicKey === '') {
       notify({
         type: 'error',
-        message: 'Connect wallet first'
+        message: 'Connect wallet first',
       })
 
       return
@@ -943,9 +942,9 @@ const formikEnhancer = withFormik<IProps, FormValues>({
     if (values.amount === 0 || values.amount === '') {
       notify({
         type: 'error',
-        message: 'Your amount is 0'
+        message: 'Your amount is 0',
       })
-      
+
       return
     }
 

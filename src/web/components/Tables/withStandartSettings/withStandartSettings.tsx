@@ -7,9 +7,8 @@ import { saveAs } from 'file-saver'
 import GetApp from '@material-ui/icons/GetApp'
 import Tooltip from '@material-ui/core/Tooltip'
 
-import { getCSVData } from '@core/utils/PortfolioTableUtils'
+// import { getCSVData } from '@core/utils/PortfolioTableUtils'
 import { Props } from '../index.types'
-
 
 export default (WrappedComponent: React.ReactType) => {
   return class Settings extends React.Component<Props> {
@@ -45,12 +44,12 @@ export default (WrappedComponent: React.ReactType) => {
         columnNames,
         expandableRows,
       } = this.props
-      const blob = new Blob([getCSVData(
-        body,
-        columnNames,
-        expandableRows
-        )], {type: 'text/plain;charset=utf-8'})
-      saveAs(blob, 'result.csv')
+      // const blob = new Blob([getCSVData(
+      //   body,
+      //   columnNames,
+      //   expandableRows
+      //   )], {type: 'text/plain;charset=utf-8'})
+      // saveAs(blob, 'result.csv')
     }
 
     render() {
@@ -72,16 +71,16 @@ export default (WrappedComponent: React.ReactType) => {
                   <Tooltip title="Download CSV">
                     <GetApp />
                   </Tooltip>
-                  ),
+                ),
                 color: 'default',
               },
               {
                 id: '5',
                 icon: (
                   <Tooltip title="More">
-                  <MoreHorizIcon
-                    aria-owns={anchorEl ? 'settings-tables-menu' : undefined}
-                  />
+                    <MoreHorizIcon
+                      aria-owns={anchorEl ? 'settings-tables-menu' : undefined}
+                    />
                   </Tooltip>
                 ),
                 onClick: this.handleClick,

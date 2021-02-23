@@ -52,10 +52,6 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos'
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
 
 import CustomPlaceholder from '@sb/components/CustomPlaceholder'
-import {
-  OnboardingPlaceholder,
-  OnboardingPromoPlaceholder,
-} from '@sb/components'
 
 const CustomTableCell = withStyles((theme) => ({
   head: {
@@ -582,8 +578,6 @@ const CustomTable = (props: Props) => {
     stylesForTable,
     paperAdditionalStyle = '',
     hideCommonCheckbox = false,
-    onboardingPlaceholder = false,
-    onboardingPromoPlaceholder = false,
   } = props
 
   if (
@@ -755,11 +749,7 @@ const CustomTable = (props: Props) => {
         </TableHead>
 
         <TableBody>
-          {data.body.length === 0 && onboardingPromoPlaceholder ? (
-            <OnboardingPromoPlaceholder />
-          ) : data.body.length === 0 && onboardingPlaceholder ? (
-            <OnboardingPlaceholder />
-          ) : data.body.length === 0 && !onboardingPlaceholder ? (
+          {data.body.length === 0 ? (
             <CustomPlaceholder theme={theme} text={emptyTableText} />
           ) : (
             paginationFunc(
@@ -834,7 +824,7 @@ const CustomTable = (props: Props) => {
                             padding="checkbox"
                             style={{
                               backgroundColor: tableStyles.cell.backgroundColor,
-                              width: '4rem'
+                              width: '4rem',
                             }}
                           >
                             {renderCheckBox({
