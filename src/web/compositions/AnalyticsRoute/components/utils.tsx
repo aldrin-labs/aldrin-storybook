@@ -493,7 +493,7 @@ export const createLinearChart = (data: any) => {
         6600000,
         16600000,
         41600000,
-        // 45000000,
+        45000000,
         // 91600000,
         // 166600000,
         // 266600000,
@@ -542,6 +542,9 @@ export const createLinearChart = (data: any) => {
             color: 'rgb(246, 86, 131)',
           },
           ticks: {
+            callback: function(value, index, values) {
+              return '$' + value
+            },
             color: '#fff',
             font: {
               size: +(width / 180).toFixed(0),
@@ -557,10 +560,10 @@ export const createLinearChart = (data: any) => {
           },
           ticks: {
             callback: function(value, index, values) {
-              if (value > 1000) {
-                return value / 1000 + 'M'
+              if (value >= 1000000) {
+                return value / 1000000 + 'M'
               } else {
-                return value + 'К'
+                return value / 1000 + 'К'
               }
             },
             color: '#fff',
@@ -571,6 +574,11 @@ export const createLinearChart = (data: any) => {
           },
         },
       },
+      // plugins: {
+      //   tooltip: {
+      //     enabled: true,
+      //   },
+      // },
     },
     onResize: (myChart, size) => {
       if (!window.myLinearChart) return
