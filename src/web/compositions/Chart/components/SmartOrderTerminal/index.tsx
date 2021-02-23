@@ -175,18 +175,29 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     } = this.props
 
     this.updateSubBlockValue('entryPoint', 'order', 'price', this.props.price)
+
     console.log(
       ' this.props.componentLeverage',
       this.props.componentLeverage,
       'this.props.price',
       this.props.price
     )
+
     this.updateSubBlockValue(
       'entryPoint',
       'order',
       'leverage',
       this.props.componentLeverage
     )
+
+    if (marketType === 0) {
+      this.updateSubBlockValue(
+        'entryPoint',
+        'TVAlert',
+        'sidePlotEnabled',
+        false
+      )
+    }
 
     const isMarketType =
       this.state.entryPoint.order.type === 'market' ||
@@ -261,95 +272,102 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       console.log('stateResult', amount, total, this.props.funds)
     }
 
-    this.setState((prevState) => ({
-      entryPoint: {
-        ...prevState.entryPoint,
-        order: {
-          ...prevState.entryPoint.order,
-          ...(result.entryPoint &&
-          result.entryPoint.order &&
-          result.entryPoint.order.type
-            ? { type: result.entryPoint.order.type }
-            : {}),
-          ...(result.entryPoint &&
-          result.entryPoint.order &&
-          result.entryPoint.order.side
-            ? { side: result.entryPoint.order.side }
-            : {}),
-          ...(marketType === 0 ? { side: 'buy' } : {}),
-          leverage: componentLeverage,
-          hedgeMode,
+    console.log('sideplotstate', {
+      ...(marketType === 0 ? { sidePlotEnabled: false } : {}),
+    })
+    this.setState(
+      (prevState) => ({
+        entryPoint: {
+          ...prevState.entryPoint,
+          order: {
+            ...prevState.entryPoint.order,
+            ...(result.entryPoint &&
+            result.entryPoint.order &&
+            result.entryPoint.order.type
+              ? { type: result.entryPoint.order.type }
+              : {}),
+            ...(result.entryPoint &&
+            result.entryPoint.order &&
+            result.entryPoint.order.side
+              ? { side: result.entryPoint.order.side }
+              : {}),
+            ...(marketType === 0 ? { side: 'buy' } : {}),
+            leverage: componentLeverage,
+            hedgeMode,
+          },
+          averaging: {
+            enabled: false,
+            closeStrategyAfterFirstTAP: false,
+            placeEntryAfterTAP: false,
+            placeWithoutLoss: false,
+            entryLevels: [],
+            percentage: 1,
+            price: 0,
+            ...savedAveraging,
+          },
+          TVAlert: {
+            isTVAlertOn: false,
+            templateMode: 'once',
+            plotEnabled: false,
+            immediateEntry: false,
+            sidePlotEnabled: true,
+            sidePlot: '',
+            typePlotEnabled: true,
+            typePlot: '',
+            pricePlotEnabled: true,
+            pricePlot: '',
+            amountPlotEnabled: true,
+            amountPlot: '',
+            deviationPlotEnabled: true,
+            deviationPlot: '',
+            ...result.entryTVAlert,
+            ...(result.entryPoint?.order.type === 'market'
+              ? { pricePlotEnabled: false }
+              : {}),
+            ...(marketType === 0 ? { sidePlotEnabled: false } : {}),
+            templateToken: generateToken(),
+          },
+          trailing: {
+            trailingDeviationPrice: 0,
+            deviationPercentage: 0.1,
+            ...(marketType === 1 ? { ...prevState.entryPoint.trailing } : {}),
+            ...(result.entryPoint && marketType === 1
+              ? {
+                  ...result.entryPoint.trailing,
+                  deviationPercentage: +stripDigitPlaces(
+                    result.entryPoint.trailing.deviationPercentage,
+                    3
+                  ),
+                }
+              : {
+                  isTrailingOn: false,
+                }),
+          },
         },
-        averaging: {
-          enabled: false,
-          closeStrategyAfterFirstTAP: false,
-          placeEntryAfterTAP: false,
-          placeWithoutLoss: false,
-          entryLevels: [],
-          percentage: 1,
-          price: 0,
-          ...savedAveraging,
-        },
-        TVAlert: {
-          isTVAlertOn: false,
-          templateMode: 'once',
-          plotEnabled: false,
-          immediateEntry: false,
-          sidePlotEnabled: true,
-          sidePlot: '',
-          typePlotEnabled: true,
-          typePlot: '',
-          pricePlotEnabled: true,
-          pricePlot: '',
-          amountPlotEnabled: true,
-          amountPlot: '',
-          deviationPlotEnabled: true,
-          deviationPlot: '',
-          ...result.entryTVAlert,
-          ...(result.entryPoint?.order.type === 'market'
-            ? { pricePlotEnabled: false }
-            : {}),
-          ...(marketType === 0 ? { sidePlotEnabled: false } : {}),
-          templateToken: generateToken(),
-        },
-        trailing: {
-          trailingDeviationPrice: 0,
-          deviationPercentage: 0.1,
-          ...(marketType === 1 ? { ...prevState.entryPoint.trailing } : {}),
-          ...(result.entryPoint && marketType === 1
-            ? {
-                ...result.entryPoint.trailing,
-                deviationPercentage: +stripDigitPlaces(
-                  result.entryPoint.trailing.deviationPercentage,
-                  3
-                ),
-              }
-            : {
-                isTrailingOn: false,
-              }),
-        },
-      },
-      takeProfit: {
-        takeProfitPrice: 0,
+        takeProfit: {
+          takeProfitPrice: 0,
 
-        ...result.takeProfit,
-        plotEnabled: false,
-        trailingTAP: {
-          ...result.takeProfit.trailingTAP,
+          ...result.takeProfit,
+          plotEnabled: false,
+          trailingTAP: {
+            ...result.takeProfit.trailingTAP,
+          },
         },
-      },
-      stopLoss: {
-        stopLossPrice: 0,
-        ...result.stopLoss,
-        plotEnabled: false,
-        forcedStop: {
-          forcedStopPrice: 0,
-          ...result.stopLoss.forcedStop,
-          isForcedStopOn: !!result.stopLoss.forcedStop.isForcedStopOn,
-          mandatoryForcedLoss: !!result.stopLoss.forcedStop.mandatoryForcedLoss,
+        stopLoss: {
+          stopLossPrice: 0,
+          ...result.stopLoss,
+          plotEnabled: false,
+          forcedStop: {
+            forcedStopPrice: 0,
+            ...result.stopLoss.forcedStop,
+            isForcedStopOn: !!result.stopLoss.forcedStop.isForcedStopOn,
+            mandatoryForcedLoss: !!result.stopLoss.forcedStop
+              .mandatoryForcedLoss,
+          },
         },
-      },
-    }))
+      }),
+      () => console.log('state', this.state)
+    )
 
     if (
       !(
