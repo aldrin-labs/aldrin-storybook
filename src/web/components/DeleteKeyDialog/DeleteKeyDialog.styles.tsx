@@ -3,10 +3,11 @@ import { OpenRenameButton } from '@sb/components/RenameKeyDialog/RenameKeyDialog
 
 export const OpenDeleteButton = styled(OpenRenameButton)`
   color: #b93b2b;
-  padding: 1rem 8.5rem;
+  padding: 1rem 10.05rem;
   border-bottom: 0;
   border-radius: 0;
-  border-bottom-left-radius: 1rem;
-  border-bottom-right-radius: 1rem;
+  border-top: 1px solid #e0e5ec;
+  border-bottom-left-radius: 1.5rem;
+  border-bottom-right-radius: 1.5rem;
   display: block;
 `

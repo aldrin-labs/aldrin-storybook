@@ -16,9 +16,11 @@ export interface IProps {
 export interface IPropsDataWrapper {
   symbol: string;
   exchange: string;
+  marketType: 0 | 1;
   props: any[];
   getPriceQuery: {
     getPrice: number | string
+    subscribeToMoreFunction: () => () => void
   }
   pricePrecision: number
 }
@@ -35,12 +37,18 @@ const PriceBlock = ({ pricePrecision, price }: IProps) => (
 
 const MemoizedMarkPriceBlock = React.memo(PriceBlock);
 
-const MarkPriceDataWrapper = ({ getPriceQuery, pricePrecision  }: IPropsDataWrapper) => {
+const MarkPriceDataWrapper = ({ getPriceQuery, pricePrecision, symbol, exchange, marketType }: IPropsDataWrapper) => {
+  React.useEffect(() => {
+    const unsubscribePrice = getPriceQuery.subscribeToMoreFunction()
+
+    return () => {
+      unsubscribePrice && unsubscribePrice()
+    }
+  }, [symbol, exchange, marketType])
+
   const { getPrice: price = 0 } = getPriceQuery || {
     getPrice: price = 0
   };
-
-  console.log('getPrice', getPriceQuery)
 
   return (
     <MemoizedMarkPriceBlock
@@ -61,6 +69,16 @@ export default React.memo(compose(
       exchange: props.exchange.symbol,
       pair: `${props.symbol}:${props.marketType}`,
     }),
+    subscriptionArgs: {
+      subscription: LISTEN_PRICE,
+      variables: (props: any) => ({
+        input: {
+          exchange: props.exchange.symbol,
+          pair: `${props.symbol}:${props.marketType}`,
+        },
+      }),
+      updateQueryFunction: updatePriceQuerryFunction,
+    },
     fetchPolicy: 'cache-first',
     withOutSpinner: true,
     withTableLoader: false,
