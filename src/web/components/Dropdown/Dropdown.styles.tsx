@@ -70,13 +70,13 @@ export const StyledDropdown = styled.div`
 export const StyledPaper = styled(Paper)`
   display: none;
   &&& {
-    z-index: 1;
+    z-index: 11;
     position: absolute;
     top: calc(6rem);
-    right: ${props => props.isWalletConnected ? '9rem' : '3rem'};
+    right: ${(props) => (props.isWalletConnected ? '9rem' : '3rem')};
     width: calc(14rem);
     height: auto;
-    box-shadow: 0px .4rem .8rem rgba(10, 19, 43, 0.1);
+    box-shadow: 0px 0.4rem 0.8rem rgba(10, 19, 43, 0.1);
     border: ${(props) => props.theme.palette.border.main};
     background: ${(props) => props.theme.palette.white.background};
     border-radius: 0rem;
