@@ -18,7 +18,7 @@ const ButterflyChart = ({ theme, id, title, data, needQuoteInLabel, isDataLoadin
     createButterflyChart(id, data, needQuoteInLabel)
 
     return () =>  window[`butterflyChart-${id}`].destroy()
-  }, [id, needQuoteInLabel, isDataLoading])
+  }, [id, needQuoteInLabel])
 
   return (
     <>

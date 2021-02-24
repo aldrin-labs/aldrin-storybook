@@ -166,8 +166,6 @@ const MarketInfo = ({
     : 0
   const sign24hChange = +priceChangePercentage > 0 ? `+` : ``
 
-  console.log('priceChangePercentage', !!markPrice, priceChangePercentage)
-
   // console.log('market', market)
   // if (market) {
   //   console.log(market._decoded.ownAddress.toBase58(), market._decoded.baseMint.toBase58(), market._decoded.baseVault.toBase58(), )
@@ -249,7 +247,7 @@ const MarketInfo = ({
               </SmallTitle>
               <SmallBoldTitle
                 theme={theme}
-              >{`${minPrice} ${quote}`}</SmallBoldTitle>
+              >{`${markPrice < minPrice ? markPrice : minPrice} ${quote}`}</SmallBoldTitle>
             </Row>
             <Row>
               <SmallTitle theme={theme} style={{ paddingRight: '.5rem' }}>
@@ -257,7 +255,7 @@ const MarketInfo = ({
               </SmallTitle>
               <SmallBoldTitle
                 theme={theme}
-              >{`${maxPrice} ${quote}`}</SmallBoldTitle>
+              >{`${markPrice > maxPrice ? markPrice : maxPrice} ${quote}`}</SmallBoldTitle>
             </Row>
           </Row>
         </Row>

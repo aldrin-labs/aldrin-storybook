@@ -15,7 +15,13 @@ const AreaVolumeChart = ({ theme, getSerumQuoteTradeVolumeStatsQuery, selectedPa
       theme={theme}
       data={getSerumQuoteTradeVolumeStatsQuery.getSerumQuoteTradeVolumeStats}
       selectedPair={selectedPair}
-      id={generateIDFromValues(getSerumQuoteTradeVolumeStatsQuery.getSerumQuoteTradeVolumeStats) + selectedPair}
+      id={
+        'getSerumQuoteTradeVolumeStatsQuery' + 
+        generateIDFromValues(getSerumQuoteTradeVolumeStatsQuery.getSerumQuoteTradeVolumeStats) + 
+        selectedPair +
+        getSerumQuoteTradeVolumeStatsQuery.loading
+      }
+      isDataLoading={getSerumQuoteTradeVolumeStatsQuery.loading}
       title={'Average Trade Value'}
       needQuoteInLabel={true}
     />

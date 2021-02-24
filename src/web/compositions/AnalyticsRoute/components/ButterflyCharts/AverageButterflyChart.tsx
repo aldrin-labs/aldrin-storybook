@@ -12,8 +12,12 @@ const CountButterflyChart = ({ theme, getSerumAvgTotalStatsQuery, selectedPair }
     <ButterflyChart
       theme={theme}
       data={getSerumAvgTotalStatsQuery.getSerumAvgTotalStats}
-      id={generateIDFromValues(getSerumAvgTotalStatsQuery.getSerumAvgTotalStats) + selectedPair}
-      isDataLoading={getSerumAvgTotalStatsQuery.loading}
+      id={
+        'getSerumAvgTotalStatsQuery' +
+        generateIDFromValues(getSerumAvgTotalStatsQuery.getSerumAvgTotalStats) +
+        selectedPair + 
+        getSerumAvgTotalStatsQuery.loading
+      }
       title={'Average Trade Value'}
       needQuoteInLabel={true}
     />

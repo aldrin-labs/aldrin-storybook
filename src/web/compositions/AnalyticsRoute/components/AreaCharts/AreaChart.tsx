@@ -9,7 +9,7 @@ const AreaChart = ({ theme, data, selectedPair, isDataLoading, id }: { theme: Th
     createAreaChart(data)
 
     return () => window.myAreaChart.destroy()
-  }, [selectedPair, isDataLoading, id])
+  }, [id])
 
   return (
     <>

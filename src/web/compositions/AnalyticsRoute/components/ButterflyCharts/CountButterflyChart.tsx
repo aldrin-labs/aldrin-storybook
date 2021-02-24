@@ -20,8 +20,12 @@ const CountButterflyChart = ({ theme, getSerumTradesCountStatsQuery, selectedPai
       theme={theme}
       needQuoteInLabel={false}
       data={getSerumTradesCountStats}
-      isDataLoading={getSerumTradesCountStatsQuery.loading}
-      id={generateIDFromValues(getSerumTradesCountStats) + selectedPair}
+      id={
+        'getSerumTradesCountStatsQuery' + 
+        generateIDFromValues(getSerumTradesCountStats) + 
+        selectedPair + 
+        getSerumTradesCountStatsQuery.loading
+      }
       title={'Daily Trades Count'}
     />
   )
