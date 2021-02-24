@@ -14,6 +14,8 @@ import SvgIcon from '@sb/components/SvgIcon'
 import Sollet from '@icons/sollet.svg'
 import Mathwallet from '@icons/mathwallet.svg'
 import Solong from '@icons/solong.svg'
+import CCAI from '@icons/ccai.svg'
+
 
 import { IProps } from './types'
 
@@ -56,6 +58,7 @@ export default class Dropdown extends React.Component<IProps> {
       isSelected,
     } = this.props
 
+    const isCCAIActive = providerUrl === 'https://wallet.cryptocurrencies.ai'
     const isSolletActive = providerUrl === 'https://www.sollet.io'
     const isMathWalletActive = providerUrl === 'https://www.mathwallet.org'
     const isSolongWallet = providerUrl === 'https://solongwallet.com'
@@ -76,6 +79,41 @@ export default class Dropdown extends React.Component<IProps> {
           isWalletConnected={isWalletConnected}
         >
           <MenuList style={{ padding: 0 }}>
+            <StyledMenuItem
+              theme={theme}
+              disableRipple
+              disableGutters={true}
+              key={'ccai'}
+            >
+              <BtnCustom
+                btnWidth={'100%'}
+                height={'4rem'}
+                border="none"
+                borderWidth="0"
+                borderRadius="0"
+                btnColor={isCCAIActive ? '#AAF2C9' : '#ECF0F3'}
+                fontSize={'1.2rem'}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  textTransform: 'none',
+                  padding: '1rem',
+                }}
+                onClick={() => {
+                  console.log('CLICK ON CCAI')
+
+                  if (isCCAIActive && !isWalletConnected) {
+                    wallet.connect()
+                    return
+                  }
+
+                  updateProviderUrl('https://wallet.cryptocurrencies.ai')
+                }}
+              >
+                <SvgIcon src={CCAI} width={'20%'} height={'70%'} />
+                Wallet™
+              </BtnCustom>
+            </StyledMenuItem>
             <StyledMenuItem
               theme={theme}
               disableRipple
