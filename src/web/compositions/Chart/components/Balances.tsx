@@ -20,7 +20,6 @@ import {
 } from '@core/utils/MarketCapUtils'
 import UpdateFuturesBalances from '@core/components/UpdateFuturesBalances/UpdateFuturesBalances'
 
-import TransferPopup from '@sb/compositions/Chart/components/TransferPopup'
 import DepositPopup from '@sb/compositions/Chart/components/DepositPopup'
 
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
@@ -228,19 +227,6 @@ export const Balances = ({
 
   return (
     <>
-      <TransferPopup
-        open={open}
-        theme={theme}
-        handleClose={() => togglePopup(false)}
-        transferFromSpotToFutures={transferFromSpotToFutures}
-        selectedAccount={selectedKey.keyId}
-        showFuturesTransfer={showFuturesTransfer}
-        isFuturesWarsKey={isFuturesWarsKey}
-        futuresWarsRoundBet={futuresWarsRoundBet}
-        timerForFuturesWars={timerForFuturesWars}
-        loading={loading}
-        setLoading={setLoading}
-      />
       <DepositPopup
         open={openDepositPopup}
         handleClose={() => {

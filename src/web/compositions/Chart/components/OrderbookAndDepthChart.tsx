@@ -61,7 +61,12 @@ const OrderbookAndDepthChart = (props) => {
   const markPrice = useMarkPrice()
   const [orderbook] = useOrderbook()
 
-  const pricePrecision = serumPricePrecision === undefined ? sizeDigits !== undefined ? 8 : undefined : serumPricePrecision
+  const pricePrecision =
+    serumPricePrecision === undefined
+      ? sizeDigits !== undefined
+        ? 8
+        : undefined
+      : serumPricePrecision
 
   const [orderbookData, setOrderbookData] = useState({
     asks: new TreeMap(),
@@ -147,7 +152,7 @@ const OrderbookAndDepthChart = (props) => {
       id="depthChartAndOB"
       style={{ display: 'flex', width: '100%', height: '100%' }}
     >
-      {!hideDepthChart && (
+      {/* {!hideDepthChart && (
         <Grid
           item
           xs={5}
@@ -167,7 +172,7 @@ const OrderbookAndDepthChart = (props) => {
             }}
           />
         </Grid>
-      )}
+      )} */}
 
       <Grid
         item

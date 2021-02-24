@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { compose } from 'recompose'
 import { withTheme } from '@material-ui/core/styles'
-import { AWESOME_MARKETS } from '@dr497/awesome-serum-markets'
+import { AWESOME_MARKETS } from '@sb/dexUtils/serum'
 
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import { withPublicKey } from '@core/hoc/withPublicKey'
@@ -116,7 +116,10 @@ const AnalyticsRoute = ({
               theme={theme}
               style={{ position: 'relative' }}
             >
-              <AreaVolumeChart theme={theme} selectedPair={selectedPair === 'all' ? 'ALL' : selectedPair} />
+              <AreaVolumeChart
+                theme={theme}
+                selectedPair={selectedPair === 'all' ? 'ALL' : selectedPair}
+              />
             </BlockTemplate>
           </Row>
         </MainContentContainer>

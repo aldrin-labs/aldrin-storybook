@@ -1,5 +1,4 @@
-import moment from 'moment'
-
+import moment from 'dayjs'
 import {
   Chart,
   BarElement,
@@ -12,6 +11,7 @@ import {
   LineController,
   PolarAreaController,
   Filler,
+  BubbleController,
 } from 'chart.js'
 
 import {
@@ -29,6 +29,7 @@ Chart.register(
   LineElement,
   LineController,
   PolarAreaController,
+  BubbleController,
   Filler
 )
 
@@ -441,4 +442,180 @@ export const createAreaChart = (data: any) => {
       },
     },
   })
+}
+
+export const createLinearChart = (data: any) => {
+  console.log('srmVolumesInUSDT', data)
+  const ctx = document.getElementById('linearChart')?.getContext('2d')
+
+  const gradient = ctx.createLinearGradient(0, 0, 0, 400)
+  gradient.addColorStop(0, 'rgba(115, 128, 235, 0.55)')
+  gradient.addColorStop(1, 'rgba(115, 128, 235, 0)')
+
+  // const chartDataMap = new Map()
+
+  // data.forEach((item) => {})
+
+  // const chartData = [...chartDataMap.values()]
+
+  const width =
+    window.innerWidth ||
+    document.documentElement.clientWidth ||
+    document.body.clientWidth
+
+  window.myLinearChart = new Chart(ctx, {
+    type: 'line',
+    // data: {
+    //   labels: [],
+    //   datasets: [
+    //     {
+    //       fill: 'origin',
+    //       tension: 0.5,
+    //       borderColor: '#7380EB',
+    //       backgroundColor: gradient,
+    //       borderWidth: 2,
+    //       // pointRadius: 0,
+    //       hoverBackgroundColor: 'rgba(28, 29, 34, 0.75)',
+    //       data: [],
+    //     },
+    //   ],
+    // },
+    data: {
+      labels: [
+        100000,
+        600000,
+        1600000,
+        6600000,
+        16600000,
+        41600000,
+        45000000,
+        // 91600000,
+        // 166600000,
+        // 266600000,
+        // 466600000,
+      ],
+      datasets: [
+        {
+          backgroundColor: 'rgb(199, 255, 208)',
+          borderColor: 'rgb(199, 255, 208)',
+          pointRadius: 0,
+          type: 'line',
+          data: [
+            { x: 100000, y: 200000 },
+            { x: 600000, y: 400000 },
+            { x: 1600000, y: 600000 },
+            { x: 6600000, y: 800000 },
+            { x: 16600000, y: 1000000 },
+            { x: 41600000, y: 1200000 },
+            { x: 45000000, y: 1213600 },
+            // { x: 91600000, y: 1400000 },
+            // { x: 166600000, y: 1600000 },
+            // { x: 266600000, y: 1800000 },
+            // { x: 466600000, y: 2000000 },
+          ],
+        },
+        {
+          type: 'bubble',
+          backgroundColor: 'rgb(199, 255, 208)',
+          borderColor: 'rgb(199, 255, 208)',
+          radius: 9,
+          data: [{ x: data.srmInUSDT, y: data.dcfi }],
+        },
+      ],
+    },
+    options: {
+      elements: {
+        line: {
+          cubicInterpolationMode: 'default',
+        },
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          gridLines: {
+            display: true,
+            color: 'rgb(246, 86, 131)',
+          },
+          ticks: {
+            callback: function(value, index, values) {
+              return '$' + value
+            },
+            color: '#fff',
+            font: {
+              size: +(width / 180).toFixed(0),
+              family: 'Avenir Next',
+            },
+          },
+        },
+        y: {
+          // type: 'linear',
+          gridLines: {
+            display: true,
+            color: 'rgb(246, 86, 131)',
+          },
+          ticks: {
+            callback: function(value, index, values) {
+              if (value >= 1000000) {
+                return value / 1000000 + 'M'
+              } else {
+                return value / 1000 + 'К'
+              }
+            },
+            color: '#fff',
+            font: {
+              size: +(width / 180).toFixed(0),
+              family: 'Avenir Next',
+            },
+          },
+        },
+      },
+      // plugins: {
+      //   tooltip: {
+      //     enabled: true,
+      //   },
+      // },
+    },
+    onResize: (myChart, size) => {
+      if (!window.myLinearChart) return
+
+      const width =
+        window.innerWidth ||
+        document.documentElement.clientWidth ||
+        document.body.clientWidth
+
+      window.myLinearChart.options.scales = {
+        x: {
+          gridLines: {
+            display: true,
+            color: 'rgb(246, 86, 131)',
+          },
+          ticks: {
+            color: '#fff',
+            font: {
+              size: +(width / 180).toFixed(0),
+              family: 'Avenir Next',
+            },
+          },
+        },
+        y: {
+          gridLines: {
+            display: true,
+            color: 'rgb(246, 86, 131)',
+          },
+          ticks: {
+            color: '#fff',
+            font: {
+              size: +(width / 180).toFixed(0),
+              family: 'Avenir Next',
+            },
+          },
+        },
+      }
+    },
+  })
+
+  ctx.beginPath()
+  ctx.fillStyle = '#000' //or whatever color
+  ctx.arc(10000, 10000, 20, 100, Math.PI * 2) //maybe too big for you, but you get the point
+  ctx.fill()
 }
