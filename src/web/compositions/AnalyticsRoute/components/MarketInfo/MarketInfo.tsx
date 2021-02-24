@@ -160,10 +160,13 @@ const MarketInfo = ({
   const quote = pair.split('/')[1]
 
   const prevClosePrice = markPrice + lastPriceDiff * -1
+
   const priceChangePercentage = !!markPrice
     ? (markPrice - prevClosePrice) / (prevClosePrice / 100)
     : 0
   const sign24hChange = +priceChangePercentage > 0 ? `+` : ``
+
+  console.log('priceChangePercentage', !!markPrice, priceChangePercentage)
 
   // console.log('market', market)
   // if (market) {

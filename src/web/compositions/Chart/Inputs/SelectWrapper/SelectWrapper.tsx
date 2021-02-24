@@ -62,21 +62,21 @@ export const datesForQuery = {
   startOfTime: dayjs()
     .startOf('hour')
     .subtract(24, 'hour')
-    .valueOf(),
+    .unix(),
 
   endOfTime: dayjs()
     .startOf('hour')
-    .valueOf(),
+    .unix(),
 
   prevStartTimestamp: dayjs()
     .startOf('hour')
     .subtract(48, 'hour')
-    .valueOf(),
+    .unix(),
 
   prevEndTimestamp: dayjs()
     .startOf('hour')
     .subtract(24, 'hour')
-    .valueOf(),
+    .unix(),
 }
 
 export const fiatRegexp = new RegExp(fiatPairs.join('|'), 'gi')

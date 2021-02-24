@@ -4,10 +4,12 @@ import { createAreaChart } from '../utils'
 import { Theme } from '@material-ui/core'
 // import { TooltipForAreaChart } from './Tooltips'
 
-const AreaChart = ({ theme, data, selectedPair }: { theme: Theme, data: any, selectedPair: string }) => {
+const AreaChart = ({ theme, data, selectedPair, isDataLoading, id }: { theme: Theme, data: any, selectedPair: string }) => {
   useEffect(() => {
     createAreaChart(data)
-  }, [selectedPair])
+
+    return () => window.myAreaChart.destroy()
+  }, [selectedPair, isDataLoading, id])
 
   return (
     <>

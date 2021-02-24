@@ -3,16 +3,17 @@ import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getSerumAvgTotalStats } from '@core/graphql/queries/analytics/getSerumAvgTotalStats'
 
-import { endOfDayTimestamp, dayDuration } from '../utils'
+import { endOfDayTimestamp, dayDuration, generateIDFromValues } from '../utils'
 
 import ButterflyChart from './ButterflyChart'
 
-const CountButterflyChart = ({ theme, getSerumAvgTotalStatsQuery }) => {
+const CountButterflyChart = ({ theme, getSerumAvgTotalStatsQuery, selectedPair }) => {
   return (
     <ButterflyChart
       theme={theme}
       data={getSerumAvgTotalStatsQuery.getSerumAvgTotalStats}
-      id={`second`}
+      id={generateIDFromValues(getSerumAvgTotalStatsQuery.getSerumAvgTotalStats) + selectedPair}
+      isDataLoading={getSerumAvgTotalStatsQuery.loading}
       title={'Average Trade Value'}
       needQuoteInLabel={true}
     />
@@ -28,7 +29,7 @@ export default compose(
       toTimestamp: endOfDayTimestamp,
       sinceTimestamp: endOfDayTimestamp - dayDuration * 13,
     }),
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-and-network',    
     withOutSpinner: false,
     withTableLoader: false,
     withoutLoading: false,

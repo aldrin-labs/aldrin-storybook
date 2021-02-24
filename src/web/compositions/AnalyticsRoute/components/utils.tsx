@@ -32,18 +32,10 @@ Chart.register(
   Filler
 )
 
-export const endOfDayTimestamp = moment()
-  .endOf('day')
-  .valueOf()
-export const dayDuration = 24 * 60 * 60 * 1000
+export const generateIDFromValues = (arr: any[]) => arr.reduce((acc, cur) => acc + cur.buy + cur.sell, '');
 
-const last30DaysTimestamps = []
-
-for (let i = 1; i <= 30; i++) {
-  last30DaysTimestamps.push(endOfDayTimestamp - dayDuration * i)
-}
-
-last30DaysTimestamps.reverse()
+export const endOfDayTimestamp = moment().endOf('day').unix() 
+export const dayDuration = 24 * 60 * 60
 
 export const createButterflyChart = (
   id: string,
@@ -66,7 +58,7 @@ export const createButterflyChart = (
   window[`butterflyChart-${id}`] = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: data.map((item) => moment(item.date).format('D MMM')),
+      labels: data.map((item) => moment.unix(item.date).format('D MMM')),
       datasets: [
         {
           barPercentage,
@@ -277,18 +269,6 @@ export const createAreaChart = (data: any) => {
   gradient.addColorStop(0, 'rgba(115, 128, 235, 0.55)')
   gradient.addColorStop(1, 'rgba(115, 128, 235, 0)')
 
-  const chartDataMap = new Map()
-
-  data.forEach((item) => {
-    if (chartDataMap.has(item.date)) {
-      chartDataMap.set(item.date, chartDataMap.get(item.date) + item.total)
-    } else {
-      chartDataMap.set(item.date, item.total)
-    }
-  })
-
-  const chartData = [...chartDataMap.values()]
-
   const width =
     window.innerWidth ||
     document.documentElement.clientWidth ||
@@ -297,9 +277,8 @@ export const createAreaChart = (data: any) => {
   window.myAreaChart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: data
-        .slice(0, 30)
-        .map((item) => moment(item.date).format('D MMM')),
+      labels: data.filter(i => i.date !== 0).sort((a, b) => a.date - b.date)
+        .map((item) => moment.unix(item.date).format('D MMM')),
       datasets: [
         {
           fill: 'origin',
@@ -309,7 +288,7 @@ export const createAreaChart = (data: any) => {
           borderWidth: 2,
           // pointRadius: 0,
           hoverBackgroundColor: 'rgba(28, 29, 34, 0.75)',
-          data: chartData.map((item, i) => ({ x: i, y: item })),
+          data: data.filter(i => i.date !== 0).map((item, i) => ({ x: i, y: item.total })),
         },
       ],
     },
@@ -336,7 +315,15 @@ export const createAreaChart = (data: any) => {
           ticks: {
             color: '#fff',
             callback: function(value, index, values) {
-              return '$' + value
+              let valueToShow = value
+
+              if (valueToShow % 1000000 === 0) {
+                valueToShow = valueToShow / 1000000 + 'M'
+              } else if (valueToShow % 1000 === 0) {
+                valueToShow = valueToShow / 1000 + 'K'
+              }
+
+              return '$' + valueToShow
             },
             font: {
               size: +(width / 140).toFixed(0),
@@ -376,7 +363,15 @@ export const createAreaChart = (data: any) => {
             ticks: {
               color: '#fff',
               callback: function(value, index, values) {
-                return '$' + value
+                let valueToShow = +value
+
+                if (valueToShow % 1000000 === 0) {
+                  valueToShow = valueToShow / 1000000 + 'M'
+                } else if (valueToShow % 1000 === 0) {
+                  valueToShow = valueToShow / 1000 + 'K'
+                }
+
+                return '$' + valueToShow
               },
               font: {
                 size: +(width / 140).toFixed(0),

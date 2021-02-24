@@ -3,11 +3,12 @@ import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getSerumTradesCountStats } from '@core/graphql/queries/analytics/getSerumTradesCountStats'
 
-import { endOfDayTimestamp, dayDuration } from '../utils'
+import { endOfDayTimestamp, dayDuration, generateIDFromValues } from '../utils'
 
 import ButterflyChart from './ButterflyChart'
 
-const CountButterflyChart = ({ theme, getSerumTradesCountStatsQuery }) => {
+
+const CountButterflyChart = ({ theme, getSerumTradesCountStatsQuery, selectedPair }) => {
   const {
     getSerumTradesCountStats = []
   } = getSerumTradesCountStatsQuery || {
@@ -17,8 +18,10 @@ const CountButterflyChart = ({ theme, getSerumTradesCountStatsQuery }) => {
   return (
     <ButterflyChart
       theme={theme}
+      needQuoteInLabel={false}
       data={getSerumTradesCountStats}
-      id={`first`}
+      isDataLoading={getSerumTradesCountStatsQuery.loading}
+      id={generateIDFromValues(getSerumTradesCountStats) + selectedPair}
       title={'Daily Trades Count'}
     />
   )

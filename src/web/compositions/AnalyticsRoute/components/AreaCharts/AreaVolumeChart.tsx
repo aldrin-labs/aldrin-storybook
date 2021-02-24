@@ -3,9 +3,11 @@ import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getSerumQuoteTradeVolumeStats } from '@core/graphql/queries/analytics/getSerumQuoteTradeVolumeStats'
 
-import { endOfDayTimestamp, dayDuration } from '../utils'
+import { endOfDayTimestamp, dayDuration, generateIDFromValues } from '../utils'
 
 import AreaChart from './AreaChart'
+
+const sinceTimestamp = endOfDayTimestamp - dayDuration * 29
 
 const AreaVolumeChart = ({ theme, getSerumQuoteTradeVolumeStatsQuery, selectedPair }) => {
   return (
@@ -13,7 +15,7 @@ const AreaVolumeChart = ({ theme, getSerumQuoteTradeVolumeStatsQuery, selectedPa
       theme={theme}
       data={getSerumQuoteTradeVolumeStatsQuery.getSerumQuoteTradeVolumeStats}
       selectedPair={selectedPair}
-      id={`second`}
+      id={generateIDFromValues(getSerumQuoteTradeVolumeStatsQuery.getSerumQuoteTradeVolumeStats) + selectedPair}
       title={'Average Trade Value'}
       needQuoteInLabel={true}
     />
@@ -27,9 +29,9 @@ export default compose(
     variables: (props) => ({
       pair: props.selectedPair,
       toTimestamp: endOfDayTimestamp,
-      sinceTimestamp: endOfDayTimestamp - dayDuration * 29,
+      sinceTimestamp,
     }),
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-and-network',
     withOutSpinner: false,
     withTableLoader: false,
     withoutLoading: false,
