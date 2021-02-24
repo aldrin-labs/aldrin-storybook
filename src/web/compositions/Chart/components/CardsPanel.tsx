@@ -48,6 +48,7 @@ import TwitterIcon from '@icons/twitter.svg'
 import { withTheme } from '@material-ui/core'
 
 import Dropdown from '@sb/components/Dropdown'
+import NetworkDropdown from './NetworkDropdown/NetworkDropdown'
 
 export const NavBarLink = styled(({ style, ...props }) => (
   <NavLink {...props} />
@@ -249,6 +250,14 @@ const TopBar = ({ theme }) => {
         />
       </div> */}
       {/* <WalletBlock /> */}
+      <div data-tut="connection-dropdown">
+        <NetworkDropdown
+          endpoint={endpoint}
+          setEndpoint={setEndpoint}
+          theme={theme}
+        />
+      </div>
+
       <div data-tut="wallet">
         <Dropdown
           wallet={wallet}
