@@ -253,7 +253,7 @@ const PairSelector = ({
             cellRenderer={({ cellData }) => cellData.render}
           />
           <Column
-            label={`Volume`}
+            label={`Volume 24h`}
             dataKey="volume24hChange"
             headerStyle={{
               textTransform: 'capitalize',

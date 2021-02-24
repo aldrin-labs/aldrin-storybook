@@ -30,6 +30,11 @@ export const selectWrapperColumnNames = [
   { label: '24H volume', id: '24hVolume', isNumber: true, isSortable: true },
 ]
 
+export const getIsNotUSDTQuote = (symbol) => {
+  const [base, quote] = symbol.split('_')
+  return quote !== 'USDT' && quote !== 'USDC' && !symbol.toLowerCase().includes('all')
+}
+
 export const getUpdatedFavoritePairsList = (
   clonedData: GetSelectorSettingsType,
   symbol: string
@@ -136,8 +141,7 @@ export const combineSelectWrapperData = ({
     return []
   }
 
-  let processedData = data
-  .filter(
+  let processedData = data.filter(
     (market, index, arr) =>
       arr.findIndex(
         (marketInFindIndex) => marketInFindIndex.symbol === market.symbol
@@ -214,9 +218,11 @@ export const combineSelectWrapperData = ({
       let updatedSearchValue = searchValue
 
       const slashInSearch = updatedSearchValue.includes('/')
-      if (slashInSearch) updatedSearchValue = updatedSearchValue.replace('/', '_')
+      if (slashInSearch)
+        updatedSearchValue = updatedSearchValue.replace('/', '_')
       const spaceInSeach = updatedSearchValue.includes(' ')
-      if (spaceInSeach) updatedSearchValue = updatedSearchValue.replace(' ', '_')
+      if (spaceInSeach)
+        updatedSearchValue = updatedSearchValue.replace(' ', '_')
       const dashInSeach = updatedSearchValue.includes(' ')
       if (dashInSeach) updatedSearchValue = updatedSearchValue.replace('-', '_')
 
@@ -257,6 +263,9 @@ export const combineSelectWrapperData = ({
     const priceColor = !!previousData ? '' : ''
 
     const [base, quote] = el.symbol.split('_')
+
+    const isNotUSDTQuote = getIsNotUSDTQuote(el.symbol)
+
     // console.log('filtredData', el)
     return {
       id: `${el.symbol}`,
@@ -325,9 +334,9 @@ export const combineSelectWrapperData = ({
         contentToSort: +el.volume || 0,
         render: (
           <span>
-            {`$${formatNumberToUSFormat(
+            {`${isNotUSDTQuote ? '' : '$'}${formatNumberToUSFormat(
               roundAndFormatNumber(el.volume, 2, false)
-            )}`}
+            )}${isNotUSDTQuote ? ` ${quote}` : ''}`}
           </span>
         ),
       },

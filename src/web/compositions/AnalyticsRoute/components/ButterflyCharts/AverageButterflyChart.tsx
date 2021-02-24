@@ -1,5 +1,6 @@
 import React from 'react'
 import { compose } from 'recompose'
+import { Theme } from '@material-ui/core'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getSerumAvgTotalStats } from '@core/graphql/queries/analytics/getSerumAvgTotalStats'
 
@@ -7,15 +8,24 @@ import { endOfDayTimestamp, dayDuration, generateIDFromValues } from '../utils'
 
 import ButterflyChart from './ButterflyChart'
 
-const CountButterflyChart = ({ theme, getSerumAvgTotalStatsQuery, selectedPair }) => {
+const CountButterflyChart = ({
+  theme,
+  getSerumAvgTotalStatsQuery,
+  selectedPair,
+}: {
+  theme: Theme
+  selectedPair: string
+  getSerumAvgTotalStatsQuery: any
+}) => {
   return (
     <ButterflyChart
       theme={theme}
+      selectedPair={selectedPair}
       data={getSerumAvgTotalStatsQuery.getSerumAvgTotalStats}
       id={
         'getSerumAvgTotalStatsQuery' +
         generateIDFromValues(getSerumAvgTotalStatsQuery.getSerumAvgTotalStats) +
-        selectedPair + 
+        selectedPair +
         getSerumAvgTotalStatsQuery.loading
       }
       title={'Average Trade Value'}
@@ -33,7 +43,7 @@ export default compose(
       toTimestamp: endOfDayTimestamp,
       sinceTimestamp: endOfDayTimestamp - dayDuration * 13,
     }),
-    fetchPolicy: 'cache-and-network',    
+    fetchPolicy: 'cache-and-network',
     withOutSpinner: false,
     withTableLoader: false,
     withoutLoading: false,

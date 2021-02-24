@@ -19,6 +19,8 @@ import {
   formatNumberToUSFormat,
 } from '@core/utils/PortfolioTableUtils'
 
+import { getIsNotUSDTQuote } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
+
 Chart.register(
   BarElement,
   PointElement,
@@ -33,15 +35,19 @@ Chart.register(
   Filler
 )
 
-export const generateIDFromValues = (arr: any[]) => arr.reduce((acc, cur) => acc + cur.buy + cur.sell, '');
+export const generateIDFromValues = (arr: any[]) =>
+  arr.reduce((acc, cur) => acc + cur.buy + cur.sell, '')
 
-export const endOfDayTimestamp = moment().endOf('day').unix() 
+export const endOfDayTimestamp = moment()
+  .endOf('day')
+  .unix()
 export const dayDuration = 24 * 60 * 60
 
 export const createButterflyChart = (
   id: string,
   data: any,
-  needQuoteInLabel = false
+  needQuoteInLabel = false,
+  selectedPair = ''
 ) => {
   const ctx = document.getElementById(`butterflyChart-${id}`)?.getContext('2d')
 
@@ -55,6 +61,9 @@ export const createButterflyChart = (
     document.body.clientWidth
 
   const barPercentage = width > 2560 ? 0.3 : width < 1600 ? 0.5 : 0.4
+
+  const [base, quote] = selectedPair.split('_')
+  const isNotUSDTQuote = getIsNotUSDTQuote(selectedPair)
 
   window[`butterflyChart-${id}`] = new Chart(ctx, {
     type: 'bar',
@@ -105,9 +114,11 @@ export const createButterflyChart = (
           ticks: {
             color: '#fff',
             callback: needQuoteInLabel
-              ? function(value, index, values) {
-                  return `$${Math.abs(value)}`
-                }
+            ? function(value, index, values) {
+              return `${isNotUSDTQuote ? '' : '$'}${Math.abs(value)}${
+                isNotUSDTQuote ? ` ${quote}` : ''
+              }`
+            }
               : function(value, index, values) {
                   return String(Math.abs(value))
                 },
@@ -148,9 +159,15 @@ export const createButterflyChart = (
             },
             ticks: {
               color: '#fff',
-              callback: function(value, index, values) {
-                return String(Math.abs(value))
-              },
+              callback: needQuoteInLabel
+                ? function(value, index, values) {
+                    return `${needQuoteInLabel ? isNotUSDTQuote ? '' : '$' : ''}${Math.abs(value)}${
+                      isNotUSDTQuote && needQuoteInLabel ? ` ${quote}` : ''
+                    }`
+                  }
+                : function(value, index, values) {
+                    return String(Math.abs(value))
+                  },
               font: {
                 size: +(width / 140).toFixed(0),
                 family: 'Avenir Next',
@@ -212,19 +229,19 @@ export const createButterflyChart = (
                 dateBlock.innerHTML = `${tooltipModel.title[0]}, 2021` // hardcoded for now, need to be determined normally
               if (buyCountBlock)
                 buyCountBlock.innerHTML = `${
-                  needQuoteInLabel ? '$' : ''
+                  needQuoteInLabel ? `${isNotUSDTQuote ? '' : '$'}` : ''
                 }${formatNumberToUSFormat(
                   stripDigitPlaces(tooltipModel.dataPoints[0].dataPoint.y, 0)
-                )}`
+                )}${isNotUSDTQuote ? ` ${quote}` : ''}`
               if (sellCountBlock)
                 sellCountBlock.innerHTML = `${
-                  needQuoteInLabel ? '$' : ''
+                  needQuoteInLabel ? `${isNotUSDTQuote ? '' : '$'}` : ''
                 }${formatNumberToUSFormat(
                   stripDigitPlaces(
                     Math.abs(tooltipModel.dataPoints[1].dataPoint.y),
                     0
                   )
-                )}`
+                )}${isNotUSDTQuote ? ` ${quote}` : ''}`
             }
 
             var position = context.chart.canvas.getBoundingClientRect()
@@ -241,7 +258,7 @@ export const createButterflyChart = (
 
               tooltipEl.style.left = left + 'px'
 
-              if (left + tooltipModel._size.width >= width) {
+              if (left + tooltipModel._size.width * 1.5 >= width) {
                 tooltipEl.style.left =
                   left - tooltipModel._size.width * 2 + 'px'
               }
@@ -263,7 +280,7 @@ export const createButterflyChart = (
   })
 }
 
-export const createAreaChart = (data: any) => {
+export const createAreaChart = (data: any, selectedPair = '') => {
   const ctx = document.getElementById('areaChart')?.getContext('2d')
 
   const gradient = ctx.createLinearGradient(0, 0, 0, 400)
@@ -275,10 +292,15 @@ export const createAreaChart = (data: any) => {
     document.documentElement.clientWidth ||
     document.body.clientWidth
 
+  const [base, quote] = selectedPair.split('_')
+  const isNotUSDTQuote = getIsNotUSDTQuote(selectedPair)
+
   window.myAreaChart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: data.filter(i => i.date !== 0).sort((a, b) => a.date - b.date)
+      labels: data
+        .filter((i) => i.date !== 0)
+        .sort((a, b) => a.date - b.date)
         .map((item) => moment.unix(item.date).format('D MMM')),
       datasets: [
         {
@@ -289,7 +311,9 @@ export const createAreaChart = (data: any) => {
           borderWidth: 2,
           // pointRadius: 0,
           hoverBackgroundColor: 'rgba(28, 29, 34, 0.75)',
-          data: data.filter(i => i.date !== 0).map((item, i) => ({ x: i, y: item.total })),
+          data: data
+            .filter((i) => i.date !== 0)
+            .map((item, i) => ({ x: i, y: item.total })),
         },
       ],
     },
@@ -316,15 +340,19 @@ export const createAreaChart = (data: any) => {
           ticks: {
             color: '#fff',
             callback: function(value, index, values) {
-              let valueToShow = value
+              let valueToShow: number | string = +value
 
-              if (valueToShow % 1000000 === 0) {
+              if (valueToShow === 0) {
+                valueToShow = 0
+              } else if (valueToShow % 1000000 === 0) {
                 valueToShow = valueToShow / 1000000 + 'M'
               } else if (valueToShow % 1000 === 0) {
                 valueToShow = valueToShow / 1000 + 'K'
               }
 
-              return '$' + valueToShow
+              return `${isNotUSDTQuote ? '' : '$'}${valueToShow}${
+                isNotUSDTQuote ? ` ${quote}` : ''
+              }`
             },
             font: {
               size: +(width / 140).toFixed(0),
@@ -364,15 +392,19 @@ export const createAreaChart = (data: any) => {
             ticks: {
               color: '#fff',
               callback: function(value, index, values) {
-                let valueToShow = +value
+                let valueToShow: number | string = +value
 
-                if (valueToShow % 1000000 === 0) {
+                if (valueToShow === 0) {
+                  valueToShow = 0
+                } else if (valueToShow % 1000000 === 0) {
                   valueToShow = valueToShow / 1000000 + 'M'
                 } else if (valueToShow % 1000 === 0) {
                   valueToShow = valueToShow / 1000 + 'K'
                 }
 
-                return '$' + valueToShow
+                return `${isNotUSDTQuote ? '' : '$'}${valueToShow}${
+                  isNotUSDTQuote ? ` ${quote}` : ''
+                }`
               },
               font: {
                 size: +(width / 140).toFixed(0),
@@ -426,9 +458,9 @@ export const createAreaChart = (data: any) => {
             afterTitle: () => '—————————————————',
             beforeFooter: () => '',
             footer: (item) =>
-              `$${formatNumberToUSFormat(
+              `${isNotUSDTQuote ? '' : '$'}${formatNumberToUSFormat(
                 stripDigitPlaces(item[0].dataPoint.y, 2)
-              )}`,
+              )}${isNotUSDTQuote ? ` ${quote}` : ''}`,
           },
         },
         legend: {

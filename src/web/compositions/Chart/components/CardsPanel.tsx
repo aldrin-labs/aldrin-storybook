@@ -255,6 +255,7 @@ const TopBar = ({ theme }) => {
           endpoint={endpoint}
           setEndpoint={setEndpoint}
           theme={theme}
+          isWalletConnected={connected}
         />
       </div>
 

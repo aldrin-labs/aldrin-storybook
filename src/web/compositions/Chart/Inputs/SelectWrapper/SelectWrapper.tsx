@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Grid, Input, InputAdornment } from '@material-ui/core'
 import { withTheme } from '@material-ui/core/styles'
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
-import { Column, Table } from 'react-virtualized'
+import { Column, Table, SortDirection } from 'react-virtualized'
 import 'react-virtualized/styles.css'
 import dayjs from 'dayjs'
 
@@ -24,6 +24,7 @@ import CustomMarketDialog from '@sb/compositions/Chart/Inputs/SelectWrapper/AddC
 import favoriteSelected from '@icons/favoriteSelected.svg'
 import search from '@icons/search.svg'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
+import _ from 'lodash'
 
 import { notify } from '@sb/dexUtils/notifications'
 import { getMarketInfos } from '@sb/dexUtils/markets'
@@ -49,13 +50,13 @@ import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 
 export const excludedPairs = [
-  'USDC_ODOP',
-  'KIN_USDT',
+  // 'USDC_ODOP',
+  // 'KIN_USDT',
   // 'MIDBEAR_USDT',
   // 'MIDBULL_USDT',
   // 'XRPBEAR_USDT',
   // 'XRPBULL_USDT',
-  'SWAG_USDT'
+  // 'SWAG_USDT'
 ]
 
 export const datesForQuery = {
@@ -65,7 +66,7 @@ export const datesForQuery = {
     .unix(),
 
   endOfTime: dayjs()
-    .startOf('hour')
+    .endOf('hour')
     .unix(),
 
   prevStartTimestamp: dayjs()
@@ -233,6 +234,8 @@ class SelectPairListComponent extends React.PureComponent<
     processedSelectData: [],
     showAddMarketPopup: false,
     left: 0,
+    sortBy: 'volume24hChange',
+    sortDirection: SortDirection.DESC,
   }
 
   componentDidMount() {
@@ -255,6 +258,7 @@ class SelectPairListComponent extends React.PureComponent<
     } = this.props
 
     const { left } = document.getElementById('ExchangePair')?.getBoundingClientRect()
+    const { sortBy, sortDirection } = this.state
 
     const processedSelectData = combineSelectWrapperData({
       data,
@@ -274,8 +278,12 @@ class SelectPairListComponent extends React.PureComponent<
     })
 
     this.setState({
+      processedSelectData: this._sortList({
+        sortBy,
+        sortDirection,
+        data: processedSelectData,
+      }),
       left,
-      processedSelectData,
     })
   }
 
@@ -297,6 +305,7 @@ class SelectPairListComponent extends React.PureComponent<
       marketType,
     } = nextProps
     const { data: prevPropsData } = this.props
+    const { sortBy, sortDirection } = this.state
 
     const processedSelectData = combineSelectWrapperData({
       data,
@@ -317,8 +326,56 @@ class SelectPairListComponent extends React.PureComponent<
     })
 
     this.setState({
-      processedSelectData,
+      processedSelectData: this._sortList({
+        sortBy,
+        sortDirection,
+        data: processedSelectData,
+      }),
     })
+  }
+
+  _sortList = ({ sortBy, sortDirection, data }) => {
+    let dataToSort = data
+
+    if (!dataToSort) {
+      dataToSort = this.state.processedSelectData
+    }
+
+    let newList = [...dataToSort]
+
+    if (this.props.marketType === 0 && sortBy === 'volume24hChange') {
+      newList.sort((pairObjectA, pairObjectB) => {
+        const quoteA = pairObjectA.symbol.contentToSort.split('_')[1]
+        const quoteB = pairObjectB.symbol.contentToSort.split('_')[1]
+        if (quoteA === 'USDT' && quoteB === 'USDT') {
+          return (
+            pairObjectB.volume24hChange.contentToSort -
+            pairObjectA.volume24hChange.contentToSort
+          )
+        } else if (quoteA === 'USDT') {
+          return -1
+        } else if (quoteB === 'USDT') {
+          return 1
+        } else if (quoteA !== 'USDT' && quoteB !== 'USDT') {
+          return (
+            pairObjectB.volume24hChange.contentToSort -
+            pairObjectA.volume24hChange.contentToSort
+          )
+        }
+      })
+    } else {
+      newList = _.sortBy(dataToSort, [`${sortBy}.contentToSort`])
+      if (sortDirection === SortDirection.DESC) {
+        newList = newList.reverse()
+      }
+    }
+
+    return newList
+  }
+
+  _sort = ({ sortBy, sortDirection }) => {
+    const processedSelectData = this._sortList({ sortBy, sortDirection })
+    this.setState({ sortBy, sortDirection, processedSelectData })
   }
 
   render() {
@@ -684,6 +741,9 @@ class SelectPairListComponent extends React.PureComponent<
                 width={width}
                 height={height}
                 rowCount={processedSelectData.length}
+                sort={this._sort}
+                sortBy={this.state.sortBy}
+                sortDirection={this.state.sortDirection}
                 onRowClick={({ event, index, rowData }) => {
                   rowData.symbol.onClick()
                 }}

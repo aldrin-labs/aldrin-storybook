@@ -11,17 +11,31 @@ import {
 
 import { BlockValue, BlockTitle } from './MarketInfo'
 
-const FeesBlock = ({ theme, getSerumQuoteTradeVolumeStatsQuery }) => {
+const FeesBlock = ({
+  theme,
+  selectedPair,
+  getSerumQuoteTradeVolumeStatsQuery,
+  isNotUSDTQuote,
+}) => {
   const dataForToday =
     getSerumQuoteTradeVolumeStatsQuery.getSerumQuoteTradeVolumeStats[
-      getSerumQuoteTradeVolumeStatsQuery.getSerumQuoteTradeVolumeStats.length - 1
+      getSerumQuoteTradeVolumeStatsQuery.getSerumQuoteTradeVolumeStats.length -
+        1
     ]
+
+  const [base, quote] = selectedPair.split('_')
+
   return (
     <>
-    <BlockTitle theme={theme}>Fees (24h)</BlockTitle>
-    <BlockValue theme={theme}>{`$${formatNumberToUSFormat(
-      stripDigitPlaces(dataForToday.buy * 0.0022 - dataForToday.buy * 0.0003, 2)
-    )}`}</BlockValue>
+      <BlockTitle theme={theme}>Fees (24h)</BlockTitle>
+      <BlockValue theme={theme}>{`${
+        isNotUSDTQuote ? '' : '$'
+      }${formatNumberToUSFormat(
+        stripDigitPlaces(
+          dataForToday.buy * 0.0022 - dataForToday.buy * 0.0003,
+          2
+        )
+      )}${isNotUSDTQuote ? ` ${quote}` : ''}`}</BlockValue>
     </>
   )
 }

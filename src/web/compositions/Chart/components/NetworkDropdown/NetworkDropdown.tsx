@@ -36,7 +36,7 @@ export default class NetworkDropdown extends React.PureComponent<{
   endpoint: { name: string; endpoint: string }
 }> {
   render() {
-    const { theme, setEndpoint, endpoint } = this.props
+    const { theme, setEndpoint, endpoint, isWalletConnected } = this.props
 
     const currentConnectionEndpoint = {
       value: endpoint,
@@ -56,7 +56,7 @@ export default class NetworkDropdown extends React.PureComponent<{
               currentConnectionEndpoint.label === endpoint.name ? 'none' : '',
           }}
           theme={theme}
-          isWalletConnected={currentConnectionEndpoint.label === endpoint.name}
+          isWalletConnected={isWalletConnected}
           customActiveRem={`25rem`}
           customNotActiveRem={`19rem`}
         >

@@ -13,12 +13,26 @@ import { createButterflyChart } from '../utils'
 
 import { TooltipForButterflyChart } from '../Tooltips'
 
-const ButterflyChart = ({ theme, id, title, data, needQuoteInLabel, isDataLoading }: { theme: Theme, id: string, title: string, data: any, needQuoteInLabel: boolean }) => {
+const ButterflyChart = ({
+  theme,
+  id,
+  title,
+  data,
+  needQuoteInLabel,
+  selectedPair,
+}: {
+  theme: Theme
+  id: string
+  title: string
+  data: any
+  needQuoteInLabel: boolean
+  selectedPair: string
+}) => {
   useEffect(() => {
-    createButterflyChart(id, data, needQuoteInLabel)
+    createButterflyChart(id, data, needQuoteInLabel, selectedPair)
 
-    return () =>  window[`butterflyChart-${id}`].destroy()
-  }, [id, needQuoteInLabel])
+    return () => window[`butterflyChart-${id}`].destroy()
+  }, [id])
 
   return (
     <>
@@ -52,7 +66,11 @@ const ButterflyChart = ({ theme, id, title, data, needQuoteInLabel, isDataLoadin
       </HeaderContainer>
       <ChartContainer>
         <canvas id={`butterflyChart-${id}`}></canvas>
-        <TooltipForButterflyChart needQuoteInLabel={needQuoteInLabel} theme={theme} id={id} />
+        <TooltipForButterflyChart
+          needQuoteInLabel={needQuoteInLabel}
+          theme={theme}
+          id={id}
+        />
       </ChartContainer>
     </>
   )

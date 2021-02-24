@@ -1,5 +1,6 @@
 import React from 'react'
 import { compose } from 'recompose'
+import { Theme } from '@material-ui/core'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getSerumQuoteTradeVolumeStats } from '@core/graphql/queries/analytics/getSerumQuoteTradeVolumeStats'
 
@@ -9,21 +10,29 @@ import AreaChart from './AreaChart'
 
 const sinceTimestamp = endOfDayTimestamp - dayDuration * 29
 
-const AreaVolumeChart = ({ theme, getSerumQuoteTradeVolumeStatsQuery, selectedPair }) => {
+const AreaVolumeChart = ({
+  theme,
+  getSerumQuoteTradeVolumeStatsQuery,
+  selectedPair,
+}: {
+  theme: Theme
+  selectedPair: string
+  getSerumQuoteTradeVolumeStatsQuery: any
+}) => {
   return (
     <AreaChart
       theme={theme}
       data={getSerumQuoteTradeVolumeStatsQuery.getSerumQuoteTradeVolumeStats}
       selectedPair={selectedPair}
       id={
-        'getSerumQuoteTradeVolumeStatsQuery' + 
-        generateIDFromValues(getSerumQuoteTradeVolumeStatsQuery.getSerumQuoteTradeVolumeStats) + 
+        'getSerumQuoteTradeVolumeStatsQuery' +
+        generateIDFromValues(
+          getSerumQuoteTradeVolumeStatsQuery.getSerumQuoteTradeVolumeStats
+        ) +
         selectedPair +
         getSerumQuoteTradeVolumeStatsQuery.loading
       }
-      isDataLoading={getSerumQuoteTradeVolumeStatsQuery.loading}
-      title={'Average Trade Value'}
-      needQuoteInLabel={true}
+      title={'Volume'}
     />
   )
 }

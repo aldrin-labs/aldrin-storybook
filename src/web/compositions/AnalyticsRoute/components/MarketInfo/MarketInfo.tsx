@@ -16,6 +16,7 @@ import { Link } from 'react-router-dom'
 import FeesInfo from './FeesInfo'
 import { marketDataByTickers } from '@core/graphql/queries/chart/marketDataByTickers'
 import { datesForQuery } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
+import { getIsNotUSDTQuote } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 import { notify } from '@sb/dexUtils/notifications'
 
 import {
@@ -29,6 +30,7 @@ import {
   TopBarTitle,
   BlockTemplate,
 } from '../../index.styles'
+
 import {
   stripDigitPlaces,
   formatNumberToUSFormat,
@@ -165,11 +167,7 @@ const MarketInfo = ({
     ? (markPrice - prevClosePrice) / (prevClosePrice / 100)
     : 0
   const sign24hChange = +priceChangePercentage > 0 ? `+` : ``
-
-  // console.log('market', market)
-  // if (market) {
-  //   console.log(market._decoded.ownAddress.toBase58(), market._decoded.baseMint.toBase58(), market._decoded.baseVault.toBase58(), )
-  // }
+  const isNotUSDTQuote = getIsNotUSDTQuote(selectedPair)
 
   return (
     <BlockTemplate
@@ -245,17 +243,17 @@ const MarketInfo = ({
               <SmallTitle theme={theme} style={{ paddingRight: '.5rem' }}>
                 24h Low:
               </SmallTitle>
-              <SmallBoldTitle
-                theme={theme}
-              >{`${markPrice < minPrice ? markPrice : minPrice} ${quote}`}</SmallBoldTitle>
+              <SmallBoldTitle theme={theme}>{`${
+                markPrice < minPrice ? markPrice : minPrice
+              } ${quote}`}</SmallBoldTitle>
             </Row>
             <Row>
               <SmallTitle theme={theme} style={{ paddingRight: '.5rem' }}>
                 24h High:
               </SmallTitle>
-              <SmallBoldTitle
-                theme={theme}
-              >{`${markPrice > maxPrice ? markPrice : maxPrice} ${quote}`}</SmallBoldTitle>
+              <SmallBoldTitle theme={theme}>{`${
+                markPrice > maxPrice ? markPrice : maxPrice
+              } ${quote}`}</SmallBoldTitle>
             </Row>
           </Row>
         </Row>
@@ -263,9 +261,11 @@ const MarketInfo = ({
           <Row padding="2rem 0">
             <ValueBlock theme={theme} align={'flex-start'} direction={'column'}>
               <BlockTitle theme={theme}>Volume (24h)</BlockTitle>
-              <BlockValue theme={theme}>{`$${formatNumberToUSFormat(
-                stripDigitPlaces(volume, 2)
-              )}`}</BlockValue>
+              <BlockValue theme={theme}>{`${
+                isNotUSDTQuote ? '' : '$'
+              }${formatNumberToUSFormat(stripDigitPlaces(volume, 2))}${
+                isNotUSDTQuote ? ` ${quote}` : ''
+              }`}</BlockValue>
             </ValueBlock>
           </Row>
           {/* <Row padding="2rem 0">
@@ -276,7 +276,11 @@ const MarketInfo = ({
           </Row> */}
           <Row padding="2rem 0" style={{ position: 'relative' }}>
             <ValueBlock theme={theme} align={'flex-start'} direction={'column'}>
-              <FeesInfo theme={theme} selectedPair={selectedPair} />
+              <FeesInfo
+                isNotUSDTQuote={isNotUSDTQuote}
+                theme={theme}
+                selectedPair={selectedPair}
+              />
             </ValueBlock>
           </Row>
           <Row padding="2rem 0">
@@ -303,10 +307,9 @@ const MarketInfo = ({
                     notify({
                       message: 'Copied!',
                       type: 'success',
-                    });
+                    })
                     copy(market ? market.address.toBase58() : '--')
-                  }
-                  }
+                  }}
                   style={{
                     marginLeft: '1rem',
                     width: '4rem',

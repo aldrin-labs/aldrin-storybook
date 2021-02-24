@@ -22,27 +22,27 @@ const Wrapper = styled(Card)`
 `
 
 const marketsWithoutIndexChart = [
-  'ALEPH_USDT',
-  'ALTBEAR_USDT',
-  'ALTBULL_USDT',
-  'BEARSHIT_USDT',
-  'BULLSHIT_USDT',
-  'KEEP_USDT',
-  'KIN_USDT',
-  'MSRM_USDT',
-  'SWAG_USDT',
-  'SRM_SOL',
+  // 'ALEPH_USDT',
+  // 'ALTBEAR_USDT',
+  // 'ALTBULL_USDT',
+  // 'BEARSHIT_USDT',
+  // 'BULLSHIT_USDT',
+  // 'KEEP_USDT',
+  // 'KIN_USDT',
+  // 'MSRM_USDT',
+  // 'SWAG_USDT',
+  // 'SRM_SOL',
 ]
 
 const marketsWithoutBinanceChart = [
-  'CREAM_USDT',
-  'FIDA_USDT',
-  'FRONT_USDT',
-  'HGET_USDT',
-  'HXRO_USDT',
-  'LUA_USDT',
-  'MATH_USDT',
-  'UBXT_USDT'
+  // 'CREAM_USDT',
+  // 'FIDA_USDT',
+  // 'FRONT_USDT',
+  // 'HGET_USDT',
+  // 'HXRO_USDT',
+  // 'LUA_USDT',
+  // 'MATH_USDT',
+  // 'UBXT_USDT'
 ]
 
 const marketsWithUSDCCharts = ['BTC', 'LINK']

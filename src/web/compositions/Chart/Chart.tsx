@@ -353,7 +353,7 @@ function ChartPageComponent(props: any) {
   const accentColor = '#09ACC7'
 
   return (
-    <MainContainer fullscreen={true}>
+    <MainContainer fullscreen={false}>
       <Tour
         showCloseButton={false}
         nextButton={<FinishBtn>Next</FinishBtn>}

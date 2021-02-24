@@ -33,6 +33,7 @@ import {
 import { useMarkPrice, useMarket } from '@sb/dexUtils/markets'
 
 import { getDecimalCount } from '@sb/dexUtils/utils'
+import { datesForQuery } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
 
 import {
   PanelCard,
@@ -83,27 +84,6 @@ export interface IProps {
   }
   quantityPrecision: number
   pricePrecision: number
-}
-
-const datesForQuery = {
-  startOfTime: dayjs()
-    .startOf('hour')
-    .subtract(24, 'hour')
-    .valueOf(),
-
-  endOfTime: dayjs()
-    .startOf('hour')
-    .valueOf(),
-
-  prevStartTimestamp: dayjs()
-    .startOf('hour')
-    .subtract(48, 'hour')
-    .valueOf(),
-
-  prevEndTimestamp: dayjs()
-    .startOf('hour')
-    .subtract(24, 'hour')
-    .valueOf(),
 }
 
 const MarketStats = (props) => {

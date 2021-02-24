@@ -1,5 +1,6 @@
 import React from 'react'
 import { compose } from 'recompose'
+import { Theme } from '@material-ui/core'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getSerumTradesCountStats } from '@core/graphql/queries/analytics/getSerumTradesCountStats'
 
@@ -7,12 +8,17 @@ import { endOfDayTimestamp, dayDuration, generateIDFromValues } from '../utils'
 
 import ButterflyChart from './ButterflyChart'
 
-
-const CountButterflyChart = ({ theme, getSerumTradesCountStatsQuery, selectedPair }) => {
-  const {
-    getSerumTradesCountStats = []
-  } = getSerumTradesCountStatsQuery || {
-    getSerumTradesCountStats: []
+const CountButterflyChart = ({
+  theme,
+  getSerumTradesCountStatsQuery,
+  selectedPair,
+}: {
+  theme: Theme
+  selectedPair: string
+  getSerumTradesCountStatsQuery: any
+}) => {
+  const { getSerumTradesCountStats = [] } = getSerumTradesCountStatsQuery || {
+    getSerumTradesCountStats: [],
   }
 
   return (
@@ -20,10 +26,11 @@ const CountButterflyChart = ({ theme, getSerumTradesCountStatsQuery, selectedPai
       theme={theme}
       needQuoteInLabel={false}
       data={getSerumTradesCountStats}
+      selectedPair={selectedPair}
       id={
-        'getSerumTradesCountStatsQuery' + 
-        generateIDFromValues(getSerumTradesCountStats) + 
-        selectedPair + 
+        'getSerumTradesCountStatsQuery' +
+        generateIDFromValues(getSerumTradesCountStats) +
+        selectedPair +
         getSerumTradesCountStatsQuery.loading
       }
       title={'Daily Trades Count'}
