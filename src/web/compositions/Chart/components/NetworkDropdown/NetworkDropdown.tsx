@@ -11,9 +11,13 @@ import {
 } from '@sb/components/Dropdown/Dropdown.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
-import { IProps } from './NetworkDropdown.types'
-
-const WalletStatusButton = ({ connection, theme }: { connection: string, theme: Theme }) => (
+const WalletStatusButton = ({
+  connection,
+  theme,
+}: {
+  connection: string
+  theme: Theme
+}) => (
   <BtnCustom
     type="text"
     size="large"
@@ -26,7 +30,11 @@ const WalletStatusButton = ({ connection, theme }: { connection: string, theme: 
 )
 
 @withRouter
-export default class NetworkDropdown extends React.PureComponent<{ theme: Theme, setEndpoint: (endpoint: string) => void, endpoint: {name: string, endpoint: string}}> {
+export default class NetworkDropdown extends React.PureComponent<{
+  theme: Theme
+  setEndpoint: (endpoint: string) => void
+  endpoint: { name: string; endpoint: string }
+}> {
   render() {
     const { theme, setEndpoint, endpoint } = this.props
 
@@ -43,7 +51,10 @@ export default class NetworkDropdown extends React.PureComponent<{ theme: Theme,
         />
 
         <StyledPaper
-          style={{ display: currentConnectionEndpoint.label === endpoint.name ? 'none' : '' }}
+          style={{
+            display:
+              currentConnectionEndpoint.label === endpoint.name ? 'none' : '',
+          }}
           theme={theme}
           isWalletConnected={currentConnectionEndpoint.label === endpoint.name}
           customActiveRem={`25rem`}
@@ -63,7 +74,11 @@ export default class NetworkDropdown extends React.PureComponent<{ theme: Theme,
                   border="none"
                   borderWidth="0"
                   borderRadius="0"
-                  btnColor={currentConnectionEndpoint.label === endpoint.name ? '#AAF2C9' : '#ECF0F3'}
+                  btnColor={
+                    currentConnectionEndpoint.label === endpoint.name
+                      ? '#AAF2C9'
+                      : '#ECF0F3'
+                  }
                   fontSize={'1.2rem'}
                   style={{
                     display: 'flex',
@@ -86,25 +101,3 @@ export default class NetworkDropdown extends React.PureComponent<{ theme: Theme,
     )
   }
 }
-
-// {this.props.items.map(({ icon, text, to, style, ...events }) => (
-// <StyledMenuItem
-//   theme={theme}
-//   disableRipple
-//   disableGutters={true}
-//   key={text}
-// >
-//     <StyledLink
-//       theme={theme}
-//       to={to}
-//       key={`${text}-link`}
-//       onClick={this.handleClose}
-//       {...events}
-//     >
-//       {/* {icon} */}
-//       <StyledMenuItemText style={style} key={`${text}-text`}>
-//         {text}
-//       </StyledMenuItemText>
-//     </StyledLink>
-//   </StyledMenuItem>
-// ))}
