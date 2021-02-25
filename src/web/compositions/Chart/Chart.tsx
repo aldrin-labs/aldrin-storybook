@@ -376,6 +376,7 @@ function ChartPageComponent(props: any) {
         view={'default'}
         layout={layout}
         theme={theme}
+        publicKey={publicKey}
         authenticated={authenticated}
         marketType={marketType}
         currencyPair={selectedPair}

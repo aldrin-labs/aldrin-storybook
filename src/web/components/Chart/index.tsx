@@ -133,12 +133,13 @@ export const SingleChartWithButtons = ({
             textTransform: 'capitalize',
             fontSize: '1.3rem',
             lineHeight: '1rem',
-            paddingLeft: '1rem',
+            // paddingLeft: '1rem',
+            padding: '1rem'
           }}
         >
           Chart
         </span>
-        {isWithoutIndexChart ? null :
+        {/* {isWithoutIndexChart ? null :
         <TerminalModeButton
           theme={theme}
           active={chartExchange === 'index'}
@@ -158,7 +159,7 @@ export const SingleChartWithButtons = ({
           onClick={() => updateChartExchange('serum')}
         >
           Serum
-        </TerminalModeButton>
+        </TerminalModeButton> */}
       </TriggerTitle>
       <SingleChart
         name=""
