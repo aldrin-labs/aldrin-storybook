@@ -166,13 +166,7 @@ export const SingleChartWithButtons = ({
         key={`${themeMode}${base}/${quote}`}
         themeMode={themeMode}
         currencyPair={currencyPair}
-        additionalUrl={`/?symbol=${base}/${quote}_${String(marketType)}_${
-          chartExchange === 'index'
-            ? isCustomMarkets
-              ? 'ftx'
-              : 'binance'
-            : 'serum'
-        }&user_id=${publicKey}&api_version=${2.1}`}
+        additionalUrl={`/?symbol=${base}/${quote}_${String(marketType)}_serum&user_id=${publicKey}&api_version=${2.1}`}
       />
     </CustomCard>
   )

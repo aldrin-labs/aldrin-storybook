@@ -250,14 +250,14 @@ const TopBar = ({ theme }) => {
         />
       </div> */}
       {/* <WalletBlock /> */}
-      <div data-tut="connection-dropdown">
+      {/* <div data-tut="connection-dropdown">
         <NetworkDropdown
           endpoint={endpoint}
           setEndpoint={setEndpoint}
           theme={theme}
           isWalletConnected={connected}
         />
-      </div>
+      </div> */}
 
       <div data-tut="wallet">
         <Dropdown

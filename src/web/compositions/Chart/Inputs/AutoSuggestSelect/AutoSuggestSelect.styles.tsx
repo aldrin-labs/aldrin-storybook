@@ -30,4 +30,11 @@ export const ExchangePair = styled(({ gridBorder, paddingCell, ...props }) => (
   &:hover #selectWrapper {
     display: block;
   }
+
+  ${(props) =>
+    props.fixed
+      ? `  #selectWrapper {
+    display: block;
+  }`
+      : ``};
 `

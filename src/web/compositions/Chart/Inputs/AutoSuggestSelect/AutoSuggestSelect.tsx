@@ -32,7 +32,6 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
     if (prevProps.value !== this.props.value) {
       const { value, markets, customMarkets, setMarketAddress } = this.props
       const allMarkets = [...markets, ...customMarkets]
-  
 
       // Need to refactor this, address of a coin should be in the value, not name
       // console.log('value: ', value)
@@ -64,7 +63,15 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
     this.setState({ isMenuOpen: true })
   }
 
-  handleChange = async ({ value, isCustomUserMarket, address }: { value: string, isCustomUserMarket: boolean, address: string }) => {
+  handleChange = async ({
+    value,
+    isCustomUserMarket,
+    address,
+  }: {
+    value: string
+    isCustomUserMarket: boolean
+    address: string
+  }) => {
     const {
       getCharts,
       getViewModeQuery: {
@@ -76,13 +83,19 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       marketType,
       setMarketAddress,
       markets,
-      customMarkets
+      customMarkets,
     } = this.props
     const {
       multichart: { charts },
     } = getCharts
 
-    console.log('onSelectPair', value, markets, customMarkets, isCustomUserMarket)
+    console.log(
+      'onSelectPair',
+      value,
+      markets,
+      customMarkets,
+      isCustomUserMarket
+    )
 
     if (!value) {
       return
@@ -97,15 +110,30 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       // Need to refactor this, address of a coin should be in the value, not name
       // console.log('value: ', value)
 
-      console.log('selectedMarketFormSelector before', selectedMarketFormSelector)
+      console.log(
+        'selectedMarketFormSelector before',
+        selectedMarketFormSelector
+      )
 
       if (selectedMarketFormSelector) {
-        console.log('selectedMarketFormSelector in first', selectedMarketFormSelector)
+        console.log(
+          'selectedMarketFormSelector in first',
+          selectedMarketFormSelector
+        )
         setMarketAddress(selectedMarketFormSelector.address.toBase58())
       } else {
-        selectedMarketFormSelector = customMarkets.find((el) => el.name === pair)
-        console.log('selectedMarketFormSelector in second', selectedMarketFormSelector)
-        setMarketAddress(selectedMarketFormSelector ? selectedMarketFormSelector.address : address)
+        selectedMarketFormSelector = customMarkets.find(
+          (el) => el.name === pair
+        )
+        console.log(
+          'selectedMarketFormSelector in second',
+          selectedMarketFormSelector
+        )
+        setMarketAddress(
+          selectedMarketFormSelector
+            ? selectedMarketFormSelector.address
+            : address
+        )
       }
 
       const chartPageType = marketType === 0 ? 'spot' : 'futures'
@@ -161,15 +189,19 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
           style={{ width: '14.4rem', ...style }}
           border={divider}
           selectStyles={selectStyles}
-          onClick={this.toggleMenu}
+          fixed={isMenuOpen}
         >
-          <SelectR
-            id={this.props.id}
-            style={{ width: '100%' }}
-            value={isClosed && marketName && { marketName, label: marketName }}
-            fullWidth={true}
-            isDisabled={true}
-          />
+          <div onClick={this.toggleMenu} style={{ display: 'flex', width: '100%' }}>
+            <SelectR
+              id={this.props.id}
+              style={{ width: '100%' }}
+              value={
+                isClosed && marketName && { marketName, label: marketName }
+              }
+              fullWidth={true}
+              isDisabled={true}
+            />
+          </div>
           <SelectWrapper
             id={'selectWrapper'}
             theme={theme}
