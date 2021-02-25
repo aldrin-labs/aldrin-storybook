@@ -34,12 +34,12 @@ export function WalletProvider({ children }) {
 
   // old code should be removed
   // const isMathWallet = !!providerUrl.match('https://www.mathwallet.org')
-  // const isSolongWallet = !!providerUrl.match('https://solongwallet.com')
+  const isSolongWallet = !!providerUrl.match('https://solongwallet.com')
   // const WalletClass = isMathWallet ? MathWallet : isSolongWallet ? SolongWallet : Wallet
   
   const wallet = useMemo(() => { 
     const isMathWallet = !!providerUrl.match('https://www.mathwallet.org')
-    const WalletClass = isMathWallet ? MathWallet : Wallet
+    const WalletClass = isMathWallet ? MathWallet : isSolongWallet ? SolongWallet : Wallet
     
     const wallet = new WalletClass(providerUrl, endpoint)
 
