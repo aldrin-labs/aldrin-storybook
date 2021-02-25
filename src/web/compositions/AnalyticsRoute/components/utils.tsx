@@ -41,6 +41,7 @@ export const generateIDFromValues = (arr: any[]) =>
 export const endOfDayTimestamp = moment()
   .endOf('day')
   .unix()
+
 export const dayDuration = 24 * 60 * 60
 
 export const createButterflyChart = (
@@ -232,7 +233,7 @@ export const createButterflyChart = (
                   needQuoteInLabel ? `${isNotUSDTQuote ? '' : '$'}` : ''
                 }${formatNumberToUSFormat(
                   stripDigitPlaces(tooltipModel.dataPoints[0].dataPoint.y, 0)
-                )}${isNotUSDTQuote ? ` ${quote}` : ''}`
+                )}${isNotUSDTQuote && needQuoteInLabel ? ` ${quote}` : ''}`
               if (sellCountBlock)
                 sellCountBlock.innerHTML = `${
                   needQuoteInLabel ? `${isNotUSDTQuote ? '' : '$'}` : ''
@@ -241,7 +242,7 @@ export const createButterflyChart = (
                     Math.abs(tooltipModel.dataPoints[1].dataPoint.y),
                     0
                   )
-                )}${isNotUSDTQuote ? ` ${quote}` : ''}`
+                )}${isNotUSDTQuote && needQuoteInLabel ? ` ${quote}` : ''}`
             }
 
             var position = context.chart.canvas.getBoundingClientRect()
