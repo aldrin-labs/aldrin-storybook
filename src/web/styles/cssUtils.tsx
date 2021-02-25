@@ -10,7 +10,7 @@ import { TypographyWithCustomColor } from '@sb/styles/StyledComponents/Typograph
 export const customAquaScrollBar = css`
   &::-webkit-scrollbar {
     width: ${({ scrollBarWidth }: { scrollBarWidth?: number }) =>
-      scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
+      scrollBarWidth ? `${scrollBarWidth}px` : '0px'};
     height: 3px;
   }
 
@@ -20,6 +20,7 @@ export const customAquaScrollBar = css`
 
   &::-webkit-scrollbar-thumb {
     background: rgb(39, 39, 45);
+    width: 0px;
   }
 `
 

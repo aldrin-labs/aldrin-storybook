@@ -4,6 +4,7 @@ import { graphql } from 'react-apollo'
 import { useLocation, useHistory } from 'react-router-dom'
 import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import PreferencesSelect from '../Inputs/PreferencesSelect'
+import PortfolioSelector from '../Inputs/PortfolioSelector'
 import LayoutSelector from '@core/components/LayoutSelector'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import KeySelector from '@core/components/KeySelector'
@@ -176,7 +177,7 @@ export const CardsPanel = ({
               'You can create an unlimited number of portfolios and accounts, but to trade within one window you will have to choose only one of them.'
             }
           >
-            <KeySelector
+            {/* <KeySelector
               theme={theme}
               exchange={activeExchange}
               marketType={marketType}
@@ -185,6 +186,14 @@ export const CardsPanel = ({
                 width: '100%',
               }}
               isAccountSelect={true}
+            /> */}
+            <PortfolioSelector
+              selectStyles={selectStyles(theme)}
+              theme={theme}
+              marketType={marketType}
+              style={{ width: '20%', minWidth: '0', marginLeft: '.8rem' }}
+              id={'portfolioSelector'}
+              value={'portfolio'}
             />
           </DarkTooltip>
         )}
