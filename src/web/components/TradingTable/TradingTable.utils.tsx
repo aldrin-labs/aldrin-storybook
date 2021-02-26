@@ -1570,7 +1570,7 @@ export const combineTradeHistoryTable = ({
             }
           : {}),
         fee: {
-          render: `${stripDigitPlaces(cost, quantityPrecision)} ${currency}`,
+          render: `${stripDigitPlaces(cost, 8)} ${currency}`,
 
           contentToSort: cost,
         },

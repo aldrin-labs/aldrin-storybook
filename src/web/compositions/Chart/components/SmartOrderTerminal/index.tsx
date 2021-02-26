@@ -204,10 +204,12 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       this.state.entryPoint.order.type === 'maker-only'
 
     console.log('getStrategySettingsQuery', getStrategySettingsQuery)
+
     const result = getDefaultStateFromStrategySettings({
       getStrategySettingsQuery,
       marketType,
     })
+
     console.log('result', result)
 
     if (!result) {
@@ -215,6 +217,19 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
     }
 
     let savedAveraging = { ...result.entryPoint?.averaging }
+    let maxAmount = 0
+
+    if (marketType === 0) {
+      maxAmount =
+        result.entryPoint?.order.side === 'buy'
+          ? +stripDigitPlaces(this.props.funds[1].quantity, 8)
+          : +stripDigitPlaces(this.props.funds[0].quantity, 8)
+    } else if (marketType === 1) {
+      maxAmount = +stripDigitPlaces(
+        this.props.funds[1].quantity * this.props.leverage,
+        quantityPrecision
+      )
+    }
 
     if (result.entryPoint?.averaging?.entryLevels) {
       savedAveraging = {
@@ -232,21 +247,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         ],
       }
 
-      let maxAmount = 0
-
       let priceForCalculate = this.props.price
-
-      if (marketType === 0) {
-        maxAmount =
-          result.entryPoint?.order.side === 'buy'
-            ? +stripDigitPlaces(this.props.funds[1].quantity, 8)
-            : +stripDigitPlaces(this.props.funds[0].quantity, 8)
-      } else if (marketType === 1) {
-        maxAmount = +stripDigitPlaces(
-          this.props.funds[1].quantity * this.props.leverage,
-          quantityPrecision
-        )
-      }
 
       if (result.entryPoint?.averaging.entryLevels.length > 0) {
         result.entryPoint.averaging.entryLevels.forEach((target) => {
@@ -380,19 +381,24 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       return
     }
 
+    let updatedAmount =
+      result.entryPoint.order.amount > maxAmount
+        ? maxAmount
+        : result.entryPoint.order.amount
+
     let price =
       (isMarketType && !result.entryPoint.trailing.isTrailingOn) ||
       !result.entryPoint.order.price
         ? this.props.price
         : result.entryPoint.order.price
 
-    const newTotal = result.entryPoint.order.amount * this.props.price
+    const newTotal = updatedAmount * this.props.price
 
     this.updateSubBlockValue(
       'entryPoint',
       'order',
       'amount',
-      stripDigitPlaces(result.entryPoint.order.amount, quantityPrecision)
+      stripDigitPlaces(updatedAmount, quantityPrecision)
     )
 
     this.updateSubBlockValue('entryPoint', 'order', 'price', this.props.price)

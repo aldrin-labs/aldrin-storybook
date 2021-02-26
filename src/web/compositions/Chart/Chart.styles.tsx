@@ -97,8 +97,8 @@ html {
     top: 10%;
     left: 0;
     z-index: -1;
-    will-change: transform;
-    transition: transform .4s ease-out;
+    // will-change: transform;
+    // transition: transform .4s ease-out;
   }
 
   .needHover {

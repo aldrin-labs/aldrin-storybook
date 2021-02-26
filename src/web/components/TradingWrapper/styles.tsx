@@ -234,7 +234,7 @@ export const StyledSelect = styled.select`
       props.theme.palette &&
       props.theme.palette.white &&
       props.theme.palette.white.background) ||
-    '#16253D'};
+    'transparent'};
   border: ${(props) =>
     (props.theme &&
       props.theme.palette &&
@@ -249,7 +249,7 @@ export const StyledSelect = styled.select`
       props.theme.palette &&
       props.theme.palette.grey &&
       props.theme.palette.grey.light) ||
-    '#7284a0'};
+    '#545454'};
   font-weight: bold;
   font-size: 1rem;
   text-align: center;

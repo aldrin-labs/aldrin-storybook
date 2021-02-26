@@ -290,15 +290,11 @@ export const getStrategyFields = ({
                 padding=".1rem 1rem 0 1rem"
                 borderRadius="0.5rem"
                 borderColor={
-                  enableEdit
-                    ? theme.palette.blue.tabs
-                    : theme.palette.grey.main
+                  enableEdit ? theme.palette.blue.tabs : theme.palette.grey.main
                 }
                 btnColor={'#fff'}
                 backgroundColor={
-                  enableEdit
-                    ? theme.palette.blue.tabs
-                    : theme.palette.grey.main
+                  enableEdit ? theme.palette.blue.tabs : theme.palette.grey.main
                 }
                 transition={'all .4s ease-out'}
                 onClick={(e) => {
@@ -759,6 +755,7 @@ export const combineActiveTradesTable = ({
           marketType,
           entryOrder: { side, orderType, amount, price, entryDeviation },
           entryLevels,
+          exitLevels,
           isTemplate,
           templatePnl,
           templateStatus,
@@ -771,6 +768,7 @@ export const combineActiveTradesTable = ({
             amount: '-',
           },
           entryLevels: [],
+          exitLevels: [],
           isTemplate: false,
           templatePnl: 0,
           templateStatus: '-',
@@ -801,14 +799,10 @@ export const combineActiveTradesTable = ({
       const needOpacity = false
       const keyName = keys[accountId]
 
-      console.log('jbuhyuyvkuyvkvkyvycyc', entryDeviation, entryPrice)
-
       const entryOrderPrice =
         !entryDeviation && orderType === 'limit' && !entryPrice
           ? price
           : entryPrice
-
-      console.log('entryOrderPrice', entryOrderPrice)
 
       const [activeOrderStatus, statusColor] = getActiveOrderStatus({
         strategy: el,
@@ -858,6 +852,7 @@ export const combineActiveTradesTable = ({
                 exitPrice={exitPrice}
                 entryOrderPrice={entryOrderPrice}
                 entryLevels={entryLevels}
+                isSplitTargets={exitLevels.length > 0}
                 receivedProfitPercentage={receivedProfitPercentage}
                 receivedProfitAmount={receivedProfitAmount}
                 positionAmount={+stripDigitPlaces(amount, quantityPrecision)}

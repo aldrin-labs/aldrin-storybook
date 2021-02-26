@@ -24,6 +24,7 @@ import {
   onErrorImportCoinUrl,
 } from '@core/utils/MarketCapUtils'
 import UpdateFuturesBalances from '@core/components/UpdateFuturesBalances/UpdateFuturesBalances'
+import UpdateSpotBalances from '@core/components/UpdateSpotBalances/UpdateSpotBalances'
 
 import TransferPopup from '@sb/compositions/Chart/components/TransferPopup'
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
@@ -213,6 +214,9 @@ export const Balances = ({
             Balances{' '}
             {!isSPOTMarket && (
               <UpdateFuturesBalances keyId={selectedKey.keyId} />
+            )}
+            {isSPOTMarket && (
+              <UpdateSpotBalances keyId={selectedKey.keyId} />
             )}
           </>
         </ChartCardHeader>

@@ -280,7 +280,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       if (leverage !== undefined) {
         this.onPriceChange({ target: { value: marketPriceAfterPairChange } })
       }
-      
       if (total !== 0) {
         const { quantityPrecision: qp } = getPrecisionItem({
           marketType: isSPOTMarket ? 0 : 1,
@@ -288,8 +287,16 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
         })
 
         setFieldValue('total', +total)
-        setFieldValue('amount', stripDigitPlaces(+total / marketPriceAfterPairChange, qp))
+        setFieldValue(
+          'amount',
+          stripDigitPlaces(+total / marketPriceAfterPairChange, qp)
+        )
       }
+    }
+
+    if (pair !== prevProps.pair) {
+      setFieldValue('total', 0)
+      setFieldValue('amount', 0)
     }
 
     if (prevProps.priceType !== priceType) {
@@ -300,10 +307,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
       setFieldValue(
         'amount',
-        stripDigitPlaces(
-          +total / +priceForCalculate,
-          quantityPrecision
-        )
+        stripDigitPlaces(+total / +priceForCalculate, quantityPrecision)
       )
     }
 
@@ -600,7 +604,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     } else {
       maxAmount = funds[1].quantity * leverage
     }
-  
+
     return (
       <Container background={'transparent'}>
         <GridContainer isBuyType={isBuyType} key={`${pair[0]}/${pair[1]}`}>
@@ -725,7 +729,11 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     ? `buy ${pair[0]}`
                     : `sell ${pair[0]}`
                   : operationType === 'buy'
-                  ? 'buy long'
+                  ? this.props.reduceOnly
+                    ? 'reduce long'
+                    : 'buy long'
+                  : this.props.reduceOnly
+                  ? 'reduce short'
                   : 'sell short'}
               </SendButton>
             </Grid>
