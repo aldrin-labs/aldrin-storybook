@@ -483,10 +483,14 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
 
                 // TODO: move to utils
                 const statusResult =
-                  result && result.data && result.data.updateEntryPoint
+                  result &&
+                  result.data &&
+                  result.data.updateEntryPoint &&
+                  (result.data.updateEntryPoint.enabled ||
+                    selectedTrade.conditions.isTemplate)
                     ? {
                         status: 'success',
-                        message: 'Smart order edit successful',
+                        message: 'Smart order edited successfully',
                       }
                     : {
                         status: 'error',
@@ -547,7 +551,7 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
                   result && result.data && result.data.updateTakeProfitStrategy
                     ? {
                         status: 'success',
-                        message: 'Smart order edit successful',
+                        message: 'Smart order edited successfully',
                       }
                     : {
                         status: 'error',

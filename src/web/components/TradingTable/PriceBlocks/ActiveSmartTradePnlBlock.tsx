@@ -19,12 +19,14 @@ const PnlBlock = ({
   receivedProfitAmount,
   positionAmount,
   templatePnl,
+  isSplitTargets,
 }: IProps) => {
   const { green, red, blue } = theme.palette
   let currentPrice = price
 
   // for waitLossHedge for example
-  if (exitPrice > 0) {
+  if (exitPrice > 0 && !isSplitTargets) {
+    // handle for split targets
     currentPrice = exitPrice
   }
 
@@ -32,6 +34,7 @@ const PnlBlock = ({
     ((currentPrice / entryOrderPrice) * 100 - 100) *
     leverage *
     (isBuyTypeOrder(side) ? 1 : -1)
+
   let profitAmount =
     (positionAmount / leverage) * entryOrderPrice * (profitPercentage / 100)
 
