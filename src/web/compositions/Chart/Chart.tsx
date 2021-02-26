@@ -55,6 +55,21 @@ import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import { AWESOME_MARKETS } from '@sb/dexUtils/serum'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 
+const arraysCustomMarketsMatch = (arr1, arr2) => {
+
+	// Check if the arrays are the same length
+	if (arr1.length !== arr2.length) return false;
+
+	// Check if all items exist and are in the same order
+	for (var i = 0; i < arr1.length; i++) {
+		if (arr1[i].symbol !== arr2[i].symbol) return false;
+	}
+
+	// Otherwise, return true
+	return true;
+
+};
+
 function ChartPageComponent(props: any) {
   const {
     theme,
@@ -121,47 +136,10 @@ function ChartPageComponent(props: any) {
   )
 
   useEffect(() => {
-    // const { marketType } = props
-    // setTimeout(() => {
-    //   prefetchCoinSelector({ marketType, exchangeSymbol: 'binance' })
-    // }, 5000)
-
-    // // prefetch different market for coin selector
-    // setTimeout(() => {
-    //   prefetchDifferentMarketForCoinSelector({
-    //     marketType: marketType === 1 ? 0 : 1,
-    //     exchangeSymbol: 'binance',
-    //   })
-    // }, 15000)
-
-    // setTimeout(() => {
-    //   checLoginStatusWrapper(prefetchPortfolio)
-    // }, 30000)
-
-    // setTimeout(() => {
-    //   checLoginStatusWrapper(prefetchPortfolioMainSpot)
-    // }, 45000)
-
-    // setTimeout(() => {
-    //   checLoginStatusWrapper(prefetchPortfolioMainFutures)
-    // }, 55000)
-
-    // setTimeout(() => {
-    //   checLoginStatusWrapper(prefetchDeposit)
-    // }, 75000)
-
-    // setTimeout(() => {
-    //   // checLoginStatusWrapper(prefetchWithdrawal)
-    // }, 95000)
-
     return () => {
       document.title = 'Cryptocurrencies AI'
     }
   }, [props.marketType])
-
-  // useEffect(() => {
-  //   getUserCustomMarketsQueryRefetch()
-  // }, [publicKey])
 
   useEffect(() => {
     const userMarkets = getUserCustomMarketsQuery.getUserCustomMarkets.map(
@@ -174,7 +152,7 @@ function ChartPageComponent(props: any) {
       })
     )
 
-    console.log('userMarkets', userMarkets)
+    const savedCustomMarkets = localStorage.getItem('customMarkets') || '[]'
 
     const updatedMarkets = AWESOME_MARKETS.map((el) => ({
       ...el,
@@ -183,7 +161,10 @@ function ChartPageComponent(props: any) {
       isCustomUserMarket: true,
     }))
 
-    setCustomMarkets([...updatedMarkets, ...userMarkets])
+    const isDataChanged = !arraysCustomMarketsMatch(JSON.parse(savedCustomMarkets), [...updatedMarkets, ...userMarkets])
+    console.log('isDataChanged', isDataChanged)
+
+    if (isDataChanged) setCustomMarkets([...updatedMarkets, ...userMarkets])
   }, [getUserCustomMarketsQuery.getUserCustomMarkets.length])
 
   const setCorrectMarketAddress = async () => {
@@ -200,6 +181,7 @@ function ChartPageComponent(props: any) {
         isPrivateCustomMarket: isPrivate,
       })
     )
+
     const updatedMarkets = AWESOME_MARKETS.map((el) => ({
       ...el,
       address: el.address.toString(),
@@ -295,60 +277,12 @@ function ChartPageComponent(props: any) {
   let minFuturesStep
   let initialLeverage
 
-  // hacky way to redirect to default market if user selected wrong market in url
-  // if (
-  //   pairPropertiesQuery.loading === false &&
-  //   pairPropertiesQuery.marketByName.length === 0
-  // ) {
-  //   const chartPageType = marketType === 0 ? 'spot' : 'futures'
-  //   const pathToRedirect = `/chart/${chartPageType}/BTC_USDT`
-  //   return <Redirect to={pathToRedirect} exact />
-  // }
-
   const isPairDataLoading = false
 
-  if (isPairDataLoading) {
-    minPriceDigits = 0.00000001
-    quantityPrecision =
-      (market?.minOrderSize && getDecimalCount(market.minOrderSize)) || 3
-    pricePrecision = (market?.tickSize && getDecimalCount(market.tickSize)) || 8
-    minSpotNotional = 10
-    minFuturesStep = 0.001
-    initialLeverage = 125
-  } else {
-    // minPriceDigits = +props.pairPropertiesQuery.marketByName[0].properties
-    //   .binance.filters[0].minPrice
+  quantityPrecision =
+    market?.minOrderSize && getDecimalCount(market.minOrderSize)
 
-    // quantityPrecision = +props.pairPropertiesQuery.marketByName[0].properties
-    //   .binance.quantityPrecision
-
-    quantityPrecision =
-      market?.minOrderSize && getDecimalCount(market.minOrderSize)
-
-    // pricePrecision = +props.pairPropertiesQuery.marketByName[0].properties
-    //   .binance.pricePrecision
-
-    pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
-
-    // minSpotNotional =
-    //   +props.pairPropertiesQuery.marketByName[0].properties.binance.filters[3]
-    //     .minNotional || 10
-
-    // minFuturesStep =
-    //   +props.pairPropertiesQuery.marketByName[0].properties.binance.filters[1]
-    //     .stepSize || 0.001
-
-    // initialLeverage =
-    //   (props.pairPropertiesQuery.marketByName[0].leverageBrackets &&
-    //     +props.pairPropertiesQuery.marketByName[0].leverageBrackets.binance[0]
-    //       .initialLeverage) ||
-    //   125
-  }
-
-  // const arrayOfMarketIds = marketByMarketType.map((el) => el._id)
-  // const selectedKey = selectedTradingKey
-  //   ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
-  //   : { keyId: '', hedgeMode: false, isFuturesWarsKey: false }
+  pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
 
   const accentColor = '#09ACC7'
 

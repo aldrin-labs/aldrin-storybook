@@ -19,7 +19,6 @@ import { ExchangePair, SelectR } from './AutoSuggestSelect.styles'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
 import { updateFavoritePairs } from '@core/graphql/mutations/chart/updateFavoritePairs'
-import { useAllMarkets, useCustomMarkets } from '@sb/dexUtils/markets'
 import SelectWrapper from '../SelectWrapper/SelectWrapper'
 
 class IntegrationReactSelect extends React.PureComponent<IProps, IState> {

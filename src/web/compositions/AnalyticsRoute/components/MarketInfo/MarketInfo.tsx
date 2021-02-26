@@ -181,14 +181,14 @@ const MarketInfo = ({
         <Row direction={'column'} align={'flex-start'}>
           <RowContainer justify={'space-between'}>
             <Row>
-              <SvgIcon
+              {/* <SvgIcon
                 style={{
                   margin: '0 1rem 0 0',
                 }}
                 width={`3rem`}
                 height={'3rem'}
                 src={CoinPlaceholder}
-              />
+              /> */}
               <PairNameTitle theme={theme}>{pair}</PairNameTitle>
             </Row>
             <PurpleLinkButton
@@ -244,7 +244,7 @@ const MarketInfo = ({
                 24h Low:
               </SmallTitle>
               <SmallBoldTitle theme={theme}>{`${
-                markPrice < minPrice ? markPrice : minPrice
+                stripDigitPlaces(markPrice < minPrice ? markPrice : minPrice, pricePrecision)
               } ${quote}`}</SmallBoldTitle>
             </Row>
             <Row>
@@ -252,7 +252,7 @@ const MarketInfo = ({
                 24h High:
               </SmallTitle>
               <SmallBoldTitle theme={theme}>{`${
-                markPrice > maxPrice ? markPrice : maxPrice
+                stripDigitPlaces(markPrice > maxPrice ? markPrice : maxPrice, pricePrecision)
               } ${quote}`}</SmallBoldTitle>
             </Row>
           </Row>

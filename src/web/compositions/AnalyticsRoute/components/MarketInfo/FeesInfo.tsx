@@ -24,15 +24,15 @@ const FeesBlock = ({
     ]
 
   const [base, quote] = selectedPair.split('_')
-
+  const preSymbol = dataForToday.buy * 0.0022 - dataForToday.sell * 0.0003 > 0 ? '' : '-'
   return (
     <>
       <BlockTitle theme={theme}>Fees (24h)</BlockTitle>
-      <BlockValue theme={theme}>{`${
+      <BlockValue theme={theme}>{`${preSymbol}${
         isNotUSDTQuote ? '' : '$'
       }${formatNumberToUSFormat(
         stripDigitPlaces(
-          dataForToday.buy * 0.0022 - dataForToday.buy * 0.0003,
+          Math.abs(dataForToday.buy * 0.0022 - dataForToday.sell * 0.0003),
           2
         )
       )}${isNotUSDTQuote ? ` ${quote}` : ''}`}</BlockValue>
