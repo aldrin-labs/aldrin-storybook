@@ -52,8 +52,7 @@ const PriceBlock = ({
 }: IProps) => {
   return (
     <Text theme={theme}>
-      {formatNumberToUSFormat((lastMarketPrice * circulatingSupply).toFixed(0))}
-      $
+      ${formatNumberToUSFormat((lastMarketPrice * circulatingSupply).toFixed(0))}
     </Text>
   )
 }
