@@ -4,7 +4,7 @@ import { Theme } from '@material-ui/core'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getSerumQuoteTradeVolumeStats } from '@core/graphql/queries/analytics/getSerumQuoteTradeVolumeStats'
 
-import { endOfDayTimestamp, dayDuration, generateIDFromValues } from '../utils'
+import { endOfDayTimestamp, dayDuration, generateIDFromValues, getTimezone } from '../utils'
 
 import AreaChart from './AreaChart'
 
@@ -45,6 +45,7 @@ export default compose(
       pair: props.selectedPair,
       toTimestamp: endOfDayTimestamp,
       sinceTimestamp,
+      timezone: getTimezone()
     }),
     fetchPolicy: 'cache-and-network',
     withOutSpinner: false,

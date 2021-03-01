@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import {
   Market,
   Orderbook,
@@ -50,6 +51,8 @@ export function useAllMarkets() {
   const { customMarkets } = useCustomMarkets()
 
   const getAllMarkets = async () => {
+    console.log('getAllMarkets', getMarketInfos(customMarkets))
+    let i = 0
     const markets: Array<{
       market: Market
       marketName: string
@@ -57,6 +60,8 @@ export function useAllMarkets() {
     } | null> = await Promise.all(
       getMarketInfos(customMarkets).map(async (marketInfo) => {
         try {
+          console.log('marketInfo.address', marketInfo.address, ++i)
+
           const market = await Market.load(
             connection,
             marketInfo.address,
@@ -78,16 +83,26 @@ export function useAllMarkets() {
         }
       })
     )
+
+    console.log('getAllMarkets markets', markets)
+    
     return markets.filter(
       (m): m is { market: Market; marketName: string; programId: PublicKey } =>
         !!m
     )
   }
-  return useAsyncData(
-    getAllMarkets,
+
+  const memoizedGetAllMarkets = useMemo(() => getAllMarkets, [JSON.stringify(customMarkets)]);
+
+  // console.log('memoizedGetAllMarkets', memoizedGetAllMarkets)
+
+  const getAllMarketsResult = useAsyncData(
+    memoizedGetAllMarkets,
     tuple('getAllMarkets', customMarkets.length, connection),
     { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
   )
+
+  return getAllMarketsResult
 }
 
 export function useUnmigratedOpenOrdersAccounts() {
@@ -229,7 +244,11 @@ export function MarketProvider({ children }) {
   }, [])
 
   const [market, setMarket] = useState()
+  // add state for markets
+  // add useEffect for customMarkets
   useEffect(() => {
+    console.log('useEffect in market', connection, connection)
+
     if (
       market &&
       marketInfo &&
@@ -398,7 +417,7 @@ export function useTokenAccounts() {
   return useAsyncData(
     getTokenAccounts,
     tuple('getTokenAccounts', wallet, connected),
-    { refreshInterval: _SLOW_REFRESH_INTERVAL }
+    // { refreshInterval: _SLOW_REFRESH_INTERVAL }
   )
 }
 

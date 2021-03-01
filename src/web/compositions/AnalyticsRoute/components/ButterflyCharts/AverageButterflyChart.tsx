@@ -4,7 +4,7 @@ import { Theme } from '@material-ui/core'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getSerumAvgTotalStats } from '@core/graphql/queries/analytics/getSerumAvgTotalStats'
 
-import { endOfDayTimestamp, dayDuration, generateIDFromValues } from '../utils'
+import { endOfDayTimestamp, dayDuration, generateIDFromValues, getTimezone } from '../utils'
 
 import ButterflyChart from './ButterflyChart'
 
@@ -42,6 +42,7 @@ export default compose(
       pair: props.selectedPair,
       toTimestamp: endOfDayTimestamp,
       sinceTimestamp: endOfDayTimestamp - dayDuration * 13,
+      timezone: getTimezone()
     }),
     fetchPolicy: 'cache-and-network',
     withOutSpinner: false,

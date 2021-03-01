@@ -203,7 +203,7 @@ const MarketInfo = ({
 
           <RowContainer justify="space-between">
             <LastPrice theme={theme}>
-              {`${markPrice === 0 ? '--' : markPrice.toFixed(pricePrecision)} ${
+              {`${markPrice === 0 ? '--' : formatNumberToUSFormat(stripDigitPlaces(markPrice, pricePrecision))} ${
                 pair.split('/')[1]
               }`}
             </LastPrice>

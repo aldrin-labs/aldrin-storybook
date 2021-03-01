@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { useLocalStorageState } from './utils';
 import { useInterval } from './useInterval';
 import { useConnection } from './connection';
@@ -10,6 +10,7 @@ import {PreferencesContextValues} from "./types";
 const PreferencesContext = React.createContext<PreferencesContextValues | null>(null);
 
 export function PreferencesProvider({ children }) {
+  console.log('rerender PreferencesProvider')
   const [autoSettleEnabled, setAutoSettleEnabled] = useLocalStorageState(
     'autoSettleEnabled',
     true,
@@ -17,12 +18,15 @@ export function PreferencesProvider({ children }) {
 
   const [tokenAccounts] = useTokenAccounts();
   const { connected, wallet } = useWallet();
-  const { customMarkets } = useMarket();
-  const [marketList] = useAllMarkets(customMarkets);
+
+  const [marketList] = useAllMarkets();
   const connection = useConnection();
   const [selectedTokenAccounts] = useSelectedTokenAccounts();
 
+  console.log('wallet?.autoApprove', wallet?.autoApprove)
+
   useInterval(() => {
+    console.log('interval')
     const autoSettle = async () => {
       const markets = (marketList || []).map((m) => m.market);
       try {

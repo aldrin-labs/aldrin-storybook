@@ -1,4 +1,5 @@
 import moment from 'dayjs'
+
 import {
   Chart,
   BarElement,
@@ -44,6 +45,8 @@ export const endOfDayTimestamp = moment()
 
 export const dayDuration = 24 * 60 * 60
 
+export const getTimezone = () => Intl.DateTimeFormat().resolvedOptions().timeZone // city
+
 export const createButterflyChart = (
   id: string,
   data: any,
@@ -66,6 +69,9 @@ export const createButterflyChart = (
   const [base, quote] = selectedPair.split('_')
   const isNotUSDTQuote = getIsNotUSDTQuote(selectedPair)
 
+  // 22 Feb, when data started collecting
+  const updatedData = data.map(el => (el.date < 1613944800 ? { date: el.date, buy: 0, sell: 0, total: 0} : { ...el }))
+
   window[`butterflyChart-${id}`] = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -78,7 +84,7 @@ export const createButterflyChart = (
           backgroundColor: '#1C1D22',
           borderRadius: 50,
           borderWidth: 6,
-          data: data.map((item) => item.buy),
+          data: updatedData.map((item) => item.buy),
         },
         {
           barPercentage,
@@ -87,7 +93,7 @@ export const createButterflyChart = (
           backgroundColor: '#1C1D22',
           borderRadius: 50,
           borderWidth: 6,
-          data: data.map((item) => item.sell * -1),
+          data: updatedData.map((item) => item.sell * -1),
         },
       ],
     },
