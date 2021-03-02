@@ -52,9 +52,9 @@ export function ChartPageComponent(props: any) {
     }, 5000)
 
     setTimeout(() => {
-       if (authenticated) {
-          prefetchTooltips()
-       }
+      if (authenticated) {
+        prefetchTooltips()
+      }
     }, 6500)
 
     // prefetch different market for coin selector
@@ -98,19 +98,22 @@ export function ChartPageComponent(props: any) {
     }
   }, [props.marketType])
 
-  const memoizatedUpdateTerminalViewMode = useMemo(() => (mode: string) => { /// need to replace it
-    if (mode === 'smartOrderMode') {
-      finishJoyride({
-        updateTooltipSettingsMutation:
-          props.updateTooltipSettingsMutation,
-        // we have old value here after changing, it produce strange behavior
-        getTooltipSettings: null,
-        name: 'chartPagePopup',
-      })
-    }
+  const memoizatedUpdateTerminalViewMode = useMemo(
+    () => (mode: string) => {
+      /// need to replace it
+      if (mode === 'smartOrderMode') {
+        finishJoyride({
+          updateTooltipSettingsMutation: props.updateTooltipSettingsMutation,
+          // we have old value here after changing, it produce strange behavior
+          getTooltipSettings: null,
+          name: 'chartPagePopup',
+        })
+      }
 
-    updateTerminalViewMode(mode)
-  }, [])  
+      updateTerminalViewMode(mode)
+    },
+    []
+  )
 
   const {
     theme,
@@ -218,40 +221,43 @@ export function ChartPageComponent(props: any) {
       125
   }
 
-  const arrayOfMarketIds = marketByMarketType.map((el: { _id: string }) => el._id)
+  const arrayOfMarketIds = marketByMarketType.map(
+    (el: { _id: string }) => el._id
+  )
   const selectedKey = selectedTradingKey
     ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
     : { keyId: '', hedgeMode: false, isFuturesWarsKey: false }
-  
-  console.log('Chart RENDER', selectedKey)  
+
+  console.log('Chart RENDER', selectedKey)
+
+  console.log('getMyProfile', props.getChartDataQuery.getMyProfile)
 
   return (
     <MainContainer>
       <GlobalStyles />
-        <DefaultView
-          id={_id}
-          view={view}
-          layout={layout}
-          theme={theme}
-          authenticated={authenticated}
-          marketType={marketType}
-          currencyPair={selectedPair}
-          maxLeverage={initialLeverage}
-          minPriceDigits={minPriceDigits}
-          minSpotNotional={minSpotNotional}
-          minFuturesStep={minFuturesStep}
-          isPairDataLoading={isPairDataLoading}
-          themeMode={theme.palette.type}
-          selectedKey={selectedKey}
-          activeExchange={activeExchange}
-          terminalViewMode={terminalViewMode}
-          updateTerminalViewMode={memoizatedUpdateTerminalViewMode}
-          arrayOfMarketIds={arrayOfMarketIds}
-          changeChartLayoutMutation={changeChartLayoutMutation}
-          pricePrecision={pricePrecision}
-          quantityPrecision={quantityPrecision}
-
-        />
+      <DefaultView
+        id={_id}
+        view={view}
+        layout={layout}
+        theme={theme}
+        authenticated={authenticated}
+        marketType={marketType}
+        currencyPair={selectedPair}
+        maxLeverage={initialLeverage}
+        minPriceDigits={minPriceDigits}
+        minSpotNotional={minSpotNotional}
+        minFuturesStep={minFuturesStep}
+        isPairDataLoading={isPairDataLoading}
+        themeMode={theme.palette.type}
+        selectedKey={selectedKey}
+        activeExchange={activeExchange}
+        terminalViewMode={terminalViewMode}
+        updateTerminalViewMode={memoizatedUpdateTerminalViewMode}
+        arrayOfMarketIds={arrayOfMarketIds}
+        changeChartLayoutMutation={changeChartLayoutMutation}
+        pricePrecision={pricePrecision}
+        quantityPrecision={quantityPrecision}
+      />
     </MainContainer>
   )
 }
