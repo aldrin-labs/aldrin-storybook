@@ -21,7 +21,7 @@ export const SquarePopup = styled.div`
   border-radius: 0.4rem;
   padding: 0 1rem;
   border: ${props => props.theme.palette.border.new};
-  transition: .3s opacity ease-out;
+  transition: .3s all ease-out;
 `
 
 export const PopupDateContainer = styled.div`

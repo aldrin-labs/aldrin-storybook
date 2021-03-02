@@ -198,6 +198,7 @@ export const createButterflyChart = (
         },
         tooltip: {
           enabled: false,
+          intersect: false,
           custom: (context) => {
             var tooltipEl = document.getElementById(
               `butterflyChart-tooltip-${id}`
