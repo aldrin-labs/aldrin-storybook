@@ -92,18 +92,18 @@ export const tourConfig = [
     ),
     style: Box({ height: '27rem' }),
   },
-  {
-    selector: '[data-tut="farming"]',
-    content: () => (
-      <Container>
-        <Block>Farming</Block>
-        <Text padding={'4rem 1.5rem'}>
-          Here is info about your DCFI farming. Click here to learn more.
-        </Text>
-      </Container>
-    ),
-    style: Box({ height: '25rem' }),
-  },
+  // {
+  //   selector: '[data-tut="farming"]',
+  //   content: () => (
+  //     <Container>
+  //       <Block>Farming</Block>
+  //       <Text padding={'4rem 1.5rem'}>
+  //         Here is info about your DCFI farming. Click here to learn more.
+  //       </Text>
+  //     </Container>
+  //   ),
+  //   style: Box({ height: '25rem' }),
+  // },
   {
     selector: '[data-tut="pairs"]',
     content: () => (
@@ -112,7 +112,7 @@ export const tourConfig = [
         <Text padding={'2.5rem 1.5rem'}>
           Choose any available trading pair in this menu.
         </Text>
-        <BolderText>Note: you can farm $DCFI when trading SRM/USDT.</BolderText>
+        {/* <BolderText>Note: you can farm $DCFI when trading SRM/USDT.</BolderText> */}
       </Container>
     ),
     style: Box({ height: '27rem' }),

@@ -630,7 +630,7 @@ class SimpleTabs extends React.Component {
                                 <DarkTooltip
                                   maxWidth={'35rem'}
                                   title={
-                                    'A limit order for a price higher than the purchase price of the percentage you specify will be placed immediately after purchase, so you will not only farm DCFI but also take profit from SRM trading.'
+                                    'A limit order for a price higher than the purchase price of the percentage you specify will be placed immediately after purchase, so you take profit from SRM trading.'
                                   }
                                 >
                                   <AdditionalSettingsButton
