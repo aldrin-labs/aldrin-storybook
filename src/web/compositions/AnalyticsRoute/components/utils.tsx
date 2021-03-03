@@ -1,4 +1,9 @@
 import moment from 'dayjs'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
+
+moment.extend(timezone)
+moment.extend(utc)
 
 import {
   Chart,
@@ -36,6 +41,35 @@ Chart.register(
   Filler
 )
 
+export const getTimezone = () =>
+  Intl.DateTimeFormat().resolvedOptions().timeZone // city
+
+export const getTimestampsForDays = (
+  fisrtTimestamp: number,
+  lastTimestamp: number
+) => {
+  let dayEndTimestamp: number = moment
+    .unix(lastTimestamp)
+    .startOf('day')
+    .unix()
+
+  const dayStartTimestamps = {}
+  do {
+    const day = moment.unix(dayEndTimestamp).format('YYYY-MM-DD')
+    dayStartTimestamps[day] = {
+      timestamp: dayEndTimestamp,
+      day,
+      total: 0,
+      buy: 0,
+      sell: 0,
+    }
+
+    dayEndTimestamp -= 86400
+  } while (dayEndTimestamp >= fisrtTimestamp)
+
+  return dayStartTimestamps
+}
+
 export const generateIDFromValues = (arr: any[]) =>
   arr.reduce((acc, cur) => acc + cur.buy + cur.sell, '')
 
@@ -44,8 +78,6 @@ export const endOfDayTimestamp = moment()
   .unix()
 
 export const dayDuration = 24 * 60 * 60
-
-export const getTimezone = () => Intl.DateTimeFormat().resolvedOptions().timeZone // city
 
 export const createButterflyChart = (
   id: string,
@@ -69,13 +101,36 @@ export const createButterflyChart = (
   const [base, quote] = selectedPair.split('_')
   const isNotUSDTQuote = getIsNotUSDTQuote(selectedPair)
 
-  // 22 Feb, when data started collecting
-  const updatedData = data.map(el => (el.date < 1613944800 ? { date: el.date, buy: 0, sell: 0, total: 0} : { ...el }))
+  const dataMap = getTimestampsForDays(
+    endOfDayTimestamp - dayDuration * 13,
+    endOfDayTimestamp
+  )
+
+  data.forEach((dayData) => {
+    if (dataMap[dayData.day]) {
+      const prevData = dataMap[dayData.day]
+      dataMap[dayData.day] = {
+        ...prevData,
+        total: prevData.total + dayData.total,
+        buy: prevData.buy + dayData.buy,
+        sell: prevData.sell + dayData.sell,
+      }
+    }
+  })
+
+  const arrayData = Object.values(dataMap)
+    .map((el) =>
+      el.timestamp < 1613944800
+        ? { day: el.day, timestamp: el.timestamp, buy: 0, sell: 0, total: 0 }
+        : { ...el }
+    )
+    .sort((a, b) => a.timestamp - b.timestamp)
+
 
   window[`butterflyChart-${id}`] = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: data.map((item) => moment.unix(item.date).format('D MMM')),
+      labels: arrayData.map((item) => moment(item.day).format('D MMM')),
       datasets: [
         {
           barPercentage,
@@ -84,7 +139,7 @@ export const createButterflyChart = (
           backgroundColor: '#1C1D22',
           borderRadius: 50,
           borderWidth: 6,
-          data: updatedData.map((item) => item.buy),
+          data: arrayData.map((item) => item.buy),
         },
         {
           barPercentage,
@@ -93,7 +148,7 @@ export const createButterflyChart = (
           backgroundColor: '#1C1D22',
           borderRadius: 50,
           borderWidth: 6,
-          data: updatedData.map((item) => item.sell * -1),
+          data: arrayData.map((item) => item.sell * -1),
         },
       ],
     },
@@ -121,11 +176,11 @@ export const createButterflyChart = (
           ticks: {
             color: '#fff',
             callback: needQuoteInLabel
-            ? function(value, index, values) {
-              return `${isNotUSDTQuote ? '' : '$'}${Math.abs(value)}${
-                isNotUSDTQuote ? ` ${quote}` : ''
-              }`
-            }
+              ? function(value, index, values) {
+                  return `${isNotUSDTQuote ? '' : '$'}${Math.abs(value)}${
+                    isNotUSDTQuote ? ` ${quote}` : ''
+                  }`
+                }
               : function(value, index, values) {
                   return String(Math.abs(value))
                 },
@@ -168,7 +223,9 @@ export const createButterflyChart = (
               color: '#fff',
               callback: needQuoteInLabel
                 ? function(value, index, values) {
-                    return `${needQuoteInLabel ? isNotUSDTQuote ? '' : '$' : ''}${Math.abs(value)}${
+                    return `${
+                      needQuoteInLabel ? (isNotUSDTQuote ? '' : '$') : ''
+                    }${Math.abs(value)}${
                       isNotUSDTQuote && needQuoteInLabel ? ` ${quote}` : ''
                     }`
                   }
@@ -303,13 +360,28 @@ export const createAreaChart = (data: any, selectedPair = '') => {
   const [base, quote] = selectedPair.split('_')
   const isNotUSDTQuote = getIsNotUSDTQuote(selectedPair)
 
+  const dataMap = getTimestampsForDays(
+    endOfDayTimestamp - dayDuration * 29,
+    endOfDayTimestamp
+  )
+
+  data.forEach((dayData) => {
+    if (dataMap[dayData.day]) {
+      dataMap[dayData.day] = {
+        ...dataMap[dayData.day],
+        total: dayData.total,
+      }
+    }
+  })
+
+  const arrayData = Object.values(dataMap).sort(
+    (a, b) => a.timestamp - b.timestamp
+  )
+
   window.myAreaChart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: data
-        .filter((i) => i.date !== 0)
-        .sort((a, b) => a.date - b.date)
-        .map((item) => moment.unix(item.date).format('D MMM')),
+      labels: arrayData.map((item) => moment(item.day).format('D MMM')),
       datasets: [
         {
           fill: 'origin',
@@ -319,9 +391,7 @@ export const createAreaChart = (data: any, selectedPair = '') => {
           borderWidth: 2,
           // pointRadius: 0,
           hoverBackgroundColor: 'rgba(28, 29, 34, 0.75)',
-          data: data
-            .filter((i) => i.date !== 0)
-            .map((item, i) => ({ x: i, y: item.total })),
+          data: arrayData.map((item, i) => ({ x: i, y: item.total })),
         },
       ],
     },
@@ -505,21 +575,6 @@ export const createLinearChart = (data: any) => {
 
   window.myLinearChart = new Chart(ctx, {
     type: 'line',
-    // data: {
-    //   labels: [],
-    //   datasets: [
-    //     {
-    //       fill: 'origin',
-    //       tension: 0.5,
-    //       borderColor: '#7380EB',
-    //       backgroundColor: gradient,
-    //       borderWidth: 2,
-    //       // pointRadius: 0,
-    //       hoverBackgroundColor: 'rgba(28, 29, 34, 0.75)',
-    //       data: [],
-    //     },
-    //   ],
-    // },
     data: {
       labels: [
         100000,

@@ -244,7 +244,7 @@ const MarketInfo = ({
                 24h Low:
               </SmallTitle>
               <SmallBoldTitle theme={theme}>{`${
-                stripDigitPlaces(markPrice < minPrice ? markPrice : minPrice, pricePrecision)
+                formatNumberToUSFormat(stripDigitPlaces(markPrice < minPrice ? markPrice : minPrice, pricePrecision))
               } ${quote}`}</SmallBoldTitle>
             </Row>
             <Row>
@@ -252,7 +252,7 @@ const MarketInfo = ({
                 24h High:
               </SmallTitle>
               <SmallBoldTitle theme={theme}>{`${
-                stripDigitPlaces(markPrice > maxPrice ? markPrice : maxPrice, pricePrecision)
+                formatNumberToUSFormat(stripDigitPlaces(markPrice > maxPrice ? markPrice : maxPrice, pricePrecision))
               } ${quote}`}</SmallBoldTitle>
             </Row>
           </Row>
