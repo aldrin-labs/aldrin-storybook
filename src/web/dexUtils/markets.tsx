@@ -51,7 +51,7 @@ export function useAllMarkets() {
   const { customMarkets } = useCustomMarkets()
 
   const getAllMarkets = async () => {
-    console.log('getAllMarkets', getMarketInfos(customMarkets))
+    // console.log('getAllMarkets', getMarketInfos(customMarkets))
     let i = 0
     const markets: Array<{
       market: Market
@@ -60,7 +60,7 @@ export function useAllMarkets() {
     } | null> = await Promise.all(
       getMarketInfos(customMarkets).map(async (marketInfo) => {
         try {
-          console.log('marketInfo.address', marketInfo.address, ++i)
+          // console.log('marketInfo.address', marketInfo.address, ++i)
 
           const market = await Market.load(
             connection,
@@ -84,7 +84,7 @@ export function useAllMarkets() {
       })
     )
 
-    console.log('getAllMarkets markets', markets)
+    // console.log('getAllMarkets markets', markets)
     
     return markets.filter(
       (m): m is { market: Market; marketName: string; programId: PublicKey } =>
@@ -247,7 +247,7 @@ export function MarketProvider({ children }) {
   // add state for markets
   // add useEffect for customMarkets
   useEffect(() => {
-    console.log('useEffect in market', connection, connection)
+    // console.log('useEffect in market', connection, connection)
 
     if (
       market &&
@@ -957,7 +957,7 @@ export function useUnmigratedDeprecatedMarkets() {
         market.address.equals(address)
       )
       try {
-        console.log('Loading market', marketInfo.name)
+        // console.log('Loading market', marketInfo.name)
         // NOTE: Should this just be cached by (connection, marketInfo.address, marketInfo.programId)?
         return await Market.load(
           connection,

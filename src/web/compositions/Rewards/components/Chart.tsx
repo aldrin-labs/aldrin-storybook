@@ -20,7 +20,6 @@ const LinearChart = ({
   selectedPair: string
   pointData: {}
 }) => {
-  console.log('pointData', pointData)
   useEffect(() => {
     createLinearChart(pointData)
   }, [selectedPair])

@@ -136,7 +136,7 @@ const AppRaw = ({
                       >
                         {children}
                       </div>
-                      {showFooter && <FooterWithTheme isRewards={isRewards} />}
+                      {/* {showFooter && <FooterWithTheme isRewards={isRewards} />} */}
                       {/* 
                     <Footer
                       isChartPage={isChartPage}

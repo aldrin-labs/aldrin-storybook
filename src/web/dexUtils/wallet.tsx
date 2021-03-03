@@ -43,7 +43,7 @@ export function WalletProvider({ children }) {
     
     const wallet = new WalletClass(providerUrl, endpoint)
 
-    console.log('providerUrl', providerUrl, 'endpoint', endpoint, 'wallet', wallet)
+    // console.log('providerUrl', providerUrl, 'endpoint', endpoint, 'wallet', wallet)
 
 
     return wallet
@@ -53,11 +53,11 @@ export function WalletProvider({ children }) {
   ]);
 
   useEffect(() => {
-    console.log('trying to connect');
+    // console.log('trying to connect');
     const connect = async () => {
-      console.log('Connecting Wallet: ', wallet, providerUrl)
+      // console.log('Connecting Wallet: ', wallet, providerUrl)
       const resultofconnect = wallet.connect()
-      console.log('resultofconnect', resultofconnect)
+      // console.log('resultofconnect', resultofconnect)
   
       wallet.on('connect', async () => {
         console.log('connected');
@@ -97,7 +97,7 @@ export function WalletProvider({ children }) {
     };
   }, [wallet]);
 
-  console.log('wallet in render', wallet)
+  // console.log('wallet in render', wallet)
 
   return (
     <WalletContext.Provider
