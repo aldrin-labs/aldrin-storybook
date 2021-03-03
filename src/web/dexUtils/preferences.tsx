@@ -3,8 +3,8 @@ import { useLocalStorageState } from './utils';
 import { useInterval } from './useInterval';
 import { useConnection } from './connection';
 import { useWallet } from './wallet';
-import {useAllMarkets, useTokenAccounts, useMarket, useSelectedTokenAccounts} from './markets';
-import { settleAllFunds } from './send';
+import {useAllMarkets, useTokenAccounts, useMarket, useSelectedTokenAccounts, getSelectedTokenAccountForMint } from './markets';
+import { settleAllFunds, settleFunds } from './send';
 import {PreferencesContextValues} from "./types";
 
 const PreferencesContext = React.createContext<PreferencesContextValues | null>(null);
@@ -19,7 +19,8 @@ export function PreferencesProvider({ children }) {
   const [tokenAccounts] = useTokenAccounts();
   const { connected, wallet } = useWallet();
 
-  const [marketList] = useAllMarkets();
+  // const [marketList] = useAllMarkets();
+  const { market } = useMarket()
   const connection = useConnection();
   const [selectedTokenAccounts] = useSelectedTokenAccounts();
 
@@ -28,10 +29,31 @@ export function PreferencesProvider({ children }) {
   useInterval(() => {
     console.log('interval')
     const autoSettle = async () => {
-      const markets = (marketList || []).map((m) => m.market);
+      // const markets = (marketList || []).map((m) => m.market);
       try {
         console.log('Auto settling');
-        await settleAllFunds({ connection, wallet, tokenAccounts: (tokenAccounts || []), markets, selectedTokenAccounts });
+        const openOrders = await market.findOpenOrdersAccountsForOwner(
+          connection,
+          wallet.publicKey
+        )
+        console.log('openOrders', openOrders)
+        // await settleAllFunds({ connection, wallet, tokenAccounts: (tokenAccounts || []), markets, selectedTokenAccounts });
+        await settleFunds({
+          market,
+          openOrders,
+          connection,
+          wallet,
+          baseCurrencyAccount: getSelectedTokenAccountForMint(
+            tokenAccounts,
+            market?.baseMintAddress
+          ),
+          quoteCurrencyAccount: getSelectedTokenAccountForMint(
+            tokenAccounts,
+            market?.quoteMintAddress
+          ),
+          selectedTokenAccounts: selectedTokenAccounts,
+          tokenAccounts
+        })
       } catch (e) {
         console.log('Error auto settling funds: ' + e.message);
       }
