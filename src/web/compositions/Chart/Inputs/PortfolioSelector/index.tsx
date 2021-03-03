@@ -1,6 +1,11 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
+
 import { getAccountsFunds } from '@core/graphql/queries/chart/getAccountsFunds'
+import { getPortfolioData } from '@core/graphql/queries/portfolio/main/getPortfolioData'
+import { getSelectedPortfolio } from '@core/graphql/queries/portfolio/main/getSelectedPortfolio'
+import { GET_TRADING_SETTINGS } from '@core/graphql/queries/user/getTradingSettings'
+
 import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 
@@ -17,14 +22,13 @@ import { Row } from '../PreferencesSelect/index.styles'
 import {
   Container,
   PortfolioTitle,
-  AccountTitle,
   Stroke,
   Name,
-  DepositBtn,
   AddPortfolioBtn,
   CloseButton,
-  Balances,
 } from './index.styles'
+import KeysComponent from './KeysComponent'
+import { RenamePortfolioDialog } from '@core/components/RenameDialog/RenamePortfolioDialog'
 
 const StyledRow = styled(Row)`
   display: none;
@@ -36,6 +40,10 @@ const PortfolioSelector = ({
   selectStyles,
   value,
   marketType,
+  getPortfolioDataQuery,
+  getSelectedPortfolioQuery,
+  getAccountsFundsQuery,
+  getTradingSettingsQuery,
 }: {
   theme: Theme
   id: string
@@ -43,15 +51,37 @@ const PortfolioSelector = ({
   value: string
   marketType: number
 }) => {
-  const [Portfolio, choosePortfolio] = useState('1')
-  const [Account, chooseAccount] = useState('5')
+  const [portfolio, choosePortfolio] = useState(
+    getSelectedPortfolioQuery.myPortfolios[0]._id
+  )
+
+  const [isEditPopupOpen, changePopupState] = useState(false)
+
+  const [portfolioToRename, choosePortfolioToRename] = useState('')
+
+  const isLoading = getAccountsFundsQuery.loading
+
+  const accountName = (
+    getAccountsFundsQuery.getAccountsFunds.find(
+      (key) =>
+        key.keyId ===
+        getTradingSettingsQuery.getTradingSettings.selectedTradingKey
+    ) || { keyName: 'Select Key' }
+  ).keyName
+
+  const portfolioName = getSelectedPortfolioQuery.myPortfolios[0].name
+
+  console.log('account', portfolioName)
+
   return (
     <>
       <ExchangePair
         style={{
-          width: '18rem',
+          width: 'auto',
+          minWidth: '22rem',
           marginLeft: '.8rem',
           borderRadius: '0.3rem',
+          whiteSpace: 'nowrap',
         }}
         selectStyles={{
           ...selectStyles,
@@ -65,7 +95,10 @@ const PortfolioSelector = ({
           theme={theme}
           id={id}
           style={{ width: '100%' }}
-          value={value}
+          value={{
+            value: `${portfolioName} / ${accountName}`,
+            label: `${portfolioName} / ${accountName}`,
+          }}
           fullWidth={true}
           isDisabled={true}
         />
@@ -73,7 +106,7 @@ const PortfolioSelector = ({
           id={'preferences'}
           direction="column"
           style={{
-            overflow: 'scroll',
+            overflow: 'hidden',
             overflowX: 'hidden',
             top: '100%',
             left: '2.5rem',
@@ -88,104 +121,105 @@ const PortfolioSelector = ({
           }}
         >
           {' '}
-          <span>
-            <Row
-              width={'100%'}
+          <Row
+            width={'100%'}
+            style={{
+              display: 'flex',
+              alignItems: 'baseline',
+              height: '100%',
+              borderBottom: '0.1rem solid #e0e2e5',
+            }}
+          >
+            <Container
+              width={'35%'}
+              theme={theme}
+              isLoading={isLoading}
               style={{
-                display: 'flex',
-                alignItems: 'baseline',
-                borderBottom: '0.1rem solid #e0e2e5',
+                borderRight: theme.palette.border.main,
+                paddingRight: '2rem',
               }}
             >
-              <Container
-                width={'45%'}
-                theme={theme}
-                style={{
-                  borderRight: theme.palette.border.main,
-                  paddingRight: '2rem',
-                }}
-              >
+              {getPortfolioDataQuery.myPortfolios.map((el) => (
                 <Stroke theme={theme}>
                   {' '}
-                  <PortfolioTitle theme={theme} isActive={Portfolio === '4'}>
+                  <PortfolioTitle theme={theme} isActive={portfolio === el._id}>
                     {' '}
                     <Name>
                       {' '}
                       <input
                         type="radio"
-                        value="4"
-                        id="4"
-                        checked={Portfolio === '4'}
+                        value={el._id}
+                        id={el._id}
+                        checked={portfolio === el._id}
                         style={{ marginRight: '1rem' }}
                         onChange={() => {
-                          choosePortfolio('4')
+                          choosePortfolio(el._id)
                         }}
                       ></input>
-                      <label htmlFor={'4'}>Portfolio #4 </label>
+                      <label htmlFor={el._id}>{el.name}</label>
                     </Name>
-                    <SvgIcon src={Portfolio === '4' ? WhitePen : BluePen} />
+                    <SvgIcon
+                      src={portfolio === el._id ? WhitePen : BluePen}
+                      onClick={() => {
+                        changePopupState(!isEditPopupOpen)
+                        choosePortfolioToRename(el._id)
+                      }}
+                    />
                   </PortfolioTitle>
-                  <Balances>$100</Balances>
                 </Stroke>
-                <Stroke>
-                  <AddPortfolioBtn width={'85%'}>
-                    + Add new portfolio
-                  </AddPortfolioBtn>
-                </Stroke>
-              </Container>
-              <Container
-                width={'calc(55% - 1rem)'}
-                style={{ marginRight: '2rem' }}
-              >
-                {' '}
-                <Stroke theme={theme} padding={'0 3rem 0 0'}>
-                  {' '}
-                  <AccountTitle theme={theme} isActive={Account === '7'}>
-                    {' '}
-                    <Name>
-                      {' '}
-                      <input
-                        type="radio"
-                        value="7"
-                        id="7"
-                        checked={Account === '7'}
-                        style={{ marginRight: '1rem' }}
-                        onChange={() => {
-                          chooseAccount('7')
-                        }}
-                      ></input>
-                      <label htmlFor={'7'}>Account #2 </label>
-                    </Name>
-                    <SvgIcon src={Account === '7' ? WhitePen : BluePen} />
-                  </AccountTitle>{' '}
-                  <Balances>$100.00</Balances>
-                  <DepositBtn>Deposit</DepositBtn>
-                </Stroke>
-                <Stroke>
-                  <AddPortfolioBtn width={'60%'}>
-                    + Add new account
-                  </AddPortfolioBtn>
-                </Stroke>
-              </Container>
-            </Row>
-            <Row style={{ height: '6rem' }}>
-              <CloseButton>Ok</CloseButton>
-            </Row>
-          </span>
+              ))}
+              <Stroke>
+                <AddPortfolioBtn width={'85%'}>
+                  + Add new portfolio
+                </AddPortfolioBtn>
+              </Stroke>
+            </Container>{' '}
+            <KeysComponent theme={theme} portfolio={portfolio} />
+          </Row>
+          <Row style={{ height: '6rem' }}>
+            <CloseButton>Ok</CloseButton>
+          </Row>
         </StyledRow>
       </ExchangePair>
+      {isEditPopupOpen ? (
+        <RenamePortfolioDialog
+          data={portfolioToRename}
+          isPortfolio={true}
+          baseCoin={'USDT'}
+          forceUpdateUserContainer={() => {}}
+          closeMainPopup={changePopupState(false)}
+        />
+      ) : null}
     </>
   )
 }
 
-export default compose()(PortfolioSelector)
-queryRendererHoc({
-  query: getAccountsFunds,
-  name: 'getAccountsFundsQuery',
-  variables: {
-    input: {
-      marketType: 0,
-      portfolioId: '',
-    },
-  },
-})
+export default compose(
+  queryRendererHoc({
+    query: getPortfolioData,
+    name: 'getPortfolioDataQuery',
+    withoutLoading: true,
+  }),
+  queryRendererHoc({
+    query: getSelectedPortfolio,
+    name: 'getSelectedPortfolioQuery',
+    withoutLoading: true,
+  }),
+  queryRendererHoc({
+    query: getAccountsFunds,
+    name: 'getAccountsFundsQuery',
+    variables: (props) => ({
+      input: {
+        marketType: props.marketType,
+        portfolioId: props.getSelectedPortfolioQuery.myPortfolios[0]._id,
+      },
+    }),
+  }),
+  queryRendererHoc({
+    query: GET_TRADING_SETTINGS,
+    name: 'getTradingSettingsQuery',
+    // skip: (props: any) => !props.authenticated,
+    withOutSpinner: true,
+    fetchPolicy: 'cache-only',
+  })
+)(PortfolioSelector)

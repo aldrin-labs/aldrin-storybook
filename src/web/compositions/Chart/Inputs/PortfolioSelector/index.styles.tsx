@@ -2,6 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 
 export const Container = styled.div`
+  overflow-y: scroll;
+  overflow-x: hidden;
   width: ${(props) => props.width || '40%'};
   height: 100%;
   div:last-child {
