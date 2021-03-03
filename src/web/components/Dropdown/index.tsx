@@ -84,6 +84,7 @@ export default class Dropdown extends React.Component<IProps> {
               disableRipple
               disableGutters={true}
               key={'ccai'}
+              isActive={isCCAIActive}
             >
               <BtnCustom
                 btnWidth={'100%'}
@@ -98,6 +99,7 @@ export default class Dropdown extends React.Component<IProps> {
                   justifyContent: 'space-between',
                   textTransform: 'none',
                   padding: '1rem',
+                  background: isCCAIActive ? 'rgba(55, 56, 62, 0.75)' : ''
                 }}
                 onClick={() => {
                   console.log('CLICK ON CCAI')
@@ -119,6 +121,7 @@ export default class Dropdown extends React.Component<IProps> {
               disableRipple
               disableGutters={true}
               key={'sollet'}
+              isActive={isSolletActive}
             >
               <BtnCustom
                 btnWidth={'100%'}
@@ -133,6 +136,7 @@ export default class Dropdown extends React.Component<IProps> {
                   justifyContent: 'space-between',
                   textTransform: 'none',
                   padding: '1rem',
+                  background: isSolletActive ? 'rgba(55, 56, 62, 0.75)' : ''
                 }}
                 onClick={() => {
                   console.log('CLICK ON SOLLET')
@@ -154,6 +158,7 @@ export default class Dropdown extends React.Component<IProps> {
               disableRipple
               disableGutters={true}
               key={'mathwallet'}
+              isActive={isMathWalletActive}
             >
               <BtnCustom
                 btnWidth={'100%'}
@@ -168,6 +173,7 @@ export default class Dropdown extends React.Component<IProps> {
                   justifyContent: 'space-between',
                   textTransform: 'none',
                   padding: '1rem',
+                  background: isMathWalletActive ? 'rgba(55, 56, 62, 0.75)' : ''
                 }}
                 onClick={() => {
                   console.log('CLICK ON MATHWALLET')
@@ -189,6 +195,7 @@ export default class Dropdown extends React.Component<IProps> {
               disableRipple
               disableGutters={true}
               key={'solong'}
+              isActive={isSolongWallet}
             >
               <BtnCustom
               btnWidth={'100%'}
@@ -203,6 +210,7 @@ export default class Dropdown extends React.Component<IProps> {
                 justifyContent: 'space-between',
                 textTransform: 'none',
                 padding: '1rem',
+                background: isSolongWallet ? 'rgba(55, 56, 62, 0.75)' : ''
               }}
                 onClick={() => {
                   if (isSolongWallet && !isWalletConnected) {

@@ -9,18 +9,22 @@ import 'react-virtualized/styles.css'
 import { Theme } from '@material-ui/core'
 import { getSerumMarketData } from '@core/graphql/queries/chart/getSerumMarketData'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
-import {
-  combineSelectWrapperData,
-} from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
+import { combineSelectWrapperData } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 import search from '@icons/search.svg'
 
+import { SvgIcon } from '@sb/components'
+
 import {
-  SvgIcon,
-} from '@sb/components'
+  datesForQuery,
+  excludedPairs,
+  fiatRegexp,
+} from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
 
-import { datesForQuery, excludedPairs, fiatRegexp } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
-
-import { HeaderContainer, WhiteTitle, PairSelectorContainerGrid } from '../index.styles'
+import {
+  HeaderContainer,
+  WhiteTitle,
+  PairSelectorContainerGrid,
+} from '../index.styles'
 
 const _sortList = ({ sortBy, sortDirection, data }) => {
   let dataToSort = data
@@ -38,8 +42,8 @@ const _sortList = ({ sortBy, sortDirection, data }) => {
       if (pairObjectA.symbol.contentToSort === 'All markets') return 1
       if (pairObjectB.symbol.contentToSort === 'All markets') return -1
 
-      return (
-        pairObjectB.symbol.contentToSort.localeCompare(pairObjectA.symbol.contentToSort)
+      return pairObjectB.symbol.contentToSort.localeCompare(
+        pairObjectA.symbol.contentToSort
       )
     })
   }
@@ -51,18 +55,85 @@ const _sortList = ({ sortBy, sortDirection, data }) => {
   return newList
 }
 
+function defaultRowRenderer({
+  className,
+  columns,
+  index,
+  key,
+  onRowClick,
+  onRowDoubleClick,
+  onRowMouseOut,
+  onRowMouseOver,
+  onRowRightClick,
+  rowData,
+  style,
+  selectedPair,
+}) {
+  const a11yProps = { 'aria-rowindex': index + 1 }
 
+  if (
+    onRowClick ||
+    onRowDoubleClick ||
+    onRowMouseOut ||
+    onRowMouseOver ||
+    onRowRightClick
+  ) {
+    a11yProps['aria-label'] = 'row'
+    a11yProps.tabIndex = 0
+
+    if (onRowClick) {
+      a11yProps.onClick = (event) => onRowClick({ event, index, rowData })
+    }
+    if (onRowDoubleClick) {
+      a11yProps.onDoubleClick = (event) =>
+        onRowDoubleClick({ event, index, rowData })
+    }
+    if (onRowMouseOut) {
+      a11yProps.onMouseOut = (event) => onRowMouseOut({ event, index, rowData })
+    }
+    if (onRowMouseOver) {
+      a11yProps.onMouseOver = (event) =>
+        onRowMouseOver({ event, index, rowData })
+    }
+    if (onRowRightClick) {
+      a11yProps.onContextMenu = (event) =>
+        onRowRightClick({ event, index, rowData })
+    }
+  }
+
+  const isSelected =
+    rowData &&
+    (rowData.symbol.contentToSort === selectedPair ||
+      (rowData.symbol.contentToSort.toLowerCase().includes('all') && selectedPair === 'all'))
+
+  return (
+    <div
+      {...a11yProps}
+      className={className}
+      key={key}
+      role="row"
+      style={{
+        ...style,
+        background: isSelected ? 'rgba(55, 56, 62, 0.75)' : '',
+      }}
+    >
+      {columns}
+    </div>
+  )
+}
 
 const PairSelector = ({
   theme,
   history,
-  getSerumMarketDataQuery
+  selectedPair,
+  getSerumMarketDataQuery,
 }: {
-  theme: Theme,
+  theme: Theme
+  selectedPair: string
   getSerumMarketDataQuery: {
     getSerumMarketData: {
-      symbol: string,
-      volume: number,
+      symbol: string
+      volume: number
       tradesCount: number
       tradesDiff: number
       volumeChange: number
@@ -90,40 +161,46 @@ const PairSelector = ({
       !excludedPairs.includes(el.symbol)
   )
 
-  const allMarketsValue = filtredMarketsByExchange.filter(
-    (market, index, arr) =>
-      arr.findIndex(
-        (marketInFindIndex) => marketInFindIndex.symbol === market.symbol
-      ) === index
-  ).reduce((acc, curr) => {
-    return {
-      ...acc,
-      volume: acc.volume + +curr.volume,
-      tradesCount: acc.tradesCount + curr.tradesCount,
-      tradesDiff: acc.tradesDiff + curr.tradesDiff,
-      volumeChange: acc.volumeChange + curr.volumeChange,
-      minPrice: acc.minPrice + curr.minPrice,
-      maxPrice: acc.maxPrice + curr.maxPrice,
-      closePrice: acc.closePrice + curr.closePrice,
-      precentageTradesDiff: acc.precentageTradesDiff + curr.precentageTradesDiff,
-      lastPriceDiff: acc.lastPriceDiff + curr.lastPriceDiff,
-    }
-  }, {
-    symbol: 'All markets',
-    volume: 0,
-    tradesCount: 0,
-    tradesDiff: 0,
-    volumeChange: 0,
-    minPrice: 0,
-    maxPrice: 0,
-    closePrice: 0,
-    precentageTradesDiff: 0,
-    lastPriceDiff: 0,
-    isCustomUserMarket: false,
-    isPrivateCustomMarket: false,
-    address: null,
-    programId: null,
-  })
+  const allMarketsValue = filtredMarketsByExchange
+    .filter(
+      (market, index, arr) =>
+        arr.findIndex(
+          (marketInFindIndex) => marketInFindIndex.symbol === market.symbol
+        ) === index
+    )
+    .reduce(
+      (acc, curr) => {
+        return {
+          ...acc,
+          volume: acc.volume + +curr.volume,
+          tradesCount: acc.tradesCount + curr.tradesCount,
+          tradesDiff: acc.tradesDiff + curr.tradesDiff,
+          volumeChange: acc.volumeChange + curr.volumeChange,
+          minPrice: acc.minPrice + curr.minPrice,
+          maxPrice: acc.maxPrice + curr.maxPrice,
+          closePrice: acc.closePrice + curr.closePrice,
+          precentageTradesDiff:
+            acc.precentageTradesDiff + curr.precentageTradesDiff,
+          lastPriceDiff: acc.lastPriceDiff + curr.lastPriceDiff,
+        }
+      },
+      {
+        symbol: 'All markets',
+        volume: 0,
+        tradesCount: 0,
+        tradesDiff: 0,
+        volumeChange: 0,
+        minPrice: 0,
+        maxPrice: 0,
+        closePrice: 0,
+        precentageTradesDiff: 0,
+        lastPriceDiff: 0,
+        isCustomUserMarket: false,
+        isPrivateCustomMarket: false,
+        address: null,
+        programId: null,
+      }
+    )
 
   filtredMarketsByExchange.push(allMarketsValue)
 
@@ -142,7 +219,8 @@ const PairSelector = ({
   useEffect(() => {
     const processedSelectData = combineSelectWrapperData({
       data: filtredMarketsByExchange,
-      onSelectPair: ({ value }) => history.push(`/analytics/${value === 'All markets' ? 'all' : value}`),
+      onSelectPair: ({ value }) =>
+        history.push(`/analytics/${value === 'All markets' ? 'all' : value}`),
       theme,
       searchValue,
       tab: 'all',
@@ -154,135 +232,142 @@ const PairSelector = ({
       usdcPairsMap: new Map(),
       usdtPairsMap: new Map(),
       marketType: 0,
-      needFiltrations: false
+      needFiltrations: false,
     })
 
-  _sort({ firstData: processedSelectData, sortBy, sortDirection })
+    _sort({ firstData: processedSelectData, sortBy, sortDirection })
   }, [searchValue])
 
   return (
     <>
-    <HeaderContainer theme={theme}>
-      <WhiteTitle theme={theme}>Markets</WhiteTitle>
-    </HeaderContainer>
-    <Grid container style={{ justifyContent: 'flex-end', width: '100%' }}>
-    <Input
-      placeholder="Search"
-      disableUnderline={true}
-      style={{
-        width: '100%',
-        height: '3rem',
-        background: "#3A475C",
-        // borderRadius: '0.3rem',
-        color: theme.palette.grey.placeholder,
-        borderBottom: `.1rem solid ${theme.palette.grey.newborder}`,
-        paddingLeft: '1rem',
-      }}
-      value={searchValue}
-      onChange={(e) => onChangeSearch(e.target.value)}
-      endAdornment={
-        <InputAdornment
+      <HeaderContainer theme={theme}>
+        <WhiteTitle theme={theme}>Markets</WhiteTitle>
+      </HeaderContainer>
+      <Grid container style={{ justifyContent: 'flex-end', width: '100%' }}>
+        <Input
+          placeholder="Search"
+          disableUnderline={true}
           style={{
-            width: '10%',
-            justifyContent: 'center',
-            cursor: 'pointer',
+            width: '100%',
+            height: '3rem',
+            background: '#3A475C',
+            // borderRadius: '0.3rem',
+            color: theme.palette.grey.placeholder,
+            borderBottom: `.1rem solid ${theme.palette.grey.newborder}`,
+            paddingLeft: '1rem',
           }}
-          disableTypography={true}
-          position="end"
-          aria-autocomplete="none"
-        >
-          <SvgIcon src={search} width="1.5rem" height="auto" />
-        </InputAdornment>
-      }
-    />
-  </Grid>
-  <PairSelectorContainerGrid style={{ overflow: 'hidden', width: '100%', height: 'calc(100% - 8rem)' }}>
-    <AutoSizer>
-      {({ width, height }: { width: number; height: number }) => (
-        <Table
-          width={width}
-          height={height}
-          sort={_sort}
-          sortDirection={sortDirection}
-          sortBy={sortBy}
-          rowCount={processedSelectData.length}
-          onRowClick={({ event, index, rowData }) => {
-            rowData.symbol.onClick()
-          }}
-          gridStyle={{
-            outline: 'none',
-          }}
-          rowClassName={'pairSelectorRow'}
-          rowStyle={{
-            outline: 'none',
-            cursor: 'pointer',
-            color: theme.palette.dark.main,
-            borderBottom: `0.05rem solid ${theme.palette.grey.newborder}`,
-          }}
-          headerHeight={window.outerHeight / 40}
-          headerStyle={{
-            color: theme.palette.grey.light,
-            paddingLeft: '.5rem',
-            paddingTop: '.25rem',
-            marginLeft: 0,
-            marginRight: 0,
-            letterSpacing: '.075rem',
-            // borderBottom: '.1rem solid #e0e5ec',
-            fontSize: '1.2rem',
-          }}
-          rowHeight={window.outerHeight / 30}
-          rowGetter={({ index }) => processedSelectData[index]}
-        >
-          <Column
-            label={`Name`}
-            dataKey="symbol"
-            headerStyle={{
-              textTransform: 'capitalize',
-              color: theme.palette.grey.title,
-              paddingRight: '6px',
-              paddingLeft: '1rem',
-              fontSize: '1.2rem',
-              textAlign: 'left',
-            }}
-            width={width}
-            style={{
-              textAlign: 'left',
-              fontSize: '1.2rem',
-              fontWeight: 'bold',
-            }}
-            cellRenderer={({ cellData }) => cellData.render}
-          />
-          <Column
-            label={`Volume 24h`}
-            dataKey="volume24hChange"
-            headerStyle={{
-              textTransform: 'capitalize',
-              color: theme.palette.grey.title,
-              paddingRight: 'calc(10px)',
-              fontSize: '1.2rem',
-              textAlign: 'left',
-            }}
-            width={width}
-            style={{
-
-              textAlign: 'left',
-              fontSize: '1.2rem',
-              fontWeight: 'bold',
-            }}
-            cellRenderer={({ cellData }) => cellData.render}
-          />
-          <Column
-            label={` `}
-            dataKey="volume24hChangeIcon"
-            width={width / 3}
-            cellRenderer={({ cellData }) => cellData.render}
-          />
-          
-        </Table>
-      )}
-    </AutoSizer>
-  </PairSelectorContainerGrid>
-  </>
+          value={searchValue}
+          onChange={(e) => onChangeSearch(e.target.value)}
+          endAdornment={
+            <InputAdornment
+              style={{
+                width: '10%',
+                justifyContent: 'center',
+                cursor: 'pointer',
+              }}
+              disableTypography={true}
+              position="end"
+              aria-autocomplete="none"
+            >
+              <SvgIcon src={search} width="1.5rem" height="auto" />
+            </InputAdornment>
+          }
+        />
+      </Grid>
+      <PairSelectorContainerGrid
+        style={{
+          overflow: 'hidden',
+          width: '100%',
+          height: 'calc(100% - 8rem)',
+        }}
+      >
+        <AutoSizer>
+          {({ width, height }: { width: number; height: number }) => (
+            <Table
+              width={width}
+              height={height}
+              sort={_sort}
+              sortDirection={sortDirection}
+              sortBy={sortBy}
+              rowCount={processedSelectData.length}
+              onRowClick={({ event, index, rowData }) => {
+                rowData.symbol.onClick()
+              }}
+              gridStyle={{
+                outline: 'none',
+              }}
+              rowRenderer={(...props) =>
+                defaultRowRenderer({ ...props[0], selectedPair })
+              }
+              rowClassName={'pairSelectorRow'}
+              rowStyle={{
+                outline: 'none',
+                cursor: 'pointer',
+                color: theme.palette.dark.main,
+                borderBottom: `0.05rem solid ${theme.palette.grey.newborder}`,
+              }}
+              headerHeight={window.outerHeight / 40}
+              headerStyle={{
+                color: theme.palette.grey.light,
+                paddingLeft: '.5rem',
+                paddingTop: '.25rem',
+                marginLeft: 0,
+                marginRight: 0,
+                letterSpacing: '.075rem',
+                // borderBottom: '.1rem solid #e0e5ec',
+                fontSize: '1.2rem',
+              }}
+              rowHeight={window.outerHeight / 30}
+              rowGetter={({ index }) => processedSelectData[index]}
+            >
+              <Column
+                label={`Name`}
+                dataKey="symbol"
+                headerStyle={{
+                  textTransform: 'capitalize',
+                  color: theme.palette.grey.title,
+                  paddingRight: '6px',
+                  paddingLeft: '1rem',
+                  fontSize: '1.2rem',
+                  textAlign: 'left',
+                }}
+                width={width}
+                style={{
+                  textAlign: 'left',
+                  fontSize: '1.2rem',
+                  fontWeight: 'bold',
+                }}
+                cellRenderer={({ cellData }) => cellData.render}
+              />
+              <Column
+                label={`Volume 24h`}
+                dataKey="volume24hChange"
+                headerStyle={{
+                  textTransform: 'capitalize',
+                  color: theme.palette.grey.title,
+                  paddingRight: 'calc(10px)',
+                  fontSize: '1.2rem',
+                  textAlign: 'left',
+                }}
+                width={width}
+                style={{
+                  textAlign: 'left',
+                  fontSize: '1.2rem',
+                  fontWeight: 'bold',
+                }}
+                cellRenderer={({ cellData }) => cellData.render}
+              />
+              <Column
+                label={` `}
+                dataKey="volume24hChangeIcon"
+                width={width / 3}
+                cellRenderer={({ cellData }) => cellData.render}
+              />
+            </Table>
+          )}
+        </AutoSizer>
+      </PairSelectorContainerGrid>
+    </>
   )
 }
 
@@ -304,5 +389,5 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     withOutSpinner: true,
     withTableLoader: false,
-  }),
+  })
 )(PairSelector)

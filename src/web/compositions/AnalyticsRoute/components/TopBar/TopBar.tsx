@@ -28,27 +28,25 @@ import {
 import SRMPriceBlock from './SRMPriceBlock'
 import SRMMarketCap from './SRMMarketCap'
 
+export const serumData = {
+  totalySupply: 161000001,
+  burned: 887835.621,
+  circulatingSupply: 50000000,
+}
+
 const TopBar = ({
   theme,
-  getSerumDataQuery,
 }: {
   theme: Theme
-  getSerumDataQuery: {
-    getSerumData: {
-      circulatingSupply: number
-      totalySupply: number
-      burned: number
-    }
-  }
 }) => {
   const { market } = useMarket() || { market: { tickSize: 8 } }
 
   let circulatingSupply =
-    getSerumDataQuery.getSerumData.circulatingSupply -
-    getSerumDataQuery.getSerumData.burned
+    serumData.circulatingSupply -
+    serumData.burned
   let totalySupply =
-    getSerumDataQuery.getSerumData.totalySupply -
-    getSerumDataQuery.getSerumData.burned
+    serumData.totalySupply -
+    serumData.burned
 
   let pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
 
@@ -104,7 +102,7 @@ const TopBar = ({
             {' '}
             <Text theme={theme}>
               {formatNumberToUSFormat(
-                getSerumDataQuery.getSerumData.burned.toFixed(0)
+                serumData.burned.toFixed(0)
               )}{' '}
               SRM
             </Text>
@@ -115,13 +113,4 @@ const TopBar = ({
   )
 }
 
-export default compose(
-  queryRendererHoc({
-    query: getSerumData,
-    name: 'getSerumDataQuery',
-    withOutSpinner: false,
-    withTableLoader: false,
-    fetchPolicy: 'network-only',
-    loaderSize: 32,
-  })
-)(TopBar)
+export default TopBar
