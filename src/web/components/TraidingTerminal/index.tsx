@@ -613,7 +613,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   <DarkTooltip
                     maxWidth={'35rem'}
                     title={
-                      'A limit order for a price higher than the purchase price of the percentage you specify will be placed immediately after purchase, so you will not only farm DCFI but also take profit from SRM trading.'
+                      'A limit order for a price higher than the purchase price of the percentage you specify will be placed immediately after purchase, so you will take profit from SRM trading.'
                     }
                   >
                     <AdditionalSettingsButton
@@ -849,7 +849,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     ? priceType === 'market' && pair.join('_') === 'SRM_USDT'
                       ? tradingBotEnabled && !tradingBotIsActive
                         ? 'Start Cycle Bot'
-                        : 'Buy SRM and earn DCFI'
+                        : 'buy SRM'
                       : `buy ${pair[0]}`
                     : `sell ${pair[0]}`
                   : sideType === 'buy'
