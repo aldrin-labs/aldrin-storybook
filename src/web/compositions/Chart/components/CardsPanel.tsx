@@ -430,23 +430,6 @@ export const CardsPanel = ({
             <NavBarLink
               theme={theme}
               data-tut="farming"
-              to="/rewards"
-              style={{
-                color: location.pathname.includes('rewards')
-                  ? theme.palette.blue.serum
-                  : theme.palette.grey.text,
-                textDecoration: location.pathname.includes('rewards')
-                  ? 'underline'
-                  : 'none',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {' '}
-              Farming 👨‍🌾
-            </NavBarLink>
-            <NavBarLink
-              theme={theme}
-              data-tut="farming"
               to="/addressbook"
               style={{
                 borderRight: theme.palette.border.main,
