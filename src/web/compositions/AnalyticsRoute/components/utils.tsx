@@ -485,7 +485,7 @@ export const createAreaChart = (data: any, selectedPair = '') => {
 }
 
 export const createLinearChart = (data: any) => {
-  console.log('srmVolumesInUSDT', data)
+  // console.log('srmVolumesInUSDT', data)
   const ctx = document.getElementById('linearChart')?.getContext('2d')
 
   const gradient = ctx.createLinearGradient(0, 0, 0, 400)

@@ -407,21 +407,23 @@ const RewardsRoute = (props) => {
         justify={'space-between'}
       >
         <Title
-          style={{ paddingBottom: '1rem', color: theme.palette.text.black }}
+          style={{ 
+            // paddingBottom: '1rem',
+            color: theme.palette.text.black }}
           theme={theme}
         >
-          Buy SRM and farm DCFI token
+          Farm DCFI token
         </Title>
-        <RowContainer style={{ width: '32%' }}>
+        <RowContainer style={{ width: '15%' }}>
           <a
             rel="noopener noreferrel"
             target={'_blank'}
             href={'https://decefi.app/onePager'}
             style={{
-              paddingBottom: '2rem',
-              width: 'calc((100% - 4rem) / 2)',
+              // paddingBottom: '2rem',
+              width: '100%',
               textDecoration: 'none',
-              marginRight: '2rem',
+              // marginRight: '2rem',
             }}
           >
             <BtnCustom
@@ -437,7 +439,7 @@ const RewardsRoute = (props) => {
               Decefi one-pager{' '}
             </BtnCustom>
           </a>
-          <a
+          {/* <a
             rel="noopener noreferrel"
             target={'_blank'}
             href={
@@ -461,7 +463,7 @@ const RewardsRoute = (props) => {
             >
               How to farm DCFI
             </BtnCustom>
-          </a>
+          </a> */}
         </RowContainer>
       </RowContainer>
       <div
@@ -474,7 +476,7 @@ const RewardsRoute = (props) => {
           alignItems: 'flex-start',
         }}
       >
-        <Card theme={theme}>
+        {/* <Card theme={theme}>
           <RowContainer style={{ height: '50%' }}>
             <SvgIcon src={serum} width="13%" height="auto" />
           </RowContainer>
@@ -517,7 +519,7 @@ const RewardsRoute = (props) => {
               </BtnCustom>
             </Link>
           </RowContainer>
-        </Card>
+        </Card> */}
         {/* <Card theme={theme}>
           <SvgIcon src={serum} width="11%" height="auto" />
           <Value theme={theme}>456.997</Value>{' '}
@@ -596,11 +598,11 @@ const RewardsRoute = (props) => {
                 btnColor={theme.palette.grey.main}
                 backgroundColor={theme.palette.blue.serum}
                 hoverBackground={theme.palette.blue.serum}
-                padding={'1.5rem 0 2.5rem 0'}
+                padding={''}
                 height={'5rem'}
                 fontSize={'1.6rem'}
                 btnWidth={'calc(50% - 2rem)'}
-                margin={'0 1rem'}
+                margin={'0 1rem 1rem 1rem'}
                 textTransform={'none'}
                 onClick={(e) => {
                   if (publicKey === '') {
@@ -725,7 +727,7 @@ const RewardsRoute = (props) => {
                 </BtnCustom>
               </Form>
             </RowContainer>
-            <RowContainer style={{ position: 'absolute', top: '63rem' }}>
+            <RowContainer style={{ position: 'absolute', top: '61rem' }}>
               <CardText color={theme.palette.green.descrip} theme={theme}>
                 Twitter farming rules
                 <div

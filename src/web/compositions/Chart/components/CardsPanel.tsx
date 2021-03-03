@@ -48,6 +48,7 @@ import TwitterIcon from '@icons/twitter.svg'
 import { withTheme } from '@material-ui/core'
 
 import Dropdown from '@sb/components/Dropdown'
+import Logo from '@sb/compositions/Chart/components/DecefiLogo'
 import NetworkDropdown from './NetworkDropdown/NetworkDropdown'
 
 export const NavBarLink = styled(({ style, ...props }) => (
@@ -152,113 +153,13 @@ const TopBar = ({ theme }) => {
     connected,
     wallet,
     providerUrl,
-    providerName,
     setProvider,
   } = useWallet()
-  const { endpoint, setEndpoint } = useConnectionConfig()
-  const location = useLocation()
-  const history = useHistory()
-  const [isOpenPopup, setPopupOpen] = useState(false)
 
   const publicKey = wallet?.publicKey?.toBase58()
 
-  const handleClick = useCallback(
-    (e) => {
-      history.push(e.key)
-    },
-    [history]
-  )
-
-  const isDarkTheme = theme.palette.type === 'dark'
-
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-      {/* <SvgIcon
-        width={'auto'}
-        height={'100%'}
-        styledComponentsAdditionalStyle={{
-          padding: '1rem 2rem 1rem 0',
-          cursor: 'pointer',
-        }}
-        src={isDarkTheme ? SunDisabled : SunActive}
-        onClick={() => {
-          if (isDarkTheme) {
-            theme.updateMode('light')
-          }
-        }}
-      />
-
-      <SvgIcon
-        width={'auto'}
-        height={'100%'}
-        styledComponentsAdditionalStyle={{
-          padding: '1rem 2rem 1rem 0',
-          cursor: 'pointer',
-        }}
-        src={isDarkTheme ? MoonActive : MoonDisabled}
-        onClick={() => {
-          if (!isDarkTheme) {
-            theme.updateMode('dark')
-          }
-        }}
-      /> */}
-
-      {/* <div>
-        <OvalSelector
-          theme={theme}
-          selectStyles={selectStyles(theme)}
-          onChange={({ value }) => {
-            setEndpoint(value)
-          }}
-          value={{
-            value: endpoint,
-            label: ENDPOINTS.find((a) => a.endpoint === endpoint).name,
-          }}
-          options={ENDPOINTS.map((endpoint) => ({
-            value: endpoint.endpoint,
-            label: endpoint.name,
-          }))}
-        />
-      </div>
-      <div>
-        <OvalSelector
-          theme={theme}
-          selectStyles={selectStyles(theme)}
-          onChange={({ value }) => {
-            setProvider(value)
-          }}
-          value={{ value: providerUrl, label: providerName }}
-          options={WALLET_PROVIDERS.map((provider) => ({
-            value: provider.url,
-            label: provider.name,
-          }))}
-        />
-      </div> */}
-      {/* <div>
-        <OvalSelector
-          theme={theme}
-          selectStyles={selectStyles(theme)}
-          onChange={({ value }) => {
-            setProvider(value)
-            console.log('value', value)
-          }}
-          value={{ value: providerUrl, label: providerName }}
-          options={WALLET_PROVIDERS.map((provider) => ({
-            value: provider.url,
-            label: provider.name,
-          }))}
-        />
-      </div> */}
-      {/* <WalletBlock /> */}
-      {/* <div data-tut="connection-dropdown">
-        <NetworkDropdown
-          endpoint={endpoint}
-          setEndpoint={setEndpoint}
-          theme={theme}
-          isWalletConnected={connected}
-        />
-      </div> */}
-
       <div data-tut="wallet">
         <Dropdown
           wallet={wallet}
@@ -360,7 +261,6 @@ export const CardsPanel = ({
         <CustomCard
           theme={theme}
           style={{
-            // position: 'relative',
             display: 'flex',
             maxWidth: '75%',
             marginRight: '.4rem',
@@ -370,13 +270,12 @@ export const CardsPanel = ({
           }}
         >
           <Link
-            to={'/chart/spot/SRM_USDT'}
-            style={{ width: '17rem' }}
-            onClick={() => {
-              setMarketAddress(DEFAULT_MARKET?.address.toBase58())
-            }}
+            to={'/'}
+            style={{ width: '17rem', display: 'flex', justifyContent: 'center' }}
           >
-            <img
+
+            <Logo/>
+            {/* <img
               style={{
                 width: '17rem',
                 height: '100%',
@@ -384,9 +283,12 @@ export const CardsPanel = ({
                 borderRight: theme.palette.border.main,
               }}
               src={isDarkTheme ? SerumCCAILogo : LightLogo}
-            />
+            /> */}
+
+
+
           </Link>
-          <div
+          {/* <div
             style={{
               width: '35%',
               marginLeft: '4rem',
@@ -396,37 +298,6 @@ export const CardsPanel = ({
               alignItems: 'center',
             }}
           >
-            <NavBarLink
-              theme={theme}
-              style={{
-                color: location.pathname.includes('chart')
-                  ? theme.palette.blue.serum
-                  : theme.palette.grey.text,
-                textDecoration: location.pathname.includes('chart')
-                  ? 'underline'
-                  : 'none',
-              }}
-              to="/chart"
-            >
-              Trading
-            </NavBarLink>
-            <NavBarLink
-              theme={theme}
-              data-tut="analytics"
-              to="/analytics"
-              style={{
-                color: location.pathname.includes('analytics')
-                  ? theme.palette.blue.serum
-                  : theme.palette.grey.text,
-
-                textDecoration: location.pathname.includes('analytics')
-                  ? 'underline'
-                  : 'none',
-              }}
-            >
-              {' '}
-              Analytics
-            </NavBarLink>
             <NavBarLink
               theme={theme}
               data-tut="farming"
@@ -444,59 +315,7 @@ export const CardsPanel = ({
               {' '}
               Farming 👨‍🌾
             </NavBarLink>
-            <NavBarLink
-              theme={theme}
-              data-tut="farming"
-              to="/addressbook"
-              style={{
-                borderRight: theme.palette.border.main,
-                paddingRight: '4rem',
-                color: location.pathname.includes('addressbook')
-                  ? theme.palette.blue.serum
-                  : theme.palette.grey.text,
-                textDecoration: location.pathname.includes('addressbook')
-                  ? 'underline'
-                  : 'none',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {' '}
-              Addressbook
-            </NavBarLink>
-          </div>
-          {isChartPage && (
-            <div data-tut="pairs">
-              <AutoSuggestSelect
-                value={view === 'default' && pair}
-                id={'pairSelector'}
-                view={view}
-                style={{ width: '13rem' }}
-                activeExchange={activeExchange}
-                selectStyles={{ ...selectStyles(theme) }}
-                marketType={marketType}
-                quantityPrecision={quantityPrecision}
-                pricePrecision={pricePrecision}
-              />
-            </div>
-          )}
-
-          {/* <TooltipCustom
-            title="Cryptocurrencies.ai is a Binance partner exchange"
-            enterDelay={250}
-            component={ */}
-          {isChartPage && (
-            <MarketStats
-              theme={theme}
-              symbol={pair}
-              marketType={marketType}
-              exchange={activeExchange}
-              quantityPrecision={quantityPrecision}
-              pricePrecision={pricePrecision}
-            />
-          )}
-
-          {/* }
-          /> */}
+          </div> */}
         </CustomCard>
 
         <TopBar theme={theme} />
