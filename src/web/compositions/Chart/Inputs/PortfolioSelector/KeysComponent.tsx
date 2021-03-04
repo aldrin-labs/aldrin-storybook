@@ -3,7 +3,10 @@ import React, { useState } from 'react'
 import { getAccountsFunds } from '@core/graphql/queries/chart/getAccountsFunds'
 import { selectTradingKey } from '@core/graphql/mutations/user/selectTradingKey'
 import { GET_TRADING_SETTINGS } from '@core/graphql/queries/user/getTradingSettings'
-import withAuth from '@core/hoc/withAuth'
+import { selectProfileKey } from '@core/components/SelectKeyListDW/SelectKeyListDW'
+import { updateDepositSettings } from '@core/graphql/mutations/user/updateDepositSettings'
+import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
+import PopupStart from '@sb/components/Onboarding/PopupStart/PopupStart'
 
 import { graphql } from 'react-apollo'
 import { client } from '@core/graphql/apolloClient'
@@ -21,10 +24,12 @@ import {
   AccountTitle,
   Stroke,
   Name,
-  DepositBtn,
   AddPortfolioBtn,
   Balances,
 } from './index.styles'
+import { NavLink as Link } from 'react-router-dom'
+
+import { RenameKeyDialog } from '@core/components/RenameDialog/RenameKeyDialog'
 
 const KeysComponent = ({
   theme,
@@ -35,6 +40,7 @@ const KeysComponent = ({
   getAccountsFundsQuery,
   selectTradingKeyMutation,
   getTradingSettingsQuery,
+  updateDepositSettingsMutation,
   portfolio,
 }: {
   theme: Theme
@@ -44,7 +50,16 @@ const KeysComponent = ({
   marketType: number
   portfolio: string
 }) => {
-  const [account, chooseAccount] = useState('')
+  const Deposit = (props: any) => <Link to="/profile/deposit" {...props} />
+
+  const [account, chooseAccount] = useState(
+    getTradingSettingsQuery.getTradingSettings.selectedTradingKey
+  )
+  const [isEditPopupOpen, changePopupState] = useState(false)
+  const [accountToRename, chooseAccountToRename] = useState({})
+  const [creatingAdditionalAccount, startCreatingAdditionalAccount] = useState(
+    false
+  )
 
   const selectKey = async (
     account: string,
@@ -87,27 +102,23 @@ const KeysComponent = ({
     await selectKey(value, hedgeMode, isFuturesWarsKey)
   }
 
-  const currentKeyIndex = getAccountsFundsQuery.getAccountsFunds.findIndex(
-    (key) => key.keyId == account
-  )
-
-  const selectedKey =
-    currentKeyIndex !== -1
-      ? getAccountsFundsQuery.getAccountsFunds[currentKeyIndex]
-      : null
-
-  console.log('getTradingSettings')
-
   const isLoading = getAccountsFundsQuery.loading
 
   return (
     <Container
       isLoading={isLoading}
-      width={'calc(62%)'}
-      style={{ marginRight: '2rem' }}
+      width={'calc(60%)'}
+      style={{ marginRight: isLoading ? 'none' : '2rem' }}
     >
       {isLoading ? (
-        <div>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
           <span
             style={{
               display: 'flex',
@@ -121,9 +132,15 @@ const KeysComponent = ({
             <span>It seems to take a while to load your accounts.</span>
             <span>Wait a few more seconds please, they are on their way.</span>
           </span>
-          <span style={{ width: '5rem' }}>
+          <span
+            style={{
+              width: '35rem',
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
             {' '}
-            <img src={Rocket} width={'100%'} />
+            <img src={Rocket} width={'75%'} />
           </span>
         </div>
       ) : (
@@ -150,20 +167,88 @@ const KeysComponent = ({
                       })
                     }}
                   ></input>
-                  <label htmlFor={el.keyId}>{el.keyName}</label>
+                  <label style={{ cursor: 'pointer' }} htmlFor={el.keyId}>
+                    {el.keyName}
+                  </label>
                 </Name>
-                <SvgIcon src={account === el.keyId ? WhitePen : BluePen} />
+                <SvgIcon
+                  onClick={() => {
+                    changePopupState(!isEditPopupOpen)
+                    chooseAccountToRename({ name: el.keyName, _id: el.keyId })
+                    console.log('elid', el.keyId, el.keyName)
+                  }}
+                  src={account === el.keyId ? WhitePen : BluePen}
+                />
               </AccountTitle>{' '}
               <Balances>${el.totalValue.toFixed(2)}</Balances>
-              <DepositBtn>Deposit</DepositBtn>
+              <div style={{ display: 'flex', width: '20%' }}>
+                <NavLinkButton
+                  key="deposit"
+                  page={`deposit`}
+                  component={Deposit}
+                  style={{
+                    border: 'none',
+                    btnWidth: '100%',
+                    backgroundColor: 'none',
+                    color: '#165be0',
+                    fontSize: '1.3rem',
+                    fontFamily: 'Avenir Next Medium',
+                    outline: 'none',
+                    cursor: 'pointer',
+                    '&:hover': {
+                      border: 'none',
+                      backgroundColor: 'transparent',
+                      color: '#165be0',
+                      fontSize: '1.3rem',
+                      fontFamily: 'Avenir Next Medium',
+                      outline: 'none',
+                      cursor: 'pointer',
+                    },
+                  }}
+                  onClick={() => {
+                    selectProfileKey({
+                      keyId: el.keyId,
+                      isDeposit: true,
+                      mutation: updateDepositSettingsMutation,
+                    }),
+                      console.log('deposit')
+                  }}
+                >
+                  {' '}
+                  Deposit
+                </NavLinkButton>
+              </div>
             </Stroke>
           ))}{' '}
         </span>
       )}
       {isLoading ? null : (
-        <Stroke>
-          <AddPortfolioBtn width={'60%'}>+ Add new account</AddPortfolioBtn>
+        <Stroke style={{ borderTop: '0.1rem solid #e0e2e5' }}>
+          <AddPortfolioBtn
+            onClick={() => {
+              startCreatingAdditionalAccount(!creatingAdditionalAccount)
+            }}
+            width={'60%'}
+          >
+            + Add new account
+          </AddPortfolioBtn>
         </Stroke>
+      )}
+      {isEditPopupOpen ? (
+        <RenameKeyDialog
+          portfolioId={portfolio}
+          needRenameButton={false}
+          data={accountToRename}
+          baseCoin={'USDT'}
+          forceUpdateUserContainer={() => {}}
+          isPortfolio={false}
+          closeMainPopup={() => changePopupState(false)}
+          marketType={marketType}
+          theme={theme}
+        />
+      ) : null}
+      {creatingAdditionalAccount && (
+        <PopupStart open={true} creatingAdditionalAccount={true} />
       )}
     </Container>
   )
@@ -191,5 +276,8 @@ export default compose(
   }),
   graphql(selectTradingKey, {
     name: 'selectTradingKeyMutation',
+  }),
+  graphql(updateDepositSettings, {
+    name: 'updateDepositSettingsMutation',
   })
 )(KeysComponent)

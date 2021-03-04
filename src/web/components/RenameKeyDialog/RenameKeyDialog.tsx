@@ -15,19 +15,23 @@ import {
   StyledButton,
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
+import { withTheme } from '@material-ui/styles'
 import { ErrorText } from '@sb/components/SignalPreferencesDialog/SignalPreferencesDialog.styles'
 import { OpenRenameButton } from '@sb/components/RenameKeyDialog/RenameKeyDialog.styles'
 
 const RenameKeyDialogComponent = ({
   data,
+  theme,
   renameMutation,
   closeMainPopup,
+  needRenameButton = true,
   isPortfolio = false,
+  portfolioId,
 }) => {
   const { name, _id: id } = data
   const target = isPortfolio ? 'portfolio' : 'account'
 
-  const [isOpen, toggleDialog] = useState(false)
+  const [isOpen, toggleDialog] = useState(!needRenameButton)
   const [newName, updateName] = useState('')
   const [error, setError] = useState('')
 
@@ -45,7 +49,7 @@ const RenameKeyDialogComponent = ({
 
     const variables = isPortfolio
       ? { inputPortfolio: { id, name: trimmedName } }
-      : { input: { keyId: id, name: trimmedName } }
+      : { input: { keyId: id, name: trimmedName, portfolioId: portfolioId } }
 
     if (trimmedName.length < 3) {
       setError('Please enter name with at least 3 characters ')
@@ -68,11 +72,15 @@ const RenameKeyDialogComponent = ({
       return setError(error)
     }
   }
-
   return (
     <>
-      <OpenRenameButton onClick={openDialog}>Rename</OpenRenameButton>
+      {needRenameButton ? (
+        <OpenRenameButton theme={theme} onClick={openDialog}>
+          Rename
+        </OpenRenameButton>
+      ) : null}
       <Dialog
+        theme={theme}
         PaperComponent={StyledPaper}
         style={{ width: '75rem', margin: 'auto' }}
         open={isOpen}
@@ -81,32 +89,42 @@ const RenameKeyDialogComponent = ({
         style={{ transition: 'opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms' }}
         aria-labelledby="form-dialog-title"
       >
-        <StyledDialogTitle disableTypography id="form-dialog-title">
-          <TypographyTitle>{`Rename ${target} "${name}"?`}</TypographyTitle>
-          <ClearButton>
+        <StyledDialogTitle
+          theme={theme}
+          disableTypography
+          id="form-dialog-title"
+        >
+          <TypographyTitle
+            theme={theme}
+          >{`Rename ${target} "${name}"?`}</TypographyTitle>
+          <ClearButton theme={theme}>
             <Clear
+              theme={theme}
               style={{ fontSize: '2rem' }}
               color="inherit"
               onClick={closeDialog}
             />
           </ClearButton>
         </StyledDialogTitle>
-        <StyledDialogContent style={{ paddingBottom: '1rem' }}>
-          <Grid style={{ paddingBottom: '1.5rem' }}>
+        <StyledDialogContent theme={theme} style={{ paddingBottom: '1rem' }}>
+          <Grid theme={theme} style={{ paddingBottom: '1.5rem' }}>
             <Grid
+              theme={theme}
               style={{ padding: '1rem' }}
               container
               alignItems="center"
               wrap="nowrap"
             >
-              <TypographySectionTitle>
+              <TypographySectionTitle theme={theme}>
                 TO RENAME A KEY, PLEASE ENTER ITS NEW NAME
               </TypographySectionTitle>
-              <Line />
+              <Line theme={theme} />
             </Grid>
-            <FormControl fullWidth required>
-              <Grid container alignItems="center">
+            <FormControl theme={theme} fullWidth required>
+              <Grid container theme={theme} alignItems="center">
                 <StyledInput
+                  maxLength={'24'}
+                  theme={theme}
                   type="text"
                   width="100"
                   value={newName}
@@ -116,10 +134,13 @@ const RenameKeyDialogComponent = ({
                 />
               </Grid>
               {error ? (
-                <ErrorText style={{ paddingTop: '.5rem' }}>{error}</ErrorText>
+                <ErrorText theme={theme} style={{ paddingTop: '.5rem' }}>
+                  {error}
+                </ErrorText>
               ) : null}
             </FormControl>
             <Grid
+              theme={theme}
               container
               alignItems="center"
               justify="flex-end"
@@ -127,6 +148,7 @@ const RenameKeyDialogComponent = ({
               style={{ paddingTop: '2rem' }}
             >
               <StyledButton
+                theme={theme}
                 onClick={handleSubmit}
                 color="primary"
                 id="RenameDialogButton"
@@ -141,4 +163,4 @@ const RenameKeyDialogComponent = ({
   )
 }
 
-export default RenameKeyDialogComponent
+export default withTheme()(RenameKeyDialogComponent)

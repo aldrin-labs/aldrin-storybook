@@ -153,6 +153,8 @@ const ThemeWrapper = ({ themeMode, location, children }) => {
               primary: '#F07878',
               orderbook: '#FF0000',
               marketStats: '#FF0000',
+              portfolio:
+                'linear-gradient(140.41deg, #F26D68 0%, #F69894 92.17%)',
             },
             blue: {
               custom: '#5085EC',
@@ -176,6 +178,7 @@ const ThemeWrapper = ({ themeMode, location, children }) => {
               onboarding: '#1BA492',
               orderbook: '#007C0C',
               marketStats: '#39A74C',
+              account: 'linear-gradient(135deg, #A5E898 0%, #97E873 100%)',
             },
             grey: {
               custom: '#2E2E2E',
@@ -190,6 +193,7 @@ const ThemeWrapper = ({ themeMode, location, children }) => {
               titleForInput: '#2E2E2E',
               marketStats: 'rgb(11, 11, 14)',
               disabled: '#e0e2e5',
+              selector: '#1C1D22',
             },
             primary: {
               main: '#303037',
@@ -365,6 +369,7 @@ const ThemeWrapper = ({ themeMode, location, children }) => {
               primary: '#F07878',
               orderbook: '#FF0000',
               marketStats: '#FF0000',
+              portfolio: '#EF8F8B',
             },
             blue: {
               custom: '#5085EC',
@@ -387,6 +392,7 @@ const ThemeWrapper = ({ themeMode, location, children }) => {
               onboarding: '#1BA492',
               orderbook: '#007C0C',
               marketStats: '#39A74C',
+              account: '#89BE90',
             },
             grey: {
               custom: '#ABBAD1',
@@ -400,6 +406,7 @@ const ThemeWrapper = ({ themeMode, location, children }) => {
               onboard: '#3A475C',
               titleForInput: '#f1f6f9',
               marketStats: '#ECF0F3',
+              selector: '#fff',
             },
             primary: {
               main: '#FEFEFE',

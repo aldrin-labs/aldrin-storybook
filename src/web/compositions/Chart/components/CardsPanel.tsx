@@ -13,6 +13,8 @@ import { getActiveStrategies } from '@core/graphql/queries/chart/getActiveStrate
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { IProps, IQueryProps, INextQueryProps } from './TradingTabs.types'
 
+import { withAuthStatus } from '@core/hoc/withAuthStatus'
+
 import { getPrecisionItem } from '@core/utils/getPrecisionItem'
 import {
   SmartTradeButton,
@@ -156,7 +158,7 @@ export const CardsPanel = ({
 
   const authenticated = checkLoginStatus()
   const isSmartOrderMode = terminalViewMode === 'smartOrderMode'
-  console.log('marketType', marketType)
+
   return (
     <>
       <PanelWrapper theme={theme}>
@@ -187,14 +189,18 @@ export const CardsPanel = ({
               }}
               isAccountSelect={true}
             /> */}
-            <PortfolioSelector
-              selectStyles={selectStyles(theme)}
-              theme={theme}
-              marketType={marketType}
-              style={{ width: '20%', minWidth: '0', marginLeft: '.8rem' }}
-              id={'portfolioSelector'}
-              value={'portfolio'}
-            />
+            {authenticated ? (
+              <PortfolioSelector
+                selectStyles={selectStyles(theme)}
+                theme={theme}
+                marketType={marketType}
+                style={{ width: '20%', minWidth: '0', marginLeft: '.8rem' }}
+                id={'portfolioSelector'}
+                value={'portfolio'}
+              />
+            ) : (
+              <div />
+            )}
           </DarkTooltip>
         )}
 

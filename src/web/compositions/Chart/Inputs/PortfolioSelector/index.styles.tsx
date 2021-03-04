@@ -7,7 +7,7 @@ export const Container = styled.div`
   width: ${(props) => props.width || '40%'};
   height: 100%;
   div:last-child {
-    border-bottom: none;
+    border-bottom: ${(props) => props.borderBottom || 'none'};
   }
 `
 export const Stroke = styled.div`
@@ -32,7 +32,10 @@ export const PortfolioTitle = styled.div`
   width: 95%;
   white-space: nowrap;
   сolor: ${(props) => (props.isActive ? '#3A475C' : '#96999C')};
-  background: ${(props) => (props.isActive ? '#EF8F8B' : '#fff')};
+  background: ${(props) =>
+    props.isActive
+      ? props.theme.palette.red.portfolio
+      : props.theme.palette.grey.selector};
   padding: 0 1rem;
   cursor: pointer;
 `
@@ -43,18 +46,23 @@ export const AccountTitle = styled.div`
   border-radius: 0.5rem;
   font-family: Avenir Next Light;
   height: 3rem;
-  width: 80%;
+  width: 60%;
   сolor: ${(props) => (props.isActive ? '#3A475C' : '#96999C')};
   white-space: nowrap;
-  background: ${(props) => (props.isActive ? '#89BE90' : '#fff')};
+  background: ${(props) =>
+    props.isActive
+      ? props.theme.palette.green.account
+      : props.theme.palette.grey.selector};
   padding: 0 1rem;
   cursor: pointer;
 `
 export const Name = styled.div`
   display: flex;
-  width: 70%;
+  cursor: pointer;
+  min-width: 70%;
   align-items: end;
   justify-content: end;
+  width: 70%;
 
   .radio {
     position: absolute;
@@ -102,6 +110,7 @@ export const CloseButton = styled.button`
   color: #fff;
   background: #7380eb;
   border: none;
+  font-size: 1.5rem;
   height: 3rem;
   border-radius: 1rem;
   outline: none;
@@ -110,6 +119,7 @@ export const CloseButton = styled.button`
 export const Balances = styled.div`
   padding: 0 1rem;
   color: #157e23;
+  width: 20%;
   font-size: 1.3rem;
   font-family: Avenir Next Medium;
   cursor: default;
