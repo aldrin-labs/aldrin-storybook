@@ -766,6 +766,7 @@ class SelectPairListComponent extends React.PureComponent<
                   letterSpacing: '.075rem',
                   // borderBottom: '.1rem solid #e0e5ec',
                   fontSize: '1.2rem',
+                  outline: 'none',
                 }}
                 rowHeight={window.outerHeight / 30}
                 rowGetter={({ index }) => processedSelectData[index]}

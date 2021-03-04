@@ -45,7 +45,7 @@ import { checLoginStatusWrapper } from '@core/utils/loginUtils'
 
 import withAuth from '@core/hoc/withAuth'
 import { checkLoginStatus } from '@core/utils/loginUtils'
-import { MainContainer, GlobalStyles } from './Chart.styles'
+import { MainContainer, GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
 import { IProps } from './Chart.types'
 
 import { useMarket } from '@sb/dexUtils/markets'

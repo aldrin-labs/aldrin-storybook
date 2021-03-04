@@ -388,7 +388,7 @@ export const CardsPanel = ({
           </Link>
           <div
             style={{
-              width: '35%',
+              // width: '24%',
               marginLeft: '4rem',
               paddingRight: '4rem',
               display: 'flex',

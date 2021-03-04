@@ -22,7 +22,7 @@ const TechIssues = () => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: 'calc(100% - 5.4vh)',
+        height: 'calc(100% - 6rem)',
         flexDirection: 'column',
       }}
     >

@@ -316,6 +316,7 @@ const PairSelector = ({
                 letterSpacing: '.075rem',
                 // borderBottom: '.1rem solid #e0e5ec',
                 fontSize: '1.2rem',
+                outline: 'none'
               }}
               rowHeight={window.outerHeight / 30}
               rowGetter={({ index }) => processedSelectData[index]}
@@ -361,6 +362,7 @@ const PairSelector = ({
                 label={` `}
                 dataKey="volume24hChangeIcon"
                 width={width / 3}
+                disableSort
                 cellRenderer={({ cellData }) => cellData.render}
               />
             </Table>

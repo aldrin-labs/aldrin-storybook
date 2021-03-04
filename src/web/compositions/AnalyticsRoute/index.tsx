@@ -6,6 +6,7 @@ import { AWESOME_MARKETS } from '@sb/dexUtils/serum'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 
+import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
 import TopBar from './components/TopBar/TopBar'
 import MarketInfo from './components/MarketInfo/MarketInfo'
 import PairSelector from './components/PairSelector'
@@ -53,6 +54,7 @@ const AnalyticsRoute = ({
 
   return (
     <Container theme={theme}>
+      <GlobalStyles />
       <RowContainer height={'100%'} direction={'column'}>
         <TopBarContainer theme={theme} justify={'space-between'}>
           <TopBar theme={theme} />

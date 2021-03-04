@@ -105,6 +105,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
     if (view === 'default') {
       const pair = value.split('_').join('/')
       console.log('markets', markets)
+      console.log('customMarkets', customMarkets)
       let selectedMarketFormSelector = markets.find((el) => el.name === pair)
       // Need to refactor this, address of a coin should be in the value, not name
       // console.log('value: ', value)
