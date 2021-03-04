@@ -8,7 +8,7 @@ export const GlobalStyle = createGlobalStyle`
  
  &::-webkit-scrollbar {
     width: ${({ scrollBarWidth }: { scrollBarWidth?: number }) =>
-      scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
+      scrollBarWidth ? `${scrollBarWidth}px` : '0px'};
     height: 3px;
   }
 

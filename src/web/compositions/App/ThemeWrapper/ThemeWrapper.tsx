@@ -153,6 +153,8 @@ const ThemeWrapper = ({ themeMode, location, children }) => {
               primary: '#F07878',
               orderbook: '#FF0000',
               marketStats: '#FF0000',
+              portfolio:
+                'linear-gradient(135deg, rgba(242, 109, 105, 0.5), rgba(246, 150, 147, 0.5))',
             },
             blue: {
               custom: '#5085EC',
@@ -176,6 +178,8 @@ const ThemeWrapper = ({ themeMode, location, children }) => {
               onboarding: '#1BA492',
               orderbook: '#007C0C',
               marketStats: '#39A74C',
+              account:
+                'linear-gradient(135deg, rgba(164, 231, 151, 0.5), rgba(150, 232, 115, 0.5))',
             },
             grey: {
               custom: '#2E2E2E',
@@ -190,6 +194,8 @@ const ThemeWrapper = ({ themeMode, location, children }) => {
               titleForInput: '#2E2E2E',
               marketStats: 'rgb(11, 11, 14)',
               disabled: '#e0e2e5',
+              selector: '#1C1D22',
+              selectorText: '#ECF0F3',
             },
             primary: {
               main: '#303037',
@@ -365,6 +371,7 @@ const ThemeWrapper = ({ themeMode, location, children }) => {
               primary: '#F07878',
               orderbook: '#FF0000',
               marketStats: '#FF0000',
+              portfolio: '#EF8F8B',
             },
             blue: {
               custom: '#5085EC',
@@ -387,6 +394,7 @@ const ThemeWrapper = ({ themeMode, location, children }) => {
               onboarding: '#1BA492',
               orderbook: '#007C0C',
               marketStats: '#39A74C',
+              account: '#89BE90',
             },
             grey: {
               custom: '#ABBAD1',
@@ -400,6 +408,8 @@ const ThemeWrapper = ({ themeMode, location, children }) => {
               onboard: '#3A475C',
               titleForInput: '#f1f6f9',
               marketStats: '#ECF0F3',
+              selector: '#fff',
+              selectorText: '#3A475C',
             },
             primary: {
               main: '#FEFEFE',

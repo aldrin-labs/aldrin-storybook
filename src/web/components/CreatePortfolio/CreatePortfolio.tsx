@@ -16,6 +16,7 @@ import {
 } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 
 import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortfoliosQuery'
+import { getPortfolioData } from '@core/graphql/queries/portfolio/main/getPortfolioData'
 import { createPortfolioMutation } from '@core/graphql/mutations/user/createPortfolioMutation'
 import { renamePortfolio } from '@core/graphql/mutations/portfolio/renamePortfolio'
 
@@ -243,6 +244,7 @@ export default compose(
     options: ({ baseCoin }: { baseCoin: 'USDT' | 'BTC' }) => ({
       refetchQueries: [
         { query: getMyPortfoliosQuery, variables: { baseCoin } },
+        { query: getPortfolioData },
       ],
     }),
   }),

@@ -2,8 +2,8 @@ import styled from 'styled-components'
 
 export const customAquaScrollBar = `
   &::-webkit-scrollbar {
-    width: 3px;
-    height: 3px;
+    width: 0px;
+    height: 0px;
   }
 
   &::-webkit-scrollbar-track {
@@ -12,6 +12,7 @@ export const customAquaScrollBar = `
 
   &::-webkit-scrollbar-thumb {
     background: #4ed8da;
+    width: 0px;
   }`
 
 //  https://stackoverflow.com/questions/21646738/convert-hex-to-rgba
