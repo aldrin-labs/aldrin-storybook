@@ -1,7 +1,7 @@
 export const customAquaScrollBar = `
   &::-webkit-scrollbar {
-    width: 3px;
-    height: 3px;
+    width: 0px;
+    height: 0px;
   } 
 
   &::-webkit-scrollbar-track {

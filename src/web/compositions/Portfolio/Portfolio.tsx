@@ -174,6 +174,8 @@ class PortfolioComponent extends React.Component<IProps, IState> {
 
     console.log('isOnboardingEnabled', isOnboardingEnabled)
 
+    console.log('portfolioId', portfolioId)
+
     return (
       <>
         <PortfolioContainer>

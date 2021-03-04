@@ -4,6 +4,7 @@ import { graphql } from 'react-apollo'
 import { useLocation, useHistory } from 'react-router-dom'
 import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import PreferencesSelect from '../Inputs/PreferencesSelect'
+import PortfolioSelector from '../Inputs/PortfolioSelector'
 import LayoutSelector from '@core/components/LayoutSelector'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import KeySelector from '@core/components/KeySelector'
@@ -11,6 +12,8 @@ import SelectExchange from '../Inputs/SelectExchange/SelectExchange'
 import { getActiveStrategies } from '@core/graphql/queries/chart/getActiveStrategies'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { IProps, IQueryProps, INextQueryProps } from './TradingTabs.types'
+
+import { withAuthStatus } from '@core/hoc/withAuthStatus'
 
 import { getPrecisionItem } from '@core/utils/getPrecisionItem'
 import {
@@ -155,7 +158,7 @@ export const CardsPanel = ({
 
   const authenticated = checkLoginStatus()
   const isSmartOrderMode = terminalViewMode === 'smartOrderMode'
-  console.log('marketType', marketType)
+
   return (
     <>
       <PanelWrapper theme={theme}>
@@ -176,7 +179,7 @@ export const CardsPanel = ({
               'You can create an unlimited number of portfolios and accounts, but to trade within one window you will have to choose only one of them.'
             }
           >
-            <KeySelector
+            {/* <KeySelector
               theme={theme}
               exchange={activeExchange}
               marketType={marketType}
@@ -185,7 +188,19 @@ export const CardsPanel = ({
                 width: '100%',
               }}
               isAccountSelect={true}
-            />
+            /> */}
+            {authenticated ? (
+              <PortfolioSelector
+                selectStyles={selectStyles(theme)}
+                theme={theme}
+                marketType={marketType}
+                style={{ width: '20%', minWidth: '0', marginLeft: '.8rem' }}
+                id={'portfolioSelector'}
+                value={'portfolio'}
+              />
+            ) : (
+              <div />
+            )}
           </DarkTooltip>
         )}
 

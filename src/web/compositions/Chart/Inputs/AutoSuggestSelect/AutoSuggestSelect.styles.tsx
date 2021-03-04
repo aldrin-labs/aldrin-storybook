@@ -27,7 +27,14 @@ export const ExchangePair = styled(({ gridBorder, paddingCell, ...props }) => (
   border-radius: 0;
   box-shadow: none;
 
-  &:hover #selectWrapper, &:hover #preferences {
+  &:hover #selectWrapper,
+  &:hover #preferences {
     display: block;
   }
+  ${(props) =>
+    props.fixed
+      ? `  #preferences {
+    display: block;
+  }`
+      : ``};
 `
