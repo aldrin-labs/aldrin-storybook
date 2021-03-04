@@ -294,7 +294,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       }
     }
 
-    if (pair !== prevProps.pair) {
+    if (pair.join('') !== prevProps.pair.join('')) {
       setFieldValue('total', 0)
       setFieldValue('amount', 0)
     }

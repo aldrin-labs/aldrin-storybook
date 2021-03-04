@@ -230,8 +230,6 @@ export function ChartPageComponent(props: any) {
 
   console.log('Chart RENDER', selectedKey)
 
-  console.log('getMyProfile', props.getChartDataQuery.getMyProfile)
-
   return (
     <MainContainer>
       <GlobalStyles />

@@ -457,13 +457,13 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
               handleClose={() => this.setState({ editTrade: null })}
               updateState={async (entryOrderProperties) => {
                 this.setState({ editTrade: null })
-
                 const entryOrder = getEntryOrderArgsForUpdate(
                   entryOrderProperties
                 )
 
                 // TODO: move to separate function
                 let result
+
                 try {
                   result = await updateEntryPointStrategyMutation({
                     variables: {
@@ -480,6 +480,8 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
                     message: `${e}`,
                   }
                 }
+
+                console.log('rasdfdgh', result, 'afdgh', selectedTrade)
 
                 // TODO: move to utils
                 const statusResult =
