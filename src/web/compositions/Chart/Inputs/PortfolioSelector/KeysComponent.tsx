@@ -5,8 +5,11 @@ import { selectTradingKey } from '@core/graphql/mutations/user/selectTradingKey'
 import { GET_TRADING_SETTINGS } from '@core/graphql/queries/user/getTradingSettings'
 import { selectProfileKey } from '@core/components/SelectKeyListDW/SelectKeyListDW'
 import { updateDepositSettings } from '@core/graphql/mutations/user/updateDepositSettings'
+import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
+
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 import PopupStart from '@sb/components/Onboarding/PopupStart/PopupStart'
+import { Loading } from '@sb/components/index'
 
 import { graphql } from 'react-apollo'
 import { client } from '@core/graphql/apolloClient'
@@ -18,6 +21,7 @@ import SvgIcon from '@sb/components/SvgIcon'
 import WhitePen from '@icons/pencil.svg'
 import BluePen from '@icons/bluePencil.svg'
 import Rocket from '@icons/rocket.gif'
+import { sleep } from '@core/utils/helpers'
 
 import {
   Container,
@@ -41,6 +45,7 @@ const KeysComponent = ({
   selectTradingKeyMutation,
   getTradingSettingsQuery,
   updateDepositSettingsMutation,
+  getThemeModeQuery,
   portfolio,
 }: {
   theme: Theme
@@ -102,10 +107,16 @@ const KeysComponent = ({
     await selectKey(value, hedgeMode, isFuturesWarsKey)
   }
 
-  const isLoading = getAccountsFundsQuery.loading
+  const themeMode =
+    (getThemeModeQuery &&
+      getThemeModeQuery.getAccountSettings &&
+      getThemeModeQuery.getAccountSettings.themeMode) ||
+    'dark'
 
+  const isLoading = getAccountsFundsQuery.loading
   return (
     <Container
+      theme={theme}
       isLoading={isLoading}
       width={'calc(60%)'}
       style={{ marginRight: isLoading ? 'none' : '2rem' }}
@@ -119,28 +130,44 @@ const KeysComponent = ({
             alignItems: 'center',
           }}
         >
-          <span
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              lineHeight: '3rem',
-              fontSize: '1.1rem',
-            }}
-          >
-            <span>It seems to take a while to load your accounts.</span>
-            <span>Wait a few more seconds please, they are on their way.</span>
-          </span>
-          <span
-            style={{
-              width: '35rem',
-              display: 'flex',
-              justifyContent: 'center',
-            }}
-          >
+          {' '}
+          <span>
             {' '}
-            <img src={Rocket} width={'75%'} />
+            <span
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                lineHeight: '3rem',
+                fontSize: '1.1rem',
+              }}
+            >
+              <span
+                style={{
+                  color: theme.palette.grey.selectorText,
+                }}
+              >
+                It seems to take a while to load your accounts.
+              </span>
+              <span
+                style={{
+                  color: theme.palette.grey.selectorText,
+                }}
+              >
+                Wait a few more seconds please, they are on their way.
+              </span>
+            </span>
+            <span
+              style={{
+                width: '35rem',
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            >
+              {' '}
+              <img src={Rocket} width={'75%'} />
+            </span>
           </span>
         </div>
       ) : (
@@ -150,7 +177,7 @@ const KeysComponent = ({
               {' '}
               <AccountTitle theme={theme} isActive={account === el.keyId}>
                 {' '}
-                <Name>
+                <Name theme={theme}>
                   {' '}
                   <input
                     type="radio"
@@ -167,7 +194,15 @@ const KeysComponent = ({
                       })
                     }}
                   ></input>
-                  <label style={{ cursor: 'pointer' }} htmlFor={el.keyId}>
+                  <label
+                    style={{
+                      cursor: 'pointer',
+                      color: theme.palette.grey.selectorText,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                    htmlFor={el.keyId}
+                  >
                     {el.keyName}
                   </label>
                 </Name>
@@ -223,7 +258,7 @@ const KeysComponent = ({
         </span>
       )}
       {isLoading ? null : (
-        <Stroke style={{ borderTop: '0.1rem solid #e0e2e5' }}>
+        <Stroke theme={theme} style={{ borderTop: theme.palette.border.main }}>
           <AddPortfolioBtn
             onClick={() => {
               startCreatingAdditionalAccount(!creatingAdditionalAccount)
@@ -248,13 +283,30 @@ const KeysComponent = ({
         />
       ) : null}
       {creatingAdditionalAccount && (
-        <PopupStart open={true} creatingAdditionalAccount={true} />
+        <PopupStart
+          open={true}
+          marketType={marketType}
+          portfolioId={portfolio}
+          creatingAdditionalAccount={true}
+          completeOnboarding={() => {
+            startCreatingAdditionalAccount(false)
+            sleep(5000)
+            getAccountsFundsQuery.refetch()
+          }}
+          onboarding={false}
+        />
       )}
     </Container>
   )
 }
 
 export default compose(
+  queryRendererHoc({
+    query: getThemeMode,
+    name: 'getThemeModeQuery',
+    // skip: (props: any) => !props.authenticated,
+    fetchPolicy: 'cache-first',
+  }),
   queryRendererHoc({
     query: getAccountsFunds,
     name: 'getAccountsFundsQuery',

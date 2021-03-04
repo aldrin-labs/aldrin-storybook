@@ -152,11 +152,12 @@ const PortfolioSelector = ({
           {' '}
           <Row
             width={'100%'}
+            theme={theme}
             style={{
               display: 'flex',
               alignItems: 'baseline',
               height: '80%',
-              borderBottom: '0.1rem solid #e0e2e5',
+              borderBottom: theme.palette.border.main,
             }}
           >
             <Container
@@ -187,7 +188,7 @@ const PortfolioSelector = ({
                     isActive={portfolio === el._id}
                   >
                     {' '}
-                    <Name>
+                    <Name theme={theme}>
                       {' '}
                       <input
                         type="radio"
@@ -196,7 +197,15 @@ const PortfolioSelector = ({
                         checked={portfolio === el._id}
                         style={{ marginRight: '1rem' }}
                       ></input>
-                      <label style={{ cursor: 'pointer' }} htmlFor={el._id}>
+                      <label
+                        style={{
+                          cursor: 'pointer',
+                          color: theme.palette.grey.selectorText,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}
+                        htmlFor={el._id}
+                      >
                         {el.name}
                       </label>
                     </Name>
@@ -213,7 +222,7 @@ const PortfolioSelector = ({
                   </PortfolioTitle>
                 </Stroke>
               ))}
-              <Stroke>
+              <Stroke theme={theme}>
                 <CreatePortfolio
                   baseCoin={'USDT'}
                   existCustomButton

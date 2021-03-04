@@ -6,12 +6,15 @@ import { getMyPortfoliosQuery } from '@core/graphql/queries/portfolio/getMyPortf
 import { getCurrentPortfolio } from '@core/graphql/queries/profile/getCurrentPortfolio'
 import { getAllUserKeys } from '@core/graphql/queries/user/getAllUserKeys'
 import { GET_TRADING_SETTINGS } from '@core/graphql/queries/user/getTradingSettings'
+import { getAccountsFunds } from '@core/graphql/queries/chart/getAccountsFunds'
 
 export const refetchOptionsOnKeyAddFunction = ({
   baseData: {
     portfolio: { baseCoin },
   },
   onboarding,
+  marketType,
+  portfolioId,
 }: {
   baseData: { portfolio: { baseCoin: 'USDT' | 'BTC' } }
   onboarding: boolean
@@ -32,6 +35,25 @@ export const refetchOptionsOnKeyAddFunction = ({
         { query: getCurrentPortfolio },
         { query: getAllUserKeys },
         { query: GET_TRADING_SETTINGS },
+        {
+          query: getAccountsFunds,
+          variables: {
+            input: {
+              marketType,
+              portfolioId,
+            },
+          },
+        },
       ]
-    : [],
+    : [
+        {
+          query: getAccountsFunds,
+          variables: {
+            input: {
+              marketType,
+              portfolioId,
+            },
+          },
+        },
+      ],
 })

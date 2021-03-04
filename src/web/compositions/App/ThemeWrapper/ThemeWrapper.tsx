@@ -154,7 +154,7 @@ const ThemeWrapper = ({ themeMode, location, children }) => {
               orderbook: '#FF0000',
               marketStats: '#FF0000',
               portfolio:
-                'linear-gradient(140.41deg, #F26D68 0%, #F69894 92.17%)',
+                'linear-gradient(135deg, rgba(242, 109, 105, 0.5), rgba(246, 150, 147, 0.5))',
             },
             blue: {
               custom: '#5085EC',
@@ -178,7 +178,8 @@ const ThemeWrapper = ({ themeMode, location, children }) => {
               onboarding: '#1BA492',
               orderbook: '#007C0C',
               marketStats: '#39A74C',
-              account: 'linear-gradient(135deg, #A5E898 0%, #97E873 100%)',
+              account:
+                'linear-gradient(135deg, rgba(164, 231, 151, 0.5), rgba(150, 232, 115, 0.5))',
             },
             grey: {
               custom: '#2E2E2E',
@@ -194,6 +195,7 @@ const ThemeWrapper = ({ themeMode, location, children }) => {
               marketStats: 'rgb(11, 11, 14)',
               disabled: '#e0e2e5',
               selector: '#1C1D22',
+              selectorText: '#ECF0F3',
             },
             primary: {
               main: '#303037',
@@ -407,6 +409,7 @@ const ThemeWrapper = ({ themeMode, location, children }) => {
               titleForInput: '#f1f6f9',
               marketStats: '#ECF0F3',
               selector: '#fff',
+              selectorText: '#3A475C',
             },
             primary: {
               main: '#FEFEFE',
