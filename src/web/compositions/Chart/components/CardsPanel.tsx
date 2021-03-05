@@ -192,6 +192,7 @@ export const CardsPanel = ({
             {authenticated ? (
               <PortfolioSelector
                 selectStyles={selectStyles(theme)}
+                isChartPage={true}
                 theme={theme}
                 marketType={marketType}
                 style={{ width: '20%', minWidth: '0', marginLeft: '.8rem' }}

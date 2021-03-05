@@ -10,6 +10,7 @@ import {
   StyledLink,
 } from './SharePortfolioPanel.style'
 import SelectPortfolioPeriod from '@sb/components/SelectPortfolioPeriod'
+import PortfolioSelector from '../../compositions/Chart/Inputs/PortfolioSelector/index'
 import TransferPopup from '@sb/compositions/Chart/components/TransferPopup'
 import Dropdown from '@sb/components/Dropdown'
 import { IProps } from './SharePortfolio.types'
@@ -18,7 +19,6 @@ import { MASTER_BUILD } from '@core/utils/config'
 import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
 import { StyledInputLabel } from '@sb/compositions/Optimization/Import/Import.styles'
 import { pink } from '@material-ui/core/colors'
-
 
 const SharePortfolioPanel = ({
   portfolioName,
@@ -31,12 +31,45 @@ const SharePortfolioPanel = ({
   pathname,
   logout,
 }) => {
+  const selectStyles = (theme: Theme) => ({
+    height: '100%',
+    // background: theme.palette.white.background,
+    marginRight: '.8rem',
+    cursor: 'pointer',
+    padding: 0,
+    border: 'none',
+    // backgroundColor: theme.palette.white.background,
+    // border: theme.palette.border.main,
+    // borderRadius: '0.75rem',
+    // boxShadow: '0px 0px 1.2rem rgba(8, 22, 58, 0.1)',
+    width: '5%',
+    '& div': {
+      cursor: 'pointer',
+      // color: theme.palette.text.grey,
+      textTransform: 'capitalize',
+      fontSize: '1.4rem',
+    },
+    '& svg': {
+      color: theme.palette.grey.light,
+    },
+    '.custom-select-box__control': {
+      padding: '0 .75rem',
+    },
+    '.custom-select-box__menu': {
+      minWidth: '130px',
+      marginTop: '0',
+      borderRadius: '0',
+      boxShadow: '0px 4px 8px rgba(10,19,43,0.1)',
+    },
+  })
+
   const [loading, setLoading] = useState(false)
   const [open, togglePopup] = useState(false)
   const [transferFromSpotToFutures, setTransferFromSpotToFutures] = useState(
     false
   )
   const { enqueueSnackbar } = useSnackbar()
+  const marketType = isSPOTCurrently ? 0 : 1
 
   return (
     <Grid
@@ -51,10 +84,29 @@ const SharePortfolioPanel = ({
     >
       <Grid item>
         <Grid container justify="flex-start" alignItems="center">
-          <Grid item style={{ marginRight: '1rem' }}>
+          <Grid
+            item
+            style={{
+              marginRight: '1rem',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexDirection: 'row',
+            }}
+          >
             <TypographyHeading textColor={theme.palette.black.registration}>
               {portfolioName}
             </TypographyHeading>
+            {/* <SvgIcon src={ArrowBottom} width={'14px'} /> */}
+            <PortfolioSelector
+              isChartPage={false}
+              selectStyles={selectStyles(theme)}
+              theme={theme}
+              marketType={marketType}
+              style={{ width: '20%', minWidth: '0', marginLeft: '.8rem' }}
+              id={'portfolioSelector'}
+              value={'portfolio'}
+            />
           </Grid>
           {/* <Grid item>
               <StyledButton
@@ -94,7 +146,7 @@ const SharePortfolioPanel = ({
                   position: 'absolute',
                   top: '0',
                   right: '-1rem',
-                  transform: 'translateY(-150%)'
+                  transform: 'translateY(-150%)',
                 }}
               >
                 Transfer between your spot and futures accounts

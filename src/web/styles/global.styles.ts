@@ -8,7 +8,7 @@ export const GlobalStyle = createGlobalStyle`
  
  &::-webkit-scrollbar {
     width: ${({ scrollBarWidth }: { scrollBarWidth?: number }) =>
-      scrollBarWidth ? `${scrollBarWidth}px` : '0px'};
+      scrollBarWidth ? `${scrollBarWidth}px` : '2px'};
     height: 3px;
   }
 
@@ -17,7 +17,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #165BE0;
+    background: #e0e2e5;
   }
 
   .DateRangePicker {

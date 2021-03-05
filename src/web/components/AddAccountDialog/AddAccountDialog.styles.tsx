@@ -65,7 +65,8 @@ export const DialogSubTitle = styled(DialogTitle)`
   padding-bottom: 15px;
 `
 
-export const InputBaseCustom = styled(InputBase)`
+export const InputBaseCustom = styled.input`
+  outline: none;
   width: 100%;
   background: #fff;
   padding: 1rem 1.25rem;
@@ -74,16 +75,12 @@ export const InputBaseCustom = styled(InputBase)`
   box-sizing: border-box;
   border-radius: 1rem;
   box-shadow: inset 0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.15);
+  color: #7284a0;
+  font-size: 1.6rem;
 
-  input {
-    color: #16253d;
-    font-size: 1.3rem;
-    line-height: 114.5%;
-    padding: 0;
-
-    &::placeholder {
-      text-transform: capitalize;
-    }
+  &::placeholder {
+    color: #abbad1;
+    font-size: 1.6rem;
   }
 `
 

@@ -42,6 +42,7 @@ const PortfolioSelector = ({
   id,
   selectStyles,
   value,
+  isChartPage,
   marketType,
   getPortfolioDataQuery,
   getSelectedPortfolioQuery,
@@ -73,7 +74,7 @@ const PortfolioSelector = ({
       getAccountsFundsQuery.getAccountsFunds.find(
         (key) =>
           key.keyId ===
-          getTradingSettingsQuery.getTradingSettings.selectedTradingKey
+          getTradingSettingsQuery?.getTradingSettings?.selectedTradingKey
       )) || { keyName: 'Select Key' }
   ).keyName
 
@@ -98,7 +99,7 @@ const PortfolioSelector = ({
       <ExchangePair
         style={{
           width: 'auto',
-          minWidth: '25rem',
+          minWidth: isChartPage ? '25rem' : '5rem',
           marginLeft: '.8rem',
           borderRadius: '0.3rem',
           whiteSpace: 'nowrap',
@@ -124,8 +125,8 @@ const PortfolioSelector = ({
             id={id}
             style={{ width: '100%' }}
             value={{
-              value: `${portfolioName} / ${accountName}`,
-              label: `${portfolioName} / ${accountName}`,
+              value: isChartPage ? `${portfolioName} / ${accountName}` : '',
+              label: isChartPage ? `${portfolioName} / ${accountName}` : '',
             }}
             fullWidth={true}
             isDisabled={true}
@@ -137,11 +138,11 @@ const PortfolioSelector = ({
           style={{
             overflow: 'hidden',
             overflowX: 'hidden',
-            top: '100%',
+            top: isChartPage ? '100%' : '7rem',
             left: '2.5rem',
             position: 'absolute',
             zIndex: 900,
-            background: theme.palette.white.background,
+            background: theme.palette.grey.selector,
             width: '65rem',
             height: '34rem',
             borderRadius: '1rem',
@@ -156,8 +157,7 @@ const PortfolioSelector = ({
             style={{
               display: 'flex',
               alignItems: 'baseline',
-              height: '80%',
-              borderBottom: theme.palette.border.main,
+              height: '100%',
             }}
           >
             <Container
@@ -236,7 +236,6 @@ const PortfolioSelector = ({
                       onClick={() => {
                         changeAddPortfolioPopupState(!isAddPortfolioPopupOpen)
                         handleClick()
-                        console.log('addportf', isAddPortfolioPopupOpen)
                       }}
                     >
                       + Add new portfolio
@@ -249,16 +248,8 @@ const PortfolioSelector = ({
               theme={theme}
               marketType={marketType}
               portfolio={portfolio}
+              isChartPage={isChartPage}
             />
-          </Row>
-          <Row style={{ height: '6rem' }}>
-            <CloseButton
-              onClick={() => {
-                changeSelectorState(false)
-              }}
-            >
-              Ok
-            </CloseButton>
           </Row>
         </StyledRow>
       </ExchangePair>
@@ -307,6 +298,7 @@ export default compose(
     query: GET_TRADING_SETTINGS,
     name: 'getTradingSettingsQuery',
     // skip: (props: any) => !props.authenticated,
+    withoutLoading: false,
     withOutSpinner: true,
     fetchPolicy: 'cache-only',
   }),

@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { Grid, FormControl } from '@material-ui/core'
 import Dialog from '@material-ui/core/Dialog'
 
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+
 import Clear from '@material-ui/icons/Clear'
 import {
   ClearButton,
@@ -82,33 +84,59 @@ const RenameKeyDialogComponent = ({
       <Dialog
         theme={theme}
         PaperComponent={StyledPaper}
-        style={{ width: '75rem', margin: 'auto' }}
+        style={{
+          width: '75rem',
+          margin: 'auto',
+          // height: '22rem',
+          // maxHeight: '22rem',
+        }}
         open={isOpen}
         onClose={closeDialog}
         maxWidth={'md'}
-        style={{ transition: 'opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms' }}
         aria-labelledby="form-dialog-title"
       >
         <StyledDialogTitle
+          style={{
+            border: 'none',
+            background: 'none',
+            justifyContent: 'center',
+            height: '8rem',
+          }}
           theme={theme}
           disableTypography
           id="form-dialog-title"
         >
           <TypographyTitle
+            style={{
+              fontFamily: 'Avenir Next Medium',
+              textTransform: 'none',
+              fontSize: '2.2rem',
+              color: theme.palette.grey.onboard,
+              letterSpacing: '-0.65px',
+            }}
             theme={theme}
-          >{`Rename ${target} "${name}"?`}</TypographyTitle>
-          <ClearButton theme={theme}>
+          >{`Rename ${target} ${name} to:`}</TypographyTitle>
+          {/* <ClearButton theme={theme}>
             <Clear
               theme={theme}
               style={{ fontSize: '2rem' }}
               color="inherit"
               onClick={closeDialog}
             />
-          </ClearButton>
+          </ClearButton> */}
         </StyledDialogTitle>
-        <StyledDialogContent theme={theme} style={{ paddingBottom: '1rem' }}>
+        <StyledDialogContent
+          theme={theme}
+          style={{
+            paddingBottom: '1rem',
+            height: '15rem',
+            display: 'flex',
+            justifyContent: 'space-evenly',
+            flexDirection: 'column',
+          }}
+        >
           <Grid theme={theme} style={{ paddingBottom: '1.5rem' }}>
-            <Grid
+            {/* <Grid
               theme={theme}
               style={{ padding: '1rem' }}
               container
@@ -119,7 +147,7 @@ const RenameKeyDialogComponent = ({
                 TO RENAME A KEY, PLEASE ENTER ITS NEW NAME
               </TypographySectionTitle>
               <Line theme={theme} />
-            </Grid>
+            </Grid> */}
             <FormControl theme={theme} fullWidth required>
               <Grid container theme={theme} alignItems="center">
                 <StyledInput
@@ -129,7 +157,7 @@ const RenameKeyDialogComponent = ({
                   width="100"
                   value={newName}
                   onChange={(e) => updateName(e.target.value)}
-                  placeholder="Type new name..."
+                  placeholder="Enter new name here"
                   style={{ marginLeft: '0rem' }}
                 />
               </Grid>
@@ -143,18 +171,40 @@ const RenameKeyDialogComponent = ({
               theme={theme}
               container
               alignItems="center"
-              justify="flex-end"
+              justify="space-between"
               wrap="nowrap"
               style={{ paddingTop: '2rem' }}
             >
-              <StyledButton
+              <BtnCustom
                 theme={theme}
-                onClick={handleSubmit}
-                color="primary"
-                id="RenameDialogButton"
+                height={'3.7rem'}
+                btnWidth={'48%'}
+                backgroundColor={'transparent'}
+                color={theme.palette.grey.onboard}
+                borderColor={theme.palette.grey.onboard}
+                borderRadius={'1rem'}
+                borderWidth={'0.1rem'}
+                fontSize={'1.3rem'}
+                textTransform={'capitalize'}
+                onClick={closeDialog}
               >
-                Rename
-              </StyledButton>
+                Cancel
+              </BtnCustom>
+              <BtnCustom
+                theme={theme}
+                height={'3.7rem'}
+                btnWidth={'48%'}
+                borderColor={'none'}
+                backgroundColor={theme.palette.blue.main}
+                color={'#fff'}
+                borderRadius={'1rem'}
+                textTransform={'capitalize'}
+                fontSize={'1.3rem'}
+                id="RenameDialogButton"
+                onClick={handleSubmit}
+              >
+                {`Rename ${target}`}
+              </BtnCustom>
             </Grid>
           </Grid>
         </StyledDialogContent>

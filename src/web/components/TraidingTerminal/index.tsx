@@ -730,10 +730,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     : `sell ${pair[0]}`
                   : operationType === 'buy'
                   ? this.props.reduceOnly
-                    ? 'reduce long'
+                    ? 'close short'
                     : 'buy long'
                   : this.props.reduceOnly
-                  ? 'reduce short'
+                  ? 'close long'
                   : 'sell short'}
               </SendButton>
             </Grid>

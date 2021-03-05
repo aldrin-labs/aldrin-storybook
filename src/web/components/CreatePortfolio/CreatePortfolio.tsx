@@ -26,6 +26,7 @@ import { IProps, IState } from './CreatePortfolio.types'
 // import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 import Steps from '@sb/components/Onboarding/Steps/Steps'
 import { DialogContent } from '@sb/styles/Dialog.styles'
+import ThemeWrapper from '@sb/compositions/App/ThemeWrapper/ThemeWrapper'
 
 @withTheme()
 class CreatePortfolio extends React.Component<IProps, IState> {
@@ -175,6 +176,13 @@ class CreatePortfolio extends React.Component<IProps, IState> {
         >
           <DialogTitleCustom
             id="customized-dialog-title"
+            style={{
+              border: 'none',
+              background: 'none',
+              display: 'flex',
+              justifyContent: 'center',
+              height: '5rem',
+            }}
             onClose={() => {
               if (!onboarding) {
                 this.handleClose()
@@ -182,6 +190,13 @@ class CreatePortfolio extends React.Component<IProps, IState> {
             }}
           >
             <TypographyCustomHeading
+              style={{
+                textTransform: 'none',
+                fontFamily: 'Avenir Next Medium',
+                fontSize: '2.2rem',
+                letterSpacing: '-0.65px',
+                color: this.props.theme.palette.grey.onboard,
+              }}
               fontWeight={'700'}
               borderRadius={'1rem'}
               color={black.custom}
@@ -191,7 +206,7 @@ class CreatePortfolio extends React.Component<IProps, IState> {
                   Set your portfolio name - <Steps current={1} />
                 </>
               ) : (
-                'Create Portfolio'
+                'Create  Additional Portfolio'
               )}
             </TypographyCustomHeading>
           </DialogTitleCustom>
@@ -203,9 +218,10 @@ class CreatePortfolio extends React.Component<IProps, IState> {
           >
             <Grid style={{ width: '440px' }}>
               <GridCustom>
-                <Legend>Portfolio name</Legend>
                 <InputBaseCustom
-                  placeholder=""
+                  placeholder="Select portfolio name"
+                  maxLength={'24'}
+                  input="text"
                   name="portfolioName"
                   onChange={(e) => this.handleChange(e.target.value)}
                   value={portfolioName}
@@ -214,7 +230,7 @@ class CreatePortfolio extends React.Component<IProps, IState> {
               </GridCustom>
             </Grid>
 
-            <Grid container justify="flex-end" alignItems="center">
+            {/* <Grid container justify="flex-end" alignItems="center">
               <BtnCustom
                 btnWidth={'85px'}
                 borderRadius={'32px'}
@@ -229,6 +245,51 @@ class CreatePortfolio extends React.Component<IProps, IState> {
                 }}
               >
                 {onboarding ? 'SAVE' : 'CREATE'}
+              </BtnCustom>
+            </Grid> */}
+            <Grid
+              theme={this.props.theme}
+              container
+              alignItems="center"
+              justify="space-between"
+              wrap="nowrap"
+              style={{ paddingTop: '2rem' }}
+            >
+              <BtnCustom
+                theme={this.props.theme}
+                height={'3.7rem'}
+                btnWidth={'48%'}
+                backgroundColor={'transparent'}
+                color={this.props.theme.palette.grey.onboard}
+                borderColor={this.props.theme.palette.grey.onboard}
+                borderRadius={'1rem'}
+                borderWidth={'0.1rem'}
+                fontSize={'1.3rem'}
+                textTransform={'capitalize'}
+                onClick={() => {}}
+              >
+                Cancel
+              </BtnCustom>
+              <BtnCustom
+                theme={this.props.theme}
+                height={'3.7rem'}
+                btnWidth={'48%'}
+                borderColor={'none'}
+                backgroundColor={this.props.theme.palette.blue.main}
+                color={'#fff'}
+                borderRadius={'1rem'}
+                textTransform={'capitalize'}
+                fontSize={'1.3rem'}
+                onClick={async () => {
+                  const response = await this.handleSubmit()
+                  if (response) {
+                    if (!onboarding) {
+                      this.handleClose()
+                    }
+                  }
+                }}
+              >
+                Create{' '}
               </BtnCustom>
             </Grid>
           </DialogContent>

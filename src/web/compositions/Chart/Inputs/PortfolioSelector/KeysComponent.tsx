@@ -6,11 +6,12 @@ import { GET_TRADING_SETTINGS } from '@core/graphql/queries/user/getTradingSetti
 import { selectProfileKey } from '@core/components/SelectKeyListDW/SelectKeyListDW'
 import { updateDepositSettings } from '@core/graphql/mutations/user/updateDepositSettings'
 import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
+import { getSelectedKeys } from '@core/graphql/queries/portfolio/main/getSelectedKeys'
+import { updatePortfolioSettingsMutation } from '@core/graphql/mutations/portfolio/updatePortfolioSettingsMutation'
 
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 import PopupStart from '@sb/components/Onboarding/PopupStart/PopupStart'
-import { Loading } from '@sb/components/index'
-
+import DarkRocket from '@icons/darkRocket.gif'
 import { graphql } from 'react-apollo'
 import { client } from '@core/graphql/apolloClient'
 import { compose } from 'recompose'
@@ -21,7 +22,6 @@ import SvgIcon from '@sb/components/SvgIcon'
 import WhitePen from '@icons/pencil.svg'
 import BluePen from '@icons/bluePencil.svg'
 import Rocket from '@icons/rocket.gif'
-import { sleep } from '@core/utils/helpers'
 
 import {
   Container,
@@ -36,6 +36,7 @@ import { NavLink as Link } from 'react-router-dom'
 import { RenameKeyDialog } from '@core/components/RenameDialog/RenameKeyDialog'
 
 const KeysComponent = ({
+  isChartPage,
   theme,
   id,
   selectStyles,
@@ -45,7 +46,9 @@ const KeysComponent = ({
   selectTradingKeyMutation,
   getTradingSettingsQuery,
   updateDepositSettingsMutation,
+  updatePortfolioSettings,
   getThemeModeQuery,
+  getSelectedKeysQuery,
   portfolio,
 }: {
   theme: Theme
@@ -58,12 +61,19 @@ const KeysComponent = ({
   const Deposit = (props: any) => <Link to="/profile/deposit" {...props} />
 
   const [account, chooseAccount] = useState(
-    getTradingSettingsQuery.getTradingSettings.selectedTradingKey
+    getTradingSettingsQuery?.getTradingSettings?.selectedTradingKey
   )
   const [isEditPopupOpen, changePopupState] = useState(false)
   const [accountToRename, chooseAccountToRename] = useState({})
   const [creatingAdditionalAccount, startCreatingAdditionalAccount] = useState(
     false
+  )
+  const [selectedKeys, selectKeys] = useState<string[]>(
+    isChartPage
+      ? ['']
+      : getSelectedKeysQuery?.myPortfolios[0]?.userSettings?.keys
+          .filter((key) => key.selected)
+          .map((key) => key._id)
   )
 
   const selectKey = async (
@@ -101,25 +111,37 @@ const KeysComponent = ({
     hedgeMode: boolean
     isFuturesWarsKey: boolean
   }) => {
-    if (!account) {
-      return
+    const objForQuery = {
+      settings: {
+        portfolioId: portfolio,
+        // [isRebalance ? 'selectedRebalanceKeys' : 'selectedKeys']: [toggledKeyID],
+        selectedKeys: selectedKeys,
+      },
     }
-    await selectKey(value, hedgeMode, isFuturesWarsKey)
+
+    if (isChartPage) {
+      await selectKey(value, hedgeMode, isFuturesWarsKey)
+    } else {
+      await updatePortfolioSettings({
+        variables: objForQuery,
+      })
+    }
   }
 
   const themeMode =
     (getThemeModeQuery &&
       getThemeModeQuery.getAccountSettings &&
       getThemeModeQuery.getAccountSettings.themeMode) ||
-    'dark'
+    'light'
 
   const isLoading = getAccountsFundsQuery.loading
+
   return (
     <Container
       theme={theme}
       isLoading={isLoading}
       width={'calc(60%)'}
-      style={{ marginRight: isLoading ? 'none' : '2rem' }}
+      style={{ paddingRight: isLoading ? 'none' : '2rem' }}
     >
       {isLoading ? (
         <div
@@ -145,6 +167,7 @@ const KeysComponent = ({
             >
               <span
                 style={{
+                  fontFamily: 'Avenir Next Light',
                   color: theme.palette.grey.selectorText,
                 }}
               >
@@ -153,6 +176,7 @@ const KeysComponent = ({
               <span
                 style={{
                   color: theme.palette.grey.selectorText,
+                  fontFamily: 'Avenir Next Light',
                 }}
               >
                 Wait a few more seconds please, they are on their way.
@@ -166,7 +190,10 @@ const KeysComponent = ({
               }}
             >
               {' '}
-              <img src={Rocket} width={'75%'} />
+              <img
+                src={themeMode === 'dark' && isChartPage ? DarkRocket : Rocket}
+                width={'75%'}
+              />
             </span>
           </span>
         </div>
@@ -180,13 +207,32 @@ const KeysComponent = ({
                 <Name theme={theme}>
                   {' '}
                   <input
-                    type="radio"
+                    type={isChartPage ? 'radio' : 'checkbox'}
                     value={el.keyId}
                     id={el.keyId}
-                    checked={account === el.keyId}
+                    checked={
+                      isChartPage
+                        ? account === el.keyId
+                        : selectedKeys.includes(el.keyId)
+                    }
                     style={{ marginRight: '1rem' }}
                     onChange={(e) => {
-                      chooseAccount(el.keyId)
+                      // state change
+                      if (!isChartPage) {
+                        selectKeys(
+                          selectedKeys.includes(el.keyId)
+                            ? [
+                                ...selectedKeys.filter(
+                                  (keyId) => keyId !== el.keyId
+                                ),
+                              ]
+                            : [...selectedKeys, el.keyId]
+                        )
+                      } else {
+                        chooseAccount(el.keyId)
+                      }
+
+                      // mutation
                       handleChange({
                         value: el.keyId,
                         hedgeMode: el.hedgeMode,
@@ -290,8 +336,9 @@ const KeysComponent = ({
           creatingAdditionalAccount={true}
           completeOnboarding={() => {
             startCreatingAdditionalAccount(false)
-            sleep(5000)
-            getAccountsFundsQuery.refetch()
+            // ask Anton
+            // sleep(5000)
+            // getAccountsFundsQuery.refetch()
           }}
           onboarding={false}
         />
@@ -320,16 +367,33 @@ export default compose(
     }),
   }),
   queryRendererHoc({
+    query: getSelectedKeys,
+    name: 'getSelectedKeysQuery',
+    skip: (props: any) => props.isChartPage,
+    fetchPolicy: 'cache-and-network',
+  }),
+  queryRendererHoc({
     query: GET_TRADING_SETTINGS,
     name: 'getTradingSettingsQuery',
     // skip: (props: any) => !props.authenticated,
     withOutSpinner: true,
     fetchPolicy: 'cache-only',
+    skip: (props: any) => !props.isChartPage,
   }),
   graphql(selectTradingKey, {
     name: 'selectTradingKeyMutation',
   }),
   graphql(updateDepositSettings, {
     name: 'updateDepositSettingsMutation',
+  }),
+  graphql(updatePortfolioSettingsMutation, {
+    name: 'updatePortfolioSettings',
+    options: {
+      refetchQueries: [
+        {
+          query: getSelectedKeys,
+        },
+      ],
+    },
   })
 )(KeysComponent)
