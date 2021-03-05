@@ -9,7 +9,7 @@ import {
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
 
-import { useTokenAccounts, getSelectedTokenAccountForMint, useBalances } from '@sb/dexUtils/markets'
+import { useTokenAccounts, getSelectedTokenAccountForMint, useBalances, useSelectedTokenAccounts } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { useSendConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -23,23 +23,14 @@ const BalancesTable = (props) => {
     page,
     perPage,
     marketType,
-    allKeys,
-    specificPair,
-    handleChangePage,
-    handleChangeRowsPerPage,
-    getOpenOrderHistoryQuery,
-    handleToggleAllKeys,
-    handleToggleSpecificPair,
-    arrayOfMarketIds,
-    canceledOrders,
-    handlePairChange,
-    keys
   } = props
 
   const balances = useBalances();
   const [accounts] = useTokenAccounts();
   const connection = useSendConnection();
   const { wallet } = useWallet();
+  const [selectedTokenAccounts] = useSelectedTokenAccounts();
+
 
   async function onSettleFunds(market, openOrders) {
     try {
@@ -56,6 +47,8 @@ const BalancesTable = (props) => {
           accounts,
           market?.quoteMintAddress,
         ),
+        selectedTokenAccounts,
+        tokenAccounts: accounts,
       });
 
       notify({

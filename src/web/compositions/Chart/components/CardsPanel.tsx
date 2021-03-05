@@ -70,6 +70,26 @@ export const NavBarLink = styled(({ style, ...props }) => (
   }
 `
 
+export const NavBarALink = styled(({ style, ...props }) => (
+  <a {...props} />
+))`
+  font-family: Avenir Next Demi;
+  text-transform: capitalize;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.4rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  ${(props) => props.style};
+
+  &:hover {
+    color: ${(props) => props.theme.palette.blue.serum};
+  }
+`
+
 const WalletId = styled.div`
   position: relative;
   display: flex;
@@ -446,6 +466,21 @@ export const CardsPanel = ({
               {' '}
               Addressbook
             </NavBarLink>
+            <NavBarALink
+              theme={theme}
+              data-tut="farming"
+              to="https://wallet.cryptocurrencies.ai/"
+              style={{
+                borderRight: theme.palette.border.main,
+                paddingRight: '4rem',
+                color: theme.palette.grey.text,
+                textDecoration: 'none',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {' '}
+              Wallet
+            </NavBarALink>
           </div>
           {isChartPage && (
             <div data-tut="pairs">

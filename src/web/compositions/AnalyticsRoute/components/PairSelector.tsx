@@ -257,7 +257,12 @@ const PairSelector = ({
             paddingLeft: '1rem',
           }}
           value={searchValue}
-          onChange={(e) => onChangeSearch(e.target.value)}
+          onChange={(e) => {
+            if (!`${e.target.value}`.match(/[a-zA-Z1-9]/) && e.target.value !== '') {
+              return
+            }
+            onChangeSearch(e.target.value)
+          }}
           endAdornment={
             <InputAdornment
               style={{

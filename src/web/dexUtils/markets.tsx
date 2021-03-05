@@ -26,8 +26,6 @@ export const ALL_TOKENS_MINTS = [...TOKEN_MINTS, ...AWESOME_TOKENS]
 
 const _IGNORE_DEPRECATED = false
 
-console.log('MARKETS', MARKETS.length)
-
 const USE_MARKETS = _IGNORE_DEPRECATED
   ? MARKETS.map((m) => ({ ...m, deprecated: false }))
   : MARKETS

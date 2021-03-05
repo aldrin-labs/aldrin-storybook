@@ -375,6 +375,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       setFieldValue,
     } = this.props
 
+    if (`${e.target.value}`.match(/[a-zA-Z]/)) {
+      return
+    }
+
     const priceForCalculate =
       priceType !== 'market' && priceType !== 'maker-only' ? price : marketPrice
 
@@ -405,6 +409,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       setFieldTouched,
       quantityPrecision,
     } = this.props
+
+    if (`${e.target.value}`.match(/[a-zA-Z]/)) {
+      return
+    }
 
     const priceForCalculate =
       priceType !== 'market' && priceType !== 'maker-only' ? price : marketPrice
@@ -454,6 +462,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       leverage,
       setFieldValue,
     } = this.props
+
+    if (`${e.target.value}`.match(/[a-zA-Z]/)) {
+      return
+    }
 
     const priceForCalculate =
       priceType !== 'market' && priceType !== 'maker-only'
@@ -581,8 +593,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 </InputRowContainer>
               ) : null}
 
-              {priceType === 'market' && isBuyType && !tradingBotEnabled && (
-                <InputRowContainer>
+              {priceType === 'market' && !tradingBotEnabled && (
+                <InputRowContainer style={{ visibility: !isBuyType ? 'hidden' : 'visible'}}>
                   {pair.join('_') === 'SRM_USDT' && (
                     <DarkTooltip
                       maxWidth={'35rem'}
@@ -710,7 +722,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                       theme={theme}
                       haveSelector
                       symbol={'sec'}
-                      // width={'calc(55% - .4rem)'}
                       width={'calc(50% - .4rem)'}
                       value={tradingBotInterval}
                       onChange={(e) => {
@@ -724,30 +735,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                         borderTopRightRadius: 0,
                         borderBottomRightRadius: 0,
                       }}
-                      // disabled={!stopLoss.timeout.whenLossableOn}
                     />
-                    {/* <Select
-                  theme={theme}
-                  width={'calc(25% - .8rem)'}
-                  // width={'calc(30% - .4rem)'}
-                  value={stopLoss.timeout.whenLossableMode}
-                  inputStyles={{
-                    borderTopLeftRadius: 0,
-                    borderBottomLeftRadius: 0,
-                  }}
-                  onChange={(e) => {
-                    this.updateSubBlockValue(
-                      'stopLoss',
-                      'timeout',
-                      'whenLossableMode',
-                      e.target.value
-                    )
-                  }}
-                // isDisabled={!stopLoss.timeout.whenLossableOn}
-                >
-                  <option>sec</option>
-                  <option>min</option>
-                </Select> */}
                     <BlueSlider
                       theme={theme}
                       showMarks={false}
@@ -791,11 +779,11 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                       !isSPOTMarket || isBuyType
                         ? +stripDigitPlaces(
                             newValue / priceForCalculate,
-                            isSPOTMarket ? 8 : quantityPrecision
+                            quantityPrecision
                           )
                         : +stripDigitPlaces(
                             newValue,
-                            isSPOTMarket ? 8 : quantityPrecision
+                            quantityPrecision
                           )
 
                     const newTotal =

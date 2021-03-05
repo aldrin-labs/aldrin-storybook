@@ -31,6 +31,7 @@ import {
   useTokenAccounts,
   getSelectedTokenAccountForMint,
   useUnmigratedOpenOrdersAccounts,
+  useSelectedTokenAccounts
 } from '@sb/dexUtils/markets'
 import { useSendConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -157,6 +158,7 @@ export const Balances = ({
   const { market } = useMarket()
   const balances = useBalances()
   const [accounts] = useTokenAccounts()
+  const [selectedTokenAccounts] = useSelectedTokenAccounts();
   const connection = useSendConnection()
   const { wallet } = useWallet()
   const { refresh } = useUnmigratedOpenOrdersAccounts()
@@ -181,6 +183,8 @@ export const Balances = ({
           accounts,
           market?.quoteMintAddress
         ),
+        tokenAccounts: accounts,
+        selectedTokenAccounts,
       })
 
       notify({

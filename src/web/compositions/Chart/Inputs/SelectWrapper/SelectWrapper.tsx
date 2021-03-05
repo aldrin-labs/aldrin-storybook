@@ -94,6 +94,10 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
   }
 
   onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!`${e.target.value}`.match(/[a-zA-Z1-9]/) && e.target.value !== '') {
+      return
+    }
+
     this.setState({ searchValue: e.target.value })
   }
 

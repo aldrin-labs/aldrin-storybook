@@ -195,7 +195,7 @@ const CustomMarketDialog = ({
       await addSerumCustomMarketMutation({
         variables: {
           publicKey: publicKey,
-          symbol: `${knownBaseCurrency || baseLabel}/${knownQuoteCurrency || quoteLabel}`,
+          symbol: `${knownBaseCurrency || baseLabel}/${knownQuoteCurrency || quoteLabel}`.toUpperCase(),
           isPrivate: isPrivate,
           marketId,
           programId
