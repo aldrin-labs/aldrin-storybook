@@ -51,7 +51,7 @@ const RenameKeyDialogComponent = ({
 
     const variables = isPortfolio
       ? { inputPortfolio: { id, name: trimmedName } }
-      : { input: { keyId: id, name: trimmedName, portfolioId: portfolioId } }
+      : { input: { keyId: id, name: trimmedName } }
 
     if (trimmedName.length < 3) {
       setError('Please enter name with at least 3 characters ')

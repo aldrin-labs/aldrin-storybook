@@ -200,11 +200,11 @@ const KeysComponent = ({
       ) : (
         <span>
           {getAccountsFundsQuery.getAccountsFunds.map((el) => (
-            <Stroke theme={theme} padding={'0 3rem 0 0'}>
+            <Stroke theme={theme} padding={'0'}>
               {' '}
               <AccountTitle theme={theme} isActive={account === el.keyId}>
                 {' '}
-                <Name theme={theme}>
+                <Name theme={theme} isActive={account === el.keyId}>
                   {' '}
                   <input
                     type={isChartPage ? 'radio' : 'checkbox'}
@@ -243,7 +243,11 @@ const KeysComponent = ({
                   <label
                     style={{
                       cursor: 'pointer',
-                      color: theme.palette.grey.selectorText,
+                      color:
+                        account === el.keyId
+                          ? theme.palette.grey.activeBtnText
+                          : theme.palette.grey.selectorText,
+                      fontSize: '1.7rem',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                     }}

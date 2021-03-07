@@ -143,7 +143,8 @@ const PortfolioSelector = ({
             position: 'absolute',
             zIndex: 900,
             background: theme.palette.grey.selector,
-            width: '65rem',
+            width: 'auto',
+            minWidth: '65rem',
             height: '34rem',
             borderRadius: '1rem',
             border: theme.palette.border.main,
@@ -188,7 +189,7 @@ const PortfolioSelector = ({
                     isActive={portfolio === el._id}
                   >
                     {' '}
-                    <Name theme={theme}>
+                    <Name isActive={portfolio === el._id} theme={theme}>
                       {' '}
                       <input
                         type="radio"
@@ -200,7 +201,11 @@ const PortfolioSelector = ({
                       <label
                         style={{
                           cursor: 'pointer',
-                          color: theme.palette.grey.selectorText,
+                          color:
+                            portfolio === el._id
+                              ? theme.palette.grey.activeBtnText
+                              : theme.palette.grey.selectorText,
+                          fontSize: '1.7rem',
                           overflow: 'hidden',
                           textOverflow: 'ellipsis',
                         }}

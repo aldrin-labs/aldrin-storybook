@@ -196,6 +196,7 @@ const ThemeWrapper = ({ themeMode, location, children }) => {
               disabled: '#e0e2e5',
               selector: '#1C1D22',
               selectorText: '#ECF0F3',
+              activeBtnText: '#ECF0F3',
             },
             primary: {
               main: '#303037',
@@ -409,7 +410,8 @@ const ThemeWrapper = ({ themeMode, location, children }) => {
               titleForInput: '#f1f6f9',
               marketStats: '#ECF0F3',
               selector: '#fff',
-              selectorText: '#3A475C',
+              selectorText: '#96999C',
+              activeBtnText: '#3A475C',
             },
             primary: {
               main: '#FEFEFE',

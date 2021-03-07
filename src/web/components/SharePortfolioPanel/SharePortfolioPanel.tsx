@@ -98,7 +98,7 @@ const SharePortfolioPanel = ({
               {portfolioName}
             </TypographyHeading>
             {/* <SvgIcon src={ArrowBottom} width={'14px'} /> */}
-            <PortfolioSelector
+            {/* <PortfolioSelector
               isChartPage={false}
               selectStyles={selectStyles(theme)}
               theme={theme}
@@ -106,7 +106,7 @@ const SharePortfolioPanel = ({
               style={{ width: '20%', minWidth: '0', marginLeft: '.8rem' }}
               id={'portfolioSelector'}
               value={'portfolio'}
-            />
+            /> */}
           </Grid>
           {/* <Grid item>
               <StyledButton

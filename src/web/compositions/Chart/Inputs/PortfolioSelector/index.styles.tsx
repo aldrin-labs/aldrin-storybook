@@ -1,3 +1,4 @@
+import { RadioButtonUnchecked } from '@material-ui/icons'
 import React from 'react'
 import styled from 'styled-components'
 
@@ -31,7 +32,6 @@ export const PortfolioTitle = styled.div`
   height: 3rem;
   width: 95%;
   white-space: nowrap;
-  // сolor: ${(props) => props.theme.palette.grey.selectorText};
   background: ${(props) =>
     props.isActive
       ? props.theme.palette.red.portfolio
@@ -47,7 +47,6 @@ export const AccountTitle = styled.div`
   font-family: Avenir Next Light;
   height: 3rem;
   width: 60%;
-  // сolor: ${(props) => props.theme.palette.grey.selectorText};
   white-space: nowrap;
   background: ${(props) =>
     props.isActive
@@ -62,9 +61,11 @@ export const Name = styled.div`
   min-width: 70%;
   align-items: end;
   justify-content: end;
-  width: 70%;
-  сolor: ${(props) => props.theme.palette.grey.selectorText};
-
+  width: auto%;
+  сolor: ${(props) =>
+    props.isActive
+      ? props.theme.palette.grey.activeBtnText
+      : props.theme.palette.grey.selectorText};
   .radio {
     position: absolute;
     top: 0.2rem;
