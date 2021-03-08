@@ -496,7 +496,7 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
                       }
                     : {
                         status: 'error',
-                        message: 'Smart order edit failed',
+                        message: 'Sorry, your smart order already in position',
                       }
 
                 showCancelResult(statusResult)
