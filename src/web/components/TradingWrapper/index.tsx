@@ -81,7 +81,7 @@ class SimpleTabs extends React.Component {
     orderIsCreating: false,
     takeProfit: false,
     takeProfitPercentage: 0,
-    breakEvenPoint: true,
+    breakEvenPoint: false,
     tradingBotEnabled: false,
     TVAlertsBotEnabled: false,
     tradingBotIsActive: false,
@@ -641,7 +641,7 @@ class SimpleTabs extends React.Component {
                                         'takeProfit',
                                         !takeProfit
                                       )
-                                      this.updateState('breakEvenPoint', false)
+                                      this.updateState('breakEvenPoint', !breakEvenPoint)
                                     }}
                                   >
                                     <SCheckbox
