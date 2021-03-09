@@ -259,13 +259,12 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       setFieldValue,
     } = this.props
 
+    // Handling case with balances in TradingTerminal
     const isBuyType = sideType === 'buy'
     const fundsAssetValue = isBuyType ? funds[1].quantity : funds[0].quantity
     const previousFundsAssetValue = isBuyType ? prevProps.funds[1].quantity : prevProps.funds[0].quantity
 
     if (fundsAssetValue !== previousFundsAssetValue) {
-      console.log('INSIDE componentDidUpdate funds condition')
-
       const newValue = fundsAssetValue
       const priceForCalculate =
       priceType !== 'market' && priceType !== 'maker-only'
