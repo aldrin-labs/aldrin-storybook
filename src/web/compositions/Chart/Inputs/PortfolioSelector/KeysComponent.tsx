@@ -32,7 +32,7 @@ import {
   Balances,
 } from './index.styles'
 import { NavLink as Link } from 'react-router-dom'
-
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { RenameKeyDialog } from '@core/components/RenameDialog/RenameKeyDialog'
 
 const KeysComponent = ({
@@ -204,58 +204,60 @@ const KeysComponent = ({
               {' '}
               <AccountTitle theme={theme} isActive={account === el.keyId}>
                 {' '}
-                <Name theme={theme} isActive={account === el.keyId}>
-                  {' '}
-                  <input
-                    type={isChartPage ? 'radio' : 'checkbox'}
-                    value={el.keyId}
-                    id={el.keyId}
-                    checked={
-                      isChartPage
-                        ? account === el.keyId
-                        : selectedKeys.includes(el.keyId)
-                    }
-                    style={{ marginRight: '1rem' }}
-                    onChange={(e) => {
-                      // state change
-                      if (!isChartPage) {
-                        selectKeys(
-                          selectedKeys.includes(el.keyId)
-                            ? [
-                                ...selectedKeys.filter(
-                                  (keyId) => keyId !== el.keyId
-                                ),
-                              ]
-                            : [...selectedKeys, el.keyId]
-                        )
-                      } else {
-                        chooseAccount(el.keyId)
+                <DarkTooltip title={el.keyName}>
+                  <Name theme={theme} isActive={account === el.keyId}>
+                    {' '}
+                    <input
+                      type={isChartPage ? 'radio' : 'checkbox'}
+                      value={el.keyId}
+                      id={el.keyId}
+                      checked={
+                        isChartPage
+                          ? account === el.keyId
+                          : selectedKeys.includes(el.keyId)
                       }
+                      style={{ marginRight: '1rem' }}
+                      onChange={(e) => {
+                        // state change
+                        if (!isChartPage) {
+                          selectKeys(
+                            selectedKeys.includes(el.keyId)
+                              ? [
+                                  ...selectedKeys.filter(
+                                    (keyId) => keyId !== el.keyId
+                                  ),
+                                ]
+                              : [...selectedKeys, el.keyId]
+                          )
+                        } else {
+                          chooseAccount(el.keyId)
+                        }
 
-                      // mutation
-                      handleChange({
-                        value: el.keyId,
-                        hedgeMode: el.hedgeMode,
-                        isFuturesWarsKey: el.isFuturesWarsKey,
-                      })
-                    }}
-                  ></input>
-                  <label
-                    style={{
-                      cursor: 'pointer',
-                      color:
-                        account === el.keyId
-                          ? theme.palette.grey.activeBtnText
-                          : theme.palette.grey.selectorText,
-                      fontSize: '1.7rem',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                    }}
-                    htmlFor={el.keyId}
-                  >
-                    {el.keyName}
-                  </label>
-                </Name>
+                        // mutation
+                        handleChange({
+                          value: el.keyId,
+                          hedgeMode: el.hedgeMode,
+                          isFuturesWarsKey: el.isFuturesWarsKey,
+                        })
+                      }}
+                    ></input>
+                    <label
+                      style={{
+                        cursor: 'pointer',
+                        color:
+                          account === el.keyId
+                            ? theme.palette.grey.activeBtnText
+                            : theme.palette.grey.selectorText,
+                        fontSize: '1.7rem',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                      htmlFor={el.keyId}
+                    >
+                      {el.keyName}
+                    </label>
+                  </Name>
+                </DarkTooltip>
                 <SvgIcon
                   onClick={() => {
                     changePopupState(!isEditPopupOpen)

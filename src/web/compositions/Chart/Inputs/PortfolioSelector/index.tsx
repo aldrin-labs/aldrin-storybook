@@ -31,6 +31,8 @@ import {
   AddPortfolioBtn,
   CloseButton,
 } from './index.styles'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+
 import KeysComponent from './KeysComponent'
 import { RenamePortfolioDialog } from '@core/components/RenameDialog/RenamePortfolioDialog'
 
@@ -189,31 +191,33 @@ const PortfolioSelector = ({
                     isActive={portfolio === el._id}
                   >
                     {' '}
-                    <Name isActive={portfolio === el._id} theme={theme}>
-                      {' '}
-                      <input
-                        type="radio"
-                        value={el._id}
-                        id={el._id}
-                        checked={portfolio === el._id}
-                        style={{ marginRight: '1rem' }}
-                      ></input>
-                      <label
-                        style={{
-                          cursor: 'pointer',
-                          color:
-                            portfolio === el._id
-                              ? theme.palette.grey.activeBtnText
-                              : theme.palette.grey.selectorText,
-                          fontSize: '1.7rem',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                        }}
-                        htmlFor={el._id}
-                      >
-                        {el.name}
-                      </label>
-                    </Name>
+                    <DarkTooltip title={el.name}>
+                      <Name isActive={portfolio === el._id} theme={theme}>
+                        {' '}
+                        <input
+                          type="radio"
+                          value={el._id}
+                          id={el._id}
+                          checked={portfolio === el._id}
+                          style={{ marginRight: '1rem' }}
+                        ></input>
+                        <label
+                          style={{
+                            cursor: 'pointer',
+                            color:
+                              portfolio === el._id
+                                ? theme.palette.grey.activeBtnText
+                                : theme.palette.grey.selectorText,
+                            fontSize: '1.7rem',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                          }}
+                          htmlFor={el._id}
+                        >
+                          {el.name}
+                        </label>
+                      </Name>
+                    </DarkTooltip>
                     <SvgIcon
                       src={portfolio === el._id ? WhitePen : BluePen}
                       onClick={() => {
