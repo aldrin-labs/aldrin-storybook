@@ -815,7 +815,7 @@ const RewardsRoute = (props) => {
                         theme={theme}
                         style={{ width: '90%' }}
                       >
-                        Every day 2000 $DCFI reward will be distributed between
+                        Every day 1000 $DCFI reward will be distributed between
                         Top-20 accounts that made $DCFI retweet, ranked by
                         followers count. If there were less than 20 retweets,
                         the reward will be distributed among all
@@ -1190,7 +1190,7 @@ const RewardsRoute = (props) => {
                     </Cell>
                     {/* <Cell theme={theme}>{el.userFollowersCount}</Cell> */}
                     <Cell theme={theme}>
-                      {(2000 / getTopTwitterFarmingData.length).toFixed(0) +
+                      {(1000 / getTopTwitterFarmingData.length).toFixed(0) +
                         ' DCFI'}
                     </Cell>
                   </TableRow>
