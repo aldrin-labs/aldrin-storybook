@@ -266,9 +266,9 @@ export const Balances = ({
           direction="column"
           wrap={'nowrap'}
           style={{
-            height: 'calc(100% - 5rem)',
+            height: 'calc(100% - 3rem)',
             padding: '0 .8rem',
-            overflowY: 'scroll',
+            overflowY: 'auto',
           }}
         >
           {isSPOTMarket ? (
@@ -346,9 +346,9 @@ export const Balances = ({
                     fontSize=".8rem"
                     padding=".5rem 0 .4rem 0;"
                     borderRadius=".8rem"
-                    btnColor={theme.palette.white.background}
-                    backgroundColor="#46adc7"
-                    hoverColor={theme.palette.white.background}
+                    btnColor={theme.palette.dark.main}
+                    borderColor={theme.palette.blue.serum}
+                    backgroundColor={theme.palette.blue.serum}
                     hoverBackground="#3992a9"
                     transition={'all .4s ease-out'}
                     onClick={() => {
@@ -429,9 +429,9 @@ export const Balances = ({
                     fontSize=".8rem"
                     padding=".5rem 0 .4rem 0;"
                     borderRadius=".8rem"
-                    btnColor={theme.palette.white.background}
-                    backgroundColor="#46adc7"
-                    hoverColor={theme.palette.white.background}
+                    btnColor={theme.palette.dark.main}
+                    borderColor={theme.palette.blue.serum}
+                    backgroundColor={theme.palette.blue.serum}
                     hoverBackground="#3992a9"
                     transition={'all .4s ease-out'}
                     onClick={() => {

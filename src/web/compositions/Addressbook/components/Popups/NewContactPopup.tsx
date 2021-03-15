@@ -31,7 +31,7 @@ export const PasteButton = styled.button`
   right: 0.5rem;
   background: inherit;
   border: 0;
-  color: #7380eb;
+  color: ${props => props.theme.palette.blue.serum};
   cursor: pointer;
   padding: 1.5rem;
 `
@@ -148,9 +148,9 @@ const NewContactPopup = ({
             fontSize="1.4rem"
             padding="1rem 2rem"
             borderRadius=".8rem"
-            borderColor={'#7380EB'}
+            borderColor={theme.palette.blue.serum}
             btnColor={'#fff'}
-            backgroundColor={'#7380EB'}
+            backgroundColor={theme.palette.blue.serum}
             textTransform={'none'}
             margin={'1rem 0 0 0'}
             transition={'all .4s ease-out'}

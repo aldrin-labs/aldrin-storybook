@@ -6,11 +6,11 @@ import { NavLink } from 'react-router-dom'
 
 import copy from 'clipboard-copy'
 import { useLocation, useHistory, Link } from 'react-router-dom'
-import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
+import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 import MarketStats from './MarketStats/MarketStats'
 import { TooltipCustom } from '@sb/components/index'
-import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { changePositionMode } from '@core/graphql/mutations/chart/changePositionMode'
 import { TOGGLE_THEME_MODE } from '@core/graphql/mutations/app/toggleThemeMode'
 import { changeHedgeModeInCache } from '@core/utils/tradingComponent.utils'
@@ -46,9 +46,10 @@ import TelegramIcon from '@icons/telegram.svg'
 import DiscordIcon from '@icons/discord.svg'
 import TwitterIcon from '@icons/twitter.svg'
 import { withTheme } from '@material-ui/core'
+import NetworkDropdown from '@sb/compositions/Chart/components/NetworkDropdown/NetworkDropdown'
 
 import Dropdown from '@sb/components/Dropdown'
-import NetworkDropdown from './NetworkDropdown/NetworkDropdown'
+import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 
 export const NavBarLink = styled(({ style, ...props }) => (
   <NavLink {...props} />
@@ -70,9 +71,7 @@ export const NavBarLink = styled(({ style, ...props }) => (
   }
 `
 
-export const NavBarALink = styled(({ style, ...props }) => (
-  <a {...props} />
-))`
+export const NavBarALink = styled(({ style, ...props }) => <a {...props} />)`
   font-family: Avenir Next Demi;
   text-transform: capitalize;
   text-decoration: none;
@@ -88,6 +87,12 @@ export const NavBarALink = styled(({ style, ...props }) => (
   &:hover {
     color: ${(props) => props.theme.palette.blue.serum};
   }
+`
+
+const LinkBlock = styled.a`
+  display: flex;
+  justify-content: center;
+  height: 100%;
 `
 
 const WalletId = styled.div`
@@ -109,72 +114,119 @@ const WalletId = styled.div`
   }
 `
 
-const TelegramLink = (props) => (
-  <a
-    href="https://t.me/CryptocurrenciesAi"
-    target="_blank"
-    rel="noopener noreferrer"
-    {...props}
-  />
-)
+export const CardsPanel = ({ theme, setMarketAddress }) => {
+  const location = useLocation()
 
-const DiscordLink = (props) => (
-  <a
-    href="https://discord.com/invite/2EaKvrs"
-    target="_blank"
-    rel="noopener noreferrer"
-    {...props}
-  />
-)
+  const isDarkTheme = theme.palette.type === 'dark'
+  const isAnalytics = location.pathname.includes('analytics')
+  const isChartPage = location.pathname.includes('chart')
 
-const TwitterLink = (props) => (
-  <a
-    href="https://twitter.com/CCAI_Official"
-    target="_blank"
-    rel="noopener noreferrer"
-    {...props}
-  />
-)
+  return (
+    <ChartGridContainer isChartPage={isChartPage} theme={theme}>
+      <PanelWrapper>
+        <CustomCard
+          theme={theme}
+          style={{
+            // position: 'relative',
+            display: 'flex',
+            maxWidth: '100%',
+            marginRight: '.4rem',
+            flexGrow: 1,
+            border: '0',
+          }}
+        >
+          <Link
+            to={'/chart/spot/SRM_USDT'}
+            style={{
+              padding: '1rem 0',
+              height: '100%',
+            }}
+            onClick={() => {
+              setMarketAddress(DEFAULT_MARKET?.address.toBase58())
+            }}
+          >
+            <img
+              style={{
+                height: '100%',
+              }}
+              src={isDarkTheme ? SerumCCAILogo : LightLogo}
+            />
+          </Link>
+          <div
+            style={{
+              width: '100%',
+              marginLeft: '4rem',
+              padding: '1rem 4rem 1rem 4rem',
+              borderRight: theme.palette.border.new,
+              borderLeft: theme.palette.border.new,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <NavLinkButton
+              theme={theme}
+              data-tut="farming"
+              pathname={location.pathname}
+              page={'wallet'}
+              component={(props) => (
+                <a
+                  href="https://develop.wallet.cryptocurrencies.ai/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  {...props}
+                />
+              )}
+            >
+              Wallet
+            </NavLinkButton>
+            <NavLinkButton
+              theme={theme}
+              pathname={location.pathname}
+              to="/chart"
+              page={'chart'}
+              component={(props) => <Link to={`/chart`} {...props} />}
+            >
+              Trading
+            </NavLinkButton>
+            <NavLinkButton
+              theme={theme}
+              data-tut="analytics"
+              page={'analytics'}
+              pathname={location.pathname}
+              component={(props) => <Link to={`/analytics/all`} {...props} />}
+            >
+              {' '}
+              Analytics
+            </NavLinkButton>
+            <NavLinkButton
+              theme={theme}
+              data-tut="farming"
+              page={'addressbook'}
+              pathname={location.pathname}
+              component={(props) => <Link to={`/addressbook`} {...props} />}
+            >
+              {' '}
+              Addressbook
+            </NavLinkButton>
+          </div>
+        </CustomCard>
 
-const selectStyles = (theme: Theme) => ({
-  height: '100%',
-  background: theme.palette.white.background,
-  marginRight: '.8rem',
-  cursor: 'pointer',
-  padding: 0,
-  backgroundColor: theme.palette.white.background,
-  border: theme.palette.border.main,
-  borderRadius: '0.75rem',
-  boxShadow: '0px 0px 1.2rem rgba(8, 22, 58, 0.1)',
-  width: '14rem',
-  '& div': {
-    cursor: 'pointer',
-    color: theme.palette.dark.main,
-    textTransform: 'uppercase',
-    fontWeight: 'bold',
-  },
-  '& svg': {
-    color: theme.palette.grey.light,
-  },
-  '.custom-select-box__control': {
-    padding: '0 .75rem',
-  },
-  '.custom-select-box__menu': {
-    minWidth: '130px',
-    marginTop: '0',
-    borderRadius: '0',
-    boxShadow: '0px 4px 8px rgba(10,19,43,0.1)',
-  },
-})
+        <TopBar theme={theme} />
+      </PanelWrapper>
+    </ChartGridContainer>
+  )
+}
 
 const TopBar = ({ theme }) => {
   const {
     connected,
     wallet,
     providerUrl,
-    providerName,
+    updateProviderUrl,
     setProvider,
   } = useWallet()
+
   const { endpoint, setEndpoint } = useConnectionConfig()
   const location = useLocation()
   const history = useHistory()
@@ -182,14 +234,10 @@ const TopBar = ({ theme }) => {
 
   const publicKey = wallet?.publicKey?.toBase58()
 
-  const handleClick = useCallback(
-    (e) => {
-      history.push(e.key)
-    },
-    [history]
-  )
-
   const isDarkTheme = theme.palette.type === 'dark'
+  const isWalletConnected = connected
+  const isCCAIActive =
+    providerUrl === 'https://develop.wallet.cryptocurrencies.ai'
 
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -270,16 +318,16 @@ const TopBar = ({ theme }) => {
         />
       </div> */}
       {/* <WalletBlock /> */}
-      {/* <div data-tut="connection-dropdown">
+      <div data-tut="connection-dropdown">
         <NetworkDropdown
           endpoint={endpoint}
           setEndpoint={setEndpoint}
           theme={theme}
           isWalletConnected={connected}
         />
-      </div> */}
+      </div>
 
-      <div data-tut="wallet">
+      <Row data-tut="wallet" wrap={'nowrap'}>
         <Dropdown
           wallet={wallet}
           connected={connected}
@@ -287,7 +335,33 @@ const TopBar = ({ theme }) => {
           setProvider={setProvider}
           providerUrl={providerUrl}
         />
-      </div>
+        {/* <BtnCustom
+          btnWidth={'14rem'}
+          height={'3.5rem'}
+          borderRadius=".6rem"
+          btnColor={theme.palette.blue.serum}
+          fontSize={'1.2rem'}
+          textTransform={'capitalize'}
+          margin={'0 0 0 3rem'}
+          style={{
+            display: 'flex',
+            textTransform: 'none',
+            padding: '1rem',
+          }}
+          onClick={() => {
+            console.log('CLICK ON CCAI')
+
+            if (isCCAIActive && !isWalletConnected) {
+              wallet.connect()
+              return
+            }
+
+            updateProviderUrl('https://develop.wallet.cryptocurrencies.ai')
+          }}
+        >
+          Connect Wallet™
+        </BtnCustom> */}
+      </Row>
       {connected && (
         <WalletId
           theme={theme}
@@ -347,213 +421,6 @@ const TopBar = ({ theme }) => {
         </WalletId>
       )}
     </div>
-  )
-}
-
-export const CardsPanel = ({
-  view = 'default',
-  theme,
-  marketType = 0,
-  activeExchange = 'serum',
-  setMarketAddress,
-}) => {
-  const { market } = useMarket()
-  const location = useLocation()
-
-  const quantityPrecision =
-    market?.minOrderSize && getDecimalCount(market.minOrderSize)
-  const pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
-
-  const isDarkTheme = theme.palette.type === 'dark'
-  const isAnalytics = location.pathname.includes('analytics')
-  const isChartPage = location.pathname.includes('chart')
-
-  const pair = isChartPage ? location.pathname.split('/')[3] : 'SRM_USDT'
-
-  if (isChartPage && !location.pathname.split('/')[3]) {
-    return null
-  }
-
-  return (
-    <ChartGridContainer isChartPage={isChartPage} theme={theme}>
-      <PanelWrapper>
-        <CustomCard
-          theme={theme}
-          style={{
-            // position: 'relative',
-            display: 'flex',
-            maxWidth: '75%',
-            marginRight: '.4rem',
-            flexGrow: 1,
-            border: '0',
-            padding: '1rem 0',
-          }}
-        >
-          <Link
-            to={'/chart/spot/SRM_USDT'}
-            style={{ width: '17rem' }}
-            onClick={() => {
-              setMarketAddress(DEFAULT_MARKET?.address.toBase58())
-            }}
-          >
-            <img
-              style={{
-                width: '17rem',
-                height: '100%',
-                padding: '0 3rem',
-                borderRight: theme.palette.border.main,
-              }}
-              src={isDarkTheme ? SerumCCAILogo : LightLogo}
-            />
-          </Link>
-          <div
-            style={{
-              // width: '24%',
-              marginLeft: '4rem',
-              paddingRight: '4rem',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <NavBarLink
-              theme={theme}
-              style={{
-                color: location.pathname.includes('chart')
-                  ? theme.palette.blue.serum
-                  : theme.palette.grey.text,
-                textDecoration: location.pathname.includes('chart')
-                  ? 'underline'
-                  : 'none',
-              }}
-              to="/chart"
-            >
-              Trading
-            </NavBarLink>
-            <NavBarLink
-              theme={theme}
-              data-tut="analytics"
-              to="/analytics"
-              style={{
-                color: location.pathname.includes('analytics')
-                  ? theme.palette.blue.serum
-                  : theme.palette.grey.text,
-
-                textDecoration: location.pathname.includes('analytics')
-                  ? 'underline'
-                  : 'none',
-              }}
-            >
-              {' '}
-              Analytics
-            </NavBarLink>
-            <NavBarLink
-              theme={theme}
-              data-tut="farming"
-              to="/addressbook"
-              style={{
-                borderRight: theme.palette.border.main,
-                paddingRight: '4rem',
-                color: location.pathname.includes('addressbook')
-                  ? theme.palette.blue.serum
-                  : theme.palette.grey.text,
-                textDecoration: location.pathname.includes('addressbook')
-                  ? 'underline'
-                  : 'none',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {' '}
-              Addressbook
-            </NavBarLink>
-            <NavBarALink
-              theme={theme}
-              data-tut="farming"
-              to="https://wallet.cryptocurrencies.ai/"
-              style={{
-                borderRight: theme.palette.border.main,
-                paddingRight: '4rem',
-                color: theme.palette.grey.text,
-                textDecoration: 'none',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {' '}
-              Wallet
-            </NavBarALink>
-          </div>
-          {isChartPage && (
-            <div data-tut="pairs">
-              <AutoSuggestSelect
-                value={view === 'default' && pair}
-                id={'pairSelector'}
-                view={view}
-                style={{ width: '13rem' }}
-                activeExchange={activeExchange}
-                selectStyles={{ ...selectStyles(theme) }}
-                marketType={marketType}
-                quantityPrecision={quantityPrecision}
-                pricePrecision={pricePrecision}
-              />
-            </div>
-          )}
-
-          {/* <TooltipCustom
-            title="Cryptocurrencies.ai is a Binance partner exchange"
-            enterDelay={250}
-            component={ */}
-          {isChartPage && (
-            <MarketStats
-              theme={theme}
-              symbol={pair}
-              marketType={marketType}
-              exchange={activeExchange}
-              quantityPrecision={quantityPrecision}
-              pricePrecision={pricePrecision}
-            />
-          )}
-
-          {/* }
-          /> */}
-        </CustomCard>
-
-        <TopBar theme={theme} />
-        {/* <Line theme={theme} top={'calc(100%)'} /> */}
-        {/*         
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <TooltipCustom
-            title={'Our Twitter'}
-            enterDelay={250}
-            component={
-              <TwitterLink>
-                <SvgIcon height={'80%'} width={'auto'} style={{ padding: '0 1rem', cursor: 'pointer'}} src={TwitterIcon} />
-              </TwitterLink>
-            }
-          />
-
-
-          <TooltipCustom
-            title={'Discord chat'}
-            enterDelay={250}
-            component={
-              <DiscordLink>
-                <SvgIcon height={'80%'} width={'auto'} style={{ padding: '0 1rem', cursor: 'pointer'}} src={DiscordIcon} />
-              </DiscordLink>
-            }
-          />
-
-          <TooltipCustom
-            title={'Telegram chat'}
-            enterDelay={250}
-            component={
-              <TelegramLink>
-                <SvgIcon height={'80%'} width={'auto'} style={{ padding: '0 1rem', cursor: 'pointer' }} src={TelegramIcon} />
-              </TelegramLink>
-            }
-          />
-          </div> */}
-      </PanelWrapper>
-    </ChartGridContainer>
   )
 }
 

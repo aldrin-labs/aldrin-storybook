@@ -16,6 +16,7 @@ import { Loading } from '@sb/components/index'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { editContact } from '@core/graphql/mutations/chart/editContact'
+import { PasteButton } from '@sb/compositions/Addressbook/components/Popups/NewContactPopup'
 
 import { notify } from '@sb/dexUtils/notifications'
 import { encrypt, decrypt, createHash } from '../../index'
@@ -23,17 +24,6 @@ import { encrypt, decrypt, createHash } from '../../index'
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
   width: 55rem;
-`
-
-export const PasteButton = styled.button`
-  position: absolute;
-  font-size: 1.8rem;
-  right: 0.5rem;
-  background: inherit;
-  border: 0;
-  color: #7380eb;
-  cursor: pointer;
-  padding: 1.5rem;
 `
 
 const EditContactPopup = ({
@@ -149,9 +139,9 @@ const EditContactPopup = ({
             fontSize="1.4rem"
             padding="1rem 2rem"
             borderRadius=".8rem"
-            borderColor={'#7380EB'}
+            borderColor={theme.palette.blue.serum}
             btnColor={'#fff'}
-            backgroundColor={'#7380EB'}
+            backgroundColor={theme.palette.blue.serum}
             textTransform={'none'}
             margin={'1rem 0 0 0'}
             transition={'all .4s ease-out'}

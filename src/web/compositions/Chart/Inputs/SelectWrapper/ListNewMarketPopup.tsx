@@ -332,6 +332,7 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
 
               <InputRowContainer align={'flex-start'}>
                 <PurpleButton
+                  theme={theme}
                   disabled={!canSubmit}
                   text={connected ? 'Submit' : 'Not connected to wallet'}
                   width={connected ? '12rem' : '25rem'}
@@ -370,6 +371,7 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
               </InputRowContainer>
               <InputRowContainer justify={'center'}>
                 <PurpleButton
+                  theme={theme}
                   text={'Close'}
                   onClick={onClose}
                   width={'12rem'}
@@ -378,6 +380,7 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
                 />
                 {!connected  &&
                 <PurpleButton
+                  theme={theme}
                   text={'Connect wallet'}
                   onClick={wallet.connect}
                   width={'20rem'}

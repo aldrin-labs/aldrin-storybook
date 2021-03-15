@@ -90,7 +90,7 @@ export const BlockValue = styled((props) => <WhiteTitle {...props} />)`
 
 const PurpleTitle = styled((props) => <a {...props} />)`
   font-size: 1.4rem;
-  color: #9ba6ff;
+  color: ${(props) => props.theme.palette.blue.serum};
   font-family: Avenir Next Demi;
   cursor: pointer;
   text-decoration: none;
@@ -104,7 +104,7 @@ const PurpleLinkButton = styled.a`
   color: ${(props) => props.theme.palette.white.main};
   text-align: center;
   text-decoration: none;
-  background: #9ba6ff;
+  background: ${(props) => props.theme.palette.blue.serum};
   border-radius: 0.4rem;
   padding: 0.5rem 0;
   font-family: Avenir Next;

@@ -353,7 +353,7 @@ export const TradingViewBotTerminal = ({
                 paste it into alert{' '}
                 <span
                   style={{
-                    color: '#7380EB',
+                    color: theme.palette.blue.serum,
                     textDecoration: 'underline',
                   }}
                 >
@@ -370,9 +370,9 @@ export const TradingViewBotTerminal = ({
               fontSize="1.4rem"
               padding="1rem 2rem"
               borderRadius=".8rem"
-              borderColor={'#7380EB'}
+              borderColor={theme.palette.blue.serum}
               btnColor={'#fff'}
-              backgroundColor={'#7380EB'}
+              backgroundColor={theme.palette.blue.serum}
               textTransform={'none'}
               margin={'1rem 0 0 0'}
               transition={'all .4s ease-out'}
@@ -400,7 +400,7 @@ export const TradingViewBotTerminal = ({
                 Paste it into alert{' '}
                 <span
                   style={{
-                    color: '#7380EB',
+                    color: theme.palette.blue.serum,
                     textDecoration: 'underline',
                   }}
                 >
@@ -417,9 +417,9 @@ export const TradingViewBotTerminal = ({
               fontSize="1.4rem"
               padding="1rem 2rem"
               borderRadius=".8rem"
-              borderColor={'#7380EB'}
+              borderColor={theme.palette.blue.serum}
               btnColor={'#fff'}
-              backgroundColor={'#7380EB'}
+              backgroundColor={theme.palette.blue.serum}
               textTransform={'none'}
               margin={'1rem 0 0 0'}
               transition={'all .4s ease-out'}

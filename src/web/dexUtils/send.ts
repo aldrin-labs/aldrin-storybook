@@ -796,15 +796,15 @@ async function sendTransaction({
       const feeCost = +stripDigitPlaces(params.size * params.price / 100 * userFeeTier.taker, 6);
       const strippedPrice = +stripDigitPlaces(params.price, (market?.tickSize && getDecimalCount(market.tickSize)) || 8)
 
-      addSerumTransactionMutation({
-        variables: {
-          fee: feeCost, 
-          amount: params.size, 
-          dexId: txid, 
-          publicKey: wallet.publicKey.toBase58(), 
-          price: strippedPrice,
-        }
-      })
+      // addSerumTransactionMutation({
+      //   variables: {
+      //     fee: feeCost, 
+      //     amount: params.size, 
+      //     dexId: txid, 
+      //     publicKey: wallet.publicKey.toBase58(), 
+      //     price: strippedPrice,
+      //   }
+      // })
     }
   }
 

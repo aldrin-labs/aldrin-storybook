@@ -133,14 +133,11 @@ export const PanelCard = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: ${(props: { marketType: number; theme: Theme }) =>
-    props.marketType === 0 ? '20%' : 'calc(100% / 7)'};
   flex-grow: 1;
   padding: 0.1rem;
   margin: 0;
   min-height: auto;
-  border-right: ${(props: { marketType: number; theme: Theme }) =>
-    props.theme.palette.border.main};
+  border-right: ${(props: { marketType: number; theme: Theme }) => '.2rem solid #ABBAD1'};
   font-weight: bold;
   font-family: DM Sans;
   text-transform: uppercase;
@@ -216,6 +213,7 @@ export const OrderbookContainer = styled(({ background = '', ...rest }) => (
   <CustomCard {...rest} />
 ))`
   border-right: 0;
+  border-top: 0;
 
   && {
     overflow: hidden;
@@ -232,6 +230,8 @@ export const OrderbookContainer = styled(({ background = '', ...rest }) => (
 export const TradeHistoryWrapper = styled(({ background = '', ...rest }) => (
   <CustomCard {...rest} />
 ))`
+  border-top: 0;
+  
   && {
     overflow: hidden;
   }
@@ -261,8 +261,8 @@ export const ChartGridContainer = styled(({ MASTER_BUILD, ...rest }) => (
   width: calc(100%);
   height: 6rem;
   position: relative;
-  padding: 0rem 3rem 0rem 0rem;
-  border-bottom: ${(props) => props.isChartPage ? '' : props.theme.palette.border.new};
+  padding: 0rem 3rem;
+  border-bottom: ${(props) => props.theme.palette.border.new};
   margin: 0rem;
   background: ${(props) => props.theme.palette.grey.additional};
 `
@@ -424,7 +424,7 @@ export const Container = styled(Grid)`
   background-color: ${(props) => props.theme.palette.white.background};
 
   @media (max-width: 1400px) {
-    height: calc(100vh - 6rem);
+    height: calc(100vh - 12rem);
   }
 `
 

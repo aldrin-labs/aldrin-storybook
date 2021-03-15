@@ -113,6 +113,7 @@ export const SingleChartWithButtons = ({
         display: 'flex',
         flexDirection: 'column',
         borderRight: 'none',
+        borderTop: 'none',
       }}
     >
       <TriggerTitle

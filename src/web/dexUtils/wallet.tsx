@@ -2,17 +2,35 @@ import React, { useContext, useEffect, useMemo, useState } from 'react';
 import Wallet from '@project-serum/sol-wallet-adapter';
 import MathWallet from '@sb/dexUtils/MathWallet/MathWallet';
 import SolongWallet from '@sb/dexUtils/SolongWallet/SolongWallet'
+import CcaiWallet from '@sb/dexUtils/CcaiWallet/CcaiWallet'
 import { notify } from './notifications';
 import { useConnectionConfig } from './connection';
 import { useLocalStorageState } from './utils';
 
 export const WALLET_PROVIDERS = [
   // { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },
-  { name: 'cryptocurrencies.ai', url: 'https://wallet.cryptocurrencies.ai' },
+  { name: 'cryptocurrencies.ai', url: 'https://develop.wallet.cryptocurrencies.ai' },
   { name: 'sollet.io', url: 'https://www.sollet.io' },
   { name: 'mathwallet.org', url: 'https://www.mathwallet.org' },
   { name: "solongwallet.com", url: "https://solongwallet.com" },
 ];
+
+const getWalletByProviderUrl = (providerUrl: string) => {
+  switch (providerUrl) {
+    case 'https://solongwallet.com': {
+      return SolongWallet
+    }
+    case 'https://www.mathwallet.org': {
+      return MathWallet
+    }
+    case 'https://develop.wallet.cryptocurrencies.ai': {
+      return CcaiWallet
+    }
+    default: {
+      return Wallet
+    }
+  }
+}
 
 const WalletContext = React.createContext(null);
 
@@ -32,15 +50,8 @@ export function WalletProvider({ children }) {
     providerUrl = savedProviderUrl;
   }
 
-  // old code should be removed
-  // const isMathWallet = !!providerUrl.match('https://www.mathwallet.org')
-  const isSolongWallet = !!providerUrl.match('https://solongwallet.com')
-  // const WalletClass = isMathWallet ? MathWallet : isSolongWallet ? SolongWallet : Wallet
-  
   const wallet = useMemo(() => { 
-    const isMathWallet = !!providerUrl.match('https://www.mathwallet.org')
-    const WalletClass = isMathWallet ? MathWallet : isSolongWallet ? SolongWallet : Wallet
-    
+    const WalletClass = getWalletByProviderUrl(providerUrl)
     const wallet = new WalletClass(providerUrl, endpoint)
 
     console.log('providerUrl', providerUrl, 'endpoint', endpoint, 'wallet', wallet)
@@ -53,31 +64,29 @@ export function WalletProvider({ children }) {
   ]);
 
   useEffect(() => {
-    console.log('trying to connect');
-    const connect = async () => {
-      console.log('Connecting Wallet: ', wallet, providerUrl)
-      const resultofconnect = wallet.connect()
-      console.log('resultofconnect', resultofconnect)
-  
-      wallet.on('connect', async () => {
-        console.log('connected');
-        console.log('wallet', wallet)
-        let walletPublicKey = wallet.publicKey.toBase58();
-        console.log('walletPublicKey', walletPublicKey)
-        let keyToDisplay =
-          walletPublicKey.length > 20
-            ? `${walletPublicKey.substring(0, 7)}.....${walletPublicKey.substring(
-              walletPublicKey.length - 7,
-              walletPublicKey.length,
-            )}`
-            : walletPublicKey;
-  
-        notify({
-          message: 'Wallet update',
-          description: 'Connected to wallet ' + keyToDisplay,
-        });
 
-        await setConnected(true);
+    if (wallet) {
+      wallet.on('connect', async () => {
+        if (wallet.publicKey) {
+          console.log('connected');
+          setConnected(true);
+          const walletPublicKey = wallet.publicKey.toBase58();
+          const keyToDisplay =
+            walletPublicKey.length > 20
+              ? `${walletPublicKey.substring(
+                  0,
+                  7,
+                )}.....${walletPublicKey.substring(
+                  walletPublicKey.length - 7,
+                  walletPublicKey.length,
+                )}`
+              : walletPublicKey;
+
+          notify({
+            message: 'Wallet update',
+            description: 'Connected to wallet ' + keyToDisplay,
+          });
+        }
       });
   
       wallet.on('disconnect', () => {
@@ -88,8 +97,6 @@ export function WalletProvider({ children }) {
         });
       });
     }
-
-    connect()
 
     return () => {
       wallet.disconnect();

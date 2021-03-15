@@ -16,19 +16,23 @@ import Mathwallet from '@icons/mathwallet.svg'
 import Solong from '@icons/solong.svg'
 import CCAI from '@icons/ccai.svg'
 
-
 import { IProps } from './types'
-
-import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 
 const WalletStatusButton = ({ wallet, connected, theme }) => (
   <BtnCustom
-    type="text"
-    size="large"
     onClick={connected ? wallet.disconnect : wallet.connect}
     btnColor={theme.palette.blue.serum}
     btnWidth={'14rem'}
-    height={'100%'}
+    textTransform={'capitalize'}
+    height={'3.5rem'}
+    borderRadius=".6rem"
+    fontSize={'1.2rem'}
+    margin={'0 0 0 3rem'}
+    style={{
+      display: 'flex',
+      textTransform: 'none',
+      padding: '1rem',
+    }}
   >
     {!connected ? 'Connect wallet' : 'Disconnect'}
   </BtnCustom>
@@ -58,7 +62,8 @@ export default class Dropdown extends React.Component<IProps> {
       isSelected,
     } = this.props
 
-    const isCCAIActive = providerUrl === 'https://wallet.cryptocurrencies.ai'
+    const isCCAIActive =
+      providerUrl === 'https://develop.wallet.cryptocurrencies.ai'
     const isSolletActive = providerUrl === 'https://www.sollet.io'
     const isMathWalletActive = providerUrl === 'https://www.mathwallet.org'
     const isSolongWallet = providerUrl === 'https://solongwallet.com'
@@ -66,6 +71,7 @@ export default class Dropdown extends React.Component<IProps> {
     const isWalletConnected = connected
 
     return (
+      <>
       <StyledDropdown theme={theme}>
         <WalletStatusButton
           wallet={wallet}
@@ -77,6 +83,8 @@ export default class Dropdown extends React.Component<IProps> {
           style={{ display: isSelected ? 'none' : '' }}
           theme={theme}
           isWalletConnected={isWalletConnected}
+          customActiveRem={'26rem'}
+          customNotActiveRem={'20rem'}
         >
           <MenuList style={{ padding: 0 }}>
             <StyledMenuItem
@@ -99,7 +107,7 @@ export default class Dropdown extends React.Component<IProps> {
                   justifyContent: 'space-between',
                   textTransform: 'none',
                   padding: '1rem',
-                  background: isCCAIActive ? 'rgba(55, 56, 62, 0.75)' : ''
+                  background: isCCAIActive ? 'rgba(55, 56, 62, 0.75)' : '',
                 }}
                 onClick={() => {
                   console.log('CLICK ON CCAI')
@@ -109,7 +117,9 @@ export default class Dropdown extends React.Component<IProps> {
                     return
                   }
 
-                  updateProviderUrl('https://wallet.cryptocurrencies.ai')
+                  updateProviderUrl(
+                    'https://develop.wallet.cryptocurrencies.ai'
+                  )
                 }}
               >
                 <SvgIcon src={CCAI} width={'20%'} height={'70%'} />
@@ -136,7 +146,7 @@ export default class Dropdown extends React.Component<IProps> {
                   justifyContent: 'space-between',
                   textTransform: 'none',
                   padding: '1rem',
-                  background: isSolletActive ? 'rgba(55, 56, 62, 0.75)' : ''
+                  background: isSolletActive ? 'rgba(55, 56, 62, 0.75)' : '',
                 }}
                 onClick={() => {
                   console.log('CLICK ON SOLLET')
@@ -173,7 +183,9 @@ export default class Dropdown extends React.Component<IProps> {
                   justifyContent: 'space-between',
                   textTransform: 'none',
                   padding: '1rem',
-                  background: isMathWalletActive ? 'rgba(55, 56, 62, 0.75)' : ''
+                  background: isMathWalletActive
+                    ? 'rgba(55, 56, 62, 0.75)'
+                    : '',
                 }}
                 onClick={() => {
                   console.log('CLICK ON MATHWALLET')
@@ -198,20 +210,20 @@ export default class Dropdown extends React.Component<IProps> {
               isActive={isSolongWallet}
             >
               <BtnCustom
-              btnWidth={'100%'}
-              height={'4rem'}
-              border="none"
-              borderWidth="0"
-              borderRadius="0"
-              btnColor={isSolongWallet ? '#AAF2C9' : '#ECF0F3'}
-              fontSize={'1.2rem'}
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                textTransform: 'none',
-                padding: '1rem',
-                background: isSolongWallet ? 'rgba(55, 56, 62, 0.75)' : ''
-              }}
+                btnWidth={'100%'}
+                height={'4rem'}
+                border="none"
+                borderWidth="0"
+                borderRadius="0"
+                btnColor={isSolongWallet ? '#AAF2C9' : '#ECF0F3'}
+                fontSize={'1.2rem'}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  textTransform: 'none',
+                  padding: '1rem',
+                  background: isSolongWallet ? 'rgba(55, 56, 62, 0.75)' : '',
+                }}
                 onClick={() => {
                   if (isSolongWallet && !isWalletConnected) {
                     wallet.connect()
@@ -228,6 +240,7 @@ export default class Dropdown extends React.Component<IProps> {
           </MenuList>
         </StyledPaper>
       </StyledDropdown>
+      </>
     )
   }
 }

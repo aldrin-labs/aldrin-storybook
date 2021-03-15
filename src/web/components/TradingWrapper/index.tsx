@@ -81,7 +81,7 @@ class SimpleTabs extends React.Component {
     orderIsCreating: false,
     takeProfit: false,
     takeProfitPercentage: 0,
-    breakEvenPoint: true,
+    breakEvenPoint: false,
     tradingBotEnabled: false,
     TVAlertsBotEnabled: false,
     tradingBotIsActive: false,

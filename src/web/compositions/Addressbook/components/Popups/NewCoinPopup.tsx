@@ -23,24 +23,15 @@ import { createHash, Input, encrypt } from '@sb/compositions/Addressbook/index'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components/index'
+import { PasteButton } from '@sb/compositions/Addressbook/components/Popups/NewContactPopup'
+
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
   width: 55rem;
 `
 
-export const PasteButton = styled.button`
-  position: absolute;
-  font-size: 1.8rem;
-  right: 0.5rem;
-  background: inherit;
-  border: 0;
-  color: #7380eb;
-  cursor: pointer;
-  padding: 1.5rem;
-`
-
-export const PurpleButton = ({ onClick, showLoader, text, width, height, margin, disabled, background }) => (
+export const PurpleButton = ({ onClick, showLoader, theme, text, width, height, margin, disabled, background }) => (
   <BtnCustom
     disabled={showLoader || disabled}
     needMinWidth={false}
@@ -49,9 +40,9 @@ export const PurpleButton = ({ onClick, showLoader, text, width, height, margin,
     fontSize="1.4rem"
     padding="1rem 2rem"
     borderRadius=".8rem"
-    borderColor={background || '#7380EB'}
+    borderColor={background || theme.palette.blue.serum}
     btnColor={'#fff'}
-    backgroundColor={background ||'#7380EB'}
+    backgroundColor={background ||theme.palette.blue.serum}
     textTransform={'none'}
     margin={margin || '1rem 0 0 0'}
     transition={'all .4s ease-out'}
@@ -265,9 +256,9 @@ const NewCoinPopup = ({
             fontSize="1.4rem"
             padding="1rem 2rem"
             borderRadius=".8rem"
-            borderColor={'#7380EB'}
+            borderColor={theme.palette.blue.serum}
             btnColor={'#fff'}
-            backgroundColor={'#7380EB'}
+            backgroundColor={theme.palette.blue.serum}
             textTransform={'none'}
             margin={'1rem 0 0 0'}
             transition={'all .4s ease-out'}
