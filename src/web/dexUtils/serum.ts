@@ -16,9 +16,11 @@ const AWESOME_TOKENS = Tokens.map(token => {
     name: token.name,
     address: new solana.PublicKey(token.address)
   };
-});
+})
+
+const FILTRED_DEPRECATED_AWESOME_MARKETS = AWESOME_MARKETS.filter(el => !el.deprecated)
 
 export {
-  AWESOME_MARKETS,
+  FILTRED_DEPRECATED_AWESOME_MARKETS as AWESOME_MARKETS,
   AWESOME_TOKENS,
 }
