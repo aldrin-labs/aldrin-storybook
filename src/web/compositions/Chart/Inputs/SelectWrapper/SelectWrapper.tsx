@@ -118,7 +118,6 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
       marketsByExchangeQuery,
       getSelectorSettingsQuery,
       markets,
-      AWESOME_MARKETS,
       AWESOME_TOKENS = [],
       setCustomMarkets,
       setMarketAddress,
