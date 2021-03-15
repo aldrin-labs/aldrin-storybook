@@ -641,7 +641,7 @@ class SimpleTabs extends React.Component {
                                         'takeProfit',
                                         !takeProfit
                                       )
-                                      this.updateState('breakEvenPoint', false)
+                                      this.updateState('breakEvenPoint', !breakEvenPoint)
                                     }}
                                   >
                                     <SCheckbox

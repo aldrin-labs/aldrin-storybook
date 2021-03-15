@@ -256,7 +256,45 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       sideType,
       marketPriceAfterPairChange,
       values: { amount, price, total, margin },
+      setFieldValue,
     } = this.props
+
+    // Handling case with balances in TradingTerminal
+    const isBuyType = sideType === 'buy'
+    const fundsAssetValue = isBuyType ? funds[1].quantity : funds[0].quantity
+    const previousFundsAssetValue = isBuyType ? prevProps.funds[1].quantity : prevProps.funds[0].quantity
+
+    if (fundsAssetValue !== previousFundsAssetValue) {
+      const newValue = fundsAssetValue
+      const priceForCalculate =
+      priceType !== 'market' && priceType !== 'maker-only'
+        ? price
+        : marketPrice
+
+      const newAmount =
+        !isSPOTMarket || isBuyType
+          ? +stripDigitPlaces(
+              newValue / priceForCalculate,
+              quantityPrecision
+            )
+          : +stripDigitPlaces(
+              newValue,
+              quantityPrecision
+            )
+
+      const newTotal =
+        isBuyType || !isSPOTMarket
+          ? newValue
+          : newValue * priceForCalculate
+
+
+      setFieldValue('amount', newAmount)
+      setFieldValue(
+        'total',
+        stripDigitPlaces(newTotal, isSPOTMarket ? 8 : 3)
+      )
+
+    }
 
     if (marketPriceAfterPairChange !== prevProps.marketPriceAfterPairChange) {
       this.onPriceChange({ target: { value: marketPriceAfterPairChange } })
