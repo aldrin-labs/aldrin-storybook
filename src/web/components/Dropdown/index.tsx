@@ -60,6 +60,7 @@ export default class Dropdown extends React.Component<IProps> {
       setProvider: updateProviderUrl,
       providerUrl,
       isSelected,
+      setAutoConnect,
     } = this.props
 
     const isCCAIActive =
@@ -112,14 +113,16 @@ export default class Dropdown extends React.Component<IProps> {
                 onClick={() => {
                   console.log('CLICK ON CCAI')
 
-                  if (isCCAIActive && !isWalletConnected) {
-                    wallet.connect()
-                    return
-                  }
+                  // if (isCCAIActive && !isWalletConnected) {
+                  //   wallet.connect()
+                  //   return
+                  // }
 
                   updateProviderUrl(
                     'https://develop.wallet.cryptocurrencies.ai'
                   )
+
+                  setAutoConnect(true)
                 }}
               >
                 <SvgIcon src={CCAI} width={'20%'} height={'70%'} />
@@ -151,12 +154,13 @@ export default class Dropdown extends React.Component<IProps> {
                 onClick={() => {
                   console.log('CLICK ON SOLLET')
 
-                  if (isSolletActive && !isWalletConnected) {
-                    wallet.connect()
-                    return
-                  }
+                  // if (isSolletActive && !isWalletConnected) {
+                  //   wallet.connect()
+                  //   return
+                  // }
 
                   updateProviderUrl('https://www.sollet.io')
+                  setAutoConnect(true)
                 }}
               >
                 <SvgIcon src={Sollet} width={'20%'} height={'70%'} />
@@ -190,12 +194,13 @@ export default class Dropdown extends React.Component<IProps> {
                 onClick={() => {
                   console.log('CLICK ON MATHWALLET')
 
-                  if (isMathWalletActive && !isWalletConnected) {
-                    wallet.connect()
-                    return
-                  }
+                  // if (isMathWalletActive && !isWalletConnected) {
+                  //   wallet.connect()
+                  //   return
+                  // }
 
                   updateProviderUrl('https://www.mathwallet.org')
+                  setAutoConnect(true)
                 }}
               >
                 <SvgIcon src={Mathwallet} width={'20%'} height={'70%'} />
@@ -225,12 +230,13 @@ export default class Dropdown extends React.Component<IProps> {
                   background: isSolongWallet ? 'rgba(55, 56, 62, 0.75)' : '',
                 }}
                 onClick={() => {
-                  if (isSolongWallet && !isWalletConnected) {
-                    wallet.connect()
-                    return
-                  }
+                  // if (isSolongWallet && !isWalletConnected) {
+                  //   wallet.connect()
+                  //   return
+                  // }
 
                   updateProviderUrl('https://solongwallet.com')
+                  setAutoConnect(true)
                 }}
               >
                 <SvgIcon src={Solong} width={'20%'} height={'70%'} />
