@@ -37,6 +37,8 @@ const WalletContext = React.createContext(null);
 export function WalletProvider({ children }) {
   const [connected, setConnected] = useState(false);
 
+  const [autoConnect, setAutoConnect] = useState(false);
+
   const { endpoint } = useConnectionConfig();
   const [savedProviderUrl, setProviderUrl] = useLocalStorageState(
     'walletProvider',
@@ -99,12 +101,22 @@ export function WalletProvider({ children }) {
     }
 
     return () => {
-      wallet.disconnect();
       setConnected(false);
+      if (wallet) {
+        wallet.disconnect();
+        setConnected(false);
+      }
     };
   }, [wallet]);
 
-  console.log('wallet in render', wallet)
+  useEffect(() => {
+    if (wallet && autoConnect) {
+      wallet.connect();
+      setAutoConnect(false);
+    }
+
+    return () => {};
+  }, [wallet, autoConnect]);
 
   return (
     <WalletContext.Provider
@@ -113,6 +125,7 @@ export function WalletProvider({ children }) {
         connected,
         providerUrl,
         setProviderUrl,
+        setAutoConnect,
         providerName:
           WALLET_PROVIDERS.find(({ url }) => url === providerUrl)?.name ??
           providerUrl,
@@ -134,5 +147,6 @@ export function useWallet() {
     providerUrl: context.providerUrl,
     setProvider: context.setProviderUrl,
     providerName: context.providerName,
+    setAutoConnect: context.setAutoConnect,
   };
 }
