@@ -222,6 +222,7 @@ const TopBar = ({ theme }) => {
     providerUrl,
     updateProviderUrl,
     setProvider,
+    setAutoConnect,
   } = useWallet()
 
   const { endpoint, setEndpoint } = useConnectionConfig()
@@ -331,6 +332,7 @@ const TopBar = ({ theme }) => {
           theme={theme}
           setProvider={setProvider}
           providerUrl={providerUrl}
+          setAutoConnect={setAutoConnect}
         />
         {/* <BtnCustom
           btnWidth={'14rem'}
