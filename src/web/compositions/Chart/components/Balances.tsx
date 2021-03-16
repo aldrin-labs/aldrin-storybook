@@ -349,7 +349,7 @@ export const Balances = ({
                     btnColor={theme.palette.dark.main}
                     borderColor={theme.palette.blue.serum}
                     backgroundColor={theme.palette.blue.serum}
-                    hoverBackground="#3992a9"
+                    // hoverBackground="#3992a9"
                     transition={'all .4s ease-out'}
                     onClick={() => {
                       console.log('balnces', baseBalances, balances)
@@ -432,7 +432,7 @@ export const Balances = ({
                     btnColor={theme.palette.dark.main}
                     borderColor={theme.palette.blue.serum}
                     backgroundColor={theme.palette.blue.serum}
-                    hoverBackground="#3992a9"
+                    // hoverBackground="#3992a9"
                     transition={'all .4s ease-out'}
                     onClick={() => {
                       const { market, openOrders } = quoteBalances

@@ -83,8 +83,8 @@ export default class Dropdown extends React.Component<IProps> {
           style={{ display: isSelected ? 'none' : '' }}
           theme={theme}
           isWalletConnected={isWalletConnected}
-          customActiveRem={'26rem'}
-          customNotActiveRem={'20rem'}
+          customActiveRem={'9rem'}
+          customNotActiveRem={'3rem'}
         >
           <MenuList style={{ padding: 0 }}>
             <StyledMenuItem

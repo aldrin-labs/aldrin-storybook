@@ -130,7 +130,6 @@ export const CardsPanel = ({ theme, setMarketAddress }) => {
             // position: 'relative',
             display: 'flex',
             maxWidth: '100%',
-            marginRight: '.4rem',
             flexGrow: 1,
             border: '0',
           }}
