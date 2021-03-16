@@ -345,12 +345,12 @@ export const createButterflyChart = (
   })
 }
 
-export const createAreaChart = (data: any, selectedPair = '') => {
+export const createAreaChart = (data: any, selectedPair = '', theme) => {
   const ctx = document.getElementById('areaChart')?.getContext('2d')
 
   const gradient = ctx.createLinearGradient(0, 0, 0, 400)
-  gradient.addColorStop(0, 'rgba(115, 128, 235, 0.55)')
-  gradient.addColorStop(1, 'rgba(115, 128, 235, 0)')
+  gradient.addColorStop(0, 'rgba(54, 108, 229, 0.8)')
+  gradient.addColorStop(1, 'rgba(54, 108, 229, 0)')
 
   const width =
     window.innerWidth ||
@@ -386,7 +386,7 @@ export const createAreaChart = (data: any, selectedPair = '') => {
         {
           fill: 'origin',
           tension: 0.5,
-          borderColor: '#7380EB',
+          borderColor: theme.palette.blue.serum,
           backgroundColor: gradient,
           borderWidth: 2,
           // pointRadius: 0,

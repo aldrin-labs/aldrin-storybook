@@ -425,18 +425,17 @@ class SelectPairListComponent extends React.PureComponent<
       <StyledGrid
         id={id}
         style={{
-          top: `calc(100% - 0.9rem)`,
-          left: `calc(${this.state.left}px - 0rem)`,
+          top: `calc(100% - 1rem)`,
+          left: `0rem`,
           fontFamily: 'DM Sans',
           position: 'absolute',
-          // transform: 'translateX(-100%)',
           zIndex: 900,
           background: theme.palette.white.background,
-          minWidth: '43%',
+          minWidth: '70rem',
           height: '35rem',
           borderRadius: '.4rem',
           overflow: 'hidden',
-          border: `1px solid ${theme.palette.grey.newborder}`,
+          border: `.1rem solid ${theme.palette.grey.newborder}`,
           boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
         }}
       >

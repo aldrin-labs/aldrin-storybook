@@ -57,9 +57,9 @@ const TradingViewConfirmPopup = ({ theme, open, handleClose, updateState }) => {
           fontSize="1.4rem"
           padding="1rem 2rem"
           borderRadius=".8rem"
-          borderColor={'#7380EB'}
+          borderColor={theme.palette.blue.serum}
           btnColor={'#fff'}
-          backgroundColor={'#7380EB'}
+          backgroundColor={theme.palette.blue.serum}
           textTransform={'none'}
           margin={'1rem 0 0 0'}
           transition={'all .4s ease-out'}

@@ -42,6 +42,7 @@ import { syncStorage } from '@storage'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { useQuery } from 'react-apollo'
 import CardsPanel from '@sb/compositions/Chart/components/CardsPanel'
+import MarketBlock from '@sb/compositions/Chart/components/MarketBlock'
 
 import { ConnectionProvider } from '@sb/dexUtils/connection'
 import { WalletProvider } from '@sb/dexUtils/wallet'
@@ -127,11 +128,14 @@ const AppRaw = ({
                       {!pageIsRegistration && (
                         <CardsPanel pathname={currentPage} hide={fullscreen} />
                       )}
+                      {isChartPage && <MarketBlock />}
                       <div
                         style={{
                           height: showFooter
                             ? 'calc(100% - 11.7rem)'
-                            : 'calc(100% - 6rem)'
+                            : isChartPage
+                            ? 'calc(100% - 12rem)'
+                            : 'calc(100% - 6rem)',
                         }}
                       >
                         {children}

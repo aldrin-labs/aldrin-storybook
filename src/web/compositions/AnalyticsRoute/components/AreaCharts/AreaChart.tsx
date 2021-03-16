@@ -23,7 +23,7 @@ const AreaChart = ({
   title: string
 }) => {
   useEffect(() => {
-    createAreaChart(data, selectedPair)
+    createAreaChart(data, selectedPair, theme)
 
     return () => window.myAreaChart.destroy()
   }, [id])

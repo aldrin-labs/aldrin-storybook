@@ -9,6 +9,7 @@ import {
   StyledPaper,
   StyledMenuItem,
 } from '@sb/components/Dropdown/Dropdown.styles'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
 const WalletStatusButton = ({
@@ -19,13 +20,13 @@ const WalletStatusButton = ({
   theme: Theme
 }) => (
   <BtnCustom
-    type="text"
-    size="large"
-    btnColor={theme.palette.blue.serum}
+    borderWidth={'0'}
+    height={'3.5rem'}
+    btnColor={theme.palette.dark.main}
     btnWidth={'14rem'}
-    height={'100%'}
   >
     {connection}
+    <ExpandMoreIcon fontSize="small" style={{ marginLeft: '.5rem' }} />
   </BtnCustom>
 )
 
@@ -40,11 +41,13 @@ export default class NetworkDropdown extends React.PureComponent<{
 
     const currentConnectionEndpoint = {
       value: endpoint,
-      label: ENDPOINTS.find((a) => a.endpoint === endpoint).name,
+      label: (
+        ENDPOINTS.find((a) => a.endpoint === endpoint) || { name: 'Loading' }
+      ).name,
     }
 
     return (
-      <StyledDropdown theme={theme} style={{ margin: '0 2rem' }}>
+      <StyledDropdown theme={theme} style={{ borderRight: theme.palette.border.new }}>
         <WalletStatusButton
           connection={currentConnectionEndpoint.label}
           theme={theme}
@@ -57,8 +60,8 @@ export default class NetworkDropdown extends React.PureComponent<{
           }}
           theme={theme}
           isWalletConnected={isWalletConnected}
-          customActiveRem={`25rem`}
-          customNotActiveRem={`19rem`}
+          customActiveRem={`46rem`}
+          customNotActiveRem={`37rem`}
         >
           <MenuList style={{ padding: 0 }}>
             {ENDPOINTS.map((endpoint) => (
@@ -80,12 +83,9 @@ export default class NetworkDropdown extends React.PureComponent<{
                       : '#ECF0F3'
                   }
                   fontSize={'1.2rem'}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    textTransform: 'none',
-                    padding: '1rem',
-                  }}
+                  padding={'1rem'}
+                  textTransform={'capitalize'}
+                  style={{ justifyContent: 'flex-start' }}
                   onClick={() => {
                     setEndpoint(endpoint.endpoint)
                   }}

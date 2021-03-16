@@ -26,17 +26,6 @@ const StyledPaper = styled(Paper)`
   width: 55rem;
 `
 
-export const PasteButton = styled.button`
-  position: absolute;
-  font-size: 1.8rem;
-  right: 0.5rem;
-  background: inherit;
-  border: 0;
-  color: #7380eb;
-  cursor: pointer;
-  padding: 1.5rem;
-`
-
 const ConfirmDeleteDialog = ({
   theme,
   open,
@@ -99,9 +88,9 @@ const ConfirmDeleteDialog = ({
             fontSize="1.4rem"
             padding="1rem 2rem"
             borderRadius=".8rem"
-            borderColor={'#7380EB'}
+            borderColor={theme.palette.blue.serum}
             btnColor={'#fff'}
-            backgroundColor={'#7380EB'}
+            backgroundColor={theme.palette.blue.serum}
             textTransform={'none'}
             margin={'2.4rem 0 0 0'}
             transition={'all .4s ease-out'}

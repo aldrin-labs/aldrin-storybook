@@ -271,6 +271,7 @@ const CustomMarketDialog = ({
       >
         <RowContainer margin={'2rem 0 0 0'}>
           <PurpleButton
+            theme={theme}
             text={'List New Market'}
             width={'20rem'}
             height={'3.5rem'}
@@ -391,6 +392,7 @@ const CustomMarketDialog = ({
         </RowContainer>
         <RowContainer justify={'center'}>
           <PurpleButton
+            theme={theme}
             margin={'0 0 0 0rem'}
             text={'Add Market'}
             width={'20rem'}
