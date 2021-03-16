@@ -15,7 +15,7 @@ import Sollet from '@icons/sollet.svg'
 import Mathwallet from '@icons/mathwallet.svg'
 import Solong from '@icons/solong.svg'
 import CCAI from '@icons/ccai.svg'
-
+import { CCAIProviderURL } from '@sb/dexUtils/utils'
 import { IProps } from './types'
 
 const WalletStatusButton = ({ wallet, connected, theme }) => (
@@ -63,7 +63,7 @@ export default class Dropdown extends React.Component<IProps> {
     } = this.props
 
     const isCCAIActive =
-      providerUrl === 'https://wallet.cryptocurrencies.ai'
+      providerUrl === CCAIProviderURL
     const isSolletActive = providerUrl === 'https://www.sollet.io'
     const isMathWalletActive = providerUrl === 'https://www.mathwallet.org'
     const isSolongWallet = providerUrl === 'https://solongwallet.com'
@@ -118,7 +118,7 @@ export default class Dropdown extends React.Component<IProps> {
                   }
 
                   updateProviderUrl(
-                    'https://wallet.cryptocurrencies.ai'
+                    'https://develop.wallet.cryptocurrencies.ai'
                   )
                 }}
               >

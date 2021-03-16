@@ -68,7 +68,7 @@ export default class Wallet extends EventEmitter {
       this._popup = window.open(
         this._providerUrl.toString(),
         '_blank',
-        'location,resizable,width=500,height=780',
+        'location,resizable,width=465,height=640',
       );
       return new Promise((resolve) => {
         this.once('connect', resolve);
