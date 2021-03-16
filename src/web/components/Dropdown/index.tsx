@@ -63,7 +63,7 @@ export default class Dropdown extends React.Component<IProps> {
     } = this.props
 
     const isCCAIActive =
-      providerUrl === 'https://develop.wallet.cryptocurrencies.ai'
+      providerUrl === 'https://wallet.cryptocurrencies.ai'
     const isSolletActive = providerUrl === 'https://www.sollet.io'
     const isMathWalletActive = providerUrl === 'https://www.mathwallet.org'
     const isSolongWallet = providerUrl === 'https://solongwallet.com'
@@ -118,7 +118,7 @@ export default class Dropdown extends React.Component<IProps> {
                   }
 
                   updateProviderUrl(
-                    'https://develop.wallet.cryptocurrencies.ai'
+                    'https://wallet.cryptocurrencies.ai'
                   )
                 }}
               >
