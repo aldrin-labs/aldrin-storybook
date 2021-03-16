@@ -170,9 +170,7 @@ export const CardsPanel = ({ theme, setMarketAddress }) => {
               page={'wallet'}
               component={(props) => (
                 <a
-                  href="https://develop.wallet.cryptocurrencies.ai/"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="https://wallet.cryptocurrencies.ai/"
                   {...props}
                 />
               )}
@@ -236,7 +234,7 @@ const TopBar = ({ theme }) => {
   const isDarkTheme = theme.palette.type === 'dark'
   const isWalletConnected = connected
   const isCCAIActive =
-    providerUrl === 'https://develop.wallet.cryptocurrencies.ai'
+    providerUrl === 'https://wallet.cryptocurrencies.ai'
 
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -317,14 +315,14 @@ const TopBar = ({ theme }) => {
         />
       </div> */}
       {/* <WalletBlock /> */}
-      <div data-tut="connection-dropdown">
+      {/* <div data-tut="connection-dropdown">
         <NetworkDropdown
           endpoint={endpoint}
           setEndpoint={setEndpoint}
           theme={theme}
           isWalletConnected={connected}
         />
-      </div>
+      </div> */}
 
       <Row data-tut="wallet" wrap={'nowrap'}>
         <Dropdown
@@ -355,7 +353,7 @@ const TopBar = ({ theme }) => {
               return
             }
 
-            updateProviderUrl('https://develop.wallet.cryptocurrencies.ai')
+            updateProviderUrl('https://wallet.cryptocurrencies.ai')
           }}
         >
           Connect Wallet™
