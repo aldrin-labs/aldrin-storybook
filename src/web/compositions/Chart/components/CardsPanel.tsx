@@ -216,7 +216,7 @@ export const CardsPanel = ({ theme, setMarketAddress }) => {
               {' '}
               Addressbook
             </NavLinkButton>
-            <IdoBtn>CCAI IDO</IdoBtn>
+            {/* <IdoBtn>CCAI IDO</IdoBtn> */}
           </div>
         </CustomCard>
 
