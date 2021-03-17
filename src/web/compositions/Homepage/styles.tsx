@@ -55,6 +55,10 @@ export const WhiteButton = styled.a`
   cursor: pointer;
   padding: ${(props) => props.padding || '0 4rem'};
 
+  @media only screen and (min-width: 1430px) {
+    width: ${(props) => props.width || '18rem'};
+  }
+
   &:hover {
     background: #f8faff;
     color: #3a475c;
@@ -131,7 +135,11 @@ export const ButtonContainer = styled.div`
   justify-content: flex-end;
   align-items: flex-end;
   padding: 0 10% 3% 0;
-  @media only screen and (min-width: 1430px) {
+  @media only screen and (min-width: 1000px) {
     padding: 0 9% 3% 0;
+  }
+
+  @media only screen and (min-width: 1430px) {
+    padding: 0 8% 3% 0;
   }
 `
