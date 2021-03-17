@@ -49,7 +49,7 @@ import { WalletProvider } from '@sb/dexUtils/wallet'
 import { MarketProvider } from '@sb/dexUtils/markets'
 import { PreferencesProvider } from '@sb/dexUtils/preferences'
 
-const version = `10.9.51-mathwallet-under-maintenance`
+const version = `10.9.52-remove-homepage`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
 const localPassword = localStorage.getItem('localPassword')
 const currentVersion = localStorage.getItem('version')
