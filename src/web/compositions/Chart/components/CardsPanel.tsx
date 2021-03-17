@@ -164,7 +164,7 @@ export const CardsPanel = ({ theme, setMarketAddress }) => {
               alignItems: 'center',
             }}
           >
-            <NavLinkButton
+            {/* <NavLinkButton
               theme={theme}
               page={'homepage'}
               pathname={location.pathname}
@@ -172,7 +172,7 @@ export const CardsPanel = ({ theme, setMarketAddress }) => {
             >
               {' '}
               Home
-            </NavLinkButton>
+            </NavLinkButton> */}
             <NavLinkButton
               theme={theme}
               data-tut="farming"
