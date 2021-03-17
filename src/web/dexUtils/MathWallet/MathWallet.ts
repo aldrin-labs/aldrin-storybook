@@ -35,7 +35,7 @@ export default class MathWallet extends EventEmitter {
     }
 
     if (!window.solana.getAccounts) {
-      alert('Unlock your Mathwallet in extension settings first')
+      alert('Mathwallet is currently under maintenance')
       return
     }
 
