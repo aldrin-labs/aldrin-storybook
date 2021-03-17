@@ -88,7 +88,8 @@ const AppRaw = ({
   const showFooter =
     !currentPage.includes('/analytics') &&
     currentPage !== '/tech_issues' &&
-    !isChartPage
+    !isChartPage &&
+    currentPage !== '/homepage'
   const isPNL = currentPage.includes('/portfolio/main')
   // TODO: Check this variable
   const pageIsRegistration = currentPage.includes('regist')

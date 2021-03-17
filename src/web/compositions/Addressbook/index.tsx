@@ -54,10 +54,11 @@ export const AddBtn = styled.button`
   }
 `
 
-const Text = styled.span`
-  font-size: 1.5rem;
+export const Text = styled.span`
+  font-size: ${(props) => props.fontSize || '1.5rem'};
   padding-bottom: ${(props) => props.paddingBottom};
   text-transform: none;
+  font-family: Avenir Next Medium;
   color: #ecf0f3;
 `
 
@@ -398,7 +399,6 @@ const AddressbookRoute = ({
             </div>
 
             <TableWithSort
-
               hideCommonCheckbox
               expandableRows={true}
               rowsWithHover={false}

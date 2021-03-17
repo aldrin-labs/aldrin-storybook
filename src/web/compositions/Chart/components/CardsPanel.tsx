@@ -7,6 +7,7 @@ import { NavLink } from 'react-router-dom'
 import copy from 'clipboard-copy'
 import { useLocation, useHistory, Link } from 'react-router-dom'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { IdoBtn } from '../../Homepage/styles'
 
 import MarketStats from './MarketStats/MarketStats'
 import { TooltipCustom } from '@sb/components/index'
@@ -166,6 +167,15 @@ export const CardsPanel = ({ theme, setMarketAddress }) => {
           >
             <NavLinkButton
               theme={theme}
+              page={'homepage'}
+              pathname={location.pathname}
+              component={(props) => <Link to={`/homepage`} {...props} />}
+            >
+              {' '}
+              Home
+            </NavLinkButton>
+            <NavLinkButton
+              theme={theme}
               data-tut="farming"
               pathname={location.pathname}
               page={'wallet'}
@@ -209,6 +219,7 @@ export const CardsPanel = ({ theme, setMarketAddress }) => {
               {' '}
               Addressbook
             </NavLinkButton>
+            <IdoBtn>CCAI IDO</IdoBtn>
           </div>
         </CustomCard>
 
