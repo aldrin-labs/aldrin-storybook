@@ -60,8 +60,8 @@ export default class NetworkDropdown extends React.PureComponent<{
           }}
           theme={theme}
           isWalletConnected={isWalletConnected}
-          customActiveRem={`46rem`}
-          customNotActiveRem={`37rem`}
+          customActiveRem={`26rem`}
+          customNotActiveRem={`20rem`}
         >
           <MenuList style={{ padding: 0 }}>
             {ENDPOINTS.map((endpoint) => (

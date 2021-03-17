@@ -131,7 +131,6 @@ export const CardsPanel = ({ theme, setMarketAddress }) => {
             // position: 'relative',
             display: 'flex',
             maxWidth: '100%',
-            marginRight: '.4rem',
             flexGrow: 1,
             border: '0',
           }}
@@ -182,8 +181,6 @@ export const CardsPanel = ({ theme, setMarketAddress }) => {
               component={(props) => (
                 <a
                   href="https://develop.wallet.cryptocurrencies.ai/"
-                  target="_blank"
-                  rel="noopener noreferrer"
                   {...props}
                 />
               )}
@@ -236,6 +233,7 @@ const TopBar = ({ theme }) => {
     providerUrl,
     updateProviderUrl,
     setProvider,
+    setAutoConnect,
   } = useWallet()
 
   const { endpoint, setEndpoint } = useConnectionConfig()
@@ -329,14 +327,14 @@ const TopBar = ({ theme }) => {
         />
       </div> */}
       {/* <WalletBlock /> */}
-      <div data-tut="connection-dropdown">
+      {/* <div data-tut="connection-dropdown">
         <NetworkDropdown
           endpoint={endpoint}
           setEndpoint={setEndpoint}
           theme={theme}
           isWalletConnected={connected}
         />
-      </div>
+      </div> */}
 
       <Row data-tut="wallet" wrap={'nowrap'}>
         <Dropdown
@@ -345,6 +343,7 @@ const TopBar = ({ theme }) => {
           theme={theme}
           setProvider={setProvider}
           providerUrl={providerUrl}
+          setAutoConnect={setAutoConnect}
         />
         {/* <BtnCustom
           btnWidth={'14rem'}

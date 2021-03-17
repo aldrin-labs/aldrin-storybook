@@ -15,7 +15,7 @@ import Sollet from '@icons/sollet.svg'
 import Mathwallet from '@icons/mathwallet.svg'
 import Solong from '@icons/solong.svg'
 import CCAI from '@icons/ccai.svg'
-
+import { CCAIProviderURL } from '@sb/dexUtils/utils'
 import { IProps } from './types'
 
 const WalletStatusButton = ({ wallet, connected, theme }) => (
@@ -60,10 +60,11 @@ export default class Dropdown extends React.Component<IProps> {
       setProvider: updateProviderUrl,
       providerUrl,
       isSelected,
+      setAutoConnect,
     } = this.props
 
     const isCCAIActive =
-      providerUrl === 'https://develop.wallet.cryptocurrencies.ai'
+      providerUrl === CCAIProviderURL
     const isSolletActive = providerUrl === 'https://www.sollet.io'
     const isMathWalletActive = providerUrl === 'https://www.mathwallet.org'
     const isSolongWallet = providerUrl === 'https://solongwallet.com'
@@ -83,8 +84,8 @@ export default class Dropdown extends React.Component<IProps> {
           style={{ display: isSelected ? 'none' : '' }}
           theme={theme}
           isWalletConnected={isWalletConnected}
-          customActiveRem={'26rem'}
-          customNotActiveRem={'20rem'}
+          customActiveRem={'9rem'}
+          customNotActiveRem={'3rem'}
         >
           <MenuList style={{ padding: 0 }}>
             <StyledMenuItem
@@ -112,14 +113,16 @@ export default class Dropdown extends React.Component<IProps> {
                 onClick={() => {
                   console.log('CLICK ON CCAI')
 
-                  if (isCCAIActive && !isWalletConnected) {
-                    wallet.connect()
-                    return
-                  }
+                  // if (isCCAIActive && !isWalletConnected) {
+                  //   wallet.connect()
+                  //   return
+                  // }
 
                   updateProviderUrl(
                     'https://develop.wallet.cryptocurrencies.ai'
                   )
+
+                  setAutoConnect(true)
                 }}
               >
                 <SvgIcon src={CCAI} width={'20%'} height={'70%'} />
@@ -151,12 +154,13 @@ export default class Dropdown extends React.Component<IProps> {
                 onClick={() => {
                   console.log('CLICK ON SOLLET')
 
-                  if (isSolletActive && !isWalletConnected) {
-                    wallet.connect()
-                    return
-                  }
+                  // if (isSolletActive && !isWalletConnected) {
+                  //   wallet.connect()
+                  //   return
+                  // }
 
                   updateProviderUrl('https://www.sollet.io')
+                  setAutoConnect(true)
                 }}
               >
                 <SvgIcon src={Sollet} width={'20%'} height={'70%'} />
@@ -190,12 +194,13 @@ export default class Dropdown extends React.Component<IProps> {
                 onClick={() => {
                   console.log('CLICK ON MATHWALLET')
 
-                  if (isMathWalletActive && !isWalletConnected) {
-                    wallet.connect()
-                    return
-                  }
+                  // if (isMathWalletActive && !isWalletConnected) {
+                  //   wallet.connect()
+                  //   return
+                  // }
 
                   updateProviderUrl('https://www.mathwallet.org')
+                  setAutoConnect(true)
                 }}
               >
                 <SvgIcon src={Mathwallet} width={'20%'} height={'70%'} />
@@ -225,12 +230,13 @@ export default class Dropdown extends React.Component<IProps> {
                   background: isSolongWallet ? 'rgba(55, 56, 62, 0.75)' : '',
                 }}
                 onClick={() => {
-                  if (isSolongWallet && !isWalletConnected) {
-                    wallet.connect()
-                    return
-                  }
+                  // if (isSolongWallet && !isWalletConnected) {
+                  //   wallet.connect()
+                  //   return
+                  // }
 
                   updateProviderUrl('https://solongwallet.com')
+                  setAutoConnect(true)
                 }}
               >
                 <SvgIcon src={Solong} width={'20%'} height={'70%'} />

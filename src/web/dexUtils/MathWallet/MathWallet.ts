@@ -34,6 +34,11 @@ export default class MathWallet extends EventEmitter {
       return
     }
 
+    if (!window.solana.getAccounts) {
+      alert('Unlock your Mathwallet in extension settings first')
+      return
+    }
+
     window.solana.getAccounts()
     .then((accounts: any[]) => {
       // TODO: Refactor --- add catch
@@ -80,6 +85,9 @@ export default class MathWallet extends EventEmitter {
       // window.addEventListener('message', this._handleMessage)
       window.addEventListener('beforeunload', this.disconnect)
     }
+
+
+
     return this._handleConnect()
   }
 

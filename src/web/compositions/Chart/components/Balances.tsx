@@ -31,11 +31,12 @@ import {
   useTokenAccounts,
   getSelectedTokenAccountForMint,
   useUnmigratedOpenOrdersAccounts,
-  useSelectedTokenAccounts
+  useSelectedTokenAccounts,
 } from '@sb/dexUtils/markets'
 import { useSendConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { settleFunds } from '@sb/dexUtils/send'
+import { CCAIProviderURL } from '@sb/dexUtils/utils'
 import { notify } from '@sb/dexUtils/notifications'
 
 import { getDecimalCount } from '@sb/dexUtils/utils'
@@ -158,9 +159,9 @@ export const Balances = ({
   const { market } = useMarket()
   const balances = useBalances()
   const [accounts] = useTokenAccounts()
-  const [selectedTokenAccounts] = useSelectedTokenAccounts();
+  const [selectedTokenAccounts] = useSelectedTokenAccounts()
   const connection = useSendConnection()
-  const { wallet } = useWallet()
+  const { wallet, providerUrl } = useWallet()
   const { refresh } = useUnmigratedOpenOrdersAccounts()
 
   async function onSettleSuccess() {
@@ -228,6 +229,7 @@ export const Balances = ({
   )
 
   const isSPOTMarket = isSPOTMarketType(marketType)
+  const isCCAIWallet = providerUrl === CCAIProviderURL
 
   return (
     <>
@@ -317,7 +319,9 @@ export const Balances = ({
                 <div
                   style={{
                     display: 'flex',
-                    justifyContent: 'space-evenly',
+                    justifyContent: isCCAIWallet
+                      ? 'flex-start'
+                      : 'space-evenly',
                     width: '100%',
                     paddingBottom: '0.8rem',
                   }}
@@ -340,25 +344,27 @@ export const Balances = ({
                   >
                     deposit
                   </BtnCustom>
-                  <BtnCustom
-                    btnWidth="45%"
-                    height="auto"
-                    fontSize=".8rem"
-                    padding=".5rem 0 .4rem 0;"
-                    borderRadius=".8rem"
-                    btnColor={theme.palette.dark.main}
-                    borderColor={theme.palette.blue.serum}
-                    backgroundColor={theme.palette.blue.serum}
-                    hoverBackground="#3992a9"
-                    transition={'all .4s ease-out'}
-                    onClick={() => {
-                      console.log('balnces', baseBalances, balances)
-                      const { market, openOrders } = baseBalances
-                      onSettleFunds(market, openOrders)
-                    }}
-                  >
-                    settle
-                  </BtnCustom>
+                  {!isCCAIWallet && (
+                    <BtnCustom
+                      btnWidth="45%"
+                      height="auto"
+                      fontSize=".8rem"
+                      padding=".5rem 0 .4rem 0;"
+                      borderRadius=".8rem"
+                      btnColor={theme.palette.dark.main}
+                      borderColor={theme.palette.blue.serum}
+                      backgroundColor={theme.palette.blue.serum}
+                      // hoverBackground="#3992a9"
+                      transition={'all .4s ease-out'}
+                      onClick={() => {
+                        console.log('balnces', baseBalances, balances)
+                        const { market, openOrders } = baseBalances
+                        onSettleFunds(market, openOrders)
+                      }}
+                    >
+                      settle
+                    </BtnCustom>
+                  )}
                 </div>
               </Grid>
               <Grid
@@ -401,7 +407,9 @@ export const Balances = ({
                 <div
                   style={{
                     display: 'flex',
-                    justifyContent: 'space-evenly',
+                    justifyContent: isCCAIWallet
+                      ? 'flex-start'
+                      : 'space-evenly',
                     width: '100%',
                   }}
                 >
@@ -423,24 +431,26 @@ export const Balances = ({
                   >
                     deposit
                   </BtnCustom>
-                  <BtnCustom
-                    btnWidth="45%"
-                    height="auto"
-                    fontSize=".8rem"
-                    padding=".5rem 0 .4rem 0;"
-                    borderRadius=".8rem"
-                    btnColor={theme.palette.dark.main}
-                    borderColor={theme.palette.blue.serum}
-                    backgroundColor={theme.palette.blue.serum}
-                    hoverBackground="#3992a9"
-                    transition={'all .4s ease-out'}
-                    onClick={() => {
-                      const { market, openOrders } = quoteBalances
-                      onSettleFunds(market, openOrders)
-                    }}
-                  >
-                    settle
-                  </BtnCustom>
+                  {!isCCAIWallet && (
+                    <BtnCustom
+                      btnWidth="45%"
+                      height="auto"
+                      fontSize=".8rem"
+                      padding=".5rem 0 .4rem 0;"
+                      borderRadius=".8rem"
+                      btnColor={theme.palette.dark.main}
+                      borderColor={theme.palette.blue.serum}
+                      backgroundColor={theme.palette.blue.serum}
+                      // hoverBackground="#3992a9"
+                      transition={'all .4s ease-out'}
+                      onClick={() => {
+                        const { market, openOrders } = quoteBalances
+                        onSettleFunds(market, openOrders)
+                      }}
+                    >
+                      settle
+                    </BtnCustom>
+                  )}
                 </div>
               </Grid>
             </>
