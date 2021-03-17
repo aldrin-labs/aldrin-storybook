@@ -115,7 +115,7 @@ export const Homepage = () => {
               <WhiteButton
                 width={'30rem'}
                 padding={'0 2rem'}
-                href="https://develop.wallet.cryptocurrencies.ai/welcome"
+                href="https://wallet.cryptocurrencies.ai/welcome"
               >
                 Go to Wallet{' '}
                 <svg

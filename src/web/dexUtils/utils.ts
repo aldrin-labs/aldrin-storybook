@@ -13,7 +13,7 @@ export function isValidPublicKey(key) {
   }
 }
 
-export const CCAIProviderURL = 'https://develop.wallet.cryptocurrencies.ai'
+export const CCAIProviderURL = 'https://wallet.cryptocurrencies.ai'
 
 export async function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
