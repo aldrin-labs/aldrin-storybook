@@ -3,6 +3,7 @@ import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import greenArrow from '@icons/greenArrow.svg'
 import { NavLink } from 'react-router-dom'
+import { MASTER_BUILD } from '@core/utils/config'
 
 import copy from 'clipboard-copy'
 import { useLocation, useHistory, Link } from 'react-router-dom'
@@ -51,7 +52,7 @@ import TelegramIcon from '@icons/telegram.svg'
 import DiscordIcon from '@icons/discord.svg'
 import TwitterIcon from '@icons/twitter.svg'
 import { withTheme } from '@material-ui/core'
-import WalletIcon from '@icons/walletIcon.svg'
+// import WalletIcon from '@icons/walletIcon.svg'
 import NetworkDropdown from '@sb/compositions/Chart/components/NetworkDropdown/NetworkDropdown'
 
 import Dropdown from '@sb/components/Dropdown'
@@ -167,23 +168,23 @@ export const CardsPanel = ({ theme, setMarketAddress }) => {
               alignItems: 'center',
             }}
           >
-            {/* <NavLinkButton
-              theme={theme}
-              page={'homepage'}
-              pathname={location.pathname}
-              component={(props) => <Link to={`/homepage`} {...props} />}
-            >
-              {' '}
-              Home
-            </NavLinkButton> */}
+            {!MASTER_BUILD ? (
+              <NavLinkButton
+                theme={theme}
+                page={'homepage'}
+                pathname={location.pathname}
+                component={(props) => <Link to={`/homepage`} {...props} />}
+              >
+                {' '}
+                Home
+              </NavLinkButton>
+            ) : null}
             <NavLinkButton
               theme={theme}
               data-tut="farming"
               pathname={location.pathname}
               page={'wallet'}
-              component={(props) => (
-                <a href={CCAIProviderURL} {...props} />
-              )}
+              component={(props) => <a href={CCAIProviderURL} {...props} />}
             >
               Wallet
             </NavLinkButton>
@@ -379,20 +380,20 @@ const TopBar = ({ theme }) => {
       )}
       {connected && (
         <RowContainer wrap="nowrap">
-          <SvgIcon
+          {/* <SvgIcon
             src={WalletIcon}
             width="1.6rem"
             height="1.6rem"
             style={{ margin: '0 2rem' }}
-          />
+          /> */}
           <Row direction="column" align="flex-start" margin="0 0 1rem 0">
             <Title fontSize="1rem" fontFamily="Avenir Next">
               {isCCAIActive ? (
                 <>
                   <span style={{ fontFamily: 'Avenir Next Demi' }}>
                     Wallet™
-                  </span> &nbsp;
-                  by Cryptocurrencies.Ai
+                  </span>{' '}
+                  &nbsp; by Cryptocurrencies.Ai
                 </>
               ) : isSolletActive ? (
                 'Sollet Wallet'
