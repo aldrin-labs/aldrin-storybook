@@ -23,6 +23,7 @@ import Candies from '../../../icons/candies.svg'
 import ChartCard from '@icons/chart.svg'
 import Alameda from '@icons/alamedaLight.svg'
 import Serum from '@icons/Logo&Serum.svg'
+import { CCAIProviderURL } from '@sb/dexUtils/utils'
 
 export const Homepage = () => {
   return (
@@ -115,7 +116,7 @@ export const Homepage = () => {
               <WhiteButton
                 width={'30rem'}
                 padding={'0 2rem'}
-                href="https://wallet.cryptocurrencies.ai/welcome"
+                href={`${CCAIProviderURL}/welcome`}
               >
                 Go to Wallet{' '}
                 <svg

@@ -6,7 +6,11 @@ import { NavLink } from 'react-router-dom'
 
 import copy from 'clipboard-copy'
 import { useLocation, useHistory, Link } from 'react-router-dom'
-import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
+import {
+  RowContainer,
+  Row,
+  ReusableTitle as Title,
+} from '@sb/compositions/AnalyticsRoute/index.styles'
 import { IdoBtn } from '../../Homepage/styles'
 
 import MarketStats from './MarketStats/MarketStats'
@@ -20,7 +24,7 @@ import { PanelWrapper, CustomCard } from '../Chart.styles'
 import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
 import { updateThemeMode } from '@core/graphql/mutations/chart/updateThemeMode'
 import { useMarket } from '@sb/dexUtils/markets'
-import { getDecimalCount } from '@sb/dexUtils/utils'
+import { CCAIProviderURL, getDecimalCount } from '@sb/dexUtils/utils'
 import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 
@@ -47,6 +51,7 @@ import TelegramIcon from '@icons/telegram.svg'
 import DiscordIcon from '@icons/discord.svg'
 import TwitterIcon from '@icons/twitter.svg'
 import { withTheme } from '@material-ui/core'
+import WalletIcon from '@icons/walletIcon.svg'
 import NetworkDropdown from '@sb/compositions/Chart/components/NetworkDropdown/NetworkDropdown'
 
 import Dropdown from '@sb/components/Dropdown'
@@ -96,23 +101,21 @@ const LinkBlock = styled.a`
   height: 100%;
 `
 
-const WalletId = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 1rem;
-  cursor: pointer;
-  transition: 2s;
-
-  .wallet {
-    visibility: hidden;
-  }
-
-  &:hover .wallet {
-    transition: 2s;
-    visibility: visible;
-  }
+const RedButton = styled((props) => (
+  <BtnCustom
+    btnWidth={props.width || '50%'}
+    fontSize={'1.4rem'}
+    height={'4.5rem'}
+    textTransform={'capitalize'}
+    backgroundColor={props.background || 'transparent'}
+    borderColor={props.background || 'transparent'}
+    btnColor={props.color || props.theme.palette.red.main}
+    borderRadius={'1rem'}
+    border={props.border || 'none'}
+    {...props}
+  />
+))`
+  outline: none;
 `
 
 export const CardsPanel = ({ theme, setMarketAddress }) => {
@@ -179,10 +182,7 @@ export const CardsPanel = ({ theme, setMarketAddress }) => {
               pathname={location.pathname}
               page={'wallet'}
               component={(props) => (
-                <a
-                  href="https://wallet.cryptocurrencies.ai/"
-                  {...props}
-                />
+                <a href={CCAIProviderURL} {...props} />
               )}
             >
               Wallet
@@ -245,8 +245,11 @@ const TopBar = ({ theme }) => {
 
   const isDarkTheme = theme.palette.type === 'dark'
   const isWalletConnected = connected
-  const isCCAIActive =
-    providerUrl === 'https://wallet.cryptocurrencies.ai'
+
+  const isCCAIActive = providerUrl === CCAIProviderURL
+  const isSolletActive = providerUrl === 'https://www.sollet.io'
+  const isMathWalletActive = providerUrl === 'https://www.mathwallet.org'
+  const isSolongWallet = providerUrl === 'https://solongwallet.com'
 
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -336,16 +339,17 @@ const TopBar = ({ theme }) => {
         />
       </div> */}
 
-      <Row data-tut="wallet" wrap={'nowrap'}>
-        <Dropdown
-          wallet={wallet}
-          connected={connected}
-          theme={theme}
-          setProvider={setProvider}
-          providerUrl={providerUrl}
-          setAutoConnect={setAutoConnect}
-        />
-        {/* <BtnCustom
+      {!connected && (
+        <Row data-tut="wallet" wrap={'nowrap'}>
+          <Dropdown
+            wallet={wallet}
+            connected={connected}
+            theme={theme}
+            setProvider={setProvider}
+            providerUrl={providerUrl}
+            setAutoConnect={setAutoConnect}
+          />
+          {/* <BtnCustom
           btnWidth={'14rem'}
           height={'3.5rem'}
           borderRadius=".6rem"
@@ -366,69 +370,66 @@ const TopBar = ({ theme }) => {
               return
             }
 
-            updateProviderUrl('https://wallet.cryptocurrencies.ai')
+            updateProviderUrl(CCAIProviderURL)
           }}
         >
           Connect Wallet™
         </BtnCustom> */}
-      </Row>
+        </Row>
+      )}
       {connected && (
-        <WalletId
-          theme={theme}
-          style={{
-            position: 'relative',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '0 1rem',
-            cursor: 'pointer',
-          }}
-        >
-          <a
-            target={'_blank'}
-            rel={'noopener noreferrer'}
-            href={`https://explorer.solana.com/address/${publicKey}`}
-            style={{
-              color: theme.palette.blue.serum,
-              fontSize: '1.4rem',
-              textDecoration: 'none',
-            }}
-          >
-            <SvgIcon src={Wallet} />
-          </a>
+        <RowContainer wrap="nowrap">
           <SvgIcon
-            src={greenArrow}
-            width={'1.3rem'}
-            height={'1.3rem'}
-            style={{ marginLeft: '1rem' }}
-          />{' '}
-          <div
+            src={WalletIcon}
+            width="1.6rem"
+            height="1.6rem"
+            style={{ margin: '0 2rem' }}
+          />
+          <Row direction="column" align="flex-start" margin="0 0 1rem 0">
+            <Title fontSize="1rem" fontFamily="Avenir Next">
+              {isCCAIActive ? (
+                <>
+                  <span style={{ fontFamily: 'Avenir Next Demi' }}>
+                    Wallet™
+                  </span> &nbsp;
+                  by Cryptocurrencies.Ai
+                </>
+              ) : isSolletActive ? (
+                'Sollet Wallet'
+              ) : isMathWalletActive ? (
+                'Math Wallet'
+              ) : isSolongWallet ? (
+                'Solong Wallet'
+              ) : (
+                'Wallet'
+              )}
+            </Title>
+            <Title
+              fontFamily="Avenir Next"
+              color={'rgb(147, 160, 178)'}
+              fontSize="1rem"
+            >
+              {wallet.publicKey.toBase58()}
+            </Title>
+          </Row>
+          <RedButton
+            width="10rem"
+            height="2rem"
+            theme={theme}
+            fontSize="1.2rem"
+            onClick={() => {
+              wallet.disconnect()
+            }}
             style={{
               position: 'absolute',
               right: '0',
-              top: '5rem',
-              zIndex: '10',
-              background: theme.palette.white.background,
-              border: theme.palette.border.main,
-              padding: '2rem 1rem',
-              boxShadow: '0px 4px 8px rgba(10, 19, 43, 0.1)',
+              bottom: '.5rem',
+              fontFamily: 'Avenir Next Demi',
             }}
-            className="wallet"
           >
-            <a
-              target={'_blank'}
-              rel={'noopener noreferrer'}
-              href={`https://explorer.solana.com/address/${publicKey}`}
-              style={{
-                color: theme.palette.blue.serum,
-                fontSize: '1.4rem',
-                textDecoration: 'none',
-              }}
-            >
-              {publicKey}
-            </a>
-          </div>
-        </WalletId>
+            Disconnect
+          </RedButton>
+        </RowContainer>
       )}
     </div>
   )

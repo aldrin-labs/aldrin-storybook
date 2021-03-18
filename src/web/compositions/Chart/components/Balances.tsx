@@ -32,6 +32,8 @@ import {
   getSelectedTokenAccountForMint,
   useUnmigratedOpenOrdersAccounts,
   useSelectedTokenAccounts,
+  useSelectedQuoteCurrencyAccount,
+  useSelectedBaseCurrencyAccount,
 } from '@sb/dexUtils/markets'
 import { useSendConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -164,6 +166,9 @@ export const Balances = ({
   const { wallet, providerUrl } = useWallet()
   const { refresh } = useUnmigratedOpenOrdersAccounts()
 
+  const isBaseCoinExistsInWallet = useSelectedBaseCurrencyAccount();
+  const isQuoteCoinExistsInWallet = useSelectedQuoteCurrencyAccount();
+
   async function onSettleSuccess() {
     console.log('settled funds success')
     setTimeout(refresh, 5000)
@@ -230,6 +235,7 @@ export const Balances = ({
 
   const isSPOTMarket = isSPOTMarketType(marketType)
   const isCCAIWallet = providerUrl === CCAIProviderURL
+  const showSettle = !isCCAIWallet || !wallet.connected || !wallet.autoApprove
 
   return (
     <>
@@ -319,7 +325,7 @@ export const Balances = ({
                 <div
                   style={{
                     display: 'flex',
-                    justifyContent: isCCAIWallet
+                    justifyContent: !showSettle
                       ? 'flex-start'
                       : 'space-evenly',
                     width: '100%',
@@ -327,7 +333,7 @@ export const Balances = ({
                   }}
                 >
                   <BtnCustom
-                    btnWidth="45%"
+                    btnWidth={!showSettle ? '100%' : '45%'}
                     height="auto"
                     fontSize=".8rem"
                     padding=".5rem 0 .4rem 0;"
@@ -344,7 +350,7 @@ export const Balances = ({
                   >
                     deposit
                   </BtnCustom>
-                  {!isCCAIWallet && (
+                  {showSettle && (
                     <BtnCustom
                       btnWidth="45%"
                       height="auto"
@@ -407,14 +413,14 @@ export const Balances = ({
                 <div
                   style={{
                     display: 'flex',
-                    justifyContent: isCCAIWallet
+                    justifyContent: !showSettle
                       ? 'flex-start'
                       : 'space-evenly',
                     width: '100%',
                   }}
                 >
                   <BtnCustom
-                    btnWidth="45%"
+                    btnWidth={!showSettle ? '100%' : '45%'}
                     height="auto"
                     fontSize=".8rem"
                     padding=".5rem 0 .4rem 0;"
@@ -431,7 +437,7 @@ export const Balances = ({
                   >
                     deposit
                   </BtnCustom>
-                  {!isCCAIWallet && (
+                  {showSettle && (
                     <BtnCustom
                       btnWidth="45%"
                       height="auto"

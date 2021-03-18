@@ -7,6 +7,7 @@ import {
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
+import { useFeeDiscountKeys } from '@sb/dexUtils/markets'
 
 export const feeTiers = [
   { feeTier: 0, taker: 0.22, maker: -0.03, token: '', balance: '' },
@@ -28,55 +29,40 @@ export const feeTiers = [
     balance: 1000000,
   },
   { feeTier: 6, taker: 0.1, maker: -0.05, token: 'MSRM', balance: 1 },
-];
+]
 
+export const combineFeeTiers = (feeTiers, feeAccounts) => {
+  const userTier = feeAccounts ? feeAccounts[0].feeTier : -1
 
-export const combineFeeTiers = (
-    feeTiers
-  ) => {
-    const processedFundsData = feeTiers
-      .map((el) => {
-        const {
-          feeTier,
-          taker,
-          maker,
-          token,
-          balance,
-        } = el
-  
-        return {
-          id: `${feeTier}${balance}`,
-          feeTier: `${feeTier}`,
-          taker: `${taker} %`,
-          maker: `${maker} %`,
-          condition: {
-            render: balance > 0 ? `>= ${balance} ${token}` : 'None',
-            style: { textAlign: 'left' },
-            contentToSort: +balance,
-          },
-        }
-      })
-  
-    return processedFundsData.filter((el) => !!el)
-  }
+  const processedFundsData = feeTiers.map((el) => {
+    const { feeTier, taker, maker, token, balance } = el
+
+    return {
+      id: `${feeTier}${balance}`,
+      feeTier: `${feeTier}${feeTier === userTier ? ' Selected' : ''}`,
+      taker: `${taker} %`,
+      maker: `${maker} %`,
+      condition: {
+        render: balance > 0 ? `>= ${balance} ${token}` : 'None',
+        style: { textAlign: 'left' },
+        contentToSort: +balance,
+      },
+    }
+  })
+
+  return processedFundsData.filter((el) => !!el)
+}
 
 const FeeTiers = (props) => {
-  const {
-    tab,
-    theme,
-    show,
-    page,
-    perPage,
-    marketType,
-  } = props
+  const { tab, theme, show, page, perPage, marketType } = props
 
   if (!show) {
     return null
   }
 
-  const balancesProcessedData = combineFeeTiers(
-    feeTiers
-  )
+  const [feeAccounts] = useFeeDiscountKeys()
+
+  const balancesProcessedData = combineFeeTiers(feeTiers, feeAccounts)
 
   return (
     <TableWithSort

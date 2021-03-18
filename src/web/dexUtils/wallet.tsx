@@ -5,11 +5,11 @@ import SolongWallet from '@sb/dexUtils/SolongWallet/SolongWallet'
 import CcaiWallet from '@sb/dexUtils/CcaiWallet/CcaiWallet'
 import { notify } from './notifications';
 import { useConnectionConfig } from './connection';
-import { useLocalStorageState } from './utils';
+import { CCAIProviderURL, useLocalStorageState } from './utils';
 
 export const WALLET_PROVIDERS = [
   // { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },
-  { name: 'cryptocurrencies.ai', url: 'https://wallet.cryptocurrencies.ai' },
+  { name: 'cryptocurrencies.ai', url: CCAIProviderURL },
   { name: 'sollet.io', url: 'https://www.sollet.io' },
   { name: 'mathwallet.org', url: 'https://www.mathwallet.org' },
   { name: "solongwallet.com", url: "https://solongwallet.com" },
@@ -23,7 +23,7 @@ const getWalletByProviderUrl = (providerUrl: string) => {
     case 'https://www.mathwallet.org': {
       return MathWallet
     }
-    case 'https://wallet.cryptocurrencies.ai': {
+    case CCAIProviderURL: {
       return CcaiWallet
     }
     default: {

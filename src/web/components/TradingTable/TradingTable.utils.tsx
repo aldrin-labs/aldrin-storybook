@@ -122,9 +122,7 @@ export const getTableBody = (tab: string) =>
 export const getTableHead = (
   tab: string,
   marketType: number = 0,
-  refetch?: () => void,
-  updatePositionsHandler?: () => void,
-  positionsRefetchInProcess?: boolean
+  showSettle: boolean = true
 ): any[] =>
   tab === 'openOrders'
     ? openOrdersColumnNames(marketType)
@@ -133,7 +131,7 @@ export const getTableHead = (
     : tab === 'tradeHistory'
     ? tradeHistoryColumnNames(marketType)
     : tab === 'balances'
-    ? balancesColumnNames
+    ? balancesColumnNames(showSettle)
     : tab === 'feeTiers'
     ? feeTiersColumnNames
     : tab === 'feeDiscounts'
@@ -2306,7 +2304,8 @@ export const combineTradeHistoryTable = (
 export const combineBalancesTable = (
   fundsData: FundsType[],
   onSettleFunds,
-  theme
+  theme,
+  showSettle
 ) => {
   if (!fundsData && !Array.isArray(fundsData)) {
     return []
@@ -2343,20 +2342,24 @@ export const combineBalancesTable = (
         style: { textAlign: 'left' },
         contentToSort: +unsettled,
       },
-      settle: {
-        render: (
-          <BtnCustom
-            type="text"
-            size="large"
-            onClick={() => onSettleFunds(market, openOrders)}
-            btnColor={theme.palette.blue.serum}
-            btnWidth={'14rem'}
-            height={'100%'}
-          >
-            Settle
-          </BtnCustom>
-        ),
-      },
+      ...(showSettle
+        ? {
+            settle: {
+              render: (
+                <BtnCustom
+                  type="text"
+                  size="large"
+                  onClick={() => onSettleFunds(market, openOrders)}
+                  btnColor={theme.palette.blue.serum}
+                  btnWidth={'14rem'}
+                  height={'100%'}
+                >
+                  Settle
+                </BtnCustom>
+              ),
+            },
+          }
+        : {}),
     }
   })
 

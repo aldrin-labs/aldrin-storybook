@@ -319,13 +319,13 @@ export const tradeHistoryBody = new Array(13).fill(undefined).map((el, i) => ({
   total: 100,
 }))
 
-export const balancesColumnNames = [
+export const balancesColumnNames = (showSettle) => ([
   { label: 'Coin', id: 'coin' },
   { label: 'Wallet balance', id: 'wallet' },
   { label: 'Orders', id: 'orders' },
-  { label: 'Settled', id: 'settled' },
-  { label: 'Settle', id: 'settle' },
-]
+  { label: 'Unsettled', id: 'settled' },
+  ...(showSettle ? [{ label: 'Settle', id: 'settle' }] : [{}]),
+].filter(a => !!a.label))
 
 export const fundsBody = new Array(13).fill(undefined).map((el, i) => ({
   coin: `${String.fromCharCode(getRandomInt(65, 80)) +

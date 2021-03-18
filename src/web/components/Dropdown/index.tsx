@@ -119,7 +119,7 @@ export default class Dropdown extends React.Component<IProps> {
                   // }
 
                   updateProviderUrl(
-                    'https://wallet.cryptocurrencies.ai'
+                    CCAIProviderURL
                   )
 
                   setAutoConnect(true)

@@ -228,27 +228,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             handlePairChange: this.handlePairChange,
           }}
         />
-        {/* <OrderHistoryTable
-          {...{
-            tab,
-            keys,
-            theme,
-            selectedKey,
-            marketType,
-            arrayOfMarketIds,
-            canceledOrders,
-            currencyPair,
-            showAllPositionPairs,
-            showAllOpenOrderPairs,
-            showAllSmartTradePairs,
-            showPositionsFromAllAccounts,
-            showOpenOrdersFromAllAccounts,
-            showSmartTradesFromAllAccounts,
-            show: tab === 'orderHistory',
-            handleTabChange: this.handleTabChange,
-            handlePairChange: this.handlePairChange,
-          }}
-        /> */}
         <TradeHistoryTable
           {...{
             tab,

@@ -9,28 +9,31 @@ import {
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
 
-import { useTokenAccounts, getSelectedTokenAccountForMint, useBalances, useSelectedTokenAccounts } from '@sb/dexUtils/markets'
+import {
+  useTokenAccounts,
+  getSelectedTokenAccountForMint,
+  useBalances,
+  useSelectedTokenAccounts,
+} from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { useSendConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { settleFunds } from '@sb/dexUtils/send'
+import { CCAIProviderURL } from '@sb/dexUtils/utils'
 
 const BalancesTable = (props) => {
-  const {
-    tab,
-    theme,
-    show,
-    page,
-    perPage,
-    marketType,
-  } = props
+  const { tab, theme, show, page, perPage, marketType } = props
 
-  const balances = useBalances();
-  const [accounts] = useTokenAccounts();
-  const connection = useSendConnection();
-  const { wallet } = useWallet();
-  const [selectedTokenAccounts] = useSelectedTokenAccounts();
+  const balances = useBalances()
+  const [accounts] = useTokenAccounts()
+  const connection = useSendConnection()
+  const { wallet, providerUrl } = useWallet()
+  const [selectedTokenAccounts] = useSelectedTokenAccounts()
 
+  const isCCAIWallet = providerUrl === CCAIProviderURL
+  const showSettle = !isCCAIWallet || !wallet.connected || !wallet.autoApprove
+
+  console.log('showSettle', showSettle)
 
   async function onSettleFunds(market, openOrders) {
     try {
@@ -41,29 +44,28 @@ const BalancesTable = (props) => {
         wallet,
         baseCurrencyAccount: getSelectedTokenAccountForMint(
           accounts,
-          market?.baseMintAddress,
+          market?.baseMintAddress
         ),
         quoteCurrencyAccount: getSelectedTokenAccountForMint(
           accounts,
-          market?.quoteMintAddress,
+          market?.quoteMintAddress
         ),
         selectedTokenAccounts,
         tokenAccounts: accounts,
-      });
+      })
 
       notify({
         message: 'Settling funds sucess',
         description: 'No description',
         type: 'success',
-      });
-
+      })
     } catch (e) {
       notify({
         message: 'Error settling funds',
         description: e.message,
         type: 'error',
-      });
-      return;
+      })
+      return
     }
   }
 
@@ -74,11 +76,13 @@ const BalancesTable = (props) => {
   const balancesProcessedData = combineBalancesTable(
     balances,
     onSettleFunds,
-    theme
+    theme,
+    showSettle
   )
 
   return (
     <TableWithSort
+      rowsWithHover={false}
       style={{
         borderRadius: 0,
         height: 'calc(100% - 6rem)',
@@ -119,7 +123,7 @@ const BalancesTable = (props) => {
       }}
       emptyTableText={getEmptyTextPlaceholder(tab)}
       data={{ body: balancesProcessedData }}
-      columnNames={getTableHead(tab, marketType)}
+      columnNames={getTableHead(tab, marketType, showSettle)}
     />
   )
   // }
