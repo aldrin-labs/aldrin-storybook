@@ -86,28 +86,10 @@ export const DefaultViewComponent = (
     changeChartLayoutMutation,
   } = props
 
-  const [chartExchange, updateChartExchange] = useState('binance')
-
-  if (!currencyPair) {
-    return null
-  }
-
   const { hideOrderbook } = layout
 
   const hideTradeHistory = false
   const hideDepthChart = true
-
-  const changeChartLayout = async (newParams) => {
-    const argObject = {
-      hideDepthChart,
-      hideTradeHistory,
-      hideOrderbook,
-      ...newParams,
-    }
-    await changeChartLayoutMutation({
-      variables: { input: { layout: argObject } },
-    })
-  }
 
   const [priceFromOrderbook, updateTerminalPriceFromOrderbook] = useState<
     null | number
@@ -121,8 +103,6 @@ export const DefaultViewComponent = (
   useEffect(() => {
     updateTerminalPriceFromOrderbook(null)
   }, [currencyPair])
-
-  console.log('default view rerender', props)
 
   return (
     <Container container spacing={8} theme={theme}>

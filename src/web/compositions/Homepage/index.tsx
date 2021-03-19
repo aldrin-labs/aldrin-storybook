@@ -116,7 +116,7 @@ export const Homepage = () => {
               <WhiteButton
                 width={'30rem'}
                 padding={'0 2rem'}
-                href={`${CCAIProviderURL}/welcome`}
+                href={`${CCAIProviderURL}`}
               >
                 Go to Wallet{' '}
                 <svg
