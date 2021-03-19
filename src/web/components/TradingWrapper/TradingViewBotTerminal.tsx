@@ -290,27 +290,31 @@ export const TradingViewBotTerminal = ({
               ? maxAmount
               : e.target.value
 
-            const total = stripDigitPlaces(amountForUpdate * priceForCalculate, 3)
+            const total = stripDigitPlaces(
+              amountForUpdate * priceForCalculate,
+              3
+            )
 
             changeAmount(amountForUpdate)
             changeTotal(total)
           }}
           onTotalChange={(e) => {
-
             const priceForCalculate =
               orderType === 'market' ? marketPrice : price
 
-            const isTotalMoreThanMax = +e.target.value > maxAmount * priceForCalculate
+            const isTotalMoreThanMax =
+              +e.target.value > maxAmount * priceForCalculate
 
-            const totalForUpdate = isTotalMoreThanMax ? maxAmount * priceForCalculate : e.target.value
+            const totalForUpdate = isTotalMoreThanMax
+              ? maxAmount * priceForCalculate
+              : e.target.value
 
             console.log('totalForUpdate', totalForUpdate)
 
             changeTotal(totalForUpdate)
-            changeAmount(stripDigitPlaces(
-              +totalForUpdate / priceForCalculate,
-              8
-            ))
+            changeAmount(
+              stripDigitPlaces(+totalForUpdate / priceForCalculate, 8)
+            )
           }}
           marketType={0}
           priceForCalculate={orderType === 'market' ? marketPrice : price}
@@ -342,25 +346,28 @@ export const TradingViewBotTerminal = ({
             padding={'0 0 0 0'}
             haveTooltip={true}
             style={{ width: 'calc(35% - 1rem)', marginRight: '1rem' }}
-            tooltipText={
-              <img
-                style={{ width: '35rem', height: '50rem' }}
-                src={WebHookImg}
-              />
-            }
             title={
-              <span>
-                paste it into alert{' '}
-                <span
-                  style={{
-                    color: theme.palette.blue.serum,
-                    textDecoration: 'underline',
-                  }}
-                >
-                  web-hook
-                </span>{' '}
-                URL field
-              </span>
+              <DarkTooltip
+                title={
+                  <img
+                    style={{ width: '35rem', height: '50rem' }}
+                    src={WebHookImg}
+                  />
+                }
+              >
+                <span>
+                  paste it into alert{' '}
+                  <span
+                    style={{
+                      color: theme.palette.blue.serum,
+                      textDecoration: 'underline',
+                    }}
+                  >
+                    web-hook
+                  </span>{' '}
+                  URL field
+                </span>
+              </DarkTooltip>
             }
           >
             <BtnCustom
@@ -389,25 +396,28 @@ export const TradingViewBotTerminal = ({
             style={{ width: 'calc(35%)' }}
             padding={'0 0 0 0'}
             haveTooltip={true}
-            tooltipText={
-              <img
-                style={{ width: '40rem', height: '42rem' }}
-                src={MessageImg}
-              />
-            }
             title={
-              <span>
-                Paste it into alert{' '}
-                <span
-                  style={{
-                    color: theme.palette.blue.serum,
-                    textDecoration: 'underline',
-                  }}
-                >
-                  message
-                </span>{' '}
-                URL field
-              </span>
+              <DarkTooltip
+                title={
+                  <img
+                    style={{ width: '40rem', height: '42rem' }}
+                    src={MessageImg}
+                  />
+                }
+              >
+                <span>
+                  paste it into alert{' '}
+                  <span
+                    style={{
+                      color: theme.palette.blue.serum,
+                      textDecoration: 'underline',
+                    }}
+                  >
+                    message
+                  </span>{' '}
+                  URL field
+                </span>
+              </DarkTooltip>
             }
           >
             <BtnCustom
@@ -439,12 +449,11 @@ export const TradingViewBotTerminal = ({
             <SendButton
               type={'buy'}
               onClick={() => {
-
                 // publicKey check
                 if (publicKey === '') {
                   notify({
                     type: 'error',
-                    message: 'Connect wallet first'
+                    message: 'Connect wallet first',
                   })
 
                   return
@@ -453,12 +462,12 @@ export const TradingViewBotTerminal = ({
                 if (amount === 0) {
                   notify({
                     type: 'error',
-                    message: 'Your amount is 0'
+                    message: 'Your amount is 0',
                   })
-                  
+
                   return
                 }
-                // amount check 
+                // amount check
 
                 startTradingViewBot()
                 updateState('TVAlertsBotIsActive', true)

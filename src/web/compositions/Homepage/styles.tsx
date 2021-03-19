@@ -60,11 +60,11 @@ export const WhiteButton = styled.a`
   }
 
   &:hover {
-    background: #f8faff;
-    color: #3a475c;
+    background: ${(props) => (props.needHover ? '#f8faff' : null)};
+    color: ${(props) => (props.needHover ? '#3a475c' : null)};
     svg {
       path {
-        fill: #3a475c;
+        fill: ${(props) => (props.needHover ? '#3a475c' : null)};
       }
     }
   }

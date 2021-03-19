@@ -62,7 +62,7 @@ const StyledPaper = styled(Paper)`
 `
 
 const StyledInput = styled(Input)`
-    font-weight: bold;
+  font-weight: bold;
 `
 
 export interface MintInfo {
@@ -136,31 +136,34 @@ export function useMintInput({
 
   const input = (
     <>
-    <FormInputContainer theme={theme} padding={'1.2rem 0 0 0'} title={title}>
-      <StyledInput
-        theme={theme}
-        height={'4rem'}
-        value={address}
-        onChange={(e) => setAddress(e.target.value.trim())}
-        type="text"
-        min="0"
-        step="any"
-      />
-      <StyledPasteButton
-        key={title}
-        style={{ bottom: '1rem' }}
-        onClick={() => {
-          navigator.clipboard
-            .readText()
-            .then((clipText) => setAddress(clipText))
-        }}
-      >
-        Paste
-      </StyledPasteButton>
-    </FormInputContainer>
-    {validateStatus === 'error' && <InputRowContainer>
-        <Text type={'danger'}>{help}</Text>
-    </InputRowContainer>}
+      <FormInputContainer theme={theme} padding={'1.2rem 0 0 0'} title={title}>
+        <StyledInput
+          theme={theme}
+          height={'4rem'}
+          value={address}
+          onChange={(e) => setAddress(e.target.value.trim())}
+          type="text"
+          min="0"
+          step="any"
+        />
+        <StyledPasteButton
+          key={title}
+          theme={theme}
+          style={{ bottom: '1rem' }}
+          onClick={() => {
+            navigator.clipboard
+              .readText()
+              .then((clipText) => setAddress(clipText))
+          }}
+        >
+          Paste
+        </StyledPasteButton>
+      </FormInputContainer>
+      {validateStatus === 'error' && (
+        <InputRowContainer>
+          <Text type={'danger'}>{help}</Text>
+        </InputRowContainer>
+      )}
     </>
   )
 
@@ -258,6 +261,7 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
         }}
       >
         <Text
+          theme={theme}
           style={{
             fontSize: '1.8rem',
             color: theme.palette.text.light,
@@ -266,30 +270,31 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
         >
           Create new market
         </Text>
-        <ClearButton>
-            <Clear
-              style={{ fontSize: '2rem' }}
-              color="inherit"
-              onClick={onClose}
-            />
-          </ClearButton>
+        <ClearButton theme={theme}>
+          <Clear
+            theme={theme}
+            style={{ fontSize: '2rem' }}
+            color="inherit"
+            onClick={onClose}
+          />
+        </ClearButton>
       </StyledDialogTitle>
       <StyledDialogContent
         style={{ background: theme.palette.grey.input }}
         theme={theme}
         id="share-dialog-content"
       >
-        <Wrapper>
+        <Wrapper theme={theme}>
           <div>
-            <div
-            >
+            <div>
               {baseMintInput}
               {quoteMintInput}
 
-              <InputRowContainer>
+              <InputRowContainer theme={theme}>
                 <InputRowContainer
                   style={{ marginRight: '1rem' }}
                   width={'calc(50% - 1rem)'}
+                  theme={theme}
                 >
                   <FormInputContainer
                     theme={theme}
@@ -297,7 +302,7 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
                     title={`Minimum Order Size (Lot size in e.g. BTC)`}
                   >
                     <StyledInput
-                    theme={theme}
+                      theme={theme}
                       height={'4rem'}
                       value={lotSize}
                       onChange={(e) => setLotSize(e.target.value.trim())}
@@ -309,6 +314,7 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
                 </InputRowContainer>
 
                 <InputRowContainer
+                  theme={theme}
                   style={{ marginLeft: '1rem' }}
                   width={'calc(50% - 1rem)'}
                 >
@@ -318,7 +324,7 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
                     title={`Tick Size (Price increment in e.g. USDT)`}
                   >
                     <StyledInput
-                    theme={theme}
+                      theme={theme}
                       height={'4rem'}
                       value={tickSize}
                       onChange={(e) => setTickSize(e.target.value.trim())}
@@ -330,7 +336,7 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
                 </InputRowContainer>
               </InputRowContainer>
 
-              <InputRowContainer align={'flex-start'}>
+              <InputRowContainer theme={theme} align={'flex-start'}>
                 <PurpleButton
                   theme={theme}
                   disabled={!canSubmit}
@@ -342,13 +348,14 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
                   showLoader={submitting}
                 />
                 <InputRowContainer
+                  theme={theme}
                   width={
                     connected ? 'calc(100% - 13rem)' : 'calc(100% - 26rem)'
                   }
                   style={{ marginLeft: '1rem' }}
                 >
                   <StyledInput
-                  theme={theme}
+                    theme={theme}
                     height={'4rem'}
                     value={listedMarket ? listedMarket.toBase58() : ''}
                     type="text"
@@ -358,7 +365,8 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
                   />
                   {listedMarket && (
                     <StyledPasteButton
-                      style={{ bottom: '1.5rem'}}
+                      theme={theme}
+                      style={{ bottom: '1.5rem' }}
                       onClick={() => {
                         copy(listedMarket.toBase58())
                       }}
@@ -367,9 +375,8 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
                     </StyledPasteButton>
                   )}
                 </InputRowContainer>
-
               </InputRowContainer>
-              <InputRowContainer justify={'center'}>
+              <InputRowContainer theme={theme} justify={'center'}>
                 <PurpleButton
                   theme={theme}
                   text={'Close'}
@@ -378,16 +385,17 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
                   height={'4rem'}
                   margin={connected ? '0' : '0 1rem 0 0'}
                 />
-                {!connected  &&
-                <PurpleButton
-                  theme={theme}
-                  text={'Connect wallet'}
-                  onClick={wallet.connect}
-                  width={'20rem'}
-                  height={'4rem'}
-                  margin={'0 0 0 1rem'}
-                />}
-                </InputRowContainer>
+                {!connected && (
+                  <PurpleButton
+                    theme={theme}
+                    text={'Connect wallet'}
+                    onClick={wallet.connect}
+                    width={'20rem'}
+                    height={'4rem'}
+                    margin={'0 0 0 1rem'}
+                  />
+                )}
+              </InputRowContainer>
             </div>
           </div>
         </Wrapper>
