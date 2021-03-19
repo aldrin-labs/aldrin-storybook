@@ -1,19 +1,19 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
-import Wallet from '@project-serum/sol-wallet-adapter';
-import MathWallet from '@sb/dexUtils/MathWallet/MathWallet';
+import React, { useContext, useEffect, useMemo, useState } from 'react'
+import Wallet from '@project-serum/sol-wallet-adapter'
+import MathWallet from '@sb/dexUtils/MathWallet/MathWallet'
 import SolongWallet from '@sb/dexUtils/SolongWallet/SolongWallet'
 import CcaiWallet from '@sb/dexUtils/CcaiWallet/CcaiWallet'
-import { notify } from './notifications';
-import { useConnectionConfig } from './connection';
-import { CCAIProviderURL, useLocalStorageState } from './utils';
+import { notify } from './notifications'
+import { useConnectionConfig } from './connection'
+import { CCAIProviderURL, useLocalStorageState } from './utils'
 
 export const WALLET_PROVIDERS = [
   // { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },
   { name: 'cryptocurrencies.ai', url: CCAIProviderURL },
   { name: 'sollet.io', url: 'https://www.sollet.io' },
   { name: 'mathwallet.org', url: 'https://www.mathwallet.org' },
-  { name: "solongwallet.com", url: "https://solongwallet.com" },
-];
+  { name: 'solongwallet.com', url: 'https://solongwallet.com' },
+]
 
 const getWalletByProviderUrl = (providerUrl: string) => {
   switch (providerUrl) {
@@ -32,91 +32,92 @@ const getWalletByProviderUrl = (providerUrl: string) => {
   }
 }
 
-const WalletContext = React.createContext(null);
+const WalletContext = React.createContext(null)
 
 export function WalletProvider({ children }) {
-  const [connected, setConnected] = useState(false);
+  const [connected, setConnected] = useState(false)
+  const [autoConnect, setAutoConnect] = useState(false)
 
-  const [autoConnect, setAutoConnect] = useState(false);
-
-  const { endpoint } = useConnectionConfig();
+  const { endpoint } = useConnectionConfig()
   const [savedProviderUrl, setProviderUrl] = useLocalStorageState(
     'walletProvider',
-    'https://www.sollet.io',
-  );
+    'https://www.sollet.io'
+  )
 
-  let providerUrl;
+  let providerUrl
   if (!savedProviderUrl) {
-    providerUrl = 'https://www.sollet.io';
+    providerUrl = 'https://www.sollet.io'
   } else {
-    providerUrl = savedProviderUrl;
+    providerUrl = savedProviderUrl
   }
 
-  const wallet = useMemo(() => { 
+  const wallet = useMemo(() => {
     const WalletClass = getWalletByProviderUrl(providerUrl)
     const wallet = new WalletClass(providerUrl, endpoint)
 
-    console.log('providerUrl', providerUrl, 'endpoint', endpoint, 'wallet', wallet)
-
-
     return wallet
-  }, [
-    providerUrl,
-    endpoint,
-  ]);
+  }, [providerUrl, endpoint])
+
+  const connectWalletHash = useMemo(() => window.location.hash, [wallet.connected])
 
   useEffect(() => {
-
     if (wallet) {
       wallet.on('connect', async () => {
         if (wallet.publicKey) {
-          console.log('connected');
-          setConnected(true);
-          const walletPublicKey = wallet.publicKey.toBase58();
+          console.log('connected')
+          setConnected(true)
+          const walletPublicKey = wallet.publicKey.toBase58()
           const keyToDisplay =
             walletPublicKey.length > 20
               ? `${walletPublicKey.substring(
                   0,
-                  7,
+                  7
                 )}.....${walletPublicKey.substring(
                   walletPublicKey.length - 7,
-                  walletPublicKey.length,
+                  walletPublicKey.length
                 )}`
-              : walletPublicKey;
+              : walletPublicKey
 
           notify({
             message: 'Wallet update',
             description: 'Connected to wallet ' + keyToDisplay,
-          });
+          })
         }
-      });
-  
+      })
+
       wallet.on('disconnect', () => {
-        setConnected(false);
+        setConnected(false)
         notify({
           message: 'Wallet update',
           description: 'Disconnected from wallet',
-        });
-      });
+        })
+      })
     }
 
     return () => {
-      setConnected(false);
+      setConnected(false)
       if (wallet) {
-        wallet.disconnect();
-        setConnected(false);
+        wallet.disconnect()
+        setConnected(false)
       }
-    };
-  }, [wallet]);
+    }
+  }, [wallet])
 
   useEffect(() => {
     if (wallet && autoConnect) {
-      wallet.connect();
-      setAutoConnect(false);
+      wallet.connect()
+      setAutoConnect(false)
     }
 
-    return () => {};
-  }, [wallet, autoConnect]);
+    return () => {}
+  }, [wallet, autoConnect])
+
+  useEffect(() => {
+    if (connectWalletHash) {
+      setProviderUrl(CCAIProviderURL)
+      wallet.connect()
+    }
+  }, [wallet])
 
   return (
     <WalletContext.Provider
@@ -133,13 +134,13 @@ export function WalletProvider({ children }) {
     >
       {children}
     </WalletContext.Provider>
-  );
+  )
 }
 
 export function useWallet() {
-  const context = useContext(WalletContext);
+  const context = useContext(WalletContext)
   if (!context) {
-    throw new Error('Missing wallet context');
+    throw new Error('Missing wallet context')
   }
   return {
     connected: context.connected,
@@ -148,5 +149,5 @@ export function useWallet() {
     setProvider: context.setProviderUrl,
     providerName: context.providerName,
     setAutoConnect: context.setAutoConnect,
-  };
+  }
 }

@@ -54,6 +54,7 @@ import { getDecimalCount } from '@sb/dexUtils/utils'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import { AWESOME_MARKETS } from '@sb/dexUtils/serum'
 import { withPublicKey } from '@core/hoc/withPublicKey'
+import { useWallet } from '@sb/dexUtils/wallet'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
 
@@ -126,6 +127,7 @@ function ChartPageComponent(props: any) {
     history,
     customMarkets,
     publicKey,
+    connectWalletHash,
   } = props
 
   const [terminalViewMode, updateTerminalViewMode] = useState('default')
@@ -134,6 +136,13 @@ function ChartPageComponent(props: any) {
   const [isTourOpen, setIsTourOpen] = useState(
     localStorage.getItem('isOnboardingDone') == 'null'
   )
+  const { wallet } = useWallet()
+
+  useEffect(() => {
+    if (connectWalletHash) {
+      wallet.connect()
+    }
+  }, [])
 
   useEffect(() => {
     return () => {
