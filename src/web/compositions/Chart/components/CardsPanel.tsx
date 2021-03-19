@@ -171,9 +171,9 @@ export const CardsPanel = ({ theme, setMarketAddress }) => {
             {!MASTER_BUILD ? (
               <NavLinkButton
                 theme={theme}
-                page={'homepage'}
+                page={'home' || ''}
                 pathname={location.pathname}
-                component={(props) => <Link to={`/homepage`} {...props} />}
+                component={(props) => <Link to={`/home`} {...props} />}
               >
                 {' '}
                 Home
