@@ -32,7 +32,7 @@ export const feeTiers = [
 ]
 
 export const combineFeeTiers = (feeTiers, feeAccounts) => {
-  const userTier = feeAccounts && feeAccounts.length > 0 ? feeAccounts[0].feeTier : -1
+  const userTier = feeAccounts && feeAccounts.length > 0 ? feeAccounts[0].feeTier : 0
 
   const processedFundsData = feeTiers.map((el) => {
     const { feeTier, taker, maker, token, balance } = el

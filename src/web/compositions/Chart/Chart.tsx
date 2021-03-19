@@ -139,12 +139,6 @@ function ChartPageComponent(props: any) {
   const { wallet } = useWallet()
 
   useEffect(() => {
-    if (connectWalletHash) {
-      wallet.connect()
-    }
-  }, [])
-
-  useEffect(() => {
     return () => {
       document.title = 'Cryptocurrencies AI'
     }
@@ -177,6 +171,8 @@ function ChartPageComponent(props: any) {
   }, [getUserCustomMarketsQuery.getUserCustomMarkets.length])
 
   const setCorrectMarketAddress = async () => {
+    console.log('location.pathname', location.pathname, location.pathname.split('/'), location.pathname.split('/')[3])
+    // probably broken here
     const pair = !!location.pathname.split('/')[3]
       ? location.pathname.split('/')[3]
       : 'SRM_USDT'
@@ -226,48 +222,6 @@ function ChartPageComponent(props: any) {
   useEffect(() => {
     setCorrectMarketAddress()
   }, [])
-
-  const handleJoyrideCallback = (data) => {
-    if (
-      data.action === 'close' ||
-      data.action === 'skip' ||
-      data.status === 'finished'
-    ) {
-      const {
-        updateTooltipSettingsMutation,
-        getTooltipSettingsQuery: { getTooltipSettings },
-      } = props
-
-      finishJoyride({
-        updateTooltipSettingsMutation,
-        getTooltipSettings,
-        name: 'chartPage',
-      })
-    }
-
-    switch (data.action) {
-      case 'next': {
-        if (data.lifecycle === 'complete') {
-          updateStepIndex(stepIndex + 1)
-        }
-        break
-      }
-      case 'prev': {
-        if (data.lifecycle === 'complete') {
-          updateStepIndex(stepIndex - 1)
-        }
-        break
-      }
-    }
-
-    if (
-      data.status === 'finished' ||
-      (data.status === 'stop' && data.index !== data.size - 1) ||
-      data.status === 'reset'
-    ) {
-      updateKey(key + 1)
-    }
-  }
 
   const closeChartPagePopup = () => {
     finishJoyride({
