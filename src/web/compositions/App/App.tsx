@@ -89,7 +89,7 @@ const AppRaw = ({
     !currentPage.includes('/analytics') &&
     currentPage !== '/tech_issues' &&
     !isChartPage &&
-    currentPage !== '/'
+    currentPage !== '/home'
   const isPNL = currentPage.includes('/portfolio/main')
   // TODO: Check this variable
   const pageIsRegistration = currentPage.includes('regist')
