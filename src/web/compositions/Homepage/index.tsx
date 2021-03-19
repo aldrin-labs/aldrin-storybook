@@ -37,7 +37,7 @@ export const Homepage = () => {
           {/* //bottom={'6rem'} right={'16rem'}{' '}
           position={'relative'} */}
           <ButtonContainer>
-            <WhiteButton>
+            <WhiteButton needHover={true} padding={'0 3rem'}>
               Learn More{' '}
               <svg
                 width="20"
@@ -69,6 +69,7 @@ export const Homepage = () => {
                 Solana technology. User-friendly DeFi experience with low fees.
               </Description>
               <WhiteButton
+                needHover={true}
                 style={{ marginBottom: '-1rem' }}
                 width={'18rem'}
                 padding={'0 3rem'}
@@ -114,6 +115,7 @@ export const Homepage = () => {
                 </Description>
               </RowContainer>
               <WhiteButton
+                needHover={true}
                 width={'30rem'}
                 padding={'0 2rem'}
                 href={`${CCAIProviderURL}/welcome`}
@@ -144,6 +146,7 @@ export const Homepage = () => {
                 </Description>
               </RowContainer>
               <WhiteButton
+                needHover={true}
                 width={'30rem'}
                 padding={'0 2rem'}
                 href={'/analytics'}
@@ -183,7 +186,12 @@ export const Homepage = () => {
                   Low-fee and instant Swaps. Made possible by Solana.
                 </Description>
               </RowContainer>
-              <WhiteButton width={'30rem'} padding={'0 2rem'}>
+              <WhiteButton
+                style={{ cursor: 'auto' }}
+                needHover={false}
+                width={'30rem'}
+                padding={'0 2rem'}
+              >
                 Coming Soon
               </WhiteButton>
             </HeaderContainer>
@@ -198,7 +206,12 @@ export const Homepage = () => {
                   Provide liquidity and earn a fees.
                 </Description>
               </RowContainer>
-              <WhiteButton width={'30rem'} padding={'0 2rem'}>
+              <WhiteButton
+                style={{ cursor: 'auto' }}
+                needHover={false}
+                width={'30rem'}
+                padding={'0 2rem'}
+              >
                 Coming Soon
               </WhiteButton>
             </HeaderContainer>
