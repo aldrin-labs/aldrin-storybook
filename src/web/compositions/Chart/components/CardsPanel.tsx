@@ -52,7 +52,7 @@ import TelegramIcon from '@icons/telegram.svg'
 import DiscordIcon from '@icons/discord.svg'
 import TwitterIcon from '@icons/twitter.svg'
 import { withTheme } from '@material-ui/core'
-// import WalletIcon from '@icons/walletIcon.svg'
+import WalletIcon from '@icons/walletIcon.svg'
 import NetworkDropdown from '@sb/compositions/Chart/components/NetworkDropdown/NetworkDropdown'
 
 import Dropdown from '@sb/components/Dropdown'
@@ -380,12 +380,12 @@ const TopBar = ({ theme }) => {
       )}
       {connected && (
         <RowContainer wrap="nowrap">
-          {/* <SvgIcon
+          <SvgIcon
             src={WalletIcon}
             width="1.6rem"
             height="1.6rem"
             style={{ margin: '0 2rem' }}
-          /> */}
+          />
           <Row direction="column" align="flex-start" margin="0 0 1rem 0">
             <Title fontSize="1rem" fontFamily="Avenir Next">
               {isCCAIActive ? (
