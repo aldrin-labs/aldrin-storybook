@@ -148,6 +148,8 @@ export default ({ themeMode, isChartPage, children }) => {
             },
             orange: {
               main: '#F29C38',
+              dark: '#F8B567',
+              light: '#F29C38',
             },
             black: {
               custom: '#16253D',
@@ -371,6 +373,8 @@ export default ({ themeMode, isChartPage, children }) => {
             },
             orange: {
               main: '#F29C38',
+              dark: '#F8B567',
+              light: '#F29C38',
             },
             black: {
               custom: '#16253D',
@@ -406,7 +410,7 @@ export default ({ themeMode, isChartPage, children }) => {
               descrip: '#1BA492',
               acid: '#1BA492',
               border: '#7380eb',
-              analytics: '#A5E898'
+              analytics: '#A5E898',
             },
             grey: {
               custom: '#ABBAD1',

@@ -326,7 +326,7 @@ class SimpleTabs extends React.Component {
                 </TerminalModeButton>
               </div>
               <div>
-                <TerminalModeButton
+                {/* <TerminalModeButton
                   theme={theme}
                   style={{
                     width: TVAlertsBotIsActive ? '16rem' : '14rem',
@@ -406,7 +406,7 @@ class SimpleTabs extends React.Component {
                     />
                     {tradingBotIsActive ? 'Stop Cycle BOT' : 'Use Cycle BOT'}
                   </TerminalModeButton>
-                )}
+                )} */}
               </div>
 
               {/* <DarkTooltip

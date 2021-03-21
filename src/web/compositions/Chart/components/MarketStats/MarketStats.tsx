@@ -162,7 +162,7 @@ const MarketStats = (props) => {
   const sign24hChange = +priceChangePercentage > 0 ? `+` : ``
 
   return (
-    <div style={{ display: 'flex', width: '30%' }}>
+    <div style={{ display: 'flex' }}>
       <PanelCard marketType={marketType} theme={theme}>
         <PanelCardValue
           theme={theme}

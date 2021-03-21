@@ -6,10 +6,11 @@ import CcaiWallet from '@sb/dexUtils/CcaiWallet/CcaiWallet'
 import { notify } from './notifications'
 import { useAccountInfo, useConnectionConfig } from './connection'
 import { CCAIProviderURL, useLocalStorageState } from './utils'
-import { PublicKey } from '@solana/web3.js'
+import { PublicKey, SYSVAR_RENT_PUBKEY, Transaction, TransactionInstruction } from '@solana/web3.js'
 import { MINT_LAYOUT, parseTokenAccountData } from './tokens'
 import { clusterApiUrl } from '@solana/web3.js';
 import { TokenListProvider } from '@solana/spl-token-registry';
+import { TokenInstructions } from '@project-serum/serum'
 
 
 export const WALLET_PROVIDERS = [
@@ -29,6 +30,10 @@ export const WRAPPED_SOL_MINT = new PublicKey(
 );
 
 export const MAINNET_URL = 'https://solana-api.projectserum.com';
+
+export const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey(
+  'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
+);
 
 const getWalletByProviderUrl = (providerUrl: string) => {
   switch (providerUrl) {
@@ -331,4 +336,120 @@ export function useBalanceInfo(publicKey) {
   }
 
   return null;
+}
+
+export async function signAndSendTransaction(
+  connection,
+  transaction,
+  wallet,
+  signers,
+  skipPreflight = false,
+) {
+  transaction.recentBlockhash = (
+    await connection.getRecentBlockhash('max')
+  ).blockhash;
+  transaction.setSigners(
+    // fee payed by the wallet owner
+    wallet.publicKey,
+    ...signers.map((s) => s.publicKey),
+  );
+
+  if (signers.length > 0) {
+    transaction.partialSign(...signers);
+  }
+
+  transaction = await wallet.signTransaction(transaction);
+  const rawTransaction = transaction.serialize();
+  return await connection.sendRawTransaction(rawTransaction, {
+    skipPreflight,
+    preflightCommitment: 'single',
+  });
+}
+
+export async function createAssociatedTokenAccount({
+  connection,
+  wallet,
+  splTokenMintAddress,
+}) {
+  const [ix, address] = await createAssociatedTokenAccountIx(
+    wallet.publicKey,
+    wallet.publicKey,
+    splTokenMintAddress,
+  );
+  const tx = new Transaction();
+  tx.add(ix);
+  tx.feePayer = wallet.publicKey;
+  const txSig = await signAndSendTransaction(connection, tx, wallet, []);
+
+  return [address, txSig];
+}
+async function createAssociatedTokenAccountIx(
+  fundingAddress,
+  walletAddress,
+  splTokenMintAddress,
+) {
+  const associatedTokenAddress = await findAssociatedTokenAddress(
+    walletAddress,
+    splTokenMintAddress,
+  );
+  const systemProgramId = new PublicKey('11111111111111111111111111111111');
+  const keys = [
+    {
+      pubkey: fundingAddress,
+      isSigner: true,
+      isWritable: true,
+    },
+    {
+      pubkey: associatedTokenAddress,
+      isSigner: false,
+      isWritable: true,
+    },
+    {
+      pubkey: walletAddress,
+      isSigner: false,
+      isWritable: false,
+    },
+    {
+      pubkey: splTokenMintAddress,
+      isSigner: false,
+      isWritable: false,
+    },
+    {
+      pubkey: systemProgramId,
+      isSigner: false,
+      isWritable: false,
+    },
+    {
+      pubkey: TokenInstructions.TOKEN_PROGRAM_ID,
+      isSigner: false,
+      isWritable: false,
+    },
+    {
+      pubkey: SYSVAR_RENT_PUBKEY,
+      isSigner: false,
+      isWritable: false,
+    },
+  ];
+  const ix = new TransactionInstruction({
+    keys,
+    programId: ASSOCIATED_TOKEN_PROGRAM_ID,
+    data: Buffer.from([]),
+  });
+  return [ix, associatedTokenAddress];
+}
+
+export async function findAssociatedTokenAddress(
+  walletAddress,
+  tokenMintAddress,
+) {
+  return (
+    await PublicKey.findProgramAddress(
+      [
+        walletAddress.toBuffer(),
+        TokenInstructions.TOKEN_PROGRAM_ID.toBuffer(),
+        tokenMintAddress.toBuffer(),
+      ],
+      ASSOCIATED_TOKEN_PROGRAM_ID,
+    )
+  )[0];
 }

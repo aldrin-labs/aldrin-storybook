@@ -417,7 +417,7 @@ export function useTokenAccounts() {
   return useAsyncData(
     getTokenAccounts,
     tuple('getTokenAccounts', wallet, connected),
-    // { refreshInterval: _SLOW_REFRESH_INTERVAL }
+    { refreshInterval: _SLOW_REFRESH_INTERVAL }
   )
 }
 

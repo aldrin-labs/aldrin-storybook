@@ -5,7 +5,11 @@ import { compose } from 'recompose'
 import { Paper } from '@material-ui/core'
 
 import { notify } from '@sb/dexUtils//notifications'
-import { useBalanceInfo, useWallet } from '@sb/dexUtils/wallet'
+import {
+  createAssociatedTokenAccount,
+  useBalanceInfo,
+  useWallet,
+} from '@sb/dexUtils/wallet'
 
 import Clear from '@material-ui/icons/Clear'
 import {
@@ -20,6 +24,7 @@ import { PurpleButton } from '@sb/compositions/Addressbook/components/Popups/New
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import {
+  useMarket,
   useSelectedBaseCurrencyAccount,
   useSelectedQuoteCurrencyAccount,
 } from '@sb/dexUtils/markets'
@@ -27,6 +32,7 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import clipboardCopy from 'clipboard-copy'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import { useConnection } from '@sb/dexUtils/connection'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -88,7 +94,7 @@ const Text = styled.span`
       : '#ecf0f3'};
 `
 
-const CustomMarketDialog = ({
+const TokenNotAddedDialog = ({
   open,
   pair,
   onClose,
@@ -96,10 +102,13 @@ const CustomMarketDialog = ({
   history,
   publicKey,
 }) => {
+  const { market } = useMarket()
   const { wallet, providerUrl } = useWallet()
+  const connection = useConnection()
   const isBaseCoinExistsInWallet = useSelectedBaseCurrencyAccount()
   const isQuoteCoinExistsInWallet = useSelectedQuoteCurrencyAccount()
   const balanceInfo = useBalanceInfo(wallet.publicKey)
+  const isBothNotAdded = !isBaseCoinExistsInWallet && !isQuoteCoinExistsInWallet
 
   let { amount, decimals } = balanceInfo || {
     amount: 0,
@@ -109,15 +118,16 @@ const CustomMarketDialog = ({
     tokenSymbol: '--',
   }
 
-  const displayName =
-    !isBaseCoinExistsInWallet && !isQuoteCoinExistsInWallet
-      ? `${pair[0]} and ${pair[1]}`
-      : !isBaseCoinExistsInWallet
-      ? pair[0]
-      : pair[1]
+  const displayName = isBothNotAdded
+    ? `${pair[0]} and ${pair[1]}`
+    : !isBaseCoinExistsInWallet
+    ? pair[0]
+    : pair[1]
 
   const SOLAmount = amount / Math.pow(10, decimals)
-  const cost = wallet.tokenAccountCost / LAMPORTS_PER_SOL || 0.002039
+  const cost =
+    (wallet.tokenAccountCost / LAMPORTS_PER_SOL || 0.002039) *
+    (isBothNotAdded ? 2 : 1)
 
   return (
     <DialogWrapper
@@ -207,14 +217,29 @@ const CustomMarketDialog = ({
               href={providerUrl}
               target="_blank"
               rel="noopener noreferrer"
+              // onClick={async () => {
+              //   if (!isBaseCoinExistsInWallet) {
+              //     const result = await createAssociatedTokenAccount({
+              //       splTokenMintAddress: market?.baseMintAddress,
+              //       wallet,
+              //       connection,
+              //     })
+
+              //     console.log('base result', result)
+              //   }
+
+              //   if (!isQuoteCoinExistsInWallet) {
+              //     const result = await createAssociatedTokenAccount({
+              //       splTokenMintAddress: market?.quoteMintAddress,
+              //       wallet,
+              //       connection,
+              //     })
+
+              //     console.log('quote result', result)
+              //   }
+              // }}
             >
-              Add{' '}
-              {!isBaseCoinExistsInWallet && !isQuoteCoinExistsInWallet
-                ? 'Coins'
-                : !isBaseCoinExistsInWallet
-                ? pair[0]
-                : pair[1]}{' '}
-              to the Wallet
+              Go to the Wallet
             </VioletButton>
           </RowContainer>
         </Row>
@@ -223,4 +248,4 @@ const CustomMarketDialog = ({
   )
 }
 
-export default compose(withRouter, withPublicKey)(CustomMarketDialog)
+export default compose(withRouter, withPublicKey)(TokenNotAddedDialog)

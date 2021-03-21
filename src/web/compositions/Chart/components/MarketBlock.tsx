@@ -1,12 +1,39 @@
 import React from 'react'
+import styled from 'styled-components'
 import { compose } from 'recompose'
-import { withTheme } from '@material-ui/core'
+import { Theme, withTheme } from '@material-ui/core'
 import { useLocation } from 'react-router-dom'
 import { useMarket } from '@sb/dexUtils/markets'
 import { getDecimalCount } from '@sb/dexUtils/utils'
 import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import MarketStats from './MarketStats/MarketStats'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+
+export const ExclamationMark = styled(({ fontSize, lineHeight, ...props }) => (
+  <span {...props}>!</span>
+))`
+  color: ${(props) => props.color || props.theme.palette.orange.dark};
+  font-family: Avenir Next Demi;
+  font-size: ${(props) => props.fontSize || '5rem'};
+  line-height: ${(props) => props.lineHeight || '6rem'};
+  margin: ${(props) => props.margin || '0 2rem 0 0'};
+`
+
+export const Title = styled(
+  ({ width, fontFamily, fontSize, color, textAlign, margin, ...props }) => (
+    <span {...props} />
+  )
+)`
+  width: ${(props) => props.width || 'auto'};
+  font-family: ${(props) => props.fontFamily || 'Avenir Next Medium'};
+  font-style: normal;
+  font-weight: normal;
+  font-size: ${(props) => props.fontSize || '1.4rem'};
+  text-align: center;
+  color: ${(props) => props.color || '#ecf0f3'};
+  text-align: ${(props) => props.textAlign || 'center'};
+  margin: ${(props) => props.margin || '0'};
+`
 
 const selectStyles = (theme: Theme) => ({
   height: '100%',
@@ -40,27 +67,33 @@ const selectStyles = (theme: Theme) => ({
   },
 })
 
-const MarketBlock = ({
-  theme,
-  activeExchange = 'serum',
-  marketType = 0,
-}) => {
+const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
   const { market } = useMarket()
-    const location = useLocation()
+  const location = useLocation()
 
-    const pair = location.pathname.split('/')[3]
-    const quantityPrecision =
+  const pair = location.pathname.split('/')[3]
+  const quantityPrecision =
     market?.minOrderSize && getDecimalCount(market.minOrderSize)
-    const pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
+  const pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
 
+  if (!location.pathname.split('/')[3]) {
+    return null
+  }
 
-    if (!location.pathname.split('/')[3]) {
-      return null
-    }
-
-    return (
-      <RowContainer justify={'space-between'} style={{ height: '6rem', padding: '0 3rem', borderBottom: theme.palette.border.new }}>
-        <div data-tut="pairs" style={{ height: '100%', padding: '1rem 0', position: 'relative' }}>
+  return (
+    <RowContainer
+      justify={'space-between'}
+      style={{
+        height: '6rem',
+        padding: '0 3rem',
+        borderBottom: theme.palette.border.new,
+      }}
+    >
+      <Row justify="flex-start">
+        <div
+          data-tut="pairs"
+          style={{ height: '100%', padding: '1rem 0', position: 'relative' }}
+        >
           <AutoSuggestSelect
             value={pair}
             id={'pairSelector'}
@@ -81,10 +114,20 @@ const MarketBlock = ({
           quantityPrecision={quantityPrecision}
           pricePrecision={pricePrecision}
         />
-      </RowContainer>
-    )
+      </Row>
+      <Row>
+        <Row align={'flex-start'} direction="column">
+          <Title color={theme.palette.orange.dark}>
+            SOL is the fuel for transactions on Solana. You must have
+          </Title>
+          <Title color={theme.palette.orange.dark}>
+            some SOL in your wallet for DEX trading or other transactions.
+          </Title>
+        </Row>
+        <ExclamationMark theme={theme} margin={'0 0 0 2rem'} fontSize="5rem" />
+      </Row>
+    </RowContainer>
+  )
 }
 
-export default compose(
-  withTheme()
-)(MarketBlock)
+export default compose(withTheme())(MarketBlock)
