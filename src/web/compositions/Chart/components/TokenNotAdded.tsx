@@ -189,7 +189,7 @@ const TokenNotAddedDialog = ({
                   })
                 }}
               >
-                Copy Deposit Address
+                Copy SOL Deposit Address
               </BtnCustom>
             </Row>
             <Row align="flex-start" direction="column">
@@ -205,6 +205,28 @@ const TokenNotAddedDialog = ({
               >
                 {stripDigitPlaces(cost, 8)} SOL
               </Text>
+              <BtnCustom
+                btnWidth="auto"
+                textTransform="capitalize"
+                color={theme.palette.blue.serum}
+                borderWidth="0"
+                fontFamily="Avenir Next Demi"
+                fontSize="1rem"
+                onClick={() => {
+                  clipboardCopy(
+                    !isBaseCoinExistsInWallet
+                      ? market?.baseMintAddress
+                      : market?.quoteMintAddress
+                  )
+                  notify({
+                    type: 'success',
+                    message: 'Copied!',
+                  })
+                }}
+              >
+                Copy {!isBaseCoinExistsInWallet ? pair[0] : pair[1]} Mint
+                Address
+              </BtnCustom>
             </Row>
           </RowContainer>
           <RowContainer justify="space-between" margin="4rem 0 0rem 0">
