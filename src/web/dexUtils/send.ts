@@ -209,7 +209,7 @@ export async function settleFunds({
     !openOrders ||
     (!baseCurrencyAccount && !quoteCurrencyAccount)
   ) {
-    notify({ message: 'Not connected' });
+    notify({ message: 'Please, connect wallet to settle funds' });
     return;
   }
 

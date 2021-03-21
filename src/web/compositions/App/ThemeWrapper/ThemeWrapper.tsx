@@ -199,7 +199,7 @@ export default ({ themeMode, isChartPage, children }) => {
               block: '#424b68',
               circle: '#0E1016',
               chart: '#f65683',
-              input: '#2e3742',
+              input: '#222429',
               back: '#303743',
               newborder: '#3A475C',
               placeholder: '#abbad1',

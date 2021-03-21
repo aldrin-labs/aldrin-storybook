@@ -4,8 +4,13 @@ import MathWallet from '@sb/dexUtils/MathWallet/MathWallet'
 import SolongWallet from '@sb/dexUtils/SolongWallet/SolongWallet'
 import CcaiWallet from '@sb/dexUtils/CcaiWallet/CcaiWallet'
 import { notify } from './notifications'
-import { useConnectionConfig } from './connection'
+import { useAccountInfo, useConnectionConfig } from './connection'
 import { CCAIProviderURL, useLocalStorageState } from './utils'
+import { PublicKey } from '@solana/web3.js'
+import { MINT_LAYOUT, parseTokenAccountData } from './tokens'
+import { clusterApiUrl } from '@solana/web3.js';
+import { TokenListProvider } from '@solana/spl-token-registry';
+
 
 export const WALLET_PROVIDERS = [
   // { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },
@@ -14,6 +19,16 @@ export const WALLET_PROVIDERS = [
   { name: 'mathwallet.org', url: 'https://www.mathwallet.org' },
   { name: 'solongwallet.com', url: 'https://solongwallet.com' },
 ]
+
+export const TOKEN_PROGRAM_ID = new PublicKey(
+  'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
+);
+
+export const WRAPPED_SOL_MINT = new PublicKey(
+  'So11111111111111111111111111111111111111112',
+);
+
+export const MAINNET_URL = 'https://solana-api.projectserum.com';
 
 const getWalletByProviderUrl = (providerUrl: string) => {
   switch (providerUrl) {
@@ -150,4 +165,170 @@ export function useWallet() {
     providerName: context.providerName,
     setAutoConnect: context.setAutoConnect,
   }
+}
+
+export function parseMintData(data) {
+  let { decimals } = MINT_LAYOUT.decode(data);
+  return { decimals };
+}
+
+// const TokenListContext = React.createContext({});
+
+// export const CLUSTERS = [
+//   {
+//     name: 'mainnet-beta',
+//     apiUrl: MAINNET_URL,
+//     label: 'Mainnet Beta'
+//   },
+//   {
+//     name: 'devnet',
+//     apiUrl: clusterApiUrl('devnet'),
+//     label: 'Devnet'
+//   },
+//   {
+//     name: 'testnet',
+//     apiUrl: clusterApiUrl('testnet'),
+//     label: 'Testnet'
+//   },
+//   {
+//     name: 'localnet',
+//     apiUrl: 'http://localhost:8899',
+//     label: null
+//   }
+// ];
+
+// export function clusterForEndpoint(endpoint) {
+//   return CLUSTERS.find(({ apiUrl }) => apiUrl === endpoint);
+// }
+
+// export function useTokenInfos() {
+//   const { tokenInfos } = useContext(TokenListContext);
+//   return tokenInfos;
+// }
+
+// const nameUpdated = new EventEmitter();
+// nameUpdated.setMaxListeners(100);
+
+
+// export function useTokenInfo(mint) {
+//   const { endpoint } = useConnectionConfig();
+//   useListener(nameUpdated, 'update');
+//   const tokenInfos = useTokenInfos();
+//   return getTokenInfo(mint, endpoint, tokenInfos);
+// }
+
+// export function TokenRegistryProvider(props) {
+//   const { endpoint } = useConnectionConfig();
+//   const [tokenInfos, setTokenInfos] = useState(null);
+//   useEffect(() => {
+//     const tokenListProvider = new TokenListProvider();
+//     tokenListProvider.resolve().then((tokenListContainer) => {
+//       const cluster = clusterForEndpoint(endpoint);
+
+//       const filteredTokenListContainer = tokenListContainer?.filterByClusterSlug(
+//         cluster?.name,
+//       );
+//       const tokenInfos =
+//         tokenListContainer !== filteredTokenListContainer
+//           ? filteredTokenListContainer?.getList()
+//           : null; // Workaround for filter return all on unknown slug
+//       setTokenInfos(tokenInfos);
+//     });
+//   }, [endpoint]);
+
+//   return (
+//     <TokenListContext.Provider value={{ tokenInfos }}>
+//       {props.children}
+//     </TokenListContext.Provider>
+//   );
+// }
+
+// const customTokenNamesByNetwork = JSON.parse(
+//   localStorage.getItem('tokenNames') ?? '{}',
+// );
+
+
+// export function getTokenInfo(mint, endpoint, tokenInfos) {
+//   if (!mint) {
+//     return { name: null, symbol: null };
+//   }
+
+//   let info = customTokenNamesByNetwork?.[endpoint]?.[mint.toBase58()];
+//   let match = tokenInfos?.find(
+//     (tokenInfo) => tokenInfo.address === mint.toBase58(),
+//   );
+//   if (match) {
+//     if (!info) {
+//       info = { ...match, logoUri: match.logoURI };
+//     }
+//     // The user has overridden a name locally.
+//     else {
+//       info = { ...info, logoUri: match.logoURI };
+//     }
+//   }
+//   return { ...info };
+// }
+
+export function useBalanceInfo(publicKey) {
+  let [accountInfo, accountInfoLoaded] = useAccountInfo(publicKey);
+  let { mint, owner, amount } = accountInfo?.owner.equals(TOKEN_PROGRAM_ID)
+    ? parseTokenAccountData(accountInfo.data)
+    : {};
+  let [mintInfo, mintInfoLoaded] = useAccountInfo(mint);
+  // let { name, symbol } = useTokenInfo(mint);
+
+  if (!accountInfoLoaded) {
+    return null;
+  }
+
+  if (mint && mint.equals(WRAPPED_SOL_MINT)) {
+    return {
+      amount,
+      decimals: 9,
+      mint,
+      owner,
+      tokenName: 'Wrapped SOL',
+      tokenSymbol: 'SOL',
+      valid: true,
+    };
+  }
+
+  if (mint && mintInfoLoaded) {
+    try {
+      let { decimals } = parseMintData(mintInfo.data);
+      return {
+        amount,
+        decimals,
+        mint,
+        owner,
+        // tokenName: name.replace(' (Sollet)', ''),
+        // tokenSymbol: symbol,
+        valid: true,
+      };
+    } catch (e) {
+      return {
+        amount,
+        decimals: 0,
+        mint,
+        owner,
+        tokenName: 'Invalid',
+        tokenSymbol: 'INVALID',
+        valid: false,
+      };
+    }
+  }
+
+  if (!mint) {
+    return {
+      amount: accountInfo?.lamports ?? 0,
+      decimals: 9,
+      mint: null,
+      owner: publicKey,
+      tokenName: 'SOL',
+      tokenSymbol: 'SOL',
+      valid: true,
+    };
+  }
+
+  return null;
 }

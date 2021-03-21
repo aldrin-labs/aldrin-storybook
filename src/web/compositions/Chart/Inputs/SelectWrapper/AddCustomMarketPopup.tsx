@@ -2,47 +2,34 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router'
 import { compose } from 'recompose'
-import { Dialog, Paper } from '@material-ui/core'
+import { Paper } from '@material-ui/core'
 import { PublicKey } from '@solana/web3.js'
 import { Market, MARKETS, TOKEN_MINTS } from '@project-serum/serum'
 import { graphql } from 'react-apollo'
 import {
-  getSecondValueFromFirst,
-  GreenSwitcherStyles,
-  RedSwitcherStyles,
-  DisabledSwitcherStyles,
   BlueSwitcherStyles,
 } from '@sb/compositions/Chart/components/SmartOrderTerminal/utils'
-import CustomSwitcher, {
-  SwitcherHalf,
-} from '@sb/components/SwitchOnOff/CustomSwitcher'
+import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
 
 import { notify } from '@sb/dexUtils//notifications'
 import { isValidPublicKey } from '@sb/dexUtils//utils'
 import { useAccountInfo, useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { Loading } from '@sb/components/index'
 
-// const { Text } = Typography;
 import Clear from '@material-ui/icons/Clear'
 import {
-  TypographyTitle,
   StyledDialogContent,
   ClearButton,
   StyledDialogTitle,
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-import { addContactCoin } from '@core/graphql/mutations/chart/addContactCoin'
 
 import { Input } from '@sb/compositions/Addressbook/index'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { PurpleButton } from '@sb/compositions/Addressbook/components/Popups/NewCoinPopup'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import ListNewMarketPopup from './ListNewMarketPopup'
 import { addSerumCustomMarket } from '@core/graphql/mutations/chart/addSerumCustomMarket'
 import { withPublicKey } from '@core/hoc/withPublicKey'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -73,8 +60,6 @@ const CustomMarketDialog = ({
   history,
   addSerumCustomMarketMutation,
   publicKey,
-  getUserCustomMarketsQueryRefetch,
-  getSerumMarketDataQueryRefetch
 }) => {
   const { wallet } = useWallet();
 

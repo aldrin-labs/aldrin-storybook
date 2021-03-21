@@ -1,21 +1,14 @@
 import React, { useState, useEffect } from 'react'
 
 import { Fade, Grid, Theme } from '@material-ui/core'
-
-// import MainDepthChart from '../DepthChart/MainDepthChart/MainDepthChart'
 import SingleChartWithButtons from '@sb/components/Chart'
-import { TriggerTitle } from '@sb/components/ChartCardHeader'
-
+import TokenNotAddedPopup from '@sb/compositions/Chart/components/TokenNotAdded'
 import Balances from '@core/components/Balances'
 import TradingComponent from '@core/components/TradingComponent'
 import TradingTable from '@sb/components/TradingTable/TradingTable'
 import { TablesBlockWrapper } from '@sb/components/TradingWrapper/styles'
 import { TradeHistory, OrderbookAndDepthChart } from '../components'
-import CardsPanel from '../components/CardsPanel'
-import { GuestMode } from '../components/GuestMode/GuestMode'
-import { HideArrow } from '../components/HideArrow/HideArrow'
 import { isEqual } from 'lodash'
-import { TerminalModeButton } from '@sb/components/TradingWrapper/styles'
 
 const TerminalContainer = ({
   isDefaultTerminalViewMode,
@@ -40,11 +33,8 @@ const TerminalContainer = ({
 import {
   Container,
   ChartsContainer,
-  DepthChartContainer,
   TradingTabelContainer,
   TradingTerminalContainer,
-  ChartGridContainer,
-  CustomCard,
   BalancesContainer,
   TopChartsContainer,
 } from '../Chart.styles'
@@ -55,8 +45,6 @@ export const DefaultViewComponent = (
 ): React.ReactComponentElement<any> | null => {
   const {
     currencyPair,
-    id,
-    view,
     marketType,
     theme,
     themeMode,
@@ -80,10 +68,8 @@ export const DefaultViewComponent = (
     minFuturesStep,
     chartPagePopup,
     closeChartPagePopup,
-    authenticated,
     maxLeverage,
     layout,
-    changeChartLayoutMutation,
   } = props
 
   const { hideOrderbook } = layout
@@ -94,6 +80,7 @@ export const DefaultViewComponent = (
   const [priceFromOrderbook, updateTerminalPriceFromOrderbook] = useState<
     null | number
   >(null)
+  const [showTokenNotAddedPopup, setShowTokenNotAdded] = useState(false)
   const [base, quote] = currencyPair.split('_')
   const baseQuoteArr = [base, quote]
   const exchange = activeExchange.symbol
@@ -239,77 +226,80 @@ export const DefaultViewComponent = (
               </Grid>
             </TradingTerminalContainer>
           </TopChartsContainer>
-          {/* {!authenticated && <GuestMode />} */}
 
-          {
-            <TradingTabelContainer
-              item
-              theme={theme}
-              xs={6}
+          <TradingTabelContainer
+            item
+            theme={theme}
+            xs={6}
+            isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+          >
+            <TradingTable
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-            >
-              <TradingTable
-                isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-                maxLeverage={maxLeverage}
-                selectedKey={selectedKey}
-                showOrderResult={showOrderResult}
-                showCancelResult={showCancelResult}
-                marketType={marketType}
-                exchange={exchange}
-                pricePrecision={pricePrecision}
-                quantityPrecision={quantityPrecision}
-                priceFromOrderbook={priceFromOrderbook}
-                currencyPair={currencyPair}
-                arrayOfMarketIds={arrayOfMarketIds}
-              />
-            </TradingTabelContainer>
-          }
-          {isDefaultTerminalViewMode && (
-            <BalancesContainer
-              item
-              xs={1}
-              theme={theme}
-              id="balances"
-              isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-            >
-              <Balances
-                pair={currencyPair.split('_')}
-                selectedKey={selectedKey}
-                marketType={marketType}
-                theme={theme}
-                showFuturesTransfer={showFuturesTransfer}
-              />
-            </BalancesContainer>
-          )}
+              maxLeverage={maxLeverage}
+              selectedKey={selectedKey}
+              showOrderResult={showOrderResult}
+              showCancelResult={showCancelResult}
+              marketType={marketType}
+              exchange={exchange}
+              pricePrecision={pricePrecision}
+              quantityPrecision={quantityPrecision}
+              priceFromOrderbook={priceFromOrderbook}
+              currencyPair={currencyPair}
+              arrayOfMarketIds={arrayOfMarketIds}
+            />
+          </TradingTabelContainer>
 
-          {
-            <TerminalContainer
+          <BalancesContainer
+            item
+            xs={1}
+            theme={theme}
+            id="balances"
+            isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+          >
+            <Balances
+              pair={currencyPair.split('_')}
+              selectedKey={selectedKey}
+              marketType={marketType}
               theme={theme}
+              showFuturesTransfer={showFuturesTransfer}
+              setShowTokenNotAdded={setShowTokenNotAdded}
+            />
+          </BalancesContainer>
+
+          <TerminalContainer
+            theme={theme}
+            isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+          >
+            <TradingComponent
+              selectedKey={selectedKey}
+              activeExchange={activeExchange}
+              pair={baseQuoteArr}
+              theme={theme}
+              chartPagePopup={chartPagePopup}
+              closeChartPagePopup={closeChartPagePopup}
+              quantityPrecision={quantityPrecision}
+              pricePrecision={pricePrecision}
+              minSpotNotional={minSpotNotional}
+              minFuturesStep={minFuturesStep}
+              sizeDigits={sizeDigits}
+              priceFromOrderbook={priceFromOrderbook}
+              marketType={marketType}
+              maxLeverage={maxLeverage}
+              showOrderResult={showOrderResult}
+              showCancelResult={showCancelResult}
+              showChangePositionModeResult={showChangePositionModeResult}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-            >
-              <TradingComponent
-                selectedKey={selectedKey}
-                activeExchange={activeExchange}
-                pair={baseQuoteArr}
-                theme={theme}
-                chartPagePopup={chartPagePopup}
-                closeChartPagePopup={closeChartPagePopup}
-                quantityPrecision={quantityPrecision}
-                pricePrecision={pricePrecision}
-                minSpotNotional={minSpotNotional}
-                minFuturesStep={minFuturesStep}
-                sizeDigits={sizeDigits}
-                priceFromOrderbook={priceFromOrderbook}
-                marketType={marketType}
-                maxLeverage={maxLeverage}
-                showOrderResult={showOrderResult}
-                showCancelResult={showCancelResult}
-                showChangePositionModeResult={showChangePositionModeResult}
-                isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-                updateTerminalViewMode={updateTerminalViewMode}
-              />
-            </TerminalContainer>
-          }
+              updateTerminalViewMode={updateTerminalViewMode}
+              setShowTokenNotAdded={setShowTokenNotAdded}
+            />
+          </TerminalContainer>
+
+          <TokenNotAddedPopup
+            pair={baseQuoteArr}
+            theme={theme}
+            open={showTokenNotAddedPopup}
+            onClose={() => setShowTokenNotAdded(false)}
+          />
         </Grid>
       </Grid>
     </Container>
