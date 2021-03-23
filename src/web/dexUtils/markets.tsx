@@ -484,16 +484,16 @@ export function useQuoteCurrencyBalances() {
 export function useBaseCurrencyBalances() {
   const baseCurrencyAccount = useSelectedBaseCurrencyAccount()
   const { market } = useMarket()
-  const [accountInfo, loaded] = useAccountInfo(baseCurrencyAccount?.pubkey)
+  const [accountInfo, loaded, refreshBase] = useAccountInfo(baseCurrencyAccount?.pubkey)
   if (!market || !baseCurrencyAccount || !loaded) {
-    return null
+    return [null, refreshBase]
   }
   if (market.baseMintAddress.equals(TokenInstructions.WRAPPED_SOL_MINT)) {
-    return accountInfo?.lamports / 1e9 ?? 0
+    return [accountInfo?.lamports / 1e9 ?? 0, refreshBase]
   }
-  return market.baseSplSizeToNumber(
+  return [market.baseSplSizeToNumber(
     new BN(accountInfo.data.slice(64, 72), 10, 'le')
-  )
+  ), refreshBase] 
 }
 
 // TODO: Update to use websocket
@@ -708,7 +708,7 @@ export function useOpenOrdersForAllMarkets() {
 }
 
 export function useBalances() {
-  const baseCurrencyBalances = useBaseCurrencyBalances()
+  const [baseCurrencyBalances, refreshBase] = useBaseCurrencyBalances()
   const quoteCurrencyBalances = useQuoteCurrencyBalances()
   const openOrders = useSelectedOpenOrdersAccount(true)
   const { baseCurrency, quoteCurrency, market } = useMarket()
@@ -741,6 +741,8 @@ export function useBalances() {
         baseExists && market
           ? market.baseSplSizeToNumber(openOrders.baseTokenFree)
           : null,
+      refreshBase
+
     },
     {
       market,

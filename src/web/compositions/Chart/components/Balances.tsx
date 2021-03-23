@@ -24,6 +24,7 @@ import DepositPopup from '@sb/compositions/Chart/components/DepositPopup'
 
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 import SvgIcon from '@sb/components/SvgIcon'
+import RefreshBtn from '@icons/refresh.svg'
 
 import {
   useBalances,
@@ -133,7 +134,7 @@ export const Balances = ({
   isAlreadyJoined = false,
   isFuturesWarsKey = false,
   futuresWarsRoundBet = 0,
-  setShowTokenNotAdded = () => {}
+  setShowTokenNotAdded = () => {},
 }: {
   getFundsQuery: {
     getFunds: FundsType[]
@@ -260,17 +261,18 @@ export const Balances = ({
           theme={theme}
           style={{
             display: 'flex',
-            justifyContent: 'flex-start',
+            justifyContent: 'space-around',
             alignItems: 'center',
             paddingLeft: '2rem',
           }}
         >
-          <>
-            Balances{' '}
-            {!isSPOTMarket && (
-              <UpdateFuturesBalances keyId={selectedKey.keyId} />
-            )}
-          </>
+            Balances
+            <SvgIcon
+            src={RefreshBtn}
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              baseBalances.refreshBase()}
+            }/>
         </ChartCardHeader>
         <Grid
           container
@@ -367,7 +369,7 @@ export const Balances = ({
                           // hoverBackground="#3992a9"
                           transition={'all .4s ease-out'}
                           onClick={() => {
-                            console.log('balnces', baseBalances, balances)
+                            console.log('balnces', baseBalances.refreshBase, balances)
                             const { market, openOrders } = baseBalances
                             onSettleFunds(market, openOrders)
                           }}
@@ -496,7 +498,6 @@ export const Balances = ({
                       transition={'all .4s ease-out'}
                       onClick={() => {
                         setShowTokenNotAdded(true)
-
                       }}
                     >
                       Add to the wallet
