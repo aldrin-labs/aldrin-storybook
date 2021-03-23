@@ -35,7 +35,7 @@ import { ENDPOINTS, useConnectionConfig } from '@sb/dexUtils/connection'
 import { Line } from '@sb/compositions/AnalyticsRoute/index.styles'
 import styled from 'styled-components'
 import OvalSelector from '@sb/components/OvalSelector'
-import SerumCCAILogo from '@icons/serumCCAILogo.svg'
+import SerumCCAILogo from '@icons/serumCCAILogo.png'
 import LightLogo from '@icons/lightLogo.svg'
 import SvgIcon from '@sb/components/SvgIcon'
 
@@ -142,7 +142,7 @@ export const CardsPanel = ({ theme, setMarketAddress }) => {
           <Link
             to={'/chart/spot/SRM_USDT'}
             style={{
-              padding: '1rem 0',
+              padding: '0.5rem 0',
               height: '100%',
             }}
             onClick={() => {

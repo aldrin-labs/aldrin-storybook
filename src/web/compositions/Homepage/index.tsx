@@ -30,7 +30,7 @@ export const Homepage = () => {
     <MainContainer>
       <RowContainer>
         <CardContainer
-          style={{ marginTop: '3rem' }}
+          style={{ marginTop: '3rem', minHeight: '20rem' }}
           width={'calc(100% - 5.5rem)'}
         >
           <img src={Banner} width={'100%'} />
