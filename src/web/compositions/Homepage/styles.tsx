@@ -3,7 +3,8 @@ import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 export const MainContainer = styled.div`
   width: 100%;
-  height: 100%;
+  margin-top: 9%;
+  height: 70%;
 `
 export const IdoBtn = styled.button`
   background-image: linear-gradient(

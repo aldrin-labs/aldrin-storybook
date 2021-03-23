@@ -125,7 +125,7 @@ export const CardsPanel = ({ theme, setMarketAddress }) => {
   const isDarkTheme = theme.palette.type === 'dark'
   const isAnalytics = location.pathname.includes('analytics')
   const isChartPage = location.pathname.includes('chart')
-
+console.log('page', location.pathname)
   return (
     <ChartGridContainer isChartPage={isChartPage} theme={theme}>
       <PanelWrapper>
@@ -168,17 +168,15 @@ export const CardsPanel = ({ theme, setMarketAddress }) => {
               alignItems: 'center',
             }}
           >
-            {!MASTER_BUILD ? (
               <NavLinkButton
                 theme={theme}
-                page={'home' || ''}
-                pathname={location.pathname}
-                component={(props) => <Link to={`/home`} {...props} />}
+                page={'/'}
+                pathname={location.pathname === '/' ? location.pathname : ''}
+                component={(props) => <Link to={`/`} {...props} />}
               >
                 {' '}
                 Home
               </NavLinkButton>
-            ) : null}
             <NavLinkButton
               theme={theme}
               data-tut="farming"
