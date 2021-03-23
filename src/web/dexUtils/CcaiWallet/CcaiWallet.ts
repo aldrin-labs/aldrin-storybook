@@ -118,7 +118,7 @@ export default class Wallet extends EventEmitter {
           this._providerUrl.origin,
         );
 
-        if (!this.autoApprove) {
+        if (!this.autoApprove || method === 'signAllTransactions') {
           this._popup.focus();
         }
       }

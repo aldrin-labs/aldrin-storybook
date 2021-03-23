@@ -7,10 +7,14 @@ import SnackbarUtils from '@sb/utils/SnackbarUtils'
 
 export const notify = ({
   message,
-  description,
+  description = '',
   txid = '',
   type = 'info',
-  placement = 'bottomLeft',
+}: {
+  message: string;
+  description?: any;
+  txid?: string;
+  type?: string
 }) => {
   console.log('notification: ', message)
   if (txid) {

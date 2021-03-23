@@ -414,6 +414,7 @@ class SelectPairListComponent extends React.PureComponent<
 
         return false
       }
+      
       const newCustomMarkets = [...customMarkets, customMarket]
       setCustomMarkets(newCustomMarkets)
       setMarketAddress(customMarket.address)

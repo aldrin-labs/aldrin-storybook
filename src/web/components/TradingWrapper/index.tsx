@@ -326,7 +326,7 @@ class SimpleTabs extends React.Component {
                 </TerminalModeButton>
               </div>
               <div>
-                {/* <TerminalModeButton
+                <TerminalModeButton
                   theme={theme}
                   style={{
                     width: TVAlertsBotIsActive ? '16rem' : '14rem',
@@ -372,7 +372,7 @@ class SimpleTabs extends React.Component {
                   />
                   {TVAlertsBotIsActive ? 'Stop Alert BOT' : 'Alert BOT'}
                 </TerminalModeButton>
-                {pair.join('_') === 'SRM_USDT' && (
+                {/* {pair.join('_') === 'SRM_USDT' && (
                   <TerminalModeButton
                     theme={theme}
                     active={tradingBotEnabled}
