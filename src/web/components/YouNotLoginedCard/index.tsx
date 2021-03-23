@@ -4,7 +4,7 @@ import { Grid, Typography, Button } from '@material-ui/core'
 
 import { SvgIcon, SignUpButton, SignInLink, SignUpLink } from '@sb/components'
 
-import MainLogo from '@icons/Logo.svg'
+import MainLogo from '@icons/newLogo.png'
 import PortfolioMainImage from '@sb/images/PortfolioMain.png'
 import { IProps } from './index.types'
 
