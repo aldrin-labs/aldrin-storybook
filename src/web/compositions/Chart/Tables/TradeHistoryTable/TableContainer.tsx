@@ -48,21 +48,23 @@ class TableContainer extends Component<IProps, IState> {
 
     const pricePrecision = newProps.pricePrecision === undefined ? newProps.sizeDigits !== undefined ? 8 : undefined : newProps.pricePrecision
 
+    console.log('Trade History', pricePrecision, newProps.sizeDigits)
+
     // query data processing
     if (
       state.data.length === 0 &&
       newProps.data &&
       newProps.data.marketTickers &&
       newProps.data.marketTickers.length > 0 &&
-      pricePrecision !== undefined &&
+      newProps.pricePrecision !== undefined &&
       newProps.sizeDigits !== undefined
     ) {
       const tickersData = [ ...newProps.data.marketTickers ]
 
       const updatedData = tickersData.map((trade, i) => ({
         ...trade,
-        size: Number(trade.size).toFixed(newProps.quantityPrecision),
-        price: Number(trade.price).toFixed(pricePrecision),
+        size: Number(trade.size).toFixed(newProps.sizeDigits),
+        price: Number(trade.price).toFixed(newProps.pricePrecision),
         time: dayjs.unix(+trade.timestamp).format('LTS'),
         id: `${trade.price}${trade.size}${i}${trade.timestamp}`,
       }))

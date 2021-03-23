@@ -79,24 +79,6 @@ export function useMintInput({
     isValidPublicKey(address) ? new PublicKey(address) : null
   )
 
-  const mintToTickers = useMintToTickers()
-  const options = useMemo(() => {
-    return Object.entries(mintToTickers)
-      .filter(
-        ([mintAddress, ticker]) =>
-          mintAddress.includes(address) ||
-          ticker.toLowerCase().includes(address.toLowerCase())
-      )
-      .map(([mintAddress, ticker]) => ({
-        value: mintAddress,
-        label: (
-          <>
-            {ticker} ({mintAddress})
-          </>
-        ),
-      }))
-  }, [mintToTickers, address])
-
   const { validateStatus, hasFeedback, help, mintInfo } = useMemo(() => {
     let validateStatus = ''
     let hasFeedback = false
@@ -226,7 +208,8 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
         quoteLotSize,
         dexProgramId,
       })
-      setListedMarket(marketAddress)
+      
+      await setListedMarket(marketAddress)
     } catch (e) {
       console.warn(e)
       console.log('e.message', e.message)

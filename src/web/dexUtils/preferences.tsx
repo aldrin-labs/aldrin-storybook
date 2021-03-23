@@ -10,7 +10,6 @@ import {PreferencesContextValues} from "./types";
 const PreferencesContext = React.createContext<PreferencesContextValues | null>(null);
 
 export function PreferencesProvider({ children }) {
-  console.log('rerender PreferencesProvider')
   const [autoSettleEnabled, setAutoSettleEnabled] = useLocalStorageState(
     'autoSettleEnabled',
     true,
@@ -24,19 +23,14 @@ export function PreferencesProvider({ children }) {
   const connection = useConnection();
   const [selectedTokenAccounts] = useSelectedTokenAccounts();
 
-  console.log('wallet?.autoApprove', wallet?.autoApprove)
-
   useInterval(() => {
-    console.log('interval')
     const autoSettle = async () => {
       // const markets = (marketList || []).map((m) => m.market);
       try {
-        console.log('Auto settling');
         const openOrders = await market.findOpenOrdersAccountsForOwner(
           connection,
           wallet.publicKey
         )
-        console.log('openOrders', openOrders)
         // await settleAllFunds({ connection, wallet, tokenAccounts: (tokenAccounts || []), markets, selectedTokenAccounts });
         await settleFunds({
           market,

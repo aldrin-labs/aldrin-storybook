@@ -177,7 +177,7 @@ const MarketStats = (props) => {
           }}
         >
           {markPrice === 0 ? '--' : formatNumberToUSFormat(
-            roundAndFormatNumber(markPrice, pricePrecision, false)
+            stripDigitPlaces(markPrice, priceDecimalCount)
           )}
         </PanelCardValue>
       </PanelCard>
@@ -206,7 +206,7 @@ const MarketStats = (props) => {
                   : theme.palette.red.main,
             }}
           >
-             {`${sign24hChange}
+             {!priceChangePercentage ? '0%' : `${sign24hChange}
               ${formatNumberToUSFormat(
                 stripDigitPlaces(+priceChangePercentage)
               )}%`} 
@@ -218,10 +218,9 @@ const MarketStats = (props) => {
         <PanelCardTitle theme={theme}>24h high</PanelCardTitle>
         <PanelCardValue theme={theme}>
           {formatNumberToUSFormat(
-            roundAndFormatNumber(
+            stripDigitPlaces(
               maxPrice,
-              priceDecimalCount,
-              false
+              priceDecimalCount
             )
           )}
         </PanelCardValue>
@@ -231,10 +230,9 @@ const MarketStats = (props) => {
         <PanelCardTitle theme={theme}>24h low</PanelCardTitle>
         <PanelCardValue theme={theme}>
           {formatNumberToUSFormat(
-            roundAndFormatNumber(
+            stripDigitPlaces(
               minPrice,
-              priceDecimalCount,
-              false
+              priceDecimalCount
             )
           )}
         </PanelCardValue>
@@ -243,12 +241,11 @@ const MarketStats = (props) => {
         <PanelCardTitle theme={theme}>24hr volume</PanelCardTitle>
         <PanelCardValue theme={theme}>
           {formatNumberToUSFormat(
-            roundAndFormatNumber(
+            stripDigitPlaces(
               volume,
-              priceDecimalCount,
-              false
+              priceDecimalCount
             )
-          )}
+          )} {quote}
         </PanelCardValue>
       </PanelCard>
     </div>
