@@ -87,7 +87,7 @@ export function useAccountInfo(publicKey) {
     cacheKey,
     { refreshInterval: 60_000 },
   );
-  const refreshBase = () => refreshCache(cacheKey)
+  const refresh = () => refreshCache(cacheKey)
 
   useEffect(() => {
     if (!publicKey) {
@@ -122,7 +122,7 @@ export function useAccountInfo(publicKey) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cacheKey]);
 
-  return [accountInfo, loaded, refreshBase];
+  return [accountInfo, loaded, refresh];
 }
 
 export function useAccountData(publicKey) {

@@ -258,6 +258,7 @@ export const Balances = ({
         style={{ borderRight: 'none', borderTop: '0' }}
       >
         <ChartCardHeader
+          padding={'0.6rem 0'}
           theme={theme}
           style={{
             display: 'flex',
@@ -266,13 +267,21 @@ export const Balances = ({
             paddingLeft: '2rem',
           }}
         >
-            Balances
-            <SvgIcon
+          Balances
+          <SvgIcon
             src={RefreshBtn}
             style={{ cursor: 'pointer' }}
-            onClick={() => {
-              baseBalances.refreshBase()}
-            }/>
+            width="15%"
+            height="auto"
+            onClick={async () => {
+              await baseBalances.refreshBase()
+              await quoteBalances.refreshQuote()
+              await notify({
+                message: 'Your balances successfully updated',
+                type: 'success',
+              })
+            }}
+          />
         </ChartCardHeader>
         <Grid
           container
@@ -281,7 +290,7 @@ export const Balances = ({
           wrap={'nowrap'}
           style={{
             height: 'calc(100% - 3rem)',
-            padding: '0 .8rem',
+            padding: '0 .8rem 1rem .8rem',
             overflowY: 'auto',
           }}
         >
@@ -369,7 +378,6 @@ export const Balances = ({
                           // hoverBackground="#3992a9"
                           transition={'all .4s ease-out'}
                           onClick={() => {
-                            console.log('balnces', baseBalances.refreshBase, balances)
                             const { market, openOrders } = baseBalances
                             onSettleFunds(market, openOrders)
                           }}

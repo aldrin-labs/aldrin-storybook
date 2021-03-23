@@ -137,7 +137,8 @@ export const PanelCard = styled.div`
   padding: 0.1rem;
   margin: 0;
   min-height: auto;
-  border-right: ${(props: { marketType: number; theme: Theme }) => '.2rem solid #ABBAD1'};
+  border-right: ${(props: { marketType: number; theme: Theme }) =>
+    '.2rem solid #ABBAD1'};
   font-weight: bold;
   font-family: DM Sans;
   text-transform: uppercase;
@@ -231,7 +232,7 @@ export const TradeHistoryWrapper = styled(({ background = '', ...rest }) => (
   <CustomCard {...rest} />
 ))`
   border-top: 0;
-  
+
   && {
     overflow: hidden;
   }
