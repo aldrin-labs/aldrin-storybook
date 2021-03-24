@@ -2,6 +2,9 @@ import React from 'react'
 import Tour from 'reactour'
 import styled from 'styled-components'
 
+import SvgIcon from '@sb/components/SvgIcon'
+import exclamationMarkNotification from '@icons/exclamationMarkNotification.svg'
+
 export const FinishBtn = styled.button`
   width: 8rem;
   height: 3.5rem;
@@ -51,6 +54,13 @@ export const Text = styled.div`
   align-items: center;
   font-family: DM Sans;
 `
+
+export const WrapperForNotificationTour = styled.div`
+  && > .my-helper {
+    max-width: initial !important;
+  }
+`
+
 const Box = ({ height = '30rem' }) => {
   return {
     padding: '0 0 1rem 0',
@@ -67,6 +77,149 @@ const Box = ({ height = '30rem' }) => {
     boxShadow: '0px 0px 1.5rem #D1D9E6',
   }
 }
+
+const notificationBox = () => ({
+  padding: '3rem',
+  width: '50%',
+  height: 'auto',
+  backgroundColor: '#0E1016',
+  borderRadius: '3rem',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  border: '0.1rem solid #E0E5EC',
+  maxWidth: 'initial',
+})
+
+export const NotificationBlock = styled.div``
+
+export const NotificationBlockInitial = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 2rem;
+`
+
+export const NotificationBlockFinal = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`
+
+export const RegularText = styled.p`
+  font-family: DM Sans;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 1.6rem;
+  color: #f5f5fb;
+  letter-spacing: -0.523077px;
+`
+
+export const BoldText = styled.p`
+  font-family: DM Sans;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 1.6rem;
+  color: #f5f5fb;
+  letter-spacing: -0.523077px;
+`
+
+export const WarningText = styled.p`
+  font-family: DM Sans;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 1.6rem;
+  color: #f29c38;
+  letter-spacing: -0.523077px;
+`
+
+export const HeadingBoldText = styled.p`
+  font-family: DM Sans;
+  font-weight: bold;
+  font-size: 2.6rem;
+  color: #f5f5fb;
+  letter-spacing: -0.784615px;
+`
+
+export const GotItButton = styled.button`
+  width: 8rem;
+  height: 3.5rem;
+  border: none;
+  background-color: #c7ffd0;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bolder;
+  border-radius: 0.5rem;
+  width: 184px;
+  height: 40px;
+
+  background: #366ce5;
+  border-radius: 8px;
+`
+
+export const notificationTourConfig = [
+  {
+    selector: '[data-tut="reactour__style"]',
+    content: ({ close, goTo, inDOM, step }) => {
+      return (
+        <Container>
+          <NotificationBlockInitial>
+            <div>
+              <HeadingBoldText>An important announcement!</HeadingBoldText>
+              <BoldText>
+                Tether is bringing the native USDT stablecoin to the Solana
+                network.
+              </BoldText>
+            </div>
+            <div>
+              <SvgIcon
+                src={exclamationMarkNotification}
+                width="81px"
+                height="auto"
+              />
+            </div>
+          </NotificationBlockInitial>
+          <NotificationBlock style={{ paddingBottom: '2rem' }}>
+            <RegularText>
+              This means that trading of all tokens paired with wUSDT (Wrapped
+              USDT) will be stoped as of Friday, March 26, 2021.
+            </RegularText>
+            <RegularText>
+              At the same time, we will open trading of all tokens paired with
+              native USDT.
+            </RegularText>
+            <WarningText>
+              To continue trading with high liquidity on native USDT pairs you
+              have to cancel all open orders, settle all your funds and convert
+              your wUSDT tokens to native USDT in your wallets.
+            </WarningText>
+            <WarningText>
+              You can send funds from your wUSDT to native USDT easily using
+              Cryptocurrencies.Ai wallet.
+            </WarningText>
+          </NotificationBlock>
+          <NotificationBlock>
+            <RegularText>Native USDT Mint Address:</RegularText>
+            <BoldText>Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB</BoldText>
+          </NotificationBlock>
+          <NotificationBlockFinal>
+            <div>
+              <RegularText>Have any questions? Contact us:</RegularText>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                
+              </div>
+            </div>
+            <div>
+              <GotItButton onClick={() => close()}> Got it! </GotItButton>
+            </div>
+          </NotificationBlockFinal>
+        </Container>
+      )
+    },
+    style: notificationBox(),
+  },
+]
 
 export const tourConfig = [
   {
