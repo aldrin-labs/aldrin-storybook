@@ -137,7 +137,7 @@ function ChartPageComponent(props: any) {
   const [stepIndex, updateStepIndex] = useState(0)
   const [key, updateKey] = useState(0)
   const [isTourOpen, setIsTourOpen] = useState(
-    localStorage.getItem('isOnboardingDone') == 'null'
+    false
   )
 
   const { wallet } = useWallet()
