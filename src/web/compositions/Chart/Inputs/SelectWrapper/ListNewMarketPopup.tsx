@@ -208,7 +208,7 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
         quoteLotSize,
         dexProgramId,
       })
-      
+
       await setListedMarket(marketAddress)
     } catch (e) {
       console.warn(e)
@@ -344,14 +344,16 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
                     type="text"
                     min="0"
                     step="any"
+                    disabled={true}
                     placeholder={'Here will appear new market ID'}
                   />
                   {listedMarket && (
                     <StyledPasteButton
                       theme={theme}
-                      style={{ bottom: '1.5rem' }}
+                      style={{ bottom: '1.5rem', outline: 'none' }}
                       onClick={() => {
                         copy(listedMarket.toBase58())
+                        notify({ message: 'Copied!', type: 'success' })
                       }}
                     >
                       Copy

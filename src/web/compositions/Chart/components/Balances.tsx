@@ -276,10 +276,14 @@ export const Balances = ({
             onClick={async () => {
               await baseBalances.refreshBase()
               await quoteBalances.refreshQuote()
-              await notify({
-                message: 'Your balances successfully updated',
-                type: 'success',
-              })
+              await notify(
+                wallet.connected
+                  ? {
+                      message: 'Your balances successfully updated',
+                      type: 'success',
+                    }
+                  : { message: 'Connect your wallet first', type: 'error' }
+              )
             }}
           />
         </ChartCardHeader>

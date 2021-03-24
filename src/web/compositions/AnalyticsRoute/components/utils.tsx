@@ -102,7 +102,7 @@ export const createButterflyChart = (
   const isNotUSDTQuote = getIsNotUSDTQuote(selectedPair)
 
   const dataMap = getTimestampsForDays(
-    endOfDayTimestamp - dayDuration * 13,
+    endOfDayTimestamp - dayDuration * 14,
     endOfDayTimestamp
   )
 
@@ -125,7 +125,6 @@ export const createButterflyChart = (
         : { ...el }
     )
     .sort((a, b) => a.timestamp - b.timestamp)
-
 
   window[`butterflyChart-${id}`] = new Chart(ctx, {
     type: 'bar',
@@ -361,7 +360,7 @@ export const createAreaChart = (data: any, selectedPair = '', theme) => {
   const isNotUSDTQuote = getIsNotUSDTQuote(selectedPair)
 
   const dataMap = getTimestampsForDays(
-    endOfDayTimestamp - dayDuration * 29,
+    endOfDayTimestamp - dayDuration * 30,
     endOfDayTimestamp
   )
 
