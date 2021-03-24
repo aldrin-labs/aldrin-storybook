@@ -303,7 +303,6 @@ function ChartPageComponent(props: any) {
           localStorage.setItem('isOnboardingDone', 'true')
         }}
       />
-      <GlobalStyles />
       {/* {view === 'default' && ( */}
       <DefaultView
         id={'_id'}

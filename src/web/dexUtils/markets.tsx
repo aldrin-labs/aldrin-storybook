@@ -468,32 +468,32 @@ export function useSelectedBaseCurrencyAccount() {
 export function useQuoteCurrencyBalances() {
   const quoteCurrencyAccount = useSelectedQuoteCurrencyAccount()
   const { market } = useMarket()
-  const [accountInfo, loaded] = useAccountInfo(quoteCurrencyAccount?.pubkey)
+  const [accountInfo, loaded, refresh] = useAccountInfo(quoteCurrencyAccount?.pubkey)
   if (!market || !quoteCurrencyAccount || !loaded) {
-    return null
+    return [null,refresh]
   }
   if (market.quoteMintAddress.equals(TokenInstructions.WRAPPED_SOL_MINT)) {
-    return accountInfo?.lamports / 1e9 ?? 0
+    return [accountInfo?.lamports / 1e9 ?? 0, refresh]
   }
-  return market.quoteSplSizeToNumber(
+  return [market.quoteSplSizeToNumber(
     new BN(accountInfo.data.slice(64, 72), 10, 'le')
-  )
+  ), refresh]
 }
 
 // TODO: Update to use websocket
 export function useBaseCurrencyBalances() {
   const baseCurrencyAccount = useSelectedBaseCurrencyAccount()
   const { market } = useMarket()
-  const [accountInfo, loaded] = useAccountInfo(baseCurrencyAccount?.pubkey)
+  const [accountInfo, loaded, refresh] = useAccountInfo(baseCurrencyAccount?.pubkey)
   if (!market || !baseCurrencyAccount || !loaded) {
-    return null
+    return [null, refresh]
   }
   if (market.baseMintAddress.equals(TokenInstructions.WRAPPED_SOL_MINT)) {
-    return accountInfo?.lamports / 1e9 ?? 0
+    return [accountInfo?.lamports / 1e9 ?? 0, refresh]
   }
-  return market.baseSplSizeToNumber(
+  return [market.baseSplSizeToNumber(
     new BN(accountInfo.data.slice(64, 72), 10, 'le')
-  )
+  ), refresh] 
 }
 
 // TODO: Update to use websocket
@@ -708,8 +708,8 @@ export function useOpenOrdersForAllMarkets() {
 }
 
 export function useBalances() {
-  const baseCurrencyBalances = useBaseCurrencyBalances()
-  const quoteCurrencyBalances = useQuoteCurrencyBalances()
+  const [baseCurrencyBalances, refreshBase] = useBaseCurrencyBalances()
+  const [quoteCurrencyBalances, refreshQuote] = useQuoteCurrencyBalances()
   const openOrders = useSelectedOpenOrdersAccount(true)
   const { baseCurrency, quoteCurrency, market } = useMarket()
   const baseExists =
@@ -741,6 +741,8 @@ export function useBalances() {
         baseExists && market
           ? market.baseSplSizeToNumber(openOrders.baseTokenFree)
           : null,
+      refreshBase
+
     },
     {
       market,
@@ -758,6 +760,7 @@ export function useBalances() {
         quoteExists && market
           ? market.quoteSplSizeToNumber(openOrders.quoteTokenFree)
           : null,
+      refreshQuote
     },
   ]
 }

@@ -31,7 +31,7 @@ export const PasteButton = styled.button`
   right: 0.5rem;
   background: inherit;
   border: 0;
-  color: ${props => props.theme.palette.blue.serum};
+  color: ${(props) => props.theme.palette.blue.serum};
   cursor: pointer;
   padding: 1.5rem;
 `
@@ -74,6 +74,7 @@ const NewContactPopup = ({
         }}
       >
         <span
+          theme={theme}
           style={{
             fontSize: '1.8rem',
             color: theme.palette.text.light,
@@ -88,7 +89,10 @@ const NewContactPopup = ({
         style={{ background: theme.palette.grey.input }}
         id="share-dialog-content"
       >
-        <div style={{ paddingTop: '2.5rem', textAlign: 'center' }}>
+        <div
+          theme={theme}
+          style={{ paddingTop: '2.5rem', textAlign: 'center' }}
+        >
           <Input
             theme={theme}
             style={{
@@ -115,7 +119,7 @@ const NewContactPopup = ({
             value={email}
             onChange={(e) => updateEmail(e.target.value)}
           />
-          <div style={{ position: 'relative' }}>
+          <div theme={theme} style={{ position: 'relative' }}>
             <Input
               theme={theme}
               style={{
@@ -131,6 +135,7 @@ const NewContactPopup = ({
               onChange={(e) => updateAddress(e.target.value)}
             />
             <PasteButton
+              theme={theme}
               onClick={() => {
                 navigator.clipboard
                   .readText()
@@ -141,6 +146,7 @@ const NewContactPopup = ({
             </PasteButton>
           </div>
           <BtnCustom
+            theme={theme}
             disabled={showLoader}
             needMinWidth={false}
             btnWidth="15rem"
@@ -205,6 +211,7 @@ const NewContactPopup = ({
           >
             {showLoader ? (
               <Loading
+                theme={theme}
                 color={'#fff'}
                 size={16}
                 height={'16px'}

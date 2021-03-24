@@ -35,7 +35,7 @@ import { ENDPOINTS, useConnectionConfig } from '@sb/dexUtils/connection'
 import { Line } from '@sb/compositions/AnalyticsRoute/index.styles'
 import styled from 'styled-components'
 import OvalSelector from '@sb/components/OvalSelector'
-import SerumCCAILogo from '@icons/serumCCAILogo.svg'
+import SerumCCAILogo from '@icons/serumCCAILogo.png'
 import LightLogo from '@icons/lightLogo.svg'
 import SvgIcon from '@sb/components/SvgIcon'
 
@@ -125,7 +125,7 @@ export const CardsPanel = ({ theme, setMarketAddress }) => {
   const isDarkTheme = theme.palette.type === 'dark'
   const isAnalytics = location.pathname.includes('analytics')
   const isChartPage = location.pathname.includes('chart')
-
+console.log('page', location.pathname)
   return (
     <ChartGridContainer isChartPage={isChartPage} theme={theme}>
       <PanelWrapper>
@@ -142,7 +142,7 @@ export const CardsPanel = ({ theme, setMarketAddress }) => {
           <Link
             to={'/chart/spot/SRM_USDT'}
             style={{
-              padding: '1rem 0',
+              padding: '0.5rem 0',
               height: '100%',
             }}
             onClick={() => {
@@ -168,17 +168,15 @@ export const CardsPanel = ({ theme, setMarketAddress }) => {
               alignItems: 'center',
             }}
           >
-            {!MASTER_BUILD ? (
               <NavLinkButton
                 theme={theme}
-                page={'home' || ''}
-                pathname={location.pathname}
-                component={(props) => <Link to={`/home`} {...props} />}
+                page={'/'}
+                pathname={location.pathname === '/' ? location.pathname : ''}
+                component={(props) => <Link to={`/`} {...props} />}
               >
                 {' '}
                 Home
               </NavLinkButton>
-            ) : null}
             <NavLinkButton
               theme={theme}
               data-tut="farming"

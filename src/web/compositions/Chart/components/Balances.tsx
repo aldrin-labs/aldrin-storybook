@@ -24,6 +24,7 @@ import DepositPopup from '@sb/compositions/Chart/components/DepositPopup'
 
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 import SvgIcon from '@sb/components/SvgIcon'
+import RefreshBtn from '@icons/refresh.svg'
 
 import {
   useBalances,
@@ -133,7 +134,7 @@ export const Balances = ({
   isAlreadyJoined = false,
   isFuturesWarsKey = false,
   futuresWarsRoundBet = 0,
-  setShowTokenNotAdded = () => {}
+  setShowTokenNotAdded = () => {},
 }: {
   getFundsQuery: {
     getFunds: FundsType[]
@@ -257,20 +258,34 @@ export const Balances = ({
         style={{ borderRight: 'none', borderTop: '0' }}
       >
         <ChartCardHeader
+          padding={'0.6rem 0'}
           theme={theme}
           style={{
             display: 'flex',
-            justifyContent: 'flex-start',
+            justifyContent: 'space-around',
             alignItems: 'center',
             paddingLeft: '2rem',
           }}
         >
-          <>
-            Balances{' '}
-            {!isSPOTMarket && (
-              <UpdateFuturesBalances keyId={selectedKey.keyId} />
-            )}
-          </>
+          Balances
+          <SvgIcon
+            src={RefreshBtn}
+            style={{ cursor: 'pointer' }}
+            width="15%"
+            height="auto"
+            onClick={async () => {
+              await baseBalances.refreshBase()
+              await quoteBalances.refreshQuote()
+              await notify(
+                wallet.connected
+                  ? {
+                      message: 'Your balances successfully updated',
+                      type: 'success',
+                    }
+                  : { message: 'Connect your wallet first', type: 'error' }
+              )
+            }}
+          />
         </ChartCardHeader>
         <Grid
           container
@@ -279,7 +294,7 @@ export const Balances = ({
           wrap={'nowrap'}
           style={{
             height: 'calc(100% - 3rem)',
-            padding: '0 .8rem',
+            padding: '0 .8rem 1rem .8rem',
             overflowY: 'auto',
           }}
         >
@@ -367,7 +382,6 @@ export const Balances = ({
                           // hoverBackground="#3992a9"
                           transition={'all .4s ease-out'}
                           onClick={() => {
-                            console.log('balnces', baseBalances, balances)
                             const { market, openOrders } = baseBalances
                             onSettleFunds(market, openOrders)
                           }}
@@ -496,7 +510,6 @@ export const Balances = ({
                       transition={'all .4s ease-out'}
                       onClick={() => {
                         setShowTokenNotAdded(true)
-
                       }}
                     >
                       Add to the wallet

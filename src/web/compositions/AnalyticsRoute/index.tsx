@@ -54,7 +54,6 @@ const AnalyticsRoute = ({
 
   return (
     <Container theme={theme}>
-      <GlobalStyles />
       <RowContainer height={'100%'} direction={'column'}>
         <TopBarContainer theme={theme} justify={'space-between'}>
           <TopBar theme={theme} />

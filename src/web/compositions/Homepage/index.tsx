@@ -28,15 +28,15 @@ import { CCAIProviderURL } from '@sb/dexUtils/utils'
 export const Homepage = () => {
   return (
     <MainContainer>
-      <RowContainer>
+      {/* <RowContainer>
         <CardContainer
-          style={{ marginTop: '3rem' }}
+          style={{ marginTop: '3rem', minHeight: '20rem' }}
           width={'calc(100% - 5.5rem)'}
         >
           <img src={Banner} width={'100%'} />
           {/* //bottom={'6rem'} right={'16rem'}{' '}
           position={'relative'} */}
-          <ButtonContainer>
+          {/* <ButtonContainer>
             <WhiteButton needHover={true} padding={'0 3rem'}>
               Learn More{' '}
               <svg
@@ -53,8 +53,8 @@ export const Homepage = () => {
               </svg>
             </WhiteButton>
           </ButtonContainer>
-        </CardContainer>
-      </RowContainer>
+        </CardContainer> */}
+      {/* </RowContainer> */}
       <RowContainer align={'flex-start'} style={{ marginTop: '1.5rem' }}>
         <Row
           direction={'column'}

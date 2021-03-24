@@ -4,11 +4,16 @@ import { Theme } from '@material-ui/core'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getSerumQuoteTradeVolumeStats } from '@core/graphql/queries/analytics/getSerumQuoteTradeVolumeStats'
 
-import { endOfDayTimestamp, dayDuration, generateIDFromValues, getTimezone } from '../utils'
+import {
+  endOfDayTimestamp,
+  dayDuration,
+  generateIDFromValues,
+  getTimezone,
+} from '../utils'
 
 import AreaChart from './AreaChart'
 
-const sinceTimestamp = endOfDayTimestamp - dayDuration * 29
+const sinceTimestamp = endOfDayTimestamp - dayDuration * 30
 
 const AreaVolumeChart = ({
   theme,
@@ -45,7 +50,7 @@ export default compose(
       pair: props.selectedPair,
       toTimestamp: endOfDayTimestamp,
       sinceTimestamp,
-      timezone: getTimezone()
+      timezone: getTimezone(),
     }),
     fetchPolicy: 'cache-and-network',
     withOutSpinner: false,
