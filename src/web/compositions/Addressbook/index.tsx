@@ -249,7 +249,6 @@ const AddressbookRoute = ({
       style={{ height: '100%', background: theme.palette.grey.additional }}
     >
       {' '}
-      <GlobalStyles />
       <Card
         style={{
           display: 'flex',

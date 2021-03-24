@@ -51,7 +51,7 @@ const BlueSlider = ({
         width: '1.2rem',
         height: '1.2rem',
         border: 'none',
-        backgroundColor: theme.palette.blue.main,
+        backgroundColor: theme.palette.blue.serum,
         marginTop: '-.28rem',
         boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
         transform: 'translate(-50%, -15%) !important',
@@ -61,7 +61,7 @@ const BlueSlider = ({
         backgroundColor: theme.palette.slider.dots,
       }}
       activeDotStyles={{
-        backgroundColor: theme.palette.blue.main,
+        backgroundColor: theme.palette.blue.serum,
       }}
       markTextSlyles={{
         color: theme.palette.grey.light,
@@ -72,7 +72,7 @@ const BlueSlider = ({
           ? theme.palette.slider.rail
           : theme.palette.slider.dots,
       }}
-      trackBeforeBackground={theme.palette.blue.main}
+      trackBeforeBackground={theme.palette.blue.serum}
     />
   )
 }

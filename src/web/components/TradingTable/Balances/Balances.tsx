@@ -33,8 +33,6 @@ const BalancesTable = (props) => {
   const isCCAIWallet = providerUrl === CCAIProviderURL
   const showSettle = !isCCAIWallet || !wallet.connected || !wallet.autoApprove
 
-  console.log('showSettle', showSettle)
-
   async function onSettleFunds(market, openOrders) {
     try {
       await settleFunds({

@@ -24,7 +24,7 @@ const NavLinkButton = ({
   style: any
   onClick: any
 }) => {
-  const isActivePage = new RegExp(page, 'i').test(pathname)
+  const isActivePage = pathname.match(page)
 
   return (
     <SButton

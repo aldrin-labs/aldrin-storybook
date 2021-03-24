@@ -1,7 +1,7 @@
 import { useLocalStorageState } from './utils';
 import { Account, clusterApiUrl, Connection } from '@solana/web3.js';
 import React, { useContext, useEffect, useMemo } from 'react';
-import { setCache, useAsyncData } from './fetch-loop';
+import { refreshCache, setCache, useAsyncData } from './fetch-loop';
 import tuple from 'immutable-tuple';
 
 export const ENDPOINTS = [
@@ -87,6 +87,8 @@ export function useAccountInfo(publicKey) {
     cacheKey,
     { refreshInterval: 60_000 },
   );
+  const refresh = () => refreshCache(cacheKey)
+
   useEffect(() => {
     if (!publicKey) {
       return;
@@ -119,7 +121,8 @@ export function useAccountInfo(publicKey) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cacheKey]);
-  return [accountInfo, loaded];
+
+  return [accountInfo, loaded, refresh];
 }
 
 export function useAccountData(publicKey) {

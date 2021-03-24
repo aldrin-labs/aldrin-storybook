@@ -34,6 +34,7 @@ import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
 import { AppGridLayout, FontStyle } from './App.styles'
 // import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
 import { GlobalStyle } from '@sb/styles/global.styles'
+import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
@@ -89,7 +90,7 @@ const AppRaw = ({
     !currentPage.includes('/analytics') &&
     currentPage !== '/tech_issues' &&
     !isChartPage &&
-    currentPage !== '/home'
+    currentPage !== '/'
   const isPNL = currentPage.includes('/portfolio/main')
   // TODO: Check this variable
   const pageIsRegistration = currentPage.includes('regist')
@@ -136,6 +137,8 @@ const AppRaw = ({
                             ? 'calc(100% - 11.7rem)'
                             : isChartPage
                             ? 'calc(100% - 12rem)'
+                            : currentPage == '/'
+                            ? '70%'
                             : 'calc(100% - 6rem)',
                         }}
                       >
@@ -155,6 +158,7 @@ const AppRaw = ({
               </MarketProvider>
             </ConnectionProvider>
             <GlobalStyle />
+            <GlobalStyles/>
           </SnackbarWrapper>
         </ThemeWrapper>
       </JssProvider>

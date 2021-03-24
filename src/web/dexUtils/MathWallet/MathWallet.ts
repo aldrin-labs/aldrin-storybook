@@ -1,136 +1,101 @@
-import EventEmitter from 'eventemitter3'
-import { PublicKey } from '@solana/web3.js'
-import bs58 from 'bs58'
+import EventEmitter from 'eventemitter3';
+import { PublicKey, Transaction } from '@solana/web3.js';
+import { DEFAULT_PUBLIC_KEY, WalletAdapter } from '../types';
+import { notify } from '../notifications';
 
-export default class MathWallet extends EventEmitter {
-  _providerUrl: URL
-  _publicKey: null | any
-  _autoApprove: boolean
-  _popup: null | any
-  _handlerAdded: boolean
-  _nextRequestId: number
-  _responsePromises: any
-  _useInjectedInterface: boolean
-
-  constructor(providerUrl: string, network: string) {
-    super()
-    this._providerUrl = new URL(providerUrl)
-    this._providerUrl.hash = new URLSearchParams({
-      origin: window.location.origin,
-      network,
-    }).toString()
-    this._publicKey = null
-    this._autoApprove = false
-    this._popup = null
-    this._handlerAdded = false
-    this._nextRequestId = 1
-    this._responsePromises = new Map()
-    this._useInjectedInterface = false
-  }
-
-  _handleConnect = () => {
-    if (!window.solana) {
-      alert('Open the mathwallet plugin and switch to Solana')
-      return
-    }
-
-    if (!window.solana.getAccounts) {
-      alert('Mathwallet is currently under maintenance')
-      return
-    }
-
-    window.solana.getAccounts()
-    .then((accounts: any[]) => {
-      // TODO: Refactor --- add catch
-      if (accounts && accounts.length) {
-        const account = accounts[0]
-        const newPublicKey = new PublicKey(account.publicKey)
-
-        if (!this._publicKey || !this._publicKey.equals(newPublicKey)) {
-          this._handleDisconnect()
-          this._publicKey = newPublicKey
-          // bcz mathwallet doesn't support autoApprove
-          this._autoApprove = false
-
-          this.emit('connect', this._publicKey);
-        }
-      }
-    })
-    .catch((err) => {
-      this._handleDisconnect()
-      alert(err.message)
-    })
-
-  }
-
-  _handleDisconnect = () => {
-    if (this._publicKey) {
-      window.solana.forgetAccounts()
-      .then(() => {
-        this._publicKey = null
-        
-        this.emit('disconnect')
-      })
-      .catch((err) => {
-        alert(err.message)
-      })
-    }
-
-  }
-
-  connect = () => {
-    if (!this._handlerAdded) {
-      this._handlerAdded = true
-
-      // window.addEventListener('message', this._handleMessage)
-      window.addEventListener('beforeunload', this.disconnect)
-    }
-
-
-
-    return this._handleConnect()
-  }
-
-  disconnect = () => {
-    if (!window.solana) {
-      alert('Open the mathwallet plugin and switch to Solana')
-      return
-    }
-
-    this._handleDisconnect()
-  }
-
-  get publicKey() {
-    return this._publicKey
+export default class MathWalletAdapter extends EventEmitter implements WalletAdapter {
+  _publicKey?: PublicKey;
+  _onProcess: boolean;
+  _connected: boolean;
+  constructor() {
+    super();
+    this._onProcess = false;
+    this._connected = false;
+    this.connect = this.connect.bind(this);
   }
 
   get connected() {
-    return this._publicKey !== null
+    return this._connected;
   }
 
   get autoApprove() {
-    return this._autoApprove
+    return false;
   }
 
-  signTransaction = async (transaction) => {
+  public async signAllTransactions(
+    transactions: Transaction[],
+  ): Promise<Transaction[]> {
+    if (!this._provider) {
+      return transactions;
+    }
+
+    return this._provider.signAllTransactions(transactions);
+  }
+
+  private get _provider() {
+    if ((window as any)?.solana?.isMathWallet) {
+      return (window as any).solana;
+    }
+    return undefined;
+  }
+
+  get publicKey() {
+    return this._publicKey || DEFAULT_PUBLIC_KEY;
+  }
+
+  async signTransaction(transaction: Transaction) {
+    if (!this._provider) {
+      return transaction;
+    }
+
+    return this._provider.signTransaction(transaction);
+  }
+
+  connect() {
+    if (this._onProcess) {
+      return;
+    }
+
     if (!window.solana) {
-      alert('Open the mathwallet plugin and switch to Solana')
+      notify({ message: 'Please, open the mathwallet plugin and switch to Solana' })
       return
     }
 
-    if (!this._publicKey) {
-      alert('Connect your mathwallet first')
+    if (!window.solana?.getAccounts) {
+      notify({ message: 'Sorry, Mathwallet is under maintenance now, try to connect later.' })
       return
     }
 
-    const { signRawTransaction } = window.solana
+    if (!this._provider) {
+      window.open('https://mathwallet.org/', '_blank');
+      notify({
+        message: 'Math Wallet Error',
+        description: 'Please install mathwallet',
+      });
+      return;
+    }
 
-    const response = await signRawTransaction(bs58.encode(transaction.serializeMessage()))
-
-    const signature = bs58.decode(response.signature)
-    const publicKey = new PublicKey(response.publicKey)
-    transaction.addSignature(publicKey, signature)
-    return transaction 
+    this._onProcess = true;
+    this._provider
+      .getAccount()
+      .then((account: any) => {
+        this._publicKey = new PublicKey(account);
+        this._connected = true;
+        this.emit('connect', this._publicKey);
+      })
+      .catch(() => {
+        this.disconnect();
+      })
+      .finally(() => {
+        this._onProcess = false;
+      });
   }
 
+  disconnect() {
+    if (this._publicKey) {
+      this._publicKey = undefined;
+      this._connected = false;
+      this.emit('disconnect');
+    }
+  }
 }

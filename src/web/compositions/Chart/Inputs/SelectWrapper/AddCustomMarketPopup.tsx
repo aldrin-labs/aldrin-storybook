@@ -84,7 +84,7 @@ const CustomMarketDialog = ({
   )
   const programId = marketAccountInfo
     ? marketAccountInfo.owner.toBase58()
-    : MARKETS.find(({ deprecated }) => !deprecated).programId.toBase58()
+    : MARKETS?.find(({ deprecated }) => !deprecated).programId.toBase58()
 
   useEffect(() => {
     if (!wellFormedMarketId || !programId) {
@@ -147,6 +147,7 @@ const CustomMarketDialog = ({
         message: 'Please fill in all fields with valid values',
         type: 'error',
       })
+
       return
     }
 
@@ -162,8 +163,8 @@ const CustomMarketDialog = ({
       params.quoteLabel = quoteLabel
     }
 
-    console.log('knownBaseCurrency || baseLabel', )
-    console.log('knownQuoteCurrency || quoteLabel', )
+    console.log('knownBaseCurrency || baseLabel', knownBaseCurrency || baseLabel)
+    console.log('knownQuoteCurrency || quoteLabel', knownQuoteCurrency || quoteLabel)
 
     if (!marketLabel.includes('_')) {
       notify({
@@ -403,7 +404,7 @@ const CustomMarketDialog = ({
         open={showCreateMarketPopup}
         onClose={() => changeShowCreateMarketPopup(false)}
         theme={theme}
-      />
+      /> 
     </DialogWrapper>
   )
 }
@@ -411,13 +412,5 @@ const CustomMarketDialog = ({
 export default compose(
   withRouter,
   withPublicKey,
-  // queryRendererHoc({
-  //   query: getUserCustomMarkets,
-  //   name: 'getUserCustomMarketsQuery',
-  //   fetchPolicy: 'cache-first',
-  //   variables: (props) => ({
-  //     publicKey: props.publicKey,
-  //   }),
-  // }),
   graphql(addSerumCustomMarket, { name: 'addSerumCustomMarketMutation' })
 )(CustomMarketDialog)

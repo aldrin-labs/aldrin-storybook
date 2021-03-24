@@ -123,7 +123,7 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
       setMarketAddress,
       customMarkets,
       getSerumMarketDataQuery = { getSerumMarketData: [] },
-      getSerumMarketDataQueryRefetch
+      getSerumMarketDataQueryRefetch,
     } = this.props
 
     const {
@@ -260,7 +260,9 @@ class SelectPairListComponent extends React.PureComponent<
       getSerumMarketDataQuery,
     } = this.props
 
-    const { left } = document.getElementById('ExchangePair')?.getBoundingClientRect()
+    const { left } = document
+      .getElementById('ExchangePair')
+      ?.getBoundingClientRect()
     const { sortBy, sortDirection } = this.state
 
     const processedSelectData = combineSelectWrapperData({
@@ -399,7 +401,7 @@ class SelectPairListComponent extends React.PureComponent<
       setCustomMarkets,
       setMarketAddress,
       customMarkets,
-      getSerumMarketDataQueryRefetch
+      getSerumMarketDataQueryRefetch,
     } = this.props
 
     const onAddCustomMarket = (customMarket: any) => {
@@ -414,10 +416,11 @@ class SelectPairListComponent extends React.PureComponent<
 
         return false
       }
+      
       const newCustomMarkets = [...customMarkets, customMarket]
       setCustomMarkets(newCustomMarkets)
       setMarketAddress(customMarket.address)
-      
+
       return true
     }
 
@@ -501,6 +504,25 @@ class SelectPairListComponent extends React.PureComponent<
           >
             USDT
           </Grid>
+          <Grid
+            style={{
+              padding: '1rem',
+              background: tab === 'usdc' ? theme.palette.grey.input : '',
+              display: 'flex',
+              alignItems: 'center',
+              borderRadius: '0.3rem',
+              cursor: 'pointer',
+              fontFamily: 'Avenir Next Demi',
+              fontSize: '1.4rem',
+              height: '2rem',
+              color: theme.palette.grey.text,
+              fontWeight: 'bold',
+              // borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
+            }}
+            onClick={() => onTabChange('usdc')}
+          >
+            USDC
+          </Grid>
           {/* <Grid
             style={{
               padding: '1rem',
@@ -582,15 +604,15 @@ class SelectPairListComponent extends React.PureComponent<
           </Grid>
           <AddCircleIcon
             onClick={async () => {
-              if (publicKey === '') {    
+              if (publicKey === '') {
                 notify({
                   message: 'Connect your wallet first',
                   type: 'error',
                 })
-                wallet.connect() 
+                wallet.connect()
                 return
               }
-              
+
               this.setState({ showAddMarketPopup: true })
             }}
             style={{
@@ -798,7 +820,6 @@ class SelectPairListComponent extends React.PureComponent<
                   }}
                   width={width}
                   style={{
-
                     textAlign: 'left',
                     fontSize: '1.2rem',
                     fontWeight: 'bold',
@@ -816,7 +837,6 @@ class SelectPairListComponent extends React.PureComponent<
                   }}
                   width={width}
                   style={{
-
                     textAlign: 'left',
                     fontSize: '1.2rem',
                     fontWeight: 'bold',
@@ -834,7 +854,6 @@ class SelectPairListComponent extends React.PureComponent<
                   }}
                   width={width}
                   style={{
-
                     textAlign: 'left',
                     fontSize: '1.2rem',
                     fontWeight: 'bold',
@@ -852,7 +871,6 @@ class SelectPairListComponent extends React.PureComponent<
                   }}
                   width={width}
                   style={{
-
                     textAlign: 'left',
                     fontSize: '1.2rem',
                     fontWeight: 'bold',
@@ -887,7 +905,6 @@ class SelectPairListComponent extends React.PureComponent<
                   }}
                   width={width}
                   style={{
-
                     textAlign: 'left',
                     fontSize: '1.2rem',
                     fontWeight: 'bold',
@@ -947,7 +964,7 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     withOutSpinner: true,
     withTableLoader: false,
-  }),
+  })
   // queryRendererHoc({
   //   query: getSelectorSettings,
   //   skip: (props: any) => !props.authenticated,
