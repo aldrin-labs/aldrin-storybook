@@ -52,6 +52,7 @@ import { PreferencesProvider } from '@sb/dexUtils/preferences'
 
 const version = `10.9.57-update-markets-tokens-wusdt-migration`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
+const isNotificationDone = localStorage.getItem('isNotificationDone')
 const localPassword = localStorage.getItem('localPassword')
 const currentVersion = localStorage.getItem('version')
 
@@ -59,6 +60,7 @@ if (currentVersion !== version) {
   localStorage.clear()
   localStorage.setItem('version', version)
   localStorage.setItem('isOnboardingDone', isOnboardingDone)
+  localStorage.setItem('isNotificationDone', isNotificationDone)
 
   if (localPassword !== null) {
     localStorage.setItem('localPassword', localPassword)

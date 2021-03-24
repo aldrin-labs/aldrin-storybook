@@ -32,7 +32,7 @@ const USE_MARKETS = _IGNORE_DEPRECATED
 
 export function useMarketsList() {
   const UPDATED_USE_MARKETS = USE_MARKETS.filter(
-    ({ deprecated }) => !deprecated
+    (el) => !el.deprecated || (el.name.includes('/WUSDT') && el.programId.toBase58() === '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin')
   )
 
   return UPDATED_USE_MARKETS
