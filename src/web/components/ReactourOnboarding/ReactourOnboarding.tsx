@@ -5,6 +5,12 @@ import styled from 'styled-components'
 import SvgIcon from '@sb/components/SvgIcon'
 import exclamationMarkNotification from '@icons/exclamationMarkNotification.svg'
 
+import twitter from '@icons/twitter.svg'
+import telegram from '@icons/telegram.svg'
+import discord from '@icons/discord.svg'
+
+
+
 export const FinishBtn = styled.button`
   width: 8rem;
   height: 3.5rem;
@@ -56,8 +62,8 @@ export const Text = styled.div`
 `
 
 export const WrapperForNotificationTour = styled.div`
-  && > .my-helper {
-    max-width: initial !important;
+  && > span[data-tour-elem="badge"] {
+    display: none;
   }
 `
 
@@ -104,7 +110,7 @@ export const NotificationBlockInitial = styled.div`
 export const NotificationBlockFinal = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
 `
 
 export const RegularText = styled.p`
@@ -206,8 +212,47 @@ export const notificationTourConfig = [
           <NotificationBlockFinal>
             <div>
               <RegularText>Have any questions? Contact us:</RegularText>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="https://twitter.com/CCAI_Official"
+                >
+                  <SvgIcon
+                    style={{ fill: 'white' }}
+                    src={twitter}
+                    width="16px"
+                    height="auto"
+                  />
+                </a>
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="https://t.me/CryptocurrenciesAi"
+                >
+                  <SvgIcon
+                    src={telegram}
+                    width="16px"
+                    height="auto"
+                  />
+                </a>
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="https://discord.gg/2EaKvrs"
+                >
+                  <SvgIcon
+                    src={discord}
+                    width="16px"
+                    height="auto"
+                  />
+                </a>
               </div>
             </div>
             <div>
