@@ -12,6 +12,8 @@ import Tour from 'reactour'
 import {
   tourConfig,
   FinishBtn,
+  notificationTourConfig,
+  WrapperForNotificationTour,
 } from '@sb/components/ReactourOnboarding/ReactourOnboarding'
 // import { CardsPanel } from './components'
 import DefaultView from './DefaultView/StatusWrapper'
@@ -45,7 +47,10 @@ import { checLoginStatusWrapper } from '@core/utils/loginUtils'
 
 import withAuth from '@core/hoc/withAuth'
 import { checkLoginStatus } from '@core/utils/loginUtils'
-import { MainContainer, GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
+import {
+  MainContainer,
+  GlobalStyles,
+} from '@sb/compositions/Chart/Chart.styles'
 import { IProps } from './Chart.types'
 
 import { useMarket } from '@sb/dexUtils/markets'
@@ -57,19 +62,17 @@ import { withPublicKey } from '@core/hoc/withPublicKey'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
+  // Check if the arrays are the same length
+  if (arr1.length !== arr2.length) return false
 
-	// Check if the arrays are the same length
-	if (arr1.length !== arr2.length) return false;
+  // Check if all items exist and are in the same order
+  for (var i = 0; i < arr1.length; i++) {
+    if (arr1[i].symbol !== arr2[i].symbol) return false
+  }
 
-	// Check if all items exist and are in the same order
-	for (var i = 0; i < arr1.length; i++) {
-		if (arr1[i].symbol !== arr2[i].symbol) return false;
-	}
-
-	// Otherwise, return true
-	return true;
-
-};
+  // Otherwise, return true
+  return true
+}
 
 function ChartPageComponent(props: any) {
   const {
@@ -136,7 +139,13 @@ function ChartPageComponent(props: any) {
   const [isTourOpen, setIsTourOpen] = useState(
     localStorage.getItem('isOnboardingDone') == 'null'
   )
+
   const { wallet } = useWallet()
+
+  const isNotificationPassCondition = Date.now() < 1617027500000
+  const [isNotificationTourOpen, setNotificationTourOpen] = useState(
+    localStorage.getItem('isNotificationDone') == 'null'
+  )
 
   useEffect(() => {
     return () => {
@@ -164,14 +173,22 @@ function ChartPageComponent(props: any) {
       isCustomUserMarket: true,
     }))
 
-    const isDataChanged = !arraysCustomMarketsMatch(JSON.parse(savedCustomMarkets), [...updatedMarkets, ...userMarkets])
+    const isDataChanged = !arraysCustomMarketsMatch(
+      JSON.parse(savedCustomMarkets),
+      [...updatedMarkets, ...userMarkets]
+    )
     console.log('isDataChanged', isDataChanged)
 
     if (isDataChanged) setCustomMarkets([...updatedMarkets, ...userMarkets])
   }, [getUserCustomMarketsQuery.getUserCustomMarkets.length])
 
   const setCorrectMarketAddress = async () => {
-    console.log('location.pathname', location.pathname, location.pathname.split('/'), location.pathname.split('/')[3])
+    console.log(
+      'location.pathname',
+      location.pathname,
+      location.pathname.split('/'),
+      location.pathname.split('/')[3]
+    )
     // probably broken here
     const pair = !!location.pathname.split('/')[3]
       ? location.pathname.split('/')[3]
@@ -251,6 +268,27 @@ function ChartPageComponent(props: any) {
 
   return (
     <MainContainer fullscreen={false}>
+      {!isTourOpen && (
+          <Tour
+            className="my-helper"
+            showCloseButton={false}
+            showNumber={false}
+            nextButton={null}
+            prevButton={<a />}
+            showNavigationNumber={false}
+            showButtons={false}
+            showCloseButton={false}
+            showNavigation={false}
+            lastStepNextButton={null}
+            steps={notificationTourConfig}
+            accentColor={accentColor}
+            isOpen={isNotificationTourOpen}
+            onRequestClose={() => {
+              setNotificationTourOpen(false)
+              localStorage.setItem('isNotificationDone', 'true')
+            }}
+          />
+      )}
       <Tour
         showCloseButton={false}
         nextButton={<FinishBtn>Next</FinishBtn>}
