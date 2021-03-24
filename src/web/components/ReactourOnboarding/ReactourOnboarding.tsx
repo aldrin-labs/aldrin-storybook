@@ -134,7 +134,7 @@ export const BoldText = styled.p`
 export const WarningText = styled.p`
   font-family: DM Sans;
   font-style: normal;
-  font-weight: normal;
+  font-weight: bold;
   font-size: 1.6rem;
   color: #f29c38;
   letter-spacing: -0.523077px;
