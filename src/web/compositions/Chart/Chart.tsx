@@ -272,13 +272,14 @@ function ChartPageComponent(props: any) {
           <Tour
             className="my-helper"
             showCloseButton={false}
-            nextButton={<FinishBtn>Next</FinishBtn>}
+            showNumber={false}
+            nextButton={null}
             prevButton={<a />}
             showNavigationNumber={false}
             showButtons={false}
             showCloseButton={false}
             showNavigation={false}
-            lastStepNextButton={<div style={{ width: '100%' }}><FinishBtn>Finish123</FinishBtn></div>}
+            lastStepNextButton={null}
             steps={notificationTourConfig}
             accentColor={accentColor}
             isOpen={isNotificationTourOpen}
