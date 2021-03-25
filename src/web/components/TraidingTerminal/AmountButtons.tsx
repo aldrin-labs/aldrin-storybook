@@ -34,6 +34,7 @@ export const ButtonsWithAmountFieldRowForBasic = ({
   priceForCalculate,
   onMarginChange,
   initialMargin,
+  minOrderSize,
   amount,
   total,
   leverage,
@@ -172,12 +173,13 @@ export const ButtonsWithAmountFieldRowForBasic = ({
               title={
                 <>
                   <p>
-                    Minimal step size for SOL/USDC pair is{' '}
-                    <strong>0.1 SOL</strong>
+                    Minimal increment for {pair[0]}/{pair[1]} pair is{' '}
+                    <strong>{minOrderSize}</strong>
                   </p>
                   <p>
-                    Therefore, the percentage of your balance will be rounded to
-                    one decimal when calculating the percentage.
+                    For example, if you have{' '}
+                    {minOrderSize * 2 + minOrderSize / 2} {pair[0]} then you can
+                    only place an order for {minOrderSize * 2} {pair[0]} .
                   </p>
                 </>
               }

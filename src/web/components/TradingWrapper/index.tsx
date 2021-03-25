@@ -250,6 +250,7 @@ class SimpleTabs extends React.Component {
       intervalId,
       updateIntervalId,
       publicKey,
+      minOrderSize,
     } = this.props
 
     const isSPOTMarket = isSPOTMarketType(marketType)
@@ -583,6 +584,7 @@ class SimpleTabs extends React.Component {
                         sideType={'buy'}
                         priceType={mode}
                         hedgeMode={hedgeMode}
+                        minOrderSize={minOrderSize}
                         publicKey={publicKey}
                         pricePrecision={pricePrecision}
                         quantityPrecision={quantityPrecision}
@@ -824,6 +826,7 @@ class SimpleTabs extends React.Component {
                           byType={'sell'}
                           sideType={'sell'}
                           priceType={mode}
+                          minOrderSize={minOrderSize}
                           theme={theme}
                           hedgeMode={hedgeMode}
                           pricePrecision={pricePrecision}

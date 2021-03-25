@@ -566,6 +566,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       tradingBotEnabled,
       tradingBotInterval,
       tradingBotIsActive,
+      minOrderSize,
     } = this.props
 
     if (!funds) return null
@@ -755,6 +756,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   pair,
                   theme,
                   maxAmount,
+                  minOrderSize,
                   priceType,
                   onAmountChange: this.onAmountChange,
                   onTotalChange: this.onTotalChange,
