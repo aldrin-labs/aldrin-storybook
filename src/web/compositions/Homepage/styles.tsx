@@ -63,7 +63,8 @@ export const WhiteButton = styled.a`
   &:hover {
     background: ${(props) => (props.needHover ? '#f8faff' : null)};
     color: ${(props) => (props.needHover ? '#3a475c' : null)};
-    svg {
+
+    img svg {
       path {
         fill: ${(props) => (props.needHover ? '#3a475c' : null)};
       }
@@ -128,6 +129,7 @@ export const Socials = styled(Row)`
     }
   }
 `
+
 export const ButtonContainer = styled.div`
   position: absolute;
   width: 100%;

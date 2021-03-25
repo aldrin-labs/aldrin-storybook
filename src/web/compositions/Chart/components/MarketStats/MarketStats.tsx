@@ -1,4 +1,4 @@
-import React, {useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { compose } from 'recompose'
 import dayjs from 'dayjs'
 import { withTheme } from '@material-ui/core/styles'
@@ -157,8 +157,10 @@ const MarketStats = (props) => {
 
   const [base, quote] = symbol.split('_')
 
-  const prevClosePrice = markPrice + (lastPriceDiff * -1)
-  const priceChangePercentage = (markPrice - prevClosePrice) / (prevClosePrice / 100)
+  const prevClosePrice = markPrice + lastPriceDiff * -1
+  const priceChangePercentage = !prevClosePrice
+    ? 100
+    : (markPrice - prevClosePrice) / (prevClosePrice / 100)
   const sign24hChange = +priceChangePercentage > 0 ? `+` : ``
 
   return (
@@ -176,9 +178,11 @@ const MarketStats = (props) => {
             fontFamily: 'Avenir Next',
           }}
         >
-          {markPrice === 0 ? '--' : formatNumberToUSFormat(
-            stripDigitPlaces(markPrice, priceDecimalCount)
-          )}
+          {markPrice === 0
+            ? '--'
+            : formatNumberToUSFormat(
+                stripDigitPlaces(markPrice, priceDecimalCount)
+              )}
         </PanelCardValue>
       </PanelCard>
       <PanelCard marketType={marketType} theme={theme}>
@@ -193,9 +197,9 @@ const MarketStats = (props) => {
                   : theme.palette.red.main,
             }}
           >
-             {formatNumberToUSFormat(
+            {formatNumberToUSFormat(
               stripDigitPlaces(lastPriceDiff, priceDecimalCount)
-            )} 
+            )}
           </PanelCardValue>
           <PanelCardSubValue
             theme={theme}
@@ -206,10 +210,12 @@ const MarketStats = (props) => {
                   : theme.palette.red.main,
             }}
           >
-             {!priceChangePercentage ? '0%' : `${sign24hChange}
+            {!priceChangePercentage
+              ? '0%'
+              : `${sign24hChange}
               ${formatNumberToUSFormat(
                 stripDigitPlaces(+priceChangePercentage)
-              )}%`} 
+              )}%`}
           </PanelCardSubValue>
         </span>
       </PanelCard>
@@ -218,10 +224,7 @@ const MarketStats = (props) => {
         <PanelCardTitle theme={theme}>24h high</PanelCardTitle>
         <PanelCardValue theme={theme}>
           {formatNumberToUSFormat(
-            stripDigitPlaces(
-              maxPrice,
-              priceDecimalCount
-            )
+            stripDigitPlaces(maxPrice, priceDecimalCount)
           )}
         </PanelCardValue>
       </PanelCard>
@@ -230,22 +233,15 @@ const MarketStats = (props) => {
         <PanelCardTitle theme={theme}>24h low</PanelCardTitle>
         <PanelCardValue theme={theme}>
           {formatNumberToUSFormat(
-            stripDigitPlaces(
-              minPrice,
-              priceDecimalCount
-            )
+            stripDigitPlaces(minPrice, priceDecimalCount)
           )}
         </PanelCardValue>
       </PanelCard>
       <PanelCard marketType={marketType} theme={theme}>
         <PanelCardTitle theme={theme}>24hr volume</PanelCardTitle>
         <PanelCardValue theme={theme}>
-          {formatNumberToUSFormat(
-            stripDigitPlaces(
-              volume,
-              priceDecimalCount
-            )
-          )} {quote}
+          {formatNumberToUSFormat(stripDigitPlaces(volume, priceDecimalCount))}{' '}
+          {quote}
         </PanelCardValue>
       </PanelCard>
     </div>
