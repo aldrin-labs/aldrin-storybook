@@ -157,10 +157,12 @@ const MarketStats = (props) => {
 
   const [base, quote] = symbol.split('_')
 
-  const prevClosePrice = markPrice + lastPriceDiff * -1
+  const prevClosePrice = +stripDigitPlaces(markPrice, pricePrecision) - +stripDigitPlaces(lastPriceDiff, pricePrecision)
+  
   const priceChangePercentage = !prevClosePrice || props.symbol.includes('WUSDT')
     ? null
     : (markPrice - prevClosePrice) / (prevClosePrice / 100)
+
   const sign24hChange = +priceChangePercentage > 0 ? `+` : ``
 
   return (

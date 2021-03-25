@@ -250,9 +250,9 @@ export async function settleFunds({
   }
 
   const programIds: PublicKey[] = []
-  const m = market
+  const m = market;
 
-  ;[m]
+  [m]
     .reduce((cumulative, m) => {
       // @ts-ignore
       cumulative.push(m._programId)
@@ -356,7 +356,14 @@ export async function settleFunds({
     (x): x is { signers: [PublicKey | Account]; transaction: Transaction } =>
       !!x
   )
-  if (!settleTransactions || settleTransactions.length === 0) return
+  if (!settleTransactions || settleTransactions.length === 0) {
+    notify({
+      message: 'No funds to settle',
+      type: 'error',
+    })
+
+    return
+  }
 
   const transactions = settleTransactions.slice(0, 4).map((t) => t.transaction)
   const signers: Array<Account | PublicKey> = []
@@ -512,7 +519,7 @@ export async function placeOrder({
   feeAccounts,
   addSerumTransactionMutation,
 }) {
-  console.log('place ORDER', market?.minOrderSize)
+  console.log('place ORDER', market?.minOrderSize, size)
 
   let formattedMinOrderSize =
     market?.minOrderSize?.toFixed(getDecimalCount(market.minOrderSize)) ||
