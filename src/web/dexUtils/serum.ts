@@ -18,7 +18,7 @@ const AWESOME_TOKENS = Tokens.map(token => {
   };
 })
 
-const FILTRED_DEPRECATED_AWESOME_MARKETS = AWESOME_MARKETS.filter(el => !el.deprecated)
+const FILTRED_DEPRECATED_AWESOME_MARKETS = AWESOME_MARKETS.filter(el => !el.deprecated || (el.name.includes('/WUSDT') && el.programId.toBase58() === '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'))
 
 export {
   FILTRED_DEPRECATED_AWESOME_MARKETS as AWESOME_MARKETS,
