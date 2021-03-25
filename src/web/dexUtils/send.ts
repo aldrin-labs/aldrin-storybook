@@ -527,8 +527,10 @@ export async function placeOrder({
   let formattedTickSize =
     market?.tickSize?.toFixed(getDecimalCount(market.tickSize)) ||
     market?.tickSize
+
   const isIncrement = (num, step) =>
     Math.abs((num / step) % 1) < 1e-5 || Math.abs(((num / step) % 1) - 1) < 1e-5
+
   if (isNaN(price)) {
     notify({ message: 'Invalid price', type: 'error' })
     return
@@ -606,6 +608,7 @@ export async function placeOrder({
   transaction.add(market.makeMatchOrdersTransaction(5))
 
   console.log('placeOrder transaction after add', transaction)
+  console.log('price', price, 'market.tickSize', market.tickSize, 'market.minOrderSize',market.minOrderSize)
 
   return await sendTransaction({
     transaction,
