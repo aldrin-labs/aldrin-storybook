@@ -50,8 +50,9 @@ import { WalletProvider } from '@sb/dexUtils/wallet'
 import { MarketProvider } from '@sb/dexUtils/markets'
 import { PreferencesProvider } from '@sb/dexUtils/preferences'
 
-const version = `10.9.57-update-markets-tokens-wusdt-migration`
+const version = `10.9.61-add-reload-on-version-change-test`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
+const isNotificationDone = localStorage.getItem('isNotificationDone')
 const localPassword = localStorage.getItem('localPassword')
 const currentVersion = localStorage.getItem('version')
 
@@ -59,6 +60,8 @@ if (currentVersion !== version) {
   localStorage.clear()
   localStorage.setItem('version', version)
   localStorage.setItem('isOnboardingDone', isOnboardingDone)
+  localStorage.setItem('isNotificationDone', isNotificationDone)
+  document.location.reload()
 
   if (localPassword !== null) {
     localStorage.setItem('localPassword', localPassword)

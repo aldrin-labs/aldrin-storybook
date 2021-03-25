@@ -12,6 +12,8 @@ import Tour from 'reactour'
 import {
   tourConfig,
   FinishBtn,
+  notificationTourConfig,
+  WrapperForNotificationTour,
 } from '@sb/components/ReactourOnboarding/ReactourOnboarding'
 // import { CardsPanel } from './components'
 import DefaultView from './DefaultView/StatusWrapper'
@@ -135,9 +137,15 @@ function ChartPageComponent(props: any) {
   const [stepIndex, updateStepIndex] = useState(0)
   const [key, updateKey] = useState(0)
   const [isTourOpen, setIsTourOpen] = useState(
-    localStorage.getItem('isOnboardingDone') == 'null'
+    false
   )
+
   const { wallet } = useWallet()
+
+  const isNotificationPassCondition = Date.now() < 1617027500000
+  const [isNotificationTourOpen, setNotificationTourOpen] = useState(
+    localStorage.getItem('isNotificationDone') == 'null'
+  )
 
   useEffect(() => {
     return () => {
@@ -260,6 +268,27 @@ function ChartPageComponent(props: any) {
 
   return (
     <MainContainer fullscreen={false}>
+      {!isTourOpen && (
+          <Tour
+            className="my-helper"
+            showCloseButton={false}
+            showNumber={false}
+            nextButton={null}
+            prevButton={<a />}
+            showNavigationNumber={false}
+            showButtons={false}
+            showCloseButton={false}
+            showNavigation={false}
+            lastStepNextButton={null}
+            steps={notificationTourConfig}
+            accentColor={accentColor}
+            isOpen={isNotificationTourOpen}
+            onRequestClose={() => {
+              setNotificationTourOpen(false)
+              localStorage.setItem('isNotificationDone', 'true')
+            }}
+          />
+      )}
       <Tour
         showCloseButton={false}
         nextButton={<FinishBtn>Next</FinishBtn>}

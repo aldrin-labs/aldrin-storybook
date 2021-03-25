@@ -174,10 +174,22 @@ export const Balances = ({
 
   async function onSettleSuccess() {
     console.log('settled funds success')
+
     setTimeout(refresh, 5000)
   }
 
   async function onSettleFunds(market, openOrders) {
+    if (!wallet.connected) {
+      notify({
+        message: 'Please, connect your wallet first.',
+        type: 'error',
+      })
+
+      wallet.connect()
+
+      return
+    }
+
     try {
       const result = await settleFunds({
         market,
@@ -195,6 +207,8 @@ export const Balances = ({
         tokenAccounts: accounts,
         selectedTokenAccounts,
       })
+
+      console.log('settleFunds result', result)
 
       if (!!result) {
         notify({

@@ -241,7 +241,6 @@ export async function settleFunds({
   }
 
   if (!baseCurrencyAccount && !quoteCurrencyAccount) {
-    notify({ message: 'Sorry, for settling funds on this market you need to have at least one token added to the wallet' })
     return
   }
 
@@ -251,9 +250,9 @@ export async function settleFunds({
   }
 
   const programIds: PublicKey[] = []
-  const m = market
+  const m = market;
 
-  ;[m]
+  [m]
     .reduce((cumulative, m) => {
       // @ts-ignore
       cumulative.push(m._programId)
@@ -311,12 +310,7 @@ export async function settleFunds({
           selectedTokenAccounts &&
           selectedTokenAccounts[quoteMint.toBase58()]
       )?.pubkey
-      console.log(
-        'selectedBaseTokenAccount',
-        selectedBaseTokenAccount,
-        'selectedQuoteTokenAccount',
-        selectedQuoteTokenAccount
-      )
+
       if (!selectedBaseTokenAccount || !selectedQuoteTokenAccount) {
         return null
       }
@@ -358,15 +352,18 @@ export async function settleFunds({
     })
   )
 
-  console.log('settleTransactions before', settleTransactions)
   settleTransactions = settleTransactions.filter(
     (x): x is { signers: [PublicKey | Account]; transaction: Transaction } =>
       !!x
   )
-  console.log('settleTransactions after', settleTransactions)
-  if (!settleTransactions || settleTransactions.length === 0) return
+  if (!settleTransactions || settleTransactions.length === 0) {
+    notify({
+      message: 'No funds to settle',
+      type: 'error',
+    })
 
-  console.log('settleTransactions', settleTransactions)
+    return
+  }
 
   const transactions = settleTransactions.slice(0, 4).map((t) => t.transaction)
   const signers: Array<Account | PublicKey> = []
@@ -522,7 +519,7 @@ export async function placeOrder({
   feeAccounts,
   addSerumTransactionMutation,
 }) {
-  console.log('place ORDER', market?.minOrderSize)
+  console.log('place ORDER', market?.minOrderSize, size)
 
   let formattedMinOrderSize =
     market?.minOrderSize?.toFixed(getDecimalCount(market.minOrderSize)) ||
