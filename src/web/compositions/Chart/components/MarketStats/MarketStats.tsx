@@ -159,7 +159,7 @@ const MarketStats = (props) => {
 
   const prevClosePrice = markPrice + lastPriceDiff * -1
   const priceChangePercentage = !prevClosePrice
-    ? 100
+    ? null
     : (markPrice - prevClosePrice) / (prevClosePrice / 100)
   const sign24hChange = +priceChangePercentage > 0 ? `+` : ``
 
@@ -211,7 +211,7 @@ const MarketStats = (props) => {
             }}
           >
             {!priceChangePercentage
-              ? '0%'
+              ? '--'
               : `${sign24hChange}
               ${formatNumberToUSFormat(
                 stripDigitPlaces(+priceChangePercentage)
