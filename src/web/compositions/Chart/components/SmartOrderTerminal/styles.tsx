@@ -147,7 +147,16 @@ export const BeforeCharacter = styled.span`
 `
 
 export const AdditionalSettingsButton = styled(
-  ({ isActive, children, theme, ...rest }) => (
+  ({
+    needHover,
+    isActive,
+    children,
+    theme,
+    ...rest
+  }: {
+    needHover: true
+    isActive: false
+  }) => (
     <BtnCustom
       btnWidth="calc(48.5%)"
       height={'3rem'}
@@ -162,9 +171,15 @@ export const AdditionalSettingsButton = styled(
       backgroundColor={
         isActive ? theme.palette.blue.serum : theme.palette.grey.main
       }
-      hoverColor={theme.palette.white.main}
-      hoverBorderColor={theme.palette.blue.serum}
-      hoverBackground={theme.palette.blue.serum}
+      hoverColor={
+        needHover ? theme.palette.white.main : theme.palette.grey.text
+      }
+      hoverBorderColor={
+        needHover ? theme.palette.blue.serum : theme.palette.grey.border
+      }
+      hoverBackground={
+        needHover ? theme.palette.blue.serum : theme.palette.grey.main
+      }
       transition={'all .25s ease-out'}
       textTransform="none"
       boxShadow={'0px .2rem .3rem rgba(8, 22, 58, 0.15)'}

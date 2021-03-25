@@ -154,8 +154,13 @@ class SimpleTabs extends React.Component {
         fetchPolicy: 'cache-first',
       })
       .subscribe({
-        next: (data: { loading: boolean, data: any }) => {
-          const { type, side, amount, price } = data.data.listenSerumOrdersByTVAlerts
+        next: (data: { loading: boolean; data: any }) => {
+          const {
+            type,
+            side,
+            amount,
+            price,
+          } = data.data.listenSerumOrdersByTVAlerts
 
           const variables =
             type === 'limit'
@@ -320,16 +325,136 @@ class SimpleTabs extends React.Component {
                       tradingBotEnabled: false,
                       TVAlertsBotEnabled: false,
                     })
+                    this.updateState('takeProfit', false)
                   }}
                 >
                   Limit
                 </TerminalModeButton>
               </div>
-              <div>
+              <div
+                style={{
+                  width: mode === 'limit' ? '52%' : '34%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                }}
+              >
+                <DarkTooltip
+                  maxWidth={'35rem'}
+                  title={
+                    'A limit order for a price higher than the purchase price of the percentage you specify will be placed immediately after purchase, so you take profit from SRM trading.'
+                  }
+                >
+                  <AdditionalSettingsButton
+                    theme={theme}
+                    style={{
+                      margin: '0',
+                      border: 'none',
+                      whiteSpace: 'nowrap',
+                    }}
+                    isActive={false}
+                    needHover={false}
+                    onClick={() => {
+                      this.updateState('takeProfit', !takeProfit)
+                      this.updateState('breakEvenPoint', !breakEvenPoint)
+                    }}
+                  >
+                    <SCheckbox
+                      checked={takeProfit}
+                      disabled={mode === 'limit'}
+                      onChange={() => {}}
+                      style={{
+                        padding: '0 0.8rem 0 0',
+                      }}
+                    />
+                    <span
+                      style={{
+                        margin: mode === 'limit' ? '0 auto' : '0',
+                        fontFamily: 'Avenir Next Demi',
+                      }}
+                    >
+                      Take Profit
+                    </span>
+                  </AdditionalSettingsButton>
+                </DarkTooltip>
+                {isSPOTMarket && mode === 'limit' ? (
+                  <TerminalHeader
+                    key={'futuresTerminal'}
+                    style={{ display: 'flex', border: 'none' }}
+                    theme={theme}
+                  >
+                    <SettingsContainer>
+                      {mode === 'limit' && (
+                        <FuturesSettings key="postOnlyTerminalController">
+                          <SRadio
+                            id="postOnly"
+                            checked={orderMode === 'postOnly'}
+                            style={{ padding: '0 1rem' }}
+                            onChange={() =>
+                              this.setState({
+                                orderMode:
+                                  orderMode === 'postOnly' ? '' : 'postOnly',
+                                TIFMode: 'GTX',
+                              })
+                            }
+                          />
+                          <SettingsLabel
+                            style={{
+                              whiteSpace: 'nowrap',
+                              textTransform: 'capitalize',
+                              color: '#7284A0',
+                              fontSize: '1.1rem',
+                              fontFamily: 'Avenir Next Medium',
+                            }}
+                            theme={theme}
+                            htmlFor="postOnly"
+                          >
+                            post only
+                          </SettingsLabel>
+                        </FuturesSettings>
+                      )}
+
+                      {mode === 'limit' && (
+                        <FuturesSettings
+                          key="iocTerminalController"
+                          style={{ padding: '.4rem 0' }}
+                        >
+                          <SRadio
+                            id="ioc"
+                            checked={orderMode === 'ioc'}
+                            style={{ padding: '0 1rem' }}
+                            onChange={() =>
+                              this.setState({
+                                orderMode: orderMode === 'ioc' ? '' : 'ioc',
+                              })
+                            }
+                          />
+                          <SettingsLabel
+                            style={{
+                              whiteSpace: 'nowrap',
+                              color: '#7284A0',
+                              fontSize: '1.1rem',
+                              fontFamily: 'Avenir Next Medium',
+                            }}
+                            theme={theme}
+                            htmlFor="ioc"
+                          >
+                            ioc
+                          </SettingsLabel>
+                        </FuturesSettings>
+                      )}
+                    </SettingsContainer>
+                  </TerminalHeader>
+                ) : null}
                 <TerminalModeButton
                   theme={theme}
                   style={{
-                    width: TVAlertsBotIsActive ? '16rem' : '14rem',
+                    width: TVAlertsBotIsActive
+                      ? '16rem'
+                      : mode === 'limit'
+                      ? '27rem'
+                      : '16rem',
                     borderLeft: theme.palette.border.main,
                     ...(TVAlertsBotIsActive
                       ? { backgroundColor: '#F07878' }
@@ -341,13 +466,12 @@ class SimpleTabs extends React.Component {
                       this.unsubscribe()
                       this.setState({
                         TVAlertsBotIsActive: false,
-                        
                       })
                     }
                     this.handleChangeMode('')
                     this.setState((prev) => ({
                       TVAlertsBotEnabled: !prev.TVAlertsBotEnabled,
-                      tradingBotEnabled: false
+                      tradingBotEnabled: false,
                     }))
                   }}
                 >
@@ -362,7 +486,9 @@ class SimpleTabs extends React.Component {
                           ? '30.5rem'
                           : pair.join('_') === 'SRM_USDT' &&
                             !TVAlertsBotIsActive
-                          ? '27.5rem'
+                          ? mode === 'limit'
+                            ? '10.3rem'
+                            : '12.3rem'
                           : pair.join('_') !== 'SRM_USDT' &&
                             !TVAlertsBotIsActive
                           ? '11rem'
@@ -425,56 +551,6 @@ class SimpleTabs extends React.Component {
               </DarkTooltip> */}
             </div>
           </TerminalHeader>
-
-          {isSPOTMarket && mode === 'limit' ? (
-            <TerminalHeader
-              key={'futuresTerminal'}
-              style={{ display: 'flex' }}
-              theme={theme}
-            >
-              <SettingsContainer>
-                {mode === 'limit' && (
-                  <FuturesSettings key="postOnlyTerminalController">
-                    <SCheckbox
-                      id="postOnly"
-                      checked={orderMode === 'postOnly'}
-                      style={{ padding: '0 1rem' }}
-                      onChange={() =>
-                        this.setState({
-                          orderMode: orderMode === 'postOnly' ? '' : 'postOnly',
-                          TIFMode: 'GTX',
-                        })
-                      }
-                    />
-                    <SettingsLabel theme={theme} htmlFor="postOnly">
-                      post only
-                    </SettingsLabel>
-                  </FuturesSettings>
-                )}
-
-                {mode === 'limit' && (
-                  <FuturesSettings
-                    key="iocTerminalController"
-                    style={{ padding: '.4rem 0' }}
-                  >
-                    <SCheckbox
-                      id="ioc"
-                      checked={orderMode === 'ioc'}
-                      style={{ padding: '0 1rem' }}
-                      onChange={() =>
-                        this.setState({
-                          orderMode: orderMode === 'ioc' ? '' : 'ioc',
-                        })
-                      }
-                    />
-                    <SettingsLabel theme={theme} htmlFor="ioc">
-                      ioc
-                    </SettingsLabel>
-                  </FuturesSettings>
-                )}
-              </SettingsContainer>
-            </TerminalHeader>
-          ) : null}
 
           <TerminalMainGrid item xs={12} container marketType={marketType}>
             <div style={{ display: 'flex', width: '100%', height: '100%' }}>
@@ -596,7 +672,7 @@ class SimpleTabs extends React.Component {
                               }}
                             >
                               <InputRowContainer>
-                                <DarkTooltip
+                                {/* <DarkTooltip
                                   maxWidth={'35rem'}
                                   title={
                                     'As soon as you purchase SRM, there are will be placed a limit order for sale at a price that will refund the fees you paid.'
@@ -626,37 +702,7 @@ class SimpleTabs extends React.Component {
                                       Break-Even Point
                                     </span>
                                   </AdditionalSettingsButton>
-                                </DarkTooltip>
-                                <DarkTooltip
-                                  maxWidth={'35rem'}
-                                  title={
-                                    'A limit order for a price higher than the purchase price of the percentage you specify will be placed immediately after purchase, so you take profit from SRM trading.'
-                                  }
-                                >
-                                  <AdditionalSettingsButton
-                                    theme={theme}
-                                    isActive={takeProfit}
-                                    onClick={() => {
-                                      this.updateState(
-                                        'takeProfit',
-                                        !takeProfit
-                                      )
-                                      this.updateState('breakEvenPoint', !breakEvenPoint)
-                                    }}
-                                  >
-                                    <SCheckbox
-                                      checked={takeProfit}
-                                      onChange={() => {}}
-                                      style={{
-                                        padding: '0 0 0 1rem',
-                                        color: '#fff',
-                                      }}
-                                    />
-                                    <span style={{ margin: '0 auto' }}>
-                                      Take Profit
-                                    </span>
-                                  </AdditionalSettingsButton>
-                                </DarkTooltip>
+                                </DarkTooltip> */}
                               </InputRowContainer>
 
                               {takeProfit && (

@@ -139,15 +139,16 @@ export const TerminalModeButton = styled(
   width: 12.5%;
   color: ${(props: { active: boolean; theme: Theme }) =>
     props.active
-      ? props.theme.palette.white.greyish
-      : props.theme.palette.dark.main};
-  background-color: ${(props: { active: boolean; theme: Theme }) =>
-    props.active
       ? props.theme.palette.blue.serum
-      : props.theme.palette.grey.main};
-  border: none;
+      : props.theme.palette.dark.main};
+  background-color: ${(props) => props.theme.palette.grey.main};
   border-right: ${(props) => props.theme.palette.border.main};
-  border-left: ${(props) => props.borderLeft || 'none'}
+  border-left: ${(props) => props.borderLeft || 'none'};
+  font-family: ${(props: { active: boolean; theme: Theme }) =>
+    props.active ? 'Avenir Next Demi' : 'Avenir Next Medium'};
+  border-bottom: ${(props: { active: boolean; theme: Theme }) =>
+    props.active ? `0.2rem solid ${props.theme.palette.blue.serum}` : 'none'};
+  border-top: none;
   text-transform: none;
   white-space: nowrap;
   padding: 1rem 0;
@@ -221,9 +222,9 @@ export const StyledSelect = styled.select`
   background: ${(props) =>
     (!props.disabled &&
       props.theme &&
-        props.theme.palette &&
-        props.theme.palette.white &&
-        props.theme.palette.white.background) ||
+      props.theme.palette &&
+      props.theme.palette.white &&
+      props.theme.palette.white.background) ||
     '#16253D'};
   border: ${(props) =>
     (props.theme &&

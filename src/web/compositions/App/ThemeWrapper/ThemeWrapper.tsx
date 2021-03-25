@@ -158,6 +158,7 @@ export default ({ themeMode, isChartPage, children }) => {
             },
             red: {
               main: '#DD6956',
+              button: 'linear-gradient(140.41deg, #F26D68 0%, #F69894 92.17%)',
               custom: '#D93B28',
               bright: '#ED6337',
               new: '#DD6956',
@@ -180,6 +181,7 @@ export default ({ themeMode, isChartPage, children }) => {
               light: '#E7ECF3',
               custom: '#97C15C',
               main: '#55BB7C',
+              button: 'linear-gradient(135deg, #A5E898 0%, #97E873 100%)',
               new: '#29AC80',
               tab: '#09ACC7',
               shine: '#c7ffd0',
@@ -207,6 +209,7 @@ export default ({ themeMode, isChartPage, children }) => {
               placeholder: '#abbad1',
               disabledInput: 'rgb(46,46,46)',
               title: '#93A0B2',
+              terminal: '#383B45',
             },
             primary: {
               main: '#303037',
