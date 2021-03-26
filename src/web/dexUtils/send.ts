@@ -229,7 +229,7 @@ export async function settleFunds({
   quoteCurrencyAccount,
   tokenAccounts,
   selectedTokenAccounts,
-}) {
+  }) {
   if (!wallet) {
     notify({ message: 'Please, connect wallet to settle funds' })
     return
@@ -356,7 +356,7 @@ export async function settleFunds({
     (x): x is { signers: [PublicKey | Account]; transaction: Transaction } =>
       !!x
   )
-  if (!settleTransactions || settleTransactions.length === 0) {
+  if ((!settleTransactions || settleTransactions.length === 0) && !wallet.autoApprove) {
     notify({
       message: 'No funds to settle',
       type: 'error',

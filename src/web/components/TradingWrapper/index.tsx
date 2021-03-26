@@ -334,51 +334,54 @@ class SimpleTabs extends React.Component {
               </div>
               <div
                 style={{
-                  width: mode === 'limit' ? '52%' : '34%',
+                  width: mode === 'limit' ? '45%' : '37%',
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
                   flexDirection: 'row',
                 }}
               >
-                <DarkTooltip
-                  maxWidth={'35rem'}
-                  title={
-                    'A limit order for a price higher than the purchase price of the percentage you specify will be placed immediately after purchase, so you take profit from SRM trading.'
-                  }
-                >
-                  <AdditionalSettingsButton
-                    theme={theme}
-                    style={{
-                      margin: '0',
-                      border: 'none',
-                      whiteSpace: 'nowrap',
-                    }}
-                    isActive={false}
-                    needHover={false}
-                    onClick={() => {
-                      this.updateState('takeProfit', !takeProfit)
-                      this.updateState('breakEvenPoint', !breakEvenPoint)
-                    }}
+                {mode === 'market' ? (
+                  <DarkTooltip
+                    maxWidth={'35rem'}
+                    title={
+                      'A limit order for a price higher than the purchase price of the percentage you specify will be placed immediately after purchase, so you take profit from SRM trading.'
+                    }
                   >
-                    <SCheckbox
-                      checked={takeProfit}
-                      disabled={mode === 'limit'}
-                      onChange={() => {}}
+                    <AdditionalSettingsButton
+                      theme={theme}
                       style={{
-                        padding: '0 0.8rem 0 0',
+                        margin: '0',
+                        border: 'none',
+                        whiteSpace: 'nowrap',
                       }}
-                    />
-                    <span
-                      style={{
-                        margin: mode === 'limit' ? '0 auto' : '0',
-                        fontFamily: 'Avenir Next Demi',
+                      isActive={false}
+                      needHover={false}
+                      onClick={() => {
+                        this.updateState('takeProfit', !takeProfit)
+                        this.updateState('breakEvenPoint', !breakEvenPoint)
                       }}
                     >
-                      Take Profit
-                    </span>
-                  </AdditionalSettingsButton>
-                </DarkTooltip>
+                      <SCheckbox
+                        checked={takeProfit}
+                        disabled={mode === 'limit'}
+                        onChange={() => {}}
+                        style={{
+                          padding: '0 0.8rem 0 0',
+                        }}
+                      />
+                      <span
+                        style={{
+                          margin: mode === 'limit' ? '0 auto' : '0',
+                          fontFamily: 'Avenir Next Demi',
+                        }}
+                      >
+                        Take Profit
+                      </span>
+                    </AdditionalSettingsButton>
+                  </DarkTooltip>
+                ) : null}
+
                 {isSPOTMarket && mode === 'limit' ? (
                   <TerminalHeader
                     key={'futuresTerminal'}
@@ -454,7 +457,7 @@ class SimpleTabs extends React.Component {
                     width: TVAlertsBotIsActive
                       ? '16rem'
                       : mode === 'limit'
-                      ? '27rem'
+                      ? '22rem'
                       : '16rem',
                     borderLeft: theme.palette.border.main,
                     ...(TVAlertsBotIsActive

@@ -861,7 +861,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   ? 'long'
                   : 'short'}
               </SendButton>
-              <Grid>
+              {/* <Grid>
                 <span
                   style={{
                     color: theme.palette.grey.title,
@@ -882,7 +882,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   </span>{' '}
                   in your wallet for successful trading.
                 </span>
-              </Grid>
+              </Grid> */}
             </Grid>
           </Grid>
         </GridContainer>
