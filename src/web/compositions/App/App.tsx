@@ -161,7 +161,7 @@ const AppRaw = ({
               </MarketProvider>
             </ConnectionProvider>
             <GlobalStyle />
-            <GlobalStyles/>
+            <GlobalStyles />
           </SnackbarWrapper>
         </ThemeWrapper>
       </JssProvider>

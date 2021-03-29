@@ -42,7 +42,7 @@ import {
 } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { FormInputContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
-import { SliderWithAmountFieldRowForBasic } from './AmountSlider'
+import { ButtonsWithAmountFieldRowForBasic } from './AmountButtons'
 
 export const TradeInputHeader = ({
   title = 'Input',
@@ -262,38 +262,27 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     // Handling case with balances in TradingTerminal
     const isBuyType = sideType === 'buy'
     const fundsAssetValue = isBuyType ? funds[1].quantity : funds[0].quantity
-    const previousFundsAssetValue = isBuyType ? prevProps.funds[1].quantity : prevProps.funds[0].quantity
+    const previousFundsAssetValue = isBuyType
+      ? prevProps.funds[1].quantity
+      : prevProps.funds[0].quantity
 
     if (fundsAssetValue !== previousFundsAssetValue) {
       const newValue = fundsAssetValue
       const priceForCalculate =
-      priceType !== 'market' && priceType !== 'maker-only'
-        ? price
-        : marketPrice
+        priceType !== 'market' && priceType !== 'maker-only'
+          ? price
+          : marketPrice
 
       const newAmount =
         !isSPOTMarket || isBuyType
-          ? +stripDigitPlaces(
-              newValue / priceForCalculate,
-              quantityPrecision
-            )
-          : +stripDigitPlaces(
-              newValue,
-              quantityPrecision
-            )
+          ? +stripDigitPlaces(newValue / priceForCalculate, quantityPrecision)
+          : +stripDigitPlaces(newValue, quantityPrecision)
 
       const newTotal =
-        isBuyType || !isSPOTMarket
-          ? newValue
-          : newValue * priceForCalculate
-
+        isBuyType || !isSPOTMarket ? newValue : newValue * priceForCalculate
 
       setFieldValue('amount', newAmount)
-      setFieldValue(
-        'total',
-        stripDigitPlaces(newTotal, isSPOTMarket ? 8 : 3)
-      )
-
+      setFieldValue('total', stripDigitPlaces(newTotal, isSPOTMarket ? 8 : 3))
     }
 
     if (marketPriceAfterPairChange !== prevProps.marketPriceAfterPairChange) {
@@ -577,6 +566,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       tradingBotEnabled,
       tradingBotInterval,
       tradingBotIsActive,
+      minOrderSize,
     } = this.props
 
     if (!funds) return null
@@ -623,17 +613,18 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     theme={theme}
                     needTitle
                     type={'text'}
-                    title={`price (${pair[1]})`}
+                    title={`price`}
                     value={values.price || ''}
                     onChange={this.onPriceChange}
                     symbol={pair[1]}
                   />
                 </InputRowContainer>
               ) : null}
-
               {priceType === 'market' && !tradingBotEnabled && (
-                <InputRowContainer style={{ visibility: !isBuyType ? 'hidden' : 'visible'}}>
-                  {pair.join('_') === 'SRM_USDT' && (
+                <InputRowContainer
+                  style={{ visibility: !isBuyType ? 'hidden' : 'visible' }}
+                >
+                  {/* {pair.join('_') === 'SRM_USDT' && (
                     <DarkTooltip
                       maxWidth={'35rem'}
                       title={
@@ -659,8 +650,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                         </span>
                       </AdditionalSettingsButton>
                     </DarkTooltip>
-                  )}
-                  <DarkTooltip
+                  )} */}
+                  {/* <DarkTooltip
                     maxWidth={'35rem'}
                     title={
                       'A limit order for a price higher than the purchase price of the percentage you specify will be placed immediately after purchase, so you will take profit from SRM trading.'
@@ -681,40 +672,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                       />
                       <span style={{ margin: '0 auto' }}>Take Profit</span>
                     </AdditionalSettingsButton>
-                  </DarkTooltip>
+                  </DarkTooltip> */}
                 </InputRowContainer>
               )}
-
-              {takeProfit && !tradingBotEnabled && priceType === 'market' && (
-                <InputRowContainer>
-                  <TradeInputContent
-                    theme={theme}
-                    padding={'0 1.5% 0 0'}
-                    width={'calc(50%)'}
-                    symbol={'%'}
-                    title={'TP'}
-                    textAlign={'right'}
-                    needTitle={true}
-                    value={takeProfitPercentage}
-                    onChange={(e) => {
-                      updateState('takeProfitPercentage', e.target.value)
-                    }}
-                  />
-
-                  <BlueSlider
-                    theme={theme}
-                    value={takeProfitPercentage * 20}
-                    sliderContainerStyles={{
-                      width: '50%',
-                      margin: '0 0 0 1.5%',
-                    }}
-                    onChange={(value) => {
-                      updateState('takeProfitPercentage', value / 20)
-                    }}
-                  />
-                </InputRowContainer>
-              )}
-
               {priceType === 'stop-limit' || priceType === 'stop-market' ? (
                 <InputRowContainer
                   key={'stop-limit'}
@@ -732,7 +692,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   />
                 </InputRowContainer>
               ) : null}
-
               {tradingBotEnabled && !tradingBotIsActive && (
                 <FormInputContainer
                   theme={theme}
@@ -792,12 +751,12 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   </InputRowContainer>
                 </FormInputContainer>
               )}
-
-              <SliderWithAmountFieldRowForBasic
+              <ButtonsWithAmountFieldRowForBasic
                 {...{
                   pair,
                   theme,
                   maxAmount,
+                  minOrderSize,
                   priceType,
                   onAmountChange: this.onAmountChange,
                   onTotalChange: this.onTotalChange,
@@ -819,15 +778,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                             newValue / priceForCalculate,
                             quantityPrecision
                           )
-                        : +stripDigitPlaces(
-                            newValue,
-                            quantityPrecision
-                          )
+                        : +stripDigitPlaces(newValue, quantityPrecision)
 
-                    const newTotal =
-                      isBuyType || !isSPOTMarket
-                        ? newValue
-                        : newValue * priceForCalculate
+                    const newTotal = newAmount * priceForCalculate
 
                     const newMargin = stripDigitPlaces(
                       (maxAmount * (value / 100)) / leverage,
@@ -835,14 +788,40 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     )
 
                     setFieldValue('amount', newAmount)
-                    setFieldValue(
-                      'total',
-                      stripDigitPlaces(newTotal, isSPOTMarket ? 8 : 3)
-                    )
+                    setFieldValue('total', stripDigitPlaces(newTotal, 2))
                     setFieldValue('margin', newMargin)
                   },
                 }}
-              />
+              />{' '}
+              {takeProfit && !tradingBotEnabled && priceType === 'market' && (
+                <InputRowContainer>
+                  <TradeInputContent
+                    theme={theme}
+                    padding={'0 1.5% 0 0'}
+                    width={'calc(50%)'}
+                    symbol={'%'}
+                    title={'Take Profit'}
+                    textAlign={'right'}
+                    needTitle={true}
+                    value={takeProfitPercentage}
+                    onChange={(e) => {
+                      updateState('takeProfitPercentage', e.target.value)
+                    }}
+                  />
+
+                  <BlueSlider
+                    theme={theme}
+                    value={takeProfitPercentage * 20}
+                    sliderContainerStyles={{
+                      width: '50%',
+                      margin: '0 0 0 1.5%',
+                    }}
+                    onChange={(value) => {
+                      updateState('takeProfitPercentage', value / 20)
+                    }}
+                  />
+                </InputRowContainer>
+              )}
             </InputRowContainer>
           </Grid>
 
@@ -882,6 +861,28 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   ? 'long'
                   : 'short'}
               </SendButton>
+              {/* <Grid>
+                <span
+                  style={{
+                    color: theme.palette.grey.title,
+                    fontSize: '1.1rem',
+                    width: '100%',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  You must have at least{' '}
+                  <span
+                    style={{
+                      color: '#F8FAFF',
+                      fontSize: '1.1rem',
+                      width: '100%',
+                    }}
+                  >
+                    0.03 SOL
+                  </span>{' '}
+                  in your wallet for successful trading.
+                </span>
+              </Grid> */}
             </Grid>
           </Grid>
         </GridContainer>
