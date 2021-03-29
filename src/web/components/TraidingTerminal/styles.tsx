@@ -464,3 +464,17 @@ export const PercentageTabsContainer = styled.div`
   justify-content: space-between;
   align-items: center;
 `
+export const Placeholder = styled.div`
+  font-size: 1.2rem;
+  width: 100%;
+  height: 4rem;
+  background: #383b45;
+  border-radius: 1rem;
+  padding: 0 2rem;
+  font-family: Avenir Next Medium;
+  color: #f69894;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-derection: column;
+`

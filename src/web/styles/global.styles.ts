@@ -17,7 +17,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #09ACC7;
+    background: #366CE5;
   }
 
   .DateRangePicker {

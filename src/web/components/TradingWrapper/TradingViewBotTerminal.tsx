@@ -180,9 +180,9 @@ export const TradingViewBotTerminal = ({
             />
           </SwitcherContainer>
           <Input
-            needTitleBlock
-            header={'plot_'}
             theme={theme}
+            needTitle
+            title={`plot_`}
             type={'number'}
             textAlign="left"
             width={'calc(20% - .8rem)'}
@@ -235,9 +235,9 @@ export const TradingViewBotTerminal = ({
               textAlign={'right'}
               symbol={pair[1]}
               value={orderType === 'market' ? 'Market' : price}
-              header={'price'}
+              needTitle
+              title={`plot_`}
               type={'text'}
-              needTitleBlock={true}
               disabled={pricePlotEnabled || orderType === 'market'}
               onChange={(e) => {
                 updatePrice(e.target.value)
@@ -254,8 +254,8 @@ export const TradingViewBotTerminal = ({
             />
           </SwitcherContainer>
           <Input
-            needTitleBlock
-            header={'plot_'}
+            needTitle
+            title={`plot_`}
             theme={theme}
             type={'number'}
             textAlign="left"
