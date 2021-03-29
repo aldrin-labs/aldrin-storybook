@@ -57,6 +57,7 @@ import NetworkDropdown from '@sb/compositions/Chart/components/NetworkDropdown/N
 
 import Dropdown from '@sb/components/Dropdown'
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
+import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown/index'
 
 export const NavBarLink = styled(({ style, ...props }) => (
   <NavLink {...props} />
@@ -125,7 +126,7 @@ export const CardsPanel = ({ theme, setMarketAddress }) => {
   const isDarkTheme = theme.palette.type === 'dark'
   const isAnalytics = location.pathname.includes('analytics')
   const isChartPage = location.pathname.includes('chart')
-console.log('page', location.pathname)
+  console.log('page', location.pathname)
   return (
     <ChartGridContainer isChartPage={isChartPage} theme={theme}>
       <PanelWrapper>
@@ -168,15 +169,15 @@ console.log('page', location.pathname)
               alignItems: 'center',
             }}
           >
-              <NavLinkButton
-                theme={theme}
-                page={'/'}
-                pathname={location.pathname === '/' ? location.pathname : ''}
-                component={(props) => <Link to={`/`} {...props} />}
-              >
-                {' '}
-                Home
-              </NavLinkButton>
+            <NavLinkButton
+              theme={theme}
+              page={'/'}
+              pathname={location.pathname === '/' ? location.pathname : ''}
+              component={(props) => <Link to={`/`} {...props} />}
+            >
+              {' '}
+              Home
+            </NavLinkButton>
             <NavLinkButton
               theme={theme}
               data-tut="farming"
@@ -339,14 +340,13 @@ const TopBar = ({ theme }) => {
       </div> */}
 
       {!connected && (
-        <Row data-tut="wallet" wrap={'nowrap'}>
-          <Dropdown
-            wallet={wallet}
-            connected={connected}
+        <Row style={{ paddingLeft: '4rem' }} data-tut="wallet" wrap={'nowrap'}>
+          <ConnectWalletDropdown
             theme={theme}
-            setProvider={setProvider}
-            providerUrl={providerUrl}
-            setAutoConnect={setAutoConnect}
+            height={'4rem'}
+            id={'navBar'}
+            isNavBar={true}
+            showOnTop={true}
           />
           {/* <BtnCustom
           btnWidth={'14rem'}

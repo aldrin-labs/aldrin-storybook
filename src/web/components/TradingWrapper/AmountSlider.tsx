@@ -35,7 +35,7 @@ export const SliderWithAmountFieldRow = ({
   amountPlot,
   total,
   togglePlot,
-  changePlot
+  changePlot,
 }: SliderWithPriceAndPercentageFieldRowProps) => {
   const [localAmount, updateLocalAmount] = useState(amount)
   const [localTotal, updateLocalTotal] = useState(total)
@@ -58,8 +58,8 @@ export const SliderWithAmountFieldRow = ({
               type={'text'}
               pattern={marketType === 0 ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'}
               symbol={pair[0]}
-              header={'size'}
-              needTitleBlock
+              needTitle
+              title={`size`}
               value={localAmount}
               showErrors={showErrors}
               disabled={amountPlotEnabled}
@@ -71,10 +71,10 @@ export const SliderWithAmountFieldRow = ({
             <Input
               theme={theme}
               type={'text'}
-              header={'total'}
-              needTitleBlock
               symbol={pair[1]}
               value={localTotal}
+              needTitle
+              title={`total`}
               disabled={amountPlotEnabled}
               onChange={onTotalChange}
             />
@@ -124,20 +124,17 @@ export const SliderWithAmountFieldRow = ({
             width: '10%',
           }}
         >
-          <Switcher
-            checked={amountPlotEnabled}
-            onChange={togglePlot}
-          />
+          <Switcher checked={amountPlotEnabled} onChange={togglePlot} />
         </div>
         <Input
           theme={theme}
           type={'number'}
-          needTitleBlock
-          header={'plot_'}
           textAlign="left"
           width={'calc(20% - .8rem)'}
           disabled={!amountPlotEnabled}
           value={amountPlot}
+          needTitle
+          title={`plot_`}
           showErrors={showErrors}
           isValid={validateField(true, amountPlot)}
           onChange={changePlot}

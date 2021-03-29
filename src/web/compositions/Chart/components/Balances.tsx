@@ -43,6 +43,7 @@ import { CCAIProviderURL } from '@sb/dexUtils/utils'
 import { notify } from '@sb/dexUtils/notifications'
 
 import { getDecimalCount } from '@sb/dexUtils/utils'
+import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown/index'
 
 export const BalanceTitle = styled.div`
   display: flex;
@@ -355,75 +356,97 @@ export const Balances = ({
                     {pair[0]}
                   </BalanceQuantity>
                 </BalanceValues>
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: !showSettle ? 'flex-start' : 'space-evenly',
-                    width: '100%',
-                    paddingBottom: '0.8rem',
-                  }}
-                >
-                  {isBaseCoinExistsInWallet || !wallet.connected ? (
-                    <>
-                      <BtnCustom
-                        btnWidth={!showSettle ? '100%' : '45%'}
-                        height="auto"
-                        fontSize=".8rem"
-                        padding=".5rem 0 .4rem 0;"
-                        borderRadius=".8rem"
-                        btnColor={theme.palette.white.background}
-                        backgroundColor="#57bc7c"
-                        hoverColor={theme.palette.white.background}
-                        hoverBackground="#50ad72"
-                        transition={'all .4s ease-out'}
-                        onClick={() => {
-                          toggleOpeningDepositPopup(true)
-                          chooseCoinForDeposit('base')
-                        }}
-                      >
-                        deposit
-                      </BtnCustom>
-                      {showSettle && (
+                {wallet.connected ? (
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: !showSettle
+                        ? 'flex-start'
+                        : 'space-evenly',
+                      width: '100%',
+                      paddingBottom: '0.8rem',
+                    }}
+                  >
+                    {isBaseCoinExistsInWallet || !wallet.connected ? (
+                      <>
                         <BtnCustom
-                          btnWidth="45%"
+                          btnWidth={!showSettle ? '100%' : '45%'}
                           height="auto"
                           fontSize=".8rem"
                           padding=".5rem 0 .4rem 0;"
                           borderRadius=".8rem"
-                          btnColor={theme.palette.dark.main}
-                          borderColor={theme.palette.blue.serum}
-                          backgroundColor={theme.palette.blue.serum}
-                          // hoverBackground="#3992a9"
+                          btnColor={theme.palette.white.background}
+                          backgroundColor="#57bc7c"
+                          hoverColor={theme.palette.white.background}
+                          hoverBackground="#50ad72"
                           transition={'all .4s ease-out'}
                           onClick={() => {
-                            const { market, openOrders } = baseBalances
-                            onSettleFunds(market, openOrders)
+                            toggleOpeningDepositPopup(true)
+                            chooseCoinForDeposit('base')
                           }}
                         >
-                          settle
+                          deposit
                         </BtnCustom>
-                      )}
-                    </>
-                  ) : (
-                    <BtnCustom
-                      btnWidth="100%"
-                      height="auto"
-                      fontSize=".8rem"
-                      padding=".5rem 0 .4rem 0;"
-                      borderRadius=".8rem"
-                      btnColor={theme.palette.dark.main}
-                      borderColor={theme.palette.blue.serum}
-                      backgroundColor={theme.palette.blue.serum}
-                      // hoverBackground="#3992a9"
-                      transition={'all .4s ease-out'}
-                      onClick={() => {
-                        setShowTokenNotAdded(true)
-                      }}
-                    >
-                      Add to the wallet
-                    </BtnCustom>
-                  )}
-                </div>
+                        {showSettle && (
+                          <BtnCustom
+                            btnWidth="45%"
+                            height="auto"
+                            fontSize=".8rem"
+                            padding=".5rem 0 .4rem 0;"
+                            borderRadius=".8rem"
+                            btnColor={theme.palette.dark.main}
+                            borderColor={theme.palette.blue.serum}
+                            backgroundColor={theme.palette.blue.serum}
+                            // hoverBackground="#3992a9"
+                            transition={'all .4s ease-out'}
+                            onClick={() => {
+                              const { market, openOrders } = baseBalances
+                              onSettleFunds(market, openOrders)
+                            }}
+                          >
+                            settle
+                          </BtnCustom>
+                        )}
+                      </>
+                    ) : (
+                      <BtnCustom
+                        btnWidth="100%"
+                        height="auto"
+                        fontSize=".8rem"
+                        padding=".5rem 0 .4rem 0;"
+                        borderRadius=".8rem"
+                        btnColor={theme.palette.dark.main}
+                        borderColor={theme.palette.blue.serum}
+                        backgroundColor={theme.palette.blue.serum}
+                        // hoverBackground="#3992a9"
+                        transition={'all .4s ease-out'}
+                        onClick={() => {
+                          setShowTokenNotAdded(true)
+                        }}
+                      >
+                        Add to the wallet
+                      </BtnCustom>
+                    )}
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: !showSettle
+                        ? 'flex-start'
+                        : 'space-evenly',
+                      width: '100%',
+                      paddingBottom: '0.8rem',
+                    }}
+                  >
+                    <ConnectWalletDropdown
+                      theme={theme}
+                      showOnTop={true}
+                      height={'2rem'}
+                      id={'connectButtonBase'}
+                    />
+                  </div>
+                )}
               </Grid>
               <Grid
                 container
@@ -462,74 +485,93 @@ export const Balances = ({
                     {pair[1]}
                   </BalanceQuantity>
                 </BalanceValues>
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: !showSettle ? 'flex-start' : 'space-evenly',
-                    width: '100%',
-                  }}
-                >
-                  {isQuoteCoinExistsInWallet || !wallet.connected ? (
-                    <>
-                      <BtnCustom
-                        btnWidth={!showSettle ? '100%' : '45%'}
-                        height="auto"
-                        fontSize=".8rem"
-                        padding=".5rem 0 .4rem 0;"
-                        borderRadius=".8rem"
-                        btnColor={theme.palette.white.background}
-                        backgroundColor="#57bc7c"
-                        hoverColor={theme.palette.white.background}
-                        hoverBackground="#50ad72"
-                        transition={'all .4s ease-out'}
-                        onClick={() => {
-                          toggleOpeningDepositPopup(true)
-                          chooseCoinForDeposit('quote')
-                        }}
-                      >
-                        deposit
-                      </BtnCustom>
-                      {showSettle && (
+                {wallet.connected ? (
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: !showSettle
+                        ? 'flex-start'
+                        : 'space-evenly',
+                      width: '100%',
+                    }}
+                  >
+                    {isQuoteCoinExistsInWallet || !wallet.connected ? (
+                      <>
                         <BtnCustom
-                          btnWidth="45%"
+                          btnWidth={!showSettle ? '100%' : '45%'}
                           height="auto"
                           fontSize=".8rem"
                           padding=".5rem 0 .4rem 0;"
                           borderRadius=".8rem"
-                          btnColor={theme.palette.dark.main}
-                          borderColor={theme.palette.blue.serum}
-                          backgroundColor={theme.palette.blue.serum}
-                          // hoverBackground="#3992a9"
+                          btnColor={theme.palette.white.background}
+                          backgroundColor="#57bc7c"
+                          hoverColor={theme.palette.white.background}
+                          hoverBackground="#50ad72"
                           transition={'all .4s ease-out'}
                           onClick={() => {
-                            const { market, openOrders } = quoteBalances
-                            onSettleFunds(market, openOrders)
+                            toggleOpeningDepositPopup(true)
+                            chooseCoinForDeposit('quote')
                           }}
                         >
-                          settle
+                          deposit
                         </BtnCustom>
-                      )}
-                    </>
-                  ) : (
-                    <BtnCustom
-                      btnWidth="100%"
-                      height="auto"
-                      fontSize=".8rem"
-                      padding=".5rem 0 .4rem 0;"
-                      borderRadius=".8rem"
-                      btnColor={theme.palette.dark.main}
-                      borderColor={theme.palette.blue.serum}
-                      backgroundColor={theme.palette.blue.serum}
-                      // hoverBackground="#3992a9"
-                      transition={'all .4s ease-out'}
-                      onClick={() => {
-                        setShowTokenNotAdded(true)
-                      }}
-                    >
-                      Add to the wallet
-                    </BtnCustom>
-                  )}
-                </div>
+                        {showSettle && (
+                          <BtnCustom
+                            btnWidth="45%"
+                            height="auto"
+                            fontSize=".8rem"
+                            padding=".5rem 0 .4rem 0;"
+                            borderRadius=".8rem"
+                            btnColor={theme.palette.dark.main}
+                            borderColor={theme.palette.blue.serum}
+                            backgroundColor={theme.palette.blue.serum}
+                            // hoverBackground="#3992a9"
+                            transition={'all .4s ease-out'}
+                            onClick={() => {
+                              const { market, openOrders } = quoteBalances
+                              onSettleFunds(market, openOrders)
+                            }}
+                          >
+                            settle
+                          </BtnCustom>
+                        )}
+                      </>
+                    ) : (
+                      <BtnCustom
+                        btnWidth="100%"
+                        height="auto"
+                        fontSize=".8rem"
+                        padding=".5rem 0 .4rem 0;"
+                        borderRadius=".8rem"
+                        btnColor={theme.palette.dark.main}
+                        borderColor={theme.palette.blue.serum}
+                        backgroundColor={theme.palette.blue.serum}
+                        // hoverBackground="#3992a9"
+                        transition={'all .4s ease-out'}
+                        onClick={() => {
+                          setShowTokenNotAdded(true)
+                        }}
+                      >
+                        Add to the wallet
+                      </BtnCustom>
+                    )}
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: !showSettle
+                        ? 'flex-start'
+                        : 'space-evenly',
+                      width: '100%',
+                    }}
+                  >
+                    <ConnectWalletDropdown
+                      height={'2rem'}
+                      id={'connectButtonQuote'}
+                    />
+                  </div>
+                )}
               </Grid>
             </>
           ) : (

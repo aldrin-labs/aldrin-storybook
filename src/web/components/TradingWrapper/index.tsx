@@ -250,6 +250,9 @@ class SimpleTabs extends React.Component {
       intervalId,
       updateIntervalId,
       publicKey,
+      connected,
+      SOLAmount,
+      openOrdersAccount,
       minOrderSize,
     } = this.props
 
@@ -280,6 +283,7 @@ class SimpleTabs extends React.Component {
           }
         ).positionAmt
 
+    console.log('TVAlertsBotIsActive', TVAlertsBotIsActive)
     return (
       <Grid
         id="tradingTerminal"
@@ -334,7 +338,7 @@ class SimpleTabs extends React.Component {
               </div>
               <div
                 style={{
-                  width: mode === 'limit' ? '45%' : '37%',
+                  width: mode === '' ? '20%' : mode === 'limit' ? '45%' : '37%',
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
@@ -472,6 +476,9 @@ class SimpleTabs extends React.Component {
                         TVAlertsBotIsActive: false,
                       })
                     }
+                    if (TVAlertsBotEnabled) {
+                      this.handleChangeMode('market')
+                    }
                     this.handleChangeMode('')
                     this.setState((prev) => ({
                       TVAlertsBotEnabled: !prev.TVAlertsBotEnabled,
@@ -495,7 +502,9 @@ class SimpleTabs extends React.Component {
                             : '12.3rem'
                           : pair.join('_') !== 'SRM_USDT' &&
                             !TVAlertsBotIsActive
-                          ? '11rem'
+                          ? mode === 'limit'
+                            ? '11rem'
+                            : '12rem'
                           : '13rem',
                       top: 0,
                     }}
@@ -589,10 +598,13 @@ class SimpleTabs extends React.Component {
                         hedgeMode={hedgeMode}
                         minOrderSize={minOrderSize}
                         publicKey={publicKey}
+                        connected={connected}
                         pricePrecision={pricePrecision}
+                        SOLAmount={SOLAmount}
                         quantityPrecision={quantityPrecision}
                         minSpotNotional={minSpotNotional}
                         minFuturesStep={minFuturesStep}
+                        openOrdersAccount={openOrdersAccount}
                         priceFromOrderbook={priceFromOrderbook}
                         marketPriceAfterPairChange={marketPriceAfterPairChange}
                         isSPOTMarket={isSPOTMarket}
@@ -836,6 +848,9 @@ class SimpleTabs extends React.Component {
                           quantityPrecision={quantityPrecision}
                           minSpotNotional={minSpotNotional}
                           minFuturesStep={minFuturesStep}
+                          connected={connected}
+                          SOLAmount={SOLAmount}
+                          openOrdersAccount={openOrdersAccount}
                           priceFromOrderbook={priceFromOrderbook}
                           marketPriceAfterPairChange={
                             marketPriceAfterPairChange

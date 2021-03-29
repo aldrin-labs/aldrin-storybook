@@ -56,10 +56,11 @@ export const StyledButton = styled(Button)`
 `
 
 export const StyledDropdown = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: auto;
+  width: 100%;
   height: 100%;
   &:hover > div {
     display: block !important;
@@ -72,8 +73,15 @@ export const StyledPaper = styled(Paper)`
   &&& {
     z-index: 11;
     position: absolute;
-    top: calc(6rem - .1rem);
-    right: ${(props) => (props.isWalletConnected ? (props.customActiveRem ? props.customActiveRem : `9rem`) : (props.customNotActiveRem ? props.customNotActiveRem : '3rem'))};
+    top: calc(6rem - 0.1rem);
+    right: ${(props) =>
+      props.isWalletConnected
+        ? props.customActiveRem
+          ? props.customActiveRem
+          : `9rem`
+        : props.customNotActiveRem
+        ? props.customNotActiveRem
+        : '3rem'};
     width: calc(14rem);
     height: auto;
     box-shadow: 0px 0.4rem 0.8rem rgba(10, 19, 43, 0.1);

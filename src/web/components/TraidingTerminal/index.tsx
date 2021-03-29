@@ -12,6 +12,8 @@ import { Loading } from '@sb/components/index'
 import { stubFalse, toNumber, toPairs } from 'lodash-es'
 import { traidingErrorMessages } from '@core/config/errorMessages'
 import { IProps, FormValues, IPropsWithFormik, priceType } from './types'
+import Info from '@icons/inform.svg'
+import SvgIcon from '@sb/components/SvgIcon'
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
@@ -30,6 +32,7 @@ import {
   BlueInputTitle,
   SeparateInputTitle,
   AbsoluteInputTitle,
+  Placeholder,
 } from './styles'
 import { SendButton } from '../TraidingTerminal/styles'
 import {
@@ -43,6 +46,7 @@ import {
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { FormInputContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
 import { ButtonsWithAmountFieldRowForBasic } from './AmountButtons'
+import ConnectWalletDropdown from '../ConnectWalletDropdown/index'
 
 export const TradeInputHeader = ({
   title = 'Input',
@@ -567,7 +571,14 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       tradingBotInterval,
       tradingBotIsActive,
       minOrderSize,
+      connected,
+      SOLAmount,
+      openOrdersAccount,
     } = this.props
+
+    const costsOfTheFirstTrade = 0.024
+    const SOLFeeForTrade = 0.00001
+    const needCreateOpenOrdersAccount = !openOrdersAccount
 
     if (!funds) return null
 
@@ -832,35 +843,108 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
             style={{ maxWidth: '100%', paddingBottom: '1.5rem' }}
           >
             <Grid xs={12} item container alignItems="center">
-              <SendButton
-                theme={theme}
-                // disabled={orderIsCreating === sideType}
-                style={{
-                  ...(tradingBotEnabled && !tradingBotIsActive
-                    ? { position: 'absolute', width: '95%' }
-                    : {}),
-                }}
-                type={sideType}
-                onClick={async () => {
-                  const result = await validateForm()
-                  console.log('result', result)
-                  if (Object.keys(result).length === 0 || !isSPOTMarket) {
-                    handleSubmit(values)
-                  }
-                }}
-              >
-                {isSPOTMarket
-                  ? sideType === 'buy'
-                    ? priceType === 'market' && pair.join('_') === 'SRM_USDT'
-                      ? tradingBotEnabled && !tradingBotIsActive
-                        ? 'Start Cycle Bot'
-                        : 'buy SRM'
-                      : `buy ${pair[0]}`
-                    : `sell ${pair[0]}`
-                  : sideType === 'buy'
-                  ? 'long'
-                  : 'short'}
-              </SendButton>
+              {!connected ? (
+                <ConnectWalletDropdown
+                  theme={theme}
+                  height={'4rem'}
+                  id={`${sideType}-connectButton`}
+                />
+              ) : (needCreateOpenOrdersAccount &&
+                  SOLAmount < costsOfTheFirstTrade) ||
+                SOLAmount < SOLFeeForTrade ? (
+                needCreateOpenOrdersAccount ? (
+                  <DarkTooltip
+                    title={
+                      <>
+                        <p>
+                          Deposit some SOL to your wallet for successful
+                          trading.
+                        </p>
+                        <p>
+                          Due to Serum design there is need to open a trading
+                          account for this pair to trade it.
+                        </p>
+                        <p>
+                          So, the “first trade” fee is{' '}
+                          <span style={{ color: '#BFEAB6' }}>
+                            {' '}
+                            ≈{costsOfTheFirstTrade} SOL
+                          </span>
+                          .
+                        </p>
+                        <p>
+                          The fee for all further trades on this pair will be
+                          <span style={{ color: '#BFEAB6' }}>
+                            {' '}
+                            ≈{SOLFeeForTrade} SOL
+                          </span>
+                          .{' '}
+                        </p>
+                      </>
+                    }
+                  >
+                    <Placeholder>
+                      Insufficient SOL balance to complete the transaction.
+                      <SvgIcon src={Info} width={'5%'} />
+                    </Placeholder>
+                  </DarkTooltip>
+                ) : (
+                  <DarkTooltip
+                    title={
+                      <>
+                        <p>
+                          Deposit some SOL to your wallet for successful
+                          trading.
+                        </p>
+                        <p>
+                          The fee size for each trade on the DEX is{' '}
+                          <span style={{ color: '#BFEAB6' }}>
+                            {' '}
+                            ≈0.00001 SOL
+                          </span>
+                          .{' '}
+                        </p>
+                      </>
+                    }
+                  >
+                    <Placeholder>
+                      Insufficient SOL balance to complete the transaction.
+                      <SvgIcon src={Info} width={'5%'} />
+                    </Placeholder>
+                  </DarkTooltip>
+                )
+              ) : (
+                <SendButton
+                  theme={theme}
+                  // disabled={orderIsCreating === sideType}
+                  style={{
+                    ...(tradingBotEnabled && !tradingBotIsActive
+                      ? { position: 'absolute', width: '95%' }
+                      : {}),
+                  }}
+                  type={sideType}
+                  onClick={async () => {
+                    const result = await validateForm()
+                    console.log('result', result)
+                    if (Object.keys(result).length === 0 || !isSPOTMarket) {
+                      handleSubmit(values)
+                    }
+                  }}
+                >
+                  {isSPOTMarket
+                    ? sideType === 'buy'
+                      ? priceType === 'market' && pair.join('_') === 'SRM_USDT'
+                        ? tradingBotEnabled && !tradingBotIsActive
+                          ? 'Start Cycle Bot'
+                          : 'buy SRM'
+                        : `buy ${pair[0]}`
+                      : `sell ${pair[0]}`
+                    : sideType === 'buy'
+                    ? 'long'
+                    : 'short'}
+                </SendButton>
+              )}
+
               {/* <Grid>
                 <span
                   style={{
