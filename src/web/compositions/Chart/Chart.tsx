@@ -134,15 +134,10 @@ function ChartPageComponent(props: any) {
   } = props
 
   const [terminalViewMode, updateTerminalViewMode] = useState('default')
-  const [stepIndex, updateStepIndex] = useState(0)
-  const [key, updateKey] = useState(0)
   const [isTourOpen, setIsTourOpen] = useState(
     false
   )
 
-  const { wallet } = useWallet()
-
-  const isNotificationPassCondition = Date.now() < 1617027500000
   const [isNotificationTourOpen, setNotificationTourOpen] = useState(
     localStorage.getItem('isNotificationDone') == 'null'
   )
@@ -182,7 +177,7 @@ function ChartPageComponent(props: any) {
     if (isDataChanged) setCustomMarkets([...updatedMarkets, ...userMarkets])
   }, [getUserCustomMarketsQuery.getUserCustomMarkets.length])
 
-  const setCorrectMarketAddress = async () => {
+  const setCorrectMarketAddress = () => {
     console.log(
       'location.pathname',
       location.pathname,
@@ -217,19 +212,21 @@ function ChartPageComponent(props: any) {
       (el) => el.name.split('/').join('_') === pair
     )
 
+    console.log('selected', selectedMarketFromUrl, pair)
+
     if (!selectedMarketFromUrl) {
-      await setMarketAddress(
+      setMarketAddress(
         allMarkets
           .find((el) => el.name.split('/').join('_') === 'SRM_USDT')
           .address.toBase58()
       )
 
-      await history.push('/chart/spot/SRM_USDT')
+      history.push('/chart/spot/SRM_USDT')
 
       return
     }
 
-    await setMarketAddress(
+    setMarketAddress(
       selectedMarketFromUrl.isCustomUserMarket
         ? selectedMarketFromUrl.address
         : selectedMarketFromUrl.address.toBase58()

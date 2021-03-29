@@ -283,7 +283,6 @@ class SimpleTabs extends React.Component {
           }
         ).positionAmt
 
-    console.log('TVAlertsBotIsActive', TVAlertsBotIsActive)
     return (
       <Grid
         id="tradingTerminal"

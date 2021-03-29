@@ -120,7 +120,7 @@ const RedButton = styled((props) => (
   outline: none;
 `
 
-export const CardsPanel = ({ theme, setMarketAddress }) => {
+export const CardsPanel = ({ theme }) => {
   const location = useLocation()
 
   const isDarkTheme = theme.palette.type === 'dark'
@@ -145,9 +145,6 @@ export const CardsPanel = ({ theme, setMarketAddress }) => {
             style={{
               padding: '0.5rem 0',
               height: '100%',
-            }}
-            onClick={() => {
-              setMarketAddress(DEFAULT_MARKET?.address.toBase58())
             }}
           >
             <img
@@ -438,7 +435,6 @@ const MemoizedCardsPanel = React.memo(CardsPanel)
 
 export default compose(
   withTheme(),
-  withMarketUtilsHOC,
   withApolloPersist,
   graphql(TOGGLE_THEME_MODE, {
     name: 'toggleThemeMode',
