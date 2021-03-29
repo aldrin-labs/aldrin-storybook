@@ -140,7 +140,7 @@ console.log('page', location.pathname)
           }}
         >
           <Link
-            to={'/chart/spot/SRM_USDT'}
+            to={'/'}
             style={{
               padding: '0.5rem 0',
               height: '100%',
