@@ -517,7 +517,6 @@ export async function placeOrder({
   baseCurrencyAccount,
   quoteCurrencyAccount,
   feeAccounts,
-  addSerumTransactionMutation,
 }) {
   console.log('place ORDER', market?.minOrderSize, size)
 
@@ -985,49 +984,6 @@ async function sendTransaction({
     done = true
   }
   notify({ message: successMessage, type: 'success', txid })
-
-  // only buy market SRM_USDT order
-  console.log(
-    'isOrderCreating',
-    isOrderCreating,
-    "params.pair === 'SRM_USDT'",
-    params.pair === 'SRM_USDT',
-    'params.isMarketOrder',
-    params.isMarketOrder,
-    " params.side === 'buy'",
-    params.side === 'buy'
-  )
-
-  if (
-    isOrderCreating &&
-    params.pair === 'SRM_USDT' &&
-    params.isMarketOrder &&
-    params.side === 'buy'
-  ) {
-    if (feeAccounts.length === 0) {
-      notify({ message: 'Create SRM account first', type: 'error' })
-    } else {
-      const userFeeTier = feeTiers[feeAccounts[0].feeTier]
-      const feeCost = +stripDigitPlaces(
-        ((params.size * params.price) / 100) * userFeeTier.taker,
-        6
-      )
-      const strippedPrice = +stripDigitPlaces(
-        params.price,
-        (market?.tickSize && getDecimalCount(market.tickSize)) || 8
-      )
-
-      // addSerumTransactionMutation({
-      //   variables: {
-      //     fee: feeCost,
-      //     amount: params.size,
-      //     dexId: txid,
-      //     publicKey: wallet.publicKey.toBase58(),
-      //     price: strippedPrice,
-      //   }
-      // })
-    }
-  }
 
   console.log(
     'Latency',
