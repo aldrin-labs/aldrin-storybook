@@ -395,7 +395,7 @@ class SimpleTabs extends React.Component {
                     <SettingsContainer>
                       {mode === 'limit' && (
                         <FuturesSettings key="postOnlyTerminalController">
-                          <SRadio
+                          <SCheckbox
                             id="postOnly"
                             checked={orderMode === 'postOnly'}
                             style={{ padding: '0 1rem' }}
@@ -428,7 +428,7 @@ class SimpleTabs extends React.Component {
                           key="iocTerminalController"
                           style={{ padding: '.4rem 0' }}
                         >
-                          <SRadio
+                          <SCheckbox
                             id="ioc"
                             checked={orderMode === 'ioc'}
                             style={{ padding: '0 1rem' }}
@@ -461,7 +461,7 @@ class SimpleTabs extends React.Component {
                     width: TVAlertsBotIsActive
                       ? '16rem'
                       : mode === 'limit'
-                      ? '22rem'
+                      ? '25rem'
                       : '16rem',
                     borderLeft: theme.palette.border.main,
                     ...(TVAlertsBotIsActive
@@ -498,7 +498,7 @@ class SimpleTabs extends React.Component {
                           : pair.join('_') === 'SRM_USDT' &&
                             !TVAlertsBotIsActive
                           ? mode === 'limit'
-                            ? '10.3rem'
+                            ? '11.5rem'
                             : '12.3rem'
                           : pair.join('_') !== 'SRM_USDT' &&
                             !TVAlertsBotIsActive
