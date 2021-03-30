@@ -216,6 +216,7 @@ export const TradeInputContent = ({
         style={{ ...inputStyles, ...(fontSize ? { fontSize: fontSize } : {}) }}
       />
       <UpdatedCoin
+        symbolLength={symbol.length}
         theme={theme}
         right={
           !!symbolRightIndent
@@ -620,74 +621,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 <InputRowContainer
                   style={{ visibility: !isBuyType ? 'hidden' : 'visible' }}
                 >
-                  {/* {pair.join('_') === 'SRM_USDT' && (
-                    <DarkTooltip
-                      maxWidth={'35rem'}
-                      title={
-                        'As soon as you purchase SRM, there are will be placed a limit order for sale at a price that will refund the fees you paid.'
-                      }
-                    >
-                      <AdditionalSettingsButton
-                        theme={theme}
-                        isActive={breakEvenPoint}
-                        fontSize={'1rem'}
-                        onClick={() => {
-                          updateState('takeProfit', false)
-                          updateState('breakEvenPoint', !breakEvenPoint)
-                        }}
-                      >
-                        <SCheckbox
-                          checked={breakEvenPoint}
-                          onChange={() => {}}
-                          style={{ padding: '0 0 0 1rem', color: '#fff' }}
-                        />
-                        <span style={{ margin: '0 auto' }}>
-                          Break-Even Point
-                        </span>
-                      </AdditionalSettingsButton>
-                    </DarkTooltip>
-                  )} */}
-                  {/* <DarkTooltip
-                    maxWidth={'35rem'}
-                    title={
-                      'A limit order for a price higher than the purchase price of the percentage you specify will be placed immediately after purchase, so you will take profit from SRM trading.'
-                    }
-                  >
-                    <AdditionalSettingsButton
-                      theme={theme}
-                      isActive={takeProfit}
-                      onClick={() => {
-                        updateState('takeProfit', !takeProfit)
-                        updateState('breakEvenPoint', false)
-                      }}
-                    >
-                      <SCheckbox
-                        checked={takeProfit}
-                        onChange={() => {}}
-                        style={{ padding: '0 0 0 1rem', color: '#fff' }}
-                      />
-                      <span style={{ margin: '0 auto' }}>Take Profit</span>
-                    </AdditionalSettingsButton>
-                  </DarkTooltip> */}
                 </InputRowContainer>
               )}
-              {priceType === 'stop-limit' || priceType === 'stop-market' ? (
-                <InputRowContainer
-                  key={'stop-limit'}
-                  padding={'.6rem 0'}
-                  direction={'column'}
-                >
-                  <TradeInputContent
-                    theme={theme}
-                    needTitle
-                    type={'text'}
-                    title={`trigger price (${pair[1]})`}
-                    value={values.stop || ''}
-                    onChange={this.onStopChange}
-                    symbol={pair[1]}
-                  />
-                </InputRowContainer>
-              ) : null}
               {tradingBotEnabled && !tradingBotIsActive && (
                 <FormInputContainer
                   theme={theme}
