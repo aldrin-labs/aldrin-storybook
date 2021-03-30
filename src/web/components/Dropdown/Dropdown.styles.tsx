@@ -107,7 +107,7 @@ export const StyledMenuItem = styled(MenuItem)`
   }
 
   &:hover {
-    background: transparent;
+    background: ${(props) => props.theme.palette.white.background};
   }
 
   @media (min-width: 1921px) {
