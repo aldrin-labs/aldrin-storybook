@@ -24,6 +24,7 @@ import {
 } from '@sb/compositions/Rewards/index'
 import { notify } from '@sb/dexUtils/notifications'
 import { decrypt } from '../index'
+import { CCAIProviderURL } from '@sb/dexUtils/utils'
 
 const SubColumn = ({
   theme,
@@ -136,7 +137,7 @@ const SubColumn = ({
                   padding={'0 2rem'}
                 >
                   <a
-                    href={'https://www.sollet.io/'}
+                    href={CCAIProviderURL}
                     target="_blank"
                     rel="noopener noreferrer"
                     style={{

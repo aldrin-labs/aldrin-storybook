@@ -61,12 +61,12 @@ export function WalletProvider({ children }) {
   const { endpoint } = useConnectionConfig()
   const [savedProviderUrl, setProviderUrl] = useLocalStorageState(
     'walletProvider',
-    'https://www.sollet.io'
+    CCAIProviderURL
   )
 
   let providerUrl
   if (!savedProviderUrl) {
-    providerUrl = 'https://www.sollet.io'
+    providerUrl = CCAIProviderURL
   } else {
     providerUrl = savedProviderUrl
   }

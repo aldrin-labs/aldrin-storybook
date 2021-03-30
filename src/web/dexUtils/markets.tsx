@@ -227,6 +227,7 @@ export function MarketProvider({ children }) {
     []
   )
 
+  console.log('marketAddress', marketAddress)
   const address = new PublicKey(marketAddress)
   const connection = useConnection()
   const marketInfos = getMarketInfos(customMarkets)

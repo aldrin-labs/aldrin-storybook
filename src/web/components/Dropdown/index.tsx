@@ -43,6 +43,7 @@ const WalletStatusButton = ({ wallet, connected, theme, id }) => (
 
 const ConnectWalletButton = ({ wallet, connected, theme, height, id }) => (
   <BtnCustom
+    onClick={wallet.connect}
     btnColor={'#F8FAFF'}
     backgroundColor={theme.palette.blue.serum}
     btnWidth={'100%'}

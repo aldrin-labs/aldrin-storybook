@@ -27,21 +27,6 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
     isMenuOpen: false,
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.value !== this.props.value) {
-      const { value, markets, customMarkets, setMarketAddress } = this.props
-      const allMarkets = [...markets, ...customMarkets]
-
-      // Need to refactor this, address of a coin should be in the value, not name
-      // console.log('value: ', value)
-      const selectedMarketFromUrl = allMarkets.find(
-        (el) => el.name.split('/').join('_') === value
-      )
-      // console.log('selectedMarketFormSelector', selectedMarketFormSelector)
-      // setMarketAddress(selectedMarketFromUrl.isCustomUserMarket ? selectedMarketFromUrl.address : selectedMarketFromUrl.address.toBase58())
-    }
-  }
-
   onMenuOpen = () => {
     this.setState({ isClosed: false })
   }

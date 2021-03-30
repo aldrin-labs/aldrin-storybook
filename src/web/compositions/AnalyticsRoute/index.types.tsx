@@ -34,5 +34,4 @@ export interface IProps {
       burned: number
     }
   }
-  setMarketAddress: (address: string) => void
 }

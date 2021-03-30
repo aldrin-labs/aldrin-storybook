@@ -49,8 +49,8 @@ export const BalanceTitle = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-top: 0.8rem;
-  padding: 0 0.5rem;
+  margin-top: 0.6rem;
+  padding: 0 0.4rem;
   border-radius: 0.8rem;
 `
 
@@ -59,7 +59,7 @@ export const BalanceValues = styled.div`
   flex-direction: column;
   align-items: flex-end;
   margin-top: 0;
-  padding: 0 0.5rem 1rem;
+  padding: 0 0.5rem;
   text-align: left;
 `
 
@@ -154,11 +154,6 @@ export const Balances = ({
   futuresWarsRoundBet: number
   setShowTokenNotAdded: (show: boolean) => void
 }) => {
-  const [loading, setLoading] = useState(false)
-  const [open, togglePopup] = useState(false)
-  const [transferFromSpotToFutures, setTransferFromSpotToFutures] = useState(
-    false
-  )
   const [openDepositPopup, toggleOpeningDepositPopup] = useState(false)
   const [coinForDepositPopup, chooseCoinForDeposit] = useState('')
 
@@ -309,397 +304,263 @@ export const Balances = ({
           wrap={'nowrap'}
           style={{
             height: 'calc(100% - 3rem)',
-            padding: '0 .8rem 1rem .8rem',
+            padding: '0 .8rem .4rem .8rem',
             overflowY: 'auto',
           }}
         >
-          {isSPOTMarket ? (
-            <>
-              <Grid
-                item
-                container
-                direction="column"
-                justify="center"
-                align="flex-start"
-                xs={6}
-                style={{
-                  borderBottom: theme.palette.border.main,
-                  maxWidth: '100%',
-                }}
-              >
-                <BalanceTitle>
-                  <BalanceSymbol>{pair[0]}</BalanceSymbol>
-                  <SvgIcon
-                    width={`1.7rem`}
-                    height={`1.7rem`}
-                    src={importCoinIcon(pair[0])}
-                    onError={onErrorImportCoinUrl}
-                  />
-                </BalanceTitle>
-                <BalanceValues>
-                  <BalanceFuturesTitle theme={theme}>
-                    Wallet balance
-                  </BalanceFuturesTitle>
-                  <BalanceQuantity theme={theme}>
-                    {balances[0]?.wallet
-                      ? stripDigitPlaces(balances[0].wallet, 8)
-                      : 0}{' '}
-                    {pair[0]}
-                  </BalanceQuantity>
-                  <BalanceFuturesTitle theme={theme}>
-                    Unsettled balance
-                  </BalanceFuturesTitle>
-                  <BalanceQuantity theme={theme}>
-                    {balances[0]?.unsettled
-                      ? stripDigitPlaces(balances[0].unsettled, 8)
-                      : 0}{' '}
-                    {pair[0]}
-                  </BalanceQuantity>
-                </BalanceValues>
-                {wallet.connected ? (
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: !showSettle
-                        ? 'flex-start'
-                        : 'space-evenly',
-                      width: '100%',
-                      paddingBottom: '0.8rem',
-                    }}
-                  >
-                    {isBaseCoinExistsInWallet || !wallet.connected ? (
-                      <>
-                        <BtnCustom
-                          btnWidth={!showSettle ? '100%' : '45%'}
-                          height="auto"
-                          fontSize=".8rem"
-                          padding=".5rem 0 .4rem 0;"
-                          borderRadius=".8rem"
-                          btnColor={theme.palette.white.background}
-                          backgroundColor="#57bc7c"
-                          hoverColor={theme.palette.white.background}
-                          hoverBackground="#50ad72"
-                          transition={'all .4s ease-out'}
-                          onClick={() => {
-                            toggleOpeningDepositPopup(true)
-                            chooseCoinForDeposit('base')
-                          }}
-                        >
-                          deposit
-                        </BtnCustom>
-                        {showSettle && (
-                          <BtnCustom
-                            btnWidth="45%"
-                            height="auto"
-                            fontSize=".8rem"
-                            padding=".5rem 0 .4rem 0;"
-                            borderRadius=".8rem"
-                            btnColor={theme.palette.dark.main}
-                            borderColor={theme.palette.blue.serum}
-                            backgroundColor={theme.palette.blue.serum}
-                            // hoverBackground="#3992a9"
-                            transition={'all .4s ease-out'}
-                            onClick={() => {
-                              const { market, openOrders } = baseBalances
-                              onSettleFunds(market, openOrders)
-                            }}
-                          >
-                            settle
-                          </BtnCustom>
-                        )}
-                      </>
-                    ) : (
+          <>
+            <Grid
+              item
+              container
+              direction="column"
+              justify="center"
+              align="flex-start"
+              xs={6}
+              style={{
+                borderBottom: theme.palette.border.main,
+                maxWidth: '100%',
+              }}
+            >
+              <BalanceTitle>
+                <BalanceSymbol>{pair[0]}</BalanceSymbol>
+                <SvgIcon
+                  width={`1.7rem`}
+                  height={`1.7rem`}
+                  src={importCoinIcon(pair[0])}
+                  onError={onErrorImportCoinUrl}
+                />
+              </BalanceTitle>
+              <BalanceValues>
+                <BalanceFuturesTitle theme={theme}>
+                  Wallet balance
+                </BalanceFuturesTitle>
+                <BalanceQuantity theme={theme}>
+                  {balances[0]?.wallet
+                    ? stripDigitPlaces(balances[0].wallet, 8)
+                    : 0}{' '}
+                  {pair[0]}
+                </BalanceQuantity>
+                <BalanceFuturesTitle theme={theme}>
+                  Unsettled balance
+                </BalanceFuturesTitle>
+                <BalanceQuantity theme={theme}>
+                  {balances[0]?.unsettled
+                    ? stripDigitPlaces(balances[0].unsettled, 8)
+                    : 0}{' '}
+                  {pair[0]}
+                </BalanceQuantity>
+              </BalanceValues>
+              {wallet.connected ? (
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: !showSettle ? 'flex-start' : 'space-evenly',
+                    width: '100%',
+                    paddingTop: '0.4rem',
+                  }}
+                >
+                  {isBaseCoinExistsInWallet || !wallet.connected ? (
+                    <>
                       <BtnCustom
-                        btnWidth="100%"
+                        btnWidth={!showSettle ? '100%' : '45%'}
                         height="auto"
                         fontSize=".8rem"
                         padding=".5rem 0 .4rem 0;"
                         borderRadius=".8rem"
-                        btnColor={theme.palette.dark.main}
-                        borderColor={theme.palette.blue.serum}
-                        backgroundColor={theme.palette.blue.serum}
-                        // hoverBackground="#3992a9"
+                        btnColor={theme.palette.white.background}
+                        backgroundColor="#57bc7c"
+                        hoverColor={theme.palette.white.background}
+                        hoverBackground="#50ad72"
                         transition={'all .4s ease-out'}
                         onClick={() => {
-                          setShowTokenNotAdded(true)
+                          toggleOpeningDepositPopup(true)
+                          chooseCoinForDeposit('base')
                         }}
                       >
-                        Add to the wallet
+                        deposit
                       </BtnCustom>
-                    )}
-                  </div>
-                ) : (
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: !showSettle
-                        ? 'flex-start'
-                        : 'space-evenly',
-                      width: '100%',
-                      paddingBottom: '0.8rem',
-                    }}
-                  >
-                    <ConnectWalletDropdown
-                      theme={theme}
-                      showOnTop={true}
-                      height={'2rem'}
-                      id={'connectButtonBase'}
-                    />
-                  </div>
-                )}
-              </Grid>
-              <Grid
-                container
-                direction="column"
-                justify="center"
-                item
-                xs={6}
-                style={{ maxWidth: '100%' }}
-              >
-                <BalanceTitle>
-                  <BalanceSymbol>{pair[1]}</BalanceSymbol>
-                  <SvgIcon
-                    width={`1.7rem`}
-                    height={`1.7rem`}
-                    src={importCoinIcon(pair[1])}
-                    onError={onErrorImportCoinUrl}
-                  />
-                </BalanceTitle>
-                <BalanceValues>
-                  <BalanceFuturesTitle theme={theme}>
-                    Wallet balance
-                  </BalanceFuturesTitle>
-                  <BalanceQuantity theme={theme}>
-                    {balances[1]?.wallet
-                      ? stripDigitPlaces(balances[1].wallet, 8)
-                      : 0}{' '}
-                    {pair[1]}
-                  </BalanceQuantity>
-                  <BalanceFuturesTitle theme={theme}>
-                    Unsettled balance
-                  </BalanceFuturesTitle>
-                  <BalanceQuantity theme={theme}>
-                    {balances[1]?.unsettled
-                      ? stripDigitPlaces(balances[1].unsettled, 8)
-                      : 0}{' '}
-                    {pair[1]}
-                  </BalanceQuantity>
-                </BalanceValues>
-                {wallet.connected ? (
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: !showSettle
-                        ? 'flex-start'
-                        : 'space-evenly',
-                      width: '100%',
-                    }}
-                  >
-                    {isQuoteCoinExistsInWallet || !wallet.connected ? (
-                      <>
+                      {showSettle && (
                         <BtnCustom
-                          btnWidth={!showSettle ? '100%' : '45%'}
+                          btnWidth="45%"
                           height="auto"
                           fontSize=".8rem"
                           padding=".5rem 0 .4rem 0;"
                           borderRadius=".8rem"
-                          btnColor={theme.palette.white.background}
-                          backgroundColor="#57bc7c"
-                          hoverColor={theme.palette.white.background}
-                          hoverBackground="#50ad72"
+                          btnColor={theme.palette.dark.main}
+                          borderColor={theme.palette.blue.serum}
+                          backgroundColor={theme.palette.blue.serum}
+                          // hoverBackground="#3992a9"
                           transition={'all .4s ease-out'}
                           onClick={() => {
-                            toggleOpeningDepositPopup(true)
-                            chooseCoinForDeposit('quote')
+                            const { market, openOrders } = baseBalances
+                            onSettleFunds(market, openOrders)
                           }}
                         >
-                          deposit
+                          settle
                         </BtnCustom>
-                        {showSettle && (
-                          <BtnCustom
-                            btnWidth="45%"
-                            height="auto"
-                            fontSize=".8rem"
-                            padding=".5rem 0 .4rem 0;"
-                            borderRadius=".8rem"
-                            btnColor={theme.palette.dark.main}
-                            borderColor={theme.palette.blue.serum}
-                            backgroundColor={theme.palette.blue.serum}
-                            // hoverBackground="#3992a9"
-                            transition={'all .4s ease-out'}
-                            onClick={() => {
-                              const { market, openOrders } = quoteBalances
-                              onSettleFunds(market, openOrders)
-                            }}
-                          >
-                            settle
-                          </BtnCustom>
-                        )}
-                      </>
-                    ) : (
-                      <BtnCustom
-                        btnWidth="100%"
-                        height="auto"
-                        fontSize=".8rem"
-                        padding=".5rem 0 .4rem 0;"
-                        borderRadius=".8rem"
-                        btnColor={theme.palette.dark.main}
-                        borderColor={theme.palette.blue.serum}
-                        backgroundColor={theme.palette.blue.serum}
-                        // hoverBackground="#3992a9"
-                        transition={'all .4s ease-out'}
-                        onClick={() => {
-                          setShowTokenNotAdded(true)
-                        }}
-                      >
-                        Add to the wallet
-                      </BtnCustom>
-                    )}
-                  </div>
-                ) : (
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: !showSettle
-                        ? 'flex-start'
-                        : 'space-evenly',
-                      width: '100%',
-                    }}
-                  >
-                    <ConnectWalletDropdown
-                      height={'2rem'}
-                      id={'connectButtonQuote'}
-                    />
-                  </div>
-                )}
-              </Grid>
-            </>
-          ) : (
-            <>
-              <Grid
-                item
-                xs={9}
-                container
-                alignItems="center"
-                justify="flex-start"
-                style={{ maxWidth: '100%' }}
-              >
-                <div style={{ height: '100%', width: '100%' }}>
-                  <BalanceFuturesContainer theme={theme}>
-                    <BalanceFuturesTitle theme={theme}>
-                      Wallet balance
-                    </BalanceFuturesTitle>
-                    <BalanceFuturesValue theme={theme}>
-                      <span style={{ color: theme.palette.blue.main }}>
-                        {stripDigitPlaces(USDTFuturesFund.quantity)}
-                      </span>{' '}
-                      <BalanceFuturesSymbol theme={theme}>
-                        USDT
-                      </BalanceFuturesSymbol>
-                    </BalanceFuturesValue>
-                  </BalanceFuturesContainer>
-                  <BalanceFuturesContainer theme={theme}>
-                    <BalanceFuturesTitle theme={theme}>
-                      Availiable
-                    </BalanceFuturesTitle>
-                    <BalanceFuturesValue theme={theme}>
-                      <span style={{ color: theme.palette.blue.main }}>
-                        {stripDigitPlaces(USDTFuturesFund.free)}
-                      </span>{' '}
-                      <BalanceFuturesSymbol theme={theme}>
-                        USDT
-                      </BalanceFuturesSymbol>
-                    </BalanceFuturesValue>
-                  </BalanceFuturesContainer>
-                </div>
-              </Grid>
-              <Grid
-                item
-                xs={3}
-                container
-                direction="column"
-                alignItems="center"
-                justify="space-evenly"
-                style={{
-                  maxWidth: '100%',
-                  borderTop: theme.palette.border.main,
-                }}
-              >
-                {isFuturesWarsKey && (
-                  <BtnCustom
-                    disabled={isAlreadyJoined}
-                    btnWidth="100%"
-                    height="auto"
-                    fontSize=".8rem"
-                    padding="1rem 0 .8rem 0;"
-                    borderRadius=".8rem"
-                    btnColor={theme.palette.blue.main}
-                    backgroundColor={theme.palette.white.background}
-                    hoverColor={theme.palette.white.background}
-                    hoverBackground={theme.palette.blue.main}
-                    transition={'all .4s ease-out'}
-                    onClick={() => {
-                      togglePopup(true)
-                    }}
-                  >
-                    {isAlreadyJoined ? 'Joined' : `Join`}
-                  </BtnCustom>
-                )}
-                {!isFuturesWarsKey && (
-                  <>
-                    <BalanceFuturesTitle theme={theme}>
-                      transfer
-                    </BalanceFuturesTitle>
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-evenly',
-                        width: '100%',
-                        paddingBottom: '0.8rem',
+                      )}
+                    </>
+                  ) : (
+                    <BtnCustom
+                      btnWidth="100%"
+                      height="auto"
+                      fontSize=".8rem"
+                      padding=".5rem 0 .4rem 0;"
+                      borderRadius=".8rem"
+                      btnColor={theme.palette.dark.main}
+                      borderColor={theme.palette.blue.serum}
+                      backgroundColor={theme.palette.blue.serum}
+                      // hoverBackground="#3992a9"
+                      transition={'all .4s ease-out'}
+                      onClick={() => {
+                        setShowTokenNotAdded(true)
                       }}
                     >
+                      Add to the wallet
+                    </BtnCustom>
+                  )}
+                </div>
+              ) : (
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: !showSettle ? 'flex-start' : 'space-evenly',
+                    width: '100%',
+                    paddingBottom: '0.4rem',
+                  }}
+                >
+                  <ConnectWalletDropdown
+                    theme={theme}
+                    showOnTop={true}
+                    height={'2rem'}
+                    id={'connectButtonBase'}
+                  />
+                </div>
+              )}
+            </Grid>
+            <Grid
+              container
+              direction="column"
+              justify="center"
+              item
+              xs={6}
+              style={{ maxWidth: '100%' }}
+            >
+              <BalanceTitle>
+                <BalanceSymbol>{pair[1]}</BalanceSymbol>
+                <SvgIcon
+                  width={`1.7rem`}
+                  height={`1.7rem`}
+                  src={importCoinIcon(pair[1])}
+                  onError={onErrorImportCoinUrl}
+                />
+              </BalanceTitle>
+              <BalanceValues>
+                <BalanceFuturesTitle theme={theme}>
+                  Wallet balance
+                </BalanceFuturesTitle>
+                <BalanceQuantity theme={theme}>
+                  {balances[1]?.wallet
+                    ? stripDigitPlaces(balances[1].wallet, 8)
+                    : 0}{' '}
+                  {pair[1]}
+                </BalanceQuantity>
+                <BalanceFuturesTitle theme={theme}>
+                  Unsettled balance
+                </BalanceFuturesTitle>
+                <BalanceQuantity theme={theme}>
+                  {balances[1]?.unsettled
+                    ? stripDigitPlaces(balances[1].unsettled, 8)
+                    : 0}{' '}
+                  {pair[1]}
+                </BalanceQuantity>
+              </BalanceValues>
+              {wallet.connected ? (
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: !showSettle ? 'flex-start' : 'space-evenly',
+                    width: '100%',
+                    paddingTop: '.4rem'
+                  }}
+                >
+                  {isQuoteCoinExistsInWallet || !wallet.connected ? (
+                    <>
                       <BtnCustom
-                        btnWidth="45%"
+                        btnWidth={!showSettle ? '100%' : '45%'}
                         height="auto"
                         fontSize=".8rem"
                         padding=".5rem 0 .4rem 0;"
                         borderRadius=".8rem"
-                        btnColor={theme.palette.blue.main}
-                        backgroundColor={theme.palette.white.background}
+                        btnColor={theme.palette.white.background}
+                        backgroundColor="#57bc7c"
                         hoverColor={theme.palette.white.background}
-                        hoverBackground={theme.palette.blue.main}
+                        hoverBackground="#50ad72"
                         transition={'all .4s ease-out'}
                         onClick={() => {
-                          setTransferFromSpotToFutures(true)
-                          togglePopup(true)
+                          toggleOpeningDepositPopup(true)
+                          chooseCoinForDeposit('quote')
                         }}
                       >
-                        in
+                        deposit
                       </BtnCustom>
-                      <BtnCustom
-                        btnWidth="45%"
-                        height="auto"
-                        fontSize=".8rem"
-                        padding=".5rem 0 .4rem 0;"
-                        borderRadius=".8rem"
-                        btnColor={theme.palette.blue.main}
-                        backgroundColor={theme.palette.white.background}
-                        hoverColor={theme.palette.white.background}
-                        hoverBackground={theme.palette.blue.main}
-                        transition={'all .4s ease-out'}
-                        onClick={() => {
-                          setTransferFromSpotToFutures(false)
-                          togglePopup(true)
-                        }}
-                      >
-                        out
-                      </BtnCustom>
-                    </div>
-                  </>
-                )}
-              </Grid>
-            </>
-          )}
+                      {showSettle && (
+                        <BtnCustom
+                          btnWidth="45%"
+                          height="auto"
+                          fontSize=".8rem"
+                          padding=".5rem 0 .4rem 0;"
+                          borderRadius=".8rem"
+                          btnColor={theme.palette.dark.main}
+                          borderColor={theme.palette.blue.serum}
+                          backgroundColor={theme.palette.blue.serum}
+                          // hoverBackground="#3992a9"
+                          transition={'all .4s ease-out'}
+                          onClick={() => {
+                            const { market, openOrders } = quoteBalances
+                            onSettleFunds(market, openOrders)
+                          }}
+                        >
+                          settle
+                        </BtnCustom>
+                      )}
+                    </>
+                  ) : (
+                    <BtnCustom
+                      btnWidth="100%"
+                      height="auto"
+                      fontSize=".8rem"
+                      padding=".5rem 0 .4rem 0;"
+                      borderRadius=".8rem"
+                      btnColor={theme.palette.dark.main}
+                      borderColor={theme.palette.blue.serum}
+                      backgroundColor={theme.palette.blue.serum}
+                      // hoverBackground="#3992a9"
+                      transition={'all .4s ease-out'}
+                      onClick={() => {
+                        setShowTokenNotAdded(true)
+                      }}
+                    >
+                      Add to the wallet
+                    </BtnCustom>
+                  )}
+                </div>
+              ) : (
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: !showSettle ? 'flex-start' : 'space-evenly',
+                    width: '100%',
+                  }}
+                >
+                  <ConnectWalletDropdown
+                    height={'2rem'}
+                    id={'connectButtonQuote'}
+                  />
+                </div>
+              )}
+            </Grid>
+          </>
         </Grid>
       </CustomCard>
     </>
