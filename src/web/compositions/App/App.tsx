@@ -48,7 +48,7 @@ import { WalletProvider } from '@sb/dexUtils/wallet'
 import { MarketProvider } from '@sb/dexUtils/markets'
 import { PreferencesProvider } from '@sb/dexUtils/preferences'
 
-const version = `1.0.2-fix-phase`
+const version = `1.0.3-fix-reload`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
 const localPassword = localStorage.getItem('localPassword')
 const currentVersion = localStorage.getItem('version')
@@ -57,6 +57,8 @@ if (currentVersion !== version) {
   localStorage.clear()
   localStorage.setItem('version', version)
   localStorage.setItem('isOnboardingDone', isOnboardingDone)
+
+  document.location.reload()
 
   if (localPassword !== null) {
     localStorage.setItem('localPassword', localPassword)
