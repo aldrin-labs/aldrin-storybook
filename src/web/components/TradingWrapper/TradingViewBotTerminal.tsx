@@ -309,8 +309,6 @@ export const TradingViewBotTerminal = ({
               ? maxAmount * priceForCalculate
               : e.target.value
 
-            console.log('totalForUpdate', totalForUpdate)
-
             changeTotal(totalForUpdate)
             changeAmount(
               stripDigitPlaces(+totalForUpdate / priceForCalculate, 8)
@@ -448,6 +446,7 @@ export const TradingViewBotTerminal = ({
             {' '}
             <SendButton
               type={'buy'}
+              theme={theme}
               onClick={() => {
                 // publicKey check
                 if (publicKey === '') {

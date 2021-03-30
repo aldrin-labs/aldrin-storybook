@@ -295,7 +295,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     if (marketPriceAfterPairChange !== prevProps.marketPriceAfterPairChange) {
       this.onPriceChange({
         target: {
-          value: stripDigitPlaces(marketPriceAfterPairChange, pricePrecision),
+          value: +stripDigitPlaces(marketPriceAfterPairChange, pricePrecision),
         },
       })
     }
@@ -901,9 +901,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
 const formikEnhancer = withFormik<IProps, FormValues>({
   mapPropsToValues: (props) => ({
-    price: props.marketPrice,
+    price: stripDigitPlaces(props.marketPrice, props.pricePrecision),
     stop: null,
-    limit: props.marketPrice,
+    limit: stripDigitPlaces(props.marketPrice, props.pricePrecision),
     amount: null,
     total: null,
     margin: null,
