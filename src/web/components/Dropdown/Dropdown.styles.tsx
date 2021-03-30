@@ -74,14 +74,6 @@ export const StyledPaper = styled(Paper)`
     z-index: 11;
     position: absolute;
     top: calc(6rem - 0.1rem);
-    right: ${(props) =>
-      props.isWalletConnected
-        ? props.customActiveRem
-          ? props.customActiveRem
-          : `9rem`
-        : props.customNotActiveRem
-        ? props.customNotActiveRem
-        : '3rem'};
     width: calc(14rem);
     height: auto;
     box-shadow: 0px 0.4rem 0.8rem rgba(10, 19, 43, 0.1);

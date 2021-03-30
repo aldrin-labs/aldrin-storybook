@@ -290,7 +290,11 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     }
 
     if (marketPriceAfterPairChange !== prevProps.marketPriceAfterPairChange) {
-      this.onPriceChange({ target: { value: marketPriceAfterPairChange } })
+      this.onPriceChange({
+        target: {
+          value: stripDigitPlaces(marketPriceAfterPairChange, pricePrecision),
+        },
+      })
     }
 
     if (prevProps.marketPrice === null && this.props.marketPrice !== null) {
@@ -306,6 +310,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
         priceType !== 'market' && priceType !== 'maker-only'
           ? price
           : marketPrice
+
       this.setFormatted(
         'amount',
         stripDigitPlaces(+total / +priceForCalculate, quantityPrecision),
@@ -315,8 +320,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
     if (
       this.state.priceFromOrderbook !== this.props.priceFromOrderbook &&
-      priceType !== 'market' &&
-      priceType !== 'maker-only'
+      priceType !== 'market'
     ) {
       const { priceFromOrderbook, leverage } = this.props
 
@@ -337,25 +341,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
         0
       )
       this.setState({ priceFromOrderbook })
-    }
-
-    if (leverage !== prevProps.leverage) {
-      const priceForCalculate =
-        priceType !== 'market' && priceType !== 'maker-only'
-          ? price
-          : marketPrice
-      const maxTotal = funds[1].quantity * leverage
-
-      this.setFormatted('total', stripDigitPlaces(margin * leverage, 8), 0)
-
-      this.setFormatted(
-        'amount',
-        stripDigitPlaces(
-          (margin * leverage) / priceForCalculate,
-          quantityPrecision
-        ),
-        0
-      )
     }
 
     if (marketPrice !== prevProps.marketPrice && priceType === 'market') {
