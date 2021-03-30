@@ -279,15 +279,17 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
           : marketPrice
 
       const newAmount =
-        !isSPOTMarket || isBuyType
-          ? +stripDigitPlaces(newValue / priceForCalculate, quantityPrecision)
-          : +stripDigitPlaces(newValue, quantityPrecision)
+          isBuyType
+            ? +stripDigitPlaces(
+                newValue / priceForCalculate,
+                quantityPrecision
+              )
+            : +stripDigitPlaces(newValue, quantityPrecision)
 
-      const newTotal =
-        isBuyType || !isSPOTMarket ? newValue : newValue * priceForCalculate
+        const newTotal = newAmount * priceForCalculate
 
       setFieldValue('amount', newAmount)
-      setFieldValue('total', stripDigitPlaces(newTotal, isSPOTMarket ? 8 : 3))
+      setFieldValue('total', stripDigitPlaces(newTotal, 2))
     }
 
     if (marketPriceAfterPairChange !== prevProps.marketPriceAfterPairChange) {
@@ -346,8 +348,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
     if (marketPrice !== prevProps.marketPrice && priceType === 'market') {
       this.setFormatted(
-        'amount',
-        stripDigitPlaces(total / marketPrice, quantityPrecision),
+        'total',
+        stripDigitPlaces(marketPrice * amount, 2),
         0
       )
     }
@@ -703,8 +705,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   onAfterSliderChange: (value) => {
                     const newValue = (maxAmount / 100) * value
 
+                    console.log('newValue', newValue)
+
                     const newAmount =
-                      !isSPOTMarket || isBuyType
+                      isBuyType
                         ? +stripDigitPlaces(
                             newValue / priceForCalculate,
                             quantityPrecision
