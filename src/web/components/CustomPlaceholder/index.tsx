@@ -24,6 +24,7 @@ const Container = styled.tr`
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1;
+  user-select: none;
 `
 
 const Typography = styled.td`

@@ -186,10 +186,6 @@ class SimpleTabs extends React.Component {
     this.subscription && this.subscription.unsubscribe()
   }
 
-  handleChangeMode = (mode: string) => {
-    this.setState({ mode })
-  }
-
   handleChangePercentage = (percentage: string, mode: string) => {
     this.setState({ [`percentage${mode}`]: percentage })
   }
@@ -235,7 +231,6 @@ class SimpleTabs extends React.Component {
       enqueueSnackbar,
       chartPagePopup,
       closeChartPagePopup,
-      leverage: startLeverage,
       componentMarginType,
       priceFromOrderbook,
       quantityPrecision,
@@ -261,30 +256,6 @@ class SimpleTabs extends React.Component {
 
     const isSPOTMarket = isSPOTMarketType(marketType)
     const maxAmount = [funds[1].quantity, funds[0].quantity]
-
-    const lockedPositionBothAmount = isSPOTMarket
-      ? 0
-      : (
-          funds[2].find((position) => position.positionSide === 'BOTH') || {
-            positionAmt: 0,
-          }
-        ).positionAmt
-
-    const lockedPositionShortAmount = isSPOTMarket
-      ? 0
-      : (
-          funds[2].find((position) => position.positionSide === 'SHORT') || {
-            positionAmt: 0,
-          }
-        ).positionAmt
-
-    const lockedPositionLongAmount = isSPOTMarket
-      ? 0
-      : (
-          funds[2].find((position) => position.positionSide === 'LONG') || {
-            positionAmt: 0,
-          }
-        ).positionAmt
 
     return (
       <Grid
@@ -312,8 +283,8 @@ class SimpleTabs extends React.Component {
                   theme={theme}
                   active={mode === 'market'}
                   onClick={() => {
-                    this.handleChangeMode('market')
                     this.setState({
+                      mode: 'market',
                       orderMode: 'ioc',
                       TVAlertsBotEnabled: false,
                     })
@@ -326,12 +297,13 @@ class SimpleTabs extends React.Component {
                   theme={theme}
                   active={mode === 'limit'}
                   onClick={() => {
-                    this.handleChangeMode('limit')
                     this.setState({
+                      mode: 'limit',
                       orderMode: 'TIF',
                       tradingBotEnabled: false,
                       TVAlertsBotEnabled: false,
                     })
+
                     this.updateState('takeProfit', false)
                   }}
                 >
@@ -460,57 +432,38 @@ class SimpleTabs extends React.Component {
                 <TerminalModeButton
                   theme={theme}
                   style={{
-                    width: TVAlertsBotIsActive
-                      ? '16rem'
-                      : mode === 'limit'
-                      ? '25rem'
-                      : '16rem',
+                    width: mode === 'limit' ? '26rem' : '16rem',
                     borderLeft: theme.palette.border.main,
                     ...(TVAlertsBotIsActive
-                      ? { backgroundColor: '#F07878' }
+                      ? { backgroundColor: '#F07878', color: '#fff' }
                       : {}),
                   }}
                   active={TVAlertsBotEnabled}
                   onClick={() => {
                     if (TVAlertsBotIsActive) {
                       this.unsubscribe()
-                      this.setState({
-                        TVAlertsBotIsActive: false,
-                      })
                     }
-                    if (TVAlertsBotEnabled) {
-                      this.handleChangeMode('market')
-                    }
-                    this.handleChangeMode('')
+
                     this.setState((prev) => ({
                       TVAlertsBotEnabled: !prev.TVAlertsBotEnabled,
-                      tradingBotEnabled: false,
+                      // tradingBotEnabled: false,
+                      mode: prev.TVAlertsBotEnabled ? 'market' : '',
+                      ...(TVAlertsBotIsActive ? { TVAlertsBotIsActive: false} : {}),
                     }))
                   }}
                 >
-                  <SvgIcon
-                    src={Bell}
-                    height={'100%'}
-                    width={'1.5rem'}
-                    style={{
-                      position: 'absolute',
-                      right:
-                        pair.join('_') === 'SRM_USDT' && TVAlertsBotIsActive
-                          ? '30.5rem'
-                          : pair.join('_') === 'SRM_USDT' &&
-                            !TVAlertsBotIsActive
-                          ? mode === 'limit'
-                            ? '11.5rem'
-                            : '12.3rem'
-                          : pair.join('_') !== 'SRM_USDT' &&
-                            !TVAlertsBotIsActive
-                          ? mode === 'limit'
-                            ? '11rem'
-                            : '12rem'
-                          : '13rem',
-                      top: 0,
-                    }}
-                  />
+                  {!TVAlertsBotIsActive && (
+                    <SvgIcon
+                      src={Bell}
+                      height={'100%'}
+                      width={'1.5rem'}
+                      style={{
+                        position: 'absolute',
+                        right: '12rem',
+                        top: 0,
+                      }}
+                    />
+                  )}
                   {TVAlertsBotIsActive ? 'Stop Alert BOT' : 'Alert BOT'}
                 </TerminalModeButton>
                 {/* {pair.join('_') === 'SRM_USDT' && (
@@ -549,21 +502,6 @@ class SimpleTabs extends React.Component {
                   </TerminalModeButton>
                 )} */}
               </div>
-
-              {/* <DarkTooltip
-                maxWidth={'35rem'}
-                title={
-                  'Maker-only or post-only market order will place a post-only limit orders as close to the market price as possible until the last one is executed. This way you can enter the position at the market price by paying low maker fees.'
-                }
-              >
-                <TerminalModeButton
-                  theme={theme}
-                  active={mode === 'maker-only'}
-                  onClick={() => this.handleChangeMode('maker-only')}
-                >
-                  Maker-only
-                </TerminalModeButton>
-              </DarkTooltip> */}
             </div>
           </TerminalHeader>
 
@@ -619,13 +557,7 @@ class SimpleTabs extends React.Component {
                         market={market}
                         pair={pair}
                         funds={funds}
-                        lockedAmount={
-                          hedgeMode
-                            ? -lockedPositionShortAmount
-                            : lockedPositionBothAmount >= 0
-                            ? 0
-                            : -lockedPositionBothAmount
-                        }
+                        lockedAmount={0}
                         key={[pair, funds]}
                         walletValue={funds && funds[1]}
                         marketPrice={price}
@@ -693,40 +625,6 @@ class SimpleTabs extends React.Component {
                                 padding: '1rem 0',
                               }}
                             >
-                              <InputRowContainer>
-                                {/* <DarkTooltip
-                                  maxWidth={'35rem'}
-                                  title={
-                                    'As soon as you purchase SRM, there are will be placed a limit order for sale at a price that will refund the fees you paid.'
-                                  }
-                                >
-                                  <AdditionalSettingsButton
-                                    theme={theme}
-                                    isActive={breakEvenPoint}
-                                    fontSize={'1rem'}
-                                    onClick={() => {
-                                      this.updateState('takeProfit', false)
-                                      this.updateState(
-                                        'breakEvenPoint',
-                                        !breakEvenPoint
-                                      )
-                                    }}
-                                  >
-                                    <SCheckbox
-                                      checked={breakEvenPoint}
-                                      onChange={() => {}}
-                                      style={{
-                                        padding: '0 0 0 1rem',
-                                        color: '#fff',
-                                      }}
-                                    />
-                                    <span style={{ margin: '0 auto' }}>
-                                      Break-Even Point
-                                    </span>
-                                  </AdditionalSettingsButton>
-                                </DarkTooltip> */}
-                              </InputRowContainer>
-
                               {takeProfit && (
                                 <InputRowContainer>
                                   <TradeInputContent
@@ -870,13 +768,7 @@ class SimpleTabs extends React.Component {
                           }
                           pair={pair}
                           funds={funds}
-                          lockedAmount={
-                            hedgeMode
-                              ? lockedPositionLongAmount
-                              : lockedPositionBothAmount <= 0
-                              ? 0
-                              : lockedPositionBothAmount
-                          }
+                          lockedAmount={0}
                           key={[pair, funds]}
                           walletValue={funds && funds[1]}
                           marketPrice={price}

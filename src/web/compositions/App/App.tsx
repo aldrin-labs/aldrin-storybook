@@ -50,7 +50,7 @@ import { WalletProvider } from '@sb/dexUtils/wallet'
 import { MarketProvider } from '@sb/dexUtils/markets'
 import { PreferencesProvider } from '@sb/dexUtils/preferences'
 
-const version = `10.9.62-audit`
+const version = `10.9.69-audit`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
 const isNotificationDone = localStorage.getItem('isNotificationDone')
 const localPassword = localStorage.getItem('localPassword')
@@ -71,10 +71,7 @@ if (currentVersion !== version) {
 const AppRaw = ({
   children,
   getViewModeQuery,
-  getThemeModeQuery,
-  getChartDataQuery,
-  location: { pathname: currentPage, search },
-  ...props
+  location: { pathname: currentPage, search }
 }: any) => {
   const isChartPage = /chart/.test(currentPage)
 
@@ -255,11 +252,6 @@ export const App = compose(
     name: 'getViewModeQuery',
     fetchPolicy: 'cache-and-network',
   }),
-  // queryRendererHoc({
-  //   query: GET_THEME_MODE,
-  //   name: 'getThemeModeQuery',
-  //   fetchPolicy: 'cache-and-network',
-  // }),
   queryRendererHoc({
     skip: (props: any) => {
       return !props.authenticated

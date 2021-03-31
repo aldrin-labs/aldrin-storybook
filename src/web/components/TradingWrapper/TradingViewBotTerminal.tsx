@@ -236,7 +236,7 @@ export const TradingViewBotTerminal = ({
               symbol={pair[1]}
               value={orderType === 'market' ? 'Market' : price}
               needTitle
-              title={`plot_`}
+              title={`price`}
               type={'text'}
               disabled={pricePlotEnabled || orderType === 'market'}
               onChange={(e) => {
@@ -308,8 +308,6 @@ export const TradingViewBotTerminal = ({
             const totalForUpdate = isTotalMoreThanMax
               ? maxAmount * priceForCalculate
               : e.target.value
-
-            console.log('totalForUpdate', totalForUpdate)
 
             changeTotal(totalForUpdate)
             changeAmount(
@@ -448,6 +446,7 @@ export const TradingViewBotTerminal = ({
             {' '}
             <SendButton
               type={'buy'}
+              theme={theme}
               onClick={() => {
                 // publicKey check
                 if (publicKey === '') {

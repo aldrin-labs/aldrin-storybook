@@ -218,6 +218,7 @@ export const TradeInputContent = ({
         style={{ ...inputStyles, ...(fontSize ? { fontSize: fontSize } : {}) }}
       />
       <UpdatedCoin
+        symbolLength={symbol.length}
         theme={theme}
         right={
           !!symbolRightIndent
@@ -281,19 +282,25 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
           : marketPrice
 
       const newAmount =
-        !isSPOTMarket || isBuyType
-          ? +stripDigitPlaces(newValue / priceForCalculate, quantityPrecision)
-          : +stripDigitPlaces(newValue, quantityPrecision)
+          isBuyType
+            ? +stripDigitPlaces(
+                newValue / priceForCalculate,
+                quantityPrecision
+              )
+            : +stripDigitPlaces(newValue, quantityPrecision)
 
-      const newTotal =
-        isBuyType || !isSPOTMarket ? newValue : newValue * priceForCalculate
+        const newTotal = newAmount * priceForCalculate
 
       setFieldValue('amount', newAmount)
-      setFieldValue('total', stripDigitPlaces(newTotal, isSPOTMarket ? 8 : 3))
+      setFieldValue('total', stripDigitPlaces(newTotal, 2))
     }
 
     if (marketPriceAfterPairChange !== prevProps.marketPriceAfterPairChange) {
-      this.onPriceChange({ target: { value: marketPriceAfterPairChange } })
+      this.onPriceChange({
+        target: {
+          value: +stripDigitPlaces(marketPriceAfterPairChange, pricePrecision),
+        },
+      })
     }
 
     if (prevProps.marketPrice === null && this.props.marketPrice !== null) {
@@ -309,6 +316,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
         priceType !== 'market' && priceType !== 'maker-only'
           ? price
           : marketPrice
+
       this.setFormatted(
         'amount',
         stripDigitPlaces(+total / +priceForCalculate, quantityPrecision),
@@ -318,8 +326,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
     if (
       this.state.priceFromOrderbook !== this.props.priceFromOrderbook &&
-      priceType !== 'market' &&
-      priceType !== 'maker-only'
+      priceType !== 'market'
     ) {
       const { priceFromOrderbook, leverage } = this.props
 
@@ -342,29 +349,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       this.setState({ priceFromOrderbook })
     }
 
-    if (leverage !== prevProps.leverage) {
-      const priceForCalculate =
-        priceType !== 'market' && priceType !== 'maker-only'
-          ? price
-          : marketPrice
-      const maxTotal = funds[1].quantity * leverage
-
-      this.setFormatted('total', stripDigitPlaces(margin * leverage, 8), 0)
-
-      this.setFormatted(
-        'amount',
-        stripDigitPlaces(
-          (margin * leverage) / priceForCalculate,
-          quantityPrecision
-        ),
-        0
-      )
-    }
-
     if (marketPrice !== prevProps.marketPrice && priceType === 'market') {
       this.setFormatted(
-        'amount',
-        stripDigitPlaces(total / marketPrice, quantityPrecision),
+        'total',
+        stripDigitPlaces(marketPrice * amount, 2),
         0
       )
     }
@@ -649,74 +637,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 <InputRowContainer
                   style={{ visibility: !isBuyType ? 'hidden' : 'visible' }}
                 >
-                  {/* {pair.join('_') === 'SRM_USDT' && (
-                    <DarkTooltip
-                      maxWidth={'35rem'}
-                      title={
-                        'As soon as you purchase SRM, there are will be placed a limit order for sale at a price that will refund the fees you paid.'
-                      }
-                    >
-                      <AdditionalSettingsButton
-                        theme={theme}
-                        isActive={breakEvenPoint}
-                        fontSize={'1rem'}
-                        onClick={() => {
-                          updateState('takeProfit', false)
-                          updateState('breakEvenPoint', !breakEvenPoint)
-                        }}
-                      >
-                        <SCheckbox
-                          checked={breakEvenPoint}
-                          onChange={() => {}}
-                          style={{ padding: '0 0 0 1rem', color: '#fff' }}
-                        />
-                        <span style={{ margin: '0 auto' }}>
-                          Break-Even Point
-                        </span>
-                      </AdditionalSettingsButton>
-                    </DarkTooltip>
-                  )} */}
-                  {/* <DarkTooltip
-                    maxWidth={'35rem'}
-                    title={
-                      'A limit order for a price higher than the purchase price of the percentage you specify will be placed immediately after purchase, so you will take profit from SRM trading.'
-                    }
-                  >
-                    <AdditionalSettingsButton
-                      theme={theme}
-                      isActive={takeProfit}
-                      onClick={() => {
-                        updateState('takeProfit', !takeProfit)
-                        updateState('breakEvenPoint', false)
-                      }}
-                    >
-                      <SCheckbox
-                        checked={takeProfit}
-                        onChange={() => {}}
-                        style={{ padding: '0 0 0 1rem', color: '#fff' }}
-                      />
-                      <span style={{ margin: '0 auto' }}>Take Profit</span>
-                    </AdditionalSettingsButton>
-                  </DarkTooltip> */}
                 </InputRowContainer>
               )}
-              {priceType === 'stop-limit' || priceType === 'stop-market' ? (
-                <InputRowContainer
-                  key={'stop-limit'}
-                  padding={'.6rem 0'}
-                  direction={'column'}
-                >
-                  <TradeInputContent
-                    theme={theme}
-                    needTitle
-                    type={'text'}
-                    title={`trigger price (${pair[1]})`}
-                    value={values.stop || ''}
-                    onChange={this.onStopChange}
-                    symbol={pair[1]}
-                  />
-                </InputRowContainer>
-              ) : null}
               {tradingBotEnabled && !tradingBotIsActive && (
                 <FormInputContainer
                   theme={theme}
@@ -798,8 +720,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   onAfterSliderChange: (value) => {
                     const newValue = (maxAmount / 100) * value
 
+                    console.log('newValue', newValue)
+
                     const newAmount =
-                      !isSPOTMarket || isBuyType
+                      isBuyType
                         ? +stripDigitPlaces(
                             newValue / priceForCalculate,
                             quantityPrecision
@@ -1034,9 +958,9 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
 const formikEnhancer = withFormik<IProps, FormValues>({
   mapPropsToValues: (props) => ({
-    price: props.marketPrice,
+    price: stripDigitPlaces(props.marketPrice, props.pricePrecision),
     stop: null,
-    limit: props.marketPrice,
+    limit: stripDigitPlaces(props.marketPrice, props.pricePrecision),
     amount: null,
     total: null,
     margin: null,

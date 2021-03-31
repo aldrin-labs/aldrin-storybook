@@ -6,8 +6,8 @@ import { Theme } from '@material-ui/core'
 
 export const SquarePopup = styled.div`
   position: absolute;
-  top: 0;
-  left: 0;
+  top: -1000px;
+  left: -1000px;
   z-index: 1008;
 
   opacity: 0;
