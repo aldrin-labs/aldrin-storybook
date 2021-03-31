@@ -59,26 +59,25 @@ html {
 }  
         
   .virtualized-row {
-    font-family: 'IBM Plex Sans Condensed', sans-serif;
-    font-size: 1.1rem;
+    font-family: Avenir Next Medium;
+    font-size: 1.2rem;
     line-height: 35px;
-    font-weight: bold;
-    color: #16253D;
+    color: #F8FAFF;
     padding: 0 .5rem;
-    letter-spacing: 0.075rem;
+    letter-spacing: 0.05rem;
     cursor: default;
     outline: none;
   }
 
   @media (max-width: 1450px) {
     .virtualized-row {
-          font-size: 1rem;
+      font-size: 1.1rem;
     }
   }
 
   @media (max-width: 1350px) {
     .virtualized-row {
-          font-size: 0.9rem;
+      font-size: 1rem;
     }
   }
 

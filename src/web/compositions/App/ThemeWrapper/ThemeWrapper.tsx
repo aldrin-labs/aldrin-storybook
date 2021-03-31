@@ -157,11 +157,11 @@ export default ({ themeMode, isChartPage, children }) => {
               card: '#1C1D22',
             },
             red: {
-              main: '#DD6956',
+              main: '#F69894',
               button: 'linear-gradient(140.41deg, #F26D68 0%, #F69894 92.17%)',
               custom: '#D93B28',
               bright: '#ED6337',
-              new: '#DD6956',
+              new: '#F69894',
               chart: '#C7FFD0',
             },
             blue: {
@@ -180,9 +180,9 @@ export default ({ themeMode, isChartPage, children }) => {
               dark: '#377E21',
               light: '#E7ECF3',
               custom: '#97C15C',
-              main: '#55BB7C',
+              main: '#A5E898',
               button: 'linear-gradient(135deg, #A5E898 0%, #97E873 100%)',
-              new: '#29AC80',
+              new: '#A5E898',
               tab: '#09ACC7',
               shine: '#c7ffd0',
               acid: '#c7ffd0',
@@ -265,8 +265,8 @@ export default ({ themeMode, isChartPage, children }) => {
               redBackground: '#923B50',
             },
             orderbook: {
-              greenBackground: '#497E5A',
-              redBackground: '#923B50',
+              greenBackground: 'rgba(165, 232, 152, 0.25)',
+              redBackground: 'rgba(247, 152, 148, 0.25)',
             },
             slider: {
               dots: '#2F3949',

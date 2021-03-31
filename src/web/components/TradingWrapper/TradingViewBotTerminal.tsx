@@ -141,7 +141,7 @@ export const TradingViewBotTerminal = ({
         handleClose={() => changeShowPopup(false)}
         updateState={updateState}
       />
-      <div style={{ margin: 'auto 0' }}>
+      <div style={{ margin: 'auto 0', width: '100%' }}>
         <InputRowContainer padding={'1.2rem 0 .6rem 0'}>
           <CustomSwitcher
             theme={theme}

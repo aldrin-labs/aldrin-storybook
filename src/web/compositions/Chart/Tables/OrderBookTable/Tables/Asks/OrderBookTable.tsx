@@ -45,7 +45,7 @@ class OrderBookTable extends Component<IProps> {
               onRowClick={({ event, index, rowData }) => {
                 updateTerminalPriceFromOrderbook(+rowData.price)
               }}
-              headerHeight={window.outerHeight / 50}
+              headerHeight={window.outerHeight / 45}
               headerStyle={{
                 color: theme.palette.grey.text,
                 paddingLeft: '.5rem',
@@ -60,7 +60,7 @@ class OrderBookTable extends Component<IProps> {
                 // overflow: mode !== 'asks' ? 'hidden' : 'hidden auto',
                 overflow: 'hidden',
               }}
-              rowHeight={window.outerHeight / 60}
+              rowHeight={window.outerHeight / 45}
               overscanRowCount={0}
               scrollToIndex={tableData.length - 1}
               rowGetter={({ index }) => tableData[index]}
@@ -82,7 +82,7 @@ class OrderBookTable extends Component<IProps> {
                 dataKey="price"
                 headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
                 width={width - width / 6}
-                style={{ color: theme.palette.depthChart.redStroke }}
+                style={{ color: theme.palette.red.main, fontFamily: 'Avenir Next Demi' }}
               />
               <Column
                 label={`Size (${base})`}

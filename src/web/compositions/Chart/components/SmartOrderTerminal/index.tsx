@@ -1985,6 +1985,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                               }}
                             />
                             <SettingsLabel
+                              theme={theme}
                               style={{
                                 color: theme.palette.dark.main,
                                 textDecoration: 'underline',
@@ -2021,6 +2022,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                               }}
                             />
                             <SettingsLabel
+                              theme={theme}
                               style={{
                                 color: theme.palette.dark.main,
                                 textDecoration: 'underline',
@@ -2060,6 +2062,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
                               }}
                             />
                             <SettingsLabel
+                              theme={theme}
                               style={{
                                 color: theme.palette.dark.main,
                                 textDecoration: 'underline',

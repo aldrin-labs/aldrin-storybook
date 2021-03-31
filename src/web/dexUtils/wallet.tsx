@@ -133,7 +133,7 @@ export function WalletProvider({ children }) {
   }, [wallet, autoConnect])
 
   useEffect(() => {
-    if (connectWalletHash) {
+    if (connectWalletHash === '#connect_wallet') {
       setProviderUrl(CCAIProviderURL)
       wallet.connect()
     }
@@ -280,7 +280,6 @@ export function useBalanceInfo(publicKey) {
     ? parseTokenAccountData(accountInfo.data)
     : {};
   let [mintInfo, mintInfoLoaded] = useAccountInfo(mint);
-  // let { name, symbol } = useTokenInfo(mint);
 
   if (!accountInfoLoaded) {
     return null;

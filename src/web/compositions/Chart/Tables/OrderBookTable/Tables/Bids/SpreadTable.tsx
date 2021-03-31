@@ -47,7 +47,7 @@ class SpreadTable extends Component<IProps> {
               disableHeader={mode !== 'bids'}
               width={width}
               height={height}
-              headerHeight={window.outerHeight / 50}
+              headerHeight={window.outerHeight / 45}
               onRowClick={({ event, index, rowData }) => {
                 updateTerminalPriceFromOrderbook(+rowData.price)
               }}
@@ -66,7 +66,7 @@ class SpreadTable extends Component<IProps> {
                 overflow: 'hidden',
               }}
               rowCount={tableData.length}
-              rowHeight={window.outerHeight / 60}
+              rowHeight={window.outerHeight / 45}
               overscanRowCount={0}
               rowGetter={({ index }) => tableData[index]}
               rowRenderer={(...rest) =>
@@ -87,7 +87,7 @@ class SpreadTable extends Component<IProps> {
                 dataKey="price"
                 headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
                 width={width - width / 6}
-                style={{ color: theme.palette.depthChart.greenStroke }}
+                style={{ color: theme.palette.green.main, fontFamily: 'Avenir Next Demi' }}
               />
               <Column
                 label={mode === 'bids' ? `size (${base})` : ''}

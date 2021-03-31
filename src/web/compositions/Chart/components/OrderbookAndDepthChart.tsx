@@ -1,39 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import 'treemap-js'
-var SortedMap = require('collections/sorted-map')
 
-import { client } from '@core/graphql/apolloClient'
 import { Grid } from '@material-ui/core'
-import QueryRenderer from '@core/components/QueryRenderer'
-import { ORDERS_MARKET_QUERY } from '@core/graphql/queries/chart/ORDERS_MARKET_QUERY'
-import { getTerminalData } from '@core/graphql/queries/chart/getTerminalData'
-
-import {
-  MOCKED_ORDERBOOK,
-  ORDERBOOK,
-} from '@core/graphql/subscriptions/ORDERBOOK'
-import { updateOrderBookQuerryFunction } from '@core/utils/chartPageUtils'
-import { OrderBook, DepthChart } from '../components'
-import {
-  IProps,
-  OrderbookGroup,
-} from '../Tables/OrderBookTable/OrderBookTableContainer.types'
-
-import { client } from '@core/graphql/apolloClient'
+import { OrderBook } from '../components'
 import { useOrderbook, useMarkPrice } from '@sb/dexUtils/markets'
 
 import {
   transformOrderbookData,
-  addOrdersToOrderbook,
-  addOrderToOrderbook,
   getAggregatedData,
-  testJSON,
-  getAggregationsFromMinPriceDigits,
   getAggregationsFromPricePrecision,
-  getNumberOfDecimalsFromNumber,
 } from '@core/utils/chartPageUtils'
 
 import { useInterval } from '@sb/dexUtils/useInterval'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 const OrderbookAndDepthChart = (props) => {
   const {
@@ -49,7 +28,6 @@ const OrderbookAndDepthChart = (props) => {
     arrayOfMarketIds,
     updateTerminalPriceFromOrderbook,
     hideDepthChart,
-    isPairDataLoading,
     sizeDigits,
     pricePrecision: serumPricePrecision,
   } = props
@@ -148,32 +126,10 @@ const OrderbookAndDepthChart = (props) => {
       : aggregatedOrderbookData
 
   return (
-    <div
+    <RowContainer
       id="depthChartAndOB"
-      style={{ display: 'flex', width: '100%', height: '100%' }}
+      height="100%"
     >
-      {/* {!hideDepthChart && (
-        <Grid
-          item
-          xs={5}
-          style={{
-            height: '100%',
-          }}
-        >
-          <DepthChart
-            theme={theme}
-            chartProps={chartProps}
-            changeTable={changeTable}
-            exchange={exchange}
-            symbol={symbol}
-            data={{
-              asks: orderbookData.asks,
-              bids: orderbookData.bids,
-            }}
-          />
-        </Grid>
-      )} */}
-
       <Grid
         item
         xs={hideDepthChart ? 12 : 7}
@@ -200,7 +156,7 @@ const OrderbookAndDepthChart = (props) => {
           data={dataToSend}
         />
       </Grid>
-    </div>
+    </RowContainer>
   )
 }
 

@@ -21,10 +21,6 @@ export const BidsWrapper = styled.div`
       : isFullHeight
       ? 'height: calc(100% - 6rem)'
       : 'display: none'};
-
-  & .ReactVirtualized__Grid {
-    overflow: hidden !important;
-  }
 `
 
 export const AsksWrapper = styled.div`
@@ -35,12 +31,6 @@ export const AsksWrapper = styled.div`
       : isFullHeight
       ? 'height: calc(100% - 6rem)'
       : 'display: none'};
-
-  & .ReactVirtualized__Grid {
-    /* overflow: ${(props) =>
-      props.mode === 'asks' ? 'hidden auto' : 'hidden !important'}; */
-    overflow: hidden !important;
-  }
 `
 
 export const SvgMode = styled(({ isActive, ...rest }) => (

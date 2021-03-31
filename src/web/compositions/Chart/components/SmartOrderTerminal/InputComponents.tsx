@@ -130,6 +130,7 @@ export const FormInputContainer = ({
   lineWidth?: string
   needRightValue?: boolean
   rightValue?: string
+  lineMargin?: string
   haveTooltip?: boolean
   tooltipText?: string | React.ReactChild
   tooltipStyles?: React.CSSProperties

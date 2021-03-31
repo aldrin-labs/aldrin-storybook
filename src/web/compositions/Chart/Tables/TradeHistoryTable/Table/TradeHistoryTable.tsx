@@ -13,9 +13,6 @@ import defaultRowRenderer from '../../OrderBookTable/utils'
 
 const Wrapper = styled.div`
   height: calc(100% - 3rem);
-  & .ReactVirtualized__Grid {
-    overflow: hidden !important;
-  }
 `
 
 @withTheme()
@@ -34,7 +31,7 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
         <AutoSizer>
           {({ width, height }: { width: number; height: number }) => (
             <Table
-              headerHeight={window.outerHeight / 50}
+              headerHeight={window.outerHeight / 45}
               headerStyle={{
                 color: theme.palette.grey.text,
                 paddingLeft: '.5rem',
@@ -52,7 +49,7 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
               height={height}
               rowCount={data.length}
               overscanRowCount={0}
-              rowHeight={window.outerHeight / 60}
+              rowHeight={window.outerHeight / 45}
               rowGetter={({ index }) => data[index]}
               onRowClick={({ event, index, rowData }) => {
                 updateTerminalPriceFromOrderbook(+rowData.price)
@@ -71,7 +68,7 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
                 label="Price"
                 dataKey="price"
                 width={width}
-                style={{ color: theme.palette.dark.main }}
+                style={{ fontFamily: 'Avenir Next Demi' }}
                 headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
               />
               <Column

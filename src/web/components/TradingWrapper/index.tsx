@@ -1,16 +1,13 @@
 import React from 'react'
-import { SERUM_ORDERS_BY_TV_ALERTS } from '@core/graphql/subscriptions/SERUM_ORDERS_BY_TV_ALERTS'
-
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import { Grid } from '@material-ui/core'
 import { compose } from 'recompose'
+import { Grid } from '@material-ui/core'
+
+import { SERUM_ORDERS_BY_TV_ALERTS } from '@core/graphql/subscriptions/SERUM_ORDERS_BY_TV_ALERTS'
+import { withErrorFallback } from '@core/hoc/withErrorFallback'
 
 import { isSPOTMarketType } from '@core/utils/chartPageUtils'
-import { isFuturesWarsKey } from '@core/graphql/queries/futureWars/isFuturesWarsKey'
 
 import TraidingTerminal from '../TraidingTerminal'
-import SmallSlider from '@sb/components/Slider/SmallSlider'
 
 import { client } from '@core/graphql/apolloClient'
 
@@ -18,15 +15,7 @@ import {
   SRadio,
   SCheckbox,
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-
-import RoboHead from '@icons/roboHead.svg'
 import Bell from '@icons/bell.svg'
-
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-
-import { SendButton } from '../TraidingTerminal/styles'
 
 import {
   TerminalContainer,
@@ -34,22 +23,13 @@ import {
   FullHeightGrid,
   TerminalHeader,
   TerminalModeButton,
-  LeverageLabel,
-  LeverageTitle,
-  LeverageContainer,
   SettingsContainer,
   SettingsLabel,
-  StyledSelect,
-  StyledOption,
-  SpotBalanceSpan,
   FuturesSettings,
-  DropdownItemsBlock,
-  TerminalModeButtonWithDropdown,
 } from './styles'
 
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import FirstVisitPopup from '@sb/compositions/Chart/components/FirstVisitPopup'
 import SvgIcon from '@sb/components/SvgIcon'
 import { TradeInputContent } from '@sb/components/TraidingTerminal/index'
 import { FormInputContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
@@ -69,8 +49,10 @@ const generateToken = () =>
     .toString(36)
     .substring(2, 15)
 
-class SimpleTabs extends React.Component {
-  state = {
+class SimpleTabs extends React.Component<any, any> {
+  state: { 
+    mode: 'market' | 'limit'
+  } = {
     side: 'buy',
     mode: 'market',
     leverage: false,
@@ -186,10 +168,6 @@ class SimpleTabs extends React.Component {
     this.subscription && this.subscription.unsubscribe()
   }
 
-  handleChangePercentage = (percentage: string, mode: string) => {
-    this.setState({ [`percentage${mode}`]: percentage })
-  }
-
   addLoaderToButton = (side: 'buy' | 'sell') => {
     this.setState({ orderIsCreating: side })
   }
@@ -228,22 +206,12 @@ class SimpleTabs extends React.Component {
       marketType,
       hedgeMode,
       enqueueSnackbar,
-      chartPagePopup,
-      closeChartPagePopup,
-      componentMarginType,
       priceFromOrderbook,
       quantityPrecision,
       pricePrecision,
       minSpotNotional,
       minFuturesStep,
       marketPriceAfterPairChange,
-      updateTerminalViewMode,
-      updateLeverage,
-      changePositionModeWithStatus,
-      changeMarginTypeWithStatus,
-      maxLeverage,
-      intervalId,
-      updateIntervalId,
       publicKey,
       connected,
       SOLAmount,
@@ -309,7 +277,6 @@ class SimpleTabs extends React.Component {
               </div>
               <div
                 style={{
-                  width: mode === '' ? '20%' : mode === 'limit' ? '45%' : '37%',
                   display: 'flex',
                   justifyContent: 'center',
                   alignItems: 'center',
@@ -323,116 +290,86 @@ class SimpleTabs extends React.Component {
                       'A limit order for a price higher than the purchase price of the percentage you specify will be placed immediately after purchase, so you take profit from SRM trading.'
                     }
                   >
-                    <AdditionalSettingsButton
+                    <FuturesSettings
                       theme={theme}
                       style={{
-                        margin: '0',
-                        border: 'none',
-                        whiteSpace: 'nowrap',
-                      }}
-                      isActive={false}
-                      needHover={false}
-                      onClick={() => {
-                        this.updateState('takeProfit', !takeProfit)
-                        this.updateState('breakEvenPoint', !breakEvenPoint)
+                        padding: '0 2rem 0 0',
                       }}
                     >
                       <SCheckbox
+                        id="takeProfitButton"
                         checked={takeProfit}
                         disabled={mode === 'limit'}
-                        onChange={() => {}}
+                        onChange={() => {
+                          this.updateState('takeProfit', !takeProfit)
+                        }}
                         style={{
                           padding: '0 0.8rem 0 0',
                         }}
                       />
-                      <span
-                        style={{
-                          margin: mode === 'limit' ? '0 auto' : '0',
-                          fontFamily: 'Avenir Next Demi',
-                        }}
-                      >
+                      <SettingsLabel theme={theme} htmlFor="takeProfitButton">
                         Take Profit
-                      </span>
-                    </AdditionalSettingsButton>
+                      </SettingsLabel>
+                    </FuturesSettings>
                   </DarkTooltip>
                 ) : null}
 
-                {isSPOTMarket && mode === 'limit' ? (
+                {mode === 'limit' ? (
                   <TerminalHeader
                     key={'futuresTerminal'}
                     style={{ display: 'flex', border: 'none' }}
                     theme={theme}
                   >
                     <SettingsContainer>
-                      {mode === 'limit' && (
-                        <FuturesSettings key="postOnlyTerminalController">
-                          <SCheckbox
-                            id="postOnly"
-                            checked={orderMode === 'postOnly'}
-                            style={{ padding: '0 1rem' }}
-                            onChange={() =>
-                              this.setState({
-                                orderMode:
-                                  orderMode === 'postOnly' ? '' : 'postOnly',
-                                TIFMode: 'GTX',
-                              })
-                            }
-                          />
-                          <SettingsLabel
-                            style={{
-                              whiteSpace: 'nowrap',
-                              textTransform: 'capitalize',
-                              color: '#7284A0',
-                              fontSize: '1.1rem',
-                              fontFamily: 'Avenir Next Medium',
-                            }}
-                            theme={theme}
-                            htmlFor="postOnly"
-                          >
-                            post only
-                          </SettingsLabel>
-                        </FuturesSettings>
-                      )}
+                      <FuturesSettings key="postOnlyTerminalController">
+                        <SCheckbox
+                          id="postOnly"
+                          checked={orderMode === 'postOnly'}
+                          style={{ padding: '0 1rem' }}
+                          onChange={() =>
+                            this.setState({
+                              orderMode:
+                                orderMode === 'postOnly' ? '' : 'postOnly',
+                              TIFMode: 'GTX',
+                            })
+                          }
+                        />
+                        <SettingsLabel theme={theme} htmlFor="postOnly">
+                          post only
+                        </SettingsLabel>
+                      </FuturesSettings>
 
-                      {mode === 'limit' && (
-                        <FuturesSettings
-                          key="iocTerminalController"
-                          style={{ padding: '.4rem 0' }}
-                        >
-                          <SCheckbox
-                            id="ioc"
-                            checked={orderMode === 'ioc'}
-                            style={{ padding: '0 1rem' }}
-                            onChange={() =>
-                              this.setState({
-                                orderMode: orderMode === 'ioc' ? '' : 'ioc',
-                              })
-                            }
-                          />
-                          <SettingsLabel
-                            style={{
-                              whiteSpace: 'nowrap',
-                              color: '#7284A0',
-                              fontSize: '1.1rem',
-                              fontFamily: 'Avenir Next Medium',
-                            }}
-                            theme={theme}
-                            htmlFor="ioc"
-                          >
-                            ioc
-                          </SettingsLabel>
-                        </FuturesSettings>
-                      )}
+                      <FuturesSettings
+                        key="iocTerminalController"
+                        style={{ padding: '.4rem 2rem .4rem 0' }}
+                      >
+                        <SCheckbox
+                          id="ioc"
+                          checked={orderMode === 'ioc'}
+                          style={{ padding: '0 1rem' }}
+                          onChange={() =>
+                            this.setState({
+                              orderMode: orderMode === 'ioc' ? '' : 'ioc',
+                            })
+                          }
+                        />
+                        <SettingsLabel theme={theme} htmlFor="ioc">
+                          ioc
+                        </SettingsLabel>
+                      </FuturesSettings>
                     </SettingsContainer>
                   </TerminalHeader>
                 ) : null}
                 <TerminalModeButton
                   theme={theme}
                   style={{
-                    width: mode === 'limit' ? '26rem' : '16rem',
+                    width: 'auto',
+                    height: '100%',
+                    padding: TVAlertsBotIsActive ? '0 4rem ' : '0 4rem 0 6rem',
+                    borderRight: 0,
                     borderLeft: theme.palette.border.main,
                     ...(TVAlertsBotIsActive
-                      ? { backgroundColor: '#F07878', color: '#fff' }
+                      ? { backgroundColor: '#F07878', color: '#fff', borderBottom: '0' }
                       : {}),
                   }}
                   active={TVAlertsBotEnabled}
@@ -445,7 +382,9 @@ class SimpleTabs extends React.Component {
                       TVAlertsBotEnabled: !prev.TVAlertsBotEnabled,
                       // tradingBotEnabled: false,
                       mode: prev.TVAlertsBotEnabled ? 'market' : '',
-                      ...(TVAlertsBotIsActive ? { TVAlertsBotIsActive: false} : {}),
+                      ...(TVAlertsBotIsActive
+                        ? { TVAlertsBotIsActive: false }
+                        : {}),
                     }))
                   }}
                 >
@@ -460,7 +399,7 @@ class SimpleTabs extends React.Component {
                         top: 0,
                       }}
                     />
-                  )}
+                  )} 
                   {TVAlertsBotIsActive ? 'Stop Alert BOT' : 'Alert BOT'}
                 </TerminalModeButton>
                 {/* {pair.join('_') === 'SRM_USDT' && (
@@ -546,17 +485,13 @@ class SimpleTabs extends React.Component {
                         marketPriceAfterPairChange={marketPriceAfterPairChange}
                         isSPOTMarket={isSPOTMarket}
                         enqueueSnackbar={enqueueSnackbar}
-                        changePercentage={(value) =>
-                          this.handleChangePercentage(value, 'Buy')
-                        }
                         pair={pair}
                         funds={funds}
                         lockedAmount={0}
-                        key={[pair, funds]}
+                        key={JSON.stringify([pair, funds])}
                         walletValue={funds && funds[1]}
                         marketPrice={price}
                         confirmOperation={placeOrder}
-                        cancelOrder={cancelOrder}
                         tradingBotEnabled={tradingBotEnabled}
                         tradingBotInterval={tradingBotInterval}
                         tradingBotIsActive={tradingBotIsActive}
@@ -685,7 +620,6 @@ class SimpleTabs extends React.Component {
                                   theme={theme}
                                   haveSelector
                                   symbol={'min'}
-                                  // width={'calc(55% - .4rem)'}
                                   width={'calc(50% - .4rem)'}
                                   value={tradingBotTotalTime}
                                   onChange={(e) => {
@@ -705,7 +639,6 @@ class SimpleTabs extends React.Component {
                                     borderTopRightRadius: 0,
                                     borderBottomRightRadius: 0,
                                   }}
-                                  // disabled={!stopLoss.timeout.whenLossableOn}
                                 />
                                 <BlueSlider
                                   theme={theme}
@@ -754,13 +687,10 @@ class SimpleTabs extends React.Component {
                           }
                           isSPOTMarket={isSPOTMarket}
                           enqueueSnackbar={enqueueSnackbar}
-                          changePercentage={(value) =>
-                            this.handleChangePercentage(value, 'Sell')
-                          }
                           pair={pair}
                           funds={funds}
                           lockedAmount={0}
-                          key={[pair, funds]}
+                          key={JSON.stringify([pair, funds])}
                           walletValue={funds && funds[1]}
                           marketPrice={price}
                           confirmOperation={placeOrder}
