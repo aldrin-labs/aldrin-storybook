@@ -50,7 +50,7 @@ import { WalletProvider } from '@sb/dexUtils/wallet'
 import { MarketProvider } from '@sb/dexUtils/markets'
 import { PreferencesProvider } from '@sb/dexUtils/preferences'
 
-const version = `10.9.69-audit`
+const version = `10.9.70-audit`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
 const isNotificationDone = localStorage.getItem('isNotificationDone')
 const localPassword = localStorage.getItem('localPassword')
@@ -71,7 +71,7 @@ if (currentVersion !== version) {
 const AppRaw = ({
   children,
   getViewModeQuery,
-  location: { pathname: currentPage, search }
+  location: { pathname: currentPage, search },
 }: any) => {
   const isChartPage = /chart/.test(currentPage)
 

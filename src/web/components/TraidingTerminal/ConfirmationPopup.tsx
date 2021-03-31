@@ -244,8 +244,7 @@ export const ConfirmationPopup = ({
                 ? costsOfTheFirstTrade
                 : SOLFeeForTrade}{' '}
             </span>{' '}
-            &nbsp;
-            {pair[0]}
+            &nbsp; SOL
             {!needCreateOpenOrdersAccount ? (
               <DarkTooltip
                 title={
