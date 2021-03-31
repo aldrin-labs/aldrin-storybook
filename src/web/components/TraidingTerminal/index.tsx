@@ -8,6 +8,7 @@ import { withFormik, validateYupSchema, yupToFormErrors } from 'formik'
 
 import { Grid, InputAdornment, Typography, Theme } from '@material-ui/core'
 import { Loading } from '@sb/components/index'
+import { ConfirmationPopup } from './ConfirmationPopup'
 
 import { stubFalse, toNumber, toPairs } from 'lodash-es'
 import { traidingErrorMessages } from '@core/config/errorMessages'
@@ -47,6 +48,7 @@ import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { FormInputContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
 import { ButtonsWithAmountFieldRowForBasic } from './AmountButtons'
 import ConnectWalletDropdown from '../ConnectWalletDropdown/index'
+import { validateVariablesForPlacingOrder } from '@sb/dexUtils/send'
 
 export const TradeInputHeader = ({
   title = 'Input',
@@ -247,6 +249,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
   state = {
     marketPrice: null,
     priceFromOrderbook: null,
+    isConfirmationPopupOpen: false,
   }
 
   componentDidUpdate(prevProps) {
@@ -534,6 +537,14 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     setFieldValue('total', stripDigitPlaces(newTotal, 2))
   }
 
+  openConfirmationPopup = () => {
+    this.setState({ isConfirmationPopupOpen: true })
+  }
+
+  closeConfirmationPopup = () => {
+    this.setState({ isConfirmationPopupOpen: false })
+  }
+
   render() {
     const {
       pair,
@@ -561,7 +572,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       minOrderSize,
       connected,
       SOLAmount,
+      spread,
       openOrdersAccount,
+      market,
+      wallet,
     } = this.props
 
     const costsOfTheFirstTrade = 0.024
@@ -687,6 +701,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
               <ButtonsWithAmountFieldRowForBasic
                 {...{
                   pair,
+                  needButtons: true,
                   theme,
                   maxAmount,
                   minOrderSize,
@@ -847,12 +862,26 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                       : {}),
                   }}
                   type={sideType}
-                  onClick={async () => {
-                    const result = await validateForm()
-                    console.log('result', result)
-                    if (Object.keys(result).length === 0 || !isSPOTMarket) {
-                      handleSubmit(values)
+                  onClick={() => {
+                    // const result = await validateForm()
+                    // console.log('result', result)
+                    // if (Object.keys(result).length === 0 || !isSPOTMarket) {
+                    //   handleSubmit(values)
+                    // }
+                    const isValidationSuccessfull = validateVariablesForPlacingOrder(
+                      {
+                        price: values.price,
+                        size: values.amount,
+                        market,
+                        wallet,
+                      }
+                    )
+
+                    if (!isValidationSuccessfull) {
+                      return
                     }
+
+                    this.openConfirmationPopup()
                   }}
                 >
                   {isSPOTMarket
@@ -868,7 +897,35 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     : 'short'}
                 </SendButton>
               )}
-
+              <ConfirmationPopup
+                theme={theme}
+                spread={spread}
+                open={this.state.isConfirmationPopupOpen}
+                pair={pair}
+                maxAmount={maxAmount}
+                minOrderSize={minOrderSize}
+                priceType={priceType}
+                onAmountChange={this.onAmountChange}
+                onTotalChange={this.onTotalChange}
+                isSPOTMarket={isSPOTMarket}
+                quantityPrecision={quantityPrecision}
+                priceForCalculate={priceForCalculate}
+                onMarginChange={this.onMarginChange}
+                initialMargin={values.margin}
+                amount={values.amount}
+                total={values.total}
+                leverage={leverage}
+                isBuyType={isBuyType}
+                onPriceChange={this.onPriceChange}
+                values={values}
+                sideType={sideType}
+                onClose={this.closeConfirmationPopup}
+                costsOfTheFirstTrade={costsOfTheFirstTrade}
+                SOLFeeForTrade={SOLFeeForTrade}
+                needCreateOpenOrdersAccount={needCreateOpenOrdersAccount}
+                validateForm={validateForm}
+                handleSubmit={handleSubmit}
+              />
               {/* <Grid>
                 <span
                   style={{

@@ -229,7 +229,7 @@ export async function settleFunds({
   quoteCurrencyAccount,
   tokenAccounts,
   selectedTokenAccounts,
-  }) {
+}) {
   if (!wallet) {
     notify({ message: 'Please, connect wallet to settle funds' })
     return
@@ -250,9 +250,8 @@ export async function settleFunds({
   }
 
   const programIds: PublicKey[] = []
-  const m = market;
-
-  [m]
+  const m = market
+  ;[m]
     .reduce((cumulative, m) => {
       // @ts-ignore
       cumulative.push(m._programId)
@@ -356,7 +355,10 @@ export async function settleFunds({
     (x): x is { signers: [PublicKey | Account]; transaction: Transaction } =>
       !!x
   )
-  if ((!settleTransactions || settleTransactions.length === 0) && !wallet.autoApprove) {
+  if (
+    (!settleTransactions || settleTransactions.length === 0) &&
+    !wallet.autoApprove
+  ) {
     notify({
       message: 'No funds to settle',
       type: 'error',
@@ -504,32 +506,18 @@ export async function cancelOrders({ market, wallet, connection, orders }) {
   })
 }
 
-export async function placeOrder({
-  side,
+export const validateVariablesForPlacingOrder = ({
   price,
   size,
-  pair,
-  orderType,
   market,
-  isMarketOrder,
-  connection,
   wallet,
-  baseCurrencyAccount,
-  quoteCurrencyAccount,
-  feeAccounts,
-}) {
-  console.log('place ORDER', market?.minOrderSize, size)
-
+}) => {
   let formattedMinOrderSize =
     market?.minOrderSize?.toFixed(getDecimalCount(market.minOrderSize)) ||
     market?.minOrderSize
   let formattedTickSize =
     market?.tickSize?.toFixed(getDecimalCount(market.tickSize)) ||
     market?.tickSize
-
-  const isIncrement = (num, step) =>
-    Math.abs((num / step) % 1) < 1e-5 || Math.abs(((num / step) % 1) - 1) < 1e-5
-
   if (isNaN(price)) {
     notify({ message: 'Invalid price', type: 'error' })
     return
@@ -568,6 +556,39 @@ export async function placeOrder({
     notify({ message: 'Price under tick size', type: 'error' })
     return
   }
+
+  return true
+}
+
+const isIncrement = (num, step) =>
+  Math.abs((num / step) % 1) < 1e-5 || Math.abs(((num / step) % 1) - 1) < 1e-5
+
+export async function placeOrder({
+  side,
+  price,
+  size,
+  pair,
+  orderType,
+  market,
+  isMarketOrder,
+  connection,
+  wallet,
+  baseCurrencyAccount,
+  quoteCurrencyAccount,
+  feeAccounts,
+}) {
+  console.log('place ORDER', market?.minOrderSize, size)
+  const isValidationSuccessfull = validateVariablesForPlacingOrder({
+    price,
+    size,
+    market,
+    wallet,
+  })
+
+  if (!isValidationSuccessfull) {
+    return
+  }
+
   const owner = wallet.publicKey
 
   const payer =
@@ -607,7 +628,6 @@ export async function placeOrder({
   transaction.add(market.makeMatchOrdersTransaction(5))
 
   console.log('placeOrder transaction after add', transaction)
-  console.log('price', price, 'market.tickSize', market.tickSize, 'market.minOrderSize',market.minOrderSize)
 
   return await sendTransaction({
     transaction,

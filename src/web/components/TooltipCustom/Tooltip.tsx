@@ -34,14 +34,16 @@ export const Tooltip = styled(({ ...props }) => (
 
 import { Tooltip as MUTooltip } from '@material-ui/core'
 
-export const DarkTooltip = styled((props) => (
-  <MUTooltip
-    classes={{ popper: props.className, tooltip: 'tooltip' }}
-    style={{ opacity: '1' }}
-    enterDelay={props.delay || 100}
-    {...props}
-  />
-))`
+export const DarkTooltip = styled((props) => {
+  return (
+    <MUTooltip
+      classes={{ popper: props.className, tooltip: 'tooltip' }}
+      style={{ opacity: '1' }}
+      enterDelay={props.delay || 100}
+      {...props}
+    />
+  )
+})`
   & .tooltip {
     background: #222429;
     border: 1px solid #3a475c;

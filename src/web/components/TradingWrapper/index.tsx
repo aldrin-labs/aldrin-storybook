@@ -201,6 +201,7 @@ class SimpleTabs extends React.Component<any, any> {
       theme,
       placeOrder,
       decimals,
+      spread,
       showOrderResult,
       cancelOrder,
       marketType,
@@ -217,6 +218,8 @@ class SimpleTabs extends React.Component<any, any> {
       SOLAmount,
       openOrdersAccount,
       minOrderSize,
+      market,
+      wallet,
     } = this.props
 
     const isSPOTMarket = isSPOTMarketType(marketType)
@@ -468,6 +471,7 @@ class SimpleTabs extends React.Component<any, any> {
                     <TerminalContainer>
                       <TraidingTerminal
                         byType={'buy'}
+                        spread={spread}
                         theme={theme}
                         sideType={'buy'}
                         priceType={mode}
@@ -670,6 +674,7 @@ class SimpleTabs extends React.Component<any, any> {
                         <TraidingTerminal
                           byType={'sell'}
                           sideType={'sell'}
+                          market={market}
                           priceType={mode}
                           minOrderSize={minOrderSize}
                           theme={theme}
@@ -685,6 +690,8 @@ class SimpleTabs extends React.Component<any, any> {
                           marketPriceAfterPairChange={
                             marketPriceAfterPairChange
                           }
+                          spread={spread}
+                          wallet={wallet}
                           isSPOTMarket={isSPOTMarket}
                           enqueueSnackbar={enqueueSnackbar}
                           pair={pair}
