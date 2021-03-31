@@ -241,8 +241,8 @@ export const ConfirmationPopup = ({
               {' '}
               ≈&nbsp;
               {needCreateOpenOrdersAccount
-                ? SOLFeeForTrade
-                : costsOfTheFirstTrade}{' '}
+                ? costsOfTheFirstTrade
+                : SOLFeeForTrade}{' '}
             </span>{' '}
             &nbsp;
             {pair[0]}
