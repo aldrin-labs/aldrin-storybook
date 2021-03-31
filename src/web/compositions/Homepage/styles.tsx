@@ -64,10 +64,8 @@ export const WhiteButton = styled.a`
     background: ${(props) => (props.needHover ? '#f8faff' : null)};
     color: ${(props) => (props.needHover ? '#3a475c' : null)};
 
-    img svg {
-      path {
-        fill: ${(props) => (props.needHover ? '#3a475c' : null)};
-      }
+    svg > path{
+      fill: ${(props) => (props.needHover ? '#3a475c !important' : null)};
     }
   }
 `
