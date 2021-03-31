@@ -155,7 +155,9 @@ export const ConfirmationPopup = ({
           <Line sideType={sideType} width={'31%'} />
           <Title sideType={sideType}>
             <span style={{ textTransform: 'capitalize' }}>{priceType}</span>
+            &nbsp;
             <span style={{ textTransform: 'capitalize' }}>{sideType}</span>
+            &nbsp;
             {pair[0]}
           </Title>
           <Line sideType={sideType} width={'31%'} />
