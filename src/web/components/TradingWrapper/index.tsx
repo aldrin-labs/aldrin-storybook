@@ -448,7 +448,7 @@ class SimpleTabs extends React.Component {
                     }))
                   }}
                 >
-                  {!tradingBotEnabled && (
+                  {!TVAlertsBotEnabled && (
                     <SvgIcon
                       src={Bell}
                       height={'100%'}
