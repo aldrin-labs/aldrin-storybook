@@ -299,9 +299,9 @@ export const ConfirmationPopup = ({
                 <SvgIcon width="100%" height="auto" src={Attention} />
               </div>
               <WhiteText style={{ padding: '2rem' }}>
-                Slippage in this market is extremely high. The price of a trade
-                is very unpredictable, we do not recommend to use the market
-                order on this market.
+                Spread in this market is extremely high. The price of a trade is
+                very unpredictable, we do not recommend to use the market order
+                on this market.
               </WhiteText>
             </WarningBlock>
             <div
@@ -328,7 +328,7 @@ export const ConfirmationPopup = ({
                   letterSpacing: '0.01rem',
                 }}
               >
-                I am aware of the risks associated with high Slippage and still
+                I am aware of the risks associated with high Spread and still
                 want to use market order.
               </WhiteText>
             </div>

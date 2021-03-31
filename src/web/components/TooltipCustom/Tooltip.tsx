@@ -35,7 +35,6 @@ export const Tooltip = styled(({ ...props }) => (
 import { Tooltip as MUTooltip } from '@material-ui/core'
 
 export const DarkTooltip = styled((props) => {
-  console.log('props', props)
   return (
     <MUTooltip
       classes={{ popper: props.className, tooltip: 'tooltip' }}
