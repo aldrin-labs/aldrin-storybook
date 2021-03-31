@@ -236,7 +236,7 @@ export const TradingViewBotTerminal = ({
               symbol={pair[1]}
               value={orderType === 'market' ? 'Market' : price}
               needTitle
-              title={`plot_`}
+              title={`price`}
               type={'text'}
               disabled={pricePlotEnabled || orderType === 'market'}
               onChange={(e) => {

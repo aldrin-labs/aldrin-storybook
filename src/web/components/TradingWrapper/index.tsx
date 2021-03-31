@@ -432,7 +432,7 @@ class SimpleTabs extends React.Component {
                     width: mode === 'limit' ? '26rem' : '16rem',
                     borderLeft: theme.palette.border.main,
                     ...(TVAlertsBotIsActive
-                      ? { backgroundColor: '#F07878' }
+                      ? { backgroundColor: '#F07878', color: '#fff' }
                       : {}),
                   }}
                   active={TVAlertsBotEnabled}
@@ -443,12 +443,13 @@ class SimpleTabs extends React.Component {
 
                     this.setState((prev) => ({
                       TVAlertsBotEnabled: !prev.TVAlertsBotEnabled,
-                      tradingBotEnabled: false,
+                      // tradingBotEnabled: false,
                       mode: prev.TVAlertsBotEnabled ? 'market' : '',
+                      ...(TVAlertsBotIsActive ? { TVAlertsBotIsActive: false} : {}),
                     }))
                   }}
                 >
-                  {!TVAlertsBotEnabled && (
+                  {!TVAlertsBotIsActive && (
                     <SvgIcon
                       src={Bell}
                       height={'100%'}
