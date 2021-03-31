@@ -39,6 +39,7 @@ export const ButtonsWithAmountFieldRowForBasic = ({
   total,
   leverage,
   isBuyType,
+  needButtons,
 }: SliderWithPriceAndPercentageFieldRowProps) => {
   const [localAmount, updateLocalAmount] = useState(amount)
   const [localTotal, updateLocalTotal] = useState(total)
@@ -151,46 +152,47 @@ export const ButtonsWithAmountFieldRowForBasic = ({
             </InputRowContainer>
           )}
         </div>
-        <InputRowContainer
-          style={{
-            height: '4rem',
-            margin: '.5rem 0',
-          }}
-        >
-          <PercentageTabsContainer>
-            {percentages.map((el) => (
-              <PercentageTab
-                theme={theme}
-                isActive={false}
-                onClick={() => {
-                  onAfterSliderChange(el.value)
-                }}
+        {needButtons ? (
+          <InputRowContainer
+            style={{
+              height: '4rem',
+              margin: '.5rem 0',
+            }}
+          >
+            <PercentageTabsContainer>
+              {percentages.map((el) => (
+                <PercentageTab
+                  theme={theme}
+                  isActive={false}
+                  onClick={() => {
+                    onAfterSliderChange(el.value)
+                  }}
+                >
+                  {el.value}%
+                </PercentageTab>
+              ))}
+              <DarkTooltip
+                title={
+                  <>
+                    <p>
+                      Minimal increment for {pair[0]}/{pair[1]} pair is{' '}
+                      <strong>{minOrderSize}</strong>
+                    </p>
+                    <p>
+                      For example, if you have{' '}
+                      {minOrderSize * 2 + minOrderSize / 2} {pair[0]} then you
+                      can only place an order for {minOrderSize * 2} {pair[0]} .
+                    </p>
+                  </>
+                }
               >
-                {el.value}%
-              </PercentageTab>
-            ))}
-            <DarkTooltip
-              title={
-                <>
-                  <p>
-                    Minimal increment for {pair[0]}/{pair[1]} pair is{' '}
-                    <strong>{minOrderSize}</strong>
-                  </p>
-                  <p>
-                    For example, if you have{' '}
-                    {minOrderSize * 2 + minOrderSize / 2} {pair[0]} then you can
-                    only place an order for {minOrderSize * 2} {pair[0]} .
-                  </p>
-                </>
-              }
-            >
-              <div style={{ width: '5%', height: '2rem' }}>
-                {' '}
-                <SvgIcon width="100%" height="auto" src={Info} />
-              </div>
-            </DarkTooltip>
-          </PercentageTabsContainer>
-          {/* <BlueSlider
+                <div style={{ width: '5%', height: '2rem' }}>
+                  {' '}
+                  <SvgIcon width="100%" height="auto" src={Info} />
+                </div>
+              </DarkTooltip>
+            </PercentageTabsContainer>
+            {/* <BlueSlider
             theme={theme}
             showMarks
             handleStyles={{ top: '0.5rem' }}
@@ -233,7 +235,8 @@ export const ButtonsWithAmountFieldRowForBasic = ({
             }}
             onAfterChange={onAfterSliderChange}
           /> */}
-        </InputRowContainer>
+          </InputRowContainer>
+        ) : null}
       </InputRowContainer>
 
       {!isSPOTMarket && (
