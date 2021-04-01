@@ -57,15 +57,16 @@ const CustomTableCell = withStyles((theme) => ({
   head: {
     position: 'sticky',
     top: '3rem',
-    backgroundColor: theme.palette.primary.dark,
+    backgroundColor: 'inherit',
     color: theme.palette.dark.main,
-    textTransform: 'uppercase',
-    fontSize: 14,
+    textTransform: 'capitalize',
+    fontFamily: 'Avenir Next Demi',
+    fontSize: '1.2rem',
     fontWeight: 'bold',
     border: 0,
     whiteSpace: 'nowrap',
     zIndex: 100,
-    padding: '0.2rem 1.6rem 0.2rem  0.6rem',
+    padding: '0.2rem 1.6rem 0.3rem  0.6rem',
     boxShadow: 'none',
   },
   body: {
@@ -201,8 +202,8 @@ const styles = (theme: Theme) =>
     },
     headRow: {
       height: '2rem',
-
       boxShadow: 'none',
+      borderBottom: theme.palette.border.main,
     },
     rowSelected: {
       backgroundColor: theme.palette.action.selected,

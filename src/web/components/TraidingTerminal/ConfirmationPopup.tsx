@@ -125,6 +125,7 @@ export const ConfirmationPopup = ({
 }) => {
   const isSlippageHigh = spread > 2
   const [isAwareOfHighSlippage, confirmIsAwareOfHighSlippage] = useState(false)
+
   return (
     <DialogWrapper
       theme={theme}
@@ -238,7 +239,6 @@ export const ConfirmationPopup = ({
           <WhiteText style={{ fontFamily: 'Avenir Next Demi' }}>
             {' '}
             <span style={{ color: '#a5e898', fontFamily: 'Avenir Next Demi' }}>
-              {' '}
               ≈&nbsp;
               {needCreateOpenOrdersAccount
                 ? costsOfTheFirstTrade

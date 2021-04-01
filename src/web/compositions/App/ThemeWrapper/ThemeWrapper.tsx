@@ -234,7 +234,7 @@ export default ({ themeMode, isChartPage, children }) => {
             },
             border: {
               main: '.2rem solid #2e2e2e',
-              new: '.1rem solid #3A475C',
+              new: '.2rem solid #2e2e2e',
             },
             price: {
               increase: '#2F7619',
@@ -248,7 +248,8 @@ export default ({ themeMode, isChartPage, children }) => {
             },
             white: {
               main: '#fff',
-              background: '#1B2028',
+              primary: '#F8FAFF',
+              background: '#17181A',
               inputBackground: '#14161B',
               greyish: '#f5f5fb',
               block: '#1B2028',
@@ -257,6 +258,7 @@ export default ({ themeMode, isChartPage, children }) => {
             },
             dark: {
               main: '#D1DDEF',
+              background: '#222429',
             },
             depthChart: {
               redStroke: '#FFADAD',
@@ -473,6 +475,7 @@ export default ({ themeMode, isChartPage, children }) => {
             },
             white: {
               main: '#fff',
+              primary: '#F8FAFF',
               background: '#fff',
               inputBackground: '#fff',
               greyish: '#f5f5fb',
@@ -482,6 +485,7 @@ export default ({ themeMode, isChartPage, children }) => {
             },
             dark: {
               main: '#16253D',
+              background: '#222429',
             },
             depthChart: {
               redStroke: '#DD6956',

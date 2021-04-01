@@ -491,6 +491,8 @@ class SimpleTabs extends React.Component<any, any> {
                         enqueueSnackbar={enqueueSnackbar}
                         pair={pair}
                         funds={funds}
+                        wallet={wallet}
+                        market={market}
                         lockedAmount={0}
                         key={JSON.stringify([pair, funds])}
                         walletValue={funds && funds[1]}

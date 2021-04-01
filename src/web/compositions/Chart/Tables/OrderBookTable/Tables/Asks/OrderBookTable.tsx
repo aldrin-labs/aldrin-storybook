@@ -1,4 +1,4 @@
-import React, { Component, PureComponent } from 'react'
+import React, { Component } from 'react'
 import { withTheme } from '@material-ui/styles'
 
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
@@ -28,6 +28,7 @@ class OrderBookTable extends Component<IProps> {
       updateTerminalPriceFromOrderbook,
       currencyPair,
     } = this.props
+
     const tableData = getDataFromTree(data.asks, 'asks').reverse()
     const amountForBackground =
       tableData.reduce((acc, curr) => acc + +curr.size, 0) / tableData.length
@@ -45,7 +46,7 @@ class OrderBookTable extends Component<IProps> {
               onRowClick={({ event, index, rowData }) => {
                 updateTerminalPriceFromOrderbook(+rowData.price)
               }}
-              headerHeight={window.outerHeight / 45}
+              headerHeight={mode === 'both' ? height / 9 : height / 18}
               headerStyle={{
                 color: theme.palette.grey.text,
                 paddingLeft: '.5rem',
@@ -56,11 +57,7 @@ class OrderBookTable extends Component<IProps> {
                 borderBottom: theme.palette.border.main,
                 fontSize: '1rem',
               }}
-              gridStyle={{
-                // overflow: mode !== 'asks' ? 'hidden' : 'hidden auto',
-                overflow: 'hidden',
-              }}
-              rowHeight={window.outerHeight / 45}
+              rowHeight={mode === 'both' ? height / 9 : height / 18}
               overscanRowCount={0}
               scrollToIndex={tableData.length - 1}
               rowGetter={({ index }) => tableData[index]}
@@ -87,11 +84,11 @@ class OrderBookTable extends Component<IProps> {
               <Column
                 label={`Size (${base})`}
                 dataKey="size"
-                headerStyle={{ textAlign: 'right', paddingRight: '6px' }}
+                headerStyle={{ textAlign: 'left', paddingRight: '6px' }}
                 width={width + width / 6}
                 style={{
-                  textAlign: 'right',
-                  color: theme.palette.dark.main,
+                  textAlign: 'left',
+                  color: theme.palette.white.primary,
                 }}
               />
               <Column
@@ -102,7 +99,7 @@ class OrderBookTable extends Component<IProps> {
                   textAlign: 'right',
                 }}
                 width={width}
-                style={{ textAlign: 'right', color: theme.palette.dark.main }}
+                style={{ textAlign: 'right', color: theme.palette.white.primary }}
               />
             </Table>
           )}

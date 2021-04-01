@@ -31,7 +31,7 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
         <AutoSizer>
           {({ width, height }: { width: number; height: number }) => (
             <Table
-              headerHeight={window.outerHeight / 45}
+              headerHeight={height / 19}
               headerStyle={{
                 color: theme.palette.grey.text,
                 paddingLeft: '.5rem',
@@ -42,14 +42,11 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
                 borderBottom: theme.palette.border.main,
                 fontSize: '1rem',
               }}
-              gridStyle={{
-                overflow: 'hidden',
-              }}
               width={width}
               height={height}
               rowCount={data.length}
               overscanRowCount={0}
-              rowHeight={window.outerHeight / 45}
+              rowHeight={height / 19}
               rowGetter={({ index }) => data[index]}
               onRowClick={({ event, index, rowData }) => {
                 updateTerminalPriceFromOrderbook(+rowData.price)
@@ -75,13 +72,13 @@ class TradeHistoryTable extends PureComponent<IProps, IState> {
                 label="Size"
                 dataKey="size"
                 width={width}
-                style={{ color: theme.palette.dark.main }}
+                style={{ color: theme.palette.white.primary }}
               />
               <Column
                 label="time"
                 dataKey="time"
                 width={width}
-                style={{ color: theme.palette.dark.main }}
+                style={{ color: theme.palette.white.primary }}
               />
             </Table>
           )}

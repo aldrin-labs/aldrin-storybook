@@ -274,22 +274,20 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       ? prevProps.funds[1].quantity
       : prevProps.funds[0].quantity
 
-    if (fundsAssetValue !== previousFundsAssetValue) {
+    const priceForCalculate = priceType !== 'market' ? price : marketPrice
+
+    if (
+      fundsAssetValue !== previousFundsAssetValue &&
+      fundsAssetValue &&
+      priceForCalculate
+    ) {
       const newValue = fundsAssetValue
-      const priceForCalculate =
-        priceType !== 'market' && priceType !== 'maker-only'
-          ? price
-          : marketPrice
 
-      const newAmount =
-          isBuyType
-            ? +stripDigitPlaces(
-                newValue / priceForCalculate,
-                quantityPrecision
-              )
-            : +stripDigitPlaces(newValue, quantityPrecision)
+      const newAmount = isBuyType
+        ? +stripDigitPlaces(newValue / priceForCalculate, quantityPrecision)
+        : +stripDigitPlaces(newValue, quantityPrecision)
 
-        const newTotal = newAmount * priceForCalculate
+      const newTotal = newAmount * priceForCalculate
 
       setFieldValue('amount', newAmount)
       setFieldValue('total', stripDigitPlaces(newTotal, 2))
@@ -312,11 +310,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     }
 
     if (prevProps.priceType !== priceType) {
-      const priceForCalculate =
-        priceType !== 'market' && priceType !== 'maker-only'
-          ? price
-          : marketPrice
-
       this.setFormatted(
         'amount',
         stripDigitPlaces(+total / +priceForCalculate, quantityPrecision),
@@ -350,11 +343,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     }
 
     if (marketPrice !== prevProps.marketPrice && priceType === 'market') {
-      this.setFormatted(
-        'total',
-        stripDigitPlaces(marketPrice * amount, 2),
-        0
-      )
+      this.setFormatted('total', stripDigitPlaces(marketPrice * amount, 2), 0)
     }
   }
 
@@ -636,8 +625,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
               {priceType === 'market' && !tradingBotEnabled && (
                 <InputRowContainer
                   style={{ visibility: !isBuyType ? 'hidden' : 'visible' }}
-                >
-                </InputRowContainer>
+                ></InputRowContainer>
               )}
               {tradingBotEnabled && !tradingBotIsActive && (
                 <FormInputContainer
@@ -718,17 +706,18 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   leverage,
                   isBuyType,
                   onAfterSliderChange: (value) => {
+                    if (!priceForCalculate) {
+                      return
+                    }
+                    
                     const newValue = (maxAmount / 100) * value
 
-                    console.log('newValue', newValue)
-
-                    const newAmount =
-                      isBuyType
-                        ? +stripDigitPlaces(
-                            newValue / priceForCalculate,
-                            quantityPrecision
-                          )
-                        : +stripDigitPlaces(newValue, quantityPrecision)
+                    const newAmount = isBuyType
+                      ? +stripDigitPlaces(
+                          newValue / priceForCalculate,
+                          quantityPrecision
+                        )
+                      : +stripDigitPlaces(newValue, quantityPrecision)
 
                     const newTotal = newAmount * priceForCalculate
 
@@ -855,7 +844,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
               ) : (
                 <SendButton
                   theme={theme}
-                  // disabled={orderIsCreating === sideType}
                   style={{
                     ...(tradingBotEnabled && !tradingBotIsActive
                       ? { position: 'absolute', width: '95%' }
@@ -863,11 +851,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   }}
                   type={sideType}
                   onClick={() => {
-                    // const result = await validateForm()
-                    // console.log('result', result)
-                    // if (Object.keys(result).length === 0 || !isSPOTMarket) {
-                    //   handleSubmit(values)
-                    // }
                     const isValidationSuccessfull = validateVariablesForPlacingOrder(
                       {
                         price: values.price,
@@ -959,11 +942,11 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 const formikEnhancer = withFormik<IProps, FormValues>({
   mapPropsToValues: (props) => ({
     price: stripDigitPlaces(props.marketPrice, props.pricePrecision),
-    stop: null,
+    stop: 0,
     limit: stripDigitPlaces(props.marketPrice, props.pricePrecision),
-    amount: null,
-    total: null,
-    margin: null,
+    amount: 0,
+    total: 0,
+    margin: 0,
   }),
   handleSubmit: async (values, { props, setSubmitting, resetForm }) => {
     const {

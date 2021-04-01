@@ -97,9 +97,9 @@ const OpenOrdersTable = (props) => {
         borderRadius: 0,
         height: 'calc(100% - 6rem)',
         overflowX: 'hidden',
-        backgroundColor: theme.palette.white.background,
+        backgroundColor: 'inherit',
       }}
-      stylesForTable={{ backgroundColor: theme.palette.white.background }}
+      stylesForTable={{ backgroundColor: 'inherit' }}
       defaultSort={{
         sortColumn: 'date',
         sortDirection: 'desc',
@@ -133,24 +133,13 @@ const OpenOrdersTable = (props) => {
       //   },
       // }}
       tableStyles={{
-        headRow: {
-          borderBottom: theme.palette.border.main,
-          boxShadow: 'none',
-        },
-        heading: {
-          fontSize: '1rem',
-          fontWeight: 'bold',
-          backgroundColor: theme.palette.grey.cream,
-          color: theme.palette.dark.main,
-          boxShadow: 'none',
-        },
         cell: {
           color: theme.palette.dark.main,
           fontSize: '1rem', // 1.2 if bold
           fontWeight: 'bold',
           letterSpacing: '.1rem',
           borderBottom: theme.palette.border.main,
-          backgroundColor: theme.palette.white.background,
+          backgroundColor: 'inherit',
           boxShadow: 'none',
         },
         tab: {

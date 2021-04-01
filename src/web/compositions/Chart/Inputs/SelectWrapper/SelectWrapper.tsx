@@ -48,6 +48,7 @@ import {
 } from './SelectWrapper.utils'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import { withPublicKey } from '@core/hoc/withPublicKey'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 export const excludedPairs = [
   // 'USDC_ODOP',
@@ -84,6 +85,23 @@ export const fiatRegexp = new RegExp(fiatPairs.join('|'), 'gi')
 
 const StyledGrid = styled(Grid)`
   display: none;
+`
+
+const StyledTab = styled(({ isSelected, ...props }) => <Row {...props} />)`
+  && {
+    text-transform: capitalize;
+    padding: 1rem;
+    background: ${(props) =>
+      props.isSelected ? props.theme.palette.dark.background : 'inherit'};
+    border-radius: 0.3rem;
+    cursor: pointer;
+    font-family: Avenir Next Demi;
+    font-size: 1.4rem;
+    color: ${(props) =>
+      props.isSelected
+        ? props.theme.palette.dark.main
+        : props.theme.palette.grey.text};
+  }
 `
 
 class SelectWrapper extends React.PureComponent<IProps, IState> {
@@ -408,6 +426,7 @@ class SelectPairListComponent extends React.PureComponent<
       const marketInfo = getMarketInfos(customMarkets).some(
         (m) => m.address.toBase58() === customMarket.address
       )
+
       if (marketInfo) {
         notify({
           message: `A market with the given ID already exists`,
@@ -416,7 +435,7 @@ class SelectPairListComponent extends React.PureComponent<
 
         return false
       }
-      
+
       const newCustomMarkets = [...customMarkets, customMarket]
       setCustomMarkets(newCustomMarkets)
       setMarketAddress(customMarket.address)
@@ -438,21 +457,19 @@ class SelectPairListComponent extends React.PureComponent<
           height: '35rem',
           borderRadius: '.4rem',
           overflow: 'hidden',
-          border: `.1rem solid ${theme.palette.grey.newborder}`,
+          border: theme.palette.border.new,
           boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
         }}
       >
-        <Grid
-          container
+        <RowContainer
           style={{
             height: '5rem',
             padding: '0.5rem',
-            // justifyContent: 'flex-start',
             justifyContent: 'space-around',
             flexDirection: 'row',
             flexWrap: 'nowrap',
             alignItems: 'center',
-            borderBottom: `1px solid ${theme.palette.grey.newborder}`,
+            borderBottom: theme.palette.border.new,
           }}
         >
           {/* <Grid
@@ -466,142 +483,48 @@ class SelectPairListComponent extends React.PureComponent<
           >
             <SvgIcon src={favoriteSelected} width="2rem" height="auto" />
           </Grid> */}
-          <Grid
-            style={{
-              padding: '1rem',
-              background: tab === 'all' ? theme.palette.grey.input : '',
-              display: 'flex',
-              borderRadius: '0.3rem',
-              alignItems: 'center',
-              cursor: 'pointer',
-              height: '2rem',
-              fontFamily: 'Avenir Next Demi',
-              fontSize: '1.4rem',
-              color: theme.palette.grey.text,
-              fontWeight: 'bold',
-              // borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
-            }}
+          <StyledTab
+            theme={theme}
+            isSelected={tab === 'all'}
             onClick={() => onTabChange('all')}
           >
-            ALL
-          </Grid>
-          <Grid
-            style={{
-              padding: '1rem',
-              background: tab === 'usdt' ? theme.palette.grey.input : '',
-              display: 'flex',
-              alignItems: 'center',
-              borderRadius: '0.3rem',
-              cursor: 'pointer',
-              fontFamily: 'Avenir Next Demi',
-              fontSize: '1.4rem',
-              height: '2rem',
-              color: theme.palette.grey.text,
-              fontWeight: 'bold',
-              // borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
-            }}
+            All
+          </StyledTab>
+          <StyledTab
+            theme={theme}
+            isSelected={tab === 'usdt'}
             onClick={() => onTabChange('usdt')}
           >
             USDT
-          </Grid>
-          <Grid
-            style={{
-              padding: '1rem',
-              background: tab === 'usdc' ? theme.palette.grey.input : '',
-              display: 'flex',
-              alignItems: 'center',
-              borderRadius: '0.3rem',
-              cursor: 'pointer',
-              fontFamily: 'Avenir Next Demi',
-              fontSize: '1.4rem',
-              height: '2rem',
-              color: theme.palette.grey.text,
-              fontWeight: 'bold',
-              // borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
-            }}
+          </StyledTab>
+          <StyledTab
+            theme={theme}
+            isSelected={tab === 'usdc'}
             onClick={() => onTabChange('usdc')}
           >
             USDC
-          </Grid>
-          {/* <Grid
-            style={{
-              padding: '1rem',
-              background: tab === 'usdc' ? theme.palette.grey.input : '',
-              display: 'flex',
-              alignItems: 'center',
-              cursor: 'pointer',
-              borderRadius: '0.3rem',
-              fontFamily: 'Avenir Next Demi',
-              fontSize: '1.4rem',
-              height: '2rem',
-              color: theme.palette.grey.text,
-              fontWeight: 'bold',
-              // borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
-            }}
-            onClick={() => onTabChange('usdc')}
-          >
-            USDC
-          </Grid> */}
-          <Grid
-            style={{
-              padding: '1rem',
-              height: '2rem',
-              background: tab === 'leveraged' ? theme.palette.grey.input : '',
-              display: 'flex',
-              alignItems: 'center',
-              cursor: 'pointer',
-              borderRadius: '0.3rem',
-              fontFamily: 'Avenir Next Demi',
-              fontSize: '1.4rem',
-              whiteSpace: 'nowrap',
-              color: theme.palette.grey.text,
-              fontWeight: 'bold',
-              // borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
-            }}
+          </StyledTab>
+          <StyledTab
+            theme={theme}
+            isSelected={tab === 'leveraged'}
             onClick={() => onTabChange('leveraged')}
           >
             Leveraged tokens
-          </Grid>
-          <Grid
-            style={{
-              padding: '1rem',
-              height: '2rem',
-              background: tab === 'public' ? theme.palette.grey.input : '',
-              display: 'flex',
-              alignItems: 'center',
-              cursor: 'pointer',
-              borderRadius: '0.3rem',
-              fontFamily: 'Avenir Next Demi',
-              fontSize: '1.4rem',
-              whiteSpace: 'nowrap',
-              color: theme.palette.grey.text,
-              fontWeight: 'bold',
-              // borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
-            }}
+          </StyledTab>
+          <StyledTab
+            theme={theme}
+            isSelected={tab === 'public'}
             onClick={() => onTabChange('public')}
           >
             Public markets
-          </Grid>
-          <Grid
-            style={{
-              padding: '1rem',
-              height: '2rem',
-              background: tab === 'private' ? theme.palette.grey.input : '',
-              display: 'flex',
-              alignItems: 'center',
-              cursor: 'pointer',
-              borderRadius: '0.3rem',
-              fontFamily: 'Avenir Next Demi',
-              fontSize: '1.4rem',
-              whiteSpace: 'nowrap',
-              color: theme.palette.grey.text,
-              fontWeight: 'bold',
-              // borderLeft: `.1rem solid ${theme.palette.grey.newborder}`,
-            }}
+          </StyledTab>
+          <StyledTab
+            theme={theme}
+            isSelected={tab === 'private'}
             onClick={() => onTabChange('private')}
           >
             Private markets{' '}
-          </Grid>
+          </StyledTab>
           <AddCircleIcon
             onClick={async () => {
               if (publicKey === '') {
@@ -721,7 +644,7 @@ class SelectPairListComponent extends React.PureComponent<
               </Grid>
             </>
           )}
-        </Grid>
+        </RowContainer>
         <Grid container style={{ justifyContent: 'flex-end', width: '100%' }}>
           <Input
             placeholder="Search"
@@ -964,6 +887,7 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     withOutSpinner: true,
     withTableLoader: false,
+    showNoLoader: true,
   })
   // queryRendererHoc({
   //   query: getSelectorSettings,

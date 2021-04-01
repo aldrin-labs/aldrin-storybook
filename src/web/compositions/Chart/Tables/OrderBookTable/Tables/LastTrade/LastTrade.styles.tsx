@@ -8,7 +8,7 @@ export const LastTradeContainer = styled.div`
   align-items: center;
 
   width: 100%;
-  height: 3rem;
+  height: 4rem;
   margin: 0;
   text-align: center;
   background: ${(props) => props.theme.palette.white.background};

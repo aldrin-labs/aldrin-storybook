@@ -69,12 +69,10 @@ export const DefaultViewComponent = (
     chartPagePopup,
     closeChartPagePopup,
     maxLeverage,
-    layout,
   } = props
 
-  const { hideOrderbook } = layout
-
-  const hideTradeHistory = false
+  const hideTradeHistory = currencyPair.includes('WUSDT')
+  const hideOrderbook = false
   const hideDepthChart = true
 
   const [priceFromOrderbook, updateTerminalPriceFromOrderbook] = useState<
@@ -142,17 +140,16 @@ export const DefaultViewComponent = (
                 <Grid
                   item
                   container
-                  xs={7}
                   style={{
                     height: '100%',
                     flexBasis: hideOrderbook
                       ? '0%'
-                      : hideDepthChart
+                      : !hideTradeHistory
                       ? '50%'
                       : '100%',
                     maxWidth: hideOrderbook
                       ? '0%'
-                      : hideDepthChart
+                      : !hideTradeHistory
                       ? '50%'
                       : '100%',
                   }}

@@ -59,25 +59,25 @@ html {
 }  
         
   .virtualized-row {
-    font-family: Avenir Next Medium;
-    font-size: 1.2rem;
+    font-family: Avenir Next Demi;
+    font-size: 1.3rem;
     line-height: 35px;
     color: #F8FAFF;
     padding: 0 .5rem;
-    letter-spacing: 0.05rem;
+    letter-spacing: 0.01rem;
     cursor: default;
     outline: none;
   }
 
   @media (max-width: 1450px) {
     .virtualized-row {
-      font-size: 1.1rem;
+      font-size: 1.25rem;
     }
   }
 
   @media (max-width: 1350px) {
     .virtualized-row {
-      font-size: 1rem;
+      font-size: 1.2rem;
     }
   }
 
@@ -294,13 +294,10 @@ export const TradingTerminalContainer = styled(
   height: 100%;
   transition: all 0.5s ease;
   position: relative;
-  display: ${(props) => (props.hideTradeHistory ? 'none' : 'flex')};
   // 60% - 3%, the half of height cards, will fix in future
   width: ${(props) =>
-    props.MASTER_BUILD
-      ? '30%'
-      : props.hideTradeHistory
-      ? '0%'
+      props.hideTradeHistory
+      ? '17%'
       : props.hideOrderbook
       ? '17%'
       : props.hideDepthChart
@@ -361,10 +358,8 @@ export const ChartsContainer = styled(
   position: relative;
   display: flex;
   width: ${(props) =>
-    props.MASTER_BUILD
-      ? '70%'
-      : props.hideTradeHistory
-      ? '100%'
+      props.hideTradeHistory
+      ? '83%'
       : props.hideOrderbook
       ? '83%'
       : props.hideDepthChart
@@ -420,8 +415,8 @@ export const Container = styled(Grid)`
   width: 100%;
   margin: 0;
   padding: 0;
-  font-family: DM Sans;
-  background-color: ${(props) => props.theme.palette.white.background};
+  font-family: Avenir Next Medium;
+  background-color: ${(props) => props.theme.palette.dark.background};
 
   @media (max-width: 1400px) {
     height: calc(100vh - 12rem);
