@@ -356,7 +356,7 @@ class SimpleTabs extends React.Component<any, any> {
                             })
                           }
                         />
-                        <SettingsLabel theme={theme} htmlFor="ioc">
+                        <SettingsLabel theme={theme} htmlFor="ioc" style={{ textTransform: 'uppercase' }}>
                           ioc
                         </SettingsLabel>
                       </FuturesSettings>

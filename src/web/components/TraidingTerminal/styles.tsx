@@ -238,7 +238,7 @@ export const TradeInput = styled.input`
   padding-left: ${(props) => (props.needCharacter ? '2rem' : '0.6rem')};
   text-align: ${(props) => props.align};
   outline: none;
-  padding-right: ${(props) => (props.needPadding ? `5rem` : '1.5rem')};
+  padding-right: ${(props) => (props.needPadding ? `${props.symbolLength + 1}rem` : '1.5rem')};
   &:focus {
     border: 0.14rem solid #a1aaf4;
   }
@@ -302,14 +302,7 @@ export const UpdatedCoin = styled(Coin)`
       props.theme.palette.grey.text) ||
     '#7284a0'};
 
-  font-size: ${(props) =>
-    props.symbolLength >= 6
-      ? '.7rem'
-      : props.symbolLength >= 5
-      ? '.8rem'
-      : props.symbolLength >= 4
-      ? '.9rem'
-      : '1.2rem'};
+  font-size: 1.2rem;
 `
 // percentages
 

@@ -79,15 +79,6 @@ const TradingTabs = ({
         >
           Recent Trade history
         </TitleTab>
-
-        {/* <TitleTab
-          theme={theme}
-          active={tab === 'feeDiscounts'}
-          onClick={() => handleTabChange('feeDiscounts')}
-        >
-          Fee Discounts
-        </TitleTab> */}
-
         <TitleTab
           theme={theme}
           active={tab === 'feeTiers'}
@@ -100,7 +91,7 @@ const TradingTabs = ({
           active={tab === 'balances'}
           onClick={() => handleTabChange('balances')}
         >
-          Balances
+          Market Balances
         </TitleTab>
       </TitleTabsGroup>
     </>

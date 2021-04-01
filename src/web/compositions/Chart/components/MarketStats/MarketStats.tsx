@@ -175,9 +175,8 @@ const MarketStats = (props) => {
               ? theme.palette.green.main
               : theme.palette.red.main,
             fontSize: '2.3rem',
-            letterSpacing: '0.2rem',
-            fontWeight: 'bolder',
-            fontFamily: 'Avenir Next',
+            letterSpacing: '0.01rem',
+            fontFamily: 'Avenir Next Demi',
           }}
         >
           {markPrice === 0

@@ -128,6 +128,7 @@ export const TradeInputContent = ({
   value = '',
   pattern = '',
   step = '',
+  min = 0,
   type = 'number',
   padding = '0',
   width = '100%',
@@ -155,6 +156,7 @@ export const TradeInputContent = ({
   value: string | number
   pattern?: string
   step?: string | number
+  min?: number
   type?: string
   padding?: string | number
   width?: string | number
@@ -209,8 +211,10 @@ export const TradeInputContent = ({
         type={type}
         pattern={pattern}
         step={step}
+        min={min}
         isValid={showErrors ? isValid : true}
         value={value}
+        symbolLength={symbol.length}
         disabled={disabled}
         onChange={onChange}
         needPadding={symbol !== ''}
@@ -218,7 +222,6 @@ export const TradeInputContent = ({
         style={{ ...inputStyles, ...(fontSize ? { fontSize: fontSize } : {}) }}
       />
       <UpdatedCoin
-        symbolLength={symbol.length}
         theme={theme}
         right={
           !!symbolRightIndent
@@ -263,7 +266,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       quantityPrecision,
       sideType,
       marketPriceAfterPairChange,
-      values: { amount, price, total, margin },
+      values: { amount, price, total },
       setFieldValue,
     } = this.props
 
@@ -334,11 +337,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
         stripDigitPlaces(amount * priceFromOrderbook, 3),
         0
       )
-      this.setFormatted(
-        'margin',
-        stripDigitPlaces((amount * priceFromOrderbook) / leverage, 3),
-        0
-      )
       this.setState({ priceFromOrderbook })
     }
 
@@ -397,11 +395,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
     if (priceForCalculate) {
       const amount = e.target.value / priceForCalculate
-      const margin = e.target.value / leverage
 
       setFieldValue('amount', stripDigitPlaces(amount, quantityPrecision))
-
-      setFieldValue('margin', stripDigitPlaces(margin, 3))
     }
   }
 
@@ -414,6 +409,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       sideType,
       isSPOTMarket,
       leverage,
+      minOrderSize,
       marketPrice,
       setFieldValue,
       values: { price, limit },
@@ -429,36 +425,32 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       priceType !== 'market' && priceType !== 'maker-only' ? price : marketPrice
     const isBuyType = sideType === 'buy'
 
-    let maxAmount = 0
-
-    if (isSPOTMarket) {
-      maxAmount = isBuyType ? funds[1].quantity : funds[0].quantity
-    } else {
-      maxAmount = funds[1].quantity * leverage
-    }
+    let maxAmount = isBuyType ? funds[1].quantity : funds[0].quantity
 
     const currentMaxAmount =
       isBuyType || !isSPOTMarket ? maxAmount / priceForCalculate : maxAmount
 
     const isAmountMoreThanMax = e.target.value > currentMaxAmount
+    const isAmountLessThanMin =
+      stripDigitPlaces(e.target.value, quantityPrecision) < minOrderSize &&
+      stripDigitPlaces(e.target.value, quantityPrecision) !== '' &&
+      stripDigitPlaces(e.target.value, quantityPrecision) !== '0'
 
     const amountForUpdate = isAmountMoreThanMax
       ? currentMaxAmount
+      : isAmountLessThanMin
+      ? minOrderSize
       : e.target.value
 
     const total = amountForUpdate * priceForCalculate
 
-    const newMargin = stripDigitPlaces(
-      (amountForUpdate / leverage) * priceForCalculate,
-      2
-    )
-
     const strippedAmount = isAmountMoreThanMax
       ? stripDigitPlaces(amountForUpdate, quantityPrecision)
+      : isAmountLessThanMin
+      ? amountForUpdate
       : e.target.value
 
     setFieldValue('amount', strippedAmount)
-    setFieldValue('margin', stripDigitPlaces(newMargin, 3))
     setFieldValue('total', stripDigitPlaces(total, 3))
   }
 
@@ -487,13 +479,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
     const total = stripDigitPlaces(e.target.value * amount, 3)
     this.setFormatted('total', total, 1)
-
-    const newMargin = stripDigitPlaces(
-      (amount / leverage) * priceForCalculate,
-      2
-    )
-
-    this.setFormatted('margin', newMargin, 1)
   }
 
   onMarginChange = (
@@ -521,7 +506,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
     const newAmount = (value * leverage) / priceForCalculate
     const newTotal = value * leverage
 
-    setFieldValue('margin', value)
     setFieldValue('amount', stripDigitPlaces(newAmount, quantityPrecision))
     setFieldValue('total', stripDigitPlaces(newTotal, 2))
   }
@@ -699,8 +683,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                   isSPOTMarket,
                   quantityPrecision,
                   priceForCalculate,
-                  onMarginChange: this.onMarginChange,
-                  initialMargin: values.margin,
                   amount: values.amount,
                   total: values.total,
                   leverage,
@@ -709,7 +691,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     if (!priceForCalculate) {
                       return
                     }
-                    
+
                     const newValue = (maxAmount / 100) * value
 
                     const newAmount = isBuyType
@@ -721,14 +703,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
                     const newTotal = newAmount * priceForCalculate
 
-                    const newMargin = stripDigitPlaces(
-                      (maxAmount * (value / 100)) / leverage,
-                      2
-                    )
-
                     setFieldValue('amount', newAmount)
                     setFieldValue('total', stripDigitPlaces(newTotal, 2))
-                    setFieldValue('margin', newMargin)
                   },
                 }}
               />{' '}
@@ -893,8 +869,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 isSPOTMarket={isSPOTMarket}
                 quantityPrecision={quantityPrecision}
                 priceForCalculate={priceForCalculate}
-                onMarginChange={this.onMarginChange}
-                initialMargin={values.margin}
                 amount={values.amount}
                 total={values.total}
                 leverage={leverage}
@@ -946,7 +920,6 @@ const formikEnhancer = withFormik<IProps, FormValues>({
     limit: stripDigitPlaces(props.marketPrice, props.pricePrecision),
     amount: 0,
     total: 0,
-    margin: 0,
   }),
   handleSubmit: async (values, { props, setSubmitting, resetForm }) => {
     const {

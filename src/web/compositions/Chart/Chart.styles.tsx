@@ -136,33 +136,36 @@ export const PanelCard = styled.div`
   padding: 0.1rem;
   margin: 0;
   min-height: auto;
-  border-right: ${(props: { marketType: number; theme: Theme }) =>
-    '.2rem solid #ABBAD1'};
+  border-right: ${(props: { marketType: number; theme: Theme }) => props.theme.palette.border.new};
   font-weight: bold;
-  font-family: DM Sans;
-  text-transform: uppercase;
-  letter-spacing: 0.1rem;
+  text-transform: capitalize;
+  font-family: Avenir Next;
+  letter-spacing: 0.01rem;
 `
 
 export const PanelCardTitle = styled.span`
   display: block;
-  padding: 0.1rem 1rem;
+  padding: 0.1rem 1rem 0.3rem 1rem;
+  font-size: 1.3rem;
+  font-family: Avenir Next;
   color: ${(props) => props.theme.palette.grey.text};
   letter-spacing: 0.1rem;
 
   @media (min-width: 1400px) {
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
 `
 
 export const PanelCardValue = styled.span`
   white-space: pre-line;
-  color: ${(props) => props.theme.palette.dark.main};
+  font-family: Avenir Next Demi;
+  color: ${(props) => props.theme.palette.white.primary};
+  font-size: 1.3rem;
   padding: 0.1rem 1rem;
   letter-spacing: 0.1rem;
 
   @media (min-width: 1400px) {
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
 `
 
@@ -171,9 +174,10 @@ export const PanelCardSubValue = styled.span`
   padding-left: 0.4rem;
   color: ${(props) => props.theme.palette.dark.main};
   letter-spacing: 0.1rem;
+  font-size: 1.3rem;
 
   @media (min-width: 1400px) {
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
 `
 
