@@ -258,10 +258,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
   componentDidUpdate(prevProps) {
     const {
       funds,
-      leverage,
       priceType,
       marketPrice,
-      isSPOTMarket,
       pricePrecision,
       quantityPrecision,
       sideType,
@@ -314,8 +312,8 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
     if (prevProps.priceType !== priceType) {
       this.setFormatted(
-        'amount',
-        stripDigitPlaces(+total / +priceForCalculate, quantityPrecision),
+        'total',
+        stripDigitPlaces(amount * priceForCalculate, 2),
         0
       )
     }

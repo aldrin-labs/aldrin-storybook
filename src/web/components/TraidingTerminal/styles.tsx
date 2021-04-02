@@ -238,7 +238,12 @@ export const TradeInput = styled.input`
   padding-left: ${(props) => (props.needCharacter ? '2rem' : '0.6rem')};
   text-align: ${(props) => props.align};
   outline: none;
-  padding-right: ${(props) => (props.needPadding ? `${props.symbolLength + 1}rem` : '1.5rem')};
+  padding-right: ${(props) =>
+    props.needPadding
+      ? `calc(${props.symbolLength}rem + ${
+          props.symbolLength < 4 ? '1.5rem' : '1rem'
+        })`
+      : '1.5rem'};
   &:focus {
     border: 0.14rem solid #a1aaf4;
   }

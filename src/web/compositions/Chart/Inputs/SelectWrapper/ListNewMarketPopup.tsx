@@ -127,6 +127,7 @@ export function useMintInput({
           type="text"
           min="0"
           step="any"
+          style={{ paddingRight: '10rem' }}
         />
         <StyledPasteButton
           key={title}
@@ -346,6 +347,7 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
                     step="any"
                     disabled={true}
                     placeholder={'Here will appear new market ID'}
+                    style={{ paddingRight: '8rem' }}
                   />
                   {listedMarket && (
                     <StyledPasteButton

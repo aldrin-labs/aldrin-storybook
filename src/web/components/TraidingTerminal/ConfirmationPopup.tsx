@@ -11,7 +11,7 @@ import {
   SCheckbox,
   StyledDialogTitle,
 } from '../SharePortfolioDialog/SharePortfolioDialog.styles'
-import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { ButtonsWithAmountFieldRowForBasic } from './AmountButtons'
@@ -25,7 +25,7 @@ import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
   width: 55rem;
-  height: 50rem;
+  height: auto;
   background: #222429;
   border: 0.1rem solid #3a475c;
   display: flex;
@@ -134,23 +134,11 @@ export const ConfirmationPopup = ({
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <span
-        style={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
+      <RowContainer direction="column">
         <MainTitle>
           {pair[0]}/{pair[1]}
         </MainTitle>
-        <Row
-          justify={'row'}
-          width={'100%'}
-          justify={'center'}
-          style={{ flexWrap: 'nowrap' }}
-        >
+        <RowContainer justify={'center'} style={{ flexWrap: 'nowrap' }}>
           <Line sideType={sideType} width={'31%'} />
           <Title sideType={sideType}>
             <span style={{ textTransform: 'capitalize' }}>{priceType}</span>
@@ -160,19 +148,11 @@ export const ConfirmationPopup = ({
             {pair[0]}
           </Title>
           <Line sideType={sideType} width={'31%'} />
-        </Row>
-      </span>
-      <span style={{ width: '100%' }}>
+        </RowContainer>
+      </RowContainer>
+      <RowContainer margin="2rem 0 0 0">
         {priceType === 'market' ? (
-          <span
-            style={{
-              width: '100%',
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              marginBottom: '2rem',
-            }}
-          >
+          <RowContainer justify="space-between" margin="0 0 2rem 0">
             <WhiteText>Spread Percentage:</WhiteText>
             <WhiteText style={{ fontFamily: 'Avenir Next Demi' }}>
               <span style={{ color: isSlippageHigh ? '#F2ABB1' : '#a5e898' }}>
@@ -180,9 +160,9 @@ export const ConfirmationPopup = ({
               </span>
               %
             </WhiteText>
-          </span>
+          </RowContainer>
         ) : null}
-        <Row width={'100%'} style={{}}>
+        <RowContainer>
           {priceType !== 'market' &&
           priceType !== 'stop-market' &&
           priceType !== 'maker-only' ? (
@@ -220,33 +200,24 @@ export const ConfirmationPopup = ({
               leverage,
               isBuyType,
             }}
-          />{' '}
-        </Row>
-        <span
-          style={{
-            width: '100%',
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginTop: '2rem',
-          }}
-        >
+          />
+        </RowContainer>
+        <RowContainer justify="space-between" margin="2rem 0 0 0">
           <WhiteText>Est. Fee:</WhiteText>
           <WhiteText style={{ fontFamily: 'Avenir Next Demi' }}>
-            {' '}
             <span style={{ color: '#a5e898', fontFamily: 'Avenir Next Demi' }}>
               ≈&nbsp;
               {needCreateOpenOrdersAccount
                 ? costsOfTheFirstTrade
-                : SOLFeeForTrade}{' '}
-            </span>{' '}
+                : SOLFeeForTrade}
+            </span>
             &nbsp; SOL
             {!needCreateOpenOrdersAccount ? (
               <DarkTooltip
                 title={
                   <>
                     <p>
-                      The fee size for each trade on the DEX is ≈0.00001 SOL.{' '}
+                      The fee size for each trade on the DEX is ≈0.00001 SOL.
                     </p>
                   </>
                 }
@@ -270,7 +241,7 @@ export const ConfirmationPopup = ({
                     <p>So, the “first trade” fee is ≈0.023 SOL.</p>
                     <p>
                       The fee for all further trades on this pair will be
-                      ≈0.00001 SOL.{' '}
+                      ≈0.00001 SOL.
                     </p>
                   </>
                 }
@@ -285,13 +256,11 @@ export const ConfirmationPopup = ({
               </DarkTooltip>
             )}
           </WhiteText>
-        </span>
+        </RowContainer>
         {priceType === 'market' && isSlippageHigh ? (
           <span style={{ width: '100%' }}>
-            {' '}
             <WarningBlock>
               <div style={{ width: '6%' }}>
-                {' '}
                 <SvgIcon width="100%" height="auto" src={Attention} />
               </div>
               <WhiteText style={{ padding: '2rem' }}>
@@ -300,14 +269,7 @@ export const ConfirmationPopup = ({
                 on this market.
               </WhiteText>
             </WarningBlock>
-            <div
-              style={{
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'space-between',
-                marginTop: '1rem',
-              }}
-            >
+            <RowContainer justify="space-between" margin="2rem 0 0 0">
               <SCheckbox
                 style={{ padding: 0 }}
                 onChange={() => {
@@ -327,12 +289,12 @@ export const ConfirmationPopup = ({
                 I am aware of the risks associated with high Spread and still
                 want to use market order.
               </WhiteText>
-            </div>
+            </RowContainer>
           </span>
         ) : null}
-      </span>
+      </RowContainer>
 
-      <Row width={'100%'} justify={'space-between'}>
+      <RowContainer margin="2rem 0 0 0" justify={'space-between'}>
         <WhiteButton width={'49%'} theme={theme} onClick={() => onClose()}>
           Cancel
         </WhiteButton>
@@ -356,15 +318,12 @@ export const ConfirmationPopup = ({
             }}
             theme={theme}
           >
-            <span
+            <RowContainer
+              direction="column"
               style={{
-                display: 'flex',
-                flexDirection: 'column',
-                textAlign: 'center',
                 letterSpacing: '0',
               }}
             >
-              {' '}
               <span style={{ height: '2rem' }}>
                 {isSPOTMarket
                   ? sideType === 'buy'
@@ -377,7 +336,7 @@ export const ConfirmationPopup = ({
               <span style={{ fontSize: '1.2rem', textTransform: 'lowercase' }}>
                 (it may cause a loss of funds)
               </span>
-            </span>
+            </RowContainer>
           </SendButton>
         ) : (
           <SendButton
@@ -402,7 +361,7 @@ export const ConfirmationPopup = ({
               : 'short'}
           </SendButton>
         )}
-      </Row>
+      </RowContainer>
     </DialogWrapper>
   )
 }

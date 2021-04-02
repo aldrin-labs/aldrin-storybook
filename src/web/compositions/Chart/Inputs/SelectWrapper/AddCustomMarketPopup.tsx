@@ -261,7 +261,9 @@ const CustomMarketDialog = ({
             text={'List New Market'}
             width={'20rem'}
             height={'3.5rem'}
+            color={theme.palette.dark.main}
             background={theme.palette.green.main}
+            
             onClick={() => {
               changeShowCreateMarketPopup(true)
             }}

@@ -31,7 +31,7 @@ const StyledPaper = styled(Paper)`
   width: 55rem;
 `
 
-export const PurpleButton = ({ onClick, showLoader, theme, text, width, height, margin, disabled, background }) => (
+export const PurpleButton = ({ onClick, showLoader, theme, text, width, height, margin, disabled, background, color }) => (
   <BtnCustom
     disabled={showLoader || disabled}
     needMinWidth={false}
@@ -41,7 +41,7 @@ export const PurpleButton = ({ onClick, showLoader, theme, text, width, height, 
     padding="1rem 2rem"
     borderRadius=".8rem"
     borderColor={background || theme.palette.blue.serum}
-    btnColor={'#fff'}
+    btnColor={color || '#fff'}
     backgroundColor={background ||theme.palette.blue.serum}
     textTransform={'none'}
     margin={margin || '1rem 0 0 0'}
@@ -230,6 +230,8 @@ const NewCoinPopup = ({
                 color: theme.palette.text.light,
                 border: `0.1rem solid ${theme.palette.text.white}`,
                 outline: 'none',
+                paddingRight: '10rem',
+
               }}
               id={'address'}
               type={'text'}

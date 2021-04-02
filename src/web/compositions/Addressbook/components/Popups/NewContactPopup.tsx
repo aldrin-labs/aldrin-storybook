@@ -127,6 +127,7 @@ const NewContactPopup = ({
                 color: theme.palette.text.light,
                 border: `0.1rem solid ${theme.palette.text.white}`,
                 outline: 'none',
+                paddingRight: '10rem',
               }}
               id={'address'}
               type={'text'}

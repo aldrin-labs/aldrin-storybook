@@ -30,7 +30,7 @@ import SRMMarketCap from './SRMMarketCap'
 
 export const serumData = {
   totalySupply: 161000001,
-  burned: 887835.621,
+  burned: 925972.231,
   circulatingSupply: 50000000,
 }
 
