@@ -3,9 +3,8 @@ import Dropdown from '@sb/components/Dropdown'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { compose } from 'recompose'
 import { withTheme } from '@sb/types/materialUI'
-import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
 
-const ConnectWalletDropdown = ({ isNavBar, height, id, showOnTop }) => {
+const ConnectWalletDropdown = ({ isNavBar, height, id, showOnTop, containerStyle }) => {
   const {
     connected,
     wallet,
@@ -14,6 +13,7 @@ const ConnectWalletDropdown = ({ isNavBar, height, id, showOnTop }) => {
     setProvider,
     setAutoConnect,
   } = useWallet()
+
   return (
     <Dropdown
       isNavBar={isNavBar}
@@ -26,6 +26,7 @@ const ConnectWalletDropdown = ({ isNavBar, height, id, showOnTop }) => {
       setProvider={setProvider}
       providerUrl={providerUrl}
       setAutoConnect={setAutoConnect}
+      containerStyle={containerStyle}
     />
   )
 }

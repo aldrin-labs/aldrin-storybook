@@ -177,7 +177,7 @@ function ChartPageComponent(props: any) {
     if (isDataChanged) setCustomMarkets([...updatedMarkets, ...userMarkets])
   }, [getUserCustomMarketsQuery.getUserCustomMarkets.length])
 
-  const setCorrectMarketAddress = () => {
+  const setCorrectMarketAddress = async () => {
     console.log(
       'location.pathname',
       location.pathname,

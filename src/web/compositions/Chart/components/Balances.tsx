@@ -65,8 +65,8 @@ export const BalanceValues = styled.div`
 
 export const BalanceQuantity = styled.span`
   color: ${(props) => props.theme.palette.dark.main};
-  font-size: 1rem;
-  font-weight: bold;
+  font-size: 1.2rem;
+  font-family: Avenir Next Demi;
   letter-spacing: 0.075rem;
 
   text-align: left;
@@ -103,11 +103,11 @@ export const BalanceFuturesContainer = styled.div`
 `
 
 export const BalanceFuturesTypography = styled.span`
-  font-size: 0.9rem;
-  font-weight: bold;
+  font-size: 1.2rem;
+  font-family: Avenir Next Demi;
   padding: 1rem 0 0.35rem 0;
-  letter-spacing: 0.1rem;
-  text-transform: uppercase;
+  letter-spacing: 0.01rem;
+  text-transform: capitalize;
   text-align: left;
 `
 
@@ -226,29 +226,6 @@ export const Balances = ({
   }
 
   const [baseBalances, quoteBalances] = balances
-
-  let pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
-  let quantityPrecision =
-    market?.minOrderSize && getDecimalCount(market.minOrderSize)
-
-  // getting values for the trading terminal pair
-  const funds = pair.map((coin, index) => {
-    const asset = getFundsQuery.getFunds.find(
-      (el) => el.asset.symbol === pair[index] && el.assetType === marketType
-    )
-    const quantity = asset !== undefined ? asset.free : 0
-    const value = asset !== undefined ? asset.free * asset.asset.priceUSD : 0
-
-    return { quantity, value }
-  })
-
-  const [
-    USDTFuturesFund = { free: 0, locked: 0, quantity: 0 },
-  ] = getFundsQuery.getFunds.filter(
-    (el) => +el.assetType === 1 && el.asset.symbol === 'USDT'
-  )
-
-  const isSPOTMarket = isSPOTMarketType(marketType)
   const isCCAIWallet = providerUrl === CCAIProviderURL
   const showSettle = !isCCAIWallet || !wallet.connected || !wallet.autoApprove
 
@@ -321,33 +298,31 @@ export const Balances = ({
                 maxWidth: '100%',
               }}
             >
-              <BalanceTitle>
+              {/* <BalanceTitle>
                 <BalanceSymbol>{pair[0]}</BalanceSymbol>
                 <SvgIcon
-                  width={`1.7rem`}
-                  height={`1.7rem`}
+                  width={`1.5rem`}
+                  height={`1.5rem`}
                   src={importCoinIcon(pair[0])}
                   onError={onErrorImportCoinUrl}
                 />
-              </BalanceTitle>
+              </BalanceTitle> */}
               <BalanceValues>
                 <BalanceFuturesTitle theme={theme}>
-                  Wallet balance
+                  {pair[0]} Wallet
                 </BalanceFuturesTitle>
                 <BalanceQuantity theme={theme}>
                   {balances[0]?.wallet
-                    ? stripDigitPlaces(balances[0].wallet, 8)
-                    : 0}{' '}
-                  {pair[0]}
+                    ? (balances[0].wallet).toFixed(8)
+                    : (0).toFixed(8)}
                 </BalanceQuantity>
                 <BalanceFuturesTitle theme={theme}>
-                  Unsettled balance
+                  {pair[0]} Unsettled
                 </BalanceFuturesTitle>
                 <BalanceQuantity theme={theme}>
                   {balances[0]?.unsettled
-                    ? stripDigitPlaces(balances[0].unsettled, 8)
-                    : 0}{' '}
-                  {pair[0]}
+                    ? (balances[0].unsettled).toFixed(8)
+                    : (0).toFixed(8)}
                 </BalanceQuantity>
               </BalanceValues>
               {wallet.connected ? (
@@ -356,7 +331,7 @@ export const Balances = ({
                     display: 'flex',
                     justifyContent: !showSettle ? 'flex-start' : 'space-evenly',
                     width: '100%',
-                    paddingTop: '0.4rem',
+                    paddingTop: '0.8rem',
                   }}
                 >
                   {isBaseCoinExistsInWallet || !wallet.connected ? (
@@ -426,7 +401,7 @@ export const Balances = ({
                     display: 'flex',
                     justifyContent: !showSettle ? 'flex-start' : 'space-evenly',
                     width: '100%',
-                    paddingBottom: '0.4rem',
+                    paddingBottom: '0rem',
                   }}
                 >
                   <ConnectWalletDropdown
@@ -434,6 +409,7 @@ export const Balances = ({
                     showOnTop={true}
                     height={'2rem'}
                     id={'connectButtonBase'}
+                    containerStyle={{ padding: '.8rem 0 0 0' }}
                   />
                 </div>
               )}
@@ -446,33 +422,31 @@ export const Balances = ({
               xs={6}
               style={{ maxWidth: '100%' }}
             >
-              <BalanceTitle>
+              {/* <BalanceTitle>
                 <BalanceSymbol>{pair[1]}</BalanceSymbol>
                 <SvgIcon
-                  width={`1.7rem`}
-                  height={`1.7rem`}
+                  width={`1.5rem`}
+                  height={`1.5rem`}
                   src={importCoinIcon(pair[1])}
                   onError={onErrorImportCoinUrl}
                 />
-              </BalanceTitle>
+              </BalanceTitle> */}
               <BalanceValues>
                 <BalanceFuturesTitle theme={theme}>
-                  Wallet balance
+                  {pair[1]} Wallet
                 </BalanceFuturesTitle>
                 <BalanceQuantity theme={theme}>
                   {balances[1]?.wallet
-                    ? stripDigitPlaces(balances[1].wallet, 8)
-                    : 0}{' '}
-                  {pair[1]}
+                    ? (balances[1].wallet).toFixed(8)
+                    : (0).toFixed(8)}
                 </BalanceQuantity>
                 <BalanceFuturesTitle theme={theme}>
-                  Unsettled balance
+                  {pair[1]} Unsettled
                 </BalanceFuturesTitle>
                 <BalanceQuantity theme={theme}>
                   {balances[1]?.unsettled
-                    ? stripDigitPlaces(balances[1].unsettled, 8)
-                    : 0}{' '}
-                  {pair[1]}
+                    ? (balances[1].unsettled).toFixed(8)
+                    : (0).toFixed(8)}
                 </BalanceQuantity>
               </BalanceValues>
               {wallet.connected ? (
@@ -481,7 +455,7 @@ export const Balances = ({
                     display: 'flex',
                     justifyContent: !showSettle ? 'flex-start' : 'space-evenly',
                     width: '100%',
-                    paddingTop: '.4rem'
+                    paddingTop: '.8rem'
                   }}
                 >
                   {isQuoteCoinExistsInWallet || !wallet.connected ? (

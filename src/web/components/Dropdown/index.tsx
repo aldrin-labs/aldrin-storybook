@@ -20,7 +20,7 @@ import { CCAIProviderURL } from '@sb/dexUtils/utils'
 import { IProps } from './types'
 import styled from 'styled-components'
 
-const WalletStatusButton = ({ wallet, connected, theme, id }) => (
+const WalletStatusButton = ({ wallet, connected, theme, id, buttonStyle }) => (
   <BtnCustom
     onClick={connected ? wallet.disconnect : wallet.connect}
     btnColor={theme.palette.blue.serum}
@@ -35,13 +35,14 @@ const WalletStatusButton = ({ wallet, connected, theme, id }) => (
       display: 'flex',
       textTransform: 'none',
       padding: '1rem',
+      ...buttonStyle,
     }}
   >
     {!connected ? 'Connect wallet' : 'Disconnect'}
   </BtnCustom>
 )
 
-const ConnectWalletButton = ({ wallet, connected, theme, height, id }) => (
+const ConnectWalletButton = ({ wallet, theme, height, id, buttonStyle }) => (
   <BtnCustom
     onClick={wallet.connect}
     btnColor={'#F8FAFF'}
@@ -56,6 +57,7 @@ const ConnectWalletButton = ({ wallet, connected, theme, height, id }) => (
       display: 'flex',
       textTransform: 'none',
       padding: '1rem',
+      ...buttonStyle,
     }}
     id={id}
   >
@@ -95,6 +97,7 @@ export default class Dropdown extends React.Component<IProps> {
       isNavBar,
       height,
       showOnTop,
+      containerStyle,
     } = this.props
 
     const isCCAIActive = providerUrl === CCAIProviderURL
@@ -105,7 +108,12 @@ export default class Dropdown extends React.Component<IProps> {
     const isWalletConnected = connected
     return (
       <>
-        <StyledDropdown isNavBar={isNavBar} theme={theme} showOnTop={showOnTop}>
+        <StyledDropdown
+          isNavBar={isNavBar}
+          theme={theme}
+          showOnTop={showOnTop}
+          style={{ ...containerStyle }}
+        >
           {isNavBar ? (
             <WalletStatusButton
               wallet={wallet}
@@ -172,7 +180,6 @@ export default class Dropdown extends React.Component<IProps> {
                     // }
 
                     updateProviderUrl(CCAIProviderURL)
-
                     setAutoConnect(true)
                   }}
                 >

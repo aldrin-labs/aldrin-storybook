@@ -21,7 +21,7 @@ import { client } from '@core/graphql/apolloClient'
 import { IProps, IState } from './TableContainer.types'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { updateTradeHistoryQuerryFunction } from '@core/utils/chartPageUtils'
-
+import { at } from 'lodash'
 
 let unsubscribe: Function | undefined
 
@@ -46,7 +46,12 @@ class TableContainer extends Component<IProps, IState> {
       return null
     }
 
-    const pricePrecision = newProps.pricePrecision === undefined ? newProps.sizeDigits !== undefined ? 8 : undefined : newProps.pricePrecision
+    const pricePrecision =
+      newProps.pricePrecision === undefined
+        ? newProps.sizeDigits !== undefined
+          ? 8
+          : undefined
+        : newProps.pricePrecision
 
     console.log('Trade History', pricePrecision, newProps.sizeDigits)
 
@@ -59,15 +64,17 @@ class TableContainer extends Component<IProps, IState> {
       newProps.pricePrecision !== undefined &&
       newProps.sizeDigits !== undefined
     ) {
-      const tickersData = [ ...newProps.data.marketTickers ]
+      const tickersData = [...newProps.data.marketTickers]
 
-      const updatedData = tickersData.map((trade, i) => ({
-        ...trade,
-        size: Number(trade.size).toFixed(newProps.sizeDigits),
-        price: Number(trade.price).toFixed(newProps.pricePrecision),
-        time: dayjs.unix(+trade.timestamp).format('LTS'),
-        id: `${trade.price}${trade.size}${i}${trade.timestamp}`,
-      }))
+      const updatedData = tickersData
+        .sort((a, b) => b.time - a.time)
+        .map((trade, i) => ({
+          ...trade,
+          size: Number(trade.size).toFixed(newProps.sizeDigits),
+          price: Number(trade.price).toFixed(newProps.pricePrecision),
+          time: dayjs.unix(+trade.timestamp).format('LTS'),
+          id: `${trade.price}${trade.size}${i}${trade.timestamp}`,
+        }))
 
       const numbersAfterDecimalForPrice = getNumberOfDigitsAfterDecimal(
         updatedData,
@@ -86,7 +93,7 @@ class TableContainer extends Component<IProps, IState> {
   subscribe = () => {
     const that = this
     this.subscription && this.subscription.unsubscribe()
-    
+
     this.subscription = client
       .subscribe({
         query: MARKET_TICKERS,
@@ -105,8 +112,12 @@ class TableContainer extends Component<IProps, IState> {
             data.listenMarketTickers.length > 0
           ) {
             const tickersData = data.listenMarketTickers
-            const pricePrecision = that.props.pricePrecision === undefined ? that.props.sizeDigits !== undefined ? 8 : undefined : that.props.pricePrecision
-
+            const pricePrecision =
+              that.props.pricePrecision === undefined
+                ? that.props.sizeDigits !== undefined
+                  ? 8
+                  : undefined
+                : that.props.pricePrecision
 
             if (
               !tickersData ||
@@ -119,11 +130,10 @@ class TableContainer extends Component<IProps, IState> {
 
             const updatedData = reduceArrayLength(
               tickersData
+                .sort((a, b) => b.time - a.time)
                 .map((trade) => ({
                   ...trade,
-                  size: Number(trade.size).toFixed(
-                    that.props.sizeDigits
-                  ),
+                  size: Number(trade.size).toFixed(that.props.sizeDigits),
                   price: Number(trade.price).toFixed(pricePrecision),
                   time: new Date(trade.time).toLocaleTimeString(),
                 }))
