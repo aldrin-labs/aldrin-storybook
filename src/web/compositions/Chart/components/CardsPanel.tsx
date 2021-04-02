@@ -35,7 +35,7 @@ import { ENDPOINTS, useConnectionConfig } from '@sb/dexUtils/connection'
 import { Line } from '@sb/compositions/AnalyticsRoute/index.styles'
 import styled from 'styled-components'
 import OvalSelector from '@sb/components/OvalSelector'
-import SerumCCAILogo from '@icons/serumCCAILogo.png'
+import SerumCCAILogo from '@icons/serumCCAILogo.svg'
 import LightLogo from '@icons/lightLogo.svg'
 import SvgIcon from '@sb/components/SvgIcon'
 
