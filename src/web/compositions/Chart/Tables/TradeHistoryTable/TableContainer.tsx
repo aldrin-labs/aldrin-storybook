@@ -90,6 +90,48 @@ class TableContainer extends Component<IProps, IState> {
     return null
   }
 
+  componentDidMount() {
+    this.subscribe()
+  }
+
+  componentDidUpdate(prevProps: IProps) {
+    if (
+      prevProps.activeExchange.symbol !== this.props.activeExchange.symbol ||
+      prevProps.currencyPair !== this.props.currencyPair ||
+      prevProps.marketType !== this.props.marketType
+    ) {
+      // when change exchange delete all data and...
+      this.setState({ data: [] })
+
+      //  unsubscribe from old exchange
+      this.subscription && this.subscription.unsubscribe()
+
+      //  subscribe to new exchange and create new unsub link
+      this.subscribe()
+    }
+
+    if (
+      prevProps.pricePrecision !== this.props.pricePrecision ||
+      prevProps.sizeDigits !== this.props.sizeDigits
+    ) {
+      const tickersData = [...this.props.data.marketTickers]
+
+      const updatedData = tickersData
+        .sort((a, b) => b.time - a.time)
+        .map((trade, i) => ({
+          ...trade,
+          size: Number(trade.size).toFixed(this.props.sizeDigits),
+          price: Number(trade.price).toFixed(this.props.pricePrecision),
+          time: dayjs.unix(+trade.timestamp).format('LTS'),
+          id: `${trade.price}${trade.size}${i}${trade.timestamp}`,
+        }))
+
+      this.setState({
+        data: updatedData,
+      })
+    }
+  }
+
   subscribe = () => {
     const that = this
     this.subscription && this.subscription.unsubscribe()
@@ -146,27 +188,6 @@ class TableContainer extends Component<IProps, IState> {
           }
         },
       })
-  }
-
-  componentDidMount() {
-    this.subscribe()
-  }
-
-  componentDidUpdate(prevProps: IProps) {
-    if (
-      prevProps.activeExchange.symbol !== this.props.activeExchange.symbol ||
-      prevProps.currencyPair !== this.props.currencyPair ||
-      prevProps.marketType !== this.props.marketType
-    ) {
-      // when change exchange delete all data and...
-      this.setState({ data: [] })
-
-      //  unsubscribe from old exchange
-      this.subscription && this.subscription.unsubscribe()
-
-      //  subscribe to new exchange and create new unsub link
-      this.subscribe()
-    }
   }
 
   render() {

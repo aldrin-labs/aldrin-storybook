@@ -25,6 +25,19 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
   state = {
     isClosed: true,
     isMenuOpen: false,
+    id: null
+  }
+
+  // componentDidMount() {
+  //   const id = setInterval(() => {
+  //     this.checkThatPairsMatchUp()
+  //   }, 1000)
+
+  //   this.setState({ id })
+  // }
+
+  componentWillUnmount() {
+    clearInterval(this.state.id)
   }
 
   onMenuOpen = () => {
@@ -47,7 +60,21 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
     this.setState({ isMenuOpen: true })
   }
 
-  handleChange = async ({
+  checkThatPairsMatchUp = () => {
+    const { marketName, pair } = this.props
+
+    if (!marketName || !pair) return
+
+    console.log('checkThatPairsMatchUp marketName', marketName.replace('/', '_'), pair)
+    if (marketName.replace('/', '_') !== pair) {
+      console.log('checkThatPairsMatchUp handleChange')
+      this.handleChange({
+        value: pair
+      })
+    }
+  }
+
+  handleChange = ({
     value,
     isCustomUserMarket,
     address,
@@ -89,11 +116,10 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
 
     if (view === 'default') {
       const pair = value.split('_').join('/')
+
       console.log('markets', markets)
       console.log('customMarkets', customMarkets)
       let selectedMarketFormSelector = markets.find((el) => el.name === pair)
-      // Need to refactor this, address of a coin should be in the value, not name
-      // console.log('value: ', value)
 
       console.log(
         'selectedMarketFormSelector before',
@@ -122,15 +148,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       }
 
       const chartPageType = marketType === 0 ? 'spot' : 'futures'
-      history.push(`/chart/${chartPageType}/${value}`)
-
-      return
-    } else if (charts.length < 8 && view === 'onlyCharts') {
-      await addChartMutation({
-        variables: {
-          chart: value,
-        },
-      })
+      history.push(`/chart/spot/${value}`)
 
       return
     }

@@ -44,7 +44,7 @@ export function getDecimalCount(value) {
   return 0
 }
 
-export function useLocalStorageState(key, defaultState = null) {
+export function useLocalStorageState(key, defaultState = null, setIfNotChanged = false) {
   const [state, setState] = useState(() => {
     // NOTE: Not sure if this is ok
     const storedState = localStorage.getItem(key)
@@ -57,7 +57,7 @@ export function useLocalStorageState(key, defaultState = null) {
   const setLocalStorageState = useCallback(
     (newState) => {
       const changed = state !== newState
-      if (!changed) {
+      if (!changed && !setIfNotChanged) {
         return
       }
       setState(newState)
@@ -67,7 +67,7 @@ export function useLocalStorageState(key, defaultState = null) {
         localStorage.setItem(key, JSON.stringify(newState))
       }
     },
-    [state, key]
+    [state, key, setIfNotChanged]
   )
 
   return [state, setLocalStorageState]

@@ -220,7 +220,8 @@ function getMarketDetails(market, customMarkets) {
 export function MarketProvider({ children }) {
   const [marketAddress, setMarketAddress] = useLocalStorageState(
     'marketAddress',
-    DEFAULT_MARKET.address.toBase58()
+    DEFAULT_MARKET.address.toBase58(),
+    true
   )
   const [customMarkets, setCustomMarkets] = useLocalStorageState(
     'customMarkets',
@@ -248,7 +249,7 @@ export function MarketProvider({ children }) {
   // add state for markets
   // add useEffect for customMarkets
   useEffect(() => {
-    console.log('useEffect in market', connection, connection)
+    console.log('useEffect in market', connection)
 
     if (
       market &&

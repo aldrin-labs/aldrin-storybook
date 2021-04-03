@@ -20,7 +20,7 @@ import { CCAIProviderURL } from '@sb/dexUtils/utils'
 import { IProps } from './types'
 import styled from 'styled-components'
 
-const WalletStatusButton = ({ wallet, connected, theme, id, buttonStyle }) => (
+const WalletStatusButton = ({ wallet, connected, theme, id }) => (
   <BtnCustom
     onClick={connected ? wallet.disconnect : wallet.connect}
     btnColor={theme.palette.blue.serum}
@@ -35,14 +35,13 @@ const WalletStatusButton = ({ wallet, connected, theme, id, buttonStyle }) => (
       display: 'flex',
       textTransform: 'none',
       padding: '1rem',
-      ...buttonStyle,
     }}
   >
     {!connected ? 'Connect wallet' : 'Disconnect'}
   </BtnCustom>
 )
 
-const ConnectWalletButton = ({ wallet, theme, height, id, buttonStyle }) => (
+const ConnectWalletButton = ({ wallet, theme, height, id }) => (
   <BtnCustom
     onClick={wallet.connect}
     btnColor={'#F8FAFF'}
@@ -57,7 +56,6 @@ const ConnectWalletButton = ({ wallet, theme, height, id, buttonStyle }) => (
       display: 'flex',
       textTransform: 'none',
       padding: '1rem',
-      ...buttonStyle,
     }}
     id={id}
   >

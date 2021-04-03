@@ -241,7 +241,7 @@ const MarketStats = (props) => {
       <PanelCard marketType={marketType} theme={theme}>
         <PanelCardTitle theme={theme}>24hr volume</PanelCardTitle>
         <PanelCardValue theme={theme}>
-          {formatNumberToUSFormat(stripDigitPlaces(volume, priceDecimalCount))}{' '}
+          {formatNumberToUSFormat(stripDigitPlaces(volume, 2))}{' '}
           {quote}
         </PanelCardValue>
       </PanelCard>

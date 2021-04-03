@@ -76,7 +76,7 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
     market?.minOrderSize && getDecimalCount(market.minOrderSize)
   const pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
 
-  if (!location.pathname.split('/')[3]) {
+  if (!pair) {
     return null
   }
 
@@ -101,6 +101,7 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
             activeExchange={activeExchange}
             selectStyles={{ ...selectStyles(theme) }}
             marketType={marketType}
+            pair={pair}
             quantityPrecision={quantityPrecision}
             pricePrecision={pricePrecision}
           />

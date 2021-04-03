@@ -127,6 +127,7 @@ export const CardsPanel = ({ theme }) => {
   const isAnalytics = location.pathname.includes('analytics')
   const isChartPage = location.pathname.includes('chart')
   console.log('page', location.pathname)
+
   return (
     <ChartGridContainer isChartPage={isChartPage} theme={theme}>
       <PanelWrapper>
@@ -345,32 +346,6 @@ const TopBar = ({ theme }) => {
             isNavBar={true}
             showOnTop={true}
           />
-          {/* <BtnCustom
-          btnWidth={'14rem'}
-          height={'3.5rem'}
-          borderRadius=".6rem"
-          btnColor={theme.palette.blue.serum}
-          fontSize={'1.2rem'}
-          textTransform={'capitalize'}
-          margin={'0 0 0 3rem'}
-          style={{
-            display: 'flex',
-            textTransform: 'none',
-            padding: '1rem',
-          }}
-          onClick={() => {
-            console.log('CLICK ON CCAI')
-
-            if (isCCAIActive && !isWalletConnected) {
-              wallet.connect()
-              return
-            }
-
-            updateProviderUrl(CCAIProviderURL)
-          }}
-        >
-          Connect Wallet™
-        </BtnCustom> */}
         </Row>
       )}
       {connected && (
