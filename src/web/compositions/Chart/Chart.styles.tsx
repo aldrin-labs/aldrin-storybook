@@ -162,7 +162,7 @@ export const PanelCardValue = styled.span`
   color: ${(props) => props.theme.palette.white.primary};
   font-size: 1.3rem;
   padding: 0.1rem 1rem;
-  letter-spacing: 0.1rem;
+  letter-spacing: 0.01rem;
 
   @media (min-width: 1400px) {
     font-size: 1.2rem;

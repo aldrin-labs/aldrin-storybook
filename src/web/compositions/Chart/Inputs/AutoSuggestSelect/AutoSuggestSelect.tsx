@@ -25,16 +25,16 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
   state = {
     isClosed: true,
     isMenuOpen: false,
-    id: null
+    id: null,
   }
 
-  // componentDidMount() {
-  //   const id = setInterval(() => {
-  //     this.checkThatPairsMatchUp()
-  //   }, 1000)
+  componentDidMount() {
+    const id = setInterval(() => {
+      this.checkThatPairsMatchUp()
+    }, 1000)
 
-  //   this.setState({ id })
-  // }
+    this.setState({ id })
+  }
 
   componentWillUnmount() {
     clearInterval(this.state.id)
@@ -61,16 +61,26 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
   }
 
   checkThatPairsMatchUp = () => {
-    const { marketName, pair } = this.props
+    const {
+      marketName,
+      pair,
+      reloadMarketCounter,
+      setReloadMarketCounter,
+    } = this.props
 
     if (!marketName || !pair) return
 
-    console.log('checkThatPairsMatchUp marketName', marketName.replace('/', '_'), pair)
+    console.log(
+      'checkThatPairsMatchUp marketName',
+      marketName.replace('/', '_'),
+      pair
+    )
     if (marketName.replace('/', '_') !== pair) {
       console.log('checkThatPairsMatchUp handleChange')
       this.handleChange({
-        value: pair
+        value: pair,
       })
+      setReloadMarketCounter(reloadMarketCounter + 1)
     }
   }
 
@@ -84,21 +94,11 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
     address: string
   }) => {
     const {
-      getCharts,
-      getViewModeQuery: {
-        chart: { view },
-      },
-      addChartMutation,
-      changeCurrencyPairMutation,
-      history,
-      marketType,
       setMarketAddress,
       markets,
       customMarkets,
+      history,
     } = this.props
-    const {
-      multichart: { charts },
-    } = getCharts
 
     console.log(
       'onSelectPair',
@@ -114,44 +114,27 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
 
     this.closeMenu()
 
-    if (view === 'default') {
-      const pair = value.split('_').join('/')
+    const pair = value.split('_').join('/')
 
-      console.log('markets', markets)
-      console.log('customMarkets', customMarkets)
-      let selectedMarketFormSelector = markets.find((el) => el.name === pair)
+    let selectedMarketFormSelector = markets.find((el) => el.name === pair)
 
-      console.log(
-        'selectedMarketFormSelector before',
-        selectedMarketFormSelector
+    if (selectedMarketFormSelector) {
+      setMarketAddress(selectedMarketFormSelector.address.toBase58())
+    } else {
+      selectedMarketFormSelector = customMarkets.find(
+        (el) => el.name === pair
       )
 
-      if (selectedMarketFormSelector) {
-        console.log(
-          'selectedMarketFormSelector in first',
-          selectedMarketFormSelector
-        )
-        setMarketAddress(selectedMarketFormSelector.address.toBase58())
-      } else {
-        selectedMarketFormSelector = customMarkets.find(
-          (el) => el.name === pair
-        )
-        console.log(
-          'selectedMarketFormSelector in second',
-          selectedMarketFormSelector
-        )
-        setMarketAddress(
-          selectedMarketFormSelector
-            ? selectedMarketFormSelector.address
-            : address
-        )
-      }
-
-      const chartPageType = marketType === 0 ? 'spot' : 'futures'
-      history.push(`/chart/spot/${value}`)
-
-      return
+      setMarketAddress(
+        selectedMarketFormSelector
+          ? selectedMarketFormSelector.address
+          : address
+      )
     }
+
+    history.push(`/chart/spot/${value}`)
+
+    return
   }
 
   render() {
@@ -194,7 +177,10 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
           selectStyles={selectStyles}
           fixed={isMenuOpen}
         >
-          <div onClick={this.toggleMenu} style={{ display: 'flex', width: '100%' }}>
+          <div
+            onClick={this.toggleMenu}
+            style={{ display: 'flex', width: '100%' }}
+          >
             <SelectR
               id={this.props.id}
               style={{ width: '100%' }}

@@ -67,7 +67,7 @@ export const BalanceQuantity = styled.span`
   color: ${(props) => props.theme.palette.dark.main};
   font-size: 1.2rem;
   font-family: Avenir Next Demi;
-  letter-spacing: 0.075rem;
+  letter-spacing: 0.01rem;
 
   text-align: left;
   white-space: nowrap;

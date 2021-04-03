@@ -32,7 +32,11 @@ const USE_MARKETS = _IGNORE_DEPRECATED
 
 export function useMarketsList() {
   const UPDATED_USE_MARKETS = USE_MARKETS.filter(
-    (el) => !el.deprecated || (el.name.includes('/WUSDT') && el.programId.toBase58() === '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin')
+    (el) =>
+      !el.deprecated ||
+      (el.name.includes('/WUSDT') &&
+        el.programId.toBase58() ===
+          '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin')
   )
 
   return UPDATED_USE_MARKETS
@@ -85,14 +89,16 @@ export function useAllMarkets() {
     )
 
     console.log('getAllMarkets markets', markets)
-    
+
     return markets.filter(
       (m): m is { market: Market; marketName: string; programId: PublicKey } =>
         !!m
     )
   }
 
-  const memoizedGetAllMarkets = useMemo(() => getAllMarkets, [JSON.stringify(customMarkets)]);
+  const memoizedGetAllMarkets = useMemo(() => getAllMarkets, [
+    JSON.stringify(customMarkets),
+  ])
 
   // console.log('memoizedGetAllMarkets', memoizedGetAllMarkets)
 
@@ -208,6 +214,13 @@ function getMarketDetails(market, customMarkets) {
     (marketInfo?.quoteLabel && `${marketInfo?.quoteLabel}*`) ||
     'UNKNOWN'
 
+  console.log('market data', {
+    marketName: marketInfo?.name,
+    baseCurrency,
+    quoteCurrency,
+    marketInfo,
+  })
+
   return {
     ...marketInfo,
     marketName: marketInfo?.name,
@@ -227,6 +240,7 @@ export function MarketProvider({ children }) {
     'customMarkets',
     []
   )
+  const [reloadMarketCounter, setReloadMarketCounter] = useState(0)
 
   console.log('marketAddress', marketAddress)
   const address = new PublicKey(marketAddress)
@@ -249,16 +263,25 @@ export function MarketProvider({ children }) {
   // add state for markets
   // add useEffect for customMarkets
   useEffect(() => {
-    console.log('useEffect in market', connection)
+    console.log(
+      'useEffect in market',
+      market,
+      market?._decoded.ownAddress,
+      marketInfo?.address,
+      reloadMarketCounter
+    )
 
     if (
       market &&
       marketInfo &&
       market._decoded.ownAddress?.equals(marketInfo?.address)
     ) {
+      console.log('useEffect in market - first return')
       return
     }
+
     setMarket(null)
+
     if (!marketInfo || !marketInfo.address) {
       notify({
         message: 'Error loading market',
@@ -267,8 +290,13 @@ export function MarketProvider({ children }) {
       })
       return
     }
+
+    console.log('useEffect in market - load market')
     Market.load(connection, marketInfo.address, {}, marketInfo.programId)
-      .then(setMarket)
+      .then(data => {
+        console.log('useEffect in market - set market in load', data)
+        return setMarket(data)}
+      )
       .catch((e) =>
         notify({
           message: 'Error loading market',
@@ -277,16 +305,22 @@ export function MarketProvider({ children }) {
         })
       )
     // eslint-disable-next-line
-  }, [connection, marketInfo])
+  }, [connection, marketInfo, reloadMarketCounter])
+
+  const marketData = getMarketDetails(market, customMarkets)
+
+  console.log('marketData', reloadMarketCounter, market, marketInfo, marketData)
 
   return (
     <MarketContext.Provider
       value={{
         market,
-        ...getMarketDetails(market, customMarkets),
+        ...marketData,
         setMarketAddress,
         customMarkets,
         setCustomMarkets,
+        reloadMarketCounter,
+        setReloadMarketCounter,
       }}
     >
       {children}
@@ -470,32 +504,42 @@ export function useSelectedBaseCurrencyAccount() {
 export function useQuoteCurrencyBalances() {
   const quoteCurrencyAccount = useSelectedQuoteCurrencyAccount()
   const { market } = useMarket()
-  const [accountInfo, loaded, refresh] = useAccountInfo(quoteCurrencyAccount?.pubkey)
+  const [accountInfo, loaded, refresh] = useAccountInfo(
+    quoteCurrencyAccount?.pubkey
+  )
   if (!market || !quoteCurrencyAccount || !loaded) {
-    return [null,refresh]
+    return [null, refresh]
   }
   if (market.quoteMintAddress.equals(TokenInstructions.WRAPPED_SOL_MINT)) {
     return [accountInfo?.lamports / 1e9 ?? 0, refresh]
   }
-  return [market.quoteSplSizeToNumber(
-    new BN(accountInfo.data.slice(64, 72), 10, 'le')
-  ), refresh]
+  return [
+    market.quoteSplSizeToNumber(
+      new BN(accountInfo.data.slice(64, 72), 10, 'le')
+    ),
+    refresh,
+  ]
 }
 
 // TODO: Update to use websocket
 export function useBaseCurrencyBalances() {
   const baseCurrencyAccount = useSelectedBaseCurrencyAccount()
   const { market } = useMarket()
-  const [accountInfo, loaded, refresh] = useAccountInfo(baseCurrencyAccount?.pubkey)
+  const [accountInfo, loaded, refresh] = useAccountInfo(
+    baseCurrencyAccount?.pubkey
+  )
   if (!market || !baseCurrencyAccount || !loaded) {
     return [null, refresh]
   }
   if (market.baseMintAddress.equals(TokenInstructions.WRAPPED_SOL_MINT)) {
     return [accountInfo?.lamports / 1e9 ?? 0, refresh]
   }
-  return [market.baseSplSizeToNumber(
-    new BN(accountInfo.data.slice(64, 72), 10, 'le')
-  ), refresh] 
+  return [
+    market.baseSplSizeToNumber(
+      new BN(accountInfo.data.slice(64, 72), 10, 'le')
+    ),
+    refresh,
+  ]
 }
 
 // TODO: Update to use websocket
@@ -743,8 +787,7 @@ export function useBalances() {
         baseExists && market
           ? market.baseSplSizeToNumber(openOrders.baseTokenFree)
           : null,
-      refreshBase
-
+      refreshBase,
     },
     {
       market,
@@ -762,7 +805,7 @@ export function useBalances() {
         quoteExists && market
           ? market.quoteSplSizeToNumber(openOrders.quoteTokenFree)
           : null,
-      refreshQuote
+      refreshQuote,
     },
   ]
 }
