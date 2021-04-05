@@ -261,7 +261,7 @@ const CustomMarketDialog = ({
             text={'List New Market'}
             width={'20rem'}
             height={'3.5rem'}
-            color={theme.palette.dark.main}
+            color={theme.palette.grey.terminal}
             background={theme.palette.green.main}
             
             onClick={() => {

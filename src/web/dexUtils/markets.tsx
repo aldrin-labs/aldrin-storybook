@@ -232,15 +232,21 @@ function getMarketDetails(market, customMarkets) {
 
 const getPairFromLocation = () => {
   let pair = 'SRM_USDT'
-  const isChartPage = location.pathname.includes('chart')
-  const isAnalytics = location.pathname.includes('analytics')
+  const { pathname } = location
 
-  if (isChartPage && location.pathname.split('/')[3]) {
-    pair = location.pathname.split('/')[3]
-  } else if (isAnalytics && location.pathname.split('/')[2] && location.pathname.split('/')[2] !== 'all') {
-    pair = location.pathname.split('/')[2]
+  const isChartPage = pathname.includes('chart')
+  const pairInChartUrl = pathname.split('/')[3]
+
+  const isAnalytics = pathname.includes('analytics')
+  const pairInAnalyticsUrl = pathname.split('/')[2]
+
+  if (isChartPage && pairInChartUrl) {
+    pair = pairInChartUrl
+  } else if (isAnalytics && pairInAnalyticsUrl && pairInAnalyticsUrl !== 'all') {
+    pair = pairInAnalyticsUrl
   }
 
+  // we have pairs in format base/quote in array
   return pair.replace('_', '/')
 }
 
@@ -1170,7 +1176,9 @@ export function getMarketInfos(customMarkets) {
     programId: new PublicKey(m.programId),
   }))
 
-  // TODO: add comment
+  // TODO: we should use useMarketsList first to not find
+  // pair from custom market by name (in this way we cover case when pair with 
+  // the same name will be in our market list and cusom markets)
   return [...useMarketsList(), ...customMarketsInfo]
 }
 

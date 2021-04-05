@@ -49,6 +49,7 @@ import {
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { withRouter } from 'react-router'
 
 export const excludedPairs = [
   // 'USDC_ODOP',
@@ -413,6 +414,7 @@ class SelectPairListComponent extends React.PureComponent<
       marketType,
       publicKey,
       wallet,
+      history,
       onSpecificCoinChange,
       marketsByExchangeQuery,
       setCustomMarkets,
@@ -436,7 +438,7 @@ class SelectPairListComponent extends React.PureComponent<
 
       const newCustomMarkets = [...customMarkets, customMarket]
       setCustomMarkets(newCustomMarkets)
-      jistory.push(`/chart/spot/${customMarket.name.replace('/', '_')}`)
+      history.push(`/chart/spot/${customMarket.name.replace('/', '_')}`)
 
       return true
     }
@@ -866,6 +868,7 @@ class SelectPairListComponent extends React.PureComponent<
 
 export default compose(
   withMarketUtilsHOC,
+  withRouter,
   withAuthStatus,
   withPublicKey,
   withTheme(),
