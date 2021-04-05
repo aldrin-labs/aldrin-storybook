@@ -196,6 +196,13 @@ const NewCoinPopup = ({
               fontSize: '1.4rem',
               marginLeft: '0',
               marginBottom: '2rem',
+              height: '100%',
+              '& > div': {
+                height: '100%',
+              },
+              '& > div > input': {
+                height: '100%',
+              },
             }}
             valueContainerStyles={{
               border: `0.1rem solid ${theme.palette.text.white}`,
