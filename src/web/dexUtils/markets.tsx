@@ -230,47 +230,47 @@ function getMarketDetails(market, customMarkets) {
   }
 }
 
+const getPairFromLocation = () => {
+  let pair = 'SRM_USDT'
+  const isChartPage = location.pathname.includes('chart')
+  const isAnalytics = location.pathname.includes('analytics')
+
+  if (isChartPage && location.pathname.split('/')[3]) {
+    pair = location.pathname.split('/')[3]
+  } else if (isAnalytics && location.pathname.split('/')[2] && location.pathname.split('/')[2] !== 'all') {
+    pair = location.pathname.split('/')[2]
+  }
+
+  return pair.replace('_', '/')
+}
+
 export function MarketProvider({ children }) {
-  const [marketAddress, setMarketAddress] = useLocalStorageState(
-    'marketAddress',
-    DEFAULT_MARKET.address.toBase58(),
-    true
-  )
   const [customMarkets, setCustomMarkets] = useLocalStorageState(
     'customMarkets',
     []
   )
-  const [reloadMarketCounter, setReloadMarketCounter] = useState(0)
 
-  console.log('marketAddress', marketAddress)
-  const address = new PublicKey(marketAddress)
+  const marketName = getPairFromLocation()
   const connection = useConnection()
   const marketInfos = getMarketInfos(customMarkets)
-  const marketInfo = marketInfos.find((market) =>
-    market.address.equals(address)
+
+  // here we try to get non deprecated one
+  let marketInfo = marketInfos.find((market) =>
+    market.name === marketName && !market.deprecated
   )
 
-  // Replace existing market with a non-deprecated one on first load
-  useEffect(() => {
-    if (marketInfo && marketInfo.deprecated) {
-      console.log('Switching markets from deprecated', marketInfo)
-      setMarketAddress(DEFAULT_MARKET.address.toBase58())
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  if (!marketInfo) {
+    marketInfo = marketInfos.find((market) =>
+      market.name === marketName
+    )
+  }
+
+  console.log('marketInfo', marketInfo)
 
   const [market, setMarket] = useState()
   // add state for markets
   // add useEffect for customMarkets
   useEffect(() => {
-    console.log(
-      'useEffect in market',
-      market,
-      market?._decoded.ownAddress,
-      marketInfo?.address,
-      reloadMarketCounter
-    )
-
     if (
       market &&
       marketInfo &&
@@ -305,22 +305,19 @@ export function MarketProvider({ children }) {
         })
       )
     // eslint-disable-next-line
-  }, [connection, marketInfo, reloadMarketCounter])
+  }, [connection, marketInfo])
 
   const marketData = getMarketDetails(market, customMarkets)
 
-  console.log('marketData', reloadMarketCounter, market, marketInfo, marketData)
+  console.log('marketData', market, marketInfo, marketData)
 
   return (
     <MarketContext.Provider
       value={{
         market,
         ...marketData,
-        setMarketAddress,
         customMarkets,
         setCustomMarkets,
-        reloadMarketCounter,
-        setReloadMarketCounter,
       }}
     >
       {children}
@@ -1173,7 +1170,8 @@ export function getMarketInfos(customMarkets) {
     programId: new PublicKey(m.programId),
   }))
 
-  return [...customMarketsInfo, ...USE_MARKETS]
+  // TODO: add comment
+  return [...useMarketsList(), ...customMarketsInfo]
 }
 
 export function useSelectedTokenAccounts(): [

@@ -21,7 +21,7 @@ const FeesBlock = ({
     getSerumQuoteTradeVolumeStatsQuery.getSerumQuoteTradeVolumeStats[
       getSerumQuoteTradeVolumeStatsQuery.getSerumQuoteTradeVolumeStats.length -
         1
-    ]
+    ] || { total: 0 }
 
   const [base, quote] = selectedPair.split('_')
   const preSymbol = dataForToday.total * 0.0019 > 0 ? '' : '-'

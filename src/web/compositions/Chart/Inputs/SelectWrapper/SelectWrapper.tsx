@@ -138,7 +138,6 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
       markets,
       AWESOME_TOKENS = [],
       setCustomMarkets,
-      setMarketAddress,
       customMarkets,
       getSerumMarketDataQuery = { getSerumMarketData: [] },
       getSerumMarketDataQueryRefetch,
@@ -417,7 +416,6 @@ class SelectPairListComponent extends React.PureComponent<
       onSpecificCoinChange,
       marketsByExchangeQuery,
       setCustomMarkets,
-      setMarketAddress,
       customMarkets,
       getSerumMarketDataQueryRefetch,
     } = this.props
@@ -438,7 +436,7 @@ class SelectPairListComponent extends React.PureComponent<
 
       const newCustomMarkets = [...customMarkets, customMarket]
       setCustomMarkets(newCustomMarkets)
-      setMarketAddress(customMarket.address)
+      jistory.push(`/chart/spot/${customMarket.name.replace('/', '_')}`)
 
       return true
     }

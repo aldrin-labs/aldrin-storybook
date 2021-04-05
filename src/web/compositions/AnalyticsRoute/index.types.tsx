@@ -26,6 +26,7 @@ export type LineProps = {
 export interface IProps {
   theme: Theme
   publicKey: string
+  selectedPair: string
   markets: { name: string; address: any }[]
   getSerumDataQuery: {
     getSerumData: {

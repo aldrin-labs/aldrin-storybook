@@ -28,14 +28,6 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
     id: null,
   }
 
-  componentDidMount() {
-    const id = setInterval(() => {
-      this.checkThatPairsMatchUp()
-    }, 1000)
-
-    this.setState({ id })
-  }
-
   componentWillUnmount() {
     clearInterval(this.state.id)
   }
@@ -60,30 +52,6 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
     this.setState({ isMenuOpen: true })
   }
 
-  checkThatPairsMatchUp = () => {
-    const {
-      marketName,
-      pair,
-      reloadMarketCounter,
-      setReloadMarketCounter,
-    } = this.props
-
-    if (!marketName || !pair) return
-
-    console.log(
-      'checkThatPairsMatchUp marketName',
-      marketName.replace('/', '_'),
-      pair
-    )
-    if (marketName.replace('/', '_') !== pair) {
-      console.log('checkThatPairsMatchUp handleChange')
-      this.handleChange({
-        value: pair,
-      })
-      setReloadMarketCounter(reloadMarketCounter + 1)
-    }
-  }
-
   handleChange = ({
     value,
     isCustomUserMarket,
@@ -94,7 +62,6 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
     address: string
   }) => {
     const {
-      setMarketAddress,
       markets,
       customMarkets,
       history,
@@ -113,24 +80,6 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
     }
 
     this.closeMenu()
-
-    const pair = value.split('_').join('/')
-
-    let selectedMarketFormSelector = markets.find((el) => el.name === pair)
-
-    if (selectedMarketFormSelector) {
-      setMarketAddress(selectedMarketFormSelector.address.toBase58())
-    } else {
-      selectedMarketFormSelector = customMarkets.find(
-        (el) => el.name === pair
-      )
-
-      setMarketAddress(
-        selectedMarketFormSelector
-          ? selectedMarketFormSelector.address
-          : address
-      )
-    }
 
     history.push(`/chart/spot/${value}`)
 
@@ -155,7 +104,6 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       marketName,
       customMarkets,
       setCustomMarkets,
-      setMarketAddress,
       markets,
       style,
       handleDeprecated,

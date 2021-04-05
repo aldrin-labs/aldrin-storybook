@@ -117,20 +117,16 @@ function ChartPageComponent(props: any) {
         },
       },
     },
-    pairPropertiesQuery,
     marketType,
     selectedPair,
     authenticated,
     changeChartLayoutMutation,
     setCustomMarkets,
     getUserCustomMarketsQuery = { getUserCustomMarkets: [] },
-    getUserCustomMarketsQueryRefetch,
-    setMarketAddress,
     location,
     history,
     customMarkets,
     publicKey,
-    connectWalletHash,
   } = props
 
   const [terminalViewMode, updateTerminalViewMode] = useState('default')
@@ -178,13 +174,6 @@ function ChartPageComponent(props: any) {
   }, [getUserCustomMarketsQuery.getUserCustomMarkets.length])
 
   const setCorrectMarketAddress = async () => {
-    console.log(
-      'location.pathname',
-      location.pathname,
-      location.pathname.split('/'),
-      location.pathname.split('/')[3]
-    )
-    // probably broken here
     const pair = !!location.pathname.split('/')[3]
       ? location.pathname.split('/')[3]
       : 'SRM_USDT'
@@ -212,25 +201,10 @@ function ChartPageComponent(props: any) {
       (el) => el.name.split('/').join('_') === pair
     )
 
-    console.log('selected', selectedMarketFromUrl, pair)
-
     if (!selectedMarketFromUrl) {
-      setMarketAddress(
-        allMarkets
-          .find((el) => el.name.split('/').join('_') === 'SRM_USDT')
-          .address.toBase58()
-      )
-
       history.push('/chart/spot/SRM_USDT')
-
       return
     }
-
-    setMarketAddress(
-      selectedMarketFromUrl.isCustomUserMarket
-        ? selectedMarketFromUrl.address
-        : selectedMarketFromUrl.address.toBase58()
-    )
   }
 
   useEffect(() => {

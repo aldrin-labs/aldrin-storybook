@@ -27,30 +27,11 @@ import {
 
 const AnalyticsRoute = ({
   markets,
-  setMarketAddress,
   theme,
   publicKey,
   selectedPair,
 }: IProps) => {
   const isAllMarketsSelected = selectedPair === 'all'
-
-  // replace to another component with withMarketUtilsHOC
-  useEffect(() => {
-    const updatedMarkets = AWESOME_MARKETS.map((el) => ({
-      ...el,
-      address: el.address,
-      programId: el.programId,
-      isCustomUserMarket: true,
-    }))
-
-    const pair = selectedPair === 'all' ? 'SRM_USDT' : selectedPair
-    const selectedMarketFromUrl = [...markets, ...updatedMarkets].find(
-      (el) => el.name.split('/').join('_') === pair
-    )
-
-    selectedMarketFromUrl &&
-      setMarketAddress(selectedMarketFromUrl.address.toBase58())
-  }, [selectedPair])
 
   return (
     <Container theme={theme}>
