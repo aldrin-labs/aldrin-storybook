@@ -57,7 +57,7 @@ export const StyledButton = styled(Button)`
 
 export const StyledDropdown = styled.div`
   position: relative;
-  display: flex;
+  display: block;
   align-items: center;
   justify-content: center;
   width: 100%;

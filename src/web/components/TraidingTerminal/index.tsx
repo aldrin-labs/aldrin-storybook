@@ -179,7 +179,7 @@ export const TradeInputContent = ({
     >
       {needTitle && (
         <AbsoluteInputTitle
-          style={{ ...(fontSize ? { fontSize: fontSize } : {}) }}
+          style={{ ...(fontSize ? { fontSize } : {}) }}
         >
           {title}
         </AbsoluteInputTitle>
