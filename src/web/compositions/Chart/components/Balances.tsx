@@ -341,7 +341,7 @@ export const Balances = ({
               <div
                 style={{
                   display: 'flex',
-                  justifyContent: !showSettle ? 'flex-start' : 'space-evenly',
+                  justifyContent: !showSettle ? 'flex-start' : 'space-between',
                   width: '100%',
                   padding: '0 0.5rem',
                 }}
@@ -357,15 +357,14 @@ export const Balances = ({
                 ) : isBaseCoinExistsInWallet ? (
                   <>
                     <BtnCustom
-                      btnWidth={!showSettle ? '100%' : '45%'}
+                      btnWidth={!showSettle ? '100%' : 'calc(50% - .25rem)'}
                       height="auto"
                       fontSize=".8rem"
                       padding=".5rem 0 .4rem 0;"
                       borderRadius=".8rem"
-                      btnColor={theme.palette.white.background}
-                      backgroundColor="#57bc7c"
-                      hoverColor={theme.palette.white.background}
-                      hoverBackground="#50ad72"
+                      btnColor={theme.palette.dark.main}
+                      borderColor={theme.palette.blue.serum}
+                      backgroundColor={theme.palette.blue.serum}
                       transition={'all .4s ease-out'}
                       onClick={() => {
                         toggleOpeningDepositPopup(true)
@@ -376,7 +375,7 @@ export const Balances = ({
                     </BtnCustom>
                     {showSettle && (
                       <BtnCustom
-                        btnWidth="45%"
+                        btnWidth={'calc(50% - .25rem)'}
                         height="auto"
                         fontSize=".8rem"
                         padding=".5rem 0 .4rem 0;"
@@ -458,7 +457,7 @@ export const Balances = ({
               <div
                 style={{
                   display: 'flex',
-                  justifyContent: !showSettle ? 'flex-start' : 'space-evenly',
+                  justifyContent: !showSettle ? 'flex-start' : 'space-between',
                   width: '100%',
                   padding: '0 0.5rem',
                 }}
@@ -472,15 +471,14 @@ export const Balances = ({
                 ) : isQuoteCoinExistsInWallet ? (
                   <>
                     <BtnCustom
-                      btnWidth={!showSettle ? '100%' : '45%'}
+                      btnWidth={!showSettle ? '100%' : 'calc(50% - .25rem)'}
                       height="auto"
                       fontSize=".8rem"
                       padding=".5rem 0 .4rem 0;"
                       borderRadius=".8rem"
-                      btnColor={theme.palette.white.background}
-                      backgroundColor="#57bc7c"
-                      hoverColor={theme.palette.white.background}
-                      hoverBackground="#50ad72"
+                      btnColor={theme.palette.dark.main}
+                      borderColor={theme.palette.blue.serum}
+                      backgroundColor={theme.palette.blue.serum}
                       transition={'all .4s ease-out'}
                       onClick={() => {
                         toggleOpeningDepositPopup(true)
@@ -491,7 +489,7 @@ export const Balances = ({
                     </BtnCustom>
                     {showSettle && (
                       <BtnCustom
-                        btnWidth="45%"
+                        btnWidth={'calc(50% - .25rem)'}
                         height="auto"
                         fontSize=".8rem"
                         padding=".5rem 0 .4rem 0;"
@@ -499,7 +497,6 @@ export const Balances = ({
                         btnColor={theme.palette.dark.main}
                         borderColor={theme.palette.blue.serum}
                         backgroundColor={theme.palette.blue.serum}
-                        // hoverBackground="#3992a9"
                         transition={'all .4s ease-out'}
                         onClick={() => {
                           const { market, openOrders } = quoteBalances

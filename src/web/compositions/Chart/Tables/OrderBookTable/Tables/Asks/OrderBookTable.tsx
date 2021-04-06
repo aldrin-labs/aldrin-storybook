@@ -16,10 +16,13 @@ import styled from 'styled-components'
 
 const StyledTable = styled(Table)`
   & .ReactVirtualized__Grid__innerScrollContainer {
-    top: ${props => props.rowCount < 9
-        ? props.height - (props.height / 9) * (props.rowCount + 1)
+    top: ${(props) => {
+      const numberOfRows = props.mode === 'both' ? 9 : 18;
+
+      return props.rowCount < numberOfRows
+        ? props.height - (props.height / numberOfRows) * (props.rowCount + 1)
         : 0
-      }px;
+    }}px;
   }
 `
 
@@ -49,9 +52,9 @@ class OrderBookTable extends Component<IProps> {
       <AsksWrapper mode={mode} isFullHeight={mode === 'asks'}>
         <AutoSizer>
           {({ width, height }: { width: number; height: number }) => {
-            console.log('tableData.length', tableData.length, 'height', height)
             return (
               <StyledTable
+                mode={mode}
                 width={width}
                 height={height}
                 rowCount={tableData.length}
