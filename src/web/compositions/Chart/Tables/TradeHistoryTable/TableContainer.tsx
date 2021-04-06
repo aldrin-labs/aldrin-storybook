@@ -67,7 +67,7 @@ class TableContainer extends Component<IProps, IState> {
       const tickersData = [...newProps.data.marketTickers]
 
       const updatedData = tickersData
-        .sort((a, b) => b.time - a.time)
+        .sort((a, b) => b.timestamp - a.timestamp)
         .map((trade, i) => ({
           ...trade,
           size: Number(trade.size).toFixed(newProps.sizeDigits),
@@ -117,7 +117,7 @@ class TableContainer extends Component<IProps, IState> {
       const tickersData = [...this.props.data.marketTickers]
 
       const updatedData = tickersData
-        .sort((a, b) => b.time - a.time)
+        .sort((a, b) => b.timestamp - a.timestamp)
         .map((trade, i) => ({
           ...trade,
           size: Number(trade.size).toFixed(this.props.sizeDigits),
