@@ -178,9 +178,7 @@ export const TradeInputContent = ({
       style={{ position: 'relative' }}
     >
       {needTitle && (
-        <AbsoluteInputTitle
-          style={{ ...(fontSize ? { fontSize } : {}) }}
-        >
+        <AbsoluteInputTitle style={{ ...(fontSize ? { fontSize } : {}) }}>
           {title}
         </AbsoluteInputTitle>
       )}
@@ -302,7 +300,10 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
       })
     }
 
-    if (prevProps.marketPrice === null && this.props.marketPrice !== null) {
+    if (
+      (prevProps.marketPrice === null && this.props.marketPrice !== null) ||
+      prevProps.pricePrecision !== this.props.pricePrecision
+    ) {
       this.setFormatted(
         'price',
         stripDigitPlaces(+marketPrice, pricePrecision),
@@ -436,7 +437,7 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
     const amountForUpdate = isAmountMoreThanMax
       ? currentMaxAmount
-      : isAmountLessThanMin
+      : isAmountLessThanMin && minOrderSize < 1
       ? minOrderSize
       : e.target.value
 
@@ -695,9 +696,14 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                     const newAmount = isBuyType
                       ? +stripDigitPlaces(
                           newValue / priceForCalculate,
-                          quantityPrecision
+                          quantityPrecision,
+                          market?.minOrderSize
                         )
-                      : +stripDigitPlaces(newValue, quantityPrecision)
+                      : +stripDigitPlaces(
+                          newValue,
+                          quantityPrecision,
+                          market?.minOrderSize
+                        )
 
                     const newTotal = newAmount * priceForCalculate
 

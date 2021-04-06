@@ -515,9 +515,11 @@ export const validateVariablesForPlacingOrder = ({
   let formattedMinOrderSize =
     market?.minOrderSize?.toFixed(getDecimalCount(market.minOrderSize)) ||
     market?.minOrderSize
+
   let formattedTickSize =
     market?.tickSize?.toFixed(getDecimalCount(market.tickSize)) ||
     market?.tickSize
+
   if (isNaN(price)) {
     notify({ message: 'Invalid price', type: 'error' })
     return
