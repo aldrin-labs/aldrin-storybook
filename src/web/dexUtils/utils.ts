@@ -38,7 +38,8 @@ export function roundToDecimal(value, decimals) {
 
 export function getDecimalCount(value) {
   // includes e-7
-  if (value <= 0.0000001) return 8
+  if (value <= 0.00000001) return 8
+  if (value <= 0.0000001) return 7
   if (!isNaN(value) && Math.floor(value) !== value && !!value)
     return value.toString().split('.')[1].length || 0
   return 0

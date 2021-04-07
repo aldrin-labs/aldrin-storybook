@@ -300,7 +300,7 @@ export function MarketProvider({ children }) {
     console.log('useEffect in market - load market')
     Market.load(connection, marketInfo.address, {}, marketInfo.programId)
       .then(data => {
-        console.log('useEffect in market - set market in load', data)
+        console.log('useEffect in market - set market in load', marketInfo.address, marketInfo.name)
         return setMarket(data)}
       )
       .catch((e) =>
