@@ -775,7 +775,7 @@ class SelectPairListComponent extends React.PureComponent<
                     fontSize: '1rem',
                     textAlign: 'left',
                   }}
-                  width={width}
+                  width={width * 1.5}
                   style={{
                     textAlign: 'left',
                     fontSize: '1.2rem',
@@ -786,23 +786,6 @@ class SelectPairListComponent extends React.PureComponent<
                 <Column
                   label={`24H VOLUME`}
                   dataKey="volume24hChange"
-                  headerStyle={{
-                    color: theme.palette.grey.title,
-                    paddingRight: 'calc(10px)',
-                    fontSize: '1rem',
-                    textAlign: 'left',
-                  }}
-                  width={width}
-                  style={{
-                    textAlign: 'left',
-                    fontSize: '1.2rem',
-                    fontWeight: 'bold',
-                  }}
-                  cellRenderer={({ cellData }) => cellData.render}
-                />
-                <Column
-                  label={`trades change 24h`}
-                  dataKey="tradesChange24h"
                   headerStyle={{
                     color: theme.palette.grey.title,
                     paddingRight: 'calc(10px)',

@@ -32,7 +32,11 @@ export const selectWrapperColumnNames = [
 
 export const getIsNotUSDTQuote = (symbol) => {
   const [base, quote] = symbol.split('_')
-  return quote !== 'USDT' && quote !== 'USDC' && !symbol.toLowerCase().includes('all')
+  return (
+    quote !== 'USDT' &&
+    quote !== 'USDC' &&
+    !symbol.toLowerCase().includes('all')
+  )
 }
 
 export const getUpdatedFavoritePairsList = (
@@ -235,46 +239,59 @@ export const combineSelectWrapperData = ({
   }
 
   const filtredData = processedData.map((el) => {
-    // const {
-    //   symbol = '',
-    //   price = 0,
-    //   price24hChange = 0,
-    //   volume24hChange = 0,
-    //   pricePrecision: pricePrecisionRaw = 0,
-    //   quantityPrecision: quantityPrecisionRaw = 0,
-    // } = el || {
-    //   symbol: '',
-    //   price: 0,
-    //   price24hChange: 0,
-    //   volume24hChange: 0,
-    //   pricePrecision: 0,
-    //   quantityPrecision: 0,
-    // }
+    const {
+      symbol = '',
+      closePrice = 0,
+      lastPriceDiff = 0,
+      volume = 0,
+      precentageTradesDiff = 0,
+      tradesCount = 0,
+      volumeChange = 0,
+      address = '',
+      programId = '',
+    } = el || {
+      symbol: '',
+      closePrice: 0,
+      lastPriceDiff: 0,
+      volume: 0,
+      precentageTradesDiff: 0,
+      tradesCount: 0,
+      volumeChange: 0,
+      address: '',
+      programId: '',
+    }
 
-    // const pricePrecision =
-    //   pricePrecisionRaw === 0 || pricePrecisionRaw < 0 ? 8 : pricePrecisionRaw
-    // const quantityPrecision =
-    //   quantityPrecisionRaw === 0 || quantityPrecisionRaw < 0
-    //     ? 8
-    //     : quantityPrecisionRaw
+    const [_, quote] = symbol.split('_')
+    const pricePrecision = closePrice < 1 ? 8 : closePrice < 10 ? 4 : 2
 
-    const isInFavoriteAlready = favoritePairsMap.has(el.symbol)
+    const isNotUSDTQuote = getIsNotUSDTQuote(symbol)
 
-    const priceColor = !!previousData ? '' : ''
+    const strippedLastPriceDiff = +stripDigitPlaces(
+      lastPriceDiff,
+      pricePrecision
+    )
 
-    const [base, quote] = el.symbol.split('_')
+    const strippedMarkPrice = +stripDigitPlaces(closePrice, pricePrecision)
 
-    const isNotUSDTQuote = getIsNotUSDTQuote(el.symbol)
+    const prevClosePrice = strippedMarkPrice - strippedLastPriceDiff
 
-    // console.log('filtredData', el)
+    const priceChangePercentage = !prevClosePrice
+      ? 0
+      : (closePrice - prevClosePrice) / (prevClosePrice / 100)
+
+    const sign24hChange = +priceChangePercentage > 0 ? `+` : ``
+    const signTrades24hChange = +precentageTradesDiff > 0 ? '+' : '-'
+
+    console.log('symbol', symbol, pricePrecision, lastPriceDiff, strippedLastPriceDiff)
+
     return {
-      id: `${el.symbol}`,
+      id: `${symbol}`,
       // favorite: {
       //   isSortable: false,
       //   render: (
       //     <SvgIcon
       //       onClick={() =>
-      //         updateFavoritePairsHandler(updateFavoritePairsMutation, el.symbol)
+      //         updateFavoritePairsHandler(updateFavoritePairsMutation, symbol)
       //       }
       //       src={isInFavoriteAlready ? favoriteSelected : favoriteUnselected}
       //       width="2rem"
@@ -283,22 +300,23 @@ export const combineSelectWrapperData = ({
       //   ),
       // },
       symbol: {
-        render: <span>{el.symbol.replace('_', '/')}</span>,
+        render: <span>{symbol.replace('_', '/')}</span>,
         onClick: () =>
           onSelectPair({
-            value: el.symbol,
-            isCustomUserMarket: el.isCustomUserMarket,
-            address: el.address,
-            programId: el.programId,
+            value: symbol,
+            address,
+            programId,
           }),
-        contentToSort: el.symbol,
+        contentToSort: symbol,
         color: theme.palette.dark.main,
       },
       price: {
-        contentToSort: +el.closePrice,
+        contentToSort: +closePrice,
         render: (
           <span>
-            {formatNumberToUSFormat(stripDigitPlaces(el.closePrice, 2))}
+            {formatNumberToUSFormat(
+              stripDigitPlaces(closePrice, pricePrecision)
+            )}
           </span>
         ),
 
@@ -310,83 +328,64 @@ export const combineSelectWrapperData = ({
           <span
             style={{
               color:
-                +el.lastPriceDiff === 0
+                +lastPriceDiff === 0
                   ? ''
-                  : +el.lastPriceDiff > 0
+                  : +lastPriceDiff > 0
                   ? theme.palette.green.main
                   : theme.palette.red.main,
             }}
           >
-            {`${formatNumberToUSFormat(stripDigitPlaces(el.lastPriceDiff))}`}
-          </span>
-        ),
-
-        contentToSort: +el.lastPriceDiff,
-        color:
-          +el.lastPriceDiff === 0
-            ? ''
-            : +el.lastPriceDiff > 0
-            ? theme.customPalette.green.main
-            : theme.customPalette.red.main,
-      },
-      volume24hChange: {
-        isNumber: true,
-        contentToSort: +el.volume || 0,
-        render: (
-          <span>
-            {`${isNotUSDTQuote ? '' : '$'}${formatNumberToUSFormat(
-              roundAndFormatNumber(el.volume, 2, false)
-            )}${isNotUSDTQuote ? ` ${quote}` : ''}`}
-          </span>
-        ),
-      },
-      tradesChange24h: {
-        isNumber: true,
-        render: (
-          <span
-            style={{
-              color:
-                +el.precentageTradesDiff === 0
-                  ? ''
-                  : +el.precentageTradesDiff > 0
-                  ? theme.palette.green.main
-                  : theme.palette.red.main,
-            }}
-          >
-            {`${
-              +el.precentageTradesDiff === 0
-                ? ''
-                : +el.precentageTradesDiff > 0
-                ? '+'
-                : '-'
-            }${formatNumberToUSFormat(
-              stripDigitPlaces(Math.abs(el.precentageTradesDiff))
+            {`${sign24hChange}${formatNumberToUSFormat(
+              stripDigitPlaces(lastPriceDiff, pricePrecision)
+            )} / ${sign24hChange}${formatNumberToUSFormat(
+              stripDigitPlaces(priceChangePercentage, 2)
             )}%`}
           </span>
         ),
 
-        contentToSort: +el.precentageTradesDiff,
-        color:
-          +el.precentageTradesDiff === 0
-            ? ''
-            : +el.precentageTradesDiff > 0
-            ? theme.customPalette.green.main
-            : theme.customPalette.red.main,
+        contentToSort: +lastPriceDiff,
+      },
+      volume24hChange: {
+        isNumber: true,
+        contentToSort: +volume || 0,
+        render: (
+          <span>
+            {`${isNotUSDTQuote ? '' : '$'}${formatNumberToUSFormat(
+              roundAndFormatNumber(volume, 2, false)
+            )}${isNotUSDTQuote ? ` ${quote}` : ''}`}
+          </span>
+        ),
       },
       trades24h: {
         isNumber: true,
-        contentToSort: +el.tradesCount || 0,
+        contentToSort: +tradesCount || 0,
         render: (
-          <span>
-            {`${formatNumberToUSFormat(
-              roundAndFormatNumber(el.tradesCount, 0, false)
-            )}`}
-          </span>
+          <>
+            <span>
+              {`${formatNumberToUSFormat(
+                roundAndFormatNumber(tradesCount, 0, false)
+              )} / `}
+            </span>
+            <span
+              style={{
+                color:
+                  +precentageTradesDiff === 0
+                    ? ''
+                    : +precentageTradesDiff > 0
+                    ? theme.palette.green.main
+                    : theme.palette.red.main,
+              }}
+            >
+              {`${signTrades24hChange}${formatNumberToUSFormat(
+                stripDigitPlaces(Math.abs(precentageTradesDiff))
+              )}%`}
+            </span>
+          </>
         ),
       },
       volume24hChangeIcon: {
         render:
-          +el.volumeChange > 0 ? (
+          +volumeChange > 0 ? (
             <SvgIcon src={MoreVolumeArrow} width="1rem" height="auto" />
           ) : (
             <SvgIcon src={LessVolumeArrow} width="1rem" height="auto" />

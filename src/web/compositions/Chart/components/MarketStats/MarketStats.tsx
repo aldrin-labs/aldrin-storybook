@@ -98,11 +98,8 @@ const MarketStats = (props) => {
     getPriceQuery,
     getMarkPriceQuery,
     quantityPrecision,
-    pricePrecision: pricePrecisionRaw,
+    pricePrecision,
   } = props
-
-  const pricePrecision =
-    pricePrecisionRaw === 0 || pricePrecisionRaw < 0 ? 8 : pricePrecisionRaw
 
   const {
     marketDataByTickers: {
@@ -138,6 +135,7 @@ const MarketStats = (props) => {
     },
   }
 
+  const { market } = useMarket()
   const [previousPrice, savePreviousPrice] = useState(0)
   const [showGreen, updateToGreen] = useState(false)
   const markPrice = useMarkPrice() || 0
@@ -152,15 +150,25 @@ const MarketStats = (props) => {
     savePreviousPrice(markPrice)
   }, [markPrice])
 
-  const { market } = useMarket()
-  let priceDecimalCount = market?.tickSize && getDecimalCount(market.tickSize)
+  const bigPrecision = market?.tickSize > 1 ? market?.tickSize : null
+
+  const strippedLastPriceDiff = +stripDigitPlaces(
+    lastPriceDiff,
+    pricePrecision,
+    bigPrecision
+  )
+  const strippedMarkPrice = +stripDigitPlaces(
+    markPrice,
+    pricePrecision,
+    bigPrecision
+  )
 
   const [base, quote] = symbol.split('_')
 
-  const prevClosePrice = +stripDigitPlaces(markPrice, pricePrecision) - +stripDigitPlaces(lastPriceDiff, pricePrecision)
-  
+  const prevClosePrice = strippedMarkPrice - strippedLastPriceDiff
+
   const priceChangePercentage = !prevClosePrice
-    ? null
+    ? 0
     : (markPrice - prevClosePrice) / (prevClosePrice / 100)
 
   const sign24hChange = +priceChangePercentage > 0 ? `+` : ``
@@ -179,11 +187,7 @@ const MarketStats = (props) => {
             fontFamily: 'Avenir Next Demi',
           }}
         >
-          {markPrice === 0
-            ? '--'
-            : formatNumberToUSFormat(
-                stripDigitPlaces(markPrice, priceDecimalCount)
-              )}
+          {markPrice === 0 ? '--' : formatNumberToUSFormat(strippedMarkPrice)}
         </PanelCardValue>
       </PanelCard>
       <PanelCard marketType={marketType} theme={theme}>
@@ -198,9 +202,7 @@ const MarketStats = (props) => {
                   : theme.palette.red.main,
             }}
           >
-            {formatNumberToUSFormat(
-              stripDigitPlaces(lastPriceDiff, priceDecimalCount)
-            )}
+            {formatNumberToUSFormat(strippedLastPriceDiff)}
           </PanelCardValue>
           <PanelCardSubValue
             theme={theme}
@@ -224,25 +226,20 @@ const MarketStats = (props) => {
       <PanelCard marketType={marketType} theme={theme}>
         <PanelCardTitle theme={theme}>24h high</PanelCardTitle>
         <PanelCardValue theme={theme}>
-          {formatNumberToUSFormat(
-            stripDigitPlaces(maxPrice, priceDecimalCount)
-          )}
+          {formatNumberToUSFormat(stripDigitPlaces(maxPrice, pricePrecision))}
         </PanelCardValue>
       </PanelCard>
 
       <PanelCard marketType={marketType} theme={theme}>
         <PanelCardTitle theme={theme}>24h low</PanelCardTitle>
         <PanelCardValue theme={theme}>
-          {formatNumberToUSFormat(
-            stripDigitPlaces(minPrice, priceDecimalCount)
-          )}
+          {formatNumberToUSFormat(stripDigitPlaces(minPrice, pricePrecision))}
         </PanelCardValue>
       </PanelCard>
       <PanelCard marketType={marketType} theme={theme}>
         <PanelCardTitle theme={theme}>24hr volume</PanelCardTitle>
         <PanelCardValue theme={theme}>
-          {formatNumberToUSFormat(stripDigitPlaces(volume, 2))}{' '}
-          {quote}
+          {formatNumberToUSFormat(stripDigitPlaces(volume, 2))} {quote}
         </PanelCardValue>
       </PanelCard>
     </div>
