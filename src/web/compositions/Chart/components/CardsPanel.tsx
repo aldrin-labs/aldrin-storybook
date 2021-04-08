@@ -236,7 +236,7 @@ const TopBar = ({ theme }) => {
 
   const { endpoint, setEndpoint } = useConnectionConfig()
   const location = useLocation()
-  const history = useHistory()
+  // const history = useHistory()
   const [isOpenPopup, setPopupOpen] = useState(false)
 
   const publicKey = wallet?.publicKey?.toBase58()
