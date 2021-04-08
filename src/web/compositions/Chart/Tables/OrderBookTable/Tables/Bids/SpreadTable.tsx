@@ -82,13 +82,13 @@ class SpreadTable extends Component<IProps> {
                 label={mode === 'bids' ? `price` : ''}
                 dataKey="price"
                 headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
-                width={width + width / 6}
+                width={width}
                 style={{ color: theme.palette.green.main, fontFamily: 'Avenir Next Demi' }}
               />
               <Column
                 label={mode === 'bids' ? `size (${base})` : ''}
                 dataKey="size"
-                width={width + width / 6}
+                width={width}
                 headerStyle={{ textAlign: 'left', paddingRight: '.9rem' }}
                 style={{
                   textAlign: 'left',
@@ -98,7 +98,7 @@ class SpreadTable extends Component<IProps> {
               <Column
                 label={mode === 'bids' ? `total (${quote})` : ''}
                 dataKey="total"
-                width={width - width / 3}
+                width={width}
                 headerStyle={{
                   paddingRight: 'calc(.5rem + 10px)',
                   textAlign: 'right',

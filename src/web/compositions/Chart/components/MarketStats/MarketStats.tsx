@@ -215,8 +215,7 @@ const MarketStats = (props) => {
           >
             {!priceChangePercentage
               ? '--'
-              : `${sign24hChange}
-              ${formatNumberToUSFormat(
+              : `${sign24hChange}${formatNumberToUSFormat(
                 stripDigitPlaces(+priceChangePercentage)
               )}%`}
           </PanelCardSubValue>

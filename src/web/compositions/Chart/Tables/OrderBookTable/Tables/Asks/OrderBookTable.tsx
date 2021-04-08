@@ -93,7 +93,7 @@ class OrderBookTable extends Component<IProps> {
                   label="Price"
                   dataKey="price"
                   headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
-                  width={width + width / 6}
+                  width={width}
                   style={{
                     color: theme.palette.red.main,
                     fontFamily: 'Avenir Next Demi',
@@ -103,7 +103,7 @@ class OrderBookTable extends Component<IProps> {
                   label={`Size (${base})`}
                   dataKey="size"
                   headerStyle={{ textAlign: 'left', paddingRight: '6px' }}
-                  width={width + width / 6}
+                  width={width}
                   style={{
                     textAlign: 'left',
                     color: theme.palette.white.primary,
@@ -116,7 +116,7 @@ class OrderBookTable extends Component<IProps> {
                     paddingRight: 'calc(10px)',
                     textAlign: 'right',
                   }}
-                  width={width - width / 3}
+                  width={width}
                   style={{
                     textAlign: 'right',
                     color: theme.palette.white.primary,

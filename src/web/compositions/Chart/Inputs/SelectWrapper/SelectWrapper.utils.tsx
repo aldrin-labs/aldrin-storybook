@@ -282,8 +282,6 @@ export const combineSelectWrapperData = ({
     const sign24hChange = +priceChangePercentage > 0 ? `+` : ``
     const signTrades24hChange = +precentageTradesDiff > 0 ? '+' : '-'
 
-    console.log('symbol', symbol, pricePrecision, lastPriceDiff, strippedLastPriceDiff)
-
     return {
       id: `${symbol}`,
       // favorite: {
@@ -343,7 +341,7 @@ export const combineSelectWrapperData = ({
           </span>
         ),
 
-        contentToSort: +lastPriceDiff,
+        contentToSort: +priceChangePercentage,
       },
       volume24hChange: {
         isNumber: true,
