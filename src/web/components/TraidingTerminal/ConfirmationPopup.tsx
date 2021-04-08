@@ -34,7 +34,7 @@ const StyledPaper = styled(Paper)`
   margin: 2rem;
   padding: 3rem;
 `
-const MainTitle = styled.span`
+export const MainTitle = styled.span`
   font-family: Avenir Next Bold;
   font-size: 3rem;
   line-height: 4rem;
@@ -75,7 +75,7 @@ export const WhiteButton = styled((props) => (
 ))`
   outline: none;
 `
-const WhiteText = styled.span`
+export const WhiteText = styled.span`
   font-family: Avenir Next;
   font-size: 1.5rem;
   display: flex;
