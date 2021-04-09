@@ -217,7 +217,7 @@ function ChartPageComponent(props: any) {
 
   useEffect(() => {
     setCorrectMarketAddress()
-  }, [])
+  }, [selectedPair])
 
   const closeChartPagePopup = () => {
     finishJoyride({
