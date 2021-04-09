@@ -296,12 +296,6 @@ export const combineSelectWrapperData = ({
       currentMarket?.isPrivateCustomMarket !== undefined
     const isAwesomeMarket = currentMarket?.isCustomUserMarket
 
-    console.log(
-      'isPublicCustomMarket',
-      marketName,
-      customMarkets,
-      currentMarket
-    )
     return {
       id: `${symbol}`,
       // favorite: {
