@@ -744,7 +744,7 @@ class SelectPairListComponent extends React.PureComponent<
                     fontSize: '1rem',
                     textAlign: 'left',
                   }}
-                  width={width}
+                  width={width / 2}
                   style={{
                     textAlign: 'left',
                     fontSize: '1.2rem',

@@ -324,7 +324,7 @@ export const combineSelectWrapperData = ({
           >
             <div
               style={{
-                width: '7rem',
+                width: '4rem',
                 fontSize: '2rem',
                 display: 'flex',
                 justifyContent: 'center',
