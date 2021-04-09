@@ -865,7 +865,7 @@ class SelectPairListComponent extends React.PureComponent<
           onAddCustomMarket={onAddCustomMarket}
           getSerumMarketDataQueryRefetch={getSerumMarketDataQueryRefetch}
         />
-        <WarningPopup />
+        <WarningPopup theme={theme} />
       </StyledGrid>
     )
   }
