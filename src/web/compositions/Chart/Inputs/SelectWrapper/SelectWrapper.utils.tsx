@@ -2,6 +2,8 @@ import React from 'react'
 import { client } from '@core/graphql/apolloClient'
 import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSettings'
 import { SvgIcon } from '@sb/components'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
@@ -117,6 +119,7 @@ export const combineSelectWrapperData = ({
   favoritePairsMap,
   marketType,
   needFiltrations = true,
+  customMarkets,
 }: {
   data: ISelectData
   // updateFavoritePairsMutation: (variableObj: {
@@ -249,6 +252,8 @@ export const combineSelectWrapperData = ({
       volumeChange = 0,
       address = '',
       programId = '',
+      isCustomUserMarket,
+      isPrivateCustomMarket,
     } = el || {
       symbol: '',
       closePrice: 0,
@@ -259,6 +264,8 @@ export const combineSelectWrapperData = ({
       volumeChange: 0,
       address: '',
       programId: '',
+      isCustomUserMarket,
+      isPrivateCustomMarket,
     }
 
     const [_, quote] = symbol.split('_')
@@ -282,6 +289,13 @@ export const combineSelectWrapperData = ({
     const sign24hChange = +priceChangePercentage > 0 ? `+` : ``
     const signTrades24hChange = +precentageTradesDiff > 0 ? '+' : '-'
 
+    const marketName = symbol.replace('_', '/')
+    const currentMarket = customMarkets?.find((el) => el?.name === marketName)
+
+    const isAdditionalCustomUserMarket =
+      currentMarket?.isPrivateCustomMarket !== undefined
+    const isAwesomeMarket = currentMarket?.isCustomUserMarket
+
     return {
       id: `${symbol}`,
       // favorite: {
@@ -297,6 +311,34 @@ export const combineSelectWrapperData = ({
       //     />
       //   ),
       // },
+      emoji: {
+        render: (
+          <DarkTooltip
+            title={
+              isAdditionalCustomUserMarket
+                ? 'This is an unofficial custom market. Use at your own risk.'
+                : isAwesomeMarket
+                ? 'This is curated but unofficial market.'
+                : 'This is the official Serum market.'
+            }
+          >
+            <div
+              style={{
+                width: '4rem',
+                fontSize: '2rem',
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            >
+              {isAdditionalCustomUserMarket
+                ? '🤔'
+                : isAwesomeMarket
+                ? '⭐️'
+                : '👍'}
+            </div>
+          </DarkTooltip>
+        ),
+      },
       symbol: {
         render: <span>{symbol.replace('_', '/')}</span>,
         onClick: () =>

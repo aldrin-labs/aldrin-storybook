@@ -60,6 +60,7 @@ import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import { AWESOME_MARKETS } from '@sb/dexUtils/serum'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { WarningPopup } from './components/WarningPopup'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
   // Check if the arrays are the same length
@@ -130,9 +131,8 @@ function ChartPageComponent(props: any) {
   } = props
 
   const [terminalViewMode, updateTerminalViewMode] = useState('default')
-  const [isTourOpen, setIsTourOpen] = useState(
-    false
-  )
+  const [isTourOpen, setIsTourOpen] = useState(false)
+  const [isWarningPopupOpen, openWarningPopup] = useState(false)
 
   const [isNotificationTourOpen, setNotificationTourOpen] = useState(
     localStorage.getItem('isNotificationDone') == 'null'
@@ -205,11 +205,19 @@ function ChartPageComponent(props: any) {
       history.push('/chart/spot/SRM_USDT')
       return
     }
+
+    const isPublicUsersMarket = userMarkets?.find(
+      (el) => el.name === pair.replace('_', '/')
+    )
+
+    if (isPublicUsersMarket !== undefined) {
+      openWarningPopup(true)
+    }
   }
 
   useEffect(() => {
     setCorrectMarketAddress()
-  }, [])
+  }, [selectedPair])
 
   const closeChartPagePopup = () => {
     finishJoyride({
@@ -236,29 +244,28 @@ function ChartPageComponent(props: any) {
   pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
 
   const accentColor = '#09ACC7'
-
   return (
     <MainContainer fullscreen={false}>
       {!isTourOpen && (
-          <Tour
-            className="my-helper"
-            showCloseButton={false}
-            showNumber={false}
-            nextButton={null}
-            prevButton={<a />}
-            showNavigationNumber={false}
-            showButtons={false}
-            showCloseButton={false}
-            showNavigation={false}
-            lastStepNextButton={null}
-            steps={notificationTourConfig}
-            accentColor={accentColor}
-            isOpen={isNotificationTourOpen}
-            onRequestClose={() => {
-              setNotificationTourOpen(false)
-              localStorage.setItem('isNotificationDone', 'true')
-            }}
-          />
+        <Tour
+          className="my-helper"
+          showCloseButton={false}
+          showNumber={false}
+          nextButton={null}
+          prevButton={<a />}
+          showNavigationNumber={false}
+          showButtons={false}
+          showCloseButton={false}
+          showNavigation={false}
+          lastStepNextButton={null}
+          steps={notificationTourConfig}
+          accentColor={accentColor}
+          isOpen={isNotificationTourOpen}
+          onRequestClose={() => {
+            setNotificationTourOpen(false)
+            localStorage.setItem('isNotificationDone', 'true')
+          }}
+        />
       )}
       <Tour
         showCloseButton={false}
@@ -319,6 +326,11 @@ function ChartPageComponent(props: any) {
         }
         closeChartPagePopup={closeChartPagePopup}
         changeChartLayoutMutation={changeChartLayoutMutation}
+      />
+      <WarningPopup
+        open={isWarningPopupOpen}
+        onClose={() => openWarningPopup(false)}
+        theme={theme}
       />
       {/* )} */}
       {/* <JoyrideOnboarding

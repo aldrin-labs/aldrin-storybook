@@ -8,6 +8,7 @@ import { getDecimalCount } from '@sb/dexUtils/utils'
 import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import MarketStats from './MarketStats/MarketStats'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 export const ExclamationMark = styled(({ fontSize, lineHeight, ...props }) => (
   <span {...props}>!</span>
@@ -68,7 +69,7 @@ const selectStyles = (theme: Theme) => ({
 })
 
 const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
-  const { market } = useMarket()
+  const { market, customMarkets } = useMarket()
   const location = useLocation()
 
   const pair = location.pathname.split('/')[3]
@@ -79,6 +80,13 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
   if (!pair) {
     return null
   }
+
+  const marketName = pair.replace('_', '/')
+  const currentMarket = customMarkets?.find((el) => el?.name === marketName)
+
+  const isPrivateCustomMarket =
+    currentMarket?.isPrivateCustomMarket !== undefined
+  const isCustomUserMarket = currentMarket?.isCustomUserMarket
 
   return (
     <RowContainer
@@ -115,6 +123,26 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
           quantityPrecision={quantityPrecision}
           pricePrecision={pricePrecision}
         />
+        <DarkTooltip
+          title={
+            isPrivateCustomMarket
+              ? 'This is an unofficial custom market. Use at your own risk.'
+              : isCustomUserMarket
+              ? 'This is curated but unofficial market.'
+              : 'This is the official Serum market.'
+          }
+        >
+          <div
+            style={{
+              width: '7rem',
+              fontSize: '2rem',
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
+            {isPrivateCustomMarket ? '🤔' : isCustomUserMarket ? '⭐️' : '👍'}
+          </div>
+        </DarkTooltip>
       </Row>
       <Row>
         <Row align={'flex-start'} direction="column">

@@ -7,7 +7,7 @@ import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
 import { Column, Table, SortDirection } from 'react-virtualized'
 import 'react-virtualized/styles.css'
 import dayjs from 'dayjs'
-
+import { WarningPopup } from '@sb/compositions/Chart/components/WarningPopup'
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSettings'
 import { MARKETS_BY_EXCHANE_QUERY } from '@core/graphql/queries/chart/MARKETS_BY_EXCHANE_QUERY'
@@ -276,6 +276,7 @@ class SelectPairListComponent extends React.PureComponent<
       usdtPairsMap,
       marketType,
       getSerumMarketDataQuery,
+      customMarkets,
     } = this.props
 
     const { left } = document
@@ -298,6 +299,7 @@ class SelectPairListComponent extends React.PureComponent<
       usdcPairsMap,
       usdtPairsMap,
       marketType,
+      customMarkets,
     })
 
     this.setState({
@@ -326,6 +328,7 @@ class SelectPairListComponent extends React.PureComponent<
       usdtPairsMap,
       favoritePairsMap,
       marketType,
+      customMarkets,
     } = nextProps
     const { data: prevPropsData } = this.props
     const { sortBy, sortDirection } = this.state
@@ -346,6 +349,7 @@ class SelectPairListComponent extends React.PureComponent<
       usdtPairsMap,
       favoritePairsMap,
       marketType,
+      customMarkets,
     })
 
     this.setState({
@@ -732,6 +736,23 @@ class SelectPairListComponent extends React.PureComponent<
                   )}
                 /> */}
                 <Column
+                  label={` `}
+                  dataKey="emoji"
+                  headerStyle={{
+                    color: theme.palette.grey.title,
+                    paddingRight: 'calc(10px)',
+                    fontSize: '1rem',
+                    textAlign: 'left',
+                  }}
+                  width={width / 2}
+                  style={{
+                    textAlign: 'left',
+                    fontSize: '1.2rem',
+                    fontWeight: 'bold',
+                  }}
+                  cellRenderer={({ cellData }) => cellData.render}
+                />
+                <Column
                   label={`Pair`}
                   dataKey="symbol"
                   headerStyle={{
@@ -844,6 +865,7 @@ class SelectPairListComponent extends React.PureComponent<
           onAddCustomMarket={onAddCustomMarket}
           getSerumMarketDataQueryRefetch={getSerumMarketDataQueryRefetch}
         />
+        <WarningPopup theme={theme} />
       </StyledGrid>
     )
   }

@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom'
 import { withTheme } from '@material-ui/core/styles'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 // import stableCoins from '@core/config/stableCoins'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
@@ -61,11 +62,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
     isCustomUserMarket: boolean
     address: string
   }) => {
-    const {
-      markets,
-      customMarkets,
-      history,
-    } = this.props
+    const { markets, customMarkets, history } = this.props
 
     console.log(
       'onSelectPair',
@@ -133,7 +130,11 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
               id={this.props.id}
               style={{ width: '100%' }}
               value={
-                isClosed && marketName && { marketName, label: marketName }
+                isClosed &&
+                marketName && {
+                  marketName,
+                  label: marketName,
+                }
               }
               fullWidth={true}
               isDisabled={true}
