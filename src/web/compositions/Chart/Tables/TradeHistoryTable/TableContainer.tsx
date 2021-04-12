@@ -2,14 +2,9 @@ import React, { Component } from 'react'
 import dayjs from 'dayjs'
 import TradeHistoryTable from './Table/TradeHistoryTable'
 import ChartCardHeader from '@sb/components/ChartCardHeader'
-var SortedMap = require('collections/sorted-map')
-
 import {
   reduceArrayLength,
   getNumberOfDigitsAfterDecimal,
-  testJSON,
-  getNumberOfDecimalsFromNumber,
-  getAggregationsFromMinPriceDigits,
 } from '@core/utils/chartPageUtils'
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
@@ -20,10 +15,6 @@ import { client } from '@core/graphql/apolloClient'
 
 import { IProps, IState } from './TableContainer.types'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import { updateTradeHistoryQuerryFunction } from '@core/utils/chartPageUtils'
-import { at } from 'lodash'
-
-let unsubscribe: Function | undefined
 
 class TableContainer extends Component<IProps, IState> {
   state: IState = {
@@ -45,15 +36,6 @@ class TableContainer extends Component<IProps, IState> {
       //  if data is actually not a new data
       return null
     }
-
-    const pricePrecision =
-      newProps.pricePrecision === undefined
-        ? newProps.sizeDigits !== undefined
-          ? 8
-          : undefined
-        : newProps.pricePrecision
-
-    console.log('Trade History', pricePrecision, newProps.sizeDigits)
 
     // query data processing
     if (
@@ -177,7 +159,7 @@ class TableContainer extends Component<IProps, IState> {
                   ...trade,
                   size: Number(trade.size).toFixed(that.props.sizeDigits),
                   price: Number(trade.price).toFixed(pricePrecision),
-                  time: new Date(trade.time).toLocaleTimeString(),
+                  time: dayjs.unix(+trade.timestamp).format('LTS'),
                 }))
                 .concat(that.state.data)
             )
