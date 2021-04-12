@@ -16,7 +16,6 @@ import Mathwallet from '@icons/mathwallet.svg'
 import Solong from '@icons/solong.svg'
 import CCAI from '@icons/ccai.svg'
 
-
 import { IProps } from './types'
 
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
@@ -149,7 +148,7 @@ export default class Dropdown extends React.Component<IProps> {
                 Sollet.io
               </BtnCustom>
             </StyledMenuItem>
-            <StyledMenuItem
+            {/* <StyledMenuItem
               theme={theme}
               disableRipple
               disableGutters={true}
@@ -183,7 +182,7 @@ export default class Dropdown extends React.Component<IProps> {
                 <SvgIcon src={Mathwallet} width={'20%'} height={'70%'} />
                 Math Wallet
               </BtnCustom>
-            </StyledMenuItem>
+            </StyledMenuItem> */}
             <StyledMenuItem
               theme={theme}
               disableRipple
@@ -191,19 +190,19 @@ export default class Dropdown extends React.Component<IProps> {
               key={'solong'}
             >
               <BtnCustom
-              btnWidth={'100%'}
-              height={'4rem'}
-              border="none"
-              borderWidth="0"
-              borderRadius="0"
-              btnColor={isSolongWallet ? '#AAF2C9' : '#ECF0F3'}
-              fontSize={'1.2rem'}
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                textTransform: 'none',
-                padding: '1rem',
-              }}
+                btnWidth={'100%'}
+                height={'4rem'}
+                border="none"
+                borderWidth="0"
+                borderRadius="0"
+                btnColor={isSolongWallet ? '#AAF2C9' : '#ECF0F3'}
+                fontSize={'1.2rem'}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  textTransform: 'none',
+                  padding: '1rem',
+                }}
                 onClick={() => {
                   if (isSolongWallet && !isWalletConnected) {
                     wallet.connect()

@@ -7,7 +7,6 @@ import Sollet from '@icons/sollet.svg'
 import Mathwallet from '@icons/mathwallet.svg'
 import Solong from '@icons/solong.svg'
 
-
 import useStateWithCallback from '@sb/utils/useStateWithCallback'
 
 const WalletBlockComponent = () => {
@@ -63,7 +62,7 @@ const WalletBlockComponent = () => {
       >
         <SvgIcon src={Sollet} width={'20%'} height={'70%'} /> Sollet.io
       </BtnCustom>
-      <BtnCustom
+      {/* <BtnCustom
         btnWidth={'12.5rem'}
         height={'4rem'}
         btnColor={isMathWalletActive ? '#AAF2C9' : '#ECF0F3'}
@@ -80,7 +79,7 @@ const WalletBlockComponent = () => {
         }}
       >
         <SvgIcon src={Mathwallet} width={'20%'} height={'70%'} /> Math Wallet
-      </BtnCustom>
+      </BtnCustom> */}
     </div>
   )
 }
