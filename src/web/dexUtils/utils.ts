@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { PublicKey } from '@solana/web3.js';
+import { MASTER_BUILD } from '@core/utils/config';
 
 export function isValidPublicKey(key) {
   if (!key) {
@@ -38,6 +39,8 @@ export function getDecimalCount(value) {
     return value.toString().split('.')[1].length || 0;
   return 0;
 }
+
+export const CCAIProviderURL = MASTER_BUILD ? 'https://wallet.cryptocurrencies.ai' : 'https://develop.wallet.cryptocurrencies.ai';
 
 export function useLocalStorageState(key, defaultState = null) {
   const [state, setState] = useState(() => {
