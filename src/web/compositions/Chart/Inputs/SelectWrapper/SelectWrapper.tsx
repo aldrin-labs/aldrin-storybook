@@ -520,7 +520,7 @@ class SelectPairListComponent extends React.PureComponent<
             isSelected={tab === 'public'}
             onClick={() => onTabChange('public')}
           >
-            Public markets
+            Custom markets
           </StyledTab>
           <StyledTab
             theme={theme}

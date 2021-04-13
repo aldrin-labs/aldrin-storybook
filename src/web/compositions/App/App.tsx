@@ -184,7 +184,7 @@ const Footer = (props) => {
         Cryptocurrencies.Ai
       </Link>
       <Link
-        href="https://t.me/CryptocurrenciesAi"
+        href="https://t.me/CCAI_Official"
         target="_blank"
         rel="noopener noreferrer"
       >

@@ -9,8 +9,6 @@ import twitter from '@icons/twitter.svg'
 import telegram from '@icons/telegram.svg'
 import discord from '@icons/discord.svg'
 
-
-
 export const FinishBtn = styled.button`
   width: 8rem;
   height: 3.5rem;
@@ -62,7 +60,7 @@ export const Text = styled.div`
 `
 
 export const WrapperForNotificationTour = styled.div`
-  && > span[data-tour-elem="badge"] {
+  && > span[data-tour-elem='badge'] {
     display: none;
   }
 `
@@ -234,24 +232,16 @@ export const notificationTourConfig = [
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
-                  href="https://t.me/CryptocurrenciesAi"
+                  href="https://t.me/CCAI_Official"
                 >
-                  <SvgIcon
-                    src={telegram}
-                    width="16px"
-                    height="auto"
-                  />
+                  <SvgIcon src={telegram} width="16px" height="auto" />
                 </a>
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
                   href="https://discord.gg/2EaKvrs"
                 >
-                  <SvgIcon
-                    src={discord}
-                    width="16px"
-                    height="auto"
-                  />
+                  <SvgIcon src={discord} width="16px" height="auto" />
                 </a>
               </div>
             </div>

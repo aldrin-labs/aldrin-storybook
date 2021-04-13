@@ -206,11 +206,14 @@ function ChartPageComponent(props: any) {
       return
     }
 
-    const isPublicUsersMarket = userMarkets?.find(
+    const isCustomUsersMarket = updatedMarkets?.find(
       (el) => el.name === pair.replace('_', '/')
     )
 
-    if (isPublicUsersMarket !== undefined) {
+    const isPublicUsersMarket = userMarkets?.find(
+      (el) => el.name === pair.replace('_', '/')
+    )
+    if (isPublicUsersMarket !== undefined && !isCustomUsersMarket) {
       openWarningPopup(true)
     }
   }
