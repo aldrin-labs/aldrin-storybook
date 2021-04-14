@@ -8,8 +8,13 @@ import { getDecimalCount } from '@sb/dexUtils/utils'
 import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import MarketStats from './MarketStats/MarketStats'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+<<<<<<< HEAD
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
+=======
+import LinkToSolanaExp from './LinkToSolanaExp'
+ 
+>>>>>>> 8ba14499... add link to solana-exp
 export const ExclamationMark = styled(({ fontSize, lineHeight, ...props }) => (
   <span {...props}>!</span>
 ))`
@@ -69,18 +74,28 @@ const selectStyles = (theme: Theme) => ({
 })
 
 const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
+<<<<<<< HEAD
   const { market, customMarkets } = useMarket()
+=======
+  const { market } = useMarket()
+>>>>>>> 8ba14499... add link to solana-exp
   const location = useLocation()
 
   const pair = location.pathname.split('/')[3]
   const quantityPrecision =
     market?.minOrderSize && getDecimalCount(market.minOrderSize)
   const pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
+<<<<<<< HEAD
 
+=======
+  const marketAddress = market?.address?.toBase58()
+  console.log("marketAddress -->>", marketAddress)
+>>>>>>> 8ba14499... add link to solana-exp
   if (!pair) {
     return null
   }
 
+<<<<<<< HEAD
   const marketName = pair.replace('_', '/')
   const currentMarket = customMarkets?.find((el) => el?.name === marketName)
 
@@ -88,6 +103,8 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
     currentMarket?.isPrivateCustomMarket !== undefined
   const isCustomUserMarket = currentMarket?.isCustomUserMarket
 
+=======
+>>>>>>> 8ba14499... add link to solana-exp
   return (
     <RowContainer
       justify={'space-between'}
@@ -123,6 +140,7 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
           quantityPrecision={quantityPrecision}
           pricePrecision={pricePrecision}
         />
+<<<<<<< HEAD
         <DarkTooltip
           title={
             isPrivateCustomMarket
@@ -143,6 +161,9 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
             {isPrivateCustomMarket ? '🤔' : isCustomUserMarket ? '⭐️' : '👍'}
           </div>
         </DarkTooltip>
+=======
+        <LinkToSolanaExp marketAddress={marketAddress} />
+>>>>>>> 8ba14499... add link to solana-exp
       </Row>
       <Row>
         <Row align={'flex-start'} direction="column">
