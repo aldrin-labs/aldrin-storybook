@@ -8,12 +8,16 @@ const StyleLink = styled.a`
     padding: 0.3rem 1rem 0rem 1rem;
 `;
 
-const LinkToSolanaExp = ({ marketAddress }) => {
+const LoaderWrapper = styled.div`
+    padding: 0.3rem 1rem 0rem 1rem;
+`;
+
+const LinkToSolanaExp = ({ marketAddress } : { marketAddress?: string }) => {
     if (!marketAddress) {
         return (
-            <StyleLink>
+            <LoaderWrapper>
                 <Loading size={18}/>
-            </StyleLink>
+            </LoaderWrapper>
         )
     }
 
