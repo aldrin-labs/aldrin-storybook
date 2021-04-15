@@ -40,7 +40,7 @@ export const Title = styled(
 const selectStyles = (theme: Theme) => ({
   height: '100%',
   background: theme.palette.white.background,
-  marginRight: '.8rem',
+  marginRight: '0',
   cursor: 'pointer',
   padding: 0,
   backgroundColor: theme.palette.white.background,
@@ -99,6 +99,28 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
       }}
     >
       <Row justify="flex-start">
+      <DarkTooltip
+          title={
+            isPrivateCustomMarket
+              ? 'This is an unofficial custom market. Use at your own risk.'
+              : isCustomUserMarket
+              ? 'This is curated but unofficial market.'
+              : 'This is the official Serum market.'
+          }
+        >
+          <div
+            style={{
+              width: '3rem',
+              marginRight: '1rem',
+              fontSize: '2rem',
+              display: 'flex',
+              justifyContent: 'center',
+              marginBottom: '0.25rem',
+            }}
+          >
+            {isPrivateCustomMarket ? '🤔' : isCustomUserMarket ? '⭐️' : '👍'}
+          </div>
+        </DarkTooltip>
         <div
           data-tut="pairs"
           style={{ height: '100%', padding: '1rem 0', position: 'relative' }}
@@ -124,26 +146,7 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
           quantityPrecision={quantityPrecision}
           pricePrecision={pricePrecision}
         />
-        <DarkTooltip
-          title={
-            isPrivateCustomMarket
-              ? 'This is an unofficial custom market. Use at your own risk.'
-              : isCustomUserMarket
-              ? 'This is curated but unofficial market.'
-              : 'This is the official Serum market.'
-          }
-        >
-          <div
-            style={{
-              width: '7rem',
-              fontSize: '2rem',
-              display: 'flex',
-              justifyContent: 'center',
-            }}
-          >
-            {isPrivateCustomMarket ? '🤔' : isCustomUserMarket ? '⭐️' : '👍'}
-          </div>
-        </DarkTooltip>
+        
         <LinkToSolanaExp marketAddress={marketAddress} />
       </Row>
       <Row>

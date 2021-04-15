@@ -185,6 +185,7 @@ const MarketStats = (props) => {
             fontSize: '2.3rem',
             letterSpacing: '0.01rem',
             fontFamily: 'Avenir Next Demi',
+            padding: '0.1rem 1.5rem',
           }}
         >
           {markPrice === 0 ? '--' : formatNumberToUSFormat(strippedMarkPrice)}
