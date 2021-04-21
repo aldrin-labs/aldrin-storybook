@@ -9,7 +9,8 @@ import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import MarketStats from './MarketStats/MarketStats'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-
+import LinkToSolanaExp from './LinkToSolanaExp'
+ 
 export const ExclamationMark = styled(({ fontSize, lineHeight, ...props }) => (
   <span {...props}>!</span>
 ))`
@@ -76,7 +77,7 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
   const quantityPrecision =
     market?.minOrderSize && getDecimalCount(market.minOrderSize)
   const pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
-
+  const marketAddress = market?.address?.toBase58()
   if (!pair) {
     return null
   }
@@ -143,6 +144,7 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
             {isPrivateCustomMarket ? '🤔' : isCustomUserMarket ? '⭐️' : '👍'}
           </div>
         </DarkTooltip>
+        <LinkToSolanaExp marketAddress={marketAddress} />
       </Row>
       <Row>
         <Row align={'flex-start'} direction="column">
