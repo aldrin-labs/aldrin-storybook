@@ -443,7 +443,7 @@ class SelectPairListComponent extends React.PureComponent<
       const newCustomMarkets = [...customMarkets, customMarket]
       setCustomMarkets(newCustomMarkets)
       history.push(`/chart/spot/${customMarket.name.replace('/', '_')}`)
-
+      console.log('onAddCustomMarket', newCustomMarkets)
       return true
     }
 
