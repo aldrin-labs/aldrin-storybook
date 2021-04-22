@@ -137,9 +137,8 @@ const AppRaw = ({
                             ? 'calc(100% - 11.7rem)'
                             : isChartPage
                             ? 'calc(100% - 12rem)'
-                            : currentPage == '/'
-                            ? '70%'
                             : 'calc(100% - 6rem)',
+                          overflow: currentPage == '/' ? 'hidden' : 'auto',
                         }}
                       >
                         {children}
