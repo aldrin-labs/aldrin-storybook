@@ -201,14 +201,14 @@ export const Homepage = () => {
       </RowContainer>
       <RowContainer justify={'space-between'}>
         <Row
-          width={'31%'}
+          width={'18%'}
           height={'7rem'}
           justify={'space-around'}
           style={{ marginLeft: '2rem' }}
         >
           <Text fontSize={'1.7rem'}>In partnership with</Text>
           {/* <SvgIcon src={Alameda} height={'auto'} width={'40%'} /> */}
-          <SvgIcon src={Serum} height={'auto'} width={'17%'} />
+          <SvgIcon src={Serum} height={'auto'} width={'28%'} />
         </Row>
         <Socials justify={'space-around'} width={'20%'}>
           <a

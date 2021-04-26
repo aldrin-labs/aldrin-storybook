@@ -281,6 +281,7 @@ const AddressbookRoute = ({
               textTransform={'none'}
               margin={'4rem 0 0 0'}
               transition={'all .4s ease-out'}
+              style={{ whiteSpace: 'nowrap' }}
             >
               Connect wallet
             </BtnCustom>
