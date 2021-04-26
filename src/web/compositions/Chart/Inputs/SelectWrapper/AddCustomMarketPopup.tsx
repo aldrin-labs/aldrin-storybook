@@ -28,6 +28,9 @@ import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import ListNewMarketPopup from './ListNewMarketPopup'
 import { addSerumCustomMarket } from '@core/graphql/mutations/chart/addSerumCustomMarket'
 import { withPublicKey } from '@core/hoc/withPublicKey'
+import { readQueryData, writeQueryData } from '@core/utils/TradingTable.utils'
+import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -58,6 +61,7 @@ const CustomMarketDialog = ({
   history,
   addSerumCustomMarketMutation,
   publicKey,
+  getUserCustomMarketsQuery,
 }) => {
   const { wallet } = useWallet()
 
@@ -197,18 +201,39 @@ const CustomMarketDialog = ({
       await onDoClose()
       return
     }
-    console.log('resultOfAdding', resultOfAdding)
-    // await getUserCustomMarketsQueryRefetch()
-    // await getSerumMarketDataQueryRefetch()
 
     await changeLoading(false)
 
-    await onDoClose()
+    await writeQueryData(
+      getUserCustomMarkets,
+      { publicKey },
+      {
+        getUserCustomMarkets: [
+          ...getUserCustomMarketsQuery.getUserCustomMarkets,
+          {
+            isPrivate: isPrivate,
+            marketId: marketId,
+            programId: programId,
+            publicKey: publicKey,
+            symbol: `${knownBaseCurrency || baseLabel}/${knownQuoteCurrency ||
+              quoteLabel}`.toUpperCase(),
+            __typename: 'SerumCustomMarket',
+          },
+        ],
+      }
+    )
+
+    await notify({
+      message: 'Your custom market successfully added.',
+      type: 'success',
+    })
 
     await history.push(
       `/chart/spot/${knownBaseCurrency || baseLabel}_${knownQuoteCurrency ||
         quoteLabel}`
     )
+
+    await onDoClose()
   }
 
   const onDoClose = () => {
@@ -218,6 +243,7 @@ const CustomMarketDialog = ({
     onClose()
   }
 
+  console.log('getUserCustomMarketsQuery', getUserCustomMarketsQuery)
   return (
     <DialogWrapper
       theme={theme}
@@ -418,5 +444,13 @@ const CustomMarketDialog = ({
 export default compose(
   withRouter,
   withPublicKey,
+  queryRendererHoc({
+    query: getUserCustomMarkets,
+    name: 'getUserCustomMarketsQuery',
+    fetchPolicy: 'cache-first',
+    variables: (props) => ({
+      publicKey: props.publicKey,
+    }),
+  }),
   graphql(addSerumCustomMarket, { name: 'addSerumCustomMarketMutation' })
 )(CustomMarketDialog)

@@ -76,23 +76,28 @@ export const WarningPopup = ({ theme, onClose, open }) => {
       <RowContainer justify="space-between" style={{ marginBottom: '2rem' }}>
         <Row width={'calc(45%)'} justify="space-between" margin="2rem 0 0 0">
           <SCheckbox
+            id={'warning_checkbox'}
             style={{ padding: 0, marginRight: '1rem' }}
             onChange={() => {
               userConfident(!isUserConfident)
             }}
             checked={isUserConfident}
           />
-          <WhiteText
-            style={{
-              color: '#F2ABB1',
-              fontSize: '1.12rem',
-              fontFamily: 'Avenir Next Medium',
-              whiteSpace: 'nowrap',
-              letterSpacing: '0.01rem',
-            }}
-          >
-            I am confident in the reliability of this market.
-          </WhiteText>
+          <label for={'warning_checkbox'}>
+            {' '}
+            <WhiteText
+              style={{
+                cursor: 'pointer',
+                color: '#F2ABB1',
+                fontSize: '1.12rem',
+                fontFamily: 'Avenir Next Medium',
+                whiteSpace: 'nowrap',
+                letterSpacing: '0.01rem',
+              }}
+            >
+              I am confident in the reliability of this market.
+            </WhiteText>
+          </label>
         </Row>
         <BlueButton
           disabled={!isUserConfident}
