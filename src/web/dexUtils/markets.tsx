@@ -242,7 +242,11 @@ const getPairFromLocation = () => {
 
   if (isChartPage && pairInChartUrl) {
     pair = pairInChartUrl
-  } else if (isAnalytics && pairInAnalyticsUrl && pairInAnalyticsUrl !== 'all') {
+  } else if (
+    isAnalytics &&
+    pairInAnalyticsUrl &&
+    pairInAnalyticsUrl !== 'all'
+  ) {
     pair = pairInAnalyticsUrl
   }
 
@@ -261,14 +265,12 @@ export function MarketProvider({ children }) {
   const marketInfos = getMarketInfos(customMarkets)
 
   // here we try to get non deprecated one
-  let marketInfo = marketInfos.find((market) =>
-    market.name === marketName && !market.deprecated
+  let marketInfo = marketInfos.find(
+    (market) => market.name === marketName && !market.deprecated
   )
 
   if (!marketInfo) {
-    marketInfo = marketInfos.find((market) =>
-      market.name === marketName
-    )
+    marketInfo = marketInfos.find((market) => market.name === marketName)
   }
 
   console.log('marketInfo', marketInfo)
@@ -288,7 +290,8 @@ export function MarketProvider({ children }) {
 
     setMarket(null)
 
-    if (!marketInfo || !marketInfo.address) {
+    if (!marketInfo || !marketInfo?.address) {
+      console.log('marketInfo', marketInfo)
       notify({
         message: 'Error loading market',
         description: 'Please select a market from the dropdown',
@@ -299,10 +302,14 @@ export function MarketProvider({ children }) {
 
     console.log('useEffect in market - load market')
     Market.load(connection, marketInfo.address, {}, marketInfo.programId)
-      .then(data => {
-        console.log('useEffect in market - set market in load', marketInfo.address, marketInfo.name)
-        return setMarket(data)}
-      )
+      .then((data) => {
+        console.log(
+          'useEffect in market - set market in load',
+          marketInfo.address,
+          marketInfo.name
+        )
+        return setMarket(data)
+      })
       .catch((e) =>
         notify({
           message: 'Error loading market',
@@ -1177,7 +1184,7 @@ export function getMarketInfos(customMarkets) {
   }))
 
   // TODO: we should use useMarketsList first to not find
-  // pair from custom market by name (in this way we cover case when pair with 
+  // pair from custom market by name (in this way we cover case when pair with
   // the same name will be in our market list and cusom markets)
   return [...useMarketsList(), ...customMarketsInfo]
 }

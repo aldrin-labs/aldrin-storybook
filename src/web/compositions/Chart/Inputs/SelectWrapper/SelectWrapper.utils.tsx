@@ -331,10 +331,10 @@ export const combineSelectWrapperData = ({
               }}
             >
               {isAdditionalCustomUserMarket
-                ? '🤔'
+                ? '⚠️'
                 : isAwesomeMarket
-                ? '⭐️'
-                : '👍'}
+                ? '🤔'
+                : '✔️'}
             </div>
           </DarkTooltip>
         ),

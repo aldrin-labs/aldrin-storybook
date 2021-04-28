@@ -3,8 +3,7 @@ import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 export const MainContainer = styled.div`
   width: 100%;
-  margin-top: 9%;
-  height: 70%;
+  height: 100%;
 `
 export const IdoBtn = styled.button`
   background-image: linear-gradient(
@@ -63,9 +62,10 @@ export const WhiteButton = styled.a`
   &:hover {
     background: ${(props) => (props.needHover ? '#f8faff' : null)};
     color: ${(props) => (props.needHover ? '#3a475c' : null)};
-
-    svg > path{
-      fill: ${(props) => (props.needHover ? '#3a475c !important' : null)};
+    svg {
+      path {
+        fill: ${(props) => (props.needHover ? '#3a475c' : null)};
+      }
     }
   }
 `
@@ -127,7 +127,6 @@ export const Socials = styled(Row)`
     }
   }
 `
-
 export const ButtonContainer = styled.div`
   position: absolute;
   width: 100%;

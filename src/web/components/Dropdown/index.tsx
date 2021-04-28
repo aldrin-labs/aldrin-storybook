@@ -56,6 +56,7 @@ const ConnectWalletButton = ({ wallet, theme, height, id }) => (
       display: 'flex',
       textTransform: 'none',
       padding: '1rem',
+      whiteSpace: 'nowrap',
     }}
     id={id}
   >
@@ -302,8 +303,6 @@ export default class Dropdown extends React.Component<IProps> {
               </StyledMenuItem>
             </MenuList>
           </StyledPaper>
-          ,{/* document.body
-          )} */}
         </StyledDropdown>
       </>
     )

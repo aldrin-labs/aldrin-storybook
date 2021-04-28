@@ -80,7 +80,7 @@ const TechIssues = () => {
         <ButtonLink
           target="_blank"
           rel="noopener noreferrer"
-          href={'https://t.me/CryptocurrenciesAi'}
+          href={'https://t.me/CCAI_Official'}
           style={{ marginRight: '1.5rem' }}
         >
           <SvgIcon

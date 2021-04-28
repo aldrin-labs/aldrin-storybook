@@ -443,7 +443,7 @@ class SelectPairListComponent extends React.PureComponent<
       const newCustomMarkets = [...customMarkets, customMarket]
       setCustomMarkets(newCustomMarkets)
       history.push(`/chart/spot/${customMarket.name.replace('/', '_')}`)
-
+      console.log('onAddCustomMarket', newCustomMarkets)
       return true
     }
 
@@ -520,7 +520,7 @@ class SelectPairListComponent extends React.PureComponent<
             isSelected={tab === 'public'}
             onClick={() => onTabChange('public')}
           >
-            Public markets
+            Custom markets
           </StyledTab>
           <StyledTab
             theme={theme}

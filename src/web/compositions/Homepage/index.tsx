@@ -28,32 +28,14 @@ import { CCAIProviderURL } from '@sb/dexUtils/utils'
 export const Homepage = () => {
   return (
     <MainContainer>
-      {/* <RowContainer>
+      <RowContainer>
         <CardContainer
-          style={{ marginTop: '3rem', minHeight: '20rem' }}
+          style={{ marginTop: '3rem', minHeight: '25rem' }}
           width={'calc(100% - 5.5rem)'}
         >
           <img src={Banner} width={'100%'} />
-
-          <ButtonContainer>
-            <WhiteButton needHover={true} padding={'0 3rem'}>
-              Learn More{' '}
-              <svg
-                width="20"
-                height="8"
-                viewBox="0 0 20 8"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M19.3536 4.35355C19.5488 4.15829 19.5488 3.84171 19.3536 3.64645L16.1716 0.464466C15.9763 0.269204 15.6597 0.269204 15.4645 0.464466C15.2692 0.659728 15.2692 0.976311 15.4645 1.17157L18.2929 4L15.4645 6.82843C15.2692 7.02369 15.2692 7.34027 15.4645 7.53553C15.6597 7.7308 15.9763 7.7308 16.1716 7.53553L19.3536 4.35355ZM0 4.5H19V3.5H0V4.5Z"
-                  fill="#F8FAFF"
-                />
-              </svg>
-            </WhiteButton>
-          </ButtonContainer>
         </CardContainer>
-      </RowContainer> */}
+      </RowContainer>
       <RowContainer align={'flex-start'} style={{ marginTop: '1.5rem' }}>
         <Row
           direction={'column'}
@@ -117,7 +99,7 @@ export const Homepage = () => {
                 needHover={true}
                 width={'30rem'}
                 padding={'0 2rem'}
-                href={`${CCAIProviderURL}`}
+                href={`${CCAIProviderURL}/welcome`}
               >
                 Go to Wallet{' '}
                 <svg
@@ -219,14 +201,14 @@ export const Homepage = () => {
       </RowContainer>
       <RowContainer justify={'space-between'}>
         <Row
-          width={'31%'}
+          width={'18%'}
           height={'7rem'}
           justify={'space-around'}
           style={{ marginLeft: '2rem' }}
         >
           <Text fontSize={'1.7rem'}>In partnership with</Text>
-          <SvgIcon src={Alameda} height={'auto'} width={'40%'} />
-          <SvgIcon src={Serum} height={'auto'} width={'17%'} />
+          {/* <SvgIcon src={Alameda} height={'auto'} width={'40%'} /> */}
+          <SvgIcon src={Serum} height={'auto'} width={'28%'} />
         </Row>
         <Socials justify={'space-around'} width={'20%'}>
           <a

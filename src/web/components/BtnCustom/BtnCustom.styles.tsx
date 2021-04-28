@@ -20,6 +20,7 @@ export const BtnCustom = styled(
     hoverColor,
     transition,
     needMinWidth,
+    style,
     ...rest
   }) => <Button {...rest} />
 )`
@@ -48,4 +49,6 @@ export const BtnCustom = styled(
     background: ${(props) => props.hoverBackground || props.backgroundColor};
     transition: ${(props) => props.transition || 'all .3s ease-out'};
   }
+
+  ${(props) => props.style}
 `

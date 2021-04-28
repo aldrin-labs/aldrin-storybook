@@ -50,7 +50,7 @@ import { WalletProvider } from '@sb/dexUtils/wallet'
 import { MarketProvider } from '@sb/dexUtils/markets'
 import { PreferencesProvider } from '@sb/dexUtils/preferences'
 
-const version = `10.9.88-fix-for-data-node`
+const version = `10.9.90-alameda-fix`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
 const isNotificationDone = localStorage.getItem('isNotificationDone')
 const localPassword = localStorage.getItem('localPassword')
@@ -137,9 +137,8 @@ const AppRaw = ({
                             ? 'calc(100% - 11.7rem)'
                             : isChartPage
                             ? 'calc(100% - 12rem)'
-                            : currentPage == '/'
-                            ? '70%'
                             : 'calc(100% - 6rem)',
+                          overflow: currentPage == '/' ? 'hidden' : 'auto',
                         }}
                       >
                         {children}
@@ -184,7 +183,7 @@ const Footer = (props) => {
         Cryptocurrencies.Ai
       </Link>
       <Link
-        href="https://t.me/CryptocurrenciesAi"
+        href="https://t.me/CCAI_Official"
         target="_blank"
         rel="noopener noreferrer"
       >

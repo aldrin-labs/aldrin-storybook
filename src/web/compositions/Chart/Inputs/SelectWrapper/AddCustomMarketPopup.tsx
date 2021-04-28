@@ -6,9 +6,7 @@ import { Paper } from '@material-ui/core'
 import { PublicKey } from '@solana/web3.js'
 import { Market, MARKETS, TOKEN_MINTS } from '@project-serum/serum'
 import { graphql } from 'react-apollo'
-import {
-  BlueSwitcherStyles,
-} from '@sb/compositions/Chart/components/SmartOrderTerminal/utils'
+import { BlueSwitcherStyles } from '@sb/compositions/Chart/components/SmartOrderTerminal/utils'
 import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
 
 import { notify } from '@sb/dexUtils//notifications'
@@ -30,6 +28,9 @@ import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import ListNewMarketPopup from './ListNewMarketPopup'
 import { addSerumCustomMarket } from '@core/graphql/mutations/chart/addSerumCustomMarket'
 import { withPublicKey } from '@core/hoc/withPublicKey'
+import { readQueryData, writeQueryData } from '@core/utils/TradingTable.utils'
+import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -60,8 +61,9 @@ const CustomMarketDialog = ({
   history,
   addSerumCustomMarketMutation,
   publicKey,
+  getUserCustomMarketsQuery,
 }) => {
-  const { wallet } = useWallet();
+  const { wallet } = useWallet()
 
   const [showCreateMarketPopup, changeShowCreateMarketPopup] = useState(false)
   const connection = useConnection()
@@ -163,8 +165,14 @@ const CustomMarketDialog = ({
       params.quoteLabel = quoteLabel
     }
 
-    console.log('knownBaseCurrency || baseLabel', knownBaseCurrency || baseLabel)
-    console.log('knownQuoteCurrency || quoteLabel', knownQuoteCurrency || quoteLabel)
+    console.log(
+      'knownBaseCurrency || baseLabel',
+      knownBaseCurrency || baseLabel
+    )
+    console.log(
+      'knownQuoteCurrency || quoteLabel',
+      knownQuoteCurrency || quoteLabel
+    )
 
     if (!marketLabel.includes('_')) {
       notify({
@@ -181,10 +189,11 @@ const CustomMarketDialog = ({
       await addSerumCustomMarketMutation({
         variables: {
           publicKey: publicKey,
-          symbol: `${knownBaseCurrency || baseLabel}/${knownQuoteCurrency || quoteLabel}`.toUpperCase(),
+          symbol: `${knownBaseCurrency || baseLabel}/${knownQuoteCurrency ||
+            quoteLabel}`.toUpperCase(),
           isPrivate: isPrivate,
           marketId,
-          programId
+          programId,
         },
       })
     } else {
@@ -193,17 +202,38 @@ const CustomMarketDialog = ({
       return
     }
 
-    // await getUserCustomMarketsQueryRefetch()
-    // await getSerumMarketDataQueryRefetch()
-
     await changeLoading(false)
 
-    await onDoClose()
+    await writeQueryData(
+      getUserCustomMarkets,
+      { publicKey },
+      {
+        getUserCustomMarkets: [
+          ...getUserCustomMarketsQuery.getUserCustomMarkets,
+          {
+            isPrivate: isPrivate,
+            marketId: marketId,
+            programId: programId,
+            publicKey: publicKey,
+            symbol: `${knownBaseCurrency || baseLabel}/${knownQuoteCurrency ||
+              quoteLabel}`.toUpperCase(),
+            __typename: 'SerumCustomMarket',
+          },
+        ],
+      }
+    )
+
+    await notify({
+      message: 'Your custom market successfully added.',
+      type: 'success',
+    })
 
     await history.push(
       `/chart/spot/${knownBaseCurrency || baseLabel}_${knownQuoteCurrency ||
         quoteLabel}`
     )
+
+    await onDoClose()
   }
 
   const onDoClose = () => {
@@ -213,6 +243,7 @@ const CustomMarketDialog = ({
     onClose()
   }
 
+  console.log('getUserCustomMarketsQuery', getUserCustomMarketsQuery)
   return (
     <DialogWrapper
       theme={theme}
@@ -263,7 +294,6 @@ const CustomMarketDialog = ({
             height={'3.5rem'}
             color={theme.palette.grey.terminal}
             background={theme.palette.green.main}
-            
             onClick={() => {
               changeShowCreateMarketPopup(true)
             }}
@@ -388,11 +418,11 @@ const CustomMarketDialog = ({
             showLoader={loading}
             onClick={async (e) => {
               e.preventDefault()
-              if (publicKey === '') {   
+              if (publicKey === '') {
                 notify({
                   message: 'Connect your wallet first',
                   type: 'error',
-                }) 
+                })
                 wallet.connect()
                 return
               }
@@ -406,7 +436,7 @@ const CustomMarketDialog = ({
         open={showCreateMarketPopup}
         onClose={() => changeShowCreateMarketPopup(false)}
         theme={theme}
-      /> 
+      />
     </DialogWrapper>
   )
 }
@@ -414,5 +444,13 @@ const CustomMarketDialog = ({
 export default compose(
   withRouter,
   withPublicKey,
+  queryRendererHoc({
+    query: getUserCustomMarkets,
+    name: 'getUserCustomMarketsQuery',
+    fetchPolicy: 'cache-first',
+    variables: (props) => ({
+      publicKey: props.publicKey,
+    }),
+  }),
   graphql(addSerumCustomMarket, { name: 'addSerumCustomMarketMutation' })
 )(CustomMarketDialog)
