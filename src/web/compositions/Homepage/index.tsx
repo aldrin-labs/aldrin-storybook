@@ -269,7 +269,7 @@ export const Homepage = () => {
           <a
             target="_blank"
             rel="noopener noreferrer"
-            href="https://t.me/CryptocurrenciesAi"
+            href="https://t.me/CCAI_Official"
           >
             {' '}
             <svg
