@@ -115,6 +115,16 @@ class SimpleTabs extends React.Component<any, any> {
     ) {
       this.setState({ tradingBotEnabled: false, tradingBotIsActive: false })
     }
+
+    if (prevProps.wallet.connected && this.props.wallet.connected && this.state.TVAlertsBotIsActive) {
+      this.unsubscribe()
+
+      this.setState((prev) => ({
+        TVAlertsBotEnabled: false,
+        mode: 'market',
+        TVAlertsBotIsActive: false,
+      }))
+    }
   }
 
   componentWillUnmount() {
