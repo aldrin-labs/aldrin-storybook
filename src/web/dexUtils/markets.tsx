@@ -273,7 +273,7 @@ export function MarketProvider({ children }) {
     marketInfo = marketInfos.find((market) => market.name === marketName)
   }
 
-  console.log('marketInfo', marketInfo)
+  // console.log('marketInfo', marketInfo)
 
   const [market, setMarket] = useState()
   // add state for markets
@@ -291,7 +291,7 @@ export function MarketProvider({ children }) {
     setMarket(null)
 
     if (!marketInfo || !marketInfo?.address) {
-      console.log('marketInfo', marketInfo)
+      // console.log('marketInfo', marketInfo)
       notify({
         message: 'Error loading market',
         description: 'Please select a market from the dropdown',
@@ -300,14 +300,14 @@ export function MarketProvider({ children }) {
       return
     }
 
-    console.log('useEffect in market - load market')
+    // console.log('useEffect in market - load market')
     Market.load(connection, marketInfo.address, {}, marketInfo.programId)
       .then((data) => {
-        console.log(
-          'useEffect in market - set market in load',
-          marketInfo.address,
-          marketInfo.name
-        )
+        // console.log(
+        //   'useEffect in market - set market in load',
+        //   marketInfo.address,
+        //   marketInfo.name
+        // )
         return setMarket(data)
       })
       .catch((e) =>
@@ -322,7 +322,7 @@ export function MarketProvider({ children }) {
 
   const marketData = getMarketDetails(market, customMarkets)
 
-  console.log('marketData', market, marketInfo, marketData)
+  // console.log('marketData', market, marketInfo, marketData)
 
   return (
     <MarketContext.Provider
