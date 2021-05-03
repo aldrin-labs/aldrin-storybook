@@ -1082,7 +1082,7 @@ async function awaitTransactionSignatureConfirmation(
             }
           }
         })()
-        await sleep(300)
+        await sleep(700)
       }
     })()
   })
