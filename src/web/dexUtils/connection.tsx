@@ -6,7 +6,11 @@ import tuple from 'immutable-tuple';
 
 export const ENDPOINTS = [
   {
-    name: 'mainnet-beta',
+    name: 'serum-endpoint-mainnet-beta',
+    endpoint: 'https://solana-api.projectserum.com',
+  },
+  {
+    name: 'solana-endpoint-mainnet-beta',
     endpoint: 'https://api.mainnet-beta.solana.com',
   },
   { name: 'testnet', endpoint: clusterApiUrl('testnet') },
@@ -24,11 +28,16 @@ export function ConnectionProvider({ children }) {
     ENDPOINTS[0].endpoint,
   );
 
+  const [sendEndpoint, setSendEndpoint] = useLocalStorageState(
+    'connectionEndpts',
+    ENDPOINTS[1].endpoint,
+  );
+
   const connection = useMemo(() => new Connection(endpoint, 'recent'), [
     endpoint,
   ]);
-  const sendConnection = useMemo(() => new Connection(endpoint, 'recent'), [
-    endpoint,
+  const sendConnection = useMemo(() => new Connection(sendEndpoint, 'recent'), [
+    sendEndpoint,
   ]);
 
   // The websocket library solana/web3.js uses closes its websocket connection when the subscription list
