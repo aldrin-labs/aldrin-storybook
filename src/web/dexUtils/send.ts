@@ -647,7 +647,7 @@ export async function sendSignedTransaction({
       connection.sendRawTransaction(rawTransaction, {
         skipPreflight: true,
       })
-      await sleep(300)
+      await sleep(700)
     }
   })()
   try {
@@ -955,7 +955,7 @@ async function sendTransaction({
         'sendTransaction resultOfSendingConfirm',
         resultOfSendingConfirm
       )
-      await sleep(300)
+      await sleep(700)
     }
   })()
   try {
