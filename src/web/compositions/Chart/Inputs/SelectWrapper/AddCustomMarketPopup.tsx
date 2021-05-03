@@ -243,7 +243,7 @@ const CustomMarketDialog = ({
     onClose()
   }
 
-  console.log('getUserCustomMarketsQuery', getUserCustomMarketsQuery)
+  // console.log('getUserCustomMarketsQuery', getUserCustomMarketsQuery)
   return (
     <DialogWrapper
       theme={theme}

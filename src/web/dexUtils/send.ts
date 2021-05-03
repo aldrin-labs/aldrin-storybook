@@ -284,7 +284,7 @@ export async function settleFunds({
     []
   )
 
-  console.log('openOrdersAccounts', openOrdersAccounts)
+  // console.log('openOrdersAccounts', openOrdersAccounts)
 
   let settleTransactions = await Promise.all(
     openOrdersAccounts.map((openOrdersAccount) => {
@@ -958,7 +958,7 @@ async function sendTransaction({
     transaction.partialSign(...signers)
   }
 
-  console.log('sendTransaction transaction: ', transaction)
+  // console.log('sendTransaction transaction: ', transaction)
 
   const rawTransaction = (await wallet.signTransaction(transaction)).serialize()
 
