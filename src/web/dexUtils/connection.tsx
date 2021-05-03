@@ -7,7 +7,7 @@ import tuple from 'immutable-tuple';
 export const ENDPOINTS = [
   {
     name: 'mainnet-beta',
-    endpoint: 'https://api.rpcpool.com',
+    endpoint: 'https://solana-api.projectserum.com',
   },
   { name: 'testnet', endpoint: clusterApiUrl('testnet') },
   { name: 'devnet', endpoint: clusterApiUrl('devnet') },
