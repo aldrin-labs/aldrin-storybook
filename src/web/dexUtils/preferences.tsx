@@ -57,7 +57,7 @@ export function PreferencesProvider({ children }) {
           tokenAccounts,
         })
       } catch (e) {
-        console.log('Error auto settling funds: ' + e.message)
+        // console.log('Error auto settling funds: ' + e.message)
       }
     }
 

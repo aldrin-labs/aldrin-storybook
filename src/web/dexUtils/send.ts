@@ -284,7 +284,7 @@ export async function settleFunds({
     []
   )
 
-  console.log('openOrdersAccounts', openOrdersAccounts)
+  // console.log('openOrdersAccounts', openOrdersAccounts)
 
   let settleTransactions = await Promise.all(
     openOrdersAccounts.map((openOrdersAccount) => {
@@ -678,7 +678,7 @@ export async function sendSignedTransaction({
       connection.sendRawTransaction(rawTransaction, {
         skipPreflight: true,
       })
-      await sleep(300)
+      await sleep(700)
     }
   })()
   try {
@@ -958,7 +958,7 @@ async function sendTransaction({
     transaction.partialSign(...signers)
   }
 
-  console.log('sendTransaction transaction: ', transaction)
+  // console.log('sendTransaction transaction: ', transaction)
 
   const rawTransaction = (await wallet.signTransaction(transaction)).serialize()
 
@@ -986,7 +986,7 @@ async function sendTransaction({
         'sendTransaction resultOfSendingConfirm',
         resultOfSendingConfirm
       )
-      await sleep(300)
+      await sleep(700)
     }
   })()
   try {
@@ -1082,7 +1082,7 @@ async function awaitTransactionSignatureConfirmation(
             }
           }
         })()
-        await sleep(300)
+        await sleep(700)
       }
     })()
   })
