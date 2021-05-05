@@ -10,6 +10,8 @@ import MarketStats from './MarketStats/MarketStats'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import LinkToSolanaExp from './LinkToSolanaExp'
+import GreenCheckmark from '@icons/successIcon.svg'
+import SvgIcon from '@sb/components/SvgIcon'
 
 export const ExclamationMark = styled(({ fontSize, lineHeight, ...props }) => (
   <span {...props}>!</span>
@@ -116,7 +118,13 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
               justifyContent: 'flex-start',
             }}
           >
-            {isPrivateCustomMarket ? '⚠️' : isCustomUserMarket ? '🤔' : '✔️'}
+            {isPrivateCustomMarket ? (
+              '⚠️'
+            ) : isCustomUserMarket ? (
+              '🤔'
+            ) : (
+              <SvgIcon width={'50%'} height={'auto'} src={GreenCheckmark} />
+            )}
           </div>
         </DarkTooltip>
         <div

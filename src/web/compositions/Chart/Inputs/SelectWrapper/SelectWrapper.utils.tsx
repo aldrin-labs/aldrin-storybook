@@ -11,6 +11,8 @@ import {
   roundAndFormatNumber,
 } from '@core/utils/PortfolioTableUtils'
 
+import GreenCheckmark from '@icons/successIcon.svg'
+
 import favoriteSelected from '@icons/favoriteSelected.svg'
 import favoriteUnselected from '@icons/favoriteUnselected.svg'
 
@@ -330,11 +332,13 @@ export const combineSelectWrapperData = ({
                 justifyContent: 'center',
               }}
             >
-              {isAdditionalCustomUserMarket
-                ? '⚠️'
-                : isAwesomeMarket
-                ? '🤔'
-                : '✔️'}
+              {isAdditionalCustomUserMarket ? (
+                '⚠️'
+              ) : isAwesomeMarket ? (
+                '🤔'
+              ) : (
+                <SvgIcon width={'50%'} height={'auto'} src={GreenCheckmark} />
+              )}
             </div>
           </DarkTooltip>
         ),
