@@ -33,8 +33,9 @@ export function ConnectionProvider({ children }) {
     () =>
       new MultiEndpointsConnection(
         [
-          { endpoint: 'https://solana-api.projectserum.com', RPS: 4 },
-          { endpoint: 'https://api.mainnet-beta.solana.com', RPS: 4 },
+          { url: 'https://solana-api.projectserum.com', RPS: 2 },
+          { url: 'https://api.mainnet-beta.solana.com', RPS: 4 },
+          { url: 'https://api.rpcpool.com', RPS: 10 },
         ],
         'recent'
       ),
@@ -56,7 +57,7 @@ export function ConnectionProvider({ children }) {
 
   return (
     <ConnectionContext.Provider
-      value={{ endpoint, setEndpoint, connection, sendConnection: connection }}
+      value={{ endpoint, setEndpoint, connection }}
     >
       {children}
     </ConnectionContext.Provider>

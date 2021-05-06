@@ -1,7 +1,7 @@
 import { Commitment, Connection } from '@solana/web3.js'
 
 type RateLimitedEndpoint = {
-  endpoint: string
+  url: string
   RPS: number
 }
 
@@ -15,12 +15,10 @@ class MultiEndpointsConnection implements Connection {
   private endpointsRequestsCounter: EndpointRequestsCounter[]
 
   constructor(endpoints: RateLimitedEndpoint[], commitment?: Commitment) {
-    this.commitment = commitment;
-
     this.endpointsRequestsCounter = endpoints.map(
       (endpoint: RateLimitedEndpoint) => ({
         endpoint,
-        connection: new Connection(endpoint.endpoint, commitment),
+        connection: new Connection(endpoint.url, commitment),
         numberOfRequestsSent: 0,
       })
     )
@@ -36,38 +34,23 @@ class MultiEndpointsConnection implements Connection {
       }
     }
 
-    setInterval(() => {
-      this.endpointsRequestsCounter.forEach((endpointCounter) => {
-        endpointCounter.numberOfRequestsSent = 0
-      })
-    }, 1000)
+    // setInterval(() => {
+    //   this.endpointsRequestsCounter.forEach((endpointCounter) => {
+    //     endpointCounter.numberOfRequestsSent = 0
+    //   })
+    // }, 1500)
   }
 
   getConnection(): Connection {
-    let selectedRequestCounter
-
-    const availableConnection = this.endpointsRequestsCounter.find(
-      (endpointCounter) => {
-        return (
-          endpointCounter.numberOfRequestsSent < endpointCounter.endpoint.RPS
-        )
-      }
-    )
-
-    if (availableConnection) {
-      selectedRequestCounter = availableConnection
-    } else {
-      // no available connections, use one with the best RPS
-      selectedRequestCounter = this.endpointsRequestsCounter.reduce(
-        (prev, current) =>
-          prev.endpoint.RPS > current.endpoint.RPS ? prev : current
-      )
-    }
+    const availableConnection = this.endpointsRequestsCounter.reduce(
+      (prev, current) =>
+        prev.numberOfRequestsSent < current.numberOfRequestsSent ? prev : current
+    );
 
     // objects pass by ref
-    selectedRequestCounter.numberOfRequestsSent++
+    availableConnection.numberOfRequestsSent++
 
-    return selectedRequestCounter.connection
+    return availableConnection.connection
   }
 
   // initializing in constructor, but some libraries use connection._rpcRequest
