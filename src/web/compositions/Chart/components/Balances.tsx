@@ -36,7 +36,7 @@ import {
   useSelectedQuoteCurrencyAccount,
   useSelectedBaseCurrencyAccount,
 } from '@sb/dexUtils/markets'
-import { useSendConnection } from '@sb/dexUtils/connection'
+import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { settleFunds } from '@sb/dexUtils/send'
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
@@ -168,7 +168,7 @@ export const Balances = ({
   const balances = useBalances()
   const [accounts] = useTokenAccounts()
   const [selectedTokenAccounts] = useSelectedTokenAccounts()
-  const connection = useSendConnection()
+  const connection = useConnection()
   const { wallet, providerUrl } = useWallet()
   const { refresh } = useUnmigratedOpenOrdersAccounts()
 
