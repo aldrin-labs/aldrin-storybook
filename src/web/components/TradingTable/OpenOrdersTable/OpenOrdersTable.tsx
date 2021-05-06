@@ -12,13 +12,13 @@ import { PaginationBlock } from '../TradingTablePagination'
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
 import { useOpenOrders } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import { useSendConnection } from '@sb/dexUtils/connection'
+import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { cancelOrder } from '@sb/dexUtils/send'
 
 const OpenOrdersTable = (props) => {
   const { wallet } = useWallet()
-  const connection = useSendConnection()
+  const connection = useConnection()
 
   const onCancelOrder = async (order) => {
     try {
