@@ -1,5 +1,4 @@
 import { Commitment, Connection } from '@solana/web3.js'
-import { TOKEN_PROGRAM_ID } from './tokens';
 
 type RateLimitedEndpoint = {
   endpoint: string
@@ -29,7 +28,7 @@ class MultiEndpointsConnection implements Connection {
     // go through all methods of connection
     for (let functionName of Object.getOwnPropertyNames(Connection.prototype)) {
       // skip non-function
-      if (typeof Connection.prototype[functionName] !== 'function' || typeof Connection.prototype[functionName] === '_rpcRequest') continue
+      if (typeof Connection.prototype[functionName] !== 'function') continue
       this[functionName] = (...args: any) => {
         // select connection, depending on RPS and load of connection, execute method of this connection
         const connection = this.getConnection();
@@ -44,7 +43,6 @@ class MultiEndpointsConnection implements Connection {
     }, 1000)
   }
 
-  //
   getConnection(): Connection {
     let selectedRequestCounter
 
@@ -72,6 +70,7 @@ class MultiEndpointsConnection implements Connection {
     return selectedRequestCounter.connection
   }
 
+  // initializing in constructor, but some libraries use connection._rpcRequest
   async _rpcRequest(...args) {
     return await this.getConnection()._rpcRequest(...args);
   }
