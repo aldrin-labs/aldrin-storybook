@@ -10,17 +10,15 @@ import { Theme } from '@material-ui/core'
 
 const TotalVolumeLockedChart = ({
   theme,
-  data,
   id,
   title,
 }: {
   theme: Theme
-  data: any
   id: string
   title: string
 }) => {
   useEffect(() => {
-    createTotalVolumeLockedChart({ id })
+    createTotalVolumeLockedChart({ theme, id })
 
     return () => window[`TotalVolumeLockedChart-${id}`].destroy()
   }, [id])

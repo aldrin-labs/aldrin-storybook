@@ -1,15 +1,10 @@
 import React from 'react'
 import { Theme } from '@material-ui/core'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
+// import { queryRendererHoc } from '@core/components/QueryRenderer'
 
 import { TotalVolumeLockedChart } from './index'
 
-const TotalVolumeLockedChartDataContainer = ({
-  theme,
-}: {
-  theme: Theme
-  selectedPair: string
-}) => {
+const TotalVolumeLockedChartDataContainer = ({ theme }: { theme: Theme }) => {
   return (
     <TotalVolumeLockedChart
       theme={theme}
@@ -19,7 +14,9 @@ const TotalVolumeLockedChartDataContainer = ({
   )
 }
 
-export default TotalVolumeLockedChartDataContainer
+const Wrappper = TotalVolumeLockedChartDataContainer
+
+export { Wrappper as TotalVolumeLockedChart }
 // queryRendererHoc({
 //   query: getSerumQuoteTradeVolumeStats,
 //   name: 'getSerumQuoteTradeVolumeStatsQuery',

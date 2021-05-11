@@ -1,1 +1,1 @@
-export * from './TotalVolumeLockedChart'
+export * from './TotalVolumeLockedChart/DataContainer'
