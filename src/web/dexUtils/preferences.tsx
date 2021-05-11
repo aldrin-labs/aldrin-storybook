@@ -16,29 +16,29 @@ export function PreferencesProvider({ children }) {
     true,
   );
 
-  const [tokenAccounts] = useTokenAccounts();
-  const { connected, wallet } = useWallet();
+  // const [tokenAccounts] = useTokenAccounts();
+  // const { connected, wallet } = useWallet();
 
-  const [marketList] = useAllMarkets();
-  const connection = useConnection();
-  const [selectedTokenAccounts] = useSelectedTokenAccounts();
+  // const [marketList] = useAllMarkets();
+  // const connection = useConnection();
+  // const [selectedTokenAccounts] = useSelectedTokenAccounts();
 
   // console.log('wallet?.autoApprove', wallet?.autoApprove)
 
-  useInterval(() => {
+  // useInterval(() => {
     // console.log('interval')
-    const autoSettle = async () => {
-      const markets = (marketList || []).map((m) => m.market);
-      try {
-        console.log('Auto settling');
-        await settleAllFunds({ connection, wallet, tokenAccounts: (tokenAccounts || []), markets, selectedTokenAccounts });
-      } catch (e) {
-        console.log('Error auto settling funds: ' + e.message);
-      }
-    };
+  //   const autoSettle = async () => {
+  //     const markets = (marketList || []).map((m) => m.market);
+  //     try {
+  //       console.log('Auto settling');
+  //       await settleAllFunds({ connection, wallet, tokenAccounts: (tokenAccounts || []), markets, selectedTokenAccounts });
+  //     } catch (e) {
+  //       console.log('Error auto settling funds: ' + e.message);
+  //     }
+  //   };
 
-    connected && wallet?.autoApprove && autoSettleEnabled && autoSettle();
-  }, 10000);
+  //   connected && wallet?.autoApprove && autoSettleEnabled && autoSettle();
+  // }, 10000);
 
   return (
     <PreferencesContext.Provider
