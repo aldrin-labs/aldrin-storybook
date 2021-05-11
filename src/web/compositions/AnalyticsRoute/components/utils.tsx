@@ -388,7 +388,6 @@ export const createAreaChart = (data: any, selectedPair = '', theme) => {
           borderColor: theme.palette.blue.serum,
           backgroundColor: gradient,
           borderWidth: 2,
-          // pointRadius: 0,
           hoverBackgroundColor: 'rgba(28, 29, 34, 0.75)',
           data: arrayData.map((item, i) => ({ x: i, y: item.total })),
         },
