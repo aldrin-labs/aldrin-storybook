@@ -380,7 +380,7 @@ const TopBar = ({ theme }) => {
               color={'rgb(147, 160, 178)'}
               fontSize="1rem"
             >
-              {wallet.publicKey.toBase58()}
+              {wallet?.publicKey.toBase58()}
             </Title>
           </Row>
           <RedButton

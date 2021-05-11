@@ -1,9 +1,9 @@
 import EventEmitter from 'eventemitter3';
 import { PublicKey, Transaction } from '@solana/web3.js';
-import { DEFAULT_PUBLIC_KEY, WalletAdapter } from '../types';
-import { notify } from '../notifications';
+import { DEFAULT_PUBLIC_KEY, WalletAdapter } from '../../types';
+import { notify } from '../../notifications';
 
-export default class MathWalletAdapter extends EventEmitter implements WalletAdapter {
+export class MathWalletAdapter extends EventEmitter implements WalletAdapter {
   _publicKey?: PublicKey;
   _onProcess: boolean;
   _connected: boolean;
