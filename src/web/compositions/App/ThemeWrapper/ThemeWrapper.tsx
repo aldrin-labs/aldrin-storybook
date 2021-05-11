@@ -145,6 +145,7 @@ export default ({ themeMode, isChartPage, children }) => {
               light: '#fff',
               white: '#424b68',
               black: '#fff',
+              text: '#96999C',
             },
             orange: {
               main: '#F29C38',

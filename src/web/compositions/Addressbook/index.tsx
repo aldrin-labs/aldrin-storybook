@@ -59,7 +59,7 @@ export const Text = styled.span`
   padding-bottom: ${(props) => props.paddingBottom};
   text-transform: none;
   font-family: Avenir Next Medium;
-  color: #ecf0f3;
+  color: ${(props) => props.color || '#ecf0f3'};
 `
 
 export const Input = styled.input`
