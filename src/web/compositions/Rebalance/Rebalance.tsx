@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { compose } from 'recompose'
 import { withTheme, Theme } from '@material-ui/core/styles'
 
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { useWalletPublicKeys } from '@sb/dexUtils/walletExtra'
 
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
@@ -24,6 +25,37 @@ const RebalanceComposition = ({
   theme: Theme
 }) => {
   const { wallet } = useWallet()
+  const [publicKeys] = useWalletPublicKeys();
+
+  console.log('publicKeys: ', publicKeys)
+
+  // const sortedPublicKeys = useMemo(
+  //   () =>
+  //     Array.isArray(publicKeys)
+  //       ? [...publicKeys].sort((a, b) => {
+  //           const aVal = assetsValues[a.toString()]?.usdValue;
+  //           const bVal = assetsValues[b.toString()]?.usdValue;
+
+  //           // SOL always fisrt
+  //           if (a.equals(wallet.publicKey)) return -1;
+  //           if (b.equals(wallet.publicKey)) return 1;
+
+  //           a = aVal === undefined || aVal === null ? -1 : aVal;
+  //           b = bVal === undefined || bVal === null ? -1 : bVal;
+
+  //           if (b < a) {
+  //             return -1;
+  //           } else if (b > a) {
+  //             return 1;
+  //           } else {
+  //             return 0;
+  //           }
+  //         })
+  //       : [],
+  //   [publicKeys, wallet.publicKey],
+  // );
+
+  // console.log('sortedPublicKeys: ', sortedPublicKeys)
 
   return (
     <RowContainer
