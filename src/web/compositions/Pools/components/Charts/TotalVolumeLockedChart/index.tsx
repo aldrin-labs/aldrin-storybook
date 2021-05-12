@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react'
+import { Theme } from '@material-ui/core'
+
 import {
   WhiteTitle,
   HeaderContainer,
   Row,
   ChartContainer,
 } from '@sb/compositions/AnalyticsRoute/index.styles'
+
 import { createTotalVolumeLockedChart } from '../utils'
-import { Theme } from '@material-ui/core'
 
 const TotalVolumeLockedChart = ({
   theme,
@@ -20,6 +22,7 @@ const TotalVolumeLockedChart = ({
   useEffect(() => {
     createTotalVolumeLockedChart({ theme, id })
 
+    // @ts-ignore - we set it in create chart function above
     return () => window[`TotalVolumeLockedChart-${id}`].destroy()
   }, [id])
 
@@ -27,7 +30,9 @@ const TotalVolumeLockedChart = ({
     <>
       <HeaderContainer theme={theme} justify={'space-between'}>
         <Row margin={'0 0 0 2rem'}>
-          <WhiteTitle theme={theme}>{title}</WhiteTitle>
+          <WhiteTitle theme={theme} color={theme.palette.white.text}>
+            {title}
+          </WhiteTitle>
         </Row>
       </HeaderContainer>
       <ChartContainer>

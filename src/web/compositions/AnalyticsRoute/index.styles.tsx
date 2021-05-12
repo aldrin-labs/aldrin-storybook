@@ -158,7 +158,8 @@ export const Text = styled.div`
   }
 `
 
-export const Title = styled.div`
+export const Title = styled.span`
+  font-family: Avenir Next;
   color: ${(props: TitleProps) =>
     props.color || props.theme.palette.grey.title};
   font-size: 1.6rem;
@@ -178,7 +179,7 @@ export const TopBarTitle = styled((props) => <Title {...props} />)`
 
 export const WhiteTitle = styled((props) => <Title {...props} />)`
   font-size: 1.8rem;
-  color: ${(props) => props.theme.palette.dark.main};
+  color: ${(props) => props.color || props.theme.palette.dark.main};
   font-weight: ${(props) => props.fontWeight || 'bold'};
   white-space: nowrap;
 

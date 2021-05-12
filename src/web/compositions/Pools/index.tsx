@@ -8,7 +8,7 @@ import { UserLiquitidyTable } from './components/Tables/UserLiquidity'
 
 const Pools = ({ theme }: { theme: Theme }) => {
   return (
-    <RowContainer direction={'column'} padding={'5rem 15rem'}>
+    <RowContainer direction={'column'} padding={'2rem 15rem'}>
       <RowContainer justify={'space-between'}>
         <BlockTemplate
           theme={theme}
