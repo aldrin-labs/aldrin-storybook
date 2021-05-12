@@ -158,8 +158,8 @@ const createTradingVolumeChart = ({
     ?.getContext('2d')
 
   const gradient = ctx.createLinearGradient(0, 0, 0, 400)
-  gradient.addColorStop(0, 'rgba(54, 108, 229, 0.84)')
-  gradient.addColorStop(0.55, 'rgba(115, 128, 235, 0)')
+  gradient.addColorStop(0, 'rgba(165, 232, 152, 0.85)')
+  gradient.addColorStop(0.55, 'rgba(165, 232, 152, 0)')
   gradient.addColorStop(1, '#222429')
 
   const width =
@@ -175,7 +175,7 @@ const createTradingVolumeChart = ({
         {
           fill: 'origin',
           tension: 0.5,
-          borderColor: '#7380EB',
+          borderColor: theme.palette.green.new,
           backgroundColor: gradient,
           borderWidth: 2,
           pointRadius: 0,
