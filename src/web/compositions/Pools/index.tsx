@@ -5,6 +5,7 @@ import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BlockTemplate } from './index.styles'
 import { TotalVolumeLockedChart, TradingVolumeChart } from './components/Charts'
 import { UserLiquitidyTable } from './components/Tables/UserLiquidity'
+import { AllPoolsTable } from './components/Tables/Pools'
 
 const Pools = ({ theme }: { theme: Theme }) => {
   return (
@@ -26,6 +27,7 @@ const Pools = ({ theme }: { theme: Theme }) => {
         </BlockTemplate>
       </RowContainer>
       <UserLiquitidyTable theme={theme} />
+      <AllPoolsTable theme={theme} />
     </RowContainer>
   )
 }
