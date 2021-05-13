@@ -1,7 +1,6 @@
 import React from 'react'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
-  BlockTemplate,
   LiquidityDataContainer,
   TableHeader,
   TableRow,
@@ -9,15 +8,26 @@ import {
   BorderButton,
   RowTd,
   TextColumnContainer,
-  TokenIconsContainer,
-} from '@sb/compositions/Pools/index.styles'
+} from '@sb/compositions/Pools/components/Tables/index.styles'
+
+import { BlockTemplate } from '../../../index.styles'
+
+import { TokenIconsContainer } from '../components/index'
 
 import TooltipIcon from '@icons/TooltipImg.svg'
 
 import { Text } from '@sb/compositions/Addressbook/index'
 import SvgIcon from '@sb/components/SvgIcon'
 
-export const UserLiquitidyTable = ({ theme }: { theme: Theme }) => {
+export const UserLiquitidyTable = ({
+  theme,
+  changeLiquidityPopupState,
+  changeWithdrawalPopupState,
+}: {
+  theme: Theme
+  changeLiquidityPopupState: any
+  changeWithdrawalPopupState: any
+}) => {
   return (
     <RowContainer>
       <BlockTemplate
@@ -151,159 +161,16 @@ export const UserLiquitidyTable = ({ theme }: { theme: Theme }) => {
               </RowTd>
               <RowTd>
                 <Row justify="flex-end" width={'100%'}>
-                  <BorderButton style={{ marginRight: '2rem' }}>
+                  <BorderButton
+                    style={{ marginRight: '2rem' }}
+                    onClick={() => changeWithdrawalPopupState(true)}
+                  >
                     Withdraw liquidity + fees
                   </BorderButton>
-                  <BorderButton borderColor={'#366CE5'}>
-                    Add Liquidity
-                  </BorderButton>
-                </Row>
-              </RowTd>
-            </TableRow>
-            <TableRow>
-              <RowTd>
-                <TokenIconsContainer />
-              </RowTd>
-              <RowTd>
-                <TextColumnContainer>
-                  <Text
-                    theme={theme}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
+                  <BorderButton
+                    onClick={() => changeLiquidityPopupState(true)}
+                    borderColor={'#366CE5'}
                   >
-                    $68.24m
-                  </Text>
-                  <Text
-                    theme={theme}
-                    color={theme.palette.grey.new}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    2000 SOL / 200 CCAI
-                  </Text>
-                </TextColumnContainer>
-              </RowTd>
-              <RowTd>
-                <Text
-                  theme={theme}
-                  style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                >
-                  24%
-                </Text>
-              </RowTd>
-              <RowTd>
-                <TextColumnContainer>
-                  <Text
-                    theme={theme}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    $68.24m
-                  </Text>
-                  <Text
-                    theme={theme}
-                    color={theme.palette.grey.new}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    2000 SOL / 200 CCAI
-                  </Text>
-                </TextColumnContainer>
-              </RowTd>
-              <RowTd>
-                <TextColumnContainer>
-                  <Text
-                    theme={theme}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    $68.24m
-                  </Text>
-                  <Text
-                    theme={theme}
-                    color={theme.palette.grey.new}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    2000 SOL / 200 CCAI
-                  </Text>
-                </TextColumnContainer>
-              </RowTd>
-              <RowTd>
-                <Row justify="flex-end" width={'100%'}>
-                  <BorderButton style={{ marginRight: '2rem' }}>
-                    Withdraw liquidity + fees
-                  </BorderButton>
-                  <BorderButton borderColor={'#366CE5'}>
-                    Add Liquidity
-                  </BorderButton>
-                </Row>
-              </RowTd>
-            </TableRow>
-
-            <TableRow>
-              <RowTd>
-                <TokenIconsContainer />
-              </RowTd>
-              <RowTd>
-                <TextColumnContainer>
-                  <Text
-                    theme={theme}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    $68.24m
-                  </Text>
-                  <Text
-                    theme={theme}
-                    color={theme.palette.grey.new}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    2000 SOL / 200 CCAI
-                  </Text>
-                </TextColumnContainer>
-              </RowTd>
-              <RowTd>
-                <Text
-                  theme={theme}
-                  style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                >
-                  24%
-                </Text>
-              </RowTd>
-              <RowTd>
-                <TextColumnContainer>
-                  <Text
-                    theme={theme}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    $68.24m
-                  </Text>
-                  <Text
-                    theme={theme}
-                    color={theme.palette.grey.new}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    2000 SOL / 200 CCAI
-                  </Text>
-                </TextColumnContainer>
-              </RowTd>
-              <RowTd>
-                <TextColumnContainer>
-                  <Text
-                    theme={theme}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    $68.24m
-                  </Text>
-                  <Text
-                    theme={theme}
-                    color={theme.palette.grey.new}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    2000 SOL / 200 CCAI
-                  </Text>
-                </TextColumnContainer>
-              </RowTd>
-              <RowTd>
-                <Row justify="flex-end" width={'100%'}>
-                  <BorderButton style={{ marginRight: '2rem' }}>
-                    Withdraw liquidity + fees
-                  </BorderButton>
-                  <BorderButton borderColor={'#366CE5'}>
                     Add Liquidity
                   </BorderButton>
                 </Row>

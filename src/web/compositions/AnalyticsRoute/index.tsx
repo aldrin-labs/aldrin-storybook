@@ -46,7 +46,11 @@ const AnalyticsRoute = ({
             margin={'0 0.4rem 0 0'}
             theme={theme}
           >
-            <PairSelector theme={theme} publicKey={publicKey} selectedPair={selectedPair} />
+            <PairSelector
+              theme={theme}
+              publicKey={publicKey}
+              selectedPair={selectedPair}
+            />
           </BlockTemplate>
           <Row
             width={'calc(83% - 0.4rem)'}

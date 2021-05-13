@@ -1,23 +1,30 @@
 import React from 'react'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
-  BlockTemplate,
-  LiquidityDataContainer,
   TableHeader,
   TableRow,
   Table,
   BorderButton,
   RowTd,
   TextColumnContainer,
-  TokenIconsContainer,
-} from '@sb/compositions/Pools/index.styles'
+} from '@sb/compositions/Pools/components/Tables/index.styles'
+
+import { BlockTemplate } from '../../../index.styles'
+
+import { TokenIconsContainer, SeachInputWithLoop } from '../components/index'
 
 import TooltipIcon from '@icons/TooltipImg.svg'
 
 import { Text } from '@sb/compositions/Addressbook/index'
 import SvgIcon from '@sb/components/SvgIcon'
 
-export const AllPoolsTable = ({ theme }: { theme: Theme }) => {
+export const AllPoolsTable = ({
+  theme,
+  changeCreatePoolPopupState,
+}: {
+  theme: Theme
+  changeCreatePoolPopupState: any
+}) => {
   return (
     <RowContainer>
       <BlockTemplate
@@ -31,7 +38,18 @@ export const AllPoolsTable = ({ theme }: { theme: Theme }) => {
       >
         <RowContainer padding="2rem" justify={'space-between'} align="center">
           <Text theme={theme}>All Pools</Text>
-          <Row width={'33%'}></Row>
+          <Row justify={'space-between'} width={'42%'}>
+            <SeachInputWithLoop placeholder={'Search'} />
+            <BorderButton
+              onClick={() => {
+                changeCreatePoolPopupState(true)
+              }}
+              padding={'0 2.6rem'}
+              borderColor={'#A5E898'}
+            >
+              Create Pool
+            </BorderButton>
+          </Row>
         </RowContainer>
         <RowContainer>
           <Table>
@@ -52,96 +70,6 @@ export const AllPoolsTable = ({ theme }: { theme: Theme }) => {
               </RowTd>{' '}
               <RowTd></RowTd>
             </TableHeader>
-            <TableRow>
-              <RowTd>
-                <TokenIconsContainer />
-              </RowTd>
-              <RowTd>
-                <TextColumnContainer>
-                  <Text
-                    theme={theme}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    $68.24m
-                  </Text>
-                  <Text
-                    theme={theme}
-                    color={theme.palette.grey.new}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    2000 SOL / 200 CCAI
-                  </Text>
-                </TextColumnContainer>
-              </RowTd>
-              <RowTd>
-                <Text
-                  theme={theme}
-                  style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                >
-                  $14,252{' '}
-                </Text>
-              </RowTd>{' '}
-              <RowTd>
-                <Text
-                  theme={theme}
-                  style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                >
-                  24%
-                </Text>
-              </RowTd>{' '}
-              <RowTd>
-                <Row justify={'flex-end'} width={'100%'}>
-                  <BorderButton borderColor={'#366CE5'}>
-                    Add Liquidity
-                  </BorderButton>
-                </Row>
-              </RowTd>
-            </TableRow>
-            <TableRow>
-              <RowTd>
-                <TokenIconsContainer />
-              </RowTd>
-              <RowTd>
-                <TextColumnContainer>
-                  <Text
-                    theme={theme}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    $68.24m
-                  </Text>
-                  <Text
-                    theme={theme}
-                    color={theme.palette.grey.new}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    2000 SOL / 200 CCAI
-                  </Text>
-                </TextColumnContainer>
-              </RowTd>
-              <RowTd>
-                <Text
-                  theme={theme}
-                  style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                >
-                  $14,252{' '}
-                </Text>
-              </RowTd>{' '}
-              <RowTd>
-                <Text
-                  theme={theme}
-                  style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                >
-                  24%
-                </Text>
-              </RowTd>{' '}
-              <RowTd>
-                <Row justify={'flex-end'} width={'100%'}>
-                  <BorderButton borderColor={'#366CE5'}>
-                    Add Liquidity
-                  </BorderButton>
-                </Row>
-              </RowTd>
-            </TableRow>
             <TableRow>
               <RowTd>
                 <TokenIconsContainer />
