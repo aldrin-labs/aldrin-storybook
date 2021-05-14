@@ -1,10 +1,20 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useEffect } from 'react'
+import { Connection, LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { compose } from 'recompose'
 import { withTheme, Theme } from '@material-ui/core/styles'
+import {
+  TokenInstructions,
+} from '@project-serum/serum'
 
 import { withPublicKey } from '@core/hoc/withPublicKey'
-import { useWallet } from '@sb/dexUtils/wallet'
+import { useWallet, WRAPPED_SOL_MINT } from '@sb/dexUtils/wallet'
+import { ALL_TOKENS_MINTS_MAP } from '@sb/dexUtils/markets'
+
 import { useWalletPublicKeys } from '@sb/dexUtils/walletExtra'
+import { useBalanceInfo } from '@sb/dexUtils/wallet'
+import { getPricesForTokens, getTokenValuesForTokens, getSortedTokensByValue } from './utils'
+import { useConnection } from '@sb/dexUtils/connection'
+
 
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
@@ -25,37 +35,53 @@ const RebalanceComposition = ({
   theme: Theme
 }) => {
   const { wallet } = useWallet()
-  const [publicKeys] = useWalletPublicKeys();
+  // const [publicKeys = []] = useWalletPublicKeys();
+  // console.log('publicKeys: ', publicKeys)
 
-  console.log('publicKeys: ', publicKeys)
+  const connection: Connection = useConnection()
+  const isWalletConnected = !!wallet?.publicKey
 
-  // const sortedPublicKeys = useMemo(
-  //   () =>
-  //     Array.isArray(publicKeys)
-  //       ? [...publicKeys].sort((a, b) => {
-  //           const aVal = assetsValues[a.toString()]?.usdValue;
-  //           const bVal = assetsValues[b.toString()]?.usdValue;
+  console.log('isWalletConnected: ', isWalletConnected)  
 
-  //           // SOL always fisrt
-  //           if (a.equals(wallet.publicKey)) return -1;
-  //           if (b.equals(wallet.publicKey)) return 1;
+  useEffect(() => {
+    const fetchData = async () => {
+      console.log('fetchData: ', fetchData)
 
-  //           a = aVal === undefined || aVal === null ? -1 : aVal;
-  //           b = bVal === undefined || bVal === null ? -1 : bVal;
+      try {
+        console.time('rebalance initial data set time')
+        const parsedTokenAccounts = await connection.getParsedTokenAccountsByOwner(wallet.publicKey, { programId: TokenInstructions.TOKEN_PROGRAM_ID })
+        const solBalance = await connection.getBalance(wallet.publicKey) / LAMPORTS_PER_SOL
+        const SOLToken = { symbol: 'SOL', amount: solBalance, decimals: 8, mint: TokenInstructions.WRAPPED_SOL_MINT }
 
-  //           if (b < a) {
-  //             return -1;
-  //           } else if (b > a) {
-  //             return 1;
-  //           } else {
-  //             return 0;
-  //           }
-  //         })
-  //       : [],
-  //   [publicKeys, wallet.publicKey],
-  // );
+        const parsedTokensData = parsedTokenAccounts.value.map(el => ({ 
+          symbol: ALL_TOKENS_MINTS_MAP[el.account.data.parsed.info.mint] ? ALL_TOKENS_MINTS_MAP[el.account.data.parsed.info.mint] : el.account.data.parsed.info.mint,
+          decimals: el.account.data.parsed.info.tokenAmount.decimals,
+          amount: el.account.data.parsed.info.tokenAmount.uiAmount,
+          mint: el.account.data.parsed.info.mint,
+         }))
 
-  // console.log('sortedPublicKeys: ', sortedPublicKeys)
+
+         const allTokensData = [SOLToken, ...parsedTokensData]
+
+        const tokensWithPrices = await getPricesForTokens(allTokensData)
+        const tokensWithTokenValue = getTokenValuesForTokens(tokensWithPrices)
+        const sortedTokensByTokenValue = getSortedTokensByValue(tokensWithTokenValue)
+
+        console.timeEnd('rebalance initial data set time')
+        console.log('sortedTokensByTokenValue: ', sortedTokensByTokenValue)
+
+      } catch(e) {
+        // set error
+        console.log('e: ', e)
+      }
+
+
+    }
+  
+    if (isWalletConnected) {
+      fetchData();
+    }
+  }, [wallet.publicKey]);
 
   return (
     <RowContainer
