@@ -17,6 +17,7 @@ import { IProps } from './index.types'
 import {
   AllocationChartContainer,
   AllocationLegendContainer,
+  ChartContainer,
 } from './index.styles'
 
 export const mockData = [
@@ -34,11 +35,7 @@ export const mockData = [
 
 export const ROWS_TO_SHOW_IN_LEGEND = 4
 
-const DonutChartWithLegend = ({
-  data,
-  theme,
-  title = 'Current Allocation',
-}: IProps) => {
+const DonutChartWithLegend = ({ data, theme, id }: IProps) => {
   const [colors, setColors] = useState<string[]>([])
 
   useEffect(() => {
@@ -58,7 +55,7 @@ const DonutChartWithLegend = ({
     }))
 
   const chartData = sortedData.map((tokenData) => tokenData.value)
-  const chartId = chartData.reduce((prev, value) => prev + value, '')
+  // const chartId = chartData.reduce((prev, value) => prev + value + id, '')
 
   // we need to show only 4 rows in legend
   const otherTokensProgressBarData =
@@ -75,23 +72,31 @@ const DonutChartWithLegend = ({
   const legendData = [...sortedData.slice(0, ROWS_TO_SHOW_IN_LEGEND)].concat(
     otherTokensProgressBarData
   )
-
   return (
-    <BlockTemplate theme={theme} width={'100%'} height={'30rem'}>
-      <HeaderContainer theme={theme} justify={'space-between'}>
-        <Row margin={'0 0 0 2rem'}>
-          <WhiteTitle theme={theme}>{title}</WhiteTitle>
-        </Row>
-      </HeaderContainer>
-      <RowContainer height={'calc(100% - 5rem)'}>
-        <AllocationChartContainer>
-          {/* we need to re-render chart on data update */}
-          <AllocationDonutChart id={chartId} data={chartData} colors={colors} />
-        </AllocationChartContainer>
-        <AllocationLegendContainer>
-          <AllocationLegend theme={theme} data={legendData} colors={colors} />
-        </AllocationLegendContainer>
-      </RowContainer>
+    <BlockTemplate
+      style={{ margin: '0 0 2rem 0' }}
+      theme={theme}
+      width={'100%'}
+      height={'47%'}
+    >
+      <ChartContainer>
+        <HeaderContainer theme={theme} justify={'space-between'}>
+          <Row margin={'0 0 0 2rem'}>
+            <WhiteTitle theme={theme}>
+              {id === 'target' ? 'Target Allocation' : 'Current Allocation'}
+            </WhiteTitle>
+          </Row>
+        </HeaderContainer>
+        <RowContainer height={'calc(100% - 5rem)'}>
+          <AllocationChartContainer>
+            {/* we need to re-render chart on data update */}
+            <AllocationDonutChart id={id} data={chartData} colors={colors} />
+          </AllocationChartContainer>
+          <AllocationLegendContainer>
+            <AllocationLegend theme={theme} data={legendData} colors={colors} />
+          </AllocationLegendContainer>
+        </RowContainer>
+      </ChartContainer>
     </BlockTemplate>
   )
 }

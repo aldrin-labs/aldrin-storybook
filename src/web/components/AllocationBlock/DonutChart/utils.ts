@@ -53,7 +53,7 @@ const createAllocationDonutChart = ({
   data: number[]
   colors: string[]
 }) => {
-  const ctx = document.getElementById('AllocationDonutChart')?.getContext('2d')
+  const ctx = document.getElementById(`AllocationDonutChart-${id}`)?.getContext('2d')
 
   window[`AllocationDonutChart-${id}`] = new Chart(ctx, {
     type: 'doughnut',

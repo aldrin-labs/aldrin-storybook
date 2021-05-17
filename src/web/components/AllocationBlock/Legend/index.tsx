@@ -36,7 +36,7 @@ const AllocationLegend = ({ data, colors, theme }: LegendProps) => {
                   ? '#365FBC'
                   : colors[i]
               }
-              height={'2.5rem'}
+              height={'2.2rem'}
               width={`${tokenData.value}%`}
               variant="determinate"
               value={0}

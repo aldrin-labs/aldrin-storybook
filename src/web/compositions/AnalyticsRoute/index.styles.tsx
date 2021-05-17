@@ -32,7 +32,7 @@ export const RowContainer = styled((props) => <Row {...props} />)`
 export const ReusableTitle = styled(
   ({ width, fontFamily, fontSize, color, textAlign, margin, ...props }) => (
     <span {...props} />
-  ),
+  )
 )`
   width: ${(props) => props.width || 'auto'};
   font-family: ${(props) => props.fontFamily || 'Avenir Next Medium'};
@@ -43,7 +43,7 @@ export const ReusableTitle = styled(
   color: ${(props) => props.color || '#ecf0f3'};
   text-align: ${(props) => props.textAlign || 'center'};
   margin: ${(props) => props.margin || '0'};
-`;
+`
 
 export const SerumTitleBlockContainer = styled(({ theme, ...props }) => (
   <Row {...props} />
@@ -117,7 +117,6 @@ export const BlockContainer = styled.div`
 
 export const HeaderContainer = styled((props) => <RowContainer {...props} />)`
   height: 5rem;
-  border-bottom: ${(props) => props.theme.palette.border.new};
 
   @media (min-width: 1921px) {
     height: 4rem;
