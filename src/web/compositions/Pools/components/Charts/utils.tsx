@@ -52,9 +52,11 @@ const mockData = [
 const createTotalVolumeLockedChart = ({
   id,
   theme,
+  data,
 }: {
   id: string
   theme: Theme
+  data: []
 }) => {
   const ctx = document
     .getElementById('TotalVolumeLockedChart')
@@ -73,7 +75,7 @@ const createTotalVolumeLockedChart = ({
   window[`TotalVolumeLockedChart-${id}`] = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: mockData.map((item) => dayjs(item.day).format('MMM, D')),
+      labels: data.map((item) => dayjs(item.date).format('MMM, D')),
       datasets: [
         {
           fill: 'origin',
@@ -83,7 +85,7 @@ const createTotalVolumeLockedChart = ({
           borderWidth: 2,
           pointRadius: 0,
           hoverBackgroundColor: 'rgba(28, 29, 34, 0.75)',
-          data: mockData.map((item, i) => ({ x: i, y: item.total })),
+          data: data.map((item, i) => ({ x: i, y: item.vol })),
         },
       ],
     },
@@ -114,7 +116,7 @@ const createTotalVolumeLockedChart = ({
             callback: (value) =>
               `$${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`,
             color: '#F5F5FB',
-            stepSize: mockData[mockData.length - 1].total / 5,
+            stepSize: data[data.length - 1].vol / 5,
             font: {
               size: +(width / 130).toFixed(0),
               family: 'Avenir Next',
@@ -149,13 +151,13 @@ const createTotalVolumeLockedChart = ({
 const createTradingVolumeChart = ({
   id,
   theme,
+  data,
 }: {
   id: string
   theme: Theme
+  data: []
 }) => {
-  const ctx = document
-    .getElementById('TradingVolumeChart')
-    ?.getContext('2d')
+  const ctx = document.getElementById('TradingVolumeChart')?.getContext('2d')
 
   const gradient = ctx.createLinearGradient(0, 0, 0, 400)
   gradient.addColorStop(0, 'rgba(165, 232, 152, 0.85)')
@@ -170,7 +172,7 @@ const createTradingVolumeChart = ({
   window[`TradingVolumeChart-${id}`] = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: mockData.map((item) => dayjs(item.day).format('MMM, D')),
+      labels: data.map((item) => dayjs(item.date).format('MMM, D')),
       datasets: [
         {
           fill: 'origin',
@@ -180,7 +182,7 @@ const createTradingVolumeChart = ({
           borderWidth: 2,
           pointRadius: 0,
           hoverBackgroundColor: 'rgba(28, 29, 34, 0.75)',
-          data: mockData.map((item, i) => ({ x: i, y: item.total })),
+          data: data.map((item, i) => ({ x: i, y: item.vol })),
         },
       ],
     },
@@ -211,7 +213,7 @@ const createTradingVolumeChart = ({
             callback: (value) =>
               `$${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`,
             color: '#F5F5FB',
-            stepSize: mockData[mockData.length - 1].total / 5,
+            stepSize: data[data.length - 1].vol / 5,
             font: {
               size: +(width / 130).toFixed(0),
               family: 'Avenir Next',
