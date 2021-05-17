@@ -20,8 +20,52 @@ import { Text } from '@sb/compositions/Addressbook/index'
 import SvgIcon from '@sb/components/SvgIcon'
 import { TokenIconsContainer } from '@sb/compositions/Pools/components/Tables/components'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import Slider from '@sb/components/Slider/Slider'
 
 import MockedToken from '@icons/ccaiToken.svg'
+
+const mockedData = [
+  {
+    amount: 0.307,
+    decimals: 6,
+    mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+    percentage: 2.793658965543384,
+    price: 1,
+    symbol: 'USDT',
+    disabled: false,
+    disabledReason: '',
+  },
+  {
+    amount: 0.307,
+    decimals: 6,
+    mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+    percentage: 2.793658965543384,
+    price: 1,
+    symbol: 'USDT',
+    disabled: true,
+    disabledReason: 'no pool',
+  },
+  {
+    amount: 0.307,
+    decimals: 6,
+    mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+    percentage: 2.793658965543384,
+    price: 1,
+    symbol: 'USDT',
+    disabled: false,
+    disabledReason: '',
+  },
+  {
+    amount: 0.307,
+    decimals: 6,
+    mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+    percentage: 2.793658965543384,
+    price: 1,
+    symbol: 'USDT',
+    disabled: true,
+    disabledReason: 'no price',
+  },
+]
 
 const RebalanceTable = ({ theme }: { theme: Theme }) => {
   return (
@@ -64,291 +108,77 @@ const RebalanceTable = ({ theme }: { theme: Theme }) => {
               <RowTd>Allocation</RowTd>
               <RowTd>Target Value</RowTd>
             </TableHeader>
-            <TableRow>
-              <RowTd>
-                <Row justify={'flex-start'}>
-                  <SvgIcon
-                    src={MockedToken}
-                    width={'30px'}
-                    height={'30px'}
-                    style={{ marginRight: '1rem' }}
-                  />
-                  <Text fontSize={'2rem'} fontFamily={'Avenir Next Medium'}>
-                    CCAI
-                  </Text>
-                </Row>
-              </RowTd>
-              <RowTd>
-                <TextColumnContainer>
-                  <Text
-                    theme={theme}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    45.61 SOL{' '}
-                  </Text>
-                  <Text
-                    theme={theme}
-                    color={theme.palette.grey.new}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    $2,000{' '}
-                  </Text>
-                </TextColumnContainer>
-              </RowTd>
-              <RowTd>
-                <Text
-                  theme={theme}
-                  style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                >
-                  23{' '}
-                </Text>
-              </RowTd>{' '}
-              <RowTd>
-                <TextColumnContainer>
-                  <Text
-                    theme={theme}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    45.61 SOL{' '}
-                  </Text>
-                  <Text
-                    theme={theme}
-                    color={theme.palette.grey.new}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    $2,000{' '}
-                  </Text>
-                </TextColumnContainer>
-              </RowTd>{' '}
-            </TableRow>
-            <TableRow>
-              <RowTd>
-                <Row justify={'flex-start'}>
-                  <SvgIcon
-                    src={MockedToken}
-                    width={'30px'}
-                    height={'30px'}
-                    style={{ marginRight: '1rem' }}
-                  />
-                  <Text fontSize={'2rem'} fontFamily={'Avenir Next Medium'}>
-                    CCAI
-                  </Text>
-                </Row>
-              </RowTd>
-              <RowTd>
-                <TextColumnContainer>
-                  <Text
-                    theme={theme}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    45.61 SOL{' '}
-                  </Text>
-                  <Text
-                    theme={theme}
-                    color={theme.palette.grey.new}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    $2,000{' '}
-                  </Text>
-                </TextColumnContainer>
-              </RowTd>
-              <RowTd>
-                <Text
-                  theme={theme}
-                  style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                >
-                  23{' '}
-                </Text>
-              </RowTd>{' '}
-              <RowTd>
-                <TextColumnContainer>
-                  <Text
-                    theme={theme}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    45.61 SOL{' '}
-                  </Text>
-                  <Text
-                    theme={theme}
-                    color={theme.palette.grey.new}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    $2,000{' '}
-                  </Text>
-                </TextColumnContainer>
-              </RowTd>{' '}
-            </TableRow>
-            <TableRow>
-              <RowTd>
-                <Row justify={'flex-start'}>
-                  <SvgIcon
-                    src={MockedToken}
-                    width={'30px'}
-                    height={'30px'}
-                    style={{ marginRight: '1rem' }}
-                  />
-                  <Text fontSize={'2rem'} fontFamily={'Avenir Next Medium'}>
-                    CCAI
-                  </Text>
-                </Row>
-              </RowTd>
-              <RowTd>
-                <TextColumnContainer>
-                  <Text
-                    theme={theme}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    45.61 SOL{' '}
-                  </Text>
-                  <Text
-                    theme={theme}
-                    color={theme.palette.grey.new}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    $2,000{' '}
-                  </Text>
-                </TextColumnContainer>
-              </RowTd>
-              <RowTd>
-                <Text
-                  theme={theme}
-                  style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                >
-                  23{' '}
-                </Text>
-              </RowTd>{' '}
-              <RowTd>
-                <TextColumnContainer>
-                  <Text
-                    theme={theme}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    45.61 SOL{' '}
-                  </Text>
-                  <Text
-                    theme={theme}
-                    color={theme.palette.grey.new}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    $2,000{' '}
-                  </Text>
-                </TextColumnContainer>
-              </RowTd>{' '}
-            </TableRow>
-            <TableRow>
-              <RowTd>
-                <Row justify={'flex-start'}>
-                  <SvgIcon
-                    src={MockedToken}
-                    width={'30px'}
-                    height={'30px'}
-                    style={{ marginRight: '1rem' }}
-                  />
-                  <Text fontSize={'2rem'} fontFamily={'Avenir Next Medium'}>
-                    CCAI
-                  </Text>
-                </Row>
-              </RowTd>
-              <RowTd>
-                <TextColumnContainer>
-                  <Text
-                    theme={theme}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    45.61 SOL{' '}
-                  </Text>
-                  <Text
-                    theme={theme}
-                    color={theme.palette.grey.new}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    $2,000{' '}
-                  </Text>
-                </TextColumnContainer>
-              </RowTd>
-              <RowTd>
-                <Text
-                  theme={theme}
-                  style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                >
-                  23{' '}
-                </Text>
-              </RowTd>{' '}
-              <RowTd>
-                <TextColumnContainer>
-                  <Text
-                    theme={theme}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    45.61 SOL{' '}
-                  </Text>
-                  <Text
-                    theme={theme}
-                    color={theme.palette.grey.new}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    $2,000{' '}
-                  </Text>
-                </TextColumnContainer>
-              </RowTd>{' '}
-            </TableRow>
-            <TableRow>
-              <RowTd>
-                <Row justify={'flex-start'}>
-                  <SvgIcon
-                    src={MockedToken}
-                    width={'30px'}
-                    height={'30px'}
-                    style={{ marginRight: '1rem' }}
-                  />
-                  <Text fontSize={'2rem'} fontFamily={'Avenir Next Medium'}>
-                    CCAI
-                  </Text>
-                </Row>
-              </RowTd>
-              <RowTd>
-                <TextColumnContainer>
-                  <Text
-                    theme={theme}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    45.61 SOL{' '}
-                  </Text>
-                  <Text
-                    theme={theme}
-                    color={theme.palette.grey.new}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    $2,000{' '}
-                  </Text>
-                </TextColumnContainer>
-              </RowTd>
-              <RowTd>
-                <Text
-                  theme={theme}
-                  style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                >
-                  23{' '}
-                </Text>
-              </RowTd>{' '}
-              <RowTd>
-                <TextColumnContainer>
-                  <Text
-                    theme={theme}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    45.61 SOL{' '}
-                  </Text>
-                  <Text
-                    theme={theme}
-                    color={theme.palette.grey.new}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    $2,000{' '}
-                  </Text>
-                </TextColumnContainer>
-              </RowTd>{' '}
-            </TableRow>
+            {mockedData.map((el) => {
+              return (
+                <TableRow>
+                  <RowTd>
+                    <Row justify={'flex-start'}>
+                      <SvgIcon
+                        src={MockedToken}
+                        width={'30px'}
+                        height={'30px'}
+                        style={{ marginRight: '1rem' }}
+                      />
+                      <Text fontSize={'2rem'} fontFamily={'Avenir Next Medium'}>
+                        CCAI
+                      </Text>
+                    </Row>
+                  </RowTd>
+                  <RowTd>
+                    <TextColumnContainer>
+                      <Text
+                        theme={theme}
+                        style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
+                      >
+                        45.61 SOL{' '}
+                      </Text>
+                      <Text
+                        theme={theme}
+                        color={theme.palette.grey.new}
+                        style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
+                      >
+                        $2,000{' '}
+                      </Text>
+                    </TextColumnContainer>
+                  </RowTd>
+                  <RowTd>
+                    <Slider
+                      thumbWidth="2.4rem"
+                      thumbHeight="2.4rem"
+                      sliderWidth="18rem"
+                      sliderHeight="1.7rem"
+                      sliderHeightAfter="2rem"
+                      borderRadius="3rem"
+                      borderRadiusAfter="3rem"
+                      thumbBackground="#165BE0"
+                      borderThumb="2px solid #f2fbfb"
+                      trackAfterBackground={'#383B45'}
+                      trackBeforeBackground={'#366CE5'}
+                      value={50}
+                      // onChange={handleSlideChange}
+                      max={100}
+                    />
+                  </RowTd>{' '}
+                  <RowTd>
+                    <TextColumnContainer>
+                      <Text
+                        theme={theme}
+                        style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
+                      >
+                        45.61 SOL{' '}
+                      </Text>
+                      <Text
+                        theme={theme}
+                        color={theme.palette.grey.new}
+                        style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
+                      >
+                        $2,000{' '}
+                      </Text>
+                    </TextColumnContainer>
+                  </RowTd>{' '}
+                </TableRow>
+              )
+            })}
           </Table>
         </RowContainer>
       </BlockTemplate>

@@ -61,8 +61,7 @@ export const StyledSlider = styled(
       props.borderRadiusAfter || '50px'};
     background: ${(props: { trackAfterBackground: string }) =>
       props.trackAfterBackground};
-    opacity: ${(props: { trackAfterOpacity: string }) =>
-      props.trackAfterOpacity};
+    opacity: ${(props: { trackAfterOpacity: string }) => '1'};
     height: ${(props: { sliderHeightAfter: string }) =>
       props.sliderHeightAfter || '2px'};
 
