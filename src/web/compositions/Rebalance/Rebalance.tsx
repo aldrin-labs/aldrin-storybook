@@ -12,7 +12,7 @@ import { ALL_TOKENS_MINTS_MAP } from '@sb/dexUtils/markets'
 
 import { useWalletPublicKeys } from '@sb/dexUtils/walletExtra'
 import { useBalanceInfo } from '@sb/dexUtils/wallet'
-import { getPricesForTokens, getTokenValuesForTokens, getSortedTokensByValue } from './utils'
+import { getPricesForTokens, getTokenValuesForTokens, getSortedTokensByValue, getTotalTokenValue, getPercentageAllocationForTokens } from './utils'
 import { useConnection } from '@sb/dexUtils/connection'
 
 
@@ -69,6 +69,14 @@ const RebalanceComposition = ({
 
         console.timeEnd('rebalance initial data set time')
         console.log('sortedTokensByTokenValue: ', sortedTokensByTokenValue)
+
+        const totalTokenValue = getTotalTokenValue(sortedTokensByTokenValue)
+        console.log('totalTokenValue: ', totalTokenValue)
+
+        const tokensWithPercentages = getPercentageAllocationForTokens(sortedTokensByTokenValue, totalTokenValue)
+        console.log('tokensWithPercentages', tokensWithPercentages)
+
+
 
       } catch(e) {
         // set error
