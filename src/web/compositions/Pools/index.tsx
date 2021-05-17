@@ -4,8 +4,8 @@ import { withTheme, Theme } from '@material-ui/core'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BlockTemplate } from './index.styles'
 import { TotalVolumeLockedChart, TradingVolumeChart } from './components/Charts'
-import { UserLiquitidyTable } from './components/Tables/UserLiquidity'
-import { AllPoolsTable } from './components/Tables/Pools'
+import UserLiquitidyTable from './components/Tables/UserLiquidity'
+import AllPoolsTable from './components/Tables/Pools'
 import { AddLiquidityPopup } from './components/Popups/AddLiquidity'
 import { CreatePoolPopup } from './components/Popups/CreatePool'
 import { WithdrawalPopup } from './components/Popups/Withdraw Liquidity'
@@ -40,6 +40,7 @@ const Pools = ({ theme }: { theme: Theme }) => {
       />
       <AllPoolsTable
         changeCreatePoolPopupState={changeCreatePoolPopupState}
+        changeLiquidityPopupState={changeLiquidityPopupState}
         theme={theme}
       />
       <AddLiquidityPopup

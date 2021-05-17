@@ -2,7 +2,7 @@ import React from 'react'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
-import { StyledInput, TokenContainer } from '../index.styles'
+import { StyledInput, TokenContainer, InvisibleInput } from '../index.styles'
 import MockedToken from '@icons/ccaiToken.svg'
 import MockedToken2 from '@icons/solToken.svg'
 import Arrow from '@icons/arrowBottom.svg'
@@ -15,9 +15,7 @@ export const InputWithCoins = ({}) => {
         <Text color={'#93A0B2'}>SOL</Text>
       </TokenContainer>
       <TokenContainer left={'2rem'} top={'6rem'}>
-        <Text fontSize={'2rem'} fontFamily={'Avenir Next Demi'}>
-          200.00
-        </Text>
+        <InvisibleInput placeholder={''} />
       </TokenContainer>
       <TokenContainer left={'42rem'} top={'6rem'}>
         <Row style={{ flexWrap: 'nowrap' }}>
@@ -82,7 +80,7 @@ export const InputWithTotal = ({}) => {
   )
 }
 
-export const InputWithSelector = ({}) => {
+export const InputWithSelector = ({ openSelectCoinPopup }) => {
   return (
     <Row style={{ position: 'relative' }} padding={'2rem 0'} width={'100%'}>
       <StyledInput />
@@ -90,9 +88,7 @@ export const InputWithSelector = ({}) => {
         <Text color={'#93A0B2'}>SOL</Text>
       </TokenContainer>
       <TokenContainer left={'2rem'} top={'6rem'}>
-        <Text fontSize={'2rem'} fontFamily={'Avenir Next Demi'}>
-          200.00
-        </Text>
+        <InvisibleInput placeholder={''} />
       </TokenContainer>
       <TokenContainer
         style={{ right: '2rem', cursor: 'pointer' }}
@@ -108,7 +104,12 @@ export const InputWithSelector = ({}) => {
           >
             CCAI
           </Text>
-          <SvgIcon src={Arrow} width={'10px'} height={'10px'} />
+          <SvgIcon
+            onClick={() => openSelectCoinPopup()}
+            src={Arrow}
+            width={'10px'}
+            height={'10px'}
+          />
         </Row>
       </TokenContainer>
       <TokenContainer left={'42rem'} top={'3rem'}>
@@ -135,9 +136,7 @@ export const SimpleInput = ({}) => {
         <Text color={'#93A0B2'}>SOL</Text>
       </TokenContainer>
       <TokenContainer left={'2rem'} top={'6rem'}>
-        <Text fontSize={'2rem'} fontFamily={'Avenir Next Demi'}>
-          200.00
-        </Text>
+        <InvisibleInput placeholder={''} />
       </TokenContainer>
       <TokenContainer
         style={{ right: '2rem', cursor: 'pointer' }}

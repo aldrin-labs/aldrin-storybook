@@ -9,7 +9,7 @@ import MockedToken from '@icons/ccaiToken.svg'
 import MockedToken2 from '@icons/solToken.svg'
 import Loop from '@icons/loop.svg'
 
-export const SeachInputWithLoop = ({
+export const SearchInputWithLoop = ({
   placeholder,
 }: {
   placeholder: String
@@ -17,12 +17,15 @@ export const SeachInputWithLoop = ({
   return (
     <Row style={{ position: 'relative' }} width={'40rem'}>
       <SearchInput placeholder={placeholder} />
-      <SvgIcon src={Loop} style={{ position: 'absolute', right: '2rem' }} />
+      <SvgIcon
+        src={Loop}
+        style={{ position: 'absolute', right: '2rem', cursor: 'pointer' }}
+      />
     </Row>
   )
 }
 
-export const TokenIconsContainer = ({}) => {
+export const TokenIconsContainer = ({ tokenA, tokenB }) => {
   return (
     <Row justify={'end'}>
       <IconsContainer>
@@ -38,7 +41,7 @@ export const TokenIconsContainer = ({}) => {
         </TokenIcon>
       </IconsContainer>{' '}
       <Text style={{ marginLeft: '2rem' }} fontFamily={'Avenir Next Demi'}>
-        SOL/CCAI
+        {tokenA}/{tokenB}
       </Text>{' '}
     </Row>
   )

@@ -1,4 +1,7 @@
 import React from 'react'
+import { compose } from 'recompose'
+import { graphql } from 'react-apollo'
+
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
   LiquidityDataContainer,
@@ -18,16 +21,27 @@ import TooltipIcon from '@icons/TooltipImg.svg'
 
 import { Text } from '@sb/compositions/Addressbook/index'
 import SvgIcon from '@sb/components/SvgIcon'
+import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getFeesEarnedByAccount } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
 
-export const UserLiquitidyTable = ({
+const UserLiquitidyTable = ({
   theme,
   changeLiquidityPopupState,
   changeWithdrawalPopupState,
+  getPoolsInfoQuery,
+  getFeesEarnedByAccountQuery,
 }: {
   theme: Theme
   changeLiquidityPopupState: any
   changeWithdrawalPopupState: any
+  getPoolsInfoQuery: any
+  getFeesEarnedByAccountQuery: any
 }) => {
+  console.log(
+    'getFeesEarnedByAccountQuery',
+    getFeesEarnedByAccountQuery.getFeesEarnedByAccount
+  )
   return (
     <RowContainer>
       <BlockTemplate
@@ -71,7 +85,12 @@ export const UserLiquitidyTable = ({
                 color={theme.palette.green.new}
                 fontFamily={'Avenir Next Demi'}
               >
-                $32,874
+                $
+                {getFeesEarnedByAccountQuery.getFeesEarnedByAccount.map(
+                  (el) => {
+                    return el.earnedUSD
+                  }
+                )}
               </Text>
             </LiquidityDataContainer>
           </Row>
@@ -96,89 +115,112 @@ export const UserLiquitidyTable = ({
               <RowTd>Total Fees Earned</RowTd>
               <RowTd></RowTd>
             </TableHeader>
-            <TableRow>
-              <RowTd>
-                <TokenIconsContainer />
-              </RowTd>
-              <RowTd>
-                <TextColumnContainer>
-                  <Text
-                    theme={theme}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    $68.24m
-                  </Text>
-                  <Text
-                    theme={theme}
-                    color={theme.palette.grey.new}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    2000 SOL / 200 CCAI
-                  </Text>
-                </TextColumnContainer>
-              </RowTd>
-              <RowTd>
-                <Text
-                  theme={theme}
-                  style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                >
-                  24%
-                </Text>
-              </RowTd>
-              <RowTd>
-                <TextColumnContainer>
-                  <Text
-                    theme={theme}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    $68.24m
-                  </Text>
-                  <Text
-                    theme={theme}
-                    color={theme.palette.grey.new}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    2000 SOL / 200 CCAI
-                  </Text>
-                </TextColumnContainer>
-              </RowTd>
-              <RowTd>
-                <TextColumnContainer>
-                  <Text
-                    theme={theme}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    $68.24m
-                  </Text>
-                  <Text
-                    theme={theme}
-                    color={theme.palette.grey.new}
-                    style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                  >
-                    2000 SOL / 200 CCAI
-                  </Text>
-                </TextColumnContainer>
-              </RowTd>
-              <RowTd>
-                <Row justify="flex-end" width={'100%'}>
-                  <BorderButton
-                    style={{ marginRight: '2rem' }}
-                    onClick={() => changeWithdrawalPopupState(true)}
-                  >
-                    Withdraw liquidity + fees
-                  </BorderButton>
-                  <BorderButton
-                    onClick={() => changeLiquidityPopupState(true)}
-                    borderColor={'#366CE5'}
-                  >
-                    Add Liquidity
-                  </BorderButton>
-                </Row>
-              </RowTd>
-            </TableRow>
+            {getPoolsInfoQuery.getPoolsInfo.map((el) => {
+              return (
+                <TableRow>
+                  <RowTd>
+                    <TokenIconsContainer
+                      tokenA={el.tokenA}
+                      tokenB={el.tokenB}
+                    />
+                  </RowTd>
+                  <RowTd>
+                    <TextColumnContainer>
+                      <Text
+                        theme={theme}
+                        style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
+                      >
+                        {el.tvl.USD}
+                      </Text>
+                      <Text
+                        theme={theme}
+                        color={theme.palette.grey.new}
+                        style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
+                      >
+                        {el.tvl.tokenA} {el.tokenA} / {el.tvl.tokenB}{' '}
+                        {el.tokenB}
+                      </Text>
+                    </TextColumnContainer>
+                  </RowTd>
+                  <RowTd>
+                    <Text
+                      theme={theme}
+                      style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
+                    >
+                      {el.apy24h}%
+                    </Text>
+                  </RowTd>
+                  <RowTd>
+                    <TextColumnContainer>
+                      <Text
+                        theme={theme}
+                        style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
+                      >
+                        $68.24m
+                      </Text>
+                      <Text
+                        theme={theme}
+                        color={theme.palette.grey.new}
+                        style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
+                      >
+                        2000 SOL / 200 CCAI
+                      </Text>
+                    </TextColumnContainer>
+                  </RowTd>
+                  <RowTd>
+                    <TextColumnContainer>
+                      <Text
+                        theme={theme}
+                        style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
+                      >
+                        $68.24m
+                      </Text>
+                      <Text
+                        theme={theme}
+                        color={theme.palette.grey.new}
+                        style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
+                      >
+                        2000 SOL / 200 CCAI
+                      </Text>
+                    </TextColumnContainer>
+                  </RowTd>
+                  <RowTd>
+                    <Row justify="flex-end" width={'100%'}>
+                      <BorderButton
+                        style={{ marginRight: '2rem' }}
+                        onClick={() => changeWithdrawalPopupState(true)}
+                      >
+                        Withdraw liquidity + fees
+                      </BorderButton>
+                      <BorderButton
+                        onClick={() => changeLiquidityPopupState(true)}
+                        borderColor={'#366CE5'}
+                      >
+                        Add Liquidity
+                      </BorderButton>
+                    </Row>
+                  </RowTd>
+                </TableRow>
+              )
+            })}
           </Table>
         </RowContainer>
       </BlockTemplate>
     </RowContainer>
   )
 }
+
+export default compose(
+  graphql(getPoolsInfo, {
+    name: 'getPoolsInfoQuery',
+  }),
+  queryRendererHoc({
+    query: getFeesEarnedByAccount,
+    name: 'getFeesEarnedByAccountQuery',
+    variables: {
+      pools: '',
+      accountPublicKey: '',
+    },
+    fetchPolicy: 'only-network',
+  })
+)(UserLiquitidyTable)

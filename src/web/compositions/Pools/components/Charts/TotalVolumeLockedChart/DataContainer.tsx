@@ -1,7 +1,7 @@
 import React from 'react'
 import { Theme } from '@material-ui/core'
 
-import { TotalVolumeLockedChart } from './index'
+import TotalVolumeLockedChart from './index'
 
 const TotalVolumeLockedChartDataContainer = ({ theme }: { theme: Theme }) => {
   return (

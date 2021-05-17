@@ -59,9 +59,11 @@ export const TokenIcon = styled.div`
   z-index: ${(props) => props.zIndex};
 `
 export const SearchInput = styled.input`
+  color: #f2fbfb;
   background: #383b45;
   border: 0.1rem solid #3a475c;
   border-radius: 1.5rem;
+  font-family: 'Avenir Next Thin';
   height: 4rem;
   width: ${(props) => props.width || '100%'};
   padding: 0 2rem;

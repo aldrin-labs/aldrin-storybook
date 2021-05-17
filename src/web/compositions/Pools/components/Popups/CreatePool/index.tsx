@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
@@ -13,6 +13,7 @@ import { InputWithSelector } from '../components'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
+import { SelectCoinPopup } from '../SelectCoin'
 
 const StyledPaper = styled(Paper)`
   height: auto;
@@ -24,6 +25,7 @@ const StyledPaper = styled(Paper)`
 `
 
 export const CreatePoolPopup = ({ theme, open, close }) => {
+  const [isSelectCoinPopupOpen, openSelectCoinPopup] = useState(false)
   return (
     <DialogWrapper
       theme={theme}
@@ -53,13 +55,17 @@ export const CreatePoolPopup = ({ theme, open, close }) => {
         </Text>
       </RowContainer>
       <RowContainer>
-        <InputWithSelector />
+        <InputWithSelector
+          openSelectCoinPopup={() => openSelectCoinPopup(true)}
+        />
         <Row>
           <Text fontSize={'4rem'} fontFamily={'Avenir Next Medium'}>
             +
           </Text>
         </Row>
-        <InputWithSelector />
+        <InputWithSelector
+          openSelectCoinPopup={() => openSelectCoinPopup(true)}
+        />
       </RowContainer>{' '}
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
         <Row
@@ -99,6 +105,11 @@ export const CreatePoolPopup = ({ theme, open, close }) => {
           Add liquidity{' '}
         </BlueButton>
       </RowContainer>{' '}
+      <SelectCoinPopup
+        theme={theme}
+        open={isSelectCoinPopupOpen}
+        close={() => openSelectCoinPopup(false)}
+      />
     </DialogWrapper>
   )
 }
