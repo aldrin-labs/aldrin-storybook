@@ -145,6 +145,7 @@ export default ({ themeMode, isChartPage, children }) => {
               light: '#fff',
               white: '#424b68',
               black: '#fff',
+              text: '#96999C',
             },
             orange: {
               main: '#F29C38',
@@ -210,6 +211,7 @@ export default ({ themeMode, isChartPage, children }) => {
               disabledInput: 'rgb(46,46,46)',
               title: '#93A0B2',
               terminal: '#383B45',
+              new: '#96999C',
             },
             primary: {
               main: '#303037',
