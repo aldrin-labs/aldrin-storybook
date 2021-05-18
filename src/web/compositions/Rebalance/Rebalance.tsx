@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react'
+import React, { useMemo, useEffect, useState } from 'react'
 import { Connection, LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { compose } from 'recompose'
 import { withTheme, Theme } from '@material-ui/core/styles'
@@ -12,8 +12,11 @@ import { ALL_TOKENS_MINTS_MAP } from '@sb/dexUtils/markets'
 
 import { useWalletPublicKeys } from '@sb/dexUtils/walletExtra'
 import { useBalanceInfo } from '@sb/dexUtils/wallet'
-import { getPricesForTokens, getTokenValuesForTokens, getSortedTokensByValue, getTotalTokenValue, getPercentageAllocationForTokens } from './utils'
+import { getPricesForTokens, getTokenValuesForTokens, getSortedTokensByValue, getTotalTokenValue, getPercentageAllocationForTokens, getAvailableTokensForRebalance, getTokensMap } from './utils'
 import { useConnection } from '@sb/dexUtils/connection'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 
 
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
@@ -26,13 +29,16 @@ import {
 } from '@sb/compositions/Rewards/index'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Text } from './Rebalance.styles'
+import { PoolInfo } from './Rebalance.types'
 
 const RebalanceComposition = ({
   publicKey,
   theme,
+  getPoolsInfoQuery: { getPoolsInfo },
 }: {
   publicKey: string
   theme: Theme
+  getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
 }) => {
   const { wallet } = useWallet()
   // const [publicKeys = []] = useWalletPublicKeys();
@@ -41,7 +47,7 @@ const RebalanceComposition = ({
   const connection: Connection = useConnection()
   const isWalletConnected = !!wallet?.publicKey
 
-  console.log('isWalletConnected: ', isWalletConnected)  
+  const [tokensMap, setTokensMap] = useState({})
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,22 +67,30 @@ const RebalanceComposition = ({
          }))
 
 
-         const allTokensData = [SOLToken, ...parsedTokensData]
+        const allTokensData = [SOLToken, ...parsedTokensData]
 
         const tokensWithPrices = await getPricesForTokens(allTokensData)
         const tokensWithTokenValue = getTokenValuesForTokens(tokensWithPrices)
         const sortedTokensByTokenValue = getSortedTokensByValue(tokensWithTokenValue)
 
-        console.timeEnd('rebalance initial data set time')
-        console.log('sortedTokensByTokenValue: ', sortedTokensByTokenValue)
 
         const totalTokenValue = getTotalTokenValue(sortedTokensByTokenValue)
-        console.log('totalTokenValue: ', totalTokenValue)
+        // console.log('totalTokenValue: ', totalTokenValue)
 
         const tokensWithPercentages = getPercentageAllocationForTokens(sortedTokensByTokenValue, totalTokenValue)
-        console.log('tokensWithPercentages', tokensWithPercentages)
+        // console.log('tokensWithPercentages', tokensWithPercentages)
 
 
+        // console.log('getPoolsInfo: ', getPoolsInfo)
+
+        // TODO: Can be splitted and move up
+        const availableTokensForRebalance = getAvailableTokensForRebalance(getPoolsInfo, tokensWithPercentages)
+        const availableTokensForRebalanceMap = getTokensMap(availableTokensForRebalance)
+
+        setTokensMap(availableTokensForRebalanceMap)
+
+        // console.log('availableTokensForRebalanceMap: ', availableTokensForRebalanceMap)
+        console.timeEnd('rebalance initial data set time')
 
       } catch(e) {
         // set error
@@ -139,4 +153,12 @@ const RebalanceComposition = ({
   )
 }
 
-export default compose(withTheme(), withPublicKey)(RebalanceComposition)
+export default compose(
+  withTheme(),
+  withPublicKey,
+  queryRendererHoc({
+    query: getPoolsInfo,
+    name: 'getPoolsInfoQuery',
+    fetchPolicy: 'cache-and-network',
+  })
+)(RebalanceComposition)
