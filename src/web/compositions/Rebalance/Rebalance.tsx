@@ -1,8 +1,9 @@
-import React, { useMemo, useEffect } from 'react'
+import React, { useMemo, useEffect, useState } from 'react'
 import { Connection, LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { compose } from 'recompose'
 import { withTheme, Theme } from '@material-ui/core/styles'
 import { TokenInstructions } from '@project-serum/serum'
+import StepArrow from '@icons/StepArrow.png'
 
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { useWallet, WRAPPED_SOL_MINT } from '@sb/dexUtils/wallet'
@@ -35,6 +36,50 @@ import DonutChartWithLegend, {
   mockData,
 } from '@sb/components/AllocationBlock/index'
 import BalanceDistributedComponent from './components/BalanceDistributed'
+import { RebalancePopup } from './components/RebalancePopup'
+
+const mockedData = [
+  {
+    amount: 0.307,
+    decimals: 6,
+    mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+    percentage: 2.793658965543384,
+    price: 1,
+    symbol: 'SRM',
+    disabled: false,
+    disabledReason: '',
+  },
+  {
+    amount: 0.447,
+    decimals: 6,
+    mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+    percentage: 2.793658965543384,
+    price: 1,
+    symbol: 'SOL',
+    disabled: true,
+    disabledReason: 'no pool',
+  },
+  {
+    amount: 0.303,
+    decimals: 6,
+    mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+    percentage: 2.793658965543384,
+    price: 1,
+    symbol: 'USDT',
+    disabled: false,
+    disabledReason: '',
+  },
+  {
+    amount: 0.751,
+    decimals: 6,
+    mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+    percentage: 2.793658965543384,
+    price: 1,
+    symbol: 'CCAI',
+    disabled: true,
+    disabledReason: 'no price',
+  },
+]
 
 const RebalanceComposition = ({
   publicKey,
@@ -44,6 +89,9 @@ const RebalanceComposition = ({
   theme: Theme
 }) => {
   const { wallet } = useWallet()
+  const [isRebalancePopupOpen, changeRebalancePopupState] = useState(false)
+  const [rebalanceStep, changeRebalanceStep] = useState('')
+
   // const [publicKeys = []] = useWalletPublicKeys();
   // console.log('publicKeys: ', publicKeys)
 
@@ -148,7 +196,7 @@ const RebalanceComposition = ({
             margin={'0 2rem 0 0'}
           >
             <RebalanceHeaderComponent />
-            <RebalanceTable theme={theme} />
+            <RebalanceTable mockedData={mockedData} theme={theme} />
           </Row>
           <Row
             height={'90%'}
@@ -183,7 +231,9 @@ const RebalanceComposition = ({
               </Row>
               <BtnCustom
                 theme={theme}
-                onClick={wallet.connect}
+                onClick={() => {
+                  changeRebalancePopupState(true)
+                }}
                 needMinWidth={false}
                 btnWidth="calc(55% - 1rem)"
                 height="100%"
@@ -204,6 +254,14 @@ const RebalanceComposition = ({
           </Row>
         </RowContainer>
       )}
+
+      <RebalancePopup
+        theme={theme}
+        open={isRebalancePopupOpen}
+        rebalanceStep={rebalanceStep}
+        changeRebalanceStep={changeRebalanceStep}
+        close={() => changeRebalancePopupState(false)}
+      />
     </RowContainer>
   )
 }

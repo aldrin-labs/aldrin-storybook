@@ -22,7 +22,7 @@ export const TableHeader = styled.tr`
 `
 export const BorderButton = styled(BtnCustom)`
   border: 0.1rem solid ${(props) => props.borderColor || '#41454E'};
-  width: auto;
+  width: ${(props) => props.width || 'auto'};
   padding: ${(props) => props.padding || '0 2rem'};
   height: 4rem;
   text-transform: none;

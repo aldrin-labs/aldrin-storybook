@@ -24,50 +24,13 @@ import Slider from '@sb/components/Slider/Slider'
 
 import MockedToken from '@icons/ccaiToken.svg'
 
-const mockedData = [
-  {
-    amount: 0.307,
-    decimals: 6,
-    mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
-    percentage: 2.793658965543384,
-    price: 1,
-    symbol: 'USDT',
-    disabled: false,
-    disabledReason: '',
-  },
-  {
-    amount: 0.307,
-    decimals: 6,
-    mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
-    percentage: 2.793658965543384,
-    price: 1,
-    symbol: 'USDT',
-    disabled: true,
-    disabledReason: 'no pool',
-  },
-  {
-    amount: 0.307,
-    decimals: 6,
-    mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
-    percentage: 2.793658965543384,
-    price: 1,
-    symbol: 'USDT',
-    disabled: false,
-    disabledReason: '',
-  },
-  {
-    amount: 0.307,
-    decimals: 6,
-    mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
-    percentage: 2.793658965543384,
-    price: 1,
-    symbol: 'USDT',
-    disabled: true,
-    disabledReason: 'no price',
-  },
-]
-
-const RebalanceTable = ({ theme }: { theme: Theme }) => {
+const RebalanceTable = ({
+  theme,
+  mockedData,
+}: {
+  theme: Theme
+  mockedData: any
+}) => {
   return (
     <RowContainer height={'75%'} align={'flex-end'}>
       <BlockTemplate
@@ -81,24 +44,31 @@ const RebalanceTable = ({ theme }: { theme: Theme }) => {
       >
         <RowContainer padding="2rem" justify={'space-between'} align="center">
           <Text theme={theme}>Set up your allocation </Text>
-          <BtnCustom
-            theme={theme}
-            onClick={() => {}}
-            needMinWidth={false}
-            btnWidth="auto"
-            height="auto"
-            fontSize="1.4rem"
-            padding="1rem 2.5rem"
-            borderRadius="1.7rem"
-            borderColor={theme.palette.blue.serum}
-            btnColor={'#fff'}
-            backgroundColor={theme.palette.blue.serum}
-            textTransform={'none'}
-            transition={'all .4s ease-out'}
-            style={{ whiteSpace: 'nowrap' }}
+          <a
+            href={'https://wallet.cryptocurrencies.ai/wallet'}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ textDecoration: 'none' }}
           >
-            Add Coin{' '}
-          </BtnCustom>
+            <BtnCustom
+              theme={theme}
+              onClick={() => {}}
+              needMinWidth={false}
+              btnWidth="auto"
+              height="auto"
+              fontSize="1.4rem"
+              padding="1rem 2.5rem"
+              borderRadius="1.7rem"
+              borderColor={theme.palette.blue.serum}
+              btnColor={'#fff'}
+              backgroundColor={theme.palette.blue.serum}
+              textTransform={'none'}
+              transition={'all .4s ease-out'}
+              style={{ whiteSpace: 'nowrap' }}
+            >
+              Add Coin{' '}
+            </BtnCustom>
+          </a>
         </RowContainer>
         <RowContainer>
           <Table>
@@ -120,7 +90,7 @@ const RebalanceTable = ({ theme }: { theme: Theme }) => {
                         style={{ marginRight: '1rem' }}
                       />
                       <Text fontSize={'2rem'} fontFamily={'Avenir Next Medium'}>
-                        CCAI
+                        {el.symbol}
                       </Text>
                     </Row>
                   </RowTd>
