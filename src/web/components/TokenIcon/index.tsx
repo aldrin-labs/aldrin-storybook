@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { TokenListProvider, TokenInfo } from '@solana/spl-token-registry'
 import CoinPlaceholder from '@icons/coinPlaceholder.svg'
+import { SvgIcon } from '@sb/components'
 
 export const TokenIcon = ({
   mint,
@@ -26,10 +27,13 @@ export const TokenIcon = ({
     })
   }, [setTokenMap])
 
-  if (!mint) return <img src={CoinPlaceholder} style={{ height, width }} />
+  if (!mint)
+    return <SvgIcon src={CoinPlaceholder} height={height} width={width} />
   const token = tokenMap.get(mint)
   if (!token || !token.logoURI)
-    return <img src={CoinPlaceholder} style={{ height, width }} />
+    return <SvgIcon src={CoinPlaceholder} height={height} width={width} />
 
-  return <img src={token.logoURI} style={{ height, width, borderRadius: '50%' }} />
+  return (
+    <img src={token.logoURI} style={{ height, width, borderRadius: '50%' }} />
+  )
 }

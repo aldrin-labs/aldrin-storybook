@@ -3,11 +3,12 @@ import { Text } from '@sb/compositions/Addressbook/index'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 import { StyledInput, TokenContainer, InvisibleInput } from '../index.styles'
-import MockedToken from '@icons/ccaiToken.svg'
 import Arrow from '@icons/arrowBottom.svg'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { Theme } from '@material-ui/core'
 import { BlueText } from './index.styles'
+import { TokenIcon } from '@sb/components/TokenIcon'
+import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 
 export const InputWithCoins = ({
   theme,
@@ -40,7 +41,11 @@ export const InputWithCoins = ({
       </TokenContainer>
       <TokenContainer right={'2rem'} bottom={'3rem'}>
         <Row style={{ flexWrap: 'nowrap' }}>
-          <SvgIcon src={MockedToken} width={'2rem'} height={'2rem'} />
+          <TokenIcon
+            mint={getTokenMintAddressByName(symbol)}
+            width={'2rem'}
+            height={'2rem'}
+          />
           <Text
             style={{ marginLeft: '0.5rem' }}
             fontSize={'2rem'}
@@ -141,7 +146,11 @@ export const InputWithSelector = ({
         bottom={'3rem'}
       >
         <Row style={{ flexWrap: 'nowrap' }}>
-          <SvgIcon src={MockedToken} width={'2rem'} height={'2rem'} />
+          <TokenIcon
+            mint={getTokenMintAddressByName(symbol)}
+            width={'2rem'}
+            height={'2rem'}
+          />
           <Text
             style={{ margin: '0 0.5rem' }}
             fontSize={'2rem'}
@@ -205,7 +214,11 @@ export const SimpleInput = ({
         bottom={'3rem'}
       >
         <Row style={{ flexWrap: 'nowrap' }}>
-          <SvgIcon src={MockedToken} width={'2rem'} height={'2rem'} />
+          <TokenIcon
+            mint={getTokenMintAddressByName(symbol)}
+            width={'2rem'}
+            height={'2rem'}
+          />
           <Text
             style={{ margin: '0 0.5rem' }}
             fontSize={'2rem'}
