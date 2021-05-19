@@ -126,7 +126,7 @@ const RebalanceTable = ({
                             paddingBottom: '1rem',
                           }}
                         >
-                          ${el.tokenValue}
+                          ${el.tokenValue.toFixed(2)}
                         </Text>
                       </TextColumnContainer>
                     </RowTd>
