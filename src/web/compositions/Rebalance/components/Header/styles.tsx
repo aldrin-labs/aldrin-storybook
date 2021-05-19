@@ -10,6 +10,9 @@ export const BalanceCard = styled(Row)`
   padding: 2rem;
   height: 100%;
   border-radius: 1.6rem;
+  @media (max-width: 1400px) {
+    padding: 1rem;
+  }
 `
 export const Title = styled.span`
   font-family: 'Avenir Next Thin';

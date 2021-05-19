@@ -16,9 +16,12 @@ export const LiquidityDataContainer = styled(Row)`
 export const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
+  // table-layout: fixed;
 `
-export const TableHeader = styled.tr`
-  height: 4rem;
+export const TableHeader = styled.thead`
+  td {
+    padding: 1rem 2rem;
+  }
 `
 export const BorderButton = styled(BtnCustom)`
   border: 0.1rem solid ${(props) => props.borderColor || '#41454E'};
@@ -29,6 +32,10 @@ export const BorderButton = styled(BtnCustom)`
   color: ${(props) => props.color || '#fbf2f2'};
   border-radius: 1.5rem;
   font-size: 1.4rem;
+`
+export const TableBody = styled.tbody`
+  height: 90%;
+  overflow: auto;
 `
 
 export const TableRow = styled.tr``

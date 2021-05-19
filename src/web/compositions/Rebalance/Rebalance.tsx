@@ -9,7 +9,15 @@ import { withPublicKey } from '@core/hoc/withPublicKey'
 import { useWallet, WRAPPED_SOL_MINT } from '@sb/dexUtils/wallet'
 import { ALL_TOKENS_MINTS_MAP } from '@sb/dexUtils/markets'
 
-import { getPricesForTokens, getTokenValuesForTokens, getSortedTokensByValue, getTotalTokenValue, getPercentageAllocationForTokens, getAvailableTokensForRebalance, getTokensMap } from './utils'
+import {
+  getPricesForTokens,
+  getTokenValuesForTokens,
+  getSortedTokensByValue,
+  getTotalTokenValue,
+  getPercentageAllocationForTokens,
+  getAvailableTokensForRebalance,
+  getTokensMap,
+} from './utils'
 import { useConnection } from '@sb/dexUtils/connection'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -128,25 +136,30 @@ const RebalanceComposition = ({
           tokensWithTokenValue
         )
 
-
         const totalTokenValue = getTotalTokenValue(sortedTokensByTokenValue)
         // console.log('totalTokenValue: ', totalTokenValue)
 
-        const tokensWithPercentages = getPercentageAllocationForTokens(sortedTokensByTokenValue, totalTokenValue)
+        const tokensWithPercentages = getPercentageAllocationForTokens(
+          sortedTokensByTokenValue,
+          totalTokenValue
+        )
         // console.log('tokensWithPercentages', tokensWithPercentages)
-
 
         // console.log('getPoolsInfo: ', getPoolsInfo)
 
         // TODO: Can be splitted and move up
-        const availableTokensForRebalance = getAvailableTokensForRebalance(getPoolsInfo, tokensWithPercentages)
-        const availableTokensForRebalanceMap = getTokensMap(availableTokensForRebalance)
+        const availableTokensForRebalance = getAvailableTokensForRebalance(
+          getPoolsInfo,
+          tokensWithPercentages
+        )
+        const availableTokensForRebalanceMap = getTokensMap(
+          availableTokensForRebalance
+        )
 
         setTokensMap(availableTokensForRebalanceMap)
 
         // console.log('availableTokensForRebalanceMap: ', availableTokensForRebalanceMap)
         console.timeEnd('rebalance initial data set time')
-
       } catch (e) {
         // set error
         console.log('e: ', e)
@@ -188,23 +201,24 @@ const RebalanceComposition = ({
           </BtnCustom>
         </>
       ) : (
-        <RowContainer theme={theme} height="100%">
+        <RowContainer theme={theme} height="100%" padding={'6rem 0'}>
           <Row
             height="100%"
             direction={'column'}
             width={'50%'}
             margin={'0 2rem 0 0'}
+            justify={'space-between'}
           >
             <RebalanceHeaderComponent />
             <RebalanceTable mockedData={mockedData} theme={theme} />
           </Row>
           <Row
-            height={'90%'}
+            height={'100%'}
             width={'30%'}
             direction="column"
             justify="space-between"
           >
-            <RowContainer height={'calc(100% - 9rem)'}>
+            <RowContainer height={'calc(85% - 2rem)'}>
               <DonutChartWithLegend
                 theme={theme}
                 data={mockData}
@@ -219,7 +233,7 @@ const RebalanceComposition = ({
             <RowContainer
               justify={'space-between'}
               align={'flex-end'}
-              height={'9rem'}
+              height={'16%'}
             >
               {' '}
               <Row

@@ -6,7 +6,7 @@ import { Text } from '@sb/compositions/Addressbook/index'
 
 const RebalanceHeaderComponent = ({}) => {
   return (
-    <RowContainer margin={'0 0 2rem 0'} height={'12rem'}>
+    <RowContainer margin={'0 0 2rem 0'} height={'calc(16%)'}>
       <Row
         justify="space-around"
         height="100%"

@@ -7,6 +7,7 @@ import {
   TableHeader,
   TableRow,
   Table,
+  TableBody,
   BorderButton,
   RowTd,
   TextColumnContainer,
@@ -32,17 +33,22 @@ const RebalanceTable = ({
   mockedData: any
 }) => {
   return (
-    <RowContainer height={'75%'} align={'flex-end'}>
+    <RowContainer height={'80%'} align={'flex-end'}>
       <BlockTemplate
         width={'100%'}
-        height={'95%'}
-        style={{ marginTop: '2rem' }}
+        height={'100%'}
         align={'flex-end'}
         theme={theme}
         direction={'column'}
         justify={'end'}
       >
-        <RowContainer padding="2rem" justify={'space-between'} align="center">
+        <RowContainer
+          height={'10rem'}
+          padding="2rem"
+          justify={'space-between'}
+          align="center"
+          style={{ borderBottom: '0.1rem solid #383B45' }}
+        >
           <Text theme={theme}>Set up your allocation </Text>
           <a
             href={'https://wallet.cryptocurrencies.ai/wallet'}
@@ -70,7 +76,10 @@ const RebalanceTable = ({
             </BtnCustom>
           </a>
         </RowContainer>
-        <RowContainer>
+        <RowContainer
+          align="flex-start"
+          style={{ height: 'calc(100% - 15rem)', overflow: 'scroll' }}
+        >
           <Table>
             <TableHeader>
               <RowTd>Asset</RowTd>
@@ -78,78 +87,132 @@ const RebalanceTable = ({
               <RowTd>Allocation</RowTd>
               <RowTd>Target Value</RowTd>
             </TableHeader>
-            {mockedData.map((el) => {
-              return (
-                <TableRow>
-                  <RowTd>
-                    <Row justify={'flex-start'}>
-                      <SvgIcon
-                        src={MockedToken}
-                        width={'30px'}
-                        height={'30px'}
-                        style={{ marginRight: '1rem' }}
+            <TableBody>
+              {mockedData.map((el) => {
+                return (
+                  <TableRow>
+                    <RowTd>
+                      <Row justify={'flex-start'}>
+                        <SvgIcon
+                          src={MockedToken}
+                          width={'30px'}
+                          height={'30px'}
+                          style={{ marginRight: '1rem' }}
+                        />
+                        <Text
+                          fontSize={'2rem'}
+                          fontFamily={'Avenir Next Medium'}
+                        >
+                          {el.symbol}
+                        </Text>
+                      </Row>
+                    </RowTd>
+                    <RowTd>
+                      <TextColumnContainer>
+                        <Text
+                          theme={theme}
+                          style={{
+                            whiteSpace: 'nowrap',
+                            paddingBottom: '1rem',
+                          }}
+                        >
+                          45.61 SOL{' '}
+                        </Text>
+                        <Text
+                          theme={theme}
+                          color={theme.palette.grey.new}
+                          style={{
+                            whiteSpace: 'nowrap',
+                            paddingBottom: '1rem',
+                          }}
+                        >
+                          $2,000{' '}
+                        </Text>
+                      </TextColumnContainer>
+                    </RowTd>
+                    <RowTd>
+                      <Slider
+                        thumbWidth="2.4rem"
+                        thumbHeight="2.4rem"
+                        sliderWidth="18rem"
+                        sliderHeight="1.7rem"
+                        sliderHeightAfter="2rem"
+                        borderRadius="3rem"
+                        borderRadiusAfter="3rem"
+                        thumbBackground="#165BE0"
+                        borderThumb="2px solid #f2fbfb"
+                        trackAfterBackground={'#383B45'}
+                        trackBeforeBackground={'#366CE5'}
+                        value={50}
+                        // onChange={handleSlideChange}
+                        max={100}
                       />
-                      <Text fontSize={'2rem'} fontFamily={'Avenir Next Medium'}>
-                        {el.symbol}
-                      </Text>
-                    </Row>
-                  </RowTd>
-                  <RowTd>
-                    <TextColumnContainer>
-                      <Text
-                        theme={theme}
-                        style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                      >
-                        45.61 SOL{' '}
-                      </Text>
-                      <Text
-                        theme={theme}
-                        color={theme.palette.grey.new}
-                        style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                      >
-                        $2,000{' '}
-                      </Text>
-                    </TextColumnContainer>
-                  </RowTd>
-                  <RowTd>
-                    <Slider
-                      thumbWidth="2.4rem"
-                      thumbHeight="2.4rem"
-                      sliderWidth="18rem"
-                      sliderHeight="1.7rem"
-                      sliderHeightAfter="2rem"
-                      borderRadius="3rem"
-                      borderRadiusAfter="3rem"
-                      thumbBackground="#165BE0"
-                      borderThumb="2px solid #f2fbfb"
-                      trackAfterBackground={'#383B45'}
-                      trackBeforeBackground={'#366CE5'}
-                      value={50}
-                      // onChange={handleSlideChange}
-                      max={100}
-                    />
-                  </RowTd>{' '}
-                  <RowTd>
-                    <TextColumnContainer>
-                      <Text
-                        theme={theme}
-                        style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                      >
-                        45.61 SOL{' '}
-                      </Text>
-                      <Text
-                        theme={theme}
-                        color={theme.palette.grey.new}
-                        style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                      >
-                        $2,000{' '}
-                      </Text>
-                    </TextColumnContainer>
-                  </RowTd>{' '}
-                </TableRow>
-              )
-            })}
+                    </RowTd>{' '}
+                    <RowTd>
+                      <TextColumnContainer>
+                        <Text
+                          theme={theme}
+                          style={{
+                            whiteSpace: 'nowrap',
+                            paddingBottom: '1rem',
+                          }}
+                        >
+                          45.61 SOL{' '}
+                        </Text>
+                        <Text
+                          theme={theme}
+                          color={theme.palette.grey.new}
+                          style={{
+                            whiteSpace: 'nowrap',
+                            paddingBottom: '1rem',
+                          }}
+                        >
+                          $2,000{' '}
+                        </Text>
+                      </TextColumnContainer>
+                    </RowTd>{' '}
+                  </TableRow>
+                )
+              })}
+            </TableBody>
           </Table>
+        </RowContainer>
+        <RowContainer
+          height={'5rem'}
+          padding="0 2rem"
+          justify={'space-between'}
+          align="center"
+          style={{ borderTop: '0.1rem solid #383B45' }}
+        >
+          <Text theme={theme}>
+            Want to earn fees from Rebalance transactions? Add liquidity!{' '}
+          </Text>
+          <a
+            href={'/pools'}
+            style={{
+              textDecoration: 'none',
+              fontFamily: 'Avenir Next Medium',
+              fontSize: '1.5rem',
+              textAlign: 'right',
+              letterSpacing: '-0.523077px',
+              color: '#A5E898',
+            }}
+          >
+            View Pools
+            <svg
+              style={{ marginLeft: '1rem' }}
+              width="13"
+              height="8"
+              viewBox="0 0 13 8"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12.3536 4.35355C12.5488 4.15829 12.5488 3.84171 12.3536 3.64645L9.17157 0.464467C8.97631 0.269205 8.65973 0.269205 8.46447 0.464467C8.2692 0.659729 8.2692 0.976311 8.46447 1.17157L11.2929 4L8.46447 6.82843C8.2692 7.02369 8.2692 7.34027 8.46447 7.53553C8.65973 7.7308 8.97631 7.7308 9.17157 7.53553L12.3536 4.35355ZM-4.37114e-08 4.5L12 4.5L12 3.5L4.37114e-08 3.5L-4.37114e-08 4.5Z"
+                fill="#A5E898"
+              />
+            </svg>
+          </a>
         </RowContainer>
       </BlockTemplate>
     </RowContainer>
