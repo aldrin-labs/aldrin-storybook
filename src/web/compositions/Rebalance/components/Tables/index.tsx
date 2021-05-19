@@ -116,7 +116,7 @@ const RebalanceTable = ({
                             paddingBottom: '1rem',
                           }}
                         >
-                          45.61 SOL{' '}
+                          {el.amount} {el.symbol}
                         </Text>
                         <Text
                           theme={theme}
@@ -126,7 +126,7 @@ const RebalanceTable = ({
                             paddingBottom: '1rem',
                           }}
                         >
-                          $2,000{' '}
+                          ${el.tokenValue}
                         </Text>
                       </TextColumnContainer>
                     </RowTd>
@@ -157,7 +157,7 @@ const RebalanceTable = ({
                             paddingBottom: '1rem',
                           }}
                         >
-                          45.61 SOL{' '}
+                          {el.targetAmount || 0} {el.symbol}
                         </Text>
                         <Text
                           theme={theme}
@@ -167,7 +167,7 @@ const RebalanceTable = ({
                             paddingBottom: '1rem',
                           }}
                         >
-                          $2,000{' '}
+                          {el.targetTokenValue || 0}$
                         </Text>
                       </TextColumnContainer>
                     </RowTd>{' '}
