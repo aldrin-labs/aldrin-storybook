@@ -181,7 +181,7 @@ const RebalanceTable = ({
                         trackBeforeBackground={
                           el.disabled ? '#93A0B2' : '#366CE5'
                         }
-                        value={50}
+                        value={el.targetPercentage}
                         disabled={el.disabled}
                         disabledText={tooltipTexts[el.disabledReason]}
                         // onChange={handleSlideChange}
@@ -197,7 +197,7 @@ const RebalanceTable = ({
                             paddingBottom: '1rem',
                           }}
                         >
-                          {el.targetAmount}
+                          {el.targetAmount}{' '}
                           {el.symbol.length > 15
                             ? `${el.symbol.slice(0, 4)}...${el.symbol.slice(
                                 el.symbol.length - 3
