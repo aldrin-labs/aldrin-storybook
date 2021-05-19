@@ -1,4 +1,7 @@
 import React, { useState } from 'react'
+import copy from 'clipboard-copy'
+import { notify } from '@sb/dexUtils/notifications'
+
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 
@@ -24,13 +27,30 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import Slider from '@sb/components/Slider/Slider'
 
 import MockedToken from '@icons/ccaiToken.svg'
+import { Theme } from '@material-ui/core'
+
+const tooltipTexts = {
+  'no pool':
+    "It's currently impossible to buy or sell this token due to a lack of liquidity. Although, you can create a pool or deposit liquidity to the existing one and earn fees from each transaction through this pool.",
+  'no price':
+    "It's currently impossible to buy or sell this token due to a lack of liquidity. Although, you can create a pool or deposit liquidity to the existing one and earn fees from each transaction through this pool.",
+  'no liquidity in pool':
+    "It's currently impossible to buy or sell this token due to a lack of liquidity. Although, you can create a pool or deposit liquidity to the existing one and earn fees from each transaction through this pool.",
+}
 
 const RebalanceTable = ({
   theme,
   mockedData,
 }: {
   theme: Theme
-  mockedData: any
+  mockedData: {
+    amount: Number
+    decimals: 6
+    mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB'
+    percentage: 2.793658965543384
+    price: 1
+    symbol: 'USDT'
+  }[]
 }) => {
   return (
     <RowContainer height={'80%'} align={'flex-end'}>
@@ -100,6 +120,13 @@ const RebalanceTable = ({
                           style={{ marginRight: '1rem' }}
                         />
                         <Text
+                          onClick={() => {
+                            copy(el.symbol)
+                            notify({
+                              type: 'success',
+                              message: 'Copied!',
+                            })
+                          }}
                           fontSize={'2rem'}
                           fontFamily={'Avenir Next Medium'}
                         >
@@ -148,11 +175,15 @@ const RebalanceTable = ({
                         sliderHeightAfter="2rem"
                         borderRadius="3rem"
                         borderRadiusAfter="3rem"
-                        thumbBackground="#165BE0"
+                        thumbBackground={el.disabled ? '#93A0B2' : '#165BE0'}
                         borderThumb="2px solid #f2fbfb"
                         trackAfterBackground={'#383B45'}
-                        trackBeforeBackground={'#366CE5'}
+                        trackBeforeBackground={
+                          el.disabled ? '#93A0B2' : '#366CE5'
+                        }
                         value={50}
+                        disabled={el.disabled}
+                        disabledText={tooltipTexts[el.disabledReason]}
                         // onChange={handleSlideChange}
                         max={100}
                       />

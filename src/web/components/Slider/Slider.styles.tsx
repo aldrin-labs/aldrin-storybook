@@ -1,7 +1,7 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 import Slider from '@material-ui/lab/Slider'
-import Lock from '@material-ui/icons/Lock'
+import Lock from '@icons/question.png'
 
 // const thumbWidth = '25px'
 // const thumbHeight = '25px'
@@ -96,7 +96,7 @@ export const StyledSlider = styled(
 `
 
 export const StyledLock = styled(
-  ({ value, sliderWidth, max = 100, ...rest }) => <Lock {...rest} />
+  ({ value, sliderWidth, max = 100, ...rest }) => <img src={Lock} {...rest} />
 )`
   color: #fff;
   position: absolute;
