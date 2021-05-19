@@ -48,13 +48,18 @@ const createAllocationDonutChart = ({
   id,
   data,
   colors,
+  tooltipData,
 }: {
   id: string
-  data: number[]
+  data: any
+  tooltipData: any
   colors: string[]
 }) => {
-  const ctx = document.getElementById(`AllocationDonutChart-${id}`)?.getContext('2d')
+  const ctx = document
+    .getElementById(`AllocationDonutChart-${id}`)
+    ?.getContext('2d')
 
+  console.log('data', tooltipData)
   window[`AllocationDonutChart-${id}`] = new Chart(ctx, {
     type: 'doughnut',
     data: {

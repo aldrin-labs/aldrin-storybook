@@ -74,10 +74,10 @@ const DonutChartWithLegend = ({ data, theme, id }: IProps) => {
   )
   return (
     <BlockTemplate
-      style={{ margin: '0 0 2rem 0' }}
+      style={{ margin: '0 0 2rem 0', overflow: 'scroll' }}
       theme={theme}
       width={'100%'}
-      height={'47%'}
+      height={'48%'}
     >
       <ChartContainer>
         <HeaderContainer theme={theme} justify={'space-between'}>
@@ -90,7 +90,12 @@ const DonutChartWithLegend = ({ data, theme, id }: IProps) => {
         <RowContainer height={'calc(100% - 5rem)'}>
           <AllocationChartContainer>
             {/* we need to re-render chart on data update */}
-            <AllocationDonutChart id={id} data={chartData} colors={colors} />
+            <AllocationDonutChart
+              id={id}
+              data={chartData}
+              tooltipData={mockData}
+              colors={colors}
+            />
           </AllocationChartContainer>
           <AllocationLegendContainer>
             <AllocationLegend theme={theme} data={legendData} colors={colors} />

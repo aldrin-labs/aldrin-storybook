@@ -8,13 +8,15 @@ const AllocationDonutChart = ({
   id,
   colors,
   data,
+  tooltipData,
 }: {
   id: string
   colors: string[]
   data: number[]
+  tooltipData: any
 }) => {
   useEffect(() => {
-    createAllocationDonutChart({ id, data, colors })
+    createAllocationDonutChart({ id, data, colors, tooltipData })
 
     // @ts-ignore - we set it in create chart function above
     return () => window[`AllocationDonutChart-${id}`].destroy()
