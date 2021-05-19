@@ -99,6 +99,8 @@ const RebalanceComposition = ({
   const isWalletConnected = !!wallet?.publicKey
 
   const [tokensMap, setTokensMap] = useState({})
+  const [totalTokensValue, setTotalTokensValue] = useState(0)
+  const [leftToDistributeValue, setLeftToDistributeValue] = useState(0)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -157,6 +159,7 @@ const RebalanceComposition = ({
         )
 
         setTokensMap(availableTokensForRebalanceMap)
+        setTotalTokensValue(totalTokenValue)
 
         // console.log('availableTokensForRebalanceMap: ', availableTokensForRebalanceMap)
         console.timeEnd('rebalance initial data set time')
@@ -209,8 +212,8 @@ const RebalanceComposition = ({
             margin={'0 2rem 0 0'}
             justify={'space-between'}
           >
-            <RebalanceHeaderComponent />
-            <RebalanceTable mockedData={mockedData} theme={theme} />
+            <RebalanceHeaderComponent totalTokensValue={totalTokensValue} leftToDistributeValue={leftToDistributeValue} />
+            <RebalanceTable mockedData={Object.values(tokensMap).map(el => el)} theme={theme} />
           </Row>
           <Row
             height={'100%'}
@@ -221,12 +224,12 @@ const RebalanceComposition = ({
             <RowContainer height={'calc(85% - 2rem)'}>
               <DonutChartWithLegend
                 theme={theme}
-                data={mockData}
+                data={Object.values(tokensMap).map(el => ({ symbol: el.symbol, value: el.percentage }))}
                 id={'current'}
               />
               <DonutChartWithLegend
                 theme={theme}
-                data={mockData}
+                data={Object.values(tokensMap).map(el => ({ symbol: el.symbol, value: el.percentage }))}
                 id={'target'}
               />
             </RowContainer>

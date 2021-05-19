@@ -24,6 +24,7 @@ export type TokenType = {
     decimals: number
     amount: number
     price: number | null
+    percentage: number
     mint: string
     tokenValue: number,
     disabled?: true | false
