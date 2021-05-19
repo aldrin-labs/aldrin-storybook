@@ -1213,7 +1213,7 @@ export const getTokenMintAddressByName = (name: string): string | null => {
   return ALL_TOKENS_MINTS.find(token => token.name === name)?.address?.toString();
 }
 
-export const getTokenNameByAddress = (address: string): string => {
+export const getTokenNameByMintAddress = (address: string): string => {
   const token = ALL_TOKENS_MINTS.find(token => token.address.toString() === address);
 
   if (token) {
