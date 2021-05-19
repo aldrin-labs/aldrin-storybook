@@ -27,6 +27,9 @@ export type TokenType = {
     percentage: number
     mint: string
     tokenValue: number,
+    targetTokenValue: number,
+    targetAmount: number,
+    targetPercentage: number,
     disabled?: true | false
     disabledReason?: string
     poolWithLiquidityExists?: true | false

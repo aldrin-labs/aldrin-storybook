@@ -240,7 +240,7 @@ const RebalanceComposition = ({
                 theme={theme}
                 data={Object.values(tokensMap).map((el) => ({
                   symbol: el.symbol,
-                  value: el.percentage,
+                  value: el.targetPercentage,
                 }))}
                 id={'target'}
               />

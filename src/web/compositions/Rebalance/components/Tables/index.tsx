@@ -197,7 +197,7 @@ const RebalanceTable = ({
                             paddingBottom: '1rem',
                           }}
                         >
-                          {el.targetAmount || 0}{' '}
+                          {el.targetAmount}
                           {el.symbol.length > 15
                             ? `${el.symbol.slice(0, 4)}...${el.symbol.slice(
                                 el.symbol.length - 3
@@ -212,7 +212,7 @@ const RebalanceTable = ({
                             paddingBottom: '1rem',
                           }}
                         >
-                          {el.targetTokenValue || 0}$
+                          ${el.targetTokenValue.toFixed(2)}
                         </Text>
                       </TextColumnContainer>
                     </RowTd>{' '}
