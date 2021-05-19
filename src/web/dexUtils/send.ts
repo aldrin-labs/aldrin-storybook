@@ -950,10 +950,7 @@ export async function sendTransaction({
   sentMessage?: string,
   successMessage?: string,
   timeout?: number
-}) {
-
-  throw new Error('Transaction failed')
-  
+}) {  
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash('max')
   ).blockhash
