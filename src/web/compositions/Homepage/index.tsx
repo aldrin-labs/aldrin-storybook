@@ -23,6 +23,7 @@ import Candies from '../../../icons/candies.svg'
 import ChartCard from '@icons/chart.svg'
 import Alameda from '@icons/alamedaLight.svg'
 import Serum from '@icons/Logo&Serum.svg'
+import Chrome from '@icons/chrome.svg'
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
 
 export const Homepage = () => {
@@ -34,6 +35,27 @@ export const Homepage = () => {
           width={'calc(100% - 5.5rem)'}
         >
           <img src={Banner} width={'100%'} />
+          <WhiteButton
+            style={{ position: 'absolute', right: '10rem' }}
+            width={'21rem'}
+            padding={'0 3rem'}
+            needHover={true}
+            href={`https://ido.cryptocurrencies.ai/`}
+          >
+            Learn More{' '}
+            <svg
+              width="20"
+              height="8"
+              viewBox="0 0 20 8"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M19.3536 4.35355C19.5488 4.15829 19.5488 3.84171 19.3536 3.64645L16.1716 0.464466C15.9763 0.269204 15.6597 0.269204 15.4645 0.464466C15.2692 0.659728 15.2692 0.976311 15.4645 1.17157L18.2929 4L15.4645 6.82843C15.2692 7.02369 15.2692 7.34027 15.4645 7.53553C15.6597 7.7308 15.9763 7.7308 16.1716 7.53553L19.3536 4.35355ZM0 4.5H19V3.5H0V4.5Z"
+                fill="#F8FAFF"
+              />
+            </svg>
+          </WhiteButton>
         </CardContainer>
       </RowContainer>
       <RowContainer align={'flex-start'} style={{ marginTop: '1.5rem' }}>
@@ -95,26 +117,39 @@ export const Homepage = () => {
                   <strong>CCAI  Wallet™</strong>.
                 </Description>
               </RowContainer>
-              <WhiteButton
-                needHover={true}
-                width={'30rem'}
-                padding={'0 2rem'}
-                href={`${CCAIProviderURL}/welcome`}
-              >
-                Go to Wallet{' '}
-                <svg
-                  width="20"
-                  height="8"
-                  viewBox="0 0 20 8"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+              <Row direction={'column'}>
+                {' '}
+                <WhiteButton
+                  style={{ marginBottom: '3rem' }}
+                  needHover={true}
+                  width={'22rem'}
+                  padding={'0 2rem'}
+                  href={`${CCAIProviderURL}/welcome`}
                 >
-                  <path
-                    d="M19.3536 4.35355C19.5488 4.15829 19.5488 3.84171 19.3536 3.64645L16.1716 0.464466C15.9763 0.269204 15.6597 0.269204 15.4645 0.464466C15.2692 0.659728 15.2692 0.976311 15.4645 1.17157L18.2929 4L15.4645 6.82843C15.2692 7.02369 15.2692 7.34027 15.4645 7.53553C15.6597 7.7308 15.9763 7.7308 16.1716 7.53553L19.3536 4.35355ZM0 4.5H19V3.5H0V4.5Z"
-                    fill="#F8FAFF"
-                  />
-                </svg>
-              </WhiteButton>
+                  Go to Wallet{' '}
+                  <svg
+                    width="20"
+                    height="8"
+                    viewBox="0 0 20 8"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M19.3536 4.35355C19.5488 4.15829 19.5488 3.84171 19.3536 3.64645L16.1716 0.464466C15.9763 0.269204 15.6597 0.269204 15.4645 0.464466C15.2692 0.659728 15.2692 0.976311 15.4645 1.17157L18.2929 4L15.4645 6.82843C15.2692 7.02369 15.2692 7.34027 15.4645 7.53553C15.6597 7.7308 15.9763 7.7308 16.1716 7.53553L19.3536 4.35355ZM0 4.5H19V3.5H0V4.5Z"
+                      fill="#F8FAFF"
+                    />
+                  </svg>
+                </WhiteButton>
+                {/* <WhiteButton
+                  style={{ cursor: 'pointer' }}
+                  needHover={true}
+                  width={'22rem'}
+                  padding={'0 2rem'}
+                >
+                  Install Plug-In
+                  <SvgIcon src={Chrome} width={'2.3rem'} height={'2.3rem'} />
+                </WhiteButton> */}
+              </Row>
             </HeaderContainer>
           </CardContainer>
           <CardContainer>
