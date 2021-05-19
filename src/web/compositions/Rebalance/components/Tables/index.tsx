@@ -31,9 +31,9 @@ import { Theme } from '@material-ui/core'
 
 const tooltipTexts = {
   'no pool':
-    "It's currently impossible to buy or sell this token due to a lack of liquidity. Although, you can create a pool or deposit liquidity to the existing one and earn fees from each transaction through this pool.",
+    "It's currently impossible to buy or sell this token because no pools available for such token. Although, you can create a pool or deposit liquidity to the existing one and earn fees from each transaction through this pool.",
   'no price':
-    "It's currently impossible to buy or sell this token due to a lack of liquidity. Although, you can create a pool or deposit liquidity to the existing one and earn fees from each transaction through this pool.",
+    "It's currently impossible to buy or sell this token because this token is not supported.",
   'no liquidity in pool':
     "It's currently impossible to buy or sell this token due to a lack of liquidity. Although, you can create a pool or deposit liquidity to the existing one and earn fees from each transaction through this pool.",
 }
@@ -131,7 +131,7 @@ const RebalanceTable = ({
                           fontFamily={'Avenir Next Medium'}
                         >
                           {el.symbol.length > 15
-                            ? `${el.symbol.slice(1, 4)}...${el.symbol.slice(
+                            ? `${el.symbol.slice(0, 3)}...${el.symbol.slice(
                                 el.symbol.length - 3
                               )}`
                             : el.symbol}
@@ -149,7 +149,7 @@ const RebalanceTable = ({
                         >
                           {el.amount}{' '}
                           {el.symbol.length > 15
-                            ? `${el.symbol.slice(1, 4)}...${el.symbol.slice(
+                            ? `${el.symbol.slice(0, 3)}...${el.symbol.slice(
                                 el.symbol.length - 3
                               )}`
                             : el.symbol}
@@ -199,7 +199,7 @@ const RebalanceTable = ({
                         >
                           {el.targetAmount || 0}{' '}
                           {el.symbol.length > 15
-                            ? `${el.symbol.slice(1, 4)}...${el.symbol.slice(
+                            ? `${el.symbol.slice(0, 4)}...${el.symbol.slice(
                                 el.symbol.length - 3
                               )}`
                             : el.symbol}
