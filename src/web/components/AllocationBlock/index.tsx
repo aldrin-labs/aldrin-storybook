@@ -35,7 +35,7 @@ export const mockData = [
 
 export const ROWS_TO_SHOW_IN_LEGEND = 4
 
-const DonutChartWithLegend = ({ data, theme, id }: IProps) => {
+const DonutChartWithLegend = ({ data = [], theme, id }: IProps) => {
   const [colors, setColors] = useState<string[]>([])
 
   useEffect(() => {
@@ -44,7 +44,7 @@ const DonutChartWithLegend = ({ data, theme, id }: IProps) => {
     )
 
     setColors(generatedColors)
-  }, [])
+  }, [data])
 
   const totalValue = data.reduce((prev, curr) => prev + curr.value, 0)
   const sortedData = data
