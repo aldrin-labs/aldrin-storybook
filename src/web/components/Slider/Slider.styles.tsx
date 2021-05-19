@@ -1,7 +1,6 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 import Slider from '@material-ui/lab/Slider'
-import Lock from '@icons/question.png'
 
 // const thumbWidth = '25px'
 // const thumbHeight = '25px'
@@ -96,18 +95,15 @@ export const StyledSlider = styled(
 `
 
 export const StyledLock = styled(
-  ({ value, sliderWidth, max = 100, ...rest }) => <img src={Lock} {...rest} />
+  ({ value, sliderWidth, max = 100, ...rest }) => <div {...rest}>?</div>
 )`
   color: #fff;
   position: absolute;
   z-index: 10;
-  left: calc(
-    ${(props) => props.value * +(parseFloat(props.sliderWidth) / props.max)}rem -
-      0.75rem
-  );
   height: 1.5rem;
   width: 1.5rem;
-  top: 0.2rem;
+  left: 8.6rem;
+  font-family: 'Avenir Next Demi';
 `
 
 export const AvailableRange = styled.div`
