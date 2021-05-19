@@ -61,6 +61,7 @@ import { AWESOME_MARKETS } from '@sb/dexUtils/serum'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { WarningPopup } from './components/WarningPopup'
+import { withRegionCheck } from '@core/hoc/withRegionCheck'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
   // Check if the arrays are the same length
@@ -418,6 +419,7 @@ export default compose(
   withTheme(),
   withPublicKey,
   withRouter,
+  withRegionCheck,
   // withAuth,
   // queryRendererHoc({
   //   skip: (props: any) => !props.authenticated,

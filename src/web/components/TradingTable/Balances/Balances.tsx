@@ -16,7 +16,7 @@ import {
   useSelectedTokenAccounts,
 } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import { useSendConnection } from '@sb/dexUtils/connection'
+import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { settleFunds } from '@sb/dexUtils/send'
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
@@ -26,7 +26,7 @@ const BalancesTable = (props) => {
 
   const balances = useBalances()
   const [accounts] = useTokenAccounts()
-  const connection = useSendConnection()
+  const connection = useConnection()
   const { wallet, providerUrl } = useWallet()
   const [selectedTokenAccounts] = useSelectedTokenAccounts()
 
