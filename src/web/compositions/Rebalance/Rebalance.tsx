@@ -212,8 +212,14 @@ const RebalanceComposition = ({
             margin={'0 2rem 0 0'}
             justify={'space-between'}
           >
-            <RebalanceHeaderComponent totalTokensValue={totalTokensValue} leftToDistributeValue={leftToDistributeValue} />
-            <RebalanceTable mockedData={Object.values(tokensMap).map(el => el)} theme={theme} />
+            <RebalanceHeaderComponent
+              totalTokensValue={totalTokensValue}
+              leftToDistributeValue={leftToDistributeValue}
+            />
+            <RebalanceTable
+              mockedData={Object.values(tokensMap).map((el) => el)}
+              theme={theme}
+            />
           </Row>
           <Row
             height={'100%'}
@@ -224,12 +230,18 @@ const RebalanceComposition = ({
             <RowContainer height={'calc(85% - 2rem)'}>
               <DonutChartWithLegend
                 theme={theme}
-                data={Object.values(tokensMap).map(el => ({ symbol: el.symbol, value: el.percentage }))}
+                data={Object.values(tokensMap).map((el) => ({
+                  symbol: el.symbol,
+                  value: el.percentage,
+                }))}
                 id={'current'}
               />
               <DonutChartWithLegend
                 theme={theme}
-                data={Object.values(tokensMap).map(el => ({ symbol: el.symbol, value: el.percentage }))}
+                data={Object.values(tokensMap).map((el) => ({
+                  symbol: el.symbol,
+                  value: el.percentage,
+                }))}
                 id={'target'}
               />
             </RowContainer>

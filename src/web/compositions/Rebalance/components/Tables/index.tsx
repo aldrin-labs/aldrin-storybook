@@ -103,7 +103,11 @@ const RebalanceTable = ({
                           fontSize={'2rem'}
                           fontFamily={'Avenir Next Medium'}
                         >
-                          {el.symbol}
+                          {el.symbol.length > 15
+                            ? `${el.symbol.slice(1, 4)}...${el.symbol.slice(
+                                el.symbol.length - 3
+                              )}`
+                            : el.symbol}
                         </Text>
                       </Row>
                     </RowTd>
@@ -116,7 +120,12 @@ const RebalanceTable = ({
                             paddingBottom: '1rem',
                           }}
                         >
-                          {el.amount} {el.symbol}
+                          {el.amount}{' '}
+                          {el.symbol.length > 15
+                            ? `${el.symbol.slice(1, 4)}...${el.symbol.slice(
+                                el.symbol.length - 3
+                              )}`
+                            : el.symbol}
                         </Text>
                         <Text
                           theme={theme}
@@ -157,7 +166,12 @@ const RebalanceTable = ({
                             paddingBottom: '1rem',
                           }}
                         >
-                          {el.targetAmount || 0} {el.symbol}
+                          {el.targetAmount || 0}{' '}
+                          {el.symbol.length > 15
+                            ? `${el.symbol.slice(1, 4)}...${el.symbol.slice(
+                                el.symbol.length - 3
+                              )}`
+                            : el.symbol}
                         </Text>
                         <Text
                           theme={theme}
