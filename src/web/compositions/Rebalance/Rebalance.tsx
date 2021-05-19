@@ -205,7 +205,7 @@ const RebalanceComposition = ({
           <Row
             height="100%"
             direction={'column'}
-            width={'50%'}
+            width={'55%'}
             margin={'0 2rem 0 0'}
             justify={'space-between'}
           >
@@ -214,7 +214,7 @@ const RebalanceComposition = ({
           </Row>
           <Row
             height={'100%'}
-            width={'30%'}
+            width={'35%'}
             direction="column"
             justify="space-between"
           >
