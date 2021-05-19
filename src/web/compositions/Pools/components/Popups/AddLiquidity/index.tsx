@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { Paper } from '@material-ui/core'
+import { Paper, Theme } from '@material-ui/core'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BoldHeader, Line } from '../index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -13,6 +13,10 @@ import { InputWithCoins, InputWithTotal } from '../components'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
+import { depositAllTokenTypes } from '@sb/dexUtils/pools'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { useConnection } from '@sb/dexUtils/connection'
+import { PublicKey } from '@solana/web3.js'
 
 const StyledPaper = styled(Paper)`
   height: auto;
@@ -23,7 +27,28 @@ const StyledPaper = styled(Paper)`
   border-radius: 0.8rem;
 `
 
-export const AddLiquidityPopup = ({ theme, open, close }) => {
+export const AddLiquidityPopup = ({
+  theme,
+  open,
+  close,
+}: {
+  theme: Theme
+  open: boolean
+  close: () => void
+}) => {
+  const { wallet } = useWallet()
+  const connection = useConnection()
+
+  const [baseAmount, setBaseAmount] = useState<string>('')
+  const [quoteAmount, setQuoteAmount] = useState<string>('')
+
+  const [warningChecked, setWarningChecked] = useState(false)
+
+  const [operationLoading, setOperationLoading] = useState(false)
+
+  const isDisabled =
+    !warningChecked || +baseAmount <= 0 || +quoteAmount <= 0 || operationLoading
+
   return (
     <DialogWrapper
       theme={theme}
@@ -36,22 +61,32 @@ export const AddLiquidityPopup = ({ theme, open, close }) => {
     >
       <Row justify={'space-between'} width={'100%'}>
         <BoldHeader>Add Liquidity</BoldHeader>
-        <SvgIcon
-          style={{ cursor: 'pointer' }}
-          onClick={() => close()}
-          src={Close}
-        />
+        <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </Row>
       <RowContainer>
-        <InputWithCoins />
+        <InputWithCoins
+          theme={theme}
+          value={baseAmount}
+          onChange={setBaseAmount}
+          symbol={'SOL'}
+          alreadyInPool={200}
+          maxBalance={2000}
+        />
         <Row>
           <Text fontSize={'4rem'} fontFamily={'Avenir Next Medium'}>
             +
           </Text>
         </Row>
-        <InputWithCoins />
+        <InputWithCoins
+          theme={theme}
+          value={quoteAmount}
+          onChange={setQuoteAmount}
+          symbol={'CCAI'}
+          alreadyInPool={200}
+          maxBalance={2000}
+        />
         <Line />
-        <InputWithTotal />
+        <InputWithTotal theme={theme} value={2000} />
       </RowContainer>
       <Row margin={'2rem 0 1rem 0'} justify={'space-between'}>
         <Row direction={'column'} align={'start'}>
@@ -59,14 +94,13 @@ export const AddLiquidityPopup = ({ theme, open, close }) => {
             Projected fee earnings based on the past 30d
           </Text>
           <Row>
-            {' '}
             <Text
               fontSize={'2rem'}
               color={'#A5E898'}
               fontFamily={'Avenir Next Demi'}
             >
               $120&nbsp;
-            </Text>{' '}
+            </Text>
             <Text fontSize={'2rem'} fontFamily={'Avenir Next Demi'}>
               / Month
             </Text>
@@ -77,14 +111,13 @@ export const AddLiquidityPopup = ({ theme, open, close }) => {
             APY (30d)
           </Text>
           <Row>
-            {' '}
             <Text
               fontSize={'2rem'}
               color={'#A5E898'}
               fontFamily={'Avenir Next Demi'}
             >
               12%
-            </Text>{' '}
+            </Text>
           </Row>
         </Row>
       </Row>
@@ -97,11 +130,10 @@ export const AddLiquidityPopup = ({ theme, open, close }) => {
           <SCheckbox
             id={'warning_checkbox'}
             style={{ padding: 0, marginRight: '1rem' }}
-            onChange={() => {}}
-            checked={true}
+            onChange={() => setWarningChecked(!warningChecked)}
+            checked={warningChecked}
           />
           <label htmlFor={'warning_checkbox'}>
-            {' '}
             <WhiteText
               style={{
                 cursor: 'pointer',
@@ -112,20 +144,38 @@ export const AddLiquidityPopup = ({ theme, open, close }) => {
               }}
             >
               I understand the risks of providing liquidity, and that I could
-              lose money to impermanent loss.{' '}
+              lose money to impermanent loss.
             </WhiteText>
           </label>
         </Row>
         <BlueButton
           style={{ width: '36%', fontFamily: 'Avenir Next Medium' }}
-          disabled={false}
+          disabled={isDisabled}
           isUserConfident={true}
           theme={theme}
-          onClick={() => {}}
+          onClick={async () => {
+            await setOperationLoading(true)
+            await depositAllTokenTypes({
+              wallet,
+              connection,
+              swapTokenPublicKey: new PublicKey(
+                '57XV3PZWT75ftJy1jXW3uu8jgwYzgCjdhtSXLxP6rXbt'
+              ),
+              userTokenAccountA: new PublicKey(
+                'C5qDUKtsQmUZ6QPDojp5pygoEwmaKg3XGuPCSbCswVM4'
+              ),
+              userTokenAccountB: new PublicKey(
+                '6CLDZwFGXRxwAdjG9hvmPGfUKMQKy3EjQBt4YitGSaq1'
+              ),
+              userAmountTokenA: 10000,
+              userAmountTokenB: 10000,
+            })
+            await setOperationLoading(true)
+          }}
         >
-          Add liquidity{' '}
+          Add liquidity
         </BlueButton>
-      </RowContainer>{' '}
+      </RowContainer>
     </DialogWrapper>
   )
 }

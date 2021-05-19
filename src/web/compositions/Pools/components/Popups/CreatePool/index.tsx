@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { Paper } from '@material-ui/core'
+import { Paper, Theme } from '@material-ui/core'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BoldHeader, Line } from '../index.styles'
+import { BoldHeader } from '../index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
 import Close from '@icons/closeIcon.svg'
@@ -14,6 +14,10 @@ import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDia
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { SelectCoinPopup } from '../SelectCoin'
+import { createTokenSwap } from '@sb/dexUtils/pools'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { useConnection } from '@sb/dexUtils/connection'
+import { PublicKey } from '@solana/web3.js'
 
 const StyledPaper = styled(Paper)`
   height: auto;
@@ -24,8 +28,28 @@ const StyledPaper = styled(Paper)`
   border-radius: 0.8rem;
 `
 
-export const CreatePoolPopup = ({ theme, open, close }) => {
+export const CreatePoolPopup = ({
+  theme,
+  open,
+  close,
+}: {
+  theme: Theme
+  open: boolean
+  close: () => void
+}) => {
+  const { wallet } = useWallet()
+  const connection = useConnection()
+
+  const [baseAmount, setBaseAmount] = useState<string>('')
+  const [quoteAmount, setQuoteAmount] = useState<string>('')
+
+  const [warningChecked, setWarningChecked] = useState(false)
   const [isSelectCoinPopupOpen, openSelectCoinPopup] = useState(false)
+  const [operationLoading, setOperationLoading] = useState(false)
+
+  const isDisabled =
+    !warningChecked || +baseAmount <= 0 || +quoteAmount <= 0 || operationLoading
+
   return (
     <DialogWrapper
       theme={theme}
@@ -45,7 +69,7 @@ export const CreatePoolPopup = ({ theme, open, close }) => {
         />
       </RowContainer>
       <RowContainer margin={'2rem 0'} justify={'space-between'}>
-        <Text color={'#93A0B2'}>Market Price:</Text>
+        <Text color={theme.palette.grey.title}>Market Price:</Text>
         <Text
           fontSize={'2rem'}
           color={'#A5E898'}
@@ -56,6 +80,11 @@ export const CreatePoolPopup = ({ theme, open, close }) => {
       </RowContainer>
       <RowContainer>
         <InputWithSelector
+          theme={theme}
+          value={baseAmount}
+          onChange={setBaseAmount}
+          symbol={'SOL'}
+          maxBalance={2000}
           openSelectCoinPopup={() => openSelectCoinPopup(true)}
         />
         <Row>
@@ -64,9 +93,14 @@ export const CreatePoolPopup = ({ theme, open, close }) => {
           </Text>
         </Row>
         <InputWithSelector
+          theme={theme}
+          value={quoteAmount}
+          onChange={setQuoteAmount}
+          symbol={'CCAI'}
+          maxBalance={2000}
           openSelectCoinPopup={() => openSelectCoinPopup(true)}
         />
-      </RowContainer>{' '}
+      </RowContainer>
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
         <Row
           width={'55%'}
@@ -76,11 +110,10 @@ export const CreatePoolPopup = ({ theme, open, close }) => {
           <SCheckbox
             id={'warning_checkbox'}
             style={{ padding: 0, marginRight: '1rem' }}
-            onChange={() => {}}
-            checked={true}
+            onChange={() => setWarningChecked(!warningChecked)}
+            checked={warningChecked}
           />
           <label htmlFor={'warning_checkbox'}>
-            {' '}
             <WhiteText
               style={{
                 cursor: 'pointer',
@@ -91,20 +124,46 @@ export const CreatePoolPopup = ({ theme, open, close }) => {
               }}
             >
               I understand the risks of providing liquidity, and that I could
-              lose money to impermanent loss.{' '}
+              lose money to impermanent loss.
             </WhiteText>
           </label>
         </Row>
         <BlueButton
           style={{ width: '36%', fontFamily: 'Avenir Next Medium' }}
-          disabled={false}
+          disabled={isDisabled}
           isUserConfident={true}
           theme={theme}
-          onClick={() => {}}
+          onClick={async () => {
+            console.log('create pool')
+            await setOperationLoading(true)
+            try {
+              await createTokenSwap({
+                wallet,
+                connection,
+                mintA: new PublicKey(
+                  '8jZjXuaNA3uBcAax77hnjyhaZwkssV2VNoMNW5JYcDaL'
+                ),
+                mintB: new PublicKey(
+                  '5FDj4Hk6iHbv5hxzqRs9zT6L7Hbu347HLpYyf1zZkFxq'
+                ),
+                userAmountTokenA: 100000,
+                userAmountTokenB: 100000,
+                userTokenAccountA: new PublicKey(
+                  'C5qDUKtsQmUZ6QPDojp5pygoEwmaKg3XGuPCSbCswVM4'
+                ),
+                userTokenAccountB: new PublicKey(
+                  '6CLDZwFGXRxwAdjG9hvmPGfUKMQKy3EjQBt4YitGSaq1'
+                ),
+              })
+            } catch (e) {
+              console.error('createTokenSwap error:', e)
+            }
+            await setOperationLoading(false)
+          }}
         >
-          Add liquidity{' '}
+          Create pool
         </BlueButton>
-      </RowContainer>{' '}
+      </RowContainer>
       <SelectCoinPopup
         theme={theme}
         open={isSelectCoinPopupOpen}

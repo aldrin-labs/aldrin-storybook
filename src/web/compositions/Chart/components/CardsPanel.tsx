@@ -337,14 +337,14 @@ const TopBar = ({ theme }) => {
         />
       </div> */}
       {/* <WalletBlock /> */}
-      {/* <div data-tut="connection-dropdown">
+      <div data-tut="connection-dropdown">
         <NetworkDropdown
           endpoint={endpoint}
           setEndpoint={setEndpoint}
           theme={theme}
           isWalletConnected={connected}
         />
-      </div> */}
+      </div>
 
       {!connected && (
         <Row style={{ paddingLeft: '4rem' }} data-tut="wallet" wrap={'nowrap'}>

@@ -18,10 +18,20 @@ export const StyledInput = styled.div`
   padding: 0 2rem;
   outline: none;
 `
+
+type TokenContainerProps = {
+  top?: string
+  bottom?: string
+  left?: string
+  right?: string
+}
+
 export const TokenContainer = styled.div`
-  left: ${(props) => props.left};
-  top: ${(props) => props.top};
   position: absolute;
+  top: ${(props: TokenContainerProps) => props.top};
+  right: ${(props: TokenContainerProps) => props.right};
+  bottom: ${(props: TokenContainerProps) => props.bottom};
+  left: ${(props: TokenContainerProps) => props.left};
 `
 export const Line = styled.div`
   border: 0.1rem solid #3a475c;
@@ -30,6 +40,7 @@ export const Line = styled.div`
   width: 100%;
 `
 export const InvisibleInput = styled.input`
+  width: 100%;
   background: #222429;
   color: #fbf2f2;
   font-size: 2rem;

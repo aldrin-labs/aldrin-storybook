@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { compose } from 'recompose'
-import { graphql } from 'react-apollo'
 
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
@@ -21,19 +20,24 @@ import TooltipIcon from '@icons/TooltipImg.svg'
 import { Text } from '@sb/compositions/Addressbook/index'
 import SvgIcon from '@sb/components/SvgIcon'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { Theme } from '@material-ui/core'
 
 const AllPoolsTable = ({
   theme,
-  changeCreatePoolPopupState,
+  setIsCreatePoolPopupOpen,
   getPoolsInfoQuery,
-  changeLiquidityPopupState,
+  setIsAddLiquidityPopupOpen,
 }: {
   theme: Theme
-  changeCreatePoolPopupState: any
+  setIsCreatePoolPopupOpen: (value: boolean) => void
   getPoolsInfoQuery: any
-  changeLiquidityPopupState: any
+  setIsAddLiquidityPopupOpen: (value: boolean) => void
 }) => {
   const [searchValue, onChangeSearch] = useState('')
+
+  const { wallet } = useWallet()
 
   return (
     <RowContainer>
@@ -52,12 +56,16 @@ const AllPoolsTable = ({
             <SearchInputWithLoop placeholder={'Search'} />
             <BorderButton
               onClick={() => {
-                changeCreatePoolPopupState(true)
+                if (wallet.connected) {
+                  setIsCreatePoolPopupOpen(true)
+                } else {
+                  wallet.connect()
+                }
               }}
-              padding={'0 2.6rem'}
+              padding={wallet.connected ? '0 2.6rem' : '0 2rem'}
               borderColor={'#A5E898'}
             >
-              Create Pool
+              {wallet.connected ? 'Create pool' : 'Connect wallet'}
             </BorderButton>
           </Row>
         </RowContainer>
@@ -70,14 +78,14 @@ const AllPoolsTable = ({
               <RowTd>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <SvgIcon
-                    width={'12px'}
-                    height={'12px'}
+                    width={'1.2rem'}
+                    height={'1.2rem'}
                     style={{ marginRight: '1rem' }}
                     src={TooltipIcon}
                   />
                   APY (24h)
                 </div>
-              </RowTd>{' '}
+              </RowTd>
               <RowTd></RowTd>
             </TableHeader>
             {getPoolsInfoQuery.getPoolsInfo.map((el) => {
@@ -102,7 +110,7 @@ const AllPoolsTable = ({
                         color={theme.palette.grey.new}
                         style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
                       >
-                        {el.tvl.tokenA} {el.tokenA} / {el.tvl.tokenB}{' '}
+                        {el.tvl.tokenA} {el.tokenA} / {el.tvl.tokenB}
                         {el.tokenB}
                       </Text>
                     </TextColumnContainer>
@@ -114,7 +122,7 @@ const AllPoolsTable = ({
                     >
                       ${el.totalFeesPaid.USD}
                     </Text>
-                  </RowTd>{' '}
+                  </RowTd>
                   <RowTd>
                     <Text
                       theme={theme}
@@ -122,14 +130,18 @@ const AllPoolsTable = ({
                     >
                       {el.apy24h}%
                     </Text>
-                  </RowTd>{' '}
+                  </RowTd>
                   <RowTd>
                     <Row justify={'flex-end'} width={'100%'}>
                       <BorderButton
-                        onClick={() => changeLiquidityPopupState(true)}
+                        onClick={() =>
+                          wallet.connected
+                            ? setIsAddLiquidityPopupOpen(true)
+                            : wallet.connect()
+                        }
                         borderColor={'#366CE5'}
                       >
-                        Add Liquidity
+                        {wallet.connected ? 'Add Liquidity' : 'Connect wallet'}
                       </BorderButton>
                     </Row>
                   </RowTd>
@@ -144,7 +156,8 @@ const AllPoolsTable = ({
 }
 
 export default compose(
-  graphql(getPoolsInfo, {
+  queryRendererHoc({
     name: 'getPoolsInfoQuery',
+    query: getPoolsInfo,
   })
 )(AllPoolsTable)

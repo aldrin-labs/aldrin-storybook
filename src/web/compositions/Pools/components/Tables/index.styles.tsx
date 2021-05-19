@@ -52,12 +52,13 @@ export const IconsContainer = styled.div`
   height: 3rem;
   width: 5rem;
 `
-export const TokenIcon = styled.div`
+export const TokenIconContainer = styled.div`
   position: absolute;
   left: ${(props) => props.left};
   right: ${(props) => props.right};
   z-index: ${(props) => props.zIndex};
 `
+
 export const SearchInput = styled.input`
   color: #f2fbfb;
   background: #383b45;

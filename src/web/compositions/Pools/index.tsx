@@ -8,12 +8,12 @@ import UserLiquitidyTable from './components/Tables/UserLiquidity'
 import AllPoolsTable from './components/Tables/Pools'
 import { AddLiquidityPopup } from './components/Popups/AddLiquidity'
 import { CreatePoolPopup } from './components/Popups/CreatePool'
-import { WithdrawalPopup } from './components/Popups/Withdraw Liquidity'
+import { WithdrawalPopup } from './components/Popups/WithdrawLiquidity'
 
 const Pools = ({ theme }: { theme: Theme }) => {
-  const [isAddLiquidityPopupOpen, changeLiquidityPopupState] = useState(false)
-  const [isCreatePoolPopupOpen, changeCreatePoolPopupState] = useState(false)
-  const [isWithdrawalPopupOpen, changeWithdrawalPopupState] = useState(false)
+  const [isAddLiquidityPopupOpen, setIsAddLiquidityPopupOpen] = useState(false);
+  const [isCreatePoolPopupOpen, setIsCreatePoolPopupOpen] = useState(false);
+  const [isWithdrawalPopupOpen, setIsWithdrawalPopupOpen] = useState(false);
 
   return (
     <RowContainer direction={'column'} padding={'2rem 15rem'}>
@@ -35,27 +35,27 @@ const Pools = ({ theme }: { theme: Theme }) => {
       </RowContainer>
       <UserLiquitidyTable
         theme={theme}
-        changeLiquidityPopupState={changeLiquidityPopupState}
-        changeWithdrawalPopupState={changeWithdrawalPopupState}
+        setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
+        setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
       />
       <AllPoolsTable
-        changeCreatePoolPopupState={changeCreatePoolPopupState}
-        changeLiquidityPopupState={changeLiquidityPopupState}
+        setIsCreatePoolPopupOpen={setIsCreatePoolPopupOpen}
+        setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
         theme={theme}
       />
       <AddLiquidityPopup
         theme={theme}
-        close={() => changeLiquidityPopupState(false)}
+        close={() => setIsAddLiquidityPopupOpen(false)}
         open={isAddLiquidityPopupOpen}
       />
       <CreatePoolPopup
         theme={theme}
-        close={() => changeCreatePoolPopupState(false)}
+        close={() => setIsCreatePoolPopupOpen(false)}
         open={isCreatePoolPopupOpen}
       />
       <WithdrawalPopup
         theme={theme}
-        close={() => changeWithdrawalPopupState(false)}
+        close={() => setIsWithdrawalPopupOpen(false)}
         open={isWithdrawalPopupOpen}
       />
     </RowContainer>

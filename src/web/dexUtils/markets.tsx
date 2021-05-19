@@ -22,6 +22,8 @@ import { AWESOME_TOKENS } from '@sb/dexUtils/serum'
 
 export const ALL_TOKENS_MINTS = [...TOKEN_MINTS, ...AWESOME_TOKENS]
 
+console.log('ALL_TOKENS_MINTS', ALL_TOKENS_MINTS)
+
 // Used in debugging, should be false in production
 
 const _IGNORE_DEPRECATED = false
@@ -1205,4 +1207,18 @@ export async function getOpenOrdersAccountsCustom(connection, wallet, market) {
     connection,
     wallet.publicKey
   )
+}
+
+export const getTokenMintAddressByName = (name: string): string | null => {
+  return ALL_TOKENS_MINTS.find(token => token.name === name)?.address?.toString();
+}
+
+export const getTokenNameByAddress = (address: string): string => {
+  const token = ALL_TOKENS_MINTS.find(token => token.address.toString() === address);
+
+  if (token) {
+    return token.name;
+  }
+  
+  return `${address.slice(0, 4)}...${address.slice(address.length - 3)}`;
 }

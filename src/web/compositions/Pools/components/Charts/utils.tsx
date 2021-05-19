@@ -144,6 +144,49 @@ const createTotalVolumeLockedChart = ({
           left: 70,
         },
       },
+      onResize: () => {
+        if (!window[`TotalVolumeLockedChart-${id}`]) return
+
+        const width =
+          window.innerWidth ||
+          document.documentElement.clientWidth ||
+          document.body.clientWidth
+
+        window[`TotalVolumeLockedChart-${id}`].options.scales = {
+          x: {
+            stacked: true,
+            gridLines: {
+              display: false,
+            },
+            ticks: {
+              align: 'end',
+              color: '#F5F5FB',
+              font: {
+                size: +(width / 130).toFixed(0),
+                family: 'Avenir Next',
+              },
+            },
+          },
+          y: {
+            position: 'right',
+            gridLines: {
+              display: false,
+              color: '#383B45',
+            },
+            ticks: {
+              padding: 15,
+              callback: (value) =>
+                `$${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`,
+              color: '#F5F5FB',
+              stepSize: data[data.length - 1].vol / 5,
+              font: {
+                size: +(width / 130).toFixed(0),
+                family: 'Avenir Next',
+              },
+            },
+          },
+        }
+      },
     },
   })
 }
@@ -240,6 +283,49 @@ const createTradingVolumeChart = ({
           right: 15,
           left: 70,
         },
+      },
+      onResize: () => {
+        if (!window[`TradingVolumeChart-${id}`]) return
+
+        const width =
+          window.innerWidth ||
+          document.documentElement.clientWidth ||
+          document.body.clientWidth
+
+        window[`TradingVolumeChart-${id}`].options.scales = {
+          x: {
+            stacked: true,
+            gridLines: {
+              display: false,
+            },
+            ticks: {
+              align: 'end',
+              color: '#F5F5FB',
+              font: {
+                size: +(width / 130).toFixed(0),
+                family: 'Avenir Next',
+              },
+            },
+          },
+          y: {
+            position: 'right',
+            gridLines: {
+              display: false,
+              color: '#383B45',
+            },
+            ticks: {
+              padding: 15,
+              callback: (value) =>
+                `$${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`,
+              color: '#F5F5FB',
+              stepSize: data[data.length - 1].vol / 5,
+              font: {
+                size: +(width / 130).toFixed(0),
+                family: 'Avenir Next',
+              },
+            },
+          },
+        }
       },
     },
   })

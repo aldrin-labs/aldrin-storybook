@@ -1,6 +1,5 @@
 import React from 'react'
 import { compose } from 'recompose'
-import { graphql } from 'react-apollo'
 
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
@@ -24,24 +23,24 @@ import SvgIcon from '@sb/components/SvgIcon'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getFeesEarnedByAccount } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
+import { Theme } from '@material-ui/core'
+import { useWallet } from '@sb/dexUtils/wallet'
 
 const UserLiquitidyTable = ({
   theme,
-  changeLiquidityPopupState,
-  changeWithdrawalPopupState,
+  setIsWithdrawalPopupOpen,
+  setIsAddLiquidityPopupOpen,
   getPoolsInfoQuery,
   getFeesEarnedByAccountQuery,
 }: {
   theme: Theme
-  changeLiquidityPopupState: any
-  changeWithdrawalPopupState: any
+  setIsWithdrawalPopupOpen: (value: boolean) => void
+  setIsAddLiquidityPopupOpen: (value: boolean) => void
   getPoolsInfoQuery: any
   getFeesEarnedByAccountQuery: any
 }) => {
-  console.log(
-    'getFeesEarnedByAccountQuery',
-    getFeesEarnedByAccountQuery.getFeesEarnedByAccount
-  )
+  const { wallet } = useWallet()
+
   return (
     <RowContainer>
       <BlockTemplate
@@ -103,8 +102,8 @@ const UserLiquitidyTable = ({
               <RowTd>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <SvgIcon
-                    width={'12px'}
-                    height={'12px'}
+                    width={'1.2rem'}
+                    height={'1.2rem'}
                     style={{ marginRight: '1rem' }}
                     src={TooltipIcon}
                   />
@@ -130,14 +129,14 @@ const UserLiquitidyTable = ({
                         theme={theme}
                         style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
                       >
-                        {el.tvl.USD}
+                        ${el.tvl.USD}
                       </Text>
                       <Text
                         theme={theme}
                         color={theme.palette.grey.new}
                         style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
                       >
-                        {el.tvl.tokenA} {el.tokenA} / {el.tvl.tokenB}{' '}
+                        {el.tvl.tokenA} {el.tokenA} / {el.tvl.tokenB}
                         {el.tokenB}
                       </Text>
                     </TextColumnContainer>
@@ -188,15 +187,25 @@ const UserLiquitidyTable = ({
                     <Row justify="flex-end" width={'100%'}>
                       <BorderButton
                         style={{ marginRight: '2rem' }}
-                        onClick={() => changeWithdrawalPopupState(true)}
+                        onClick={() =>
+                          wallet.connected
+                            ? setIsWithdrawalPopupOpen(true)
+                            : wallet.connect()
+                        }
                       >
-                        Withdraw liquidity + fees
+                        {wallet.connected
+                          ? 'Withdraw liquidity + fees'
+                          : 'Connect wallet'}
                       </BorderButton>
                       <BorderButton
-                        onClick={() => changeLiquidityPopupState(true)}
-                        borderColor={'#366CE5'}
+                        onClick={() =>
+                          wallet.connected
+                            ? setIsAddLiquidityPopupOpen(true)
+                            : wallet.connect()
+                        }
+                        borderColor={theme.palette.blue.serum}
                       >
-                        Add Liquidity
+                        {wallet.connected ? 'Add Liquidity' : 'Connect wallet'}
                       </BorderButton>
                     </Row>
                   </RowTd>
@@ -211,16 +220,17 @@ const UserLiquitidyTable = ({
 }
 
 export default compose(
-  graphql(getPoolsInfo, {
+  queryRendererHoc({
+    query: getPoolsInfo,
     name: 'getPoolsInfoQuery',
   }),
   queryRendererHoc({
     query: getFeesEarnedByAccount,
     name: 'getFeesEarnedByAccountQuery',
     variables: {
-      pools: '',
-      accountPublicKey: '',
+      pools: [''],
+      account: '',
     },
-    fetchPolicy: 'only-network',
+    fetchPolicy: 'network-only',
   })
 )(UserLiquitidyTable)
