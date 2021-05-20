@@ -99,7 +99,7 @@ export const StyledLock = styled(
 )`
   left: calc(
     ${(props) => props.value * +(parseFloat(props.sliderWidth) / props.max)}rem -
-      0.45rem
+      0.75rem
   );
   color: #fff;
   position: absolute;
@@ -107,6 +107,7 @@ export const StyledLock = styled(
   height: 1.5rem;
   width: 1.5rem;
   font-family: 'Avenir Next Demi';
+  text-align: center;
 `
 
 export const AvailableRange = styled.div`

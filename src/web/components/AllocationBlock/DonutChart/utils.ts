@@ -49,10 +49,12 @@ const createAllocationDonutChart = ({
   id,
   data,
   colors,
+  tooltipData,
 }: {
   id: string
   data: any
   colors: string[]
+  tooltipData: any
 }) => {
   const ctx = document
     .getElementById(`AllocationDonutChart-${id}`)
