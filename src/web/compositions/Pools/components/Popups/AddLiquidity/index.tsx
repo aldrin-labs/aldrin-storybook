@@ -17,6 +17,9 @@ import { depositAllTokenTypes } from '@sb/dexUtils/pools'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
 import { PublicKey } from '@solana/web3.js'
+import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 const StyledPaper = styled(Paper)`
   height: auto;
@@ -30,10 +33,12 @@ const StyledPaper = styled(Paper)`
 export const AddLiquidityPopup = ({
   theme,
   open,
+  selectedPool,
   close,
 }: {
   theme: Theme
   open: boolean
+  selectedPool: PoolInfo
   close: () => void
 }) => {
   const { wallet } = useWallet()
@@ -48,6 +53,11 @@ export const AddLiquidityPopup = ({
 
   const isDisabled =
     !warningChecked || +baseAmount <= 0 || +quoteAmount <= 0 || operationLoading
+
+  const total = +baseAmount + +quoteAmount
+
+  // we should select pool first
+  if (!open) return null
 
   return (
     <DialogWrapper
@@ -68,7 +78,7 @@ export const AddLiquidityPopup = ({
           theme={theme}
           value={baseAmount}
           onChange={setBaseAmount}
-          symbol={'SOL'}
+          symbol={getTokenNameByMintAddress(selectedPool.tokenA)}
           alreadyInPool={200}
           maxBalance={2000}
         />
@@ -81,7 +91,7 @@ export const AddLiquidityPopup = ({
           theme={theme}
           value={quoteAmount}
           onChange={setQuoteAmount}
-          symbol={'CCAI'}
+          symbol={getTokenNameByMintAddress(selectedPool.tokenB)}
           alreadyInPool={200}
           maxBalance={2000}
         />
@@ -91,7 +101,7 @@ export const AddLiquidityPopup = ({
       <Row margin={'2rem 0 1rem 0'} justify={'space-between'}>
         <Row direction={'column'} align={'start'}>
           <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
-            Projected fee earnings based on the past 30d
+            Projected fee earnings based on the past 24h
           </Text>
           <Row>
             <Text
@@ -99,16 +109,17 @@ export const AddLiquidityPopup = ({
               color={'#A5E898'}
               fontFamily={'Avenir Next Demi'}
             >
-              $120&nbsp;
+              ${stripDigitPlaces(total * (1 + selectedPool.apy24h / 100), 2)}
+              &nbsp;
             </Text>
             <Text fontSize={'2rem'} fontFamily={'Avenir Next Demi'}>
-              / Month
+              / 24h
             </Text>
           </Row>
         </Row>
         <Row direction={'column'}>
           <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
-            APY (30d)
+            APY (24h)
           </Text>
           <Row>
             <Text
@@ -116,7 +127,7 @@ export const AddLiquidityPopup = ({
               color={'#A5E898'}
               fontFamily={'Avenir Next Demi'}
             >
-              12%
+              {selectedPool.apy24h}%
             </Text>
           </Row>
         </Row>

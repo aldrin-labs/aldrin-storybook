@@ -2,6 +2,7 @@ import styled from 'styled-components'
 
 import { Row } from '../../../AnalyticsRoute/index.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { Text } from '@sb/compositions/Addressbook'
 
 export const LiquidityDataContainer = styled(Row)`
   width: 50%;
@@ -41,6 +42,20 @@ export const RowTd = styled.td`
   color: #f5f5fb;
   font-size: 1.5rem;
 `
+
+export const RowDataTd = styled(RowTd)`
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+`
+
+export const RowDataTdText = styled(Text)`
+  white-space: nowrap;
+`
+
+export const RowDataTdTopText = styled(RowDataTdText)`
+  padding-bottom: .5rem;
+`
+
 export const TextColumnContainer = styled(Row)`
   flex-direction: column;
   align-items: flex-start;
@@ -52,11 +67,18 @@ export const IconsContainer = styled.div`
   height: 3rem;
   width: 5rem;
 `
+
+type TokenIconContainerProps = {
+  zIndex?: string | number
+  left?: string
+  right?: string
+}
+
 export const TokenIconContainer = styled.div`
   position: absolute;
-  left: ${(props) => props.left};
-  right: ${(props) => props.right};
-  z-index: ${(props) => props.zIndex};
+  left: ${(props: TokenIconContainerProps) => props.left};
+  right: ${(props: TokenIconContainerProps) => props.right};
+  z-index: ${(props: TokenIconContainerProps) => props.zIndex};
 `
 
 export const SearchInput = styled.input`

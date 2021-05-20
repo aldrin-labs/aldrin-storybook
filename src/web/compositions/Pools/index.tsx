@@ -49,6 +49,7 @@ const Pools = ({ theme }: { theme: Theme }) => {
       />
       <AddLiquidityPopup
         theme={theme}
+        selectedPool={selectedPool}
         close={() => setIsAddLiquidityPopupOpen(false)}
         open={isAddLiquidityPopupOpen}
       />
@@ -59,6 +60,7 @@ const Pools = ({ theme }: { theme: Theme }) => {
       />
       <WithdrawalPopup
         theme={theme}
+        selectedPool={selectedPool}
         close={() => setIsWithdrawalPopupOpen(false)}
         open={isWithdrawalPopupOpen}
       />

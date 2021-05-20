@@ -56,6 +56,9 @@ export const CreatePoolPopup = ({
   const isDisabled =
     !warningChecked || +baseAmount <= 0 || +quoteAmount <= 0 || operationLoading
 
+  const baseSymbol = getTokenNameByMintAddress(baseTokenAddress)
+  const quoteSymbol = getTokenNameByMintAddress(quoteTokenAddress)
+
   return (
     <DialogWrapper
       theme={theme}
@@ -77,7 +80,7 @@ export const CreatePoolPopup = ({
           color={'#A5E898'}
           fontFamily={'Avenir Next Demi'}
         >
-          1 CCAI = 20 USDT
+          1 {baseSymbol} = 20 {quoteSymbol}
         </Text>
       </RowContainer>
       <RowContainer>
@@ -85,7 +88,7 @@ export const CreatePoolPopup = ({
           theme={theme}
           value={baseAmount}
           onChange={setBaseAmount}
-          symbol={getTokenNameByMintAddress(baseTokenAddress)}
+          symbol={baseSymbol}
           maxBalance={baseTokenAddress ? 2000 : 0}
           openSelectCoinPopup={() => {
             setIsBaseTokenSelecting(true)
@@ -101,7 +104,7 @@ export const CreatePoolPopup = ({
           theme={theme}
           value={quoteAmount}
           onChange={setQuoteAmount}
-          symbol={getTokenNameByMintAddress(quoteTokenAddress)}
+          symbol={quoteSymbol}
           maxBalance={quoteTokenAddress ? 2000 : 0}
           openSelectCoinPopup={() => {
             setIsBaseTokenSelecting(false)
