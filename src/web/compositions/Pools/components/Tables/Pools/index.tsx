@@ -26,13 +26,15 @@ import { Theme } from '@material-ui/core'
 
 const AllPoolsTable = ({
   theme,
-  setIsCreatePoolPopupOpen,
   getPoolsInfoQuery,
+  selectPool,
+  setIsCreatePoolPopupOpen,
   setIsAddLiquidityPopupOpen,
 }: {
   theme: Theme
-  setIsCreatePoolPopupOpen: (value: boolean) => void
   getPoolsInfoQuery: any
+  selectPool: (pool: any) => void
+  setIsCreatePoolPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
 }) => {
   const [searchValue, onChangeSearch] = useState('')
@@ -134,11 +136,14 @@ const AllPoolsTable = ({
                   <RowTd>
                     <Row justify={'flex-end'} width={'100%'}>
                       <BorderButton
-                        onClick={() =>
-                          wallet.connected
-                            ? setIsAddLiquidityPopupOpen(true)
-                            : wallet.connect()
-                        }
+                        onClick={() => {
+                          if (wallet.connected) {
+                            selectPool(el)
+                            setIsAddLiquidityPopupOpen(true)
+                          } else {
+                            wallet.connect()
+                          }
+                        }}
                         borderColor={'#366CE5'}
                       >
                         {wallet.connected ? 'Add Liquidity' : 'Connect wallet'}

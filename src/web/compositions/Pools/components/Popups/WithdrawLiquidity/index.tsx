@@ -37,8 +37,13 @@ export const WithdrawalPopup = ({
   const { wallet } = useWallet()
   const connection = useConnection()
 
-  const [baseAmount, setBaseAmount] = useState<string>('')
-  const [quoteAmount, setQuoteAmount] = useState<string>('')
+  const [baseAmount, setBaseAmount] = useState<string | number>('')
+  const [quoteAmount, setQuoteAmount] = useState<string | number>('')
+
+  const [operationLoading, setOperationLoading] = useState(false)
+
+  const isDisabled =
+    +baseAmount <= 0 || +quoteAmount <= 0 || operationLoading
 
   return (
     <DialogWrapper
@@ -80,10 +85,11 @@ export const WithdrawalPopup = ({
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
         <BlueButton
           style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
-          disabled={false}
+          disabled={isDisabled}
           isUserConfident={true}
           theme={theme}
           onClick={async () => {
+            await setOperationLoading(true)
             await withdrawAllTokenTypes({
               wallet,
               connection,
@@ -101,6 +107,7 @@ export const WithdrawalPopup = ({
               ),
               poolTokenAmount: 10000,
             })
+            await setOperationLoading(false)
           }}
         >
           Withdraw

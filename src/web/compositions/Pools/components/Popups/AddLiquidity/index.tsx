@@ -39,8 +39,8 @@ export const AddLiquidityPopup = ({
   const { wallet } = useWallet()
   const connection = useConnection()
 
-  const [baseAmount, setBaseAmount] = useState<string>('')
-  const [quoteAmount, setQuoteAmount] = useState<string>('')
+  const [baseAmount, setBaseAmount] = useState<string | number>('')
+  const [quoteAmount, setQuoteAmount] = useState<string | number>('')
 
   const [warningChecked, setWarningChecked] = useState(false)
 
@@ -123,9 +123,10 @@ export const AddLiquidityPopup = ({
       </Row>
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
         <Row
-          width={'55%'}
+          width={'60%'}
           justify="space-between"
-          style={{ flexWrap: 'nowrap' }}
+          wrap={'nowrap'}
+          padding={'0 2rem 0 0'}
         >
           <SCheckbox
             id={'warning_checkbox'}
@@ -149,7 +150,7 @@ export const AddLiquidityPopup = ({
           </label>
         </Row>
         <BlueButton
-          style={{ width: '36%', fontFamily: 'Avenir Next Medium' }}
+          style={{ width: '40%', fontFamily: 'Avenir Next Medium' }}
           disabled={isDisabled}
           isUserConfident={true}
           theme={theme}

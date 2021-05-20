@@ -37,7 +37,6 @@ const Title = styled(({ ...props }) => <MainTitle {...props} />)`
 export const BlueButton = styled(({ ...props }) => (
   <BtnCustom back {...props} />
 ))`
-  width: calc(43%);
   font-size: 1.4rem;
   height: 4.5rem;
   text-transform: capitalize;

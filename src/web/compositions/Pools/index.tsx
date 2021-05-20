@@ -11,9 +11,11 @@ import { CreatePoolPopup } from './components/Popups/CreatePool'
 import { WithdrawalPopup } from './components/Popups/WithdrawLiquidity'
 
 const Pools = ({ theme }: { theme: Theme }) => {
-  const [isAddLiquidityPopupOpen, setIsAddLiquidityPopupOpen] = useState(false);
-  const [isCreatePoolPopupOpen, setIsCreatePoolPopupOpen] = useState(false);
-  const [isWithdrawalPopupOpen, setIsWithdrawalPopupOpen] = useState(false);
+  const [selectedPool, selectPool] = useState({})
+
+  const [isAddLiquidityPopupOpen, setIsAddLiquidityPopupOpen] = useState(false)
+  const [isCreatePoolPopupOpen, setIsCreatePoolPopupOpen] = useState(false)
+  const [isWithdrawalPopupOpen, setIsWithdrawalPopupOpen] = useState(false)
 
   return (
     <RowContainer direction={'column'} padding={'2rem 15rem'}>
@@ -35,13 +37,15 @@ const Pools = ({ theme }: { theme: Theme }) => {
       </RowContainer>
       <UserLiquitidyTable
         theme={theme}
+        selectPool={selectPool}
         setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
         setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
       />
       <AllPoolsTable
+        theme={theme}
+        selectPool={selectPool}
         setIsCreatePoolPopupOpen={setIsCreatePoolPopupOpen}
         setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
-        theme={theme}
       />
       <AddLiquidityPopup
         theme={theme}
