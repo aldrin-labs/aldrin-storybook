@@ -9,6 +9,9 @@ import {
   BorderButton,
   RowTd,
   TextColumnContainer,
+  RowDataTdTopText,
+  RowDataTdText,
+  RowDataTd,
 } from '@sb/compositions/Pools/components/Tables/index.styles'
 
 import { BlockTemplate } from '../../../index.styles'
@@ -23,16 +26,20 @@ import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { Theme } from '@material-ui/core'
+import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 
 const AllPoolsTable = ({
   theme,
-  setIsCreatePoolPopupOpen,
   getPoolsInfoQuery,
+  selectPool,
+  setIsCreatePoolPopupOpen,
   setIsAddLiquidityPopupOpen,
 }: {
   theme: Theme
+  getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
+  selectPool: (pool: PoolInfo) => void
   setIsCreatePoolPopupOpen: (value: boolean) => void
-  getPoolsInfoQuery: any
   setIsAddLiquidityPopupOpen: (value: boolean) => void
 }) => {
   const [searchValue, onChangeSearch] = useState('')
@@ -106,54 +113,39 @@ const AllPoolsTable = ({
                       tokenB={el.tokenB}
                     />
                   </RowTd>
-                  <RowTd>
+                  <RowDataTd>
                     <TextColumnContainer>
-                      <Text
-                        theme={theme}
-                        style={{
-                          whiteSpace: 'nowrap',
-                          paddingBottom: '1rem',
-                        }}
-                      >
+                      <RowDataTdTopText theme={theme}>
                         ${el.tvl.USD}
-                      </Text>
-                      <Text
+                      </RowDataTdTopText>
+                      <RowDataTdText
                         theme={theme}
                         color={theme.palette.grey.new}
-                        style={{
-                          whiteSpace: 'nowrap',
-                          paddingBottom: '1rem',
-                        }}
                       >
-                        {el.tvl.tokenA} {el.tokenA} / {el.tvl.tokenB}&nbsp;
-                        {el.tokenB}
-                      </Text>
+                        {el.tvl.tokenA} {getTokenNameByMintAddress(el.tokenA)} /{' '}
+                        {el.tvl.tokenB} {getTokenNameByMintAddress(el.tokenB)}
+                      </RowDataTdText>
                     </TextColumnContainer>
-                  </RowTd>
-                  <RowTd>
-                    <Text
-                      theme={theme}
-                      style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                    >
+                  </RowDataTd>
+                  <RowDataTd>
+                    <RowDataTdText theme={theme}>
                       ${el.totalFeesPaid.USD}
-                    </Text>
-                  </RowTd>
-                  <RowTd>
-                    <Text
-                      theme={theme}
-                      style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                    >
-                      {el.apy24h}%
-                    </Text>
-                  </RowTd>
+                    </RowDataTdText>
+                  </RowDataTd>
+                  <RowDataTd>
+                    <RowDataTdText theme={theme}>{el.apy24h}%</RowDataTdText>
+                  </RowDataTd>
                   <RowTd>
                     <Row justify={'flex-end'} width={'100%'}>
                       <BorderButton
-                        onClick={() =>
-                          wallet.connected
-                            ? setIsAddLiquidityPopupOpen(true)
-                            : wallet.connect()
-                        }
+                        onClick={() => {
+                          if (wallet.connected) {
+                            selectPool(el)
+                            setIsAddLiquidityPopupOpen(true)
+                          } else {
+                            wallet.connect()
+                          }
+                        }}
                         borderColor={'#366CE5'}
                       >
                         {wallet.connected ? 'Add Liquidity' : 'Connect wallet'}
@@ -174,5 +166,6 @@ export default compose(
   queryRendererHoc({
     name: 'getPoolsInfoQuery',
     query: getPoolsInfo,
+    fetchPolicy: 'cache-and-network',
   })
 )(AllPoolsTable)

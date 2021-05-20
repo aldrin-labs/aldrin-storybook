@@ -19,7 +19,7 @@ export const InputWithCoins = ({
   onChange,
 }: {
   theme: Theme
-  value: string
+  value: string | number
   symbol: string
   alreadyInPool: number
   maxBalance: number
@@ -120,10 +120,10 @@ export const InputWithSelector = ({
   openSelectCoinPopup,
 }: {
   theme: Theme
-  value: string
+  value: string | number
   symbol: string
   maxBalance: number
-  onChange: (value: string) => void
+  onChange: (value: string | number) => void
   openSelectCoinPopup: () => void
 }) => {
   return (
@@ -145,7 +145,7 @@ export const InputWithSelector = ({
         right={'2rem'}
         bottom={'3rem'}
       >
-        <Row style={{ flexWrap: 'nowrap' }}>
+        <Row style={{ flexWrap: 'nowrap' }} onClick={openSelectCoinPopup}>
           <TokenIcon
             mint={getTokenMintAddressByName(symbol)}
             width={'2rem'}
@@ -158,12 +158,7 @@ export const InputWithSelector = ({
           >
             {symbol}
           </Text>
-          <SvgIcon
-            onClick={openSelectCoinPopup}
-            src={Arrow}
-            width={'1rem'}
-            height={'1rem'}
-          />
+          <SvgIcon src={Arrow} width={'1rem'} height={'1rem'} />
         </Row>
       </TokenContainer>
       <TokenContainer right={'2rem'} top={'3rem'}>
@@ -189,10 +184,10 @@ export const SimpleInput = ({
   onChange,
 }: {
   theme: Theme
-  value: string
+  value: string | number
   symbol: string
   maxBalance: number
-  onChange: (value: string) => void
+  onChange: (value: string | number) => void
 }) => {
   return (
     <Row style={{ position: 'relative' }} padding={'2rem 0'} width={'100%'}>

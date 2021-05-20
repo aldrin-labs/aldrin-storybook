@@ -1220,6 +1220,10 @@ export const getTokenMintAddressByName = (name: string): string | null => {
 }
 
 export const getTokenNameByMintAddress = (address: string): string => {
+  if (!address) {
+    return '--';
+  }
+  
   const token = ALL_TOKENS_MINTS_MAP.get(address);
 
   if (token) {

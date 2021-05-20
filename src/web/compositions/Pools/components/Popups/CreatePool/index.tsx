@@ -18,6 +18,7 @@ import { createTokenSwap } from '@sb/dexUtils/pools'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
 import { PublicKey } from '@solana/web3.js'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 
 const StyledPaper = styled(Paper)`
   height: auto;
@@ -40,15 +41,23 @@ export const CreatePoolPopup = ({
   const { wallet } = useWallet()
   const connection = useConnection()
 
-  const [baseAmount, setBaseAmount] = useState<string>('')
-  const [quoteAmount, setQuoteAmount] = useState<string>('')
+  const [baseTokenAddress, setBaseTokenAddress] = useState<string>('')
+  const [baseAmount, setBaseAmount] = useState<string | number>('')
+
+  const [quoteTokenAddress, setQuoteTokenAddress] = useState<string>('')
+  const [quoteAmount, setQuoteAmount] = useState<string | number>('')
+
+  const [isSelectCoinPopupOpen, setIsSelectCoinPopupOpen] = useState(false)
+  const [isBaseTokenSelecting, setIsBaseTokenSelecting] = useState(false)
 
   const [warningChecked, setWarningChecked] = useState(false)
-  const [isSelectCoinPopupOpen, openSelectCoinPopup] = useState(false)
   const [operationLoading, setOperationLoading] = useState(false)
 
   const isDisabled =
     !warningChecked || +baseAmount <= 0 || +quoteAmount <= 0 || operationLoading
+
+  const baseSymbol = getTokenNameByMintAddress(baseTokenAddress)
+  const quoteSymbol = getTokenNameByMintAddress(quoteTokenAddress)
 
   return (
     <DialogWrapper
@@ -62,11 +71,7 @@ export const CreatePoolPopup = ({
     >
       <RowContainer justify={'space-between'}>
         <BoldHeader>Create Pool</BoldHeader>
-        <SvgIcon
-          style={{ cursor: 'pointer' }}
-          onClick={() => close()}
-          src={Close}
-        />
+        <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </RowContainer>
       <RowContainer margin={'2rem 0'} justify={'space-between'}>
         <Text color={theme.palette.grey.title}>Market Price:</Text>
@@ -75,7 +80,7 @@ export const CreatePoolPopup = ({
           color={'#A5E898'}
           fontFamily={'Avenir Next Demi'}
         >
-          1 CCAI = 20 USDT
+          1 {baseSymbol} = 20 {quoteSymbol}
         </Text>
       </RowContainer>
       <RowContainer>
@@ -83,9 +88,12 @@ export const CreatePoolPopup = ({
           theme={theme}
           value={baseAmount}
           onChange={setBaseAmount}
-          symbol={'SOL'}
-          maxBalance={2000}
-          openSelectCoinPopup={() => openSelectCoinPopup(true)}
+          symbol={baseSymbol}
+          maxBalance={baseTokenAddress ? 2000 : 0}
+          openSelectCoinPopup={() => {
+            setIsBaseTokenSelecting(true)
+            setIsSelectCoinPopupOpen(true)
+          }}
         />
         <Row>
           <Text fontSize={'4rem'} fontFamily={'Avenir Next Medium'}>
@@ -96,16 +104,20 @@ export const CreatePoolPopup = ({
           theme={theme}
           value={quoteAmount}
           onChange={setQuoteAmount}
-          symbol={'CCAI'}
-          maxBalance={2000}
-          openSelectCoinPopup={() => openSelectCoinPopup(true)}
+          symbol={quoteSymbol}
+          maxBalance={quoteTokenAddress ? 2000 : 0}
+          openSelectCoinPopup={() => {
+            setIsBaseTokenSelecting(false)
+            setIsSelectCoinPopupOpen(true)
+          }}
         />
       </RowContainer>
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
         <Row
-          width={'55%'}
+          width={'60%'}
           justify="space-between"
-          style={{ flexWrap: 'nowrap' }}
+          wrap={'nowrap'}
+          padding={'0 2rem 0 0'}
         >
           <SCheckbox
             id={'warning_checkbox'}
@@ -129,7 +141,7 @@ export const CreatePoolPopup = ({
           </label>
         </Row>
         <BlueButton
-          style={{ width: '36%', fontFamily: 'Avenir Next Medium' }}
+          style={{ width: '40%', fontFamily: 'Avenir Next Medium' }}
           disabled={isDisabled}
           isUserConfident={true}
           theme={theme}
@@ -167,7 +179,20 @@ export const CreatePoolPopup = ({
       <SelectCoinPopup
         theme={theme}
         open={isSelectCoinPopupOpen}
-        close={() => openSelectCoinPopup(false)}
+        selectTokenAddress={(address: string) => {
+          const select = isBaseTokenSelecting
+            ? () => {
+                setBaseTokenAddress(address)
+                setIsSelectCoinPopupOpen(false)
+              }
+            : () => {
+                setQuoteTokenAddress(address)
+                setIsSelectCoinPopupOpen(false)
+              }
+
+          select()
+        }}
+        close={() => setIsSelectCoinPopupOpen(false)}
       />
     </DialogWrapper>
   )

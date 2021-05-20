@@ -9,11 +9,9 @@ import {
   TokenIconContainer,
 } from '../index.styles'
 
-import MockedToken from '@icons/ccaiToken.svg'
-import MockedToken2 from '@icons/solToken.svg'
 import Loop from '@icons/loop.svg'
 import { TokenIcon } from '@sb/components/TokenIcon'
-import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 
 export const SearchInputWithLoop = ({
   placeholder,
@@ -51,26 +49,18 @@ export const TokenIconsContainer = ({
     <Row justify={'end'}>
       <IconsContainer>
         <TokenIconContainer zIndex={'1'} left={'0'}>
-          <TokenIcon
-            width={'3rem'}
-            height={'3rem'}
-            mint={getTokenMintAddressByName(tokenA)}
-          />
+          <TokenIcon width={'3rem'} height={'3rem'} mint={tokenA} />
         </TokenIconContainer>
         <TokenIconContainer
           left={'0'}
           zIndex={'0'}
           style={{ transform: 'translateX(70%)' }}
         >
-          <TokenIcon
-            width={'3rem'}
-            height={'3rem'}
-            mint={getTokenMintAddressByName(tokenB)}
-          />
+          <TokenIcon width={'3rem'} height={'3rem'} mint={tokenB} />
         </TokenIconContainer>
       </IconsContainer>
       <Text style={{ marginLeft: '2rem' }} fontFamily={'Avenir Next Demi'}>
-        {tokenA}/{tokenB}
+        {getTokenNameByMintAddress(tokenA)}/{getTokenNameByMintAddress(tokenB)}
       </Text>
     </Row>
   )

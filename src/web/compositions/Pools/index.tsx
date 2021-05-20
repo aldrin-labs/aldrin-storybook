@@ -13,6 +13,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 
 const Pools = ({ theme }: { theme: Theme }) => {
   const { wallet } = useWallet()
+  const [selectedPool, selectPool] = useState({})
 
   const [isAddLiquidityPopupOpen, setIsAddLiquidityPopupOpen] = useState(false)
   const [isCreatePoolPopupOpen, setIsCreatePoolPopupOpen] = useState(false)
@@ -46,12 +47,14 @@ const Pools = ({ theme }: { theme: Theme }) => {
       ) : null}
 
       <AllPoolsTable
+        theme={theme}
+        selectPool={selectPool}
         setIsCreatePoolPopupOpen={setIsCreatePoolPopupOpen}
         setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
-        theme={theme}
       />
       <AddLiquidityPopup
         theme={theme}
+        selectedPool={selectedPool}
         close={() => setIsAddLiquidityPopupOpen(false)}
         open={isAddLiquidityPopupOpen}
       />
@@ -62,6 +65,7 @@ const Pools = ({ theme }: { theme: Theme }) => {
       />
       <WithdrawalPopup
         theme={theme}
+        selectedPool={selectedPool}
         close={() => setIsWithdrawalPopupOpen(false)}
         open={isWithdrawalPopupOpen}
       />
