@@ -20,19 +20,6 @@ import {
   ChartContainer,
 } from './index.styles'
 
-export const mockData = [
-  { symbol: 'SOL', value: 100 },
-  { symbol: 'CCAI', value: 75 },
-  { symbol: 'BNB', value: 50 },
-  { symbol: 'OXY', value: 40 },
-  { symbol: 'YFI', value: 35 },
-  { symbol: 'SRM', value: 30 },
-  { symbol: 'KIN', value: 25 },
-  { symbol: 'HIN', value: 20 },
-  { symbol: 'BTC', value: 15 },
-  { symbol: 'ETH', value: 10 },
-]
-
 export const ROWS_TO_SHOW_IN_LEGEND = 4
 
 const DonutChartWithLegend = ({ data = [], theme, id }: IProps) => {
