@@ -93,7 +93,6 @@ const DonutChartWithLegend = ({ data = [], theme, id }: IProps) => {
             <AllocationDonutChart
               id={id}
               data={chartData}
-              tooltipData={mockData}
               colors={colors}
             />
           </AllocationChartContainer>

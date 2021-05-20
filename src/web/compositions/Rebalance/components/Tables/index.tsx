@@ -40,17 +40,10 @@ const tooltipTexts = {
 
 const RebalanceTable = ({
   theme,
-  mockedData,
+  data,
 }: {
   theme: Theme
-  mockedData: {
-    amount: Number
-    decimals: 6
-    mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB'
-    percentage: 2.793658965543384
-    price: 1
-    symbol: 'USDT'
-  }[]
+  data,
 }) => {
   return (
     <RowContainer height={'80%'} align={'flex-end'}>
@@ -108,7 +101,7 @@ const RebalanceTable = ({
               <RowTd>Target Value</RowTd>
             </TableHeader>
             <TableBody>
-              {mockedData.map((el) => {
+              {data.map((el) => {
                 return (
                   <TableRow>
                     <RowTd>

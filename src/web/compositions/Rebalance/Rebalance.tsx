@@ -3,7 +3,6 @@ import { Connection, LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { compose } from 'recompose'
 import { withTheme, Theme } from '@material-ui/core/styles'
 import { TokenInstructions } from '@project-serum/serum'
-import StepArrow from '@icons/StepArrow.png'
 
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { useWallet, WRAPPED_SOL_MINT } from '@sb/dexUtils/wallet'
@@ -26,58 +25,13 @@ import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { Text } from './Rebalance.styles'
 import { PoolInfo } from './Rebalance.types'
 import RebalanceTable from './components/Tables'
 import RebalanceHeaderComponent from './components/Header'
-import DonutChartWithLegend, {
-  mockData,
-} from '@sb/components/AllocationBlock/index'
+import DonutChartWithLegend from '@sb/components/AllocationBlock/index'
 import BalanceDistributedComponent from './components/BalanceDistributed'
 import { RebalancePopup } from './components/RebalancePopup'
 
-const mockedData = [
-  {
-    amount: 0.307,
-    decimals: 6,
-    mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
-    percentage: 2.793658965543384,
-    price: 1,
-    symbol: 'SRM',
-    disabled: false,
-    disabledReason: '',
-  },
-  {
-    amount: 0.447,
-    decimals: 6,
-    mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
-    percentage: 2.793658965543384,
-    price: 1,
-    symbol: 'SOL',
-    disabled: true,
-    disabledReason: 'no pool',
-  },
-  {
-    amount: 0.303,
-    decimals: 6,
-    mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
-    percentage: 2.793658965543384,
-    price: 1,
-    symbol: 'USDT',
-    disabled: false,
-    disabledReason: '',
-  },
-  {
-    amount: 0.751,
-    decimals: 6,
-    mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
-    percentage: 2.793658965543384,
-    price: 1,
-    symbol: 'CCAI',
-    disabled: true,
-    disabledReason: 'no price',
-  },
-]
 
 const RebalanceComposition = ({
   publicKey,
@@ -217,7 +171,7 @@ const RebalanceComposition = ({
               leftToDistributeValue={leftToDistributeValue}
             />
             <RebalanceTable
-              mockedData={Object.values(tokensMap).map((el) => el)}
+              data={Object.values(tokensMap).map((el) => el)}
               theme={theme}
             />
           </Row>
@@ -267,7 +221,6 @@ const RebalanceComposition = ({
                 btnWidth="calc(55% - 1rem)"
                 height="100%"
                 fontSize="1.4rem"
-                padding="2rem 8rem"
                 borderRadius="1.6rem"
                 borderColor={theme.palette.blue.serum}
                 btnColor={'#fff'}
