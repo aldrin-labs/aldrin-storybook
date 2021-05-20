@@ -21,6 +21,11 @@ import { getTokenAccountInfo } from './tokens'
 import { AWESOME_TOKENS } from '@sb/dexUtils/serum'
 
 export const ALL_TOKENS_MINTS = [...TOKEN_MINTS, ...AWESOME_TOKENS]
+export const ALL_TOKENS_MINTS_MAP = ALL_TOKENS_MINTS.reduce((acc, el) => { 
+  acc[el.address] = el.name 
+
+  return acc
+}, {})
 
 const ALL_TOKENS_MINTS_MAP = new Map();
 
