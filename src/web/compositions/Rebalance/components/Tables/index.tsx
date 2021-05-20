@@ -45,11 +45,13 @@ const RebalanceTable = ({
   theme: Theme
   mockedData: {
     amount: Number
-    decimals: 6
-    mint: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB'
-    percentage: 2.793658965543384
-    price: 1
-    symbol: 'USDT'
+    decimals: Number
+    mint: String
+    percentage: Number
+    price: Number
+    symbol: String
+    disabled: Boolean
+    disabledReason: String
   }[]
 }) => {
   return (
