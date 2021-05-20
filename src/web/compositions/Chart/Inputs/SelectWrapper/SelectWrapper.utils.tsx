@@ -104,6 +104,35 @@ export const updateFavoritePairsHandler = async (
   }
 }
 
+export const filterDataBySymbolForDifferentDeviders = ({
+  searchValue,
+  symbol,
+}: {
+  searchValue: string
+  symbol: string
+}) => {
+  if (searchValue) {
+    let updatedSearchValue = searchValue
+
+    const slashInSearch = updatedSearchValue.includes('/')
+    if (slashInSearch) updatedSearchValue = updatedSearchValue.replace('/', '_')
+
+    const spaceInSeach = updatedSearchValue.includes(' ')
+    if (spaceInSeach) updatedSearchValue = updatedSearchValue.replace(' ', '_')
+
+    const dashInSeach = updatedSearchValue.includes('-')
+    if (dashInSeach) updatedSearchValue = updatedSearchValue.replace('-', '_')
+
+    const underlineInSearch = updatedSearchValue.includes('_')
+
+    return new RegExp(`${updatedSearchValue}`, 'gi').test(
+      underlineInSearch ? symbol : symbol.replace('_', '')
+    )
+  }
+
+  return true
+}
+
 export const combineSelectWrapperData = ({
   data,
   // updateFavoritePairsMutation,
@@ -222,26 +251,9 @@ export const combineSelectWrapperData = ({
     processedData = processedData.filter((el) => !el.isCustomUserMarket)
   }
 
-  if (searchValue) {
-    processedData = processedData.filter((el) => {
-      let updatedSearchValue = searchValue
-
-      const slashInSearch = updatedSearchValue.includes('/')
-      if (slashInSearch)
-        updatedSearchValue = updatedSearchValue.replace('/', '_')
-      const spaceInSeach = updatedSearchValue.includes(' ')
-      if (spaceInSeach)
-        updatedSearchValue = updatedSearchValue.replace(' ', '_')
-      const dashInSeach = updatedSearchValue.includes(' ')
-      if (dashInSeach) updatedSearchValue = updatedSearchValue.replace('-', '_')
-
-      const underlineInSearch = updatedSearchValue.includes('_')
-
-      return new RegExp(`${updatedSearchValue}`, 'gi').test(
-        underlineInSearch ? el.symbol : el.symbol.replace('_', '')
-      )
-    })
-  }
+  processedData = processedData.filter((el) =>
+    filterDataBySymbolForDifferentDeviders({ searchValue, symbol: el.symbol })
+  )
 
   const filtredData = processedData.map((el) => {
     const {

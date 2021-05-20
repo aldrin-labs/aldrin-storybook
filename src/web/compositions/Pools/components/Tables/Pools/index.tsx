@@ -39,6 +39,11 @@ const AllPoolsTable = ({
 
   const { wallet } = useWallet()
 
+  //filterDataBySymbolForDifferentDeviders({searchValue:searchValue,symbol:el.
+  const filteredData = getPoolsInfoQuery.getPoolsInfo.filter((el) =>
+    el.name.toLowerCase().includes(searchValue)
+  )
+
   return (
     <RowContainer>
       <BlockTemplate
@@ -53,7 +58,11 @@ const AllPoolsTable = ({
         <RowContainer padding="2rem" justify={'space-between'} align="center">
           <Text theme={theme}>All Pools</Text>
           <Row justify={'space-between'} width={'42%'}>
-            <SearchInputWithLoop placeholder={'Search'} />
+            <SearchInputWithLoop
+              searchValue={searchValue}
+              onChangeSearch={onChangeSearch}
+              placeholder={'Search...'}
+            />
             <BorderButton
               onClick={() => {
                 if (wallet.connected) {
@@ -88,7 +97,7 @@ const AllPoolsTable = ({
               </RowTd>
               <RowTd></RowTd>
             </TableHeader>
-            {getPoolsInfoQuery.getPoolsInfo.map((el) => {
+            {filteredData.map((el) => {
               return (
                 <TableRow>
                   <RowTd>
@@ -101,16 +110,22 @@ const AllPoolsTable = ({
                     <TextColumnContainer>
                       <Text
                         theme={theme}
-                        style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
+                        style={{
+                          whiteSpace: 'nowrap',
+                          paddingBottom: '1rem',
+                        }}
                       >
                         ${el.tvl.USD}
                       </Text>
                       <Text
                         theme={theme}
                         color={theme.palette.grey.new}
-                        style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
+                        style={{
+                          whiteSpace: 'nowrap',
+                          paddingBottom: '1rem',
+                        }}
                       >
-                        {el.tvl.tokenA} {el.tokenA} / {el.tvl.tokenB}
+                        {el.tvl.tokenA} {el.tokenA} / {el.tvl.tokenB}&nbsp;
                         {el.tokenB}
                       </Text>
                     </TextColumnContainer>

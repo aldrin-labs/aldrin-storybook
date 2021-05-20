@@ -17,12 +17,21 @@ import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 
 export const SearchInputWithLoop = ({
   placeholder,
+  onChangeSearch,
+  searchValue,
 }: {
   placeholder: string
+  onChangeSearch: (value: string) => void
+  searchValue: string
 }) => {
   return (
     <Row style={{ position: 'relative' }} width={'40rem'}>
-      <SearchInput placeholder={placeholder} />
+      <SearchInput
+        onChange={(e) => {
+          onChangeSearch(e.target.value)
+        }}
+        placeholder={placeholder}
+      />
       <SvgIcon
         src={Loop}
         style={{ position: 'absolute', right: '2rem', cursor: 'pointer' }}

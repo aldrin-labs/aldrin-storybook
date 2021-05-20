@@ -136,7 +136,7 @@ const UserLiquitidyTable = ({
                         color={theme.palette.grey.new}
                         style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
                       >
-                        {el.tvl.tokenA} {el.tokenA} / {el.tvl.tokenB}
+                        {el.tvl.tokenA} {el.tokenA} / {el.tvl.tokenB}&nbsp;
                         {el.tokenB}
                       </Text>
                     </TextColumnContainer>
