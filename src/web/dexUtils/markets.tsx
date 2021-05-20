@@ -22,7 +22,13 @@ import { AWESOME_TOKENS } from '@sb/dexUtils/serum'
 
 export const ALL_TOKENS_MINTS = [...TOKEN_MINTS, ...AWESOME_TOKENS]
 
-console.log('ALL_TOKENS_MINTS', ALL_TOKENS_MINTS)
+const ALL_TOKENS_MINTS_MAP = new Map();
+
+ALL_TOKENS_MINTS.forEach(tokenMint => { 
+  // set address by name and name by address
+  ALL_TOKENS_MINTS_MAP.set(tokenMint.name, tokenMint);
+  ALL_TOKENS_MINTS_MAP.set(tokenMint.address.toString(), tokenMint);
+})
 
 // Used in debugging, should be false in production
 
@@ -1210,11 +1216,11 @@ export async function getOpenOrdersAccountsCustom(connection, wallet, market) {
 }
 
 export const getTokenMintAddressByName = (name: string): string | null => {
-  return ALL_TOKENS_MINTS.find(token => token.name === name)?.address?.toString();
+  return ALL_TOKENS_MINTS_MAP.get(name)?.address?.toString();
 }
 
 export const getTokenNameByMintAddress = (address: string): string => {
-  const token = ALL_TOKENS_MINTS.find(token => token.address.toString() === address);
+  const token = ALL_TOKENS_MINTS_MAP.get(address);
 
   if (token) {
     return token.name;
