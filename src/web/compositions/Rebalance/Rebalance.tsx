@@ -16,6 +16,7 @@ import {
   getPercentageAllocationForTokens,
   getAvailableTokensForRebalance,
   getTokensMap,
+  getAllTokensData,
 } from './utils'
 import { useConnection } from '@sb/dexUtils/connection'
 
@@ -62,29 +63,7 @@ const RebalanceComposition = ({
 
       try {
         console.time('rebalance initial data set time')
-        const parsedTokenAccounts = await connection.getParsedTokenAccountsByOwner(
-          wallet.publicKey,
-          { programId: TokenInstructions.TOKEN_PROGRAM_ID }
-        )
-        const solBalance =
-          (await connection.getBalance(wallet.publicKey)) / LAMPORTS_PER_SOL
-        const SOLToken = {
-          symbol: 'SOL',
-          amount: solBalance,
-          decimals: 8,
-          mint: TokenInstructions.WRAPPED_SOL_MINT,
-        }
-
-        const parsedTokensData = parsedTokenAccounts.value.map((el) => ({
-          symbol: ALL_TOKENS_MINTS_MAP[el.account.data.parsed.info.mint]
-            ? ALL_TOKENS_MINTS_MAP[el.account.data.parsed.info.mint]
-            : el.account.data.parsed.info.mint,
-          decimals: el.account.data.parsed.info.tokenAmount.decimals,
-          amount: el.account.data.parsed.info.tokenAmount.uiAmount,
-          mint: el.account.data.parsed.info.mint,
-        }))
-
-        const allTokensData = [SOLToken, ...parsedTokensData]
+        const allTokensData = await getAllTokensData(wallet.publicKey, connection)
 
         const tokensWithPrices = await getPricesForTokens(allTokensData)
         const tokensWithTokenValue = getTokenValuesForTokens(tokensWithPrices)
