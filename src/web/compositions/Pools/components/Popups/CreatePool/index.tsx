@@ -75,13 +75,15 @@ export const CreatePoolPopup = ({
       </RowContainer>
       <RowContainer margin={'2rem 0'} justify={'space-between'}>
         <Text color={theme.palette.grey.title}>Market Price:</Text>
-        <Text
-          fontSize={'2rem'}
-          color={'#A5E898'}
-          fontFamily={'Avenir Next Demi'}
-        >
-          1 {baseSymbol} = 20 {quoteSymbol}
-        </Text>
+        {baseTokenAddress && quoteTokenAddress && (
+          <Text
+            fontSize={'2rem'}
+            color={'#A5E898'}
+            fontFamily={'Avenir Next Demi'}
+          >
+            1 {baseSymbol} = 20 {quoteSymbol}
+          </Text>
+        )}
       </RowContainer>
       <RowContainer>
         <InputWithSelector

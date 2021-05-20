@@ -5,13 +5,13 @@ import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.
 import { Paper, Theme } from '@material-ui/core'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
-import MockedToken from '@icons/ccaiToken.svg'
 import { SearchInputWithLoop } from '../../Tables/components/index'
 
 import Close from '@icons/closeIcon.svg'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { ALL_TOKENS_MINTS } from '@sb/dexUtils/markets'
 import { TokenIcon } from '@sb/components/TokenIcon'
+import { useWalletMints, useWalletPublicKeys } from '@sb/dexUtils/wallet'
 
 const StyledPaper = styled(Paper)`
   height: auto;
@@ -44,6 +44,10 @@ export const SelectCoinPopup = ({
   close: () => void
   selectTokenAddress: (address: string) => void
 }) => {
+  const [mints, loaded] = useWalletMints();
+
+  if (loaded && mints) console.log('mints', mints.map(a=>a.pubkey.toString()), loaded)
+
   return (
     <DialogWrapper
       theme={theme}
