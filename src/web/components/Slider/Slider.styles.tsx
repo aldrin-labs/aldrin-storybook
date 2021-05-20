@@ -97,12 +97,15 @@ export const StyledSlider = styled(
 export const StyledLock = styled(
   ({ value, sliderWidth, max = 100, ...rest }) => <div {...rest}>?</div>
 )`
+  left: calc(
+    ${(props) => props.value * +(parseFloat(props.sliderWidth) / props.max)}rem -
+      0.45rem
+  );
   color: #fff;
   position: absolute;
   z-index: 10;
   height: 1.5rem;
   width: 1.5rem;
-  left: 8.6rem;
   font-family: 'Avenir Next Demi';
 `
 

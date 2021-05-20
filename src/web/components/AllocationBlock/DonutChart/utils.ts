@@ -1,4 +1,5 @@
 import { randomInteger } from '@core/utils/helpers'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { Chart, DoughnutController, ArcElement } from 'chart.js'
 
 Chart.register(DoughnutController, ArcElement)
@@ -64,7 +65,7 @@ const createAllocationDonutChart = ({
       datasets: [
         {
           label: 'Donut Chart Dataset',
-          data,
+          data: data.filter((el) => el),
           backgroundColor: colors,
           hoverOffset: 4,
           borderWidth: 0,
@@ -94,7 +95,10 @@ const createAllocationDonutChart = ({
         tooltip: {
           enabled: true,
           callbacks: {
-            label: (text) => `${text.formattedValue}%`,
+            label: (text) =>
+              `${text.formattedValue}% ${
+                tooltipData.find((el) => el.value === text.dataPoint).symbol
+              }`,
           },
           intersect: false,
         },

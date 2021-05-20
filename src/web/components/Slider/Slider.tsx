@@ -22,7 +22,7 @@ const Slider = (props: any) => (
         }}
         {...props}
       />
-      {/* {props.disabled && (
+      {props.disabled && (
         <DarkTooltip
           title={props.disabledText || 'This slider is temporary locked'}
         >
@@ -32,7 +32,7 @@ const Slider = (props: any) => (
             max={props.max}
           />
         </DarkTooltip>
-      )} */}
+      )}
     </>
     {/* /> */}
   </div>

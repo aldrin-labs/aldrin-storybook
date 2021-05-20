@@ -59,7 +59,7 @@ const DonutChartWithLegend = ({ data = [], theme, id }: IProps) => {
   const legendData = [...sortedData.slice(0, ROWS_TO_SHOW_IN_LEGEND)].concat(
     otherTokensProgressBarData
   )
-  
+
   return (
     <BlockTemplate
       style={{ margin: '0 0 2rem 0', overflow: 'scroll' }}
