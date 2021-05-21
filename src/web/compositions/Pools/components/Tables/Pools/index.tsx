@@ -28,6 +28,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { Theme } from '@material-ui/core'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 
 const AllPoolsTable = ({
   theme,
@@ -46,10 +47,11 @@ const AllPoolsTable = ({
 
   const { wallet } = useWallet()
 
-  //filterDataBySymbolForDifferentDeviders({searchValue:searchValue,symbol:el.
   const filteredData = getPoolsInfoQuery.getPoolsInfo.filter((el) =>
-    el.name.toLowerCase().includes(searchValue)
+    filterDataBySymbolForDifferentDeviders({ searchValue, symbol: el.name })
   )
+
+  console.log('filterDataBySymbolForDifferentDeviders')
 
   return (
     <RowContainer>
