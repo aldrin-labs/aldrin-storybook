@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { Paper, Theme } from '@material-ui/core'
+import { Theme } from '@material-ui/core'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BoldHeader, Line } from '../index.styles'
+import { BoldHeader, Line, StyledPaper } from '../index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
 import Close from '@icons/closeIcon.svg'
@@ -15,23 +14,17 @@ import { withdrawAllTokenTypes } from '@sb/dexUtils/pools'
 import { PublicKey } from '@solana/web3.js'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
-
-const StyledPaper = styled(Paper)`
-  height: auto;
-  padding: 2rem;
-  width: 55rem;
-  box-shadow: 0px 0px 0.8rem 0px rgba(0, 0, 0, 0.45);
-  background: #222429;
-  border-radius: 0.8rem;
-`
+import { PoolInfo } from '@sb/compositions/Pools/index.types'
 
 export const WithdrawalPopup = ({
   theme,
   open,
+  selectedPool,
   close,
 }: {
   theme: Theme
   open: boolean
+  selectedPool: PoolInfo,
   close: () => void
 }) => {
   const { wallet } = useWallet()
@@ -94,18 +87,18 @@ export const WithdrawalPopup = ({
               wallet,
               connection,
               swapTokenPublicKey: new PublicKey(
-                '57XV3PZWT75ftJy1jXW3uu8jgwYzgCjdhtSXLxP6rXbt'
+                '57XV3PZWT75ftJy1jXW3uu8jgwYzgCjdhtSXLxP6rXbt' // from pool
               ),
               userTokenAccountA: new PublicKey(
-                'C5qDUKtsQmUZ6QPDojp5pygoEwmaKg3XGuPCSbCswVM4'
+                'C5qDUKtsQmUZ6QPDojp5pygoEwmaKg3XGuPCSbCswVM4' // all tokens
               ),
               userTokenAccountB: new PublicKey(
-                '6CLDZwFGXRxwAdjG9hvmPGfUKMQKy3EjQBt4YitGSaq1'
+                '6CLDZwFGXRxwAdjG9hvmPGfUKMQKy3EjQBt4YitGSaq1' // all tokens
               ),
               poolTokenAccount: new PublicKey(
-                'HJdPiSX52fVjnuKWxoBV1PWuDpmuU5xS4EL79Nem1rbM'
+                'HJdPiSX52fVjnuKWxoBV1PWuDpmuU5xS4EL79Nem1rbM' // from all tokens, using info from pool
               ),
-              poolTokenAmount: 10000,
+              poolTokenAmount: 10000, // calc from base/quote and pool supply
             })
             await setOperationLoading(false)
           }}

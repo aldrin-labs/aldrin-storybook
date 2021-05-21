@@ -4,7 +4,10 @@ import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 import { StyledInput, TokenContainer, InvisibleInput } from '../index.styles'
 import Arrow from '@icons/arrowBottom.svg'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 import { Theme } from '@material-ui/core'
 import { BlueText } from './index.styles'
 import { TokenIcon } from '@sb/components/TokenIcon'
@@ -74,7 +77,7 @@ export const InputWithCoins = ({
           </Text>
           &nbsp;
           <BlueText onClick={() => onChange(maxBalance)} theme={theme}>
-            {stripDigitPlaces(maxBalance, 2)} {symbol}
+            {formatNumberToUSFormat(stripDigitPlaces(maxBalance, 2))} {symbol}
           </BlueText>
         </Row>
       </TokenContainer>
@@ -97,7 +100,7 @@ export const InputWithTotal = ({
       </TokenContainer>
       <TokenContainer left={'2rem'} bottom={'3rem'}>
         <Text fontSize={'2rem'} fontFamily={'Avenir Next Demi'}>
-          ${stripDigitPlaces(value, 2)}
+          {formatNumberToUSFormat(stripDigitPlaces(value, 2))}
         </Text>
       </TokenContainer>
       <TokenContainer right={'2rem'} bottom={'3rem'}>
@@ -126,6 +129,8 @@ export const InputWithSelector = ({
   onChange: (value: string | number) => void
   openSelectCoinPopup: () => void
 }) => {
+  const isSelectToken = symbol === 'Select token'
+
   return (
     <Row style={{ position: 'relative' }} padding={'2rem 0'} width={'100%'}>
       <StyledInput />
@@ -161,17 +166,19 @@ export const InputWithSelector = ({
           <SvgIcon src={Arrow} width={'1rem'} height={'1rem'} />
         </Row>
       </TokenContainer>
-      <TokenContainer right={'2rem'} top={'3rem'}>
-        <Row style={{ flexWrap: 'nowrap' }}>
-          <Text color={theme.palette.grey.title} fontSize={'1.2rem'}>
-            &nbsp;Max:
-          </Text>
-          &nbsp;
-          <BlueText theme={theme} onClick={() => onChange(maxBalance)}>
-            {maxBalance}
-          </BlueText>
-        </Row>
-      </TokenContainer>
+      {!isSelectToken && (
+        <TokenContainer right={'2rem'} top={'3rem'}>
+          <Row style={{ flexWrap: 'nowrap' }}>
+            <Text color={theme.palette.grey.title} fontSize={'1.2rem'}>
+              &nbsp;Max:
+            </Text>
+            &nbsp;
+            <BlueText theme={theme} onClick={() => onChange(maxBalance)}>
+              {formatNumberToUSFormat(stripDigitPlaces(maxBalance, 8))} {symbol}
+            </BlueText>
+          </Row>
+        </TokenContainer>
+      )}
     </Row>
   )
 }
@@ -203,11 +210,7 @@ export const SimpleInput = ({
           placeholder={''}
         />
       </TokenContainer>
-      <TokenContainer
-        style={{ cursor: 'pointer' }}
-        right={'2rem'}
-        bottom={'3rem'}
-      >
+      <TokenContainer right={'2rem'} bottom={'3rem'}>
         <Row style={{ flexWrap: 'nowrap' }}>
           <TokenIcon
             mint={getTokenMintAddressByName(symbol)}
@@ -230,7 +233,7 @@ export const SimpleInput = ({
           </Text>
           &nbsp;
           <BlueText theme={theme} onClick={() => onChange(maxBalance)}>
-            {stripDigitPlaces(maxBalance, 2)}
+            {formatNumberToUSFormat(stripDigitPlaces(maxBalance, 2))} {symbol}
           </BlueText>
         </Row>
       </TokenContainer>

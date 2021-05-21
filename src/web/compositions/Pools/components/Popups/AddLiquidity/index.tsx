@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { Paper, Theme } from '@material-ui/core'
+import { Theme } from '@material-ui/core'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BoldHeader, Line } from '../index.styles'
+import { BoldHeader, Line, StyledPaper } from '../index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
 import Close from '@icons/closeIcon.svg'
@@ -20,15 +19,7 @@ import { PublicKey } from '@solana/web3.js'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-
-const StyledPaper = styled(Paper)`
-  height: auto;
-  padding: 2rem;
-  width: 55rem;
-  box-shadow: 0px 0px 0.8rem 0px rgba(0, 0, 0, 0.45);
-  background: #222429;
-  border-radius: 0.8rem;
-`
+import { getTokenAddressByMint } from '@sb/compositions/Pools/utils'
 
 export const AddLiquidityPopup = ({
   theme,
@@ -55,9 +46,6 @@ export const AddLiquidityPopup = ({
     !warningChecked || +baseAmount <= 0 || +quoteAmount <= 0 || operationLoading
 
   const total = +baseAmount + +quoteAmount
-
-  // we should select pool first
-  if (!open) return null
 
   return (
     <DialogWrapper
@@ -171,16 +159,17 @@ export const AddLiquidityPopup = ({
               wallet,
               connection,
               swapTokenPublicKey: new PublicKey(
-                '57XV3PZWT75ftJy1jXW3uu8jgwYzgCjdhtSXLxP6rXbt'
+                '57XV3PZWT75ftJy1jXW3uu8jgwYzgCjdhtSXLxP6rXbt' // from pool
               ),
               userTokenAccountA: new PublicKey(
-                'C5qDUKtsQmUZ6QPDojp5pygoEwmaKg3XGuPCSbCswVM4'
+                'C5qDUKtsQmUZ6QPDojp5pygoEwmaKg3XGuPCSbCswVM4' // from all tokens
               ),
+              // userTokenAccountA: new PublicKey(getTokenAddressByMint(all))
               userTokenAccountB: new PublicKey(
-                '6CLDZwFGXRxwAdjG9hvmPGfUKMQKy3EjQBt4YitGSaq1'
+                '6CLDZwFGXRxwAdjG9hvmPGfUKMQKy3EjQBt4YitGSaq1' // from all tokens
               ),
-              userAmountTokenA: 10000,
-              userAmountTokenB: 10000,
+              userAmountTokenA: 10000, // state
+              userAmountTokenB: 10000, // state
             })
             await setOperationLoading(true)
           }}

@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { Paper, Theme } from '@material-ui/core'
+import { Theme } from '@material-ui/core'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BoldHeader } from '../index.styles'
+import { BoldHeader, StyledPaper } from '../index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
 import Close from '@icons/closeIcon.svg'
@@ -19,32 +18,27 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
 import { PublicKey } from '@solana/web3.js'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-
-const StyledPaper = styled(Paper)`
-  height: auto;
-  padding: 2rem;
-  width: 55rem;
-  box-shadow: 0px 0px 0.8rem 0px rgba(0, 0, 0, 0.45);
-  background: #222429;
-  border-radius: 0.8rem;
-`
+import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
+import { getTokenAddressByMint } from '@sb/compositions/Pools/utils'
 
 export const CreatePoolPopup = ({
   theme,
   open,
+  allTokensData,
   close,
 }: {
   theme: Theme
   open: boolean
+  allTokensData: TokenInfo[] | []
   close: () => void
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
 
-  const [baseTokenAddress, setBaseTokenAddress] = useState<string>('')
+  const [baseTokenMintAddress, setBaseTokenMintAddress] = useState<string>('')
   const [baseAmount, setBaseAmount] = useState<string | number>('')
 
-  const [quoteTokenAddress, setQuoteTokenAddress] = useState<string>('')
+  const [quoteTokenMintAddress, setQuoteTokenMintAddress] = useState<string>('')
   const [quoteAmount, setQuoteAmount] = useState<string | number>('')
 
   const [isSelectCoinPopupOpen, setIsSelectCoinPopupOpen] = useState(false)
@@ -56,8 +50,16 @@ export const CreatePoolPopup = ({
   const isDisabled =
     !warningChecked || +baseAmount <= 0 || +quoteAmount <= 0 || operationLoading
 
-  const baseSymbol = getTokenNameByMintAddress(baseTokenAddress)
-  const quoteSymbol = getTokenNameByMintAddress(quoteTokenAddress)
+  const baseSymbol = baseTokenMintAddress ? getTokenNameByMintAddress(baseTokenMintAddress) : 'Select token'
+  const quoteSymbol = quoteTokenMintAddress ? getTokenNameByMintAddress(quoteTokenMintAddress) : 'Select token'
+
+  const mints = allTokensData.map((tokenInfo: TokenInfo) => tokenInfo.mint)
+  const baseTokenInfo = allTokensData.find(
+    (tokenInfo: TokenInfo) => tokenInfo.mint === baseTokenMintAddress
+  )
+  const quoteTokenInfo = allTokensData.find(
+    (tokenInfo: TokenInfo) => tokenInfo.mint === quoteTokenMintAddress
+  )
 
   return (
     <DialogWrapper
@@ -75,13 +77,13 @@ export const CreatePoolPopup = ({
       </RowContainer>
       <RowContainer margin={'2rem 0'} justify={'space-between'}>
         <Text color={theme.palette.grey.title}>Market Price:</Text>
-        {baseTokenAddress && quoteTokenAddress && (
+        {baseTokenMintAddress && quoteTokenMintAddress && (
           <Text
             fontSize={'2rem'}
             color={'#A5E898'}
             fontFamily={'Avenir Next Demi'}
           >
-            1 {baseSymbol} = 20 {quoteSymbol}
+            1 {baseSymbol} = 20 {quoteSymbol} 
           </Text>
         )}
       </RowContainer>
@@ -91,7 +93,7 @@ export const CreatePoolPopup = ({
           value={baseAmount}
           onChange={setBaseAmount}
           symbol={baseSymbol}
-          maxBalance={baseTokenAddress ? 2000 : 0}
+          maxBalance={baseTokenInfo?.amount || 0}
           openSelectCoinPopup={() => {
             setIsBaseTokenSelecting(true)
             setIsSelectCoinPopupOpen(true)
@@ -107,7 +109,7 @@ export const CreatePoolPopup = ({
           value={quoteAmount}
           onChange={setQuoteAmount}
           symbol={quoteSymbol}
-          maxBalance={quoteTokenAddress ? 2000 : 0}
+          maxBalance={quoteTokenInfo?.amount || 0}
           openSelectCoinPopup={() => {
             setIsBaseTokenSelecting(false)
             setIsSelectCoinPopupOpen(true)
@@ -148,6 +150,28 @@ export const CreatePoolPopup = ({
           isUserConfident={true}
           theme={theme}
           onClick={async () => {
+            const userTokenAccountA = getTokenAddressByMint(
+              allTokensData,
+              baseTokenMintAddress
+            )
+            const userTokenAccountB = getTokenAddressByMint(
+              allTokensData,
+              quoteTokenMintAddress
+            )
+
+            const userAmountTokenA =
+              +baseAmount * (baseTokenInfo?.decimals || 0)
+            const userAmountTokenB =
+              +quoteAmount * (quoteTokenInfo?.decimals || 0)
+
+            if (
+              !userTokenAccountA ||
+              !userTokenAccountB ||
+              !userAmountTokenA ||
+              !userAmountTokenB
+            )
+              return // add notify
+
             console.log('create pool')
             await setOperationLoading(true)
             try {
@@ -155,18 +179,22 @@ export const CreatePoolPopup = ({
                 wallet,
                 connection,
                 mintA: new PublicKey(
-                  '8jZjXuaNA3uBcAax77hnjyhaZwkssV2VNoMNW5JYcDaL'
+                  // '8jZjXuaNA3uBcAax77hnjyhaZwkssV2VNoMNW5JYcDaL' // state
+                  baseTokenMintAddress
                 ),
                 mintB: new PublicKey(
-                  '5FDj4Hk6iHbv5hxzqRs9zT6L7Hbu347HLpYyf1zZkFxq'
+                  // '5FDj4Hk6iHbv5hxzqRs9zT6L7Hbu347HLpYyf1zZkFxq' // state
+                  quoteTokenMintAddress
                 ),
-                userAmountTokenA: 100000,
-                userAmountTokenB: 100000,
+                userAmountTokenA, // state
+                userAmountTokenB, // state
                 userTokenAccountA: new PublicKey(
-                  'C5qDUKtsQmUZ6QPDojp5pygoEwmaKg3XGuPCSbCswVM4'
+                  // 'C5qDUKtsQmUZ6QPDojp5pygoEwmaKg3XGuPCSbCswVM4' // all tokens
+                  userTokenAccountA
                 ),
                 userTokenAccountB: new PublicKey(
-                  '6CLDZwFGXRxwAdjG9hvmPGfUKMQKy3EjQBt4YitGSaq1'
+                  // '6CLDZwFGXRxwAdjG9hvmPGfUKMQKy3EjQBt4YitGSaq1' // all tokens
+                  userTokenAccountB
                 ),
               })
             } catch (e) {
@@ -180,15 +208,16 @@ export const CreatePoolPopup = ({
       </RowContainer>
       <SelectCoinPopup
         theme={theme}
+        mints={mints}
         open={isSelectCoinPopupOpen}
         selectTokenAddress={(address: string) => {
           const select = isBaseTokenSelecting
             ? () => {
-                setBaseTokenAddress(address)
+                setBaseTokenMintAddress(address)
                 setIsSelectCoinPopupOpen(false)
               }
             : () => {
-                setQuoteTokenAddress(address)
+                setQuoteTokenMintAddress(address)
                 setIsSelectCoinPopupOpen(false)
               }
 

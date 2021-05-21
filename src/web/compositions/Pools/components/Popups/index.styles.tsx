@@ -1,4 +1,7 @@
+import React from 'react'
 import styled from 'styled-components'
+
+import { Paper } from '@material-ui/core'
 
 export const BoldHeader = styled.h1`
   font-family: Avenir Next Bold;
@@ -52,4 +55,13 @@ export const InvisibleInput = styled.input`
     font-size: 1.7rem;
     font-family: 'Avenir Next Thin';
   }
+`
+
+export const StyledPaper = styled(({ ...props }) => <Paper {...props} />)`
+  height: auto;
+  padding: 2rem;
+  width: 55rem;
+  box-shadow: 0px 0px 0.8rem 0px rgba(0, 0, 0, 0.45);
+  background: #222429;
+  border-radius: 0.8rem;
 `

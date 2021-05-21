@@ -2,24 +2,19 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { Paper, Theme } from '@material-ui/core'
+import { Theme } from '@material-ui/core'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 import { SearchInputWithLoop } from '../../Tables/components/index'
 
 import Close from '@icons/closeIcon.svg'
 import { Text } from '@sb/compositions/Addressbook/index'
-import { ALL_TOKENS_MINTS } from '@sb/dexUtils/markets'
 import { TokenIcon } from '@sb/components/TokenIcon'
-import { useWalletMints, useWalletPublicKeys } from '@sb/dexUtils/wallet'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { StyledPaper } from '../index.styles'
 
-const StyledPaper = styled(Paper)`
-  height: auto;
-  padding: 2rem;
+const UpdatedPaper = styled(({ ...props }) => <StyledPaper {...props} />)`
   width: 45rem;
-  box-shadow: 0px 0px 0.8rem 0px rgba(0, 0, 0, 0.45);
-  background: #222429;
-  border-radius: 0.8rem;
 `
 
 const SelectorRow = styled(({ ...props }) => <RowContainer {...props} />)`
@@ -36,27 +31,22 @@ const StyledText = styled(({ ...props }) => <Text {...props} />)`
 export const SelectCoinPopup = ({
   theme,
   open,
+  mints,
   close,
   selectTokenAddress,
 }: {
   theme: Theme
   open: boolean
+  mints: string[]
   close: () => void
   selectTokenAddress: (address: string) => void
 }) => {
-  const [mints, loaded] = useWalletMints();
-
-  if (loaded && mints) console.log('mints', mints.map(a=>a.pubkey.toString()), loaded)
-
-  const [searchValue, onChangeSearch] = useState('')
-
-  const filteredData = ALL_TOKENS_MINTS.filter((el) =>
-    el.name.toLowerCase().includes(searchValue)
-  )
+  const [searchValue, onChangeSearch] = useState('');
+  
   return (
     <DialogWrapper
       theme={theme}
-      PaperComponent={StyledPaper}
+      PaperComponent={UpdatedPaper}
       fullScreen={false}
       onClose={close}
       maxWidth={'md'}
@@ -75,22 +65,18 @@ export const SelectCoinPopup = ({
         />
       </RowContainer>
       <RowContainer>
-        {filteredData.map((tokenData) => {
+        {mints.map((mint: string) => {
           return (
             <SelectorRow
               justify={'space-between'}
               style={{ cursor: 'pointer' }}
               onClick={() => {
-                selectTokenAddress(tokenData.address.toString())
+                selectTokenAddress(mint)
               }}
             >
               <Row wrap={'nowrap'}>
-                <TokenIcon
-                  mint={tokenData.address.toString()}
-                  width={'2rem'}
-                  height={'2rem'}
-                />
-                <StyledText>{tokenData.name}</StyledText>
+                <TokenIcon mint={mint} width={'2rem'} height={'2rem'} />
+                <StyledText>{getTokenNameByMintAddress(mint)}</StyledText>
               </Row>
               <Row wrap={'nowrap'}>
                 <StyledText>--</StyledText>
