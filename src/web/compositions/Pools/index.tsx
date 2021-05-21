@@ -9,8 +9,10 @@ import AllPoolsTable from './components/Tables/Pools'
 import { AddLiquidityPopup } from './components/Popups/AddLiquidity'
 import { CreatePoolPopup } from './components/Popups/CreatePool'
 import { WithdrawalPopup } from './components/Popups/WithdrawLiquidity'
+import { useWallet } from '@sb/dexUtils/wallet'
 
 const Pools = ({ theme }: { theme: Theme }) => {
+  const { wallet } = useWallet()
   const [selectedPool, selectPool] = useState({})
 
   const [isAddLiquidityPopupOpen, setIsAddLiquidityPopupOpen] = useState(false)
@@ -18,7 +20,7 @@ const Pools = ({ theme }: { theme: Theme }) => {
   const [isWithdrawalPopupOpen, setIsWithdrawalPopupOpen] = useState(false)
 
   return (
-    <RowContainer direction={'column'} padding={'2rem 15rem'}>
+    <RowContainer direction={'column'} padding={'2rem 3rem'}>
       <RowContainer justify={'space-between'}>
         <BlockTemplate
           theme={theme}
@@ -35,12 +37,15 @@ const Pools = ({ theme }: { theme: Theme }) => {
           <TradingVolumeChart theme={theme} />
         </BlockTemplate>
       </RowContainer>
-      <UserLiquitidyTable
-        theme={theme}
-        selectPool={selectPool}
-        setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
-        setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
-      />
+
+      {wallet.connected ? (
+        <UserLiquitidyTable
+          theme={theme}
+          setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
+          setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
+        />
+      ) : null}
+
       <AllPoolsTable
         theme={theme}
         selectPool={selectPool}

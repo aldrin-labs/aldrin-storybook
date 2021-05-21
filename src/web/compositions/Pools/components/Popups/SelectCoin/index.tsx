@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
@@ -48,6 +48,11 @@ export const SelectCoinPopup = ({
 
   if (loaded && mints) console.log('mints', mints.map(a=>a.pubkey.toString()), loaded)
 
+  const [searchValue, onChangeSearch] = useState('')
+
+  const filteredData = ALL_TOKENS_MINTS.filter((el) =>
+    el.name.toLowerCase().includes(searchValue)
+  )
   return (
     <DialogWrapper
       theme={theme}
@@ -63,10 +68,14 @@ export const SelectCoinPopup = ({
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </RowContainer>
       <RowContainer padding={'3rem 0'}>
-        <SearchInputWithLoop placeholder={'Search'} />
+        <SearchInputWithLoop
+          searchValue={searchValue}
+          onChangeSearch={onChangeSearch}
+          placeholder={'Search'}
+        />
       </RowContainer>
       <RowContainer>
-        {ALL_TOKENS_MINTS.map((tokenData) => {
+        {filteredData.map((tokenData) => {
           return (
             <SelectorRow
               justify={'space-between'}
