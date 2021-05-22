@@ -1,1 +1,1 @@
-export * from './getTokenAddressByMint'
+export * from './getTokenDataByMint'

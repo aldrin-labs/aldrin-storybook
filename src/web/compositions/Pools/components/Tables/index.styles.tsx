@@ -44,9 +44,9 @@ export const TableRow = styled.tr``
 export const RowTd = styled.td`
   width: auto;
   padding: 0 2rem;
-  font-family: 'Avenir Next Thin';
+  font-family: 'Avenir Next';
   border-top: 0.2rem solid #383b45;
-  color: #f5f5fb;
+  color: #f5f5fb; 
   font-size: 1.5rem;
 `
 

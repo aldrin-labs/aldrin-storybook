@@ -34,8 +34,8 @@ const Title = styled(({ ...props }) => <MainTitle {...props} />)`
   font-size: 2.5rem;
   margin-bottom: 0;
 `
-export const BlueButton = styled(({ ...props }) => (
-  <BtnCustom back {...props} />
+export const BlueButton = styled(({ isUserConfident, ...props }) => (
+  <BtnCustom {...props} />
 ))`
   font-size: 1.4rem;
   height: 4.5rem;

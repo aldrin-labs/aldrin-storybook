@@ -292,6 +292,7 @@ export async function depositAllTokenTypes({
   wallet,
   connection,
   swapTokenPublicKey,
+  poolTokenAccount,
   userTokenAccountA,
   userTokenAccountB,
   userAmountTokenA,
@@ -300,6 +301,7 @@ export async function depositAllTokenTypes({
   wallet: WalletAdapter
   connection: Connection
   swapTokenPublicKey: PublicKey
+  poolTokenAccount?: PublicKey
   userTokenAccountA: PublicKey
   userTokenAccountB: PublicKey
   userAmountTokenA: number
@@ -324,15 +326,6 @@ export async function depositAllTokenTypes({
   const poolMintInfo = await tokenPool.getMintInfo()
   const supply = poolMintInfo.supply.toNumber()
 
-  const [
-    newAccountPool,
-    newAccountPoolSignature,
-    newAccountPoolTransaction,
-  ] = await tokenPool.createAccount(wallet.publicKey)
-
-  const userTransferAuthority = new Account()
-
-  console.log('Creating depositor token a account')
   const tokenMintA = new Token(wallet, connection, mintA, TOKEN_PROGRAM_ID)
   const poolTokenA = await tokenMintA.getAccountInfo(tokenAccountA)
   const poolTokenAmountA = poolTokenA.amount.toNumber()
@@ -340,6 +333,29 @@ export async function depositAllTokenTypes({
   let poolTokenAmount = Math.floor(
     (supply * userAmountTokenA) / poolTokenAmountA
   )
+
+  const isUserAlreadyHasPoolTokenAccount = !!poolTokenAccount
+
+  let [newAccountPool, newAccountPoolSignature, newAccountPoolTransaction]: [
+    PublicKey | null,
+    Account | null,
+    Transaction | null
+  ] = [null, null, null]
+
+  // create new account for user only if it has no one for such pool mint
+  if (!isUserAlreadyHasPoolTokenAccount) {
+    [
+      newAccountPool,
+      newAccountPoolSignature,
+      newAccountPoolTransaction,
+    ] = await tokenPool.createAccount(wallet.publicKey)
+  }
+
+  const userPoolTokenAccount = isUserAlreadyHasPoolTokenAccount
+    ? poolTokenAccount
+    : newAccountPool
+
+  const userTransferAuthority = new Account()
 
   console.log('approving token a')
   const tokenMintAApproveTransaction = await tokenMintA.approve(
@@ -361,11 +377,20 @@ export async function depositAllTokenTypes({
   )
 
   const previousTransactions = new Transaction()
+
+  if (!isUserAlreadyHasPoolTokenAccount && newAccountPoolTransaction) {
+    previousTransactions.add(newAccountPoolTransaction)
+  }
+
   previousTransactions.add(
-    newAccountPoolTransaction,
     tokenMintAApproveTransaction,
     tokenMintBApproveTransaction
   )
+
+  if (!userPoolTokenAccount) {
+    console.error("User's token account was not provided or created")
+    return
+  }
 
   console.log('Depositing into swap')
   let counter = 0
@@ -374,13 +399,18 @@ export async function depositAllTokenTypes({
       const depositSignature = await tokenSwap.depositAllTokenTypes(
         userTokenAccountA,
         userTokenAccountB,
-        newAccountPool,
+        userPoolTokenAccount,
         userTransferAuthority,
         poolTokenAmount,
         userAmountTokenA,
         userAmountTokenB,
         previousTransactions,
-        [newAccountPoolSignature]
+        // signature for creating new account
+        [
+          ...(isUserAlreadyHasPoolTokenAccount || !newAccountPoolSignature
+            ? []
+            : [newAccountPoolSignature]),
+        ]
       )
 
       console.log('depositSignature', depositSignature)
@@ -446,13 +476,7 @@ export async function withdrawAllTokenTypes({
     TOKEN_SWAP_PROGRAM_ID
   )
 
-  const {
-    tokenAccountA,
-    tokenAccountB,
-    mintA,
-    mintB,
-    poolToken: poolTokenMint,
-  } = tokenSwap
+  const { poolToken: poolTokenMint } = tokenSwap
 
   const tokenPool = new Token(
     wallet,
@@ -461,23 +485,14 @@ export async function withdrawAllTokenTypes({
     TOKEN_PROGRAM_ID
   )
 
-  const poolMintInfo = await tokenPool.getMintInfo()
-  const supply = poolMintInfo.supply.toNumber()
-
-  const tokenMintA = new Token(wallet, connection, mintA, TOKEN_PROGRAM_ID)
-  const poolTokenA = await tokenMintA.getAccountInfo(tokenAccountA)
-  const poolTokenAmountA = poolTokenA.amount.toNumber()
-
-  const tokenMintB = new Token(wallet, connection, mintB, TOKEN_PROGRAM_ID)
-  const poolTokenB = await tokenMintB.getAccountInfo(tokenAccountB)
-  const poolTokenAmountB = poolTokenB.amount.toNumber()
-
-  let withdrawAmountTokenA = Math.floor(
-    (poolTokenAmountA * poolTokenAmount) / supply
-  )
-
-  let withdrawAmountTokenB = Math.floor(
-    (poolTokenAmountB * poolTokenAmount) / supply
+  let [withdrawAmountTokenA, withdrawAmountTokenB] = await getMaxWithdrawAmount(
+    {
+      wallet,
+      connection,
+      swapTokenPublicKey,
+      poolTokenAmount,
+      tokenSwap,
+    }
   )
 
   let feeAmount = 0
@@ -516,9 +531,78 @@ export async function withdrawAllTokenTypes({
       if (withdrawSignature) break
     } catch (e) {
       console.log('withdraw catch error', e)
-      counter++;
-      withdrawAmountTokenA *= 0.99;
-      withdrawAmountTokenB *= 0.99;
+      counter++
+      withdrawAmountTokenA *= 0.99
+      withdrawAmountTokenB *= 0.99
     }
   }
+}
+
+export const getMaxWithdrawAmount = async ({
+  wallet,
+  connection,
+  swapTokenPublicKey,
+  poolTokenAmount,
+  tokenSwap,
+}: {
+  wallet: WalletAdapter
+  connection: Connection
+  swapTokenPublicKey: PublicKey
+  poolTokenAmount: number
+  tokenSwap?: TokenSwap
+}) => {
+  let tokenSwapClass = tokenSwap
+
+  if (!tokenSwapClass) {
+    tokenSwapClass = await TokenSwap.loadTokenSwap(
+      wallet,
+      connection,
+      swapTokenPublicKey,
+      TOKEN_SWAP_PROGRAM_ID
+    )
+  }
+
+  const {
+    tokenAccountA,
+    tokenAccountB,
+    mintA,
+    mintB,
+    poolToken: poolTokenMint,
+  } = tokenSwapClass
+
+  const tokenPool = new Token(
+    wallet,
+    connection,
+    poolTokenMint,
+    TOKEN_PROGRAM_ID
+  )
+
+  const poolMintInfo = await tokenPool.getMintInfo()
+  const supply = poolMintInfo.supply.toNumber()
+
+  const tokenMintA = new Token(wallet, connection, mintA, TOKEN_PROGRAM_ID)
+  const poolTokenA = await tokenMintA.getAccountInfo(tokenAccountA)
+  const poolTokenAmountA = poolTokenA.amount.toNumber()
+
+  const tokenMintB = new Token(wallet, connection, mintB, TOKEN_PROGRAM_ID)
+  const poolTokenB = await tokenMintB.getAccountInfo(tokenAccountB)
+  const poolTokenAmountB = poolTokenB.amount.toNumber()
+
+  const withdrawAmountTokenA = Math.floor(
+    (poolTokenAmountA * poolTokenAmount) / supply
+  )
+
+  const withdrawAmountTokenB = Math.floor(
+    (poolTokenAmountB * poolTokenAmount) / supply
+  )
+
+  console.log(
+    'poolTokenAmountB * poolTokenAmount) / supply',
+    poolTokenAmountA,
+    poolTokenAmountB,
+    poolTokenAmount,
+    supply
+  )
+
+  return [withdrawAmountTokenA, withdrawAmountTokenB]
 }

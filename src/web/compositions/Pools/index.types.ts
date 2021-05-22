@@ -2,6 +2,8 @@ export type PoolInfo = {
   name: string,
   tokenA: string,
   tokenB: string,
+  swapToken: string,
+  poolTokenMint: string,
   tvl: {
       tokenA: number,
       tokenB: number,

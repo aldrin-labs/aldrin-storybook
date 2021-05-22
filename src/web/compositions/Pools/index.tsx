@@ -16,7 +16,7 @@ import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { PoolInfo } from './index.types'
 
 const Pools = ({ theme }: { theme: Theme }) => {
-  const [allTokensData, setAllTokensData] = useState<TokenInfo[] | []>([])
+  const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
   const [selectedPool, selectPool] = useState<PoolInfo | null>(null)
 
   const [isAddLiquidityPopupOpen, setIsAddLiquidityPopupOpen] = useState(false)
@@ -60,6 +60,7 @@ const Pools = ({ theme }: { theme: Theme }) => {
       {wallet.connected ? (
         <UserLiquitidyTable
           theme={theme}
+          selectPool={selectPool}
           setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
           setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
         />
@@ -83,6 +84,7 @@ const Pools = ({ theme }: { theme: Theme }) => {
         <AddLiquidityPopup
           theme={theme}
           selectedPool={selectedPool}
+          allTokensData={allTokensData}
           close={() => setIsAddLiquidityPopupOpen(false)}
           open={isAddLiquidityPopupOpen}
         />
@@ -92,6 +94,7 @@ const Pools = ({ theme }: { theme: Theme }) => {
         <WithdrawalPopup
           theme={theme}
           selectedPool={selectedPool}
+          allTokensData={allTokensData}
           close={() => setIsWithdrawalPopupOpen(false)}
           open={isWithdrawalPopupOpen}
         />

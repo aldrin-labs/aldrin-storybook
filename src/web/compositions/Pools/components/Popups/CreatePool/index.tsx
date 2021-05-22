@@ -19,7 +19,7 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { PublicKey } from '@solana/web3.js'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { getTokenAddressByMint } from '@sb/compositions/Pools/utils'
+import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 
 export const CreatePoolPopup = ({
   theme,
@@ -29,7 +29,7 @@ export const CreatePoolPopup = ({
 }: {
   theme: Theme
   open: boolean
-  allTokensData: TokenInfo[] | []
+  allTokensData: TokenInfo[]
   close: () => void
 }) => {
   const { wallet } = useWallet()
@@ -50,15 +50,18 @@ export const CreatePoolPopup = ({
   const isDisabled =
     !warningChecked || +baseAmount <= 0 || +quoteAmount <= 0 || operationLoading
 
-  const baseSymbol = baseTokenMintAddress ? getTokenNameByMintAddress(baseTokenMintAddress) : 'Select token'
-  const quoteSymbol = quoteTokenMintAddress ? getTokenNameByMintAddress(quoteTokenMintAddress) : 'Select token'
+  const baseSymbol = baseTokenMintAddress
+    ? getTokenNameByMintAddress(baseTokenMintAddress)
+    : 'Select token'
+  const quoteSymbol = quoteTokenMintAddress
+    ? getTokenNameByMintAddress(quoteTokenMintAddress)
+    : 'Select token'
 
   const mints = allTokensData.map((tokenInfo: TokenInfo) => tokenInfo.mint)
-  const baseTokenInfo = allTokensData.find(
-    (tokenInfo: TokenInfo) => tokenInfo.mint === baseTokenMintAddress
-  )
-  const quoteTokenInfo = allTokensData.find(
-    (tokenInfo: TokenInfo) => tokenInfo.mint === quoteTokenMintAddress
+  const baseTokenInfo = getTokenDataByMint(allTokensData, baseTokenMintAddress)
+  const quoteTokenInfo = getTokenDataByMint(
+    allTokensData,
+    quoteTokenMintAddress
   )
 
   return (
@@ -83,7 +86,7 @@ export const CreatePoolPopup = ({
             color={'#A5E898'}
             fontFamily={'Avenir Next Demi'}
           >
-            1 {baseSymbol} = 20 {quoteSymbol} 
+            1 {baseSymbol} = 20 {quoteSymbol}
           </Text>
         )}
       </RowContainer>
@@ -150,19 +153,14 @@ export const CreatePoolPopup = ({
           isUserConfident={true}
           theme={theme}
           onClick={async () => {
-            const userTokenAccountA = getTokenAddressByMint(
-              allTokensData,
-              baseTokenMintAddress
-            )
-            const userTokenAccountB = getTokenAddressByMint(
-              allTokensData,
-              quoteTokenMintAddress
-            )
+            const userTokenAccountA = baseTokenInfo?.address
+            const userTokenAccountB = quoteTokenInfo?.address
 
-            const userAmountTokenA =
-              +baseAmount * (baseTokenInfo?.decimals || 0)
-            const userAmountTokenB =
-              +quoteAmount * (quoteTokenInfo?.decimals || 0)
+            const baseTokenDecimals = baseTokenInfo?.decimals || 0
+            const quoteTokenDecimals = quoteTokenInfo?.decimals || 0
+
+            const userAmountTokenA = +baseAmount * (10 ** baseTokenDecimals)
+            const userAmountTokenB = +quoteAmount * (10 ** quoteTokenDecimals)
 
             if (
               !userTokenAccountA ||
@@ -178,24 +176,12 @@ export const CreatePoolPopup = ({
               await createTokenSwap({
                 wallet,
                 connection,
-                mintA: new PublicKey(
-                  // '8jZjXuaNA3uBcAax77hnjyhaZwkssV2VNoMNW5JYcDaL' // state
-                  baseTokenMintAddress
-                ),
-                mintB: new PublicKey(
-                  // '5FDj4Hk6iHbv5hxzqRs9zT6L7Hbu347HLpYyf1zZkFxq' // state
-                  quoteTokenMintAddress
-                ),
-                userAmountTokenA, // state
-                userAmountTokenB, // state
-                userTokenAccountA: new PublicKey(
-                  // 'C5qDUKtsQmUZ6QPDojp5pygoEwmaKg3XGuPCSbCswVM4' // all tokens
-                  userTokenAccountA
-                ),
-                userTokenAccountB: new PublicKey(
-                  // '6CLDZwFGXRxwAdjG9hvmPGfUKMQKy3EjQBt4YitGSaq1' // all tokens
-                  userTokenAccountB
-                ),
+                userAmountTokenA,
+                userAmountTokenB,
+                mintA: new PublicKey(baseTokenMintAddress),
+                mintB: new PublicKey(quoteTokenMintAddress),
+                userTokenAccountA: new PublicKey(userTokenAccountA),
+                userTokenAccountB: new PublicKey(userTokenAccountB),
               })
             } catch (e) {
               console.error('createTokenSwap error:', e)

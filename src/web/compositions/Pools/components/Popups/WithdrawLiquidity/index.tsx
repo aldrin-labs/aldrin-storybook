@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { Theme } from '@material-ui/core'
@@ -10,21 +10,26 @@ import Close from '@icons/closeIcon.svg'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { SimpleInput, InputWithTotal } from '../components'
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
-import { withdrawAllTokenTypes } from '@sb/dexUtils/pools'
+import { getMaxWithdrawAmount, withdrawAllTokenTypes } from '@sb/dexUtils/pools'
 import { PublicKey } from '@solana/web3.js'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
+import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 
 export const WithdrawalPopup = ({
   theme,
   open,
   selectedPool,
+  allTokensData,
   close,
 }: {
   theme: Theme
   open: boolean
-  selectedPool: PoolInfo,
+  selectedPool: PoolInfo
+  allTokensData: TokenInfo[]
   close: () => void
 }) => {
   const { wallet } = useWallet()
@@ -33,10 +38,48 @@ export const WithdrawalPopup = ({
   const [baseAmount, setBaseAmount] = useState<string | number>('')
   const [quoteAmount, setQuoteAmount] = useState<string | number>('')
 
-  const [operationLoading, setOperationLoading] = useState(false)
+  const [operationLoading, setOperationLoading] = useState<boolean>(false)
+  const [
+    [withdrawAmountTokenA, withdrawAmountTokenB],
+    setWithdrawAmounts,
+  ] = useState<[number, number]>([0, 0])
 
-  const isDisabled =
-    +baseAmount <= 0 || +quoteAmount <= 0 || operationLoading
+  const poolTokenInfo = getTokenDataByMint(
+    allTokensData,
+    selectedPool.poolTokenMint
+  )
+  const poolTokenAmount = poolTokenInfo?.amount || 0
+  const poolTokenDecimals = poolTokenInfo?.decimals || 0
+  const poolTokenAmountToWithdraw =
+    (+baseAmount / withdrawAmountTokenA) *
+    100 *
+    poolTokenAmount *
+    10 ** poolTokenDecimals
+
+  const baseTokenInfo = getTokenDataByMint(allTokensData, selectedPool.tokenA)
+  const quoteTokenInfo = getTokenDataByMint(allTokensData, selectedPool.tokenB)
+
+  // load max withdrawal values for tokenA, tokenB
+  useEffect(() => {
+    const getData = async () => {
+      const [
+        withdrawAmountTokenA,
+        withdrawAmountTokenB,
+      ] = await getMaxWithdrawAmount({
+        wallet,
+        connection,
+        swapTokenPublicKey: new PublicKey(selectedPool.swapToken),
+        poolTokenAmount,
+      })
+
+      setWithdrawAmounts([withdrawAmountTokenA, withdrawAmountTokenB])
+    }
+
+    getData()
+  }, [wallet, connection, selectedPool.swapToken, poolTokenAmount])
+
+  const isDisabled = +baseAmount <= 0 || +quoteAmount <= 0 || operationLoading
+  const total = +baseAmount + +quoteAmount
 
   return (
     <DialogWrapper
@@ -55,10 +98,10 @@ export const WithdrawalPopup = ({
       <RowContainer>
         <SimpleInput
           theme={theme}
-          symbol={'SOL'}
+          symbol={getTokenNameByMintAddress(selectedPool.tokenA)}
           value={baseAmount}
           onChange={setBaseAmount}
-          maxBalance={2000}
+          maxBalance={withdrawAmountTokenA}
         />
         <Row>
           <Text fontSize={'4rem'} fontFamily={'Avenir Next Medium'}>
@@ -67,13 +110,13 @@ export const WithdrawalPopup = ({
         </Row>
         <SimpleInput
           theme={theme}
-          symbol={'CCAI'}
+          symbol={getTokenNameByMintAddress(selectedPool.tokenB)}
           value={quoteAmount}
           onChange={setQuoteAmount}
-          maxBalance={2000}
+          maxBalance={withdrawAmountTokenB}
         />
         <Line />
-        <InputWithTotal theme={theme} value={2000} />
+        <InputWithTotal theme={theme} value={total} />
       </RowContainer>
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
         <BlueButton
@@ -82,23 +125,27 @@ export const WithdrawalPopup = ({
           isUserConfident={true}
           theme={theme}
           onClick={async () => {
+            const userTokenAccountA = baseTokenInfo?.address
+            const userTokenAccountB = quoteTokenInfo?.address
+            const userPoolTokenAccount = poolTokenInfo?.address
+
+            if (
+              !userTokenAccountA ||
+              !userTokenAccountB ||
+              !userPoolTokenAccount ||
+              !poolTokenAmountToWithdraw
+            )
+              return // add notify
+
             await setOperationLoading(true)
             await withdrawAllTokenTypes({
               wallet,
               connection,
-              swapTokenPublicKey: new PublicKey(
-                '57XV3PZWT75ftJy1jXW3uu8jgwYzgCjdhtSXLxP6rXbt' // from pool
-              ),
-              userTokenAccountA: new PublicKey(
-                'C5qDUKtsQmUZ6QPDojp5pygoEwmaKg3XGuPCSbCswVM4' // all tokens
-              ),
-              userTokenAccountB: new PublicKey(
-                '6CLDZwFGXRxwAdjG9hvmPGfUKMQKy3EjQBt4YitGSaq1' // all tokens
-              ),
-              poolTokenAccount: new PublicKey(
-                'HJdPiSX52fVjnuKWxoBV1PWuDpmuU5xS4EL79Nem1rbM' // from all tokens, using info from pool
-              ),
-              poolTokenAmount: 10000, // calc from base/quote and pool supply
+              poolTokenAmount: poolTokenAmountToWithdraw,
+              swapTokenPublicKey: new PublicKey(selectedPool.swapToken),
+              userTokenAccountA: new PublicKey(userTokenAccountA),
+              userTokenAccountB: new PublicKey(userTokenAccountB),
+              poolTokenAccount: new PublicKey(userPoolTokenAccount),
             })
             await setOperationLoading(false)
           }}
