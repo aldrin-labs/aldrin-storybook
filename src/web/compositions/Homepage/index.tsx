@@ -123,7 +123,7 @@ export const Homepage = () => {
               <Row direction={'column'}>
                 {' '}
                 <WhiteButton
-                  style={{ marginBottom: '3rem' }}
+                  // style={{ marginBottom: '3rem' }}
                   needHover={true}
                   width={'22rem'}
                   padding={'0 2rem'}
