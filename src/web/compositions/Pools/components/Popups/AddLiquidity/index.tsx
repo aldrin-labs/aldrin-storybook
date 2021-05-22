@@ -188,6 +188,7 @@ export const AddLiquidityPopup = ({
           style={{ width: '40%', fontFamily: 'Avenir Next Medium' }}
           disabled={isDisabled}
           isUserConfident={true}
+          showLoader={operationLoading}
           theme={theme}
           onClick={async () => {
             const userTokenAccountA = baseTokenInfo?.address

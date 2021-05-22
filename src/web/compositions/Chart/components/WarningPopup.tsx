@@ -16,6 +16,7 @@ import Warning from '@icons/newWarning.svg'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { Row } from '../Inputs/PreferencesSelect/index.styles'
+import { Loading } from '@sb/components'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -34,9 +35,21 @@ const Title = styled(({ ...props }) => <MainTitle {...props} />)`
   font-size: 2.5rem;
   margin-bottom: 0;
 `
-export const BlueButton = styled(({ isUserConfident, ...props }) => (
-  <BtnCustom {...props} />
-))`
+export const BlueButton = styled(
+  ({ isUserConfident, showLoader, children, ...props }) => (
+    <BtnCustom {...props}>
+      {showLoader ? (
+        <Loading
+          color={'#fff'}
+          size={24}
+          style={{ display: 'flex', alignItems: 'center', height: '4.5rem' }}
+        />
+      ) : (
+        children
+      )}
+    </BtnCustom>
+  )
+)`
   font-size: 1.4rem;
   height: 4.5rem;
   text-transform: capitalize;
