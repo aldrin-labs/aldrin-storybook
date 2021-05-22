@@ -44,7 +44,7 @@ export const TradeHistory = ({
         withOutSpinner
         query={MARKET_QUERY}
         variables={{ symbol, exchange: 'serum', marketType }}
-        fetchPolicy={'cache-and-network'}
+        fetchPolicy={'network-only'}
         // subscriptionArgs={{
         //   subscription: MARKET_TICKERS,
         //   variables: { symbol, exchange: 'serum', marketType: String(marketType) },
