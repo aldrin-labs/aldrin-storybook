@@ -5,7 +5,7 @@ import { Text } from '@sb/compositions/Addressbook/index'
 import { BlockTemplate } from '@sb/compositions/Pools/index.styles'
 import { TokenAllocationProgressBar } from '@sb/components/AllocationBlock/Legend/index.styles'
 
-const BalanceDistributedComponent = ({ theme }) => {
+const BalanceDistributedComponent = ({ theme, leftToDistributeValue, totalTokensValue }) => {
   return (
     <BlockTemplate
       direction={'column'}
@@ -17,7 +17,7 @@ const BalanceDistributedComponent = ({ theme }) => {
       <RowContainer align={'flex-end'} style={{ flexWrap: 'nowrap' }}>
         <Text color={'#93A0B2'}>Balance Distributed:</Text>&nbsp; &nbsp;
         <Text fontSize={'1.7rem'} fontFamily={'Avenir Next Bold'}>
-          100%
+          {(100 - leftToDistributeValue * 100 / totalTokensValue).toFixed(2)}%
         </Text>
       </RowContainer>
       <TokenAllocationProgressBar
