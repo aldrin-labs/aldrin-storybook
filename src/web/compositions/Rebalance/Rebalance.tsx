@@ -17,6 +17,7 @@ import {
   getAvailableTokensForRebalance,
   getTokensMap,
   getAllTokensData,
+  getSliderStepForTokens,
 } from './utils'
 import { useConnection } from '@sb/dexUtils/connection'
 
@@ -32,6 +33,11 @@ import RebalanceHeaderComponent from './components/Header'
 import DonutChartWithLegend from '@sb/components/AllocationBlock/index'
 import BalanceDistributedComponent from './components/BalanceDistributed'
 import { RebalancePopup } from './components/RebalancePopup'
+
+// const handleSliderChange = (setTokensMap, e, newValue) => {
+//     // console.log('setTokensMap: ', setTokensMap)
+//     console.log('newValue: ', newValue)
+// }
 
 
 const RebalanceComposition = ({
@@ -57,6 +63,8 @@ const RebalanceComposition = ({
   const [totalTokensValue, setTotalTokensValue] = useState(0)
   const [leftToDistributeValue, setLeftToDistributeValue] = useState(0)
 
+  console.log('leftToDistributeValue: ', leftToDistributeValue)
+
   useEffect(() => {
     const fetchData = async () => {
       console.log('fetchData: ', fetchData)
@@ -78,6 +86,8 @@ const RebalanceComposition = ({
           sortedTokensByTokenValue,
           totalTokenValue
         )
+
+        const tokensWithSliderSteps = getSliderStepForTokens(tokensWithPercentages, totalTokenValue)
         // console.log('tokensWithPercentages', tokensWithPercentages)
 
         // console.log('getPoolsInfo: ', getPoolsInfo)
@@ -85,11 +95,14 @@ const RebalanceComposition = ({
         // TODO: Can be splitted and move up
         const availableTokensForRebalance = getAvailableTokensForRebalance(
           getPoolsInfo,
-          tokensWithPercentages
+          tokensWithSliderSteps
         )
         const availableTokensForRebalanceMap = getTokensMap(
           availableTokensForRebalance
         )
+
+        console.log('availableTokensForRebalanceMap: ', availableTokensForRebalanceMap)
+        console.log('totalTokenValue: ', totalTokenValue)
 
         setTokensMap(availableTokensForRebalanceMap)
         setTotalTokensValue(totalTokenValue)
@@ -106,6 +119,10 @@ const RebalanceComposition = ({
       fetchData()
     }
   }, [wallet.publicKey])
+
+  // const bindedHandleSliderChange = handleSliderChange.bind(this, setTokensMap)
+
+  console.log('tokensMap: ', tokensMap)
 
   return (
     <RowContainer
@@ -152,6 +169,12 @@ const RebalanceComposition = ({
             <RebalanceTable
               data={Object.values(tokensMap).map((el) => el)}
               theme={theme}
+              tokensMap={tokensMap}
+              setTokensMap={setTokensMap}
+              leftToDistributeValue={leftToDistributeValue}
+              setLeftToDistributeValue={setLeftToDistributeValue}
+              totalTokensValue={totalTokensValue}
+              // handleSliderChange={bindedHandleSliderChange}
             />
           </Row>
           <Row
@@ -189,7 +212,10 @@ const RebalanceComposition = ({
                 height={'100%'}
                 width={'calc(45% - 1rem)'}
               >
-                <BalanceDistributedComponent theme={theme} />
+                <BalanceDistributedComponent 
+                  totalTokensValue={totalTokensValue}
+                  leftToDistributeValue={leftToDistributeValue}
+                  theme={theme} />
               </Row>
               <BtnCustom
                 theme={theme}
