@@ -242,7 +242,8 @@ const RebalanceTable = ({
 
 
                           const percentageDiff = token.targetPercentage - value
-                          const stepCount = Math.trunc(percentageDiff / token.stepInPercentageToken) + 1
+                          // const stepCount = Math.trunc(percentageDiff / token.stepInPercentageToken) + 1
+                          const stepCount = Math.trunc(percentageDiff / token.stepInPercentageToken)
 
 
                           token.targetPercentage = token.targetPercentage - stepCount * token.stepInPercentageToken

@@ -21,8 +21,8 @@ export const getSliderStepForTokens = (tokens: any[], totalTokenValue) => {
 
 
         // const stepInAmountToken = +stripDigitPlaces(el.amount * 0.1 / el.tokenValue, el.decimalCount)
-        const stepInAmountToken = stripDigitPlaces(el.amount * 0.1 / el.tokenValue, decimalCount)
-        // const stepInAmountToken = stripDigitPlaces(1 / Math.pow(10, decimalCount), decimalCount)
+        // const stepInAmountToken = stripDigitPlaces(el.amount * 0.1 / el.tokenValue, decimalCount)
+        const stepInAmountToken = stripDigitPlaces(1 / Math.pow(10, decimalCount), decimalCount)
 
         const stepInValueToken = stepInAmountToken * el.tokenValue / el.amount
         const stepInPercentageToken = el.percentage * stepInAmountToken / el.amount
