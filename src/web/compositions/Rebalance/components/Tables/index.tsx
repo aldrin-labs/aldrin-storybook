@@ -240,7 +240,6 @@ const RebalanceTable = ({
                             return
                           }
 
-
                           const percentageDiff = token.targetPercentage - value
                           // const stepCount = Math.trunc(percentageDiff / token.stepInPercentageToken) + 1
                           const stepCount = Math.trunc(percentageDiff / token.stepInPercentageToken)
@@ -254,6 +253,15 @@ const RebalanceTable = ({
                           // TODO: check for little positive numbers
                           if (token.targetTokenValue < 0) {
                             token.targetTokenValue = 0
+                          }
+
+                          // Handling case with reverting back to initial value of token, amount, percentage & etc.
+                          const percentageDiffWithInitialPercentage = Math.abs(token.percentage - token.targetPercentage)
+                          if (percentageDiffWithInitialPercentage <= 0.3) {
+                            console.log('percentageDiffWithInitialPercentage: ', percentageDiffWithInitialPercentage)
+                            token.targetPercentage = token.percentage
+                            token.targetAmount = token.amount
+                            token.targetTokenValue = token.tokenValue
                           }
 
                           // Here we are handling case when undistributed value might be negative
@@ -272,7 +280,7 @@ const RebalanceTable = ({
                           setTokensMap({...tokensMap})
 
                         }}
-                        step={el.stepInPercentage}
+                        // step={el.stepInPercentageToken}
                         max={100}
                       />
                     </RowTd>
