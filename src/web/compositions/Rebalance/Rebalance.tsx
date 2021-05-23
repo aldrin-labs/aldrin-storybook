@@ -124,6 +124,8 @@ const RebalanceComposition = ({
 
   console.log('tokensMap: ', tokensMap)
 
+  console.log('Object.values(tokensMap): ', Object.values(tokensMap))
+
   return (
     <RowContainer
       theme={theme}
