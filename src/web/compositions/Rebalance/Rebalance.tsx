@@ -63,8 +63,6 @@ const RebalanceComposition = ({
   const [totalTokensValue, setTotalTokensValue] = useState(0)
   const [leftToDistributeValue, setLeftToDistributeValue] = useState(0)
 
-  console.log('leftToDistributeValue: ', leftToDistributeValue)
-
   useEffect(() => {
     const fetchData = async () => {
       console.log('fetchData: ', fetchData)
