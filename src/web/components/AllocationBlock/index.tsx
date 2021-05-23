@@ -33,12 +33,11 @@ const DonutChartWithLegend = ({ data = [], theme, id }: IProps) => {
     setColors(generatedColors)
   }, [data])
 
-  const totalValue = data.reduce((prev, curr) => prev + curr.value, 0)
   const sortedData = data
     .sort((a, b) => b.value - a.value)
     .map((tokenData) => ({
       ...tokenData,
-      value: (tokenData.value / totalValue) * 100,
+      value: tokenData.value,
     }))
 
   const chartData = sortedData.map((tokenData) => tokenData.value)
