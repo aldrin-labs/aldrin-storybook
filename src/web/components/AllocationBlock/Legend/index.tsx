@@ -43,7 +43,7 @@ const AllocationLegend = ({ data, colors, theme }: LegendProps) => {
             />
           </TokenAllocationProgressBarContainer>
           <PercentageTitle theme={theme}>
-            {stripDigitPlaces(tokenData.value, 2)}%
+            {stripDigitPlaces((tokenData.value).toFixed(2), 2)}%
           </PercentageTitle>
         </RowContainer>
       ))}
