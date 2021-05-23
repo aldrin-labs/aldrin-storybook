@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import copy from 'clipboard-copy'
 import { notify } from '@sb/dexUtils/notifications'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+
 
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
@@ -41,10 +43,24 @@ const tooltipTexts = {
 const RebalanceTable = ({
   theme,
   data,
+  // handleSliderChange,
+  setTokensMap,
+  tokensMap,
+  leftToDistributeValue,
+  setLeftToDistributeValue,
+  totalTokensValue,
 }: {
   theme: Theme
   data,
+  // handleSliderChange,
+  setTokensMap,
+  tokensMap,
+
+  leftToDistributeValue,
+  setLeftToDistributeValue,
+  totalTokensValue,
 }) => {
+
   return (
     <RowContainer height={'80%'} align={'flex-end'}>
       <BlockTemplate
@@ -177,10 +193,88 @@ const RebalanceTable = ({
                         value={el.targetPercentage}
                         disabled={el.disabled}
                         disabledText={tooltipTexts[el.disabledReason]}
-                        // onChange={handleSlideChange}
+                        onChange={(e, value) => {
+                          console.log('value: ', value)
+                          const token = tokensMap[el.symbol]
+
+                          const oldTargetPercentage = token.targetPercentage
+                          const oldTargetTokenValue = token.targetTokenValue
+                          const oldLeftToDistributedValue = leftToDistributeValue
+
+                          const maxDistributedValue = oldTargetPercentage + oldLeftToDistributedValue * 100 / totalTokensValue
+
+                          console.log('maxDistributedValue: ', maxDistributedValue)
+
+                          // Only for zero case
+                          if (value <= 0) {
+                            token.targetPercentage = 0
+                            token.targetAmount = 0
+                            token.targetTokenValue = 0
+
+                            // Here we are handling case when undistributed value might be negative
+                            const leftToDistributeRaw = oldLeftToDistributedValue + (oldTargetPercentage - token.targetPercentage) / 100 * totalTokensValue
+                            console.log('leftToDistributeRaw: ', leftToDistributeRaw)
+                            const leftToDistributeNew = leftToDistributeRaw < 0 ? 0 : leftToDistributeRaw
+                            setLeftToDistributeValue(leftToDistributeNew)
+
+                            setTokensMap({...tokensMap})
+
+                            return
+                          }
+
+
+                          // Handling max value
+                          if (value >= maxDistributedValue) {
+                            token.targetTokenValue = maxDistributedValue * totalTokensValue / 100
+                            token.targetPercentage = maxDistributedValue
+                            token.targetAmount = stripDigitPlaces((token.targetTokenValue  / token.price).toFixed(token.decimalCount), token.decimalCount)
+
+                            // Here we are handling case when undistributed value might be negative
+                            const leftToDistributeRaw = oldLeftToDistributedValue + (oldTargetPercentage - token.targetPercentage) / 100 * totalTokensValue
+                            console.log('leftToDistributeRaw: ', leftToDistributeRaw)
+                            const leftToDistributeNew = leftToDistributeRaw < 0 ? 0 : leftToDistributeRaw
+                            setLeftToDistributeValue(leftToDistributeNew)
+                            
+                            setTokensMap({...tokensMap})
+
+                            return
+                          }
+
+
+                          const percentageDiff = token.targetPercentage - value
+                          const stepCount = Math.trunc(percentageDiff / token.stepInPercentageToken) + 1
+
+
+                          token.targetPercentage = token.targetPercentage - stepCount * token.stepInPercentageToken
+                          token.targetAmount = +(token.targetAmount - stepCount * token.stepInAmountToken).toFixed(token.decimalCount)
+                          token.targetTokenValue = token.targetTokenValue - stepCount * token.stepInValueToken
+
+                          // if based on calculations we have little number with negative sign
+                          // TODO: check for little positive numbers
+                          if (token.targetTokenValue < 0) {
+                            token.targetTokenValue = 0
+                          }
+
+                          // Here we are handling case when undistributed value might be negative
+                          const leftToDistributeRaw = oldLeftToDistributedValue + (oldTargetPercentage - token.targetPercentage) / 100 * totalTokensValue
+
+                          console.log('leftToDistributeRaw: ', leftToDistributeRaw)
+                          const leftToDistributeNew = leftToDistributeRaw < 0 ? 0 : leftToDistributeRaw
+                          setLeftToDistributeValue(leftToDistributeNew)
+
+                          console.log('stepCount: ', stepCount)
+                          console.log('token.targetPercentage: ', token.targetPercentage)
+                          console.log('token.targetAmount: ', token.targetAmount)
+                          console.log('token.targetTokenValue: ', token.targetTokenValue)
+
+
+                          setTokensMap({...tokensMap})
+
+                        }}
+                        step={el.stepInPercentage}
                         max={100}
                       />
-                    </RowTd>{' '}
+                    </RowTd>
                     <RowTd>
                       <TextColumnContainer>
                         <Text
