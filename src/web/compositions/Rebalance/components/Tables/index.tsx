@@ -29,7 +29,7 @@ import Slider from '@sb/components/Slider/Slider'
 
 import MockedToken from '@icons/ccaiToken.svg'
 import { Theme } from '@material-ui/core'
-import { isEqual } from 'lodash'
+import { isEqual, throttle } from 'lodash'
 
 const tooltipTexts = {
   'no pool':
@@ -227,7 +227,9 @@ export const TokenTargetAmountColumn = ({
 
 export const MemoizedTokenSymbolColumn = React.memo(TokenSymbolColumn)
 export const MemoizedTokenAmountColumn = React.memo(TokenAmountColumn)
-export const MemoizedTokenTargetAmountColumn = React.memo(TokenTargetAmountColumn)
+export const MemoizedTokenTargetAmountColumn = React.memo(
+  TokenTargetAmountColumn
+)
 
 export const TableMainRow = ({
   theme,
@@ -237,163 +239,168 @@ export const TableMainRow = ({
   leftToDistributeValue,
   setLeftToDistributeValue,
   totalTokensValue,
-}) => (
-  <TableRow>
-    <MemoizedTokenSymbolColumn symbol={el.symbol} />
-    <MemoizedTokenAmountColumn
-      symbol={el.symbol}
-      amount={el.amount}
-      tokenValue={el.tokenValue}
-      theme={theme}
-    />
-    <RowTd>
-      <Slider
-        thumbWidth="2.4rem"
-        thumbHeight="2.4rem"
-        sliderWidth="18rem"
-        sliderHeight="1.7rem"
-        sliderHeightAfter="2rem"
-        borderRadius="3rem"
-        borderRadiusAfter="3rem"
-        thumbBackground={el.disabled ? '#93A0B2' : '#165BE0'}
-        borderThumb="2px solid #f2fbfb"
-        trackAfterBackground={'#383B45'}
-        trackBeforeBackground={el.disabled ? '#93A0B2' : '#366CE5'}
-        value={el.targetPercentage}
-        disabled={el.disabled}
-        disabledText={tooltipTexts[el.disabledReason]}
-        onChange={(e, value) => {
-          // console.log('value: ', value)
-          const token = tokensMap[el.symbol]
+}) => {
 
-          // console.log('token: ', token)
+  const handleSliderChange = (e, value) => {
+    // console.log('value: ', value)
+    const token = tokensMap[el.symbol]
 
-          const oldTargetPercentage = token.targetPercentage
-          const oldTargetTokenValue = token.targetTokenValue
-          const oldLeftToDistributedValue = leftToDistributeValue
+    // console.log('token: ', token)
 
-          const maxDistributedValue =
-            oldTargetPercentage +
-            (oldLeftToDistributedValue * 100) / totalTokensValue
+    const oldTargetPercentage = token.targetPercentage
+    const oldTargetTokenValue = token.targetTokenValue
+    const oldLeftToDistributedValue = leftToDistributeValue
 
-          // console.log('maxDistributedValue: ', maxDistributedValue)
+    const maxDistributedValue =
+      oldTargetPercentage +
+      (oldLeftToDistributedValue * 100) / totalTokensValue
 
-          // Only for zero case
-          if (value <= 0) {
-            token.targetPercentage = 0
-            token.targetAmount = 0
-            token.targetTokenValue = 0
+    // console.log('maxDistributedValue: ', maxDistributedValue)
 
-            // Here we are handling case when undistributed value might be negative
-            const leftToDistributeRaw =
-              oldLeftToDistributedValue +
-              ((oldTargetPercentage - token.targetPercentage) / 100) *
-                totalTokensValue
-            // console.log('leftToDistributeRaw: ', leftToDistributeRaw)
-            const leftToDistributeNew =
-              leftToDistributeRaw < 0 ? 0 : leftToDistributeRaw
-            setLeftToDistributeValue(leftToDistributeNew)
+    // Only for zero case
+    if (value <= 0) {
+      token.targetPercentage = 0
+      token.targetAmount = 0
+      token.targetTokenValue = 0
 
-            setTokensMap({ ...tokensMap })
+      // Here we are handling case when undistributed value might be negative
+      const leftToDistributeRaw =
+        oldLeftToDistributedValue +
+        ((oldTargetPercentage - token.targetPercentage) / 100) *
+          totalTokensValue
+      // console.log('leftToDistributeRaw: ', leftToDistributeRaw)
+      const leftToDistributeNew =
+        leftToDistributeRaw < 0 ? 0 : leftToDistributeRaw
+      setLeftToDistributeValue(leftToDistributeNew)
 
-            return
-          }
+      setTokensMap({ ...tokensMap })
 
-          // Handling max value
-          if (value >= maxDistributedValue) {
-            token.targetTokenValue =
-              (maxDistributedValue * totalTokensValue) / 100
-            token.targetPercentage = maxDistributedValue
-            token.targetAmount = stripDigitPlaces(
-              (token.targetTokenValue / token.price).toFixed(
-                token.decimalCount
-              ),
-              token.decimalCount
-            )
+      return
+    }
 
-            // Here we are handling case when undistributed value might be negative
-            const leftToDistributeRaw =
-              oldLeftToDistributedValue +
-              ((oldTargetPercentage - token.targetPercentage) / 100) *
-                totalTokensValue
-            // console.log('leftToDistributeRaw: ', leftToDistributeRaw)
-            // console.log('maxvalue case')
-            const leftToDistributeNew =
-              leftToDistributeRaw < 0 ? 0 : leftToDistributeRaw
-            setLeftToDistributeValue(leftToDistributeNew)
+    // Handling max value
+    if (value >= maxDistributedValue) {
+      token.targetTokenValue =
+        (maxDistributedValue * totalTokensValue) / 100
+      token.targetPercentage = maxDistributedValue
+      token.targetAmount = stripDigitPlaces(
+        (token.targetTokenValue / token.price).toFixed(
+          token.decimalCount
+        ),
+        token.decimalCount
+      )
 
-            setTokensMap({ ...tokensMap })
+      // Here we are handling case when undistributed value might be negative
+      const leftToDistributeRaw =
+        oldLeftToDistributedValue +
+        ((oldTargetPercentage - token.targetPercentage) / 100) *
+          totalTokensValue
+      // console.log('leftToDistributeRaw: ', leftToDistributeRaw)
+      // console.log('maxvalue case')
+      const leftToDistributeNew =
+        leftToDistributeRaw < 0 ? 0 : leftToDistributeRaw
+      setLeftToDistributeValue(leftToDistributeNew)
 
-            return
-          }
+      setTokensMap({ ...tokensMap })
 
-          const percentageDiff = token.targetPercentage - value
-          // const stepCount = Math.trunc(percentageDiff / token.stepInPercentageToken) + 1
-          const stepCount = Math.trunc(
-            percentageDiff / token.stepInPercentageToken
-          )
+      return
+    }
 
-          token.targetPercentage =
-            token.targetPercentage - stepCount * token.stepInPercentageToken
-          token.targetAmount = +(
-            token.targetAmount -
-            stepCount * token.stepInAmountToken
-          ).toFixed(token.decimalCount)
-          token.targetTokenValue =
-            token.targetTokenValue - stepCount * token.stepInValueToken
+    const percentageDiff = token.targetPercentage - value
+    // const stepCount = Math.trunc(percentageDiff / token.stepInPercentageToken) + 1
+    const stepCount = Math.trunc(
+      percentageDiff / token.stepInPercentageToken
+    )
 
-          // if based on calculations we have little number with negative sign
-          // TODO: check for little positive numbers
-          if (token.targetTokenValue < 0) {
-            token.targetTokenValue = 0
-          }
+    token.targetPercentage =
+      token.targetPercentage - stepCount * token.stepInPercentageToken
+    token.targetAmount = +(
+      token.targetAmount -
+      stepCount * token.stepInAmountToken
+    ).toFixed(token.decimalCount)
+    token.targetTokenValue =
+      token.targetTokenValue - stepCount * token.stepInValueToken
 
-          // Handling case with reverting back to initial value of token, amount, percentage & etc.
-          const percentageDiffWithInitialPercentage = Math.abs(
-            token.percentage - token.targetPercentage
-          )
-          if (percentageDiffWithInitialPercentage <= 0.3) {
-            // console.log('percentageDiffWithInitialPercentage: ', percentageDiffWithInitialPercentage)
-            token.targetPercentage = token.percentage
-            token.targetAmount = token.amount
-            token.targetTokenValue = token.tokenValue
-          }
+    // if based on calculations we have little number with negative sign
+    // TODO: check for little positive numbers
+    if (token.targetTokenValue < 0) {
+      token.targetTokenValue = 0
+    }
 
-          // Here we are handling case when undistributed value might be negative
-          const leftToDistributeRaw =
-            oldLeftToDistributedValue +
-            ((oldTargetPercentage - token.targetPercentage) / 100) *
-              totalTokensValue
+    // Handling case with reverting back to initial value of token, amount, percentage & etc.
+    const percentageDiffWithInitialPercentage = Math.abs(
+      token.percentage - token.targetPercentage
+    )
+    if (percentageDiffWithInitialPercentage <= 0.3) {
+      // console.log('percentageDiffWithInitialPercentage: ', percentageDiffWithInitialPercentage)
+      token.targetPercentage = token.percentage
+      token.targetAmount = token.amount
+      token.targetTokenValue = token.tokenValue
+    }
 
-          // console.log('general case leftToDistributeRaw: ', leftToDistributeRaw)
-          const leftToDistributeNew =
-            leftToDistributeRaw < 0 ? 0 : leftToDistributeRaw
-          setTokensMap({ ...tokensMap })
+    // Here we are handling case when undistributed value might be negative
+    const leftToDistributeRaw =
+      oldLeftToDistributedValue +
+      ((oldTargetPercentage - token.targetPercentage) / 100) *
+        totalTokensValue
 
-          // console.log('leftToDistributeNew: ', leftToDistributeNew)
-          // console.log('stepCount: ', stepCount)
-          // console.log('token.targetPercentage: ', token.targetPercentage)
-          // console.log('token.targetAmount: ', token.targetAmount)
-          // console.log('token.targetTokenValue: ', token.targetTokenValue)
+    // console.log('general case leftToDistributeRaw: ', leftToDistributeRaw)
+    const leftToDistributeNew =
+      leftToDistributeRaw < 0 ? 0 : leftToDistributeRaw
+    setTokensMap({ ...tokensMap })
 
-          setLeftToDistributeValue(leftToDistributeNew)
-        }}
-        // onDragEnd={(...args) => {
-        //   console.log('onDragEnd args[]', args)
-        //   console.log('onDragEnd e.target.value', args[0].target.value)
-        // }}
-        // step={el.stepInPercentageToken}
-        max={100}
+    // console.log('leftToDistributeNew: ', leftToDistributeNew)
+    // console.log('stepCount: ', stepCount)
+    // console.log('token.targetPercentage: ', token.targetPercentage)
+    // console.log('token.targetAmount: ', token.targetAmount)
+    // console.log('token.targetTokenValue: ', token.targetTokenValue)
+
+    setLeftToDistributeValue(leftToDistributeNew)
+  }
+
+  return (
+    <TableRow>
+      <MemoizedTokenSymbolColumn symbol={el.symbol} />
+      <MemoizedTokenAmountColumn
+        symbol={el.symbol}
+        amount={el.amount}
+        tokenValue={el.tokenValue}
+        theme={theme}
       />
-    </RowTd>
-    <MemoizedTokenTargetAmountColumn
-      symbol={el.symbol}
-      targetAmount={el.targetAmount}
-      targetTokenValue={el.targetTokenValue}
-      theme={theme}
-    />
-  </TableRow>
-)
+      <RowTd>
+        <Slider
+          thumbWidth="2.4rem"
+          thumbHeight="2.4rem"
+          sliderWidth="18rem"
+          sliderHeight="1.7rem"
+          sliderHeightAfter="2rem"
+          borderRadius="3rem"
+          borderRadiusAfter="3rem"
+          thumbBackground={el.disabled ? '#93A0B2' : '#165BE0'}
+          borderThumb="2px solid #f2fbfb"
+          trackAfterBackground={'#383B45'}
+          trackBeforeBackground={el.disabled ? '#93A0B2' : '#366CE5'}
+          value={el.targetPercentage}
+          disabled={el.disabled}
+          disabledText={tooltipTexts[el.disabledReason]}
+          onChange={}
+          // onDragEnd={(...args) => {
+          //   console.log('onDragEnd args[]', args)
+          //   console.log('onDragEnd e.target.value', args[0].target.value)
+          // }}
+          // step={el.stepInPercentageToken}
+          max={100}
+        />
+      </RowTd>
+      <MemoizedTokenTargetAmountColumn
+        symbol={el.symbol}
+        targetAmount={el.targetAmount}
+        targetTokenValue={el.targetTokenValue}
+        theme={theme}
+      />
+    </TableRow>
+  )
+}
 
 const TableHeaderRow = () => (
   <TableHeader>
