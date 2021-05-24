@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { compose } from 'recompose'
 import { withTheme, Theme } from '@material-ui/core'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
@@ -8,15 +8,38 @@ import UserLiquitidyTable from './components/Tables/UserLiquidity'
 import AllPoolsTable from './components/Tables/Pools'
 import { AddLiquidityPopup } from './components/Popups/AddLiquidity'
 import { CreatePoolPopup } from './components/Popups/CreatePool'
-import { WithdrawalPopup } from './components/Popups/Withdraw Liquidity'
+import { WithdrawalPopup } from './components/Popups/WithdrawLiquidity'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { useConnection } from '@sb/dexUtils/connection'
+import { getAllTokensData } from '../Rebalance/utils'
+import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
+import { PoolInfo } from './index.types'
 
 const Pools = ({ theme }: { theme: Theme }) => {
-  const [isAddLiquidityPopupOpen, changeLiquidityPopupState] = useState(false)
-  const [isCreatePoolPopupOpen, changeCreatePoolPopupState] = useState(false)
-  const [isWithdrawalPopupOpen, changeWithdrawalPopupState] = useState(false)
+  const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
+  const [selectedPool, selectPool] = useState<PoolInfo | null>(null)
+
+  const [isAddLiquidityPopupOpen, setIsAddLiquidityPopupOpen] = useState(false)
+  const [isCreatePoolPopupOpen, setIsCreatePoolPopupOpen] = useState(false)
+  const [isWithdrawalPopupOpen, setIsWithdrawalPopupOpen] = useState(false)
+
+  const { wallet } = useWallet()
+  const connection = useConnection()
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const allTokensData = await getAllTokensData(wallet.publicKey, connection)
+
+      await setAllTokensData(allTokensData)
+    }
+
+    if (!!wallet?.publicKey) {
+      fetchData()
+    }
+  }, [wallet?.publicKey])
 
   return (
-    <RowContainer direction={'column'} padding={'2rem 15rem'}>
+    <RowContainer direction={'column'} padding={'2rem 3rem'}>
       <RowContainer justify={'space-between'}>
         <BlockTemplate
           theme={theme}
@@ -33,31 +56,49 @@ const Pools = ({ theme }: { theme: Theme }) => {
           <TradingVolumeChart theme={theme} />
         </BlockTemplate>
       </RowContainer>
-      <UserLiquitidyTable
-        theme={theme}
-        changeLiquidityPopupState={changeLiquidityPopupState}
-        changeWithdrawalPopupState={changeWithdrawalPopupState}
-      />
+
+      {wallet.connected ? (
+        <UserLiquitidyTable
+          theme={theme}
+          selectPool={selectPool}
+          setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
+          setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
+        />
+      ) : null}
+
       <AllPoolsTable
-        changeCreatePoolPopupState={changeCreatePoolPopupState}
-        changeLiquidityPopupState={changeLiquidityPopupState}
         theme={theme}
+        selectPool={selectPool}
+        setIsCreatePoolPopupOpen={setIsCreatePoolPopupOpen}
+        setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
       />
-      <AddLiquidityPopup
-        theme={theme}
-        close={() => changeLiquidityPopupState(false)}
-        open={isAddLiquidityPopupOpen}
-      />
+
       <CreatePoolPopup
         theme={theme}
-        close={() => changeCreatePoolPopupState(false)}
+        close={() => setIsCreatePoolPopupOpen(false)}
         open={isCreatePoolPopupOpen}
+        allTokensData={allTokensData}
       />
-      <WithdrawalPopup
-        theme={theme}
-        close={() => changeWithdrawalPopupState(false)}
-        open={isWithdrawalPopupOpen}
-      />
+
+      {selectedPool && (
+        <AddLiquidityPopup
+          theme={theme}
+          selectedPool={selectedPool}
+          allTokensData={allTokensData}
+          close={() => setIsAddLiquidityPopupOpen(false)}
+          open={isAddLiquidityPopupOpen}
+        />
+      )}
+
+      {selectedPool && (
+        <WithdrawalPopup
+          theme={theme}
+          selectedPool={selectedPool}
+          allTokensData={allTokensData}
+          close={() => setIsWithdrawalPopupOpen(false)}
+          open={isWithdrawalPopupOpen}
+        />
+      )}
     </RowContainer>
   )
 }

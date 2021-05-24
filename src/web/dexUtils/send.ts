@@ -28,6 +28,7 @@ import {
   getOpenOrdersAccountsCustom,
   ALL_TOKENS_MINTS,
 } from './markets'
+import { WalletAdapter } from './types'
 
 export async function createTokenAccountTransaction({
   connection,
@@ -931,7 +932,7 @@ const getUnixTs = () => {
 
 const DEFAULT_TIMEOUT = 15000
 
-async function sendTransaction({
+export async function sendTransaction({
   transaction,
   wallet,
   signers = [],
@@ -940,14 +941,21 @@ async function sendTransaction({
   sentMessage = 'Transaction sent',
   successMessage = 'Transaction confirmed',
   timeout = DEFAULT_TIMEOUT,
-  isOrderCreating = false,
-  params = {},
-  feeAccounts = [],
-  market = {},
-}) {
+}: {
+  transaction: Transaction,
+  wallet: WalletAdapter,
+  signers: Account[],
+  connection: Connection,
+  sendingMessage?: string,
+  sentMessage?: string,
+  successMessage?: string,
+  timeout?: number
+}) {  
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash('max')
   ).blockhash
+
+  console.log('signers', signers)
 
   transaction.setSigners(
     wallet.publicKey,
@@ -958,9 +966,11 @@ async function sendTransaction({
     transaction.partialSign(...signers)
   }
 
-  // console.log('sendTransaction transaction: ', transaction)
+  const transactionFromWallet = await wallet.signTransaction(transaction)
 
-  const rawTransaction = (await wallet.signTransaction(transaction)).serialize()
+  console.log('sendTransaction transactionFromWallet: ', transactionFromWallet)
+
+  const rawTransaction = await transactionFromWallet.serialize()
 
   console.log('sendTransaction rawTransaction: ', rawTransaction)
   const startTime = getUnixTs()
@@ -999,8 +1009,11 @@ async function sendTransaction({
     console.log('sendTransaction resultOfSignature', resultOfSignature)
   } catch (err) {
     if (err.timeout) {
+      notify({ message: 'Timed out awaiting confirmation on transaction', type: 'error' })
       throw new Error('Timed out awaiting confirmation on transaction')
     }
+
+    notify({ message: 'Transaction failed', type: 'error' })
     throw new Error('Transaction failed')
   } finally {
     done = true
@@ -1011,9 +1024,6 @@ async function sendTransaction({
     'Latency',
     txid,
     getUnixTs() - startTime,
-    params,
-    feeTiers,
-    feeAccounts
   )
   return txid
 }

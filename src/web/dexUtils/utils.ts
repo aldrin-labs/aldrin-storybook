@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { PublicKey } from '@solana/web3.js'
 import { MASTER_BUILD } from '@core/utils/config'
 
@@ -107,4 +107,15 @@ export function isEqual(obj1, obj2, keys) {
     }
   }
   return true
+}
+
+export function useRefEqual<T>(
+  value: T,
+  areEqual: (oldValue: T, newValue: T) => boolean,
+): T {
+  const prevRef = useRef<T>(value);
+  if (prevRef.current !== value && !areEqual(prevRef.current, value)) {
+    prevRef.current = value;
+  }
+  return prevRef.current;
 }

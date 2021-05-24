@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { compose } from 'recompose'
-import { graphql } from 'react-apollo'
 
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
@@ -10,6 +9,9 @@ import {
   BorderButton,
   RowTd,
   TextColumnContainer,
+  RowDataTdTopText,
+  RowDataTdText,
+  RowDataTd,
 } from '@sb/compositions/Pools/components/Tables/index.styles'
 
 import { BlockTemplate } from '../../../index.styles'
@@ -21,19 +23,35 @@ import TooltipIcon from '@icons/TooltipImg.svg'
 import { Text } from '@sb/compositions/Addressbook/index'
 import SvgIcon from '@sb/components/SvgIcon'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { Theme } from '@material-ui/core'
+import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 
 const AllPoolsTable = ({
   theme,
-  changeCreatePoolPopupState,
   getPoolsInfoQuery,
-  changeLiquidityPopupState,
+  selectPool,
+  setIsCreatePoolPopupOpen,
+  setIsAddLiquidityPopupOpen,
 }: {
   theme: Theme
-  changeCreatePoolPopupState: any
-  getPoolsInfoQuery: any
-  changeLiquidityPopupState: any
+  getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
+  selectPool: (pool: PoolInfo) => void
+  setIsCreatePoolPopupOpen: (value: boolean) => void
+  setIsAddLiquidityPopupOpen: (value: boolean) => void
 }) => {
   const [searchValue, onChangeSearch] = useState('')
+
+  const { wallet } = useWallet()
+
+  const filteredData = getPoolsInfoQuery.getPoolsInfo.filter((el) =>
+    filterDataBySymbolForDifferentDeviders({ searchValue, symbol: el.name })
+  )
+
+  console.log('filterDataBySymbolForDifferentDeviders')
 
   return (
     <RowContainer>
@@ -49,15 +67,23 @@ const AllPoolsTable = ({
         <RowContainer padding="2rem" justify={'space-between'} align="center">
           <Text theme={theme}>All Pools</Text>
           <Row justify={'space-between'} width={'42%'}>
-            <SearchInputWithLoop placeholder={'Search'} />
+            <SearchInputWithLoop
+              searchValue={searchValue}
+              onChangeSearch={onChangeSearch}
+              placeholder={'Search...'}
+            />
             <BorderButton
               onClick={() => {
-                changeCreatePoolPopupState(true)
+                if (wallet.connected) {
+                  setIsCreatePoolPopupOpen(true)
+                } else {
+                  wallet.connect()
+                }
               }}
-              padding={'0 2.6rem'}
+              padding={wallet.connected ? '0 2.6rem' : '0 2rem'}
               borderColor={'#A5E898'}
             >
-              Create Pool
+              {wallet.connected ? 'Create pool' : 'Connect wallet'}
             </BorderButton>
           </Row>
         </RowContainer>
@@ -70,17 +96,17 @@ const AllPoolsTable = ({
               <RowTd>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <SvgIcon
-                    width={'12px'}
-                    height={'12px'}
+                    width={'1.2rem'}
+                    height={'1.2rem'}
                     style={{ marginRight: '1rem' }}
                     src={TooltipIcon}
                   />
                   APY (24h)
                 </div>
-              </RowTd>{' '}
+              </RowTd>
               <RowTd></RowTd>
             </TableHeader>
-            {getPoolsInfoQuery.getPoolsInfo.map((el) => {
+            {filteredData.map((el) => {
               return (
                 <TableRow>
                   <RowTd>
@@ -89,47 +115,42 @@ const AllPoolsTable = ({
                       tokenB={el.tokenB}
                     />
                   </RowTd>
-                  <RowTd>
+                  <RowDataTd>
                     <TextColumnContainer>
-                      <Text
-                        theme={theme}
-                        style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                      >
+                      <RowDataTdTopText theme={theme}>
                         ${el.tvl.USD}
-                      </Text>
-                      <Text
+                      </RowDataTdTopText>
+                      <RowDataTdText
                         theme={theme}
                         color={theme.palette.grey.new}
-                        style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
                       >
-                        {el.tvl.tokenA} {el.tokenA} / {el.tvl.tokenB}{' '}
-                        {el.tokenB}
-                      </Text>
+                        {el.tvl.tokenA} {getTokenNameByMintAddress(el.tokenA)} /{' '}
+                        {el.tvl.tokenB} {getTokenNameByMintAddress(el.tokenB)}
+                      </RowDataTdText>
                     </TextColumnContainer>
-                  </RowTd>
-                  <RowTd>
-                    <Text
-                      theme={theme}
-                      style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                    >
+                  </RowDataTd>
+                  <RowDataTd>
+                    <RowDataTdText theme={theme}>
                       ${el.totalFeesPaid.USD}
-                    </Text>
-                  </RowTd>{' '}
-                  <RowTd>
-                    <Text
-                      theme={theme}
-                      style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                    >
-                      {el.apy24h}%
-                    </Text>
-                  </RowTd>{' '}
+                    </RowDataTdText>
+                  </RowDataTd>
+                  <RowDataTd>
+                    <RowDataTdText theme={theme}>{el.apy24h}%</RowDataTdText>
+                  </RowDataTd>
                   <RowTd>
                     <Row justify={'flex-end'} width={'100%'}>
                       <BorderButton
-                        onClick={() => changeLiquidityPopupState(true)}
+                        onClick={() => {
+                          if (wallet.connected) {
+                            selectPool(el)
+                            setIsAddLiquidityPopupOpen(true)
+                          } else {
+                            wallet.connect()
+                          }
+                        }}
                         borderColor={'#366CE5'}
                       >
-                        Add Liquidity
+                        {wallet.connected ? 'Add Liquidity' : 'Connect wallet'}
                       </BorderButton>
                     </Row>
                   </RowTd>
@@ -144,7 +165,9 @@ const AllPoolsTable = ({
 }
 
 export default compose(
-  graphql(getPoolsInfo, {
+  queryRendererHoc({
     name: 'getPoolsInfoQuery',
+    query: getPoolsInfo,
+    fetchPolicy: 'cache-and-network',
   })
 )(AllPoolsTable)

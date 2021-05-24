@@ -3,73 +3,107 @@ import { Text } from '@sb/compositions/Addressbook/index'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 import { StyledInput, TokenContainer, InvisibleInput } from '../index.styles'
-import MockedToken from '@icons/ccaiToken.svg'
-import MockedToken2 from '@icons/solToken.svg'
 import Arrow from '@icons/arrowBottom.svg'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
+import { Theme } from '@material-ui/core'
+import { BlueText } from './index.styles'
+import { TokenIcon } from '@sb/components/TokenIcon'
+import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 
-export const InputWithCoins = ({}) => {
+export const InputWithCoins = ({
+  theme,
+  value,
+  symbol,
+  alreadyInPool,
+  maxBalance,
+  onChange,
+}: {
+  theme: Theme
+  value: string | number
+  symbol: string
+  alreadyInPool: number
+  maxBalance: number
+  onChange: (value: number | string) => void
+}) => {
   return (
     <Row style={{ position: 'relative' }} padding={'2rem 0'} width={'100%'}>
       <StyledInput />
       <TokenContainer left={'2rem'} top={'3rem'}>
-        <Text color={'#93A0B2'}>SOL</Text>
+        <Text color={theme.palette.grey.title}>{symbol}</Text>
       </TokenContainer>
-      <TokenContainer left={'2rem'} top={'6rem'}>
-        <InvisibleInput placeholder={''} />
+      <TokenContainer style={{ width: '80%' }} left={'2rem'} bottom={'3rem'}>
+        <InvisibleInput
+          type={'number'}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={''}
+        />
       </TokenContainer>
-      <TokenContainer left={'42rem'} top={'6rem'}>
+      <TokenContainer right={'2rem'} bottom={'3rem'}>
         <Row style={{ flexWrap: 'nowrap' }}>
-          <SvgIcon src={MockedToken} width={'20px'} height={'20px'} />
+          <TokenIcon
+            mint={getTokenMintAddressByName(symbol)}
+            width={'2rem'}
+            height={'2rem'}
+          />
           <Text
             style={{ marginLeft: '0.5rem' }}
             fontSize={'2rem'}
             fontFamily={'Avenir Next Demi'}
           >
-            CCAI
+            {symbol}
           </Text>
         </Row>
       </TokenContainer>
-      <TokenContainer left={'27rem'} top={'3rem'}>
+      <TokenContainer right={'2rem'} top={'3rem'}>
         <Row style={{ flexWrap: 'nowrap' }}>
-          <Text color={'#93A0B2'} fontSize={'1.2rem'}>
-            Already in pool:{' '}
+          <Text color={theme.palette.grey.title} fontSize={'1.2rem'}>
+            Already in pool:
           </Text>
           &nbsp;
-          <Text
+          <BlueText
+            theme={theme}
             style={{ marginRight: '2rem' }}
-            color={'#366CE5'}
-            fontSize={'1.2rem'}
+            onClick={() => onChange(alreadyInPool)}
           >
-            200.00
-          </Text>
+            {stripDigitPlaces(alreadyInPool, 2)} {symbol}
+          </BlueText>
           &nbsp;
-          <Text color={'#93A0B2'} fontSize={'1.2rem'}>
+          <Text color={theme.palette.grey.title} fontSize={'1.2rem'}>
             &nbsp;Max:
           </Text>
           &nbsp;
-          <Text color={'#366CE5'} fontSize={'1.2rem'}>
-            {' '}
-            200.00
-          </Text>
+          <BlueText onClick={() => onChange(maxBalance)} theme={theme}>
+            {formatNumberToUSFormat(stripDigitPlaces(maxBalance, 2))} {symbol}
+          </BlueText>
         </Row>
       </TokenContainer>
     </Row>
   )
 }
 
-export const InputWithTotal = ({}) => {
+export const InputWithTotal = ({
+  theme,
+  value,
+}: {
+  theme: Theme
+  value: number
+}) => {
   return (
     <Row style={{ position: 'relative' }} padding={'2rem 0'} width={'100%'}>
       <StyledInput />
       <TokenContainer left={'2rem'} top={'3rem'}>
-        <Text color={'#93A0B2'}>Total</Text>
+        <Text color={theme.palette.grey.title}>Total</Text>
       </TokenContainer>
-      <TokenContainer left={'2rem'} top={'6rem'}>
+      <TokenContainer left={'2rem'} bottom={'3rem'}>
         <Text fontSize={'2rem'} fontFamily={'Avenir Next Demi'}>
-          $2000.00{' '}
+          {formatNumberToUSFormat(stripDigitPlaces(value, 2))}
         </Text>
       </TokenContainer>
-      <TokenContainer left={'45rem'} top={'5rem'}>
+      <TokenContainer right={'2rem'} bottom={'3rem'}>
         <Row>
           <Text fontSize={'2rem'} fontFamily={'Avenir Next Demi'}>
             USD
@@ -80,90 +114,127 @@ export const InputWithTotal = ({}) => {
   )
 }
 
-export const InputWithSelector = ({ openSelectCoinPopup }) => {
+export const InputWithSelector = ({
+  theme,
+  value,
+  symbol,
+  maxBalance,
+  onChange,
+  openSelectCoinPopup,
+}: {
+  theme: Theme
+  value: string | number
+  symbol: string
+  maxBalance: number
+  onChange: (value: string | number) => void
+  openSelectCoinPopup: () => void
+}) => {
+  const isSelectToken = symbol === 'Select token'
+
   return (
     <Row style={{ position: 'relative' }} padding={'2rem 0'} width={'100%'}>
       <StyledInput />
       <TokenContainer left={'2rem'} top={'3rem'}>
-        <Text color={'#93A0B2'}>SOL</Text>
+        <Text color={theme.palette.grey.title}>{symbol}</Text>
       </TokenContainer>
-      <TokenContainer left={'2rem'} top={'6rem'}>
-        <InvisibleInput placeholder={''} />
+      <TokenContainer left={'2rem'} bottom={'3rem'}>
+        <InvisibleInput
+          type={'number'}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={''}
+        />
       </TokenContainer>
       <TokenContainer
-        style={{ right: '2rem', cursor: 'pointer' }}
-        left={'auto'}
-        top={'6rem'}
+        style={{ cursor: 'pointer' }}
+        right={'2rem'}
+        bottom={'3rem'}
       >
-        <Row style={{ flexWrap: 'nowrap' }}>
-          <SvgIcon src={MockedToken} width={'18px'} height={'18px'} />
+        <Row style={{ flexWrap: 'nowrap' }} onClick={openSelectCoinPopup}>
+          <TokenIcon
+            mint={getTokenMintAddressByName(symbol)}
+            width={'2rem'}
+            height={'2rem'}
+          />
           <Text
             style={{ margin: '0 0.5rem' }}
             fontSize={'2rem'}
             fontFamily={'Avenir Next Demi'}
           >
-            CCAI
+            {symbol}
           </Text>
-          <SvgIcon
-            onClick={() => openSelectCoinPopup()}
-            src={Arrow}
-            width={'10px'}
-            height={'10px'}
-          />
+          <SvgIcon src={Arrow} width={'1rem'} height={'1rem'} />
         </Row>
       </TokenContainer>
-      <TokenContainer left={'42rem'} top={'3rem'}>
-        <Row style={{ flexWrap: 'nowrap' }}>
-          <Text color={'#93A0B2'} fontSize={'1.2rem'}>
-            &nbsp;Max:
-          </Text>
-          &nbsp;
-          <Text color={'#366CE5'} fontSize={'1.2rem'}>
-            {' '}
-            200.00
-          </Text>
-        </Row>
-      </TokenContainer>
+      {!isSelectToken && (
+        <TokenContainer right={'2rem'} top={'3rem'}>
+          <Row style={{ flexWrap: 'nowrap' }}>
+            <Text color={theme.palette.grey.title} fontSize={'1.2rem'}>
+              &nbsp;Max:
+            </Text>
+            &nbsp;
+            <BlueText theme={theme} onClick={() => onChange(maxBalance)}>
+              {formatNumberToUSFormat(stripDigitPlaces(maxBalance, 8))} {symbol}
+            </BlueText>
+          </Row>
+        </TokenContainer>
+      )}
     </Row>
   )
 }
 
-export const SimpleInput = ({}) => {
+export const SimpleInput = ({
+  theme,
+  value,
+  symbol,
+  maxBalance,
+  onChange,
+}: {
+  theme: Theme
+  value: string | number
+  symbol: string
+  maxBalance: number
+  onChange: (value: string | number) => void
+}) => {
   return (
     <Row style={{ position: 'relative' }} padding={'2rem 0'} width={'100%'}>
       <StyledInput />
       <TokenContainer left={'2rem'} top={'3rem'}>
-        <Text color={'#93A0B2'}>SOL</Text>
+        <Text color={theme.palette.grey.title}>{symbol}</Text>
       </TokenContainer>
-      <TokenContainer left={'2rem'} top={'6rem'}>
-        <InvisibleInput placeholder={''} />
+      <TokenContainer style={{ width: '80%' }} left={'2rem'} bottom={'3rem'}>
+        <InvisibleInput
+          type={'number'}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={''}
+        />
       </TokenContainer>
-      <TokenContainer
-        style={{ right: '2rem', cursor: 'pointer' }}
-        left={'auto'}
-        top={'6rem'}
-      >
+      <TokenContainer right={'2rem'} bottom={'3rem'}>
         <Row style={{ flexWrap: 'nowrap' }}>
-          <SvgIcon src={MockedToken} width={'18px'} height={'18px'} />
+          <TokenIcon
+            mint={getTokenMintAddressByName(symbol)}
+            width={'2rem'}
+            height={'2rem'}
+          />
           <Text
             style={{ margin: '0 0.5rem' }}
             fontSize={'2rem'}
             fontFamily={'Avenir Next Demi'}
           >
-            CCAI
+            {symbol}
           </Text>
         </Row>
       </TokenContainer>
-      <TokenContainer left={'42rem'} top={'3rem'}>
+      <TokenContainer right={'2rem'} top={'3rem'}>
         <Row style={{ flexWrap: 'nowrap' }}>
-          <Text color={'#93A0B2'} fontSize={'1.2rem'}>
+          <Text color={theme.palette.grey.title} fontSize={'1.2rem'}>
             &nbsp;Max:
           </Text>
           &nbsp;
-          <Text color={'#366CE5'} fontSize={'1.2rem'}>
-            {' '}
-            200.00
-          </Text>
+          <BlueText theme={theme} onClick={() => onChange(maxBalance)}>
+            {formatNumberToUSFormat(stripDigitPlaces(maxBalance, 2))} {symbol}
+          </BlueText>
         </Row>
       </TokenContainer>
     </Row>

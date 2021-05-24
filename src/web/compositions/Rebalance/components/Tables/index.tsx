@@ -15,6 +15,7 @@ import {
   BorderButton,
   RowTd,
   TextColumnContainer,
+  TokenIcon,
 } from '@sb/compositions/Pools/components/Tables/index.styles'
 
 import { BlockTemplate } from '@sb/compositions/Pools/index.styles'
@@ -121,11 +122,10 @@ const FooterRow = ({ theme }: { theme: Theme }) => (
 export const TokenSymbolColumn = ({ symbol }: { symbol: string }) => (
   <RowTd>
     <Row justify={'flex-start'}>
-      <SvgIcon
-        src={MockedToken}
-        width={'30px'}
-        height={'30px'}
-        style={{ marginRight: '1rem' }}
+      <TokenIcon
+        mint={getTokenMintAddressByName(symbol)}
+        width={'2rem'}
+        height={'2rem'}
       />
       <Text
         onClick={() => {

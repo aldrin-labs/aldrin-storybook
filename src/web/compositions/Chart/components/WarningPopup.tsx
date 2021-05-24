@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 
-import { Paper } from '@material-ui/core'
+import { Paper, Theme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
@@ -16,6 +16,7 @@ import Warning from '@icons/newWarning.svg'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { Row } from '../Inputs/PreferencesSelect/index.styles'
+import { Loading } from '@sb/components'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -29,28 +30,50 @@ const StyledPaper = styled(Paper)`
   margin: 2rem;
   padding: 3rem;
 `
-const Title = styled(MainTitle)`
+const Title = styled(({ ...props }) => <MainTitle {...props} />)`
   text-transform: none;
   font-size: 2.5rem;
   margin-bottom: 0;
 `
-export const BlueButton = styled.button`
-  width: calc(43%);
-  outline: none;
+export const BlueButton = styled(
+  ({ isUserConfident, showLoader, children, ...props }) => (
+    <BtnCustom {...props}>
+      {showLoader ? (
+        <Loading
+          color={'#fff'}
+          size={24}
+          style={{ display: 'flex', alignItems: 'center', height: '4.5rem' }}
+        />
+      ) : (
+        children
+      )}
+    </BtnCustom>
+  )
+)`
   font-size: 1.4rem;
   height: 4.5rem;
   text-transform: capitalize;
-  background-color: ${(props) =>
-    props.isUserConfident ? '#366ce5' : '#93A0B2'};
-  btn-color: ;
+  background-color: ${(props: { isUserConfident: boolean; theme: Theme }) =>
+    props.isUserConfident
+      ? props.theme.palette.blue.serum
+      : props.theme.palette.grey.title};
   border-radius: 1rem;
   border-color: none;
   cursor: pointer;
-  color: ${(props) => (props.isUserConfident ? '#f8faff' : '#222429')};
+  color: ${(props: { isUserConfident: boolean }) =>
+    props.isUserConfident ? '#f8faff' : '#222429'};
   border: none;
 `
 
-export const WarningPopup = ({ theme, onClose, open }) => {
+export const WarningPopup = ({
+  theme,
+  onClose,
+  open,
+}: {
+  theme: Theme
+  onClose: () => void
+  open: boolean
+}) => {
   const [isUserConfident, userConfident] = useState(false)
   return (
     <DialogWrapper
@@ -83,8 +106,7 @@ export const WarningPopup = ({ theme, onClose, open }) => {
             }}
             checked={isUserConfident}
           />
-          <label for={'warning_checkbox'}>
-            {' '}
+          <label htmlFor={'warning_checkbox'}>
             <WhiteText
               style={{
                 cursor: 'pointer',
@@ -103,7 +125,7 @@ export const WarningPopup = ({ theme, onClose, open }) => {
           disabled={!isUserConfident}
           isUserConfident={isUserConfident}
           theme={theme}
-          onClick={() => onClose()}
+          onClick={onClose}
         >
           Ok
         </BlueButton>
