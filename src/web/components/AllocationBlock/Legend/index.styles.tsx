@@ -21,6 +21,7 @@ const TokenAllocationProgressBar = styled(
 `
 
 const BarTitle = styled(({ ...props }) => <WhiteTitle {...props} />)`
+  font-size: ${(props) => (props.symbolLenght > 4 ? '1.4rem' : 'auto')};
   width: 6rem;
 `
 

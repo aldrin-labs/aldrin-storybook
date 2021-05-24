@@ -137,11 +137,13 @@ export const TableMainRow = ({
         />
         <Text
           onClick={() => {
-            copy(el.symbol)
-            notify({
-              type: 'success',
-              message: 'Copied!',
-            })
+            if (el.symbol.length > 15) {
+              copy(el.symbol)
+              notify({
+                type: 'success',
+                message: 'Copied!',
+              })
+            }
           }}
           fontSize={'2rem'}
           fontFamily={'Avenir Next Medium'}
@@ -313,13 +315,12 @@ export const TableMainRow = ({
           console.log('token.targetTokenValue: ', token.targetTokenValue)
 
           setLeftToDistributeValue(leftToDistributeNew)
-
         }}
         // step={el.stepInPercentageToken}
         max={100}
       />
     </RowTd>
-    <RowTd>
+    <RowTd style={{ minWidth: '18rem' }}>
       <TextColumnContainer>
         <Text
           theme={theme}
@@ -406,7 +407,7 @@ const RebalanceTable = ({
               <RowTd>Target Value</RowTd>
             </TableHeader>
             <TableBody>
-              {data.map(el => (
+              {data.map((el) => (
                 <TableMainRow
                   key={el.symbol}
                   theme={theme}

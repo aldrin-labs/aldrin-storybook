@@ -24,7 +24,9 @@ const AllocationLegend = ({ data, colors, theme }: LegendProps) => {
           wrap={'nowrap'}
           key={`${tokenData.symbol}-${tokenData.value}`}
         >
-          <BarTitle theme={theme}>{tokenData.symbol}</BarTitle>
+          <BarTitle symbolLenght={tokenData.symbol.length} theme={theme}>
+            {tokenData.symbol}
+          </BarTitle>
           <TokenAllocationProgressBarContainer
             width={'calc(100% - 14rem)'}
             justify={'flex-start'}
@@ -43,7 +45,7 @@ const AllocationLegend = ({ data, colors, theme }: LegendProps) => {
             />
           </TokenAllocationProgressBarContainer>
           <PercentageTitle theme={theme}>
-            {stripDigitPlaces((tokenData.value).toFixed(2), 2)}%
+            {stripDigitPlaces(tokenData.value.toFixed(2), 2)}%
           </PercentageTitle>
         </RowContainer>
       ))}

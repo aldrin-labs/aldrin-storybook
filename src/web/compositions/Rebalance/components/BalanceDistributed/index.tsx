@@ -3,12 +3,21 @@ import React from 'react'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { BlockTemplate } from '@sb/compositions/Pools/index.styles'
-import { TokenAllocationProgressBar } from '@sb/components/AllocationBlock/Legend/index.styles'
+import {
+  TokenAllocationProgressBar,
+  TokenAllocationProgressBarContainer,
+} from '@sb/components/AllocationBlock/Legend/index.styles'
 
-const BalanceDistributedComponent = ({ theme, leftToDistributeValue, totalTokensValue }) => {
+const BalanceDistributedComponent = ({
+  theme,
+  leftToDistributeValue,
+  totalTokensValue,
+}) => {
+  const distributedPercentage = (
+    100 -
+    (leftToDistributeValue * 100) / totalTokensValue
+  ).toFixed(2)
 
-  const distributedPercentage = (100 - leftToDistributeValue * 100 / totalTokensValue).toFixed(2)
-  
   return (
     <BlockTemplate
       direction={'column'}
@@ -22,14 +31,17 @@ const BalanceDistributedComponent = ({ theme, leftToDistributeValue, totalTokens
         <Text fontSize={'1.7rem'} fontFamily={'Avenir Next Bold'}>
           {distributedPercentage}%
         </Text>
-      </RowContainer>
-      <TokenAllocationProgressBar
-        color={'#A5E898'}
-        height={'2.2rem'}
-        width={'80%'}
-        variant="determinate"
-        value={distributedPercentage}
-      />
+      </RowContainer>{' '}
+      <TokenAllocationProgressBarContainer width={'80%'} justify={'flex-start'}>
+        {' '}
+        <TokenAllocationProgressBar
+          color={'#A5E898'}
+          height={'2.2rem'}
+          width={`${distributedPercentage}%`}
+          variant="determinate"
+          value={0}
+        />
+      </TokenAllocationProgressBarContainer>
     </BlockTemplate>
   )
 }
