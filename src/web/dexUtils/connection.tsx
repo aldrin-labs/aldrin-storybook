@@ -33,7 +33,7 @@ export function ConnectionProvider({ children }) {
     () =>
       new MultiEndpointsConnection(
         [
-          { url: 'https://vip-api.mainnet-beta.solana.com/ ', RPS: 10 },
+          // { url: 'https://vip-api.mainnet-beta.solana.com/ ', RPS: 10 },
           { url: 'https://mango.rpcpool.com/', RPS: 10 },
           { url: 'https://solana-api.projectserum.com', RPS: 2 },
           { url: 'https://api.mainnet-beta.solana.com', RPS: 4 },
