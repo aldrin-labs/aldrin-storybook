@@ -240,7 +240,6 @@ export const TableMainRow = ({
   setLeftToDistributeValue,
   totalTokensValue,
 }) => {
-
   const handleSliderChange = (e, value) => {
     // console.log('value: ', value)
     const token = tokensMap[el.symbol]
@@ -252,8 +251,7 @@ export const TableMainRow = ({
     const oldLeftToDistributedValue = leftToDistributeValue
 
     const maxDistributedValue =
-      oldTargetPercentage +
-      (oldLeftToDistributedValue * 100) / totalTokensValue
+      oldTargetPercentage + (oldLeftToDistributedValue * 100) / totalTokensValue
 
     // console.log('maxDistributedValue: ', maxDistributedValue)
 
@@ -280,13 +278,10 @@ export const TableMainRow = ({
 
     // Handling max value
     if (value >= maxDistributedValue) {
-      token.targetTokenValue =
-        (maxDistributedValue * totalTokensValue) / 100
+      token.targetTokenValue = (maxDistributedValue * totalTokensValue) / 100
       token.targetPercentage = maxDistributedValue
       token.targetAmount = stripDigitPlaces(
-        (token.targetTokenValue / token.price).toFixed(
-          token.decimalCount
-        ),
+        (token.targetTokenValue / token.price).toFixed(token.decimalCount),
         token.decimalCount
       )
 
@@ -308,9 +303,7 @@ export const TableMainRow = ({
 
     const percentageDiff = token.targetPercentage - value
     // const stepCount = Math.trunc(percentageDiff / token.stepInPercentageToken) + 1
-    const stepCount = Math.trunc(
-      percentageDiff / token.stepInPercentageToken
-    )
+    const stepCount = Math.trunc(percentageDiff / token.stepInPercentageToken)
 
     token.targetPercentage =
       token.targetPercentage - stepCount * token.stepInPercentageToken
@@ -341,8 +334,7 @@ export const TableMainRow = ({
     // Here we are handling case when undistributed value might be negative
     const leftToDistributeRaw =
       oldLeftToDistributedValue +
-      ((oldTargetPercentage - token.targetPercentage) / 100) *
-        totalTokensValue
+      ((oldTargetPercentage - token.targetPercentage) / 100) * totalTokensValue
 
     // console.log('general case leftToDistributeRaw: ', leftToDistributeRaw)
     const leftToDistributeNew =

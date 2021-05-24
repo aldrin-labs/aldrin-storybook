@@ -34,8 +34,8 @@ const lightenDarkenColor = (baseColor: string, amt: number) => {
 export const fixedColors = [
   '#366CE5',
   '#D5A688',
-  '#4DA5E6',
   '#90D7C7',
+  '#4DA5E6',
   '#6891EE',
 ]
 
