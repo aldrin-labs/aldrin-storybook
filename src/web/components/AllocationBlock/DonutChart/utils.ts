@@ -45,6 +45,15 @@ export const getRandomBlueColor = () => {
   return lightenDarkenColor(randomColor, randomNumber)
 }
 
+export const formatSymbol = ({ symbol }: { symbol: string }) => {
+  
+  if (symbol.length > 15) {
+    return `${symbol.slice(0, 3)}...${symbol.slice(symbol.length - 3)}`
+  } else {
+    return symbol
+  }
+}
+
 const createAllocationDonutChart = ({
   id,
   data,

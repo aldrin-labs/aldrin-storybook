@@ -11,6 +11,7 @@ import {
 } from './index.styles'
 
 import { ROWS_TO_SHOW_IN_LEGEND } from '../index'
+import { formatSymbol } from '../DonutChart/utils'
 
 interface LegendProps extends IProps {
   colors: string[]
@@ -24,7 +25,11 @@ const AllocationLegend = ({ data, colors, theme }: LegendProps) => {
           wrap={'nowrap'}
           key={`${tokenData.symbol}-${tokenData.value}`}
         >
-          <BarTitle theme={theme}>{tokenData.symbol}</BarTitle>
+          <BarTitle theme={theme}>
+            {tokenData.symbol.length > 15
+              ? formatSymbol({ symbol: tokenData.symbol })
+              : tokenData.symbol}
+          </BarTitle>
           <TokenAllocationProgressBarContainer
             width={'calc(100% - 14rem)'}
             justify={'flex-start'}

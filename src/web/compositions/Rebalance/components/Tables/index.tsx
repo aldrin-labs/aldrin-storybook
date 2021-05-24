@@ -30,6 +30,7 @@ import Slider from '@sb/components/Slider/Slider'
 import MockedToken from '@icons/ccaiToken.svg'
 import { Theme } from '@material-ui/core'
 import { isEqual, throttle, debounce } from 'lodash'
+import { formatSymbol } from '@sb/components/AllocationBlock/DonutChart/utils'
 
 const tooltipTexts = {
   'no pool':
@@ -139,9 +140,7 @@ export const TokenSymbolColumn = ({ symbol }: { symbol: string }) => (
         fontSize={'2rem'}
         fontFamily={'Avenir Next Medium'}
       >
-        {symbol.length > 15
-          ? `${symbol.slice(0, 3)}...${symbol.slice(symbol.length - 3)}`
-          : symbol}
+        {formatSymbol({ symbol })}
       </Text>
     </Row>
   </RowTd>
@@ -167,10 +166,7 @@ export const TokenAmountColumn = ({
           paddingBottom: '1rem',
         }}
       >
-        {amount}{' '}
-        {symbol.length > 15
-          ? `${symbol.slice(0, 3)}...${symbol.slice(symbol.length - 3)}`
-          : symbol}
+        {amount} {formatSymbol({ symbol })}
       </Text>
       <Text
         theme={theme}
@@ -206,10 +202,7 @@ export const TokenTargetAmountColumn = ({
           paddingBottom: '1rem',
         }}
       >
-        {targetAmount}{' '}
-        {symbol.length > 15
-          ? `${symbol.slice(0, 4)}...${symbol.slice(symbol.length - 3)}`
-          : symbol}
+        {targetAmount} {formatSymbol({ symbol })}
       </Text>
       <Text
         theme={theme}
