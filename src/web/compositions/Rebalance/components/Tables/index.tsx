@@ -177,7 +177,6 @@ export const TableMainRow = ({
           color={theme.palette.grey.new}
           style={{
             whiteSpace: 'nowrap',
-            paddingBottom: '1rem',
           }}
         >
           ${el.tokenValue.toFixed(2)}
@@ -345,7 +344,6 @@ export const TableMainRow = ({
           color={theme.palette.grey.new}
           style={{
             whiteSpace: 'nowrap',
-            paddingBottom: '1rem',
           }}
         >
           ${el.targetTokenValue.toFixed(2)}
