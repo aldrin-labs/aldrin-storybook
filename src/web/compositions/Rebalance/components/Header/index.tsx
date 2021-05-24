@@ -17,6 +17,21 @@ const TotalTokensValueComponent = ({ totalTokensValue }: { totalTokensValue: num
 
 const MemoizedTotalTokensValueComponent = React.memo(TotalTokensValueComponent)
 
+const HeaderNameRow = () => (
+  <Row
+  justify="space-around"
+  height="100%"
+  align={'baseline'}
+  direction={'column'}
+  width={'40%'}
+>
+  <Header>Rebalance</Header>
+  <Text>Diversify your portfolio with ease.</Text>
+</Row>
+)
+
+const MemoizedHeaderNameRow = React.memo(HeaderNameRow)
+
 const RebalanceHeaderComponent = ({
   totalTokensValue,
   leftToDistributeValue,
@@ -26,16 +41,7 @@ const RebalanceHeaderComponent = ({
 }) => {
   return (
     <RowContainer margin={'0 0 2rem 0'} height={'calc(16%)'}>
-      <Row
-        justify="space-around"
-        height="100%"
-        align={'baseline'}
-        direction={'column'}
-        width={'40%'}
-      >
-        <Header>Rebalance</Header>
-        <Text>Diversify your portfolio with ease.</Text>
-      </Row>{' '}
+      <MemoizedHeaderNameRow />
       <Row justify={'space-between'} height={'100%'} width={'60%'}>
       <MemoizedTotalTokensValueComponent totalTokensValue={totalTokensValue} />
         <BalanceCard

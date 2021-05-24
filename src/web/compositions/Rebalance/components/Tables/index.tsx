@@ -204,7 +204,7 @@ export const TableMainRow = ({
           // console.log('value: ', value)
           const token = tokensMap[el.symbol]
 
-          console.log('token: ', token)
+          // console.log('token: ', token)
 
           const oldTargetPercentage = token.targetPercentage
           const oldTargetTokenValue = token.targetTokenValue
@@ -308,14 +308,18 @@ export const TableMainRow = ({
             leftToDistributeRaw < 0 ? 0 : leftToDistributeRaw
           setTokensMap({ ...tokensMap })
 
-          console.log('leftToDistributeNew: ', leftToDistributeNew)
-          console.log('stepCount: ', stepCount)
-          console.log('token.targetPercentage: ', token.targetPercentage)
-          console.log('token.targetAmount: ', token.targetAmount)
-          console.log('token.targetTokenValue: ', token.targetTokenValue)
+          // console.log('leftToDistributeNew: ', leftToDistributeNew)
+          // console.log('stepCount: ', stepCount)
+          // console.log('token.targetPercentage: ', token.targetPercentage)
+          // console.log('token.targetAmount: ', token.targetAmount)
+          // console.log('token.targetTokenValue: ', token.targetTokenValue)
 
           setLeftToDistributeValue(leftToDistributeNew)
         }}
+        // onDragEnd={(...args) => {
+        //   console.log('onDragEnd args[]', args)
+        //   console.log('onDragEnd e.target.value', args[0].target.value)
+        // }}
         // step={el.stepInPercentageToken}
         max={100}
       />
@@ -351,6 +355,15 @@ export const TableMainRow = ({
   </TableRow>
 )
 
+const TableHeaderRow = () => (
+  <TableHeader>
+  <RowTd>Asset</RowTd>
+  <RowTd>Current Value</RowTd>
+  <RowTd>Allocation</RowTd>
+  <RowTd>Target Value</RowTd>
+</TableHeader>
+)
+
 const MemoizedHeaderRow = React.memo(HeaderRow)
 const MemoizedFooterRow = React.memo(FooterRow)
 const MemoizedTableMainRow = React.memo(
@@ -363,6 +376,7 @@ const MemoizedTableMainRow = React.memo(
     return true
   }
 )
+const MemoizedTableHeaderRow = React.memo(TableHeaderRow)
 
 const RebalanceTable = ({
   theme,
@@ -400,12 +414,7 @@ const RebalanceTable = ({
           style={{ height: 'calc(100% - 15rem)', overflow: 'scroll' }}
         >
           <Table>
-            <TableHeader>
-              <RowTd>Asset</RowTd>
-              <RowTd>Current Value</RowTd>
-              <RowTd>Allocation</RowTd>
-              <RowTd>Target Value</RowTd>
-            </TableHeader>
+          <MemoizedTableHeaderRow/>
             <TableBody>
               {data.map((el) => (
                 <TableMainRow

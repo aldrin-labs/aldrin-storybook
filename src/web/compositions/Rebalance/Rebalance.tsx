@@ -46,6 +46,12 @@ const MemoizedDonutChartWithLegend = React.memo(DonutChartWithLegend, (prevProps
   return isEqual(prevProps.data, nextProps.data)
 })
 
+const MemoizedRebalancePopup = React.memo(RebalancePopup, (prevProps, nextProps) => {
+
+  return prevProps.open === nextProps.open && prevProps.rebalanceStep && nextProps.rebalanceStep
+
+})
+
 
 const RebalanceComposition = ({
   publicKey,
@@ -242,7 +248,7 @@ const RebalanceComposition = ({
         </RowContainer>
       )}
 
-      <RebalancePopup
+      <MemoizedRebalancePopup
         theme={theme}
         open={isRebalancePopupOpen}
         rebalanceStep={rebalanceStep}
