@@ -324,7 +324,7 @@ export const TableMainRow = ({
         max={100}
       />
     </RowTd>
-    <RowTd style={{ minWidth: '18rem' }}>
+    <RowTd style={{ minWidth: '25rem' }}>
       <TextColumnContainer>
         <Text
           theme={theme}
@@ -357,11 +357,11 @@ export const TableMainRow = ({
 
 const TableHeaderRow = () => (
   <TableHeader>
-  <RowTd>Asset</RowTd>
-  <RowTd>Current Value</RowTd>
-  <RowTd>Allocation</RowTd>
-  <RowTd>Target Value</RowTd>
-</TableHeader>
+    <RowTd>Asset</RowTd>
+    <RowTd>Current Value</RowTd>
+    <RowTd>Allocation</RowTd>
+    <RowTd>Target Value</RowTd>
+  </TableHeader>
 )
 
 const MemoizedHeaderRow = React.memo(HeaderRow)
@@ -414,7 +414,7 @@ const RebalanceTable = ({
           style={{ height: 'calc(100% - 15rem)', overflow: 'scroll' }}
         >
           <Table>
-          <MemoizedTableHeaderRow/>
+            <MemoizedTableHeaderRow />
             <TableBody>
               {data.map((el) => (
                 <TableMainRow
