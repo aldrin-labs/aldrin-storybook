@@ -123,9 +123,9 @@ const RebalanceComposition = ({
 
   // const bindedHandleSliderChange = handleSliderChange.bind(this, setTokensMap)
 
-  console.log('tokensMap: ', tokensMap)
+  // console.log('tokensMap: ', tokensMap)
 
-  console.log('Object.values(tokensMap): ', Object.values(tokensMap))
+  // console.log('Object.values(tokensMap): ', Object.values(tokensMap))
 
   return (
     <RowContainer
