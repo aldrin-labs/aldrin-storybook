@@ -78,7 +78,6 @@ const RebalanceComposition = ({
         )
 
         const totalTokenValue = getTotalTokenValue(sortedTokensByTokenValue)
-        // console.log('totalTokenValue: ', totalTokenValue)
 
         const tokensWithPercentages = getPercentageAllocationForTokens(
           sortedTokensByTokenValue,
@@ -86,9 +85,6 @@ const RebalanceComposition = ({
         )
 
         const tokensWithSliderSteps = getSliderStepForTokens(tokensWithPercentages, totalTokenValue)
-        // console.log('tokensWithPercentages', tokensWithPercentages)
-
-        // console.log('getPoolsInfo: ', getPoolsInfo)
 
         // TODO: Can be splitted and move up
         const availableTokensForRebalance = getAvailableTokensForRebalance(
@@ -174,7 +170,6 @@ const RebalanceComposition = ({
               leftToDistributeValue={leftToDistributeValue}
               setLeftToDistributeValue={setLeftToDistributeValue}
               totalTokensValue={totalTokensValue}
-              // handleSliderChange={bindedHandleSliderChange}
             />
           </Row>
           <Row
