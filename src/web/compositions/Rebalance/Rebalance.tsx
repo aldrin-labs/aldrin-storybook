@@ -4,6 +4,7 @@ import { compose } from 'recompose'
 import { withTheme, Theme } from '@material-ui/core/styles'
 import { TokenInstructions } from '@project-serum/serum'
 import { isEqual } from 'lodash'
+import debounceRender from 'react-debounce-render';
 
 
 import { withPublicKey } from '@core/hoc/withPublicKey'
@@ -51,6 +52,12 @@ const MemoizedRebalancePopup = React.memo(RebalancePopup, (prevProps, nextProps)
   return prevProps.open === nextProps.open && prevProps.rebalanceStep && nextProps.rebalanceStep
 
 })
+
+const DebouncedMemoizedDonutChartWithLegend = debounceRender(MemoizedDonutChartWithLegend, 100, { leading: false })
+
+const DebouncedMemoizedRebalanceHeaderComponent = debounceRender(RebalanceHeaderComponent, 100, { leading: false })
+
+const DebouncedBalanceDistributedComponent = debounceRender(BalanceDistributedComponent, 100, { leading: false })
 
 
 const RebalanceComposition = ({
@@ -171,7 +178,7 @@ const RebalanceComposition = ({
             margin={'0 2rem 0 0'}
             justify={'space-between'}
           >
-            <RebalanceHeaderComponent
+            <DebouncedMemoizedRebalanceHeaderComponent
               totalTokensValue={totalTokensValue}
               leftToDistributeValue={leftToDistributeValue}
             />
@@ -192,14 +199,14 @@ const RebalanceComposition = ({
             justify="space-between"
           >
             <RowContainer height={'calc(85% - 2rem)'}>
-              <MemoizedDonutChartWithLegend
+              <DebouncedMemoizedDonutChartWithLegend
                 data={Object.values(tokensMap).map((el) => ({
                   symbol: el.symbol,
                   value: el.percentage,
                 }))}
                 id={'current'}
               />
-              <MemoizedDonutChartWithLegend
+              <DebouncedMemoizedDonutChartWithLegend
                 data={Object.values(tokensMap).map((el) => ({
                   symbol: el.symbol,
                   value: el.targetPercentage,
@@ -218,7 +225,7 @@ const RebalanceComposition = ({
                 height={'100%'}
                 width={'calc(45% - 1rem)'}
               >
-                <BalanceDistributedComponent 
+                <DebouncedBalanceDistributedComponent 
                   totalTokensValue={totalTokensValue}
                   leftToDistributeValue={leftToDistributeValue}
                   theme={theme} />
