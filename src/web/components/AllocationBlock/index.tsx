@@ -75,7 +75,7 @@ const DonutChartWithLegend = ({ data = [], theme, id }: IProps) => {
     otherTokensProgressBarData
   )
 
-  console.log('generatedColorsForLegend', colorsForLegend)
+  // console.log('generatedColorsForLegend', colorsForLegend)
 
   return (
     <BlockTemplate
