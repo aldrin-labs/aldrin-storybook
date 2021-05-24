@@ -3,6 +3,8 @@ import { Connection, LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { compose } from 'recompose'
 import { withTheme, Theme } from '@material-ui/core/styles'
 import { TokenInstructions } from '@project-serum/serum'
+import { isEqual } from 'lodash'
+
 
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { useWallet, WRAPPED_SOL_MINT } from '@sb/dexUtils/wallet'
@@ -38,6 +40,11 @@ import { RebalancePopup } from './components/RebalancePopup'
 //     // console.log('setTokensMap: ', setTokensMap)
 //     console.log('newValue: ', newValue)
 // }
+
+const MemoizedDonutChartWithLegend = React.memo(DonutChartWithLegend, (prevProps, nextProps) => {
+
+  return isEqual(prevProps.data, nextProps.data)
+})
 
 
 const RebalanceComposition = ({
@@ -179,16 +186,14 @@ const RebalanceComposition = ({
             justify="space-between"
           >
             <RowContainer height={'calc(85% - 2rem)'}>
-              <DonutChartWithLegend
-                theme={theme}
+              <MemoizedDonutChartWithLegend
                 data={Object.values(tokensMap).map((el) => ({
                   symbol: el.symbol,
                   value: el.percentage,
                 }))}
                 id={'current'}
               />
-              <DonutChartWithLegend
-                theme={theme}
+              <MemoizedDonutChartWithLegend
                 data={Object.values(tokensMap).map((el) => ({
                   symbol: el.symbol,
                   value: el.targetPercentage,
