@@ -203,7 +203,7 @@ const RebalanceTable = ({
 
                           const maxDistributedValue = oldTargetPercentage + oldLeftToDistributedValue * 100 / totalTokensValue
 
-                          console.log('maxDistributedValue: ', maxDistributedValue)
+                          // console.log('maxDistributedValue: ', maxDistributedValue)
 
                           // Only for zero case
                           if (value <= 0) {
@@ -213,7 +213,7 @@ const RebalanceTable = ({
 
                             // Here we are handling case when undistributed value might be negative
                             const leftToDistributeRaw = oldLeftToDistributedValue + (oldTargetPercentage - token.targetPercentage) / 100 * totalTokensValue
-                            console.log('leftToDistributeRaw: ', leftToDistributeRaw)
+                            // console.log('leftToDistributeRaw: ', leftToDistributeRaw)
                             const leftToDistributeNew = leftToDistributeRaw < 0 ? 0 : leftToDistributeRaw
                             setLeftToDistributeValue(leftToDistributeNew)
 
@@ -231,7 +231,8 @@ const RebalanceTable = ({
 
                             // Here we are handling case when undistributed value might be negative
                             const leftToDistributeRaw = oldLeftToDistributedValue + (oldTargetPercentage - token.targetPercentage) / 100 * totalTokensValue
-                            console.log('leftToDistributeRaw: ', leftToDistributeRaw)
+                            // console.log('leftToDistributeRaw: ', leftToDistributeRaw)
+                            // console.log('maxvalue case')
                             const leftToDistributeNew = leftToDistributeRaw < 0 ? 0 : leftToDistributeRaw
                             setLeftToDistributeValue(leftToDistributeNew)
                             
@@ -258,7 +259,7 @@ const RebalanceTable = ({
                           // Handling case with reverting back to initial value of token, amount, percentage & etc.
                           const percentageDiffWithInitialPercentage = Math.abs(token.percentage - token.targetPercentage)
                           if (percentageDiffWithInitialPercentage <= 0.3) {
-                            console.log('percentageDiffWithInitialPercentage: ', percentageDiffWithInitialPercentage)
+                            // console.log('percentageDiffWithInitialPercentage: ', percentageDiffWithInitialPercentage)
                             token.targetPercentage = token.percentage
                             token.targetAmount = token.amount
                             token.targetTokenValue = token.tokenValue
@@ -267,17 +268,15 @@ const RebalanceTable = ({
                           // Here we are handling case when undistributed value might be negative
                           const leftToDistributeRaw = oldLeftToDistributedValue + (oldTargetPercentage - token.targetPercentage) / 100 * totalTokensValue
 
-                          console.log('leftToDistributeRaw: ', leftToDistributeRaw)
+                          // console.log('general case leftToDistributeRaw: ', leftToDistributeRaw)
                           const leftToDistributeNew = leftToDistributeRaw < 0 ? 0 : leftToDistributeRaw
                           setLeftToDistributeValue(leftToDistributeNew)
-
-                          console.log('stepCount: ', stepCount)
-                          console.log('token.targetPercentage: ', token.targetPercentage)
-                          console.log('token.targetAmount: ', token.targetAmount)
-                          console.log('token.targetTokenValue: ', token.targetTokenValue)
-
-
                           setTokensMap({...tokensMap})
+
+                          // console.log('stepCount: ', stepCount)
+                          // console.log('token.targetPercentage: ', token.targetPercentage)
+                          // console.log('token.targetAmount: ', token.targetAmount)
+                          // console.log('token.targetTokenValue: ', token.targetTokenValue)
 
                         }}
                         // step={el.stepInPercentageToken}
