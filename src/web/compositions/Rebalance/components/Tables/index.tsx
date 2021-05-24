@@ -117,6 +117,118 @@ const FooterRow = ({ theme }: { theme: Theme }) => (
   </RowContainer>
 )
 
+export const TokenSymbolColumn = ({ symbol }: { symbol: string }) => (
+  <RowTd>
+    <Row justify={'flex-start'}>
+      <SvgIcon
+        src={MockedToken}
+        width={'30px'}
+        height={'30px'}
+        style={{ marginRight: '1rem' }}
+      />
+      <Text
+        onClick={() => {
+          if (symbol.length > 15) {
+            copy(symbol)
+            notify({
+              type: 'success',
+              message: 'Copied!',
+            })
+          }
+        }}
+        fontSize={'2rem'}
+        fontFamily={'Avenir Next Medium'}
+      >
+        {symbol.length > 15
+          ? `${symbol.slice(0, 3)}...${symbol.slice(symbol.length - 3)}`
+          : symbol}
+      </Text>
+    </Row>
+  </RowTd>
+)
+
+export const TokenAmountColumn = ({
+  symbol,
+  amount,
+  tokenValue,
+  theme,
+}: {
+  symbol: string
+  amount: number
+  tokenValue: number
+  theme: Theme
+}) => (
+  <RowTd>
+    <TextColumnContainer>
+      <Text
+        theme={theme}
+        style={{
+          whiteSpace: 'nowrap',
+          paddingBottom: '1rem',
+        }}
+      >
+        {amount}{' '}
+        {symbol.length > 15
+          ? `${symbol.slice(0, 3)}...${symbol.slice(symbol.length - 3)}`
+          : symbol}
+      </Text>
+      <Text
+        theme={theme}
+        color={theme.palette.grey.new}
+        style={{
+          whiteSpace: 'nowrap',
+          paddingBottom: '1rem',
+        }}
+      >
+        ${tokenValue.toFixed(2)}
+      </Text>
+    </TextColumnContainer>
+  </RowTd>
+)
+
+export const TokenTargetAmountColumn = ({
+  symbol,
+  targetAmount,
+  targetTokenValue,
+  theme,
+}: {
+  symbol: string
+  targetAmount: number
+  targetTokenValue: number
+  theme: Theme
+}) => (
+  <RowTd style={{ minWidth: '25rem' }}>
+    <TextColumnContainer>
+      <Text
+        theme={theme}
+        style={{
+          whiteSpace: 'nowrap',
+          paddingBottom: '1rem',
+        }}
+      >
+        {targetAmount}{' '}
+        {symbol.length > 15
+          ? `${symbol.slice(0, 4)}...${symbol.slice(symbol.length - 3)}`
+          : symbol}
+      </Text>
+      <Text
+        theme={theme}
+        color={theme.palette.grey.new}
+        style={{
+          whiteSpace: 'nowrap',
+          paddingBottom: '1rem',
+        }}
+      >
+        ${targetTokenValue.toFixed(2)}
+      </Text>
+    </TextColumnContainer>
+  </RowTd>
+)
+
+export const MemoizedTokenSymbolColumn = React.memo(TokenSymbolColumn)
+export const MemoizedTokenAmountColumn = React.memo(TokenAmountColumn)
+export const MemoizedTokenTargetAmountColumn = React.memo(TokenTargetAmountColumn)
+
 export const TableMainRow = ({
   theme,
   el,
@@ -127,63 +239,13 @@ export const TableMainRow = ({
   totalTokensValue,
 }) => (
   <TableRow>
-    <RowTd>
-      <Row justify={'flex-start'}>
-        <SvgIcon
-          src={MockedToken}
-          width={'30px'}
-          height={'30px'}
-          style={{ marginRight: '1rem' }}
-        />
-        <Text
-          onClick={() => {
-            if (el.symbol.length > 15) {
-              copy(el.symbol)
-              notify({
-                type: 'success',
-                message: 'Copied!',
-              })
-            }
-          }}
-          fontSize={'2rem'}
-          fontFamily={'Avenir Next Medium'}
-        >
-          {el.symbol.length > 15
-            ? `${el.symbol.slice(0, 3)}...${el.symbol.slice(
-                el.symbol.length - 3
-              )}`
-            : el.symbol}
-        </Text>
-      </Row>
-    </RowTd>
-    <RowTd>
-      <TextColumnContainer>
-        <Text
-          theme={theme}
-          style={{
-            whiteSpace: 'nowrap',
-            paddingBottom: '1rem',
-          }}
-        >
-          {el.amount}{' '}
-          {el.symbol.length > 15
-            ? `${el.symbol.slice(0, 3)}...${el.symbol.slice(
-                el.symbol.length - 3
-              )}`
-            : el.symbol}
-        </Text>
-        <Text
-          theme={theme}
-          color={theme.palette.grey.new}
-          style={{
-            whiteSpace: 'nowrap',
-            paddingBottom: '1rem',
-          }}
-        >
-          ${el.tokenValue.toFixed(2)}
-        </Text>
-      </TextColumnContainer>
-    </RowTd>
+    <MemoizedTokenSymbolColumn symbol={el.symbol} />
+    <MemoizedTokenAmountColumn
+      symbol={el.symbol}
+      amount={el.amount}
+      tokenValue={el.tokenValue}
+      theme={theme}
+    />
     <RowTd>
       <Slider
         thumbWidth="2.4rem"
@@ -324,34 +386,12 @@ export const TableMainRow = ({
         max={100}
       />
     </RowTd>
-    <RowTd style={{ minWidth: '25rem' }}>
-      <TextColumnContainer>
-        <Text
-          theme={theme}
-          style={{
-            whiteSpace: 'nowrap',
-            paddingBottom: '1rem',
-          }}
-        >
-          {el.targetAmount}{' '}
-          {el.symbol.length > 15
-            ? `${el.symbol.slice(0, 4)}...${el.symbol.slice(
-                el.symbol.length - 3
-              )}`
-            : el.symbol}
-        </Text>
-        <Text
-          theme={theme}
-          color={theme.palette.grey.new}
-          style={{
-            whiteSpace: 'nowrap',
-            paddingBottom: '1rem',
-          }}
-        >
-          ${el.targetTokenValue.toFixed(2)}
-        </Text>
-      </TextColumnContainer>
-    </RowTd>{' '}
+    <MemoizedTokenTargetAmountColumn
+      symbol={el.symbol}
+      targetAmount={el.targetAmount}
+      targetTokenValue={el.targetTokenValue}
+      theme={theme}
+    />
   </TableRow>
 )
 
