@@ -29,7 +29,7 @@ import Slider from '@sb/components/Slider/Slider'
 
 import MockedToken from '@icons/ccaiToken.svg'
 import { Theme } from '@material-ui/core'
-import { isEqual, throttle } from 'lodash'
+import { isEqual, throttle, debounce } from 'lodash'
 
 const tooltipTexts = {
   'no pool':
@@ -358,6 +358,8 @@ export const TableMainRow = ({
     setLeftToDistributeValue(leftToDistributeNew)
   }
 
+  const handleSliderChangeThrottled = throttle(handleSliderChange, 100)
+
   return (
     <TableRow>
       <MemoizedTokenSymbolColumn symbol={el.symbol} />
@@ -383,7 +385,7 @@ export const TableMainRow = ({
           value={el.targetPercentage}
           disabled={el.disabled}
           disabledText={tooltipTexts[el.disabledReason]}
-          onChange={}
+          onChange={handleSliderChangeThrottled}
           // onDragEnd={(...args) => {
           //   console.log('onDragEnd args[]', args)
           //   console.log('onDragEnd e.target.value', args[0].target.value)
