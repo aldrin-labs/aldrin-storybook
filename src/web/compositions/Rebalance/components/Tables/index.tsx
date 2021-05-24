@@ -15,7 +15,6 @@ import {
   BorderButton,
   RowTd,
   TextColumnContainer,
-  TokenIcon,
 } from '@sb/compositions/Pools/components/Tables/index.styles'
 
 import { BlockTemplate } from '@sb/compositions/Pools/index.styles'
@@ -32,6 +31,8 @@ import MockedToken from '@icons/ccaiToken.svg'
 import { Theme } from '@material-ui/core'
 import { isEqual, throttle, debounce } from 'lodash'
 import { formatSymbol } from '@sb/components/AllocationBlock/DonutChart/utils'
+import { TokenIcon } from '@sb/components/TokenIcon'
+import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 
 const tooltipTexts = {
   'no pool':
@@ -126,6 +127,7 @@ export const TokenSymbolColumn = ({ symbol }: { symbol: string }) => (
         mint={getTokenMintAddressByName(symbol)}
         width={'2rem'}
         height={'2rem'}
+        margin={'0 1rem 0 0'}
       />
       <Text
         onClick={() => {
