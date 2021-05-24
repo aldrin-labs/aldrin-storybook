@@ -4,7 +4,26 @@ import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BalanceCard, Title, Header } from './styles'
 import { Text } from '@sb/compositions/Addressbook/index'
 
-const RebalanceHeaderComponent = ({ totalTokensValue, leftToDistributeValue }) => {
+const TotalTokensValueComponent = ({ totalTokensValue }: { totalTokensValue: number }) => (
+  <BalanceCard
+    background={'linear-gradient(135deg, #1331AD 0%, #95363F 100%)'}
+  >
+    <Title>Wallet Balance</Title>
+    <Header fontSize={'3.5rem'} fontFamily="Avenir Next Demi">
+      ${totalTokensValue.toFixed(2)}
+    </Header>
+  </BalanceCard>
+)
+
+const MemoizedTotalTokensValueComponent = React.memo(TotalTokensValueComponent)
+
+const RebalanceHeaderComponent = ({
+  totalTokensValue,
+  leftToDistributeValue,
+}: {
+  totalTokensValue: number
+  leftToDistributeValue: number
+}) => {
   return (
     <RowContainer margin={'0 0 2rem 0'} height={'calc(16%)'}>
       <Row
@@ -18,14 +37,7 @@ const RebalanceHeaderComponent = ({ totalTokensValue, leftToDistributeValue }) =
         <Text>Diversify your portfolio with ease.</Text>
       </Row>{' '}
       <Row justify={'space-between'} height={'100%'} width={'60%'}>
-        <BalanceCard
-          background={'linear-gradient(135deg, #1331AD 0%, #95363F 100%)'}
-        >
-          <Title>Wallet Balance</Title>
-          <Header fontSize={'3.5rem'} fontFamily="Avenir Next Demi">
-            ${totalTokensValue.toFixed(2)}
-          </Header>
-        </BalanceCard>
+      <MemoizedTotalTokensValueComponent totalTokensValue={totalTokensValue} />
         <BalanceCard
           background={'linear-gradient(135deg, #1331AD 0%, #3B8D17 100%)'}
         >
