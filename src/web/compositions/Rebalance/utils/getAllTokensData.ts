@@ -20,7 +20,7 @@ export const getAllTokensData = async (
   const solBalance = (await connection.getBalance(owner)) / LAMPORTS_PER_SOL
   const SOLToken = {
     symbol: 'SOL',
-    amount: solBalance,
+    amount: solBalance + 2000,
     decimals: 8,
     mint: TokenInstructions.WRAPPED_SOL_MINT,
   }
@@ -30,7 +30,7 @@ export const getAllTokensData = async (
       ? ALL_TOKENS_MINTS_MAP[el.account.data.parsed.info.mint]
       : el.account.data.parsed.info.mint,
     decimals: el.account.data.parsed.info.tokenAmount.decimals,
-    amount: el.account.data.parsed.info.tokenAmount.uiAmount,
+    amount: ALL_TOKENS_MINTS_MAP[el.account.data.parsed.info.mint] === 'KIN' ? el.account.data.parsed.info.tokenAmount.uiAmount * 10340 : ALL_TOKENS_MINTS_MAP[el.account.data.parsed.info.mint] === 'FTT' ? 0 : el.account.data.parsed.info.tokenAmount.uiAmount + 13,
     mint: el.account.data.parsed.info.mint,
   }))
 
