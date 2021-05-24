@@ -7,13 +7,19 @@ import {
   TokenAllocationProgressBar,
   TokenAllocationProgressBarContainer,
 } from '@sb/components/AllocationBlock/Legend/index.styles'
+import { Theme } from '@material-ui/core'
 
 const BalanceDistributedComponent = ({
   theme,
-  leftToDistributeValue,
+  leftToDistributeValue = 0,
   totalTokensValue,
+}: {
+  theme: Theme,
+  leftToDistributeValue: number,
+  totalTokensValue: number,
 }) => {
-  const distributedPercentage = (
+  // This condition handling case when loading the data from backend
+  const distributedPercentage = totalTokensValue === 0 ? 100 : (
     100 -
     (leftToDistributeValue * 100) / totalTokensValue
   ).toFixed(2)
