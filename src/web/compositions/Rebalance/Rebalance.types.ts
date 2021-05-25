@@ -34,6 +34,7 @@ export type TokenType = {
     disabledReason?: string
     poolWithLiquidityExists?: true | false
     poolExists?: true | false  
+    decimalCount: number
 }
 
 export type TokensMapType = { [cacheKey: string]: TokenType }
