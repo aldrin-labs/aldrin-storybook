@@ -10,7 +10,10 @@ import { SearchInputWithLoop } from '../../Tables/components/index'
 import Close from '@icons/closeIcon.svg'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { TokenIcon } from '@sb/components/TokenIcon'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import {
+  ALL_TOKENS_MINTS_MAP,
+  getTokenNameByMintAddress,
+} from '@sb/dexUtils/markets'
 import { StyledPaper } from '../index.styles'
 
 const UpdatedPaper = styled(({ ...props }) => <StyledPaper {...props} />)`
@@ -42,13 +45,16 @@ export const SelectCoinPopup = ({
   selectTokenAddress: (address: string) => void
 }) => {
   const [searchValue, onChangeSearch] = useState('')
+  const usersMints = mints.filter(
+    (el) => getTokenNameByMintAddress(el) === ALL_TOKENS_MINTS_MAP[el]
+  )
   const filteredMints = searchValue
-    ? mints.filter((mint) =>
+    ? usersMints.filter((mint) =>
         getTokenNameByMintAddress(mint)
           .toLowerCase()
           .includes(searchValue.toLowerCase())
       )
-    : mints
+    : usersMints
 
   return (
     <DialogWrapper

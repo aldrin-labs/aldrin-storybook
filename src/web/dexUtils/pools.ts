@@ -600,7 +600,7 @@ export const getMaxWithdrawAmount = async ({
     supply
   })
 
-  return [withdrawAmountTokenA, withdrawAmountTokenB]
+  return [withdrawAmountTokenA, withdrawAmountTokenB, poolTokenAmountA, poolTokenAmountB]
 }
 
 /**

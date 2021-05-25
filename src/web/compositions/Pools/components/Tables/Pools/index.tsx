@@ -39,7 +39,7 @@ const AllPoolsTable = ({
   setIsAddLiquidityPopupOpen,
 }: {
   theme: Theme
-  poolsPrices: PoolsPrices[],
+  poolsPrices: PoolsPrices[]
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
   selectPool: (pool: PoolInfo) => void
   setIsCreatePoolPopupOpen: (value: boolean) => void

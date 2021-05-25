@@ -71,6 +71,7 @@ const Pools = ({
 
       {wallet.connected ? (
         <UserLiquitidyTable
+          allTokensData={allTokensData}
           theme={theme}
           selectPool={selectPool}
           poolsPrices={getPoolsPrices}

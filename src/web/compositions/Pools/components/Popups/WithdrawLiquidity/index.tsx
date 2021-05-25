@@ -125,6 +125,8 @@ export const WithdrawalPopup = ({
 
   const total = +baseAmount * baseTokenPrice + +quoteAmount * quoteTokenPrice
 
+  console.log('price', quoteTokenPrice, baseTokenPrice, total)
+
   return (
     <DialogWrapper
       theme={theme}
