@@ -118,6 +118,7 @@ export const InputWithSelector = ({
   theme,
   value,
   symbol,
+  disabled,
   maxBalance,
   onChange,
   openSelectCoinPopup,
@@ -125,6 +126,7 @@ export const InputWithSelector = ({
   theme: Theme
   value: string | number
   symbol: string
+  disabled?: boolean
   maxBalance: number
   onChange: (value: string | number) => void
   openSelectCoinPopup: () => void
@@ -137,10 +139,11 @@ export const InputWithSelector = ({
       <TokenContainer left={'2rem'} top={'3rem'}>
         <Text color={theme.palette.grey.title}>{symbol}</Text>
       </TokenContainer>
-      <TokenContainer left={'2rem'} bottom={'3rem'}>
+      <TokenContainer style={{ width: '80%' }} left={'2rem'} bottom={'3rem'}>
         <InvisibleInput
           type={'number'}
           value={value}
+          disabled={disabled}
           onChange={(e) => onChange(e.target.value)}
           placeholder={''}
         />

@@ -562,30 +562,36 @@ export class TokenSwap {
     userTransferAuthority: Account,
     amountIn: number | Numberu64,
     minimumAmountOut: number | Numberu64,
-  ): Promise<TransactionSignature> {
-    return await sendAndConfirmTransactionViaWallet(
-      this.wallet,
-      this.connection,
-      new Transaction().add(
-        TokenSwap.swapInstruction(
-          this.tokenSwap,
-          this.authority,
-          userTransferAuthority.publicKey,
-          userSource,
-          poolSource,
-          poolDestination,
-          userDestination,
-          this.poolToken,
-          this.feeAccount,
-          hostFeeAccount,
-          this.swapProgramId,
-          this.tokenProgramId,
-          amountIn,
-          minimumAmountOut,
-        ),
+  ): Promise<[Transaction, Account]> {
+    const transaction = new Transaction();
+
+    transaction.add(
+      TokenSwap.swapInstruction(
+        this.tokenSwap,
+        this.authority,
+        userTransferAuthority.publicKey,
+        userSource,
+        poolSource,
+        poolDestination,
+        userDestination,
+        this.poolToken,
+        this.feeAccount,
+        hostFeeAccount,
+        this.swapProgramId,
+        this.tokenProgramId,
+        amountIn,
+        minimumAmountOut,
       ),
-      userTransferAuthority,
     );
+
+    // return await sendAndConfirmTransactionViaWallet(
+    //   this.wallet,
+    //   this.connection,
+    //   transaction,
+    //   userTransferAuthority,
+    // );
+
+    return [transaction, userTransferAuthority]
   }
 
   static swapInstruction(

@@ -20,16 +20,26 @@ import { PublicKey } from '@solana/web3.js'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
+import { compose } from 'recompose'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
+import { PoolInfo, PoolsPrices } from '@sb/compositions/Pools/index.types'
+import { notify } from '@sb/dexUtils/notifications'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 export const CreatePoolPopup = ({
   theme,
   open,
   allTokensData,
+  poolsPrices,
+  getPoolsInfoQuery,
   close,
 }: {
   theme: Theme
   open: boolean
   allTokensData: TokenInfo[]
+  poolsPrices: PoolsPrices[]
+  getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
   close: () => void
 }) => {
   const { wallet } = useWallet()
@@ -37,18 +47,31 @@ export const CreatePoolPopup = ({
 
   const [baseTokenMintAddress, setBaseTokenMintAddress] = useState<string>('')
   const [baseAmount, setBaseAmount] = useState<string | number>('')
+  const setBaseAmountWithQuote = (baseAmount: string | number) => {
+    const quoteAmount = stripDigitPlaces(
+      (+baseAmount * baseTokenPrice) / quoteTokenPrice,
+      8
+    )
+    setBaseAmount(baseAmount)
+    setQuoteAmount(quoteAmount)
+  }
 
   const [quoteTokenMintAddress, setQuoteTokenMintAddress] = useState<string>('')
   const [quoteAmount, setQuoteAmount] = useState<string | number>('')
+  const setQuoteAmountWithBase = (quoteAmount: string | number) => {
+    const baseAmount = stripDigitPlaces(
+      (+quoteAmount * quoteTokenPrice) / baseTokenPrice,
+      8
+    )
+    setBaseAmount(baseAmount)
+    setQuoteAmount(quoteAmount)
+  }
 
   const [isSelectCoinPopupOpen, setIsSelectCoinPopupOpen] = useState(false)
   const [isBaseTokenSelecting, setIsBaseTokenSelecting] = useState(false)
 
   const [warningChecked, setWarningChecked] = useState(false)
   const [operationLoading, setOperationLoading] = useState(false)
-
-  const isDisabled =
-    !warningChecked || +baseAmount <= 0 || +quoteAmount <= 0 || operationLoading
 
   const baseSymbol = baseTokenMintAddress
     ? getTokenNameByMintAddress(baseTokenMintAddress)
@@ -58,11 +81,50 @@ export const CreatePoolPopup = ({
     : 'Select token'
 
   const mints = allTokensData.map((tokenInfo: TokenInfo) => tokenInfo.mint)
+  const filteredMints =
+    isBaseTokenSelecting && quoteTokenMintAddress
+      ? mints.filter((m) => m !== quoteTokenMintAddress)
+      : !isBaseTokenSelecting && baseTokenMintAddress
+      ? mints.filter((m) => m !== baseTokenMintAddress)
+      : mints
+
   const baseTokenInfo = getTokenDataByMint(allTokensData, baseTokenMintAddress)
+  const maxBaseAmount = baseTokenInfo?.amount || 0
+
   const quoteTokenInfo = getTokenDataByMint(
     allTokensData,
     quoteTokenMintAddress
   )
+  const maxQuoteAmount = quoteTokenInfo?.amount || 0
+
+  const { getPoolsInfo: pools = [] } = getPoolsInfoQuery || { getPoolsInfo: [] }
+  const isPoolAlreadyExist = pools.find(
+    (pool) =>
+      pool.tokenA === baseTokenMintAddress &&
+      pool.tokenB === quoteTokenMintAddress
+  )
+
+  const baseTokenPrice =
+    poolsPrices.find(
+      (tokenInfo) =>
+        tokenInfo.symbol === baseTokenMintAddress ||
+        tokenInfo.symbol === baseSymbol
+    )?.price || 0
+
+  const quoteTokenPrice =
+    poolsPrices.find(
+      (tokenInfo) =>
+        tokenInfo.symbol === quoteTokenMintAddress ||
+        tokenInfo.symbol === quoteSymbol
+    )?.price || 0
+
+  const isDisabled =
+    !warningChecked ||
+    +baseAmount <= 0 ||
+    +quoteAmount <= 0 ||
+    operationLoading ||
+    baseAmount > maxBaseAmount ||
+    quoteAmount > maxQuoteAmount
 
   return (
     <DialogWrapper
@@ -86,7 +148,9 @@ export const CreatePoolPopup = ({
             color={'#A5E898'}
             fontFamily={'Avenir Next Demi'}
           >
-            1 {baseSymbol} = 20 {quoteSymbol}
+            1 {baseSymbol} ={' '}
+            {stripDigitPlaces(baseTokenPrice / quoteTokenPrice, 2)}{' '}
+            {quoteSymbol}
           </Text>
         )}
       </RowContainer>
@@ -94,9 +158,10 @@ export const CreatePoolPopup = ({
         <InputWithSelector
           theme={theme}
           value={baseAmount}
-          onChange={setBaseAmount}
+          onChange={setBaseAmountWithQuote}
           symbol={baseSymbol}
-          maxBalance={baseTokenInfo?.amount || 0}
+          disabled={!baseTokenPrice}
+          maxBalance={maxBaseAmount}
           openSelectCoinPopup={() => {
             setIsBaseTokenSelecting(true)
             setIsSelectCoinPopupOpen(true)
@@ -110,9 +175,10 @@ export const CreatePoolPopup = ({
         <InputWithSelector
           theme={theme}
           value={quoteAmount}
-          onChange={setQuoteAmount}
+          onChange={setQuoteAmountWithBase}
           symbol={quoteSymbol}
-          maxBalance={quoteTokenInfo?.amount || 0}
+          disabled={!quoteTokenPrice}
+          maxBalance={maxQuoteAmount}
           openSelectCoinPopup={() => {
             setIsBaseTokenSelecting(false)
             setIsSelectCoinPopupOpen(true)
@@ -160,16 +226,43 @@ export const CreatePoolPopup = ({
             const baseTokenDecimals = baseTokenInfo?.decimals || 0
             const quoteTokenDecimals = quoteTokenInfo?.decimals || 0
 
-            const userAmountTokenA = +baseAmount * (10 ** baseTokenDecimals)
-            const userAmountTokenB = +quoteAmount * (10 ** quoteTokenDecimals)
+            const userAmountTokenA = +baseAmount * 10 ** baseTokenDecimals
+            const userAmountTokenB = +quoteAmount * 10 ** quoteTokenDecimals
 
             if (
               !userTokenAccountA ||
               !userTokenAccountB ||
               !userAmountTokenA ||
               !userAmountTokenB
-            )
-              return // add notify
+            ) {
+              notify({
+                message: `Sorry, something went wrong with your amount of ${
+                  !userTokenAccountA ? 'tokenA' : 'tokenB'
+                }`,
+                type: 'error',
+              })
+
+              console.log('base data', {
+                userTokenAccountA,
+                userTokenAccountB,
+                baseTokenDecimals,
+                quoteTokenDecimals,
+                userAmountTokenA,
+                userAmountTokenB,
+              })
+
+              return
+            }
+
+            if (isPoolAlreadyExist) {
+              notify({
+                message:
+                  'Sorry, pool with this tokenA and tokenB mints already exists',
+                type: 'error',
+              })
+
+              return
+            }
 
             console.log('create pool')
             await setOperationLoading(true)
@@ -195,7 +288,7 @@ export const CreatePoolPopup = ({
       </RowContainer>
       <SelectCoinPopup
         theme={theme}
-        mints={mints}
+        mints={filteredMints}
         open={isSelectCoinPopupOpen}
         selectTokenAddress={(address: string) => {
           const select = isBaseTokenSelecting
@@ -215,3 +308,11 @@ export const CreatePoolPopup = ({
     </DialogWrapper>
   )
 }
+
+export const CreatePoolPopupWrapper = compose(
+  queryRendererHoc({
+    name: 'getPoolsInfoQuery',
+    query: getPoolsInfo,
+    fetchPolicy: 'cache-only',
+  })
+)(CreatePoolPopup)

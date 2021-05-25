@@ -8,6 +8,7 @@ import {
 } from './token-swap/token-swap'
 import { WalletAdapter } from './types'
 import { sendAndConfirmTransactionViaWallet } from './token/utils/send-and-confirm-transaction-via-wallet'
+import { sleep } from './utils'
 
 const SWAP_PROGRAM_OWNER_FEE_ADDRESS = new PublicKey(
   'HfoTxFR1Tm6kGmWgYWD6J7YHVy1UwqSULUGVLXkJqaKN'
@@ -207,8 +208,9 @@ export async function createTokenSwap({
   )
 
   console.log(
-    'tokenSwapAccount.publicKey',
-    tokenSwapAccount.publicKey.toString()
+    'tokenSwapAccount.publicKey, tokenPoolMint',
+    tokenSwapAccount.publicKey.toString(),
+    tokenPoolMint.publicKey.toString()
   )
   console.log('loading token swap', tokenSwap)
   const fetchedTokenSwap = await TokenSwap.loadTokenSwap(
@@ -282,7 +284,7 @@ export async function createTokenSwap({
  *
  * @param wallet The Wallet that will sign transactions
  * @param connection The connection to use
- * @param swapTokenPublicKey The public key of swap, that will be used to deposit money
+ * @param tokenSwapPublicKey The public key of swap, that will be used to deposit money
  * @param userTokenAccountA The user's tokenA account address
  * @param userTokenAccountB The user's tokenB account address
  * @param userAmountTokenA The amount of tokenA to tranfer to the pool token account address
@@ -291,7 +293,7 @@ export async function createTokenSwap({
 export async function depositAllTokenTypes({
   wallet,
   connection,
-  swapTokenPublicKey,
+  tokenSwapPublicKey,
   poolTokenAccount,
   userTokenAccountA,
   userTokenAccountB,
@@ -300,7 +302,7 @@ export async function depositAllTokenTypes({
 }: {
   wallet: WalletAdapter
   connection: Connection
-  swapTokenPublicKey: PublicKey
+  tokenSwapPublicKey: PublicKey
   poolTokenAccount?: PublicKey
   userTokenAccountA: PublicKey
   userTokenAccountB: PublicKey
@@ -310,7 +312,7 @@ export async function depositAllTokenTypes({
   const tokenSwap = await TokenSwap.loadTokenSwap(
     wallet,
     connection,
-    swapTokenPublicKey,
+    tokenSwapPublicKey,
     TOKEN_SWAP_PROGRAM_ID
   )
 
@@ -344,7 +346,7 @@ export async function depositAllTokenTypes({
 
   // create new account for user only if it has no one for such pool mint
   if (!isUserAlreadyHasPoolTokenAccount) {
-    [
+    ;[
       newAccountPool,
       newAccountPoolSignature,
       newAccountPoolTransaction,
@@ -445,7 +447,7 @@ export async function depositAllTokenTypes({
  *
  * @param wallet The Wallet that will sign transactions
  * @param connection The connection to use
- * @param swapTokenPublicKey The public key of swap, that will be used to deposit money
+ * @param tokenSwapPublicKey The public key of swap, that will be used to deposit money
  * @param poolTokenAccount The user's pool token address
  * @param userTokenAccountA The user's tokenA account address
  * @param userTokenAccountB The user's tokenB account address
@@ -455,7 +457,7 @@ export async function depositAllTokenTypes({
 export async function withdrawAllTokenTypes({
   wallet,
   connection,
-  swapTokenPublicKey,
+  tokenSwapPublicKey,
   poolTokenAccount,
   userTokenAccountA,
   userTokenAccountB,
@@ -463,7 +465,7 @@ export async function withdrawAllTokenTypes({
 }: {
   wallet: WalletAdapter
   connection: Connection
-  swapTokenPublicKey: PublicKey
+  tokenSwapPublicKey: PublicKey
   poolTokenAccount: PublicKey
   userTokenAccountA: PublicKey
   userTokenAccountB: PublicKey
@@ -472,7 +474,7 @@ export async function withdrawAllTokenTypes({
   const tokenSwap = await TokenSwap.loadTokenSwap(
     wallet,
     connection,
-    swapTokenPublicKey,
+    tokenSwapPublicKey,
     TOKEN_SWAP_PROGRAM_ID
   )
 
@@ -489,7 +491,7 @@ export async function withdrawAllTokenTypes({
     {
       wallet,
       connection,
-      swapTokenPublicKey,
+      tokenSwapPublicKey,
       poolTokenAmount,
       tokenSwap,
     }
@@ -530,7 +532,7 @@ export async function withdrawAllTokenTypes({
       )
       if (withdrawSignature) break
     } catch (e) {
-      console.log('withdraw catch error', e)
+      console.log('withdraw catch error', e, e.includes('cancelled'))
       counter++
       withdrawAmountTokenA *= 0.99
       withdrawAmountTokenB *= 0.99
@@ -541,13 +543,13 @@ export async function withdrawAllTokenTypes({
 export const getMaxWithdrawAmount = async ({
   wallet,
   connection,
-  swapTokenPublicKey,
+  tokenSwapPublicKey,
   poolTokenAmount,
   tokenSwap,
 }: {
   wallet: WalletAdapter
   connection: Connection
-  swapTokenPublicKey: PublicKey
+  tokenSwapPublicKey: PublicKey
   poolTokenAmount: number
   tokenSwap?: TokenSwap
 }) => {
@@ -557,7 +559,7 @@ export const getMaxWithdrawAmount = async ({
     tokenSwapClass = await TokenSwap.loadTokenSwap(
       wallet,
       connection,
-      swapTokenPublicKey,
+      tokenSwapPublicKey,
       TOKEN_SWAP_PROGRAM_ID
     )
   }
@@ -588,21 +590,86 @@ export const getMaxWithdrawAmount = async ({
   const poolTokenB = await tokenMintB.getAccountInfo(tokenAccountB)
   const poolTokenAmountB = poolTokenB.amount.toNumber()
 
-  const withdrawAmountTokenA = Math.floor(
-    (poolTokenAmountA * poolTokenAmount) / supply
-  )
+  const withdrawAmountTokenA = (poolTokenAmountA * poolTokenAmount) / supply
+  const withdrawAmountTokenB = (poolTokenAmountB * poolTokenAmount) / supply
 
-  const withdrawAmountTokenB = Math.floor(
-    (poolTokenAmountB * poolTokenAmount) / supply
-  )
-
-  console.log(
-    'poolTokenAmountB * poolTokenAmount) / supply',
+  console.log('withdraw', {
     poolTokenAmountA,
     poolTokenAmountB,
     poolTokenAmount,
     supply
-  )
+  })
 
   return [withdrawAmountTokenA, withdrawAmountTokenB]
+}
+
+/**
+ * swap
+ *
+ * @param wallet The Wallet that will sign transactions
+ * @param connection The connection to use
+ * @param tokenSwapPublicKey The public key of swap, that will be used to deposit money
+ * @param userTokenAccountA The user's tokenA account address
+ * @param userTokenAccountB The user's tokenB account address
+ * @param swapAmountIn The amount of tokenA to tranfer to the pool token account address
+ * @param swapAmountOut The amount of tokenB to tranfer to the pool token account address
+ */
+export async function swap({
+  wallet,
+  connection,
+  userTokenAccountA,
+  userTokenAccountB,
+  tokenSwapPublicKey,
+  swapAmountIn,
+  swapAmountOut,
+}: {
+  wallet: WalletAdapter,
+  connection: Connection,
+  userTokenAccountA: PublicKey,
+  userTokenAccountB: PublicKey,
+  tokenSwapPublicKey: PublicKey,
+  swapAmountIn: number,
+  swapAmountOut: number,
+}): Promise<[Transaction, Account]> {
+  const tokenSwap = await TokenSwap.loadTokenSwap(
+    wallet,
+    connection,
+    tokenSwapPublicKey,
+    TOKEN_SWAP_PROGRAM_ID
+  )
+
+  const {
+    tokenAccountA,
+    tokenAccountB,
+    mintA,
+  } = tokenSwap
+  
+  const userTransferAuthority = new Account();
+  const tokenMintA = new Token(wallet, connection, mintA, TOKEN_PROGRAM_ID)
+
+  const approveTransaction = await tokenMintA.approve(
+    userTokenAccountA,
+    userTransferAuthority.publicKey,
+    wallet.publicKey,
+    [],
+    swapAmountIn,
+  );
+
+  const [swapTransaction, signer] = await tokenSwap.swap(
+    userTokenAccountA,
+    tokenAccountA,
+    tokenAccountB,
+    userTokenAccountB,
+    null, // host fees, add later
+    userTransferAuthority,
+    swapAmountIn,
+    swapAmountOut,
+  );
+
+  const commonTransaction = new Transaction().add(
+    approveTransaction,
+    swapTransaction
+  )
+
+  return [commonTransaction, signer]
 }

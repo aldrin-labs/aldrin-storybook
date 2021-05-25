@@ -41,8 +41,15 @@ export const SelectCoinPopup = ({
   close: () => void
   selectTokenAddress: (address: string) => void
 }) => {
-  const [searchValue, onChangeSearch] = useState('');
-  
+  const [searchValue, onChangeSearch] = useState('')
+  const filteredMints = searchValue
+    ? mints.filter((mint) =>
+        getTokenNameByMintAddress(mint)
+          .toLowerCase()
+          .includes(searchValue.toLowerCase())
+      )
+    : mints
+
   return (
     <DialogWrapper
       theme={theme}
@@ -65,7 +72,7 @@ export const SelectCoinPopup = ({
         />
       </RowContainer>
       <RowContainer>
-        {mints.map((mint: string) => {
+        {filteredMints.map((mint: string) => {
           return (
             <SelectorRow
               justify={'space-between'}
@@ -84,6 +91,11 @@ export const SelectCoinPopup = ({
             </SelectorRow>
           )
         })}
+        {mints.length === 0 && (
+          <RowContainer>
+            <StyledText>Loading...</StyledText>
+          </RowContainer>
+        )}
       </RowContainer>
     </DialogWrapper>
   )

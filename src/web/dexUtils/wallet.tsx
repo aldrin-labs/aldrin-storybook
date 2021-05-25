@@ -26,6 +26,7 @@ import { clusterApiUrl } from '@solana/web3.js'
 import { TokenListProvider } from '@solana/spl-token-registry'
 import { TokenInstructions } from '@project-serum/serum'
 import { useAsyncData } from './fetch-loop'
+import { getMaxWithdrawAmount } from './pools'
 
 export const WALLET_PROVIDERS = [
   // { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },
@@ -213,29 +214,28 @@ export function useWalletPublicKeys() {
   return [publicKeys, loaded]
 }
 
-export function useWalletMints() {
+export function useMaxWithdrawalAmounts({
+  poolTokenAmount,
+  tokenSwapPublicKey,
+}: {
+  poolTokenAmount: number
+  tokenSwapPublicKey: PublicKey
+}) {
   const { wallet } = useWallet()
   const connection = useConnection()
 
-  const getWalletMintsInfo = async (
-    connection: Connection,
-    owner: PublicKey
-  ) => {
-    const data = await connection.getParsedTokenAccountsByOwner(owner, {
-      programId: TokenInstructions.TOKEN_PROGRAM_ID,
-    })
-
-    return data
-  }
-
-  const [walletMintsInfo, loaded] = useAsyncData(
-    () => getWalletMintsInfo(connection, wallet.publicKey),
-    'getWalletMintsInfo'
+  const [withdrawalAmounts, loaded] = useAsyncData(
+    () =>
+      getMaxWithdrawAmount({
+        connection,
+        wallet,
+        poolTokenAmount,
+        tokenSwapPublicKey,
+      }),
+    `getMaxWithdrawAmount-${tokenSwapPublicKey}`
   )
 
-  console.log('walletMintsInfo', walletMintsInfo)
-
-  return [walletMintsInfo.value, loaded]
+  return [withdrawalAmounts, loaded]
 }
 
 export function parseMintData(data) {
