@@ -7,10 +7,12 @@ export const TokenIcon = ({
   mint,
   height,
   width,
+  margin,
 }: {
   mint?: string | null
   height?: string
   width?: string
+  margin?: string
 }) => {
   const [tokenMap, setTokenMap] = useState<Map<string, TokenInfo>>(new Map())
 
@@ -28,12 +30,29 @@ export const TokenIcon = ({
   }, [setTokenMap])
 
   if (!mint)
-    return <SvgIcon src={CoinPlaceholder} height={height} width={width} />
+    return (
+      <SvgIcon
+        src={CoinPlaceholder}
+        height={height}
+        width={width}
+        margin={margin}
+      />
+    )
   const token = tokenMap.get(mint)
   if (!token || !token.logoURI)
-    return <SvgIcon src={CoinPlaceholder} height={height} width={width} />
+    return (
+      <SvgIcon
+        src={CoinPlaceholder}
+        height={height}
+        width={width}
+        margin={margin}
+      />
+    )
 
   return (
-    <img src={token.logoURI} style={{ height, width, borderRadius: '50%' }} />
+    <img
+      src={token.logoURI}
+      style={{ height, width, margin, borderRadius: '50%' }}
+    />
   )
 }

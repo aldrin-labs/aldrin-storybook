@@ -34,8 +34,8 @@ const lightenDarkenColor = (baseColor: string, amt: number) => {
 export const fixedColors = [
   '#366CE5',
   '#D5A688',
-  '#4DA5E6',
   '#90D7C7',
+  '#4DA5E6',
   '#6891EE',
 ]
 
@@ -43,6 +43,15 @@ export const getRandomBlueColor = () => {
   const randomColor = fixedColors[randomInteger(0, fixedColors.length - 1)]
   const randomNumber = randomInteger(-40, 40)
   return lightenDarkenColor(randomColor, randomNumber)
+}
+
+export const formatSymbol = ({ symbol }: { symbol: string }) => {
+  
+  if (symbol.length > 15) {
+    return `${symbol.slice(0, 3)}...${symbol.slice(symbol.length - 3)}`
+  } else {
+    return symbol
+  }
 }
 
 const createAllocationDonutChart = ({
