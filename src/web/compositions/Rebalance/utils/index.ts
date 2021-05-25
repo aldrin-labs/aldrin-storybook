@@ -6,6 +6,7 @@ import { getPercentageAllocationForTokens } from './getPercentageAllocationForTo
 import { getAvailableTokensForRebalance } from './getAvailableTokensForRebalance'
 import { getTokensMap } from './getTokensMap'
 import { getAllTokensData } from './getAllTokensData'
+import { getSliderStepForTokens } from './getSliderStepForTokens'
 
 export {
   getTokenValuesForTokens,
@@ -16,4 +17,5 @@ export {
   getAvailableTokensForRebalance,
   getTokensMap,
   getAllTokensData,
+  getSliderStepForTokens,
 }

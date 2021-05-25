@@ -3,6 +3,9 @@ import { Connection, LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { compose } from 'recompose'
 import { withTheme, Theme } from '@material-ui/core/styles'
 import { TokenInstructions } from '@project-serum/serum'
+import { isEqual } from 'lodash'
+import debounceRender from 'react-debounce-render';
+
 
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { useWallet, WRAPPED_SOL_MINT } from '@sb/dexUtils/wallet'
@@ -17,6 +20,7 @@ import {
   getAvailableTokensForRebalance,
   getTokensMap,
   getAllTokensData,
+  getSliderStepForTokens,
 } from './utils'
 import { useConnection } from '@sb/dexUtils/connection'
 
@@ -32,6 +36,28 @@ import RebalanceHeaderComponent from './components/Header'
 import DonutChartWithLegend from '@sb/components/AllocationBlock/index'
 import BalanceDistributedComponent from './components/BalanceDistributed'
 import { RebalancePopup } from './components/RebalancePopup'
+
+// const handleSliderChange = (setTokensMap, e, newValue) => {
+//     // console.log('setTokensMap: ', setTokensMap)
+//     console.log('newValue: ', newValue)
+// }
+
+const MemoizedDonutChartWithLegend = React.memo(DonutChartWithLegend, (prevProps, nextProps) => {
+
+  return isEqual(prevProps.data, nextProps.data)
+})
+
+const MemoizedRebalancePopup = React.memo(RebalancePopup, (prevProps, nextProps) => {
+
+  return prevProps.open === nextProps.open && prevProps.rebalanceStep && nextProps.rebalanceStep
+
+})
+
+const DebouncedMemoizedDonutChartWithLegend = debounceRender(MemoizedDonutChartWithLegend, 100, { leading: false })
+
+const DebouncedMemoizedRebalanceHeaderComponent = debounceRender(RebalanceHeaderComponent, 100, { leading: false })
+
+const DebouncedBalanceDistributedComponent = debounceRender(BalanceDistributedComponent, 100, { leading: false })
 
 
 const RebalanceComposition = ({
@@ -72,24 +98,25 @@ const RebalanceComposition = ({
         )
 
         const totalTokenValue = getTotalTokenValue(sortedTokensByTokenValue)
-        // console.log('totalTokenValue: ', totalTokenValue)
 
         const tokensWithPercentages = getPercentageAllocationForTokens(
           sortedTokensByTokenValue,
           totalTokenValue
         )
-        // console.log('tokensWithPercentages', tokensWithPercentages)
 
-        // console.log('getPoolsInfo: ', getPoolsInfo)
+        const tokensWithSliderSteps = getSliderStepForTokens(tokensWithPercentages, totalTokenValue)
 
         // TODO: Can be splitted and move up
         const availableTokensForRebalance = getAvailableTokensForRebalance(
           getPoolsInfo,
-          tokensWithPercentages
+          tokensWithSliderSteps
         )
         const availableTokensForRebalanceMap = getTokensMap(
           availableTokensForRebalance
         )
+
+        console.log('availableTokensForRebalanceMap: ', availableTokensForRebalanceMap)
+        console.log('totalTokenValue: ', totalTokenValue)
 
         setTokensMap(availableTokensForRebalanceMap)
         setTotalTokensValue(totalTokenValue)
@@ -106,6 +133,12 @@ const RebalanceComposition = ({
       fetchData()
     }
   }, [wallet.publicKey])
+
+  // const bindedHandleSliderChange = handleSliderChange.bind(this, setTokensMap)
+
+  // console.log('tokensMap: ', tokensMap)
+
+  // console.log('Object.values(tokensMap): ', Object.values(tokensMap))
 
   return (
     <RowContainer
@@ -145,13 +178,18 @@ const RebalanceComposition = ({
             margin={'0 2rem 0 0'}
             justify={'space-between'}
           >
-            <RebalanceHeaderComponent
+            <DebouncedMemoizedRebalanceHeaderComponent
               totalTokensValue={totalTokensValue}
               leftToDistributeValue={leftToDistributeValue}
             />
             <RebalanceTable
               data={Object.values(tokensMap).map((el) => el)}
               theme={theme}
+              tokensMap={tokensMap}
+              setTokensMap={setTokensMap}
+              leftToDistributeValue={leftToDistributeValue}
+              setLeftToDistributeValue={setLeftToDistributeValue}
+              totalTokensValue={totalTokensValue}
             />
           </Row>
           <Row
@@ -161,16 +199,14 @@ const RebalanceComposition = ({
             justify="space-between"
           >
             <RowContainer height={'calc(85% - 2rem)'}>
-              <DonutChartWithLegend
-                theme={theme}
+              <DebouncedMemoizedDonutChartWithLegend
                 data={Object.values(tokensMap).map((el) => ({
                   symbol: el.symbol,
                   value: el.percentage,
                 }))}
                 id={'current'}
               />
-              <DonutChartWithLegend
-                theme={theme}
+              <DebouncedMemoizedDonutChartWithLegend
                 data={Object.values(tokensMap).map((el) => ({
                   symbol: el.symbol,
                   value: el.targetPercentage,
@@ -189,7 +225,10 @@ const RebalanceComposition = ({
                 height={'100%'}
                 width={'calc(45% - 1rem)'}
               >
-                <BalanceDistributedComponent theme={theme} />
+                <DebouncedBalanceDistributedComponent 
+                  totalTokensValue={totalTokensValue}
+                  leftToDistributeValue={leftToDistributeValue}
+                  theme={theme} />
               </Row>
               <BtnCustom
                 theme={theme}
@@ -216,7 +255,7 @@ const RebalanceComposition = ({
         </RowContainer>
       )}
 
-      <RebalancePopup
+      <MemoizedRebalancePopup
         theme={theme}
         open={isRebalancePopupOpen}
         rebalanceStep={rebalanceStep}

@@ -14,13 +14,14 @@ const TokenAllocationProgressBar = styled(
   ({ width, color, height, ...rest }) => <LinearProgress {...rest} />
 )`
   width: ${(props) => props.width || `100%`};
-  background-color: ${(props) => props.color || '#E7ECF3'};
+  background: ${(props) => props.color || '#E7ECF3'};
   border-radius: 1rem;
   height: ${(props) => props.height || '1.75rem'};
   padding: 0;
 `
 
 const BarTitle = styled(({ ...props }) => <WhiteTitle {...props} />)`
+  font-size: ${(props) => props.fontSize || '1.4rem'};
   width: 6rem;
 `
 

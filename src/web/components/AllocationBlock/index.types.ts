@@ -9,7 +9,6 @@ type TokenData = {
 type IProps = {
   data: TokenData[]
   theme: Theme
-  id: string 
 }
 
 export { IProps }

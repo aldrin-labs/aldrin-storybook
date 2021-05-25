@@ -177,7 +177,7 @@ export const TopBarTitle = styled((props) => <Title {...props} />)`
 `
 
 export const WhiteTitle = styled((props) => <Title {...props} />)`
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   color: ${(props) => props.color || props.theme.palette.dark.main};
   font-weight: ${(props) => props.fontWeight || 'bold'};
   white-space: nowrap;

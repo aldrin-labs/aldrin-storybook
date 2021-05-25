@@ -1,5 +1,7 @@
 import { PoolInfo } from '../Rebalance.types'
 import { REBALANCE_CONFIG } from '../Rebalance.config'
+import { ALL_TOKENS_MINTS_MAP } from '@sb/dexUtils/markets'
+
 
 export const getAvailableTokensForRebalance = (
   poolsInfo: PoolInfo[],
@@ -14,8 +16,8 @@ export const getAvailableTokensForRebalance = (
 ) => {
 
   const availablePools = Array.from(new Set(poolsInfo.reduce((acc: string[], el) => {
-    acc.push(el.tokenA)
-    acc.push(el.tokenB)
+    acc.push(ALL_TOKENS_MINTS_MAP[el.tokenA])
+    acc.push(ALL_TOKENS_MINTS_MAP[el.tokenB])
 
     return acc
   }, [])))
@@ -23,12 +25,12 @@ export const getAvailableTokensForRebalance = (
   // Finding the bigges liquidity for coin in all pools
   const tokensInPoolByLiquidity = poolsInfo.reduce((acc: any, el) => {
     const tokenA = {
-      symbol: el.tokenA,
+      symbol: ALL_TOKENS_MINTS_MAP[el.tokenA],
       liquidity: el.tvl.tokenA,
     }
 
     const tokenB = {
-      symbol: el.tokenB,
+      symbol: ALL_TOKENS_MINTS_MAP[el.tokenB],
       liquidity: el.tvl.tokenB,
     }
 
