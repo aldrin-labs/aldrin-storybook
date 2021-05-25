@@ -66,7 +66,11 @@ const AllPoolsTable = ({
       >
         <RowContainer padding="2rem" justify={'space-between'} align="center">
           <Text theme={theme}>All Pools</Text>
-          <Row justify={'space-between'} width={'42%'}>
+          <Row
+            style={{ flexWrap: 'nowrap' }}
+            justify={'space-between'}
+            width={'34%'}
+          >
             <SearchInputWithLoop
               searchValue={searchValue}
               onChangeSearch={onChangeSearch}
@@ -80,6 +84,7 @@ const AllPoolsTable = ({
                   wallet.connect()
                 }
               }}
+              style={{ marginLeft: '2rem', whiteSpace: 'nowrap' }}
               padding={wallet.connected ? '0 2.6rem' : '0 2rem'}
               borderColor={'#A5E898'}
             >
