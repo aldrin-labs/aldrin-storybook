@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Theme } from "@material-ui/core"
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { Paper } from '@material-ui/core'
@@ -32,6 +33,12 @@ export const RebalancePopup = ({
   theme,
   open,
   close,
+}: {
+  rebalanceStep: 'initial' | 'pending' | 'done'
+  changeRebalanceStep: (step: 'initial' | 'pending' | 'done') => void
+  theme: Theme
+  open: boolean
+  close: () => void
 }) => {
   return (
     <DialogWrapper
@@ -57,7 +64,7 @@ export const RebalancePopup = ({
       <RowContainer style={{ maxHeight: '40rem', overflowY: 'scroll' }}>
         <Stroke>
           <Row>
-            <BlockForCoins />
+            <BlockForCoins symbols={['SOL']} />
           </Row>
           <Row>
             <TextColumnContainer style={{ alignItems: 'flex-end' }}>
@@ -70,9 +77,9 @@ export const RebalancePopup = ({
                     fontSize: '1.4rem',
                   }}
                 >
-                  Est. Slippage :
+                  Est. Slippage:
                 </Text>
-                &nbsp; &nbsp;
+                 
                 <Text
                   theme={theme}
                   style={{
@@ -93,9 +100,63 @@ export const RebalancePopup = ({
                     fontSize: '1.4rem',
                   }}
                 >
-                  Est. Price :
+                  Est. Price:
                 </Text>
-                &nbsp; &nbsp;
+                 
+                <Text
+                  theme={theme}
+                  style={{
+                    whiteSpace: 'nowrap',
+                    fontSize: '1.4rem',
+                  }}
+                >
+                  1 SOL = 0.001 BTC
+                </Text>
+              </Row>
+            </TextColumnContainer>
+          </Row>
+        </Stroke>{' '}
+        <Stroke>
+          <Row>
+            <BlockForCoins />
+          </Row>
+          <Row>
+            <TextColumnContainer style={{ alignItems: 'flex-end' }}>
+              <Row padding={'1rem'}>
+                <Text
+                  theme={theme}
+                  color={theme.palette.grey.new}
+                  style={{
+                    whiteSpace: 'nowrap',
+                    fontSize: '1.4rem',
+                  }}
+                >
+                  Est. Slippage:
+                </Text>
+                 
+                <Text
+                  theme={theme}
+                  style={{
+                    whiteSpace: 'nowrap',
+                    fontSize: '1.4rem',
+                  }}
+                >
+                  0.1%
+                </Text>
+              </Row>
+
+              <Row>
+                <Text
+                  theme={theme}
+                  color={theme.palette.grey.new}
+                  style={{
+                    whiteSpace: 'nowrap',
+                    fontSize: '1.4rem',
+                  }}
+                >
+                  Est. Price:
+                </Text>
+                 
                 <Text
                   theme={theme}
                   style={{
@@ -126,7 +187,7 @@ export const RebalancePopup = ({
                 >
                   Est. Slippage :
                 </Text>
-                &nbsp; &nbsp;
+                 
                 <Text
                   theme={theme}
                   style={{
@@ -149,61 +210,7 @@ export const RebalancePopup = ({
                 >
                   Est. Price :
                 </Text>
-                &nbsp; &nbsp;
-                <Text
-                  theme={theme}
-                  style={{
-                    whiteSpace: 'nowrap',
-                    fontSize: '1.4rem',
-                  }}
-                >
-                  1 SOL = 0.001 BTC
-                </Text>
-              </Row>
-            </TextColumnContainer>
-          </Row>
-        </Stroke>{' '}
-        <Stroke>
-          <Row>
-            <BlockForCoins />
-          </Row>
-          <Row>
-            <TextColumnContainer style={{ alignItems: 'flex-end' }}>
-              <Row padding={'1rem'}>
-                <Text
-                  theme={theme}
-                  color={theme.palette.grey.new}
-                  style={{
-                    whiteSpace: 'nowrap',
-                    fontSize: '1.4rem',
-                  }}
-                >
-                  Est. Slippage :
-                </Text>
-                &nbsp; &nbsp;
-                <Text
-                  theme={theme}
-                  style={{
-                    whiteSpace: 'nowrap',
-                    fontSize: '1.4rem',
-                  }}
-                >
-                  0.1%
-                </Text>
-              </Row>
-
-              <Row>
-                <Text
-                  theme={theme}
-                  color={theme.palette.grey.new}
-                  style={{
-                    whiteSpace: 'nowrap',
-                    fontSize: '1.4rem',
-                  }}
-                >
-                  Est. Price :
-                </Text>
-                &nbsp; &nbsp;
+                 
                 <Text
                   theme={theme}
                   style={{
@@ -223,7 +230,7 @@ export const RebalancePopup = ({
         height={'15rem'}
         padding={'2rem'}
       >
-        {rebalanceStep === '' ? (
+        {rebalanceStep === 'initial' && (
           <RowContainer direction={'column'}>
             <RowContainer justify={'space-between'}>
               <Text
@@ -247,7 +254,7 @@ export const RebalancePopup = ({
                 >
                   $
                 </Text>
-                &nbsp;
+                
                 <Text
                   theme={theme}
                   color={'#A5E898'}
@@ -304,7 +311,8 @@ export const RebalancePopup = ({
               </BtnCustom>
             </RowContainer>
           </RowContainer>
-        ) : rebalanceStep === 'pending' ? (
+        )}
+        {rebalanceStep === 'pending' && (
           <RowContainer
             style={{ height: '100%', alignItems: 'center', display: 'flex' }}
             direction={'column'}
@@ -315,7 +323,8 @@ export const RebalancePopup = ({
               Pending
             </Text>
           </RowContainer>
-        ) : (
+        )}
+        {rebalanceStep === 'done' && (
           <RowContainer
             style={{ height: '100%', alignItems: 'center', display: 'flex' }}
             direction={'column'}
