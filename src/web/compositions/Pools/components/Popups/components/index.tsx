@@ -19,6 +19,7 @@ export const InputWithCoins = ({
   symbol,
   alreadyInPool,
   maxBalance,
+  placeholder,
   onChange,
 }: {
   theme: Theme
@@ -26,6 +27,7 @@ export const InputWithCoins = ({
   symbol: string
   alreadyInPool: number
   maxBalance: number
+  placeholder: string
   onChange: (value: number | string) => void
 }) => {
   return (
@@ -39,7 +41,7 @@ export const InputWithCoins = ({
           type={'number'}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder={''}
+          placeholder={placeholder}
         />
       </TokenContainer>
       <TokenContainer right={'2rem'} bottom={'3rem'}>
@@ -191,12 +193,16 @@ export const SimpleInput = ({
   value,
   symbol,
   maxBalance,
+  disabled,
   onChange,
+  placeholder,
 }: {
   theme: Theme
   value: string | number
   symbol: string
+  disabled: boolean
   maxBalance: number
+  placeholder: string
   onChange: (value: string | number) => void
 }) => {
   return (
@@ -207,10 +213,11 @@ export const SimpleInput = ({
       </TokenContainer>
       <TokenContainer style={{ width: '80%' }} left={'2rem'} bottom={'3rem'}>
         <InvisibleInput
+          disabled={disabled}
           type={'number'}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder={''}
+          placeholder={placeholder}
         />
       </TokenContainer>
       <TokenContainer right={'2rem'} bottom={'3rem'}>

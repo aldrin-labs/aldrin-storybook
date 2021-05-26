@@ -47,6 +47,7 @@ const UserLiquitidyTable = ({
   setIsAddLiquidityPopupOpen,
 }: {
   theme: Theme
+
   allTokensData: TokenInfo[]
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
   poolsPrices: PoolsPrices[]
@@ -57,10 +58,11 @@ const UserLiquitidyTable = ({
 }) => {
   const { wallet } = useWallet()
 
-  const allPoolsMints = getPoolsInfo.map((el) => el.poolTokenMint)
   const userTokens = allTokensData.map((el) => el.mint)
 
-  const usersPools = allPoolsMints.filter((el) => userTokens.includes(el))
+  const usersPools = getPoolsInfo.filter((el) =>
+    userTokens.includes(el.poolTokenMint)
+  )
 
   return (
     <RowContainer>
@@ -127,7 +129,7 @@ const UserLiquitidyTable = ({
               <RowTd>Total Fees Earned</RowTd>
               <RowTd></RowTd>
             </TableHeader>
-            {getPoolsInfo.map((el: PoolInfo) => {
+            {usersPools.map((el: PoolInfo) => {
               return (
                 <TableRow>
                   <RowTd>

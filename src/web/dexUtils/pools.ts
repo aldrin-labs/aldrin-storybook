@@ -561,7 +561,7 @@ export const getMaxWithdrawAmount = async ({
   tokenSwapPublicKey: PublicKey
   poolTokenAmount: number
   tokenSwap?: TokenSwap
-}): Promise<[number, number]> => {
+}): Promise<[number, number, number, number]> => {
   let tokenSwapClass = tokenSwap
 
   if (!tokenSwapClass) {
