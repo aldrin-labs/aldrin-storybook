@@ -6,16 +6,26 @@ import { BlockTemplate } from './index.styles'
 import { TotalVolumeLockedChart, TradingVolumeChart } from './components/Charts'
 import UserLiquitidyTable from './components/Tables/UserLiquidity'
 import AllPoolsTable from './components/Tables/Pools'
-import { AddLiquidityPopup } from './components/Popups/AddLiquidity'
-import { CreatePoolPopup } from './components/Popups/CreatePool'
-import { WithdrawalPopup } from './components/Popups/WithdrawLiquidity'
+import {
+  CreatePoolPopup,
+  WithdrawalPopup,
+  AddLiquidityPopup,
+} from './components/Popups'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
 import { getAllTokensData } from '../Rebalance/utils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { PoolInfo } from './index.types'
+import { PoolInfo, PoolsPrices } from './index.types'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getPoolsPrices } from '@core/graphql/queries/pools/getPoolsPrices'
 
-const Pools = ({ theme }: { theme: Theme }) => {
+const Pools = ({
+  theme,
+  getPoolsPricesQuery,
+}: {
+  theme: Theme
+  getPoolsPricesQuery: { getPoolsPrices: PoolsPrices[] }
+}) => {
   const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
   const [selectedPool, selectPool] = useState<PoolInfo | null>(null)
 
@@ -25,6 +35,8 @@ const Pools = ({ theme }: { theme: Theme }) => {
 
   const { wallet } = useWallet()
   const connection = useConnection()
+
+  const { getPoolsPrices = [] } = getPoolsPricesQuery || { getPoolsPrices: [] }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,8 +71,10 @@ const Pools = ({ theme }: { theme: Theme }) => {
 
       {wallet.connected ? (
         <UserLiquitidyTable
+          allTokensData={allTokensData}
           theme={theme}
           selectPool={selectPool}
+          poolsPrices={getPoolsPrices}
           setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
           setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
         />
@@ -69,12 +83,14 @@ const Pools = ({ theme }: { theme: Theme }) => {
       <AllPoolsTable
         theme={theme}
         selectPool={selectPool}
+        poolsPrices={getPoolsPrices}
         setIsCreatePoolPopupOpen={setIsCreatePoolPopupOpen}
         setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
       />
 
       <CreatePoolPopup
         theme={theme}
+        poolsPrices={getPoolsPrices}
         close={() => setIsCreatePoolPopupOpen(false)}
         open={isCreatePoolPopupOpen}
         allTokensData={allTokensData}
@@ -83,6 +99,7 @@ const Pools = ({ theme }: { theme: Theme }) => {
       {selectedPool && (
         <AddLiquidityPopup
           theme={theme}
+          poolsPrices={getPoolsPrices}
           selectedPool={selectedPool}
           allTokensData={allTokensData}
           close={() => setIsAddLiquidityPopupOpen(false)}
@@ -94,6 +111,7 @@ const Pools = ({ theme }: { theme: Theme }) => {
         <WithdrawalPopup
           theme={theme}
           selectedPool={selectedPool}
+          poolsPrices={getPoolsPrices}
           allTokensData={allTokensData}
           close={() => setIsWithdrawalPopupOpen(false)}
           open={isWithdrawalPopupOpen}
@@ -103,6 +121,14 @@ const Pools = ({ theme }: { theme: Theme }) => {
   )
 }
 
-const Wrapper = compose(withTheme())(Pools)
+const Wrapper = compose(
+  withTheme(),
+  queryRendererHoc({
+    query: getPoolsPrices,
+    name: 'getPoolsPricesQuery',
+    fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
+  })
+)(Pools)
 
 export { Wrapper as PoolsComponent }

@@ -10,7 +10,10 @@ import { SearchInputWithLoop } from '../../Tables/components/index'
 import Close from '@icons/closeIcon.svg'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { TokenIcon } from '@sb/components/TokenIcon'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import {
+  ALL_TOKENS_MINTS_MAP,
+  getTokenNameByMintAddress,
+} from '@sb/dexUtils/markets'
 import { StyledPaper } from '../index.styles'
 
 const UpdatedPaper = styled(({ ...props }) => <StyledPaper {...props} />)`
@@ -41,8 +44,18 @@ export const SelectCoinPopup = ({
   close: () => void
   selectTokenAddress: (address: string) => void
 }) => {
-  const [searchValue, onChangeSearch] = useState('');
-  
+  const [searchValue, onChangeSearch] = useState('')
+  const usersMints = mints.filter(
+    (el) => getTokenNameByMintAddress(el) === ALL_TOKENS_MINTS_MAP[el]
+  )
+  const filteredMints = searchValue
+    ? usersMints.filter((mint) =>
+        getTokenNameByMintAddress(mint)
+          .toLowerCase()
+          .includes(searchValue.toLowerCase())
+      )
+    : usersMints
+
   return (
     <DialogWrapper
       theme={theme}
@@ -65,7 +78,7 @@ export const SelectCoinPopup = ({
         />
       </RowContainer>
       <RowContainer>
-        {mints.map((mint: string) => {
+        {filteredMints.map((mint: string) => {
           return (
             <SelectorRow
               justify={'space-between'}
@@ -84,6 +97,11 @@ export const SelectCoinPopup = ({
             </SelectorRow>
           )
         })}
+        {mints.length === 0 && (
+          <RowContainer>
+            <StyledText>Loading...</StyledText>
+          </RowContainer>
+        )}
       </RowContainer>
     </DialogWrapper>
   )
