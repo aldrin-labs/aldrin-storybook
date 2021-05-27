@@ -72,10 +72,11 @@ export const WithdrawalPopup = ({
 
   console.log('poolTokenInfo', poolTokenInfo)
 
-  const poolTokenAmount = poolTokenInfo?.amount || 0
   const poolTokenDecimals = poolTokenInfo?.decimals || 0
+  const poolTokenAmount = (poolTokenInfo?.amount || 0) * poolTokenDecimals
+
   const poolTokenAmountToWithdraw =
-    (+baseAmount / withdrawAmountTokenA) * 100 * poolTokenAmount
+    (+baseAmount / withdrawAmountTokenA) * poolTokenAmount
 
   const baseTokenInfo = getTokenDataByMint(allTokensData, selectedPool.tokenA)
   const baseSymbol = getTokenNameByMintAddress(selectedPool.tokenA)

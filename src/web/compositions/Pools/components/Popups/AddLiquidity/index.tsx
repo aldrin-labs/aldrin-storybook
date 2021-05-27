@@ -82,7 +82,7 @@ export const AddLiquidityPopup = ({
     allTokensData,
     selectedPool.poolTokenMint
   )
-  const poolTokenAmount = poolTokenInfo?.amount || 0
+  const poolTokenAmount = (poolTokenInfo?.amount || 0) * (poolTokenInfo?.decimals || 0)
 
   // load max withdrawal values for tokenA, tokenB
   useEffect(() => {
