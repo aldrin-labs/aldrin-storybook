@@ -17,6 +17,11 @@ export type PoolInfo = {
   apy24h: number, // %
 };
 
+export type PoolsPrices = {
+  symbol: string
+  price: number
+}
+
 export type FeesEarned = {
   pool: string, // an address of pool or 'all'
   earnedUSD: number,

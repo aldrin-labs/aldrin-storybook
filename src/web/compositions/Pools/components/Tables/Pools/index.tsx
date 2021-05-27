@@ -26,18 +26,20 @@ import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { Theme } from '@material-ui/core'
-import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { PoolInfo, PoolsPrices } from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 
 const AllPoolsTable = ({
   theme,
+  poolsPrices,
   getPoolsInfoQuery,
   selectPool,
   setIsCreatePoolPopupOpen,
   setIsAddLiquidityPopupOpen,
 }: {
   theme: Theme
+  poolsPrices: PoolsPrices[]
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
   selectPool: (pool: PoolInfo) => void
   setIsCreatePoolPopupOpen: (value: boolean) => void
@@ -50,8 +52,6 @@ const AllPoolsTable = ({
   const filteredData = getPoolsInfoQuery.getPoolsInfo.filter((el) =>
     filterDataBySymbolForDifferentDeviders({ searchValue, symbol: el.name })
   )
-
-  console.log('filterDataBySymbolForDifferentDeviders')
 
   return (
     <RowContainer>
@@ -66,7 +66,11 @@ const AllPoolsTable = ({
       >
         <RowContainer padding="2rem" justify={'space-between'} align="center">
           <Text theme={theme}>All Pools</Text>
-          <Row justify={'space-between'} width={'42%'}>
+          <Row
+            style={{ flexWrap: 'nowrap' }}
+            justify={'space-between'}
+            width={'34%'}
+          >
             <SearchInputWithLoop
               searchValue={searchValue}
               onChangeSearch={onChangeSearch}
@@ -80,6 +84,7 @@ const AllPoolsTable = ({
                   wallet.connect()
                 }
               }}
+              style={{ marginLeft: '2rem', whiteSpace: 'nowrap' }}
               padding={wallet.connected ? '0 2.6rem' : '0 2rem'}
               borderColor={'#A5E898'}
             >
