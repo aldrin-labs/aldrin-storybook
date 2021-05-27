@@ -21,13 +21,17 @@ export type PoolInfo = {
     totalFeesPaid: PoolTotalFeesPaid
 }
 
-export type TokenType = {
+export interface TokenInfo {
     symbol: string
-    decimals: number
     amount: number
+    decimals: number
+    mint: string
+    address?: string   
+}
+
+export interface TokenType extends TokenInfo {
     price: number | null
     percentage: number
-    mint: string
     tokenValue: number,
     targetTokenValue: number,
     targetAmount: number,

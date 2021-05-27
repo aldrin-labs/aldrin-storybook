@@ -31,6 +31,8 @@ import MockedToken from '@icons/ccaiToken.svg'
 import { Theme } from '@material-ui/core'
 import { isEqual, throttle, debounce } from 'lodash'
 import { formatSymbol } from '@sb/components/AllocationBlock/DonutChart/utils'
+import { TokenIcon } from '@sb/components/TokenIcon'
+import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 
 const tooltipTexts = {
   'no pool':
@@ -121,11 +123,11 @@ const FooterRow = ({ theme }: { theme: Theme }) => (
 export const TokenSymbolColumn = ({ symbol }: { symbol: string }) => (
   <RowTd>
     <Row justify={'flex-start'}>
-      <SvgIcon
-        src={MockedToken}
-        width={'30px'}
-        height={'30px'}
-        style={{ marginRight: '1rem' }}
+      <TokenIcon
+        mint={getTokenMintAddressByName(symbol)}
+        width={'2rem'}
+        height={'2rem'}
+        margin={'0 1rem 0 0'}
       />
       <Text
         onClick={() => {

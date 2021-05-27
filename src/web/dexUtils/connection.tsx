@@ -58,9 +58,7 @@ export function ConnectionProvider({ children }) {
   }, [connection])
 
   return (
-    <ConnectionContext.Provider
-      value={{ endpoint, setEndpoint, connection }}
-    >
+    <ConnectionContext.Provider value={{ endpoint, setEndpoint, connection }}>
       {children}
     </ConnectionContext.Provider>
   )

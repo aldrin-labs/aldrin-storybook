@@ -1,6 +1,5 @@
 import React from 'react'
 import { compose } from 'recompose'
-import { graphql } from 'react-apollo'
 
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
@@ -10,7 +9,10 @@ import {
   Table,
   BorderButton,
   RowTd,
+  RowDataTd,
+  RowDataTdText,
   TextColumnContainer,
+  RowDataTdTopText,
 } from '@sb/compositions/Pools/components/Tables/index.styles'
 
 import { BlockTemplate } from '../../../index.styles'
@@ -24,24 +26,28 @@ import SvgIcon from '@sb/components/SvgIcon'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getFeesEarnedByAccount } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
+import { Theme } from '@material-ui/core'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { PoolInfo, FeesEarned } from '@sb/compositions/Pools/index.types'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 
 const UserLiquitidyTable = ({
   theme,
-  changeLiquidityPopupState,
-  changeWithdrawalPopupState,
+  selectPool,
+  setIsWithdrawalPopupOpen,
+  setIsAddLiquidityPopupOpen,
   getPoolsInfoQuery,
   getFeesEarnedByAccountQuery,
 }: {
   theme: Theme
-  changeLiquidityPopupState: any
-  changeWithdrawalPopupState: any
-  getPoolsInfoQuery: any
-  getFeesEarnedByAccountQuery: any
+  selectPool: (pool: PoolInfo) => void
+  setIsWithdrawalPopupOpen: (value: boolean) => void
+  setIsAddLiquidityPopupOpen: (value: boolean) => void
+  getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
+  getFeesEarnedByAccountQuery: { getFeesEarnedByAccount: FeesEarned[] }
 }) => {
-  console.log(
-    'getFeesEarnedByAccountQuery',
-    getFeesEarnedByAccountQuery.getFeesEarnedByAccount
-  )
+  const { wallet } = useWallet()
+
   return (
     <RowContainer>
       <BlockTemplate
@@ -57,13 +63,9 @@ const UserLiquitidyTable = ({
           <Text theme={theme}>Your Liquidity</Text>
           <Row width={'33%'}>
             <LiquidityDataContainer>
-              <Text
-                theme={theme}
-                color={theme.palette.grey.new}
-                style={{ whiteSpace: 'nowrap' }}
-              >
+              <RowDataTdText theme={theme} color={theme.palette.grey.new}>
                 Liquidity (Including Fees)
-              </Text>
+              </RowDataTdText>
               <Text
                 theme={theme}
                 color={theme.palette.green.new}
@@ -73,13 +75,9 @@ const UserLiquitidyTable = ({
               </Text>
             </LiquidityDataContainer>
             <LiquidityDataContainer style={{ paddingLeft: '3rem' }}>
-              <Text
-                theme={theme}
-                color={theme.palette.grey.new}
-                style={{ whiteSpace: 'nowrap' }}
-              >
+              <RowDataTdText theme={theme} color={theme.palette.grey.new}>
                 Fees Earned (Cumulative)
-              </Text>
+              </RowDataTdText>
               <Text
                 theme={theme}
                 color={theme.palette.green.new}
@@ -87,7 +85,7 @@ const UserLiquitidyTable = ({
               >
                 $
                 {getFeesEarnedByAccountQuery.getFeesEarnedByAccount.map(
-                  (el) => {
+                  (el: FeesEarned) => {
                     return el.earnedUSD
                   }
                 )}
@@ -103,8 +101,8 @@ const UserLiquitidyTable = ({
               <RowTd>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <SvgIcon
-                    width={'12px'}
-                    height={'12px'}
+                    width={'1.2rem'}
+                    height={'1.2rem'}
                     style={{ marginRight: '1rem' }}
                     src={TooltipIcon}
                   />
@@ -115,7 +113,7 @@ const UserLiquitidyTable = ({
               <RowTd>Total Fees Earned</RowTd>
               <RowTd></RowTd>
             </TableHeader>
-            {getPoolsInfoQuery.getPoolsInfo.map((el) => {
+            {getPoolsInfoQuery.getPoolsInfo.map((el: PoolInfo) => {
               return (
                 <TableRow>
                   <RowTd>
@@ -124,79 +122,74 @@ const UserLiquitidyTable = ({
                       tokenB={el.tokenB}
                     />
                   </RowTd>
-                  <RowTd>
+                  <RowDataTd>
                     <TextColumnContainer>
-                      <Text
-                        theme={theme}
-                        style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                      >
-                        {el.tvl.USD}
-                      </Text>
-                      <Text
+                      <RowDataTdTopText theme={theme}>
+                        ${el.tvl.USD}
+                      </RowDataTdTopText>
+                      <RowDataTdText
                         theme={theme}
                         color={theme.palette.grey.new}
-                        style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
                       >
-                        {el.tvl.tokenA} {el.tokenA} / {el.tvl.tokenB}{' '}
-                        {el.tokenB}
-                      </Text>
+                        {el.tvl.tokenA} {getTokenNameByMintAddress(el.tokenA)} /{' '}
+                        {el.tvl.tokenB} {getTokenNameByMintAddress(el.tokenB)}
+                      </RowDataTdText>
                     </TextColumnContainer>
-                  </RowTd>
-                  <RowTd>
-                    <Text
-                      theme={theme}
-                      style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                    >
-                      {el.apy24h}%
-                    </Text>
-                  </RowTd>
-                  <RowTd>
+                  </RowDataTd>
+                  <RowDataTd>
+                    <RowDataTdText theme={theme}>{el.apy24h}%</RowDataTdText>
+                  </RowDataTd>
+                  <RowDataTd>
                     <TextColumnContainer>
-                      <Text
-                        theme={theme}
-                        style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                      >
-                        $68.24m
-                      </Text>
-                      <Text
+                      <RowDataTdTopText theme={theme}>$68.24m</RowDataTdTopText>
+                      <RowDataTdText
                         theme={theme}
                         color={theme.palette.grey.new}
-                        style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
                       >
                         2000 SOL / 200 CCAI
-                      </Text>
+                      </RowDataTdText>
                     </TextColumnContainer>
-                  </RowTd>
-                  <RowTd>
+                  </RowDataTd>
+                  <RowDataTd>
                     <TextColumnContainer>
-                      <Text
-                        theme={theme}
-                        style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
-                      >
-                        $68.24m
-                      </Text>
-                      <Text
+                      <RowDataTdTopText theme={theme}>$68.24m</RowDataTdTopText>
+                      <RowDataTdText
                         theme={theme}
                         color={theme.palette.grey.new}
-                        style={{ whiteSpace: 'nowrap', paddingBottom: '1rem' }}
                       >
                         2000 SOL / 200 CCAI
-                      </Text>
+                      </RowDataTdText>
                     </TextColumnContainer>
-                  </RowTd>
+                  </RowDataTd>
                   <RowTd>
                     <Row justify="flex-end" width={'100%'}>
                       <BorderButton
                         style={{ marginRight: '2rem' }}
-                        onClick={() => changeWithdrawalPopupState(true)}
+                        onClick={() => {
+                          if (wallet.connected) {
+                            selectPool(el)
+                            setIsWithdrawalPopupOpen(true)
+                          } else {
+                            wallet.connect()
+                          }
+                        }}
                       >
-                        Withdraw liquidity + fees
+                        {wallet.connected
+                          ? 'Withdraw liquidity + fees'
+                          : 'Connect wallet'}
                       </BorderButton>
                       <BorderButton
-                        onClick={() => changeLiquidityPopupState(true)}
-                        borderColor={'#366CE5'}
+                        onClick={() => {
+                          if (wallet.connected) {
+                            selectPool(el)
+                            setIsAddLiquidityPopupOpen(true)
+                          } else {
+                            wallet.connect()
+                          }
+                        }}
+                        borderColor={theme.palette.blue.serum}
                       >
-                        Add Liquidity
+                        {wallet.connected ? 'Add Liquidity' : 'Connect wallet'}
                       </BorderButton>
                     </Row>
                   </RowTd>
@@ -211,16 +204,18 @@ const UserLiquitidyTable = ({
 }
 
 export default compose(
-  graphql(getPoolsInfo, {
+  queryRendererHoc({
+    query: getPoolsInfo,
     name: 'getPoolsInfoQuery',
+    fetchPolicy: 'cache-and-network',
   }),
   queryRendererHoc({
     query: getFeesEarnedByAccount,
     name: 'getFeesEarnedByAccountQuery',
     variables: {
-      pools: '',
-      accountPublicKey: '',
+      pools: [''],
+      account: '',
     },
-    fetchPolicy: 'only-network',
+    fetchPolicy: 'cache-and-network',
   })
 )(UserLiquitidyTable)
