@@ -5,14 +5,12 @@ import { refreshCache, setCache, useAsyncData } from './fetch-loop'
 import tuple from 'immutable-tuple'
 import MultiEndpointsConnection from './MultiEndpointsConnection'
 
+const MAINNET_BETA_ENDPOINT = clusterApiUrl('mainnet-beta')
+
 export const ENDPOINTS = [
   {
-    name: 'serum-endpoint-mainnet-beta',
-    endpoint: 'https://solana-api.projectserum.com',
-  },
-  {
-    name: 'solana-endpoint-mainnet-beta',
-    endpoint: 'https://api.mainnet-beta.solana.com',
+    name: 'mainnet-beta',
+    endpoint: MAINNET_BETA_ENDPOINT,
   },
   { name: 'testnet', endpoint: clusterApiUrl('testnet') },
   { name: 'devnet', endpoint: clusterApiUrl('devnet') },
@@ -31,16 +29,23 @@ export function ConnectionProvider({ children }) {
 
   const connection = useMemo(
     () =>
-      new MultiEndpointsConnection(
-        [
-          // { url: 'https://vip-api.mainnet-beta.solana.com/ ', RPS: 10 },
-          { url: 'https://mango.rpcpool.com/', RPS: 10 },
-          { url: 'https://solana-api.projectserum.com', RPS: 2 },
-          { url: 'https://api.mainnet-beta.solana.com', RPS: 4 },
-          { url: 'https://api.rpcpool.com', RPS: 10 },
-        ],
-        'recent'
-      ),
+      endpoint === MAINNET_BETA_ENDPOINT
+        ? // multi connection only for mainnet
+          new MultiEndpointsConnection(
+            [
+              { url: 'https://mango.rpcpool.com/', RPS: 10 },
+              { url: 'https://solana-api.projectserum.com', RPS: 2 },
+              { url: 'https://api.mainnet-beta.solana.com', RPS: 4 },
+              { url: 'https://raydium.rpcpool.com/', RPS: 10 },
+              { url: 'https://orca.rpcpool.com/', RPS: 10 },
+              { url: 'https://api.rpcpool.com', RPS: 10 },
+            ],
+            'recent'
+          )
+        : new Connection(
+            ENDPOINTS.find((endpointInfo) => endpointInfo.endpoint === endpoint)
+              ?.endpoint || MAINNET_BETA_ENDPOINT
+          ),
     [endpoint]
   )
 
@@ -58,9 +63,7 @@ export function ConnectionProvider({ children }) {
   }, [connection])
 
   return (
-    <ConnectionContext.Provider
-      value={{ endpoint, setEndpoint, connection }}
-    >
+    <ConnectionContext.Provider value={{ endpoint, setEndpoint, connection }}>
       {children}
     </ConnectionContext.Provider>
   )
