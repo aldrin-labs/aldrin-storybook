@@ -232,7 +232,7 @@ export function useMaxWithdrawalAmounts({
         poolTokenAmount,
         tokenSwapPublicKey,
       }),
-    `getMaxWithdrawAmount-${tokenSwapPublicKey}`
+    `getMaxWithdrawAmount-${tokenSwapPublicKey.toString()}`
   )
 
   return [withdrawalAmounts, loaded]

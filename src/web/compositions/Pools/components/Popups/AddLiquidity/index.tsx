@@ -12,8 +12,12 @@ import { InputWithCoins, InputWithTotal } from '../components'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
-import { depositAllTokenTypes, getMaxWithdrawAmount, swap } from '@sb/dexUtils/pools'
-import { useWallet } from '@sb/dexUtils/wallet'
+import {
+  depositAllTokenTypes,
+  getMaxWithdrawAmount,
+  swap,
+} from '@sb/dexUtils/pools'
+import { useMaxWithdrawalAmounts, useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
 import { PublicKey, Transaction } from '@solana/web3.js'
 import { PoolInfo, PoolsPrices } from '@sb/compositions/Pools/index.types'
@@ -45,7 +49,7 @@ export const AddLiquidityPopup = ({
   const [baseAmount, setBaseAmount] = useState<string | number>('')
   const setBaseAmountWithQuote = (baseAmount: string | number) => {
     const quoteAmount = stripDigitPlaces(
-      (+baseAmount * baseTokenPrice) / quoteTokenPrice,
+      +baseAmount * (poolAmountTokenB / poolAmountTokenA),
       8
     )
     setBaseAmount(baseAmount)
@@ -55,7 +59,7 @@ export const AddLiquidityPopup = ({
   const [quoteAmount, setQuoteAmount] = useState<string | number>('')
   const setQuoteAmountWithBase = (quoteAmount: string | number) => {
     const baseAmount = stripDigitPlaces(
-      (+quoteAmount * quoteTokenPrice) / baseTokenPrice,
+      +quoteAmount * (poolAmountTokenA / poolAmountTokenB),
       8
     )
     setBaseAmount(baseAmount)
@@ -72,6 +76,9 @@ export const AddLiquidityPopup = ({
   const quoteTokenInfo = getTokenDataByMint(allTokensData, selectedPool.tokenB)
   const quoteSymbol = getTokenNameByMintAddress(selectedPool.tokenB)
   const maxQuoteAmount = quoteTokenInfo?.amount || 0
+  const [[poolAmountTokenA, poolAmountTokenB], setAmounts] = useState<
+    [number, number]
+  >([0, 0])
 
   const [
     [withdrawAmountTokenA, withdrawAmountTokenB],
@@ -84,20 +91,26 @@ export const AddLiquidityPopup = ({
   )
   const poolTokenAmount = (poolTokenInfo?.amount || 0) * (poolTokenInfo?.decimals || 0)
 
+  const [withdrawalAmounts, loaded] = useMaxWithdrawalAmounts({
+    poolTokenAmount: poolTokenAmount,
+    tokenSwapPublicKey: new PublicKey(selectedPool.swapToken),
+  })
   // load max withdrawal values for tokenA, tokenB
   useEffect(() => {
     const getData = async () => {
       const [
         withdrawAmountTokenA,
         withdrawAmountTokenB,
+        poolTokenAmountA,
+        poolTokenAmountB,
       ] = await getMaxWithdrawAmount({
         wallet,
         connection,
         tokenSwapPublicKey: new PublicKey(selectedPool.swapToken),
         poolTokenAmount,
       })
-
       setWithdrawAmounts([withdrawAmountTokenA, withdrawAmountTokenB])
+      setAmounts([poolTokenAmountA, poolTokenAmountB])
     }
 
     getData()
@@ -143,6 +156,7 @@ export const AddLiquidityPopup = ({
       </Row>
       <RowContainer>
         <InputWithCoins
+          placeholder={!loaded ? 'Loading...' : ''}
           theme={theme}
           value={baseAmount}
           onChange={setBaseAmountWithQuote}
@@ -156,6 +170,7 @@ export const AddLiquidityPopup = ({
           </Text>
         </Row>
         <InputWithCoins
+          placeholder={!loaded ? 'Loading...' : ''}
           theme={theme}
           value={quoteAmount}
           onChange={setQuoteAmountWithBase}
@@ -200,6 +215,18 @@ export const AddLiquidityPopup = ({
           </Row>
         </Row>
       </Row>
+
+      {baseAmount > maxBaseAmount && (
+        <RowContainer margin={'1rem 0'} justify={'flex-end'}>
+          <Text color={'#F8B567'}>Your base amount value more then max.</Text>
+        </RowContainer>
+      )}
+      {quoteAmount > maxQuoteAmount && (
+        <RowContainer margin={'1rem 0'} justify={'flex-end'}>
+          <Text color={'#F8B567'}>Your quote amount value more then max.</Text>
+        </RowContainer>
+      )}
+
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
         <Row
           width={'60%'}

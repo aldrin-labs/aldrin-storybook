@@ -12,7 +12,7 @@ import { SimpleInput, InputWithTotal } from '../components'
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { getMaxWithdrawAmount, withdrawAllTokenTypes } from '@sb/dexUtils/pools'
 import { PublicKey } from '@solana/web3.js'
-import { useWallet } from '@sb/dexUtils/wallet'
+import { useMaxWithdrawalAmounts, useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
 import { PoolInfo, PoolsPrices } from '@sb/compositions/Pools/index.types'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
@@ -20,6 +20,7 @@ import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import { publicKey } from '@sb/dexUtils/token-swap/layout'
 
 export const WithdrawalPopup = ({
   theme,
@@ -42,7 +43,7 @@ export const WithdrawalPopup = ({
   const [baseAmount, setBaseAmount] = useState<string | number>('')
   const setBaseAmountWithQuote = (baseAmount: string | number) => {
     const quoteAmount = stripDigitPlaces(
-      (+baseAmount * baseTokenPrice) / quoteTokenPrice,
+      +baseAmount * (poolAmountTokenB / poolAmountTokenA),
       8
     )
     setBaseAmount(baseAmount)
@@ -52,7 +53,7 @@ export const WithdrawalPopup = ({
   const [quoteAmount, setQuoteAmount] = useState<string | number>('')
   const setQuoteAmountWithBase = (quoteAmount: string | number) => {
     const baseAmount = stripDigitPlaces(
-      (+quoteAmount * quoteTokenPrice) / baseTokenPrice,
+      +quoteAmount * (poolAmountTokenA / poolAmountTokenB),
       8
     )
     setBaseAmount(baseAmount)
@@ -64,6 +65,10 @@ export const WithdrawalPopup = ({
     [withdrawAmountTokenA, withdrawAmountTokenB],
     setWithdrawAmounts,
   ] = useState<[number, number]>([0, 0])
+
+  const [[poolAmountTokenA, poolAmountTokenB], setAmounts] = useState<
+    [number, number]
+  >([0, 0])
 
   const poolTokenInfo = getTokenDataByMint(
     allTokensData,
@@ -84,19 +89,25 @@ export const WithdrawalPopup = ({
   const quoteTokenInfo = getTokenDataByMint(allTokensData, selectedPool.tokenB)
   const quoteSymbol = getTokenNameByMintAddress(selectedPool.tokenB)
 
+  const [withdrawalAmounts, loaded] = useMaxWithdrawalAmounts({
+    poolTokenAmount: poolTokenAmount,
+    tokenSwapPublicKey: new PublicKey(selectedPool.swapToken),
+  })
   // load max withdrawal values for tokenA, tokenB
   useEffect(() => {
     const getData = async () => {
       const [
         withdrawAmountTokenA,
         withdrawAmountTokenB,
+        poolTokenAmountA,
+        poolTokenAmountB,
       ] = await getMaxWithdrawAmount({
         wallet,
         connection,
         tokenSwapPublicKey: new PublicKey(selectedPool.swapToken),
         poolTokenAmount,
       })
-
+      setAmounts([poolTokenAmountA, poolTokenAmountB])
       setWithdrawAmounts([withdrawAmountTokenA, withdrawAmountTokenB])
     }
 
@@ -142,6 +153,8 @@ export const WithdrawalPopup = ({
       </Row>
       <RowContainer>
         <SimpleInput
+          disabled={!loaded}
+          placeholder={!loaded ? 'Loading...' : ''}
           theme={theme}
           symbol={baseSymbol}
           value={baseAmount}
@@ -154,6 +167,8 @@ export const WithdrawalPopup = ({
           </Text>
         </Row>
         <SimpleInput
+          disabled={!loaded}
+          placeholder={!loaded ? 'Loading...' : ''}
           theme={theme}
           symbol={quoteSymbol}
           value={quoteAmount}
@@ -163,6 +178,7 @@ export const WithdrawalPopup = ({
         <Line />
         <InputWithTotal theme={theme} value={total} />
       </RowContainer>
+
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
         <BlueButton
           style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
