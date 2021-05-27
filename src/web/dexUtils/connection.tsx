@@ -29,23 +29,17 @@ export function ConnectionProvider({ children }) {
 
   const connection = useMemo(
     () =>
-      endpoint === MAINNET_BETA_ENDPOINT
-        ? // multi connection only for mainnet
-          new MultiEndpointsConnection(
-            [
-              { url: 'https://mango.rpcpool.com/', RPS: 10 },
-              { url: 'https://solana-api.projectserum.com', RPS: 2 },
-              { url: 'https://api.mainnet-beta.solana.com', RPS: 4 },
-              { url: 'https://raydium.rpcpool.com/', RPS: 10 },
-              { url: 'https://orca.rpcpool.com/', RPS: 10 },
-              { url: 'https://api.rpcpool.com', RPS: 10 },
-            ],
-            'recent'
-          )
-        : new Connection(
-            ENDPOINTS.find((endpointInfo) => endpointInfo.endpoint === endpoint)
-              ?.endpoint || MAINNET_BETA_ENDPOINT
-          ),
+      new MultiEndpointsConnection(
+        [
+          // { url: 'https://vip-api.mainnet-beta.solana.com/ ', RPS: 10 },
+          // { url: 'https://mango.rpcpool.com/', RPS: 10 },
+          // { url: 'https://solana-api.projectserum.com', RPS: 2 },
+          // { url: 'https://api.mainnet-beta.solana.com', RPS: 4 },
+          // { url: 'https://api.rpcpool.com', RPS: 10 },
+          { url: clusterApiUrl('devnet'), RPS: 10 },
+        ],
+        'recent'
+      ),
     [endpoint]
   )
 

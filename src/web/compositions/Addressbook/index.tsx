@@ -54,12 +54,18 @@ export const AddBtn = styled.button`
   }
 `
 
+type TextProps = {
+  fontSize?: string;
+  paddingBottom?: string;
+  fontFamily?: string;
+}
+
 export const Text = styled.span`
-  font-size: ${(props) => props.fontSize || '1.5rem'};
-  padding-bottom: ${(props) => props.paddingBottom};
+  font-size: ${(props: TextProps) => props.fontSize || '1.5rem'};
+  padding-bottom: ${(props) => props.paddingBottom || ''};
   text-transform: none;
-  font-family: Avenir Next Medium;
-  color: #ecf0f3;
+  font-family: ${(props) => props.fontFamily || 'Avenir Next Medium'};
+  color: ${(props) => props.color || '#ecf0f3'};
 `
 
 export const Input = styled.input`

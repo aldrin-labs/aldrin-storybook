@@ -50,7 +50,7 @@ import { WalletProvider } from '@sb/dexUtils/wallet'
 import { MarketProvider } from '@sb/dexUtils/markets'
 import { PreferencesProvider } from '@sb/dexUtils/preferences'
 
-const version = `10.9.103`
+const version = `10.9.106-rblnc`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
 const isNotificationDone = localStorage.getItem('isNotificationDone')
 const localPassword = localStorage.getItem('localPassword')
@@ -90,7 +90,10 @@ const AppRaw = ({
     !currentPage.includes('/analytics') &&
     currentPage !== '/tech_issues' &&
     !isChartPage &&
-    currentPage !== '/'
+    currentPage !== '/' &&
+    currentPage !== '/pools' &&
+    currentPage !== '/rebalance'
+
   const isPNL = currentPage.includes('/portfolio/main')
   // TODO: Check this variable
   const pageIsRegistration = currentPage.includes('regist')

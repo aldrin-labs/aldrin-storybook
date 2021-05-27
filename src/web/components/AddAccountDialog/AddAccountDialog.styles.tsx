@@ -87,7 +87,7 @@ export const InputBaseCustom = styled(InputBase)`
   }
 `
 
-export const DialogWrapper = styled(Dialog)`
+export const DialogWrapper = styled(({ ...props }) => <Dialog {...props} />)`
   border-radius: 100px;
 `
 

@@ -4,14 +4,29 @@ import MathWallet from '@sb/dexUtils/MathWallet/MathWallet'
 import SolongWallet from '@sb/dexUtils/SolongWallet/SolongWallet'
 import CcaiWallet from '@sb/dexUtils/CcaiWallet/CcaiWallet'
 import { notify } from './notifications'
-import { useAccountInfo, useConnectionConfig } from './connection'
-import { CCAIProviderURL, useLocalStorageState } from './utils'
-import { PublicKey, SYSVAR_RENT_PUBKEY, Transaction, TransactionInstruction } from '@solana/web3.js'
-import { MINT_LAYOUT, parseTokenAccountData } from './tokens'
-import { clusterApiUrl } from '@solana/web3.js';
-import { TokenListProvider } from '@solana/spl-token-registry';
+import {
+  useAccountInfo,
+  useConnection,
+  useConnectionConfig,
+} from './connection'
+import { CCAIProviderURL, useLocalStorageState, useRefEqual } from './utils'
+import {
+  Connection,
+  PublicKey,
+  SYSVAR_RENT_PUBKEY,
+  Transaction,
+  TransactionInstruction,
+} from '@solana/web3.js'
+import {
+  getTokenAccountInfo,
+  MINT_LAYOUT,
+  parseTokenAccountData,
+} from './tokens'
+import { clusterApiUrl } from '@solana/web3.js'
+import { TokenListProvider } from '@solana/spl-token-registry'
 import { TokenInstructions } from '@project-serum/serum'
-
+import { useAsyncData } from './fetch-loop'
+import { getMaxWithdrawAmount } from './pools'
 
 export const WALLET_PROVIDERS = [
   // { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },
@@ -22,18 +37,18 @@ export const WALLET_PROVIDERS = [
 ]
 
 export const TOKEN_PROGRAM_ID = new PublicKey(
-  'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-);
+  'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+)
 
 export const WRAPPED_SOL_MINT = new PublicKey(
-  'So11111111111111111111111111111111111111112',
-);
+  'So11111111111111111111111111111111111111112'
+)
 
-export const MAINNET_URL = 'https://solana-api.projectserum.com';
+export const MAINNET_URL = 'https://solana-api.projectserum.com'
 
 export const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey(
-  'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
-);
+  'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+)
 
 const getWalletByProviderUrl = (providerUrl: string) => {
   switch (providerUrl) {
@@ -78,7 +93,9 @@ export function WalletProvider({ children }) {
     return wallet
   }, [providerUrl, endpoint])
 
-  const connectWalletHash = useMemo(() => window.location.hash, [wallet.connected])
+  const connectWalletHash = useMemo(() => window.location.hash, [
+    wallet.connected,
+  ])
 
   useEffect(() => {
     if (wallet) {
@@ -172,9 +189,58 @@ export function useWallet() {
   }
 }
 
+export function useWalletPublicKeys() {
+  const { wallet } = useWallet()
+  const connection = useConnection()
+
+  const [tokenAccountInfo, loaded] = useAsyncData(
+    () => getTokenAccountInfo(connection, wallet.publicKey),
+    'getTokenAccountInfo'
+  )
+
+  let publicKeys = [
+    // wallet.publicKey,
+    ...(tokenAccountInfo
+      ? tokenAccountInfo.map(({ pubkey }: { pubkey: PublicKey }) => pubkey)
+      : []),
+  ]
+  // Prevent users from re-rendering unless the list of public keys actually changes
+  publicKeys = useRefEqual(
+    publicKeys,
+    (oldKeys, newKeys) =>
+      oldKeys.length === newKeys.length &&
+      oldKeys.every((key, i) => key.equals(newKeys[i]))
+  )
+  return [publicKeys, loaded]
+}
+
+export function useMaxWithdrawalAmounts({
+  poolTokenAmount,
+  tokenSwapPublicKey,
+}: {
+  poolTokenAmount: number
+  tokenSwapPublicKey: PublicKey
+}) {
+  const { wallet } = useWallet()
+  const connection = useConnection()
+
+  const [withdrawalAmounts, loaded] = useAsyncData(
+    () =>
+      getMaxWithdrawAmount({
+        connection,
+        wallet,
+        poolTokenAmount,
+        tokenSwapPublicKey,
+      }),
+    `getMaxWithdrawAmount-${tokenSwapPublicKey.toString()}`
+  )
+
+  return [withdrawalAmounts, loaded]
+}
+
 export function parseMintData(data) {
-  let { decimals } = MINT_LAYOUT.decode(data);
-  return { decimals };
+  let { decimals } = MINT_LAYOUT.decode(data)
+  return { decimals }
 }
 
 // const TokenListContext = React.createContext({});
@@ -214,7 +280,6 @@ export function parseMintData(data) {
 // const nameUpdated = new EventEmitter();
 // nameUpdated.setMaxListeners(100);
 
-
 // export function useTokenInfo(mint) {
 //   const { endpoint } = useConnectionConfig();
 //   useListener(nameUpdated, 'update');
@@ -252,7 +317,6 @@ export function parseMintData(data) {
 //   localStorage.getItem('tokenNames') ?? '{}',
 // );
 
-
 // export function getTokenInfo(mint, endpoint, tokenInfos) {
 //   if (!mint) {
 //     return { name: null, symbol: null };
@@ -275,14 +339,14 @@ export function parseMintData(data) {
 // }
 
 export function useBalanceInfo(publicKey) {
-  let [accountInfo, accountInfoLoaded] = useAccountInfo(publicKey);
+  let [accountInfo, accountInfoLoaded] = useAccountInfo(publicKey)
   let { mint, owner, amount } = accountInfo?.owner.equals(TOKEN_PROGRAM_ID)
     ? parseTokenAccountData(accountInfo.data)
-    : {};
-  let [mintInfo, mintInfoLoaded] = useAccountInfo(mint);
+    : {}
+  let [mintInfo, mintInfoLoaded] = useAccountInfo(mint)
 
   if (!accountInfoLoaded) {
-    return null;
+    return null
   }
 
   if (mint && mint.equals(WRAPPED_SOL_MINT)) {
@@ -294,12 +358,12 @@ export function useBalanceInfo(publicKey) {
       tokenName: 'Wrapped SOL',
       tokenSymbol: 'SOL',
       valid: true,
-    };
+    }
   }
 
   if (mint && mintInfoLoaded) {
     try {
-      let { decimals } = parseMintData(mintInfo.data);
+      let { decimals } = parseMintData(mintInfo.data)
       return {
         amount,
         decimals,
@@ -308,7 +372,7 @@ export function useBalanceInfo(publicKey) {
         // tokenName: name.replace(' (Sollet)', ''),
         // tokenSymbol: symbol,
         valid: true,
-      };
+      }
     } catch (e) {
       return {
         amount,
@@ -318,7 +382,7 @@ export function useBalanceInfo(publicKey) {
         tokenName: 'Invalid',
         tokenSymbol: 'INVALID',
         valid: false,
-      };
+      }
     }
   }
 
@@ -331,10 +395,10 @@ export function useBalanceInfo(publicKey) {
       tokenName: 'SOL',
       tokenSymbol: 'SOL',
       valid: true,
-    };
+    }
   }
 
-  return null;
+  return null
 }
 
 export async function signAndSendTransaction(
@@ -342,27 +406,27 @@ export async function signAndSendTransaction(
   transaction,
   wallet,
   signers,
-  skipPreflight = false,
+  skipPreflight = false
 ) {
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash('max')
-  ).blockhash;
+  ).blockhash
   transaction.setSigners(
     // fee payed by the wallet owner
     wallet.publicKey,
-    ...signers.map((s) => s.publicKey),
-  );
+    ...signers.map((s) => s.publicKey)
+  )
 
   if (signers.length > 0) {
-    transaction.partialSign(...signers);
+    transaction.partialSign(...signers)
   }
 
-  transaction = await wallet.signTransaction(transaction);
-  const rawTransaction = transaction.serialize();
+  transaction = await wallet.signTransaction(transaction)
+  const rawTransaction = transaction.serialize()
   return await connection.sendRawTransaction(rawTransaction, {
     skipPreflight,
     preflightCommitment: 'single',
-  });
+  })
 }
 
 export async function createAssociatedTokenAccount({
@@ -373,25 +437,25 @@ export async function createAssociatedTokenAccount({
   const [ix, address] = await createAssociatedTokenAccountIx(
     wallet.publicKey,
     wallet.publicKey,
-    splTokenMintAddress,
-  );
-  const tx = new Transaction();
-  tx.add(ix);
-  tx.feePayer = wallet.publicKey;
-  const txSig = await signAndSendTransaction(connection, tx, wallet, []);
+    splTokenMintAddress
+  )
+  const tx = new Transaction()
+  tx.add(ix)
+  tx.feePayer = wallet.publicKey
+  const txSig = await signAndSendTransaction(connection, tx, wallet, [])
 
-  return [address, txSig];
+  return [address, txSig]
 }
 async function createAssociatedTokenAccountIx(
   fundingAddress,
   walletAddress,
-  splTokenMintAddress,
+  splTokenMintAddress
 ) {
   const associatedTokenAddress = await findAssociatedTokenAddress(
     walletAddress,
-    splTokenMintAddress,
-  );
-  const systemProgramId = new PublicKey('11111111111111111111111111111111');
+    splTokenMintAddress
+  )
+  const systemProgramId = new PublicKey('11111111111111111111111111111111')
   const keys = [
     {
       pubkey: fundingAddress,
@@ -428,18 +492,18 @@ async function createAssociatedTokenAccountIx(
       isSigner: false,
       isWritable: false,
     },
-  ];
+  ]
   const ix = new TransactionInstruction({
     keys,
     programId: ASSOCIATED_TOKEN_PROGRAM_ID,
     data: Buffer.from([]),
-  });
-  return [ix, associatedTokenAddress];
+  })
+  return [ix, associatedTokenAddress]
 }
 
 export async function findAssociatedTokenAddress(
   walletAddress,
-  tokenMintAddress,
+  tokenMintAddress
 ) {
   return (
     await PublicKey.findProgramAddress(
@@ -448,7 +512,7 @@ export async function findAssociatedTokenAddress(
         TokenInstructions.TOKEN_PROGRAM_ID.toBuffer(),
         tokenMintAddress.toBuffer(),
       ],
-      ASSOCIATED_TOKEN_PROGRAM_ID,
+      ASSOCIATED_TOKEN_PROGRAM_ID
     )
-  )[0];
+  )[0]
 }

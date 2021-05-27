@@ -311,7 +311,7 @@ export const ConfirmationPopup = ({
               await onClose()
             }}
             style={{
-              background: !isAwareOfHighSlippage ? '#93A0B2' : '',
+              background: !isAwareOfHighSlippage ? theme.palette.grey.title : '',
               width: '49%',
               height: '4.5rem',
               color: theme.palette.grey.terminal,

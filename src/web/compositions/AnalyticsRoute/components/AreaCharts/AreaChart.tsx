@@ -7,7 +7,6 @@ import {
 } from '../../index.styles'
 import { createAreaChart } from '../utils'
 import { Theme } from '@material-ui/core'
-// import { TooltipForAreaChart } from './Tooltips'
 
 const AreaChart = ({
   theme,
@@ -40,7 +39,6 @@ const AreaChart = ({
       </HeaderContainer>
       <ChartContainer>
         <canvas id="areaChart"></canvas>
-        {/* <TooltipForAreaChart theme={theme} /> */}
       </ChartContainer>
     </>
   )

@@ -21,6 +21,20 @@ import { getTokenAccountInfo } from './tokens'
 import { AWESOME_TOKENS } from '@sb/dexUtils/serum'
 
 export const ALL_TOKENS_MINTS = [...TOKEN_MINTS, ...AWESOME_TOKENS]
+export const ALL_TOKENS_MINTS_MAP = ALL_TOKENS_MINTS.reduce((acc, el) => { 
+  acc[el.address] = el.name;
+  acc[el.name] = el.address;
+
+  return acc
+}, {})
+
+// const ALL_TOKENS_MINTS_MAP = new Map();
+
+// ALL_TOKENS_MINTS.forEach(tokenMint => { 
+//   // set address by name and name by address
+//   ALL_TOKENS_MINTS_MAP.set(tokenMint.name, tokenMint);
+//   ALL_TOKENS_MINTS_MAP.set(tokenMint.address.toString(), tokenMint);
+// })
 
 // Used in debugging, should be false in production
 
@@ -1205,4 +1219,22 @@ export async function getOpenOrdersAccountsCustom(connection, wallet, market) {
     connection,
     wallet.publicKey
   )
+}
+
+export const getTokenMintAddressByName = (name: string): string | null => {
+  return ALL_TOKENS_MINTS_MAP[name]?.toString();
+}
+
+export const getTokenNameByMintAddress = (address: string): string => {
+  if (!address) {
+    return '--';
+  }
+  
+  const tokenName = ALL_TOKENS_MINTS_MAP[address];
+
+  if (tokenName) {
+    return tokenName;
+  }
+  
+  return `${address.slice(0, 3)}...${address.slice(address.length - 3)}`;
 }
