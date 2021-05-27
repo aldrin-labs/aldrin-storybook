@@ -12,6 +12,8 @@ export type PoolTotalFeesPaid = {
   
 export type PoolInfo = {
     name: string
+    swapToken: string
+    poolTokenMint: string
     tokenA: string
     tokenB: string
     apy24h: number
