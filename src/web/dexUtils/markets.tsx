@@ -196,10 +196,10 @@ const MarketContext = React.createContext(null)
 const _VERY_SLOW_REFRESH_INTERVAL = 5000 * 1000
 
 // For things that don't really change
-const _SLOW_REFRESH_INTERVAL = 10 * 1000
+const _SLOW_REFRESH_INTERVAL = 3 * 1000
 
 // For things that change frequently
-const _FAST_REFRESH_INTERVAL = 3 * 1000
+const _FAST_REFRESH_INTERVAL = 1 * 1000
 
 export const DEFAULT_MARKET = USE_MARKETS.find(
   ({ name, deprecated }) => name === 'SRM/USDT' && !deprecated

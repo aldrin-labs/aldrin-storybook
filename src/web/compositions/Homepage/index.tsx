@@ -18,7 +18,7 @@ import { Text } from '../../compositions/Addressbook/index'
 
 import SvgIcon from '@sb/components/SvgIcon'
 
-import Banner from '@icons/Banner.svg'
+import Banner from '@icons/Banner_coming-soon.svg'
 import ArrowCard from '@icons/arrows.svg'
 import PoolCard from '@icons/Pool.svg'
 import WalletCard from '@icons/walletCard.svg'
@@ -38,14 +38,14 @@ export const Homepage = () => {
           width={'calc(100% - 5.5rem)'}
         >
           <img src={Banner} width={'100%'} />
-          <WhiteButton
+          {/* <WhiteButton
             style={{ position: 'absolute', right: '10rem' }}
             width={'21rem'}
             padding={'0 3rem'}
             needHover={true}
             href={`https://ido.cryptocurrencies.ai/`}
           >
-            Learn More{' '}
+            Learn More
             <svg
               width="20"
               height="8"
@@ -58,7 +58,7 @@ export const Homepage = () => {
                 fill="#F8FAFF"
               />
             </svg>
-          </WhiteButton>
+          </WhiteButton> */}
         </CardContainer>
       </RowContainer>
       <RowContainer align={'flex-start'} style={{ marginTop: '1.5rem' }}>
@@ -81,8 +81,7 @@ export const Homepage = () => {
                 padding={'0 3rem'}
                 href={'/chart'}
               >
-                {' '}
-                Trade Now{' '}
+                Trade Now
                 <svg
                   width="20"
                   height="8"
@@ -106,30 +105,27 @@ export const Homepage = () => {
           width={'calc((100% - 4rem) / 3)'}
           style={{ paddingRight: '1.5rem' }}
         >
-          {' '}
           <CardContainer
             style={{ marginBottom: '1.5rem', marginTop: '0.1rem' }}
           >
-            {' '}
             <SvgIcon src={WalletCard} width={'100%'} height={'100%'} />
             <HeaderContainer align={'center'} direction={'row'}>
               <RowContainer justify={'end'} height={'100%'}>
                 <Header style={{ marginTop: '0.8rem' }}>Wallet</Header>
                 <Description>
-                  Hold and trade the top cryptocurrencies on{' '}
+                  Hold and trade the top cryptocurrencies on
                   <strong>CCAI  Wallet™</strong>.
                 </Description>
               </RowContainer>
               <Row direction={'column'}>
-                {' '}
                 <WhiteButton
                   // style={{ marginBottom: '3rem' }}
                   needHover={true}
                   width={'22rem'}
                   padding={'0 2rem'}
-                  href={`${CCAIProviderURL}/welcome`}
+                  href={`${CCAIProviderURL}/`}
                 >
-                  Go to Wallet{' '}
+                  Go to Wallet
                   <svg
                     width="20"
                     height="8"
@@ -170,7 +166,7 @@ export const Homepage = () => {
                 padding={'0 2rem'}
                 href={'/analytics'}
               >
-                View Analytics{' '}
+                View Analytics
                 <svg
                   width="20"
                   height="8"
@@ -192,11 +188,9 @@ export const Homepage = () => {
           direction={'column'}
           width={'calc(((100% - 4rem) / 3) - 1.7rem)'}
         >
-          {' '}
           <CardContainer
             style={{ marginBottom: '1.5rem', marginTop: '0.1rem' }}
           >
-            {' '}
             <SvgIcon src={ArrowCard} width={'100%'} height={'100%'} />
             <HeaderContainer align={'center'} direction={'row'}>
               <RowContainer justify={'end'} height={'100%'}>
@@ -216,7 +210,6 @@ export const Homepage = () => {
             </HeaderContainer>
           </CardContainer>
           <CardContainer>
-            {' '}
             <SvgIcon src={PoolCard} width={'100%'} height={'100%'} />
             <HeaderContainer align={'center'} direction={'row'}>
               <RowContainer justify={'end'} height={'100%'}>
