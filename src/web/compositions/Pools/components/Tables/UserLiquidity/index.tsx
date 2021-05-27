@@ -28,25 +28,41 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getFeesEarnedByAccount } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
 import { Theme } from '@material-ui/core'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { PoolInfo, FeesEarned } from '@sb/compositions/Pools/index.types'
+import {
+  PoolInfo,
+  FeesEarned,
+  PoolsPrices,
+} from '@sb/compositions/Pools/index.types'
+import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 
 const UserLiquitidyTable = ({
   theme,
+  allTokensData,
+  getPoolsInfoQuery: { getPoolsInfo },
+  poolsPrices,
+  getFeesEarnedByAccountQuery,
   selectPool,
   setIsWithdrawalPopupOpen,
   setIsAddLiquidityPopupOpen,
-  getPoolsInfoQuery,
-  getFeesEarnedByAccountQuery,
 }: {
   theme: Theme
+
+  allTokensData: TokenInfo[]
+  getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
+  poolsPrices: PoolsPrices[]
+  getFeesEarnedByAccountQuery: { getFeesEarnedByAccount: FeesEarned[] }
   selectPool: (pool: PoolInfo) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
-  getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
-  getFeesEarnedByAccountQuery: { getFeesEarnedByAccount: FeesEarned[] }
 }) => {
   const { wallet } = useWallet()
+
+  const userTokens = allTokensData.map((el) => el.mint)
+
+  const usersPools = getPoolsInfo.filter((el) =>
+    userTokens.includes(el.poolTokenMint)
+  )
 
   return (
     <RowContainer>
@@ -113,7 +129,7 @@ const UserLiquitidyTable = ({
               <RowTd>Total Fees Earned</RowTd>
               <RowTd></RowTd>
             </TableHeader>
-            {getPoolsInfoQuery.getPoolsInfo.map((el: PoolInfo) => {
+            {usersPools.map((el: PoolInfo) => {
               return (
                 <TableRow>
                   <RowTd>

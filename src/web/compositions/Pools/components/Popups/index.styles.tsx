@@ -51,6 +51,7 @@ export const InvisibleInput = styled.input`
   border: none;
   font-family: Avenir Next Medium;
   &::placeholder {
+    color: #f2fbfb;
     height: 2rem;
     font-size: 1.7rem;
     font-family: 'Avenir Next Thin';
