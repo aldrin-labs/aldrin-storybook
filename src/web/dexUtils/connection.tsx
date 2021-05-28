@@ -4,9 +4,7 @@ import React, { useContext, useEffect, useMemo } from 'react'
 import { refreshCache, setCache, useAsyncData } from './fetch-loop'
 import tuple from 'immutable-tuple'
 import MultiEndpointsConnection from './MultiEndpointsConnection'
-
 const MAINNET_BETA_ENDPOINT = clusterApiUrl('mainnet-beta')
-
 export const ENDPOINTS = [
   {
     name: 'mainnet-beta',
@@ -16,45 +14,50 @@ export const ENDPOINTS = [
   { name: 'devnet', endpoint: clusterApiUrl('devnet') },
   { name: 'localnet', endpoint: 'http://127.0.0.1:8899' },
 ]
-
 const accountListenerCount = new Map()
-
 const ConnectionContext = React.createContext(null)
-
 export function ConnectionProvider({ children }) {
   const [endpoint, setEndpoint] = useLocalStorageState(
     'connectionEndpts',
     ENDPOINTS[0].endpoint
   )
-
   const connection = useMemo(
     () =>
-      new MultiEndpointsConnection(
-        [
-          // { url: 'https://vip-api.mainnet-beta.solana.com/ ', RPS: 10 },
-          // { url: 'https://mango.rpcpool.com/', RPS: 10 },
-          // { url: 'https://solana-api.projectserum.com', RPS: 2 },
-          // { url: 'https://api.mainnet-beta.solana.com', RPS: 4 },
-          // { url: 'https://api.rpcpool.com', RPS: 10 },
-          { url: clusterApiUrl('devnet'), RPS: 10 },
-        ],
-        'recent'
-      ),
+      endpoint === MAINNET_BETA_ENDPOINT
+        ? // multi connection only for mainnet
+          new MultiEndpointsConnection(
+            [
+              { url: 'https://mango.rpcpool.com/', RPS: 10 },
+              { url: 'https://solana-api.projectserum.com', RPS: 2 },
+              { url: 'https://api.mainnet-beta.solana.com', RPS: 4 },
+              { url: 'https://raydium.rpcpool.com/', RPS: 10 },
+              { url: 'https://orca.rpcpool.com/', RPS: 10 },
+              { url: 'https://api.rpcpool.com', RPS: 10 },
+            ],
+            'recent'
+          )
+        : new Connection(
+            ENDPOINTS.find((endpointInfo) => endpointInfo.endpoint === endpoint)
+              ?.endpoint || MAINNET_BETA_ENDPOINT
+          ),
     [endpoint]
   )
-
   // The websocket library solana/web3.js uses closes its websocket connection when the subscription list
   // is empty after opening its first time, preventing subsequent subscriptions from receiving responses.
   // This is a hack to prevent the list from every getting empty
   useEffect(() => {
-    const id = connection.onAccountChange(new Account().publicKey, () => {})
-    return () => connection.removeAccountChangeListener(id)
-  }, [connection])
+    const id = connection.onAccountChange(new Account().publicKey, () => {});
+    return () => {
+      connection.removeAccountChangeListener(id);
+    };
+  }, [connection]);
 
   useEffect(() => {
-    const id = connection.onSlotChange(() => null)
-    return () => connection.removeSlotChangeListener(id)
-  }, [connection])
+    const id = connection.onSlotChange(() => null);
+    return () => {
+      connection.removeSlotChangeListener(id);
+    };
+  }, [connection]);
 
   return (
     <ConnectionContext.Provider value={{ endpoint, setEndpoint, connection }}>
@@ -62,16 +65,13 @@ export function ConnectionProvider({ children }) {
     </ConnectionContext.Provider>
   )
 }
-
 export function useConnection() {
   return useContext(ConnectionContext).connection
 }
-
 export function useConnectionConfig() {
   const context = useContext(ConnectionContext)
   return { endpoint: context.endpoint, setEndpoint: context.setEndpoint }
 }
-
 export function useAccountInfo(publicKey) {
   const connection = useConnection()
   const cacheKey = tuple(connection, publicKey?.toBase58())
@@ -81,7 +81,6 @@ export function useAccountInfo(publicKey) {
     { refreshInterval: 60_000 }
   )
   const refresh = () => refreshCache(cacheKey)
-
   useEffect(() => {
     if (!publicKey) {
       return
@@ -114,10 +113,8 @@ export function useAccountInfo(publicKey) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cacheKey])
-
   return [accountInfo, loaded, refresh]
 }
-
 export function useAccountData(publicKey) {
   const [accountInfo] = useAccountInfo(publicKey)
   return accountInfo && accountInfo.data

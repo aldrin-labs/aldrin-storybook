@@ -33,6 +33,7 @@ import { isEqual, throttle, debounce } from 'lodash'
 import { formatSymbol } from '@sb/components/AllocationBlock/DonutChart/utils'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
+import { AddCoinPopup } from '../AddCoinPopup'
 
 const tooltipTexts = {
   'no pool':
@@ -43,7 +44,13 @@ const tooltipTexts = {
     "It's currently impossible to buy or sell this token due to a lack of liquidity. Although, you can create a pool or deposit liquidity to the existing one and earn fees from each transaction through this pool.",
 }
 
-const HeaderRow = ({ theme }: { theme: Theme }) => (
+const HeaderRow = ({
+  theme,
+  openAddCoinPopup,
+}: {
+  theme: Theme
+  openAddCoinPopup: (arg: boolean) => {}
+}) => (
   <RowContainer
     height={'10rem'}
     padding="2rem"
@@ -52,31 +59,27 @@ const HeaderRow = ({ theme }: { theme: Theme }) => (
     style={{ borderBottom: '0.1rem solid #383B45' }}
   >
     <Text theme={theme}>Set up your allocation </Text>
-    <a
-      href={'https://wallet.cryptocurrencies.ai/wallet'}
-      target="_blank"
-      rel="noopener noreferrer"
-      style={{ textDecoration: 'none' }}
+
+    <BtnCustom
+      theme={theme}
+      onClick={() => {
+        openAddCoinPopup(true)
+      }}
+      needMinWidth={false}
+      btnWidth="auto"
+      height="auto"
+      fontSize="1.4rem"
+      padding="1rem 2.5rem"
+      borderRadius="1.7rem"
+      borderColor={theme.palette.blue.serum}
+      btnColor={'#fff'}
+      backgroundColor={theme.palette.blue.serum}
+      textTransform={'none'}
+      transition={'all .4s ease-out'}
+      style={{ whiteSpace: 'nowrap' }}
     >
-      <BtnCustom
-        theme={theme}
-        onClick={() => {}}
-        needMinWidth={false}
-        btnWidth="auto"
-        height="auto"
-        fontSize="1.4rem"
-        padding="1rem 2.5rem"
-        borderRadius="1.7rem"
-        borderColor={theme.palette.blue.serum}
-        btnColor={'#fff'}
-        backgroundColor={theme.palette.blue.serum}
-        textTransform={'none'}
-        transition={'all .4s ease-out'}
-        style={{ whiteSpace: 'nowrap' }}
-      >
-        Add Coin{' '}
-      </BtnCustom>
-    </a>
+      Add Coin{' '}
+    </BtnCustom>
   </RowContainer>
 )
 
@@ -434,6 +437,8 @@ const RebalanceTable = ({
   setLeftToDistributeValue
   totalTokensValue
 }) => {
+  const [isAddCoinPopupOpen, openAddCoinPopup] = useState(false)
+
   return (
     <RowContainer height={'80%'} align={'flex-end'}>
       <BlockTemplate
@@ -444,7 +449,7 @@ const RebalanceTable = ({
         direction={'column'}
         justify={'end'}
       >
-        <MemoizedHeaderRow theme={theme} />
+        <MemoizedHeaderRow openAddCoinPopup={openAddCoinPopup} theme={theme} />
         <RowContainer
           align="flex-start"
           style={{ height: 'calc(100% - 15rem)', overflow: 'scroll' }}
@@ -469,6 +474,11 @@ const RebalanceTable = ({
         </RowContainer>
         <MemoizedFooterRow theme={theme} />
       </BlockTemplate>
+      <AddCoinPopup
+        theme={theme}
+        open={isAddCoinPopupOpen}
+        close={() => openAddCoinPopup(false)}
+      />
     </RowContainer>
   )
 }

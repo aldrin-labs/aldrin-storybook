@@ -271,7 +271,7 @@ export const RebalancePopup = ({
             <RowContainer justify={'space-between'}>
               <BtnCustom
                 theme={theme}
-                onClick={() => {}}
+                onClick={() => close()}
                 needMinWidth={false}
                 btnWidth="calc(50% - 1rem)"
                 height="auto"
