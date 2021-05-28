@@ -22,11 +22,11 @@ const TokenAllocationProgressBar = styled(
 
 const BarTitle = styled(({ ...props }) => <WhiteTitle {...props} />)`
   font-size: ${(props) => props.fontSize || '1.4rem'};
-  width: 6rem;
+  width: 8rem;
 `
 
 const PercentageTitle = styled(({ ...props }) => <BarTitle {...props} />)`
-  width: 8rem;
+  width: 6rem;
   text-align: right;
 `
 

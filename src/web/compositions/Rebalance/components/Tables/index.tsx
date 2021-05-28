@@ -178,7 +178,6 @@ export const TokenAmountColumn = ({
         color={theme.palette.grey.new}
         style={{
           whiteSpace: 'nowrap',
-          paddingBottom: '1rem',
         }}
       >
         ${tokenValue.toFixed(2)}
@@ -214,7 +213,6 @@ export const TokenTargetAmountColumn = ({
         color={theme.palette.grey.new}
         style={{
           whiteSpace: 'nowrap',
-          paddingBottom: '1rem',
         }}
       >
         ${targetTokenValue.toFixed(2)}
