@@ -2,6 +2,13 @@ import React, { useEffect } from 'react'
 import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 
+import {
+  endOfDayTimestamp,
+  dayDuration,
+  generateIDFromValues,
+  getTimezone,
+} from '@sb/compositions/AnalyticsRoute/components/utils'
+
 import { Theme } from '@material-ui/core'
 
 import {
@@ -63,6 +70,8 @@ export default compose(
     name: 'getTotalVolumeLockedHistoryQuery',
     variables: {
       timezone: '',
+      // timestampFrom: endOfDayTimestamp - dayDuration * 6,
+      // timestampTo: endOfDayTimestamp,
     },
     fetchPolicy: 'cache-and-network',
   })
