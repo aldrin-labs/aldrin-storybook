@@ -5,14 +5,12 @@ import { refreshCache, setCache, useAsyncData } from './fetch-loop'
 import tuple from 'immutable-tuple'
 import MultiEndpointsConnection from './MultiEndpointsConnection'
 
+const MAINNET_BETA_ENDPOINT = clusterApiUrl('mainnet-beta')
+
 export const ENDPOINTS = [
   {
-    name: 'serum-endpoint-mainnet-beta',
-    endpoint: 'https://solana-api.projectserum.com',
-  },
-  {
-    name: 'solana-endpoint-mainnet-beta',
-    endpoint: 'https://api.mainnet-beta.solana.com',
+    name: 'mainnet-beta',
+    endpoint: MAINNET_BETA_ENDPOINT,
   },
   { name: 'testnet', endpoint: clusterApiUrl('testnet') },
   { name: 'devnet', endpoint: clusterApiUrl('devnet') },
