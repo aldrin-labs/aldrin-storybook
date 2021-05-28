@@ -9,6 +9,7 @@ import {
 import { WalletAdapter } from './types'
 import { sendAndConfirmTransactionViaWallet } from './token/utils/send-and-confirm-transaction-via-wallet'
 import { sleep } from './utils'
+import { PoolInfo } from '@sb/compositions/Pools/index.types'
 
 const SWAP_PROGRAM_OWNER_FEE_ADDRESS = new PublicKey(
   'HfoTxFR1Tm6kGmWgYWD6J7YHVy1UwqSULUGVLXkJqaKN'
@@ -540,77 +541,6 @@ export async function withdrawAllTokenTypes({
   }
 }
 
-/**
- * Get max amount in tokenA and tokenB to withdrawal from pool
- *
- * @param wallet The Wallet that will sign transactions
- * @param connection The connection to use
- * @param tokenSwapPublicKey The public key
- * @param poolTokenAmount The amount of tokenB to tranfer to the pool token account address
- * @param tokenSwap Loaded TokenSwap interface
- */
-export const getMaxWithdrawAmount = async ({
-  wallet,
-  connection,
-  tokenSwapPublicKey,
-  poolTokenAmount,
-  tokenSwap,
-}: {
-  wallet: WalletAdapter
-  connection: Connection
-  tokenSwapPublicKey: PublicKey
-  poolTokenAmount: number
-  tokenSwap?: TokenSwap
-}): Promise<[number, number, number, number]> => {
-  let tokenSwapClass = tokenSwap
-
-  if (!tokenSwapClass) {
-    tokenSwapClass = await TokenSwap.loadTokenSwap(
-      wallet,
-      connection,
-      tokenSwapPublicKey,
-      TOKEN_SWAP_PROGRAM_ID
-    )
-  }
-
-  const {
-    tokenAccountA,
-    tokenAccountB,
-    mintA,
-    mintB,
-    poolToken: poolTokenMint,
-  } = tokenSwapClass
-
-  const tokenPool = new Token(
-    wallet,
-    connection,
-    poolTokenMint,
-    TOKEN_PROGRAM_ID
-  )
-
-  const poolMintInfo = await tokenPool.getMintInfo()
-  const supply = poolMintInfo.supply.toNumber()
-
-  const tokenMintA = new Token(wallet, connection, mintA, TOKEN_PROGRAM_ID)
-  const poolTokenA = await tokenMintA.getAccountInfo(tokenAccountA)
-  const poolTokenAmountA = poolTokenA.amount.toNumber()
-
-  const tokenMintB = new Token(wallet, connection, mintB, TOKEN_PROGRAM_ID)
-  const poolTokenB = await tokenMintB.getAccountInfo(tokenAccountB)
-  const poolTokenAmountB = poolTokenB.amount.toNumber()
-
-  const withdrawAmountTokenA = (poolTokenAmountA * poolTokenAmount) / supply
-  const withdrawAmountTokenB = (poolTokenAmountB * poolTokenAmount) / supply
-
-  console.log('withdraw', {
-    poolTokenAmountA,
-    poolTokenAmountB,
-    poolTokenAmount,
-    supply,
-  })
-
-  return [withdrawAmountTokenA, withdrawAmountTokenB, poolTokenAmountA, poolTokenAmountB]
-}
 
 /**
  * Swap tokenA to tokenB and vice versa on existing pool
@@ -709,4 +639,94 @@ export async function swap({
   )
 
   return [commonTransaction, signer]
+}
+
+/**
+ * Get max amount in tokenA and tokenB to withdrawal from pool
+ *
+ * @param wallet The Wallet that will sign transactions
+ * @param connection The connection to use
+ * @param tokenSwapPublicKey The token swap address
+ * @param poolTokenAmount The amount of  user's pool tokens
+ * @param tokenSwap Loaded TokenSwap interface
+ */
+ export const getMaxWithdrawAmount = async ({
+  wallet,
+  connection,
+  tokenSwapPublicKey,
+  poolTokenAmount,
+  tokenSwap,
+}: {
+  wallet: WalletAdapter
+  connection: Connection
+  tokenSwapPublicKey: PublicKey
+  poolTokenAmount: number
+  tokenSwap?: TokenSwap
+}): Promise<[number, number, number, number]> => {
+  let tokenSwapClass = tokenSwap
+
+  if (!tokenSwapClass) {
+    tokenSwapClass = await TokenSwap.loadTokenSwap(
+      wallet,
+      connection,
+      tokenSwapPublicKey,
+      TOKEN_SWAP_PROGRAM_ID
+    )
+  }
+
+  const {
+    tokenAccountA,
+    tokenAccountB,
+    mintA,
+    mintB,
+    poolToken: poolTokenMint,
+  } = tokenSwapClass
+
+  const tokenPool = new Token(
+    wallet,
+    connection,
+    poolTokenMint,
+    TOKEN_PROGRAM_ID
+  )
+
+  const poolMintInfo = await tokenPool.getMintInfo()
+  const supply = poolMintInfo.supply.toNumber()
+
+  const tokenMintA = new Token(wallet, connection, mintA, TOKEN_PROGRAM_ID)
+  const poolTokenA = await tokenMintA.getAccountInfo(tokenAccountA)
+  const poolTokenAmountA = poolTokenA.amount.toNumber()
+
+  const tokenMintB = new Token(wallet, connection, mintB, TOKEN_PROGRAM_ID)
+  const poolTokenB = await tokenMintB.getAccountInfo(tokenAccountB)
+  const poolTokenAmountB = poolTokenB.amount.toNumber()
+
+  const withdrawAmountTokenA = (poolTokenAmountA * poolTokenAmount) / supply
+  const withdrawAmountTokenB = (poolTokenAmountB * poolTokenAmount) / supply
+
+  return [withdrawAmountTokenA, withdrawAmountTokenB, poolTokenAmountA, poolTokenAmountB]
+};
+
+/**
+ * Get max amount in tokenA and tokenB to withdrawal from pool
+ * @param selectedPool The pool which poolTokenAmount user has
+ * @param poolTokenAmount The amount of  user's pool tokens
+ */
+ export const calculateWithdrawAmount = ({
+  selectedPool,
+  poolTokenAmount,
+}: {
+  selectedPool: PoolInfo,
+  poolTokenAmount: number
+}): [number, number] => {
+  const { supply, tvl: { tokenA: poolTokenAmountA, tokenB: poolTokenAmountB } } = selectedPool
+
+  console.log('data', {
+    selectedPool,
+    poolTokenAmount
+  })
+
+  const withdrawAmountTokenA = (poolTokenAmountA * poolTokenAmount) / supply
+  const withdrawAmountTokenB = (poolTokenAmountB * poolTokenAmount) / supply
+
+  return [withdrawAmountTokenA, withdrawAmountTokenB]
 }

@@ -200,7 +200,7 @@ export const SimpleInput = ({
   theme: Theme
   value: string | number
   symbol: string
-  disabled: boolean
+  disabled?: boolean
   maxBalance: number
   placeholder: string
   onChange: (value: string | number) => void
