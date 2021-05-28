@@ -53,7 +53,7 @@ export const CreatePoolPopup = ({
       8
     )
     setBaseAmount(baseAmount)
-    setQuoteAmount(quoteAmount)
+    // setQuoteAmount(quoteAmount)
   }
 
   const [quoteTokenMintAddress, setQuoteTokenMintAddress] = useState<string>('')
@@ -63,7 +63,7 @@ export const CreatePoolPopup = ({
       (+quoteAmount * quoteTokenPrice) / baseTokenPrice,
       8
     )
-    setBaseAmount(baseAmount)
+    // setBaseAmount(baseAmount)
     setQuoteAmount(quoteAmount)
   }
 
@@ -160,7 +160,7 @@ export const CreatePoolPopup = ({
           value={baseAmount}
           onChange={setBaseAmountWithQuote}
           symbol={baseSymbol}
-          disabled={!baseTokenPrice}
+          // disabled={!baseTokenPrice}
           maxBalance={maxBaseAmount}
           openSelectCoinPopup={() => {
             setIsBaseTokenSelecting(true)
@@ -177,7 +177,7 @@ export const CreatePoolPopup = ({
           value={quoteAmount}
           onChange={setQuoteAmountWithBase}
           symbol={quoteSymbol}
-          disabled={!quoteTokenPrice}
+          // disabled={!quoteTokenPrice}
           maxBalance={maxQuoteAmount}
           openSelectCoinPopup={() => {
             setIsBaseTokenSelecting(false)

@@ -44,10 +44,12 @@ export const SelectCoinPopup = ({
   close: () => void
   selectTokenAddress: (address: string) => void
 }) => {
+  const needKnownMints = false
   const [searchValue, onChangeSearch] = useState('')
-  const usersMints = mints.filter(
+  const usersMints = needKnownMints ? mints.filter(
     (el) => getTokenNameByMintAddress(el) === ALL_TOKENS_MINTS_MAP[el]
-  )
+  ) : mints
+  
   const filteredMints = searchValue
     ? usersMints.filter((mint) =>
         getTokenNameByMintAddress(mint)
