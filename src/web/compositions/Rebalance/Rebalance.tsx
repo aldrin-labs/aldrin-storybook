@@ -1,15 +1,13 @@
-import React, { useMemo, useEffect, useState } from 'react'
-import { Connection, LAMPORTS_PER_SOL } from '@solana/web3.js'
+import React, { useEffect, useState } from 'react'
+import { Connection } from '@solana/web3.js'
 import { compose } from 'recompose'
 import { withTheme, Theme } from '@material-ui/core/styles'
-import { TokenInstructions } from '@project-serum/serum'
 import { isEqual } from 'lodash'
-import debounceRender from 'react-debounce-render';
-
+import debounceRender from 'react-debounce-render'
 
 import { withPublicKey } from '@core/hoc/withPublicKey'
-import { useWallet, WRAPPED_SOL_MINT } from '@sb/dexUtils/wallet'
-import { ALL_TOKENS_MINTS_MAP } from '@sb/dexUtils/markets'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { getRandomInt, getRandomArbitrary } from '@core/utils/helpers'
 
 import {
   getPricesForTokens,
@@ -21,6 +19,7 @@ import {
   getTokensMap,
   getAllTokensData,
   getSliderStepForTokens,
+  getTransactionsList,
 } from './utils'
 import { useConnection } from '@sb/dexUtils/connection'
 
@@ -30,35 +29,49 @@ import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { PoolInfo } from './Rebalance.types'
+import { PoolInfo, TokensMapType, TokenType } from './Rebalance.types'
 import RebalanceTable from './components/Tables'
 import RebalanceHeaderComponent from './components/Header'
 import DonutChartWithLegend from '@sb/components/AllocationBlock/index'
 import BalanceDistributedComponent from './components/BalanceDistributed'
 import { RebalancePopup } from './components/RebalancePopup'
 
-// const handleSliderChange = (setTokensMap, e, newValue) => {
-//     // console.log('setTokensMap: ', setTokensMap)
-//     console.log('newValue: ', newValue)
-// }
+import { getPoolsInfoMockData } from './Rebalance.mock'
 
-const MemoizedDonutChartWithLegend = React.memo(DonutChartWithLegend, (prevProps, nextProps) => {
+const MemoizedDonutChartWithLegend = React.memo(
+  DonutChartWithLegend,
+  (prevProps, nextProps) => {
+    return isEqual(prevProps.data, nextProps.data)
+  }
+)
 
-  return isEqual(prevProps.data, nextProps.data)
-})
+const MemoizedRebalancePopup = React.memo(
+  RebalancePopup,
+  (prevProps, nextProps) => {
+    return (
+      prevProps.open === nextProps.open &&
+      prevProps.rebalanceStep === nextProps.rebalanceStep
+    )
+  }
+)
 
-const MemoizedRebalancePopup = React.memo(RebalancePopup, (prevProps, nextProps) => {
+const DebouncedMemoizedDonutChartWithLegend = debounceRender(
+  MemoizedDonutChartWithLegend,
+  100,
+  { leading: false }
+)
 
-  return prevProps.open === nextProps.open && prevProps.rebalanceStep && nextProps.rebalanceStep
+const DebouncedMemoizedRebalanceHeaderComponent = debounceRender(
+  RebalanceHeaderComponent,
+  100,
+  { leading: false }
+)
 
-})
-
-const DebouncedMemoizedDonutChartWithLegend = debounceRender(MemoizedDonutChartWithLegend, 100, { leading: false })
-
-const DebouncedMemoizedRebalanceHeaderComponent = debounceRender(RebalanceHeaderComponent, 100, { leading: false })
-
-const DebouncedBalanceDistributedComponent = debounceRender(BalanceDistributedComponent, 100, { leading: false })
-
+const DebouncedBalanceDistributedComponent = debounceRender(
+  BalanceDistributedComponent,
+  100,
+  { leading: false }
+)
 
 const RebalanceComposition = ({
   publicKey,
@@ -71,31 +84,29 @@ const RebalanceComposition = ({
 }) => {
   const { wallet } = useWallet()
   const [isRebalancePopupOpen, changeRebalancePopupState] = useState(false)
-  const [rebalanceStep, changeRebalanceStep] = useState('')
-
-  // const [publicKeys = []] = useWalletPublicKeys();
-  // console.log('publicKeys: ', publicKeys)
+  const [rebalanceStep, changeRebalanceStep] =
+    useState<'initial' | 'pending' | 'done'>('initial')
 
   const connection: Connection = useConnection()
   const isWalletConnected = !!wallet?.publicKey
 
-  const [tokensMap, setTokensMap] = useState({})
+  const [tokensMap, setTokensMap] = useState<TokensMapType>({})
   const [totalTokensValue, setTotalTokensValue] = useState(0)
   const [leftToDistributeValue, setLeftToDistributeValue] = useState(0)
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log('fetchData: ', fetchData)
-
       try {
         console.time('rebalance initial data set time')
-        const allTokensData = await getAllTokensData(wallet.publicKey, connection)
+        const allTokensData = await getAllTokensData(
+          wallet.publicKey,
+          connection
+        )
 
         const tokensWithPrices = await getPricesForTokens(allTokensData)
         const tokensWithTokenValue = getTokenValuesForTokens(tokensWithPrices)
-        const sortedTokensByTokenValue = getSortedTokensByValue(
-          tokensWithTokenValue
-        )
+        const sortedTokensByTokenValue =
+          getSortedTokensByValue(tokensWithTokenValue)
 
         const totalTokenValue = getTotalTokenValue(sortedTokensByTokenValue)
 
@@ -104,24 +115,28 @@ const RebalanceComposition = ({
           totalTokenValue
         )
 
-        const tokensWithSliderSteps = getSliderStepForTokens(tokensWithPercentages, totalTokenValue)
+        const tokensWithSliderSteps = getSliderStepForTokens(
+          tokensWithPercentages,
+          totalTokenValue
+        )
 
         // TODO: Can be splitted and move up
         const availableTokensForRebalance = getAvailableTokensForRebalance(
-          getPoolsInfo,
+          getPoolsInfoMockData,
           tokensWithSliderSteps
         )
         const availableTokensForRebalanceMap = getTokensMap(
           availableTokensForRebalance
         )
 
-        console.log('availableTokensForRebalanceMap: ', availableTokensForRebalanceMap)
-        console.log('totalTokenValue: ', totalTokenValue)
+        console.log(
+          'availableTokensForRebalanceMap: ',
+          availableTokensForRebalanceMap
+        )
 
         setTokensMap(availableTokensForRebalanceMap)
         setTotalTokensValue(totalTokenValue)
 
-        // console.log('availableTokensForRebalanceMap: ', availableTokensForRebalanceMap)
         console.timeEnd('rebalance initial data set time')
       } catch (e) {
         // set error
@@ -134,11 +149,41 @@ const RebalanceComposition = ({
     }
   }, [wallet.publicKey])
 
-  // const bindedHandleSliderChange = handleSliderChange.bind(this, setTokensMap)
+  function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
+    if (value === null || value === undefined) return false;
+    const testDummy: TValue = value;
+    return true;
+  }
 
-  // console.log('tokensMap: ', tokensMap)
+  const tokensDiff: { symbol: string, amountDiff: number, decimalCount: number, price: number }[] = Object.values(tokensMap)
+    .map((el: TokenType) => ({
+      symbol: el.symbol,
+      amountDiff: +(el.targetAmount - el.amount).toFixed(el.decimalCount),
+      decimalCount: el.decimalCount,
+      price: el.price,
+    }))
+    .filter((el) => el.amountDiff !== 0)
 
-  // console.log('Object.values(tokensMap): ', Object.values(tokensMap))
+  const poolsInfoProcessed = getPoolsInfoMockData.map((el, i) => {
+    // const slippage = getRandomArbitrary(1, 3)
+    const slippage = [0.5, 0.5, 1, 0.5, 0.5]
+
+    return {
+      symbol: el.name,
+      slippage: slippage[i],
+    }
+  })
+
+  console.log('tokensMap: ', tokensMap)
+  console.log('poolsInfoProcessed: ', poolsInfoProcessed)
+
+  const rebalanceTransactionsList = getTransactionsList({
+    tokensDiff,
+    poolsInfo: poolsInfoProcessed,
+    tokensMap,
+  })
+
+  console.log('rebalanceTransactionsList: ', rebalanceTransactionsList)
 
   return (
     <RowContainer
@@ -225,10 +270,11 @@ const RebalanceComposition = ({
                 height={'100%'}
                 width={'calc(45% - 1rem)'}
               >
-                <DebouncedBalanceDistributedComponent 
+                <DebouncedBalanceDistributedComponent
                   totalTokensValue={totalTokensValue}
                   leftToDistributeValue={leftToDistributeValue}
-                  theme={theme} />
+                  theme={theme}
+                />
               </Row>
               <BtnCustom
                 theme={theme}

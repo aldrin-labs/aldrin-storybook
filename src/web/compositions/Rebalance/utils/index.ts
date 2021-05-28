@@ -7,6 +7,7 @@ import { getAvailableTokensForRebalance } from './getAvailableTokensForRebalance
 import { getTokensMap } from './getTokensMap'
 import { getAllTokensData } from './getAllTokensData'
 import { getSliderStepForTokens } from './getSliderStepForTokens'
+import { getTransactionsList } from './getTransactionsList'
 
 export {
   getTokenValuesForTokens,
@@ -18,4 +19,5 @@ export {
   getTokensMap,
   getAllTokensData,
   getSliderStepForTokens,
+  getTransactionsList,
 }

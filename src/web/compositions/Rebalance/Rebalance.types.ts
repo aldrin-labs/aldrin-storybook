@@ -12,6 +12,8 @@ export type PoolTotalFeesPaid = {
   
 export type PoolInfo = {
     name: string
+    swapToken: string
+    poolTokenMint: string
     tokenA: string
     tokenB: string
     apy24h: number
@@ -38,6 +40,7 @@ export interface TokenType extends TokenInfo {
     disabledReason?: string
     poolWithLiquidityExists?: true | false
     poolExists?: true | false  
+    decimalCount: number
 }
 
 export type TokensMapType = { [cacheKey: string]: TokenType }
