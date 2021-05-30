@@ -9,8 +9,8 @@ export const getPoolsInfoMockData: PoolInfo[] = [
       tokenA: "So11111111111111111111111111111111111111112",
       tokenB: "SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt",
       tvl: {
-        tokenA: 10.0,
-        tokenB: 50.0,
+        tokenA: 100.0,
+        tokenB: 15.0,
         USD: 1000.0,
       },
       totalFeesPaid: {
@@ -29,7 +29,7 @@ export const getPoolsInfoMockData: PoolInfo[] = [
       tokenB: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
       tvl: {
         tokenA: 1000,
-        tokenB: 500,
+        tokenB: 32081,
         USD: 50000,
       },
       totalFeesPaid: {
@@ -47,7 +47,7 @@ export const getPoolsInfoMockData: PoolInfo[] = [
       tokenB: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
       tvl: {
         tokenA: 10,
-        tokenB: 50,
+        tokenB: 43.53,
         USD: 5000,
       },
       totalFeesPaid: {
