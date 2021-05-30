@@ -166,7 +166,9 @@ const RebalanceComposition = ({
 
   const poolsInfoProcessed = getPoolsInfoMockData.map((el, i) => {
     // const slippage = getRandomArbitrary(1, 3)
-    const slippage = [0.5, 0.5, 1, 0.5, 0.5]
+    // const slippage = [0.5, 0.5, 1, 0.5, 0.5]
+    const slippage = [0, 0, 0, 0, 0]
+
 
     return {
       symbol: el.name,
