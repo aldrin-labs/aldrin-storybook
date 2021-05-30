@@ -7,6 +7,7 @@ export type TransactionType = PoolInfoElement & { amount: number, total?: number
 export type PoolInfoElement = {
   symbol: string
   slippage: number
+  price: number
 }
 
 // TODO: Remove _symbol or symbol_
@@ -26,6 +27,7 @@ export const getTransactionsList = ({
   tokensMap: TokensMapType
 }) => {
 
+  console.log('poolsInfo: ', poolsInfo)
   const totalDiffAbs = tokensDiff.reduce((acc, el) => acc + el.tokenValueDiffTest, 0)
 
   const tokensToSell = tokensDiff
@@ -106,7 +108,8 @@ export const getTransactionsList = ({
       const [base, quote] = poolPair.symbol.split('_')
 
       const side = base === pathSymbol ? 'sell' : 'buy'
-      const price = tokensMap[base].price / tokensMap[quote].price
+      // const price = tokensMap[base].price / tokensMap[quote].price
+      const price = poolPair.price
 
       // Handling case with intermidiate pair inside path
       const pathInString = pathElement.join('_')
@@ -182,8 +185,9 @@ export const getTransactionsList = ({
       const [base, quote] = poolPair.symbol.split('_') // 
 
       const side = base === pathSymbol ? 'sell' : 'buy'
-      const price = tokensMap[base].price / tokensMap[quote].price
-
+      // const price = tokensMap[base].price / tokensMap[quote].price
+      const price = poolPair.price
+      
       // Handling case with intermidiate pair inside path
       const pathInString = pathElement.join('_')
       const isIntermidiate = pathInString.match(`_${pathSymbol}_`) || index === 0
