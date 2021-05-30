@@ -1,5 +1,6 @@
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { TokensMapType } from '../Rebalance.types'
+import { Graph } from '@core/utils/graph/Graph'
 
 export type TransactionType = PoolInfoElement & { amount: number, total?: number, side: 'sell' | 'buy', feeUSD: number }
 
@@ -24,15 +25,29 @@ export const getTransactionsList = ({
   poolsInfo: PoolInfoElement[]
   tokensMap: TokensMapType
 }) => {
+
+  const totalDiffAbs = tokensDiff.reduce((acc, el) => acc + el.tokenValueDiffTest, 0)
+
   const tokensToSell = tokensDiff
     .filter((el) => el.amountDiff < 0)
     .filter((el) => el.symbol !== 'USDT')
-  const tokensToBuy = tokensDiff.filter((el) => el.amountDiff > 0)
+  const tokensToBuy = tokensDiff
+  .filter((el) => el.amountDiff > 0)
+  .map(el => ({ ...el, tokenValue: +(el.price * el.amountDiff).toFixed(el.decimalCount) }))
+  .sort((a,b) => a.tokenValue - b.tokenValue)
 
   if (!tokensToSell || !tokensToBuy) {
     return
   }
 
+  const tokensToSellMap = tokensToSell.reduce((acc, el) => {
+    acc[el.symbol] = el
+
+    return acc
+  }, {})
+
+
+  console.log('tokensToSellMap: ', tokensToSellMap)
   console.log('tokensToSell: ', tokensToSell)
   console.log('tokensToBuy: ', tokensToBuy)
 
@@ -48,198 +63,160 @@ export const getTransactionsList = ({
     {}
   )
 
-  // process sell transactions
-  tokensToSell.forEach((el) => {
-    let isPairToUSDTFound = false
-    let temp: { pair: string, amount: number } | undefined
+  const expectedTotalUSDT = tokensToBuy.reduce((acc: number, el) => acc + el.tokenValue, 0)
+  const containsUSDT = tokensDiff.find(el => el.symbol === 'USDT' && el.amountDiff < 0)
+  let realTotalUSDT = containsUSDT ? Math.abs(containsUSDT.amountDiff) : 0
 
-    while (!isPairToUSDTFound) {
-      let poolPair = poolsInfoMap[`${el.symbol}_USDT`]
+  // Creating graph with pools
+  const poolsGraph = new Graph()
+  poolsInfo.forEach(el => {
+    const [base, quote] = el.symbol.split('_')
 
-      if (temp) {
-        const [base, quote] = temp.pair.split('_')
+    poolsGraph.addEdge(base, quote)
+    poolsGraph.addEdge(quote, base)
+  })
 
-        if (base === el.symbol) {
-          poolPair = poolsInfoMap[`${quote}_USDT`]
-        } else if (quote === el.symbol) {
-          poolPair = poolsInfoMap[`${base}_USDT`]
-        }
+
+  const pathToSell = tokensToSell.map((el) => {
+    const path = poolsGraph.shortestPath(el.symbol, 'USDT')
+    console.log('graph path: ', path)
+
+    return path
+  })
+
+  // TODO: Handle case with USDT_USDT
+  const pathToBuy = tokensToBuy
+  .map((el) => {
+    const path = poolsGraph.shortestPath('USDT', el.symbol)
+    return path
+  })
+
+  pathToSell.forEach((pathElement: any) => {
+    let tempToken = { amount: 0 }
+
+    pathElement.forEach((pathSymbol: string, index: number, arr: string[]) => {
+      const nextElement = arr[index +1]
+
+      // We ended with finding transactions for this path
+      if (!nextElement) {
+        return
       }
 
-      // For general case if pair found
-      if (poolPair && !temp) {
-        const sellAmount = +(
-          Math.abs(el.amountDiff) -
-          (poolPair.slippage / 100) * Math.abs(el.amountDiff)
-        ).toFixed(el.decimalCount)
+      const poolPair = poolsInfoMap[`${pathSymbol}_${nextElement}`] || poolsInfoMap[`${nextElement}_${pathSymbol}`] // FTT_SOL || SOL_FTT
+      const [base, quote] = poolPair.symbol.split('_')
 
-        const { price } = tokensMap[el.symbol]
+      const side = base === pathSymbol ? 'sell' : 'buy'
+      const price = tokensMap[base].price / tokensMap[quote].price
 
-        transactionsToSell.push({
-          ...poolPair,
-          total: sellAmount * price,
-          amount: sellAmount,
-          side: 'sell',
-          feeUSD: +((poolPair.slippage / 100) * Math.abs(el.amountDiff) * el.price).toFixed(2)
-        })
-        isPairToUSDTFound = true
-        break
+      // Handling case with intermidiate pair inside path
+      const pathInString = pathElement.join('_')
+      const isIntermidiate = pathInString.match(`_${pathSymbol}_`)
+
+      const tokenAmount = isIntermidiate ? tempToken.amount : Math.abs(tokensToSellMap[pathSymbol].amountDiff)
+
+      const moduleAmountDiff = tokenAmount
+      const amount = +(base === pathSymbol ? moduleAmountDiff : moduleAmountDiff / price)
+      .toFixed(tokensMap[base].decimalCount)
+      const total = +(amount * price * (100 - poolsInfoMap[poolPair.symbol].slippage) / 100)
+      .toFixed(tokensMap[quote].decimalCount)
+
+      tempToken.amount = base === pathSymbol ? total : amount 
+
+      if (nextElement === 'USDT') {
+        realTotalUSDT = realTotalUSDT + (base === pathSymbol ? total : amount)
       }
 
-      // For handling case with another pair
-      if (poolPair && temp) {
-        // poolPair === SRM_USDT
-        // tempPair = SOL_SRM
+      transactionsToSell.push({
+        ...poolsInfoMap[poolPair.symbol],
+        amount: amount,
+        total: total, 
+        side,
 
-        const [base, quote] = temp.pair.split('_') // SOL_SRM 
-        const symbolForPrice = base === el.symbol ? quote : base
+        feeUSD: poolsInfoMap[poolPair.symbol].slippage / 100 * moduleAmountDiff * tokensMap[pathSymbol].price,
+      })
 
-        const amount = +(temp.amount * (100 - poolPair.slippage) / 100).toFixed(tokensMap[symbolForPrice].decimalCount)
-        const total = amount * tokensMap[symbolForPrice].price
+    });
 
-        transactionsToSell.push({
-          ...poolPair,
-          amount: amount,
-          total: total,
-          side: 'sell',
-          feeUSD: +((poolPair.slippage / 100) * Math.abs(el.amountDiff) * el.price).toFixed(2)
-          
-        })
-        isPairToUSDTFound = true
-        break
-      }
+  })
 
-      if (!poolPair) {
-        const anyPairToToken = poolsInfo.find(
-          (poolElement) =>
-            (poolElement.symbol.includes(`${el.symbol}_`) ||
-              poolElement.symbol.includes(`_${el.symbol}`)) 
-              // TOOD: FIX It AND make it an array of temp pairs
-              // && poolElement.symbol !== (temp && temp.pair)
-        )
 
-        if (anyPairToToken) {
-          temp = { pair: anyPairToToken.symbol, amount: 0 }
+  console.log('realTotalUSDT: ', realTotalUSDT)
+  console.log('pathToBuy: ', pathToBuy)
 
-          const [base, quote] = anyPairToToken.symbol.split('_') // 
-          const price = base === el.symbol ? tokensMap[base].price / tokensMap[quote].price : tokensMap[quote].price / tokensMap[base].price
-          const side = base === el.symbol ? 'sell' : 'buy'
+  const tokensToBuyWhichRespectsTotalUSDT = tokensToBuy.map(el => {
+  const amount = el.amountDiff * realTotalUSDT / expectedTotalUSDT
+  const total = amount * el.price
 
-          const moduleAmountDiff = Math.abs(el.amountDiff)
+    return {...el, tokenValueDiff: total, amountDiff: amount}
+  })
 
-          // TODO: probably fix amount
-          const amount = +(base === el.symbol ? moduleAmountDiff : (moduleAmountDiff / price) * (100 - poolsInfoMap[anyPairToToken.symbol].slippage) / 100).toFixed(el.decimalCount)
-          const total = +(base === el.symbol ? amount * price : amount).toFixed(tokensMap[base === el.symbol ? quote : base].decimalCount)
+  const tokensToBuyWhichRespectsTotalUSDTMap = tokensToBuyWhichRespectsTotalUSDT.reduce((acc, el) => {
+    acc[el.symbol] = el
 
-          temp.amount = total
+    return acc
+  }, {})
 
-          transactionsToSell.push({
-            ...poolsInfoMap[anyPairToToken.symbol],
-            amount: amount,
-            // TODO: SET SYMBOL
-            total: total, 
-            // totalUSDT: total * 
-            side,
-            feeUSD: +((poolsInfoMap[anyPairToToken.symbol].slippage / 100) *
-            moduleAmountDiff * el.price).toFixed(2),
-          })
-          continue
-        } else {
-          throw new Error('No pools for pair found')
-        }
-      }
+  console.log('tokensToBuyWhichRespectsTotalUSDTMap: ', tokensToBuyWhichRespectsTotalUSDTMap)
+  console.log('pathToBuy: ', pathToBuy)
+
+  pathToBuy.forEach((pathElement: any) => {
+    const destinationToken = pathElement[pathElement.length - 1]
+    let tempToken = { amount: tokensToBuyWhichRespectsTotalUSDTMap[destinationToken].tokenValueDiff }
+
+
+    if (pathElement.length === 2 && pathElement[0] === pathElement[1] && pathElement[0] === 'USDT') {
+      return
     }
+
+
+    pathElement.forEach((pathSymbol: string, index: number, arr: string[]) => {
+      const nextElement = arr[index +1]
+
+      // We ended with finding transactions for this path
+      if (!nextElement) {
+        return
+      }
+
+      const poolPair = poolsInfoMap[`${pathSymbol}_${nextElement}`] || poolsInfoMap[`${nextElement}_${pathSymbol}`] 
+      console.log('poolPair: ', poolPair)
+      const [base, quote] = poolPair.symbol.split('_') // 
+
+      const side = base === pathSymbol ? 'sell' : 'buy'
+      const price = tokensMap[base].price / tokensMap[quote].price
+
+      // Handling case with intermidiate pair inside path
+      const pathInString = pathElement.join('_')
+      const isIntermidiate = pathInString.match(`_${pathSymbol}_`) || index === 0
+
+      const tokenAmount = isIntermidiate ? tempToken.amount : Math.abs(tokensToBuyWhichRespectsTotalUSDTMap[pathSymbol].amountDiff)
+
+      const moduleAmountDiff = tokenAmount
+      const amount = +(base === pathSymbol ? moduleAmountDiff : moduleAmountDiff / price)
+      .toFixed(tokensMap[base].decimalCount)
+      const total = +(amount * price * (100 - poolsInfoMap[poolPair.symbol].slippage) / 100)
+      .toFixed(tokensMap[quote].decimalCount)
+
+      tempToken.amount = base === pathSymbol ? total : amount 
+
+      if (nextElement === 'USDT') {
+        realTotalUSDT = realTotalUSDT - total
+      }
+
+      transactionsToBuy.push({
+        ...poolsInfoMap[poolPair.symbol],
+        amount: amount,
+        total: total, 
+        side,
+
+        feeUSD: poolsInfoMap[poolPair.symbol].slippage / 100 * moduleAmountDiff * tokensMap[pathSymbol].price,
+      })
+
+    });
+
   })
 
-  tokensToBuy.forEach(el => {
-    let isPairToDestinationTokenFound = false
-    let tempPair: string | undefined
-
-    // while (!isPairToDestinationTokenFound) {
-    //   let poolPair = poolsInfoMap[`${el.symbol}_USDT`]
-
-      // if (tempPair) {
-      //   const [base, quote] = tempPair.split('_')
-
-      //   if (base === el.symbol) {
-      //     poolPair = poolsInfoMap[`${quote}_USDT`]
-      //   } else if (quote === el.symbol) {
-      //     poolPair = poolsInfoMap[`${base}_USDT`]
-      //   }
-      // }
-
-      // For general case if pair found, first attemp
-      // if (poolPair && !tempPair) {
-      //   const buyAmount = +(el.amountDiff - (poolPair.slippage / 100) * el.amountDiff).toFixed(el.decimalCount)
-
-      //   transactionsToBuy.push({
-      //     ...poolPair,
-      //     amount: buyAmount,
-      //     side: 'buy',
-      //     feeUSD: +((poolPair.slippage / 100) * el.amountDiff * el.price).toFixed(2)
-      //   })
-      //   isPairToDestinationTokenFound = false
-      //   break
-      // }
-
-      // For handling case with another pair
-      // if (poolPair && tempPair) {
-      //   const [base, quote] = tempPair.split('_')
-      //   const symbolForPrice = base === el.symbol ? quote : base
-      //   const priceToToken = tokensMap[symbolForPrice].price
-
-      //   const sellAmount = +(
-      //     (el.symbol === base
-      //       ? (el.price / priceToToken) * Math.abs(el.amountDiff)
-      //       : (priceToToken / el.price) * Math.abs(el.amountDiff)) -
-      //     (poolPair.slippage / 100) * Math.abs(el.amountDiff)
-      //   ).toFixed(el.decimalCount)
-
-      //   transactionsToSell.push({
-      //     ...poolPair,
-      //     amount: sellAmount,
-      //     side: 'sell',
-      //     feeUSD: +((poolPair.slippage / 100) * Math.abs(el.amountDiff) * el.price).toFixed(2)
-          
-      //   })
-      //   isPairToUSDTFound = true
-      //   break
-      // }
-
-    //   if (!poolPair) {
-    //     const anyPairToToken = poolsInfo.find(
-    //       (poolElement) =>
-    //         (poolElement.symbol.includes(`${el.symbol}_`) ||
-    //           poolElement.symbol.includes(`_${el.symbol}`)) &&
-    //         poolElement.symbol !== tempPair
-    //     )
-
-    //     if (anyPairToToken) {
-    //       tempPair = anyPairToToken.symbol
-
-    //       // TODO: probably fix amount
-    //       const sellAmount = +(
-    //         Math.abs(el.amountDiff) -
-    //         (poolsInfoMap[anyPairToToken.symbol].slippage / 100) *
-    //           Math.abs(el.amountDiff)
-    //       ).toFixed(el.decimalCount)
-
-    //       transactionsToSell.push({
-    //         ...poolsInfoMap[anyPairToToken.symbol],
-    //         amount: sellAmount,
-    //         side: 'sell',
-    //         feeUSD: +((poolsInfoMap[anyPairToToken.symbol].slippage / 100) *
-    //         Math.abs(el.amountDiff) * el.price).toFixed(2)
-    //       })
-    //       continue
-    //     } else {
-    //       throw new Error('No pools for pair found')
-    //     }
-    //   }
-    // }
-    // }
-  
-  })
+  console.log('transactionsToSell: ', transactionsToSell)
+  console.log('transactionsToBuy: ', transactionsToBuy)
 
   return [...transactionsToSell, ...transactionsToBuy]
 }
