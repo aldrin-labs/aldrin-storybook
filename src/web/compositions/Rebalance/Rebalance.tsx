@@ -173,6 +173,7 @@ const RebalanceComposition = ({
     return {
       symbol: el.name,
       slippage: slippage[i],
+      price: el.tvl.tokenB / el.tvl.tokenA
     }
   })
 
