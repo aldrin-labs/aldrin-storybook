@@ -2,7 +2,8 @@ import { PoolInfo,  } from './Rebalance.types'
 
 export const getPoolsInfoMockData: PoolInfo[] = [
     {
-      name: "SOL_SRM",
+      // name: "SOL_SRM",
+      name: 'SRM_SOL',
       swapToken: "57XV3PZWT75ftJy1jXW3uu8jgwYzgCjdhtSXLxP6rXbt",
       poolTokenMint: "6Vy3NcrwCsHG3fLHA7qhRhxmhVx3t3oou4ebK46gixQD",
       tokenA: "So11111111111111111111111111111111111111112",
@@ -21,6 +22,7 @@ export const getPoolsInfoMockData: PoolInfo[] = [
     },
     {
       name: "FTT_USDT",
+      // name: "USDT_FTT",
       swapToken: "57XV3PZWT75ftJy1jXW3uu8jgwYzgCjdhtSXLxP6rXbt",
       poolTokenMint: "6Vy3NcrwCsHG3fLHA7qhRhxmhVx3t3oou4ebK46gixQD",
       tokenA: "AGFEad2et2ZJif9jaGpdMixQqvW5i81aBdvKe7PHNfz3",
