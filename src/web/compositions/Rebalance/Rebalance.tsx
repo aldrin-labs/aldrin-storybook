@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { Connection } from '@solana/web3.js'
+import { Account, PublicKey, Transaction } from '@solana/web3.js'
 import { compose } from 'recompose'
 import { withTheme, Theme } from '@material-ui/core/styles'
 import { isEqual } from 'lodash'
 import debounceRender from 'react-debounce-render'
+
+import { swap } from '@sb/dexUtils/pools'
+import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/send-and-confirm-transaction-via-wallet'
 
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -149,45 +152,6 @@ const RebalanceComposition = ({
     }
   }, [wallet.publicKey])
 
-  function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
-    if (value === null || value === undefined) return false;
-    const testDummy: TValue = value;
-    return true;
-  }
-
-  const tokensDiff: { symbol: string, amountDiff: number, decimalCount: number, price: number }[] = Object.values(tokensMap)
-    .map((el: TokenType) => ({
-      symbol: el.symbol,
-      amountDiff: +(el.targetAmount - el.amount).toFixed(el.decimalCount),
-      decimalCount: el.decimalCount,
-      price: el.price,
-    }))
-    .filter((el) => el.amountDiff !== 0)
-
-  const poolsInfoProcessed = getPoolsInfoMockData.map((el, i) => {
-    // const slippage = getRandomArbitrary(1, 3)
-    // const slippage = [0.5, 0.5, 1, 0.5, 0.5]
-    const slippage = [0, 0, 0, 0, 0]
-
-
-    return {
-      symbol: el.name,
-      slippage: slippage[i],
-      price: el.tvl.tokenB / el.tvl.tokenA
-    }
-  })
-
-  console.log('tokensMap: ', tokensMap)
-  console.log('poolsInfoProcessed: ', poolsInfoProcessed)
-
-  const rebalanceTransactionsList = getTransactionsList({
-    tokensDiff,
-    poolsInfo: poolsInfoProcessed,
-    tokensMap,
-  })
-
-  console.log('rebalanceTransactionsList: ', rebalanceTransactionsList)
-
   return (
     <RowContainer
       theme={theme}
@@ -284,6 +248,78 @@ const RebalanceComposition = ({
                 onClick={() => {
                   changeRebalancePopupState(true)
                 }}
+                // onClick={async () => {
+
+                //   const [swap1t, swap1s] = await swap({
+                //     wallet,
+                //     connection,
+                //     swapAmountIn: 0.001,
+                //     swapAmountOut: 0.002,
+                //     tokenSwapPublicKey: new PublicKey("8XZsPr6CtBvxma58NMajgf4Qb3XAXmC1MW1A6afUcCwn"),
+                //     userTokenAccountA: new PublicKey("GyurcwNaUAQ7Ynm4cgAPQGWDK9rVE3ae1SdoH6MP6Roz"),
+                //     userTokenAccountB: new PublicKey("4o13XYibx4wGDdQ53iRb3cPkNrgYnuxHX9vMvxtaAZ4S"),
+                //     baseSwapToken: '',
+                //   })
+
+                //   const [swap2t, swap2s] = await swap({
+                //     wallet,
+                //     connection,
+                //     swapAmountIn: 0.001,
+                //     swapAmountOut: 0.002,
+                //     tokenSwapPublicKey: new PublicKey("8XZsPr6CtBvxma58NMajgf4Qb3XAXmC1MW1A6afUcCwn"),
+                //     userTokenAccountA: new PublicKey("GyurcwNaUAQ7Ynm4cgAPQGWDK9rVE3ae1SdoH6MP6Roz"),
+                //     userTokenAccountB: new PublicKey("4o13XYibx4wGDdQ53iRb3cPkNrgYnuxHX9vMvxtaAZ4S"),
+                //     baseSwapToken: '',
+                //   })
+
+                //   const [swap3t, swap3s] = await swap({
+                //     wallet,
+                //     connection,
+                //     swapAmountIn: 0.001,
+                //     swapAmountOut: 0.002,
+                //     tokenSwapPublicKey: new PublicKey("8XZsPr6CtBvxma58NMajgf4Qb3XAXmC1MW1A6afUcCwn"),
+                //     userTokenAccountA: new PublicKey("GyurcwNaUAQ7Ynm4cgAPQGWDK9rVE3ae1SdoH6MP6Roz"),
+                //     userTokenAccountB: new PublicKey("4o13XYibx4wGDdQ53iRb3cPkNrgYnuxHX9vMvxtaAZ4S"),
+                //     baseSwapToken: '',
+                //   })
+
+                //   const [swap4t, swap4s] = await swap({
+                //     wallet,
+                //     connection,
+                //     swapAmountIn: 0.001,
+                //     swapAmountOut: 0.002,
+                //     tokenSwapPublicKey: new PublicKey("8XZsPr6CtBvxma58NMajgf4Qb3XAXmC1MW1A6afUcCwn"),
+                //     userTokenAccountA: new PublicKey("GyurcwNaUAQ7Ynm4cgAPQGWDK9rVE3ae1SdoH6MP6Roz"),
+                //     userTokenAccountB: new PublicKey("4o13XYibx4wGDdQ53iRb3cPkNrgYnuxHX9vMvxtaAZ4S"),
+                //     baseSwapToken: '',
+                //   })
+
+                //   const [swap5t, swap5s] = await swap({
+                //     wallet,
+                //     connection,
+                //     swapAmountIn: 0.001,
+                //     swapAmountOut: 0.002,
+                //     tokenSwapPublicKey: new PublicKey("8XZsPr6CtBvxma58NMajgf4Qb3XAXmC1MW1A6afUcCwn"),
+                //     userTokenAccountA: new PublicKey("GyurcwNaUAQ7Ynm4cgAPQGWDK9rVE3ae1SdoH6MP6Roz"),
+                //     userTokenAccountB: new PublicKey("4o13XYibx4wGDdQ53iRb3cPkNrgYnuxHX9vMvxtaAZ4S"),
+                //     baseSwapToken: '',
+                //   })
+
+                //   const [swap6t, swap6s] = await swap({
+                //     wallet,
+                //     connection,
+                //     swapAmountIn: 0.001,
+                //     swapAmountOut: 0.002,
+                //     tokenSwapPublicKey: new PublicKey("8XZsPr6CtBvxma58NMajgf4Qb3XAXmC1MW1A6afUcCwn"),
+                //     userTokenAccountA: new PublicKey("GyurcwNaUAQ7Ynm4cgAPQGWDK9rVE3ae1SdoH6MP6Roz"),
+                //     userTokenAccountB: new PublicKey("4o13XYibx4wGDdQ53iRb3cPkNrgYnuxHX9vMvxtaAZ4S"),
+                //     baseSwapToken: '',
+                //   })
+
+                //   const commonTransaction = new Transaction().add(swap1t, swap2t, swap3t, swap4t, swap5t, swap6t)
+                //   await sendAndConfirmTransactionViaWallet(wallet, connection, commonTransaction, ...[swap1s, swap2s, swap3s, swap4s, swap5s, swap6s])
+
+                // }}
                 needMinWidth={false}
                 btnWidth="calc(55% - 1rem)"
                 height="100%"
@@ -305,6 +341,8 @@ const RebalanceComposition = ({
       )}
 
       <MemoizedRebalancePopup
+        tokensMap={tokensMap}
+        getPoolsInfo={getPoolsInfoMockData}
         theme={theme}
         open={isRebalancePopupOpen}
         rebalanceStep={rebalanceStep}
