@@ -11,7 +11,6 @@ import { Text } from '@sb/compositions/Addressbook/index'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 
-
 const BlockForIcons = styled(Row)`
   padding: 1rem 2rem;
   justify-content: space-around;
@@ -20,6 +19,7 @@ const BlockForIcons = styled(Row)`
   box-sizing: border-box;
   box-shadow: 16px 16px 12px rgba(0, 0, 0, 0.25);
   border-radius: 8px;
+  min-width: 25rem;
 `
 export const Stroke = styled(RowContainer)`
   justify-content: space-between;

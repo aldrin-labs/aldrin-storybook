@@ -49,18 +49,18 @@ export const TransactionComponent = ({
       </Row>
       <Row>
         <TextColumnContainer style={{ alignItems: 'flex-end' }}>
-          <Row padding={'1rem'}>
+          <Row padding={'1rem 0'}>
             <Text
               theme={theme}
               color={theme.palette.grey.new}
               style={{
                 whiteSpace: 'nowrap',
                 fontSize: '1.4rem',
+                paddingRight: '1rem',
               }}
             >
               Est. Slippage:
-            </Text>
-
+            </Text>{' '}
             <Text
               theme={theme}
               style={{
@@ -78,6 +78,7 @@ export const TransactionComponent = ({
               color={theme.palette.grey.new}
               style={{
                 whiteSpace: 'nowrap',
+                paddingRight: '1rem',
                 fontSize: '1.4rem',
               }}
             >
@@ -173,7 +174,10 @@ export const RebalancePopup = ({
     >
       <RowContainer
         justify={'space-between'}
-        style={{ borderBottom: '0.1rem solid #383B45', padding: '2rem' }}
+        style={{
+          borderBottom: '0.1rem solid #383B45',
+          padding: '0 2rem 2rem 2rem',
+        }}
       >
         <BoldHeader>Rebalance</BoldHeader>
         <SvgIcon
