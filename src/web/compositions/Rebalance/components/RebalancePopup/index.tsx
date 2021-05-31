@@ -39,63 +39,66 @@ export const TransactionComponent = ({
   symbol: string
   slippage: number
   price: number
-}) => (
-  <Stroke>
-    <Row>
-      <BlockForCoins symbol={symbol} />
-    </Row>
-    <Row>
-      <TextColumnContainer style={{ alignItems: 'flex-end' }}>
-        <Row padding={'1rem'}>
-          <Text
-            theme={theme}
-            color={theme.palette.grey.new}
-            style={{
-              whiteSpace: 'nowrap',
-              fontSize: '1.4rem',
-            }}
-          >
-            Est. Slippage:
-          </Text>
+}) => {
+  const [base, quote] = symbol.split('_')
 
-          <Text
-            theme={theme}
-            style={{
-              whiteSpace: 'nowrap',
-              fontSize: '1.4rem',
-            }}
-          >
-            {slippage}%
-          </Text>
-        </Row>
+  return (
+    <Stroke>
+      <Row>
+        <BlockForCoins symbol={symbol} />
+      </Row>
+      <Row>
+        <TextColumnContainer style={{ alignItems: 'flex-end' }}>
+          <Row padding={'1rem'}>
+            <Text
+              theme={theme}
+              color={theme.palette.grey.new}
+              style={{
+                whiteSpace: 'nowrap',
+                fontSize: '1.4rem',
+              }}
+            >
+              Est. Slippage:
+            </Text>
 
-        <Row>
-          <Text
-            theme={theme}
-            color={theme.palette.grey.new}
-            style={{
-              whiteSpace: 'nowrap',
-              fontSize: '1.4rem',
-            }}
-          >
-            Est. Price:
-          </Text>
+            <Text
+              theme={theme}
+              style={{
+                whiteSpace: 'nowrap',
+                fontSize: '1.4rem',
+              }}
+            >
+              {slippage}%
+            </Text>
+          </Row>
 
-          <Text
-            theme={theme}
-            style={{
-              whiteSpace: 'nowrap',
-              fontSize: '1.4rem',
-            }}
-          >
-            {price}
-            {/* 1 SOL = 0.001 BTC */}
-          </Text>
-        </Row>
-      </TextColumnContainer>
-    </Row>
-  </Stroke>
-)
+          <Row>
+            <Text
+              theme={theme}
+              color={theme.palette.grey.new}
+              style={{
+                whiteSpace: 'nowrap',
+                fontSize: '1.4rem',
+              }}
+            >
+              Est. Price:
+            </Text>
+
+            <Text
+              theme={theme}
+              style={{
+                whiteSpace: 'nowrap',
+                fontSize: '1.4rem',
+              }}
+            >
+              1 {base} = {1 * price} {quote}
+            </Text>
+          </Row>
+        </TextColumnContainer>
+      </Row>
+    </Stroke>
+  )
+}
 
 export const RebalancePopup = ({
   rebalanceStep,
@@ -130,8 +133,8 @@ export const RebalancePopup = ({
 
   const poolsInfoProcessed = getPoolsInfo.map((el, i) => {
     // const slippage = getRandomArbitrary(1, 3)
-    // const slippage = [0.5, 0.5, 1, 0.5, 0.5]
-    const slippage = [0, 0, 0, 0, 0]
+    const slippage = [0.5, 0.5, 1, 0.5, 0.5]
+    // const slippage = [0, 0, 0, 0, 0]
 
     return {
       symbol: el.name,
@@ -228,7 +231,7 @@ export const RebalancePopup = ({
                     fontSize: '1.9rem',
                   }}
                 >
-                  {totalFeesUSD}
+                  {totalFeesUSD.toFixed(2)}
                 </Text>
               </Row>
             </RowContainer>
