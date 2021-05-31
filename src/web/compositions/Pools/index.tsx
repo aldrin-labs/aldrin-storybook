@@ -57,6 +57,7 @@ const Pools = ({
           theme={theme}
           width={'calc(50% - 1rem)'}
           height={'30rem'}
+          style={{ position: 'relative' }}
         >
           <TotalVolumeLockedChart theme={theme} />
         </BlockTemplate>
@@ -64,6 +65,7 @@ const Pools = ({
           theme={theme}
           width={'calc(50% - 1rem)'}
           height={'30rem'}
+          style={{ position: 'relative' }}
         >
           <TradingVolumeChart theme={theme} />
         </BlockTemplate>
@@ -73,6 +75,7 @@ const Pools = ({
         <UserLiquitidyTable
           allTokensData={allTokensData}
           theme={theme}
+          selectedPool={selectedPool}
           selectPool={selectPool}
           poolsPrices={getPoolsPrices}
           setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}

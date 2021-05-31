@@ -719,12 +719,6 @@ export async function swap({
   poolTokenAmount: number
 }): [number, number] => {
   const { supply, tvl: { tokenA: poolTokenAmountA, tokenB: poolTokenAmountB } } = selectedPool
-
-  console.log('data', {
-    selectedPool,
-    poolTokenAmount
-  })
-
   const withdrawAmountTokenA = (poolTokenAmountA * poolTokenAmount) / supply
   const withdrawAmountTokenB = (poolTokenAmountB * poolTokenAmount) / supply
 

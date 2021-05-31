@@ -35,6 +35,9 @@ import {
 } from '@sb/compositions/Pools/index.types'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
+import { getTokenDataByMint } from '@sb/compositions/Pools/utils/getTokenDataByMint'
+import { formatSymbol } from '@sb/components/AllocationBlock/DonutChart/utils'
 
 const UserLiquitidyTable = ({
   theme,
@@ -130,6 +133,42 @@ const UserLiquitidyTable = ({
               <RowTd></RowTd>
             </TableHeader>
             {usersPools.map((el: PoolInfo) => {
+              const baseSymbol = getTokenNameByMintAddress(el.tokenA)
+              const quoteSymbol = getTokenNameByMintAddress(el.tokenB)
+
+              const baseTokenPrice =
+                poolsPrices.find((tokenInfo) => tokenInfo.symbol === baseSymbol)
+                  ?.price || 0
+
+              const quoteTokenPrice =
+                poolsPrices.find(
+                  (tokenInfo) => tokenInfo.symbol === quoteSymbol
+                )?.price || 0
+
+              const tvlUSD =
+                baseTokenPrice * el.tvl.tokenA + quoteTokenPrice * el.tvl.tokenB
+
+              const {
+                amount: poolTokenRawAmount,
+                decimals: poolTokenDecimals,
+              } = getTokenDataByMint(allTokensData, el.poolTokenMint)
+
+              const poolTokenAmount =
+                poolTokenRawAmount * 10 ** poolTokenDecimals
+
+              const [
+                userAmountTokenA,
+                userAmountTokenB,
+              ] = calculateWithdrawAmount({
+                selectedPool: el,
+                poolTokenAmount: poolTokenAmount,
+              })
+
+              const userLiquidityUSD =
+                baseTokenPrice * userAmountTokenA +
+                quoteTokenPrice * userAmountTokenB
+
+              console.log('userLiquidityUSD', el, poolTokenAmount)
               return (
                 <TableRow>
                   <RowTd>
@@ -141,7 +180,7 @@ const UserLiquitidyTable = ({
                   <RowDataTd>
                     <TextColumnContainer>
                       <RowDataTdTopText theme={theme}>
-                        ${el.tvl.USD}
+                        ${tvlUSD}
                       </RowDataTdTopText>
                       <RowDataTdText
                         theme={theme}
@@ -157,12 +196,17 @@ const UserLiquitidyTable = ({
                   </RowDataTd>
                   <RowDataTd>
                     <TextColumnContainer>
-                      <RowDataTdTopText theme={theme}>$68.24m</RowDataTdTopText>
+                      <RowDataTdTopText theme={theme}>
+                        ${userLiquidityUSD}
+                      </RowDataTdTopText>
                       <RowDataTdText
                         theme={theme}
                         color={theme.palette.grey.new}
                       >
-                        2000 SOL / 200 CCAI
+                        {userAmountTokenA}{' '}
+                        {formatSymbol({ symbol: baseSymbol })} /{' '}
+                        {userAmountTokenB}{' '}
+                        {formatSymbol({ symbol: quoteSymbol })}
                       </RowDataTdText>
                     </TextColumnContainer>
                   </RowDataTd>
