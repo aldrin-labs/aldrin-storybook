@@ -13,6 +13,7 @@ const TokenAllocationProgressBarContainer = styled(({ ...props }) => (
 const TokenAllocationProgressBar = styled(
   ({ width, color, height, ...rest }) => <LinearProgress {...rest} />
 )`
+  transition: width 0.5s;
   width: ${(props) => props.width || `100%`};
   background: ${(props) => props.color || '#E7ECF3'};
   border-radius: 1rem;
