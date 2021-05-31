@@ -8,6 +8,9 @@ import MockedToken2 from '@icons/solToken.svg'
 import Arrow from '@icons/smallBlueArrow.svg'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
+import { TokenIcon } from '@sb/components/TokenIcon'
+import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
+
 
 const BlockForIcons = styled(Row)`
   padding: 1rem 2rem;
@@ -24,36 +27,37 @@ export const Stroke = styled(RowContainer)`
   padding: 1.5rem 2rem;
 `
 
-export const BlockForCoins = ({}) => {
+export const BlockForCoins = ({ symbol }: { symbol: string }) => {
+  const [base, quote] = symbol.split('_')
+
   return (
     <BlockForIcons>
-      <SvgIcon
+      <TokenIcon
+        mint={getTokenMintAddressByName(base)}
         width={'2.5rem'}
         height={'2.5rem'}
-        style={{ margin: '0 1rem 0 0' }}
-        src={MockedToken2}
-      />{' '}
+        margin={'0 1rem 0 0'}
+      />
       <Text
         fontSize={'1.6rem'}
         fontFamily={'Avenir Next Medium'}
         style={{ margin: '0 1rem 0 0' }}
       >
-        {' '}
-        CCAI
+        {base}
       </Text>
       <SvgIcon src={Arrow} />
-      <SvgIcon
+      <TokenIcon
+        mint={getTokenMintAddressByName(quote)}
         width={'2.5rem'}
         height={'2.5rem'}
-        style={{ margin: '0  0 0 1rem' }}
-        src={MockedToken}
-      />{' '}
+        margin={'0 1rem 0 1rem'}
+      />
       <Text
         fontSize={'1.6rem'}
         fontFamily={'Avenir Next Medium'}
-        style={{ margin: '0 0 0 1rem' }}
+        style={{ margin: '0' }}
       >
-        SOL
+        {quote}
       </Text>
     </BlockForIcons>
   )
