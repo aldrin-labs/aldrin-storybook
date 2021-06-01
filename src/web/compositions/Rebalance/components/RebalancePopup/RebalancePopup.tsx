@@ -118,6 +118,7 @@ export const RebalancePopup = ({
       <RowContainer style={{ maxHeight: '40rem', overflowY: 'scroll' }}>
         {rebalanceTransactionsList.map((el) => (
           <TransactionComponent
+            key={`${el.symbol}${el.side}${el.price}${el.slippage}`}
             symbol={el.symbol}
             slippage={el.slippage}
             price={el.price}
@@ -182,7 +183,7 @@ export const RebalancePopup = ({
                     
                     setTimeout(() => {
                       refreshRebalance()
-                    }, 15000)
+                    }, 3000)
                     
                   } catch(e) {
                     changeRebalanceStep('failed')
