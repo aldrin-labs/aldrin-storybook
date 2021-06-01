@@ -27,7 +27,6 @@ import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getFeesEarnedByAccount } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
 import { Theme } from '@material-ui/core'
-import { useWallet } from '@sb/dexUtils/wallet'
 import {
   PoolInfo,
   FeesEarned,
@@ -35,9 +34,18 @@ import {
 } from '@sb/compositions/Pools/index.types'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
+import { getTokenDataByMint } from '@sb/compositions/Pools/utils/getTokenDataByMint'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
+import { WalletAdapter } from '@sb/dexUtils/types'
+import { getTotalUserLiquidity } from './utils'
 
 const UserLiquitidyTable = ({
   theme,
+  wallet,
   allTokensData,
   getPoolsInfoQuery: { getPoolsInfo },
   poolsPrices,
@@ -47,7 +55,7 @@ const UserLiquitidyTable = ({
   setIsAddLiquidityPopupOpen,
 }: {
   theme: Theme
-
+  wallet: WalletAdapter
   allTokensData: TokenInfo[]
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
   poolsPrices: PoolsPrices[]
@@ -56,8 +64,6 @@ const UserLiquitidyTable = ({
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
 }) => {
-  const { wallet } = useWallet()
-
   const userTokens = allTokensData.map((el) => el.mint)
 
   const usersPools = getPoolsInfo.filter((el) =>
@@ -87,7 +93,13 @@ const UserLiquitidyTable = ({
                 color={theme.palette.green.new}
                 fontFamily={'Avenir Next Demi'}
               >
-                $32,874
+                $
+                {formatNumberToUSFormat(
+                  stripDigitPlaces(
+                    getTotalUserLiquidity({ usersPools, poolsPrices }),
+                    2
+                  )
+                )}
               </Text>
             </LiquidityDataContainer>
             <LiquidityDataContainer style={{ paddingLeft: '3rem' }}>
@@ -130,6 +142,41 @@ const UserLiquitidyTable = ({
               <RowTd></RowTd>
             </TableHeader>
             {usersPools.map((el: PoolInfo) => {
+              const baseSymbol = getTokenNameByMintAddress(el.tokenA)
+              const quoteSymbol = getTokenNameByMintAddress(el.tokenB)
+
+              const baseTokenPrice =
+                poolsPrices.find((tokenInfo) => tokenInfo.symbol === baseSymbol)
+                  ?.price || 10
+
+              const quoteTokenPrice =
+                poolsPrices.find(
+                  (tokenInfo) => tokenInfo.symbol === quoteSymbol
+                )?.price || 10
+
+              const tvlUSD =
+                baseTokenPrice * el.tvl.tokenA + quoteTokenPrice * el.tvl.tokenB
+
+              const {
+                amount: poolTokenRawAmount,
+                decimals: poolTokenDecimals,
+              } = getTokenDataByMint(allTokensData, el.poolTokenMint)
+
+              const poolTokenAmount =
+                poolTokenRawAmount * 10 ** poolTokenDecimals
+
+              const [
+                userAmountTokenA,
+                userAmountTokenB,
+              ] = calculateWithdrawAmount({
+                selectedPool: el,
+                poolTokenAmount: poolTokenAmount,
+              })
+
+              const userLiquidityUSD =
+                baseTokenPrice * userAmountTokenA +
+                quoteTokenPrice * userAmountTokenB
+
               return (
                 <TableRow>
                   <RowTd>
@@ -141,14 +188,20 @@ const UserLiquitidyTable = ({
                   <RowDataTd>
                     <TextColumnContainer>
                       <RowDataTdTopText theme={theme}>
-                        ${el.tvl.USD}
+                        ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
                       </RowDataTdTopText>
                       <RowDataTdText
                         theme={theme}
                         color={theme.palette.grey.new}
                       >
-                        {el.tvl.tokenA} {getTokenNameByMintAddress(el.tokenA)} /{' '}
-                        {el.tvl.tokenB} {getTokenNameByMintAddress(el.tokenB)}
+                        {formatNumberToUSFormat(
+                          stripDigitPlaces(el.tvl.tokenA, 2)
+                        )}{' '}
+                        {getTokenNameByMintAddress(el.tokenA)} /{' '}
+                        {formatNumberToUSFormat(
+                          stripDigitPlaces(el.tvl.tokenB, 2)
+                        )}{' '}
+                        {getTokenNameByMintAddress(el.tokenB)}
                       </RowDataTdText>
                     </TextColumnContainer>
                   </RowDataTd>
@@ -157,12 +210,24 @@ const UserLiquitidyTable = ({
                   </RowDataTd>
                   <RowDataTd>
                     <TextColumnContainer>
-                      <RowDataTdTopText theme={theme}>$68.24m</RowDataTdTopText>
+                      <RowDataTdTopText theme={theme}>
+                        $
+                        {formatNumberToUSFormat(
+                          stripDigitPlaces(userLiquidityUSD, 2)
+                        )}
+                      </RowDataTdTopText>
                       <RowDataTdText
                         theme={theme}
                         color={theme.palette.grey.new}
                       >
-                        2000 SOL / 200 CCAI
+                        {formatNumberToUSFormat(
+                          stripDigitPlaces(userAmountTokenA, 8)
+                        )}{' '}
+                        {baseSymbol} /{' '}
+                        {formatNumberToUSFormat(
+                          stripDigitPlaces(userAmountTokenB, 8)
+                        )}{' '}
+                        {quoteSymbol}
                       </RowDataTdText>
                     </TextColumnContainer>
                   </RowDataTd>
@@ -228,10 +293,9 @@ export default compose(
   queryRendererHoc({
     query: getFeesEarnedByAccount,
     name: 'getFeesEarnedByAccountQuery',
-    variables: {
-      pools: [''],
-      account: '',
-    },
+    variables: (props) => ({
+      account: props.wallet.publicKey.toString(),
+    }),
     fetchPolicy: 'cache-and-network',
   })
 )(UserLiquitidyTable)

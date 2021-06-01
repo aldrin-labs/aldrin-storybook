@@ -1,11 +1,8 @@
 import {
   Account,
-  ConfirmedTransaction,
   Connection,
   PublicKey,
-  TokenBalance,
   Transaction,
-  TransactionSignature,
 } from '@solana/web3.js'
 
 import { Token, TOKEN_PROGRAM_ID } from './token/token'
@@ -16,9 +13,7 @@ import {
 } from './token-swap/token-swap'
 import { WalletAdapter } from './types'
 import { sendAndConfirmTransactionViaWallet } from './token/utils/send-and-confirm-transaction-via-wallet'
-import { sleep } from './utils'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
-import { getTokenNameByMintAddress } from './markets'
 
 const SWAP_PROGRAM_OWNER_FEE_ADDRESS = new PublicKey(
   'HfoTxFR1Tm6kGmWgYWD6J7YHVy1UwqSULUGVLXkJqaKN'
@@ -739,15 +734,7 @@ export const calculateWithdrawAmount = ({
   selectedPool: PoolInfo
   poolTokenAmount: number
 }): [number, number] => {
-  const {
-    supply,
-    tvl: { tokenA: poolTokenAmountA, tokenB: poolTokenAmountB },
-  } = selectedPool
-
-  console.log('data', {
-    selectedPool,
-    poolTokenAmount,
-  })
+  const { supply, tvl: { tokenA: poolTokenAmountA, tokenB: poolTokenAmountB } } = selectedPool
 
   const withdrawAmountTokenA = (poolTokenAmountA * poolTokenAmount) / supply
   const withdrawAmountTokenB = (poolTokenAmountB * poolTokenAmount) / supply

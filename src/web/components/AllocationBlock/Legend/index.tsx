@@ -26,9 +26,7 @@ const AllocationLegend = ({ data, colors, theme }: LegendProps) => {
           key={`${tokenData.symbol}-${tokenData.value}`}
         >
           <BarTitle theme={theme}>
-            {tokenData.symbol.length > 15
-              ? formatSymbol({ symbol: tokenData.symbol })
-              : tokenData.symbol}
+            {formatSymbol({ symbol: tokenData.symbol })}
           </BarTitle>
           <TokenAllocationProgressBarContainer
             width={'calc(100% - 14rem)'}

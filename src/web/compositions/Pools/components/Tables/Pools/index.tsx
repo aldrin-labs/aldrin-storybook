@@ -26,14 +26,24 @@ import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { Theme } from '@material-ui/core'
-import { PoolInfo, PoolsPrices } from '@sb/compositions/Pools/index.types'
+import {
+  FeesEarned,
+  PoolInfo,
+  PoolsPrices,
+} from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
+import { getFeesEarnedByPool } from '@core/graphql/queries/pools/getFeesEarnedByPool'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 
 const AllPoolsTable = ({
   theme,
   poolsPrices,
   getPoolsInfoQuery,
+  getFeesEarnedByPoolQuery,
   selectPool,
   setIsCreatePoolPopupOpen,
   setIsAddLiquidityPopupOpen,
@@ -41,17 +51,27 @@ const AllPoolsTable = ({
   theme: Theme
   poolsPrices: PoolsPrices[]
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
+  getFeesEarnedByPoolQuery: { getFeesEarnedByPool: FeesEarned[] }
   selectPool: (pool: PoolInfo) => void
   setIsCreatePoolPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
 }) => {
+  const { wallet } = useWallet()
   const [searchValue, onChangeSearch] = useState('')
 
-  const { wallet } = useWallet()
+  const { getFeesEarnedByPool = [] } = getFeesEarnedByPoolQuery || {
+    getFeesEarnedByPool: [],
+  }
 
   const filteredData = getPoolsInfoQuery.getPoolsInfo.filter((el) =>
     filterDataBySymbolForDifferentDeviders({ searchValue, symbol: el.name })
   )
+
+  const feesPerPoolMap = new Map()
+
+  getFeesEarnedByPool.forEach((feeEarnedByPool) => {
+    feesPerPoolMap.set(feeEarnedByPool.pool, feeEarnedByPool.earnedUSD)
+  })
 
   return (
     <RowContainer>
@@ -112,6 +132,24 @@ const AllPoolsTable = ({
               <RowTd></RowTd>
             </TableHeader>
             {filteredData.map((el) => {
+              const baseSymbol = getTokenNameByMintAddress(el.tokenA)
+              const quoteSymbol = getTokenNameByMintAddress(el.tokenB)
+
+              const baseTokenPrice =
+                poolsPrices.find((tokenInfo) => tokenInfo.symbol === baseSymbol)
+                  ?.price || 10
+
+              const quoteTokenPrice =
+                poolsPrices.find(
+                  (tokenInfo) => tokenInfo.symbol === quoteSymbol
+                )?.price || 10
+
+              const tvlUSD =
+                baseTokenPrice * el.tvl.tokenA + quoteTokenPrice * el.tvl.tokenB
+
+              const fees = feesPerPoolMap.get(el.swapToken) || 0
+              const apy = !!tvlUSD ? (100 * fees) / tvlUSD : 0
+
               return (
                 <TableRow>
                   <RowTd>
@@ -123,24 +161,30 @@ const AllPoolsTable = ({
                   <RowDataTd>
                     <TextColumnContainer>
                       <RowDataTdTopText theme={theme}>
-                        ${el.tvl.USD}
+                        ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
                       </RowDataTdTopText>
                       <RowDataTdText
                         theme={theme}
                         color={theme.palette.grey.new}
                       >
-                        {el.tvl.tokenA} {getTokenNameByMintAddress(el.tokenA)} /{' '}
-                        {el.tvl.tokenB} {getTokenNameByMintAddress(el.tokenB)}
+                        {formatNumberToUSFormat(
+                          stripDigitPlaces(el.tvl.tokenA, 2)
+                        )}{' '}
+                        {getTokenNameByMintAddress(el.tokenA)} /{' '}
+                        {formatNumberToUSFormat(
+                          stripDigitPlaces(el.tvl.tokenB, 2)
+                        )}{' '}
+                        {getTokenNameByMintAddress(el.tokenB)}
                       </RowDataTdText>
                     </TextColumnContainer>
                   </RowDataTd>
                   <RowDataTd>
                     <RowDataTdText theme={theme}>
-                      ${el.totalFeesPaid.USD}
+                      ${stripDigitPlaces(fees, 6)}
                     </RowDataTdText>
                   </RowDataTd>
                   <RowDataTd>
-                    <RowDataTdText theme={theme}>{el.apy24h}%</RowDataTdText>
+                    <RowDataTdText theme={theme}>{stripDigitPlaces(apy, 6)}%</RowDataTdText>
                   </RowDataTd>
                   <RowTd>
                     <Row justify={'flex-end'} width={'100%'}>
@@ -174,5 +218,11 @@ export default compose(
     name: 'getPoolsInfoQuery',
     query: getPoolsInfo,
     fetchPolicy: 'cache-and-network',
+  }),
+  queryRendererHoc({
+    name: 'getFeesEarnedByPoolQuery',
+    query: getFeesEarnedByPool,
+    fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
   })
 )(AllPoolsTable)
