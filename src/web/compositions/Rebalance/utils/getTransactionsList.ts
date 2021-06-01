@@ -1,14 +1,8 @@
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-import { TokensMapType } from '../Rebalance.types'
+import { TokensMapType, TransactionType, PoolInfoElement } from '../Rebalance.types'
 import { Graph } from '@core/utils/graph/Graph'
 
-export type TransactionType = PoolInfoElement & { amount: number, total?: number, side: 'sell' | 'buy', feeUSD: number }
 
-export type PoolInfoElement = {
-  symbol: string
-  slippage: number
-  price: number
-}
 
 // TODO: Remove _symbol or symbol_
 
@@ -25,9 +19,9 @@ export const getTransactionsList = ({
   }[]
   poolsInfo: PoolInfoElement[]
   tokensMap: TokensMapType
-}) => {
+}): TransactionType[] => {
 
-  console.log('poolsInfo: ', poolsInfo)
+  // console.log('poolsInfo: ', poolsInfo)
   const totalDiffAbs = tokensDiff.reduce((acc, el) => acc + el.tokenValueDiffTest, 0)
 
   const tokensToSell = tokensDiff
@@ -49,9 +43,9 @@ export const getTransactionsList = ({
   }, {})
 
 
-  console.log('tokensToSellMap: ', tokensToSellMap)
-  console.log('tokensToSell: ', tokensToSell)
-  console.log('tokensToBuy: ', tokensToBuy)
+  // console.log('tokensToSellMap: ', tokensToSellMap)
+  // console.log('tokensToSell: ', tokensToSell)
+  // console.log('tokensToBuy: ', tokensToBuy)
 
   let transactionsToSell: TransactionType[] = []
   let transactionsToBuy: TransactionType[] = []
@@ -81,7 +75,7 @@ export const getTransactionsList = ({
 
   const pathToSell = tokensToSell.map((el) => {
     const path = poolsGraph.shortestPath(el.symbol, 'USDT')
-    console.log('graph path: ', path)
+    // console.log('graph path: ', path)
 
     return path
   })
@@ -143,8 +137,8 @@ export const getTransactionsList = ({
   })
 
 
-  console.log('realTotalUSDT: ', realTotalUSDT)
-  console.log('pathToBuy: ', pathToBuy)
+  // console.log('realTotalUSDT: ', realTotalUSDT)
+  // console.log('pathToBuy: ', pathToBuy)
 
   const tokensToBuyWhichRespectsTotalUSDT = tokensToBuy.map(el => {
   const amount = el.amountDiff * realTotalUSDT / expectedTotalUSDT
@@ -159,8 +153,8 @@ export const getTransactionsList = ({
     return acc
   }, {})
 
-  console.log('tokensToBuyWhichRespectsTotalUSDTMap: ', tokensToBuyWhichRespectsTotalUSDTMap)
-  console.log('pathToBuy: ', pathToBuy)
+  // console.log('tokensToBuyWhichRespectsTotalUSDTMap: ', tokensToBuyWhichRespectsTotalUSDTMap)
+  // console.log('pathToBuy: ', pathToBuy)
 
   pathToBuy.forEach((pathElement: any) => {
     const destinationToken = pathElement[pathElement.length - 1]
@@ -181,13 +175,13 @@ export const getTransactionsList = ({
       }
 
       const poolPair = poolsInfoMap[`${pathSymbol}_${nextElement}`] || poolsInfoMap[`${nextElement}_${pathSymbol}`] 
-      console.log('poolPair: ', poolPair)
+      // console.log('poolPair: ', poolPair)
       const [base, quote] = poolPair.symbol.split('_') // 
 
       const side = base === pathSymbol ? 'sell' : 'buy'
       // const price = tokensMap[base].price / tokensMap[quote].price
       const price = poolPair.price
-      
+
       // Handling case with intermidiate pair inside path
       const pathInString = pathElement.join('_')
       const isIntermidiate = pathInString.match(`_${pathSymbol}_`) || index === 0
@@ -219,8 +213,8 @@ export const getTransactionsList = ({
 
   })
 
-  console.log('transactionsToSell: ', transactionsToSell)
-  console.log('transactionsToBuy: ', transactionsToBuy)
+  // console.log('transactionsToSell: ', transactionsToSell)
+  // console.log('transactionsToBuy: ', transactionsToBuy)
 
   return [...transactionsToSell, ...transactionsToBuy]
 }
