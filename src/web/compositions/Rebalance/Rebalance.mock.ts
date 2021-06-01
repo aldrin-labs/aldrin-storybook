@@ -6,8 +6,8 @@ export const getPoolsInfoMockData: PoolInfo[] = [
       name: 'SRM_SOL',
       swapToken: "57XV3PZWT75ftJy1jXW3uu8jgwYzgCjdhtSXLxP6rXbt",
       poolTokenMint: "6Vy3NcrwCsHG3fLHA7qhRhxmhVx3t3oou4ebK46gixQD",
-      tokenA: "So11111111111111111111111111111111111111112",
-      tokenB: "SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt",
+      tokenA: "SRMuApVNdxXokk5GT7XD5cUUgXMBCoAz2LHeuAoKWRt",
+      tokenB: "So11111111111111111111111111111111111111112",
       tvl: {
         tokenA: 100.0,
         tokenB: 15.0,
@@ -94,3 +94,10 @@ export const getPoolsInfoMockData: PoolInfo[] = [
         apy24h: 1.0,
       },
   ];
+
+export const MOKED_MINTS_MAP = {
+  '7YQoDmpwab7VcSzrzeM52aHg17NvyrbMQyQYw4ixzgvB': 'USDT',
+  'GTq626sYQzZbkxQjsrsdiFn7Ef84R35cZ5iC2CaWQuTZ': 'SRM',
+  '5EGUtk1uxJY9UXS7uFmD1vvFytG6UDG5CRPv5Y82X3Kj': 'FTT'
+}
+  

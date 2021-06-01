@@ -1,3 +1,6 @@
+import { Account, PublicKey, Transaction, Connection } from '@solana/web3.js'
+import { WalletAdapter } from '@sb/dexUtils/types'
+
 export type PoolTVL = {
     tokenA: number
     tokenB: number
@@ -26,7 +29,7 @@ export interface TokenInfo {
     amount: number
     decimals: number
     mint: string
-    address?: string   
+    address: string   
 }
 
 export interface TokenType extends TokenInfo {
@@ -44,3 +47,23 @@ export interface TokenType extends TokenInfo {
 }
 
 export type TokensMapType = { [cacheKey: string]: TokenType }
+
+export type TransactionType = PoolInfoElement & { amount: number, total: number, side: 'sell' | 'buy', feeUSD: number }
+
+export type PoolInfoElement = {
+  symbol: string
+  slippage: number
+  price: number
+  tokenSwapPublicKey: string
+}
+
+export type SwapsType = {
+    wallet: WalletAdapter
+    connection: Connection
+    swapAmountIn: number
+    swapAmountOut: number
+    tokenSwapPublicKey: PublicKey
+    userTokenAccountA: PublicKey
+    userTokenAccountB: PublicKey
+    baseSwapToken: 'tokenA' | 'tokenB'
+}
