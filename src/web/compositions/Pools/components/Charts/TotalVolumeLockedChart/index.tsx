@@ -33,7 +33,7 @@ const TotalVolumeLockedChart = ({
   getTotalVolumeLockedHistoryQuery: any
 }) => {
   const data =
-    getTotalVolumeLockedHistoryQuery.getTotalVolumeLockedHistory.volumes
+    getTotalVolumeLockedHistoryQuery?.getTotalVolumeLockedHistory?.volumes
 
   useEffect(() => {
     createTotalVolumeLockedChart({ theme, id, data })
@@ -41,12 +41,6 @@ const TotalVolumeLockedChart = ({
     // @ts-ignore - we set it in create chart function above
     return () => window[`TotalVolumeLockedChart-${id}`].destroy()
   }, [id])
-
-  console.log(
-    'getTotalVolumeLockedHistoryQuery',
-    getTotalVolumeLockedHistoryQuery,
-    data
-  )
 
   return (
     <>
@@ -69,9 +63,9 @@ export default compose(
     query: getTotalVolumeLockedHistory,
     name: 'getTotalVolumeLockedHistoryQuery',
     variables: {
-      timezone: '',
-      // timestampFrom: endOfDayTimestamp - dayDuration * 6,
-      // timestampTo: endOfDayTimestamp,
+      timezone: getTimezone(),
+      timestampFrom: endOfDayTimestamp - dayDuration * 6,
+      timestampTo: endOfDayTimestamp,
     },
     fetchPolicy: 'cache-and-network',
   })
