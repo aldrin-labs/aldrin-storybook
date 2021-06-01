@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Account, PublicKey, Transaction } from '@solana/web3.js'
 import { compose } from 'recompose'
 import { withTheme, Theme } from '@material-ui/core/styles'
 import { isEqual } from 'lodash'
 import debounceRender from 'react-debounce-render'
 
-import { swap } from '@sb/dexUtils/pools'
-import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/send-and-confirm-transaction-via-wallet'
-
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { getRandomInt, getRandomArbitrary } from '@core/utils/helpers'
 
 import {
   getPricesForTokens,
@@ -22,7 +17,6 @@ import {
   getTokensMap,
   getAllTokensData,
   getSliderStepForTokens,
-  getTransactionsList,
 } from './utils'
 import { useConnection } from '@sb/dexUtils/connection'
 
@@ -139,10 +133,10 @@ const RebalanceComposition = ({
           availableTokensForRebalance
         )
 
-        console.log(
-          'availableTokensForRebalanceMap: ',
-          availableTokensForRebalanceMap
-        )
+        // console.log(
+        //   'availableTokensForRebalanceMap: ',
+        //   availableTokensForRebalanceMap
+        // )
 
         setTokensMap(availableTokensForRebalanceMap)
         setTotalTokensValue(totalTokenValue)
