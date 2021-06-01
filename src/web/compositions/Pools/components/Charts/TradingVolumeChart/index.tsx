@@ -12,6 +12,11 @@ import {
 
 import { createTradingVolumeChart } from '../utils'
 import { getTradingVolumeHistory } from '@core/graphql/queries/pools/getTradingVolumeHistory'
+import {
+  dayDuration,
+  endOfDayTimestamp,
+  getTimezone,
+} from '@sb/compositions/AnalyticsRoute/components/utils'
 
 const TradingVolumeChart = ({
   theme,
@@ -24,8 +29,7 @@ const TradingVolumeChart = ({
   title: string
   getTradingVolumeHistoryQuery: any
 }) => {
-  const data = getTradingVolumeHistoryQuery.getTradingVolumeHistory.volumes
-
+  const data = getTradingVolumeHistoryQuery?.getTradingVolumeHistory?.volumes
   useEffect(() => {
     createTradingVolumeChart({ theme, id, data })
 
@@ -54,7 +58,9 @@ export default compose(
     query: getTradingVolumeHistory,
     name: 'getTradingVolumeHistoryQuery',
     variables: {
-      timezone: '',
+      timezone: getTimezone(),
+      timestampFrom: endOfDayTimestamp - dayDuration * 6,
+      timestampTo: endOfDayTimestamp,
     },
     fetchPolicy: 'cache-and-network',
   })
