@@ -25,6 +25,7 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { notify } from '@sb/dexUtils/notifications'
+import { connect } from 'formik'
 
 export const AddLiquidityPopup = ({
   theme,
