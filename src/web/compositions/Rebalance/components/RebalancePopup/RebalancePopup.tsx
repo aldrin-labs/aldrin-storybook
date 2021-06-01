@@ -25,9 +25,7 @@ import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/sen
 import { StyledPaper } from './styles'
 
 import { MOKED_MINTS_MAP } from '@sb/compositions/Rebalance/Rebalance.mock'
-import { getPoolsSwaps } from '../../utils/getPoolSwaps'
-import { getTransactionsList } from '../../utils/getTransactionsList'
-
+import { getPoolsSwaps, getTransactionsList } from '@sb/compositions/Rebalance/utils'
 import { TransactionComponent } from './TransactionComponent'
 import { PopupFooter } from './PopupFooter'
 
