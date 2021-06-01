@@ -34,6 +34,7 @@ import { formatSymbol } from '@sb/components/AllocationBlock/DonutChart/utils'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 import { AddCoinPopup } from '../AddCoinPopup'
+import { Loading } from '@sb/components'
 
 const tooltipTexts = {
   'no pool':
@@ -47,9 +48,11 @@ const tooltipTexts = {
 const HeaderRow = ({
   theme,
   openAddCoinPopup,
+  loadingRebalanceData,
 }: {
   theme: Theme
-  openAddCoinPopup: (arg: boolean) => {}
+  openAddCoinPopup: (arg: boolean) => {},
+  loadingRebalanceData: boolean
 }) => (
   <RowContainer
     height={'10rem'}
@@ -58,7 +61,13 @@ const HeaderRow = ({
     align="center"
     style={{ borderBottom: '0.1rem solid #383B45' }}
   >
-    <Text theme={theme}>Set up your allocation </Text>
+    <RowContainer style={{ width: '30%' }} align="center" justify="end">
+      <Text theme={theme}>Set up your allocation </Text>
+
+      {loadingRebalanceData && (
+        <Loading size={22} margin="auto auto auto 2rem" />
+      )}
+    </RowContainer>
 
     <BtnCustom
       theme={theme}
@@ -424,6 +433,8 @@ const RebalanceTable = ({
   leftToDistributeValue,
   setLeftToDistributeValue,
   totalTokensValue,
+
+  loadingRebalanceData,
 }: {
   theme: Theme
   data
@@ -434,6 +445,8 @@ const RebalanceTable = ({
   leftToDistributeValue
   setLeftToDistributeValue
   totalTokensValue
+
+  loadingRebalanceData: boolean
 }) => {
   const [isAddCoinPopupOpen, openAddCoinPopup] = useState(false)
 
@@ -447,7 +460,7 @@ const RebalanceTable = ({
         direction={'column'}
         justify={'end'}
       >
-        <MemoizedHeaderRow openAddCoinPopup={openAddCoinPopup} theme={theme} />
+        <MemoizedHeaderRow loadingRebalanceData={loadingRebalanceData} openAddCoinPopup={openAddCoinPopup} theme={theme} />
         <RowContainer
           align="flex-start"
           style={{ height: 'calc(100% - 15rem)', overflow: 'scroll' }}

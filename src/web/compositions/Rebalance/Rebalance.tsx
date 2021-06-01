@@ -91,14 +91,16 @@ const RebalanceComposition = ({
   const [totalTokensValue, setTotalTokensValue] = useState(0)
   const [leftToDistributeValue, setLeftToDistributeValue] = useState(0)
   const [rebalanceState, setRefreshStateRebalance] = useState(false)
+  const [loadingRebalanceData, setLoadingRebalanceData] = useState(false)
+
 
   const refreshRebalance = () => {
-    console.log('refreshRebalance: ', refreshRebalance)
     setRefreshStateRebalance(!rebalanceState)
   }
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoadingRebalanceData(true)
       try {
         console.time('rebalance initial data set time')
         const allTokensData = await getAllTokensData(
@@ -146,6 +148,7 @@ const RebalanceComposition = ({
         // set error
         console.log('e: ', e)
       }
+      setLoadingRebalanceData(false)
     }
 
     if (isWalletConnected) {
@@ -203,6 +206,8 @@ const RebalanceComposition = ({
               leftToDistributeValue={leftToDistributeValue}
               setLeftToDistributeValue={setLeftToDistributeValue}
               totalTokensValue={totalTokensValue}
+
+              loadingRebalanceData={loadingRebalanceData}
             />
           </Row>
           <Row
