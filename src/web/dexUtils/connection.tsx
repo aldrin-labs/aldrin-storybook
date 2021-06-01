@@ -21,6 +21,7 @@ export function ConnectionProvider({ children }) {
     'connectionEndpts',
     ENDPOINTS[0].endpoint
   )
+  
   const connection = useMemo(
     () =>
       endpoint === MAINNET_BETA_ENDPOINT
@@ -38,7 +39,8 @@ export function ConnectionProvider({ children }) {
           )
         : new Connection(
             ENDPOINTS.find((endpointInfo) => endpointInfo.endpoint === endpoint)
-              ?.endpoint || MAINNET_BETA_ENDPOINT
+              ?.endpoint || MAINNET_BETA_ENDPOINT,
+              'recent'
           ),
     [endpoint]
   )
@@ -65,7 +67,7 @@ export function ConnectionProvider({ children }) {
     </ConnectionContext.Provider>
   )
 }
-export function useConnection() {
+export function useConnection(): Connection {
   return useContext(ConnectionContext).connection
 }
 export function useConnectionConfig() {

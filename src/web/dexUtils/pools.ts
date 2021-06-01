@@ -1,4 +1,12 @@
-import { Account, Connection, PublicKey, Transaction } from '@solana/web3.js'
+import {
+  Account,
+  ConfirmedTransaction,
+  Connection,
+  PublicKey,
+  TokenBalance,
+  Transaction,
+  TransactionSignature,
+} from '@solana/web3.js'
 
 import { Token, TOKEN_PROGRAM_ID } from './token/token'
 import {
@@ -10,6 +18,7 @@ import { WalletAdapter } from './types'
 import { sendAndConfirmTransactionViaWallet } from './token/utils/send-and-confirm-transaction-via-wallet'
 import { sleep } from './utils'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { getTokenNameByMintAddress } from './markets'
 
 const SWAP_PROGRAM_OWNER_FEE_ADDRESS = new PublicKey(
   'HfoTxFR1Tm6kGmWgYWD6J7YHVy1UwqSULUGVLXkJqaKN'
@@ -423,6 +432,10 @@ export async function depositAllTokenTypes({
       console.log('deposit catch error', e)
       counter++
       poolTokenAmount *= 0.99
+
+      if (e.message.includes('cancelled')) {
+        return
+      }
     }
   }
 
@@ -533,14 +546,17 @@ export async function withdrawAllTokenTypes({
       )
       if (withdrawSignature) break
     } catch (e) {
-      console.log('withdraw catch error', e, e.includes('cancelled'))
+      console.log('withdraw catch error')
       counter++
       withdrawAmountTokenA *= 0.99
       withdrawAmountTokenB *= 0.99
+
+      if (e.message.includes('cancelled')) {
+        return
+      }
     }
   }
 }
-
 
 /**
  * Swap tokenA to tokenB and vice versa on existing pool
@@ -650,7 +666,7 @@ export async function swap({
  * @param poolTokenAmount The amount of  user's pool tokens
  * @param tokenSwap Loaded TokenSwap interface
  */
- export const getMaxWithdrawAmount = async ({
+export const getMaxWithdrawAmount = async ({
   wallet,
   connection,
   tokenSwapPublicKey,
@@ -703,26 +719,34 @@ export async function swap({
   const withdrawAmountTokenA = (poolTokenAmountA * poolTokenAmount) / supply
   const withdrawAmountTokenB = (poolTokenAmountB * poolTokenAmount) / supply
 
-  return [withdrawAmountTokenA, withdrawAmountTokenB, poolTokenAmountA, poolTokenAmountB]
-};
+  return [
+    withdrawAmountTokenA,
+    withdrawAmountTokenB,
+    poolTokenAmountA,
+    poolTokenAmountB,
+  ]
+}
 
 /**
  * Get max amount in tokenA and tokenB to withdrawal from pool
  * @param selectedPool The pool which poolTokenAmount user has
  * @param poolTokenAmount The amount of  user's pool tokens
  */
- export const calculateWithdrawAmount = ({
+export const calculateWithdrawAmount = ({
   selectedPool,
   poolTokenAmount,
 }: {
-  selectedPool: PoolInfo,
+  selectedPool: PoolInfo
   poolTokenAmount: number
 }): [number, number] => {
-  const { supply, tvl: { tokenA: poolTokenAmountA, tokenB: poolTokenAmountB } } = selectedPool
+  const {
+    supply,
+    tvl: { tokenA: poolTokenAmountA, tokenB: poolTokenAmountB },
+  } = selectedPool
 
   console.log('data', {
     selectedPool,
-    poolTokenAmount
+    poolTokenAmount,
   })
 
   const withdrawAmountTokenA = (poolTokenAmountA * poolTokenAmount) / supply
