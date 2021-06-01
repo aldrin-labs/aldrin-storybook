@@ -30,7 +30,7 @@ export const getSliderStepForTokens = (tokens: any[], totalTokenValue) => {
         return { ...el, stepInAmountToken, stepInValueToken, stepInPercentageToken, decimalCount }
     })
 
-    console.log('tokensWithSliderStep: ', tokensWithSliderStep)
+    // console.log('tokensWithSliderStep: ', tokensWithSliderStep)
 
     return tokensWithSliderStep
 }
