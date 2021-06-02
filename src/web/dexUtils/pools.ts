@@ -1,9 +1,4 @@
-import {
-  Account,
-  Connection,
-  PublicKey,
-  Transaction,
-} from '@solana/web3.js'
+import { Account, Connection, LAMPORTS_PER_SOL, PublicKey, Transaction } from '@solana/web3.js'
 
 import { Token, TOKEN_PROGRAM_ID } from './token/token'
 import {
@@ -15,6 +10,7 @@ import { WalletAdapter } from './types'
 import { sendAndConfirmTransactionViaWallet } from './token/utils/send-and-confirm-transaction-via-wallet'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { notify } from './notifications'
+import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 
 const SWAP_PROGRAM_OWNER_FEE_ADDRESS = new PublicKey(
   'HfoTxFR1Tm6kGmWgYWD6J7YHVy1UwqSULUGVLXkJqaKN'
@@ -125,6 +121,16 @@ export async function createTokenSwap({
     createPoolTokenAccountATransaction,
   ] = await mintTokenA.createAccount(authority)
 
+  if (mintA === WRAPPED_SOL_MINT) {
+    userTokenAccountA = await Token.createWrappedNativeAccount(
+      wallet,
+      connection,
+      TOKEN_PROGRAM_ID,
+      wallet.publicKey,
+      userAmountTokenA / LAMPORTS_PER_SOL,
+    )
+  }
+
   console.log('creating token B')
   const mintTokenB = new Token(wallet, connection, mintB, TOKEN_PROGRAM_ID)
   const [
@@ -132,6 +138,16 @@ export async function createTokenSwap({
     poolTokenAccountBSignature,
     createPoolTokenAccountBTransaction,
   ] = await mintTokenB.createAccount(authority)
+
+  if (mintB === WRAPPED_SOL_MINT) {
+    userTokenAccountB = await Token.createWrappedNativeAccount(
+      wallet,
+      connection,
+      TOKEN_PROGRAM_ID,
+      wallet.publicKey,
+      userAmountTokenB / LAMPORTS_PER_SOL
+    )
+  }
 
   // send create accounts transaction to not overflow limits
   const createAccountsTransactions = new Transaction()
@@ -228,7 +244,7 @@ export async function createTokenSwap({
     tokenSwapAccount.publicKey.toString(),
     tokenPoolMint.publicKey.toString()
   )
-  
+
   console.log('loading token swap', tokenSwap)
   const fetchedTokenSwap = await TokenSwap.loadTokenSwap(
     wallet,
@@ -420,7 +436,8 @@ export async function depositAllTokenTypes({
       if (counter > 0) {
         await notify({
           type: 'error',
-          message: 'Deposit failed, trying with bigger slippage. Please confirm transaction again.'
+          message:
+            'Deposit failed, trying with bigger slippage. Please confirm transaction again.',
         })
       }
 
@@ -443,7 +460,7 @@ export async function depositAllTokenTypes({
 
       console.log('depositSignature', depositSignature)
 
-      if (depositSignature) { 
+      if (depositSignature) {
         return 'success'
       }
     } catch (e) {
@@ -544,7 +561,8 @@ export async function withdrawAllTokenTypes({
       if (counter > 0) {
         await notify({
           type: 'error',
-          message: 'Withdrawal failed, trying with bigger slippage. Please confirm transaction again.'
+          message:
+            'Withdrawal failed, trying with bigger slippage. Please confirm transaction again.',
         })
       }
 
@@ -757,7 +775,10 @@ export const calculateWithdrawAmount = ({
   selectedPool: PoolInfo
   poolTokenAmount: number
 }): [number, number] => {
-  const { supply, tvl: { tokenA: poolTokenAmountA, tokenB: poolTokenAmountB } } = selectedPool
+  const {
+    supply,
+    tvl: { tokenA: poolTokenAmountA, tokenB: poolTokenAmountB },
+  } = selectedPool
 
   const withdrawAmountTokenA = (poolTokenAmountA * poolTokenAmount) / supply
   const withdrawAmountTokenB = (poolTokenAmountB * poolTokenAmount) / supply
