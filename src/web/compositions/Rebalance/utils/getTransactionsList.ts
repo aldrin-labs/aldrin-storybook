@@ -1,7 +1,7 @@
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { TokensMapType, TransactionType, PoolInfoElement } from '../Rebalance.types'
 import { Graph } from '@core/utils/graph/Graph'
-
+import { REBALANCE_CONFIG } from '../Rebalance.config'
 
 
 // TODO: Remove _symbol or symbol_
@@ -20,9 +20,6 @@ export const getTransactionsList = ({
   poolsInfo: PoolInfoElement[]
   tokensMap: TokensMapType
 }): TransactionType[] => {
-
-  // console.log('poolsInfo: ', poolsInfo)
-  const totalDiffAbs = tokensDiff.reduce((acc, el) => acc + el.tokenValueDiffTest, 0)
 
   const tokensToSell = tokensDiff
     .filter((el) => el.amountDiff < 0)
@@ -110,17 +107,23 @@ export const getTransactionsList = ({
       const isIntermidiate = pathInString.match(`_${pathSymbol}_`)
 
       const tokenAmount = isIntermidiate ? tempToken.amount : Math.abs(tokensToSellMap[pathSymbol].amountDiff)
+      const slippageMultiplicator = (100 - poolsInfoMap[poolPair.symbol].slippage) / 100
+      const feeMultiplicator = (100 - REBALANCE_CONFIG.POOL_FEE) / 100
 
       const moduleAmountDiff = tokenAmount
-      const amount = +(base === pathSymbol ? moduleAmountDiff : moduleAmountDiff / price)
+      const amount = +((base === pathSymbol ? moduleAmountDiff : moduleAmountDiff / price) * (side === 'buy' ? slippageMultiplicator : 1) )
       .toFixed(tokensMap[base].decimalCount)
-      const total = +(amount * price * (100 - poolsInfoMap[poolPair.symbol].slippage) / 100)
+
+      const amountRaw = +((base === pathSymbol ? moduleAmountDiff : moduleAmountDiff / price))
+      .toFixed(tokensMap[base].decimalCount)
+      
+      const total = +(amountRaw * price * (side === 'sell' ? slippageMultiplicator : 1))
       .toFixed(tokensMap[quote].decimalCount)
 
-      tempToken.amount = base === pathSymbol ? total : amount 
+      tempToken.amount = (base === pathSymbol ? total : amount) * feeMultiplicator
 
       if (nextElement === 'USDT') {
-        realTotalUSDT = realTotalUSDT + (base === pathSymbol ? total : amount)
+        realTotalUSDT = realTotalUSDT + (base === pathSymbol ? total : amount) * feeMultiplicator
       }
 
       transactionsToSell.push({
@@ -161,6 +164,7 @@ export const getTransactionsList = ({
     let tempToken = { amount: tokensToBuyWhichRespectsTotalUSDTMap[destinationToken].tokenValueDiff }
 
 
+    // Handling case with USDT_USDT
     if (pathElement.length === 2 && pathElement[0] === pathElement[1] && pathElement[0] === 'USDT') {
       return
     }
@@ -188,16 +192,23 @@ export const getTransactionsList = ({
 
       const tokenAmount = isIntermidiate ? tempToken.amount : Math.abs(tokensToBuyWhichRespectsTotalUSDTMap[pathSymbol].amountDiff)
 
+      const slippageMultiplicator = (100 - poolsInfoMap[poolPair.symbol].slippage) / 100
+      const feeMultiplicator = (100 - REBALANCE_CONFIG.POOL_FEE) / 100
+
       const moduleAmountDiff = tokenAmount
-      const amount = +(base === pathSymbol ? moduleAmountDiff : moduleAmountDiff / price)
+      const amount = +((base === pathSymbol ? moduleAmountDiff : moduleAmountDiff / price) * (side === 'buy' ? slippageMultiplicator : 1) )
       .toFixed(tokensMap[base].decimalCount)
-      const total = +(amount * price * (100 - poolsInfoMap[poolPair.symbol].slippage) / 100)
+
+      const amountRaw = +((base === pathSymbol ? moduleAmountDiff : moduleAmountDiff / price))
+      .toFixed(tokensMap[base].decimalCount)
+
+      const total = +(amountRaw * price * (side === 'sell' ? slippageMultiplicator : 1))
       .toFixed(tokensMap[quote].decimalCount)
 
-      tempToken.amount = base === pathSymbol ? total : amount 
+      tempToken.amount = (base === pathSymbol ? total : amount) * feeMultiplicator
 
       if (nextElement === 'USDT') {
-        realTotalUSDT = realTotalUSDT - total
+        realTotalUSDT = realTotalUSDT - total * feeMultiplicator
       }
 
       transactionsToBuy.push({
