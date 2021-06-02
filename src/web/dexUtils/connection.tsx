@@ -21,7 +21,7 @@ export function ConnectionProvider({ children }) {
     'connectionEndpts',
     ENDPOINTS[0].endpoint
   )
-  
+
   const connection = useMemo(
     () =>
       endpoint === MAINNET_BETA_ENDPOINT
@@ -40,7 +40,7 @@ export function ConnectionProvider({ children }) {
         : new Connection(
             ENDPOINTS.find((endpointInfo) => endpointInfo.endpoint === endpoint)
               ?.endpoint || MAINNET_BETA_ENDPOINT,
-              'recent'
+            'recent'
           ),
     [endpoint]
   )
@@ -48,18 +48,18 @@ export function ConnectionProvider({ children }) {
   // is empty after opening its first time, preventing subsequent subscriptions from receiving responses.
   // This is a hack to prevent the list from every getting empty
   useEffect(() => {
-    const id = connection.onAccountChange(new Account().publicKey, () => {});
+    const id = connection.onAccountChange(new Account().publicKey, () => {})
     return () => {
-      connection.removeAccountChangeListener(id);
-    };
-  }, [connection]);
+      connection.removeAccountChangeListener(id)
+    }
+  }, [connection])
 
   useEffect(() => {
-    const id = connection.onSlotChange(() => null);
+    const id = connection.onSlotChange(() => null)
     return () => {
-      connection.removeSlotChangeListener(id);
-    };
-  }, [connection]);
+      connection.removeSlotChangeListener(id)
+    }
+  }, [connection])
 
   return (
     <ConnectionContext.Provider value={{ endpoint, setEndpoint, connection }}>
