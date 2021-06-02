@@ -194,15 +194,17 @@ export const CardsPanel = ({ theme }) => {
             >
               Trading
             </NavLinkButton>
-            <NavLinkButton
-              theme={theme}
-              pathname={location.pathname}
-              to="/rebalance"
-              page={'rebalance'}
-              component={(props) => <Link to={`/rebalance`} {...props} />}
-            >
-              Rebalance
-            </NavLinkButton>
+            {!MASTER_BUILD && (
+              <NavLinkButton
+                theme={theme}
+                pathname={location.pathname}
+                to="/rebalance"
+                page={'rebalance'}
+                component={(props) => <Link to={`/rebalance`} {...props} />}
+              >
+                Rebalance
+              </NavLinkButton>
+            )}
             <NavLinkButton
               theme={theme}
               data-tut="analytics"
@@ -223,15 +225,17 @@ export const CardsPanel = ({ theme }) => {
               {' '}
               Addressbook
             </NavLinkButton>
-            <NavLinkButton
-              theme={theme}
-              page={'/pools'}
-              pathname={location.pathname}
-              component={(props) => <Link to={`/pools`} {...props} />}
-            >
-              {' '}
-              Pools
-            </NavLinkButton>
+            {!MASTER_BUILD && (
+              <NavLinkButton
+                theme={theme}
+                page={'/pools'}
+                pathname={location.pathname}
+                component={(props) => <Link to={`/pools`} {...props} />}
+              >
+                {' '}
+                Pools
+              </NavLinkButton>
+            )}
             {/* <IdoBtn>CCAI IDO</IdoBtn> */}
           </div>
         </CustomCard>
