@@ -26,6 +26,7 @@ import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { PoolInfo, PoolsPrices } from '@sb/compositions/Pools/index.types'
 import { notify } from '@sb/dexUtils/notifications'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import { WarningSolPopup } from '../WarningSolPopup'
 
 export const CreatePoolPopup = ({
   theme,
@@ -70,6 +71,7 @@ export const CreatePoolPopup = ({
   }
 
   const [isSelectCoinPopupOpen, setIsSelectCoinPopupOpen] = useState(false)
+  const [isWarningSolPopupOpen, setIsWarningSolPopupOpen] = useState(false)
   const [isBaseTokenSelecting, setIsBaseTokenSelecting] = useState(false)
 
   const [warningChecked, setWarningChecked] = useState(false)
@@ -226,6 +228,10 @@ export const CreatePoolPopup = ({
             const userAmountTokenA = +baseAmount * 10 ** baseTokenDecimals
             const userAmountTokenB = +quoteAmount * 10 ** quoteTokenDecimals
 
+            if (quoteSymbol === 'SOL' || baseSymbol === 'SOL') {
+              setIsWarningSolPopupOpen(true)
+            }
+
             if (
               !userTokenAccountA ||
               !userTokenAccountB ||
@@ -323,6 +329,13 @@ export const CreatePoolPopup = ({
           select()
         }}
         close={() => setIsSelectCoinPopupOpen(false)}
+      />
+      <WarningSolPopup
+        theme={theme}
+        close={() => {
+          setIsWarningSolPopupOpen(false)
+        }}
+        open={isWarningSolPopupOpen}
       />
     </DialogWrapper>
   )

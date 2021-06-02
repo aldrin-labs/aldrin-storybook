@@ -201,7 +201,6 @@ const createTradingVolumeChart = ({
   data: []
 }) => {
   const ctx = document.getElementById('TradingVolumeChart')?.getContext('2d')
-  console.log('data', data)
   const gradient = ctx.createLinearGradient(0, 0, 0, 400)
   gradient.addColorStop(0, 'rgba(165, 232, 152, 0.85)')
   gradient.addColorStop(0.55, 'rgba(165, 232, 152, 0)')
@@ -254,9 +253,9 @@ const createTradingVolumeChart = ({
           ticks: {
             padding: 15,
             callback: (value) =>
-              `$${formatNumberToUSFormat(stripDigitPlaces(value, 5))}`,
+              `$ ${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`,
             color: '#F5F5FB',
-            stepSize: data[data.length - 1].vol / 5,
+            stepSize: data[data.length - 1].vol,
             font: {
               size: +(width / 130).toFixed(0),
               family: 'Avenir Next',
@@ -316,7 +315,7 @@ const createTradingVolumeChart = ({
             ticks: {
               padding: 15,
               callback: (value) =>
-                `$${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`,
+                `$ ${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`,
               color: '#F5F5FB',
               stepSize: data[data.length - 1].vol / 5,
               font: {
