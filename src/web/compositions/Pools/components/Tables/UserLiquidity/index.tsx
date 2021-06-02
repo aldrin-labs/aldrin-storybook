@@ -70,6 +70,10 @@ const UserLiquitidyTable = ({
     userTokens.includes(el.poolTokenMint)
   )
 
+  const { getFeesEarnedByAccount = [] } = getFeesEarnedByAccountQuery || {
+    getFeesEarnedByAccountQuery: [],
+  }
+
   return (
     <RowContainer>
       <BlockTemplate
@@ -112,11 +116,9 @@ const UserLiquitidyTable = ({
                 fontFamily={'Avenir Next Demi'}
               >
                 $
-                {getFeesEarnedByAccountQuery.getFeesEarnedByAccount.map(
-                  (el: FeesEarned) => {
-                    return el.earnedUSD
-                  }
-                )}
+                {getFeesEarnedByAccount.reduce((acc, el: FeesEarned) => {
+                  return acc + el.earnedUSD
+                }, 0)}
               </Text>
             </LiquidityDataContainer>
           </Row>
@@ -233,13 +235,18 @@ const UserLiquitidyTable = ({
                   </RowDataTd>
                   <RowDataTd>
                     <TextColumnContainer>
-                      <RowDataTdTopText theme={theme}>$68.24m</RowDataTdTopText>
-                      <RowDataTdText
+                      <RowDataTdTopText theme={theme}>
+                        $
+                        {getFeesEarnedByAccount.find(
+                          (feesEarned) => feesEarned.pool === el.swapToken
+                        )?.earnedUSD || 0}
+                      </RowDataTdTopText>
+                      {/* <RowDataTdText
                         theme={theme}
                         color={theme.palette.grey.new}
                       >
                         2000 SOL / 200 CCAI
-                      </RowDataTdText>
+                      </RowDataTdText> */}
                     </TextColumnContainer>
                   </RowDataTd>
                   <RowTd>
@@ -297,5 +304,6 @@ export default compose(
       account: props.wallet.publicKey.toString(),
     }),
     fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
   })
 )(UserLiquitidyTable)
