@@ -25,7 +25,6 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { notify } from '@sb/dexUtils/notifications'
-import { connect } from 'formik'
 
 export const AddLiquidityPopup = ({
   theme,
@@ -34,6 +33,7 @@ export const AddLiquidityPopup = ({
   selectedPool,
   allTokensData,
   close,
+  refreshAllTokensData
 }: {
   theme: Theme
   open: boolean
@@ -41,6 +41,7 @@ export const AddLiquidityPopup = ({
   selectedPool: PoolInfo
   allTokensData: TokenInfo[]
   close: () => void
+  refreshAllTokensData: () => void
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -277,7 +278,7 @@ export const AddLiquidityPopup = ({
             console.log('userPoolTokenAccount', userPoolTokenAccount)
 
             await setOperationLoading(true)
-            await depositAllTokenTypes({
+            const result = await depositAllTokenTypes({
               wallet,
               connection,
               userAmountTokenA,
@@ -289,7 +290,19 @@ export const AddLiquidityPopup = ({
                 ? { poolTokenAccount: new PublicKey(userPoolTokenAccount) }
                 : {}),
             })
-            await setOperationLoading(true)
+            await refreshAllTokensData()
+            await setOperationLoading(false)
+
+            await notify({
+              type: result === 'success' ? 'success' : 'error',
+              message:
+                result === 'success'
+                  ? 'Deposit successful'
+                  : result === 'failed'
+                  ? 'Deposit failed, please try again later or contact us in telegram.'
+                  : 'Deposit cancelled',
+            })
+            await close()
           }}
         >
           Add liquidity

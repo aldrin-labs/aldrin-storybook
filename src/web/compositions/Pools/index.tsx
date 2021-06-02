@@ -26,6 +26,7 @@ const Pools = ({
   theme: Theme
   getPoolsPricesQuery: { getPoolsPrices: PoolsPrices[] }
 }) => {
+  const [refreshAllTokensDataCounter, setRefreshAllTokensDataCounter] = useState<number>(0);
   const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
   const [selectedPool, selectPool] = useState<PoolInfo | null>(null)
 
@@ -38,6 +39,8 @@ const Pools = ({
 
   const { getPoolsPrices = [] } = getPoolsPricesQuery || { getPoolsPrices: [] }
 
+  const refreshAllTokensData = () => setRefreshAllTokensDataCounter(refreshAllTokensDataCounter + 1)
+
   useEffect(() => {
     const fetchData = async () => {
       const allTokensData = await getAllTokensData(wallet.publicKey, connection)
@@ -48,7 +51,7 @@ const Pools = ({
     if (!!wallet?.publicKey) {
       fetchData()
     }
-  }, [wallet?.publicKey])
+  }, [wallet?.publicKey, refreshAllTokensDataCounter])
 
   return (
     <RowContainer direction={'column'} padding={'2rem 3rem'}>
@@ -98,6 +101,8 @@ const Pools = ({
         close={() => setIsCreatePoolPopupOpen(false)}
         open={isCreatePoolPopupOpen}
         allTokensData={allTokensData}
+        refreshAllTokensData={refreshAllTokensData}
+
       />
 
       {selectedPool && (
@@ -108,6 +113,7 @@ const Pools = ({
           allTokensData={allTokensData}
           close={() => setIsAddLiquidityPopupOpen(false)}
           open={isAddLiquidityPopupOpen}
+          refreshAllTokensData={refreshAllTokensData}
         />
       )}
 
@@ -119,6 +125,7 @@ const Pools = ({
           allTokensData={allTokensData}
           close={() => setIsWithdrawalPopupOpen(false)}
           open={isWithdrawalPopupOpen}
+          refreshAllTokensData={refreshAllTokensData}
         />
       )}
     </RowContainer>
@@ -132,6 +139,7 @@ const Wrapper = compose(
     name: 'getPoolsPricesQuery',
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
+    pollInterval: 60000.
   })
 )(Pools)
 

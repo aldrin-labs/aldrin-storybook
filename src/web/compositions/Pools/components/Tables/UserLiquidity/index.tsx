@@ -296,6 +296,7 @@ export default compose(
     query: getPoolsInfo,
     name: 'getPoolsInfoQuery',
     fetchPolicy: 'cache-and-network',
+    pollInterval: 60000,
   }),
   queryRendererHoc({
     query: getFeesEarnedByAccount,
