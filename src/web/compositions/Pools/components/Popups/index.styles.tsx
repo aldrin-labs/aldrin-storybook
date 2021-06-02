@@ -37,7 +37,7 @@ export const TokenContainer = styled.div`
   left: ${(props: TokenContainerProps) => props.left};
 `
 export const Line = styled.div`
-  border: 0.1rem solid #3a475c;
+  border: 0.1rem solid #383b45;
   height: 0.1rem;
   margin: 2rem 0;
   width: 100%;

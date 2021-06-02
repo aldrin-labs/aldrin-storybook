@@ -255,7 +255,7 @@ const createTradingVolumeChart = ({
             callback: (value) =>
               `$ ${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`,
             color: '#F5F5FB',
-            stepSize: data[data.length - 1].vol,
+            stepSize: data[data.length - 1].vol / 5,
             font: {
               size: +(width / 130).toFixed(0),
               family: 'Avenir Next',
