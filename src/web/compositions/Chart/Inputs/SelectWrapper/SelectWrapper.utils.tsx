@@ -12,6 +12,8 @@ import {
 } from '@core/utils/PortfolioTableUtils'
 
 import GreenCheckmark from '@icons/successIcon.svg'
+import Warning from '@icons/warningPairSel.png'
+import ThinkingFace from '@icons/thinkingFace.png'
 
 import favoriteSelected from '@icons/favoriteSelected.svg'
 import favoriteUnselected from '@icons/favoriteUnselected.svg'
@@ -345,9 +347,9 @@ export const combineSelectWrapperData = ({
               }}
             >
               {isAdditionalCustomUserMarket ? (
-                '⚠️'
+                <SvgIcon width={'50%'} height={'auto'} src={Warning} />
               ) : isAwesomeMarket ? (
-                '🤔'
+                <SvgIcon width={'50%'} height={'auto'} src={ThinkingFace} />
               ) : (
                 <SvgIcon width={'50%'} height={'auto'} src={GreenCheckmark} />
               )}
