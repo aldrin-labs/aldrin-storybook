@@ -20,7 +20,7 @@ export const getPoolsSwaps = ({
 }): SwapsType[] => {
   const swaps = transactionsList.map((el) => {
     const [base, quote] = el.symbol.split('_')
-    const baseSwapToken: 'tokenA' | 'tokenB'  = el.side === 'sell' ? 'tokenA' : 'tokenB'
+    const baseSwapToken: 'tokenA' | 'tokenB' = el.side === 'sell' ? 'tokenA' : 'tokenB'
 
     const baseAddress: string = tokensMap[base].address
     const quoteAddress: string = tokensMap[quote].address
@@ -28,8 +28,20 @@ export const getPoolsSwaps = ({
     return {
       wallet,
       connection,
-      swapAmountIn: el.amount * 10 ** 8,
-      swapAmountOut: el.total * 10 ** 8,
+      ...(el.side === 'sell' ? {
+        swapAmountIn: el.amount * 10 ** 8,
+        swapAmountOut: el.total * 10 ** 8,
+
+        swapAmountInRaw: el.amount,
+        swapAmountOutRaw: el.total,
+      } : {
+        swapAmountIn: el.total * 10 ** 8,
+        swapAmountOut: el.amount * 10 ** 8,
+
+        swapAmountInRaw: el.total,
+        swapAmountOutRaw: el.amount,
+      }),
+
       tokenSwapPublicKey: new PublicKey(el.tokenSwapPublicKey),
       userTokenAccountA: new PublicKey(baseAddress),
       userTokenAccountB: new PublicKey(quoteAddress),
