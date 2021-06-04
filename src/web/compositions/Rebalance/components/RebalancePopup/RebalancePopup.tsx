@@ -18,7 +18,7 @@ import { Loading } from '@sb/components'
 import GreenCheckMark from '@icons/greenDoneMark.svg'
 import RedCross from '@icons/Cross.svg'
 
-import { TokenType, PoolInfo } from '../../Rebalance.types'
+import { TokenType, PoolInfo, RebalancePopupStep } from '../../Rebalance.types'
 import { getRandomInt } from '@core/utils/helpers'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/send-and-confirm-transaction-via-wallet'
@@ -41,9 +41,10 @@ export const RebalancePopup = ({
   wallet,
   connection,
   refreshRebalance,
+  setLoadingRebalanceData,
 }: {
-  rebalanceStep: 'initial' | 'pending' | 'done' | 'failed'
-  changeRebalanceStep: (step: 'initial' | 'pending' | 'done' | 'failed') => void
+  rebalanceStep: RebalancePopupStep
+  changeRebalanceStep: (step: RebalancePopupStep) => void
   theme: Theme
   open: boolean
   close: () => void
@@ -52,6 +53,7 @@ export const RebalancePopup = ({
   wallet: WalletAdapter,
   connection: Connection,
   refreshRebalance: () => void,
+  setLoadingRebalanceData: (loadingState: boolean) => void
 }) => {
 
   const [pendingStateText, setPendingStateText] = useState('Pending')
@@ -76,7 +78,7 @@ export const RebalancePopup = ({
 
       // symbol: el.name,
       symbol: `${MOKED_MINTS_MAP[el.tokenA]}_${MOKED_MINTS_MAP[el.tokenB]}`,
-      slippage: getRandomInt(1, 3),
+      slippage: getRandomInt(3, 3),
       // slippage: 0,
       price: el.tvl.tokenB / el.tvl.tokenA,
       tokenA: el.tvl.tokenA,
@@ -189,7 +191,9 @@ export const RebalancePopup = ({
                     setPendingStateText('Awaitng for Rebalance confirmation...')
                     await sendAndConfirmTransactionViaWallet(wallet, connection, commonTransaction, ...[...swapsSigns])
                     changeRebalanceStep('done')
-                    
+
+
+                    setLoadingRebalanceData(true)
                     setTimeout(() => {
                       refreshRebalance()
                     }, 15000)
