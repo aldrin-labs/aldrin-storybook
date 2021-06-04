@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 import { withTheme, Theme } from '@material-ui/core/styles'
 import { isEqual } from 'lodash'
+import { Connection } from '@solana/web3.js'
 import debounceRender from 'react-debounce-render'
 
+import { client } from '@core/graphql/apolloClient'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { useWallet } from '@sb/dexUtils/wallet'
 
@@ -17,16 +19,14 @@ import {
   getTokensMap,
   getAllTokensData,
   getSliderStepForTokens,
+  getPoolsInfo,
 } from './utils'
 import { useConnection } from '@sb/dexUtils/connection'
-
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { PoolInfo, TokensMapType, TokenType } from './Rebalance.types'
+import { PoolInfo, TokensMapType, TokenType, RebalancePopupStep } from './Rebalance.types'
 import RebalanceTable from './components/Tables'
 import RebalanceHeaderComponent from './components/Header'
 import DonutChartWithLegend from '@sb/components/AllocationBlock/index'
@@ -73,16 +73,14 @@ const DebouncedBalanceDistributedComponent = debounceRender(
 const RebalanceComposition = ({
   publicKey,
   theme,
-  getPoolsInfoQuery: { getPoolsInfo },
 }: {
   publicKey: string
   theme: Theme
-  getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
 }) => {
   const { wallet } = useWallet()
   const [isRebalancePopupOpen, changeRebalancePopupState] = useState(false)
   const [rebalanceStep, changeRebalanceStep] =
-    useState<'initial' | 'pending' | 'done'>('initial')
+    useState<RebalancePopupStep>('initial')
 
   const connection: Connection = useConnection()
   const isWalletConnected = !!wallet?.publicKey
@@ -92,6 +90,8 @@ const RebalanceComposition = ({
   const [leftToDistributeValue, setLeftToDistributeValue] = useState(0)
   const [rebalanceState, setRefreshStateRebalance] = useState(false)
   const [loadingRebalanceData, setLoadingRebalanceData] = useState(false)
+
+  const [poolsInfoData, setPoolsInfoData] = useState<PoolInfo[]>([])
 
 
   const refreshRebalance = () => {
@@ -112,7 +112,7 @@ const RebalanceComposition = ({
         const tokensWithTokenValue = getTokenValuesForTokens(tokensWithPrices)
         const sortedTokensByTokenValue =
           getSortedTokensByValue(tokensWithTokenValue)
-
+          
         const totalTokenValue = getTotalTokenValue(sortedTokensByTokenValue)
 
         const tokensWithPercentages = getPercentageAllocationForTokens(
@@ -125,10 +125,12 @@ const RebalanceComposition = ({
           totalTokenValue
         )
 
+        const poolsInfo = await getPoolsInfo()
+
         // TODO: Can be splitted and move up
         const availableTokensForRebalance = getAvailableTokensForRebalance(
           // getPoolsInfoMockData,
-          getPoolsInfo,
+          poolsInfo,
           tokensWithSliderSteps
         )
         const availableTokensForRebalanceMap = getTokensMap(
@@ -142,6 +144,7 @@ const RebalanceComposition = ({
 
         setTokensMap(availableTokensForRebalanceMap)
         setTotalTokensValue(totalTokenValue)
+        setPoolsInfoData(poolsInfo)
 
         console.timeEnd('rebalance initial data set time')
       } catch (e) {
@@ -164,7 +167,6 @@ const RebalanceComposition = ({
     >
       {!publicKey ? (
         <>
-          {/* connect wallet */}
           <BtnCustom
             theme={theme}
             onClick={wallet.connect}
@@ -237,7 +239,6 @@ const RebalanceComposition = ({
               align={'flex-end'}
               height={'16%'}
             >
-              {' '}
               <Row
                 align={'flex-end'}
                 height={'100%'}
@@ -279,8 +280,9 @@ const RebalanceComposition = ({
         connection={connection}
         tokensMap={tokensMap}
         refreshRebalance={refreshRebalance}
+        setLoadingRebalanceData={setLoadingRebalanceData}
         // getPoolsInfo={getPoolsInfoMockData}
-        getPoolsInfo={getPoolsInfo}
+        getPoolsInfo={poolsInfoData}
         theme={theme}
         open={isRebalancePopupOpen}
         rebalanceStep={rebalanceStep}
@@ -294,9 +296,4 @@ const RebalanceComposition = ({
 export default compose(
   withTheme(),
   withPublicKey,
-  queryRendererHoc({
-    query: getPoolsInfo,
-    name: 'getPoolsInfoQuery',
-    fetchPolicy: 'cache-and-network',
-  })
 )(RebalanceComposition)
