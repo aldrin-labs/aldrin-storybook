@@ -1,4 +1,10 @@
-import { Account, Connection, LAMPORTS_PER_SOL, PublicKey, Transaction } from '@solana/web3.js'
+import {
+  Account,
+  Connection,
+  LAMPORTS_PER_SOL,
+  PublicKey,
+  Transaction,
+} from '@solana/web3.js'
 
 import { Token, TOKEN_PROGRAM_ID } from './token/token'
 import {
@@ -57,6 +63,7 @@ function assert(condition: boolean, message?: string) {
  * @param userTokenAccountB The user's tokenB account address
  * @param userAmountTokenA The amount of tokenA to tranfer to the pool token account address
  * @param userAmountTokenB The amount of tokenB to tranfer to the pool token account address
+ * @param transferSOLToWrapped The flag which shows if we need to wrap our SOL token
  */
 export async function createTokenSwap({
   wallet,
@@ -67,6 +74,7 @@ export async function createTokenSwap({
   userTokenAccountB,
   userAmountTokenA,
   userAmountTokenB,
+  transferSOLToWrapped,
 }: {
   wallet: WalletAdapter
   connection: Connection
@@ -76,6 +84,7 @@ export async function createTokenSwap({
   userTokenAccountB: PublicKey
   userAmountTokenA: number
   userAmountTokenB: number
+  transferSOLToWrapped: boolean
 }): Promise<'success' | 'failed' | 'cancelled'> {
   console.log('start createTokenSwap')
   const tokenSwapAccount = new Account()
@@ -121,33 +130,13 @@ export async function createTokenSwap({
     createPoolTokenAccountATransaction,
   ] = await mintTokenA.createAccount(authority)
 
-  if (mintA === WRAPPED_SOL_MINT) {
-    userTokenAccountA = await Token.createWrappedNativeAccount(
-      wallet,
-      connection,
-      TOKEN_PROGRAM_ID,
-      wallet.publicKey,
-      userAmountTokenA / LAMPORTS_PER_SOL,
-    )
-  }
-
-  console.log('creating token B')
+  console.log('creating token B', mintB.toString())
   const mintTokenB = new Token(wallet, connection, mintB, TOKEN_PROGRAM_ID)
   const [
     poolTokenAccountB,
     poolTokenAccountBSignature,
     createPoolTokenAccountBTransaction,
   ] = await mintTokenB.createAccount(authority)
-
-  if (mintB === WRAPPED_SOL_MINT) {
-    userTokenAccountB = await Token.createWrappedNativeAccount(
-      wallet,
-      connection,
-      TOKEN_PROGRAM_ID,
-      wallet.publicKey,
-      userAmountTokenB / LAMPORTS_PER_SOL
-    )
-  }
 
   // send create accounts transaction to not overflow limits
   const createAccountsTransactions = new Transaction()
@@ -175,6 +164,58 @@ export async function createTokenSwap({
     ...createAccountsSignatures
   )
 
+  const beforeCreatePoolTransaction = new Transaction()
+  const beforeCreatePoolTransactionSigners = []
+
+  const afterCreatePoolTransaction = new Transaction()
+
+  // if SOL - create new token address
+  if (mintA.equals(WRAPPED_SOL_MINT) && transferSOLToWrapped) {
+    const result = await transferSOLToWrappedAccountAndClose({
+      wallet,
+      connection,
+      amount: userAmountTokenA,
+    })
+
+    // change account to use from native to wrapped
+    userTokenAccountA = result[0]
+    const [
+      _,
+      createWrappedAccountTransaction,
+      createWrappedAccountTransactionSigner,
+      closeAccountTransaction,
+    ] = result
+
+    beforeCreatePoolTransaction.add(createWrappedAccountTransaction)
+    beforeCreatePoolTransactionSigners.push(
+      createWrappedAccountTransactionSigner
+    )
+
+    afterCreatePoolTransaction.add(closeAccountTransaction)
+  } else if (mintB.equals(WRAPPED_SOL_MINT) && transferSOLToWrapped) {
+    const result = await transferSOLToWrappedAccountAndClose({
+      wallet,
+      connection,
+      amount: userAmountTokenB,
+    })
+
+    // change account to use from native to wrapped
+    userTokenAccountB = result[0]
+    const [
+      _,
+      createWrappedAccountTransaction,
+      createWrappedAccountTransactionSigner,
+      closeAccountTransaction,
+    ] = result
+
+    beforeCreatePoolTransaction.add(createWrappedAccountTransaction)
+    beforeCreatePoolTransactionSigners.push(
+      createWrappedAccountTransactionSigner
+    )
+
+    afterCreatePoolTransaction.add(closeAccountTransaction)
+  }
+
   // transfer funds
   console.log('minting token A to swap')
   const mintTokenATransferTransaction = await mintTokenA.transfer(
@@ -194,9 +235,7 @@ export async function createTokenSwap({
     userAmountTokenB
   )
 
-  const leftTransactions = new Transaction()
-
-  leftTransactions.add(
+  beforeCreatePoolTransaction.add(
     mintTokenATransferTransaction,
     mintTokenBTransferTransaction
   )
@@ -229,12 +268,16 @@ export async function createTokenSwap({
       HOST_FEE_NUMERATOR,
       HOST_FEE_DENOMINATOR,
       CURVE_TYPE,
-      leftTransactions
+      beforeCreatePoolTransaction,
+      beforeCreatePoolTransactionSigners,
+      afterCreatePoolTransaction
     )
   } catch (e) {
     if (e.message.includes('cancelled')) {
       return 'cancelled'
     }
+
+    console.log('create pool error', e)
 
     return 'failed'
   }
@@ -334,6 +377,7 @@ export async function depositAllTokenTypes({
   userTokenAccountB,
   userAmountTokenA,
   userAmountTokenB,
+  transferSOLToWrapped,
 }: {
   wallet: WalletAdapter
   connection: Connection
@@ -343,6 +387,7 @@ export async function depositAllTokenTypes({
   userTokenAccountB: PublicKey
   userAmountTokenA: number
   userAmountTokenB: number
+  transferSOLToWrapped: boolean
 }): Promise<'success' | 'failed' | 'cancelled'> {
   const tokenSwap = await TokenSwap.loadTokenSwap(
     wallet,
@@ -392,6 +437,58 @@ export async function depositAllTokenTypes({
     ? poolTokenAccount
     : newAccountPool
 
+    const beforeDepositTransaction = new Transaction()
+  const beforeDepositTransactionSigners = [
+    ...(isUserAlreadyHasPoolTokenAccount || !newAccountPoolSignature
+      ? []
+      : [newAccountPoolSignature]),
+  ]
+
+  const afterDepositTransaction = new Transaction()
+
+  // if SOL - create new token address
+  if (mintA.equals(WRAPPED_SOL_MINT) && transferSOLToWrapped) {
+    const result = await transferSOLToWrappedAccountAndClose({
+      wallet,
+      connection,
+      amount: userAmountTokenA,
+    })
+
+    // change account to use from native to wrapped
+    userTokenAccountA = result[0]
+    const [
+      _,
+      createWrappedAccountTransaction,
+      createWrappedAccountTransactionSigner,
+      closeAccountTransaction,
+    ] = result
+
+    beforeDepositTransaction.add(createWrappedAccountTransaction)
+    beforeDepositTransactionSigners.push(createWrappedAccountTransactionSigner)
+
+    afterDepositTransaction.add(closeAccountTransaction)
+  } else if (mintB.equals(WRAPPED_SOL_MINT) && transferSOLToWrapped) {
+    const result = await transferSOLToWrappedAccountAndClose({
+      wallet,
+      connection,
+      amount: userAmountTokenB,
+    })
+
+    // change account to use from native to wrapped
+    userTokenAccountB = result[0]
+    const [
+      _,
+      createWrappedAccountTransaction,
+      createWrappedAccountTransactionSigner,
+      closeAccountTransaction,
+    ] = result
+
+    beforeDepositTransaction.add(createWrappedAccountTransaction)
+    beforeDepositTransactionSigners.push(createWrappedAccountTransactionSigner)
+
+    afterDepositTransaction.add(closeAccountTransaction)
+  }
+
   const userTransferAuthority = new Account()
 
   console.log('approving token a')
@@ -403,7 +500,7 @@ export async function depositAllTokenTypes({
     userAmountTokenA
   )
 
-  console.log('Creating depositor token b account')
+  console.log('approving token a')
   const tokenMintB = new Token(wallet, connection, mintB, TOKEN_PROGRAM_ID)
   const tokenMintBApproveTransaction = await tokenMintB.approve(
     userTokenAccountB,
@@ -412,14 +509,12 @@ export async function depositAllTokenTypes({
     [],
     userAmountTokenB
   )
-
-  const previousTransactions = new Transaction()
-
+  // create new pool token account for user, if no one exists
   if (!isUserAlreadyHasPoolTokenAccount && newAccountPoolTransaction) {
-    previousTransactions.add(newAccountPoolTransaction)
+    beforeDepositTransaction.add(newAccountPoolTransaction)
   }
 
-  previousTransactions.add(
+  beforeDepositTransaction.add(
     tokenMintAApproveTransaction,
     tokenMintBApproveTransaction
   )
@@ -449,13 +544,9 @@ export async function depositAllTokenTypes({
         poolTokenAmount,
         userAmountTokenA,
         userAmountTokenB,
-        previousTransactions,
-        // signature for creating new account
-        [
-          ...(isUserAlreadyHasPoolTokenAccount || !newAccountPoolSignature
-            ? []
-            : [newAccountPoolSignature]),
-        ]
+        beforeDepositTransaction,
+        beforeDepositTransactionSigners,
+        afterDepositTransaction
       )
 
       console.log('depositSignature', depositSignature)
@@ -488,6 +579,7 @@ export async function depositAllTokenTypes({
  * @param userTokenAccountB The user's tokenB account address
  * @param amountTokenA The amount of tokenA to tranfer to the pool token account address
  * @param amountTokenB The amount of tokenB to tranfer to the pool token account address
+ *
  */
 export async function withdrawAllTokenTypes({
   wallet,
@@ -513,14 +605,7 @@ export async function withdrawAllTokenTypes({
     TOKEN_SWAP_PROGRAM_ID
   )
 
-  const { poolToken: poolTokenMint } = tokenSwap
-
-  const tokenPool = new Token(
-    wallet,
-    connection,
-    poolTokenMint,
-    TOKEN_PROGRAM_ID
-  )
+  const { poolToken: poolTokenMint, mintA, mintB } = tokenSwap
 
   let [withdrawAmountTokenA, withdrawAmountTokenB] = await getMaxWithdrawAmount(
     {
@@ -532,8 +617,55 @@ export async function withdrawAllTokenTypes({
     }
   )
 
+  // todo: make number bigger
   withdrawAmountTokenA *= 0.99
   withdrawAmountTokenB *= 0.99
+
+  // in case tokenA/B is SOL
+  const beforeWithdrawTransaction = new Transaction()
+  const beforeWithdrawTransactionSigners = []
+
+  const afterWithdrawTransaction = new Transaction()
+
+  // if SOL - create new token address
+  if (mintA.equals(WRAPPED_SOL_MINT)) {
+    const result = await transferSOLToWrappedAccountAndClose({
+      wallet,
+      connection,
+      amount: withdrawAmountTokenA,
+    })
+
+    // change account to use from native to wrapped
+    userTokenAccountA = result[0]
+    const [_, createWrappedAccountTransaction, createWrappedAccountTransactionSigner, closeAccountTransaction] = result
+
+    beforeWithdrawTransaction.add(createWrappedAccountTransaction)
+    beforeWithdrawTransactionSigners.push(createWrappedAccountTransactionSigner)
+
+    afterWithdrawTransaction.add(closeAccountTransaction)
+  } else if (mintB.equals(WRAPPED_SOL_MINT)) {
+    const result = await transferSOLToWrappedAccountAndClose({
+      wallet,
+      connection,
+      amount: withdrawAmountTokenB,
+    })
+
+    // change account to use from native to wrapped
+    userTokenAccountB = result[0]
+    const [_, createWrappedAccountTransaction, createWrappedAccountTransactionSigner, closeAccountTransaction] = result
+
+    beforeWithdrawTransaction.add(createWrappedAccountTransaction)
+    beforeWithdrawTransactionSigners.push(createWrappedAccountTransactionSigner)
+
+    afterWithdrawTransaction.add(closeAccountTransaction)
+  }
+
+  const tokenPool = new Token(
+    wallet,
+    connection,
+    poolTokenMint,
+    TOKEN_PROGRAM_ID
+  )
 
   let feeAmount = 0
   if (OWNER_WITHDRAW_FEE_NUMERATOR !== 0) {
@@ -553,6 +685,7 @@ export async function withdrawAllTokenTypes({
     [],
     poolTokenAmount
   )
+  beforeWithdrawTransaction.add(tokenPoolApproveTransaction)
 
   console.log('Withdrawing pool tokens for A and B tokens')
   let counter = 0
@@ -574,7 +707,9 @@ export async function withdrawAllTokenTypes({
         poolTokenAmount - feeAmount,
         withdrawAmountTokenA,
         withdrawAmountTokenB,
-        tokenPoolApproveTransaction
+        beforeWithdrawTransaction,
+        beforeWithdrawTransactionSigners,
+        afterWithdrawTransaction
       )
       if (withdrawSignature) {
         return 'success'
@@ -784,4 +919,83 @@ export const calculateWithdrawAmount = ({
   const withdrawAmountTokenB = (poolTokenAmountB * poolTokenAmount) / supply
 
   return [withdrawAmountTokenA, withdrawAmountTokenB]
+}
+
+export const closeSolAccount = async ({
+  wallet,
+  connection,
+  accountToClose,
+}: {
+  wallet: WalletAdapter
+  connection: Connection
+  accountToClose: PublicKey
+}) => {
+  const tokenMintA = new Token(
+    wallet,
+    connection,
+    WRAPPED_SOL_MINT,
+    TOKEN_PROGRAM_ID
+  )
+
+  const [closeAccountTransaction] = await tokenMintA.closeAccount(
+    accountToClose,
+    wallet.publicKey,
+    wallet.publicKey,
+    []
+  )
+
+  await sendAndConfirmTransactionViaWallet(
+    wallet,
+    connection,
+    closeAccountTransaction
+  )
+}
+
+/**
+ * Transfer amount of SOL from native account to wrapped to be able to interact with pools
+ * @returns Address, transaction for creation this account and closing
+ */
+const transferSOLToWrappedAccountAndClose = async ({
+  wallet,
+  connection,
+  amount,
+}: {
+  wallet: WalletAdapter
+  connection: Connection
+  amount: number
+}): Promise<[PublicKey, Transaction, Account, Transaction]> => {
+  // if SOL - create new token address
+
+  const tokenMint = new Token(
+    wallet,
+    connection,
+    WRAPPED_SOL_MINT,
+    TOKEN_PROGRAM_ID
+  )
+
+  const [
+    createdWrappedAccount,
+    createWrappedAccountTransaction,
+    createWrappedAccountSigner,
+  ] = await Token.createWrappedNativeAccount(
+    wallet,
+    connection,
+    TOKEN_PROGRAM_ID,
+    wallet.publicKey,
+    amount
+  )
+
+  const [closeAccountTransaction] = await tokenMint.closeAccount(
+    createdWrappedAccount,
+    wallet.publicKey,
+    wallet.publicKey,
+    []
+  )
+
+  return [
+    createdWrappedAccount,
+    createWrappedAccountTransaction,
+    createWrappedAccountSigner,
+    closeAccountTransaction,
+  ]
 }

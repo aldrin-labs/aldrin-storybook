@@ -18,13 +18,16 @@ import {
 } from '@sb/dexUtils/pools'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
-import { PublicKey } from '@solana/web3.js'
+import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
 import { PoolInfo, PoolsPrices } from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { notify } from '@sb/dexUtils/notifications'
+import { Token, TOKEN_PROGRAM_ID } from '@sb/dexUtils/token/token'
+import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
+import AttentionComponent from '@sb/components/AttentionBlock'
 
 export const AddLiquidityPopup = ({
   theme,
@@ -33,7 +36,7 @@ export const AddLiquidityPopup = ({
   selectedPool,
   allTokensData,
   close,
-  refreshAllTokensData
+  refreshAllTokensData,
 }: {
   theme: Theme
   open: boolean
@@ -89,6 +92,27 @@ export const AddLiquidityPopup = ({
 
   const baseSymbol = getTokenNameByMintAddress(selectedPool.tokenA)
   const quoteSymbol = getTokenNameByMintAddress(selectedPool.tokenB)
+
+  // for cases with SOL token
+  const isBaseTokenSOL = baseSymbol === 'SOL'
+  const isQuoteTokenSOL = quoteSymbol === 'SOL'
+
+  const isPoolWithSOLToken = isBaseTokenSOL || isQuoteTokenSOL
+  const solAddresses = allTokensData.filter(
+    (tokenData) => tokenData.mint === WRAPPED_SOL_MINT.toString()
+  )
+
+  const isSeveralSOLAddresses = solAddresses.length > 1
+  const isNativeSOLSelected =
+    allTokensData[0]?.address === userTokenAccountA ||
+    allTokensData[0]?.address === userTokenAccountB
+
+  const isNeedToLeftSomeSOL =
+    isBaseTokenSOL && isNativeSOLSelected
+      ? maxBaseAmount - +baseAmount < 0.1
+      : isQuoteTokenSOL && isNativeSOLSelected
+      ? maxQuoteAmount - +quoteAmount < 0.1
+      : false
 
   const poolTokenAmount = poolTokenRawAmount * 10 ** poolTokenDecimals
   const [poolAmountTokenA, poolAmountTokenB] = [
@@ -201,17 +225,24 @@ export const AddLiquidityPopup = ({
         </Row>
       </Row>
 
-      {baseAmount > maxBaseAmount && (
-        <RowContainer margin={'1rem 0'} justify={'flex-end'}>
-          <Text color={'#F8B567'}>Your base amount value more then max.</Text>
+      {(isNeedToLeftSomeSOL ||
+        baseAmount > maxBaseAmount ||
+        quoteAmount > maxQuoteAmount) && (
+        <RowContainer margin={'2rem 0 0 0'}>
+          <AttentionComponent
+            text={
+              isNeedToLeftSomeSOL
+                ? 'Sorry, but you need to left some SOL (al least 0.1 SOL) on your wallet SOL account to successfully execute further transactions.'
+                : baseAmount > maxBaseAmount
+                ? `You entered more tokenA amount than you have.`
+                : quoteAmount > maxQuoteAmount
+                ? `You entered more tokenB amount than you have.`
+                : ''
+            }
+            blockHeight={'8rem'}
+          />
         </RowContainer>
       )}
-      {quoteAmount > maxQuoteAmount && (
-        <RowContainer margin={'1rem 0'} justify={'flex-end'}>
-          <Text color={'#F8B567'}>Your quote amount value more then max.</Text>
-        </RowContainer>
-      )}
-
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
         <Row
           width={'60%'}
@@ -276,8 +307,8 @@ export const AddLiquidityPopup = ({
             }
 
             console.log('userPoolTokenAccount', userPoolTokenAccount)
-
             await setOperationLoading(true)
+
             const result = await depositAllTokenTypes({
               wallet,
               connection,
@@ -289,7 +320,9 @@ export const AddLiquidityPopup = ({
               ...(userPoolTokenAccount
                 ? { poolTokenAccount: new PublicKey(userPoolTokenAccount) }
                 : {}),
+              transferSOLToWrapped: isPoolWithSOLToken && isNativeSOLSelected,
             })
+
             await refreshAllTokensData()
             await setOperationLoading(false)
 
@@ -302,6 +335,7 @@ export const AddLiquidityPopup = ({
                   ? 'Deposit failed, please try again later or contact us in telegram.'
                   : 'Deposit cancelled',
             })
+
             await close()
           }}
         >

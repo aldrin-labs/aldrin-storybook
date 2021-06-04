@@ -20,10 +20,12 @@ export const WarningSolPopup = ({
   theme,
   open,
   close,
+  createAdditionalSolAddress
 }: {
   theme: Theme
   open: boolean
   close: () => void
+  createAdditionalSolAddress: () => void
 }) => {
   return (
     <DialogWrapper
@@ -80,7 +82,7 @@ export const WarningSolPopup = ({
         </BtnCustom>
         <BtnCustom
           theme={theme}
-          onClick={() => {}}
+          onClick={createAdditionalSolAddress}
           needMinWidth={false}
           btnWidth="calc(55% - 3rem)"
           height="100%"

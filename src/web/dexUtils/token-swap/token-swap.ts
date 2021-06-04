@@ -425,19 +425,34 @@ export class TokenSwap {
   /**
    * Create a new Token Swap
    *
-   * @param connection The connection to use
    * @param wallet Pays for the transaction
+   * @param connection The connection to use
    * @param tokenSwapAccount The token swap account
    * @param authority The authority over the swap and accounts
-   * @param nonce The nonce used to generate the authority
    * @param tokenAccountA: The token swap's Token A account
    * @param tokenAccountB: The token swap's Token B account
    * @param poolToken The pool token
+   * @param mintA Mint tokenA
+   * @param mintB Mint tokenB
+   * @param feeAccount The account for sending fee for
    * @param tokenAccountPool The token swap's pool token account
+   * @param swapProgramId The program ID of the token-swap program 
    * @param tokenProgramId The program ID of the token program
-   * @param swapProgramId The program ID of the token-swap program
-   * @param feeNumerator Numerator of the fee ratio
-   * @param feeDenominator Denominator of the fee ratio
+   * @param nonce The nonce used to generate the authority
+   * @param tradeFeeNumerator Numerator of the fee ratio
+   * @param tradeFeeDenominator Denominator of the fee ratio
+   * @param tradeFeeNumerator Numerator of the fee ratio
+   * @param tradeFeeDenominator Denominator of the fee ratio
+   * @param ownerTradeFeeNumerator TODO: fill it
+   * @param ownerTradeFeeDenominator: TODO: fill it
+   * @param ownerWithdrawFeeNumerator: TODO: fill it
+   * @param ownerWithdrawFeeDenominator: TODO: fill it
+   * @param hostFeeNumerator: TODO: fill it
+   * @param hostFeeDenominator: TODO: fill it
+   * @param curveType: TODO: fill it
+   * @param beforeCreatePoolTransaction Transactions that we'll be sent before create pool transaction
+   * @param beforeCreatePoolTransactionSigners Signers for transactions before create pool
+   * @param afterCreatePoolTransaction: Transactions that we'll be sent after create pool transaction
    * @return Token object for the newly minted token, Public key of the account holding the total supply of new tokens
    */
   static async createTokenSwap(
@@ -464,7 +479,9 @@ export class TokenSwap {
     hostFeeNumerator: number,
     hostFeeDenominator: number,
     curveType: number,
-    previousTransactions: Transaction,
+    beforeCreatePoolTransaction: Transaction,
+    beforeCreatePoolTransactionSigners: Account[],
+    afterCreatePoolTransaction: Transaction,
   ): Promise<TokenSwap> {
     let transaction;
     const tokenSwap = new TokenSwap(
@@ -495,9 +512,10 @@ export class TokenSwap {
     const balanceNeeded = await TokenSwap.getMinBalanceRentForExemptTokenSwap(
       connection,
     );
+
     transaction = new Transaction();
     transaction.add(
-      previousTransactions,
+      beforeCreatePoolTransaction,
       SystemProgram.createAccount({
         fromPubkey: wallet.publicKey,
         newAccountPubkey: tokenSwapAccount.publicKey,
@@ -530,14 +548,15 @@ export class TokenSwap {
     );
 
     transaction.add(instruction);
+    transaction.add(afterCreatePoolTransaction);
+
     const result = await sendAndConfirmTransactionViaWallet(
       wallet,
       connection,
       transaction,
+      ...beforeCreatePoolTransactionSigners,
       tokenSwapAccount,
     );
-
-    console.log('result', result)
 
     return tokenSwap;
   }
@@ -657,6 +676,9 @@ export class TokenSwap {
    * @param poolTokenAmount Amount of pool tokens to mint
    * @param maximumTokenA The maximum amount of token A to deposit
    * @param maximumTokenB The maximum amount of token B to deposit
+   * @param beforeDepositTransaction Transactions that we'll be sent before deposit transaction
+   * @param beforeDepositTransactionSigners Signers for transaction before deposit 
+   * @param afterDepositTransaction: Transactions that we'll be sent after deposit transaction   
    */
   async depositAllTokenTypes(
     userAccountA: PublicKey,
@@ -666,14 +688,15 @@ export class TokenSwap {
     poolTokenAmount: number | Numberu64,
     maximumTokenA: number | Numberu64,
     maximumTokenB: number | Numberu64,
-    previousTransactions: Transaction,
-    previousSignatures: Account[],
+    beforeDepositTransaction: Transaction,
+    beforeDepositTransactionSignatures: Account[],
+    afterDepositTransaction: Transaction
   ): Promise<TransactionSignature> {
     return await sendAndConfirmTransactionViaWallet(
       this.wallet,
       this.connection,
       new Transaction().add(
-        previousTransactions,
+        beforeDepositTransaction,
         TokenSwap.depositAllTokenTypesInstruction(
           this.tokenSwap,
           this.authority,
@@ -690,9 +713,10 @@ export class TokenSwap {
           maximumTokenA,
           maximumTokenB,
         ),
+        afterDepositTransaction,
       ),
+      ...beforeDepositTransactionSignatures,
       userTransferAuthority,
-      ...previousSignatures,
     );
   }
 
@@ -759,6 +783,9 @@ export class TokenSwap {
    * @param poolTokenAmount Amount of pool tokens to burn
    * @param minimumTokenA The minimum amount of token A to withdraw
    * @param minimumTokenB The minimum amount of token B to withdraw
+   * @param beforeWithdrawTransaction Transactions that we'll be sent before withdraw transaction
+   * @param beforeWithdrawTransactionSigners Signers for transaction before withdraw
+   * @param afterWithdrawTransaction: Transactions that we'll be sent after withdraw transaction   
    */
   async withdrawAllTokenTypes(
     userAccountA: PublicKey,
@@ -768,13 +795,15 @@ export class TokenSwap {
     poolTokenAmount: number | Numberu64,
     minimumTokenA: number | Numberu64,
     minimumTokenB: number | Numberu64,
-    previousTransactions: Transaction
+    beforeWithdrawTransaction: Transaction,
+    beforeWithdrawTransactionSigners: Account[],
+    afterWithdrawTransaction: Transaction,
   ): Promise<TransactionSignature> {
     return await sendAndConfirmTransactionViaWallet(
       this.wallet,
       this.connection,
       new Transaction().add(
-        previousTransactions,
+        beforeWithdrawTransaction,
         TokenSwap.withdrawAllTokenTypesInstruction(
           this.tokenSwap,
           this.authority,
@@ -792,7 +821,9 @@ export class TokenSwap {
           minimumTokenA,
           minimumTokenB,
         ),
+        afterWithdrawTransaction,
       ),
+      ...beforeWithdrawTransactionSigners,
       userTransferAuthority,
     );
   }

@@ -15,7 +15,7 @@ export const getAllTokensData = async (
   const SOLToken = {
     symbol: 'SOL',
     amount: solBalance,
-    decimals: 8,
+    decimals: 9,
     mint: TokenInstructions.WRAPPED_SOL_MINT.toString(),
     address: owner.toString(),
   }

@@ -597,7 +597,7 @@ export class Token {
     programId: PublicKey,
     owner: PublicKey,
     amount: number,
-  ): Promise<PublicKey> {
+  ): Promise<[PublicKey, Transaction, Account]> {
     // Allocate memory for the account
     const balanceNeeded = await Token.getMinBalanceRentForExemptAccount(
       connection,
@@ -638,14 +638,14 @@ export class Token {
     );
 
     // Send the three instructions
-    await sendAndConfirmTransactionViaWallet(
-      wallet,
-      connection,
-      transaction,
-      newAccount,
-    );
+    // await sendAndConfirmTransactionViaWallet(
+    //   wallet,
+    //   connection,
+    //   transaction,
+    //   newAccount,
+    // );
 
-    return newAccount.publicKey;
+    return [newAccount.publicKey, transaction, newAccount];
   }
 
   /**
@@ -1118,7 +1118,7 @@ export class Token {
     dest: PublicKey,
     authority: any,
     multiSigners: Array<Account>,
-  ): Promise<void> {
+  ): Promise<[Transaction, Account[]]> {
     let authorityPublicKey;
     let signers;
     if (isAccount(authority)) {
@@ -1128,21 +1128,25 @@ export class Token {
       authorityPublicKey = authority;
       signers = multiSigners;
     }
-    await sendAndConfirmTransaction(
-      'CloseAccount',
-      this.connection,
-      new Transaction().add(
-        Token.createCloseAccountInstruction(
-          this.programId,
-          account,
-          dest,
-          authorityPublicKey,
-          multiSigners,
-        ),
+
+    const transaction = new Transaction().add(
+      Token.createCloseAccountInstruction(
+        this.programId,
+        account,
+        dest,
+        authorityPublicKey,
+        multiSigners,
       ),
-      this.payer,
-      ...signers,
     );
+
+    // await sendAndConfirmTransactionViaWallet(
+    //   this.wallet,
+    //   this.connection,
+    //   transaction,
+    //   ...signers,
+    // );
+
+    return [transaction, signers]
   }
 
   /**
