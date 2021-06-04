@@ -69,3 +69,5 @@ export type SwapsType = {
     userTokenAccountB: PublicKey
     baseSwapToken: 'tokenA' | 'tokenB'
 }
+
+export type RebalancePopupStep = 'initial' | 'pending' | 'done' | 'failed'
