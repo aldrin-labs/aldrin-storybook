@@ -26,7 +26,9 @@ import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { PoolInfo, PoolsPrices } from '@sb/compositions/Pools/index.types'
 import { notify } from '@sb/dexUtils/notifications'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-import { WarningSolPopup } from '../WarningSolPopup'
+
+import AttentionComponent from '@sb/components/AttentionBlock'
+import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 
 export const CreatePoolPopup = ({
   theme,
@@ -35,6 +37,7 @@ export const CreatePoolPopup = ({
   poolsPrices,
   getPoolsInfoQuery,
   close,
+  refreshAllTokensData,
 }: {
   theme: Theme
   open: boolean
@@ -42,6 +45,7 @@ export const CreatePoolPopup = ({
   poolsPrices: PoolsPrices[]
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
   close: () => void
+  refreshAllTokensData: () => void
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -69,7 +73,6 @@ export const CreatePoolPopup = ({
   }
 
   const [isSelectCoinPopupOpen, setIsSelectCoinPopupOpen] = useState(false)
-  const [isWarningSolPopupOpen, setIsWarningSolPopupOpen] = useState(false)
   const [isBaseTokenSelecting, setIsBaseTokenSelecting] = useState(false)
 
   const [warningChecked, setWarningChecked] = useState(false)
@@ -83,21 +86,19 @@ export const CreatePoolPopup = ({
     : 'Select token'
 
   const mints = allTokensData.map((tokenInfo: TokenInfo) => tokenInfo.mint)
-  const filteredMints =
-    isBaseTokenSelecting && quoteTokenMintAddress
-      ? mints.filter((m) => m !== quoteTokenMintAddress)
-      : !isBaseTokenSelecting && baseTokenMintAddress
-      ? mints.filter((m) => m !== baseTokenMintAddress)
-      : mints
+  const filteredMints = [...new Set(mints)]
 
-  const baseTokenInfo = getTokenDataByMint(allTokensData, baseTokenMintAddress)
-  const maxBaseAmount = baseTokenInfo?.amount || 0
+  const {
+    address: userTokenAccountA,
+    amount: maxBaseAmount,
+    decimals: baseTokenDecimals,
+  } = getTokenDataByMint(allTokensData, baseTokenMintAddress)
 
-  const quoteTokenInfo = getTokenDataByMint(
-    allTokensData,
-    quoteTokenMintAddress
-  )
-  const maxQuoteAmount = quoteTokenInfo?.amount || 0
+  const {
+    address: userTokenAccountB,
+    decimals: quoteTokenDecimals,
+    amount: maxQuoteAmount,
+  } = getTokenDataByMint(allTokensData, quoteTokenMintAddress)
 
   const { getPoolsInfo: pools = [] } = getPoolsInfoQuery || { getPoolsInfo: [] }
   const isPoolAlreadyExist = pools.find(
@@ -105,6 +106,30 @@ export const CreatePoolPopup = ({
       pool.tokenA === baseTokenMintAddress &&
       pool.tokenB === quoteTokenMintAddress
   )
+
+  const userAmountTokenA = +baseAmount * 10 ** baseTokenDecimals
+  const userAmountTokenB = +quoteAmount * 10 ** quoteTokenDecimals
+
+  // for cases with SOL token
+  const isBaseTokenSOL = baseSymbol === 'SOL'
+  const isQuoteTokenSOL = quoteSymbol === 'SOL'
+
+  const isPoolWithSOLToken = isBaseTokenSOL || isQuoteTokenSOL
+  const solAddresses = allTokensData.filter(
+    (tokenData) => tokenData.mint === WRAPPED_SOL_MINT.toString()
+  )
+
+  const isSeveralSOLAddresses = solAddresses.length > 1
+  const isNativeSOLSelected =
+    allTokensData[0]?.address === userTokenAccountA ||
+    allTokensData[0]?.address === userTokenAccountB
+
+  const isNeedToLeftSomeSOL =
+    isBaseTokenSOL && isNativeSOLSelected
+      ? maxBaseAmount - +baseAmount < 0.1
+      : isQuoteTokenSOL && isNativeSOLSelected
+      ? maxQuoteAmount - +quoteAmount < 0.1
+      : false
 
   const baseTokenPrice =
     poolsPrices.find(
@@ -126,7 +151,10 @@ export const CreatePoolPopup = ({
     +quoteAmount <= 0 ||
     operationLoading ||
     baseAmount > maxBaseAmount ||
-    quoteAmount > maxQuoteAmount
+    quoteAmount > maxQuoteAmount ||
+    isNeedToLeftSomeSOL
+
+  console.log('addTokenData', allTokensData)
 
   return (
     <DialogWrapper
@@ -187,6 +215,24 @@ export const CreatePoolPopup = ({
           }}
         />
       </RowContainer>
+      {(isNeedToLeftSomeSOL ||
+        baseAmount > maxBaseAmount ||
+        quoteAmount > maxQuoteAmount) && (
+        <RowContainer margin={'1rem 0 0 0'}>
+          <AttentionComponent
+            text={
+              isNeedToLeftSomeSOL
+                ? 'Sorry, but you need to left some SOL (al least 0.1 SOL) on your wallet SOL account to successfully execute further transactions.'
+                : baseAmount > maxBaseAmount
+                ? `You entered more tokenA amount than you have.`
+                : quoteAmount > maxQuoteAmount
+                ? `You entered more tokenB amount than you have.`
+                : ''
+            }
+            blockHeight={'8rem'}
+          />
+        </RowContainer>
+      )}
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
         <Row
           width={'60%'}
@@ -222,19 +268,6 @@ export const CreatePoolPopup = ({
           showLoader={operationLoading}
           theme={theme}
           onClick={async () => {
-            const userTokenAccountA = baseTokenInfo?.address
-            const userTokenAccountB = quoteTokenInfo?.address
-
-            const baseTokenDecimals = baseTokenInfo?.decimals || 0
-            const quoteTokenDecimals = quoteTokenInfo?.decimals || 0
-
-            const userAmountTokenA = +baseAmount * 10 ** baseTokenDecimals
-            const userAmountTokenB = +quoteAmount * 10 ** quoteTokenDecimals
-
-            if (quoteSymbol === 'SOL' || baseSymbol === 'SOL') {
-              setIsWarningSolPopupOpen(true)
-            }
-
             if (
               !userTokenAccountA ||
               !userTokenAccountB ||
@@ -270,10 +303,12 @@ export const CreatePoolPopup = ({
               return
             }
 
+            let result
+
             console.log('create pool')
             await setOperationLoading(true)
             try {
-              await createTokenSwap({
+              result = await createTokenSwap({
                 wallet,
                 connection,
                 userAmountTokenA,
@@ -282,11 +317,26 @@ export const CreatePoolPopup = ({
                 mintB: new PublicKey(quoteTokenMintAddress),
                 userTokenAccountA: new PublicKey(userTokenAccountA),
                 userTokenAccountB: new PublicKey(userTokenAccountB),
+                transferSOLToWrapped: isPoolWithSOLToken && isNativeSOLSelected,
               })
             } catch (e) {
               console.error('createTokenSwap error:', e)
             }
+
+            await refreshAllTokensData()
             await setOperationLoading(false)
+
+            await notify({
+              type: result === 'success' ? 'success' : 'error',
+              message:
+                result === 'success'
+                  ? 'Pool created successfully, it will appear on pools page in few minutes.'
+                  : result === 'failed'
+                  ? 'Pool creation failed, please try again later or contact us in telegram.'
+                  : 'Pool creation cancelled',
+            })
+
+            await close()
           }}
         >
           Create pool
@@ -299,10 +349,16 @@ export const CreatePoolPopup = ({
         selectTokenAddress={(address: string) => {
           const select = isBaseTokenSelecting
             ? () => {
+                if (quoteTokenMintAddress === address) {
+                  setQuoteTokenMintAddress('')
+                }
                 setBaseTokenMintAddress(address)
                 setIsSelectCoinPopupOpen(false)
               }
             : () => {
+                if (baseTokenMintAddress === address) {
+                  setBaseTokenMintAddress('')
+                }
                 setQuoteTokenMintAddress(address)
                 setIsSelectCoinPopupOpen(false)
               }
@@ -310,13 +366,6 @@ export const CreatePoolPopup = ({
           select()
         }}
         close={() => setIsSelectCoinPopupOpen(false)}
-      />
-      <WarningSolPopup
-        theme={theme}
-        close={() => {
-          setIsWarningSolPopupOpen(false)
-        }}
-        open={isWarningSolPopupOpen}
       />
     </DialogWrapper>
   )

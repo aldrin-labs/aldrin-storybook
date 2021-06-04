@@ -31,6 +31,7 @@ export const WithdrawalPopup = ({
   selectedPool,
   allTokensData,
   close,
+  refreshAllTokensData
 }: {
   theme: Theme
   open: boolean
@@ -38,6 +39,7 @@ export const WithdrawalPopup = ({
   selectedPool: PoolInfo
   allTokensData: TokenInfo[]
   close: () => void
+  refreshAllTokensData: () => void
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -168,14 +170,6 @@ export const WithdrawalPopup = ({
           showLoader={operationLoading}
           theme={theme}
           onClick={async () => {
-            console.log(' poolTokenAmountToWithdraw data', {
-              perc: (+baseAmount / withdrawAmountTokenA) * 100,
-              poolTokenAmount,
-              poolTokenDecimals,
-            })
-
-            console.log('poolTokenAmountToWithdraw', poolTokenAmountToWithdraw)
-
             if (
               !userTokenAccountA ||
               !userTokenAccountB ||
@@ -198,7 +192,7 @@ export const WithdrawalPopup = ({
             }
 
             await setOperationLoading(true)
-            await withdrawAllTokenTypes({
+            const result = await withdrawAllTokenTypes({
               wallet,
               connection,
               poolTokenAmount: poolTokenAmountToWithdraw,
@@ -207,7 +201,20 @@ export const WithdrawalPopup = ({
               userTokenAccountB: new PublicKey(userTokenAccountB),
               poolTokenAccount: new PublicKey(userPoolTokenAccount),
             })
+            await refreshAllTokensData()
             await setOperationLoading(false)
+
+            await notify({
+              type: result === 'success' ? 'success' : 'error',
+              message:
+                result === 'success'
+                  ? 'Withdrawal successful'
+                  : result === 'failed'
+                  ? 'Withdrawal failed, please try again later or contact us in telegram.'
+                  : 'Withdrawal cancelled',
+            })
+
+            await close()
           }}
         >
           Withdraw

@@ -227,11 +227,13 @@ export default compose(
     name: 'getPoolsInfoQuery',
     query: getPoolsInfo,
     fetchPolicy: 'cache-and-network',
+    pollInterval: 60000,
   }),
   queryRendererHoc({
     name: 'getFeesEarnedByPoolQuery',
     query: getFeesEarnedByPool,
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
+    pollInterval: 60000,
   })
 )(AllPoolsTable)

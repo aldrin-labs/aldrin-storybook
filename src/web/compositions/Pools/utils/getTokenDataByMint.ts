@@ -1,4 +1,5 @@
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
+import { WRAPPED_SOL_MINT } from '@sb/dexUtils/wallet'
 
 export const getTokenDataByMint = (
   allTokensData: TokenInfo[],
