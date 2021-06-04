@@ -30,7 +30,7 @@ export function ConnectionProvider({ children }) {
               { url: 'https://mango.rpcpool.com/', RPS: 10 },
               { url: 'https://solana-api.projectserum.com', RPS: 2 },
               { url: 'https://api.mainnet-beta.solana.com', RPS: 4 },
-              { url: 'https://raydium.rpcpool.com/', RPS: 10 },
+              // { url: 'https://raydium.rpcpool.com/', RPS: 10 },
               { url: 'https://orca.rpcpool.com/', RPS: 10 },
               { url: 'https://api.rpcpool.com', RPS: 10 },
             ],
