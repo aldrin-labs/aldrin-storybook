@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Theme } from '@material-ui/core'
 import { Connection, Transaction } from '@solana/web3.js'
 
@@ -54,6 +54,8 @@ export const RebalancePopup = ({
   refreshRebalance: () => void,
 }) => {
 
+  const [pendingStateText, setPendingStateText] = useState('Pending')
+
   const tokensDiff: {
     symbol: string
     amountDiff: number
@@ -74,8 +76,11 @@ export const RebalancePopup = ({
 
       // symbol: el.name,
       symbol: `${MOKED_MINTS_MAP[el.tokenA]}_${MOKED_MINTS_MAP[el.tokenB]}`,
-      slippage: getRandomInt(4, 8),
+      slippage: getRandomInt(6, 12),
+      // slippage: 0,
       price: el.tvl.tokenB / el.tvl.tokenA,
+      tokenA: el.tvl.tokenA,
+      tokenB: el.tvl.tokenB,
       tokenSwapPublicKey: el.swapToken,
     }
   })
@@ -85,6 +90,8 @@ export const RebalancePopup = ({
     poolsInfo: poolsInfoProcessed,
     tokensMap,
   })
+
+  console.log('rebalanceTransactionsList: ', rebalanceTransactionsList)
 
   const totalFeesUSD = rebalanceTransactionsList.reduce(
     (acc, el) => el.feeUSD + acc,
@@ -166,6 +173,7 @@ export const RebalancePopup = ({
                   try {
                     const swaps = getPoolsSwaps({ wallet, connection, transactionsList: rebalanceTransactionsList, tokensMap })
                     console.log('swaps: ', swaps)
+                    setPendingStateText('Creating swaps...')
                     const promisedSwaps = await Promise.all(swaps.map(el => swap(el)))
                     console.log('promisedSwaps: ', promisedSwaps)
                     const swapsTransactions = promisedSwaps.map(el => el[0])
@@ -174,16 +182,17 @@ export const RebalancePopup = ({
                     console.log('swapsSigns: ', swapsSigns)
   
   
+                    setPendingStateText('Creating transaction...')
                     const commonTransaction = new Transaction().add(...swapsTransactions)
                     console.log('commonTransaction: ', commonTransaction)
   
-  
+                    setPendingStateText('Awaitng for Rebalance confirmation...')
                     await sendAndConfirmTransactionViaWallet(wallet, connection, commonTransaction, ...[...swapsSigns])
                     changeRebalanceStep('done')
                     
                     setTimeout(() => {
                       refreshRebalance()
-                    }, 3000)
+                    }, 15000)
                     
                   } catch(e) {
                     changeRebalanceStep('failed')
@@ -221,7 +230,7 @@ export const RebalancePopup = ({
             {' '}
             <Loading color={'#F29C38'} size={42} />
             <Text color={'#F29C38'} style={{ marginTop: '1rem' }}>
-              Pending
+              {pendingStateText}
             </Text>
           </RowContainer>
         )}
