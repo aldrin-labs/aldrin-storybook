@@ -76,7 +76,7 @@ export const RebalancePopup = ({
 
       // symbol: el.name,
       symbol: `${MOKED_MINTS_MAP[el.tokenA]}_${MOKED_MINTS_MAP[el.tokenB]}`,
-      slippage: getRandomInt(6, 12),
+      slippage: getRandomInt(1, 3),
       // slippage: 0,
       price: el.tvl.tokenB / el.tvl.tokenA,
       tokenA: el.tvl.tokenA,
