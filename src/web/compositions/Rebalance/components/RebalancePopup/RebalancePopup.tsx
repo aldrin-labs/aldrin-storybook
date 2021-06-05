@@ -172,21 +172,26 @@ export const RebalancePopup = ({
                 onClick={async () => {
                   changeRebalanceStep('pending')
 
+
+                  // TODO:
+                  // 1. We need to refresh pools info each time before click
+                  // 2. We need to refresh popup each interval (e.g. 10 seconds)
+
                   try {
                     const swaps = getPoolsSwaps({ wallet, connection, transactionsList: rebalanceTransactionsList, tokensMap })
                     console.log('swaps: ', swaps)
                     setPendingStateText('Creating swaps...')
                     const promisedSwaps = await Promise.all(swaps.map(el => swap(el)))
-                    console.log('promisedSwaps: ', promisedSwaps)
+                    // console.log('promisedSwaps: ', promisedSwaps)
                     const swapsTransactions = promisedSwaps.map(el => el[0])
-                    console.log('swapsTransactions: ', swapsTransactions)
+                    // console.log('swapsTransactions: ', swapsTransactions)
                     const swapsSigns = promisedSwaps.map(el => el[1])
-                    console.log('swapsSigns: ', swapsSigns)
+                    // console.log('swapsSigns: ', swapsSigns)
   
   
                     setPendingStateText('Creating transaction...')
                     const commonTransaction = new Transaction().add(...swapsTransactions)
-                    console.log('commonTransaction: ', commonTransaction)
+                    // console.log('commonTransaction: ', commonTransaction)
   
                     setPendingStateText('Awaitng for Rebalance confirmation...')
                     await sendAndConfirmTransactionViaWallet(wallet, connection, commonTransaction, ...[...swapsSigns])
