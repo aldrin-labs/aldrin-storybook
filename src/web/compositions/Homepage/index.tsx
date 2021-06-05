@@ -113,7 +113,7 @@ export const Homepage = () => {
               <RowContainer justify={'end'} height={'100%'}>
                 <Header style={{ marginTop: '0.8rem' }}>Wallet</Header>
                 <Description>
-                  Hold and trade the top cryptocurrencies on
+                  Hold and trade the top cryptocurrencies on{' '}
                   <strong>CCAI  Wallet™</strong>.
                 </Description>
               </RowContainer>
