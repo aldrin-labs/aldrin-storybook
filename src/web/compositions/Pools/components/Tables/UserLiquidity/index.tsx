@@ -42,6 +42,7 @@ import {
 } from '@core/utils/PortfolioTableUtils'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import { getTotalUserLiquidity } from './utils'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 const UserLiquitidyTable = ({
   theme,
@@ -133,12 +134,18 @@ const UserLiquitidyTable = ({
               <RowTd>TVL</RowTd>
               <RowTd>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <SvgIcon
-                    width={'1.2rem'}
-                    height={'1.2rem'}
-                    style={{ marginRight: '1rem' }}
-                    src={TooltipIcon}
-                  />
+                  <DarkTooltip
+                    title={
+                      'Annualized, non-compounded return on investment based on the fees earned in the last 24 hours, relative to the size of the pool.'
+                    }
+                  >
+                    <SvgIcon
+                      width={'1.2rem'}
+                      height={'1.2rem'}
+                      style={{ marginRight: '1rem' }}
+                      src={TooltipIcon}
+                    />
+                  </DarkTooltip>
                   APY (24h)
                 </div>
               </RowTd>

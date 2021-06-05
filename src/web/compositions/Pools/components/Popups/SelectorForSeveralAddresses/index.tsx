@@ -15,7 +15,6 @@ import {
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
 import { StyledPaper } from '../index.styles'
-import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
 
 const UpdatedPaper = styled(({ ...props }) => <StyledPaper {...props} />)`
   width: 45rem;
@@ -32,7 +31,7 @@ const StyledText = styled(({ ...props }) => <Text {...props} />)`
   font-family: Avenir Next Demi;
 `
 
-export const SelectCoinPopup = ({
+export const SelectSeveralAddressesPopup = ({
   theme,
   open,
   mints,
@@ -46,24 +45,11 @@ export const SelectCoinPopup = ({
   selectTokenAddress: (address: string) => void
 }) => {
   const needKnownMints = false
-  const [searchValue, onChangeSearch] = useState('')
-  const [
-    isSelectorForSeveralAddressesOpen,
-    openSelectorForSeveralAddresses,
-  ] = useState(false)
   const usersMints = needKnownMints
     ? mints.filter(
         (el) => getTokenNameByMintAddress(el) === ALL_TOKENS_MINTS_MAP[el]
       )
     : mints
-
-  const filteredMints = searchValue
-    ? usersMints.filter((mint) =>
-        getTokenNameByMintAddress(mint)
-          .toLowerCase()
-          .includes(searchValue.toLowerCase())
-      )
-    : usersMints
 
   return (
     <DialogWrapper
@@ -79,28 +65,17 @@ export const SelectCoinPopup = ({
         <Text fontSize={'2rem'}>Select Token</Text>
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </RowContainer>
-      <RowContainer padding={'3rem 0'}>
-        <SearchInputWithLoop
-          searchValue={searchValue}
-          onChangeSearch={onChangeSearch}
-          placeholder={'Search'}
-        />
+      <RowContainer justify={'flex-start'} margin={'3rem 0'}>
+        <Text>You have several SOL addresses. Choose one of them.</Text>
       </RowContainer>
       <RowContainer>
-        {filteredMints.map((mint: string) => {
+        {usersMints.map((mint: string) => {
           return (
             <SelectorRow
               justify={'space-between'}
               style={{ cursor: 'pointer' }}
               onClick={() => {
-                const isSeveralCoinsWithSameAddress =
-                  filteredMints.filter((el) => el === mint).length > 1
-
-                if (isSeveralCoinsWithSameAddress) {
-                  openSelectorForSeveralAddresses(true)
-                } else {
-                  selectTokenAddress(mint)
-                }
+                selectTokenAddress(mint)
               }}
             >
               <Row wrap={'nowrap'}>
@@ -110,13 +85,6 @@ export const SelectCoinPopup = ({
               <Row wrap={'nowrap'}>
                 <StyledText>--</StyledText>
               </Row>
-              <SelectSeveralAddressesPopup
-                theme={theme}
-                mints={filteredMints.filter((el) => el === mint)}
-                open={isSelectorForSeveralAddressesOpen}
-                close={() => openSelectorForSeveralAddresses(false)}
-                selectTokenAddress={selectTokenAddress}
-              />
             </SelectorRow>
           )
         })}
