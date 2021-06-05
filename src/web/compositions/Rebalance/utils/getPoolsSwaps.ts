@@ -29,6 +29,8 @@ export const getPoolsSwaps = ({
       wallet,
       connection,
       ...(el.side === 'sell' ? {
+
+        // TODO: Remove 8 and replace with real decimalCount param from BLOCKCHAIN
         swapAmountIn: el.amount * 10 ** 8,
         swapAmountOut: el.total * 10 ** 8,
 
