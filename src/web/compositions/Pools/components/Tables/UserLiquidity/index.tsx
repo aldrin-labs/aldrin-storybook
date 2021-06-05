@@ -116,9 +116,12 @@ const UserLiquitidyTable = ({
                 fontFamily={'Avenir Next Demi'}
               >
                 $
-                {getFeesEarnedByAccount.reduce((acc, el: FeesEarned) => {
-                  return acc + el.earnedUSD
-                }, 0)}
+                {stripDigitPlaces(
+                  getFeesEarnedByAccount.reduce((acc, el: FeesEarned) => {
+                    return acc + el.earnedUSD
+                  }, 0),
+                  3
+                )}
               </Text>
             </LiquidityDataContainer>
           </Row>
@@ -143,147 +146,189 @@ const UserLiquitidyTable = ({
               <RowTd>Total Fees Earned</RowTd>
               <RowTd></RowTd>
             </TableHeader>
-            {usersPools.map((el: PoolInfo) => {
-              const baseSymbol = getTokenNameByMintAddress(el.tokenA)
-              const quoteSymbol = getTokenNameByMintAddress(el.tokenB)
+            {usersPools
+              .sort((poolA: PoolInfo, poolB: PoolInfo) => {
+                const [poolABaseTokenPrice, poolBBaseTokenPrice] = [
+                  poolsPrices.find(
+                    (tokenInfo) =>
+                      tokenInfo.symbol ===
+                      getTokenNameByMintAddress(poolA.tokenA)
+                  )?.price || 10,
+                  poolsPrices.find(
+                    (tokenInfo) =>
+                      tokenInfo.symbol ===
+                      getTokenNameByMintAddress(poolB.tokenA)
+                  )?.price || 10,
+                ]
 
-              const baseTokenPrice =
-                poolsPrices.find((tokenInfo) => tokenInfo.symbol === baseSymbol)
-                  ?.price || 10
+                const [poolAQuoteTokenPrice, poolBQuoteTokenPrice] = [
+                  poolsPrices.find(
+                    (tokenInfo) =>
+                      tokenInfo.symbol ===
+                      getTokenNameByMintAddress(poolA.tokenB)
+                  )?.price || 10,
+                  poolsPrices.find(
+                    (tokenInfo) =>
+                      tokenInfo.symbol ===
+                      getTokenNameByMintAddress(poolB.tokenB)
+                  )?.price || 10,
+                ]
 
-              const quoteTokenPrice =
-                poolsPrices.find(
-                  (tokenInfo) => tokenInfo.symbol === quoteSymbol
-                )?.price || 10
+                const poolATvlUSD =
+                  poolABaseTokenPrice * poolA.tvl.tokenA +
+                  poolAQuoteTokenPrice * poolA.tvl.tokenB
 
-              const tvlUSD =
-                baseTokenPrice * el.tvl.tokenA + quoteTokenPrice * el.tvl.tokenB
+                const poolBTvlUSD =
+                  poolBBaseTokenPrice * poolB.tvl.tokenA +
+                  poolBQuoteTokenPrice * poolB.tvl.tokenB
 
-              const {
-                amount: poolTokenRawAmount,
-                decimals: poolTokenDecimals,
-              } = getTokenDataByMint(allTokensData, el.poolTokenMint)
-
-              const poolTokenAmount =
-                poolTokenRawAmount * 10 ** poolTokenDecimals
-
-              const [
-                userAmountTokenA,
-                userAmountTokenB,
-              ] = calculateWithdrawAmount({
-                selectedPool: el,
-                poolTokenAmount: poolTokenAmount,
+                return poolBTvlUSD - poolATvlUSD
               })
+              .map((el: PoolInfo) => {
+                const baseSymbol = getTokenNameByMintAddress(el.tokenA)
+                const quoteSymbol = getTokenNameByMintAddress(el.tokenB)
 
-              const userLiquidityUSD =
-                baseTokenPrice * userAmountTokenA +
-                quoteTokenPrice * userAmountTokenB
+                const baseTokenPrice =
+                  poolsPrices.find(
+                    (tokenInfo) => tokenInfo.symbol === baseSymbol
+                  )?.price || 10
 
-              return (
-                <TableRow>
-                  <RowTd>
-                    <TokenIconsContainer
-                      tokenA={el.tokenA}
-                      tokenB={el.tokenB}
-                    />
-                  </RowTd>
-                  <RowDataTd>
-                    <TextColumnContainer>
-                      <RowDataTdTopText theme={theme}>
-                        ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
-                      </RowDataTdTopText>
-                      <RowDataTdText
-                        theme={theme}
-                        color={theme.palette.grey.new}
-                      >
-                        {formatNumberToUSFormat(
-                          stripDigitPlaces(el.tvl.tokenA, 2)
-                        )}{' '}
-                        {getTokenNameByMintAddress(el.tokenA)} /{' '}
-                        {formatNumberToUSFormat(
-                          stripDigitPlaces(el.tvl.tokenB, 2)
-                        )}{' '}
-                        {getTokenNameByMintAddress(el.tokenB)}
-                      </RowDataTdText>
-                    </TextColumnContainer>
-                  </RowDataTd>
-                  <RowDataTd>
-                    <RowDataTdText theme={theme}>{el.apy24h}%</RowDataTdText>
-                  </RowDataTd>
-                  <RowDataTd>
-                    <TextColumnContainer>
-                      <RowDataTdTopText theme={theme}>
-                        $
-                        {formatNumberToUSFormat(
-                          stripDigitPlaces(userLiquidityUSD, 2)
-                        )}
-                      </RowDataTdTopText>
-                      <RowDataTdText
-                        theme={theme}
-                        color={theme.palette.grey.new}
-                      >
-                        {formatNumberToUSFormat(
-                          stripDigitPlaces(userAmountTokenA, 8)
-                        )}{' '}
-                        {baseSymbol} /{' '}
-                        {formatNumberToUSFormat(
-                          stripDigitPlaces(userAmountTokenB, 8)
-                        )}{' '}
-                        {quoteSymbol}
-                      </RowDataTdText>
-                    </TextColumnContainer>
-                  </RowDataTd>
-                  <RowDataTd>
-                    <TextColumnContainer>
-                      <RowDataTdTopText theme={theme}>
-                        $
-                        {getFeesEarnedByAccount.find(
-                          (feesEarned) => feesEarned.pool === el.swapToken
-                        )?.earnedUSD || 0}
-                      </RowDataTdTopText>
-                      {/* <RowDataTdText
-                        theme={theme}
-                        color={theme.palette.grey.new}
-                      >
-                        2000 SOL / 200 CCAI
-                      </RowDataTdText> */}
-                    </TextColumnContainer>
-                  </RowDataTd>
-                  <RowTd>
-                    <Row justify="flex-end" width={'100%'}>
-                      <BorderButton
-                        style={{ marginRight: '2rem' }}
-                        onClick={() => {
-                          if (wallet.connected) {
-                            selectPool(el)
-                            setIsWithdrawalPopupOpen(true)
-                          } else {
-                            wallet.connect()
-                          }
-                        }}
-                      >
-                        {wallet.connected
-                          ? 'Withdraw liquidity + fees'
-                          : 'Connect wallet'}
-                      </BorderButton>
-                      <BorderButton
-                        onClick={() => {
-                          if (wallet.connected) {
-                            selectPool(el)
-                            setIsAddLiquidityPopupOpen(true)
-                          } else {
-                            wallet.connect()
-                          }
-                        }}
-                        borderColor={theme.palette.blue.serum}
-                      >
-                        {wallet.connected ? 'Add Liquidity' : 'Connect wallet'}
-                      </BorderButton>
-                    </Row>
-                  </RowTd>
-                </TableRow>
-              )
-            })}
+                const quoteTokenPrice =
+                  poolsPrices.find(
+                    (tokenInfo) => tokenInfo.symbol === quoteSymbol
+                  )?.price || 10
+
+                const tvlUSD =
+                  baseTokenPrice * el.tvl.tokenA +
+                  quoteTokenPrice * el.tvl.tokenB
+
+                const {
+                  amount: poolTokenRawAmount,
+                  decimals: poolTokenDecimals,
+                } = getTokenDataByMint(allTokensData, el.poolTokenMint)
+
+                const poolTokenAmount =
+                  poolTokenRawAmount * 10 ** poolTokenDecimals
+
+                const [
+                  userAmountTokenA,
+                  userAmountTokenB,
+                ] = calculateWithdrawAmount({
+                  selectedPool: el,
+                  poolTokenAmount: poolTokenAmount,
+                })
+
+                const userLiquidityUSD =
+                  baseTokenPrice * userAmountTokenA +
+                  quoteTokenPrice * userAmountTokenB
+
+                return (
+                  <TableRow>
+                    <RowTd>
+                      <TokenIconsContainer
+                        tokenA={el.tokenA}
+                        tokenB={el.tokenB}
+                      />
+                    </RowTd>
+                    <RowDataTd>
+                      <TextColumnContainer>
+                        <RowDataTdTopText theme={theme}>
+                          ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
+                        </RowDataTdTopText>
+                        <RowDataTdText
+                          theme={theme}
+                          color={theme.palette.grey.new}
+                        >
+                          {formatNumberToUSFormat(
+                            stripDigitPlaces(el.tvl.tokenA, 2)
+                          )}{' '}
+                          {getTokenNameByMintAddress(el.tokenA)} /{' '}
+                          {formatNumberToUSFormat(
+                            stripDigitPlaces(el.tvl.tokenB, 2)
+                          )}{' '}
+                          {getTokenNameByMintAddress(el.tokenB)}
+                        </RowDataTdText>
+                      </TextColumnContainer>
+                    </RowDataTd>
+                    <RowDataTd>
+                      <RowDataTdText theme={theme}>{el.apy24h}%</RowDataTdText>
+                    </RowDataTd>
+                    <RowDataTd>
+                      <TextColumnContainer>
+                        <RowDataTdTopText theme={theme}>
+                          $
+                          {formatNumberToUSFormat(
+                            stripDigitPlaces(userLiquidityUSD, 2)
+                          )}
+                        </RowDataTdTopText>
+                        <RowDataTdText
+                          theme={theme}
+                          color={theme.palette.grey.new}
+                        >
+                          {formatNumberToUSFormat(
+                            stripDigitPlaces(userAmountTokenA, 8)
+                          )}{' '}
+                          {baseSymbol} /{' '}
+                          {formatNumberToUSFormat(
+                            stripDigitPlaces(userAmountTokenB, 8)
+                          )}{' '}
+                          {quoteSymbol}
+                        </RowDataTdText>
+                      </TextColumnContainer>
+                    </RowDataTd>
+                    <RowDataTd>
+                      <TextColumnContainer>
+                        <RowDataTdTopText
+                          theme={theme}
+                          color={theme.palette.grey.new}
+                        >
+                          $
+                          {stripDigitPlaces(
+                            getFeesEarnedByAccount.find(
+                              (feesEarned) => feesEarned.pool === el.swapToken
+                            )?.earnedUSD || 0,
+                            3
+                          )}
+                        </RowDataTdTopText>
+                      </TextColumnContainer>
+                    </RowDataTd>
+                    <RowTd>
+                      <Row justify="flex-end" width={'100%'}>
+                        <BorderButton
+                          style={{ marginRight: '2rem' }}
+                          onClick={() => {
+                            if (wallet.connected) {
+                              selectPool(el)
+                              setIsWithdrawalPopupOpen(true)
+                            } else {
+                              wallet.connect()
+                            }
+                          }}
+                        >
+                          {wallet.connected
+                            ? 'Withdraw liquidity + fees'
+                            : 'Connect wallet'}
+                        </BorderButton>
+                        <BorderButton
+                          onClick={() => {
+                            if (wallet.connected) {
+                              selectPool(el)
+                              setIsAddLiquidityPopupOpen(true)
+                            } else {
+                              wallet.connect()
+                            }
+                          }}
+                          borderColor={theme.palette.blue.serum}
+                        >
+                          {wallet.connected
+                            ? 'Add Liquidity'
+                            : 'Connect wallet'}
+                        </BorderButton>
+                      </Row>
+                    </RowTd>
+                  </TableRow>
+                )
+              })}
           </Table>
         </RowContainer>
       </BlockTemplate>
