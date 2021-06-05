@@ -37,12 +37,7 @@ const RestrictedRegion = ({ theme }: { theme: Theme }) => {
       </RowContainer>
       <RowContainer direction="column" margin="0 0 4rem 0">
         <Text theme={theme}>
-          Cryptocurrencies.Ai does not provide services to current residents of
-          the United States of America, Cuba,
-        </Text>
-        <Text theme={theme}>
-          Iran, Syria, North Korea, Crimea and Sevastopol, Antigua and Barbuba
-          or other sanctioned jurisdiction.
+          Cryptocurrencies.Ai doesn't offer its services in your region.
         </Text>
       </RowContainer>
       <RowContainer margin="0 0 2rem 0">

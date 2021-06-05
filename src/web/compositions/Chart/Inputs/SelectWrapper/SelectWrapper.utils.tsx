@@ -305,8 +305,8 @@ export const combineSelectWrapperData = ({
     const sign24hChange = +priceChangePercentage > 0 ? `+` : ``
     const signTrades24hChange = +precentageTradesDiff > 0 ? '+' : '-'
 
-    const marketName = symbol.replace('_', '/')
-    const currentMarket = customMarkets?.find((el) => el?.name === marketName)
+    const marketName = symbol.replaceAll('_', '/')
+    const currentMarket = customMarkets?.find((el) => el?.name.replaceAll("_", "/") === marketName)
 
     const isAdditionalCustomUserMarket =
       currentMarket?.isPrivateCustomMarket !== undefined
@@ -358,7 +358,7 @@ export const combineSelectWrapperData = ({
         ),
       },
       symbol: {
-        render: <span>{symbol.replace('_', '/')}</span>,
+        render: <span>{symbol.replaceAll('_', '/')}</span>,
         onClick: () =>
           onSelectPair({
             value: symbol,

@@ -18,7 +18,8 @@ import { WalletAdapter } from '../types';
 import { sendAndConfirmTransactionViaWallet } from '../token/utils/send-and-confirm-transaction-via-wallet';
 
 export const TOKEN_SWAP_PROGRAM_ID: PublicKey = new PublicKey(
-  'SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8',
+  '4EowrfgqS9tbYhfcaKQmG4HDfqUAT6H5HqZvvYm9T1dB',
+  // 'SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8',
 );
 
 /**

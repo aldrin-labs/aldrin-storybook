@@ -86,8 +86,8 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
     return null
   }
 
-  const marketName = pair.replace('_', '/')
-  const currentMarket = customMarkets?.find((el) => el?.name === marketName)
+  const marketName = pair.replaceAll('_', '/')
+  const currentMarket = customMarkets?.find((el) => el?.name.replaceAll('_', '/') === marketName)
 
   const isPrivateCustomMarket =
     currentMarket?.isPrivateCustomMarket !== undefined

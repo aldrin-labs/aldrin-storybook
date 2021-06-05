@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { Theme } from '@material-ui/core'
@@ -13,20 +13,18 @@ import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDia
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import {
+  calculateWithdrawAmount,
   depositAllTokenTypes,
-  getMaxWithdrawAmount,
-  swap,
 } from '@sb/dexUtils/pools'
-import { useMaxWithdrawalAmounts, useWallet } from '@sb/dexUtils/wallet'
+import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
-import { PublicKey, Transaction } from '@solana/web3.js'
+import { PublicKey } from '@solana/web3.js'
 import { PoolInfo, PoolsPrices } from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { notify } from '@sb/dexUtils/notifications'
-import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/send-and-confirm-transaction-via-wallet'
 
 export const AddLiquidityPopup = ({
   theme,
@@ -69,52 +67,37 @@ export const AddLiquidityPopup = ({
   const [warningChecked, setWarningChecked] = useState(false)
   const [operationLoading, setOperationLoading] = useState(false)
 
-  const baseTokenInfo = getTokenDataByMint(allTokensData, selectedPool.tokenA)
+  const {
+    address: userTokenAccountA,
+    amount: maxBaseAmount,
+    decimals: baseTokenDecimals,
+  } = getTokenDataByMint(allTokensData, selectedPool.tokenA)
+
+  const {
+    address: userTokenAccountB,
+    amount: maxQuoteAmount,
+    decimals: quoteTokenDecimals,
+  } = getTokenDataByMint(allTokensData, selectedPool.tokenB)
+
+  const {
+    amount: poolTokenRawAmount,
+    address: userPoolTokenAccount,
+    decimals: poolTokenDecimals,
+  } = getTokenDataByMint(allTokensData, selectedPool.poolTokenMint)
+
   const baseSymbol = getTokenNameByMintAddress(selectedPool.tokenA)
-  const maxBaseAmount = baseTokenInfo?.amount || 0
-
-  const quoteTokenInfo = getTokenDataByMint(allTokensData, selectedPool.tokenB)
   const quoteSymbol = getTokenNameByMintAddress(selectedPool.tokenB)
-  const maxQuoteAmount = quoteTokenInfo?.amount || 0
-  const [[poolAmountTokenA, poolAmountTokenB], setAmounts] = useState<
-    [number, number]
-  >([0, 0])
 
-  const [
-    [withdrawAmountTokenA, withdrawAmountTokenB],
-    setWithdrawAmounts,
-  ] = useState<[number, number]>([0, 0])
+  const poolTokenAmount = poolTokenRawAmount * 10 ** poolTokenDecimals
+  const [poolAmountTokenA, poolAmountTokenB] = [
+    selectedPool.tvl.tokenA,
+    selectedPool.tvl.tokenB,
+  ]
 
-  const poolTokenInfo = getTokenDataByMint(
-    allTokensData,
-    selectedPool.poolTokenMint
-  )
-  const poolTokenAmount = poolTokenInfo?.amount || 0
-
-  const [withdrawalAmounts, loaded] = useMaxWithdrawalAmounts({
-    poolTokenAmount: poolTokenAmount,
-    tokenSwapPublicKey: new PublicKey(selectedPool.swapToken),
+  const [withdrawAmountTokenA, withdrawAmountTokenB] = calculateWithdrawAmount({
+    selectedPool,
+    poolTokenAmount,
   })
-  // load max withdrawal values for tokenA, tokenB
-  useEffect(() => {
-    const getData = async () => {
-      const [
-        withdrawAmountTokenA,
-        withdrawAmountTokenB,
-        poolTokenAmountA,
-        poolTokenAmountB,
-      ] = await getMaxWithdrawAmount({
-        wallet,
-        connection,
-        tokenSwapPublicKey: new PublicKey(selectedPool.swapToken),
-        poolTokenAmount,
-      })
-      setWithdrawAmounts([withdrawAmountTokenA, withdrawAmountTokenB])
-      setAmounts([poolTokenAmountA, poolTokenAmountB])
-    }
-
-    getData()
-  }, [wallet, connection, selectedPool.swapToken, poolTokenAmount])
 
   const isDisabled =
     !warningChecked ||
@@ -156,7 +139,7 @@ export const AddLiquidityPopup = ({
       </Row>
       <RowContainer>
         <InputWithCoins
-          placeholder={!loaded ? 'Loading...' : ''}
+          placeholder={''}
           theme={theme}
           value={baseAmount}
           onChange={setBaseAmountWithQuote}
@@ -170,7 +153,7 @@ export const AddLiquidityPopup = ({
           </Text>
         </Row>
         <InputWithCoins
-          placeholder={!loaded ? 'Loading...' : ''}
+          placeholder={''}
           theme={theme}
           value={quoteAmount}
           onChange={setQuoteAmountWithBase}
@@ -262,13 +245,6 @@ export const AddLiquidityPopup = ({
           showLoader={operationLoading}
           theme={theme}
           onClick={async () => {
-            const userTokenAccountA = baseTokenInfo?.address
-            const userTokenAccountB = quoteTokenInfo?.address
-            const userPoolTokenAccount = poolTokenInfo?.address
-
-            const baseTokenDecimals = baseTokenInfo?.decimals || 0
-            const quoteTokenDecimals = quoteTokenInfo?.decimals || 0
-
             const userAmountTokenA = +baseAmount * 10 ** baseTokenDecimals
             const userAmountTokenB = +quoteAmount * 10 ** quoteTokenDecimals
 

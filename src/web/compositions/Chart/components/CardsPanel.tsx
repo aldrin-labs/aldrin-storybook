@@ -194,6 +194,17 @@ export const CardsPanel = ({ theme }) => {
             >
               Trading
             </NavLinkButton>
+            {!MASTER_BUILD && (
+              <NavLinkButton
+                theme={theme}
+                pathname={location.pathname}
+                to="/rebalance"
+                page={'rebalance'}
+                component={(props) => <Link to={`/rebalance`} {...props} />}
+              >
+                Rebalance
+              </NavLinkButton>
+            )}
             <NavLinkButton
               theme={theme}
               data-tut="analytics"
@@ -214,15 +225,17 @@ export const CardsPanel = ({ theme }) => {
               {' '}
               Addressbook
             </NavLinkButton>
-            <NavLinkButton
-              theme={theme}
-              page={'/pools'}
-              pathname={location.pathname}
-              component={(props) => <Link to={`/pools`} {...props} />}
-            >
-              {' '}
-              Pools
-            </NavLinkButton>
+            {!MASTER_BUILD && (
+              <NavLinkButton
+                theme={theme}
+                page={'/pools'}
+                pathname={location.pathname}
+                component={(props) => <Link to={`/pools`} {...props} />}
+              >
+                {' '}
+                Pools
+              </NavLinkButton>
+            )}
             {/* <IdoBtn>CCAI IDO</IdoBtn> */}
           </div>
         </CustomCard>
@@ -389,7 +402,7 @@ const TopBar = ({ theme }) => {
               color={'rgb(147, 160, 178)'}
               fontSize="1rem"
             >
-              {wallet.publicKey.toBase58()}
+              {wallet.publicKey?.toBase58()}
             </Title>
           </Row>
           <RedButton

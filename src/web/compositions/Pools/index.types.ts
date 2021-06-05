@@ -15,6 +15,7 @@ export type PoolInfo = {
       USD: number,
   },
   apy24h: number, // %
+  supply: number,
 };
 
 export type PoolsPrices = {
