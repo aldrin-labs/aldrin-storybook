@@ -4,8 +4,6 @@ import { Graph } from '@core/utils/graph/Graph'
 import { REBALANCE_CONFIG } from '../Rebalance.config'
 
 
-// TODO: Remove _symbol or symbol_
-
 export const getTransactionsList = ({
   tokensDiff,
   poolsInfo,
@@ -77,7 +75,6 @@ export const getTransactionsList = ({
     return path
   })
 
-  // TODO: Handle case with USDT_USDT
   const pathToBuy = tokensToBuy
   .map((el) => {
     const path = poolsGraph.shortestPath('USDT', el.symbol)
