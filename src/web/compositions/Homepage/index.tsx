@@ -38,7 +38,7 @@ export const Homepage = () => {
           width={'calc(100% - 5.5rem)'}
         >
           <img src={Banner} width={'100%'} />
-          {/* <WhiteButton
+          <WhiteButton
             style={{ position: 'absolute', right: '10rem' }}
             width={'21rem'}
             padding={'0 3rem'}
@@ -58,7 +58,7 @@ export const Homepage = () => {
                 fill="#F8FAFF"
               />
             </svg>
-          </WhiteButton> */}
+          </WhiteButton>
         </CardContainer>
       </RowContainer>
       <RowContainer align={'flex-start'} style={{ marginTop: '1.5rem' }}>
