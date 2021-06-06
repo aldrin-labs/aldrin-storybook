@@ -43,7 +43,7 @@ export const Homepage = () => {
             width={'21rem'}
             padding={'0 3rem'}
             needHover={true}
-            href={`https://ido.cryptocurrencies.ai/`}
+            href={`https://ccai.cryptocurrencies.ai/`}
           >
             Learn More
             <svg
