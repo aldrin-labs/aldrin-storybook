@@ -15,6 +15,8 @@ class MultiEndpointsConnection implements Connection {
   private endpointsRequestsCounter: EndpointRequestsCounter[]
 
   constructor(endpoints: RateLimitedEndpoint[], commitment?: Commitment) {
+    this.commitment = commitment;
+    console.log('commitment', commitment)
     this.endpointsRequestsCounter = endpoints.map(
       (endpoint: RateLimitedEndpoint) => ({
         endpoint,
@@ -26,7 +28,12 @@ class MultiEndpointsConnection implements Connection {
     // go through all methods of connection
     for (let functionName of Object.getOwnPropertyNames(Connection.prototype)) {
       // skip non-function
-      if (typeof Connection.prototype[functionName] !== 'function') continue
+      if (typeof Connection.prototype[functionName] !== 'function') {
+        // const connection = this.getConnection();
+        // this[functionName] = connection[functionName];
+        continue
+      }
+
       this[functionName] = (...args: any) => {
         // select connection, depending on RPS and load of connection, execute method of this connection
         const connection = this.getConnection();

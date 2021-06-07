@@ -287,7 +287,6 @@ const UserLiquitidyTable = ({
                       <TextColumnContainer>
                         <RowDataTdTopText
                           theme={theme}
-                          color={theme.palette.grey.new}
                         >
                           $
                           {stripDigitPlaces(

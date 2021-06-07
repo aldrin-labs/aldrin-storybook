@@ -1,6 +1,6 @@
 import { useLocalStorageState } from './utils'
-import { Account, clusterApiUrl, Connection } from '@solana/web3.js'
-import React, { useContext, useEffect, useMemo } from 'react'
+import { Account, AccountInfo, clusterApiUrl, Connection, PublicKey } from '@solana/web3.js'
+import React, { useContext, useEffect, useMemo, useRef } from 'react'
 import { refreshCache, setCache, useAsyncData } from './fetch-loop'
 import tuple from 'immutable-tuple'
 import MultiEndpointsConnection from './MultiEndpointsConnection'
@@ -30,7 +30,7 @@ export function ConnectionProvider({ children }) {
             [
               { url: 'https://mango.rpcpool.com/', RPS: 10 },
               { url: 'https://solana-api.projectserum.com', RPS: 2 },
-              { url: 'https://api.mainnet-beta.solana.com', RPS: 4 },
+              // { url: 'https://api.mainnet-beta.solana.com', RPS: 4 },
               // { url: 'https://raydium.rpcpool.com/', RPS: 10 },
               { url: 'https://orca.rpcpool.com/', RPS: 10 },
               { url: 'https://api.rpcpool.com', RPS: 10 },
@@ -48,16 +48,18 @@ export function ConnectionProvider({ children }) {
   // is empty after opening its first time, preventing subsequent subscriptions from receiving responses.
   // This is a hack to prevent the list from every getting empty
   useEffect(() => {
-    const id = connection.onAccountChange(new Account().publicKey, () => {})
+    const rawConnection = endpoint === MAINNET_BETA_ENDPOINT ? connection.getConnection() : connection
+    const id = rawConnection.onAccountChange(new Account().publicKey, () => {})
     return () => {
-      connection.removeAccountChangeListener(id)
+      rawConnection.removeAccountChangeListener(id)
     }
   }, [connection])
 
   useEffect(() => {
-    const id = connection.onSlotChange(() => null)
+    const rawConnection = endpoint === MAINNET_BETA_ENDPOINT ? connection.getConnection() : connection
+    const id = rawConnection.onSlotChange(() => null)
     return () => {
-      connection.removeSlotChangeListener(id)
+      rawConnection.removeSlotChangeListener(id)
     }
   }, [connection])
 
@@ -74,50 +76,63 @@ export function useConnectionConfig() {
   const context = useContext(ConnectionContext)
   return { endpoint: context.endpoint, setEndpoint: context.setEndpoint }
 }
-export function useAccountInfo(publicKey) {
-  const connection = useConnection()
-  const cacheKey = tuple(connection, publicKey?.toBase58())
-  const [accountInfo, loaded] = useAsyncData(
+export function useAccountInfo(
+  publicKey: PublicKey | undefined | null,
+): [AccountInfo<Buffer> | null | undefined, boolean] {
+  const connection = useConnection();
+  const cacheKey = tuple(connection, publicKey?.toBase58());
+  const [accountInfo, loaded] = useAsyncData<AccountInfo<Buffer> | null>(
     async () => (publicKey ? connection.getAccountInfo(publicKey) : null),
     cacheKey,
-    { refreshInterval: 60_000 }
-  )
-  const refresh = () => refreshCache(cacheKey)
+    { refreshInterval: 60_000 },
+  );
+  
   useEffect(() => {
     if (!publicKey) {
-      return
+      return;
     }
     if (accountListenerCount.has(cacheKey)) {
-      let currentItem = accountListenerCount.get(cacheKey)
-      ++currentItem.count
+      let currentItem = accountListenerCount.get(cacheKey);
+      ++currentItem.count;
     } else {
-      let previousData = null
-      const subscriptionId = connection.onAccountChange(publicKey, (e) => {
-        if (e.data) {
-          if (!previousData || !previousData.equals(e.data)) {
-            setCache(cacheKey, e)
-          } else {
-          }
-          previousData = e.data
+      let previousInfo: AccountInfo<Buffer> | null = null;
+      const subscriptionId = connection.onAccountChange(publicKey, (info) => {
+        if (
+          !previousInfo ||
+          !previousInfo.data.equals(info.data) ||
+          previousInfo.lamports !== info.lamports
+        ) {
+          previousInfo = info;
+          setCache(cacheKey, info);
         }
-      })
-      accountListenerCount.set(cacheKey, { count: 1, subscriptionId })
+      });
+      accountListenerCount.set(cacheKey, { count: 1, subscriptionId });
     }
     return () => {
-      let currentItem = accountListenerCount.get(cacheKey)
-      let nextCount = currentItem.count - 1
+      let currentItem = accountListenerCount.get(cacheKey);
+      let nextCount = currentItem.count - 1;
       if (nextCount <= 0) {
-        connection.removeAccountChangeListener(currentItem.subscriptionId)
-        accountListenerCount.delete(cacheKey)
+        connection.removeAccountChangeListener(currentItem.subscriptionId);
+        accountListenerCount.delete(cacheKey);
       } else {
-        --currentItem.count
+        --currentItem.count;
       }
-    }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cacheKey])
-  return [accountInfo, loaded, refresh]
+  }, [cacheKey]);
+  const previousInfoRef = useRef<AccountInfo<Buffer> | null | undefined>(null);
+  if (
+    !accountInfo ||
+    !previousInfoRef.current ||
+    !previousInfoRef.current.data.equals(accountInfo.data) ||
+    previousInfoRef.current.lamports !== accountInfo.lamports
+  ) {
+    previousInfoRef.current = accountInfo;
+  }
+  return [previousInfoRef.current, loaded];
 }
+
 export function useAccountData(publicKey) {
-  const [accountInfo] = useAccountInfo(publicKey)
-  return accountInfo && accountInfo.data
+  const [accountInfo] = useAccountInfo(publicKey);
+  return accountInfo && accountInfo.data;
 }

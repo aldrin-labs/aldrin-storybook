@@ -18,7 +18,7 @@ import { WalletAdapter } from '../types';
 import { sendAndConfirmTransactionViaWallet } from '../token/utils/send-and-confirm-transaction-via-wallet';
 
 export const TOKEN_SWAP_PROGRAM_ID: PublicKey = new PublicKey(
-  '4EowrfgqS9tbYhfcaKQmG4HDfqUAT6H5HqZvvYm9T1dB',
+  'zbYGvYSANmoNN8rSLcvVmKcuzEASyjfSENtnKNbu9cW',
   // 'SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8',
 );
 
@@ -69,6 +69,7 @@ export const TokenSwapLayout: typeof BufferLayout.Structure = BufferLayout.struc
     Layout.publicKey('tokenAccountA'),
     Layout.publicKey('tokenAccountB'),
     Layout.publicKey('tokenPool'),
+    Layout.publicKey('tokenFreezeAccount'),
     Layout.publicKey('mintA'),
     Layout.publicKey('mintB'),
     Layout.publicKey('feeAccount'),
@@ -82,6 +83,23 @@ export const TokenSwapLayout: typeof BufferLayout.Structure = BufferLayout.struc
     Layout.uint64('hostFeeDenominator'),
     BufferLayout.u8('curveType'),
     BufferLayout.blob(32, 'curveParameters'),
+    Layout.publicKey('farmingState'),
+  ],
+);
+
+export const TokenFarmingLayout: typeof BufferLayout.Structure = BufferLayout.struct(
+  [
+    Layout.uint64('discriminator'),
+    BufferLayout.u8('isInitialized'),
+    Layout.uint64('tokensUnlocked'),
+    Layout.uint64('tokensTotal'),
+    Layout.uint64('tokensPerPeriod'),
+    Layout.uint64('periodLength'),
+    Layout.uint64('startTime'),
+    Layout.uint64('currentTime'),
+    Layout.publicKey('attachedSwapAccount'),
+    Layout.publicKey('farmingTokenAccount'),
+    BufferLayout.blob(3758, 'farmingSnapshots'),
   ],
 );
 
@@ -220,6 +238,7 @@ export class TokenSwap {
     swapProgramId: PublicKey,
     tokenProgramId: PublicKey,
     poolToken: PublicKey,
+    tokenFreezeAccount: PublicKey,
     feeAccount: PublicKey,
     authority: PublicKey,
     tokenAccountA: PublicKey,
@@ -235,6 +254,7 @@ export class TokenSwap {
     hostFeeNumerator: Numberu64,
     hostFeeDenominator: Numberu64,
     curveType: number,
+    farmingState: PublicKey,
   ) {
     Object.assign(this, {
       wallet,
@@ -243,6 +263,7 @@ export class TokenSwap {
       swapProgramId,
       tokenProgramId,
       poolToken,
+      tokenFreezeAccount,
       feeAccount,
       authority,
       tokenAccountA,
@@ -258,6 +279,7 @@ export class TokenSwap {
       hostFeeNumerator,
       hostFeeDenominator,
       curveType,
+      farmingState,
     });
   }
 
@@ -280,6 +302,7 @@ export class TokenSwap {
     tokenAccountA: PublicKey,
     tokenAccountB: PublicKey,
     tokenPool: PublicKey,
+    tokenFreezeAccount: PublicKey,
     feeAccount: PublicKey,
     tokenAccountPool: PublicKey,
     tokenProgramId: PublicKey,
@@ -294,6 +317,7 @@ export class TokenSwap {
     hostFeeNumerator: number,
     hostFeeDenominator: number,
     curveType: number,
+    farmingState: PublicKey,
   ): TransactionInstruction {
     const keys = [
       {pubkey: tokenSwapAccount.publicKey, isSigner: false, isWritable: true},
@@ -304,6 +328,8 @@ export class TokenSwap {
       {pubkey: feeAccount, isSigner: false, isWritable: false},
       {pubkey: tokenAccountPool, isSigner: false, isWritable: true},
       {pubkey: tokenProgramId, isSigner: false, isWritable: false},
+      {pubkey: farmingState, isSigner: false, isWritable: true},
+      {pubkey: tokenFreezeAccount, isSigner: false, isWritable: false},
     ];
     const commandDataLayout = BufferLayout.struct([
       BufferLayout.u8('instruction'),
@@ -364,6 +390,8 @@ export class TokenSwap {
     );
 
     const poolToken = new PublicKey(tokenSwapData.tokenPool);
+    const tokenFreezeAccount = new PublicKey(tokenSwapData.tokenFreezeAccount);
+
     const feeAccount = new PublicKey(tokenSwapData.feeAccount);
     const tokenAccountA = new PublicKey(tokenSwapData.tokenAccountA);
     const tokenAccountB = new PublicKey(tokenSwapData.tokenAccountB);
@@ -395,7 +423,9 @@ export class TokenSwap {
     const hostFeeDenominator = Numberu64.fromBuffer(
       tokenSwapData.hostFeeDenominator,
     );
+
     const curveType = tokenSwapData.curveType;
+    const farmingState = new PublicKey(tokenSwapData.farmingState);
 
     return new TokenSwap(
       wallet,
@@ -404,6 +434,7 @@ export class TokenSwap {
       programId,
       tokenProgramId,
       poolToken,
+      tokenFreezeAccount,
       feeAccount,
       authority,
       tokenAccountA,
@@ -419,6 +450,7 @@ export class TokenSwap {
       hostFeeNumerator,
       hostFeeDenominator,
       curveType,
+      farmingState,
     );
   }
 
@@ -463,6 +495,7 @@ export class TokenSwap {
     tokenAccountA: PublicKey,
     tokenAccountB: PublicKey,
     poolToken: PublicKey,
+    tokenFreezeAccount: PublicKey,
     mintA: PublicKey,
     mintB: PublicKey,
     feeAccount: PublicKey,
@@ -479,6 +512,7 @@ export class TokenSwap {
     hostFeeNumerator: number,
     hostFeeDenominator: number,
     curveType: number,
+    farmingState: PublicKey,
     beforeCreatePoolTransaction: Transaction,
     beforeCreatePoolTransactionSigners: Account[],
     afterCreatePoolTransaction: Transaction,
@@ -491,6 +525,7 @@ export class TokenSwap {
       swapProgramId,
       tokenProgramId,
       poolToken,
+      tokenFreezeAccount,
       feeAccount,
       authority,
       tokenAccountA,
@@ -506,6 +541,7 @@ export class TokenSwap {
       new Numberu64(hostFeeNumerator),
       new Numberu64(hostFeeDenominator),
       curveType,
+      farmingState,
     );
 
     // Allocate memory for the account
@@ -531,6 +567,7 @@ export class TokenSwap {
       tokenAccountA,
       tokenAccountB,
       poolToken,
+      tokenFreezeAccount,
       feeAccount,
       tokenAccountPool,
       tokenProgramId,
@@ -545,6 +582,7 @@ export class TokenSwap {
       hostFeeNumerator,
       hostFeeDenominator,
       curveType,
+      farmingState,
     );
 
     transaction.add(instruction);

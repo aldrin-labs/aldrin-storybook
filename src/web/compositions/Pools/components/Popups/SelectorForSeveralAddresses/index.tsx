@@ -15,6 +15,7 @@ import {
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
 import { StyledPaper } from '../index.styles'
+import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 
 const UpdatedPaper = styled(({ ...props }) => <StyledPaper {...props} />)`
   width: 45rem;
@@ -34,23 +35,18 @@ const StyledText = styled(({ ...props }) => <Text {...props} />)`
 export const SelectSeveralAddressesPopup = ({
   theme,
   open,
-  mints,
+  tokens,
   close,
-  selectTokenAddress,
+  selectTokenMintAddress,
+  selectTokenAddressFromSeveral,
 }: {
   theme: Theme
   open: boolean
-  mints: string[]
+  tokens: TokenInfo[]
   close: () => void
-  selectTokenAddress: (address: string) => void
+  selectTokenMintAddress: (address: string) => void
+  selectTokenAddressFromSeveral: (address: string) => void
 }) => {
-  const needKnownMints = false
-  const usersMints = needKnownMints
-    ? mints.filter(
-        (el) => getTokenNameByMintAddress(el) === ALL_TOKENS_MINTS_MAP[el]
-      )
-    : mints
-
   return (
     <DialogWrapper
       theme={theme}
@@ -69,30 +65,29 @@ export const SelectSeveralAddressesPopup = ({
         <Text>You have several SOL addresses. Choose one of them.</Text>
       </RowContainer>
       <RowContainer>
-        {usersMints.map((mint: string) => {
+        {tokens.map((token: TokenInfo) => {
           return (
             <SelectorRow
               justify={'space-between'}
               style={{ cursor: 'pointer' }}
               onClick={() => {
-                selectTokenAddress(mint)
+                selectTokenMintAddress(token.mint)
+                selectTokenAddressFromSeveral(token.address)
+                close()
               }}
             >
               <Row wrap={'nowrap'}>
-                <TokenIcon mint={mint} width={'2rem'} height={'2rem'} />
-                <StyledText>{getTokenNameByMintAddress(mint)}</StyledText>
+                <TokenIcon mint={token.mint} width={'2rem'} height={'2rem'} />
+                <StyledText>{getTokenNameByMintAddress(token.mint)}</StyledText>
               </Row>
               <Row wrap={'nowrap'}>
-                <StyledText>--</StyledText>
+                <StyledText>
+                  {token.amount} {getTokenNameByMintAddress(token.mint)}
+                </StyledText>
               </Row>
             </SelectorRow>
           )
         })}
-        {mints.length === 0 && (
-          <RowContainer>
-            <StyledText>Loading...</StyledText>
-          </RowContainer>
-        )}
       </RowContainer>
     </DialogWrapper>
   )

@@ -29,6 +29,10 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import AttentionComponent from '@sb/components/AttentionBlock'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
+import {
+  TokenSwapLayout,
+  TOKEN_SWAP_PROGRAM_ID,
+} from '@sb/dexUtils/token-swap/token-swap'
 
 export const CreatePoolPopup = ({
   theme,
@@ -49,6 +53,16 @@ export const CreatePoolPopup = ({
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
+
+  // if user has more than one token for one mint
+  const [
+    selectedBaseTokenAddressFromSeveral,
+    setBaseTokenAddressFromSeveral,
+  ] = useState<string>('')
+  const [
+    selectedQuoteTokenAddressFromSeveral,
+    setQuoteTokenAddressFromSeveral,
+  ] = useState<string>('')
 
   const [baseTokenMintAddress, setBaseTokenMintAddress] = useState<string>('')
   const [baseAmount, setBaseAmount] = useState<string | number>('')
@@ -81,6 +95,7 @@ export const CreatePoolPopup = ({
   const baseSymbol = baseTokenMintAddress
     ? getTokenNameByMintAddress(baseTokenMintAddress)
     : 'Select token'
+
   const quoteSymbol = quoteTokenMintAddress
     ? getTokenNameByMintAddress(quoteTokenMintAddress)
     : 'Select token'
@@ -92,13 +107,21 @@ export const CreatePoolPopup = ({
     address: userTokenAccountA,
     amount: maxBaseAmount,
     decimals: baseTokenDecimals,
-  } = getTokenDataByMint(allTokensData, baseTokenMintAddress)
+  } = getTokenDataByMint(
+    allTokensData,
+    baseTokenMintAddress,
+    selectedBaseTokenAddressFromSeveral
+  )
 
   const {
     address: userTokenAccountB,
     decimals: quoteTokenDecimals,
     amount: maxQuoteAmount,
-  } = getTokenDataByMint(allTokensData, quoteTokenMintAddress)
+  } = getTokenDataByMint(
+    allTokensData,
+    quoteTokenMintAddress,
+    selectedQuoteTokenAddressFromSeveral
+  )
 
   const { getPoolsInfo: pools = [] } = getPoolsInfoQuery || { getPoolsInfo: [] }
   const isPoolAlreadyExist = pools.find(
@@ -308,17 +331,39 @@ export const CreatePoolPopup = ({
             console.log('create pool')
             await setOperationLoading(true)
             try {
-              result = await createTokenSwap({
-                wallet,
-                connection,
-                userAmountTokenA,
-                userAmountTokenB,
-                mintA: new PublicKey(baseTokenMintAddress),
-                mintB: new PublicKey(quoteTokenMintAddress),
-                userTokenAccountA: new PublicKey(userTokenAccountA),
-                userTokenAccountB: new PublicKey(userTokenAccountB),
-                transferSOLToWrapped: isPoolWithSOLToken && isNativeSOLSelected,
+              // result = await createTokenSwap({
+              //   wallet,
+              //   connection,
+              //   userAmountTokenA,
+              //   userAmountTokenB,
+              //   mintA: new PublicKey(baseTokenMintAddress),
+              //   mintB: new PublicKey(quoteTokenMintAddress),
+              //   userTokenAccountA: new PublicKey(userTokenAccountA),
+              //   userTokenAccountB: new PublicKey(userTokenAccountB),
+              //   transferSOLToWrapped: isPoolWithSOLToken && isNativeSOLSelected,
+              // })
+
+              const tokenSwapOwnedAccounts = await connection.getProgramAccounts(
+                TOKEN_SWAP_PROGRAM_ID,
+                'finalized'
+              )
+
+              const data = tokenSwapOwnedAccounts.map((pool) => {
+                const data = Buffer.from(pool.account.data)
+                const tokenSwapData = TokenSwapLayout.decode(data)
+                console.log('getPools: tokenSwapData:', tokenSwapData)
+
+                return {
+                  pubkey: pool.pubkey.toString(),
+                  poolToken: new PublicKey(tokenSwapData.tokenPool).toString(),
+                  tokenAccountA: new PublicKey(tokenSwapData.tokenAccountA).toString(),
+                  tokenAccountB: new PublicKey(tokenSwapData.tokenAccountB).toString(),
+                  mintA: new PublicKey(tokenSwapData.mintA).toString(),
+                  mintB: new PublicKey(tokenSwapData.mintB).toString(),
+                }
               })
+
+              console.log('pools data', data)
             } catch (e) {
               console.error('createTokenSwap error:', e)
             }
@@ -345,8 +390,13 @@ export const CreatePoolPopup = ({
       <SelectCoinPopup
         theme={theme}
         mints={filteredMints}
+        allTokensData={allTokensData}
         open={isSelectCoinPopupOpen}
-        selectTokenAddress={(address: string) => {
+        poolsPrices={poolsPrices}
+        isBaseTokenSelecting={isBaseTokenSelecting}
+        setBaseTokenAddressFromSeveral={setBaseTokenAddressFromSeveral}
+        setQuoteTokenAddressFromSeveral={setQuoteTokenAddressFromSeveral}
+        selectTokenMintAddress={(address: string) => {
           const select = isBaseTokenSelecting
             ? () => {
                 if (quoteTokenMintAddress === address) {

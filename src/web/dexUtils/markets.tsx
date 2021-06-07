@@ -21,16 +21,16 @@ import { getTokenAccountInfo } from './tokens'
 import { AWESOME_TOKENS } from '@sb/dexUtils/serum'
 
 export const ALL_TOKENS_MINTS = [...TOKEN_MINTS, ...AWESOME_TOKENS]
-export const ALL_TOKENS_MINTS_MAP = ALL_TOKENS_MINTS.reduce((acc, el) => { 
-  acc[el.address] = el.name;
-  acc[el.name] = el.address;
+export const ALL_TOKENS_MINTS_MAP = ALL_TOKENS_MINTS.reduce((acc, el) => {
+  acc[el.address] = el.name
+  acc[el.name] = el.address
 
   return acc
 }, {})
 
 // const ALL_TOKENS_MINTS_MAP = new Map();
 
-// ALL_TOKENS_MINTS.forEach(tokenMint => { 
+// ALL_TOKENS_MINTS.forEach(tokenMint => {
 //   // set address by name and name by address
 //   ALL_TOKENS_MINTS_MAP.set(tokenMint.name, tokenMint);
 //   ALL_TOKENS_MINTS_MAP.set(tokenMint.address.toString(), tokenMint);
@@ -439,16 +439,33 @@ export function useOpenOrdersAccounts(fast = false) {
   const { connected, wallet } = useWallet()
   const connection = useConnection()
   async function getOpenOrdersAccounts() {
+    console.log('get open orders accounts')
     if (!connected) {
       return null
     }
     if (!market) {
       return null
     }
-    return await market.findOpenOrdersAccountsForOwner(
+
+    const start = +Date.now()
+    await console.log(start, 'start of getting open orders')
+    const accounts = await market.findOpenOrdersAccountsForOwner(
       connection,
       wallet.publicKey
     )
+    console.log(
+      'accounts',
+      market.baseSplSizeToNumber(accounts[0].baseTokenTotal),
+      market.baseSplSizeToNumber(accounts[0].baseTokenFree),
+      market.quoteSplSizeToNumber(accounts[0].quoteTokenTotal),
+      market.quoteSplSizeToNumber(accounts[0].quoteTokenFree)
+    )
+    const end = +Date.now()
+    await console.log(end, 'end of getting open orders')
+    await console.log('Latency: ', (end - start) / 1000)
+
+
+    return accounts
   }
   return useAsyncData(
     getOpenOrdersAccounts,
@@ -778,10 +795,13 @@ export function useOpenOrdersForAllMarkets() {
 }
 
 export function useBalances() {
+  const { baseCurrency, quoteCurrency, market } = useMarket()
+
   const [baseCurrencyBalances, refreshBase] = useBaseCurrencyBalances()
   const [quoteCurrencyBalances, refreshQuote] = useQuoteCurrencyBalances()
+
   const openOrders = useSelectedOpenOrdersAccount(true)
-  const { baseCurrency, quoteCurrency, market } = useMarket()
+
   const baseExists =
     openOrders && openOrders.baseTokenTotal && openOrders.baseTokenFree
   const quoteExists =
@@ -794,6 +814,7 @@ export function useBalances() {
   ) {
     return []
   }
+
   return [
     {
       market,
@@ -1222,19 +1243,19 @@ export async function getOpenOrdersAccountsCustom(connection, wallet, market) {
 }
 
 export const getTokenMintAddressByName = (name: string): string | null => {
-  return ALL_TOKENS_MINTS_MAP[name]?.toString();
+  return ALL_TOKENS_MINTS_MAP[name]?.toString()
 }
 
 export const getTokenNameByMintAddress = (address: string): string => {
   if (!address) {
-    return '--';
+    return '--'
   }
-  
-  const tokenName = ALL_TOKENS_MINTS_MAP[address];
+
+  const tokenName = ALL_TOKENS_MINTS_MAP[address]
 
   if (tokenName) {
-    return tokenName;
+    return tokenName
   }
-  
-  return `${address.slice(0, 3)}...${address.slice(address.length - 3)}`;
+
+  return `${address.slice(0, 3)}...${address.slice(address.length - 3)}`
 }

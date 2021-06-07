@@ -3,6 +3,7 @@ import {
   Connection,
   LAMPORTS_PER_SOL,
   PublicKey,
+  SystemProgram,
   Transaction,
 } from '@solana/web3.js'
 
@@ -11,6 +12,7 @@ import {
   CurveType,
   TokenSwap,
   TOKEN_SWAP_PROGRAM_ID,
+  TokenFarmingLayout,
 } from './token-swap/token-swap'
 import { WalletAdapter } from './types'
 import { sendAndConfirmTransactionViaWallet } from './token/utils/send-and-confirm-transaction-via-wallet'
@@ -18,12 +20,8 @@ import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { notify } from './notifications'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 
-const SWAP_PROGRAM_OWNER_FEE_ADDRESS = new PublicKey(
-  'HfoTxFR1Tm6kGmWgYWD6J7YHVy1UwqSULUGVLXkJqaKN'
-)
-
 const OWNER: PublicKey = new PublicKey(
-  'HfoTxFR1Tm6kGmWgYWD6J7YHVy1UwqSULUGVLXkJqaKN'
+  '9VHVV44zDSmmdDMUHk4fwotXioimN78yzNDgzaVUP5Fb'
 )
 
 const ownerKey = OWNER.toString()
@@ -35,10 +33,10 @@ const TRADING_FEE_NUMERATOR = 25
 const TRADING_FEE_DENOMINATOR = 10000
 const OWNER_TRADING_FEE_NUMERATOR = 5
 const OWNER_TRADING_FEE_DENOMINATOR = 10000
-const OWNER_WITHDRAW_FEE_NUMERATOR = SWAP_PROGRAM_OWNER_FEE_ADDRESS ? 0 : 1
-const OWNER_WITHDRAW_FEE_DENOMINATOR = SWAP_PROGRAM_OWNER_FEE_ADDRESS ? 0 : 6
-const HOST_FEE_NUMERATOR = 20
-const HOST_FEE_DENOMINATOR = 100
+const OWNER_WITHDRAW_FEE_NUMERATOR = 0
+const OWNER_WITHDRAW_FEE_DENOMINATOR = 0
+const HOST_FEE_NUMERATOR = 0
+const HOST_FEE_DENOMINATOR = 0
 
 // curve type used to calculate swaps and deposits
 const CURVE_TYPE = CurveType.ConstantProduct
@@ -122,6 +120,17 @@ export async function createTokenSwap({
     createFeeAccountTransaction,
   ] = await tokenPoolMint.createAccount(new PublicKey(ownerKey))
 
+  const [
+    tokenFreezeAccount,
+    tokenFreezeAccountSignature,
+    tokenFreezeAccountTransaction,
+  ] = await tokenPoolMint.createAccount(authority)
+
+  const [
+    farmingStateAccount,
+    farmingStateTransaction,
+  ] = await createFarmingStateAccount({ wallet, connection })
+
   console.log('creating token A', mintA.toString())
   const mintTokenA = new Token(wallet, connection, mintA, TOKEN_PROGRAM_ID)
   const [
@@ -145,16 +154,16 @@ export async function createTokenSwap({
     createTokenPoolMintTransaction,
     createTokenAccountPoolTransaction,
     createFeeAccountTransaction,
-    createPoolTokenAccountATransaction,
-    createPoolTokenAccountBTransaction
+    tokenFreezeAccountTransaction,
+    farmingStateTransaction,
   )
 
   const createAccountsSignatures = [
     tokenAccountPoolSignature,
     tokenPoolMintSignature,
-    poolTokenAccountASignature,
     feeAccountSignature,
-    poolTokenAccountBSignature,
+    farmingStateAccount,
+    tokenFreezeAccountSignature,
   ]
 
   await sendAndConfirmTransactionViaWallet(
@@ -164,8 +173,16 @@ export async function createTokenSwap({
     ...createAccountsSignatures
   )
 
-  const beforeCreatePoolTransaction = new Transaction()
-  const beforeCreatePoolTransactionSigners = []
+  // second transaction
+  const beforeCreatePoolTransaction = new Transaction().add(
+    createPoolTokenAccountATransaction,
+    createPoolTokenAccountBTransaction,
+  )
+
+  const beforeCreatePoolTransactionSigners = [
+    poolTokenAccountASignature,
+    poolTokenAccountBSignature,
+  ]
 
   const afterCreatePoolTransaction = new Transaction()
 
@@ -186,9 +203,11 @@ export async function createTokenSwap({
       closeAccountTransaction,
     ] = result
 
-    beforeCreatePoolTransaction.add(createWrappedAccountTransaction)
-    beforeCreatePoolTransactionSigners.push(
-      createWrappedAccountTransactionSigner
+    await sendAndConfirmTransactionViaWallet(
+      wallet,
+      connection,
+      createWrappedAccountTransaction,
+      createWrappedAccountTransactionSigner,
     )
 
     afterCreatePoolTransaction.add(closeAccountTransaction)
@@ -208,8 +227,10 @@ export async function createTokenSwap({
       closeAccountTransaction,
     ] = result
 
-    beforeCreatePoolTransaction.add(createWrappedAccountTransaction)
-    beforeCreatePoolTransactionSigners.push(
+    await sendAndConfirmTransactionViaWallet(
+      wallet,
+      connection,
+      createWrappedAccountTransaction,
       createWrappedAccountTransactionSigner
     )
 
@@ -252,6 +273,7 @@ export async function createTokenSwap({
       poolTokenAccountA,
       poolTokenAccountB,
       tokenPoolMint.publicKey,
+      tokenFreezeAccount,
       mintA,
       mintB,
       feeAccount,
@@ -268,6 +290,7 @@ export async function createTokenSwap({
       HOST_FEE_NUMERATOR,
       HOST_FEE_DENOMINATOR,
       CURVE_TYPE,
+      farmingStateAccount.publicKey,
       beforeCreatePoolTransaction,
       beforeCreatePoolTransactionSigners,
       afterCreatePoolTransaction
@@ -437,7 +460,7 @@ export async function depositAllTokenTypes({
     ? poolTokenAccount
     : newAccountPool
 
-    const beforeDepositTransaction = new Transaction()
+  const beforeDepositTransaction = new Transaction()
   const beforeDepositTransactionSigners = [
     ...(isUserAlreadyHasPoolTokenAccount || !newAccountPoolSignature
       ? []
@@ -637,7 +660,12 @@ export async function withdrawAllTokenTypes({
 
     // change account to use from native to wrapped
     userTokenAccountA = result[0]
-    const [_, createWrappedAccountTransaction, createWrappedAccountTransactionSigner, closeAccountTransaction] = result
+    const [
+      _,
+      createWrappedAccountTransaction,
+      createWrappedAccountTransactionSigner,
+      closeAccountTransaction,
+    ] = result
 
     beforeWithdrawTransaction.add(createWrappedAccountTransaction)
     beforeWithdrawTransactionSigners.push(createWrappedAccountTransactionSigner)
@@ -652,7 +680,12 @@ export async function withdrawAllTokenTypes({
 
     // change account to use from native to wrapped
     userTokenAccountB = result[0]
-    const [_, createWrappedAccountTransaction, createWrappedAccountTransactionSigner, closeAccountTransaction] = result
+    const [
+      _,
+      createWrappedAccountTransaction,
+      createWrappedAccountTransactionSigner,
+      closeAccountTransaction,
+    ] = result
 
     beforeWithdrawTransaction.add(createWrappedAccountTransaction)
     beforeWithdrawTransactionSigners.push(createWrappedAccountTransactionSigner)
@@ -998,4 +1031,34 @@ const transferSOLToWrappedAccountAndClose = async ({
     createWrappedAccountSigner,
     closeAccountTransaction,
   ]
+}
+
+const createFarmingStateAccount = async ({
+  wallet,
+  connection,
+}: {
+  wallet: WalletAdapter
+  connection: Connection
+}): Promise<[Account, Transaction]> => {
+  // Allocate memory for the account
+  const balanceNeeded = await connection.getMinimumBalanceForRentExemption(
+    TokenFarmingLayout.span
+  )
+
+  console.log('TokenFarmingLayout.span', TokenFarmingLayout.span, 'balanceNeeded', balanceNeeded)
+
+  const farmingStateAccount = new Account()
+  const transaction = new Transaction()
+
+  transaction.add(
+    SystemProgram.createAccount({
+      fromPubkey: wallet.publicKey,
+      newAccountPubkey: farmingStateAccount.publicKey,
+      lamports: balanceNeeded,
+      space: TokenFarmingLayout.span,
+      programId: TOKEN_SWAP_PROGRAM_ID,
+    })
+  )
+
+  return [farmingStateAccount, transaction]
 }

@@ -24,7 +24,7 @@ export interface TokenInfo {
     amount: number
     decimals: number
     mint: string
-    address?: string   
+    address: string   
 }
 
 export interface TokenType extends TokenInfo {
