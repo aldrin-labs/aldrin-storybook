@@ -21,24 +21,23 @@ export const getPoolsSwaps = ({
   const swaps = transactionsList.map((el) => {
     const [base, quote] = el.symbol.split('_')
     const baseSwapToken: 'tokenA' | 'tokenB' = el.side === 'sell' ? 'tokenA' : 'tokenB'
-
     const baseAddress: string = tokensMap[base].address
     const quoteAddress: string = tokensMap[quote].address
+    const baseDecimals = tokensMap[base].decimals
+    const quoteDecimals = tokensMap[quote].decimals
 
     return {
       wallet,
       connection,
       ...(el.side === 'sell' ? {
-
-        // TODO: Remove 8 and replace with real decimalCount param from BLOCKCHAIN
-        swapAmountIn: el.amount * 10 ** 8,
-        swapAmountOut: el.total * 10 ** 8,
+        swapAmountIn: el.amount * (10 ** baseDecimals),
+        swapAmountOut: el.total * (10 ** quoteDecimals),
 
         swapAmountInRaw: el.amount,
         swapAmountOutRaw: el.total,
       } : {
-        swapAmountIn: el.total * 10 ** 8,
-        swapAmountOut: el.amount * 10 ** 8,
+        swapAmountIn: el.total * (10 ** quoteDecimals),
+        swapAmountOut: el.amount * (10 ** baseDecimals),
 
         swapAmountInRaw: el.total,
         swapAmountOutRaw: el.amount,
