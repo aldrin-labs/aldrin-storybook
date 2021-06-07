@@ -8,10 +8,19 @@ import {
   HeaderContainer,
   Row,
   ChartContainer,
+  RowContainer,
 } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 import { createTradingVolumeChart } from '../utils'
 import { getTradingVolumeHistory } from '@core/graphql/queries/pools/getTradingVolumeHistory'
+import {
+  dayDuration,
+  endOfDayTimestamp,
+  getTimezone,
+} from '@sb/compositions/AnalyticsRoute/components/utils'
+
+import dayjs from 'dayjs'
+import { Line } from '../../Popups/index.styles'
 
 const TradingVolumeChart = ({
   theme,
@@ -24,10 +33,15 @@ const TradingVolumeChart = ({
   title: string
   getTradingVolumeHistoryQuery: any
 }) => {
-  const data = getTradingVolumeHistoryQuery.getTradingVolumeHistory.volumes
-
+  const data = getTradingVolumeHistoryQuery?.getTradingVolumeHistory?.volumes
   useEffect(() => {
-    createTradingVolumeChart({ theme, id, data })
+    createTradingVolumeChart({
+      theme,
+      id,
+      data: [...data].sort((a, b) => {
+        return dayjs(a.date).unix() - dayjs(b.date).unix()
+      }),
+    })
 
     // @ts-ignore - we set it in create chart function above
     return () => window[`TradingVolumeChart-${id}`].destroy()
@@ -36,11 +50,16 @@ const TradingVolumeChart = ({
   return (
     <>
       <HeaderContainer theme={theme} justify={'space-between'}>
-        <Row margin={'0 0 0 2rem'}>
-          <WhiteTitle theme={theme} color={theme.palette.white.text}>
+        <RowContainer margin={'0 2rem 0 2rem'} style={{ flexWrap: 'nowrap' }}>
+          <WhiteTitle
+            style={{ marginRight: '2rem' }}
+            theme={theme}
+            color={theme.palette.white.text}
+          >
             {title}
           </WhiteTitle>
-        </Row>
+          <Line />
+        </RowContainer>
       </HeaderContainer>
       <ChartContainer>
         <canvas id="TradingVolumeChart"></canvas>
@@ -54,7 +73,9 @@ export default compose(
     query: getTradingVolumeHistory,
     name: 'getTradingVolumeHistoryQuery',
     variables: {
-      timezone: '',
+      timezone: getTimezone(),
+      timestampFrom: endOfDayTimestamp - dayDuration * 6,
+      timestampTo: endOfDayTimestamp,
     },
     fetchPolicy: 'cache-and-network',
   })

@@ -4,46 +4,71 @@ import assert from 'assert';
 
 const pageLoadTime = new Date();
 
-const globalCache = new Map();
+const globalCache: Map<any, any> = new Map();
 
-class FetchLoopListener {
-  constructor(cacheKey, fn, refreshInterval, refreshIntervalOnError, callback) {
+class FetchLoopListener<T = any> {
+  cacheKey: any;
+  fn: () => Promise<T>;
+  refreshInterval: number;
+  refreshIntervalOnError: number | null;
+  callback: () => void;
+  cacheNullValues: Boolean = true;
+
+  constructor(
+    cacheKey: any,
+    fn: () => Promise<T>,
+    refreshInterval: number,
+    refreshIntervalOnError: number | null,
+    callback: () => void,
+    cacheNullValues: Boolean,
+  ) {
     this.cacheKey = cacheKey;
     this.fn = fn;
     this.refreshInterval = refreshInterval;
     this.refreshIntervalOnError = refreshIntervalOnError;
     this.callback = callback;
+    this.cacheNullValues = cacheNullValues;
   }
 }
 
-class FetchLoopInternal {
-  constructor(cacheKey, fn) {
+class FetchLoopInternal<T = any> {
+  cacheKey: any;
+  fn: () => Promise<T>;
+  timeoutId: null | any;
+  listeners: Set<FetchLoopListener<T>>;
+  errors: number;
+  cacheNullValues: Boolean = true;
+
+  constructor(cacheKey: any, fn: () => Promise<T>, cacheNullValues: Boolean) {
     this.cacheKey = cacheKey;
     this.fn = fn;
     this.timeoutId = null;
     this.listeners = new Set();
     this.errors = 0;
+    this.cacheNullValues = cacheNullValues;
   }
 
-  get refreshInterval() {
+  get refreshInterval(): number {
     return Math.min(
       ...[...this.listeners].map((listener) => listener.refreshInterval),
     );
   }
 
-  get refreshIntervalOnError() {
-    return Math.min(
-      ...[...this.listeners]
-        .map((listener) => listener.refreshIntervalOnError)
-        .filter((x) => x),
-    );
+  get refreshIntervalOnError(): number | null {
+    const refreshIntervalsOnError: number[] = [...this.listeners]
+      .map((listener) => listener.refreshIntervalOnError)
+      .filter((x): x is number => x !== null);
+    if (refreshIntervalsOnError.length === 0) {
+      return null;
+    }
+    return Math.min(...refreshIntervalsOnError);
   }
 
-  get stopped() {
+  get stopped(): boolean {
     return this.listeners.size === 0;
   }
 
-  addListener(listener) {
+  addListener(listener: FetchLoopListener<T>): void {
     const previousRefreshInterval = this.refreshInterval;
     this.listeners.add(listener);
     if (this.refreshInterval < previousRefreshInterval) {
@@ -51,7 +76,7 @@ class FetchLoopInternal {
     }
   }
 
-  removeListener(listener) {
+  removeListener(listener: FetchLoopListener<T>): void {
     assert(this.listeners.delete(listener));
     if (this.stopped) {
       if (this.timeoutId) {
@@ -61,7 +86,7 @@ class FetchLoopInternal {
     }
   }
 
-  notifyListeners() {
+  notifyListeners(): void {
     this.listeners.forEach((listener) => listener.callback());
   }
 
@@ -77,10 +102,17 @@ class FetchLoopInternal {
     let errored = false;
     try {
       const data = await this.fn();
-      globalCache.set(this.cacheKey, data);
-      this.errors = 0;
-      this.notifyListeners();
-      return data;
+      if (!this.cacheNullValues && data === null) {
+        console.log(`Not caching null value for ${this.cacheKey}`);
+        // cached data has not changed so no need to re-render
+        this.errors = 0;
+        return data;
+      } else {
+        globalCache.set(this.cacheKey, data);
+        this.errors = 0;
+        this.notifyListeners();
+        return data;
+      }
     } catch (error) {
       ++this.errors;
       console.warn(error);
@@ -102,7 +134,7 @@ class FetchLoopInternal {
         }
 
         // Don't do any refreshing for the first five seconds, to make way for other things to load.
-        const timeSincePageLoad = new Date() - pageLoadTime;
+        const timeSincePageLoad = +new Date() - +pageLoadTime;
         if (timeSincePageLoad < 5000) {
           waitTime += 5000 - timeSincePageLoad / 2;
         }
@@ -126,21 +158,26 @@ class FetchLoopInternal {
 class FetchLoops {
   loops = new Map();
 
-  addListener(listener) {
+  addListener<T>(listener: FetchLoopListener<T>) {
     if (!this.loops.has(listener.cacheKey)) {
       this.loops.set(
         listener.cacheKey,
-        new FetchLoopInternal(listener.cacheKey, listener.fn),
+        new FetchLoopInternal<T>(
+          listener.cacheKey,
+          listener.fn,
+          listener.cacheNullValues,
+        ),
       );
     }
     this.loops.get(listener.cacheKey).addListener(listener);
   }
 
-  removeListener(listener) {
+  removeListener<T>(listener: FetchLoopListener<T>) {
     const loop = this.loops.get(listener.cacheKey);
     loop.removeListener(listener);
     if (loop.stopped) {
       this.loops.delete(listener.cacheKey);
+      globalCache.delete(listener.cacheKey);
     }
   }
 
@@ -156,11 +193,12 @@ class FetchLoops {
 }
 const globalLoops = new FetchLoops();
 
-export function useAsyncData(
-  asyncFn,
-  cacheKey,
+export function useAsyncData<T = any>(
+  asyncFn: () => Promise<T>,
+  cacheKey: any,
   { refreshInterval = 60000, refreshIntervalOnError = null } = {},
-) {
+  cacheNullValues: Boolean = true,
+): [null | undefined | T, boolean] {
   const [, rerender] = useReducer((i) => i + 1, 0);
 
   useEffect(() => {
@@ -168,12 +206,13 @@ export function useAsyncData(
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       return () => {};
     }
-    const listener = new FetchLoopListener(
+    const listener = new FetchLoopListener<T>(
       cacheKey,
       asyncFn,
       refreshInterval,
       refreshIntervalOnError,
       rerender,
+      cacheNullValues,
     );
     globalLoops.addListener(listener);
     return () => globalLoops.removeListener(listener);
@@ -189,7 +228,7 @@ export function useAsyncData(
   return [data, loaded];
 }
 
-export function refreshCache(cacheKey, clearCache = false) {
+export function refreshCache(cacheKey: any, clearCache = false): void {
   if (clearCache) {
     globalCache.delete(cacheKey);
   }
@@ -202,13 +241,17 @@ export function refreshCache(cacheKey, clearCache = false) {
   }
 }
 
-export function refreshAllCaches() {
+export function refreshAllCaches(): void {
   for (const loop of globalLoops.loops.values()) {
     loop.refresh();
   }
 }
 
-export function setCache(cacheKey, value, { initializeOnly = false } = {}) {
+export function setCache(
+  cacheKey: any,
+  value: any,
+  { initializeOnly = false } = {},
+): void {
   if (initializeOnly && globalCache.has(cacheKey)) {
     return;
   }
@@ -217,4 +260,10 @@ export function setCache(cacheKey, value, { initializeOnly = false } = {}) {
   if (loop) {
     loop.notifyListeners();
   }
+}
+
+export function getCache(
+  cacheKey: any
+) {
+  return globalCache.get(cacheKey);
 }

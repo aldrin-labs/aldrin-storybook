@@ -584,20 +584,20 @@ export class Token {
    *
    * This function sends lamports to the new account before initializing it.
    *
+   * @param wallet The wallet that will sign the transaction
    * @param connection A solana web3 connection
    * @param programId The token program ID
    * @param owner The owner of the new token account
-   * @param payer The source of the lamports to initialize, and payer of the initialization fees.
    * @param amount The amount of lamports to wrap
    * @return {Promise<PublicKey>} The new token account
    */
   static async createWrappedNativeAccount(
+    wallet: WalletAdapter,
     connection: Connection,
     programId: PublicKey,
     owner: PublicKey,
-    payer: Account,
     amount: number,
-  ): Promise<PublicKey> {
+  ): Promise<[PublicKey, Transaction, Account]> {
     // Allocate memory for the account
     const balanceNeeded = await Token.getMinBalanceRentForExemptAccount(
       connection,
@@ -608,7 +608,7 @@ export class Token {
     const transaction = new Transaction();
     transaction.add(
       SystemProgram.createAccount({
-        fromPubkey: payer.publicKey,
+        fromPubkey: wallet.publicKey,
         newAccountPubkey: newAccount.publicKey,
         lamports: balanceNeeded,
         space: AccountLayout.span,
@@ -619,7 +619,7 @@ export class Token {
     // Send lamports to it (these will be wrapped into native tokens by the token program)
     transaction.add(
       SystemProgram.transfer({
-        fromPubkey: payer.publicKey,
+        fromPubkey: wallet.publicKey,
         toPubkey: newAccount.publicKey,
         lamports: amount,
       }),
@@ -638,15 +638,14 @@ export class Token {
     );
 
     // Send the three instructions
-    await sendAndConfirmTransaction(
-      'createAccount, transfer, and initializeAccount',
-      connection,
-      transaction,
-      payer,
-      newAccount,
-    );
+    // await sendAndConfirmTransactionViaWallet(
+    //   wallet,
+    //   connection,
+    //   transaction,
+    //   newAccount,
+    // );
 
-    return newAccount.publicKey;
+    return [newAccount.publicKey, transaction, newAccount];
   }
 
   /**
@@ -1119,7 +1118,7 @@ export class Token {
     dest: PublicKey,
     authority: any,
     multiSigners: Array<Account>,
-  ): Promise<void> {
+  ): Promise<[Transaction, Account[]]> {
     let authorityPublicKey;
     let signers;
     if (isAccount(authority)) {
@@ -1129,21 +1128,25 @@ export class Token {
       authorityPublicKey = authority;
       signers = multiSigners;
     }
-    await sendAndConfirmTransaction(
-      'CloseAccount',
-      this.connection,
-      new Transaction().add(
-        Token.createCloseAccountInstruction(
-          this.programId,
-          account,
-          dest,
-          authorityPublicKey,
-          multiSigners,
-        ),
+
+    const transaction = new Transaction().add(
+      Token.createCloseAccountInstruction(
+        this.programId,
+        account,
+        dest,
+        authorityPublicKey,
+        multiSigners,
       ),
-      this.payer,
-      ...signers,
     );
+
+    // await sendAndConfirmTransactionViaWallet(
+    //   this.wallet,
+    //   this.connection,
+    //   transaction,
+    //   ...signers,
+    // );
+
+    return [transaction, signers]
   }
 
   /**

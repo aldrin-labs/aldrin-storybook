@@ -26,14 +26,25 @@ import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { Theme } from '@material-ui/core'
-import { PoolInfo, PoolsPrices } from '@sb/compositions/Pools/index.types'
+import {
+  FeesEarned,
+  PoolInfo,
+  PoolsPrices,
+} from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
+import { getFeesEarnedByPool } from '@core/graphql/queries/pools/getFeesEarnedByPool'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 const AllPoolsTable = ({
   theme,
   poolsPrices,
   getPoolsInfoQuery,
+  getFeesEarnedByPoolQuery,
   selectPool,
   setIsCreatePoolPopupOpen,
   setIsAddLiquidityPopupOpen,
@@ -41,17 +52,27 @@ const AllPoolsTable = ({
   theme: Theme
   poolsPrices: PoolsPrices[]
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
+  getFeesEarnedByPoolQuery: { getFeesEarnedByPool: FeesEarned[] }
   selectPool: (pool: PoolInfo) => void
   setIsCreatePoolPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
 }) => {
+  const { wallet } = useWallet()
   const [searchValue, onChangeSearch] = useState('')
 
-  const { wallet } = useWallet()
+  const { getFeesEarnedByPool = [] } = getFeesEarnedByPoolQuery || {
+    getFeesEarnedByPool: [],
+  }
 
   const filteredData = getPoolsInfoQuery.getPoolsInfo.filter((el) =>
-    filterDataBySymbolForDifferentDeviders({ searchValue, symbol: el.name })
+    filterDataBySymbolForDifferentDeviders({ searchValue, symbol: el.parsedName })
   )
+
+  const feesPerPoolMap = new Map()
+
+  getFeesEarnedByPool.forEach((feeEarnedByPool) => {
+    feesPerPoolMap.set(feeEarnedByPool.pool, feeEarnedByPool.earnedUSD)
+  })
 
   return (
     <RowContainer>
@@ -100,68 +121,142 @@ const AllPoolsTable = ({
               <RowTd>Total Fees Paid</RowTd>
               <RowTd>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <SvgIcon
-                    width={'1.2rem'}
-                    height={'1.2rem'}
-                    style={{ marginRight: '1rem' }}
-                    src={TooltipIcon}
-                  />
+                  <DarkTooltip
+                    title={
+                      'Annualized, non-compounded return on investment based on the fees earned in the last 24 hours, relative to the size of the pool.'
+                    }
+                  >
+                    <SvgIcon
+                      width={'1.2rem'}
+                      height={'1.2rem'}
+                      style={{ marginRight: '1rem' }}
+                      src={TooltipIcon}
+                    />
+                  </DarkTooltip>
                   APY (24h)
                 </div>
               </RowTd>
               <RowTd></RowTd>
             </TableHeader>
-            {filteredData.map((el) => {
-              return (
-                <TableRow>
-                  <RowTd>
-                    <TokenIconsContainer
-                      tokenA={el.tokenA}
-                      tokenB={el.tokenB}
-                    />
-                  </RowTd>
-                  <RowDataTd>
-                    <TextColumnContainer>
-                      <RowDataTdTopText theme={theme}>
-                        ${el.tvl.USD}
-                      </RowDataTdTopText>
-                      <RowDataTdText
-                        theme={theme}
-                        color={theme.palette.grey.new}
-                      >
-                        {el.tvl.tokenA} {getTokenNameByMintAddress(el.tokenA)} /{' '}
-                        {el.tvl.tokenB} {getTokenNameByMintAddress(el.tokenB)}
+            {filteredData
+              .sort((poolA: PoolInfo, poolB: PoolInfo) => {
+                const [poolABaseTokenPrice, poolBBaseTokenPrice] = [
+                  poolsPrices.find(
+                    (tokenInfo) =>
+                      tokenInfo.symbol ===
+                      getTokenNameByMintAddress(poolA.tokenA)
+                  )?.price || 10,
+                  poolsPrices.find(
+                    (tokenInfo) =>
+                      tokenInfo.symbol ===
+                      getTokenNameByMintAddress(poolB.tokenA)
+                  )?.price || 10,
+                ]
+
+                const [poolAQuoteTokenPrice, poolBQuoteTokenPrice] = [
+                  poolsPrices.find(
+                    (tokenInfo) =>
+                      tokenInfo.symbol ===
+                      getTokenNameByMintAddress(poolA.tokenB)
+                  )?.price || 10,
+                  poolsPrices.find(
+                    (tokenInfo) =>
+                      tokenInfo.symbol ===
+                      getTokenNameByMintAddress(poolB.tokenB)
+                  )?.price || 10,
+                ]
+
+                const poolATvlUSD =
+                  poolABaseTokenPrice * poolA.tvl.tokenA +
+                  poolAQuoteTokenPrice * poolA.tvl.tokenB
+
+                const poolBTvlUSD =
+                  poolBBaseTokenPrice * poolB.tvl.tokenA +
+                  poolBQuoteTokenPrice * poolB.tvl.tokenB
+
+                return poolBTvlUSD - poolATvlUSD
+              })
+              .map((el) => {
+                const baseSymbol = getTokenNameByMintAddress(el.tokenA)
+                const quoteSymbol = getTokenNameByMintAddress(el.tokenB)
+
+                const baseTokenPrice =
+                  poolsPrices.find(
+                    (tokenInfo) => tokenInfo.symbol === baseSymbol
+                  )?.price || 10
+
+                const quoteTokenPrice =
+                  poolsPrices.find(
+                    (tokenInfo) => tokenInfo.symbol === quoteSymbol
+                  )?.price || 10
+
+                const tvlUSD =
+                  baseTokenPrice * el.tvl.tokenA +
+                  quoteTokenPrice * el.tvl.tokenB
+
+                const fees = feesPerPoolMap.get(el.swapToken) || 0
+                const apy = !!tvlUSD ? (100 * fees) / tvlUSD : 0
+
+                return (
+                  <TableRow>
+                    <RowTd>
+                      <TokenIconsContainer
+                        tokenA={el.tokenA}
+                        tokenB={el.tokenB}
+                      />
+                    </RowTd>
+                    <RowDataTd>
+                      <TextColumnContainer>
+                        <RowDataTdTopText theme={theme}>
+                          ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
+                        </RowDataTdTopText>
+                        <RowDataTdText
+                          theme={theme}
+                          color={theme.palette.grey.new}
+                        >
+                          {formatNumberToUSFormat(
+                            stripDigitPlaces(el.tvl.tokenA, 2)
+                          )}{' '}
+                          {getTokenNameByMintAddress(el.tokenA)} /{' '}
+                          {formatNumberToUSFormat(
+                            stripDigitPlaces(el.tvl.tokenB, 2)
+                          )}{' '}
+                          {getTokenNameByMintAddress(el.tokenB)}
+                        </RowDataTdText>
+                      </TextColumnContainer>
+                    </RowDataTd>
+                    <RowDataTd>
+                      <RowDataTdText theme={theme}>
+                        ${stripDigitPlaces(fees, 6)}
                       </RowDataTdText>
-                    </TextColumnContainer>
-                  </RowDataTd>
-                  <RowDataTd>
-                    <RowDataTdText theme={theme}>
-                      ${el.totalFeesPaid.USD}
-                    </RowDataTdText>
-                  </RowDataTd>
-                  <RowDataTd>
-                    <RowDataTdText theme={theme}>{el.apy24h}%</RowDataTdText>
-                  </RowDataTd>
-                  <RowTd>
-                    <Row justify={'flex-end'} width={'100%'}>
-                      <BorderButton
-                        onClick={() => {
-                          if (wallet.connected) {
-                            selectPool(el)
-                            setIsAddLiquidityPopupOpen(true)
-                          } else {
-                            wallet.connect()
-                          }
-                        }}
-                        borderColor={'#366CE5'}
-                      >
-                        {wallet.connected ? 'Add Liquidity' : 'Connect wallet'}
-                      </BorderButton>
-                    </Row>
-                  </RowTd>
-                </TableRow>
-              )
-            })}
+                    </RowDataTd>
+                    <RowDataTd>
+                      <RowDataTdText theme={theme}>
+                        {stripDigitPlaces(apy, 6)}%
+                      </RowDataTdText>
+                    </RowDataTd>
+                    <RowTd>
+                      <Row justify={'flex-end'} width={'100%'}>
+                        <BorderButton
+                          onClick={() => {
+                            if (wallet.connected) {
+                              selectPool(el)
+                              setIsAddLiquidityPopupOpen(true)
+                            } else {
+                              wallet.connect()
+                            }
+                          }}
+                          borderColor={'#366CE5'}
+                        >
+                          {wallet.connected
+                            ? 'Add Liquidity'
+                            : 'Connect wallet'}
+                        </BorderButton>
+                      </Row>
+                    </RowTd>
+                  </TableRow>
+                )
+              })}
           </Table>
         </RowContainer>
       </BlockTemplate>
@@ -174,5 +269,13 @@ export default compose(
     name: 'getPoolsInfoQuery',
     query: getPoolsInfo,
     fetchPolicy: 'cache-and-network',
+    pollInterval: 60000,
+  }),
+  queryRendererHoc({
+    name: 'getFeesEarnedByPoolQuery',
+    query: getFeesEarnedByPool,
+    fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
+    pollInterval: 60000,
   })
 )(AllPoolsTable)

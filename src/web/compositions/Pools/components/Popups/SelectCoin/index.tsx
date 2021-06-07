@@ -15,6 +15,10 @@ import {
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
 import { StyledPaper } from '../index.styles'
+import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
+import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
+import { PoolsPrices } from '@sb/compositions/Pools/index.types'
+import { formatNumberToUSFormat, stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 const UpdatedPaper = styled(({ ...props }) => <StyledPaper {...props} />)`
   width: 45rem;
@@ -35,21 +39,39 @@ export const SelectCoinPopup = ({
   theme,
   open,
   mints,
+  allTokensData,
+  poolsPrices,
+  isBaseTokenSelecting,
   close,
-  selectTokenAddress,
+  selectTokenMintAddress,
+  setBaseTokenAddressFromSeveral,
+  setQuoteTokenAddressFromSeveral,
 }: {
   theme: Theme
   open: boolean
   mints: string[]
+  isBaseTokenSelecting: boolean
+  allTokensData: TokenInfo[]
+  poolsPrices: PoolsPrices[]
   close: () => void
-  selectTokenAddress: (address: string) => void
+  selectTokenMintAddress: (address: string) => void
+  setBaseTokenAddressFromSeveral: (address: string) => void
+  setQuoteTokenAddressFromSeveral: (address: string) => void
 }) => {
   const needKnownMints = false
-  const [searchValue, onChangeSearch] = useState('')
-  const usersMints = needKnownMints ? mints.filter(
-    (el) => getTokenNameByMintAddress(el) === ALL_TOKENS_MINTS_MAP[el]
-  ) : mints
-  
+  const [searchValue, onChangeSearch] = useState<string>('')
+  const [selectedMint, setSelectedMint] = useState<string>('')
+  const [
+    isSelectorForSeveralAddressesOpen,
+    openSelectorForSeveralAddresses,
+  ] = useState(false)
+
+  const usersMints = needKnownMints
+    ? mints.filter(
+        (el) => getTokenNameByMintAddress(el) === ALL_TOKENS_MINTS_MAP[el]
+      )
+    : mints
+
   const filteredMints = searchValue
     ? usersMints.filter((mint) =>
         getTokenNameByMintAddress(mint)
@@ -86,7 +108,15 @@ export const SelectCoinPopup = ({
               justify={'space-between'}
               style={{ cursor: 'pointer' }}
               onClick={() => {
-                selectTokenAddress(mint)
+                const isSeveralCoinsWithSameAddress =
+                  allTokensData.filter((el) => el.mint === mint).length > 1
+
+                if (isSeveralCoinsWithSameAddress) {
+                  setSelectedMint(mint)
+                  openSelectorForSeveralAddresses(true)
+                } else {
+                  selectTokenMintAddress(mint)
+                }
               }}
             >
               <Row wrap={'nowrap'}>
@@ -94,7 +124,17 @@ export const SelectCoinPopup = ({
                 <StyledText>{getTokenNameByMintAddress(mint)}</StyledText>
               </Row>
               <Row wrap={'nowrap'}>
-                <StyledText>--</StyledText>
+                <StyledText>
+                  {formatNumberToUSFormat(
+                    stripDigitPlaces(
+                      poolsPrices.find(
+                        (tokenInfo) =>
+                          tokenInfo.symbol === getTokenNameByMintAddress(mint)
+                      )?.price || 0,
+                      8
+                    )
+                  )}
+                </StyledText>
               </Row>
             </SelectorRow>
           )
@@ -104,6 +144,18 @@ export const SelectCoinPopup = ({
             <StyledText>Loading...</StyledText>
           </RowContainer>
         )}
+        <SelectSeveralAddressesPopup
+          theme={theme}
+          tokens={allTokensData.filter((el) => el.mint === selectedMint)}
+          open={isSelectorForSeveralAddressesOpen}
+          close={() => openSelectorForSeveralAddresses(false)}
+          selectTokenMintAddress={selectTokenMintAddress}
+          selectTokenAddressFromSeveral={
+            isBaseTokenSelecting
+              ? setBaseTokenAddressFromSeveral
+              : setQuoteTokenAddressFromSeveral
+          }
+        />
       </RowContainer>
     </DialogWrapper>
   )
