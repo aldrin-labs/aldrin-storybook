@@ -1,7 +1,7 @@
 import EventEmitter from 'eventemitter3'
 import { PublicKey } from '@solana/web3.js'
 
-export default class SolongWallet extends EventEmitter {
+export class SolongWalletAdapter extends EventEmitter {
   _providerUrl: URL
   _publicKey: any
   _onProcess: boolean

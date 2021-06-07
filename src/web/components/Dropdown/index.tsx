@@ -12,17 +12,15 @@ import {
 } from './Dropdown.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import SvgIcon from '@sb/components/SvgIcon'
-import Sollet from '@icons/sollet.svg'
-import Mathwallet from '@icons/mathwallet.svg'
-import Solong from '@icons/solong.svg'
-import CCAI from '@icons/ccai.svg'
-import { CCAIProviderURL } from '@sb/dexUtils/utils'
+
 import { IProps } from './types'
 import styled from 'styled-components'
 
+import { WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
+
 const WalletStatusButton = ({ wallet, connected, theme, id }) => (
   <BtnCustom
-    onClick={connected ? wallet.disconnect : wallet.connect}
+    onClick={connected ? wallet?.disconnect : wallet?.connect}
     btnColor={theme.palette.blue.serum}
     btnWidth={'14rem'}
     textTransform={'capitalize'}
@@ -43,7 +41,7 @@ const WalletStatusButton = ({ wallet, connected, theme, id }) => (
 
 const ConnectWalletButton = ({ wallet, theme, height, id }) => (
   <BtnCustom
-    onClick={wallet.connect}
+    onClick={wallet?.connect}
     btnColor={'#F8FAFF'}
     backgroundColor={theme.palette.blue.serum}
     btnWidth={'100%'}
@@ -72,10 +70,6 @@ const StyledButton = styled(BtnCustom)`
 
 @withRouter
 export default class Dropdown extends React.Component<IProps> {
-  state = {
-    open: false,
-  }
-
   render() {
     const {
       page,
@@ -99,12 +93,6 @@ export default class Dropdown extends React.Component<IProps> {
       containerStyle,
     } = this.props
 
-    const isCCAIActive = providerUrl === CCAIProviderURL
-    const isSolletActive = providerUrl === 'https://www.sollet.io'
-    const isMathWalletActive = providerUrl === 'https://www.mathwallet.org'
-    const isSolongWallet = providerUrl === 'https://solongwallet.com'
-
-    const isWalletConnected = connected
     return (
       <>
         <StyledDropdown
@@ -140,167 +128,56 @@ export default class Dropdown extends React.Component<IProps> {
             }}
             showOnTop={showOnTop}
             theme={theme}
-            isWalletConnected={isWalletConnected}
+            isWalletConnected={connected}
             customActiveRem={'9rem'}
             customNotActiveRem={'3rem'}
           >
             <MenuList style={{ padding: 0 }}>
-              <StyledMenuItem
-                theme={theme}
-                disableRipple
-                disableGutters={true}
-                key={'ccai'}
-                isActive={isCCAIActive}
-              >
-                <StyledButton
-                  btnWidth={'100%'}
-                  height={'4rem'}
-                  border="none"
-                  borderWidth="0"
-                  borderRadius="0"
-                  btnColor={isCCAIActive ? '#AAF2C9' : '#ECF0F3'}
-                  fontSize={'1.2rem'}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    textTransform: 'none',
-                    padding: '1rem',
-                    background: isCCAIActive ? 'rgba(55, 56, 62, 0.75)' : '',
-                    '& span': {
-                      height: '100%',
-                    },
-                  }}
-                  onClick={() => {
-                    console.log('CLICK ON CCAI')
+              {WALLET_PROVIDERS.map((provider) => {
+                const isProviderActive = provider.url === providerUrl
 
-                    // if (isCCAIActive && !isWalletConnected) {
-                    //   wallet.connect()
-                    //   return
-                    // }
-
-                    updateProviderUrl(CCAIProviderURL)
-                    setAutoConnect(true)
-                  }}
-                >
-                  {' '}
-                  <SvgIcon src={CCAI} width={'auto'} height={'100%'} />
-                  Wallet™
-                </StyledButton>
-              </StyledMenuItem>
-              <StyledMenuItem
-                theme={theme}
-                disableRipple
-                disableGutters={true}
-                key={'sollet'}
-                isActive={isSolletActive}
-              >
-                <StyledButton
-                  btnWidth={'100%'}
-                  height={'4rem'}
-                  border="none"
-                  borderWidth="0"
-                  borderRadius="0"
-                  btnColor={isSolletActive ? '#AAF2C9' : '#ECF0F3'}
-                  fontSize={'1.2rem'}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    textTransform: 'none',
-                    padding: '1rem',
-                    background: isSolletActive ? 'rgba(55, 56, 62, 0.75)' : '',
-                  }}
-                  onClick={() => {
-                    console.log('CLICK ON SOLLET')
-
-                    // if (isSolletActive && !isWalletConnected) {
-                    //   wallet.connect()
-                    //   return
-                    // }
-
-                    updateProviderUrl('https://www.sollet.io')
-                    setAutoConnect(true)
-                  }}
-                >
-                  <SvgIcon src={Sollet} width={'auto'} height={'100%'} />
-                  Sollet.io
-                </StyledButton>
-              </StyledMenuItem>
-              {/* <StyledMenuItem
-                theme={theme}
-                disableRipple
-                disableGutters={true}
-                key={'mathwallet'}
-                isActive={isMathWalletActive}
-              >
-                <StyledButton
-                  btnWidth={'100%'}
-                  height={'4rem'}
-                  border="none"
-                  borderWidth="0"
-                  borderRadius="0"
-                  btnColor={isMathWalletActive ? '#AAF2C9' : '#ECF0F3'}
-                  fontSize={'1.2rem'}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    textTransform: 'none',
-                    padding: '1rem',
-                    background: isMathWalletActive
-                      ? 'rgba(55, 56, 62, 0.75)'
-                      : '',
-                  }}
-                  onClick={() => {
-                    console.log('CLICK ON MATHWALLET') */}
-
-              {/* // if (isMathWalletActive && !isWalletConnected) { */}
-              {/* //   wallet.connect()
-                    //   return
-                    // }
-
-                //     updateProviderUrl('https://www.mathwallet.org')
-                //     setAutoConnect(true)
-                //   }}
-                // >
-                //   <SvgIcon src={Mathwallet} width={'auto'} height={'80%'} />
-                //   Math Wallet
-                // </StyledButton>
-              // </StyledMenuItem> */}
-              <StyledMenuItem
-                theme={theme}
-                disableRipple
-                disableGutters={true}
-                key={'solong'}
-                isActive={isSolongWallet}
-              >
-                <StyledButton
-                  btnWidth={'100%'}
-                  height={'4rem'}
-                  border="none"
-                  borderWidth="0"
-                  borderRadius="0"
-                  btnColor={isSolongWallet ? '#AAF2C9' : '#ECF0F3'}
-                  fontSize={'1.2rem'}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    textTransform: 'none',
-                    padding: '1rem',
-                    background: isSolongWallet ? 'rgba(55, 56, 62, 0.75)' : '',
-                  }}
-                  onClick={() => {
-                    // if (isSolongWallet && !isWalletConnected) {
-                    //   wallet.connect()
-                    //   return
-                    // }
-
-                    updateProviderUrl('https://solongwallet.com')
-                    setAutoConnect(true)
-                  }}
-                >
-                  <SvgIcon src={Solong} width={'auto'} height={'100%'} />
-                  Solong
-                </StyledButton>
-              </StyledMenuItem>
+                return (
+                  <StyledMenuItem
+                    theme={theme}
+                    disableRipple
+                    disableGutters={true}
+                    key={provider.name}
+                    isActive={isProviderActive}
+                  >
+                    <StyledButton
+                      btnWidth={'100%'}
+                      height={'4rem'}
+                      border="none"
+                      borderWidth="0"
+                      borderRadius="0"
+                      btnColor={isProviderActive ? '#AAF2C9' : '#ECF0F3'}
+                      fontSize={'1.2rem'}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        textTransform: 'none',
+                        padding: '1rem',
+                        whiteSpace: 'normal',
+                        textAlign: 'right',
+                        background: isProviderActive
+                          ? 'rgba(55, 56, 62, 0.75)'
+                          : '',
+                      }}
+                      onClick={() => {
+                        updateProviderUrl(provider.url)
+                        setAutoConnect(true)
+                      }}
+                    >
+                      <SvgIcon
+                        src={provider.icon}
+                        width={'auto'}
+                        height={'100%'}
+                      />
+                      {provider.name}
+                    </StyledButton>
+                  </StyledMenuItem>
+                )
+              })}
             </MenuList>
           </StyledPaper>
         </StyledDropdown>
@@ -308,25 +185,3 @@ export default class Dropdown extends React.Component<IProps> {
     )
   }
 }
-
-// {this.props.items.map(({ icon, text, to, style, ...events }) => (
-// <StyledMenuItem
-//   theme={theme}
-//   disableRipple
-//   disableGutters={true}
-//   key={text}
-// >
-//     <StyledLink
-//       theme={theme}
-//       to={to}
-//       key={`${text}-link`}
-//       onClick={this.handleClose}
-//       {...events}
-//     >
-//       {/* {icon} */}
-//       <StyledMenuItemText style={style} key={`${text}-text`}>
-//         {text}
-//       </StyledMenuItemText>
-//     </StyledLink>
-//   </StyledMenuItem>
-// ))}

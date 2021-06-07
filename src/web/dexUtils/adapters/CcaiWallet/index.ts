@@ -1,8 +1,9 @@
 import EventEmitter from 'eventemitter3';
 import { PublicKey } from '@solana/web3.js';
 import bs58 from 'bs58';
+import { WalletAdapter } from '../types';
 
-export default class Wallet extends EventEmitter {
+export class CcaiWalletAdapter extends EventEmitter implements WalletAdapter {
   constructor(provider, network) {
     super();
     if (isInjectedProvider(provider)) {

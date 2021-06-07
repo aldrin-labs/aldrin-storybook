@@ -15,6 +15,7 @@ class MultiEndpointsConnection implements Connection {
   private endpointsRequestsCounter: EndpointRequestsCounter[]
 
   constructor(endpoints: RateLimitedEndpoint[], commitment?: Commitment) {
+    this.commitment = commitment;
     this.endpointsRequestsCounter = endpoints.map(
       (endpoint: RateLimitedEndpoint) => ({
         endpoint,
