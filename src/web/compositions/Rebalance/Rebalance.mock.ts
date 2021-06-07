@@ -96,8 +96,12 @@ export const getPoolsInfoMockData: PoolInfo[] = [
   ];
 
 export const MOKED_MINTS_MAP = {
-  '7YQoDmpwab7VcSzrzeM52aHg17NvyrbMQyQYw4ixzgvB': 'USDT',
-  'GTq626sYQzZbkxQjsrsdiFn7Ef84R35cZ5iC2CaWQuTZ': 'SRM',
-  '5EGUtk1uxJY9UXS7uFmD1vvFytG6UDG5CRPv5Y82X3Kj': 'FTT'
+  '5BBxieFRQ18CzstVfhNM9f7Wp2gn8XnGXfNubCxdTbXK': 'FTT',
+  '5PAM7RzMMwsh1p1db12dXV4pUTfqrhK83V6f7GTRgYa2': 'USDT',
+  'E2VP1wkGtLBHuFwe6RsgYSvKLwcqso7Vvujc3PDND4Ns': 'SRM',
+
+  '8gK3eoqYJn8QdAQyVe4chkpWZcGJ5q5RB8FwzevoxPoo': 'RAY',
+  'Ane7NUSf52twdPEADmcjAYRsskoBJW4rk7Hi1QX3L94T': 'OXY',
+  'BX9ynz6hW2yJ1KyrYCvKkNroDcdPFjmjtJHe3ExR69py': 'KIN',
 }
   
