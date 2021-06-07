@@ -1,8 +1,12 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import Wallet from '@project-serum/sol-wallet-adapter'
-import MathWallet from '@sb/dexUtils/MathWallet/MathWallet'
-import SolongWallet from '@sb/dexUtils/SolongWallet/SolongWallet'
-import CcaiWallet from '@sb/dexUtils/CcaiWallet/CcaiWallet'
+import {
+  SolongWalletAdapter,
+  SolletExtensionAdapter,
+  MathWalletAdapter,
+  CcaiWalletAdapter,
+  CcaiExtensionAdapter,
+} from '@sb/dexUtils/adapters'
 import { notify } from './notifications'
 import {
   useAccountInfo,
@@ -17,23 +21,57 @@ import {
   Transaction,
   TransactionInstruction,
 } from '@solana/web3.js'
-import {
-  getTokenAccountInfo,
-  MINT_LAYOUT,
-  parseTokenAccountData,
-} from './tokens'
+
 import { clusterApiUrl } from '@solana/web3.js'
 import { TokenListProvider } from '@solana/spl-token-registry'
 import { TokenInstructions } from '@project-serum/serum'
 import { useAsyncData } from './fetch-loop'
 import { getMaxWithdrawAmount } from './pools'
+import { MINT_LAYOUT, parseTokenAccountData } from './tokens'
+import Sollet from '@icons/sollet.svg'
+import Mathwallet from '@icons/mathwallet.svg'
+import Solong from '@icons/solong.svg'
+import CCAI from '@icons/ccai.svg'
+import { WalletAdapter } from './adapters'
 
 export const WALLET_PROVIDERS = [
   // { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },
-  { name: 'cryptocurrencies.ai', url: CCAIProviderURL },
-  { name: 'sollet.io', url: 'https://www.sollet.io' },
-  { name: 'mathwallet.org', url: 'https://www.mathwallet.org' },
-  { name: 'solongwallet.com', url: 'https://solongwallet.com' },
+  {
+    name: 'Wallet™',
+    url: CCAIProviderURL,
+    adapter: Wallet,
+    icon: CCAI,
+  },
+  // {
+  //   name: 'Wallet™ Extension',
+  //   url: `${CCAIProviderURL}/extension`,
+  //   adapter: CcaiExtensionAdapter,
+  //   icon: CCAI,
+  // },
+  {
+    name: 'Sollet.io',
+    url: 'https://www.sollet.io',
+    adapter: Wallet,
+    icon: Sollet,
+  },
+  {
+    name: 'Sollet Extension',
+    url: 'https://www.sollet.io/extension',
+    adapter: SolletExtensionAdapter,
+    icon: Sollet,
+  },
+  // {
+  //   name: 'MathWallet',
+  //   url: 'https://www.mathwallet.org',
+  //   adapter: MathWalletAdapter,
+  //   icon: Mathwallet,
+  // },
+  {
+    name: 'Solong',
+    url: 'https://solongwallet.com',
+    adapter: SolongWalletAdapter,
+    icon: Solong,
+  },
 ]
 
 export const TOKEN_PROGRAM_ID = new PublicKey(
@@ -70,40 +108,73 @@ const getWalletByProviderUrl = (providerUrl: string) => {
 const WalletContext = React.createContext(null)
 
 export function WalletProvider({ children }) {
-  const [connected, setConnected] = useState(false)
-  const [autoConnect, setAutoConnect] = useState(false)
-
   const { endpoint } = useConnectionConfig()
-  const [savedProviderUrl, setProviderUrl] = useLocalStorageState(
+
+  const [autoConnect, setAutoConnect] = useState(false)
+  const [providerUrl, setProviderUrl] = useLocalStorageState(
     'walletProvider',
     CCAIProviderURL
   )
 
-  let providerUrl
-  if (!savedProviderUrl) {
-    providerUrl = CCAIProviderURL
-  } else {
-    providerUrl = savedProviderUrl
-  }
+  const provider = useMemo(
+    () => WALLET_PROVIDERS.find(({ url }) => url === providerUrl),
+    [providerUrl]
+  )
+
+  // let [wallet, setWallet] = useState<WalletAdapter | undefined>(
+  //   new Wallet(providerUrl, endpoint)
+  // )
+
+  // useEffect(() => {
+  //   if (provider) {
+  //     const updateWallet = () => {
+  //       // hack to also update wallet synchronously in case it disconnects
+  //       // eslint-disable-next-line react-hooks/exhaustive-deps
+  //       wallet = new (provider.adapter || Wallet)(
+  //         providerUrl,
+  //         endpoint
+  //       ) as WalletAdapter
+  //       setWallet(wallet)
+  //     }
+
+  //     if (document.readyState !== 'complete') {
+  //       // wait to ensure that browser extensions are loaded
+  //       const listener = () => {
+  //         updateWallet()
+  //         window.removeEventListener('load', listener)
+  //       }
+  //       window.addEventListener('load', listener)
+  //       return () => window.removeEventListener('load', listener)
+  //     } else {
+  //       updateWallet()
+  //     }
+  //   }
+
+  //   return () => {}
+  // }, [provider, providerUrl, endpoint])
+
+  const [connected, setConnected] = useState(false)
 
   const wallet = useMemo(() => {
-    const WalletClass = getWalletByProviderUrl(providerUrl)
-    const wallet = new WalletClass(providerUrl, endpoint)
+    const wallet = new (provider?.adapter || Wallet)(
+      providerUrl,
+      endpoint
+    ) as WalletAdapter
 
     return wallet
-  }, [providerUrl, endpoint])
+  }, [provider, endpoint])
 
   const connectWalletHash = useMemo(() => window.location.hash, [
-    wallet.connected,
+    wallet?.connected,
   ])
 
   useEffect(() => {
     if (wallet) {
       wallet.on('connect', async () => {
-        if (wallet.publicKey) {
+        if (wallet?.publicKey) {
           console.log('connected')
           setConnected(true)
-          const walletPublicKey = wallet.publicKey.toBase58()
+          const walletPublicKey = wallet?.publicKey.toBase58()
           const keyToDisplay =
             walletPublicKey.length > 20
               ? `${walletPublicKey.substring(
@@ -150,9 +221,9 @@ export function WalletProvider({ children }) {
   }, [wallet, autoConnect])
 
   useEffect(() => {
-    if (connectWalletHash === '#connect_wallet') {
+    if (wallet && connectWalletHash === '#connect_wallet') {
       setProviderUrl(CCAIProviderURL)
-      wallet.connect()
+      wallet?.connect()
     }
   }, [wallet])
 
