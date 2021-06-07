@@ -29,15 +29,17 @@ export const getPoolsSwaps = ({
     return {
       wallet,
       connection,
+      // We need toFixed there because of FPS iee754 of js
+      // e.g. 0.00002000 * (10 ** 8) -> 2000.0000000000002, while pool expects 2000
       ...(el.side === 'sell' ? {
-        swapAmountIn: el.amount * (10 ** baseDecimals),
-        swapAmountOut: el.total * (10 ** quoteDecimals),
+        swapAmountIn: +(el.amount * (10 ** baseDecimals)).toFixed(),
+        swapAmountOut: +(el.total * (10 ** quoteDecimals)).toFixed(),
 
         swapAmountInRaw: el.amount,
         swapAmountOutRaw: el.total,
       } : {
-        swapAmountIn: el.total * (10 ** quoteDecimals),
-        swapAmountOut: el.amount * (10 ** baseDecimals),
+        swapAmountIn: +(el.total * (10 ** quoteDecimals)).toFixed(),
+        swapAmountOut: +(el.amount * (10 ** baseDecimals)).toFixed(),
 
         swapAmountInRaw: el.total,
         swapAmountOutRaw: el.amount,
