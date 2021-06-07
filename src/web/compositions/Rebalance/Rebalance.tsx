@@ -26,7 +26,12 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { PoolInfo, TokensMapType, TokenType, RebalancePopupStep } from './Rebalance.types'
+import {
+  PoolInfo,
+  TokensMapType,
+  TokenType,
+  RebalancePopupStep,
+} from './Rebalance.types'
 import RebalanceTable from './components/Tables'
 import RebalanceHeaderComponent from './components/Header'
 import DonutChartWithLegend from '@sb/components/AllocationBlock/index'
@@ -79,8 +84,9 @@ const RebalanceComposition = ({
 }) => {
   const { wallet } = useWallet()
   const [isRebalancePopupOpen, changeRebalancePopupState] = useState(false)
-  const [rebalanceStep, changeRebalanceStep] =
-    useState<RebalancePopupStep>('initial')
+  const [rebalanceStep, changeRebalanceStep] = useState<RebalancePopupStep>(
+    'initial'
+  )
 
   const connection: Connection = useConnection()
   const isWalletConnected = !!wallet?.publicKey
@@ -92,7 +98,6 @@ const RebalanceComposition = ({
   const [loadingRebalanceData, setLoadingRebalanceData] = useState(false)
 
   const [poolsInfoData, setPoolsInfoData] = useState<PoolInfo[]>([])
-
 
   const refreshRebalance = () => {
     setRefreshStateRebalance(!rebalanceState)
@@ -110,9 +115,10 @@ const RebalanceComposition = ({
 
         const tokensWithPrices = await getPricesForTokens(allTokensData)
         const tokensWithTokenValue = getTokenValuesForTokens(tokensWithPrices)
-        const sortedTokensByTokenValue =
-          getSortedTokensByValue(tokensWithTokenValue)
-          
+        const sortedTokensByTokenValue = getSortedTokensByValue(
+          tokensWithTokenValue
+        )
+
         const totalTokenValue = getTotalTokenValue(sortedTokensByTokenValue)
 
         const tokensWithPercentages = getPercentageAllocationForTokens(
@@ -163,7 +169,12 @@ const RebalanceComposition = ({
     <RowContainer
       theme={theme}
       height="100%"
-      style={{ background: theme.palette.grey.additional }}
+      style={{
+        background: theme.palette.grey.additional,
+        minWidth: '1000px',
+        overflow: 'auto',
+        minHeight: '500px',
+      }}
     >
       {!publicKey ? (
         <>
@@ -195,6 +206,7 @@ const RebalanceComposition = ({
             width={'60%'}
             margin={'0 2rem 0 0'}
             justify={'space-between'}
+            style={{ flexWrap: 'nowrap' }}
           >
             <DebouncedMemoizedRebalanceHeaderComponent
               totalTokensValue={totalTokensValue}
@@ -208,7 +220,6 @@ const RebalanceComposition = ({
               leftToDistributeValue={leftToDistributeValue}
               setLeftToDistributeValue={setLeftToDistributeValue}
               totalTokensValue={totalTokensValue}
-
               loadingRebalanceData={loadingRebalanceData}
             />
           </Row>
@@ -217,6 +228,7 @@ const RebalanceComposition = ({
             width={'35%'}
             direction="column"
             justify="space-between"
+            style={{ flexWrap: 'nowrap' }}
           >
             <RowContainer height={'calc(85% - 2rem)'}>
               <DebouncedMemoizedDonutChartWithLegend
@@ -293,7 +305,4 @@ const RebalanceComposition = ({
   )
 }
 
-export default compose(
-  withTheme(),
-  withPublicKey,
-)(RebalanceComposition)
+export default compose(withTheme(), withPublicKey)(RebalanceComposition)
