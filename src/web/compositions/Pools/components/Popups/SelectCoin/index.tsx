@@ -63,7 +63,7 @@ export const SelectCoinPopup = ({
   const [selectedMint, setSelectedMint] = useState<string>('')
   const [
     isSelectorForSeveralAddressesOpen,
-    openSelectorForSeveralAddresses,
+    setIsSelectorForSeveralAddressesOpen,
   ] = useState(false)
 
   const usersMints = needKnownMints
@@ -113,7 +113,7 @@ export const SelectCoinPopup = ({
 
                 if (isSeveralCoinsWithSameAddress) {
                   setSelectedMint(mint)
-                  openSelectorForSeveralAddresses(true)
+                  setIsSelectorForSeveralAddressesOpen(true)
                 } else {
                   selectTokenMintAddress(mint)
                 }
@@ -148,7 +148,7 @@ export const SelectCoinPopup = ({
           theme={theme}
           tokens={allTokensData.filter((el) => el.mint === selectedMint)}
           open={isSelectorForSeveralAddressesOpen}
-          close={() => openSelectorForSeveralAddresses(false)}
+          close={() => setIsSelectorForSeveralAddressesOpen(false)}
           selectTokenMintAddress={selectTokenMintAddress}
           selectTokenAddressFromSeveral={
             isBaseTokenSelecting
