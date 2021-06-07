@@ -138,11 +138,7 @@ export const CreatePoolPopup = ({
   const isQuoteTokenSOL = quoteSymbol === 'SOL'
 
   const isPoolWithSOLToken = isBaseTokenSOL || isQuoteTokenSOL
-  const solAddresses = allTokensData.filter(
-    (tokenData) => tokenData.mint === WRAPPED_SOL_MINT.toString()
-  )
 
-  const isSeveralSOLAddresses = solAddresses.length > 1
   const isNativeSOLSelected =
     allTokensData[0]?.address === userTokenAccountA ||
     allTokensData[0]?.address === userTokenAccountB
@@ -176,8 +172,6 @@ export const CreatePoolPopup = ({
     baseAmount > maxBaseAmount ||
     quoteAmount > maxQuoteAmount ||
     isNeedToLeftSomeSOL
-
-  console.log('addTokenData', allTokensData)
 
   return (
     <DialogWrapper
@@ -331,39 +325,39 @@ export const CreatePoolPopup = ({
             console.log('create pool')
             await setOperationLoading(true)
             try {
-              // result = await createTokenSwap({
-              //   wallet,
-              //   connection,
-              //   userAmountTokenA,
-              //   userAmountTokenB,
-              //   mintA: new PublicKey(baseTokenMintAddress),
-              //   mintB: new PublicKey(quoteTokenMintAddress),
-              //   userTokenAccountA: new PublicKey(userTokenAccountA),
-              //   userTokenAccountB: new PublicKey(userTokenAccountB),
-              //   transferSOLToWrapped: isPoolWithSOLToken && isNativeSOLSelected,
-              // })
-
-              const tokenSwapOwnedAccounts = await connection.getProgramAccounts(
-                TOKEN_SWAP_PROGRAM_ID,
-                'finalized'
-              )
-
-              const data = tokenSwapOwnedAccounts.map((pool) => {
-                const data = Buffer.from(pool.account.data)
-                const tokenSwapData = TokenSwapLayout.decode(data)
-                console.log('getPools: tokenSwapData:', tokenSwapData)
-
-                return {
-                  pubkey: pool.pubkey.toString(),
-                  poolToken: new PublicKey(tokenSwapData.tokenPool).toString(),
-                  tokenAccountA: new PublicKey(tokenSwapData.tokenAccountA).toString(),
-                  tokenAccountB: new PublicKey(tokenSwapData.tokenAccountB).toString(),
-                  mintA: new PublicKey(tokenSwapData.mintA).toString(),
-                  mintB: new PublicKey(tokenSwapData.mintB).toString(),
-                }
+              result = await createTokenSwap({
+                wallet,
+                connection,
+                userAmountTokenA,
+                userAmountTokenB,
+                mintA: new PublicKey(baseTokenMintAddress),
+                mintB: new PublicKey(quoteTokenMintAddress),
+                userTokenAccountA: new PublicKey(userTokenAccountA),
+                userTokenAccountB: new PublicKey(userTokenAccountB),
+                transferSOLToWrapped: isPoolWithSOLToken && isNativeSOLSelected,
               })
 
-              console.log('pools data', data)
+              // const tokenSwapOwnedAccounts = await connection.getProgramAccounts(
+              //   TOKEN_SWAP_PROGRAM_ID,
+              //   'finalized'
+              // )
+
+              // const data = tokenSwapOwnedAccounts.map((pool) => {
+              //   const data = Buffer.from(pool.account.data)
+              //   const tokenSwapData = TokenSwapLayout.decode(data)
+              //   console.log('getPools: tokenSwapData:', tokenSwapData)
+
+              //   return {
+              //     pubkey: pool.pubkey.toString(),
+              //     poolToken: new PublicKey(tokenSwapData.tokenPool).toString(),
+              //     tokenAccountA: new PublicKey(tokenSwapData.tokenAccountA).toString(),
+              //     tokenAccountB: new PublicKey(tokenSwapData.tokenAccountB).toString(),
+              //     mintA: new PublicKey(tokenSwapData.mintA).toString(),
+              //     mintB: new PublicKey(tokenSwapData.mintB).toString(),
+              //   }
+              // })
+
+              // console.log('pools data', data)
             } catch (e) {
               console.error('createTokenSwap error:', e)
             }
