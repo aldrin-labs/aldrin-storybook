@@ -38,12 +38,12 @@ export function getOwnedAccountsFilters(publicKey) {
   return [
     {
       memcmp: {
-        offset: ACCOUNT_LAYOUT.offsetOf('owner'),
+        offset: 8,
         bytes: publicKey.toBase58(),
       },
     },
     {
-      dataSize: ACCOUNT_LAYOUT.span,
+      dataSize: 258,
     },
   ];
 }

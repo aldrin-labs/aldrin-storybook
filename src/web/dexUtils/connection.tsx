@@ -11,7 +11,7 @@ export const ENDPOINTS = [
     endpoint: MAINNET_BETA_ENDPOINT,
   },
   { name: 'testnet', endpoint: clusterApiUrl('testnet') },
-  { name: 'devnet', endpoint: clusterApiUrl('devnet') },
+  { name: 'devnet', endpoint: 'https://api.devnet.solana.com' },
   { name: 'localnet', endpoint: 'http://127.0.0.1:8899' },
 ]
 const accountListenerCount = new Map()

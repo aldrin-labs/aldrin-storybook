@@ -16,7 +16,6 @@ const VestingPage = ({
 }) => {
   const { wallet } = useWallet()
 
-  const [step, changeStep] = useState('connect-wallet')
   return (
     <RowContainer height={'100%'}>
       {!publicKey ? (
