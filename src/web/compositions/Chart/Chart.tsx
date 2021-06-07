@@ -12,7 +12,6 @@ import Tour from 'reactour'
 import {
   tourConfig,
   FinishBtn,
-  notificationTourConfig,
   WrapperForNotificationTour,
 } from '@sb/components/ReactourOnboarding/ReactourOnboarding'
 // import { CardsPanel } from './components'
@@ -250,7 +249,7 @@ function ChartPageComponent(props: any) {
   const accentColor = '#09ACC7'
   return (
     <MainContainer fullscreen={false}>
-      {!isTourOpen && (
+      {/* {!isTourOpen && (
         <Tour
           className="my-helper"
           showCloseButton={false}
@@ -270,7 +269,7 @@ function ChartPageComponent(props: any) {
             localStorage.setItem('isNotificationDone', 'true')
           }}
         />
-      )}
+      )} */}
       <Tour
         showCloseButton={false}
         nextButton={<FinishBtn>Next</FinishBtn>}
