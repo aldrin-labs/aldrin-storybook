@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { withTheme } from '@material-ui/core/styles'
@@ -6,6 +6,7 @@ import { compose } from 'recompose'
 import { RowContainer } from '../AnalyticsRoute/index.styles'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { ClaimBlock } from './ClaimBlock'
+import { NotEligibleWalletBlock } from './NotEligibleWalletBlock'
 
 const VestingPage = ({
   theme,
@@ -16,7 +17,6 @@ const VestingPage = ({
 }) => {
   const { wallet } = useWallet()
 
-  const [step, changeStep] = useState('connect-wallet')
   return (
     <RowContainer height={'100%'}>
       {!publicKey ? (
@@ -40,7 +40,8 @@ const VestingPage = ({
           Connect wallet
         </BtnCustom>
       ) : (
-        <ClaimBlock theme={theme} />
+        // <NotEligibleWalletBlock theme={theme} />
+        <ClaimBlock wallet={wallet} theme={theme} />
       )}
     </RowContainer>
   )
