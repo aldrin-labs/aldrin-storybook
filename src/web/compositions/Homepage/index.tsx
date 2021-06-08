@@ -278,13 +278,13 @@ export const Homepage = () => {
           <WhiteButton
             style={{
               position: 'absolute',
-              right: '16rem',
-              bottom: '8rem',
+              right: '5rem',
+              bottom: '4rem',
               height: '7rem',
               fontSize: '2.7rem',
               borderRadius: '2.4rem',
             }}
-            width={'41rem'}
+            width={'26rem'}
             padding={'0 3rem'}
             needHover={true}
             href={`https://ccai.cryptocurrencies.ai/`}
@@ -307,13 +307,13 @@ export const Homepage = () => {
         <CardContainer height={'auto'} style={{ margin: '4rem 0' }}>
           <SvgIcon src={smallCandies} width={'100%'} height={'100%'} />
           <HeaderContainer style={{ height: '86%', width: '66%' }}>
-            <Header fontSize={'10rem'} style={{ lineHeight: 'auto' }}>
+            <Header fontSize={'6rem'} style={{ lineHeight: 'auto' }}>
               DEX
             </Header>
             <Description
-              fontSize={'3.6rem'}
+              fontSize={'2.6rem'}
               width={'100%'}
-              style={{ lineHeight: '6rem', fontSize: '3.6rem' }}
+              style={{ lineHeight: '6rem', fontSize: '2.6rem' }}
             >
               One of the fastest DEXs in the world, built on the Serum and
               Solana technology. User-friendly DeFi experience with low fees.
@@ -323,13 +323,13 @@ export const Homepage = () => {
         <CardContainer height={'auto'} style={{ margin: '4rem 0' }}>
           <SvgIcon src={smallWalletCard} width={'100%'} height={'100%'} />
           <HeaderContainer style={{ height: '86%', width: '66%' }}>
-            <Header fontSize={'10rem'} style={{ lineHeight: 'auto' }}>
+            <Header fontSize={'6rem'} style={{ lineHeight: 'auto' }}>
               Wallet{' '}
             </Header>
             <Description
-              fontSize={'3.6rem'}
+              fontSize={'2.6rem'}
               width={'100%'}
-              style={{ lineHeight: '6rem', fontSize: '3.6rem' }}
+              style={{ lineHeight: '6rem', fontSize: '2.6rem' }}
             >
               Hold and trade the top cryptocurrencies on{' '}
               <strong>CCAI  Wallet™</strong>.
@@ -339,13 +339,13 @@ export const Homepage = () => {
         <CardContainer height={'auto'} style={{ margin: '4rem 0' }}>
           <SvgIcon src={smallChartCard} width={'100%'} height={'100%'} />
           <HeaderContainer style={{ height: '86%', width: '66%' }}>
-            <Header fontSize={'10rem'} style={{ lineHeight: 'auto' }}>
+            <Header fontSize={'6rem'} style={{ lineHeight: 'auto' }}>
               Analytics{' '}
             </Header>
             <Description
-              fontSize={'3.6rem'}
+              fontSize={'2.6rem'}
               width={'100%'}
-              style={{ lineHeight: '6rem', fontSize: '3.6rem' }}
+              style={{ lineHeight: '6rem', fontSize: '2.6rem' }}
             >
               Transparent analysis of all markets on Serum in simple charts.
             </Description>
@@ -354,13 +354,13 @@ export const Homepage = () => {
         <CardContainer height={'auto'} style={{ margin: '4rem 0' }}>
           <SvgIcon src={smallSwapsCard} width={'100%'} height={'100%'} />
           <HeaderContainer style={{ height: '86%', width: '66%' }}>
-            <Header fontSize={'10rem'} style={{ lineHeight: 'auto' }}>
+            <Header fontSize={'6rem'} style={{ lineHeight: 'auto' }}>
               Swap{' '}
             </Header>
             <Description
-              fontSize={'3.6rem'}
+              fontSize={'2.6rem'}
               width={'100%'}
-              style={{ lineHeight: '6rem', fontSize: '3.6rem' }}
+              style={{ lineHeight: '6rem', fontSize: '2.6rem' }}
             >
               Low-fee and instant Swaps. Made possible by Solana.{' '}
             </Description>
@@ -369,13 +369,13 @@ export const Homepage = () => {
         <CardContainer height={'auto'} style={{ margin: '4rem 0' }}>
           <SvgIcon src={smallSwapsCard} width={'100%'} height={'100%'} />
           <HeaderContainer style={{ height: '86%', width: '66%' }}>
-            <Header fontSize={'10rem'} style={{ lineHeight: 'auto' }}>
+            <Header fontSize={'6rem'} style={{ lineHeight: 'auto' }}>
               Pools{' '}
             </Header>
             <Description
-              fontSize={'3.6rem'}
+              fontSize={'2.6rem'}
               width={'100%'}
-              style={{ lineHeight: '6rem', fontSize: '3.6rem' }}
+              style={{ lineHeight: '6rem', fontSize: '2.6rem' }}
             >
               Provide liquidity and earn a fees.{' '}
             </Description>
