@@ -75,12 +75,8 @@ export const RebalancePopup = ({
 
   const poolsInfoProcessed = getPoolsInfo.map((el, i) => {
     return {
-      // TODO: Check that place
-
-      // symbol: el.name,
       symbol: `${ALL_TOKENS_MINTS_MAP[el.tokenA] || MOCKED_MINTS_MAP[el.tokenA] || el.tokenA}_${ALL_TOKENS_MINTS_MAP[el.tokenB] || MOCKED_MINTS_MAP[el.tokenB] || el.tokenB}`,
       slippage: getRandomInt(3, 3),
-      // slippage: 0,
       price: el.tvl.tokenB / el.tvl.tokenA,
       tokenA: el.tvl.tokenA,
       tokenB: el.tvl.tokenB,
