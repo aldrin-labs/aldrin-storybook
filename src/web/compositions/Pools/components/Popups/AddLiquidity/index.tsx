@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { Theme } from '@material-ui/core'
@@ -51,7 +51,16 @@ export const AddLiquidityPopup = ({
   const { wallet } = useWallet()
   const connection = useConnection()
 
-  const [baseTokenMintAddress, setBaseTokenMintAddress] = useState<string>('')
+  // if user has more than one token for one mint
+  const [
+    selectedBaseTokenAddressFromSeveral,
+    setBaseTokenAddressFromSeveral,
+  ] = useState<string>('')
+  const [
+    selectedQuoteTokenAddressFromSeveral,
+    setQuoteTokenAddressFromSeveral,
+  ] = useState<string>('')
+
   const [baseAmount, setBaseAmount] = useState<string | number>('')
   const setBaseAmountWithQuote = (baseAmount: string | number) => {
     const quoteAmount = stripDigitPlaces(
@@ -62,7 +71,6 @@ export const AddLiquidityPopup = ({
     setQuoteAmount(quoteAmount)
   }
 
-  const [quoteTokenMintAddress, setQuoteTokenMintAddress] = useState<string>('')
   const [quoteAmount, setQuoteAmount] = useState<string | number>('')
   const setQuoteAmountWithBase = (quoteAmount: string | number) => {
     const baseAmount = stripDigitPlaces(
@@ -73,8 +81,14 @@ export const AddLiquidityPopup = ({
     setQuoteAmount(quoteAmount)
   }
 
-  const [isSelectorForSeveralBaseAddressesOpen, setIsSelectorForSeveralBaseAddressesOpen] = useState(false)
-  const [isSelectorForSeveralQuoteAddressesOpen, setIsSelectorForSeveralQuoteAddressesOpen] = useState(false)
+  const [
+    isSelectorForSeveralBaseAddressesOpen,
+    setIsSelectorForSeveralBaseAddressesOpen,
+  ] = useState(false)
+  const [
+    isSelectorForSeveralQuoteAddressesOpen,
+    setIsSelectorForSeveralQuoteAddressesOpen,
+  ] = useState(false)
 
   const [warningChecked, setWarningChecked] = useState(false)
   const [operationLoading, setOperationLoading] = useState(false)
@@ -127,6 +141,17 @@ export const AddLiquidityPopup = ({
     selectedPool,
     poolTokenAmount,
   })
+
+  useEffect(() => {
+    const isSeveralBaseAddresses =
+      allTokensData.filter((el) => el.mint === selectedPool.tokenA).length > 1
+
+    const isSeveralQuoteAddresses =
+      allTokensData.filter((el) => el.mint === selectedPool.tokenB).length > 1
+
+    setIsSelectorForSeveralBaseAddressesOpen(isSeveralBaseAddresses)
+    setIsSelectorForSeveralQuoteAddressesOpen(isSeveralQuoteAddresses)
+  }, [])
 
   const isDisabled =
     !warningChecked ||
@@ -348,14 +373,18 @@ export const AddLiquidityPopup = ({
       <SelectSeveralAddressesPopup
         theme={theme}
         tokens={allTokensData.filter((el) => el.mint === selectedPool.tokenA)}
-        open={isSelectorForSeveralAddressesOpen}
-        close={() => setIsSelectorForSeveralAddressesOpen(false)}
+        open={isSelectorForSeveralBaseAddressesOpen}
+        close={() => setIsSelectorForSeveralBaseAddressesOpen(false)}
         selectTokenMintAddress={() => {}}
-        selectTokenAddressFromSeveral={
-          isBaseTokenSelecting
-            ? setBaseTokenMintAddress
-            : setQuoteTokenMintAddress
-        }
+        selectTokenAddressFromSeveral={setBaseTokenAddressFromSeveral}
+      />
+      <SelectSeveralAddressesPopup
+        theme={theme}
+        tokens={allTokensData.filter((el) => el.mint === selectedPool.tokenB)}
+        open={isSelectorForSeveralQuoteAddressesOpen}
+        close={() => setIsSelectorForSeveralQuoteAddressesOpen(false)}
+        selectTokenMintAddress={() => {}}
+        selectTokenAddressFromSeveral={setQuoteTokenAddressFromSeveral}
       />
     </DialogWrapper>
   )
