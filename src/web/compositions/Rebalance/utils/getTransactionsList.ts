@@ -21,29 +21,16 @@ export const getTransactionsList = ({
 
   const tokensToSell = tokensDiff
     .filter((el) => el.amountDiff < 0)
-    .filter((el) => el.symbol !== 'USDT')
+    .map(el => ({ ...el, tokenValue: +(el.price * Math.abs(el.amountDiff)).toFixed(el.decimalCount), isSold: false }))
+    .sort((a,b) => a.tokenValue - b.tokenValue)
   const tokensToBuy = tokensDiff
   .filter((el) => el.amountDiff > 0)
   .map(el => ({ ...el, tokenValue: +(el.price * el.amountDiff).toFixed(el.decimalCount) }))
-  .sort((a,b) => a.tokenValue - b.tokenValue)
+  .sort((a,b) => b.tokenValue - a.tokenValue)
 
   if (!tokensToSell || !tokensToBuy) {
-    return
+    return []
   }
-
-  const tokensToSellMap = tokensToSell.reduce((acc, el) => {
-    acc[el.symbol] = el
-
-    return acc
-  }, {})
-
-
-  // console.log('tokensToSellMap: ', tokensToSellMap)
-  // console.log('tokensToSell: ', tokensToSell)
-  // console.log('tokensToBuy: ', tokensToBuy)
-
-  let transactionsToSell: TransactionType[] = []
-  let transactionsToBuy: TransactionType[] = []
 
   const poolsInfoMap = poolsInfo.reduce(
     (acc: { [cacheKey: string]: PoolInfoElement }, el) => {
@@ -54,11 +41,8 @@ export const getTransactionsList = ({
     {}
   )
 
-  const expectedTotalUSDT = tokensToBuy.reduce((acc: number, el) => acc + el.tokenValue, 0)
-  const containsUSDT = tokensDiff.find(el => el.symbol === 'USDT' && el.amountDiff < 0)
-  let realTotalUSDT = containsUSDT ? Math.abs(containsUSDT.amountDiff) : 0
+  let allTransactions: TransactionType[] = []
 
-  // Creating graph with pools
   const poolsGraph = new Graph()
   poolsInfo.forEach(el => {
     const [base, quote] = el.symbol.split('_')
@@ -67,162 +51,86 @@ export const getTransactionsList = ({
     poolsGraph.addEdge(quote, base)
   })
 
-
-  const pathToSell = tokensToSell.map((el) => {
-    const path = poolsGraph.shortestPath(el.symbol, 'USDT')
-    // console.log('graph path: ', path)
-
-    return path
-  })
-
-  const pathToBuy = tokensToBuy
-  .map((el) => {
-    const path = poolsGraph.shortestPath('USDT', el.symbol)
-    return path
-  })
-
-  pathToSell.forEach((pathElement: any) => {
-    let tempToken = { amount: 0 }
-
-    pathElement.forEach((pathSymbol: string, index: number, arr: string[]) => {
-      const nextElement = arr[index +1]
-
-      // We ended with finding transactions for this path
-      if (!nextElement) {
-        return
+  let i = 0;
+  tokensToSell.forEach(elSell => {
+    while (elSell.isSold === false) {
+      const elBuy = tokensToBuy[i]
+      if (!elBuy) {
+        break;
       }
 
-      const poolPair = poolsInfoMap[`${pathSymbol}_${nextElement}`] || poolsInfoMap[`${nextElement}_${pathSymbol}`] // FTT_SOL || SOL_FTT
-      const [base, quote] = poolPair.symbol.split('_')
+      const pathElement = poolsGraph.shortestPath(elSell.symbol, elBuy.symbol) // FTT, USDT || SOL, SRM, USDT, KIN
 
-      const side = base === pathSymbol ? 'sell' : 'buy'
-      // const price = tokensMap[base].price / tokensMap[quote].price
-      const price = poolPair.price
+      // Checking that we want to sell full amount of coin or only part of it
+      const diffBuySell = elSell.tokenValue - elBuy.tokenValue
+      let toSellTokenAmount = 0
 
-      // Handling case with intermidiate pair inside path
-      const pathInString = pathElement.join('_')
-      const isIntermidiate = pathInString.match(`_${pathSymbol}_`)
-
-      const tokenAmount = isIntermidiate ? tempToken.amount : Math.abs(tokensToSellMap[pathSymbol].amountDiff)
-      const slippageMultiplicator = (100 - poolsInfoMap[poolPair.symbol].slippage) / 100
-      const feeMultiplicator = (100 - REBALANCE_CONFIG.POOL_FEE) / 100
-
-      const moduleAmountDiff = tokenAmount
-      const amount = +((base === pathSymbol ? moduleAmountDiff : moduleAmountDiff / price) * (side === 'buy' ? slippageMultiplicator : 1) )
-      .toFixed(tokensMap[base].decimalCount)
-
-      const amountRaw = +((base === pathSymbol ? moduleAmountDiff : moduleAmountDiff / price))
-      .toFixed(tokensMap[base].decimalCount)
-      
-      const total = +(amountRaw * price * (side === 'sell' ? slippageMultiplicator : 1))
-      .toFixed(tokensMap[quote].decimalCount)
-
-      tempToken.amount = (base === pathSymbol ? total : amount) * feeMultiplicator
-
-      if (nextElement === 'USDT') {
-        realTotalUSDT = realTotalUSDT + (base === pathSymbol ? total : amount) * feeMultiplicator
+      // Configuring amount to sell
+      if (diffBuySell > 0) {
+        // if sell token is more than buy token
+        toSellTokenAmount = +(elBuy.tokenValue / elSell.price).toFixed(tokensMap[elSell.symbol].decimalCount)
+        // buy should go out
+        i++;
+      } else {
+        // if sell token less than buy token
+        toSellTokenAmount = Math.abs(elSell.amountDiff)
+        // sell should go out
+        elSell.isSold = true
       }
 
-      transactionsToSell.push({
-        ...poolsInfoMap[poolPair.symbol],
-        amount: amount,
-        total: total, 
-        side,
 
-        feeUSD: poolsInfoMap[poolPair.symbol].slippage / 100 * moduleAmountDiff * tokensMap[pathSymbol].price,
+      let tempToken = { amount: 0 }
+      pathElement?.forEach((pathSymbol: string, index: number, arr: string[]) => {
+        const nextElement = arr[index +1]
+
+        // We ended with finding transactions for this path
+        if (!nextElement) {
+          return
+        }
+
+        const poolPair = poolsInfoMap[`${pathSymbol}_${nextElement}`] || poolsInfoMap[`${nextElement}_${pathSymbol}`] // FTT_SOL || SOL_FTT
+        // console.log('poolPair: ', poolPair)
+        const [base, quote] = poolPair.symbol.split('_')
+
+        const side = base === pathSymbol ? 'sell' : 'buy'
+        // const price = tokensMap[base].price / tokensMap[quote].price
+        const price = poolPair.price
+  
+        // Handling case with intermidiate pair inside path
+        const pathInString = pathElement.join('_')
+        const isIntermidiate = pathInString.match(`_${pathSymbol}_`)
+  
+        const tokenAmount = isIntermidiate ? tempToken.amount : toSellTokenAmount
+        const slippageMultiplicator = (100 - poolsInfoMap[poolPair.symbol].slippage) / 100
+        const feeMultiplicator = (100 - REBALANCE_CONFIG.POOL_FEE) / 100
+  
+        const moduleAmountDiff = tokenAmount
+        const amount = +((base === pathSymbol ? moduleAmountDiff : moduleAmountDiff / price) * (side === 'buy' ? slippageMultiplicator : 1) )
+        .toFixed(tokensMap[base].decimalCount)
+  
+        const amountRaw = +((base === pathSymbol ? moduleAmountDiff : moduleAmountDiff / price))
+        .toFixed(tokensMap[base].decimalCount)
+        
+        const total = +(amountRaw * price * (side === 'sell' ? slippageMultiplicator : 1))
+        .toFixed(tokensMap[quote].decimalCount)
+  
+        tempToken.amount = (base === pathSymbol ? total : amount) * feeMultiplicator
+  
+        allTransactions.push({
+          ...poolsInfoMap[poolPair.symbol],
+          amount: amount,
+          total: total, 
+          side,
+
+          // TODO: Fix feeUSD
+          feeUSD: poolsInfoMap[poolPair.symbol].slippage / 100 * moduleAmountDiff * tokensMap[pathSymbol].price,
+        })
+
       })
 
-    });
 
-  })
-
-
-  // console.log('realTotalUSDT: ', realTotalUSDT)
-  // console.log('pathToBuy: ', pathToBuy)
-
-  const tokensToBuyWhichRespectsTotalUSDT = tokensToBuy.map(el => {
-  const amount = el.amountDiff * realTotalUSDT / expectedTotalUSDT
-  const total = amount * el.price
-
-    return {...el, tokenValueDiff: total, amountDiff: amount}
-  })
-
-  const tokensToBuyWhichRespectsTotalUSDTMap = tokensToBuyWhichRespectsTotalUSDT.reduce((acc, el) => {
-    acc[el.symbol] = el
-
-    return acc
-  }, {})
-
-  // console.log('tokensToBuyWhichRespectsTotalUSDTMap: ', tokensToBuyWhichRespectsTotalUSDTMap)
-  // console.log('pathToBuy: ', pathToBuy)
-
-  pathToBuy.forEach((pathElement: any) => {
-    const destinationToken = pathElement[pathElement.length - 1]
-    let tempToken = { amount: tokensToBuyWhichRespectsTotalUSDTMap[destinationToken].tokenValueDiff }
-
-
-    // Handling case with USDT_USDT
-    if (pathElement.length === 2 && pathElement[0] === pathElement[1] && pathElement[0] === 'USDT') {
-      return
     }
-
-
-    pathElement.forEach((pathSymbol: string, index: number, arr: string[]) => {
-      const nextElement = arr[index +1]
-
-      // We ended with finding transactions for this path
-      if (!nextElement) {
-        return
-      }
-
-      const poolPair = poolsInfoMap[`${pathSymbol}_${nextElement}`] || poolsInfoMap[`${nextElement}_${pathSymbol}`] 
-      // console.log('poolPair: ', poolPair)
-      const [base, quote] = poolPair.symbol.split('_') // 
-
-      const side = base === pathSymbol ? 'sell' : 'buy'
-      // const price = tokensMap[base].price / tokensMap[quote].price
-      const price = poolPair.price
-
-      // Handling case with intermidiate pair inside path
-      const pathInString = pathElement.join('_')
-      const isIntermidiate = pathInString.match(`_${pathSymbol}_`) || index === 0
-
-      const tokenAmount = isIntermidiate ? tempToken.amount : Math.abs(tokensToBuyWhichRespectsTotalUSDTMap[pathSymbol].amountDiff)
-
-      const slippageMultiplicator = (100 - poolsInfoMap[poolPair.symbol].slippage) / 100
-      const feeMultiplicator = (100 - REBALANCE_CONFIG.POOL_FEE) / 100
-
-      const moduleAmountDiff = tokenAmount
-      const amount = +((base === pathSymbol ? moduleAmountDiff : moduleAmountDiff / price) * (side === 'buy' ? slippageMultiplicator : 1) )
-      .toFixed(tokensMap[base].decimalCount)
-
-      const amountRaw = +((base === pathSymbol ? moduleAmountDiff : moduleAmountDiff / price))
-      .toFixed(tokensMap[base].decimalCount)
-
-      const total = +(amountRaw * price * (side === 'sell' ? slippageMultiplicator : 1))
-      .toFixed(tokensMap[quote].decimalCount)
-
-      tempToken.amount = (base === pathSymbol ? total : amount) * feeMultiplicator
-
-      if (nextElement === 'USDT') {
-        realTotalUSDT = realTotalUSDT - total * feeMultiplicator
-      }
-
-      transactionsToBuy.push({
-        ...poolsInfoMap[poolPair.symbol],
-        amount: amount,
-        total: total, 
-        side,
-
-        feeUSD: poolsInfoMap[poolPair.symbol].slippage / 100 * moduleAmountDiff * tokensMap[pathSymbol].price,
-      })
-
-    });
-
   })
 
-  // console.log('transactionsToSell: ', transactionsToSell)
-  // console.log('transactionsToBuy: ', transactionsToBuy)
-
-  return [...transactionsToSell, ...transactionsToBuy]
+  return [...allTransactions]
 }
