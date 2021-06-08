@@ -5,6 +5,19 @@ import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 export const MainContainer = styled.div`
   width: 100%;
   height: 100%;
+
+  @media only screen and (max-width: 600px) {
+    display: none;
+  }
+`
+export const MainContainerForSmallScreens = styled.div`
+  width: 100%;
+  height: 100%;
+  display: none;
+
+  @media only screen and (max-width: 600px) {
+    display: block;
+  }
 `
 export const IdoBtn = styled.button`
   background-image: linear-gradient(
