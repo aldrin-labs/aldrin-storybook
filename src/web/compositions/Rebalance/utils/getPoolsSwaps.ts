@@ -35,23 +35,20 @@ export const getPoolsSwaps = ({
         swapAmountIn: +(el.amount * (10 ** baseDecimals)).toFixed(),
         swapAmountOut: +(el.total * (10 ** quoteDecimals)).toFixed(),
 
-        swapAmountInRaw: el.amount,
-        swapAmountOutRaw: el.total,
+        // swapAmountInRaw: el.amount,
+        // swapAmountOutRaw: el.total,
       } : {
         swapAmountIn: +(el.total * (10 ** quoteDecimals)).toFixed(),
         swapAmountOut: +(el.amount * (10 ** baseDecimals)).toFixed(),
 
-        swapAmountInRaw: el.total,
-        swapAmountOutRaw: el.amount,
+        // swapAmountInRaw: el.total,
+        // swapAmountOutRaw: el.amount,
       }),
-
       tokenSwapPublicKey: new PublicKey(el.tokenSwapPublicKey),
       userTokenAccountA: new PublicKey(baseAddress),
       userTokenAccountB: new PublicKey(quoteAddress),
 
       tokenSwapPublicKeyRaw: el.tokenSwapPublicKey,
-      userTokenAccountARaw: tokensMap[base].address,
-      userTokenAccountBRaw: tokensMap[quote].address,
       baseSwapToken: baseSwapToken,
     }
   })
