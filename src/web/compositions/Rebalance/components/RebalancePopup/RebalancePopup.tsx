@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Theme } from '@material-ui/core'
-import { Connection, Transaction } from '@solana/web3.js'
+import { Connection, PublicKey, Transaction } from '@solana/web3.js'
 
 import { swap } from '@sb/dexUtils/pools'
 
@@ -24,7 +24,8 @@ import { WalletAdapter } from '@sb/dexUtils/types'
 import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/send-and-confirm-transaction-via-wallet'
 import { StyledPaper } from './styles'
 
-import { MOKED_MINTS_MAP } from '@sb/compositions/Rebalance/Rebalance.mock'
+import { MOCKED_MINTS_MAP } from '@sb/compositions/Rebalance/Rebalance.mock'
+import { ALL_TOKENS_MINTS_MAP } from '@sb/dexUtils/markets'
 import { getPoolsSwaps, getTransactionsList } from '@sb/compositions/Rebalance/utils'
 import { TransactionComponent } from './TransactionComponent'
 import { PopupFooter } from './PopupFooter'
@@ -77,7 +78,7 @@ export const RebalancePopup = ({
       // TODO: Check that place
 
       // symbol: el.name,
-      symbol: `${MOKED_MINTS_MAP[el.tokenA]}_${MOKED_MINTS_MAP[el.tokenB]}`,
+      symbol: `${ALL_TOKENS_MINTS_MAP[el.tokenA] || MOCKED_MINTS_MAP[el.tokenA] || el.tokenA}_${ALL_TOKENS_MINTS_MAP[el.tokenB] || MOCKED_MINTS_MAP[el.tokenB] || el.tokenB}`,
       slippage: getRandomInt(3, 3),
       // slippage: 0,
       price: el.tvl.tokenB / el.tvl.tokenA,
@@ -179,25 +180,17 @@ export const RebalancePopup = ({
 
                   try {
                     const swaps = getPoolsSwaps({ wallet, connection, transactionsList: rebalanceTransactionsList, tokensMap })
-                    console.log('swaps: ', swaps)
                     setPendingStateText('Creating swaps...')
                     const promisedSwaps = await Promise.all(swaps.map(el => swap(el)))
-                    // console.log('promisedSwaps: ', promisedSwaps)
                     const swapsTransactions = promisedSwaps.map(el => el[0])
-                    // console.log('swapsTransactions: ', swapsTransactions)
-                    const swapsSigns = promisedSwaps.map(el => el[1])
-                    // console.log('swapsSigns: ', swapsSigns)
-  
-  
                     setPendingStateText('Creating transaction...')
-                    const commonTransaction = new Transaction().add(...swapsTransactions)
-                    // console.log('commonTransaction: ', commonTransaction)
-  
+                    const commonTransaction = new Transaction().add(...swapsTransactions)  
                     setPendingStateText('Awaitng for Rebalance confirmation...')
-                    await sendAndConfirmTransactionViaWallet(wallet, connection, commonTransaction, ...[...swapsSigns])
+                    await sendAndConfirmTransactionViaWallet(wallet, connection, commonTransaction)
                     changeRebalanceStep('done')
 
 
+                    // After all completed
                     setLoadingRebalanceData(true)
                     setTimeout(() => {
                       refreshRebalance()
