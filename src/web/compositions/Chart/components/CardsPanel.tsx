@@ -35,7 +35,7 @@ import { ENDPOINTS, useConnectionConfig } from '@sb/dexUtils/connection'
 import { Line } from '@sb/compositions/AnalyticsRoute/index.styles'
 import styled from 'styled-components'
 import OvalSelector from '@sb/components/OvalSelector'
-import SerumCCAILogo from '@icons/serumCCAILogo.svg'
+import SerumCCAILogo from '@icons/new-ccai-logo.svg'
 import LightLogo from '@icons/lightLogo.svg'
 import SvgIcon from '@sb/components/SvgIcon'
 
@@ -148,7 +148,9 @@ export const CardsPanel = ({ theme }) => {
               height: '100%',
             }}
           >
-            <img
+            <SvgIcon
+              width={'auto'}
+              height={'100%'}
               style={{
                 height: '100%',
               }}
