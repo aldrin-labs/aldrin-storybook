@@ -37,13 +37,22 @@ import RebalanceHeaderComponent from './components/Header'
 import DonutChartWithLegend from '@sb/components/AllocationBlock/index'
 import BalanceDistributedComponent from './components/BalanceDistributed'
 import { RebalancePopup } from './components/RebalancePopup/RebalancePopup'
+import {
+  fixedColors,
+  fixedColorsForLegend,
+  getRandomBlueColor,
+} from '@sb/components/AllocationBlock/DonutChart/utils'
 
 import { getPoolsInfoMockData } from './Rebalance.mock'
 
 const MemoizedDonutChartWithLegend = React.memo(
   DonutChartWithLegend,
   (prevProps, nextProps) => {
-    return isEqual(prevProps.data, nextProps.data)
+    return (
+      isEqual(prevProps.data, nextProps.data) &&
+      isEqual(prevProps.colors, nextProps.colors) &&
+      isEqual(prevProps.colorsForLegend, nextProps.colorsForLegend)
+    )
   }
 )
 
@@ -99,6 +108,31 @@ const RebalanceComposition = ({
 
   const [poolsInfoData, setPoolsInfoData] = useState<PoolInfo[]>([])
 
+  const [colors, setColors] = useState([])
+  const [colorsForLegend, setColorsForLegend] = useState([])
+
+  const currentData = Object.values(tokensMap)
+    .map((el) => ({
+      symbol: el.symbol,
+      value: el.percentage,
+    }))
+    .sort((a, b) => b.value - a.value)
+
+  const targetData = Object.values(tokensMap)
+    .map((el) => ({
+      symbol: el.symbol,
+      value: el.targetPercentage,
+    }))
+    .sort((a, b) => b.value - a.value)
+
+  console.log(
+    'targetData',
+    targetData,
+    targetData.map(
+      (el) => colors.find((item) => item.symbol === el.symbol)?.color
+    )
+  )
+
   const refreshRebalance = () => {
     setRefreshStateRebalance(!rebalanceState)
   }
@@ -142,6 +176,33 @@ const RebalanceComposition = ({
         const availableTokensForRebalanceMap = getTokensMap(
           availableTokensForRebalance
         )
+
+        const currentTargetData = Object.values(
+          availableTokensForRebalanceMap
+        ).map((el) => ({
+          symbol: el.symbol,
+          value: el.percentage,
+        }))
+
+        const generatedColors = currentTargetData.map((el, i) => ({
+          symbol: el.symbol,
+          color: i < fixedColors.length ? fixedColors[i] : getRandomBlueColor(),
+        }))
+
+        const generatedColorsForLegend = currentTargetData.map((el, i) => ({
+          symbol: el.symbol,
+          color:
+            i < fixedColorsForLegend.length
+              ? fixedColorsForLegend[i]
+              : getRandomBlueColor(),
+        }))
+        console.log(
+          'currentTargetData',
+          generatedColors,
+          generatedColorsForLegend
+        )
+        setColors(generatedColors)
+        setColorsForLegend(generatedColorsForLegend)
 
         // console.log(
         //   'availableTokensForRebalanceMap: ',
@@ -232,17 +293,22 @@ const RebalanceComposition = ({
           >
             <RowContainer height={'calc(85% - 2rem)'}>
               <DebouncedMemoizedDonutChartWithLegend
-                data={Object.values(tokensMap).map((el) => ({
-                  symbol: el.symbol,
-                  value: el.percentage,
-                }))}
+                data={currentData}
+                colors={colors.map((el) => el.color)}
+                colorsForLegend={colorsForLegend.map((el) => el.color)}
                 id={'current'}
               />
               <DebouncedMemoizedDonutChartWithLegend
-                data={Object.values(tokensMap).map((el) => ({
-                  symbol: el.symbol,
-                  value: el.targetPercentage,
-                }))}
+                data={targetData}
+                colors={targetData.map(
+                  (el) =>
+                    colors.find((item) => item.symbol === el.symbol)?.color
+                )}
+                colorsForLegend={targetData.map(
+                  (el) =>
+                    colorsForLegend.find((item) => item.symbol === el.symbol)
+                      ?.color
+                )}
                 id={'target'}
               />
             </RowContainer>
