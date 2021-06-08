@@ -26,10 +26,13 @@ import { StyledPaper } from './styles'
 
 import { MOCKED_MINTS_MAP } from '@sb/compositions/Rebalance/Rebalance.mock'
 import { ALL_TOKENS_MINTS_MAP } from '@sb/dexUtils/markets'
-import { getPoolsSwaps, getTransactionsList } from '@sb/compositions/Rebalance/utils'
+import {
+  getPoolsSwaps,
+  getTransactionsList,
+} from '@sb/compositions/Rebalance/utils'
 import { TransactionComponent } from './TransactionComponent'
 import { PopupFooter } from './PopupFooter'
-
+import { ReloadTimer } from '../ReloadTimer'
 
 export const RebalancePopup = ({
   rebalanceStep,
@@ -50,13 +53,12 @@ export const RebalancePopup = ({
   open: boolean
   close: () => void
   tokensMap: { [key: string]: TokenType }
-  getPoolsInfo: PoolInfo[],
-  wallet: WalletAdapter,
-  connection: Connection,
-  refreshRebalance: () => void,
+  getPoolsInfo: PoolInfo[]
+  wallet: WalletAdapter
+  connection: Connection
+  refreshRebalance: () => void
   setLoadingRebalanceData: (loadingState: boolean) => void
 }) => {
-
   const [pendingStateText, setPendingStateText] = useState('Pending')
 
   const tokensDiff: {
@@ -75,7 +77,11 @@ export const RebalancePopup = ({
 
   const poolsInfoProcessed = getPoolsInfo.map((el, i) => {
     return {
-      symbol: `${ALL_TOKENS_MINTS_MAP[el.tokenA] || MOCKED_MINTS_MAP[el.tokenA] || el.tokenA}_${ALL_TOKENS_MINTS_MAP[el.tokenB] || MOCKED_MINTS_MAP[el.tokenB] || el.tokenB}`,
+      symbol: `${ALL_TOKENS_MINTS_MAP[el.tokenA] ||
+        MOCKED_MINTS_MAP[el.tokenA] ||
+        el.tokenA}_${ALL_TOKENS_MINTS_MAP[el.tokenB] ||
+        MOCKED_MINTS_MAP[el.tokenB] ||
+        el.tokenB}`,
       slippage: getRandomInt(3, 3),
       price: el.tvl.tokenB / el.tvl.tokenA,
       tokenA: el.tvl.tokenA,
@@ -115,11 +121,14 @@ export const RebalancePopup = ({
         }}
       >
         <BoldHeader>Rebalance</BoldHeader>
-        <SvgIcon
-          style={{ cursor: 'pointer' }}
-          onClick={() => close()}
-          src={Close}
-        />
+        <Row style={{ flexWrap: 'nowrap' }}>
+          <ReloadTimer callback={() => {}} />
+          <SvgIcon
+            style={{ cursor: 'pointer' }}
+            onClick={() => close()}
+            src={Close}
+          />
+        </Row>
       </RowContainer>
       <RowContainer style={{ maxHeight: '40rem', overflowY: 'scroll' }}>
         {rebalanceTransactionsList.map((el) => (
@@ -144,7 +153,7 @@ export const RebalancePopup = ({
             <RowContainer justify={'space-between'}>
               <BtnCustom
                 theme={theme}
-                onClick={() => { 
+                onClick={() => {
                   close()
                   changeRebalanceStep('initial')
                 }}
@@ -169,33 +178,43 @@ export const RebalancePopup = ({
                 onClick={async () => {
                   changeRebalanceStep('pending')
 
-
                   // TODO:
                   // 1. We need to refresh pools info each time before click
                   // 2. We need to refresh popup each interval (e.g. 10 seconds)
 
                   try {
-                    const swaps = getPoolsSwaps({ wallet, connection, transactionsList: rebalanceTransactionsList, tokensMap })
+                    const swaps = getPoolsSwaps({
+                      wallet,
+                      connection,
+                      transactionsList: rebalanceTransactionsList,
+                      tokensMap,
+                    })
                     setPendingStateText('Creating swaps...')
-                    const promisedSwaps = await Promise.all(swaps.map(el => swap(el)))
-                    const swapsTransactions = promisedSwaps.map(el => el[0])
+                    const promisedSwaps = await Promise.all(
+                      swaps.map((el) => swap(el))
+                    )
+                    const swapsTransactions = promisedSwaps.map((el) => el[0])
                     setPendingStateText('Creating transaction...')
-                    const commonTransaction = new Transaction().add(...swapsTransactions)  
+                    const commonTransaction = new Transaction().add(
+                      ...swapsTransactions
+                    )
                     setPendingStateText('Awaitng for Rebalance confirmation...')
-                    await sendAndConfirmTransactionViaWallet(wallet, connection, commonTransaction)
-                    
+                    await sendAndConfirmTransactionViaWallet(
+                      wallet,
+                      connection,
+                      commonTransaction
+                    )
+
                     // After all completed
                     changeRebalanceStep('done')
                     setLoadingRebalanceData(true)
                     setTimeout(() => {
                       refreshRebalance()
                     }, 15000)
-                    
-                  } catch(e) {
+                  } catch (e) {
                     console.log('e: ', e)
                     changeRebalanceStep('failed')
                   }
-
 
                   setTimeout(() => {
                     changeRebalanceStep('initial')
