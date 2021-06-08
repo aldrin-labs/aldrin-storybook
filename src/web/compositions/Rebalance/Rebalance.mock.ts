@@ -95,7 +95,7 @@ export const getPoolsInfoMockData: PoolInfo[] = [
       },
   ];
 
-export const MOKED_MINTS_MAP = {
+export const MOCKED_MINTS_MAP = {
   '5BBxieFRQ18CzstVfhNM9f7Wp2gn8XnGXfNubCxdTbXK': 'FTT',
   '5PAM7RzMMwsh1p1db12dXV4pUTfqrhK83V6f7GTRgYa2': 'USDT',
   'E2VP1wkGtLBHuFwe6RsgYSvKLwcqso7Vvujc3PDND4Ns': 'SRM',
