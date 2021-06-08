@@ -26,9 +26,10 @@ import { StyledPaper } from './styles'
 
 import { MOCKED_MINTS_MAP } from '@sb/compositions/Rebalance/Rebalance.mock'
 import { ALL_TOKENS_MINTS_MAP } from '@sb/dexUtils/markets'
-import { getPoolsSwaps, getTransactionsList } from '@sb/compositions/Rebalance/utils'
+import { getPoolsSwaps, getTransactionsList, getSwapsChunks } from '@sb/compositions/Rebalance/utils'
 import { TransactionComponent } from './TransactionComponent'
 import { PopupFooter } from './PopupFooter'
+import { REBALANCE_CONFIG } from '../../Rebalance.config'
 
 
 export const RebalancePopup = ({
@@ -174,16 +175,23 @@ export const RebalancePopup = ({
                   // 1. We need to refresh pools info each time before click
                   // 2. We need to refresh popup each interval (e.g. 10 seconds)
 
+                  const swaps = getPoolsSwaps({ wallet, connection, transactionsList: rebalanceTransactionsList, tokensMap })
+
                   try {
-                    const swaps = getPoolsSwaps({ wallet, connection, transactionsList: rebalanceTransactionsList, tokensMap })
                     setPendingStateText('Creating swaps...')
                     const promisedSwaps = await Promise.all(swaps.map(el => swap(el)))
                     const swapsTransactions = promisedSwaps.map(el => el[0])
-                    setPendingStateText('Creating transaction...')
-                    const commonTransaction = new Transaction().add(...swapsTransactions)  
-                    setPendingStateText('Awaitng for Rebalance confirmation...')
-                    await sendAndConfirmTransactionViaWallet(wallet, connection, commonTransaction)
-                    
+
+                    const swapTransactionsGroups = getSwapsChunks(swapsTransactions, REBALANCE_CONFIG.SWAPS_PER_TRANSACTION_LIMIT)
+                    console.log('swapTransactionsGroups: ', swapTransactionsGroups)
+
+                    await Promise.all(swapTransactionsGroups.map(async swapTransactionGroup => {
+                      setPendingStateText('Creating transaction...')
+                      const commonTransaction = new Transaction().add(...swapTransactionGroup)  
+                      setPendingStateText('Awaitng for Rebalance confirmation...')
+                      await sendAndConfirmTransactionViaWallet(wallet, connection, commonTransaction)  
+                    }))
+
                     // After all completed
                     changeRebalanceStep('done')
                     setLoadingRebalanceData(true)
