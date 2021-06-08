@@ -149,7 +149,7 @@ export const ClaimBlock = ({ theme }: { theme: any }) => {
       .format('HH:mm MMM DD, YYYY')
   }
 
-  console.log('nextUnlockDate', nextUnlockDate)
+  console.log('maxWithdrawBalance', maxWithdrawBalance)
 
   return (
     <BlockTemplate
@@ -189,7 +189,7 @@ export const ClaimBlock = ({ theme }: { theme: any }) => {
         margin={'4rem 0 0 0'}
         transition={'all .4s ease-out'}
         style={{ whiteSpace: 'nowrap' }}
-        disabled={!allTokensData.length}
+        disabled={!allTokensData.length || +maxWithdrawBalance === 0}
         onClick={async () => {
           await withdrawVested({ wallet, connection, allTokensData })
           await refreshData(refreshDataCounter + 1)
