@@ -1,6 +1,6 @@
 import bs58 from 'bs58'
 import BN from 'bn.js'
-import { Program, Provider } from '@project-serum/anchor/dist/esm/index'
+import { Program, Provider } from '@project-serum/anchor/ts/dist/esm/index'
 import { TokenInstructions } from '@project-serum/serum'
 import { getOwnedAccountsFilters } from './tokens'
 import { simulateTransaction } from './send'

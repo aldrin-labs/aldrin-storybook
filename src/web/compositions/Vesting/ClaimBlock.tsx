@@ -18,7 +18,7 @@ import { Loading } from '@sb/components'
 import { NotEligibleWalletBlock } from './NotEligibleWalletBlock'
 import { getAllTokensData } from '../Rebalance/utils'
 import { TokenInfo } from '../Rebalance/Rebalance.types'
-import { Program } from '@project-serum/anchor/dist/esm/index'
+import { Program } from '@project-serum/anchor/ts/dist/esm/index'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
