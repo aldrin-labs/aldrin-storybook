@@ -187,10 +187,9 @@ export const RebalancePopup = ({
                     const commonTransaction = new Transaction().add(...swapsTransactions)  
                     setPendingStateText('Awaitng for Rebalance confirmation...')
                     await sendAndConfirmTransactionViaWallet(wallet, connection, commonTransaction)
-                    changeRebalanceStep('done')
-
-
+                    
                     // After all completed
+                    changeRebalanceStep('done')
                     setLoadingRebalanceData(true)
                     setTimeout(() => {
                       refreshRebalance()
