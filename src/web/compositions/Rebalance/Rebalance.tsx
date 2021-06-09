@@ -49,9 +49,7 @@ const MemoizedDonutChartWithLegend = React.memo(
   DonutChartWithLegend,
   (prevProps, nextProps) => {
     return (
-      isEqual(prevProps.data, nextProps.data) &&
-      isEqual(prevProps.colors, nextProps.colors) &&
-      isEqual(prevProps.colorsForLegend, nextProps.colorsForLegend)
+      isEqual(prevProps.data, nextProps.data)
     )
   }
 )
@@ -125,14 +123,6 @@ const RebalanceComposition = ({
     }))
     .sort((a, b) => b.value - a.value)
 
-  console.log(
-    'targetData',
-    targetData,
-    targetData.map(
-      (el) => colors.find((item) => item.symbol === el.symbol)?.color
-    )
-  )
-
   const refreshRebalance = () => {
     setRefreshStateRebalance(!rebalanceState)
   }
@@ -196,18 +186,9 @@ const RebalanceComposition = ({
               ? fixedColorsForLegend[i]
               : getRandomBlueColor(),
         }))
-        console.log(
-          'currentTargetData',
-          generatedColors,
-          generatedColorsForLegend
-        )
+
         setColors(generatedColors)
         setColorsForLegend(generatedColorsForLegend)
-
-        // console.log(
-        //   'availableTokensForRebalanceMap: ',
-        //   availableTokensForRebalanceMap
-        // )
 
         setTokensMap(availableTokensForRebalanceMap)
         setTotalTokensValue(totalTokenValue)
