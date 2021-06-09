@@ -12,7 +12,6 @@ import { BlockTemplate } from '@sb/compositions/Pools/index.styles'
 
 import AllocationDonutChart from './DonutChart'
 import AllocationLegend from './Legend'
-import { fixedColors, getRandomBlueColor } from './DonutChart/utils'
 
 import { IProps } from './index.types'
 import {
@@ -21,36 +20,17 @@ import {
   ChartContainer,
 } from './index.styles'
 
-const fixedColorsForLegend = [
-  'linear-gradient(90deg, #366CE5 0%, #747CF6 95.65%)',
-  'linear-gradient(90deg, #D3A987 0%, #EE7A96 100%)',
-  'linear-gradient(90deg, #95D2BA 0%, #83E6EC 100%)',
-  'linear-gradient(90deg, #4071B6 0%, #52B7F6 100%)',
-]
-
 export const ROWS_TO_SHOW_IN_LEGEND = 4
 
-const DonutChartWithLegend = ({ data = [], theme, id }: IProps) => {
-  const [colors, setColors] = useState<string[]>([])
-  const [colorsForLegend, setColorsForLegend] = useState<string[]>([])
-
-  useEffect(() => {
-    const generatedColors = data.map((_, i) =>
-      i < fixedColors.length ? fixedColors[i] : getRandomBlueColor()
-    )
-
-    const generatedColorsForLegend = data.map((_, i) =>
-      i < fixedColorsForLegend.length
-        ? fixedColorsForLegend[i]
-        : getRandomBlueColor()
-    )
-
-    setColors(generatedColors)
-    setColorsForLegend(generatedColorsForLegend)
-  }, [data])
-
+const DonutChartWithLegend = ({
+  data = [],
+  theme,
+  id,
+  colors,
+  colorsForLegend,
+}: IProps) => {
   const sortedData = data
-    .sort((a, b) => b.value - a.value)
+    // .sort((a, b) => b.value - a.value)
     .map((tokenData) => ({
       ...tokenData,
       value: tokenData.value,
@@ -75,7 +55,7 @@ const DonutChartWithLegend = ({ data = [], theme, id }: IProps) => {
     otherTokensProgressBarData
   )
 
-  // console.log('generatedColorsForLegend', colorsForLegend)
+  console.log('generatedColorsForLegend', colors, colorsForLegend)
 
   return (
     <BlockTemplate
