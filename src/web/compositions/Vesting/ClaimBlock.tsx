@@ -63,7 +63,6 @@ export const ClaimBlock = ({ theme }: { theme: any }) => {
         setIsInvestor(false)
       } else {
         vestingAccountPubkey = vestingAccountPubkey[0].publicKey
-        console.log('result', vestingAccountPubkey)
 
         setIsInvestor(true)
 
@@ -85,8 +84,6 @@ export const ClaimBlock = ({ theme }: { theme: any }) => {
           }),
         ])
 
-        console.log(allTokensData, maxWithdraw, vestingProgramAccount)
-
         setAllTokensData(allTokensData)
         setMaxWithdrawBalance(maxWithdraw)
         setVestingProgramAccount(vestingProgramAccount)
@@ -104,7 +101,7 @@ export const ClaimBlock = ({ theme }: { theme: any }) => {
     return <Loading />
   }
 
-  const toBeUnlockedCCAI = formatNumberToUSFormat(
+  let toBeUnlockedCCAI: string | number = formatNumberToUSFormat(
     stripDigitPlaces(
       vestingProgramAccount?.startBalance.toString() /
         vestingProgramAccount?.periodCount.toString() /
@@ -118,22 +115,6 @@ export const ClaimBlock = ({ theme }: { theme: any }) => {
       vestingProgramAccount.startTs.toString()) /
     vestingProgramAccount.periodCount.toString()
 
-  console.log({
-    beneficiary: vestingProgramAccount.beneficiary.toString(),
-    mint: vestingProgramAccount.mint.toString(),
-    vault: vestingProgramAccount.vault.toString(),
-    grantor: vestingProgramAccount.grantor.toString(),
-    outstanding: vestingProgramAccount.outstanding.toString(),
-    startBalance: vestingProgramAccount.startBalance.toString(),
-    createdTs: vestingProgramAccount.createdTs.toString(),
-    startTs: vestingProgramAccount.startTs.toString(),
-    endTs: vestingProgramAccount.endTs.toString(),
-    periodCount: vestingProgramAccount.periodCount.toString(),
-    whitelistOwned: vestingProgramAccount.whitelistOwned.toString(),
-    nonce: vestingProgramAccount.nonce,
-    realizor: vestingProgramAccount.realizor,
-  })
-
   let nextUnlockDate: string | number =
     +vestingProgramAccount.startTs.toString() || 0
 
@@ -144,12 +125,16 @@ export const ClaimBlock = ({ theme }: { theme: any }) => {
       nextUnlockDate += timeToNextUnlock
     } while (now > nextUnlockDate)
 
+    if (nextUnlockDate > +vestingProgramAccount.endTs) {
+      nextUnlockDate = 'All CCAI unlocked!'
+      toBeUnlockedCCAI = 0
+    } else {
     nextUnlockDate = dayjs
       .unix(Math.floor(nextUnlockDate))
       .format('HH:mm MMM DD, YYYY')
-  }
+    }
 
-  console.log('maxWithdrawBalance', maxWithdrawBalance)
+  }
 
   return (
     <BlockTemplate
