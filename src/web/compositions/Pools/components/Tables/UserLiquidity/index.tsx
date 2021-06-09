@@ -258,7 +258,7 @@ const UserLiquitidyTable = ({
                       </TextColumnContainer>
                     </RowDataTd>
                     <RowDataTd>
-                      <RowDataTdText theme={theme}>{el.apy24h}%</RowDataTdText>
+                      <RowDataTdText theme={theme}>{stripDigitPlaces(el.apy24h, 6)}%</RowDataTdText>
                     </RowDataTd>
                     <RowDataTd>
                       <TextColumnContainer>

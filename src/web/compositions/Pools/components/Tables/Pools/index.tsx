@@ -195,7 +195,7 @@ const AllPoolsTable = ({
                   quoteTokenPrice * el.tvl.tokenB
 
                 const fees = feesPerPoolMap.get(el.swapToken) || 0
-                const apy = !!tvlUSD ? (100 * fees) / tvlUSD : 0
+                const apy = el.apy24h || 0
 
                 return (
                   <TableRow>

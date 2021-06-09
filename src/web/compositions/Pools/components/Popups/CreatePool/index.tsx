@@ -179,6 +179,18 @@ export const CreatePoolPopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
+      onEnter={() => {
+        setBaseTokenAddressFromSeveral('');
+        setQuoteTokenAddressFromSeveral('');
+        setBaseTokenMintAddress('');
+        setQuoteTokenMintAddress('');
+        setBaseAmount('');
+        setQuoteAmount('');
+        setIsSelectCoinPopupOpen(false);
+        setIsBaseTokenSelecting(false);
+        setWarningChecked(false);
+        setOperationLoading(false);
+      }}
       maxWidth={'md'}
       open={open}
       aria-labelledby="responsive-dialog-title"

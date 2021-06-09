@@ -5,6 +5,7 @@ import {
   PublicKey,
   SystemProgram,
   Transaction,
+  TransactionSignature,
 } from '@solana/web3.js'
 
 import { Token, TOKEN_PROGRAM_ID } from './token/token'
@@ -1045,8 +1046,6 @@ const createFarmingStateAccount = async ({
     TokenFarmingLayout.span
   )
 
-  console.log('TokenFarmingLayout.span', TokenFarmingLayout.span, 'balanceNeeded', balanceNeeded)
-
   const farmingStateAccount = new Account()
   const transaction = new Transaction()
 
@@ -1061,4 +1060,19 @@ const createFarmingStateAccount = async ({
   )
 
   return [farmingStateAccount, transaction]
+}
+
+export const getParsedTransactionData = async ({
+  connection,
+  signature,
+}: {
+  connection: Connection
+  signature: TransactionSignature
+}) => {
+  try {
+    const ts = await connection.getConfirmedTransaction(signature, 'confirmed')
+    console.log('transaction data: ', ts)
+  } catch (e) {
+    console.log('e', e)
+  }
 }

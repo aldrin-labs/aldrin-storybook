@@ -15,6 +15,7 @@ import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import {
   calculateWithdrawAmount,
   depositAllTokenTypes,
+  getParsedTransactionData,
 } from '@sb/dexUtils/pools'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
@@ -97,13 +98,21 @@ export const AddLiquidityPopup = ({
     address: userTokenAccountA,
     amount: maxBaseAmount,
     decimals: baseTokenDecimals,
-  } = getTokenDataByMint(allTokensData, selectedPool.tokenA)
+  } = getTokenDataByMint(
+    allTokensData,
+    selectedPool.tokenA,
+    selectedBaseTokenAddressFromSeveral
+  )
 
   const {
     address: userTokenAccountB,
     amount: maxQuoteAmount,
     decimals: quoteTokenDecimals,
-  } = getTokenDataByMint(allTokensData, selectedPool.tokenB)
+  } = getTokenDataByMint(
+    allTokensData,
+    selectedPool.tokenB,
+    selectedQuoteTokenAddressFromSeveral
+  )
 
   const {
     amount: poolTokenRawAmount,
@@ -183,6 +192,24 @@ export const AddLiquidityPopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
+      onEnter={() => {
+        const isSeveralBaseAddresses =
+          allTokensData.filter((el) => el.mint === selectedPool.tokenA).length >
+          1
+
+        const isSeveralQuoteAddresses =
+          allTokensData.filter((el) => el.mint === selectedPool.tokenB).length >
+          1
+
+        setBaseTokenAddressFromSeveral('')
+        setQuoteTokenAddressFromSeveral('')
+        setBaseAmount('')
+        setQuoteAmount('')
+        setWarningChecked(false)
+        setOperationLoading(false)
+        setIsSelectorForSeveralBaseAddressesOpen(isSeveralBaseAddresses)
+        setIsSelectorForSeveralQuoteAddressesOpen(isSeveralQuoteAddresses)
+      }}
       maxWidth={'md'}
       open={open}
       aria-labelledby="responsive-dialog-title"
@@ -229,7 +256,7 @@ export const AddLiquidityPopup = ({
               color={'#A5E898'}
               fontFamily={'Avenir Next Demi'}
             >
-              ${stripDigitPlaces(total * (1 + selectedPool.apy24h / 100), 2)}
+              ${stripDigitPlaces(total * (selectedPool.apy24h / 100), 2)}
               &nbsp;
             </Text>
             <Text fontSize={'2rem'} fontFamily={'Avenir Next Demi'}>
@@ -247,7 +274,7 @@ export const AddLiquidityPopup = ({
               color={'#A5E898'}
               fontFamily={'Avenir Next Demi'}
             >
-              {selectedPool.apy24h}%
+              {stripDigitPlaces(selectedPool.apy24h, 6)}%
             </Text>
           </Row>
         </Row>
@@ -363,6 +390,8 @@ export const AddLiquidityPopup = ({
                   ? 'Deposit failed, please try again later or contact us in telegram.'
                   : 'Deposit cancelled',
             })
+
+            // await getParsedTransactionData({ connection, signature: '3M3VQkDf6qwt3oNbhctwCT9n2w5UgQKygrfpRjde8DY4ixwJzamDXkvgWMTL746KRZ8DNJCNWy7G4AMGdkFJnWs8' });
 
             await close()
           }}
