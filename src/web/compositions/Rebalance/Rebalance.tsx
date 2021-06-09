@@ -131,7 +131,7 @@ const RebalanceComposition = ({
           totalTokenValue
         )
 
-        const poolsInfo = await getPoolsInfo()
+        const poolsInfo = await getPoolsInfo(totalTokenValue)
 
         // TODO: Can be splitted and move up
         const availableTokensForRebalance = getAvailableTokensForRebalance(
