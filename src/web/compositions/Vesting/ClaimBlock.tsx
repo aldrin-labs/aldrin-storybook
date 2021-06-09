@@ -86,7 +86,13 @@ export const ClaimBlock = ({ theme }: { theme: any }) => {
 
         setAllTokensData(allTokensData)
         setMaxWithdrawBalance(maxWithdraw)
-        setVestingProgramAccount(vestingProgramAccount)
+        setVestingProgramAccount({
+          endTs: vestingProgramAccount.endTs.toString(),
+          startTs: vestingProgramAccount.startTs.toString(),
+          startBalance: vestingProgramAccount.startBalance.toString(),
+          periodCount: vestingProgramAccount.periodCount.toString(),
+          outstanding: vestingProgramAccount.outstanding.toString(),
+        })
       }
     }
 
@@ -103,20 +109,18 @@ export const ClaimBlock = ({ theme }: { theme: any }) => {
 
   let toBeUnlockedCCAI: string | number = formatNumberToUSFormat(
     stripDigitPlaces(
-      vestingProgramAccount?.startBalance.toString() /
-        vestingProgramAccount?.periodCount.toString() /
+      vestingProgramAccount.startBalance /
+        vestingProgramAccount.periodCount /
         10 ** CCAI_TOKEN_DECIMALS,
       8
     )
   )
 
   const timeToNextUnlock =
-    (vestingProgramAccount.endTs.toString() -
-      vestingProgramAccount.startTs.toString()) /
-    vestingProgramAccount.periodCount.toString()
+    (vestingProgramAccount.endTs - vestingProgramAccount.startTs) /
+    vestingProgramAccount.periodCount
 
-  let nextUnlockDate: string | number =
-    +vestingProgramAccount.startTs.toString() || 0
+  let nextUnlockDate: string | number = +vestingProgramAccount.startTs
 
   const now = Date.now() / 1000
 
@@ -125,15 +129,17 @@ export const ClaimBlock = ({ theme }: { theme: any }) => {
       nextUnlockDate += timeToNextUnlock
     } while (now > nextUnlockDate)
 
-    if (nextUnlockDate > +vestingProgramAccount.endTs) {
+    if (
+      nextUnlockDate > +vestingProgramAccount.endTs ||
+      +vestingProgramAccount.outstanding === 0
+    ) {
       nextUnlockDate = 'All CCAI unlocked!'
       toBeUnlockedCCAI = 0
     } else {
-    nextUnlockDate = dayjs
-      .unix(Math.floor(nextUnlockDate))
-      .format('HH:mm MMM DD, YYYY')
+      nextUnlockDate = dayjs
+        .unix(Math.floor(nextUnlockDate))
+        .format('HH:mm MMM DD, YYYY')
     }
-
   }
 
   return (
