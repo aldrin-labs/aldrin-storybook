@@ -109,7 +109,7 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
               ? 'This is an unofficial custom market. Use at your own risk.'
               : isCustomUserMarket
               ? 'This is curated but unofficial market.'
-              : 'This is the official Serum market.'
+              : 'This is the official market.'
           }
         >
           <div
