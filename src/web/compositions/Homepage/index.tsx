@@ -273,7 +273,7 @@ export const Homepage = () => {
             src={SerumCCAILogo}
           />
         </RowContainer>
-        <CardContainer style={{ margin: '4rem 0', height: 'auto' }}>
+        {/* <CardContainer style={{ margin: '4rem 0', height: 'auto' }}>
           <SvgIcon src={smallBanner} width={'100%'} height={'100%'} />
           <WhiteButton
             style={{
@@ -303,7 +303,7 @@ export const Homepage = () => {
               />
             </svg>
           </WhiteButton>
-        </CardContainer>{' '}
+        </CardContainer> */}
         <CardContainer height={'auto'} style={{ margin: '4rem 0' }}>
           <SvgIcon src={smallCandies} width={'100%'} height={'100%'} />
           <HeaderContainer style={{ height: '86%', width: '66%' }}>
