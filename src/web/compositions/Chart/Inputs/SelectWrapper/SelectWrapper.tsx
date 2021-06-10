@@ -360,8 +360,6 @@ class SelectPairListComponent extends React.PureComponent<
       data: processedSelectData,
     })
 
-    console.log('sortedData', sortedData)
-
     this.setState({
       processedSelectData: sortedData,
     })
@@ -417,8 +415,6 @@ class SelectPairListComponent extends React.PureComponent<
       ...newList.slice(0, ccaiIndex),
       ...newList.slice(ccaiIndex + 1),
     ]
-
-    console.log('updatedList', updatedList)
 
     return updatedList
   }
