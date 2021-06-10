@@ -176,7 +176,7 @@ function ChartPageComponent(props: any) {
   const setCorrectMarketAddress = async () => {
     const pair = !!location.pathname.split('/')[3]
       ? location.pathname.split('/')[3]
-      : 'SRM_USDT'
+      : 'CCAI_USDC'
 
     const userMarkets = getUserCustomMarketsQuery.getUserCustomMarkets.map(
       ({ publicKey, marketId, isPrivate, ...rest }) => ({
@@ -202,7 +202,7 @@ function ChartPageComponent(props: any) {
     )
 
     if (!selectedMarketFromUrl) {
-      history.push('/chart/spot/SRM_USDT')
+      history.push('/chart/spot/CCAI_USDC')
       return
     }
 

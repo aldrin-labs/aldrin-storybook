@@ -254,7 +254,7 @@ function getMarketDetails(market, customMarkets) {
 }
 
 const getPairFromLocation = () => {
-  let pair = 'SRM_USDT'
+  let pair = 'CCAI_USDC'
   const { pathname } = location
 
   const isChartPage = pathname.includes('chart')
