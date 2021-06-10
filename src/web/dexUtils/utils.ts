@@ -18,6 +18,10 @@ export const CCAIProviderURL = MASTER_BUILD
   ? 'https://wallet.cryptocurrencies.ai'
   : 'https://develop.wallet.cryptocurrencies.ai'
 
+export const CCAIListingTime = 1623333600
+
+export const isCCAITradingEnabled = () => Date.now() / 1000 > CCAIListingTime 
+
 export async function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }

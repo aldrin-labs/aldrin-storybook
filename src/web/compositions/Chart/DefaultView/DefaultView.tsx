@@ -38,6 +38,8 @@ import {
   BalancesContainer,
   TopChartsContainer,
 } from '../Chart.styles'
+import TradingBlocked from '../components/TradingBlocked'
+import { CCAIListingTime, isCCAITradingEnabled } from '@sb/dexUtils/utils'
 
 // fix props type
 export const DefaultViewComponent = (
@@ -78,7 +80,12 @@ export const DefaultViewComponent = (
   const [priceFromOrderbook, updateTerminalPriceFromOrderbook] = useState<
     null | number
   >(null)
+
   const [showTokenNotAddedPopup, setShowTokenNotAdded] = useState(false)
+  const [isTradingBlockedPopupOpen, setIsTradingBlockedPopupOpen] = useState(
+    !isCCAITradingEnabled() && currencyPair === 'CCAI_USDC'
+  )
+
   const [base, quote] = currencyPair.split('_')
   const baseQuoteArr = [base, quote]
   const exchange = activeExchange.symbol
@@ -290,6 +297,13 @@ export const DefaultViewComponent = (
               setShowTokenNotAdded={setShowTokenNotAdded}
             />
           </TerminalContainer>
+
+          <TradingBlocked
+            pair={baseQuoteArr}
+            theme={theme}
+            open={isTradingBlockedPopupOpen}
+            onClose={() => setIsTradingBlockedPopupOpen(false)}
+          />
 
           <TokenNotAddedPopup
             pair={baseQuoteArr}
