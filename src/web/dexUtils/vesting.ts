@@ -22,7 +22,7 @@ const LookupJSON = require('./lookup.json')
 // const CCAI_MINT = 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp'
 export const CCAI_MINT = 'AYoo9Qbjtw8S9HJwMrRFyZNaEiqMArKWtvvxXMv4qCoX'
 export const CCAI_TOKEN_DECIMALS = 9
-export const VESTING_PROGRAM_ADDRESS = process.env.VESTING_PROGRAM_ADDRESS
+export const VESTING_PROGRAM_ADDRESS = process.env.VESTING_PROGRAM_ADDRESS || 'EwA6aaET9TpWzi9cRmYDfRQC6kg8DjA6hNnuWsCo6WEU'
 
 export async function getOwnedVestingAccounts(
   connection: Connection,

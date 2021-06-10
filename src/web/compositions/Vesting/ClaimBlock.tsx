@@ -63,6 +63,7 @@ export const ClaimBlock = ({ theme }: { theme: any }) => {
         setIsInvestor(false)
       } else {
         vestingAccountPubkey = vestingAccountPubkey[0].publicKey
+        console.log('vestingAccountPubkey', vestingAccountPubkey.toString())
 
         setIsInvestor(true)
 
@@ -98,6 +99,8 @@ export const ClaimBlock = ({ theme }: { theme: any }) => {
 
     getIsInvestor()
   }, [setIsInvestor, connection, wallet.publicKey, refreshDataCounter])
+
+  console.log('vestingProgramAccount', vestingProgramAccount)
 
   if (isInvestor === false) {
     return <NotEligibleWalletBlock theme={theme} />
