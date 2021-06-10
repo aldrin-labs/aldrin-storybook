@@ -29,7 +29,6 @@ const TradingBlocked = ({ open, onClose, theme }) => {
       PaperComponent={StyledPaper}
       style={{ width: '85rem', margin: 'auto' }}
       fullScreen={false}
-      onClose={onClose}
       maxWidth={'md'}
       open={open}
       aria-labelledby="responsive-dialog-title"
