@@ -30,6 +30,7 @@ import {
   PoolInfo,
   TokensMapType,
   TokenType,
+  Colors,
   RebalancePopupStep,
 } from './Rebalance.types'
 import RebalanceTable from './components/Tables'
@@ -44,6 +45,10 @@ import {
 } from '@sb/components/AllocationBlock/DonutChart/utils'
 
 import { getPoolsInfoMockData } from './Rebalance.mock'
+import {
+  generateLegendColors,
+  generateChartColors,
+} from './utils/colorGeneraing'
 
 const MemoizedDonutChartWithLegend = React.memo(
   DonutChartWithLegend,
@@ -108,30 +113,8 @@ const RebalanceComposition = ({
 
   const [poolsInfoData, setPoolsInfoData] = useState<PoolInfo[]>([])
 
-  const [colors, setColors] = useState([])
-  const [colorsForLegend, setColorsForLegend] = useState([])
-
-  const currentData = Object.values(tokensMap)
-    .map((el) => ({
-      symbol: el.symbol,
-      value: el.percentage,
-    }))
-    .sort((a, b) => b.value - a.value)
-
-  const targetData = Object.values(tokensMap)
-    .map((el) => ({
-      symbol: el.symbol,
-      value: el.targetPercentage,
-    }))
-    .sort((a, b) => b.value - a.value)
-
-  console.log(
-    'targetData',
-    targetData,
-    targetData.map(
-      (el) => colors.find((item) => item.symbol === el.symbol)?.color
-    )
-  )
+  const [colors, setColors] = useState<Colors>({})
+  const [colorsForLegend, setColorsForLegend] = useState<Colors>({})
 
   const refreshRebalance = () => {
     setRefreshStateRebalance(!rebalanceState)
@@ -177,42 +160,18 @@ const RebalanceComposition = ({
           availableTokensForRebalance
         )
 
-        const currentTargetData = Object.values(
-          availableTokensForRebalanceMap
-        ).map((el) => ({
-          symbol: el.symbol,
-          value: el.percentage,
-        }))
-
-        const generatedColors = currentTargetData.map((el, i) => ({
-          symbol: el.symbol,
-          color: i < fixedColors.length ? fixedColors[i] : getRandomBlueColor(),
-        }))
-
-        const generatedColorsForLegend = currentTargetData.map((el, i) => ({
-          symbol: el.symbol,
-          color:
-            i < fixedColorsForLegend.length
-              ? fixedColorsForLegend[i]
-              : getRandomBlueColor(),
-        }))
-        console.log(
-          'currentTargetData',
-          generatedColors,
-          generatedColorsForLegend
-        )
-        setColors(generatedColors)
-        setColorsForLegend(generatedColorsForLegend)
-
-        // console.log(
-        //   'availableTokensForRebalanceMap: ',
-        //   availableTokensForRebalanceMap
-        // )
+        const chartColors = generateChartColors({
+          data: availableTokensForRebalanceMap,
+        })
+        const legendColors = generateLegendColors({
+          data: availableTokensForRebalanceMap,
+        })
 
         setTokensMap(availableTokensForRebalanceMap)
+        setColors(chartColors)
+        setColorsForLegend(legendColors)
         setTotalTokensValue(totalTokenValue)
         setPoolsInfoData(poolsInfo)
-
         console.timeEnd('rebalance initial data set time')
       } catch (e) {
         // set error
@@ -225,6 +184,7 @@ const RebalanceComposition = ({
       fetchData()
     }
   }, [wallet.publicKey, rebalanceState])
+  console.log('chartColors', colors)
 
   return (
     <RowContainer
@@ -293,22 +253,15 @@ const RebalanceComposition = ({
           >
             <RowContainer height={'calc(85% - 2rem)'}>
               <DebouncedMemoizedDonutChartWithLegend
-                data={currentData}
-                colors={colors.map((el) => el.color)}
-                colorsForLegend={colorsForLegend.map((el) => el.color)}
+                data={tokensMap}
+                colors={colors}
+                colorsForLegend={colorsForLegend}
                 id={'current'}
               />
               <DebouncedMemoizedDonutChartWithLegend
-                data={targetData}
-                colors={targetData.map(
-                  (el) =>
-                    colors.find((item) => item.symbol === el.symbol)?.color
-                )}
-                colorsForLegend={targetData.map(
-                  (el) =>
-                    colorsForLegend.find((item) => item.symbol === el.symbol)
-                      ?.color
-                )}
+                data={tokensMap}
+                colors={colors}
+                colorsForLegend={colorsForLegend}
                 id={'target'}
               />
             </RowContainer>

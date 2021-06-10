@@ -32,6 +32,8 @@ export interface TokenInfo {
     address: string   
 }
 
+export type Colors = { [symbol: string]: string }
+
 export interface TokenType extends TokenInfo {
     price: number | null
     percentage: number

@@ -29,7 +29,14 @@ const DonutChartWithLegend = ({
   colors,
   colorsForLegend,
 }: IProps) => {
-  const sortedData = data
+  const formattedData = Object.values(data)
+    .map((el) => ({
+      symbol: el.symbol,
+      value: id === 'target' ? el.targetPercentage : el.percentage,
+    }))
+    .sort((a, b) => b.value - a.value)
+
+  const sortedData = formattedData
     // .sort((a, b) => b.value - a.value)
     .map((tokenData) => ({
       ...tokenData,
@@ -37,9 +44,12 @@ const DonutChartWithLegend = ({
     }))
 
   const chartData = sortedData.map((tokenData) => tokenData.value)
+
+  const formattedColorsForLegend = Object.values(colorsForLegend)
+
+  const formattedColorsForChart = Object.values(colors)
   // const chartId = chartData.reduce((prev, value) => prev + value + id, '')
 
-  // we need to show only 4 rows in legend
   const otherTokensProgressBarData =
     sortedData.length > ROWS_TO_SHOW_IN_LEGEND
       ? sortedData.slice(ROWS_TO_SHOW_IN_LEGEND).reduce(
@@ -54,9 +64,6 @@ const DonutChartWithLegend = ({
   const legendData = [...sortedData.slice(0, ROWS_TO_SHOW_IN_LEGEND)].concat(
     otherTokensProgressBarData
   )
-
-  console.log('generatedColorsForLegend', colors, colorsForLegend)
-
   return (
     <BlockTemplate
       style={{ margin: '0 0 2rem 0', overflow: 'scroll' }}
@@ -75,11 +82,10 @@ const DonutChartWithLegend = ({
         </HeaderContainer>
         <RowContainer height={'calc(100% - 5rem)'}>
           <AllocationChartContainer>
-            {/* we need to re-render chart on data update */}
             <AllocationDonutChart
               id={id}
               data={chartData}
-              colors={colors}
+              colors={formattedColorsForChart}
               tooltipData={sortedData}
             />
           </AllocationChartContainer>
@@ -87,7 +93,7 @@ const DonutChartWithLegend = ({
             <AllocationLegend
               theme={theme}
               data={legendData}
-              colors={colorsForLegend}
+              colors={formattedColorsForLegend}
             />
           </AllocationLegendContainer>
         </RowContainer>
