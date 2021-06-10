@@ -14,7 +14,7 @@ export function isValidPublicKey(key) {
   }
 }
 
-export const CCAIProviderURL = !MASTER_BUILD
+export const CCAIProviderURL = MASTER_BUILD
   ? 'https://wallet.cryptocurrencies.ai'
   : 'https://develop.wallet.cryptocurrencies.ai'
 

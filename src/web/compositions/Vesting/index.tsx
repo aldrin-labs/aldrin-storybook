@@ -6,7 +6,6 @@ import { compose } from 'recompose'
 import { RowContainer } from '../AnalyticsRoute/index.styles'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { ClaimBlock } from './ClaimBlock'
-import { NotEligibleWalletBlock } from './NotEligibleWalletBlock'
 
 const VestingPage = ({
   theme,
@@ -40,7 +39,6 @@ const VestingPage = ({
           Connect wallet
         </BtnCustom>
       ) : (
-        // <NotEligibleWalletBlock theme={theme} />
         <ClaimBlock wallet={wallet} theme={theme} />
       )}
     </RowContainer>

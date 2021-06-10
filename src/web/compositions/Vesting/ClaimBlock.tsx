@@ -63,7 +63,6 @@ export const ClaimBlock = ({ theme }: { theme: any }) => {
         setIsInvestor(false)
       } else {
         vestingAccountPubkey = vestingAccountPubkey[0].publicKey
-        console.log('vestingAccountPubkey', vestingAccountPubkey.toString())
 
         setIsInvestor(true)
 
@@ -100,8 +99,6 @@ export const ClaimBlock = ({ theme }: { theme: any }) => {
     getIsInvestor()
   }, [setIsInvestor, connection, wallet.publicKey, refreshDataCounter])
 
-  console.log('vestingProgramAccount', vestingProgramAccount)
-
   if (isInvestor === false) {
     return <NotEligibleWalletBlock theme={theme} />
   }
@@ -128,9 +125,9 @@ export const ClaimBlock = ({ theme }: { theme: any }) => {
   const now = Date.now() / 1000
 
   if (vestingProgramAccount.startTs) {
-    do {
+    while (now > nextUnlockDate) {
       nextUnlockDate += timeToNextUnlock
-    } while (now > nextUnlockDate)
+    }
 
     if (
       nextUnlockDate > +vestingProgramAccount.endTs ||
@@ -168,6 +165,16 @@ export const ClaimBlock = ({ theme }: { theme: any }) => {
         <AlignedText left>To be unlocked:</AlignedText>
         <AlignedText green>{toBeUnlockedCCAI} CCAI</AlignedText>
       </RowContainer>
+
+      {allTokensData[0].amount < 0.01 && (
+        <RowContainer>
+          <AlignedText left style={{ color: theme.palette.red.main }}>
+            Please, top up your SOL balance to have at least 0.01 SOL for paying
+            fees.
+          </AlignedText>
+        </RowContainer>
+      )}
+
       <BtnCustom
         theme={theme}
         needMinWidth={false}
