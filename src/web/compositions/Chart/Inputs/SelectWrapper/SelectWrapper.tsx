@@ -302,12 +302,14 @@ class SelectPairListComponent extends React.PureComponent<
       customMarkets,
     })
 
+    const sortedData = this._sortList({
+      sortBy,
+      sortDirection,
+      data: processedSelectData,
+    })
+
     this.setState({
-      processedSelectData: this._sortList({
-        sortBy,
-        sortDirection,
-        data: processedSelectData,
-      }),
+      processedSelectData: sortedData,
       left,
     })
   }
@@ -352,12 +354,16 @@ class SelectPairListComponent extends React.PureComponent<
       customMarkets,
     })
 
+    const sortedData = this._sortList({
+      sortBy,
+      sortDirection,
+      data: processedSelectData,
+    })
+
+    console.log('sortedData', sortedData)
+
     this.setState({
-      processedSelectData: this._sortList({
-        sortBy,
-        sortDirection,
-        data: processedSelectData,
-      }),
+      processedSelectData: sortedData,
     })
   }
 
@@ -370,10 +376,13 @@ class SelectPairListComponent extends React.PureComponent<
 
     let newList = [...dataToSort]
 
+    // const CCAIMarket = newList.find(v => v.symbol.contentToSort === 'CCAI_USDC')
+
     if (this.props.marketType === 0 && sortBy === 'volume24hChange') {
       newList.sort((pairObjectA, pairObjectB) => {
         const quoteA = pairObjectA.symbol.contentToSort.split('_')[1]
         const quoteB = pairObjectB.symbol.contentToSort.split('_')[1]
+
         if (quoteA === 'USDT' && quoteB === 'USDT') {
           return (
             pairObjectB.volume24hChange.contentToSort -
@@ -397,7 +406,21 @@ class SelectPairListComponent extends React.PureComponent<
       }
     }
 
-    return newList
+    const ccaiIndex = newList.findIndex(
+      (v) => v.symbol.contentToSort === 'CCAI_USDC'
+    )
+
+    if (ccaiIndex === -1) return newList
+
+    const updatedList = [
+      newList[ccaiIndex],
+      ...newList.slice(0, ccaiIndex),
+      ...newList.slice(ccaiIndex + 1),
+    ]
+
+    console.log('updatedList', updatedList)
+
+    return updatedList
   }
 
   _sort = ({ sortBy, sortDirection }) => {
@@ -446,6 +469,7 @@ class SelectPairListComponent extends React.PureComponent<
       console.log('onAddCustomMarket', newCustomMarkets)
       return true
     }
+
 
     return (
       <StyledGrid

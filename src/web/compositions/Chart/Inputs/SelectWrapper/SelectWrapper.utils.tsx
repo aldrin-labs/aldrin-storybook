@@ -308,8 +308,7 @@ export const combineSelectWrapperData = ({
     const marketName = symbol.replaceAll('_', '/')
     const currentMarket = customMarkets?.find((el) => el?.name.replaceAll("_", "/") === marketName)
 
-    const isAdditionalCustomUserMarket =
-      currentMarket?.isPrivateCustomMarket !== undefined
+    const isAdditionalCustomUserMarket = el.isCustomUserMarket
     const isAwesomeMarket = currentMarket?.isCustomUserMarket
 
     return {
