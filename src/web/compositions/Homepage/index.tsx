@@ -53,8 +53,8 @@ export const Homepage = () => {
                 style={{ position: 'absolute', right: '10rem', bottom: '7rem' }}
                 width={'21rem'}
                 padding={'0 3rem'}
-                needHover={true}
-                href={`https://ccai.cryptocurrencies.ai/`}
+                // needHover={true}
+              
               >
                 Trade on Uniswap
               </WhiteButton>
@@ -63,7 +63,7 @@ export const Homepage = () => {
                 width={'21rem'}
                 padding={'0 3rem'}
                 needHover={true}
-                href={`https://ccai.cryptocurrencies.ai/`}
+                href={`https://dex.cryptocurrencies.ai/chart/spot/CCAI_USDC`}
               >
                 Trade on CCAI DEX{' '}
               </WhiteButton>
