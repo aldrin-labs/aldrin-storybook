@@ -53,7 +53,8 @@ export const Homepage = () => {
                 style={{ position: 'absolute', right: '10rem', bottom: '7rem' }}
                 width={'21rem'}
                 padding={'0 3rem'}
-                // needHover={true}
+                needHover={true}
+                href={'https://www.dextools.io/app/uniswap/pair-explorer/0x4a9e79219e9417ec6c0b67c42da387fb8a45230e'}
               
               >
                 Trade on Uniswap
