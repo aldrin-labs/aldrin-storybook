@@ -42,7 +42,12 @@ const _IGNORE_DEPRECATED = false
 
 const USE_MARKETS = _IGNORE_DEPRECATED
   ? MARKETS.map((m) => ({ ...m, deprecated: false }))
-  : MARKETS
+  : [{
+    address: new PublicKey('ErevFef5oR6YKDW4XrWSq396D1wvW7YFr5gLichC1ycK'),
+    name: 'TST/USDC',
+    programId: new PublicKey('9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'),
+    deprecated: false,
+}].concat(MARKETS)
 
 export function useMarketsList() {
   const UPDATED_USE_MARKETS = USE_MARKETS.filter(
@@ -86,11 +91,14 @@ export function useAllMarkets() {
             {},
             marketInfo.programId
           )
+
+
           return {
             market,
             marketName: marketInfo.name,
             programId: marketInfo.programId,
           }
+          
         } catch (e) {
           notify({
             message: 'Error loading all market',
@@ -317,11 +325,12 @@ export function MarketProvider({ children }) {
     // console.log('useEffect in market - load market')
     Market.load(connection, marketInfo.address, {}, marketInfo.programId)
       .then((data) => {
-        // console.log(
-        //   'useEffect in market - set market in load',
-        //   marketInfo.address,
-        //   marketInfo.name
-        // )
+        console.log(
+          'useEffect in market - set market in load',
+          marketInfo.address,
+          marketInfo.name,
+          data
+        )
         return setMarket(data)
       })
       .catch((e) =>
