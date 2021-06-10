@@ -51,6 +51,7 @@ export const CardContainer = styled.div`
 export const WhiteButton = styled.a`
   bottom: ${(props) => props.bottom || 'none'};
   right: ${(props) => props.right || 'none'};
+  top: ${(props) => props.top || 'none'};
   display: flex;
   text-decoration: none;
   justify-content: space-around;
@@ -58,7 +59,7 @@ export const WhiteButton = styled.a`
   position: ${(props) => props.position || 'relative'};
   background: none;
   border: 0.1rem solid #f8faff;
-  border-radius: 1.4rem;
+  border-radius: 2.3rem;
   width: ${(props) => props.width || '21rem'};
   white-space: nowrap;
   height: 4rem;
