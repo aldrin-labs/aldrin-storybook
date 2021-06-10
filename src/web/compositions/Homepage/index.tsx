@@ -13,6 +13,10 @@ import {
   DiscordLink,
   TelegramLink,
   MainContainerForSmallScreens,
+  TextContainer,
+  BlockForText,
+  ThinText,
+  BannerHeader,
 } from './styles'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { Text } from '../../compositions/Addressbook/index'
@@ -35,6 +39,7 @@ import smallSwapsCard from '@icons/smallSwaps.svg'
 import smallWalletCard from '@icons/smallWallet.svg'
 import smallCandies from '@icons/smallCandies.svg'
 import SerumCCAILogo from '@icons/serumCCAILogo.svg'
+import Logo from '@icons/Banner_coming-soon.svg'
 
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
 
@@ -47,28 +52,73 @@ export const Homepage = () => {
             style={{ marginTop: '3rem', minHeight: '25rem' }}
             width={'calc(100% - 5.5rem)'}
           >
-            <img src={Banner} width={'100%'} />
-            <Row>
-              <WhiteButton
-                style={{ position: 'absolute', right: '10rem', bottom: '7rem' }}
-                width={'21rem'}
-                padding={'0 3rem'}
-                needHover={true}
-                href={'https://www.dextools.io/app/uniswap/pair-explorer/0x4a9e79219e9417ec6c0b67c42da387fb8a45230e'}
-              
-              >
-                Trade on Uniswap
-              </WhiteButton>
-              <WhiteButton
-                style={{ position: 'absolute', right: '10rem', top: '8rem' }}
-                width={'21rem'}
-                padding={'0 3rem'}
-                needHover={true}
-                href={`https://dex.cryptocurrencies.ai/chart/spot/CCAI_USDC`}
-              >
-                Trade on CCAI DEX{' '}
-              </WhiteButton>
-            </Row>
+            <SvgIcon src={Banner} width={'100%'} height={'100%'} />
+            <TextContainer>
+              {' '}
+              <Row style={{ flexWrap: 'nowrap' }} width={'60%'}>
+                <SvgIcon width={'10%'} height={'10%'} src={Logo} />
+                <BlockForText>
+                  <BannerHeader
+                    style={{
+                      fontFamily: 'Avenir Next Thin',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    Trade{' '}
+                    <span style={{ fontFamily: 'Avenir Next Bold' }}>
+                      WWT/ETH*
+                    </span>{' '}
+                    on Uniswap and{' '}
+                    <span style={{ fontFamily: 'Avenir Next Bold' }}>
+                      CCAI/USDC
+                    </span>{' '}
+                    on CCAI DEX!
+                  </BannerHeader>
+                  <RowContainer margin={'2rem 0 0 0'} direction={'column'}>
+                    <ThinText>
+                      *CCAI token is not a native ERC20 token and was wrapped by
+                      Wormhole Bridge. ERC20 CCAI token is called WWT.
+                    </ThinText>
+                    <ThinText>
+                      <a
+                        style={{
+                          textDecoration: 'underline',
+                          color: '#fbf2f2',
+                        }}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href="https://ccaiofficial.medium.com/how-to-transfer-ccai-token-from-erc20-to-solana-d36d835213c1"
+                      >
+                        Learn how to transfer CCAI Token from ERC20 to Solana.
+                      </a>
+                    </ThinText>
+                  </RowContainer>
+                </BlockForText>
+              </Row>
+              <Row direction={'column'}>
+                {' '}
+                <WhiteButton
+                  width={'25rem'}
+                  style={{ margin: '0 0 2rem 0', height: '5rem' }}
+                  padding={'1rem 4rem'}
+                  needHover={true}
+                  href={
+                    'https://www.dextools.io/app/uniswap/pair-explorer/0x4a9e79219e9417ec6c0b67c42da387fb8a45230e'
+                  }
+                >
+                  Trade on Uniswap
+                </WhiteButton>
+                <WhiteButton
+                  width={'25rem'}
+                  style={{ height: '5rem' }}
+                  padding={'1rem 4rem'}
+                  needHover={true}
+                  href={`https://dex.cryptocurrencies.ai/chart/spot/CCAI_USDC`}
+                >
+                  Trade on CCAI DEX{' '}
+                </WhiteButton>
+              </Row>
+            </TextContainer>
           </CardContainer>
         </RowContainer>
         <RowContainer align={'flex-start'} style={{ marginTop: '1.5rem' }}>

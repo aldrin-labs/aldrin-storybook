@@ -2,6 +2,18 @@ import React from 'react'
 import styled from 'styled-components'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 
+export const TextContainer = styled(RowContainer)`
+  position: absolute;
+  justify-content: space-between;
+  padding: 2rem 8rem;
+  height: 100%;
+`
+
+export const BlockForText = styled(Row)`
+  flex-direction: column;
+  width: 90%;
+`
+
 export const MainContainer = styled.div`
   width: 100%;
   height: 100%;
@@ -341,3 +353,16 @@ export const DiscordLink = () => {
     </a>
   )
 }
+export const BannerHeader = styled(Description)`
+  @media (max-width: 3000px) {
+    font-size: 3.2rem;
+  }
+`
+export const ThinText = styled(Description)`
+  @media (max-width: 3000px) {
+    white-space: nowrap;
+    font-family: Avenir Next Thin;
+    line-height: 3rem;
+    font-size: 1.8rem;
+  }
+`
