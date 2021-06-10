@@ -42,13 +42,13 @@ const _IGNORE_DEPRECATED = false
 
 const USE_MARKETS = _IGNORE_DEPRECATED
   ? MARKETS.map((m) => ({ ...m, deprecated: false }))
-//   : [{
-//     address: new PublicKey('ErevFef5oR6YKDW4XrWSq396D1wvW7YFr5gLichC1ycK'),
-//     name: 'TST/USDC',
-//     programId: new PublicKey('9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'),
-//     deprecated: false,
-// }].concat(MARKETS)
-: MARKETS
+  : [{
+    address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
+    name: 'CCAI/USDC',
+    programId: new PublicKey('9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'),
+    deprecated: false,
+}].concat(MARKETS)
+// : MARKETS
 
 export function useMarketsList() {
   const UPDATED_USE_MARKETS = USE_MARKETS.filter(
