@@ -6,6 +6,8 @@ import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { client } from '@core/graphql/apolloClient'
 import { isEqual } from 'lodash'
+import { MASTER_BUILD } from '@core/utils/config'
+
 import Tour from 'reactour'
 // import { Grid, Hidden } from '@material-ui/core'
 
@@ -61,6 +63,7 @@ import { withPublicKey } from '@core/hoc/withPublicKey'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { WarningPopup } from './components/WarningPopup'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
+import { DevUrlPopup } from '@sb/components/PopupForDevUrl'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
   // Check if the arrays are the same length
@@ -335,6 +338,7 @@ function ChartPageComponent(props: any) {
         onClose={() => openWarningPopup(false)}
         theme={theme}
       />
+
       {/* )} */}
       {/* <JoyrideOnboarding
         continuous={true}

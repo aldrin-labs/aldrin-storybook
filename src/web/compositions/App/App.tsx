@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 // import './app.styles.global.css';
 import styled from 'styled-components'
 import { compose } from 'recompose'
@@ -49,6 +49,8 @@ import { ConnectionProvider } from '@sb/dexUtils/connection'
 import { WalletProvider } from '@sb/dexUtils/wallet'
 import { MarketProvider } from '@sb/dexUtils/markets'
 import { PreferencesProvider } from '@sb/dexUtils/preferences'
+import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
+import DevUrlPopup from '@sb/components/PopupForDevUrl'
 
 const version = `10.9.118`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
@@ -73,6 +75,8 @@ const AppRaw = ({
   getViewModeQuery,
   location: { pathname: currentPage, search },
 }: any) => {
+  const [isDevUrlPopupOpen, openDevUrlPopup] = useState(true)
+
   const isChartPage = /chart/.test(currentPage)
 
   let themeMode = localStorage.getItem('themeMode')
@@ -153,6 +157,14 @@ const AppRaw = ({
                       fullscreenMode={fullscreen}
                       showFooter={showFooter}
                     /> */}
+                      {!MASTER_BUILD && !LOCAL_BUILD && (
+                        <DevUrlPopup
+                          open={isDevUrlPopupOpen}
+                          close={() => {
+                            openDevUrlPopup(false)
+                          }}
+                        />
+                      )}
                     </AppGridLayout>
                     {/* <ShowWarningOnMoblieDevice /> */}
                   </PreferencesProvider>
