@@ -59,6 +59,7 @@ export type PoolInfoElement = {
   tokenSwapPublicKey: string
   tokenA: number
   tokenB: number
+  priceIncludingCurveAndFees: number
 }
 
 export type SwapsType = {

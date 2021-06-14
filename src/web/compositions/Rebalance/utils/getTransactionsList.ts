@@ -1,4 +1,3 @@
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { TokensMapType, TransactionType, PoolInfoElement } from '../Rebalance.types'
 import { Graph } from '@core/utils/graph/Graph'
 import { REBALANCE_CONFIG } from '../Rebalance.config'
@@ -24,9 +23,9 @@ export const getTransactionsList = ({
     .map(el => ({ ...el, tokenValue: +(el.price * Math.abs(el.amountDiff)).toFixed(el.decimalCount), isSold: false }))
     .sort((a,b) => a.tokenValue - b.tokenValue)
   const tokensToBuy = tokensDiff
-  .filter((el) => el.amountDiff > 0)
-  .map(el => ({ ...el, tokenValue: +(el.price * el.amountDiff).toFixed(el.decimalCount) }))
-  .sort((a,b) => b.tokenValue - a.tokenValue)
+    .filter((el) => el.amountDiff > 0)
+    .map(el => ({ ...el, tokenValue: +(el.price * el.amountDiff).toFixed(el.decimalCount) }))
+    .sort((a,b) => b.tokenValue - a.tokenValue)
 
   if (!tokensToSell || !tokensToBuy) {
     return []
@@ -89,11 +88,9 @@ export const getTransactionsList = ({
         }
 
         const poolPair = poolsInfoMap[`${pathSymbol}_${nextElement}`] || poolsInfoMap[`${nextElement}_${pathSymbol}`] // FTT_SOL || SOL_FTT
-        // console.log('poolPair: ', poolPair)
         const [base, quote] = poolPair.symbol.split('_')
 
         const side = base === pathSymbol ? 'sell' : 'buy'
-        // const price = tokensMap[base].price / tokensMap[quote].price
         const price = poolPair.price
   
         // Handling case with intermidiate pair inside path
@@ -101,20 +98,35 @@ export const getTransactionsList = ({
         const isIntermidiate = pathInString.match(`_${pathSymbol}_`)
   
         const tokenAmount = isIntermidiate ? tempToken.amount : toSellTokenAmount
-        const slippageMultiplicator = (100 - poolsInfoMap[poolPair.symbol].slippage) / 100
         const feeMultiplicator = (100 - REBALANCE_CONFIG.POOL_FEE) / 100
   
         const moduleAmountDiff = tokenAmount
-        const amount = +((base === pathSymbol ? moduleAmountDiff : moduleAmountDiff / price) * (side === 'buy' ? slippageMultiplicator : 1) )
-        .toFixed(tokensMap[base].decimalCount)
-  
         const amountRaw = +((base === pathSymbol ? moduleAmountDiff : moduleAmountDiff / price))
         .toFixed(tokensMap[base].decimalCount)
-        
+        const totalRaw = +(amountRaw * price)
+        .toFixed(tokensMap[quote].decimalCount)
+
+        // getting slippage
+        const poolsAmountDiff = side === 'sell' ? poolPair.tokenA / amountRaw : poolPair.tokenB / totalRaw
+        const rawSlippage = 100 / (poolsAmountDiff + 1)
+        const slippage = rawSlippage + REBALANCE_CONFIG.POOL_FEE + poolPair.slippage
+        const slippageMultiplicator = (100 - slippage) / 100
+
+        // console.log('poolsAmountDiff: ', poolsAmountDiff)
+        // console.log('rawSlippage: ', rawSlippage)
+        // console.log('slippage: ', slippage)
+
+        const amount = +((base === pathSymbol ? moduleAmountDiff : moduleAmountDiff / price) * (side === 'buy' ? slippageMultiplicator : 1) )
+        .toFixed(tokensMap[base].decimalCount)
         const total = +(amountRaw * price * (side === 'sell' ? slippageMultiplicator : 1))
         .toFixed(tokensMap[quote].decimalCount)
+
+        // console.log(`side ${side}, amountRaw: ${amountRaw}, totalRaw ${totalRaw}, finalAmount ${amount}, finalTotal ${total}`)
   
         tempToken.amount = (base === pathSymbol ? total : amount) * feeMultiplicator
+
+        const priceIncludingCurveAndFees = total / amount
+        const feeUSD = (side === 'sell' ? (totalRaw - (totalRaw * feeMultiplicator)) : (amountRaw - (amountRaw * feeMultiplicator))) * tokensMap[side === 'sell' ? quote : base].price
   
         allTransactions.push({
           ...poolsInfoMap[poolPair.symbol],
@@ -122,13 +134,12 @@ export const getTransactionsList = ({
           total: total, 
           side,
 
-          // TODO: Fix feeUSD
-          feeUSD: poolsInfoMap[poolPair.symbol].slippage / 100 * moduleAmountDiff * tokensMap[pathSymbol].price,
+          feeUSD: feeUSD,
+
+          priceIncludingCurveAndFees: priceIncludingCurveAndFees,
         })
 
       })
-
-
     }
   })
 
