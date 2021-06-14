@@ -38,6 +38,7 @@ const OrderbookAndDepthChart = (props) => {
 
   const markPrice = useMarkPrice()
   const [orderbook] = useOrderbook()
+  const [prevOrderbook, setPrevOrderbook] = useState({})
 
   const pricePrecision =
     serumPricePrecision === undefined
@@ -69,10 +70,19 @@ const OrderbookAndDepthChart = (props) => {
   )
 
   useInterval(() => {
-    if (pricePrecision === undefined || sizeDigits === undefined) return
+    if (
+      pricePrecision === undefined ||
+      sizeDigits === undefined ||
+      !orderbook?.asks ||
+      !orderbook?.bids ||
+      JSON.stringify(orderbook) === JSON.stringify(prevOrderbook)
+    )
+      return
 
-    const asks = orderbook?.asks?.map((row) => [row[0], [row[1], Date.now()]])
-    const bids = orderbook?.bids?.map((row) => [row[0], [row[1], Date.now()]])
+    setPrevOrderbook(orderbook)
+
+    const asks = orderbook.asks.map((row) => [row[0], [row[1], Date.now()]])
+    const bids = orderbook.bids.map((row) => [row[0], [row[1], Date.now()]])
 
     const updatedData = transformOrderbookData({
       marketOrders: {
@@ -126,10 +136,7 @@ const OrderbookAndDepthChart = (props) => {
       : aggregatedOrderbookData
 
   return (
-    <RowContainer
-      id="depthChartAndOB"
-      height="100%"
-    >
+    <RowContainer id="depthChartAndOB" height="100%">
       <Grid
         item
         xs={hideDepthChart ? 12 : 7}

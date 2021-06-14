@@ -504,8 +504,7 @@ class SimpleTabs extends React.Component<any, any> {
                         wallet={wallet}
                         market={market}
                         lockedAmount={0}
-                        key={JSON.stringify([pair, funds])}
-                        walletValue={funds && funds[1]}
+                        key={JSON.stringify([pair])}
                         marketPrice={price}
                         confirmOperation={placeOrder}
                         tradingBotEnabled={tradingBotEnabled}
@@ -709,8 +708,7 @@ class SimpleTabs extends React.Component<any, any> {
                           pair={pair}
                           funds={funds}
                           lockedAmount={0}
-                          key={JSON.stringify([pair, funds])}
-                          walletValue={funds && funds[1]}
+                          key={JSON.stringify([pair])}
                           marketPrice={price}
                           confirmOperation={placeOrder}
                           cancelOrder={cancelOrder}
