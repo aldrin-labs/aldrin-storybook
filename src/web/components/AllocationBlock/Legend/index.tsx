@@ -18,7 +18,6 @@ interface LegendProps extends IProps {
 }
 
 const AllocationLegend = ({ data, colors, theme }: LegendProps) => {
-  console.log('colors', colors)
   return (
     <>
       {data?.map((tokenData, i) => (

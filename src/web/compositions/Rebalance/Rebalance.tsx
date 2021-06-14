@@ -50,16 +50,33 @@ import {
   generateChartColors,
 } from './utils/colorGeneraing'
 
-const MemoizedDonutChartWithLegend = React.memo(
-  DonutChartWithLegend,
-  (prevProps, nextProps) => {
-    return (
-      isEqual(prevProps.data, nextProps.data) &&
-      isEqual(prevProps.colors, nextProps.colors) &&
-      isEqual(prevProps.colorsForLegend, nextProps.colorsForLegend)
-    )
-  }
-)
+// const MemoizedCurrentValueChartWithLegend = React.memo(
+//   DonutChartWithLegend,
+//   (prevProps, nextProps) => {
+//     return (
+//       isEqual(
+//         Object.values(prevProps.data)?.map((el) => el.percentage),
+//         Object.values(nextProps.data)?.map((el) => el.percentage)
+//       ) &&
+//       isEqual(prevProps.colors, nextProps.colors) &&
+//       isEqual(prevProps.colorsForLegend, nextProps.colorsForLegend)
+//     )
+//   }
+// )
+
+// const MemoizedTargetValueChartWithLegend = React.memo(
+//   DonutChartWithLegend,
+//   (prevProps, nextProps) => {
+//     return (
+//       isEqual(
+//         Object.values(prevProps.data)?.map((el) => el.targetPercentage),
+//         Object.values(nextProps.data)?.map((el) => el.targetPercentage)
+//       ) &&
+//       isEqual(prevProps.colors, nextProps.colors) &&
+//       isEqual(prevProps.colorsForLegend, nextProps.colorsForLegend)
+//     )
+//   }
+// )
 
 const MemoizedRebalancePopup = React.memo(
   RebalancePopup,
@@ -71,8 +88,14 @@ const MemoizedRebalancePopup = React.memo(
   }
 )
 
-const DebouncedMemoizedDonutChartWithLegend = debounceRender(
-  MemoizedDonutChartWithLegend,
+const DebouncedMemoizedCurrentValueChartWithLegend = debounceRender(
+  DonutChartWithLegend,
+  100,
+  { leading: false }
+)
+
+const DebouncedMemoizedTargetValueChartWithLegend = debounceRender(
+  DonutChartWithLegend,
   100,
   { leading: false }
 )
@@ -184,7 +207,8 @@ const RebalanceComposition = ({
       fetchData()
     }
   }, [wallet.publicKey, rebalanceState])
-  console.log('chartColors', colors)
+
+  console.log('tokensMap', tokensMap)
 
   return (
     <RowContainer
@@ -252,13 +276,13 @@ const RebalanceComposition = ({
             style={{ flexWrap: 'nowrap' }}
           >
             <RowContainer height={'calc(85% - 2rem)'}>
-              <DebouncedMemoizedDonutChartWithLegend
+              <DebouncedMemoizedCurrentValueChartWithLegend
                 data={tokensMap}
                 colors={colors}
                 colorsForLegend={colorsForLegend}
                 id={'current'}
               />
-              <DebouncedMemoizedDonutChartWithLegend
+              <DebouncedMemoizedTargetValueChartWithLegend
                 data={tokensMap}
                 colors={colors}
                 colorsForLegend={colorsForLegend}

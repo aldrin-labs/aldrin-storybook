@@ -45,9 +45,11 @@ const DonutChartWithLegend = ({
 
   const chartData = sortedData.map((tokenData) => tokenData.value)
 
-  const formattedColorsForLegend = Object.values(colorsForLegend)
+  const formattedColorsForLegend = formattedData.map(
+    (el) => colorsForLegend[el.symbol]
+  )
 
-  const formattedColorsForChart = Object.values(colors)
+  const formattedColorsForChart = formattedData.map((el) => colors[el.symbol])
   // const chartId = chartData.reduce((prev, value) => prev + value + id, '')
 
   const otherTokensProgressBarData =
@@ -64,6 +66,7 @@ const DonutChartWithLegend = ({
   const legendData = [...sortedData.slice(0, ROWS_TO_SHOW_IN_LEGEND)].concat(
     otherTokensProgressBarData
   )
+  console.log('data', formattedColorsForLegend)
   return (
     <BlockTemplate
       style={{ margin: '0 0 2rem 0', overflow: 'scroll' }}
