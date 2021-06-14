@@ -1,4 +1,4 @@
-import { PoolInfo } from '../Rebalance.types'
+import { PoolInfo, TokensDataType } from '../Rebalance.types'
 import { REBALANCE_CONFIG } from '../Rebalance.config'
 import { ALL_TOKENS_MINTS_MAP } from '@sb/dexUtils/markets'
 
@@ -15,7 +15,7 @@ export const getAvailableTokensForRebalance = (
     mint: string
     tokenValue: number
   }[],
-) => {
+): TokensDataType => {
 
   const availablePools = Array.from(new Set(poolsInfo.reduce((acc: string[], el) => {
     acc.push(ALL_TOKENS_MINTS_MAP[el.tokenA] || MOCKED_MINTS_MAP[el.tokenA] || el.tokenA)

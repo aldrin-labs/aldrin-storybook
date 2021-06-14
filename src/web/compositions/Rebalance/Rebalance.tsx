@@ -208,8 +208,6 @@ const RebalanceComposition = ({
     }
   }, [wallet.publicKey, rebalanceState])
 
-  console.log('tokensMap', tokensMap)
-
   return (
     <RowContainer
       theme={theme}
