@@ -984,12 +984,12 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       const filtredValues =
         priceType === 'limit'
           ? {
-              limit: stripDigitPlaces(values.limit, props.pricePrecision),
-              price: stripDigitPlaces(values.price, props.pricePrecision),
-              amount: stripDigitPlaces(values.amount, props.quantityPrecision),
+              limit: values.limit,
+              price: values.price,
+              amount: values.amount,
             }
           : priceType === 'market'
-          ? { amount: stripDigitPlaces(values.amount, props.quantityPrecision) }
+          ? { amount: values.amount }
           : {
               stop: values.stop,
               price: values.price,

@@ -645,10 +645,6 @@ export async function placeOrder({
     connection,
     signers,
     sendingMessage: 'Sending order...',
-    isOrderCreating: true,
-    params,
-    feeAccounts,
-    market,
   })
 }
 

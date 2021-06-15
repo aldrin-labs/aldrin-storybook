@@ -215,7 +215,7 @@ const createTotalVolumeLockedChart = ({
                   ? `$${stripDigitPlaces(value / 1000000, 2)}m`
                   : `$${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`,
               color: '#F5F5FB',
-              stepSize: data[data.length - 1].vol / 5,
+              stepSize: data[data.length - 1]?.vol / 5,
               font: {
                 size: +(width / 130).toFixed(0),
                 family: 'Avenir Next',
@@ -367,7 +367,7 @@ const createTradingVolumeChart = ({
                   : `$${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`
               },
               color: '#F5F5FB',
-              stepSize: data[data.length - 1].vol / 5,
+              stepSize: data[data.length - 1]?.vol / 5,
               font: {
                 size: +(width / 130).toFixed(0),
                 family: 'Avenir Next',
