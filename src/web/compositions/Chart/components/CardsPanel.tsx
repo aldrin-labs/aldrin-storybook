@@ -194,7 +194,7 @@ export const CardsPanel = ({ theme }) => {
             >
               Trading
             </NavLinkButton>
-            {!MASTER_BUILD && (
+            {/* {!MASTER_BUILD && (
               <NavLinkButton
                 theme={theme}
                 pathname={location.pathname}
@@ -204,7 +204,7 @@ export const CardsPanel = ({ theme }) => {
               >
                 Rebalance
               </NavLinkButton>
-            )}
+            )} */}
             <NavLinkButton
               theme={theme}
               data-tut="analytics"
