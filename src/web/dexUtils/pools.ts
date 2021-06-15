@@ -22,7 +22,7 @@ import { notify } from './notifications'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 
 const OWNER: PublicKey = new PublicKey(
-  '9VHVV44zDSmmdDMUHk4fwotXioimN78yzNDgzaVUP5Fb'
+  '5rWKzCUY9ESdmobivjyjQzvdfHSePf37WouX39sMmfx9'
 )
 
 const ownerKey = OWNER.toString()
