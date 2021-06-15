@@ -10,7 +10,7 @@ import { Grid, InputAdornment, Typography, Theme } from '@material-ui/core'
 import { Loading } from '@sb/components/index'
 import { ConfirmationPopup } from './ConfirmationPopup'
 
-import { stubFalse, toNumber, toPairs } from 'lodash-es'
+import { isEqual, stubFalse, toNumber, toPairs } from 'lodash-es'
 import { traidingErrorMessages } from '@core/config/errorMessages'
 import { IProps, FormValues, IPropsWithFormik, priceType } from './types'
 import Info from '@icons/inform.svg'
@@ -246,7 +246,7 @@ const toFixedTrunc = (value, n) => {
 }
 
 @withTheme()
-class TraidingTerminal extends PureComponent<IPropsWithFormik> {
+class TradingTerminal extends PureComponent<IPropsWithFormik> {
   state = {
     marketPrice: null,
     priceFromOrderbook: null,
@@ -275,22 +275,22 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 
     const priceForCalculate = priceType !== 'market' ? price : marketPrice
 
-    if (
-      fundsAssetValue !== previousFundsAssetValue &&
-      fundsAssetValue &&
-      priceForCalculate
-    ) {
-      const newValue = fundsAssetValue
+    // if (
+    //   fundsAssetValue !== previousFundsAssetValue &&
+    //   fundsAssetValue &&
+    //   priceForCalculate
+    // ) {
+    //   const newValue = fundsAssetValue
 
-      const newAmount = isBuyType
-        ? +stripDigitPlaces(newValue / priceForCalculate, quantityPrecision)
-        : +stripDigitPlaces(newValue, quantityPrecision)
+    //   const newAmount = isBuyType
+    //     ? +stripDigitPlaces(newValue / priceForCalculate, quantityPrecision)
+    //     : +stripDigitPlaces(newValue, quantityPrecision)
 
-      const newTotal = newAmount * priceForCalculate
+    //   const newTotal = newAmount * priceForCalculate
 
-      setFieldValue('amount', newAmount)
-      setFieldValue('total', stripDigitPlaces(newTotal, 2))
-    }
+    //   setFieldValue('amount', newAmount)
+    //   setFieldValue('total', stripDigitPlaces(newTotal, 2))
+    // }
 
     if (marketPriceAfterPairChange !== prevProps.marketPriceAfterPairChange) {
       this.onPriceChange({
@@ -887,28 +887,6 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
                 validateForm={validateForm}
                 handleSubmit={handleSubmit}
               />
-              {/* <Grid>
-                <span
-                  style={{
-                    color: theme.palette.grey.title,
-                    fontSize: '1.1rem',
-                    width: '100%',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  You must have at least{' '}
-                  <span
-                    style={{
-                      color: '#F8FAFF',
-                      fontSize: '1.1rem',
-                      width: '100%',
-                    }}
-                  >
-                    0.03 SOL
-                  </span>{' '}
-                  in your wallet for successful trading.
-                </span>
-              </Grid> */}
             </Grid>
           </Grid>
         </GridContainer>
@@ -918,13 +896,15 @@ class TraidingTerminal extends PureComponent<IPropsWithFormik> {
 }
 
 const formikEnhancer = withFormik<IProps, FormValues>({
-  mapPropsToValues: (props) => ({
-    price: stripDigitPlaces(props.marketPrice, props.pricePrecision),
-    stop: 0,
-    limit: stripDigitPlaces(props.marketPrice, props.pricePrecision),
-    amount: 0,
-    total: 0,
-  }),
+  mapPropsToValues: (props) => {
+    return {
+      price: stripDigitPlaces(props.marketPrice, props.pricePrecision),
+      stop: 0,
+      limit: stripDigitPlaces(props.marketPrice, props.pricePrecision),
+      amount: 0,
+      total: 0,
+    }
+  },
   handleSubmit: async (values, { props, setSubmitting, resetForm }) => {
     const {
       byType,
@@ -1077,4 +1057,4 @@ const formikEnhancer = withFormik<IProps, FormValues>({
   },
 })
 
-export default compose(withErrorFallback, formikEnhancer)(TraidingTerminal)
+export default compose(withErrorFallback, formikEnhancer)(TradingTerminal)

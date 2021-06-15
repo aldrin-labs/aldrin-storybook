@@ -347,13 +347,14 @@ export const Balances = ({
                 }}
               >
                 {!wallet.connected ? (
-                  <ConnectWalletDropdown
-                    theme={theme}
-                    showOnTop={true}
-                    height={'2rem'}
-                    id={'connectButtonBase'}
-                    containerStyle={{ padding: '0' }}
-                  />
+                  null
+                  // <ConnectWalletDropdown
+                  //   theme={theme}
+                  //   showOnTop={true}
+                  //   height={'2rem'}
+                  //   id={'connectButtonBase'}
+                  //   containerStyle={{ padding: '0' }}
+                  // />
                 ) : isBaseCoinExistsInWallet ? (
                   <>
                     <BtnCustom
@@ -463,11 +464,12 @@ export const Balances = ({
                 }}
               >
                 {!wallet.connected ? (
-                  <ConnectWalletDropdown
-                    height={'2rem'}
-                    id={'connectButtonQuote'}
-                    containerStyle={{ padding: '0' }}
-                  />
+                  null
+                  // <ConnectWalletDropdown
+                  //   height={'2rem'}
+                  //   id={'connectButtonQuote'}
+                  //   containerStyle={{ padding: '0' }}
+                  // />
                 ) : isQuoteCoinExistsInWallet ? (
                   <>
                     <BtnCustom

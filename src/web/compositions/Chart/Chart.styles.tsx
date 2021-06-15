@@ -136,7 +136,8 @@ export const PanelCard = styled.div`
   padding: 0.1rem;
   margin: 0;
   min-height: auto;
-  border-right: ${(props: { marketType: number; theme: Theme }) => props.theme.palette.border.new};
+  border-right: ${(props: { marketType: number; theme: Theme }) =>
+    props.theme.palette.border.new};
   font-weight: bold;
   text-transform: capitalize;
   font-family: Avenir Next;
@@ -269,6 +270,10 @@ export const ChartGridContainer = styled(({ MASTER_BUILD, ...rest }) => (
   border-bottom: ${(props) => props.theme.palette.border.new};
   margin: 0rem;
   background: ${(props) => props.theme.palette.grey.additional};
+
+  @media (max-width: 600px) {
+    display: none;
+  }
 `
 
 export const TablesContainer = styled(Grid)`
@@ -300,7 +305,7 @@ export const TradingTerminalContainer = styled(
   position: relative;
   // 60% - 3%, the half of height cards, will fix in future
   width: ${(props) =>
-      props.hideTradeHistory
+    props.hideTradeHistory
       ? '17%'
       : props.hideOrderbook
       ? '17%'
@@ -362,7 +367,7 @@ export const ChartsContainer = styled(
   position: relative;
   display: flex;
   width: ${(props) =>
-      props.hideTradeHistory
+    props.hideTradeHistory
       ? '83%'
       : props.hideOrderbook
       ? '83%'
