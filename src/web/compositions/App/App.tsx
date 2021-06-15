@@ -92,7 +92,8 @@ const AppRaw = ({
     !isChartPage &&
     currentPage !== '/' &&
     currentPage !== '/pools' &&
-    currentPage !== '/rebalance'
+    currentPage !== '/rebalance' &&
+    currentPage !== '/swaps'
 
   const isPNL = currentPage.includes('/portfolio/main')
   // TODO: Check this variable

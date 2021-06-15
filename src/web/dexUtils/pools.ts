@@ -794,7 +794,7 @@ export async function swap({
   swapAmountIn: number
   swapAmountOut: number
   baseSwapToken: 'tokenA' | 'tokenB'
-}): Promise<[Transaction, Account]> {
+}): Promise<[Transaction]> {
   const tokenSwap = await TokenSwap.loadTokenSwap(
     wallet,
     connection,
@@ -827,39 +827,39 @@ export async function swap({
           tokenAccountA,
         ]
 
-  const userTransferAuthority = new Account()
-  const sourceTokenMint = new Token(
-    wallet,
-    connection,
-    sourceMint,
-    TOKEN_PROGRAM_ID
-  )
+  // const userTransferAuthority = new Account()
+  // const sourceTokenMint = new Token(
+  //   wallet,
+  //   connection,
+  //   sourceMint,
+  //   TOKEN_PROGRAM_ID
+  // )
 
-  const approveTransaction = await sourceTokenMint.approve(
-    userSourceAccount,
-    userTransferAuthority.publicKey,
-    wallet.publicKey,
-    [],
-    swapAmountIn
-  )
+  // const approveTransaction = await sourceTokenMint.approve(
+  //   userSourceAccount,
+  //   userTransferAuthority.publicKey,
+  //   wallet.publicKey,
+  //   [],
+  //   swapAmountIn
+  // )
 
-  const [swapTransaction, signer] = await tokenSwap.swap(
+  const [swapTransaction] = await tokenSwap.swap(
     userSourceAccount,
     poolSourceAccount,
     poolDestinationAccount,
     userDestinationAccount,
     null, // host fees, add later
-    userTransferAuthority,
+    wallet.publicKey,
     swapAmountIn,
     swapAmountOut
   )
 
   const commonTransaction = new Transaction().add(
-    approveTransaction,
+    // approveTransaction,
     swapTransaction
   )
 
-  return [commonTransaction, signer]
+  return [commonTransaction]
 }
 
 /**

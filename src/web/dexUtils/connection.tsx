@@ -17,9 +17,10 @@ export const ENDPOINTS = [
     endpoint: MAINNET_BETA_ENDPOINT,
   },
   { name: 'testnet', endpoint: clusterApiUrl('testnet') },
-  { name: 'devnet', endpoint: 'http://api.devnet.solana.com/' },
+  { name: 'devnet', endpoint: 'https://api.devnet.solana.com' },
   { name: 'localnet', endpoint: 'http://127.0.0.1:8899' },
 ]
+
 const accountListenerCount = new Map()
 const ConnectionContext = React.createContext(null)
 export function ConnectionProvider({ children }) {

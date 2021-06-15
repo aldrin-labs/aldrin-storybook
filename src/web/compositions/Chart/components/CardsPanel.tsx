@@ -223,6 +223,15 @@ export const CardsPanel = ({ theme }) => {
               {' '}
               Pools
             </NavLinkButton>
+            <NavLinkButton
+              theme={theme}
+              page={'/swaps'}
+              pathname={location.pathname}
+              component={(props) => <Link to={`/swaps`} {...props} />}
+            >
+              {' '}
+              Swaps
+            </NavLinkButton>
             {/* <IdoBtn>CCAI IDO</IdoBtn> */}
           </div>
         </CustomCard>
