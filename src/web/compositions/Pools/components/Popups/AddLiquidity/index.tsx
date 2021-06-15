@@ -391,8 +391,6 @@ export const AddLiquidityPopup = ({
                   : 'Deposit cancelled',
             })
 
-            // await getParsedTransactionData({ connection, signature: '3M3VQkDf6qwt3oNbhctwCT9n2w5UgQKygrfpRjde8DY4ixwJzamDXkvgWMTL746KRZ8DNJCNWy7G4AMGdkFJnWs8' });
-
             await close()
           }}
         >
