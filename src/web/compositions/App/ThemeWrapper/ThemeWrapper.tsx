@@ -142,20 +142,28 @@ export default ({ themeMode, isChartPage, children }) => {
               dark: '#7284A0',
               subPrimary: 'white',
               grey: '#fff',
+              light: '#fff',
+              white: '#424b68',
+              black: '#fff',
+              text: '#96999C',
             },
             orange: {
               main: '#F29C38',
+              dark: '#F8B567',
+              light: '#F29C38',
             },
             black: {
               custom: '#16253D',
               registration: '#000000',
+              card: '#1C1D22',
             },
             red: {
-              main: '#DD6956',
+              main: '#F69894',
+              button: 'linear-gradient(140.41deg, #F26D68 0%, #F69894 92.17%)',
               custom: '#D93B28',
               bright: '#ED6337',
-              new: '#DD6956',
-              chart: '#C7FFD0'
+              new: '#F69894',
+              chart: '#C7FFD0',
             },
             blue: {
               custom: '#5085EC',
@@ -167,15 +175,21 @@ export default ({ themeMode, isChartPage, children }) => {
               btnBackground: '#3B63AF', // 165BE0
               switcherBackground: '#3B63AF', // 165BE0
               switcherBorder: '#2E2E2E',
-              serum: '#09ACC7',
+              serum: '#366CE5',
             },
             green: {
               dark: '#377E21',
               light: '#E7ECF3',
               custom: '#97C15C',
-              main: '#55BB7C',
-              new: '#29AC80',
+              main: '#A5E898',
+              button: 'linear-gradient(135deg, #A5E898 0%, #97E873 100%)',
+              new: '#A5E898',
               tab: '#09ACC7',
+              shine: '#c7ffd0',
+              acid: '#c7ffd0',
+              descrip: '#61D8E6',
+              border: '#61D8E6',
+              analytics: '#A5E898',
             },
             grey: {
               custom: '#2E2E2E',
@@ -188,6 +202,16 @@ export default ({ themeMode, isChartPage, children }) => {
               cream: '#0E1016',
               additional: '#0E1016',
               block: '#424b68',
+              circle: '#0E1016',
+              chart: '#f65683',
+              input: '#222429',
+              back: '#303743',
+              newborder: '#3A475C',
+              placeholder: '#abbad1',
+              disabledInput: 'rgb(46,46,46)',
+              title: '#93A0B2',
+              terminal: '#383B45',
+              new: '#96999C',
             },
             primary: {
               main: '#303037',
@@ -211,7 +235,8 @@ export default ({ themeMode, isChartPage, children }) => {
               main: '#E0E5EC',
             },
             border: {
-              main: '.1rem solid #2e2e2e',
+              main: '.2rem solid #2e2e2e',
+              new: '.2rem solid #2e2e2e',
             },
             price: {
               increase: '#2F7619',
@@ -225,14 +250,17 @@ export default ({ themeMode, isChartPage, children }) => {
             },
             white: {
               main: '#fff',
-              background: '#1B2028',
+              primary: '#F8FAFF',
+              background: '#17181A',
               inputBackground: '#14161B',
               greyish: '#f5f5fb',
               block: '#1B2028',
               card: '#1B2028',
+              text: '#F5F5FB',
             },
             dark: {
               main: '#D1DDEF',
+              background: '#222429',
             },
             depthChart: {
               redStroke: '#FFADAD',
@@ -241,8 +269,8 @@ export default ({ themeMode, isChartPage, children }) => {
               redBackground: '#923B50',
             },
             orderbook: {
-              greenBackground: '#497E5A',
-              redBackground: '#923B50',
+              greenBackground: 'rgba(165, 232, 152, 0.25)',
+              redBackground: 'rgba(247, 152, 148, 0.25)',
             },
             slider: {
               dots: '#2F3949',
@@ -346,20 +374,26 @@ export default ({ themeMode, isChartPage, children }) => {
               blue: '#165BE0',
               subPrimary: '#16253D',
               grey: '#2E2E2E',
+              light: '#9F9F9F',
+              black: '#3A475C',
+              white: '#9F9F9F',
             },
             orange: {
               main: '#F29C38',
+              dark: '#F8B567',
+              light: '#F29C38',
             },
             black: {
               custom: '#16253D',
               registration: '#000000',
+              card: '#1C1D22',
             },
             red: {
               main: '#DD6956',
               custom: '#D93B28',
               bright: '#ED6337',
               new: '#DD6956',
-              chart: '#7380EB'
+              chart: '#7380EB',
             },
             blue: {
               custom: '#5085EC',
@@ -371,7 +405,7 @@ export default ({ themeMode, isChartPage, children }) => {
               btnBackground: '#5C8CEA',
               switcherBackground: 'rgba(11, 31, 209, 0.5)',
               switcherBorder: '#0B1FD1',
-              serum: '#7380EB',
+              serum: '#366CE5',
             },
             green: {
               dark: '#377E21',
@@ -379,6 +413,11 @@ export default ({ themeMode, isChartPage, children }) => {
               main: '#39A74C',
               new: '#29AC80',
               tab: '#7380EB',
+              shine: '#7380eb',
+              descrip: '#1BA492',
+              acid: '#1BA492',
+              border: '#7380eb',
+              analytics: '#A5E898',
             },
             grey: {
               custom: '#ABBAD1',
@@ -391,6 +430,14 @@ export default ({ themeMode, isChartPage, children }) => {
               cream: '#F9FBFD',
               additional: '#fff',
               block: '#e0e5ec',
+              circle: '#E0E0E8',
+              chart: '#e0e0e8',
+              input: '#fff',
+              back: '#e0e0e8',
+              newborder: '#F6F8FA',
+              placeholder: '#7284A0',
+              disabledInput: '#F2F4F6',
+              title: '#93A0B2',
             },
             primary: {
               main: '#FEFEFE',
@@ -404,7 +451,8 @@ export default ({ themeMode, isChartPage, children }) => {
               selected: 'rgba(255, 255, 255, 0.05)',
             },
             border: {
-              main: '.1rem solid #e0e5ec',
+              main: '.2rem solid #e0e5ec',
+              new: '.1rem solid #3A475C',
             },
             hover: {
               dark: '#383a3d',
@@ -429,14 +477,17 @@ export default ({ themeMode, isChartPage, children }) => {
             },
             white: {
               main: '#fff',
+              primary: '#F8FAFF',
               background: '#fff',
               inputBackground: '#fff',
               greyish: '#f5f5fb',
               block: '#F6F8FA',
               card: '#fff',
+              text: '#93A0B2',
             },
             dark: {
               main: '#16253D',
+              background: '#222429',
             },
             depthChart: {
               redStroke: '#DD6956',

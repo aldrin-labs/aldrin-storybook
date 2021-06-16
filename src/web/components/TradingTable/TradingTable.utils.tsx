@@ -4,35 +4,13 @@ import localizedFormat from 'dayjs/plugin/localizedFormat'
 dayjs.extend(localizedFormat)
 
 import { OrderType, TradeType, FundsType, Key } from '@core/types/ChartTypes'
-import ErrorIcon from '@material-ui/icons/Error'
-
-import { Position } from './PositionsTable/PositionsTable.types'
 import { TableButton } from './TradingTable.styles'
-import { ArrowForward as Arrow } from '@material-ui/icons'
-import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
-import { getActiveStrategies } from '@core/graphql/queries/chart/getActiveStrategies'
 
-import { client } from '@core/graphql/apolloClient'
-import { filterCacheData, modifyCacheData } from '@core/utils/TradingTable.utils'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components/index'
 import stableCoins from '@core/config/stableCoins'
 import { cloneDeep } from 'lodash-es'
-import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
-import { AdlIndicator } from './TradingTable.styles'
 import { getPrecisionItem } from '@core/utils/getPrecisionItem'
-
-const changePairToSelected = (pair: string) => {
-  console.log('client mutate', client)
-  client.mutate({
-    mutation: CHANGE_CURRENCY_PAIR,
-    variables: {
-      pairInput: {
-        pair,
-      },
-    },
-  })
-}
 
 export const CloseButton = ({
   i,
@@ -63,8 +41,8 @@ export const CloseButton = ({
           <Loading size={16} style={{ height: '16px' }} />
         </div>
       ) : (
-          'Cancel'
-        )}
+        'Cancel'
+      )}
     </TableButton>
   )
 }
@@ -84,107 +62,90 @@ import {
   tradeHistoryBody,
 } from '@sb/components/TradingTable/TradingTable.mocks'
 
-import SubRow from './PositionsTable/SubRow'
-import {
-  EntryOrderColumn,
-  StopLossColumn,
-  DateColumn,
-  TakeProfitColumn,
-} from './ActiveTrades/Columns'
-
 import { Theme } from '@material-ui/core'
-import EditIcon from '@material-ui/icons/Edit'
-import { TRADING_CONFIG } from '@sb/components/TradingTable/TradingTable.config'
-
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-
-import { SubColumnValue } from './ActiveTrades/Columns'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
-import { addMainSymbol } from '@sb/components'
-import TooltipCustom from '../TooltipCustom/TooltipCustom'
 
 export const getTableBody = (tab: string) =>
   tab === 'openOrders'
     ? openOrdersBody
     : tab === 'orderHistory'
-      ? orderHistoryBody
-      : tab === 'tradeHistory'
-        ? tradeHistoryBody
-        : tab === 'funds'
-          ? fundsBody
-          : tab === 'positions'
-            ? positionsBody
-            : []
+    ? orderHistoryBody
+    : tab === 'tradeHistory'
+    ? tradeHistoryBody
+    : tab === 'funds'
+    ? fundsBody
+    : tab === 'positions'
+    ? positionsBody
+    : []
 
 export const getTableHead = (
   tab: string,
   marketType: number = 0,
-  refetch?: () => void,
-  updatePositionsHandler?: () => void,
-  positionsRefetchInProcess?: boolean
+  showSettle: boolean = true
 ): any[] =>
   tab === 'openOrders'
     ? openOrdersColumnNames(marketType)
     : tab === 'orderHistory'
-      ? orderHistoryColumnNames(marketType)
-      : tab === 'tradeHistory'
-        ? tradeHistoryColumnNames(marketType)
-        : tab === 'balances'
-          ? balancesColumnNames
-          : tab === 'feeTiers'
-            ? feeTiersColumnNames
-            : tab === 'feeDiscounts'
-              ? feeDiscountsColumnNames
-              : tab === 'strategiesHistory'
-                ? strategiesHistoryColumnNames
-                : []
+    ? orderHistoryColumnNames(marketType)
+    : tab === 'tradeHistory'
+    ? tradeHistoryColumnNames(marketType)
+    : tab === 'balances'
+    ? balancesColumnNames(showSettle)
+    : tab === 'feeTiers'
+    ? feeTiersColumnNames
+    : tab === 'feeDiscounts'
+    ? feeDiscountsColumnNames
+    : tab === 'strategiesHistory'
+    ? strategiesHistoryColumnNames
+    : []
 
 export const getStartDate = (stringDate: string): number =>
   stringDate === '1Day'
     ? dayjs()
-      .startOf('day')
-      .valueOf()
+        .startOf('day')
+        .valueOf()
     : stringDate === '1Week'
-      ? dayjs()
+    ? dayjs()
         .startOf('day')
         .subtract(1, 'week')
         .valueOf()
-      : stringDate === '2Weeks'
-        ? dayjs()
-          .startOf('day')
-          .subtract(2, 'week')
-          .valueOf()
-        : stringDate === '1Month'
-          ? dayjs()
-            .startOf('day')
-            .subtract(1, 'month')
-            .valueOf()
-          : stringDate === '3Month'
-            ? dayjs()
-              .startOf('day')
-              .subtract(3, 'month')
-              .valueOf()
-            : dayjs()
-              .startOf('day')
-              .subtract(6, 'month')
-              .valueOf()
+    : stringDate === '2Weeks'
+    ? dayjs()
+        .startOf('day')
+        .subtract(2, 'week')
+        .valueOf()
+    : stringDate === '1Month'
+    ? dayjs()
+        .startOf('day')
+        .subtract(1, 'month')
+        .valueOf()
+    : stringDate === '3Month'
+    ? dayjs()
+        .startOf('day')
+        .subtract(3, 'month')
+        .valueOf()
+    : dayjs()
+        .startOf('day')
+        .subtract(6, 'month')
+        .valueOf()
 
 export const getEmptyTextPlaceholder = (tab: string): string =>
   tab === 'openOrders'
     ? 'You have no open orders.'
     : tab === 'orderHistory'
-      ? 'You have no order history.'
-      : tab === 'tradeHistory'
-        ? 'You have no trades.'
-        : tab === 'balances'
-          ? 'You have no Funds.'
-          : tab === 'feeTiers'
-            ? 'You have no fee tiers'
-            : tab === 'feeDiscounts'
-              ? 'You have no (M)SRM accounts'
-              : tab === 'strategiesHistory'
-                ? 'You have no smart trades'
-                : 'You have no assets'
+    ? 'You have no order history.'
+    : tab === 'tradeHistory'
+    ? 'You have no trades.'
+    : tab === 'balances'
+    ? 'You have no Funds.'
+    : tab === 'feeTiers'
+    ? 'You have no fee tiers'
+    : tab === 'feeDiscounts'
+    ? 'You have no (M)SRM accounts'
+    : tab === 'strategiesHistory'
+    ? 'You have no smart trades'
+    : 'You have no assets'
 
 export const isBuyTypeOrder = (orderStringType: string): boolean =>
   /buy/gi.test(orderStringType.toLowerCase())
@@ -248,9 +209,9 @@ const getActiveOrderStatus = ({
   state,
   profitPercentage,
 }: IStatus): [
-    'Trailing entry' | 'In Profit' | 'In Loss' | 'Preparing' | 'Timeout',
-    string
-  ] => {
+  'Trailing entry' | 'In Profit' | 'In Loss' | 'Preparing' | 'Timeout',
+  string
+] => {
   if (strategy.conditions.isTemplate) {
     if (strategy.conditions.templateStatus === 'enabled') {
       return ['Waiting alert', theme.palette.green.main]
@@ -316,1336 +277,6 @@ export const filterOpenOrders = ({
 
 export const filterPositions = ({ position, canceledPositions }) => {
   return position.positionAmt !== 0 && !canceledPositions.includes(position._id)
-}
-
-export const combinePositionsTable = ({
-  data,
-  createOrderWithStatus,
-  theme,
-  prices,
-  pair,
-  keyId,
-  keys,
-  canceledPositions,
-  priceFromOrderbook,
-  // pricePrecision,
-  // quantityPrecision,
-  adlData,
-  toogleEditMarginPopup,
-  handlePairChange,
-  enqueueSnackbar,
-}: {
-  data: Position[]
-  createOrderWithStatus: (variables: any, positionId: any) => Promise<void>
-  theme: Theme
-  prices: { price: number; pair: string }[]
-  pair: string
-  keyId: string
-  canceledPositions: string[]
-  priceFromOrderbook: number | string
-  // pricePrecision: number
-  // quantityPrecision: number
-  keys: Key[]
-  adlData: { symbol: string; adlQuantile: any }[]
-  toogleEditMarginPopup: (position: Position) => void
-  handlePairChange: (pair: string) => void
-  enqueueSnackbar: (message: string, { variant: string }) => void
-}) => {
-  if (!data && !Array.isArray(data)) {
-    return []
-  }
-
-  const {
-    green,
-    red,
-  }: { green: { new: string }; red: { new: string } } = theme.palette
-  let positions: any = []
-
-  const processedPositionsData = data
-    .filter((el) => filterPositions({ position: el, canceledPositions }))
-    .map((el: OrderType, i: number) => {
-      const {
-        symbol,
-        entryPrice,
-        positionAmt,
-        leverage = 1,
-        keyId,
-        marginType,
-        isolatedMargin,
-        liquidationPrice,
-      } = el
-
-      const { pricePrecision, quantityPrecision } = getPrecisionItem({
-        marketType: 1,
-        symbol,
-      })
-
-      const needOpacity = el._id === '0'
-
-      const marketPrice = (
-        prices.find((price) => price.pair === `${el.symbol}:1:binance`) || {
-          price: 0,
-        }
-      ).price
-
-      const keyName = keys[keyId]
-
-      const getVariables = (type: String, price: Number) => ({
-        keyId: el.keyId,
-        keyParams: {
-          symbol,
-          side: positionAmt < 0 ? 'buy' : 'sell',
-          marketType: 1,
-          type,
-          reduceOnly: true,
-          ...(type === 'limit' ? { price, timeInForce: 'GTC' } : {}),
-          amount: Math.abs(positionAmt),
-          leverage,
-          params: {
-            type,
-          },
-        },
-      })
-
-      const side = positionAmt < 0 ? 'sell short' : 'buy long'
-      const liqPrice =
-        entryPrice *
-        (side === 'sell short'
-          ? 1 + 100 / leverage / 100
-          : 1 - 100 / leverage / 100)
-
-      const profitPercentage =
-        ((marketPrice / entryPrice) * 100 - 100) *
-        leverage *
-        (side === 'buy long' ? 1 : -1)
-
-      const profitAmount =
-        (positionAmt / leverage) *
-        entryPrice *
-        (profitPercentage / 100) *
-        (side === 'buy long' ? 1 : -1)
-
-      const pair = symbol.split('_')
-
-      let adl = 0
-      const currentAdlData = adlData.find(
-        (adl) => adl.symbol === symbol.replace('_', '')
-      )
-
-      if (currentAdlData && currentAdlData.adlQuantile) {
-        adl =
-          side === 'buy long'
-            ? currentAdlData.adlQuantile.LONG ||
-            currentAdlData.adlQuantile.HEDGE ||
-            currentAdlData.adlQuantile.BOTH
-            : currentAdlData.adlQuantile.SHORT ||
-            currentAdlData.adlQuantile.HEDGE ||
-            currentAdlData.adlQuantile.BOTH
-      }
-
-      return [
-        {
-          index: {
-            render: i + 1,
-            rowspan: 2,
-            color: theme.palette.grey.light,
-          },
-          id: el._id,
-          pair: {
-            render: (
-              <div
-                onClick={(e) => {
-                  handlePairChange(symbol)
-                }}
-                style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  flexDirection: 'column',
-                  cursor: 'pointer',
-                }}
-              >
-                <span>
-                  {pair[0]}/{pair[1]}
-                </span>
-                <span
-                  style={{
-                    display: 'block',
-                    textTransform: 'uppercase',
-                    color: side === 'buy long' ? green.main : red.main,
-                  }}
-                >
-                  {side}
-                </span>
-              </div>
-            ),
-            contentToSort: symbol,
-            style: { opacity: needOpacity ? 0.5 : 1 },
-          },
-          size: {
-            render: `${positionAmt} ${pair[0]}`,
-            contentToSort: positionAmt,
-            style: { opacity: needOpacity ? 0.5 : 1, textAlign: 'right' },
-          },
-          margin: {
-            render: (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                }}
-                onClick={() => {
-                  if (marginType === 'isolated') {
-                    toogleEditMarginPopup(el)
-                  }
-                }}
-              >
-                <span>
-                  {marginType === 'isolated'
-                    ? stripDigitPlaces(isolatedMargin, 2)
-                    : stripDigitPlaces(
-                      (positionAmt / leverage) *
-                      entryPrice *
-                      (side === 'buy long' ? 1 : -1),
-                      2
-                    )}{' '}
-                  {pair[1]}
-                </span>
-                {marginType === 'isolated' && (
-                  <EditIcon
-                    style={{
-                      width: '1.5rem',
-                      height: '1.5rem',
-                      marginLeft: '.5rem',
-                      fill: theme.palette.blue.main,
-                    }}
-                  />
-                )}
-              </div>
-            ),
-          },
-          // marginRation: {
-          //   render: `40%`,
-          // },
-          leverage: {
-            render: `X${leverage}`,
-            contentToSort: leverage,
-            style: { opacity: needOpacity ? 0.5 : 1 },
-          },
-          entryPrice: {
-            render: `${entryPrice} ${pair[1]}`,
-            style: {
-              textAlign: 'left',
-              whiteSpace: 'nowrap',
-              opacity: needOpacity ? 0.5 : 1,
-            },
-            contentToSort: entryPrice,
-          },
-          marketPrice: {
-            render: `${stripDigitPlaces(marketPrice, pricePrecision)} ${pair[1]
-              }`,
-            style: {
-              textAlign: 'left',
-              whiteSpace: 'nowrap',
-              opacity: needOpacity ? 0.5 : 1,
-              maxWidth: '70px',
-            },
-            contentToSort: marketPrice,
-          },
-          adl: {
-            render: (
-              <div style={{ display: 'flex', height: '2rem' }}>
-                <AdlIndicator
-                  color={theme.palette.green.main}
-                  adl={adl}
-                  i={0}
-                />
-                <AdlIndicator color={'#A2AC29'} adl={adl} i={1} />
-                <AdlIndicator color={'#F3BA2F'} adl={adl} i={2} />
-                <AdlIndicator color={'#F38D2F'} adl={adl} i={3} />
-                <AdlIndicator color={theme.palette.red.main} adl={adl} i={4} />
-              </div>
-            ),
-          },
-          liqPrice: {
-            render: `${liquidationPrice == 0
-              ? '-'
-              : stripDigitPlaces(liquidationPrice, pricePrecision)
-              } ${liquidationPrice == 0 ? '' : pair[1]}`,
-            style: {
-              textAlign: 'left',
-              whiteSpace: 'nowrap',
-              opacity: needOpacity ? 0.5 : 1,
-            },
-            contentToSort: liquidationPrice,
-          },
-
-          profit: {
-            render: marketPrice ? (
-              <SubColumnValue
-                theme={theme}
-                style={{ whiteSpace: 'nowrap' }}
-                color={profitPercentage > 0 ? green.main : red.main}
-              >
-                {`${profitAmount < 0 ? '-' : ''}${Math.abs(
-                  Number(profitAmount.toFixed(3))
-                )} ${pair[1]} / ${profitPercentage < 0 ? '-' : ''}${Math.abs(
-                  Number(profitPercentage.toFixed(2))
-                )}%`}
-              </SubColumnValue>
-            ) : (
-                `0 ${pair[1]} / 0%`
-              ),
-            style: { opacity: needOpacity ? 0.5 : 1, maxWidth: '100px' },
-            colspan: 2,
-          },
-          tooltipTitle: keyName,
-        },
-        {
-          pair: {
-            render: (
-              <div>
-                <SubRow
-                  theme={theme}
-                  positionId={el._id}
-                  enqueueSnackbar={enqueueSnackbar}
-                  getVariables={getVariables}
-                  priceFromOrderbook={priceFromOrderbook}
-                  createOrderWithStatus={createOrderWithStatus}
-                />
-              </div>
-            ),
-            colspan: 10,
-            style: {
-              opacity: needOpacity ? 0.5 : 1,
-              visibility: needOpacity ? 'hidden' : 'visible',
-            },
-          },
-        },
-      ]
-    })
-
-  processedPositionsData.forEach((position) => {
-    position.forEach((obj) => positions.push(obj))
-  })
-
-  return positions
-}
-
-export const combineActiveTradesTable = ({
-  data,
-  queryBody,
-  queryVariables,
-  cancelOrderFunc,
-  changeStatusWithStatus,
-  editTrade,
-  theme,
-  prices = [],
-  marketType,
-  currencyPair,
-  // pricePrecision,
-  // quantityPrecision,
-  addOrderToCanceled,
-  canceledOrders,
-  keys,
-  handlePairChange,
-}: {
-  data: any[]
-  queryBody: string,
-  queryVariables: object,
-  cancelOrderFunc: (strategyId: string) => Promise<any>
-  changeStatusWithStatus: (
-    startegyId: string,
-    keyId: string,
-    status: string
-  ) => Promise<any>
-  editTrade: (block: string, trade: any) => void
-  theme: Theme
-  prices: { pair: string; price: number }[]
-  marketType: number
-  currencyPair: string
-  // pricePrecision: number
-  // quantityPrecision: number
-  addOrderToCanceled: (id: string) => void
-  canceledOrders: string[]
-  keys: Key[]
-  handlePairChange: (pair: string) => void
-}) => {
-  if (!data && !Array.isArray(data)) {
-    return []
-  }
-
-  const { green, red, blue } = theme.palette
-
-  const processedActiveTradesData = data
-    .filter(
-      (a) =>
-        !!a &&
-        (a.enabled ||
-          (a.conditions.isTemplate &&
-            a.conditions.templateStatus !== 'disabled')) &&
-        !canceledOrders.includes(a._id)
-    )
-    .sort((a, b) => {
-      // sometimes in db we receive createdAt as timestamp
-      // so using this we understand type of value that in createdAt field
-
-      const aDate = isNaN(dayjs(+a.createdAt).unix())
-        ? a.createdAt
-        : +a.createdAt
-
-      const bDate = isNaN(dayjs(+b.createdAt).unix())
-        ? b.createdAt
-        : +b.createdAt
-
-      // TODO: maybe I'm wrong here with replacing with dayjs
-      return dayjs(bDate).valueOf() - dayjs(aDate).valueOf()
-    })
-    .map((el: OrderType, i: number, arr) => {
-      const {
-        createdAt,
-        accountId,
-        conditions: {
-          pair,
-          leverage,
-          marketType,
-          entryOrder: {
-            side,
-            orderType,
-            amount,
-            entryDeviation,
-            price,
-            activatePrice,
-          },
-          exitLevels,
-          entryLevels,
-          stopLoss,
-          stopLossType,
-          forcedLoss,
-          trailingExit,
-          timeoutIfProfitable,
-          timeoutLoss,
-          timeoutWhenLoss,
-          timeoutWhenProfit,
-          hedgeLossDeviation,
-          isTemplate,
-          templatePnl,
-          templateStatus,
-        } = {
-          pair: '-',
-          marketType: 0,
-          entryOrder: {
-            side: '-',
-            orderType: '-',
-            amount: '-',
-          },
-          exitLevels: [],
-          entryLevels: [],
-          stopLoss: '-',
-          stopLossType: '-',
-          forcedLoss: false,
-          trailingExit: false,
-          timeoutIfProfitable: '-',
-          timeoutLoss: '-',
-          timeoutWhenLoss: '-',
-          timeoutWhenProfit: '-',
-          hedgeLossDeviation: '-',
-          isTemplate: false,
-          templatePnl: 0,
-          templateStatus: '-',
-        },
-      } = el
-
-      console.log('processedActiveTradesData arr :', arr)
-
-      const { entryPrice, exitPrice, state, msg } = el.state || {
-        entryPrice: 0,
-        state: '-',
-        msg: null,
-      }
-
-      const pairArr = pair.split('_')
-      const needOpacity = false
-      const date = isNaN(dayjs(+createdAt).unix()) ? createdAt : +createdAt
-      let currentPrice = (
-        prices.find(
-          (priceObj) => priceObj.pair === `${pair}:${marketType}:binance`
-        ) || { price: 0 }
-      ).price
-
-      // for waitLossHedge for example
-      if (exitPrice > 0) {
-        currentPrice = exitPrice
-      }
-
-      const keyName = keys[accountId]
-
-      const entryOrderPrice =
-        !entryDeviation && orderType === 'limit' && !entryPrice
-          ? price
-          : entryPrice
-
-      const profitPercentage =
-        ((currentPrice / entryOrderPrice) * 100 - 100) *
-        leverage *
-        (isBuyTypeOrder(side) ? 1 : -1)
-
-      const profitAmount =
-        (amount / leverage) * entryOrderPrice * (profitPercentage / 100)
-
-      const [activeOrderStatus, statusColor] = getActiveOrderStatus({
-        strategy: el,
-        state: el.state,
-        profitPercentage,
-        theme,
-      })
-
-      const isErrorInOrder = !!msg
-
-      const { pricePrecision, quantityPrecision } = getPrecisionItem({
-        marketType,
-        symbol: pair,
-      })
-
-      const strategyId = el._id
-
-      return {
-        id: `${el._id}${i}`,
-        pair: {
-          render: (
-            <SubColumnValue
-              theme={theme}
-              onClick={(e) => {
-                handlePairChange(pair)
-              }}
-            >{`${pairArr[0]}/${pairArr[1]}`}</SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-            cursor: 'pointer',
-          },
-        },
-        side: {
-          render: (
-            <SubColumnValue
-              theme={theme}
-              color={side === 'buy' ? green.main : red.main}
-            >
-              {marketType === 0
-                ? side
-                : side === 'buy'
-                  ? 'buy long'
-                  : 'sell short'}
-            </SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-          contentToSort: side,
-        },
-        entryPrice: {
-          render: entryPrice ? (
-            <SubColumnValue theme={theme}>
-              {stripDigitPlaces(entryPrice, pricePrecision)} {pairArr[1]}
-            </SubColumnValue>
-          ) : !!entryDeviation ? (
-            <SubColumnValue theme={theme}>
-              <div style={{ color: theme.palette.grey.light }}>trailing</div>{' '}
-              <div>
-                <span style={{ color: theme.palette.grey.light }}>from</span>{' '}
-                {stripDigitPlaces(activatePrice, pricePrecision)}
-              </div>
-            </SubColumnValue>
-          ) : !!entryOrderPrice ? (
-            <SubColumnValue theme={theme}>
-              {stripDigitPlaces(entryOrderPrice, pricePrecision)} {pairArr[1]}
-            </SubColumnValue>
-          ) : (
-                  '-'
-                ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-          contentToSort: entryOrderPrice,
-        },
-        quantity: {
-          render: (
-            <SubColumnValue theme={theme}>
-              {stripDigitPlaces(amount, quantityPrecision)} {pairArr[0]}{' '}
-            </SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-          contentToSort: amount,
-        },
-        takeProfit: {
-          render: (
-            <SubColumnValue theme={theme} color={green.main}>
-              {exitLevels[0] &&
-                exitLevels[0].activatePrice &&
-                exitLevels[0].entryDeviation ? (
-                  `${exitLevels[0].activatePrice}% / ${exitLevels[0].entryDeviation
-                  }%`
-                ) : exitLevels.length > 1 ? (
-                  <div>
-                    <div>
-                      {exitLevels.map((level, i) =>
-                        i < 4 ? (
-                          <span style={{ color: theme.palette.grey.light }}>
-                            {level.amount}%{' '}
-                            {i === 3 || i + 1 === exitLevels.length ? '' : '/ '}
-                          </span>
-                        ) : null
-                      )}
-                    </div>
-                    <div>
-                      {exitLevels.map((level, i) =>
-                        i < 4 ? (
-                          <span>
-                            {level.price}%{' '}
-                            {i === 3 || i + 1 === exitLevels.length ? '' : '/ '}
-                          </span>
-                        ) : null
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                    `${exitLevels.length > 0 ? exitLevels[0].price : '-'}%`
-                  )}
-            </SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-        },
-        stopLoss: {
-          render:
-            stopLoss || hedgeLossDeviation ? (
-              <SubColumnValue theme={theme} color={red.main}>
-                {stopLoss || hedgeLossDeviation}%
-              </SubColumnValue>
-            ) : (
-                '-'
-              ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-          contentToSort: stopLoss,
-        },
-        profit: {
-          render:
-            !isTemplate &&
-              (state &&
-                activeOrderStatus !== 'Preparing' &&
-                state !== 'WaitForEntry' &&
-                state !== 'TrailingEntry' &&
-                !!currentPrice &&
-                entryOrderPrice) ? (
-                <SubColumnValue
-                  theme={theme}
-                  color={
-                    profitPercentage > 0 || templatePnl > 0
-                      ? green.main
-                      : red.main
-                  }
-                >
-                  {' '}
-                  {!!templatePnl
-                    ? `${stripDigitPlaces(templatePnl, 3)} ${pairArr[1]}`
-                    : `${profitAmount < 0 ? '-' : ''}${Math.abs(
-                      Number(profitAmount.toFixed(3))
-                    )} ${pairArr[1]} / ${profitPercentage < 0 ? '-' : ''
-                    }${Math.abs(Number(profitPercentage.toFixed(2)))}%`}
-                </SubColumnValue>
-              ) : (
-                `0 ${pairArr[1]} / 0%`
-              ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-            minWidth: '135px',
-          },
-          contentToSort: profitAmount,
-        },
-        status: {
-          render: (
-            <SubColumnValue
-              theme={theme}
-              style={{
-                textTransform: 'none',
-                display: 'flex',
-                alignItems: 'center',
-              }}
-              color={isErrorInOrder ? red.main : statusColor}
-            >
-              {isErrorInOrder ? 'Error' : activeOrderStatus}
-              {isErrorInOrder ? (
-                <TooltipCustom
-                  title={msg}
-                  component={
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <ErrorIcon
-                        style={{
-                          height: '1.5rem',
-                          width: '1.5rem',
-                          color: red.main,
-                          marginLeft: '.5rem',
-                        }}
-                      />
-                    </div>
-                  }
-                />
-              ) : null}
-            </SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-          contentToSort: activeOrderStatus,
-        },
-        close: {
-          render: needOpacity ? (
-            ' '
-          ) : isTemplate ? (
-            <div>
-              <BtnCustom
-                btnWidth="100%"
-                height="auto"
-                fontSize=".9rem"
-                padding=".2rem 0 .1rem 0"
-                margin="0 0 .4rem 0"
-                borderRadius=".8rem"
-                btnColor={theme.palette.white.main}
-                borderColor={theme.palette.blue.main}
-                backgroundColor={theme.palette.blue.main}
-                hoverColor={theme.palette.white.main}
-                hoverBackground={theme.palette.blue.main}
-                transition={'all .4s ease-out'}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  changeStatusWithStatus(
-                    el._id,
-                    el.accountId,
-                    templateStatus === 'paused' ? 'enabled' : 'paused'
-                  )
-                }}
-              >
-                {templateStatus === 'paused' ? 'continue' : 'pause'}
-              </BtnCustom>
-              <BtnCustom
-                btnWidth="100%"
-                height="auto"
-                fontSize=".9rem"
-                margin=".4rem 0 0 0"
-                padding=".2rem 0 .1rem 0"
-                borderRadius=".8rem"
-                btnColor={theme.palette.white.main}
-                borderColor={red.main}
-                backgroundColor={red.main}
-                hoverColor={theme.palette.white.main}
-                hoverBackground={red.main}
-                transition={'all .4s ease-out'}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  changeStatusWithStatus(el._id, el.accountId, 'disabled')
-                    .then((res) => {
-                      console.log('changeStatusWithStatus res', res)
-
-                      if (res.status === 'error') {
-                        modifyCacheData({
-                          _id: strategyId,
-                          name: 'getActiveStrategies',
-                          subName: 'strategies',
-                          typename: 'strategiesHistoryOutput',
-                          data: null,
-                          query: queryBody,
-                          variables: queryVariables,
-                          modifyFunc: 'map',
-                          modifyFuncCallBack: (elem) => {
-                            if (elem._id === strategyId) {
-                              elem.enabled = el.enabled
-
-                              if (elem.conditions.isTemplate && elem.conditions.templateStatus) {
-                                elem.conditions.templateStatus = el.conditions.templateStatus
-                              }
-                            }
-
-                            return elem
-                          },
-                        })
-                      }
-
-                    })
-
-                  modifyCacheData({
-                    _id: strategyId,
-                    name: 'getActiveStrategies',
-                    subName: 'strategies',
-                    typename: 'strategiesHistoryOutput',
-                    data: null,
-                    query: queryBody,
-                    variables: queryVariables,
-                    modifyFunc: 'map',
-                    modifyFuncCallBack: (elem) => {
-                      if (elem._id === strategyId) {
-                        elem.enabled = false
-
-                        if (elem.conditions.isTemplate && elem.conditions.templateStatus) {
-                          elem.conditions.templateStatus = 'disabled'
-                        }
-                      }
-
-                      return elem
-                    },
-                  })
-
-                  // addOrderToCanceled(el._id)
-                }}
-              >
-                stop
-              </BtnCustom>
-            </div>
-          ) : (
-                <BtnCustom
-                  btnWidth="100%"
-                  height="auto"
-                  fontSize=".9rem"
-                  padding=".2rem 0 .1rem 0"
-                  borderRadius=".8rem"
-                  btnColor={theme.palette.white.main}
-                  borderColor={red.main}
-                  backgroundColor={red.main}
-                  hoverColor={red.main}
-                  hoverBackground={theme.palette.white.main}
-                  transition={'all .4s ease-out'}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    cancelOrderFunc(el._id, el.accountId)
-                      .then((res) => {
-                        console.log('changeStatusWithStatus res', res)
-
-                        if (res.status === 'error') {
-                          modifyCacheData({
-                            _id: strategyId,
-                            name: 'getActiveStrategies',
-                            subName: 'strategies',
-                            typename: 'strategiesHistoryOutput',
-                            data: null,
-                            query: queryBody,
-                            variables: queryVariables,
-                            modifyFunc: 'map',
-                            modifyFuncCallBack: (elem) => {
-                              if (elem._id === strategyId) {
-                                elem.enabled = el.enabled
-
-                                if (elem.conditions.isTemplate && elem.conditions.templateStatus) {
-                                  elem.conditions.templateStatus = el.conditions.templateStatus
-                                }
-                              }
-
-                              return elem
-                            },
-                          })
-                        }
-
-                      })
-
-                    modifyCacheData({
-                      _id: strategyId,
-                      name: 'getActiveStrategies',
-                      subName: 'strategies',
-                      typename: 'strategiesHistoryOutput',
-                      data: null,
-                      query: queryBody,
-                      variables: queryVariables,
-                      modifyFunc: 'map',
-                      modifyFuncCallBack: (elem) => {
-                        if (elem._id === strategyId) {
-                          elem.enabled = false
-
-                          if (elem.conditions.isTemplate && elem.conditions.templateStatus) {
-                            elem.conditions.templateStatus = 'disabled'
-                          }
-                        }
-
-                        return elem
-                      },
-                    })
-                  }}
-                >
-                  {activeOrderStatus === 'Preparing' ||
-                    activeOrderStatus === 'Trailing entry'
-                    ? 'cancel'
-                    : 'market'}
-                </BtnCustom>
-              ),
-        },
-        tooltipTitle: keyName,
-        expandableContent: [
-          {
-            row: {
-              render: (
-                <div style={{ position: 'relative' }}>
-                  <EntryOrderColumn
-                    theme={theme}
-                    haveEdit={true}
-                    entryLevels={entryLevels}
-                    editTrade={() => editTrade('entryOrder', el)}
-                    enableEdit={activeOrderStatus === 'Preparing' || isTemplate}
-                    pair={`${pairArr[0]}/${pairArr[1]}`}
-                    side={side}
-                    price={entryOrderPrice}
-                    order={orderType}
-                    amount={
-                      marketType === 0 ? +amount.toFixed(8) : +amount.toFixed(3)
-                    }
-                    total={entryOrderPrice * amount}
-                    trailing={
-                      entryDeviation
-                        ? stripDigitPlaces(entryDeviation / leverage, 3)
-                        : false
-                    }
-                    activatePrice={activatePrice}
-                    red={red.main}
-                    green={green.main}
-                    blue={blue}
-                  />
-                  <TakeProfitColumn
-                    haveEdit={true}
-                    theme={theme}
-                    enableEdit={true}
-                    editTrade={() => editTrade('takeProfit', el)}
-                    price={exitLevels.length > 0 && exitLevels[0].price}
-                    order={exitLevels.length > 0 && exitLevels[0].orderType}
-                    targets={exitLevels ? exitLevels : []}
-                    timeoutProfit={timeoutWhenProfit}
-                    timeoutProfitable={timeoutIfProfitable}
-                    trailing={trailingExit}
-                    red={red.main}
-                    green={green.main}
-                    blue={blue}
-                  />
-                  <StopLossColumn
-                    theme={theme}
-                    haveEdit={true}
-                    enableEdit={true}
-                    editTrade={() => editTrade('stopLoss', el)}
-                    price={stopLoss}
-                    order={stopLossType}
-                    forced={forcedLoss}
-                    timeoutWhenLoss={timeoutWhenLoss}
-                    timeoutLoss={timeoutLoss}
-                    red={red.main}
-                    green={green.main}
-                    blue={blue}
-                  />
-                  <DateColumn theme={theme} createdAt={date} />
-                </div>
-              ),
-              colspan: 9,
-            },
-          },
-        ],
-      }
-    })
-
-  return processedActiveTradesData
-}
-
-export const combineStrategiesHistoryTable = (
-  data: OrderType[],
-  theme: Theme,
-  marketType: number,
-  keys: Key[],
-  handlePairChange
-) => {
-  if (!data && !Array.isArray(data)) {
-    return []
-  }
-
-  const { green, red, blue } = theme.palette
-
-  const processedStrategiesHistoryData = data
-    .filter((el) => el.conditions.marketType === marketType)
-    .map((el: OrderType, i: number) => {
-      const {
-        createdAt,
-        enabled,
-        accountId,
-        conditions: {
-          pair,
-          leverage,
-          marketType,
-          entryOrder: {
-            side,
-            orderType,
-            amount,
-            entryDeviation,
-            price,
-            activatePrice,
-          },
-          exitLevels,
-          entryLevels,
-          stopLoss,
-          stopLossType,
-          forcedLoss,
-          trailingExit,
-          timeoutIfProfitable,
-          timeoutWhenLoss,
-          timeoutLoss,
-          timeoutWhenProfit,
-          isTemplate,
-          templatePnl,
-          templateStatus,
-        } = {
-          pair: '-',
-          marketType: 0,
-          entryOrder: {
-            side: '-',
-            orderType: '-',
-            amount: '-',
-          },
-          exitLevels: [],
-          entryLevels: [],
-          stopLoss: '-',
-          stopLossType: '-',
-          forcedLoss: false,
-          trailingExit: false,
-          timeoutIfProfitable: '-',
-          timeoutWhenLoss: '-',
-          timeoutLoss: '-',
-          timeoutWhenProfit: '-',
-          isTemplate: false,
-          templatePnl: 0,
-          templateStatus: '-',
-        },
-      } = el
-
-      const { entryPrice, exitPrice, state, msg } = el.state || {
-        entryPrice: 0,
-        state: '',
-        msg: null,
-        exitPrice: 0,
-      }
-
-      const keyName = keys[accountId]
-
-      const pairArr = pair.split('_')
-      const needOpacity = el._id === '-1'
-      const date = isNaN(dayjs(+createdAt).unix()) ? createdAt : +createdAt
-      let orderState = state ? state : enabled ? 'Waiting' : 'Closed'
-      let isErrorInOrder = !!msg
-
-      const entryOrderPrice =
-        !entryDeviation && orderType === 'limit' && !entryPrice
-          ? price
-          : entryPrice
-      // ? entryPrice
-      // : !!entryDeviation
-      // ? activatePrice * (1 + entryDeviation / leverage / 100)
-      // : price
-
-      const [profitAmount, profitPercentage] = getPnlFromState({
-        state: el.state,
-        pair: pairArr,
-        side,
-        amount,
-        leverage,
-      })
-
-      const positionWasPlaced =
-        !!state && state !== 'TrailingEntry' && state !== 'WaitForEntry'
-
-      if (isErrorInOrder && profitAmount !== 0) {
-        orderState = 'Closed'
-        isErrorInOrder = false
-      }
-
-      if (isTemplate) {
-        if (templateStatus === 'enabled') {
-          orderState = 'Waiting alert'
-        }
-        if (templateStatus === 'disabled') {
-          orderState = 'Closed'
-        }
-        if (templateStatus === 'paused') {
-          orderState = 'On pause'
-        }
-      }
-
-      if (!enabled && positionWasPlaced) {
-        orderState = 'Closed'
-      }
-
-      if (profitAmount === 0 && !exitPrice && !enabled && !positionWasPlaced) {
-        orderState = 'Canceled'
-      }
-
-      if (orderState === 'End') orderState = 'Closed'
-
-      if (isTemplate) orderState = 'Template'
-
-      const { pricePrecision, quantityPrecision } = getPrecisionItem({
-        marketType,
-        symbol: pair,
-      })
-
-      return {
-        id: el._id,
-        pair: {
-          render: (
-            <SubColumnValue
-              theme={theme}
-              onClick={() => handlePairChange(pair)}
-            >{`${pairArr[0]}/${pairArr[1]}`}</SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-            cursor: 'pointer',
-          },
-          contentToSort: `${pairArr[0]}/${pairArr[1]}`,
-        },
-        side: {
-          render: (
-            <SubColumnValue
-              theme={theme}
-              color={side === 'buy' ? green.main : red.main}
-            >
-              {marketType === 0
-                ? side
-                : side === 'buy'
-                  ? 'buy long'
-                  : 'sell short'}
-            </SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-          contentToSort: side,
-        },
-        entryPrice: {
-          render: (
-            <SubColumnValue theme={theme}>
-              {stripDigitPlaces(entryOrderPrice, pricePrecision)} {pairArr[1]}
-            </SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-          contentToSort: entryOrderPrice,
-        },
-        quantity: {
-          render: (
-            <SubColumnValue theme={theme}>
-              {stripDigitPlaces(amount, quantityPrecision)} {pairArr[0]}{' '}
-            </SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-          contentToSort: amount,
-        },
-        takeProfit: {
-          render: (
-            <SubColumnValue theme={theme} color={green.main}>
-              {exitLevels[0] &&
-                exitLevels[0].activatePrice &&
-                exitLevels[0].entryDeviation ? (
-                  `${exitLevels[0].activatePrice}% / ${exitLevels[0].entryDeviation
-                  }%`
-                ) : exitLevels.length > 1 ? (
-                  <div>
-                    <div>
-                      {exitLevels.map((level, i) =>
-                        i < 4 ? (
-                          <span style={{ color: theme.palette.grey.light }}>
-                            {level.amount}%{' '}
-                            {i === 3 || i + 1 === exitLevels.length ? '' : '/ '}
-                          </span>
-                        ) : null
-                      )}
-                    </div>
-                    <div>
-                      {exitLevels.map((level, i) =>
-                        i < 4 ? (
-                          <span>
-                            {level.price}%{' '}
-                            {i === 3 || i + 1 === exitLevels.length ? '' : '/ '}
-                          </span>
-                        ) : null
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                    `${exitLevels.length > 0 ? exitLevels[0].price : '-'}%`
-                  )}
-            </SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-        },
-        stopLoss: {
-          render: stopLoss ? (
-            <SubColumnValue theme={theme} color={red.main}>
-              {stopLoss}%
-            </SubColumnValue>
-          ) : (
-              '-'
-            ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-          contentToSort: stopLoss,
-        },
-        profit: {
-          render: (
-            <SubColumnValue
-              theme={theme}
-              color={
-                profitPercentage === 0 && !templatePnl
-                  ? ''
-                  : profitPercentage > 0 || (!!templatePnl && templatePnl > 0)
-                    ? green.main
-                    : red.main
-              }
-            >
-              {!!templatePnl
-                ? `${stripDigitPlaces(templatePnl, 3)} ${pairArr[1]}`
-                : `${stripDigitPlaces(profitAmount, 3)} ${pairArr[1]
-                } / ${stripDigitPlaces(profitPercentage, 2)}%`}
-            </SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-          contentToSort: profitAmount,
-        },
-        status: {
-          render: (
-            <SubColumnValue
-              theme={theme}
-              style={{
-                display: 'flex',
-                textTransform: 'none',
-                alignItems: 'center',
-              }}
-              color={
-                state || isTemplate
-                  ? !isErrorInOrder && orderState !== 'Canceled'
-                    ? green.main
-                    : red.main
-                  : red.main
-              }
-            >
-              {isErrorInOrder ? 'Error' : orderState}
-              {isErrorInOrder ? (
-                <TooltipCustom
-                  title={msg}
-                  component={
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <ErrorIcon
-                        style={{
-                          height: '1.5rem',
-                          width: '1.5rem',
-                          color: red.main,
-                          marginLeft: '.5rem',
-                        }}
-                      />
-                    </div>
-                  }
-                />
-              ) : null}
-            </SubColumnValue>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-          },
-          contentToSort: profitPercentage,
-        },
-        date: {
-          render: (
-            <div>
-              <span
-                style={{ display: 'block', color: theme.palette.dark.main }}
-              >
-                {String(dayjs(date).format('ll'))}
-              </span>
-              <span style={{ color: theme.palette.grey.light }}>
-                {dayjs(date).format('LT')}
-              </span>
-            </div>
-          ),
-          style: {
-            opacity: needOpacity ? 0.6 : 1,
-            textAlign: 'right',
-          },
-          contentToSort: createdAt ? +new Date(createdAt) : -1,
-        },
-        tooltipTitle: keyName,
-        expandableContent: [
-          {
-            row: {
-              render: (
-                <div style={{ position: 'relative' }}>
-                  <EntryOrderColumn
-                    theme={theme}
-                    haveEdit={false}
-                    enableEdit={!!entryPrice}
-                    entryLevels={entryLevels}
-                    pair={`${pairArr[0]}/${pairArr[1]}`}
-                    side={side}
-                    price={entryOrderPrice}
-                    order={orderType}
-                    amount={
-                      marketType === 0 ? +amount.toFixed(8) : +amount.toFixed(3)
-                    }
-                    total={entryOrderPrice * amount}
-                    trailing={
-                      entryDeviation
-                        ? stripDigitPlaces(entryDeviation / leverage, 3)
-                        : false
-                    }
-                    activatePrice={activatePrice}
-                    red={red.main}
-                    green={green.main}
-                    blue={blue}
-                  />
-                  <TakeProfitColumn
-                    theme={theme}
-                    haveEdit={false}
-                    price={exitLevels.length > 0 && exitLevels[0].price}
-                    order={exitLevels.length > 0 && exitLevels[0].orderType}
-                    targets={exitLevels ? exitLevels : []}
-                    timeoutProfit={timeoutWhenProfit}
-                    timeoutProfitable={timeoutIfProfitable}
-                    trailing={trailingExit}
-                    red={red.main}
-                    green={green.main}
-                    blue={blue}
-                  />
-                  <StopLossColumn
-                    theme={theme}
-                    haveEdit={false}
-                    price={stopLoss}
-                    order={stopLossType}
-                    forced={forcedLoss}
-                    timeoutWhenLoss={timeoutWhenLoss}
-                    timeoutLoss={timeoutLoss}
-                    red={red.main}
-                    green={green.main}
-                    blue={blue}
-                  />
-                </div>
-              ),
-              colspan: 9,
-            },
-          },
-        ],
-      }
-    })
-
-  return processedStrategiesHistoryData
 }
 
 export const combineOpenOrdersTable = (
@@ -1780,8 +411,8 @@ export const combineOpenOrdersTable = (
           render: isMarketOrMakerOrder
             ? 'market'
             : !+price
-              ? price
-              : `${stripDigitPlaces(price, pricePrecision)} ${pair[1]}`,
+            ? price
+            : `${stripDigitPlaces(price, pricePrecision)} ${pair[1]}`,
           style: {
             textAlign: 'left',
             whiteSpace: 'nowrap',
@@ -1803,16 +434,17 @@ export const combineOpenOrdersTable = (
         // TODO: We should change "total" to total param from backend when it will be ready
         ...(marketType === 0
           ? {
-            amount: {
-              // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-              render: !+price
-                ? '-'
-                : `${stripDigitPlaces(+size * price, quantityPrecision)} ${pair[1]
-                }`,
-              contentToSort: +size * price,
-              style: { opacity: needOpacity ? 0.75 : 1 },
-            },
-          }
+              amount: {
+                // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+                render: !+price
+                  ? '-'
+                  : `${stripDigitPlaces(+size * price, quantityPrecision)} ${
+                      pair[1]
+                    }`,
+                contentToSort: +size * price,
+                style: { opacity: needOpacity ? 0.75 : 1 },
+              },
+            }
           : {}),
         // TODO: Not sure about triggerConditions
         // triggerConditions: {
@@ -1864,31 +496,29 @@ export const combineOpenOrdersTable = (
           render: needOpacity ? (
             '-'
           ) : (
-              <CloseButton
-                i={i}
-                onClick={() => {
-                  cancelOrderFunc(
-                    el
-                  )
+            <CloseButton
+              i={i}
+              onClick={() => {
+                cancelOrderFunc(el)
 
-                  // filterCacheData({
-                  //   data: null,
-                  //   name: 'getOpenOrderHistory',
-                  //   subName: 'orders',
-                  //   query: getOpenOrderHistory,
-                  //   variables: {
-                  //     openOrderInput: {
-                  //       // activeExchangeKey: keyId,
-                  //       marketType,
-                  //     },
-                  //   },
-                  //   filterData: (order) => order.info.orderId != orderId,
-                  // })
-                }}
-              >
-                Cancel
-              </CloseButton>
-            ),
+                // filterCacheData({
+                //   data: null,
+                //   name: 'getOpenOrderHistory',
+                //   subName: 'orders',
+                //   query: getOpenOrderHistory,
+                //   variables: {
+                //     openOrderInput: {
+                //       // activeExchangeKey: keyId,
+                //       marketType,
+                //     },
+                //   },
+                //   filterData: (order) => order.info.orderId != orderId,
+                // })
+              }}
+            >
+              Cancel
+            </CloseButton>
+          ),
         },
         // tooltipTitle: keyName,
       }
@@ -1953,8 +583,8 @@ export const combineOrderHistoryTable = (
             (!isBuyTypeOrder(side) && type === 'take_profit_market') ||
             (!isBuyTypeOrder(side) && type === 'take_profit_limit') ||
             (!isBuyTypeOrder(side) && type === 'take_profit')
-            ? `>= ${triggerConditions}`
-            : `<= ${triggerConditions}`
+          ? `>= ${triggerConditions}`
+          : `<= ${triggerConditions}`
 
       const isMarketOrMakerOrder =
         (!!type.match(/market/) && price === 0) || isMakerOnlyOrder
@@ -2037,17 +667,17 @@ export const combineOrderHistoryTable = (
         // TODO: We should change "total" to total param from backend when it will be ready
         ...(marketType === 0
           ? {
-            amount: {
-              // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-              render: `${stripDigitPlaces(
-                isMarketOrMakerOrder ? qty * average : qty * price,
-                quantityPrecision
-              )} ${pair[1]}`,
-              contentToSort: isMarketOrMakerOrder
-                ? qty * average
-                : qty * price,
-            },
-          }
+              amount: {
+                // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+                render: `${stripDigitPlaces(
+                  isMarketOrMakerOrder ? qty * average : qty * price,
+                  quantityPrecision
+                )} ${pair[1]}`,
+                contentToSort: isMarketOrMakerOrder
+                  ? qty * average
+                  : qty * price,
+              },
+            }
           : {}),
         // TODO: Not sure about triggerConditions
         triggerConditions: {
@@ -2056,23 +686,23 @@ export const combineOrderHistoryTable = (
         },
         ...(marketType === 1
           ? {
-            reduceOnly: {
-              // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-              render: reduceOnly ? (
-                <div
-                  style={{
-                    width: '.6rem',
-                    height: '.6rem',
-                    background: theme.palette.blue.background,
-                    borderRadius: '50%',
-                  }}
-                />
-              ) : (
+              reduceOnly: {
+                // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+                render: reduceOnly ? (
+                  <div
+                    style={{
+                      width: '.6rem',
+                      height: '.6rem',
+                      background: theme.palette.blue.background,
+                      borderRadius: '50%',
+                    }}
+                  />
+                ) : (
                   '-'
                 ),
-              contentToSort: reduceOnly,
-            },
-          }
+                contentToSort: reduceOnly,
+              },
+            }
           : {}),
         status: {
           render: status ? (
@@ -2088,8 +718,8 @@ export const combineOrderHistoryTable = (
               {status.replace(/_/g, ' ')}
             </span>
           ) : (
-              '-'
-            ),
+            '-'
+          ),
           contentToSort: status,
         },
         date: {
@@ -2139,7 +769,7 @@ export const combineTradeHistoryTable = (
         price = 0,
         orderId = 0,
         liquidity = '',
-        feeCost = 0
+        feeCost = 0,
       } = el
 
       const { pricePrecision, quantityPrecision } = getPrecisionItem({
@@ -2147,7 +777,10 @@ export const combineTradeHistoryTable = (
         symbol: marketName,
       })
 
-      const pair = marketName.split('/').join('_').split('_')
+      const pair = marketName
+        .split('/')
+        .join('_')
+        .split('_')
       // const isSmallProfit = Math.abs(realizedPnl) < 0.01 && realizedPnl !== 0
 
       return {
@@ -2200,15 +833,14 @@ export const combineTradeHistoryTable = (
         // TODO: We should change "total" to total param from backend when it will be ready
         ...(marketType === 0
           ? {
-            amount: {
-              // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
-              render: `${stripDigitPlaces(
-                size * price,
-                quantityPrecision
-              )} ${pair[1]}`,
-              contentToSort: size * price,
-            },
-          }
+              amount: {
+                // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
+                render: `${stripDigitPlaces(size * price, quantityPrecision)} ${
+                  pair[1]
+                }`,
+                contentToSort: size * price,
+              },
+            }
           : {}),
         // ...(marketType === 1
         //   ? {
@@ -2288,7 +920,8 @@ export const combineTradeHistoryTable = (
 export const combineBalancesTable = (
   fundsData: FundsType[],
   onSettleFunds,
-  theme
+  theme,
+  showSettle
 ) => {
   if (!fundsData && !Array.isArray(fundsData)) {
     return []
@@ -2296,52 +929,55 @@ export const combineBalancesTable = (
 
   const filtredFundsData = fundsData
 
-  const processedFundsData = filtredFundsData
-    .map((el: FundsType) => {
-      const {
-        marketName,
-        coin,
-        wallet,
-        orders,
-        unsettled,
-        market,
-        openOrders
-      } = el
+  const processedFundsData = filtredFundsData.map((el: FundsType) => {
+    const {
+      marketName,
+      coin,
+      wallet,
+      orders,
+      unsettled,
+      market,
+      openOrders,
+    } = el
 
-      return {
-        id: `${coin}${wallet}`,
-        coin: coin || 'unknown',
-        wallet: {
-          render: roundAndFormatNumber(wallet, 8, true) || '-',
-          style: { textAlign: 'left' },
-          contentToSort: +wallet,
-        },
-        orders: {
-          render: roundAndFormatNumber(orders, 8, true)|| '-',
-          style: { textAlign: 'left' },
-          contentToSort: +orders,
-        },
-        unsettled: {
-          render: roundAndFormatNumber(unsettled, 8, true) || '-',
-          style: { textAlign: 'left' },
-          contentToSort: +unsettled,
-        },
-        settle: {
-          render: (
-            <BtnCustom
-            type="text"
-            size="large"
-            onClick={() => onSettleFunds(market, openOrders)}
-            btnColor={theme.palette.blue.serum}
-            btnWidth={'14rem'}
-            height={'100%'}
-          >
-            Settle
-          </BtnCustom>
-          ),
-        }
-      }
-    })
+    return {
+      id: `${coin}${wallet}`,
+      coin: coin || 'unknown',
+      wallet: {
+        render: roundAndFormatNumber(wallet, 8, true) || '-',
+        style: { textAlign: 'left' },
+        contentToSort: +wallet,
+      },
+      orders: {
+        render: roundAndFormatNumber(orders, 8, true) || '-',
+        style: { textAlign: 'left' },
+        contentToSort: +orders,
+      },
+      unsettled: {
+        render: roundAndFormatNumber(unsettled, 8, true) || '-',
+        style: { textAlign: 'left' },
+        contentToSort: +unsettled,
+      },
+      ...(showSettle
+        ? {
+            settle: {
+              render: (
+                <BtnCustom
+                  type="text"
+                  size="large"
+                  onClick={() => onSettleFunds(market, openOrders)}
+                  btnColor={theme.palette.blue.serum}
+                  btnWidth={'14rem'}
+                  height={'100%'}
+                >
+                  Settle
+                </BtnCustom>
+              ),
+            },
+          }
+        : {}),
+    }
+  })
 
   return processedFundsData.filter((el) => !!el)
 }
@@ -2648,7 +1284,7 @@ export const updateOrderHistoryQuerryFunction = (
 export const updatePaginatedOrderHistoryQuerryFunction = (
   previous,
   { subscriptionData },
-  enqueueSnackbar = (msg: string, obj: { variant: string }) => { }
+  enqueueSnackbar = (msg: string, obj: { variant: string }) => {}
 ) => {
   const isEmptySubscription =
     !subscriptionData.data || !subscriptionData.data.listenOrderHistory
@@ -2686,14 +1322,16 @@ export const updatePaginatedOrderHistoryQuerryFunction = (
       newDataElement.type !== 'market'
     ) {
       enqueueSnackbar(
-        `${newDataElement.type
-          ? `${newDataElement.type
-            .charAt(0)
-            .toUpperCase()}${newDataElement.type.slice(1)} order`
-          : 'Order'
-        } ${newDataElement.type === 'maker-only'
-          ? ''
-          : `with price ${newDataElement.price}`
+        `${
+          newDataElement.type
+            ? `${newDataElement.type
+                .charAt(0)
+                .toUpperCase()}${newDataElement.type.slice(1)} order`
+            : 'Order'
+        } ${
+          newDataElement.type === 'maker-only'
+            ? ''
+            : `with price ${newDataElement.price}`
         } was executed!`,
         {
           variant: 'success',
@@ -2729,14 +1367,16 @@ export const updatePaginatedOrderHistoryQuerryFunction = (
       newDataElement.type !== 'market'
     ) {
       enqueueSnackbar(
-        `${newDataElement.type
-          ? `${newDataElement.type
-            .charAt(0)
-            .toUpperCase()}${newDataElement.type.slice(1)} order`
-          : 'Order'
-        } ${newDataElement.type === 'maker-only'
-          ? ''
-          : `with price ${newDataElement.price}`
+        `${
+          newDataElement.type
+            ? `${newDataElement.type
+                .charAt(0)
+                .toUpperCase()}${newDataElement.type.slice(1)} order`
+            : 'Order'
+        } ${
+          newDataElement.type === 'maker-only'
+            ? ''
+            : `with price ${newDataElement.price}`
         } was executed!`,
         {
           variant: 'success',

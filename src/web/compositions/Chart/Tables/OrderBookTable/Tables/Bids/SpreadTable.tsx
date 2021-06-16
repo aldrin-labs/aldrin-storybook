@@ -47,7 +47,7 @@ class SpreadTable extends Component<IProps> {
               disableHeader={mode !== 'bids'}
               width={width}
               height={height}
-              headerHeight={window.outerHeight / 50}
+              headerHeight={mode === 'both' ? height / 8 : height / 18}
               onRowClick={({ event, index, rowData }) => {
                 updateTerminalPriceFromOrderbook(+rowData.price)
               }}
@@ -61,12 +61,8 @@ class SpreadTable extends Component<IProps> {
                 borderBottom: theme.palette.border.main,
                 fontSize: '1rem',
               }}
-              gridStyle={{
-                // overflow: mode !== 'bids' ? 'hidden' : 'hidden auto',
-                overflow: 'hidden',
-              }}
               rowCount={tableData.length}
-              rowHeight={window.outerHeight / 60}
+              rowHeight={mode === 'both' ? height / 8 : height / 18}
               overscanRowCount={0}
               rowGetter={({ index }) => tableData[index]}
               rowRenderer={(...rest) =>
@@ -86,28 +82,28 @@ class SpreadTable extends Component<IProps> {
                 label={mode === 'bids' ? `price` : ''}
                 dataKey="price"
                 headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
-                width={width - width / 6}
-                style={{ color: theme.palette.depthChart.greenStroke }}
+                width={width}
+                style={{ color: theme.palette.green.main, fontFamily: 'Avenir Next Demi' }}
               />
               <Column
                 label={mode === 'bids' ? `size (${base})` : ''}
                 dataKey="size"
-                width={width + width / 6}
-                headerStyle={{ textAlign: 'right', paddingRight: '.9rem' }}
+                width={width}
+                headerStyle={{ textAlign: 'left', paddingRight: '.9rem' }}
                 style={{
-                  textAlign: 'right',
-                  color: theme.palette.dark.main,
+                  textAlign: 'left',
+                  color: theme.palette.white.primary,
                 }}
               />
               <Column
                 label={mode === 'bids' ? `total (${quote})` : ''}
                 dataKey="total"
+                width={width}
                 headerStyle={{
                   paddingRight: 'calc(.5rem + 10px)',
                   textAlign: 'right',
                 }}
-                width={width}
-                style={{ textAlign: 'right', color: theme.palette.dark.main }}
+                style={{ textAlign: 'right', color: theme.palette.white.primary }}
               />
             </Table>
           )}

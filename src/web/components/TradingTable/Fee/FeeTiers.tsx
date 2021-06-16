@@ -7,6 +7,7 @@ import {
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
+import { useFeeDiscountKeys } from '@sb/dexUtils/markets'
 
 export const feeTiers = [
   { feeTier: 0, taker: 0.22, maker: -0.03, token: '', balance: '' },
@@ -28,55 +29,40 @@ export const feeTiers = [
     balance: 1000000,
   },
   { feeTier: 6, taker: 0.1, maker: -0.05, token: 'MSRM', balance: 1 },
-];
+]
 
+export const combineFeeTiers = (feeTiers, feeAccounts) => {
+  const userTier = feeAccounts && feeAccounts.length > 0 ? feeAccounts[0].feeTier : 0
 
-export const combineFeeTiers = (
-    feeTiers
-  ) => {
-    const processedFundsData = feeTiers
-      .map((el) => {
-        const {
-          feeTier,
-          taker,
-          maker,
-          token,
-          balance,
-        } = el
-  
-        return {
-          id: `${feeTier}${balance}`,
-          feeTier: `${feeTier}`,
-          taker: `${taker} %`,
-          maker: `${maker} %`,
-          condition: {
-            render: balance > 0 ? `>= ${balance} ${token}` : 'None',
-            style: { textAlign: 'left' },
-            contentToSort: +balance,
-          },
-        }
-      })
-  
-    return processedFundsData.filter((el) => !!el)
-  }
+  const processedFundsData = feeTiers.map((el) => {
+    const { feeTier, taker, maker, token, balance } = el
+
+    return {
+      id: `${feeTier}${balance}`,
+      feeTier: `${feeTier}${feeTier === userTier ? ' Selected' : ''}`,
+      taker: `${taker} %`,
+      maker: `${maker} %`,
+      condition: {
+        render: balance > 0 ? `>= ${balance} ${token}` : 'None',
+        style: { textAlign: 'left' },
+        contentToSort: +balance,
+      },
+    }
+  })
+
+  return processedFundsData.filter((el) => !!el)
+}
 
 const FeeTiers = (props) => {
-  const {
-    tab,
-    theme,
-    show,
-    page,
-    perPage,
-    marketType,
-  } = props
+  const { tab, theme, show, marketType } = props
 
   if (!show) {
     return null
   }
 
-  const balancesProcessedData = combineFeeTiers(
-    feeTiers
-  )
+  const [feeAccounts] = useFeeDiscountKeys()
+
+  const balancesProcessedData = combineFeeTiers(feeTiers, feeAccounts)
 
   return (
     <TableWithSort
@@ -84,33 +70,22 @@ const FeeTiers = (props) => {
         borderRadius: 0,
         height: 'calc(100% - 6rem)',
         overflowX: 'hidden',
-        backgroundColor: theme.palette.white.background,
+        backgroundColor: 'inherit',
       }}
-      stylesForTable={{ backgroundColor: theme.palette.white.background }}
+      stylesForTable={{ backgroundColor: 'inherit' }}
       defaultSort={{
         sortColumn: 'date',
         sortDirection: 'desc',
       }}
       withCheckboxes={false}
       tableStyles={{
-        headRow: {
-          borderBottom: theme.palette.border.main,
-          boxShadow: 'none',
-        },
-        heading: {
-          fontSize: '1rem',
-          fontWeight: 'bold',
-          backgroundColor: theme.palette.grey.cream,
-          color: theme.palette.dark.main,
-          boxShadow: 'none',
-        },
         cell: {
           color: theme.palette.dark.main,
           fontSize: '1rem', // 1.2 if bold
           fontWeight: 'bold',
           letterSpacing: '.1rem',
           borderBottom: theme.palette.border.main,
-          backgroundColor: theme.palette.white.background,
+          backgroundColor: 'inherit',
           boxShadow: 'none',
         },
         tab: {

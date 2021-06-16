@@ -17,7 +17,7 @@ import {
 
 import { ErrorText } from '@sb/components/SignalPreferencesDialog/SignalPreferencesDialog.styles'
 
-import { OpenDeleteButton } from './DeleteKeyDialog.styles'
+import { OpenDeleteButton } from '@sb/components/DeleteKeyDialog/DeleteKeyDialog.styles'
 
 const DeleteAccountDialogComponent = ({
   data,

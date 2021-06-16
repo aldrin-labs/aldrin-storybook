@@ -59,26 +59,25 @@ html {
 }  
         
   .virtualized-row {
-    font-family: 'IBM Plex Sans Condensed', sans-serif;
-    font-size: 1.1rem;
+    font-family: Avenir Next Demi;
+    font-size: 1.3rem;
     line-height: 35px;
-    font-weight: bold;
-    color: #16253D;
+    color: #F8FAFF;
     padding: 0 .5rem;
-    letter-spacing: 0.075rem;
+    letter-spacing: 0.01rem;
     cursor: default;
     outline: none;
   }
 
   @media (max-width: 1450px) {
     .virtualized-row {
-          font-size: 1rem;
+      font-size: 1.25rem;
     }
   }
 
   @media (max-width: 1350px) {
     .virtualized-row {
-          font-size: 0.9rem;
+      font-size: 1.2rem;
     }
   }
 
@@ -133,39 +132,41 @@ export const PanelCard = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: ${(props: { marketType: number; theme: Theme }) =>
-    props.marketType === 0 ? '20%' : 'calc(100% / 7)'};
   flex-grow: 1;
   padding: 0.1rem;
   margin: 0;
   min-height: auto;
   border-right: ${(props: { marketType: number; theme: Theme }) =>
-    props.theme.palette.border.main};
+    props.theme.palette.border.new};
   font-weight: bold;
-  font-family: DM Sans;
-  text-transform: uppercase;
-  letter-spacing: 0.1rem;
+  text-transform: capitalize;
+  font-family: Avenir Next;
+  letter-spacing: 0.01rem;
 `
 
 export const PanelCardTitle = styled.span`
   display: block;
-  padding: 0.1rem 1rem;
+  padding: 0.1rem 1rem 0.3rem 1rem;
+  font-size: 1.3rem;
+  font-family: Avenir Next;
   color: ${(props) => props.theme.palette.grey.text};
   letter-spacing: 0.1rem;
 
   @media (min-width: 1400px) {
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
 `
 
 export const PanelCardValue = styled.span`
   white-space: pre-line;
-  color: ${(props) => props.theme.palette.dark.main};
+  font-family: Avenir Next Demi;
+  color: ${(props) => props.theme.palette.white.primary};
+  font-size: 1.3rem;
   padding: 0.1rem 1rem;
-  letter-spacing: 0.1rem;
+  letter-spacing: 0.01rem;
 
   @media (min-width: 1400px) {
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
 `
 
@@ -174,9 +175,10 @@ export const PanelCardSubValue = styled.span`
   padding-left: 0.4rem;
   color: ${(props) => props.theme.palette.dark.main};
   letter-spacing: 0.1rem;
+  font-size: 1.3rem;
 
   @media (min-width: 1400px) {
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
 `
 
@@ -216,6 +218,7 @@ export const OrderbookContainer = styled(({ background = '', ...rest }) => (
   <CustomCard {...rest} />
 ))`
   border-right: 0;
+  border-top: 0;
 
   && {
     overflow: hidden;
@@ -232,6 +235,8 @@ export const OrderbookContainer = styled(({ background = '', ...rest }) => (
 export const TradeHistoryWrapper = styled(({ background = '', ...rest }) => (
   <CustomCard {...rest} />
 ))`
+  border-top: 0;
+
   && {
     overflow: hidden;
   }
@@ -255,18 +260,19 @@ export const WatchListContainer = styled(Card)`
 export const ChartGridContainer = styled(({ MASTER_BUILD, ...rest }) => (
   <Grid {...rest} />
 ))`
-  position: relative;
   display: flex;
   flex: auto;
   align-items: center;
-  width: calc(100% - 2rem);
-  height: 4rem;
-  padding: 0;
-  margin: 1rem;
-  // background: ${(props) => props.theme.palette.grey.cream};
+  width: calc(100%);
+  height: 6rem;
+  position: relative;
+  padding: 0rem 3rem;
+  border-bottom: ${(props) => props.theme.palette.border.new};
+  margin: 0rem;
+  background: ${(props) => props.theme.palette.grey.additional};
 
-  && {
-    padding: 0;
+  @media (max-width: 600px) {
+    display: none;
   }
 `
 
@@ -297,18 +303,15 @@ export const TradingTerminalContainer = styled(
   height: 100%;
   transition: all 0.5s ease;
   position: relative;
-  display: ${(props) => (props.hideTradeHistory ? 'none' : 'flex')};
   // 60% - 3%, the half of height cards, will fix in future
   width: ${(props) =>
-    props.MASTER_BUILD
-      ? '30%'
-      : props.hideTradeHistory
-      ? '0%'
+    props.hideTradeHistory
+      ? '17%'
       : props.hideOrderbook
       ? '17%'
       : props.hideDepthChart
       ? '35%'
-      : '41.66667%'};
+      : '32%'};
   overflow: hidden;
 
   flex-direction: column;
@@ -364,15 +367,13 @@ export const ChartsContainer = styled(
   position: relative;
   display: flex;
   width: ${(props) =>
-    props.MASTER_BUILD
-      ? '70%'
-      : props.hideTradeHistory
-      ? '100%'
+    props.hideTradeHistory
+      ? '83%'
       : props.hideOrderbook
       ? '83%'
       : props.hideDepthChart
       ? '65%'
-      : '58.33333%'};
+      : '68%'};
   justify-content: flex-end;
   flex-direction: column;
   border-radius: 0;
@@ -423,11 +424,11 @@ export const Container = styled(Grid)`
   width: 100%;
   margin: 0;
   padding: 0;
-  font-family: DM Sans;
-  background-color: ${(props) => props.theme.palette.white.background};
+  font-family: Avenir Next Medium;
+  background-color: ${(props) => props.theme.palette.dark.background};
 
   @media (max-width: 1400px) {
-    height: calc(100vh - 5.4vh);
+    height: calc(100vh - 12rem);
   }
 `
 

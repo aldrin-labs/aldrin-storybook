@@ -2,6 +2,8 @@ import React from 'react'
 import { client } from '@core/graphql/apolloClient'
 import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSettings'
 import { SvgIcon } from '@sb/components'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
@@ -9,8 +11,15 @@ import {
   roundAndFormatNumber,
 } from '@core/utils/PortfolioTableUtils'
 
+import GreenCheckmark from '@icons/successIcon.svg'
+import Warning from '@icons/warningPairSel.png'
+import ThinkingFace from '@icons/thinkingFace.png'
+
 import favoriteSelected from '@icons/favoriteSelected.svg'
 import favoriteUnselected from '@icons/favoriteUnselected.svg'
+
+import LessVolumeArrow from '@icons/lessVolumeArrow.svg'
+import MoreVolumeArrow from '@icons/moreVolumeArrow.svg'
 
 import {
   GetSelectorSettingsType,
@@ -26,6 +35,15 @@ export const selectWrapperColumnNames = [
   { label: '24H change', id: '24hChange', isNumber: true, isSortable: true },
   { label: '24H volume', id: '24hVolume', isNumber: true, isSortable: true },
 ]
+
+export const getIsNotUSDTQuote = (symbol) => {
+  const [base, quote] = symbol.split('_')
+  return (
+    quote !== 'USDT' &&
+    quote !== 'USDC' &&
+    !symbol.toLowerCase().includes('all')
+  )
+}
 
 export const getUpdatedFavoritePairsList = (
   clonedData: GetSelectorSettingsType,
@@ -88,9 +106,38 @@ export const updateFavoritePairsHandler = async (
   }
 }
 
+export const filterDataBySymbolForDifferentDeviders = ({
+  searchValue,
+  symbol,
+}: {
+  searchValue: string
+  symbol: string
+}) => {
+  if (searchValue) {
+    let updatedSearchValue = searchValue
+
+    const slashInSearch = updatedSearchValue.includes('/')
+    if (slashInSearch) updatedSearchValue = updatedSearchValue.replace('/', '_')
+
+    const spaceInSeach = updatedSearchValue.includes(' ')
+    if (spaceInSeach) updatedSearchValue = updatedSearchValue.replace(' ', '_')
+
+    const dashInSeach = updatedSearchValue.includes('-')
+    if (dashInSeach) updatedSearchValue = updatedSearchValue.replace('-', '_')
+
+    const underlineInSearch = updatedSearchValue.includes('_')
+
+    return new RegExp(`${updatedSearchValue}`, 'gi').test(
+      underlineInSearch ? symbol : symbol.replace('_', '')
+    )
+  }
+
+  return true
+}
+
 export const combineSelectWrapperData = ({
   data,
-  updateFavoritePairsMutation,
+  // updateFavoritePairsMutation,
   previousData,
   onSelectPair,
   theme,
@@ -100,17 +147,21 @@ export const combineSelectWrapperData = ({
   stableCoinsPairsMap,
   btcCoinsPairsMap,
   altCoinsPairsMap,
+  usdcPairsMap,
+  usdtPairsMap,
   favoritePairsMap,
   marketType,
+  needFiltrations = true,
+  customMarkets,
 }: {
   data: ISelectData
-  updateFavoritePairsMutation: (variableObj: {
-    variables: {
-      input: {
-        favoritePairs: string[]
-      }
-    }
-  }) => Promise<void>
+  // updateFavoritePairsMutation: (variableObj: {
+  //   variables: {
+  //     input: {
+  //       favoritePairs: tabSpecificCoin[]
+  //     }
+  //   }
+  // }) => Promise<void>
   previousData?: ISelectData
   onSelectPair: ({ value }: { value: string }) => void
   theme: any
@@ -121,21 +172,29 @@ export const combineSelectWrapperData = ({
   stableCoinsPairsMap: Map<string, string>
   btcCoinsPairsMap: Map<string, string>
   altCoinsPairsMap: Map<string, string>
+  usdcPairsMap: Map<string, string>
+  usdtPairsMap: Map<string, string>
   marketType: number
+  needFiltrations?: boolean
 }) => {
   if (!data && !Array.isArray(data)) {
     return []
   }
 
-  let processedData = data
+  let processedData = data.filter(
+    (market, index, arr) =>
+      arr.findIndex(
+        (marketInFindIndex) => marketInFindIndex.symbol === market.symbol
+      ) === index
+  )
 
-  if (tabSpecificCoin !== '' && tabSpecificCoin !== 'ALL') {
+  if (tabSpecificCoin !== '' && tabSpecificCoin !== 'ALL' && needFiltrations) {
     processedData = processedData.filter((el) =>
       new RegExp(`${tabSpecificCoin}`, 'gi').test(el.symbol)
     )
   }
 
-  if (tab !== 'all') {
+  if (tab !== 'all' && needFiltrations) {
     if (tab === 'alts') {
       processedData = processedData.filter((el) =>
         altCoinsPairsMap.has(el.symbol)
@@ -156,50 +215,101 @@ export const combineSelectWrapperData = ({
         favoritePairsMap.has(el.symbol)
       )
     }
-  }
-
-  if (searchValue) {
-    processedData = processedData.filter((el) => {
-      const underlineInSearch = searchValue.includes('_')
-      const symbolBase = el.symbol.split('_')[0]
-      const withReplacedWhitespace = searchValue.replace(/\s/g, '_')
-      const withRevertedWord = reverseFor(withReplacedWhitespace)
-
-      return new RegExp(`${searchValue}`, 'gi').test(
-        underlineInSearch ? el.symbol : symbolBase
+    if (tab === 'usdc') {
+      processedData = processedData.filter(
+        (el) =>
+          !el.symbol.includes('BULL') &&
+          !el.symbol.includes('BEAR') &&
+          usdcPairsMap.has(el.symbol) &&
+          !el.isCustomUserMarket
       )
-    })
+    }
+    if (tab === 'usdt') {
+      processedData = processedData.filter(
+        (el) =>
+          !el.symbol.includes('BULL') &&
+          !el.symbol.includes('BEAR') &&
+          usdtPairsMap.has(el.symbol) &&
+          !el.isCustomUserMarket
+      )
+    }
+    if (tab === 'leveraged') {
+      processedData = processedData.filter(
+        (el) =>
+          el.symbol.includes('BULL') ||
+          (el.symbol.includes('BEAR') && !el.isCustomUserMarket)
+      )
+    }
+
+    if (tab === 'private') {
+      processedData = data.filter((el) => el.isPrivateCustomMarket)
+    }
+    if (tab === 'public') {
+      processedData = data.filter(
+        (el) => el.isCustomUserMarket && !el.isPrivateCustomMarket
+      )
+    }
+  } else if (needFiltrations) {
+    processedData = processedData.filter((el) => !el.isCustomUserMarket)
   }
+
+  processedData = processedData.filter((el) =>
+    filterDataBySymbolForDifferentDeviders({ searchValue, symbol: el.symbol })
+  )
 
   const filtredData = processedData.map((el) => {
     const {
       symbol = '',
-      price = 0,
-      price24hChange = 0,
-      volume24hChange = 0,
-      pricePrecision: pricePrecisionRaw = 0,
-      quantityPrecision: quantityPrecisionRaw = 0,
+      closePrice = 0,
+      lastPriceDiff = 0,
+      volume = 0,
+      precentageTradesDiff = 0,
+      tradesCount = 0,
+      volumeChange = 0,
+      address = '',
+      programId = '',
+      isCustomUserMarket,
+      isPrivateCustomMarket,
     } = el || {
       symbol: '',
-      price: 0,
-      price24hChange: 0,
-      volume24hChange: 0,
-      pricePrecision: 0,
-      quantityPrecision: 0,
+      closePrice: 0,
+      lastPriceDiff: 0,
+      volume: 0,
+      precentageTradesDiff: 0,
+      tradesCount: 0,
+      volumeChange: 0,
+      address: '',
+      programId: '',
+      isCustomUserMarket,
+      isPrivateCustomMarket,
     }
 
-    const pricePrecision =
-      pricePrecisionRaw === 0 || pricePrecisionRaw < 0 ? 8 : pricePrecisionRaw
-    const quantityPrecision =
-      quantityPrecisionRaw === 0 || quantityPrecisionRaw < 0
-        ? 8
-        : quantityPrecisionRaw
+    const [_, quote] = symbol.split('_')
+    const pricePrecision = closePrice < 1 ? 8 : closePrice < 10 ? 4 : 2
 
-    const isInFavoriteAlready = favoritePairsMap.has(symbol)
+    const isNotUSDTQuote = getIsNotUSDTQuote(symbol)
 
-    const priceColor = !!previousData ? '' : ''
+    const strippedLastPriceDiff = +stripDigitPlaces(
+      lastPriceDiff,
+      pricePrecision
+    )
 
-    const [base, quote] = symbol.split('_')
+    const strippedMarkPrice = +stripDigitPlaces(closePrice, pricePrecision)
+
+    const prevClosePrice = strippedMarkPrice - strippedLastPriceDiff
+
+    const priceChangePercentage = !prevClosePrice
+      ? 0
+      : (closePrice - prevClosePrice) / (prevClosePrice / 100)
+
+    const sign24hChange = +priceChangePercentage > 0 ? `+` : ``
+    const signTrades24hChange = +precentageTradesDiff > 0 ? '+' : '-'
+
+    const marketName = symbol.replaceAll('_', '/')
+    const currentMarket = customMarkets?.find((el) => el?.name.replaceAll("_", "/") === marketName)
+
+    const isAdditionalCustomUserMarket = el.isCustomUserMarket
+    const isAwesomeMarket = currentMarket?.isCustomUserMarket
 
     return {
       id: `${symbol}`,
@@ -216,69 +326,132 @@ export const combineSelectWrapperData = ({
       //     />
       //   ),
       // },
-      symbol: {
+      emoji: {
         render: (
-          <span onClick={() => onSelectPair({ value: symbol })}>{symbol}</span>
+          <DarkTooltip
+            title={
+              isAdditionalCustomUserMarket
+                ? 'This is an unofficial custom market. Use at your own risk.'
+                : isAwesomeMarket
+                ? 'This is curated but unofficial market.'
+                : 'This is the official Serum market.'
+            }
+          >
+            <div
+              style={{
+                width: '4rem',
+                fontSize: '2rem',
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            >
+              {isAdditionalCustomUserMarket ? (
+                <SvgIcon width={'50%'} height={'auto'} src={Warning} />
+              ) : isAwesomeMarket ? (
+                <SvgIcon width={'50%'} height={'auto'} src={ThinkingFace} />
+              ) : (
+                <SvgIcon width={'50%'} height={'auto'} src={GreenCheckmark} />
+              )}
+            </div>
+          </DarkTooltip>
         ),
-        onClick: () => onSelectPair({ value: symbol }),
-        contentToSort: symbol,
       },
-      //   price: {
-      //     contentToSort: +price,
-      //     render: (
-      //       <span onClick={() => onSelectPair({ value: symbol })}>
-      //         {formatNumberToUSFormat(
-      //           stripDigitPlaces(price, pricePrecision)
-      //         )}
-      //       </span>
-      //     ),
-      //     // onClick: () => onSelectPair({ value: symbol }),
-      //     // color: priceColor,
-      //   },
-      //   price24hChange: {
-      //     isNumber: true,
-      //     render: (
-      //       <span
-      //         style={{
-      //           color:
-      //             +price24hChange === 0
-      //               ? ''
-      //               : +price24hChange > 0
-      //               ? theme.palette.green.main
-      //               : theme.palette.red.main,
-      //         }}
-      //         onClick={() => onSelectPair({ value: symbol })}
-      //       >
-      //         {`${formatNumberToUSFormat(stripDigitPlaces(price24hChange))}%`}
-      //       </span>
-      //     ),
-      //     // onClick: () => onSelectPair({ value: symbol }),
-      //     contentToSort: +price24hChange,
-      //     // color:
-      //     //   +price24hChange === 0
-      //     //     ? ''
-      //     //     : +price24hChange > 0
-      //     //     ? theme.customPalette.green.main
-      //     //     : theme.customPalette.red.main,
-      //   },
-      //   volume24hChange: {
-      //     isNumber: true,
-      //     contentToSort: +volume24hChange,
-      //     render: (
-      //       <span onClick={() => onSelectPair({ value: symbol })}>
-      //         {`${formatNumberToUSFormat(
-      //           roundAndFormatNumber(volume24hChange, 2, false)
-      //         )} ${quote}`}
-      //       </span>
-      //     ),
-      //     // onClick: () => onSelectPair({ value: symbol }),
-      //   },
+      symbol: {
+        render: <span>{symbol.replaceAll('_', '/')}</span>,
+        onClick: () =>
+          onSelectPair({
+            value: symbol,
+            address,
+            programId,
+          }),
+        contentToSort: symbol,
+        color: theme.palette.dark.main,
+      },
+      price: {
+        contentToSort: +closePrice,
+        render: (
+          <span>
+            {formatNumberToUSFormat(
+              stripDigitPlaces(closePrice, pricePrecision)
+            )}
+          </span>
+        ),
+
+        color: theme.palette.dark.main,
+      },
+      price24hChange: {
+        isNumber: true,
+        render: (
+          <span
+            style={{
+              color:
+                +lastPriceDiff === 0
+                  ? ''
+                  : +lastPriceDiff > 0
+                  ? theme.palette.green.main
+                  : theme.palette.red.main,
+            }}
+          >
+            {`${sign24hChange}${formatNumberToUSFormat(
+              stripDigitPlaces(lastPriceDiff, pricePrecision)
+            )} / ${sign24hChange}${formatNumberToUSFormat(
+              stripDigitPlaces(priceChangePercentage, 2)
+            )}%`}
+          </span>
+        ),
+
+        contentToSort: +priceChangePercentage,
+      },
+      volume24hChange: {
+        isNumber: true,
+        contentToSort: +volume || 0,
+        render: (
+          <span>
+            {`${isNotUSDTQuote ? '' : '$'}${formatNumberToUSFormat(
+              roundAndFormatNumber(volume, 2, false)
+            )}${isNotUSDTQuote ? ` ${quote}` : ''}`}
+          </span>
+        ),
+      },
+      trades24h: {
+        isNumber: true,
+        contentToSort: +tradesCount || 0,
+        render: (
+          <>
+            <span>
+              {`${formatNumberToUSFormat(
+                roundAndFormatNumber(tradesCount, 0, false)
+              )} / `}
+            </span>
+            <span
+              style={{
+                color:
+                  +precentageTradesDiff === 0
+                    ? ''
+                    : +precentageTradesDiff > 0
+                    ? theme.palette.green.main
+                    : theme.palette.red.main,
+              }}
+            >
+              {`${signTrades24hChange}${formatNumberToUSFormat(
+                stripDigitPlaces(Math.abs(precentageTradesDiff))
+              )}%`}
+            </span>
+          </>
+        ),
+      },
+      volume24hChangeIcon: {
+        render:
+          +volumeChange > 0 ? (
+            <SvgIcon src={MoreVolumeArrow} width="1rem" height="auto" />
+          ) : (
+            <SvgIcon src={LessVolumeArrow} width="1rem" height="auto" />
+          ),
+      },
     }
   })
 
-  // return filtredData.sort(
-  //   (a, b) => b.volume24hChange.contentToSort - a.volume24hChange.contentToSort
-  // )
-
-  return filtredData
+  return filtredData.sort((a, b) =>
+    a.symbol.contentToSort.localeCompare(b.symbol.contentToSort)
+  )
 }

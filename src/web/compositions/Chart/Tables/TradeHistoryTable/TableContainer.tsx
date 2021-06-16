@@ -2,14 +2,9 @@ import React, { Component } from 'react'
 import dayjs from 'dayjs'
 import TradeHistoryTable from './Table/TradeHistoryTable'
 import ChartCardHeader from '@sb/components/ChartCardHeader'
-var SortedMap = require('collections/sorted-map')
-
 import {
   reduceArrayLength,
   getNumberOfDigitsAfterDecimal,
-  testJSON,
-  getNumberOfDecimalsFromNumber,
-  getAggregationsFromMinPriceDigits,
 } from '@core/utils/chartPageUtils'
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
@@ -20,8 +15,6 @@ import { client } from '@core/graphql/apolloClient'
 
 import { IProps, IState } from './TableContainer.types'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
-
-let unsubscribe: Function | undefined
 
 class TableContainer extends Component<IProps, IState> {
   state: IState = {
@@ -49,17 +42,21 @@ class TableContainer extends Component<IProps, IState> {
       state.data.length === 0 &&
       newProps.data &&
       newProps.data.marketTickers &&
-      newProps.data.marketTickers.length > 0
+      newProps.data.marketTickers.length > 0 &&
+      newProps.pricePrecision !== undefined &&
+      newProps.sizeDigits !== undefined
     ) {
-      const updatedData = newProps.data.marketTickers.map((trade, i) => ({
-        ...trade,
-        size: Number(trade.size).toFixed(
-          newProps.quantityPrecision
-        ),
-        price: Number(trade.price).toFixed(newProps.pricePrecision),
-        time: dayjs.unix(+trade.timestamp).format('LTS'),
-        id: `${trade.price}${trade.size}${i}${trade.timestamp}`,
-      }))
+      const tickersData = [...newProps.data.marketTickers]
+
+      const updatedData = tickersData
+        .sort((a, b) => b.timestamp - a.timestamp)
+        .map((trade, i) => ({
+          ...trade,
+          size: Number(trade.size).toFixed(newProps.sizeDigits),
+          price: Number(trade.price).toFixed(newProps.pricePrecision),
+          time: dayjs.unix(+trade.timestamp).format('LTS'),
+          id: `${trade.price}${trade.size}${i}${trade.timestamp}`,
+        }))
 
       const numbersAfterDecimalForPrice = getNumberOfDigitsAfterDecimal(
         updatedData,
@@ -73,6 +70,48 @@ class TableContainer extends Component<IProps, IState> {
     }
 
     return null
+  }
+
+  componentDidMount() {
+    this.subscribe()
+  }
+
+  componentDidUpdate(prevProps: IProps) {
+    if (
+      prevProps.activeExchange.symbol !== this.props.activeExchange.symbol ||
+      prevProps.currencyPair !== this.props.currencyPair ||
+      prevProps.marketType !== this.props.marketType
+    ) {
+      // when change exchange delete all data and...
+      this.setState({ data: [] })
+
+      //  unsubscribe from old exchange
+      this.subscription && this.subscription.unsubscribe()
+
+      //  subscribe to new exchange and create new unsub link
+      this.subscribe()
+    }
+
+    if (
+      prevProps.pricePrecision !== this.props.pricePrecision ||
+      prevProps.sizeDigits !== this.props.sizeDigits
+    ) {
+      const tickersData = [...this.props.data.marketTickers]
+
+      const updatedData = tickersData
+        .sort((a, b) => b.timestamp - a.timestamp)
+        .map((trade, i) => ({
+          ...trade,
+          size: Number(trade.size).toFixed(this.props.sizeDigits),
+          price: Number(trade.price).toFixed(this.props.pricePrecision),
+          time: dayjs.unix(+trade.timestamp).format('LTS'),
+          id: `${trade.price}${trade.size}${i}${trade.timestamp}`,
+        }))
+
+      this.setState({
+        data: updatedData,
+      })
+    }
   }
 
   subscribe = () => {
@@ -97,6 +136,12 @@ class TableContainer extends Component<IProps, IState> {
             data.listenMarketTickers.length > 0
           ) {
             const tickersData = data.listenMarketTickers
+            const pricePrecision =
+              that.props.pricePrecision === undefined
+                ? that.props.sizeDigits !== undefined
+                  ? 8
+                  : undefined
+                : that.props.pricePrecision
 
             if (
               !tickersData ||
@@ -109,44 +154,22 @@ class TableContainer extends Component<IProps, IState> {
 
             const updatedData = reduceArrayLength(
               tickersData
+                .sort((a, b) => b.time - a.time)
                 .map((trade) => ({
                   ...trade,
-                  size: Number(trade.size).toFixed(
-                    that.props.quantityPrecision
-                  ),
-                  price: Number(trade.price).toFixed(that.props.pricePrecision),
-                  time: new Date(trade.time).toLocaleTimeString(),
+                  size: Number(trade.size).toFixed(that.props.sizeDigits),
+                  price: Number(trade.price).toFixed(pricePrecision),
+                  time: dayjs.unix(+trade.timestamp).format('LTS'),
                 }))
                 .concat(that.state.data)
             )
 
-            this.setState({
+            that.setState({
               data: updatedData,
             })
           }
         },
       })
-  }
-
-  componentDidMount() {
-    this.subscribe()
-  }
-
-  componentDidUpdate(prevProps: IProps) {
-    if (
-      prevProps.activeExchange.symbol !== this.props.activeExchange.symbol ||
-      prevProps.currencyPair !== this.props.currencyPair ||
-      prevProps.marketType !== this.props.marketType
-    ) {
-      // when change exchange delete all data and...
-      this.setState({ data: [] })
-
-      //  unsubscribe from old exchange
-      this.subscription && this.subscription.unsubscribe()
-
-      //  subscribe to new exchange and create new unsub link
-      this.subscribe()
-    }
   }
 
   render() {
@@ -155,9 +178,9 @@ class TableContainer extends Component<IProps, IState> {
       currencyPair,
       updateTerminalPriceFromOrderbook,
       theme,
-      quantityPrecision,
+      sizeDigits,
     } = this.props
-    const { data, numbersAfterDecimalForPrice } = this.state
+    const { data = [], numbersAfterDecimalForPrice } = this.state
     const amountForBackground =
       data.reduce((prev, curr) => prev + +curr.size, 0) / data.length
 
@@ -170,7 +193,7 @@ class TableContainer extends Component<IProps, IState> {
           numbersAfterDecimalForPrice={numbersAfterDecimalForPrice}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
           quote={quote}
-          quantityPrecision={quantityPrecision}
+          quantityPrecision={sizeDigits}
           amountForBackground={amountForBackground}
           currencyPair={currencyPair}
         />

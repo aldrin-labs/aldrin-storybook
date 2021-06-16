@@ -12,13 +12,13 @@ import { PaginationBlock } from '../TradingTablePagination'
 import { cancelOrderStatus } from '@core/utils/tradingUtils'
 import { useOpenOrders } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import { useSendConnection } from '@sb/dexUtils/connection'
+import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { cancelOrder } from '@sb/dexUtils/send'
 
 const OpenOrdersTable = (props) => {
   const { wallet } = useWallet()
-  const connection = useSendConnection()
+  const connection = useConnection()
 
   const onCancelOrder = async (order) => {
     try {
@@ -27,6 +27,7 @@ const OpenOrdersTable = (props) => {
         market: order.market,
         connection,
         wallet,
+        signers: []
       })
     } catch (e) {
       notify({
@@ -44,11 +45,11 @@ const OpenOrdersTable = (props) => {
 
     // await props.addOrderToCanceled(orderId)
     const result = await onCancelOrder(order)
-    const status = await cancelOrderStatus(result)
+    // const status = await cancelOrderStatus(result)
 
-    if (status.result === 'error') {
-      await props.clearCanceledOrders()
-    }
+    // if (status.result === 'error') {
+    //   await props.clearCanceledOrders()
+    // }
 
     // showCancelResult(status)
   }
@@ -96,9 +97,9 @@ const OpenOrdersTable = (props) => {
         borderRadius: 0,
         height: 'calc(100% - 6rem)',
         overflowX: 'hidden',
-        backgroundColor: theme.palette.white.background,
+        backgroundColor: 'inherit',
       }}
-      stylesForTable={{ backgroundColor: theme.palette.white.background }}
+      stylesForTable={{ backgroundColor: 'inherit' }}
       defaultSort={{
         sortColumn: 'date',
         sortDirection: 'desc',
@@ -132,24 +133,13 @@ const OpenOrdersTable = (props) => {
       //   },
       // }}
       tableStyles={{
-        headRow: {
-          borderBottom: theme.palette.border.main,
-          boxShadow: 'none',
-        },
-        heading: {
-          fontSize: '1rem',
-          fontWeight: 'bold',
-          backgroundColor: theme.palette.grey.cream,
-          color: theme.palette.dark.main,
-          boxShadow: 'none',
-        },
         cell: {
           color: theme.palette.dark.main,
           fontSize: '1rem', // 1.2 if bold
           fontWeight: 'bold',
           letterSpacing: '.1rem',
           borderBottom: theme.palette.border.main,
-          backgroundColor: theme.palette.white.background,
+          backgroundColor: 'inherit',
           boxShadow: 'none',
         },
         tab: {

@@ -21,12 +21,13 @@ export const SButton = styled(
   && {
     color: ${(props) => (props.isActivePage ? props.blue : props.grey)};
     background: ${(props) =>
-      props.isActivePage ? props.borderColor : 'transparent'};
+      props.isActivePage ? props.borderColor : props.theme.palette.grey.main};
     font-family: Avenir Next Demi;
     letter-spacing: 0.05rem;
     font-size: 1.2rem;
     transition: 0.35s all;
-    width: 100%;
+    width: 10rem;
+    margin-right: 1rem;
     height: 100%;
     padding: 0;
     border-radius: 0.6rem;

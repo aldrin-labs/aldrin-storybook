@@ -17,6 +17,7 @@ import SearchUsername from '@core/components/SearchUsername/SearchUsername'
 import { Link } from 'react-router-dom'
 
 export const StyledDialogContent = styled(DialogContent)`
+
   border-radius: none;
   border: ${(props) =>
       (props.theme &&

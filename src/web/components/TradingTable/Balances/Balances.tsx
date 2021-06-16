@@ -9,37 +9,29 @@ import {
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
 
-import { useTokenAccounts, getSelectedTokenAccountForMint, useBalances } from '@sb/dexUtils/markets'
+import {
+  useTokenAccounts,
+  getSelectedTokenAccountForMint,
+  useBalances,
+  useSelectedTokenAccounts,
+} from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import { useSendConnection } from '@sb/dexUtils/connection'
+import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { settleFunds } from '@sb/dexUtils/send'
+import { CCAIProviderURL } from '@sb/dexUtils/utils'
 
 const BalancesTable = (props) => {
-  const {
-    tab,
-    theme,
-    show,
-    page,
-    perPage,
-    marketType,
-    allKeys,
-    specificPair,
-    handleChangePage,
-    handleChangeRowsPerPage,
-    getOpenOrderHistoryQuery,
-    handleToggleAllKeys,
-    handleToggleSpecificPair,
-    arrayOfMarketIds,
-    canceledOrders,
-    handlePairChange,
-    keys
-  } = props
+  const { tab, theme, show, page, perPage, marketType } = props
 
-  const balances = useBalances();
-  const [accounts] = useTokenAccounts();
-  const connection = useSendConnection();
-  const { wallet } = useWallet();
+  const balances = useBalances()
+  const [accounts] = useTokenAccounts()
+  const connection = useConnection()
+  const { wallet, providerUrl } = useWallet()
+  const [selectedTokenAccounts] = useSelectedTokenAccounts()
+
+  const isCCAIWallet = providerUrl === CCAIProviderURL
+  const showSettle = !isCCAIWallet || !wallet.connected || !wallet.autoApprove
 
   async function onSettleFunds(market, openOrders) {
     try {
@@ -50,27 +42,28 @@ const BalancesTable = (props) => {
         wallet,
         baseCurrencyAccount: getSelectedTokenAccountForMint(
           accounts,
-          market?.baseMintAddress,
+          market?.baseMintAddress
         ),
         quoteCurrencyAccount: getSelectedTokenAccountForMint(
           accounts,
-          market?.quoteMintAddress,
+          market?.quoteMintAddress
         ),
-      });
+        selectedTokenAccounts,
+        tokenAccounts: accounts,
+      })
 
-      notify({
-        message: 'Settling funds sucess',
+      await notify({
+        message: 'Successfully settled funds',
         description: 'No description',
         type: 'success',
-      });
-
+      })
     } catch (e) {
       notify({
         message: 'Error settling funds',
         description: e.message,
         type: 'error',
-      });
-      return;
+      })
+      return
     }
   }
 
@@ -81,42 +74,33 @@ const BalancesTable = (props) => {
   const balancesProcessedData = combineBalancesTable(
     balances,
     onSettleFunds,
-    theme
+    theme,
+    showSettle
   )
 
   return (
     <TableWithSort
+      rowsWithHover={false}
       style={{
         borderRadius: 0,
         height: 'calc(100% - 6rem)',
         overflowX: 'hidden',
-        backgroundColor: theme.palette.white.background,
+        backgroundColor: 'inherit',
       }}
-      stylesForTable={{ backgroundColor: theme.palette.white.background }}
+      stylesForTable={{ backgroundColor: 'inherit' }}
       defaultSort={{
         sortColumn: 'date',
         sortDirection: 'desc',
       }}
       withCheckboxes={false}
       tableStyles={{
-        headRow: {
-          borderBottom: theme.palette.border.main,
-          boxShadow: 'none',
-        },
-        heading: {
-          fontSize: '1rem',
-          fontWeight: 'bold',
-          backgroundColor: theme.palette.grey.cream,
-          color: theme.palette.dark.main,
-          boxShadow: 'none',
-        },
         cell: {
           color: theme.palette.dark.main,
           fontSize: '1rem', // 1.2 if bold
           fontWeight: 'bold',
           letterSpacing: '.1rem',
           borderBottom: theme.palette.border.main,
-          backgroundColor: theme.palette.white.background,
+          backgroundColor: 'inherit',
           boxShadow: 'none',
         },
         tab: {
@@ -126,7 +110,7 @@ const BalancesTable = (props) => {
       }}
       emptyTableText={getEmptyTextPlaceholder(tab)}
       data={{ body: balancesProcessedData }}
-      columnNames={getTableHead(tab, marketType)}
+      columnNames={getTableHead(tab, marketType, showSettle)}
     />
   )
   // }

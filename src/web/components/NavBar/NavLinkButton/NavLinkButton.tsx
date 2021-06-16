@@ -8,6 +8,7 @@ const NavLinkButton = ({
   component,
   children,
   pathname,
+  theme,
   theme: { palette },
   page,
   marketName,
@@ -23,21 +24,22 @@ const NavLinkButton = ({
   style: any
   onClick: any
 }) => {
-  const isActivePage = new RegExp(page, 'i').test(pathname)
+  const isActivePage = pathname.match(page)
 
   return (
     <SButton
+      theme={theme}
       pathname={pathname}
       marketName={marketName}
       component={component}
       isActivePage={isActivePage}
-      // disabled={(page === 'spot' || page === 'futures') && !isActivePage}
       type={palette.type}
       white={palette.common.white}
       black={palette.common.black}
       grey={palette.grey.text}
       blue={palette.blue.light}
       borderColor={palette.grey.border}
+      btnWidth={'14rem'}
       size="medium"
       color="default"
       variant="text"

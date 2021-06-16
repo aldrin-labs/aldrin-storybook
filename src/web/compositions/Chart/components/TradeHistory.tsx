@@ -47,10 +47,11 @@ export const TradeHistory = ({
         fetchPolicy={'network-only'}
         // subscriptionArgs={{
         //   subscription: MARKET_TICKERS,
-        //   variables: { symbol, exchange, marketType: String(marketType) },
-        //   // subscription: MOCKED_MARKET_TICKERS,
-        //   // variables: { time: 10000 },
+        //   variables: { symbol, exchange: 'serum', marketType: String(marketType) },
+          // subscription: MOCKED_MARKET_TICKERS,
+          // variables: { time: 10000 },
         //   updateQueryFunction: updateTradeHistoryQuerryFunction,
+        //   fetchPolicy: 'cache-and-network'
         // }}
         {...{
           quote,
@@ -70,7 +71,7 @@ export const TradeHistory = ({
           updateTerminalPriceFromOrderbook,
           key: 'tradeyistory_table_query_render',
         }}
-        isDataLoading={isPairDataLoading}
+        // isDataLoading={isPairDataLoading}
       />
     </TradeHistoryWrapper>
   )

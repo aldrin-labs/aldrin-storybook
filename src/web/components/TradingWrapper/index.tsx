@@ -1,26 +1,21 @@
 import React from 'react'
-
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import { Grid } from '@material-ui/core'
 import { compose } from 'recompose'
+import { Grid } from '@material-ui/core'
+
+import { SERUM_ORDERS_BY_TV_ALERTS } from '@core/graphql/subscriptions/SERUM_ORDERS_BY_TV_ALERTS'
+import { withErrorFallback } from '@core/hoc/withErrorFallback'
 
 import { isSPOTMarketType } from '@core/utils/chartPageUtils'
-import { isFuturesWarsKey } from '@core/graphql/queries/futureWars/isFuturesWarsKey'
 
 import TraidingTerminal from '../TraidingTerminal'
-import SmallSlider from '@sb/components/Slider/SmallSlider'
+
+import { client } from '@core/graphql/apolloClient'
 
 import {
   SRadio,
   SCheckbox,
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-
-import { SendButton } from '../TraidingTerminal/styles'
+import Bell from '@icons/bell.svg'
 
 import {
   TerminalContainer,
@@ -28,36 +23,54 @@ import {
   FullHeightGrid,
   TerminalHeader,
   TerminalModeButton,
-  LeverageLabel,
-  LeverageTitle,
-  LeverageContainer,
   SettingsContainer,
   SettingsLabel,
-  StyledSelect,
-  StyledOption,
-  SpotBalanceSpan,
   FuturesSettings,
-  DropdownItemsBlock,
-  TerminalModeButtonWithDropdown,
 } from './styles'
 
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import FirstVisitPopup from '@sb/compositions/Chart/components/FirstVisitPopup'
+import SvgIcon from '@sb/components/SvgIcon'
+import { TradeInputContent } from '@sb/components/TraidingTerminal/index'
+import { FormInputContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
+import {
+  InputRowContainer,
+  AdditionalSettingsButton,
+} from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
+import BlueSlider from '@sb/components/Slider/BlueSlider'
+import { TradingViewBotTerminalMemo } from './TradingViewBotTerminal'
+import { withPublicKey } from '@core/hoc/withPublicKey'
 
-class SimpleTabs extends React.Component {
-  state = {
-    operation: 'buy',
+const generateToken = () =>
+  Math.random()
+    .toString(36)
+    .substring(2, 15) +
+  Math.random()
+    .toString(36)
+    .substring(2, 15)
+
+class SimpleTabs extends React.Component<any, any> {
+  state: { 
+    mode: 'market' | 'limit'
+  } = {
+    side: 'buy',
     mode: 'market',
     leverage: false,
     reduceOnly: false,
-    orderMode: 'TIF',
+    orderMode: 'ioc',
     TIFMode: 'GTC',
     trigger: 'last price',
     orderIsCreating: false,
     takeProfit: false,
     takeProfitPercentage: 0,
-    breakEvenPoint: true,
+    breakEvenPoint: false,
+    tradingBotEnabled: false,
+    TVAlertsBotEnabled: false,
+    tradingBotIsActive: false,
+    TVAlertsBotIsActive: false,
+    tradingBotInterval: 45,
+    tradingBotTotalTime: 60,
+    token: generateToken(),
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -95,18 +108,74 @@ class SimpleTabs extends React.Component {
     if (prevProps.componentLeverage !== this.props.componentLeverage) {
       this.setState({ leverage: this.props.componentLeverage })
     }
+
+    if (
+      prevProps.intervalId !== this.props.intervalId &&
+      this.props.intervalId === null
+    ) {
+      this.setState({ tradingBotEnabled: false, tradingBotIsActive: false })
+    }
+
+    if (prevProps.wallet.connected && this.props.wallet.connected && this.state.TVAlertsBotIsActive) {
+      this.unsubscribe()
+
+      this.setState((prev) => ({
+        TVAlertsBotEnabled: false,
+        mode: 'market',
+        TVAlertsBotIsActive: false,
+      }))
+    }
   }
 
-  handleChangeMode = (mode: string) => {
-    this.setState({ mode })
+  componentWillUnmount() {
+    this.unsubscribe()
   }
 
-  handleChangeOperation = (operation: string) => {
-    this.setState({ operation })
+  subscribe = () => {
+    const that = this
+
+    this.subscription = client
+      .subscribe({
+        query: SERUM_ORDERS_BY_TV_ALERTS,
+        variables: {
+          serumOrdersByTVAlertsInput: {
+            publicKey: this.props.publicKey,
+            token: this.state.token,
+          },
+        },
+        fetchPolicy: 'cache-first',
+      })
+      .subscribe({
+        next: (data: { loading: boolean; data: any }) => {
+          const {
+            type,
+            side,
+            amount,
+            price,
+          } = data.data.listenSerumOrdersByTVAlerts
+
+          const variables =
+            type === 'limit'
+              ? { limit: price, price, amount: amount }
+              : type === 'market'
+              ? { amount: amount }
+              : {}
+
+          that.props.placeOrder(side, type, variables, {
+            orderMode: type === 'market' ? 'ioc' : 'limit',
+            takeProfit: false,
+            takeProfitPercentage: 0,
+            breakEvenPoint: false,
+            tradingBotEnabled: false,
+            tradingBotInterval: 0,
+            tradingBotTotalTime: 0,
+          })
+        },
+      })
   }
 
-  handleChangePercentage = (percentage: string, mode: string) => {
-    this.setState({ [`percentage${mode}`]: percentage })
+  unsubscribe = () => {
+    this.subscription && this.subscription.unsubscribe()
   }
 
   addLoaderToButton = (side: 'buy' | 'sell') => {
@@ -123,8 +192,16 @@ class SimpleTabs extends React.Component {
       trigger,
       orderIsCreating,
       takeProfit,
+      side,
+      token,
       breakEvenPoint,
       takeProfitPercentage,
+      tradingBotEnabled,
+      TVAlertsBotEnabled,
+      tradingBotIsActive,
+      TVAlertsBotIsActive,
+      tradingBotInterval,
+      tradingBotTotalTime,
     } = this.state
 
     const {
@@ -134,54 +211,29 @@ class SimpleTabs extends React.Component {
       theme,
       placeOrder,
       decimals,
+      spread,
       showOrderResult,
       cancelOrder,
       marketType,
       hedgeMode,
       enqueueSnackbar,
-      chartPagePopup,
-      closeChartPagePopup,
-      leverage: startLeverage,
-      componentMarginType,
       priceFromOrderbook,
       quantityPrecision,
       pricePrecision,
       minSpotNotional,
       minFuturesStep,
       marketPriceAfterPairChange,
-      updateTerminalViewMode,
-      updateLeverage,
-      changePositionModeWithStatus,
-      changeMarginTypeWithStatus,
-      maxLeverage,
+      publicKey,
+      connected,
+      SOLAmount,
+      openOrdersAccount,
+      minOrderSize,
+      market,
+      wallet,
     } = this.props
 
     const isSPOTMarket = isSPOTMarketType(marketType)
     const maxAmount = [funds[1].quantity, funds[0].quantity]
-
-    const lockedPositionBothAmount = isSPOTMarket
-      ? 0
-      : (
-          funds[2].find((position) => position.positionSide === 'BOTH') || {
-            positionAmt: 0,
-          }
-        ).positionAmt
-
-    const lockedPositionShortAmount = isSPOTMarket
-      ? 0
-      : (
-          funds[2].find((position) => position.positionSide === 'SHORT') || {
-            positionAmt: 0,
-          }
-        ).positionAmt
-
-    const lockedPositionLongAmount = isSPOTMarket
-      ? 0
-      : (
-          funds[2].find((position) => position.positionSide === 'LONG') || {
-            positionAmt: 0,
-          }
-        ).positionAmt
 
     return (
       <Grid
@@ -198,571 +250,490 @@ class SimpleTabs extends React.Component {
           >
             <div
               style={{
-                width: '50%',
-                borderRight: theme.palette.border.main,
-                padding: '0 1rem',
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'space-between',
               }}
             >
-              {/* <TerminalModeButton
-                theme={theme}
-                style={{
-                  width: '100%',
-                  border: `.1rem solid ${theme.palette.blue.main}`,
-                  color: theme.palette.blue.main,
-                  borderRadius: '.4rem',
-                  lineHeight: 'calc(.8rem)',
-                }}
-                active={mode === 'smart'}
-                onClick={() => {
-                  this.handleChangeMode('smart')
-                  updateTerminalViewMode('smartOrderMode')
-                }}
-              >
-                Go to Smart terminal
-              </TerminalModeButton> */}
-            </div>
-            <div style={{ width: '50%' }}>
-              <TerminalModeButton
-                theme={theme}
-                active={mode === 'market'}
-                onClick={() => {
-                  this.handleChangeMode('market')
-                  this.setState({
-                    orderMode: 'ioc',
-                  })
-                }}
-              >
-                Market
-              </TerminalModeButton>
-              <TerminalModeButton
-                theme={theme}
-                active={mode === 'limit'}
-                onClick={() => this.handleChangeMode('limit')}
-              >
-                Limit
-              </TerminalModeButton>
-              {/* <DarkTooltip
-                maxWidth={'35rem'}
-                title={
-                  'Maker-only or post-only market order will place a post-only limit orders as close to the market price as possible until the last one is executed. This way you can enter the position at the market price by paying low maker fees.'
-                }
-              >
+              <div>
                 <TerminalModeButton
+                  style={{ width: '10rem' }}
                   theme={theme}
-                  active={mode === 'maker-only'}
-                  onClick={() => this.handleChangeMode('maker-only')}
+                  active={mode === 'market'}
+                  onClick={() => {
+                    this.setState({
+                      mode: 'market',
+                      orderMode: 'ioc',
+                      TVAlertsBotEnabled: false,
+                    })
+                  }}
                 >
-                  Maker-only
+                  Market
                 </TerminalModeButton>
-              </DarkTooltip> */}
-
-              {/* {!isSPOTMarket ? (
-                <TerminalModeButtonWithDropdown
+                <TerminalModeButton
+                  style={{ width: '10rem' }}
                   theme={theme}
-                  active={mode === 'stop-limit' || mode === 'stop-market'}
+                  active={mode === 'limit'}
+                  onClick={() => {
+                    this.setState({
+                      mode: 'limit',
+                      orderMode: 'TIF',
+                      tradingBotEnabled: false,
+                      TVAlertsBotEnabled: false,
+                    })
+
+                    this.updateState('takeProfit', false)
+                  }}
                 >
-                  {mode === 'stop-limit'
-                    ? 'Stop-Limit'
-                    : mode === 'stop-market'
-                      ? 'Stop-Market'
-                      : 'Stop-Limit'}
-                  <ExpandMoreIcon
-                    style={{
-                      position: 'relative',
-                      left: '.8rem',
-                      top: '.2rem',
-                      width: '1rem',
-                      height: '.9rem',
-                      fill:
-                        mode !== 'stop-limit' && mode !== 'stop-market'
-                          ? '#7284a0'
-                          : '#fff',
-                    }}
-                  />
-                  <DropdownItemsBlock>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <TerminalModeButton
-                        theme={theme}
-                        active={mode === 'stop-limit'}
-                        onClick={() => {
-                          this.handleChangeMode('stop-limit')
-                          this.setState({
-                            orderMode: 'TIF',
-                            ...(orderMode === 'postOnly'
-                              ? { TIFMode: 'GTC' }
-                              : {}),
-                          })
-                        }}
-                        style={{
-                          width: '100%',
-                          padding: '1rem 0 1rem',
-                          border: theme.palette.border.main,
-                        }}
-                      >
-                        Stop-Limit
-                      </TerminalModeButton>
-                      <TerminalModeButton
-                        theme={theme}
-                        active={mode === 'stop-market'}
-                        onClick={() => {
-                          this.handleChangeMode('stop-market')
-                          this.setState({
-                            orderMode: 'TIF',
-                            ...(orderMode === 'postOnly'
-                              ? { TIFMode: 'GTC' }
-                              : {}),
-                          })
-                        }}
-                        style={{
-                          width: '100%',
-                          padding: '1rem 0 1rem',
-                          border: theme.palette.border.main,
-                          borderTop: 0,
-                        }}
-                      >
-                        Stop-Market
-                      </TerminalModeButton>
-                    </div>
-                  </DropdownItemsBlock>
-                </TerminalModeButtonWithDropdown>
-              ) : (
-                  <TerminalModeButton
-                    theme={theme}
-                    active={mode === 'stop-limit'}
-                    onClick={() => {
-                      this.handleChangeMode('stop-limit')
-                      this.setState({ orderMode: 'TIF' })
-                    }}
-                  >
-                    Stop-Limit
-                  </TerminalModeButton>
-                )} */}
-            </div>
-            {/* {marketType === 1 && (
-              <div style={{ width: '35%' }}>
-                <PillowButton
-                  firstHalfText={'one-way'}
-                  secondHalfText={'hedge'}
-                  secondHalfTooltip={
-                    'You can open a long and short at the same time. Just turn on hedge mode and open opposite positions.'
-                  }
-                  activeHalf={hedgeMode ? 'second' : 'first'}
-                  buttonAdditionalStyle={{
-                    width: '50%',
-                  }}
-                  changeHalf={() => {
-                    changePositionModeWithStatus(hedgeMode ? false : true)
-                  }}
-                />
+                  Limit
+                </TerminalModeButton>
               </div>
-            )} */}
-          </TerminalHeader>
-
-          {isSPOTMarket && mode === 'limit' ? (
-            <TerminalHeader
-              key={'futuresTerminal'}
-              style={{ display: 'flex' }}
-              theme={theme}
-            >
-              <SettingsContainer>
-                {/* {mode === 'market' && (
-                  <FuturesSettings key="postOnlyTerminalController">
-                    <SCheckbox
-                      id="postOnly"
-                      checked={orderMode === 'postOnly'}
-                      style={{ padding: '0 1rem' }}
-                      onChange={() =>
-                        this.setState({
-                          orderMode: orderMode === 'postOnly' ? '' : 'postOnly',
-                          TIFMode: 'GTX',
-                        })
-                      }
-                    />
-                    <SettingsLabel theme={theme} htmlFor="postOnly">
-                      BEP
-                    </SettingsLabel>
-                  </FuturesSettings>
-                )}
-                {mode === 'market' && (
-                  <FuturesSettings key="postOnlyTerminalController">
-                    <SCheckbox
-                      id="postOnly"
-                      checked={orderMode === 'postOnly'}
-                      style={{ padding: '0 1rem' }}
-                      onChange={() =>
-                        this.setState({
-                          orderMode: orderMode === 'postOnly' ? '' : 'postOnly',
-                          TIFMode: 'GTX',
-                        })
-                      }
-                    />
-                    <SettingsLabel theme={theme} htmlFor="postOnly">
-                      Take Profit
-                    </SettingsLabel>
-                  </FuturesSettings>
-                )} */}
-                {mode === 'limit' && (
-                  <FuturesSettings key="postOnlyTerminalController">
-                    <SCheckbox
-                      id="postOnly"
-                      checked={orderMode === 'postOnly'}
-                      style={{ padding: '0 1rem' }}
-                      onChange={() =>
-                        this.setState({
-                          orderMode: orderMode === 'postOnly' ? '' : 'postOnly',
-                          TIFMode: 'GTX',
-                        })
-                      }
-                    />
-                    <SettingsLabel theme={theme} htmlFor="postOnly">
-                      post only
-                    </SettingsLabel>
-                  </FuturesSettings>
-                )}
-
-                {mode === 'limit' && (
-                  <FuturesSettings
-                    key="iocTerminalController"
-                    style={{ padding: '.4rem 0' }}
-                  >
-                    <SCheckbox
-                      id="ioc"
-                      checked={orderMode === 'ioc'}
-                      style={{ padding: '0 1rem' }}
-                      onChange={() =>
-                        this.setState({
-                          orderMode: orderMode === 'ioc' ? '' : 'ioc',
-                        })
-                      }
-                    />
-                    <SettingsLabel theme={theme} htmlFor="ioc">
-                      ioc
-                    </SettingsLabel>
-                  </FuturesSettings>
-                )}
-                {/* 
-                {mode !== 'market' && ( //
-                  <DarkTooltip
-                    maxWidth={'35rem'}
-                    title={
-                      <>
-                        <p>
-                          <b>Time in Force</b>
-                        </p>
-                        <p>
-                          <b>- GTC (Good Till Cancel):</b> the order will
-                          continue to work until the order fills or is canceled.
-                        </p>
-                        <p>
-                          <b> - IOC (Immediate Or Cancel):</b> the order will
-                          execute all or part immediately and cancel any
-                          unfilled portion of the order.
-                        </p>
-                        <p>
-                          <b>- FOK (Fill Or Kill):</b> the order must be filled
-                          immediately in its entirety or not executed at all.
-                        </p>
-                        <p>
-                          <b>- GTX Good Till Crossing (Post Only):</b> the order
-                          would immediately match and trade, and not be a pure
-                          maker order. Available only in post-only mode.
-                        </p>
-                      </>
-                    }
-                  >
-                    <FuturesSettings key="TIFTerminalController">
-                      <SRadio
-                        id="TIF"
-                        checked={orderMode === 'TIF'}
-                        style={{ padding: '0 1rem' }}
-                        onChange={() =>
-                          this.setState({
-                            orderMode: 'TIF',
-                            ...(orderMode === 'postOnly'
-                              ? { TIFMode: 'GTC' }
-                              : {}),
-                          })
-                        }
-                      />
-                      <SettingsLabel theme={theme} htmlFor="TIF">
-                        TIF
-                      </SettingsLabel>
-                      <StyledSelect
-                        theme={theme}
-                        disabled={orderMode !== 'TIF'}
-                        value={this.state.TIFMode}
-                        onChange={(e) =>
-                          this.setState({ TIFMode: e.target.value })
-                        }
-                      >
-                        <StyledOption>GTC</StyledOption>
-                        <StyledOption>IOC</StyledOption>
-                        <StyledOption>FOK</StyledOption>
-                        {orderMode === 'postOnly' && (
-                          <StyledOption>GTX</StyledOption>
-                        )}
-                      </StyledSelect>
-                    </FuturesSettings>
-                  </DarkTooltip>
-                )} */}
-
-                {/* <FuturesSettings key="reduceTerminalController">
-                  <SCheckbox
-                    id="reduceOnly"
-                    checked={reduceOnly}
-                    style={{ padding: '0 1rem' }}
-                    onChange={() =>
-                      this.setState((prev) => ({
-                        reduceOnly: !prev.reduceOnly,
-                      }))
-                    }
-                  />
-                  <SettingsLabel theme={theme} htmlFor="reduceOnly">
-                    reduce only
-                  </SettingsLabel>
-                </FuturesSettings> */}
-
-                {/* {(mode === 'stop-limit' || mode === 'stop-market') && (
-                  <FuturesSettings
-                    key="triggerTerminalController"
-                    style={{ padding: '0 1rem' }}
-                  >
-                    <StyledSelect
-                      theme={theme}
-                      id="trigger"
-                      onChange={(e) =>
-                        this.setState({ trigger: e.target.value })
-                      }
-                    >
-                      <StyledOption>last price</StyledOption>
-                      <StyledOption>mark price</StyledOption>
-                    </StyledSelect>
-                  </FuturesSettings>
-                )} */}
-              </SettingsContainer>
-              <LeverageContainer theme={theme}>
-                {/* <LeverageTitle>
-                  <StyledSelect
-                    theme={theme}
-                    onChange={(e) =>
-                      changeMarginTypeWithStatus(e.target.value.toLowerCase())
-                    }
-                    value={componentMarginType}
-                    style={{ color: theme.palette.dark.main }}
-                  >
-                    <StyledOption>cross</StyledOption>
-                    <StyledOption>isolated</StyledOption>
-                  </StyledSelect>
-                </LeverageTitle>
-                <SmallSlider
-                  min={1}
-                  max={maxLeverage}
-                  defaultValue={startLeverage}
-                  value={leverage}
-                  valueSymbol={'X'}
-                  marks={
-                    maxLeverage === 125
-                      ? {
-                        1: {},
-                        25: {},
-                        50: {},
-                        75: {},
-                        100: {},
-                        125: {},
-                      }
-                      : maxLeverage === 75
-                        ? {
-                          1: {},
-                          15: {},
-                          30: {},
-                          45: {},
-                          60: {},
-                          75: {},
-                        }
-                        : {
-                          1: {},
-                          10: {},
-                          20: {},
-                          30: {},
-                          40: {},
-                          50: {},
-                        }
-                  }
-                  onChange={(leverage: number) => {
-                    this.setState({ leverage })
-                  }}
-                  onAfterChange={(leverage: number) => {
-                    updateLeverage(leverage)
-                  }}
-                  sliderContainerStyles={{
-                    width: '65%',
-                    margin: '0 auto',
-                  }}
-                  trackBeforeBackground={theme.palette.green.main}
-                  handleStyles={{
-                    width: '1.2rem',
-                    height: '1.2rem',
-                    border: 'none',
-                    backgroundColor: '#036141',
-                    marginTop: '-.28rem',
-                    boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
-                    transform: 'translate(-50%, -15%) !important',
-                  }}
-                  dotStyles={{
-                    border: 'none',
-                    backgroundColor: theme.palette.slider.dots,
-                  }}
-                  activeDotStyles={{
-                    backgroundColor: theme.palette.green.main,
-                  }}
-                  markTextSlyles={{
-                    color: theme.palette.grey.light,
-                    fontSize: '1rem',
-                  }}
-                  railStyle={{
-                    backgroundColor: theme.palette.slider.rail,
-                  }}
-                />
-                <LeverageLabel theme={theme} style={{ width: '12.5%' }}>
-                  {leverage}x
-                </LeverageLabel>*/}
-              </LeverageContainer>
-            </TerminalHeader>
-          ) : null}
-
-          <TerminalMainGrid item xs={12} container marketType={marketType}>
-            {this.props.isFuturesWarsKey && false ? (
               <div
                 style={{
                   display: 'flex',
-                  width: '100%',
                   justifyContent: 'center',
                   alignItems: 'center',
+                  flexDirection: 'row',
                 }}
               >
-                <SendButton
+                {mode === 'market' ? (
+                  <DarkTooltip
+                    maxWidth={'35rem'}
+                    title={
+                      'A limit order for a price higher than the purchase price of the percentage you specify will be placed immediately after purchase, so you take profit from SRM trading.'
+                    }
+                  >
+                    <FuturesSettings
+                      theme={theme}
+                      style={{
+                        padding: '0 2rem 0 0',
+                      }}
+                    >
+                      <SCheckbox
+                        id="takeProfitButton"
+                        checked={takeProfit}
+                        disabled={mode === 'limit'}
+                        onChange={() => {
+                          this.updateState('takeProfit', !takeProfit)
+                        }}
+                        style={{
+                          padding: '0 0.8rem 0 0',
+                        }}
+                      />
+                      <SettingsLabel theme={theme} htmlFor="takeProfitButton">
+                        Take Profit
+                      </SettingsLabel>
+                    </FuturesSettings>
+                  </DarkTooltip>
+                ) : null}
+
+                {mode === 'limit' ? (
+                  <TerminalHeader
+                    key={'futuresTerminal'}
+                    style={{ display: 'flex', border: 'none' }}
+                    theme={theme}
+                  >
+                    <SettingsContainer>
+                      <FuturesSettings key="postOnlyTerminalController">
+                        <SCheckbox
+                          id="postOnly"
+                          checked={orderMode === 'postOnly'}
+                          style={{ padding: '0 1rem' }}
+                          onChange={() =>
+                            this.setState({
+                              orderMode:
+                                orderMode === 'postOnly' ? '' : 'postOnly',
+                              TIFMode: 'GTX',
+                            })
+                          }
+                        />
+                        <SettingsLabel theme={theme} htmlFor="postOnly">
+                          post only
+                        </SettingsLabel>
+                      </FuturesSettings>
+
+                      <FuturesSettings
+                        key="iocTerminalController"
+                        style={{ padding: '.4rem 2rem .4rem 0' }}
+                      >
+                        <SCheckbox
+                          id="ioc"
+                          checked={orderMode === 'ioc'}
+                          style={{ padding: '0 1rem' }}
+                          onChange={() =>
+                            this.setState({
+                              orderMode: orderMode === 'ioc' ? '' : 'ioc',
+                            })
+                          }
+                        />
+                        <SettingsLabel theme={theme} htmlFor="ioc" style={{ textTransform: 'uppercase' }}>
+                          ioc
+                        </SettingsLabel>
+                      </FuturesSettings>
+                    </SettingsContainer>
+                  </TerminalHeader>
+                ) : null}
+                <TerminalModeButton
                   theme={theme}
-                  style={{ width: '30%' }}
-                  type={'buy'}
+                  style={{
+                    width: 'auto',
+                    height: '100%',
+                    padding: TVAlertsBotIsActive ? '0 4rem ' : '0 4rem 0 6rem',
+                    borderRight: 0,
+                    borderLeft: theme.palette.border.main,
+                    ...(TVAlertsBotIsActive
+                      ? { backgroundColor: '#F07878', color: '#fff', borderBottom: '0' }
+                      : {}),
+                  }}
+                  active={TVAlertsBotEnabled}
                   onClick={() => {
-                    this.handleChangeMode('smart')
-                    updateTerminalViewMode('smartOrderMode')
+                    if (TVAlertsBotIsActive) {
+                      this.unsubscribe()
+                    }
+
+                    this.setState((prev) => ({
+                      TVAlertsBotEnabled: !prev.TVAlertsBotEnabled,
+                      // tradingBotEnabled: false,
+                      mode: prev.TVAlertsBotEnabled ? 'market' : '',
+                      ...(TVAlertsBotIsActive
+                        ? { TVAlertsBotIsActive: false }
+                        : {}),
+                    }))
                   }}
                 >
-                  use smart order
-                </SendButton>
-              </div>
-            ) : (
-              <div style={{ display: 'flex', width: '100%', height: '100%' }}>
-                <FullHeightGrid theme={theme} xs={6} item needBorderRight>
-                  <TerminalContainer>
-                    <TraidingTerminal
-                      byType={'buy'}
-                      theme={theme}
-                      operationType={'buy'}
-                      priceType={mode}
-                      hedgeMode={hedgeMode}
-                      pricePrecision={pricePrecision}
-                      quantityPrecision={quantityPrecision}
-                      minSpotNotional={minSpotNotional}
-                      minFuturesStep={minFuturesStep}
-                      priceFromOrderbook={priceFromOrderbook}
-                      marketPriceAfterPairChange={marketPriceAfterPairChange}
-                      isSPOTMarket={isSPOTMarket}
-                      enqueueSnackbar={enqueueSnackbar}
-                      changePercentage={(value) =>
-                        this.handleChangePercentage(value, 'Buy')
-                      }
-                      pair={pair}
-                      funds={funds}
-                      lockedAmount={
-                        hedgeMode
-                          ? -lockedPositionShortAmount
-                          : lockedPositionBothAmount >= 0
-                          ? 0
-                          : -lockedPositionBothAmount
-                      }
-                      key={[pair, funds]}
-                      walletValue={funds && funds[1]}
-                      marketPrice={price}
-                      confirmOperation={placeOrder}
-                      cancelOrder={cancelOrder}
-                      {...{
-                        trigger,
-                        TIFMode,
-                        orderMode,
-                        reduceOnly,
-                        leverage,
-                        takeProfit,
-                        decimals,
-                        showOrderResult,
-                        orderIsCreating,
-                        takeProfitPercentage,
-                        breakEvenPoint,
-                        cancelOrder,
-                        addLoaderToButton: this.addLoaderToButton,
-                        updateState: this.updateState,
+                  {!TVAlertsBotIsActive && (
+                    <SvgIcon
+                      src={Bell}
+                      height={'100%'}
+                      width={'1.5rem'}
+                      style={{
+                        position: 'absolute',
+                        right: '12rem',
+                        top: 0,
                       }}
                     />
-                  </TerminalContainer>
-                </FullHeightGrid>
-
-                <FullHeightGrid theme={theme} xs={6} item>
-                  <TerminalContainer>
-                    <TraidingTerminal
-                      byType={'sell'}
-                      operationType={'sell'}
-                      priceType={mode}
-                      theme={theme}
-                      hedgeMode={hedgeMode}
-                      pricePrecision={pricePrecision}
-                      quantityPrecision={quantityPrecision}
-                      minSpotNotional={minSpotNotional}
-                      minFuturesStep={minFuturesStep}
-                      priceFromOrderbook={priceFromOrderbook}
-                      marketPriceAfterPairChange={marketPriceAfterPairChange}
-                      isSPOTMarket={isSPOTMarket}
-                      enqueueSnackbar={enqueueSnackbar}
-                      changePercentage={(value) =>
-                        this.handleChangePercentage(value, 'Sell')
+                  )} 
+                  {TVAlertsBotIsActive ? 'Stop Alert BOT' : 'Alert BOT'}
+                </TerminalModeButton>
+                {/* {pair.join('_') === 'SRM_USDT' && (
+                  <TerminalModeButton
+                    theme={theme}
+                    active={tradingBotEnabled}
+                    style={{
+                      width: '17rem',
+                      ...(tradingBotIsActive
+                        ? { backgroundColor: '#F07878' }
+                        : {}),
+                    }}
+                    onClick={() => {
+                      if (tradingBotIsActive) {
+                        clearInterval(intervalId)
+                        updateIntervalId(null)
+                        this.setState({ tradingBotIsActive: false })
+                      } else {
+                        this.setState((prev) => ({
+                          tradingBotEnabled: !prev.tradingBotEnabled,
+                          TVAlertsBotEnabled: false,
+                          tradingBotIsActive: false,
+                          orderMode: 'ioc',
+                          mode: 'market',
+                        }))
                       }
-                      pair={pair}
-                      funds={funds}
-                      lockedAmount={
-                        hedgeMode
-                          ? lockedPositionLongAmount
-                          : lockedPositionBothAmount <= 0
-                          ? 0
-                          : lockedPositionBothAmount
-                      }
-                      key={[pair, funds]}
-                      walletValue={funds && funds[1]}
-                      marketPrice={price}
-                      confirmOperation={placeOrder}
-                      cancelOrder={cancelOrder}
-                      decimals={decimals}
-                      addLoaderToButton={this.addLoaderToButton}
-                      orderIsCreating={orderIsCreating}
-                      showOrderResult={showOrderResult}
-                      leverage={leverage}
-                      reduceOnly={reduceOnly}
-                      orderMode={orderMode}
-                      TIFMode={TIFMode}
-                      trigger={trigger}
-                      updateState={this.updateState}
+                    }}
+                  >
+                    <SvgIcon
+                      src={RoboHead}
+                      height={'100%'}
+                      width={'2rem'}
+                      style={{ position: 'absolute', right: '14rem', top: 0 }}
                     />
-                  </TerminalContainer>
-                </FullHeightGrid>
+                    {tradingBotIsActive ? 'Stop Cycle BOT' : 'Use Cycle BOT'}
+                  </TerminalModeButton>
+                )} */}
               </div>
-            )}
+            </div>
+          </TerminalHeader>
+
+          <TerminalMainGrid item xs={12} container marketType={marketType}>
+            <div style={{ display: 'flex', width: '100%', height: '100%' }}>
+              {TVAlertsBotEnabled ? (
+                <TradingViewBotTerminalMemo
+                  theme={theme}
+                  side={side}
+                  pair={pair}
+                  token={token}
+                  orderType={mode}
+                  marketPrice={price}
+                  maxAmount={maxAmount}
+                  publicKey={publicKey}
+                  subscribeToTVAlert={this.subscribe}
+                  quantityPrecision={quantityPrecision}
+                  updateState={this.updateState}
+                />
+              ) : (
+                <>
+                  <FullHeightGrid
+                    theme={theme}
+                    xs={6}
+                    item
+                    needBorderRight={!tradingBotEnabled}
+                  >
+                    <TerminalContainer>
+                      <TraidingTerminal
+                        byType={'buy'}
+                        spread={spread}
+                        theme={theme}
+                        sideType={'buy'}
+                        priceType={mode}
+                        hedgeMode={hedgeMode}
+                        minOrderSize={minOrderSize}
+                        publicKey={publicKey}
+                        connected={connected}
+                        pricePrecision={pricePrecision}
+                        SOLAmount={SOLAmount}
+                        quantityPrecision={quantityPrecision}
+                        minSpotNotional={minSpotNotional}
+                        minFuturesStep={minFuturesStep}
+                        openOrdersAccount={openOrdersAccount}
+                        priceFromOrderbook={priceFromOrderbook}
+                        marketPriceAfterPairChange={marketPriceAfterPairChange}
+                        isSPOTMarket={isSPOTMarket}
+                        enqueueSnackbar={enqueueSnackbar}
+                        pair={pair}
+                        funds={funds}
+                        wallet={wallet}
+                        market={market}
+                        lockedAmount={0}
+                        key={JSON.stringify([pair])}
+                        marketPrice={price}
+                        confirmOperation={placeOrder}
+                        tradingBotEnabled={tradingBotEnabled}
+                        tradingBotInterval={tradingBotInterval}
+                        tradingBotIsActive={tradingBotIsActive}
+                        tradingBotTotalTime={tradingBotTotalTime}
+                        {...{
+                          trigger,
+                          TIFMode,
+                          orderMode,
+                          reduceOnly,
+                          leverage,
+                          takeProfit,
+                          decimals,
+                          showOrderResult,
+                          orderIsCreating,
+                          takeProfitPercentage,
+                          breakEvenPoint,
+                          cancelOrder,
+                          addLoaderToButton: this.addLoaderToButton,
+                          updateState: this.updateState,
+                        }}
+                      />
+                    </TerminalContainer>
+                  </FullHeightGrid>
+
+                  {tradingBotEnabled && !tradingBotIsActive ? (
+                    <FullHeightGrid theme={theme} xs={6} item>
+                      <TerminalContainer>
+                        <Grid
+                          item
+                          container
+                          xs={8}
+                          style={{ maxWidth: '100%', height: '66.666667%' }}
+                        >
+                          <InputRowContainer
+                            direction="column"
+                            style={{ margin: 'auto 0', width: '100%' }}
+                          >
+                            <FormInputContainer
+                              theme={theme}
+                              haveTooltip={false}
+                              tooltipText={
+                                <>
+                                  <p>
+                                    Waiting after unrealized P&L will reach set
+                                    target.
+                                  </p>
+                                  <p>
+                                    <b>For example:</b> you set 10% stop loss
+                                    and 1 minute timeout. When your unrealized
+                                    loss is 10% timeout will give a minute for a
+                                    chance to reverse trend and loss to go below
+                                    10% before stop loss order executes.
+                                  </p>
+                                </>
+                              }
+                              title={'Buy SRM Each'}
+                              lineMargin={'0 1.2rem 0 1rem'}
+                              style={{
+                                borderBottom: theme.palette.border.main,
+                                padding: '1rem 0',
+                              }}
+                            >
+                              {takeProfit && (
+                                <InputRowContainer>
+                                  <TradeInputContent
+                                    theme={theme}
+                                    padding={'0 1.5% 0 0'}
+                                    width={'calc(50%)'}
+                                    symbol={'%'}
+                                    title={'TP'}
+                                    textAlign={'right'}
+                                    needTitle={true}
+                                    value={takeProfitPercentage}
+                                    onChange={(e) => {
+                                      this.updateState(
+                                        'takeProfitPercentage',
+                                        e.target.value
+                                      )
+                                    }}
+                                  />
+
+                                  <BlueSlider
+                                    theme={theme}
+                                    value={takeProfitPercentage * 20}
+                                    sliderContainerStyles={{
+                                      width: '50%',
+                                      margin: '0 0 0 1.5%',
+                                    }}
+                                    onChange={(value) => {
+                                      this.updateState(
+                                        'takeProfitPercentage',
+                                        value / 20
+                                      )
+                                    }}
+                                  />
+                                </InputRowContainer>
+                              )}
+                            </FormInputContainer>
+                            <FormInputContainer
+                              theme={theme}
+                              haveTooltip={false}
+                              tooltipText={
+                                <>
+                                  <p>
+                                    Waiting after unrealized P&L will reach set
+                                    target.
+                                  </p>
+                                  <p>
+                                    <b>For example:</b> you set 10% stop loss
+                                    and 1 minute timeout. When your unrealized
+                                    loss is 10% timeout will give a minute for a
+                                    chance to reverse trend and loss to go below
+                                    10% before stop loss order executes.
+                                  </p>
+                                </>
+                              }
+                              title={"Bot's lifetime"}
+                              lineMargin={'0 1.2rem 0 1rem'}
+                              style={{
+                                borderBottom: theme.palette.border.main,
+                                padding: '1rem 0',
+                              }}
+                            >
+                              <InputRowContainer>
+                                <TradeInputContent
+                                  theme={theme}
+                                  haveSelector
+                                  symbol={'min'}
+                                  width={'calc(50% - .4rem)'}
+                                  value={tradingBotTotalTime}
+                                  onChange={(e) => {
+                                    if (+e.target.value > 720) {
+                                      this.updateState(
+                                        'tradingBotTotalTime',
+                                        720
+                                      )
+                                    } else {
+                                      this.updateState(
+                                        'tradingBotTotalTime',
+                                        e.target.value
+                                      )
+                                    }
+                                  }}
+                                  inputStyles={{
+                                    borderTopRightRadius: 0,
+                                    borderBottomRightRadius: 0,
+                                  }}
+                                />
+                                <BlueSlider
+                                  theme={theme}
+                                  showMarks={false}
+                                  value={tradingBotTotalTime}
+                                  valueSymbol={'min'}
+                                  min={0}
+                                  max={720}
+                                  sliderContainerStyles={{
+                                    width: 'calc(50% - 1.5rem)',
+                                    margin: '0 .5rem 0 1rem',
+                                  }}
+                                  onChange={(value) => {
+                                    this.updateState(
+                                      'tradingBotTotalTime',
+                                      value
+                                    )
+                                  }}
+                                />
+                              </InputRowContainer>
+                            </FormInputContainer>
+                          </InputRowContainer>
+                        </Grid>
+                      </TerminalContainer>
+                    </FullHeightGrid>
+                  ) : (
+                    <FullHeightGrid theme={theme} xs={6} item>
+                      <TerminalContainer>
+                        <TraidingTerminal
+                          byType={'sell'}
+                          sideType={'sell'}
+                          market={market}
+                          priceType={mode}
+                          minOrderSize={minOrderSize}
+                          theme={theme}
+                          hedgeMode={hedgeMode}
+                          pricePrecision={pricePrecision}
+                          quantityPrecision={quantityPrecision}
+                          minSpotNotional={minSpotNotional}
+                          minFuturesStep={minFuturesStep}
+                          connected={connected}
+                          SOLAmount={SOLAmount}
+                          openOrdersAccount={openOrdersAccount}
+                          priceFromOrderbook={priceFromOrderbook}
+                          marketPriceAfterPairChange={
+                            marketPriceAfterPairChange
+                          }
+                          spread={spread}
+                          wallet={wallet}
+                          isSPOTMarket={isSPOTMarket}
+                          enqueueSnackbar={enqueueSnackbar}
+                          pair={pair}
+                          funds={funds}
+                          lockedAmount={0}
+                          key={JSON.stringify([pair])}
+                          marketPrice={price}
+                          confirmOperation={placeOrder}
+                          cancelOrder={cancelOrder}
+                          decimals={decimals}
+                          addLoaderToButton={this.addLoaderToButton}
+                          orderIsCreating={orderIsCreating}
+                          showOrderResult={showOrderResult}
+                          leverage={leverage}
+                          reduceOnly={reduceOnly}
+                          orderMode={orderMode}
+                          TIFMode={TIFMode}
+                          trigger={trigger}
+                          updateState={this.updateState}
+                        />
+                      </TerminalContainer>
+                    </FullHeightGrid>
+                  )}
+                </>
+              )}
+            </div>
           </TerminalMainGrid>
         </CustomCard>
-        {chartPagePopup && (
-          <FirstVisitPopup closeChartPagePopup={closeChartPagePopup} />
-        )}
       </Grid>
     )
   }
 }
 
-export default compose(withErrorFallback)(SimpleTabs)
+export default compose(withErrorFallback, withPublicKey)(SimpleTabs)
