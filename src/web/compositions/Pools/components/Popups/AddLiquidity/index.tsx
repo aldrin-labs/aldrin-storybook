@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react'
+import * as BufferLayout from 'buffer-layout'
+import bs58 from 'bs58'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { Theme } from '@material-ui/core'
@@ -16,10 +18,16 @@ import {
   calculateWithdrawAmount,
   depositAllTokenTypes,
   getParsedTransactionData,
+  swap,
 } from '@sb/dexUtils/pools'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
-import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
+import {
+  LAMPORTS_PER_SOL,
+  ParsedInstruction,
+  PartiallyDecodedInstruction,
+  PublicKey,
+} from '@solana/web3.js'
 import { PoolInfo, PoolsPrices } from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
@@ -31,6 +39,8 @@ import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import AttentionComponent from '@sb/components/AttentionBlock'
 import { SelectCoinPopup } from '../SelectCoin'
 import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
+import { TOKEN_SWAP_PROGRAM_ID } from '@sb/dexUtils/token-swap/token-swap'
+import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/send-and-confirm-transaction-via-wallet'
 
 export const AddLiquidityPopup = ({
   theme,

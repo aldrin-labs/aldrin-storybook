@@ -104,7 +104,7 @@ export async function createTokenSwap({
     connection,
     authority,
     null,
-    2,
+    8,
     TOKEN_PROGRAM_ID
   )
 
