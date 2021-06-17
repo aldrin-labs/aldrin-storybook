@@ -17,12 +17,19 @@ import { Token } from './token/token'
 import { TOKEN_PROGRAM_ID } from '@project-serum/serum/lib/token-instructions'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
+import { MASTER_BUILD } from '@core/utils/config'
 
 const LookupJSON = require('./lookup.json')
 // const CCAI_MINT = 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp'
-export const CCAI_MINT = 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp'
+export const CCAI_MINT = MASTER_BUILD
+  ? 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp'
+  : 'AYoo9Qbjtw8S9HJwMrRFyZNaEiqMArKWtvvxXMv4qCoX'
+
 export const CCAI_TOKEN_DECIMALS = 9
-export const VESTING_PROGRAM_ADDRESS = process.env.VESTING_PROGRAM_ADDRESS || 'EwA6aaET9TpWzi9cRmYDfRQC6kg8DjA6hNnuWsCo6WEU'
+
+export const VESTING_PROGRAM_ADDRESS =
+  process.env.VESTING_PROGRAM_ADDRESS ||
+  'EwA6aaET9TpWzi9cRmYDfRQC6kg8DjA6hNnuWsCo6WEU'
 
 export async function getOwnedVestingAccounts(
   connection: Connection,
@@ -220,6 +227,26 @@ export const withdrawVested = async ({
   const { address: WITHDRAWAL_TOKEN_ACCOUNT } = getTokenDataByMint(
     allTokensData,
     mint.toString()
+  )
+
+  console.log(
+    {
+      beneficiary: vestingAccount.beneficiary.toBase58(),
+      mint: vestingAccount.mint.toBase58(),
+      vault: vestingAccount.vault.toBase58(),
+      grantor: vestingAccount.grantor.toBase58(),
+      outstanding: vestingAccount.outstanding.toString(),
+      startBalance: vestingAccount.startBalance.toString(),
+      createdTs: vestingAccount.createdTs.toString(),
+      startTs: vestingAccount.startTs.toString(),
+      endTs: vestingAccount.endTs.toString(),
+      periodCount: vestingAccount.periodCount.toString(),
+      whitelistOwned: vestingAccount.whitelistOwned.toString(),
+      nonce: vestingAccount.nonce,
+      realizor: vestingAccount.realizor,
+    },
+    vesting.toString(),
+    WITHDRAWAL_TOKEN_ACCOUNT
   )
 
   if (WITHDRAWAL_TOKEN_ACCOUNT) {
