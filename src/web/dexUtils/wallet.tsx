@@ -33,6 +33,7 @@ import Mathwallet from '@icons/mathwallet.svg'
 import Solong from '@icons/solong.svg'
 import CCAI from '@icons/ccai.svg'
 import { WalletAdapter } from './adapters'
+import { LedgerWalletAdapter } from './adapters/Ledger'
 
 export const WALLET_PROVIDERS = [
   // { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },
@@ -59,6 +60,12 @@ export const WALLET_PROVIDERS = [
     url: 'https://www.sollet.io/extension',
     adapter: SolletExtensionAdapter,
     icon: Sollet,
+  },
+  {
+    name: 'Ledger',
+    url: 'https://www.ledger.com',
+    adapter: LedgerWalletAdapter,
+    icon: "https://cdn.jsdelivr.net/gh/solana-labs/oyster@main/assets/wallets/ledger.svg",
   },
   // {
   //   name: 'MathWallet',
