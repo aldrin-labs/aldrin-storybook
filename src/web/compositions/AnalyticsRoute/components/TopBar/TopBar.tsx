@@ -14,6 +14,7 @@ import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
 import { getDecimalCount } from '@sb/dexUtils/utils'
 import SvgIcon from '@sb/components/SvgIcon'
 import SrmLogo from '@icons/srmLogo.svg'
+import CCAILogo from '@icons/auth0Logo.svg'
 
 import {
   Row,
@@ -27,26 +28,19 @@ import {
 
 import SRMPriceBlock from './SRMPriceBlock'
 import SRMMarketCap from './SRMMarketCap'
+import { CCAICirculationSupply } from '../CirculationSupply'
 
-export const serumData = {
-  totalySupply: 161000001,
-  burned: 925972.231,
+export const ccaiData = {
+  totalySupply: 50000000,
+  burned: 0,
   circulatingSupply: 50000000,
 }
 
-const TopBar = ({
-  theme,
-}: {
-  theme: Theme
-}) => {
+const TopBar = ({ theme }: { theme: Theme }) => {
   const { market } = useMarket() || { market: { tickSize: 8 } }
 
-  let circulatingSupply =
-    serumData.circulatingSupply -
-    serumData.burned
-  let totalySupply =
-    serumData.totalySupply -
-    serumData.burned
+  let circulatingSupply = ccaiData.circulatingSupply - ccaiData.burned
+  let totalySupply = ccaiData.totalySupply - ccaiData.burned
 
   let pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
 
@@ -54,57 +48,54 @@ const TopBar = ({
     <>
       <Row height={'100%'}>
         <SvgIcon
-          style={{ marginRight: '.75rem' }}
+          style={{ marginRight: '1rem' }}
           height={'50%'}
           width={'auto'}
-          src={SrmLogo}
+          src={CCAILogo}
         />
-        <SerumWhiteTitle theme={theme}>SRM / Serum</SerumWhiteTitle>
+        <SerumWhiteTitle theme={theme}>CCAI</SerumWhiteTitle>
         <SRMPriceBlock
           theme={theme}
           pricePrecision={3}
-          exchange={{ symbol: 'binance' }}
+          exchange={{ symbol: 'serum' }}
           marketType={0}
-          symbol={'SRM_USDT'}
+          symbol={'CCAI_USDC'}
         />
       </Row>
       <Row>
         <SerumTitleBlockContainer>
-          <TopBarTitle theme={theme}>SRM Marketcap</TopBarTitle>
+          <TopBarTitle theme={theme}>CCAI Marketcap</TopBarTitle>
           <SRMMarketCap
             theme={theme}
             pricePrecision={3}
-            exchange={{ symbol: 'binance' }}
+            exchange={{ symbol: 'serum' }}
             marketType={0}
-            symbol={'SRM_USDT'}
+            symbol={'CCAI_USDC'}
             circulatingSupply={circulatingSupply}
           />
         </SerumTitleBlockContainer>
         <SerumTitleBlockContainer>
-          <TopBarTitle theme={theme}>SRM Total Supply</TopBarTitle>
+          <TopBarTitle theme={theme}>CCAI Total Supply</TopBarTitle>
           <BlockContainer>
             <Text theme={theme}>
-              {formatNumberToUSFormat(totalySupply.toFixed(0))} SRM
+              {formatNumberToUSFormat(totalySupply.toFixed(0))} CCAI
             </Text>
           </BlockContainer>
         </SerumTitleBlockContainer>
         <SerumTitleBlockContainer>
-          <TopBarTitle theme={theme}>SRM Circulating Supply</TopBarTitle>
+          <TopBarTitle theme={theme}>CCAI Circulating Supply</TopBarTitle>
           <BlockContainer>
             <Text theme={theme}>
-              {formatNumberToUSFormat(circulatingSupply.toFixed(0))} SRM
+              <CCAICirculationSupply /> CCAI
             </Text>
           </BlockContainer>
         </SerumTitleBlockContainer>
         <SerumTitleBlockContainer>
-          <TopBarTitle theme={theme}>SRM Burned</TopBarTitle>
+          <TopBarTitle theme={theme}>CCAI Burned</TopBarTitle>
           <BlockContainer>
             {' '}
             <Text theme={theme}>
-              {formatNumberToUSFormat(
-                serumData.burned.toFixed(0)
-              )}{' '}
-              SRM
+              {formatNumberToUSFormat(ccaiData.burned.toFixed(0))} CCAI
             </Text>
           </BlockContainer>
         </SerumTitleBlockContainer>

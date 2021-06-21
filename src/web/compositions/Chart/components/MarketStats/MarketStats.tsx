@@ -17,6 +17,7 @@ import { getPrice } from '@core/graphql/queries/chart/getPrice'
 import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE'
 
 import { marketDataByTickers } from '@core/graphql/queries/chart/marketDataByTickers'
+import { CCAICirculationSupply } from '@sb/compositions/AnalyticsRoute/components/CirculationSupply'
 
 import {
   formatNumberToUSFormat,
@@ -99,6 +100,7 @@ const MarketStats = (props) => {
     getMarkPriceQuery,
     quantityPrecision,
     pricePrecision,
+    isCCAIPair,
   } = props
 
   const {
@@ -216,8 +218,8 @@ const MarketStats = (props) => {
             {!priceChangePercentage
               ? '--'
               : `${sign24hChange}${formatNumberToUSFormat(
-                stripDigitPlaces(+priceChangePercentage)
-              )}%`}
+                  stripDigitPlaces(+priceChangePercentage)
+                )}%`}
           </PanelCardSubValue>
         </span>
       </PanelCard>
@@ -241,6 +243,14 @@ const MarketStats = (props) => {
           {formatNumberToUSFormat(stripDigitPlaces(volume, 2))} {quote}
         </PanelCardValue>
       </PanelCard>
+      {isCCAIPair && (
+        <PanelCard marketType={marketType} theme={theme}>
+          <PanelCardTitle theme={theme}>Circulating Supply</PanelCardTitle>
+          <PanelCardValue theme={theme}>
+            <CCAICirculationSupply />
+          </PanelCardValue>
+        </PanelCard>
+      )}
     </div>
   )
 }

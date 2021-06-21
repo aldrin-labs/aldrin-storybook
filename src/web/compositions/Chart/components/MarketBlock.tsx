@@ -13,6 +13,7 @@ import LinkToSolanaExp from './LinkToSolanaExp'
 import GreenCheckmark from '@icons/successIcon.svg'
 import ThinkingFace from '@icons/thinkingFace.png'
 import Warning from '@icons/warningPairSel.png'
+import CCAILogo from '@icons/auth0Logo.svg'
 import SvgIcon from '@sb/components/SvgIcon'
 
 export const ExclamationMark = styled(({ fontSize, lineHeight, ...props }) => (
@@ -39,6 +40,10 @@ export const Title = styled(
   color: ${(props) => props.color || '#ecf0f3'};
   text-align: ${(props) => props.textAlign || 'center'};
   margin: ${(props) => props.margin || '0'};
+`
+const LinkToAnalytics = styled.a`
+  font-size: 2rem;
+  cursor: pointer;
 `
 
 const selectStyles = (theme: Theme) => ({
@@ -87,12 +92,18 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
   }
 
   const marketName = pair.replaceAll('_', '/')
-  const currentMarket = customMarkets?.find((el) => el?.name.replaceAll('_', '/') === marketName)
+  const currentMarket = customMarkets?.find(
+    (el) => el?.name.replaceAll('_', '/') === marketName
+  )
 
   const isPrivateCustomMarket =
     currentMarket?.isPrivateCustomMarket !== undefined
   const isCustomUserMarket = currentMarket?.isCustomUserMarket
 
+  const isCCAIPair =
+    pair.includes('CCAI') && !isPrivateCustomMarket && !isCustomUserMarket
+
+  console.log('pair', pair)
   return (
     <RowContainer
       justify={'space-between'}
@@ -124,6 +135,8 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
               <SvgIcon width={'50%'} height={'auto'} src={Warning} />
             ) : isCustomUserMarket ? (
               <SvgIcon width={'50%'} height={'auto'} src={ThinkingFace} />
+            ) : isCCAIPair ? (
+              <SvgIcon width={'50%'} height={'auto'} src={CCAILogo} />
             ) : (
               <SvgIcon width={'50%'} height={'auto'} src={GreenCheckmark} />
             )}
@@ -147,6 +160,7 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
         </div>
 
         <MarketStats
+          isCCAIPair={isCCAIPair}
           theme={theme}
           symbol={pair}
           marketType={marketType}
@@ -155,6 +169,7 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
           pricePrecision={pricePrecision}
         />
         <LinkToSolanaExp marketAddress={marketAddress} />
+        <LinkToAnalytics href={`/analytics/${pair}`}>📈 </LinkToAnalytics>
       </Row>
       <Row>
         <Row align={'flex-start'} direction="column">
