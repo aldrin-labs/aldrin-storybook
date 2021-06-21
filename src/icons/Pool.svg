@@ -1,0 +1,29 @@
+<svg width="451" height="196" viewBox="0 0 451 196" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0)">
+<rect x="1.52588e-05" y="196" width="196" height="451" rx="12" transform="rotate(-90 1.52588e-05 196)" fill="url(#paint0_linear)"/>
+<g opacity="0.1" filter="url(#filter0_f)">
+<path d="M47 268.639V189.977L308.771 56.3754L490.184 150.494V268.639H47Z" fill="#366CE5"/>
+<path d="M47 190.034V225.819L305.601 77.6323L490.031 183.611V149.202L305.601 42.0002L47 190.034Z" fill="#F5F5FB"/>
+<path d="M443.119 268.333L305.318 197.375L164.431 268.333H47V225.513L305.318 78.0911L490.184 182.847V268.333H443.119Z" fill="#5768F3"/>
+<path d="M305.318 78.0911V197.375M305.318 78.0911L490.184 182.847V268.333H443.119L305.318 197.375M305.318 78.0911L47 225.513V268.333H164.431L305.318 197.375" stroke="#F5F5FB"/>
+<path d="M305.318 197.375V78.0911L47 225.513V268.333H164.431L305.318 197.375Z" fill="#6474F5" stroke="#F5F5FB"/>
+<path d="M417.238 130.23C411.528 98.5234 398.091 54.1336 390.017 130.23M390.017 130.23V153.705M390.017 130.23L348.879 108.668M390.017 256.396V241.103M390.017 241.103L348.879 218.317V237.433V196.142M390.017 241.103V218.317M348.879 196.142L390.017 218.317M348.879 196.142V173.968M390.017 218.317V196.142M390.017 196.142L348.879 173.968M390.017 196.142V177.179M348.879 173.968V152.405M348.879 152.405L390.017 177.179M348.879 152.405V130.23M390.017 177.179V153.705M390.017 153.705L348.879 130.23M348.879 130.23V108.668M348.879 108.668C354.13 78.4389 367.169 36.1187 377.324 108.668" stroke="#3A475C" stroke-width="4"/>
+<ellipse cx="238.007" cy="191.41" rx="54.2893" ry="28.9033" fill="#F29C38"/>
+<ellipse cx="238.007" cy="187.434" rx="54.2893" ry="24.9272" fill="#F8B567"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_f" x="42.5" y="38.0002" width="452.184" height="234.833" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="2" result="effect1_foregroundBlur"/>
+</filter>
+<linearGradient id="paint0_linear" x1="26.5" y1="196" x2="83.8109" y2="655.134" gradientUnits="userSpaceOnUse">
+<stop stop-color="#2A80F9"/>
+<stop offset="1" stop-color="#0352BB"/>
+</linearGradient>
+<clipPath id="clip0">
+<rect y="196" width="196" height="451" rx="24" transform="rotate(-90 0 196)" fill="white"/>
+</clipPath>
+</defs>
+</svg>

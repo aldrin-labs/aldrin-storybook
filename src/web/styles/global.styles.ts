@@ -8,8 +8,8 @@ export const GlobalStyle = createGlobalStyle`
  
  &::-webkit-scrollbar {
     width: ${({ scrollBarWidth }: { scrollBarWidth?: number }) =>
-      scrollBarWidth ? `${scrollBarWidth}px` : '3px'};
-    height: 3px;
+      scrollBarWidth ? `${scrollBarWidth}px` : '.2rem'};
+    height: .1rem;
   }
 
   &::-webkit-scrollbar-track {
@@ -17,7 +17,18 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #165BE0;
+    background: #366CE5;
+  }
+
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  /* Firefox */
+  input[type=number] {
+    -moz-appearance: textfield;
   }
 
   .DateRangePicker {
@@ -47,7 +58,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
 
-  @media only screen and (min-width: 1921px) {
+  @media only screen and (min-width: 2200px) {
     html {
       font-size: 15px;
     }

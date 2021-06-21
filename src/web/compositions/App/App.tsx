@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 // import './app.styles.global.css';
 import styled from 'styled-components'
 import { compose } from 'recompose'
@@ -6,7 +6,11 @@ import { withRouter } from 'react-router-dom'
 // https://material-ui.com/customization/css-in-js/#other-html-element
 import JssProvider from 'react-jss/lib/JssProvider'
 import { create } from 'jss'
-import { createGenerateClassName, jssPreset } from '@material-ui/core/styles'
+import {
+  createGenerateClassName,
+  jssPreset,
+  withTheme,
+} from '@material-ui/core/styles'
 
 const generateClassName = createGenerateClassName({
   dangerouslyUseGlobalCSS: false,
@@ -30,6 +34,7 @@ import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
 import { AppGridLayout, FontStyle } from './App.styles'
 // import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
 import { GlobalStyle } from '@sb/styles/global.styles'
+import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
@@ -38,29 +43,40 @@ import { syncStorage } from '@storage'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { useQuery } from 'react-apollo'
 import CardsPanel from '@sb/compositions/Chart/components/CardsPanel'
+import MarketBlock from '@sb/compositions/Chart/components/MarketBlock'
 
 import { ConnectionProvider } from '@sb/dexUtils/connection'
 import { WalletProvider } from '@sb/dexUtils/wallet'
 import { MarketProvider } from '@sb/dexUtils/markets'
 import { PreferencesProvider } from '@sb/dexUtils/preferences'
+import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
+import DevUrlPopup from '@sb/components/PopupForDevUrl'
 
-const version = `10.9.0`
+const version = `10.9.123`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
+const isNotificationDone = localStorage.getItem('isNotificationDone')
+const localPassword = localStorage.getItem('localPassword')
 const currentVersion = localStorage.getItem('version')
+
 if (currentVersion !== version) {
   localStorage.clear()
   localStorage.setItem('version', version)
   localStorage.setItem('isOnboardingDone', isOnboardingDone)
+  localStorage.setItem('isNotificationDone', isNotificationDone)
+  document.location.reload()
+
+  if (localPassword !== null) {
+    localStorage.setItem('localPassword', localPassword)
+  }
 }
 
 const AppRaw = ({
   children,
   getViewModeQuery,
-  getThemeModeQuery,
-  getChartDataQuery,
   location: { pathname: currentPage, search },
-  ...props
 }: any) => {
+  const [isDevUrlPopupOpen, openDevUrlPopup] = useState(true)
+
   const isChartPage = /chart/.test(currentPage)
 
   let themeMode = localStorage.getItem('themeMode')
@@ -69,15 +85,19 @@ const AppRaw = ({
     themeMode = 'dark'
     localStorage.setItem('themeMode', 'dark')
   }
-  console.log('theme', themeMode)
+
   const chartPageView =
     getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
 
   const fullscreen: boolean = isChartPage && chartPageView !== 'default'
   const showFooter =
-    currentPage !== '/registration' &&
+    !currentPage.includes('/analytics') &&
     currentPage !== '/tech_issues' &&
-    !isChartPage
+    !isChartPage &&
+    currentPage !== '/' &&
+    currentPage !== '/pools' &&
+    currentPage !== '/rebalance'
+
   const isPNL = currentPage.includes('/portfolio/main')
   // TODO: Check this variable
   const pageIsRegistration = currentPage.includes('regist')
@@ -117,22 +137,34 @@ const AppRaw = ({
                       {!pageIsRegistration && (
                         <CardsPanel pathname={currentPage} hide={fullscreen} />
                       )}
+                      {isChartPage && <MarketBlock />}
                       <div
                         style={{
                           height: showFooter
                             ? 'calc(100% - 11.7rem)'
+                            : isChartPage
+                            ? 'calc(100% - 12rem)'
                             : 'calc(100% - 6rem)',
+                          overflow: currentPage == '/' ? 'hidden' : 'auto',
                         }}
                       >
                         {children}
                       </div>
-                      {showFooter && <Footer isRewards={isRewards} />}
+                      {showFooter && <FooterWithTheme isRewards={isRewards} />}
                       {/* 
                     <Footer
                       isChartPage={isChartPage}
                       fullscreenMode={fullscreen}
                       showFooter={showFooter}
                     /> */}
+                      {!MASTER_BUILD && !LOCAL_BUILD && (
+                        <DevUrlPopup
+                          open={isDevUrlPopupOpen}
+                          close={() => {
+                            openDevUrlPopup(false)
+                          }}
+                        />
+                      )}
                     </AppGridLayout>
                     {/* <ShowWarningOnMoblieDevice /> */}
                   </PreferencesProvider>
@@ -140,6 +172,7 @@ const AppRaw = ({
               </MarketProvider>
             </ConnectionProvider>
             <GlobalStyle />
+            <GlobalStyles />
           </SnackbarWrapper>
         </ThemeWrapper>
       </JssProvider>
@@ -151,6 +184,7 @@ const Footer = (props) => {
   return (
     <RowContainer
       style={{
+        background: props.theme.palette.grey.additional,
         height: '5.7rem',
         ...(props.isRewards ? { position: 'absolute', bottom: '0' } : {}),
       }}
@@ -164,7 +198,7 @@ const Footer = (props) => {
         Cryptocurrencies.Ai
       </Link>
       <Link
-        href="https://t.me/CryptocurrenciesAi"
+        href="https://t.me/CCAI_Official"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -187,6 +221,8 @@ const Footer = (props) => {
     </RowContainer>
   )
 }
+
+const FooterWithTheme = compose(withTheme())(Footer)
 
 const Row = styled.div`
   display: flex;
@@ -230,11 +266,6 @@ export const App = compose(
     name: 'getViewModeQuery',
     fetchPolicy: 'cache-and-network',
   }),
-  // queryRendererHoc({
-  //   query: GET_THEME_MODE,
-  //   name: 'getThemeModeQuery',
-  //   fetchPolicy: 'cache-and-network',
-  // }),
   queryRendererHoc({
     skip: (props: any) => {
       return !props.authenticated

@@ -1,21 +1,14 @@
 import React, { useState, useEffect } from 'react'
 
 import { Fade, Grid, Theme } from '@material-ui/core'
-
-import MainDepthChart from '../DepthChart/MainDepthChart/MainDepthChart'
-import { SingleChart } from '@sb/components/Chart'
-
+import SingleChartWithButtons from '@sb/components/Chart'
+import TokenNotAddedPopup from '@sb/compositions/Chart/components/TokenNotAdded'
 import Balances from '@core/components/Balances'
 import TradingComponent from '@core/components/TradingComponent'
 import TradingTable from '@sb/components/TradingTable/TradingTable'
 import { TablesBlockWrapper } from '@sb/components/TradingWrapper/styles'
 import { TradeHistory, OrderbookAndDepthChart } from '../components'
-import CardsPanel from '../components/CardsPanel'
-import { GuestMode } from '../components/GuestMode/GuestMode'
-import ChartCardHeader, { TriggerTitle } from '@sb/components/ChartCardHeader'
-import { HideArrow } from '../components/HideArrow/HideArrow'
 import { isEqual } from 'lodash'
-import { TerminalModeButton } from '@sb/components/TradingWrapper/styles'
 
 const TerminalContainer = ({
   isDefaultTerminalViewMode,
@@ -26,28 +19,27 @@ const TerminalContainer = ({
   children: React.ReactChild
   theme: Theme
 }) => (
-    <TablesBlockWrapper
-      item
-      container
-      theme={theme}
-      xs={isDefaultTerminalViewMode ? 5 : 12}
-      isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-    >
-      {children}
-    </TablesBlockWrapper>
-  )
+  <TablesBlockWrapper
+    item
+    container
+    theme={theme}
+    xs={isDefaultTerminalViewMode ? 5 : 12}
+    isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+  >
+    {children}
+  </TablesBlockWrapper>
+)
 
 import {
   Container,
   ChartsContainer,
-  DepthChartContainer,
   TradingTabelContainer,
   TradingTerminalContainer,
-  ChartGridContainer,
-  CustomCard,
   BalancesContainer,
   TopChartsContainer,
 } from '../Chart.styles'
+import TradingBlocked from '../components/TradingBlocked'
+import { CCAIListingTime, isCCAITradingEnabled } from '@sb/dexUtils/utils'
 
 // fix props type
 export const DefaultViewComponent = (
@@ -55,8 +47,6 @@ export const DefaultViewComponent = (
 ): React.ReactComponentElement<any> | null => {
   const {
     currencyPair,
-    id,
-    view,
     marketType,
     theme,
     themeMode,
@@ -80,35 +70,22 @@ export const DefaultViewComponent = (
     minFuturesStep,
     chartPagePopup,
     closeChartPagePopup,
-    authenticated,
     maxLeverage,
-    layout,
-    changeChartLayoutMutation,
   } = props
 
-  const [chartExchange, updateChartExchange] = useState('binance')
-
-  if (!currencyPair) {
-    return null
-  }
-
-  const { hideDepthChart, hideOrderbook, hideTradeHistory } = layout
-
-  const changeChartLayout = async (newParams) => {
-    const argObject = {
-      hideDepthChart,
-      hideTradeHistory,
-      hideOrderbook,
-      ...newParams,
-    }
-    await changeChartLayoutMutation({
-      variables: { input: { layout: argObject } },
-    })
-  }
+  const hideTradeHistory = currencyPair.includes('WUSDT')
+  const hideOrderbook = false
+  const hideDepthChart = true
 
   const [priceFromOrderbook, updateTerminalPriceFromOrderbook] = useState<
     null | number
   >(null)
+
+  const [showTokenNotAddedPopup, setShowTokenNotAdded] = useState(false)
+  const [isTradingBlockedPopupOpen, setIsTradingBlockedPopupOpen] = useState(
+    !isCCAITradingEnabled() && currencyPair === 'CCAI_USDC'
+  )
+
   const [base, quote] = currencyPair.split('_')
   const baseQuoteArr = [base, quote]
   const exchange = activeExchange.symbol
@@ -119,34 +96,8 @@ export const DefaultViewComponent = (
     updateTerminalPriceFromOrderbook(null)
   }, [currencyPair])
 
-  console.log('default view rerender', props)
-
   return (
     <Container container spacing={8} theme={theme}>
-      {/* <ChartGridContainer item xs={12} theme={theme}>
-        <CardsPanel
-          {...{
-            _id: id,
-            pair: currencyPair,
-            view,
-            theme,
-            themeMode,
-            activeExchange,
-            selectedKey,
-            showChangePositionModeResult,
-            isDefaultTerminalViewMode,
-            updateTerminalViewMode,
-            marketType,
-            quantityPrecision,
-            pricePrecision,
-            hideDepthChart,
-            hideOrderbook,
-            hideTradeHistory,
-            changeChartLayout,
-          }}
-        />
-      </ChartGridContainer> */}
-
       <Grid
         item
         container
@@ -177,65 +128,13 @@ export const DefaultViewComponent = (
               theme={theme}
               hideTradeHistory={hideTradeHistory}
             >
-              <CustomCard
-                theme={theme}
-                id="tradingViewChart"
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  borderRight: 'none',
-                }}
-              >
-                <TriggerTitle
-                  theme={theme}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: 0
-                  }}
-                >
-                  <span
-                    style={{
-                      width: 'calc(100% - 20rem)',
-                      whiteSpace: 'pre-line',
-                      textAlign: 'left',
-                      color: theme.palette.dark.main,
-                      textTransform: 'capitalize',
-                      fontSize: '1.3rem',
-                      lineHeight: '1rem',
-                      paddingLeft: '1rem'
-                    }}
-                  >
-                    Chart
-                  </span>
-                  <TerminalModeButton
-                    theme={theme}
-                    active={chartExchange === 'binance'}
-                    style={{ width: '10rem' }}
-                    onClick={() => {
-                      updateChartExchange('binance')
-                    }}
-                  >
-                    Binance
-                  </TerminalModeButton>
-                  <TerminalModeButton
-                    theme={theme}
-                    active={chartExchange === 'serum'}
-                    style={{ width: '10rem', borderRight: 0 }}
-                    onClick={() => updateChartExchange('serum')}
-                  >
-                    Serum
-                  </TerminalModeButton>
-                </TriggerTitle>
-                <SingleChart
-                  name=""
-                  themeMode={themeMode}
-                  additionalUrl={`/?symbol=${base}/${quote}_${String(
-                    marketType
-                  )}_${chartExchange}&user_id=${id}`}
-                />
-              </CustomCard>
+              <SingleChartWithButtons
+                currencyPair={currencyPair}
+                base={base}
+                quote={quote}
+                marketType={marketType}
+                themeMode={themeMode}
+              />
             </ChartsContainer>
             <TradingTerminalContainer
               theme={theme}
@@ -248,19 +147,18 @@ export const DefaultViewComponent = (
                 <Grid
                   item
                   container
-                  xs={7}
                   style={{
                     height: '100%',
                     flexBasis: hideOrderbook
                       ? '0%'
-                      : hideDepthChart
-                        ? '50%'
-                        : '65%',
+                      : !hideTradeHistory
+                      ? '50%'
+                      : '100%',
                     maxWidth: hideOrderbook
                       ? '0%'
-                      : hideDepthChart
-                        ? '50%'
-                        : '65%',
+                      : !hideTradeHistory
+                      ? '50%'
+                      : '100%',
                   }}
                 >
                   {!hideOrderbook && (
@@ -297,13 +195,13 @@ export const DefaultViewComponent = (
                     flexBasis: hideOrderbook
                       ? '100%'
                       : hideDepthChart
-                        ? '50%'
-                        : '35%',
+                      ? '50%'
+                      : '35%',
                     maxWidth: hideOrderbook
                       ? '100%'
                       : hideDepthChart
-                        ? '50%'
-                        : '35%',
+                      ? '50%'
+                      : '35%',
                   }}
                 >
                   {!hideTradeHistory && (
@@ -332,76 +230,87 @@ export const DefaultViewComponent = (
               </Grid>
             </TradingTerminalContainer>
           </TopChartsContainer>
-          {/* {!authenticated && <GuestMode />} */}
 
-          {
-            <TradingTabelContainer
-              item
-              theme={theme}
-              xs={6}
+          <TradingTabelContainer
+            item
+            theme={theme}
+            xs={6}
+            isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+          >
+            <TradingTable
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-            >
-              <TradingTable
-                isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-                maxLeverage={maxLeverage}
-                selectedKey={selectedKey}
-                showOrderResult={showOrderResult}
-                showCancelResult={showCancelResult}
-                marketType={marketType}
-                exchange={exchange}
-                pricePrecision={pricePrecision}
-                quantityPrecision={quantityPrecision}
-                priceFromOrderbook={priceFromOrderbook}
-                currencyPair={currencyPair}
-                arrayOfMarketIds={arrayOfMarketIds}
-              />
-            </TradingTabelContainer>
-          }
-          {isDefaultTerminalViewMode && (
-            <BalancesContainer
-              item
-              xs={1}
-              theme={theme}
-              id="balances"
-              isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-            >
-              <Balances
-                pair={currencyPair.split('_')}
-                selectedKey={selectedKey}
-                marketType={marketType}
-                theme={theme}
-                showFuturesTransfer={showFuturesTransfer}
-              />
-            </BalancesContainer>
-          )}
+              maxLeverage={maxLeverage}
+              selectedKey={selectedKey}
+              showOrderResult={showOrderResult}
+              showCancelResult={showCancelResult}
+              marketType={marketType}
+              exchange={exchange}
+              pricePrecision={pricePrecision}
+              quantityPrecision={quantityPrecision}
+              priceFromOrderbook={priceFromOrderbook}
+              currencyPair={currencyPair}
+              arrayOfMarketIds={arrayOfMarketIds}
+            />
+          </TradingTabelContainer>
 
-          {
-            <TerminalContainer
+          <BalancesContainer
+            item
+            xs={1}
+            theme={theme}
+            id="balances"
+            isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+          >
+            <Balances
+              pair={currencyPair.split('_')}
+              selectedKey={selectedKey}
+              marketType={marketType}
               theme={theme}
+              showFuturesTransfer={showFuturesTransfer}
+              setShowTokenNotAdded={setShowTokenNotAdded}
+            />
+          </BalancesContainer>
+
+          <TerminalContainer
+            theme={theme}
+            isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+          >
+            <TradingComponent
+              selectedKey={selectedKey}
+              activeExchange={activeExchange}
+              pair={baseQuoteArr}
+              theme={theme}
+              chartPagePopup={chartPagePopup}
+              closeChartPagePopup={closeChartPagePopup}
+              quantityPrecision={quantityPrecision}
+              pricePrecision={pricePrecision}
+              minSpotNotional={minSpotNotional}
+              minFuturesStep={minFuturesStep}
+              sizeDigits={sizeDigits}
+              priceFromOrderbook={priceFromOrderbook}
+              marketType={marketType}
+              maxLeverage={maxLeverage}
+              showOrderResult={showOrderResult}
+              showCancelResult={showCancelResult}
+              showChangePositionModeResult={showChangePositionModeResult}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-            >
-              <TradingComponent
-                selectedKey={selectedKey}
-                activeExchange={activeExchange}
-                pair={baseQuoteArr}
-                theme={theme}
-                chartPagePopup={chartPagePopup}
-                closeChartPagePopup={closeChartPagePopup}
-                quantityPrecision={quantityPrecision}
-                pricePrecision={pricePrecision}
-                minSpotNotional={minSpotNotional}
-                minFuturesStep={minFuturesStep}
-                priceFromOrderbook={priceFromOrderbook}
-                marketType={marketType}
-                maxLeverage={maxLeverage}
-                showOrderResult={showOrderResult}
-                showCancelResult={showCancelResult}
-                showChangePositionModeResult={showChangePositionModeResult}
-                isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-                updateTerminalViewMode={updateTerminalViewMode}
-              />
-            </TerminalContainer>
-          }
+              updateTerminalViewMode={updateTerminalViewMode}
+              setShowTokenNotAdded={setShowTokenNotAdded}
+            />
+          </TerminalContainer>
+
+          <TradingBlocked
+            pair={baseQuoteArr}
+            theme={theme}
+            open={isTradingBlockedPopupOpen}
+            onClose={() => setIsTradingBlockedPopupOpen(false)}
+          />
+
+          <TokenNotAddedPopup
+            pair={baseQuoteArr}
+            theme={theme}
+            open={showTokenNotAddedPopup}
+            onClose={() => setShowTokenNotAdded(false)}
+          />
         </Grid>
       </Grid>
     </Container>

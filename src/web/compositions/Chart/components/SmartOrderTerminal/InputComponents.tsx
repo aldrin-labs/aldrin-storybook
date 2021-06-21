@@ -119,8 +119,9 @@ export const FormInputContainer = ({
   haveTooltip = false,
   tooltipText = '',
   tooltipStyles = {},
-  onValueClick = () => {},
+  onValueClick = () => { },
   theme,
+  style
 }: {
   title: string
   children: ReactNode
@@ -129,14 +130,16 @@ export const FormInputContainer = ({
   lineWidth?: string
   needRightValue?: boolean
   rightValue?: string
+  lineMargin?: string
   haveTooltip?: boolean
   tooltipText?: string | React.ReactChild
   tooltipStyles?: React.CSSProperties
   onValueClick?: any
   theme: Theme
+  style: React.CSSProperties
 }) => {
   return (
-    <InputRowContainer padding={padding} direction="column">
+    <InputRowContainer padding={padding} direction="column" style={style}>
       {/* {haveTooltip ? (
         <TooltipContainer
           style={{ display: 'flex', width: '100%', cursor: 'pointer' }}

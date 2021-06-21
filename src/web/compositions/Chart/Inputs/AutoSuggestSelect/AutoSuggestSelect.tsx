@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom'
 import { withTheme } from '@material-ui/core/styles'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 // import stableCoins from '@core/config/stableCoins'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
@@ -25,30 +26,11 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
   state = {
     isClosed: true,
     isMenuOpen: false,
+    id: null,
   }
 
-  componentDidMount() {
-    const { value, markets, setMarketAddress } = this.props
-    console.log('componentDidMount value: ', value)
-    console.log('componentDidMount markets: ', markets)
-
-    // Need to refactor this, address of a coin should be in the value, not name
-    // console.log('value: ', value)
-    const selectedMarketFromUrl = markets.find((el) => el.name.split('/').join('_') === value)
-    // console.log('selectedMarketFormSelector', selectedMarketFormSelector)
-    setMarketAddress(selectedMarketFromUrl.address.toBase58())
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.value !== this.props.value) {
-      const { value, markets, setMarketAddress } = this.props
-
-      // Need to refactor this, address of a coin should be in the value, not name
-      // console.log('value: ', value)
-      const selectedMarketFromUrl = markets.find((el) => el.name.split('/').join('_') === value)
-      // console.log('selectedMarketFormSelector', selectedMarketFormSelector)
-      setMarketAddress(selectedMarketFromUrl.address.toBase58())
-    }
+  componentWillUnmount() {
+    clearInterval(this.state.id)
   }
 
   onMenuOpen = () => {
@@ -71,22 +53,24 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
     this.setState({ isMenuOpen: true })
   }
 
-  handleChange = async ({ value }: { value: string }) => {
-    const {
-      getCharts,
-      getViewModeQuery: {
-        chart: { view },
-      },
-      addChartMutation,
-      changeCurrencyPairMutation,
-      history,
-      marketType,
-      setMarketAddress,
+  handleChange = ({
+    value,
+    isCustomUserMarket,
+    address,
+  }: {
+    value: string
+    isCustomUserMarket: boolean
+    address: string
+  }) => {
+    const { markets, customMarkets, history } = this.props
+
+    console.log(
+      'onSelectPair',
+      value,
       markets,
-    } = this.props
-    const {
-      multichart: { charts },
-    } = getCharts
+      customMarkets,
+      isCustomUserMarket
+    )
 
     if (!value) {
       return
@@ -94,27 +78,9 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
 
     this.closeMenu()
 
-    if (view === 'default') {
+    history.push(`/chart/spot/${value}`)
 
-      // Need to refactor this, address of a coin should be in the value, not name
-      // console.log('value: ', value)
-      const selectedMarketFormSelector = markets.find((el) => el.name === value)
-      // console.log('selectedMarketFormSelector', selectedMarketFormSelector)
-      setMarketAddress(selectedMarketFormSelector.address.toBase58())
-
-      const chartPageType = marketType === 0 ? 'spot' : 'futures'
-      history.push(`/chart/${chartPageType}/${value.split('/').join('_')}`)
-
-      return
-    } else if (charts.length < 8 && view === 'onlyCharts') {
-      await addChartMutation({
-        variables: {
-          chart: value,
-        },
-      })
-
-      return
-    }
+    return
   }
 
   render() {
@@ -135,7 +101,6 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       marketName,
       customMarkets,
       setCustomMarkets,
-      setMarketAddress,
       markets,
       style,
       handleDeprecated,
@@ -143,14 +108,40 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       addMarketVisible,
       setAddMarketVisible,
       deprecatedMarkets,
-      getMarketInfos, } = this.props
+      getMarketInfos,
+    } = this.props
 
     const { isClosed, isMenuOpen } = this.state
 
     return (
       <>
-        {isMenuOpen && (
+        <ExchangePair
+          id={'ExchangePair'}
+          style={{ width: '14.4rem', ...style }}
+          border={divider}
+          selectStyles={selectStyles}
+          fixed={isMenuOpen}
+        >
+          <div
+            onClick={this.toggleMenu}
+            style={{ display: 'flex', width: '100%' }}
+          >
+            <SelectR
+              id={this.props.id}
+              style={{ width: '100%' }}
+              value={
+                isClosed &&
+                marketName && {
+                  marketName,
+                  label: marketName,
+                }
+              }
+              fullWidth={true}
+              isDisabled={true}
+            />
+          </div>
           <SelectWrapper
+            id={'selectWrapper'}
             theme={theme}
             updateFavoritePairsMutation={updateFavoritePairsMutation}
             onSelectPair={this.handleChange}
@@ -158,20 +149,6 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
             marketType={1}
             activeExchange={activeExchange}
             markets={markets}
-          />
-        )}
-        <ExchangePair
-          style={{ width: '14.4rem', ...style }}
-          border={divider}
-          selectStyles={selectStyles}
-          onClick={this.toggleMenu}
-        >
-          <SelectR
-            id={this.props.id}
-            style={{ width: '100%' }}
-            value={isClosed && marketName && { marketName, label: marketName }}
-            fullWidth={true}
-            isDisabled={true}
           />
         </ExchangePair>
       </>
@@ -197,6 +174,5 @@ export default compose(
     name: 'updateFavoritePairsMutation',
   }),
   graphql(ADD_CHART, { name: 'addChartMutation' }),
-  withMarketUtilsHOC,
-
+  withMarketUtilsHOC
 )(IntegrationReactSelect)

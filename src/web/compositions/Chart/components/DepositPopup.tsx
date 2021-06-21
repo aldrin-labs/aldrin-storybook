@@ -59,6 +59,7 @@ const TransferPopup = ({
     let coinMint;
     let account;
     let depositCoin;
+
     if (baseOrQuote === 'base') {
       coinMint = market?.baseMintAddress;
       account = baseCurrencyAccount;
@@ -132,7 +133,7 @@ const TransferPopup = ({
                       paddingBottom: '1rem',
                     }}
                   >
-                    Mint address:                   
+                    Mint address (Don't send funds to this address):                   
                   </Typography>
                   <Typography
                     style={{

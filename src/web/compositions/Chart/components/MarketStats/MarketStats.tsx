@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { compose } from 'recompose'
 import dayjs from 'dayjs'
 import { withTheme } from '@material-ui/core/styles'
@@ -16,6 +16,8 @@ import { LISTEN_FUNDING_RATE } from '@core/graphql/subscriptions/LISTEN_FUNDING_
 import { getPrice } from '@core/graphql/queries/chart/getPrice'
 import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE'
 
+import { marketDataByTickers } from '@core/graphql/queries/chart/marketDataByTickers'
+
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
@@ -28,15 +30,10 @@ import {
   updatePriceQuerryFunction,
 } from './MarketStats.utils'
 
+import { useMarkPrice, useMarket } from '@sb/dexUtils/markets'
 
-import {
-  useMarkPrice,
-  useMarket
-} from '@sb/dexUtils/markets'
-
-import {
-  getDecimalCount
-} from '@sb/dexUtils/utils'
+import { getDecimalCount } from '@sb/dexUtils/utils'
+import { datesForQuery } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
 
 import {
   PanelCard,
@@ -49,6 +46,9 @@ export interface IProps {
   theme: Theme
   symbol: string
   marketType: number
+  marketDataByTickersQuery: {
+    marketDataByTickers: {}
+  }
   getMarketStatisticsByPairQuery: {
     getMarketStatisticsByPair: {
       exchange: string
@@ -87,72 +87,9 @@ export interface IProps {
 }
 
 const MarketStats = (props) => {
-  // state: { key: number; refetching: boolean } = {
-  //   key: 0,
-  //   refetching: false,
-  // }
-
-  // getMarkPriceQueryUnsubscribe: null | (() => void) = null
-  // getPriceQueryUnsubscribe: null | (() => void) = null
-  // getFundingRateQueryUnsubscribe: null | (() => void) = null
-
-  // componentDidMount() {
-  // subscribe
-  // this.getMarkPriceQueryUnsubscribe = this.props.getMarkPriceQuery.subscribeToMoreFunction()
-  // this.getPriceQueryUnsubscribe = this.props.getPriceQuery.subscribeToMoreFunction()
-  // this.getFundingRateQueryUnsubscribe = this.props.getFundingRateQuery.subscribeToMoreFunction()
-  // }
-
-  // componentDidUpdate(prevProps: IProps) {
-  //   if (
-  //     prevProps.symbol !== this.props.symbol ||
-  //     prevProps.marketType !== this.props.marketType
-  //   ) {
-  //     //  unsubscribe from old params
-  //     //  subscribe to new params and create new unsub link
-  //     this.getMarkPriceQueryUnsubscribe && this.getMarkPriceQueryUnsubscribe()
-  //     this.getMarkPriceQueryUnsubscribe = this.props.getMarkPriceQuery.subscribeToMoreFunction()
-
-  //     this.getPriceQueryUnsubscribe && this.getPriceQueryUnsubscribe()
-  //     this.getPriceQueryUnsubscribe = this.props.getPriceQuery.subscribeToMoreFunction()
-
-  //     this.getFundingRateQueryUnsubscribe &&
-  //       this.getFundingRateQueryUnsubscribe()
-  //     this.getFundingRateQueryUnsubscribe = this.props.getFundingRateQuery.subscribeToMoreFunction()
-  //   }
-
-  //   // for funding ime
-  //   const {
-  //     getFundingRate: { fundingTime: prevFundingTime = 0 } = {
-  //       fundingTime: 0,
-  //     },
-  //   } = prevProps.getFundingRateQuery || {
-  //     fundingTime: 0,
-  //   }
-
-  //   const {
-  //     getFundingRate: { fundingTime: newFundingTime = 0 } = {
-  //       fundingTime: 0,
-  //     },
-  //   } = this.props.getFundingRateQuery || {
-  //     fundingTime: 0,
-  //   }
-
-  //   if (prevFundingTime === 0 && newFundingTime !== 0) {
-  //     this.setState((prevState) => ({ key: prevState.key + 1 }))
-  //   }
-  // }
-
-  // componentWillUnmount() {
-  //   //  unsubscribe
-  //   this.getMarkPriceQueryUnsubscribe && this.getMarkPriceQueryUnsubscribe()
-  //   this.getPriceQueryUnsubscribe && this.getPriceQueryUnsubscribe()
-  //   this.getFundingRateQueryUnsubscribe && this.getFundingRateQueryUnsubscribe()
-  // }
-
-  // render() {
   const {
     getMarketStatisticsByPairQuery,
+    marketDataByTickersQuery,
     getFundingRateQuery,
     symbol = ' _ ',
     theme,
@@ -161,128 +98,98 @@ const MarketStats = (props) => {
     getPriceQuery,
     getMarkPriceQuery,
     quantityPrecision,
-    pricePrecision: pricePrecisionRaw,
+    pricePrecision,
   } = props
 
-  const pricePrecision =
-    pricePrecisionRaw === 0 || pricePrecisionRaw < 0 ? 8 : pricePrecisionRaw
-
-  // const { getPrice: lastMarketPrice = 0 } = getPriceQuery || { getPrice: 0 }
-  // const { getMarkPrice = { markPrice: 0 } } = getMarkPriceQuery || {
-  //   getMarkPrice: { markPrice: 0 },
-  // }
-  // const { markPrice = 0 } = getMarkPrice || { markPrice: 0 }
-
   const {
-    getMarketStatisticsByPair: {
+    marketDataByTickers: {
+      // symbol = '',
+      tradesCount = 0,
+      tradesDiff = 0,
       volume = 0,
-      priceChange = 0,
-      priceChangePercent = 0,
-      highPrice = 0,
-      lowPrice = 0,
+      volumeChange = 0,
+      lastPriceDiff = 0,
+      minPrice = 0,
+      maxPrice = 0,
+      // closePrice = 0
     } = {
+      // symbol: '',
+      tradesCount: 0,
+      tradesDiff: 0,
       volume: 0,
-      priceChange: 0,
-      priceChangePercent: 0,
-      highPrice: 0,
-      lowPrice: 0,
+      volumeChange: 0,
+      minPrice: 0,
+      maxPrice: 0,
+      // closePrice: 0
     },
-  } = getMarketStatisticsByPairQuery || {
-    getMarketStatisticsByPair: {
+  } = marketDataByTickersQuery || {
+    marketDataByTickers: {
+      // symbol: '',
+      tradesCount: 0,
+      tradesDiff: 0,
       volume: 0,
-      priceChange: 0,
-      priceChangePercent: 0,
-      highPrice: 0,
-      lowPrice: 0,
+      volumeChange: 0,
+      minPrice: 0,
+      maxPrice: 0,
+      // closePrice: 0
     },
   }
 
-  // const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
-  // const isStableCoinInPair = stableCoinsRegexp.test(symbol)
-  // const roundingPrecision = isStableCoinInPair ? 2 : 8
+  const { market } = useMarket()
+  const [previousPrice, savePreviousPrice] = useState(0)
+  const [showGreen, updateToGreen] = useState(false)
+  const markPrice = useMarkPrice() || 0
 
-  const markPrice = useMarkPrice();
-  const { market } = useMarket();
-  let priceDecimalCount = market?.tickSize && getDecimalCount(market.tickSize);
+  useEffect(() => {
+    if (markPrice > previousPrice) {
+      updateToGreen(true)
+    } else {
+      updateToGreen(false)
+    }
+
+    savePreviousPrice(markPrice)
+  }, [markPrice])
+
+  const bigPrecision = market?.tickSize > 1 ? market?.tickSize : null
+
+  const strippedLastPriceDiff = +stripDigitPlaces(
+    lastPriceDiff,
+    pricePrecision,
+    bigPrecision
+  )
+  const strippedMarkPrice = +stripDigitPlaces(
+    markPrice,
+    pricePrecision,
+    bigPrecision
+  )
 
   const [base, quote] = symbol.split('_')
 
-  // const {
-  //   getFundingRate: { fundingTime = 0, fundingRate = 0 } = {
-  //     fundingTime: 0,
-  //     fundingRate: 0,
-  //   },
-  // } = getFundingRateQuery || {
-  //   getFundingRate: {
-  //     fundingTime: 0,
-  //     fundingRate: 0,
-  //   },
-  // }
+  const prevClosePrice = strippedMarkPrice - strippedLastPriceDiff
 
-  // if (
-  //   (fundingTime == 0 || +dayjs(fundingTime) - Date.now() < 0) &&
-  //   !this.state.refetching
-  // ) {
-  //   this.setState({ refetching: true })
-  //   setTimeout(() => {
-  //     getFundingRateQueryRefetch()
-  //     this.setState((prev) => ({ key: prev.key + 1, refetching: false }))
-  //   }, 3000)
-  // }
+  const priceChangePercentage = !prevClosePrice
+    ? 0
+    : (markPrice - prevClosePrice) / (prevClosePrice / 100)
 
-  const sign24hChange = +priceChangePercent > 0 ? `+` : ``
+  const sign24hChange = +priceChangePercentage > 0 ? `+` : ``
 
   return (
-    <div style={{ display: 'flex', width: '100%' }} >
-      {marketType === 0 ? null : (
-        <PanelCard marketType={marketType} theme={theme}>
-          <PanelCardValue
-            theme={theme}
-            style={{
-              whiteSpace: 'nowrap',
-              fontSize: '2rem',
-              textAlign: 'center',
-            }}
-          >
-            {formatNumberToUSFormat(
-              roundAndFormatNumber(markPrice, priceDecimalCount, false)
-            )}
-          </PanelCardValue>
-        </PanelCard>
-      )}
-
+    <div style={{ display: 'flex' }}>
       <PanelCard marketType={marketType} theme={theme}>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          {marketType === 1 ? null : (
-            <PanelCardTitle theme={theme} style={{ whiteSpace: 'nowrap' }}>
-              Last price
-            </PanelCardTitle>
-          )}
-          {marketType === 0 ? null : (
-            <PanelCardTitle theme={theme} style={{ whiteSpace: 'nowrap' }}>
-              Mark price
-            </PanelCardTitle>
-          )}
-        </div>
-        <span style={{ display: 'flex', justifyContent: 'space-between' }}>
-          {marketType === 1 ? null : (
-            <PanelCardValue theme={theme}>
-              {formatNumberToUSFormat(
-                roundAndFormatNumber(markPrice, priceDecimalCount, false)
-              )}
-            </PanelCardValue>
-          )}
-
-          {/* {marketType === 0 ? null : (
-              <PanelCardValue theme={theme}>
-                {formatNumberToUSFormat(
-                  roundAndFormatNumber(markPrice, priceDecimalCount, false)
-                )}
-              </PanelCardValue>
-            )} */}
-        </span>
+        <PanelCardValue
+          theme={theme}
+          style={{
+            color: showGreen
+              ? theme.palette.green.main
+              : theme.palette.red.main,
+            fontSize: '2.3rem',
+            letterSpacing: '0.01rem',
+            fontFamily: 'Avenir Next Demi',
+          }}
+        >
+          {markPrice === 0 ? '--' : formatNumberToUSFormat(strippedMarkPrice)}
+        </PanelCardValue>
       </PanelCard>
-
       <PanelCard marketType={marketType} theme={theme}>
         <PanelCardTitle theme={theme}>24h change</PanelCardTitle>
         <span style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -290,28 +197,27 @@ const MarketStats = (props) => {
             theme={theme}
             style={{
               color:
-                +priceChange > 0
+                +priceChangePercentage > 0
                   ? theme.palette.green.main
                   : theme.palette.red.main,
             }}
           >
-            {formatNumberToUSFormat(
-              stripDigitPlaces(priceChange, priceDecimalCount)
-            )}
+            {formatNumberToUSFormat(strippedLastPriceDiff)}
           </PanelCardValue>
           <PanelCardSubValue
             theme={theme}
             style={{
               color:
-                +priceChangePercent > 0
+                +priceChangePercentage > 0
                   ? theme.palette.green.main
                   : theme.palette.red.main,
             }}
           >
-            {`${sign24hChange}
-              ${formatNumberToUSFormat(
-              stripDigitPlaces(+priceChangePercent)
-            )}%`}
+            {!priceChangePercentage
+              ? '--'
+              : `${sign24hChange}${formatNumberToUSFormat(
+                stripDigitPlaces(+priceChangePercentage)
+              )}%`}
           </PanelCardSubValue>
         </span>
       </PanelCard>
@@ -319,192 +225,43 @@ const MarketStats = (props) => {
       <PanelCard marketType={marketType} theme={theme}>
         <PanelCardTitle theme={theme}>24h high</PanelCardTitle>
         <PanelCardValue theme={theme}>
-          {formatNumberToUSFormat(
-            roundAndFormatNumber(highPrice, priceDecimalCount, false)
-          )}
+          {formatNumberToUSFormat(stripDigitPlaces(maxPrice, pricePrecision))}
         </PanelCardValue>
       </PanelCard>
 
       <PanelCard marketType={marketType} theme={theme}>
         <PanelCardTitle theme={theme}>24h low</PanelCardTitle>
         <PanelCardValue theme={theme}>
-          {formatNumberToUSFormat(
-            roundAndFormatNumber(lowPrice, priceDecimalCount, false)
-          )}
+          {formatNumberToUSFormat(stripDigitPlaces(minPrice, pricePrecision))}
         </PanelCardValue>
       </PanelCard>
-
-      {/* <TooltipCustom
-        title="Cryptocurrencies.ai is a Serum partner exchange"
-        enterDelay={250}
-        component={
-          <PanelCard
-            marketType={marketType}
-            theme={theme}
-            style={{
-              borderRight: marketType === 0 ? '0' : theme.palette.border.main,
-              position: 'relative',
-            }}
-          >
-            <PanelCardTitle theme={theme}>24h volume</PanelCardTitle>
-            <PanelCardValue theme={theme}>
-              {formatNumberToUSFormat(stripDigitPlaces(volume))}
-              {` ${marketType === 0 ? quote : base}`}
-            </PanelCardValue>
-             <SvgIcon
-                style={{ position: 'absolute', right: '1rem' }}
-                src={BinanceLogo}
-              /> 
-          </PanelCard>
-        }
-      /> */}
-
-      {/* {marketType === 1 && (
-          <PanelCard
-            marketType={marketType}
-            theme={theme}
-            style={{
-              borderRight: '0',
-            }}
-          >
-            <PanelCardTitle theme={theme}>Funding</PanelCardTitle>
-            <span style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <PanelCardValue
-                theme={theme}
-                style={{
-                  color: '#235DCF',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {`${fundingRate > 0 ? '+ ' : ''}${(+fundingRate * 100).toFixed(
-                  4
-                )} %`}
-              </PanelCardValue>
-              <PanelCardSubValue
-                theme={theme}
-                style={{ minWidth: '57px', color: theme.palette.grey.text }}
-              >
-                {' '}
-                <Timer
-                  initialTime={+dayjs(fundingTime) - Date.now()}
-                  formatValue={(value) => `${value < 10 ? `0${value}` : value}`}
-                  direction="backward"
-                  startImmediately={true}
-                  checkpoints={[
-                    {
-                      time: 0,
-                      callback: () => {
-                        console.log('funding rate finished')
-                        getFundingRateQueryRefetch()
-                        this.setState((prev) => ({ key: prev.key + 1 }))
-                      },
-                    },
-                  ]}
-                >
-                  {() => (
-                    <React.Fragment>
-                      <Timer.Hours />
-                      {':'}
-                      <Timer.Minutes />
-                      {':'}
-                      <Timer.Seconds />
-                    </React.Fragment>
-                  )}
-                </Timer>
-              </PanelCardSubValue>
-            </span>
-          </PanelCard>
-        )} */}
+      <PanelCard marketType={marketType} theme={theme}>
+        <PanelCardTitle theme={theme}>24hr volume</PanelCardTitle>
+        <PanelCardValue theme={theme}>
+          {formatNumberToUSFormat(stripDigitPlaces(volume, 2))} {quote}
+        </PanelCardValue>
+      </PanelCard>
     </div>
   )
-  // }
 }
 
 export default compose(
-  // queryRendererHoc({
-  //   query: getMarkPrice,
-  //   name: 'getMarkPriceQuery',
-  //   variables: (props) => ({
-  //     input: {
-  //       exchange: props.exchange.symbol,
-  //       symbol: props.symbol,
-  //     },
-  //   }),
-  //   subscriptionArgs: {
-  //     subscription: LISTEN_MARK_PRICE,
-  //     variables: (props: any) => ({
-  //       input: {
-  //         exchange: props.exchange.symbol,
-  //         symbol: props.symbol,
-  //       },
-  //     }),
-  //     updateQueryFunction: updateMarkPriceQuerryFunction,
-  //   },
-  //   fetchPolicy: 'cache-and-network',
-  //   withOutSpinner: true,
-  //   withTableLoader: true,
-  //   withoutLoading: true,
-  // }),
-  // queryRendererHoc({
-  //   query: getPrice,
-  //   name: 'getPriceQuery',
-  //   variables: (props) => ({
-  //     exchange: props.exchange.symbol,
-  //     pair: `${props.symbol}:${props.marketType}`,
-  //   }),
-  //   subscriptionArgs: {
-  //     subscription: LISTEN_PRICE,
-  //     variables: (props: any) => ({
-  //       input: {
-  //         exchange: props.exchange.symbol,
-  //         pair: `${props.symbol}:${props.marketType}`,
-  //       },
-  //     }),
-  //     updateQueryFunction: updatePriceQuerryFunction,
-  //   },
-  //   fetchPolicy: 'cache-and-network',
-  //   withOutSpinner: true,
-  //   withTableLoader: true,
-  //   withoutLoading: true,
-  // }),
   queryRendererHoc({
-    query: getMarketStatisticsByPair,
-    name: 'getMarketStatisticsByPairQuery',
+    query: marketDataByTickers,
+    name: 'marketDataByTickersQuery',
     variables: (props) => ({
-      input: {
-        exchange: props.exchange.symbol,
-        symbol: props.symbol,
-        marketType: props.marketType,
-      },
+      symbol: props.symbol,
+      exchange: 'serum',
+      marketType: props.marketType,
+      startTimestamp: `${datesForQuery.startOfTime}`,
+      endTimestamp: `${datesForQuery.endOfTime}`,
+      prevStartTimestamp: `${datesForQuery.prevStartTimestamp}`,
+      prevEndTimestamp: `${datesForQuery.prevEndTimestamp}`,
     }),
     fetchPolicy: 'cache-and-network',
     pollInterval: 30000,
     withOutSpinner: true,
     withTableLoader: true,
     withoutLoading: true,
-  }),
-  // queryRendererHoc({
-  //   query: getFundingRate,
-  //   name: 'getFundingRateQuery',
-  //   variables: (props) => ({
-  //     input: {
-  //       exchange: props.exchange.symbol,
-  //       symbol: props.symbol,
-  //     },
-  //   }),
-  //   subscriptionArgs: {
-  //     subscription: LISTEN_FUNDING_RATE,
-  //     variables: (props: any) => ({
-  //       input: {
-  //         exchange: props.exchange.symbol,
-  //         symbol: props.symbol,
-  //       },
-  //     }),
-  //     updateQueryFunction: updateFundingRateQuerryFunction,
-  //   },
-  //   fetchPolicy: 'cache-and-network',
-  //   withOutSpinner: true,
-  //   withTableLoader: true,
-  //   withoutLoading: true,
-  // })
+  })
 )(MarketStats)

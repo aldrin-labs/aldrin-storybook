@@ -1,39 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import 'treemap-js'
-var SortedMap = require('collections/sorted-map')
 
-import { client } from '@core/graphql/apolloClient'
 import { Grid } from '@material-ui/core'
-import QueryRenderer from '@core/components/QueryRenderer'
-import { ORDERS_MARKET_QUERY } from '@core/graphql/queries/chart/ORDERS_MARKET_QUERY'
-import { getTerminalData } from '@core/graphql/queries/chart/getTerminalData'
-
-import {
-  MOCKED_ORDERBOOK,
-  ORDERBOOK,
-} from '@core/graphql/subscriptions/ORDERBOOK'
-import { updateOrderBookQuerryFunction } from '@core/utils/chartPageUtils'
-import { OrderBook, DepthChart } from '../components'
-import {
-  IProps,
-  OrderbookGroup,
-} from '../Tables/OrderBookTable/OrderBookTableContainer.types'
-
-import { client } from '@core/graphql/apolloClient'
+import { OrderBook } from '../components'
 import { useOrderbook, useMarkPrice } from '@sb/dexUtils/markets'
 
 import {
   transformOrderbookData,
-  addOrdersToOrderbook,
-  addOrderToOrderbook,
   getAggregatedData,
-  testJSON,
-  getAggregationsFromMinPriceDigits,
   getAggregationsFromPricePrecision,
-  getNumberOfDecimalsFromNumber,
 } from '@core/utils/chartPageUtils'
 
 import { useInterval } from '@sb/dexUtils/useInterval'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 const OrderbookAndDepthChart = (props) => {
   const {
@@ -49,42 +28,66 @@ const OrderbookAndDepthChart = (props) => {
     arrayOfMarketIds,
     updateTerminalPriceFromOrderbook,
     hideDepthChart,
-    isPairDataLoading,
     sizeDigits,
-    pricePrecision
+    pricePrecision: serumPricePrecision,
   } = props
 
-  const {
-    marketOrders = {},
-  } = props.data || {
+  const { marketOrders = {} } = props.data || {
     marketOrders: {},
   }
 
-  const markPrice = useMarkPrice();
+  const markPrice = useMarkPrice()
   const [orderbook] = useOrderbook()
+  const [prevOrderbook, setPrevOrderbook] = useState({})
+
+  const pricePrecision =
+    serumPricePrecision === undefined
+      ? sizeDigits !== undefined
+        ? 8
+        : undefined
+      : serumPricePrecision
+
   const [orderbookData, setOrderbookData] = useState({
     asks: new TreeMap(),
-    bids: new TreeMap()
-  });
+    bids: new TreeMap(),
+  })
 
   const [aggregatedOrderbookData, setAggregatedOrderbookData] = useState({
     asks: new TreeMap(),
-    bids: new TreeMap()
-  });
+    bids: new TreeMap(),
+  })
 
-  const [aggregation, setAggregation] = useState(String(getAggregationsFromPricePrecision(pricePrecision)[0].value))
+  const [aggregation, setAggregation] = useState(
+    String(getAggregationsFromPricePrecision(pricePrecision)[0].value)
+  )
 
-  useEffect(() => setAggregation(String(getAggregationsFromPricePrecision(pricePrecision)[0].value)), [pricePrecision])
+  useEffect(
+    () =>
+      setAggregation(
+        String(getAggregationsFromPricePrecision(pricePrecision)[0].value)
+      ),
+    [pricePrecision]
+  )
 
   useInterval(() => {
-    if (!pricePrecision || !sizeDigits) return
+    if (
+      pricePrecision === undefined ||
+      sizeDigits === undefined ||
+      !orderbook?.asks ||
+      !orderbook?.bids ||
+      JSON.stringify(orderbook) === JSON.stringify(prevOrderbook)
+    )
+      return
 
-    const asks = orderbook?.asks?.map(row => [row[0], [row[1], Date.now()]])
-    const bids = orderbook?.bids?.map(row => [row[0], [row[1], Date.now()]])
+    setPrevOrderbook(orderbook)
+
+    const asks = orderbook.asks.map((row) => [row[0], [row[1], Date.now()]])
+    const bids = orderbook.bids.map((row) => [row[0], [row[1], Date.now()]])
 
     const updatedData = transformOrderbookData({
       marketOrders: {
-        asks, bids
+        asks,
+        bids,
       },
       aggregation: +getAggregationsFromPricePrecision(pricePrecision)[0].value,
       sizeDigits: props.sizeDigits,
@@ -110,55 +113,30 @@ const OrderbookAndDepthChart = (props) => {
 
       setAggregatedOrderbookData({
         asks: aggregatedAsks,
-        bids: aggregatedBids
+        bids: aggregatedBids,
       })
     }
 
     setOrderbookData({
       asks: updatedData.asks,
-      bids: updatedData.bids
+      bids: updatedData.bids,
     })
 
-    return () => setOrderbookData({
-      asks: new TreeMap(),
-      bids: new TreeMap()
-    })
+    return () =>
+      setOrderbookData({
+        asks: new TreeMap(),
+        bids: new TreeMap(),
+      })
   }, 250)
 
-  const dataToSend = String(aggregation) ===
+  const dataToSend =
+    String(aggregation) ===
     String(getAggregationsFromPricePrecision(pricePrecision)[0].value)
-    ? orderbookData
-    : aggregatedOrderbookData
+      ? orderbookData
+      : aggregatedOrderbookData
 
   return (
-    <div
-      id="depthChartAndOB"
-      style={{ display: 'flex', width: '100%', height: '100%' }}
-    >
-      {!hideDepthChart && (
-        <Grid
-          item
-          xs={5}
-          style={{
-            height: '100%',
-          }}
-        >
-          <DepthChart
-            theme={theme}
-            chartProps={chartProps}
-            changeTable={changeTable}
-            exchange={exchange}
-            symbol={symbol}
-            data={
-              {
-                asks: orderbookData.asks,
-                bids: orderbookData.bids
-              }
-            }
-          />
-        </Grid>
-      )}
-
+    <RowContainer id="depthChartAndOB" height="100%">
       <Grid
         item
         xs={hideDepthChart ? 12 : 7}
@@ -185,7 +163,7 @@ const OrderbookAndDepthChart = (props) => {
           data={dataToSend}
         />
       </Grid>
-    </div>
+    </RowContainer>
   )
 }
 

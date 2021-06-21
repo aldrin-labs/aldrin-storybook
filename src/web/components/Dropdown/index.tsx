@@ -1,6 +1,7 @@
 import * as React from 'react'
+import ReactDOM from 'react-dom'
 import { withRouter } from 'react-router-dom'
-import { MenuList } from '@material-ui/core'
+import { MenuList, Grid, withWidth } from '@material-ui/core'
 import {
   StyledDropdown,
   StyledPaper,
@@ -9,104 +10,178 @@ import {
   StyledLink,
   StyledButton,
 } from './Dropdown.styles'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import SvgIcon from '@sb/components/SvgIcon'
 
 import { IProps } from './types'
+import styled from 'styled-components'
 
-import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
+import { WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
+
+const WalletStatusButton = ({ wallet, connected, theme, id }) => (
+  <BtnCustom
+    onClick={connected ? wallet?.disconnect : wallet?.connect}
+    btnColor={theme.palette.blue.serum}
+    btnWidth={'14rem'}
+    textTransform={'capitalize'}
+    height={'3.5rem'}
+    borderRadius=".6rem"
+    fontSize={'1.2rem'}
+    // margin={'0 0 0 3rem'}
+    id={id}
+    style={{
+      display: 'flex',
+      textTransform: 'none',
+      padding: '1rem',
+    }}
+  >
+    {!connected ? 'Connect wallet' : 'Disconnect'}
+  </BtnCustom>
+)
+
+const ConnectWalletButton = ({ wallet, theme, height, id }) => (
+  <BtnCustom
+    onClick={wallet?.connect}
+    btnColor={'#F8FAFF'}
+    backgroundColor={theme.palette.blue.serum}
+    btnWidth={'100%'}
+    borderColor={theme.palette.blue.serum}
+    textTransform={'capitalize'}
+    height={height}
+    borderRadius=".6rem"
+    fontSize={'1.2rem'}
+    style={{
+      display: 'flex',
+      textTransform: 'none',
+      padding: '1rem',
+      whiteSpace: 'nowrap',
+    }}
+    id={id}
+  >
+    Connect wallet
+  </BtnCustom>
+)
+
+const StyledButton = styled(BtnCustom)`
+  & span {
+    height: 100%;
+  }
+`
 
 @withRouter
 export default class Dropdown extends React.Component<IProps> {
-  state = {
-    open: false,
-  }
-
-  handleToggle = () => {
-    const { selectedMenu, selectActiveMenu, id } = this.props
-
-    // closing if click second time
-    if (selectedMenu === id) {
-      selectActiveMenu('')
-    }
-
-    if (selectedMenu !== id) {
-      selectActiveMenu(id)
-    }
-  }
-
-  handleClose = () => {
-    const { selectActiveMenu } = this.props
-    selectActiveMenu('')
-  }
-
   render() {
     const {
       page,
       selectedMenu,
       id,
       theme,
-      component,
+      Component,
       onMouseOver,
       marketName,
       pathname,
       isActivePage,
+      wallet,
+      connected,
+      setProvider: updateProviderUrl,
+      providerUrl,
+      isSelected,
+      setAutoConnect,
+      isNavBar,
+      height,
+      showOnTop,
+      containerStyle,
     } = this.props
-    return (
-      <StyledDropdown
-        theme={theme}
-        // onMouseEnter={this.handleToggle}
-        // onMouseLeave={this.handleClose}
-        key={`${id}-${selectedMenu}`}
-      >
-        <NavLinkButton
-          onMouseOver={onMouseOver}
-          theme={theme}
-          disableRipple={false}
-          aria-controls={this.props.id}
-          aria-haspopup="true"
-          id={id}
-          page={page}
-          isActivePage={isActivePage}
-          pathname={this.props.pathname}
-          onClick={this.handleToggle}
-          component={component}
-          marketName={marketName}
-          style={{
-            textTransform: 'none',
-            padding: '0 1rem',
-          }}
-        >
-          {this.props.buttonText}
-        </NavLinkButton>
 
-        <StyledPaper
+    return (
+      <>
+        <StyledDropdown
+          isNavBar={isNavBar}
           theme={theme}
-          style={{ display: selectedMenu === id ? 'block' : 'none' }}
+          showOnTop={showOnTop}
+          style={{ ...containerStyle }}
         >
-          <MenuList style={{ padding: 0 }}>
-            {this.props.items.map(({ icon, text, to, style, ...events }) => (
-              <StyledMenuItem
-                theme={theme}
-                disableRipple
-                disableGutters={true}
-                key={text}
-              >
-                <StyledLink
-                  theme={theme}
-                  to={to}
-                  key={`${text}-link`}
-                  onClick={this.handleClose}
-                  {...events}
-                >
-                  {/* {icon} */}
-                  <StyledMenuItemText style={style} key={`${text}-text`}>
-                    {text}
-                  </StyledMenuItemText>
-                </StyledLink>
-              </StyledMenuItem>
-            ))}
-          </MenuList>
-        </StyledPaper>
-      </StyledDropdown>
+          {isNavBar ? (
+            <WalletStatusButton
+              wallet={wallet}
+              connected={connected}
+              theme={theme}
+              id={id}
+            />
+          ) : (
+            <ConnectWalletButton
+              wallet={wallet}
+              connected={connected}
+              height={height}
+              theme={theme}
+              id={id}
+            />
+          )}
+          <StyledPaper
+            style={{
+              display: isSelected ? 'none' : '',
+              top: 0,
+              left: 0,
+              bottom: showOnTop ? '0' : 'auto',
+              transform: !showOnTop ? 'translateY(-100%)' : 'translateY(100%)',
+              width: '100%',
+            }}
+            showOnTop={showOnTop}
+            theme={theme}
+            isWalletConnected={connected}
+            customActiveRem={'9rem'}
+            customNotActiveRem={'3rem'}
+          >
+            <MenuList style={{ padding: 0 }}>
+              {WALLET_PROVIDERS.map((provider) => {
+                const isProviderActive = provider.url === providerUrl
+
+                return (
+                  <StyledMenuItem
+                    theme={theme}
+                    disableRipple
+                    disableGutters={true}
+                    key={provider.name}
+                    isActive={isProviderActive}
+                  >
+                    <StyledButton
+                      btnWidth={'100%'}
+                      height={'4rem'}
+                      border="none"
+                      borderWidth="0"
+                      borderRadius="0"
+                      btnColor={isProviderActive ? '#AAF2C9' : '#ECF0F3'}
+                      fontSize={'1.2rem'}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        textTransform: 'none',
+                        padding: '1rem',
+                        whiteSpace: 'normal',
+                        textAlign: 'right',
+                        background: isProviderActive
+                          ? 'rgba(55, 56, 62, 0.75)'
+                          : '',
+                      }}
+                      onClick={() => {
+                        updateProviderUrl(provider.url)
+                        setAutoConnect(true)
+                      }}
+                    >
+                      <SvgIcon
+                        src={provider.icon}
+                        width={'auto'}
+                        height={'100%'}
+                      />
+                      {provider.name}
+                    </StyledButton>
+                  </StyledMenuItem>
+                )
+              })}
+            </MenuList>
+          </StyledPaper>
+        </StyledDropdown>
+      </>
     )
   }
 }

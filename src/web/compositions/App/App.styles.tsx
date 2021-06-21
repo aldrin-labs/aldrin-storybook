@@ -19,7 +19,7 @@ export const AppGridLayout = styled.div`
     props.isRewards
       ? 'auto'
       : props.isChartPage || !props.showFooter
-      ? '100vh'
+      ? 'calc(100vh)'
       : 'calc(100vh)'};
   min-height: 100vh;
 `

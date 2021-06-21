@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from 'react'
-import { Redirect } from 'react-router-dom'
+import { Redirect, withRouter } from 'react-router-dom'
 // import Joyride from 'react-joyride'
 import { withTheme } from '@material-ui/styles'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { client } from '@core/graphql/apolloClient'
 import { isEqual } from 'lodash'
+import { MASTER_BUILD } from '@core/utils/config'
+
 import Tour from 'reactour'
 // import { Grid, Hidden } from '@material-ui/core'
 
 import {
   tourConfig,
   FinishBtn,
+  WrapperForNotificationTour,
 } from '@sb/components/ReactourOnboarding/ReactourOnboarding'
 // import { CardsPanel } from './components'
-import OnlyCharts from './OnlyCharts/OnlyCharts'
 import DefaultView from './DefaultView/StatusWrapper'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
@@ -23,7 +25,7 @@ import { getChartLayout } from '@core/graphql/queries/chart/getChartLayout'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { changeChartLayout } from '@core/graphql/mutations/chart/changeChartLayout'
 import { finishJoyride } from '@core/utils/joyride'
-import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
+// import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 import { getChartSteps } from '@sb/config/joyrideSteps'
 
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
@@ -31,6 +33,8 @@ import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getChartData } from '@core/graphql/queries/chart/getChartData'
 import { pairProperties } from '@core/graphql/queries/chart/getPairProperties'
+import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
+
 import {
   prefetchCoinSelector,
   prefetchDifferentMarketForCoinSelector,
@@ -44,128 +48,57 @@ import { checLoginStatusWrapper } from '@core/utils/loginUtils'
 
 import withAuth from '@core/hoc/withAuth'
 import { checkLoginStatus } from '@core/utils/loginUtils'
-import { MainContainer, GlobalStyles } from './Chart.styles'
+import {
+  MainContainer,
+  GlobalStyles,
+} from '@sb/compositions/Chart/Chart.styles'
 import { IProps } from './Chart.types'
 
 import { useMarket } from '@sb/dexUtils/markets'
 
 import { getDecimalCount } from '@sb/dexUtils/utils'
+import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
+import { AWESOME_MARKETS } from '@sb/dexUtils/serum'
+import { withPublicKey } from '@core/hoc/withPublicKey'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { WarningPopup } from './components/WarningPopup'
+import { withRegionCheck } from '@core/hoc/withRegionCheck'
+import { DevUrlPopup } from '@sb/components/PopupForDevUrl'
+
+const arraysCustomMarketsMatch = (arr1, arr2) => {
+  // Check if the arrays are the same length
+  if (arr1.length !== arr2.length) return false
+
+  // Check if all items exist and are in the same order
+  for (var i = 0; i < arr1.length; i++) {
+    if (arr1[i].symbol !== arr2[i].symbol) return false
+  }
+
+  // Otherwise, return true
+  return true
+}
 
 function ChartPageComponent(props: any) {
-  const [terminalViewMode, updateTerminalViewMode] = useState('default')
-  const [stepIndex, updateStepIndex] = useState(0)
-  const [key, updateKey] = useState(0)
-  const [isTourOpen, setIsTourOpen] = useState(localStorage.getItem('isOnboardingDone') == "null")
-
-  useEffect(() => {
-    const { marketType } = props
-    setTimeout(() => {
-      prefetchCoinSelector({ marketType, exchangeSymbol: 'binance' })
-    }, 5000)
-
-    // prefetch different market for coin selector
-    setTimeout(() => {
-      prefetchDifferentMarketForCoinSelector({
-        marketType: marketType === 1 ? 0 : 1,
-        exchangeSymbol: 'binance',
-      })
-    }, 15000)
-
-    setTimeout(() => {
-      checLoginStatusWrapper(prefetchPortfolio)
-    }, 30000)
-
-    setTimeout(() => {
-      checLoginStatusWrapper(prefetchPortfolioMainSpot)
-    }, 45000)
-
-    setTimeout(() => {
-      checLoginStatusWrapper(prefetchPortfolioMainFutures)
-    }, 55000)
-
-    setTimeout(() => {
-      checLoginStatusWrapper(prefetchDeposit)
-    }, 75000)
-
-    setTimeout(() => {
-      // checLoginStatusWrapper(prefetchWithdrawal)
-    }, 95000)
-
-    return () => {
-      document.title = 'Cryptocurrencies AI'
-    }
-  }, [props.marketType])
-
-  const handleJoyrideCallback = (data) => {
-    if (
-      data.action === 'close' ||
-      data.action === 'skip' ||
-      data.status === 'finished'
-    ) {
-      const {
-        updateTooltipSettingsMutation,
-        getTooltipSettingsQuery: { getTooltipSettings },
-      } = props
-
-      finishJoyride({
-        updateTooltipSettingsMutation,
-        getTooltipSettings,
-        name: 'chartPage',
-      })
-    }
-
-    switch (data.action) {
-      case 'next': {
-        if (data.lifecycle === 'complete') {
-          updateStepIndex(stepIndex + 1)
-        }
-        break
-      }
-      case 'prev': {
-        if (data.lifecycle === 'complete') {
-          updateStepIndex(stepIndex - 1)
-        }
-        break
-      }
-    }
-
-    if (
-      data.status === 'finished' ||
-      (data.status === 'stop' && data.index !== data.size - 1) ||
-      data.status === 'reset'
-    ) {
-      updateKey(key + 1)
-    }
-  }
-
-  const closeChartPagePopup = () => {
-    finishJoyride({
-      updateTooltipSettingsMutation: props.updateTooltipSettingsMutation,
-      getTooltipSettings,
-      name: 'chartPagePopup',
-    })
-  }
-
   const {
     theme,
-    getChartDataQuery: {
-      getMyProfile: { _id } = { _id: '' },
-      getTradingSettings: {
-        selectedTradingKey,
-        hedgeMode,
-        isFuturesWarsKey,
-      } = {
-        selectedTradingKey: '',
-        hedgeMode: false,
-        isFuturesWarsKey: false,
-      },
-      marketByMarketType = [],
-      chart: { activeExchange, currencyPair: { pair }, view } = {
-        currencyPair: { pair: 'BTC_USDT' },
-        activeExchange: { name: 'Binance', symbol: 'binance' },
-        view: 'default',
-      },
-    },
+    // getChartDataQuery: {
+    //   getMyProfile: { _id } = { _id: '' },
+    //   getTradingSettings: {
+    //     selectedTradingKey,
+    //     hedgeMode,
+    //     isFuturesWarsKey,
+    //   } = {
+    //     selectedTradingKey: '',
+    //     hedgeMode: false,
+    //     isFuturesWarsKey: false,
+    //   },
+    //   marketByMarketType = [],
+    //   chart: { activeExchange, currencyPair: { pair }, view } = {
+    //     currencyPair: { pair: 'BTC_USDT' },
+    //     activeExchange: { name: 'Binance', symbol: 'binance' },
+    //     view: 'default',
+    //   },
+    // },
     getTooltipSettingsQuery: {
       getTooltipSettings = { chartPage: false, chartPagePopup: false },
     } = {
@@ -188,12 +121,117 @@ function ChartPageComponent(props: any) {
         },
       },
     },
-    pairPropertiesQuery,
     marketType,
     selectedPair,
     authenticated,
     changeChartLayoutMutation,
+    setCustomMarkets,
+    getUserCustomMarketsQuery = { getUserCustomMarkets: [] },
+    location,
+    history,
+    customMarkets,
+    publicKey,
   } = props
+
+  const [terminalViewMode, updateTerminalViewMode] = useState('default')
+  const [isTourOpen, setIsTourOpen] = useState(false)
+  const [isWarningPopupOpen, openWarningPopup] = useState(false)
+
+  const [isNotificationTourOpen, setNotificationTourOpen] = useState(
+    localStorage.getItem('isNotificationDone') == 'null'
+  )
+
+  useEffect(() => {
+    return () => {
+      document.title = 'Cryptocurrencies AI'
+    }
+  }, [props.marketType])
+
+  useEffect(() => {
+    const userMarkets = getUserCustomMarketsQuery.getUserCustomMarkets.map(
+      ({ publicKey, marketId, isPrivate, ...rest }) => ({
+        ...rest,
+        name: rest.symbol,
+        address: marketId,
+        isCustomUserMarket: true,
+        isPrivateCustomMarket: isPrivate,
+      })
+    )
+
+    const savedCustomMarkets = localStorage.getItem('customMarkets') || '[]'
+
+    const updatedMarkets = AWESOME_MARKETS.map((el) => ({
+      ...el,
+      address: el.address.toString(),
+      programId: el.programId.toString(),
+      isCustomUserMarket: true,
+    }))
+
+    const isDataChanged = !arraysCustomMarketsMatch(
+      JSON.parse(savedCustomMarkets),
+      [...updatedMarkets, ...userMarkets]
+    )
+    console.log('isDataChanged', isDataChanged)
+
+    if (isDataChanged) setCustomMarkets([...updatedMarkets, ...userMarkets])
+  }, [getUserCustomMarketsQuery.getUserCustomMarkets.length])
+
+  const setCorrectMarketAddress = async () => {
+    const pair = !!location.pathname.split('/')[3]
+      ? location.pathname.split('/')[3]
+      : 'CCAI_USDC'
+
+    const userMarkets = getUserCustomMarketsQuery.getUserCustomMarkets.map(
+      ({ publicKey, marketId, isPrivate, ...rest }) => ({
+        ...rest,
+        name: rest.symbol,
+        address: marketId,
+        isCustomUserMarket: true,
+        isPrivateCustomMarket: isPrivate,
+      })
+    )
+
+    const updatedMarkets = AWESOME_MARKETS.map((el) => ({
+      ...el,
+      address: el.address.toString(),
+      programId: el.programId.toString(),
+      isCustomUserMarket: true,
+    }))
+
+    const allMarkets = [...props.markets, ...userMarkets, ...updatedMarkets]
+
+    const selectedMarketFromUrl = allMarkets.find(
+      (el) => el.name.replaceAll('_', '/') === pair.replaceAll('_', '/')
+    )
+
+    if (!selectedMarketFromUrl) {
+      history.push('/chart/spot/CCAI_USDC')
+      return
+    }
+
+    const isCustomUsersMarket = updatedMarkets?.find(
+      (el) => el.name.replaceAll('_', '/') === pair.replaceAll('_', '/')
+    )
+
+    const isPublicUsersMarket = userMarkets?.find(
+      (el) => el.name.replaceAll('_', '/') === pair.replaceAll('_', '/')
+    )
+    if (isPublicUsersMarket !== undefined && !isCustomUsersMarket) {
+      openWarningPopup(true)
+    }
+  }
+
+  useEffect(() => {
+    setCorrectMarketAddress()
+  }, [selectedPair])
+
+  const closeChartPagePopup = () => {
+    finishJoyride({
+      updateTooltipSettingsMutation: props.updateTooltipSettingsMutation,
+      getTooltipSettings,
+      name: 'chartPagePopup',
+    })
+  }
 
   const { market } = useMarket()
 
@@ -204,69 +242,37 @@ function ChartPageComponent(props: any) {
   let minFuturesStep
   let initialLeverage
 
-  // hacky way to redirect to default market if user selected wrong market in url
-  // if (
-  //   pairPropertiesQuery.loading === false &&
-  //   pairPropertiesQuery.marketByName.length === 0
-  // ) {
-  //   const chartPageType = marketType === 0 ? 'spot' : 'futures'
-  //   const pathToRedirect = `/chart/${chartPageType}/BTC_USDT`
-  //   return <Redirect to={pathToRedirect} exact />
-  // }
+  const isPairDataLoading = false
 
-  const isPairDataLoading =
-    !pair ||
-    props.loading ||
-    !pairPropertiesQuery.marketByName ||
-    !pairPropertiesQuery.marketByName[0] ||
-    pairPropertiesQuery.networkStatus === 2 ||
-    pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
-      selectedPair.replace('_', '')
+  quantityPrecision =
+    market?.minOrderSize && getDecimalCount(market.minOrderSize)
 
-  if (isPairDataLoading) {
-    minPriceDigits = 0.00000001
-    quantityPrecision = 3
-    minSpotNotional = 10
-    minFuturesStep = 0.001
-    initialLeverage = 125
-  } else {
-    minPriceDigits = +props.pairPropertiesQuery.marketByName[0].properties
-      .binance.filters[0].minPrice
-
-    quantityPrecision = +props.pairPropertiesQuery.marketByName[0].properties
-      .binance.quantityPrecision
-
-    quantityPrecision = market?.minOrderSize && getDecimalCount(market.minOrderSize);
-
-    pricePrecision = +props.pairPropertiesQuery.marketByName[0].properties
-      .binance.pricePrecision
-
-    pricePrecision = market?.tickSize && getDecimalCount(market.tickSize);
-
-    minSpotNotional =
-      +props.pairPropertiesQuery.marketByName[0].properties.binance.filters[3]
-        .minNotional || 10
-
-    minFuturesStep =
-      +props.pairPropertiesQuery.marketByName[0].properties.binance.filters[1]
-        .stepSize || 0.001
-
-    initialLeverage =
-      (props.pairPropertiesQuery.marketByName[0].leverageBrackets &&
-        +props.pairPropertiesQuery.marketByName[0].leverageBrackets.binance[0]
-          .initialLeverage) ||
-      125
-  }
-
-  const arrayOfMarketIds = marketByMarketType.map((el) => el._id)
-  const selectedKey = selectedTradingKey
-    ? { keyId: selectedTradingKey, hedgeMode, isFuturesWarsKey }
-    : { keyId: '', hedgeMode: false, isFuturesWarsKey: false }
+  pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
 
   const accentColor = '#09ACC7'
-
   return (
-    <MainContainer fullscreen={view !== 'default'}>
+    <MainContainer fullscreen={false}>
+      {/* {!isTourOpen && (
+        <Tour
+          className="my-helper"
+          showCloseButton={false}
+          showNumber={false}
+          nextButton={null}
+          prevButton={<a />}
+          showNavigationNumber={false}
+          showButtons={false}
+          showCloseButton={false}
+          showNavigation={false}
+          lastStepNextButton={null}
+          steps={notificationTourConfig}
+          accentColor={accentColor}
+          isOpen={isNotificationTourOpen}
+          onRequestClose={() => {
+            setNotificationTourOpen(false)
+            localStorage.setItem('isNotificationDone', 'true')
+          }}
+        />
+      )} */}
       <Tour
         showCloseButton={false}
         nextButton={<FinishBtn>Next</FinishBtn>}
@@ -279,56 +285,62 @@ function ChartPageComponent(props: any) {
         isOpen={isTourOpen}
         onRequestClose={() => {
           setIsTourOpen(false)
-          localStorage.setItem('isOnboardingDone', "true")
+          localStorage.setItem('isOnboardingDone', 'true')
         }}
       />
-      <GlobalStyles />
-      {view === 'default' && (
-        <DefaultView
-          id={_id}
-          view={view}
-          layout={layout}
-          theme={theme}
-          authenticated={authenticated}
-          marketType={marketType}
-          currencyPair={selectedPair}
-          maxLeverage={initialLeverage}
-          pricePrecision={pricePrecision}
-          quantityPrecision={quantityPrecision}
-          minPriceDigits={minPriceDigits}
-          minSpotNotional={minSpotNotional}
-          minFuturesStep={minFuturesStep}
-          isPairDataLoading={
-            isPairDataLoading || !pricePrecision || !quantityPrecision
+      {/* {view === 'default' && ( */}
+      <DefaultView
+        id={'_id'}
+        view={'default'}
+        layout={layout}
+        theme={theme}
+        publicKey={publicKey}
+        authenticated={authenticated}
+        marketType={marketType}
+        currencyPair={selectedPair}
+        maxLeverage={initialLeverage}
+        pricePrecision={pricePrecision}
+        quantityPrecision={quantityPrecision}
+        minPriceDigits={minPriceDigits}
+        minSpotNotional={minSpotNotional}
+        minFuturesStep={minFuturesStep}
+        isPairDataLoading={
+          isPairDataLoading || !pricePrecision || !quantityPrecision
+        }
+        themeMode={theme.palette.type}
+        selectedKey={{ hedgeMode: false }}
+        activeExchange={'serum'}
+        terminalViewMode={terminalViewMode}
+        updateTerminalViewMode={(mode) => {
+          if (mode === 'smartOrderMode') {
+            finishJoyride({
+              updateTooltipSettingsMutation:
+                props.updateTooltipSettingsMutation,
+              getTooltipSettings,
+              name: 'chartPagePopup',
+            })
           }
-          themeMode={theme.palette.type}
-          selectedKey={selectedKey}
-          activeExchange={activeExchange}
-          terminalViewMode={terminalViewMode}
-          updateTerminalViewMode={(mode) => {
-            if (mode === 'smartOrderMode') {
-              finishJoyride({
-                updateTooltipSettingsMutation:
-                  props.updateTooltipSettingsMutation,
-                getTooltipSettings,
-                name: 'chartPagePopup',
-              })
-            }
 
-            updateTerminalViewMode(mode)
-          }}
-          chartProps={props}
-          arrayOfMarketIds={arrayOfMarketIds}
-          chartPagePopup={
-            (getTooltipSettings.chartPagePopup === null ||
-              getTooltipSettings.chartPagePopup) &&
-            !getTooltipSettings.chartPage
-          }
-          closeChartPagePopup={closeChartPagePopup}
-          changeChartLayoutMutation={changeChartLayoutMutation}
-        />
-      )}
-      <JoyrideOnboarding
+          updateTerminalViewMode(mode)
+        }}
+        chartProps={props}
+        arrayOfMarketIds={[]}
+        chartPagePopup={
+          (getTooltipSettings.chartPagePopup === null ||
+            getTooltipSettings.chartPagePopup) &&
+          !getTooltipSettings.chartPage
+        }
+        closeChartPagePopup={closeChartPagePopup}
+        changeChartLayoutMutation={changeChartLayoutMutation}
+      />
+      <WarningPopup
+        open={isWarningPopupOpen}
+        onClose={() => openWarningPopup(false)}
+        theme={theme}
+      />
+
+      {/* )} */}
+      {/* <JoyrideOnboarding
         continuous={true}
         stepIndex={stepIndex}
         showProgress={true}
@@ -337,13 +349,13 @@ function ChartPageComponent(props: any) {
         steps={getChartSteps({ marketType })}
         open={getTooltipSettings.chartPage}
         handleJoyrideCallback={handleJoyrideCallback}
-      />
+      /> */}
     </MainContainer>
   )
 }
 
 const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
-  console.log('memo func chart page', prev, next)
+  // console.log('memo func chart page', prev, next)
 
   const isAuthenticatedUser = checkLoginStatus()
 
@@ -404,38 +416,50 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
 
 // TODO: combine all queries to one
 export default compose(
+  withMarketUtilsHOC,
   withErrorFallback,
   withAuthStatus,
   withTheme(),
+  withPublicKey,
+  withRouter,
+  withRegionCheck,
   // withAuth,
+  // queryRendererHoc({
+  //   skip: (props: any) => !props.authenticated,
+  //   query: getChartData,
+  //   name: 'getChartDataQuery',
+  //   // fetchPolicy: 'cache-and-network',
+  //   fetchPolicy: 'cache-first',
+  //   variables: {
+  //     marketType: 1, // hardcode here to get only futures marketIds'
+  //   },
+  // }),
   queryRendererHoc({
-    skip: (props: any) => !props.authenticated,
-    query: getChartData,
-    name: 'getChartDataQuery',
-    // fetchPolicy: 'cache-and-network',
+    query: getUserCustomMarkets,
+    name: 'getUserCustomMarketsQuery',
     fetchPolicy: 'cache-first',
-    variables: {
-      marketType: 1, // hardcode here to get only futures marketIds'
-    },
-  }),
-  queryRendererHoc({
-    skip: (props: any) => !props.authenticated,
-    query: GET_TOOLTIP_SETTINGS,
-    name: 'getTooltipSettingsQuery',
-    fetchPolicy: 'cache-first',
-    withOutSpinner: true,
-    withoutLoading: true,
-  }),
-  queryRendererHoc({
-    query: pairProperties,
-    name: 'pairPropertiesQuery',
-    fetchPolicy: 'cache-first',
-    withoutLoading: true,
-    variables: (props: IProps) => ({
-      marketName: props.selectedPair,
-      marketType: props.marketType,
+    variables: (props) => ({
+      publicKey: props.publicKey,
     }),
   }),
+  // queryRendererHoc({
+  //   skip: (props: any) => !props.authenticated,
+  //   query: GET_TOOLTIP_SETTINGS,
+  //   name: 'getTooltipSettingsQuery',
+  //   fetchPolicy: 'cache-first',
+  //   withOutSpinner: true,
+  //   withoutLoading: true,
+  // }),
+  // queryRendererHoc({
+  //   query: pairProperties,
+  //   name: 'pairPropertiesQuery',
+  //   fetchPolicy: 'cache-first',
+  //   withoutLoading: true,
+  //   variables: (props: IProps) => ({
+  //     marketName: props.selectedPair,
+  //     marketType: props.marketType,
+  //   }),
+  // }),
   queryRendererHoc({
     query: getChartLayout,
     name: 'getChartLayoutQuery',
