@@ -5,7 +5,7 @@ export const CCAICirculationSupply = ({}) => {
   const [circulationSupply, setCirculationSupply] = useState<number>(0)
 
   useEffect(() => {
-    fetch('https://develop.api.cryptocurrencies.ai/getCCAICirculationSupply', {
+    fetch(`https://api.cryptocurrencies.ai/getCCAICirculationSupply`, {
       method: 'GET',
     })
       .then((data) => data.json())
