@@ -445,7 +445,6 @@ class SelectPairListComponent extends React.PureComponent<
       getSerumMarketDataQueryRefetch,
       getSerumMarketDataQuery,
     } = this.props
-    console.log('data', getSerumMarketDataQuery)
 
     const onAddCustomMarket = (customMarket: any) => {
       const marketInfo = getMarketInfos(customMarkets).some(

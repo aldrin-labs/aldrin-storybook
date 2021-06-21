@@ -20,14 +20,14 @@ import {
   Row,
   BlockContainer,
   GreenTitle,
-  SerumTitleBlockContainer,
-  SerumWhiteTitle,
+  TokenTitleBlockContainer,
+  TokenWhiteTitle,
   Text,
   TopBarTitle,
 } from '../../index.styles'
 
-import SRMPriceBlock from './SRMPriceBlock'
-import SRMMarketCap from './SRMMarketCap'
+import PriceBlock from './tokenPriceBlock'
+import MarketCap from './tokenMarketCap'
 import { CCAICirculationSupply } from '../CirculationSupply'
 
 export const ccaiData = {
@@ -53,8 +53,8 @@ const TopBar = ({ theme }: { theme: Theme }) => {
           width={'auto'}
           src={CCAILogo}
         />
-        <SerumWhiteTitle theme={theme}>CCAI</SerumWhiteTitle>
-        <SRMPriceBlock
+        <TokenWhiteTitle theme={theme}>CCAI</TokenWhiteTitle>
+        <PriceBlock
           theme={theme}
           pricePrecision={3}
           exchange={{ symbol: 'serum' }}
@@ -63,9 +63,9 @@ const TopBar = ({ theme }: { theme: Theme }) => {
         />
       </Row>
       <Row>
-        <SerumTitleBlockContainer>
+        <TokenTitleBlockContainer>
           <TopBarTitle theme={theme}>CCAI Marketcap</TopBarTitle>
-          <SRMMarketCap
+          <MarketCap
             theme={theme}
             pricePrecision={3}
             exchange={{ symbol: 'serum' }}
@@ -73,24 +73,24 @@ const TopBar = ({ theme }: { theme: Theme }) => {
             symbol={'CCAI_USDC'}
             circulatingSupply={circulatingSupply}
           />
-        </SerumTitleBlockContainer>
-        <SerumTitleBlockContainer>
+        </TokenTitleBlockContainer>
+        <TokenTitleBlockContainer>
           <TopBarTitle theme={theme}>CCAI Total Supply</TopBarTitle>
           <BlockContainer>
             <Text theme={theme}>
               {formatNumberToUSFormat(totalySupply.toFixed(0))} CCAI
             </Text>
           </BlockContainer>
-        </SerumTitleBlockContainer>
-        <SerumTitleBlockContainer>
+        </TokenTitleBlockContainer>
+        <TokenTitleBlockContainer>
           <TopBarTitle theme={theme}>CCAI Circulating Supply</TopBarTitle>
           <BlockContainer>
             <Text theme={theme}>
               <CCAICirculationSupply /> CCAI
             </Text>
           </BlockContainer>
-        </SerumTitleBlockContainer>
-        <SerumTitleBlockContainer>
+        </TokenTitleBlockContainer>
+        <TokenTitleBlockContainer>
           <TopBarTitle theme={theme}>CCAI Burned</TopBarTitle>
           <BlockContainer>
             {' '}
@@ -98,7 +98,7 @@ const TopBar = ({ theme }: { theme: Theme }) => {
               {formatNumberToUSFormat(ccaiData.burned.toFixed(0))} CCAI
             </Text>
           </BlockContainer>
-        </SerumTitleBlockContainer>
+        </TokenTitleBlockContainer>
       </Row>
     </>
   )

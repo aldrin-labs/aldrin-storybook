@@ -70,7 +70,6 @@ const _sortList = ({ sortBy, sortDirection, data }) => {
   //   ...newList.slice(0, ccaiIndex),
   //   ...newList.slice(ccaiIndex + 1),
   // ]
-  console.log('newList', newList)
 
   return newList
 }
@@ -260,7 +259,6 @@ const PairSelector = ({
 
     _sort({ firstData: processedSelectData, sortBy, sortDirection })
   }, [searchValue])
-  console.log('data', getSerumMarketDataQuery)
   return (
     <>
       <HeaderContainer theme={theme}>

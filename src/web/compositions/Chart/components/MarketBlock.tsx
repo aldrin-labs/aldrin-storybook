@@ -103,7 +103,6 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
   const isCCAIPair =
     pair.includes('CCAI') && !isPrivateCustomMarket && !isCustomUserMarket
 
-  console.log('pair', pair)
   return (
     <RowContainer
       justify={'space-between'}
