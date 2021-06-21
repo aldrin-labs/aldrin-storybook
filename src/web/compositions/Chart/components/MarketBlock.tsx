@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { compose } from 'recompose'
 import { Theme, withTheme } from '@material-ui/core'
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useMarket } from '@sb/dexUtils/markets'
 import { getDecimalCount } from '@sb/dexUtils/utils'
 import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
@@ -14,7 +14,9 @@ import GreenCheckmark from '@icons/successIcon.svg'
 import ThinkingFace from '@icons/thinkingFace.png'
 import Warning from '@icons/warningPairSel.png'
 import CCAILogo from '@icons/auth0Logo.svg'
+import BlueTwitterIcon from '@icons/blueTwitter.svg'
 import SvgIcon from '@sb/components/SvgIcon'
+import { TokenInfo, TokenListProvider } from '@solana/spl-token-registry'
 
 export const ExclamationMark = styled(({ fontSize, lineHeight, ...props }) => (
   <span {...props}>!</span>
@@ -41,9 +43,16 @@ export const Title = styled(
   text-align: ${(props) => props.textAlign || 'center'};
   margin: ${(props) => props.margin || '0'};
 `
-const LinkToAnalytics = styled.a`
+const LinkToAnalytics = styled(Link)`
   font-size: 2rem;
   cursor: pointer;
+  margin-left: 2rem;
+`
+
+const LinkToTwitter = styled.a`
+  font-size: 2rem;
+  cursor: pointer;
+  margin-left: 2rem;
 `
 
 const selectStyles = (theme: Theme) => ({
@@ -82,11 +91,31 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
   const { market, customMarkets } = useMarket()
   const location = useLocation()
 
+  const [tokenMap, setTokenMap] = useState<Map<string, TokenInfo>>(new Map())
+
+  useEffect(() => {
+    new TokenListProvider().resolve().then((tokens) => {
+      const tokenList = tokens.filterByClusterSlug('mainnet-beta').getList()
+
+      setTokenMap(
+        tokenList.reduce((map, item) => {
+          map.set(item.address, item)
+          map.set(item.symbol, item)
+          return map
+        }, new Map())
+      )
+    })
+  }, [setTokenMap])
+
   const pair = location.pathname.split('/')[3]
+  const [base, quote] = pair.split('_');
+
+  const baseTokenInfo = tokenMap.get(base)
   const quantityPrecision =
     market?.minOrderSize && getDecimalCount(market.minOrderSize)
   const pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
   const marketAddress = market?.address?.toBase58()
+
   if (!pair) {
     return null
   }
@@ -169,8 +198,19 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
         />
         <LinkToSolanaExp marketAddress={marketAddress} />
         <DarkTooltip title={'Show analytics for this market.'}>
-          <LinkToAnalytics href={`/analytics/${pair}`}>📈 </LinkToAnalytics>
+          <LinkToAnalytics to={`/analytics/${pair}`}>📈</LinkToAnalytics>
         </DarkTooltip>
+        {baseTokenInfo?.extensions?.twitter &&
+        <DarkTooltip title={'Twitter profile of base token.'}>
+          <LinkToTwitter href={baseTokenInfo?.extensions?.twitter}>
+            <SvgIcon 
+              width={'2.75rem'}
+              height={'2.75rem'}
+              src={BlueTwitterIcon}
+            />
+          </LinkToTwitter>
+        </DarkTooltip>
+        }
       </Row>
       <Row>
         <Row align={'flex-start'} direction="column">
