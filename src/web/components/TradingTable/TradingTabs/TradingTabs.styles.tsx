@@ -7,20 +7,20 @@ export const TitleTab = styled(({ active, theme, ...rest }) => {
 })`
   &&& {
     color: ${(props: { active: boolean; theme: Theme }) =>
-    props.active
-      ? props.theme.palette.white.main
-      : props.theme.palette.dark.main};
-    background-color: ${(props: { active: boolean; theme: Theme }) =>
-    props.active
-      ? props.theme.palette.blue.serum
-      : props.theme.palette.grey.main};
+      props.active
+        ? props.theme.palette.blue.serum
+        : props.theme.palette.dark.main};
+    background-color: ${(props) => props.theme.palette.grey.main};
     font-size: 1.3rem;
     font-weight: normal;
     width: 25%;
-    // padding: 0.6rem 4rem;
     border-radius: 0;
+    font-family: ${(props: { active: boolean; theme: Theme }) =>
+      props.active ? 'Avenir Next Demi' : 'Avenir Next Medium'};
     letter-spacing: 0.01rem;
     border: none;
+    border-bottom: ${(props: { active: boolean; theme: Theme }) =>
+      props.active ? `0.2rem solid ${props.theme.palette.blue.serum}` : `0.2rem solid ${props.theme.palette.grey.border}`};
     border-right: ${(props) => props.theme.palette.border.main};
     height: auto;
     text-transform: capitalize;
@@ -52,6 +52,5 @@ export const TitleTabsGroup = styled(({ ...rest }) => <div {...rest} />)`
   &&& {
     display: flex;
     background-color: ${(props) => props.theme.palette.grey.main};
-    border-bottom: ${(props) => props.theme.palette.border.main};
   }
 `

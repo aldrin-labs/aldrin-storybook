@@ -4,31 +4,19 @@ import { compose } from 'recompose'
 import { isEqual } from 'lodash'
 import { withTheme } from '@material-ui/styles'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import withAuth from '@core/hoc/withAuth'
-
 import { Key } from '@core/types/ChartTypes'
 import {
   IProps,
-  IPropsTradingTableWrapper,
   IState,
   IStateKeys,
 } from './TradingTable.types'
 import { StyleForCalendar } from '@sb/components/GitTransactionCalendar/Calendar.styles'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 
-import ActiveTrades from './ActiveTrades/ActiveTrades'
-import PositionsTable from './PositionsTable/PositionsTable'
 import OpenOrdersTable from './OpenOrdersTable/OpenOrdersTable'
 import Balances from './Balances/Balances'
 import FeeTiers from './Fee/FeeTiers'
-import FeeDiscounts from './Fee/FeeDiscounts'
-import OrderHistoryTable from './OrderHistoryTable/OrderHistoryDataWrapper'
 import TradeHistoryTable from './TradeHistoryTable/TradeHistoryDataWrapper'
-import StrategiesHistoryTable from './StrategiesHistoryTable/StrategiesHistoryDataWrapper'
-import Funds from './FundsTable/FundsTable'
-
-import { getAllUserKeys } from '@core/graphql/queries/user/getAllUserKeys'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 
 class TradingTable extends React.PureComponent<IProps, IState> {
@@ -160,7 +148,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
         id="tables"
         style={{
           height: '100%',
-          backgroundColor: theme.palette.white.background,
+          backgroundColor: theme.palette.dark.background,
           borderLeft: theme.palette.border.main,
           borderBottom: theme.palette.border.main,
         }}
@@ -228,27 +216,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             handlePairChange: this.handlePairChange,
           }}
         />
-        {/* <OrderHistoryTable
-          {...{
-            tab,
-            keys,
-            theme,
-            selectedKey,
-            marketType,
-            arrayOfMarketIds,
-            canceledOrders,
-            currencyPair,
-            showAllPositionPairs,
-            showAllOpenOrderPairs,
-            showAllSmartTradePairs,
-            showPositionsFromAllAccounts,
-            showOpenOrdersFromAllAccounts,
-            showSmartTradesFromAllAccounts,
-            show: tab === 'orderHistory',
-            handleTabChange: this.handleTabChange,
-            handlePairChange: this.handlePairChange,
-          }}
-        /> */}
         <TradeHistoryTable
           {...{
             tab,
@@ -309,27 +276,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             showOpenOrdersFromAllAccounts,
             showSmartTradesFromAllAccounts,
             show: tab === 'feeTiers',
-            handleTabChange: this.handleTabChange,
-            handlePairChange: this.handlePairChange,
-          }}
-        />
-        <FeeDiscounts
-          {...{
-            tab,
-            keys,
-            theme,
-            selectedKey,
-            marketType,
-            arrayOfMarketIds,
-            canceledOrders,
-            currencyPair,
-            showAllPositionPairs,
-            showAllOpenOrderPairs,
-            showAllSmartTradePairs,
-            showPositionsFromAllAccounts,
-            showOpenOrdersFromAllAccounts,
-            showSmartTradesFromAllAccounts,
-            show: tab === 'feeDiscounts',
             handleTabChange: this.handleTabChange,
             handlePairChange: this.handlePairChange,
           }}

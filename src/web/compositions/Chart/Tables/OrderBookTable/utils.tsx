@@ -117,11 +117,12 @@ export default function defaultRowRenderer({
 
   const colorStyles =
     fall !== undefined
-      ? // ? { color:  fall ? '#DD6956' : '#29AC80' }
+      ?
         {
           color: fall ? theme.palette.red.main : theme.palette.green.main,
         }
       : {}
+
   let needHighlightPrice = false
   let needHighlightStopPrice = false
 
@@ -250,6 +251,7 @@ export default function defaultRowRenderer({
       <div
         className="amountForBackground"
         style={{
+          borderRadius: '.1rem',
           backgroundColor:
             side === 'bids' || fall === 0
               ? theme.palette.orderbook.greenBackground

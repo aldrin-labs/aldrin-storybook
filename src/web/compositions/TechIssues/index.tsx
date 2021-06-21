@@ -22,7 +22,7 @@ const TechIssues = () => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height: 'calc(100% - 5.4vh)',
+        height: 'calc(100% - 6rem)',
         flexDirection: 'column',
       }}
     >
@@ -80,7 +80,7 @@ const TechIssues = () => {
         <ButtonLink
           target="_blank"
           rel="noopener noreferrer"
-          href={'https://t.me/CryptocurrenciesAi'}
+          href={'https://t.me/CCAI_Official'}
           style={{ marginRight: '1.5rem' }}
         >
           <SvgIcon

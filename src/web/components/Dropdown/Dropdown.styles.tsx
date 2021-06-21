@@ -1,8 +1,8 @@
 import { NavLink } from 'react-router-dom'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Paper, MenuItem, Button } from '@material-ui/core'
 
-export const StyledLink = styled(NavLink)`
+export const StyledLinkCss = css`
   color: ${(props) => props.theme.palette.grey.text};
   padding: 1.5rem 0 1.5rem 10%;
   font-size: 1.2rem;
@@ -30,6 +30,14 @@ export const StyledLink = styled(NavLink)`
   }
 `
 
+// export const StyledSpan = styled(<span>)`
+// ${StyledLinkCss}
+// `
+
+export const StyledLink = styled(NavLink)`
+  ${StyledLinkCss}
+`
+
 export const StyledButton = styled(Button)`
   font-size: 12px;
   letter-spacing: 1px;
@@ -49,48 +57,33 @@ export const StyledButton = styled(Button)`
 
 export const StyledDropdown = styled.div`
   position: relative;
-  display: flex;
+  display: block;
   align-items: center;
   justify-content: center;
-  /* margin: 0 1rem;
-  padding: 0rem 0.5rem; */
-  width: auto;
+  width: 100%;
   height: 100%;
-  padding: 0.8rem 1.2rem;
   &:hover > div {
     display: block !important;
   }
-  /* @media (min-width: 1921px) {
-    padding: 0rem 0.5rem;
-  }
-
-  @media (min-width: 2560px) {
-    padding: 0rem 0.5rem;
-  } */
+  padding: 1rem 0;
 `
 
 export const StyledPaper = styled(Paper)`
-  && {
+  display: none;
+  &&& {
+    z-index: 11;
     position: absolute;
-    top: calc(5.4vh - 1px);
-    left: calc(50% - 0.5px);
-    width: calc(100% + 0.15rem);
+    top: calc(6rem - 0.1rem);
+    width: calc(14rem);
     height: auto;
-    box-shadow: 0px 8px 16px rgba(10, 19, 43, 0.1);
+    box-shadow: 0px 0.4rem 0.8rem rgba(10, 19, 43, 0.1);
     border: ${(props) => props.theme.palette.border.main};
     background: ${(props) => props.theme.palette.white.background};
-    transform: translateX(-50%);
     border-radius: 0rem;
     /* border-top-left-radius: 0;
     border-top-right-radius: 0; */
     /* padding-left: 8px;
     padding-right: 8px; */
-  }
-
-  @media screen and (max-width: 1400px) {
-    && {
-      width: calc(100% + 0.2rem);
-    }
   }
 `
 
@@ -106,7 +99,7 @@ export const StyledMenuItem = styled(MenuItem)`
   }
 
   &:hover {
-    background: transparent;
+    background: ${(props) => props.theme.palette.white.background};
   }
 
   @media (min-width: 1921px) {

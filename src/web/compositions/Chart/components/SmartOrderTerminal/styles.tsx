@@ -103,7 +103,7 @@ export const SubBlocksContainer = styled.div`
 
 export const InputRowContainer = styled.div`
   display: flex;
-  align-items: center;
+  align-items: ${(props: InputRowProps) => props.align || 'center'};
   position: relative;
   width: ${(props: InputRowProps) => props.width || '100%'};
   flex-direction: ${(props: InputRowProps) => props.direction || 'row'};
@@ -147,7 +147,16 @@ export const BeforeCharacter = styled.span`
 `
 
 export const AdditionalSettingsButton = styled(
-  ({ isActive, children, theme, ...rest }) => (
+  ({
+    needHover,
+    isActive,
+    children,
+    theme,
+    ...rest
+  }: {
+    needHover: true
+    isActive: false
+  }) => (
     <BtnCustom
       btnWidth="calc(48.5%)"
       height={'3rem'}
@@ -162,9 +171,15 @@ export const AdditionalSettingsButton = styled(
       backgroundColor={
         isActive ? theme.palette.blue.serum : theme.palette.grey.main
       }
-      hoverColor={theme.palette.white.main}
-      hoverBorderColor={theme.palette.blue.serum}
-      hoverBackground={theme.palette.blue.serum}
+      hoverColor={
+        needHover ? theme.palette.white.main : theme.palette.grey.text
+      }
+      hoverBorderColor={
+        needHover ? theme.palette.blue.serum : theme.palette.grey.border
+      }
+      hoverBackground={
+        needHover ? theme.palette.blue.serum : theme.palette.grey.main
+      }
       transition={'all .25s ease-out'}
       textTransform="none"
       boxShadow={'0px .2rem .3rem rgba(8, 22, 58, 0.15)'}
@@ -205,7 +220,7 @@ const IOSSwitcherContainer = styled.div`
     .el-switch-style {
       height: 1.6em;
       left: 0;
-      background: #c0ccda;
+      background: #abbad1;
       -webkit-border-radius: 0.8em;
       border-radius: 0.8em;
       display: inline-block;
@@ -237,7 +252,7 @@ const IOSSwitcherContainer = styled.div`
         background-color: #d3dce6;
       }
       &:checked + .el-switch-style {
-        background-color: #20a0fd;
+        background-color: #9ba6ff;
         &:before {
           left: 50%;
         }

@@ -1,7 +1,6 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 import Slider from '@material-ui/lab/Slider'
-import Lock from '@material-ui/icons/Lock'
 
 // const thumbWidth = '25px'
 // const thumbHeight = '25px'
@@ -61,8 +60,7 @@ export const StyledSlider = styled(
       props.borderRadiusAfter || '50px'};
     background: ${(props: { trackAfterBackground: string }) =>
       props.trackAfterBackground};
-    opacity: ${(props: { trackAfterOpacity: string }) =>
-      props.trackAfterOpacity};
+    opacity: ${(props: { trackAfterOpacity: string }) => '1'};
     height: ${(props: { sliderHeightAfter: string }) =>
       props.sliderHeightAfter || '2px'};
 
@@ -97,18 +95,19 @@ export const StyledSlider = styled(
 `
 
 export const StyledLock = styled(
-  ({ value, sliderWidth, max = 100, ...rest }) => <Lock {...rest} />
+  ({ value, sliderWidth, max = 100, ...rest }) => <div {...rest}>?</div>
 )`
-  color: #fff;
-  position: absolute;
-  z-index: 10;
   left: calc(
     ${(props) => props.value * +(parseFloat(props.sliderWidth) / props.max)}rem -
       0.75rem
   );
+  color: #fff;
+  position: absolute;
+  z-index: 10;
   height: 1.5rem;
   width: 1.5rem;
-  top: 0.2rem;
+  font-family: 'Avenir Next Demi';
+  text-align: center;
 `
 
 export const AvailableRange = styled.div`

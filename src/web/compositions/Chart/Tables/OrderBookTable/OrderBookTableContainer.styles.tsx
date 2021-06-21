@@ -17,30 +17,20 @@ export const BidsWrapper = styled.div`
   top: 0.2rem;
   ${({ mode, isFullHeight }: { mode: OrderbookMode; isFullHeight: boolean }) =>
     mode === 'both'
-      ? 'height: calc(50% - 4.5rem)'
+      ? 'height: calc(50% - 5rem)'
       : isFullHeight
-      ? 'height: calc(100% - 6rem)'
+      ? 'height: calc(100% - 7rem)'
       : 'display: none'};
-
-  & .ReactVirtualized__Grid {
-    overflow: hidden !important;
-  }
 `
 
 export const AsksWrapper = styled.div`
   bottom: 0.2rem;
   ${({ mode, isFullHeight }: { mode: OrderbookMode; isFullHeight: boolean }) =>
     mode === 'both'
-      ? 'height: calc(50% - 2rem)'
+      ? 'height: calc(50% - 2.5rem)'
       : isFullHeight
-      ? 'height: calc(100% - 6rem)'
+      ? 'height: calc(100% - 7rem)'
       : 'display: none'};
-
-  & .ReactVirtualized__Grid {
-    /* overflow: ${(props) =>
-      props.mode === 'asks' ? 'hidden auto' : 'hidden !important'}; */
-    overflow: hidden !important;
-  }
 `
 
 export const SvgMode = styled(({ isActive, ...rest }) => (

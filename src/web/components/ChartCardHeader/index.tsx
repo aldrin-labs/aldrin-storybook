@@ -26,7 +26,7 @@ export const TriggerTitle = styled(Title)`
   height: auto;
   line-height: 1rem;
   position: relative;
-  padding: 1rem 0;
+  padding: ${(props) => props.padding || '1rem 0'};
   transition: opacity 0.75s ease-in-out;
   background: ${(props) =>
     (props.theme &&
@@ -52,15 +52,22 @@ const ChartCardHeader = ({
   style,
   theme,
   triggerTitleStyle,
+  padding,
 }: {
   children?: React.Childern
   style?: CSSProperties
   triggerTitleStyle?: CSSProperties
   theme?: Theme
+  padding?: CSSProperties
 }) => {
   return (
-    <TriggerTitle style={triggerTitleStyle} theme={theme}>
-      <CardTitle style={style} variant="subtitle2" theme={theme}>
+    <TriggerTitle style={triggerTitleStyle} theme={theme} padding={padding}>
+      <CardTitle
+        padding={padding}
+        style={style}
+        variant="subtitle2"
+        theme={theme}
+      >
         {children}
       </CardTitle>
     </TriggerTitle>

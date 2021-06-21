@@ -9,10 +9,10 @@ export const TablesBlockWrapper = styled(Grid)`
   border: none;
   position: relative;
   height: ${({
-  isDefaultTerminalViewMode,
-}: {
-  isDefaultTerminalViewMode: boolean
-}) => (isDefaultTerminalViewMode ? '40%' : '50%')};
+    isDefaultTerminalViewMode,
+  }: {
+    isDefaultTerminalViewMode: boolean
+  }) => (isDefaultTerminalViewMode ? '40%' : '50%')};
 
   && {
     box-shadow: none !important;
@@ -136,17 +136,19 @@ export const TerminalModeButton = styled(
   font-size: 1.3rem;
   font-weight: normal;
   letter-spacing: 0.05rem;
-  width: 25%;
+  width: 12.5%;
   color: ${(props: { active: boolean; theme: Theme }) =>
     props.active
-      ? props.theme.palette.white.greyish
-      : props.theme.palette.dark.main};
-  background-color: ${(props: { active: boolean; theme: Theme }) =>
-    props.active
       ? props.theme.palette.blue.serum
-      : props.theme.palette.grey.main};
-  border: none;
+      : props.theme.palette.dark.main};
+  background-color: ${(props) => props.theme.palette.grey.main};
   border-right: ${(props) => props.theme.palette.border.main};
+  border-left: ${(props) => props.borderLeft || 'none'};
+  font-family: ${(props: { active: boolean; theme: Theme }) =>
+    props.active ? 'Avenir Next Demi' : 'Avenir Next Medium'};
+  border-bottom: ${(props: { active: boolean; theme: Theme }) =>
+    props.active ? `0.2rem solid ${props.theme.palette.blue.serum}` : 'none'};
+  border-top: none;
   text-transform: none;
   white-space: nowrap;
   padding: 1rem 0;
@@ -207,38 +209,24 @@ export const SettingsContainer = styled(TradingMenuContainer)`
 `
 
 export const SettingsLabel = styled(LeverageLabel)`
-  color: ${(props) =>
-    (props.theme &&
-      props.theme.palette &&
-      props.theme.palette.grey &&
-      props.theme.palette.grey.light) ||
-    '#7284a0'};
+  text-transform: capitalize;
+  white-space: nowrap;
+  font-size: 1.1rem;
+  font-family: Avenir Next Medium;
+  cursor: pointer;
+  color: ${(props) => props.theme.palette.grey.light || '#7284a0'};
 `
 
 export const StyledSelect = styled.select`
   width: 100%;
   background: ${(props) =>
-    (!props.disabled &&
-      (props.theme &&
-        props.theme.palette &&
-        props.theme.palette.white &&
-        props.theme.palette.white.background)) ||
+    (!props.disabled && props.theme.palette.white.background) ||
     '#16253D'};
-  border: ${(props) =>
-    (props.theme &&
-      props.theme.palette &&
-      props.theme.palette.border &&
-      props.theme.palette.border.main) ||
-    '.1rem solid #e0e5ec'};
+  border: ${(props) => props.theme.palette.border.main || '.1rem solid #e0e5ec'};
   border-radius: 0.2rem;
   padding: 0.2rem;
   margin: 0 0.5rem;
-  color: ${(props) =>
-    (props.theme &&
-      props.theme.palette &&
-      props.theme.palette.grey &&
-      props.theme.palette.grey.light) ||
-    '#7284a0'};
+  color: ${(props) => props.theme.palette.grey.light ||'#7284a0'};
   font-weight: bold;
   font-size: 1rem;
   text-align: center;

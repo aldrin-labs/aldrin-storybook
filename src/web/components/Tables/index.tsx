@@ -52,24 +52,21 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos'
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
 
 import CustomPlaceholder from '@sb/components/CustomPlaceholder'
-import {
-  OnboardingPlaceholder,
-  OnboardingPromoPlaceholder,
-} from '@sb/components'
 
 const CustomTableCell = withStyles((theme) => ({
   head: {
     position: 'sticky',
     top: '3rem',
-    backgroundColor: theme.palette.primary.dark,
+    backgroundColor: 'inherit',
     color: theme.palette.dark.main,
-    textTransform: 'uppercase',
-    fontSize: 14,
+    textTransform: 'capitalize',
+    fontFamily: 'Avenir Next Demi',
+    fontSize: '1.2rem',
     fontWeight: 'bold',
     border: 0,
     whiteSpace: 'nowrap',
     zIndex: 100,
-    padding: '0.2rem 1.6rem 0.2rem  0.6rem',
+    padding: '0.2rem 1.6rem 0.3rem  0.6rem',
     boxShadow: 'none',
   },
   body: {
@@ -205,8 +202,8 @@ const styles = (theme: Theme) =>
     },
     headRow: {
       height: '2rem',
-
       boxShadow: 'none',
+      borderBottom: theme.palette.border.main,
     },
     rowSelected: {
       backgroundColor: theme.palette.action.selected,
@@ -214,14 +211,10 @@ const styles = (theme: Theme) =>
     row: {
       height: '2rem',
       boxShadow: 'none',
-      transition: `background-color ${theme.transitions.duration.short}ms  ${
-        theme.transitions.easing.easeOut
-      }`,
+      transition: `background-color ${theme.transitions.duration.short}ms  ${theme.transitions.easing.easeOut}`,
       borderBottom: '0',
       '&:hover td': {
-        transition: `background-color ${theme.transitions.duration.short}ms  ${
-          theme.transitions.easing.easeOut
-        }`,
+        transition: `background-color ${theme.transitions.duration.short}ms  ${theme.transitions.easing.easeOut}`,
       },
     },
     rowWithHover: {
@@ -586,8 +579,6 @@ const CustomTable = (props: Props) => {
     stylesForTable,
     paperAdditionalStyle = '',
     hideCommonCheckbox = false,
-    onboardingPlaceholder = false,
-    onboardingPromoPlaceholder = false,
   } = props
 
   if (
@@ -759,11 +750,7 @@ const CustomTable = (props: Props) => {
         </TableHead>
 
         <TableBody>
-          {data.body.length === 0 && onboardingPromoPlaceholder ? (
-            <OnboardingPromoPlaceholder />
-          ) : data.body.length === 0 && onboardingPlaceholder ? (
-            <OnboardingPlaceholder />
-          ) : data.body.length === 0 && !onboardingPlaceholder ? (
+          {data.body.length === 0 ? (
             <CustomPlaceholder theme={theme} text={emptyTableText} />
           ) : (
             paginationFunc(
@@ -777,9 +764,7 @@ const CustomTable = (props: Props) => {
 
                 const rowHoverClassName = rowsWithHover
                   ? rowWithHoverBorderRadius
-                    ? `${rowClassName} + ${classes.rowWithHover} + ${
-                        classes.rowWithHoverBorderRadius
-                      }`
+                    ? `${rowClassName} + ${classes.rowWithHover} + ${classes.rowWithHoverBorderRadius}`
                     : `${classes.rowWithHover}`
                   : rowClassName
 
@@ -840,6 +825,7 @@ const CustomTable = (props: Props) => {
                             padding="checkbox"
                             style={{
                               backgroundColor: tableStyles.cell.backgroundColor,
+                              width: '4rem',
                             }}
                           >
                             {renderCheckBox({

@@ -65,61 +65,13 @@ const TradingTabs = ({
   return (
     <>
       <TitleTabsGroup theme={theme}>
-        {/* <TitleTab
-          theme={theme}
-          active={tab === 'activeTrades'}
-          onClick={() => handleTabChange('activeTrades')}
-        >
-          Smart trades{' '}
-          {activeTradesLength > 0
-            ? `(
-          ${activeTradesLength}
-          )`
-            : ''}
-        </TitleTab>
-        <TitleTab
-          theme={theme}
-          active={tab === 'strategiesHistory'}
-          onClick={() => handleTabChange('strategiesHistory')}
-        >
-          ST History
-        </TitleTab>
-        {!isSPOTMarketType(marketType) && (
-          <TitleTab
-            theme={theme}
-            active={tab === 'positions'}
-            onClick={() => {
-              handleTabChange('positions')
-            }}
-          >
-            Positions{' '}
-            {positionsLength > 0
-              ? `(
-          ${positionsLength}
-          )`
-              : ''}
-          </TitleTab>
-        )} */}
-
         <TitleTab
           theme={theme}
           active={tab === 'openOrders'}
           onClick={() => handleTabChange('openOrders')}
         >
           Open orders{' '}
-          {/* {openOrdersLength > 0
-            ? `(
-          ${openOrdersLength}
-          )`
-            : ''} */}
         </TitleTab>
-        {/* <TitleTab
-          theme={theme}
-          active={tab === 'orderHistory'}
-          onClick={() => handleTabChange('orderHistory')}
-        >
-          Order history
-        </TitleTab> */}
         <TitleTab
           theme={theme}
           active={tab === 'tradeHistory'}
@@ -127,29 +79,20 @@ const TradingTabs = ({
         >
           Recent Trade history
         </TitleTab>
-
-          <TitleTab
-            theme={theme}
-            active={tab === 'balances'}
-            onClick={() => handleTabChange('balances')}
-          >
-            Balances
-          </TitleTab>
-          <TitleTab
-            theme={theme}
-            active={tab === 'feeDiscounts'}
-            onClick={() => handleTabChange('feeDiscounts')}
-          >
-            Fee Discounts
-          </TitleTab>
-
-          <TitleTab
-            theme={theme}
-            active={tab === 'feeTiers'}
-            onClick={() => handleTabChange('feeTiers')}
-          >
-            Fee Tiers
-          </TitleTab>
+        <TitleTab
+          theme={theme}
+          active={tab === 'feeTiers'}
+          onClick={() => handleTabChange('feeTiers')}
+        >
+          Fee Tiers
+        </TitleTab>
+        <TitleTab
+          theme={theme}
+          active={tab === 'balances'}
+          onClick={() => handleTabChange('balances')}
+        >
+          Market Balances
+        </TitleTab>
       </TitleTabsGroup>
     </>
   )
