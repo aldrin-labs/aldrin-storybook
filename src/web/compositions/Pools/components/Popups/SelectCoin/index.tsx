@@ -75,6 +75,12 @@ export const SelectCoinPopup = ({
       )
     : mints
 
+  const sortedAllTokensData = new Map()
+
+  allTokensData.forEach((tokensData) => {
+    sortedAllTokensData.set(tokensData.mint, tokensData.amount)
+  })
+
   const filteredMints = searchValue
     ? usersMints.filter((mint) =>
         getTokenNameByMintAddress(mint)
@@ -82,6 +88,12 @@ export const SelectCoinPopup = ({
           .includes(searchValue.toLowerCase())
       )
     : usersMints
+
+  const sortedMints = filteredMints
+    .map((mint) => {
+      return { mint, amount: sortedAllTokensData.get(mint) || 0 }
+    })
+    .sort((a, b) => b.amount - a.amount)
 
   return (
     <DialogWrapper
@@ -92,9 +104,9 @@ export const SelectCoinPopup = ({
       maxWidth={'md'}
       open={open}
       onEnter={() => {
-        onChangeSearch('');
-        setSelectedMint('');
-        setIsSelectorForSeveralAddressesOpen(false);
+        onChangeSearch('')
+        setSelectedMint('')
+        setIsSelectorForSeveralAddressesOpen(false)
       }}
       aria-labelledby="responsive-dialog-title"
     >
@@ -110,41 +122,37 @@ export const SelectCoinPopup = ({
         />
       </RowContainer>
       <RowContainer>
-        {filteredMints.map((mint: string) => {
-          return (
-            <SelectorRow
-              justify={'space-between'}
-              style={{ cursor: 'pointer' }}
-              onClick={() => {
-                const isSeveralCoinsWithSameAddress =
-                  allTokensData.filter((el) => el.mint === mint).length > 1
+        {sortedMints.map(
+          ({ mint, amount }: { mint: string; amount: number }) => {
+            return (
+              <SelectorRow
+                justify={'space-between'}
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
+                  const isSeveralCoinsWithSameAddress =
+                    allTokensData.filter((el) => el.mint === mint).length > 1
 
-                if (isSeveralCoinsWithSameAddress) {
-                  setSelectedMint(mint)
-                  setIsSelectorForSeveralAddressesOpen(true)
-                } else {
-                  selectTokenMintAddress(mint)
-                }
-              }}
-            >
-              <Row wrap={'nowrap'}>
-                <TokenIcon mint={mint} width={'2rem'} height={'2rem'} />
-                <StyledText>{getTokenNameByMintAddress(mint)}</StyledText>
-              </Row>
-              <Row wrap={'nowrap'}>
-                <StyledText>
-                  {formatNumberToUSFormat(
-                    stripDigitPlaces(
-                      allTokensData.find((tokenData) => tokenData.mint === mint)
-                        ?.amount || 0,
-                      8
-                    )
-                  )}
-                </StyledText>
-              </Row>
-            </SelectorRow>
-          )
-        })}
+                  if (isSeveralCoinsWithSameAddress) {
+                    setSelectedMint(mint)
+                    setIsSelectorForSeveralAddressesOpen(true)
+                  } else {
+                    selectTokenMintAddress(mint)
+                  }
+                }}
+              >
+                <Row wrap={'nowrap'}>
+                  <TokenIcon mint={mint} width={'2rem'} height={'2rem'} />
+                  <StyledText>{getTokenNameByMintAddress(mint)}</StyledText>
+                </Row>
+                <Row wrap={'nowrap'}>
+                  <StyledText>
+                    {formatNumberToUSFormat(stripDigitPlaces(amount, 8))}
+                  </StyledText>
+                </Row>
+              </SelectorRow>
+            )
+          }
+        )}
         {mints.length === 0 && (
           <RowContainer>
             <StyledText>Loading...</StyledText>

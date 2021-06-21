@@ -26,7 +26,10 @@ const Pools = ({
   theme: Theme
   getPoolsPricesQuery: { getPoolsPrices: PoolsPrices[] }
 }) => {
-  const [refreshAllTokensDataCounter, setRefreshAllTokensDataCounter] = useState<number>(0);
+  const [
+    refreshAllTokensDataCounter,
+    setRefreshAllTokensDataCounter,
+  ] = useState<number>(0)
   const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
   const [selectedPool, selectPool] = useState<PoolInfo | null>(null)
 
@@ -39,7 +42,8 @@ const Pools = ({
 
   const { getPoolsPrices = [] } = getPoolsPricesQuery || { getPoolsPrices: [] }
 
-  const refreshAllTokensData = () => setRefreshAllTokensDataCounter(refreshAllTokensDataCounter + 1)
+  const refreshAllTokensData = () =>
+    setRefreshAllTokensDataCounter(refreshAllTokensDataCounter + 1)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -102,7 +106,6 @@ const Pools = ({
         open={isCreatePoolPopupOpen}
         allTokensData={allTokensData}
         refreshAllTokensData={refreshAllTokensData}
-
       />
 
       {selectedPool && (
@@ -139,7 +142,7 @@ const Wrapper = compose(
     name: 'getPoolsPricesQuery',
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
-    pollInterval: 60000.
+    pollInterval: 60000,
   })
 )(Pools)
 

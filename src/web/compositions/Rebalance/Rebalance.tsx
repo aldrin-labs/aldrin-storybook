@@ -264,7 +264,7 @@ const RebalanceComposition = ({
               setLeftToDistributeValue={setLeftToDistributeValue}
               totalTokensValue={totalTokensValue}
               loadingRebalanceData={loadingRebalanceData}
-            />
+            />{' '}
           </Row>
           <Row
             height={'100%'}

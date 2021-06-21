@@ -624,7 +624,6 @@ export async function placeOrder({
   } = await market.makePlaceOrderTransaction(connection, params, 10_000, 10_000)
 
   console.log('placeOrder placeOrderTx', placeOrderTx)
-  console.log('placeOrder signers', signers)
   console.log('placeOrder rest', rest)
 
   transaction.add(placeOrderTx)
