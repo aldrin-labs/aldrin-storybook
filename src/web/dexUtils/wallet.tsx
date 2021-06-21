@@ -7,6 +7,7 @@ import {
   CcaiWalletAdapter,
   CcaiExtensionAdapter,
   PhantomWalletAdapter,
+  LedgerWalletAdapter,
 } from '@sb/dexUtils/adapters'
 import { notify } from './notifications'
 import {
@@ -34,7 +35,6 @@ import Mathwallet from '@icons/mathwallet.svg'
 import Solong from '@icons/solong.svg'
 import CCAI from '@icons/ccai.svg'
 import { WalletAdapter } from './adapters'
-import { LedgerWalletAdapter } from './adapters/Ledger'
 
 export const WALLET_PROVIDERS = [
   // { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },
@@ -74,12 +74,12 @@ export const WALLET_PROVIDERS = [
     icon: `https://www.phantom.app/img/logo.png`,
     adapter: PhantomWalletAdapter,
   },
-  // {
-  //   name: 'MathWallet',
-  //   url: 'https://www.mathwallet.org',
-  //   adapter: MathWalletAdapter,
-  //   icon: Mathwallet,
-  // },
+  {
+    name: 'MathWallet',
+    url: 'https://www.mathwallet.org',
+    adapter: MathWalletAdapter,
+    icon: Mathwallet,
+  },
   {
     name: 'Solong',
     url: 'https://solongwallet.com',
@@ -101,23 +101,6 @@ export const MAINNET_URL = 'https://solana-api.projectserum.com'
 export const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey(
   'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
 )
-
-const getWalletByProviderUrl = (providerUrl: string) => {
-  switch (providerUrl) {
-    case 'https://solongwallet.com': {
-      return SolongWallet
-    }
-    case 'https://www.mathwallet.org': {
-      return MathWallet
-    }
-    case CCAIProviderURL: {
-      return CcaiWallet
-    }
-    default: {
-      return Wallet
-    }
-  }
-}
 
 const WalletContext = React.createContext(null)
 
