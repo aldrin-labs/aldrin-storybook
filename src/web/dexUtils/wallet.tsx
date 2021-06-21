@@ -202,7 +202,7 @@ export function WalletProvider({ children }) {
 
     return () => {
       setConnected(false)
-      if (wallet) {
+      if (wallet && wallet.disconnect) {
         wallet.disconnect()
         setConnected(false)
       }
