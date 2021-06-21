@@ -169,7 +169,9 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
           pricePrecision={pricePrecision}
         />
         <LinkToSolanaExp marketAddress={marketAddress} />
-        <LinkToAnalytics href={`/analytics/${pair}`}>📈 </LinkToAnalytics>
+        <DarkTooltip title={'Show analytics for this market.'}>
+          <LinkToAnalytics href={`/analytics/${pair}`}>📈 </LinkToAnalytics>
+        </DarkTooltip>
       </Row>
       <Row>
         <Row align={'flex-start'} direction="column">
