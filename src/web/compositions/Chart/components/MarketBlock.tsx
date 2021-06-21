@@ -108,9 +108,7 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
   }, [setTokenMap])
 
   const pair = location.pathname.split('/')[3]
-  const [base, quote] = pair.split('_');
 
-  const baseTokenInfo = tokenMap.get(base)
   const quantityPrecision =
     market?.minOrderSize && getDecimalCount(market.minOrderSize)
   const pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
@@ -119,6 +117,10 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
   if (!pair) {
     return null
   }
+
+  const [base, quote] = pair.split('_');
+
+  const baseTokenInfo = tokenMap.get(base)
 
   const marketName = pair.replaceAll('_', '/')
   const currentMarket = customMarkets?.find(
