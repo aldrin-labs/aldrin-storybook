@@ -20,9 +20,7 @@ import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE'
 import { updatePriceQuerryFunction } from '@sb/compositions/Chart/components/MarketStats/MarketStats.utils'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 
-import {
-  GreenTitle,
-} from '../../index.styles'
+import { GreenTitle } from '../../index.styles'
 
 export interface IProps {
   marketType: 0 | 1

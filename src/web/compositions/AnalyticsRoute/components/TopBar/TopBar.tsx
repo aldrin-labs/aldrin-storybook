@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
+import { getPoolsPrices } from '@core/graphql/queries/pools/getPoolsPrices'
 
 import { Theme } from '@material-ui/core'
 import { getSerumData } from '@core/graphql/queries/chart/getSerumData'
@@ -7,6 +8,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 
 import {
   formatNumberToUSFormat,
+  roundAndFormatNumber,
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 
@@ -29,6 +31,7 @@ import {
 import PriceBlock from './tokenPriceBlock'
 import MarketCap from './tokenMarketCap'
 import { getCCAICirculationSupply } from '../CirculationSupply'
+import { PoolsPrices } from '@sb/compositions/Pools/index.types'
 
 export const ccaiData = {
   totalySupply: 50000000,
@@ -36,15 +39,43 @@ export const ccaiData = {
   circulatingSupply: 50000000,
 }
 
-const TopBar = ({ theme }: { theme: Theme }) => {
+const TopBar = ({
+  theme,
+  getPoolsPricesQuery,
+}: {
+  theme: Theme
+  getPoolsPricesQuery: { getPoolsPrices: PoolsPrices[] }
+}) => {
+  const [CCAICirculatingSupply, setCirculatingSupply] = useState(0)
+  const [showGreen, updateToGreen] = useState(false)
+  const [previousPrice, savePreviousPrice] = useState(0)
+
+  useEffect(() => {
+    const getCCAISupply = async () => {
+      const CCAICircSupplyValue = await getCCAICirculationSupply()
+      setCirculatingSupply(CCAICircSupplyValue)
+    }
+    getCCAISupply()
+  }, [])
+
   const { market } = useMarket() || { market: { tickSize: 8 } }
+  const CCAIPrice = getPoolsPricesQuery?.getPoolsPrices.filter(
+    (el) => el.symbol === 'CCAI'
+  )[0].price
 
-  let circulatingSupply = ccaiData.circulatingSupply - ccaiData.burned
+  useEffect(() => {
+    if (CCAIPrice > previousPrice) {
+      updateToGreen(true)
+    } else {
+      updateToGreen(false)
+    }
+
+    savePreviousPrice(CCAIPrice)
+  }, [CCAIPrice])
+
   let totalySupply = ccaiData.totalySupply - ccaiData.burned
-
-  let pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
-
-  const CCAICircSupplyValue = getCCAICirculationSupply()
+  const CCAImarketcap = CCAICirculatingSupply * CCAIPrice
+  console.log('price', CCAIPrice)
   return (
     <>
       <Row height={'100%'}>
@@ -55,25 +86,21 @@ const TopBar = ({ theme }: { theme: Theme }) => {
           src={CCAILogo}
         />
         <TokenWhiteTitle theme={theme}>CCAI</TokenWhiteTitle>
-        <PriceBlock
+        <GreenTitle
+          style={{ color: showGreen ? '#A5E898' : '#F26D68' }}
           theme={theme}
-          pricePrecision={3}
-          exchange={{ symbol: 'serum' }}
-          marketType={0}
-          symbol={'CCAI_USDC'}
-        />
+        >
+          {`$${formatNumberToUSFormat(
+            roundAndFormatNumber(CCAIPrice, 4, false)
+          )}`}
+        </GreenTitle>
       </Row>
       <Row>
         <TokenTitleBlockContainer>
-          <TopBarTitle theme={theme}>CCAI Marketcap</TopBarTitle>
-          <MarketCap
-            theme={theme}
-            pricePrecision={3}
-            exchange={{ symbol: 'serum' }}
-            marketType={0}
-            symbol={'CCAI_USDC'}
-            circulatingSupply={circulatingSupply}
-          />
+          <TopBarTitle theme={theme}>CCAI Marketcap</TopBarTitle>{' '}
+          <Text theme={theme}>
+            {formatNumberToUSFormat(CCAImarketcap.toFixed(0))} CCAI
+          </Text>
         </TokenTitleBlockContainer>
         <TokenTitleBlockContainer>
           <TopBarTitle theme={theme}>CCAI Total Supply</TopBarTitle>
@@ -86,15 +113,8 @@ const TopBar = ({ theme }: { theme: Theme }) => {
         <TokenTitleBlockContainer>
           <TopBarTitle theme={theme}>CCAI Circulating Supply</TopBarTitle>
           <BlockContainer>
-            <Text theme={theme}>CCAI</Text>
-          </BlockContainer>
-        </TokenTitleBlockContainer>
-        <TokenTitleBlockContainer>
-          <TopBarTitle theme={theme}>CCAI Burned</TopBarTitle>
-          <BlockContainer>
-            {' '}
             <Text theme={theme}>
-              {formatNumberToUSFormat(ccaiData.burned.toFixed(0))} CCAI
+              {formatNumberToUSFormat(CCAICirculatingSupply.toFixed(0))} CCAI
             </Text>
           </BlockContainer>
         </TokenTitleBlockContainer>
@@ -103,4 +123,12 @@ const TopBar = ({ theme }: { theme: Theme }) => {
   )
 }
 
-export default TopBar
+export default compose(
+  queryRendererHoc({
+    query: getPoolsPrices,
+    name: 'getPoolsPricesQuery',
+    fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
+    pollInterval: 10000,
+  })
+)(TopBar)
