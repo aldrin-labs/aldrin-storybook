@@ -99,7 +99,7 @@ const TopBar = ({
         <TokenTitleBlockContainer>
           <TopBarTitle theme={theme}>CCAI Marketcap</TopBarTitle>{' '}
           <Text theme={theme}>
-            {formatNumberToUSFormat(CCAImarketcap.toFixed(0))} CCAI
+            ${formatNumberToUSFormat(CCAImarketcap.toFixed(0))}
           </Text>
         </TokenTitleBlockContainer>
         <TokenTitleBlockContainer>
