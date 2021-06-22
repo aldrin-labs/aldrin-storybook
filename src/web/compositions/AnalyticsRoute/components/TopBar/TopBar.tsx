@@ -59,9 +59,10 @@ const TopBar = ({
   }, [])
 
   const { market } = useMarket() || { market: { tickSize: 8 } }
-  const CCAIPrice = getPoolsPricesQuery?.getPoolsPrices.filter(
-    (el) => el.symbol === 'CCAI'
-  )[0].price
+
+  const CCAIPrice =
+    getPoolsPricesQuery?.getPoolsPrices?.filter((el) => el.symbol === 'CCAI')[0]
+      .price || 0
 
   useEffect(() => {
     if (CCAIPrice > previousPrice) {
