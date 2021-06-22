@@ -75,7 +75,6 @@ const TopBar = ({
 
   let totalySupply = ccaiData.totalySupply - ccaiData.burned
   const CCAImarketcap = CCAICirculatingSupply * CCAIPrice
-  console.log('price', CCAIPrice)
   return (
     <>
       <Row height={'100%'}>
