@@ -36,6 +36,7 @@ import {
 import { getTokenDataByMint } from '../Pools/utils'
 import { TokenAddressesPopup } from './components/TokenAddressesPopup'
 import { withPublicKey } from '@core/hoc/withPublicKey'
+import { REBALANCE_CONFIG } from '../Rebalance/Rebalance.config'
 import { filterDataBySymbolForDifferentDeviders } from '../Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 import Pools from '../Pools/components/Tables/Pools'
 
@@ -56,7 +57,7 @@ const SwapsPage = ({
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
-  const [slippageTolerance, setSlippageTolerance] = useState<number>(0.1)
+  const [slippageTolerance, setSlippageTolerance] = useState<number>(0.3)
   const [isTokensAddressesPopupOpen, openTokensAddressesPopup] = useState(false)
   const [isSelectCoinPopupOpen, setIsSelectCoinPopupOpen] = useState(false)
   const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
@@ -119,18 +120,18 @@ const SwapsPage = ({
       (tokenInfo) =>
         tokenInfo.symbol === baseTokenMintAddress ||
         tokenInfo.symbol === baseSymbol
-    )?.price || 0
+    )?.price || 10
 
   const quoteTokenPrice =
     getPoolsPrices.find(
       (tokenInfo) =>
         tokenInfo.symbol === quoteTokenMintAddress ||
         tokenInfo.symbol === quoteSymbol
-    )?.price || 0
+    )?.price || 10
 
   const swapTokens = ALL_TOKENS_MINTS.map((el) => el.address.toString())
 
-  const poolsTokens = getPoolsInfoQuery.getPoolsInfo.find(
+  const selectedTokens = getPoolsInfoQuery.getPoolsInfo.find(
     (pool) =>
       (pool?.tokenA === baseTokenMintAddress ||
         pool?.tokenA === quoteTokenMintAddress) &&
@@ -138,9 +139,12 @@ const SwapsPage = ({
         pool?.tokenB === quoteTokenMintAddress)
   )
 
+  const baseTokenSwap =
+    selectedTokens?.tokenA === baseTokenMintAddress ? 'tokenA' : 'tokenB'
+
   const [poolAmountTokenA, poolAmountTokenB] = [
-    poolsTokens?.tvl.tokenA,
-    poolsTokens?.tvl.tokenB,
+    selectedTokens?.tvl.tokenA,
+    selectedTokens?.tvl.tokenB,
   ]
 
   const {
@@ -190,12 +194,18 @@ const SwapsPage = ({
     await setQuoteAmount(baseAmount)
   }
 
-  console.log(
-    'poolAmountTokenA, poolAmountTokenB',
-    poolAmountTokenA,
-    poolAmountTokenB,
-    poolsTokens
-  )
+  const poolsAmountDiff =
+    baseTokenSwap === 'tokenA'
+      ? +poolAmountTokenA / +baseAmount
+      : +poolAmountTokenB / +quoteAmount
+
+  const rawSlippage = 100 / (poolsAmountDiff + 1)
+
+  const calculatedFees =
+    REBALANCE_CONFIG.POOL_FEE + slippageTolerance + rawSlippage
+
+  const totalWithFees = +quoteAmount - calculatedFees
+
   return (
     <RowContainer direction={'column'} height={'100%'}>
       {!publicKey ? (
@@ -307,7 +317,7 @@ const SwapsPage = ({
                   <Text fontSize={'1.5rem'} fontFamily={'Avenir Next Demi'}>
                     {baseSymbol}{' '}
                   </Text>
-                  = {stripDigitPlaces(baseTokenPrice / quoteTokenPrice, 2)}{' '}
+                  = {stripDigitPlaces(+poolAmountTokenB / +poolAmountTokenA, 2)}{' '}
                   <Text fontSize={'1.5rem'} fontFamily={'Avenir Next Demi'}>
                     {quoteSymbol}{' '}
                   </Text>
@@ -343,19 +353,22 @@ const SwapsPage = ({
               width={'45rem'}
               height={'12rem'}
             >
-              {/* <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
-          <Text color={'#93A0B2'}>Minimum received</Text>
-          <Row style={{ flexWrap: 'nowrap' }}>
-            <Text
-              style={{ padding: '0 0.5rem 0 0.5rem' }}
-              fontFamly={'Avenir Next Bold'}
-              color={'#A5E898'}
-            >
-              38.076043
-            </Text>
-            <Text fontFamly={'Avenir Next Bold'}>SRM</Text>
-          </Row>
-        </RowContainer> */}
+              {baseAmount && quoteAmount && (
+                <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
+                  <Text color={'#93A0B2'}>Minimum received</Text>
+                  <Row style={{ flexWrap: 'nowrap' }}>
+                    <Text
+                      style={{ padding: '0 0.5rem 0 0.5rem' }}
+                      fontFamly={'Avenir Next Bold'}
+                      color={'#A5E898'}
+                    >
+                      {totalWithFees.toFixed(2)}{' '}
+                    </Text>
+                    <Text fontFamly={'Avenir Next Bold'}>{quoteSymbol}</Text>
+                  </Row>
+                </RowContainer>
+              )}
+
               <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
                 <Text color={'#93A0B2'}>Price Impact</Text>
                 <Row style={{ flexWrap: 'nowrap' }}>
