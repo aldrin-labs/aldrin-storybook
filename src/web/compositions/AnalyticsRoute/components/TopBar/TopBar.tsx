@@ -28,7 +28,7 @@ import {
 
 import PriceBlock from './tokenPriceBlock'
 import MarketCap from './tokenMarketCap'
-import { CCAICirculationSupply } from '../CirculationSupply'
+import { getCCAICirculationSupply } from '../CirculationSupply'
 
 export const ccaiData = {
   totalySupply: 50000000,
@@ -44,6 +44,7 @@ const TopBar = ({ theme }: { theme: Theme }) => {
 
   let pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
 
+  const CCAICircSupplyValue = getCCAICirculationSupply()
   return (
     <>
       <Row height={'100%'}>
@@ -85,9 +86,7 @@ const TopBar = ({ theme }: { theme: Theme }) => {
         <TokenTitleBlockContainer>
           <TopBarTitle theme={theme}>CCAI Circulating Supply</TopBarTitle>
           <BlockContainer>
-            <Text theme={theme}>
-              <CCAICirculationSupply /> CCAI
-            </Text>
+            <Text theme={theme}>CCAI</Text>
           </BlockContainer>
         </TokenTitleBlockContainer>
         <TokenTitleBlockContainer>
