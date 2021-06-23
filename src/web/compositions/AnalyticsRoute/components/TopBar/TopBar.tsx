@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
-import { getPoolsPrices } from '@core/graphql/queries/pools/getPoolsPrices'
+import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 
 import { Theme } from '@material-ui/core'
 import { getSerumData } from '@core/graphql/queries/chart/getSerumData'
@@ -41,10 +41,10 @@ export const ccaiData = {
 
 const TopBar = ({
   theme,
-  getPoolsPricesQuery,
+  getDexTokensPricesQuery,
 }: {
   theme: Theme
-  getPoolsPricesQuery: { getPoolsPrices: PoolsPrices[] }
+  getDexTokensPricesQuery: { getDexTokensPrices: PoolsPrices[] }
 }) => {
   const [CCAICirculatingSupply, setCirculatingSupply] = useState(0)
   const [showGreen, updateToGreen] = useState(false)
@@ -61,8 +61,9 @@ const TopBar = ({
   const { market } = useMarket() || { market: { tickSize: 8 } }
 
   const CCAIPrice =
-    getPoolsPricesQuery?.getPoolsPrices?.filter((el) => el.symbol === 'CCAI')[0]
-      .price || 0
+    getDexTokensPricesQuery?.getDexTokensPrices?.filter(
+      (el) => el.symbol === 'CCAI'
+    )[0].price || 0
 
   useEffect(() => {
     if (CCAIPrice > previousPrice) {
@@ -125,8 +126,8 @@ const TopBar = ({
 
 export default compose(
   queryRendererHoc({
-    query: getPoolsPrices,
-    name: 'getPoolsPricesQuery',
+    query: getDexTokensPrices,
+    name: 'getDexTokensPricesQuery',
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 10000,

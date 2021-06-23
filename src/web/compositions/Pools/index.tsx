@@ -17,16 +17,19 @@ import { getAllTokensData } from '../Rebalance/utils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { PoolInfo, PoolsPrices } from './index.types'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getPoolsPrices } from '@core/graphql/queries/pools/getPoolsPrices'
+import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 
 const Pools = ({
   theme,
-  getPoolsPricesQuery,
+  getDexTokensPricesQuery,
 }: {
   theme: Theme
-  getPoolsPricesQuery: { getPoolsPrices: PoolsPrices[] }
+  getDexTokensPricesQuery: { getDexTokensPrices: PoolsPrices[] }
 }) => {
-  const [refreshAllTokensDataCounter, setRefreshAllTokensDataCounter] = useState<number>(0);
+  const [
+    refreshAllTokensDataCounter,
+    setRefreshAllTokensDataCounter,
+  ] = useState<number>(0)
   const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
   const [selectedPool, selectPool] = useState<PoolInfo | null>(null)
 
@@ -37,9 +40,12 @@ const Pools = ({
   const { wallet } = useWallet()
   const connection = useConnection()
 
-  const { getPoolsPrices = [] } = getPoolsPricesQuery || { getPoolsPrices: [] }
+  const { getDexTokensPrices = [] } = getDexTokensPricesQuery || {
+    getDexTokensPrices: [],
+  }
 
-  const refreshAllTokensData = () => setRefreshAllTokensDataCounter(refreshAllTokensDataCounter + 1)
+  const refreshAllTokensData = () =>
+    setRefreshAllTokensDataCounter(refreshAllTokensDataCounter + 1)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -81,7 +87,7 @@ const Pools = ({
           wallet={wallet}
           selectedPool={selectedPool}
           selectPool={selectPool}
-          poolsPrices={getPoolsPrices}
+          poolsPrices={getDexTokensPrices}
           setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
           setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
         />
@@ -90,25 +96,24 @@ const Pools = ({
       <AllPoolsTable
         theme={theme}
         selectPool={selectPool}
-        poolsPrices={getPoolsPrices}
+        poolsPrices={getDexTokensPrices}
         setIsCreatePoolPopupOpen={setIsCreatePoolPopupOpen}
         setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
       />
 
       <CreatePoolPopup
         theme={theme}
-        poolsPrices={getPoolsPrices}
+        poolsPrices={getDexTokensPrices}
         close={() => setIsCreatePoolPopupOpen(false)}
         open={isCreatePoolPopupOpen}
         allTokensData={allTokensData}
         refreshAllTokensData={refreshAllTokensData}
-
       />
 
       {selectedPool && (
         <AddLiquidityPopup
           theme={theme}
-          poolsPrices={getPoolsPrices}
+          poolsPrices={getDexTokensPrices}
           selectedPool={selectedPool}
           allTokensData={allTokensData}
           close={() => setIsAddLiquidityPopupOpen(false)}
@@ -121,7 +126,7 @@ const Pools = ({
         <WithdrawalPopup
           theme={theme}
           selectedPool={selectedPool}
-          poolsPrices={getPoolsPrices}
+          poolsPrices={getDexTokensPrices}
           allTokensData={allTokensData}
           close={() => setIsWithdrawalPopupOpen(false)}
           open={isWithdrawalPopupOpen}
@@ -135,11 +140,11 @@ const Pools = ({
 const Wrapper = compose(
   withTheme(),
   queryRendererHoc({
-    query: getPoolsPrices,
-    name: 'getPoolsPricesQuery',
+    query: getDexTokensPrices,
+    name: 'getDexTokensPricesQuery',
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
-    pollInterval: 60000.
+    pollInterval: 60000,
   })
 )(Pools)
 
