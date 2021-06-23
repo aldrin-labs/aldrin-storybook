@@ -169,7 +169,6 @@ function ChartPageComponent(props: any) {
       JSON.parse(savedCustomMarkets),
       [...updatedMarkets, ...userMarkets]
     )
-    console.log('isDataChanged', isDataChanged)
 
     if (isDataChanged) setCustomMarkets([...updatedMarkets, ...userMarkets])
   }, [getUserCustomMarketsQuery.getUserCustomMarkets.length])

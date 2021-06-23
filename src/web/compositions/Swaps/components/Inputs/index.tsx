@@ -26,6 +26,7 @@ export const InputWithSelectorForSwaps = ({
   maxBalance,
   padding,
   directionFrom,
+  placeholder,
   onChange,
   openSelectCoinPopup,
 }: {
@@ -36,6 +37,7 @@ export const InputWithSelectorForSwaps = ({
   padding?: string
   maxBalance: number
   directionFrom?: boolean
+  placeholder?: string
   onChange: (value: string | number) => void
   openSelectCoinPopup: () => void
 }) => {
@@ -57,7 +59,7 @@ export const InputWithSelectorForSwaps = ({
           onChange={(e) => {
             onChange(e.target.value)
           }}
-          placeholder={''}
+          placeholder={placeholder}
         />
       </TokenContainer>
       <TokenContainer

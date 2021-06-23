@@ -42,7 +42,17 @@ const _IGNORE_DEPRECATED = false
 
 const USE_MARKETS = _IGNORE_DEPRECATED
   ? MARKETS.map((m) => ({ ...m, deprecated: false }))
-  : MARKETS
+  : [
+      {
+        address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
+        name: 'CCAI/USDC',
+        programId: new PublicKey(
+          '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'
+        ),
+        deprecated: false,
+      },
+    ].concat(MARKETS)
+// : MARKETS
 
 export function useMarketsList() {
   const UPDATED_USE_MARKETS = USE_MARKETS.filter(
@@ -86,6 +96,7 @@ export function useAllMarkets() {
             {},
             marketInfo.programId
           )
+
           return {
             market,
             marketName: marketInfo.name,
@@ -245,7 +256,7 @@ function getMarketDetails(market, customMarkets) {
 }
 
 const getPairFromLocation = () => {
-  let pair = 'SRM_USDT'
+  let pair = 'CCAI_USDC'
   const { pathname } = location
 
   const isChartPage = pathname.includes('chart')
@@ -287,8 +298,6 @@ export function MarketProvider({ children }) {
     marketInfo = marketInfos.find((market) => market.name === marketName)
   }
 
-  // console.log('marketInfo', marketInfo)
-
   const [market, setMarket] = useState()
   // add state for markets
   // add useEffect for customMarkets
@@ -305,7 +314,6 @@ export function MarketProvider({ children }) {
     setMarket(null)
 
     if (!marketInfo || !marketInfo?.address) {
-      // console.log('marketInfo', marketInfo)
       notify({
         message: 'Error loading market',
         description: 'Please select a market from the dropdown',
@@ -317,11 +325,12 @@ export function MarketProvider({ children }) {
     // console.log('useEffect in market - load market')
     Market.load(connection, marketInfo.address, {}, marketInfo.programId)
       .then((data) => {
-        // console.log(
-        //   'useEffect in market - set market in load',
-        //   marketInfo.address,
-        //   marketInfo.name
-        // )
+        console.log(
+          'useEffect in market - set market in load',
+          marketInfo.address,
+          marketInfo.name,
+          data
+        )
         return setMarket(data)
       })
       .catch((e) =>
@@ -463,7 +472,6 @@ export function useOpenOrdersAccounts(fast = false) {
     const end = +Date.now()
     await console.log(end, 'end of getting open orders')
     await console.log('Latency: ', (end - start) / 1000)
-
 
     return accounts
   }

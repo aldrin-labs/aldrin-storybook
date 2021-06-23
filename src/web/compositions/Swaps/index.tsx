@@ -25,7 +25,7 @@ import Gear from '@icons/gear.svg'
 import Arrows from '@icons/switchArrows.svg'
 import { TokenInfo } from '../Rebalance/Rebalance.types'
 import { useConnection } from '@sb/dexUtils/connection'
-import { getPoolsPrices } from '@core/graphql/queries/pools/getPoolsPrices'
+import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import withTheme from '@material-ui/core/styles/withTheme'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import {
@@ -44,16 +44,16 @@ const SwapsPage = ({
   theme,
   publicKey,
   getPoolsInfoQuery,
-  getPoolsPricesQuery,
+  getDexTokensPricesQuery,
   getPoolsInfoQueryRefetch,
-  getPoolsPricesQueryRefetch,
+  getDexTokensPricesQueryRefetch,
 }: {
   theme: Theme
   publicKey: string
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
-  getPoolsPricesQuery: { getPoolsPrices: PoolsPrices[] }
+  getDexTokensPricesQuery: { getDexTokensPrices: PoolsPrices[] }
   getPoolsInfoQueryRefetch: () => void
-  getPoolsPricesQueryRefetch: () => void
+  getDexTokensPricesQueryRefetch: () => void
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -81,28 +81,50 @@ const SwapsPage = ({
 
   const [selectedPool, selectPool] = useState<PoolInfo | null>(null)
 
-  const { getPoolsPrices = [] } = getPoolsPricesQuery || { getPoolsPrices: [] }
-
+  const [baseTokenMintAddress, setBaseTokenMintAddress] = useState<string>('')
   const [quoteTokenMintAddress, setQuoteTokenMintAddress] = useState<string>('')
+
+  const selectedTokens = getPoolsInfoQuery.getPoolsInfo.find(
+    (pool) =>
+      (pool?.tokenA === baseTokenMintAddress ||
+        pool?.tokenA === quoteTokenMintAddress) &&
+      (pool?.tokenB === baseTokenMintAddress ||
+        pool?.tokenB === quoteTokenMintAddress)
+  )
+
+  const { getDexTokensPrices = [] } = getDexTokensPricesQuery || {
+    getDexTokensPrices: [],
+  }
+  const isBaseTokenA = selectedTokens?.tokenA === baseTokenMintAddress
+
   const [quoteAmount, setQuoteAmount] = useState<string | number>('')
   const setQuoteAmountWithBase = (quoteAmount: string | number) => {
-    const baseAmount = stripDigitPlaces(
-      +quoteAmount * (+poolAmountTokenA / +poolAmountTokenB),
-      8
-    )
+    const baseAmount = isBaseTokenA
+      ? stripDigitPlaces(
+          +quoteAmount * (+poolAmountTokenA / +poolAmountTokenB),
+          8
+        )
+      : stripDigitPlaces(
+          +quoteAmount * (+poolAmountTokenB / +poolAmountTokenA),
+          8
+        )
     setBaseAmount(baseAmount)
     setQuoteAmount(quoteAmount)
   }
 
-  const [baseTokenMintAddress, setBaseTokenMintAddress] = useState<string>('')
   const [baseAmount, setBaseAmount] = useState<string | number>('')
   const [isBaseTokenSelecting, setIsBaseTokenSelecting] = useState(false)
 
   const setBaseAmountWithQuote = (baseAmount: string | number) => {
-    const quoteAmount = stripDigitPlaces(
-      +baseAmount * (+poolAmountTokenB / +poolAmountTokenA),
-      8
-    )
+    const quoteAmount = isBaseTokenA
+      ? stripDigitPlaces(
+          +baseAmount * (+poolAmountTokenB / +poolAmountTokenA),
+          8
+        )
+      : stripDigitPlaces(
+          +baseAmount * (+poolAmountTokenA / +poolAmountTokenB),
+          8
+        )
     setBaseAmount(baseAmount)
     setQuoteAmount(quoteAmount)
   }
@@ -116,28 +138,20 @@ const SwapsPage = ({
     : 'Select token'
 
   const baseTokenPrice =
-    getPoolsPrices.find(
+    getDexTokensPrices.find(
       (tokenInfo) =>
         tokenInfo.symbol === baseTokenMintAddress ||
         tokenInfo.symbol === baseSymbol
     )?.price || 10
 
   const quoteTokenPrice =
-    getPoolsPrices.find(
+    getDexTokensPrices.find(
       (tokenInfo) =>
         tokenInfo.symbol === quoteTokenMintAddress ||
         tokenInfo.symbol === quoteSymbol
     )?.price || 10
 
   const swapTokens = ALL_TOKENS_MINTS.map((el) => el.address.toString())
-
-  const selectedTokens = getPoolsInfoQuery.getPoolsInfo.find(
-    (pool) =>
-      (pool?.tokenA === baseTokenMintAddress ||
-        pool?.tokenA === quoteTokenMintAddress) &&
-      (pool?.tokenB === baseTokenMintAddress ||
-        pool?.tokenB === quoteTokenMintAddress)
-  )
 
   const baseTokenSwap =
     selectedTokens?.tokenA === baseTokenMintAddress ? 'tokenA' : 'tokenB'
@@ -197,7 +211,7 @@ const SwapsPage = ({
   const poolsAmountDiff =
     baseTokenSwap === 'tokenA'
       ? +poolAmountTokenA / +baseAmount
-      : +poolAmountTokenB / +quoteAmount
+      : +poolAmountTokenA / +quoteAmount
 
   // price impact due to curve
   const rawSlippage = 100 / (poolsAmountDiff + 1)
@@ -207,6 +221,8 @@ const SwapsPage = ({
 
   const totalWithFees = +quoteAmount - (+quoteAmount / 100) * sumFeesPercentages
 
+  // const InsufficientBalance
+  // console.log('poolAmountTokenA', poolAmountTokenA)
   return (
     <RowContainer direction={'column'} height={'100%'}>
       {!publicKey ? (
@@ -245,7 +261,7 @@ const SwapsPage = ({
                 <ReloadTimer
                   marginRight={'1.5rem'}
                   callback={async () => {
-                    await getPoolsPricesQueryRefetch()
+                    await getDexTokensPricesQueryRefetch()
                     await getPoolsInfoQueryRefetch()
                   }}
                 />
@@ -271,6 +287,11 @@ const SwapsPage = ({
                 theme={theme}
                 directionFrom={true}
                 value={baseAmount}
+                disabled={
+                  !baseTokenMintAddress ||
+                  !quoteTokenMintAddress ||
+                  (!baseTokenMintAddress && !quoteTokenMintAddress)
+                }
                 onChange={setBaseAmountWithQuote}
                 symbol={baseSymbol}
                 maxBalance={maxBaseAmount}
@@ -294,6 +315,11 @@ const SwapsPage = ({
             <RowContainer margin={'1rem 0 2rem 0'}>
               <InputWithSelectorForSwaps
                 theme={theme}
+                disabled={
+                  !baseTokenMintAddress ||
+                  !quoteTokenMintAddress ||
+                  (!baseTokenMintAddress && !quoteTokenMintAddress)
+                }
                 value={quoteAmount}
                 onChange={setQuoteAmountWithBase}
                 symbol={quoteSymbol}
@@ -317,7 +343,13 @@ const SwapsPage = ({
                   <Text fontSize={'1.5rem'} fontFamily={'Avenir Next Demi'}>
                     {baseSymbol}{' '}
                   </Text>
-                  = {stripDigitPlaces(+poolAmountTokenB / +poolAmountTokenA, 2)}{' '}
+                  ={' '}
+                  {isBaseTokenA
+                    ? stripDigitPlaces(+poolAmountTokenB / +poolAmountTokenA, 8)
+                    : stripDigitPlaces(
+                        +(+poolAmountTokenA / +poolAmountTokenB),
+                        8
+                      )}{' '}
                   <Text fontSize={'1.5rem'} fontFamily={'Avenir Next Demi'}>
                     {quoteSymbol}{' '}
                   </Text>
@@ -340,6 +372,7 @@ const SwapsPage = ({
                 textTransform={'none'}
                 margin={'1rem 0 0 0'}
                 transition={'all .4s ease-out'}
+                disabled={}
                 onClick={() => {
                   // swap func here
                 }}
@@ -378,7 +411,7 @@ const SwapsPage = ({
                         fontFamily={'Avenir Next Bold'}
                         color={'#A5E898'}
                       >
-                        {rawSlippage}%
+                        {stripDigitPlaces(rawSlippage, 2)}%
                       </Text>
                     </Row>
                   </RowContainer>{' '}
@@ -408,11 +441,11 @@ const SwapsPage = ({
       />
       <SelectCoinPopup
         theme={theme}
-        mints={swapTokens}
-        mints={allTokensData.map((el) => el.mint)}
+        // mints={swapTokens}
+        mints={allTokensData.map((el) => el.mint)} //
         allTokensData={allTokensData}
         open={isSelectCoinPopupOpen}
-        poolsPrices={getPoolsPrices}
+        poolsPrices={getDexTokensPrices}
         isBaseTokenSelecting={isBaseTokenSelecting}
         setBaseTokenAddressFromSeveral={setBaseTokenAddressFromSeveral}
         setQuoteTokenAddressFromSeveral={setQuoteTokenAddressFromSeveral}
@@ -458,8 +491,8 @@ export default compose(
     fetchPolicy: 'cache-and-network',
   }),
   queryRendererHoc({
-    query: getPoolsPrices,
-    name: 'getPoolsPricesQuery',
+    query: getDexTokensPrices,
+    name: 'getDexTokensPricesQuery',
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000,
