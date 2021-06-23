@@ -199,12 +199,13 @@ const SwapsPage = ({
       ? +poolAmountTokenA / +baseAmount
       : +poolAmountTokenB / +quoteAmount
 
+  // price impact due to curve
   const rawSlippage = 100 / (poolsAmountDiff + 1)
 
-  const calculatedFees =
+  const sumFeesPercentages =
     REBALANCE_CONFIG.POOL_FEE + slippageTolerance + rawSlippage
 
-  const totalWithFees = +quoteAmount - calculatedFees
+  const totalWithFees = +quoteAmount - (+quoteAmount / 100) * sumFeesPercentages
 
   return (
     <RowContainer direction={'column'} height={'100%'}>
@@ -292,7 +293,6 @@ const SwapsPage = ({
             </RowContainer>
             <RowContainer margin={'1rem 0 2rem 0'}>
               <InputWithSelectorForSwaps
-                selectPool={() => selectPool}
                 theme={theme}
                 value={quoteAmount}
                 onChange={setQuoteAmountWithBase}
@@ -340,9 +340,11 @@ const SwapsPage = ({
                 textTransform={'none'}
                 margin={'1rem 0 0 0'}
                 transition={'all .4s ease-out'}
-                onClick={() => {}}
+                onClick={() => {
+                  // swap func here
+                }}
               >
-                {'Swap'}
+                Swap
               </BtnCustom>
             </RowContainer>
           </BlockTemplate>
@@ -353,42 +355,43 @@ const SwapsPage = ({
               width={'45rem'}
               height={'12rem'}
             >
-              {baseAmount && quoteAmount && (
-                <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
-                  <Text color={'#93A0B2'}>Minimum received</Text>
-                  <Row style={{ flexWrap: 'nowrap' }}>
-                    <Text
-                      style={{ padding: '0 0.5rem 0 0.5rem' }}
-                      fontFamly={'Avenir Next Bold'}
-                      color={'#A5E898'}
-                    >
-                      {totalWithFees.toFixed(2)}{' '}
-                    </Text>
-                    <Text fontFamly={'Avenir Next Bold'}>{quoteSymbol}</Text>
-                  </Row>
-                </RowContainer>
-              )}
-
-              <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
-                <Text color={'#93A0B2'}>Price Impact</Text>
-                <Row style={{ flexWrap: 'nowrap' }}>
-                  <Text
-                    style={{ padding: '0 0.5rem 0 0.5rem' }}
-                    fontFamly={'Avenir Next Bold'}
-                    color={'#A5E898'}
-                  >
-                    0.034%
-                  </Text>
-                </Row>
-              </RowContainer>
+              {baseAmount && quoteAmount ? (
+                <>
+                  <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
+                    <Text color={'#93A0B2'}>Minimum received</Text>
+                    <Row style={{ flexWrap: 'nowrap' }}>
+                      <Text
+                        style={{ padding: '0 0.5rem 0 0.5rem' }}
+                        fontFamily={'Avenir Next Bold'}
+                        color={'#A5E898'}
+                      >
+                        {totalWithFees.toFixed(2)}{' '}
+                      </Text>
+                      <Text fontFamily={'Avenir Next Bold'}>{quoteSymbol}</Text>
+                    </Row>
+                  </RowContainer>
+                  <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
+                    <Text color={'#93A0B2'}>Price Impact</Text>
+                    <Row style={{ flexWrap: 'nowrap' }}>
+                      <Text
+                        style={{ padding: '0 0.5rem 0 0.5rem' }}
+                        fontFamily={'Avenir Next Bold'}
+                        color={'#A5E898'}
+                      >
+                        {rawSlippage}%
+                      </Text>
+                    </Row>
+                  </RowContainer>{' '}
+                </>
+              ) : null}
               <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
                 <Text color={'#93A0B2'}>Liquidity provider fee</Text>
                 <Row style={{ flexWrap: 'nowrap' }}>
                   <Text
                     style={{ padding: '0 0.5rem 0 0.5rem' }}
-                    fontFamly={'Avenir Next Bold'}
+                    fontFamily={'Avenir Next Bold'}
                   >
-                    0.06 SOL
+                    {REBALANCE_CONFIG.POOL_FEE}%
                   </Text>
                 </Row>
               </RowContainer>

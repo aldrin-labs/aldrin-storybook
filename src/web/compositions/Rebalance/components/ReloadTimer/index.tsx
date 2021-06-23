@@ -11,7 +11,8 @@ export const TimerButton = styled.div`
   background: #383b45;
   border-radius: 0.8rem;
   cursor: pointer;
-  margin-right: ${(props) => props.marginRight || '3rem'};
+  margin-right: ${(props: { marginRight: string }) =>
+    props.marginRight || '3rem'};
 `
 
 export const ReloadTimer = ({
