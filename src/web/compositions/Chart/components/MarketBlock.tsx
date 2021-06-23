@@ -15,6 +15,7 @@ import ThinkingFace from '@icons/thinkingFace.png'
 import Warning from '@icons/warningPairSel.png'
 import CCAILogo from '@icons/auth0Logo.svg'
 import BlueTwitterIcon from '@icons/blueTwitter.svg'
+import AnalyticsIcon from '@icons/analytics.svg'
 import SvgIcon from '@sb/components/SvgIcon'
 import { TokenInfo, TokenListProvider } from '@solana/spl-token-registry'
 
@@ -118,7 +119,7 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
     return null
   }
 
-  const [base, quote] = pair.split('_');
+  const [base, quote] = pair.split('_')
 
   const baseTokenInfo = tokenMap.get(base)
 
@@ -198,21 +199,26 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
           quantityPrecision={quantityPrecision}
           pricePrecision={pricePrecision}
         />
-        <LinkToSolanaExp marketAddress={marketAddress} />
-        <DarkTooltip title={'Show analytics for this market.'}>
-          <LinkToAnalytics to={`/analytics/${pair}`}>📈</LinkToAnalytics>
-        </DarkTooltip>
-        {baseTokenInfo?.extensions?.twitter &&
-        <DarkTooltip title={'Twitter profile of base token.'}>
-          <LinkToTwitter href={baseTokenInfo?.extensions?.twitter}>
-            <SvgIcon 
-              width={'2.75rem'}
-              height={'2.75rem'}
-              src={BlueTwitterIcon}
-            />
-          </LinkToTwitter>
-        </DarkTooltip>
-        }
+        <Row align={'baseline'}>
+          {' '}
+          <LinkToSolanaExp marketAddress={marketAddress} />
+          <DarkTooltip title={'Show analytics for this market.'}>
+            <LinkToAnalytics to={`/analytics/${pair}`}>
+              <SvgIcon src={AnalyticsIcon} width={'2.3rem'} height={'2.3rem'} />
+            </LinkToAnalytics>
+          </DarkTooltip>
+          {baseTokenInfo?.extensions?.twitter && (
+            <DarkTooltip title={'Twitter profile of base token.'}>
+              <LinkToTwitter href={baseTokenInfo?.extensions?.twitter}>
+                <SvgIcon
+                  width={'2.5rem'}
+                  height={'2.5rem'}
+                  src={BlueTwitterIcon}
+                />
+              </LinkToTwitter>
+            </DarkTooltip>
+          )}
+        </Row>
       </Row>
       <Row>
         <Row align={'flex-start'} direction="column">
