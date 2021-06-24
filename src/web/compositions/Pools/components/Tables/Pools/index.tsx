@@ -29,7 +29,7 @@ import { Theme } from '@material-ui/core'
 import {
   FeesEarned,
   PoolInfo,
-  PoolsPrices,
+  DexTokensPrices,
 } from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
@@ -42,7 +42,7 @@ import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 const AllPoolsTable = ({
   theme,
-  poolsPrices,
+  dexTokensPrices,
   getPoolsInfoQuery,
   getFeesEarnedByPoolQuery,
   selectPool,
@@ -50,7 +50,7 @@ const AllPoolsTable = ({
   setIsAddLiquidityPopupOpen,
 }: {
   theme: Theme
-  poolsPrices: PoolsPrices[]
+  dexTokensPrices: DexTokensPrices[]
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
   getFeesEarnedByPoolQuery: { getFeesEarnedByPool: FeesEarned[] }
   selectPool: (pool: PoolInfo) => void
@@ -141,12 +141,12 @@ const AllPoolsTable = ({
             {filteredData
               .sort((poolA: PoolInfo, poolB: PoolInfo) => {
                 const [poolABaseTokenPrice, poolBBaseTokenPrice] = [
-                  poolsPrices.find(
+                  dexTokensPrices.find(
                     (tokenInfo) =>
                       tokenInfo.symbol ===
                       getTokenNameByMintAddress(poolA.tokenA)
                   )?.price || 10,
-                  poolsPrices.find(
+                  dexTokensPrices.find(
                     (tokenInfo) =>
                       tokenInfo.symbol ===
                       getTokenNameByMintAddress(poolB.tokenA)
@@ -154,12 +154,12 @@ const AllPoolsTable = ({
                 ]
 
                 const [poolAQuoteTokenPrice, poolBQuoteTokenPrice] = [
-                  poolsPrices.find(
+                  dexTokensPrices.find(
                     (tokenInfo) =>
                       tokenInfo.symbol ===
                       getTokenNameByMintAddress(poolA.tokenB)
                   )?.price || 10,
-                  poolsPrices.find(
+                  dexTokensPrices.find(
                     (tokenInfo) =>
                       tokenInfo.symbol ===
                       getTokenNameByMintAddress(poolB.tokenB)
@@ -181,12 +181,12 @@ const AllPoolsTable = ({
                 const quoteSymbol = getTokenNameByMintAddress(el.tokenB)
 
                 const baseTokenPrice =
-                  poolsPrices.find(
+                  dexTokensPrices.find(
                     (tokenInfo) => tokenInfo.symbol === baseSymbol
                   )?.price || 10
 
                 const quoteTokenPrice =
-                  poolsPrices.find(
+                  dexTokensPrices.find(
                     (tokenInfo) => tokenInfo.symbol === quoteSymbol
                   )?.price || 10
 

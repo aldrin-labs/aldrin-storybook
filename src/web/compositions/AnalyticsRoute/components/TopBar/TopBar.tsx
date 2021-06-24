@@ -31,7 +31,7 @@ import {
 import PriceBlock from './tokenPriceBlock'
 import MarketCap from './tokenMarketCap'
 import { getCCAICirculationSupply } from '../CirculationSupply'
-import { PoolsPrices } from '@sb/compositions/Pools/index.types'
+import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 
 export const ccaiData = {
   totalySupply: 50000000,
@@ -44,7 +44,7 @@ const TopBar = ({
   getDexTokensPricesQuery,
 }: {
   theme: Theme
-  getDexTokensPricesQuery: { getDexTokensPrices: PoolsPrices[] }
+  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }) => {
   const [CCAICirculatingSupply, setCirculatingSupply] = useState(0)
   const [showGreen, updateToGreen] = useState(false)

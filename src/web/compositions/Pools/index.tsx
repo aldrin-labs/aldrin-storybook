@@ -15,7 +15,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
 import { getAllTokensData } from '../Rebalance/utils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { PoolInfo, PoolsPrices } from './index.types'
+import { PoolInfo, DexTokensPrices } from './index.types'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 
@@ -24,7 +24,7 @@ const Pools = ({
   getDexTokensPricesQuery,
 }: {
   theme: Theme
-  getDexTokensPricesQuery: { getDexTokensPrices: PoolsPrices[] }
+  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }) => {
   const [
     refreshAllTokensDataCounter,
@@ -87,7 +87,7 @@ const Pools = ({
           wallet={wallet}
           selectedPool={selectedPool}
           selectPool={selectPool}
-          poolsPrices={getDexTokensPrices}
+          dexTokensPrices={getDexTokensPrices}
           setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
           setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
         />
@@ -96,14 +96,14 @@ const Pools = ({
       <AllPoolsTable
         theme={theme}
         selectPool={selectPool}
-        poolsPrices={getDexTokensPrices}
+        dexTokensPrices={getDexTokensPrices}
         setIsCreatePoolPopupOpen={setIsCreatePoolPopupOpen}
         setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
       />
 
       <CreatePoolPopup
         theme={theme}
-        poolsPrices={getDexTokensPrices}
+        dexTokensPrices={getDexTokensPrices}
         close={() => setIsCreatePoolPopupOpen(false)}
         open={isCreatePoolPopupOpen}
         allTokensData={allTokensData}
@@ -113,7 +113,7 @@ const Pools = ({
       {selectedPool && (
         <AddLiquidityPopup
           theme={theme}
-          poolsPrices={getDexTokensPrices}
+          dexTokensPrices={getDexTokensPrices}
           selectedPool={selectedPool}
           allTokensData={allTokensData}
           close={() => setIsAddLiquidityPopupOpen(false)}
@@ -126,7 +126,7 @@ const Pools = ({
         <WithdrawalPopup
           theme={theme}
           selectedPool={selectedPool}
-          poolsPrices={getDexTokensPrices}
+          dexTokensPrices={getDexTokensPrices}
           allTokensData={allTokensData}
           close={() => setIsWithdrawalPopupOpen(false)}
           open={isWithdrawalPopupOpen}

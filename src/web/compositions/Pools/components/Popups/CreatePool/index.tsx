@@ -23,7 +23,7 @@ import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
-import { PoolInfo, PoolsPrices } from '@sb/compositions/Pools/index.types'
+import { PoolInfo, DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import { notify } from '@sb/dexUtils/notifications'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
@@ -38,7 +38,7 @@ export const CreatePoolPopup = ({
   theme,
   open,
   allTokensData,
-  poolsPrices,
+  dexTokensPrices,
   getPoolsInfoQuery,
   close,
   refreshAllTokensData,
@@ -46,7 +46,7 @@ export const CreatePoolPopup = ({
   theme: Theme
   open: boolean
   allTokensData: TokenInfo[]
-  poolsPrices: PoolsPrices[]
+  dexTokensPrices: DexTokensPrices[]
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
   close: () => void
   refreshAllTokensData: () => void
@@ -151,14 +151,14 @@ export const CreatePoolPopup = ({
       : false
 
   const baseTokenPrice =
-    poolsPrices.find(
+    dexTokensPrices.find(
       (tokenInfo) =>
         tokenInfo.symbol === baseTokenMintAddress ||
         tokenInfo.symbol === baseSymbol
     )?.price || 0
 
   const quoteTokenPrice =
-    poolsPrices.find(
+    dexTokensPrices.find(
       (tokenInfo) =>
         tokenInfo.symbol === quoteTokenMintAddress ||
         tokenInfo.symbol === quoteSymbol
@@ -398,7 +398,7 @@ export const CreatePoolPopup = ({
         mints={filteredMints}
         allTokensData={allTokensData}
         open={isSelectCoinPopupOpen}
-        poolsPrices={poolsPrices}
+        dexTokensPrices={dexTokensPrices}
         isBaseTokenSelecting={isBaseTokenSelecting}
         setBaseTokenAddressFromSeveral={setBaseTokenAddressFromSeveral}
         setQuoteTokenAddressFromSeveral={setQuoteTokenAddressFromSeveral}
