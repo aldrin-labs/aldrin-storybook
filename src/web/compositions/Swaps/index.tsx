@@ -221,8 +221,11 @@ const SwapsPage = ({
 
   const totalWithFees = +quoteAmount - (+quoteAmount / 100) * sumFeesPercentages
 
-  // const InsufficientBalance
-  // console.log('poolAmountTokenA', poolAmountTokenA)
+  const InsufficientTokenABalance = baseAmount > +maxBaseAmount
+
+  const InsufficientTokenBBalance = quoteAmount > +maxQuoteAmount
+  console.log('selectedTokens', selectedTokens)
+
   return (
     <RowContainer direction={'column'} height={'100%'}>
       {!publicKey ? (
@@ -372,12 +375,22 @@ const SwapsPage = ({
                 textTransform={'none'}
                 margin={'1rem 0 0 0'}
                 transition={'all .4s ease-out'}
-                disabled={}
+                disabled={
+                  InsufficientTokenABalance ||
+                  InsufficientTokenBBalance ||
+                  !selectedTokens
+                }
                 onClick={() => {
                   // swap func here
                 }}
               >
-                Swap
+                {InsufficientTokenABalance
+                  ? `Insufficient ${baseSymbol} Balance`
+                  : InsufficientTokenBBalance
+                  ? `Insufficient ${quoteSymbol} Balance`
+                  : !selectedTokens
+                  ? 'Insufficient liquidiy'
+                  : 'Swap'}
               </BtnCustom>
             </RowContainer>
           </BlockTemplate>
