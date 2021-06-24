@@ -10,6 +10,7 @@ export function SolletExtensionAdapter(_, network) {
   return {
     on: () => {},
     connect: () => {
+      window.open('https://chrome.google.com/webstore/detail/sollet/fhmfendgdocmcbmfikdcogofphimnkno', '_blank');
       notify({
         message: 'Sollet Extension Error',
         description: 'Please install the Sollet Extension for Chrome',
