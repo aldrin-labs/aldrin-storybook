@@ -119,6 +119,23 @@ const RedButton = styled((props) => (
 ))`
   outline: none;
 `
+const TokenLink = styled.a`
+  font-family: Avenir Next Demi;
+  text-transform: capitalize;
+  text-decoration: none;
+  font-size: 1.4rem;
+  background: linear-gradient(
+    106.89deg,
+    rgba(94, 181, 168, 0.8) 17.87%,
+    rgba(56, 98, 193, 0.8) 82.13%
+  );
+  display: flex;
+  align-items: center;
+  padding: 0 2rem;
+  height: 100%;
+  border-radius: 0.6rem;
+  color: #f8faff;
+`
 
 export const CardsPanel = ({ theme }) => {
   const location = useLocation()
@@ -194,7 +211,7 @@ export const CardsPanel = ({ theme }) => {
             >
               Trading
             </NavLinkButton>
-            {!MASTER_BUILD && (
+            {/* {!MASTER_BUILD && (
               <NavLinkButton
                 theme={theme}
                 pathname={location.pathname}
@@ -204,7 +221,7 @@ export const CardsPanel = ({ theme }) => {
               >
                 Rebalance
               </NavLinkButton>
-            )}
+            )} */}
             <NavLinkButton
               theme={theme}
               data-tut="analytics"
@@ -245,7 +262,13 @@ export const CardsPanel = ({ theme }) => {
                 Swaps
               </NavLinkButton>
             )}
-
+            <TokenLink
+              href="https://ccai.cryptocurrencies.ai/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Token
+            </TokenLink>
             {/* <IdoBtn>CCAI IDO</IdoBtn> */}
           </div>
         </CustomCard>

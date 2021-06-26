@@ -19,7 +19,7 @@ export type PoolInfo = {
   supply: number,
 };
 
-export type PoolsPrices = {
+export type DexTokensPrices = {
   symbol: string
   price: number
 }

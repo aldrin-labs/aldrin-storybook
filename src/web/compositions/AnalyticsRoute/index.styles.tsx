@@ -45,7 +45,7 @@ export const ReusableTitle = styled(
   margin: ${(props) => props.margin || '0'};
 `
 
-export const SerumTitleBlockContainer = styled(({ theme, ...props }) => (
+export const TokenTitleBlockContainer = styled(({ theme, ...props }) => (
   <Row {...props} />
 ))`
   display: flex;
@@ -187,7 +187,7 @@ export const WhiteTitle = styled((props) => <Title {...props} />)`
   }
 `
 
-export const SerumWhiteTitle = styled((props) => <WhiteTitle {...props} />)`
+export const TokenWhiteTitle = styled((props) => <WhiteTitle {...props} />)`
   @media (min-width: 1440px) and (max-width: 1560px) {
     font-size: 1.6rem;
   }
@@ -206,7 +206,7 @@ export const Dot = styled.div`
   margin-right: 0.7rem;
 `
 
-export const GreenTitle = styled((props) => <SerumWhiteTitle {...props} />)`
+export const GreenTitle = styled((props) => <TokenWhiteTitle {...props} />)`
   color: ${(props) => props.theme.palette.green.analytics};
   padding-left: 1rem;
 `

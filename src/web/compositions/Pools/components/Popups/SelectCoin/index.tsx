@@ -17,7 +17,7 @@ import {
 import { StyledPaper } from '../index.styles'
 import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { PoolsPrices } from '@sb/compositions/Pools/index.types'
+import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
@@ -43,7 +43,7 @@ export const SelectCoinPopup = ({
   open,
   mints,
   allTokensData,
-  poolsPrices,
+  dexTokensPrices,
   isBaseTokenSelecting,
   close,
   selectTokenMintAddress,
@@ -55,7 +55,7 @@ export const SelectCoinPopup = ({
   mints: string[]
   isBaseTokenSelecting: boolean
   allTokensData: TokenInfo[]
-  poolsPrices: PoolsPrices[]
+  dexTokensPrices: DexTokensPrices[]
   close: () => void
   selectTokenMintAddress: (address: string) => void
   setBaseTokenAddressFromSeveral: (address: string) => void

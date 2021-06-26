@@ -6,6 +6,8 @@ import {
   MathWalletAdapter,
   CcaiWalletAdapter,
   CcaiExtensionAdapter,
+  PhantomWalletAdapter,
+  LedgerWalletAdapter,
 } from '@sb/dexUtils/adapters'
 import { notify } from './notifications'
 import {
@@ -42,12 +44,12 @@ export const WALLET_PROVIDERS = [
     adapter: Wallet,
     icon: CCAI,
   },
-  // {
-  //   name: 'Wallet™ Extension',
-  //   url: `${CCAIProviderURL}/extension`,
-  //   adapter: CcaiExtensionAdapter,
-  //   icon: CCAI,
-  // },
+  {
+    name: 'Wallet™ Extension',
+    url: `${CCAIProviderURL}/extension`,
+    adapter: CcaiExtensionAdapter,
+    icon: CCAI,
+  },
   {
     name: 'Sollet.io',
     url: 'https://www.sollet.io',
@@ -60,12 +62,24 @@ export const WALLET_PROVIDERS = [
     adapter: SolletExtensionAdapter,
     icon: Sollet,
   },
-  // {
-  //   name: 'MathWallet',
-  //   url: 'https://www.mathwallet.org',
-  //   adapter: MathWalletAdapter,
-  //   icon: Mathwallet,
-  // },
+  {
+    name: 'Ledger',
+    url: 'https://www.ledger.com',
+    icon: `https://cdn.jsdelivr.net/gh/solana-labs/oyster@main/assets/wallets/ledger.svg`,
+    adapter: LedgerWalletAdapter,
+  },
+  {
+    name: 'Phantom',
+    url: 'https://www.phantom.app',
+    icon: `https://www.phantom.app/img/logo.png`,
+    adapter: PhantomWalletAdapter,
+  },
+  {
+    name: 'MathWallet',
+    url: 'https://www.mathwallet.org',
+    adapter: MathWalletAdapter,
+    icon: Mathwallet,
+  },
   {
     name: 'Solong',
     url: 'https://solongwallet.com',
@@ -87,23 +101,6 @@ export const MAINNET_URL = 'https://solana-api.projectserum.com'
 export const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey(
   'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
 )
-
-const getWalletByProviderUrl = (providerUrl: string) => {
-  switch (providerUrl) {
-    case 'https://solongwallet.com': {
-      return SolongWallet
-    }
-    case 'https://www.mathwallet.org': {
-      return MathWallet
-    }
-    case CCAIProviderURL: {
-      return CcaiWallet
-    }
-    default: {
-      return Wallet
-    }
-  }
-}
 
 const WalletContext = React.createContext(null)
 

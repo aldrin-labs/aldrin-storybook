@@ -448,7 +448,6 @@ export function useOpenOrdersAccounts(fast = false) {
   const { connected, wallet } = useWallet()
   const connection = useConnection()
   async function getOpenOrdersAccounts() {
-    console.log('get open orders accounts')
     if (!connected) {
       return null
     }
@@ -456,22 +455,10 @@ export function useOpenOrdersAccounts(fast = false) {
       return null
     }
 
-    const start = +Date.now()
-    await console.log(start, 'start of getting open orders')
     const accounts = await market.findOpenOrdersAccountsForOwner(
       connection,
       wallet.publicKey
     )
-    console.log(
-      'accounts',
-      market.baseSplSizeToNumber(accounts[0].baseTokenTotal),
-      market.baseSplSizeToNumber(accounts[0].baseTokenFree),
-      market.quoteSplSizeToNumber(accounts[0].quoteTokenTotal),
-      market.quoteSplSizeToNumber(accounts[0].quoteTokenFree)
-    )
-    const end = +Date.now()
-    await console.log(end, 'end of getting open orders')
-    await console.log('Latency: ', (end - start) / 1000)
 
     return accounts
   }

@@ -30,7 +30,7 @@ import { Theme } from '@material-ui/core'
 import {
   PoolInfo,
   FeesEarned,
-  PoolsPrices,
+  DexTokensPrices,
 } from '@sb/compositions/Pools/index.types'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
@@ -49,7 +49,7 @@ const UserLiquitidyTable = ({
   wallet,
   allTokensData,
   getPoolsInfoQuery: { getPoolsInfo },
-  poolsPrices,
+  dexTokensPrices,
   getFeesEarnedByAccountQuery,
   selectPool,
   setIsWithdrawalPopupOpen,
@@ -59,7 +59,7 @@ const UserLiquitidyTable = ({
   wallet: WalletAdapter
   allTokensData: TokenInfo[]
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
-  poolsPrices: PoolsPrices[]
+  dexTokensPrices: DexTokensPrices[]
   getFeesEarnedByAccountQuery: { getFeesEarnedByAccount: FeesEarned[] }
   selectPool: (pool: PoolInfo) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
@@ -101,7 +101,7 @@ const UserLiquitidyTable = ({
                 $
                 {formatNumberToUSFormat(
                   stripDigitPlaces(
-                    getTotalUserLiquidity({ usersPools, poolsPrices }),
+                    getTotalUserLiquidity({ usersPools, dexTokensPrices }),
                     2
                   )
                 )}
@@ -156,12 +156,12 @@ const UserLiquitidyTable = ({
             {usersPools
               .sort((poolA: PoolInfo, poolB: PoolInfo) => {
                 const [poolABaseTokenPrice, poolBBaseTokenPrice] = [
-                  poolsPrices.find(
+                  dexTokensPrices.find(
                     (tokenInfo) =>
                       tokenInfo.symbol ===
                       getTokenNameByMintAddress(poolA.tokenA)
                   )?.price || 10,
-                  poolsPrices.find(
+                  dexTokensPrices.find(
                     (tokenInfo) =>
                       tokenInfo.symbol ===
                       getTokenNameByMintAddress(poolB.tokenA)
@@ -169,12 +169,12 @@ const UserLiquitidyTable = ({
                 ]
 
                 const [poolAQuoteTokenPrice, poolBQuoteTokenPrice] = [
-                  poolsPrices.find(
+                  dexTokensPrices.find(
                     (tokenInfo) =>
                       tokenInfo.symbol ===
                       getTokenNameByMintAddress(poolA.tokenB)
                   )?.price || 10,
-                  poolsPrices.find(
+                  dexTokensPrices.find(
                     (tokenInfo) =>
                       tokenInfo.symbol ===
                       getTokenNameByMintAddress(poolB.tokenB)
@@ -196,12 +196,12 @@ const UserLiquitidyTable = ({
                 const quoteSymbol = getTokenNameByMintAddress(el.tokenB)
 
                 const baseTokenPrice =
-                  poolsPrices.find(
+                  dexTokensPrices.find(
                     (tokenInfo) => tokenInfo.symbol === baseSymbol
                   )?.price || 10
 
                 const quoteTokenPrice =
-                  poolsPrices.find(
+                  dexTokensPrices.find(
                     (tokenInfo) => tokenInfo.symbol === quoteSymbol
                   )?.price || 10
 
