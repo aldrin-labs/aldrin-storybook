@@ -90,15 +90,18 @@ export const SingleChartWithButtons = ({
   const { wallet } = useWallet()
   const publicKey = wallet?.publicKey?.toBase58()
 
-  const isWithoutIndexChart = 
-  (!marketsWithUSDCCharts.includes(currencyPair.split('_')[0]) && currencyPair.split('_')[1] === 'USDC') 
-  || marketsWithoutIndexChart.includes(currencyPair)
+  const isWithoutIndexChart =
+    (!marketsWithUSDCCharts.includes(currencyPair.split('_')[0]) &&
+      currencyPair.split('_')[1] === 'USDC') ||
+    marketsWithoutIndexChart.includes(currencyPair)
 
-  const [chartExchange, updateChartExchange] = useState(isWithoutIndexChart ? 'serum' : 'index')
+  const [chartExchange, updateChartExchange] = useState(
+    isWithoutIndexChart ? 'serum' : 'index'
+  )
 
-  const isCustomMarkets = customMarkets.find(
-    (el) => el.name.split('/').join('_') === currencyPair
-  ) || marketsWithoutBinanceChart.includes(currencyPair)
+  const isCustomMarkets =
+    customMarkets.find((el) => el.name.split('/').join('_') === currencyPair) ||
+    marketsWithoutBinanceChart.includes(currencyPair)
 
   useEffect(() => {
     updateChartExchange(isWithoutIndexChart ? 'serum' : 'index')
@@ -135,7 +138,7 @@ export const SingleChartWithButtons = ({
             fontSize: '1.3rem',
             lineHeight: '1rem',
             // paddingLeft: '1rem',
-            padding: '1rem'
+            padding: '1rem',
           }}
         >
           Chart
@@ -167,7 +170,9 @@ export const SingleChartWithButtons = ({
         key={`${themeMode}${base}/${quote}`}
         themeMode={themeMode}
         currencyPair={currencyPair}
-        additionalUrl={`/?symbol=${base}/${quote}&marketType=${String(marketType)}&exchange=serum&publicKey=${publicKey}&api_version=${2.1}`}
+        additionalUrl={`/?symbol=${base}/${quote}&marketType=${String(
+          marketType
+        )}&exchange=serum&publicKey=${publicKey}&api_version=${2.1}`}
       />
     </CustomCard>
   )

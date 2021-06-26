@@ -39,6 +39,8 @@ import { withPublicKey } from '@core/hoc/withPublicKey'
 import { REBALANCE_CONFIG } from '../Rebalance/Rebalance.config'
 import { filterDataBySymbolForDifferentDeviders } from '../Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 import Pools from '../Pools/components/Tables/Pools'
+import { swap } from '@sb/dexUtils/pools'
+import { PublicKey } from '@solana/web3.js'
 
 const SwapsPage = ({
   theme,
@@ -224,8 +226,12 @@ const SwapsPage = ({
   const InsufficientTokenABalance = baseAmount > +maxBaseAmount
 
   const InsufficientTokenBBalance = quoteAmount > +maxQuoteAmount
-  console.log('selectedTokens', selectedTokens)
 
+  const InsufficientLiquidiy =
+    baseSymbol !== 'Select token' &&
+    quoteSymbol !== 'Select token' &&
+    !selectedTokens
+  // console.log('userTokenAccountA', userTokenAccountA, userTokenAccountB)
   return (
     <RowContainer direction={'column'} height={'100%'}>
       {!publicKey ? (
@@ -381,68 +387,78 @@ const SwapsPage = ({
                   !selectedTokens
                 }
                 onClick={() => {
-                  // swap func here
+                  if (!selectedTokens) return
+
+                  swap({
+                    wallet,
+                    connection,
+                    userTokenAccountA: new PublicKey(userTokenAccountA),
+                    userTokenAccountB: new PublicKey(userTokenAccountB),
+                    tokenSwapPublicKey: new PublicKey(selectedTokens.swapToken),
+                    swapAmountIn: +baseAmount,
+                    swapAmountOut: +quoteAmount,
+                    baseSwapToken: baseTokenSwap,
+                  })
                 }}
               >
                 {InsufficientTokenABalance
                   ? `Insufficient ${baseSymbol} Balance`
                   : InsufficientTokenBBalance
                   ? `Insufficient ${quoteSymbol} Balance`
-                  : !selectedTokens
+                  : InsufficientLiquidiy
                   ? 'Insufficient liquidiy'
                   : 'Swap'}
               </BtnCustom>
             </RowContainer>
           </BlockTemplate>
-          {baseTokenMintAddress && quoteTokenMintAddress && (
-            <Card
-              style={{ padding: '2rem' }}
-              theme={theme}
-              width={'45rem'}
-              height={'12rem'}
-            >
-              {baseAmount && quoteAmount ? (
-                <>
-                  <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
-                    <Text color={'#93A0B2'}>Minimum received</Text>
-                    <Row style={{ flexWrap: 'nowrap' }}>
-                      <Text
-                        style={{ padding: '0 0.5rem 0 0.5rem' }}
-                        fontFamily={'Avenir Next Bold'}
-                        color={'#A5E898'}
-                      >
-                        {totalWithFees.toFixed(2)}{' '}
-                      </Text>
-                      <Text fontFamily={'Avenir Next Bold'}>{quoteSymbol}</Text>
-                    </Row>
-                  </RowContainer>
-                  <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
-                    <Text color={'#93A0B2'}>Price Impact</Text>
-                    <Row style={{ flexWrap: 'nowrap' }}>
-                      <Text
-                        style={{ padding: '0 0.5rem 0 0.5rem' }}
-                        fontFamily={'Avenir Next Bold'}
-                        color={'#A5E898'}
-                      >
-                        {stripDigitPlaces(rawSlippage, 2)}%
-                      </Text>
-                    </Row>
-                  </RowContainer>{' '}
-                </>
-              ) : null}
-              <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
-                <Text color={'#93A0B2'}>Liquidity provider fee</Text>
-                <Row style={{ flexWrap: 'nowrap' }}>
-                  <Text
-                    style={{ padding: '0 0.5rem 0 0.5rem' }}
-                    fontFamily={'Avenir Next Bold'}
-                  >
-                    {REBALANCE_CONFIG.POOL_FEE}%
-                  </Text>
-                </Row>
-              </RowContainer>
-            </Card>
-          )}
+          {baseTokenMintAddress &&
+            quoteTokenMintAddress &&
+            baseAmount &&
+            quoteAmount && (
+              <Card
+                style={{ padding: '2rem' }}
+                theme={theme}
+                width={'45rem'}
+                height={'12rem'}
+              >
+                <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
+                  <Text color={'#93A0B2'}>Minimum received</Text>
+                  <Row style={{ flexWrap: 'nowrap' }}>
+                    <Text
+                      style={{ padding: '0 0.5rem 0 0.5rem' }}
+                      fontFamily={'Avenir Next Bold'}
+                      color={'#A5E898'}
+                    >
+                      {totalWithFees.toFixed(5)}{' '}
+                    </Text>
+                    <Text fontFamily={'Avenir Next Bold'}>{quoteSymbol}</Text>
+                  </Row>
+                </RowContainer>
+                <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
+                  <Text color={'#93A0B2'}>Price Impact</Text>
+                  <Row style={{ flexWrap: 'nowrap' }}>
+                    <Text
+                      style={{ padding: '0 0.5rem 0 0.5rem' }}
+                      fontFamily={'Avenir Next Bold'}
+                      color={'#A5E898'}
+                    >
+                      {stripDigitPlaces(rawSlippage, 2)}%
+                    </Text>
+                  </Row>
+                </RowContainer>{' '}
+                <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
+                  <Text color={'#93A0B2'}>Liquidity provider fee</Text>
+                  <Row style={{ flexWrap: 'nowrap' }}>
+                    <Text
+                      style={{ padding: '0 0.5rem 0 0.5rem' }}
+                      fontFamily={'Avenir Next Bold'}
+                    >
+                      {REBALANCE_CONFIG.POOL_FEE}%
+                    </Text>
+                  </Row>
+                </RowContainer>
+              </Card>
+            )}
         </>
       )}
 
