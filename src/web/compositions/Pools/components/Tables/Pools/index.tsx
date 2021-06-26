@@ -65,7 +65,10 @@ const AllPoolsTable = ({
   }
 
   const filteredData = getPoolsInfoQuery.getPoolsInfo.filter((el) =>
-    filterDataBySymbolForDifferentDeviders({ searchValue, symbol: el.parsedName })
+    filterDataBySymbolForDifferentDeviders({
+      searchValue,
+      symbol: el.parsedName,
+    })
   )
 
   const feesPerPoolMap = new Map()
