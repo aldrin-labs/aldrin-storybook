@@ -14,6 +14,7 @@ import { InputWithSelectorForSwaps } from './components/Inputs/index'
 import { Card } from './styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { SelectCoinPopup } from '../Pools/components/Popups/SelectCoin'
+import { notify } from '@sb/dexUtils/notifications'
 
 import { TransactionSettingsPopup } from './components/TransactionSettingsPopup'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
@@ -41,6 +42,7 @@ import { filterDataBySymbolForDifferentDeviders } from '../Chart/Inputs/SelectWr
 import Pools from '../Pools/components/Tables/Pools'
 import { swap } from '@sb/dexUtils/pools'
 import { PublicKey } from '@solana/web3.js'
+import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/send-and-confirm-transaction-via-wallet'
 
 const SwapsPage = ({
   theme,
@@ -80,6 +82,9 @@ const SwapsPage = ({
     refreshAllTokensDataCounter,
     setRefreshAllTokensDataCounter,
   ] = useState<number>(0)
+
+  const refreshAllTokensData = () =>
+    setRefreshAllTokensDataCounter(refreshAllTokensDataCounter + 1)
 
   const [selectedPool, selectPool] = useState<PoolInfo | null>(null)
 
@@ -164,7 +169,7 @@ const SwapsPage = ({
   ]
 
   const {
-    address: userTokenAccountA,
+    address: userBaseTokenAccount,
     amount: maxBaseAmount,
     decimals: baseTokenDecimals,
   } = getTokenDataByMint(
@@ -174,7 +179,7 @@ const SwapsPage = ({
   )
 
   const {
-    address: userTokenAccountB,
+    address: userQuoteTokenAccount,
     decimals: quoteTokenDecimals,
     amount: maxQuoteAmount,
   } = getTokenDataByMint(
@@ -200,8 +205,8 @@ const SwapsPage = ({
   // const filteredMints = [...new Set(mints)]
 
   // const isNativeSOLSelected =
-  //   allTokensData[0]?.address === userTokenAccountA ||
-  //   allTokensData[0]?.address === userTokenAccountB
+  //   allTokensData[0]?.address === userBaseTokenAccount ||
+  //   allTokensData[0]?.address === userQuoteTokenAccount
 
   const reverseTokens = async () => {
     await setBaseTokenMintAddress(quoteTokenMintAddress)
@@ -223,15 +228,13 @@ const SwapsPage = ({
 
   const totalWithFees = +quoteAmount - (+quoteAmount / 100) * sumFeesPercentages
 
-  const InsufficientTokenABalance = baseAmount > +maxBaseAmount
-
-  const InsufficientTokenBBalance = quoteAmount > +maxQuoteAmount
+  const isTokenABalanceInsufficient = baseAmount > +maxBaseAmount
 
   const InsufficientLiquidiy =
     baseSymbol !== 'Select token' &&
     quoteSymbol !== 'Select token' &&
     !selectedTokens
-  // console.log('userTokenAccountA', userTokenAccountA, userTokenAccountB)
+
   return (
     <RowContainer direction={'column'} height={'100%'}>
       {!publicKey ? (
@@ -272,6 +275,7 @@ const SwapsPage = ({
                   callback={async () => {
                     await getDexTokensPricesQueryRefetch()
                     await getPoolsInfoQueryRefetch()
+                    await refreshAllTokensData()
                   }}
                 />
                 {baseTokenMintAddress && quoteTokenMintAddress && (
@@ -381,30 +385,80 @@ const SwapsPage = ({
                 textTransform={'none'}
                 margin={'1rem 0 0 0'}
                 transition={'all .4s ease-out'}
-                disabled={
-                  InsufficientTokenABalance ||
-                  InsufficientTokenBBalance ||
-                  !selectedTokens
-                }
-                onClick={() => {
+                disabled={isTokenABalanceInsufficient || !selectedTokens}
+                onClick={async () => {
                   if (!selectedTokens) return
 
-                  swap({
+                  const swapAmountInDecimals =
+                    baseTokenSwap === 'tokenA'
+                      ? baseTokenDecimals
+                      : quoteTokenDecimals
+
+                  const swapAmountOutDecimals =
+                    baseTokenSwap === 'tokenA'
+                      ? quoteTokenDecimals
+                      : baseTokenDecimals
+
+                  const userTokenAccountA =
+                    baseTokenSwap === 'tokenA'
+                      ? userBaseTokenAccount
+                      : userQuoteTokenAccount
+
+                  const userTokenAccountB =
+                    baseTokenSwap === 'tokenA'
+                      ? userQuoteTokenAccount
+                      : userBaseTokenAccount
+
+                  console.log({
                     wallet,
                     connection,
                     userTokenAccountA: new PublicKey(userTokenAccountA),
                     userTokenAccountB: new PublicKey(userTokenAccountB),
                     tokenSwapPublicKey: new PublicKey(selectedTokens.swapToken),
-                    swapAmountIn: +baseAmount,
-                    swapAmountOut: +quoteAmount,
+                    swapAmountIn: +baseAmount * 10 ** swapAmountInDecimals,
+                    swapAmountOut: +totalWithFees * 10 ** swapAmountOutDecimals,
                     baseSwapToken: baseTokenSwap,
                   })
+
+                  const [transaction] = await swap({
+                    wallet,
+                    connection,
+                    userTokenAccountA: new PublicKey(userTokenAccountA),
+                    userTokenAccountB: new PublicKey(userTokenAccountB),
+                    tokenSwapPublicKey: new PublicKey(selectedTokens.swapToken),
+                    swapAmountIn: +baseAmount * 10 ** swapAmountInDecimals,
+                    swapAmountOut: +totalWithFees * 10 ** swapAmountOutDecimals,
+                    baseSwapToken: baseTokenSwap,
+                  })
+
+                  try {
+                    const result = await sendAndConfirmTransactionViaWallet(
+                      wallet,
+                      connection,
+                      transaction
+                    )
+
+                    await notify({
+                      type: result ? 'success' : 'error',
+                      message: result
+                        ? 'Swap executed successfully.'
+                        : 'Swap operation failed. Please, try to increase slippage tolerance.',
+                    })
+                  } catch (e) {
+                    console.error('swap error:', e)
+                    if (e.message.includes('cancelled')) {
+                      await notify({
+                        type: 'error',
+                        message: 'Swap operation cancelled.',
+                      })
+                    }
+                  }
+
+                  await refreshAllTokensData()
                 }}
               >
-                {InsufficientTokenABalance
+                {isTokenABalanceInsufficient
                   ? `Insufficient ${baseSymbol} Balance`
-                  : InsufficientTokenBBalance
-                  ? `Insufficient ${quoteSymbol} Balance`
                   : InsufficientLiquidiy
                   ? 'Insufficient liquidiy'
                   : 'Swap'}
@@ -471,7 +525,7 @@ const SwapsPage = ({
       <SelectCoinPopup
         theme={theme}
         // mints={swapTokens}
-        mints={allTokensData.map((el) => el.mint)} //
+        mints={allTokensData.map((el) => el.mint)}
         allTokensData={allTokensData}
         open={isSelectCoinPopupOpen}
         poolsPrices={getDexTokensPrices}

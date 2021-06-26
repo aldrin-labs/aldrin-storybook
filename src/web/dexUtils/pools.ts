@@ -801,7 +801,6 @@ export async function swap({
     tokenSwapPublicKey,
     TOKEN_SWAP_PROGRAM_ID
   )
-
   const { tokenAccountA, tokenAccountB, mintA, mintB } = tokenSwap
 
   const [
