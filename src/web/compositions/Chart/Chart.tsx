@@ -6,13 +6,14 @@ import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { client } from '@core/graphql/apolloClient'
 import { isEqual } from 'lodash'
+import { MASTER_BUILD } from '@core/utils/config'
+
 import Tour from 'reactour'
 // import { Grid, Hidden } from '@material-ui/core'
 
 import {
   tourConfig,
   FinishBtn,
-  notificationTourConfig,
   WrapperForNotificationTour,
 } from '@sb/components/ReactourOnboarding/ReactourOnboarding'
 // import { CardsPanel } from './components'
@@ -62,6 +63,7 @@ import { withPublicKey } from '@core/hoc/withPublicKey'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { WarningPopup } from './components/WarningPopup'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
+import { DevUrlPopup } from '@sb/components/PopupForDevUrl'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
   // Check if the arrays are the same length
@@ -176,7 +178,7 @@ function ChartPageComponent(props: any) {
   const setCorrectMarketAddress = async () => {
     const pair = !!location.pathname.split('/')[3]
       ? location.pathname.split('/')[3]
-      : 'SRM_USDT'
+      : 'CCAI_USDC'
 
     const userMarkets = getUserCustomMarketsQuery.getUserCustomMarkets.map(
       ({ publicKey, marketId, isPrivate, ...rest }) => ({
@@ -198,20 +200,20 @@ function ChartPageComponent(props: any) {
     const allMarkets = [...props.markets, ...userMarkets, ...updatedMarkets]
 
     const selectedMarketFromUrl = allMarkets.find(
-      (el) => el.name.split('/').join('_') === pair
+      (el) => el.name.replaceAll('_', '/') === pair.replaceAll('_', '/')
     )
 
     if (!selectedMarketFromUrl) {
-      history.push('/chart/spot/SRM_USDT')
+      history.push('/chart/spot/CCAI_USDC')
       return
     }
 
     const isCustomUsersMarket = updatedMarkets?.find(
-      (el) => el.name === pair.replace('_', '/')
+      (el) => el.name.replaceAll('_', '/') === pair.replaceAll('_', '/')
     )
 
     const isPublicUsersMarket = userMarkets?.find(
-      (el) => el.name === pair.replace('_', '/')
+      (el) => el.name.replaceAll('_', '/') === pair.replaceAll('_', '/')
     )
     if (isPublicUsersMarket !== undefined && !isCustomUsersMarket) {
       openWarningPopup(true)
@@ -249,7 +251,7 @@ function ChartPageComponent(props: any) {
   const accentColor = '#09ACC7'
   return (
     <MainContainer fullscreen={false}>
-      {!isTourOpen && (
+      {/* {!isTourOpen && (
         <Tour
           className="my-helper"
           showCloseButton={false}
@@ -269,7 +271,7 @@ function ChartPageComponent(props: any) {
             localStorage.setItem('isNotificationDone', 'true')
           }}
         />
-      )}
+      )} */}
       <Tour
         showCloseButton={false}
         nextButton={<FinishBtn>Next</FinishBtn>}
@@ -335,6 +337,7 @@ function ChartPageComponent(props: any) {
         onClose={() => openWarningPopup(false)}
         theme={theme}
       />
+
       {/* )} */}
       {/* <JoyrideOnboarding
         continuous={true}

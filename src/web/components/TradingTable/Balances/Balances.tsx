@@ -52,8 +52,8 @@ const BalancesTable = (props) => {
         tokenAccounts: accounts,
       })
 
-      notify({
-        message: 'Settling funds sucess',
+      await notify({
+        message: 'Successfully settled funds',
         description: 'No description',
         type: 'success',
       })

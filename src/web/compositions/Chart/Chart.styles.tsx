@@ -270,6 +270,10 @@ export const ChartGridContainer = styled(({ MASTER_BUILD, ...rest }) => (
   border-bottom: ${(props) => props.theme.palette.border.new};
   margin: 0rem;
   background: ${(props) => props.theme.palette.grey.additional};
+
+  @media (max-width: 600px) {
+    display: none;
+  }
 `
 
 export const TablesContainer = styled(Grid)`

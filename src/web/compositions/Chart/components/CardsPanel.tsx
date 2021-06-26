@@ -194,6 +194,17 @@ export const CardsPanel = ({ theme }) => {
             >
               Trading
             </NavLinkButton>
+            {!MASTER_BUILD && (
+              <NavLinkButton
+                theme={theme}
+                pathname={location.pathname}
+                to="/rebalance"
+                page={'rebalance'}
+                component={(props) => <Link to={`/rebalance`} {...props} />}
+              >
+                Rebalance
+              </NavLinkButton>
+            )}
             <NavLinkButton
               theme={theme}
               data-tut="analytics"
@@ -267,6 +278,8 @@ const TopBar = ({ theme }) => {
 
   const isCCAIActive = providerUrl === CCAIProviderURL
   const isSolletActive = providerUrl === 'https://www.sollet.io'
+  const isSolletExtensionActive =
+    providerUrl === 'https://www.sollet.io/extension'
   const isMathWalletActive = providerUrl === 'https://www.mathwallet.org'
   const isSolongWallet = providerUrl === 'https://solongwallet.com'
 
@@ -388,6 +401,8 @@ const TopBar = ({ theme }) => {
                 </>
               ) : isSolletActive ? (
                 'Sollet Wallet'
+              ) : isSolletExtensionActive ? (
+                'Sollet Extension Wallet'
               ) : isMathWalletActive ? (
                 'Math Wallet'
               ) : isSolongWallet ? (
@@ -401,7 +416,7 @@ const TopBar = ({ theme }) => {
               color={'rgb(147, 160, 178)'}
               fontSize="1rem"
             >
-              {wallet.publicKey?.toBase58()}
+              {wallet?.publicKey?.toBase58()}
             </Title>
           </Row>
           <RedButton

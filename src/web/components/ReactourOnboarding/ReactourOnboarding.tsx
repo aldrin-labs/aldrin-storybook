@@ -162,112 +162,112 @@ export const GotItButton = styled.button`
   border-radius: 8px;
 `
 
-export const notificationTourConfig = [
-  {
-    selector: '[data-tut="reactour__style"]',
-    content: ({ close, goTo, inDOM, step }) => {
-      return (
-        <Container>
-          <NotificationBlockInitial>
-            <div>
-              <HeadingBoldText>An important announcement!</HeadingBoldText>
-              <BoldText>
-                Tether is bringing the native USDT stablecoin to the Solana
-                network.
-              </BoldText>
-            </div>
-            <div>
-              <SvgIcon
-                src={exclamationMarkNotification}
-                width="81px"
-                height="auto"
-              />
-            </div>
-          </NotificationBlockInitial>
-          <NotificationBlock style={{ paddingBottom: '2rem' }}>
-            <RegularText>
-              This means that trading of all tokens paired with wUSDT (Wrapped
-              USDT) will be stoped as of Friday, March 26, 2021.
-            </RegularText>
-            <RegularText>
-              At the same time, we will open trading of all tokens paired with
-              native USDT.
-            </RegularText>
-            <WarningText>
-              To continue trading with high liquidity on native USDT pairs you
-              have to cancel all open orders, settle all your funds and convert
-              your wUSDT tokens to native USDT in your wallets.
-            </WarningText>
-            <WarningText>
-              You can send funds from your wUSDT to native USDT easily using
-              Cryptocurrencies.Ai wallet.
-            </WarningText>
-          </NotificationBlock>
-          <NotificationBlock>
-            <RegularText>Native USDT Mint Address:</RegularText>
-            <BoldText>Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB</BoldText>
-          </NotificationBlock>
-          <NotificationBlockFinal>
-            <div>
-              <RegularText>Have any questions? Contact us:</RegularText>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://twitter.com/CCAI_Official"
-                >
-                  <SvgIcon
-                    style={{ fill: 'white' }}
-                    src={twitter}
-                    width="16px"
-                    height="auto"
-                  />
-                </a>
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://t.me/CCAI_Official"
-                >
-                  <SvgIcon src={telegram} width="16px" height="auto" />
-                </a>
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://discord.gg/2EaKvrs"
-                >
-                  <SvgIcon src={discord} width="16px" height="auto" />
-                </a>
-              </div>
-            </div>
-            <div>
-              <GotItButton onClick={() => close()}> Got it! </GotItButton>
-            </div>
-          </NotificationBlockFinal>
-        </Container>
-      )
-    },
-    style: notificationBox(),
-  },
-]
+// export const notificationTourConfig = [
+//   {
+//     selector: '[data-tut="reactour__style"]',
+//     content: ({ close, goTo, inDOM, step }) => {
+//       return (
+//         <Container>
+//           <NotificationBlockInitial>
+//             <div>
+//               <HeadingBoldText>An important announcement!</HeadingBoldText>
+//               <BoldText>
+//                 Tether is bringing the native USDT stablecoin to the Solana
+//                 network.
+//               </BoldText>
+//             </div>
+//             <div>
+//               <SvgIcon
+//                 src={exclamationMarkNotification}
+//                 width="81px"
+//                 height="auto"
+//               />
+//             </div>
+//           </NotificationBlockInitial>
+//           <NotificationBlock style={{ paddingBottom: '2rem' }}>
+//             <RegularText>
+//               This means that trading of all tokens paired with wUSDT (Wrapped
+//               USDT) will be stoped as of Friday, March 26, 2021.
+//             </RegularText>
+//             <RegularText>
+//               At the same time, we will open trading of all tokens paired with
+//               native USDT.
+//             </RegularText>
+//             <WarningText>
+//               To continue trading with high liquidity on native USDT pairs you
+//               have to cancel all open orders, settle all your funds and convert
+//               your wUSDT tokens to native USDT in your wallets.
+//             </WarningText>
+//             <WarningText>
+//               You can send funds from your wUSDT to native USDT easily using
+//               Cryptocurrencies.Ai wallet.
+//             </WarningText>
+//           </NotificationBlock>
+//           <NotificationBlock>
+//             <RegularText>Native USDT Mint Address:</RegularText>
+//             <BoldText>Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB</BoldText>
+//           </NotificationBlock>
+//           <NotificationBlockFinal>
+//             <div>
+//               <RegularText>Have any questions? Contact us:</RegularText>
+//               <div
+//                 style={{
+//                   display: 'flex',
+//                   justifyContent: 'space-between',
+//                   alignItems: 'center',
+//                 }}
+//               >
+//                 <a
+//                   target="_blank"
+//                   rel="noopener noreferrer"
+//                   href="https://twitter.com/CCAI_Official"
+//                 >
+//                   <SvgIcon
+//                     style={{ fill: 'white' }}
+//                     src={twitter}
+//                     width="16px"
+//                     height="auto"
+//                   />
+//                 </a>
+//                 <a
+//                   target="_blank"
+//                   rel="noopener noreferrer"
+//                   href="https://t.me/CCAI_Official"
+//                 >
+//                   <SvgIcon src={telegram} width="16px" height="auto" />
+//                 </a>
+//                 <a
+//                   target="_blank"
+//                   rel="noopener noreferrer"
+//                   href="https://discord.gg/2EaKvrs"
+//                 >
+//                   <SvgIcon src={discord} width="16px" height="auto" />
+//                 </a>
+//               </div>
+//             </div>
+//             <div>
+//               <GotItButton onClick={() => close()}> Got it! </GotItButton>
+//             </div>
+//           </NotificationBlockFinal>
+//         </Container>
+//       )
+//     },
+//     style: notificationBox(),
+//   },
+// ]
 
 export const tourConfig = [
-  {
-    selector: '[data-tut="reactour__style"]',
-    content: () => (
-      <Container>
-        <Block>Welcome aboard!</Block>
-        <BolderText>Welcome to Cryptocurrencies.ai x Serum DEX!</BolderText>
-        <Text>Let us clarify some important points for trading here.</Text>
-      </Container>
-    ),
-    style: Box({ height: '32rem' }),
-  },
+  // {
+  //   selector: '[data-tut="reactour__style"]',
+  //   content: () => (
+  //     <Container>
+  //       <Block>Welcome aboard!</Block>
+  //       <BolderText>Welcome to Cryptocurrencies.ai x Serum DEX!</BolderText>
+  //       <Text>Let us clarify some important points for trading here.</Text>
+  //     </Container>
+  //   ),
+  //   style: Box({ height: '32rem' }),
+  // },
   {
     selector: '[data-tut="analytics"]',
     content: () => (

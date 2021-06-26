@@ -1,5 +1,5 @@
 import { notify } from './notifications'
-import { getDecimalCount, sleep } from './utils'
+import { getDecimalCount, isCCAITradingEnabled, sleep } from './utils'
 import {
   Account,
   Commitment,
@@ -512,6 +512,7 @@ export const validateVariablesForPlacingOrder = ({
   size,
   market,
   wallet,
+  pair
 }) => {
   let formattedMinOrderSize =
     market?.minOrderSize?.toFixed(getDecimalCount(market.minOrderSize)) ||
@@ -520,6 +521,11 @@ export const validateVariablesForPlacingOrder = ({
   let formattedTickSize =
     market?.tickSize?.toFixed(getDecimalCount(market.tickSize)) ||
     market?.tickSize
+
+  if (pair === 'CCAI_USDC' && !isCCAITradingEnabled()) {
+    notify({ message: 'Please, wait until 2pm UTC time before trading CCAI', type: 'error' })
+    return
+  }
 
   if (isNaN(price)) {
     notify({ message: 'Invalid price', type: 'error' })
@@ -586,6 +592,7 @@ export async function placeOrder({
     size,
     market,
     wallet,
+    pair
   })
 
   if (!isValidationSuccessfull) {
@@ -637,10 +644,6 @@ export async function placeOrder({
     connection,
     signers,
     sendingMessage: 'Sending order...',
-    isOrderCreating: true,
-    params,
-    feeAccounts,
-    market,
   })
 }
 

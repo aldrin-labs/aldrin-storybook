@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router'
 import { compose } from 'recompose'
@@ -6,21 +6,15 @@ import { Paper } from '@material-ui/core'
 
 import { notify } from '@sb/dexUtils//notifications'
 import {
-  createAssociatedTokenAccount,
   useBalanceInfo,
   useWallet,
 } from '@sb/dexUtils/wallet'
 
-import Clear from '@material-ui/icons/Clear'
 import {
   StyledDialogContent,
-  ClearButton,
-  StyledDialogTitle,
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
-import { Input } from '@sb/compositions/Addressbook/index'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { PurpleButton } from '@sb/compositions/Addressbook/components/Popups/NewCoinPopup'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import {
@@ -81,7 +75,7 @@ export const WhiteButton = styled((props) => (
   outline: none;
 `
 
-const Text = styled.span`
+export const Text = styled.span`
   font-size: 1.5rem;
   font-family: Avenir Next Demi;
   padding-bottom: ${(props) => props.paddingBottom};
@@ -239,27 +233,6 @@ const TokenNotAddedDialog = ({
               href={providerUrl}
               target="_blank"
               rel="noopener noreferrer"
-              // onClick={async () => {
-              //   if (!isBaseCoinExistsInWallet) {
-              //     const result = await createAssociatedTokenAccount({
-              //       splTokenMintAddress: market?.baseMintAddress,
-              //       wallet,
-              //       connection,
-              //     })
-
-              //     console.log('base result', result)
-              //   }
-
-              //   if (!isQuoteCoinExistsInWallet) {
-              //     const result = await createAssociatedTokenAccount({
-              //       splTokenMintAddress: market?.quoteMintAddress,
-              //       wallet,
-              //       connection,
-              //     })
-
-              //     console.log('quote result', result)
-              //   }
-              // }}
             >
               Go to the Wallet
             </VioletButton>
