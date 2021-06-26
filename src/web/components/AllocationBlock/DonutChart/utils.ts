@@ -39,6 +39,13 @@ export const fixedColors = [
   '#6891EE',
 ]
 
+export const fixedColorsForLegend = [
+  'linear-gradient(90deg, #366CE5 0%, #747CF6 95.65%)',
+  'linear-gradient(90deg, #D3A987 0%, #EE7A96 100%)',
+  'linear-gradient(90deg, #95D2BA 0%, #83E6EC 100%)',
+  'linear-gradient(90deg, #4071B6 0%, #52B7F6 100%)',
+]
+
 export const getRandomBlueColor = () => {
   const randomColor = fixedColors[randomInteger(0, fixedColors.length - 1)]
   const randomNumber = randomInteger(-40, 40)
