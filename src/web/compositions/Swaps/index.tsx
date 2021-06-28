@@ -235,6 +235,8 @@ const SwapsPage = ({
     quoteSymbol !== 'Select token' &&
     !selectedTokens
 
+  const isButtonDisabled = isTokenABalanceInsufficient || !selectedTokens
+
   return (
     <RowContainer direction={'column'} height={'100%'}>
       {!publicKey ? (
@@ -344,7 +346,7 @@ const SwapsPage = ({
               />
             </RowContainer>
 
-            {baseTokenMintAddress && quoteTokenMintAddress && (
+            {selectedTokens && (
               <RowContainer margin={'1rem 2rem'} justify={'space-between'}>
                 <Text color={'#93A0B2'}>Price:</Text>
                 <Text
@@ -380,12 +382,14 @@ const SwapsPage = ({
                 borderColor={'none'}
                 btnColor={'#fff'}
                 backgroundColor={
-                  'linear-gradient(90.62deg, #5EB6A8 0.11%, #3861C1 99.54%)'
+                  isButtonDisabled
+                    ? '#3A475C'
+                    : 'linear-gradient(90.62deg, #5EB6A8 0.11%, #3861C1 99.54%)'
                 }
                 textTransform={'none'}
                 margin={'1rem 0 0 0'}
                 transition={'all .4s ease-out'}
-                disabled={isTokenABalanceInsufficient || !selectedTokens}
+                disabled={isButtonDisabled}
                 onClick={async () => {
                   if (!selectedTokens) return
 
