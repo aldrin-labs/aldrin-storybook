@@ -43,6 +43,7 @@ import Pools from '../Pools/components/Tables/Pools'
 import { swap, swapWithHandleNativeSol } from '@sb/dexUtils/pools'
 import { PublicKey } from '@solana/web3.js'
 import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/send-and-confirm-transaction-via-wallet'
+import { WarningPopup } from '../Chart/components/WarningPopup'
 
 const SwapsPage = ({
   theme,
@@ -87,6 +88,7 @@ const SwapsPage = ({
     setRefreshAllTokensDataCounter(refreshAllTokensDataCounter + 1)
 
   const [selectedPool, selectPool] = useState<PoolInfo | null>(null)
+  const [isWarningPopupOpen, openWarningPopup] = useState(true)
 
   const [baseTokenMintAddress, setBaseTokenMintAddress] = useState<string>('')
   const [quoteTokenMintAddress, setQuoteTokenMintAddress] = useState<string>('')
@@ -235,6 +237,8 @@ const SwapsPage = ({
     quoteSymbol !== 'Select token' &&
     !selectedTokens
 
+  const isButtonDisabled = isTokenABalanceInsufficient || !selectedTokens
+
   return (
     <RowContainer direction={'column'} height={'100%'}>
       {!publicKey ? (
@@ -344,7 +348,7 @@ const SwapsPage = ({
               />
             </RowContainer>
 
-            {baseTokenMintAddress && quoteTokenMintAddress && (
+            {selectedTokens && (
               <RowContainer margin={'1rem 2rem'} justify={'space-between'}>
                 <Text color={'#93A0B2'}>Price:</Text>
                 <Text
@@ -380,12 +384,14 @@ const SwapsPage = ({
                 borderColor={'none'}
                 btnColor={'#fff'}
                 backgroundColor={
-                  'linear-gradient(90.62deg, #5EB6A8 0.11%, #3861C1 99.54%)'
+                  isButtonDisabled
+                    ? '#3A475C'
+                    : 'linear-gradient(90.62deg, #5EB6A8 0.11%, #3861C1 99.54%)'
                 }
                 textTransform={'none'}
                 margin={'1rem 0 0 0'}
                 transition={'all .4s ease-out'}
-                disabled={isTokenABalanceInsufficient || !selectedTokens}
+                disabled={isButtonDisabled}
                 onClick={async () => {
                   if (!selectedTokens) return
 
@@ -490,14 +496,19 @@ const SwapsPage = ({
                   </Row>
                 </RowContainer>
                 <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
-                  <Text color={'#93A0B2'}>Price Impact</Text>
+                  <Text color={'#93A0B2'}>Pool liquidity:</Text>
                   <Row style={{ flexWrap: 'nowrap' }}>
                     <Text
-                      style={{ padding: '0 0.5rem 0 0.5rem' }}
+                      style={{
+                        padding: '0 0.5rem 0 0.5rem',
+                        whiteSpace: 'nowrap',
+                      }}
                       fontFamily={'Avenir Next Bold'}
                       color={'#A5E898'}
                     >
-                      {stripDigitPlaces(rawSlippage, 2)}%
+                      {stripDigitPlaces(poolAmountTokenA, 4)} {baseSymbol} /{' '}
+                      {stripDigitPlaces(poolAmountTokenB, 4)}
+                      {quoteSymbol}{' '}
                     </Text>
                   </Row>
                 </RowContainer>{' '}
@@ -561,6 +572,12 @@ const SwapsPage = ({
         allTokensData={allTokensData}
         open={isTokensAddressesPopupOpen}
         close={() => openTokensAddressesPopup(false)}
+      />
+      <WarningPopup
+        theme={theme}
+        open={isWarningPopupOpen}
+        onClose={() => openWarningPopup(false)}
+        isPoolsPage={true}
       />
     </RowContainer>
   )
