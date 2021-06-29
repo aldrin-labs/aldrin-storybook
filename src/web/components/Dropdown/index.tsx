@@ -170,7 +170,7 @@ export default class Dropdown extends React.Component<IProps> {
                     >
                       <SvgIcon
                         src={provider.icon}
-                        width={'auto'}
+                        width={'2.5rem'}
                         height={'100%'}
                       />
                       {provider.name}
