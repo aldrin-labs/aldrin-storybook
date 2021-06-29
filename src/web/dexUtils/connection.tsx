@@ -47,18 +47,27 @@ export function ConnectionProvider({ children }) {
   // is empty after opening its first time, preventing subsequent subscriptions from receiving responses.
   // This is a hack to prevent the list from every getting empty
   useEffect(() => {
-    const id = connection.onAccountChange(new Account().publicKey, () => {});
+    const rawConnection =
+      endpoint === MAINNET_BETA_ENDPOINT
+        ? connection.getConnection()
+        : connection
+    const id = rawConnection.onAccountChange(new Account().publicKey, () => {})
     return () => {
-      connection.removeAccountChangeListener(id);
-    };
-  }, [connection]);
+      rawConnection.removeAccountChangeListener(id)
+    }
+  }, [connection])
 
   useEffect(() => {
-    const id = connection.onSlotChange(() => null);
+    const rawConnection =
+      endpoint === MAINNET_BETA_ENDPOINT
+        ? connection.getConnection()
+        : connection
+    const id = rawConnection.onSlotChange(() => null)
     return () => {
-      connection.removeSlotChangeListener(id);
-    };
-  }, [connection]);
+      rawConnection.removeSlotChangeListener(id)
+    }
+  }, [connection])
+
 
   return (
     <ConnectionContext.Provider value={{ endpoint, setEndpoint, connection }}>

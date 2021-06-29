@@ -18,6 +18,9 @@ export const CCAIProviderURL = MASTER_BUILD
   ? 'https://wallet.cryptocurrencies.ai'
   : 'https://develop.wallet.cryptocurrencies.ai'
 
+export const CCAIExtensionURL = 'https://chrome.google.com/webstore/detail/cryptocurrenciesai-wallet/oomlbhdllfeiglglhhaacafbkkbibhel'
+export const SolletExtensionURL = 'https://chrome.google.com/webstore/detail/sollet/fhmfendgdocmcbmfikdcogofphimnkno'
+
 export async function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
