@@ -6,6 +6,7 @@ import { Theme } from '@material-ui/core'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 import { SearchInputWithLoop } from '../../Tables/components/index'
+import SolanaExplorerIcon from '@icons/SolanaExplorerIcon.svg'
 
 import Close from '@icons/closeIcon.svg'
 import { Text } from '@sb/compositions/Addressbook/index'
@@ -143,6 +144,19 @@ export const SelectCoinPopup = ({
                 <Row wrap={'nowrap'}>
                   <TokenIcon mint={mint} width={'2rem'} height={'2rem'} />
                   <StyledText>{getTokenNameByMintAddress(mint)}</StyledText>
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={`https://explorer.solana.com/address/${mint}`}
+                  >
+                    {' '}
+                    <SvgIcon
+                      src={SolanaExplorerIcon}
+                      width={'2rem'}
+                      height={'2rem'}
+                      style={{ marginLeft: '1rem' }}
+                    />
+                  </a>
                 </Row>
                 <Row wrap={'nowrap'}>
                   <StyledText>

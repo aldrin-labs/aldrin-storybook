@@ -40,9 +40,10 @@ import { withPublicKey } from '@core/hoc/withPublicKey'
 import { REBALANCE_CONFIG } from '../Rebalance/Rebalance.config'
 import { filterDataBySymbolForDifferentDeviders } from '../Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 import Pools from '../Pools/components/Tables/Pools'
-import { swap } from '@sb/dexUtils/pools'
+import { swap, swapWithHandleNativeSol } from '@sb/dexUtils/pools'
 import { PublicKey } from '@solana/web3.js'
 import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/send-and-confirm-transaction-via-wallet'
+import { WarningPopup } from '../Chart/components/WarningPopup'
 
 const SwapsPage = ({
   theme,
@@ -87,6 +88,7 @@ const SwapsPage = ({
     setRefreshAllTokensDataCounter(refreshAllTokensDataCounter + 1)
 
   const [selectedPool, selectPool] = useState<PoolInfo | null>(null)
+  const [isWarningPopupOpen, openWarningPopup] = useState(true)
 
   const [baseTokenMintAddress, setBaseTokenMintAddress] = useState<string>('')
   const [quoteTokenMintAddress, setQuoteTokenMintAddress] = useState<string>('')
@@ -426,7 +428,7 @@ const SwapsPage = ({
                     baseSwapToken: baseTokenSwap,
                   })
 
-                  const [transaction] = await swap({
+                  const [transaction, signers] = await swapWithHandleNativeSol({
                     wallet,
                     connection,
                     userTokenAccountA: new PublicKey(userTokenAccountA),
@@ -441,7 +443,8 @@ const SwapsPage = ({
                     const result = await sendAndConfirmTransactionViaWallet(
                       wallet,
                       connection,
-                      transaction
+                      transaction,
+                      ...signers
                     )
 
                     await notify({
@@ -569,6 +572,12 @@ const SwapsPage = ({
         allTokensData={allTokensData}
         open={isTokensAddressesPopupOpen}
         close={() => openTokensAddressesPopup(false)}
+      />
+      <WarningPopup
+        theme={theme}
+        open={isWarningPopupOpen}
+        onClose={() => openWarningPopup(false)}
+        isPoolsPage={true}
       />
     </RowContainer>
   )

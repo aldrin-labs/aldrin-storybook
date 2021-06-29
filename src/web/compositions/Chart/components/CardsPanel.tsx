@@ -232,7 +232,7 @@ export const CardsPanel = ({ theme }) => {
               {' '}
               Analytics
             </NavLinkButton>
-            <NavLinkButton
+            {/* <NavLinkButton
               theme={theme}
               data-tut="farming"
               page={'addressbook'}
@@ -241,7 +241,7 @@ export const CardsPanel = ({ theme }) => {
             >
               {' '}
               Addressbook
-            </NavLinkButton>
+            </NavLinkButton> */}
             <NavLinkButton
               theme={theme}
               page={'/pools'}
