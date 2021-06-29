@@ -22,7 +22,6 @@ export const TablesBlockWrapper = styled(Grid)`
 export const TerminalContainer = styled.div`
   height: 100%;
   padding: 5px;
-  overflow: hidden scroll;
 `
 
 export const ScrollWrapper = styled.div`
@@ -102,7 +101,7 @@ export const TerminalMainGrid = styled(({ marketType, ...rest }) => (
   <Grid {...rest} />
 ))`
   height: calc(
-    100% - ${(props) => (props.marketType === 0 ? '3rem' : '5.2rem')}
+    100% - ${(props) => (props.marketType === 0 ? '3.4rem' : '5.2rem')}
   );
 `
 

@@ -21,7 +21,13 @@ import { updatePriceQuerryFunction } from '@sb/compositions/Chart/components/Mar
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 
 import {
+  Row,
+  BlockContainer,
   GreenTitle,
+  SerumTitleBlockContainer,
+  SerumWhiteTitle,
+  Text,
+  TopBarTitle,
 } from '../../index.styles'
 
 export interface IProps {
@@ -42,29 +48,13 @@ const PriceBlock = ({
   theme,
   pricePrecision,
   lastMarketPrice,
+  circulatingSupply,
 }: IProps) => {
-  const [previousPrice, savePreviousPrice] = useState(0)
-  const [showGreen, updateToGreen] = useState(false)
-
-  useEffect(() => {
-    if (lastMarketPrice > previousPrice) {
-      updateToGreen(true)
-    } else {
-      updateToGreen(false)
-    }
-
-    savePreviousPrice(lastMarketPrice)
-  }, [lastMarketPrice])
-
   return (
-    <GreenTitle
-      style={{ color: showGreen ? '#A5E898' : '#F26D68' }}
-      theme={theme}
-    >
-      {`$${formatNumberToUSFormat(
-        roundAndFormatNumber(lastMarketPrice, pricePrecision, false)
-      )}`}
-    </GreenTitle>
+    <Text theme={theme}>
+      $
+      {formatNumberToUSFormat((lastMarketPrice * circulatingSupply).toFixed(0))}
+    </Text>
   )
 }
 
@@ -76,15 +66,7 @@ const PriceDataWrapper = ({
   marketType,
   ...props
 }: IPropsDataWrapper) => {
-  React.useEffect(() => {
-    const unsubscribePrice = props.getPriceQuery.subscribeToMoreFunction()
-
-    return () => {
-      unsubscribePrice && unsubscribePrice()
-    }
-  }, [symbol, exchange, marketType])
-
-  const { getPriceQuery, theme, pricePrecision } = props
+  const { getPriceQuery, theme, pricePrecision, circulatingSupply } = props
   const { getPrice: lastMarketPrice = 0 } = getPriceQuery || { getPrice: 0 }
 
   return (
@@ -93,6 +75,7 @@ const PriceDataWrapper = ({
       pricePrecision={pricePrecision}
       lastMarketPrice={lastMarketPrice}
       marketType={marketType}
+      circulatingSupply={circulatingSupply}
     />
   )
 }
@@ -108,16 +91,6 @@ export default React.memo(
         exchange: props.exchange.symbol,
         pair: `${props.symbol}:${props.marketType}`,
       }),
-      subscriptionArgs: {
-        subscription: LISTEN_PRICE,
-        variables: (props: any) => ({
-          input: {
-            exchange: props.exchange.symbol,
-            pair: `${props.symbol}:${props.marketType}`,
-          },
-        }),
-        updateQueryFunction: updatePriceQuerryFunction,
-      },
       fetchPolicy: 'cache-and-network',
       withOutSpinner: true,
       withTableLoader: true,

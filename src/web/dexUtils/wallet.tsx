@@ -44,12 +44,12 @@ export const WALLET_PROVIDERS = [
     adapter: Wallet,
     icon: CCAI,
   },
-  // {
-  //   name: 'Wallet™ Extension',
-  //   url: `${CCAIProviderURL}/extension`,
-  //   adapter: CcaiExtensionAdapter,
-  //   icon: CCAI,
-  // },
+  {
+    name: 'Wallet™ Extension',
+    url: `${CCAIProviderURL}/extension`,
+    adapter: CcaiExtensionAdapter,
+    icon: CCAI,
+  },
   {
     name: 'Sollet.io',
     url: 'https://www.sollet.io',
@@ -201,7 +201,7 @@ export function WalletProvider({ children }) {
 
     return () => {
       setConnected(false)
-      if (wallet) {
+      if (wallet && wallet.disconnect) {
         wallet.disconnect()
         setConnected(false)
       }

@@ -443,6 +443,7 @@ class SelectPairListComponent extends React.PureComponent<
       setCustomMarkets,
       customMarkets,
       getSerumMarketDataQueryRefetch,
+      getSerumMarketDataQuery,
     } = this.props
 
     const onAddCustomMarket = (customMarket: any) => {
@@ -465,7 +466,6 @@ class SelectPairListComponent extends React.PureComponent<
       console.log('onAddCustomMarket', newCustomMarkets)
       return true
     }
-
 
     return (
       <StyledGrid

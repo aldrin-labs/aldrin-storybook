@@ -119,6 +119,23 @@ const RedButton = styled((props) => (
 ))`
   outline: none;
 `
+const TokenLink = styled.a`
+  font-family: Avenir Next Demi;
+  text-transform: capitalize;
+  text-decoration: none;
+  font-size: 1.4rem;
+  background: linear-gradient(
+    106.89deg,
+    rgba(94, 181, 168, 0.8) 17.87%,
+    rgba(56, 98, 193, 0.8) 82.13%
+  );
+  display: flex;
+  align-items: center;
+  padding: 0 2rem;
+  height: 100%;
+  border-radius: 0.6rem;
+  color: #f8faff;
+`
 
 export const CardsPanel = ({ theme }) => {
   const location = useLocation()
@@ -215,7 +232,7 @@ export const CardsPanel = ({ theme }) => {
               {' '}
               Analytics
             </NavLinkButton>
-            <NavLinkButton
+            {/* <NavLinkButton
               theme={theme}
               data-tut="farming"
               page={'addressbook'}
@@ -224,18 +241,34 @@ export const CardsPanel = ({ theme }) => {
             >
               {' '}
               Addressbook
+            </NavLinkButton> */}
+            <NavLinkButton
+              theme={theme}
+              page={'/pools'}
+              pathname={location.pathname}
+              component={(props) => <Link to={`/pools`} {...props} />}
+            >
+              {' '}
+              Pools
             </NavLinkButton>
             {!MASTER_BUILD && (
               <NavLinkButton
                 theme={theme}
-                page={'/pools'}
+                page={'/swaps'}
                 pathname={location.pathname}
-                component={(props) => <Link to={`/pools`} {...props} />}
+                component={(props) => <Link to={`/swaps`} {...props} />}
               >
                 {' '}
-                Pools
+                Swaps
               </NavLinkButton>
             )}
+            <TokenLink
+              href="https://ccai.cryptocurrencies.ai/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Token
+            </TokenLink>
             {/* <IdoBtn>CCAI IDO</IdoBtn> */}
           </div>
         </CustomCard>
@@ -415,7 +448,7 @@ const TopBar = ({ theme }) => {
             theme={theme}
             fontSize="1.2rem"
             onClick={() => {
-              wallet.disconnect()
+              wallet?.disconnect && wallet.disconnect()
             }}
             style={{
               position: 'absolute',

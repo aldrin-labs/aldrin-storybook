@@ -14,6 +14,7 @@ import {
 import GreenCheckmark from '@icons/successIcon.svg'
 import Warning from '@icons/warningPairSel.png'
 import ThinkingFace from '@icons/thinkingFace.png'
+import CCAILogo from '@icons/auth0Logo.svg'
 
 import favoriteSelected from '@icons/favoriteSelected.svg'
 import favoriteUnselected from '@icons/favoriteUnselected.svg'
@@ -306,10 +307,16 @@ export const combineSelectWrapperData = ({
     const signTrades24hChange = +precentageTradesDiff > 0 ? '+' : '-'
 
     const marketName = symbol.replaceAll('_', '/')
-    const currentMarket = customMarkets?.find((el) => el?.name.replaceAll("_", "/") === marketName)
+    const currentMarket = customMarkets?.find(
+      (el) => el?.name.replaceAll('_', '/') === marketName
+    )
 
     const isAdditionalCustomUserMarket = el.isCustomUserMarket
     const isAwesomeMarket = currentMarket?.isCustomUserMarket
+    const isCCAIPair =
+      symbol.includes('CCAI') &&
+      !isAdditionalCustomUserMarket &&
+      !isAwesomeMarket
 
     return {
       id: `${symbol}`,
@@ -349,6 +356,8 @@ export const combineSelectWrapperData = ({
                 <SvgIcon width={'50%'} height={'auto'} src={Warning} />
               ) : isAwesomeMarket ? (
                 <SvgIcon width={'50%'} height={'auto'} src={ThinkingFace} />
+              ) : isCCAIPair ? (
+                <SvgIcon width={'50%'} height={'auto'} src={CCAILogo} />
               ) : (
                 <SvgIcon width={'50%'} height={'auto'} src={GreenCheckmark} />
               )}

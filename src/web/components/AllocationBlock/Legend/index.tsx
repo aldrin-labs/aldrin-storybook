@@ -20,13 +20,13 @@ interface LegendProps extends IProps {
 const AllocationLegend = ({ data, colors, theme }: LegendProps) => {
   return (
     <>
-      {data.map((tokenData, i) => (
+      {data?.map((tokenData, i) => (
         <RowContainer
           wrap={'nowrap'}
-          key={`${tokenData.symbol}-${tokenData.value}`}
+          key={`${tokenData.symbol}-${tokenData?.value}`}
         >
           <BarTitle theme={theme}>
-            {formatSymbol({ symbol: tokenData.symbol })}
+            {formatSymbol({ symbol: tokenData?.symbol })}
           </BarTitle>
           <TokenAllocationProgressBarContainer
             width={'calc(100% - 14rem)'}
@@ -35,18 +35,18 @@ const AllocationLegend = ({ data, colors, theme }: LegendProps) => {
             <TokenAllocationProgressBar
               // other bar has another color
               color={
-                data.length - 1 === i && data.length > ROWS_TO_SHOW_IN_LEGEND
+                data?.length - 1 === i && data?.length > ROWS_TO_SHOW_IN_LEGEND
                   ? '#365FBC'
                   : colors[i]
               }
               height={'2.2rem'}
-              width={`${tokenData.value}%`}
+              width={`${tokenData?.value}%`}
               variant="determinate"
               value={0}
             />
           </TokenAllocationProgressBarContainer>
           <PercentageTitle theme={theme}>
-            {stripDigitPlaces(tokenData.value.toFixed(2), 2)}%
+            {stripDigitPlaces(tokenData?.value?.toFixed(2), 2)}%
           </PercentageTitle>
         </RowContainer>
       ))}
