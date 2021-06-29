@@ -18,7 +18,7 @@ const VestingPage = ({
 
   return (
     <RowContainer height={'100%'}>
-      {!publicKey ? (
+      {!wallet.connected ? (
         <BtnCustom
           theme={theme}
           onClick={wallet.connect}
@@ -39,7 +39,7 @@ const VestingPage = ({
           Connect wallet
         </BtnCustom>
       ) : (
-        <ClaimBlock wallet={wallet} theme={theme} />
+        <ClaimBlock theme={theme} />
       )}
     </RowContainer>
   )

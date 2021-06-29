@@ -169,8 +169,7 @@ export const ClaimBlock = ({ theme }: { theme: any }) => {
       {allTokensData[0].amount < 0.01 && (
         <RowContainer>
           <AlignedText left style={{ color: theme.palette.red.main }}>
-            Please, top up your SOL balance to have at least 0.01 SOL for paying
-            fees.
+            Deposit at least 0.01 SOL for paying fees for the claim.
           </AlignedText>
         </RowContainer>
       )}
