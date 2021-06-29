@@ -8,6 +8,9 @@ import {
   TransactionSignature,
 } from '@solana/web3.js'
 
+import * as BufferLayout from 'buffer-layout'
+import Base58 from 'base-58'
+
 import { Token, TOKEN_PROGRAM_ID } from './token/token'
 import {
   CurveType,
@@ -156,7 +159,7 @@ export async function createTokenSwap({
     createTokenAccountPoolTransaction,
     createFeeAccountTransaction,
     tokenFreezeAccountTransaction,
-    farmingStateTransaction,
+    farmingStateTransaction
   )
 
   const createAccountsSignatures = [
@@ -177,7 +180,7 @@ export async function createTokenSwap({
   // second transaction
   const beforeCreatePoolTransaction = new Transaction().add(
     createPoolTokenAccountATransaction,
-    createPoolTokenAccountBTransaction,
+    createPoolTokenAccountBTransaction
   )
 
   const beforeCreatePoolTransactionSigners = [
@@ -208,7 +211,7 @@ export async function createTokenSwap({
       wallet,
       connection,
       createWrappedAccountTransaction,
-      createWrappedAccountTransactionSigner,
+      createWrappedAccountTransactionSigner
     )
 
     afterCreatePoolTransaction.add(closeAccountTransaction)
@@ -862,6 +865,118 @@ export async function swap({
 }
 
 /**
+ * Swap tokenA to tokenB and vice versa on existing pool
+ *
+ * @param wallet The Wallet that will sign transactions
+ * @param connection The connection to use
+ * @param tokenSwapPublicKey The public key of swap, that will be used to deposit money
+ * @param userTokenAccountA The user's tokenA account address
+ * @param userTokenAccountB The user's tokenB account address
+ * @param swapAmountIn The amount of tokenA to tranfer to the pool token account address
+ * @param swapAmountOut The amount of tokenB to tranfer to the pool token account address
+ * @param baseSwapToken The flag which will determine swapIn and swapOut tokens
+ * @returns Transaction and signer for this transaction (userTransferAuthority in our case to approve transfer funds from userSourceAccount to poolSourceAccount)
+ */
+ export async function swapWithHandleNativeSol({
+  wallet,
+  connection,
+  userTokenAccountA,
+  userTokenAccountB,
+  tokenSwapPublicKey,
+  swapAmountIn,
+  swapAmountOut,
+  baseSwapToken,
+}: {
+  wallet: WalletAdapter
+  connection: Connection
+  userTokenAccountA: PublicKey
+  userTokenAccountB: PublicKey
+  tokenSwapPublicKey: PublicKey
+  swapAmountIn: number
+  swapAmountOut: number
+  baseSwapToken: 'tokenA' | 'tokenB'
+}): Promise<[Transaction, Account[]]> {
+  const tokenSwap = await TokenSwap.loadTokenSwap(
+    wallet,
+    connection,
+    tokenSwapPublicKey,
+    TOKEN_SWAP_PROGRAM_ID
+  )
+  const { tokenAccountA, tokenAccountB, mintA, mintB } = tokenSwap
+
+  let [
+    sourceMint,
+    userSourceAccount,
+    userDestinationAccount,
+    poolSourceAccount,
+    poolDestinationAccount,
+  ] =
+    baseSwapToken === 'tokenA'
+      ? [
+          mintA,
+          userTokenAccountA,
+          userTokenAccountB,
+          tokenAccountA,
+          tokenAccountB,
+        ]
+      : [
+          mintB,
+          userTokenAccountB,
+          userTokenAccountA,
+          tokenAccountB,
+          tokenAccountA,
+        ]
+
+    // in case tokenA/B is SOL
+    const beforeSwapTransaction = new Transaction()
+    const beforeSwapTransactionSigners = []
+  
+    const afterSwapTransaction = new Transaction()
+  
+    // if SOL - create new token address
+    if (sourceMint.equals(WRAPPED_SOL_MINT)) {
+      const result = await transferSOLToWrappedAccountAndClose({
+        wallet,
+        connection,
+        amount: swapAmountIn,
+      })
+  
+      // change account to use from native to wrapped
+      userSourceAccount = result[0]
+      const [
+        _,
+        createWrappedAccountTransaction,
+        createWrappedAccountTransactionSigner,
+        closeAccountTransaction,
+      ] = result
+  
+      beforeSwapTransaction.add(createWrappedAccountTransaction)
+      beforeSwapTransactionSigners.push(createWrappedAccountTransactionSigner)
+  
+      afterSwapTransaction.add(closeAccountTransaction)
+    }
+
+  const [swapTransaction] = await tokenSwap.swap(
+    userSourceAccount,
+    poolSourceAccount,
+    poolDestinationAccount,
+    userDestinationAccount,
+    null, // host fees, add later
+    wallet.publicKey,
+    swapAmountIn,
+    swapAmountOut
+  )
+
+  const commonTransaction = new Transaction().add(
+    beforeSwapTransaction,
+    swapTransaction,
+    afterSwapTransaction,
+  )
+
+  return [commonTransaction, beforeSwapTransactionSigners]
+}
+
+/**
  * Get max amount in tokenA and tokenB to withdrawal from pool
  *
  * @param wallet The Wallet that will sign transactions
@@ -1069,7 +1184,7 @@ export const getParsedTransactionData = async ({
   signature: TransactionSignature
 }) => {
   try {
-    const ts = await connection.getConfirmedTransaction(signature, 'confirmed')
+    const ts = await connection.getParsedConfirmedTransaction(signature, 'confirmed')
     console.log('transaction data: ', ts)
   } catch (e) {
     console.log('e', e)
