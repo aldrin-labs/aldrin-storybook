@@ -6,6 +6,7 @@ import { Theme } from '@material-ui/core'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 import { SearchInputWithLoop } from '../../Tables/components/index'
+import SolanaExplorerIcon from '@icons/SolanaExplorerIcon.svg'
 
 import Close from '@icons/closeIcon.svg'
 import { Text } from '@sb/compositions/Addressbook/index'
@@ -17,7 +18,7 @@ import {
 import { StyledPaper } from '../index.styles'
 import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { PoolsPrices } from '@sb/compositions/Pools/index.types'
+import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
@@ -43,7 +44,7 @@ export const SelectCoinPopup = ({
   open,
   mints,
   allTokensData,
-  poolsPrices,
+  dexTokensPrices,
   isBaseTokenSelecting,
   close,
   selectTokenMintAddress,
@@ -55,7 +56,7 @@ export const SelectCoinPopup = ({
   mints: string[]
   isBaseTokenSelecting: boolean
   allTokensData: TokenInfo[]
-  poolsPrices: PoolsPrices[]
+  dexTokensPrices: DexTokensPrices[]
   close: () => void
   selectTokenMintAddress: (address: string) => void
   setBaseTokenAddressFromSeveral: (address: string) => void
@@ -75,6 +76,12 @@ export const SelectCoinPopup = ({
       )
     : mints
 
+  const sortedAllTokensData = new Map()
+
+  allTokensData.forEach((tokensData) => {
+    sortedAllTokensData.set(tokensData.mint, tokensData.amount)
+  })
+
   const filteredMints = searchValue
     ? usersMints.filter((mint) =>
         getTokenNameByMintAddress(mint)
@@ -82,6 +89,12 @@ export const SelectCoinPopup = ({
           .includes(searchValue.toLowerCase())
       )
     : usersMints
+
+  const sortedMints = filteredMints
+    .map((mint) => {
+      return { mint, amount: sortedAllTokensData.get(mint) || 0 }
+    })
+    .sort((a, b) => b.amount - a.amount)
 
   return (
     <DialogWrapper
@@ -92,9 +105,9 @@ export const SelectCoinPopup = ({
       maxWidth={'md'}
       open={open}
       onEnter={() => {
-        onChangeSearch('');
-        setSelectedMint('');
-        setIsSelectorForSeveralAddressesOpen(false);
+        onChangeSearch('')
+        setSelectedMint('')
+        setIsSelectorForSeveralAddressesOpen(false)
       }}
       aria-labelledby="responsive-dialog-title"
     >
@@ -110,41 +123,50 @@ export const SelectCoinPopup = ({
         />
       </RowContainer>
       <RowContainer>
-        {filteredMints.map((mint: string) => {
-          return (
-            <SelectorRow
-              justify={'space-between'}
-              style={{ cursor: 'pointer' }}
-              onClick={() => {
-                const isSeveralCoinsWithSameAddress =
-                  allTokensData.filter((el) => el.mint === mint).length > 1
+        {sortedMints.map(
+          ({ mint, amount }: { mint: string; amount: number }) => {
+            return (
+              <SelectorRow
+                justify={'space-between'}
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
+                  const isSeveralCoinsWithSameAddress =
+                    allTokensData.filter((el) => el.mint === mint).length > 1
 
-                if (isSeveralCoinsWithSameAddress) {
-                  setSelectedMint(mint)
-                  setIsSelectorForSeveralAddressesOpen(true)
-                } else {
-                  selectTokenMintAddress(mint)
-                }
-              }}
-            >
-              <Row wrap={'nowrap'}>
-                <TokenIcon mint={mint} width={'2rem'} height={'2rem'} />
-                <StyledText>{getTokenNameByMintAddress(mint)}</StyledText>
-              </Row>
-              <Row wrap={'nowrap'}>
-                <StyledText>
-                  {formatNumberToUSFormat(
-                    stripDigitPlaces(
-                      allTokensData.find((tokenData) => tokenData.mint === mint)
-                        ?.amount || 0,
-                      8
-                    )
-                  )}
-                </StyledText>
-              </Row>
-            </SelectorRow>
-          )
-        })}
+                  if (isSeveralCoinsWithSameAddress) {
+                    setSelectedMint(mint)
+                    setIsSelectorForSeveralAddressesOpen(true)
+                  } else {
+                    selectTokenMintAddress(mint)
+                  }
+                }}
+              >
+                <Row wrap={'nowrap'}>
+                  <TokenIcon mint={mint} width={'2rem'} height={'2rem'} />
+                  <StyledText>{getTokenNameByMintAddress(mint)}</StyledText>
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href={`https://explorer.solana.com/address/${mint}`}
+                  >
+                    {' '}
+                    <SvgIcon
+                      src={SolanaExplorerIcon}
+                      width={'2rem'}
+                      height={'2rem'}
+                      style={{ marginLeft: '1rem' }}
+                    />
+                  </a>
+                </Row>
+                <Row wrap={'nowrap'}>
+                  <StyledText>
+                    {formatNumberToUSFormat(stripDigitPlaces(amount, 8))}
+                  </StyledText>
+                </Row>
+              </SelectorRow>
+            )
+          }
+        )}
         {mints.length === 0 && (
           <RowContainer>
             <StyledText>Loading...</StyledText>

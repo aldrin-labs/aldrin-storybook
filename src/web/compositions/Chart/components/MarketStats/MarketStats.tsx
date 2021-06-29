@@ -17,6 +17,7 @@ import { getPrice } from '@core/graphql/queries/chart/getPrice'
 import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE'
 
 import { marketDataByTickers } from '@core/graphql/queries/chart/marketDataByTickers'
+import { getCCAICirculationSupply } from '@sb/compositions/AnalyticsRoute/components/CirculationSupply'
 
 import {
   formatNumberToUSFormat,
@@ -99,6 +100,7 @@ const MarketStats = (props) => {
     getMarkPriceQuery,
     quantityPrecision,
     pricePrecision,
+    isCCAIPair,
   } = props
 
   const {
@@ -138,6 +140,7 @@ const MarketStats = (props) => {
   const { market } = useMarket()
   const [previousPrice, savePreviousPrice] = useState(0)
   const [showGreen, updateToGreen] = useState(false)
+  const [circulatingSupply, setCirculatingSupply] = useState(0)
   const markPrice = useMarkPrice() || 0
 
   useEffect(() => {
@@ -149,6 +152,14 @@ const MarketStats = (props) => {
 
     savePreviousPrice(markPrice)
   }, [markPrice])
+
+  useEffect(() => {
+    const getCCAISupply = async () => {
+      const CCAICircSupplyValue = await getCCAICirculationSupply()
+      setCirculatingSupply(CCAICircSupplyValue)
+    }
+    getCCAISupply()
+  }, [])
 
   const bigPrecision = market?.tickSize > 1 ? market?.tickSize : null
 
@@ -172,6 +183,8 @@ const MarketStats = (props) => {
     : (markPrice - prevClosePrice) / (prevClosePrice / 100)
 
   const sign24hChange = +priceChangePercentage > 0 ? `+` : ``
+
+  const marketcap = circulatingSupply * markPrice
 
   return (
     <div style={{ display: 'flex' }}>
@@ -216,8 +229,8 @@ const MarketStats = (props) => {
             {!priceChangePercentage
               ? '--'
               : `${sign24hChange}${formatNumberToUSFormat(
-                stripDigitPlaces(+priceChangePercentage)
-              )}%`}
+                  stripDigitPlaces(+priceChangePercentage)
+                )}%`}
           </PanelCardSubValue>
         </span>
       </PanelCard>
@@ -241,6 +254,23 @@ const MarketStats = (props) => {
           {formatNumberToUSFormat(stripDigitPlaces(volume, 2))} {quote}
         </PanelCardValue>
       </PanelCard>
+      {isCCAIPair && (
+        <>
+          <PanelCard marketType={marketType} theme={theme}>
+            <PanelCardTitle theme={theme}>Circulating Supply</PanelCardTitle>
+            <PanelCardValue theme={theme}>
+              {formatNumberToUSFormat(stripDigitPlaces(circulatingSupply, 2))}{' '}
+              CCAI
+            </PanelCardValue>
+          </PanelCard>
+          <PanelCard marketType={marketType} theme={theme}>
+            <PanelCardTitle theme={theme}>Marketcap</PanelCardTitle>
+            <PanelCardValue theme={theme}>
+              ${formatNumberToUSFormat(stripDigitPlaces(marketcap, 2))}
+            </PanelCardValue>
+          </PanelCard>
+        </>
+      )}
     </div>
   )
 }

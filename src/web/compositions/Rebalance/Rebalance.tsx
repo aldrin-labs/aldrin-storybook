@@ -1,15 +1,13 @@
-import React, { useMemo, useEffect, useState } from 'react'
-import { Connection, LAMPORTS_PER_SOL } from '@solana/web3.js'
+import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 import { withTheme, Theme } from '@material-ui/core/styles'
-import { TokenInstructions } from '@project-serum/serum'
 import { isEqual } from 'lodash'
-import debounceRender from 'react-debounce-render';
+import { Connection } from '@solana/web3.js'
+import debounceRender from 'react-debounce-render'
 
-
+import { client } from '@core/graphql/apolloClient'
 import { withPublicKey } from '@core/hoc/withPublicKey'
-import { useWallet, WRAPPED_SOL_MINT } from '@sb/dexUtils/wallet'
-import { ALL_TOKENS_MINTS_MAP } from '@sb/dexUtils/markets'
+import { useWallet } from '@sb/dexUtils/wallet'
 
 import {
   getPricesForTokens,
@@ -21,75 +19,139 @@ import {
   getTokensMap,
   getAllTokensData,
   getSliderStepForTokens,
+  getPoolsInfo,
 } from './utils'
 import { useConnection } from '@sb/dexUtils/connection'
-
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { PoolInfo } from './Rebalance.types'
+import {
+  PoolInfo,
+  TokensMapType,
+  TokenType,
+  Colors,
+  RebalancePopupStep,
+} from './Rebalance.types'
 import RebalanceTable from './components/Tables'
 import RebalanceHeaderComponent from './components/Header'
 import DonutChartWithLegend from '@sb/components/AllocationBlock/index'
 import BalanceDistributedComponent from './components/BalanceDistributed'
-import { RebalancePopup } from './components/RebalancePopup'
+import { RebalancePopup } from './components/RebalancePopup/RebalancePopup'
+import {
+  fixedColors,
+  fixedColorsForLegend,
+  getRandomBlueColor,
+} from '@sb/components/AllocationBlock/DonutChart/utils'
 
-// const handleSliderChange = (setTokensMap, e, newValue) => {
-//     // console.log('setTokensMap: ', setTokensMap)
-//     console.log('newValue: ', newValue)
-// }
+import { getPoolsInfoMockData } from './Rebalance.mock'
+import {
+  generateLegendColors,
+  generateChartColors,
+} from './utils/colorGeneraing'
 
-const MemoizedDonutChartWithLegend = React.memo(DonutChartWithLegend, (prevProps, nextProps) => {
+// const MemoizedCurrentValueChartWithLegend = React.memo(
+//   DonutChartWithLegend,
+//   (prevProps, nextProps) => {
+//     return (
+//       isEqual(
+//         Object.values(prevProps.data)?.map((el) => el.percentage),
+//         Object.values(nextProps.data)?.map((el) => el.percentage)
+//       ) &&
+//       isEqual(prevProps.colors, nextProps.colors) &&
+//       isEqual(prevProps.colorsForLegend, nextProps.colorsForLegend)
+//     )
+//   }
+// )
 
-  return isEqual(prevProps.data, nextProps.data)
-})
+// const MemoizedTargetValueChartWithLegend = React.memo(
+//   DonutChartWithLegend,
+//   (prevProps, nextProps) => {
+//     return (
+//       isEqual(
+//         Object.values(prevProps.data)?.map((el) => el.targetPercentage),
+//         Object.values(nextProps.data)?.map((el) => el.targetPercentage)
+//       ) &&
+//       isEqual(prevProps.colors, nextProps.colors) &&
+//       isEqual(prevProps.colorsForLegend, nextProps.colorsForLegend)
+//     )
+//   }
+// )
 
-const MemoizedRebalancePopup = React.memo(RebalancePopup, (prevProps, nextProps) => {
+const MemoizedRebalancePopup = React.memo(
+  RebalancePopup,
+  (prevProps, nextProps) => {
+    return (
+      prevProps.open === nextProps.open &&
+      prevProps.rebalanceStep === nextProps.rebalanceStep
+    )
+  }
+)
 
-  return prevProps.open === nextProps.open && prevProps.rebalanceStep && nextProps.rebalanceStep
+const DebouncedMemoizedCurrentValueChartWithLegend = debounceRender(
+  DonutChartWithLegend,
+  100,
+  { leading: false }
+)
 
-})
+const DebouncedMemoizedTargetValueChartWithLegend = debounceRender(
+  DonutChartWithLegend,
+  100,
+  { leading: false }
+)
 
-const DebouncedMemoizedDonutChartWithLegend = debounceRender(MemoizedDonutChartWithLegend, 100, { leading: false })
+const DebouncedMemoizedRebalanceHeaderComponent = debounceRender(
+  RebalanceHeaderComponent,
+  100,
+  { leading: false }
+)
 
-const DebouncedMemoizedRebalanceHeaderComponent = debounceRender(RebalanceHeaderComponent, 100, { leading: false })
-
-const DebouncedBalanceDistributedComponent = debounceRender(BalanceDistributedComponent, 100, { leading: false })
-
+const DebouncedBalanceDistributedComponent = debounceRender(
+  BalanceDistributedComponent,
+  100,
+  { leading: false }
+)
 
 const RebalanceComposition = ({
   publicKey,
   theme,
-  getPoolsInfoQuery: { getPoolsInfo },
 }: {
   publicKey: string
   theme: Theme
-  getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
 }) => {
   const { wallet } = useWallet()
   const [isRebalancePopupOpen, changeRebalancePopupState] = useState(false)
-  const [rebalanceStep, changeRebalanceStep] = useState('')
-
-  // const [publicKeys = []] = useWalletPublicKeys();
-  // console.log('publicKeys: ', publicKeys)
+  const [rebalanceStep, changeRebalanceStep] = useState<RebalancePopupStep>(
+    'initial'
+  )
 
   const connection: Connection = useConnection()
   const isWalletConnected = !!wallet?.publicKey
 
-  const [tokensMap, setTokensMap] = useState({})
+  const [tokensMap, setTokensMap] = useState<TokensMapType>({})
   const [totalTokensValue, setTotalTokensValue] = useState(0)
   const [leftToDistributeValue, setLeftToDistributeValue] = useState(0)
+  const [rebalanceState, setRefreshStateRebalance] = useState(false)
+  const [loadingRebalanceData, setLoadingRebalanceData] = useState(false)
+
+  const [poolsInfoData, setPoolsInfoData] = useState<PoolInfo[]>([])
+
+  const [colors, setColors] = useState<Colors>({})
+  const [colorsForLegend, setColorsForLegend] = useState<Colors>({})
+
+  const refreshRebalance = () => {
+    setRefreshStateRebalance(!rebalanceState)
+  }
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log('fetchData: ', fetchData)
-
+      setLoadingRebalanceData(true)
       try {
         console.time('rebalance initial data set time')
-        const allTokensData = await getAllTokensData(wallet.publicKey, connection)
+        const allTokensData = await getAllTokensData(
+          wallet.publicKey,
+          connection
+        )
 
         const tokensWithPrices = await getPricesForTokens(allTokensData)
         const tokensWithTokenValue = getTokenValuesForTokens(tokensWithPrices)
@@ -104,51 +166,61 @@ const RebalanceComposition = ({
           totalTokenValue
         )
 
-        const tokensWithSliderSteps = getSliderStepForTokens(tokensWithPercentages, totalTokenValue)
+        const tokensWithSliderSteps = getSliderStepForTokens(
+          tokensWithPercentages,
+          totalTokenValue
+        )
+
+        const poolsInfo = await getPoolsInfo(totalTokenValue)
 
         // TODO: Can be splitted and move up
         const availableTokensForRebalance = getAvailableTokensForRebalance(
-          getPoolsInfo,
+          // getPoolsInfoMockData,
+          poolsInfo,
           tokensWithSliderSteps
         )
         const availableTokensForRebalanceMap = getTokensMap(
           availableTokensForRebalance
         )
 
-        console.log('availableTokensForRebalanceMap: ', availableTokensForRebalanceMap)
-        console.log('totalTokenValue: ', totalTokenValue)
+        const chartColors = generateChartColors({
+          data: availableTokensForRebalanceMap,
+        })
+        const legendColors = generateLegendColors({
+          data: availableTokensForRebalanceMap,
+        })
 
         setTokensMap(availableTokensForRebalanceMap)
+        setColors(chartColors)
+        setColorsForLegend(legendColors)
         setTotalTokensValue(totalTokenValue)
-
-        // console.log('availableTokensForRebalanceMap: ', availableTokensForRebalanceMap)
+        setPoolsInfoData(poolsInfo)
         console.timeEnd('rebalance initial data set time')
       } catch (e) {
         // set error
         console.log('e: ', e)
       }
+      setLoadingRebalanceData(false)
     }
 
     if (isWalletConnected) {
       fetchData()
     }
-  }, [wallet.publicKey])
-
-  // const bindedHandleSliderChange = handleSliderChange.bind(this, setTokensMap)
-
-  // console.log('tokensMap: ', tokensMap)
-
-  // console.log('Object.values(tokensMap): ', Object.values(tokensMap))
+  }, [wallet.publicKey, rebalanceState])
 
   return (
     <RowContainer
       theme={theme}
       height="100%"
-      style={{ background: theme.palette.grey.additional }}
+      style={{
+        background: theme.palette.grey.additional,
+        minWidth: '1000px',
+        overflow: 'auto',
+        minHeight: '500px',
+      }}
     >
       {!publicKey ? (
         <>
-          {/* connect wallet */}
           <BtnCustom
             theme={theme}
             onClick={wallet.connect}
@@ -177,6 +249,7 @@ const RebalanceComposition = ({
             width={'60%'}
             margin={'0 2rem 0 0'}
             justify={'space-between'}
+            style={{ flexWrap: 'nowrap' }}
           >
             <DebouncedMemoizedRebalanceHeaderComponent
               totalTokensValue={totalTokensValue}
@@ -190,27 +263,27 @@ const RebalanceComposition = ({
               leftToDistributeValue={leftToDistributeValue}
               setLeftToDistributeValue={setLeftToDistributeValue}
               totalTokensValue={totalTokensValue}
-            />
+              loadingRebalanceData={loadingRebalanceData}
+            />{' '}
           </Row>
           <Row
             height={'100%'}
             width={'35%'}
             direction="column"
             justify="space-between"
+            style={{ flexWrap: 'nowrap' }}
           >
             <RowContainer height={'calc(85% - 2rem)'}>
-              <DebouncedMemoizedDonutChartWithLegend
-                data={Object.values(tokensMap).map((el) => ({
-                  symbol: el.symbol,
-                  value: el.percentage,
-                }))}
+              <DebouncedMemoizedCurrentValueChartWithLegend
+                data={tokensMap}
+                colors={colors}
+                colorsForLegend={colorsForLegend}
                 id={'current'}
               />
-              <DebouncedMemoizedDonutChartWithLegend
-                data={Object.values(tokensMap).map((el) => ({
-                  symbol: el.symbol,
-                  value: el.targetPercentage,
-                }))}
+              <DebouncedMemoizedTargetValueChartWithLegend
+                data={tokensMap}
+                colors={colors}
+                colorsForLegend={colorsForLegend}
                 id={'target'}
               />
             </RowContainer>
@@ -219,16 +292,16 @@ const RebalanceComposition = ({
               align={'flex-end'}
               height={'16%'}
             >
-              {' '}
               <Row
                 align={'flex-end'}
                 height={'100%'}
                 width={'calc(45% - 1rem)'}
               >
-                <DebouncedBalanceDistributedComponent 
+                <DebouncedBalanceDistributedComponent
                   totalTokensValue={totalTokensValue}
                   leftToDistributeValue={leftToDistributeValue}
-                  theme={theme} />
+                  theme={theme}
+                />
               </Row>
               <BtnCustom
                 theme={theme}
@@ -256,6 +329,13 @@ const RebalanceComposition = ({
       )}
 
       <MemoizedRebalancePopup
+        wallet={wallet}
+        connection={connection}
+        tokensMap={tokensMap}
+        refreshRebalance={refreshRebalance}
+        setLoadingRebalanceData={setLoadingRebalanceData}
+        // getPoolsInfo={getPoolsInfoMockData}
+        getPoolsInfo={poolsInfoData}
         theme={theme}
         open={isRebalancePopupOpen}
         rebalanceStep={rebalanceStep}
@@ -266,12 +346,4 @@ const RebalanceComposition = ({
   )
 }
 
-export default compose(
-  withTheme(),
-  withPublicKey,
-  queryRendererHoc({
-    query: getPoolsInfo,
-    name: 'getPoolsInfoQuery',
-    fetchPolicy: 'cache-and-network',
-  })
-)(RebalanceComposition)
+export default compose(withTheme(), withPublicKey)(RebalanceComposition)

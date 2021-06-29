@@ -65,14 +65,23 @@ export const Homepage = () => {
                     }}
                   >
                     Trade{' '}
-                    <span style={{ fontFamily: 'Avenir Next Bold' }}>
-                      WWT/ETH*
-                    </span>{' '}
-                    on Uniswap and{' '}
-                    <span style={{ fontFamily: 'Avenir Next Bold' }}>
+                    <span
+                      style={{
+                        fontFamily: 'Avenir Next Bold',
+                      }}
+                    >
                       CCAI/USDC
                     </span>{' '}
-                    on CCAI DEX!
+                    on CCAI DEX and{' '}
+                    <span
+                      style={{
+                        padding: '0 0 0.5rem 0',
+                        fontFamily: 'Avenir Next Bold',
+                      }}
+                    >
+                      WWT/ETH*
+                    </span>{' '}
+                    on Uniswap!{' '}
                   </BannerHeader>
                   <RowContainer margin={'2rem 0 0 0'} direction={'column'}>
                     <ThinText>
@@ -102,20 +111,20 @@ export const Homepage = () => {
                   style={{ margin: '0 0 2rem 0', height: '5rem' }}
                   padding={'1rem 4rem'}
                   needHover={true}
-                  href={
-                    'https://www.dextools.io/app/uniswap/pair-explorer/0x4a9e79219e9417ec6c0b67c42da387fb8a45230e'
-                  }
+                  href={`https://dex.cryptocurrencies.ai/chart/spot/CCAI_USDC`}
                 >
-                  Trade on Uniswap
-                </WhiteButton>
+                  Trade on CCAI DEX{' '}
+                </WhiteButton>{' '}
                 <WhiteButton
                   width={'25rem'}
                   style={{ height: '5rem' }}
                   padding={'1rem 4rem'}
                   needHover={true}
-                  href={`https://dex.cryptocurrencies.ai/chart/spot/CCAI_USDC`}
+                  href={
+                    'https://www.dextools.io/app/uniswap/pair-explorer/0x4a9e79219e9417ec6c0b67c42da387fb8a45230e'
+                  }
                 >
-                  Trade on CCAI DEX{' '}
+                  Trade on Uniswap
                 </WhiteButton>
               </Row>
             </TextContainer>

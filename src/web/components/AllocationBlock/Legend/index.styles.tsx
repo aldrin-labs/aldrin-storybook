@@ -13,6 +13,7 @@ const TokenAllocationProgressBarContainer = styled(({ ...props }) => (
 const TokenAllocationProgressBar = styled(
   ({ width, color, height, ...rest }) => <LinearProgress {...rest} />
 )`
+  transition: width 0.5s;
   width: ${(props) => props.width || `100%`};
   background: ${(props) => props.color || '#E7ECF3'};
   border-radius: 1rem;
@@ -22,11 +23,11 @@ const TokenAllocationProgressBar = styled(
 
 const BarTitle = styled(({ ...props }) => <WhiteTitle {...props} />)`
   font-size: ${(props) => props.fontSize || '1.4rem'};
-  width: 6rem;
+  width: 8rem;
 `
 
 const PercentageTitle = styled(({ ...props }) => <BarTitle {...props} />)`
-  width: 8rem;
+  width: 6rem;
   text-align: right;
 `
 

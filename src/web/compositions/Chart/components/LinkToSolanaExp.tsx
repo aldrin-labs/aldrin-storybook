@@ -5,11 +5,11 @@ import styled from 'styled-components'
 import { Loading } from '@sb/components'
 
 const StyleLink = styled.a`
-  padding: 0.3rem 1rem 0rem 1rem;
+  padding: 0.3rem 0rem 0rem 2rem;
 `
 
 const LoaderWrapper = styled.div`
-  padding: 0.3rem 1rem 0rem 1rem;
+  padding: 0.3rem 0rem 0rem 2rem;
 `
 
 const LinkToSolanaExp = ({ marketAddress }: { marketAddress?: string }) => {
@@ -28,8 +28,8 @@ const LinkToSolanaExp = ({ marketAddress }: { marketAddress?: string }) => {
       target="_blank"
     >
       <SvgIcon
-        width="5rem"
-        height="2rem"
+        width="2.5rem"
+        height="2.5rem"
         alt="View on Solan explorer"
         src={SolanaExplorerIcon}
       />

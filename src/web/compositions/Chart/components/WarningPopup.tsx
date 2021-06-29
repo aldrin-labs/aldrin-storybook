@@ -69,10 +69,12 @@ export const WarningPopup = ({
   theme,
   onClose,
   open,
+  isPoolsPage = false,
 }: {
   theme: Theme
   onClose: () => void
   open: boolean
+  isPoolsPage?: boolean
 }) => {
   const [isUserConfident, userConfident] = useState(false)
   return (
@@ -89,12 +91,26 @@ export const WarningPopup = ({
         <Title>Warning!</Title>
         <SvgIcon src={Warning} width={'10%'} height={'auto'} />
       </RowContainer>
-      <RowContainer style={{ marginBottom: '2rem' }}>
-        <WhiteText theme={theme}>
-          On Cryptocurrencies.Ai DEX anyone can create their own market. This
-          market is one of those unofficial custom markets. Use at your own
-          risk.
-        </WhiteText>
+      <RowContainer direction={'column'} style={{ marginBottom: '2rem' }}>
+        {isPoolsPage ? (
+          <>
+            <WhiteText theme={theme}>
+              Anyone can create a token on Solana, it may be fake version of
+              existing tokens, or token, that claim to represent projects that
+              don't have a token.
+            </WhiteText>
+            <WhiteText style={{ marginTop: '2rem' }} theme={theme}>
+              Always check the quoted price and that the pool has sufficient
+              liquidity before trading.
+            </WhiteText>
+          </>
+        ) : (
+          <WhiteText theme={theme}>
+            On Cryptocurrencies.Ai DEX anyone can create their own market and
+            pool for this market. This pool is one of those unofficial custom
+            pools. Use at your own risk.
+          </WhiteText>
+        )}
       </RowContainer>
       <RowContainer justify="space-between" style={{ marginBottom: '2rem' }}>
         <Row width={'calc(45%)'} justify="space-between" margin="2rem 0 0 0">
