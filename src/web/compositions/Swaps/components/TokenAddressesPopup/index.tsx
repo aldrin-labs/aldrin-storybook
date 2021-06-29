@@ -17,12 +17,12 @@ import { notify } from '@sb/dexUtils/notifications'
 const StyledPaper = styled(Paper)`
   height: auto;
   padding: 2rem 0;
-  width: 50rem;
+  width: 65rem;
   box-shadow: 0px 0px 0.8rem 0px rgba(0, 0, 0, 0.45);
   background: #222429;
   border-radius: 0.8rem;
   overflow: hidden;
-  padding: 2rem;
+  padding: 3rem 2rem;
 `
 
 export const TokenAddressesPopup = ({
@@ -65,7 +65,7 @@ export const TokenAddressesPopup = ({
             height={'2rem'}
             margin={'0 1rem 0 0'}
           />{' '}
-          <Text>{getTokenNameByMintAddress(baseTokenMintAddress)}</Text>
+          <Text>{baseTokenMintAddress}</Text>
         </Row>
         <Row>
           <Text
@@ -92,7 +92,7 @@ export const TokenAddressesPopup = ({
             height={'2rem'}
             margin={'0 1rem 0 0'}
           />{' '}
-          <Text>{getTokenNameByMintAddress(quoteTokenMintAddress)}</Text>
+          <Text>{quoteTokenMintAddress}</Text>
         </Row>{' '}
         <Row>
           <Text

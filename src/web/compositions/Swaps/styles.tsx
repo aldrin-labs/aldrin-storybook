@@ -8,3 +8,13 @@ export const Card = styled(BlockTemplate)`
   border-top: none;
   box-shadow: none;
 `
+export const TokenLabel = styled.div`
+  width: auto;
+  padding: 0.5rem 1rem;
+  font-family: Avenir Next Medium;
+  color: #f8faff;
+  border-radius: 1.3rem;
+  background: #f69894;
+  font-size: 1.4rem;
+  margin-left: 1rem;
+`
