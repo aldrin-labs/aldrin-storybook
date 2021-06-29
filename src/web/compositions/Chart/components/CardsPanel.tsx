@@ -448,7 +448,7 @@ const TopBar = ({ theme }) => {
             theme={theme}
             fontSize="1.2rem"
             onClick={() => {
-              wallet.disconnect()
+              wallet?.disconnect && wallet.disconnect()
             }}
             style={{
               position: 'absolute',
