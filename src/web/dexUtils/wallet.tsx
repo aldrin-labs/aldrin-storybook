@@ -74,12 +74,12 @@ export const WALLET_PROVIDERS = [
     icon: `https://www.phantom.app/img/logo.png`,
     adapter: PhantomWalletAdapter,
   },
-  {
-    name: 'MathWallet',
-    url: 'https://www.mathwallet.org',
-    adapter: MathWalletAdapter,
-    icon: Mathwallet,
-  },
+  // {
+  //   name: 'MathWallet',
+  //   url: 'https://www.mathwallet.org',
+  //   adapter: MathWalletAdapter,
+  //   icon: Mathwallet,
+  // },
   {
     name: 'Solong',
     url: 'https://solongwallet.com',
