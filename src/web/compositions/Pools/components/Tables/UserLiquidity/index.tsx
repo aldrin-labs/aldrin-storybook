@@ -65,10 +65,14 @@ const UserLiquitidyTable = ({
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
 }) => {
-  const userTokens = allTokensData.map((el) => el.mint)
+  const allTokensDataMap = new Map()
 
-  const usersPools = getPoolsInfo.filter((el) =>
-    userTokens.includes(el.poolTokenMint)
+  allTokensData.forEach((el) => allTokensDataMap.set(el.mint, el))
+
+  const usersPools = getPoolsInfo.filter(
+    (el) =>
+      allTokensDataMap.has(el.poolTokenMint) &&
+      allTokensDataMap.get(el.poolTokenMint).amount > 0
   )
 
   const { getFeesEarnedByAccount = [] } = getFeesEarnedByAccountQuery || {
@@ -133,21 +137,21 @@ const UserLiquitidyTable = ({
               <RowTd>Pool</RowTd>
               <RowTd>TVL</RowTd>
               <RowTd>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <DarkTooltip
-                    title={
-                      'Annualized, non-compounded return on investment based on the fees earned in the last 24 hours, relative to the size of the pool.'
-                    }
-                  >
+                <DarkTooltip
+                  title={
+                    'Annualized, non-compounded return on investment based on the fees earned in the last 24 hours, relative to the size of the pool.'
+                  }
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
                     <SvgIcon
                       width={'1.2rem'}
                       height={'1.2rem'}
                       style={{ marginRight: '1rem' }}
                       src={TooltipIcon}
                     />
-                  </DarkTooltip>
-                  APY (24h)
-                </div>
+                    APY (24h)
+                  </div>
+                </DarkTooltip>
               </RowTd>
               <RowTd>Your Liquidity (Including Fees)</RowTd>
               <RowTd>Total Fees Earned</RowTd>
@@ -258,7 +262,9 @@ const UserLiquitidyTable = ({
                       </TextColumnContainer>
                     </RowDataTd>
                     <RowDataTd>
-                      <RowDataTdText theme={theme}>{stripDigitPlaces(el.apy24h, 6)}%</RowDataTdText>
+                      <RowDataTdText theme={theme}>
+                        {stripDigitPlaces(el.apy24h, 6)}%
+                      </RowDataTdText>
                     </RowDataTd>
                     <RowDataTd>
                       <TextColumnContainer>
@@ -285,9 +291,7 @@ const UserLiquitidyTable = ({
                     </RowDataTd>
                     <RowDataTd>
                       <TextColumnContainer>
-                        <RowDataTdTopText
-                          theme={theme}
-                        >
+                        <RowDataTdTopText theme={theme}>
                           $
                           {stripDigitPlaces(
                             getFeesEarnedByAccount.find(

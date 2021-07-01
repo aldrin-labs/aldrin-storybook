@@ -193,15 +193,6 @@ export const CardsPanel = ({ theme }) => {
               {' '}
               Home
             </NavLinkButton>
-            {/* <NavLinkButton
-              theme={theme}
-              data-tut="farming"
-              pathname={location.pathname}
-              page={'wallet'}
-              component={(props) => <a href={CCAIProviderURL} {...props} />}
-            >
-              Wallet
-            </NavLinkButton> */}
             <NavLinkButton
               theme={theme}
               pathname={location.pathname}
@@ -261,7 +252,17 @@ export const CardsPanel = ({ theme }) => {
                 {' '}
                 Swaps
               </NavLinkButton>
-            )}
+            )}{' '}
+            <NavLinkButton
+              style={{ color: '#386DE6' }}
+              theme={theme}
+              data-tut="farming"
+              pathname={location.pathname}
+              page={'wallet'}
+              component={(props) => <a href={CCAIProviderURL} {...props} />}
+            >
+              SunWallet
+            </NavLinkButton>
             <TokenLink
               href="https://ccai.cryptocurrencies.ai/"
               target="_blank"
@@ -448,7 +449,7 @@ const TopBar = ({ theme }) => {
             theme={theme}
             fontSize="1.2rem"
             onClick={() => {
-              wallet.disconnect()
+              wallet?.disconnect && wallet.disconnect()
             }}
             style={{
               position: 'absolute',
