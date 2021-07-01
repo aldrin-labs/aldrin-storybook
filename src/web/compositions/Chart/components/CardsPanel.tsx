@@ -193,7 +193,7 @@ export const CardsPanel = ({ theme }) => {
               {' '}
               Home
             </NavLinkButton>
-            <NavLinkButton
+            {/* <NavLinkButton
               theme={theme}
               data-tut="farming"
               pathname={location.pathname}
@@ -201,7 +201,7 @@ export const CardsPanel = ({ theme }) => {
               component={(props) => <a href={CCAIProviderURL} {...props} />}
             >
               Wallet
-            </NavLinkButton>
+            </NavLinkButton> */}
             <NavLinkButton
               theme={theme}
               pathname={location.pathname}
@@ -232,7 +232,7 @@ export const CardsPanel = ({ theme }) => {
               {' '}
               Analytics
             </NavLinkButton>
-            <NavLinkButton
+            {/* <NavLinkButton
               theme={theme}
               data-tut="farming"
               page={'addressbook'}
@@ -241,7 +241,7 @@ export const CardsPanel = ({ theme }) => {
             >
               {' '}
               Addressbook
-            </NavLinkButton>
+            </NavLinkButton> */}
             <NavLinkButton
               theme={theme}
               page={'/pools'}

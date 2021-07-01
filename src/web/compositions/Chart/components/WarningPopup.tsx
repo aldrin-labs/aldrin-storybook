@@ -70,11 +70,13 @@ export const WarningPopup = ({
   onClose,
   open,
   isPoolsPage = false,
+  isSwapPage = false,
 }: {
   theme: Theme
   onClose: () => void
   open: boolean
   isPoolsPage?: boolean
+  isSwapPage?: boolean
 }) => {
   const [isUserConfident, userConfident] = useState(false)
   return (
@@ -92,7 +94,7 @@ export const WarningPopup = ({
         <SvgIcon src={Warning} width={'10%'} height={'auto'} />
       </RowContainer>
       <RowContainer direction={'column'} style={{ marginBottom: '2rem' }}>
-        {isPoolsPage ? (
+        {isSwapPage ? (
           <>
             <WhiteText theme={theme}>
               Anyone can create a token on Solana, it may be fake version of
@@ -104,6 +106,12 @@ export const WarningPopup = ({
               liquidity before trading.
             </WhiteText>
           </>
+        ) : isPoolsPage ? (
+          <WhiteText theme={theme}>
+            On Cryptocurrencies.Ai DEX anyone can create their own market and
+            pool for this market. This pool is one of those unofficial custom
+            pools. Use at your own risk.
+          </WhiteText>
         ) : (
           <WhiteText theme={theme}>
             On Cryptocurrencies.Ai DEX anyone can create their own market and
