@@ -23,7 +23,7 @@ const LinkToSolanaExp = ({ marketAddress }: { marketAddress?: string }) => {
 
   return (
     <StyleLink
-      href={`https://explorer.solana.com/address/${marketAddress}`}
+      href={`https://solanabeach.io/address/${marketAddress}`}
       rel="noopener noreferrer"
       target="_blank"
     >
