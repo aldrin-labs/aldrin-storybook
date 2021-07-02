@@ -51,10 +51,14 @@ import { MarketProvider } from '@sb/dexUtils/markets'
 import { PreferencesProvider } from '@sb/dexUtils/preferences'
 import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
 import DevUrlPopup from '@sb/components/PopupForDevUrl'
+import WalletMigrationPopup from '@sb/components/WalletMigrationPopup'
 
 const version = `10.9.130`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
 const isNotificationDone = localStorage.getItem('isNotificationDone')
+const isWalletMigrationToNewUrlPopupDone = localStorage.getItem(
+  'isWalletMigrationToNewUrlPopupDone'
+)
 const localPassword = localStorage.getItem('localPassword')
 const currentVersion = localStorage.getItem('version')
 
@@ -76,6 +80,9 @@ const AppRaw = ({
   location: { pathname: currentPage, search },
 }: any) => {
   const [isDevUrlPopupOpen, openDevUrlPopup] = useState(true)
+  const [isMigrationToNewUrlPopupOpen, openMigrationToNewUrlPopup] = useState(
+    true
+  )
 
   const isChartPage = /chart/.test(currentPage)
 
@@ -163,6 +170,14 @@ const AppRaw = ({
                           open={isDevUrlPopupOpen}
                           close={() => {
                             openDevUrlPopup(false)
+                          }}
+                        />
+                      )}
+                      {!isWalletMigrationToNewUrlPopupDone && (
+                        <WalletMigrationPopup
+                          open={isMigrationToNewUrlPopupOpen}
+                          close={() => {
+                            openMigrationToNewUrlPopup(false)
                           }}
                         />
                       )}
