@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { Link } from 'react-router-dom'
 
 export const TextContainer = styled(RowContainer)`
   position: absolute;
@@ -365,4 +366,11 @@ export const ThinText = styled(Description)`
     line-height: 3rem;
     font-size: 1.8rem;
   }
+`
+export const NewLink = styled(Link)`
+  white-space: nowrap;
+  font-family: Avenir Next Demi;
+  line-height: 3rem;
+  font-size: 1.8rem;
+  color: #fbf2f2;
 `

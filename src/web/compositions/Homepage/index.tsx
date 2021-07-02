@@ -1,445 +1,268 @@
 import React from 'react'
 
-import {
-  MainContainer,
-  CardContainer,
-  WhiteButton,
-  Header,
-  HeaderContainer,
-  Description,
-  Socials,
-  ButtonContainer,
-  TwitterLink,
-  DiscordLink,
-  TelegramLink,
-  MainContainerForSmallScreens,
-  TextContainer,
-  BlockForText,
-  ThinText,
-  BannerHeader,
-} from './styles'
-import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { Text } from '../../compositions/Addressbook/index'
+import { MainContainer, MainContainerForSmallScreens, NewLink } from './styles'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import newBanner from '@icons/newBanner.svg'
+import newBannerForSmallScreens from '@icons/newBannerForSmallScreens.svg'
+import poolsIcon from '@icons/poolsIcon.svg'
+import swapsIcon from '@icons/swapsIcon.svg'
+import rebalanceIcon from '@icons/rebalanceIcon.svg'
+import tradingIcon from '@icons/tradingIcon.svg'
+import sunWalletIcon from '@icons/sunWalletIcon.svg'
+import analyticsIcon from '@icons/analyticsicon.svg'
+import serumCCAILogo from '@icons/serumCCAILogo.svg'
 
 import SvgIcon from '@sb/components/SvgIcon'
-
-import Banner from '@icons/Banner.svg'
-import ArrowCard from '@icons/arrows.svg'
-import PoolCard from '@icons/Pool.svg'
-import WalletCard from '@icons/walletCard.svg'
-import Candies from '../../../icons/candies.svg'
-import ChartCard from '@icons/chart.svg'
-import Serum from '@icons/Logo&Serum.svg'
-import Chrome from '@icons/chrome.svg'
-
-import smallChartCard from '@icons/smallChartBanner.svg'
-import smallBanner from '@icons/smallBanner.svg'
-import smallPoolCard from '@icons/smallPools.svg'
-import smallSwapsCard from '@icons/smallSwaps.svg'
-import smallWalletCard from '@icons/smallWallet.svg'
-import smallCandies from '@icons/smallCandies.svg'
-import SerumCCAILogo from '@icons/serumCCAILogo.svg'
-import Logo from '@icons/Banner_coming-soon.svg'
-
-import { CCAIProviderURL } from '@sb/dexUtils/utils'
 
 export const Homepage = () => {
   return (
     <>
       <MainContainer>
-        <RowContainer>
-          <CardContainer
-            style={{ marginTop: '3rem', minHeight: '25rem' }}
-            width={'calc(100% - 5.5rem)'}
+        <RowContainer padding={'5rem 25rem'} justify={'space-between'}>
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://twitter.com/CCAI_Official"
           >
-            <SvgIcon src={Banner} width={'100%'} height={'100%'} />
-            <TextContainer>
-              {' '}
-              <Row style={{ flexWrap: 'nowrap' }} width={'60%'}>
-                <SvgIcon width={'10%'} height={'10%'} src={Logo} />
-                <BlockForText>
-                  <BannerHeader
-                    style={{
-                      fontFamily: 'Avenir Next Thin',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    Trade{' '}
-                    <span
-                      style={{
-                        fontFamily: 'Avenir Next Bold',
-                      }}
-                    >
-                      CCAI/USDC
-                    </span>{' '}
-                    on CCAI DEX and{' '}
-                    <span
-                      style={{
-                        padding: '0 0 0.5rem 0',
-                        fontFamily: 'Avenir Next Bold',
-                      }}
-                    >
-                      WWT/ETH*
-                    </span>{' '}
-                    on Uniswap!{' '}
-                  </BannerHeader>
-                  <RowContainer margin={'2rem 0 0 0'} direction={'column'}>
-                    <ThinText>
-                      *CCAI token is not a native ERC20 token and was wrapped by
-                      Wormhole Bridge. ERC20 CCAI token is called WWT.
-                    </ThinText>
-                    <ThinText>
-                      <a
-                        style={{
-                          textDecoration: 'underline',
-                          color: '#fbf2f2',
-                        }}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href="https://ccaiofficial.medium.com/how-to-transfer-ccai-token-from-erc20-to-solana-d36d835213c1"
-                      >
-                        Learn how to transfer CCAI Token from ERC20 to Solana.
-                      </a>
-                    </ThinText>
-                  </RowContainer>
-                </BlockForText>
-              </Row>
-              <Row direction={'column'}>
-                {' '}
-                <WhiteButton
-                  width={'25rem'}
-                  style={{ margin: '0 0 2rem 0', height: '5rem' }}
-                  padding={'1rem 4rem'}
-                  needHover={true}
-                  href={`https://dex.cryptocurrencies.ai/chart/spot/CCAI_USDC`}
-                >
-                  Trade on CCAI DEX{' '}
-                </WhiteButton>{' '}
-                <WhiteButton
-                  width={'25rem'}
-                  style={{ height: '5rem' }}
-                  padding={'1rem 4rem'}
-                  needHover={true}
-                  href={
-                    'https://www.dextools.io/app/uniswap/pair-explorer/0x4a9e79219e9417ec6c0b67c42da387fb8a45230e'
-                  }
-                >
-                  Trade on Uniswap
-                </WhiteButton>
-              </Row>
-            </TextContainer>
-          </CardContainer>
-        </RowContainer>
-        <RowContainer align={'flex-start'} style={{ marginTop: '1.5rem' }}>
-          <Row
-            direction={'column'}
-            height={'60%'}
-            width={'calc((98.5% - 4rem) / 3)'}
-          >
-            <CardContainer style={{ paddingRight: '1.5rem' }}>
-              <HeaderContainer>
-                <Header fontSize={'6rem'}>DEX</Header>
-                <Description fontSize={'2.25rem'} width={'75%'}>
-                  One of the fastest DEXs in the world, built on the Serum and
-                  Solana technology. User-friendly DeFi experience with low
-                  fees.
-                </Description>
-                <WhiteButton
-                  needHover={true}
-                  style={{ marginBottom: '-1rem' }}
-                  width={'18rem'}
-                  padding={'0 3rem'}
-                  href={'/chart'}
-                >
-                  Trade Now
-                  <svg
-                    width="20"
-                    height="8"
-                    viewBox="0 0 20 8"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M19.3536 4.35355C19.5488 4.15829 19.5488 3.84171 19.3536 3.64645L16.1716 0.464466C15.9763 0.269204 15.6597 0.269204 15.4645 0.464466C15.2692 0.659728 15.2692 0.976311 15.4645 1.17157L18.2929 4L15.4645 6.82843C15.2692 7.02369 15.2692 7.34027 15.4645 7.53553C15.6597 7.7308 15.9763 7.7308 16.1716 7.53553L19.3536 4.35355ZM0 4.5H19V3.5H0V4.5Z"
-                      fill="#F8FAFF"
-                    />
-                  </svg>
-                </WhiteButton>
-              </HeaderContainer>
-              <SvgIcon src={Candies} width={'100%'} height={'100%'} />
-            </CardContainer>
-          </Row>
-          <Row
-            height={'60%'}
-            direction={'column'}
-            width={'calc((100% - 4rem) / 3)'}
-            style={{ paddingRight: '1.5rem' }}
-          >
-            <CardContainer
-              style={{ marginBottom: '1.5rem', marginTop: '0.1rem' }}
-            >
-              <SvgIcon src={WalletCard} width={'100%'} height={'100%'} />
-              <HeaderContainer align={'center'} direction={'row'}>
-                <RowContainer justify={'end'} height={'100%'}>
-                  <Header style={{ marginTop: '0.8rem' }}>Wallet</Header>
-                  <Description>
-                    Hold and trade the top cryptocurrencies on{' '}
-                    <strong>CCAI  Wallet™</strong>.
-                  </Description>
-                </RowContainer>
-                <Row direction={'column'}>
-                  <WhiteButton
-                    // style={{ marginBottom: '3rem' }}
-                    needHover={true}
-                    width={'22rem'}
-                    padding={'0 2rem'}
-                    href={`${CCAIProviderURL}/`}
-                  >
-                    Go to Wallet
-                    <svg
-                      width="20"
-                      height="8"
-                      viewBox="0 0 20 8"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M19.3536 4.35355C19.5488 4.15829 19.5488 3.84171 19.3536 3.64645L16.1716 0.464466C15.9763 0.269204 15.6597 0.269204 15.4645 0.464466C15.2692 0.659728 15.2692 0.976311 15.4645 1.17157L18.2929 4L15.4645 6.82843C15.2692 7.02369 15.2692 7.34027 15.4645 7.53553C15.6597 7.7308 15.9763 7.7308 16.1716 7.53553L19.3536 4.35355ZM0 4.5H19V3.5H0V4.5Z"
-                        fill="#F8FAFF"
-                      />
-                    </svg>
-                  </WhiteButton>
-                  {/* <WhiteButton
-                  style={{ cursor: 'pointer' }}
-                  needHover={true}
-                  width={'22rem'}
-                  padding={'0 2rem'}
-                >
-                  Install Plug-In
-                  <SvgIcon src={Chrome} width={'2.3rem'} height={'2.3rem'} />
-                </WhiteButton> */}
-                </Row>
-              </HeaderContainer>
-            </CardContainer>
-            <CardContainer>
-              <SvgIcon src={ChartCard} width={'100%'} height={'100%'} />
-              <HeaderContainer align={'center'} direction={'row'}>
-                <RowContainer justify={'end'} height={'100%'}>
-                  <Header style={{ marginTop: '0.8rem' }}>Analytics</Header>
-                  <Description style={{ marginBottom: '1rem' }}>
-                    Transparent analysis of all markets on Serum in simple
-                    charts.
-                  </Description>
-                </RowContainer>
-                <WhiteButton
-                  needHover={true}
-                  width={'30rem'}
-                  padding={'0 2rem'}
-                  href={'/analytics'}
-                >
-                  View Analytics
-                  <svg
-                    width="20"
-                    height="8"
-                    viewBox="0 0 20 8"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M19.3536 4.35355C19.5488 4.15829 19.5488 3.84171 19.3536 3.64645L16.1716 0.464466C15.9763 0.269204 15.6597 0.269204 15.4645 0.464466C15.2692 0.659728 15.2692 0.976311 15.4645 1.17157L18.2929 4L15.4645 6.82843C15.2692 7.02369 15.2692 7.34027 15.4645 7.53553C15.6597 7.7308 15.9763 7.7308 16.1716 7.53553L19.3536 4.35355ZM0 4.5H19V3.5H0V4.5Z"
-                      fill="#F8FAFF"
-                    />
-                  </svg>
-                </WhiteButton>
-              </HeaderContainer>
-            </CardContainer>
-          </Row>
-          <Row
-            height={'60%'}
-            direction={'column'}
-            width={'calc(((100% - 4rem) / 3) - 1.7rem)'}
-          >
-            <CardContainer
-              style={{ marginBottom: '1.5rem', marginTop: '0.1rem' }}
-            >
-              <SvgIcon src={ArrowCard} width={'100%'} height={'100%'} />
-              <HeaderContainer align={'center'} direction={'row'}>
-                <RowContainer justify={'end'} height={'100%'}>
-                  <Header>Swap</Header>
-                  <Description style={{ marginBottom: '-1rem' }}>
-                    Low-fee and instant Swaps. Made possible by Solana.
-                  </Description>
-                </RowContainer>
-                <WhiteButton
-                  style={{ cursor: 'auto' }}
-                  needHover={false}
-                  width={'30rem'}
-                  padding={'0 2rem'}
-                >
-                  Coming Soon
-                </WhiteButton>
-              </HeaderContainer>
-            </CardContainer>
-            <CardContainer>
-              <SvgIcon src={PoolCard} width={'100%'} height={'100%'} />
-              <HeaderContainer align={'center'} direction={'row'}>
-                <RowContainer justify={'end'} height={'100%'}>
-                  <Header>Pools</Header>
-                  <Description style={{ marginBottom: '-1rem' }}>
-                    Provide liquidity and earn a fees.
-                  </Description>
-                </RowContainer>
-                <WhiteButton
-                  style={{ cursor: 'auto' }}
-                  needHover={false}
-                  width={'30rem'}
-                  padding={'0 2rem'}
-                >
-                  Coming Soon
-                </WhiteButton>
-              </HeaderContainer>
-            </CardContainer>
-          </Row>
-        </RowContainer>
-        <RowContainer justify={'space-between'}>
-          <Row
-            width={'18%'}
-            height={'7rem'}
-            justify={'space-around'}
-            style={{ marginLeft: '2rem' }}
-          >
-            <Text fontSize={'1.7rem'}>In partnership with</Text>
-            {/* <SvgIcon src={Alameda} height={'auto'} width={'40%'} /> */}
-            <SvgIcon src={Serum} height={'auto'} width={'28%'} />
-          </Row>
-          <Socials justify={'space-around'} width={'20%'}>
-            <TwitterLink />
-            <TelegramLink />
-            <DiscordLink />
-          </Socials>
-        </RowContainer>
-      </MainContainer>
-      <MainContainerForSmallScreens
-        style={{ overflow: 'scroll', padding: '5rem 5rem' }}
-      >
-        <RowContainer justify={'flex-start'}>
-          {' '}
-          <img
-            style={{
-              height: '100%',
-              width: '25rem',
-            }}
-            src={SerumCCAILogo}
-          />
-        </RowContainer>
-        {/* <CardContainer style={{ margin: '4rem 0', height: 'auto' }}>
-          <SvgIcon src={smallBanner} width={'100%'} height={'100%'} />
-          <WhiteButton
-            style={{
-              position: 'absolute',
-              right: '5rem',
-              bottom: '4rem',
-              height: '7rem',
-              fontSize: '2.7rem',
-              borderRadius: '2.4rem',
-            }}
-            width={'26rem'}
-            padding={'0 3rem'}
-            needHover={true}
-            href={`https://ccai.cryptocurrencies.ai/`}
-          >
-            Learn More
             <svg
-              width="20"
-              height="8"
-              viewBox="0 0 20 8"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="12" cy="12" r="12" fill="#EDF0F2" />
+              <path
+                d="M12 0C5.37321 0 0 5.37321 0 12C0 18.6268 5.37321 24 12 24C18.6268 24 24 18.6268 24 12C24 5.37321 18.6268 0 12 0ZM17.767 9.04554C17.775 9.17143 17.775 9.30268 17.775 9.43125C17.775 13.3634 14.7804 17.8929 9.30804 17.8929C7.62054 17.8929 6.05625 17.4027 4.73839 16.5589C4.97946 16.5857 5.20982 16.5964 5.45625 16.5964C6.84911 16.5964 8.12946 16.125 9.15 15.3268C7.84286 15.3 6.74464 14.4429 6.36964 13.2643C6.82768 13.3313 7.24018 13.3313 7.71161 13.2107C7.03855 13.074 6.43359 12.7084 5.99951 12.1762C5.56542 11.644 5.32898 10.9779 5.33036 10.2911V10.2536C5.72411 10.4759 6.1875 10.6125 6.67232 10.6313C6.26476 10.3596 5.93051 9.99164 5.69923 9.5599C5.46794 9.12817 5.34676 8.64603 5.34643 8.15625C5.34643 7.60179 5.49107 7.09554 5.75089 6.65625C6.49795 7.5759 7.43017 8.32806 8.48696 8.86384C9.54375 9.39961 10.7014 9.70702 11.8848 9.76607C11.4643 7.74375 12.975 6.10714 14.7911 6.10714C15.6482 6.10714 16.4196 6.46607 16.9634 7.04464C17.6357 6.91875 18.2786 6.66696 18.8518 6.32946C18.6295 7.01786 18.1634 7.59911 17.5446 7.96607C18.1446 7.90179 18.7232 7.73571 19.2589 7.50268C18.8545 8.09732 18.3482 8.625 17.767 9.04554Z"
+                fill="#366CE5"
+              />
+            </svg>
+          </a>
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href={'https://t.me/CCAI_Official'}
+          >
+            <svg
+              width="24"
+              height="25"
+              viewBox="0 0 24 25"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="12" cy="12.6484" r="12" fill="#EDF0F2" />
+              <path
+                d="M12 0.648438C5.37058 0.648438 0 6.01979 0 12.6484C0 19.2771 5.37135 24.6484 12 24.6484C18.6294 24.6484 24 19.2771 24 12.6484C24 6.01979 18.6286 0.648438 12 0.648438ZM17.8939 8.8696L15.9244 18.1506C15.7788 18.8087 15.3871 18.9682 14.8405 18.6585L11.8405 16.4474L10.3935 17.841C10.2341 18.0004 10.0986 18.1359 9.7889 18.1359L10.0018 15.0825L15.5613 10.0595C15.8036 9.84663 15.5079 9.72586 15.1881 9.93876L8.31716 14.2642L5.35587 13.3398C4.71252 13.137 4.69781 12.6964 5.49135 12.3868L17.0609 7.92508C17.5982 7.73153 18.0674 8.05592 17.8932 8.86882L17.8939 8.8696Z"
+                fill="#366CE5"
+              />
+            </svg>
+          </a>
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://discord.gg/2EaKvrs"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <ellipse
+                cx="12.0437"
+                cy="12"
+                rx="11.9565"
+                ry="12"
+                fill="#EDF0F2"
+              />
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M23.9991 12C23.9991 18.6274 18.6267 24 11.9996 24C5.37238 24 0 18.6274 0 12C0 5.37258 5.37238 0 11.9996 0C18.6267 0 23.9991 5.37258 23.9991 12ZM10.0011 11.8333C9.90904 11.8333 9.83441 11.9079 9.83441 12C9.83441 12.0921 9.90904 12.1667 10.0011 12.1667C10.0931 12.1667 10.1677 12.0921 10.1677 12C10.1677 11.9079 10.0931 11.8333 10.0011 11.8333ZM8.83441 12C8.83441 11.3557 9.35672 10.8333 10.0011 10.8333C10.6454 10.8333 11.1677 11.3557 11.1677 12C11.1677 12.6443 10.6454 13.1667 10.0011 13.1667C9.35672 13.1667 8.83441 12.6443 8.83441 12ZM13.8343 12C13.8343 11.9079 13.9089 11.8333 14.0009 11.8333C14.0929 11.8333 14.1675 11.9079 14.1675 12C14.1675 12.0921 14.0929 12.1667 14.0009 12.1667C13.9089 12.1667 13.8343 12.0921 13.8343 12ZM14.0009 10.8333C13.3566 10.8333 12.8343 11.3557 12.8343 12C12.8343 12.6443 13.3566 13.1667 14.0009 13.1667C14.6452 13.1667 15.1675 12.6443 15.1675 12C15.1675 11.3557 14.6452 10.8333 14.0009 10.8333ZM12.0009 8.99998C11.1484 8.99998 10.2813 9.15416 9.13833 9.48074C8.87281 9.55661 8.59607 9.40286 8.5202 9.13735C8.44434 8.87183 8.59808 8.59509 8.8636 8.51922C9.29513 8.39592 9.69722 8.29377 10.0812 8.21365L9.6805 7.2118C8.94825 7.32103 8.27041 7.52275 7.59898 7.98027C7.00727 9.77399 6.68754 11.3225 6.56316 12.5504C6.43503 13.8152 6.51978 14.6867 6.68496 15.1373C6.87883 15.5396 7.16299 15.9809 7.49294 16.3155C7.79861 16.6255 8.09194 16.7934 8.35052 16.827C8.36672 16.8124 8.38645 16.7933 8.40953 16.7692C8.51044 16.6636 8.63368 16.5039 8.7544 16.3145C8.87431 16.1265 8.9824 15.9238 9.05883 15.7374C9.07412 15.7001 9.08753 15.6649 9.09922 15.632C8.91147 15.5859 8.72199 15.5355 8.53047 15.4808C8.26495 15.4049 8.11121 15.1282 8.18707 14.8626C8.26294 14.5971 8.53968 14.4434 8.8052 14.5192C11.0487 15.1603 12.9534 15.1603 15.1969 14.5192C15.4624 14.4434 15.7392 14.5971 15.815 14.8626C15.8909 15.1282 15.7371 15.4049 15.4716 15.4808C15.2833 15.5346 15.0969 15.5842 14.9123 15.6296C14.9237 15.6583 14.9367 15.6888 14.9512 15.721C15.0349 15.906 15.1536 16.1082 15.2855 16.2966C15.418 16.486 15.5538 16.6469 15.6654 16.7544C15.7001 16.7878 15.7285 16.8122 15.7502 16.8293C16.0427 16.801 16.366 16.6247 16.695 16.3069C17.0424 15.9714 17.3407 15.5302 17.5438 15.1291C17.7155 14.6825 17.8047 13.8157 17.6703 12.5529C17.5399 11.3274 17.2046 9.78092 16.5837 7.98881C15.8649 7.52388 15.1063 7.31978 14.3222 7.20972L13.9206 8.21368C14.3046 8.2938 14.7066 8.39594 15.1381 8.51922C15.4036 8.59509 15.5574 8.87183 15.4815 9.13735C15.4056 9.40286 15.1289 9.55661 14.8634 9.48074C13.7204 9.15416 12.8533 8.99998 12.0009 8.99998ZM10.0844 15.8364C10.0552 15.9332 10.0206 16.0276 9.98406 16.1168C9.88108 16.3679 9.74335 16.6235 9.5976 16.8521C9.45267 17.0794 9.29042 17.2948 9.13259 17.46C9.05446 17.5418 8.96648 17.6228 8.87264 17.6871C8.79434 17.7408 8.64106 17.8333 8.44636 17.8333C7.77459 17.8333 7.20376 17.4465 6.78088 17.0176C6.34907 16.5797 6.00234 16.0297 5.77304 15.5484C5.76727 15.5362 5.76198 15.5239 5.7572 15.5113C5.50347 14.8452 5.43361 13.7787 5.56825 12.4496C5.7048 11.1016 6.05783 9.42609 6.70244 7.50743C6.73536 7.40945 6.79783 7.32408 6.88126 7.26307C7.90554 6.51402 8.93268 6.28113 9.94632 6.16966C10.1696 6.14511 10.3818 6.27244 10.4652 6.48097L11.0929 8.05031C11.3988 8.01694 11.6991 7.99998 12.0009 7.99998C12.3026 7.99998 12.603 8.01694 12.9089 8.05033L13.5367 6.48097C13.6198 6.273 13.8312 6.14573 14.0539 6.16948C15.0883 6.27982 16.2146 6.5096 17.2866 7.25641C17.3725 7.31625 17.4374 7.40155 17.4723 7.50027C18.1497 9.41993 18.521 11.097 18.6647 12.4471C18.8063 13.7777 18.7332 14.8487 18.465 15.5191C18.4598 15.532 18.4541 15.5446 18.4479 15.5571C18.2065 16.0395 17.8421 16.5893 17.3897 17.0262C16.9446 17.456 16.3538 17.8333 15.6675 17.8333C15.4799 17.8333 15.3277 17.7486 15.2458 17.6964C15.1487 17.6345 15.0558 17.5557 14.9717 17.4747C14.8021 17.3114 14.6254 17.0974 14.4662 16.8701C14.3065 16.6418 14.1543 16.3857 14.0401 16.1332C13.9978 16.0395 13.9572 15.9391 13.9235 15.8354C12.6243 16.0545 11.3834 16.0549 10.0844 15.8364ZM15.7954 16.86C15.7954 16.8602 15.793 16.8591 15.788 16.8561C15.7928 16.8583 15.7953 16.8598 15.7954 16.86ZM8.3005 16.8663C8.29911 16.8671 8.29839 16.8676 8.29837 16.8678C8.29832 16.868 8.30078 16.8667 8.30592 16.8632C8.30357 16.8645 8.30176 16.8655 8.3005 16.8663Z"
+                fill="#366CE5"
+              />
+            </svg>
+          </a>
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://ccaiofficial.medium.com/"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="M19.3536 4.35355C19.5488 4.15829 19.5488 3.84171 19.3536 3.64645L16.1716 0.464466C15.9763 0.269204 15.6597 0.269204 15.4645 0.464466C15.2692 0.659728 15.2692 0.976311 15.4645 1.17157L18.2929 4L15.4645 6.82843C15.2692 7.02369 15.2692 7.34027 15.4645 7.53553C15.6597 7.7308 15.9763 7.7308 16.1716 7.53553L19.3536 4.35355ZM0 4.5H19V3.5H0V4.5Z"
-                fill="#F8FAFF"
+                d="M24.0002 12C24.0002 18.6274 18.6277 24 12.0002 24C5.37283 24 0.000244141 18.6274 0.000244141 12C0.000244141 5.37258 5.37283 0 12.0002 0C18.6277 0 24.0002 5.37258 24.0002 12Z"
+                fill="#406EDC"
+              />
+              <path
+                d="M7.42321 8.78998C7.43812 8.63535 7.38195 8.48252 7.27195 8.37845L6.1515 6.96164V6.75H9.6305L12.3196 12.9405L14.6837 6.75H18.0002V6.96164L17.0423 7.92578C16.9597 7.99186 16.9187 8.10047 16.9358 8.20797V15.292C16.9187 15.3995 16.9597 15.5081 17.0423 15.5742L17.9778 16.5384V16.75H13.272V16.5384L14.2411 15.5507C14.3364 15.4508 14.3364 15.4214 14.3364 15.2685V9.54247L11.6417 16.7265H11.2776L8.1403 9.54247V14.3573C8.11414 14.5597 8.17819 14.7635 8.31397 14.9099L9.57447 16.5148V16.7265H6.00024V16.5148L7.26075 14.9099C7.39554 14.7633 7.45585 14.5581 7.42321 14.3573V8.78998Z"
+                fill="white"
               />
             </svg>
-          </WhiteButton>
-        </CardContainer> */}
-        <CardContainer height={'auto'} style={{ margin: '4rem 0' }}>
-          <SvgIcon src={smallCandies} width={'100%'} height={'100%'} />
-          <HeaderContainer style={{ height: '86%', width: '66%' }}>
-            <Header fontSize={'6rem'} style={{ lineHeight: 'auto' }}>
-              DEX
-            </Header>
-            <Description
-              fontSize={'2.6rem'}
-              width={'100%'}
-              style={{ lineHeight: '6rem', fontSize: '2.6rem' }}
+          </a>
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://www.youtube.com/channel/UCyUM72zWism4-LdA2J4bwew"
+          >
+            <svg
+              width="24"
+              height="25"
+              viewBox="0 0 24 25"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              One of the fastest DEXs in the world, built on the Serum and
-              Solana technology. User-friendly DeFi experience with low fees.
-            </Description>
-          </HeaderContainer>
-        </CardContainer>{' '}
-        <CardContainer height={'auto'} style={{ margin: '4rem 0' }}>
-          <SvgIcon src={smallWalletCard} width={'100%'} height={'100%'} />
-          <HeaderContainer style={{ height: '86%', width: '66%' }}>
-            <Header fontSize={'6rem'} style={{ lineHeight: 'auto' }}>
-              Wallet{' '}
-            </Header>
-            <Description
-              fontSize={'2.6rem'}
-              width={'100%'}
-              style={{ lineHeight: '6rem', fontSize: '2.6rem' }}
+              <circle cx="12.0002" cy="12.6484" r="12" fill="#366CE5" />
+              <path
+                d="M18.981 8.98426C18.8125 8.3316 18.3184 7.81712 17.6918 7.64138C16.5472 7.31519 11.9684 7.31519 11.9684 7.31519C11.9684 7.31519 7.38988 7.31519 6.24522 7.62901C5.63071 7.80456 5.12458 8.3317 4.95602 8.98426C4.65479 10.1763 4.65479 12.6485 4.65479 12.6485C4.65479 12.6485 4.65479 15.1332 4.95602 16.3128C5.12476 16.9653 5.61865 17.4798 6.24531 17.6556C7.40193 17.9819 11.9686 17.9819 11.9686 17.9819C11.9686 17.9819 16.5472 17.9819 17.6918 17.668C18.3185 17.4924 18.8125 16.9779 18.9812 16.3253C19.2823 15.1332 19.2823 12.6611 19.2823 12.6611C19.2823 12.6611 19.2944 10.1763 18.981 8.98426ZM10.5107 14.9324V10.3646L14.3181 12.6485L10.5107 14.9324Z"
+                fill="#EAEEF2"
+              />
+            </svg>
+          </a>
+        </RowContainer>
+        <RowContainer padding={'0 25rem'}>
+          <SvgIcon width={'100%'} height={'auto'} src={newBanner} />
+        </RowContainer>
+        <RowContainer padding={'5rem 25rem'} justify={'space-between'}>
+          <NewLink to="/chart">Trading</NewLink>
+          <a
+            href={'https://wallet.cryptocurrencies.ai'}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              whiteSpace: 'nowrap',
+              fontFamily: 'Avenir Next Demi',
+              lineHeight: '3rem',
+              fontSize: '1.8rem',
+              color: '#fbf2f2',
+            }}
+          >
+            SunWallet
+          </a>
+          <NewLink to="/analytics">Analytics</NewLink>
+          <NewLink to="/pools">Liquidity Pools</NewLink>
+          <NewLink to="/swaps">Swap</NewLink>
+          <NewLink to="/rebalance">Rebalance</NewLink>
+        </RowContainer>
+      </MainContainer>
+      <MainContainerForSmallScreens style={{ overflow: 'scroll' }}>
+        <RowContainer
+          justify={'space-between'}
+          height="15rem"
+          padding="5rem 3rem"
+          style={{ backgroundColor: '#222429' }}
+        >
+          <SvgIcon src={serumCCAILogo} width={'40%'} height={'auto'} />
+          <Row justify={'space-between'} width={'40%'}>
+            {' '}
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://twitter.com/CCAI_Official"
             >
-              Hold and trade the top cryptocurrencies on{' '}
-              <strong>CCAI  Wallet™</strong>.
-            </Description>
-          </HeaderContainer>
-        </CardContainer>{' '}
-        <CardContainer height={'auto'} style={{ margin: '4rem 0' }}>
-          <SvgIcon src={smallChartCard} width={'100%'} height={'100%'} />
-          <HeaderContainer style={{ height: '86%', width: '66%' }}>
-            <Header fontSize={'6rem'} style={{ lineHeight: 'auto' }}>
-              Analytics{' '}
-            </Header>
-            <Description
-              fontSize={'2.6rem'}
-              width={'100%'}
-              style={{ lineHeight: '6rem', fontSize: '2.6rem' }}
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="12" cy="12" r="12" fill="#EDF0F2" />
+                <path
+                  d="M12 0C5.37321 0 0 5.37321 0 12C0 18.6268 5.37321 24 12 24C18.6268 24 24 18.6268 24 12C24 5.37321 18.6268 0 12 0ZM17.767 9.04554C17.775 9.17143 17.775 9.30268 17.775 9.43125C17.775 13.3634 14.7804 17.8929 9.30804 17.8929C7.62054 17.8929 6.05625 17.4027 4.73839 16.5589C4.97946 16.5857 5.20982 16.5964 5.45625 16.5964C6.84911 16.5964 8.12946 16.125 9.15 15.3268C7.84286 15.3 6.74464 14.4429 6.36964 13.2643C6.82768 13.3313 7.24018 13.3313 7.71161 13.2107C7.03855 13.074 6.43359 12.7084 5.99951 12.1762C5.56542 11.644 5.32898 10.9779 5.33036 10.2911V10.2536C5.72411 10.4759 6.1875 10.6125 6.67232 10.6313C6.26476 10.3596 5.93051 9.99164 5.69923 9.5599C5.46794 9.12817 5.34676 8.64603 5.34643 8.15625C5.34643 7.60179 5.49107 7.09554 5.75089 6.65625C6.49795 7.5759 7.43017 8.32806 8.48696 8.86384C9.54375 9.39961 10.7014 9.70702 11.8848 9.76607C11.4643 7.74375 12.975 6.10714 14.7911 6.10714C15.6482 6.10714 16.4196 6.46607 16.9634 7.04464C17.6357 6.91875 18.2786 6.66696 18.8518 6.32946C18.6295 7.01786 18.1634 7.59911 17.5446 7.96607C18.1446 7.90179 18.7232 7.73571 19.2589 7.50268C18.8545 8.09732 18.3482 8.625 17.767 9.04554Z"
+                  fill="#366CE5"
+                />
+              </svg>
+            </a>
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href={'https://t.me/CCAI_Official'}
             >
-              Transparent analysis of all markets on Serum in simple charts.
-            </Description>
-          </HeaderContainer>
-        </CardContainer>{' '}
-        <CardContainer height={'auto'} style={{ margin: '4rem 0' }}>
-          <SvgIcon src={smallSwapsCard} width={'100%'} height={'100%'} />
-          <HeaderContainer style={{ height: '86%', width: '66%' }}>
-            <Header fontSize={'6rem'} style={{ lineHeight: 'auto' }}>
-              Swap{' '}
-            </Header>
-            <Description
-              fontSize={'2.6rem'}
-              width={'100%'}
-              style={{ lineHeight: '6rem', fontSize: '2.6rem' }}
+              <svg
+                width="24"
+                height="25"
+                viewBox="0 0 24 25"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="12" cy="12.6484" r="12" fill="#EDF0F2" />
+                <path
+                  d="M12 0.648438C5.37058 0.648438 0 6.01979 0 12.6484C0 19.2771 5.37135 24.6484 12 24.6484C18.6294 24.6484 24 19.2771 24 12.6484C24 6.01979 18.6286 0.648438 12 0.648438ZM17.8939 8.8696L15.9244 18.1506C15.7788 18.8087 15.3871 18.9682 14.8405 18.6585L11.8405 16.4474L10.3935 17.841C10.2341 18.0004 10.0986 18.1359 9.7889 18.1359L10.0018 15.0825L15.5613 10.0595C15.8036 9.84663 15.5079 9.72586 15.1881 9.93876L8.31716 14.2642L5.35587 13.3398C4.71252 13.137 4.69781 12.6964 5.49135 12.3868L17.0609 7.92508C17.5982 7.73153 18.0674 8.05592 17.8932 8.86882L17.8939 8.8696Z"
+                  fill="#366CE5"
+                />
+              </svg>
+            </a>
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://discord.gg/2EaKvrs"
             >
-              Low-fee and instant Swaps. Made possible by Solana.{' '}
-            </Description>
-          </HeaderContainer>
-        </CardContainer>{' '}
-        <CardContainer height={'auto'} style={{ margin: '4rem 0' }}>
-          <SvgIcon src={smallSwapsCard} width={'100%'} height={'100%'} />
-          <HeaderContainer style={{ height: '86%', width: '66%' }}>
-            <Header fontSize={'6rem'} style={{ lineHeight: 'auto' }}>
-              Pools{' '}
-            </Header>
-            <Description
-              fontSize={'2.6rem'}
-              width={'100%'}
-              style={{ lineHeight: '6rem', fontSize: '2.6rem' }}
-            >
-              Provide liquidity and earn a fees.{' '}
-            </Description>
-          </HeaderContainer>
-        </CardContainer>{' '}
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <ellipse
+                  cx="12.0437"
+                  cy="12"
+                  rx="11.9565"
+                  ry="12"
+                  fill="#EDF0F2"
+                />
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M23.9991 12C23.9991 18.6274 18.6267 24 11.9996 24C5.37238 24 0 18.6274 0 12C0 5.37258 5.37238 0 11.9996 0C18.6267 0 23.9991 5.37258 23.9991 12ZM10.0011 11.8333C9.90904 11.8333 9.83441 11.9079 9.83441 12C9.83441 12.0921 9.90904 12.1667 10.0011 12.1667C10.0931 12.1667 10.1677 12.0921 10.1677 12C10.1677 11.9079 10.0931 11.8333 10.0011 11.8333ZM8.83441 12C8.83441 11.3557 9.35672 10.8333 10.0011 10.8333C10.6454 10.8333 11.1677 11.3557 11.1677 12C11.1677 12.6443 10.6454 13.1667 10.0011 13.1667C9.35672 13.1667 8.83441 12.6443 8.83441 12ZM13.8343 12C13.8343 11.9079 13.9089 11.8333 14.0009 11.8333C14.0929 11.8333 14.1675 11.9079 14.1675 12C14.1675 12.0921 14.0929 12.1667 14.0009 12.1667C13.9089 12.1667 13.8343 12.0921 13.8343 12ZM14.0009 10.8333C13.3566 10.8333 12.8343 11.3557 12.8343 12C12.8343 12.6443 13.3566 13.1667 14.0009 13.1667C14.6452 13.1667 15.1675 12.6443 15.1675 12C15.1675 11.3557 14.6452 10.8333 14.0009 10.8333ZM12.0009 8.99998C11.1484 8.99998 10.2813 9.15416 9.13833 9.48074C8.87281 9.55661 8.59607 9.40286 8.5202 9.13735C8.44434 8.87183 8.59808 8.59509 8.8636 8.51922C9.29513 8.39592 9.69722 8.29377 10.0812 8.21365L9.6805 7.2118C8.94825 7.32103 8.27041 7.52275 7.59898 7.98027C7.00727 9.77399 6.68754 11.3225 6.56316 12.5504C6.43503 13.8152 6.51978 14.6867 6.68496 15.1373C6.87883 15.5396 7.16299 15.9809 7.49294 16.3155C7.79861 16.6255 8.09194 16.7934 8.35052 16.827C8.36672 16.8124 8.38645 16.7933 8.40953 16.7692C8.51044 16.6636 8.63368 16.5039 8.7544 16.3145C8.87431 16.1265 8.9824 15.9238 9.05883 15.7374C9.07412 15.7001 9.08753 15.6649 9.09922 15.632C8.91147 15.5859 8.72199 15.5355 8.53047 15.4808C8.26495 15.4049 8.11121 15.1282 8.18707 14.8626C8.26294 14.5971 8.53968 14.4434 8.8052 14.5192C11.0487 15.1603 12.9534 15.1603 15.1969 14.5192C15.4624 14.4434 15.7392 14.5971 15.815 14.8626C15.8909 15.1282 15.7371 15.4049 15.4716 15.4808C15.2833 15.5346 15.0969 15.5842 14.9123 15.6296C14.9237 15.6583 14.9367 15.6888 14.9512 15.721C15.0349 15.906 15.1536 16.1082 15.2855 16.2966C15.418 16.486 15.5538 16.6469 15.6654 16.7544C15.7001 16.7878 15.7285 16.8122 15.7502 16.8293C16.0427 16.801 16.366 16.6247 16.695 16.3069C17.0424 15.9714 17.3407 15.5302 17.5438 15.1291C17.7155 14.6825 17.8047 13.8157 17.6703 12.5529C17.5399 11.3274 17.2046 9.78092 16.5837 7.98881C15.8649 7.52388 15.1063 7.31978 14.3222 7.20972L13.9206 8.21368C14.3046 8.2938 14.7066 8.39594 15.1381 8.51922C15.4036 8.59509 15.5574 8.87183 15.4815 9.13735C15.4056 9.40286 15.1289 9.55661 14.8634 9.48074C13.7204 9.15416 12.8533 8.99998 12.0009 8.99998ZM10.0844 15.8364C10.0552 15.9332 10.0206 16.0276 9.98406 16.1168C9.88108 16.3679 9.74335 16.6235 9.5976 16.8521C9.45267 17.0794 9.29042 17.2948 9.13259 17.46C9.05446 17.5418 8.96648 17.6228 8.87264 17.6871C8.79434 17.7408 8.64106 17.8333 8.44636 17.8333C7.77459 17.8333 7.20376 17.4465 6.78088 17.0176C6.34907 16.5797 6.00234 16.0297 5.77304 15.5484C5.76727 15.5362 5.76198 15.5239 5.7572 15.5113C5.50347 14.8452 5.43361 13.7787 5.56825 12.4496C5.7048 11.1016 6.05783 9.42609 6.70244 7.50743C6.73536 7.40945 6.79783 7.32408 6.88126 7.26307C7.90554 6.51402 8.93268 6.28113 9.94632 6.16966C10.1696 6.14511 10.3818 6.27244 10.4652 6.48097L11.0929 8.05031C11.3988 8.01694 11.6991 7.99998 12.0009 7.99998C12.3026 7.99998 12.603 8.01694 12.9089 8.05033L13.5367 6.48097C13.6198 6.273 13.8312 6.14573 14.0539 6.16948C15.0883 6.27982 16.2146 6.5096 17.2866 7.25641C17.3725 7.31625 17.4374 7.40155 17.4723 7.50027C18.1497 9.41993 18.521 11.097 18.6647 12.4471C18.8063 13.7777 18.7332 14.8487 18.465 15.5191C18.4598 15.532 18.4541 15.5446 18.4479 15.5571C18.2065 16.0395 17.8421 16.5893 17.3897 17.0262C16.9446 17.456 16.3538 17.8333 15.6675 17.8333C15.4799 17.8333 15.3277 17.7486 15.2458 17.6964C15.1487 17.6345 15.0558 17.5557 14.9717 17.4747C14.8021 17.3114 14.6254 17.0974 14.4662 16.8701C14.3065 16.6418 14.1543 16.3857 14.0401 16.1332C13.9978 16.0395 13.9572 15.9391 13.9235 15.8354C12.6243 16.0545 11.3834 16.0549 10.0844 15.8364ZM15.7954 16.86C15.7954 16.8602 15.793 16.8591 15.788 16.8561C15.7928 16.8583 15.7953 16.8598 15.7954 16.86ZM8.3005 16.8663C8.29911 16.8671 8.29839 16.8676 8.29837 16.8678C8.29832 16.868 8.30078 16.8667 8.30592 16.8632C8.30357 16.8645 8.30176 16.8655 8.3005 16.8663Z"
+                  fill="#366CE5"
+                />
+              </svg>
+            </a>
+          </Row>
+        </RowContainer>
+        <RowContainer padding="5rem 3rem">
+          <SvgIcon
+            src={newBannerForSmallScreens}
+            width={'100%'}
+            height={'auto'}
+          />
+        </RowContainer>
+        <RowContainer
+          align={'baseline'}
+          padding={'2rem 3rem'}
+          justify={'space-between'}
+        >
+          <NewLink to={'/chart'}>
+            <SvgIcon width={'4rem'} height={'auto'} src={tradingIcon} />
+          </NewLink>{' '}
+          <NewLink to={'/analytics'}>
+            <SvgIcon width={'6rem'} height={'auto'} src={analyticsIcon} />
+          </NewLink>{' '}
+          <NewLink to={'/pools'}>
+            <SvgIcon width={'5rem'} height={'auto'} src={poolsIcon} />
+          </NewLink>{' '}
+          <NewLink to={'/swaps'}>
+            <SvgIcon width={'4rem'} height={'auto'} src={swapsIcon} />
+          </NewLink>{' '}
+          <NewLink to={'/rebalance'}>
+            <SvgIcon width={'7rem'} height={'auto'} src={rebalanceIcon} />
+          </NewLink>{' '}
+          <a
+            href={'https://wallet.cryptocurrencies.ai'}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <SvgIcon width={'7rem'} height={'auto'} src={sunWalletIcon} />
+          </a>
+        </RowContainer>
       </MainContainerForSmallScreens>
     </>
   )
