@@ -18,6 +18,7 @@ import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { PoolInfo, DexTokensPrices } from './index.types'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { WarningPopup } from '../Chart/components/WarningPopup'
 import { useInterval } from '@sb/dexUtils/useInterval'
 
 const Pools = ({
@@ -33,6 +34,7 @@ const Pools = ({
   ] = useState<number>(0)
   const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
   const [selectedPool, selectPool] = useState<PoolInfo | null>(null)
+  const [isWarningPopupOpen, openWarningPopup] = useState(true)
 
   const [isAddLiquidityPopupOpen, setIsAddLiquidityPopupOpen] = useState(false)
   const [isCreatePoolPopupOpen, setIsCreatePoolPopupOpen] = useState(false)
@@ -48,7 +50,7 @@ const Pools = ({
   const refreshAllTokensData = () =>
     setRefreshAllTokensDataCounter(refreshAllTokensDataCounter + 1)
 
-  useInterval(refreshAllTokensData, 10000);
+  useInterval(refreshAllTokensData, 10000)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -136,6 +138,13 @@ const Pools = ({
           refreshAllTokensData={refreshAllTokensData}
         />
       )}
+
+      <WarningPopup
+        theme={theme}
+        open={isWarningPopupOpen}
+        onClose={() => openWarningPopup(false)}
+        isPoolsPage={true}
+      />
     </RowContainer>
   )
 }

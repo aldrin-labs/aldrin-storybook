@@ -577,7 +577,7 @@ const SwapsPage = ({
         theme={theme}
         open={isWarningPopupOpen}
         onClose={() => openWarningPopup(false)}
-        isPoolsPage={true}
+        isSwapPage={true}
       />
     </RowContainer>
   )
