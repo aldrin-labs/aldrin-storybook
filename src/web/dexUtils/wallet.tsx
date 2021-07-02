@@ -33,22 +33,22 @@ import { MINT_LAYOUT, parseTokenAccountData } from './tokens'
 import Sollet from '@icons/sollet.svg'
 import Mathwallet from '@icons/mathwallet.svg'
 import Solong from '@icons/solong.svg'
-import CCAI from '@icons/ccai.svg'
+import SunWallet from '@icons/sunWallet.svg'
 import { WalletAdapter } from './adapters'
 
 export const WALLET_PROVIDERS = [
   // { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },
   {
-    name: 'Wallet™',
+    name: 'SunWallet',
     url: CCAIProviderURL,
     adapter: Wallet,
-    icon: CCAI,
+    icon: SunWallet,
   },
   {
-    name: 'Wallet™ Extension',
+    name: 'SunWallet Extension',
     url: `${CCAIProviderURL}/extension`,
     adapter: CcaiExtensionAdapter,
-    icon: CCAI,
+    icon: SunWallet,
   },
   {
     name: 'Sollet.io',

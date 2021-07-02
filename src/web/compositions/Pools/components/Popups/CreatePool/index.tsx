@@ -251,11 +251,11 @@ export const CreatePoolPopup = ({
           <AttentionComponent
             text={
               isNeedToLeftSomeSOL
-                ? 'Sorry, but you need to left some SOL (al least 0.1 SOL) on your wallet SOL account to successfully execute further transactions.'
+                ? 'Sorry, but you need to left some SOL (at least 0.1 SOL) on your wallet SOL account to successfully execute further transactions.'
                 : baseAmount > maxBaseAmount
-                ? `You entered more tokenA amount than you have.`
+                ? `You entered more token A amount than you have.`
                 : quoteAmount > maxQuoteAmount
-                ? `You entered more tokenB amount than you have.`
+                ? `You entered more token B amount than you have.`
                 : ''
             }
             blockHeight={'8rem'}
