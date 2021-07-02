@@ -5,8 +5,6 @@ import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.
 import { Theme } from '@material-ui/core'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
-import { SearchInputWithLoop } from '../../Tables/components/index'
-import SolanaExplorerIcon from '@icons/SolanaExplorerIcon.svg'
 
 import Close from '@icons/closeIcon.svg'
 import { Text } from '@sb/compositions/Addressbook/index'
@@ -15,17 +13,19 @@ import {
   ALL_TOKENS_MINTS_MAP,
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
-import { StyledPaper } from '../index.styles'
-import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
+import { SelectSeveralAddressesPopup } from '../../Pools/components/Popups/SelectorForSeveralAddresses'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
+import { StyledPaper } from '@sb/compositions/Pools/components/Popups/index.styles'
+import { SearchInputWithLoop } from '@sb/compositions/Pools/components/Tables/components'
+import { TokenLabel } from '../styles'
 
 const UpdatedPaper = styled(({ ...props }) => <StyledPaper {...props} />)`
-  width: 45rem;
+  width: 55rem;
 `
 
 const SelectorRow = styled(({ ...props }) => <RowContainer {...props} />)`
@@ -45,9 +45,12 @@ export const SelectCoinPopup = ({
   mints,
   allTokensData,
   dexTokensPrices,
+  getPoolsInfoQuery,
   isBaseTokenSelecting,
   close,
   selectTokenMintAddress,
+  quoteTokenMintAddress,
+  baseTokenMintAddress,
   setBaseTokenAddressFromSeveral,
   setQuoteTokenAddressFromSeveral,
 }: {
@@ -57,8 +60,11 @@ export const SelectCoinPopup = ({
   isBaseTokenSelecting: boolean
   allTokensData: TokenInfo[]
   dexTokensPrices: DexTokensPrices[]
+  getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
   close: () => void
   selectTokenMintAddress: (address: string) => void
+  quoteTokenMintAddress: string
+  baseTokenMintAddress: string
   setBaseTokenAddressFromSeveral: (address: string) => void
   setQuoteTokenAddressFromSeveral: (address: string) => void
 }) => {
@@ -90,9 +96,29 @@ export const SelectCoinPopup = ({
       )
     : usersMints
 
+  const poolsTokensA = getPoolsInfoQuery.getPoolsInfo.map((el) => el.tokenA)
+  const poolsTokensB = getPoolsInfoQuery.getPoolsInfo.map((el) => el.tokenB)
+
+  const choosenMint =
+    baseTokenMintAddress && quoteTokenMintAddress
+      ? isBaseTokenSelecting
+        ? quoteTokenMintAddress
+        : baseTokenMintAddress
+      : baseTokenMintAddress || quoteTokenMintAddress
+
+  const availablePools = getPoolsInfoQuery.getPoolsInfo
+    .filter((el) => el.tokenA === choosenMint || el.tokenB === choosenMint)
+    .map((el) => (el.tokenA === choosenMint ? el.tokenB : el.tokenA))
+
   const sortedMints = filteredMints
     .map((mint) => {
-      return { mint, amount: sortedAllTokensData.get(mint) || 0 }
+      return {
+        mint,
+        amount: sortedAllTokensData.get(mint) || 0,
+        isTokenInPool:
+          poolsTokensA.includes(mint) || poolsTokensB.includes(mint),
+        isPoolExist: availablePools.includes(mint),
+      }
     })
     .sort((a, b) => b.amount - a.amount)
 
@@ -124,7 +150,17 @@ export const SelectCoinPopup = ({
       </RowContainer>
       <RowContainer>
         {sortedMints.map(
-          ({ mint, amount }: { mint: string; amount: number }) => {
+          ({
+            mint,
+            amount,
+            isTokenInPool,
+            isPoolExist,
+          }: {
+            mint: string
+            amount: number
+            isTokenInPool: boolean
+            isPoolExist: boolean
+          }) => {
             return (
               <SelectorRow
                 justify={'space-between'}
@@ -144,19 +180,13 @@ export const SelectCoinPopup = ({
                 <Row wrap={'nowrap'}>
                   <TokenIcon mint={mint} width={'2rem'} height={'2rem'} />
                   <StyledText>{getTokenNameByMintAddress(mint)}</StyledText>
-                  <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={`https://explorer.solana.com/address/${mint}`}
-                  >
-                    {' '}
-                    <SvgIcon
-                      src={SolanaExplorerIcon}
-                      width={'2rem'}
-                      height={'2rem'}
-                      style={{ marginLeft: '1rem' }}
-                    />
-                  </a>
+                  {!quoteTokenMintAddress && !baseTokenMintAddress ? (
+                    !isTokenInPool ? (
+                      <TokenLabel>No Pools available</TokenLabel>
+                    ) : null
+                  ) : !isPoolExist ? (
+                    <TokenLabel>Insufficient Liquidity</TokenLabel>
+                  ) : null}
                 </Row>
                 <Row wrap={'nowrap'}>
                   <StyledText>

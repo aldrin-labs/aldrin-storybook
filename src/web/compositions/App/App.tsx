@@ -52,7 +52,7 @@ import { PreferencesProvider } from '@sb/dexUtils/preferences'
 import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
 import DevUrlPopup from '@sb/components/PopupForDevUrl'
 
-const version = `10.9.127`
+const version = `10.9.129`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
 const isNotificationDone = localStorage.getItem('isNotificationDone')
 const localPassword = localStorage.getItem('localPassword')
@@ -96,7 +96,8 @@ const AppRaw = ({
     !isChartPage &&
     currentPage !== '/' &&
     currentPage !== '/pools' &&
-    currentPage !== '/rebalance'
+    currentPage !== '/rebalance' &&
+    currentPage !== '/swaps'
 
   const isPNL = currentPage.includes('/portfolio/main')
   // TODO: Check this variable

@@ -65,7 +65,10 @@ const AllPoolsTable = ({
   }
 
   const filteredData = getPoolsInfoQuery.getPoolsInfo.filter((el) =>
-    filterDataBySymbolForDifferentDeviders({ searchValue, symbol: el.parsedName })
+    filterDataBySymbolForDifferentDeviders({
+      searchValue,
+      symbol: el.parsedName,
+    })
   )
 
   const feesPerPoolMap = new Map()
@@ -120,21 +123,21 @@ const AllPoolsTable = ({
               <RowTd>TVL</RowTd>
               <RowTd>Total Fees Paid</RowTd>
               <RowTd>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <DarkTooltip
-                    title={
-                      'Annualized, non-compounded return on investment based on the fees earned in the last 24 hours, relative to the size of the pool.'
-                    }
-                  >
+                <DarkTooltip
+                  title={
+                    'Annualized, non-compounded return on investment based on the fees earned in the last 24 hours, relative to the size of the pool.'
+                  }
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
                     <SvgIcon
                       width={'1.2rem'}
                       height={'1.2rem'}
                       style={{ marginRight: '1rem' }}
                       src={TooltipIcon}
                     />
-                  </DarkTooltip>
-                  APY (24h)
-                </div>
+                    APY (24h)
+                  </div>
+                </DarkTooltip>
               </RowTd>
               <RowTd></RowTd>
             </TableHeader>

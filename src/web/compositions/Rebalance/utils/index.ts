@@ -7,6 +7,10 @@ import { getAvailableTokensForRebalance } from './getAvailableTokensForRebalance
 import { getTokensMap } from './getTokensMap'
 import { getAllTokensData } from './getAllTokensData'
 import { getSliderStepForTokens } from './getSliderStepForTokens'
+import { getTransactionsList } from './getTransactionsList'
+import { getPoolsSwaps } from './getPoolsSwaps'
+import { getPoolsInfo } from './getPoolsInfo'
+import { getSwapsChunks } from './getSwapsChunks'
 
 export {
   getTokenValuesForTokens,
@@ -18,4 +22,8 @@ export {
   getTokensMap,
   getAllTokensData,
   getSliderStepForTokens,
+  getTransactionsList,
+  getPoolsSwaps,
+  getPoolsInfo,
+  getSwapsChunks,
 }

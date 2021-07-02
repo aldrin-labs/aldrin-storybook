@@ -232,7 +232,7 @@ export const CardsPanel = ({ theme }) => {
               {' '}
               Analytics
             </NavLinkButton>
-            <NavLinkButton
+            {/* <NavLinkButton
               theme={theme}
               data-tut="farming"
               page={'addressbook'}
@@ -241,16 +241,25 @@ export const CardsPanel = ({ theme }) => {
             >
               {' '}
               Addressbook
+            </NavLinkButton> */}
+            <NavLinkButton
+              theme={theme}
+              page={'/pools'}
+              pathname={location.pathname}
+              component={(props) => <Link to={`/pools`} {...props} />}
+            >
+              {' '}
+              Pools
             </NavLinkButton>
             {!MASTER_BUILD && (
               <NavLinkButton
                 theme={theme}
-                page={'/pools'}
+                page={'/swaps'}
                 pathname={location.pathname}
-                component={(props) => <Link to={`/pools`} {...props} />}
+                component={(props) => <Link to={`/swaps`} {...props} />}
               >
                 {' '}
-                Pools
+                Swaps
               </NavLinkButton>
             )}
             <TokenLink
@@ -439,7 +448,7 @@ const TopBar = ({ theme }) => {
             theme={theme}
             fontSize="1.2rem"
             onClick={() => {
-              wallet.disconnect()
+              wallet?.disconnect && wallet.disconnect()
             }}
             style={{
               position: 'absolute',

@@ -1,7 +1,7 @@
 import { priceStore } from '@sb/dexUtils/price'
 import { MARKETS_BY_NAME_MAP } from '@sb/dexUtils/serum'
 
-export const getPricesForTokens = async (tokens: {symbol: string, decimals: number, amount: number, mint: string}[]): Promise<{symbol: string, decimals: number, amount: number, mint: string, price: null | number}[]> => {
+export const getPricesForTokens = async (tokens: { symbol: string, mint: string }[]): Promise<{symbol: string, mint: string, price: null | number}[]> => {
     const tokensWithPrices = await Promise.all(tokens.map(async token => {
       const { symbol, mint } = token
   

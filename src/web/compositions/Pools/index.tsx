@@ -18,6 +18,7 @@ import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { PoolInfo, DexTokensPrices } from './index.types'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { useInterval } from '@sb/dexUtils/useInterval'
 
 const Pools = ({
   theme,
@@ -46,6 +47,8 @@ const Pools = ({
 
   const refreshAllTokensData = () =>
     setRefreshAllTokensDataCounter(refreshAllTokensDataCounter + 1)
+
+  useInterval(refreshAllTokensData, 10000);
 
   useEffect(() => {
     const fetchData = async () => {

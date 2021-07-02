@@ -180,16 +180,16 @@ export const CreatePoolPopup = ({
       fullScreen={false}
       onClose={close}
       onEnter={() => {
-        setBaseTokenAddressFromSeveral('');
-        setQuoteTokenAddressFromSeveral('');
-        setBaseTokenMintAddress('');
-        setQuoteTokenMintAddress('');
-        setBaseAmount('');
-        setQuoteAmount('');
-        setIsSelectCoinPopupOpen(false);
-        setIsBaseTokenSelecting(false);
-        setWarningChecked(false);
-        setOperationLoading(false);
+        setBaseTokenAddressFromSeveral('')
+        setQuoteTokenAddressFromSeveral('')
+        setBaseTokenMintAddress('')
+        setQuoteTokenMintAddress('')
+        setBaseAmount('')
+        setQuoteAmount('')
+        setIsSelectCoinPopupOpen(false)
+        setIsBaseTokenSelecting(false)
+        setWarningChecked(false)
+        setOperationLoading(false)
       }}
       maxWidth={'md'}
       open={open}

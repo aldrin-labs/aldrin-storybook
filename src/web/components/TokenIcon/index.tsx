@@ -35,7 +35,7 @@ export const TokenIcon = ({
         src={CoinPlaceholder}
         height={height}
         width={width}
-        margin={margin}
+        style={{ margin: margin }}
       />
     )
   const token = tokenMap.get(mint)
@@ -45,7 +45,7 @@ export const TokenIcon = ({
         src={CoinPlaceholder}
         height={height}
         width={width}
-        margin={margin}
+        style={{ margin: margin }}
       />
     )
 

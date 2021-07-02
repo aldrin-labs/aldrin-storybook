@@ -42,12 +42,16 @@ const _IGNORE_DEPRECATED = false
 
 const USE_MARKETS = _IGNORE_DEPRECATED
   ? MARKETS.map((m) => ({ ...m, deprecated: false }))
-  : [{
-    address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
-    name: 'CCAI/USDC',
-    programId: new PublicKey('9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'),
-    deprecated: false,
-}].concat(MARKETS)
+  : [
+      {
+        address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
+        name: 'CCAI/USDC',
+        programId: new PublicKey(
+          '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'
+        ),
+        deprecated: false,
+      },
+    ].concat(MARKETS)
 // : MARKETS
 
 export function useMarketsList() {
@@ -93,13 +97,11 @@ export function useAllMarkets() {
             marketInfo.programId
           )
 
-
           return {
             market,
             marketName: marketInfo.name,
             programId: marketInfo.programId,
           }
-          
         } catch (e) {
           notify({
             message: 'Error loading all market',
@@ -296,8 +298,6 @@ export function MarketProvider({ children }) {
     marketInfo = marketInfos.find((market) => market.name === marketName)
   }
 
-  // console.log('marketInfo', marketInfo)
-
   const [market, setMarket] = useState()
   // add state for markets
   // add useEffect for customMarkets
@@ -314,7 +314,6 @@ export function MarketProvider({ children }) {
     setMarket(null)
 
     if (!marketInfo || !marketInfo?.address) {
-      // console.log('marketInfo', marketInfo)
       notify({
         message: 'Error loading market',
         description: 'Please select a market from the dropdown',
