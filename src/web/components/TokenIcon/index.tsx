@@ -3,33 +3,35 @@ import { TokenListProvider, TokenInfo } from '@solana/spl-token-registry'
 import CoinPlaceholder from '@icons/coinPlaceholder.svg'
 import { SvgIcon } from '@sb/components'
 
+import GreenCheckmark from '@icons/successIcon.svg'
+import Warning from '@icons/warningPairSel.png'
+import ThinkingFace from '@icons/thinkingFace.png'
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
+
 export const TokenIcon = ({
   mint,
   height,
   width,
   margin,
+  emojiIfNoLogo = false,
+  isAwesomeMarket = false,
+  isAdditionalCustomUserMarket = false,
 }: {
   mint?: string | null
   height?: string
   width?: string
   margin?: string
+  emojiIfNoLogo?: boolean
+  isAwesomeMarket?: boolean
+  isAdditionalCustomUserMarket?: boolean
 }) => {
-  const [tokenMap, setTokenMap] = useState<Map<string, TokenInfo>>(new Map())
+  const tokenMap = useTokenInfos()
 
-  useEffect(() => {
-    new TokenListProvider().resolve().then((tokens) => {
-      const tokenList = tokens.filterByClusterSlug('mainnet-beta').getList()
+  if (isAdditionalCustomUserMarket) {
+    return <SvgIcon width={'50%'} height={'auto'} src={Warning} />
+  }
 
-      setTokenMap(
-        tokenList.reduce((map, item) => {
-          map.set(item.address, item)
-          return map
-        }, new Map())
-      )
-    })
-  }, [setTokenMap])
-
-  if (!mint)
+  if (!mint) {
     return (
       <SvgIcon
         src={CoinPlaceholder}
@@ -38,8 +40,19 @@ export const TokenIcon = ({
         style={{ margin: margin }}
       />
     )
+  }
+
   const token = tokenMap.get(mint)
-  if (!token || !token.logoURI)
+
+  if (!token || !token.logoURI) {
+    if (emojiIfNoLogo) {
+      return isAwesomeMarket ? (
+        <SvgIcon width={'50%'} height={'auto'} src={ThinkingFace} />
+      ) : (
+        <SvgIcon width={'50%'} height={'auto'} src={GreenCheckmark} />
+      )
+    }
+
     return (
       <SvgIcon
         src={CoinPlaceholder}
@@ -48,6 +61,7 @@ export const TokenIcon = ({
         style={{ margin: margin }}
       />
     )
+  }
 
   return (
     <img

@@ -51,8 +51,9 @@ import { MarketProvider } from '@sb/dexUtils/markets'
 import { PreferencesProvider } from '@sb/dexUtils/preferences'
 import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
 import DevUrlPopup from '@sb/components/PopupForDevUrl'
+import { TokenRegistryProvider } from '@sb/dexUtils/tokenRegistry'
 
-const version = `10.9.129`
+const version = `10.9.130`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
 const isNotificationDone = localStorage.getItem('isNotificationDone')
 const localPassword = localStorage.getItem('localPassword')
@@ -125,6 +126,7 @@ const AppRaw = ({
             <CssBaseline />
             {/* <FontStyle /> */}
             <ConnectionProvider>
+              <TokenRegistryProvider>
               <MarketProvider>
                 <WalletProvider>
                   <PreferencesProvider>
@@ -171,6 +173,7 @@ const AppRaw = ({
                   </PreferencesProvider>
                 </WalletProvider>
               </MarketProvider>
+              </TokenRegistryProvider>
             </ConnectionProvider>
             <GlobalStyle />
             <GlobalStyles />
