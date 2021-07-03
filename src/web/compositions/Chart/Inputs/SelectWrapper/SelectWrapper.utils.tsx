@@ -28,6 +28,8 @@ import {
   UpdateFavoritePairsMutationType,
   SelectTabType,
 } from './SelectWrapper.types'
+import { TokenIcon } from '@sb/components/TokenIcon'
+import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 
 export const selectWrapperColumnNames = [
   { label: '', id: 'favorite', isSortable: false },
@@ -285,7 +287,7 @@ export const combineSelectWrapperData = ({
       isPrivateCustomMarket,
     }
 
-    const [_, quote] = symbol.split('_')
+    const [base, quote] = symbol.split('_')
     const pricePrecision = closePrice < 1 ? 8 : closePrice < 10 ? 4 : 2
 
     const isNotUSDTQuote = getIsNotUSDTQuote(symbol)
@@ -317,6 +319,8 @@ export const combineSelectWrapperData = ({
       symbol.includes('CCAI') &&
       !isAdditionalCustomUserMarket &&
       !isAwesomeMarket
+
+    const mint = getTokenMintAddressByName(base)
 
     return {
       id: `${symbol}`,
@@ -352,15 +356,13 @@ export const combineSelectWrapperData = ({
                 justifyContent: 'center',
               }}
             >
-              {isAdditionalCustomUserMarket ? (
-                <SvgIcon width={'50%'} height={'auto'} src={Warning} />
-              ) : isAwesomeMarket ? (
-                <SvgIcon width={'50%'} height={'auto'} src={ThinkingFace} />
-              ) : isCCAIPair ? (
-                <SvgIcon width={'50%'} height={'auto'} src={CCAILogo} />
-              ) : (
-                <SvgIcon width={'50%'} height={'auto'} src={GreenCheckmark} />
-              )}
+              <TokenIcon 
+                mint={mint}
+                width={'50%'}
+                emojiIfNoLogo={true}
+                isAwesomeMarket={isAwesomeMarket}
+                isAdditionalCustomUserMarket={isAdditionalCustomUserMarket}
+              />
             </div>
           </DarkTooltip>
         ),
