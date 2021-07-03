@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { compose } from 'recompose'
 import { Theme, withTheme } from '@material-ui/core'
 import { Link, useLocation } from 'react-router-dom'
-import { useMarket } from '@sb/dexUtils/markets'
+import { getTokenMintAddressByName, useMarket } from '@sb/dexUtils/markets'
 import { getDecimalCount } from '@sb/dexUtils/utils'
 import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import MarketStats from './MarketStats/MarketStats'
@@ -18,6 +18,8 @@ import BlueTwitterIcon from '@icons/blueTwitter.svg'
 import AnalyticsIcon from '@icons/analytics.svg'
 import SvgIcon from '@sb/components/SvgIcon'
 import { TokenInfo, TokenListProvider } from '@solana/spl-token-registry'
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
+import { TokenIcon } from '@sb/components/TokenIcon'
 
 export const ExclamationMark = styled(({ fontSize, lineHeight, ...props }) => (
   <span {...props}>!</span>
@@ -92,22 +94,7 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
   const { market, customMarkets } = useMarket()
   const location = useLocation()
 
-  const [tokenMap, setTokenMap] = useState<Map<string, TokenInfo>>(new Map())
-
-  useEffect(() => {
-    new TokenListProvider().resolve().then((tokens) => {
-      const tokenList = tokens.filterByClusterSlug('mainnet-beta').getList()
-
-      setTokenMap(
-        tokenList.reduce((map, item) => {
-          map.set(item.address, item)
-          map.set(item.symbol, item)
-          return map
-        }, new Map())
-      )
-    })
-  }, [setTokenMap])
-
+  const tokenMap = useTokenInfos()
   const pair = location.pathname.split('/')[3]
 
   const quantityPrecision =
@@ -162,15 +149,13 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
               justifyContent: 'flex-start',
             }}
           >
-            {isPrivateCustomMarket ? (
-              <SvgIcon width={'50%'} height={'auto'} src={Warning} />
-            ) : isCustomUserMarket ? (
-              <SvgIcon width={'50%'} height={'auto'} src={ThinkingFace} />
-            ) : isCCAIPair ? (
-              <SvgIcon width={'50%'} height={'auto'} src={CCAILogo} />
-            ) : (
-              <SvgIcon width={'50%'} height={'auto'} src={GreenCheckmark} />
-            )}
+            <TokenIcon
+              mint={getTokenMintAddressByName(base)}
+              width={'50%'}
+              emojiIfNoLogo={true}
+              isAwesomeMarket={isCustomUserMarket}
+              isAdditionalCustomUserMarket={isPrivateCustomMarket}
+            />
           </div>
         </DarkTooltip>
         <div

@@ -96,7 +96,7 @@ export const WRAPPED_SOL_MINT = new PublicKey(
   'So11111111111111111111111111111111111111112'
 )
 
-export const MAINNET_URL = 'https://solana-api.projectserum.com'
+export const MAINNET_URL = 'https://api.mainnet-beta.solana.com'
 
 export const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey(
   'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
