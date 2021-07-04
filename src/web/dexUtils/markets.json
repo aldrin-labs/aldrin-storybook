@@ -1284,10 +1284,10 @@
     "deprecated": false
   },
   {
-      "name": "LIQ/SOL",
-      "address": "F7SrwFTQ8uWBs9zhN9fctLKLJdEAz8fu7XmNyi9Sebht",
-      "programId": "9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin",
-      "deprecated": false
+    "name": "LIQ/SOL",
+    "address": "F7SrwFTQ8uWBs9zhN9fctLKLJdEAz8fu7XmNyi9Sebht",
+    "programId": "9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin",
+    "deprecated": false
   },
   {
     "name": "BOP/USDC",
