@@ -108,7 +108,7 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
 
   const [base, quote] = pair.split('_')
 
-  const baseTokenInfo = tokenMap.get(base)
+  const baseTokenInfo = tokenMap.get(getTokenMintAddressByName(base))
 
   const marketName = pair.replaceAll('_', '/')
   const currentMarket = customMarkets?.find(
