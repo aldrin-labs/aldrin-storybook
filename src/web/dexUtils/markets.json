@@ -1314,12 +1314,6 @@
     "deprecated": false
   },
   {
-    "name": "SDA/SOL",
-    "address": "7LoFJL9wvTaRA4JfMJNWrESzJMTjzqkjeFrDGgZTWoFr",
-    "programId": "9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin",
-    "deprecated": false
-  },
-  {
     "name": "SDOGE/USDC",
     "address": "9aruV2p8cRWxybx6wMsJwPFqeN7eQVPR74RrxdM3DNdu",
     "programId": "9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin",
