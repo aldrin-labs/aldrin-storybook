@@ -427,7 +427,7 @@ export function useOrderbookAccounts() {
   }
 }
 
-export function useOrderbook(depth = 20) {
+export function useOrderbook(depth = 30) {
   const { bidOrderbook, askOrderbook } = useOrderbookAccounts()
   const { market } = useMarket()
   const bids =
