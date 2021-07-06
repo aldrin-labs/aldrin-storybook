@@ -53,7 +53,7 @@ import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
 import DevUrlPopup from '@sb/components/PopupForDevUrl'
 import { TokenRegistryProvider } from '@sb/dexUtils/tokenRegistry'
 
-const version = `10.9.132`
+const version = `10.9.133`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
 const isNotificationDone = localStorage.getItem('isNotificationDone')
 const localPassword = localStorage.getItem('localPassword')
