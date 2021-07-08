@@ -253,7 +253,7 @@ export const CardsPanel = ({ theme }) => {
                 Swaps
               </NavLinkButton>
             )}{' '}
-            <NavLinkButton
+            {/* <NavLinkButton
               style={{ color: '#386DE6' }}
               theme={theme}
               data-tut="farming"
@@ -262,7 +262,7 @@ export const CardsPanel = ({ theme }) => {
               component={(props) => <a href={CCAIProviderURL} {...props} />}
             >
               SunWallet
-            </NavLinkButton>
+            </NavLinkButton> */}
             <TokenLink
               href="https://ccai.cryptocurrencies.ai/"
               target="_blank"

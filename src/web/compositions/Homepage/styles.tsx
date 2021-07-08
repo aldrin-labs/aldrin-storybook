@@ -29,7 +29,9 @@ export const MainContainerForSmallScreens = styled.div`
   display: none;
 
   @media only screen and (max-width: 600px) {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 `
 export const IdoBtn = styled.button`
@@ -371,6 +373,44 @@ export const NewLink = styled(Link)`
   white-space: nowrap;
   font-family: Avenir Next Demi;
   line-height: 3rem;
+  text-decoration: none;
   font-size: 1.8rem;
   color: #fbf2f2;
+  transition: 0.3s;
+
+  &:hover {
+    text-decoration: underline;
+    transition: 0.3s;
+    svg {
+      path {
+        fill: #366ce5;
+      }
+      defs {
+        linearGradient {
+          stop {
+            stop-color: #366ce5;
+          }
+        }
+      }
+    }
+  }
+`
+export const StyledA = styled.a`
+  text-decoration: none;
+  white-space: nowrap;
+  font-family: Avenir Next Demi;
+  line-height: 3rem;
+  font-size: 1.8rem;
+  color: #fbf2f2;
+  transition: 0.3s;
+
+  &:hover {
+    transition: 0.3s;
+    text-decoration: underline;
+    svg {
+      path {
+        fill: #366ce5;
+      }
+    }
+  }
 `

@@ -30,6 +30,34 @@ import {
 } from './markets'
 import { WalletAdapter } from './types'
 
+const setNotificationTexts = ({
+  baseSymbol = 'CCAI',
+  quoteSymbol = 'USDC',
+  baseUnsettled = 0,
+  quoteUnsettled = 0,
+  side = 'buy',
+  amount = 0,
+  price = 0,
+}: {
+  baseSymbol?: string
+  quoteSymbol?: string
+  baseUnsettled?: number
+  quoteUnsettled?: number
+  side?: string
+  amount?: number
+  price?: number
+}) => {
+  return {
+    createOrder: `Order placed. ${baseSymbol}/${quoteSymbol}: ${side} ${amount} ${baseSymbol} order placed at ${price} ${quoteSymbol}.`,
+    cancelOrder: `Order canceled. ${baseSymbol}/${quoteSymbol}: ${side} ${amount} ${baseSymbol} order canceled at ${price} ${quoteSymbol}.`,
+    settleFunds: `Funds Settled. ${
+      baseUnsettled > 0 ? quoteUnsettled : baseUnsettled 
+    } ${
+      baseUnsettled === 0 ? quoteSymbol : baseSymbol
+    } has been successfully settled in your wallet.`,
+  }
+}
+
 export async function createTokenAccountTransaction({
   connection,
   wallet,
@@ -230,6 +258,10 @@ export async function settleFunds({
   quoteCurrencyAccount,
   tokenAccounts,
   selectedTokenAccounts,
+  baseCurrency,
+  quoteCurrency,
+  baseUnsettled,
+  quoteUnsettled,
 }) {
   if (!wallet) {
     notify({ message: 'Please, connect wallet to settle funds' })
@@ -395,12 +427,18 @@ export async function settleFunds({
     })
 
   const transaction = mergeTransactions(transactions)
-
   return await sendTransaction({
     transaction,
     signers,
     wallet,
     connection,
+    operationType: 'settleFunds',
+    params: {
+      baseSymbol: baseCurrency,
+      quoteSymbol: quoteCurrency,
+      baseUnsettled: baseUnsettled,
+      quoteUnsettled: quoteUnsettled,
+    },
   })
 
   // let createAccountTransaction;
@@ -498,12 +536,21 @@ export async function cancelOrders({ market, wallet, connection, orders }) {
     )
   })
   transaction.add(market.makeMatchOrdersTransaction(5))
+
   return await sendTransaction({
     transaction,
     wallet,
     connection,
     signers: [],
     sendingMessage: 'Sending cancel...',
+    params: {
+      baseSymbol: orders[0]?.marketName.split('/')[0],
+      quoteSymbol: orders[0]?.marketName.split('/')[1],
+      side: orders[0]?.side,
+      amount: orders[0]?.size,
+      price: orders[0]?.price,
+    },
+    operationType: 'cancelOrder',
   })
 }
 
@@ -512,7 +559,7 @@ export const validateVariablesForPlacingOrder = ({
   size,
   market,
   wallet,
-  pair
+  pair,
 }) => {
   let formattedMinOrderSize =
     market?.minOrderSize?.toFixed(getDecimalCount(market.minOrderSize)) ||
@@ -523,7 +570,10 @@ export const validateVariablesForPlacingOrder = ({
     market?.tickSize
 
   if (pair === 'CCAI_USDC' && !isCCAITradingEnabled()) {
-    notify({ message: 'Please, wait until 2pm UTC time before trading CCAI', type: 'error' })
+    notify({
+      message: 'Please, wait until 2pm UTC time before trading CCAI',
+      type: 'error',
+    })
     return
   }
 
@@ -592,7 +642,7 @@ export async function placeOrder({
     size,
     market,
     wallet,
-    pair
+    pair,
   })
 
   if (!isValidationSuccessfull) {
@@ -644,6 +694,14 @@ export async function placeOrder({
     connection,
     signers,
     sendingMessage: 'Sending order...',
+    operationType: 'createOrder',
+    params: {
+      side: side,
+      price: price,
+      amount: size,
+      baseSymbol: pair.split('_')[0],
+      quoteSymbol: pair.split('_')[1],
+    },
   })
 }
 
@@ -943,20 +1001,25 @@ export async function sendTransaction({
   sentMessage = 'Transaction sent',
   successMessage = 'Transaction confirmed',
   timeout = DEFAULT_TIMEOUT,
+  operationType = 'createOrder',
+  params,
 }: {
-  transaction: Transaction,
-  wallet: WalletAdapter,
-  signers: Account[],
-  connection: Connection,
-  sendingMessage?: string,
-  sentMessage?: string,
-  successMessage?: string,
+  transaction: Transaction
+  wallet: WalletAdapter
+  signers: Account[]
+  connection: Connection
+  sendingMessage?: string
+  sentMessage?: string
+  successMessage?: string
   timeout?: number
-}) {  
+  operationType?: string
+  params: any
+}) {
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash('max')
   ).blockhash
 
+  console.log('operationType', operationType)
   console.log('signers', signers)
 
   transaction.setSigners(
@@ -976,11 +1039,24 @@ export async function sendTransaction({
 
   console.log('sendTransaction rawTransaction: ', rawTransaction)
   const startTime = getUnixTs()
-  notify({ message: sendingMessage })
+
+  // notify({ message: sendingMessage })
   const txid = await connection.sendRawTransaction(rawTransaction, {
     skipPreflight: true,
   })
-  notify({ message: sentMessage, type: 'success', txid })
+  notify({
+    message: setNotificationTexts({
+      baseSymbol: params?.baseSymbol || '',
+      quoteSymbol: params?.quoteSymbol || '',
+      quoteUnsettled: params?.quoteUnsettled || 0,
+      baseUnsettled: params?.baseUnsettled || 0,
+      price: params?.price || 0,
+      amount: params?.amount || 0,
+      side: params?.side || '',
+    })[operationType],
+    type: 'success',
+    txid,
+  })
 
   console.log('Started awaiting confirmation for', txid)
 
@@ -1011,7 +1087,10 @@ export async function sendTransaction({
     console.log('sendTransaction resultOfSignature', resultOfSignature)
   } catch (err) {
     if (err.timeout) {
-      notify({ message: 'Timed out awaiting confirmation on transaction', type: 'error' })
+      notify({
+        message: 'Timed out awaiting confirmation on transaction',
+        type: 'error',
+      })
       throw new Error('Timed out awaiting confirmation on transaction')
     }
 
@@ -1020,13 +1099,8 @@ export async function sendTransaction({
   } finally {
     done = true
   }
-  notify({ message: successMessage, type: 'success', txid })
-
-  console.log(
-    'Latency',
-    txid,
-    getUnixTs() - startTime,
-  )
+  // notify({ message: successMessage, type: 'success', txid })
+  console.log('Latency', txid, getUnixTs() - startTime)
   return txid
 }
 

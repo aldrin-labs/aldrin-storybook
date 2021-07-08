@@ -134,60 +134,65 @@ const AppRaw = ({
             {/* <FontStyle /> */}
             <ConnectionProvider>
               <TokenRegistryProvider>
-              <MarketProvider>
-                <WalletProvider>
-                  <PreferencesProvider>
-                    <AppGridLayout
-                      id={'react-notification'}
-                      showFooter={showFooter}
-                      isRewards={isRewards}
-                      isPNL={isPNL}
-                      isChartPage={isChartPage}
-                    >
-                      {!pageIsRegistration && (
-                        <CardsPanel pathname={currentPage} hide={fullscreen} />
-                      )}
-                      {isChartPage && <MarketBlock />}
-                      <div
-                        style={{
-                          height: showFooter
-                            ? 'calc(100% - 11.7rem)'
-                            : isChartPage
-                            ? 'calc(100% - 12rem)'
-                            : 'calc(100% - 6rem)',
-                          overflow: currentPage == '/' ? 'hidden' : 'auto',
-                        }}
+                <MarketProvider>
+                  <WalletProvider>
+                    <PreferencesProvider>
+                      <AppGridLayout
+                        id={'react-notification'}
+                        showFooter={showFooter}
+                        isRewards={isRewards}
+                        isPNL={isPNL}
+                        isChartPage={isChartPage}
                       >
-                        {children}
-                      </div>
-                      {showFooter && <FooterWithTheme isRewards={isRewards} />}
-                      {/* 
+                        {!pageIsRegistration && (
+                          <CardsPanel
+                            pathname={currentPage}
+                            hide={fullscreen}
+                          />
+                        )}
+                        {isChartPage && <MarketBlock />}
+                        <div
+                          style={{
+                            height: showFooter
+                              ? 'calc(100% - 11.7rem)'
+                              : isChartPage
+                              ? 'calc(100% - 12rem)'
+                              : 'calc(100% - 6rem)',
+                            overflow: currentPage == '/' ? 'hidden' : 'auto',
+                          }}
+                        >
+                          {children}
+                        </div>
+                        {showFooter && (
+                          <FooterWithTheme isRewards={isRewards} />
+                        )}
+                        {/* 
                     <Footer
                       isChartPage={isChartPage}
                       fullscreenMode={fullscreen}
                       showFooter={showFooter}
                     /> */}
-                      {!MASTER_BUILD && !LOCAL_BUILD && (
-                        <DevUrlPopup
-                          open={isDevUrlPopupOpen}
-                          close={() => {
-                            openDevUrlPopup(false)
-                          }}
-                        />
-                      )}
-                      {!isWalletMigrationToNewUrlPopupDone && (
+                        {!MASTER_BUILD && !LOCAL_BUILD && (
+                          <DevUrlPopup
+                            open={isDevUrlPopupOpen}
+                            close={() => {
+                              openDevUrlPopup(false)
+                            }}
+                          />
+                        )}
+                        {/* {!isWalletMigrationToNewUrlPopupDone && (
                         <WalletMigrationPopup
                           open={isMigrationToNewUrlPopupOpen}
                           close={() => {
                             openMigrationToNewUrlPopup(false)
                           }}
                         />
-                      )}
-                    </AppGridLayout>
-                    {/* <ShowWarningOnMoblieDevice /> */}
-                  </PreferencesProvider>
-                </WalletProvider>
-              </MarketProvider>
+                      )} */}
+                      </AppGridLayout>
+                      {/* <ShowWarningOnMoblieDevice /> */}
+                    </PreferencesProvider>
+                  </WalletProvider>
+                </MarketProvider>
               </TokenRegistryProvider>
             </ConnectionProvider>
             <GlobalStyle />
