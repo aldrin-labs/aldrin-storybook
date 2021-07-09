@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Theme } from '@material-ui/core'
 
-const SwitcherHalf = styled(
+export const SwitcherHalf = styled(
   ({
     isDisabled,
     activeBackgroundColor,
@@ -31,7 +31,7 @@ const SwitcherHalf = styled(
   )
 )`
   height: ${(props) => props.height};
-  font-weight: ${(props) => props.fontWeight || 'normal'};
+  font-weight: ${(props) => (props.isDisabled ? 'normal' : 'bold')};
   text-transform: ${(props) => props.textTransform || 'capitalize'};
   white-space: nowrap;
   cursor: ${(props) => (props.isDisabled ? 'unset' : 'pointer')};
@@ -74,6 +74,7 @@ const CustomSwitcher = ({
   buttonHeight,
   containerStyles,
   theme,
+  isDisabled
 }: {
   firstHalfIsActive: boolean
   changeHalf: () => void
@@ -84,6 +85,7 @@ const CustomSwitcher = ({
   buttonHeight: string
   containerStyles: CSSProperties
   theme: Theme
+  isDisabled: boolean
 }) => {
   return (
     <div style={{ display: 'inline-block', ...containerStyles }}>
@@ -91,7 +93,7 @@ const CustomSwitcher = ({
         isFirstHalf
         theme={theme}
         key={'firstHalf'}
-        isDisabled={!firstHalfIsActive}
+        isDisabled={!firstHalfIsActive || isDisabled}
         onClick={() => !firstHalfIsActive && changeHalf()}
         height={buttonHeight}
         width={'50%'}
@@ -102,7 +104,7 @@ const CustomSwitcher = ({
       <SwitcherHalf
         theme={theme}
         key={'secondHalf'}
-        isDisabled={firstHalfIsActive}
+        isDisabled={firstHalfIsActive || isDisabled}
         onClick={() => firstHalfIsActive && changeHalf()}
         height={buttonHeight}
         width={'50%'}

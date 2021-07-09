@@ -98,14 +98,7 @@ const AppRaw = ({
     getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
 
   const fullscreen: boolean = isChartPage && chartPageView !== 'default'
-  const showFooter =
-    !currentPage.includes('/analytics') &&
-    currentPage !== '/tech_issues' &&
-    !isChartPage &&
-    currentPage !== '/' &&
-    currentPage !== '/pools' &&
-    currentPage !== '/rebalance' &&
-    currentPage !== '/swaps'
+  const showFooter = false
 
   const isPNL = currentPage.includes('/portfolio/main')
   // TODO: Check this variable
@@ -147,13 +140,12 @@ const AppRaw = ({
                       {!pageIsRegistration && (
                         <CardsPanel pathname={currentPage} hide={fullscreen} />
                       )}
-                      {isChartPage && <MarketBlock />}
                       <div
                         style={{
                           height: showFooter
                             ? 'calc(100% - 11.7rem)'
                             : isChartPage
-                            ? 'calc(100% - 12rem)'
+                            ? 'calc(100% - 6rem)'
                             : 'calc(100% - 6rem)',
                           overflow: currentPage == '/' ? 'hidden' : 'auto',
                         }}

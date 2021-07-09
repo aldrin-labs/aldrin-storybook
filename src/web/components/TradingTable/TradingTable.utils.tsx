@@ -5,6 +5,7 @@ dayjs.extend(localizedFormat)
 
 import { OrderType, TradeType, FundsType, Key } from '@core/types/ChartTypes'
 import { TableButton } from './TradingTable.styles'
+import ErrorIcon from '@material-ui/icons/Error'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components/index'
@@ -60,11 +61,15 @@ import {
   openOrdersBody,
   orderHistoryBody,
   tradeHistoryBody,
+  activeTradesColumnNames,
 } from '@sb/components/TradingTable/TradingTable.mocks'
 
 import { Theme } from '@material-ui/core'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
+import { getStrategyFields } from './ActiveTrades/ActiveTrades.utils'
+import TooltipCustom from '../TooltipCustom/TooltipCustom'
+import { SubColumnValue } from './ActiveTrades/Columns'
 
 export const getTableBody = (tab: string) =>
   tab === 'openOrders'
@@ -98,6 +103,8 @@ export const getTableHead = (
     ? feeDiscountsColumnNames
     : tab === 'strategiesHistory'
     ? strategiesHistoryColumnNames
+    : tab === 'activeTrades'
+    ? activeTradesColumnNames
     : []
 
 export const getStartDate = (stringDate: string): number =>
@@ -143,6 +150,8 @@ export const getEmptyTextPlaceholder = (tab: string): string =>
     ? 'You have no fee tiers'
     : tab === 'feeDiscounts'
     ? 'You have no (M)SRM accounts'
+    : tab === 'activeTrades'
+    ? 'You don’t have active trades now.'
     : tab === 'strategiesHistory'
     ? 'You have no smart trades'
     : 'You have no assets'
@@ -1432,4 +1441,258 @@ export const updateTradeHistoryQuerryFunction = (
   }
 
   return result
+}
+
+export const combineStrategiesHistoryTable = ({
+  data,
+  theme,
+  marketType,
+  keys,
+  handlePairChange,
+}:
+{
+  data: SmartOrder[]
+  theme: Theme
+  marketType: number
+  keys: Key[]
+  handlePairChange: any
+}) => {
+  if (!data && !Array.isArray(data)) {
+    return []
+  }
+
+  const processedStrategiesHistoryData = data
+    .filter((el) => el.conditions.marketType === marketType)
+    .map((el: SmartOrder, i: number) => {
+      const {
+        createdAt,
+        enabled,
+        accountId,
+        conditions: {
+          pair,
+          leverage,
+          marketType,
+          entryOrder: {
+            side,
+            orderType,
+            amount,
+            entryDeviation,
+            price,
+            activatePrice,
+          },
+          exitLevels,
+          stopLoss,
+          isTemplate,
+          templatePnl,
+          templateStatus,
+        } = {
+          pair: '-',
+          marketType: 0,
+          entryOrder: {
+            side: '-',
+            orderType: '-',
+            amount: '-',
+          },
+          exitLevels: [],
+          entryLevels: [],
+          stopLoss: '-',
+          stopLossType: '-',
+          forcedLoss: false,
+          trailingExit: false,
+          timeoutIfProfitable: '-',
+          timeoutWhenLoss: '-',
+          timeoutLoss: '-',
+          timeoutWhenProfit: '-',
+          isTemplate: false,
+          templatePnl: 0,
+          templateStatus: '-',
+        },
+      } = el
+
+      const {
+        entryPrice,
+        exitPrice,
+        state,
+        msg,
+        receivedProfitAmount,
+        receivedProfitPercentage,
+      } = el.state || {
+        entryPrice: 0,
+        state: '',
+        msg: null,
+        exitPrice: 0,
+        receivedProfitAmount: 0,
+        receivedProfitPercentage: 0,
+      }
+
+      const keyName = keys[accountId]
+
+      const pairArr = pair.split('_')
+      const needOpacity = el._id === '-1'
+      const date = isNaN(dayjs(+createdAt).unix()) ? createdAt : +createdAt
+      let orderState = state ? state : enabled ? 'Waiting' : 'Closed'
+      let isErrorInOrder = !!msg
+
+      const entryOrderPrice =
+        !entryDeviation && orderType === 'limit' && !entryPrice
+          ? price
+          : entryPrice
+
+      const { pricePrecision, quantityPrecision } = getPrecisionItem({
+        marketType,
+        symbol: pair,
+      })
+
+      const [profitAmount, profitPercentage] = getPnlFromState({
+        state: el.state,
+        side,
+        amount,
+        leverage,
+      })
+
+      const positionWasPlaced =
+        !!state && state !== 'TrailingEntry' && state !== 'WaitForEntry'
+
+      if (isErrorInOrder && profitAmount !== 0) {
+        orderState = 'Closed'
+        isErrorInOrder = false
+      }
+
+      if (isTemplate) {
+        if (templateStatus === 'enabled') {
+          orderState = 'Waiting alert'
+        }
+        if (templateStatus === 'disabled') {
+          orderState = 'Closed'
+        }
+        if (templateStatus === 'paused') {
+          orderState = 'On pause'
+        }
+      }
+
+      if (!enabled && positionWasPlaced) {
+        orderState = 'Closed'
+      }
+
+      if (profitAmount === 0 && !exitPrice && !enabled && !positionWasPlaced) {
+        orderState = 'Canceled'
+      }
+
+      if (orderState === 'End') orderState = 'Closed'
+
+      if (isTemplate) orderState = 'Template'
+
+      return {
+        id: `${el._id}_${accountId}`,
+        ...getStrategyFields({
+          el,
+          theme,
+          keyName,
+          pairArr,
+          pricePrecision,
+          entryOrderPrice,
+          handlePairChange,
+          quantityPrecision,
+          isActiveTable: false,
+        }),
+        profit: {
+          render: (
+            <SubColumnValue
+              theme={theme}
+              color={
+                receivedProfitPercentage === 0 && !templatePnl
+                  ? ''
+                  : receivedProfitPercentage > 0 ||
+                    (!!templatePnl && templatePnl > 0)
+                  ? theme.palette.green.main
+                  : theme.palette.red.main
+              }
+            >
+              {!!templatePnl
+                ? `${stripDigitPlaces(templatePnl, 3)} ${pairArr[1]}`
+                : `${stripDigitPlaces(receivedProfitAmount, 3)} ${
+                    pairArr[1]
+                  } / ${stripDigitPlaces(receivedProfitPercentage, 2)}%`}
+            </SubColumnValue>
+          ),
+          style: {
+            opacity: needOpacity ? 0.6 : 1,
+          },
+          contentToSort: profitAmount,
+        },
+        status: {
+          render: (
+            <SubColumnValue
+              theme={theme}
+              style={{
+                display: 'flex',
+                textTransform: 'none',
+                alignItems: 'center',
+              }}
+              color={
+                state || isTemplate
+                  ? !isErrorInOrder && orderState !== 'Canceled'
+                    ? theme.palette.green.main
+                    : theme.palette.red.main
+                  : theme.palette.red.main
+              }
+            >
+              {isErrorInOrder ? 'Error' : orderState}
+              {isErrorInOrder ? (
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}
+                >
+                  <TooltipCustom
+                    title={msg}
+                    component={
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <ErrorIcon
+                          style={{
+                            height: '1.5rem',
+                            width: '1.5rem',
+                            color: theme.palette.red.main,
+                            marginLeft: '.5rem',
+                          }}
+                        />{' '}
+                      </div>
+                    }
+                  />
+                  <a className={'errorMsg'}>{msg}</a>
+                </div>
+              ) : null}
+            </SubColumnValue>
+          ),
+          style: {
+            opacity: needOpacity ? 0.6 : 1,
+          },
+          contentToSort: profitPercentage,
+        },
+        date: {
+          render: (
+            <div>
+              <span
+                style={{ display: 'block', color: theme.palette.dark.main }}
+              >
+                {String(dayjs(date).format('ll'))}
+              </span>
+              <span style={{ color: theme.palette.grey.light }}>
+                {dayjs(date).format('LT')}
+              </span>
+            </div>
+          ),
+          style: {
+            opacity: needOpacity ? 0.6 : 1,
+            textAlign: 'right',
+          },
+          contentToSort: createdAt ? +new Date(createdAt) : -1,
+        },
+        tooltipTitle: keyName,
+      }
+    })
+
+  return processedStrategiesHistoryData
 }

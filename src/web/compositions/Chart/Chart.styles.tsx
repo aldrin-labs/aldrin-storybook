@@ -5,7 +5,7 @@ import { Card, Grid, Button, Theme } from '@material-ui/core'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 
 export const MainContainer = styled.div`
-  height: 100%;
+  height: calc(100% - 6rem);
   ${(props: { fullscreen: boolean }) =>
     props.fullscreen && 'height: 100vh; position: relative; z-index: 10;'};
 `
@@ -292,7 +292,6 @@ export const TablesContainer = styled(Grid)`
 
 export const TradingTerminalContainer = styled(
   ({
-    isDefaultTerminalViewMode,
     MASTER_BUILD,
     hideDepthChart,
     hideOrderbook,
@@ -324,6 +323,7 @@ export const TradingTerminalContainer = styled(
 export const TopChartsContainer = styled(
   ({
     isDefaultTerminalViewMode,
+    isFullScreenTablesMode,
     MASTER_BUILD,
     hideDepthChart,
     hideOrderbook,
@@ -339,6 +339,7 @@ export const TopChartsContainer = styled(
   flex-grow: 0;
   max-width: 100%;
   flex-basis: 100%;
+  display: ${(props) => (props.isFullScreenTablesMode ? 'none' : 'flex')};
   height: ${(props) =>
     props.isDefaultTerminalViewMode ? 'calc(60%)' : 'calc(50%)'};
   @media screen and (max-width: 1440px) {
@@ -384,13 +385,21 @@ export const ChartsContainer = styled(
   background-color: ${(props) => props.theme.palette.white.background};
 `
 
-export const TradingTabelContainer = styled(
-  ({ isDefaultTerminalViewMode, ...rest }) => <TablesContainer {...rest} />
+export const TradingTableContainer = styled(
+  ({ isDefaultTerminalViewMode, isFullScreenTablesMode, ...rest }) => (
+    <TablesContainer {...rest} />
+  )
 )`
   // 32vh was
+  display: ${(props) => (!props.isSmartOrderMode ? 'flex' : 'none')};
   background-color: ${(props) => props.theme.palette.white.background};
   position: relative;
-  height: ${(props) => (props.isDefaultTerminalViewMode ? '40%' : '0%')};
+  height: ${(props) =>
+    props.isDefaultTerminalViewMode || props.isDefaultOnlyTablesMode
+      ? '40%'
+      : props.isFullScreenTablesMode
+      ? '100%'
+      : '0%'};
   justify-content: flex-start;
   flex-direction: column;
   overflow: hidden;
@@ -467,10 +476,11 @@ export const WatchSubvalue = styled.span`
 `
 
 export const BalancesContainer = styled(
-  ({ isDefaultTerminalViewMode, ...rest }) => <Grid {...rest} />
+  ({ isDefaultTerminalViewMode, isFullScreenTablesMode, isSmartOrderMode, ...rest }) => <Grid {...rest} />
 )`
   position: relative;
   padding: 0;
+  display: ${(props) => (props.isFullScreenTablesMode || props.isSmartOrderMode ? 'none' : 'flex')};
   height: ${(props) => (props.isDefaultTerminalViewMode ? '40%' : '50%')};
 `
 

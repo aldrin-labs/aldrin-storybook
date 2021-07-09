@@ -9,7 +9,6 @@ export const TitleSecondRowContainer = styled.div`
   display: flex;
   background-color: ${(props) => props.theme.palette.white.background};
   padding: 0.2rem auto;
-  border-bottom: ${(props) => props.theme.palette.border.main};
 `
 
 export const TitleButton = styled(
@@ -35,6 +34,17 @@ export const TitleButton = styled(
     background-color: ${(props: { isActive?: boolean }) =>
       props.isActive && props.theme.palette.blue.main};
     color: ${(props) => props.theme.palette.white.main};
+  }
+`
+
+export const TableCell = styled.td`
+  border-bottom: 0.1rem solid ${(props) => props.theme.palette.grey.border};
+  color: ${(props) => props.theme.palette.grey.onboard};
+`
+
+export const TableRow = styled.tr`
+  &:last-child td {
+    border: none;
   }
 `
 

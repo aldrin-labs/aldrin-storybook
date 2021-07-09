@@ -12,10 +12,14 @@ import { isEqual } from 'lodash'
 
 const TerminalContainer = ({
   isDefaultTerminalViewMode,
+  isDefaultOnlyTablesMode,
+  isFullScreenTablesMode,
   children,
   theme,
 }: {
   isDefaultTerminalViewMode: boolean
+  isFullScreenTablesMode: boolean
+  isDefaultOnlyTablesMode: boolean
   children: React.ReactChild
   theme: Theme
 }) => (
@@ -25,6 +29,8 @@ const TerminalContainer = ({
     theme={theme}
     xs={isDefaultTerminalViewMode ? 5 : 12}
     isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+    isDefaultOnlyTablesMode={isDefaultOnlyTablesMode}
+    isFullScreenTablesMode={isFullScreenTablesMode}
   >
     {children}
   </TablesBlockWrapper>
@@ -33,7 +39,7 @@ const TerminalContainer = ({
 import {
   Container,
   ChartsContainer,
-  TradingTabelContainer,
+  TradingTableContainer,
   TradingTerminalContainer,
   BalancesContainer,
   TopChartsContainer,
@@ -55,11 +61,14 @@ export const DefaultViewComponent = (
     minPriceDigits,
     showOrderResult,
     showCancelResult,
-    showFuturesTransfer,
     showTableOnMobile,
     selectedKey,
     chartProps,
     showChangePositionModeResult,
+    isDefaultTerminalViewMode,
+    isDefaultOnlyTablesMode,
+    isFullScreenTablesMode,
+    isSmartOrderMode,
     terminalViewMode,
     updateTerminalViewMode,
     arrayOfMarketIds,
@@ -89,8 +98,9 @@ export const DefaultViewComponent = (
   const [base, quote] = currencyPair.split('_')
   const baseQuoteArr = [base, quote]
   const exchange = activeExchange.symbol
-  const isDefaultTerminalViewMode = terminalViewMode === 'default'
   const sizeDigits = quantityPrecision
+
+  console.log('terminalViewMode', terminalViewMode)
 
   useEffect(() => {
     updateTerminalPriceFromOrderbook(null)
@@ -117,12 +127,8 @@ export const DefaultViewComponent = (
             height: '100%',
           }}
         >
-          <TopChartsContainer
-            isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-            theme={theme}
-          >
+          <TopChartsContainer isFullScreenTablesMode={isFullScreenTablesMode} isDefaultTerminalViewMode={true} theme={theme}>
             <ChartsContainer
-              isDefaultTerminalViewMode={isDefaultTerminalViewMode}
               hideDepthChart={hideDepthChart}
               hideOrderbook={hideOrderbook}
               theme={theme}
@@ -130,15 +136,12 @@ export const DefaultViewComponent = (
             >
               <SingleChartWithButtons
                 currencyPair={currencyPair}
-                base={base}
-                quote={quote}
                 marketType={marketType}
                 themeMode={themeMode}
               />
             </ChartsContainer>
             <TradingTerminalContainer
               theme={theme}
-              isDefaultTerminalViewMode={isDefaultTerminalViewMode}
               hideDepthChart={hideDepthChart}
               hideOrderbook={hideOrderbook}
               hideTradeHistory={hideTradeHistory}
@@ -231,14 +234,29 @@ export const DefaultViewComponent = (
             </TradingTerminalContainer>
           </TopChartsContainer>
 
-          <TradingTabelContainer
+          <TradingTableContainer
             item
             theme={theme}
-            xs={6}
+            isSmartOrderMode={isSmartOrderMode}
+            xs={
+              isFullScreenTablesMode
+                ? 12
+                : isDefaultOnlyTablesMode
+                ? 11
+                : 6
+            }
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+            updateTerminalViewMode={updateTerminalViewMode}
+            isDefaultOnlyTablesMode={isDefaultOnlyTablesMode}
+            isFullScreenTablesMode={isFullScreenTablesMode}
           >
             <TradingTable
+              isFullScreenTablesMode={isFullScreenTablesMode}
+              isDefaultOnlyTablesMode={isDefaultOnlyTablesMode}
+              isSmartOrderMode={isSmartOrderMode}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+              updateTerminalViewMode={updateTerminalViewMode}
+              terminalViewMode={terminalViewMode}
               maxLeverage={maxLeverage}
               selectedKey={selectedKey}
               showOrderResult={showOrderResult}
@@ -251,21 +269,22 @@ export const DefaultViewComponent = (
               currencyPair={currencyPair}
               arrayOfMarketIds={arrayOfMarketIds}
             />
-          </TradingTabelContainer>
+          </TradingTableContainer>
 
           <BalancesContainer
             item
             xs={1}
             theme={theme}
             id="balances"
-            isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+            isFullScreenTablesMode={isFullScreenTablesMode}
+            isSmartOrderMode={isSmartOrderMode}
+            isDefaultTerminalViewMode={true}
           >
             <Balances
               pair={currencyPair.split('_')}
               selectedKey={selectedKey}
               marketType={marketType}
               theme={theme}
-              showFuturesTransfer={showFuturesTransfer}
               setShowTokenNotAdded={setShowTokenNotAdded}
             />
           </BalancesContainer>
@@ -273,6 +292,8 @@ export const DefaultViewComponent = (
           <TerminalContainer
             theme={theme}
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+            isDefaultOnlyTablesMode={isDefaultOnlyTablesMode}
+            isFullScreenTablesMode={isFullScreenTablesMode}
           >
             <TradingComponent
               selectedKey={selectedKey}
@@ -293,13 +314,13 @@ export const DefaultViewComponent = (
               showCancelResult={showCancelResult}
               showChangePositionModeResult={showChangePositionModeResult}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+              isSmartOrderMode={isSmartOrderMode}
               updateTerminalViewMode={updateTerminalViewMode}
               setShowTokenNotAdded={setShowTokenNotAdded}
             />
           </TerminalContainer>
 
           <TradingBlocked
-            pair={baseQuoteArr}
             theme={theme}
             open={isTradingBlockedPopupOpen}
             onClose={() => setIsTradingBlockedPopupOpen(false)}

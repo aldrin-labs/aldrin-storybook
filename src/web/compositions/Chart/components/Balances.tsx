@@ -132,33 +132,14 @@ const BalanceValuesContainer = styled(RowContainer)`
 `
 
 export const Balances = ({
-  getFundsQuery,
   pair,
   theme,
   marketType,
-  selectedKey,
-  showFuturesTransfer = false,
-  timerForFuturesWars = {},
-  isAlreadyJoined = false,
-  isFuturesWarsKey = false,
-  futuresWarsRoundBet = 0,
   setShowTokenNotAdded = () => {},
 }: {
-  getFundsQuery: {
-    getFunds: FundsType[]
-  }
   theme: Theme
   pair: string[]
   marketType: 0 | 1
-  selectedKey: Key
-  showFuturesTransfer: boolean
-  timerForFuturesWars: {
-    isEnabled: boolean
-    startedAt: number
-  }
-  isAlreadyJoined: boolean
-  isFuturesWarsKey: boolean
-  futuresWarsRoundBet: number
   setShowTokenNotAdded: (show: boolean) => void
 }) => {
   const [openDepositPopup, toggleOpeningDepositPopup] = useState(false)

@@ -12,13 +12,23 @@ export const TablesBlockWrapper = styled(Grid)`
     isDefaultTerminalViewMode,
   }: {
     isDefaultTerminalViewMode: boolean
-  }) => (isDefaultTerminalViewMode ? '40%' : '50%')};
+    isDefaultOnlyTablesMode: boolean
+    isFullScreenTablesMode: boolean
+  }) => '40%'};
+
+  display: ${(props: {
+    isDefaultTerminalViewMode: boolean
+    isDefaultOnlyTablesMode: boolean
+    isFullScreenTablesMode: boolean
+  }) =>
+    props.isDefaultOnlyTablesMode || props.isFullScreenTablesMode
+      ? 'none'
+      : 'block'};
 
   && {
     box-shadow: none !important;
   }
 `
-
 export const TerminalContainer = styled.div`
   height: 100%;
   padding: 5px;
@@ -51,7 +61,7 @@ export const StyledTab = styled(({ active, ...rest }) => <Button {...rest} />)`
   font-size: 1.5rem;
   font-weight: bold;
 
-  letter-spacing: 1.5px;
+  letter-spacing: 1px;
   transition: 0.3s all;
 
   background: ${(props) => (props.active ? '#165BE0' : '#fff')};

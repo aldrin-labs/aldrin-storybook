@@ -348,7 +348,7 @@ export const SendButton = styled(StyledTab)`
   border-radius: 1rem;
   border: none;
   text-transform: capitalize;
-  font-family: Avenir Next;
+  font-family: Avenir Next Medium;
 
   &:hover {
     background-color: ${(props) =>
@@ -368,7 +368,7 @@ export const SendButton = styled(StyledTab)`
 
 export const SmartTradeButton = styled(SendButton)`
   line-height: 150%;
-  font-size: 1rem;
+  font-size: 1.2rem;
   background-color: ${(props) =>
     props.type === 'buy'
       ? (props.theme &&
@@ -395,18 +395,6 @@ export const SmartTradeButton = styled(SendButton)`
             props.theme.palette.red &&
             props.theme.palette.red.main) ||
           '#DD6956'};
-  }
-
-  @media (max-width: 1600px) {
-    font-size: 1rem;
-  }
-
-  @media screen and (max-width: 1440px) {
-    font-size: 0.9rem;
-  }
-
-  @media (min-width: 1921px) {
-    font-size: 1rem;
   }
 `
 

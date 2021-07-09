@@ -86,30 +86,19 @@ export const addressBookColumnNames = [
 
 export const activeTradesColumnNames = [
   { label: ' ', id: 'blank' },
-  { label: 'pair', id: 'pair' },
-  { label: 'Side', id: 'side' },
-  { label: 'Entry Price', id: 'entryPrice' },
-  { label: 'Size', id: 'quantity' },
+  { label: 'Position', id: 'pair' },
+  { label: 'Entry price', id: 'entryPrice' },
+  { label: 'Lvg.', id: 'leverage' },
+  { label: 'Margin/Size', id: 'quantity' },
+  { label: 'Averaging', id: 'averaging' },
+  { label: 'Stop loss', id: 'stopLoss' },
   {
     label: (
-      <DarkTooltip title={`Take a profit`}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          T-A-P
-          <Help
-            style={{
-              height: '1.5rem',
-              width: '1.5rem',
-              color: 'rgb(0, 93, 217)',
-              marginLeft: '.5rem',
-            }}
-          />
-        </div>
-      </DarkTooltip>
+      <div style={{ display: 'flex', alignItems: 'center' }}>Take profit</div>
     ),
     id: 'takeProfit',
   },
-  { label: 'Stop', id: 'stopLoss' },
-  { label: 'Pnl/Roe', id: 'profit' },
+  { label: 'P&L/ROE', id: 'profit' },
   {
     label: (
       <DarkTooltip
@@ -123,27 +112,64 @@ export const activeTradesColumnNames = [
           </div>
         }
       >
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            textDecoration: 'underline',
+          }}
+        >
           status
-          <Help
-            style={{
-              height: '1.5rem',
-              width: '1.5rem',
-              color: 'rgb(0, 93, 217)',
-              marginLeft: '.5rem',
-            }}
-          />
         </div>
       </DarkTooltip>
     ),
     id: 'status',
   },
-  { label: 'close', id: 'close', isSortable: false },
-  // { label: 'Entry point', id: 'entryOrder' },
-  // { label: 'Take a profit', id: 'takeProfit' },
-  // { label: 'Stop loss', id: 'stopLoss' },
-  // { label: 'status', id: 'status' },
-  // { label: 'close', id: 'close' },
+  { label: 'Action', id: 'close', isSortable: false },
+]
+
+export const strategiesHistoryColumnNames = [
+  { label: ' ', id: 'blank' },
+  { label: 'Position', id: 'pair' },
+  { label: 'Entry price', id: 'entryPrice' },
+  { label: 'Lvg.', id: 'leverage' },
+  { label: 'Margin/Size', id: 'quantity' },
+  { label: 'Averaging', id: 'averaging' },
+  { label: 'Stop loss', id: 'stopLoss' },
+  {
+    label: (
+      <div style={{ display: 'flex', alignItems: 'center' }}>Take profit</div>
+    ),
+    id: 'takeProfit',
+  },
+  { label: 'P&L/ROE', id: 'profit' },
+  {
+    label: (
+      <DarkTooltip
+        title={
+          <div>
+            <p>Preparing (while placing orders/waiting for act price)</p>
+            <p>Trailing entry (When trailing activated)</p>
+            <p>In loss (pnl less than 0)</p>
+            <p>In Profit (profit greater than 0)</p>
+            <p>Error (error has occured)</p>
+          </div>
+        }
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            textDecoration: 'underline',
+          }}
+        >
+          status
+        </div>
+      </DarkTooltip>
+    ),
+    id: 'status',
+  },
+  { label: 'date', isNumber: true, id: 'date' },
 ]
 
 export const feeTiersColumnNames = [
@@ -162,35 +188,6 @@ export const feeDiscountsColumnNames = [
   { label: 'Mint', id: 'mint' },
 ]
 
-export const strategiesHistoryColumnNames = [
-  { label: ' ', id: 'blank' },
-  { label: 'pair', id: 'pair' },
-  { label: 'Side', id: 'side' },
-  { label: 'Entry Price', id: 'entryPrice' },
-  { label: 'Size', id: 'quantity' },
-  {
-    label: (
-      <DarkTooltip title={`Take a profit`}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          T-A-P
-          <Help
-            style={{
-              height: '1.5rem',
-              width: '1.5rem',
-              color: 'rgb(0, 93, 217)',
-              marginLeft: '.5rem',
-            }}
-          />
-        </div>
-      </DarkTooltip>
-    ),
-    id: 'takeProfit',
-  },
-  { label: 'Stop', id: 'stopLoss' },
-  { label: 'Pnl/Roe', id: 'profit' },
-  { label: 'status', id: 'status' },
-  { label: 'date', isNumber: true, id: 'date' },
-]
 
 export const positionsBody = new Array(13).fill(undefined).map((el, i) => ({
   id: i,

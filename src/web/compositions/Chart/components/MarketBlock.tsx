@@ -58,6 +58,30 @@ const LinkToTwitter = styled.a`
   margin-left: 2rem;
 `
 
+const ChangeTerminalButton = styled.div`
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  align-items: center;
+`
+
+const ChangeTradeButton = styled.button`
+  display: flex;
+  justify-content: center;
+  text-transform: capitalize;
+  font-weight: bold;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+  font-family: DM Sans, sans-serif;
+  font-size: 1.4rem;
+  line-height: 1.9rem;
+  align-items: center;
+  outline: none;
+  border: none;
+  width: 50%;
+`
+
 const selectStyles = (theme: Theme) => ({
   height: '100%',
   background: theme.palette.white.background,
@@ -90,7 +114,16 @@ const selectStyles = (theme: Theme) => ({
   },
 })
 
-const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
+const MarketBlock = ({
+  theme,
+  activeExchange = 'serum',
+  marketType = 0,
+  isDefaultTerminalViewMode,
+  isDefaultOnlyTablesMode,
+  isSmartOrderMode,
+  isFullScreenTablesMode,
+  updateTerminalViewMode,
+}) => {
   const { market, customMarkets } = useMarket()
   const location = useLocation()
 
@@ -124,6 +157,7 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
 
   return (
     <RowContainer
+      wrap={'nowrap'}
       justify={'space-between'}
       style={{
         height: '6rem',
@@ -205,8 +239,105 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
           )}
         </Row>
       </Row>
-      <Row>
-        <Row align={'flex-start'} direction="column">
+      <Row wrap="nowrap">
+        <Row>
+          <ChangeTerminalButton
+            data-tut={'smart&basic'}
+            style={{
+              width: '30rem',
+              height: '4rem',
+            }}
+          >
+            <DarkTooltip title={'Terminal with traditional order types.'}>
+              <ChangeTradeButton
+                theme={theme}
+                style={{
+                  cursor: 'pointer',
+                  height: '100%',
+                  border: theme.palette.border.main,
+                  borderRight: `.1rem solid ${theme.palette.grey.border}`,
+                  borderTopLeftRadius: '0.8rem',
+                  borderBottomLeftRadius: '0.8rem',
+                  backgroundColor:
+                    isDefaultTerminalViewMode
+                      ? theme.palette.blue.main
+                      : theme.palette.white.background,
+                  color:
+                    isDefaultTerminalViewMode 
+                      ? theme.palette.white.main
+                      : theme.palette.grey.light,
+                }}
+                //type={isDefaultTerminalViewMode ? 'buy' : 'sell'}
+                id="basicTradingButton"
+                onClick={() => {
+                  updateTerminalViewMode('default')
+                }}
+              >
+                <span
+                  style={{
+                    textDecoration: 'underline',
+                  }}
+                >
+                  Basic Mode
+                </span>
+              </ChangeTradeButton>
+            </DarkTooltip>
+
+            <DarkTooltip
+              title={
+                'Our unique terminal with smart orders and advanced trading features.'
+              }
+            >
+              <ChangeTradeButton
+                theme={theme}
+                style={{
+                  height: '100%',
+                  borderTopRightRadius: '0.8rem',
+                  borderBottomRightRadius: '0.8rem',
+                  border: theme.palette.border.main,
+                  borderLeft: `.1rem solid ${theme.palette.grey.border}`,
+                  cursor: 'pointer',
+                  backgroundColor:
+                    isSmartOrderMode || isDefaultOnlyTablesMode || isFullScreenTablesMode
+                      ? theme.palette.blue.main
+                      : theme.palette.white.background,
+                  color:
+                    isSmartOrderMode || isDefaultOnlyTablesMode || isFullScreenTablesMode
+                      ? theme.palette.white.main
+                      : theme.palette.grey.light,
+                }}
+                type={isDefaultTerminalViewMode ? 'buy' : 'sell'}
+                id="smartTradingButton"
+                onClick={() => {
+                  updateTerminalViewMode('onlyTables')
+                }}
+              >
+                <span
+                  style={{
+                    textDecoration: 'underline',
+                  }}
+                >
+                  Advanced Mode
+                </span>
+                {/* <span
+                style={{
+                  backgroundColor: theme.palette.red.main,
+                  marginLeft: '0.5rem',
+                  borderRadius: '0.5rem',
+                  fontSize: '1.5rem',
+                  width: '2.7rem',
+                  height: '1.6rem',
+                  alignItems: 'center',
+                  color: theme.palette.white.main,
+                }}
+              >
+                {activeTradesLength}
+              </span> */}
+              </ChangeTradeButton>
+            </DarkTooltip>
+          </ChangeTerminalButton>
+        </Row>
+        {/* <Row align={'flex-start'} direction="column">
           <Title color={theme.palette.orange.dark}>
             SOL is the fuel for transactions on Solana. You must have
           </Title>
@@ -214,7 +345,7 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
             some SOL in your wallet for DEX trading or other transactions.
           </Title>
         </Row>
-        <ExclamationMark theme={theme} margin={'0 0 0 2rem'} fontSize="5rem" />
+        <ExclamationMark theme={theme} margin={'0 0 0 2rem'} fontSize="5rem" /> */}
       </Row>
     </RowContainer>
   )

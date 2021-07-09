@@ -27,6 +27,7 @@ import clipboardCopy from 'clipboard-copy'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { useConnection } from '@sb/dexUtils/connection'
+import { Theme } from '@material-ui/core'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -93,8 +94,11 @@ const TokenNotAddedDialog = ({
   pair,
   onClose,
   theme,
-  history,
-  publicKey,
+}: {
+  theme: Theme,
+  open: boolean,
+  pair: string[],
+  onClose: () => void
 }) => {
   const { market } = useMarket()
   const { wallet, providerUrl } = useWallet()

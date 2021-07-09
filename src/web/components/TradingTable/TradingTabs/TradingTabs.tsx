@@ -1,98 +1,143 @@
-import React from 'react'
-import { compose } from 'recompose'
+import React, { useState } from 'react'
 
-import { IProps, IQueryProps, INextQueryProps } from './TradingTabs.types'
+import { IProps } from './TradingTabs.types'
 import { TitleTab, TitleTabsGroup } from './TradingTabs.styles'
-
-import { isSPOTMarketType } from '@core/utils/chartPageUtils'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import {
-  filterOpenOrders,
-  filterPositions,
-} from '@sb/components/TradingTable/TradingTable.utils'
-
-import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
-import { getActivePositions } from '@core/graphql/queries/chart/getActivePositions'
-import { getActiveStrategies } from '@core/graphql/queries/chart/getActiveStrategies'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import SvgIcon from '@sb/components/SvgIcon'
+import FullScreen from '@icons/fullscreen.svg'
+import { SmartTradeButton } from '@sb/components/TraidingTerminal/styles'
 
 const TradingTabs = ({
   tab,
   theme,
   handleTabChange,
-  marketType,
-  getOpenOrderHistoryQuery: {
-    getOpenOrderHistory = { orders: [], count: 0 },
-  } = {
-    getOpenOrderHistory: { orders: [], count: 0 },
-  },
-  getActivePositionsQuery: { getActivePositions = [] } = {
-    getActivePositions: [],
-  },
-  getActiveStrategiesQuery: {
-    getActiveStrategies = { strategies: [], count: 0 },
-  } = {
-    getActiveStrategies: { strategies: [], count: 0 },
-  },
-  canceledOrders,
-  arrayOfMarketIds,
-  currencyPair,
-  subscribeToMore,
-  showAllSmartTradePairs,
-  showSmartTradesFromAllAccounts,
-  ...props
+  terminalViewMode,
+  isSmartOrderMode,
+  isFullScreenTablesMode,
+  isDefaultTerminalViewMode,
+  isDefaultOnlyTablesMode,
+  updateTerminalViewMode,
 }: IProps) => {
-  // const openOrdersLength = getOpenOrderHistory.orders.filter((order) =>
-  //   filterOpenOrders({
-  //     order,
-  //     canceledOrders,
-  //   })
+  const [modeBeforeExpand, saveModeBeforeExpand] = useState('')
+
+  // const activeTradesLength = getActiveStrategies.strategies.filter(
+  //   (a) =>
+  //     a !== null &&
+  //     (a.enabled ||
+  //       (a.conditions.isTemplate && a.conditions.templateStatus !== 'disabled'))
   // ).length
-
-  const positionsLength = getActivePositions.filter((position) =>
-    filterPositions({
-      position,
-      canceledPositions: canceledOrders,
-    })
-  ).length
-
-  const activeTradesLength = getActiveStrategies.strategies.filter(
-    (a) =>
-      a !== null &&
-      (a.enabled ||
-        (a.conditions.isTemplate && a.conditions.templateStatus !== 'disabled'))
-  ).length
 
   return (
     <>
       <TitleTabsGroup theme={theme}>
-        <TitleTab
-          theme={theme}
-          active={tab === 'openOrders'}
-          onClick={() => handleTabChange('openOrders')}
-        >
-          Open orders{' '}
-        </TitleTab>
-        <TitleTab
-          theme={theme}
-          active={tab === 'tradeHistory'}
-          onClick={() => handleTabChange('tradeHistory')}
-        >
-          Recent Trade history
-        </TitleTab>
-        <TitleTab
-          theme={theme}
-          active={tab === 'feeTiers'}
-          onClick={() => handleTabChange('feeTiers')}
-        >
-          Fee Tiers
-        </TitleTab>
-        <TitleTab
-          theme={theme}
-          active={tab === 'balances'}
-          onClick={() => handleTabChange('balances')}
-        >
-          Market Balances
-        </TitleTab>
+        {isDefaultOnlyTablesMode || isFullScreenTablesMode ? (
+          <TitleTab
+            onClick={() => {
+              if (!modeBeforeExpand) {
+                saveModeBeforeExpand(terminalViewMode)
+              }
+
+              // depend which state should be after click
+              switch (true) {
+                case isDefaultOnlyTablesMode: {
+                  updateTerminalViewMode('fullScreenTables')
+                  break
+                }
+                case isFullScreenTablesMode: {
+                  updateTerminalViewMode(modeBeforeExpand)
+                  saveModeBeforeExpand('')
+                  break
+                }
+                default: {
+                }
+              }
+            }}
+            style={{ width: '8rem', padding: 0 }}
+            theme={theme}
+          >
+            <SvgIcon src={FullScreen} width="2rem" height="2rem" />
+          </TitleTab>
+        ) : null}
+        {isDefaultOnlyTablesMode || isFullScreenTablesMode ? (
+          <DarkTooltip
+            title={'Watch and manage your active Smart trades from here.'}
+          >
+            <TitleTab
+              data-tut={'smart-trades'}
+              theme={theme}
+              active={tab === 'activeTrades'}
+              onClick={() => handleTabChange('activeTrades')}
+              style={{ width: '50%' }}
+            >
+              Smart trades{' '}
+              {/* {activeTradesLength > 0
+                ? `(
+          ${activeTradesLength}
+          )`
+                : ''} */}
+            </TitleTab>
+          </DarkTooltip>
+        ) : null}
+        {isDefaultOnlyTablesMode || isFullScreenTablesMode ? (
+          <TitleTab
+            theme={theme}
+            active={tab === 'strategiesHistory'}
+            onClick={() => handleTabChange('strategiesHistory')}
+            style={{ width: '50%' }}
+          >
+            Smart Trades History
+          </TitleTab>
+        ) : null}
+        {isDefaultTerminalViewMode && (
+          <>
+            <TitleTab
+              theme={theme}
+              active={tab === 'openOrders'}
+              onClick={() => handleTabChange('openOrders')}
+            >
+              Open orders{' '}
+            </TitleTab>
+            <TitleTab
+              theme={theme}
+              active={tab === 'tradeHistory'}
+              onClick={() => handleTabChange('tradeHistory')}
+            >
+              Recent Trade history
+            </TitleTab>
+            <TitleTab
+              theme={theme}
+              active={tab === 'feeTiers'}
+              onClick={() => handleTabChange('feeTiers')}
+            >
+              Fee Tiers
+            </TitleTab>
+            <TitleTab
+              theme={theme}
+              active={tab === 'balances'}
+              onClick={() => handleTabChange('balances')}
+            >
+              Market Balances
+            </TitleTab>
+          </>
+        )}
+        {!isSmartOrderMode && (
+          <SmartTradeButton
+            data-tut={'createSM'}
+            style={{
+              height: '3rem',
+              width: '30rem',
+              color: theme?.palette.white.main,
+              backgroundColor: '#157E23',
+              borderRadius: 0,
+              boxShadow: '0px 0px 0.5rem #74787E',
+            }}
+            onClick={() => {
+              updateTerminalViewMode('smartOrderMode')
+            }}
+          >
+            Create Smart Trade
+          </SmartTradeButton>
+        )}
       </TitleTabsGroup>
     </>
   )

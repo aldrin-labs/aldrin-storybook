@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { compose } from 'recompose'
 import { withTheme } from '@material-ui/styles'
-import { Card } from '@material-ui/core'
+import { Card, Theme } from '@material-ui/core'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import { TriggerTitle } from '@sb/components/ChartCardHeader'
 import { CHARTS_API_URL } from '@core/utils/config'
@@ -82,31 +82,17 @@ export const SingleChartWithButtons = ({
   theme,
   themeMode,
   currencyPair,
-  base,
-  quote,
   marketType,
   customMarkets,
+}: {
+  theme: Theme,
+  themeMode: string,
+  currencyPair: string,
+  marketType: number,
+  customMarkets: any
 }) => {
   const { wallet } = useWallet()
   const publicKey = wallet?.publicKey?.toBase58()
-
-  const isWithoutIndexChart =
-    (!marketsWithUSDCCharts.includes(currencyPair.split('_')[0]) &&
-      currencyPair.split('_')[1] === 'USDC') ||
-    marketsWithoutIndexChart.includes(currencyPair)
-
-  const [chartExchange, updateChartExchange] = useState(
-    isWithoutIndexChart ? 'serum' : 'index'
-  )
-
-  const isCustomMarkets =
-    customMarkets.find((el) => el.name.split('/').join('_') === currencyPair) ||
-    marketsWithoutBinanceChart.includes(currencyPair)
-
-  useEffect(() => {
-    updateChartExchange(isWithoutIndexChart ? 'serum' : 'index')
-    return () => {}
-  }, [currencyPair])
 
   return (
     <CustomCard
@@ -143,34 +129,13 @@ export const SingleChartWithButtons = ({
         >
           Chart
         </span>
-        {/* {isWithoutIndexChart ? null :
-        <TerminalModeButton
-          theme={theme}
-          active={chartExchange === 'index'}
-          themeMode
-          style={{ width: '10rem' }}
-          onClick={() => {
-            updateChartExchange('index')
-          }}
-        >
-          Index
-        </TerminalModeButton>
-}
-        <TerminalModeButton
-          theme={theme}
-          active={chartExchange === 'serum'}
-          style={{ width: '10rem' }}
-          onClick={() => updateChartExchange('serum')}
-        >
-          Serum
-        </TerminalModeButton> */}
       </TriggerTitle>
       <SingleChart
         name=""
-        key={`${themeMode}${base}/${quote}`}
+        key={`${themeMode}${currencyPair}`}
         themeMode={themeMode}
         currencyPair={currencyPair}
-        additionalUrl={`/?symbol=${base}/${quote}&marketType=${String(
+        additionalUrl={`/?symbol=${currencyPair.replace('_', '/')}&marketType=${String(
           marketType
         )}&exchange=serum&publicKey=${publicKey}&api_version=${2.1}`}
       />

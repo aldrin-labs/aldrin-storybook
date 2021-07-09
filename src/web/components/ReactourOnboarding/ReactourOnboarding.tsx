@@ -1,40 +1,44 @@
 import React from 'react'
 import Tour from 'reactour'
-import styled from 'styled-components'
+import { withTheme } from '@sb/types/materialUI'
 
-import SvgIcon from '@sb/components/SvgIcon'
-import exclamationMarkNotification from '@icons/exclamationMarkNotification.svg'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
-import twitter from '@icons/twitter.svg'
-import telegram from '@icons/telegram.svg'
-import discord from '@icons/discord.svg'
+import Onboard from '@icons/onboard.svg'
+import styled, { ThemeConsumer } from 'styled-components'
+
+const Logo = styled.img`
+  width: 5rem;
+  height: auto;
+`
 
 export const FinishBtn = styled.button`
   width: 8rem;
   height: 3.5rem;
   border: none;
-  background-color: #c7ffd0;
-  color: #000;
+  background-color: #7380eb;
+  color: #fff;
   font-size: 1.4rem;
   font-weight: bolder;
   border-radius: 0.5rem;
+  outline: none;
 `
 export const Block = styled.div`
-  border-top-left-radius: 1rem;
-  border-top-right-radius: 1rem;
+  border-top-left-radius: 0.3rem;
+  border-top-right-radius: 0.3rem;
   align-items: center;
-  padding: 0 0;
-  height: 20%;
+  padding: 0 2rem;
+  height: 35%;
   width: 100%;
-  background: #09acc7;
+  background: ${(props) => props.theme.palette.green.onboarding};
   display: flex;
-  justify-content: center;
+  color: #fff;
+  justify-content: space-between;
   font-family: DM Sans;
   font-style: normal;
   font-weight: 500;
-  font-size: 20px;
+  font-size: 13px;
 `
-
 export const Container = styled.div`
   width: 100%;
   height: 100%;
@@ -58,285 +62,367 @@ export const Text = styled.div`
   align-items: center;
   font-family: DM Sans;
 `
-
-export const WrapperForNotificationTour = styled.div`
-  && > span[data-tour-elem='badge'] {
-    display: none;
-  }
-`
-
 const Box = ({ height = '30rem' }) => {
   return {
     padding: '0 0 1rem 0',
-    width: '45rem',
+    width: '55rem',
     height,
-    backgroundColor: '#0E1016',
-    color: 'white',
-    borderRadius: '1rem',
+    backgroundColor: theme.palette.white.onboarding,
+    color: theme.palette.grey.onboard,
+    borderRadius: '.3rem',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    border: '0.1rem solid #E0E5EC',
-    boxShadow: '0px 0px 1.5rem #D1D9E6',
+    // border: '1px solid #ABBAD1',
+    // boxShadow: '0px 0px 10px #D1D9E6',
+    //border: '0.1rem solid #E0E5EC',
+    //boxShadow: '0px 0px 1.5rem #D1D9E6',
   }
 }
 
-const notificationBox = () => ({
-  padding: '3rem',
-  width: '50%',
-  height: 'auto',
-  backgroundColor: '#0E1016',
-  borderRadius: '3rem',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  border: '0.1rem solid #E0E5EC',
-  maxWidth: 'initial',
-})
-
-export const NotificationBlock = styled.div``
-
-export const NotificationBlockInitial = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 2rem;
-`
-
-export const NotificationBlockFinal = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-`
-
-export const RegularText = styled.p`
-  font-family: DM Sans;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 1.6rem;
-  color: #f5f5fb;
-  letter-spacing: -0.523077px;
-`
-
-export const BoldText = styled.p`
-  font-family: DM Sans;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 1.6rem;
-  color: #f5f5fb;
-  letter-spacing: -0.523077px;
-`
-
-export const WarningText = styled.p`
-  font-family: DM Sans;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 1.6rem;
-  color: #f29c38;
-  letter-spacing: -0.523077px;
-`
-
-export const HeadingBoldText = styled.p`
-  font-family: DM Sans;
-  font-weight: bold;
-  font-size: 2.6rem;
-  color: #f5f5fb;
-  letter-spacing: -0.784615px;
-`
-
-export const GotItButton = styled.button`
-  width: 8rem;
-  height: 3.5rem;
-  border: none;
-  background-color: #c7ffd0;
-  color: #fff;
-  font-size: 1.2rem;
-  font-weight: bolder;
-  border-radius: 0.5rem;
-  width: 184px;
-  height: 40px;
-
-  background: #366ce5;
-  border-radius: 8px;
-`
-
-// export const notificationTourConfig = [
-//   {
-//     selector: '[data-tut="reactour__style"]',
-//     content: ({ close, goTo, inDOM, step }) => {
-//       return (
-//         <Container>
-//           <NotificationBlockInitial>
-//             <div>
-//               <HeadingBoldText>An important announcement!</HeadingBoldText>
-//               <BoldText>
-//                 Tether is bringing the native USDT stablecoin to the Solana
-//                 network.
-//               </BoldText>
-//             </div>
-//             <div>
-//               <SvgIcon
-//                 src={exclamationMarkNotification}
-//                 width="81px"
-//                 height="auto"
-//               />
-//             </div>
-//           </NotificationBlockInitial>
-//           <NotificationBlock style={{ paddingBottom: '2rem' }}>
-//             <RegularText>
-//               This means that trading of all tokens paired with wUSDT (Wrapped
-//               USDT) will be stoped as of Friday, March 26, 2021.
-//             </RegularText>
-//             <RegularText>
-//               At the same time, we will open trading of all tokens paired with
-//               native USDT.
-//             </RegularText>
-//             <WarningText>
-//               To continue trading with high liquidity on native USDT pairs you
-//               have to cancel all open orders, settle all your funds and convert
-//               your wUSDT tokens to native USDT in your wallets.
-//             </WarningText>
-//             <WarningText>
-//               You can send funds from your wUSDT to native USDT easily using
-//               Cryptocurrencies.Ai wallet.
-//             </WarningText>
-//           </NotificationBlock>
-//           <NotificationBlock>
-//             <RegularText>Native USDT Mint Address:</RegularText>
-//             <BoldText>Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB</BoldText>
-//           </NotificationBlock>
-//           <NotificationBlockFinal>
-//             <div>
-//               <RegularText>Have any questions? Contact us:</RegularText>
-//               <div
-//                 style={{
-//                   display: 'flex',
-//                   justifyContent: 'space-between',
-//                   alignItems: 'center',
-//                 }}
-//               >
-//                 <a
-//                   target="_blank"
-//                   rel="noopener noreferrer"
-//                   href="https://twitter.com/CCAI_Official"
-//                 >
-//                   <SvgIcon
-//                     style={{ fill: 'white' }}
-//                     src={twitter}
-//                     width="16px"
-//                     height="auto"
-//                   />
-//                 </a>
-//                 <a
-//                   target="_blank"
-//                   rel="noopener noreferrer"
-//                   href="https://t.me/CCAI_Official"
-//                 >
-//                   <SvgIcon src={telegram} width="16px" height="auto" />
-//                 </a>
-//                 <a
-//                   target="_blank"
-//                   rel="noopener noreferrer"
-//                   href="https://discord.gg/2EaKvrs"
-//                 >
-//                   <SvgIcon src={discord} width="16px" height="auto" />
-//                 </a>
-//               </div>
-//             </div>
-//             <div>
-//               <GotItButton onClick={() => close()}> Got it! </GotItButton>
-//             </div>
-//           </NotificationBlockFinal>
-//         </Container>
-//       )
-//     },
-//     style: notificationBox(),
-//   },
-// ]
-
-export const tourConfig = [
-  // {
-  //   selector: '[data-tut="reactour__style"]',
-  //   content: () => (
-  //     <Container>
-  //       <Block>Welcome aboard!</Block>
-  //       <BolderText>Welcome to Cryptocurrencies.ai x Serum DEX!</BolderText>
-  //       <Text>Let us clarify some important points for trading here.</Text>
-  //     </Container>
-  //   ),
-  //   style: Box({ height: '32rem' }),
-  // },
+export const smartTerminal = [
   {
-    selector: '[data-tut="analytics"]',
     content: () => (
       <Container>
-        <Block>Analytics</Block>
-        <Text padding={'4rem 1.5rem'}>
-          You can watch $SRM analytics under this tab.
+        <Block theme={theme}>
+          <Logo src={Onboard} />
+          Denis from Cryptocurrencies.ai
+        </Block>
+        <BolderText padding={'1.5rem 1.5rem 0 1.5rem'}>
+          This is the advanced mode!
+        </BolderText>
+        <Text padding={'0.5rem 1.5rem'}>
+          If you want to trade on the Basic terminal, you can switch to it in
+          one click.
+        </Text>
+        <Text padding={'0.5rem 1.5rem'}>
+          Let us quickly show you how to use it.
         </Text>
       </Container>
     ),
-    style: Box({ height: '27rem' }),
-  },
-  // {
-  //   selector: '[data-tut="farming"]',
-  //   content: () => (
-  //     <Container>
-  //       <Block>Farming</Block>
-  //       <Text padding={'4rem 1.5rem'}>
-  //         Here is info about your DCFI farming. Click here to learn more.
-  //       </Text>
-  //     </Container>
-  //   ),
-  //   style: Box({ height: '25rem' }),
-  // },
-  {
-    selector: '[data-tut="pairs"]',
-    content: () => (
-      <Container>
-        <Block>Pairs</Block>
-        <Text padding={'2.5rem 1.5rem'}>
-          Choose any available trading pair in this menu.
-        </Text>
-        {/* <BolderText>Note: you can farm $DCFI when trading SRM/USDT.</BolderText> */}
-      </Container>
-    ),
-    style: Box({ height: '27rem' }),
+    style: Box({ theme, height: '33rem' }),
   },
   {
-    selector: '[data-tut="wallet"]',
+    selector: '[data-tut="deposit"]',
     content: () => (
       <Container>
-        <Block>Wallet</Block>
-        <Text padding={'1rem 1.5rem'}>
-          Connect your Cryptocurrencies.Ai wallet here to start trading.
+        <Block theme={theme}>
+          <Logo src={Onboard} />
+          Denis from Cryptocurrencies.ai
+        </Block>
+        <Text padding={'1.5rem 1.5rem'}>
+          {' '}
+          Smart order was designed to automate your manual trading, by
+          simultaneously setting the Entry point, Stop Loss and Take Profit with
+          advanced options.
         </Text>
-        <Text padding={'1rem 1.5rem'}>
-          Note: remember to create the address of token you want to trade before
-          trading.There should be some SOL in your wallet to trade on DEX.
+        <Text padding={'0.5rem 1.5rem'}>
+          To promote healthy trading behavior it is a requirement to enter Stop
+          Loss and Take Profit.
+        </Text>
+        <Text padding={'0.5rem 1.5rem'}>
+          It’s easy, let’s explore the steps.{' '}
         </Text>
       </Container>
     ),
     style: Box({ height: '37rem' }),
   },
   {
-    selector: '[data-tut="balances"]',
+    selector: '[data-tut="step1"]',
     content: () => (
       <Container>
-        <Block>Balances</Block>
-        <Text padding={'2.5rem 1.5rem'}>Here is your balance</Text>
-        <Text>
-          Unsettled balance are funds were traded but haven't returned to your
-          wallet. Press "Settle" to transfer the funds back to your wallet.
+        <Block theme={theme}>
+          <Logo src={Onboard} />
+          Denis from Cryptocurrencies.ai
+        </Block>
+        <BolderText padding={'1.5rem 1.5rem'}>Step 1: Enter</BolderText>
+        <Text padding={'0.5rem 1.5rem'}>
+          Here you can set conditions to enter your position. You can set
+          leverage, side, order type and amount. You can use advanced settings
+          such as averaging, trailing enrty or entering a position by a
+          Tradingview alert. Hover over the fields to see the tooltips.
         </Text>
-        <Text padding={'1rem 1.5rem'}>
-          To use auto settle, first enable auto approval in your wallet during
-          connection.
+      </Container>
+    ),
+    style: Box({ height: '35rem' }),
+  },
+  {
+    selector: '[data-tut="step2"]',
+    content: () => (
+      <Container>
+        <Block theme={theme}>
+          <Logo src={Onboard} />
+          Denis from Cryptocurrencies.ai
+        </Block>
+        <BolderText padding={'1.5rem 1.5rem'}>Step 2: Stop Loss</BolderText>
+        <Text padding={'0.5rem 1.5rem'}>
+          Set conditions to exit your position if it's in a loss. Specify the
+          exact price or set loss level in %. Use our advanced settings such as
+          Timeout or exit a position by a Tradingview alert.
+        </Text>
+      </Container>
+    ),
+    style: Box({ height: '35rem' }),
+  },
+  {
+    selector: '[data-tut="step3"]',
+    content: () => (
+      <Container>
+        <Block theme={theme}>
+          <Logo src={Onboard} />
+          Denis from Cryptocurrencies.ai
+        </Block>
+        <BolderText padding={'1.5rem 1.5rem'}>Step 3: Take profit</BolderText>
+        <Text padding={'0.5rem 1.5rem'}>
+          Set conditions to exit your position if it's in a profit. Specify the
+          exact price or set profit level in %. Use our advanced settings such
+          as Trailing, multiple targets or exit a position by a Tradingview
+          alert.
+        </Text>
+      </Container>
+    ),
+    style: Box({ height: '35rem' }),
+  },
+  {
+    selector: '[data-tut="createBtn"]',
+    content: () => (
+      <Container>
+        <Block theme={theme}>
+          <Logo src={Onboard} />
+          Denis from Cryptocurrencies.ai
+        </Block>
+        <Text padding={'1.5rem 1.5rem'}>
+          When you set your entry conditions, Stop Loss and Take Profit – you
+          can track the performance of your position in the smart trade tab.
+        </Text>
+        <Text padding={'0.5rem 1.5rem'}>
+          <a
+            style={{
+              color: '#7380eb',
+              textDecoration: 'none',
+            }}
+            href="https://cryptocurrencies.ai/smartTrading"
+            target="_blank"
+          >
+            Click here to learn more about smart order.
+          </a>
+        </Text>
+      </Container>
+    ),
+    style: Box({ height: '35rem' }),
+  },
+]
+
+export const tourConfig = [
+  {
+    selector: '[data-tut="reactour__style"]',
+    content: () => (
+      <Container>
+        <Block theme={theme}>
+          <Logo src={Onboard} />
+          Denis from Cryptocurrencies.ai
+        </Block>
+        <BolderText padding={'1.5rem 1.5rem'}>
+          Hey, welcome to Cryptocurrencies.Ai's smart trading terminal!
+        </BolderText>
+        <Text>
+          {' '}
+          If you want to trade on a basic terminal, you can switch to it in one
+          click.{' '}
+        </Text>
+        <Text padding={'0.5rem 1.5rem'}>
+          {' '}
+          Let us quickly show you our exchange.
         </Text>
       </Container>
     ),
     style: Box({ height: '32rem' }),
   },
+  {
+    selector: '[data-tut="spot&futures"]',
+    content: () => (
+      <Container>
+        <Block theme={theme}>
+          <Logo src={Onboard} />
+          Denis from Cryptocurrencies.ai
+        </Block>
+        <Text padding={'1.5rem 1.5rem'}>
+          You can switch between Spot and Futures.
+        </Text>{' '}
+        <BolderText padding={'0.5rem 1.5rem'}>
+          Currently you’re in the Spot mode.
+        </BolderText>
+      </Container>
+    ),
+    style: Box({ height: '30rem' }),
+  },
+  {
+    selector: '[data-tut="menu"]',
+    content: () => (
+      <Container>
+        <Block theme={theme}>
+          <Logo src={Onboard} />
+          Denis from Cryptocurrencies.ai
+        </Block>
+        <Text padding={'1.5rem 1.5rem'}>
+          This menu offers other Cryptocurrencies.ai exchange features.
+        </Text>
+        <Text padding={'0.5rem 1.5rem'}>
+          <em>
+            Data will be shown depending on your selection of spot or futures
+            mode.
+          </em>
+        </Text>
+      </Container>
+    ),
+    style: Box({ height: '30rem' }),
+  },
+  {
+    selector: '[data-tut="total"]',
+    content: () => (
+      <Container>
+        <Block theme={theme}>
+          <Logo src={Onboard} />
+          Denis from Cryptocurrencies.ai
+        </Block>
+        <Text padding={'1.5rem 1.5rem'}>
+          Total balance of all your spot and futures accounts.
+        </Text>
+      </Container>
+    ),
+    style: Box({ height: '30rem' }),
+  },
+  {
+    selector: '[data-tut="smart&basic"]',
+    content: () => (
+      <Container>
+        <Block theme={theme}>
+          <Logo src={Onboard} />
+          Denis from Cryptocurrencies.ai
+        </Block>
+        <Text padding={'1.5rem 1.5rem'}>
+          Easily switch between Basic and Advanced terminal. You can trade with
+          Smart orders on Advanced terminal.
+        </Text>
+      </Container>
+    ),
+    style: Box({ height: '30rem' }),
+  },
+  // {
+  //   selector: '[data-tut="basic-terminal"]',
+  //   content: () => (
+  //     <Container>
+  //       <Block theme={theme}>
+  //         <Logo src={Onboard} />
+  //         Denis from Cryptocurrencies.ai
+  //       </Block>
+
+  //       <Text padding={'2rem 1.5rem'}>
+  //         Place orders with or without preset Stop Loss and Take Profit.
+  //       </Text>
+  //     </Container>
+  //   ),
+  //   style: Box({ height: '30rem' }),
+  // },
+  {
+    selector: '[data-tut="balances"]',
+    content: () => (
+      <Container>
+        <Block theme={theme}>
+          <Logo src={Onboard} />
+          Denis from Cryptocurrencies.ai
+        </Block>
+
+        <Text padding={'1.5rem 1.5rem'}>
+          View the balance of your account and deposit or withdraw funds.
+        </Text>
+
+        <a
+          href="https://develop.app.cryptocurrencies.ai/profile/deposit"
+          style={{
+            borderBottom: '0.1rem solid #7380EB',
+            textDecoration: 'none',
+            marginLeft: '19rem',
+            marginTop: '2rem',
+            color: '#7380EB',
+            fontSize: '1.5rem',
+            fontFamily: 'DM Sans',
+          }}
+        >
+          {/* <BtnCustom
+            btnWidth="12rem"
+            height="3.5rem"
+            fontSize="1.4rem"
+            padding=".2rem 0 .1rem 0"
+            margin="0 0 .4rem 0"
+            borderRadius=".4rem"
+            textTransform="none"
+            btnColor="#fff"
+            borderColor="#7380EB"
+            backgroundColor="#7380EB"
+            hoverColor="#7380EB"
+            hoverBackground="#7380EB"
+            transition={'all .4s ease-out'}
+          > */}
+          Deposit now
+          {/* </BtnCustom> */}
+        </a>
+      </Container>
+    ),
+    showNavigation: false,
+    style: Box({ height: '30rem' }),
+  },
+  {
+    selector: '[data-tut="createSM"]',
+    content: () => (
+      <Container>
+        <Block theme={theme}>
+          <Logo src={Onboard} />
+          Denis from Cryptocurrencies.ai
+        </Block>
+        <Text padding={'1.5rem 1.5rem'}>
+          The main point of advanced terminal is the ability. Manage your Smart
+          trades in the Smart trade tab in the table.
+        </Text>
+        <Text padding={'0.5rem 1.5rem'}>
+          <a
+            style={{
+              color: '#7380eb',
+              textDecoration: 'none',
+            }}
+            href="https://cryptocurrencies.ai/smartTrading"
+            target="_blank"
+          >
+            Click here to learn more about smart order.
+          </a>
+        </Text>
+      </Container>
+    ),
+    style: Box({ height: '33rem' }),
+  },
+  {
+    selector: '[data-tut="deposit"]',
+    content: () => (
+      <Container>
+        <Block theme={theme}>
+          <Logo src={Onboard} />
+          Denis from Cryptocurrencies.ai
+        </Block>
+        <Text padding={'1.5rem 1.5rem 0 1.5rem'}>
+          All deposits are made into your spot wallet.
+        </Text>
+        <Text padding={'0.5rem 1.5rem'}>
+          <em>
+            To fund your futures account you have to transfer funds from spot to
+            futures on futures portfolio page, futures trading terminal or
+            accounts page in settings.
+          </em>
+        </Text>
+      </Container>
+    ),
+    style: Box({ height: '33rem' }),
+  },
 ]
+
+export default withTheme()

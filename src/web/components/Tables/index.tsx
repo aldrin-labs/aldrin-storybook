@@ -579,6 +579,8 @@ const CustomTable = (props: Props) => {
     stylesForTable,
     paperAdditionalStyle = '',
     hideCommonCheckbox = false,
+    needAdditionalComponent,
+    AdditionalComponent
   } = props
 
   if (
@@ -751,7 +753,12 @@ const CustomTable = (props: Props) => {
 
         <TableBody>
           {data.body.length === 0 ? (
-            <CustomPlaceholder theme={theme} text={emptyTableText} />
+            <CustomPlaceholder
+              theme={theme}
+              text={emptyTableText}
+              needAdditionalComponent={needAdditionalComponent}
+              AdditionalComponent={AdditionalComponent}
+            />
           ) : (
             paginationFunc(
               data.body.filter(Boolean).map((row) => {

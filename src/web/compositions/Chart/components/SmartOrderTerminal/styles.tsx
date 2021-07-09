@@ -8,6 +8,7 @@ import Switch from '@material-ui/core/Switch'
 export const TerminalBlocksContainer = styled(Grid)`
   padding-top: 1rem;
   height: 90%;
+  display: flex;
 `
 
 export const TerminalHeaders = styled.div`
@@ -15,7 +16,7 @@ export const TerminalHeaders = styled.div`
   position: relative;
 `
 
-export const TerminalHeader = styled.div`
+export const TerminalHeader = React.memo(styled.div`
   display: flex;
   align-items: center;
   justify-content: ${(props: HeaderProperties) => props.justify};
@@ -28,7 +29,7 @@ export const TerminalHeader = styled.div`
   border: ${(props) => props.theme.palette.border.main};
   border-top: 0;
   border-radius: 0.2rem;
-`
+`)
 
 export const HeaderLabel = styled.label`
   font-size: 1rem;
@@ -46,11 +47,11 @@ export const HeaderTitle = styled.span`
   color: ${(props) => props.theme.palette.dark.main};
 `
 
-export const BlockHeader = styled(HeaderTitle)`
+export const BlockHeader = React.memo(styled(HeaderTitle)`
   color: ${(props) => props.theme.palette.grey.light};
   font-size: 1.5rem;
   letter-spacing: 0.1rem;
-`
+`)
 
 export const InputTitle = styled(HeaderTitle)`
   color: ${(props) => props.theme.palette.grey.light};
@@ -96,24 +97,27 @@ export const FieldsContainer = styled.div`
 `
 
 export const SubBlocksContainer = styled.div`
-  width: ${(props) => props.width || '50%'};
-  border-right: ${(props) => props.needBorder && '.1rem solid #e0e5ec'};
+  width: ${(props: { width?: string; needBorder?: boolean }) =>
+    props.width || '50%'};
+  border-right: ${(props: { width?: string; needBorder?: boolean }) =>
+    props.needBorder && '.1rem solid #e0e5ec'};
   padding-right: 0.4rem;
 `
 
-export const InputRowContainer = styled.div`
+export const InputRowContainer = React.memo(styled.div`
   display: flex;
-  align-items: ${(props: InputRowProps) => props.align || 'center'};
+  align-items: center;
   position: relative;
   width: ${(props: InputRowProps) => props.width || '100%'};
   flex-direction: ${(props: InputRowProps) => props.direction || 'row'};
   justify-content: ${(props: InputRowProps) => props.justify};
+  flex-wrap: ${(props: InputRowProps) => props.wrap || 'nowrap'};
   padding: ${(props: InputRowProps) => props.padding || '0 0 .6rem 0'};
 
   @media (min-width: 1921px) {
     padding-bottom: ${(props) => props.padding || '0 0 .8rem 0'};
   }
-`
+`)
 
 export const SwitcherContainer = styled.div`
   align-items: center;
@@ -141,61 +145,92 @@ export const BeforeCharacter = styled.span`
   top: 50%;
   z-index: 10;
   transform: translateY(-55%);
-  display: ${(props) => (props.needCharacter ? 'block' : 'none')};
+  display: ${(props: { needCharacter: boolean; beforeSymbol: string }) =>
+    props.needCharacter ? 'block' : 'none'};
   font-size: 1.2rem;
-  color: ${(props) => (props.beforeSymbol === '+' ? '#29AC80' : '#DD6956')};
+  color: ${(props: { needCharacter: boolean; beforeSymbol: string }) =>
+    props.beforeSymbol === '+' ? '#29AC80' : '#DD6956'};
 `
 
 export const AdditionalSettingsButton = styled(
   ({
-    needHover,
     isActive,
     children,
     theme,
+    width,
+    margin,
+    fontSize,
+    borderRadius,
     ...rest
-  }: {
-    needHover: true
-    isActive: false
   }) => (
     <BtnCustom
-      btnWidth="calc(48.5%)"
-      height={'3rem'}
-      fontSize="1.2rem"
-      fontWeight="normal"
+      btnWidth={width || '22.75%'}
+      height={'3.125rem'}
+      fontSize={fontSize || '1.2rem'}
+      fontWeight={isActive ? '700' : '400'}
       padding="0"
-      borderRadius=".4rem"
+      borderRadius={borderRadius || '3.125rem'}
       borderColor={
-        isActive ? theme.palette.blue.serum : theme.palette.grey.border
+        isActive ? theme.palette.blue.main : theme.palette.grey.border
       }
-      btnColor={isActive ? theme.palette.white.main : theme.palette.grey.text}
-      backgroundColor={
-        isActive ? theme.palette.blue.serum : theme.palette.grey.main
-      }
-      hoverColor={
-        needHover ? theme.palette.white.main : theme.palette.grey.text
-      }
-      hoverBorderColor={
-        needHover ? theme.palette.blue.serum : theme.palette.grey.border
-      }
-      hoverBackground={
-        needHover ? theme.palette.blue.serum : theme.palette.grey.main
-      }
+      btnColor={isActive ? theme.palette.blue.main : theme.palette.text.dark}
+      backgroundColor={theme.palette.grey.main}
+      hoverColor={theme.palette.blue.main}
+      hoverBorderColor={theme.palette.blue.main}
       transition={'all .25s ease-out'}
       textTransform="none"
-      boxShadow={'0px .2rem .3rem rgba(8, 22, 58, 0.15)'}
-      margin={'0 3% 0 0'}
+      boxShadow={isActive ? '0px .2rem .3rem rgba(8, 22, 58, 0.15)' : 'none'}
+      margin={margin || '0 3% 0 0'}
       {...rest}
     >
       {children}
     </BtnCustom>
   )
 )`
-  display: flex;
-  justify-content: flex-start;
+  &:hover {
+    box-shadow: 0px 0.2rem 0.3rem rgba(8, 22, 58, 0.15);
+  }
   &:last-child {
     margin: 0;
   }
 
+  @media (min-width: 1921px) {
+    height: calc(2.5rem - 0.5rem);
+    font-size: 1.1rem;
+    padding-top: 0.2rem;
+  }
+`
+
+export const ChangeOrderTypeBtn = styled(
+  ({ isActive, isPlotEnabled, children, disabled, theme, ...rest }) => (
+    <BtnCustom
+      btnWidth={isPlotEnabled ? '35%' : 'calc(50%)'}
+      height={'3rem'}
+      fontSize={'1.2rem'}
+      fontWeight={isActive ? '700' : '400'}
+      padding="0"
+      borderRadius="0.1rem"
+      borderColor={
+        isActive ? theme.palette.blue.main : theme.palette.grey.border
+      }
+      btnColor={isActive ? theme.palette.blue.main : theme.palette.text.dark}
+      backgroundColor={theme.palette.grey.main}
+      hoverColor={theme.palette.blue.main}
+      hoverBorderColor={theme.palette.blue.main}
+      transition={'all .25s ease-out'}
+      textTransform="none"
+      boxShadow={isActive ? '0px .2rem .3rem rgba(8, 22, 58, 0.15)' : 'none'}
+      margin={'0 0 0 0'}
+      disabled={disabled}
+      {...rest}
+    >
+      {children}
+    </BtnCustom>
+  )
+)`
+  &:hover {
+    box-shadow: 0px 0.2rem 0.3rem rgba(8, 22, 58, 0.15);
+  }
   @media (min-width: 1921px) {
     height: calc(2.5rem - 0.5rem);
     font-size: 1.1rem;
@@ -215,32 +250,33 @@ const IOSSwitcherContainer = styled.div`
   .el-switch {
     display: inline-block;
     font-size: 100%;
-    height: 1.6em;
+    height: 2.1rem;
     position: relative;
     .el-switch-style {
-      height: 1.6em;
+      height: 2.1rem;
       left: 0;
-      background: #abbad1;
-      -webkit-border-radius: 0.8em;
-      border-radius: 0.8em;
+      background: ${(props) => props.theme.palette.white.btnBackground};
+      -webkit-border-radius: 1rem;
+      border-radius: 1rem;
+      border: ${(props) => props.theme.palette.border.main};
       display: inline-block;
       position: relative;
       top: 0;
       -webkit-transition: all 0.3s ease-in-out;
       transition: all 0.3s ease-in-out;
-      width: 3em;
+      width: 4em;
       cursor: pointer;
       &:before {
         display: block;
         content: '';
-        height: 1.4em;
+        height: 2.3rem;
         position: absolute;
-        width: 1.4em;
-        background-color: #fff;
+        width: 2.3rem;
+        background-color: ${(props) => props.theme.palette.grey.text};
         -webkit-border-radius: 50%;
         border-radius: 50%;
-        left: 0.1em;
-        top: 0.1em;
+        // left: 0.1em;
+        top: -0.2em;
         -webkit-transition: all 0.3s ease-in-out;
         transition: all 0.3s ease-in-out;
       }
@@ -252,9 +288,10 @@ const IOSSwitcherContainer = styled.div`
         background-color: #d3dce6;
       }
       &:checked + .el-switch-style {
-        background-color: #9ba6ff;
+        background: ${(props) => props.theme.palette.white.btnBackground};
         &:before {
-          left: 50%;
+          left: 40%;
+          background-color: ${(props) => props.theme.palette.blue.main};
         }
       }
     }
@@ -264,12 +301,14 @@ const IOSSwitcherContainer = styled.div`
 export const Switcher = ({
   checked,
   onChange,
+  theme,
 }: {
   checked: boolean
   onChange: () => void
+  theme: any
 }) => {
   return (
-    <IOSSwitcherContainer>
+    <IOSSwitcherContainer theme={theme}>
       <label className="el-switch">
         <input
           checked={checked}

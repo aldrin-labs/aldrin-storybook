@@ -64,6 +64,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { WarningPopup } from './components/WarningPopup'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
 import { DevUrlPopup } from '@sb/components/PopupForDevUrl'
+import MarketBlock from './components/MarketBlock'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
   // Check if the arrays are the same length
@@ -81,24 +82,6 @@ const arraysCustomMarketsMatch = (arr1, arr2) => {
 function ChartPageComponent(props: any) {
   const {
     theme,
-    // getChartDataQuery: {
-    //   getMyProfile: { _id } = { _id: '' },
-    //   getTradingSettings: {
-    //     selectedTradingKey,
-    //     hedgeMode,
-    //     isFuturesWarsKey,
-    //   } = {
-    //     selectedTradingKey: '',
-    //     hedgeMode: false,
-    //     isFuturesWarsKey: false,
-    //   },
-    //   marketByMarketType = [],
-    //   chart: { activeExchange, currencyPair: { pair }, view } = {
-    //     currencyPair: { pair: 'BTC_USDT' },
-    //     activeExchange: { name: 'Binance', symbol: 'binance' },
-    //     view: 'default',
-    //   },
-    // },
     getTooltipSettingsQuery: {
       getTooltipSettings = { chartPage: false, chartPagePopup: false },
     } = {
@@ -249,29 +232,15 @@ function ChartPageComponent(props: any) {
   pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
 
   const accentColor = '#09ACC7'
+
+  const isDefaultTerminalViewMode = terminalViewMode === 'default'
+  const isDefaultOnlyTablesMode = terminalViewMode === 'onlyTables'
+  const isSmartOrderMode = terminalViewMode === 'smartOrderMode'
+  const isFullScreenTablesMode =
+    terminalViewMode === 'fullScreenTables'
+
   return (
     <MainContainer fullscreen={false}>
-      {/* {!isTourOpen && (
-        <Tour
-          className="my-helper"
-          showCloseButton={false}
-          showNumber={false}
-          nextButton={null}
-          prevButton={<a />}
-          showNavigationNumber={false}
-          showButtons={false}
-          showCloseButton={false}
-          showNavigation={false}
-          lastStepNextButton={null}
-          steps={notificationTourConfig}
-          accentColor={accentColor}
-          isOpen={isNotificationTourOpen}
-          onRequestClose={() => {
-            setNotificationTourOpen(false)
-            localStorage.setItem('isNotificationDone', 'true')
-          }}
-        />
-      )} */}
       <Tour
         showCloseButton={false}
         nextButton={<FinishBtn>Next</FinishBtn>}
@@ -287,9 +256,14 @@ function ChartPageComponent(props: any) {
           localStorage.setItem('isOnboardingDone', 'true')
         }}
       />
-      {/* {view === 'default' && ( */}
+      <MarketBlock
+        isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+        isDefaultOnlyTablesMode={isDefaultOnlyTablesMode}
+        isFullScreenTablesMode={isFullScreenTablesMode}
+        isSmartOrderMode={isSmartOrderMode}
+        updateTerminalViewMode={updateTerminalViewMode}
+      />
       <DefaultView
-        id={'_id'}
         view={'default'}
         layout={layout}
         theme={theme}
@@ -303,6 +277,10 @@ function ChartPageComponent(props: any) {
         minPriceDigits={minPriceDigits}
         minSpotNotional={minSpotNotional}
         minFuturesStep={minFuturesStep}
+        isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+        isDefaultOnlyTablesMode={isDefaultOnlyTablesMode}
+        isSmartOrderMode={isSmartOrderMode}
+        isFullScreenTablesMode={isFullScreenTablesMode}
         isPairDataLoading={
           isPairDataLoading || !pricePrecision || !quantityPrecision
         }
@@ -310,18 +288,7 @@ function ChartPageComponent(props: any) {
         selectedKey={{ hedgeMode: false }}
         activeExchange={'serum'}
         terminalViewMode={terminalViewMode}
-        updateTerminalViewMode={(mode) => {
-          if (mode === 'smartOrderMode') {
-            finishJoyride({
-              updateTooltipSettingsMutation:
-                props.updateTooltipSettingsMutation,
-              getTooltipSettings,
-              name: 'chartPagePopup',
-            })
-          }
-
-          updateTerminalViewMode(mode)
-        }}
+        updateTerminalViewMode={updateTerminalViewMode}
         chartProps={props}
         arrayOfMarketIds={[]}
         chartPagePopup={
@@ -332,23 +299,12 @@ function ChartPageComponent(props: any) {
         closeChartPagePopup={closeChartPagePopup}
         changeChartLayoutMutation={changeChartLayoutMutation}
       />
+
       <WarningPopup
         open={isWarningPopupOpen}
         onClose={() => openWarningPopup(false)}
         theme={theme}
       />
-
-      {/* )} */}
-      {/* <JoyrideOnboarding
-        continuous={true}
-        stepIndex={stepIndex}
-        showProgress={true}
-        showSkipButton={true}
-        key={key}
-        steps={getChartSteps({ marketType })}
-        open={getTooltipSettings.chartPage}
-        handleJoyrideCallback={handleJoyrideCallback}
-      /> */}
     </MainContainer>
   )
 }

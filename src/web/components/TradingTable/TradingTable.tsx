@@ -5,11 +5,7 @@ import { isEqual } from 'lodash'
 import { withTheme } from '@material-ui/styles'
 
 import { Key } from '@core/types/ChartTypes'
-import {
-  IProps,
-  IState,
-  IStateKeys,
-} from './TradingTable.types'
+import { IProps, IState, IStateKeys } from './TradingTable.types'
 import { StyleForCalendar } from '@sb/components/GitTransactionCalendar/Calendar.styles'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 
@@ -18,6 +14,8 @@ import Balances from './Balances/Balances'
 import FeeTiers from './Fee/FeeTiers'
 import TradeHistoryTable from './TradeHistoryTable/TradeHistoryDataWrapper'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
+import StrategiesHistoryTable from './StrategiesHistoryTable/StrategiesHistoryTable'
+import ActiveTrades from './ActiveTrades/ActiveTrades'
 
 class TradingTable extends React.PureComponent<IProps, IState> {
   state: IState = {
@@ -36,22 +34,35 @@ class TradingTable extends React.PureComponent<IProps, IState> {
     perPagePositions: 30,
     pageSmartTrades: 0,
     perPageSmartTrades: 30,
+    allKeys: true,
+    specificPair: false,
   }
 
-  // componentDidMount() {
-  //   console.log('TradingTable componentDidMount')
-  // }
+  componentDidMount() {
+    if (
+      this.props.terminalViewMode === 'default' &&
+      (this.state.tab === 'activeTrades' ||
+        this.state.tab === 'strategiesHistory')
+    ) {
+      this.setState({ tab: 'openOrders' })
+    }
+  }
 
   componentDidUpdate(prevProps) {
-    // console.log('TradingTable componentDidUpdate prevProps', prevProps)
-    // console.log('TradingTable componentDidUpdate this.props', this.props)
-
-    if (prevProps.marketType !== this.props.marketType) {
+    // change from onlyTables to basic when SM tables is open
+    if (prevProps.terminalViewMode !== this.props.terminalViewMode) {
       if (
-        (this.props.marketType === 0 && this.state.tab === 'positions') ||
-        (this.props.marketType === 1 && this.state.tab === 'funds')
+        this.props.terminalViewMode === 'default' &&
+        (this.state.tab === 'activeTrades' ||
+          this.state.tab === 'strategiesHistory')
       ) {
-        this.setState({ tab: 'activeTrades' })
+        this.setState({ tab: 'openOrders' })
+      }
+
+      if (this.props.terminalViewMode === 'onlyTables') {
+        this.setState({
+          tab: 'activeTrades',
+        })
       }
     }
   }
@@ -83,6 +94,18 @@ class TradingTable extends React.PureComponent<IProps, IState> {
     })
   }
 
+  handleToggleAllKeys = () => {
+    this.setState((prev) => ({ allKeys: !prev.allKeys }))
+  }
+
+  handleToggleSpecificPair = () => {
+    const { currencyPair } = this.props
+
+    this.setState((prev) => ({
+      specificPair: !prev.specificPair ? currencyPair : false,
+    }))
+  }
+
   addOrderToCanceled = (orderId: string) => {
     this.setState((prev) => {
       return { canceledOrders: [...prev.canceledOrders].concat([orderId]) }
@@ -109,9 +132,9 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       perPagePositions,
       pageSmartTrades,
       perPageSmartTrades,
+      allKeys,
+      specificPair,
     } = this.state
-
-    // console.log('TradingTable render')
 
     const {
       theme,
@@ -123,6 +146,12 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       priceFromOrderbook,
       pricePrecision,
       quantityPrecision,
+      isFullScreenTablesMode,
+      isDefaultOnlyTablesMode,
+      isSmartOrderMode,
+      updateTerminalViewMode,
+      terminalViewMode,
+      isDefaultTerminalViewMode,
       getAllUserKeysQuery = {
         myPortfolios: [],
       },
@@ -161,6 +190,12 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             selectedKey,
             currencyPair,
             canceledOrders,
+            terminalViewMode,
+            isFullScreenTablesMode,
+            isDefaultTerminalViewMode,
+            isDefaultOnlyTablesMode,
+            isSmartOrderMode,
+            updateTerminalViewMode,
             handleTabChange: this.handleTabChange,
             arrayOfMarketIds,
             showAllPositionPairs,
@@ -175,6 +210,82 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             perPagePositions,
             pageSmartTrades,
             perPageSmartTrades,
+          }}
+        />
+        <ActiveTrades
+          {...{
+            tab,
+            updateTerminalViewMode,
+            isDefaultOnlyTables: isDefaultOnlyTablesMode,
+            isFullScreenTablesMode,
+            keys,
+            theme,
+            selectedKey,
+            marketType,
+            maxLeverage: 1,
+            exchange,
+            currencyPair,
+            canceledOrders,
+            arrayOfMarketIds,
+            minFuturesStep: 1,
+            showAllPositionPairs,
+            showAllOpenOrderPairs,
+            showAllSmartTradePairs,
+            showPositionsFromAllAccounts,
+            showOpenOrdersFromAllAccounts,
+            showSmartTradesFromAllAccounts,
+            show: tab === 'activeTrades',
+            page: pageSmartTrades,
+            perPage: perPageSmartTrades,
+            pricePrecision,
+            quantityPrecision,
+            allKeys,
+            specificPair,
+            getActiveStrategiesQuery: {
+              subscribeToMoreFunction: () => {},
+              getActiveStrategies: {
+                strategies: [],
+                count: 0,
+              },
+            },
+            handleToggleSpecificPair: this.handleToggleSpecificPair,
+            handleToggleAllKeys: this.handleToggleAllKeys,
+            handleChangePage: (value: number) =>
+              this.handleChangePage('pageSmartTrades', value),
+            handleChangeRowsPerPage: (
+              event: React.ChangeEvent<HTMLSelectElement>
+            ) => this.handleChangeRowsPerPage('perPageSmartTrades', event),
+            handleTabChange: this.handleTabChange,
+            addOrderToCanceled: this.addOrderToCanceled,
+            handlePairChange: this.handlePairChange,
+          }}
+        />
+        <StrategiesHistoryTable
+          {...{
+            tab,
+            keys,
+            theme,
+            allKeys,
+            specificPair,
+            selectedKey,
+            marketType,
+            exchange,
+            currencyPair,
+            canceledOrders,
+            arrayOfMarketIds,
+            pricePrecision,
+            quantityPrecision,
+            showAllPositionPairs,
+            showAllOpenOrderPairs,
+            showAllSmartTradePairs,
+            showPositionsFromAllAccounts,
+            showOpenOrdersFromAllAccounts,
+            showSmartTradesFromAllAccounts,
+            handleToggleSpecificPair: this.handleToggleSpecificPair,
+            handleToggleAllKeys: this.handleToggleAllKeys,
+            show: tab === 'strategiesHistory',
+            handleTabChange: this.handleTabChange,
+            handlePairChange: this.handlePairChange,
           }}
         />
         <OpenOrdersTable
@@ -259,7 +370,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             handlePairChange: this.handlePairChange,
           }}
         />
-        <FeeTiers 
+        <FeeTiers
           {...{
             tab,
             keys,
@@ -286,35 +397,4 @@ class TradingTable extends React.PureComponent<IProps, IState> {
   }
 }
 
-const TradingTableWrapper = compose(
-  withRouter,
-  withErrorFallback,
-  withTheme()
-)(TradingTable)
-
-export default React.memo(
-  TradingTableWrapper,
-  (
-    prevProps: IPropsTradingTableWrapper,
-    nextProps: IPropsTradingTableWrapper
-  ) => {
-    // console.log('prevProps: ', prevProps)
-    // console.log('nextProps: ', nextProps)
-
-    if (
-      prevProps.maxLeverage === nextProps.maxLeverage &&
-      isEqual(prevProps.selectedKey, nextProps.selectedKey) &&
-      prevProps.marketType === nextProps.marketType &&
-      prevProps.exchange === nextProps.exchange &&
-      prevProps.pricePrecision === nextProps.pricePrecision &&
-      prevProps.quantityPrecision === nextProps.quantityPrecision &&
-      prevProps.priceFromOrderbook === nextProps.priceFromOrderbook &&
-      prevProps.currencyPair === nextProps.currencyPair &&
-      prevProps.arrayOfMarketIds.length === nextProps.arrayOfMarketIds.length
-    ) {
-      return true
-    }
-
-    return false
-  }
-)
+export default compose(withRouter, withErrorFallback, withTheme())(TradingTable)

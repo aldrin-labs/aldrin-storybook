@@ -14,13 +14,14 @@ import Warning from '@icons/newWarning.svg'
 import { SvgIcon } from '@sb/components'
 import Timer from 'react-compound-timer/build'
 import { CCAIListingTime } from '@sb/dexUtils/utils'
+import { Theme } from '@material-ui/core'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
   width: 60rem;
 `
 
-const TradingBlocked = ({ open, onClose, theme }) => {
+const TradingBlocked = ({ open, onClose, theme }: { theme: Theme, open: boolean, onClose: () => void }) => {
   const initial = CCAIListingTime * 1000 - Date.now()
 
   return (
