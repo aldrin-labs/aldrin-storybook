@@ -27,6 +27,8 @@ export const InputWithSelectorForSwaps = ({
   padding,
   directionFrom,
   placeholder,
+  publicKey,
+  wallet,
   onChange,
   openSelectCoinPopup,
 }: {
@@ -38,6 +40,8 @@ export const InputWithSelectorForSwaps = ({
   maxBalance: number
   directionFrom?: boolean
   placeholder?: string
+  publicKey: string
+  wallet: any
   onChange: (value: string | number) => void
   openSelectCoinPopup: () => void
 }) => {
@@ -67,7 +71,16 @@ export const InputWithSelectorForSwaps = ({
         right={'2rem'}
         bottom={'1rem'}
       >
-        <Row style={{ flexWrap: 'nowrap' }} onClick={openSelectCoinPopup}>
+        <Row
+          style={{ flexWrap: 'nowrap' }}
+          onClick={() => {
+            if (!publicKey) {
+              wallet.connect()
+            } else {
+              openSelectCoinPopup()
+            }
+          }}
+        >
           <TokenIcon
             mint={getTokenMintAddressByName(symbol)}
             width={'2rem'}

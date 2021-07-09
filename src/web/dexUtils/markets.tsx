@@ -816,7 +816,6 @@ export function useBalances() {
   ) {
     return []
   }
-
   return [
     {
       market,

@@ -121,7 +121,7 @@ export const WarningPopup = ({
         )}
       </RowContainer>
       <RowContainer justify="space-between" style={{ marginBottom: '2rem' }}>
-        <Row width={'calc(45%)'} justify="space-between" margin="2rem 0 0 0">
+        <Row width={'calc(45%)'} justify="flex-start" margin="2rem 0 0 0">
           <SCheckbox
             id={'warning_checkbox'}
             style={{ padding: 0, marginRight: '1rem' }}
@@ -141,7 +141,9 @@ export const WarningPopup = ({
                 letterSpacing: '0.01rem',
               }}
             >
-              I am confident in the reliability of this market.
+              {isSwapPage
+                ? 'I am aware of the risks'
+                : 'I am confident in the reliability of this market.'}
             </WhiteText>
           </label>
         </Row>
