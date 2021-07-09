@@ -18,7 +18,7 @@ import tuple from 'immutable-tuple'
 import { notify } from './notifications'
 import { BN } from 'bn.js'
 import { getTokenAccountInfo } from './tokens'
-import { AWESOME_TOKENS } from '@sb/dexUtils/serum'
+import { AWESOME_MARKETS, AWESOME_TOKENS } from '@sb/dexUtils/serum'
 
 export const ALL_TOKENS_MINTS = [...TOKEN_MINTS, ...AWESOME_TOKENS]
 export const ALL_TOKENS_MINTS_MAP = ALL_TOKENS_MINTS.reduce((acc, el) => {
@@ -53,6 +53,13 @@ const USE_MARKETS = _IGNORE_DEPRECATED
       },
     ].concat(MARKETS)
 // : MARKETS
+
+export const UPDATED_AWESOME_MARKETS = AWESOME_MARKETS.map((el) => ({
+  ...el,
+  address: el.address.toString(),
+  programId: el.programId.toString(),
+  isCustomUserMarket: true,
+}))
 
 export function useMarketsList() {
   const UPDATED_USE_MARKETS = USE_MARKETS.filter(

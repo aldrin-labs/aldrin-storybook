@@ -7,6 +7,7 @@ import GreenCheckmark from '@icons/successIcon.svg'
 import Warning from '@icons/warningPairSel.png'
 import ThinkingFace from '@icons/thinkingFace.png'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
+import { CCAI_MINT } from '@sb/dexUtils/utils'
 
 export const TokenIcon = ({
   mint,
@@ -66,7 +67,7 @@ export const TokenIcon = ({
   return (
     <img
       src={token.logoURI}
-      style={{ height, width, margin, borderRadius: '50%' }}
+      style={{ height, width, margin, borderRadius: mint === CCAI_MINT ? '0' : '50%' }}
     />
   )
 }
