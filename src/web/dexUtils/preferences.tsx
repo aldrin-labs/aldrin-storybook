@@ -27,7 +27,7 @@ export function PreferencesProvider({ children }) {
   const { connected, wallet } = useWallet()
 
   // const [marketList] = useAllMarkets();
-  const { market } = useMarket()
+  const { market, baseCurrency, quoteCurrency } = useMarket()
   const connection = useConnection()
   const [selectedTokenAccounts] = useSelectedTokenAccounts()
 
@@ -39,6 +39,15 @@ export function PreferencesProvider({ children }) {
           connection,
           wallet.publicKey
         )
+
+        const selectedOpenOrders = openOrders[0]
+
+        const baseExists =
+        selectedOpenOrders && selectedOpenOrders.baseTokenTotal && selectedOpenOrders.baseTokenFree
+
+        const quoteExists =
+          selectedOpenOrders && selectedOpenOrders.quoteTokenTotal && selectedOpenOrders.quoteTokenFree
+
         // await settleAllFunds({ connection, wallet, tokenAccounts: (tokenAccounts || []), markets, selectedTokenAccounts });
         await settleFunds({
           market,
@@ -55,6 +64,10 @@ export function PreferencesProvider({ children }) {
           ),
           selectedTokenAccounts: selectedTokenAccounts,
           tokenAccounts,
+          baseCurrency,
+          quoteCurrency,
+          baseUnsettled: baseExists && market ? market.baseSplSizeToNumber(selectedOpenOrders.baseTokenFree) : null,
+          quoteUnsettled: quoteExists && market ? market.quoteSplSizeToNumber(selectedOpenOrders.quoteTokenFree) : null,
         })
       } catch (e) {
         // console.log('Error auto settling funds: ' + e.message)

@@ -184,8 +184,6 @@ export const combineSelectWrapperData = ({
   const officialMarketsMap = new Map()
   officialMarkets.forEach(market => officialMarketsMap.set(market.name.replaceAll('/', '_'), market))
 
-  console.log('officialMarketsMap', officialMarkets, 'data', data)
-
   // create map & filter out from custom
   if (!data && !Array.isArray(data)) {
     return []

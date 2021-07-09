@@ -48,12 +48,17 @@ const getNotificationText = ({
   side?: string
   amount?: number
   price?: number
-  orderType?: string,
+  orderType?: string
   operationType: string
 }): [string, string] => {
+  const baseSettleText = `${baseUnsettled} ${baseSymbol}`
+  const quoteSettleText = `${quoteUnsettled} ${quoteSymbol}`
+
   const texts = {
     createOrder: [
-      `${orderType.slice(0, 1).toUpperCase()}${orderType.slice(1)} order placed.`,
+      `${orderType.slice(0, 1).toUpperCase()}${orderType.slice(
+        1
+      )} order placed.`,
       `${baseSymbol}/${quoteSymbol}: ${side} ${amount} ${baseSymbol} order placed at ${price} ${quoteSymbol}.`,
     ],
     cancelOrder: [
@@ -62,8 +67,12 @@ const getNotificationText = ({
     ],
     settleFunds: [
       `Funds Settled.`,
-      `${baseUnsettled > 0 ? quoteUnsettled : baseUnsettled} ${
-        baseUnsettled === 0 ? quoteSymbol : baseSymbol
+      `${
+        baseUnsettled > 0 && quoteUnsettled > 0
+          ? `${baseSettleText} and ${quoteSettleText}`
+          : baseUnsettled > 0
+          ? baseSettleText
+          : quoteSettleText
       } has been successfully settled in your wallet.`,
     ],
   }
