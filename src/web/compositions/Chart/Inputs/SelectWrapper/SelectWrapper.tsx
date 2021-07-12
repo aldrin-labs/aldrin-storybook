@@ -27,7 +27,7 @@ import AddCircleIcon from '@material-ui/icons/AddCircle'
 import _ from 'lodash'
 
 import { notify } from '@sb/dexUtils/notifications'
-import { getMarketInfos } from '@sb/dexUtils/markets'
+import { getMarketInfos, UPDATED_AWESOME_MARKETS } from '@sb/dexUtils/markets'
 
 import {
   // TableWithSort,
@@ -286,6 +286,7 @@ class SelectPairListComponent extends React.PureComponent<
       customMarkets,
       market,
       tokenMap,
+      markets,
     } = this.props
 
     const serumMarketsDataMap = new Map()
@@ -318,6 +319,7 @@ class SelectPairListComponent extends React.PureComponent<
       market,
       tokenMap,
       serumMarketsDataMap,
+      officialMarkets: [...markets, ...UPDATED_AWESOME_MARKETS],
     })
 
     const sortedData = this._sortList({
@@ -348,6 +350,7 @@ class SelectPairListComponent extends React.PureComponent<
       usdtPairsMap,
       favoritePairsMap,
       marketType,
+      markets,
       customMarkets,
       market,
       tokenMap,
@@ -380,6 +383,7 @@ class SelectPairListComponent extends React.PureComponent<
       market,
       tokenMap,
       serumMarketsDataMap: serumMarketsDataMap,
+      officialMarkets: [...markets, ...UPDATED_AWESOME_MARKETS],
     })
 
     const sortedData = this._sortList({

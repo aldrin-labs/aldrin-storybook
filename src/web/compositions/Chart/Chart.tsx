@@ -4,10 +4,6 @@ import { Redirect, withRouter } from 'react-router-dom'
 import { withTheme } from '@material-ui/styles'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
-import { client } from '@core/graphql/apolloClient'
-import { isEqual } from 'lodash'
-import { MASTER_BUILD } from '@core/utils/config'
-
 import Tour from 'reactour'
 // import { Grid, Hidden } from '@material-ui/core'
 
@@ -18,52 +14,32 @@ import {
 } from '@sb/components/ReactourOnboarding/ReactourOnboarding'
 // import { CardsPanel } from './components'
 import DefaultView from './DefaultView/StatusWrapper'
-import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
-import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
-import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
+
 import { getChartLayout } from '@core/graphql/queries/chart/getChartLayout'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { changeChartLayout } from '@core/graphql/mutations/chart/changeChartLayout'
 import { finishJoyride } from '@core/utils/joyride'
 // import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
-import { getChartSteps } from '@sb/config/joyrideSteps'
 
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getChartData } from '@core/graphql/queries/chart/getChartData'
-import { pairProperties } from '@core/graphql/queries/chart/getPairProperties'
 import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
 
-import {
-  prefetchCoinSelector,
-  prefetchDifferentMarketForCoinSelector,
-  prefetchPortfolio,
-  prefetchPortfolioMainSpot,
-  prefetchPortfolioMainFutures,
-  prefetchDeposit,
-  prefetchWithdrawal,
-} from '@core/utils/prefetching'
-import { checLoginStatusWrapper } from '@core/utils/loginUtils'
-
-import withAuth from '@core/hoc/withAuth'
 import { checkLoginStatus } from '@core/utils/loginUtils'
 import {
   MainContainer,
   GlobalStyles,
 } from '@sb/compositions/Chart/Chart.styles'
-import { IProps } from './Chart.types'
 
-import { useMarket } from '@sb/dexUtils/markets'
+import { UPDATED_AWESOME_MARKETS, useMarket } from '@sb/dexUtils/markets'
 
 import { getDecimalCount } from '@sb/dexUtils/utils'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import { AWESOME_MARKETS } from '@sb/dexUtils/serum'
 import { withPublicKey } from '@core/hoc/withPublicKey'
-import { useWallet } from '@sb/dexUtils/wallet'
 import { WarningPopup } from './components/WarningPopup'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
-import { DevUrlPopup } from '@sb/components/PopupForDevUrl'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
   // Check if the arrays are the same length
@@ -81,24 +57,6 @@ const arraysCustomMarketsMatch = (arr1, arr2) => {
 function ChartPageComponent(props: any) {
   const {
     theme,
-    // getChartDataQuery: {
-    //   getMyProfile: { _id } = { _id: '' },
-    //   getTradingSettings: {
-    //     selectedTradingKey,
-    //     hedgeMode,
-    //     isFuturesWarsKey,
-    //   } = {
-    //     selectedTradingKey: '',
-    //     hedgeMode: false,
-    //     isFuturesWarsKey: false,
-    //   },
-    //   marketByMarketType = [],
-    //   chart: { activeExchange, currencyPair: { pair }, view } = {
-    //     currencyPair: { pair: 'BTC_USDT' },
-    //     activeExchange: { name: 'Binance', symbol: 'binance' },
-    //     view: 'default',
-    //   },
-    // },
     getTooltipSettingsQuery: {
       getTooltipSettings = { chartPage: false, chartPagePopup: false },
     } = {
@@ -190,14 +148,12 @@ function ChartPageComponent(props: any) {
       })
     )
 
-    const updatedMarkets = AWESOME_MARKETS.map((el) => ({
-      ...el,
-      address: el.address.toString(),
-      programId: el.programId.toString(),
-      isCustomUserMarket: true,
-    }))
+    const updatedMarkets = [
+      ...props.markets,
+      ...UPDATED_AWESOME_MARKETS,
+    ]
 
-    const allMarkets = [...props.markets, ...userMarkets, ...updatedMarkets]
+    const allMarkets = [...updatedMarkets, ...userMarkets]
 
     const selectedMarketFromUrl = allMarkets.find(
       (el) => el.name.replaceAll('_', '/') === pair.replaceAll('_', '/')
@@ -215,6 +171,7 @@ function ChartPageComponent(props: any) {
     const isPublicUsersMarket = userMarkets?.find(
       (el) => el.name.replaceAll('_', '/') === pair.replaceAll('_', '/')
     )
+
     if (isPublicUsersMarket !== undefined && !isCustomUsersMarket) {
       openWarningPopup(true)
     }

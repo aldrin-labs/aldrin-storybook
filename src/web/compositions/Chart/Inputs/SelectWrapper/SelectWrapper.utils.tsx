@@ -248,6 +248,7 @@ export const combineSelectWrapperData = ({
   market,
   tokenMap,
   serumMarketsDataMap,
+  officialMarkets,
 }: {
   data: ISelectData
   // updateFavoritePairsMutation: (variableObj: {
@@ -271,8 +272,15 @@ export const combineSelectWrapperData = ({
   usdtPairsMap: Map<string, string>
   marketType: number
   needFiltrations?: boolean
+  officialMarkets: any
 }) => {
   const marketsCategoriesData = Object.entries(marketsByCategories)
+  const officialMarketsMap = new Map()
+  officialMarkets.forEach((market) =>
+    officialMarketsMap.set(market.name.replaceAll('/', '_'), market)
+  )
+
+  // create map & filter out from custom
   if (!data && !Array.isArray(data)) {
     return []
   }
@@ -352,11 +360,16 @@ export const combineSelectWrapperData = ({
     }
 
     if (tab === 'private') {
-      processedData = data.filter((el) => el.isPrivateCustomMarket)
+      processedData = data.filter(
+        (el) => el.isPrivateCustomMarket && !officialMarketsMap.has(el.symbol)
+      )
     }
     if (tab === 'public') {
       processedData = data.filter(
-        (el) => el.isCustomUserMarket && !el.isPrivateCustomMarket
+        (el) =>
+          el.isCustomUserMarket &&
+          !el.isPrivateCustomMarket &&
+          !officialMarketsMap.has(el.symbol)
       )
     }
   } else if (needFiltrations) {
@@ -420,16 +433,12 @@ export const combineSelectWrapperData = ({
     const signTrades24hChange = +precentageTradesDiff > 0 ? '+' : '-'
 
     const marketName = symbol.replaceAll('_', '/')
-    const currentMarket = customMarkets?.find(
+    const currentMarket = officialMarkets?.find(
       (el) => el?.name.replaceAll('_', '/') === marketName
     )
 
     const isAdditionalCustomUserMarket = el.isCustomUserMarket
     const isAwesomeMarket = currentMarket?.isCustomUserMarket
-    const isCCAIPair =
-      symbol.includes('CCAI') &&
-      !isAdditionalCustomUserMarket &&
-      !isAwesomeMarket
 
     const mint = getTokenMintAddressByName(base)
 

@@ -193,6 +193,17 @@ export const CardsPanel = ({ theme }) => {
               {' '}
               Home
             </NavLinkButton>
+            {MASTER_BUILD && (
+              <NavLinkButton
+                theme={theme}
+                data-tut="farming"
+                pathname={location.pathname}
+                page={'wallet'}
+                component={(props) => <a href={CCAIProviderURL} {...props} />}
+              >
+                Wallet
+              </NavLinkButton>
+            )}
             <NavLinkButton
               theme={theme}
               pathname={location.pathname}
@@ -233,15 +244,17 @@ export const CardsPanel = ({ theme }) => {
               {' '}
               Addressbook
             </NavLinkButton> */}
-            <NavLinkButton
-              theme={theme}
-              page={'/pools'}
-              pathname={location.pathname}
-              component={(props) => <Link to={`/pools`} {...props} />}
-            >
-              {' '}
-              Pools
-            </NavLinkButton>
+            {!MASTER_BUILD && (
+              <NavLinkButton
+                theme={theme}
+                page={'/pools'}
+                pathname={location.pathname}
+                component={(props) => <Link to={`/pools`} {...props} />}
+              >
+                {' '}
+                Pools
+              </NavLinkButton>
+            )}
             {!MASTER_BUILD && (
               <NavLinkButton
                 theme={theme}
@@ -253,16 +266,18 @@ export const CardsPanel = ({ theme }) => {
                 Swaps
               </NavLinkButton>
             )}{' '}
-            {/* <NavLinkButton
-              style={{ color: '#386DE6' }}
-              theme={theme}
-              data-tut="farming"
-              pathname={location.pathname}
-              page={'wallet'}
-              component={(props) => <a href={CCAIProviderURL} {...props} />}
-            >
-              SunWallet
-            </NavLinkButton> */}
+            {!MASTER_BUILD && (
+              <NavLinkButton
+                style={{ color: '#386DE6' }}
+                theme={theme}
+                data-tut="farming"
+                pathname={location.pathname}
+                page={'wallet'}
+                component={(props) => <a href={CCAIProviderURL} {...props} />}
+              >
+                SunWallet
+              </NavLinkButton>
+            )}
             <TokenLink
               href="https://ccai.cryptocurrencies.ai/"
               target="_blank"

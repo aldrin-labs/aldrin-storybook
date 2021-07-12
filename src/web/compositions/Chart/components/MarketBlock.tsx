@@ -115,9 +115,10 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
     (el) => el?.name.replaceAll('_', '/') === marketName
   )
 
-  const isPrivateCustomMarket =
-    currentMarket?.isPrivateCustomMarket !== undefined
   const isCustomUserMarket = currentMarket?.isCustomUserMarket
+
+  const isPrivateCustomMarket =
+    currentMarket?.isPrivateCustomMarket !== undefined && !isCustomUserMarket
 
   const isCCAIPair =
     pair.includes('CCAI') && !isPrivateCustomMarket && !isCustomUserMarket

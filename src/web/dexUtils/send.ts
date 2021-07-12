@@ -30,7 +30,7 @@ import {
 } from './markets'
 import { WalletAdapter } from './types'
 
-const setNotificationTexts = ({
+const getNotificationText = ({
   baseSymbol = 'CCAI',
   quoteSymbol = 'USDC',
   baseUnsettled = 0,
@@ -38,6 +38,8 @@ const setNotificationTexts = ({
   side = 'buy',
   amount = 0,
   price = 0,
+  orderType = 'limit',
+  operationType,
 }: {
   baseSymbol?: string
   quoteSymbol?: string
@@ -46,16 +48,36 @@ const setNotificationTexts = ({
   side?: string
   amount?: number
   price?: number
-}) => {
-  return {
-    createOrder: `Order placed. ${baseSymbol}/${quoteSymbol}: ${side} ${amount} ${baseSymbol} order placed at ${price} ${quoteSymbol}.`,
-    cancelOrder: `Order canceled. ${baseSymbol}/${quoteSymbol}: ${side} ${amount} ${baseSymbol} order canceled at ${price} ${quoteSymbol}.`,
-    settleFunds: `Funds Settled. ${
-      baseUnsettled > 0 ? quoteUnsettled : baseUnsettled 
-    } ${
-      baseUnsettled === 0 ? quoteSymbol : baseSymbol
-    } has been successfully settled in your wallet.`,
+  orderType?: string
+  operationType: string
+}): [string, string] => {
+  const baseSettleText = `${baseUnsettled} ${baseSymbol}`
+  const quoteSettleText = `${quoteUnsettled} ${quoteSymbol}`
+
+  const texts = {
+    createOrder: [
+      `${orderType.slice(0, 1).toUpperCase()}${orderType.slice(
+        1
+      )} order placed.`,
+      `${baseSymbol}/${quoteSymbol}: ${side} ${amount} ${baseSymbol} order placed at ${price} ${quoteSymbol}.`,
+    ],
+    cancelOrder: [
+      `Order canceled.`,
+      `${baseSymbol}/${quoteSymbol}: ${side} ${amount} ${baseSymbol} order canceled at ${price} ${quoteSymbol}.`,
+    ],
+    settleFunds: [
+      `Funds Settled.`,
+      `${
+        baseUnsettled > 0 && quoteUnsettled > 0
+          ? `${baseSettleText} and ${quoteSettleText}`
+          : baseUnsettled > 0
+          ? baseSettleText
+          : quoteSettleText
+      } has been successfully settled in your wallet.`,
+    ],
   }
+
+  return texts[operationType]
 }
 
 export async function createTokenAccountTransaction({
@@ -701,6 +723,7 @@ export async function placeOrder({
       amount: size,
       baseSymbol: pair.split('_')[0],
       quoteSymbol: pair.split('_')[1],
+      orderType: orderType === 'ioc' ? 'market' : 'limit',
     },
   })
 }
@@ -1044,16 +1067,22 @@ export async function sendTransaction({
   const txid = await connection.sendRawTransaction(rawTransaction, {
     skipPreflight: true,
   })
+
+  const [title, text] = getNotificationText({
+    baseSymbol: params?.baseSymbol || '',
+    quoteSymbol: params?.quoteSymbol || '',
+    quoteUnsettled: params?.quoteUnsettled || 0,
+    baseUnsettled: params?.baseUnsettled || 0,
+    price: params?.price || 0,
+    amount: params?.amount || 0,
+    side: params?.side || '',
+    orderType: params?.orderType || 'limit',
+    operationType,
+  })
+
   notify({
-    message: setNotificationTexts({
-      baseSymbol: params?.baseSymbol || '',
-      quoteSymbol: params?.quoteSymbol || '',
-      quoteUnsettled: params?.quoteUnsettled || 0,
-      baseUnsettled: params?.baseUnsettled || 0,
-      price: params?.price || 0,
-      amount: params?.amount || 0,
-      side: params?.side || '',
-    })[operationType],
+    message: title,
+    description: text,
     type: 'success',
     txid,
   })
