@@ -467,9 +467,6 @@ export function useOpenOrdersAccounts(fast = false) {
       wallet.publicKey
     )
     
-    // sometimes []
-    // console.log('useOpenOrdersAccounts accounts', accounts)
-
     return accounts
   }
   return useAsyncData(
