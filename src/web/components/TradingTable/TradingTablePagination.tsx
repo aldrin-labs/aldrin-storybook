@@ -31,7 +31,7 @@ export const PaginationBlock = ({
 }) => {
   return (
     <div style={{ display: 'flex' }}>
-      <div>
+      {/* <div>
         <StyledCheckox
           id="specPair"
           checked={!specificPair}
@@ -52,7 +52,7 @@ export const PaginationBlock = ({
         <StyledLabel theme={theme} htmlFor="allKeys">
           all accounts
         </StyledLabel>
-      </div>
+      </div> */}
     </div>
   )
 }
