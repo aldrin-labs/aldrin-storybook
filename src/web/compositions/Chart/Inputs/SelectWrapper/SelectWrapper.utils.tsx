@@ -2,7 +2,7 @@ import React from 'react'
 import { client } from '@core/graphql/apolloClient'
 import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSettings'
 import { SvgIcon } from '@sb/components'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { DarkTooltip, DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 import {
   formatNumberToUSFormat,
@@ -15,6 +15,8 @@ import GreenCheckmark from '@icons/successIcon.svg'
 import Warning from '@icons/warningPairSel.png'
 import ThinkingFace from '@icons/thinkingFace.png'
 import CCAILogo from '@icons/auth0Logo.svg'
+import AnalyticsIcon from '@icons/analytics.svg'
+import BlueTwitterIcon from '@icons/blueTwitter.svg'
 
 import favoriteSelected from '@icons/favoriteSelected.svg'
 import favoriteUnselected from '@icons/favoriteUnselected.svg'
@@ -30,6 +32,9 @@ import {
 } from './SelectWrapper.types'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
+import LinkToSolanaExp from '../../components/LinkToSolanaExp'
+import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { LinkToAnalytics, LinkToTwitter } from '../../components/MarketBlock'
 
 export const selectWrapperColumnNames = [
   { label: '', id: 'favorite', isSortable: false },
@@ -38,6 +43,90 @@ export const selectWrapperColumnNames = [
   { label: '24H change', id: '24hChange', isNumber: true, isSortable: true },
   { label: '24H volume', id: '24hVolume', isNumber: true, isSortable: true },
 ]
+
+export const marketsByCategories = {
+  defi: {
+    name: 'DeFi',
+    tokens: [
+      'CCAI',
+      'SRM',
+      'OXY',
+      'RAY',
+      'GRT',
+      'FAB',
+      'SLRS',
+      'FTR',
+      'FRONT',
+      'STEP',
+      'FIDA',
+      'SNY',
+      'TGT',
+      'LIQ',
+      'SLIM',
+      'MER',
+      'AKRO',
+      'KEEP',
+      'XCOPE',
+      'ODOPE',
+      'RSR',
+      'MATH',
+      'LQID',
+      'LIEN',
+      'DGX',
+      'CREAM',
+      'BOLE',
+    ],
+  },
+  currency: { name: 'Currency', tokens: ['BTC', 'ETH', 'SOL'] },
+  exchangeDerrivatives: {
+    name: 'Exchange & Derrivatives',
+    tokens: [
+      'CCAI',
+      'SRM',
+      'FIDA',
+      'RAY',
+      'SOLAPE',
+      'FTT',
+      'SUSHI',
+      'UNI',
+      'FTR',
+      '1INCH',
+      'LIQ',
+      'WOO',
+      'PERP',
+      'LUA',
+      'SECO',
+      'MSRM',
+    ],
+  },
+  nftGamesGambling: {
+    name: 'NFT, Games & Gambling',
+    tokens: ['sHOG', 'SCA', 'HXRO', 'SAMO'],
+  },
+  memeSocial: {
+    name: 'Meme & Social',
+    tokens: ['SAIL', 'SAMO', 'COPE', 'CATO', 'IBVOL', 'BVOL'],
+  },
+  oracle: { name: 'Oracle', tokens: ['LINK'] },
+  farmAgregator: {
+    name: 'Farm & Agregator',
+    tokens: ['FRONT', 'OXY', 'YARD', 'TULP', 'RAMP'],
+  },
+  // syntheticAsset: { name: 'Synthetic Asset', tokens: ['SNY', 'FAB'] },
+  tradeLiquidity: {
+    name: 'Trade & Liquidity',
+    tokens: ['SLRS', 'ROPE', 'FTR', 'UBXT', 'LIEN'],
+  },
+  lendingYield: { name: 'Lending & Yield', tokens: ['AAVE', 'COMP', 'YFI'] },
+  infrastructure: {
+    name: 'Infrastructure',
+    tokens: ['GRT', 'BOP', 'TOMO', 'HNT', 'GEL'],
+  },
+  dApp: {
+    name: 'dApp',
+    tokens: ['KIN', 'AUDIO', 'MAPS', 'SXP', 'STEP', 'ALEPH', 'MEDIA'],
+  },
+}
 
 export const getIsNotUSDTQuote = (symbol) => {
   const [base, quote] = symbol.split('_')
@@ -155,6 +244,10 @@ export const combineSelectWrapperData = ({
   favoritePairsMap,
   marketType,
   needFiltrations = true,
+  customMarkets,
+  market,
+  tokenMap,
+  serumMarketsDataMap,
   officialMarkets,
 }: {
   data: ISelectData
@@ -181,8 +274,11 @@ export const combineSelectWrapperData = ({
   needFiltrations?: boolean
   officialMarkets: any
 }) => {
+  const marketsCategoriesData = Object.entries(marketsByCategories)
   const officialMarketsMap = new Map()
-  officialMarkets.forEach(market => officialMarketsMap.set(market.name.replaceAll('/', '_'), market))
+  officialMarkets.forEach((market) =>
+    officialMarketsMap.set(market.name.replaceAll('/', '_'), market)
+  )
 
   // create map & filter out from custom
   if (!data && !Array.isArray(data)) {
@@ -241,6 +337,20 @@ export const combineSelectWrapperData = ({
           !el.isCustomUserMarket
       )
     }
+    if (tab === 'sol') {
+      processedData = processedData.filter((el) => el.symbol.includes('SOL'))
+    }
+
+    marketsCategoriesData.forEach(([category, data]) => {
+      const tokens = data.tokens
+      if (tab === category) {
+        processedData = processedData.filter((el) => {
+          const [base, quote] = el.symbol.split('_')
+          return tokens.includes(base) || tokens.includes(quote)
+        })
+      }
+    })
+
     if (tab === 'leveraged') {
       processedData = processedData.filter(
         (el) =>
@@ -250,11 +360,16 @@ export const combineSelectWrapperData = ({
     }
 
     if (tab === 'private') {
-      processedData = data.filter((el) => el.isPrivateCustomMarket && !officialMarketsMap.has(el.symbol))
+      processedData = data.filter(
+        (el) => el.isPrivateCustomMarket && !officialMarketsMap.has(el.symbol)
+      )
     }
     if (tab === 'public') {
       processedData = data.filter(
-        (el) => el.isCustomUserMarket && !el.isPrivateCustomMarket &&  !officialMarketsMap.has(el.symbol)
+        (el) =>
+          el.isCustomUserMarket &&
+          !el.isPrivateCustomMarket &&
+          !officialMarketsMap.has(el.symbol)
       )
     }
   } else if (needFiltrations) {
@@ -278,6 +393,8 @@ export const combineSelectWrapperData = ({
       programId = '',
       isCustomUserMarket,
       isPrivateCustomMarket,
+      minPrice = 0,
+      maxPrice = 0,
     } = el || {
       symbol: '',
       closePrice: 0,
@@ -290,6 +407,8 @@ export const combineSelectWrapperData = ({
       programId: '',
       isCustomUserMarket,
       isPrivateCustomMarket,
+      minPrice: 0,
+      maxPrice: 0,
     }
 
     const [base, quote] = symbol.split('_')
@@ -322,6 +441,11 @@ export const combineSelectWrapperData = ({
     const isAwesomeMarket = currentMarket?.isCustomUserMarket
 
     const mint = getTokenMintAddressByName(base)
+
+    const baseTokenInfo = tokenMap.get(getTokenMintAddressByName(base))
+    const marketAddress = market?.address?.toBase58()
+    const avgBuy = serumMarketsDataMap?.get(symbol)?.avgBuy || 0
+    const avgSell = serumMarketsDataMap?.get(symbol)?.avgSell || 0
 
     return {
       id: `${symbol}`,
@@ -357,7 +481,7 @@ export const combineSelectWrapperData = ({
                 justifyContent: 'center',
               }}
             >
-              <TokenIcon 
+              <TokenIcon
                 mint={mint}
                 width={'50%'}
                 emojiIfNoLogo={true}
@@ -369,7 +493,24 @@ export const combineSelectWrapperData = ({
         ),
       },
       symbol: {
-        render: <span>{symbol.replaceAll('_', '/')}</span>,
+        render: (
+          <Row direction={'column'} align={'initial'}>
+            {baseTokenInfo && baseTokenInfo?.name && (
+              <span
+                style={{
+                  fontSize: '1.3rem',
+                  textTransform: 'capitalize',
+                  color: '#96999C',
+                  fontFamily: 'Avenir Next Thin',
+                  marginBottom: '1rem',
+                }}
+              >
+                {baseTokenInfo?.name.replace('(Sollet)', '')}
+              </span>
+            )}
+            <span style={{ fontSize: '1.6rem' }}>{marketName}</span>{' '}
+          </Row>
+        ),
         onClick: () =>
           onSelectPair({
             value: symbol,
@@ -382,11 +523,20 @@ export const combineSelectWrapperData = ({
       price: {
         contentToSort: +closePrice,
         render: (
-          <span>
-            {formatNumberToUSFormat(
-              stripDigitPlaces(closePrice, pricePrecision)
-            )}
-          </span>
+          <>
+            <span
+              style={{
+                color: theme.palette.green.main,
+              }}
+            >
+              {formatNumberToUSFormat(
+                stripDigitPlaces(closePrice, pricePrecision)
+              )}
+            </span>
+            <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
+              {quote}
+            </span>
+          </>
         ),
 
         color: theme.palette.dark.main,
@@ -406,7 +556,9 @@ export const combineSelectWrapperData = ({
           >
             {`${sign24hChange}${formatNumberToUSFormat(
               stripDigitPlaces(lastPriceDiff, pricePrecision)
-            )} / ${sign24hChange}${formatNumberToUSFormat(
+            )}`}{' '}
+            <span style={{ color: '#96999C' }}> / </span>{' '}
+            {`${sign24hChange}${formatNumberToUSFormat(
               stripDigitPlaces(priceChangePercentage, 2)
             )}%`}
           </span>
@@ -452,6 +604,107 @@ export const combineSelectWrapperData = ({
           </>
         ),
       },
+      min24h: {
+        render: (
+          <span
+            style={{
+              color: theme.palette.red.main,
+            }}
+          >
+            <>
+              {' '}
+              {`${formatNumberToUSFormat(
+                stripDigitPlaces(Math.abs(minPrice))
+              )}`}{' '}
+              <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
+                {quote}
+              </span>
+            </>
+          </span>
+        ),
+      },
+      max24h: {
+        render: (
+          <span
+            style={{
+              color: theme.palette.green.main,
+            }}
+          >
+            <>
+              {`${formatNumberToUSFormat(
+                stripDigitPlaces(Math.abs(maxPrice))
+              )}`}{' '}
+              <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
+                {quote}
+              </span>
+            </>
+          </span>
+        ),
+      },
+      avgSell14d: {
+        render: (
+          <>
+            <span
+              style={{
+                color: theme.palette.red.main,
+              }}
+            >
+              {`${formatNumberToUSFormat(stripDigitPlaces(avgSell))}`}
+            </span>
+            <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
+              {quote}
+            </span>
+          </>
+        ),
+      },
+      avgBuy14d: {
+        render: (
+          <>
+            <span
+              style={{
+                color: theme.palette.green.main,
+              }}
+            >
+              {`${formatNumberToUSFormat(stripDigitPlaces(avgBuy))}`}{' '}
+            </span>{' '}
+            <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
+              {quote}
+            </span>
+          </>
+        ),
+      },
+      links: {
+        render: (
+          <Row
+            style={{ flexWrap: 'nowrap' }}
+            justify={'flex-start'}
+            align={'baseline'}
+          >
+            <LinkToSolanaExp padding={'0'} marketAddress={marketAddress} />
+            <DarkTooltip title={'Show analytics for this market.'}>
+              <LinkToAnalytics to={`/analytics/${marketName}`}>
+                <SvgIcon
+                  src={AnalyticsIcon}
+                  width={'2.3rem'}
+                  height={'2.3rem'}
+                />
+              </LinkToAnalytics>
+            </DarkTooltip>
+            {baseTokenInfo?.extensions?.twitter && (
+              <DarkTooltip title={'Twitter profile of base token.'}>
+                <LinkToTwitter href={baseTokenInfo?.extensions?.twitter}>
+                  <SvgIcon
+                    width={'2.5rem'}
+                    height={'2.5rem'}
+                    src={BlueTwitterIcon}
+                  />
+                </LinkToTwitter>
+              </DarkTooltip>
+            )}
+          </Row>
+        ),
+      },
+
       volume24hChangeIcon: {
         render:
           +volumeChange > 0 ? (
