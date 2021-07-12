@@ -60,22 +60,26 @@ export function ConnectionProvider({ children }) {
       endpoint === MAINNET_BETA_ENDPOINT
         ? connection.getConnection()
         : connection
+
     const id = rawConnection.onAccountChange(new Account().publicKey, () => {})
+
     return () => {
       rawConnection.removeAccountChangeListener(id)
     }
-  }, [connection])
+  }, [endpoint, connection])
 
   useEffect(() => {
     const rawConnection =
       endpoint === MAINNET_BETA_ENDPOINT
         ? connection.getConnection()
         : connection
+
     const id = rawConnection.onSlotChange(() => null)
+
     return () => {
       rawConnection.removeSlotChangeListener(id)
     }
-  }, [connection])
+  }, [endpoint, connection])
 
   return (
     <ConnectionContext.Provider value={{ endpoint, setEndpoint, connection }}>

@@ -170,10 +170,13 @@ export const Balances = ({
   const connection = useConnection()
   const { wallet, providerUrl } = useWallet()
   const { refresh } = useUnmigratedOpenOrdersAccounts()
-  const { baseCurrency, quoteCurrency } = useMarket()
+  const { market, baseCurrency, quoteCurrency } = useMarket()
 
-  const isBaseCoinExistsInWallet = useSelectedBaseCurrencyAccount()
-  const isQuoteCoinExistsInWallet = useSelectedQuoteCurrencyAccount()
+  const baseAccount = useSelectedBaseCurrencyAccount()
+  const quoteAccount = useSelectedQuoteCurrencyAccount()
+
+  const isBaseCoinExistsInWallet = market ? baseAccount : true
+  const isQuoteCoinExistsInWallet = market ? quoteAccount : true
 
   async function onSettleSuccess() {
     console.log('settled funds success')
@@ -470,7 +473,7 @@ export const Balances = ({
                   padding: '0 0.5rem',
                 }}
               >
-                {!wallet.connected ? null : isQuoteCoinExistsInWallet ? ( // /> //   containerStyle={{ padding: '0' }} //   id={'connectButtonQuote'} //   height={'2rem'} // <ConnectWalletDropdown
+                {!wallet.connected ? null : isQuoteCoinExistsInWallet ? (
                   <>
                     <BtnCustom
                       btnWidth={!showSettle ? '100%' : 'calc(50% - .25rem)'}

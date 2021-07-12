@@ -466,6 +466,9 @@ export function useOpenOrdersAccounts(fast = false) {
       connection,
       wallet.publicKey
     )
+    
+    // sometimes []
+    // console.log('useOpenOrdersAccounts accounts', accounts)
 
     return accounts
   }
@@ -477,7 +480,7 @@ export function useOpenOrdersAccounts(fast = false) {
 }
 
 export function useSelectedOpenOrdersAccount(fast = false) {
-  const [accounts] = useOpenOrdersAccounts(fast)
+  const [accounts, loaded] = useOpenOrdersAccounts(fast)
   if (!accounts) {
     return null
   }
@@ -487,12 +490,14 @@ export function useSelectedOpenOrdersAccount(fast = false) {
 export function useTokenAccounts() {
   const { connected, wallet } = useWallet()
   const connection = useConnection()
+
   async function getTokenAccounts() {
     if (!connected) {
       return null
     }
     return await getTokenAccountInfo(connection, wallet.publicKey)
   }
+
   return useAsyncData(
     getTokenAccounts,
     tuple('getTokenAccounts', wallet, connected),
@@ -520,10 +525,12 @@ export function getSelectedTokenAccountForMint(
 }
 
 export function useSelectedQuoteCurrencyAccount() {
-  const [accounts] = useTokenAccounts()
+  const [accounts, loaded] = useTokenAccounts()
   const { market } = useMarket()
   const [selectedTokenAccounts] = useSelectedTokenAccounts()
+
   const mintAddress = market?.quoteMintAddress
+
   return getSelectedTokenAccountForMint(
     accounts,
     mintAddress,
@@ -535,7 +542,9 @@ export function useSelectedBaseCurrencyAccount() {
   const [accounts] = useTokenAccounts()
   const { market } = useMarket()
   const [selectedTokenAccounts] = useSelectedTokenAccounts()
+
   const mintAddress = market?.baseMintAddress
+
   return getSelectedTokenAccountForMint(
     accounts,
     mintAddress,
