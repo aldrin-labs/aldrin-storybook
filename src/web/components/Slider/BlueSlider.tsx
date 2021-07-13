@@ -48,11 +48,11 @@ const BlueSlider = ({
       onAfterChange={onAfterChange}
       sliderContainerStyles={sliderContainerStyles}
       handleStyles={{
-        width: '1.2rem',
-        height: '1.2rem',
+        width: '2.2rem',
+        height: '2.2rem',
         border: 'none',
         backgroundColor: theme.palette.blue.serum,
-        marginTop: '-.28rem',
+        marginTop: '-.54rem',
         boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
         transform: 'translate(-50%, -15%) !important',
       }}

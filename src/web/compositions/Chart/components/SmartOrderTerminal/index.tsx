@@ -44,7 +44,6 @@ import {
   TerminalHeadersBlock,
 } from './Blocks'
 import { compose } from 'recompose'
-import { thirdDataSet } from '@sb/components/BitcoinPriceChart/barChartDataMock'
 
 const generateToken = () =>
   Math.random()
@@ -1021,6 +1020,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
         ? this.props.price
         : entryPoint.order.price
 
+    console.log('price update', this.props.price, entryPoint.order.price)
+
     leverage = !!leverage ? leverage : entryPoint.order.leverage
 
     // we can pass 0 => !stopLossPercentage wont work for this case
@@ -1074,6 +1075,8 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
             price * (1 + stopLossPercentage / 100 / leverage),
             pricePrecision
           )
+
+    console.log('stopLossPrice', stopLossPrice, leverage, pricePrecision)
 
     const forcedStopPrice =
       side === 'buy'
@@ -1332,8 +1335,6 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
       })
     }
 
-    console.log('state', this.state)
-
     return (
       <>
         {showConfirmationPopup && !editPopup && (
@@ -1444,6 +1445,7 @@ export class SmartOrderTerminal extends React.PureComponent<IProps, IState> {
               enqueueSnackbar={this.props.enqueueSnackbar}
               entryPoint={entryPoint}
               marketType={marketType}
+              showConfirmationPopup={this.showConfirmationPopup}
               addTarget={this.addTarget}
               isMarketType={isMarketType}
               pricePrecision={pricePrecision}

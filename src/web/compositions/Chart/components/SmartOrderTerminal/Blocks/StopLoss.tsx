@@ -19,7 +19,9 @@ import { SendButton } from '@sb/components/TraidingTerminal/styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { FormInputContainer, Select } from '../InputComponents'
 
-import CustomSwitcher, { SwitcherHalf } from '@sb/components/SwitchOnOff/CustomSwitcher'
+import CustomSwitcher, {
+  SwitcherHalf,
+} from '@sb/components/SwitchOnOff/CustomSwitcher'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
 
 import { TradeInputContent as Input } from '@sb/components/TraidingTerminal/index'
@@ -348,7 +350,11 @@ export const StopLossBlock = ({
             !stopLoss.plotEnabled) ||
             !stopLoss.external ||
             (stopLoss.external && stopLoss.plotEnabled)) && (
-            <InputRowContainer style={{ margin: '.5rem auto 1rem auto' }}>
+            <InputRowContainer
+              justify={'space-between'}
+              wrap={'wrap'}
+              style={{ margin: '.5rem auto 1rem auto' }}
+            >
               <SliderWithPriceAndPercentageFieldRow
                 {...{
                   pair,
@@ -367,6 +373,12 @@ export const StopLossBlock = ({
                   updateBlockValue,
                   priceForCalculate,
                   percentagePreSymbol: '-',
+                  sliderInTheBottom: true,
+                  needPercentageTitle: true,
+                  percentageTitle: 'Loss',
+                  priceTitle: 'SL Price',
+                  percentageTextAlign: 'right',
+                  priceTextAlign: 'right',
                   approximatePrice: stopLoss.stopLossPrice,
                   pricePercentage: stopLoss.pricePercentage,
                   getApproximatePrice: (value: number) => {
@@ -945,23 +957,25 @@ export const StopLossBlock = ({
         </div>
       </div>
       <InputRowContainer
+        justify={'center'}
         style={{
           width: 'calc(100%)',
-          height: '4rem',
+          height: '5rem',
           margin: '0 auto',
           position: 'absolute',
-          bottom: '1rem',
+          bottom: '2rem',
           padding: '0rem 1rem 0rem 1.2rem',
         }}
       >
-        {' '}
         <SendButton
           theme={theme}
           style={{
-            background: theme.palette.white.background,
-            border: `0.1rem solid  ${theme.palette.red.main}`,
-            color: theme.palette.red.main,
+            background: 'transparent',
+            border: `0.1rem solid  ${theme.palette.white.main}`,
+            color: theme.palette.white.main,
             boxShadow: 'none',
+            width: '100%',
+            height: '5rem',
           }}
           type={'sell'}
           onClick={() => {
@@ -969,18 +983,6 @@ export const StopLossBlock = ({
           }}
         >
           cancel
-        </SendButton>
-        <SendButton
-          data-tut={'createBtn'}
-          theme={theme}
-          type={entryPoint.order.side}
-          onClick={showConfirmationPopup}
-        >
-          {entryPoint.order.side === 'buy' && marketType === 0
-            ? 'Start Smart Buy'
-            : entryPoint.order.side === 'buy'
-            ? 'Start Smart Long'
-            : 'Start Smart Short'}
         </SendButton>
       </InputRowContainer>
     </TerminalBlock>

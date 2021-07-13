@@ -19,12 +19,15 @@ export const SliderWithPriceAndPercentageFieldRow = ({
   showErrors,
   isMarketType,
   validateField,
+  percentageTitle,
+  priceTitle,
   pricePercentage,
   approximatePrice,
   getApproximatePrice,
   onAfterSliderChange,
   percentagePreSymbol,
   percentageTextAlign = 'left',
+  priceTextAlign = 'left',
   needPriceField = true,
   sliderInTheBottom = false,
   onPricePercentageChange,
@@ -36,14 +39,54 @@ export const SliderWithPriceAndPercentageFieldRow = ({
     updateValue(pricePercentage)
   }, [pricePercentage])
 
+  const needPercentageTitle = !!percentageTitle
+  const needPriceTitle = !!priceTitle
+
   return (
     <>
+      <Input
+        theme={theme}
+        width={
+          sliderInTheBottom
+            ? 'calc(35% - .5rem)'
+            : needPriceField
+            ? 'calc(17.5% - .5rem)'
+            : 'calc(50% - .5rem)'
+        }
+        symbol={'%'}
+        preSymbol={percentagePreSymbol}
+        textAlign={percentageTextAlign}
+        needPreSymbol={true}
+        needTitle={needPercentageTitle}
+        title={percentageTitle}
+        value={value}
+        showErrors={showErrors}
+        isValid={validateField(true, pricePercentage)}
+        inputStyles={
+          percentageTextAlign === 'left'
+            ? {
+                height: '4rem',
+                paddingRight: '0',
+                paddingLeft: '2rem',
+              }
+            : {
+                height: '4rem',
+                paddingLeft: '0',
+                paddingRight: '3.5rem',
+              }
+        }
+        onChange={onPricePercentageChange}
+      />
       {needPriceField && (
         <Input
           theme={theme}
           padding={'0'}
-          width={sliderInTheBottom ? '65%' : 'calc(32.5%)'}
-          textAlign={'left'}
+          width={
+            sliderInTheBottom ? 'calc(65% - .5rem)' : 'calc(32.5% - .5rem)'
+          }
+          needTitle={needPriceTitle}
+          title={priceTitle}
+          textAlign={priceTextAlign}
           symbol={pair[1]}
           value={
             pricePercentage !== value
@@ -54,63 +97,35 @@ export const SliderWithPriceAndPercentageFieldRow = ({
           showErrors={showErrors}
           isValid={validateField(true, pricePercentage)}
           inputStyles={{
+            height: '4rem',
             paddingLeft: '1rem',
           }}
           onChange={(e) => onApproximatePriceChange(e, updateValue)}
         />
       )}
 
-      <Input
-        theme={theme}
-        padding={
-          sliderInTheBottom
-            ? '0 0 0 .8rem'
-            : needPriceField
-            ? '0 .8rem 0 .8rem'
-            : '0 .8rem 0 0rem'
-        }
-        width={
-          sliderInTheBottom ? '35%' : needPriceField ? 'calc(17.5%)' : '50%'
-        }
-        symbol={'%'}
-        preSymbol={percentagePreSymbol}
-        textAlign={percentageTextAlign}
-        needPreSymbol={true}
-        value={value}
-        showErrors={showErrors}
-        isValid={validateField(true, pricePercentage)}
-        inputStyles={
-          percentageTextAlign === 'left'
-            ? {
-                paddingRight: '0',
-                paddingLeft: '2rem',
-              }
-            : {
-                paddingLeft: '0',
-                paddingRight: '4rem',
-              }
-        }
-        onChange={onPricePercentageChange}
-      />
       {!sliderInTheBottom ? (
         <BlueSlider
           theme={theme}
           value={value}
           sliderContainerStyles={{
-            width: '50%',
-            margin: '0 .8rem 0 .8rem',
+            width: 'calc(50% - .5rem)',
+            // margin: '0 .8rem 0 .8rem',
           }}
           onChange={(v) => updateValue(v)}
           onAfterChange={onAfterSliderChange}
         />
       ) : (
-        <InputRowContainer padding={'1.6rem 0 .8rem 0'}>
+        <InputRowContainer justify={'center'} padding={'2.6rem 0 .8rem 0'}>
           <BlueSlider
             theme={theme}
             value={value}
+            showMarks={true}
             sliderContainerStyles={{
-              width: sliderInTheBottom ? '100%' : '50%',
-              margin: '0 .4rem 0 0rem',
+              width: sliderInTheBottom
+                ? 'calc(100% - 1rem)'
+                : 'calc(50% - 5rem)',
+              // margin: '0 .4rem 0 0rem',
             }}
             onChange={(v) => updateValue(v)}
             onAfterChange={onAfterSliderChange}

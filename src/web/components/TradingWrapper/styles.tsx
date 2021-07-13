@@ -14,7 +14,7 @@ export const TablesBlockWrapper = styled(Grid)`
     isDefaultTerminalViewMode: boolean
     isDefaultOnlyTablesMode: boolean
     isFullScreenTablesMode: boolean
-  }) => '40%'};
+  }) => '100%'};
 
   display: ${(props: {
     isDefaultTerminalViewMode: boolean

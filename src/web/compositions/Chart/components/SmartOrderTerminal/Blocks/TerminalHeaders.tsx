@@ -48,12 +48,11 @@ export const TerminalHeadersBlock = ({
             theme={theme}
             style={{
               cursor: 'default',
-
               textTransform: 'capitalize',
-              textDecoration: 'underline',
             }}
           >
-            Start
+            1. Set <span style={{ fontFamily: 'Avenir Next Demi' }}>Entry</span>{' '}
+            conditions
           </BlockHeader>
         </DarkTooltip>
 
@@ -184,12 +183,12 @@ export const TerminalHeadersBlock = ({
           <BlockHeader
             style={{
               textTransform: 'capitalize',
-              textDecoration: 'underline',
               cursor: 'default',
             }}
             theme={theme}
           >
-            stop loss
+            2. Set up a{' '}
+            <span style={{ fontFamily: 'Avenir Next Demi' }}>Stop Loss</span>
           </BlockHeader>
         </DarkTooltip>
       </TerminalHeader>
@@ -208,15 +207,15 @@ export const TerminalHeadersBlock = ({
           <BlockHeader
             style={{
               textTransform: 'capitalize',
-              textDecoration: 'underline',
               cursor: 'default',
             }}
             theme={theme}
           >
-            take profit
+            3. Set up a{' '}
+            <span style={{ fontFamily: 'Avenir Next Demi' }}>Take Profit</span>
           </BlockHeader>
         </DarkTooltip>
-        <a
+        {/* <a
           href="https://cryptocurrencies.ai/smartTrading"
           target={'_blank'}
           rel={'noreferrer noopener'}
@@ -228,7 +227,7 @@ export const TerminalHeadersBlock = ({
           }}
         >
           Learn how to trade with Smart Order &rarr;
-        </a>
+        </a> */}
       </TerminalHeader>
     </TerminalHeaders>
   )

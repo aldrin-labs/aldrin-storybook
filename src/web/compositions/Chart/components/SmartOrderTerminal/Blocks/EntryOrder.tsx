@@ -81,7 +81,6 @@ export const EntryOrderBlock = ({
   isAveragingAfterFirstTarget,
   updateStopLossAndTakeProfitPrices,
 }: EntryOrderBlockProps) => {
-  console.log('typeplot', entryPoint.TVAlert)
   return (
     <TerminalBlock theme={theme} width={'calc(33% + 0.5%)'} data-tut={'step1'}>
       <div>
@@ -771,6 +770,7 @@ export const EntryOrderBlock = ({
                 isValid={
                   entryPoint.TVAlert.pricePlotEnabled || priceForCalculate != 0
                 }
+                inputStyles={{ height: '4rem' }}
                 disabled={
                   (isMarketType && !entryPoint.trailing.isTrailingOn) ||
                   (entryPoint.TVAlert.pricePlotEnabled &&
@@ -1155,6 +1155,7 @@ export const EntryOrderBlock = ({
           amountPlotEnabled={entryPoint.TVAlert.amountPlotEnabled}
           needButtons={true}
           inputsInOneRow={true}
+          inputHeight={'4rem'}
           {...{
             pair,
             theme,

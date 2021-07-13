@@ -11,7 +11,7 @@ export interface IProps {
   funds: {
     quantity: number
   }[]
-  pair: string
+  pair: [string, string]
   theme: Theme
   marketPriceAfterPairChange: number
   hedgeMode: string

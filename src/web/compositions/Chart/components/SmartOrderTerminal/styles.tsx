@@ -48,9 +48,11 @@ export const HeaderTitle = styled.span`
 `
 
 export const BlockHeader = React.memo(styled(HeaderTitle)`
-  color: ${(props) => props.theme.palette.grey.light};
-  font-size: 1.5rem;
-  letter-spacing: 0.1rem;
+  font-family: Avenir Next;
+  font-weight: normal;
+  color: ${(props) => props.theme.palette.white.primary};
+  font-size: 1.4rem;
+  letter-spacing: 0.01rem;
 `)
 
 export const InputTitle = styled(HeaderTitle)`

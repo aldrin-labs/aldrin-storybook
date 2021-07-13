@@ -241,7 +241,7 @@ export const TradeInput = styled.input`
   padding-right: ${(props) =>
     props.needPadding
       ? `calc(${props.symbolLength}rem + ${
-          props.symbolLength < 4 ? '2.5rem' : '2rem'
+          props.symbolLength < 4 ? '2.5rem' : '1.5rem'
         })`
       : '1.5rem'};
   &:focus {
@@ -307,7 +307,7 @@ export const UpdatedCoin = styled(Coin)`
       props.theme.palette.grey.text) ||
     '#7284a0'};
 
-  font-size: 1.2rem;
+  font-size: 1.3rem;
 `
 // percentages
 

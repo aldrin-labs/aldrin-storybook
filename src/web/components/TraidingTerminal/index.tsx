@@ -225,7 +225,7 @@ export const TradeInputContent = ({
           !!symbolRightIndent
             ? symbolRightIndent
             : symbol.length <= 2
-            ? '2.5rem'
+            ? '1.5rem'
             : '1rem'
         }
       >

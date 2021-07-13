@@ -141,10 +141,8 @@ export const ConfirmationPopup = ({
         <RowContainer justify={'center'} style={{ flexWrap: 'nowrap' }}>
           <Line sideType={sideType} width={'31%'} />
           <Title sideType={sideType}>
-            <span style={{ textTransform: 'capitalize' }}>{priceType}</span>
-            &nbsp;
-            <span style={{ textTransform: 'capitalize' }}>{sideType}</span>
-            &nbsp;
+            <span style={{ textTransform: 'capitalize' }}>{priceType}</span>{' '}
+            <span style={{ textTransform: 'capitalize' }}>{sideType}</span>{' '}
             {pair[0]}
           </Title>
           <Line sideType={sideType} width={'31%'} />
@@ -286,7 +284,7 @@ export const ConfirmationPopup = ({
                   fontFamily: 'Avenir Next Medium',
                   whiteSpace: 'nowrap',
                   letterSpacing: '0.01rem',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
                 }}
               >
                 I am aware of the risks associated with high Spread and still

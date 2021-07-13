@@ -27,7 +27,7 @@ const TerminalContainer = ({
     item
     container
     theme={theme}
-    xs={isDefaultTerminalViewMode ? 5 : 12}
+    xs={isDefaultTerminalViewMode ? 5 : 11}
     isDefaultTerminalViewMode={isDefaultTerminalViewMode}
     isDefaultOnlyTablesMode={isDefaultOnlyTablesMode}
     isFullScreenTablesMode={isFullScreenTablesMode}
@@ -46,6 +46,7 @@ import {
 } from '../Chart.styles'
 import TradingBlocked from '../components/TradingBlocked'
 import { CCAIListingTime, isCCAITradingEnabled } from '@sb/dexUtils/utils'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 // fix props type
 export const DefaultViewComponent = (
@@ -127,7 +128,11 @@ export const DefaultViewComponent = (
             height: '100%',
           }}
         >
-          <TopChartsContainer isFullScreenTablesMode={isFullScreenTablesMode} isDefaultTerminalViewMode={true} theme={theme}>
+          <TopChartsContainer
+            isFullScreenTablesMode={isFullScreenTablesMode}
+            isDefaultTerminalViewMode={true}
+            theme={theme}
+          >
             <ChartsContainer
               hideDepthChart={hideDepthChart}
               hideOrderbook={hideOrderbook}
@@ -234,91 +239,92 @@ export const DefaultViewComponent = (
             </TradingTerminalContainer>
           </TopChartsContainer>
 
-          <TradingTableContainer
-            item
-            theme={theme}
-            isSmartOrderMode={isSmartOrderMode}
-            xs={
-              isFullScreenTablesMode
-                ? 12
-                : isDefaultOnlyTablesMode
-                ? 11
-                : 6
-            }
-            isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-            updateTerminalViewMode={updateTerminalViewMode}
-            isDefaultOnlyTablesMode={isDefaultOnlyTablesMode}
-            isFullScreenTablesMode={isFullScreenTablesMode}
+          <RowContainer
+            direction={isSmartOrderMode ? 'row-reverse' : 'row'}
+            height={'40%'}
           >
-            <TradingTable
-              isFullScreenTablesMode={isFullScreenTablesMode}
+            <TradingTableContainer
+              item
+              theme={theme}
+              isSmartOrderMode={isSmartOrderMode}
+              xs={
+                isFullScreenTablesMode ? 12 : isDefaultOnlyTablesMode ? 11 : 6
+              }
+              isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+              updateTerminalViewMode={updateTerminalViewMode}
               isDefaultOnlyTablesMode={isDefaultOnlyTablesMode}
-              isSmartOrderMode={isSmartOrderMode}
-              isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-              updateTerminalViewMode={updateTerminalViewMode}
-              terminalViewMode={terminalViewMode}
-              maxLeverage={maxLeverage}
-              selectedKey={selectedKey}
-              showOrderResult={showOrderResult}
-              showCancelResult={showCancelResult}
-              marketType={marketType}
-              exchange={exchange}
-              pricePrecision={pricePrecision}
-              quantityPrecision={quantityPrecision}
-              priceFromOrderbook={priceFromOrderbook}
-              currencyPair={currencyPair}
-              arrayOfMarketIds={arrayOfMarketIds}
-            />
-          </TradingTableContainer>
+              isFullScreenTablesMode={isFullScreenTablesMode}
+            >
+              <TradingTable
+                isFullScreenTablesMode={isFullScreenTablesMode}
+                isDefaultOnlyTablesMode={isDefaultOnlyTablesMode}
+                isSmartOrderMode={isSmartOrderMode}
+                isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+                updateTerminalViewMode={updateTerminalViewMode}
+                terminalViewMode={terminalViewMode}
+                maxLeverage={maxLeverage}
+                selectedKey={selectedKey}
+                showOrderResult={showOrderResult}
+                showCancelResult={showCancelResult}
+                marketType={marketType}
+                exchange={exchange}
+                pricePrecision={pricePrecision}
+                quantityPrecision={quantityPrecision}
+                priceFromOrderbook={priceFromOrderbook}
+                currencyPair={currencyPair}
+                arrayOfMarketIds={arrayOfMarketIds}
+              />
+            </TradingTableContainer>
 
-          <BalancesContainer
-            item
-            xs={1}
-            theme={theme}
-            id="balances"
-            isFullScreenTablesMode={isFullScreenTablesMode}
-            isSmartOrderMode={isSmartOrderMode}
-            isDefaultTerminalViewMode={true}
-          >
-            <Balances
-              pair={currencyPair.split('_')}
-              selectedKey={selectedKey}
-              marketType={marketType}
+            <BalancesContainer
+              item
+              xs={1}
               theme={theme}
-              setShowTokenNotAdded={setShowTokenNotAdded}
-            />
-          </BalancesContainer>
-
-          <TerminalContainer
-            theme={theme}
-            isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-            isDefaultOnlyTablesMode={isDefaultOnlyTablesMode}
-            isFullScreenTablesMode={isFullScreenTablesMode}
-          >
-            <TradingComponent
-              selectedKey={selectedKey}
-              activeExchange={activeExchange}
-              pair={baseQuoteArr}
-              theme={theme}
-              chartPagePopup={chartPagePopup}
-              closeChartPagePopup={closeChartPagePopup}
-              quantityPrecision={quantityPrecision}
-              pricePrecision={pricePrecision}
-              minSpotNotional={minSpotNotional}
-              minFuturesStep={minFuturesStep}
-              sizeDigits={sizeDigits}
-              priceFromOrderbook={priceFromOrderbook}
-              marketType={marketType}
-              maxLeverage={maxLeverage}
-              showOrderResult={showOrderResult}
-              showCancelResult={showCancelResult}
-              showChangePositionModeResult={showChangePositionModeResult}
-              isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+              id="balances"
+              isFullScreenTablesMode={isFullScreenTablesMode}
               isSmartOrderMode={isSmartOrderMode}
-              updateTerminalViewMode={updateTerminalViewMode}
-              setShowTokenNotAdded={setShowTokenNotAdded}
-            />
-          </TerminalContainer>
+              isDefaultTerminalViewMode={true}
+            >
+              <Balances
+                pair={currencyPair.split('_')}
+                selectedKey={selectedKey}
+                marketType={marketType}
+                theme={theme}
+                setShowTokenNotAdded={setShowTokenNotAdded}
+              />
+            </BalancesContainer>
+
+            <TerminalContainer
+              theme={theme}
+              isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+              isDefaultOnlyTablesMode={isDefaultOnlyTablesMode}
+              isFullScreenTablesMode={isFullScreenTablesMode}
+            >
+              <TradingComponent
+                selectedKey={selectedKey}
+                activeExchange={activeExchange}
+                pair={baseQuoteArr}
+                theme={theme}
+                chartPagePopup={chartPagePopup}
+                closeChartPagePopup={closeChartPagePopup}
+                quantityPrecision={quantityPrecision}
+                pricePrecision={pricePrecision}
+                minSpotNotional={minSpotNotional}
+                minFuturesStep={minFuturesStep}
+                sizeDigits={sizeDigits}
+                priceFromOrderbook={priceFromOrderbook}
+                marketType={marketType}
+                maxLeverage={maxLeverage}
+                showOrderResult={showOrderResult}
+                showCancelResult={showCancelResult}
+                showChangePositionModeResult={showChangePositionModeResult}
+                isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+                isSmartOrderMode={isSmartOrderMode}
+                updateTerminalViewMode={updateTerminalViewMode}
+                setShowTokenNotAdded={setShowTokenNotAdded}
+              />
+            </TerminalContainer>
+          </RowContainer>
 
           <TradingBlocked
             theme={theme}

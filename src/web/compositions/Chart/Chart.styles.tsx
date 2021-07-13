@@ -396,7 +396,7 @@ export const TradingTableContainer = styled(
   position: relative;
   height: ${(props) =>
     props.isDefaultTerminalViewMode || props.isDefaultOnlyTablesMode
-      ? '40%'
+      ? '100%'
       : props.isFullScreenTablesMode
       ? '100%'
       : '0%'};
@@ -480,8 +480,8 @@ export const BalancesContainer = styled(
 )`
   position: relative;
   padding: 0;
-  display: ${(props) => (props.isFullScreenTablesMode || props.isSmartOrderMode ? 'none' : 'flex')};
-  height: ${(props) => (props.isDefaultTerminalViewMode ? '40%' : '50%')};
+  display: ${(props) => (props.isFullScreenTablesMode ? 'none' : 'flex')};
+  height: ${(props) => (props.isDefaultTerminalViewMode ? '100%' : '50%')};
 `
 
 export const SmartTerminalContainer = styled(Grid)`

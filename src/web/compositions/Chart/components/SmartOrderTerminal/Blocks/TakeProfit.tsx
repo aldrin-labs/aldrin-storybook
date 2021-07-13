@@ -46,6 +46,7 @@ import {
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { SliderWithPriceAndPercentageFieldRow } from '../SliderComponents'
+import { SendButton } from '@sb/components/TraidingTerminal/styles'
 
 export const TakeProfitBlock = ({
   pair,
@@ -62,6 +63,7 @@ export const TakeProfitBlock = ({
   updateBlockValue,
   priceForCalculate,
   updateSubBlockValue,
+  showConfirmationPopup,
   enqueueSnackbar,
   updateStopLossAndTakeProfitPrices,
 }: TakeProfitBlockProps) => {
@@ -356,7 +358,11 @@ export const TakeProfitBlock = ({
         </InputRowContainer>
 
         {!takeProfit.trailingTAP.isTrailingOn && !takeProfit.external && (
-          <InputRowContainer style={{ margin: '1.6rem auto 1rem auto' }}>
+          <InputRowContainer
+            justify={'space-between'}
+            wrap={'wrap'}
+            style={{ margin: '1.6rem auto 1rem auto' }}
+          >
             <SliderWithPriceAndPercentageFieldRow
               {...{
                 pair,
@@ -371,6 +377,12 @@ export const TakeProfitBlock = ({
                 updateBlockValue,
                 priceForCalculate,
                 percentagePreSymbol: '+',
+                sliderInTheBottom: true,
+                needPercentageTitle: true,
+                percentageTitle: 'Profit',
+                priceTitle: 'TP Price',
+                percentageTextAlign: 'right',
+                priceTextAlign: 'right',
                 approximatePrice: takeProfit.takeProfitPrice,
                 pricePercentage: takeProfit.pricePercentage,
                 getApproximatePrice: (value: number) => {
@@ -1202,6 +1214,33 @@ export const TakeProfitBlock = ({
             </InputRowContainer>
           </>
         )}
+        <InputRowContainer
+          justify={'center'}
+          style={{
+            width: 'calc(100% - 2.2rem)',
+            height: '5rem',
+            margin: '0 auto',
+            position: 'absolute',
+            bottom: '2rem',
+            padding: '0rem 1rem 0rem 1.2rem',
+          }}
+        >
+          <SendButton
+            data-tut={'createBtn'}
+            theme={theme}
+            type={entryPoint.order.side}
+            onClick={showConfirmationPopup}
+            style={{
+              height: '5rem',
+            }}
+          >
+            {entryPoint.order.side === 'buy' && marketType === 0
+              ? 'Start Smart Buy'
+              : entryPoint.order.side === 'buy'
+              ? 'Start Smart Long'
+              : 'Start Smart Short'}
+          </SendButton>
+        </InputRowContainer>
       </div>
     </TerminalBlock>
   )
