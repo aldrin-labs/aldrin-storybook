@@ -27,7 +27,7 @@ const OpenOrdersTable = (props) => {
         market: order.market,
         connection,
         wallet,
-        signers: []
+        signers: [],
       })
     } catch (e) {
       notify({
@@ -90,7 +90,6 @@ const OpenOrdersTable = (props) => {
     keys,
     handlePairChange
   )
-
   return (
     <TableWithSort
       style={{

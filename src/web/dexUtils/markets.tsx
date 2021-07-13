@@ -18,7 +18,7 @@ import tuple from 'immutable-tuple'
 import { notify } from './notifications'
 import { BN } from 'bn.js'
 import { getTokenAccountInfo } from './tokens'
-import { AWESOME_TOKENS } from '@sb/dexUtils/serum'
+import { AWESOME_MARKETS, AWESOME_TOKENS } from '@sb/dexUtils/serum'
 
 export const ALL_TOKENS_MINTS = [...TOKEN_MINTS, ...AWESOME_TOKENS]
 export const ALL_TOKENS_MINTS_MAP = ALL_TOKENS_MINTS.reduce((acc, el) => {
@@ -53,6 +53,13 @@ const USE_MARKETS = _IGNORE_DEPRECATED
       },
     ].concat(MARKETS)
 // : MARKETS
+
+export const UPDATED_AWESOME_MARKETS = AWESOME_MARKETS.map((el) => ({
+  ...el,
+  address: el.address.toString(),
+  programId: el.programId.toString(),
+  isCustomUserMarket: true,
+}))
 
 export function useMarketsList() {
   const UPDATED_USE_MARKETS = USE_MARKETS.filter(
@@ -459,7 +466,7 @@ export function useOpenOrdersAccounts(fast = false) {
       connection,
       wallet.publicKey
     )
-
+    
     return accounts
   }
   return useAsyncData(
@@ -470,7 +477,7 @@ export function useOpenOrdersAccounts(fast = false) {
 }
 
 export function useSelectedOpenOrdersAccount(fast = false) {
-  const [accounts] = useOpenOrdersAccounts(fast)
+  const [accounts, loaded] = useOpenOrdersAccounts(fast)
   if (!accounts) {
     return null
   }
@@ -480,12 +487,14 @@ export function useSelectedOpenOrdersAccount(fast = false) {
 export function useTokenAccounts() {
   const { connected, wallet } = useWallet()
   const connection = useConnection()
+
   async function getTokenAccounts() {
     if (!connected) {
       return null
     }
     return await getTokenAccountInfo(connection, wallet.publicKey)
   }
+
   return useAsyncData(
     getTokenAccounts,
     tuple('getTokenAccounts', wallet, connected),
@@ -513,10 +522,12 @@ export function getSelectedTokenAccountForMint(
 }
 
 export function useSelectedQuoteCurrencyAccount() {
-  const [accounts] = useTokenAccounts()
+  const [accounts, loaded] = useTokenAccounts()
   const { market } = useMarket()
   const [selectedTokenAccounts] = useSelectedTokenAccounts()
+
   const mintAddress = market?.quoteMintAddress
+
   return getSelectedTokenAccountForMint(
     accounts,
     mintAddress,
@@ -528,7 +539,9 @@ export function useSelectedBaseCurrencyAccount() {
   const [accounts] = useTokenAccounts()
   const { market } = useMarket()
   const [selectedTokenAccounts] = useSelectedTokenAccounts()
+
   const mintAddress = market?.baseMintAddress
+
   return getSelectedTokenAccountForMint(
     accounts,
     mintAddress,
@@ -809,7 +822,6 @@ export function useBalances() {
   ) {
     return []
   }
-
   return [
     {
       market,

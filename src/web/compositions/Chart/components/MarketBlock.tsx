@@ -46,13 +46,13 @@ export const Title = styled(
   text-align: ${(props) => props.textAlign || 'center'};
   margin: ${(props) => props.margin || '0'};
 `
-const LinkToAnalytics = styled(Link)`
+export const LinkToAnalytics = styled(Link)`
   font-size: 2rem;
   cursor: pointer;
   margin-left: 2rem;
 `
 
-const LinkToTwitter = styled.a`
+export const LinkToTwitter = styled.a`
   font-size: 2rem;
   cursor: pointer;
   margin-left: 2rem;
@@ -148,9 +148,10 @@ const MarketBlock = ({
     (el) => el?.name.replaceAll('_', '/') === marketName
   )
 
-  const isPrivateCustomMarket =
-    currentMarket?.isPrivateCustomMarket !== undefined
   const isCustomUserMarket = currentMarket?.isCustomUserMarket
+
+  const isPrivateCustomMarket =
+    currentMarket?.isPrivateCustomMarket !== undefined && !isCustomUserMarket
 
   const isCCAIPair =
     pair.includes('CCAI') && !isPrivateCustomMarket && !isCustomUserMarket
@@ -206,6 +207,8 @@ const MarketBlock = ({
             pair={pair}
             quantityPrecision={quantityPrecision}
             pricePrecision={pricePrecision}
+            market={market}
+            tokenMap={tokenMap}
           />
         </div>
 

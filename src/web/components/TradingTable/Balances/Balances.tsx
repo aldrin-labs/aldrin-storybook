@@ -14,6 +14,7 @@ import {
   getSelectedTokenAccountForMint,
   useBalances,
   useSelectedTokenAccounts,
+  useMarket,
 } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { useConnection } from '@sb/dexUtils/connection'
@@ -29,10 +30,9 @@ const BalancesTable = (props) => {
   const connection = useConnection()
   const { wallet, providerUrl } = useWallet()
   const [selectedTokenAccounts] = useSelectedTokenAccounts()
-
+  const { baseCurrency, quoteCurrency } = useMarket()
   const isCCAIWallet = providerUrl === CCAIProviderURL
   const showSettle = !isCCAIWallet || !wallet.connected || !wallet.autoApprove
-
   async function onSettleFunds(market, openOrders) {
     try {
       await settleFunds({
@@ -49,6 +49,10 @@ const BalancesTable = (props) => {
           market?.quoteMintAddress
         ),
         selectedTokenAccounts,
+        baseCurrency,
+        quoteCurrency,
+        baseUnsettled: balances[0].unsettled,
+        quoteUnsettled: balances[1].unsettled,
         tokenAccounts: accounts,
       })
 
@@ -77,7 +81,6 @@ const BalancesTable = (props) => {
     theme,
     showSettle
   )
-
   return (
     <TableWithSort
       rowsWithHover={false}

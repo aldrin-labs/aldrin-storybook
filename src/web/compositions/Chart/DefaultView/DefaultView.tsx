@@ -326,11 +326,12 @@ export const DefaultViewComponent = (
             </TerminalContainer>
           </RowContainer>
 
-          <TradingBlocked
+          {/* <TradingBlocked
+            pair={baseQuoteArr}
             theme={theme}
             open={isTradingBlockedPopupOpen}
             onClose={() => setIsTradingBlockedPopupOpen(false)}
-          />
+          /> */}
 
           <TokenNotAddedPopup
             pair={baseQuoteArr}
