@@ -143,13 +143,10 @@ const AppRaw = ({
                             hide={fullscreen}
                           />
                         )}
-                        {isChartPage && <MarketBlock />}
                         <div
                           style={{
                             height: showFooter
                               ? 'calc(100% - 11.7rem)'
-                              : isChartPage
-                              ? 'calc(100% - 12rem)'
                               : 'calc(100% - 6rem)',
                             overflow: currentPage == '/' ? 'hidden' : 'auto',
                           }}
