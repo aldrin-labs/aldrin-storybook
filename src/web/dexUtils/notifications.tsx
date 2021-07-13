@@ -63,9 +63,6 @@ export const notify = ({
 
   SnackbarUtils[type](txid ? description : message, {
     variant: type,
-    transitionDuration: {
-      exit: 100000000000000,
-    },
   })
 
   return null

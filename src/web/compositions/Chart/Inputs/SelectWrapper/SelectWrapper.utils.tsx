@@ -257,7 +257,7 @@ export const combineSelectWrapperData = ({
   market,
   tokenMap,
   serumMarketsDataMap,
-  officialMarkets,
+  officialMarketsMap,
 }: {
   data: ISelectData
   // updateFavoritePairsMutation: (variableObj: {
@@ -281,13 +281,9 @@ export const combineSelectWrapperData = ({
   usdtPairsMap: Map<string, string>
   marketType: number
   needFiltrations?: boolean
-  officialMarkets: any
+  officialMarketsMap: any
 }) => {
   const marketsCategoriesData = Object.entries(marketsByCategories)
-  const officialMarketsMap = new Map()
-  officialMarkets?.forEach((market) =>
-    officialMarketsMap.set(market.name.replaceAll('/', '_'), market)
-  )
 
   // create map & filter out from custom
   if (!data && !Array.isArray(data)) {
@@ -347,21 +343,18 @@ export const combineSelectWrapperData = ({
       )
     }
     if (tab === 'sol') {
-      processedData = processedData.filter((el) => el.symbol.includes('SOL'))
+      processedData = processedData.filter(
+        (el) => el.symbol.includes('SOL') && !el.symbol.includes('SOLAPE')
+      )
     }
 
     marketsCategoriesData?.forEach(([category, data]) => {
       const tokens = data.tokens
 
-      if (tab === category && category === 'currency') {
+      if (tab === category) {
         processedData = processedData.filter((el) => {
           const [base, quote] = el.symbol.split('_')
           return tokens.includes(base)
-        })
-      } else if (tab === category && category !== 'currency') {
-        processedData = processedData.filter((el) => {
-          const [base, quote] = el.symbol.split('_')
-          return tokens.includes(base) || tokens.includes(quote)
         })
       }
     })
@@ -372,6 +365,50 @@ export const combineSelectWrapperData = ({
           el.symbol.includes('BULL') ||
           (el.symbol.includes('BEAR') && !el.isCustomUserMarket)
       )
+    }
+
+    if (tab === 'topGainers' || tab === 'topLosers') {
+      processedData = processedData.sort((a, b) => {
+        const pricePrecisionA = a.closePrice < 1 ? 8 : a.closePrice < 10 ? 4 : 2
+
+        const strippedLastPriceDiffA = +stripDigitPlaces(
+          a.lastPriceDiff,
+          pricePrecisionA
+        )
+
+        const strippedMarkPriceA = +stripDigitPlaces(
+          a.closePrice,
+          pricePrecisionA
+        )
+
+        const prevClosePriceA = strippedMarkPriceA - strippedLastPriceDiffA
+
+        const priceChangePercentageA = !prevClosePriceA
+          ? 0
+          : (a.closePrice - prevClosePriceA) / (prevClosePriceA / 100)
+
+        const pricePrecisionB = b.closePrice < 1 ? 8 : b.closePrice < 10 ? 4 : 2
+
+        const strippedLastPriceDiffB = +stripDigitPlaces(
+          b.lastPriceDiff,
+          pricePrecisionB
+        )
+
+        const strippedMarkPriceB = +stripDigitPlaces(
+          b.closePrice,
+          pricePrecisionB
+        )
+
+        const prevClosePriceB = strippedMarkPriceB - strippedLastPriceDiffB
+
+        const priceChangePercentageB = !prevClosePriceB
+          ? 0
+          : (b.closePrice - prevClosePriceB) / (prevClosePriceB / 100)
+
+        return tab === 'topGainers'
+          ? priceChangePercentageB - priceChangePercentageA
+          : priceChangePercentageA - priceChangePercentageB
+      })
     }
 
     if (tab === 'private') {
@@ -394,7 +431,6 @@ export const combineSelectWrapperData = ({
   processedData = processedData.filter((el) =>
     filterDataBySymbolForDifferentDeviders({ searchValue, symbol: el.symbol })
   )
-
   const filtredData = processedData.map((el) => {
     const {
       symbol = '',
@@ -427,7 +463,7 @@ export const combineSelectWrapperData = ({
     }
 
     const [base, quote] = symbol.split('_')
-    const pricePrecision = closePrice < 1 ? 8 : closePrice < 10 ? 4 : 2
+    const pricePrecision = closePrice <= 0.0001 ? 8 : closePrice < 10 ? 4 : 2
 
     const isNotUSDTQuote = getIsNotUSDTQuote(symbol)
 
@@ -448,9 +484,7 @@ export const combineSelectWrapperData = ({
     const signTrades24hChange = +precentageTradesDiff > 0 ? '+' : '-'
 
     const marketName = symbol.replaceAll('_', '/')
-    const currentMarket = officialMarkets?.find(
-      (el) => el?.name.replaceAll('_', '/') === marketName
-    )
+    const currentMarket = officialMarketsMap?.get(symbol)
 
     const isAdditionalCustomUserMarket = el.isCustomUserMarket
     const isAwesomeMarket = currentMarket?.isCustomUserMarket
@@ -468,7 +502,6 @@ export const combineSelectWrapperData = ({
     const marketCapIcon = marketCapLink.includes('coinmarketcap')
       ? Coinmarketcap
       : CoinGecko
-
     return {
       id: `${symbol}`,
       // favorite: {
@@ -732,20 +765,18 @@ export const combineSelectWrapperData = ({
               </DarkTooltip>
             )}
             {marketCapLink !== '' && (
-              <DarkTooltip title={'Twitter profile of base token.'}>
-                <a
-                  style={{ marginLeft: '2rem' }}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={marketCapLink}
-                >
-                  <SvgIcon
-                    width={'2.5rem'}
-                    height={'2.5rem'}
-                    src={marketCapIcon}
-                  />
-                </a>
-              </DarkTooltip>
+              <a
+                style={{ marginLeft: '2rem' }}
+                target="_blank"
+                rel="noopener noreferrer"
+                href={marketCapLink}
+              >
+                <SvgIcon
+                  width={'2.5rem'}
+                  height={'2.5rem'}
+                  src={marketCapIcon}
+                />
+              </a>
             )}
           </Row>
         ),
@@ -762,7 +793,5 @@ export const combineSelectWrapperData = ({
     }
   })
 
-  return filtredData.sort((a, b) =>
-    a.symbol.contentToSort.localeCompare(b.symbol.contentToSort)
-  )
+  return filtredData
 }

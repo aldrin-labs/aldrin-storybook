@@ -61,6 +61,18 @@ export const UPDATED_AWESOME_MARKETS = AWESOME_MARKETS.map((el) => ({
   isCustomUserMarket: true,
 }))
 
+export function useOfficialMarketsList() {
+  const OFFICIAL_MARKETS_MAP = new Map()
+
+  const officialMarkets = [...useMarketsList(), ...UPDATED_AWESOME_MARKETS]
+
+  officialMarkets?.forEach((market) =>
+    OFFICIAL_MARKETS_MAP.set(market.name.replaceAll('/', '_'), market)
+  )
+
+  return OFFICIAL_MARKETS_MAP
+}
+
 export function useMarketsList() {
   const UPDATED_USE_MARKETS = USE_MARKETS.filter(
     (el) =>
@@ -466,7 +478,7 @@ export function useOpenOrdersAccounts(fast = false) {
       connection,
       wallet.publicKey
     )
-    
+
     return accounts
   }
   return useAsyncData(

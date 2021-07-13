@@ -27,7 +27,11 @@ import AddCircleIcon from '@material-ui/icons/AddCircle'
 import _ from 'lodash'
 
 import { notify } from '@sb/dexUtils/notifications'
-import { getMarketInfos, UPDATED_AWESOME_MARKETS } from '@sb/dexUtils/markets'
+import {
+  getMarketInfos,
+  UPDATED_AWESOME_MARKETS,
+  useOfficialMarketsList,
+} from '@sb/dexUtils/markets'
 
 import {
   // TableWithSort,
@@ -304,6 +308,7 @@ class SelectPairListComponent extends React.PureComponent<
       market,
       tokenMap,
       markets,
+      officialMarketsMap,
     } = this.props
 
     const serumMarketsDataMap = new Map()
@@ -336,10 +341,11 @@ class SelectPairListComponent extends React.PureComponent<
       market,
       tokenMap,
       serumMarketsDataMap,
-      officialMarkets: [...markets, ...UPDATED_AWESOME_MARKETS],
+      officialMarketsMap,
     })
 
     const sortedData = this._sortList({
+      tab,
       sortBy,
       sortDirection,
       data: processedSelectData,
@@ -372,9 +378,11 @@ class SelectPairListComponent extends React.PureComponent<
       market,
       tokenMap,
       getSerumTradesDataQuery,
+      officialMarketsMap,
     } = nextProps
     const { data: prevPropsData } = this.props
     const { sortBy, sortDirection } = this.state
+
     const serumMarketsDataMap = new Map()
 
     getSerumTradesDataQuery?.getSerumTradesData?.forEach((el) =>
@@ -400,10 +408,11 @@ class SelectPairListComponent extends React.PureComponent<
       market,
       tokenMap,
       serumMarketsDataMap: serumMarketsDataMap,
-      officialMarkets: [...markets, ...UPDATED_AWESOME_MARKETS],
+      officialMarketsMap,
     })
 
     const sortedData = this._sortList({
+      tab,
       sortBy,
       sortDirection,
       data: processedSelectData,
@@ -414,7 +423,7 @@ class SelectPairListComponent extends React.PureComponent<
     })
   }
 
-  _sortList = ({ sortBy, sortDirection, data }) => {
+  _sortList = ({ sortBy, sortDirection, data, tab }) => {
     let dataToSort = data
 
     if (!dataToSort) {
@@ -422,6 +431,10 @@ class SelectPairListComponent extends React.PureComponent<
     }
 
     let newList = [...dataToSort]
+
+    if (tab === 'topGainers' || tab === 'topLosers') {
+      return newList
+    }
 
     // const CCAIMarket = newList.find(v => v.symbol.contentToSort === 'CCAI_USDC')
 
@@ -456,12 +469,7 @@ class SelectPairListComponent extends React.PureComponent<
     const ccaiIndex = newList.findIndex(
       (v) => v.symbol.contentToSort === 'CCAI_USDC'
     )
-    if (
-      ccaiIndex === -1 ||
-      this.props.tab === 'topGainers' ||
-      this.props.tab === 'topLosers'
-    )
-      return newList
+    if (ccaiIndex === -1) return newList
 
     const updatedList = [
       newList[ccaiIndex],
@@ -495,6 +503,7 @@ class SelectPairListComponent extends React.PureComponent<
       marketsByExchangeQuery,
       setCustomMarkets,
       customMarkets,
+      officialMarketsMap,
       getSerumMarketDataQueryRefetch,
     } = this.props
 
@@ -625,8 +634,10 @@ class SelectPairListComponent extends React.PureComponent<
                 }}
               >
                 {`(${
-                  this.props.data.filter((el) => el.symbol.includes('SOL'))
-                    .length
+                  this.props.data.filter(
+                    (el) =>
+                      el.symbol.includes('SOL') && !el.symbol.includes('SOLAPE')
+                  ).length
                 })`}
               </span>
             </StyledTab>{' '}
@@ -635,10 +646,6 @@ class SelectPairListComponent extends React.PureComponent<
               isSelected={tab === 'topGainers'}
               onClick={() => {
                 onTabChange('topGainers')
-                this.setState({
-                  sortBy: 'price24hChange',
-                  sortDirection: SortDirection.ASC,
-                })
               }}
             >
               Top Gainers{' '}
@@ -654,10 +661,6 @@ class SelectPairListComponent extends React.PureComponent<
               isSelected={tab === 'topLosers'}
               onClick={() => {
                 onTabChange('topLosers')
-                this.setState({
-                  sortBy: 'price24hChange',
-                  sortDirection: SortDirection.DESC,
-                })
               }}
             >
               Top Losers{' '}
@@ -686,14 +689,7 @@ class SelectPairListComponent extends React.PureComponent<
                     {`(${
                       this.props.data.filter((el) => {
                         const [base, quote] = el.symbol.split('_')
-                        if (category === 'currency') {
-                          return data.tokens.includes(base)
-                        } else {
-                          return (
-                            data.tokens.includes(base) ||
-                            data.tokens.includes(quote)
-                          )
-                        }
+                        return data.tokens.includes(base)
                       }).length
                     })`}
                   </span>
@@ -735,7 +731,10 @@ class SelectPairListComponent extends React.PureComponent<
               >
                 {`(${
                   this.props.data.filter(
-                    (el) => el.isCustomUserMarket && !el.isPrivateCustomMarket
+                    (el) =>
+                      el.isCustomUserMarket &&
+                      !el.isPrivateCustomMarket &&
+                      !officialMarketsMap.has(el.symbol)
                   ).length
                 })`}
               </span>
@@ -870,8 +869,7 @@ class SelectPairListComponent extends React.PureComponent<
                 width: '100%',
                 height: '5rem',
                 background: '#383B45',
-                // borderRadius: '0.3rem',
-                fontFamily: 'Avenir Next Light',
+                fontFamily: 'Avenir Next Medium',
                 fontSize: '1.5rem',
                 color: '#96999C',
                 borderBottom: `.1rem solid #383B45`,
@@ -879,17 +877,18 @@ class SelectPairListComponent extends React.PureComponent<
               }}
               value={searchValue}
               onChange={onChangeSearch}
-              // inputProps={{
-              //   style: {
-              //     paddingLeft: '1rem',
-              //   },
-              // }}
+              inputProps={{
+                style: {
+                  color: '#96999C',
+                },
+              }}
               endAdornment={
                 <InputAdornment
                   style={{
                     width: '10%',
                     justifyContent: 'flex-end',
                     cursor: 'pointer',
+                    color: '#96999C',
                   }}
                   disableTypography={true}
                   position="end"
@@ -937,7 +936,7 @@ class SelectPairListComponent extends React.PureComponent<
                     fontSize: '2rem',
                     outline: 'none',
                   }}
-                  rowHeight={window.outerHeight / 14}
+                  rowHeight={window.outerHeight / 12}
                   rowGetter={({ index }) => processedSelectData[index]}
                 >
                   {/* <Column

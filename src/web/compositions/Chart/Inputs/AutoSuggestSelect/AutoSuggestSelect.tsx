@@ -102,6 +102,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       customMarkets,
       setCustomMarkets,
       markets,
+      officialMarketsMap,
       style,
       handleDeprecated,
       setHandleDeprecated,
@@ -150,6 +151,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
             marketType={1}
             activeExchange={activeExchange}
             markets={markets}
+            officialMarketsMap={officialMarketsMap}
             market={market}
             tokenMap={tokenMap}
           />
