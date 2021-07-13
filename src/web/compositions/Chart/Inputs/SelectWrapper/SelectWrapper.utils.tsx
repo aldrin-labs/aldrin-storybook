@@ -285,7 +285,7 @@ export const combineSelectWrapperData = ({
 }) => {
   const marketsCategoriesData = Object.entries(marketsByCategories)
   const officialMarketsMap = new Map()
-  officialMarkets.forEach((market) =>
+  officialMarkets?.forEach((market) =>
     officialMarketsMap.set(market.name.replaceAll('/', '_'), market)
   )
 
@@ -350,7 +350,7 @@ export const combineSelectWrapperData = ({
       processedData = processedData.filter((el) => el.symbol.includes('SOL'))
     }
 
-    marketsCategoriesData.forEach(([category, data]) => {
+    marketsCategoriesData?.forEach(([category, data]) => {
       const tokens = data.tokens
 
       if (tab === category && category === 'currency') {
@@ -457,7 +457,7 @@ export const combineSelectWrapperData = ({
 
     const mint = getTokenMintAddressByName(base)
 
-    const baseTokenInfo = tokenMap.get(getTokenMintAddressByName(base))
+    const baseTokenInfo = tokenMap?.get(getTokenMintAddressByName(base))
     const marketAddress = market?.address?.toBase58()
 
     const avgBuy = serumMarketsDataMap?.get(symbol)?.avgBuy || 0
