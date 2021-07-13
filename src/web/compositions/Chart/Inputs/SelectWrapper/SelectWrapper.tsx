@@ -57,6 +57,7 @@ import {
   getTimezone,
 } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { getSerumTradesData } from '@core/graphql/queries/chart/getSerumTradesData'
+import ReactDOM from 'react-dom'
 
 export const excludedPairs = [
   // 'USDC_ODOP',
@@ -94,6 +95,15 @@ export const fiatRegexp = new RegExp(fiatPairs.join('|'), 'gi')
 const StyledGrid = styled(Grid)`
   display: none;
 `
+const Overlay = styled.div`
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.7);
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10% 0;
+`
 
 const StyledTab = styled(({ isSelected, ...props }) => <Row {...props} />)`
   && {
@@ -109,6 +119,15 @@ const StyledTab = styled(({ isSelected, ...props }) => <Row {...props} />)`
     color: #fff;
   }
 `
+
+// const StyledOverlay = styled.div`
+//   background: black;
+//   width: 100%;
+//   height: 100vh;
+//   opacity: 0.4;
+//   top: 0;
+//   position: absolute;
+// `
 
 class SelectWrapper extends React.PureComponent<IProps, IState> {
   state: IState = {
@@ -178,8 +197,6 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
         !Array.isArray(el.symbol.match(fiatRegexp)) &&
         !excludedPairs.includes(el.symbol)
     )
-
-    const DefiMarkets = [{}]
 
     const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
     const altCoinsRegexp = new RegExp(`${stableCoins.join('|')}|BTC`, 'g')
@@ -439,8 +456,12 @@ class SelectPairListComponent extends React.PureComponent<
     const ccaiIndex = newList.findIndex(
       (v) => v.symbol.contentToSort === 'CCAI_USDC'
     )
-
-    if (ccaiIndex === -1) return newList
+    if (
+      ccaiIndex === -1 ||
+      this.props.tab === 'topGainers' ||
+      this.props.tab === 'topLosers'
+    )
+      return newList
 
     const updatedList = [
       newList[ccaiIndex],
@@ -498,36 +519,38 @@ class SelectPairListComponent extends React.PureComponent<
       return true
     }
     return (
-      <StyledGrid
-        id={id}
-        style={{
-          top: `calc(100% - 1rem)`,
-          left: `0rem`,
-          fontFamily: 'DM Sans',
-          position: 'absolute',
-          zIndex: 900,
-          background: '#222429',
-          minWidth: '145rem',
-          height: '70rem',
-          borderRadius: '2rem',
-          overflow: 'hidden',
-          border: theme.palette.border.new,
-          boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
-        }}
-      >
-        <RowContainer
+      <>
+        <StyledGrid
+          id={id}
           style={{
-            height: '12rem',
-            padding: '0.5rem',
-            justifyContent: 'flex-start',
-            flexDirection: 'row',
-            flexWrap: 'normal',
-            alignItems: 'center',
-            borderBottom: theme.palette.border.new,
-            background: '#17181A',
+            top: `calc(100% - 1rem)`,
+            left: `0rem`,
+            fontFamily: 'DM Sans',
+            position: 'absolute',
+            zIndex: 900,
+            background: '#222429',
+            minWidth: '150rem',
+            height: '73rem',
+            borderRadius: '2rem',
+            overflow: 'hidden',
+            border: theme.palette.border.new,
+            filter: 'drop-shadow(0px 0px 8px rgba(125, 125, 131, 0.2))',
           }}
         >
-          {/* <Grid
+          {/* {ReactDOM.createPortal(<StyledOverlay />, document.body)} */}
+          <RowContainer
+            style={{
+              height: '12rem',
+              padding: '0.5rem',
+              justifyContent: 'flex-start',
+              flexDirection: 'row',
+              flexWrap: 'normal',
+              alignItems: 'center',
+              borderBottom: theme.palette.border.new,
+              background: '#17181A',
+            }}
+          >
+            {/* <Grid
             style={{
               display: 'flex',
               padding: '1rem',
@@ -538,379 +561,386 @@ class SelectPairListComponent extends React.PureComponent<
           >
             <SvgIcon src={favoriteSelected} width="2rem" height="auto" />
           </Grid> */}
-          <StyledTab
-            theme={theme}
-            isSelected={tab === 'all'}
-            onClick={() => onTabChange('all')}
-          >
-            All{' '}
-            <span
-              style={{
-                color: tab === 'all' ? '#fbf2f2' : '#96999C',
-                marginLeft: '0.5rem',
-              }}
+            <StyledTab
+              theme={theme}
+              isSelected={tab === 'all'}
+              onClick={() => onTabChange('all')}
             >
-              {`(${this.props.data.length})`}
-            </span>
-          </StyledTab>
-          <StyledTab
-            theme={theme}
-            isSelected={tab === 'usdt'}
-            onClick={() => onTabChange('usdt')}
-          >
-            USDT{' '}
-            <span
-              style={{
-                color: tab === 'usdt' ? '#fbf2f2' : '#96999C',
-                marginLeft: '0.5rem',
-              }}
-            >
-              {`(${
-                this.props.data.filter((el) => el.symbol.includes('USDT'))
-                  .length
-              })`}
-            </span>
-          </StyledTab>
-          <StyledTab
-            theme={theme}
-            isSelected={tab === 'usdc'}
-            onClick={() => onTabChange('usdc')}
-          >
-            USDC
-            <span
-              style={{
-                color: tab === 'usdc' ? '#fbf2f2' : '#96999C',
-                marginLeft: '0.5rem',
-              }}
-            >
-              {`(${
-                this.props.data.filter((el) => el.symbol.includes('USDC'))
-                  .length
-              })`}
-            </span>
-          </StyledTab>
-          <StyledTab
-            theme={theme}
-            isSelected={tab === 'sol'}
-            onClick={() => onTabChange('sol')}
-          >
-            SOL{' '}
-            <span
-              style={{
-                color: tab === 'sol' ? '#fbf2f2' : '#96999C',
-                marginLeft: '0.5rem',
-              }}
-            >
-              {`(${
-                this.props.data.filter((el) => el.symbol.includes('SOL')).length
-              })`}
-            </span>
-          </StyledTab>{' '}
-          <StyledTab
-            theme={theme}
-            isSelected={tab === 'topGainers'}
-            onClick={() => {
-              onTabChange('topGainers')
-              this.setState({
-                sortBy: 'price24hChange',
-                sortDirection: SortDirection.ASC,
-              })
-            }}
-          >
-            Top Gainers{' '}
-            <span
-              style={{
-                color: tab === 'topGainers' ? '#fbf2f2' : '#96999C',
-                marginLeft: '0.5rem',
-              }}
-            ></span>
-          </StyledTab>
-          <StyledTab
-            theme={theme}
-            isSelected={tab === 'topLosers'}
-            onClick={() => {
-              onTabChange('topLosers')
-              this.setState({
-                sortBy: 'price24hChange',
-                sortDirection: SortDirection.DESC,
-              })
-            }}
-          >
-            Top Losers{' '}
-            <span
-              style={{
-                color: tab === 'topLosers' ? '#fbf2f2' : '#96999C',
-                marginLeft: '0.5rem',
-              }}
-            ></span>
-          </StyledTab>
-          {Object.entries(marketsByCategories).map(([category, data]) => {
-            return (
-              <StyledTab
-                theme={theme}
-                isSelected={tab === category}
-                onClick={() => onTabChange(category)}
+              All{' '}
+              <span
+                style={{
+                  color: tab === 'all' ? '#fbf2f2' : '#96999C',
+                  marginLeft: '0.5rem',
+                }}
               >
-                {data.name}
-                <span
-                  style={{
-                    color: tab === category ? '#fbf2f2' : '#96999C',
-                    marginLeft: '0.5rem',
-                  }}
-                >
-                  {`(${
-                    this.props.data.filter((el) => {
-                      const [base, quote] = el.symbol.split('_')
-
-                      return (
-                        data.tokens.includes(base) ||
-                        data.tokens.includes(quote)
-                      )
-                    }).length
-                  })`}
-                </span>
-              </StyledTab>
-            )
-          })}{' '}
-          <StyledTab
-            theme={theme}
-            isSelected={tab === 'leveraged'}
-            onClick={() => onTabChange('leveraged')}
-          >
-            Leveraged tokens{' '}
-            <span
-              style={{
-                color: tab === 'leveraged' ? '#fbf2f2' : '#96999C',
-                marginLeft: '0.5rem',
-              }}
+                {`(${this.props.data.length})`}
+              </span>
+            </StyledTab>{' '}
+            <StyledTab
+              theme={theme}
+              isSelected={tab === 'usdt'}
+              onClick={() => onTabChange('usdt')}
             >
-              {`(${
-                this.props.data.filter(
-                  (el) =>
-                    el.symbol.includes('BULL') ||
-                    (el.symbol.includes('BEAR') && !el.isCustomUserMarket)
-                ).length
-              })`}
-            </span>
-          </StyledTab>
-          <StyledTab
-            theme={theme}
-            isSelected={tab === 'public'}
-            onClick={() => onTabChange('public')}
-          >
-            Custom markets{' '}
-            <span
-              style={{
-                color: tab === 'public' ? '#fbf2f2' : '#96999C',
-                marginLeft: '0.5rem',
-              }}
+              USDT{' '}
+              <span
+                style={{
+                  color: tab === 'usdt' ? '#fbf2f2' : '#96999C',
+                  marginLeft: '0.5rem',
+                }}
+              >
+                {`(${
+                  this.props.data.filter((el) => el.symbol.includes('USDT'))
+                    .length
+                })`}
+              </span>
+            </StyledTab>
+            <StyledTab
+              theme={theme}
+              isSelected={tab === 'usdc'}
+              onClick={() => onTabChange('usdc')}
             >
-              {`(${
-                this.props.data.filter(
-                  (el) => el.isCustomUserMarket && !el.isPrivateCustomMarket
-                ).length
-              })`}
-            </span>
-          </StyledTab>
-          {/* <AddCircleIcon
-            onClick={async () => {
-              if (publicKey === '') {
-                notify({
-                  message: 'Connect your wallet first',
-                  type: 'error',
+              USDC
+              <span
+                style={{
+                  color: tab === 'usdc' ? '#fbf2f2' : '#96999C',
+                  marginLeft: '0.5rem',
+                }}
+              >
+                {`(${
+                  this.props.data.filter((el) => el.symbol.includes('USDC'))
+                    .length
+                })`}
+              </span>
+            </StyledTab>
+            <StyledTab
+              theme={theme}
+              isSelected={tab === 'sol'}
+              onClick={() => onTabChange('sol')}
+            >
+              SOL{' '}
+              <span
+                style={{
+                  color: tab === 'sol' ? '#fbf2f2' : '#96999C',
+                  marginLeft: '0.5rem',
+                }}
+              >
+                {`(${
+                  this.props.data.filter((el) => el.symbol.includes('SOL'))
+                    .length
+                })`}
+              </span>
+            </StyledTab>{' '}
+            <StyledTab
+              theme={theme}
+              isSelected={tab === 'topGainers'}
+              onClick={() => {
+                onTabChange('topGainers')
+                this.setState({
+                  sortBy: 'price24hChange',
+                  sortDirection: SortDirection.ASC,
                 })
-                wallet.connect()
-                return
+              }}
+            >
+              Top Gainers{' '}
+              <span
+                style={{
+                  color: tab === 'topGainers' ? '#fbf2f2' : '#96999C',
+                  marginLeft: '0.5rem',
+                }}
+              ></span>
+            </StyledTab>
+            <StyledTab
+              theme={theme}
+              isSelected={tab === 'topLosers'}
+              onClick={() => {
+                onTabChange('topLosers')
+                this.setState({
+                  sortBy: 'price24hChange',
+                  sortDirection: SortDirection.DESC,
+                })
+              }}
+            >
+              Top Losers{' '}
+              <span
+                style={{
+                  color: tab === 'topLosers' ? '#fbf2f2' : '#96999C',
+                  marginLeft: '0.5rem',
+                }}
+              ></span>
+            </StyledTab>
+            {Object.entries(marketsByCategories).map(([category, data]) => {
+              return (
+                <StyledTab
+                  theme={theme}
+                  isSelected={tab === category}
+                  onClick={() => onTabChange(category)}
+                >
+                  {data.name}
+
+                  <span
+                    style={{
+                      color: tab === category ? '#fbf2f2' : '#96999C',
+                      marginLeft: '0.5rem',
+                    }}
+                  >
+                    {`(${
+                      this.props.data.filter((el) => {
+                        const [base, quote] = el.symbol.split('_')
+                        if (category === 'currency') {
+                          return data.tokens.includes(base)
+                        } else {
+                          return (
+                            data.tokens.includes(base) ||
+                            data.tokens.includes(quote)
+                          )
+                        }
+                      }).length
+                    })`}
+                  </span>
+                </StyledTab>
+              )
+            })}{' '}
+            <StyledTab
+              theme={theme}
+              isSelected={tab === 'leveraged'}
+              onClick={() => onTabChange('leveraged')}
+            >
+              Leveraged tokens{' '}
+              <span
+                style={{
+                  color: tab === 'leveraged' ? '#fbf2f2' : '#96999C',
+                  marginLeft: '0.5rem',
+                }}
+              >
+                {`(${
+                  this.props.data.filter(
+                    (el) =>
+                      el.symbol.includes('BULL') ||
+                      (el.symbol.includes('BEAR') && !el.isCustomUserMarket)
+                  ).length
+                })`}
+              </span>
+            </StyledTab>
+            <StyledTab
+              theme={theme}
+              isSelected={tab === 'public'}
+              onClick={() => onTabChange('public')}
+            >
+              Custom markets{' '}
+              <span
+                style={{
+                  color: tab === 'public' ? '#fbf2f2' : '#96999C',
+                  marginLeft: '0.5rem',
+                }}
+              >
+                {`(${
+                  this.props.data.filter(
+                    (el) => el.isCustomUserMarket && !el.isPrivateCustomMarket
+                  ).length
+                })`}
+              </span>
+            </StyledTab>
+            {/* <AddCircleIcon
+              onClick={async () => {
+                if (publicKey === '') {
+                  notify({
+                    message: 'Connect your wallet first',
+                    type: 'error',
+                  })
+                  wallet.connect()
+                  return
+                }
+
+                this.setState({ showAddMarketPopup: true })
+              }}
+              style={{
+                width: '3rem',
+                height: '3rem',
+                padding: '.5rem',
+                color: '#55BB7C',
+                cursor: 'pointer',
+              }}
+            /> */}
+            {marketType === 0 && (
+              <>
+                <Grid
+                  style={{
+                    padding: '1rem',
+                    background: tab === 'btc' ? theme.palette.grey.main : '',
+                    display: 'flex',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    fontSize: '1.2rem',
+                    color: theme.palette.grey.light,
+                    fontWeight: 'bold',
+                  }}
+                  onClick={() => onTabChange('btc')}
+                >
+                  BTC
+                </Grid>
+
+                <Grid
+                  style={{
+                    display: 'flex',
+                    padding: '1rem',
+                    background: tab === 'alts' ? theme.palette.grey.main : '',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    fontSize: '1.2rem',
+                    color: theme.palette.grey.light,
+                    fontWeight: 'bold',
+                  }}
+                  onClick={() => onTabChange('alts')}
+                >
+                  <Grid style={{ paddingRight: '1rem' }}>ALTS</Grid>
+                  <Grid style={{ width: '6rem' }}>
+                    <ReactSelectComponent
+                      isSearchable={false}
+                      valueContainerStyles={{ padding: 0 }}
+                      placeholder="ALL"
+                      onChange={onSpecificCoinChange}
+                      options={[
+                        { label: 'ALL', value: 'ALL' },
+                        { value: 'ETH', label: 'ETH' },
+                        { value: 'TRX', label: 'TRX' },
+                        { value: 'XRP', label: 'XRP' },
+                        { label: 'ALL', value: 'ALL' },
+                      ]}
+                      value={
+                        tabSpecificCoin === ''
+                          ? { label: 'ALL', value: 'ALL' }
+                          : tabSpecificCoin === 'ALL'
+                          ? { label: 'ALL', value: 'ALL' }
+                          : !['ETH', 'TRX', 'XRP'].includes(tabSpecificCoin)
+                          ? { label: 'ALL', value: 'ALL' }
+                          : undefined
+                      }
+                    />
+                  </Grid>
+                </Grid>
+                <Grid
+                  style={{
+                    display: 'flex',
+                    padding: '1rem',
+                    background: tab === 'fiat' ? theme.palette.grey.main : '',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    fontSize: '1.2rem',
+                    color: theme.palette.grey.light,
+                    fontWeight: 'bold',
+                  }}
+                  onClick={() => onTabChange('fiat')}
+                >
+                  <Grid style={{ paddingRight: '1rem' }}>STABLE</Grid>
+                  <Grid style={{ width: '6rem' }}>
+                    <ReactSelectComponent
+                      isSearchable={false}
+                      valueContainerStyles={{ padding: 0 }}
+                      placeholder="ALL"
+                      onChange={onSpecificCoinChange}
+                      options={[
+                        { label: 'ALL', value: 'ALL' },
+                        ...stableCoinsWithoutFiatPairs.map((el) => ({
+                          value: el,
+                          label: el,
+                        })),
+                      ]}
+                      value={
+                        tabSpecificCoin === ''
+                          ? { label: 'ALL', value: 'ALL' }
+                          : tabSpecificCoin === 'ALL'
+                          ? { label: 'ALL', value: 'ALL' }
+                          : !stableCoinsWithoutFiatPairs.includes(
+                              tabSpecificCoin
+                            )
+                          ? { label: 'ALL', value: 'ALL' }
+                          : undefined
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              </>
+            )}
+          </RowContainer>
+          <Grid container style={{ justifyContent: 'flex-end', width: '100%' }}>
+            <Input
+              placeholder="Search by all categories"
+              disableUnderline={true}
+              style={{
+                width: '100%',
+                height: '5rem',
+                background: '#383B45',
+                // borderRadius: '0.3rem',
+                fontFamily: 'Avenir Next Light',
+                fontSize: '1.5rem',
+                color: '#96999C',
+                borderBottom: `.1rem solid #383B45`,
+                padding: '0 2rem',
+              }}
+              value={searchValue}
+              onChange={onChangeSearch}
+              // inputProps={{
+              //   style: {
+              //     paddingLeft: '1rem',
+              //   },
+              // }}
+              endAdornment={
+                <InputAdornment
+                  style={{
+                    width: '10%',
+                    justifyContent: 'flex-end',
+                    cursor: 'pointer',
+                  }}
+                  disableTypography={true}
+                  position="end"
+                  autoComplete="off"
+                >
+                  <SvgIcon src={search} width="1.5rem" height="auto" />
+                </InputAdornment>
               }
-
-              this.setState({ showAddMarketPopup: true })
-            }}
-            style={{
-              width: '3rem',
-              height: '3rem',
-              padding: '.5rem',
-              color: '#55BB7C',
-              cursor: 'pointer',
-            }}
-          /> */}
-          {marketType === 0 && (
-            <>
-              <Grid
-                style={{
-                  padding: '1rem',
-                  background: tab === 'btc' ? theme.palette.grey.main : '',
-                  display: 'flex',
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                  fontSize: '1.2rem',
-                  color: theme.palette.grey.light,
-                  fontWeight: 'bold',
-                }}
-                onClick={() => onTabChange('btc')}
-              >
-                BTC
-              </Grid>
-
-              <Grid
-                style={{
-                  display: 'flex',
-                  padding: '1rem',
-                  background: tab === 'alts' ? theme.palette.grey.main : '',
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                  fontSize: '1.2rem',
-                  color: theme.palette.grey.light,
-                  fontWeight: 'bold',
-                }}
-                onClick={() => onTabChange('alts')}
-              >
-                <Grid style={{ paddingRight: '1rem' }}>ALTS</Grid>
-                <Grid style={{ width: '6rem' }}>
-                  <ReactSelectComponent
-                    isSearchable={false}
-                    valueContainerStyles={{ padding: 0 }}
-                    placeholder="ALL"
-                    onChange={onSpecificCoinChange}
-                    options={[
-                      { label: 'ALL', value: 'ALL' },
-                      { value: 'ETH', label: 'ETH' },
-                      { value: 'TRX', label: 'TRX' },
-                      { value: 'XRP', label: 'XRP' },
-                      { label: 'ALL', value: 'ALL' },
-                    ]}
-                    value={
-                      tabSpecificCoin === ''
-                        ? { label: 'ALL', value: 'ALL' }
-                        : tabSpecificCoin === 'ALL'
-                        ? { label: 'ALL', value: 'ALL' }
-                        : !['ETH', 'TRX', 'XRP'].includes(tabSpecificCoin)
-                        ? { label: 'ALL', value: 'ALL' }
-                        : undefined
-                    }
-                  />
-                </Grid>
-              </Grid>
-              <Grid
-                style={{
-                  display: 'flex',
-                  padding: '1rem',
-                  background: tab === 'fiat' ? theme.palette.grey.main : '',
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                  fontSize: '1.2rem',
-                  color: theme.palette.grey.light,
-                  fontWeight: 'bold',
-                }}
-                onClick={() => onTabChange('fiat')}
-              >
-                <Grid style={{ paddingRight: '1rem' }}>STABLE</Grid>
-                <Grid style={{ width: '6rem' }}>
-                  <ReactSelectComponent
-                    isSearchable={false}
-                    valueContainerStyles={{ padding: 0 }}
-                    placeholder="ALL"
-                    onChange={onSpecificCoinChange}
-                    options={[
-                      { label: 'ALL', value: 'ALL' },
-                      ...stableCoinsWithoutFiatPairs.map((el) => ({
-                        value: el,
-                        label: el,
-                      })),
-                    ]}
-                    value={
-                      tabSpecificCoin === ''
-                        ? { label: 'ALL', value: 'ALL' }
-                        : tabSpecificCoin === 'ALL'
-                        ? { label: 'ALL', value: 'ALL' }
-                        : !stableCoinsWithoutFiatPairs.includes(tabSpecificCoin)
-                        ? { label: 'ALL', value: 'ALL' }
-                        : undefined
-                    }
-                  />
-                </Grid>
-              </Grid>
-            </>
-          )}
-        </RowContainer>
-        <Grid container style={{ justifyContent: 'flex-end', width: '100%' }}>
-          <Input
-            placeholder="Search by all categories"
-            disableUnderline={true}
-            style={{
-              width: '100%',
-              height: '5rem',
-              background: '#383B45',
-              // borderRadius: '0.3rem',
-              fontFamily: 'Avenir Next Light',
-              fontSize: '1.5rem',
-              color: '#96999C',
-              borderBottom: `.1rem solid #383B45`,
-              padding: '0 2rem',
-            }}
-            value={searchValue}
-            onChange={onChangeSearch}
-            // inputProps={{
-            //   style: {
-            //     paddingLeft: '1rem',
-            //   },
-            // }}
-            endAdornment={
-              <InputAdornment
-                style={{
-                  width: '10%',
-                  justifyContent: 'flex-end',
-                  cursor: 'pointer',
-                }}
-                disableTypography={true}
-                position="end"
-                autoComplete="off"
-              >
-                <SvgIcon src={search} width="1.5rem" height="auto" />
-              </InputAdornment>
-            }
-          />
-        </Grid>
-        <Grid style={{ overflow: 'hidden', height: 'calc(100% - 8rem)' }}>
-          <AutoSizer>
-            {({ width, height }: { width: number; height: number }) => (
-              <Table
-                width={width}
-                height={height}
-                rowCount={processedSelectData.length}
-                sort={this._sort}
-                sortBy={this.state.sortBy}
-                sortDirection={this.state.sortDirection}
-                onRowClick={({ event, index, rowData }) => {
-                  rowData.symbol.onClick()
-                }}
-                gridStyle={{
-                  outline: 'none',
-                }}
-                rowStyle={{
-                  outline: 'none',
-                  cursor: 'pointer',
-                  fontSize: '2rem',
-                  // color: theme.palette.dark.main,
-                  borderBottom: `0.05rem solid ${theme.palette.grey.newborder}`,
-                }}
-                headerHeight={window.outerHeight / 25}
-                headerStyle={{
-                  color: '#fff',
-                  paddingLeft: '.5rem',
-                  paddingTop: '.25rem',
-                  marginLeft: 0,
-                  marginRight: 0,
-                  letterSpacing: '.075rem',
-                  textTransform: 'capitalize',
-                  // borderBottom: '.1rem solid #e0e5ec',
-                  fontFamily: 'Avenir Next Light',
-                  fontSize: '2rem',
-                  outline: 'none',
-                }}
-                rowHeight={window.outerHeight / 15}
-                rowGetter={({ index }) => processedSelectData[index]}
-              >
-                {/* <Column
+            />
+          </Grid>
+          <Grid style={{ overflow: 'hidden', height: 'calc(100% - 8rem)' }}>
+            <AutoSizer>
+              {({ width, height }: { width: number; height: number }) => (
+                <Table
+                  width={width}
+                  height={height}
+                  rowCount={processedSelectData.length}
+                  sort={this._sort}
+                  sortBy={this.state.sortBy}
+                  sortDirection={this.state.sortDirection}
+                  onRowClick={({ event, index, rowData }) => {
+                    rowData.symbol.onClick()
+                  }}
+                  gridStyle={{
+                    outline: 'none',
+                  }}
+                  rowStyle={{
+                    outline: 'none',
+                    cursor: 'pointer',
+                    fontSize: '2rem',
+                    // color: theme.palette.dark.main,
+                    borderBottom: `0.05rem solid ${theme.palette.grey.newborder}`,
+                  }}
+                  headerHeight={window.outerHeight / 25}
+                  headerStyle={{
+                    color: '#fff',
+                    paddingLeft: '.5rem',
+                    paddingTop: '.25rem',
+                    marginLeft: 0,
+                    marginRight: 0,
+                    letterSpacing: '.075rem',
+                    textTransform: 'capitalize',
+                    // borderBottom: '.1rem solid #e0e5ec',
+                    fontFamily: 'Avenir Next Light',
+                    fontSize: '2rem',
+                    outline: 'none',
+                  }}
+                  rowHeight={window.outerHeight / 14}
+                  rowGetter={({ index }) => processedSelectData[index]}
+                >
+                  {/* <Column
                   label=""
                   dataKey="favorite"
                   headerStyle={{
@@ -923,234 +953,235 @@ class SelectPairListComponent extends React.PureComponent<
                     </span>
                   )}
                 /> */}
-                <Column
-                  label={` `}
-                  dataKey="emoji"
-                  headerStyle={{
-                    color: '#fff',
-                    paddingRight: 'calc(10px)',
-                    fontSize: '1.5rem',
-                    textAlign: 'left',
-                    fontFamily: 'Avenir Next Light',
-                  }}
-                  width={width / 2.5}
-                  style={{
-                    textAlign: 'left',
-                    fontSize: '1.4rem',
-                    fontWeight: 'bold',
-                  }}
-                  cellRenderer={({ cellData }) => cellData.render}
-                />
-                <Column
-                  label={`Pair`}
-                  dataKey="symbol"
-                  headerStyle={{
-                    color: '#fff',
-                    paddingRight: '6px',
-                    paddingLeft: '1rem',
-                    fontSize: '1.5rem',
-                    textAlign: 'left',
-                    fontFamily: 'Avenir Next Light',
-                  }}
-                  width={width * 1.5}
-                  style={{
-                    textAlign: 'left',
-                    fontSize: '1.4rem',
-                    fontWeight: 'bold',
-                  }}
-                  cellRenderer={({ cellData }) => cellData.render}
-                />
-                <Column
-                  label={`last price`}
-                  dataKey="price"
-                  headerStyle={{
-                    color: '#fff',
-                    paddingRight: 'calc(10px)',
-                    fontSize: '1.5rem',
-                    textAlign: 'left',
-                    fontFamily: 'Avenir Next Light',
-                  }}
-                  width={width * 1.2}
-                  style={{
-                    textAlign: 'left',
-                    fontSize: '1.4rem',
-                    fontWeight: 'bold',
-                  }}
-                  cellRenderer={({ cellData }) => cellData.render}
-                />
-                <Column
-                  label={`change 24h`}
-                  dataKey="price24hChange"
-                  headerStyle={{
-                    color: '#fff',
-                    paddingRight: 'calc(10px)',
-                    fontSize: '1.5rem',
-                    textAlign: 'left',
-                    fontFamily: 'Avenir Next Light',
-                  }}
-                  width={width * 1.5}
-                  style={{
-                    textAlign: 'left',
-                    fontSize: '1.4rem',
-                    fontWeight: 'bold',
-                  }}
-                  cellRenderer={({ cellData }) => cellData.render}
-                />
-                <Column
-                  label={`Min 24h`}
-                  dataKey="min24h"
-                  headerStyle={{
-                    color: '#fff',
-                    paddingRight: 'calc(10px)',
-                    fontSize: '1.5rem',
-                    textAlign: 'left',
-                    fontFamily: 'Avenir Next Light',
-                  }}
-                  width={width * 1.4}
-                  style={{
-                    textAlign: 'left',
-                    fontSize: '1.4rem',
-                    fontWeight: 'bold',
-                  }}
-                  cellRenderer={({ cellData }) => cellData.render}
-                />
-                <Column
-                  label={`Max 24h`}
-                  dataKey="max24h"
-                  headerStyle={{
-                    color: '#fff',
-                    paddingRight: 'calc(10px)',
-                    fontSize: '1.5rem',
-                    textAlign: 'left',
-                    fontFamily: 'Avenir Next Light',
-                  }}
-                  width={width * 1.4}
-                  style={{
-                    textAlign: 'left',
-                    fontSize: '1.4rem',
-                    fontWeight: 'bold',
-                  }}
-                  cellRenderer={({ cellData }) => cellData.render}
-                />
-                <Column
-                  label={`volume 24h`}
-                  dataKey="volume24hChange"
-                  headerStyle={{
-                    color: '#fff',
-                    paddingRight: 'calc(10px)',
-                    fontSize: '1.5rem',
-                    textAlign: 'left',
-                    fontFamily: 'Avenir Next Light',
-                  }}
-                  width={width * 1.3}
-                  style={{
-                    textAlign: 'left',
-                    fontSize: '1.4rem',
-                    fontWeight: 'bold',
-                  }}
-                  cellRenderer={({ cellData }) => cellData.render}
-                />
-                <Column
-                  label={`trades 24h`}
-                  dataKey="trades24h"
-                  headerStyle={{
-                    color: '#fff',
-                    paddingRight: 'calc(10px)',
-                    fontSize: '1.5rem',
-                    textAlign: 'left',
-                    fontFamily: 'Avenir Next Light',
-                  }}
-                  width={width * 1.3}
-                  style={{
-                    textAlign: 'left',
-                    fontSize: '1.4rem',
-                    fontWeight: 'bold',
-                  }}
-                  cellRenderer={({ cellData }) => cellData.render}
-                />
-                <Column
-                  label={`Avg.Buy 14d`}
-                  dataKey="avgBuy14d"
-                  headerStyle={{
-                    color: '#fff',
-                    paddingRight: 'calc(10px)',
-                    fontSize: '1.5rem',
-                    textAlign: 'left',
-                    fontFamily: 'Avenir Next Light',
-                  }}
-                  width={width * 1.4}
-                  style={{
-                    textAlign: 'left',
-                    fontSize: '1.4rem',
-                    fontWeight: 'bold',
-                  }}
-                  cellRenderer={({ cellData }) => cellData.render}
-                />
-                <Column
-                  label={`Avg.Sell 14d`}
-                  dataKey="avgSell14d"
-                  headerStyle={{
-                    color: '#fff',
-                    paddingRight: 'calc(10px)',
-                    fontSize: '1.5rem',
-                    textAlign: 'left',
-                    fontFamily: 'Avenir Next Light',
-                  }}
-                  width={width * 1.4}
-                  style={{
-                    textAlign: 'left',
-                    fontSize: '1.4rem',
-                    fontWeight: 'bold',
-                  }}
-                  cellRenderer={({ cellData }) => cellData.render}
-                />
-                <Column
-                  label={`Links`}
-                  dataKey="links"
-                  headerStyle={{
-                    color: '#fff',
-                    paddingRight: 'calc(10px)',
-                    fontSize: '1.5rem',
-                    textAlign: 'left',
-                    fontFamily: 'Avenir Next Light',
-                  }}
-                  width={width * 1.3}
-                  style={{
-                    textAlign: 'left',
-                    fontSize: '1.4rem',
-                    fontWeight: 'bold',
-                  }}
-                  cellRenderer={({ cellData }) => cellData.render}
-                />
-              </Table>
-            )}
-          </AutoSizer>
-        </Grid>
-        <Grid
-          style={{
-            display: 'flex',
-            padding: '1rem',
-            background: tab === 'fiat' ? theme.palette.grey.main : '',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            cursor: 'pointer',
-            fontSize: '1.4rem',
-            color: theme.palette.grey.light,
-            height: '3rem',
-          }}
-          onClick={() => onTabChange('fiat')}
-        >
-          {/* Binance liquidity data */}
-        </Grid>
-        <CustomMarketDialog
-          theme={theme}
-          open={showAddMarketPopup}
-          onClose={() => this.setState({ showAddMarketPopup: false })}
-          onAddCustomMarket={onAddCustomMarket}
-          getSerumMarketDataQueryRefetch={getSerumMarketDataQueryRefetch}
-        />
-        <WarningPopup theme={theme} />
-      </StyledGrid>
+                  <Column
+                    label={` `}
+                    dataKey="emoji"
+                    headerStyle={{
+                      color: '#fff',
+                      paddingRight: 'calc(10px)',
+                      fontSize: '1.5rem',
+                      textAlign: 'left',
+                      fontFamily: 'Avenir Next Light',
+                    }}
+                    width={width / 2.5}
+                    style={{
+                      textAlign: 'left',
+                      fontSize: '1.4rem',
+                      fontWeight: 'bold',
+                    }}
+                    cellRenderer={({ cellData }) => cellData.render}
+                  />
+                  <Column
+                    label={`Pair`}
+                    dataKey="symbol"
+                    headerStyle={{
+                      color: '#fff',
+                      paddingRight: '6px',
+                      paddingLeft: '1rem',
+                      fontSize: '1.5rem',
+                      textAlign: 'left',
+                      fontFamily: 'Avenir Next Light',
+                    }}
+                    width={width * 1.5}
+                    style={{
+                      textAlign: 'left',
+                      fontSize: '1.4rem',
+                      fontWeight: 'bold',
+                    }}
+                    cellRenderer={({ cellData }) => cellData.render}
+                  />
+                  <Column
+                    label={`last price`}
+                    dataKey="price"
+                    headerStyle={{
+                      color: '#fff',
+                      paddingRight: 'calc(10px)',
+                      fontSize: '1.5rem',
+                      textAlign: 'left',
+                      fontFamily: 'Avenir Next Light',
+                    }}
+                    width={width * 1.2}
+                    style={{
+                      textAlign: 'left',
+                      fontSize: '1.4rem',
+                      fontWeight: 'bold',
+                    }}
+                    cellRenderer={({ cellData }) => cellData.render}
+                  />
+                  <Column
+                    label={`change 24h`}
+                    dataKey="price24hChange"
+                    headerStyle={{
+                      color: '#fff',
+                      paddingRight: 'calc(10px)',
+                      fontSize: '1.5rem',
+                      textAlign: 'left',
+                      fontFamily: 'Avenir Next Light',
+                    }}
+                    width={width * 1.8}
+                    style={{
+                      textAlign: 'left',
+                      fontSize: '1.4rem',
+                      fontWeight: 'bold',
+                    }}
+                    cellRenderer={({ cellData }) => cellData.render}
+                  />
+                  <Column
+                    label={`Min 24h`}
+                    dataKey="min24h"
+                    headerStyle={{
+                      color: '#fff',
+                      paddingRight: 'calc(10px)',
+                      fontSize: '1.5rem',
+                      textAlign: 'left',
+                      fontFamily: 'Avenir Next Light',
+                    }}
+                    width={width * 1.6}
+                    style={{
+                      textAlign: 'left',
+                      fontSize: '1.4rem',
+                      fontWeight: 'bold',
+                    }}
+                    cellRenderer={({ cellData }) => cellData.render}
+                  />
+                  <Column
+                    label={`Max 24h`}
+                    dataKey="max24h"
+                    headerStyle={{
+                      color: '#fff',
+                      paddingRight: 'calc(10px)',
+                      fontSize: '1.5rem',
+                      textAlign: 'left',
+                      fontFamily: 'Avenir Next Light',
+                    }}
+                    width={width * 1.4}
+                    style={{
+                      textAlign: 'left',
+                      fontSize: '1.4rem',
+                      fontWeight: 'bold',
+                    }}
+                    cellRenderer={({ cellData }) => cellData.render}
+                  />
+                  <Column
+                    label={`volume 24h`}
+                    dataKey="volume24hChange"
+                    headerStyle={{
+                      color: '#fff',
+                      paddingRight: 'calc(10px)',
+                      fontSize: '1.5rem',
+                      textAlign: 'left',
+                      fontFamily: 'Avenir Next Light',
+                    }}
+                    width={width * 1.3}
+                    style={{
+                      textAlign: 'left',
+                      fontSize: '1.4rem',
+                      fontWeight: 'bold',
+                    }}
+                    cellRenderer={({ cellData }) => cellData.render}
+                  />
+                  <Column
+                    label={`trades 24h`}
+                    dataKey="trades24h"
+                    headerStyle={{
+                      color: '#fff',
+                      paddingRight: 'calc(10px)',
+                      fontSize: '1.5rem',
+                      textAlign: 'left',
+                      fontFamily: 'Avenir Next Light',
+                    }}
+                    width={width * 1.3}
+                    style={{
+                      textAlign: 'left',
+                      fontSize: '1.4rem',
+                      fontWeight: 'bold',
+                    }}
+                    cellRenderer={({ cellData }) => cellData.render}
+                  />
+                  <Column
+                    label={`Avg.Buy 14d`}
+                    dataKey="avgBuy14d"
+                    headerStyle={{
+                      color: '#fff',
+                      paddingRight: 'calc(10px)',
+                      fontSize: '1.5rem',
+                      textAlign: 'left',
+                      fontFamily: 'Avenir Next Light',
+                    }}
+                    width={width * 1.4}
+                    style={{
+                      textAlign: 'left',
+                      fontSize: '1.4rem',
+                      fontWeight: 'bold',
+                    }}
+                    cellRenderer={({ cellData }) => cellData.render}
+                  />
+                  <Column
+                    label={`Avg.Sell 14d`}
+                    dataKey="avgSell14d"
+                    headerStyle={{
+                      color: '#fff',
+                      paddingRight: 'calc(10px)',
+                      fontSize: '1.5rem',
+                      textAlign: 'left',
+                      fontFamily: 'Avenir Next Light',
+                    }}
+                    width={width * 1.4}
+                    style={{
+                      textAlign: 'left',
+                      fontSize: '1.4rem',
+                      fontWeight: 'bold',
+                    }}
+                    cellRenderer={({ cellData }) => cellData.render}
+                  />
+                  <Column
+                    label={`Links`}
+                    dataKey="links"
+                    headerStyle={{
+                      color: '#fff',
+                      paddingRight: 'calc(10px)',
+                      fontSize: '1.5rem',
+                      textAlign: 'left',
+                      fontFamily: 'Avenir Next Light',
+                    }}
+                    width={width * 1.8}
+                    style={{
+                      textAlign: 'left',
+                      fontSize: '1.4rem',
+                      fontWeight: 'bold',
+                    }}
+                    cellRenderer={({ cellData }) => cellData.render}
+                  />
+                </Table>
+              )}
+            </AutoSizer>
+          </Grid>
+          <Grid
+            style={{
+              display: 'flex',
+              padding: '1rem',
+              background: tab === 'fiat' ? theme.palette.grey.main : '',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              cursor: 'pointer',
+              fontSize: '1.4rem',
+              color: theme.palette.grey.light,
+              height: '3rem',
+            }}
+            onClick={() => onTabChange('fiat')}
+          >
+            {/* Binance liquidity data */}
+          </Grid>
+          <CustomMarketDialog
+            theme={theme}
+            open={showAddMarketPopup}
+            onClose={() => this.setState({ showAddMarketPopup: false })}
+            onAddCustomMarket={onAddCustomMarket}
+            getSerumMarketDataQueryRefetch={getSerumMarketDataQueryRefetch}
+          />
+          <WarningPopup theme={theme} />
+        </StyledGrid>
+      </>
     )
   }
 }

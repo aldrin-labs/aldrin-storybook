@@ -23,6 +23,10 @@ import favoriteUnselected from '@icons/favoriteUnselected.svg'
 
 import LessVolumeArrow from '@icons/lessVolumeArrow.svg'
 import MoreVolumeArrow from '@icons/moreVolumeArrow.svg'
+import Coinmarketcap from '@icons/coinmarketcap.svg'
+import CoinGecko from '@icons/coingecko.svg'
+
+import tokensLinksMap from './tokensTwitterLinks'
 
 import {
   GetSelectorSettingsType,
@@ -48,6 +52,7 @@ export const marketsByCategories = {
   defi: {
     name: 'DeFi',
     tokens: [
+      'RSR',
       'CCAI',
       'SRM',
       'OXY',
@@ -81,6 +86,7 @@ export const marketsByCategories = {
   exchangeDerrivatives: {
     name: 'Exchange & Derrivatives',
     tokens: [
+      'LUA',
       'CCAI',
       'SRM',
       'FIDA',
@@ -117,7 +123,10 @@ export const marketsByCategories = {
     name: 'Trade & Liquidity',
     tokens: ['SLRS', 'ROPE', 'FTR', 'UBXT', 'LIEN'],
   },
-  lendingYield: { name: 'Lending & Yield', tokens: ['AAVE', 'COMP', 'YFI'] },
+  lendingYield: {
+    name: 'Lending & Yield',
+    tokens: ['AAVE', 'COMP', 'YFI', 'SWAG'],
+  },
   infrastructure: {
     name: 'Infrastructure',
     tokens: ['GRT', 'BOP', 'TOMO', 'HNT', 'GEL'],
@@ -343,7 +352,13 @@ export const combineSelectWrapperData = ({
 
     marketsCategoriesData.forEach(([category, data]) => {
       const tokens = data.tokens
-      if (tab === category) {
+
+      if (tab === category && category === 'currency') {
+        processedData = processedData.filter((el) => {
+          const [base, quote] = el.symbol.split('_')
+          return tokens.includes(base)
+        })
+      } else if (tab === category && category !== 'currency') {
         processedData = processedData.filter((el) => {
           const [base, quote] = el.symbol.split('_')
           return tokens.includes(base) || tokens.includes(quote)
@@ -444,8 +459,15 @@ export const combineSelectWrapperData = ({
 
     const baseTokenInfo = tokenMap.get(getTokenMintAddressByName(base))
     const marketAddress = market?.address?.toBase58()
+
     const avgBuy = serumMarketsDataMap?.get(symbol)?.avgBuy || 0
     const avgSell = serumMarketsDataMap?.get(symbol)?.avgSell || 0
+
+    const twitterLink = tokensLinksMap?.get(base)?.twitterLink || ''
+    const marketCapLink = tokensLinksMap?.get(base)?.marketCapLink || ''
+    const marketCapIcon = marketCapLink.includes('coinmarketcap')
+      ? Coinmarketcap
+      : CoinGecko
 
     return {
       id: `${symbol}`,
@@ -682,7 +704,11 @@ export const combineSelectWrapperData = ({
           >
             <LinkToSolanaExp padding={'0'} marketAddress={marketAddress} />
             <DarkTooltip title={'Show analytics for this market.'}>
-              <LinkToAnalytics to={`/analytics/${marketName}`}>
+              <LinkToAnalytics
+                target="_blank"
+                rel="noopener noreferrer"
+                to={`/analytics/${marketName}`}
+              >
                 <SvgIcon
                   src={AnalyticsIcon}
                   width={'2.3rem'}
@@ -690,15 +716,35 @@ export const combineSelectWrapperData = ({
                 />
               </LinkToAnalytics>
             </DarkTooltip>
-            {baseTokenInfo?.extensions?.twitter && (
+            {twitterLink !== '' && (
               <DarkTooltip title={'Twitter profile of base token.'}>
-                <LinkToTwitter href={baseTokenInfo?.extensions?.twitter}>
+                <LinkToTwitter
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={twitterLink}
+                >
                   <SvgIcon
                     width={'2.5rem'}
                     height={'2.5rem'}
                     src={BlueTwitterIcon}
                   />
                 </LinkToTwitter>
+              </DarkTooltip>
+            )}
+            {marketCapLink !== '' && (
+              <DarkTooltip title={'Twitter profile of base token.'}>
+                <a
+                  style={{ marginLeft: '2rem' }}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={marketCapLink}
+                >
+                  <SvgIcon
+                    width={'2.5rem'}
+                    height={'2.5rem'}
+                    src={marketCapIcon}
+                  />
+                </a>
               </DarkTooltip>
             )}
           </Row>
