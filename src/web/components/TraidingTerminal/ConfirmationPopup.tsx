@@ -51,7 +51,7 @@ export const Line = styled.div`
   margin: 0 0 0 0rem;
   height: 0.1rem;
 `
-const Title = styled.span`
+export const Title = styled.span`
   font-family: Avenir Next Medium;
   font-size: 2rem;
   text-align: center;
