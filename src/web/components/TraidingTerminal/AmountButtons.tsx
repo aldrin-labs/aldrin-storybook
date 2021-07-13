@@ -40,7 +40,8 @@ export const ButtonsWithAmountFieldRowForBasic = ({
   minOrderSize,
   amount,
   total,
-  needButtons,
+  needButtons = true,
+  inputsInOneRow = false,
 }: SliderWithPriceAndPercentageFieldRowProps) => {
   const [localAmount, updateLocalAmount] = useState(amount)
   const [localTotal, updateLocalTotal] = useState(total)
@@ -61,33 +62,41 @@ export const ButtonsWithAmountFieldRowForBasic = ({
         padding={'.6rem 0'}
         justify={priceType === 'market' ? 'flex-end' : 'center'}
       >
-        <InputRowContainer padding="0 0 1.2rem 0" style={{ width: '100%' }}>
-          <Input
-            theme={theme}
-            needTitle
-            title={`amount`}
-            value={localAmount}
-            type={'text'}
-            pattern={isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'}
-            onChange={onAmountChange}
-            symbol={pair[0]}
-          />
-        </InputRowContainer>
         <InputRowContainer
-          key={'total'}
-          padding={'0 0 0rem 0'}
-          direction={'column'}
-          style={{ width: '100%' }}
+          direction={inputsInOneRow ? 'row' : 'column'}
+          justify={inputsInOneRow ? 'space-between' : 'center'}
         >
-          <Input
-            theme={theme}
-            needTitle
-            type={'text'}
-            title={`total`}
-            value={localTotal || ''}
-            onChange={onTotalChange}
-            symbol={pair[1]}
-          />
+          <InputRowContainer
+            padding={inputsInOneRow ? '0' : '0 0 1.2rem 0'}
+            style={{ width: inputsInOneRow ? 'calc(50% - .5rem)' : '100%' }}
+          >
+            <Input
+              theme={theme}
+              needTitle
+              title={`amount`}
+              value={localAmount}
+              type={'text'}
+              pattern={isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'}
+              onChange={onAmountChange}
+              symbol={pair[0]}
+            />
+          </InputRowContainer>
+          <InputRowContainer
+            key={'total'}
+            padding={'0 0 0rem 0'}
+            direction={'column'}
+            style={{ width: inputsInOneRow ? 'calc(50% - .5rem)' : '100%' }}
+          >
+            <Input
+              theme={theme}
+              needTitle
+              type={'text'}
+              title={`total`}
+              value={localTotal || ''}
+              onChange={onTotalChange}
+              symbol={pair[1]}
+            />
+          </InputRowContainer>
         </InputRowContainer>
         {needButtons ? (
           <InputRowContainer

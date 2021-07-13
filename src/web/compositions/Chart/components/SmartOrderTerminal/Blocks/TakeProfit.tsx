@@ -23,7 +23,9 @@ import {
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { FormInputContainer, Select } from '../InputComponents'
 import CloseIcon from '@material-ui/icons/Close'
-import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
+import CustomSwitcher, {
+  SwitcherHalf,
+} from '@sb/components/SwitchOnOff/CustomSwitcher'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
 
 import {
@@ -43,7 +45,7 @@ import {
 
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-import { SliderWithPriceAndPercentageFieldRow } from './SliderComponents'
+import { SliderWithPriceAndPercentageFieldRow } from '../SliderComponents'
 
 export const TakeProfitBlock = ({
   pair,
@@ -306,7 +308,7 @@ export const TakeProfitBlock = ({
           style={{ margin: '1rem auto 1.6rem 0' }}
           justify="center"
         >
-          <CustomSwitcher
+          {/* <CustomSwitcher
             theme={theme}
             firstHalfText={'limit'}
             secondHalfText={'market'}
@@ -326,7 +328,31 @@ export const TakeProfitBlock = ({
                 updateBlockValue('takeProfit', 'forcedStopByAlert', false)
               }
             }}
-          />
+          /> */}
+          <SwitcherHalf
+            theme={theme}
+            width={'calc(100%)'}
+            height={'4rem'}
+            style={{
+              backgroundColor: theme.palette.dark.background,
+              borderRadius: '0.6rem',
+              border: `.6rem solid ${theme.palette.grey.terminal}`,
+              color: theme.palette.blue.serum,
+            }}
+            onClick={() => {
+              updateBlockValue(
+                'takeProfit',
+                'type',
+                getSecondValueFromFirst(takeProfit.type)
+              )
+
+              if (getSecondValueFromFirst(takeProfit.type) === 'limit') {
+                updateBlockValue('takeProfit', 'forcedStopByAlert', false)
+              }
+            }}
+          >
+            Limit
+          </SwitcherHalf>
         </InputRowContainer>
 
         {!takeProfit.trailingTAP.isTrailingOn && !takeProfit.external && (

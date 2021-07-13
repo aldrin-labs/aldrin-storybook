@@ -19,7 +19,7 @@ import { SendButton } from '@sb/components/TraidingTerminal/styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { FormInputContainer, Select } from '../InputComponents'
 
-import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
+import CustomSwitcher, { SwitcherHalf } from '@sb/components/SwitchOnOff/CustomSwitcher'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
 
 import { TradeInputContent as Input } from '@sb/components/TraidingTerminal/index'
@@ -36,7 +36,7 @@ import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import {
   SliderWithPriceAndPercentageFieldRow,
   SliderWithTimeoutFieldRow,
-} from './SliderComponents'
+} from '../SliderComponents'
 import { BorderBottom } from '@material-ui/icons'
 
 export const StopLossBlock = ({
@@ -296,7 +296,7 @@ export const StopLossBlock = ({
             style={{ margin: '1rem auto 1.7rem 0' }}
             justify="center"
           >
-            <CustomSwitcher
+            {/* <CustomSwitcher
               theme={theme}
               firstHalfText={'limit'}
               secondHalfText={'market'}
@@ -315,7 +315,32 @@ export const StopLossBlock = ({
                   updateBlockValue('stopLoss', 'forcedStopByAlert', false)
                 }
               }}
-            />
+            /> */}
+
+            <SwitcherHalf
+              theme={theme}
+              width={'calc(100%)'}
+              height={'4rem'}
+              style={{
+                backgroundColor: theme.palette.dark.background,
+                borderRadius: '0.6rem',
+                border: `.6rem solid ${theme.palette.grey.terminal}`,
+                color: theme.palette.blue.serum,
+              }}
+              onClick={() => {
+                updateBlockValue(
+                  'stopLoss',
+                  'type',
+                  getSecondValueFromFirst(stopLoss.type)
+                )
+
+                if (getSecondValueFromFirst(stopLoss.type) === 'limit') {
+                  updateBlockValue('stopLoss', 'forcedStopByAlert', false)
+                }
+              }}
+            >
+              Limit
+            </SwitcherHalf>
           </InputRowContainer>
 
           {((stopLoss.external &&

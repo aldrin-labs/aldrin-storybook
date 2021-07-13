@@ -50,7 +50,9 @@ import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import {
   SliderWithPriceAndPercentageFieldRow,
   SliderWithAmountFieldRow,
-} from './SliderComponents'
+} from '../SliderComponents'
+import { ButtonsWithAmountFieldRowForBasic } from '@sb/components/TraidingTerminal/AmountButtons'
+import { tryFunctionOrLogError } from 'apollo-utilities'
 
 export const EntryOrderBlock = ({
   pair,
@@ -333,9 +335,7 @@ export const EntryOrderBlock = ({
           </>
         )}
         <InputRowContainer style={{ margin: '1rem  auto' }}>
-          {' '}
           <InputRowContainer>
-            {' '}
             {marketType === 1 ? (
               <CustomSwitcher
                 theme={theme}
@@ -385,25 +385,54 @@ export const EntryOrderBlock = ({
                 }}
               />
             ) : (
-              <SwitcherHalf
-                isFirstHalf
-                theme={theme}
-                key={'firstHalf'}
-                style={{
-                  backgroundColor: theme.palette.green.main,
-                  borderRadius: '0rem',
-                  border: theme.palette.border.main,
-                  color: theme.palette.white.main,
-                }}
-                height={'3rem'}
-                width={
-                  entryPoint.TVAlert.plotEnabled && marketType === 1
-                    ? '70%'
-                    : '100%'
-                }
-              >
-                buy{' '}
-              </SwitcherHalf>
+              <InputRowContainer justify="space-between">
+                <SwitcherHalf
+                  isFirstHalf
+                  theme={theme}
+                  key={'firstHalf'}
+                  style={{
+                    backgroundColor: theme.palette.dark.background,
+                    borderRadius: '0.6rem',
+                    border: `.6rem solid ${theme.palette.grey.terminal}`,
+                    color: theme.palette.green.main,
+                  }}
+                  height={'4rem'}
+                  width={
+                    entryPoint.TVAlert.plotEnabled && marketType === 1
+                      ? '70%'
+                      : 'calc(50% - .5rem)'
+                  }
+                >
+                  Smart Buy
+                </SwitcherHalf>
+                <SwitcherHalf
+                  theme={theme}
+                  disabled={
+                    entryPoint.TVAlert.plotEnabled &&
+                    entryPoint.TVAlert.typePlotEnabled
+                  }
+                  width={'calc(50% - .5rem)'}
+                  height={'4rem'}
+                  style={{
+                    backgroundColor: theme.palette.dark.background,
+                    borderRadius: '0.6rem',
+                    border: `.6rem solid ${theme.palette.grey.terminal}`,
+                    color: theme.palette.blue.serum,
+                  }}
+                  onClick={() => {
+                    updateSubBlockValue('entryPoint', 'order', 'type', 'limit')
+
+                    updateSubBlockValue(
+                      'entryPoint',
+                      'TVAlert',
+                      'immediateEntry',
+                      false
+                    )
+                  }}
+                >
+                  Limit
+                </SwitcherHalf>
+              </InputRowContainer>
             )}
             {entryPoint.TVAlert.plotEnabled && marketType === 1 && (
               <>
@@ -454,8 +483,8 @@ export const EntryOrderBlock = ({
               </>
             )}
           </InputRowContainer>
-        </InputRowContainer>{' '}
-        {!entryPoint.averaging.enabled && (
+        </InputRowContainer>
+        {/* {!entryPoint.averaging.enabled && (
           <InputRowContainer style={{ marginBottom: '1rem' }}>
             <ChangeOrderTypeBtn
               theme={theme}
@@ -484,8 +513,8 @@ export const EntryOrderBlock = ({
               }}
             >
               Market
-            </ChangeOrderTypeBtn>
-            <ChangeOrderTypeBtn
+            </ChangeOrderTypeBtn> 
+             <ChangeOrderTypeBtn
               theme={theme}
               isActive={
                 entryPoint.TVAlert.plotEnabled
@@ -511,7 +540,7 @@ export const EntryOrderBlock = ({
               }}
             >
               Limit
-            </ChangeOrderTypeBtn>
+            </ChangeOrderTypeBtn> 
             {entryPoint.TVAlert.plotEnabled && (
               <>
                 <div
@@ -560,7 +589,7 @@ export const EntryOrderBlock = ({
               </>
             )}
           </InputRowContainer>
-        )}
+        )} */}
         {entryPoint.order.type == 'market' ? null : (
           <InputRowContainer style={{ marginBottom: '1rem' }}>
             {isAveragingAfterFirstTarget ? (
@@ -700,6 +729,15 @@ export const EntryOrderBlock = ({
                 />
               </>
             ) : (
+            //   <TradeInputContent
+            //   theme={theme}
+            //   needTitle
+            //   type={'text'}
+            //   title={`price`}
+            //   value={values.price || ''}
+            //   onChange={this.onPriceChange}
+            //   symbol={pair[1]}
+            // />
               <Input
                 theme={theme}
                 width={
@@ -710,17 +748,9 @@ export const EntryOrderBlock = ({
                     ? '70%'
                     : '100%'
                 }
-                needTooltip={true}
-                titleForTooltip={
-                  'The price at which the trailing algorithm will be triggered.'
-                }
-                header={
-                  entryPoint.trailing.isTrailingOn
-                    ? 'activation price'
-                    : 'price'
-                }
+                title={`price`}
                 symbol={pair[1]}
-                needTitleBlock
+                needTitle
                 type={
                   entryPoint.order.type === 'limit'
                     ? 'number'
@@ -1013,7 +1043,7 @@ export const EntryOrderBlock = ({
             </InputRowContainer>
           </FormInputContainer>
         )}
-        <SliderWithAmountFieldRow
+        <ButtonsWithAmountFieldRowForBasic
           onAmountChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             const [maxAmount] = getMaxValues()
             const isAmountMoreThanMax = +e.target.value > maxAmount
@@ -1102,32 +1132,6 @@ export const EntryOrderBlock = ({
 
             updateBlockValue('temp', 'initialMargin', newMargin)
           }}
-          onMarginChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            const inputInitialMargin = e.target.value
-            const newTotal = inputInitialMargin * entryPoint.order.leverage
-
-            const [_, maxTotal] = getMaxValues()
-            const isMarginMoreThanMax =
-              +e.target.value * entryPoint.order.leverage > maxTotal
-            const totalForUpdate = isMarginMoreThanMax ? maxTotal : newTotal
-
-            const newAmount = totalForUpdate / priceForCalculate
-            const fixedAmount = stripDigitPlaces(newAmount, quantityPrecision)
-            const marginForUpdate = isMarginMoreThanMax
-              ? stripDigitPlaces(maxTotal / entryPoint.order.leverage, 2)
-              : inputInitialMargin
-
-            updateSubBlockValue(
-              'entryPoint',
-              'order',
-              'total',
-              stripDigitPlaces(totalForUpdate, marketType === 1 ? 2 : 8)
-            )
-
-            updateSubBlockValue('entryPoint', 'order', 'amount', fixedAmount)
-
-            updateBlockValue('temp', 'initialMargin', marginForUpdate)
-          }}
           toggleAmountPlotEnabled={() => {
             updateSubBlockValue(
               'entryPoint',
@@ -1149,6 +1153,8 @@ export const EntryOrderBlock = ({
           }
           amountPlot={entryPoint.TVAlert.amountPlot}
           amountPlotEnabled={entryPoint.TVAlert.amountPlotEnabled}
+          needButtons={true}
+          inputsInOneRow={true}
           {...{
             pair,
             theme,
