@@ -662,6 +662,7 @@ export const combineSelectWrapperData = ({
         ),
       },
       min24h: {
+        contentToSort: +minPrice || 0,
         render: (
           <span
             style={{
@@ -681,6 +682,7 @@ export const combineSelectWrapperData = ({
         ),
       },
       max24h: {
+        contentToSort: +maxPrice || 0,
         render: (
           <span
             style={{
@@ -699,6 +701,7 @@ export const combineSelectWrapperData = ({
         ),
       },
       avgSell14d: {
+        contentToSort: +avgSell || 0,
         render: (
           <>
             <span
@@ -715,6 +718,7 @@ export const combineSelectWrapperData = ({
         ),
       },
       avgBuy14d: {
+        contentToSort: +avgBuy || 0,
         render: (
           <>
             <span
