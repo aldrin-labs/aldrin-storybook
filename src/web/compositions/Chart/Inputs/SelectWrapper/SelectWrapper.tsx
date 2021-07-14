@@ -901,7 +901,7 @@ class SelectPairListComponent extends React.PureComponent<
               }
             />
           </Grid>
-          <Grid style={{ overflow: 'hidden', height: 'calc(100% - 17rem)' }}>
+          <Grid style={{ overflow: 'hidden', height: 'calc(100% - 20rem)' }}>
             <AutoSizer>
               {({ width, height }: { width: number; height: number }) => (
                 <Table
@@ -1145,7 +1145,7 @@ class SelectPairListComponent extends React.PureComponent<
                       textAlign: 'left',
                       fontFamily: 'Avenir Next Light',
                     }}
-                    width={width * 1.8}
+                    width={width * 2.2}
                     style={{
                       textAlign: 'left',
                       fontSize: '1.4rem',
@@ -1156,6 +1156,34 @@ class SelectPairListComponent extends React.PureComponent<
                 </Table>
               )}
             </AutoSizer>
+          </Grid>{' '}
+          <Grid
+            container
+            style={{
+              padding: '0 2rem',
+              justifyContent: 'flex-end',
+              width: '100%',
+              height: '3rem',
+              fontFamily: 'Avenir Next Medium',
+              color: theme.palette.blue.serum,
+              alignItems: 'center',
+              fontSize: '1.5rem',
+              textTransform: 'none',
+            }}
+            onClick={async () => {
+              if (publicKey === '') {
+                notify({
+                  message: 'Connect your wallet first',
+                  type: 'error',
+                })
+                wallet.connect()
+                return
+              }
+
+              this.setState({ showAddMarketPopup: true })
+            }}
+          >
+            + Add Market
           </Grid>
           <Grid
             style={{

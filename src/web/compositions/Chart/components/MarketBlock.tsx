@@ -52,13 +52,13 @@ export const Title = styled(
 export const LinkToAnalytics = styled(Link)`
   font-size: 2rem;
   cursor: pointer;
-  margin-left: 2rem;
+  margin-left: 1.5rem;
 `
 
 export const LinkToTwitter = styled.a`
   font-size: 2rem;
   cursor: pointer;
-  margin-left: 2rem;
+  margin-left: 1.5rem;
 `
 
 const selectStyles = (theme: Theme) => ({
@@ -221,7 +221,7 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
           )}
           {marketCapLink !== '' && (
             <a
-              style={{ marginLeft: '2rem' }}
+              style={{ marginLeft: '1.5rem' }}
               target="_blank"
               rel="noopener noreferrer"
               href={marketCapLink}

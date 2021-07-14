@@ -59,10 +59,12 @@ const getNotificationText = ({
       `${orderType.slice(0, 1).toUpperCase()}${orderType.slice(
         1
       )} order placed.`,
-      `${baseSymbol}/${quoteSymbol}: ${side} ${amount} ${baseSymbol} order placed at ${price} ${quoteSymbol}.`,
+      `${baseSymbol}/${quoteSymbol}: ${side} ${amount} ${baseSymbol} order placed${
+        orderType === 'market' ? '' : ` at ${price} ${quoteSymbol}`
+      }.`,
     ],
     cancelOrder: [
-      `Order canceled.`,
+      `Limit Order canceled.`,
       `${baseSymbol}/${quoteSymbol}: ${side} ${amount} ${baseSymbol} order canceled at ${price} ${quoteSymbol}.`,
     ],
     settleFunds: [

@@ -25,6 +25,7 @@ import LessVolumeArrow from '@icons/lessVolumeArrow.svg'
 import MoreVolumeArrow from '@icons/moreVolumeArrow.svg'
 import Coinmarketcap from '@icons/coinmarketcap.svg'
 import CoinGecko from '@icons/coingecko.svg'
+import Inform from '@icons/inform.svg'
 
 import tokensLinksMap from './tokensTwitterLinks'
 
@@ -39,6 +40,7 @@ import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 import LinkToSolanaExp from '../../components/LinkToSolanaExp'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { LinkToAnalytics, LinkToTwitter } from '../../components/MarketBlock'
+import { getNumberOfDecimalsFromNumber } from '@core/utils/chartPageUtils'
 
 export const selectWrapperColumnNames = [
   { label: '', id: 'favorite', isSortable: false },
@@ -369,7 +371,7 @@ export const combineSelectWrapperData = ({
 
     if (tab === 'topGainers' || tab === 'topLosers') {
       processedData = processedData.sort((a, b) => {
-        const pricePrecisionA = a.closePrice < 1 ? 8 : a.closePrice < 10 ? 4 : 2
+        const pricePrecisionA = getNumberOfDecimalsFromNumber(a.closePrice)
 
         const strippedLastPriceDiffA = +stripDigitPlaces(
           a.lastPriceDiff,
@@ -387,7 +389,7 @@ export const combineSelectWrapperData = ({
           ? 0
           : (a.closePrice - prevClosePriceA) / (prevClosePriceA / 100)
 
-        const pricePrecisionB = b.closePrice < 1 ? 8 : b.closePrice < 10 ? 4 : 2
+        const pricePrecisionB = getNumberOfDecimalsFromNumber(b.closePrice)
 
         const strippedLastPriceDiffB = +stripDigitPlaces(
           b.lastPriceDiff,
@@ -463,7 +465,7 @@ export const combineSelectWrapperData = ({
     }
 
     const [base, quote] = symbol.split('_')
-    const pricePrecision = closePrice <= 0.0001 ? 8 : closePrice < 10 ? 4 : 2
+    const pricePrecision = getNumberOfDecimalsFromNumber(closePrice)
 
     const isNotUSDTQuote = getIsNotUSDTQuote(symbol)
 
@@ -669,7 +671,7 @@ export const combineSelectWrapperData = ({
             <>
               {' '}
               {`${formatNumberToUSFormat(
-                stripDigitPlaces(Math.abs(minPrice))
+                stripDigitPlaces(minPrice, pricePrecision)
               )}`}{' '}
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
                 {quote}
@@ -687,7 +689,7 @@ export const combineSelectWrapperData = ({
           >
             <>
               {`${formatNumberToUSFormat(
-                stripDigitPlaces(Math.abs(maxPrice))
+                stripDigitPlaces(maxPrice, pricePrecision)
               )}`}{' '}
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
                 {quote}
@@ -735,6 +737,13 @@ export const combineSelectWrapperData = ({
             justify={'flex-start'}
             align={'baseline'}
           >
+            <SvgIcon
+              onClick={() => {}}
+              src={Inform}
+              style={{ marginRight: '1.5rem' }}
+              width={'2.3rem'}
+              height={'2.3rem'}
+            />
             <LinkToSolanaExp padding={'0'} marketAddress={marketAddress} />
             <DarkTooltip title={'Show analytics for this market.'}>
               <LinkToAnalytics
@@ -766,7 +775,7 @@ export const combineSelectWrapperData = ({
             )}
             {marketCapLink !== '' && (
               <a
-                style={{ marginLeft: '2rem' }}
+                style={{ marginLeft: '1.5rem' }}
                 target="_blank"
                 rel="noopener noreferrer"
                 href={marketCapLink}
@@ -778,6 +787,7 @@ export const combineSelectWrapperData = ({
                 />
               </a>
             )}
+            {/* <MintsPopup /> */}
           </Row>
         ),
       },
