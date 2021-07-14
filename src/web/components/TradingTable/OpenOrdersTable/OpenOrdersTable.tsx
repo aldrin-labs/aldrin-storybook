@@ -64,8 +64,6 @@ const OpenOrdersTable = (props) => {
 
   const openOrders = useOpenOrders()
 
-  console.log('openOrders', openOrders)
-
   if (!show) {
     return null
   }
