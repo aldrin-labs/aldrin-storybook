@@ -11,11 +11,6 @@ import {
   DialogWrapper,
 } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 
-import {
-  ClearButton,
-  StyledDialogTitle,
-} from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-
 import { InputRowContainer, TargetTitle, TargetValue } from '../styles'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
@@ -24,10 +19,17 @@ import { DialogContent } from '@sb/styles/Dialog.styles'
 
 import { EntryPointType, StopLossType, TakeProfitType } from '../types'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import {
+  Line,
+  MainTitle,
+  Title,
+} from '@sb/components/TraidingTerminal/ConfirmationPopup'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
-  width: 45rem;
+  width: 55rem;
+  max-height: 100%;
 `
 
 const EditButton = ({ children, ...props }) => (
@@ -51,8 +53,8 @@ const EditButton = ({ children, ...props }) => (
 export const StyledTypography = styled(({ color, ...rest }) => (
   <Typography {...rest} />
 ))`
-  text-transform: uppercase;
-  font-size: 1.1rem;
+  text-transform: capitalize;
+  font-size: 1.3rem;
   font-weight: bold;
   color: ${(props) =>
     props.color ||
@@ -67,10 +69,11 @@ const TitleTypography = ({ children, theme, ...props }) => (
   <StyledTypography
     {...props}
     style={{
-      fontSize: '1.2rem',
-      color: theme.palette.dark.main,
-      letterSpacing: '.1rem',
+      fontSize: '1.4rem',
+      color: theme.palette.white.primary,
+      letterSpacing: '.01rem',
       whiteSpace: 'nowrap',
+      paddingRight: '1rem',
       ...props.style,
     }}
   >
@@ -82,26 +85,13 @@ const ItemTypography = ({ children, ...props }) => (
   <StyledTypography
     {...props}
     style={{
-      fontSize: '1.2rem',
-      padding: '0 0 0.65rem 0',
+      fontSize: '1.4rem',
       letterSpacing: '.1rem',
       ...props.style,
     }}
   >
     {children}
   </StyledTypography>
-)
-
-const Line = ({ theme }) => (
-  <div
-    style={{
-      content: '',
-      width: '100%',
-      height: '.1rem',
-      background: theme.palette.grey.border,
-      margin: '0 1rem',
-    }}
-  />
 )
 
 interface IProps {
@@ -140,6 +130,11 @@ export default ({
         .toFixed(quantityPrecision)
     : 0
 
+  const [base, quote] = pair
+
+  const sideType = entryPoint.order.side
+  const priceType = entryPoint.order.type
+
   return (
     <>
       <DialogWrapper
@@ -153,30 +148,20 @@ export default ({
         }}
         PaperComponent={StyledPaper}
       >
-        <StyledDialogTitle
-          theme={theme}
-          disableTypography
-          id="customized-dialog-title"
-        >
-          <TypographyCustomHeading
-            fontWeight={'700'}
-            style={{
-              textAlign: 'center',
-              fontSize: '1.4rem',
-              letterSpacing: '1.5px',
-              color: theme.palette.dark.main,
-            }}
-          >
-            Confirm trade
-          </TypographyCustomHeading>
-          <ClearButton>
-            <Clear
-              style={{ fontSize: '2rem' }}
-              color="inherit"
-              onClick={handleClose}
-            />
-          </ClearButton>
-        </StyledDialogTitle>
+        <RowContainer padding="2rem 0 0 0" direction="column">
+          <MainTitle>
+            {pair[0]}/{pair[1]}
+          </MainTitle>
+          <RowContainer justify={'center'} wrap={'nowrap'}>
+            <Line sideType={sideType} width={'31%'} />
+            <Title sideType={sideType}>
+              <span style={{ textTransform: 'capitalize' }}>{priceType}</span>{' '}
+              <span style={{ textTransform: 'capitalize' }}>{sideType}</span>{' '}
+              {pair[0]}
+            </Title>
+            <Line sideType={sideType} width={'31%'} />
+          </RowContainer>
+        </RowContainer>
         <DialogContent
           theme={theme}
           justify="center"
@@ -184,451 +169,141 @@ export default ({
             padding: '3rem',
           }}
         >
-          <Grid>
-            <Grid id="entry">
-              <Grid
-                container
+          <RowContainer>
+            <RowContainer id="entry">
+              <RowContainer
                 justify="space-between"
-                alignItems="center"
-                style={{ padding: '1rem 0', flexWrap: 'nowrap' }}
+                align="center"
+                wrap={'nowrap'}
+                style={{ padding: '1rem 0' }}
               >
-                <TitleTypography theme={theme}>Entry point</TitleTypography>
-                <Line theme={theme} />
-                <EditButton
+                <TitleTypography theme={theme}>1. Enter</TitleTypography>
+                <Line sideType={sideType} theme={theme} />
+                {/* <EditButton
                   theme={theme}
                   onClick={() => handleOpenEditPopup('entryOrder')}
                 >
                   edit
-                </EditButton>
-              </Grid>
-              <Grid container style={{ padding: '1rem 0rem' }}>
-                <Grid
-                  style={{
-                    textAlign: 'right',
-                    width: '25%',
-                    position: 'relative',
-                  }}
-                >
-                  <ItemTypography theme={theme}>Side:</ItemTypography>
-                  <ItemTypography theme={theme}>price:</ItemTypography>
-                  <ItemTypography theme={theme}>amount:</ItemTypography>
-                  <ItemTypography theme={theme}>Trailing:</ItemTypography>
-                  <ItemTypography theme={theme}>Averaging:</ItemTypography>
-                </Grid>
-                <Grid style={{ paddingLeft: '4rem', width: '65%' }}>
-                  <ItemTypography
-                    theme={theme}
-                    color={getColor(order.side === 'buy', theme)}
-                  >
-                    {order.side}
+                </EditButton> */}
+              </RowContainer>
+              <RowContainer padding={'1rem 0rem 0 0'}>
+                <RowContainer justify="space-between">
+                  <ItemTypography theme={theme}>Price:</ItemTypography>
+                  <ItemTypography theme={theme}>
+                    {`${order.price} ${quote}`}
                   </ItemTypography>
-                  <ItemTypography
-                    style={{ whiteSpace: 'nowrap', display: 'flex' }}
-                    theme={theme}
-                    color={theme.palette.dark.main}
+                </RowContainer>
+                <RowContainer padding={'1rem 0 0 0'} justify="space-between">
+                  <Row
+                    width={'calc(50%)'}
+                    padding={'0 1rem 0 0'}
+                    justify="space-between"
                   >
-                    {averaging.enabled && (
-                      <ItemTypography style={{ padding: 0 }} theme={theme}>
-                        averaging from:&nbsp;
-                      </ItemTypography>
-                    )}
-                    {`${
-                      averaging.enabled
-                        ? ` ${averaging.entryLevels[0].price}`
-                        : order.type === 'limit'
-                        ? order.price
-                        : trailing.isTrailingOn
-                        ? order.price
-                        : 'MARKET'
-                    } ${pair[1]}`}
-                  </ItemTypography>
-                  <ItemTypography
-                    style={{ whiteSpace: 'nowrap' }}
-                    theme={theme}
-                    color={theme.palette.dark.main}
-                  >
-                    {averaging.enabled && 'sum: '}
-                    {getArrowSymbol(
-                      `${
-                        averaging.enabled
-                          ? stripDigitPlaces(averagingAmount, quantityPrecision)
-                          : order.amount
-                      } ${pair[0]}`,
-                      `${
-                        averaging.enabled
-                          ? stripDigitPlaces(
-                              averaging.entryLevels[0].price * averagingAmount,
-                              2
-                            )
-                          : stripDigitPlaces(order.total, 2)
-                      } ${pair[1]}`,
-                      true
-                    )}
-                  </ItemTypography>
-                  <Grid container justify="space-between" wrap={'nowrap'}>
-                    <ItemTypography
-                      theme={theme}
-                      color={getColor(trailing.isTrailingOn, theme)}
-                    >
-                      {getOnOffText(trailing.isTrailingOn)}
+                    <ItemTypography theme={theme}>Total:</ItemTypography>
+                    <ItemTypography theme={theme}>
+                      {`${order.total} ${quote}`}
                     </ItemTypography>
-                    {trailing.isTrailingOn && (
-                      <>
-                        <ItemTypography
-                          theme={theme}
-                          style={{ padding: '0 .5rem .65rem .5rem' }}
-                        >
-                          Deviation:
-                        </ItemTypography>
-                        <ItemTypography
-                          theme={theme}
-                          color={theme.palette.dark.main}
-                          style={{ whiteSpace: 'nowrap' }}
-                        >
-                          {trailing.deviationPercentage}%
-                        </ItemTypography>
-                      </>
-                    )}
-                  </Grid>
-                  <ItemTypography
-                    theme={theme}
-                    color={
-                      averaging.enabled
-                        ? theme.palette.dark.main
-                        : getColor(trailing.isTrailingOn, theme)
-                    }
+                  </Row>
+                  <Row
+                    width={'calc(50%)'}
+                    justify="space-between"
+                    padding={'0 0 0 1rem'}
+                    style={{ borderLeft: theme.palette.border.new }}
                   >
-                    {averaging.enabled ? (
-                      <>
-                        <InputRowContainer padding=".2rem .5rem">
-                          <TargetTitle theme={theme} style={{ width: '50%' }}>
-                            price
-                          </TargetTitle>
-                          <TargetTitle
-                            theme={theme}
-                            style={{ width: '50%', textAlign: 'right' }}
-                          >
-                            amount
-                          </TargetTitle>
-                        </InputRowContainer>
-                        <div
-                          style={{
-                            width: '100%',
-                          }}
-                        >
-                          {averaging.entryLevels.map((target, i) => (
-                            <InputRowContainer
-                              key={`${target.price}${target.amount}${i}`}
-                              padding=".2rem .5rem"
-                              style={{ borderBottom: '.1rem solid #e0e5ec' }}
-                            >
-                              <TargetValue
-                                theme={theme}
-                                style={{
-                                  width: '50%',
-                                  color:
-                                    i === 0
-                                      ? theme.palette.dark.main
-                                      : getColor(false, theme),
-                                }}
-                              >
-                                {i === 0
-                                  ? `${target.price} ${pair[1]}`
-                                  : `-${target.price}%`}
-                              </TargetValue>
-                              <TargetValue
-                                theme={theme}
-                                style={{ width: '50%', textAlign: 'right' }}
-                              >
-                                {target.amount} {pair[0]}
-                              </TargetValue>
-                            </InputRowContainer>
-                          ))}
-                        </div>
-                      </>
-                    ) : (
-                      getOnOffText(averaging.enabled)
-                    )}
-                  </ItemTypography>
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid id="takeaprofit">
-              <Grid
-                container
+                    <ItemTypography theme={theme}>Size:</ItemTypography>
+                    <ItemTypography theme={theme}>
+                      {`${order.amount} ${base}`}
+                    </ItemTypography>
+                  </Row>
+                </RowContainer>
+              </RowContainer>
+            </RowContainer>
+
+            <RowContainer id="stoploss">
+              <RowContainer
                 justify="space-between"
                 alignItems="center"
-                style={{ padding: '1rem 0', flexWrap: 'nowrap' }}
+                padding="3rem 0 0 0"
+                wrap={'nowrap'}
               >
-                <TitleTypography theme={theme}>take profit:</TitleTypography>
-                <Line theme={theme} />
-                <EditButton
-                  theme={theme}
-                  onClick={() => handleOpenEditPopup('takeProfit')}
-                >
-                  edit
-                </EditButton>
-              </Grid>
-              <Grid container style={{ padding: '1rem 0rem 1rem 0rem' }}>
-                <Grid style={{ textAlign: 'right', width: '25%' }}>
-                  {averaging.enabled && (
-                    <ItemTypography theme={theme}>1st tp only:</ItemTypography>
-                  )}
-                  {!takeProfit.trailingTAP.isTrailingOn && (
-                    <>
-                      <ItemTypography theme={theme}>
-                        split target:
-                      </ItemTypography>
-                      {takeProfit.splitTargets.isSplitTargetsOn && (
-                        <ItemTypography
-                          theme={theme}
-                          style={{
-                            paddingBottom: `${takeProfit.splitTargets.targets
-                              .length *
-                              1.8 +
-                              1}rem`,
-                          }}
-                        >
-                          targets
-                        </ItemTypography>
-                      )}
-                    </>
-                  )}
-                  {!takeProfit.splitTargets.isSplitTargetsOn && (
-                    <ItemTypography theme={theme}>trailing:</ItemTypography>
-                  )}
-                  {!takeProfit.splitTargets.isSplitTargetsOn &&
-                    takeProfit.trailingTAP.isTrailingOn && (
-                      <ItemTypography theme={theme}>deviation:</ItemTypography>
-                    )}
-                  {!takeProfit.splitTargets.isSplitTargetsOn &&
-                    !takeProfit.trailingTAP.isTrailingOn && (
-                      <ItemTypography theme={theme}>price:</ItemTypography>
-                    )}
-                  {/* <ItemTypography theme={theme}>timeout:</ItemTypography>
-                  {takeProfit.timeout.isTimeoutOn && (
-                    <>
-                      <ItemTypography theme={theme}>when profit:</ItemTypography>
-                      <ItemTypography theme={theme}>when in profit:</ItemTypography>
-                    </>
-                  )} */}
-                </Grid>
-                <Grid style={{ paddingLeft: '4rem', width: '55%' }}>
-                  {averaging.enabled && (
-                    <ItemTypography
-                      color={getColor(
-                        averaging.closeStrategyAfterFirstTAP,
-                        theme
-                      )}
-                      theme={theme}
-                    >
-                      {getOnOffText(averaging.closeStrategyAfterFirstTAP)}
-                    </ItemTypography>
-                  )}
-                  {!takeProfit.trailingTAP.isTrailingOn && (
-                    <ItemTypography
-                      theme={theme}
-                      color={getColor(
-                        takeProfit.splitTargets.isSplitTargetsOn,
-                        theme
-                      )}
-                    >
-                      {getOnOffText(takeProfit.splitTargets.isSplitTargetsOn)}
-                    </ItemTypography>
-                  )}
-
-                  {takeProfit.splitTargets.isSplitTargetsOn &&
-                    !takeProfit.trailingTAP.isTrailingOn && (
-                      <ItemTypography theme={theme}>
-                        <InputRowContainer padding=".2rem .5rem">
-                          <TargetTitle theme={theme} style={{ width: '50%' }}>
-                            price
-                          </TargetTitle>
-                          <TargetTitle theme={theme} style={{ width: '50%' }}>
-                            quantity
-                          </TargetTitle>
-                        </InputRowContainer>
-                        <div
-                          style={{
-                            width: '100%',
-                          }}
-                        >
-                          {takeProfit.splitTargets.targets.map((target, i) => (
-                            <InputRowContainer
-                              key={`${target.price}${target.amount}${i}`}
-                              padding=".2rem .5rem"
-                              style={{ borderBottom: '.1rem solid #e0e5ec' }}
-                            >
-                              <TargetValue
-                                theme={theme}
-                                style={{
-                                  width: '50%',
-                                  color: getColor(true, theme),
-                                }}
-                              >
-                                +{target.price}%
-                              </TargetValue>
-                              <TargetValue
-                                theme={theme}
-                                style={{ width: '50%' }}
-                              >
-                                {target.amount}%
-                              </TargetValue>
-                            </InputRowContainer>
-                          ))}
-                        </div>
-                      </ItemTypography>
-                    )}
-                  {!takeProfit.splitTargets.isSplitTargetsOn && (
-                    <ItemTypography
-                      theme={theme}
-                      color={getColor(
-                        takeProfit.trailingTAP.isTrailingOn,
-                        theme
-                      )}
-                    >
-                      {getOnOffText(takeProfit.trailingTAP.isTrailingOn)}
-                    </ItemTypography>
-                  )}
-
-                  {!takeProfit.splitTargets.isSplitTargetsOn &&
-                    takeProfit.trailingTAP.isTrailingOn && (
-                      <ItemTypography
-                        theme={theme}
-                        color={theme.palette.dark.main}
-                      >
-                        {takeProfit.trailingTAP.deviationPercentage} %
-                      </ItemTypography>
-                    )}
-
-                  {!takeProfit.splitTargets.isSplitTargetsOn &&
-                    !takeProfit.trailingTAP.isTrailingOn && (
-                      <ItemTypography
-                        theme={theme}
-                        color={getColor(true, theme)}
-                      >
-                        {takeProfit.pricePercentage} %
-                      </ItemTypography>
-                    )}
-
-                  {/* <ItemTypography theme={theme}
-                    color={getColor(takeProfit.timeout.isTimeoutOn)}
-                  >
-                    {getOnOffText(takeProfit.timeout.isTimeoutOn)}
-                  </ItemTypography>
-
-                  {takeProfit.timeout.isTimeoutOn && (
-                    <>
-                      <ItemTypography theme={theme} color={theme.palette.dark.main}>
-                        {`${takeProfit.timeout.whenProfitSec} ${
-                          takeProfit.timeout.whenProfitMode
-                        }`}
-                      </ItemTypography>
-                      <ItemTypography theme={theme} color={theme.palette.dark.main}>
-                        {`${takeProfit.timeout.whenProfitableSec} ${
-                          takeProfit.timeout.whenProfitableMode
-                        }`}
-                      </ItemTypography>
-                    </>
-                  )} */}
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid id="stoploss">
-              <Grid
-                container
-                justify="space-between"
-                alignItems="center"
-                style={{ padding: '1rem 0', flexWrap: 'nowrap' }}
-              >
-                <TitleTypography theme={theme}>stop loss:</TitleTypography>
-                <Line theme={theme} />
-                <EditButton
+                <TitleTypography theme={theme}>2. Stop Loss:</TitleTypography>
+                <Line sideType={sideType} theme={theme} />
+                {/* <EditButton
                   theme={theme}
                   onClick={() => handleOpenEditPopup('stopLoss')}
                 >
                   edit
-                </EditButton>
-              </Grid>
-              <Grid container style={{ padding: '1rem 0 3rem 0rem' }}>
-                <Grid style={{ textAlign: 'right', width: '25%' }}>
-                  {averaging.enabled && (
-                    <ItemTypography theme={theme}>bep:</ItemTypography>
-                  )}
-                  <ItemTypography theme={theme}>price:</ItemTypography>
-                  <ItemTypography theme={theme}>timeout:</ItemTypography>
-                  {stopLoss.timeout.isTimeoutOn && (
-                    <>
-                      {/* <ItemTypography theme={theme}>when loss:</ItemTypography> */}
-                      <ItemTypography theme={theme}>
-                        when in loss:
-                      </ItemTypography>{' '}
-                    </>
-                  )}
-                  <ItemTypography theme={theme}>forced stop:</ItemTypography>
-                </Grid>
-                <Grid style={{ paddingLeft: '4rem' }}>
-                  {averaging.enabled && (
-                    <ItemTypography
-                      color={getColor(
-                        averaging.entryLevels.some(
-                          (level) => level.placeWithoutLoss
-                        ),
-                        theme
-                      )}
-                      theme={theme}
-                    >
-                      {getOnOffText(
-                        averaging.entryLevels.some(
-                          (level) => level.placeWithoutLoss
-                        )
-                      )}
+                </EditButton> */}
+              </RowContainer>
+              <RowContainer container style={{ padding: '1rem 0 0rem 0rem' }}>
+                <RowContainer justify="space-between">
+                  <Row
+                    width={'calc(30%)'}
+                    padding={'0 1rem 0 0'}
+                    justify="space-between"
+                  >
+                    <ItemTypography theme={theme}>Loss:</ItemTypography>
+                    <ItemTypography theme={theme}>
+                      {`${stopLoss.pricePercentage}%`}
                     </ItemTypography>
-                  )}
-                  <ItemTypography theme={theme} color={getColor(false, theme)}>
-                    -{stopLoss.pricePercentage}%
-                  </ItemTypography>
-                  <ItemTypography
-                    theme={theme}
-                    color={getColor(stopLoss.timeout.isTimeoutOn, theme)}
+                  </Row>
+                  <Row
+                    width={'calc(70%)'}
+                    justify="space-between"
+                    padding={'0 0 0 1rem'}
+                    style={{ borderLeft: theme.palette.border.new }}
                   >
-                    {getOnOffText(stopLoss.timeout.isTimeoutOn)}
-                  </ItemTypography>
-                  {stopLoss.timeout.isTimeoutOn && (
-                    <>
-                      {/* <ItemTypography theme={theme} color={theme.palette.dark.main}>
-                        {`${stopLoss.timeout.whenLossSec} ${
-                          stopLoss.timeout.whenLossMode
-                        }`}
-                      </ItemTypography> */}
-                      <ItemTypography
-                        theme={theme}
-                        color={theme.palette.dark.main}
-                      >
-                        {`${stopLoss.timeout.whenLossableSec} ${stopLoss.timeout.whenLossableMode}`}
-                      </ItemTypography>
-                    </>
-                  )}
-                  <ItemTypography
-                    theme={theme}
-                    color={getColor(stopLoss.forcedStop.isForcedStopOn, theme)}
+                    <ItemTypography theme={theme}>Price:</ItemTypography>
+                    <ItemTypography theme={theme}>
+                      {`${stopLoss.stopLossPrice} ${quote}`}
+                    </ItemTypography>
+                  </Row>
+                </RowContainer>
+              </RowContainer>
+            </RowContainer>
+            <RowContainer id="takeaprofit">
+              <RowContainer
+                justify="space-between"
+                alignItems="center"
+                padding="3rem 0 0 0"
+                wrap={'nowrap'}
+              >
+                <TitleTypography theme={theme}>3. Take Profit:</TitleTypography>
+                <Line sideType={sideType} theme={theme} />
+                {/* <EditButton
+                  theme={theme}
+                  onClick={() => handleOpenEditPopup('takeProfit')}
+                >
+                  edit
+                </EditButton> */}
+              </RowContainer>
+              <RowContainer container style={{ padding: '1rem 0 0rem 0rem' }}>
+                <RowContainer justify="space-between">
+                  <Row
+                    width={'calc(30%)'}
+                    padding={'0 1rem 0 0'}
+                    justify="space-between"
                   >
-                    {`${getOnOffText(stopLoss.forcedStop.isForcedStopOn)} / ${
-                      stopLoss.forcedStop.pricePercentage
-                    }%`}
-                  </ItemTypography>
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid
-              container
-              justify="center"
-              style={{
-                position: 'absolute',
-                bottom: '1.5rem',
-                width: 'calc(100% - 6rem)',
-              }}
-            >
+                    <ItemTypography theme={theme}>Profit:</ItemTypography>
+                    <ItemTypography theme={theme}>
+                      {`${takeProfit.pricePercentage}%`}
+                    </ItemTypography>
+                  </Row>
+                  <Row
+                    width={'calc(70%)'}
+                    justify="space-between"
+                    padding={'0 0 0 1rem'}
+                    style={{ borderLeft: theme.palette.border.new }}
+                  >
+                    <ItemTypography theme={theme}>Price:</ItemTypography>
+                    <ItemTypography theme={theme}>
+                      {`${takeProfit.takeProfitPrice} ${quote}`}
+                    </ItemTypography>
+                  </Row>
+                </RowContainer>
+              </RowContainer>
+            </RowContainer>
+            <RowContainer padding="3rem 0 0 0">
               <SendButton
                 theme={theme}
                 type={'buy'}
@@ -636,8 +311,8 @@ export default ({
               >
                 confirm
               </SendButton>
-            </Grid>
-          </Grid>
+            </RowContainer>
+          </RowContainer>
         </DialogContent>
       </DialogWrapper>
     </>

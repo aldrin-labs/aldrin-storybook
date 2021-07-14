@@ -14,10 +14,8 @@ import { isValidPublicKey } from '@sb/dexUtils/utils'
 import { parseTokenMintData, useMintToTickers } from '@sb/dexUtils/tokens'
 
 import { Dialog, Paper } from '@material-ui/core'
-import { Input } from '@sb/compositions/Addressbook/index'
 import { FormInputContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { PurpleButton } from '@sb/compositions/Addressbook/components/Popups/NewCoinPopup'
 import Clear from '@material-ui/icons/Clear'
 import {
   TypographyTitle,
@@ -27,7 +25,7 @@ import {
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { InputRowContainer } from '../../components/SmartOrderTerminal/styles'
 import { PasteButton } from '@sb/compositions/Addressbook/components/Popups/NewContactPopup'
-import { Loading } from '@sb/components'
+import { PurpleButton, Input } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 // const { Text, Title } = Typography;
 

@@ -3,6 +3,8 @@ import styled from 'styled-components'
 
 import { Grid } from '@material-ui/core'
 import { LineProps, RowProps, TitleProps } from './index.types'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { Loading } from '@sb/components'
 
 export const Line = styled.div`
   position: absolute;
@@ -209,4 +211,53 @@ export const Dot = styled.div`
 export const GreenTitle = styled((props) => <TokenWhiteTitle {...props} />)`
   color: ${(props) => props.theme.palette.green.analytics};
   padding-left: 1rem;
+`
+
+export const PurpleButton = ({ onClick, showLoader, theme, text, width, height, margin, disabled, background, color }) => (
+  <BtnCustom
+    disabled={showLoader || disabled}
+    needMinWidth={false}
+    btnWidth={width || "15rem"}
+    height={height || "4.5rem"}
+    fontSize="1.4rem"
+    padding="1rem 2rem"
+    borderRadius=".8rem"
+    borderColor={background || theme.palette.blue.serum}
+    btnColor={color || '#fff'}
+    backgroundColor={background ||theme.palette.blue.serum}
+    textTransform={'none'}
+    margin={margin || '1rem 0 0 0'}
+    transition={'all .4s ease-out'}
+    onClick={onClick}
+  >
+    {showLoader ? (
+      <Loading
+        color={'#fff'}
+        size={16}
+        height={'16px'}
+        style={{ height: '16px' }}
+      />
+    ) : (
+      text
+    )}
+  </BtnCustom>
+)
+
+export const Input = styled.input`
+  width: 100%;
+  height: ${(props) => props.height || '5rem'};
+  margin-bottom: 1rem;
+  background: ${(props) =>
+    props.disabled
+      ? props.theme.palette.grey.disabledInput
+      : props.theme.palette.grey.input};
+  border: ${(props) => `0.1rem solid ${props.theme.palette.text.white}`};
+  border-radius: 0.4rem;
+  padding-left: 1rem;
+  color: ${(props) => props.theme.palette.text.light};
+
+  &::placeholder {
+    color: #abbad1;
+    font-weight: normal;
+  }
 `

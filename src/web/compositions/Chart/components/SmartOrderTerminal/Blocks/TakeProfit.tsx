@@ -67,6 +67,7 @@ export const TakeProfitBlock = ({
   enqueueSnackbar,
   updateStopLossAndTakeProfitPrices,
 }: TakeProfitBlockProps) => {
+  const [base, quote] = pair
   const occupiedVolume = takeProfit.splitTargets.targets.reduce(
     (prev, curr) => prev + curr.amount,
     0
@@ -1235,7 +1236,7 @@ export const TakeProfitBlock = ({
             }}
           >
             {entryPoint.order.side === 'buy' && marketType === 0
-              ? 'Start Smart Buy'
+              ? `Smart Buy ${base}`
               : entryPoint.order.side === 'buy'
               ? 'Start Smart Long'
               : 'Start Smart Short'}
