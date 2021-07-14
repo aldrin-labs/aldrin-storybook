@@ -164,23 +164,25 @@ export const Balances = ({
   const [openDepositPopup, toggleOpeningDepositPopup] = useState(false)
   const [coinForDepositPopup, chooseCoinForDeposit] = useState('')
 
-  const { market } = useMarket()
   const balances = useBalances()
   const [accounts] = useTokenAccounts()
   const [selectedTokenAccounts] = useSelectedTokenAccounts()
   const connection = useConnection()
   const { wallet, providerUrl } = useWallet()
   const { refresh } = useUnmigratedOpenOrdersAccounts()
+  const { market, baseCurrency, quoteCurrency } = useMarket()
 
-  const isBaseCoinExistsInWallet = useSelectedBaseCurrencyAccount()
-  const isQuoteCoinExistsInWallet = useSelectedQuoteCurrencyAccount()
+  const baseAccount = useSelectedBaseCurrencyAccount()
+  const quoteAccount = useSelectedQuoteCurrencyAccount()
+
+  const isBaseCoinExistsInWallet = market ? baseAccount : true
+  const isQuoteCoinExistsInWallet = market ? quoteAccount : true
 
   async function onSettleSuccess() {
     console.log('settled funds success')
 
     setTimeout(refresh, 5000)
   }
-
   async function onSettleFunds(market, openOrders) {
     if (!wallet.connected) {
       notify({
@@ -189,6 +191,15 @@ export const Balances = ({
       })
 
       wallet.connect()
+
+      return
+    }
+
+    if (balances[0].unsettled === 0 && balances[1].unsettled === 0) {
+      notify({
+        message: 'You have no funds to settle.',
+        type: 'error',
+      })
 
       return
     }
@@ -209,6 +220,10 @@ export const Balances = ({
         ),
         tokenAccounts: accounts,
         selectedTokenAccounts,
+        baseCurrency,
+        quoteCurrency,
+        baseUnsettled: balances[0].unsettled,
+        quoteUnsettled: balances[1].unsettled,
       })
 
       console.log('settleFunds result', result)
@@ -236,7 +251,11 @@ export const Balances = ({
   const isCCAIWallet = providerUrl === CCAIProviderURL
   const showSettle = !isCCAIWallet || !wallet.connected || !wallet.autoApprove
   const quote = pair[1].toUpperCase()
-  const isQuoteUSDT = quote === 'USDT' || quote === 'USDC' || quote === 'WUSDT' || quote === 'WUSDC'
+  const isQuoteUSDT =
+    quote === 'USDT' ||
+    quote === 'USDC' ||
+    quote === 'WUSDT' ||
+    quote === 'WUSDC'
 
   return (
     <>
@@ -346,16 +365,7 @@ export const Balances = ({
                   padding: '0 0.5rem',
                 }}
               >
-                {!wallet.connected ? (
-                  null
-                  // <ConnectWalletDropdown
-                  //   theme={theme}
-                  //   showOnTop={true}
-                  //   height={'2rem'}
-                  //   id={'connectButtonBase'}
-                  //   containerStyle={{ padding: '0' }}
-                  // />
-                ) : isBaseCoinExistsInWallet ? (
+                {!wallet.connected ? null : isBaseCoinExistsInWallet ? ( // /> //   containerStyle={{ padding: '0' }} //   id={'connectButtonBase'} //   height={'2rem'} //   showOnTop={true} //   theme={theme} // <ConnectWalletDropdown
                   <>
                     <BtnCustom
                       btnWidth={!showSettle ? '100%' : 'calc(50% - .25rem)'}
@@ -463,14 +473,7 @@ export const Balances = ({
                   padding: '0 0.5rem',
                 }}
               >
-                {!wallet.connected ? (
-                  null
-                  // <ConnectWalletDropdown
-                  //   height={'2rem'}
-                  //   id={'connectButtonQuote'}
-                  //   containerStyle={{ padding: '0' }}
-                  // />
-                ) : isQuoteCoinExistsInWallet ? (
+                {!wallet.connected ? null : isQuoteCoinExistsInWallet ? (
                   <>
                     <BtnCustom
                       btnWidth={!showSettle ? '100%' : 'calc(50% - .25rem)'}

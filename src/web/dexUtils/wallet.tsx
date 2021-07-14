@@ -33,7 +33,7 @@ import { MINT_LAYOUT, parseTokenAccountData } from './tokens'
 import Sollet from '@icons/sollet.svg'
 import Mathwallet from '@icons/mathwallet.svg'
 import Solong from '@icons/solong.svg'
-import CCAI from '@icons/ccai.svg'
+import WalletCCAI from '@icons/auth0Logo_sample.png'
 import { WalletAdapter } from './adapters'
 
 export const WALLET_PROVIDERS = [
@@ -42,13 +42,13 @@ export const WALLET_PROVIDERS = [
     name: 'Wallet™',
     url: CCAIProviderURL,
     adapter: Wallet,
-    icon: CCAI,
+    icon: WalletCCAI,
   },
   {
     name: 'Wallet™ Extension',
     url: `${CCAIProviderURL}/extension`,
     adapter: CcaiExtensionAdapter,
-    icon: CCAI,
+    icon: WalletCCAI,
   },
   {
     name: 'Sollet.io',

@@ -87,11 +87,10 @@ const SwapsPage = ({
   const refreshAllTokensData = () =>
     setRefreshAllTokensDataCounter(refreshAllTokensDataCounter + 1)
 
-  const [selectedPool, selectPool] = useState<PoolInfo | null>(null)
-  const [isWarningPopupOpen, openWarningPopup] = useState(true)
-
   const [baseTokenMintAddress, setBaseTokenMintAddress] = useState<string>('')
   const [quoteTokenMintAddress, setQuoteTokenMintAddress] = useState<string>('')
+  const [selectedPool, selectPool] = useState<PoolInfo | null>(null)
+  const [isWarningPopupOpen, openWarningPopup] = useState(true)
 
   const selectedTokens = getPoolsInfoQuery.getPoolsInfo.find(
     (pool) =>
@@ -280,6 +279,8 @@ const SwapsPage = ({
           </RowContainer>
           <RowContainer margin={'2rem 0 1rem 0'}>
             <InputWithSelectorForSwaps
+              wallet={wallet}
+              publicKey={publicKey}
               placeholder={'0.00'}
               theme={theme}
               directionFrom={true}
@@ -311,6 +312,8 @@ const SwapsPage = ({
           </RowContainer>
           <RowContainer margin={'1rem 0 2rem 0'}>
             <InputWithSelectorForSwaps
+              wallet={wallet}
+              publicKey={publicKey}
               placeholder={'0.00'}
               theme={theme}
               disabled={
@@ -577,7 +580,7 @@ const SwapsPage = ({
         theme={theme}
         open={isWarningPopupOpen}
         onClose={() => openWarningPopup(false)}
-        isPoolsPage={true}
+        isSwapPage={true}
       />
     </RowContainer>
   )

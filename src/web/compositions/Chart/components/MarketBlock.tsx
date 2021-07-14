@@ -20,6 +20,9 @@ import SvgIcon from '@sb/components/SvgIcon'
 import { TokenInfo, TokenListProvider } from '@solana/spl-token-registry'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { TokenIcon } from '@sb/components/TokenIcon'
+import tokensLinksMap from '@core/config/tokensTwitterLinks'
+import Coinmarketcap from '@icons/coinmarketcap.svg'
+import CoinGecko from '@icons/coingecko.svg'
 
 export const ExclamationMark = styled(({ fontSize, lineHeight, ...props }) => (
   <span {...props}>!</span>
@@ -46,16 +49,16 @@ export const Title = styled(
   text-align: ${(props) => props.textAlign || 'center'};
   margin: ${(props) => props.margin || '0'};
 `
-const LinkToAnalytics = styled(Link)`
+export const LinkToAnalytics = styled(Link)`
   font-size: 2rem;
   cursor: pointer;
-  margin-left: 2rem;
+  margin-left: 1.5rem;
 `
 
-const LinkToTwitter = styled.a`
+export const LinkToTwitter = styled.a`
   font-size: 2rem;
   cursor: pointer;
-  margin-left: 2rem;
+  margin-left: 1.5rem;
 `
 
 const selectStyles = (theme: Theme) => ({
@@ -115,12 +118,19 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
     (el) => el?.name.replaceAll('_', '/') === marketName
   )
 
-  const isPrivateCustomMarket =
-    currentMarket?.isPrivateCustomMarket !== undefined
   const isCustomUserMarket = currentMarket?.isCustomUserMarket
+
+  const isPrivateCustomMarket =
+    currentMarket?.isPrivateCustomMarket !== undefined && !isCustomUserMarket
 
   const isCCAIPair =
     pair.includes('CCAI') && !isPrivateCustomMarket && !isCustomUserMarket
+
+  const twitterLink = tokensLinksMap?.get(base)?.twitterLink || ''
+  const marketCapLink = tokensLinksMap?.get(base)?.marketCapLink || ''
+  const marketCapIcon = marketCapLink.includes('coinmarketcap')
+    ? Coinmarketcap
+    : CoinGecko
 
   return (
     <RowContainer
@@ -172,6 +182,8 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
             pair={pair}
             quantityPrecision={quantityPrecision}
             pricePrecision={pricePrecision}
+            market={market}
+            tokenMap={tokenMap}
           />
         </div>
 
@@ -192,9 +204,13 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
               <SvgIcon src={AnalyticsIcon} width={'2.3rem'} height={'2.3rem'} />
             </LinkToAnalytics>
           </DarkTooltip>
-          {baseTokenInfo?.extensions?.twitter && (
+          {twitterLink !== '' && (
             <DarkTooltip title={'Twitter profile of base token.'}>
-              <LinkToTwitter href={baseTokenInfo?.extensions?.twitter}>
+              <LinkToTwitter
+                target="_blank"
+                rel="noopener noreferrer"
+                href={twitterLink}
+              >
                 <SvgIcon
                   width={'2.5rem'}
                   height={'2.5rem'}
@@ -202,6 +218,16 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
                 />
               </LinkToTwitter>
             </DarkTooltip>
+          )}
+          {marketCapLink !== '' && (
+            <a
+              style={{ marginLeft: '1.5rem' }}
+              target="_blank"
+              rel="noopener noreferrer"
+              href={marketCapLink}
+            >
+              <SvgIcon width={'2.5rem'} height={'2.5rem'} src={marketCapIcon} />
+            </a>
           )}
         </Row>
       </Row>

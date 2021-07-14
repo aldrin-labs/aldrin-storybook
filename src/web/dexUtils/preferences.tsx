@@ -27,7 +27,7 @@ export function PreferencesProvider({ children }) {
   const { connected, wallet } = useWallet()
 
   // const [marketList] = useAllMarkets();
-  const { market } = useMarket()
+  const { market, baseCurrency, quoteCurrency } = useMarket()
   const connection = useConnection()
   const [selectedTokenAccounts] = useSelectedTokenAccounts()
 
@@ -39,23 +39,51 @@ export function PreferencesProvider({ children }) {
           connection,
           wallet.publicKey
         )
+
+        const selectedOpenOrders = openOrders[0]
+
+        const baseExists =
+          selectedOpenOrders &&
+          selectedOpenOrders.baseTokenTotal &&
+          selectedOpenOrders.baseTokenFree
+
+        const quoteExists =
+          selectedOpenOrders &&
+          selectedOpenOrders.quoteTokenTotal &&
+          selectedOpenOrders.quoteTokenFree
+
+        const baseUnsettled =
+          baseExists && market
+            ? market.baseSplSizeToNumber(selectedOpenOrders.baseTokenFree)
+            : null
+        const quoteUnsettled =
+          quoteExists && market
+            ? market.quoteSplSizeToNumber(selectedOpenOrders.quoteTokenFree)
+            : null
+
         // await settleAllFunds({ connection, wallet, tokenAccounts: (tokenAccounts || []), markets, selectedTokenAccounts });
-        await settleFunds({
-          market,
-          openOrders,
-          connection,
-          wallet,
-          baseCurrencyAccount: getSelectedTokenAccountForMint(
+        if (baseUnsettled > 0 || quoteUnsettled > 0) {
+          await settleFunds({
+            market,
+            openOrders,
+            connection,
+            wallet,
+            baseCurrencyAccount: getSelectedTokenAccountForMint(
+              tokenAccounts,
+              market?.baseMintAddress
+            ),
+            quoteCurrencyAccount: getSelectedTokenAccountForMint(
+              tokenAccounts,
+              market?.quoteMintAddress
+            ),
+            selectedTokenAccounts: selectedTokenAccounts,
             tokenAccounts,
-            market?.baseMintAddress
-          ),
-          quoteCurrencyAccount: getSelectedTokenAccountForMint(
-            tokenAccounts,
-            market?.quoteMintAddress
-          ),
-          selectedTokenAccounts: selectedTokenAccounts,
-          tokenAccounts,
-        })
+            baseCurrency,
+            quoteCurrency,
+            baseUnsettled,
+            quoteUnsettled,
+          })
+        }
       } catch (e) {
         // console.log('Error auto settling funds: ' + e.message)
       }

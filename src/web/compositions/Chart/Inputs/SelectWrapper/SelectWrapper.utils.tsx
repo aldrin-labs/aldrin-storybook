@@ -2,7 +2,9 @@ import React from 'react'
 import { client } from '@core/graphql/apolloClient'
 import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSettings'
 import { SvgIcon } from '@sb/components'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { DarkTooltip, DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+
+import { marketsByCategories } from '@core/config/marketsByCategories'
 
 import {
   formatNumberToUSFormat,
@@ -15,12 +17,19 @@ import GreenCheckmark from '@icons/successIcon.svg'
 import Warning from '@icons/warningPairSel.png'
 import ThinkingFace from '@icons/thinkingFace.png'
 import CCAILogo from '@icons/auth0Logo.svg'
+import AnalyticsIcon from '@icons/analytics.svg'
+import BlueTwitterIcon from '@icons/blueTwitter.svg'
 
 import favoriteSelected from '@icons/favoriteSelected.svg'
 import favoriteUnselected from '@icons/favoriteUnselected.svg'
 
 import LessVolumeArrow from '@icons/lessVolumeArrow.svg'
 import MoreVolumeArrow from '@icons/moreVolumeArrow.svg'
+import Coinmarketcap from '@icons/coinmarketcap.svg'
+import CoinGecko from '@icons/coingecko.svg'
+import Inform from '@icons/inform.svg'
+
+import tokensLinksMap from '@core/config/tokensTwitterLinks'
 
 import {
   GetSelectorSettingsType,
@@ -30,6 +39,10 @@ import {
 } from './SelectWrapper.types'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
+import LinkToSolanaExp from '../../components/LinkToSolanaExp'
+import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { LinkToAnalytics, LinkToTwitter } from '../../components/MarketBlock'
+import { getNumberOfDecimalsFromNumber } from '@core/utils/chartPageUtils'
 
 export const selectWrapperColumnNames = [
   { label: '', id: 'favorite', isSortable: false },
@@ -156,6 +169,10 @@ export const combineSelectWrapperData = ({
   marketType,
   needFiltrations = true,
   customMarkets,
+  market,
+  tokenMap,
+  serumMarketsDataMap,
+  officialMarketsMap,
 }: {
   data: ISelectData
   // updateFavoritePairsMutation: (variableObj: {
@@ -179,7 +196,11 @@ export const combineSelectWrapperData = ({
   usdtPairsMap: Map<string, string>
   marketType: number
   needFiltrations?: boolean
+  officialMarketsMap: any
 }) => {
+  const marketsCategoriesData = Object.entries(marketsByCategories)
+
+  // create map & filter out from custom
   if (!data && !Array.isArray(data)) {
     return []
   }
@@ -236,6 +257,24 @@ export const combineSelectWrapperData = ({
           !el.isCustomUserMarket
       )
     }
+    if (tab === 'sol') {
+      processedData = processedData.filter((el) => {
+        const [base, quote] = el.symbol.split('_')
+        return quote === 'SOL'
+      })
+    }
+
+    marketsCategoriesData?.forEach(([category, data]) => {
+      const tokens = data.tokens
+
+      if (tab === category) {
+        processedData = processedData.filter((el) => {
+          const [base, quote] = el.symbol.split('_')
+          return tokens.includes(base) && !el.isCustomUserMarket
+        })
+      }
+    })
+
     if (tab === 'leveraged') {
       processedData = processedData.filter(
         (el) =>
@@ -244,12 +283,61 @@ export const combineSelectWrapperData = ({
       )
     }
 
+    if (tab === 'topGainers' || tab === 'topLosers') {
+      processedData = processedData.sort((a, b) => {
+        const pricePrecisionA = getNumberOfDecimalsFromNumber(a.closePrice)
+
+        const strippedLastPriceDiffA = +stripDigitPlaces(
+          a.lastPriceDiff,
+          pricePrecisionA
+        )
+
+        const strippedMarkPriceA = +stripDigitPlaces(
+          a.closePrice,
+          pricePrecisionA
+        )
+
+        const prevClosePriceA = strippedMarkPriceA - strippedLastPriceDiffA
+
+        const priceChangePercentageA = !prevClosePriceA
+          ? 0
+          : (a.closePrice - prevClosePriceA) / (prevClosePriceA / 100)
+
+        const pricePrecisionB = getNumberOfDecimalsFromNumber(b.closePrice)
+
+        const strippedLastPriceDiffB = +stripDigitPlaces(
+          b.lastPriceDiff,
+          pricePrecisionB
+        )
+
+        const strippedMarkPriceB = +stripDigitPlaces(
+          b.closePrice,
+          pricePrecisionB
+        )
+
+        const prevClosePriceB = strippedMarkPriceB - strippedLastPriceDiffB
+
+        const priceChangePercentageB = !prevClosePriceB
+          ? 0
+          : (b.closePrice - prevClosePriceB) / (prevClosePriceB / 100)
+
+        return tab === 'topGainers'
+          ? priceChangePercentageB - priceChangePercentageA
+          : priceChangePercentageA - priceChangePercentageB
+      })
+    }
+
     if (tab === 'private') {
-      processedData = data.filter((el) => el.isPrivateCustomMarket)
+      processedData = data.filter(
+        (el) => el.isPrivateCustomMarket && !officialMarketsMap.has(el.symbol)
+      )
     }
     if (tab === 'public') {
       processedData = data.filter(
-        (el) => el.isCustomUserMarket && !el.isPrivateCustomMarket
+        (el) =>
+          el.isCustomUserMarket &&
+          !el.isPrivateCustomMarket &&
+          !officialMarketsMap.has(el.symbol)
       )
     }
   } else if (needFiltrations) {
@@ -259,7 +347,6 @@ export const combineSelectWrapperData = ({
   processedData = processedData.filter((el) =>
     filterDataBySymbolForDifferentDeviders({ searchValue, symbol: el.symbol })
   )
-
   const filtredData = processedData.map((el) => {
     const {
       symbol = '',
@@ -273,6 +360,8 @@ export const combineSelectWrapperData = ({
       programId = '',
       isCustomUserMarket,
       isPrivateCustomMarket,
+      minPrice = 0,
+      maxPrice = 0,
     } = el || {
       symbol: '',
       closePrice: 0,
@@ -285,10 +374,12 @@ export const combineSelectWrapperData = ({
       programId: '',
       isCustomUserMarket,
       isPrivateCustomMarket,
+      minPrice: 0,
+      maxPrice: 0,
     }
 
     const [base, quote] = symbol.split('_')
-    const pricePrecision = closePrice < 1 ? 8 : closePrice < 10 ? 4 : 2
+    const pricePrecision = getNumberOfDecimalsFromNumber(closePrice)
 
     const isNotUSDTQuote = getIsNotUSDTQuote(symbol)
 
@@ -309,19 +400,24 @@ export const combineSelectWrapperData = ({
     const signTrades24hChange = +precentageTradesDiff > 0 ? '+' : '-'
 
     const marketName = symbol.replaceAll('_', '/')
-    const currentMarket = customMarkets?.find(
-      (el) => el?.name.replaceAll('_', '/') === marketName
-    )
+    const currentMarket = officialMarketsMap?.get(symbol)
 
     const isAdditionalCustomUserMarket = el.isCustomUserMarket
     const isAwesomeMarket = currentMarket?.isCustomUserMarket
-    const isCCAIPair =
-      symbol.includes('CCAI') &&
-      !isAdditionalCustomUserMarket &&
-      !isAwesomeMarket
 
     const mint = getTokenMintAddressByName(base)
 
+    const baseTokenInfo = tokenMap?.get(getTokenMintAddressByName(base))
+    const marketAddress = market?.address?.toBase58()
+
+    const avgBuy = serumMarketsDataMap?.get(symbol)?.avgBuy || 0
+    const avgSell = serumMarketsDataMap?.get(symbol)?.avgSell || 0
+
+    const twitterLink = tokensLinksMap?.get(base)?.twitterLink || ''
+    const marketCapLink = tokensLinksMap?.get(base)?.marketCapLink || ''
+    const marketCapIcon = marketCapLink.includes('coinmarketcap')
+      ? Coinmarketcap
+      : CoinGecko
     return {
       id: `${symbol}`,
       // favorite: {
@@ -356,7 +452,7 @@ export const combineSelectWrapperData = ({
                 justifyContent: 'center',
               }}
             >
-              <TokenIcon 
+              <TokenIcon
                 mint={mint}
                 width={'50%'}
                 emojiIfNoLogo={true}
@@ -368,7 +464,24 @@ export const combineSelectWrapperData = ({
         ),
       },
       symbol: {
-        render: <span>{symbol.replaceAll('_', '/')}</span>,
+        render: (
+          <Row direction={'column'} align={'initial'}>
+            {baseTokenInfo && baseTokenInfo?.name && (
+              <span
+                style={{
+                  fontSize: '1.3rem',
+                  textTransform: 'capitalize',
+                  color: '#96999C',
+                  fontFamily: 'Avenir Next Thin',
+                  marginBottom: '1rem',
+                }}
+              >
+                {baseTokenInfo?.name.replace('(Sollet)', '')}
+              </span>
+            )}
+            <span style={{ fontSize: '1.6rem' }}>{marketName}</span>{' '}
+          </Row>
+        ),
         onClick: () =>
           onSelectPair({
             value: symbol,
@@ -381,11 +494,20 @@ export const combineSelectWrapperData = ({
       price: {
         contentToSort: +closePrice,
         render: (
-          <span>
-            {formatNumberToUSFormat(
-              stripDigitPlaces(closePrice, pricePrecision)
-            )}
-          </span>
+          <>
+            <span
+              style={{
+                color: theme.palette.green.main,
+              }}
+            >
+              {formatNumberToUSFormat(
+                stripDigitPlaces(closePrice, pricePrecision)
+              )}
+            </span>
+            <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
+              {quote}
+            </span>
+          </>
         ),
 
         color: theme.palette.dark.main,
@@ -405,7 +527,9 @@ export const combineSelectWrapperData = ({
           >
             {`${sign24hChange}${formatNumberToUSFormat(
               stripDigitPlaces(lastPriceDiff, pricePrecision)
-            )} / ${sign24hChange}${formatNumberToUSFormat(
+            )}`}{' '}
+            <span style={{ color: '#96999C' }}> / </span>{' '}
+            {`${sign24hChange}${formatNumberToUSFormat(
               stripDigitPlaces(priceChangePercentage, 2)
             )}%`}
           </span>
@@ -451,6 +575,137 @@ export const combineSelectWrapperData = ({
           </>
         ),
       },
+      min24h: {
+        render: (
+          <span
+            style={{
+              color: theme.palette.red.main,
+            }}
+          >
+            <>
+              {' '}
+              {`${formatNumberToUSFormat(
+                stripDigitPlaces(minPrice, pricePrecision)
+              )}`}{' '}
+              <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
+                {quote}
+              </span>
+            </>
+          </span>
+        ),
+      },
+      max24h: {
+        render: (
+          <span
+            style={{
+              color: theme.palette.green.main,
+            }}
+          >
+            <>
+              {`${formatNumberToUSFormat(
+                stripDigitPlaces(maxPrice, pricePrecision)
+              )}`}{' '}
+              <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
+                {quote}
+              </span>
+            </>
+          </span>
+        ),
+      },
+      avgSell14d: {
+        render: (
+          <>
+            <span
+              style={{
+                color: theme.palette.red.main,
+              }}
+            >
+              {`${formatNumberToUSFormat(stripDigitPlaces(avgSell))}`}
+            </span>
+            <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
+              {quote}
+            </span>
+          </>
+        ),
+      },
+      avgBuy14d: {
+        render: (
+          <>
+            <span
+              style={{
+                color: theme.palette.green.main,
+              }}
+            >
+              {`${formatNumberToUSFormat(stripDigitPlaces(avgBuy))}`}{' '}
+            </span>{' '}
+            <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
+              {quote}
+            </span>
+          </>
+        ),
+      },
+      links: {
+        render: (
+          <Row
+            style={{ flexWrap: 'nowrap' }}
+            justify={'flex-start'}
+            align={'baseline'}
+          >
+            {/* <SvgIcon
+              onClick={() => {}}
+              src={Inform}
+              style={{ marginRight: '1.5rem' }}
+              width={'2.3rem'}
+              height={'2.3rem'}
+            /> */}
+            <LinkToSolanaExp padding={'0'} marketAddress={marketAddress} />
+            <DarkTooltip title={'Show analytics for this market.'}>
+              <LinkToAnalytics
+                target="_blank"
+                rel="noopener noreferrer"
+                to={`/analytics/${marketName}`}
+              >
+                <SvgIcon
+                  src={AnalyticsIcon}
+                  width={'2.3rem'}
+                  height={'2.3rem'}
+                />
+              </LinkToAnalytics>
+            </DarkTooltip>
+            {twitterLink !== '' && (
+              <DarkTooltip title={'Twitter profile of base token.'}>
+                <LinkToTwitter
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={twitterLink}
+                >
+                  <SvgIcon
+                    width={'2.5rem'}
+                    height={'2.5rem'}
+                    src={BlueTwitterIcon}
+                  />
+                </LinkToTwitter>
+              </DarkTooltip>
+            )}
+            {marketCapLink !== '' && (
+              <a
+                style={{ marginLeft: '1.5rem' }}
+                target="_blank"
+                rel="noopener noreferrer"
+                href={marketCapLink}
+              >
+                <SvgIcon
+                  width={'2.5rem'}
+                  height={'2.5rem'}
+                  src={marketCapIcon}
+                />
+              </a>
+            )}
+            {/* <MintsPopup /> */}
+          </Row>
+        ),
+      },
+
       volume24hChangeIcon: {
         render:
           +volumeChange > 0 ? (
@@ -462,7 +717,5 @@ export const combineSelectWrapperData = ({
     }
   })
 
-  return filtredData.sort((a, b) =>
-    a.symbol.contentToSort.localeCompare(b.symbol.contentToSort)
-  )
+  return filtredData
 }

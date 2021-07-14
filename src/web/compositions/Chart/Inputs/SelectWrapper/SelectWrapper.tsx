@@ -1,10 +1,8 @@
 import React from 'react'
 import { compose } from 'recompose'
-import styled from 'styled-components'
 import { Grid, Input, InputAdornment } from '@material-ui/core'
 import { withTheme } from '@material-ui/core/styles'
-import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
-import { Column, Table, SortDirection } from 'react-virtualized'
+import { SortDirection } from 'react-virtualized'
 import 'react-virtualized/styles.css'
 import dayjs from 'dayjs'
 import { WarningPopup } from '@sb/compositions/Chart/components/WarningPopup'
@@ -26,8 +24,13 @@ import search from '@icons/search.svg'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
 import _ from 'lodash'
 
+import { StyledGrid } from './SelectWrapperStyles'
 import { notify } from '@sb/dexUtils/notifications'
-import { getMarketInfos } from '@sb/dexUtils/markets'
+import {
+  getMarketInfos,
+  UPDATED_AWESOME_MARKETS,
+  useOfficialMarketsList,
+} from '@sb/dexUtils/markets'
 
 import {
   // TableWithSort,
@@ -45,11 +48,21 @@ import {
 import {
   // selectWrapperColumnNames,
   combineSelectWrapperData,
+  marketsByCategories,
 } from './SelectWrapper.utils'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import { withPublicKey } from '@core/hoc/withPublicKey'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { withRouter } from 'react-router'
+import {
+  dayDuration,
+  endOfDayTimestamp,
+  getTimezone,
+} from '@sb/compositions/AnalyticsRoute/components/utils'
+import { getSerumTradesData } from '@core/graphql/queries/chart/getSerumTradesData'
+import ReactDOM from 'react-dom'
+import { TableHeader } from './TableHeader'
+import { TableInner } from './TableInner'
 
 export const excludedPairs = [
   // 'USDC_ODOP',
@@ -83,27 +96,6 @@ export const datesForQuery = {
 }
 
 export const fiatRegexp = new RegExp(fiatPairs.join('|'), 'gi')
-
-const StyledGrid = styled(Grid)`
-  display: none;
-`
-
-const StyledTab = styled(({ isSelected, ...props }) => <Row {...props} />)`
-  && {
-    text-transform: capitalize;
-    padding: 1rem;
-    background: ${(props) =>
-      props.isSelected ? props.theme.palette.dark.background : 'inherit'};
-    border-radius: 0.3rem;
-    cursor: pointer;
-    font-family: Avenir Next Demi;
-    font-size: 1.4rem;
-    color: ${(props) =>
-      props.isSelected
-        ? props.theme.palette.dark.main
-        : props.theme.palette.grey.text};
-  }
-`
 
 class SelectWrapper extends React.PureComponent<IProps, IState> {
   state: IState = {
@@ -257,6 +249,7 @@ class SelectPairListComponent extends React.PureComponent<
     left: 0,
     sortBy: 'volume24hChange',
     sortDirection: SortDirection.DESC,
+    // isMintsPopupOpen: false,
   }
 
   componentDidMount() {
@@ -275,14 +268,25 @@ class SelectPairListComponent extends React.PureComponent<
       usdcPairsMap,
       usdtPairsMap,
       marketType,
-      getSerumMarketDataQuery,
+      getSerumTradesDataQuery,
       customMarkets,
+      market,
+      tokenMap,
+      markets,
+      officialMarketsMap,
+      onTabChange,
     } = this.props
+
+    const serumMarketsDataMap = new Map()
 
     const { left } = document
       .getElementById('ExchangePair')
       ?.getBoundingClientRect()
     const { sortBy, sortDirection } = this.state
+
+    getSerumTradesDataQuery?.getSerumTradesData?.forEach((el) =>
+      serumMarketsDataMap.set(el.pair, el)
+    )
 
     const processedSelectData = combineSelectWrapperData({
       data,
@@ -300,9 +304,14 @@ class SelectPairListComponent extends React.PureComponent<
       usdtPairsMap,
       marketType,
       customMarkets,
+      market,
+      tokenMap,
+      serumMarketsDataMap,
+      officialMarketsMap,
     })
 
     const sortedData = this._sortList({
+      tab,
       sortBy,
       sortDirection,
       data: processedSelectData,
@@ -330,11 +339,22 @@ class SelectPairListComponent extends React.PureComponent<
       usdtPairsMap,
       favoritePairsMap,
       marketType,
+      markets,
       customMarkets,
+      market,
+      tokenMap,
+      getSerumTradesDataQuery,
+      officialMarketsMap,
+      onTabChange,
     } = nextProps
     const { data: prevPropsData } = this.props
     const { sortBy, sortDirection } = this.state
 
+    const serumMarketsDataMap = new Map()
+
+    getSerumTradesDataQuery?.getSerumTradesData?.forEach((el) =>
+      serumMarketsDataMap?.set(el.pair, el)
+    )
     const processedSelectData = combineSelectWrapperData({
       data,
       updateFavoritePairsMutation,
@@ -352,9 +372,14 @@ class SelectPairListComponent extends React.PureComponent<
       favoritePairsMap,
       marketType,
       customMarkets,
+      market,
+      tokenMap,
+      serumMarketsDataMap: serumMarketsDataMap,
+      officialMarketsMap,
     })
 
     const sortedData = this._sortList({
+      tab,
       sortBy,
       sortDirection,
       data: processedSelectData,
@@ -365,7 +390,15 @@ class SelectPairListComponent extends React.PureComponent<
     })
   }
 
-  _sortList = ({ sortBy, sortDirection, data }) => {
+  // handleCloseMintsPopup = () => {
+  //   this.setState({ isMintsPopupOpen: false })
+  // }
+
+  // handleOpenMintsPopup = () => {
+  //   this.setState({ isMintsPopupOpen: true })
+  // }
+
+  _sortList = ({ sortBy, sortDirection, data, tab }) => {
     let dataToSort = data
 
     if (!dataToSort) {
@@ -373,6 +406,10 @@ class SelectPairListComponent extends React.PureComponent<
     }
 
     let newList = [...dataToSort]
+
+    if (tab === 'topGainers' || tab === 'topLosers') {
+      return newList
+    }
 
     // const CCAIMarket = newList.find(v => v.symbol.contentToSort === 'CCAI_USDC')
 
@@ -407,7 +444,6 @@ class SelectPairListComponent extends React.PureComponent<
     const ccaiIndex = newList.findIndex(
       (v) => v.symbol.contentToSort === 'CCAI_USDC'
     )
-
     if (ccaiIndex === -1) return newList
 
     const updatedList = [
@@ -433,7 +469,6 @@ class SelectPairListComponent extends React.PureComponent<
       id,
       tabSpecificCoin,
       onChangeSearch,
-      onTabChange,
       marketType,
       publicKey,
       wallet,
@@ -442,8 +477,9 @@ class SelectPairListComponent extends React.PureComponent<
       marketsByExchangeQuery,
       setCustomMarkets,
       customMarkets,
+      officialMarketsMap,
       getSerumMarketDataQueryRefetch,
-      getSerumMarketDataQuery,
+      onTabChange,
     } = this.props
 
     const onAddCustomMarket = (customMarket: any) => {
@@ -466,427 +502,126 @@ class SelectPairListComponent extends React.PureComponent<
       console.log('onAddCustomMarket', newCustomMarkets)
       return true
     }
-
     return (
-      <StyledGrid
-        id={id}
-        style={{
-          top: `calc(100% - 1rem)`,
-          left: `0rem`,
-          fontFamily: 'DM Sans',
-          position: 'absolute',
-          zIndex: 900,
-          background: theme.palette.white.background,
-          minWidth: '70rem',
-          height: '35rem',
-          borderRadius: '.4rem',
-          overflow: 'hidden',
-          border: theme.palette.border.new,
-          boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
-        }}
-      >
-        <RowContainer
+      <>
+        <StyledGrid
+          id={id}
           style={{
-            height: '5rem',
-            padding: '0.5rem',
-            justifyContent: 'space-around',
-            flexDirection: 'row',
-            flexWrap: 'nowrap',
-            alignItems: 'center',
-            borderBottom: theme.palette.border.new,
+            top: `calc(100% - 1rem)`,
+            left: `0rem`,
+            fontFamily: 'DM Sans',
+            position: 'absolute',
+            zIndex: 900,
+            background: '#222429',
+            minWidth: '150rem',
+            height: '73rem',
+            borderRadius: '2rem',
+            overflow: 'hidden',
+            border: theme.palette.border.new,
+            filter: 'drop-shadow(0px 0px 8px rgba(125, 125, 131, 0.2))',
           }}
         >
-          {/* <Grid
-            style={{
-              display: 'flex',
-              padding: '1rem',
-              background: tab === 'favorite' ? theme.palette.grey.main : '',
-              cursor: 'pointer',
-            }}
-            onClick={() => onTabChange('favorite')}
-          >
-            <SvgIcon src={favoriteSelected} width="2rem" height="auto" />
-          </Grid> */}
-          <StyledTab
+          <TableHeader
             theme={theme}
-            isSelected={tab === 'all'}
-            onClick={() => onTabChange('all')}
-          >
-            All
-          </StyledTab>
-          <StyledTab
-            theme={theme}
-            isSelected={tab === 'usdt'}
-            onClick={() => onTabChange('usdt')}
-          >
-            USDT
-          </StyledTab>
-          <StyledTab
-            theme={theme}
-            isSelected={tab === 'usdc'}
-            onClick={() => onTabChange('usdc')}
-          >
-            USDC
-          </StyledTab>
-          <StyledTab
-            theme={theme}
-            isSelected={tab === 'leveraged'}
-            onClick={() => onTabChange('leveraged')}
-          >
-            Leveraged tokens
-          </StyledTab>
-          <StyledTab
-            theme={theme}
-            isSelected={tab === 'public'}
-            onClick={() => onTabChange('public')}
-          >
-            Custom markets
-          </StyledTab>
-          <StyledTab
-            theme={theme}
-            isSelected={tab === 'private'}
-            onClick={() => onTabChange('private')}
-          >
-            Private markets{' '}
-          </StyledTab>
-          <AddCircleIcon
-            onClick={async () => {
-              if (publicKey === '') {
-                notify({
-                  message: 'Connect your wallet first',
-                  type: 'error',
-                })
-                wallet.connect()
-                return
+            tab={tab}
+            data={this.props.data}
+            onTabChange={onTabChange}
+            officialMarketsMap={officialMarketsMap}
+            marketType={marketType}
+          />
+          {/* {ReactDOM.createPortal(<StyledOverlay />, document.body)} */}
+          <Grid container style={{ justifyContent: 'flex-end', width: '100%' }}>
+            <Input
+              placeholder="Search by all categories"
+              disableUnderline={true}
+              style={{
+                width: '100%',
+                height: '5rem',
+                background: '#383B45',
+                fontFamily: 'Avenir Next Medium',
+                fontSize: '1.5rem',
+                color: '#96999C',
+                borderBottom: `.1rem solid #383B45`,
+                padding: '0 2rem',
+              }}
+              value={searchValue}
+              onChange={onChangeSearch}
+              inputProps={{
+                style: {
+                  color: '#96999C',
+                },
+              }}
+              endAdornment={
+                <InputAdornment
+                  style={{
+                    width: '10%',
+                    justifyContent: 'flex-end',
+                    cursor: 'pointer',
+                    color: '#96999C',
+                  }}
+                  disableTypography={true}
+                  position="end"
+                  autoComplete="off"
+                >
+                  <SvgIcon src={search} width="1.5rem" height="auto" />
+                </InputAdornment>
               }
-
-              this.setState({ showAddMarketPopup: true })
-            }}
-            style={{
-              width: '3rem',
-              height: '3rem',
-              padding: '.5rem',
-              color: '#55BB7C',
-              cursor: 'pointer',
-            }}
+            />
+          </Grid>
+          <TableInner
+            theme={theme}
+            processedSelectData={processedSelectData}
+            sort={this._sort}
+            sortBy={this.state.sortBy}
+            sortDirection={this.state.sortDirection}
           />
-          {marketType === 0 && (
-            <>
-              <Grid
-                style={{
-                  padding: '1rem',
-                  background: tab === 'btc' ? theme.palette.grey.main : '',
-                  display: 'flex',
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                  fontSize: '1.2rem',
-                  color: theme.palette.grey.light,
-                  fontWeight: 'bold',
-                }}
-                onClick={() => onTabChange('btc')}
-              >
-                BTC
-              </Grid>
-
-              <Grid
-                style={{
-                  display: 'flex',
-                  padding: '1rem',
-                  background: tab === 'alts' ? theme.palette.grey.main : '',
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                  fontSize: '1.2rem',
-                  color: theme.palette.grey.light,
-                  fontWeight: 'bold',
-                }}
-                onClick={() => onTabChange('alts')}
-              >
-                <Grid style={{ paddingRight: '1rem' }}>ALTS</Grid>
-                <Grid style={{ width: '6rem' }}>
-                  <ReactSelectComponent
-                    isSearchable={false}
-                    valueContainerStyles={{ padding: 0 }}
-                    placeholder="ALL"
-                    onChange={onSpecificCoinChange}
-                    options={[
-                      { label: 'ALL', value: 'ALL' },
-                      { value: 'ETH', label: 'ETH' },
-                      { value: 'TRX', label: 'TRX' },
-                      { value: 'XRP', label: 'XRP' },
-                      { label: 'ALL', value: 'ALL' },
-                    ]}
-                    value={
-                      tabSpecificCoin === ''
-                        ? { label: 'ALL', value: 'ALL' }
-                        : tabSpecificCoin === 'ALL'
-                        ? { label: 'ALL', value: 'ALL' }
-                        : !['ETH', 'TRX', 'XRP'].includes(tabSpecificCoin)
-                        ? { label: 'ALL', value: 'ALL' }
-                        : undefined
-                    }
-                  />
-                </Grid>
-              </Grid>
-              <Grid
-                style={{
-                  display: 'flex',
-                  padding: '1rem',
-                  background: tab === 'fiat' ? theme.palette.grey.main : '',
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                  fontSize: '1.2rem',
-                  color: theme.palette.grey.light,
-                  fontWeight: 'bold',
-                }}
-                onClick={() => onTabChange('fiat')}
-              >
-                <Grid style={{ paddingRight: '1rem' }}>STABLE</Grid>
-                <Grid style={{ width: '6rem' }}>
-                  <ReactSelectComponent
-                    isSearchable={false}
-                    valueContainerStyles={{ padding: 0 }}
-                    placeholder="ALL"
-                    onChange={onSpecificCoinChange}
-                    options={[
-                      { label: 'ALL', value: 'ALL' },
-                      ...stableCoinsWithoutFiatPairs.map((el) => ({
-                        value: el,
-                        label: el,
-                      })),
-                    ]}
-                    value={
-                      tabSpecificCoin === ''
-                        ? { label: 'ALL', value: 'ALL' }
-                        : tabSpecificCoin === 'ALL'
-                        ? { label: 'ALL', value: 'ALL' }
-                        : !stableCoinsWithoutFiatPairs.includes(tabSpecificCoin)
-                        ? { label: 'ALL', value: 'ALL' }
-                        : undefined
-                    }
-                  />
-                </Grid>
-              </Grid>
-            </>
-          )}
-        </RowContainer>
-        <Grid container style={{ justifyContent: 'flex-end', width: '100%' }}>
-          <Input
-            placeholder="Search"
-            disableUnderline={true}
+          <Grid
             style={{
+              justifyContent: 'flex-end',
               width: '100%',
-              height: '3rem',
-              background: theme.palette.white.background,
-              // borderRadius: '0.3rem',
-              color: theme.palette.grey.placeholder,
-              borderBottom: `.1rem solid ${theme.palette.grey.newborder}`,
-              paddingLeft: '1rem',
+              position: 'relative',
+              zIndex: 1000,
             }}
-            value={searchValue}
-            onChange={onChangeSearch}
-            // inputProps={{
-            //   style: {
-            //     paddingLeft: '1rem',
-            //   },
-            // }}
-            endAdornment={
-              <InputAdornment
-                style={{
-                  width: '10%',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                }}
-                disableTypography={true}
-                position="end"
-                autoComplete="off"
-              >
-                <SvgIcon src={search} width="1.5rem" height="auto" />
-              </InputAdornment>
-            }
+            container
+          >
+            <Row
+              style={{
+                padding: '0 2rem',
+                height: '4rem',
+                fontFamily: 'Avenir Next Medium',
+                color: theme.palette.blue.serum,
+                alignItems: 'center',
+                fontSize: '1.5rem',
+                textTransform: 'none',
+              }}
+              onClick={async (e) => {
+                e.stopPropagation()
+                if (publicKey === '') {
+                  notify({
+                    message: 'Connect your wallet first',
+                    type: 'error',
+                  })
+                  wallet.connect()
+                  return
+                }
+
+                this.setState({ showAddMarketPopup: true })
+              }}
+            >
+              {' '}
+              + Add Market
+            </Row>
+          </Grid>
+          <CustomMarketDialog
+            theme={theme}
+            open={showAddMarketPopup}
+            onClose={() => this.setState({ showAddMarketPopup: false })}
+            onAddCustomMarket={onAddCustomMarket}
+            getSerumMarketDataQueryRefetch={getSerumMarketDataQueryRefetch}
           />
-        </Grid>
-        <Grid style={{ overflow: 'hidden', height: 'calc(100% - 8rem)' }}>
-          <AutoSizer>
-            {({ width, height }: { width: number; height: number }) => (
-              <Table
-                width={width}
-                height={height}
-                rowCount={processedSelectData.length}
-                sort={this._sort}
-                sortBy={this.state.sortBy}
-                sortDirection={this.state.sortDirection}
-                onRowClick={({ event, index, rowData }) => {
-                  rowData.symbol.onClick()
-                }}
-                gridStyle={{
-                  outline: 'none',
-                }}
-                rowStyle={{
-                  outline: 'none',
-                  cursor: 'pointer',
-                  // color: theme.palette.dark.main,
-                  borderBottom: `0.05rem solid ${theme.palette.grey.newborder}`,
-                }}
-                headerHeight={window.outerHeight / 40}
-                headerStyle={{
-                  color: theme.palette.grey.title,
-                  paddingLeft: '.5rem',
-                  paddingTop: '.25rem',
-                  marginLeft: 0,
-                  marginRight: 0,
-                  letterSpacing: '.075rem',
-                  // borderBottom: '.1rem solid #e0e5ec',
-                  fontSize: '1.2rem',
-                  outline: 'none',
-                }}
-                rowHeight={window.outerHeight / 30}
-                rowGetter={({ index }) => processedSelectData[index]}
-              >
-                {/* <Column
-                  label=""
-                  dataKey="favorite"
-                  headerStyle={{
-                    paddingLeft: 'calc(.5rem + 10px)',
-                  }}
-                  width={width / 5}
-                  cellRenderer={({ cellData }) => (
-                    <span onClick={(e) => e.stopPropagation()}>
-                      {cellData.render}
-                    </span>
-                  )}
-                /> */}
-                <Column
-                  label={` `}
-                  dataKey="emoji"
-                  headerStyle={{
-                    color: theme.palette.grey.title,
-                    paddingRight: 'calc(10px)',
-                    fontSize: '1rem',
-                    textAlign: 'left',
-                  }}
-                  width={width / 2}
-                  style={{
-                    textAlign: 'left',
-                    fontSize: '1.2rem',
-                    fontWeight: 'bold',
-                  }}
-                  cellRenderer={({ cellData }) => cellData.render}
-                />
-                <Column
-                  label={`Pair`}
-                  dataKey="symbol"
-                  headerStyle={{
-                    color: theme.palette.grey.title,
-                    paddingRight: '6px',
-                    paddingLeft: '1rem',
-                    fontSize: '1rem',
-                    textAlign: 'left',
-                  }}
-                  width={width}
-                  style={{
-                    textAlign: 'left',
-                    fontSize: '1.2rem',
-                    fontWeight: 'bold',
-                  }}
-                  cellRenderer={({ cellData }) => cellData.render}
-                />
-                <Column
-                  label={`last price`}
-                  dataKey="price"
-                  headerStyle={{
-                    color: theme.palette.grey.title,
-                    paddingRight: 'calc(10px)',
-                    fontSize: '1rem',
-                    textAlign: 'left',
-                  }}
-                  width={width}
-                  style={{
-                    textAlign: 'left',
-                    fontSize: '1.2rem',
-                    fontWeight: 'bold',
-                  }}
-                  cellRenderer={({ cellData }) => cellData.render}
-                />
-                <Column
-                  label={`24H CHANGE`}
-                  dataKey="price24hChange"
-                  headerStyle={{
-                    color: theme.palette.grey.title,
-                    paddingRight: 'calc(10px)',
-                    fontSize: '1rem',
-                    textAlign: 'left',
-                  }}
-                  width={width * 1.5}
-                  style={{
-                    textAlign: 'left',
-                    fontSize: '1.2rem',
-                    fontWeight: 'bold',
-                  }}
-                  cellRenderer={({ cellData }) => cellData.render}
-                />
-                <Column
-                  label={`24H VOLUME`}
-                  dataKey="volume24hChange"
-                  headerStyle={{
-                    color: theme.palette.grey.title,
-                    paddingRight: 'calc(10px)',
-                    fontSize: '1rem',
-                    textAlign: 'left',
-                  }}
-                  width={width}
-                  style={{
-                    textAlign: 'left',
-                    fontSize: '1.2rem',
-                    fontWeight: 'bold',
-                  }}
-                  cellRenderer={({ cellData }) => cellData.render}
-                />
-                <Column
-                  label={`trades 24h`}
-                  dataKey="trades24h"
-                  headerStyle={{
-                    color: theme.palette.grey.title,
-                    paddingRight: 'calc(10px)',
-                    fontSize: '1rem',
-                    textAlign: 'left',
-                  }}
-                  width={width}
-                  style={{
-                    textAlign: 'left',
-                    fontSize: '1.2rem',
-                    fontWeight: 'bold',
-                  }}
-                  cellRenderer={({ cellData }) => cellData.render}
-                />
-              </Table>
-            )}
-          </AutoSizer>
-        </Grid>
-        <Grid
-          style={{
-            display: 'flex',
-            padding: '1rem',
-            background: tab === 'fiat' ? theme.palette.grey.main : '',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            cursor: 'pointer',
-            fontSize: '1.4rem',
-            color: theme.palette.grey.light,
-            height: '3rem',
-          }}
-          onClick={() => onTabChange('fiat')}
-        >
-          {/* Binance liquidity data */}
-        </Grid>
-        <CustomMarketDialog
-          theme={theme}
-          open={showAddMarketPopup}
-          onClose={() => this.setState({ showAddMarketPopup: false })}
-          onAddCustomMarket={onAddCustomMarket}
-          getSerumMarketDataQueryRefetch={getSerumMarketDataQueryRefetch}
-        />
-        <WarningPopup theme={theme} />
-      </StyledGrid>
+          <WarningPopup theme={theme} />
+        </StyledGrid>
+      </>
     )
   }
 }
@@ -914,6 +649,17 @@ export default compose(
     withOutSpinner: true,
     withTableLoader: false,
     showNoLoader: true,
+  }),
+  queryRendererHoc({
+    query: getSerumTradesData,
+    name: 'getSerumTradesDataQuery',
+    variables: (props) => ({
+      timezone: getTimezone(),
+      timestampTo: endOfDayTimestamp,
+      timestampFrom: endOfDayTimestamp - dayDuration * 14,
+    }),
+    // TODO: make chache-first here and in CHART by refetching this after adding market
+    fetchPolicy: 'cache-and-network',
   })
   // queryRendererHoc({
   //   query: getSelectorSettings,

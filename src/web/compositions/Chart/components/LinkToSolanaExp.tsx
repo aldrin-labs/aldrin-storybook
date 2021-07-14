@@ -5,17 +5,23 @@ import styled from 'styled-components'
 import { Loading } from '@sb/components'
 
 const StyleLink = styled.a`
-  padding: 0.3rem 0rem 0rem 2rem;
+  padding: ${(props) => props.padding || '0.3rem 0rem 0rem 1.5rem'};
 `
 
 const LoaderWrapper = styled.div`
-  padding: 0.3rem 0rem 0rem 2rem;
+  padding: ${(props) => props.padding || '0.3rem 0rem 0rem 1.5rem'};
 `
 
-const LinkToSolanaExp = ({ marketAddress }: { marketAddress?: string }) => {
+const LinkToSolanaExp = ({
+  marketAddress,
+  padding,
+}: {
+  marketAddress?: string
+  padding?: string
+}) => {
   if (!marketAddress) {
     return (
-      <LoaderWrapper>
+      <LoaderWrapper padding={padding}>
         <Loading size={18} />
       </LoaderWrapper>
     )
@@ -23,7 +29,8 @@ const LinkToSolanaExp = ({ marketAddress }: { marketAddress?: string }) => {
 
   return (
     <StyleLink
-      href={`https://explorer.solana.com/address/${marketAddress}`}
+      padding={padding}
+      href={`https://solanabeach.io/address/${marketAddress}`}
       rel="noopener noreferrer"
       target="_blank"
     >
