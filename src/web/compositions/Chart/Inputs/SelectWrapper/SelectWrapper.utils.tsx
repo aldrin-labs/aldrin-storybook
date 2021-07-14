@@ -737,13 +737,13 @@ export const combineSelectWrapperData = ({
             justify={'flex-start'}
             align={'baseline'}
           >
-            <SvgIcon
+            {/* <SvgIcon
               onClick={() => {}}
               src={Inform}
               style={{ marginRight: '1.5rem' }}
               width={'2.3rem'}
               height={'2.3rem'}
-            />
+            /> */}
             <LinkToSolanaExp padding={'0'} marketAddress={marketAddress} />
             <DarkTooltip title={'Show analytics for this market.'}>
               <LinkToAnalytics

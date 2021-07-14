@@ -285,6 +285,7 @@ class SelectPairListComponent extends React.PureComponent<
     left: 0,
     sortBy: 'volume24hChange',
     sortDirection: SortDirection.DESC,
+    // isMintsPopupOpen: false,
   }
 
   componentDidMount() {
@@ -422,6 +423,14 @@ class SelectPairListComponent extends React.PureComponent<
       processedSelectData: sortedData,
     })
   }
+
+  // handleCloseMintsPopup = () => {
+  //   this.setState({ isMintsPopupOpen: false })
+  // }
+
+  // handleOpenMintsPopup = () => {
+  //   this.setState({ isMintsPopupOpen: true })
+  // }
 
   _sortList = ({ sortBy, sortDirection, data, tab }) => {
     let dataToSort = data
@@ -741,27 +750,6 @@ class SelectPairListComponent extends React.PureComponent<
                 })`}
               </span>
             </StyledTab>
-            {/* <AddCircleIcon
-              onClick={async () => {
-                if (publicKey === '') {
-                  notify({
-                    message: 'Connect your wallet first',
-                    type: 'error',
-                  })
-                  wallet.connect()
-                  return
-                }
-
-                this.setState({ showAddMarketPopup: true })
-              }}
-              style={{
-                width: '3rem',
-                height: '3rem',
-                padding: '.5rem',
-                color: '#55BB7C',
-                cursor: 'pointer',
-              }}
-            /> */}
             {marketType === 0 && (
               <>
                 <Grid
@@ -1145,7 +1133,7 @@ class SelectPairListComponent extends React.PureComponent<
                       textAlign: 'left',
                       fontFamily: 'Avenir Next Light',
                     }}
-                    width={width * 2.2}
+                    width={width * 1.8}
                     style={{
                       textAlign: 'left',
                       fontSize: '1.4rem',
