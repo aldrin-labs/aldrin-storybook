@@ -734,7 +734,7 @@ class SelectPairListComponent extends React.PureComponent<
                     (el) =>
                       el.isCustomUserMarket &&
                       !el.isPrivateCustomMarket &&
-                      !officialMarketsMap.has(el.symbol)
+                      !officialMarketsMap?.has(el.symbol)
                   ).length
                 })`}
               </span>
