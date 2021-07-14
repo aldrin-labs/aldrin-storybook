@@ -899,7 +899,7 @@ class SelectPairListComponent extends React.PureComponent<
               }
             />
           </Grid>
-          <Grid style={{ overflow: 'hidden', height: 'calc(100% - 8rem)' }}>
+          <Grid style={{ overflow: 'hidden', height: 'calc(100% - 17rem)' }}>
             <AutoSizer>
               {({ width, height }: { width: number; height: number }) => (
                 <Table
@@ -936,7 +936,7 @@ class SelectPairListComponent extends React.PureComponent<
                     fontSize: '2rem',
                     outline: 'none',
                   }}
-                  rowHeight={window.outerHeight / 12}
+                  rowHeight={window.outerHeight / 14}
                   rowGetter={({ index }) => processedSelectData[index]}
                 >
                   {/* <Column
@@ -981,7 +981,7 @@ class SelectPairListComponent extends React.PureComponent<
                       textAlign: 'left',
                       fontFamily: 'Avenir Next Light',
                     }}
-                    width={width * 1.5}
+                    width={width * 1.8}
                     style={{
                       textAlign: 'left',
                       fontSize: '1.4rem',
