@@ -490,9 +490,11 @@ export function useOpenOrdersAccounts(fast = false) {
 
 export function useSelectedOpenOrdersAccount(fast = false) {
   const [accounts, loaded] = useOpenOrdersAccounts(fast)
+
   if (!accounts) {
     return null
   }
+
   return accounts[0]
 }
 
@@ -637,13 +639,13 @@ export function useSelectedBaseCurrencyBalances() {
 
 export function useOpenOrders() {
   const { market, marketName } = useMarket()
-  const openOrdersAccount = useSelectedOpenOrdersAccount()
+  const [openOrdersAccounts] = useOpenOrdersAccounts(false)
   const { bidOrderbook, askOrderbook } = useOrderbookAccounts()
-  if (!market || !openOrdersAccount || !bidOrderbook || !askOrderbook) {
+  if (!market || !openOrdersAccounts || !bidOrderbook || !askOrderbook) {
     return null
   }
   return market
-    .filterForOpenOrders(bidOrderbook, askOrderbook, [openOrdersAccount])
+    .filterForOpenOrders(bidOrderbook, askOrderbook, openOrdersAccounts)
     .map((order) => ({ ...order, marketName, market }))
 }
 
