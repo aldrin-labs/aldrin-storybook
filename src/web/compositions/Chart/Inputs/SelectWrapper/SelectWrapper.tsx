@@ -689,7 +689,9 @@ class SelectPairListComponent extends React.PureComponent<
                     {`(${
                       this.props.data.filter((el) => {
                         const [base, quote] = el.symbol.split('_')
-                        return data.tokens.includes(base)
+                        return (
+                          data.tokens.includes(base) && !el.isCustomUserMarket
+                        )
                       }).length
                     })`}
                   </span>

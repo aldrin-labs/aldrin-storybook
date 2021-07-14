@@ -354,7 +354,7 @@ export const combineSelectWrapperData = ({
       if (tab === category) {
         processedData = processedData.filter((el) => {
           const [base, quote] = el.symbol.split('_')
-          return tokens.includes(base)
+          return tokens.includes(base) && !el.isCustomUserMarket
         })
       }
     })
