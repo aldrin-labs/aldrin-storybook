@@ -25,6 +25,7 @@ import {
   MainTitle,
   Title,
 } from '@sb/components/TraidingTerminal/ConfirmationPopup'
+import AttentionComponent from '@sb/components/AttentionBlock'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -302,11 +303,53 @@ export default ({
                   </Row>
                 </RowContainer>
               </RowContainer>
+              <RowContainer padding={'3rem 0 0 0'} justify="space-between">
+                <Row width={'calc(50% - .5rem)'}>
+                  <AttentionComponent
+                    text={
+                      <span style={{ fontSize: '1.6rem' }}>
+                        <span style={{ fontFamily: 'Avenir Next Demi' }}>
+                          0.03 SOL
+                        </span>{' '}
+                        will be reserved from your wallet to pay for all
+                        possible transactions.
+                      </span>
+                    }
+                  />
+                </Row>
+                <Row width={'calc(50% - .5rem)'}>
+                  <AttentionComponent
+                    text={
+                      <span style={{ fontSize: '1.6rem' }}>
+                        Don't forget to confirm all transactions in your wallet.
+                      </span>
+                    }
+                  />
+                </Row>
+              </RowContainer>
             </RowContainer>
-            <RowContainer padding="3rem 0 0 0">
+            <RowContainer justify="space-between" padding="3rem 0 0 0">
+              <SendButton
+                theme={theme}
+                style={{
+                  background: 'transparent',
+                  border: `0.1rem solid  ${theme.palette.white.main}`,
+                  color: theme.palette.white.main,
+                  boxShadow: 'none',
+                  width: 'calc(50% - .5rem)',
+                  height: '5rem',
+                }}
+                type={'sell'}
+                onClick={() => {
+                  handleClose()
+                }}
+              >
+                cancel
+              </SendButton>
               <SendButton
                 theme={theme}
                 type={'buy'}
+                style={{ width: 'calc(50% - .5rem)', height: '5rem' }}
                 onClick={() => confirmTrade()}
               >
                 confirm
