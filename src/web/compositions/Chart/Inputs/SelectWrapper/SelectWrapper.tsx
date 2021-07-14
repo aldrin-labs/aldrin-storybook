@@ -1,10 +1,8 @@
 import React from 'react'
 import { compose } from 'recompose'
-import styled from 'styled-components'
 import { Grid, Input, InputAdornment } from '@material-ui/core'
 import { withTheme } from '@material-ui/core/styles'
-import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
-import { Column, Table, SortDirection } from 'react-virtualized'
+import { SortDirection } from 'react-virtualized'
 import 'react-virtualized/styles.css'
 import dayjs from 'dayjs'
 import { WarningPopup } from '@sb/compositions/Chart/components/WarningPopup'
@@ -26,6 +24,7 @@ import search from '@icons/search.svg'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
 import _ from 'lodash'
 
+import { StyledGrid } from './SelectWrapperStyles'
 import { notify } from '@sb/dexUtils/notifications'
 import {
   getMarketInfos,
@@ -53,7 +52,7 @@ import {
 } from './SelectWrapper.utils'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import { withPublicKey } from '@core/hoc/withPublicKey'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { withRouter } from 'react-router'
 import {
   dayDuration,
@@ -62,6 +61,8 @@ import {
 } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { getSerumTradesData } from '@core/graphql/queries/chart/getSerumTradesData'
 import ReactDOM from 'react-dom'
+import { TableHeader } from './TableHeader'
+import { TableInner } from './TableInner'
 
 export const excludedPairs = [
   // 'USDC_ODOP',
@@ -95,43 +96,6 @@ export const datesForQuery = {
 }
 
 export const fiatRegexp = new RegExp(fiatPairs.join('|'), 'gi')
-
-const StyledGrid = styled(Grid)`
-  display: none;
-`
-const Overlay = styled.div`
-  position: fixed;
-  background-color: rgba(0, 0, 0, 0.7);
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 10% 0;
-`
-
-const StyledTab = styled(({ isSelected, ...props }) => <Row {...props} />)`
-  && {
-    text-transform: capitalize;
-    padding: 0.5rem 1.5rem;
-    background: ${(props) => (props.isSelected ? '#366CE5' : '#383B45')};
-    border-radius: 1.3rem;
-    cursor: pointer;
-    font-family: ${(props) =>
-      props.isSelected ? 'Avenir Next Demi' : 'Avenir Next Medium'};
-    font-size: 1.4rem;
-    margin: 0.5rem 0.75rem;
-    color: #fff;
-  }
-`
-
-// const StyledOverlay = styled.div`
-//   background: black;
-//   width: 100%;
-//   height: 100vh;
-//   opacity: 0.4;
-//   top: 0;
-//   position: absolute;
-// `
 
 class SelectWrapper extends React.PureComponent<IProps, IState> {
   state: IState = {
@@ -310,6 +274,7 @@ class SelectPairListComponent extends React.PureComponent<
       tokenMap,
       markets,
       officialMarketsMap,
+      onTabChange,
     } = this.props
 
     const serumMarketsDataMap = new Map()
@@ -380,6 +345,7 @@ class SelectPairListComponent extends React.PureComponent<
       tokenMap,
       getSerumTradesDataQuery,
       officialMarketsMap,
+      onTabChange,
     } = nextProps
     const { data: prevPropsData } = this.props
     const { sortBy, sortDirection } = this.state
@@ -503,7 +469,6 @@ class SelectPairListComponent extends React.PureComponent<
       id,
       tabSpecificCoin,
       onChangeSearch,
-      onTabChange,
       marketType,
       publicKey,
       wallet,
@@ -514,6 +479,7 @@ class SelectPairListComponent extends React.PureComponent<
       customMarkets,
       officialMarketsMap,
       getSerumMarketDataQueryRefetch,
+      onTabChange,
     } = this.props
 
     const onAddCustomMarket = (customMarket: any) => {
@@ -555,302 +521,15 @@ class SelectPairListComponent extends React.PureComponent<
             filter: 'drop-shadow(0px 0px 8px rgba(125, 125, 131, 0.2))',
           }}
         >
+          <TableHeader
+            theme={theme}
+            tab={tab}
+            data={this.props.data}
+            onTabChange={onTabChange}
+            officialMarketsMap={officialMarketsMap}
+            marketType={marketType}
+          />
           {/* {ReactDOM.createPortal(<StyledOverlay />, document.body)} */}
-          <RowContainer
-            style={{
-              height: '12rem',
-              padding: '0.5rem',
-              justifyContent: 'flex-start',
-              flexDirection: 'row',
-              flexWrap: 'normal',
-              alignItems: 'center',
-              borderBottom: theme.palette.border.new,
-              background: '#17181A',
-            }}
-          >
-            {/* <Grid
-            style={{
-              display: 'flex',
-              padding: '1rem',
-              background: tab === 'favorite' ? theme.palette.grey.main : '',
-              cursor: 'pointer',
-            }}
-            onClick={() => onTabChange('favorite')}
-          >
-            <SvgIcon src={favoriteSelected} width="2rem" height="auto" />
-          </Grid> */}
-            <StyledTab
-              theme={theme}
-              isSelected={tab === 'all'}
-              onClick={() => onTabChange('all')}
-            >
-              All{' '}
-              <span
-                style={{
-                  color: tab === 'all' ? '#fbf2f2' : '#96999C',
-                  marginLeft: '0.5rem',
-                }}
-              >
-                {`(${this.props.data.length})`}
-              </span>
-            </StyledTab>{' '}
-            <StyledTab
-              theme={theme}
-              isSelected={tab === 'usdt'}
-              onClick={() => onTabChange('usdt')}
-            >
-              USDT{' '}
-              <span
-                style={{
-                  color: tab === 'usdt' ? '#fbf2f2' : '#96999C',
-                  marginLeft: '0.5rem',
-                }}
-              >
-                {`(${
-                  this.props.data.filter((el) => el.symbol.includes('USDT'))
-                    .length
-                })`}
-              </span>
-            </StyledTab>
-            <StyledTab
-              theme={theme}
-              isSelected={tab === 'usdc'}
-              onClick={() => onTabChange('usdc')}
-            >
-              USDC
-              <span
-                style={{
-                  color: tab === 'usdc' ? '#fbf2f2' : '#96999C',
-                  marginLeft: '0.5rem',
-                }}
-              >
-                {`(${
-                  this.props.data.filter((el) => el.symbol.includes('USDC'))
-                    .length
-                })`}
-              </span>
-            </StyledTab>
-            <StyledTab
-              theme={theme}
-              isSelected={tab === 'sol'}
-              onClick={() => onTabChange('sol')}
-            >
-              SOL{' '}
-              <span
-                style={{
-                  color: tab === 'sol' ? '#fbf2f2' : '#96999C',
-                  marginLeft: '0.5rem',
-                }}
-              >
-                {`(${
-                  this.props.data.filter(
-                    (el) =>
-                      el.symbol.includes('SOL') && !el.symbol.includes('SOLAPE')
-                  ).length
-                })`}
-              </span>
-            </StyledTab>{' '}
-            <StyledTab
-              theme={theme}
-              isSelected={tab === 'topGainers'}
-              onClick={() => {
-                onTabChange('topGainers')
-              }}
-            >
-              Top Gainers{' '}
-              <span
-                style={{
-                  color: tab === 'topGainers' ? '#fbf2f2' : '#96999C',
-                  marginLeft: '0.5rem',
-                }}
-              ></span>
-            </StyledTab>
-            <StyledTab
-              theme={theme}
-              isSelected={tab === 'topLosers'}
-              onClick={() => {
-                onTabChange('topLosers')
-              }}
-            >
-              Top Losers{' '}
-              <span
-                style={{
-                  color: tab === 'topLosers' ? '#fbf2f2' : '#96999C',
-                  marginLeft: '0.5rem',
-                }}
-              ></span>
-            </StyledTab>
-            {Object.entries(marketsByCategories).map(([category, data]) => {
-              return (
-                <StyledTab
-                  theme={theme}
-                  isSelected={tab === category}
-                  onClick={() => onTabChange(category)}
-                >
-                  {data.name}
-
-                  <span
-                    style={{
-                      color: tab === category ? '#fbf2f2' : '#96999C',
-                      marginLeft: '0.5rem',
-                    }}
-                  >
-                    {`(${
-                      this.props.data.filter((el) => {
-                        const [base, quote] = el.symbol.split('_')
-                        return (
-                          data.tokens.includes(base) && !el.isCustomUserMarket
-                        )
-                      }).length
-                    })`}
-                  </span>
-                </StyledTab>
-              )
-            })}{' '}
-            <StyledTab
-              theme={theme}
-              isSelected={tab === 'leveraged'}
-              onClick={() => onTabChange('leveraged')}
-            >
-              Leveraged tokens{' '}
-              <span
-                style={{
-                  color: tab === 'leveraged' ? '#fbf2f2' : '#96999C',
-                  marginLeft: '0.5rem',
-                }}
-              >
-                {`(${
-                  this.props.data.filter(
-                    (el) =>
-                      el.symbol.includes('BULL') ||
-                      (el.symbol.includes('BEAR') && !el.isCustomUserMarket)
-                  ).length
-                })`}
-              </span>
-            </StyledTab>
-            <StyledTab
-              theme={theme}
-              isSelected={tab === 'public'}
-              onClick={() => onTabChange('public')}
-            >
-              Custom markets{' '}
-              <span
-                style={{
-                  color: tab === 'public' ? '#fbf2f2' : '#96999C',
-                  marginLeft: '0.5rem',
-                }}
-              >
-                {`(${
-                  this.props.data.filter(
-                    (el) =>
-                      el.isCustomUserMarket &&
-                      !el.isPrivateCustomMarket &&
-                      !officialMarketsMap?.has(el.symbol)
-                  ).length
-                })`}
-              </span>
-            </StyledTab>
-            {marketType === 0 && (
-              <>
-                <Grid
-                  style={{
-                    padding: '1rem',
-                    background: tab === 'btc' ? theme.palette.grey.main : '',
-                    display: 'flex',
-                    alignItems: 'center',
-                    cursor: 'pointer',
-                    fontSize: '1.2rem',
-                    color: theme.palette.grey.light,
-                    fontWeight: 'bold',
-                  }}
-                  onClick={() => onTabChange('btc')}
-                >
-                  BTC
-                </Grid>
-
-                <Grid
-                  style={{
-                    display: 'flex',
-                    padding: '1rem',
-                    background: tab === 'alts' ? theme.palette.grey.main : '',
-                    alignItems: 'center',
-                    cursor: 'pointer',
-                    fontSize: '1.2rem',
-                    color: theme.palette.grey.light,
-                    fontWeight: 'bold',
-                  }}
-                  onClick={() => onTabChange('alts')}
-                >
-                  <Grid style={{ paddingRight: '1rem' }}>ALTS</Grid>
-                  <Grid style={{ width: '6rem' }}>
-                    <ReactSelectComponent
-                      isSearchable={false}
-                      valueContainerStyles={{ padding: 0 }}
-                      placeholder="ALL"
-                      onChange={onSpecificCoinChange}
-                      options={[
-                        { label: 'ALL', value: 'ALL' },
-                        { value: 'ETH', label: 'ETH' },
-                        { value: 'TRX', label: 'TRX' },
-                        { value: 'XRP', label: 'XRP' },
-                        { label: 'ALL', value: 'ALL' },
-                      ]}
-                      value={
-                        tabSpecificCoin === ''
-                          ? { label: 'ALL', value: 'ALL' }
-                          : tabSpecificCoin === 'ALL'
-                          ? { label: 'ALL', value: 'ALL' }
-                          : !['ETH', 'TRX', 'XRP'].includes(tabSpecificCoin)
-                          ? { label: 'ALL', value: 'ALL' }
-                          : undefined
-                      }
-                    />
-                  </Grid>
-                </Grid>
-                <Grid
-                  style={{
-                    display: 'flex',
-                    padding: '1rem',
-                    background: tab === 'fiat' ? theme.palette.grey.main : '',
-                    alignItems: 'center',
-                    cursor: 'pointer',
-                    fontSize: '1.2rem',
-                    color: theme.palette.grey.light,
-                    fontWeight: 'bold',
-                  }}
-                  onClick={() => onTabChange('fiat')}
-                >
-                  <Grid style={{ paddingRight: '1rem' }}>STABLE</Grid>
-                  <Grid style={{ width: '6rem' }}>
-                    <ReactSelectComponent
-                      isSearchable={false}
-                      valueContainerStyles={{ padding: 0 }}
-                      placeholder="ALL"
-                      onChange={onSpecificCoinChange}
-                      options={[
-                        { label: 'ALL', value: 'ALL' },
-                        ...stableCoinsWithoutFiatPairs.map((el) => ({
-                          value: el,
-                          label: el,
-                        })),
-                      ]}
-                      value={
-                        tabSpecificCoin === ''
-                          ? { label: 'ALL', value: 'ALL' }
-                          : tabSpecificCoin === 'ALL'
-                          ? { label: 'ALL', value: 'ALL' }
-                          : !stableCoinsWithoutFiatPairs.includes(
-                              tabSpecificCoin
-                            )
-                          ? { label: 'ALL', value: 'ALL' }
-                          : undefined
-                      }
-                    />
-                  </Grid>
-                </Grid>
-              </>
-            )}
-          </RowContainer>
           <Grid container style={{ justifyContent: 'flex-end', width: '100%' }}>
             <Input
               placeholder="Search by all categories"
@@ -889,262 +568,13 @@ class SelectPairListComponent extends React.PureComponent<
               }
             />
           </Grid>
-          <Grid style={{ overflow: 'hidden', height: 'calc(100% - 21rem)' }}>
-            <AutoSizer>
-              {({ width, height }: { width: number; height: number }) => (
-                <Table
-                  width={width}
-                  height={height}
-                  rowCount={processedSelectData.length}
-                  sort={this._sort}
-                  sortBy={this.state.sortBy}
-                  sortDirection={this.state.sortDirection}
-                  onRowClick={({ event, index, rowData }) => {
-                    rowData.symbol.onClick()
-                  }}
-                  gridStyle={{
-                    outline: 'none',
-                  }}
-                  rowStyle={{
-                    outline: 'none',
-                    cursor: 'pointer',
-                    fontSize: '2rem',
-                    // color: theme.palette.dark.main,
-                    borderBottom: `0.05rem solid ${theme.palette.grey.newborder}`,
-                  }}
-                  headerHeight={window.outerHeight / 25}
-                  headerStyle={{
-                    color: '#fff',
-                    paddingLeft: '.5rem',
-                    paddingTop: '.25rem',
-                    marginLeft: 0,
-                    marginRight: 0,
-                    letterSpacing: '.075rem',
-                    textTransform: 'capitalize',
-                    // borderBottom: '.1rem solid #e0e5ec',
-                    fontFamily: 'Avenir Next Light',
-                    fontSize: '2rem',
-                    outline: 'none',
-                  }}
-                  rowHeight={window.outerHeight / 14}
-                  rowGetter={({ index }) => processedSelectData[index]}
-                >
-                  {/* <Column
-                  label=""
-                  dataKey="favorite"
-                  headerStyle={{
-                    paddingLeft: 'calc(.5rem + 10px)',
-                  }}
-                  width={width / 5}
-                  cellRenderer={({ cellData }) => (
-                    <span onClick={(e) => e.stopPropagation()}>
-                      {cellData.render}
-                    </span>
-                  )}
-                /> */}
-                  <Column
-                    label={` `}
-                    dataKey="emoji"
-                    headerStyle={{
-                      color: '#fff',
-                      paddingRight: 'calc(10px)',
-                      fontSize: '1.5rem',
-                      textAlign: 'left',
-                      fontFamily: 'Avenir Next Light',
-                    }}
-                    width={width / 2.5}
-                    style={{
-                      textAlign: 'left',
-                      fontSize: '1.4rem',
-                      fontWeight: 'bold',
-                    }}
-                    cellRenderer={({ cellData }) => cellData.render}
-                  />
-                  <Column
-                    label={`Pair`}
-                    dataKey="symbol"
-                    headerStyle={{
-                      color: '#fff',
-                      paddingRight: '6px',
-                      paddingLeft: '1rem',
-                      fontSize: '1.5rem',
-                      textAlign: 'left',
-                      fontFamily: 'Avenir Next Light',
-                    }}
-                    width={width * 1.8}
-                    style={{
-                      textAlign: 'left',
-                      fontSize: '1.4rem',
-                      fontWeight: 'bold',
-                    }}
-                    cellRenderer={({ cellData }) => cellData.render}
-                  />
-                  <Column
-                    label={`last price`}
-                    dataKey="price"
-                    headerStyle={{
-                      color: '#fff',
-                      paddingRight: 'calc(10px)',
-                      fontSize: '1.5rem',
-                      textAlign: 'left',
-                      fontFamily: 'Avenir Next Light',
-                    }}
-                    width={width * 1.2}
-                    style={{
-                      textAlign: 'left',
-                      fontSize: '1.4rem',
-                      fontWeight: 'bold',
-                    }}
-                    cellRenderer={({ cellData }) => cellData.render}
-                  />
-                  <Column
-                    label={`change 24h`}
-                    dataKey="price24hChange"
-                    headerStyle={{
-                      color: '#fff',
-                      paddingRight: 'calc(10px)',
-                      fontSize: '1.5rem',
-                      textAlign: 'left',
-                      fontFamily: 'Avenir Next Light',
-                    }}
-                    width={width * 1.8}
-                    style={{
-                      textAlign: 'left',
-                      fontSize: '1.4rem',
-                      fontWeight: 'bold',
-                    }}
-                    cellRenderer={({ cellData }) => cellData.render}
-                  />
-                  <Column
-                    label={`Min 24h`}
-                    dataKey="min24h"
-                    headerStyle={{
-                      color: '#fff',
-                      paddingRight: 'calc(10px)',
-                      fontSize: '1.5rem',
-                      textAlign: 'left',
-                      fontFamily: 'Avenir Next Light',
-                    }}
-                    width={width * 1.6}
-                    style={{
-                      textAlign: 'left',
-                      fontSize: '1.4rem',
-                      fontWeight: 'bold',
-                    }}
-                    cellRenderer={({ cellData }) => cellData.render}
-                  />
-                  <Column
-                    label={`Max 24h`}
-                    dataKey="max24h"
-                    headerStyle={{
-                      color: '#fff',
-                      paddingRight: 'calc(10px)',
-                      fontSize: '1.5rem',
-                      textAlign: 'left',
-                      fontFamily: 'Avenir Next Light',
-                    }}
-                    width={width * 1.4}
-                    style={{
-                      textAlign: 'left',
-                      fontSize: '1.4rem',
-                      fontWeight: 'bold',
-                    }}
-                    cellRenderer={({ cellData }) => cellData.render}
-                  />
-                  <Column
-                    label={`volume 24h`}
-                    dataKey="volume24hChange"
-                    headerStyle={{
-                      color: '#fff',
-                      paddingRight: 'calc(10px)',
-                      fontSize: '1.5rem',
-                      textAlign: 'left',
-                      fontFamily: 'Avenir Next Light',
-                    }}
-                    width={width * 1.3}
-                    style={{
-                      textAlign: 'left',
-                      fontSize: '1.4rem',
-                      fontWeight: 'bold',
-                    }}
-                    cellRenderer={({ cellData }) => cellData.render}
-                  />
-                  <Column
-                    label={`trades 24h`}
-                    dataKey="trades24h"
-                    headerStyle={{
-                      color: '#fff',
-                      paddingRight: 'calc(10px)',
-                      fontSize: '1.5rem',
-                      textAlign: 'left',
-                      fontFamily: 'Avenir Next Light',
-                    }}
-                    width={width * 1.3}
-                    style={{
-                      textAlign: 'left',
-                      fontSize: '1.4rem',
-                      fontWeight: 'bold',
-                    }}
-                    cellRenderer={({ cellData }) => cellData.render}
-                  />
-                  <Column
-                    label={`Avg.Buy 14d`}
-                    dataKey="avgBuy14d"
-                    headerStyle={{
-                      color: '#fff',
-                      paddingRight: 'calc(10px)',
-                      fontSize: '1.5rem',
-                      textAlign: 'left',
-                      fontFamily: 'Avenir Next Light',
-                    }}
-                    width={width * 1.4}
-                    style={{
-                      textAlign: 'left',
-                      fontSize: '1.4rem',
-                      fontWeight: 'bold',
-                    }}
-                    cellRenderer={({ cellData }) => cellData.render}
-                  />
-                  <Column
-                    label={`Avg.Sell 14d`}
-                    dataKey="avgSell14d"
-                    headerStyle={{
-                      color: '#fff',
-                      paddingRight: 'calc(10px)',
-                      fontSize: '1.5rem',
-                      textAlign: 'left',
-                      fontFamily: 'Avenir Next Light',
-                    }}
-                    width={width * 1.4}
-                    style={{
-                      textAlign: 'left',
-                      fontSize: '1.4rem',
-                      fontWeight: 'bold',
-                    }}
-                    cellRenderer={({ cellData }) => cellData.render}
-                  />
-                  <Column
-                    label={`Links`}
-                    dataKey="links"
-                    headerStyle={{
-                      color: '#fff',
-                      paddingRight: 'calc(10px)',
-                      fontSize: '1.5rem',
-                      textAlign: 'left',
-                      fontFamily: 'Avenir Next Light',
-                    }}
-                    width={width * 1.8}
-                    style={{
-                      textAlign: 'left',
-                      fontSize: '1.4rem',
-                      fontWeight: 'bold',
-                    }}
-                    cellRenderer={({ cellData }) => cellData.render}
-                  />
-                </Table>
-              )}
-            </AutoSizer>
-          </Grid>{' '}
+          <TableInner
+            theme={theme}
+            processedSelectData={processedSelectData}
+            sort={this._sort}
+            sortBy={this.state.sortBy}
+            sortDirection={this.state.sortDirection}
+          />
           <Grid
             style={{
               justifyContent: 'flex-end',
@@ -1181,22 +611,6 @@ class SelectPairListComponent extends React.PureComponent<
               {' '}
               + Add Market
             </Row>
-          </Grid>
-          <Grid
-            style={{
-              display: 'flex',
-              padding: '1rem',
-              background: tab === 'fiat' ? theme.palette.grey.main : '',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              cursor: 'pointer',
-              fontSize: '1.4rem',
-              color: theme.palette.grey.light,
-              height: '3rem',
-            }}
-            onClick={() => onTabChange('fiat')}
-          >
-            {/* Binance liquidity data */}
           </Grid>
           <CustomMarketDialog
             theme={theme}

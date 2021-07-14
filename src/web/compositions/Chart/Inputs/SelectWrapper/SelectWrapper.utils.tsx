@@ -4,6 +4,8 @@ import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSett
 import { SvgIcon } from '@sb/components'
 import { DarkTooltip, DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
+import { marketsByCategories } from '@core/config/marketsByCategories'
+
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
@@ -27,7 +29,7 @@ import Coinmarketcap from '@icons/coinmarketcap.svg'
 import CoinGecko from '@icons/coingecko.svg'
 import Inform from '@icons/inform.svg'
 
-import tokensLinksMap from './tokensTwitterLinks'
+import tokensLinksMap from '@core/config/tokensTwitterLinks'
 
 import {
   GetSelectorSettingsType,
@@ -49,95 +51,6 @@ export const selectWrapperColumnNames = [
   { label: '24H change', id: '24hChange', isNumber: true, isSortable: true },
   { label: '24H volume', id: '24hVolume', isNumber: true, isSortable: true },
 ]
-
-export const marketsByCategories = {
-  defi: {
-    name: 'DeFi',
-    tokens: [
-      'RSR',
-      'CCAI',
-      'SRM',
-      'OXY',
-      'RAY',
-      'GRT',
-      'FAB',
-      'SLRS',
-      'FTR',
-      'FRONT',
-      'STEP',
-      'FIDA',
-      'SNY',
-      'TGT',
-      'LIQ',
-      'SLIM',
-      'MER',
-      'AKRO',
-      'KEEP',
-      'XCOPE',
-      'ODOPE',
-      'RSR',
-      'MATH',
-      'LQID',
-      'LIEN',
-      'DGX',
-      'CREAM',
-      'BOLE',
-    ],
-  },
-  currency: { name: 'Currency', tokens: ['BTC', 'ETH', 'SOL'] },
-  exchangeDerrivatives: {
-    name: 'Exchange & Derrivatives',
-    tokens: [
-      'LUA',
-      'CCAI',
-      'SRM',
-      'FIDA',
-      'RAY',
-      'SOLAPE',
-      'FTT',
-      'SUSHI',
-      'UNI',
-      'FTR',
-      '1INCH',
-      'LIQ',
-      'WOO',
-      'PERP',
-      'LUA',
-      'SECO',
-      'MSRM',
-    ],
-  },
-  nftGamesGambling: {
-    name: 'NFT, Games & Gambling',
-    tokens: ['sHOG', 'SCA', 'HXRO', 'SAMO'],
-  },
-  memeSocial: {
-    name: 'Meme & Social',
-    tokens: ['SAIL', 'SAMO', 'COPE', 'CATO', 'IBVOL', 'BVOL'],
-  },
-  oracle: { name: 'Oracle', tokens: ['LINK'] },
-  farmAgregator: {
-    name: 'Farm & Agregator',
-    tokens: ['FRONT', 'OXY', 'YARD', 'TULP', 'RAMP'],
-  },
-  // syntheticAsset: { name: 'Synthetic Asset', tokens: ['SNY', 'FAB'] },
-  tradeLiquidity: {
-    name: 'Trade & Liquidity',
-    tokens: ['SLRS', 'ROPE', 'FTR', 'UBXT', 'LIEN'],
-  },
-  lendingYield: {
-    name: 'Lending & Yield',
-    tokens: ['AAVE', 'COMP', 'YFI', 'SWAG'],
-  },
-  infrastructure: {
-    name: 'Infrastructure',
-    tokens: ['GRT', 'BOP', 'TOMO', 'HNT', 'GEL'],
-  },
-  dApp: {
-    name: 'dApp',
-    tokens: ['KIN', 'AUDIO', 'MAPS', 'SXP', 'STEP', 'ALEPH', 'MEDIA'],
-  },
-}
 
 export const getIsNotUSDTQuote = (symbol) => {
   const [base, quote] = symbol.split('_')
@@ -345,9 +258,10 @@ export const combineSelectWrapperData = ({
       )
     }
     if (tab === 'sol') {
-      processedData = processedData.filter(
-        (el) => el.symbol.includes('SOL') && !el.symbol.includes('SOLAPE')
-      )
+      processedData = processedData.filter((el) => {
+        const [base, quote] = el.symbol.split('_')
+        return quote === 'SOL'
+      })
     }
 
     marketsCategoriesData?.forEach(([category, data]) => {

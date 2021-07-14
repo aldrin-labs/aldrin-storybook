@@ -20,7 +20,7 @@ import SvgIcon from '@sb/components/SvgIcon'
 import { TokenInfo, TokenListProvider } from '@solana/spl-token-registry'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { TokenIcon } from '@sb/components/TokenIcon'
-import tokensLinksMap from '../Inputs/SelectWrapper/tokensTwitterLinks'
+import tokensLinksMap from '@core/config/tokensTwitterLinks'
 import Coinmarketcap from '@icons/coinmarketcap.svg'
 import CoinGecko from '@icons/coingecko.svg'
 
