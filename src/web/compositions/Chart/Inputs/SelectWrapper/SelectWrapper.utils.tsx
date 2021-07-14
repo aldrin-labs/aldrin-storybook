@@ -23,6 +23,10 @@ import favoriteUnselected from '@icons/favoriteUnselected.svg'
 
 import LessVolumeArrow from '@icons/lessVolumeArrow.svg'
 import MoreVolumeArrow from '@icons/moreVolumeArrow.svg'
+import Coinmarketcap from '@icons/coinmarketcap.svg'
+import CoinGecko from '@icons/coingecko.svg'
+
+import tokensLinksMap from './tokensTwitterLinks'
 
 import {
   GetSelectorSettingsType,
@@ -48,6 +52,7 @@ export const marketsByCategories = {
   defi: {
     name: 'DeFi',
     tokens: [
+      'RSR',
       'CCAI',
       'SRM',
       'OXY',
@@ -81,6 +86,7 @@ export const marketsByCategories = {
   exchangeDerrivatives: {
     name: 'Exchange & Derrivatives',
     tokens: [
+      'LUA',
       'CCAI',
       'SRM',
       'FIDA',
@@ -117,7 +123,10 @@ export const marketsByCategories = {
     name: 'Trade & Liquidity',
     tokens: ['SLRS', 'ROPE', 'FTR', 'UBXT', 'LIEN'],
   },
-  lendingYield: { name: 'Lending & Yield', tokens: ['AAVE', 'COMP', 'YFI'] },
+  lendingYield: {
+    name: 'Lending & Yield',
+    tokens: ['AAVE', 'COMP', 'YFI', 'SWAG'],
+  },
   infrastructure: {
     name: 'Infrastructure',
     tokens: ['GRT', 'BOP', 'TOMO', 'HNT', 'GEL'],
@@ -248,7 +257,7 @@ export const combineSelectWrapperData = ({
   market,
   tokenMap,
   serumMarketsDataMap,
-  officialMarkets,
+  officialMarketsMap,
 }: {
   data: ISelectData
   // updateFavoritePairsMutation: (variableObj: {
@@ -272,13 +281,9 @@ export const combineSelectWrapperData = ({
   usdtPairsMap: Map<string, string>
   marketType: number
   needFiltrations?: boolean
-  officialMarkets: any
+  officialMarketsMap: any
 }) => {
   const marketsCategoriesData = Object.entries(marketsByCategories)
-  const officialMarketsMap = new Map()
-  officialMarkets.forEach((market) =>
-    officialMarketsMap.set(market.name.replaceAll('/', '_'), market)
-  )
 
   // create map & filter out from custom
   if (!data && !Array.isArray(data)) {
@@ -338,15 +343,18 @@ export const combineSelectWrapperData = ({
       )
     }
     if (tab === 'sol') {
-      processedData = processedData.filter((el) => el.symbol.includes('SOL'))
+      processedData = processedData.filter(
+        (el) => el.symbol.includes('SOL') && !el.symbol.includes('SOLAPE')
+      )
     }
 
-    marketsCategoriesData.forEach(([category, data]) => {
+    marketsCategoriesData?.forEach(([category, data]) => {
       const tokens = data.tokens
+
       if (tab === category) {
         processedData = processedData.filter((el) => {
           const [base, quote] = el.symbol.split('_')
-          return tokens.includes(base) || tokens.includes(quote)
+          return tokens.includes(base)
         })
       }
     })
@@ -357,6 +365,50 @@ export const combineSelectWrapperData = ({
           el.symbol.includes('BULL') ||
           (el.symbol.includes('BEAR') && !el.isCustomUserMarket)
       )
+    }
+
+    if (tab === 'topGainers' || tab === 'topLosers') {
+      processedData = processedData.sort((a, b) => {
+        const pricePrecisionA = a.closePrice < 1 ? 8 : a.closePrice < 10 ? 4 : 2
+
+        const strippedLastPriceDiffA = +stripDigitPlaces(
+          a.lastPriceDiff,
+          pricePrecisionA
+        )
+
+        const strippedMarkPriceA = +stripDigitPlaces(
+          a.closePrice,
+          pricePrecisionA
+        )
+
+        const prevClosePriceA = strippedMarkPriceA - strippedLastPriceDiffA
+
+        const priceChangePercentageA = !prevClosePriceA
+          ? 0
+          : (a.closePrice - prevClosePriceA) / (prevClosePriceA / 100)
+
+        const pricePrecisionB = b.closePrice < 1 ? 8 : b.closePrice < 10 ? 4 : 2
+
+        const strippedLastPriceDiffB = +stripDigitPlaces(
+          b.lastPriceDiff,
+          pricePrecisionB
+        )
+
+        const strippedMarkPriceB = +stripDigitPlaces(
+          b.closePrice,
+          pricePrecisionB
+        )
+
+        const prevClosePriceB = strippedMarkPriceB - strippedLastPriceDiffB
+
+        const priceChangePercentageB = !prevClosePriceB
+          ? 0
+          : (b.closePrice - prevClosePriceB) / (prevClosePriceB / 100)
+
+        return tab === 'topGainers'
+          ? priceChangePercentageB - priceChangePercentageA
+          : priceChangePercentageA - priceChangePercentageB
+      })
     }
 
     if (tab === 'private') {
@@ -379,7 +431,6 @@ export const combineSelectWrapperData = ({
   processedData = processedData.filter((el) =>
     filterDataBySymbolForDifferentDeviders({ searchValue, symbol: el.symbol })
   )
-
   const filtredData = processedData.map((el) => {
     const {
       symbol = '',
@@ -412,7 +463,7 @@ export const combineSelectWrapperData = ({
     }
 
     const [base, quote] = symbol.split('_')
-    const pricePrecision = closePrice < 1 ? 8 : closePrice < 10 ? 4 : 2
+    const pricePrecision = closePrice <= 0.0001 ? 8 : closePrice < 10 ? 4 : 2
 
     const isNotUSDTQuote = getIsNotUSDTQuote(symbol)
 
@@ -433,20 +484,24 @@ export const combineSelectWrapperData = ({
     const signTrades24hChange = +precentageTradesDiff > 0 ? '+' : '-'
 
     const marketName = symbol.replaceAll('_', '/')
-    const currentMarket = officialMarkets?.find(
-      (el) => el?.name.replaceAll('_', '/') === marketName
-    )
+    const currentMarket = officialMarketsMap?.get(symbol)
 
     const isAdditionalCustomUserMarket = el.isCustomUserMarket
     const isAwesomeMarket = currentMarket?.isCustomUserMarket
 
     const mint = getTokenMintAddressByName(base)
 
-    const baseTokenInfo = tokenMap.get(getTokenMintAddressByName(base))
+    const baseTokenInfo = tokenMap?.get(getTokenMintAddressByName(base))
     const marketAddress = market?.address?.toBase58()
+
     const avgBuy = serumMarketsDataMap?.get(symbol)?.avgBuy || 0
     const avgSell = serumMarketsDataMap?.get(symbol)?.avgSell || 0
 
+    const twitterLink = tokensLinksMap?.get(base)?.twitterLink || ''
+    const marketCapLink = tokensLinksMap?.get(base)?.marketCapLink || ''
+    const marketCapIcon = marketCapLink.includes('coinmarketcap')
+      ? Coinmarketcap
+      : CoinGecko
     return {
       id: `${symbol}`,
       // favorite: {
@@ -682,7 +737,11 @@ export const combineSelectWrapperData = ({
           >
             <LinkToSolanaExp padding={'0'} marketAddress={marketAddress} />
             <DarkTooltip title={'Show analytics for this market.'}>
-              <LinkToAnalytics to={`/analytics/${marketName}`}>
+              <LinkToAnalytics
+                target="_blank"
+                rel="noopener noreferrer"
+                to={`/analytics/${marketName}`}
+              >
                 <SvgIcon
                   src={AnalyticsIcon}
                   width={'2.3rem'}
@@ -690,9 +749,13 @@ export const combineSelectWrapperData = ({
                 />
               </LinkToAnalytics>
             </DarkTooltip>
-            {baseTokenInfo?.extensions?.twitter && (
+            {twitterLink !== '' && (
               <DarkTooltip title={'Twitter profile of base token.'}>
-                <LinkToTwitter href={baseTokenInfo?.extensions?.twitter}>
+                <LinkToTwitter
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={twitterLink}
+                >
                   <SvgIcon
                     width={'2.5rem'}
                     height={'2.5rem'}
@@ -700,6 +763,20 @@ export const combineSelectWrapperData = ({
                   />
                 </LinkToTwitter>
               </DarkTooltip>
+            )}
+            {marketCapLink !== '' && (
+              <a
+                style={{ marginLeft: '2rem' }}
+                target="_blank"
+                rel="noopener noreferrer"
+                href={marketCapLink}
+              >
+                <SvgIcon
+                  width={'2.5rem'}
+                  height={'2.5rem'}
+                  src={marketCapIcon}
+                />
+              </a>
             )}
           </Row>
         ),
@@ -716,7 +793,5 @@ export const combineSelectWrapperData = ({
     }
   })
 
-  return filtredData.sort((a, b) =>
-    a.symbol.contentToSort.localeCompare(b.symbol.contentToSort)
-  )
+  return filtredData
 }

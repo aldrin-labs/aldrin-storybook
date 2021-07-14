@@ -20,6 +20,9 @@ import SvgIcon from '@sb/components/SvgIcon'
 import { TokenInfo, TokenListProvider } from '@solana/spl-token-registry'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { TokenIcon } from '@sb/components/TokenIcon'
+import tokensLinksMap from '../Inputs/SelectWrapper/tokensTwitterLinks'
+import Coinmarketcap from '@icons/coinmarketcap.svg'
+import CoinGecko from '@icons/coingecko.svg'
 
 export const ExclamationMark = styled(({ fontSize, lineHeight, ...props }) => (
   <span {...props}>!</span>
@@ -156,6 +159,12 @@ const MarketBlock = ({
   const isCCAIPair =
     pair.includes('CCAI') && !isPrivateCustomMarket && !isCustomUserMarket
 
+  const twitterLink = tokensLinksMap?.get(base)?.twitterLink || ''
+  const marketCapLink = tokensLinksMap?.get(base)?.marketCapLink || ''
+  const marketCapIcon = marketCapLink.includes('coinmarketcap')
+    ? Coinmarketcap
+    : CoinGecko
+
   return (
     <RowContainer
       wrap={'nowrap'}
@@ -229,9 +238,13 @@ const MarketBlock = ({
               <SvgIcon src={AnalyticsIcon} width={'2.3rem'} height={'2.3rem'} />
             </LinkToAnalytics>
           </DarkTooltip>
-          {baseTokenInfo?.extensions?.twitter && (
+          {twitterLink !== '' && (
             <DarkTooltip title={'Twitter profile of base token.'}>
-              <LinkToTwitter href={baseTokenInfo?.extensions?.twitter}>
+              <LinkToTwitter
+                target="_blank"
+                rel="noopener noreferrer"
+                href={twitterLink}
+              >
                 <SvgIcon
                   width={'2.5rem'}
                   height={'2.5rem'}
@@ -239,6 +252,16 @@ const MarketBlock = ({
                 />
               </LinkToTwitter>
             </DarkTooltip>
+          )}
+          {marketCapLink !== '' && (
+            <a
+              style={{ marginLeft: '2rem' }}
+              target="_blank"
+              rel="noopener noreferrer"
+              href={marketCapLink}
+            >
+              <SvgIcon width={'2.5rem'} height={'2.5rem'} src={marketCapIcon} />
+            </a>
           )}
         </Row>
       </Row>
