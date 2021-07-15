@@ -176,6 +176,7 @@ export default ({ themeMode, isChartPage, children }) => {
               switcherBackground: '#3B63AF', // 165BE0
               switcherBorder: '#2E2E2E',
               serum: '#366CE5',
+              tabs: '#6E98E9',
             },
             green: {
               dark: '#377E21',

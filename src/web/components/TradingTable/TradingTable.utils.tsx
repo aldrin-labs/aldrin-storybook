@@ -1449,13 +1449,16 @@ export const combineStrategiesHistoryTable = ({
   marketType,
   keys,
   handlePairChange,
-}:
-{
+  pricePrecision,
+  quantityPrecision,
+}: {
   data: SmartOrder[]
   theme: Theme
   marketType: number
   keys: Key[]
   handlePairChange: any
+  pricePrecision: number
+  quantityPrecision: number
 }) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -1537,11 +1540,6 @@ export const combineStrategiesHistoryTable = ({
         !entryDeviation && orderType === 'limit' && !entryPrice
           ? price
           : entryPrice
-
-      const { pricePrecision, quantityPrecision } = getPrecisionItem({
-        marketType,
-        symbol: pair,
-      })
 
       const [profitAmount, profitPercentage] = getPnlFromState({
         state: el.state,
@@ -1695,4 +1693,65 @@ export const combineStrategiesHistoryTable = ({
     })
 
   return processedStrategiesHistoryData
+}
+
+export const SMMock = {
+  __typename: 'strategy',
+  createdAt: +Date.now(),
+  _id: '1',
+  accountId: '0',
+  enabled: true,
+
+  conditions: {
+    __typename: 'conditions',
+    leverage: 1,
+    pair: 'CCAI_USDC',
+    marketType: 0,
+
+    entryOrder: {
+      __typename: 'entryOrder',
+      side: 'buy',
+      type: 'limit',
+      price: 10,
+      activatePrice: 0,
+      amount: 100,
+      orderType: 'limit',
+      entryDeviation: 0,
+    },
+
+    trailingExit: 0,
+    entryLevels: [],
+    exitLevels: [
+      {
+        __typename: 'exitLevel',
+        price: 15,
+        amount: 100,
+        type: null,
+        orderType: 'limit',
+        activatePrice: 0,
+        entryDeviation: 0,
+        side: 'sell',
+      },
+    ],
+
+    timeoutIfProfitable: 0,
+    timeoutWhenProfit: 0,
+
+    forcedLoss: 0,
+    stopLoss: 10,
+    timeoutLoss: 0,
+    timeoutWhenLoss: 0,
+    stopLossType: 0,
+    templatePnl: null,
+    templateStatus: null,
+    isTemplate: null,
+    hedgeStrategyId: null,
+    continueIfEnded: null,
+    hedging: null,
+    hedgeLossDeviation: null,
+  },
+  state: {
+    receivedProfitAmount: 1,
+    receivedProfitPercentage: 10,
+  },
 }

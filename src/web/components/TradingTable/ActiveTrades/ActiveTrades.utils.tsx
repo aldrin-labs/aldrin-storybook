@@ -19,9 +19,7 @@ import { TooltipCustom } from '@sb/components/index'
 import { SubColumnTitle, SubColumnValue } from './Columns'
 import { SmartOrder } from './ActiveTrades.types'
 import { TableCell, TableRow } from '../TradingTable.styles'
-import {
-  ExitLevel,
-} from '@sb/compositions/Chart/components/SmartOrderTerminal/types'
+import { ExitLevel } from '@sb/compositions/Chart/components/SmartOrderTerminal/types'
 
 type IStatus = {
   state: { state: string }
@@ -154,6 +152,7 @@ export const getStrategyFields = ({
       : exitLevels[0].price
 
   return {
+    blank: '',
     pair: {
       render: (
         <SubColumnValue
@@ -241,24 +240,24 @@ export const getStrategyFields = ({
       ),
       contentToSort: entryOrderPrice,
     },
-    leverage: {
-      render: (
-        <SubColumnValue
-          style={{
-            fontSize: '1.3rem',
-            fontFamily: 'Avenir Next Demi',
-            textTransform: 'lowercase',
-            color: theme.palette.grey.onboard,
-          }}
-          theme={theme}
-        >
-          {' '}
-          {'x'}
-          {leverage}
-        </SubColumnValue>
-      ),
-      contentToSort: leverage,
-    },
+    // leverage: {
+    //   render: (
+    //     <SubColumnValue
+    //       style={{
+    //         fontSize: '1.3rem',
+    //         fontFamily: 'Avenir Next Demi',
+    //         textTransform: 'lowercase',
+    //         color: theme.palette.grey.onboard,
+    //       }}
+    //       theme={theme}
+    //     >
+    //       {' '}
+    //       {'x'}
+    //       {leverage}
+    //     </SubColumnValue>
+    //   ),
+    //   contentToSort: leverage,
+    // },
     quantity: {
       render: (
         <SubColumnValue
@@ -272,7 +271,7 @@ export const getStrategyFields = ({
           }}
           theme={theme}
         >
-          {isActiveTable && enableEdit && (
+          {/* {isActiveTable && enableEdit && (
             <SubColumnTitle
               theme={theme}
               style={{ width: 'auto', padding: '0 1rem 0 0' }}
@@ -286,15 +285,11 @@ export const getStrategyFields = ({
                 padding=".1rem 1rem 0 1rem"
                 borderRadius="0.5rem"
                 borderColor={
-                  enableEdit
-                    ? theme.palette.blue.tabs
-                    : theme.palette.grey.main
+                  enableEdit ? theme.palette.blue.tabs : theme.palette.grey.main
                 }
                 btnColor={'#fff'}
                 backgroundColor={
-                  enableEdit
-                    ? theme.palette.blue.tabs
-                    : theme.palette.grey.main
+                  enableEdit ? theme.palette.blue.tabs : theme.palette.grey.main
                 }
                 transition={'all .4s ease-out'}
                 onClick={(e) => {
@@ -306,7 +301,7 @@ export const getStrategyFields = ({
                 edit
               </BtnCustom>
             </SubColumnTitle>
-          )}
+          )} */}
 
           <div
             style={{
@@ -314,9 +309,6 @@ export const getStrategyFields = ({
               flexDirection: 'column',
             }}
           >
-            <a>
-              {((amount * entryOrderPrice) / leverage).toFixed(2)} {pairArr[1]}
-            </a>
             <a
               style={{
                 color: theme.palette.grey.light,
@@ -338,85 +330,85 @@ export const getStrategyFields = ({
       ),
       contentToSort: amount,
     },
-    averaging: {
-      render: (
-        <SubColumnValue
-          style={{
-            fontSize: '1.3rem',
-            fontFamily: 'Avenir Next Demi',
-            textTransform: 'lowercase',
-            color: theme.palette.grey.onboard,
-            position: 'relative',
-          }}
-          theme={theme}
-        >
-          {entryLevels && entryLevels.length > 0 ? (
-            <>
-              {entryLevels.length}
-              {' points'}{' '}
-              <SvgIcon src={ArrowBottom} width={'1rem'} height={'1rem'} />
-            </>
-          ) : (
-            '-'
-          )}
-          {entryLevels.length > 0 && (
-            <div
-              className="avgTable"
-              style={{
-                position: 'absolute',
-                height: 'auto',
-                left: '45%',
-                width: '60rem',
-                top: '100%',
-                background: theme.palette.background.default,
-                zIndex: 100,
-                borderRadius: '0.1rem',
-                justifyContent: 'center',
-                border: theme.palette.border.main,
-              }}
-            >
-              <table
-                style={{
-                  width: '95%',
-                  color: theme.palette.grey.light,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0',
-                }}
-              >
-                <TableRow style={{ fontSize: '1.2rem' }}>
-                  <TableCell theme={theme}>price</TableCell>
-                  <TableCell theme={theme}>amount / margin</TableCell>
-                  <TableCell theme={theme}>est. averaged entry price</TableCell>
-                </TableRow>
+    // averaging: {
+    //   render: (
+    //     <SubColumnValue
+    //       style={{
+    //         fontSize: '1.3rem',
+    //         fontFamily: 'Avenir Next Demi',
+    //         textTransform: 'lowercase',
+    //         color: theme.palette.grey.onboard,
+    //         position: 'relative',
+    //       }}
+    //       theme={theme}
+    //     >
+    //       {entryLevels && entryLevels.length > 0 ? (
+    //         <>
+    //           {entryLevels.length}
+    //           {' points'}{' '}
+    //           <SvgIcon src={ArrowBottom} width={'1rem'} height={'1rem'} />
+    //         </>
+    //       ) : (
+    //         '-'
+    //       )}
+    //       {entryLevels.length > 0 && (
+    //         <div
+    //           className="avgTable"
+    //           style={{
+    //             position: 'absolute',
+    //             height: 'auto',
+    //             left: '45%',
+    //             width: '60rem',
+    //             top: '100%',
+    //             background: theme.palette.background.default,
+    //             zIndex: 100,
+    //             borderRadius: '0.1rem',
+    //             justifyContent: 'center',
+    //             border: theme.palette.border.main,
+    //           }}
+    //         >
+    //           <table
+    //             style={{
+    //               width: '95%',
+    //               color: theme.palette.grey.light,
+    //               textTransform: 'uppercase',
+    //               letterSpacing: '0',
+    //             }}
+    //           >
+    //             <TableRow style={{ fontSize: '1.2rem' }}>
+    //               <TableCell theme={theme}>price</TableCell>
+    //               <TableCell theme={theme}>amount / margin</TableCell>
+    //               <TableCell theme={theme}>est. averaged entry price</TableCell>
+    //             </TableRow>
 
-                {processEntryLevels(entryLevels, leverage, side).map(
-                  (level, index) => {
-                    return (
-                      <TableRow>
-                        <TableCell theme={theme}>
-                          {level.price.toFixed(pricePrecision)} {pairArr[1]}
-                        </TableCell>
-                        <TableCell theme={theme}>
-                          {level.quantity} {index === 0 ? pairArr[0] : '%'} /{' '}
-                          {level.margin.toFixed(pricePrecision)} {pairArr[1]}
-                        </TableCell>
-                        <TableCell theme={theme}>
-                          {level.estimatedAveragingPrice.toFixed(
-                            pricePrecision
-                          )}{' '}
-                          {pairArr[1]}
-                        </TableCell>
-                      </TableRow>
-                    )
-                  }
-                )}
-              </table>{' '}
-            </div>
-          )}
-        </SubColumnValue>
-      ),
-      contentToSort: entryLevels ? entryLevels.length : 0,
-    },
+    //             {processEntryLevels(entryLevels, leverage, side).map(
+    //               (level, index) => {
+    //                 return (
+    //                   <TableRow>
+    //                     <TableCell theme={theme}>
+    //                       {level.price.toFixed(pricePrecision)} {pairArr[1]}
+    //                     </TableCell>
+    //                     <TableCell theme={theme}>
+    //                       {level.quantity} {index === 0 ? pairArr[0] : '%'} /{' '}
+    //                       {level.margin.toFixed(pricePrecision)} {pairArr[1]}
+    //                     </TableCell>
+    //                     <TableCell theme={theme}>
+    //                       {level.estimatedAveragingPrice.toFixed(
+    //                         pricePrecision
+    //                       )}{' '}
+    //                       {pairArr[1]}
+    //                     </TableCell>
+    //                   </TableRow>
+    //                 )
+    //               }
+    //             )}
+    //           </table>{' '}
+    //         </div>
+    //       )}
+    //     </SubColumnValue>
+    //   ),
+    //   contentToSort: entryLevels ? entryLevels.length : 0,
+    // },
     stopLoss: {
       render:
         stopLoss || hedgeLossDeviation ? (
@@ -695,6 +687,8 @@ export const combineActiveTradesTable = ({
   canceledOrders,
   keys,
   handlePairChange,
+  pricePrecision,
+  quantityPrecision
 }: // pricePrecision,
 // quantityPrecision
 {
@@ -715,7 +709,8 @@ export const combineActiveTradesTable = ({
   canceledOrders: string[]
   keys: any
   handlePairChange: (pair: string) => void
-  // pricePrecision: number
+  quantityPrecision: number,
+  pricePrecision: number
   // quantityPrecision: number
 }) => {
   if (!data && !Array.isArray(data)) {
@@ -788,23 +783,14 @@ export const combineActiveTradesTable = ({
         receivedProfitPercentage: 0,
       }
 
-      const { pricePrecision, quantityPrecision } = getPrecisionItem({
-        marketType,
-        symbol: pair,
-      })
-
       const pairArr = pair.split('_')
       const needOpacity = false
       const keyName = keys[accountId]
-
-      console.log('jbuhyuyvkuyvkvkyvycyc', entryDeviation, entryPrice)
 
       const entryOrderPrice =
         !entryDeviation && orderType === 'limit' && !entryPrice
           ? price
           : entryPrice
-
-      console.log('entryOrderPrice', entryOrderPrice)
 
       const [activeOrderStatus, statusColor] = getActiveOrderStatus({
         strategy: el,
@@ -839,30 +825,31 @@ export const combineActiveTradesTable = ({
           isActiveTable: true,
         }),
         profit: {
-          render: null,
+          render: (
             // isSMIsAlreadyInEntry && entryOrderPrice ? (
-            //   <SMPnlComponent
-            //     exchange={activeExchange}
-            //     symbol={pair}
-            //     marketType={marketType}
-            //     pairArr={pairArr}
-            //     entryPrice={entryPrice}
-            //     leverage={leverage}
-            //     side={side}
-            //     exitPrice={exitPrice}
-            //     entryOrderPrice={entryOrderPrice}
-            //     entryLevels={entryLevels}
-            //     receivedProfitPercentage={receivedProfitPercentage}
-            //     receivedProfitAmount={receivedProfitAmount}
-            //     positionAmount={+stripDigitPlaces(amount, quantityPrecision)}
-            //     templatePnl={templatePnl}
-            //     theme={theme}
-            //   />
-            // ) : (
-            //   <a style={{ color: theme.palette.grey.light }}>
-            //     0 {pairArr[1]} / 0%
-            //   </a>
-            // ),
+            //     <SMPnlComponent
+            //       exchange={activeExchange}
+            //       symbol={pair}
+            //       marketType={marketType}
+            //       pairArr={pairArr}
+            //       entryPrice={entryPrice}
+            //       leverage={leverage}
+            //       side={side}
+            //       exitPrice={exitPrice}
+            //       entryOrderPrice={entryOrderPrice}
+            //       entryLevels={entryLevels}
+            //       receivedProfitPercentage={receivedProfitPercentage}
+            //       receivedProfitAmount={receivedProfitAmount}
+            //       positionAmount={+stripDigitPlaces(amount, quantityPrecision)}
+            //       templatePnl={templatePnl}
+            //       theme={theme}
+            //     />
+            //   ) : (
+            <span style={{ color: theme.palette.grey.light }}>
+              0 {pairArr[1]} / 0%
+            </span>
+          ),
+          // ),
           style: {
             opacity: needOpacity ? 0.6 : 1,
             minWidth: '135px',

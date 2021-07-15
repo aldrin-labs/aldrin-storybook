@@ -379,6 +379,8 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
       updateTerminalViewMode,
       isDefaultOnlyTables,
       maxLeverage,
+      pricePrecision,
+      quantityPrecision,
       allKeys,
       specificPair,
       handleToggleAllKeys,
@@ -389,42 +391,9 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
       return null
     }
 
-    let pricePrecision = 8,
-      quantityPrecision = 8
+    console.log('aaaaaaa', pricePrecision, quantityPrecision)
 
-    if (selectedTrade && selectedTrade.conditions) {
-      const precisionObject = getPrecisionItem({
-        marketType,
-        symbol: selectedTrade.conditions.pair,
-      })
-
-      pricePrecision = precisionObject.pricePrecision
-      quantityPrecision = precisionObject.quantityPrecision
-    }
-
-    const pair =
-      editTrade === 'entryOrder' && selectedTrade && selectedTrade.conditions
-        ? selectedTrade.conditions.pair.split('_')
-        : currencyPair.split('_')
-
-    const funds = pair.map((coin, index) => {
-      const asset = getFundsQuery.getFunds.find(
-        (el) => el.asset.symbol === pair[index] && el.assetType === marketType
-      )
-      const quantity = asset !== undefined ? asset.free : 0
-      const value = asset !== undefined ? asset.free * asset.asset.priceUSD : 0
-
-      return { quantity, value }
-    })
-
-    const [
-      USDTFuturesFund = { quantity: 0, value: 0 },
-    ] = getFundsQuery.getFunds
-      .filter((el) => +el.assetType === 1 && el.asset.symbol === 'USDT')
-      .map((el) => ({ quantity: el.quantity, value: el.quantity }))
-
-    const processedFunds =
-      marketType === 0 ? funds : [funds[0], USDTFuturesFund]
+    const columnNames = getTableHead(tab, marketType)
 
     // const EditEntryPopup =
     //   marketType === 0
@@ -635,9 +604,9 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
               Create Smart Trade
             </SmartTradeButton>
           )}
-          expandableRows={true}
-          expandedRows={expandedRows}
-          onChange={this.setExpandedRows}
+          // expandableRows={true}
+          // expandedRows={expandedRows}
+          // onChange={this.setExpandedRows}
           rowsWithHover={false}
           onTrClick={(row) => {
             this.setExpandedRows(row.id)
@@ -718,7 +687,7 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
           }}
           emptyTableText={getEmptyTextPlaceholder(tab)}
           data={{ body: activeStrategiesProcessedData }}
-          columnNames={getTableHead({ tab, marketType })}
+          columnNames={columnNames}
         />
       </>
     )

@@ -241,7 +241,7 @@ export const DefaultViewComponent = (
 
           <RowContainer
             direction={isSmartOrderMode ? 'row-reverse' : 'row'}
-            height={'40%'}
+            height={isFullScreenTablesMode ? '100%' : '40%'}
           >
             <TradingTableContainer
               item

@@ -88,9 +88,9 @@ export const activeTradesColumnNames = [
   { label: ' ', id: 'blank' },
   { label: 'Position', id: 'pair' },
   { label: 'Entry price', id: 'entryPrice' },
-  { label: 'Lvg.', id: 'leverage' },
-  { label: 'Margin/Size', id: 'quantity' },
-  { label: 'Averaging', id: 'averaging' },
+  // { label: 'Lvg.', id: 'leverage' },
+  { label: 'Size', id: 'quantity' },
+  // { label: 'Averaging', id: 'averaging' },
   { label: 'Stop loss', id: 'stopLoss' },
   {
     label: (
@@ -132,9 +132,9 @@ export const strategiesHistoryColumnNames = [
   { label: ' ', id: 'blank' },
   { label: 'Position', id: 'pair' },
   { label: 'Entry price', id: 'entryPrice' },
-  { label: 'Lvg.', id: 'leverage' },
+  // { label: 'Lvg.', id: 'leverage' },
   { label: 'Margin/Size', id: 'quantity' },
-  { label: 'Averaging', id: 'averaging' },
+  // { label: 'Averaging', id: 'averaging' },
   { label: 'Stop loss', id: 'stopLoss' },
   {
     label: (

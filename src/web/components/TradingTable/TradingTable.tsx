@@ -16,6 +16,7 @@ import TradeHistoryTable from './TradeHistoryTable/TradeHistoryDataWrapper'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import StrategiesHistoryTable from './StrategiesHistoryTable/StrategiesHistoryTable'
 import ActiveTrades from './ActiveTrades/ActiveTrades'
+import { SMMock } from './TradingTable.utils'
 
 class TradingTable extends React.PureComponent<IProps, IState> {
   state: IState = {
@@ -244,7 +245,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             getActiveStrategiesQuery: {
               subscribeToMoreFunction: () => {},
               getActiveStrategies: {
-                strategies: [],
+                strategies: [SMMock],
                 count: 0,
               },
             },

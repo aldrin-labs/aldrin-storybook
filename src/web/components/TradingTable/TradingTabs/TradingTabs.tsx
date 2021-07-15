@@ -69,7 +69,7 @@ const TradingTabs = ({
               onClick={() => handleTabChange('activeTrades')}
               style={{ width: '50%' }}
             >
-              Smart trades{' '}
+              Active Smart trades{' '}
               {/* {activeTradesLength > 0
                 ? `(
           ${activeTradesLength}

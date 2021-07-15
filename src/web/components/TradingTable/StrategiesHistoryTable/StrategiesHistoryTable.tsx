@@ -12,6 +12,7 @@ import {
   combineStrategiesHistoryTable,
   getEmptyTextPlaceholder,
   getTableHead,
+  SMMock,
 } from '@sb/components/TradingTable/TradingTable.utils'
 import { PaginationBlock } from '../TradingTablePagination'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
@@ -76,7 +77,6 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
       //   currencyPair,
       //   specificPair,
       // } = this.props
-
       // this.unsubscribeFunction && this.unsubscribeFunction()
       // this.unsubscribeFunction = this.props.getStrategiesHistoryQuery.subscribeToMore(
       //   {
@@ -173,9 +173,9 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
     return (
       <TableWithSort
         hideCommonCheckbox
-        expandableRows={true}
-        expandedRows={expandedRows}
-        onChange={this.setExpandedRows}
+        // expandableRows={true}
+        // expandedRows={expandedRows}
+        // onChange={this.setExpandedRows}
         rowsWithHover={false}
         style={{
           borderRadius: 0,
@@ -248,7 +248,7 @@ class StrategiesHistoryTable extends React.PureComponent<IProps> {
         }}
         emptyTableText={getEmptyTextPlaceholder(tab)}
         data={{ body: strategiesHistoryProcessedData }}
-        columnNames={getTableHead({ tab, marketType })}
+        columnNames={getTableHead(tab, marketType)}
       />
     )
   }
@@ -262,7 +262,14 @@ const TableDataWrapper = ({ ...props }) => {
 
   return (
     <StrategiesHistoryTable
-    getStrategiesHistoryQuery={ {getStrategiesHistory: {strategies: [], count: 0 }}}
+      getStrategiesHistoryQuery={{
+        getStrategiesHistory: {
+          strategies: [
+            SMMock
+          ],
+          count: 0,
+        },
+      }}
       component={StrategiesHistoryTable}
       variables={{
         strategiesHistoryInput: {
