@@ -23,6 +23,8 @@ import { TokenIcon } from '@sb/components/TokenIcon'
 import tokensLinksMap from '@core/config/tokensTwitterLinks'
 import Coinmarketcap from '@icons/coinmarketcap.svg'
 import CoinGecko from '@icons/coingecko.svg'
+import Inform from '@icons/inform.svg'
+import { MintsPopup } from '../Inputs/SelectWrapper/MintsPopup'
 
 export const ExclamationMark = styled(({ fontSize, lineHeight, ...props }) => (
   <span {...props}>!</span>
@@ -96,6 +98,7 @@ const selectStyles = (theme: Theme) => ({
 const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
   const { market, customMarkets } = useMarket()
   const location = useLocation()
+  const [isMintsPopupOpen, setIsMintsPopupOpen] = useState(false)
 
   const tokenMap = useTokenInfos()
   const pair = location.pathname.split('/')[3]
@@ -184,6 +187,8 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
             pricePrecision={pricePrecision}
             market={market}
             tokenMap={tokenMap}
+            isMintsPopupOpen={isMintsPopupOpen}
+            setIsMintsPopupOpen={() => setIsMintsPopupOpen}
           />
         </div>
 
@@ -197,7 +202,15 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
           pricePrecision={pricePrecision}
         />
         <Row align={'baseline'}>
-          {' '}
+          <SvgIcon
+            src={Inform}
+            onClick={() => {
+              setIsMintsPopupOpen(true)
+            }}
+            style={{ margin: '0 1.5rem', cursor: 'pointer' }}
+            width={'2.3rem'}
+            height={'2.3rem'}
+          />
           <LinkToSolanaExp marketAddress={marketAddress} />
           <DarkTooltip title={'Show analytics for this market.'}>
             <LinkToAnalytics to={`/analytics/${pair}`}>
@@ -242,6 +255,13 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
         </Row>
         <ExclamationMark theme={theme} margin={'0 0 0 2rem'} fontSize="5rem" />
       </Row>
+      <MintsPopup
+        theme={theme}
+        symbol={marketName}
+        marketAddress={marketAddress}
+        open={isMintsPopupOpen}
+        onClose={() => setIsMintsPopupOpen(false)}
+      />
     </RowContainer>
   )
 }

@@ -9,7 +9,7 @@ export const TableHeader = ({
   tab,
   data,
   onTabChange,
-  officialMarketsMap,
+  allMarketsMap,
   marketType,
 }) => {
   return (
@@ -37,7 +37,7 @@ export const TableHeader = ({
             marginLeft: '0.5rem',
           }}
         >
-          {`(${data.length})`}
+          {`(${data.filter((el) => !el.isCustomUserMarket).length})`}
         </span>
       </StyledTab>{' '}
       <StyledTab
@@ -171,8 +171,8 @@ export const TableHeader = ({
       </StyledTab>
       <StyledTab
         theme={theme}
-        isSelected={tab === 'public'}
-        onClick={() => onTabChange('public')}
+        isSelected={tab === 'customMarkets'}
+        onClick={() => onTabChange('customMarkets')}
       >
         Custom markets{' '}
         <span
@@ -184,9 +184,8 @@ export const TableHeader = ({
           {`(${
             data.filter(
               (el) =>
-                el.isCustomUserMarket &&
-                !el.isPrivateCustomMarket &&
-                !officialMarketsMap?.has(el.symbol)
+                allMarketsMap?.has(el.symbol) &&
+                allMarketsMap?.get(el.symbol).isCustomUserMarket
             ).length
           })`}
         </span>
