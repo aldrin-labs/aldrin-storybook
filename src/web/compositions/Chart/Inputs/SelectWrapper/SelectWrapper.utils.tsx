@@ -4,6 +4,8 @@ import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSett
 import { SvgIcon } from '@sb/components'
 import { DarkTooltip, DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
+import { marketsByCategories } from '@core/config/marketsByCategories'
+
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
@@ -25,8 +27,9 @@ import LessVolumeArrow from '@icons/lessVolumeArrow.svg'
 import MoreVolumeArrow from '@icons/moreVolumeArrow.svg'
 import Coinmarketcap from '@icons/coinmarketcap.svg'
 import CoinGecko from '@icons/coingecko.svg'
+import Inform from '@icons/inform.svg'
 
-import tokensLinksMap from './tokensTwitterLinks'
+import tokensLinksMap from '@core/config/tokensTwitterLinks'
 
 import {
   GetSelectorSettingsType,
@@ -39,6 +42,7 @@ import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 import LinkToSolanaExp from '../../components/LinkToSolanaExp'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { LinkToAnalytics, LinkToTwitter } from '../../components/MarketBlock'
+import { getNumberOfDecimalsFromNumber } from '@core/utils/chartPageUtils'
 
 export const selectWrapperColumnNames = [
   { label: '', id: 'favorite', isSortable: false },
@@ -47,95 +51,6 @@ export const selectWrapperColumnNames = [
   { label: '24H change', id: '24hChange', isNumber: true, isSortable: true },
   { label: '24H volume', id: '24hVolume', isNumber: true, isSortable: true },
 ]
-
-export const marketsByCategories = {
-  defi: {
-    name: 'DeFi',
-    tokens: [
-      'RSR',
-      'CCAI',
-      'SRM',
-      'OXY',
-      'RAY',
-      'GRT',
-      'FAB',
-      'SLRS',
-      'FTR',
-      'FRONT',
-      'STEP',
-      'FIDA',
-      'SNY',
-      'TGT',
-      'LIQ',
-      'SLIM',
-      'MER',
-      'AKRO',
-      'KEEP',
-      'XCOPE',
-      'ODOPE',
-      'RSR',
-      'MATH',
-      'LQID',
-      'LIEN',
-      'DGX',
-      'CREAM',
-      'BOLE',
-    ],
-  },
-  currency: { name: 'Currency', tokens: ['BTC', 'ETH', 'SOL'] },
-  exchangeDerrivatives: {
-    name: 'Exchange & Derrivatives',
-    tokens: [
-      'LUA',
-      'CCAI',
-      'SRM',
-      'FIDA',
-      'RAY',
-      'SOLAPE',
-      'FTT',
-      'SUSHI',
-      'UNI',
-      'FTR',
-      '1INCH',
-      'LIQ',
-      'WOO',
-      'PERP',
-      'LUA',
-      'SECO',
-      'MSRM',
-    ],
-  },
-  nftGamesGambling: {
-    name: 'NFT, Games & Gambling',
-    tokens: ['sHOG', 'SCA', 'HXRO', 'SAMO'],
-  },
-  memeSocial: {
-    name: 'Meme & Social',
-    tokens: ['SAIL', 'SAMO', 'COPE', 'CATO', 'IBVOL', 'BVOL'],
-  },
-  oracle: { name: 'Oracle', tokens: ['LINK'] },
-  farmAgregator: {
-    name: 'Farm & Agregator',
-    tokens: ['FRONT', 'OXY', 'YARD', 'TULP', 'RAMP'],
-  },
-  // syntheticAsset: { name: 'Synthetic Asset', tokens: ['SNY', 'FAB'] },
-  tradeLiquidity: {
-    name: 'Trade & Liquidity',
-    tokens: ['SLRS', 'ROPE', 'FTR', 'UBXT', 'LIEN'],
-  },
-  lendingYield: {
-    name: 'Lending & Yield',
-    tokens: ['AAVE', 'COMP', 'YFI', 'SWAG'],
-  },
-  infrastructure: {
-    name: 'Infrastructure',
-    tokens: ['GRT', 'BOP', 'TOMO', 'HNT', 'GEL'],
-  },
-  dApp: {
-    name: 'dApp',
-    tokens: ['KIN', 'AUDIO', 'MAPS', 'SXP', 'STEP', 'ALEPH', 'MEDIA'],
-  },
-}
 
 export const getIsNotUSDTQuote = (symbol) => {
   const [base, quote] = symbol.split('_')
@@ -343,9 +258,10 @@ export const combineSelectWrapperData = ({
       )
     }
     if (tab === 'sol') {
-      processedData = processedData.filter(
-        (el) => el.symbol.includes('SOL') && !el.symbol.includes('SOLAPE')
-      )
+      processedData = processedData.filter((el) => {
+        const [base, quote] = el.symbol.split('_')
+        return quote === 'SOL'
+      })
     }
 
     marketsCategoriesData?.forEach(([category, data]) => {
@@ -369,7 +285,7 @@ export const combineSelectWrapperData = ({
 
     if (tab === 'topGainers' || tab === 'topLosers') {
       processedData = processedData.sort((a, b) => {
-        const pricePrecisionA = a.closePrice < 1 ? 8 : a.closePrice < 10 ? 4 : 2
+        const pricePrecisionA = getNumberOfDecimalsFromNumber(a.closePrice)
 
         const strippedLastPriceDiffA = +stripDigitPlaces(
           a.lastPriceDiff,
@@ -387,7 +303,7 @@ export const combineSelectWrapperData = ({
           ? 0
           : (a.closePrice - prevClosePriceA) / (prevClosePriceA / 100)
 
-        const pricePrecisionB = b.closePrice < 1 ? 8 : b.closePrice < 10 ? 4 : 2
+        const pricePrecisionB = getNumberOfDecimalsFromNumber(b.closePrice)
 
         const strippedLastPriceDiffB = +stripDigitPlaces(
           b.lastPriceDiff,
@@ -463,7 +379,7 @@ export const combineSelectWrapperData = ({
     }
 
     const [base, quote] = symbol.split('_')
-    const pricePrecision = closePrice <= 0.0001 ? 8 : closePrice < 10 ? 4 : 2
+    const pricePrecision = getNumberOfDecimalsFromNumber(closePrice)
 
     const isNotUSDTQuote = getIsNotUSDTQuote(symbol)
 
@@ -669,7 +585,7 @@ export const combineSelectWrapperData = ({
             <>
               {' '}
               {`${formatNumberToUSFormat(
-                stripDigitPlaces(Math.abs(minPrice))
+                stripDigitPlaces(minPrice, pricePrecision)
               )}`}{' '}
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
                 {quote}
@@ -687,7 +603,7 @@ export const combineSelectWrapperData = ({
           >
             <>
               {`${formatNumberToUSFormat(
-                stripDigitPlaces(Math.abs(maxPrice))
+                stripDigitPlaces(maxPrice, pricePrecision)
               )}`}{' '}
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
                 {quote}
@@ -735,6 +651,13 @@ export const combineSelectWrapperData = ({
             justify={'flex-start'}
             align={'baseline'}
           >
+            {/* <SvgIcon
+              onClick={() => {}}
+              src={Inform}
+              style={{ marginRight: '1.5rem' }}
+              width={'2.3rem'}
+              height={'2.3rem'}
+            /> */}
             <LinkToSolanaExp padding={'0'} marketAddress={marketAddress} />
             <DarkTooltip title={'Show analytics for this market.'}>
               <LinkToAnalytics
@@ -766,7 +689,7 @@ export const combineSelectWrapperData = ({
             )}
             {marketCapLink !== '' && (
               <a
-                style={{ marginLeft: '2rem' }}
+                style={{ marginLeft: '1.5rem' }}
                 target="_blank"
                 rel="noopener noreferrer"
                 href={marketCapLink}
@@ -778,6 +701,7 @@ export const combineSelectWrapperData = ({
                 />
               </a>
             )}
+            {/* <MintsPopup /> */}
           </Row>
         ),
       },

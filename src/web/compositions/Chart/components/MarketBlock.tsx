@@ -20,7 +20,7 @@ import SvgIcon from '@sb/components/SvgIcon'
 import { TokenInfo, TokenListProvider } from '@solana/spl-token-registry'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { TokenIcon } from '@sb/components/TokenIcon'
-import tokensLinksMap from '../Inputs/SelectWrapper/tokensTwitterLinks'
+import tokensLinksMap from '@core/config/tokensTwitterLinks'
 import Coinmarketcap from '@icons/coinmarketcap.svg'
 import CoinGecko from '@icons/coingecko.svg'
 
@@ -52,13 +52,13 @@ export const Title = styled(
 export const LinkToAnalytics = styled(Link)`
   font-size: 2rem;
   cursor: pointer;
-  margin-left: 2rem;
+  margin-left: 1.5rem;
 `
 
 export const LinkToTwitter = styled.a`
   font-size: 2rem;
   cursor: pointer;
-  margin-left: 2rem;
+  margin-left: 1.5rem;
 `
 
 const selectStyles = (theme: Theme) => ({
@@ -221,7 +221,7 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
           )}
           {marketCapLink !== '' && (
             <a
-              style={{ marginLeft: '2rem' }}
+              style={{ marginLeft: '1.5rem' }}
               target="_blank"
               rel="noopener noreferrer"
               href={marketCapLink}

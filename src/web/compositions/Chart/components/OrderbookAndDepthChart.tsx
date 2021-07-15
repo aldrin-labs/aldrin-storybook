@@ -77,7 +77,8 @@ const OrderbookAndDepthChart = (props) => {
       pricePrecision === undefined ||
       sizeDigits === undefined ||
       (!orderbook?.asks && !orderbook?.bids) ||
-      (JSON.stringify(orderbook) === JSON.stringify(prevOrderbook) && prevAggregation === aggregation)
+      (JSON.stringify(orderbook) === JSON.stringify(prevOrderbook) &&
+        prevAggregation === aggregation)
     )
       return
 
@@ -96,7 +97,6 @@ const OrderbookAndDepthChart = (props) => {
       sizeDigits: props.sizeDigits,
     })
 
-    console.log('updatedData asks', updatedData.asks.getLength())
     console.log(
       'aggregation',
       aggregation,
@@ -121,8 +121,6 @@ const OrderbookAndDepthChart = (props) => {
         side: 'bids',
         sizeDigits,
       })
-
-      console.log('set aggregated ob', aggregatedAsks.getLength())
 
       setAggregatedOrderbookData({
         asks: aggregatedAsks,

@@ -81,9 +81,9 @@ const AppRaw = ({
   location: { pathname: currentPage, search },
 }: any) => {
   const [isDevUrlPopupOpen, openDevUrlPopup] = useState(true)
-  const [isMigrationToNewUrlPopupOpen, openMigrationToNewUrlPopup] = useState(
-    true
-  )
+  // const [isMigrationToNewUrlPopupOpen, openMigrationToNewUrlPopup] = useState(
+  //   true
+  // )
 
   const isChartPage = /chart/.test(currentPage)
 
