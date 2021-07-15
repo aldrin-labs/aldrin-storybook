@@ -479,7 +479,7 @@ export const combineSelectWrapperData = ({
                 {baseTokenInfo?.name.replace('(Sollet)', '')}
               </span>
             )}
-            <span style={{ fontSize: '1.6rem' }}>{marketName}</span>{' '}
+            <span>{marketName}</span>{' '}
           </Row>
         ),
         onClick: () =>
@@ -663,7 +663,7 @@ export const combineSelectWrapperData = ({
               <LinkToAnalytics
                 target="_blank"
                 rel="noopener noreferrer"
-                to={`/analytics/${marketName}`}
+                to={`/analytics/${symbol}`}
               >
                 <SvgIcon
                   src={AnalyticsIcon}
