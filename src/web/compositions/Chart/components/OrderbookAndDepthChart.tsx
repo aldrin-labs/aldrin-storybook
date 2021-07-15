@@ -96,14 +96,6 @@ const OrderbookAndDepthChart = (props) => {
       sizeDigits: props.sizeDigits,
     })
 
-    console.log('updatedData asks', updatedData.asks.getLength())
-    console.log(
-      'aggregation',
-      aggregation,
-      'getAggregationsFromPricePrecision(pricePrecision)[0].value',
-      getAggregationsFromPricePrecision(pricePrecision)[0].value
-    )
-
     if (
       String(aggregation) !==
       String(getAggregationsFromPricePrecision(pricePrecision)[0].value)

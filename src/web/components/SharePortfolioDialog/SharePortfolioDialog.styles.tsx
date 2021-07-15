@@ -17,7 +17,7 @@ import SearchUsername from '@core/components/SearchUsername/SearchUsername'
 import { Link } from 'react-router-dom'
 
 export const StyledDialogContent = styled(DialogContent)`
-
+  background: ${props => props.theme.palette.dark.background};
   border-radius: none;
   border: ${(props) =>
       (props.theme &&
@@ -47,9 +47,9 @@ export const StyledDialogTitle = styled(DialogTitle)`
   background-color: ${(props) =>
     (props.theme &&
       props.theme.palette &&
-      props.theme.palette.grey &&
-      props.theme.palette.grey.main) ||
-    '#f2f4f6'};
+      props.theme.palette.white &&
+      props.theme.palette.white.background) ||
+    '#17181A'};
   height: 4rem;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
@@ -288,7 +288,7 @@ export const TypographyTitle = styled(Typography)`
   font-style: normal;
   font-weight: 600;
   font-size: 1.6rem;
-  text-transform: uppercase;
+  text-transform: capitalize;
   line-height: 31px;
   color: ${(props) =>
     (props.theme &&

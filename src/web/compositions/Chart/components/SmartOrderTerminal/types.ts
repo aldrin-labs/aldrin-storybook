@@ -232,6 +232,8 @@ export type InputRowProps = {
 export type CommonForBlocks = {
   pair: [string, string]
   theme: Theme,
+  isMarketType: boolean,
+  entryPoint: EntryPointType,
   validateField: (needValidate: boolean, value: any) => boolean,
   updateBlockValue: (blockName: string, valueName: string, value: any) => void,
   updateSubBlockValue: (blockName: string, subBlockName: string, valueName: string, value: any) => void,
@@ -249,12 +251,10 @@ export type CommonForBlocks = {
 export interface EntryOrderBlockProps extends CommonForBlocks {
   funds: [{ quantity: number, value: number}, { quantity: number, value: number}],
   maxAmount: number
-  entryPoint: EntryPointType,
   showErrors: boolean,
   marketType: 0 | 1,
   getMaxValues: () => [number, number],
   setMaxAmount: () => void,
-  isMarketType: boolean,
   initialMargin: number,
   pricePrecision: number,
   addAverageTarget: () => void,
@@ -268,11 +268,8 @@ export interface EntryOrderBlockProps extends CommonForBlocks {
 }
 
 export interface StopLossBlockProps extends CommonForBlocks {
-  pair: [string, string]
-  entryPoint: EntryPointType,
   showErrors: boolean,
   stopLoss: StopLossType,
-  isMarketType: boolean,
   priceForCalculate: number,
   pricePrecision: number
   showConfirmationPopup: () => void,
@@ -280,21 +277,16 @@ export interface StopLossBlockProps extends CommonForBlocks {
 }
 
 export interface TakeProfitBlockProps extends CommonForBlocks {
-  pair: [string, string]
   marketType: 0 | 1,
   addTarget: () => void,
-  entryPoint: EntryPointType,
   showErrors: boolean,
   takeProfit: TakeProfitType,
-  isMarketType: boolean,
   priceForCalculate: number,
   deleteTarget: (i: number) => void
 }
 
 export interface TerminalHeaderBlockProps extends CommonForBlocks {
   marketType: 0 | 1,
-  entryPoint: EntryPointType,
-  isMarketType: boolean,
   initialMargin: number
   selectedKey: SelectedKey
   maxLeverage: number
@@ -307,12 +299,23 @@ export interface TerminalHeaderBlockProps extends CommonForBlocks {
 }
 
 export interface SliderWithPriceAndPercentageFieldRowProps extends CommonForBlocks {
-  entryPoint: EntryPointType,
+  percentageTitle?: string,
+  priceTitle?: string,
+  pricePercentage?: string,
+  priceTextAlign?: string,
+  percentageTextAlign?: string,
+  sliderInTheBottom?: boolean,
+  approximatePrice: number,
   showErrors: boolean,
   stopLoss?: StopLossType,
-  isMarketType: boolean,
   priceForCalculate: number,
   pricePrecision: number
+  needPriceField?: boolean,
+  percentagePreSymbol?: string,
+  getApproximatePrice: () => number,
+  onApproximatePriceChange: () => void,
+  onAfterSliderChange: () => void,
+  onPricePercentageChange: () => void,
   showConfirmationPopup?: () => void,
   updateTerminalViewMode?: (newMode: string) => void
 }

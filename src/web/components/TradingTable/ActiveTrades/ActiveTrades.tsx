@@ -391,8 +391,6 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
       return null
     }
 
-    console.log('aaaaaaa', pricePrecision, quantityPrecision)
-
     const columnNames = getTableHead(tab, marketType)
 
     // const EditEntryPopup =

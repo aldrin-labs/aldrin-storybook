@@ -70,6 +70,7 @@ export const StopLossBlock = ({
   let estPrice = 0
   let sumAmount = 0
   let margin = 0
+  
   return (
     <TerminalBlock
       data-tut={'step2'}
