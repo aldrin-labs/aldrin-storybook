@@ -201,7 +201,7 @@ export const FeedbackPopup = ({
         <Form
           // onSubmit={handleSubmit}
           name="marketsCategoriesFeedback"
-          // data-netlify="true"
+          data-netlify="true"
           method={'post'}
         >
           <input
