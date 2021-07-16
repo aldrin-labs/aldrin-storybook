@@ -85,6 +85,28 @@ const TextField = styled.input`
 const Form = styled.form`
   width: 100%;
 `
+const Label = styled.label`
+  width: 100%;
+  color: #fbf2f2;
+  font-family: Avenir Next Medium;
+  font-size: 1.4rem;
+`
+
+const SubmitButton = styled.button`
+  width: 100%;
+  height: 4.5rem;
+  background: ${(props) => props.theme.palette.blue.serum};
+  font-size: 1.4rem;
+  text-transform: capitalize;
+  border-radius: 1rem;
+  border-color: none;
+  cursor: pointer;
+  color: #f8faff;
+  border: none;
+  font-family: Avenir Next Medium;
+  margin-top: 4rem;
+`
+
 export const FeedbackPopup = ({
   theme,
   onClose,
@@ -204,6 +226,7 @@ export const FeedbackPopup = ({
               <TextField
                 type="text"
                 name="token"
+                id="token"
                 theme={theme}
                 placeholder={'Input token name'}
                 value={feedbackData.token}
@@ -227,6 +250,7 @@ export const FeedbackPopup = ({
               <TextField
                 type="text"
                 name="wrongCategory"
+                id="wrongCategory"
                 theme={theme}
                 placeholder={'Input category name'}
                 value={feedbackData.wrongCategory}
@@ -250,6 +274,7 @@ export const FeedbackPopup = ({
               <TextField
                 type="text"
                 name="rightCategory"
+                id="rightCategory"
                 theme={theme}
                 placeholder={'Input category name'}
                 value={feedbackData.rightCategory}
