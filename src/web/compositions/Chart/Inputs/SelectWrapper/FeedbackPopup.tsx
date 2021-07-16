@@ -128,7 +128,7 @@ export const FeedbackPopup = ({
     return setFeedbackData({ ...feedbackData, [fieldName]: value })
   }
 
-  const handleSubmit = (e, feedbackData) => {
+  const handleSubmit = (e) => {
     fetch('/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
