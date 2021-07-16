@@ -199,9 +199,9 @@ export const FeedbackPopup = ({
         </RowContainer>
       ) : (
         <Form
-          onSubmit={handleSubmit}
+          // onSubmit={handleSubmit}
           name="marketsCategoriesFeedback"
-          data-netlify="true"
+          // data-netlify="true"
           method={'post'}
         >
           <input
