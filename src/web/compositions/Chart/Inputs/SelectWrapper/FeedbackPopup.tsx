@@ -110,7 +110,10 @@ export const FeedbackPopup = ({
     fetch('/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: encode({ 'form-name': 'contact', ...feedbackData }),
+      body: encode({
+        'form-name': 'marketsCategoriesFeedback',
+        ...feedbackData,
+      }),
     })
       .then(() => console.log('Success!'))
       .catch((error) => console.log(error))
