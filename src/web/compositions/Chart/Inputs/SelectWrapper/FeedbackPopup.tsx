@@ -294,9 +294,6 @@ export const FeedbackPopup = ({
               theme={theme}
               type="submit"
               onClick={(e) => {
-                e.preventDefault()
-
-                handleSubmit(e, feedbackData)
                 submitFeedback(true)
               }}
             >
