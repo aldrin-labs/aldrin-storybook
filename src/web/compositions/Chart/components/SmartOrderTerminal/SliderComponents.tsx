@@ -15,9 +15,7 @@ import { Select, FormInputContainer } from './InputComponents'
 export const SliderWithPriceAndPercentageFieldRow = ({
   pair,
   theme,
-  entryPoint,
   showErrors,
-  isMarketType,
   validateField,
   percentageTitle,
   priceTitle,
@@ -29,6 +27,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
   percentageTextAlign = 'left',
   priceTextAlign = 'left',
   needPriceField = true,
+  priceFieldDisabled = false,
   sliderInTheBottom = false,
   onPricePercentageChange,
   onApproximatePriceChange,
@@ -93,7 +92,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
               ? getApproximatePrice(value)
               : approximatePrice
           }
-          disabled={isMarketType && !entryPoint.trailing.isTrailingOn}
+          disabled={priceFieldDisabled}
           showErrors={showErrors}
           isValid={validateField(true, pricePercentage)}
           inputStyles={{

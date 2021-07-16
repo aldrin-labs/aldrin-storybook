@@ -263,7 +263,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
           </ClearButton> */}
         </StyledDialogTitle>
         <StyledDialogContent theme={theme} id="share-dialog-content">
-          <InputRowContainer justify="center" padding={'1rem 0 .6rem 0'}>
+          <InputRowContainer justify="center" padding={'1rem 0 1.6rem 0'}>
             {/* <CustomSwitcher
               theme={theme}
               firstHalfText={'limit'}
@@ -348,7 +348,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
             </InputRowContainer> */}
 
             {!this.state.isTrailingOn && (
-              <InputRowContainer>
+              <InputRowContainer justify={'space-between'} wrap={'wrap'}>
                 {/* <FormInputContainer theme={theme} title={'stop price'}>
                   <InputRowContainer>
                     <Input
@@ -429,10 +429,8 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                   {...{
                     pair,
                     theme,
-                    entryPoint,
                     showErrors: false,
-                    isMarketType: false,
-                    validateField,
+                    validateField: (_, value) => !!value,
                     pricePrecision: 8,
                     header: 'price',
                     levelFieldTitle: 'profit',
@@ -450,56 +448,23 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                     getApproximatePrice: (value: number) => {
                       return value === 0
                         ? priceForCalculate
-                        : entryPoint.order.side === 'sell'
+                        : side === 'sell'
                         ? stripDigitPlaces(
-                            priceForCalculate *
-                              (1 - value / 100 / entryPoint.order.leverage),
+                            priceForCalculate * (1 - value / 100 / leverage),
                             pricePrecision
                           )
                         : stripDigitPlaces(
-                            priceForCalculate *
-                              (1 + value / 100 / entryPoint.order.leverage),
+                            priceForCalculate * (1 + value / 100 / leverage),
                             pricePrecision
                           )
                     },
                     onAfterSliderChange: (value: number) => {
-                      updateStopLossAndTakeProfitPrices({
-                        takeProfitPercentage: value,
-                      })
-
-                      updateBlockValue('takeProfit', 'pricePercentage', value)
+                      this.setState({ pricePercentage: value })
+                      this.updateTakeProfit(value)
                     },
                     onApproximatePriceChange: (
                       e: React.ChangeEvent<HTMLInputElement>,
                       updateValue: (v: any) => void
-                    ) => {
-                      const percentage =
-                        entryPoint.order.side === 'sell'
-                          ? (1 - +e.target.value / priceForCalculate) *
-                            100 *
-                            entryPoint.order.leverage
-                          : -(1 - +e.target.value / priceForCalculate) *
-                            100 *
-                            entryPoint.order.leverage
-
-                      updateBlockValue(
-                        'takeProfit',
-                        'pricePercentage',
-                        stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
-                      )
-
-                      updateValue(
-                        stripDigitPlaces(percentage < 0 ? 0 : percentage, 2)
-                      )
-
-                      updateBlockValue(
-                        'takeProfit',
-                        'takeProfitPrice',
-                        e.target.value
-                      )
-                    },
-                    onPricePercentageChange: (
-                      e: React.ChangeEvent<HTMLInputElement>
                     ) => {
                       const percentage =
                         side === 'sell'
@@ -514,14 +479,24 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                         takeProfitPrice: e.target.value,
                       })
                     },
-                    updateSubBlockValue,
-                    updateStopLossAndTakeProfitPrices,
+                    onPricePercentageChange: (
+                      e: React.ChangeEvent<HTMLInputElement>
+                    ) => {
+                      this.setState({ pricePercentage: e.target.value })
+                      this.updateTakeProfit(e.target.value)
+                    },
+                    updateSubBlockValue: this.updateSubBlockValue,
+                    updateStopLossAndTakeProfitPrices: ({
+                      takeProfitPercentage,
+                    }) => {
+                      this.updateTakeProfit(takeProfitPercentage)
+                    },
                   }}
                 />
               </InputRowContainer>
             )}
 
-            {this.state.isTrailingOn && (
+            {/* {this.state.isTrailingOn && (
               <>
                 <FormInputContainer theme={theme} title={`activate price`}>
                   <InputRowContainer>
@@ -617,7 +592,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                   </FormInputContainer>
                 </InputRowContainer>
               </>
-            )}
+            )} */}
 
             {/* {this.state.isSplitTargetsOn && (
               <>
@@ -773,7 +748,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
               </>
             )} */}
 
-            {this.state.isTimeoutOn && (
+            {/* {this.state.isTimeoutOn && (
               <>
                 <TradeInputHeader
                   theme={theme}
@@ -892,7 +867,8 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                   </SubBlocksContainer>
                 </InputRowContainer>
               </>
-            )}
+            )} */}
+
             <InputRowContainer padding={'2rem 0 0 0'}>
               <SendButton
                 theme={theme}
@@ -982,6 +958,23 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
     }
   }
 
+  updateBlockValue = (
+    blockName: string,
+    valueName: string,
+    newValue: string | number
+  ) => {
+    this.setState({ [valueName]: newValue })
+  }
+
+  updateSubBlockValue = (
+    blockName: string,
+    subBlockName: string,
+    valueName: string,
+    newValue: string | number
+  ) => {
+    this.setState({ [valueName]: newValue })
+  }
+
   updateStopLoss = (percentage, field = 'stopLossPrice') => {
     const { side, price, pricePrecision, leverage } = this.props
     const fieldPrice =
@@ -1010,7 +1003,12 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
       side,
       pair,
       price,
+      pricePrecision,
     } = this.props
+
+    const { pricePercentage, stopLossPrice } = this.state
+
+    const priceForCalculate = price || 0
 
     return (
       <Dialog
@@ -1028,18 +1026,18 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
           disableTypography
           id="responsive-edit-stop-loss-dialog-title"
         >
-          <TypographyTitle theme={theme}>{`Edit stop loss`}</TypographyTitle>
-          <ClearButton>
+          <TypographyTitle theme={theme}>Edit Stop Loss</TypographyTitle>
+          {/* <ClearButton>
             <Clear
               style={{ fontSize: '2rem' }}
               color="inherit"
               onClick={handleClose}
             />
-          </ClearButton>
+          </ClearButton> */}
         </StyledDialogTitle>
         <StyledDialogContent theme={theme} id="edit-stop-loss-dialog-content">
-          <InputRowContainer justify="center" padding={'1rem 0 .6rem 0'}>
-            <CustomSwitcher
+          <InputRowContainer justify="center" padding={'1rem 0 1.6rem 0'}>
+            {/* <CustomSwitcher
               theme={theme}
               firstHalfText={'limit'}
               secondHalfText={'market'}
@@ -1053,10 +1051,28 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                   type: getSecondValueFromFirst(prev.type),
                 }))
               }}
-            />
+            /> */}
+            <SwitcherHalf
+              theme={theme}
+              width={'calc(100%)'}
+              height={'4rem'}
+              style={{
+                backgroundColor: theme.palette.dark.background,
+                borderRadius: '0.6rem',
+                border: `.6rem solid ${theme.palette.grey.terminal}`,
+                color: theme.palette.blue.serum,
+              }}
+              onClick={() => {
+                this.setState((prev) => ({
+                  type: getSecondValueFromFirst(prev.type),
+                }))
+              }}
+            >
+              Limit
+            </SwitcherHalf>
           </InputRowContainer>
           <div>
-            <InputRowContainer
+            {/* <InputRowContainer
               justify="flex-start"
               padding={'.8rem 0 1.2rem 0'}
             >
@@ -1071,21 +1087,10 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
               >
                 Timeout
               </AdditionalSettingsButton>
+            </InputRowContainer> */}
 
-              {/* <AdditionalSettingsButton theme={theme}
-                isActive={this.state.isForcedStopOn}
-                onClick={() =>
-                  this.setState((prev) => ({
-                    isForcedStopOn: !prev.isForcedStopOn,
-                  }))
-                }
-              >
-                Forced stop
-              </AdditionalSettingsButton> */}
-            </InputRowContainer>
-
-            <InputRowContainer>
-              <FormInputContainer theme={theme} title={'stop price'}>
+            <InputRowContainer wrap={'wrap'} justify={'space-between'}>
+              {/* <FormInputContainer theme={theme} title={'stop price'}>
                 <InputRowContainer>
                   <Input
                     theme={theme}
@@ -1155,7 +1160,73 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                     }}
                   />
                 </InputRowContainer>
-              </FormInputContainer>
+              </FormInputContainer> */}
+              <SliderWithPriceAndPercentageFieldRow
+                {...{
+                  pair,
+                  theme,
+                  showErrors: true,
+                  validateField: (_, v) => !!v,
+                  pricePrecision,
+                  updateBlockValue: this.updateBlockValue,
+                  priceForCalculate,
+                  percentagePreSymbol: '-',
+                  sliderInTheBottom: true,
+                  needPercentageTitle: true,
+                  percentageTitle: 'Loss',
+                  priceTitle: 'SL Price',
+                  percentageTextAlign: 'right',
+                  priceTextAlign: 'right',
+                  approximatePrice: stopLossPrice,
+                  pricePercentage: pricePercentage,
+                  getApproximatePrice: (value: number) => {
+                    return value === 0
+                      ? priceForCalculate
+                      : side === 'buy'
+                      ? stripDigitPlaces(
+                          priceForCalculate * (1 - value / 100 / leverage),
+                          pricePrecision
+                        )
+                      : stripDigitPlaces(
+                          priceForCalculate * (1 + value / 100 / leverage),
+                          pricePrecision
+                        )
+                  },
+                  onAfterSliderChange: (value: number) => {
+                    this.setState({ pricePercentage: value })
+                    this.updateStopLoss(value)
+                  },
+                  onApproximatePriceChange: (
+                    e: React.ChangeEvent<HTMLInputElement>,
+                    updateValue: (v: any) => void
+                  ) => {
+                    const percentage =
+                      side === 'buy'
+                        ? (1 - e.target.value / price) * 100 * leverage
+                        : -(1 - e.target.value / price) * 100 * leverage
+
+                    this.setState({
+                      pricePercentage: stripDigitPlaces(
+                        percentage < 0 ? 0 : percentage,
+                        2
+                      ),
+                      stopLossPrice: e.target.value,
+                    })
+                  },
+                  onPricePercentageChange: (
+                    e: React.ChangeEvent<HTMLInputElement>
+                  ) => {
+                    this.setState({ pricePercentage: e.target.value })
+                    this.updateStopLoss(e.target.value)
+                  },
+                  updateSubBlockValue: this.updateSubBlockValue,
+                  updateStopLossAndTakeProfitPrices: ({
+                    stopLossPercentage,
+                  }) => {
+                    this.updateStopLoss(stopLossPercentage)
+                  },
+                }}
+              />
             </InputRowContainer>
 
             {this.state.isTimeoutOn && (
@@ -1375,6 +1446,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
 
             <InputRowContainer padding={'2rem 0 0 0'}>
               <SendButton
+                theme={theme}
                 type={'buy'}
                 onClick={() => {
                   const transformedState = transformProperties(this.state)

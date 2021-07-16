@@ -232,8 +232,8 @@ export type InputRowProps = {
 export type CommonForBlocks = {
   pair: [string, string]
   theme: Theme,
-  isMarketType: boolean,
-  entryPoint: EntryPointType,
+  isMarketType?: boolean,
+  entryPoint?: EntryPointType,
   validateField: (needValidate: boolean, value: any) => boolean,
   updateBlockValue: (blockName: string, valueName: string, value: any) => void,
   updateSubBlockValue: (blockName: string, subBlockName: string, valueName: string, value: any) => void,
