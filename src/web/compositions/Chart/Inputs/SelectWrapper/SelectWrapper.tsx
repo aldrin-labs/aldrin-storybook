@@ -44,6 +44,7 @@ import { getSerumTradesData } from '@core/graphql/queries/chart/getSerumTradesDa
 import { TableHeader } from './TableHeader'
 import { TableInner } from './TableInner'
 import { MintsPopup } from './MintsPopup'
+import { FeedbackPopup } from './FeedbackPopup'
 
 export const excludedPairs = [
   // 'USDC_ODOP',
@@ -221,6 +222,7 @@ class SelectPairListComponent extends React.PureComponent<
     sortDirection: SortDirection.DESC,
     choosenMarketData: {},
     isMintsPopupOpen: false,
+    isFeedBackPopupOpen: false,
   }
 
   changeChoosenMarketData = ({ symbol, marketAddress }) => {
@@ -229,6 +231,10 @@ class SelectPairListComponent extends React.PureComponent<
 
   setIsMintsPopupOpen = (isMintsPopupOpen) => {
     this.setState({ isMintsPopupOpen })
+  }
+
+  setIsFeedbackPopupOpen = (isFeedBackPopupOpen) => {
+    this.setState({ isFeedBackPopupOpen })
   }
 
   componentDidMount() {
@@ -261,7 +267,12 @@ class SelectPairListComponent extends React.PureComponent<
     const { left } = document
       .getElementById('ExchangePair')
       ?.getBoundingClientRect()
-    const { sortBy, sortDirection, isMintsPopupOpen } = this.state
+    const {
+      sortBy,
+      sortDirection,
+      isMintsPopupOpen,
+      isFeedBackPopupOpen,
+    } = this.state
 
     getSerumTradesDataQuery?.getSerumTradesData?.forEach((el) =>
       serumMarketsDataMap.set(el.pair, el)
@@ -330,7 +341,12 @@ class SelectPairListComponent extends React.PureComponent<
       onTabChange,
     } = nextProps
     const { data: prevPropsData } = this.props
-    const { sortBy, sortDirection, isMintsPopupOpen } = this.state
+    const {
+      sortBy,
+      sortDirection,
+      isMintsPopupOpen,
+      isFeedBackPopupOpen,
+    } = this.state
 
     const serumMarketsDataMap = new Map()
 
@@ -443,6 +459,7 @@ class SelectPairListComponent extends React.PureComponent<
       showAddMarketPopup,
       choosenMarketData,
       isMintsPopupOpen,
+      isFeedBackPopupOpen,
     } = this.state
     const {
       theme,
@@ -484,7 +501,7 @@ class SelectPairListComponent extends React.PureComponent<
       console.log('onAddCustomMarket', newCustomMarkets)
       return true
     }
-    console.log('choosenMarketData', choosenMarketData)
+
     return (
       <>
         <StyledGrid
@@ -496,7 +513,7 @@ class SelectPairListComponent extends React.PureComponent<
             position: 'absolute',
             zIndex: 900,
             background: '#222429',
-            minWidth: '150rem',
+            minWidth: '155rem',
             height: '73rem',
             borderRadius: '2rem',
             overflow: 'hidden',
@@ -560,13 +577,42 @@ class SelectPairListComponent extends React.PureComponent<
           />
           <Grid
             style={{
-              justifyContent: 'flex-end',
+              justifyContent: 'space-between',
               width: '100%',
               position: 'relative',
               zIndex: 1000,
+              background: '#17181A',
+              borderTop: '0.1rem solid #383B45',
             }}
             container
           >
+            <Row
+              style={{
+                padding: '0 2rem',
+                height: '4rem',
+                fontFamily: 'Avenir Next Medium',
+                color: theme.palette.blue.serum,
+                alignItems: 'center',
+                fontSize: '1.5rem',
+                textTransform: 'none',
+                textDecoration: 'underline',
+              }}
+              onClick={async (e) => {
+                e.stopPropagation()
+                // if (publicKey === '') {
+                //   notify({
+                //     message: 'Connect your wallet first',
+                //     type: 'error',
+                //   })
+                //   wallet.connect()
+                //   return
+                // }
+
+                this.setIsFeedbackPopupOpen(true)
+              }}
+            >
+              Found an error in the catalog? Let us know!
+            </Row>
             <Row
               style={{
                 padding: '0 2rem',
@@ -591,7 +637,6 @@ class SelectPairListComponent extends React.PureComponent<
                 this.setState({ showAddMarketPopup: true })
               }}
             >
-              {' '}
               + Add Market
             </Row>
           </Grid>
@@ -609,6 +654,11 @@ class SelectPairListComponent extends React.PureComponent<
             marketAddress={choosenMarketData?.marketAddress}
             open={isMintsPopupOpen}
             onClose={() => this.setIsMintsPopupOpen(false)}
+          />
+          <FeedbackPopup
+            theme={theme}
+            open={isFeedBackPopupOpen}
+            onClose={() => this.setIsFeedbackPopupOpen(false)}
           />
         </StyledGrid>
       </>

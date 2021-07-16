@@ -78,8 +78,6 @@ export function useAllMarketsList() {
       !ALL_MARKETS_MAP.has(market.name.replaceAll('/', '_'))
   )
 
-  console.log('usersMarkets', usersMarkets)
-
   usersMarkets?.forEach((market) =>
     ALL_MARKETS_MAP.set(market.name.replaceAll('/', '_'), {
       ...market,

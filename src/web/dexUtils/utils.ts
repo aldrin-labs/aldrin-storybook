@@ -34,6 +34,14 @@ export const percentFormat = new Intl.NumberFormat(undefined, {
   maximumFractionDigits: 2,
 })
 
+export const encode = (data) => {
+  return Object.keys(data)
+    .map(
+      (key) => encodeURIComponent(key) + '=' + encodeURIComponent(data[key])
+    )
+    .join('&')
+}
+
 export function floorToDecimal(value, decimals) {
   return decimals ? Math.floor(value * 10 ** decimals) / 10 ** decimals : value
 }
