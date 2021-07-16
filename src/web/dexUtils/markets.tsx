@@ -387,7 +387,7 @@ export function useMarket() {
 export function useMarkPrice() {
   const [markPrice, setMarkPrice] = useState(null)
 
-  const [orderbook] = useOrderbook()
+  const [orderbook] = useOrderbook(2)
   const trades = useTrades()
 
   useEffect(() => {
@@ -446,7 +446,7 @@ export function useOrderbookAccounts() {
   }
 }
 
-export function useOrderbook(depth = 30) {
+export function useOrderbook(depth = 200) {
   const { bidOrderbook, askOrderbook } = useOrderbookAccounts()
   const { market } = useMarket()
   const bids =

@@ -332,6 +332,7 @@ const PairSelector = ({
               rowStyle={{
                 outline: 'none',
                 cursor: 'pointer',
+                fontSize: '1.4rem',
                 color: theme.palette.dark.main,
                 borderBottom: `0.05rem solid ${theme.palette.grey.newborder}`,
               }}
@@ -343,6 +344,7 @@ const PairSelector = ({
                 marginLeft: 0,
                 marginRight: 0,
                 letterSpacing: '.075rem',
+                whiteSpace: 'nowrap',
                 // borderBottom: '.1rem solid #e0e5ec',
                 fontSize: '1.2rem',
                 outline: 'none',
@@ -372,13 +374,13 @@ const PairSelector = ({
                   color: theme.palette.grey.title,
                   paddingRight: '6px',
                   paddingLeft: '1rem',
-                  fontSize: '1.2rem',
+                  fontSize: '1.4rem',
                   textAlign: 'left',
                 }}
-                width={width}
+                width={width * 1.5}
                 style={{
                   textAlign: 'left',
-                  fontSize: '1.2rem',
+                  fontSize: '1.3rem',
                   fontWeight: 'bold',
                 }}
                 cellRenderer={({ cellData }) => cellData.render}
@@ -390,13 +392,13 @@ const PairSelector = ({
                   textTransform: 'capitalize',
                   color: theme.palette.grey.title,
                   paddingRight: 'calc(10px)',
-                  fontSize: '1.2rem',
+                  fontSize: '1.4rem',
                   textAlign: 'left',
                 }}
                 width={width}
                 style={{
                   textAlign: 'left',
-                  fontSize: '1.2rem',
+                  fontSize: '1.3rem',
                   fontWeight: 'bold',
                 }}
                 cellRenderer={({ cellData }) => cellData.render}
