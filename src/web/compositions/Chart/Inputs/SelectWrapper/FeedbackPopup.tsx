@@ -292,7 +292,7 @@ export const FeedbackPopup = ({
               style={{ width: '100%', margin: '3rem 0' }}
               disabled={isButtonDisabled}
               theme={theme}
-              type="submit"
+              type="button"
               onClick={(e) => {
                 submitFeedback(true)
               }}
