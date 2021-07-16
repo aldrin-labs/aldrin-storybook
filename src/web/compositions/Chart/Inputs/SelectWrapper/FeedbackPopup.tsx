@@ -119,9 +119,9 @@ export const FeedbackPopup = ({
   const [isFeedbackSubmitted, submitFeedback] = useState(false)
 
   const [feedbackData, setFeedbackData] = useState({
-    tokenNameField: 'sdf',
-    rightCategoryField: '123',
-    wrongCategoryField: 'zsas',
+    token: '',
+    rightCategory: '',
+    wrongCategory: '',
   })
 
   const setData = ({ fieldName, value }) => {
@@ -144,9 +144,9 @@ export const FeedbackPopup = ({
   }
 
   const isButtonDisabled =
-    feedbackData.tokenNameField === '' ||
-    feedbackData.rightCategoryField === '' ||
-    feedbackData.wrongCategoryField === ''
+    feedbackData.token === '' ||
+    feedbackData.rightCategory === '' ||
+    feedbackData.wrongCategory === ''
 
   return (
     <DialogWrapper
@@ -216,93 +216,89 @@ export const FeedbackPopup = ({
             value="marketsCategoriesFeedback"
           />
           <RowContainer margin={'1rem 0'}>
-            {/* <RowContainer wrap="nowrap">
+            <RowContainer wrap="nowrap">
               <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
                 Token
               </Text>
               <Line />
-            </RowContainer> */}
-            {/* <RowContainer justify={'space-between'}> */}
-            <Label>
-              Token:
+            </RowContainer>
+            <RowContainer justify={'space-between'}>
               <TextField
                 type="text"
                 name="token"
+                id="token"
                 theme={theme}
                 placeholder={'Input token name'}
-                id="token"
-
-                // value={feedbackData.tokenNameField}
-                // onChange={(e) =>
-                //   setData({
-                //     fieldName: 'tokenNameField',
-                //     value: e.target.value,
-                //   })
-                // }
+                value={feedbackData.token}
+                onChange={(e) =>
+                  setData({
+                    fieldName: 'token',
+                    value: e.target.value,
+                  })
+                }
               />
-            </Label>
-            {/* </RowContainer> */}
+            </RowContainer>
           </RowContainer>
           <RowContainer margin={'1rem 0'}>
-            {/* <RowContainer wrap="nowrap">
+            <RowContainer wrap="nowrap">
               <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
                 Stored in category
               </Text>
               <Line />
-            </RowContainer> */}
-            {/* <RowContainer justify={'space-between'}> */}
-            <Label>
-              Stored in category:
+            </RowContainer>
+            <RowContainer justify={'space-between'}>
               <TextField
                 type="text"
                 name="wrongCategory"
-                theme={theme}
-                placeholder={'Input category'}
                 id="wrongCategory"
-
-                // value={feedbackData.wrongCategoryField}
-                // onChange={(e) =>
-                //   setData({
-                //     fieldName: 'wrongCategoryField',
-                //     value: e.target.value,
-                //   })
-                // }
+                theme={theme}
+                placeholder={'Input category name'}
+                value={feedbackData.wrongCategory}
+                onChange={(e) =>
+                  setData({
+                    fieldName: 'wrongCategory',
+                    value: e.target.value,
+                  })
+                }
               />
-            </Label>
-
-            {/* </RowContainer> */}
+            </RowContainer>
           </RowContainer>
           <RowContainer margin={'1rem 0'}>
-            {/* <RowContainer wrap="nowrap">
+            <RowContainer wrap="nowrap">
               <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
                 But should be in
               </Text>
               <Line />
-            </RowContainer> */}
-            {/* <RowContainer justify={'space-between'}> */}
-            <Label>
-              But should be in:
+            </RowContainer>
+            <RowContainer justify={'space-between'}>
               <TextField
                 type="text"
                 name="rightCategory"
-                theme={theme}
-                placeholder={'Input category'}
                 id="rightCategory"
-
-                // value={feedbackData.rightCategoryField}
-                // onChange={(e) =>
-                //   setData({
-                //     fieldName: 'rightCategoryField',
-                //     value: e.target.value,
-                //   })
-                // }
+                theme={theme}
+                placeholder={'Input category name'}
+                value={feedbackData.rightCategory}
+                onChange={(e) =>
+                  setData({
+                    fieldName: 'rightCategory',
+                    value: e.target.value,
+                  })
+                }
               />
-            </Label>
-
-            {/* </RowContainer> */}
+            </RowContainer>
           </RowContainer>
           <RowContainer>
-            <input onClick={() => submitFeedback(true)} type="submit"/>
+            <BlueButton
+              style={{ width: '100%', margin: '3rem 0' }}
+              disabled={isButtonDisabled}
+              theme={theme}
+              type="submit"
+              onClick={(e) => {
+                submitFeedback(true)
+              }}
+            >
+              Submit
+            </BlueButton>
           </RowContainer>
         </Form>
       )}
