@@ -288,7 +288,7 @@ export const FeedbackPopup = ({
             </RowContainer>
           </RowContainer>
           <RowContainer>
-            <BlueButton
+            <button
               style={{ width: '100%', margin: '3rem 0' }}
               disabled={isButtonDisabled}
               theme={theme}
@@ -301,7 +301,7 @@ export const FeedbackPopup = ({
               }}
             >
               Submit
-            </BlueButton>
+            </button>
           </RowContainer>
         </Form>
       )}
