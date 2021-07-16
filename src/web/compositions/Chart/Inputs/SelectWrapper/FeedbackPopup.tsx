@@ -302,9 +302,7 @@ export const FeedbackPopup = ({
             {/* </RowContainer> */}
           </RowContainer>
           <RowContainer>
-            <input onClick={() => submitFeedback(true)} type="submit">
-              Send
-            </input>
+            <input onClick={() => submitFeedback(true)} type="submit"/>
           </RowContainer>
         </Form>
       )}
