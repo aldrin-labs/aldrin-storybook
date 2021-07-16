@@ -113,9 +113,9 @@ export const FeedbackPopup = ({
   const [isFeedbackSubmitted, submitFeedback] = useState(false)
 
   const [feedbackData, setFeedbackData] = useState({
-    tokenNameField: '',
-    rightCategoryField: '',
-    wrongCategoryField: '',
+    tokenNameField: 'sdf',
+    rightCategoryField: '123',
+    wrongCategoryField: 'zsas',
   })
 
   const setData = ({ fieldName, value }) => {
@@ -199,7 +199,7 @@ export const FeedbackPopup = ({
         </RowContainer>
       ) : (
         <Form
-          // onSubmit={handleSubmit}
+          onSubmit={handleSubmit}
           name="marketsCategoriesFeedback"
           data-netlify="true"
           method={'post'}
