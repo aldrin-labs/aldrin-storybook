@@ -206,13 +206,13 @@ export const FeedbackPopup = ({
                 name="token"
                 theme={theme}
                 placeholder={'Input token name'}
-                value={feedbackData.tokenNameField}
-                onChange={(e) =>
-                  setData({
-                    fieldName: 'tokenNameField',
-                    value: e.target.value,
-                  })
-                }
+                // value={feedbackData.tokenNameField}
+                // onChange={(e) =>
+                //   setData({
+                //     fieldName: 'tokenNameField',
+                //     value: e.target.value,
+                //   })
+                // }
               />
             </RowContainer>
           </RowContainer>
@@ -229,13 +229,13 @@ export const FeedbackPopup = ({
                 name="wrongCategory"
                 theme={theme}
                 placeholder={'Input token name'}
-                value={feedbackData.wrongCategoryField}
-                onChange={(e) =>
-                  setData({
-                    fieldName: 'wrongCategoryField',
-                    value: e.target.value,
-                  })
-                }
+                // value={feedbackData.wrongCategoryField}
+                // onChange={(e) =>
+                //   setData({
+                //     fieldName: 'wrongCategoryField',
+                //     value: e.target.value,
+                //   })
+                // }
               />
             </RowContainer>
           </RowContainer>
@@ -252,13 +252,13 @@ export const FeedbackPopup = ({
                 name="rightCategory"
                 theme={theme}
                 placeholder={'Input token name'}
-                value={feedbackData.rightCategoryField}
-                onChange={(e) =>
-                  setData({
-                    fieldName: 'rightCategoryField',
-                    value: e.target.value,
-                  })
-                }
+                // value={feedbackData.rightCategoryField}
+                // onChange={(e) =>
+                //   setData({
+                //     fieldName: 'rightCategoryField',
+                //     value: e.target.value,
+                //   })
+                // }
               />
             </RowContainer>
           </RowContainer>
