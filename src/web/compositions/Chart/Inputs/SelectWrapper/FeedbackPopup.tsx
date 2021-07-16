@@ -85,6 +85,22 @@ const TextField = styled.input`
 const Form = styled.form`
   width: 100%;
 `
+
+const SubmitButton = styled.button`
+  width: 100%;
+  height: 4.5rem;
+  background: ${(props) => props.theme.palette.blue.serum};
+  font-size: 1.4rem;
+  text-transform: capitalize;
+  border-radius: 1rem;
+  border-color: none;
+  cursor: pointer;
+  color: #f8faff;
+  border: none;
+  font-family: Avenir Next Medium;
+  margin-top: 4rem;
+`
+
 export const FeedbackPopup = ({
   theme,
   onClose,
@@ -269,24 +285,13 @@ export const FeedbackPopup = ({
             </RowContainer>
           </RowContainer>
           <RowContainer>
-            <button
-              style={{
-                width: '100%',
-                height: '4.5rem',
-                background: theme.palette.blue.serum,
-                fontSize: '1.4rem',
-                textTransform: 'capitalize',
-                borderRadius: '1rem',
-                borderColor: 'none',
-                cursor: 'pointer',
-                color: '#f8faff',
-                border: 'none',
-                fontFamily: 'Avenir Next Medium',
-              }}
+            <SubmitButton
+              theme={theme}
+              onClick={() => submitFeedback(true)}
               type="submit"
             >
               Submit
-            </button>
+            </SubmitButton>
           </RowContainer>
         </Form>
       )}
