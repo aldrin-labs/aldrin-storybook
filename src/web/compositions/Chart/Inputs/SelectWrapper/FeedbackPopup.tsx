@@ -263,17 +263,7 @@ export const FeedbackPopup = ({
             </RowContainer>
           </RowContainer>
           <RowContainer>
-            <BlueButton
-              style={{ width: '100%', margin: '3rem 0' }}
-              disabled={isButtonDisabled}
-              theme={theme}
-              type="submit"
-              onClick={(e) => {
-                submitFeedback(true)
-              }}
-            >
-              Submit
-            </BlueButton>
+            <button type="submit">Send</button>
           </RowContainer>
         </Form>
       )}
