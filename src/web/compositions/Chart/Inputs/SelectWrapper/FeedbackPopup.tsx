@@ -85,6 +85,12 @@ const TextField = styled.input`
 const Form = styled.form`
   width: 100%;
 `
+const Label = styled.label`
+  width: 100%;
+  color: #fbf2f2;
+  font-family: Avenir Next Medium;
+  font-size: 1.4rem;
+`
 
 const SubmitButton = styled.button`
   width: 100%;
@@ -210,13 +216,15 @@ export const FeedbackPopup = ({
             value="marketsCategoriesFeedback"
           />
           <RowContainer margin={'1rem 0'}>
-            <RowContainer wrap="nowrap">
+            {/* <RowContainer wrap="nowrap">
               <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
                 Token
               </Text>
               <Line />
-            </RowContainer>
-            <RowContainer justify={'space-between'}>
+            </RowContainer> */}
+            {/* <RowContainer justify={'space-between'}> */}
+            <Label>
+              Token:
               <TextField
                 type="text"
                 name="token"
@@ -232,21 +240,24 @@ export const FeedbackPopup = ({
                 //   })
                 // }
               />
-            </RowContainer>
+            </Label>
+            {/* </RowContainer> */}
           </RowContainer>
           <RowContainer margin={'1rem 0'}>
-            <RowContainer wrap="nowrap">
+            {/* <RowContainer wrap="nowrap">
               <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
                 Stored in category
               </Text>
               <Line />
-            </RowContainer>
-            <RowContainer justify={'space-between'}>
+            </RowContainer> */}
+            {/* <RowContainer justify={'space-between'}> */}
+            <Label>
+              Stored in category:
               <TextField
                 type="text"
                 name="wrongCategory"
                 theme={theme}
-                placeholder={'Input token name'}
+                placeholder={'Input category'}
                 id="wrongCategory"
 
                 // value={feedbackData.wrongCategoryField}
@@ -257,21 +268,25 @@ export const FeedbackPopup = ({
                 //   })
                 // }
               />
-            </RowContainer>
+            </Label>
+
+            {/* </RowContainer> */}
           </RowContainer>
           <RowContainer margin={'1rem 0'}>
-            <RowContainer wrap="nowrap">
+            {/* <RowContainer wrap="nowrap">
               <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
                 But should be in
               </Text>
               <Line />
-            </RowContainer>
-            <RowContainer justify={'space-between'}>
+            </RowContainer> */}
+            {/* <RowContainer justify={'space-between'}> */}
+            <Label>
+              But should be in:
               <TextField
                 type="text"
                 name="rightCategory"
                 theme={theme}
-                placeholder={'Input token name'}
+                placeholder={'Input category'}
                 id="rightCategory"
 
                 // value={feedbackData.rightCategoryField}
@@ -282,16 +297,14 @@ export const FeedbackPopup = ({
                 //   })
                 // }
               />
-            </RowContainer>
+            </Label>
+
+            {/* </RowContainer> */}
           </RowContainer>
           <RowContainer>
-            <SubmitButton
-              theme={theme}
-              onClick={() => submitFeedback(true)}
-              type="submit"
-            >
-              Submit
-            </SubmitButton>
+            <button onClick={() => submitFeedback(true)} type="submit">
+              Send
+            </button>
           </RowContainer>
         </Form>
       )}
