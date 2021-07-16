@@ -97,9 +97,9 @@ export const FeedbackPopup = ({
   const [isFeedbackSubmitted, submitFeedback] = useState(false)
 
   const [feedbackData, setFeedbackData] = useState({
-    tokenNameField: '',
-    rightCategoryField: '',
-    wrongCategoryField: '',
+    token: '',
+    rightCategory: '',
+    wrongCategory: '',
   })
 
   const setData = ({ fieldName, value }) => {
@@ -122,9 +122,9 @@ export const FeedbackPopup = ({
   }
 
   const isButtonDisabled =
-    feedbackData.tokenNameField === '' ||
-    feedbackData.rightCategoryField === '' ||
-    feedbackData.wrongCategoryField === ''
+    feedbackData.token === '' ||
+    feedbackData.rightCategory === '' ||
+    feedbackData.wrongCategory === ''
 
   return (
     <DialogWrapper
@@ -206,10 +206,10 @@ export const FeedbackPopup = ({
                 name="token"
                 theme={theme}
                 placeholder={'Input token name'}
-                value={feedbackData.tokenNameField}
+                value={feedbackData.token}
                 onChange={(e) =>
                   setData({
-                    fieldName: 'tokenNameField',
+                    fieldName: 'token',
                     value: e.target.value,
                   })
                 }
@@ -228,11 +228,11 @@ export const FeedbackPopup = ({
                 type="text"
                 name="wrongCategory"
                 theme={theme}
-                placeholder={'Input token name'}
-                value={feedbackData.wrongCategoryField}
+                placeholder={'Input category name'}
+                value={feedbackData.wrongCategory}
                 onChange={(e) =>
                   setData({
-                    fieldName: 'wrongCategoryField',
+                    fieldName: 'wrongCategory',
                     value: e.target.value,
                   })
                 }
@@ -251,11 +251,11 @@ export const FeedbackPopup = ({
                 type="text"
                 name="rightCategory"
                 theme={theme}
-                placeholder={'Input token name'}
-                value={feedbackData.rightCategoryField}
+                placeholder={'Input category name'}
+                value={feedbackData.rightCategory}
                 onChange={(e) =>
                   setData({
-                    fieldName: 'rightCategoryField',
+                    fieldName: 'rightCategory',
                     value: e.target.value,
                   })
                 }
