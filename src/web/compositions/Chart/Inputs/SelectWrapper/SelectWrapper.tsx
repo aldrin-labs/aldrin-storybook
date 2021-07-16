@@ -7,35 +7,20 @@ import 'react-virtualized/styles.css'
 import dayjs from 'dayjs'
 import { WarningPopup } from '@sb/compositions/Chart/components/WarningPopup'
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
-import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSettings'
-import { MARKETS_BY_EXCHANE_QUERY } from '@core/graphql/queries/chart/MARKETS_BY_EXCHANE_QUERY'
 
 import { getSerumMarketData } from '@core/graphql/queries/chart/getSerumMarketData'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 
-import stableCoins, {
-  fiatPairs,
-  stableCoinsWithoutFiatPairs,
-} from '@core/config/stableCoins'
-import ReactSelectComponent from '@sb/components/ReactSelectComponent'
+import stableCoins, { fiatPairs } from '@core/config/stableCoins'
 import CustomMarketDialog from '@sb/compositions/Chart/Inputs/SelectWrapper/AddCustomMarketPopup'
-import favoriteSelected from '@icons/favoriteSelected.svg'
 import search from '@icons/search.svg'
-import AddCircleIcon from '@material-ui/icons/AddCircle'
 import _ from 'lodash'
 
 import { StyledGrid } from './SelectWrapperStyles'
 import { notify } from '@sb/dexUtils/notifications'
-import {
-  getMarketInfos,
-  UPDATED_AWESOME_MARKETS,
-  useOfficialMarketsList,
-} from '@sb/dexUtils/markets'
+import { getMarketInfos } from '@sb/dexUtils/markets'
 
-import {
-  // TableWithSort,
-  SvgIcon,
-} from '@sb/components'
+import { SvgIcon } from '@sb/components'
 
 import {
   IProps,
@@ -45,11 +30,7 @@ import {
   SelectTabType,
 } from './SelectWrapper.types'
 
-import {
-  // selectWrapperColumnNames,
-  combineSelectWrapperData,
-  marketsByCategories,
-} from './SelectWrapper.utils'
+import { combineSelectWrapperData } from './SelectWrapper.utils'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
@@ -60,9 +41,10 @@ import {
   getTimezone,
 } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { getSerumTradesData } from '@core/graphql/queries/chart/getSerumTradesData'
-import ReactDOM from 'react-dom'
 import { TableHeader } from './TableHeader'
 import { TableInner } from './TableInner'
+import { MintsPopup } from './MintsPopup'
+import { FeedbackPopup } from './FeedbackPopup'
 
 export const excludedPairs = [
   // 'USDC_ODOP',
@@ -147,17 +129,6 @@ class SelectWrapper extends React.PureComponent<IProps, IState> {
         selectorSettings: { favoritePairs: [] },
       },
     }
-
-    // const { getMarketsByExchange = [] } = marketsByExchangeQuery || {
-    //   getMarketsByExchange: [],
-    // }
-
-    // console.log('markets', markets)
-
-    // const dexMarketSymbols = markets.map((el) => ({
-    //   symbol: el.name.replace('/', '_'),
-    //   isAwesomeMarket: el.isAwesomeMarket,
-    // }))
 
     const filtredMarketsByExchange = getSerumMarketDataQuery.getSerumMarketData.filter(
       (el) =>
@@ -249,7 +220,21 @@ class SelectPairListComponent extends React.PureComponent<
     left: 0,
     sortBy: 'volume24hChange',
     sortDirection: SortDirection.DESC,
-    // isMintsPopupOpen: false,
+    choosenMarketData: {},
+    isMintsPopupOpen: false,
+    isFeedBackPopupOpen: false,
+  }
+
+  changeChoosenMarketData = ({ symbol, marketAddress }) => {
+    this.setState({ choosenMarketData: { symbol, marketAddress } })
+  }
+
+  setIsMintsPopupOpen = (isMintsPopupOpen) => {
+    this.setState({ isMintsPopupOpen })
+  }
+
+  setIsFeedbackPopupOpen = (isFeedBackPopupOpen) => {
+    this.setState({ isFeedBackPopupOpen })
   }
 
   componentDidMount() {
@@ -273,7 +258,7 @@ class SelectPairListComponent extends React.PureComponent<
       market,
       tokenMap,
       markets,
-      officialMarketsMap,
+      allMarketsMap,
       onTabChange,
     } = this.props
 
@@ -282,7 +267,12 @@ class SelectPairListComponent extends React.PureComponent<
     const { left } = document
       .getElementById('ExchangePair')
       ?.getBoundingClientRect()
-    const { sortBy, sortDirection } = this.state
+    const {
+      sortBy,
+      sortDirection,
+      isMintsPopupOpen,
+      isFeedBackPopupOpen,
+    } = this.state
 
     getSerumTradesDataQuery?.getSerumTradesData?.forEach((el) =>
       serumMarketsDataMap.set(el.pair, el)
@@ -307,7 +297,10 @@ class SelectPairListComponent extends React.PureComponent<
       market,
       tokenMap,
       serumMarketsDataMap,
-      officialMarketsMap,
+      allMarketsMap,
+      isMintsPopupOpen,
+      setIsMintsPopupOpen: this.setIsMintsPopupOpen,
+      changeChoosenMarketData: this.changeChoosenMarketData,
     })
 
     const sortedData = this._sortList({
@@ -344,11 +337,16 @@ class SelectPairListComponent extends React.PureComponent<
       market,
       tokenMap,
       getSerumTradesDataQuery,
-      officialMarketsMap,
+      allMarketsMap,
       onTabChange,
     } = nextProps
     const { data: prevPropsData } = this.props
-    const { sortBy, sortDirection } = this.state
+    const {
+      sortBy,
+      sortDirection,
+      isMintsPopupOpen,
+      isFeedBackPopupOpen,
+    } = this.state
 
     const serumMarketsDataMap = new Map()
 
@@ -375,7 +373,10 @@ class SelectPairListComponent extends React.PureComponent<
       market,
       tokenMap,
       serumMarketsDataMap: serumMarketsDataMap,
-      officialMarketsMap,
+      allMarketsMap,
+      isMintsPopupOpen,
+      setIsMintsPopupOpen: this.setIsMintsPopupOpen,
+      changeChoosenMarketData: this.changeChoosenMarketData,
     })
 
     const sortedData = this._sortList({
@@ -389,14 +390,6 @@ class SelectPairListComponent extends React.PureComponent<
       processedSelectData: sortedData,
     })
   }
-
-  // handleCloseMintsPopup = () => {
-  //   this.setState({ isMintsPopupOpen: false })
-  // }
-
-  // handleOpenMintsPopup = () => {
-  //   this.setState({ isMintsPopupOpen: true })
-  // }
 
   _sortList = ({ sortBy, sortDirection, data, tab }) => {
     let dataToSort = data
@@ -461,7 +454,13 @@ class SelectPairListComponent extends React.PureComponent<
   }
 
   render() {
-    const { processedSelectData, showAddMarketPopup } = this.state
+    const {
+      processedSelectData,
+      showAddMarketPopup,
+      choosenMarketData,
+      isMintsPopupOpen,
+      isFeedBackPopupOpen,
+    } = this.state
     const {
       theme,
       searchValue,
@@ -477,7 +476,7 @@ class SelectPairListComponent extends React.PureComponent<
       marketsByExchangeQuery,
       setCustomMarkets,
       customMarkets,
-      officialMarketsMap,
+      allMarketsMap,
       getSerumMarketDataQueryRefetch,
       onTabChange,
     } = this.props
@@ -502,6 +501,7 @@ class SelectPairListComponent extends React.PureComponent<
       console.log('onAddCustomMarket', newCustomMarkets)
       return true
     }
+
     return (
       <>
         <StyledGrid
@@ -513,7 +513,7 @@ class SelectPairListComponent extends React.PureComponent<
             position: 'absolute',
             zIndex: 900,
             background: '#222429',
-            minWidth: '150rem',
+            minWidth: '155rem',
             height: '73rem',
             borderRadius: '2rem',
             overflow: 'hidden',
@@ -526,7 +526,7 @@ class SelectPairListComponent extends React.PureComponent<
             tab={tab}
             data={this.props.data}
             onTabChange={onTabChange}
-            officialMarketsMap={officialMarketsMap}
+            allMarketsMap={allMarketsMap}
             marketType={marketType}
           />
           {/* {ReactDOM.createPortal(<StyledOverlay />, document.body)} */}
@@ -577,13 +577,42 @@ class SelectPairListComponent extends React.PureComponent<
           />
           <Grid
             style={{
-              justifyContent: 'flex-end',
+              justifyContent: 'space-between',
               width: '100%',
               position: 'relative',
               zIndex: 1000,
+              background: '#17181A',
+              borderTop: '0.1rem solid #383B45',
             }}
             container
           >
+            <Row
+              style={{
+                padding: '0 2rem',
+                height: '4rem',
+                fontFamily: 'Avenir Next Medium',
+                color: theme.palette.blue.serum,
+                alignItems: 'center',
+                fontSize: '1.5rem',
+                textTransform: 'none',
+                textDecoration: 'underline',
+              }}
+              onClick={async (e) => {
+                e.stopPropagation()
+                // if (publicKey === '') {
+                //   notify({
+                //     message: 'Connect your wallet first',
+                //     type: 'error',
+                //   })
+                //   wallet.connect()
+                //   return
+                // }
+
+                this.setIsFeedbackPopupOpen(true)
+              }}
+            >
+              Found an error in the catalog? Let us know!
+            </Row>
             <Row
               style={{
                 padding: '0 2rem',
@@ -608,7 +637,6 @@ class SelectPairListComponent extends React.PureComponent<
                 this.setState({ showAddMarketPopup: true })
               }}
             >
-              {' '}
               + Add Market
             </Row>
           </Grid>
@@ -620,6 +648,18 @@ class SelectPairListComponent extends React.PureComponent<
             getSerumMarketDataQueryRefetch={getSerumMarketDataQueryRefetch}
           />
           <WarningPopup theme={theme} />
+          <MintsPopup
+            theme={theme}
+            symbol={choosenMarketData?.symbol}
+            marketAddress={choosenMarketData?.marketAddress}
+            open={isMintsPopupOpen}
+            onClose={() => this.setIsMintsPopupOpen(false)}
+          />
+          <FeedbackPopup
+            theme={theme}
+            open={isFeedBackPopupOpen}
+            onClose={() => this.setIsFeedbackPopupOpen(false)}
+          />
         </StyledGrid>
       </>
     )
@@ -644,7 +684,6 @@ export default compose(
       prevStartTimestamp: `${datesForQuery.prevStartTimestamp}`,
       prevEndTimestamp: `${datesForQuery.prevEndTimestamp}`,
     }),
-    // TODO: make chache-first here and in CHART by refetching this after adding market
     fetchPolicy: 'cache-and-network',
     withOutSpinner: true,
     withTableLoader: false,
@@ -658,14 +697,6 @@ export default compose(
       timestampTo: endOfDayTimestamp,
       timestampFrom: endOfDayTimestamp - dayDuration * 14,
     }),
-    // TODO: make chache-first here and in CHART by refetching this after adding market
     fetchPolicy: 'cache-and-network',
   })
-  // queryRendererHoc({
-  //   query: getSelectorSettings,
-  //   skip: (props: any) => !props.authenticated,
-  //   withOutSpinner: true,
-  //   withTableLoader: false,
-  //   name: 'getSelectorSettingsQuery',
-  // })
 )(SelectWrapper)

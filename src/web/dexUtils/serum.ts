@@ -10,7 +10,7 @@ const AWESOME_MARKETS = Markets.map((market) => {
     name: market.name,
     programId: new solana.PublicKey(market.programId),
     deprecated: market.deprecated,
-    isCustomUserMarket: market.isCustomUserMarket
+    isAwesomeMarket: true
   }
 })
 

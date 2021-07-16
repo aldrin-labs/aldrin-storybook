@@ -5,11 +5,11 @@ import styled from 'styled-components'
 import { Loading } from '@sb/components'
 
 const StyleLink = styled.a`
-  padding: ${(props) => props.padding || '0.3rem 0rem 0rem 1.5rem'};
+  padding: ${(props) => props.padding || '0.3rem 0rem 0rem'};
 `
 
 const LoaderWrapper = styled.div`
-  padding: ${(props) => props.padding || '0.3rem 0rem 0rem 1.5rem'};
+  padding: ${(props) => props.padding || '0.3rem 0rem 0rem'};
 `
 
 const LinkToSolanaExp = ({
