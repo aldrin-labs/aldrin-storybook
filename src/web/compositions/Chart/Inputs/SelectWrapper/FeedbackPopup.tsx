@@ -272,17 +272,6 @@ export const FeedbackPopup = ({
               Submit
             </BlueButton>
           </RowContainer>
-
-          {/* <form
-            name="marketsCategoriesFeedback"
-            netlify
-            netlify-honeypot="bot-field"
-            hidden
-          >
-            <input type="text" name="token" />
-            <input type="text" name="wrongCategory" />
-            <input type="text" name="rightCategory" />
-          </form> */}
         </Form>
       )}
     </DialogWrapper>
