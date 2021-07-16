@@ -182,123 +182,113 @@ export const FeedbackPopup = ({
           </BlueButton>
         </RowContainer>
       ) : (
-        <form name="marketsCategoriesFeedback" method="post">
+        <Form
+          onSubmit={handleSubmit}
+          name="marketsCategoriesFeedback"
+          data-netlify="true"
+          method={'post'}
+        >
           <input
             type="hidden"
             name="form-name"
             value="marketsCategoriesFeedback"
           />
-          <p>
-            <label htmlFor="name">Name</label> <br />
-            <input type="text" id="token" name="token" required />
-          </p>
-          <p>
-            <label htmlFor="email">Email</label> <br />
-            <input
-              type="text"
-              id="wrongCategory"
-              name="wrongCategory"
-              required
-            />
-          </p>
-          <p>
-            <label htmlFor="message">Message</label> <br />
-            <input
-              id="rightCategory"
-              type="text"
-              name="rightCategory"
-              required
-            ></input>
-          </p>
-          <p>
-            <input type="submit" value="Submit message" />
-          </p>
-        </form>
+          <RowContainer margin={'1rem 0'}>
+            <RowContainer wrap="nowrap">
+              <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
+                Token
+              </Text>
+              <Line />
+            </RowContainer>
+            <RowContainer justify={'space-between'}>
+              <TextField
+                type="text"
+                name="token"
+                theme={theme}
+                placeholder={'Input token name'}
+                id="token"
 
-        // <Form
-        //   onSubmit={handleSubmit}
-        //   name="marketsCategoriesFeedback"
-        //   data-netlify="true"
-        //   method={'post'}
-        // >
-        //   <input
-        //     type="hidden"
-        //     name="form-name"
-        //     value="marketsCategoriesFeedback"
-        //   />
-        //   <RowContainer margin={'1rem 0'}>
-        //     <RowContainer wrap="nowrap">
-        //       <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
-        //         Token
-        //       </Text>
-        //       <Line />
-        //     </RowContainer>
-        //     <RowContainer justify={'space-between'}>
-        //       <TextField
-        //         type="text"
-        //         name="token"
-        //         theme={theme}
-        //         placeholder={'Input token name'}
-        //         // value={feedbackData.tokenNameField}
-        //         // onChange={(e) =>
-        //         //   setData({
-        //         //     fieldName: 'tokenNameField',
-        //         //     value: e.target.value,
-        //         //   })
-        //         // }
-        //       />
-        //     </RowContainer>
-        //   </RowContainer>
-        //   <RowContainer margin={'1rem 0'}>
-        //     <RowContainer wrap="nowrap">
-        //       <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
-        //         Stored in category
-        //       </Text>
-        //       <Line />
-        //     </RowContainer>
-        //     <RowContainer justify={'space-between'}>
-        //       <TextField
-        //         type="text"
-        //         name="wrongCategory"
-        //         theme={theme}
-        //         placeholder={'Input token name'}
-        //         // value={feedbackData.wrongCategoryField}
-        //         // onChange={(e) =>
-        //         //   setData({
-        //         //     fieldName: 'wrongCategoryField',
-        //         //     value: e.target.value,
-        //         //   })
-        //         // }
-        //       />
-        //     </RowContainer>
-        //   </RowContainer>
-        //   <RowContainer margin={'1rem 0'}>
-        //     <RowContainer wrap="nowrap">
-        //       <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
-        //         But should be in
-        //       </Text>
-        //       <Line />
-        //     </RowContainer>
-        //     <RowContainer justify={'space-between'}>
-        //       <TextField
-        //         type="text"
-        //         name="rightCategory"
-        //         theme={theme}
-        //         placeholder={'Input token name'}
-        //         // value={feedbackData.rightCategoryField}
-        //         // onChange={(e) =>
-        //         //   setData({
-        //         //     fieldName: 'rightCategoryField',
-        //         //     value: e.target.value,
-        //         //   })
-        //         // }
-        //       />
-        //     </RowContainer>
-        //   </RowContainer>
-        //   <RowContainer>
-        //     <button type="submit">Send</button>
-        //   </RowContainer>
-        // </Form>
+                // value={feedbackData.tokenNameField}
+                // onChange={(e) =>
+                //   setData({
+                //     fieldName: 'tokenNameField',
+                //     value: e.target.value,
+                //   })
+                // }
+              />
+            </RowContainer>
+          </RowContainer>
+          <RowContainer margin={'1rem 0'}>
+            <RowContainer wrap="nowrap">
+              <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
+                Stored in category
+              </Text>
+              <Line />
+            </RowContainer>
+            <RowContainer justify={'space-between'}>
+              <TextField
+                type="text"
+                name="wrongCategory"
+                theme={theme}
+                placeholder={'Input token name'}
+                id="wrongCategory"
+
+                // value={feedbackData.wrongCategoryField}
+                // onChange={(e) =>
+                //   setData({
+                //     fieldName: 'wrongCategoryField',
+                //     value: e.target.value,
+                //   })
+                // }
+              />
+            </RowContainer>
+          </RowContainer>
+          <RowContainer margin={'1rem 0'}>
+            <RowContainer wrap="nowrap">
+              <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
+                But should be in
+              </Text>
+              <Line />
+            </RowContainer>
+            <RowContainer justify={'space-between'}>
+              <TextField
+                type="text"
+                name="rightCategory"
+                theme={theme}
+                placeholder={'Input token name'}
+                id="rightCategory"
+
+                // value={feedbackData.rightCategoryField}
+                // onChange={(e) =>
+                //   setData({
+                //     fieldName: 'rightCategoryField',
+                //     value: e.target.value,
+                //   })
+                // }
+              />
+            </RowContainer>
+          </RowContainer>
+          <RowContainer>
+            <button
+              style={{
+                width: '100%',
+                height: '4.5rem',
+                background: theme.palette.blue.serum,
+                fontSize: '1.4rem',
+                textTransform: 'capitalize',
+                borderRadius: '1rem',
+                borderColor: 'none',
+                cursor: 'pointer',
+                color: '#f8faff',
+                border: 'none',
+                fontFamily: 'Avenir Next Medium',
+              }}
+              type="submit"
+            >
+              Submit
+            </button>
+          </RowContainer>
+        </Form>
       )}
     </DialogWrapper>
   )
