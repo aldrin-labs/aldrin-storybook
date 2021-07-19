@@ -75,7 +75,6 @@ const TextField = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  margin-top: 1rem;
 `
 
 export const MintsPopup = ({
@@ -105,7 +104,13 @@ export const MintsPopup = ({
     >
       <RowContainer style={{ marginBottom: '2rem' }} justify={'space-between'}>
         <Title>{symbol}</Title>
-        <SvgIcon src={CloseIcon} width={'2rem'} height={'2rem'} />
+        <SvgIcon
+          src={CloseIcon}
+          style={{ cursor: 'pointer' }}
+          width={'2rem'}
+          height={'2rem'}
+          onClick={() => onClose()}
+        />
       </RowContainer>
       <RowContainer margin={'1rem 0'}>
         <RowContainer wrap="nowrap">
