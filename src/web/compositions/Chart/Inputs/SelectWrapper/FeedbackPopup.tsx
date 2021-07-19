@@ -128,8 +128,8 @@ export const FeedbackPopup = ({
     return setFeedbackData({ ...feedbackData, [fieldName]: value })
   }
 
-  const handleSubmit = async (e) => {
-    await fetch('/', {
+  const handleSubmit = (e) => {
+    fetch('/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: encode({
@@ -137,10 +137,12 @@ export const FeedbackPopup = ({
         ...feedbackData,
       }),
     })
-      .then(() => console.log('Success!'))
+      .then(() => {
+        submitFeedback(true)
+        console.log('Success!')
+      })
       .catch((error) => console.log(error))
 
-    submitFeedback(true)
     e.preventDefault()
   }
 
@@ -210,6 +212,7 @@ export const FeedbackPopup = ({
           name="marketsCategoriesFeedback"
           data-netlify="true"
           method={'post'}
+          action="/success"
         >
           <input
             type="hidden"
@@ -289,15 +292,7 @@ export const FeedbackPopup = ({
             </RowContainer>
           </RowContainer>
           <RowContainer>
-            <SubmitButton
-              theme={theme}
-              // style={{ width: '100%', margin: '3rem 0' }}
-              // disabled={isButtonDisabled}
-              type="submit"
-              // onClick={(e) => {
-              //   submitFeedback(true)
-              // }}
-            >
+            <SubmitButton theme={theme} type="submit">
               Submit
             </SubmitButton>
           </RowContainer>
