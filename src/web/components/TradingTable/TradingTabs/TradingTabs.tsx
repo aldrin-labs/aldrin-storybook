@@ -5,6 +5,7 @@ import { TitleTab, TitleTabsGroup } from './TradingTabs.styles'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import SvgIcon from '@sb/components/SvgIcon'
 import FullScreen from '@icons/fullscreen.svg'
+import FullScreenOff from '@icons/fullscreenOff.svg'
 import { SmartTradeButton } from '@sb/components/TraidingTerminal/styles'
 
 const TradingTabs = ({
@@ -55,7 +56,11 @@ const TradingTabs = ({
             style={{ width: '8rem', padding: 0 }}
             theme={theme}
           >
-            <SvgIcon src={FullScreen} width="2rem" height="2rem" />
+            <SvgIcon
+              src={isFullScreenTablesMode ? FullScreenOff : FullScreen}
+              width="2rem"
+              height="2rem"
+            />
           </TitleTab>
         ) : null}
         {isDefaultOnlyTablesMode || isFullScreenTablesMode ? (
@@ -123,11 +128,11 @@ const TradingTabs = ({
         {!isSmartOrderMode && (
           <SmartTradeButton
             data-tut={'createSM'}
+            type={'buy'}
             style={{
               height: '3rem',
               width: '30rem',
               color: theme?.palette.white.main,
-              backgroundColor: '#157E23',
               borderRadius: 0,
               boxShadow: '0px 0px 0.5rem #74787E',
             }}

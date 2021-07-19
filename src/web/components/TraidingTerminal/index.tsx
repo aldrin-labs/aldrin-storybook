@@ -221,6 +221,7 @@ export const TradeInputContent = ({
       />
       <UpdatedCoin
         theme={theme}
+        style={{ fontSize: symbol.length <= 2 ? '1.5rem' : '1.3rem' }}
         right={
           !!symbolRightIndent
             ? symbolRightIndent

@@ -23,7 +23,7 @@ export const SubColumnValue = styled(InputTitle)`
   display: inline-block;
   width: ${(props) => props.width || '50%'};
   padding: 0.4rem 0rem 0.4rem 0rem;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   color: ${(props: { textAlign?: string; color?: string }) =>
     props.color || props.theme.palette.dark.main};
 

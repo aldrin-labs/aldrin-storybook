@@ -55,7 +55,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
         symbol={'%'}
         preSymbol={percentagePreSymbol}
         textAlign={percentageTextAlign}
-        needPreSymbol={true}
+        needPreSymbol={false}
         needTitle={needPercentageTitle}
         title={percentageTitle}
         value={value}
@@ -67,11 +67,13 @@ export const SliderWithPriceAndPercentageFieldRow = ({
                 height: '4rem',
                 paddingRight: '0',
                 paddingLeft: '2rem',
+                borderRadius: '1.2rem',
               }
             : {
                 height: '4rem',
                 paddingLeft: '0',
                 paddingRight: '3.5rem',
+                borderRadius: '1.2rem',
               }
         }
         onChange={onPricePercentageChange}
@@ -98,6 +100,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
           inputStyles={{
             height: '4rem',
             paddingLeft: '1rem',
+            borderRadius: '1.2rem',
           }}
           onChange={(e) => onApproximatePriceChange(e, updateValue)}
         />

@@ -37,7 +37,7 @@ import {
   useSelectedBaseCurrencyAccount,
 } from '@sb/dexUtils/markets'
 import { useConnection } from '@sb/dexUtils/connection'
-import { useWallet } from '@sb/dexUtils/wallet'
+import { useBalanceInfo, useWallet } from '@sb/dexUtils/wallet'
 import { settleFunds } from '@sb/dexUtils/send'
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
 import { notify } from '@sb/dexUtils/notifications'
@@ -135,11 +135,13 @@ export const Balances = ({
   pair,
   theme,
   marketType,
+  isDefaultTerminalViewMode,
   setShowTokenNotAdded = () => {},
 }: {
   theme: Theme
   pair: string[]
   marketType: 0 | 1
+  isDefaultTerminalViewMode: boolean
   setShowTokenNotAdded: (show: boolean) => void
 }) => {
   const [openDepositPopup, toggleOpeningDepositPopup] = useState(false)
@@ -158,6 +160,18 @@ export const Balances = ({
 
   const isBaseCoinExistsInWallet = market ? baseAccount : true
   const isQuoteCoinExistsInWallet = market ? quoteAccount : true
+
+  const balanceInfo = useBalanceInfo(wallet.publicKey)
+
+  let { amount, decimals } = balanceInfo || {
+    amount: 0,
+    decimals: 8,
+    mint: null,
+    tokenName: 'Loading...',
+    tokenSymbol: '--',
+  }
+
+  const SOLAmount = amount / Math.pow(10, decimals)
 
   async function onSettleSuccess() {
     console.log('settled funds success')
@@ -238,6 +252,8 @@ export const Balances = ({
     quote === 'WUSDT' ||
     quote === 'WUSDC'
 
+  const quotePrecision = isQuoteUSDT ? 2 : 8
+
   return (
     <>
       <DepositPopup
@@ -316,28 +332,59 @@ export const Balances = ({
                   onError={onErrorImportCoinUrl}
                 />
               </BalanceTitle> */}
-              <BalanceValues>
-                <BalanceValuesContainer theme={theme}>
-                  <BalanceFuturesTitle theme={theme}>
-                    {pair[0]} Wallet
-                  </BalanceFuturesTitle>
-                  <BalanceQuantity theme={theme}>
-                    {balances[0]?.wallet
-                      ? balances[0].wallet.toFixed(8)
-                      : (0).toFixed(8)}
-                  </BalanceQuantity>
-                </BalanceValuesContainer>
-                <BalanceValuesContainer theme={theme}>
-                  <BalanceFuturesTitle theme={theme}>
-                    {pair[0]} Unsettled
-                  </BalanceFuturesTitle>
-                  <BalanceQuantity theme={theme}>
-                    {balances[0]?.unsettled
-                      ? balances[0].unsettled.toFixed(8)
-                      : (0).toFixed(8)}
-                  </BalanceQuantity>
-                </BalanceValuesContainer>
-              </BalanceValues>
+              {!isDefaultTerminalViewMode ? (
+                <BalanceValues>
+                  <BalanceValuesContainer theme={theme}>
+                    <BalanceFuturesTitle theme={theme}>
+                      On Wallet
+                    </BalanceFuturesTitle>
+                    <BalanceQuantity theme={theme}>
+                      <span style={{ color: theme.palette.green.main }}>
+                        {balances[0]?.wallet
+                          ? balances[0].wallet.toFixed(8)
+                          : (0).toFixed(8)}
+                      </span>{' '}
+                      {pair[0]}
+                    </BalanceQuantity>
+                  </BalanceValuesContainer>
+                  <BalanceValuesContainer theme={theme}>
+                    <BalanceFuturesTitle theme={theme}>
+                      In Order
+                    </BalanceFuturesTitle>
+                    <BalanceQuantity theme={theme}>
+                      <span style={{ color: theme.palette.green.main }}>
+                        {balances[0]?.orders
+                          ? balances[0].orders.toFixed(8)
+                          : (0).toFixed(8)}
+                      </span>{' '}
+                      {pair[0]}
+                    </BalanceQuantity>
+                  </BalanceValuesContainer>
+                </BalanceValues>
+              ) : (
+                <BalanceValues>
+                  <BalanceValuesContainer theme={theme}>
+                    <BalanceFuturesTitle theme={theme}>
+                      {pair[0]} Wallet
+                    </BalanceFuturesTitle>
+                    <BalanceQuantity theme={theme}>
+                      {balances[0]?.wallet
+                        ? balances[0].wallet.toFixed(8)
+                        : (0).toFixed(8)}
+                    </BalanceQuantity>
+                  </BalanceValuesContainer>
+                  <BalanceValuesContainer theme={theme}>
+                    <BalanceFuturesTitle theme={theme}>
+                      {pair[0]} Unsettled
+                    </BalanceFuturesTitle>
+                    <BalanceQuantity theme={theme}>
+                      {balances[0]?.unsettled
+                        ? balances[0].unsettled.toFixed(8)
+                        : (0).toFixed(8)}
+                    </BalanceQuantity>
+                  </BalanceValuesContainer>
+                </BalanceValues>
+              )}
               <div
                 style={{
                   display: 'flex',
@@ -346,28 +393,11 @@ export const Balances = ({
                   padding: '0 0.5rem',
                 }}
               >
-                {!wallet.connected ? null : isBaseCoinExistsInWallet ? ( // /> //   containerStyle={{ padding: '0' }} //   id={'connectButtonBase'} //   height={'2rem'} //   showOnTop={true} //   theme={theme} // <ConnectWalletDropdown
-                  <>
-                    <BtnCustom
-                      btnWidth={!showSettle ? '100%' : 'calc(50% - .25rem)'}
-                      height="auto"
-                      fontSize=".8rem"
-                      padding=".5rem 0 .4rem 0;"
-                      borderRadius=".8rem"
-                      btnColor={theme.palette.dark.main}
-                      borderColor={theme.palette.blue.serum}
-                      backgroundColor={theme.palette.blue.serum}
-                      transition={'all .4s ease-out'}
-                      onClick={() => {
-                        toggleOpeningDepositPopup(true)
-                        chooseCoinForDeposit('base')
-                      }}
-                    >
-                      deposit
-                    </BtnCustom>
-                    {showSettle && (
+                {!wallet.connected ? null : isBaseCoinExistsInWallet ? (
+                  !isDefaultTerminalViewMode ? null : ( // /> //   containerStyle={{ padding: '0' }} //   id={'connectButtonBase'} //   height={'2rem'} //   showOnTop={true} //   theme={theme} // <ConnectWalletDropdown
+                    <>
                       <BtnCustom
-                        btnWidth={'calc(50% - .25rem)'}
+                        btnWidth={!showSettle ? '100%' : 'calc(50% - .25rem)'}
                         height="auto"
                         fontSize=".8rem"
                         padding=".5rem 0 .4rem 0;"
@@ -375,17 +405,36 @@ export const Balances = ({
                         btnColor={theme.palette.dark.main}
                         borderColor={theme.palette.blue.serum}
                         backgroundColor={theme.palette.blue.serum}
-                        // hoverBackground="#3992a9"
                         transition={'all .4s ease-out'}
                         onClick={() => {
-                          const { market, openOrders } = baseBalances
-                          onSettleFunds(market, openOrders)
+                          toggleOpeningDepositPopup(true)
+                          chooseCoinForDeposit('base')
                         }}
                       >
-                        settle
+                        deposit
                       </BtnCustom>
-                    )}
-                  </>
+                      {showSettle && (
+                        <BtnCustom
+                          btnWidth={'calc(50% - .25rem)'}
+                          height="auto"
+                          fontSize=".8rem"
+                          padding=".5rem 0 .4rem 0;"
+                          borderRadius=".8rem"
+                          btnColor={theme.palette.dark.main}
+                          borderColor={theme.palette.blue.serum}
+                          backgroundColor={theme.palette.blue.serum}
+                          // hoverBackground="#3992a9"
+                          transition={'all .4s ease-out'}
+                          onClick={() => {
+                            const { market, openOrders } = baseBalances
+                            onSettleFunds(market, openOrders)
+                          }}
+                        >
+                          settle
+                        </BtnCustom>
+                      )}
+                    </>
+                  )
                 ) : (
                   <BtnCustom
                     btnWidth="100%"
@@ -424,28 +473,59 @@ export const Balances = ({
                   onError={onErrorImportCoinUrl}
                 />
               </BalanceTitle> */}
-              <BalanceValues>
-                <BalanceValuesContainer theme={theme}>
-                  <BalanceFuturesTitle theme={theme}>
-                    {pair[1]} Wallet
-                  </BalanceFuturesTitle>
-                  <BalanceQuantity theme={theme}>
-                    {balances[1]?.wallet
-                      ? balances[1].wallet.toFixed(isQuoteUSDT ? 2 : 8)
-                      : (0).toFixed(isQuoteUSDT ? 2 : 8)}
-                  </BalanceQuantity>
-                </BalanceValuesContainer>
-                <BalanceValuesContainer theme={theme}>
-                  <BalanceFuturesTitle theme={theme}>
-                    {pair[1]} Unsettled
-                  </BalanceFuturesTitle>
-                  <BalanceQuantity theme={theme}>
-                    {balances[1]?.unsettled
-                      ? balances[1].unsettled.toFixed(isQuoteUSDT ? 2 : 8)
-                      : (0).toFixed(isQuoteUSDT ? 2 : 8)}
-                  </BalanceQuantity>
-                </BalanceValuesContainer>
-              </BalanceValues>
+              {!isDefaultTerminalViewMode ? (
+                <BalanceValues>
+                  <BalanceValuesContainer theme={theme}>
+                    <BalanceFuturesTitle theme={theme}>
+                      On Wallet
+                    </BalanceFuturesTitle>
+                    <BalanceQuantity theme={theme}>
+                      <span style={{ color: theme.palette.green.main }}>
+                        {balances[1]?.wallet
+                          ? balances[1].wallet.toFixed(quotePrecision)
+                          : (0).toFixed(quotePrecision)}
+                      </span>{' '}
+                      {pair[1]}
+                    </BalanceQuantity>
+                  </BalanceValuesContainer>
+                  <BalanceValuesContainer theme={theme}>
+                    <BalanceFuturesTitle theme={theme}>
+                      In Order
+                    </BalanceFuturesTitle>
+                    <BalanceQuantity theme={theme}>
+                      <span style={{ color: theme.palette.green.main }}>
+                        {balances[1]?.orders
+                          ? balances[1].orders.toFixed(quotePrecision)
+                          : (0).toFixed(quotePrecision)}
+                      </span>{' '}
+                      {pair[1]}
+                    </BalanceQuantity>
+                  </BalanceValuesContainer>
+                </BalanceValues>
+              ) : (
+                <BalanceValues>
+                  <BalanceValuesContainer theme={theme}>
+                    <BalanceFuturesTitle theme={theme}>
+                      {pair[1]} Wallet
+                    </BalanceFuturesTitle>
+                    <BalanceQuantity theme={theme}>
+                      {balances[1]?.wallet
+                        ? balances[1].wallet.toFixed(quotePrecision)
+                        : (0).toFixed(quotePrecision)}
+                    </BalanceQuantity>
+                  </BalanceValuesContainer>
+                  <BalanceValuesContainer theme={theme}>
+                    <BalanceFuturesTitle theme={theme}>
+                      {pair[0]} Unsettled
+                    </BalanceFuturesTitle>
+                    <BalanceQuantity theme={theme}>
+                      {balances[1]?.unsettled
+                        ? balances[1].unsettled.toFixed(quotePrecision)
+                        : (0).toFixed(quotePrecision)}
+                    </BalanceQuantity>
+                  </BalanceValuesContainer>
+                </BalanceValues>
+              )}
               <div
                 style={{
                   display: 'flex',
@@ -455,27 +535,31 @@ export const Balances = ({
                 }}
               >
                 {!wallet.connected ? null : isQuoteCoinExistsInWallet ? (
-                  <>
-                    <BtnCustom
-                      btnWidth={!showSettle ? '100%' : 'calc(50% - .25rem)'}
-                      height="auto"
-                      fontSize=".8rem"
-                      padding=".5rem 0 .4rem 0;"
-                      borderRadius=".8rem"
-                      btnColor={theme.palette.dark.main}
-                      borderColor={theme.palette.blue.serum}
-                      backgroundColor={theme.palette.blue.serum}
-                      transition={'all .4s ease-out'}
-                      onClick={() => {
-                        toggleOpeningDepositPopup(true)
-                        chooseCoinForDeposit('quote')
+                  !isDefaultTerminalViewMode ? (
+                    <RowContainer
+                      padding={'.4rem 0'}
+                      style={{
+                        background: theme.palette.green.main,
+                        borderRadius: '.6rem',
                       }}
                     >
-                      deposit
-                    </BtnCustom>
-                    {showSettle && (
+                      <span
+                        style={{
+                          color: theme.palette.white.background,
+                          fontFamily: 'Avenir Next',
+                          fontSize: '1.4rem',
+                        }}
+                      >
+                        {formatNumberToUSFormat(stripDigitPlaces(SOLAmount, 3))}{' '}
+                        <span style={{ fontFamily: 'Avenir Next Demi' }}>
+                          SOL
+                        </span>
+                      </span>
+                    </RowContainer>
+                  ) : (
+                    <>
                       <BtnCustom
-                        btnWidth={'calc(50% - .25rem)'}
+                        btnWidth={!showSettle ? '100%' : 'calc(50% - .25rem)'}
                         height="auto"
                         fontSize=".8rem"
                         padding=".5rem 0 .4rem 0;"
@@ -485,14 +569,33 @@ export const Balances = ({
                         backgroundColor={theme.palette.blue.serum}
                         transition={'all .4s ease-out'}
                         onClick={() => {
-                          const { market, openOrders } = quoteBalances
-                          onSettleFunds(market, openOrders)
+                          toggleOpeningDepositPopup(true)
+                          chooseCoinForDeposit('quote')
                         }}
                       >
-                        settle
+                        deposit
                       </BtnCustom>
-                    )}
-                  </>
+                      {showSettle && (
+                        <BtnCustom
+                          btnWidth={'calc(50% - .25rem)'}
+                          height="auto"
+                          fontSize=".8rem"
+                          padding=".5rem 0 .4rem 0;"
+                          borderRadius=".8rem"
+                          btnColor={theme.palette.dark.main}
+                          borderColor={theme.palette.blue.serum}
+                          backgroundColor={theme.palette.blue.serum}
+                          transition={'all .4s ease-out'}
+                          onClick={() => {
+                            const { market, openOrders } = quoteBalances
+                            onSettleFunds(market, openOrders)
+                          }}
+                        >
+                          settle
+                        </BtnCustom>
+                      )}
+                    </>
+                  )
                 ) : (
                   <BtnCustom
                     btnWidth="100%"

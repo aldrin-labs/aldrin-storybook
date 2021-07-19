@@ -82,7 +82,7 @@ export const EntryOrderBlock = ({
   updateStopLossAndTakeProfitPrices,
 }: EntryOrderBlockProps) => {
   return (
-    <TerminalBlock theme={theme} width={'calc(33% + 0.5%)'} data-tut={'step1'}>
+    <TerminalBlock theme={theme} width={'calc(100% / 3)'} data-tut={'step1'}>
       <div>
         {/* tabs */}
         {/* <InputRowContainer justify="flex-start" padding={'0rem 0 1.2rem 0'}>
@@ -391,7 +391,7 @@ export const EntryOrderBlock = ({
                   key={'firstHalf'}
                   style={{
                     backgroundColor: theme.palette.dark.background,
-                    borderRadius: '0.6rem',
+                    borderRadius: '1.2rem',
                     border: `.6rem solid ${theme.palette.grey.terminal}`,
                     color: theme.palette.green.main,
                   }}
@@ -414,7 +414,7 @@ export const EntryOrderBlock = ({
                   height={'4rem'}
                   style={{
                     backgroundColor: theme.palette.dark.background,
-                    borderRadius: '0.6rem',
+                    borderRadius: '1.2rem',
                     border: `.6rem solid ${theme.palette.grey.terminal}`,
                     color: theme.palette.blue.serum,
                   }}
@@ -770,7 +770,7 @@ export const EntryOrderBlock = ({
                 isValid={
                   entryPoint.TVAlert.pricePlotEnabled || priceForCalculate != 0
                 }
-                inputStyles={{ height: '4rem' }}
+                inputStyles={{ height: '4rem', borderRadius: '1.2rem' }}
                 disabled={
                   (isMarketType && !entryPoint.trailing.isTrailingOn) ||
                   (entryPoint.TVAlert.pricePlotEnabled &&
@@ -1156,6 +1156,9 @@ export const EntryOrderBlock = ({
           needButtons={true}
           inputsInOneRow={true}
           inputHeight={'4rem'}
+          inputStyles={{
+            borderRadius: '1.2rem',
+          }}
           {...{
             pair,
             theme,

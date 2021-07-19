@@ -5,7 +5,8 @@ import { Card, Grid, Button, Theme } from '@material-ui/core'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 
 export const MainContainer = styled.div`
-  height: calc(100% - 6rem);
+  height: ${(props) =>
+    props.isFullScreenTablesMode ? '100%' : 'calc(100% - 6rem)'};
   ${(props: { fullscreen: boolean }) =>
     props.fullscreen && 'height: 100vh; position: relative; z-index: 10;'};
 `
@@ -476,7 +477,12 @@ export const WatchSubvalue = styled.span`
 `
 
 export const BalancesContainer = styled(
-  ({ isDefaultTerminalViewMode, isFullScreenTablesMode, isSmartOrderMode, ...rest }) => <Grid {...rest} />
+  ({
+    isDefaultTerminalViewMode,
+    isFullScreenTablesMode,
+    isSmartOrderMode,
+    ...rest
+  }) => <Grid {...rest} />
 )`
   position: relative;
   padding: 0;

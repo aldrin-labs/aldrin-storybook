@@ -105,7 +105,7 @@ export const activeTradesColumnNames = [
         title={
           <div>
             <p>Preparing (while placing orders/waiting for act price)</p>
-            <p>Trailing entry (When trailing activated)</p>
+            {/* <p>Trailing entry (When trailing activated)</p> */}
             <p>In loss (pnl less than 0)</p>
             <p>In Profit (profit greater than 0)</p>
             <p>Error (error has occured)</p>
@@ -133,7 +133,7 @@ export const strategiesHistoryColumnNames = [
   { label: 'Position', id: 'pair' },
   { label: 'Entry price', id: 'entryPrice' },
   // { label: 'Lvg.', id: 'leverage' },
-  { label: 'Margin/Size', id: 'quantity' },
+  { label: 'Size', id: 'quantity' },
   // { label: 'Averaging', id: 'averaging' },
   { label: 'Stop loss', id: 'stopLoss' },
   {

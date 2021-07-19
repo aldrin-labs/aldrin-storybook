@@ -40,8 +40,9 @@ export const TerminalHeadersBlock = ({
       <TerminalHeader
         theme={theme}
         key={'entryPoint'}
-        width={'33%'}
+        width={'calc(100% / 3)'}
         justify={marketType === 0 ? 'flex-start' : 'space-around'}
+        style={{ borderLeft: 'none' }}
       >
         <DarkTooltip title={'Conditions for opening your position.'}>
           <BlockHeader
@@ -169,11 +170,11 @@ export const TerminalHeadersBlock = ({
       </TerminalHeader>
       <TerminalHeader
         theme={theme}
-        width={'32.5%'}
-        margin={'0 1%'}
+        width={'calc(100% / 3)'}
         padding={'0rem 1.5rem'}
         justify={'flex-start'}
         key={'stopLoss'}
+        style={{ borderLeft: 'none' }}
       >
         <DarkTooltip
           title={
@@ -195,9 +196,10 @@ export const TerminalHeadersBlock = ({
       <TerminalHeader
         theme={theme}
         key={'takeProfit'}
-        width={'32.5%'}
+        width={'calc(100% / 3)'}
         padding={'0rem 1.5rem'}
         justify={'space-between'}
+        style={{ borderLeft: 'none', borderRight: 'none' }}
       >
         <DarkTooltip
           title={

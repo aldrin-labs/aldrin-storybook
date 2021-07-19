@@ -149,10 +149,7 @@ function ChartPageComponent(props: any) {
       })
     )
 
-    const updatedMarkets = [
-      ...props.markets,
-      ...UPDATED_AWESOME_MARKETS,
-    ]
+    const updatedMarkets = [...props.markets, ...UPDATED_AWESOME_MARKETS]
 
     const allMarkets = [...updatedMarkets, ...userMarkets]
 
@@ -211,11 +208,10 @@ function ChartPageComponent(props: any) {
   const isDefaultTerminalViewMode = terminalViewMode === 'default'
   const isDefaultOnlyTablesMode = terminalViewMode === 'onlyTables'
   const isSmartOrderMode = terminalViewMode === 'smartOrderMode'
-  const isFullScreenTablesMode =
-    terminalViewMode === 'fullScreenTables'
+  const isFullScreenTablesMode = terminalViewMode === 'fullScreenTables'
 
   return (
-    <MainContainer fullscreen={false}>
+    <MainContainer isFullScreenTablesMode={isFullScreenTablesMode} fullscreen={false}>
       <Tour
         showCloseButton={false}
         nextButton={<FinishBtn>Next</FinishBtn>}
@@ -231,13 +227,15 @@ function ChartPageComponent(props: any) {
           localStorage.setItem('isOnboardingDone', 'true')
         }}
       />
-      <MarketBlock
-        isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-        isDefaultOnlyTablesMode={isDefaultOnlyTablesMode}
-        isFullScreenTablesMode={isFullScreenTablesMode}
-        isSmartOrderMode={isSmartOrderMode}
-        updateTerminalViewMode={updateTerminalViewMode}
-      />
+      {!isFullScreenTablesMode && (
+        <MarketBlock
+          isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+          isDefaultOnlyTablesMode={isDefaultOnlyTablesMode}
+          isFullScreenTablesMode={isFullScreenTablesMode}
+          isSmartOrderMode={isSmartOrderMode}
+          updateTerminalViewMode={updateTerminalViewMode}
+        />
+      )}
       <DefaultView
         view={'default'}
         layout={layout}

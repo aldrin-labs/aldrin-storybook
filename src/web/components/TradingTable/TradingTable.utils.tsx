@@ -1738,7 +1738,7 @@ export const SMMock = {
     timeoutWhenProfit: 0,
 
     forcedLoss: 0,
-    stopLoss: 10,
+    stopLoss: -10,
     timeoutLoss: 0,
     timeoutWhenLoss: 0,
     stopLossType: 0,

@@ -76,7 +76,7 @@ export const TakeProfitBlock = ({
   return (
     <TerminalBlock
       theme={theme}
-      width={'calc(33%)'}
+      width={'calc(100% / 3)'}
       borderRight="0"
       data-tut={'step3'}
     >
@@ -338,7 +338,7 @@ export const TakeProfitBlock = ({
             height={'4rem'}
             style={{
               backgroundColor: theme.palette.dark.background,
-              borderRadius: '0.6rem',
+              borderRadius: '1.2rem',
               border: `.6rem solid ${theme.palette.grey.terminal}`,
               color: theme.palette.blue.serum,
             }}

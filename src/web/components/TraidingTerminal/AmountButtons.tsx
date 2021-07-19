@@ -42,7 +42,8 @@ export const ButtonsWithAmountFieldRowForBasic = ({
   total,
   needButtons = true,
   inputsInOneRow = false,
-  inputHeight = '3rem'
+  inputHeight = '3rem',
+  inputStyles = {}
 }: SliderWithPriceAndPercentageFieldRowProps) => {
   const [localAmount, updateLocalAmount] = useState(amount)
   const [localTotal, updateLocalTotal] = useState(total)
@@ -80,7 +81,7 @@ export const ButtonsWithAmountFieldRowForBasic = ({
               pattern={isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'}
               onChange={onAmountChange}
               symbol={pair[0]}
-              inputStyles={{ height: inputHeight }}
+              inputStyles={{ height: inputHeight, ...inputStyles }}
             />
           </InputRowContainer>
           <InputRowContainer
@@ -97,7 +98,7 @@ export const ButtonsWithAmountFieldRowForBasic = ({
               value={localTotal || ''}
               onChange={onTotalChange}
               symbol={pair[1]}
-              inputStyles={{ height: inputHeight }}
+              inputStyles={{ height: inputHeight, ...inputStyles }}
             />
           </InputRowContainer>
         </InputRowContainer>

@@ -41,7 +41,7 @@ export const ccaiData = {
 
 const TopBar = ({
   theme,
-  getDexTokensPricesQuery,
+  getDexTokensPricesQuery: { getDexTokensPrices },
 }: {
   theme: Theme
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
@@ -61,9 +61,7 @@ const TopBar = ({
   const { market } = useMarket() || { market: { tickSize: 8 } }
 
   const CCAIPrice =
-    getDexTokensPricesQuery?.getDexTokensPrices?.filter(
-      (el) => el.symbol === 'CCAI'
-    )[0].price || 0
+    getDexTokensPrices?.length > 0 ? getDexTokensPrices[0].price : 0
 
   useEffect(() => {
     if (CCAIPrice > previousPrice) {
@@ -129,6 +127,9 @@ export default compose(
     query: getDexTokensPrices,
     name: 'getDexTokensPricesQuery',
     fetchPolicy: 'cache-and-network',
+    variables: {
+      symbols: ['CCAI'],
+    },
     withoutLoading: true,
     pollInterval: 10000,
   })

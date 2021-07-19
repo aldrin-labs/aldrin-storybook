@@ -587,9 +587,9 @@ class ActiveTradesTable extends React.PureComponent<IProps, IState> {
           needAdditionalComponent={true}
           AdditionalComponent={() => (
             <SmartTradeButton
+              type={'buy'}
               style={{
                 color: theme?.palette.white.main,
-                backgroundColor: '#157E23',
                 marginTop: '1.5rem',
                 borderRadius: '0.8rem',
                 boxShadow: '0px 0px 0.5rem #74787E',

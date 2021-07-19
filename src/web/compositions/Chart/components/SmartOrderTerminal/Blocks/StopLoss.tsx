@@ -60,13 +60,12 @@ export const StopLossBlock = ({
   togglePlaceWithoutLoss,
   enqueueSnackbar,
 }: StopLossBlockProps) => {
-  console.log('entryPoint', entryPoint)
   let avgPrice =
     entryPoint.averaging.entryLevels &&
     entryPoint.averaging.entryLevels.length !== 0
       ? entryPoint.averaging.entryLevels[0].price
       : 0
-  console.log('entryPoint', entryPoint)
+
   let estPrice = 0
   let sumAmount = 0
   let margin = 0
@@ -75,7 +74,7 @@ export const StopLossBlock = ({
     <TerminalBlock
       data-tut={'step2'}
       theme={theme}
-      width={'calc(32.5% + 1%)'}
+      width={'calc(100% / 3)'}
       style={{ overflow: 'hidden', padding: 0 }}
     >
       <div
@@ -326,7 +325,7 @@ export const StopLossBlock = ({
               height={'4rem'}
               style={{
                 backgroundColor: theme.palette.dark.background,
-                borderRadius: '0.6rem',
+                borderRadius: '1.2rem',
                 border: `.6rem solid ${theme.palette.grey.terminal}`,
                 color: theme.palette.blue.serum,
               }}

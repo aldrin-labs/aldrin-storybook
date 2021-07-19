@@ -286,7 +286,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
               height={'4rem'}
               style={{
                 backgroundColor: theme.palette.dark.background,
-                borderRadius: '0.6rem',
+                borderRadius: '1.2rem',
                 border: `.6rem solid ${theme.palette.grey.terminal}`,
                 color: theme.palette.blue.serum,
               }}
@@ -1058,7 +1058,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
               height={'4rem'}
               style={{
                 backgroundColor: theme.palette.dark.background,
-                borderRadius: '0.6rem',
+                borderRadius: '1.2rem',
                 border: `.6rem solid ${theme.palette.grey.terminal}`,
                 color: theme.palette.blue.serum,
               }}

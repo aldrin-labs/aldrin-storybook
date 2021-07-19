@@ -155,9 +155,8 @@ export const TradingItemTitle = styled.span`
   display: block;
   color: inherit;
   font-size: 1.2rem;
-  letter-spacing: 0.09rem;
-  font-family: Avenir Next Medium;
-  font-weight: bold;
+  letter-spacing: 0.01rem;
+  font-family: Avenir Next;
   text-transform: capitalize;
 `
 
@@ -232,7 +231,7 @@ export const TradeInput = styled.input`
           props.theme.palette.grey &&
           props.theme.palette.grey.terminal) ||
         '#fff'};
-  font-size: 1.3rem;
+  font-size: 1.4rem;
 
   font-weight: bold;
   padding-left: ${(props) => (props.needCharacter ? '2rem' : '0.6rem')};
@@ -244,6 +243,10 @@ export const TradeInput = styled.input`
           props.symbolLength < 4 ? '2.5rem' : '1.5rem'
         })`
       : '1.5rem'};
+  
+  padding-top: 0;
+  padding-bottom: 0;
+
   &:focus {
     border: 0.14rem solid #a1aaf4;
   }
@@ -297,6 +300,10 @@ export const Coin = styled(TradingItemTitle)`
   text-transform: capitalize;
   font-size: 1.2rem;
   z-index: 2;
+
+  @media (max-width: 1440px) {
+    transform: translateY(-55%);
+  }
 `
 
 export const UpdatedCoin = styled(Coin)`
@@ -374,7 +381,7 @@ export const SmartTradeButton = styled(SendButton)`
       ? (props.theme &&
           props.theme.palette &&
           props.theme.palette.blue &&
-          props.theme.palette.blue.main) ||
+          props.theme.palette.blue.serum) ||
         '#165BE0'
       : (props.theme &&
           props.theme.palette &&
@@ -429,7 +436,7 @@ export const AbsoluteInputTitle = styled(Coin)`
       props.theme.palette.grey &&
       props.theme.palette.grey.custom) ||
     '#ABBAD1'};
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   width: 0;
   white-space: nowrap;
 `

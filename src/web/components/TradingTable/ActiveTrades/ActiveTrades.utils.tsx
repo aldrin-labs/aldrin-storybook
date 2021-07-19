@@ -1,5 +1,6 @@
 import React from 'react'
 import dayjs from 'dayjs'
+import styled from 'styled-components'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 dayjs.extend(localizedFormat)
 
@@ -75,6 +76,14 @@ const getActiveOrderStatus = ({
     return ['Preparing', theme.palette.blue.background]
   }
 }
+
+const PriceField = styled.span`
+  color: ${(props) => props.theme.palette.white.primary};
+`
+
+const SymbolField = styled.span`
+  color: ${(props) => props.theme.palette.grey.new};
+`
 
 export const getStrategyFields = ({
   el,
@@ -181,11 +190,7 @@ export const getStrategyFields = ({
                 textTransform: 'capitalize',
               }}
             >
-              {marketType === 0
-                ? side
-                : side === 'buy'
-                ? 'buy long'
-                : 'sell short'}
+              {side === 'buy' ? 'Smart Buy' : 'Smart Sell'}
             </span>
             <span
               style={{
@@ -206,19 +211,18 @@ export const getStrategyFields = ({
       render: !!entryOrderPrice ? (
         <SubColumnValue
           style={{
-            fontSize: '1.3rem',
-            fontFamily: 'Avenir Next Demi',
             color: theme.palette.grey.onboard,
           }}
           theme={theme}
         >
-          {stripDigitPlaces(entryOrderPrice, pricePrecision)} {pairArr[1]}
+          <PriceField theme={theme}>
+            {stripDigitPlaces(entryOrderPrice, pricePrecision)}
+          </PriceField>{' '}
+          <SymbolField theme={theme}>{pairArr[1]}</SymbolField>
         </SubColumnValue>
       ) : !!entryDeviation ? (
         <SubColumnValue
           style={{
-            fontSize: '1.3rem',
-            fontFamily: 'Avenir Next Demi',
             color: theme.palette.grey.onboard,
             display: 'flex',
             flexDirection: 'column',
@@ -233,7 +237,10 @@ export const getStrategyFields = ({
           >
             Trailing from
           </div>{' '}
-          <div>{stripDigitPlaces(activatePrice, pricePrecision)}</div>
+          <div>
+            {stripDigitPlaces(activatePrice, pricePrecision)}
+            <SymbolField theme={theme}>{pairArr[1]}</SymbolField>
+          </div>
         </SubColumnValue>
       ) : (
         '-'
@@ -307,24 +314,30 @@ export const getStrategyFields = ({
             style={{
               display: 'flex',
               flexDirection: 'column',
+              padding: '.4rem 0',
             }}
           >
-            <a
+            <span
               style={{
+                paddingBottom: '.4rem',
                 color: theme.palette.grey.light,
-                fontSize: '1.2rem',
               }}
             >
-              {amount.toFixed(quantityPrecision)} {pairArr[0]}
-            </a>
-            <a
+              <PriceField theme={theme}>
+                {amount.toFixed(quantityPrecision)}
+              </PriceField>{' '}
+              <SymbolField theme={theme}>{pairArr[0]}</SymbolField>
+            </span>
+            <span
               style={{
                 color: theme.palette.grey.light,
-                fontSize: '1.2rem',
               }}
             >
-              {(amount * entryOrderPrice).toFixed(2)} {pairArr[1]}
-            </a>
+              <PriceField theme={theme}>
+                {(amount * entryOrderPrice).toFixed(2)}
+              </PriceField>{' '}
+              <SymbolField theme={theme}>{pairArr[1]}</SymbolField>
+            </span>
           </div>
         </SubColumnValue>
       ),
@@ -414,8 +427,6 @@ export const getStrategyFields = ({
         stopLoss || hedgeLossDeviation ? (
           <SubColumnValue
             style={{
-              fontSize: '1.3rem',
-              fontFamily: 'Avenir Next Demi',
               display: 'flex',
               flexDirection: 'row',
               alignItems: 'center',
@@ -458,18 +469,20 @@ export const getStrategyFields = ({
               }}
             >
               <div style={{ alignSelf: 'start' }}>
-                {' '}
-                <a> {stopLoss || hedgeLossDeviation}% </a>{' '}
+                <span
+                  style={{ fontSize: '1.3rem', fontFamily: 'Avenir Next Demi' }}
+                >
+                  {stopLoss || hedgeLossDeviation}%{' '}
+                </span>{' '}
                 {timeoutLoss ? (
-                  <a>
+                  <span>
                     <>
                       {' '}
-                      <a style={{ color: theme.palette.grey.onboard }}>
-                        {' '}
-                        /{' '}
-                      </a>{' '}
+                      <span style={{ color: theme.palette.grey.onboard }}>
+                        /
+                      </span>{' '}
                       <SvgIcon src={Timer} height="13px" />
-                      <a
+                      <span
                         style={{
                           textTransform: 'lowercase',
                           color: theme.palette.grey.onboard,
@@ -477,35 +490,32 @@ export const getStrategyFields = ({
                       >
                         {' '}
                         {timeoutLoss} sec
-                      </a>
+                      </span>
                     </>
-                  </a>
+                  </span>
                 ) : null}
               </div>
-              <a
-                style={{
-                  color: theme.palette.grey.light,
-                  fontSize: '1.2rem',
-                  alignSelf: 'baseline',
-                }}
-              >
-                {' '}
-                {entryOrderPrice ? (
-                  side === 'buy' ? (
-                    (entryOrderPrice * (1 - stopLoss / 100 / leverage)).toFixed(
-                      pricePrecision
-                    ) + ` ${pairArr[1]}`
-                  ) : (
-                    (entryOrderPrice * (1 + stopLoss / 100 / leverage)).toFixed(
-                      pricePrecision
-                    ) + ` ${pairArr[1]}`
-                  )
-                ) : (
-                  <a style={{ textTransform: 'none', alignSelf: 'baseline' }}>
-                    Processing...
-                  </a>
-                )}{' '}
-              </a>
+
+              {entryOrderPrice ? (
+                <div>
+                  <PriceField theme={theme}>
+                    {side === 'buy'
+                      ? (
+                          entryOrderPrice *
+                          (1 - stopLoss / 100 / leverage)
+                        ).toFixed(pricePrecision)
+                      : (
+                          entryOrderPrice *
+                          (1 + stopLoss / 100 / leverage)
+                        ).toFixed(pricePrecision)}
+                  </PriceField>{' '}
+                  <SymbolField theme={theme}>{pairArr[1]}</SymbolField>
+                </div>
+              ) : (
+                <span style={{ textTransform: 'none', alignSelf: 'baseline' }}>
+                  Processing...
+                </span>
+              )}
             </div>
           </SubColumnValue>
         ) : (
@@ -517,8 +527,6 @@ export const getStrategyFields = ({
       render: (
         <SubColumnValue
           style={{
-            fontSize: '1.3rem',
-            fontFamily: 'Avenir Next Demi',
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
@@ -568,15 +576,14 @@ export const getStrategyFields = ({
                 entryOrderPrice ? (
                   <div>
                     {' '}
-                    <a
+                    <span
                       style={{
-                        fontSize: '1.2rem',
                         textTransform: 'none',
                         alignSelf: 'baseline',
                       }}
                     >
                       Trailing from
-                    </a>{' '}
+                    </span>{' '}
                     +{exitLevels[0].activatePrice}%
                   </div>
                 ) : (
@@ -585,8 +592,6 @@ export const getStrategyFields = ({
               ) : exitLevels.length > 1 ? ( // split targets
                 <div
                   style={{
-                    fontSize: '1.3rem',
-                    fontFamily: 'Avenir Next Demi',
                     textTransform: 'lowercase',
                     color: theme.palette.grey.onboard,
                     position: 'relative',
@@ -635,36 +640,43 @@ export const getStrategyFields = ({
                   <SvgIcon src={ArrowBottom} width={'1rem'} height={'1rem'} />
                 </div>
               ) : (
-                `${exitLevels.length > 0 ? exitLevels[0].price : '-'}%` // tp
+                <span
+                  style={{ fontSize: '1.3rem', fontFamily: 'Avenir Next Demi' }}
+                >
+                  {exitLevels.length > 0 ? exitLevels[0].price : '-'}%
+                </span>
               )}
             </div>
             {exitLevels.length > 1 ? null : (
-              <a
+              <PriceField
+                theme={theme}
                 style={{
-                  color: theme.palette.grey.light,
-                  fontSize: '1.2rem',
                   alignSelf: 'baseline',
                 }}
               >
-                {' '}
                 {entryOrderPrice ? (
-                  side === 'buy' ? (
-                    (
-                      entryOrderPrice *
-                      (1 + takeProfitPercentage / 100 / leverage)
-                    ).toFixed(pricePrecision) + ` ${pairArr[1]}`
-                  ) : (
-                    (
-                      entryOrderPrice *
-                      (1 - takeProfitPercentage / 100 / leverage)
-                    ).toFixed(pricePrecision) + ` ${pairArr[1]}`
-                  )
+                  <div>
+                    <PriceField theme={theme}>
+                      {side === 'buy'
+                        ? (
+                            entryOrderPrice *
+                            (1 + takeProfitPercentage / 100 / leverage)
+                          ).toFixed(pricePrecision)
+                        : (
+                            entryOrderPrice *
+                            (1 - takeProfitPercentage / 100 / leverage)
+                          ).toFixed(pricePrecision)}
+                    </PriceField>{' '}
+                    <SymbolField theme={theme}>{pairArr[1]}</SymbolField>
+                  </div>
                 ) : (
-                  <a style={{ textTransform: 'none', alignSelf: 'baseline' }}>
+                  <span
+                    style={{ textTransform: 'none', alignSelf: 'baseline' }}
+                  >
                     Processing...
-                  </a>
+                  </span>
                 )}{' '}
-              </a>
+              </PriceField>
             )}
           </div>
         </SubColumnValue>
@@ -688,7 +700,7 @@ export const combineActiveTradesTable = ({
   keys,
   handlePairChange,
   pricePrecision,
-  quantityPrecision
+  quantityPrecision,
 }: // pricePrecision,
 // quantityPrecision
 {
@@ -709,7 +721,7 @@ export const combineActiveTradesTable = ({
   canceledOrders: string[]
   keys: any
   handlePairChange: (pair: string) => void
-  quantityPrecision: number,
+  quantityPrecision: number
   pricePrecision: number
   // quantityPrecision: number
 }) => {
@@ -845,7 +857,7 @@ export const combineActiveTradesTable = ({
             //       theme={theme}
             //     />
             //   ) : (
-            <span style={{ color: theme.palette.grey.light }}>
+            <span style={{ color: theme.palette.white.primary }}>
               0 {pairArr[1]} / 0%
             </span>
           ),
@@ -863,7 +875,7 @@ export const combineActiveTradesTable = ({
                 textTransform: 'none',
                 width: '8.5rem',
                 display: 'flex',
-                alignItems: 'center',
+                alignItems: 'flex-start',
                 flexDirection: 'column',
                 fontSize: '1.3rem',
                 fontFamily: 'Avenir Next Demi',
@@ -895,9 +907,9 @@ export const combineActiveTradesTable = ({
                       </div>
                     }
                   />
-                  <a className={'errorMsg'} style={{}}>
+                  <span className={'errorMsg'} style={{}}>
                     {msg}
-                  </a>
+                  </span>
                 </div>
               ) : null}
             </SubColumnValue>

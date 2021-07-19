@@ -287,9 +287,9 @@ export const DefaultViewComponent = (
             >
               <Balances
                 pair={currencyPair.split('_')}
-                selectedKey={selectedKey}
                 marketType={marketType}
                 theme={theme}
+                isDefaultTerminalViewMode={isDefaultTerminalViewMode}
                 setShowTokenNotAdded={setShowTokenNotAdded}
               />
             </BalancesContainer>
