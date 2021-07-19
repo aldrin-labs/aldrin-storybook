@@ -287,8 +287,13 @@ export const FeedbackPopup = ({
               />
             </RowContainer>
           </RowContainer>
-          <RowContainer>
-            <button
+          <RowContainer
+            onClick={(e) => {
+              submitFeedback(true)
+            }}
+          >
+            <SubmitButton
+              theme={theme}
               // style={{ width: '100%', margin: '3rem 0' }}
               // disabled={isButtonDisabled}
               // theme={theme}
@@ -298,7 +303,7 @@ export const FeedbackPopup = ({
               // }}
             >
               Submit
-            </button>
+            </SubmitButton>
           </RowContainer>
         </Form>
       )}
