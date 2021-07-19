@@ -61,16 +61,32 @@ export const UPDATED_AWESOME_MARKETS = AWESOME_MARKETS.map((el) => ({
   isCustomUserMarket: true,
 }))
 
-export function useOfficialMarketsList() {
-  const OFFICIAL_MARKETS_MAP = new Map()
+export function useAllMarketsList() {
+  const ALL_MARKETS_MAP = new Map()
 
-  const officialMarkets = [...useMarketsList(), ...UPDATED_AWESOME_MARKETS]
+  const { customMarkets } = useCustomMarkets()
+
+  const officialMarkets = [...useMarketsList(), ...AWESOME_MARKETS]
 
   officialMarkets?.forEach((market) =>
-    OFFICIAL_MARKETS_MAP.set(market.name.replaceAll('/', '_'), market)
+    ALL_MARKETS_MAP.set(market.name.replaceAll('/', '_'), market)
   )
 
-  return OFFICIAL_MARKETS_MAP
+  const usersMarkets = customMarkets.filter(
+    (market) =>
+      market.isCustomUserMarket &&
+      !ALL_MARKETS_MAP.has(market.name.replaceAll('/', '_'))
+  )
+
+  usersMarkets?.forEach((market) =>
+    ALL_MARKETS_MAP.set(market.name.replaceAll('/', '_'), {
+      ...market,
+      address: new PublicKey(market.address),
+      programId: new PublicKey(market.programId),
+    })
+  )
+
+  return ALL_MARKETS_MAP
 }
 
 export function useMarketsList() {

@@ -43,6 +43,7 @@ import LinkToSolanaExp from '../../components/LinkToSolanaExp'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { LinkToAnalytics, LinkToTwitter } from '../../components/MarketBlock'
 import { getNumberOfDecimalsFromNumber } from '@core/utils/chartPageUtils'
+import { MintsPopup } from './MintsPopup'
 
 export const selectWrapperColumnNames = [
   { label: '', id: 'favorite', isSortable: false },
@@ -172,7 +173,10 @@ export const combineSelectWrapperData = ({
   market,
   tokenMap,
   serumMarketsDataMap,
-  officialMarketsMap,
+  allMarketsMap,
+  isMintsPopupOpen,
+  setIsMintsPopupOpen,
+  changeChoosenMarketData,
 }: {
   data: ISelectData
   // updateFavoritePairsMutation: (variableObj: {
@@ -196,7 +200,7 @@ export const combineSelectWrapperData = ({
   usdtPairsMap: Map<string, string>
   marketType: number
   needFiltrations?: boolean
-  officialMarketsMap: any
+  allMarketsMap: any
 }) => {
   const marketsCategoriesData = Object.entries(marketsByCategories)
 
@@ -327,17 +331,11 @@ export const combineSelectWrapperData = ({
       })
     }
 
-    if (tab === 'private') {
-      processedData = data.filter(
-        (el) => el.isPrivateCustomMarket && !officialMarketsMap.has(el.symbol)
-      )
-    }
-    if (tab === 'public') {
+    if (tab === 'customMarkets') {
       processedData = data.filter(
         (el) =>
-          el.isCustomUserMarket &&
-          !el.isPrivateCustomMarket &&
-          !officialMarketsMap.has(el.symbol)
+          allMarketsMap.has(el.symbol) &&
+          allMarketsMap.get(el.symbol).isCustomUserMarket
       )
     }
   } else if (needFiltrations) {
@@ -399,16 +397,16 @@ export const combineSelectWrapperData = ({
     const sign24hChange = +priceChangePercentage > 0 ? `+` : ``
     const signTrades24hChange = +precentageTradesDiff > 0 ? '+' : '-'
 
-    const marketName = symbol.replaceAll('_', '/')
-    const currentMarket = officialMarketsMap?.get(symbol)
+    const marketName = symbol?.replaceAll('_', '/')
+    const currentMarket = allMarketsMap?.get(symbol)
 
     const isAdditionalCustomUserMarket = el.isCustomUserMarket
-    const isAwesomeMarket = currentMarket?.isCustomUserMarket
+    const isAwesomeMarket = currentMarket?.isAwesomeMarket
 
     const mint = getTokenMintAddressByName(base)
 
     const baseTokenInfo = tokenMap?.get(getTokenMintAddressByName(base))
-    const marketAddress = market?.address?.toBase58()
+    const marketAddress = allMarketsMap.get(el.symbol)?.address?.toBase58()
 
     const avgBuy = serumMarketsDataMap?.get(symbol)?.avgBuy || 0
     const avgSell = serumMarketsDataMap?.get(symbol)?.avgSell || 0
@@ -418,6 +416,7 @@ export const combineSelectWrapperData = ({
     const marketCapIcon = marketCapLink.includes('coinmarketcap')
       ? Coinmarketcap
       : CoinGecko
+
     return {
       id: `${symbol}`,
       // favorite: {
@@ -651,13 +650,17 @@ export const combineSelectWrapperData = ({
             justify={'flex-start'}
             align={'baseline'}
           >
-            {/* <SvgIcon
-              onClick={() => {}}
+            <SvgIcon
+              onClick={(e) => {
+                e.stopPropagation()
+                changeChoosenMarketData({ symbol: marketName, marketAddress })
+                setIsMintsPopupOpen(true)
+              }}
               src={Inform}
-              style={{ marginRight: '1.5rem' }}
+              style={{ marginRight: '1.5rem', cursor: 'pointer' }}
               width={'2.3rem'}
               height={'2.3rem'}
-            /> */}
+            />
             <LinkToSolanaExp padding={'0'} marketAddress={marketAddress} />
             <DarkTooltip title={'Show analytics for this market.'}>
               <LinkToAnalytics
@@ -701,7 +704,6 @@ export const combineSelectWrapperData = ({
                 />
               </a>
             )}
-            {/* <MintsPopup /> */}
           </Row>
         ),
       },

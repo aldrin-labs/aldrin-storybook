@@ -240,7 +240,7 @@ export const TableInner = ({
                 textAlign: 'left',
                 fontFamily: 'Avenir Next Light',
               }}
-              width={width * 1.8}
+              width={width * 2.1}
               style={{
                 textAlign: 'left',
                 fontSize: '1.4rem',

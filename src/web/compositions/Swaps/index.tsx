@@ -420,17 +420,6 @@ const SwapsPage = ({
                       ? userQuoteTokenAccount
                       : userBaseTokenAccount
 
-                  console.log({
-                    wallet,
-                    connection,
-                    userTokenAccountA: new PublicKey(userTokenAccountA),
-                    userTokenAccountB: new PublicKey(userTokenAccountB),
-                    tokenSwapPublicKey: new PublicKey(selectedTokens.swapToken),
-                    swapAmountIn: +baseAmount * 10 ** swapAmountInDecimals,
-                    swapAmountOut: +totalWithFees * 10 ** swapAmountOutDecimals,
-                    baseSwapToken: baseTokenSwap,
-                  })
-
                   const [transaction, signers] = await swapWithHandleNativeSol({
                     wallet,
                     connection,
