@@ -599,14 +599,6 @@ class SelectPairListComponent extends React.PureComponent<
               }}
               onClick={async (e) => {
                 e.stopPropagation()
-                // if (publicKey === '') {
-                //   notify({
-                //     message: 'Connect your wallet first',
-                //     type: 'error',
-                //   })
-                //   wallet.connect()
-                //   return
-                // }
 
                 this.setIsFeedbackPopupOpen(true)
               }}

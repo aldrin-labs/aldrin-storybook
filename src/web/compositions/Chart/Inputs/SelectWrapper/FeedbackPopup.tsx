@@ -1,111 +1,26 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
-import copy from 'clipboard-copy'
 
 import { Text } from '@sb/compositions/Addressbook/index'
-import { Paper, Theme } from '@material-ui/core'
+import { Theme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
-import { MainTitle } from '@sb/components/TraidingTerminal/ConfirmationPopup'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 import CloseIcon from '@icons/closeIcon.svg'
 import CoolIcon from '@icons/coolIcon.svg'
 
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-
-import { Loading } from '@sb/components'
 import { Line } from '@sb/compositions/Pools/components/Popups/index.styles'
-import { notify } from '@sb/dexUtils/notifications'
 import { encode } from '@sb/dexUtils/utils'
-
-const StyledPaper = styled(Paper)`
-  border-radius: 2rem;
-  width: 60rem;
-  height: auto;
-  background: #222429;
-  border: 0.1rem solid #3a475c;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 2rem;
-  padding: 3rem;
-`
-const Title = styled(({ ...props }) => <MainTitle {...props} />)`
-  text-transform: none;
-  font-size: 2.5rem;
-  margin-bottom: 0;
-`
-export const BlueButton = styled(
-  ({ isUserConfident, showLoader, children, ...props }) => (
-    <BtnCustom {...props}>
-      {showLoader ? (
-        <Loading
-          color={'#fff'}
-          size={24}
-          style={{ display: 'flex', alignItems: 'center', height: '4.5rem' }}
-        />
-      ) : (
-        children
-      )}
-    </BtnCustom>
-  )
-)`
-  font-size: 1.4rem;
-  height: 4.5rem;
-  text-transform: capitalize;
-  background-color: ${(props) => props.theme.palette.blue.serum};
-  border-radius: 1rem;
-  border-color: none;
-  cursor: pointer;
-  color: #f8faff;
-  border: none;
-`
-const TextField = styled.input`
-  width: 100%;
-  height: 3.5rem;
-  background: #383b45;
-  border: 1px solid #3a475c;
-  border-radius: 0.5rem;
-  color: #fbf2f2;
-  font-family: Avenir Next Medium;
-  font-size: 1.4rem;
-  padding: 0 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  outline: none;
-  margin-top: 1rem;
-
-  &:focus {
-    border: ${(props) => `0.1rem solid ${props.theme.palette.blue.serum}`};
-  }
-`
-const Form = styled.form`
-  width: 100%;
-`
-const Label = styled.label`
-  width: 100%;
-  color: #fbf2f2;
-  font-family: Avenir Next Medium;
-  font-size: 1.4rem;
-`
-
-const SubmitButton = styled.button`
-  width: 100%;
-  height: 4.5rem;
-  background: ${(props) => props.theme.palette.blue.serum};
-  font-size: 1.4rem;
-  text-transform: capitalize;
-  border-radius: 1rem;
-  border-color: none;
-  cursor: pointer;
-  color: #f8faff;
-  border: none;
-  font-family: Avenir Next Medium;
-  margin-top: 4rem;
-`
+import {
+  BlueButton,
+  Form,
+  StyledPaper,
+  SubmitButton,
+  TextField,
+  Title,
+} from './SelectWrapperStyles'
+import { notify } from '@sb/dexUtils/notifications'
 
 export const FeedbackPopup = ({
   theme,
@@ -141,15 +56,16 @@ export const FeedbackPopup = ({
         submitFeedback(true)
         console.log('Success!')
       })
-      .catch((error) => console.log(error))
+      .catch((error) => {
+        console.log(error)
+        notify({
+          type: 'error',
+          message: 'Something went wrong, please try again.',
+        })
+      })
 
     e.preventDefault()
   }
-
-  const isButtonDisabled =
-    feedbackData.token === '' ||
-    feedbackData.rightCategory === '' ||
-    feedbackData.wrongCategory === ''
 
   return (
     <DialogWrapper
