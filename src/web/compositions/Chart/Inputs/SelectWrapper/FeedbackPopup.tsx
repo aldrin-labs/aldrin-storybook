@@ -196,7 +196,7 @@ export const FeedbackPopup = ({
             disabled={false}
             theme={theme}
             onClick={() => {
-              submitFeedback(true)
+              submitFeedback(false)
               onClose()
             }}
           >
