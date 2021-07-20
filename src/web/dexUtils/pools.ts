@@ -5,6 +5,7 @@ import {
   PublicKey,
   SystemProgram,
   Transaction,
+  TransactionSignature,
 } from '@solana/web3.js'
 
 import { Token, TOKEN_PROGRAM_ID } from './token/token'
@@ -21,7 +22,7 @@ import { notify } from './notifications'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 
 const OWNER: PublicKey = new PublicKey(
-  '9VHVV44zDSmmdDMUHk4fwotXioimN78yzNDgzaVUP5Fb'
+  '5rWKzCUY9ESdmobivjyjQzvdfHSePf37WouX39sMmfx9'
 )
 
 const ownerKey = OWNER.toString()
@@ -103,7 +104,7 @@ export async function createTokenSwap({
     connection,
     authority,
     null,
-    2,
+    8,
     TOKEN_PROGRAM_ID
   )
 
@@ -1045,8 +1046,6 @@ const createFarmingStateAccount = async ({
     TokenFarmingLayout.span
   )
 
-  console.log('TokenFarmingLayout.span', TokenFarmingLayout.span, 'balanceNeeded', balanceNeeded)
-
   const farmingStateAccount = new Account()
   const transaction = new Transaction()
 
@@ -1061,4 +1060,19 @@ const createFarmingStateAccount = async ({
   )
 
   return [farmingStateAccount, transaction]
+}
+
+export const getParsedTransactionData = async ({
+  connection,
+  signature,
+}: {
+  connection: Connection
+  signature: TransactionSignature
+}) => {
+  try {
+    const ts = await connection.getConfirmedTransaction(signature, 'confirmed')
+    console.log('transaction data: ', ts)
+  } catch (e) {
+    console.log('e', e)
+  }
 }

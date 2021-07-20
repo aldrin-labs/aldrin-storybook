@@ -26,6 +26,10 @@ import {
 } from '@core/utils/PortfolioTableUtils'
 
 import { Theme } from '@material-ui/core'
+import {
+  dayDuration,
+  endOfDayTimestamp,
+} from '@sb/compositions/AnalyticsRoute/components/utils'
 
 Chart.register(
   BarElement,
@@ -41,13 +45,32 @@ Chart.register(
   Filler
 )
 
-const mockData = [
-  { day: '2020-05-01', total: 10000 },
-  { day: '2020-05-02', total: 30000 },
-  { day: '2020-05-03', total: 20000 },
-  { day: '2020-05-04', total: 50000 },
-  { day: '2020-05-05', total: 100000 },
-]
+const NUMBER_OF_DAYS_TO_SHOW = 6
+
+const getEmptyData = (
+  fisrtTimestamp: number = endOfDayTimestamp -
+    dayDuration * NUMBER_OF_DAYS_TO_SHOW,
+  lastTimestamp: number = endOfDayTimestamp
+) => {
+  let dayEndTimestamp: number = dayjs
+    .unix(lastTimestamp)
+    .startOf('day')
+    .unix()
+
+  const emptyData = []
+
+  do {
+    const day = dayjs.unix(dayEndTimestamp).format('YYYY-MM-DD')
+    emptyData.push({
+      date: day,
+      vol: 0,
+    })
+
+    dayEndTimestamp -= dayDuration
+  } while (dayEndTimestamp >= fisrtTimestamp)
+
+  return emptyData.reverse()
+}
 
 const createTotalVolumeLockedChart = ({
   id,
@@ -72,10 +95,20 @@ const createTotalVolumeLockedChart = ({
     document.documentElement.clientWidth ||
     document.body.clientWidth
 
+  const transformedData = getEmptyData().map((value) => ({
+    ...value,
+    vol:
+      data.find(
+        (item: { date: string; vol: number }) => item.date === value.date
+      )?.vol || 0,
+  }))
+
+  console.log('transformedData', transformedData)
+
   window[`TotalVolumeLockedChart-${id}`] = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: data.map((item) => dayjs(item.date).format('MMM, D')),
+      labels: transformedData.map((item) => dayjs(item.date).format('MMM, D')),
       datasets: [
         {
           fill: 'origin',
@@ -85,7 +118,7 @@ const createTotalVolumeLockedChart = ({
           borderWidth: 2,
           pointRadius: 0,
           hoverBackgroundColor: 'rgba(28, 29, 34, 0.75)',
-          data: data.map((item, i) => ({ x: i, y: item.vol })),
+          data: transformedData.map((item, i) => ({ x: i, y: item.vol })),
         },
       ],
     },
@@ -114,7 +147,9 @@ const createTotalVolumeLockedChart = ({
           ticks: {
             padding: 15,
             callback: (value) =>
-              `$${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`,
+              value > 1000000
+                ? `$${stripDigitPlaces(value / 1000000, 2)}m`
+                : `$${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`,
             color: '#F5F5FB',
             stepSize: data[data.length - 1].vol / 5,
             font: {
@@ -176,9 +211,11 @@ const createTotalVolumeLockedChart = ({
             ticks: {
               padding: 15,
               callback: (value) =>
-                `$${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`,
+                value > 1000000
+                  ? `$${stripDigitPlaces(value / 1000000, 2)}m`
+                  : `$${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`,
               color: '#F5F5FB',
-              stepSize: data[data.length - 1].vol / 5,
+              stepSize: data[data.length - 1]?.vol / 5,
               font: {
                 size: +(width / 130).toFixed(0),
                 family: 'Avenir Next',
@@ -211,10 +248,18 @@ const createTradingVolumeChart = ({
     document.documentElement.clientWidth ||
     document.body.clientWidth
 
+  const transformedData = getEmptyData().map((value) => ({
+    ...value,
+    vol:
+      data.find(
+        (item: { date: string; vol: number }) => item.date === value.date
+      )?.vol || 0,
+  }))
+
   window[`TradingVolumeChart-${id}`] = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: data?.map((item) => dayjs(item.date).format('MMM, D')),
+      labels: transformedData.map((item) => dayjs(item.date).format('MMM, D')),
       datasets: [
         {
           fill: 'origin',
@@ -224,7 +269,7 @@ const createTradingVolumeChart = ({
           borderWidth: 2,
           pointRadius: 0,
           hoverBackgroundColor: 'rgba(28, 29, 34, 0.75)',
-          data: data.map((item, i) => ({ x: i, y: item.vol })),
+          data: transformedData.map((item, i) => ({ x: i, y: item.vol })),
         },
       ],
     },
@@ -253,9 +298,11 @@ const createTradingVolumeChart = ({
           ticks: {
             padding: 15,
             callback: (value) =>
-              `$ ${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`,
+              value > 1000000
+                ? `$${stripDigitPlaces(value / 1000000, 2)}m`
+                : `$${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`,
             color: '#F5F5FB',
-            stepSize: data[data.length - 1].vol / 5,
+            // stepSize: Math.max(data.map(d => d.vol)) / 5,
             font: {
               size: +(width / 130).toFixed(0),
               family: 'Avenir Next',
@@ -314,10 +361,13 @@ const createTradingVolumeChart = ({
             },
             ticks: {
               padding: 15,
-              callback: (value) =>
-                `$ ${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`,
+              callback: (value) => {
+                return value > 1000000
+                  ? `$${stripDigitPlaces(value / 1000000, 2)}m`
+                  : `$${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`
+              },
               color: '#F5F5FB',
-              stepSize: data[data.length - 1].vol / 5,
+              stepSize: data[data.length - 1]?.vol / 5,
               font: {
                 size: +(width / 130).toFixed(0),
                 family: 'Avenir Next',

@@ -12,6 +12,8 @@ import {
 } from '@core/utils/PortfolioTableUtils'
 
 import GreenCheckmark from '@icons/successIcon.svg'
+import Warning from '@icons/warningPairSel.png'
+import ThinkingFace from '@icons/thinkingFace.png'
 
 import favoriteSelected from '@icons/favoriteSelected.svg'
 import favoriteUnselected from '@icons/favoriteUnselected.svg'
@@ -303,11 +305,10 @@ export const combineSelectWrapperData = ({
     const sign24hChange = +priceChangePercentage > 0 ? `+` : ``
     const signTrades24hChange = +precentageTradesDiff > 0 ? '+' : '-'
 
-    const marketName = symbol.replace('_', '/')
-    const currentMarket = customMarkets?.find((el) => el?.name === marketName)
+    const marketName = symbol.replaceAll('_', '/')
+    const currentMarket = customMarkets?.find((el) => el?.name.replaceAll("_", "/") === marketName)
 
-    const isAdditionalCustomUserMarket =
-      currentMarket?.isPrivateCustomMarket !== undefined
+    const isAdditionalCustomUserMarket = el.isCustomUserMarket
     const isAwesomeMarket = currentMarket?.isCustomUserMarket
 
     return {
@@ -345,9 +346,9 @@ export const combineSelectWrapperData = ({
               }}
             >
               {isAdditionalCustomUserMarket ? (
-                '⚠️'
+                <SvgIcon width={'50%'} height={'auto'} src={Warning} />
               ) : isAwesomeMarket ? (
-                '🤔'
+                <SvgIcon width={'50%'} height={'auto'} src={ThinkingFace} />
               ) : (
                 <SvgIcon width={'50%'} height={'auto'} src={GreenCheckmark} />
               )}
@@ -356,7 +357,7 @@ export const combineSelectWrapperData = ({
         ),
       },
       symbol: {
-        render: <span>{symbol.replace('_', '/')}</span>,
+        render: <span>{symbol.replaceAll('_', '/')}</span>,
         onClick: () =>
           onSelectPair({
             value: symbol,

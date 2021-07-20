@@ -18,7 +18,10 @@ import { StyledPaper } from '../index.styles'
 import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { PoolsPrices } from '@sb/compositions/Pools/index.types'
-import { formatNumberToUSFormat, stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 
 const UpdatedPaper = styled(({ ...props }) => <StyledPaper {...props} />)`
   width: 45rem;
@@ -63,7 +66,7 @@ export const SelectCoinPopup = ({
   const [selectedMint, setSelectedMint] = useState<string>('')
   const [
     isSelectorForSeveralAddressesOpen,
-    openSelectorForSeveralAddresses,
+    setIsSelectorForSeveralAddressesOpen,
   ] = useState(false)
 
   const usersMints = needKnownMints
@@ -88,6 +91,11 @@ export const SelectCoinPopup = ({
       onClose={close}
       maxWidth={'md'}
       open={open}
+      onEnter={() => {
+        onChangeSearch('');
+        setSelectedMint('');
+        setIsSelectorForSeveralAddressesOpen(false);
+      }}
       aria-labelledby="responsive-dialog-title"
     >
       <RowContainer justify={'space-between'}>
@@ -113,7 +121,7 @@ export const SelectCoinPopup = ({
 
                 if (isSeveralCoinsWithSameAddress) {
                   setSelectedMint(mint)
-                  openSelectorForSeveralAddresses(true)
+                  setIsSelectorForSeveralAddressesOpen(true)
                 } else {
                   selectTokenMintAddress(mint)
                 }
@@ -127,10 +135,8 @@ export const SelectCoinPopup = ({
                 <StyledText>
                   {formatNumberToUSFormat(
                     stripDigitPlaces(
-                      poolsPrices.find(
-                        (tokenInfo) =>
-                          tokenInfo.symbol === getTokenNameByMintAddress(mint)
-                      )?.price || 0,
+                      allTokensData.find((tokenData) => tokenData.mint === mint)
+                        ?.amount || 0,
                       8
                     )
                   )}
@@ -148,7 +154,7 @@ export const SelectCoinPopup = ({
           theme={theme}
           tokens={allTokensData.filter((el) => el.mint === selectedMint)}
           open={isSelectorForSeveralAddressesOpen}
-          close={() => openSelectorForSeveralAddresses(false)}
+          close={() => setIsSelectorForSeveralAddressesOpen(false)}
           selectTokenMintAddress={selectTokenMintAddress}
           selectTokenAddressFromSeveral={
             isBaseTokenSelecting

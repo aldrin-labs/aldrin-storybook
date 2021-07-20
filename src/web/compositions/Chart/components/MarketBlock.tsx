@@ -11,6 +11,8 @@ import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import LinkToSolanaExp from './LinkToSolanaExp'
 import GreenCheckmark from '@icons/successIcon.svg'
+import ThinkingFace from '@icons/thinkingFace.png'
+import Warning from '@icons/warningPairSel.png'
 import SvgIcon from '@sb/components/SvgIcon'
 
 export const ExclamationMark = styled(({ fontSize, lineHeight, ...props }) => (
@@ -84,8 +86,8 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
     return null
   }
 
-  const marketName = pair.replace('_', '/')
-  const currentMarket = customMarkets?.find((el) => el?.name === marketName)
+  const marketName = pair.replaceAll('_', '/')
+  const currentMarket = customMarkets?.find((el) => el?.name.replaceAll('_', '/') === marketName)
 
   const isPrivateCustomMarket =
     currentMarket?.isPrivateCustomMarket !== undefined
@@ -107,7 +109,7 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
               ? 'This is an unofficial custom market. Use at your own risk.'
               : isCustomUserMarket
               ? 'This is curated but unofficial market.'
-              : 'This is the official Serum market.'
+              : 'This is the official market.'
           }
         >
           <div
@@ -119,9 +121,9 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
             }}
           >
             {isPrivateCustomMarket ? (
-              '⚠️'
+              <SvgIcon width={'50%'} height={'auto'} src={Warning} />
             ) : isCustomUserMarket ? (
-              '🤔'
+              <SvgIcon width={'50%'} height={'auto'} src={ThinkingFace} />
             ) : (
               <SvgIcon width={'50%'} height={'auto'} src={GreenCheckmark} />
             )}

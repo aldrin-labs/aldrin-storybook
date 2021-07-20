@@ -128,6 +128,11 @@ export const WithdrawalPopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
+      onEnter={() => {
+        setBaseAmount('');
+        setQuoteAmount('');
+        setOperationLoading(false);
+      }}
       maxWidth={'md'}
       open={open}
       aria-labelledby="responsive-dialog-title"

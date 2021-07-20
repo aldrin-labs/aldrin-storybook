@@ -1,4 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import * as BufferLayout from 'buffer-layout'
+import bs58 from 'bs58'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { Theme } from '@material-ui/core'
@@ -15,10 +17,17 @@ import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import {
   calculateWithdrawAmount,
   depositAllTokenTypes,
+  getParsedTransactionData,
+  swap,
 } from '@sb/dexUtils/pools'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
-import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
+import {
+  LAMPORTS_PER_SOL,
+  ParsedInstruction,
+  PartiallyDecodedInstruction,
+  PublicKey,
+} from '@solana/web3.js'
 import { PoolInfo, PoolsPrices } from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
@@ -28,6 +37,10 @@ import { notify } from '@sb/dexUtils/notifications'
 import { Token, TOKEN_PROGRAM_ID } from '@sb/dexUtils/token/token'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import AttentionComponent from '@sb/components/AttentionBlock'
+import { SelectCoinPopup } from '../SelectCoin'
+import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
+import { TOKEN_SWAP_PROGRAM_ID } from '@sb/dexUtils/token-swap/token-swap'
+import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/send-and-confirm-transaction-via-wallet'
 
 export const AddLiquidityPopup = ({
   theme,
@@ -49,6 +62,16 @@ export const AddLiquidityPopup = ({
   const { wallet } = useWallet()
   const connection = useConnection()
 
+  // if user has more than one token for one mint
+  const [
+    selectedBaseTokenAddressFromSeveral,
+    setBaseTokenAddressFromSeveral,
+  ] = useState<string>('')
+  const [
+    selectedQuoteTokenAddressFromSeveral,
+    setQuoteTokenAddressFromSeveral,
+  ] = useState<string>('')
+
   const [baseAmount, setBaseAmount] = useState<string | number>('')
   const setBaseAmountWithQuote = (baseAmount: string | number) => {
     const quoteAmount = stripDigitPlaces(
@@ -69,6 +92,15 @@ export const AddLiquidityPopup = ({
     setQuoteAmount(quoteAmount)
   }
 
+  const [
+    isSelectorForSeveralBaseAddressesOpen,
+    setIsSelectorForSeveralBaseAddressesOpen,
+  ] = useState(false)
+  const [
+    isSelectorForSeveralQuoteAddressesOpen,
+    setIsSelectorForSeveralQuoteAddressesOpen,
+  ] = useState(false)
+
   const [warningChecked, setWarningChecked] = useState(false)
   const [operationLoading, setOperationLoading] = useState(false)
 
@@ -76,13 +108,21 @@ export const AddLiquidityPopup = ({
     address: userTokenAccountA,
     amount: maxBaseAmount,
     decimals: baseTokenDecimals,
-  } = getTokenDataByMint(allTokensData, selectedPool.tokenA)
+  } = getTokenDataByMint(
+    allTokensData,
+    selectedPool.tokenA,
+    selectedBaseTokenAddressFromSeveral
+  )
 
   const {
     address: userTokenAccountB,
     amount: maxQuoteAmount,
     decimals: quoteTokenDecimals,
-  } = getTokenDataByMint(allTokensData, selectedPool.tokenB)
+  } = getTokenDataByMint(
+    allTokensData,
+    selectedPool.tokenB,
+    selectedQuoteTokenAddressFromSeveral
+  )
 
   const {
     amount: poolTokenRawAmount,
@@ -98,11 +138,7 @@ export const AddLiquidityPopup = ({
   const isQuoteTokenSOL = quoteSymbol === 'SOL'
 
   const isPoolWithSOLToken = isBaseTokenSOL || isQuoteTokenSOL
-  const solAddresses = allTokensData.filter(
-    (tokenData) => tokenData.mint === WRAPPED_SOL_MINT.toString()
-  )
 
-  const isSeveralSOLAddresses = solAddresses.length > 1
   const isNativeSOLSelected =
     allTokensData[0]?.address === userTokenAccountA ||
     allTokensData[0]?.address === userTokenAccountB
@@ -124,6 +160,17 @@ export const AddLiquidityPopup = ({
     selectedPool,
     poolTokenAmount,
   })
+
+  useEffect(() => {
+    const isSeveralBaseAddresses =
+      allTokensData.filter((el) => el.mint === selectedPool.tokenA).length > 1
+
+    const isSeveralQuoteAddresses =
+      allTokensData.filter((el) => el.mint === selectedPool.tokenB).length > 1
+
+    setIsSelectorForSeveralBaseAddressesOpen(isSeveralBaseAddresses)
+    setIsSelectorForSeveralQuoteAddressesOpen(isSeveralQuoteAddresses)
+  }, [])
 
   const isDisabled =
     !warningChecked ||
@@ -155,6 +202,24 @@ export const AddLiquidityPopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
+      onEnter={() => {
+        const isSeveralBaseAddresses =
+          allTokensData.filter((el) => el.mint === selectedPool.tokenA).length >
+          1
+
+        const isSeveralQuoteAddresses =
+          allTokensData.filter((el) => el.mint === selectedPool.tokenB).length >
+          1
+
+        setBaseTokenAddressFromSeveral('')
+        setQuoteTokenAddressFromSeveral('')
+        setBaseAmount('')
+        setQuoteAmount('')
+        setWarningChecked(false)
+        setOperationLoading(false)
+        setIsSelectorForSeveralBaseAddressesOpen(isSeveralBaseAddresses)
+        setIsSelectorForSeveralQuoteAddressesOpen(isSeveralQuoteAddresses)
+      }}
       maxWidth={'md'}
       open={open}
       aria-labelledby="responsive-dialog-title"
@@ -201,7 +266,7 @@ export const AddLiquidityPopup = ({
               color={'#A5E898'}
               fontFamily={'Avenir Next Demi'}
             >
-              ${stripDigitPlaces(total * (1 + selectedPool.apy24h / 100), 2)}
+              ${stripDigitPlaces(total * (selectedPool.apy24h / 100), 2)}
               &nbsp;
             </Text>
             <Text fontSize={'2rem'} fontFamily={'Avenir Next Demi'}>
@@ -219,7 +284,7 @@ export const AddLiquidityPopup = ({
               color={'#A5E898'}
               fontFamily={'Avenir Next Demi'}
             >
-              {selectedPool.apy24h}%
+              {stripDigitPlaces(selectedPool.apy24h, 6)}%
             </Text>
           </Row>
         </Row>
@@ -342,6 +407,22 @@ export const AddLiquidityPopup = ({
           Add liquidity
         </BlueButton>
       </RowContainer>
+      <SelectSeveralAddressesPopup
+        theme={theme}
+        tokens={allTokensData.filter((el) => el.mint === selectedPool.tokenA)}
+        open={isSelectorForSeveralBaseAddressesOpen}
+        close={() => setIsSelectorForSeveralBaseAddressesOpen(false)}
+        selectTokenMintAddress={() => {}}
+        selectTokenAddressFromSeveral={setBaseTokenAddressFromSeveral}
+      />
+      <SelectSeveralAddressesPopup
+        theme={theme}
+        tokens={allTokensData.filter((el) => el.mint === selectedPool.tokenB)}
+        open={isSelectorForSeveralQuoteAddressesOpen}
+        close={() => setIsSelectorForSeveralQuoteAddressesOpen(false)}
+        selectTokenMintAddress={() => {}}
+        selectTokenAddressFromSeveral={setQuoteTokenAddressFromSeveral}
+      />
     </DialogWrapper>
   )
 }

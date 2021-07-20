@@ -271,24 +271,27 @@ export const ConfirmationPopup = ({
             </WarningBlock>
             <RowContainer justify="space-between" margin="2rem 0 0 0">
               <SCheckbox
+                id="slippageCheckbox"
                 style={{ padding: 0 }}
                 onChange={() => {
                   confirmIsAwareOfHighSlippage(!isAwareOfHighSlippage)
                 }}
                 checked={isAwareOfHighSlippage}
               />
-              <WhiteText
+              <label
+                htmlFor="slippageCheckbox"
                 style={{
                   color: '#F2ABB1',
                   fontSize: '1.12rem',
                   fontFamily: 'Avenir Next Medium',
                   whiteSpace: 'nowrap',
                   letterSpacing: '0.01rem',
+                  cursor: 'pointer'
                 }}
               >
                 I am aware of the risks associated with high Spread and still
                 want to use market order.
-              </WhiteText>
+              </label>
             </RowContainer>
           </span>
         ) : null}
@@ -311,7 +314,9 @@ export const ConfirmationPopup = ({
               await onClose()
             }}
             style={{
-              background: !isAwareOfHighSlippage ? theme.palette.grey.title : '',
+              background: !isAwareOfHighSlippage
+                ? theme.palette.grey.title
+                : '',
               width: '49%',
               height: '4.5rem',
               color: theme.palette.grey.terminal,
