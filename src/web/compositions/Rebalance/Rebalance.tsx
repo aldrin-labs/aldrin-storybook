@@ -152,6 +152,7 @@ const RebalanceComposition = ({
         )
 
         const tokensWithPrices = await getPricesForTokens(allTokensData)
+        console.log('tokensWithPrices', tokensWithPrices)
         const tokensWithTokenValue = getTokenValuesForTokens(tokensWithPrices)
         const totalTokenValue = getTotalTokenValue(tokensWithTokenValue)
 

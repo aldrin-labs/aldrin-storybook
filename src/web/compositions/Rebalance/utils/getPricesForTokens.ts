@@ -13,56 +13,45 @@ export const getPricesForTokens = async (
   })
 
   const {
-    data: { getDexTokensPrices: prices } = { getDexTokensPrices: [] },
+    data: { getDexTokensPrices: tokensPrices } = { getDexTokensPrices: [] },
   } = getDexTokensPricesData || {
     data: {
       getDexTokensPrices: [],
     },
   }
 
-  console.log('prices', prices)
+  const tokensWithPrices = tokens.map((token) => {
+    const { symbol, mint } = token
 
-  const tokensWithPrices = await Promise.all(
-    tokens.map(async (token) => {
-      const { symbol, mint } = token
+    const isTokenSymbolIsNotRecognized = symbol === mint
+    const isUSDT =
+      symbol === 'USDT' ||
+      symbol === 'USDC' ||
+      symbol === 'WUSDC' ||
+      symbol === 'WUSDT'
 
-      const isTokenSymbolIsNotRecognized = symbol === mint
-      const isUSDT =
-        symbol === 'USDT' ||
-        symbol === 'USDC' ||
-        symbol === 'WUSDC' ||
-        symbol === 'WUSDT'
-      const tokenToUSDCPair = `${symbol}/USDC`
-      const isTokenHasPairWithUSDC = !!MARKETS_BY_NAME_MAP[tokenToUSDCPair]
+    // No token symbol so don't fetch market data.
+    if (isTokenSymbolIsNotRecognized) {
+      return { ...token, price: null }
+    }
 
-      // No token symbol so don't fetch market data.
-      if (isTokenSymbolIsNotRecognized) {
-        return { ...token, price: null }
-      }
+    // Don't fetch USD stable coins. Mark to 1 USD.
+    if (isUSDT) {
+      return { ...token, price: 1 }
+    }
 
-      // Don't fetch USD stable coins. Mark to 1 USD.
-      if (isUSDT) {
-        return { ...token, price: 1 }
-      }
-
-      // No Serum market exists.
-      if (!isTokenHasPairWithUSDC) {
-        return { ...token, price: null }
-      }
-
-      // A Serum market exists. Fetch the price.
-      try {
-        // TODO: Make this method more bullet-proof
-        const price: number | null = await priceStore.getPrice(
-          tokenToUSDCPair.split('/').join('')
-        )
-
-        return { ...token, price }
-      } catch (e) {
-        return { ...token, price: null }
-      }
-    })
-  )
+    // A Serum market exists. Fetch the price.
+    try {
+      // TODO: Make this method more bullet-proof
+      const price: number | null = tokensPrices.find(
+        (tokenPrice) => tokenPrice.symbol === symbol
+      )?.price
+      
+      return { ...token, price }
+    } catch (e) {
+      return { ...token, price: null }
+    }
+  })
 
   return tokensWithPrices
 }
