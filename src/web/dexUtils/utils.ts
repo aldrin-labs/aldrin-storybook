@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Connection, PublicKey } from '@solana/web3.js'
+import { PublicKey } from '@solana/web3.js'
 import { MASTER_BUILD } from '@core/utils/config'
-import { Token, TOKEN_PROGRAM_ID } from './token/token'
-import { WalletAdapter } from './types'
-import { sendAndConfirmTransactionViaWallet } from './token/utils/send-and-confirm-transaction-via-wallet'
 
 export function isValidPublicKey(key) {
   if (!key) {
@@ -135,25 +132,4 @@ export function useRefEqual<T>(
     prevRef.current = value;
   }
   return prevRef.current;
-}
-
-export const createToken = async ({
-  wallet,
-  connection,
-  mint 
-}:{
-  wallet: WalletAdapter, 
-  connection: Connection,
-  mint: PublicKey
-}) => {
-
-  const token = new Token(
-    wallet,
-    connection,
-    mint,
-    TOKEN_PROGRAM_ID
-  )
-
-  const [_, tokenAccount, transaction] = await token.createAccount(wallet.publicKey)
-  await sendAndConfirmTransactionViaWallet(wallet, connection, transaction, tokenAccount)
 }

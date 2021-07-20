@@ -22,7 +22,7 @@ import clipboardCopy from 'clipboard-copy'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { useConnection } from '@sb/dexUtils/connection'
-import { createToken } from '@sb/dexUtils/utils'
+import { createToken } from '@sb/dexUtils/pools'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
