@@ -199,6 +199,8 @@ const RebalanceComposition = ({
       tokensWithPrices
     })
 
+    console.log('tokensMap', tokensMap, 'availableTokensForRebalanceMap', availableTokensForRebalanceMap)
+
     setTokensMap(availableTokensForRebalanceMap)
     setTotalTokensValue(totalTokenValue)
   }, [wallet, connection])
@@ -301,8 +303,8 @@ const RebalanceComposition = ({
               <BtnCustom
                 theme={theme}
                 onClick={() => {
-                  refreshRebalance()
-                  // changeRebalancePopupState(true)
+                  // refreshRebalance()
+                  changeRebalancePopupState(true)
                 }}
                 needMinWidth={false}
                 btnWidth="calc(55% - 1rem)"
