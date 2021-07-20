@@ -55,17 +55,20 @@ export const AddBtn = styled.button`
 `
 
 type TextProps = {
-  fontSize?: string;
-  paddingBottom?: string;
-  fontFamily?: string;
+  fontSize?: string
+  paddingBottom?: string
+  fontFamily?: string
 }
 
 export const Text = styled.span`
   font-size: ${(props: TextProps) => props.fontSize || '1.5rem'};
-  padding-bottom: ${(props) => props.paddingBottom || ''};
+  padding-bottom: ${(props) => props.paddingBottom || '0'};
   text-transform: none;
-  font-family: ${(props) => props.fontFamily || 'Avenir Next Medium'};
-  color: ${(props) => props.color || '#ecf0f3'};
+  font-family: ${(props: TextProps) =>
+    props.fontFamily || 'Avenir Next Medium'};
+  color: ${(props: TextProps) => props.color || '#ecf0f3'};
+  white-space: ${(props) => props.whiteSpace || 'normal'};
+  padding: ${(props) => props.padding || '0'};
 `
 
 export const Input = styled.input`

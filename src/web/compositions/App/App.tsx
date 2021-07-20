@@ -51,10 +51,15 @@ import { MarketProvider } from '@sb/dexUtils/markets'
 import { PreferencesProvider } from '@sb/dexUtils/preferences'
 import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
 import DevUrlPopup from '@sb/components/PopupForDevUrl'
+import WalletMigrationPopup from '@sb/components/WalletMigrationPopup'
+import { TokenRegistryProvider } from '@sb/dexUtils/tokenRegistry'
 
-const version = `10.9.120`
+const version = `10.9.138`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
 const isNotificationDone = localStorage.getItem('isNotificationDone')
+const isWalletMigrationToNewUrlPopupDone = localStorage.getItem(
+  'isWalletMigrationToNewUrlPopupDone'
+)
 const localPassword = localStorage.getItem('localPassword')
 const currentVersion = localStorage.getItem('version')
 
@@ -76,6 +81,9 @@ const AppRaw = ({
   location: { pathname: currentPage, search },
 }: any) => {
   const [isDevUrlPopupOpen, openDevUrlPopup] = useState(true)
+  // const [isMigrationToNewUrlPopupOpen, openMigrationToNewUrlPopup] = useState(
+  //   true
+  // )
 
   const isChartPage = /chart/.test(currentPage)
 
@@ -96,7 +104,8 @@ const AppRaw = ({
     !isChartPage &&
     currentPage !== '/' &&
     currentPage !== '/pools' &&
-    currentPage !== '/rebalance'
+    currentPage !== '/rebalance' &&
+    currentPage !== '/swaps'
 
   const isPNL = currentPage.includes('/portfolio/main')
   // TODO: Check this variable
@@ -124,52 +133,67 @@ const AppRaw = ({
             <CssBaseline />
             {/* <FontStyle /> */}
             <ConnectionProvider>
-              <MarketProvider>
-                <WalletProvider>
-                  <PreferencesProvider>
-                    <AppGridLayout
-                      id={'react-notification'}
-                      showFooter={showFooter}
-                      isRewards={isRewards}
-                      isPNL={isPNL}
-                      isChartPage={isChartPage}
-                    >
-                      {!pageIsRegistration && (
-                        <CardsPanel pathname={currentPage} hide={fullscreen} />
-                      )}
-                      {isChartPage && <MarketBlock />}
-                      <div
-                        style={{
-                          height: showFooter
-                            ? 'calc(100% - 11.7rem)'
-                            : isChartPage
-                            ? 'calc(100% - 12rem)'
-                            : 'calc(100% - 6rem)',
-                          overflow: currentPage == '/' ? 'hidden' : 'auto',
-                        }}
+              <TokenRegistryProvider>
+                <MarketProvider>
+                  <WalletProvider>
+                    <PreferencesProvider>
+                      <AppGridLayout
+                        id={'react-notification'}
+                        showFooter={showFooter}
+                        isRewards={isRewards}
+                        isPNL={isPNL}
+                        isChartPage={isChartPage}
                       >
-                        {children}
-                      </div>
-                      {showFooter && <FooterWithTheme isRewards={isRewards} />}
-                      {/* 
+                        {!pageIsRegistration && (
+                          <CardsPanel
+                            pathname={currentPage}
+                            hide={fullscreen}
+                          />
+                        )}
+                        {isChartPage && <MarketBlock />}
+                        <div
+                          style={{
+                            height: showFooter
+                              ? 'calc(100% - 11.7rem)'
+                              : isChartPage
+                              ? 'calc(100% - 12rem)'
+                              : 'calc(100% - 6rem)',
+                            overflow: currentPage == '/' ? 'hidden' : 'auto',
+                          }}
+                        >
+                          {children}
+                        </div>
+                        {showFooter && (
+                          <FooterWithTheme isRewards={isRewards} />
+                        )}
+                        {/* 
                     <Footer
                       isChartPage={isChartPage}
                       fullscreenMode={fullscreen}
                       showFooter={showFooter}
                     /> */}
-                      {!MASTER_BUILD && !LOCAL_BUILD && (
-                        <DevUrlPopup
-                          open={isDevUrlPopupOpen}
+                        {!MASTER_BUILD && !LOCAL_BUILD && (
+                          <DevUrlPopup
+                            open={isDevUrlPopupOpen}
+                            close={() => {
+                              openDevUrlPopup(false)
+                            }}
+                          />
+                        )}
+                        {/* {!isWalletMigrationToNewUrlPopupDone && (
+                        <WalletMigrationPopup
+                          open={isMigrationToNewUrlPopupOpen}
                           close={() => {
-                            openDevUrlPopup(false)
+                            openMigrationToNewUrlPopup(false)
                           }}
                         />
-                      )}
-                    </AppGridLayout>
-                    {/* <ShowWarningOnMoblieDevice /> */}
-                  </PreferencesProvider>
-                </WalletProvider>
-              </MarketProvider>
+                      )} */}
+                      </AppGridLayout>
+                      {/* <ShowWarningOnMoblieDevice /> */}
+                    </PreferencesProvider>
+                  </WalletProvider>
+                </MarketProvider>
+              </TokenRegistryProvider>
             </ConnectionProvider>
             <GlobalStyle />
             <GlobalStyles />

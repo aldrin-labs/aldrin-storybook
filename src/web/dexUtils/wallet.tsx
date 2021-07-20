@@ -6,6 +6,8 @@ import {
   MathWalletAdapter,
   CcaiWalletAdapter,
   CcaiExtensionAdapter,
+  PhantomWalletAdapter,
+  LedgerWalletAdapter,
 } from '@sb/dexUtils/adapters'
 import { notify } from './notifications'
 import {
@@ -31,7 +33,7 @@ import { MINT_LAYOUT, parseTokenAccountData } from './tokens'
 import Sollet from '@icons/sollet.svg'
 import Mathwallet from '@icons/mathwallet.svg'
 import Solong from '@icons/solong.svg'
-import CCAI from '@icons/ccai.svg'
+import WalletCCAI from '@icons/auth0Logo_sample.png'
 import { WalletAdapter } from './adapters'
 
 export const WALLET_PROVIDERS = [
@@ -40,14 +42,14 @@ export const WALLET_PROVIDERS = [
     name: 'Wallet™',
     url: CCAIProviderURL,
     adapter: Wallet,
-    icon: CCAI,
+    icon: WalletCCAI,
   },
-  // {
-  //   name: 'Wallet™ Extension',
-  //   url: `${CCAIProviderURL}/extension`,
-  //   adapter: CcaiExtensionAdapter,
-  //   icon: CCAI,
-  // },
+  {
+    name: 'Wallet™ Extension',
+    url: `${CCAIProviderURL}/extension`,
+    adapter: CcaiExtensionAdapter,
+    icon: WalletCCAI,
+  },
   {
     name: 'Sollet.io',
     url: 'https://www.sollet.io',
@@ -60,12 +62,24 @@ export const WALLET_PROVIDERS = [
     adapter: SolletExtensionAdapter,
     icon: Sollet,
   },
-  // {
-  //   name: 'MathWallet',
-  //   url: 'https://www.mathwallet.org',
-  //   adapter: MathWalletAdapter,
-  //   icon: Mathwallet,
-  // },
+  {
+    name: 'Ledger',
+    url: 'https://www.ledger.com',
+    icon: `https://cdn.jsdelivr.net/gh/solana-labs/oyster@main/assets/wallets/ledger.svg`,
+    adapter: LedgerWalletAdapter,
+  },
+  {
+    name: 'Phantom',
+    url: 'https://www.phantom.app',
+    icon: `https://www.phantom.app/img/logo.png`,
+    adapter: PhantomWalletAdapter,
+  },
+  {
+    name: 'MathWallet',
+    url: 'https://www.mathwallet.org',
+    adapter: MathWalletAdapter,
+    icon: Mathwallet,
+  },
   {
     name: 'Solong',
     url: 'https://solongwallet.com',
@@ -82,28 +96,11 @@ export const WRAPPED_SOL_MINT = new PublicKey(
   'So11111111111111111111111111111111111111112'
 )
 
-export const MAINNET_URL = 'https://solana-api.projectserum.com'
+export const MAINNET_URL = 'https://api.mainnet-beta.solana.com'
 
 export const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey(
   'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
 )
-
-const getWalletByProviderUrl = (providerUrl: string) => {
-  switch (providerUrl) {
-    case 'https://solongwallet.com': {
-      return SolongWallet
-    }
-    case 'https://www.mathwallet.org': {
-      return MathWallet
-    }
-    case CCAIProviderURL: {
-      return CcaiWallet
-    }
-    default: {
-      return Wallet
-    }
-  }
-}
 
 const WalletContext = React.createContext(null)
 
@@ -204,7 +201,7 @@ export function WalletProvider({ children }) {
 
     return () => {
       setConnected(false)
-      if (wallet) {
+      if (wallet && wallet.disconnect) {
         wallet.disconnect()
         setConnected(false)
       }

@@ -36,7 +36,7 @@ export function ConnectionProvider({ children }) {
           new MultiEndpointsConnection(
             [
               // { url: 'https://mango.rpcpool.com/', RPS: 10 },
-              { url: 'https://solana-api.projectserum.com', RPS: 2 },
+              // { url: 'https://solana-api.projectserum.com', RPS: 2 },
               { url: 'https://api.mainnet-beta.solana.com', RPS: 4 },
               { url: 'https://api-cryptocurrencies-ai.rpcpool.com', RPS: 20 },
               // { url: 'https://raydium.rpcpool.com/', RPS: 10 },
@@ -60,22 +60,26 @@ export function ConnectionProvider({ children }) {
       endpoint === MAINNET_BETA_ENDPOINT
         ? connection.getConnection()
         : connection
+
     const id = rawConnection.onAccountChange(new Account().publicKey, () => {})
+
     return () => {
       rawConnection.removeAccountChangeListener(id)
     }
-  }, [connection])
+  }, [endpoint, connection])
 
   useEffect(() => {
     const rawConnection =
       endpoint === MAINNET_BETA_ENDPOINT
         ? connection.getConnection()
         : connection
+
     const id = rawConnection.onSlotChange(() => null)
+
     return () => {
       rawConnection.removeSlotChangeListener(id)
     }
-  }, [connection])
+  }, [endpoint, connection])
 
   return (
     <ConnectionContext.Provider value={{ endpoint, setEndpoint, connection }}>

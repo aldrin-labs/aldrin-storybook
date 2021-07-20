@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { compose } from 'recompose'
 import { Theme, withTheme } from '@material-ui/core'
-import { useLocation } from 'react-router-dom'
-import { useMarket } from '@sb/dexUtils/markets'
+import { Link, useLocation } from 'react-router-dom'
+import { getTokenMintAddressByName, useMarket } from '@sb/dexUtils/markets'
 import { getDecimalCount } from '@sb/dexUtils/utils'
 import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import MarketStats from './MarketStats/MarketStats'
@@ -13,7 +13,18 @@ import LinkToSolanaExp from './LinkToSolanaExp'
 import GreenCheckmark from '@icons/successIcon.svg'
 import ThinkingFace from '@icons/thinkingFace.png'
 import Warning from '@icons/warningPairSel.png'
+import CCAILogo from '@icons/auth0Logo.svg'
+import BlueTwitterIcon from '@icons/blueTwitter.svg'
+import AnalyticsIcon from '@icons/analytics.svg'
 import SvgIcon from '@sb/components/SvgIcon'
+import { TokenInfo, TokenListProvider } from '@solana/spl-token-registry'
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
+import { TokenIcon } from '@sb/components/TokenIcon'
+import tokensLinksMap from '@core/config/tokensTwitterLinks'
+import Coinmarketcap from '@icons/coinmarketcap.svg'
+import CoinGecko from '@icons/coingecko.svg'
+import Inform from '@icons/inform.svg'
+import { MintsPopup } from '../Inputs/SelectWrapper/MintsPopup'
 
 export const ExclamationMark = styled(({ fontSize, lineHeight, ...props }) => (
   <span {...props}>!</span>
@@ -39,6 +50,17 @@ export const Title = styled(
   color: ${(props) => props.color || '#ecf0f3'};
   text-align: ${(props) => props.textAlign || 'center'};
   margin: ${(props) => props.margin || '0'};
+`
+export const LinkToAnalytics = styled(Link)`
+  font-size: 2rem;
+  cursor: pointer;
+  margin-left: 1.5rem;
+`
+
+export const LinkToTwitter = styled.a`
+  font-size: 2rem;
+  cursor: pointer;
+  margin-left: 1.5rem;
 `
 
 const selectStyles = (theme: Theme) => ({
@@ -76,22 +98,42 @@ const selectStyles = (theme: Theme) => ({
 const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
   const { market, customMarkets } = useMarket()
   const location = useLocation()
+  const [isMintsPopupOpen, setIsMintsPopupOpen] = useState(false)
 
+  const tokenMap = useTokenInfos()
   const pair = location.pathname.split('/')[3]
+
   const quantityPrecision =
     market?.minOrderSize && getDecimalCount(market.minOrderSize)
   const pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
   const marketAddress = market?.address?.toBase58()
+
   if (!pair) {
     return null
   }
 
+  const [base, quote] = pair.split('_')
+
+  const baseTokenInfo = tokenMap.get(getTokenMintAddressByName(base))
+
   const marketName = pair.replaceAll('_', '/')
-  const currentMarket = customMarkets?.find((el) => el?.name.replaceAll('_', '/') === marketName)
+  const currentMarket = customMarkets?.find(
+    (el) => el?.name.replaceAll('_', '/') === marketName
+  )
+
+  const isCustomUserMarket = currentMarket?.isCustomUserMarket
 
   const isPrivateCustomMarket =
-    currentMarket?.isPrivateCustomMarket !== undefined
-  const isCustomUserMarket = currentMarket?.isCustomUserMarket
+    currentMarket?.isPrivateCustomMarket !== undefined && !isCustomUserMarket
+
+  const isCCAIPair =
+    pair.includes('CCAI') && !isPrivateCustomMarket && !isCustomUserMarket
+
+  const twitterLink = tokensLinksMap?.get(base)?.twitterLink || ''
+  const marketCapLink = tokensLinksMap?.get(base)?.marketCapLink || ''
+  const marketCapIcon = marketCapLink.includes('coinmarketcap')
+    ? Coinmarketcap
+    : CoinGecko
 
   return (
     <RowContainer
@@ -120,13 +162,13 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
               justifyContent: 'flex-start',
             }}
           >
-            {isPrivateCustomMarket ? (
-              <SvgIcon width={'50%'} height={'auto'} src={Warning} />
-            ) : isCustomUserMarket ? (
-              <SvgIcon width={'50%'} height={'auto'} src={ThinkingFace} />
-            ) : (
-              <SvgIcon width={'50%'} height={'auto'} src={GreenCheckmark} />
-            )}
+            <TokenIcon
+              mint={getTokenMintAddressByName(base)}
+              width={'50%'}
+              emojiIfNoLogo={true}
+              isAwesomeMarket={isCustomUserMarket}
+              isAdditionalCustomUserMarket={isPrivateCustomMarket}
+            />
           </div>
         </DarkTooltip>
         <div
@@ -143,10 +185,15 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
             pair={pair}
             quantityPrecision={quantityPrecision}
             pricePrecision={pricePrecision}
+            market={market}
+            tokenMap={tokenMap}
+            isMintsPopupOpen={isMintsPopupOpen}
+            setIsMintsPopupOpen={() => setIsMintsPopupOpen}
           />
         </div>
 
         <MarketStats
+          isCCAIPair={isCCAIPair}
           theme={theme}
           symbol={pair}
           marketType={marketType}
@@ -154,7 +201,48 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
           quantityPrecision={quantityPrecision}
           pricePrecision={pricePrecision}
         />
-        <LinkToSolanaExp marketAddress={marketAddress} />
+        <Row align={'baseline'}>
+          <SvgIcon
+            src={Inform}
+            onClick={() => {
+              setIsMintsPopupOpen(true)
+            }}
+            style={{ margin: '0 1.5rem', cursor: 'pointer' }}
+            width={'2.3rem'}
+            height={'2.3rem'}
+          />
+          <LinkToSolanaExp marketAddress={marketAddress} />
+          <DarkTooltip title={'Show analytics for this market.'}>
+            <LinkToAnalytics to={`/analytics/${pair}`}>
+              <SvgIcon src={AnalyticsIcon} width={'2.3rem'} height={'2.3rem'} />
+            </LinkToAnalytics>
+          </DarkTooltip>
+          {twitterLink !== '' && (
+            <DarkTooltip title={'Twitter profile of base token.'}>
+              <LinkToTwitter
+                target="_blank"
+                rel="noopener noreferrer"
+                href={twitterLink}
+              >
+                <SvgIcon
+                  width={'2.5rem'}
+                  height={'2.5rem'}
+                  src={BlueTwitterIcon}
+                />
+              </LinkToTwitter>
+            </DarkTooltip>
+          )}
+          {marketCapLink !== '' && (
+            <a
+              style={{ marginLeft: '1.5rem' }}
+              target="_blank"
+              rel="noopener noreferrer"
+              href={marketCapLink}
+            >
+              <SvgIcon width={'2.5rem'} height={'2.5rem'} src={marketCapIcon} />
+            </a>
+          )}
+        </Row>
       </Row>
       <Row>
         <Row align={'flex-start'} direction="column">
@@ -167,6 +255,13 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
         </Row>
         <ExclamationMark theme={theme} margin={'0 0 0 2rem'} fontSize="5rem" />
       </Row>
+      <MintsPopup
+        theme={theme}
+        symbol={marketName}
+        marketAddress={marketAddress}
+        open={isMintsPopupOpen}
+        onClose={() => setIsMintsPopupOpen(false)}
+      />
     </RowContainer>
   )
 }

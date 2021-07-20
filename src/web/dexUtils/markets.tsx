@@ -18,7 +18,7 @@ import tuple from 'immutable-tuple'
 import { notify } from './notifications'
 import { BN } from 'bn.js'
 import { getTokenAccountInfo } from './tokens'
-import { AWESOME_TOKENS } from '@sb/dexUtils/serum'
+import { AWESOME_MARKETS, AWESOME_TOKENS } from '@sb/dexUtils/serum'
 
 export const ALL_TOKENS_MINTS = [...TOKEN_MINTS, ...AWESOME_TOKENS]
 export const ALL_TOKENS_MINTS_MAP = ALL_TOKENS_MINTS.reduce((acc, el) => {
@@ -42,13 +42,52 @@ const _IGNORE_DEPRECATED = false
 
 const USE_MARKETS = _IGNORE_DEPRECATED
   ? MARKETS.map((m) => ({ ...m, deprecated: false }))
-  : [{
-    address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
-    name: 'CCAI/USDC',
-    programId: new PublicKey('9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'),
-    deprecated: false,
-}].concat(MARKETS)
+  : [
+      {
+        address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
+        name: 'CCAI/USDC',
+        programId: new PublicKey(
+          '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'
+        ),
+        deprecated: false,
+      },
+    ].concat(MARKETS)
 // : MARKETS
+
+export const UPDATED_AWESOME_MARKETS = AWESOME_MARKETS.map((el) => ({
+  ...el,
+  address: el.address.toString(),
+  programId: el.programId.toString(),
+  isCustomUserMarket: true,
+}))
+
+export function useAllMarketsList() {
+  const ALL_MARKETS_MAP = new Map()
+
+  const { customMarkets } = useCustomMarkets()
+
+  const officialMarkets = [...useMarketsList(), ...AWESOME_MARKETS]
+
+  officialMarkets?.forEach((market) =>
+    ALL_MARKETS_MAP.set(market.name.replaceAll('/', '_'), market)
+  )
+
+  const usersMarkets = customMarkets.filter(
+    (market) =>
+      market.isCustomUserMarket &&
+      !ALL_MARKETS_MAP.has(market.name.replaceAll('/', '_'))
+  )
+
+  usersMarkets?.forEach((market) =>
+    ALL_MARKETS_MAP.set(market.name.replaceAll('/', '_'), {
+      ...market,
+      address: new PublicKey(market.address),
+      programId: new PublicKey(market.programId),
+    })
+  )
+
+  return ALL_MARKETS_MAP
+}
 
 export function useMarketsList() {
   const UPDATED_USE_MARKETS = USE_MARKETS.filter(
@@ -93,13 +132,11 @@ export function useAllMarkets() {
             marketInfo.programId
           )
 
-
           return {
             market,
             marketName: marketInfo.name,
             programId: marketInfo.programId,
           }
-          
         } catch (e) {
           notify({
             message: 'Error loading all market',
@@ -296,8 +333,6 @@ export function MarketProvider({ children }) {
     marketInfo = marketInfos.find((market) => market.name === marketName)
   }
 
-  // console.log('marketInfo', marketInfo)
-
   const [market, setMarket] = useState()
   // add state for markets
   // add useEffect for customMarkets
@@ -314,7 +349,6 @@ export function MarketProvider({ children }) {
     setMarket(null)
 
     if (!marketInfo || !marketInfo?.address) {
-      // console.log('marketInfo', marketInfo)
       notify({
         message: 'Error loading market',
         description: 'Please select a market from the dropdown',
@@ -369,7 +403,7 @@ export function useMarket() {
 export function useMarkPrice() {
   const [markPrice, setMarkPrice] = useState(null)
 
-  const [orderbook] = useOrderbook()
+  const [orderbook] = useOrderbook(2)
   const trades = useTrades()
 
   useEffect(() => {
@@ -428,7 +462,7 @@ export function useOrderbookAccounts() {
   }
 }
 
-export function useOrderbook(depth = 20) {
+export function useOrderbook(depth = 200) {
   const { bidOrderbook, askOrderbook } = useOrderbookAccounts()
   const { market } = useMarket()
   const bids =
@@ -449,7 +483,6 @@ export function useOpenOrdersAccounts(fast = false) {
   const { connected, wallet } = useWallet()
   const connection = useConnection()
   async function getOpenOrdersAccounts() {
-    console.log('get open orders accounts')
     if (!connected) {
       return null
     }
@@ -457,23 +490,10 @@ export function useOpenOrdersAccounts(fast = false) {
       return null
     }
 
-    const start = +Date.now()
-    await console.log(start, 'start of getting open orders')
     const accounts = await market.findOpenOrdersAccountsForOwner(
       connection,
       wallet.publicKey
     )
-    console.log(
-      'accounts',
-      market.baseSplSizeToNumber(accounts[0].baseTokenTotal),
-      market.baseSplSizeToNumber(accounts[0].baseTokenFree),
-      market.quoteSplSizeToNumber(accounts[0].quoteTokenTotal),
-      market.quoteSplSizeToNumber(accounts[0].quoteTokenFree)
-    )
-    const end = +Date.now()
-    await console.log(end, 'end of getting open orders')
-    await console.log('Latency: ', (end - start) / 1000)
-
 
     return accounts
   }
@@ -485,22 +505,26 @@ export function useOpenOrdersAccounts(fast = false) {
 }
 
 export function useSelectedOpenOrdersAccount(fast = false) {
-  const [accounts] = useOpenOrdersAccounts(fast)
+  const [accounts, loaded] = useOpenOrdersAccounts(fast)
+
   if (!accounts) {
     return null
   }
+
   return accounts[0]
 }
 
 export function useTokenAccounts() {
   const { connected, wallet } = useWallet()
   const connection = useConnection()
+
   async function getTokenAccounts() {
     if (!connected) {
       return null
     }
     return await getTokenAccountInfo(connection, wallet.publicKey)
   }
+
   return useAsyncData(
     getTokenAccounts,
     tuple('getTokenAccounts', wallet, connected),
@@ -528,10 +552,12 @@ export function getSelectedTokenAccountForMint(
 }
 
 export function useSelectedQuoteCurrencyAccount() {
-  const [accounts] = useTokenAccounts()
+  const [accounts, loaded] = useTokenAccounts()
   const { market } = useMarket()
   const [selectedTokenAccounts] = useSelectedTokenAccounts()
+
   const mintAddress = market?.quoteMintAddress
+
   return getSelectedTokenAccountForMint(
     accounts,
     mintAddress,
@@ -543,7 +569,9 @@ export function useSelectedBaseCurrencyAccount() {
   const [accounts] = useTokenAccounts()
   const { market } = useMarket()
   const [selectedTokenAccounts] = useSelectedTokenAccounts()
+
   const mintAddress = market?.baseMintAddress
+
   return getSelectedTokenAccountForMint(
     accounts,
     mintAddress,
@@ -627,13 +655,13 @@ export function useSelectedBaseCurrencyBalances() {
 
 export function useOpenOrders() {
   const { market, marketName } = useMarket()
-  const openOrdersAccount = useSelectedOpenOrdersAccount()
+  const [openOrdersAccounts] = useOpenOrdersAccounts(false)
   const { bidOrderbook, askOrderbook } = useOrderbookAccounts()
-  if (!market || !openOrdersAccount || !bidOrderbook || !askOrderbook) {
+  if (!market || !openOrdersAccounts || !bidOrderbook || !askOrderbook) {
     return null
   }
   return market
-    .filterForOpenOrders(bidOrderbook, askOrderbook, [openOrdersAccount])
+    .filterForOpenOrders(bidOrderbook, askOrderbook, openOrdersAccounts)
     .map((order) => ({ ...order, marketName, market }))
 }
 
@@ -824,7 +852,6 @@ export function useBalances() {
   ) {
     return []
   }
-
   return [
     {
       market,

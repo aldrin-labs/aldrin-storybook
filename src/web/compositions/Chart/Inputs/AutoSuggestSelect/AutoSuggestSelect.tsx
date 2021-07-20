@@ -102,6 +102,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       customMarkets,
       setCustomMarkets,
       markets,
+      allMarketsMap,
       style,
       handleDeprecated,
       setHandleDeprecated,
@@ -109,6 +110,9 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       setAddMarketVisible,
       deprecatedMarkets,
       getMarketInfos,
+      tokenMap,
+      isMintsPopupOpen,
+      setIsMintsPopupOpen,
     } = this.props
 
     const { isClosed, isMenuOpen } = this.state
@@ -149,6 +153,11 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
             marketType={1}
             activeExchange={activeExchange}
             markets={markets}
+            allMarketsMap={allMarketsMap}
+            market={market}
+            tokenMap={tokenMap}
+            isMintsPopupOpen={isMintsPopupOpen}
+            setIsMintsPopupOpen={setIsMintsPopupOpen}
           />
         </ExchangePair>
       </>

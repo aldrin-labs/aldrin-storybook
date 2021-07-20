@@ -25,32 +25,51 @@ import {
   WhiteTitle,
   PairSelectorContainerGrid,
 } from '../index.styles'
+import { useCustomMarkets } from '@sb/dexUtils/markets'
 
 const _sortList = ({ sortBy, sortDirection, data }) => {
   let dataToSort = data
   let newList = [...dataToSort]
+  const isASCSort = sortDirection === SortDirection.ASC
 
-  if (sortBy === 'volume24hChange') {
-    newList.sort((pairObjectA, pairObjectB) => {
+  newList.sort((pairObjectA, pairObjectB) => {
+    if (pairObjectA.symbol.contentToSort === 'All markets')
+      return isASCSort ? 1 : -1
+    if (pairObjectB.symbol.contentToSort === 'All markets')
+      return isASCSort ? -1 : 1
+
+    if (pairObjectA.symbol.contentToSort === 'CCAI_USDC')
+      return isASCSort ? 1 : -1
+    if (pairObjectB.symbol.contentToSort === 'CCAI_USDC')
+      return isASCSort ? -1 : 1
+
+    if (sortBy === 'volume24hChange') {
       return (
         pairObjectB.volume24hChange.contentToSort -
         pairObjectA.volume24hChange.contentToSort
       )
-    })
-  } else {
-    newList.sort((pairObjectA, pairObjectB) => {
-      if (pairObjectA.symbol.contentToSort === 'All markets') return 1
-      if (pairObjectB.symbol.contentToSort === 'All markets') return -1
-
+    } else {
       return pairObjectB.symbol.contentToSort.localeCompare(
         pairObjectA.symbol.contentToSort
       )
-    })
-  }
+    }
+  })
 
   if (sortDirection === SortDirection.ASC) {
     newList = newList.reverse()
   }
+
+  // const ccaiIndex = newList.findIndex(
+  //   (v) => v.symbol.contentToSort === 'CCAI_USDC'
+  // )
+
+  // if (ccaiIndex === -1) return newList
+
+  // const updatedList = [
+  //   newList[ccaiIndex],
+  //   ...newList.slice(0, ccaiIndex),
+  //   ...newList.slice(ccaiIndex + 1),
+  // ]
 
   return newList
 }
@@ -104,7 +123,8 @@ function defaultRowRenderer({
   const isSelected =
     rowData &&
     (rowData.symbol.contentToSort === selectedPair ||
-      (rowData.symbol.contentToSort.toLowerCase().includes('all') && selectedPair === 'all'))
+      (rowData.symbol.contentToSort.toLowerCase().includes('all') &&
+        selectedPair === 'all'))
 
   return (
     <div
@@ -153,6 +173,7 @@ const PairSelector = ({
   const [sortBy, updateSortBy] = useState('volume24hChange')
   const [sortDirection, updateSortDirection] = useState(SortDirection.DESC)
   const [processedSelectData, updateProcessedSelectData] = useState([])
+  const { customMarkets } = useCustomMarkets()
 
   const filtredMarketsByExchange = getSerumMarketDataQuery.getSerumMarketData.filter(
     (el) =>
@@ -233,11 +254,11 @@ const PairSelector = ({
       usdtPairsMap: new Map(),
       marketType: 0,
       needFiltrations: false,
+      customMarkets,
     })
 
     _sort({ firstData: processedSelectData, sortBy, sortDirection })
   }, [searchValue])
-
   return (
     <>
       <HeaderContainer theme={theme}>
@@ -258,7 +279,10 @@ const PairSelector = ({
           }}
           value={searchValue}
           onChange={(e) => {
-            if (!`${e.target.value}`.match(/[a-zA-Z1-9]/) && e.target.value !== '') {
+            if (
+              !`${e.target.value}`.match(/[a-zA-Z1-9]/) &&
+              e.target.value !== ''
+            ) {
               return
             }
             onChangeSearch(e.target.value)
@@ -308,6 +332,7 @@ const PairSelector = ({
               rowStyle={{
                 outline: 'none',
                 cursor: 'pointer',
+                fontSize: '1.4rem',
                 color: theme.palette.dark.main,
                 borderBottom: `0.05rem solid ${theme.palette.grey.newborder}`,
               }}
@@ -319,16 +344,17 @@ const PairSelector = ({
                 marginLeft: 0,
                 marginRight: 0,
                 letterSpacing: '.075rem',
+                whiteSpace: 'nowrap',
                 // borderBottom: '.1rem solid #e0e5ec',
                 fontSize: '1.2rem',
-                outline: 'none'
+                outline: 'none',
               }}
               rowHeight={window.outerHeight / 30}
               rowGetter={({ index }) => processedSelectData[index]}
             >
               <Column
-                label={`Name`}
-                dataKey="symbol"
+                label={``}
+                dataKey="emoji"
                 headerStyle={{
                   textTransform: 'capitalize',
                   color: theme.palette.grey.title,
@@ -337,10 +363,24 @@ const PairSelector = ({
                   fontSize: '1.2rem',
                   textAlign: 'left',
                 }}
-                width={width}
+                width={width / 2.5}
+                cellRenderer={({ cellData }) => cellData.render}
+              />
+              <Column
+                label={`Name`}
+                dataKey="symbol"
+                headerStyle={{
+                  textTransform: 'capitalize',
+                  color: theme.palette.grey.title,
+                  paddingRight: '6px',
+                  paddingLeft: '1rem',
+                  fontSize: '1.4rem',
+                  textAlign: 'left',
+                }}
+                width={width * 1.5}
                 style={{
                   textAlign: 'left',
-                  fontSize: '1.2rem',
+                  fontSize: '1.3rem',
                   fontWeight: 'bold',
                 }}
                 cellRenderer={({ cellData }) => cellData.render}
@@ -352,13 +392,13 @@ const PairSelector = ({
                   textTransform: 'capitalize',
                   color: theme.palette.grey.title,
                   paddingRight: 'calc(10px)',
-                  fontSize: '1.2rem',
+                  fontSize: '1.4rem',
                   textAlign: 'left',
                 }}
                 width={width}
                 style={{
                   textAlign: 'left',
-                  fontSize: '1.2rem',
+                  fontSize: '1.3rem',
                   fontWeight: 'bold',
                 }}
                 cellRenderer={({ cellData }) => cellData.render}

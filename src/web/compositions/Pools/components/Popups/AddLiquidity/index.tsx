@@ -45,7 +45,7 @@ import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/sen
 export const AddLiquidityPopup = ({
   theme,
   open,
-  poolsPrices,
+  dexTokensPrices,
   selectedPool,
   allTokensData,
   close,
@@ -53,7 +53,7 @@ export const AddLiquidityPopup = ({
 }: {
   theme: Theme
   open: boolean
-  poolsPrices: PoolsPrices[]
+  dexTokensPrices: DexTokensPrices[]
   selectedPool: PoolInfo
   allTokensData: TokenInfo[]
   close: () => void
@@ -181,14 +181,14 @@ export const AddLiquidityPopup = ({
     quoteAmount > maxQuoteAmount
 
   const baseTokenPrice =
-    poolsPrices.find(
+    dexTokensPrices.find(
       (tokenInfo) =>
         tokenInfo.symbol === selectedPool.tokenA ||
         tokenInfo.symbol === baseSymbol
     )?.price || 0
 
   const quoteTokenPrice =
-    poolsPrices.find(
+    dexTokensPrices.find(
       (tokenInfo) =>
         tokenInfo.symbol === selectedPool.tokenB ||
         tokenInfo.symbol === quoteSymbol
@@ -228,6 +228,12 @@ export const AddLiquidityPopup = ({
         <BoldHeader>Add Liquidity</BoldHeader>
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </Row>
+      <RowContainer>
+        <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
+          Enter the amount of the first coin you wish to add, the second coin
+          will adjust according to the match of a pool ratio.
+        </Text>
+      </RowContainer>
       <RowContainer>
         <InputWithCoins
           placeholder={''}
@@ -297,11 +303,11 @@ export const AddLiquidityPopup = ({
           <AttentionComponent
             text={
               isNeedToLeftSomeSOL
-                ? 'Sorry, but you need to left some SOL (al least 0.1 SOL) on your wallet SOL account to successfully execute further transactions.'
+                ? 'Sorry, but you need to left some SOL (at least 0.1 SOL) on your wallet SOL account to successfully execute further transactions.'
                 : baseAmount > maxBaseAmount
-                ? `You entered more tokenA amount than you have.`
+                ? `You entered more token A amount than you have.`
                 : quoteAmount > maxQuoteAmount
-                ? `You entered more tokenB amount than you have.`
+                ? `You entered more token B amount than you have.`
                 : ''
             }
             blockHeight={'8rem'}

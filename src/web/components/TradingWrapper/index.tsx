@@ -242,7 +242,7 @@ class SimpleTabs extends React.Component<any, any> {
         xs={12}
         style={{ height: '100%', padding: '0 0 0 0' }}
       >
-        <CustomCard theme={theme} style={{ borderTop: 0 }}>
+        <CustomCard theme={theme} style={{ borderTop: 0, overflow: 'unset' }}>
           <TerminalHeader
             key={'spotTerminal'}
             style={{ display: 'flex' }}

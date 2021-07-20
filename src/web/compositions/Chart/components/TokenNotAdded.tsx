@@ -5,14 +5,9 @@ import { compose } from 'recompose'
 import { Paper } from '@material-ui/core'
 
 import { notify } from '@sb/dexUtils//notifications'
-import {
-  useBalanceInfo,
-  useWallet,
-} from '@sb/dexUtils/wallet'
+import { useBalanceInfo, useWallet } from '@sb/dexUtils/wallet'
 
-import {
-  StyledDialogContent,
-} from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
+import { StyledDialogContent } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
@@ -27,6 +22,7 @@ import clipboardCopy from 'clipboard-copy'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { useConnection } from '@sb/dexUtils/connection'
+import { createToken } from '@sb/dexUtils/pools'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -123,6 +119,10 @@ const TokenNotAddedDialog = ({
     (wallet.tokenAccountCost / LAMPORTS_PER_SOL || 0.002039) *
     (isBothNotAdded ? 2 : 1)
 
+  const mint = !isBaseCoinExistsInWallet
+    ? market?.baseMintAddress
+    : market?.quoteMintAddress
+
   return (
     <DialogWrapper
       theme={theme}
@@ -207,11 +207,7 @@ const TokenNotAddedDialog = ({
                 fontFamily="Avenir Next Demi"
                 fontSize="1rem"
                 onClick={() => {
-                  clipboardCopy(
-                    !isBaseCoinExistsInWallet
-                      ? market?.baseMintAddress
-                      : market?.quoteMintAddress
-                  )
+                  clipboardCopy(mint)
                   notify({
                     type: 'success',
                     message: 'Copied!',
@@ -229,12 +225,9 @@ const TokenNotAddedDialog = ({
             </WhiteButton>
             <VioletButton
               theme={theme}
-              component="a"
-              href={providerUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              onClick={() => createToken({ wallet, connection, mint })}
             >
-              Go to the Wallet
+              Add to the wallet
             </VioletButton>
           </RowContainer>
         </Row>

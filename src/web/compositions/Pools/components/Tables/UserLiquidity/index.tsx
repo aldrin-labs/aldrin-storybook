@@ -30,7 +30,7 @@ import { Theme } from '@material-ui/core'
 import {
   PoolInfo,
   FeesEarned,
-  PoolsPrices,
+  DexTokensPrices,
 } from '@sb/compositions/Pools/index.types'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
@@ -49,7 +49,7 @@ const UserLiquitidyTable = ({
   wallet,
   allTokensData,
   getPoolsInfoQuery: { getPoolsInfo },
-  poolsPrices,
+  dexTokensPrices,
   getFeesEarnedByAccountQuery,
   selectPool,
   setIsWithdrawalPopupOpen,
@@ -59,16 +59,20 @@ const UserLiquitidyTable = ({
   wallet: WalletAdapter
   allTokensData: TokenInfo[]
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
-  poolsPrices: PoolsPrices[]
+  dexTokensPrices: DexTokensPrices[]
   getFeesEarnedByAccountQuery: { getFeesEarnedByAccount: FeesEarned[] }
   selectPool: (pool: PoolInfo) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
 }) => {
-  const userTokens = allTokensData.map((el) => el.mint)
+  const allTokensDataMap = new Map()
 
-  const usersPools = getPoolsInfo.filter((el) =>
-    userTokens.includes(el.poolTokenMint)
+  allTokensData.forEach((el) => allTokensDataMap.set(el.mint, el))
+
+  const usersPools = getPoolsInfo.filter(
+    (el) =>
+      allTokensDataMap.has(el.poolTokenMint) &&
+      allTokensDataMap.get(el.poolTokenMint).amount > 0
   )
 
   const { getFeesEarnedByAccount = [] } = getFeesEarnedByAccountQuery || {
@@ -101,7 +105,7 @@ const UserLiquitidyTable = ({
                 $
                 {formatNumberToUSFormat(
                   stripDigitPlaces(
-                    getTotalUserLiquidity({ usersPools, poolsPrices }),
+                    getTotalUserLiquidity({ usersPools, dexTokensPrices }),
                     2
                   )
                 )}
@@ -133,21 +137,21 @@ const UserLiquitidyTable = ({
               <RowTd>Pool</RowTd>
               <RowTd>TVL</RowTd>
               <RowTd>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <DarkTooltip
-                    title={
-                      'Annualized, non-compounded return on investment based on the fees earned in the last 24 hours, relative to the size of the pool.'
-                    }
-                  >
+                <DarkTooltip
+                  title={
+                    'Annualized, non-compounded return on investment based on the fees earned in the last 24 hours, relative to the size of the pool.'
+                  }
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
                     <SvgIcon
                       width={'1.2rem'}
                       height={'1.2rem'}
                       style={{ marginRight: '1rem' }}
                       src={TooltipIcon}
                     />
-                  </DarkTooltip>
-                  APY (24h)
-                </div>
+                    APY (24h)
+                  </div>
+                </DarkTooltip>
               </RowTd>
               <RowTd>Your Liquidity (Including Fees)</RowTd>
               <RowTd>Total Fees Earned</RowTd>
@@ -156,12 +160,12 @@ const UserLiquitidyTable = ({
             {usersPools
               .sort((poolA: PoolInfo, poolB: PoolInfo) => {
                 const [poolABaseTokenPrice, poolBBaseTokenPrice] = [
-                  poolsPrices.find(
+                  dexTokensPrices.find(
                     (tokenInfo) =>
                       tokenInfo.symbol ===
                       getTokenNameByMintAddress(poolA.tokenA)
                   )?.price || 10,
-                  poolsPrices.find(
+                  dexTokensPrices.find(
                     (tokenInfo) =>
                       tokenInfo.symbol ===
                       getTokenNameByMintAddress(poolB.tokenA)
@@ -169,12 +173,12 @@ const UserLiquitidyTable = ({
                 ]
 
                 const [poolAQuoteTokenPrice, poolBQuoteTokenPrice] = [
-                  poolsPrices.find(
+                  dexTokensPrices.find(
                     (tokenInfo) =>
                       tokenInfo.symbol ===
                       getTokenNameByMintAddress(poolA.tokenB)
                   )?.price || 10,
-                  poolsPrices.find(
+                  dexTokensPrices.find(
                     (tokenInfo) =>
                       tokenInfo.symbol ===
                       getTokenNameByMintAddress(poolB.tokenB)
@@ -196,12 +200,12 @@ const UserLiquitidyTable = ({
                 const quoteSymbol = getTokenNameByMintAddress(el.tokenB)
 
                 const baseTokenPrice =
-                  poolsPrices.find(
+                  dexTokensPrices.find(
                     (tokenInfo) => tokenInfo.symbol === baseSymbol
                   )?.price || 10
 
                 const quoteTokenPrice =
-                  poolsPrices.find(
+                  dexTokensPrices.find(
                     (tokenInfo) => tokenInfo.symbol === quoteSymbol
                   )?.price || 10
 
@@ -258,7 +262,9 @@ const UserLiquitidyTable = ({
                       </TextColumnContainer>
                     </RowDataTd>
                     <RowDataTd>
-                      <RowDataTdText theme={theme}>{stripDigitPlaces(el.apy24h, 6)}%</RowDataTdText>
+                      <RowDataTdText theme={theme}>
+                        {stripDigitPlaces(el.apy24h, 6)}%
+                      </RowDataTdText>
                     </RowDataTd>
                     <RowDataTd>
                       <TextColumnContainer>
@@ -285,9 +291,7 @@ const UserLiquitidyTable = ({
                     </RowDataTd>
                     <RowDataTd>
                       <TextColumnContainer>
-                        <RowDataTdTopText
-                          theme={theme}
-                        >
+                        <RowDataTdTopText theme={theme}>
                           $
                           {stripDigitPlaces(
                             getFeesEarnedByAccount.find(

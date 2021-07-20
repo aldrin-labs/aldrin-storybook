@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 
-const TimerButton = styled.div`
+export const TimerButton = styled.div`
   width: 4rem;
   height: 4rem;
   display: flex;
@@ -11,7 +11,8 @@ const TimerButton = styled.div`
   background: #383b45;
   border-radius: 0.8rem;
   cursor: pointer;
-  margin-right: 3rem;
+  margin-right: ${(props: { marginRight: string }) =>
+    props.marginRight || '3rem'};
 `
 
 export const ReloadTimer = ({
@@ -20,17 +21,20 @@ export const ReloadTimer = ({
   color = '#366CE5',
   trailColor = '#383B45',
   callback,
+  marginRight = '3rem',
 }: {
   size?: number
   duration?: number
   color?: string
   trailColor?: string
   callback: () => void
+  marginRight?: string
 }) => {
   const [rerenderCounter, rerender] = useState(0)
 
   return (
     <TimerButton
+      marginRight={marginRight}
       onClick={() => {
         callback()
         rerender(rerenderCounter + 1)

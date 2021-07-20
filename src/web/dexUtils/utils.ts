@@ -14,6 +14,8 @@ export function isValidPublicKey(key) {
   }
 }
 
+export const CCAI_MINT: string = "E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp"
+
 export const CCAIProviderURL = MASTER_BUILD
   ? 'https://wallet.cryptocurrencies.ai'
   : 'https://develop.wallet.cryptocurrencies.ai'
@@ -31,6 +33,14 @@ export const percentFormat = new Intl.NumberFormat(undefined, {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
 })
+
+export const encode = (data) => {
+  return Object.keys(data)
+    .map(
+      (key) => encodeURIComponent(key) + '=' + encodeURIComponent(data[key])
+    )
+    .join('&')
+}
 
 export function floorToDecimal(value, decimals) {
   return decimals ? Math.floor(value * 10 ** decimals) / 10 ** decimals : value
