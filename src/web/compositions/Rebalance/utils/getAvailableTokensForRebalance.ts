@@ -1,4 +1,4 @@
-import { PoolInfo, TokensDataType } from '../Rebalance.types'
+import { PoolInfo, TokenInfoWithDisableReason, TokenInfoWithSliderStep } from '../Rebalance.types'
 import { REBALANCE_CONFIG } from '../Rebalance.config'
 import { ALL_TOKENS_MINTS_MAP } from '@sb/dexUtils/markets'
 
@@ -7,15 +7,8 @@ import { MOCKED_MINTS_MAP } from '@sb/compositions/Rebalance/Rebalance.mock'
 
 export const getAvailableTokensForRebalance = (
   poolsInfo: PoolInfo[],
-  tokens: {
-    symbol: string
-    decimals: number
-    amount: number
-    price: number | null
-    mint: string
-    tokenValue: number
-  }[],
-): TokensDataType => {
+  tokens: TokenInfoWithSliderStep[],
+): TokenInfoWithDisableReason[] => {
 
   const availablePools = Array.from(new Set(poolsInfo.reduce((acc: string[], el) => {
     acc.push(ALL_TOKENS_MINTS_MAP[el.tokenA] || MOCKED_MINTS_MAP[el.tokenA] || el.tokenA)
@@ -44,9 +37,9 @@ export const getAvailableTokensForRebalance = (
   }, {})
 
   const tokensWithPoolsAndLiquidity = tokens.map(el => {
-    const isTokenHasPrice = el.price !== null
-    const isTokenHasPool = availablePools.includes(el.symbol)
-    const isTokenHasPoolWithLiquidity = tokensInPoolByLiquidity[el.symbol] > el.amount * REBALANCE_CONFIG.MULTIPLIER_FOR_ENOUGH_LIQUIDITY
+    const isTokenHasPrice = el.price !== null || true
+    const isTokenHasPool = availablePools.includes(el.symbol) || true
+    const isTokenHasPoolWithLiquidity = tokensInPoolByLiquidity[el.symbol] > el.amount * REBALANCE_CONFIG.MULTIPLIER_FOR_ENOUGH_LIQUIDITY || true
 
     return {
       ...el,

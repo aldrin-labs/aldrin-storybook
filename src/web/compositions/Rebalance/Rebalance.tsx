@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 import { withTheme, Theme } from '@material-ui/core/styles'
-import { isEqual } from 'lodash'
 import { Connection } from '@solana/web3.js'
 import debounceRender from 'react-debounce-render'
 
-import { client } from '@core/graphql/apolloClient'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { useWallet } from '@sb/dexUtils/wallet'
 
@@ -29,26 +27,25 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import {
   PoolInfo,
   TokensMapType,
-  TokenType,
   Colors,
   RebalancePopupStep,
+  TokenInfo,
 } from './Rebalance.types'
 import RebalanceTable from './components/Tables'
 import RebalanceHeaderComponent from './components/Header'
 import DonutChartWithLegend from '@sb/components/AllocationBlock/index'
 import BalanceDistributedComponent from './components/BalanceDistributed'
 import { RebalancePopup } from './components/RebalancePopup/RebalancePopup'
-import {
-  fixedColors,
-  fixedColorsForLegend,
-  getRandomBlueColor,
-} from '@sb/components/AllocationBlock/DonutChart/utils'
 
 import { getPoolsInfoMockData } from './Rebalance.mock'
+
 import {
   generateLegendColors,
   generateChartColors,
 } from './utils/colorGeneraing'
+import { useCallback } from 'react'
+import { updateAllTokensAmount } from './utils/updateAllTokensAmount'
+import { processAllTokensData } from './utils/processAllTokensData'
 
 // const MemoizedCurrentValueChartWithLegend = React.memo(
 //   DonutChartWithLegend,
@@ -83,7 +80,8 @@ const MemoizedRebalancePopup = React.memo(
   (prevProps, nextProps) => {
     return (
       prevProps.open === nextProps.open &&
-      prevProps.rebalanceStep === nextProps.rebalanceStep
+      prevProps.rebalanceStep === nextProps.rebalanceStep &&
+      prevProps.softRefresh === nextProps.softRefresh
     )
   }
 )
@@ -155,33 +153,14 @@ const RebalanceComposition = ({
 
         const tokensWithPrices = await getPricesForTokens(allTokensData)
         const tokensWithTokenValue = getTokenValuesForTokens(tokensWithPrices)
-        const sortedTokensByTokenValue = getSortedTokensByValue(
-          tokensWithTokenValue
-        )
-
-        const totalTokenValue = getTotalTokenValue(sortedTokensByTokenValue)
-
-        const tokensWithPercentages = getPercentageAllocationForTokens(
-          sortedTokensByTokenValue,
-          totalTokenValue
-        )
-
-        const tokensWithSliderSteps = getSliderStepForTokens(
-          tokensWithPercentages,
-          totalTokenValue
-        )
+        const totalTokenValue = getTotalTokenValue(tokensWithTokenValue)
 
         const poolsInfo = await getPoolsInfo(totalTokenValue)
 
-        // TODO: Can be splitted and move up
-        const availableTokensForRebalance = getAvailableTokensForRebalance(
-          // getPoolsInfoMockData,
+        const availableTokensForRebalanceMap = processAllTokensData({
           poolsInfo,
-          tokensWithSliderSteps
-        )
-        const availableTokensForRebalanceMap = getTokensMap(
-          availableTokensForRebalance
-        )
+          tokensWithPrices
+        })
 
         const chartColors = generateChartColors({
           data: availableTokensForRebalanceMap,
@@ -207,6 +186,22 @@ const RebalanceComposition = ({
       fetchData()
     }
   }, [wallet.publicKey, rebalanceState])
+
+  const softRefresh = useCallback(async ({ tokensMap, poolsInfo }) => {
+    const allTokensData: TokenInfo[] = Object.values(tokensMap)
+    const tokensWithPrices = await getPricesForTokens(allTokensData)
+
+    const tokensWithTokenValue = getTokenValuesForTokens(tokensWithPrices)
+    const totalTokenValue = getTotalTokenValue(tokensWithTokenValue)
+
+    const availableTokensForRebalanceMap = processAllTokensData({
+      poolsInfo,
+      tokensWithPrices
+    })
+
+    setTokensMap(availableTokensForRebalanceMap)
+    setTotalTokensValue(totalTokenValue)
+  }, [wallet, connection])
 
   return (
     <RowContainer
@@ -306,7 +301,8 @@ const RebalanceComposition = ({
               <BtnCustom
                 theme={theme}
                 onClick={() => {
-                  changeRebalancePopupState(true)
+                  refreshRebalance()
+                  // changeRebalancePopupState(true)
                 }}
                 needMinWidth={false}
                 btnWidth="calc(55% - 1rem)"
@@ -332,6 +328,7 @@ const RebalanceComposition = ({
         wallet={wallet}
         connection={connection}
         tokensMap={tokensMap}
+        softRefresh={() => softRefresh({ tokensMap, poolsInfo: poolsInfoData })}
         refreshRebalance={refreshRebalance}
         setLoadingRebalanceData={setLoadingRebalanceData}
         // getPoolsInfo={getPoolsInfoMockData}

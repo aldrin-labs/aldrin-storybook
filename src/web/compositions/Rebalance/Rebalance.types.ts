@@ -32,22 +32,41 @@ export interface TokenInfo {
     address: string   
 }
 
-export type Colors = { [ symbol: string]: string }
-export interface TokenType extends TokenInfo {
+export interface TokenInfoWithPrice extends TokenInfo {
     price: number | null
+}
+
+export interface TokenInfoWithValue extends TokenInfoWithPrice {
+    tokenValue: number
+}
+
+export interface TokenInfoWithPercentage extends TokenInfoWithValue {
     percentage: number
-    tokenValue: number,
-    targetTokenValue: number,
-    targetAmount: number,
-    targetPercentage: number,
+}
+
+export interface TokenInfoWithSliderStep extends TokenInfoWithPercentage {
+    stepInAmountToken: number
+    stepInValueToken: number
+    stepInPercentageToken: number
+    decimalCount: number
+}
+
+export interface TokenInfoWithDisableReason extends TokenInfoWithPercentage {
     disabled?: true | false
     disabledReason?: string
     poolWithLiquidityExists?: true | false
     poolExists?: true | false  
-    decimalCount: number
 }
 
-export type TokensMapType = { [cacheKey: string]: TokenType }
+export interface TokenInfoWithTargetData extends TokenInfoWithDisableReason {
+    targetTokenValue: number
+    targetAmount: number
+    targetPercentage: number
+}
+
+export type Colors = { [ symbol: string]: string }
+
+export type TokensMapType = { [cacheKey: string]: TokenInfoWithTargetData }
 
 export type TransactionType = PoolInfoElement & { amount: number, total: number, side: 'sell' | 'buy', feeUSD: number }
 

@@ -46,6 +46,7 @@ export const RebalancePopup = ({
   getPoolsInfo,
   wallet,
   connection,
+  softRefresh,
   refreshRebalance,
   setLoadingRebalanceData,
 }: {
@@ -58,6 +59,7 @@ export const RebalancePopup = ({
   getPoolsInfo: PoolInfo[]
   wallet: WalletAdapter
   connection: Connection
+  softRefresh: () => void
   refreshRebalance: () => void
   setLoadingRebalanceData: (loadingState: boolean) => void
 }) => {
@@ -124,7 +126,7 @@ export const RebalancePopup = ({
       >
         <BoldHeader>Rebalance</BoldHeader>
         <Row style={{ flexWrap: 'nowrap' }}>
-          <ReloadTimer callback={() => {}} />
+          <ReloadTimer callback={() => softRefresh()} />
           <SvgIcon
             style={{ cursor: 'pointer' }}
             onClick={() => close()}

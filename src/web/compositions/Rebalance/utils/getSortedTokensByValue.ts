@@ -1,4 +1,6 @@
-export const getSortedTokensByValue = (tokens: {symbol: string, decimals: number, amount: number, price: number | null, mint: string, tokenValue: number }[]) => {
+import { TokenInfoWithValue } from "../Rebalance.types"
+
+export const getSortedTokensByValue = (tokens: TokenInfoWithValue[]) => {
     const sortedTokens = tokens.sort((a, b) => b.tokenValue - a.tokenValue)
 
     return sortedTokens

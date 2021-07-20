@@ -1,11 +1,33 @@
-import { TokensMapType, TokenType } from '../Rebalance.types'
+import { TokenInfoWithDisableReason, TokenInfoWithTargetData, TokensMapType } from '../Rebalance.types'
 
-export const getTokensMap = (tokens: TokenType[]): TokensMapType => {
-    const tokensMap = tokens.reduce((acc: TokensMapType, el) => {
-        acc[el.symbol] = { ...el, targetTokenValue: el.tokenValue, targetAmount: el.amount, targetPercentage: el.percentage }
+export const getTokensMap = ({
+    total = 0,
+    tokens
+}: {
+    total?: number,
+    tokens: TokenInfoWithDisableReason[] | TokenInfoWithTargetData[]
+}): TokensMapType => {
+  const tokensMap = tokens.reduce((acc: TokensMapType, el) => {
+    if (el.targetPercentage) {
+        const targetTokenValue = total / 100 * el.targetPercentage
+        const targetAmount = targetTokenValue / el.price
 
-        return acc
-    }, {})
+        acc[el.symbol] = {
+            ...el,
+            targetTokenValue,
+            targetAmount,
+        }
+    } else {
+        acc[el.symbol] = {
+            ...el,
+            targetTokenValue: el.tokenValue,
+            targetAmount: el.amount,
+            targetPercentage: el.percentage,
+        }
+    }
 
-    return tokensMap
+    return acc
+  }, {})
+
+  return tokensMap
 }
