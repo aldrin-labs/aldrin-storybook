@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router'
 import { compose } from 'recompose'
@@ -22,7 +22,10 @@ import clipboardCopy from 'clipboard-copy'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { useConnection } from '@sb/dexUtils/connection'
-import { createToken } from '@sb/dexUtils/pools'
+import { BlueButton } from '../Inputs/SelectWrapper/SelectWrapperStyles'
+import SvgIcon from '@sb/components/SvgIcon'
+import greenDoneMark from '@icons/greenDoneMark.svg'
+import { createToken } from '@sb/dexUtils/createToken'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -94,6 +97,9 @@ const TokenNotAddedDialog = ({
 }) => {
   const { market } = useMarket()
   const { wallet, providerUrl } = useWallet()
+  const [isTokenSuccessfullyAdded, setIsTokenSuccessfullyAdded] = useState(
+    false
+  )
   const connection = useConnection()
   const isBaseCoinExistsInWallet = useSelectedBaseCurrencyAccount()
   const isQuoteCoinExistsInWallet = useSelectedQuoteCurrencyAccount()
@@ -115,9 +121,7 @@ const TokenNotAddedDialog = ({
     : pair[1]
 
   const SOLAmount = amount / Math.pow(10, decimals)
-  const cost =
-    (wallet.tokenAccountCost / LAMPORTS_PER_SOL || 0.002039) *
-    (isBothNotAdded ? 2 : 1)
+  const cost = wallet.tokenAccountCost / LAMPORTS_PER_SOL || 0.002039
 
   const mint = !isBaseCoinExistsInWallet
     ? market?.baseMintAddress
@@ -144,93 +148,119 @@ const TokenNotAddedDialog = ({
         theme={theme}
         id="share-dialog-content"
       >
-        <Row width="70%" direction="column" padding="2rem 0">
-          <RowContainer direction="column" margin="0 0 6rem 0">
-            <Text>
-              It seems like you don’t have {displayName} token in your wallet.
-            </Text>
-            <Text>
-              Please create the address for {displayName} to continue trading.
-            </Text>
-          </RowContainer>
-          <RowContainer align="flex-start" justify="space-between">
-            <Row align="flex-start" direction="column">
-              <Text style={{ paddingBottom: '1.5rem' }}>Your SOL Balance:</Text>
-              <Text
-                style={{
-                  color:
-                    SOLAmount < cost
-                      ? theme.palette.red.main
-                      : theme.palette.green.main,
-                  fontSize: '2.4rem',
-                  paddingBottom: '1rem',
-                }}
-              >
-                {stripDigitPlaces(SOLAmount, 8)} SOL
+        {isTokenSuccessfullyAdded ? (
+          <RowContainer padding={'0 0 2rem 0'}>
+            <RowContainer margin={'2rem 0 5rem 0'}>
+              <SvgIcon src={greenDoneMark} width={'10rem'} height={'auto'} />
+            </RowContainer>
+            <RowContainer margin={'0 0 5rem 0'}>
+              <Text>
+                CCAI token has been successfully added to your wallet.
               </Text>
-              <BtnCustom
-                btnWidth="auto"
-                textTransform="capitalize"
-                color={theme.palette.blue.serum}
-                borderWidth="0"
-                fontFamily="Avenir Next Demi"
-                fontSize="1rem"
-                onClick={() => {
-                  clipboardCopy(wallet.publicKey)
-                  notify({
-                    type: 'success',
-                    message: 'Copied!',
-                  })
-                }}
-              >
-                Copy SOL Deposit Address
-              </BtnCustom>
-            </Row>
-            <Row align="flex-start" direction="column">
-              <Text style={{ paddingBottom: '1.5rem' }}>
-                Address creation cost:
-              </Text>
-              <Text
-                style={{
-                  color: theme.palette.green.main,
-                  fontSize: '2.4rem',
-                  paddingBottom: '1rem',
-                }}
-              >
-                {stripDigitPlaces(cost, 8)} SOL
-              </Text>
-              <BtnCustom
-                btnWidth="auto"
-                textTransform="capitalize"
-                color={theme.palette.blue.serum}
-                borderWidth="0"
-                fontFamily="Avenir Next Demi"
-                fontSize="1rem"
-                onClick={() => {
-                  clipboardCopy(mint)
-                  notify({
-                    type: 'success',
-                    message: 'Copied!',
-                  })
-                }}
-              >
-                Copy {!isBaseCoinExistsInWallet ? pair[0] : pair[1]} Mint
-                Address
-              </BtnCustom>
-            </Row>
-          </RowContainer>
-          <RowContainer justify="space-between" margin="4rem 0 0rem 0">
-            <WhiteButton theme={theme} onClick={onClose}>
-              Cancel
-            </WhiteButton>
-            <VioletButton
+            </RowContainer>
+            <BlueButton
+              color={'#17181A'}
+              background="#A5E898"
               theme={theme}
-              onClick={() => createToken({ wallet, connection, mint })}
+              onClick={() => onClose()}
             >
-              Add to the wallet
-            </VioletButton>
+              Ok
+            </BlueButton>
           </RowContainer>
-        </Row>
+        ) : (
+          <Row width="70%" direction="column" padding="2rem 0">
+            <RowContainer direction="column" margin="0 0 6rem 0">
+              <Text>
+                It seems like you don’t have {displayName} token in your wallet.
+              </Text>
+              <Text>
+                Please create the address for {displayName} to continue trading.
+              </Text>
+            </RowContainer>
+            <RowContainer align="flex-start" justify="space-between">
+              <Row align="flex-start" direction="column">
+                <Text style={{ paddingBottom: '1.5rem' }}>
+                  Your SOL Balance:
+                </Text>
+                <Text
+                  style={{
+                    color:
+                      SOLAmount < cost
+                        ? theme.palette.red.main
+                        : theme.palette.green.main,
+                    fontSize: '2.4rem',
+                    paddingBottom: '1rem',
+                  }}
+                >
+                  {stripDigitPlaces(SOLAmount, 8)} SOL
+                </Text>
+                <BtnCustom
+                  btnWidth="auto"
+                  textTransform="capitalize"
+                  color={theme.palette.blue.serum}
+                  borderWidth="0"
+                  fontFamily="Avenir Next Demi"
+                  fontSize="1rem"
+                  onClick={() => {
+                    clipboardCopy(wallet.publicKey)
+                    notify({
+                      type: 'success',
+                      message: 'Copied!',
+                    })
+                  }}
+                >
+                  Copy SOL Deposit Address
+                </BtnCustom>
+              </Row>
+              <Row align="flex-start" direction="column">
+                <Text style={{ paddingBottom: '1.5rem' }}>
+                  Address creation cost:
+                </Text>
+                <Text
+                  style={{
+                    color: theme.palette.green.main,
+                    fontSize: '2.4rem',
+                    paddingBottom: '1rem',
+                  }}
+                >
+                  {stripDigitPlaces(cost, 8)} SOL
+                </Text>
+                <BtnCustom
+                  btnWidth="auto"
+                  textTransform="capitalize"
+                  color={theme.palette.blue.serum}
+                  borderWidth="0"
+                  fontFamily="Avenir Next Demi"
+                  fontSize="1rem"
+                  onClick={() => {
+                    clipboardCopy(mint)
+                    notify({
+                      type: 'success',
+                      message: 'Copied!',
+                    })
+                  }}
+                >
+                  Copy {!isBaseCoinExistsInWallet ? pair[0] : pair[1]} Mint
+                  Address
+                </BtnCustom>
+              </Row>
+            </RowContainer>
+            <RowContainer justify="space-between" margin="4rem 0 0rem 0">
+              <WhiteButton theme={theme} onClick={onClose}>
+                Cancel
+              </WhiteButton>
+              <VioletButton
+                theme={theme}
+                onClick={async () => {
+                  await createToken({ wallet, connection, mint })
+                  await setIsTokenSuccessfullyAdded(true)
+                }}
+              >
+                Add to the wallet
+              </VioletButton>
+            </RowContainer>
+          </Row>
+        )}
       </StyledDialogContent>
     </DialogWrapper>
   )
