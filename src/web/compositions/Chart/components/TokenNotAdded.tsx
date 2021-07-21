@@ -25,7 +25,7 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { BlueButton } from '../Inputs/SelectWrapper/SelectWrapperStyles'
 import SvgIcon from '@sb/components/SvgIcon'
 import greenDoneMark from '@icons/greenDoneMark.svg'
-import { createToken } from '@sb/dexUtils/pools'
+import { createToken } from '@sb/dexUtils/createToken'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
