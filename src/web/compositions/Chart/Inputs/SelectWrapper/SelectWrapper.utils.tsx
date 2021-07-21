@@ -406,7 +406,7 @@ export const combineSelectWrapperData = ({
     const mint = getTokenMintAddressByName(base)
 
     const baseTokenInfo = tokenMap?.get(getTokenMintAddressByName(base))
-    const marketAddress = allMarketsMap.get(el.symbol)?.address?.toBase58()
+    const marketAddress = allMarketsMap?.get(el.symbol)?.address?.toBase58()
 
     const avgBuy = serumMarketsDataMap?.get(symbol)?.avgBuy || 0
     const avgSell = serumMarketsDataMap?.get(symbol)?.avgSell || 0

@@ -363,7 +363,7 @@ const PairSelector = ({
                   fontSize: '1.2rem',
                   textAlign: 'left',
                 }}
-                width={width / 2.5}
+                width={width / 1.5}
                 cellRenderer={({ cellData }) => cellData.render}
               />
               <Column
@@ -395,7 +395,7 @@ const PairSelector = ({
                   fontSize: '1.4rem',
                   textAlign: 'left',
                 }}
-                width={width}
+                width={width * 2}
                 style={{
                   textAlign: 'left',
                   fontSize: '1.3rem',
