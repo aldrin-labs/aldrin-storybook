@@ -1,3 +1,4 @@
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { TokenInfoWithDisableReason, TokenInfoWithTargetData, TokensMapType } from '../Rebalance.types'
 
 export const getTokensMap = ({
@@ -14,8 +15,8 @@ export const getTokensMap = ({
 
         acc[el.symbol] = {
             ...el,
-            targetTokenValue,
-            targetAmount,
+            targetTokenValue: +stripDigitPlaces(targetTokenValue, 8),
+            targetAmount: +stripDigitPlaces(targetAmount, 8),
         }
     } else {
         acc[el.symbol] = {

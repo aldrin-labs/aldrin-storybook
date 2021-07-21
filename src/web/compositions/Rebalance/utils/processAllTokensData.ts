@@ -1,3 +1,4 @@
+import { MarketData, TokenInfoWithPrice } from "../Rebalance.types"
 import { getAvailableTokensForRebalance } from "./getAvailableTokensForRebalance"
 import { getPercentageAllocationForTokens } from "./getPercentageAllocationForTokens"
 import { getSliderStepForTokens } from "./getSliderStepForTokens"
@@ -8,10 +9,10 @@ import { getTotalTokenValue } from "./getTotalTokenValue"
 
 export const processAllTokensData = ({
   tokensWithPrices,
-  poolsInfo
+  marketsData
 }: {
-  tokensWithPrices
-  poolsInfo,
+  tokensWithPrices: TokenInfoWithPrice[]
+  marketsData: MarketData[],
 }) => {
   const tokensWithTokenValue = getTokenValuesForTokens(tokensWithPrices)
   const sortedTokensByTokenValue = getSortedTokensByValue(
@@ -33,11 +34,12 @@ export const processAllTokensData = ({
   // TODO: Can be splitted and move up
   const availableTokensForRebalance = getAvailableTokensForRebalance(
     // getPoolsInfoMockData,
-    poolsInfo,
+    marketsData,
     tokensWithSliderSteps
   )
   const availableTokensForRebalanceMap = getTokensMap({
-    tokens: availableTokensForRebalance
+    tokens: availableTokensForRebalance,
+    total: totalTokenValue
   })
 
   return availableTokensForRebalanceMap

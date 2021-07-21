@@ -1,11 +1,11 @@
-import { TokensMapType, TransactionType, PoolInfoElement } from '../Rebalance.types'
+import { TokensMapType, TransactionType, PoolInfoElement, MarketData, MarketDataProcessed } from '../Rebalance.types'
 import { Graph } from '@core/utils/graph/Graph'
 import { REBALANCE_CONFIG } from '../Rebalance.config'
 
 
 export const getTransactionsList = ({
   tokensDiff,
-  poolsInfo,
+  marketsData,
   tokensMap,
 }: {
   tokensDiff: {
@@ -14,7 +14,7 @@ export const getTransactionsList = ({
     decimalCount: number
     price: number
   }[]
-  poolsInfo: PoolInfoElement[]
+  marketsData: MarketDataProcessed[]
   tokensMap: TokensMapType
 }): TransactionType[] => {
 
@@ -22,6 +22,7 @@ export const getTransactionsList = ({
     .filter((el) => el.amountDiff < 0)
     .map(el => ({ ...el, tokenValue: +(el.price * Math.abs(el.amountDiff)).toFixed(el.decimalCount), isSold: false }))
     .sort((a,b) => a.tokenValue - b.tokenValue)
+    
   const tokensToBuy = tokensDiff
     .filter((el) => el.amountDiff > 0)
     .map(el => ({ ...el, tokenValue: +(el.price * el.amountDiff).toFixed(el.decimalCount) }))
@@ -31,8 +32,8 @@ export const getTransactionsList = ({
     return []
   }
 
-  const poolsInfoMap = poolsInfo.reduce(
-    (acc: { [cacheKey: string]: PoolInfoElement }, el) => {
+  const poolsInfoMap = marketsData.reduce(
+    (acc: { [cacheKey: string]: MarketData }, el) => {
       acc[el.symbol] = el
 
       return acc
@@ -43,7 +44,7 @@ export const getTransactionsList = ({
   let allTransactions: TransactionType[] = []
 
   const poolsGraph = new Graph()
-  poolsInfo.forEach(el => {
+  marketsData.forEach(el => {
     const [base, quote] = el.symbol.split('_')
 
     poolsGraph.addEdge(base, quote)

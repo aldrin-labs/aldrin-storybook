@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Theme } from '@material-ui/core'
 import { Connection, PublicKey, Transaction } from '@solana/web3.js'
 
@@ -18,14 +18,20 @@ import { Loading } from '@sb/components'
 import GreenCheckMark from '@icons/greenDoneMark.svg'
 import RedCross from '@icons/Cross.svg'
 
-import { TokenType, PoolInfo, RebalancePopupStep } from '../../Rebalance.types'
+import {
+  PoolInfo,
+  RebalancePopupStep,
+  MarketData,
+  TokensMapType,
+  MarketDataProcessed,
+} from '../../Rebalance.types'
 import { getRandomInt } from '@core/utils/helpers'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/send-and-confirm-transaction-via-wallet'
 import { StyledPaper } from './styles'
 
 import { MOCKED_MINTS_MAP } from '@sb/compositions/Rebalance/Rebalance.mock'
-import { ALL_TOKENS_MINTS_MAP } from '@sb/dexUtils/markets'
+import { ALL_TOKENS_MINTS_MAP, useAllMarketsList } from '@sb/dexUtils/markets'
 import { ReloadTimer } from '../ReloadTimer'
 import {
   getPoolsSwaps,
@@ -35,6 +41,7 @@ import {
 import { TransactionComponent } from './TransactionComponent'
 import { PopupFooter } from './PopupFooter'
 import { REBALANCE_CONFIG } from '../../Rebalance.config'
+import { getOrderbookForMarkets } from '../../utils/getOrderbookForMarkets'
 
 export const RebalancePopup = ({
   rebalanceStep,
@@ -43,7 +50,7 @@ export const RebalancePopup = ({
   open,
   close,
   tokensMap,
-  getPoolsInfo,
+  marketsData,
   wallet,
   connection,
   softRefresh,
@@ -55,8 +62,8 @@ export const RebalancePopup = ({
   theme: Theme
   open: boolean
   close: () => void
-  tokensMap: { [key: string]: TokenType }
-  getPoolsInfo: PoolInfo[]
+  tokensMap: TokensMapType
+  marketsData: MarketData[]
   wallet: WalletAdapter
   connection: Connection
   softRefresh: () => void
@@ -65,42 +72,55 @@ export const RebalancePopup = ({
 }) => {
   const [pendingStateText, setPendingStateText] = useState('Pending')
 
+  const allMarketsMap = useAllMarketsList()
+
   const tokensDiff: {
     symbol: string
     amountDiff: number
     decimalCount: number
     price: number
   }[] = Object.values(tokensMap)
-    .map((el: TokenType) => ({
+    .map((el) => ({
       symbol: el.symbol,
-      amountDiff: +(el.targetAmount - el.amount).toFixed(el.decimalCount),
-      decimalCount: el.decimalCount,
+      amountDiff: +(el.targetAmount - el.amount).toFixed(el.decimals),
+      decimalCount: el.decimals,
       price: el.price,
     }))
     .filter((el) => el.amountDiff !== 0)
 
-  const poolsInfoProcessed = getPoolsInfo.map((el, i) => {
-    return {
-      symbol: `${ALL_TOKENS_MINTS_MAP[el.tokenA] ||
-        MOCKED_MINTS_MAP[el.tokenA] ||
-        el.tokenA}_${ALL_TOKENS_MINTS_MAP[el.tokenB] ||
-        MOCKED_MINTS_MAP[el.tokenB] ||
-        el.tokenB}`,
-      slippage: getRandomInt(3, 3),
-      price: el.tvl.tokenB / el.tvl.tokenA,
-      tokenA: el.tvl.tokenA,
-      tokenB: el.tvl.tokenB,
-      tokenSwapPublicKey: el.swapToken,
+  const marketsDataProcessed: MarketDataProcessed[] = marketsData.map(
+    (el, i) => {
+      return {
+        ...el,
+        symbol: el.name,
+        slippage: getRandomInt(3, 3),
+        // price: el.tvl.tokenB / el.tvl.tokenA, // price from ob
+        // tokenA: el.tvl.tokenA,
+        // tokenB: el.tvl.tokenB,
+        // tokenSwapPublicKey: el.swapToken,
+      }
     }
-  })
+  )
 
   const rebalanceTransactionsList = getTransactionsList({
     tokensDiff,
-    poolsInfo: poolsInfoProcessed,
+    marketsData: marketsDataProcessed,
     tokensMap,
   })
 
-  console.log('rebalanceTransactionsList: ', rebalanceTransactionsList)
+  useEffect(() => {
+    const fetchData = async () => {
+      const orderbooks = await getOrderbookForMarkets({
+        connection,
+        marketsNames: rebalanceTransactionsList.map((t) => t.name),
+        allMarketsMap,
+      })
+
+      console.log('orderbooks', orderbooks)
+    }
+
+    fetchData()
+  }, [rebalanceTransactionsList, allMarketsMap])
 
   const totalFeesUSD = rebalanceTransactionsList.reduce(
     (acc, el) => el.feeUSD + acc,
@@ -126,7 +146,7 @@ export const RebalancePopup = ({
       >
         <BoldHeader>Rebalance</BoldHeader>
         <Row style={{ flexWrap: 'nowrap' }}>
-          <ReloadTimer callback={() => softRefresh()} />
+          <ReloadTimer duration={20} callback={() => softRefresh()} />
           <SvgIcon
             style={{ cursor: 'pointer' }}
             onClick={() => close()}

@@ -17,7 +17,7 @@ import {
   getTokensMap,
   getAllTokensData,
   getSliderStepForTokens,
-  getPoolsInfo,
+  getMarketsData,
 } from './utils'
 import { useConnection } from '@sb/dexUtils/connection'
 
@@ -30,6 +30,7 @@ import {
   Colors,
   RebalancePopupStep,
   TokenInfo,
+  MarketData,
 } from './Rebalance.types'
 import RebalanceTable from './components/Tables'
 import RebalanceHeaderComponent from './components/Header'
@@ -44,8 +45,8 @@ import {
   generateChartColors,
 } from './utils/colorGeneraing'
 import { useCallback } from 'react'
-import { updateAllTokensAmount } from './utils/updateAllTokensAmount'
 import { processAllTokensData } from './utils/processAllTokensData'
+import { useAllMarketsList } from '@sb/dexUtils/markets'
 
 // const MemoizedCurrentValueChartWithLegend = React.memo(
 //   DonutChartWithLegend,
@@ -118,12 +119,14 @@ const RebalanceComposition = ({
   theme: Theme
 }) => {
   const { wallet } = useWallet()
+  const connection: Connection = useConnection()
+  const allMarketsMap = useAllMarketsList()
+
   const [isRebalancePopupOpen, changeRebalancePopupState] = useState(false)
   const [rebalanceStep, changeRebalanceStep] = useState<RebalancePopupStep>(
     'initial'
   )
 
-  const connection: Connection = useConnection()
   const isWalletConnected = !!wallet?.publicKey
 
   const [tokensMap, setTokensMap] = useState<TokensMapType>({})
@@ -132,7 +135,7 @@ const RebalanceComposition = ({
   const [rebalanceState, setRefreshStateRebalance] = useState(false)
   const [loadingRebalanceData, setLoadingRebalanceData] = useState(false)
 
-  const [poolsInfoData, setPoolsInfoData] = useState<PoolInfo[]>([])
+  const [marketsData, setMarketsData] = useState<MarketData[]>([])
 
   const [colors, setColors] = useState<Colors>({})
   const [colorsForLegend, setColorsForLegend] = useState<Colors>({})
@@ -156,11 +159,11 @@ const RebalanceComposition = ({
         const tokensWithTokenValue = getTokenValuesForTokens(tokensWithPrices)
         const totalTokenValue = getTotalTokenValue(tokensWithTokenValue)
 
-        const poolsInfo = await getPoolsInfo(totalTokenValue)
+        const marketsData = await getMarketsData(allMarketsMap)
 
         const availableTokensForRebalanceMap = processAllTokensData({
-          poolsInfo,
-          tokensWithPrices
+          marketsData,
+          tokensWithPrices,
         })
 
         const chartColors = generateChartColors({
@@ -174,7 +177,7 @@ const RebalanceComposition = ({
         setColors(chartColors)
         setColorsForLegend(legendColors)
         setTotalTokensValue(totalTokenValue)
-        setPoolsInfoData(poolsInfo)
+        setMarketsData(marketsData)
         console.timeEnd('rebalance initial data set time')
       } catch (e) {
         // set error
@@ -188,23 +191,37 @@ const RebalanceComposition = ({
     }
   }, [wallet.publicKey, rebalanceState])
 
-  const softRefresh = useCallback(async ({ tokensMap, poolsInfo }) => {
-    const allTokensData: TokenInfo[] = Object.values(tokensMap)
-    const tokensWithPrices = await getPricesForTokens(allTokensData)
+  const softRefresh = useCallback(
+    async ({
+      tokensMap,
+      marketsData,
+    }: {
+      tokensMap: TokensMapType
+      marketsData: MarketData[]
+    }) => {
+      const allTokensData: TokenInfo[] = Object.values(tokensMap)
+      const tokensWithPrices = await getPricesForTokens(allTokensData)
 
-    const tokensWithTokenValue = getTokenValuesForTokens(tokensWithPrices)
-    const totalTokenValue = getTotalTokenValue(tokensWithTokenValue)
+      const tokensWithTokenValue = getTokenValuesForTokens(tokensWithPrices)
+      const totalTokenValue = getTotalTokenValue(tokensWithTokenValue)
 
-    const availableTokensForRebalanceMap = processAllTokensData({
-      poolsInfo,
-      tokensWithPrices
-    })
+      const availableTokensForRebalanceMap = processAllTokensData({
+        marketsData,
+        tokensWithPrices,
+      })
 
-    console.log('tokensMap', tokensMap, 'availableTokensForRebalanceMap', availableTokensForRebalanceMap)
+      console.log(
+        'tokensMap',
+        tokensMap,
+        'availableTokensForRebalanceMap',
+        availableTokensForRebalanceMap
+      )
 
-    setTokensMap(availableTokensForRebalanceMap)
-    setTotalTokensValue(totalTokenValue)
-  }, [wallet, connection])
+      setTokensMap(availableTokensForRebalanceMap)
+      setTotalTokensValue(totalTokenValue)
+    },
+    [wallet, connection]
+  )
 
   return (
     <RowContainer
@@ -327,21 +344,23 @@ const RebalanceComposition = ({
         </RowContainer>
       )}
 
-      <MemoizedRebalancePopup
-        wallet={wallet}
-        connection={connection}
-        tokensMap={tokensMap}
-        softRefresh={() => softRefresh({ tokensMap, poolsInfo: poolsInfoData })}
-        refreshRebalance={refreshRebalance}
-        setLoadingRebalanceData={setLoadingRebalanceData}
-        // getPoolsInfo={getPoolsInfoMockData}
-        getPoolsInfo={poolsInfoData}
-        theme={theme}
-        open={isRebalancePopupOpen}
-        rebalanceStep={rebalanceStep}
-        changeRebalanceStep={changeRebalanceStep}
-        close={() => changeRebalancePopupState(false)}
-      />
+      {isRebalancePopupOpen && (
+        <MemoizedRebalancePopup
+          wallet={wallet}
+          connection={connection}
+          tokensMap={tokensMap}
+          softRefresh={() => softRefresh({ tokensMap, marketsData })}
+          refreshRebalance={refreshRebalance}
+          setLoadingRebalanceData={setLoadingRebalanceData}
+          // getPoolsInfo={getPoolsInfoMockData}
+          marketsData={marketsData}
+          theme={theme}
+          open={isRebalancePopupOpen}
+          rebalanceStep={rebalanceStep}
+          changeRebalanceStep={changeRebalanceStep}
+          close={() => changeRebalancePopupState(false)}
+        />
+      )}
     </RowContainer>
   )
 }

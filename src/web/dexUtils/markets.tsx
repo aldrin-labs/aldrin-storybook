@@ -61,30 +61,45 @@ export const UPDATED_AWESOME_MARKETS = AWESOME_MARKETS.map((el) => ({
   isCustomUserMarket: true,
 }))
 
-export function useAllMarketsList() {
+export interface RawMarketData {
+  name: string
+  address: PublicKey
+  programId: PublicKey
+  deprecated: boolean
+}
+
+export interface RawCustomMarketData extends RawMarketData {
+  isCustomUserMarket: boolean
+}
+
+export function useAllMarketsList(): Map<string, RawMarketData> {
   const ALL_MARKETS_MAP = new Map()
 
   const { customMarkets } = useCustomMarkets()
 
   const officialMarkets = [...useMarketsList(), ...AWESOME_MARKETS]
 
-  officialMarkets?.forEach((market) =>
-    ALL_MARKETS_MAP.set(market.name.replaceAll('/', '_'), market)
-  )
+  officialMarkets?.forEach((market: RawMarketData) => {
+    const marketName = market.name.replaceAll('/', '_')
+    ALL_MARKETS_MAP.set(marketName, { ...market, name: marketName })
+  })
 
-  const usersMarkets = customMarkets.filter(
-    (market) =>
-      market.isCustomUserMarket &&
-      !ALL_MARKETS_MAP.has(market.name.replaceAll('/', '_'))
-  )
+  const usersMarkets = customMarkets.filter((market: RawCustomMarketData) => {
+    const marketName = market.name.replaceAll('/', '_')
 
-  usersMarkets?.forEach((market) =>
-    ALL_MARKETS_MAP.set(market.name.replaceAll('/', '_'), {
+    return market.isCustomUserMarket && !ALL_MARKETS_MAP.has(marketName)
+  })
+
+  usersMarkets?.forEach((market: RawMarketData) => {
+    const marketName = market.name.replaceAll('/', '_')
+
+    ALL_MARKETS_MAP.set(marketName, {
       ...market,
+      name: marketName,
       address: new PublicKey(market.address),
       programId: new PublicKey(market.programId),
     })
-  )
+  })
 
   return ALL_MARKETS_MAP
 }
@@ -120,11 +135,11 @@ export function useAllMarkets() {
       market: Market
       marketName: string
       programId: PublicKey
-    } | null> = await Promise.all(
-      getMarketInfos(customMarkets).map(async (marketInfo) => {
+    } | null> = getMarketInfos(customMarkets)
+      // .slice(0, 2)
+      .map(async (marketInfo) => {
         try {
-          console.log('marketInfo.address', marketInfo.address, ++i)
-
+          // console.log('marketInfo.address', marketInfo.address, ++i)
           const market = await Market.load(
             connection,
             marketInfo.address,
@@ -132,10 +147,15 @@ export function useAllMarkets() {
             marketInfo.programId
           )
 
+          const asks = await market.loadAsks(connection)
+          const bids = await market.loadBids(connection)
+
           return {
             market,
             marketName: marketInfo.name,
             programId: marketInfo.programId,
+            asks,
+            bids,
           }
         } catch (e) {
           notify({
@@ -146,7 +166,6 @@ export function useAllMarkets() {
           return null
         }
       })
-    )
 
     console.log('getAllMarkets markets', markets)
 
@@ -465,14 +484,17 @@ export function useOrderbookAccounts() {
 export function useOrderbook(depth = 200) {
   const { bidOrderbook, askOrderbook } = useOrderbookAccounts()
   const { market } = useMarket()
+
   const bids =
     !bidOrderbook || !market
       ? []
       : bidOrderbook.getL2(depth).map(([price, size]) => [price, size])
+
   const asks =
     !askOrderbook || !market
       ? []
       : askOrderbook.getL2(depth).map(([price, size]) => [price, size])
+      
   return [{ bids, asks }, !!bids || !!asks]
 }
 

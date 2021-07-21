@@ -24,6 +24,15 @@ export type PoolInfo = {
     totalFeesPaid: PoolTotalFeesPaid
 }
 
+export type MarketData = {
+    name: string
+    address: PublicKey
+    programId: PublicKey
+    deprecated: boolean
+    tokenA: string
+    tokenB: string
+}
+
 export interface TokenInfo {
     symbol: string
     amount: number
@@ -51,7 +60,7 @@ export interface TokenInfoWithSliderStep extends TokenInfoWithPercentage {
     decimalCount: number
 }
 
-export interface TokenInfoWithDisableReason extends TokenInfoWithPercentage {
+export interface TokenInfoWithDisableReason extends TokenInfoWithSliderStep {
     disabled?: true | false
     disabledReason?: string
     poolWithLiquidityExists?: true | false
@@ -68,16 +77,10 @@ export type Colors = { [ symbol: string]: string }
 
 export type TokensMapType = { [cacheKey: string]: TokenInfoWithTargetData }
 
-export type TransactionType = PoolInfoElement & { amount: number, total: number, side: 'sell' | 'buy', feeUSD: number }
+export type TransactionType = MarketDataProcessed & { amount: number, total: number, side: 'sell' | 'buy', feeUSD: number }
 
-export type PoolInfoElement = {
+export interface MarketDataProcessed extends MarketData {
   symbol: string
-  slippage: number
-  price: number
-  tokenSwapPublicKey: string
-  tokenA: number
-  tokenB: number
-  priceIncludingCurveAndFees: number
 }
 
 export type SwapsType = {
