@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Theme } from '@material-ui/core'
 import { Connection, PublicKey, Transaction } from '@solana/web3.js'
 
@@ -54,7 +54,6 @@ export const RebalancePopup = ({
   marketsData,
   wallet,
   connection,
-  softRefresh,
   refreshRebalance,
   setLoadingRebalanceData,
 }: {
@@ -67,12 +66,13 @@ export const RebalancePopup = ({
   marketsData: MarketData[]
   wallet: WalletAdapter
   connection: Connection
-  softRefresh: () => void
   refreshRebalance: () => void
   setLoadingRebalanceData: (loadingState: boolean) => void
 }) => {
   const [pendingStateText, setPendingStateText] = useState('Pending')
-  const [rebalanceTransactionsList, setRebalanceTransactionsList] = useState<TransactionType[]>([])
+  const [rebalanceTransactionsList, setRebalanceTransactionsList] = useState<
+    TransactionType[]
+  >([])
 
   const allMarketsMap = useAllMarketsList()
 
@@ -104,49 +104,58 @@ export const RebalancePopup = ({
     }
   )
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const rebalanceTransactionsList = getTransactionsList({
-        tokensDiff,
-        marketsData: marketsDataProcessed,
-        tokensMap,
-      })
+  const updateTransactionsList = useCallback(async () => {
+    const rebalanceTransactionsList = getTransactionsList({
+      tokensDiff,
+      marketsData: marketsDataProcessed,
+      tokensMap,
+    })
 
-      console.log('rebalanceTransactionsList', rebalanceTransactionsList)
+    console.log('rebalanceTransactionsList', rebalanceTransactionsList)
 
-      const orderbooks = await getOrderbookForMarkets({
-        connection,
-        marketsNames: rebalanceTransactionsList.map((t) => t.name),
-        allMarketsMap,
-      })
+    const orderbooks = await getOrderbookForMarkets({
+      connection,
+      marketsNames: rebalanceTransactionsList.map((t) => t.name),
+      allMarketsMap,
+    })
 
-      console.log('orderbooks', orderbooks)
-
-      // update transactions list - set price depending on 
-      const rebalanceTransactionsListWithPrices = rebalanceTransactionsList.map(transaction => {
+    // update transactions list - set price depending on
+    const rebalanceTransactionsListWithPrices = rebalanceTransactionsList.map(
+      (transaction) => {
         const obCategory = transaction.side === 'sell' ? 'bids' : 'asks'
         const obData = orderbooks[transaction.symbol][obCategory]
 
         let transactionAmount = transaction.amount
-        const transactionTotal = obData.reduce((acc: number, [rowPrice, rowAmount]: [number, number]) => {
-          if (transactionAmount >= rowAmount) {
-            transactionAmount -= rowAmount
-            return acc + rowAmount * rowPrice
-          } else {
-            return acc + transactionAmount * rowPrice
-          }
-        }, 0);
+        const transactionTotal = obData.reduce(
+          (acc: number, [rowPrice, rowAmount]: [number, number]) => {
+            if (transactionAmount >= rowAmount) {
+              transactionAmount -= rowAmount
+              return acc + rowAmount * rowPrice
+            } else {
+              const total = acc + transactionAmount * rowPrice
+              transactionAmount = 0
+              return total
+            }
+          },
+          0
+        )
 
-        const transactionPrice = transactionTotal / transactionAmount
-        
-        return { ...transaction, total: transactionTotal, price: transactionPrice }
-      });
+        const transactionPrice = transactionTotal / transaction.amount
 
-      setRebalanceTransactionsList(rebalanceTransactionsListWithPrices)
-    }
+        return {
+          ...transaction,
+          total: transactionTotal,
+          price: transactionPrice,
+        }
+      }
+    )
 
-    fetchData()
-  }, [allMarketsMap])
+    setRebalanceTransactionsList(rebalanceTransactionsListWithPrices)
+  }, [JSON.stringify([...allMarketsMap.values()])])
+
+  useEffect(() => {
+    updateTransactionsList()
+  }, [updateTransactionsList])
 
   const totalFeesUSD = rebalanceTransactionsList.reduce(
     (acc, el) => el.feeUSD + acc,
@@ -172,7 +181,10 @@ export const RebalancePopup = ({
       >
         <BoldHeader>Rebalance</BoldHeader>
         <Row style={{ flexWrap: 'nowrap' }}>
-          <ReloadTimer duration={20} callback={() => softRefresh()} />
+          <ReloadTimer
+            duration={20}
+            callback={() => updateTransactionsList()}
+          />
           <SvgIcon
             style={{ cursor: 'pointer' }}
             onClick={() => close()}
