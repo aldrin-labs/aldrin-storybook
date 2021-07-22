@@ -35,7 +35,7 @@ export const getOrderbookForMarkets = async ({
 
     orderbookMap[name] = {
       asks: asks.getL2(30).map(([price, size]) => [price, size]),
-      bids: bids.getL2(30).map(([price, size]) => [price, size]),
+      bids: bids.getL2(30).map(([price, size]) => [price, size]).reverse(),
     }
 
     if (i % 2 === 0) sleep(1 * 1000)

@@ -24,6 +24,7 @@ import {
   MarketData,
   TokensMapType,
   MarketDataProcessed,
+  TransactionType,
 } from '../../Rebalance.types'
 import { getRandomInt } from '@core/utils/helpers'
 import { WalletAdapter } from '@sb/dexUtils/types'
@@ -71,6 +72,7 @@ export const RebalancePopup = ({
   setLoadingRebalanceData: (loadingState: boolean) => void
 }) => {
   const [pendingStateText, setPendingStateText] = useState('Pending')
+  const [rebalanceTransactionsList, setRebalanceTransactionsList] = useState<TransactionType[]>([])
 
   const allMarketsMap = useAllMarketsList()
 
@@ -102,14 +104,16 @@ export const RebalancePopup = ({
     }
   )
 
-  const rebalanceTransactionsList = getTransactionsList({
-    tokensDiff,
-    marketsData: marketsDataProcessed,
-    tokensMap,
-  })
-
   useEffect(() => {
     const fetchData = async () => {
+      const rebalanceTransactionsList = getTransactionsList({
+        tokensDiff,
+        marketsData: marketsDataProcessed,
+        tokensMap,
+      })
+
+      console.log('rebalanceTransactionsList', rebalanceTransactionsList)
+
       const orderbooks = await getOrderbookForMarkets({
         connection,
         marketsNames: rebalanceTransactionsList.map((t) => t.name),
@@ -117,10 +121,32 @@ export const RebalancePopup = ({
       })
 
       console.log('orderbooks', orderbooks)
+
+      // update transactions list - set price depending on 
+      const rebalanceTransactionsListWithPrices = rebalanceTransactionsList.map(transaction => {
+        const obCategory = transaction.side === 'sell' ? 'bids' : 'asks'
+        const obData = orderbooks[transaction.symbol][obCategory]
+
+        let transactionAmount = transaction.amount
+        const transactionTotal = obData.reduce((acc: number, [rowPrice, rowAmount]: [number, number]) => {
+          if (transactionAmount >= rowAmount) {
+            transactionAmount -= rowAmount
+            return acc + rowAmount * rowPrice
+          } else {
+            return acc + transactionAmount * rowPrice
+          }
+        }, 0);
+
+        const transactionPrice = transactionTotal / transactionAmount
+        
+        return { ...transaction, total: transactionTotal, price: transactionPrice }
+      });
+
+      setRebalanceTransactionsList(rebalanceTransactionsListWithPrices)
     }
 
     fetchData()
-  }, [rebalanceTransactionsList, allMarketsMap])
+  }, [allMarketsMap])
 
   const totalFeesUSD = rebalanceTransactionsList.reduce(
     (acc, el) => el.feeUSD + acc,
