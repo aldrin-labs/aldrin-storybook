@@ -1026,7 +1026,7 @@ export async function sendTransaction({
   sentMessage = 'Transaction sent',
   successMessage = 'Transaction confirmed',
   timeout = DEFAULT_TIMEOUT,
-  operationType = 'createOrder',
+  operationType,
   params,
 }: {
   transaction: Transaction
@@ -1044,7 +1044,6 @@ export async function sendTransaction({
     await connection.getRecentBlockhash('max')
   ).blockhash
 
-  console.log('operationType', operationType)
   console.log('signers', signers)
 
   transaction.setSigners(
@@ -1065,29 +1064,36 @@ export async function sendTransaction({
   console.log('sendTransaction rawTransaction: ', rawTransaction)
   const startTime = getUnixTs()
 
-  // notify({ message: sendingMessage })
   const txid = await connection.sendRawTransaction(rawTransaction, {
     skipPreflight: true,
   })
 
-  const [title, text] = getNotificationText({
-    baseSymbol: params?.baseSymbol || '',
-    quoteSymbol: params?.quoteSymbol || '',
-    quoteUnsettled: params?.quoteUnsettled || 0,
-    baseUnsettled: params?.baseUnsettled || 0,
-    price: params?.price || 0,
-    amount: params?.amount || 0,
-    side: params?.side || '',
-    orderType: params?.orderType || 'limit',
-    operationType,
-  })
+  if (operationType) {
+    const [title, text] = getNotificationText({
+      baseSymbol: params?.baseSymbol || '',
+      quoteSymbol: params?.quoteSymbol || '',
+      quoteUnsettled: params?.quoteUnsettled || 0,
+      baseUnsettled: params?.baseUnsettled || 0,
+      price: params?.price || 0,
+      amount: params?.amount || 0,
+      side: params?.side || '',
+      orderType: params?.orderType || 'limit',
+      operationType,
+    })
 
-  notify({
-    message: title,
-    description: text,
-    type: 'success',
-    txid,
-  })
+    notify({
+      message: title,
+      description: text,
+      type: 'success',
+      txid,
+    })
+  } else {
+    notify({
+      message: sentMessage,
+      type: 'success',
+      txid,
+    })
+  }
 
   console.log('Started awaiting confirmation for', txid)
 
@@ -1130,7 +1136,7 @@ export async function sendTransaction({
   } finally {
     done = true
   }
-  // notify({ message: successMessage, type: 'success', txid })
+  if (!operationType) notify({ message: successMessage, type: 'success', txid })
   console.log('Latency', txid, getUnixTs() - startTime)
   return txid
 }

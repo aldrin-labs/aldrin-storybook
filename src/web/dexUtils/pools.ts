@@ -1190,3 +1190,4 @@ export const getParsedTransactionData = async ({
     console.log('e', e)
   }
 }
+
