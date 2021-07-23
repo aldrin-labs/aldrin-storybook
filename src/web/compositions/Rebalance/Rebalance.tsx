@@ -199,7 +199,10 @@ const RebalanceComposition = ({
       tokensMap: TokensMapType
       marketsData: MarketData[]
     }) => {
-      const allTokensData: TokenInfo[] = Object.values(tokensMap)
+      const allTokensData = await getAllTokensData(
+        wallet.publicKey,
+        connection
+      )      
       const tokensWithPrices = await getPricesForTokens(allTokensData)
 
       const tokensWithTokenValue = getTokenValuesForTokens(tokensWithPrices)
@@ -268,6 +271,7 @@ const RebalanceComposition = ({
               theme={theme}
               tokensMap={tokensMap}
               setTokensMap={setTokensMap}
+              softRefresh={() => softRefresh({ marketsData })}
               leftToDistributeValue={leftToDistributeValue}
               setLeftToDistributeValue={setLeftToDistributeValue}
               totalTokensValue={totalTokensValue}
@@ -342,7 +346,6 @@ const RebalanceComposition = ({
           wallet={wallet}
           connection={connection}
           tokensMap={tokensMap}
-          softRefresh={() => softRefresh({ tokensMap, marketsData })}
           refreshRebalance={refreshRebalance}
           setLoadingRebalanceData={setLoadingRebalanceData}
           // getPoolsInfo={getPoolsInfoMockData}

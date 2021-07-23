@@ -77,7 +77,14 @@ export type Colors = { [ symbol: string]: string }
 
 export type TokensMapType = { [cacheKey: string]: TokenInfoWithTargetData }
 
-export type TransactionType = MarketDataProcessed & { amount: number, total: number, side: 'sell' | 'buy', feeUSD: number }
+export type TransactionType = MarketDataProcessed & { 
+    rawAmount: number, 
+    price: number, 
+    amount: number, 
+    total: number, 
+    side: 'sell' | 'buy', 
+    feeUSD: number 
+}
 
 export interface MarketDataProcessed extends MarketData {
   symbol: string
@@ -95,3 +102,6 @@ export type SwapsType = {
 }
 
 export type RebalancePopupStep = 'initial' | 'pending' | 'done' | 'failed'
+
+export type Orderbook = { asks: [number, number][], bids: [number, number][] }
+export type Orderbooks = { [key: string]: Orderbook }

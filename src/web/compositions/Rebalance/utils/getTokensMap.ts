@@ -10,13 +10,8 @@ export const getTokensMap = ({
 }): TokensMapType => {
   const tokensMap = tokens.reduce((acc: TokensMapType, el) => {
     if (el.targetPercentage) {
-        const targetTokenValue = total / 100 * el.targetPercentage
-        const targetAmount = targetTokenValue / el.price
-
         acc[el.symbol] = {
             ...el,
-            targetTokenValue: +stripDigitPlaces(targetTokenValue, 8),
-            targetAmount: +stripDigitPlaces(targetAmount, 8),
         }
     } else {
         acc[el.symbol] = {

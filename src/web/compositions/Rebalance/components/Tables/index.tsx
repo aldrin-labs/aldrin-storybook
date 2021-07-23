@@ -51,7 +51,7 @@ const HeaderRow = ({
   loadingRebalanceData,
 }: {
   theme: Theme
-  openAddCoinPopup: (arg: boolean) => {},
+  openAddCoinPopup: (arg: boolean) => {}
   loadingRebalanceData: boolean
 }) => (
   <RowContainer
@@ -433,12 +433,12 @@ const RebalanceTable = ({
   leftToDistributeValue,
   setLeftToDistributeValue,
   totalTokensValue,
-
+  softRefresh,
   loadingRebalanceData,
 }: {
   theme: Theme
   data
-  // handleSliderChange,
+  softRefresh
   setTokensMap
   tokensMap
   leftToDistributeValue
@@ -459,7 +459,14 @@ const RebalanceTable = ({
         direction={'column'}
         justify={'end'}
       >
-        <MemoizedHeaderRow loadingRebalanceData={loadingRebalanceData} openAddCoinPopup={openAddCoinPopup} theme={theme} />
+        <MemoizedHeaderRow
+          loadingRebalanceData={loadingRebalanceData}
+          openAddCoinPopup={(...args) => {
+            softRefresh()
+            openAddCoinPopup(...args)
+          }}
+          theme={theme}
+        />
         <RowContainer
           align="flex-start"
           style={{ height: 'calc(100% - 15rem)', overflow: 'scroll' }}

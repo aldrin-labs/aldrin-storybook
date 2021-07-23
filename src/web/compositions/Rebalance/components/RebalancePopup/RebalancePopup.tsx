@@ -43,6 +43,7 @@ import { TransactionComponent } from './TransactionComponent'
 import { PopupFooter } from './PopupFooter'
 import { REBALANCE_CONFIG } from '../../Rebalance.config'
 import { getOrderbookForMarkets } from '../../utils/getOrderbookForMarkets'
+import { getPricesForTransactionsFromOrderbook } from '../../utils/getPricesForTransactionsFromOrderbook'
 
 export const RebalancePopup = ({
   rebalanceStep,
@@ -90,26 +91,14 @@ export const RebalancePopup = ({
     }))
     .filter((el) => el.amountDiff !== 0)
 
-  const marketsDataProcessed: MarketDataProcessed[] = marketsData.map(
-    (el, i) => {
-      return {
-        ...el,
-        symbol: el.name,
-        slippage: getRandomInt(3, 3),
-        price: 0,
-      }
-    }
-  )
-
   const updateTransactionsList = useCallback(async () => {
     // getting names of markets to load
     const rebalanceTransactionsList = getTransactionsList({
       tokensDiff,
-      marketsData: marketsDataProcessed,
+      transactionsPrices: [],
+      marketsData,
       tokensMap,
     })
-
-    console.log('rebalanceTransactionsList', rebalanceTransactionsList)
 
     const orderbooks = await getOrderbookForMarkets({
       connection,
@@ -117,66 +106,40 @@ export const RebalancePopup = ({
       allMarketsMap,
     })
 
-    console.log('orderbooks', orderbooks)
-
-    const marketsDataMapWithPrices = [...marketsDataProcessed].reduce(
-      (acc, cur) => acc.set(cur.symbol, cur),
-      new Map()
-    )
-
-    // TODO: resolve issue with several same transactions
-    // update transactions list - set price depending on
-    // const rebalanceTransactionsListWithPrices =
-    rebalanceTransactionsList.forEach((transaction) => {
-      const obCategory = transaction.side === 'sell' ? 'bids' : 'asks'
-      const obData = orderbooks[transaction.symbol][obCategory]
-
-      console.log('obData', obData, transaction)
-
-      let transactionAmount = transaction.rawAmount
-
-      const transactionTotal = obData.reduce(
-        (acc: number, [rowPrice, rowAmount]: [number, number]) => {          
-          if (transactionAmount >= rowAmount) {
-            transactionAmount -= rowAmount
-            return acc + rowAmount * rowPrice
-          } else {
-            const total = acc + transactionAmount * rowPrice
-            transactionAmount = 0
-            return total
-          }
-        },
-        0
-      )
-
-      const transactionPrice = transactionTotal / transaction.rawAmount
-
-      console.log('transactionPrice', transactionPrice, transactionTotal, transaction.rawAmount)
-
-      marketsDataMapWithPrices.set(transaction.symbol, {
-        ...marketsDataMapWithPrices.get(transaction.symbol),
-        price: transactionPrice,
-      })
-
-      return {
-        ...transaction,
-        total: transactionTotal,
-        price: transactionPrice,
-      }
+    // calc total & amount values via sell transactions prices (for buy t-ns we need to know total first)
+    const rebalanceSellTransactionsPrices = getPricesForTransactionsFromOrderbook({ 
+      transactionsList: rebalanceTransactionsList,
+      orderbooks,
+    })
+ 
+    // using sell t-ns prices we get buy t-ns total
+    const rebalanceTransactionsListWithSellPrices = getTransactionsList({
+      tokensDiff,
+      marketsData, // prices for transactions
+      transactionsPrices: rebalanceSellTransactionsPrices,
+      tokensMap,
     })
 
-    const rebalanceTransactionsListWithPrices = getTransactionsList({
+    // get prices using both sell and buy transactions using amount & total
+   const rebalanceAllTransactionsPrices = getPricesForTransactionsFromOrderbook({ 
+     transactionsList: rebalanceTransactionsListWithSellPrices,
+     orderbooks,
+   })
+
+   // transactions with all prices
+    const rebalanceAllTransactionsListWithPrices = getTransactionsList({
       tokensDiff,
-      marketsData: [...marketsDataMapWithPrices.values()], // prices for transactions
+      marketsData, // prices for transactions
+      transactionsPrices: rebalanceAllTransactionsPrices,
       tokensMap,
     })
 
     console.log(
-      'rebalanceTransactionsListWithPrices',
-      rebalanceTransactionsListWithPrices
+      'rebalanceAllTransactionsPrices',
+      rebalanceAllTransactionsListWithPrices
     )
 
-    setRebalanceTransactionsList(rebalanceTransactionsListWithPrices)
+    setRebalanceTransactionsList(rebalanceAllTransactionsListWithPrices)
   }, [JSON.stringify([...allMarketsMap.values()])])
 
   useEffect(() => {
