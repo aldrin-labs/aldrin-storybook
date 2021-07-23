@@ -24,6 +24,21 @@ export const AppGridLayout = styled.div`
   min-height: 100vh;
 `
 
+export const AppContainer = styled.div`
+  height: ${(props) =>
+    props.showFooter
+      ? 'calc(100% - 11.7rem)'
+      : props.isChartPage
+      ? 'calc(100% - 12rem)'
+      : 'calc(100% - 6rem)'};
+
+  overflow: ${(props) => (props.currentPage == '/' ? 'hidden' : 'auto')};
+
+  @media (max-width: 600px) {
+    height: 100%;
+  }
+`
+
 // height: calc(100vh - 3rem)
 // @media (max-width: 1920px) {
 //   min-height: ${(props) =>

@@ -21,6 +21,7 @@ import analyticsIcon from '@icons/analyticsicon.svg'
 import serumCCAILogo from '@icons/serumCCAILogo.svg'
 
 import SvgIcon from '@sb/components/SvgIcon'
+import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
 
 export const Homepage = () => {
   return (
@@ -55,12 +56,16 @@ export const Homepage = () => {
         <RowContainer
           justify={'space-between'}
           height="15rem"
-          padding="5rem 3rem"
-          style={{ backgroundColor: '#222429' }}
+          padding="0rem 3rem"
+          style={{
+            backgroundColor: '#222429',
+            borderBottom: '0.1rem solid #383B45',
+          }}
         >
           <SvgIcon src={serumCCAILogo} width={'40%'} height={'auto'} />
-          <Row justify={'space-between'} width={'40%'}>
+          <Row justify={'space-between'} width={'35%'}>
             <LinkToTwitter />
+            <LinkToTelegram />
             <LinkToDiscord />
           </Row>
         </RowContainer>
@@ -75,7 +80,8 @@ export const Homepage = () => {
           align={'baseline'}
           padding={'2rem 3rem'}
           justify={'space-between'}
-        ></RowContainer>
+        ></RowContainer>{' '}
+        <MobileFooter />
       </MainContainerForSmallScreens>
     </>
   )

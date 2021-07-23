@@ -31,7 +31,7 @@ import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
 import SnackbarWrapper from './SnackbarWrapper/SnackbarWrapper'
 import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
 
-import { AppGridLayout, FontStyle } from './App.styles'
+import { AppContainer, AppGridLayout, FontStyle } from './App.styles'
 // import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
 import { GlobalStyle } from '@sb/styles/global.styles'
 import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
@@ -151,18 +151,12 @@ const AppRaw = ({
                           />
                         )}
                         {isChartPage && <MarketBlock />}
-                        <div
-                          style={{
-                            height: showFooter
-                              ? 'calc(100% - 11.7rem)'
-                              : isChartPage
-                              ? 'calc(100% - 12rem)'
-                              : 'calc(100% - 6rem)',
-                            overflow: currentPage == '/' ? 'hidden' : 'auto',
-                          }}
+                        <AppContainer
+                          isChartPage={isChartPage}
+                          showFooter={showFooter}
                         >
                           {children}
-                        </div>
+                        </AppContainer>
                         {showFooter && (
                           <FooterWithTheme isRewards={isRewards} />
                         )}
