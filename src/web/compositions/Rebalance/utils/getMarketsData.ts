@@ -8,9 +8,9 @@ import { getPricesForTokens } from './getPricesForTokens'
 import { REBALANCE_CONFIG } from '../Rebalance.config'
 import { Graph } from '@core/utils/graph/Graph'
 
-export const getMarketsData = async (
+export const getMarketsData = (
   allMarketsMap: Map<string, { name: string }>
-): Promise<MarketData[]> => {
+): MarketData[] => {
   // const getPoolsInfoQueryData = await client.query({
   //   query: getPoolsInfoQuery,
   //   fetchPolicy: 'network-only',

@@ -210,13 +210,6 @@ const RebalanceComposition = ({
         tokensWithPrices,
       })
 
-      console.log(
-        'tokensMap',
-        tokensMap,
-        'availableTokensForRebalanceMap',
-        availableTokensForRebalanceMap
-      )
-
       setTokensMap(availableTokensForRebalanceMap)
       setTotalTokensValue(totalTokenValue)
     },

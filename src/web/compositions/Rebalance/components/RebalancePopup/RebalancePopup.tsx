@@ -96,15 +96,13 @@ export const RebalancePopup = ({
         ...el,
         symbol: el.name,
         slippage: getRandomInt(3, 3),
-        // price: el.tvl.tokenB / el.tvl.tokenA, // price from ob
-        // tokenA: el.tvl.tokenA,
-        // tokenB: el.tvl.tokenB,
-        // tokenSwapPublicKey: el.swapToken,
+        price: 0,
       }
     }
   )
 
   const updateTransactionsList = useCallback(async () => {
+    // getting names of markets to load
     const rebalanceTransactionsList = getTransactionsList({
       tokensDiff,
       marketsData: marketsDataProcessed,
@@ -119,35 +117,63 @@ export const RebalancePopup = ({
       allMarketsMap,
     })
 
+    console.log('orderbooks', orderbooks)
+
+    const marketsDataMapWithPrices = [...marketsDataProcessed].reduce(
+      (acc, cur) => acc.set(cur.symbol, cur),
+      new Map()
+    )
+
+    // TODO: resolve issue with several same transactions
     // update transactions list - set price depending on
-    const rebalanceTransactionsListWithPrices = rebalanceTransactionsList.map(
-      (transaction) => {
-        const obCategory = transaction.side === 'sell' ? 'bids' : 'asks'
-        const obData = orderbooks[transaction.symbol][obCategory]
+    // const rebalanceTransactionsListWithPrices =
+    rebalanceTransactionsList.forEach((transaction) => {
+      const obCategory = transaction.side === 'sell' ? 'bids' : 'asks'
+      const obData = orderbooks[transaction.symbol][obCategory]
 
-        let transactionAmount = transaction.amount
-        const transactionTotal = obData.reduce(
-          (acc: number, [rowPrice, rowAmount]: [number, number]) => {
-            if (transactionAmount >= rowAmount) {
-              transactionAmount -= rowAmount
-              return acc + rowAmount * rowPrice
-            } else {
-              const total = acc + transactionAmount * rowPrice
-              transactionAmount = 0
-              return total
-            }
-          },
-          0
-        )
+      console.log('obData', obData, transaction)
 
-        const transactionPrice = transactionTotal / transaction.amount
+      let transactionAmount = transaction.rawAmount
 
-        return {
-          ...transaction,
-          total: transactionTotal,
-          price: transactionPrice,
-        }
+      const transactionTotal = obData.reduce(
+        (acc: number, [rowPrice, rowAmount]: [number, number]) => {          
+          if (transactionAmount >= rowAmount) {
+            transactionAmount -= rowAmount
+            return acc + rowAmount * rowPrice
+          } else {
+            const total = acc + transactionAmount * rowPrice
+            transactionAmount = 0
+            return total
+          }
+        },
+        0
+      )
+
+      const transactionPrice = transactionTotal / transaction.rawAmount
+
+      console.log('transactionPrice', transactionPrice, transactionTotal, transaction.rawAmount)
+
+      marketsDataMapWithPrices.set(transaction.symbol, {
+        ...marketsDataMapWithPrices.get(transaction.symbol),
+        price: transactionPrice,
+      })
+
+      return {
+        ...transaction,
+        total: transactionTotal,
+        price: transactionPrice,
       }
+    })
+
+    const rebalanceTransactionsListWithPrices = getTransactionsList({
+      tokensDiff,
+      marketsData: [...marketsDataMapWithPrices.values()], // prices for transactions
+      tokensMap,
+    })
+
+    console.log(
+      'rebalanceTransactionsListWithPrices',
+      rebalanceTransactionsListWithPrices
     )
 
     setRebalanceTransactionsList(rebalanceTransactionsListWithPrices)

@@ -28,6 +28,8 @@ export const getTransactionsList = ({
     .map(el => ({ ...el, tokenValue: +(el.price * el.amountDiff).toFixed(el.decimalCount) }))
     .sort((a,b) => b.tokenValue - a.tokenValue)
 
+  console.log('tokensToSell', tokensToSell, 'tokensToBuy', tokensToBuy)
+
   if (!tokensToSell || !tokensToBuy) {
     return []
   }
@@ -100,6 +102,9 @@ export const getTransactionsList = ({
   
         const tokenAmount = isIntermidiate ? tempToken.amount : toSellTokenAmount
         const feeMultiplicator = (100 - REBALANCE_CONFIG.POOL_FEE) / 100
+
+        console.log('toSellTokenAmount', isIntermidiate,  tempToken.amount, toSellTokenAmount, `${pathSymbol}_${nextElement}`, elSell, elBuy)
+
   
         const moduleAmountDiff = tokenAmount
         const amountRaw = +((base === pathSymbol ? moduleAmountDiff : moduleAmountDiff / price))
@@ -108,9 +113,9 @@ export const getTransactionsList = ({
         .toFixed(tokensMap[quote].decimalCount)
 
         // getting slippage
-        const poolsAmountDiff = side === 'sell' ? poolPair.tokenA / amountRaw : poolPair.tokenB / totalRaw
-        const rawSlippage = 100 / (poolsAmountDiff + 1)
-        const slippage = rawSlippage + REBALANCE_CONFIG.POOL_FEE + poolPair.slippage
+        // const poolsAmountDiff = side === 'sell' ? poolPair.tokenA / amountRaw : poolPair.tokenB / totalRaw
+        // const rawSlippage = 100 / (poolsAmountDiff + 1)
+        const slippage = REBALANCE_CONFIG.POOL_FEE + poolPair.slippage
         const slippageMultiplicator = (100 - slippage) / 100
 
         // console.log('poolsAmountDiff: ', poolsAmountDiff)
@@ -119,10 +124,13 @@ export const getTransactionsList = ({
 
         const amount = +((base === pathSymbol ? moduleAmountDiff : moduleAmountDiff / price) * (side === 'buy' ? slippageMultiplicator : 1) )
         .toFixed(tokensMap[base].decimalCount)
+
+        console.log('price', price)
+
         const total = +(amountRaw * price * (side === 'sell' ? slippageMultiplicator : 1))
         .toFixed(tokensMap[quote].decimalCount)
 
-        // console.log(`side ${side}, amountRaw: ${amountRaw}, totalRaw ${totalRaw}, finalAmount ${amount}, finalTotal ${total}`)
+        console.log(`side ${side}, amountRaw: ${amountRaw}, totalRaw ${totalRaw}, finalAmount ${amount}, finalTotal ${total}`)
   
         tempToken.amount = (base === pathSymbol ? total : amount) * feeMultiplicator
 
@@ -131,6 +139,7 @@ export const getTransactionsList = ({
   
         allTransactions.push({
           ...poolsInfoMap[poolPair.symbol],
+          rawAmount: tokenAmount,
           amount: amount,
           total: total, 
           side,
