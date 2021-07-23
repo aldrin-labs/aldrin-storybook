@@ -25,7 +25,7 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { BlueButton } from '../Inputs/SelectWrapper/SelectWrapperStyles'
 import SvgIcon from '@sb/components/SvgIcon'
 import greenDoneMark from '@icons/greenDoneMark.svg'
-import { createToken } from '@sb/dexUtils/pools'
+import { createTokens } from '@sb/dexUtils/pools'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -252,7 +252,7 @@ const TokenNotAddedDialog = ({
               <VioletButton
                 theme={theme}
                 onClick={async () => {
-                  await createToken({ wallet, connection, mint })
+                  await createTokens({ wallet, connection, mints: [mint] })
                   await setIsTokenSuccessfullyAdded(true)
                 }}
               >

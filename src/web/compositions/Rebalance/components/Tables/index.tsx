@@ -35,6 +35,7 @@ import { TokenIcon } from '@sb/components/TokenIcon'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 import { AddCoinPopup } from '../AddCoinPopup'
 import { Loading } from '@sb/components'
+import AddTokenDialog from '../AddTokensPopup/AddTokensPopup'
 
 const tooltipTexts = {
   'no pool':
@@ -51,7 +52,7 @@ const HeaderRow = ({
   loadingRebalanceData,
 }: {
   theme: Theme
-  openAddCoinPopup: (arg: boolean) => {},
+  openAddCoinPopup: (arg: boolean) => {}
   loadingRebalanceData: boolean
 }) => (
   <RowContainer
@@ -356,7 +357,6 @@ export const TableMainRow = ({
   }
 
   const handleSliderChangeThrottled = throttle(handleSliderChange, 100)
-
   return (
     <TableRow>
       <MemoizedTokenSymbolColumn symbol={el.symbol} />
@@ -433,7 +433,7 @@ const RebalanceTable = ({
   leftToDistributeValue,
   setLeftToDistributeValue,
   totalTokensValue,
-
+  allTokensData,
   loadingRebalanceData,
 }: {
   theme: Theme
@@ -444,7 +444,7 @@ const RebalanceTable = ({
   leftToDistributeValue
   setLeftToDistributeValue
   totalTokensValue
-
+  allTokensData
   loadingRebalanceData: boolean
 }) => {
   const [isAddCoinPopupOpen, openAddCoinPopup] = useState(false)
@@ -459,7 +459,11 @@ const RebalanceTable = ({
         direction={'column'}
         justify={'end'}
       >
-        <MemoizedHeaderRow loadingRebalanceData={loadingRebalanceData} openAddCoinPopup={openAddCoinPopup} theme={theme} />
+        <MemoizedHeaderRow
+          loadingRebalanceData={loadingRebalanceData}
+          openAddCoinPopup={openAddCoinPopup}
+          theme={theme}
+        />
         <RowContainer
           align="flex-start"
           style={{ height: 'calc(100% - 15rem)', overflow: 'scroll' }}
@@ -484,10 +488,12 @@ const RebalanceTable = ({
         </RowContainer>
         <MemoizedFooterRow theme={theme} />
       </BlockTemplate>
-      <AddCoinPopup
+      <AddTokenDialog
         theme={theme}
         open={isAddCoinPopupOpen}
-        close={() => openAddCoinPopup(false)}
+        userTokens={data}
+        allTokensData={allTokensData}
+        onClose={() => openAddCoinPopup(false)}
       />
     </RowContainer>
   )

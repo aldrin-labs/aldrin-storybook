@@ -139,6 +139,8 @@ const RebalanceComposition = ({
   const [colors, setColors] = useState<Colors>({})
   const [colorsForLegend, setColorsForLegend] = useState<Colors>({})
 
+  const [allTokensData, setAllTokensData] = useState([])
+
   const refreshRebalance = () => {
     setRefreshStateRebalance(!rebalanceState)
   }
@@ -195,6 +197,7 @@ const RebalanceComposition = ({
         setColorsForLegend(legendColors)
         setTotalTokensValue(totalTokenValue)
         setPoolsInfoData(poolsInfo)
+        setAllTokensData(allTokensData)
         console.timeEnd('rebalance initial data set time')
       } catch (e) {
         // set error
@@ -207,7 +210,6 @@ const RebalanceComposition = ({
       fetchData()
     }
   }, [wallet.publicKey, rebalanceState])
-
   return (
     <RowContainer
       theme={theme}
@@ -264,7 +266,8 @@ const RebalanceComposition = ({
               setLeftToDistributeValue={setLeftToDistributeValue}
               totalTokensValue={totalTokensValue}
               loadingRebalanceData={loadingRebalanceData}
-            />{' '}
+              allTokensData={allTokensData}
+            />
           </Row>
           <Row
             height={'100%'}

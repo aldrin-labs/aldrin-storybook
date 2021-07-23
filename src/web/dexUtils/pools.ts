@@ -877,7 +877,7 @@ export async function swap({
  * @param baseSwapToken The flag which will determine swapIn and swapOut tokens
  * @returns Transaction and signer for this transaction (userTransferAuthority in our case to approve transfer funds from userSourceAccount to poolSourceAccount)
  */
- export async function swapWithHandleNativeSol({
+export async function swapWithHandleNativeSol({
   wallet,
   connection,
   userTokenAccountA,
@@ -927,34 +927,34 @@ export async function swap({
           tokenAccountA,
         ]
 
-    // in case tokenA/B is SOL
-    const beforeSwapTransaction = new Transaction()
-    const beforeSwapTransactionSigners = []
-  
-    const afterSwapTransaction = new Transaction()
-  
-    // if SOL - create new token address
-    if (sourceMint.equals(WRAPPED_SOL_MINT)) {
-      const result = await transferSOLToWrappedAccountAndClose({
-        wallet,
-        connection,
-        amount: swapAmountIn,
-      })
-  
-      // change account to use from native to wrapped
-      userSourceAccount = result[0]
-      const [
-        _,
-        createWrappedAccountTransaction,
-        createWrappedAccountTransactionSigner,
-        closeAccountTransaction,
-      ] = result
-  
-      beforeSwapTransaction.add(createWrappedAccountTransaction)
-      beforeSwapTransactionSigners.push(createWrappedAccountTransactionSigner)
-  
-      afterSwapTransaction.add(closeAccountTransaction)
-    }
+  // in case tokenA/B is SOL
+  const beforeSwapTransaction = new Transaction()
+  const beforeSwapTransactionSigners = []
+
+  const afterSwapTransaction = new Transaction()
+
+  // if SOL - create new token address
+  if (sourceMint.equals(WRAPPED_SOL_MINT)) {
+    const result = await transferSOLToWrappedAccountAndClose({
+      wallet,
+      connection,
+      amount: swapAmountIn,
+    })
+
+    // change account to use from native to wrapped
+    userSourceAccount = result[0]
+    const [
+      _,
+      createWrappedAccountTransaction,
+      createWrappedAccountTransactionSigner,
+      closeAccountTransaction,
+    ] = result
+
+    beforeSwapTransaction.add(createWrappedAccountTransaction)
+    beforeSwapTransactionSigners.push(createWrappedAccountTransactionSigner)
+
+    afterSwapTransaction.add(closeAccountTransaction)
+  }
 
   const [swapTransaction] = await tokenSwap.swap(
     userSourceAccount,
@@ -970,7 +970,7 @@ export async function swap({
   const commonTransaction = new Transaction().add(
     beforeSwapTransaction,
     swapTransaction,
-    afterSwapTransaction,
+    afterSwapTransaction
   )
 
   return [commonTransaction, beforeSwapTransactionSigners]
@@ -1184,30 +1184,47 @@ export const getParsedTransactionData = async ({
   signature: TransactionSignature
 }) => {
   try {
-    const ts = await connection.getParsedConfirmedTransaction(signature, 'confirmed')
+    const ts = await connection.getParsedConfirmedTransaction(
+      signature,
+      'confirmed'
+    )
     console.log('transaction data: ', ts)
   } catch (e) {
     console.log('e', e)
   }
 }
 
-export const createToken = async ({
+export const createTokens = async ({
   wallet,
   connection,
-  mint 
-}:{
-  wallet: WalletAdapter, 
-  connection: Connection,
-  mint: PublicKey
+  mints,
+}: {
+  wallet: WalletAdapter
+  connection: Connection
+  mints: PublicKey[]
 }) => {
+  const transactions = new Transaction()
+  const tokenAccounts: Account[] = []
 
-  const token = new Token(
+  const addToken = async (mint) => {
+    const token = new Token(wallet, connection, mint, TOKEN_PROGRAM_ID)
+
+    const [_, tokenAccount, transaction] = await token.createAccount(
+      wallet.publicKey
+    )
+
+    transactions.add(transaction)
+    tokenAccounts.push(tokenAccount)
+
+    return { transaction, tokenAccount }
+  }
+
+  await Promise.all(mints.map((mint) => addToken(mint)))
+
+  await sendAndConfirmTransactionViaWallet(
     wallet,
     connection,
-    mint,
-    TOKEN_PROGRAM_ID
+    transactions,
+    ...tokenAccounts
   )
-
-  const [_, tokenAccount, transaction] = await token.createAccount(wallet.publicKey)
-  await sendAndConfirmTransactionViaWallet(wallet, connection, transaction, tokenAccount)
 }
