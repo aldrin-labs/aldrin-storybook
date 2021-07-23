@@ -61,7 +61,7 @@ export const BlueButton = styled(
   border-color: none;
   cursor: pointer;
   color: ${(props: { isUserConfident: boolean }) =>
-    props.isUserConfident ? '#f8faff' : '#222429'};
+    props.isUserConfident ? '#f8faff' : '#fff'};
   border: none;
 `
 

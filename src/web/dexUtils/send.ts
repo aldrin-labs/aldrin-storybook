@@ -286,7 +286,7 @@ export async function settleFunds({
   quoteCurrency,
   baseUnsettled,
   quoteUnsettled,
-}) {
+}) { 
   if (!wallet) {
     notify({ message: 'Please, connect wallet to settle funds' })
     return

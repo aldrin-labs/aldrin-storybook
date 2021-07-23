@@ -35,6 +35,7 @@ import { TokenIcon } from '@sb/components/TokenIcon'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 import { AddCoinPopup } from '../AddCoinPopup'
 import { Loading } from '@sb/components'
+import AddTokenDialog from '../AddTokensPopup/AddTokensPopup'
 
 const tooltipTexts = {
   'no pool':
@@ -356,7 +357,6 @@ export const TableMainRow = ({
   }
 
   const handleSliderChangeThrottled = throttle(handleSliderChange, 100)
-
   return (
     <TableRow>
       <MemoizedTokenSymbolColumn symbol={el.symbol} />
@@ -444,7 +444,7 @@ const RebalanceTable = ({
   leftToDistributeValue
   setLeftToDistributeValue
   totalTokensValue
-
+  allTokensData
   loadingRebalanceData: boolean
 }) => {
   const [isAddCoinPopupOpen, openAddCoinPopup] = useState(false)
@@ -491,10 +491,12 @@ const RebalanceTable = ({
         </RowContainer>
         <MemoizedFooterRow theme={theme} />
       </BlockTemplate>
-      <AddCoinPopup
+      <AddTokenDialog
         theme={theme}
         open={isAddCoinPopupOpen}
-        close={() => openAddCoinPopup(false)}
+        userTokens={data}
+        allTokensData={allTokensData}
+        onClose={() => openAddCoinPopup(false)}
       />
     </RowContainer>
   )

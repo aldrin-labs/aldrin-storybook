@@ -51,11 +51,12 @@ export const BlueButton = styled(
   font-size: 1.4rem;
   height: 4.5rem;
   text-transform: capitalize;
-  background-color: ${(props) => props.theme.palette.blue.serum};
+  background-color: ${(props) =>
+    props.background || props.theme.palette.blue.serum};
   border-radius: 1rem;
   border-color: none;
   cursor: pointer;
-  color: #f8faff;
+  color: ${(props) => props.color || '#f8faff'};
   border: none;
 `
 export const TextField = styled.input`

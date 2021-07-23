@@ -177,6 +177,7 @@ const RebalanceComposition = ({
         setColors(chartColors)
         setColorsForLegend(legendColors)
         setTotalTokensValue(totalTokenValue)
+        setPoolsInfoData(poolsInfo)
         setMarketsData(marketsData)
         console.timeEnd('rebalance initial data set time')
       } catch (e) {
@@ -216,6 +217,7 @@ const RebalanceComposition = ({
       setTokensMap(availableTokensForRebalanceMap)
       setTotalTokensValue(totalTokenValue)
     },
+
     [wallet, connection]
   )
 
@@ -276,7 +278,8 @@ const RebalanceComposition = ({
               setLeftToDistributeValue={setLeftToDistributeValue}
               totalTokensValue={totalTokensValue}
               loadingRebalanceData={loadingRebalanceData}
-            />{' '}
+              allTokensData={Object.values(tokensMap)}
+            />
           </Row>
           <Row
             height={'100%'}
