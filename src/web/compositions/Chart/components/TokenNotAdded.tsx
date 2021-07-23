@@ -13,6 +13,7 @@ import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import {
+  getTokenNameByMintAddress,
   useMarket,
   useSelectedBaseCurrencyAccount,
   useSelectedQuoteCurrencyAccount,
@@ -87,19 +88,13 @@ export const Text = styled.span`
       : '#ecf0f3'};
 `
 
-const TokenNotAddedDialog = ({
-  open,
-  pair,
-  onClose,
-  theme,
-  history,
-  publicKey,
-}) => {
+const TokenNotAddedDialog = ({ open, pair, onClose, theme }) => {
   const { market } = useMarket()
   const { wallet, providerUrl } = useWallet()
   const [isTokenSuccessfullyAdded, setIsTokenSuccessfullyAdded] = useState(
     false
   )
+  const [tokenName, setTokenName] = useState('')
   const connection = useConnection()
   const isBaseCoinExistsInWallet = useSelectedBaseCurrencyAccount()
   const isQuoteCoinExistsInWallet = useSelectedQuoteCurrencyAccount()
@@ -136,6 +131,7 @@ const TokenNotAddedDialog = ({
       onClose={onClose}
       maxWidth={'md'}
       open={open}
+      onEnter={() => setIsTokenSuccessfullyAdded(false)}
       aria-labelledby="responsive-dialog-title"
     >
       <StyledDialogContent
@@ -155,7 +151,7 @@ const TokenNotAddedDialog = ({
             </RowContainer>
             <RowContainer margin={'0 0 5rem 0'}>
               <Text>
-                CCAI token has been successfully added to your wallet.
+                {tokenName} token has been successfully added to your wallet.
               </Text>
             </RowContainer>
             <BlueButton
@@ -254,6 +250,7 @@ const TokenNotAddedDialog = ({
                 onClick={async () => {
                   await createToken({ wallet, connection, mint })
                   await setIsTokenSuccessfullyAdded(true)
+                  await setTokenName(getTokenNameByMintAddress(mint))
                 }}
               >
                 Add to the wallet
