@@ -81,7 +81,6 @@ export const Homepage = () => {
           padding={'2rem 3rem'}
           justify={'space-between'}
         ></RowContainer>{' '}
-        <MobileFooter />
       </MainContainerForSmallScreens>
     </>
   )

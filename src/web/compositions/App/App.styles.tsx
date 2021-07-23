@@ -35,7 +35,7 @@ export const AppContainer = styled.div`
   overflow: ${(props) => (props.currentPage == '/' ? 'hidden' : 'auto')};
 
   @media (max-width: 600px) {
-    height: 100%;
+    height: calc(100% - 15rem);
   }
 `
 

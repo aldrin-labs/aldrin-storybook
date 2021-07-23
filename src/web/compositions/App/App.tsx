@@ -53,6 +53,7 @@ import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
 import DevUrlPopup from '@sb/components/PopupForDevUrl'
 import WalletMigrationPopup from '@sb/components/WalletMigrationPopup'
 import { TokenRegistryProvider } from '@sb/dexUtils/tokenRegistry'
+import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
 
 const version = `10.9.139`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
@@ -160,6 +161,7 @@ const AppRaw = ({
                         {showFooter && (
                           <FooterWithTheme isRewards={isRewards} />
                         )}
+                        <MobileFooter />
                         {/* 
                     <Footer
                       isChartPage={isChartPage}
