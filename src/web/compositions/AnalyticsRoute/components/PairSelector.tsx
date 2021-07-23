@@ -25,7 +25,7 @@ import {
   WhiteTitle,
   PairSelectorContainerGrid,
 } from '../index.styles'
-import { useCustomMarkets } from '@sb/dexUtils/markets'
+import { useAllMarketsList, useCustomMarkets } from '@sb/dexUtils/markets'
 
 const _sortList = ({ sortBy, sortDirection, data }) => {
   let dataToSort = data
@@ -173,7 +173,7 @@ const PairSelector = ({
   const [sortBy, updateSortBy] = useState('volume24hChange')
   const [sortDirection, updateSortDirection] = useState(SortDirection.DESC)
   const [processedSelectData, updateProcessedSelectData] = useState([])
-  const { customMarkets } = useCustomMarkets()
+  const allMarketsMap = useAllMarketsList()
 
   const filtredMarketsByExchange = getSerumMarketDataQuery.getSerumMarketData.filter(
     (el) =>
@@ -254,7 +254,7 @@ const PairSelector = ({
       usdtPairsMap: new Map(),
       marketType: 0,
       needFiltrations: false,
-      customMarkets,
+      allMarketsMap,
     })
 
     _sort({ firstData: processedSelectData, sortBy, sortDirection })
@@ -363,7 +363,7 @@ const PairSelector = ({
                   fontSize: '1.2rem',
                   textAlign: 'left',
                 }}
-                width={width / 2.5}
+                width={width / 1.5}
                 cellRenderer={({ cellData }) => cellData.render}
               />
               <Column
@@ -395,7 +395,7 @@ const PairSelector = ({
                   fontSize: '1.4rem',
                   textAlign: 'left',
                 }}
-                width={width}
+                width={width * 2}
                 style={{
                   textAlign: 'left',
                   fontSize: '1.3rem',
