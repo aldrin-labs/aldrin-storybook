@@ -107,7 +107,7 @@ export default function AddTokenDialog({
           8
         )
   const SOLBalance =
-    allTokensData?.filter((el) => el.symbol === 'SOL')[0]?.amount || '-'
+    allTokensData?.filter((el) => el.symbol === 'SOL')[0]?.amount || 0
 
   const isBalanceLowerCost = SOLBalance < cost
   const isDisabled = !valid || isBalanceLowerCost
@@ -117,7 +117,6 @@ export default function AddTokenDialog({
       onSubmit()
     }
   }
-
   return (
     <DialogWrapper
       theme={theme}
@@ -132,15 +131,10 @@ export default function AddTokenDialog({
     >
       <RowContainer direction="column">
         <RowContainer margin="0 0 0 0">
-          {cost > 0 && (
-            <WhiteText theme={theme}>
-              Add a token to your wallet. This will cost{' '}
-              <GreenText theme={theme}>
-                {stripDigitPlaces(cost, 6)} SOL
-              </GreenText>{' '}
-              per token.
-            </WhiteText>
-          )}
+          <WhiteText theme={theme}>
+            Add a token to your wallet. This will cost{' '}
+            <GreenText theme={theme}>0.002039 SOL</GreenText> per token.
+          </WhiteText>
         </RowContainer>
 
         <RowContainer width="90%">

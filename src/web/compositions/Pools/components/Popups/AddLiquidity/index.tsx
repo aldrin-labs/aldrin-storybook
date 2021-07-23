@@ -18,11 +18,17 @@ import {
   calculateWithdrawAmount,
   depositAllTokenTypes,
   getParsedTransactionData,
+  swap,
 } from '@sb/dexUtils/pools'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
-import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
-import { PoolInfo, DexTokensPrices } from '@sb/compositions/Pools/index.types'
+import {
+  LAMPORTS_PER_SOL,
+  ParsedInstruction,
+  PartiallyDecodedInstruction,
+  PublicKey,
+} from '@solana/web3.js'
+import { PoolInfo, PoolsPrices } from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
@@ -34,6 +40,7 @@ import AttentionComponent from '@sb/components/AttentionBlock'
 import { SelectCoinPopup } from '../SelectCoin'
 import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
 import { TOKEN_SWAP_PROGRAM_ID } from '@sb/dexUtils/token-swap/token-swap'
+import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/send-and-confirm-transaction-via-wallet'
 
 export const AddLiquidityPopup = ({
   theme,

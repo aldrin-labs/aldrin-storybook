@@ -24,6 +24,15 @@ export type PoolInfo = {
     totalFeesPaid: PoolTotalFeesPaid
 }
 
+export type MarketData = {
+    name: string
+    address: PublicKey
+    programId: PublicKey
+    deprecated: boolean
+    tokenA: string
+    tokenB: string
+}
+
 export interface TokenInfo {
     symbol: string
     amount: number
@@ -32,33 +41,46 @@ export interface TokenInfo {
     address: string   
 }
 
-export type Colors = { [ symbol: string]: string }
-export interface TokenType extends TokenInfo {
+export interface TokenInfoWithPrice extends TokenInfo {
     price: number | null
+}
+
+export interface TokenInfoWithValue extends TokenInfoWithPrice {
+    tokenValue: number
+}
+
+export interface TokenInfoWithPercentage extends TokenInfoWithValue {
     percentage: number
-    tokenValue: number,
-    targetTokenValue: number,
-    targetAmount: number,
-    targetPercentage: number,
+}
+
+export interface TokenInfoWithSliderStep extends TokenInfoWithPercentage {
+    stepInAmountToken: number
+    stepInValueToken: number
+    stepInPercentageToken: number
+    decimalCount: number
+}
+
+export interface TokenInfoWithDisableReason extends TokenInfoWithSliderStep {
     disabled?: true | false
     disabledReason?: string
     poolWithLiquidityExists?: true | false
     poolExists?: true | false  
-    decimalCount: number
 }
 
-export type TokensMapType = { [cacheKey: string]: TokenType }
+export interface TokenInfoWithTargetData extends TokenInfoWithDisableReason {
+    targetTokenValue: number
+    targetAmount: number
+    targetPercentage: number
+}
 
-export type TransactionType = PoolInfoElement & { amount: number, total: number, side: 'sell' | 'buy', feeUSD: number }
+export type Colors = { [ symbol: string]: string }
 
-export type PoolInfoElement = {
+export type TokensMapType = { [cacheKey: string]: TokenInfoWithTargetData }
+
+export type TransactionType = MarketDataProcessed & { amount: number, total: number, side: 'sell' | 'buy', feeUSD: number }
+
+export interface MarketDataProcessed extends MarketData {
   symbol: string
-  slippage: number
-  price: number
-  tokenSwapPublicKey: string
-  tokenA: number
-  tokenB: number
-  priceIncludingCurveAndFees: number
 }
 
 export type SwapsType = {

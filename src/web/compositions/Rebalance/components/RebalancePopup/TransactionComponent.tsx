@@ -73,7 +73,7 @@ export const TransactionComponent = ({
                   fontSize: '1.4rem',
                 }}
               >
-                1 {base} = {1 * price.toFixed(3)} {quote}
+                1 {base} = {1 * (price ? price.toFixed(3) : 0)} {quote}
               </Text>
             </Row>
           </TextColumnContainer>
