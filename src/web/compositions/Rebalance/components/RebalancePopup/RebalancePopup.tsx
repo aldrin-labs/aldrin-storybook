@@ -106,11 +106,16 @@ export const RebalancePopup = ({
       allMarketsMap,
     })
 
+    console.log('rebalanceTransactionsList', rebalanceTransactionsList)
+
     // calc total & amount values via sell transactions prices (for buy t-ns we need to know total first)
     const rebalanceSellTransactionsPrices = getPricesForTransactionsFromOrderbook({ 
+      calculateOnlyForSellTransactions: true,
       transactionsList: rebalanceTransactionsList,
       orderbooks,
     })
+
+    console.log('data first rebalanceSellTransactionsPrices', rebalanceSellTransactionsPrices)
  
     // using sell t-ns prices we get buy t-ns total
     const rebalanceTransactionsListWithSellPrices = getTransactionsList({
@@ -120,11 +125,15 @@ export const RebalancePopup = ({
       tokensMap,
     })
 
+    console.log('data first rebalanceTransactionsListWithSellPrices', rebalanceTransactionsListWithSellPrices)
+
     // get prices using both sell and buy transactions using amount & total
    const rebalanceAllTransactionsPrices = getPricesForTransactionsFromOrderbook({ 
      transactionsList: rebalanceTransactionsListWithSellPrices,
      orderbooks,
    })
+
+   console.log('data second rebalanceAllTransactionsPrices', rebalanceAllTransactionsPrices)
 
    // transactions with all prices
     const rebalanceAllTransactionsListWithPrices = getTransactionsList({
@@ -135,7 +144,7 @@ export const RebalancePopup = ({
     })
 
     console.log(
-      'rebalanceAllTransactionsPrices',
+      'data second rebalanceAllTransactionsPrices',
       rebalanceAllTransactionsListWithPrices
     )
 

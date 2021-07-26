@@ -428,6 +428,7 @@ const RebalanceTable = ({
   theme,
   data,
   // handleSliderChange,
+  allTokensData,
   setTokensMap,
   tokensMap,
   leftToDistributeValue,
@@ -461,8 +462,7 @@ const RebalanceTable = ({
       >
         <MemoizedHeaderRow
           loadingRebalanceData={loadingRebalanceData}
-          openAddCoinPopup={(...args) => {
-            softRefresh()
+          openAddCoinPopup={async (...args) => {
             openAddCoinPopup(...args)
           }}
           theme={theme}
@@ -496,6 +496,7 @@ const RebalanceTable = ({
         open={isAddCoinPopupOpen}
         userTokens={data}
         allTokensData={allTokensData}
+        softRefresh={softRefresh}
         onClose={() => openAddCoinPopup(false)}
       />
     </RowContainer>

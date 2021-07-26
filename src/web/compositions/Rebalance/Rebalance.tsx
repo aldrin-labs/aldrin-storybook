@@ -177,7 +177,6 @@ const RebalanceComposition = ({
         setColors(chartColors)
         setColorsForLegend(legendColors)
         setTotalTokensValue(totalTokenValue)
-        setPoolsInfoData(poolsInfo)
         setMarketsData(marketsData)
         console.timeEnd('rebalance initial data set time')
       } catch (e) {
@@ -200,24 +199,35 @@ const RebalanceComposition = ({
       tokensMap: TokensMapType
       marketsData: MarketData[]
     }) => {
-      const allTokensData = await getAllTokensData(
-        wallet.publicKey,
-        connection
-      )      
-      const tokensWithPrices = await getPricesForTokens(allTokensData)
+      console.log('marketsData', marketsData)
 
-      const tokensWithTokenValue = getTokenValuesForTokens(tokensWithPrices)
-      const totalTokenValue = getTotalTokenValue(tokensWithTokenValue)
+      const allTokensData = await getAllTokensData(wallet.publicKey, connection)
+      const allTokensDataWithValues = allTokensData.map((token) => ({
+        ...token,
+        ...(tokensMap[token.symbol] ? tokensMap[token.symbol] : {}),
+      }))
+
+      console.log('allTokensDataWithValues', allTokensDataWithValues)
+
+      const tokensWithPrices = await getPricesForTokens(allTokensDataWithValues)
 
       const availableTokensForRebalanceMap = processAllTokensData({
         marketsData,
         tokensWithPrices,
       })
 
-      setTokensMap(availableTokensForRebalanceMap)
-      setTotalTokensValue(totalTokenValue)
-    },
+      const chartColors = generateChartColors({
+        data: availableTokensForRebalanceMap,
+      })
 
+      const legendColors = generateLegendColors({
+        data: availableTokensForRebalanceMap,
+      })
+
+      setTokensMap(availableTokensForRebalanceMap)
+      setColors(chartColors)
+      setColorsForLegend(legendColors)
+    },
     [wallet, connection]
   )
 
@@ -273,7 +283,7 @@ const RebalanceComposition = ({
               theme={theme}
               tokensMap={tokensMap}
               setTokensMap={setTokensMap}
-              softRefresh={() => softRefresh({ marketsData })}
+              softRefresh={() => softRefresh({ marketsData, tokensMap })}
               leftToDistributeValue={leftToDistributeValue}
               setLeftToDistributeValue={setLeftToDistributeValue}
               totalTokensValue={totalTokensValue}

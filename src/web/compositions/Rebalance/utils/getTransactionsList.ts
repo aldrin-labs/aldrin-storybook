@@ -20,7 +20,7 @@ export const getTransactionsList = ({
     price: number
   }[]
   marketsData: MarketData[]
-  transactionsPrices: { price: number; symbol: string }[]
+  transactionsPrices: { price: number; symbol: string, notEnoughLiquidity: boolean }[]
   tokensMap: TokensMapType
 }): TransactionType[] => {
   const tokensToSell = tokensDiff
@@ -41,8 +41,6 @@ export const getTransactionsList = ({
       tokenValue: +(el.price * el.amountDiff).toFixed(el.decimalCount),
     }))
     .sort((a, b) => b.tokenValue - a.tokenValue)
-
-  console.log('tokensToSell', tokensToSell, 'tokensToBuy', tokensToBuy)
 
   if (!tokensToSell || !tokensToBuy) {
     return []
@@ -98,17 +96,16 @@ export const getTransactionsList = ({
             return
           }
 
-          console.log('index', transactionsPrices, index)
-
           const market = marketsData.find(
             (market) =>
               market.name === `${pathSymbol}_${nextElement}` ||
               market.name === `${nextElement}_${pathSymbol}`
           )
 
-          const { symbol, price } = transactionsPrices[transactionIndex] || {
+          const { symbol, price, notEnoughLiquidity } = transactionsPrices[transactionIndex] || {
             price: 0,
             symbol: market.name,
+            notEnoughLiquidity: true,
           }
 
           const [base, quote] = symbol.split('_')
@@ -162,7 +159,7 @@ export const getTransactionsList = ({
             (side === 'buy' ? slippageMultiplicator : 1)
           ).toFixed(tokensMap[base].decimalCount)
 
-          console.log('price', price)
+          // console.log('price', price)
 
           const total = +(
             amountRaw *
@@ -170,9 +167,9 @@ export const getTransactionsList = ({
             (side === 'sell' ? slippageMultiplicator : 1)
           ).toFixed(tokensMap[quote].decimalCount)
 
-          console.log(
-            `side ${side}, amountRaw: ${amountRaw}, totalRaw ${totalRaw}, finalAmount ${amount}, finalTotal ${total}`
-          )
+          // console.log(
+          //   `side ${side}, amountRaw: ${amountRaw}, totalRaw ${totalRaw}, finalAmount ${amount}, finalTotal ${total}`
+          // )
 
           tempToken.amount =
             (base === pathSymbol ? total : amount) * feeMultiplicator
@@ -197,6 +194,7 @@ export const getTransactionsList = ({
             name: symbol,
             feeUSD: feeUSD,
             address: market?.address,
+            notEnoughLiquidity,
             priceIncludingCurveAndFees: priceIncludingCurveAndFees,
           })
 

@@ -1,9 +1,11 @@
 import { Orderbooks, TransactionType } from '../Rebalance.types'
 
 export const getPricesForTransactionsFromOrderbook = ({
+  calculateOnlyForSellTransactions,
   transactionsList,
   orderbooks,
 }: {
+  calculateOnlyForSellTransactions?: boolean,
   transactionsList: TransactionType[]
   orderbooks: Orderbooks
 }) => {
@@ -27,14 +29,20 @@ export const getPricesForTransactionsFromOrderbook = ({
 
         // for buy we have total - need to determine amount
         if (isBuy) {
+          if (calculateOnlyForSellTransactions) return 0
+
           if (tempTransactionTotal >= rowValue) {
             obDataToModify.shift()
             tempTransactionTotal -= rowValue
+
+            console.log('tempTransactionTotal full delete', tempTransactionTotal, rowAmount, rowPrice, acc + rowAmount)
+
             return acc + rowAmount
           } else {
             // remove part
             const transactionLeftAmount = tempTransactionTotal / rowPrice
             const amount = acc + transactionLeftAmount
+            console.log('tempTransactionTotal part delete', tempTransactionTotal, rowAmount, rowPrice, acc + transactionLeftAmount)
 
             if (tempTransactionTotal > 0) {
               obDataToModify = [
@@ -42,6 +50,7 @@ export const getPricesForTransactionsFromOrderbook = ({
                 ...obDataToModify.slice(1),
               ]
             }
+
             tempTransactionTotal = 0
             return amount
           }
@@ -60,6 +69,7 @@ export const getPricesForTransactionsFromOrderbook = ({
                 ...obDataToModify.slice(1),
               ]
             }
+
             tempTransactionAmount = 0
             return total
           }
@@ -70,11 +80,18 @@ export const getPricesForTransactionsFromOrderbook = ({
 
     orderbooksClone[transaction.symbol][obCategory] = obDataToModify
 
+    console.log('obData', obData)
+    console.log('obDataToModify', obDataToModify)
+
     // for sell - use amount and devide total by amount
     // for buy - use total and get amount, then devide total by amount
     const transactionPrice = isBuy
       ? transaction.rawAmount / transactionValue
       : transactionValue / transaction.rawAmount
+
+    console.log('transactionPrice', transactionPrice)
+    console.log('transactionValue', transactionValue, 'transaction.rawAmount', transaction.rawAmount)
+
 
     return {
       symbol: transaction.symbol,

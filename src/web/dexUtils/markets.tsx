@@ -10,7 +10,7 @@ import {
 } from '@project-serum/serum'
 import { PublicKey } from '@solana/web3.js'
 import React, { useContext, useEffect, useState } from 'react'
-import { useLocalStorageState } from './utils'
+import { getUniqueListBy, useLocalStorageState } from './utils'
 import { refreshCache, useAsyncData } from './fetch-loop'
 import { useAccountData, useAccountInfo, useConnection } from './connection'
 import { useWallet } from './wallet'
@@ -20,9 +20,10 @@ import { BN } from 'bn.js'
 import { getTokenAccountInfo } from './tokens'
 import { AWESOME_MARKETS, AWESOME_TOKENS } from '@sb/dexUtils/serum'
 
-export const ALL_TOKENS_MINTS = [...TOKEN_MINTS, ...AWESOME_TOKENS].filter(
-  (el, index, tokens) => index === tokens.indexOf(el)
-)
+export const ALL_TOKENS_MINTS = getUniqueListBy([...TOKEN_MINTS, ...AWESOME_TOKENS], "name")
+
+console.log('ALL_TOKENS_MINTS', ALL_TOKENS_MINTS)
+
 export const ALL_TOKENS_MINTS_MAP = ALL_TOKENS_MINTS.reduce((acc, el) => {
   acc[el.address] = el.name
   acc[el.name] = el.address

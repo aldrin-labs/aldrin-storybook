@@ -35,11 +35,13 @@ import {
 } from '@sb/dexUtils/markets'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { TokenIcon } from '@sb/components/TokenIcon'
+import { sleep } from '@core/utils/helpers'
 
 const WhiteText = styled(Title)`
   font-size: 1.4rem;
   font-family: Avenir Next Demi;
 `
+
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
   width: 55rem;
@@ -66,15 +68,18 @@ export default function AddTokenDialog({
   open,
   onClose,
   userTokens,
-  balanceInfo,
   theme,
   allTokensData,
+  softRefresh,
+}: {
+  open: boolean
+  onClose: () => void
+  userTokens: any[]
+  theme: Theme
+  allTokensData: any[]
+  softRefresh: () => void,
 }) {
   const { wallet } = useWallet()
-  let [tokenAccountCost] = useAsyncData(
-    wallet.tokenAccountCost,
-    wallet.tokenAccountCost
-  )
 
   const [sending, setSending] = useState(false)
   const tokenMap = useTokenInfos()
@@ -82,41 +87,22 @@ export default function AddTokenDialog({
   const allTokens = ALL_TOKENS_MINTS
   const connection = useConnection()
 
-  const [tab, setTab] = useState(!!allTokens ? 'popular' : 'manual')
   const [searchValue, setSearchValue] = useState('')
-
   const [selectedTokens, setSelectedTokens] = useState([])
 
-  let valid = true
+  const valid = selectedTokens.length > 0
 
-  valid = selectedTokens.length > 0
+  const cost = stripDigitPlaces(
+    +feeFormat.format(0.002039) * selectedTokens.length,
+    8
+  )
 
-  function onSubmit() {
-    // implement
-  }
-
-  const cost =
-    tab === 'popular'
-      ? stripDigitPlaces(
-          (+feeFormat.format(tokenAccountCost / LAMPORTS_PER_SOL) || 0.002039) *
-            selectedTokens.length,
-          8
-        )
-      : stripDigitPlaces(
-          +feeFormat.format(tokenAccountCost / LAMPORTS_PER_SOL) || 0.002039,
-          8
-        )
   const SOLBalance =
-    allTokensData?.filter((el) => el.symbol === 'SOL')[0]?.amount || 0
+    allTokensData?.find((el) => el.symbol === 'SOL')?.amount || 0
 
   const isBalanceLowerCost = SOLBalance < cost
-  const isDisabled = !valid || isBalanceLowerCost
+  const isDisabled = !valid || isBalanceLowerCost || sending
 
-  const handleKeyDown = (event: any) => {
-    if (event.key === 'Enter' && !isDisabled) {
-      onSubmit()
-    }
-  }
   return (
     <DialogWrapper
       theme={theme}
@@ -163,7 +149,14 @@ export default function AddTokenDialog({
             <ListCard>
               {allTokens
                 .filter((el) => {
-                  const tokenInfo = tokenMap.get(el.address?.toString())
+                  const tokenInfo = tokenMap.has(el.address?.toString())
+                    ? tokenMap.get(el.address?.toString())
+                    : {
+                        address: el.address?.toString(),
+                        name: getTokenNameByMintAddress(el.address?.toString()),
+                        symbol: '',
+                      }
+
                   return searchValue !== ''
                     ? (tokenInfo.name ?? abbreviateAddress(el.address))
                         .toLowerCase()
@@ -181,6 +174,7 @@ export default function AddTokenDialog({
                         name: getTokenNameByMintAddress(el.address?.toString()),
                         symbol: '',
                       }
+
                   return (
                     <TokenListItem
                       theme={theme}
@@ -231,13 +225,17 @@ export default function AddTokenDialog({
             theme={theme}
             width="calc(50% - .5rem)"
             disabled={isDisabled}
-            onClick={async () =>
+            onClick={async () => {
+              await setSending(true)
               await createTokens({
                 wallet,
                 connection,
                 mints: selectedTokens.map((el) => el.mintAddress),
               })
-            }
+              await softRefresh()
+              await setSending(false)
+              await onClose()
+            }}
           >
             Add
           </BlueButton>
@@ -249,7 +247,6 @@ export default function AddTokenDialog({
 
 export function TokenListItem({
   name: tokenName,
-  logoURI,
   symbol: tokenSymbol,
   mintAddress,
   disabled,
@@ -259,7 +256,6 @@ export function TokenListItem({
   theme,
 }: {
   name: string
-  logoURI: string
   symbol: string
   mintAddress: string
   disabled: boolean
@@ -276,7 +272,6 @@ export function TokenListItem({
   const checked = selectedTokenIndex !== -1
   const isDisabled = disabled || alreadyExists
 
-  const address = new PublicKey(mintAddress)
   return (
     <>
       <RowContainer

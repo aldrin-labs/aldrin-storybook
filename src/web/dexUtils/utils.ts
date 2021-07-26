@@ -50,6 +50,10 @@ export function roundToDecimal(value, decimals) {
   return decimals ? Math.round(value * 10 ** decimals) / 10 ** decimals : value
 }
 
+export function getUniqueListBy(arr: any[], key: string): any[] {
+  return [...new Map(arr.map(item => [item[key], item])).values()]
+}
+
 export function getDecimalCount(value) {
   // includes e-7
   if (value <= 0.00000001) return 8
