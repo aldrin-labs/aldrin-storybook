@@ -383,6 +383,9 @@ export const ChartsContainer = styled(
   }
 
   @media (max-width: 600px) {
+    display: ${(props) =>
+      props.terminalViewMode === 'mobileChart' ? 'flex' : 'none'};
+    width: 100%;
   }
 
   background-color: ${(props) => props.theme.palette.white.background};

@@ -40,6 +40,7 @@ import {
 } from '../Chart.styles'
 import TradingBlocked from '../components/TradingBlocked'
 import { CCAIListingTime, isCCAITradingEnabled } from '@sb/dexUtils/utils'
+import { TradeHistoryGrid } from '../Inputs/SelectWrapper/SelectWrapperStyles'
 
 // fix props type
 export const DefaultViewComponent = (
@@ -188,22 +189,11 @@ export const DefaultViewComponent = (
                     />
                   )}
                 </Grid>
-                <Grid
+                <TradeHistoryGrid
+                  hideDepthChart={hideDepthChart}
+                  hideOrderbook={hideOrderbook}
                   item
                   xs={5}
-                  style={{
-                    height: '100%',
-                    flexBasis: hideOrderbook
-                      ? '100%'
-                      : hideDepthChart
-                      ? '50%'
-                      : '35%',
-                    maxWidth: hideOrderbook
-                      ? '100%'
-                      : hideDepthChart
-                      ? '50%'
-                      : '35%',
-                  }}
                 >
                   {!hideTradeHistory && (
                     <TradeHistory
@@ -227,7 +217,7 @@ export const DefaultViewComponent = (
                       }}
                     />
                   )}
-                </Grid>
+                </TradeHistoryGrid>
               </Grid>
             </TradingTerminalContainer>
           </TopChartsContainer>

@@ -24,6 +24,10 @@ export const CardTitle = styled(TypographyFullWidth)`
 
 export const TriggerTitle = styled(Title)`
   height: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0;
   line-height: 1rem;
   position: relative;
   padding: ${(props) => props.padding || '1rem 0'};
@@ -44,6 +48,10 @@ export const TriggerTitle = styled(Title)`
 
   &:hover {
     opacity: 0.85;
+  }
+
+  @media (max-width: 600px) {
+    display: none;
   }
 `
 

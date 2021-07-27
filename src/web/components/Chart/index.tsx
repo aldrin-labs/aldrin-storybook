@@ -119,15 +119,7 @@ export const SingleChartWithButtons = ({
         borderTop: 'none',
       }}
     >
-      <TriggerTitle
-        theme={theme}
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: 0,
-        }}
-      >
+      <TriggerTitle theme={theme}>
         <span
           style={{
             width: 'calc(100% - 20rem)',

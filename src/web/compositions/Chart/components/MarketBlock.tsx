@@ -138,6 +138,7 @@ const MarketBlock = ({
   activeExchange = 'serum',
   marketType = 0,
   updateTerminalViewMode,
+  terminalViewMode,
 }) => {
   const { market, customMarkets } = useMarket()
   const location = useLocation()
@@ -342,7 +343,13 @@ const MarketBlock = ({
             width={'3rem'}
             height={'auto'}
             style={{ margin: '0 0 0 4rem' }}
-            onClick={() => updateTerminalViewMode()}
+            onClick={() => {
+              if (terminalViewMode === 'mobileChart') {
+                updateTerminalViewMode('default')
+              } else {
+                updateTerminalViewMode('mobileChart')
+              }
+            }}
           />
         </Row>
       </MobileMarketStatsContainer>

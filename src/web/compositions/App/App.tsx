@@ -153,10 +153,6 @@ const AppRaw = ({
                             hide={fullscreen}
                           />
                         )}
-<<<<<<< Updated upstream
-                        {isChartPage && <MarketBlock />}
-=======
->>>>>>> Stashed changes
                         <AppContainer
                           isChartPage={isChartPage}
                           showFooter={showFooter}

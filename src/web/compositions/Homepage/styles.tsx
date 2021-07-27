@@ -31,7 +31,7 @@ export const MainContainerForSmallScreens = styled.div`
   @media only screen and (max-width: 600px) {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
   }
 `
 export const IdoBtn = styled.button`

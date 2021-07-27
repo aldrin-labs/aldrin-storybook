@@ -76,7 +76,7 @@ export const StyledTable = styled(Grid)`
   overflow: hidden;
   height: calc(100% - 21rem);
   @media (max-width: 600px) {
-    height: calc(100% - 12rem);
+    height: calc(100% - 10rem);
     padding: 0 2rem;
   }
 `
@@ -104,6 +104,16 @@ export const AutoSizerDesktop = styled(AutoSizer)`
 `
 export const AutoSizerMobile = styled(AutoSizer)`
   @media (min-width: 600px) {
+    display: none;
+  }
+`
+export const TradeHistoryGrid = styled(Grid)`
+  height: 100%;
+  flex-basis: ${(props) =>
+    props.hideOrderbook ? '100%' : props.hideDepthChart ? '50%' : '35%'};
+  max-width: ${(props) =>
+    props.hideOrderbook ? '100%' : props.hideDepthChart ? '50%' : '35%'};
+  @media (max-width: 600px) {
     display: none;
   }
 `

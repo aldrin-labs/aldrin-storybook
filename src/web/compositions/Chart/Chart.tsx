@@ -243,7 +243,8 @@ function ChartPageComponent(props: any) {
         }}
       />
       <MarketBlock
-        updateTerminalViewMode={() => updateTerminalViewMode('mobileChart')}
+        terminalViewMode={terminalViewMode}
+        updateTerminalViewMode={updateTerminalViewMode}
       />
       <DefaultView
         id={'_id'}
