@@ -43,7 +43,7 @@ import { getPoolsInfoMockData } from './Rebalance.mock'
 import {
   generateLegendColors,
   generateChartColors,
-} from './utils/colorGeneraing'
+} from './utils/colorGenerating'
 import { useCallback } from 'react'
 import { processAllTokensData } from './utils/processAllTokensData'
 import { useAllMarketsList } from '@sb/dexUtils/markets'

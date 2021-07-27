@@ -19,31 +19,25 @@ import GreenCheckMark from '@icons/greenDoneMark.svg'
 import RedCross from '@icons/Cross.svg'
 
 import {
-  PoolInfo,
   RebalancePopupStep,
   MarketData,
   TokensMapType,
-  MarketDataProcessed,
   TransactionType,
+  TokensDiff,
 } from '../../Rebalance.types'
-import { getRandomInt } from '@core/utils/helpers'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/send-and-confirm-transaction-via-wallet'
 import { StyledPaper } from './styles'
 
 import { MOCKED_MINTS_MAP } from '@sb/compositions/Rebalance/Rebalance.mock'
-import { ALL_TOKENS_MINTS_MAP, useAllMarketsList } from '@sb/dexUtils/markets'
+import { RawMarketData, useAllMarketsList } from '@sb/dexUtils/markets'
 import { ReloadTimer } from '../ReloadTimer'
-import {
-  getPoolsSwaps,
-  getTransactionsList,
-  getSwapsChunks,
-} from '@sb/compositions/Rebalance/utils'
+import { getPoolsSwaps, getSwapsChunks } from '@sb/compositions/Rebalance/utils'
 import { TransactionComponent } from './TransactionComponent'
 import { PopupFooter } from './PopupFooter'
 import { REBALANCE_CONFIG } from '../../Rebalance.config'
-import { getOrderbookForMarkets } from '../../utils/getOrderbookForMarkets'
-import { getPricesForTransactionsFromOrderbook } from '../../utils/getPricesForTransactionsFromOrderbook'
+import { getTransactionsListWithPrices } from '../../utils/getTransactionsListWithPrices'
+import { getVariablesForPlacingOrder } from '../../utils/placeOrderProgram/getVariablesForPlacingOrder'
 
 export const RebalancePopup = ({
   rebalanceStep,
@@ -77,82 +71,56 @@ export const RebalancePopup = ({
 
   const allMarketsMap = useAllMarketsList()
 
-  const tokensDiff: {
-    symbol: string
-    amountDiff: number
-    decimalCount: number
-    price: number
-  }[] = Object.values(tokensMap)
+  const tokensDiff: TokensDiff = Object.values(tokensMap)
     .map((el) => ({
       symbol: el.symbol,
       amountDiff: +(el.targetAmount - el.amount).toFixed(el.decimals),
       decimalCount: el.decimals,
-      price: el.price,
+      price: el.price || 0,
     }))
     .filter((el) => el.amountDiff !== 0)
 
-  const updateTransactionsList = useCallback(async () => {
-    // getting names of markets to load
-    const rebalanceTransactionsList = getTransactionsList({
-      tokensDiff,
-      transactionsPrices: [],
-      marketsData,
-      tokensMap,
-    })
-
-    const orderbooks = await getOrderbookForMarkets({
+  const updateTransactionsList = useCallback(
+    async ({
       connection,
-      marketsNames: rebalanceTransactionsList.map((t) => t.name),
+      marketsData,
+      tokensDiff,
+      tokensMap,
+      allMarketsMap,
+    }: {
+      connection: Connection
+      marketsData: MarketData[]
+      tokensDiff: TokensDiff
+      tokensMap: TokensMapType
+      allMarketsMap: Map<string, RawMarketData>
+    }) => {
+      // transactions with all prices
+      const rebalanceAllTransactionsListWithPrices = await getTransactionsListWithPrices(
+        {
+          connection,
+          marketsData,
+          tokensDiff,
+          tokensMap,
+          allMarketsMap,
+        }
+      )
+
+      setRebalanceTransactionsList(rebalanceAllTransactionsListWithPrices)
+
+      return rebalanceAllTransactionsListWithPrices
+    },
+    [JSON.stringify([...allMarketsMap.values()])]
+  )
+
+  // only on markets update
+  useEffect(() => {
+    updateTransactionsList({
+      connection,
+      marketsData,
+      tokensDiff,
+      tokensMap,
       allMarketsMap,
     })
-
-    console.log('rebalanceTransactionsList', rebalanceTransactionsList)
-
-    // calc total & amount values via sell transactions prices (for buy t-ns we need to know total first)
-    const rebalanceSellTransactionsPrices = getPricesForTransactionsFromOrderbook({ 
-      calculateOnlyForSellTransactions: true,
-      transactionsList: rebalanceTransactionsList,
-      orderbooks,
-    })
-
-    console.log('data first rebalanceSellTransactionsPrices', rebalanceSellTransactionsPrices)
- 
-    // using sell t-ns prices we get buy t-ns total
-    const rebalanceTransactionsListWithSellPrices = getTransactionsList({
-      tokensDiff,
-      marketsData, // prices for transactions
-      transactionsPrices: rebalanceSellTransactionsPrices,
-      tokensMap,
-    })
-
-    console.log('data first rebalanceTransactionsListWithSellPrices', rebalanceTransactionsListWithSellPrices)
-
-    // get prices using both sell and buy transactions using amount & total
-   const rebalanceAllTransactionsPrices = getPricesForTransactionsFromOrderbook({ 
-     transactionsList: rebalanceTransactionsListWithSellPrices,
-     orderbooks,
-   })
-
-   console.log('data second rebalanceAllTransactionsPrices', rebalanceAllTransactionsPrices)
-
-   // transactions with all prices
-    const rebalanceAllTransactionsListWithPrices = getTransactionsList({
-      tokensDiff,
-      marketsData, // prices for transactions
-      transactionsPrices: rebalanceAllTransactionsPrices,
-      tokensMap,
-    })
-
-    console.log(
-      'data second rebalanceAllTransactionsPrices',
-      rebalanceAllTransactionsListWithPrices
-    )
-
-    setRebalanceTransactionsList(rebalanceAllTransactionsListWithPrices)
-  }, [JSON.stringify([...allMarketsMap.values()])])
-
-  useEffect(() => {
-    updateTransactionsList()
   }, [updateTransactionsList])
 
   const totalFeesUSD = rebalanceTransactionsList.reduce(
@@ -181,7 +149,16 @@ export const RebalancePopup = ({
         <Row style={{ flexWrap: 'nowrap' }}>
           <ReloadTimer
             duration={20}
-            callback={() => updateTransactionsList()}
+            callback={() => {
+              // if rebalance didn't start
+              updateTransactionsList({
+                connection,
+                marketsData,
+                tokensDiff,
+                tokensMap,
+                allMarketsMap,
+              })
+            }}
           />
           <SvgIcon
             style={{ cursor: 'pointer' }}
@@ -238,66 +215,92 @@ export const RebalancePopup = ({
                 onClick={async () => {
                   changeRebalanceStep('pending')
 
-                  // TODO:
-                  // 1. We need to refresh pools info each time before click
-                  // 2. We need to refresh popup each interval (e.g. 10 seconds)
-
-                  const swaps = getPoolsSwaps({
-                    wallet,
+                  // refresh data right before rebalance
+                  const transactionsList = await updateTransactionsList({
                     connection,
-                    transactionsList: rebalanceTransactionsList,
+                    marketsData,
+                    tokensDiff,
                     tokensMap,
+                    allMarketsMap,
                   })
 
-                  try {
-                    setPendingStateText('Creating swaps...')
-                    const promisedSwaps = await Promise.all(
-                      swaps.map((el) => swap(el))
-                    )
-                    const swapsTransactions = promisedSwaps.map((el) => el[0])
+                  const transactionsVariables = await Promise.all(
+                    transactionsList.map((transaction) => {
+                      const symbol = transaction.symbol
+                      const [base, quote] = symbol.split('_')
 
-                    const swapTransactionsGroups = getSwapsChunks(
-                      swapsTransactions,
-                      REBALANCE_CONFIG.SWAPS_PER_TRANSACTION_LIMIT
-                    )
-                    console.log(
-                      'swapTransactionsGroups: ',
-                      swapTransactionsGroups
-                    )
+                      const tokenAccountA = tokensMap[base].address
+                      const tokenAccountB = tokensMap[quote].address
 
-                    await Promise.all(
-                      swapTransactionsGroups.map(
-                        async (swapTransactionGroup) => {
-                          setPendingStateText('Creating transaction...')
-                          const commonTransaction = new Transaction().add(
-                            ...swapTransactionGroup
-                          )
-                          setPendingStateText(
-                            'Awaitng for Rebalance confirmation...'
-                          )
-                          await sendAndConfirmTransactionViaWallet(
-                            wallet,
-                            connection,
-                            commonTransaction
-                          )
-                        }
-                      )
-                    )
+                      return getVariablesForPlacingOrder({
+                        wallet,
+                        connection,
+                        side: transaction.side,
+                        market: transaction.loadedMarket,
+                        tokenAccountA: new PublicKey(tokenAccountA),
+                        tokenAccountB: new PublicKey(tokenAccountB),
+                      })
+                    })
+                  )
 
-                    // After all completed
-                    changeRebalanceStep('done')
-                    setLoadingRebalanceData(true)
-                    setTimeout(() => {
-                      refreshRebalance()
-                    }, 15000)
-                  } catch (e) {
-                    console.log('e: ', e)
-                    changeRebalanceStep('failed')
-                  }
+                  console.log('transactionsVariables', transactionsVariables)
 
-                  setTimeout(() => {
-                    changeRebalanceStep('initial')
-                  }, 5000)
+                  // const swaps = getPoolsSwaps({
+                  //   wallet,
+                  //   connection,
+                  //   transactionsList: rebalanceTransactionsList,
+                  //   tokensMap,
+                  // })
+
+                  // try {
+                  //   setPendingStateText('Creating swaps...')
+                  //   const promisedSwaps = await Promise.all(
+                  //     swaps.map((el) => swap(el))
+                  //   )
+                  //   const swapsTransactions = promisedSwaps.map((el) => el[0])
+
+                  //   const swapTransactionsGroups = getSwapsChunks(
+                  //     swapsTransactions,
+                  //     REBALANCE_CONFIG.SWAPS_PER_TRANSACTION_LIMIT
+                  //   )
+                  //   console.log(
+                  //     'swapTransactionsGroups: ',
+                  //     swapTransactionsGroups
+                  //   )
+
+                  //   await Promise.all(
+                  //     swapTransactionsGroups.map(
+                  //       async (swapTransactionGroup) => {
+                  //         setPendingStateText('Creating transaction...')
+                  //         const commonTransaction = new Transaction().add(
+                  //           ...swapTransactionGroup
+                  //         )
+                  //         setPendingStateText(
+                  //           'Awaitng for Rebalance confirmation...'
+                  //         )
+                  //         await sendAndConfirmTransactionViaWallet(
+                  //           wallet,
+                  //           connection,
+                  //           commonTransaction
+                  //         )
+                  //       }
+                  //     )
+                  //   )
+
+                  //   // After all completed
+                  //   changeRebalanceStep('done')
+                  //   setLoadingRebalanceData(true)
+                  //   setTimeout(() => {
+                  //     refreshRebalance()
+                  //   }, 15000)
+                  // } catch (e) {
+                  //   console.log('e: ', e)
+                  //   changeRebalanceStep('failed')
+                  // }
+
+                  // setTimeout(() => {
+                  //   changeRebalanceStep('initial')
+                  // }, 5000)
                 }}
                 needMinWidth={false}
                 btnWidth="calc(50% - 1rem)"

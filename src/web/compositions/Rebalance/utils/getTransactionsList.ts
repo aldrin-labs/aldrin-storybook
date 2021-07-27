@@ -3,25 +3,26 @@ import {
   TransactionType,
   MarketDataProcessed,
   MarketData,
+  TokensDiff,
+  Orderbooks,
 } from '../Rebalance.types'
 import { Graph } from '@core/utils/graph/Graph'
 import { REBALANCE_CONFIG } from '../Rebalance.config'
+import { LoadedMarketsMap } from './loadMarketsByNames'
+import { getPricesForTransactionsFromOrderbook } from './getPricesForTransactionsFromOrderbook'
 
 export const getTransactionsList = ({
   tokensDiff,
-  transactionsPrices,
   tokensMap,
   marketsData,
+  loadedMarketsMap,
+  orderbooks,
 }: {
-  tokensDiff: {
-    symbol: string
-    amountDiff: number
-    decimalCount: number
-    price: number
-  }[]
+  tokensDiff: TokensDiff
   marketsData: MarketData[]
-  transactionsPrices: { price: number; symbol: string, notEnoughLiquidity: boolean }[]
   tokensMap: TokensMapType
+  loadedMarketsMap: LoadedMarketsMap
+  orderbooks: Orderbooks
 }): TransactionType[] => {
   const tokensToSell = tokensDiff
     .filter((el) => el.amountDiff < 0)
@@ -47,6 +48,8 @@ export const getTransactionsList = ({
   }
 
   let allTransactions: TransactionType[] = []
+  // we'll change orderbook in each transaction
+  let orderbooksClone = { ...orderbooks }
 
   const poolsGraph = new Graph()
   marketsData.forEach((el) => {
@@ -57,7 +60,7 @@ export const getTransactionsList = ({
   })
 
   let i = 0
-  let transactionIndex = 0;
+
   tokensToSell.forEach((elSell) => {
     while (elSell.isSold === false) {
       const elBuy = tokensToBuy[i]
@@ -102,37 +105,34 @@ export const getTransactionsList = ({
               market.name === `${nextElement}_${pathSymbol}`
           )
 
-          const { symbol, price, notEnoughLiquidity } = transactionsPrices[transactionIndex] || {
-            price: 0,
-            symbol: market.name,
-            notEnoughLiquidity: true,
-          }
-
+          const symbol = market?.name || ''
           const [base, quote] = symbol.split('_')
-
           const side = base === pathSymbol ? 'sell' : 'buy'
 
           // Handling case with intermidiate pair inside path
           const pathInString = pathElement.join('_')
-          const isIntermidiate = pathInString.match(`_${pathSymbol}_`)
+          const isIntermidiate = !!pathInString.match(`_${pathSymbol}_`)
 
           const tokenAmount = isIntermidiate
             ? tempToken.amount
             : toSellTokenAmount
           const feeMultiplicator = (100 - REBALANCE_CONFIG.POOL_FEE) / 100
 
-          console.log(
-            'toSellTokenAmount',
-            isIntermidiate,
-            tempToken.amount,
-            toSellTokenAmount,
-            `${pathSymbol}_${nextElement}`,
-            elSell,
-            elBuy
-          )
+          // we're getting price from ob here because price is required  
+          // to get total from amount for next rebalance chain element 
+          const [
+            [{ price, notEnoughLiquidity }],
+            updatedOrderbooks,
+          ] = getPricesForTransactionsFromOrderbook({
+            orderbooks: orderbooksClone,
+            transactionsList: [{ side, amount: tokenAmount, symbol }],
+          })
+
+          // update orderbook data due to making some updates in this transaction 
+          // so in next t-on this orders will be included
+          orderbooksClone = updatedOrderbooks
 
           const moduleAmountDiff = tokenAmount
-
           const amountRaw = +(base === pathSymbol
             ? moduleAmountDiff
             : moduleAmountDiff / price
@@ -182,23 +182,25 @@ export const getTransactionsList = ({
               : amountRaw - amountRaw * feeMultiplicator) *
             tokensMap[side === 'sell' ? quote : base].price
 
+          const loadedMarket = loadedMarketsMap[symbol]
+
           allTransactions.push({
             tokenA: base,
             tokenB: quote,
-            rawAmount: tokenAmount,
-            amount: amount,
-            total: total,
+            amount,
+            total,
             price,
             symbol,
             side,
+            slippage,
+            loadedMarket,
             name: symbol,
             feeUSD: feeUSD,
             address: market?.address,
             notEnoughLiquidity,
+            isIntermidiate,
             priceIncludingCurveAndFees: priceIncludingCurveAndFees,
           })
-
-          transactionIndex++;
         }
       )
     }

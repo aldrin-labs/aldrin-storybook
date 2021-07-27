@@ -1,49 +1,45 @@
-import { sleep } from "@core/utils/helpers"
-import { Market } from "@project-serum/serum"
-import { Connection } from "@solana/web3.js"
+import { sleep } from '@core/utils/helpers'
+import { Connection } from '@solana/web3.js'
+import { LoadedMarketsMap } from './loadMarketsByNames'
+
+export interface OrderbooksMap {
+  [key: string]: { asks: [number, number][]; bids: [number, number][] }
+}
 
 export const getOrderbookForMarkets = async ({
   connection,
-  marketsNames,
+  loadedMarketsMap,
   allMarketsMap,
 }: {
   connection: Connection
-  marketsNames: string[]
+  loadedMarketsMap: LoadedMarketsMap
   allMarketsMap: Map<string, any>
-}) => {
-  const orderbookMap: { [key: string]: any } = {}
-  let i = 0
+}): Promise<OrderbooksMap> => {
+  const orderbooksMap: OrderbooksMap = {}
 
-  const filteredMarketNames = [...new Set(marketsNames)]
+  let i = 0
 
   console.time('orderbooks')
 
-  for (let name of filteredMarketNames) {
-    const marketInfo = allMarketsMap.get(name)
-    
-    const market = await Market.load(
-      connection,
-      marketInfo.address,
-      {},
-      marketInfo.programId
-    )
+  const loadedMarketsArray = Object.entries(loadedMarketsMap)
 
+  for (let [name, market] of loadedMarketsArray) {
     const [asks, bids] = await Promise.all([
       market.loadAsks(connection),
       market.loadBids(connection),
     ])
 
-    orderbookMap[name] = {
+    orderbooksMap[name] = {
       asks: asks.getL2(300).map(([price, size]) => [price, size]),
       bids: bids.getL2(300).map(([price, size]) => [price, size]),
     }
 
-    if (i % 2 === 0) sleep(1 * 1000)
+    if (i % 3 === 0) sleep(1 * 1000)
 
-    i++;
+    i++
   }
 
   console.timeEnd('orderbooks')
 
-  return orderbookMap
+  return orderbooksMap
 }

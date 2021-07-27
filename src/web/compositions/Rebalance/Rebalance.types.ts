@@ -1,5 +1,6 @@
 import { Account, PublicKey, Transaction, Connection } from '@solana/web3.js'
 import { WalletAdapter } from '@sb/dexUtils/types'
+import { Market } from '@project-serum/serum'
 
 export type PoolTVL = {
     tokenA: number
@@ -77,13 +78,18 @@ export type Colors = { [ symbol: string]: string }
 
 export type TokensMapType = { [cacheKey: string]: TokenInfoWithTargetData }
 
-export type TransactionType = MarketDataProcessed & { 
-    rawAmount: number, 
+export type TransactionMainData = {
+    side: 'sell' | 'buy'
+    symbol: string
+    amount: number
+}
+
+export type TransactionType = MarketDataProcessed & TransactionMainData & { 
     price: number, 
-    amount: number, 
     total: number, 
-    side: 'sell' | 'buy', 
     feeUSD: number 
+    slippage: number
+    loadedMarket: Market
 }
 
 export interface MarketDataProcessed extends MarketData {
@@ -105,3 +111,10 @@ export type RebalancePopupStep = 'initial' | 'pending' | 'done' | 'failed'
 
 export type Orderbook = { asks: [number, number][], bids: [number, number][] }
 export type Orderbooks = { [key: string]: Orderbook }
+
+export type TokensDiff = {
+    symbol: string
+    amountDiff: number
+    decimalCount: number
+    price: number
+}[]
