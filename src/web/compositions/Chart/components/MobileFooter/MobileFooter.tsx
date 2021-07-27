@@ -12,7 +12,7 @@ import { FooterComponent } from './styles'
 
 export const MobileFooter = () => {
   return (
-    <FooterComponent height={'15rem'} justify={'space-between'}>
+    <FooterComponent height={'12rem'} justify={'space-between'}>
       <TradeLink />
       <AnalyticsLink />
       <PoolsLink />

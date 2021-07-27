@@ -16,7 +16,7 @@ import CustomMarketDialog from '@sb/compositions/Chart/Inputs/SelectWrapper/AddC
 import search from '@icons/search.svg'
 import _ from 'lodash'
 
-import { StyledGrid } from './SelectWrapperStyles'
+import { StyledGrid, StyledInput, TableFooter } from './SelectWrapperStyles'
 import { notify } from '@sb/dexUtils/notifications'
 import { getMarketInfos } from '@sb/dexUtils/markets'
 
@@ -505,21 +505,22 @@ class SelectPairListComponent extends React.PureComponent<
     return (
       <>
         <StyledGrid
+          theme={theme}
           id={id}
-          style={{
-            top: `calc(100% - 1rem)`,
-            left: `0rem`,
-            fontFamily: 'DM Sans',
-            position: 'absolute',
-            zIndex: 900,
-            background: '#222429',
-            minWidth: '155rem',
-            height: '73rem',
-            borderRadius: '2rem',
-            overflow: 'hidden',
-            border: theme.palette.border.new,
-            filter: 'drop-shadow(0px 0px 8px rgba(125, 125, 131, 0.2))',
-          }}
+          // style={{
+          //   top: `calc(100% - 1rem)`,
+          //   left: `0rem`,
+          //   fontFamily: 'DM Sans',
+          //   position: 'absolute',
+          //   zIndex: 900,
+          //   background: '#222429',
+          //   minWidth: '155rem',
+          //   height: '73rem',
+          //   borderRadius: '2rem',
+          //   overflow: 'hidden',
+          //   border: theme.palette.border.new,
+          //   filter: 'drop-shadow(0px 0px 8px rgba(125, 125, 131, 0.2))',
+          // }}
         >
           <TableHeader
             theme={theme}
@@ -529,21 +530,10 @@ class SelectPairListComponent extends React.PureComponent<
             allMarketsMap={allMarketsMap}
             marketType={marketType}
           />
-          {/* {ReactDOM.createPortal(<StyledOverlay />, document.body)} */}
           <Grid container style={{ justifyContent: 'flex-end', width: '100%' }}>
-            <Input
+            <StyledInput
               placeholder="Search by all categories"
               disableUnderline={true}
-              style={{
-                width: '100%',
-                height: '5rem',
-                background: '#383B45',
-                fontFamily: 'Avenir Next Medium',
-                fontSize: '1.5rem',
-                color: '#96999C',
-                borderBottom: `.1rem solid #383B45`,
-                padding: '0 2rem',
-              }}
               value={searchValue}
               onChange={onChangeSearch}
               inputProps={{
@@ -575,17 +565,7 @@ class SelectPairListComponent extends React.PureComponent<
             sortBy={this.state.sortBy}
             sortDirection={this.state.sortDirection}
           />
-          <Grid
-            style={{
-              justifyContent: 'space-between',
-              width: '100%',
-              position: 'relative',
-              zIndex: 1000,
-              background: '#17181A',
-              borderTop: '0.1rem solid #383B45',
-            }}
-            container
-          >
+          <TableFooter container>
             <Row
               style={{
                 padding: '0 2rem',
@@ -599,7 +579,6 @@ class SelectPairListComponent extends React.PureComponent<
               }}
               onClick={async (e) => {
                 e.stopPropagation()
-
                 this.setIsFeedbackPopupOpen(true)
               }}
             >
@@ -631,7 +610,7 @@ class SelectPairListComponent extends React.PureComponent<
             >
               + Add Market
             </Row>
-          </Grid>
+          </TableFooter>
           <CustomMarketDialog
             theme={theme}
             open={showAddMarketPopup}

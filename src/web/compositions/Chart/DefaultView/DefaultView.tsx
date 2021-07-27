@@ -123,6 +123,7 @@ export const DefaultViewComponent = (
           >
             <ChartsContainer
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+              terminalViewMode={terminalViewMode}
               hideDepthChart={hideDepthChart}
               hideOrderbook={hideOrderbook}
               theme={theme}

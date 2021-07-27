@@ -54,6 +54,7 @@ import DevUrlPopup from '@sb/components/PopupForDevUrl'
 import WalletMigrationPopup from '@sb/components/WalletMigrationPopup'
 import { TokenRegistryProvider } from '@sb/dexUtils/tokenRegistry'
 import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
+import { MobileNavBar } from '../Chart/components/MobileNavbar/MobileNavbar'
 
 const version = `10.9.139`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
@@ -145,13 +146,17 @@ const AppRaw = ({
                         isPNL={isPNL}
                         isChartPage={isChartPage}
                       >
+                        <MobileNavBar pathname={currentPage} />
                         {!pageIsRegistration && (
                           <CardsPanel
                             pathname={currentPage}
                             hide={fullscreen}
                           />
                         )}
+<<<<<<< Updated upstream
                         {isChartPage && <MarketBlock />}
+=======
+>>>>>>> Stashed changes
                         <AppContainer
                           isChartPage={isChartPage}
                           showFooter={showFooter}

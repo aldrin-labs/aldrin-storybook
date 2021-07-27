@@ -40,6 +40,7 @@ import { AWESOME_MARKETS } from '@sb/dexUtils/serum'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { WarningPopup } from './components/WarningPopup'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
+import MarketBlock from './components/MarketBlock'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
   // Check if the arrays are the same length
@@ -148,10 +149,7 @@ function ChartPageComponent(props: any) {
       })
     )
 
-    const updatedMarkets = [
-      ...props.markets,
-      ...UPDATED_AWESOME_MARKETS,
-    ]
+    const updatedMarkets = [...props.markets, ...UPDATED_AWESOME_MARKETS]
 
     const allMarkets = [...updatedMarkets, ...userMarkets]
 
@@ -244,7 +242,9 @@ function ChartPageComponent(props: any) {
           localStorage.setItem('isOnboardingDone', 'true')
         }}
       />
-      {/* {view === 'default' && ( */}
+      <MarketBlock
+        updateTerminalViewMode={() => updateTerminalViewMode('mobileChart')}
+      />
       <DefaultView
         id={'_id'}
         view={'default'}
@@ -294,7 +294,6 @@ function ChartPageComponent(props: any) {
         onClose={() => openWarningPopup(false)}
         theme={theme}
       />
-
       {/* )} */}
       {/* <JoyrideOnboarding
         continuous={true}

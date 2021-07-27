@@ -3,7 +3,11 @@ import styled from 'styled-components'
 import { compose } from 'recompose'
 import { Theme, withTheme } from '@material-ui/core'
 import { Link, useLocation } from 'react-router-dom'
-import { getTokenMintAddressByName, useMarket } from '@sb/dexUtils/markets'
+import {
+  getTokenMintAddressByName,
+  useMarket,
+  useMarkPrice,
+} from '@sb/dexUtils/markets'
 import { getDecimalCount } from '@sb/dexUtils/utils'
 import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import MarketStats from './MarketStats/MarketStats'
@@ -25,6 +29,7 @@ import Coinmarketcap from '@icons/coinmarketcap.svg'
 import CoinGecko from '@icons/coingecko.svg'
 import Inform from '@icons/inform.svg'
 import { MintsPopup } from '../Inputs/SelectWrapper/MintsPopup'
+import ChartIcon from '@icons/chartIcon.svg'
 
 export const ExclamationMark = styled(({ fontSize, lineHeight, ...props }) => (
   <span {...props}>!</span>
@@ -62,6 +67,31 @@ export const LinkToTwitter = styled.a`
   cursor: pointer;
   margin-left: 1.5rem;
 `
+const MarketStatsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: 6rem;
+  padding: 0 3rem;
+  border-bottom: ${(props) => props.theme.palette.border.new};
+  @media (max-width: 600px) {
+    display: none;
+  }
+`
+const MobileMarketStatsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: 12rem;
+  padding: 0 3rem;
+  background: #17181a;
+  border-bottom: ${(props) => props.theme.palette.border.new};
+  @media (min-width: 600px) {
+    display: none;
+  }
+`
 
 const selectStyles = (theme: Theme) => ({
   height: '100%',
@@ -73,7 +103,7 @@ const selectStyles = (theme: Theme) => ({
   border: `.1rem solid ${theme.palette.blue.serum}`,
   borderRadius: '0.75rem',
   boxShadow: '0px 0px 1.2rem rgba(8, 22, 58, 0.1)',
-  width: '14rem',
+  width: '20rem',
   '& div': {
     fontFamily: 'Avenir Next Demi',
     fontSize: '1.8rem',
@@ -93,9 +123,22 @@ const selectStyles = (theme: Theme) => ({
     borderRadius: '0',
     boxShadow: '0px 4px 8px rgba(10,19,43,0.1)',
   },
+  '@media (max-width: 600px)': {
+    border: `none`,
+    width: '19rem',
+    '& div': { fontSize: '2rem' },
+    '& svg': {
+      color: theme.palette.dark.main,
+    },
+  },
 })
 
-const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
+const MarketBlock = ({
+  theme,
+  activeExchange = 'serum',
+  marketType = 0,
+  updateTerminalViewMode,
+}) => {
   const { market, customMarkets } = useMarket()
   const location = useLocation()
   const [isMintsPopupOpen, setIsMintsPopupOpen] = useState(false)
@@ -136,133 +179,174 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
     : CoinGecko
 
   return (
-    <RowContainer
-      justify={'space-between'}
-      style={{
-        height: '6rem',
-        padding: '0 3rem',
-        borderBottom: theme.palette.border.new,
-      }}
-    >
-      <Row justify="flex-start">
-        <DarkTooltip
-          title={
-            isPrivateCustomMarket
-              ? 'This is an unofficial custom market. Use at your own risk.'
-              : isCustomUserMarket
-              ? 'This is curated but unofficial market.'
-              : 'This is the official market.'
-          }
-        >
-          <div
-            style={{
-              width: '5rem',
-              fontSize: '2rem',
-              display: 'flex',
-              justifyContent: 'flex-start',
-            }}
+    <>
+      <MarketStatsContainer theme={theme}>
+        <Row justify="flex-start">
+          <DarkTooltip
+            title={
+              isPrivateCustomMarket
+                ? 'This is an unofficial custom market. Use at your own risk.'
+                : isCustomUserMarket
+                ? 'This is curated but unofficial market.'
+                : 'This is the official market.'
+            }
           >
-            <TokenIcon
-              mint={getTokenMintAddressByName(base)}
-              width={'50%'}
-              emojiIfNoLogo={true}
-              isAwesomeMarket={isCustomUserMarket}
-              isAdditionalCustomUserMarket={isPrivateCustomMarket}
+            <div
+              style={{
+                width: '5rem',
+                fontSize: '2rem',
+                display: 'flex',
+                justifyContent: 'flex-start',
+              }}
+            >
+              <TokenIcon
+                mint={getTokenMintAddressByName(base)}
+                width={'50%'}
+                emojiIfNoLogo={true}
+                isAwesomeMarket={isCustomUserMarket}
+                isAdditionalCustomUserMarket={isPrivateCustomMarket}
+              />
+            </div>
+          </DarkTooltip>
+          <div
+            data-tut="pairs"
+            style={{ height: '100%', padding: '1rem 0', position: 'relative' }}
+          >
+            <AutoSuggestSelect
+              value={pair}
+              id={'pairSelector'}
+              style={{ width: '20rem' }}
+              activeExchange={activeExchange}
+              selectStyles={{ ...selectStyles(theme) }}
+              marketType={marketType}
+              pair={pair}
+              quantityPrecision={quantityPrecision}
+              pricePrecision={pricePrecision}
+              market={market}
+              tokenMap={tokenMap}
+              isMintsPopupOpen={isMintsPopupOpen}
+              setIsMintsPopupOpen={() => setIsMintsPopupOpen}
             />
           </div>
-        </DarkTooltip>
-        <div
-          data-tut="pairs"
-          style={{ height: '100%', padding: '1rem 0', position: 'relative' }}
-        >
-          <AutoSuggestSelect
-            value={pair}
-            id={'pairSelector'}
-            style={{ width: '20rem' }}
-            activeExchange={activeExchange}
-            selectStyles={{ ...selectStyles(theme) }}
+
+          <MarketStats
+            isCCAIPair={isCCAIPair}
+            theme={theme}
+            symbol={pair}
             marketType={marketType}
-            pair={pair}
+            exchange={activeExchange}
             quantityPrecision={quantityPrecision}
             pricePrecision={pricePrecision}
-            market={market}
-            tokenMap={tokenMap}
-            isMintsPopupOpen={isMintsPopupOpen}
-            setIsMintsPopupOpen={() => setIsMintsPopupOpen}
           />
-        </div>
-
-        <MarketStats
-          isCCAIPair={isCCAIPair}
-          theme={theme}
-          symbol={pair}
-          marketType={marketType}
-          exchange={activeExchange}
-          quantityPrecision={quantityPrecision}
-          pricePrecision={pricePrecision}
-        />
-        <Row align={'baseline'}>
-          <SvgIcon
-            src={Inform}
-            onClick={() => {
-              setIsMintsPopupOpen(true)
-            }}
-            style={{ margin: '0 1.5rem', cursor: 'pointer' }}
-            width={'2.3rem'}
-            height={'2.3rem'}
-          />
-          <LinkToSolanaExp marketAddress={marketAddress} />
-          <DarkTooltip title={'Show analytics for this market.'}>
-            <LinkToAnalytics to={`/analytics/${pair}`}>
-              <SvgIcon src={AnalyticsIcon} width={'2.3rem'} height={'2.3rem'} />
-            </LinkToAnalytics>
-          </DarkTooltip>
-          {twitterLink !== '' && (
-            <DarkTooltip title={'Twitter profile of base token.'}>
-              <LinkToTwitter
+          <Row align={'baseline'}>
+            <SvgIcon
+              src={Inform}
+              onClick={() => {
+                setIsMintsPopupOpen(true)
+              }}
+              style={{ margin: '0 1.5rem', cursor: 'pointer' }}
+              width={'2.3rem'}
+              height={'2.3rem'}
+            />
+            <LinkToSolanaExp marketAddress={marketAddress} />
+            <DarkTooltip title={'Show analytics for this market.'}>
+              <LinkToAnalytics to={`/analytics/${pair}`}>
+                <SvgIcon
+                  src={AnalyticsIcon}
+                  width={'2.3rem'}
+                  height={'2.3rem'}
+                />
+              </LinkToAnalytics>
+            </DarkTooltip>
+            {twitterLink !== '' && (
+              <DarkTooltip title={'Twitter profile of base token.'}>
+                <LinkToTwitter
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={twitterLink}
+                >
+                  <SvgIcon
+                    width={'2.5rem'}
+                    height={'2.5rem'}
+                    src={BlueTwitterIcon}
+                  />
+                </LinkToTwitter>
+              </DarkTooltip>
+            )}
+            {marketCapLink !== '' && (
+              <a
+                style={{ marginLeft: '1.5rem' }}
                 target="_blank"
                 rel="noopener noreferrer"
-                href={twitterLink}
+                href={marketCapLink}
               >
                 <SvgIcon
                   width={'2.5rem'}
                   height={'2.5rem'}
-                  src={BlueTwitterIcon}
+                  src={marketCapIcon}
                 />
-              </LinkToTwitter>
-            </DarkTooltip>
-          )}
-          {marketCapLink !== '' && (
-            <a
-              style={{ marginLeft: '1.5rem' }}
-              target="_blank"
-              rel="noopener noreferrer"
-              href={marketCapLink}
-            >
-              <SvgIcon width={'2.5rem'} height={'2.5rem'} src={marketCapIcon} />
-            </a>
-          )}
+              </a>
+            )}
+          </Row>
         </Row>
-      </Row>
-      <Row>
-        <Row align={'flex-start'} direction="column">
-          <Title color={theme.palette.orange.dark}>
-            SOL is the fuel for transactions on Solana. You must have
-          </Title>
-          <Title color={theme.palette.orange.dark}>
-            some SOL in your wallet for DEX trading or other transactions.
-          </Title>
+        <Row>
+          <Row align={'flex-start'} direction="column">
+            <Title color={theme.palette.orange.dark}>
+              SOL is the fuel for transactions on Solana. You must have
+            </Title>
+            <Title color={theme.palette.orange.dark}>
+              some SOL in your wallet for DEX trading or other transactions.
+            </Title>
+          </Row>
+          <ExclamationMark
+            theme={theme}
+            margin={'0 0 0 2rem'}
+            fontSize="5rem"
+          />
         </Row>
-        <ExclamationMark theme={theme} margin={'0 0 0 2rem'} fontSize="5rem" />
-      </Row>
-      <MintsPopup
-        theme={theme}
-        symbol={marketName}
-        marketAddress={marketAddress}
-        open={isMintsPopupOpen}
-        onClose={() => setIsMintsPopupOpen(false)}
-      />
-    </RowContainer>
+        <MintsPopup
+          theme={theme}
+          symbol={marketName}
+          marketAddress={marketAddress}
+          open={isMintsPopupOpen}
+          onClose={() => setIsMintsPopupOpen(false)}
+        />
+      </MarketStatsContainer>
+      <MobileMarketStatsContainer theme={theme}>
+        <AutoSuggestSelect
+          value={pair}
+          id={'pairSelector'}
+          activeExchange={activeExchange}
+          selectStyles={{ ...selectStyles(theme) }}
+          marketType={marketType}
+          pair={pair}
+          quantityPrecision={quantityPrecision}
+          pricePrecision={pricePrecision}
+          market={market}
+          tokenMap={tokenMap}
+          isMintsPopupOpen={isMintsPopupOpen}
+          setIsMintsPopupOpen={() => setIsMintsPopupOpen}
+        />
+        <Row>
+          <MarketStats
+            isCCAIPair={isCCAIPair}
+            theme={theme}
+            symbol={pair}
+            marketType={marketType}
+            exchange={activeExchange}
+            quantityPrecision={quantityPrecision}
+            pricePrecision={pricePrecision}
+          />{' '}
+          <SvgIcon
+            src={ChartIcon}
+            width={'3rem'}
+            height={'auto'}
+            style={{ margin: '0 0 0 4rem' }}
+            onClick={() => updateTerminalViewMode()}
+          />
+        </Row>
+      </MobileMarketStatsContainer>
+    </>
   )
 }
 

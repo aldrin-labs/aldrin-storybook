@@ -359,6 +359,7 @@ export const ChartsContainer = styled(
     hideDepthChart,
     hideOrderbook,
     hideTradeHistory,
+    terminalViewMode,
     ...rest
   }) => <div {...rest} />
 )`
@@ -379,6 +380,9 @@ export const ChartsContainer = styled(
   border-radius: 0;
   @media (max-width: 1080px) {
     flex-wrap: nowrap;
+  }
+
+  @media (max-width: 600px) {
   }
 
   background-color: ${(props) => props.theme.palette.white.background};
@@ -478,4 +482,19 @@ export const SmartTerminalContainer = styled(Grid)`
   position: relative;
   height: 48%;
   padding: 0.4rem 0 0 0.4rem;
+`
+export const MarketStatsContainer = styled.div`
+  display: flex;
+  @media (max-width: 600px) {
+    display: none;
+  }
+`
+
+export const MobileMarketStatsContainer = styled.div`
+  dispay: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  @media (min-width: 600px) {
+    display: none;
+  }
 `
