@@ -16,6 +16,10 @@ import {
 
 import defaultRowRenderer from '../../utils'
 import { BidsWrapper } from '../../OrderBookTableContainer.styles'
+import {
+  AutoSizerDesktop,
+  AutoSizerMobile,
+} from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapperStyles'
 
 @withTheme()
 class SpreadTable extends Component<IProps> {
@@ -41,7 +45,7 @@ class SpreadTable extends Component<IProps> {
 
     return (
       <BidsWrapper mode={mode} isFullHeight={mode === 'bids'}>
-        <AutoSizer>
+        <AutoSizerDesktop>
           {({ width, height }: { width: number; height: number }) => (
             <Table
               disableHeader={mode !== 'bids'}
@@ -83,7 +87,10 @@ class SpreadTable extends Component<IProps> {
                 dataKey="price"
                 headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
                 width={width}
-                style={{ color: theme.palette.green.main, fontFamily: 'Avenir Next Demi' }}
+                style={{
+                  color: theme.palette.green.main,
+                  fontFamily: 'Avenir Next Demi',
+                }}
               />
               <Column
                 label={mode === 'bids' ? `size (${base})` : ''}
@@ -103,11 +110,14 @@ class SpreadTable extends Component<IProps> {
                   paddingRight: 'calc(.5rem + 10px)',
                   textAlign: 'right',
                 }}
-                style={{ textAlign: 'right', color: theme.palette.white.primary }}
+                style={{
+                  textAlign: 'right',
+                  color: theme.palette.white.primary,
+                }}
               />
             </Table>
           )}
-        </AutoSizer>
+        </AutoSizerDesktop>
       </BidsWrapper>
     )
   }

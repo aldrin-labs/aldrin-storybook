@@ -319,6 +319,9 @@ export const TradingTerminalContainer = styled(
   @media (max-width: 1080px) {
     flex-wrap: wrap;
   }
+  @media (max-width: 600px) {
+    width: 50%;
+  }
 `
 
 export const TopChartsContainer = styled(
