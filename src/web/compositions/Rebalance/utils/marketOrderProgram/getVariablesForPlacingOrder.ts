@@ -55,7 +55,7 @@ export const getVariablesForPlacingOrder = async ({
       pcVault: market._decoded.quoteVault,
 
       vaultSigner,
-      openOrders: openOrders.publicKey, // openOrdersA
+      openOrders: openOrders ? openOrders[0].publicKey : null,
       orderPayerTokenAccount: tokenB, // token address
       coinWallet: tokenA, // token address
     },

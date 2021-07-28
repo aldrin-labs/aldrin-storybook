@@ -37,6 +37,13 @@ export const placeOrderForEachTransaction = async ({
     const swapAmount = transaction.amount * (10 ** (isBuySide ? tokenBDecimals : tokenADecimals))
     const swapTotal = transaction.total * (10 ** (isBuySide ? tokenBDecimals : tokenADecimals))
 
+    console.log({
+      tokenAccountA,
+      tokenAccountB,
+      swapAmount,
+      swapTotal,
+    })
+
     const variablesForPlacingOrder = await getVariablesForPlacingOrder({
       wallet,
       connection,
