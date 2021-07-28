@@ -6,8 +6,6 @@ import { Paper } from '@material-ui/core'
 
 import Link from '@material-ui/core/Link'
 
-import { createTokens } from '@sb/dexUtils/pools'
-
 import { useWallet } from '@sb/dexUtils/wallet'
 import { Theme } from '@sb/types/materialUI'
 import {
@@ -36,6 +34,7 @@ import {
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { sleep } from '@core/utils/helpers'
+import { createTokens } from '@sb/dexUtils/createTokens'
 
 const WhiteText = styled(Title)`
   font-size: 1.4rem;

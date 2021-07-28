@@ -27,6 +27,7 @@ import { BlueButton } from '../Inputs/SelectWrapper/SelectWrapperStyles'
 import SvgIcon from '@sb/components/SvgIcon'
 import greenDoneMark from '@icons/greenDoneMark.svg'
 import { createToken } from '@sb/dexUtils/createToken'
+import { createTokens } from '@sb/dexUtils/createTokens'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
