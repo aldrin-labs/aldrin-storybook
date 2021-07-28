@@ -35,8 +35,6 @@ export const getVariablesForPlacingOrder = async ({
     wallet.publicKey
   )
 
-  OpenOrders
-
   console.log({
     openOrders,
     vaultSigner,

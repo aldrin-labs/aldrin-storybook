@@ -37,7 +37,9 @@ import { TransactionComponent } from './TransactionComponent'
 import { PopupFooter } from './PopupFooter'
 import { REBALANCE_CONFIG } from '../../Rebalance.config'
 import { getTransactionsListWithPrices } from '../../utils/getTransactionsListWithPrices'
-import { getVariablesForPlacingOrder } from '../../utils/placeOrderProgram/getVariablesForPlacingOrder'
+import { getVariablesForPlacingOrder } from '../../utils/marketOrderProgram/getVariablesForPlacingOrder'
+import { placeOrderForEachTransaction } from '../../utils/marketOrderProgram/placeAllOrders'
+import { loadMarketOrderProgram } from '../../utils/marketOrderProgram/loadProgram'
 
 export const RebalancePopup = ({
   rebalanceStep,
@@ -224,26 +226,39 @@ export const RebalancePopup = ({
                     allMarketsMap,
                   })
 
-                  const transactionsVariables = await Promise.all(
-                    transactionsList.map((transaction) => {
-                      const symbol = transaction.symbol
-                      const [base, quote] = symbol.split('_')
+                  // const transactionsVariables = await Promise.all(
+                  //   transactionsList.map((transaction) => {
+                  //     const symbol = transaction.symbol
+                  //     const [base, quote] = symbol.split('_')
 
-                      const tokenAccountA = tokensMap[base].address
-                      const tokenAccountB = tokensMap[quote].address
+                  //     const tokenAccountA = tokensMap[base].address
+                  //     const tokenAccountB = tokensMap[quote].address
 
-                      return getVariablesForPlacingOrder({
-                        wallet,
-                        connection,
-                        side: transaction.side,
-                        market: transaction.loadedMarket,
-                        tokenAccountA: new PublicKey(tokenAccountA),
-                        tokenAccountB: new PublicKey(tokenAccountB),
-                      })
-                    })
-                  )
+                  //     return getVariablesForPlacingOrder({
+                  //       wallet,
+                  //       connection,
+                  //       side: transaction.side,
+                  //       market: transaction.loadedMarket,
+                  //       tokenAccountA: new PublicKey(tokenAccountA),
+                  //       tokenAccountB: new PublicKey(tokenAccountB),
+                  //     })
+                  //   })
+                  // )
 
-                  console.log('transactionsVariables', transactionsVariables)
+                  const marketOrderProgram = loadMarketOrderProgram({
+                    wallet,
+                    connection
+                  })
+
+                  await placeOrderForEachTransaction({
+                    wallet,
+                    connection,
+                    marketOrderProgram,
+                    tokensMap,
+                    transactions: transactionsList  
+                  })
+
+                  // console.log('transactionsVariables', transactionsVariables)
 
                   // const swaps = getPoolsSwaps({
                   //   wallet,
