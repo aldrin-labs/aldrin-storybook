@@ -118,6 +118,71 @@ class SpreadTable extends Component<IProps> {
             </Table>
           )}
         </AutoSizerDesktop>
+        <AutoSizerMobile>
+          {({ width, height }: { width: number; height: number }) => (
+            <Table
+              disableHeader={mode !== 'bids'}
+              width={width}
+              height={height}
+              headerHeight={mode === 'both' ? height / 8 : height / 18}
+              onRowClick={({ event, index, rowData }) => {
+                updateTerminalPriceFromOrderbook(+rowData.price)
+              }}
+              headerStyle={{
+                color: '#7284A0',
+                paddingLeft: '.5rem',
+                marginLeft: 0,
+                marginRight: 0,
+                paddingTop: '.25rem',
+                letterSpacing: '.075rem',
+                borderBottom: theme.palette.border.main,
+                fontSize: '1rem',
+              }}
+              rowCount={tableData.length}
+              rowHeight={height / 6}
+              overscanRowCount={0}
+              rowGetter={({ index }) => tableData[index]}
+              rowRenderer={(...rest) =>
+                defaultRowRenderer({
+                  theme,
+                  ...rest[0],
+                  side: 'bids',
+                  aggregation,
+                  marketType,
+                  arrayOfMarketIds,
+                  amountForBackground,
+                  openOrderHistory,
+                })
+              }
+            >
+              <Column
+                label={mode === 'bids' ? `price` : ''}
+                dataKey="price"
+                headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
+                width={width}
+                style={{
+                  color: theme.palette.green.main,
+                  fontFamily: 'Avenir Next Demi',
+                  fontSize: '1.8rem',
+                }}
+              />
+              <Column
+                label={mode === 'bids' ? `total (${quote})` : ''}
+                dataKey="total"
+                width={width}
+                headerStyle={{
+                  paddingRight: 'calc(.5rem + 10px)',
+                  textAlign: 'right',
+                }}
+                style={{
+                  textAlign: 'right',
+                  color: theme.palette.white.primary,
+                  fontSize: '1.8rem',
+                }}
+              />
+            </Table>
+          )}
+        </AutoSizerMobile>
       </BidsWrapper>
     )
   }

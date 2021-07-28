@@ -44,6 +44,7 @@ import {
   OrderBookGrid,
   TradeHistoryGrid,
 } from '../Inputs/SelectWrapper/SelectWrapperStyles'
+import { TerminalComponentsContainer } from './styles'
 
 // fix props type
 export const DefaultViewComponent = (
@@ -213,7 +214,6 @@ export const DefaultViewComponent = (
               </Grid>
             </TradingTerminalContainer>
           </TopChartsContainer>
-
           <TradingTabelContainer
             item
             theme={theme}
@@ -252,7 +252,6 @@ export const DefaultViewComponent = (
               setShowTokenNotAdded={setShowTokenNotAdded}
             />
           </BalancesContainer>
-
           <TerminalContainer
             theme={theme}
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
@@ -280,7 +279,6 @@ export const DefaultViewComponent = (
               setShowTokenNotAdded={setShowTokenNotAdded}
             />
           </TerminalContainer>
-
           {/* <TradingBlocked
             pair={baseQuoteArr}
             theme={theme}

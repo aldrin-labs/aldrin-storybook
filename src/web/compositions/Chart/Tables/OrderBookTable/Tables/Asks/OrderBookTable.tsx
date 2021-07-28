@@ -141,7 +141,7 @@ class OrderBookTable extends Component<IProps> {
                 onRowClick={({ event, index, rowData }) => {
                   updateTerminalPriceFromOrderbook(+rowData.price)
                 }}
-                headerHeight={mode === 'both' ? height / 9 : height / 18}
+                headerHeight={height / 7}
                 headerStyle={{
                   color: theme.palette.grey.text,
                   paddingLeft: '.5rem',
@@ -149,10 +149,11 @@ class OrderBookTable extends Component<IProps> {
                   marginLeft: 0,
                   marginRight: 0,
                   letterSpacing: '.01rem',
-                  borderBottom: theme.palette.border.main,
-                  fontSize: '1rem',
+                  fontSize: '2rem',
+                  fontFamily: 'Avenir Next Light',
+                  textTransform: 'capitalize',
                 }}
-                rowHeight={mode === 'both' ? height / 9 : height / 18}
+                rowHeight={height / 7}
                 overscanRowCount={0}
                 scrollToIndex={tableData.length - 1}
                 rowGetter={({ index }) => tableData[index]}
@@ -177,6 +178,7 @@ class OrderBookTable extends Component<IProps> {
                   style={{
                     color: theme.palette.red.main,
                     fontFamily: 'Avenir Next Demi',
+                    fontSize: '1.8rem',
                   }}
                 />
 
@@ -191,6 +193,7 @@ class OrderBookTable extends Component<IProps> {
                   style={{
                     textAlign: 'right',
                     color: theme.palette.white.primary,
+                    fontSize: '1.8rem',
                   }}
                 />
               </StyledTable>

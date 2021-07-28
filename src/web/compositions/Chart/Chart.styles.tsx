@@ -320,7 +320,7 @@ export const TradingTerminalContainer = styled(
     flex-wrap: wrap;
   }
   @media (max-width: 600px) {
-    width: 50%;
+    width: 100%;
   }
 `
 
@@ -352,6 +352,10 @@ export const TopChartsContainer = styled(
   @media screen and (max-width: 1140px) {
     height: ${(props) =>
       props.isDefaultTerminalViewMode ? 'calc(61%)' : 'calc(51%)'};
+  }
+
+  @media screen and (max-width: 600px) {
+    flex-basis: 50%;
   }
 `
 
@@ -408,7 +412,9 @@ export const TradingTabelContainer = styled(
   @media (max-width: 1080px) {
     flex-wrap: nowrap;
   }
-
+  @media (max-width: 600px) {
+    display: none;
+  }
   flex: auto;
 `
 
@@ -482,6 +488,9 @@ export const BalancesContainer = styled(
   position: relative;
   padding: 0;
   height: ${(props) => (props.isDefaultTerminalViewMode ? '40%' : '50%')};
+  @media (max-width: 600px) {
+    display: none;
+  }
 `
 
 export const SmartTerminalContainer = styled(Grid)`

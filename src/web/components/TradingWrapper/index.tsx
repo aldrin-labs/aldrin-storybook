@@ -26,6 +26,8 @@ import {
   SettingsContainer,
   SettingsLabel,
   FuturesSettings,
+  BuyTerminal,
+  SellTerminal,
 } from './styles'
 
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
@@ -50,7 +52,7 @@ const generateToken = () =>
     .substring(2, 15)
 
 class SimpleTabs extends React.Component<any, any> {
-  state: { 
+  state: {
     mode: 'market' | 'limit'
   } = {
     side: 'buy',
@@ -116,7 +118,11 @@ class SimpleTabs extends React.Component<any, any> {
       this.setState({ tradingBotEnabled: false, tradingBotIsActive: false })
     }
 
-    if (prevProps.wallet.connected && this.props.wallet.connected && this.state.TVAlertsBotIsActive) {
+    if (
+      prevProps.wallet.connected &&
+      this.props.wallet.connected &&
+      this.state.TVAlertsBotIsActive
+    ) {
       this.unsubscribe()
 
       this.setState((prev) => ({
@@ -245,7 +251,7 @@ class SimpleTabs extends React.Component<any, any> {
         <CustomCard theme={theme} style={{ borderTop: 0, overflow: 'unset' }}>
           <TerminalHeader
             key={'spotTerminal'}
-            style={{ display: 'flex' }}
+            // style={{ display: 'flex' }}
             theme={theme}
           >
             <div
@@ -366,7 +372,11 @@ class SimpleTabs extends React.Component<any, any> {
                             })
                           }
                         />
-                        <SettingsLabel theme={theme} htmlFor="ioc" style={{ textTransform: 'uppercase' }}>
+                        <SettingsLabel
+                          theme={theme}
+                          htmlFor="ioc"
+                          style={{ textTransform: 'uppercase' }}
+                        >
                           ioc
                         </SettingsLabel>
                       </FuturesSettings>
@@ -382,7 +392,11 @@ class SimpleTabs extends React.Component<any, any> {
                     borderRight: 0,
                     borderLeft: theme.palette.border.main,
                     ...(TVAlertsBotIsActive
-                      ? { backgroundColor: '#F07878', color: '#fff', borderBottom: '0' }
+                      ? {
+                          backgroundColor: '#F07878',
+                          color: '#fff',
+                          borderBottom: '0',
+                        }
                       : {}),
                   }}
                   active={TVAlertsBotEnabled}
@@ -412,7 +426,7 @@ class SimpleTabs extends React.Component<any, any> {
                         top: 0,
                       }}
                     />
-                  )} 
+                  )}
                   {TVAlertsBotIsActive ? 'Stop Alert BOT' : 'Alert BOT'}
                 </TerminalModeButton>
                 {/* {pair.join('_') === 'SRM_USDT' && (
@@ -472,7 +486,7 @@ class SimpleTabs extends React.Component<any, any> {
                 />
               ) : (
                 <>
-                  <FullHeightGrid
+                  <BuyTerminal
                     theme={theme}
                     xs={6}
                     item
@@ -529,7 +543,7 @@ class SimpleTabs extends React.Component<any, any> {
                         }}
                       />
                     </TerminalContainer>
-                  </FullHeightGrid>
+                  </BuyTerminal>
 
                   {tradingBotEnabled && !tradingBotIsActive ? (
                     <FullHeightGrid theme={theme} xs={6} item>
@@ -680,7 +694,7 @@ class SimpleTabs extends React.Component<any, any> {
                       </TerminalContainer>
                     </FullHeightGrid>
                   ) : (
-                    <FullHeightGrid theme={theme} xs={6} item>
+                    <SellTerminal theme={theme} xs={6} item>
                       <TerminalContainer>
                         <TraidingTerminal
                           byType={'sell'}
@@ -724,7 +738,7 @@ class SimpleTabs extends React.Component<any, any> {
                           updateState={this.updateState}
                         />
                       </TerminalContainer>
-                    </FullHeightGrid>
+                    </SellTerminal>
                   )}
                 </>
               )}

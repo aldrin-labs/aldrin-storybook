@@ -14,7 +14,13 @@ export const LastTradeContainer = styled.div`
   background: ${(props) => props.theme.palette.white.background};
   border-top: ${(props) => props.theme.palette.border.main};
   border-bottom: ${(props) => props.theme.palette.border.main};
-  font-family: 'IBM Plex Sans Condensed', sans-serif;
+
+  @media (max-width: 600px) {
+    background: none;
+    border-right: ${(props) => props.theme.palette.border.main};
+    height: 6rem;
+    color: #fbf2f2;
+  }
 `
 
 export const LastTradeValue = styled.div`
@@ -33,6 +39,11 @@ export const LastTradePrice = styled.span`
   color: ${(props) => props.theme.palette.dark.main};
   letter-spacing: 0.075rem;
   padding-left: 1rem;
+
+  @media (max-width: 600px) {
+    font-size: 2.1rem;
+    font-family: Avenir Next Light;
+  }
 `
 
 export const ArrowIcon = styled(({ fall, ...rest }: { fall: boolean }) => (
