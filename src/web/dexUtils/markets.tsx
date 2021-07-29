@@ -163,7 +163,7 @@ export function useAllMarkets() {
           })
           return null
         }
-      })
+      }
     )
 
     console.log('getAllMarkets markets', markets)
