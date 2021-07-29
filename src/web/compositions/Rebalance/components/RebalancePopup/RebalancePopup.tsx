@@ -153,13 +153,15 @@ export const RebalancePopup = ({
             duration={20}
             callback={() => {
               // if rebalance didn't start
-              updateTransactionsList({
-                connection,
-                marketsData,
-                tokensDiff,
-                tokensMap,
-                allMarketsMap,
-              })
+              if (rebalanceStep === 'initial') {
+                updateTransactionsList({
+                  connection,
+                  marketsData,
+                  tokensDiff,
+                  tokensMap,
+                  allMarketsMap,
+                })
+              }
             }}
           />
           <SvgIcon
@@ -217,103 +219,105 @@ export const RebalancePopup = ({
                 onClick={async () => {
                   changeRebalanceStep('pending')
 
-                  // refresh data right before rebalance
-                  const transactionsList = await updateTransactionsList({
-                    connection,
-                    marketsData,
-                    tokensDiff,
-                    tokensMap,
-                    allMarketsMap,
-                  })
+                  try {
+                    // refresh data right before rebalance
+                    const transactionsList = await updateTransactionsList({
+                      connection,
+                      marketsData,
+                      tokensDiff,
+                      tokensMap,
+                      allMarketsMap,
+                    })
 
-                  // const transactionsVariables = await Promise.all(
-                  //   transactionsList.map((transaction) => {
-                  //     const symbol = transaction.symbol
-                  //     const [base, quote] = symbol.split('_')
+                    // const transactionsVariables = await Promise.all(
+                    //   transactionsList.map((transaction) => {
+                    //     const symbol = transaction.symbol
+                    //     const [base, quote] = symbol.split('_')
 
-                  //     const tokenAccountA = tokensMap[base].address
-                  //     const tokenAccountB = tokensMap[quote].address
+                    //     const tokenAccountA = tokensMap[base].address
+                    //     const tokenAccountB = tokensMap[quote].address
 
-                  //     return getVariablesForPlacingOrder({
-                  //       wallet,
-                  //       connection,
-                  //       side: transaction.side,
-                  //       market: transaction.loadedMarket,
-                  //       tokenAccountA: new PublicKey(tokenAccountA),
-                  //       tokenAccountB: new PublicKey(tokenAccountB),
-                  //     })
-                  //   })
-                  // )
+                    //     return getVariablesForPlacingOrder({
+                    //       wallet,
+                    //       connection,
+                    //       side: transaction.side,
+                    //       market: transaction.loadedMarket,
+                    //       tokenAccountA: new PublicKey(tokenAccountA),
+                    //       tokenAccountB: new PublicKey(tokenAccountB),
+                    //     })
+                    //   })
+                    // )
 
-                  const marketOrderProgram = loadMarketOrderProgram({
-                    wallet,
-                    connection
-                  })
+                    const marketOrderProgram = loadMarketOrderProgram({
+                      wallet,
+                      connection,
+                    })
 
-                  await placeOrderForEachTransaction({
-                    wallet,
-                    connection,
-                    marketOrderProgram,
-                    tokensMap,
-                    transactions: transactionsList  
-                  })
+                    await placeOrderForEachTransaction({
+                      wallet,
+                      connection,
+                      marketOrderProgram,
+                      tokensMap,
+                      transactions: transactionsList,
+                    }).then(() => {
+                      changeRebalanceStep('done')
+                      setLoadingRebalanceData(true)
+                      setTimeout(() => {
+                        refreshRebalance()
+                      }, 7500)
+                    })
 
-                  // console.log('transactionsVariables', transactionsVariables)
+                    // console.log('transactionsVariables', transactionsVariables)
 
-                  // const swaps = getPoolsSwaps({
-                  //   wallet,
-                  //   connection,
-                  //   transactionsList: rebalanceTransactionsList,
-                  //   tokensMap,
-                  // })
+                    // const swaps = getPoolsSwaps({
+                    //   wallet,
+                    //   connection,
+                    //   transactionsList: rebalanceTransactionsList,
+                    //   tokensMap,
+                    // })
 
-                  // try {
-                  //   setPendingStateText('Creating swaps...')
-                  //   const promisedSwaps = await Promise.all(
-                  //     swaps.map((el) => swap(el))
-                  //   )
-                  //   const swapsTransactions = promisedSwaps.map((el) => el[0])
+                    // try {
+                    //   setPendingStateText('Creating swaps...')
+                    //   const promisedSwaps = await Promise.all(
+                    //     swaps.map((el) => swap(el))
+                    //   )
+                    //   const swapsTransactions = promisedSwaps.map((el) => el[0])
 
-                  //   const swapTransactionsGroups = getSwapsChunks(
-                  //     swapsTransactions,
-                  //     REBALANCE_CONFIG.SWAPS_PER_TRANSACTION_LIMIT
-                  //   )
-                  //   console.log(
-                  //     'swapTransactionsGroups: ',
-                  //     swapTransactionsGroups
-                  //   )
+                    //   const swapTransactionsGroups = getSwapsChunks(
+                    //     swapsTransactions,
+                    //     REBALANCE_CONFIG.SWAPS_PER_TRANSACTION_LIMIT
+                    //   )
+                    //   console.log(
+                    //     'swapTransactionsGroups: ',
+                    //     swapTransactionsGroups
+                    //   )
 
-                  //   await Promise.all(
-                  //     swapTransactionsGroups.map(
-                  //       async (swapTransactionGroup) => {
-                  //         setPendingStateText('Creating transaction...')
-                  //         const commonTransaction = new Transaction().add(
-                  //           ...swapTransactionGroup
-                  //         )
-                  //         setPendingStateText(
-                  //           'Awaitng for Rebalance confirmation...'
-                  //         )
-                  //         await sendAndConfirmTransactionViaWallet(
-                  //           wallet,
-                  //           connection,
-                  //           commonTransaction
-                  //         )
-                  //       }
-                  //     )
-                  //   )
+                    //   await Promise.all(
+                    //     swapTransactionsGroups.map(
+                    //       async (swapTransactionGroup) => {
+                    //         setPendingStateText('Creating transaction...')
+                    //         const commonTransaction = new Transaction().add(
+                    //           ...swapTransactionGroup
+                    //         )
+                    //         setPendingStateText(
+                    //           'Awaitng for Rebalance confirmation...'
+                    //         )
+                    //         await sendAndConfirmTransactionViaWallet(
+                    //           wallet,
+                    //           connection,
+                    //           commonTransaction
+                    //         )
+                    //       }
+                    //     )
+                    //   )
 
-                  //   // After all completed
-                  //   changeRebalanceStep('done')
-                  //   setLoadingRebalanceData(true)
-                  //   setTimeout(() => {
-                  //     refreshRebalance()
-                  //   }, 15000)
-                  // } catch (e) {
-                  //   console.log('e: ', e)
-                  //   changeRebalanceStep('failed')
-                  // }
+                    // After all completed
+                  } catch (e) {
+                    console.log('e: ', e)
+                    changeRebalanceStep('failed')
+                  }
 
-                  // setTimeout(() => {
+                  // await setTimeout(() => {
                   //   changeRebalanceStep('initial')
                   // }, 5000)
                 }}

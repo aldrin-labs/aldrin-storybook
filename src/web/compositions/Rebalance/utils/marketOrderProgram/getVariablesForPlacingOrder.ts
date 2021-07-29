@@ -22,13 +22,13 @@ export const getVariablesForPlacingOrder = async ({
   tokenAccountB: PublicKey,
 }) => {
   const isBuySide = side === 'buy' // swap b-a, sell - swap a - b
-  const [tokenA, tokenB] = isBuySide ? [tokenAccountA, tokenAccountB] : [tokenAccountB, tokenAccountA]
+  const orderPayerTokenAccount = isBuySide ? tokenAccountB : tokenAccountA
 
   // market
   // marketA for buy, marketB for sell
   // marketA_marketB
 
-  const vaultSigner = await getVaultOwnerAndNonce(market._decoded.ownAddress)
+  const [vaultSigner] = await getVaultOwnerAndNonce(market._decoded.ownAddress)
 
   const openOrders = await market.findOpenOrdersAccountsForOwner(
     connection,
@@ -39,8 +39,8 @@ export const getVariablesForPlacingOrder = async ({
     openOrders,
     vaultSigner,
     market,
-    tokenA: tokenA.toString(),
-    tokenB: tokenB.toString(),
+    tokenA: tokenAccountA.toString(),
+    tokenB: tokenAccountB.toString(),
     side
   })
 
@@ -56,10 +56,10 @@ export const getVariablesForPlacingOrder = async ({
 
       vaultSigner,
       openOrders: openOrders ? openOrders[0].publicKey : null,
-      orderPayerTokenAccount: tokenB, // token address
-      coinWallet: tokenA, // token address
+      orderPayerTokenAccount, // token address
+      coinWallet: tokenAccountA, // token address
     },
-    pcWallet: tokenB, // token address
+    pcWallet: tokenAccountB, // token address
     authority: wallet.publicKey,
     dexProgram: DEX_PID,
     tokenProgram: TOKEN_PROGRAM_ID,

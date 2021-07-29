@@ -34,14 +34,15 @@ export const placeOrderForEachTransaction = async ({
     const { address: tokenAccountA, decimals: tokenADecimals } = tokensMap[base]
     const { address: tokenAccountB, decimals: tokenBDecimals } = tokensMap[quote]
 
-    const swapAmount = transaction.amount * (10 ** (isBuySide ? tokenBDecimals : tokenADecimals))
-    const swapTotal = transaction.total * (10 ** (isBuySide ? tokenBDecimals : tokenADecimals))
+    const swapAmount = transaction.amount * (10 ** tokenADecimals)
+    const swapTotal = transaction.total * (10 ** tokenBDecimals)
 
     console.log({
       tokenAccountA,
       tokenAccountB,
       swapAmount,
       swapTotal,
+      wallet
     })
 
     const variablesForPlacingOrder = await getVariablesForPlacingOrder({
@@ -70,9 +71,9 @@ export const placeOrderForEachTransaction = async ({
 
     commonTransaction.add(
       await marketOrderProgram.instruction.swap(
-        transaction.side === 'buy' ? Side.Ask : Side.Bid,
-        new BN(swapAmount),
-        new BN(swapTotal),
+        isBuySide ? Side.Bid : Side.Ask,
+        new BN(isBuySide ? swapTotal : swapAmount),
+        new BN(isBuySide ? swapAmount : swapTotal),
         {
           accounts: variablesForPlacingOrder,
         }
@@ -85,6 +86,8 @@ export const placeOrderForEachTransaction = async ({
       commonTransaction = new Transaction()
     }
   }
+
+  console.log('commonTransaction', commonTransaction)
 
   if (transactions.length % 2 === 0) {
     return
