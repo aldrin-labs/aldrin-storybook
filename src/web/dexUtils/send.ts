@@ -1055,6 +1055,8 @@ export async function sendTransaction({
     transaction.partialSign(...signers)
   }
 
+  console.log('transaction', transaction)
+
   const transactionFromWallet = await wallet.signTransaction(transaction)
 
   console.log('sendTransaction transactionFromWallet: ', transactionFromWallet)
