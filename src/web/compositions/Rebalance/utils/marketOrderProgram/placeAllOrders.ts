@@ -25,7 +25,7 @@ export const placeOrderForEachTransaction = async ({
   const Side = { Ask: { ask: {} }, Bid: { bid: {} } }
 
   let commonTransaction = new Transaction()
-  let i = 1
+  let i = 0
 
   for (const transaction of transactions) {
     const isBuySide = transaction.side === 'buy'
@@ -80,6 +80,7 @@ export const placeOrderForEachTransaction = async ({
       )
     )
 
+    i++
     // if more than 2, split by 2 max in one transaction
     if (i % 2 === 0) {
       await sendAndConfirmTransactionViaWallet(wallet, connection, commonTransaction)
