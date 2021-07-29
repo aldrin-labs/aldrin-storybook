@@ -259,13 +259,13 @@ export const RebalancePopup = ({
                       marketOrderProgram,
                       tokensMap,
                       transactions: transactionsList,
-                    }).then(() => {
-                      changeRebalanceStep('done')
-                      setLoadingRebalanceData(true)
-                      setTimeout(() => {
-                        refreshRebalance()
-                      }, 7500)
                     })
+
+                    await changeRebalanceStep('done')
+                    await setLoadingRebalanceData(true)
+                    await setTimeout(() => {
+                      refreshRebalance()
+                    }, 7500)
 
                     // console.log('transactionsVariables', transactionsVariables)
 

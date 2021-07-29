@@ -32,17 +32,19 @@ export const placeOrderForEachTransaction = async ({
     const [base, quote] = transaction.symbol.split('_')
 
     const { address: tokenAccountA, decimals: tokenADecimals } = tokensMap[base]
-    const { address: tokenAccountB, decimals: tokenBDecimals } = tokensMap[quote]
+    const { address: tokenAccountB, decimals: tokenBDecimals } = tokensMap[
+      quote
+    ]
 
-    const swapAmount = transaction.amount * (10 ** tokenADecimals)
-    const swapTotal = transaction.total * (10 ** tokenBDecimals)
+    const swapAmount = transaction.amount * 10 ** tokenADecimals
+    const swapTotal = transaction.total * 10 ** tokenBDecimals
 
     console.log({
       tokenAccountA,
       tokenAccountB,
       swapAmount,
       swapTotal,
-      wallet
+      wallet,
     })
 
     const variablesForPlacingOrder = await getVariablesForPlacingOrder({
@@ -80,10 +82,24 @@ export const placeOrderForEachTransaction = async ({
       )
     )
 
+    console.log(
+      'place order args',
+      isBuySide ? Side.Bid : Side.Ask,
+      new BN(isBuySide ? swapTotal : swapAmount),
+      new BN(isBuySide ? swapAmount : swapTotal),
+      {
+        accounts: variablesForPlacingOrder,
+      }
+    )
+
     i++
     // if more than 2, split by 2 max in one transaction
-    if (i % 2 === 0) {
-      await sendAndConfirmTransactionViaWallet(wallet, connection, commonTransaction)
+    if (i % 1 === 0) {
+      await sendAndConfirmTransactionViaWallet(
+        wallet,
+        connection,
+        commonTransaction
+      )
       commonTransaction = new Transaction()
     }
   }
@@ -94,6 +110,10 @@ export const placeOrderForEachTransaction = async ({
     return
   } else {
     // send rest transactions
-    await sendAndConfirmTransactionViaWallet(wallet, connection, commonTransaction)
+    await sendAndConfirmTransactionViaWallet(
+      wallet,
+      connection,
+      commonTransaction
+    )
   }
 }
