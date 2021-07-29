@@ -54,7 +54,7 @@ import DevUrlPopup from '@sb/components/PopupForDevUrl'
 import WalletMigrationPopup from '@sb/components/WalletMigrationPopup'
 import { TokenRegistryProvider } from '@sb/dexUtils/tokenRegistry'
 
-const version = `10.9.140`
+const version = `10.9.141`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
 const isNotificationDone = localStorage.getItem('isNotificationDone')
 const isWalletMigrationToNewUrlPopupDone = localStorage.getItem(
