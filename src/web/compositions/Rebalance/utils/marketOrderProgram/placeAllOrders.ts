@@ -1,9 +1,12 @@
+import { roundDown } from '@core/utils/chartPageUtils'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { OpenOrders } from '@project-serum/serum'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { WalletAdapter } from '@sb/dexUtils/adapters'
 import { DEX_PID } from '@sb/dexUtils/config'
 import { transferSOLToWrappedAccountAndClose } from '@sb/dexUtils/pools'
 import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/send-and-confirm-transaction-via-wallet'
+import { getDecimalCount } from '@sb/dexUtils/utils'
 import { Account, Connection, PublicKey, Transaction } from '@solana/web3.js'
 import BN from 'bn.js'
 import { TokensMapType, TransactionType } from '../../Rebalance.types'
@@ -47,6 +50,8 @@ export const placeOrderForEachTransaction = async ({
 
   for (const transaction of transactions) {
     const isBuySide = transaction.side === 'buy'
+    const market = transaction.loadedMarket
+
     const [base, quote] = transaction.symbol.split('_')
 
     let {
@@ -65,8 +70,8 @@ export const placeOrderForEachTransaction = async ({
       tokenAMint === WRAPPED_SOL_MINT.toString() ||
       tokenBMint === WRAPPED_SOL_MINT.toString()
 
-    const swapAmount = transaction.amount * 10 ** tokenADecimals
-    const swapTotal = transaction.total * 10 ** tokenBDecimals
+    const swapAmount = +(transaction.amount * 10 ** tokenADecimals).toFixed(0)
+    const swapTotal = +(transaction.total * 10 ** tokenBDecimals).toFixed(0)
 
     console.log({
       tokenAccountA,
@@ -161,8 +166,8 @@ export const placeOrderForEachTransaction = async ({
     console.log(
       'place order args',
       isBuySide ? Side.Bid : Side.Ask,
-      new BN(isBuySide ? swapTotal : swapAmount),
-      new BN(isBuySide ? swapAmount : swapTotal),
+      isBuySide ? swapTotal : swapAmount,
+      isBuySide ? swapAmount : swapTotal,
       {
         accounts: variablesForPlacingOrder,
       }

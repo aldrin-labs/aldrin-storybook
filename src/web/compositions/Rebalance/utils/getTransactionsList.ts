@@ -10,6 +10,9 @@ import { Graph } from '@core/utils/graph/Graph'
 import { REBALANCE_CONFIG } from '../Rebalance.config'
 import { LoadedMarketsMap } from './loadMarketsByNames'
 import { getPricesForTransactionsFromOrderbook } from './getPricesForTransactionsFromOrderbook'
+import { roundDown } from '@core/utils/chartPageUtils'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import { getDecimalCount } from '@sb/dexUtils/utils'
 
 export const getTransactionsList = ({
   tokensDiff,
@@ -116,11 +119,26 @@ export const getTransactionsList = ({
           const tokenAmount = isIntermidiate
             ? tempToken.amount
             : toSellTokenAmount
+
           const feeMultiplicator = (100 - REBALANCE_CONFIG.POOL_FEE) / 100
 
-          // we're getting price from ob here because price is required  
-          // to get total from amount for next rebalance chain element 
-          const [
+          const loadedMarket = loadedMarketsMap[symbol]
+
+          const funcToRound =
+            loadedMarket?.minOrderSize >= 1
+              ? (num, precision) => roundDown(num, precision)
+              : (num, precision) => stripDigitPlaces(num, precision)
+
+          const quantityPrecision =
+            loadedMarket?.minOrderSize &&
+            getDecimalCount(loadedMarket.minOrderSize)
+
+          const pricePrecision =
+            loadedMarket?.tickSize && getDecimalCount(loadedMarket.tickSize)
+
+          // we're getting price from ob here because price is required
+          // to get total from amount for next rebalance chain element
+          let [
             [{ price, notEnoughLiquidity }],
             updatedOrderbooks,
           ] = getPricesForTransactionsFromOrderbook({
@@ -128,44 +146,40 @@ export const getTransactionsList = ({
             transactionsList: [{ side, amount: tokenAmount, symbol }],
           })
 
-          // update orderbook data due to making some updates in this transaction 
+          price = +funcToRound(price, pricePrecision)
+          // update orderbook data due to making some updates in this transaction
           // so in next t-on this orders will be included
           orderbooksClone = updatedOrderbooks
 
-          const moduleAmountDiff = tokenAmount
-          const amountRaw = +(base === pathSymbol
-            ? moduleAmountDiff
-            : moduleAmountDiff / price
-          ).toFixed(tokensMap[base].decimalCount)
+          const slippage = REBALANCE_CONFIG.POOL_FEE
+          const slippageMultiplicator = (100 - slippage) / 100
 
-          const totalRaw = +(amountRaw * price).toFixed(
+          const moduleAmountDiff = tokenAmount
+          const amount = +funcToRound(
+            base === pathSymbol
+              ? moduleAmountDiff
+              : (moduleAmountDiff / price) *
+                  (side === 'buy' ? slippageMultiplicator : 1),
+            quantityPrecision
+          )
+
+          const totalRaw = +(amount * price).toFixed(
             tokensMap[quote].decimalCount
           )
 
           // getting slippage
           // const poolsAmountDiff = side === 'sell' ? poolPair.tokenA / amountRaw : poolPair.tokenB / totalRaw
           // const rawSlippage = 100 / (poolsAmountDiff + 1)
-          const slippage = REBALANCE_CONFIG.POOL_FEE
-          const slippageMultiplicator = (100 - slippage) / 100
-
           // console.log('poolsAmountDiff: ', poolsAmountDiff)
           // console.log('rawSlippage: ', rawSlippage)
           // console.log('slippage: ', slippage)
-
-          const amount = +(
-            (base === pathSymbol
-              ? moduleAmountDiff
-              : moduleAmountDiff / price) *
-            (side === 'buy' ? slippageMultiplicator : 1)
-          ).toFixed(tokensMap[base].decimalCount)
-
           // console.log('price', price)
 
           const total = +(
-            amountRaw *
+            amount *
             price *
             (side === 'sell' ? slippageMultiplicator : 1)
-          ).toFixed(tokensMap[quote].decimalCount)
+          )
 
           // console.log(
           //   `side ${side}, amountRaw: ${amountRaw}, totalRaw ${totalRaw}, finalAmount ${amount}, finalTotal ${total}`
@@ -179,10 +193,8 @@ export const getTransactionsList = ({
           const feeUSD =
             (side === 'sell'
               ? totalRaw - totalRaw * feeMultiplicator
-              : amountRaw - amountRaw * feeMultiplicator) *
+              : amount - amount * feeMultiplicator) *
             tokensMap[side === 'sell' ? quote : base].price
-
-          const loadedMarket = loadedMarketsMap[symbol]
 
           allTransactions.push({
             tokenA: base,

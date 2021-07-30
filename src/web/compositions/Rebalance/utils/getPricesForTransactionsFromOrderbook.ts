@@ -21,13 +21,15 @@ export const getPricesForTransactionsFromOrderbook = ({
     const orderbookBySymbol = orderbooksClone[transaction.symbol]
 
     if (!orderbookBySymbol)
-      return{ price: 0, symbol: transaction.symbol, notEnoughLiquidity: true }
-      
+      return { price: 0, symbol: transaction.symbol, notEnoughLiquidity: true }
 
     const orderbookBySide = orderbookBySymbol[orderbookSide]
 
     if (!orderbookBySide)
       return { price: 0, symbol: transaction.symbol, notEnoughLiquidity: true }
+
+    // delete best ask/bids because it may change quickly
+    orderbookBySide.shift()
 
     let obDataToModify = [...orderbookBySide]
 
