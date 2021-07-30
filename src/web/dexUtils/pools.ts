@@ -1099,6 +1099,43 @@ export const closeSolAccount = async ({
   )
 }
 
+export const createSOLAccountAndClose = async ({
+  wallet,
+  connection,
+}: {
+  wallet: WalletAdapter
+  connection: Connection
+}): Promise<[PublicKey, Transaction, Account, Transaction]> => {
+  // if SOL - create new token address
+
+  const tokenMint = new Token(
+    wallet,
+    connection,
+    WRAPPED_SOL_MINT,
+    TOKEN_PROGRAM_ID
+  )
+
+  const [
+    createdWrappedAccount,
+    createWrappedAccountSigner,
+    createWrappedAccountTransaction,
+  ] = await tokenMint.createAccount(wallet.publicKey)
+
+  const [closeAccountTransaction] = await tokenMint.closeAccount(
+    createdWrappedAccount,
+    wallet.publicKey,
+    wallet.publicKey,
+    []
+  )
+
+  return [
+    createdWrappedAccount,
+    createWrappedAccountTransaction,
+    createWrappedAccountSigner,
+    closeAccountTransaction,
+  ]
+}
+
 /**
  * Transfer amount of SOL from native account to wrapped to be able to interact with pools
  * @returns Address, transaction for creation this account and closing
@@ -1193,4 +1230,3 @@ export const getParsedTransactionData = async ({
     console.log('e', e)
   }
 }
-

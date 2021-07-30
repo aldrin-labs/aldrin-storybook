@@ -4,7 +4,10 @@ import { OpenOrders } from '@project-serum/serum'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { WalletAdapter } from '@sb/dexUtils/adapters'
 import { DEX_PID } from '@sb/dexUtils/config'
-import { transferSOLToWrappedAccountAndClose } from '@sb/dexUtils/pools'
+import {
+  createSOLAccountAndClose,
+  transferSOLToWrappedAccountAndClose,
+} from '@sb/dexUtils/pools'
 import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/send-and-confirm-transaction-via-wallet'
 import { getDecimalCount } from '@sb/dexUtils/utils'
 import { Account, Connection, PublicKey, Transaction } from '@solana/web3.js'
@@ -90,12 +93,24 @@ export const placeAllOrders = async ({
       await sendTransaction()
 
       const isSOLBaseAccount = tokenAMint === WRAPPED_SOL_MINT.toString()
+      const needTransferSOL = isSOLBaseAccount
+        ? transaction.side === 'sell'
+        : isBuySide
 
-      const result = await transferSOLToWrappedAccountAndClose({
-        wallet,
-        connection,
-        amount: isSOLBaseAccount ? swapAmount : swapTotal,
-      })
+      let result
+      
+      if (needTransferSOL) {
+        result = await transferSOLToWrappedAccountAndClose({
+          wallet,
+          connection,
+          amount: isSOLBaseAccount ? swapAmount : swapTotal,
+        })
+      } else {
+        result = await createSOLAccountAndClose({
+          wallet,
+          connection,
+        })
+      }
 
       // change account to use from native to wrapped
       const [
@@ -131,7 +146,10 @@ export const placeAllOrders = async ({
     // 32 weight uniq, in total without next transaction same keys 128
     if (!variablesForPlacingOrder.market.openOrders) {
       // 2 market orders + create 2 openOrders account => exceed limit
-      if (!isTransactionWithNativeSOL && commonTransaction.instructions.length > 1) {
+      if (
+        !isTransactionWithNativeSOL &&
+        commonTransaction.instructions.length > 1
+      ) {
         await sendTransaction()
       }
 
