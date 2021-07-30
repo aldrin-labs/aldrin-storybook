@@ -1,4 +1,5 @@
 import { TAKER_FEE } from '@sb/dexUtils/config'
+import { REBALANCE_CONFIG } from '../Rebalance.config'
 import { OrderbooksMap } from './getOrderbookForMarkets'
 
 export const addTakerFeesToPricesInOrderbooks = ({
@@ -14,7 +15,7 @@ export const addTakerFeesToPricesInOrderbooks = ({
       })
 
       const bidsWithTakerFees = orderbook.bids.map(([price, amount]) => {
-        const priceWithTakerFee = price * (1 + TAKER_FEE)
+        const priceWithTakerFee = price * (1 - TAKER_FEE)
         return [priceWithTakerFee, amount]
       })
 

@@ -38,7 +38,7 @@ import { PopupFooter } from './PopupFooter'
 import { REBALANCE_CONFIG } from '../../Rebalance.config'
 import { getTransactionsListWithPrices } from '../../utils/getTransactionsListWithPrices'
 import { getVariablesForPlacingOrder } from '../../utils/marketOrderProgram/getVariablesForPlacingOrder'
-import { placeOrderForEachTransaction } from '../../utils/marketOrderProgram/placeAllOrders'
+import { placeAllOrders } from '../../utils/marketOrderProgram/placeAllOrders'
 import { loadMarketOrderProgram } from '../../utils/marketOrderProgram/loadProgram'
 
 export const RebalancePopup = ({
@@ -253,7 +253,7 @@ export const RebalancePopup = ({
                       connection,
                     })
 
-                    await placeOrderForEachTransaction({
+                    await placeAllOrders({
                       wallet,
                       connection,
                       marketOrderProgram,
@@ -266,7 +266,7 @@ export const RebalancePopup = ({
                     await setTimeout(async () => {
                       await refreshRebalance()
                       await close()
-                    }, 2000)
+                    }, 5000)
 
                     // console.log('transactionsVariables', transactionsVariables)
 

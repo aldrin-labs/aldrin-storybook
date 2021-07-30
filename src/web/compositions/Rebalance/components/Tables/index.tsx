@@ -449,6 +449,7 @@ const RebalanceTable = ({
   loadingRebalanceData: boolean
 }) => {
   const [isAddCoinPopupOpen, openAddCoinPopup] = useState(false)
+  console.log('data', data)
 
   return (
     <RowContainer height={'80%'} align={'flex-end'}>

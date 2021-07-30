@@ -47,6 +47,7 @@ import {
 import { useCallback } from 'react'
 import { processAllTokensData } from './utils/processAllTokensData'
 import { useAllMarketsList } from '@sb/dexUtils/markets'
+import { filterDuplicateTokensByAmount } from './utils/filterDuplicateTokensByAmount'
 
 // const MemoizedCurrentValueChartWithLegend = React.memo(
 //   DonutChartWithLegend,
@@ -154,9 +155,15 @@ const RebalanceComposition = ({
           connection
         )
 
-        const tokensWithPrices = await getPricesForTokens(allTokensData)
-        console.log('tokensWithPrices', tokensWithPrices)
+        const filteredAllTokensData = filterDuplicateTokensByAmount(
+          allTokensData
+        )
+
+        // console.log('filteredAllTokensData', filteredAllTokensData)
+        const tokensWithPrices = await getPricesForTokens(filteredAllTokensData)
+        // console.log('tokensWithPrices', tokensWithPrices)
         const tokensWithTokenValue = getTokenValuesForTokens(tokensWithPrices)
+        // console.log('tokensWithTokenValue', tokensWithTokenValue)
         const totalTokenValue = getTotalTokenValue(tokensWithTokenValue)
 
         const marketsData = await getMarketsData(allMarketsMap)
@@ -203,7 +210,9 @@ const RebalanceComposition = ({
       console.log('marketsData', marketsData)
 
       const allTokensData = await getAllTokensData(wallet.publicKey, connection)
-      const allTokensDataWithValues = allTokensData.map((token) => ({
+      const filteredAllTokensData = filterDuplicateTokensByAmount(allTokensData)
+
+      const allTokensDataWithValues = filteredAllTokensData.map((token) => ({
         ...token,
         ...(tokensMap[token.symbol] ? tokensMap[token.symbol] : {}),
       }))

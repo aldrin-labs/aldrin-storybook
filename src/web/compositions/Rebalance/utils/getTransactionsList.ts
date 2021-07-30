@@ -120,14 +120,17 @@ export const getTransactionsList = ({
             ? tempToken.amount
             : toSellTokenAmount
 
+          console.log('tokenAmount', tokenAmount)
+
           const feeMultiplicator = (100 - REBALANCE_CONFIG.POOL_FEE) / 100
 
           const loadedMarket = loadedMarketsMap[symbol]
 
-          const funcToRound =
-            loadedMarket?.minOrderSize >= 1
-              ? (num, precision) => roundDown(num, precision)
-              : (num, precision) => stripDigitPlaces(num, precision)
+          const funcToRound = (minSize: number) =>
+            minSize >= 1
+              ? (num: number) => roundDown(num, minSize)
+              : (num: number, precision: number) =>
+                  stripDigitPlaces(num, precision)
 
           const quantityPrecision =
             loadedMarket?.minOrderSize &&
@@ -146,7 +149,8 @@ export const getTransactionsList = ({
             transactionsList: [{ side, amount: tokenAmount, symbol }],
           })
 
-          price = +funcToRound(price, pricePrecision)
+          price = +funcToRound(loadedMarket?.tickSize)(price, pricePrecision)
+          console.log('price', price)
           // update orderbook data due to making some updates in this transaction
           // so in next t-on this orders will be included
           orderbooksClone = updatedOrderbooks
@@ -155,7 +159,7 @@ export const getTransactionsList = ({
           const slippageMultiplicator = (100 - slippage) / 100
 
           const moduleAmountDiff = tokenAmount
-          const amount = +funcToRound(
+          const amount = +funcToRound(loadedMarket?.minOrderSize)(
             base === pathSymbol
               ? moduleAmountDiff
               : (moduleAmountDiff / price) *

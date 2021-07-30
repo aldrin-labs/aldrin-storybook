@@ -12,7 +12,7 @@ import BN from 'bn.js'
 import { TokensMapType, TransactionType } from '../../Rebalance.types'
 import { getVariablesForPlacingOrder } from './getVariablesForPlacingOrder'
 
-export const placeOrderForEachTransaction = async ({
+export const placeAllOrders = async ({
   wallet,
   connection,
   transactions,
