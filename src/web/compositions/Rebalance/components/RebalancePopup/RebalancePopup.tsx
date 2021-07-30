@@ -263,9 +263,10 @@ export const RebalancePopup = ({
 
                     await changeRebalanceStep('done')
                     await setLoadingRebalanceData(true)
-                    await setTimeout(() => {
-                      refreshRebalance()
-                    }, 7500)
+                    await setTimeout(async () => {
+                      await refreshRebalance()
+                      await close()
+                    }, 2000)
 
                     // console.log('transactionsVariables', transactionsVariables)
 

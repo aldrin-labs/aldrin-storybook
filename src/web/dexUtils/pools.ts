@@ -1103,7 +1103,7 @@ export const closeSolAccount = async ({
  * Transfer amount of SOL from native account to wrapped to be able to interact with pools
  * @returns Address, transaction for creation this account and closing
  */
-const transferSOLToWrappedAccountAndClose = async ({
+export const transferSOLToWrappedAccountAndClose = async ({
   wallet,
   connection,
   amount,

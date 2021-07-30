@@ -1,6 +1,8 @@
 import { OpenOrders } from '@project-serum/serum'
+import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { WalletAdapter } from '@sb/dexUtils/adapters'
 import { DEX_PID } from '@sb/dexUtils/config'
+import { transferSOLToWrappedAccountAndClose } from '@sb/dexUtils/pools'
 import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/send-and-confirm-transaction-via-wallet'
 import { Account, Connection, PublicKey, Transaction } from '@solana/web3.js'
 import BN from 'bn.js'
@@ -21,20 +23,47 @@ export const placeOrderForEachTransaction = async ({
   marketOrderProgram: any
 }) => {
   // place max 2 orders in one transaction, if need to create oo - probably one, determine it.
-  //
+  // 2 orders + 2 create OO, or 1 order + sol token address, if no extra transactions - 2 orders
   const Side = { Ask: { ask: {} }, Bid: { bid: {} } }
 
   let commonTransaction = new Transaction()
+  let commonSigners: Account[] = []
   let i = 0
+
+  const sendTransaction = async () => {
+    if (commonTransaction.instructions.length > 0) {
+      await sendAndConfirmTransactionViaWallet(
+        wallet,
+        connection,
+        commonTransaction,
+        ...commonSigners
+      )
+
+      commonTransaction = new Transaction()
+      commonSigners = []
+      i = 0
+    }
+  }
 
   for (const transaction of transactions) {
     const isBuySide = transaction.side === 'buy'
     const [base, quote] = transaction.symbol.split('_')
 
-    const { address: tokenAccountA, decimals: tokenADecimals } = tokensMap[base]
-    const { address: tokenAccountB, decimals: tokenBDecimals } = tokensMap[
-      quote
-    ]
+    let {
+      address: tokenAccountA,
+      decimals: tokenADecimals,
+      mint: tokenAMint,
+    } = tokensMap[base]
+
+    let {
+      address: tokenAccountB,
+      decimals: tokenBDecimals,
+      mint: tokenBMint,
+    } = tokensMap[quote]
+
+    const isTransactionWithNativeSOL =
+      tokenAMint === WRAPPED_SOL_MINT.toString() ||
+      tokenBMint === WRAPPED_SOL_MINT.toString()
 
     const swapAmount = transaction.amount * 10 ** tokenADecimals
     const swapTotal = transaction.total * 10 ** tokenBDecimals
@@ -47,6 +76,43 @@ export const placeOrderForEachTransaction = async ({
       wallet,
     })
 
+    const afterSwapTransaction = new Transaction()
+
+    // create sol token account if native used - 160 weight
+    if (isTransactionWithNativeSOL) {
+      // due to exceeding the limit in case of concating 2 market orders + sol token creation
+      // we need to place prev market order, because we cannot concat with current market order
+      await sendTransaction()
+
+      const isSOLBaseAccount = tokenAMint === WRAPPED_SOL_MINT.toString()
+
+      const result = await transferSOLToWrappedAccountAndClose({
+        wallet,
+        connection,
+        amount: isSOLBaseAccount ? swapAmount : swapTotal,
+      })
+
+      // change account to use from native to wrapped
+      const [
+        SOLTokenAddress,
+        createWrappedAccountTransaction,
+        createWrappedAccountTransactionSigner,
+        closeAccountTransaction,
+      ] = result
+
+      // set new sol accout
+      if (isSOLBaseAccount) {
+        tokenAccountA = SOLTokenAddress.toString()
+      } else {
+        tokenAccountB = SOLTokenAddress.toString()
+      }
+
+      commonTransaction.add(createWrappedAccountTransaction)
+      commonSigners.push(createWrappedAccountTransactionSigner)
+
+      afterSwapTransaction.add(closeAccountTransaction)
+    }
+
     const variablesForPlacingOrder = await getVariablesForPlacingOrder({
       wallet,
       connection,
@@ -56,10 +122,18 @@ export const placeOrderForEachTransaction = async ({
       tokenAccountB: new PublicKey(tokenAccountB),
     })
 
-    // create oo if no
+    // create openOrders account if no created already
+    // 32 weight uniq, in total without next transaction same keys 128
     if (!variablesForPlacingOrder.market.openOrders) {
-      const openOrdersAccount = new Account()
+      // 2 market orders + create 2 openOrders account => exceed limit
+      if (!isTransactionWithNativeSOL && commonTransaction.instructions.length > 1) {
+        await sendTransaction()
+      }
 
+      const openOrdersAccount = new Account()
+      variablesForPlacingOrder.market.openOrders = openOrdersAccount.publicKey
+
+      commonSigners.push(openOrdersAccount)
       commonTransaction.add(
         await OpenOrders.makeCreateAccountTransaction(
           connection,
@@ -71,6 +145,7 @@ export const placeOrderForEachTransaction = async ({
       )
     }
 
+    // 544 weight
     commonTransaction.add(
       await marketOrderProgram.instruction.swap(
         isBuySide ? Side.Bid : Side.Ask,
@@ -79,7 +154,8 @@ export const placeOrderForEachTransaction = async ({
         {
           accounts: variablesForPlacingOrder,
         }
-      )
+      ),
+      afterSwapTransaction
     )
 
     console.log(
@@ -94,26 +170,19 @@ export const placeOrderForEachTransaction = async ({
 
     i++
     // if more than 2, split by 2 max in one transaction
-    if (i % 1 === 0) {
-      await sendAndConfirmTransactionViaWallet(
-        wallet,
-        connection,
-        commonTransaction
-      )
-      commonTransaction = new Transaction()
+    if (i % 2 === 0 || isTransactionWithNativeSOL) {
+      await sendTransaction()
     }
   }
 
   console.log('commonTransaction', commonTransaction)
 
-  if (transactions.length % 2 === 0) {
-    return
-  } else {
-    // send rest transactions
+  if (commonTransaction.instructions.length > 0) {
     await sendAndConfirmTransactionViaWallet(
       wallet,
       connection,
-      commonTransaction
+      commonTransaction,
+      ...commonSigners
     )
   }
 }

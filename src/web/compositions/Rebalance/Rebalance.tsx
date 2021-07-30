@@ -186,6 +186,7 @@ const RebalanceComposition = ({
       setLoadingRebalanceData(false)
     }
 
+    console.log('isWalletConnected', isWalletConnected)
     if (isWalletConnected) {
       fetchData()
     }
@@ -361,13 +362,15 @@ const RebalanceComposition = ({
           tokensMap={tokensMap}
           refreshRebalance={refreshRebalance}
           setLoadingRebalanceData={setLoadingRebalanceData}
-          // getPoolsInfo={getPoolsInfoMockData}
           marketsData={marketsData}
           theme={theme}
           open={isRebalancePopupOpen}
           rebalanceStep={rebalanceStep}
           changeRebalanceStep={changeRebalanceStep}
-          close={() => changeRebalancePopupState(false)}
+          close={() => {
+            changeRebalanceStep('initial')
+            changeRebalancePopupState(false)
+          }}
         />
       )}
     </RowContainer>
