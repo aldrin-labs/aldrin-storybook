@@ -35,6 +35,7 @@ class SpreadTable extends Component<IProps> {
       // amountForBackground,
       updateTerminalPriceFromOrderbook,
       currencyPair,
+      terminalViewMode,
     } = this.props
 
     const tableData = getDataFromTree(data.bids, 'bids').reverse()
@@ -44,7 +45,11 @@ class SpreadTable extends Component<IProps> {
     const [base, quote] = currencyPair.split('_')
 
     return (
-      <BidsWrapper mode={mode} isFullHeight={mode === 'bids'}>
+      <BidsWrapper
+        terminalViewMode={terminalViewMode}
+        mode={mode}
+        isFullHeight={mode === 'bids'}
+      >
         <AutoSizerDesktop>
           {({ width, height }: { width: number; height: number }) => (
             <Table
@@ -121,25 +126,28 @@ class SpreadTable extends Component<IProps> {
         <AutoSizerMobile>
           {({ width, height }: { width: number; height: number }) => (
             <Table
-              disableHeader={mode !== 'bids'}
+              disableHeader={terminalViewMode !== 'mobileChart'}
               width={width}
               height={height}
-              headerHeight={mode === 'both' ? height / 8 : height / 18}
               onRowClick={({ event, index, rowData }) => {
                 updateTerminalPriceFromOrderbook(+rowData.price)
               }}
+              headerHeight={height / 7}
               headerStyle={{
-                color: '#7284A0',
+                color: theme.palette.grey.text,
                 paddingLeft: '.5rem',
+                paddingTop: '.25rem',
                 marginLeft: 0,
                 marginRight: 0,
-                paddingTop: '.25rem',
-                letterSpacing: '.075rem',
-                borderBottom: theme.palette.border.main,
-                fontSize: '1rem',
+                letterSpacing: '.01rem',
+                fontSize: '2rem',
+                fontFamily: 'Avenir Next Light',
+                textTransform: 'capitalize',
               }}
               rowCount={tableData.length}
-              rowHeight={height / 6}
+              rowHeight={
+                terminalViewMode !== 'mobileChart' ? height / 7 : height / 6
+              }
               overscanRowCount={0}
               rowGetter={({ index }) => tableData[index]}
               rowRenderer={(...rest) =>
@@ -156,7 +164,7 @@ class SpreadTable extends Component<IProps> {
               }
             >
               <Column
-                label={mode === 'bids' ? `price` : ''}
+                label={`price`}
                 dataKey="price"
                 headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
                 width={width}
@@ -167,7 +175,7 @@ class SpreadTable extends Component<IProps> {
                 }}
               />
               <Column
-                label={mode === 'bids' ? `total (${quote})` : ''}
+                label={`total (${quote})`}
                 dataKey="total"
                 width={width}
                 headerStyle={{

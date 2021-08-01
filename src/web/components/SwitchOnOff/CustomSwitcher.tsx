@@ -2,8 +2,9 @@ import React, { CSSProperties } from 'react'
 import styled from 'styled-components'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Theme } from '@material-ui/core'
+import { formatGroupLabel } from 'react-select/lib/builtins'
 
-const SwitcherHalf = styled(
+export const SwitcherHalf = styled(
   ({
     isDisabled,
     activeBackgroundColor,
@@ -15,17 +16,24 @@ const SwitcherHalf = styled(
     height,
     padding,
     theme,
+    needBorder = true,
+    needBorderRadius = false,
     ...rest
   }) => (
     <BtnCustom
       btnWidth={width}
       fontSize="1.3rem"
       padding={padding}
-      btnColor={isDisabled ? theme.palette.grey.text : activeColor}
-      backgroundColor={
-        isDisabled ? theme.palette.white.background : activeBackgroundColor
+      btnColor={isDisabled ? '#7284A0' : activeColor}
+      backgroundColor={isDisabled ? 'transparent' : activeBackgroundColor}
+      borderColor={
+        // needBorder
+        //   ? isDisabled
+        //     ? theme.palette.grey.border
+        //     : activeBorderColor
+        //   :
+        'none'
       }
-      borderColor={isDisabled ? theme.palette.grey.border : activeBorderColor}
       {...rest}
     />
   )
@@ -43,14 +51,18 @@ const SwitcherHalf = styled(
     background-color: ${(props) =>
       props.isDisabled && props.activeBackgroundColor};
     border: ${(props) =>
-      props.isDisabled && `0.1rem solid ${props.activeBorderColor}`};
+      props.needBorder
+        ? props.isDisabled && `0.1rem solid ${props.activeBorderColor}`
+        : 'none'};
     cursor: ${(props) => props.isDisabled && 'pointer'};
   }
 
   border-radius: ${(props) =>
-    props.isFirstHalf
-      ? `${props.borderRadius} 0 0 ${props.borderRadius}`
-      : `0 ${props.borderRadius} ${props.borderRadius} 0`};
+    !props.needBorderRadius
+      ? props.isFirstHalf
+        ? `${props.borderRadius} 0 0 ${props.borderRadius}`
+        : `0 ${props.borderRadius} ${props.borderRadius} 0`
+      : props.borderRadius};
   transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
   @media (min-width: 1921px) {
@@ -73,7 +85,9 @@ const CustomSwitcher = ({
   secondHalfStyleProperties,
   buttonHeight,
   containerStyles,
+  needBorderRadius,
   theme,
+  needBorder,
 }: {
   firstHalfIsActive: boolean
   changeHalf: () => void
@@ -83,7 +97,9 @@ const CustomSwitcher = ({
   secondHalfStyleProperties: CSSProperties
   buttonHeight: string
   containerStyles: CSSProperties
+  needBorderRadius: boolean
   theme: Theme
+  needBorder: boolean
 }) => {
   return (
     <div style={{ display: 'inline-block', ...containerStyles }}>
@@ -95,6 +111,8 @@ const CustomSwitcher = ({
         onClick={() => !firstHalfIsActive && changeHalf()}
         height={buttonHeight}
         width={'50%'}
+        needBorderRadius
+        needBorder
         {...firstHalfStyleProperties}
       >
         {firstHalfText}
@@ -106,6 +124,8 @@ const CustomSwitcher = ({
         onClick={() => firstHalfIsActive && changeHalf()}
         height={buttonHeight}
         width={'50%'}
+        needBorderRadius
+        needBorder
         {...secondHalfStyleProperties}
       >
         {secondHalfText}

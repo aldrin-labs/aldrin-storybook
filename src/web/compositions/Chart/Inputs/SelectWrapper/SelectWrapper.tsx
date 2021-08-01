@@ -532,7 +532,7 @@ class SelectPairListComponent extends React.PureComponent<
           />
           <Grid container style={{ justifyContent: 'flex-end', width: '100%' }}>
             <StyledInput
-              placeholder="Search by all categories"
+              placeholder="Search"
               disableUnderline={true}
               value={searchValue}
               onChange={onChangeSearch}

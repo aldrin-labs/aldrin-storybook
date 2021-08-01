@@ -162,7 +162,7 @@ const AppRaw = ({
                         {showFooter && (
                           <FooterWithTheme isRewards={isRewards} />
                         )}
-                        <MobileFooter />
+                        <MobileFooter pathname={currentPage} />
                         {/* 
                     <Footer
                       isChartPage={isChartPage}

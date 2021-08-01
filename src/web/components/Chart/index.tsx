@@ -130,7 +130,7 @@ export const SingleChartWithButtons = ({
             fontSize: '1.3rem',
             lineHeight: '1rem',
             // paddingLeft: '1rem',
-            padding: '1rem',
+            padding: '0 1rem',
           }}
         >
           Chart

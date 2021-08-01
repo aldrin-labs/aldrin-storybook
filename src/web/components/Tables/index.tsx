@@ -52,6 +52,8 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos'
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
 
 import CustomPlaceholder from '@sb/components/CustomPlaceholder'
+import { StyledTableHead } from './styles'
+import styled from 'styled-components'
 
 const CustomTableCell = withStyles((theme) => ({
   head: {
@@ -95,6 +97,12 @@ const CustomTableCell = withStyles((theme) => ({
     },
   },
 }))(TableCell)
+
+const StyledCustomTableCell = styled(CustomTableCell)`
+  @media (max-width: 600px) {
+    display: ${(props) => (props.showOnMobile ? 'table-cell' : 'none')};
+  }
+`
 
 const ActionButton = withStyles(() => ({
   root: { padding: 0 },
@@ -342,7 +350,8 @@ const renderCell = ({
   const align = numeric ? 'right' : 'left'
   if (cell !== null && typeof cell === 'object') {
     return (
-      <CustomTableCell
+      <StyledCustomTableCell
+        showOnMobile={cell.showOnMobile ?? true}
         scope="row"
         variant={variant}
         style={{ ...cell.style, ...tableStyles.cell, color: cell.color }}
@@ -354,9 +363,10 @@ const renderCell = ({
         onClick={cell.onClick}
       >
         {cell.render}
-      </CustomTableCell>
+      </StyledCustomTableCell>
     )
   }
+
   if (typeof cell !== 'object') {
     return (
       <CustomTableCell
@@ -371,7 +381,6 @@ const renderCell = ({
       </CustomTableCell>
     )
   }
-
   return (
     <CustomTableCell
       padding={padding}
@@ -654,7 +663,7 @@ const CustomTable = (props: Props) => {
           ...stylesForTable,
         }}
       >
-        <TableHead>
+        <StyledTableHead>
           {title && (
             <TableRow className={classes.headRow}>
               <CustomTableCell
@@ -747,7 +756,7 @@ const CustomTable = (props: Props) => {
               )
             })}
           </TableRow>
-        </TableHead>
+        </StyledTableHead>
 
         <TableBody>
           {data.body.length === 0 ? (

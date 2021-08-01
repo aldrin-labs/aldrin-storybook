@@ -44,6 +44,7 @@ class OrderBookTable extends Component<IProps> {
       //amountForBackground,
       updateTerminalPriceFromOrderbook,
       currencyPair,
+      terminalViewMode,
     } = this.props
 
     const tableData = getDataFromTree(data.asks, 'asks').reverse()
@@ -53,7 +54,11 @@ class OrderBookTable extends Component<IProps> {
     const [base, quote] = currencyPair.split('_')
 
     return (
-      <AsksWrapper mode={mode} isFullHeight={mode === 'asks'}>
+      <AsksWrapper
+        terminalViewMode={terminalViewMode}
+        mode={mode}
+        isFullHeight={mode === 'asks'}
+      >
         <AutoSizerDesktop>
           {({ width, height }: { width: number; height: number }) => {
             return (

@@ -1,4 +1,3 @@
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import React from 'react'
 import {
   AnalyticsLink,
@@ -10,14 +9,14 @@ import {
 } from './NavIconsComponents'
 import { FooterComponent } from './styles'
 
-export const MobileFooter = () => {
+export const MobileFooter = ({ pathname }) => {
   return (
     <FooterComponent height={'12rem'} justify={'space-between'}>
-      <TradeLink />
-      <AnalyticsLink />
-      <PoolsLink />
-      <SwapsLink />
-      <RebalanceLink />
+      <TradeLink isActive={pathname.includes('chart')} />
+      <AnalyticsLink isActive={pathname.includes('analytics')} />
+      <PoolsLink isActive={pathname.includes('pools')} />
+      <SwapsLink isActive={pathname.includes('swaps')} />
+      <RebalanceLink isActive={pathname.includes('rebalance')} />
       <WalletLink />
     </FooterComponent>
   )

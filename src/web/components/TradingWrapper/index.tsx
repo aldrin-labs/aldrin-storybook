@@ -28,6 +28,7 @@ import {
   FuturesSettings,
   BuyTerminal,
   SellTerminal,
+  TerminalComponentsContainer,
 } from './styles'
 
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
@@ -236,13 +237,18 @@ class SimpleTabs extends React.Component<any, any> {
       minOrderSize,
       market,
       wallet,
+      setAutoConnect,
+      providerUrl,
+      setProvider,
+      terminalViewMode,
     } = this.props
 
     const isSPOTMarket = isSPOTMarketType(marketType)
     const maxAmount = [funds[1].quantity, funds[0].quantity]
 
     return (
-      <Grid
+      <TerminalComponentsContainer
+        terminalViewMode={terminalViewMode}
         id="tradingTerminal"
         item
         xs={12}
@@ -497,8 +503,11 @@ class SimpleTabs extends React.Component<any, any> {
                         byType={'buy'}
                         spread={spread}
                         theme={theme}
-                        sideType={'buy'}
+                        sideType={side}
                         priceType={mode}
+                        setAutoConnect={setAutoConnect}
+                        providerUrl={providerUrl}
+                        setProvider={setProvider}
                         hedgeMode={hedgeMode}
                         minOrderSize={minOrderSize}
                         publicKey={publicKey}
@@ -699,6 +708,9 @@ class SimpleTabs extends React.Component<any, any> {
                         <TraidingTerminal
                           byType={'sell'}
                           sideType={'sell'}
+                          setAutoConnect={setAutoConnect}
+                          providerUrl={providerUrl}
+                          setProvider={setProvider}
                           market={market}
                           priceType={mode}
                           minOrderSize={minOrderSize}
@@ -745,7 +757,7 @@ class SimpleTabs extends React.Component<any, any> {
             </div>
           </TerminalMainGrid>
         </CustomCard>
-      </Grid>
+      </TerminalComponentsContainer>
     )
   }
 }

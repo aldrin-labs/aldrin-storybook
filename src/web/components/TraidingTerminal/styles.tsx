@@ -5,6 +5,7 @@ import { Button, TextField, Grid } from '@material-ui/core'
 import { withStyles } from '@material-ui/styles'
 
 import { CSS_CONFIG } from '@sb/config/cssConfig'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 const styles = {
   button: {
@@ -105,6 +106,9 @@ export const GridContainer = styled.div`
 
   height: 100%;
   padding: 0 1.2rem;
+  @media (max-width: 600px) {
+    padding: 1.2rem 1rem;
+  }
 `
 
 export const NameHeader = styled.div`
@@ -258,6 +262,27 @@ export const TradeInput = styled.input`
     -webkit-appearance: none;
     margin: 0;
   }
+
+  @media (max-width: 600px) {
+    height: 7rem;
+    border: none;
+    border-radius: 3rem;
+    font-size: 2rem;
+    margin-bottom: 0.8rem;
+    padding-right: ${(props) =>
+      props.needPadding
+        ? `calc(${props.symbolLength}rem + ${
+            props.symbolLength < 4 ? '3.5rem' : '3rem'
+          })`
+        : '2.5rem'};
+  }
+`
+
+export const SwitchersContainer = styled(RowContainer)`
+  flex-direction: column;
+  @media (min-width: 600px) {
+    display: none;
+  }
 `
 
 export const TradeSelect = styled.select`
@@ -308,6 +333,13 @@ export const UpdatedCoin = styled(Coin)`
     '#7284a0'};
 
   font-size: 1.2rem;
+
+  @media (max-width: 600px) {
+    font-size: 1.6rem;
+    font-family: Avenir Next Light;
+    right: 2rem;
+    top: 45%;
+  }
 `
 // percentages
 
@@ -363,6 +395,12 @@ export const SendButton = styled(StyledTab)`
             props.theme.palette.red &&
             props.theme.palette.red.main) ||
           '#DD6956'};
+  }
+
+  @media (max-width: 600px) {
+    height: 6rem;
+    border-radius: 2rem;
+    font-size: 2rem;
   }
 `
 
@@ -444,6 +482,13 @@ export const AbsoluteInputTitle = styled(Coin)`
   font-size: 1.2rem;
   width: 0;
   white-space: nowrap;
+  @media (max-width: 600px) {
+    left: 2rem;
+    font-size: 1.9rem;
+    font-family: Avenir Next Light;
+    color: #7284a0;
+    top: 45%;
+  }
 `
 export const PercentageTab = styled.button`
   height: 3rem;
@@ -453,7 +498,7 @@ export const PercentageTab = styled.button`
   border: 0.1rem solid #3a475c;
   font-family: Avenir Next Medium;
   font-size: 1.3rem;
-  letter-spacing: -0.457692px;
+  letter-spacing: 0.01rem;
   color: #93a0b2;
   outline: none;
   cursor: pointer;
@@ -463,13 +508,56 @@ export const PercentageTab = styled.button`
     font-family: Avenir Next Demi;
     color: #f8faff;
   }
+
+  @media (max-width: 600px) {
+    width: 21%;
+    height: 4.5rem;
+    border-radius: 1.5rem;
+    border: none;
+    font-size: 1.8rem;
+  }
 `
+export const ConnectWalletDropdownContainer = styled(RowContainer)`
+  @media (max-width: 600px) {
+    display: none;
+  }
+`
+
+export const ConnectWalletButtonContainer = styled(RowContainer)`
+  @media (min-width: 600px) {
+    display: none;
+  }
+`
+
+export const ButtonBlock = styled(Grid)`
+  max-width: 100%;
+  padding-bottom: 1.5rem;
+  @media (max-width: 600px) {
+    padding-bottom: 0;
+    align-items: flex-end;
+  }
+`
+
 export const PercentageTabsContainer = styled.div`
   width: 100%;
   margin-top: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  @media (max-width: 600px) {
+    margin-top: 3rem;
+
+    button:first-child {
+      display: none;
+    }
+  }
+`
+
+export const AmountTooltip = styled.div`
+  width: 5%;
+  @media (max-width: 600px) {
+    display: none;
+  }
 `
 export const Placeholder = styled.div`
   font-size: 1.2rem;

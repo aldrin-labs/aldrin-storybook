@@ -30,6 +30,7 @@ import CoinGecko from '@icons/coingecko.svg'
 import Inform from '@icons/inform.svg'
 import { MintsPopup } from '../Inputs/SelectWrapper/MintsPopup'
 import ChartIcon from '@icons/chartIcon.svg'
+import ArrowLeft from '@icons/ArrowLeft.svg'
 
 export const ExclamationMark = styled(({ fontSize, lineHeight, ...props }) => (
   <span {...props}>!</span>
@@ -339,7 +340,7 @@ const MarketBlock = ({
             pricePrecision={pricePrecision}
           />{' '}
           <SvgIcon
-            src={ChartIcon}
+            src={terminalViewMode === 'mobileChart' ? ArrowLeft : ChartIcon}
             width={'3rem'}
             height={'auto'}
             style={{ margin: '0 0 0 4rem' }}

@@ -6,6 +6,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import {
   LastTradeContainer,
   LastTradeValue,
+  LastTradeContainerMobile,
   LastTradePrice,
   ArrowIcon,
 } from './LastTrade.styles'
@@ -57,41 +58,67 @@ const LastTrade = (props: IProps) => {
     theme,
     markPrice,
     pricePrecision,
+    terminalViewMode,
   } = props
 
   return (
-    <LastTradeContainer
-      theme={theme}
-      onClick={() =>
-        updateTerminalPriceFromOrderbook(
-          Number(markPrice).toFixed(pricePrecision)
-        )
-      }
-    >
-      <div
-        style={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'flex-start',
-          alignItems: 'flex-end',
-        }}
+    <>
+      <LastTradeContainer
+        terminalViewMode={terminalViewMode}
+        theme={theme}
+        onClick={() =>
+          updateTerminalPriceFromOrderbook(
+            Number(markPrice).toFixed(pricePrecision)
+          )
+        }
       >
-        {/* <LastTradePrice>
+        <div
+          style={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'flex-start',
+            alignItems: 'flex-end',
+          }}
+        >
+          {/* <LastTradePrice>
         spread
       </LastTradePrice> */}
-        <LastTradePrice theme={theme}>
-          {/* <ArrowIcon fall={fall} /> */}
-          {Number(markPrice).toFixed(pricePrecision)}
-        </LastTradePrice>
-        {/* {marketType === 1 && (
+          <LastTradePrice theme={theme}>
+            {/* <ArrowIcon fall={fall} /> */}
+            {Number(markPrice).toFixed(pricePrecision)}
+          </LastTradePrice>
+          {/* {marketType === 1 && (
           <LastTradePrice theme={theme} style={{ fontSize: '1.2rem' }}>
             {Number(markPrice).toFixed(
               getNumberOfDecimalsFromNumber(aggregation)
             )}
           </LastTradePrice>
         )} */}
-      </div>
-    </LastTradeContainer>
+        </div>
+      </LastTradeContainer>
+      <LastTradeContainerMobile
+        terminalViewMode={terminalViewMode}
+        theme={theme}
+        onClick={() =>
+          updateTerminalPriceFromOrderbook(
+            Number(markPrice).toFixed(pricePrecision)
+          )
+        }
+      >
+        <div
+          style={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'flex-start',
+            alignItems: 'flex-end',
+          }}
+        >
+          <LastTradePrice theme={theme}>
+            {Number(markPrice).toFixed(pricePrecision)}
+          </LastTradePrice>
+        </div>
+      </LastTradeContainerMobile>
+    </>
   )
 }
 

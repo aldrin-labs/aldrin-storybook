@@ -29,6 +29,7 @@ const OrderbookAndDepthChart = (props) => {
     updateTerminalPriceFromOrderbook,
     hideDepthChart,
     sizeDigits,
+    terminalViewMode,
     pricePrecision: serumPricePrecision,
   } = props
 
@@ -172,6 +173,7 @@ const OrderbookAndDepthChart = (props) => {
           markPrice={markPrice}
           pricePrecision={pricePrecision}
           data={dataToSend}
+          terminalViewMode={terminalViewMode}
         />
       </Grid>
     </RowContainer>

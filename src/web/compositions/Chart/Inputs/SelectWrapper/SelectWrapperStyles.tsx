@@ -120,9 +120,9 @@ export const TradeHistoryGrid = styled(Grid)`
 export const OrderBookGrid = styled(Grid)`
   height: 100%;
   flex-basis: ${(props) =>
-    props.hideOrderbook ? '0' : props.hideTradeHistory ? '50%' : '100%'};
+    props.hideOrderbook ? '0' : props.hideTradeHistory ? '100%' : '50%'};
   max-width: ${(props) =>
-    props.hideOrderbook ? '0' : props.hideTradeHistory ? '50%' : '100%'};
+    props.hideOrderbook ? '0' : props.hideTradeHistory ? '100%' : '50%'};
   @media (max-width: 600px) {
     max-width: 100%;
     flex-basis: 100%;

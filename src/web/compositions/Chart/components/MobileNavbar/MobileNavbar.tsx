@@ -49,7 +49,6 @@ export const MobileNavBar = ({
     providerUrl === 'https://www.sollet.io/extension'
   const isMathWalletActive = providerUrl === 'https://www.mathwallet.org'
   const isSolongWallet = providerUrl === 'https://solongwallet.com'
-
   return (
     <NavBarForSmallScreens theme={theme}>
       <Link style={{ width: '30%' }} to="/">
@@ -63,10 +62,10 @@ export const MobileNavBar = ({
         </Row>
       ) : (
         <Row
-          justify={wallet.publicKey ? 'space-between' : 'flex-end'}
-          width={wallet.publicKey ? '65%' : '40%'}
+          justify={wallet.connected ? 'space-between' : 'flex-end'}
+          width={wallet.connected ? '55%' : '40%'}
         >
-          {wallet.publicKey ? (
+          {wallet.connected ? (
             <RowContainer justify={'space-between'} direction={'row'}>
               <SvgIcon src={WalletIcon} />
               <Row>

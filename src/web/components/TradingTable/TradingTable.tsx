@@ -5,11 +5,7 @@ import { isEqual } from 'lodash'
 import { withTheme } from '@material-ui/styles'
 
 import { Key } from '@core/types/ChartTypes'
-import {
-  IProps,
-  IState,
-  IStateKeys,
-} from './TradingTable.types'
+import { IProps, IState, IStateKeys } from './TradingTable.types'
 import { StyleForCalendar } from '@sb/components/GitTransactionCalendar/Calendar.styles'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 
@@ -126,6 +122,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       getAllUserKeysQuery = {
         myPortfolios: [],
       },
+      updateTerminalViewMode,
+      terminalViewMode,
     } = this.props
     const { myPortfolios = [] } = getAllUserKeysQuery || { myPortfolios: [] }
 
@@ -175,6 +173,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             perPagePositions,
             pageSmartTrades,
             perPageSmartTrades,
+            updateTerminalViewMode,
+            terminalViewMode,
           }}
         />
         <OpenOrdersTable
@@ -259,7 +259,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             handlePairChange: this.handlePairChange,
           }}
         />
-        <FeeTiers 
+        <FeeTiers
           {...{
             tab,
             keys,
@@ -310,7 +310,8 @@ export default React.memo(
       prevProps.quantityPrecision === nextProps.quantityPrecision &&
       prevProps.priceFromOrderbook === nextProps.priceFromOrderbook &&
       prevProps.currencyPair === nextProps.currencyPair &&
-      prevProps.arrayOfMarketIds.length === nextProps.arrayOfMarketIds.length
+      prevProps.arrayOfMarketIds.length === nextProps.arrayOfMarketIds.length &&
+      prevProps.terminalViewMode === nextProps.terminalViewMode
     ) {
       return true
     }

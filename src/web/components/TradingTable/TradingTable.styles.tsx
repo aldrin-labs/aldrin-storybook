@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Button, Theme } from '@material-ui/core'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 export const TitleSecondRowContainer = styled.div`
   position: relative;
@@ -41,7 +42,19 @@ export const TitleButton = styled(
 export const TableButton = styled(({ ...rest }) => <Button {...rest} />)`
   &&& {
     font-size: ${CSS_CONFIG.chart.content.fontSize};
-    padding: 4px 8px;
+    padding: 1rem 3.5rem;
+    border-radius: 1.8rem;
+    background: #f79894;
+    color: #fbf2f2;
+    font-family: Avenir Next Medium;
+    text-align: center;
+    font-size: 1.4rem;
+    text-transform: none;
+    width: auto;
+    height: auto;
+    @media (max-width: 600px) {
+      font-size: 2rem;
+    }
   }
 `
 
@@ -80,4 +93,11 @@ export const AdlIndicator = styled.div`
   background: ${(props) => (props.adl > props.i ? props.color : 'inherit')};
   margin-right: 0.2rem;
   border-radius: 0.1rem;
+`
+export const StyledTitle = styled.span`
+  font-family: Avenir Next Light;
+  font-size: 2rem;
+  padding: 0.7rem 0;
+  letter-spacing: 0.01rem;
+  color: ${(props) => props.color || '#93a0b2'};
 `

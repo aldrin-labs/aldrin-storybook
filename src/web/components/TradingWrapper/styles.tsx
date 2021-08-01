@@ -21,6 +21,12 @@ export const TablesBlockWrapper = styled(Grid)`
   @media (max-width: 600px) {
     max-width: 50%;
     flex-basis: 50%;
+    height: 62%;
+    display: ${(props) =>
+      props.terminalViewMode === 'fullScreenTablesMobile' ||
+      props.terminalViewMode === 'mobileChart'
+        ? 'none'
+        : 'flex'};
   }
 `
 
@@ -113,6 +119,9 @@ export const TerminalMainGrid = styled(({ marketType, ...rest }) => (
   height: calc(
     100% - ${(props) => (props.marketType === 0 ? '3.4rem' : '5.2rem')}
   );
+  @media (max-width: 600px) {
+    height: 100%;
+  }
 `
 
 export const FullHeightGrid = styled(({ needBorderRight, ...rest }) => (
@@ -124,15 +133,15 @@ export const FullHeightGrid = styled(({ needBorderRight, ...rest }) => (
 `
 export const BuyTerminal = styled(FullHeightGrid)`
   @media (max-width: 600px) {
-    display: none;
+    width: 100%;
+    max-width: 100%;
+    flex-basis: 100%;
   }
 `
 
 export const SellTerminal = styled(FullHeightGrid)`
   @media (max-width: 600px) {
-    width: 100%;
-    max-width: 100%;
-    flex-basis: 100%;
+    display: none;
   }
 `
 
@@ -301,4 +310,11 @@ export const SpotBalanceSpan = styled.span`
   font-size: 1rem;
   font-weight: bold;
   letter-spacing: 0.1rem;
+`
+
+export const TerminalComponentsContainer = styled(Grid)`
+  @media (max-width: 600px) {
+    display: ${(props) =>
+      props.terminalViewMode === 'mobileChart' ? 'none' : 'block'};
+  }
 `

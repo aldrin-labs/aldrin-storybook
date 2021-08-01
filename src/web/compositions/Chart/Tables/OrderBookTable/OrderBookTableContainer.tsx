@@ -30,6 +30,7 @@ import {
   getAggregationsFromMinPriceDigits,
   getAggregationsFromPricePrecision,
 } from '@core/utils/chartPageUtils'
+import { OrderBookStyledContainer } from './Tables/LastTrade/LastTrade.styles'
 
 class OrderBookTableContainer extends Component<IProps, IState> {
   state: IState = {
@@ -93,6 +94,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
       getOpenOrderHistoryQuery,
       markPrice,
       pricePrecision,
+      terminalViewMode,
     } = this.props
 
     const { mode } = this.state
@@ -156,50 +158,54 @@ class OrderBookTableContainer extends Component<IProps, IState> {
             </div>
           </ModesContainer>
         </ChartCardHeader>
+        <OrderBookStyledContainer style={{ height: '100%' }}>
+          <OrderBookTable
+            data={data}
+            mode={mode}
+            theme={theme}
+            marketType={marketType}
+            arrayOfMarketIds={arrayOfMarketIds}
+            aggregation={aggregation}
+            onButtonClick={onButtonClick}
+            openOrderHistory={openOrders}
+            currencyPair={currencyPair}
+            amountForBackground={amountForBackground}
+            updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
+            quote={quote}
+            terminalViewMode={terminalViewMode}
+          />
 
-        <OrderBookTable
-          data={data}
-          mode={mode}
-          theme={theme}
-          marketType={marketType}
-          arrayOfMarketIds={arrayOfMarketIds}
-          aggregation={aggregation}
-          onButtonClick={onButtonClick}
-          openOrderHistory={openOrders}
-          currencyPair={currencyPair}
-          amountForBackground={amountForBackground}
-          updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
-          quote={quote}
-        />
+          <LastTrade
+            mode={mode}
+            data={data}
+            theme={theme}
+            minPriceDigits={minPriceDigits}
+            marketType={marketType}
+            marketOrders={marketOrders}
+            aggregation={aggregation}
+            symbol={currencyPair}
+            markPrice={markPrice}
+            exchange={this.props.exchange}
+            pricePrecision={pricePrecision}
+            updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
+            terminalViewMode={terminalViewMode}
+          />
 
-        <LastTrade
-          mode={mode}
-          data={data}
-          theme={theme}
-          minPriceDigits={minPriceDigits}
-          marketType={marketType}
-          marketOrders={marketOrders}
-          aggregation={aggregation}
-          symbol={currencyPair}
-          markPrice={markPrice}
-          exchange={this.props.exchange}
-          pricePrecision={pricePrecision}
-          updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
-        />
-
-        <SpreadTable
-          data={data}
-          mode={mode}
-          theme={theme}
-          marketType={marketType}
-          arrayOfMarketIds={arrayOfMarketIds}
-          aggregation={aggregation}
-          openOrderHistory={openOrders}
-          currencyPair={currencyPair}
-          amountForBackground={amountForBackground}
-          updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
-          quote={quote}
-        />
+          <SpreadTable
+            data={data}
+            mode={mode}
+            theme={theme}
+            marketType={marketType}
+            arrayOfMarketIds={arrayOfMarketIds}
+            aggregation={aggregation}
+            openOrderHistory={openOrders}
+            currencyPair={currencyPair}
+            amountForBackground={amountForBackground}
+            updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
+            quote={quote}
+            terminalViewMode={terminalViewMode}
+          />
+        </OrderBookStyledContainer>
       </>
     )
   }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
 import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
-import { PercentageTab, PercentageTabsContainer } from './styles'
+import { AmountTooltip, PercentageTab, PercentageTabsContainer } from './styles'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import Info from '@icons/inform.svg'
@@ -108,25 +108,26 @@ export const ButtonsWithAmountFieldRowForBasic = ({
                   {el.value}%
                 </PercentageTab>
               ))}
-              <DarkTooltip
-                title={
-                  <>
-                    <p>
-                      Minimal increment for {pair[0]}/{pair[1]} pair is{' '}
-                      <strong>{minOrderSize}</strong>
-                    </p>
-                    <p>
-                      For example, if you have{' '}
-                      {minOrderSize * 2 + minOrderSize / 2} {pair[0]} then you
-                      can only place an order for {minOrderSize * 2} {pair[0]} .
-                    </p>
-                  </>
-                }
-              >
-                <div style={{ width: '5%', height: '2rem' }}>
-                  <SvgIcon width="100%" height="auto" src={Info} />
-                </div>
-              </DarkTooltip>
+              <AmountTooltip>
+                <DarkTooltip
+                  title={
+                    <>
+                      <p>
+                        Minimal increment for {pair[0]}/{pair[1]} pair is{' '}
+                        <strong>{minOrderSize}</strong>
+                      </p>
+                      <p>
+                        For example, if you have{' '}
+                        {minOrderSize * 2 + minOrderSize / 2} {pair[0]} then you
+                        can only place an order for {minOrderSize * 2} {pair[0]}{' '}
+                        .
+                      </p>
+                    </>
+                  }
+                >
+                  <SvgIcon width="100%" height="2rem" src={Info} />
+                </DarkTooltip>
+              </AmountTooltip>
             </PercentageTabsContainer>
           </InputRowContainer>
         ) : null}
