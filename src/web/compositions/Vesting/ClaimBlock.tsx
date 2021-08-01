@@ -24,6 +24,8 @@ import {
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 import dayjs from 'dayjs'
+import { useInterval } from '@sb/dexUtils/useInterval'
+import { sleep } from '@core/utils/helpers'
 
 type TextProps = { left?: boolean; green?: boolean }
 
@@ -98,6 +100,8 @@ export const ClaimBlock = ({ theme }: { theme: any }) => {
 
     getIsInvestor()
   }, [setIsInvestor, connection, wallet.publicKey, refreshDataCounter])
+
+  useInterval(() => refreshData(refreshDataCounter + 1), 10000)
 
   if (isInvestor === false) {
     return <NotEligibleWalletBlock theme={theme} />
@@ -192,6 +196,7 @@ export const ClaimBlock = ({ theme }: { theme: any }) => {
         disabled={!allTokensData.length || +maxWithdrawBalance === 0}
         onClick={async () => {
           await withdrawVested({ wallet, connection, allTokensData })
+          await sleep(2 * 1000);
           await refreshData(refreshDataCounter + 1)
         }}
       >
