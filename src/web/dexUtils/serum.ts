@@ -1,4 +1,4 @@
-import { getDexProgramIdByEndpoint } from './config'
+import { getDexProgramIdByEndpoint } from '@core/utils/config'
 import { useConnectionConfig } from './connection'
 
 const solana = require('@solana/web3.js')
@@ -28,10 +28,7 @@ const useAwesomeMarkets = () => {
   const programId = getDexProgramIdByEndpoint(endpoint)
 
   return AWESOME_MARKETS.filter(
-    (el) =>
-      !el.deprecated ||
-      (el.name.includes('/WUSDT') &&
-        el.programId.toBase58() === programId.toString())
+    (el) => !el.deprecated && el.programId.toBase58() === programId.toString()
   )
 }
 
