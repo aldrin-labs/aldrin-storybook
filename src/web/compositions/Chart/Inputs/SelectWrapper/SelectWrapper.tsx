@@ -18,7 +18,6 @@ import _ from 'lodash'
 
 import { StyledGrid, StyledInput, TableFooter } from './SelectWrapperStyles'
 import { notify } from '@sb/dexUtils/notifications'
-import { getMarketInfos } from '@sb/dexUtils/markets'
 
 import { SvgIcon } from '@sb/components'
 
@@ -482,7 +481,7 @@ class SelectPairListComponent extends React.PureComponent<
     } = this.props
 
     const onAddCustomMarket = (customMarket: any) => {
-      const marketInfo = getMarketInfos(customMarkets).some(
+      const marketInfo = [...allMarketsMap.values()].some(
         (m) => m.address.toBase58() === customMarket.address
       )
 

@@ -109,7 +109,6 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
       addMarketVisible,
       setAddMarketVisible,
       deprecatedMarkets,
-      getMarketInfos,
       tokenMap,
       isMintsPopupOpen,
       setIsMintsPopupOpen,
