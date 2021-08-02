@@ -4,18 +4,13 @@ import { useInterval } from './useInterval'
 import { useConnection } from './connection'
 import { useWallet } from './wallet'
 import {
-  useAllMarkets,
-  useTokenAccounts,
   useMarket,
-  useSelectedTokenAccounts,
-  getSelectedTokenAccountForMint,
+  useSelectedBaseCurrencyAccount,
+  useSelectedQuoteCurrencyAccount,
 } from './markets'
-import { settleAllFunds, settleFunds } from './send'
-import { PreferencesContextValues } from './types'
+import { settleFunds } from './send'
 
-const PreferencesContext = React.createContext<PreferencesContextValues | null>(
-  null
-)
+const PreferencesContext = React.createContext(null)
 
 export function PreferencesProvider({ children }) {
   const [autoSettleEnabled, setAutoSettleEnabled] = useLocalStorageState(
@@ -23,13 +18,13 @@ export function PreferencesProvider({ children }) {
     true
   )
 
-  const [tokenAccounts] = useTokenAccounts()
   const { connected, wallet } = useWallet()
-
-  // const [marketList] = useAllMarkets();
-  const { market, baseCurrency, quoteCurrency } = useMarket()
   const connection = useConnection()
-  const [selectedTokenAccounts] = useSelectedTokenAccounts()
+
+  const { market, baseCurrency, quoteCurrency } = useMarket()
+
+  const baseTokenAccount = useSelectedBaseCurrencyAccount()
+  const quoteTokenAccount = useSelectedQuoteCurrencyAccount()
 
   useInterval(() => {
     const autoSettle = async () => {
@@ -61,25 +56,16 @@ export function PreferencesProvider({ children }) {
             ? market.quoteSplSizeToNumber(selectedOpenOrders.quoteTokenFree)
             : null
 
-        // await settleAllFunds({ connection, wallet, tokenAccounts: (tokenAccounts || []), markets, selectedTokenAccounts });
         if (baseUnsettled > 0 || quoteUnsettled > 0) {
           await settleFunds({
             market,
             openOrders,
             connection,
             wallet,
-            baseCurrencyAccount: getSelectedTokenAccountForMint(
-              tokenAccounts,
-              market?.baseMintAddress
-            ),
-            quoteCurrencyAccount: getSelectedTokenAccountForMint(
-              tokenAccounts,
-              market?.quoteMintAddress
-            ),
-            selectedTokenAccounts: selectedTokenAccounts,
-            tokenAccounts,
             baseCurrency,
             quoteCurrency,
+            baseTokenAccount,
+            quoteTokenAccount,
             baseUnsettled,
             quoteUnsettled,
           })

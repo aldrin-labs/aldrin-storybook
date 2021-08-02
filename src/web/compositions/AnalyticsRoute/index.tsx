@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { compose } from 'recompose'
 import { withTheme } from '@material-ui/core/styles'
-import { AWESOME_MARKETS } from '@sb/dexUtils/serum'
 
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import { withPublicKey } from '@core/hoc/withPublicKey'
