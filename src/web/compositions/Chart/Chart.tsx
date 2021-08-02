@@ -100,8 +100,6 @@ function ChartPageComponent(props: any) {
 
   const AWESOME_MARKETS = useAwesomeMarkets()
 
-  console.log('getUserCustomMarketsQuery', getUserCustomMarketsQuery)
-
   useEffect(() => {
     return () => {
       document.title = 'Cryptocurrencies AI'

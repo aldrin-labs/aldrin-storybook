@@ -155,8 +155,8 @@ export const Balances = ({
   const baseTokenAccount = useSelectedBaseCurrencyAccount()
   const quoteTokenAccount = useSelectedQuoteCurrencyAccount()
 
-  const isBaseCoinExistsInWallet = market ? baseCurrency : true
-  const isQuoteCoinExistsInWallet = market ? quoteCurrency : true
+  const isBaseCoinExistsInWallet = market ? baseTokenAccount : true
+  const isQuoteCoinExistsInWallet = market ? quoteTokenAccount : true
 
   async function onSettleSuccess() {
     console.log('settled funds success')

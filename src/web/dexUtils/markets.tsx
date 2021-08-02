@@ -283,7 +283,7 @@ function getMarketDetails(market, marketInfos) {
       )?.name) ||
     (marketInfo?.baseLabel && `${marketInfo?.baseLabel}*`) ||
     'UNKNOWN'
-    
+
   const quoteCurrency =
     (market?.quoteMintAddress &&
       ALL_TOKENS_MINTS.find((token) =>
@@ -350,8 +350,6 @@ export function MarketProvider({ children }) {
   if (!marketInfo) {
     marketInfo = marketInfos.find((market) => market.name === marketName)
   }
-
-  console.log('marketInfo', marketInfos, marketInfo)
 
   const [market, setMarket] = useState()
   // add state for markets

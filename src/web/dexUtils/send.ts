@@ -282,7 +282,7 @@ export async function settleFunds({
     })
 
   const transaction = mergeTransactions(transactions)
-  
+
   return await sendTransaction({
     transaction,
     signers,
@@ -804,8 +804,6 @@ export async function sendTransaction({
   if (signers.length > 0) {
     transaction.partialSign(...signers)
   }
-
-  console.log('transaction', transaction)
 
   const transactionFromWallet = await wallet.signTransaction(transaction)
 
