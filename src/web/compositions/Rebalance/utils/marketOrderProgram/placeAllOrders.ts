@@ -51,9 +51,11 @@ export const placeAllOrders = async ({
     }
   }
 
-  for (const transaction of transactions) {
+  const filteredTransactions = transactions.filter(transaction => !!transaction.amount)
+
+  for (const transaction of filteredTransactions) {
     const isBuySide = transaction.side === 'buy'
-    const market = transaction.loadedMarket
+    // const market = transaction.loadedMarket
 
     const [base, quote] = transaction.symbol.split('_')
 

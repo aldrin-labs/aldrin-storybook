@@ -178,8 +178,11 @@ export const RebalancePopup = ({
             symbol={el.symbol}
             slippage={el.slippage}
             price={el.price}
+            amount={el.amount}
+            total={el.total}
             side={el.side}
             theme={theme}
+            market={el.loadedMarket}
           />
         ))}
       </RowContainer>

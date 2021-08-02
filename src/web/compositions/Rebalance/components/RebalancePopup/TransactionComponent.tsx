@@ -7,28 +7,66 @@ import { Text } from '@sb/compositions/Addressbook/index'
 import { TextColumnContainer } from '@sb/compositions/Pools/components/Tables/index.styles'
 import { Stroke, StyledPaper } from './styles'
 import { BlockForCoins } from './BlockForCoins'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import { Market } from '@project-serum/serum'
 
 export const TransactionComponent = ({
-    theme,
-    symbol,
-    slippage,
-    price,
-    side,
-  }: {
-    theme: Theme
-    symbol: string
-    slippage: number
-    price: number
-    side: 'buy' | 'sell'
-  }) => {
-    const [base, quote] = symbol.split('_')
-  
-    return (
-      <Stroke>
-        <Row>
-          <BlockForCoins symbol={symbol} side={side} />
-        </Row>
-        <Row>
+  theme,
+  symbol,
+  slippage,
+  price,
+  side,
+  amount,
+  total,
+  market,
+}: {
+  theme: Theme
+  symbol: string
+  slippage: number
+  price: number
+  amount: number
+  total: number
+  side: 'buy' | 'sell'
+  market: Market
+}) => {
+  const [base, quote] = symbol.split('_')
+
+  return (
+    <Stroke>
+      <Row>
+        <BlockForCoins symbol={symbol} side={side} />
+      </Row>
+      <Row>
+        {amount === 0 ? (
+          <TextColumnContainer>
+            <Row>
+              <Text
+                theme={theme}
+                color={theme.palette.red.main}
+                style={{
+                  whiteSpace: 'nowrap',
+                  paddingRight: '1rem',
+                  fontSize: '1.4rem',
+                }}
+              >
+                Error. Min order size is {market.minOrderSize}
+              </Text>
+            </Row>
+            <Row>
+              <Text
+                theme={theme}
+                color={theme.palette.red.main}
+                style={{
+                  whiteSpace: 'nowrap',
+                  paddingRight: '1rem',
+                  fontSize: '1.4rem',
+                }}
+              >
+                Transaction won't be executed
+              </Text>
+            </Row>
+          </TextColumnContainer>
+        ) : (
           <TextColumnContainer style={{ alignItems: 'flex-end' }}>
             <Row padding={'1rem 0'}>
               <Text
@@ -52,7 +90,31 @@ export const TransactionComponent = ({
                 {slippage}%
               </Text>
             </Row>
-  
+
+            <Row>
+              <Text
+                theme={theme}
+                color={theme.palette.grey.new}
+                style={{
+                  whiteSpace: 'nowrap',
+                  paddingRight: '1rem',
+                  fontSize: '1.4rem',
+                }}
+              >
+                Est. Total:
+              </Text>
+
+              <Text
+                theme={theme}
+                style={{
+                  whiteSpace: 'nowrap',
+                  fontSize: '1.4rem',
+                }}
+              >
+                {`${amount} ${base}`} ={' '}
+                {`${stripDigitPlaces(total, 4)} ${quote}`}
+              </Text>
+            </Row>
             <Row>
               <Text
                 theme={theme}
@@ -65,7 +127,7 @@ export const TransactionComponent = ({
               >
                 Est. Price:
               </Text>
-  
+
               <Text
                 theme={theme}
                 style={{
@@ -73,12 +135,12 @@ export const TransactionComponent = ({
                   fontSize: '1.4rem',
                 }}
               >
-                1 {base} = {1 * (price ? price.toFixed(3) : 0)} {quote}
+                1 {base} = {price ? +stripDigitPlaces(price, 4) : 0} {quote}
               </Text>
             </Row>
           </TextColumnContainer>
-        </Row>
-      </Stroke>
-    )
-  }
-  
+        )}
+      </Row>
+    </Stroke>
+  )
+}

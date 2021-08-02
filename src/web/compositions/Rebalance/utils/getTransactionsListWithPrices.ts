@@ -1,14 +1,15 @@
+import { TAKER_FEE } from '@sb/dexUtils/config'
 import { RawMarketData } from '@sb/dexUtils/markets'
 import { Connection } from '@solana/web3.js'
+import { REBALANCE_CONFIG } from '../Rebalance.config'
 import {
   MarketData,
   TokensDiff,
   TokensMapType,
   TransactionType,
 } from '../Rebalance.types'
-import { addTakerFeesToPricesInOrderbooks } from './addTakerFeesToOrderbooks'
+import { addPercentageToPricesInOrderbooks } from './addPercentageToPricesInOrderbooks'
 import { getOrderbookForMarkets } from './getOrderbookForMarkets'
-import { getPricesForTransactionsFromOrderbook } from './getPricesForTransactionsFromOrderbook'
 import { getTransactionsList } from './getTransactionsList'
 import { loadMarketsByNames } from './loadMarketsByNames'
 
@@ -46,8 +47,11 @@ export const getTransactionsListWithPrices = async ({
     allMarketsMap,
   })
 
-  const orderbooksWithTakerFees = addTakerFeesToPricesInOrderbooks({
+  const orderbooksWithTakerFees = addPercentageToPricesInOrderbooks({
     orderbooksMap: orderbooks,
+    percentage: TAKER_FEE,
+    // +
+    // REBALANCE_CONFIG.POOL_FEE / 100,
   })
 
   console.log('rebalanceTransactionsList', rebalanceTransactionsList)

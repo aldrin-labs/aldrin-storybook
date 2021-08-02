@@ -48,28 +48,28 @@ export const getPricesForTransactionsFromOrderbook = ({
             obDataToModify.shift()
             tempTransactionTotal -= rowValue
 
-            // console.log(
-            //   'tempTransactionTotal full delete',
-            //   transaction.symbol,
-            //   tempTransactionTotal,
-            //   rowAmount,
-            //   rowPrice,
-            //   acc + rowAmount
-            // )
+            console.log(
+              'tempTransactionTotal full delete',
+              transaction.symbol,
+              tempTransactionTotal,
+              rowAmount,
+              rowPrice,
+              acc + rowAmount
+            )
 
             return acc + rowAmount
           } else {
             // remove part
             const transactionLeftAmount = tempTransactionTotal / rowPrice
             const amount = acc + transactionLeftAmount
-            // console.log(
-            //   'tempTransactionTotal part delete',
-            //   transaction.symbol,
-            //   tempTransactionTotal,
-            //   rowAmount,
-            //   rowPrice,
-            //   acc + transactionLeftAmount
-            // )
+            console.log(
+              'tempTransactionTotal part delete',
+              transaction.symbol,
+              tempTransactionTotal,
+              rowAmount,
+              rowPrice,
+              acc + transactionLeftAmount
+            )
 
             if (tempTransactionTotal > 0) {
               obDataToModify = [
@@ -107,8 +107,8 @@ export const getPricesForTransactionsFromOrderbook = ({
 
     orderbooksClone[transaction.symbol][orderbookSide] = obDataToModify
 
-    // console.log('obData', orderbookBySymbol)
-    // console.log('obDataToModify', obDataToModify)
+    console.log('obData', orderbookBySymbol)
+    console.log('obDataToModify', obDataToModify)
 
     // for sell - use amount and devide total by amount
     // for buy - use total and get amount, then devide total by amount
@@ -116,14 +116,14 @@ export const getPricesForTransactionsFromOrderbook = ({
       ? transaction.amount / transactionValue
       : transactionValue / transaction.amount
 
-    // console.log('transactionPrice', transaction.symbol, transactionPrice)
-    // console.log(
-    //   'transactionValue',
-    //   transaction.symbol,
-    //   transactionValue,
-    //   'transaction.amount',
-    //   transaction.amount
-    // )
+    console.log('transactionPrice', transaction.symbol, transactionPrice)
+    console.log(
+      'transactionValue',
+      transaction.symbol,
+      transactionValue,
+      'transaction.amount',
+      transaction.amount
+    )
 
     return {
       symbol: transaction.symbol,
