@@ -32,11 +32,10 @@ import {
   GlobalStyles,
 } from '@sb/compositions/Chart/Chart.styles'
 
-import { UPDATED_AWESOME_MARKETS, useMarket } from '@sb/dexUtils/markets'
-
+import { useMarket } from '@sb/dexUtils/markets'
 import { getDecimalCount } from '@sb/dexUtils/utils'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
-import { AWESOME_MARKETS } from '@sb/dexUtils/serum'
+import { useAwesomeMarkets } from '@sb/dexUtils/serum'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { WarningPopup } from './components/WarningPopup'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
@@ -99,6 +98,8 @@ function ChartPageComponent(props: any) {
     localStorage.getItem('isNotificationDone') == 'null'
   )
 
+  const AWESOME_MARKETS = useAwesomeMarkets()
+
   useEffect(() => {
     return () => {
       document.title = 'Cryptocurrencies AI'
@@ -147,6 +148,13 @@ function ChartPageComponent(props: any) {
         isPrivateCustomMarket: isPrivate,
       })
     )
+
+    const UPDATED_AWESOME_MARKETS = AWESOME_MARKETS.map((el) => ({
+      ...el,
+      address: el.address.toString(),
+      programId: el.programId.toString(),
+      isCustomUserMarket: true,
+    }))
 
     const updatedMarkets = [
       ...props.markets,
@@ -393,7 +401,7 @@ export default compose(
   queryRendererHoc({
     query: getUserCustomMarkets,
     name: 'getUserCustomMarketsQuery',
-    fetchPolicy: 'cache-first',
+    fetchPolicy: 'cache-and-network',
     variables: (props) => ({
       publicKey: props.publicKey,
     }),

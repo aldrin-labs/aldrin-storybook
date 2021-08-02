@@ -109,184 +109,29 @@ export async function createTokenAccountTransaction({
   }
 }
 
-export async function settleAllFunds({
-  connection,
-  wallet,
-  tokenAccounts,
-  markets,
-  selectedTokenAccounts,
-}: {
-  connection: Connection
-  wallet: Wallet
-  tokenAccounts: TokenAccount[]
-  markets: Market[]
-  selectedTokenAccounts?: SelectedTokenAccounts
-}) {
-  if (!markets || !wallet || !connection || !tokenAccounts) {
-    return
-  }
-
-  const programIds: PublicKey[] = []
-  markets
-    .reduce((cumulative, m) => {
-      // @ts-ignore
-      cumulative.push(m._programId)
-      return cumulative
-    }, [])
-    .forEach((programId) => {
-      if (!programIds.find((p) => p.equals(programId))) {
-        programIds.push(programId)
-      }
-    })
-
-  const getOpenOrdersAccountsForProgramId = async (programId) => {
-    const openOrdersAccounts = await OpenOrders.findForOwner(
-      connection,
-      wallet.publicKey,
-      programId
-    )
-    return openOrdersAccounts.filter(
-      (openOrders) =>
-        openOrders.baseTokenFree.toNumber() ||
-        openOrders.quoteTokenFree.toNumber()
-    )
-  }
-
-  const openOrdersAccountsForProgramIds = await Promise.all(
-    programIds.map((programId) => getOpenOrdersAccountsForProgramId(programId))
-  )
-  const openOrdersAccounts = openOrdersAccountsForProgramIds.reduce(
-    (accounts, current) => accounts.concat(current),
-    []
-  )
-
-  let settleTransactions = await Promise.all(
-    openOrdersAccounts.map((openOrdersAccount) => {
-      const market = markets.find((m) =>
-        // @ts-ignore
-        m._decoded?.ownAddress?.equals(openOrdersAccount.market)
-      )
-      const baseMint = market?.baseMintAddress
-      const quoteMint = market?.quoteMintAddress
-
-      const selectedBaseTokenAccount = getSelectedTokenAccountForMint(
-        tokenAccounts,
-        baseMint,
-        baseMint &&
-          selectedTokenAccounts &&
-          selectedTokenAccounts[baseMint.toBase58()]
-      )?.pubkey
-      const selectedQuoteTokenAccount = getSelectedTokenAccountForMint(
-        tokenAccounts,
-        quoteMint,
-        quoteMint &&
-          selectedTokenAccounts &&
-          selectedTokenAccounts[quoteMint.toBase58()]
-      )?.pubkey
-      console.log(
-        'selectedBaseTokenAccount',
-        selectedBaseTokenAccount,
-        'selectedQuoteTokenAccount',
-        selectedQuoteTokenAccount
-      )
-      if (!selectedBaseTokenAccount || !selectedQuoteTokenAccount) {
-        return null
-      }
-
-      let referrerQuoteWallet = null
-
-      if (market.supportsReferralFees) {
-        if (
-          process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS &&
-          market.quoteMintAddress.equals(
-            ALL_TOKENS_MINTS.find(({ name }) => name === 'USDT').address
-          )
-        ) {
-          referrerQuoteWallet = new PublicKey(
-            process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS
-          )
-        } else if (
-          process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS &&
-          market.quoteMintAddress.equals(
-            ALL_TOKENS_MINTS.find(({ name }) => name === 'USDC').address
-          )
-        ) {
-          referrerQuoteWallet = new PublicKey(
-            process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS
-          )
-        }
-      }
-
-      return (
-        market &&
-        market.makeSettleFundsTransaction(
-          connection,
-          openOrdersAccount,
-          selectedBaseTokenAccount,
-          selectedQuoteTokenAccount,
-          referrerQuoteWallet
-        )
-      )
-    })
-  )
-  console.log('settleTransactions before', settleTransactions)
-  settleTransactions = settleTransactions.filter(
-    (x): x is { signers: [PublicKey | Account]; transaction: Transaction } =>
-      !!x
-  )
-  console.log('settleTransactions after', settleTransactions)
-  if (!settleTransactions || settleTransactions.length === 0) return
-
-  const transactions = settleTransactions.slice(0, 4).map((t) => t.transaction)
-  const signers: Array<Account | PublicKey> = []
-  settleTransactions
-    .reduce(
-      (cumulative: Array<Account | PublicKey>, t) =>
-        cumulative.concat(t.signers),
-      []
-    )
-    .forEach((signer) => {
-      if (
-        !signers.find((s) => {
-          if (s.constructor.name !== signer.constructor.name) {
-            return false
-          } else if (s.constructor.name === 'PublicKey') {
-            // @ts-ignore
-            return s.equals(signer)
-          } else {
-            // @ts-ignore
-            return s.publicKey.equals(signer.publicKey)
-          }
-        })
-      ) {
-        signers.push(signer)
-      }
-    })
-
-  const transaction = mergeTransactions(transactions)
-
-  return await sendTransaction({
-    transaction,
-    signers,
-    wallet,
-    connection,
-  })
-}
-
 export async function settleFunds({
   market,
   openOrders,
   connection,
   wallet,
-  baseCurrencyAccount,
-  quoteCurrencyAccount,
-  tokenAccounts,
-  selectedTokenAccounts,
   baseCurrency,
   quoteCurrency,
+  baseTokenAccount,
+  quoteTokenAccount,
   baseUnsettled,
   quoteUnsettled,
-}) { 
+}: {
+  market: Market,
+  wallet: WalletAdapter
+  connection: Connection,
+  openOrders: OpenOrders,
+  baseCurrency: string,
+  quoteCurrency: string,
+  baseTokenAccount: any,
+  quoteTokenAccount: any,
+  baseUnsettled: number,
+  quoteUnsettled: number,
+}) {
   if (!wallet) {
     notify({ message: 'Please, connect wallet to settle funds' })
     return
@@ -297,7 +142,7 @@ export async function settleFunds({
     return
   }
 
-  if (!baseCurrencyAccount && !quoteCurrencyAccount) {
+  if (!baseCurrency && !quoteCurrency) {
     return
   }
 
@@ -336,12 +181,11 @@ export async function settleFunds({
   const openOrdersAccountsForProgramIds = await Promise.all(
     programIds.map((programId) => getOpenOrdersAccountsForProgramId(programId))
   )
+
   const openOrdersAccounts = openOrdersAccountsForProgramIds.reduce(
     (accounts, current) => accounts.concat(current),
     []
   )
-
-  // console.log('openOrdersAccounts', openOrdersAccounts)
 
   let settleTransactions = await Promise.all(
     openOrdersAccounts.map((openOrdersAccount) => {
@@ -349,23 +193,9 @@ export async function settleFunds({
         // @ts-ignore
         m._decoded?.ownAddress?.equals(openOrdersAccount.market)
       )
-      const baseMint = market?.baseMintAddress
-      const quoteMint = market?.quoteMintAddress
 
-      const selectedBaseTokenAccount = getSelectedTokenAccountForMint(
-        tokenAccounts,
-        baseMint,
-        baseMint &&
-          selectedTokenAccounts &&
-          selectedTokenAccounts[baseMint.toBase58()]
-      )?.pubkey
-      const selectedQuoteTokenAccount = getSelectedTokenAccountForMint(
-        tokenAccounts,
-        quoteMint,
-        quoteMint &&
-          selectedTokenAccounts &&
-          selectedTokenAccounts[quoteMint.toBase58()]
-      )?.pubkey
+      const selectedBaseTokenAccount = baseTokenAccount?.pubkey
+      const selectedQuoteTokenAccount = quoteTokenAccount?.pubkey
 
       if (!selectedBaseTokenAccount || !selectedQuoteTokenAccount) {
         return null
@@ -412,6 +242,7 @@ export async function settleFunds({
     (x): x is { signers: [PublicKey | Account]; transaction: Transaction } =>
       !!x
   )
+  
   if (
     (!settleTransactions || settleTransactions.length === 0) &&
     !wallet.autoApprove
@@ -451,6 +282,7 @@ export async function settleFunds({
     })
 
   const transaction = mergeTransactions(transactions)
+
   return await sendTransaction({
     transaction,
     signers,
@@ -464,88 +296,6 @@ export async function settleFunds({
       quoteUnsettled: quoteUnsettled,
     },
   })
-
-  // let createAccountTransaction;
-  // let createAccountSigner;
-  // let baseCurrencyAccountPubkey = baseCurrencyAccount?.pubkey;
-  // let quoteCurrencyAccountPubkey = quoteCurrencyAccount?.pubkey;
-
-  // if (!baseCurrencyAccountPubkey) {
-  //   const result = await createTokenAccountTransaction({
-  //     connection,
-  //     wallet,
-  //     mintPublicKey: market.baseMintAddress,
-  //   });
-  //   baseCurrencyAccountPubkey = result?.newAccountPubkey;
-  //   createAccountTransaction = result?.transaction;
-  //   createAccountSigner = result?.signer;
-  // }
-  // if (!quoteCurrencyAccountPubkey) {
-  //   const result = await createTokenAccountTransaction({
-  //     connection,
-  //     wallet,
-  //     mintPublicKey: market.quoteMintAddress,
-  //   });
-  //   quoteCurrencyAccountPubkey = result?.newAccountPubkey;
-  //   createAccountTransaction = result?.transaction;
-  //   createAccountSigner = result?.signer;
-  // }
-  // let referrerQuoteWallet = null;
-
-  // if (market.supportsReferralFees) {
-  //   if (
-  //     process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS &&
-  //     market.quoteMintAddress.equals(
-  //       ALL_TOKENS_MINTS.find(({ name }) => name === 'USDT').address,
-  //     )
-  //   ) {
-  //     referrerQuoteWallet = new PublicKey(
-  //       process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS,
-  //     );
-  //   } else if (
-  //     process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS &&
-  //     market.quoteMintAddress.equals(
-  //       ALL_TOKENS_MINTS.find(({ name }) => name === 'USDC').address,
-  //     )
-  //   ) {
-  //     referrerQuoteWallet = new PublicKey(
-  //       process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS,
-  //     );
-  //   }
-  // }
-
-  // const {
-  //   transaction: settleFundsTransaction,
-  //   signers: settleFundsSigners,
-  // } = await market.makeSettleFundsTransaction(
-  //   connection,
-  //   openOrders,
-  //   baseCurrencyAccountPubkey,
-  //   quoteCurrencyAccountPubkey,
-  //   referrerQuoteWallet,
-  // );
-
-  // console.log('settleFundsTransaction', settleFundsTransaction, settleFundsTransaction.length)
-  // console.log('settleFundsSigners', settleFundsSigners, settleFundsSigners.length)
-
-  // if (!settleFundsSigners || settleFundsSigners.length === 0) return;
-
-  // let transaction = mergeTransactions([
-  //   createAccountTransaction,
-  //   settleFundsTransaction,
-  // ]);
-
-  // let signers = createAccountSigner
-  //   ? [...settleFundsSigners, createAccountSigner]
-  //   : settleFundsSigners;
-
-  // return await sendTransaction({
-  //   transaction,
-  //   signers,
-  //   wallet,
-  //   connection,
-  //   sendingMessage: 'Settling funds...',
-  // });
 }
 
 export async function cancelOrder(params) {

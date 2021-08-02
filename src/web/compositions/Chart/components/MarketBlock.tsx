@@ -246,14 +246,14 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
       </Row>
       <Row>
         <Row align={'flex-start'} direction="column">
-          <Title color={theme.palette.orange.dark}>
+          <Title color={theme.palette.green.main}>
             SOL is the fuel for transactions on Solana. You must have
           </Title>
-          <Title color={theme.palette.orange.dark}>
+          <Title color={theme.palette.green.main}>
             some SOL in your wallet for DEX trading or other transactions.
           </Title>
         </Row>
-        <ExclamationMark theme={theme} margin={'0 0 0 2rem'} fontSize="5rem" />
+        <ExclamationMark theme={theme} color={theme.palette.green.main} margin={'0 0 0 2rem'} fontSize="5rem" />
       </Row>
       <MintsPopup
         theme={theme}

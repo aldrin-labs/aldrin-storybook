@@ -10,7 +10,8 @@ import React, { useContext, useEffect, useMemo, useRef } from 'react'
 import { refreshCache, setCache, useAsyncData } from './fetch-loop'
 import tuple from 'immutable-tuple'
 import MultiEndpointsConnection from './MultiEndpointsConnection'
-const MAINNET_BETA_ENDPOINT = clusterApiUrl('mainnet-beta')
+
+export const MAINNET_BETA_ENDPOINT = clusterApiUrl('mainnet-beta')
 export const ENDPOINTS = [
   {
     name: 'mainnet-beta',
