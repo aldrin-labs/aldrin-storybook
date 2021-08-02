@@ -99,6 +99,7 @@ const CustomTableCell = withStyles((theme) => ({
 }))(TableCell)
 
 const StyledCustomTableCell = styled(CustomTableCell)`
+  display: ${(props) => props.showOnMobile && 'none'};
   @media (max-width: 600px) {
     display: ${(props) => (props.showOnMobile ? 'table-cell' : 'none')};
   }

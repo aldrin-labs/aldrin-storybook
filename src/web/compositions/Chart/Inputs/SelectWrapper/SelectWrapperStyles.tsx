@@ -38,6 +38,7 @@ export const StyledSymbol = styled.span`
   color: #96999c;
   font-family: Avenir Next Thin;
   margin-bottom: 1rem;
+  font-size: 1.5rem;
   @media (max-width: 600px) {
     display: none;
   }

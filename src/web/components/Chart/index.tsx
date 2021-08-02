@@ -5,11 +5,12 @@ import { withTheme } from '@material-ui/styles'
 import { Card } from '@material-ui/core'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import { TriggerTitle } from '@sb/components/ChartCardHeader'
-import { CHARTS_API_URL } from '@core/utils/config'
+import { CHARTS_API_URL, maxMobileScreenResolution } from '@core/utils/config'
 import { TerminalModeButton } from '@sb/components/TradingWrapper/styles'
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 
 import { useWallet } from '@sb/dexUtils/wallet'
+import useWindowSize from '@core/hooks/useWindowSize'
 
 const Wrapper = styled(Card)`
   display: flex;
@@ -61,7 +62,9 @@ export const SingleChart = ({
   currencyPair: string
 }) => {
   // console.log('customMark', currencyPair)
+  const { width, height } = useWindowSize()
 
+  const isMobile = maxMobileScreenResolution > width
   return (
     <Wrapper>
       <iframe
@@ -69,7 +72,7 @@ export const SingleChart = ({
         style={{ borderWidth: 0 }}
         src={`https://${CHARTS_API_URL}${additionalUrl}&theme=${
           themeMode === 'light' ? 'light' : 'serum'
-        }`}
+        }&isMobile=${isMobile}`}
         height={'100%'}
         id={`${name}${themeMode}`}
         key={`${themeMode}${additionalUrl}`}

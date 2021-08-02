@@ -12,7 +12,7 @@ import {
 
 import OrderBookTable from './Tables/Asks/OrderBookTable'
 import SpreadTable from './Tables/Bids/SpreadTable'
-import LastTrade from './Tables/LastTrade/LastTrade'
+import LastTrade, { LastTradeMobile } from './Tables/LastTrade/LastTrade'
 import ChartCardHeader from '@sb/components/ChartCardHeader'
 import {
   StyledSelect,
@@ -108,7 +108,6 @@ class OrderBookTableContainer extends Component<IProps, IState> {
       filterOpenOrders({ order, canceledOrders: [] })
     )
     const aggregationModes = getAggregationsFromPricePrecision(pricePrecision)
-
     return (
       <>
         <ChartCardHeader
@@ -158,7 +157,22 @@ class OrderBookTableContainer extends Component<IProps, IState> {
             </div>
           </ModesContainer>
         </ChartCardHeader>
-        <OrderBookStyledContainer style={{ height: '100%' }}>
+        <LastTradeMobile
+          mode={mode}
+          data={data}
+          theme={theme}
+          minPriceDigits={minPriceDigits}
+          marketType={marketType}
+          marketOrders={marketOrders}
+          aggregation={aggregation}
+          symbol={currencyPair}
+          markPrice={markPrice}
+          exchange={this.props.exchange}
+          pricePrecision={pricePrecision}
+          updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
+          terminalViewMode={terminalViewMode}
+        />
+        <OrderBookStyledContainer terminalViewMode={terminalViewMode}>
           <OrderBookTable
             data={data}
             mode={mode}

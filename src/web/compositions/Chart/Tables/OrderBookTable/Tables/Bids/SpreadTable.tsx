@@ -146,7 +146,7 @@ class SpreadTable extends Component<IProps> {
               }}
               rowCount={tableData.length}
               rowHeight={
-                terminalViewMode !== 'mobileChart' ? height / 7 : height / 6
+                terminalViewMode === 'mobileChart' ? height / 7 : height / 6
               }
               overscanRowCount={0}
               rowGetter={({ index }) => tableData[index]}

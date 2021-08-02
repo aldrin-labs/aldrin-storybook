@@ -553,7 +553,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
       takeProfit,
       takeProfitPercentage,
       breakEvenPoint,
-      updateState,
+      updateWrapperState,
       tradingBotEnabled,
       tradingBotInterval,
       tradingBotIsActive,
@@ -612,7 +612,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                 padding: 0,
                 display: 'flex',
                 justifyContent: 'space-around',
-                height: '7rem',
+                height: '8.5rem',
                 background: '#383B45',
                 borderRadius: '2.5rem',
                 alignItems: 'center',
@@ -636,9 +636,9 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
               firstHalfIsActive={sideType === 'buy'}
               changeHalf={() => {
                 if (isBuyType) {
-                  updateState('side', 'sell')
+                  updateWrapperState({ side: 'sell' })
                 } else {
-                  updateState('side', 'buy')
+                  updateWrapperState({ side: 'buy' })
                 }
               }}
             />
@@ -654,7 +654,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                 padding: 0,
                 display: 'flex',
                 justifyContent: 'space-around',
-                height: '7rem',
+                height: '8.5rem',
                 background: '#383B45',
                 borderRadius: '2.5rem',
                 alignItems: 'center',
@@ -679,9 +679,18 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
               firstHalfIsActive={priceType === 'market'}
               changeHalf={() => {
                 if (priceType === 'market') {
-                  updateState('mode', 'limit')
+                  updateWrapperState({
+                    mode: 'limit',
+                    orderMode: 'TIF',
+                    tradingBotEnabled: false,
+                    TVAlertsBotEnabled: false,
+                  })
                 } else {
-                  updateState('mode', 'market')
+                  updateWrapperState({
+                    mode: 'market',
+                    orderMode: 'ioc',
+                    TVAlertsBotEnabled: false,
+                  })
                 }
               }}
             />
@@ -743,9 +752,11 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                       value={tradingBotInterval}
                       onChange={(e) => {
                         if (+e.target.value > 600) {
-                          updateState('tradingBotInterval', 600)
+                          updateWrapperState({ tradingBotInterval: 600 })
                         } else {
-                          updateState('tradingBotInterval', e.target.value)
+                          updateWrapperState({
+                            tradingBotInterval: e.target.value,
+                          })
                         }
                       }}
                       inputStyles={{
@@ -765,7 +776,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                         margin: '0 .5rem 0 1rem',
                       }}
                       onChange={(value) => {
-                        updateState('tradingBotInterval', value)
+                        updateWrapperState({ tradingBotInterval: value })
                       }}
                     />
                   </InputRowContainer>
@@ -826,7 +837,9 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                     needTitle={true}
                     value={takeProfitPercentage}
                     onChange={(e) => {
-                      updateState('takeProfitPercentage', e.target.value)
+                      updateWrapperState({
+                        takeProfitPercentage: e.target.value,
+                      })
                     }}
                   />
 
@@ -838,7 +851,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                       margin: '0 0 0 1.5%',
                     }}
                     onChange={(value) => {
-                      updateState('takeProfitPercentage', value / 20)
+                      updateWrapperState({ takeProfitPercentage: value / 20 })
                     }}
                   />
                 </InputRowContainer>
@@ -863,7 +876,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                       needMinWidth={false}
                       btnWidth="100%"
                       height="7rem"
-                      fontSize="1.4rem"
+                      fontSize="1.6rem"
                       padding="2rem 8rem"
                       borderRadius="2rem"
                       borderColor={theme.palette.blue.serum}
@@ -1054,7 +1067,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       tradingBotEnabled,
       tradingBotInterval,
       tradingBotTotalTime,
-      updateState,
+      updateWrapperState,
       publicKey,
     } = props
 

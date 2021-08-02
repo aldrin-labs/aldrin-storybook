@@ -42,8 +42,8 @@ export const TitleButton = styled(
 export const TableButton = styled(({ ...rest }) => <Button {...rest} />)`
   &&& {
     font-size: ${CSS_CONFIG.chart.content.fontSize};
-    padding: 1rem 3.5rem;
-    border-radius: 1.8rem;
+    padding: 0.25rem 1.5rem;
+    border-radius: 1.2rem;
     background: #f79894;
     color: #fbf2f2;
     font-family: Avenir Next Medium;
@@ -52,8 +52,10 @@ export const TableButton = styled(({ ...rest }) => <Button {...rest} />)`
     text-transform: none;
     width: auto;
     height: auto;
+    margin: 1rem;
     @media (max-width: 600px) {
       font-size: 2rem;
+      padding: 0.5rem 2.5rem;
     }
   }
 `

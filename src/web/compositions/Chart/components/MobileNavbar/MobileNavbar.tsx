@@ -55,7 +55,7 @@ export const MobileNavBar = ({
         <SvgIcon src={serumCCAILogo} width={'100%'} height={'auto'} />
       </Link>
       {pathname === '/' ? (
-        <Row justify={'space-between'} width={'35%'}>
+        <Row justify={'space-between'} width={'45%'}>
           <LinkToTwitter />
           <LinkToTelegram />
           <LinkToDiscord />
@@ -63,17 +63,21 @@ export const MobileNavBar = ({
       ) : (
         <Row
           justify={wallet.connected ? 'space-between' : 'flex-end'}
-          width={wallet.connected ? '55%' : '40%'}
+          width={wallet.connected ? '65%' : '40%'}
         >
           {wallet.connected ? (
-            <RowContainer justify={'space-between'} direction={'row'}>
-              <SvgIcon src={WalletIcon} />
-              <Row>
+            <RowContainer
+              justify={'flex-end'}
+              direction={'row'}
+              style={{ flexWrap: 'nowrap' }}
+            >
+              <SvgIcon src={WalletIcon} style={{ margin: '0 2rem 0 0' }} />
+              <Row style={{ margin: '0 2rem 0 0' }}>
                 <Row align={'flex-start'} direction={'column'}>
                   <Title
                     fontSize="1.2rem"
                     fontFamily="Avenir Next Bold"
-                    style={{ margin: '0 0 1rem 0' }}
+                    style={{ margin: '0 0 1rem 0', textAlign: 'left' }}
                   >
                     {isCCAIActive ? (
                       <>
@@ -95,9 +99,9 @@ export const MobileNavBar = ({
                     )}
                   </Title>
                   <Title
-                    fontFamily="Avenir Next"
+                    fontFamily="Avenir Next Medium"
                     color={'rgb(147, 160, 178)'}
-                    fontSize="1rem"
+                    fontSize="1.2rem"
                   >
                     {`${wallet?.publicKey
                       ?.toBase58()
@@ -113,6 +117,14 @@ export const MobileNavBar = ({
                 Disconnect
               </DisconnectButton>
             </RowContainer>
+          ) : isWalletsDropdownOpen ? (
+            <Title
+              fontSize="2rem"
+              fontFamily="Avenir Next Medium"
+              style={{ margin: '0 0 1rem 0' }}
+            >
+              Select Wallet to Connect
+            </Title>
           ) : (
             <BtnCustom
               theme={theme}
@@ -120,7 +132,7 @@ export const MobileNavBar = ({
               needMinWidth={false}
               btnWidth="auto"
               height="auto"
-              fontSize="1.4rem"
+              fontSize="1.6rem"
               padding="1.5rem 3.5rem"
               borderRadius="1.1rem"
               borderColor={'#366CE5'}

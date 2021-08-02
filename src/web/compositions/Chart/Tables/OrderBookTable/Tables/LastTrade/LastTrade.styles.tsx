@@ -26,19 +26,17 @@ export const LastTradeContainer = styled.div`
   }
 `
 export const LastTradeContainerMobile = styled.div`
-  @media (max-width: 600px) {
-    display: ${(props) =>
-      props.terminalViewMode === 'mobileChart' ? 'flex' : 'none'};
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 4rem;
-    margin: 0;
-    text-align: center;
-    background: ${(props) => props.theme.palette.white.background};
-    border-top: ${(props) => props.theme.palette.border.main};
-    border-bottom: ${(props) => props.theme.palette.border.main};
-  }
+  display: ${(props) =>
+    props.terminalViewMode === 'mobileChart' ? 'flex' : 'none'};
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 6rem;
+  margin: 0;
+  text-align: center;
+  background: none;
+  border-top: ${(props) => props.theme.palette.border.main};
+  border-bottom: ${(props) => props.theme.palette.border.main};
 
   @media (min-width: 600px) {
     display: none;
@@ -80,7 +78,9 @@ export const ArrowIcon = styled(({ fall, ...rest }: { fall: boolean }) => (
 
 export const OrderBookStyledContainer = styled(RowContainer)`
   height: 100%;
-  @media (max-witdh: 600px) {
+  @media (max-width: 600px) {
     width: 100%;
+    height: ${(props) =>
+      props.terminalViewMode === 'mobileChart' ? 'calc(100% - 6rem)' : '100%'};
   }
 `

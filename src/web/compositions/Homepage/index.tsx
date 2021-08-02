@@ -43,9 +43,9 @@ export const Homepage = () => {
             Wallet
           </StyledA>
           <NewLink to="/analytics">Analytics</NewLink>
-          <NewLink to="/pools">Liquidity Pools</NewLink>
+          {/* <NewLink to="/pools">Liquidity Pools</NewLink>
           <NewLink to="/swaps">Swap</NewLink>
-          <NewLink to="/rebalance">Rebalance</NewLink>
+          <NewLink to="/rebalance">Rebalance</NewLink> */}
         </RowContainer>
       </MainContainer>
       <MainContainerForSmallScreens>

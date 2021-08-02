@@ -89,10 +89,6 @@ class SimpleTabs extends React.Component<any, any> {
     }
   }
 
-  updateState = (name, property) => {
-    this.setState({ [name]: property })
-  }
-
   shouldComponentUpdate(nextProps) {
     if (this.state.mode !== 'market' && this.props.price !== nextProps.price) {
       return false
@@ -137,6 +133,9 @@ class SimpleTabs extends React.Component<any, any> {
   componentWillUnmount() {
     this.unsubscribe()
   }
+
+  updateWrapperState = (newState: { [key: string]: any }) =>
+    this.setState(newState)
 
   subscribe = () => {
     const that = this
@@ -245,7 +244,7 @@ class SimpleTabs extends React.Component<any, any> {
 
     const isSPOTMarket = isSPOTMarketType(marketType)
     const maxAmount = [funds[1].quantity, funds[0].quantity]
-
+    console.log('type', mode)
     return (
       <TerminalComponentsContainer
         terminalViewMode={terminalViewMode}
@@ -294,7 +293,7 @@ class SimpleTabs extends React.Component<any, any> {
                       TVAlertsBotEnabled: false,
                     })
 
-                    this.updateState('takeProfit', false)
+                    this.setState({ takeProfit: false })
                   }}
                 >
                   Limit
@@ -326,7 +325,7 @@ class SimpleTabs extends React.Component<any, any> {
                         checked={takeProfit}
                         disabled={mode === 'limit'}
                         onChange={() => {
-                          this.updateState('takeProfit', !takeProfit)
+                          this.setState({ takeProfit: !takeProfit })
                         }}
                         style={{
                           padding: '0 0.8rem 0 0',
@@ -488,7 +487,7 @@ class SimpleTabs extends React.Component<any, any> {
                   publicKey={publicKey}
                   subscribeToTVAlert={this.subscribe}
                   quantityPrecision={quantityPrecision}
-                  updateState={this.updateState}
+                  updateWrapperState={this.updateWrapperState}
                 />
               ) : (
                 <>
@@ -548,7 +547,7 @@ class SimpleTabs extends React.Component<any, any> {
                           breakEvenPoint,
                           cancelOrder,
                           addLoaderToButton: this.addLoaderToButton,
-                          updateState: this.updateState,
+                          updateWrapperState: this.updateWrapperState,
                         }}
                       />
                     </TerminalContainer>
@@ -604,10 +603,9 @@ class SimpleTabs extends React.Component<any, any> {
                                     needTitle={true}
                                     value={takeProfitPercentage}
                                     onChange={(e) => {
-                                      this.updateState(
-                                        'takeProfitPercentage',
-                                        e.target.value
-                                      )
+                                      this.setState({
+                                        takeProfitPercentage: e.target.value,
+                                      })
                                     }}
                                   />
 
@@ -619,10 +617,9 @@ class SimpleTabs extends React.Component<any, any> {
                                       margin: '0 0 0 1.5%',
                                     }}
                                     onChange={(value) => {
-                                      this.updateState(
-                                        'takeProfitPercentage',
-                                        value / 20
-                                      )
+                                      this.setState({
+                                        takeProfitPercentage: value / 20,
+                                      })
                                     }}
                                   />
                                 </InputRowContainer>
@@ -662,15 +659,13 @@ class SimpleTabs extends React.Component<any, any> {
                                   value={tradingBotTotalTime}
                                   onChange={(e) => {
                                     if (+e.target.value > 720) {
-                                      this.updateState(
-                                        'tradingBotTotalTime',
-                                        720
-                                      )
+                                      this.setState({
+                                        tradingBotTotalTime: 720,
+                                      })
                                     } else {
-                                      this.updateState(
-                                        'tradingBotTotalTime',
-                                        e.target.value
-                                      )
+                                      this.setState({
+                                        tradingBotTotalTime: e.target.value,
+                                      })
                                     }
                                   }}
                                   inputStyles={{
@@ -690,10 +685,9 @@ class SimpleTabs extends React.Component<any, any> {
                                     margin: '0 .5rem 0 1rem',
                                   }}
                                   onChange={(value) => {
-                                    this.updateState(
-                                      'tradingBotTotalTime',
-                                      value
-                                    )
+                                    this.setState({
+                                      tradingBotTotalTime: value,
+                                    })
                                   }}
                                 />
                               </InputRowContainer>
@@ -747,7 +741,7 @@ class SimpleTabs extends React.Component<any, any> {
                           orderMode={orderMode}
                           TIFMode={TIFMode}
                           trigger={trigger}
-                          updateState={this.updateState}
+                          updateWrapperState={this.updateWrapperState}
                         />
                       </TerminalContainer>
                     </SellTerminal>
