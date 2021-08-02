@@ -1,20 +1,17 @@
 import React, { useState } from 'react'
 import { TableWithSort } from '@sb/components'
-import { useSnackbar } from 'notistack'
 
 import {
-  updateOpenOrderHistoryQuerryFunction,
   combineBalancesTable,
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
 
 import {
-  useTokenAccounts,
-  getSelectedTokenAccountForMint,
   useBalances,
-  useSelectedTokenAccounts,
   useMarket,
+  useSelectedBaseCurrencyAccount,
+  useSelectedQuoteCurrencyAccount,
 } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { useConnection } from '@sb/dexUtils/connection'
@@ -26,13 +23,17 @@ const BalancesTable = (props) => {
   const { tab, theme, show, page, perPage, marketType } = props
 
   const balances = useBalances()
-  const [accounts] = useTokenAccounts()
   const connection = useConnection()
+
   const { wallet, providerUrl } = useWallet()
-  const [selectedTokenAccounts] = useSelectedTokenAccounts()
-  const { baseCurrency, quoteCurrency } = useMarket()
+  const { market, baseCurrency, quoteCurrency } = useMarket()
+
+  const baseTokenAccount = useSelectedBaseCurrencyAccount()
+  const quoteTokenAccount = useSelectedQuoteCurrencyAccount()
+
   const isCCAIWallet = providerUrl === CCAIProviderURL
   const showSettle = !isCCAIWallet || !wallet.connected || !wallet.autoApprove
+
   async function onSettleFunds(market, openOrders) {
     try {
       await settleFunds({
@@ -40,20 +41,12 @@ const BalancesTable = (props) => {
         openOrders,
         connection,
         wallet,
-        baseCurrencyAccount: getSelectedTokenAccountForMint(
-          accounts,
-          market?.baseMintAddress
-        ),
-        quoteCurrencyAccount: getSelectedTokenAccountForMint(
-          accounts,
-          market?.quoteMintAddress
-        ),
-        selectedTokenAccounts,
         baseCurrency,
         quoteCurrency,
+        baseTokenAccount,
+        quoteTokenAccount,
         baseUnsettled: balances[0].unsettled,
         quoteUnsettled: balances[1].unsettled,
-        tokenAccounts: accounts,
       })
 
       await notify({

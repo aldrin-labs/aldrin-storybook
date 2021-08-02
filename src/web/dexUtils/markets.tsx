@@ -163,8 +163,7 @@ export function useAllMarkets() {
           })
           return null
         }
-      }
-    )
+      })
 
     console.log('getAllMarkets markets', markets)
 
@@ -284,6 +283,7 @@ function getMarketDetails(market, marketInfos) {
       )?.name) ||
     (marketInfo?.baseLabel && `${marketInfo?.baseLabel}*`) ||
     'UNKNOWN'
+    
   const quoteCurrency =
     (market?.quoteMintAddress &&
       ALL_TOKENS_MINTS.find((token) =>
@@ -494,7 +494,7 @@ export function useOrderbook(depth = 200) {
     !askOrderbook || !market
       ? []
       : askOrderbook.getL2(depth).map(([price, size]) => [price, size])
-      
+
   return [{ bids, asks }, !!bids || !!asks]
 }
 
@@ -555,21 +555,47 @@ export function useTokenAccounts() {
 }
 
 export function getSelectedTokenAccountForMint(
+  market: Market,
   accounts: TokenAccount[] | undefined | null,
   mint: PublicKey | undefined,
-  selectedPubKey?: string | PublicKey | null
+  selectedPubKey?: string | PublicKey | null,
+  side: 'base' | 'quote' = 'base'
 ) {
   if (!accounts || !mint) {
     return null
   }
-  const filtered = accounts.filter(
-    ({ effectiveMint, pubkey }) =>
-      mint.equals(effectiveMint) &&
-      (!selectedPubKey ||
-        (typeof selectedPubKey === 'string'
-          ? selectedPubKey
-          : selectedPubKey.toBase58()) === pubkey.toBase58())
-  )
+  const isBaseToken = side === 'base'
+
+  const filtered = accounts
+    .filter(
+      ({ effectiveMint, pubkey }) =>
+        mint.equals(effectiveMint) &&
+        (!selectedPubKey ||
+          (typeof selectedPubKey === 'string'
+            ? selectedPubKey
+            : selectedPubKey.toBase58()) === pubkey.toBase58())
+    )
+    .sort((tokenA, tokenB) => {
+      if (market.quoteMintAddress.equals(TokenInstructions.WRAPPED_SOL_MINT)) {
+        const tokenABalance = tokenA.account.lamports / 1e9 ?? 0
+        const tokenBBalance = tokenB.account.lamports / 1e9 ?? 0
+        return tokenBBalance - tokenABalance
+      }
+
+      const tokenASplSize = new BN(tokenA.account.data.slice(64, 72), 10, 'le')
+      const tokenBSplSize = new BN(tokenB.account.data.slice(64, 72), 10, 'le')
+
+      const tokenABalance = isBaseToken
+        ? market.baseSplSizeToNumber(tokenASplSize)
+        : market.quoteSplSizeToNumber(tokenASplSize)
+
+      const tokenBBalance = isBaseToken
+        ? market.baseSplSizeToNumber(tokenBSplSize)
+        : market.quoteSplSizeToNumber(tokenBSplSize)
+
+      return tokenBBalance - tokenABalance
+    })
+
   return filtered && filtered[0]
 }
 
@@ -581,9 +607,11 @@ export function useSelectedQuoteCurrencyAccount() {
   const mintAddress = market?.quoteMintAddress
 
   return getSelectedTokenAccountForMint(
+    market,
     accounts,
     mintAddress,
-    mintAddress && selectedTokenAccounts[mintAddress.toBase58()]
+    mintAddress && selectedTokenAccounts[mintAddress.toBase58()],
+    'base'
   )
 }
 
@@ -595,9 +623,11 @@ export function useSelectedBaseCurrencyAccount() {
   const mintAddress = market?.baseMintAddress
 
   return getSelectedTokenAccountForMint(
+    market,
     accounts,
     mintAddress,
-    mintAddress && selectedTokenAccounts[mintAddress.toBase58()]
+    mintAddress && selectedTokenAccounts[mintAddress.toBase58()],
+    'quote'
   )
 }
 

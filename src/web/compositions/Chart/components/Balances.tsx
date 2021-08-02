@@ -5,21 +5,7 @@ import { Grid, Theme } from '@material-ui/core'
 import ChartCardHeader from '@sb/components/ChartCardHeader'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
-import {
-  formatNumberToUSFormat,
-  stripDigitPlaces,
-} from '@core/utils/PortfolioTableUtils'
-
 import { Key, FundsType } from '@core/types/ChartTypes'
-
-import { addMainSymbol } from '@sb/components/index'
-import { isSPOTMarketType } from '@core/utils/chartPageUtils'
-import {
-  importCoinIcon,
-  onErrorImportCoinUrl,
-} from '@core/utils/MarketCapUtils'
-import UpdateFuturesBalances from '@core/components/UpdateFuturesBalances/UpdateFuturesBalances'
-
 import DepositPopup from '@sb/compositions/Chart/components/DepositPopup'
 
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
@@ -29,12 +15,9 @@ import RefreshBtn from '@icons/refresh.svg'
 import {
   useBalances,
   useMarket,
-  useTokenAccounts,
-  getSelectedTokenAccountForMint,
-  useUnmigratedOpenOrdersAccounts,
-  useSelectedTokenAccounts,
-  useSelectedQuoteCurrencyAccount,
   useSelectedBaseCurrencyAccount,
+  useSelectedQuoteCurrencyAccount,
+  useUnmigratedOpenOrdersAccounts,
 } from '@sb/dexUtils/markets'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -42,8 +25,6 @@ import { settleFunds } from '@sb/dexUtils/send'
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
 import { notify } from '@sb/dexUtils/notifications'
 
-import { getDecimalCount } from '@sb/dexUtils/utils'
-import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown/index'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 export const BalanceTitle = styled.div`
@@ -165,18 +146,17 @@ export const Balances = ({
   const [coinForDepositPopup, chooseCoinForDeposit] = useState('')
 
   const balances = useBalances()
-  const [accounts] = useTokenAccounts()
-  const [selectedTokenAccounts] = useSelectedTokenAccounts()
   const connection = useConnection()
+
   const { wallet, providerUrl } = useWallet()
   const { refresh } = useUnmigratedOpenOrdersAccounts()
   const { market, baseCurrency, quoteCurrency } = useMarket()
 
-  const baseAccount = useSelectedBaseCurrencyAccount()
-  const quoteAccount = useSelectedQuoteCurrencyAccount()
+  const baseTokenAccount = useSelectedBaseCurrencyAccount()
+  const quoteTokenAccount = useSelectedQuoteCurrencyAccount()
 
-  const isBaseCoinExistsInWallet = market ? baseAccount : true
-  const isQuoteCoinExistsInWallet = market ? quoteAccount : true
+  const isBaseCoinExistsInWallet = market ? baseCurrency : true
+  const isQuoteCoinExistsInWallet = market ? quoteCurrency : true
 
   async function onSettleSuccess() {
     console.log('settled funds success')
@@ -210,18 +190,10 @@ export const Balances = ({
         openOrders,
         connection,
         wallet,
-        baseCurrencyAccount: getSelectedTokenAccountForMint(
-          accounts,
-          market?.baseMintAddress
-        ),
-        quoteCurrencyAccount: getSelectedTokenAccountForMint(
-          accounts,
-          market?.quoteMintAddress
-        ),
-        tokenAccounts: accounts,
-        selectedTokenAccounts,
         baseCurrency,
         quoteCurrency,
+        baseTokenAccount,
+        quoteTokenAccount,
         baseUnsettled: balances[0].unsettled,
         quoteUnsettled: balances[1].unsettled,
       })
