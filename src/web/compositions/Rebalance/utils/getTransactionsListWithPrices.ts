@@ -1,3 +1,4 @@
+import { WalletAdapter } from '@sb/dexUtils/adapters'
 import { TAKER_FEE } from '@sb/dexUtils/config'
 import { RawMarketData } from '@sb/dexUtils/markets'
 import { Connection } from '@solana/web3.js'
@@ -14,12 +15,14 @@ import { getTransactionsList } from './getTransactionsList'
 import { loadMarketsByNames } from './loadMarketsByNames'
 
 export const getTransactionsListWithPrices = async ({
+  wallet,
   connection,
   marketsData,
   tokensDiff,
   tokensMap,
   allMarketsMap,
 }: {
+  wallet: WalletAdapter,
   connection: Connection
   marketsData: MarketData[]
   tokensDiff: TokensDiff
@@ -36,6 +39,7 @@ export const getTransactionsListWithPrices = async ({
   })
 
   const loadedMarketsMap = await loadMarketsByNames({
+    wallet,
     connection,
     marketsNames: rebalanceTransactionsList.map((t) => t.name),
     allMarketsMap,
@@ -49,9 +53,7 @@ export const getTransactionsListWithPrices = async ({
 
   const orderbooksWithTakerFees = addPercentageToPricesInOrderbooks({
     orderbooksMap: orderbooks,
-    percentage: TAKER_FEE,
-    // +
-    // REBALANCE_CONFIG.POOL_FEE / 100,
+    percentage: TAKER_FEE + REBALANCE_CONFIG.SLIPPAGE / 100,
   })
 
   console.log('rebalanceTransactionsList', rebalanceTransactionsList)

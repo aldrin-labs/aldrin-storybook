@@ -29,7 +29,7 @@ export const placeAllOrders = async ({
   marketOrderProgram: any
 }) => {
   // place max 2 orders in one transaction, if need to create oo - probably one, determine it.
-  // 2 orders + 2 create OO, or 1 order + sol token address, if no extra transactions - 2 orders
+  // 2 orders + 1 create OO, or 1 order + sol token address, if no extra transactions - 2 orders
   const Side = { Ask: { ask: {} }, Bid: { bid: {} } }
 
   let commonTransaction = new Transaction()
@@ -139,6 +139,8 @@ export const placeAllOrders = async ({
       wallet,
       connection,
       market: transaction.loadedMarket,
+      vaultSigner: transaction.vaultSigner,
+      openOrders: transaction.openOrders,
       side: transaction.side,
       tokenAccountA: new PublicKey(tokenAccountA),
       tokenAccountB: new PublicKey(tokenAccountB),

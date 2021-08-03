@@ -23,7 +23,7 @@ export const getOrderbookForMarkets = async ({
 
   const loadedMarketsArray = Object.entries(loadedMarketsMap)
 
-  for (let [name, market] of loadedMarketsArray) {
+  for (let [name, { market }] of loadedMarketsArray) {
     const [asks, bids] = await Promise.all([
       market.loadAsks(connection),
       market.loadBids(connection),

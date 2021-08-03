@@ -235,7 +235,7 @@ const SwapsPage = ({
   const rawSlippage = 100 / (poolsAmountDiff + 1)
 
   const sumFeesPercentages =
-    REBALANCE_CONFIG.POOL_FEE + slippageTolerance + rawSlippage
+    REBALANCE_CONFIG.SLIPPAGE + slippageTolerance + rawSlippage
 
   const totalWithFees = +quoteAmount - (+quoteAmount / 100) * sumFeesPercentages
 
@@ -519,7 +519,7 @@ const SwapsPage = ({
                     style={{ padding: '0 0.5rem 0 0.5rem' }}
                     fontFamily={'Avenir Next Bold'}
                   >
-                    {REBALANCE_CONFIG.POOL_FEE}%
+                    {REBALANCE_CONFIG.SLIPPAGE}%
                   </Text>
                 </Row>
               </RowContainer>

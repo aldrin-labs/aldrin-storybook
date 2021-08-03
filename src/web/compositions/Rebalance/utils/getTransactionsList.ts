@@ -122,9 +122,13 @@ export const getTransactionsList = ({
 
           console.log('tokenAmount', tokenAmount)
 
-          const feeMultiplicator = (100 - REBALANCE_CONFIG.POOL_FEE) / 100
+          const feeMultiplicator = (100 - REBALANCE_CONFIG.SLIPPAGE) / 100
 
-          const loadedMarket = loadedMarketsMap[symbol]
+          const { market: loadedMarket, openOrders, vaultSigner } = loadedMarketsMap[symbol] || {
+            market: null,
+            openOrders: null,
+            vaultSigner: null,
+          }
 
           const funcToRound = (minSize: number) =>
             minSize >= 1
@@ -155,7 +159,7 @@ export const getTransactionsList = ({
           // so in next t-on this orders will be included
           orderbooksClone = updatedOrderbooks
 
-          const slippage = REBALANCE_CONFIG.POOL_FEE
+          const slippage = REBALANCE_CONFIG.SLIPPAGE
           const slippageMultiplicator = (100 - slippage) / 100
 
           const moduleAmountDiff = tokenAmount
@@ -165,7 +169,7 @@ export const getTransactionsList = ({
               : (moduleAmountDiff / price) *
                   (side === 'buy' ? slippageMultiplicator : 1),
             quantityPrecision
-          )
+          ) || 0
 
           const totalRaw = +(amount * price).toFixed(
             tokensMap[quote].decimalCount
@@ -210,6 +214,8 @@ export const getTransactionsList = ({
             side,
             slippage,
             loadedMarket,
+            openOrders, 
+            vaultSigner,
             name: symbol,
             feeUSD: feeUSD,
             address: market?.address,

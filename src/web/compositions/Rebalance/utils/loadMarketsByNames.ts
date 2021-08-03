@@ -1,14 +1,26 @@
 import { sleep } from '@core/utils/helpers'
-import { Market } from '@project-serum/serum'
-import { Connection } from '@solana/web3.js'
+import { Market, OpenOrders } from '@project-serum/serum'
+import { WalletAdapter } from '@sb/dexUtils/adapters'
+import { Connection, PublicKey } from '@solana/web3.js'
+import BN from 'bn.js'
+import { getVaultOwnerAndNonce } from './marketOrderProgram/getVaultOwnerAndNonce'
 
-export interface LoadedMarketsMap { [key: string]: Market }
+export interface LoadedMarket {
+  market: Market
+  vaultSigner: PublicKey | BN
+  openOrders: OpenOrders[]
+}
+export interface LoadedMarketsMap {
+  [key: string]: LoadedMarket
+}
 
 export const loadMarketsByNames = async ({
+  wallet,
   connection,
   marketsNames,
   allMarketsMap,
 }: {
+  wallet: WalletAdapter
   connection: Connection
   marketsNames: string[]
   allMarketsMap: Map<string, any>
@@ -30,11 +42,20 @@ export const loadMarketsByNames = async ({
       marketInfo.programId
     )
 
+    const [vaultSigner] = await getVaultOwnerAndNonce(
+      market._decoded.ownAddress
+    )
+
+    const openOrders = await market.findOpenOrdersAccountsForOwner(
+      connection,
+      wallet.publicKey
+    )
+
     console.log('market', market, market._decoded.bids)
 
-    marketsMap[name] = market
+    marketsMap[name] = { market, vaultSigner, openOrders }
 
-    if (i % 3 === 0) sleep(1 * 1000)
+    if (i % 2 === 0) sleep(1 * 1000)
 
     i++
   }

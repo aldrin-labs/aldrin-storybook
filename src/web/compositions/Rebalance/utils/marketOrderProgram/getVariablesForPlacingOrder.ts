@@ -3,37 +3,29 @@ import { WalletAdapter } from '@sb/dexUtils/adapters'
 import { DEX_PID } from '@sb/dexUtils/config'
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { Connection, PublicKey, SYSVAR_RENT_PUBKEY } from '@solana/web3.js'
-import { TokensMapType } from '../../Rebalance.types'
-import { getVaultOwnerAndNonce } from './getVaultOwnerAndNonce'
+import BN from 'bn.js'
 
 export const getVariablesForPlacingOrder = async ({
   wallet,
   connection,
   market,
+  vaultSigner,
+  openOrders,
   side,
   tokenAccountA,
   tokenAccountB,
 }: {
   wallet: WalletAdapter
   connection: Connection
-  market: Market
+  market: Market,
+  vaultSigner: PublicKey | BN,
+  openOrders: OpenOrders,
   side: 'buy' | 'sell'
   tokenAccountA: PublicKey,
   tokenAccountB: PublicKey,
 }) => {
-  const isBuySide = side === 'buy' // swap b-a, sell - swap a - b
+  const isBuySide = side === 'buy'
   const orderPayerTokenAccount = isBuySide ? tokenAccountB : tokenAccountA
-
-  // market
-  // marketA for buy, marketB for sell
-  // marketA_marketB
-
-  const [vaultSigner] = await getVaultOwnerAndNonce(market._decoded.ownAddress)
-
-  const openOrders = await market.findOpenOrdersAccountsForOwner(
-    connection,
-    wallet.publicKey
-  )
 
   console.log({
     openOrders,

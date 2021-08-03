@@ -84,12 +84,14 @@ export const RebalancePopup = ({
 
   const updateTransactionsList = useCallback(
     async ({
+      wallet,
       connection,
       marketsData,
       tokensDiff,
       tokensMap,
       allMarketsMap,
     }: {
+      wallet: WalletAdapter,
       connection: Connection
       marketsData: MarketData[]
       tokensDiff: TokensDiff
@@ -99,6 +101,7 @@ export const RebalancePopup = ({
       // transactions with all prices
       const rebalanceAllTransactionsListWithPrices = await getTransactionsListWithPrices(
         {
+          wallet,
           connection,
           marketsData,
           tokensDiff,
@@ -111,12 +114,13 @@ export const RebalancePopup = ({
 
       return rebalanceAllTransactionsListWithPrices
     },
-    [JSON.stringify([...allMarketsMap.values()])]
+    [wallet?.publicKey?.toString(), JSON.stringify([...allMarketsMap.values()])]
   )
 
   // only on markets update
   useEffect(() => {
     updateTransactionsList({
+      wallet,
       connection,
       marketsData,
       tokensDiff,
@@ -155,6 +159,7 @@ export const RebalancePopup = ({
               // if rebalance didn't start
               if (rebalanceStep === 'initial') {
                 updateTransactionsList({
+                  wallet,
                   connection,
                   marketsData,
                   tokensDiff,
@@ -225,31 +230,13 @@ export const RebalancePopup = ({
                   try {
                     // refresh data right before rebalance
                     const transactionsList = await updateTransactionsList({
+                      wallet,
                       connection,
                       marketsData,
                       tokensDiff,
                       tokensMap,
                       allMarketsMap,
                     })
-
-                    // const transactionsVariables = await Promise.all(
-                    //   transactionsList.map((transaction) => {
-                    //     const symbol = transaction.symbol
-                    //     const [base, quote] = symbol.split('_')
-
-                    //     const tokenAccountA = tokensMap[base].address
-                    //     const tokenAccountB = tokensMap[quote].address
-
-                    //     return getVariablesForPlacingOrder({
-                    //       wallet,
-                    //       connection,
-                    //       side: transaction.side,
-                    //       market: transaction.loadedMarket,
-                    //       tokenAccountA: new PublicKey(tokenAccountA),
-                    //       tokenAccountB: new PublicKey(tokenAccountB),
-                    //     })
-                    //   })
-                    // )
 
                     const marketOrderProgram = loadMarketOrderProgram({
                       wallet,
@@ -349,7 +336,6 @@ export const RebalancePopup = ({
             style={{ height: '100%', alignItems: 'center', display: 'flex' }}
             direction={'column'}
           >
-            {' '}
             <Loading color={'#F29C38'} size={42} />
             <Text color={'#F29C38'} style={{ marginTop: '1rem' }}>
               {pendingStateText}
