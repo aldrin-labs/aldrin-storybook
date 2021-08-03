@@ -101,7 +101,7 @@ export const ButtonsWithAmountFieldRowForBasic = ({
             />
           </InputRowContainer>
         </StyledInputsContainer>
-        {mode === 'limit' && (
+        {priceType === 'limit' && (
           <ReverseInputContainer>
             <InputWithReverseButton
               onChange={isAmountMode ? onAmountChange : onTotalChange}

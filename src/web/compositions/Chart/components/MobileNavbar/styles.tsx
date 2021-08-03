@@ -1,5 +1,6 @@
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import styled from 'styled-components'
+import { Paper } from '@material-ui/core'
 
 export const NavBarForSmallScreens = styled.div`
   display: flex;
@@ -24,4 +25,16 @@ export const DisconnectButton = styled(BtnCustom)`
   text-transform: none;
   width: auto;
   height: auto;
+`
+export const StyledPaper = styled(Paper)`
+  border-radius: 0;
+  width: 100%;
+  height: calc(100% - 24rem);
+  background: #17181a;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 3rem;
+  margin: 0;
+  box-shadow: none;
 `

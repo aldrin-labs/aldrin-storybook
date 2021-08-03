@@ -12,7 +12,7 @@ import {
   LinkToDiscord,
   LinkToTelegram,
   LinkToTwitter,
-} from '@sb/compositions/Homepage/styles'
+} from '@sb/compositions/Homepage/SocialsLinksComponents'
 import serumCCAILogo from '@icons/serumCCAILogo.svg'
 
 import {

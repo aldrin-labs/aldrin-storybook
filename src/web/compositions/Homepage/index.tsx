@@ -1,11 +1,6 @@
 import React from 'react'
 
 import {
-  LinkToDiscord,
-  LinkToMedium,
-  LinkToTelegram,
-  LinkToTwitter,
-  LinkToYouTube,
   MainContainer,
   MainContainerForSmallScreens,
   NewLink,
@@ -15,8 +10,13 @@ import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import newBanner from '@icons/newBanner.svg'
 import newBannerForSmallScreens from '@icons/newBannerForSmallScreens.svg'
 
-import serumCCAILogo from '@icons/serumCCAILogo.svg'
-
+import {
+  LinkToDiscord,
+  LinkToMedium,
+  LinkToTelegram,
+  LinkToTwitter,
+  LinkToYouTube,
+} from './SocialsLinksComponents'
 import SvgIcon from '@sb/components/SvgIcon'
 
 export const Homepage = () => {

@@ -16,7 +16,7 @@ export const InputWithReverseButton = ({
 }) => {
   return (
     <InputRowContainer
-      padding="0 0 1.2rem 0"
+      padding="0 0 0 0"
       style={{ width: '100%', position: 'relative' }}
     >
       <Input

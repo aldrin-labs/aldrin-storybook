@@ -8,24 +8,7 @@ import SvgIcon from '@sb/components/SvgIcon'
 import { MainTitle } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
-
-const StyledPaper = styled(Paper)`
-  border-radius: 0;
-  width: 100%;
-  height: calc(100% - 24rem);
-  background: #17181a;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 3rem;
-  margin: 0;
-  box-shadow: none;
-`
-const Title = styled(({ ...props }) => <MainTitle {...props} />)`
-  text-transform: none;
-  font-size: 2.5rem;
-  margin-bottom: 0;
-`
+import { StyledPaper } from './styles'
 
 export const MobileWalletDropdown = ({
   theme,
