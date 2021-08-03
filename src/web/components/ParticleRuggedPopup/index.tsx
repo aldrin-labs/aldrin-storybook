@@ -40,8 +40,8 @@ export const ParticleRuggedPopup = ({
       </RowContainer>
       <RowContainer direction={'column'} style={{ margin: '2rem 0' }}>
         <WhiteText theme={theme}>
-          You have 24 hours to close the open orders. The PARTI will be delisted
-          on August 4 at 12:00 UTC.{' '}
+          You have 24 hours to close the open orders. The PARTI token will be
+          delisted on August 4 at 12:00 UTC.{' '}
         </WhiteText>
       </RowContainer>
       <RowContainer justify="space-between" margin="2rem 0 2rem 0">
