@@ -250,7 +250,7 @@ const TokenNotAddedDialog = ({ open, pair, onClose, theme }) => {
                 onClick={async () => {
                   await createToken({ wallet, connection, mint })
                   await setIsTokenSuccessfullyAdded(true)
-                  await setTokenName(getTokenNameByMintAddress(mint))
+                  await setTokenName(getTokenNameByMintAddress(mint.toString()))
                 }}
               >
                 Add to the wallet
