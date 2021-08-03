@@ -24,7 +24,7 @@ import { notify } from './notifications'
 import { BN } from 'bn.js'
 import { getTokenAccountInfo } from './tokens'
 import { useAwesomeMarkets, AWESOME_TOKENS } from '@sb/dexUtils/serum'
-import { getDexProgramIdByEndpoint } from '@core/utils/config'
+import { getDexProgramIdByEndpoint } from '@sb/dexUtils/config'
 
 // not uniq here
 export const ALL_TOKENS_MINTS = [...TOKEN_MINTS, ...AWESOME_TOKENS]
