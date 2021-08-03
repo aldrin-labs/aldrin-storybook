@@ -1,4 +1,4 @@
-import { getDexProgramIdByEndpoint } from '@sb/config/dex'
+import { getDexProgramIdByEndpoint } from '@core/config/dex'
 import { useConnectionConfig } from './connection'
 
 const solana = require('@solana/web3.js')
