@@ -185,8 +185,10 @@ function ChartPageComponent(props: any) {
   }
 
   useEffect(() => {
+    const [base, quote] = selectedPair.split('_')
+
     setCorrectMarketAddress()
-    if (selectedPair.includes('PARTI')) {
+    if (base === 'PARTI' || quote === 'PARTI') {
       openPartiPopup(true)
     }
   }, [selectedPair])
