@@ -39,7 +39,7 @@ import { useAwesomeMarkets } from '@sb/dexUtils/serum'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { WarningPopup } from './components/WarningPopup'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
-import { ParticleRuggedPopup } from '@sb/components/ParticleRuggedPopup'
+import { TokenDelistPopup } from '@sb/components/TokenDelistPopup'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
   // Check if the arrays are the same length
@@ -94,7 +94,7 @@ function ChartPageComponent(props: any) {
   const [terminalViewMode, updateTerminalViewMode] = useState('default')
   const [isTourOpen, setIsTourOpen] = useState(false)
   const [isWarningPopupOpen, openWarningPopup] = useState(false)
-  const [isPartiPopupOpen, openPartiPopup] = useState(false)
+  const [isDelistPopupOpen, openDelistPopup] = useState(false)
 
   const [isNotificationTourOpen, setNotificationTourOpen] = useState(
     localStorage.getItem('isNotificationDone') == 'null'
@@ -307,9 +307,9 @@ function ChartPageComponent(props: any) {
         onClose={() => openWarningPopup(false)}
         theme={theme}
       />
-      <ParticleRuggedPopup
-        open={isPartiPopupOpen}
-        onClose={() => openPartiPopup(false)}
+      <TokenDelistPopup
+        open={isDelistPopupOpen}
+        onClose={() => openDelistPopup(false)}
         theme={theme}
       />
 

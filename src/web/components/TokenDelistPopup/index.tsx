@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
+import dayjs, { utc } from 'dayjs'
 
 import { Theme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
@@ -12,16 +12,24 @@ import Warning from '@icons/newWarning.svg'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { StyledPaper, Title, BlueButton } from './styles'
 
-export const ParticleRuggedPopup = ({
+dayjs.extend(utc)
+
+export const TokenDelistPopup = ({
   theme,
   onClose,
   open,
+  tokenName,
+  delistTimestamp,
 }: {
   theme: Theme
   onClose: () => void
   open: boolean
+  tokenName: string
+  delistTimestamp: number
 }) => {
   const [isUserConfident, userConfident] = useState(false)
+  const delistTimeToFormat = dayjs.unix(delistTimestamp).utc()
+
   return (
     <DialogWrapper
       theme={theme}
@@ -40,8 +48,11 @@ export const ParticleRuggedPopup = ({
       </RowContainer>
       <RowContainer direction={'column'} style={{ margin: '2rem 0' }}>
         <WhiteText theme={theme}>
-          You have 24 hours to close the open orders. The PARTI token will be
-          delisted on August 4 at 12:00 UTC.{' '}
+          You have 24 hours to close the open orders. The {tokenName} token will
+          be delisted on{' '}
+          {`${delistTimeToFormat.format(
+            'MMMM D'
+          )} at ${delistTimeToFormat.format('hh:mm')} UTC.`}
         </WhiteText>
       </RowContainer>
       <RowContainer justify="space-between" margin="2rem 0 2rem 0">
@@ -51,14 +62,14 @@ export const ParticleRuggedPopup = ({
           style={{ flexWrap: 'nowrap' }}
         >
           <SCheckbox
-            id={'warning_checkbox'}
+            id={'delist_warning_checkbox'}
             style={{ padding: 0, marginRight: '1rem' }}
             onChange={() => {
               userConfident(!isUserConfident)
             }}
             checked={isUserConfident}
           />
-          <label htmlFor={'warning_checkbox'}>
+          <label htmlFor={'delist_warning_checkbox'}>
             <WhiteText
               style={{
                 cursor: 'pointer',
