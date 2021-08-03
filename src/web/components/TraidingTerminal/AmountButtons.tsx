@@ -71,7 +71,7 @@ export const ButtonsWithAmountFieldRowForBasic = ({
         padding={'.6rem 0'}
         justify={priceType === 'market' ? 'flex-end' : 'center'}
       >
-        <StyledInputsContainer>
+        <StyledInputsContainer mode={priceType}>
           <InputRowContainer padding="0 0 1.2rem 0" style={{ width: '100%' }}>
             <Input
               theme={theme}
@@ -101,25 +101,27 @@ export const ButtonsWithAmountFieldRowForBasic = ({
             />
           </InputRowContainer>
         </StyledInputsContainer>
+        {mode === 'limit' && (
+          <ReverseInputContainer>
+            <InputWithReverseButton
+              onChange={isAmountMode ? onAmountChange : onTotalChange}
+              value={isAmountMode ? localAmount : localTotal}
+              theme={theme}
+              symbol={pair}
+              setMode={setMode}
+              mode={mode}
+              title={isAmountMode ? 'amount' : 'total'}
+              pattern={
+                isAmountMode
+                  ? isSPOTMarket
+                    ? '[0-9]+.[0-9]{8}'
+                    : '[0-9]+.[0-9]{3}'
+                  : ''
+              }
+            />
+          </ReverseInputContainer>
+        )}
 
-        <ReverseInputContainer>
-          <InputWithReverseButton
-            onChange={isAmountMode ? onAmountChange : onTotalChange}
-            value={isAmountMode ? localAmount : localTotal}
-            theme={theme}
-            symbol={pair}
-            setMode={setMode}
-            mode={mode}
-            title={isAmountMode ? 'amount' : 'total'}
-            pattern={
-              isAmountMode
-                ? isSPOTMarket
-                  ? '[0-9]+.[0-9]{8}'
-                  : '[0-9]+.[0-9]{3}'
-                : ''
-            }
-          />
-        </ReverseInputContainer>
         {needButtons ? (
           <InputRowContainer
             style={{

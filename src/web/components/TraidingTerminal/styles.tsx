@@ -111,6 +111,12 @@ export const GridContainer = styled.div`
   }
 `
 
+export const TerminalGridContainer = styled(GridContainer)`
+  @media (max-width: 600px) {
+    overflow-y: auto;
+  }
+`
+
 export const NameHeader = styled.div`
   background: ${(props: { background?: string }) => props.background};
   padding: 0px 8px;
@@ -534,6 +540,7 @@ export const ButtonBlock = styled(Grid)`
   padding-bottom: 1.5rem;
   @media (max-width: 600px) {
     padding-bottom: 0;
+    padding-top: 1rem;
     align-items: flex-end;
   }
 `
@@ -583,6 +590,6 @@ export const ReverseInputContainer = styled.div`
 export const StyledInputsContainer = styled.div`
   width: 100%;
   @media (max-width: 600px) {
-    display: none;
+    display: ${(props) => (props.mode === 'market' ? 'auto' : 'none')};
   }
 `

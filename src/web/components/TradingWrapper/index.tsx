@@ -244,7 +244,6 @@ class SimpleTabs extends React.Component<any, any> {
 
     const isSPOTMarket = isSPOTMarketType(marketType)
     const maxAmount = [funds[1].quantity, funds[0].quantity]
-    console.log('type', mode)
     return (
       <TerminalComponentsContainer
         terminalViewMode={terminalViewMode}

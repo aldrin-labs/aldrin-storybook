@@ -10,7 +10,7 @@ import { TerminalModeButton } from '@sb/components/TradingWrapper/styles'
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 
 import { useWallet } from '@sb/dexUtils/wallet'
-import useWindowSize from '@core/hooks/useWindowSize'
+import useWindowSize from '../../../core/webhooks/useWindowSize'
 
 const Wrapper = styled(Card)`
   display: flex;

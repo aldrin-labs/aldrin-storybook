@@ -44,6 +44,7 @@ import {
   ConnectWalletDropdownContainer,
   ButtonContainer,
   ButtonBlock,
+  TerminalGridContainer,
 } from './styles'
 import { SendButton } from '../TraidingTerminal/styles'
 import {
@@ -598,7 +599,10 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
     }
     return (
       <Container background={'transparent'}>
-        <GridContainer isBuyType={isBuyType} key={`${pair[0]}/${pair[1]}`}>
+        <TerminalGridContainer
+          isBuyType={isBuyType}
+          key={`${pair[0]}/${pair[1]}`}
+        >
           <SwitchersContainer>
             <CustomSwitcher
               theme={theme}
@@ -1031,7 +1035,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
               />
             </Grid>
           </ButtonBlock>
-        </GridContainer>
+        </TerminalGridContainer>
       </Container>
     )
   }
