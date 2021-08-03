@@ -12,7 +12,7 @@ import {
   Row,
   ReusableTitle as Title,
 } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { IdoBtn } from '../../Homepage/styles'
+import { IdoBtn, WhiteButton } from '../../Homepage/styles'
 
 import MarketStats from './MarketStats/MarketStats'
 import { TooltipCustom } from '@sb/components/index'
@@ -172,6 +172,25 @@ export const CardsPanel = ({ theme }) => {
               src={isDarkTheme ? SerumCCAILogo : LightLogo}
             />
           </Link>
+          <Row
+            style={{
+              borderLeft: theme.palette.border.new,
+              margin: '0 0 0 4rem',
+              justifyContent: 'flex-end',
+              padding: '0 0rem 0 4rem',
+            }}
+          >
+            <WhiteButton
+              style={{
+                borderRadius: '1.5rem',
+                width: 'auto',
+                padding: '0 2rem',
+              }}
+              theme={theme}
+            >
+              Leave feedback
+            </WhiteButton>
+          </Row>
           <div
             style={{
               width: '100%',
