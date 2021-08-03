@@ -297,6 +297,7 @@ export const TradingTerminalContainer = styled(
     hideDepthChart,
     hideOrderbook,
     hideTradeHistory,
+    terminalViewMode,
     ...rest
   }) => <div {...rest} />
 )`
@@ -319,6 +320,13 @@ export const TradingTerminalContainer = styled(
   @media (max-width: 1080px) {
     flex-wrap: wrap;
   }
+  @media (max-width: 600px) {
+    width: 100%;
+    display: ${(props) =>
+      props.terminalViewMode === 'fullScreenTablesMobile' ? 'none' : 'block'};
+    height: ${(props) =>
+      props.terminalViewMode === 'mobileChart' ? '35%' : '100%'};
+  }
 `
 
 export const TopChartsContainer = styled(
@@ -328,6 +336,7 @@ export const TopChartsContainer = styled(
     hideDepthChart,
     hideOrderbook,
     hideTradeHistory,
+    terminalViewMode,
     ...rest
   }) => <div {...rest} />
 )`
@@ -350,6 +359,15 @@ export const TopChartsContainer = styled(
     height: ${(props) =>
       props.isDefaultTerminalViewMode ? 'calc(61%)' : 'calc(51%)'};
   }
+
+  @media screen and (max-width: 600px) {
+    flex-basis: ${(props) =>
+      props.terminalViewMode === 'mobileChart' ? '100%' : '50%'};
+    height: ${(props) =>
+      props.terminalViewMode === 'mobileChart' ? '100%' : '62%'};
+    display: ${(props) =>
+      props.terminalViewMode === 'fullScreenTablesMobile' ? 'none' : 'block'};
+  }
 `
 
 export const ChartsContainer = styled(
@@ -359,6 +377,7 @@ export const ChartsContainer = styled(
     hideDepthChart,
     hideOrderbook,
     hideTradeHistory,
+    terminalViewMode,
     ...rest
   }) => <div {...rest} />
 )`
@@ -381,13 +400,19 @@ export const ChartsContainer = styled(
     flex-wrap: nowrap;
   }
 
+  @media (max-width: 600px) {
+    display: ${(props) =>
+      props.terminalViewMode === 'mobileChart' ? 'flex' : 'none'};
+    width: 100%;
+    height: ${(props) => props.terminalViewMode === 'mobileChart' && '65%'};
+  }
+
   background-color: ${(props) => props.theme.palette.white.background};
 `
 
 export const TradingTabelContainer = styled(
   ({ isDefaultTerminalViewMode, ...rest }) => <TablesContainer {...rest} />
 )`
-  // 32vh was
   background-color: ${(props) => props.theme.palette.white.background};
   position: relative;
   height: ${(props) => (props.isDefaultTerminalViewMode ? '40%' : '0%')};
@@ -398,8 +423,38 @@ export const TradingTabelContainer = styled(
   @media (max-width: 1080px) {
     flex-wrap: nowrap;
   }
-
+  @media (max-width: 600px) {
+    display: none;
+  }
   flex: auto;
+`
+
+export const MobileTradingTabelContainer = styled(
+  ({
+    isDefaultTerminalViewMode,
+    isTablesExpanded,
+    terminalViewMode,
+    ...rest
+  }) => <TablesContainer {...rest} />
+)`
+  background-color: ${(props) => props.theme.palette.white.background};
+  position: relative;
+  height: ${(props) =>
+    props.isDefaultTerminalViewMode
+      ? '38%'
+      : props.isTablesExpanded
+      ? '100%'
+      : '0%'};
+  justify-content: flex-start;
+  flex-direction: column;
+  overflow: hidden;
+  max-width: 100%;
+  display: ${(props) =>
+    props.terminalViewMode === 'mobileChart' ? 'none' : 'auto'};
+  flex: auto;
+  @media (min-width: 600px) {
+    display: none;
+  }
 `
 
 export const StyledSwitch = styled(({ isActive, ...rest }) => (
@@ -420,15 +475,16 @@ export const StyledSwitch = styled(({ isActive, ...rest }) => (
 export const Container = styled(Grid)`
   display: flex;
   // - ( menu + margin )
-  height: calc(100%);
   width: 100%;
   margin: 0;
   padding: 0;
   font-family: Avenir Next Medium;
   background-color: ${(props) => props.theme.palette.dark.background};
 
-  @media (max-width: 1400px) {
-    height: calc(100vh - 12rem);
+  height: calc(100vh - 12rem);
+
+  @media (max-width: 600px) {
+    height: calc(100vh - 36rem);
   }
 `
 
@@ -472,10 +528,37 @@ export const BalancesContainer = styled(
   position: relative;
   padding: 0;
   height: ${(props) => (props.isDefaultTerminalViewMode ? '40%' : '50%')};
+  @media (max-width: 600px) {
+    display: none;
+  }
 `
 
 export const SmartTerminalContainer = styled(Grid)`
   position: relative;
   height: 48%;
   padding: 0.4rem 0 0 0.4rem;
+`
+export const MarketStatsContainer = styled.div`
+  display: flex;
+  @media (max-width: 600px) {
+    display: none;
+  }
+`
+
+export const MobileMarketStatsContainer = styled.div`
+  dispay: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  @media (min-width: 600px) {
+    display: none;
+  }
+`
+export const ChartAndOrderbookContainer = styled(Grid)`
+  height: 100%;
+  @media (max-width: 600px) {
+    dispay: ${(props) =>
+      props.terminalViewMode === 'mobileChart' ? 'flex' : 'auto'};
+    flex-direction: ${(props) =>
+      props.terminalViewMode === 'mobileChart' ? 'column' : 'auto'};
+  }
 `

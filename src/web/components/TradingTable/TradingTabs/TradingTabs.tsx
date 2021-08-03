@@ -2,7 +2,14 @@ import React from 'react'
 import { compose } from 'recompose'
 
 import { IProps, IQueryProps, INextQueryProps } from './TradingTabs.types'
-import { TitleTab, TitleTabsGroup } from './TradingTabs.styles'
+import {
+  TitleTab,
+  TitleTabsGroup,
+  StyledTitleTab,
+  ExpandTableButton,
+  StyledTitleTabForMobile,
+} from './TradingTabs.styles'
+import SvgIcon from '@sb/components/SvgIcon'
 
 import { isSPOTMarketType } from '@core/utils/chartPageUtils'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -10,6 +17,8 @@ import {
   filterOpenOrders,
   filterPositions,
 } from '@sb/components/TradingTable/TradingTable.utils'
+import ExpandTableIcon from '@icons/expandIcon.svg'
+import SqueezeTableIcon from '@icons/squeezeIcon.svg'
 
 import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
 import { getActivePositions } from '@core/graphql/queries/chart/getActivePositions'
@@ -39,6 +48,8 @@ const TradingTabs = ({
   subscribeToMore,
   showAllSmartTradePairs,
   showSmartTradesFromAllAccounts,
+  updateTerminalViewMode,
+  terminalViewMode,
   ...props
 }: IProps) => {
   // const openOrdersLength = getOpenOrderHistory.orders.filter((order) =>
@@ -61,10 +72,17 @@ const TradingTabs = ({
       (a.enabled ||
         (a.conditions.isTemplate && a.conditions.templateStatus !== 'disabled'))
   ).length
-
   return (
     <>
       <TitleTabsGroup theme={theme}>
+        <StyledTitleTabForMobile
+          theme={theme}
+          active={tab === 'balances'}
+          onClick={() => handleTabChange('balances')}
+          style={{ width: '20%' }}
+        >
+          Balances
+        </StyledTitleTabForMobile>
         <TitleTab
           theme={theme}
           active={tab === 'openOrders'}
@@ -79,20 +97,38 @@ const TradingTabs = ({
         >
           Recent Trade history
         </TitleTab>
-        <TitleTab
+        <StyledTitleTab
           theme={theme}
           active={tab === 'feeTiers'}
           onClick={() => handleTabChange('feeTiers')}
         >
           Fee Tiers
-        </TitleTab>
-        <TitleTab
+        </StyledTitleTab>
+        <StyledTitleTab
           theme={theme}
           active={tab === 'balances'}
           onClick={() => handleTabChange('balances')}
         >
           Market Balances
-        </TitleTab>
+        </StyledTitleTab>
+        <ExpandTableButton theme={theme}>
+          <SvgIcon
+            src={
+              terminalViewMode === 'fullScreenTablesMobile'
+                ? SqueezeTableIcon
+                : ExpandTableIcon
+            }
+            width={'25%'}
+            height={'auto'}
+            onClick={() => {
+              if (terminalViewMode === 'default') {
+                updateTerminalViewMode('fullScreenTablesMobile')
+              } else {
+                updateTerminalViewMode('default')
+              }
+            }}
+          />
+        </ExpandTableButton>
       </TitleTabsGroup>
     </>
   )

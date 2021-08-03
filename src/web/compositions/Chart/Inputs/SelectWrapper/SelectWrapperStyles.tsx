@@ -2,13 +2,158 @@ import styled from 'styled-components'
 import React from 'react'
 
 import { Grid, Paper } from '@material-ui/core'
-import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components/Loading'
 import { MainTitle } from '@sb/components/TraidingTerminal/ConfirmationPopup'
+import { Input } from '@material-ui/core'
+import { AutoSizer } from 'react-virtualized'
 
 export const StyledGrid = styled(Grid)`
   display: none;
+  top: calc(100% - 1rem);
+  left: 0rem;
+  font-family: Avenir Next Medium;
+  position: absolute;
+  z-index: 900;
+  background: #222429;
+  min-width: 155rem;
+  height: 73rem;
+  border-radius: 2rem;
+  overflow: hidden;
+  border: ${(props) => props.theme.palette.border.new};
+  filter: drop-shadow(0px 0px 8px rgba(125, 125, 131, 0.2));
+  @media (max-width: 600px) {
+    top: 24rem;
+    width: 100%;
+    height: calc(100% - 36rem);
+    border-radius: 0;
+    filter: none;
+    min-width: auto;
+  }
+`
+
+export const StyledSymbol = styled.span`
+  text-transform: capitalize;
+  color: #96999c;
+  font-family: Avenir Next Thin;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  @media (max-width: 600px) {
+    display: none;
+  }
+`
+
+export const StyledTokenName = styled.span`
+  @media (max-width: 600px) {
+    font-size: 2.6rem;
+  }
+`
+export const IconContainer = styled.div`
+  width: 4rem;
+  font-size: 2rem;
+  display: flex;
+  justify-content: center;
+  @media (max-width: 600px) {
+    width: 8rem;
+    justify-content: flex-start;
+  }
+`
+
+export const StyledHeader = styled(RowContainer)`
+  height: 12rem;
+  padding: 0.5rem;
+  justify-content: flex-start;
+  flex-direction: row;
+  flex-wrap: normal;
+  align-items: center;
+  border-bottom: ${(props) => props.theme.palette.border.new};
+  background: #17181a;
+  @media (max-width: 600px) {
+    display: none;
+  }
+`
+export const StyledTable = styled(Grid)`
+  overflow: hidden;
+  height: calc(100% - 21rem);
+  @media (max-width: 600px) {
+    height: calc(100% - 10rem);
+    padding: 0 2rem;
+  }
+`
+export const StyledRow = styled.span`
+  @media (max-width: 600px) {
+    display: none;
+  }
+`
+
+export const StyledColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 2.3rem;
+  font-family: Avenir Next Light;
+  @media (min-width: 600px) {
+    display: none;
+  }
+`
+
+export const AutoSizerDesktop = styled(AutoSizer)`
+  @media (max-width: 600px) {
+    display: none;
+  }
+`
+export const AutoSizerMobile = styled(AutoSizer)`
+  @media (min-width: 600px) {
+    display: none;
+  }
+`
+export const TradeHistoryGrid = styled(Grid)`
+  height: 100%;
+  flex-basis: ${(props) =>
+    props.hideOrderbook ? '100%' : props.hideDepthChart ? '50%' : '35%'};
+  max-width: ${(props) =>
+    props.hideOrderbook ? '100%' : props.hideDepthChart ? '50%' : '35%'};
+  @media (max-width: 600px) {
+    display: none;
+  }
+`
+export const OrderBookGrid = styled(Grid)`
+  height: 100%;
+  flex-basis: ${(props) =>
+    props.hideOrderbook ? '0' : props.hideTradeHistory ? '100%' : '50%'};
+  max-width: ${(props) =>
+    props.hideOrderbook ? '0' : props.hideTradeHistory ? '100%' : '50%'};
+  @media (max-width: 600px) {
+    max-width: 100%;
+    flex-basis: 100%;
+  }
+`
+
+export const StyledInput = styled(Input)`
+  width: 100%;
+  height: 5rem;
+  background: #383b45;
+  font-family: Avenir Next Medium;
+  font-size: 1.5rem;
+  color: #96999c;
+  border-bottom: 0.1rem solid #383b45;
+  padding: 0 2rem;
+  @media (max-width: 600px) {
+    height: 10rem;
+  }
+`
+
+export const TableFooter = styled(Grid)`
+  justify-content: space-between;
+  width: 100%;
+  position: relative;
+  z-index: 1000;
+  background: #17181a;
+  border-top: 0.1rem solid #383b45;
+  @media (max-width: 600px) {
+    display: none;
+  }
 `
 
 export const StyledTab = styled(({ isSelected, ...props }) => (

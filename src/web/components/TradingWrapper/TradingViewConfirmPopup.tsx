@@ -18,7 +18,12 @@ const StyledPaper = styled(Paper)`
   width: 65rem;
 `
 
-const TradingViewConfirmPopup = ({ theme, open, handleClose, updateState }) => {
+const TradingViewConfirmPopup = ({
+  theme,
+  open,
+  handleClose,
+  updateWrapperState,
+}) => {
   return (
     <DialogWrapper
       theme={theme}
@@ -65,7 +70,7 @@ const TradingViewConfirmPopup = ({ theme, open, handleClose, updateState }) => {
           transition={'all .4s ease-out'}
           onClick={() => {
             handleClose()
-            updateState('TVAlertsBotEnabled', false)
+            updateWrapperState('TVAlertsBotEnabled', false)
           }}
         >
           OK

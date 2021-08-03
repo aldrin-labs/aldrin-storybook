@@ -24,6 +24,17 @@ export const AppGridLayout = styled.div`
   min-height: 100vh;
 `
 
+export const AppContainer = styled.div`
+  height: ${(props) =>
+    props.showFooter ? 'calc(100% - 11.7rem)' : 'calc(100% - 6rem)'};
+
+  overflow: ${(props) => (props.currentPage == '/' ? 'hidden' : 'auto')};
+
+  @media (max-width: 600px) {
+    height: calc(100% - 24rem);
+  }
+`
+
 // height: calc(100vh - 3rem)
 // @media (max-width: 1920px) {
 //   min-height: ${(props) =>

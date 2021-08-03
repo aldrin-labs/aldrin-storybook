@@ -31,7 +31,7 @@ import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
 import SnackbarWrapper from './SnackbarWrapper/SnackbarWrapper'
 import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
 
-import { AppGridLayout, FontStyle } from './App.styles'
+import { AppContainer, AppGridLayout, FontStyle } from './App.styles'
 // import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
 import { GlobalStyle } from '@sb/styles/global.styles'
 import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
@@ -53,6 +53,8 @@ import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
 import DevUrlPopup from '@sb/components/PopupForDevUrl'
 import WalletMigrationPopup from '@sb/components/WalletMigrationPopup'
 import { TokenRegistryProvider } from '@sb/dexUtils/tokenRegistry'
+import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
+import { MobileNavBar } from '../Chart/components/MobileNavbar/MobileNavbar'
 
 const version = `10.9.142`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
@@ -144,28 +146,23 @@ const AppRaw = ({
                         isPNL={isPNL}
                         isChartPage={isChartPage}
                       >
+                        <MobileNavBar pathname={currentPage} />
                         {!pageIsRegistration && (
                           <CardsPanel
                             pathname={currentPage}
                             hide={fullscreen}
                           />
                         )}
-                        {isChartPage && <MarketBlock />}
-                        <div
-                          style={{
-                            height: showFooter
-                              ? 'calc(100% - 11.7rem)'
-                              : isChartPage
-                              ? 'calc(100% - 12rem)'
-                              : 'calc(100% - 6rem)',
-                            overflow: currentPage == '/' ? 'hidden' : 'auto',
-                          }}
+                        <AppContainer
+                          isChartPage={isChartPage}
+                          showFooter={showFooter}
                         >
                           {children}
-                        </div>
+                        </AppContainer>
                         {showFooter && (
                           <FooterWithTheme isRewards={isRewards} />
                         )}
+                        <MobileFooter pathname={currentPage} />
                         {/* 
                     <Footer
                       isChartPage={isChartPage}

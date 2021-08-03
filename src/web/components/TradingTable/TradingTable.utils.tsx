@@ -4,7 +4,12 @@ import localizedFormat from 'dayjs/plugin/localizedFormat'
 dayjs.extend(localizedFormat)
 
 import { OrderType, TradeType, FundsType, Key } from '@core/types/ChartTypes'
-import { TableButton } from './TradingTable.styles'
+import {
+  DesktopRow,
+  MobileRow,
+  StyledTitle,
+  TableButton,
+} from './TradingTable.styles'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components/index'
@@ -28,8 +33,7 @@ export const CloseButton = ({
       size={`small`}
       disabled={isCancelled}
       style={{
-        color: isCancelled ? 'grey' : theme.palette.red.main,
-        borderColor: isCancelled ? 'grey' : theme.palette.red.main,
+        color: isCancelled ? 'grey' : '#fbf2f2',
       }}
       onClick={() => {
         onClick()
@@ -65,6 +69,8 @@ import {
 import { Theme } from '@material-ui/core'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { Row } from '../OldTable/Table'
 
 export const getTableBody = (tab: string) =>
   tab === 'openOrders'
@@ -359,6 +365,60 @@ export const combineOpenOrdersTable = (
 
       return {
         id: `${orderId}${size}${price}`,
+        columnForMobile: {
+          render: (
+            <RowContainer height="20rem" padding={'0 2rem'}>
+              <RowContainer style={{ width: '65%' }} direction={'column'}>
+                <RowContainer justify={'space-between'}>
+                  <StyledTitle color={'#fbf2f2'}>
+                    {pair[0]}/{pair[1]}
+                  </StyledTitle>
+                  <StyledTitle
+                    style={{
+                      textTransform: 'capitalize',
+                      color:
+                        side === 'buy'
+                          ? theme.palette.green.main
+                          : theme.palette.red.main,
+                    }}
+                  >
+                    {side}
+                  </StyledTitle>
+                </RowContainer>
+                <RowContainer justify={'space-between'}>
+                  <StyledTitle>Price(USDC)</StyledTitle>{' '}
+                  <StyledTitle color={'#fbf2f2'}>{`${stripDigitPlaces(
+                    price,
+                    pricePrecision
+                  )}`}</StyledTitle>
+                </RowContainer>
+                <RowContainer justify={'space-between'}>
+                  <StyledTitle>Amount (CCAI)</StyledTitle>
+                  <StyledTitle color={'#fbf2f2'}>
+                    {stripDigitPlaces(size, quantityPrecision)}
+                  </StyledTitle>
+                </RowContainer>
+                <RowContainer justify={'space-between'}>
+                  <StyledTitle>Total (USDC)</StyledTitle>
+                  <StyledTitle color={'#fbf2f2'}>
+                    {stripDigitPlaces(size * price, quantityPrecision)}
+                  </StyledTitle>
+                </RowContainer>
+              </RowContainer>
+              <RowContainer style={{ width: '35%', padding: '0 0 0 4rem' }}>
+                <CloseButton
+                  i={i}
+                  onClick={() => {
+                    cancelOrderFunc(el)
+                  }}
+                >
+                  Cancel
+                </CloseButton>
+              </RowContainer>
+            </RowContainer>
+          ),
+          showOnMobile: true,
+        },
         pair: {
           render: (
             <div
@@ -373,6 +433,7 @@ export const combineOpenOrdersTable = (
             </div>
           ),
           contentToSort: orderSymbol,
+          showOnMobile: false,
         },
         // type: type,
         side: {
@@ -406,6 +467,7 @@ export const combineOpenOrdersTable = (
               : theme.customPalette.red.main,
             opacity: needOpacity ? 0.75 : 1,
           },
+          showOnMobile: false,
         },
         price: {
           render: isMarketOrMakerOrder
@@ -419,6 +481,7 @@ export const combineOpenOrdersTable = (
             opacity: needOpacity ? 0.75 : 1,
           },
           contentToSort: price,
+          showOnMobile: false,
         },
         // filled: {
         //   render: `${filledQuantityProcessed} %`,
@@ -430,6 +493,7 @@ export const combineOpenOrdersTable = (
           render: `${stripDigitPlaces(size, quantityPrecision)} ${pair[0]}`,
           contentToSort: +size,
           style: { opacity: needOpacity ? 0.75 : 1 },
+          showOnMobile: false,
         },
         // TODO: We should change "total" to total param from backend when it will be ready
         ...(marketType === 0
@@ -443,6 +507,7 @@ export const combineOpenOrdersTable = (
                     }`,
                 contentToSort: +size * price,
                 style: { opacity: needOpacity ? 0.75 : 1 },
+                showOnMobile: false,
               },
             }
           : {}),
@@ -519,6 +584,7 @@ export const combineOpenOrdersTable = (
               Cancel
             </CloseButton>
           ),
+          showOnMobile: false,
         },
         // tooltipTitle: keyName,
       }
@@ -785,6 +851,52 @@ export const combineTradeHistoryTable = (
 
       return {
         id: `${orderId}_${size}_${price}`,
+        columnForMobile: {
+          render: (
+            <RowContainer
+              padding={'0 2rem'}
+              direction={'column'}
+              height="20rem"
+            >
+              <RowContainer justify={'space-between'}>
+                <StyledTitle color={'#fbf2f2'}>
+                  {pair[0]}/{pair[1]}
+                </StyledTitle>
+                <StyledTitle
+                  style={{
+                    textTransform: 'capitalize',
+                    color:
+                      side === 'buy'
+                        ? theme.palette.green.main
+                        : theme.palette.red.main,
+                  }}
+                >
+                  {side}
+                </StyledTitle>
+              </RowContainer>
+              <RowContainer justify={'space-between'}>
+                <StyledTitle>Price(USDC)</StyledTitle>{' '}
+                <StyledTitle color={'#fbf2f2'}>{`${stripDigitPlaces(
+                  price,
+                  pricePrecision
+                )}`}</StyledTitle>
+              </RowContainer>
+              <RowContainer justify={'space-between'}>
+                <StyledTitle>Amount (CCAI)</StyledTitle>
+                <StyledTitle color={'#fbf2f2'}>
+                  {stripDigitPlaces(size, quantityPrecision)}
+                </StyledTitle>
+              </RowContainer>
+              <RowContainer justify={'space-between'}>
+                <StyledTitle>Total (USDC)</StyledTitle>
+                <StyledTitle color={'#fbf2f2'}>
+                  {stripDigitPlaces(size * price, quantityPrecision)}
+                </StyledTitle>
+              </RowContainer>
+            </RowContainer>
+          ),
+          showOnMobile: true,
+        },
         pair: {
           render: (
             <div
@@ -801,34 +913,36 @@ export const combineTradeHistoryTable = (
             </div>
           ),
           contentToSort: marketName,
+          showOnMobile: false,
         },
         type: {
           render: (
-            <div>
-              <span
-                style={{
-                  display: 'block',
-                  textTransform: 'uppercase',
-                  color:
-                    side === 'buy'
-                      ? theme.palette.green.main
-                      : theme.palette.red.main,
-                }}
-              >
-                {side}
-              </span>
-            </div>
+            <span
+              style={{
+                display: 'block',
+                textTransform: 'uppercase',
+                color:
+                  side === 'buy'
+                    ? theme.palette.green.main
+                    : theme.palette.red.main,
+              }}
+            >
+              {side}
+            </span>
           ),
           contentToSort: side,
+          showOnMobile: false,
         },
         price: {
           render: `${stripDigitPlaces(price, pricePrecision)} ${pair[1]}`,
           style: { textAlign: 'left', whiteSpace: 'nowrap' },
           contentToSort: price,
+          showOnMobile: false,
         },
         quantity: {
           render: `${stripDigitPlaces(size, quantityPrecision)} ${pair[0]}`,
           contentToSort: +size,
+          showOnMobile: false,
         },
         // TODO: We should change "total" to total param from backend when it will be ready
         ...(marketType === 0
@@ -839,6 +953,7 @@ export const combineTradeHistoryTable = (
                   pair[1]
                 }`,
                 contentToSort: size * price,
+                showOnMobile: false,
               },
             }
           : {}),
@@ -874,10 +989,12 @@ export const combineTradeHistoryTable = (
         liquidity: {
           render: liquidity,
           contentToSort: liquidity,
+          showOnMobile: false,
         },
         fee: {
           render: `${stripDigitPlaces(feeCost, quantityPrecision)} ${pair[1]}`,
           contentToSort: feeCost,
+          showOnMobile: false,
         },
         // status: {
         //   render: (
@@ -942,21 +1059,67 @@ export const combineBalancesTable = (
 
     return {
       id: `${coin}${wallet}`,
-      coin: coin || 'unknown',
+      coin: { render: coin || 'unknown', showOnMobile: false },
+      columnForMobile: {
+        render: (
+          <RowContainer height={'20rem'} padding={'0 2rem'}>
+            <RowContainer style={{ width: '65%' }} direction={'column'}>
+              <RowContainer justify={'flex-start'}>
+                <StyledTitle color={'#fbf2f2'}>{coin}</StyledTitle>
+              </RowContainer>
+              <RowContainer justify={'space-between'}>
+                <StyledTitle>Wallet</StyledTitle>
+                <StyledTitle color={'#fbf2f2'}>
+                  {roundAndFormatNumber(wallet, 8, true) || '-'}
+                </StyledTitle>
+              </RowContainer>
+              <RowContainer justify={'space-between'}>
+                <StyledTitle>Unsettled</StyledTitle>
+                <StyledTitle color={'#fbf2f2'}>
+                  {roundAndFormatNumber(unsettled, 8, true) || '-'}
+                </StyledTitle>
+              </RowContainer>
+            </RowContainer>
+
+            <RowContainer style={{ width: '35%' }} justify={'center'}>
+              <BtnCustom
+                btnWidth={'50%'}
+                height="auto"
+                fontSize="1.6rem"
+                textTransform={'none'}
+                padding=".5rem 1rem .4rem 1rem"
+                borderRadius="1.4rem"
+                btnColor={theme.palette.dark.main}
+                borderColor={theme.palette.blue.serum}
+                backgroundColor={theme.palette.blue.serum}
+                transition={'all .4s ease-out'}
+                margin={'0 0 0 2rem'}
+                onClick={() => onSettleFunds(market, openOrders)}
+              >
+                Settle
+              </BtnCustom>
+            </RowContainer>
+          </RowContainer>
+        ),
+        showOnMobile: true,
+      },
       wallet: {
         render: roundAndFormatNumber(wallet, 8, true) || '-',
         style: { textAlign: 'left' },
         contentToSort: +wallet,
+        showOnMobile: false,
       },
       orders: {
         render: roundAndFormatNumber(orders, 8, true) || '-',
         style: { textAlign: 'left' },
         contentToSort: +orders,
+        showOnMobile: false,
       },
       unsettled: {
         render: roundAndFormatNumber(unsettled, 8, true) || '-',
         style: { textAlign: 'left' },
         contentToSort: +unsettled,
+        showOnMobile: false,
       },
       ...(showSettle
         ? {
@@ -973,6 +1136,7 @@ export const combineBalancesTable = (
                   Settle
                 </BtnCustom>
               ),
+              showOnMobile: false,
             },
           }
         : {}),

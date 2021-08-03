@@ -70,7 +70,7 @@ export const TradingViewBotTerminal = ({
   theme,
   side,
   token,
-  updateState,
+  updateWrapperState,
   marketPrice,
   publicKey,
   maxAmount: maxAmountArray,
@@ -101,7 +101,7 @@ export const TradingViewBotTerminal = ({
   const startTradingViewBot = () => {
     subscribeToTVAlert()
     changeShowPopup(true)
-    updateState('token', generateToken())
+    updateWrapperState({ token: generateToken() })
     window.onbeforeunload = function() {
       return 'Are you sure you want to leave?'
     }
@@ -139,7 +139,7 @@ export const TradingViewBotTerminal = ({
         theme={theme}
         open={showPopup}
         handleClose={() => changeShowPopup(false)}
-        updateState={updateState}
+        updateWrapperState={updateWrapperState}
       />
       <div style={{ margin: 'auto 0', width: '100%' }}>
         <InputRowContainer padding={'1.2rem 0 .6rem 0'}>
@@ -168,7 +168,7 @@ export const TradingViewBotTerminal = ({
                 return
               }
 
-              updateState('side', getSecondValueFromFirst(side))
+              updateWrapperState({ side: getSecondValueFromFirst(side) })
             }}
           />
           <SwitcherContainer>
@@ -469,7 +469,7 @@ export const TradingViewBotTerminal = ({
                 // amount check
 
                 startTradingViewBot()
-                updateState('TVAlertsBotIsActive', true)
+                updateWrapperState({ TVAlertsBotIsActive: true })
               }}
             >
               Start

@@ -4,7 +4,12 @@ import { compose } from 'recompose'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { withTheme } from '@material-ui/styles'
 import { withSnackbar } from 'notistack'
-import { withFormik, validateYupSchema, yupToFormErrors } from 'formik'
+import {
+  withFormik,
+  validateYupSchema,
+  yupToFormErrors,
+  FastField,
+} from 'formik'
 
 import { Grid, InputAdornment, Typography, Theme } from '@material-ui/core'
 import { Loading } from '@sb/components/index'
@@ -34,6 +39,12 @@ import {
   SeparateInputTitle,
   AbsoluteInputTitle,
   Placeholder,
+  SwitchersContainer,
+  ConnectWalletButtonContainer,
+  ConnectWalletDropdownContainer,
+  ButtonContainer,
+  ButtonBlock,
+  TerminalGridContainer,
 } from './styles'
 import { SendButton } from '../TraidingTerminal/styles'
 import {
@@ -43,12 +54,17 @@ import {
 import {
   InputRowContainer,
   AdditionalSettingsButton,
+  InputsBlock,
 } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { FormInputContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
 import { ButtonsWithAmountFieldRowForBasic } from './AmountButtons'
 import ConnectWalletDropdown from '../ConnectWalletDropdown/index'
 import { validateVariablesForPlacingOrder } from '@sb/dexUtils/send'
+import CustomSwitcher from '../SwitchOnOff/CustomSwitcher'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
+import { MobileWalletDropdown } from '@sb/compositions/Chart/components/MobileNavbar/MobileWalletDropdown'
 
 export const TradeInputHeader = ({
   title = 'Input',
@@ -251,6 +267,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
     marketPrice: null,
     priceFromOrderbook: null,
     isConfirmationPopupOpen: false,
+    isWalletPopupOpen: false,
   }
 
   componentDidUpdate(prevProps) {
@@ -537,7 +554,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
       takeProfit,
       takeProfitPercentage,
       breakEvenPoint,
-      updateState,
+      updateWrapperState,
       tradingBotEnabled,
       tradingBotInterval,
       tradingBotIsActive,
@@ -548,6 +565,9 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
       openOrdersAccount,
       market,
       wallet,
+      setAutoConnect,
+      providerUrl,
+      setProvider,
     } = this.props
 
     const costsOfTheFirstTrade = 0.024
@@ -577,15 +597,110 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
     } else {
       maxAmount = funds[1].quantity * leverage
     }
-
     return (
       <Container background={'transparent'}>
-        <GridContainer isBuyType={isBuyType} key={`${pair[0]}/${pair[1]}`}>
+        <TerminalGridContainer
+          isBuyType={isBuyType}
+          key={`${pair[0]}/${pair[1]}`}
+        >
+          <SwitchersContainer>
+            <CustomSwitcher
+              theme={theme}
+              firstHalfText={'buy'}
+              secondHalfText={'sell'}
+              buttonHeight={'3rem'}
+              needBorderRadius={true}
+              needBorder={false}
+              containerStyles={{
+                width: '100%',
+                padding: 0,
+                display: 'flex',
+                justifyContent: 'space-around',
+                height: '8.5rem',
+                background: '#383B45',
+                borderRadius: '2.5rem',
+                alignItems: 'center',
+              }}
+              firstHalfStyleProperties={{
+                activeColor: '#A5E898',
+                activeBackgroundColor: '#222429',
+                borderRadius: '3rem',
+                width: '47%',
+                height: '80%',
+                fontSize: '1.9rem',
+              }}
+              secondHalfStyleProperties={{
+                activeColor: '#A5E898',
+                activeBackgroundColor: '#222429',
+                borderRadius: '3rem',
+                width: '47%',
+                height: '80%',
+                fontSize: '1.9rem',
+              }}
+              firstHalfIsActive={sideType === 'buy'}
+              changeHalf={() => {
+                if (isBuyType) {
+                  updateWrapperState({ side: 'sell' })
+                } else {
+                  updateWrapperState({ side: 'buy' })
+                }
+              }}
+            />
+            <CustomSwitcher
+              theme={theme}
+              firstHalfText={'market'}
+              secondHalfText={'limit'}
+              buttonHeight={'3rem'}
+              needBorderRadius={true}
+              needBorder={false}
+              containerStyles={{
+                width: '100%',
+                padding: 0,
+                display: 'flex',
+                justifyContent: 'space-around',
+                height: '8.5rem',
+                background: '#383B45',
+                borderRadius: '2.5rem',
+                alignItems: 'center',
+                marginTop: '2rem',
+              }}
+              firstHalfStyleProperties={{
+                activeColor: '#fff',
+                activeBackgroundColor: '#222429',
+                borderRadius: '4rem',
+                width: '47%',
+                height: '80%',
+                fontSize: '1.9rem',
+              }}
+              secondHalfStyleProperties={{
+                activeColor: '#fff',
+                activeBackgroundColor: '#222429',
+                borderRadius: '4rem',
+                width: '47%',
+                height: '80%',
+                fontSize: '1.9rem',
+              }}
+              firstHalfIsActive={priceType === 'market'}
+              changeHalf={() => {
+                if (priceType === 'market') {
+                  updateWrapperState({
+                    mode: 'limit',
+                    orderMode: 'TIF',
+                    tradingBotEnabled: false,
+                    TVAlertsBotEnabled: false,
+                  })
+                } else {
+                  updateWrapperState({
+                    mode: 'market',
+                    orderMode: 'ioc',
+                    TVAlertsBotEnabled: false,
+                  })
+                }
+              }}
+            />
+          </SwitchersContainer>
           <Grid item container xs={9} style={{ maxWidth: '100%' }}>
-            <InputRowContainer
-              direction="column"
-              style={{ margin: 'auto 0', width: '100%' }}
-            >
+            <InputsBlock direction="column">
               {priceType !== 'market' &&
               priceType !== 'stop-market' &&
               priceType !== 'maker-only' ? (
@@ -605,11 +720,11 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                   />
                 </InputRowContainer>
               ) : null}
-              {priceType === 'market' && !tradingBotEnabled && (
+              {/* {priceType === 'market' && !tradingBotEnabled && (
                 <InputRowContainer
                   style={{ visibility: !isBuyType ? 'hidden' : 'visible' }}
                 ></InputRowContainer>
-              )}
+              )} */}
               {tradingBotEnabled && !tradingBotIsActive && (
                 <FormInputContainer
                   theme={theme}
@@ -641,9 +756,11 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                       value={tradingBotInterval}
                       onChange={(e) => {
                         if (+e.target.value > 600) {
-                          updateState('tradingBotInterval', 600)
+                          updateWrapperState({ tradingBotInterval: 600 })
                         } else {
-                          updateState('tradingBotInterval', e.target.value)
+                          updateWrapperState({
+                            tradingBotInterval: e.target.value,
+                          })
                         }
                       }}
                       inputStyles={{
@@ -663,7 +780,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                         margin: '0 .5rem 0 1rem',
                       }}
                       onChange={(value) => {
-                        updateState('tradingBotInterval', value)
+                        updateWrapperState({ tradingBotInterval: value })
                       }}
                     />
                   </InputRowContainer>
@@ -711,7 +828,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                     setFieldValue('total', stripDigitPlaces(newTotal, 2))
                   },
                 }}
-              />{' '}
+              />
               {takeProfit && !tradingBotEnabled && priceType === 'market' && (
                 <InputRowContainer>
                   <TradeInputContent
@@ -724,7 +841,9 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                     needTitle={true}
                     value={takeProfitPercentage}
                     onChange={(e) => {
-                      updateState('takeProfitPercentage', e.target.value)
+                      updateWrapperState({
+                        takeProfitPercentage: e.target.value,
+                      })
                     }}
                   />
 
@@ -736,27 +855,46 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                       margin: '0 0 0 1.5%',
                     }}
                     onChange={(value) => {
-                      updateState('takeProfitPercentage', value / 20)
+                      updateWrapperState({ takeProfitPercentage: value / 20 })
                     }}
                   />
                 </InputRowContainer>
               )}
-            </InputRowContainer>
+            </InputsBlock>
           </Grid>
-
-          <Grid
-            xs={3}
-            item
-            container
-            style={{ maxWidth: '100%', paddingBottom: '1.5rem' }}
-          >
+          <ButtonBlock xs={3} item container>
             <Grid xs={12} item container alignItems="center">
               {!connected ? (
-                <ConnectWalletDropdown
-                  theme={theme}
-                  height={'4rem'}
-                  id={`${sideType}-connectButton`}
-                />
+                <>
+                  <ConnectWalletDropdownContainer>
+                    <ConnectWalletDropdown
+                      theme={theme}
+                      height={'4rem'}
+                      id={`${sideType}-connectButton`}
+                    />
+                  </ConnectWalletDropdownContainer>
+                  <ConnectWalletButtonContainer>
+                    <BtnCustom
+                      theme={theme}
+                      onClick={() => this.setState({ isWalletPopupOpen: true })}
+                      needMinWidth={false}
+                      btnWidth="100%"
+                      height="7rem"
+                      fontSize="1.6rem"
+                      padding="2rem 8rem"
+                      borderRadius="2rem"
+                      borderColor={theme.palette.blue.serum}
+                      btnColor={'#fff'}
+                      backgroundColor={theme.palette.blue.serum}
+                      textTransform={'none'}
+                      margin={'1rem 0 0 0'}
+                      transition={'all .4s ease-out'}
+                      style={{ whiteSpace: 'nowrap' }}
+                    >
+                      Connect wallet
+                    </BtnCustom>
+                  </ConnectWalletButtonContainer>
+                </>
               ) : (needCreateOpenOrdersAccount &&
                   SOLAmount < costsOfTheFirstTrade) ||
                 SOLAmount < SOLFeeForTrade ? (
@@ -860,6 +998,14 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                     : 'short'}
                 </SendButton>
               )}
+              <MobileWalletDropdown
+                theme={theme}
+                open={this.state.isWalletPopupOpen}
+                onClose={() => this.setState({ isWalletPopupOpen: false })}
+                setAutoConnect={setAutoConnect}
+                providerUrl={providerUrl}
+                setProvider={setProvider}
+              />
               <ConfirmationPopup
                 theme={theme}
                 spread={spread}
@@ -888,8 +1034,8 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                 handleSubmit={handleSubmit}
               />
             </Grid>
-          </Grid>
-        </GridContainer>
+          </ButtonBlock>
+        </TerminalGridContainer>
       </Container>
     )
   }
@@ -925,7 +1071,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       tradingBotEnabled,
       tradingBotInterval,
       tradingBotTotalTime,
-      updateState,
+      updateWrapperState,
       publicKey,
     } = props
 

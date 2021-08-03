@@ -14,10 +14,12 @@ const TerminalContainer = ({
   isDefaultTerminalViewMode,
   children,
   theme,
+  terminalViewMode,
 }: {
   isDefaultTerminalViewMode: boolean
   children: React.ReactChild
   theme: Theme
+  terminalViewMode: sting
 }) => (
   <TablesBlockWrapper
     item
@@ -25,6 +27,7 @@ const TerminalContainer = ({
     theme={theme}
     xs={isDefaultTerminalViewMode ? 5 : 12}
     isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+    terminalViewMode={terminalViewMode}
   >
     {children}
   </TablesBlockWrapper>
@@ -37,9 +40,16 @@ import {
   TradingTerminalContainer,
   BalancesContainer,
   TopChartsContainer,
+  MobileTradingTabelContainer,
+  ChartAndOrderbookContainer,
 } from '../Chart.styles'
 import TradingBlocked from '../components/TradingBlocked'
 import { CCAIListingTime, isCCAITradingEnabled } from '@sb/dexUtils/utils'
+import {
+  OrderBookGrid,
+  TradeHistoryGrid,
+} from '../Inputs/SelectWrapper/SelectWrapperStyles'
+import { TerminalComponentsContainer } from './styles'
 
 // fix props type
 export const DefaultViewComponent = (
@@ -109,20 +119,20 @@ export const DefaultViewComponent = (
         }}
         direction="column"
       >
-        <Grid
+        <ChartAndOrderbookContainer
+          terminalViewMode={terminalViewMode}
           item
           container
           xs={12}
-          style={{
-            height: '100%',
-          }}
         >
           <TopChartsContainer
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
             theme={theme}
+            terminalViewMode={terminalViewMode}
           >
             <ChartsContainer
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+              terminalViewMode={terminalViewMode}
               hideDepthChart={hideDepthChart}
               hideOrderbook={hideOrderbook}
               theme={theme}
@@ -142,24 +152,14 @@ export const DefaultViewComponent = (
               hideDepthChart={hideDepthChart}
               hideOrderbook={hideOrderbook}
               hideTradeHistory={hideTradeHistory}
+              terminalViewMode={terminalViewMode}
             >
               <Grid item container style={{ height: '100%' }}>
-                <Grid
+                <OrderBookGrid
                   item
                   container
-                  style={{
-                    height: '100%',
-                    flexBasis: hideOrderbook
-                      ? '0%'
-                      : !hideTradeHistory
-                      ? '50%'
-                      : '100%',
-                    maxWidth: hideOrderbook
-                      ? '0%'
-                      : !hideTradeHistory
-                      ? '50%'
-                      : '100%',
-                  }}
+                  hideTradeHistory={hideTradeHistory}
+                  hideOrderbook={hideOrderbook}
                 >
                   {!hideOrderbook && (
                     <OrderbookAndDepthChart
@@ -183,26 +183,16 @@ export const DefaultViewComponent = (
                         hideDepthChart,
                         hideOrderbook,
                         pricePrecision,
+                        terminalViewMode,
                       }}
                     />
                   )}
-                </Grid>
-                <Grid
+                </OrderBookGrid>
+                <TradeHistoryGrid
+                  hideDepthChart={hideDepthChart}
+                  hideOrderbook={hideOrderbook}
                   item
                   xs={5}
-                  style={{
-                    height: '100%',
-                    flexBasis: hideOrderbook
-                      ? '100%'
-                      : hideDepthChart
-                      ? '50%'
-                      : '35%',
-                    maxWidth: hideOrderbook
-                      ? '100%'
-                      : hideDepthChart
-                      ? '50%'
-                      : '35%',
-                  }}
                 >
                   {!hideTradeHistory && (
                     <TradeHistory
@@ -226,11 +216,10 @@ export const DefaultViewComponent = (
                       }}
                     />
                   )}
-                </Grid>
+                </TradeHistoryGrid>
               </Grid>
             </TradingTerminalContainer>
           </TopChartsContainer>
-
           <TradingTabelContainer
             item
             theme={theme}
@@ -250,9 +239,10 @@ export const DefaultViewComponent = (
               priceFromOrderbook={priceFromOrderbook}
               currencyPair={currencyPair}
               arrayOfMarketIds={arrayOfMarketIds}
+              terminalViewMode={terminalViewMode}
+              updateTerminalViewMode={updateTerminalViewMode}
             />
           </TradingTabelContainer>
-
           <BalancesContainer
             item
             xs={1}
@@ -269,10 +259,10 @@ export const DefaultViewComponent = (
               setShowTokenNotAdded={setShowTokenNotAdded}
             />
           </BalancesContainer>
-
           <TerminalContainer
             theme={theme}
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+            terminalViewMode={terminalViewMode}
           >
             <TradingComponent
               selectedKey={selectedKey}
@@ -295,23 +285,47 @@ export const DefaultViewComponent = (
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
               updateTerminalViewMode={updateTerminalViewMode}
               setShowTokenNotAdded={setShowTokenNotAdded}
+              terminalViewMode={terminalViewMode}
             />
           </TerminalContainer>
-
+          <MobileTradingTabelContainer
+            item
+            theme={theme}
+            xs={6}
+            isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+            isTablesExpanded={terminalViewMode === 'fullScreenTablesMobile'}
+            terminalViewMode={terminalViewMode}
+          >
+            <TradingTable
+              isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+              maxLeverage={maxLeverage}
+              selectedKey={selectedKey}
+              showOrderResult={showOrderResult}
+              showCancelResult={showCancelResult}
+              marketType={marketType}
+              exchange={exchange}
+              pricePrecision={pricePrecision}
+              quantityPrecision={quantityPrecision}
+              priceFromOrderbook={priceFromOrderbook}
+              currencyPair={currencyPair}
+              arrayOfMarketIds={arrayOfMarketIds}
+              updateTerminalViewMode={updateTerminalViewMode}
+              terminalViewMode={terminalViewMode}
+            />
+          </MobileTradingTabelContainer>
           {/* <TradingBlocked
             pair={baseQuoteArr}
             theme={theme}
             open={isTradingBlockedPopupOpen}
             onClose={() => setIsTradingBlockedPopupOpen(false)}
           /> */}
-
           <TokenNotAddedPopup
             pair={baseQuoteArr}
             theme={theme}
             open={showTokenNotAddedPopup}
             onClose={() => setShowTokenNotAdded(false)}
           />
-        </Grid>
+        </ChartAndOrderbookContainer>
       </Grid>
     </Container>
   )
