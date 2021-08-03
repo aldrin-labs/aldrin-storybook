@@ -40,6 +40,7 @@ import { AWESOME_MARKETS } from '@sb/dexUtils/serum'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { WarningPopup } from './components/WarningPopup'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
+import { ParticleRuggedPopup } from '@sb/components/ParticleRuggedPopup'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
   // Check if the arrays are the same length
@@ -94,6 +95,7 @@ function ChartPageComponent(props: any) {
   const [terminalViewMode, updateTerminalViewMode] = useState('default')
   const [isTourOpen, setIsTourOpen] = useState(false)
   const [isWarningPopupOpen, openWarningPopup] = useState(false)
+  const [isPartiPopupOpen, openPartiPopup] = useState(false)
 
   const [isNotificationTourOpen, setNotificationTourOpen] = useState(
     localStorage.getItem('isNotificationDone') == 'null'
@@ -148,10 +150,7 @@ function ChartPageComponent(props: any) {
       })
     )
 
-    const updatedMarkets = [
-      ...props.markets,
-      ...UPDATED_AWESOME_MARKETS,
-    ]
+    const updatedMarkets = [...props.markets, ...UPDATED_AWESOME_MARKETS]
 
     const allMarkets = [...updatedMarkets, ...userMarkets]
 
@@ -179,6 +178,9 @@ function ChartPageComponent(props: any) {
 
   useEffect(() => {
     setCorrectMarketAddress()
+    if (selectedPair.includes('PARTI')) {
+      openPartiPopup(true)
+    }
   }, [selectedPair])
 
   const closeChartPagePopup = () => {
@@ -206,6 +208,7 @@ function ChartPageComponent(props: any) {
   pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
 
   const accentColor = '#09ACC7'
+
   return (
     <MainContainer fullscreen={false}>
       {/* {!isTourOpen && (
@@ -292,6 +295,11 @@ function ChartPageComponent(props: any) {
       <WarningPopup
         open={isWarningPopupOpen}
         onClose={() => openWarningPopup(false)}
+        theme={theme}
+      />
+      <ParticleRuggedPopup
+        open={isPartiPopupOpen}
+        onClose={() => openPartiPopup(false)}
         theme={theme}
       />
 
