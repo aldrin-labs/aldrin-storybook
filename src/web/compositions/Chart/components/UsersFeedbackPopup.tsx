@@ -19,10 +19,11 @@ import {
   SubmitButton,
   TextField,
   Title,
-} from './SelectWrapperStyles'
+  StyledTextArea,
+} from '../Inputs/SelectWrapper/SelectWrapperStyles'
 import { notify } from '@sb/dexUtils/notifications'
 
-export const MarketsFeedbackPopup = ({
+export const FeedbackPopup = ({
   theme,
   onClose,
   open,
@@ -34,9 +35,8 @@ export const MarketsFeedbackPopup = ({
   const [isFeedbackSubmitted, submitFeedback] = useState(false)
 
   const [feedbackData, setFeedbackData] = useState({
-    token: '',
-    rightCategory: '',
-    wrongCategory: '',
+    messagge: '',
+    contact: '',
   })
 
   const setData = ({ fieldName, value }) => {
@@ -48,7 +48,7 @@ export const MarketsFeedbackPopup = ({
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: encode({
-        'form-name': 'marketsCategoriesFeedback',
+        'form-name': 'usersFeedback',
         ...feedbackData,
       }),
     })
@@ -81,7 +81,7 @@ export const MarketsFeedbackPopup = ({
         <Title>
           {isFeedbackSubmitted
             ? 'Feedback Submitted'
-            : 'Is there a catalog mistake?'}
+            : 'We value your feedback!'}
         </Title>
         <SvgIcon
           onClick={() => onClose()}
@@ -125,35 +125,32 @@ export const MarketsFeedbackPopup = ({
       ) : (
         <Form
           onSubmit={handleSubmit}
-          name="marketsCategoriesFeedback"
+          name="usersFeedback"
           data-netlify="true"
           method={'post'}
           action="/success"
         >
-          <input
-            type="hidden"
-            name="form-name"
-            value="marketsCategoriesFeedback"
-          />
+          <input type="hidden" name="form-name" value="usersFeedback" />
           <RowContainer margin={'1rem 0'}>
             <RowContainer wrap="nowrap">
               <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
-                Token
+                Tell us how we can improve{' '}
               </Text>
               <Line />
             </RowContainer>
             <RowContainer justify={'space-between'}>
-              <TextField
+              <StyledTextArea
+                height={'20rem'}
                 type="text"
-                name="token"
-                id="token"
+                name="messagge"
+                id="messagge"
                 autoComplete="off"
                 theme={theme}
-                placeholder={'Input token name'}
-                value={feedbackData.token}
+                placeholder={'Message'}
+                value={feedbackData.messagge}
                 onChange={(e) =>
                   setData({
-                    fieldName: 'token',
+                    fieldName: 'messagge',
                     value: e.target.value,
                   })
                 }
@@ -163,47 +160,22 @@ export const MarketsFeedbackPopup = ({
           <RowContainer margin={'1rem 0'}>
             <RowContainer wrap="nowrap">
               <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
-                Stored in category
+                Would you like a representative to contact you? (optional){' '}
               </Text>
               <Line />
             </RowContainer>
             <RowContainer justify={'space-between'}>
               <TextField
                 type="text"
-                name="wrongCategory"
-                id="wrongCategory"
+                name="contact"
+                id="contact"
                 autoComplete="off"
                 theme={theme}
-                placeholder={'Input category name'}
-                value={feedbackData.wrongCategory}
+                placeholder={'Specify a way to contact you'}
+                value={feedbackData.contact}
                 onChange={(e) =>
                   setData({
-                    fieldName: 'wrongCategory',
-                    value: e.target.value,
-                  })
-                }
-              />
-            </RowContainer>
-          </RowContainer>
-          <RowContainer margin={'1rem 0'}>
-            <RowContainer wrap="nowrap">
-              <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
-                But should be in
-              </Text>
-              <Line />
-            </RowContainer>
-            <RowContainer justify={'space-between'}>
-              <TextField
-                type="text"
-                name="rightCategory"
-                id="rightCategory"
-                autoComplete="off"
-                theme={theme}
-                placeholder={'Input category name'}
-                value={feedbackData.rightCategory}
-                onChange={(e) =>
-                  setData({
-                    fieldName: 'rightCategory',
+                    fieldName: 'contact',
                     value: e.target.value,
                   })
                 }

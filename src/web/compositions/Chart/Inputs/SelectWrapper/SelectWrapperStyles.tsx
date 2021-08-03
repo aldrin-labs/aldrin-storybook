@@ -61,7 +61,7 @@ export const BlueButton = styled(
 `
 export const TextField = styled.input`
   width: 100%;
-  height: 3.5rem;
+  height: ${(props) => props.height || '3.5rem'};
   background: #383b45;
   border: 1px solid #3a475c;
   border-radius: 0.5rem;
@@ -78,7 +78,33 @@ export const TextField = styled.input`
   &:focus {
     border: ${(props) => `0.1rem solid ${props.theme.palette.blue.serum}`};
   }
+  &::placeholder {
+    padding-top: 1rem;
+  }
 `
+export const StyledTextArea = styled.textarea`
+  width: 100%;
+  height: ${(props) => props.height || '3.5rem'};
+  background: #383b45;
+  border: 1px solid #3a475c;
+  border-radius: 0.5rem;
+  color: #fbf2f2;
+  font-family: Avenir Next Medium;
+  font-size: 1.4rem;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  outline: none;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  resize: none;
+
+  &:focus {
+    border: ${(props) => `0.1rem solid ${props.theme.palette.blue.serum}`};
+  }
+`
+
 export const Form = styled.form`
   width: 100%;
 `

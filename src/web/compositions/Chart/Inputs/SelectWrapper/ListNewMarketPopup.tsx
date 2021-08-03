@@ -14,7 +14,6 @@ import { isValidPublicKey } from '@sb/dexUtils/utils'
 import { parseTokenMintData, useMintToTickers } from '@sb/dexUtils/tokens'
 
 import { Dialog, Paper } from '@material-ui/core'
-import { Input } from '@sb/compositions/Addressbook/index'
 import { FormInputContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { PurpleButton } from '@sb/compositions/Addressbook/components/Popups/NewCoinPopup'
@@ -61,6 +60,24 @@ const StyledPaper = styled(Paper)`
   width: 100rem;
 `
 
+const Input = styled.input`
+  width: 100%;
+  height: ${(props) => props.height || '5rem'};
+  margin-bottom: 1rem;
+  background: ${(props) =>
+    props.disabled
+      ? props.theme.palette.grey.disabledInput
+      : props.theme.palette.grey.input};
+  border: ${(props) => `0.1rem solid ${props.theme.palette.text.white}`};
+  border-radius: 0.4rem;
+  padding-left: 1rem;
+  color: ${(props) => props.theme.palette.text.light};
+
+  &::placeholder {
+    color: #abbad1;
+    font-weight: normal;
+  }
+`
 const StyledInput = styled(Input)`
   font-weight: bold;
 `
