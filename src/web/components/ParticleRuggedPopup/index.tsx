@@ -33,7 +33,9 @@ export const ParticleRuggedPopup = ({
       aria-labelledby="responsive-dialog-title"
     >
       <RowContainer style={{ marginBottom: '2rem' }} justify={'space-between'}>
-        <Title>Particle Finance was rugged</Title>
+        <Title style={{ fontSize: '1.7rem' }}>
+          This project is high risk due to suspicious trading activity.
+        </Title>
         <SvgIcon src={Warning} width={'10%'} height={'auto'} />
       </RowContainer>
       <RowContainer direction={'column'} style={{ margin: '2rem 0' }}>
