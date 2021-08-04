@@ -39,7 +39,7 @@ import { useAwesomeMarkets } from '@sb/dexUtils/serum'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { WarningPopup } from './components/WarningPopup'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
-import { ParticleRuggedPopup } from '@sb/components/ParticleRuggedPopup'
+// import { ParticleRuggedPopup } from '@sb/components/ParticleRuggedPopup'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
   // Check if the arrays are the same length
@@ -188,9 +188,9 @@ function ChartPageComponent(props: any) {
     const [base, quote] = selectedPair.split('_')
 
     setCorrectMarketAddress()
-    if (base === 'PARTI' || quote === 'PARTI') {
-      openPartiPopup(true)
-    }
+    // if (base === 'PARTI' || quote === 'PARTI') {
+    //   openPartiPopup(true)
+    // }
   }, [selectedPair])
 
   const closeChartPagePopup = () => {
@@ -307,11 +307,11 @@ function ChartPageComponent(props: any) {
         onClose={() => openWarningPopup(false)}
         theme={theme}
       />
-      <ParticleRuggedPopup
+      {/* <ParticleRuggedPopup
         open={isPartiPopupOpen}
         onClose={() => openPartiPopup(false)}
         theme={theme}
-      />
+      /> */}
 
       {/* )} */}
       {/* <JoyrideOnboarding
