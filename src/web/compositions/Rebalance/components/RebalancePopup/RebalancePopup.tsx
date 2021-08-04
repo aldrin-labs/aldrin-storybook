@@ -228,15 +228,15 @@ export const RebalancePopup = ({
                   changeRebalanceStep('pending')
 
                   try {
-                    // refresh data right before rebalance
-                    const transactionsList = await updateTransactionsList({
-                      wallet,
-                      connection,
-                      marketsData,
-                      tokensDiff,
-                      tokensMap,
-                      allMarketsMap,
-                    })
+                    // refresh data right before rebalance - not sure
+                    // const transactionsList = await updateTransactionsList({
+                    //   wallet,
+                    //   connection,
+                    //   marketsData,
+                    //   tokensDiff,
+                    //   tokensMap,
+                    //   allMarketsMap,
+                    // })
 
                     const marketOrderProgram = loadMarketOrderProgram({
                       wallet,
@@ -248,7 +248,7 @@ export const RebalancePopup = ({
                       connection,
                       marketOrderProgram,
                       tokensMap,
-                      transactions: transactionsList,
+                      transactions: rebalanceTransactionsList,
                     })
 
                     await changeRebalanceStep('done')
