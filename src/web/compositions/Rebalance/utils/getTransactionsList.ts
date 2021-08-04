@@ -75,7 +75,7 @@ export const getTransactionsList = ({
 
     while (elSell.isSold === false) {
       const elBuy = { ...tokensToBuyClone[i] }
-      
+
       if (!elBuy) {
         break
       }
@@ -103,14 +103,13 @@ export const getTransactionsList = ({
       } else {
         // if sell token less than buy token
         toSellTokenAmount = Math.abs(elSell.amountDiff)
-        const tokenToBuyData = tokensToBuyClone[i]
 
         // remove part from buy, that bought
         tokensToBuyClone[i] = {
-          ...tokenToBuyData,
-          tokenValue: tokenToBuyData.tokenValue - elSell.tokenValue,
+          ...elBuy,
+          tokenValue: elBuy.tokenValue - elSell.tokenValue,
           amountDiff:
-            tokenToBuyData.amountDiff -
+            elBuy.amountDiff -
             +(elSell.tokenValue / elBuy.price).toFixed(
               tokensMap[elBuy.symbol].decimalCount
             ),
