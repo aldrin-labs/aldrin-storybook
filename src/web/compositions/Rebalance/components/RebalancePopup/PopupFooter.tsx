@@ -3,6 +3,7 @@ import { Theme } from '@material-ui/core'
 
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 export const PopupFooter = ({
   totalFeesUSD,
@@ -57,7 +58,7 @@ export const PopupFooter = ({
           fontSize: '1.9rem',
         }}
       >
-        {totalFeesSOL} SOL
+        {stripDigitPlaces(totalFeesSOL, 8)} SOL
       </Text>
     </Row>
   </RowContainer>

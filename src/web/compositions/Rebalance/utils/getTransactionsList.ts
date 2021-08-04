@@ -46,7 +46,13 @@ export const getTransactionsList = ({
     }))
     .sort((a, b) => b.tokenValue - a.tokenValue)
 
-  if (!tokensToSell || !tokensToBuy) {
+  const tokensToBuyClone = [...tokensToBuy]
+
+  console.log('tokensToSell', tokensToSell)
+  console.log('tokensToBuy', tokensToBuy)
+  console.log('tokensToBuyClone', tokensToBuyClone)
+
+  if (!tokensToSell || !tokensToBuyClone) {
     return []
   }
 
@@ -64,9 +70,12 @@ export const getTransactionsList = ({
 
   let i = 0
 
-  tokensToSell.forEach((elSell) => {
+  tokensToSell.forEach((elSellRaw) => {
+    const elSell = { ...elSellRaw }
+
     while (elSell.isSold === false) {
-      const elBuy = tokensToBuy[i]
+      const elBuy = { ...tokensToBuyClone[i] }
+      
       if (!elBuy) {
         break
       }
@@ -78,16 +87,35 @@ export const getTransactionsList = ({
       let toSellTokenAmount = 0
 
       // Configuring amount to sell
+      // for sell we have more amount then for buy with same index
       if (diffBuySell > 0) {
         // if sell token is more than buy token
         toSellTokenAmount = +(elBuy.tokenValue / elSell.price).toFixed(
           tokensMap[elSell.symbol].decimalCount
         )
+
+        // remove part from sell, that sold
+        elSell.tokenValue -= elBuy.tokenValue
+        elSell.amountDiff += toSellTokenAmount
+
         // buy should go out
         i++
       } else {
         // if sell token less than buy token
         toSellTokenAmount = Math.abs(elSell.amountDiff)
+        const tokenToBuyData = tokensToBuyClone[i]
+
+        // remove part from buy, that bought
+        tokensToBuyClone[i] = {
+          ...tokenToBuyData,
+          tokenValue: tokenToBuyData.tokenValue - elSell.tokenValue,
+          amountDiff:
+            tokenToBuyData.amountDiff -
+            +(elSell.tokenValue / elBuy.price).toFixed(
+              tokensMap[elBuy.symbol].decimalCount
+            ),
+        }
+
         // sell should go out
         elSell.isSold = true
       }
@@ -124,7 +152,11 @@ export const getTransactionsList = ({
 
           const feeMultiplicator = (100 - REBALANCE_CONFIG.SLIPPAGE) / 100
 
-          const { market: loadedMarket, openOrders, vaultSigner } = loadedMarketsMap[symbol] || {
+          const {
+            market: loadedMarket,
+            openOrders,
+            vaultSigner,
+          } = loadedMarketsMap[symbol] || {
             market: null,
             openOrders: null,
             vaultSigner: null,
@@ -163,13 +195,14 @@ export const getTransactionsList = ({
           const slippageMultiplicator = (100 - slippage) / 100
 
           const moduleAmountDiff = tokenAmount
-          const amount = +funcToRound(loadedMarket?.minOrderSize)(
-            base === pathSymbol
-              ? moduleAmountDiff
-              : (moduleAmountDiff / price) *
-                  (side === 'buy' ? slippageMultiplicator : 1),
-            quantityPrecision
-          ) || 0
+          const amount =
+            +funcToRound(loadedMarket?.minOrderSize)(
+              base === pathSymbol
+                ? moduleAmountDiff
+                : (moduleAmountDiff / price) *
+                    (side === 'buy' ? slippageMultiplicator : 1),
+              quantityPrecision
+            ) || 0
 
           const totalRaw = +(amount * price).toFixed(
             tokensMap[quote].decimalCount
@@ -214,7 +247,7 @@ export const getTransactionsList = ({
             side,
             slippage,
             loadedMarket,
-            openOrders, 
+            openOrders,
             vaultSigner,
             name: symbol,
             feeUSD: feeUSD,

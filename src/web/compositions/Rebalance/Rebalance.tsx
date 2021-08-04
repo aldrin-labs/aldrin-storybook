@@ -356,6 +356,7 @@ const RebalanceComposition = ({
                 transition={'all .4s ease-out'}
                 padding={'2rem'}
                 style={{ whiteSpace: 'nowrap' }}
+                disabled={leftToDistributeValue !== 0}
               >
                 Rebalance Now
               </BtnCustom>
