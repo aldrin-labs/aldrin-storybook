@@ -56,7 +56,7 @@ import { TokenRegistryProvider } from '@sb/dexUtils/tokenRegistry'
 import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
 import { MobileNavBar } from '../Chart/components/MobileNavbar/MobileNavbar'
 
-const version = `10.9.143`
+const version = `10.9.144`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
 const isNotificationDone = localStorage.getItem('isNotificationDone')
 const isWalletMigrationToNewUrlPopupDone = localStorage.getItem(
