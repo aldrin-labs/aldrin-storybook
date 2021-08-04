@@ -50,7 +50,7 @@ const DevUrlPopup = ({
     >
       <Row justify={'space-between'} width={'100%'}>
         <BoldHeader>Warning!</BoldHeader>
-        <SvgIcon width="4rem" height="4rem" src={Warning} />
+        <SvgIcon width="4rem" height="4rem" src={Warning} onClick={close} />
       </Row>
       <RowContainer margin={'3rem 0'} align={'start'} direction={'column'}>
         <BoldHeader style={{ textAlign: 'left', marginBottom: '6rem' }}>

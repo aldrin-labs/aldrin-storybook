@@ -146,7 +146,7 @@ export const getTransactionsList = ({
           // we're getting price from ob here because price is required
           // to get total from amount for next rebalance chain element
           let [
-            [{ price, notEnoughLiquidity }],
+            [{ price, isNotEnoughLiquidity }],
             updatedOrderbooks,
           ] = getPricesForTransactionsFromOrderbook({
             orderbooks: orderbooksClone,
@@ -219,7 +219,7 @@ export const getTransactionsList = ({
             name: symbol,
             feeUSD: feeUSD,
             address: market?.address,
-            notEnoughLiquidity,
+            isNotEnoughLiquidity,
             isIntermidiate,
             priceIncludingCurveAndFees: priceIncludingCurveAndFees,
           })

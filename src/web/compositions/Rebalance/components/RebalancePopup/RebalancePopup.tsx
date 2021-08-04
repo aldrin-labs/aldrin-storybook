@@ -91,7 +91,7 @@ export const RebalancePopup = ({
       tokensMap,
       allMarketsMap,
     }: {
-      wallet: WalletAdapter,
+      wallet: WalletAdapter
       connection: Connection
       marketsData: MarketData[]
       tokensDiff: TokensDiff
@@ -131,6 +131,11 @@ export const RebalancePopup = ({
 
   const totalFeesUSD = rebalanceTransactionsList.reduce(
     (acc, el) => el.feeUSD + acc,
+    0
+  )
+
+  const totalFeesSOL = rebalanceTransactionsList.reduce(
+    (acc, el) => 0.00001 + (el.openOrders.length === 0 ? 0.0239 : 0) + acc,
     0
   )
 
@@ -188,6 +193,7 @@ export const RebalancePopup = ({
             side={el.side}
             theme={theme}
             market={el.loadedMarket}
+            isNotEnoughLiquidity={el.isNotEnoughLiquidity}
           />
         ))}
       </RowContainer>
@@ -198,7 +204,11 @@ export const RebalancePopup = ({
       >
         {rebalanceStep === 'initial' && (
           <RowContainer direction={'column'}>
-            <PopupFooter theme={theme} totalFeesUSD={totalFeesUSD} />
+            <PopupFooter
+              theme={theme}
+              totalFeesUSD={totalFeesUSD}
+              totalFeesSOL={totalFeesSOL}
+            />
             <RowContainer justify={'space-between'}>
               <BtnCustom
                 theme={theme}
@@ -312,6 +322,7 @@ export const RebalancePopup = ({
                   //   changeRebalanceStep('initial')
                   // }, 5000)
                 }}
+                disabled={rebalanceTransactionsList.length === 0}
                 needMinWidth={false}
                 btnWidth="calc(50% - 1rem)"
                 height="auto"

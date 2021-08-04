@@ -19,6 +19,7 @@ export const TransactionComponent = ({
   amount,
   total,
   market,
+  isNotEnoughLiquidity,
 }: {
   theme: Theme
   symbol: string
@@ -28,8 +29,13 @@ export const TransactionComponent = ({
   total: number
   side: 'buy' | 'sell'
   market: Market
+  isNotEnoughLiquidity: boolean
 }) => {
   const [base, quote] = symbol.split('_')
+  const showError = amount === 0 || isNotEnoughLiquidity
+  const errorText = isNotEnoughLiquidity
+    ? 'Not enough liquidity in orderbook'
+    : `Min order size is ${market.minOrderSize}`
 
   return (
     <Stroke>
@@ -37,7 +43,7 @@ export const TransactionComponent = ({
         <BlockForCoins symbol={symbol} side={side} />
       </Row>
       <Row>
-        {amount === 0 ? (
+        {showError ? (
           <TextColumnContainer>
             <Row>
               <Text
@@ -49,7 +55,7 @@ export const TransactionComponent = ({
                   fontSize: '1.4rem',
                 }}
               >
-                Error. Min order size is {market.minOrderSize}
+                Error. {errorText}
               </Text>
             </Row>
             <Row>

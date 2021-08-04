@@ -6,9 +6,11 @@ import { Text } from '@sb/compositions/Addressbook/index'
 
 export const PopupFooter = ({
   totalFeesUSD,
+  totalFeesSOL,
   theme,
 }: {
   totalFeesUSD: number
+  totalFeesSOL: number
   theme: Theme
 }) => (
   <RowContainer justify={'space-between'}>
@@ -25,15 +27,27 @@ export const PopupFooter = ({
     <Row>
       <Text
         theme={theme}
+        color={'#A5E898'}
         fontFamily={'Avenir Next Demi'}
         style={{
           whiteSpace: 'nowrap',
           fontSize: '1.9rem',
         }}
       >
-        $
+        ${totalFeesUSD.toFixed(2)}
       </Text>
-
+      <Text
+        theme={theme}
+        fontFamily={'Avenir Next Demi'}
+        style={{
+          whiteSpace: 'nowrap',
+          fontSize: '1.9rem',
+          padding: '0 .5rem'
+        }}
+      >
+        
+        +
+      </Text>
       <Text
         theme={theme}
         color={'#A5E898'}
@@ -43,7 +57,7 @@ export const PopupFooter = ({
           fontSize: '1.9rem',
         }}
       >
-        {totalFeesUSD.toFixed(2)}
+        {totalFeesSOL} SOL
       </Text>
     </Row>
   </RowContainer>

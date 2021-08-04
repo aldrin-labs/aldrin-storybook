@@ -9,7 +9,7 @@ export const getPricesForTransactionsFromOrderbook = ({
   transactionsList: TransactionMainData[]
   orderbooks: Orderbooks
 }): [
-  { symbol: string; price: number; notEnoughLiquidity: boolean }[],
+  { symbol: string; price: number; isNotEnoughLiquidity: boolean }[],
   Orderbooks
 ] => {
   let orderbooksClone = { ...orderbooks }
@@ -21,12 +21,12 @@ export const getPricesForTransactionsFromOrderbook = ({
     const orderbookBySymbol = orderbooksClone[transaction.symbol]
 
     if (!orderbookBySymbol)
-      return { price: 0, symbol: transaction.symbol, notEnoughLiquidity: true }
+      return { price: 0, symbol: transaction.symbol, isNotEnoughLiquidity: true }
 
     const orderbookBySide = orderbookBySymbol[orderbookSide]
 
     if (!orderbookBySide)
-      return { price: 0, symbol: transaction.symbol, notEnoughLiquidity: true }
+      return { price: 0, symbol: transaction.symbol, isNotEnoughLiquidity: true }
 
     // delete best ask/bids because it may change quickly
     orderbookBySide.shift()
@@ -128,7 +128,7 @@ export const getPricesForTransactionsFromOrderbook = ({
     return {
       symbol: transaction.symbol,
       price: transactionPrice || 0,
-      notEnoughLiquidity: isBuy
+      isNotEnoughLiquidity: isBuy
         ? tempTransactionTotal > 0
         : tempTransactionAmount > 0,
     }

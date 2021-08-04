@@ -1,6 +1,7 @@
 import { Account, PublicKey, Transaction, Connection } from '@solana/web3.js'
 import { WalletAdapter } from '@sb/dexUtils/types'
-import { Market } from '@project-serum/serum'
+import { Market, OpenOrders } from '@project-serum/serum'
+import BN from 'bn.js'
 
 export type PoolTVL = {
     tokenA: number
@@ -89,7 +90,10 @@ export type TransactionType = MarketDataProcessed & TransactionMainData & {
     total: number, 
     feeUSD: number 
     slippage: number
+    isNotEnoughLiquidity: boolean
     loadedMarket: Market
+    openOrders: OpenOrders[],
+    vaultSigner: PublicKey | BN
 }
 
 export interface MarketDataProcessed extends MarketData {
