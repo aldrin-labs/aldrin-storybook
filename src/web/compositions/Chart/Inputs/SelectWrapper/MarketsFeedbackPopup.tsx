@@ -22,7 +22,7 @@ import {
 } from './SelectWrapperStyles'
 import { notify } from '@sb/dexUtils/notifications'
 
-export const FeedbackPopup = ({
+export const MarketsFeedbackPopup = ({
   theme,
   onClose,
   open,
