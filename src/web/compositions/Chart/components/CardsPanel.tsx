@@ -12,7 +12,7 @@ import {
   Row,
   ReusableTitle as Title,
 } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { IdoBtn } from '../../Homepage/styles'
+import { IdoBtn, WhiteButton } from '../../Homepage/styles'
 
 import MarketStats from './MarketStats/MarketStats'
 import { TooltipCustom } from '@sb/components/index'
@@ -58,6 +58,7 @@ import NetworkDropdown from '@sb/compositions/Chart/components/NetworkDropdown/N
 import Dropdown from '@sb/components/Dropdown'
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown/index'
+import { FeedbackPopup } from './UsersFeedbackPopup'
 
 export const NavBarLink = styled(({ style, ...props }) => (
   <NavLink {...props} />
@@ -139,6 +140,7 @@ const TokenLink = styled.a`
 
 export const CardsPanel = ({ theme }) => {
   const location = useLocation()
+  const [isFeedBackPopupOpen, setIsFeedBackPopupOpen] = useState(false)
 
   const isDarkTheme = theme.palette.type === 'dark'
   const isAnalytics = location.pathname.includes('analytics')
@@ -172,6 +174,26 @@ export const CardsPanel = ({ theme }) => {
               src={isDarkTheme ? SerumCCAILogo : LightLogo}
             />
           </Link>
+          <Row
+            style={{
+              borderLeft: theme.palette.border.new,
+              margin: '0 0 0 4rem',
+              justifyContent: 'flex-end',
+              padding: '0 0rem 0 4rem',
+            }}
+          >
+            <WhiteButton
+              style={{
+                borderRadius: '1.5rem',
+                width: 'auto',
+                padding: '0 2rem',
+              }}
+              theme={theme}
+              onClick={() => setIsFeedBackPopupOpen(true)}
+            >
+              Leave feedback
+            </WhiteButton>
+          </Row>
           <div
             style={{
               width: '100%',
@@ -291,6 +313,13 @@ export const CardsPanel = ({ theme }) => {
 
         <TopBar theme={theme} />
       </PanelWrapper>
+      <FeedbackPopup
+        theme={theme}
+        open={isFeedBackPopupOpen}
+        onClose={() => {
+          setIsFeedBackPopupOpen(false)
+        }}
+      />
     </ChartGridContainer>
   )
 }

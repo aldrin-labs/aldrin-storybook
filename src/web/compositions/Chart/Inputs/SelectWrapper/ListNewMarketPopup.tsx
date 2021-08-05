@@ -60,7 +60,7 @@ const StyledPaper = styled(Paper)`
   width: 100rem;
 `
 
-export const Input = styled.input`
+const Input = styled.input`
   width: 100%;
   height: ${(props) => props.height || '5rem'};
   margin-bottom: 1rem;
@@ -78,7 +78,6 @@ export const Input = styled.input`
     font-weight: normal;
   }
 `
-
 const StyledInput = styled(Input)`
   font-weight: bold;
 `

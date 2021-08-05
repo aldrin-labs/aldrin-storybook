@@ -43,7 +43,7 @@ import { getSerumTradesData } from '@core/graphql/queries/chart/getSerumTradesDa
 import { TableHeader } from './TableHeader'
 import { TableInner } from './TableInner'
 import { MintsPopup } from './MintsPopup'
-import { FeedbackPopup } from './FeedbackPopup'
+import { MarketsFeedbackPopup } from './MarketsFeedbackPopup'
 
 export const excludedPairs = [
   // 'USDC_ODOP',
@@ -626,7 +626,7 @@ class SelectPairListComponent extends React.PureComponent<
             open={isMintsPopupOpen}
             onClose={() => this.setIsMintsPopupOpen(false)}
           />
-          <FeedbackPopup
+          <MarketsFeedbackPopup
             theme={theme}
             open={isFeedBackPopupOpen}
             onClose={() => this.setIsFeedbackPopupOpen(false)}
