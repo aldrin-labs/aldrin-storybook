@@ -67,6 +67,8 @@ export const FeedbackPopup = ({
     e.preventDefault()
   }
 
+  const isDisabled = feedbackData.messagge === ''
+
   return (
     <DialogWrapper
       theme={theme}
@@ -86,6 +88,7 @@ export const FeedbackPopup = ({
         <SvgIcon
           onClick={() => onClose()}
           src={CloseIcon}
+          style={{ cursor: 'pointer' }}
           width={'2rem'}
           height={'2rem'}
         />
@@ -183,7 +186,12 @@ export const FeedbackPopup = ({
             </RowContainer>
           </RowContainer>
           <RowContainer>
-            <SubmitButton theme={theme} type="submit">
+            <SubmitButton
+              isDisabled={isDisabled}
+              disabled={isDisabled}
+              theme={theme}
+              type="submit"
+            >
               Submit
             </SubmitButton>
           </RowContainer>
