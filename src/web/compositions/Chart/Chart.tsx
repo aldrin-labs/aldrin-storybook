@@ -40,7 +40,7 @@ import { withPublicKey } from '@core/hoc/withPublicKey'
 import { WarningPopup } from './components/WarningPopup'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
 import { TokenDelistPopup } from '@sb/components/TokenDelistPopup'
-import { tokensToDelist } from '@core/utils/config'
+import { tokensToDelist } from '@core/config/dex'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
   // Check if the arrays are the same length
