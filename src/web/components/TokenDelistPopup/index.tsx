@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import duration from 'dayjs/plugin/duration'
 
 import { Theme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
@@ -12,16 +14,34 @@ import Warning from '@icons/newWarning.svg'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { StyledPaper, Title, BlueButton } from './styles'
 
-export const ParticleRuggedPopup = ({
+dayjs.extend(utc)
+dayjs.extend(duration)
+
+export const TokenDelistPopup = ({
   theme,
   onClose,
   open,
+  tokenToDelist,
 }: {
   theme: Theme
   onClose: () => void
   open: boolean
+  tokenToDelist: {
+    name: string
+    timestamp: number
+  }
 }) => {
   const [isUserConfident, userConfident] = useState(false)
+
+  const { name, timestamp } = tokenToDelist || { name: '', timestamp: 0 }
+  const delistTimeToFormat = dayjs.unix(timestamp).utc()
+  const delistTimeUnix = delistTimeToFormat.unix()
+
+  const now = dayjs().unix()
+  const hours = (delistTimeUnix - now) / 3600
+
+  const isExpired = now > delistTimeUnix
+
   return (
     <DialogWrapper
       theme={theme}
@@ -38,11 +58,20 @@ export const ParticleRuggedPopup = ({
         </Title>
         <SvgIcon src={Warning} width={'10%'} height={'auto'} />
       </RowContainer>
-      <RowContainer direction={'column'} style={{ margin: '2rem 0' }}>
-        <WhiteText theme={theme}>
-          You have 24 hours to close the open orders. The PARTI token will be
-          delisted on August 4 at 12:00 UTC.{' '}
-        </WhiteText>
+      <RowContainer direction={'column'} align={'flex-start'} margin={'2rem 0'}>
+        {isExpired ? (
+          <WhiteText theme={theme}>
+            The {name} token will be delisted during next few hours.
+          </WhiteText>
+        ) : (
+          <WhiteText theme={theme}>
+            You have {hours.toFixed(0)} hours to close the open orders. The{' '}
+            {name} token will be delisted on{' '}
+            {`${delistTimeToFormat.format(
+              'MMMM D'
+            )} at ${delistTimeToFormat.format('hh:mm')} UTC.`}
+          </WhiteText>
+        )}
       </RowContainer>
       <RowContainer justify="space-between" margin="2rem 0 2rem 0">
         <Row
@@ -51,14 +80,14 @@ export const ParticleRuggedPopup = ({
           style={{ flexWrap: 'nowrap' }}
         >
           <SCheckbox
-            id={'warning_checkbox'}
+            id={'delist_warning_checkbox'}
             style={{ padding: 0, marginRight: '1rem' }}
             onChange={() => {
               userConfident(!isUserConfident)
             }}
             checked={isUserConfident}
           />
-          <label htmlFor={'warning_checkbox'}>
+          <label htmlFor={'delist_warning_checkbox'}>
             <WhiteText
               style={{
                 cursor: 'pointer',

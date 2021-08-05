@@ -41,6 +41,8 @@ import { WarningPopup } from './components/WarningPopup'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
 import MarketBlock from './components/MarketBlock'
 // import { ParticleRuggedPopup } from '@sb/components/ParticleRuggedPopup'
+import { TokenDelistPopup } from '@sb/components/TokenDelistPopup'
+import { tokensToDelist } from '@core/config/dex'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
   // Check if the arrays are the same length
@@ -95,7 +97,7 @@ function ChartPageComponent(props: any) {
   const [terminalViewMode, updateTerminalViewMode] = useState('default')
   const [isTourOpen, setIsTourOpen] = useState(false)
   const [isWarningPopupOpen, openWarningPopup] = useState(false)
-  const [isPartiPopupOpen, openPartiPopup] = useState(false)
+  const [isDelistPopupOpen, openDelistPopup] = useState(false)
 
   const [isNotificationTourOpen, setNotificationTourOpen] = useState(
     localStorage.getItem('isNotificationDone') == 'null'
@@ -185,13 +187,14 @@ function ChartPageComponent(props: any) {
     }
   }
 
-  useEffect(() => {
-    const [base, quote] = selectedPair.split('_')
+  const [base, quote] = selectedPair.split('_')
+  const tokenToDelist = tokensToDelist[base] || tokensToDelist[quote]
 
+  useEffect(() => {
     setCorrectMarketAddress()
-    // if (base === 'PARTI' || quote === 'PARTI') {
-    //   openPartiPopup(true)
-    // }
+    if (tokenToDelist) {
+      openDelistPopup(true)
+    }
   }, [selectedPair])
 
   const closeChartPagePopup = () => {
@@ -311,11 +314,12 @@ function ChartPageComponent(props: any) {
         onClose={() => openWarningPopup(false)}
         theme={theme}
       />
-      {/* <ParticleRuggedPopup
-        open={isPartiPopupOpen}
-        onClose={() => openPartiPopup(false)}
+      <TokenDelistPopup
+        open={isDelistPopupOpen}
+        onClose={() => openDelistPopup(false)}
         theme={theme}
-      /> */}
+        tokenToDelist={tokenToDelist}
+      />
 
       {/* )} */}
       {/* <JoyrideOnboarding
