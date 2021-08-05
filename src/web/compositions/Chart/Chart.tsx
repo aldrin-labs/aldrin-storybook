@@ -40,6 +40,9 @@ import { withPublicKey } from '@core/hoc/withPublicKey'
 import { WarningPopup } from './components/WarningPopup'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
 import MarketBlock from './components/MarketBlock'
+// import { ParticleRuggedPopup } from '@sb/components/ParticleRuggedPopup'
+import { TokenDelistPopup } from '@sb/components/TokenDelistPopup'
+import { tokensToDelist } from '@core/config/dex'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
   // Check if the arrays are the same length
@@ -94,6 +97,7 @@ function ChartPageComponent(props: any) {
   const [terminalViewMode, updateTerminalViewMode] = useState('default')
   const [isTourOpen, setIsTourOpen] = useState(false)
   const [isWarningPopupOpen, openWarningPopup] = useState(false)
+  const [isDelistPopupOpen, openDelistPopup] = useState(false)
 
   const [isNotificationTourOpen, setNotificationTourOpen] = useState(
     localStorage.getItem('isNotificationDone') == 'null'
@@ -183,8 +187,14 @@ function ChartPageComponent(props: any) {
     }
   }
 
+  const [base, quote] = selectedPair.split('_')
+  const tokenToDelist = tokensToDelist[base] || tokensToDelist[quote]
+
   useEffect(() => {
     setCorrectMarketAddress()
+    if (tokenToDelist) {
+      openDelistPopup(true)
+    }
   }, [selectedPair])
 
   const closeChartPagePopup = () => {
@@ -212,6 +222,7 @@ function ChartPageComponent(props: any) {
   pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
 
   const accentColor = '#09ACC7'
+
   return (
     <MainContainer fullscreen={false}>
       {/* {!isTourOpen && (
@@ -303,6 +314,13 @@ function ChartPageComponent(props: any) {
         onClose={() => openWarningPopup(false)}
         theme={theme}
       />
+      <TokenDelistPopup
+        open={isDelistPopupOpen}
+        onClose={() => openDelistPopup(false)}
+        theme={theme}
+        tokenToDelist={tokenToDelist}
+      />
+
       {/* )} */}
       {/* <JoyrideOnboarding
         continuous={true}

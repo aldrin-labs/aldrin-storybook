@@ -273,14 +273,16 @@ export const TradeInput = styled.input`
     height: 8rem;
     border: none;
     border-radius: 2rem;
-    font-size: 2rem;
+    font-size: 16px;
+    font-family: 'Avenir Next Light';
     margin-bottom: 0.8rem;
+
     padding-right: ${(props) =>
       props.needPadding
         ? `calc(${props.symbolLength}rem + ${
-            props.symbolLength < 4 ? '3.5rem' : '3rem'
+            props.symbolLength < 4 ? '4.5rem' : '4rem'
           })`
-        : '2.5rem'};
+        : '3.5rem'};
   }
 `
 

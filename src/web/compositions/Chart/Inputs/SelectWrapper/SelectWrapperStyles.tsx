@@ -78,7 +78,6 @@ export const StyledTable = styled(Grid)`
   height: calc(100% - 21rem);
   @media (max-width: 600px) {
     height: calc(100% - 10rem);
-    padding: 0 2rem;
   }
 `
 export const StyledRow = styled.span`
@@ -102,10 +101,18 @@ export const AutoSizerDesktop = styled(AutoSizer)`
   @media (max-width: 600px) {
     display: none;
   }
+  .pairSelectorRow:hover,
+  .pairSelectorRow:focus {
+    background: rgba(55, 56, 62, 0.75);
+  }
 `
 export const AutoSizerMobile = styled(AutoSizer)`
   @media (min-width: 600px) {
     display: none;
+  }
+  .pairSelectorRow:hover,
+  .pairSelectorRow:focus {
+    background: rgba(55, 56, 62, 0.75);
   }
 `
 export const TradeHistoryGrid = styled(Grid)`

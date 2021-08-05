@@ -90,13 +90,13 @@ export const DefaultViewComponent = (
   const [priceFromOrderbook, updateTerminalPriceFromOrderbook] = useState<
     null | number
   >(null)
-
   const [showTokenNotAddedPopup, setShowTokenNotAdded] = useState(false)
   const [isTradingBlockedPopupOpen, setIsTradingBlockedPopupOpen] = useState(
     !isCCAITradingEnabled() && currencyPair === 'CCAI_USDC'
   )
 
   const [base, quote] = currencyPair.split('_')
+
   const baseQuoteArr = [base, quote]
   const exchange = activeExchange.symbol
   const isDefaultTerminalViewMode = terminalViewMode === 'default'

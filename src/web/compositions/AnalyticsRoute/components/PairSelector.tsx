@@ -74,7 +74,7 @@ const _sortList = ({ sortBy, sortDirection, data }) => {
   return newList
 }
 
-function defaultRowRenderer({
+export const defaultRowRenderer = ({
   className,
   columns,
   index,
@@ -87,7 +87,7 @@ function defaultRowRenderer({
   rowData,
   style,
   selectedPair,
-}) {
+}) => {
   const a11yProps = { 'aria-rowindex': index + 1 }
 
   if (
@@ -125,6 +125,8 @@ function defaultRowRenderer({
     (rowData.symbol.contentToSort === selectedPair ||
       (rowData.symbol.contentToSort.toLowerCase().includes('all') &&
         selectedPair === 'all'))
+
+  console.log('className', className)
 
   return (
     <div

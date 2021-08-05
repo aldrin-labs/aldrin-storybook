@@ -115,7 +115,6 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
     } = this.props
 
     const { isClosed, isMenuOpen } = this.state
-
     return (
       <>
         <ExchangePair
@@ -156,6 +155,7 @@ class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
             tokenMap={tokenMap}
             isMintsPopupOpen={isMintsPopupOpen}
             setIsMintsPopupOpen={setIsMintsPopupOpen}
+            marketName={marketName}
           />
         </ExchangePair>
       </>

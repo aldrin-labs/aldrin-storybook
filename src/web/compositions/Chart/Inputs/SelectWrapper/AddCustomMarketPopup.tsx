@@ -30,7 +30,7 @@ import { withPublicKey } from '@core/hoc/withPublicKey'
 import { readQueryData, writeQueryData } from '@core/utils/TradingTable.utils'
 import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getDexProgramIdByEndpoint } from '@sb/dexUtils/config'
+import { getDexProgramIdByEndpoint } from '@core/config/dex'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;

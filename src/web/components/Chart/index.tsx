@@ -10,7 +10,7 @@ import { TerminalModeButton } from '@sb/components/TradingWrapper/styles'
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 
 import { useWallet } from '@sb/dexUtils/wallet'
-import useWindowSize from '../../../webhooks/useWindowSize'
+import useMobileSize from '../../../webhooks/useMobileSize'
 
 const Wrapper = styled(Card)`
   display: flex;
@@ -61,10 +61,7 @@ export const SingleChart = ({
   customMarkets: []
   currencyPair: string
 }) => {
-  // console.log('customMark', currencyPair)
-  const { width, height } = useWindowSize()
-
-  const isMobile = maxMobileScreenResolution > width
+  const isMobile = useMobileSize()
   return (
     <Wrapper>
       <iframe

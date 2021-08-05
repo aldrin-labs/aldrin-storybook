@@ -7,6 +7,7 @@ import {
   AutoSizerDesktop,
   AutoSizerMobile,
 } from './SelectWrapperStyles'
+import { defaultRowRenderer } from '@sb/compositions/AnalyticsRoute/components/PairSelector'
 
 export const TableInner = ({
   theme,
@@ -14,6 +15,7 @@ export const TableInner = ({
   sort,
   sortBy,
   sortDirection,
+  selectedPair,
 }) => {
   return (
     <StyledTable>
@@ -32,6 +34,7 @@ export const TableInner = ({
             gridStyle={{
               outline: 'none',
             }}
+            rowClassName={'pairSelectorRow'}
             rowStyle={{
               outline: 'none',
               cursor: 'pointer',
@@ -271,12 +274,16 @@ export const TableInner = ({
             gridStyle={{
               outline: 'none',
             }}
+            rowClassName={'pairSelectorRow'}
             rowStyle={{
               outline: 'none',
               cursor: 'pointer',
               fontSize: '2rem',
               borderBottom: `0.05rem solid #383B45`,
             }}
+            rowRenderer={(...props) =>
+              defaultRowRenderer({ ...props[0], selectedPair })
+            }
             headerHeight={0}
             headerStyle={{
               color: '#fff',
