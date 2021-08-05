@@ -17,6 +17,7 @@ import {
   AutoSizerDesktop,
   AutoSizerMobile,
 } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapperStyles'
+import useMobileSize from '@webhooks/useMobileSize'
 
 const StyledTable = styled(Table)`
   & .ReactVirtualized__Grid__innerScrollContainer {
@@ -30,184 +31,186 @@ const StyledTable = styled(Table)`
   }
 `
 
-@withTheme()
-class OrderBookTable extends Component<IProps> {
-  render() {
-    const {
-      data,
-      theme,
-      mode,
-      aggregation,
-      openOrderHistory,
-      marketType,
-      arrayOfMarketIds,
-      //amountForBackground,
-      updateTerminalPriceFromOrderbook,
-      currencyPair,
-      terminalViewMode,
-    } = this.props
+const OrderBookTable = ({
+  data,
+  theme,
+  mode,
+  aggregation,
+  openOrderHistory,
+  marketType,
+  arrayOfMarketIds,
+  updateTerminalPriceFromOrderbook,
+  currencyPair,
+  terminalViewMode,
+}) => {
+  const isMobile = useMobileSize()
+  const tableData =
+    isMobile && terminalViewMode === 'mobileChart'
+      ? getDataFromTree(data.asks, 'asks')
+      : getDataFromTree(data.asks, 'asks').reverse()
+  const amountForBackground =
+    tableData.reduce((acc, curr) => acc + +curr.size, 0) / tableData.length
 
-    const tableData = getDataFromTree(data.asks, 'asks').reverse()
-    const amountForBackground =
-      tableData.reduce((acc, curr) => acc + +curr.size, 0) / tableData.length
+  const [base, quote] = currencyPair.split('_')
 
-    const [base, quote] = currencyPair.split('_')
-
-    return (
-      <AsksWrapper
-        terminalViewMode={terminalViewMode}
-        mode={mode}
-        isFullHeight={mode === 'asks'}
-      >
-        <AutoSizerDesktop>
-          {({ width, height }: { width: number; height: number }) => {
-            return (
-              <StyledTable
-                mode={mode}
+  return (
+    <AsksWrapper
+      terminalViewMode={terminalViewMode}
+      mode={mode}
+      isFullHeight={mode === 'asks'}
+    >
+      <AutoSizerDesktop>
+        {({ width, height }: { width: number; height: number }) => {
+          return (
+            <StyledTable
+              mode={mode}
+              width={width}
+              height={height}
+              rowCount={tableData.length}
+              onRowClick={({ event, index, rowData }) => {
+                updateTerminalPriceFromOrderbook(+rowData.price)
+              }}
+              headerHeight={mode === 'both' ? height / 9 : height / 18}
+              headerStyle={{
+                color: theme.palette.grey.text,
+                paddingLeft: '.5rem',
+                paddingTop: '.25rem',
+                marginLeft: 0,
+                marginRight: 0,
+                letterSpacing: '.01rem',
+                borderBottom: theme.palette.border.main,
+                fontSize: '1rem',
+              }}
+              rowHeight={mode === 'both' ? height / 9 : height / 18}
+              overscanRowCount={0}
+              scrollToIndex={0}
+              rowGetter={({ index }) => tableData[index]}
+              rowRenderer={(...rest) =>
+                defaultRowRenderer({
+                  theme,
+                  ...rest[0],
+                  side: 'asks',
+                  marketType,
+                  aggregation,
+                  arrayOfMarketIds,
+                  openOrderHistory,
+                  amountForBackground,
+                })
+              }
+            >
+              <Column
+                label="Price"
+                dataKey="price"
+                headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
                 width={width}
-                height={height}
-                rowCount={tableData.length}
-                onRowClick={({ event, index, rowData }) => {
-                  updateTerminalPriceFromOrderbook(+rowData.price)
+                style={{
+                  color: theme.palette.red.main,
+                  fontFamily: 'Avenir Next Demi',
                 }}
-                headerHeight={mode === 'both' ? height / 9 : height / 18}
-                headerStyle={{
-                  color: theme.palette.grey.text,
-                  paddingLeft: '.5rem',
-                  paddingTop: '.25rem',
-                  marginLeft: 0,
-                  marginRight: 0,
-                  letterSpacing: '.01rem',
-                  borderBottom: theme.palette.border.main,
-                  fontSize: '1rem',
-                }}
-                rowHeight={mode === 'both' ? height / 9 : height / 18}
-                overscanRowCount={0}
-                scrollToIndex={tableData.length - 1}
-                rowGetter={({ index }) => tableData[index]}
-                rowRenderer={(...rest) =>
-                  defaultRowRenderer({
-                    theme,
-                    ...rest[0],
-                    side: 'asks',
-                    marketType,
-                    aggregation,
-                    arrayOfMarketIds,
-                    openOrderHistory,
-                    amountForBackground,
-                  })
-                }
-              >
-                <Column
-                  label="Price"
-                  dataKey="price"
-                  headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
-                  width={width}
-                  style={{
-                    color: theme.palette.red.main,
-                    fontFamily: 'Avenir Next Demi',
-                  }}
-                />
-                <Column
-                  label={`Size (${base})`}
-                  dataKey="size"
-                  headerStyle={{ textAlign: 'left', paddingRight: '6px' }}
-                  width={width}
-                  style={{
-                    textAlign: 'left',
-                    color: theme.palette.white.primary,
-                  }}
-                />
-                <Column
-                  label={`Total (${quote})`}
-                  dataKey="total"
-                  headerStyle={{
-                    paddingRight: 'calc(10px)',
-                    textAlign: 'right',
-                  }}
-                  width={width}
-                  style={{
-                    textAlign: 'right',
-                    color: theme.palette.white.primary,
-                  }}
-                />
-              </StyledTable>
-            )
-          }}
-        </AutoSizerDesktop>
-        <AutoSizerMobile>
-          {({ width, height }: { width: number; height: number }) => {
-            return (
-              <StyledTable
-                mode={mode}
+              />
+              <Column
+                label={`Size (${base})`}
+                dataKey="size"
+                headerStyle={{ textAlign: 'left', paddingRight: '6px' }}
                 width={width}
-                height={height}
-                rowCount={tableData.length}
-                onRowClick={({ event, index, rowData }) => {
-                  updateTerminalPriceFromOrderbook(+rowData.price)
+                style={{
+                  textAlign: 'left',
+                  color: theme.palette.white.primary,
                 }}
-                headerHeight={height / 7}
+              />
+              <Column
+                label={`Total (${quote})`}
+                dataKey="total"
                 headerStyle={{
-                  color: theme.palette.grey.text,
-                  paddingLeft: '.5rem',
-                  paddingTop: '.25rem',
-                  marginLeft: 0,
-                  marginRight: 0,
-                  letterSpacing: '.01rem',
-                  fontSize: '2rem',
-                  fontFamily: 'Avenir Next Light',
-                  textTransform: 'capitalize',
+                  paddingRight: 'calc(10px)',
+                  textAlign: 'right',
                 }}
-                rowHeight={height / 7}
-                overscanRowCount={0}
-                scrollToIndex={tableData.length - 1}
-                rowGetter={({ index }) => tableData[index]}
-                rowRenderer={(...rest) =>
-                  defaultRowRenderer({
-                    theme,
-                    ...rest[0],
-                    side: 'asks',
-                    marketType,
-                    aggregation,
-                    arrayOfMarketIds,
-                    openOrderHistory,
-                    amountForBackground,
-                  })
-                }
-              >
-                <Column
-                  label="Price"
-                  dataKey="price"
-                  headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
-                  width={width}
-                  style={{
-                    color: theme.palette.red.main,
-                    fontFamily: 'Avenir Next Demi',
-                    fontSize: '1.8rem',
-                  }}
-                />
+                width={width}
+                style={{
+                  textAlign: 'right',
+                  color: theme.palette.white.primary,
+                }}
+              />
+            </StyledTable>
+          )
+        }}
+      </AutoSizerDesktop>
+      <AutoSizerMobile>
+        {({ width, height }: { width: number; height: number }) => {
+          return (
+            <StyledTable
+              mode={mode}
+              width={width}
+              height={height}
+              rowCount={tableData.length}
+              onRowClick={({ event, index, rowData }) => {
+                updateTerminalPriceFromOrderbook(+rowData.price)
+              }}
+              headerHeight={height / 7}
+              headerStyle={{
+                color: theme.palette.grey.text,
+                paddingLeft: '.5rem',
+                paddingTop: '.25rem',
+                marginLeft: 0,
+                marginRight: 0,
+                letterSpacing: '.01rem',
+                fontSize: '2rem',
+                fontFamily: 'Avenir Next Light',
+                textTransform: 'capitalize',
+              }}
+              rowHeight={height / 7}
+              overscanRowCount={0}
+              scrollToIndex={
+                isMobile && terminalViewMode === 'mobileChart'
+                  ? 0
+                  : tableData.length - 1
+              }
+              rowGetter={({ index }) => tableData[index]}
+              rowRenderer={(...rest) =>
+                defaultRowRenderer({
+                  theme,
+                  ...rest[0],
+                  side: 'asks',
+                  marketType,
+                  aggregation,
+                  arrayOfMarketIds,
+                  openOrderHistory,
+                  amountForBackground,
+                })
+              }
+            >
+              <Column
+                label="Price"
+                dataKey="price"
+                headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
+                width={width}
+                style={{
+                  color: theme.palette.red.main,
+                  fontFamily: 'Avenir Next Demi',
+                  fontSize: '1.8rem',
+                }}
+              />
 
-                <Column
-                  label={`Total (${quote})`}
-                  dataKey="total"
-                  headerStyle={{
-                    paddingRight: 'calc(10px)',
-                    textAlign: 'right',
-                  }}
-                  width={width}
-                  style={{
-                    textAlign: 'right',
-                    color: theme.palette.white.primary,
-                    fontSize: '1.8rem',
-                  }}
-                />
-              </StyledTable>
-            )
-          }}
-        </AutoSizerMobile>
-      </AsksWrapper>
-    )
-  }
+              <Column
+                label={`Total (${quote})`}
+                dataKey="total"
+                headerStyle={{
+                  paddingRight: 'calc(10px)',
+                  textAlign: 'right',
+                }}
+                width={width}
+                style={{
+                  textAlign: 'right',
+                  color: theme.palette.white.primary,
+                  fontSize: '1.8rem',
+                }}
+              />
+            </StyledTable>
+          )
+        }}
+      </AutoSizerMobile>
+    </AsksWrapper>
+  )
 }
 
 export default withErrorFallback(OrderBookTable)

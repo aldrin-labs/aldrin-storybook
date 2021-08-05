@@ -30,7 +30,7 @@ export const Homepage = () => {
           <LinkToMedium />
           <LinkToYouTube />
         </RowContainer>
-        <RowContainer padding={'0 25rem'}>
+        <RowContainer height={'62rem'} padding={'0 25rem'}>
           <SvgIcon width={'100%'} height={'auto'} src={newBanner} />
         </RowContainer>
         <RowContainer padding={'5rem 25rem'} justify={'space-between'}>

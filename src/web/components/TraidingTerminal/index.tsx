@@ -187,6 +187,10 @@ export const TradeInputContent = ({
   titleForTooltip?: string
   needTitleBlock?: boolean
 }) => {
+  const handleSelect = (e) => {
+    e.target.select()
+  }
+
   return (
     <InputRowContainer
       padding={padding}
@@ -234,6 +238,7 @@ export const TradeInputContent = ({
         needPadding={symbol !== ''}
         haveSelector={haveSelector}
         style={{ ...inputStyles, ...(fontSize ? { fontSize: fontSize } : {}) }}
+        onClick={(e) => handleSelect(e)}
       />
       <UpdatedCoin
         theme={theme}
@@ -597,6 +602,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
     } else {
       maxAmount = funds[1].quantity * leverage
     }
+
     return (
       <Container background={'transparent'}>
         <TerminalGridContainer
@@ -630,7 +636,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                 fontSize: '1.9rem',
               }}
               secondHalfStyleProperties={{
-                activeColor: '#A5E898',
+                activeColor: '#F69894',
                 activeBackgroundColor: '#222429',
                 borderRadius: '3rem',
                 width: '47%',

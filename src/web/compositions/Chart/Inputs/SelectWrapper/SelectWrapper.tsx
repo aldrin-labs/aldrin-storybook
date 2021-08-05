@@ -478,6 +478,7 @@ class SelectPairListComponent extends React.PureComponent<
       allMarketsMap,
       getSerumMarketDataQueryRefetch,
       onTabChange,
+      marketName,
     } = this.props
 
     const onAddCustomMarket = (customMarket: any) => {
@@ -500,7 +501,6 @@ class SelectPairListComponent extends React.PureComponent<
       console.log('onAddCustomMarket', newCustomMarkets)
       return true
     }
-
     return (
       <>
         <StyledGrid
@@ -563,6 +563,7 @@ class SelectPairListComponent extends React.PureComponent<
             sort={this._sort}
             sortBy={this.state.sortBy}
             sortDirection={this.state.sortDirection}
+            selectedPair={marketName?.replace('/', '_')}
           />
           <TableFooter container>
             <Row

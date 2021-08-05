@@ -498,7 +498,7 @@ class SimpleTabs extends React.Component<any, any> {
                   >
                     <TerminalContainer>
                       <TraidingTerminal
-                        byType={'buy'}
+                        byType={side}
                         spread={spread}
                         theme={theme}
                         sideType={side}
