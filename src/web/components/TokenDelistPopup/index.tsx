@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
-import dayjs, { utc } from 'dayjs'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import duration from 'dayjs/plugin/duration'
 
 import { Theme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
@@ -13,22 +15,32 @@ import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDia
 import { StyledPaper, Title, BlueButton } from './styles'
 
 dayjs.extend(utc)
+dayjs.extend(duration)
 
 export const TokenDelistPopup = ({
   theme,
   onClose,
   open,
-  tokenName,
-  delistTimestamp,
+  tokenToDelist,
 }: {
   theme: Theme
   onClose: () => void
   open: boolean
-  tokenName: string
-  delistTimestamp: number
+  tokenToDelist: {
+    name: string
+    timestamp: number
+  }
 }) => {
   const [isUserConfident, userConfident] = useState(false)
-  const delistTimeToFormat = dayjs.unix(delistTimestamp).utc()
+
+  const { name, timestamp } = tokenToDelist || { name: '', timestamp: 0 }
+  const delistTimeToFormat = dayjs.unix(timestamp).utc()
+  const delistTimeUnix = delistTimeToFormat.unix()
+
+  const now = dayjs().unix()
+  const hours = (delistTimeUnix - now) / 3600
+
+  const isExpired = now > delistTimeUnix
 
   return (
     <DialogWrapper
@@ -46,14 +58,20 @@ export const TokenDelistPopup = ({
         </Title>
         <SvgIcon src={Warning} width={'10%'} height={'auto'} />
       </RowContainer>
-      <RowContainer direction={'column'} style={{ margin: '2rem 0' }}>
-        <WhiteText theme={theme}>
-          You have 24 hours to close the open orders. The {tokenName} token will
-          be delisted on{' '}
-          {`${delistTimeToFormat.format(
-            'MMMM D'
-          )} at ${delistTimeToFormat.format('hh:mm')} UTC.`}
-        </WhiteText>
+      <RowContainer direction={'column'} align={'flex-start'} margin={'2rem 0'}>
+        {isExpired ? (
+          <WhiteText theme={theme}>
+            The {name} token will be delisted during next few hours.
+          </WhiteText>
+        ) : (
+          <WhiteText theme={theme}>
+            You have {hours.toFixed(0)} hours to close the open orders. The{' '}
+            {name} token will be delisted on{' '}
+            {`${delistTimeToFormat.format(
+              'MMMM D'
+            )} at ${delistTimeToFormat.format('hh:mm')} UTC.`}
+          </WhiteText>
+        )}
       </RowContainer>
       <RowContainer justify="space-between" margin="2rem 0 2rem 0">
         <Row

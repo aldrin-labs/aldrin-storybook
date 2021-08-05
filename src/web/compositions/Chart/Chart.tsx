@@ -40,6 +40,7 @@ import { withPublicKey } from '@core/hoc/withPublicKey'
 import { WarningPopup } from './components/WarningPopup'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
 import { TokenDelistPopup } from '@sb/components/TokenDelistPopup'
+import { tokensToDelist } from '@core/utils/config'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
   // Check if the arrays are the same length
@@ -184,12 +185,13 @@ function ChartPageComponent(props: any) {
     }
   }
 
-  useEffect(() => {
-    const [base, quote] = selectedPair.split('_')
+  const [base, quote] = selectedPair.split('_')
+  const tokenToDelist = tokensToDelist[base] || tokensToDelist[quote]
 
+  useEffect(() => {
     setCorrectMarketAddress()
-    if (base === 'PARTI' || quote === 'PARTI') {
-      openPartiPopup(true)
+    if (tokenToDelist) {
+      openDelistPopup(true)
     }
   }, [selectedPair])
 
@@ -311,6 +313,7 @@ function ChartPageComponent(props: any) {
         open={isDelistPopupOpen}
         onClose={() => openDelistPopup(false)}
         theme={theme}
+        tokenToDelist={tokenToDelist}
       />
 
       {/* )} */}
