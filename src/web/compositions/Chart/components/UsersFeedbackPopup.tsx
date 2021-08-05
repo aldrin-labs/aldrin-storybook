@@ -75,6 +75,13 @@ export const FeedbackPopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={onClose}
+      onEnter={()=>{
+        submitFeedback(false)
+        setFeedbackData({
+          messagge: '',
+          contact: '',
+        })
+      }}
       maxWidth={'md'}
       open={open}
       aria-labelledby="responsive-dialog-title"

@@ -203,7 +203,7 @@ export async function settleFunds({
 
       let referrerQuoteWallet = null
 
-      if (market.supportsReferralFees) {
+      if (market?.supportsReferralFees) {
         if (
           process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS &&
           market.quoteMintAddress.equals(
