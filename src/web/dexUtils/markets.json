@@ -1296,12 +1296,6 @@
     "deprecated": false
   },
   {
-    "name": "TGT/USDC",
-    "address": "GfokD5aka4n8kqCgRiJtMYi4Xd1ZLBatkynxFGyKdNTc",
-    "programId": "9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin",
-    "deprecated": false
-  },
-  {
     "name": "WOO/USDC",
     "address": "2Ux1EYeWsxywPKouRCNiALCZ1y3m563Tc4hq1kQganiq",
     "programId": "9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin",
@@ -1352,12 +1346,6 @@
   {
     "name": "KERMIT/USDC",
     "address": "EmyoFKQQyALv7mMDL681vV5oanPsLhFggvgJh5gE29vn",
-    "programId": "9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin",
-    "deprecated": false
-  },
-  {
-    "name": "FROG/SOL",
-    "address": "2Si6XDdpv5zcvYna221eZZrsjsp5xeYoz9W1TVdMdbnt",
     "programId": "9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin",
     "deprecated": false
   }
