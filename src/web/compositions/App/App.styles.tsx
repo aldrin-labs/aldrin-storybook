@@ -22,6 +22,10 @@ export const AppGridLayout = styled.div`
       ? 'calc(100vh)'
       : 'calc(100vh)'};
   min-height: 100vh;
+  @media (max-width: 600px) {
+    height: calc(var(--vh, 1vh) * 100);
+    min-height: auto;
+  }
 `
 
 export const AppContainer = styled.div`

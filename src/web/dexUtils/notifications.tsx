@@ -59,9 +59,34 @@ export const notify = ({
         )}
       </Link>
     )
+  } else {
+    description = (
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          marginLeft: '.5rem',
+          height: '6rem',
+        }}
+      >
+        <span
+          style={{
+            color: '#fff',
+            fontFamily: 'Avenir Next Demi',
+            fontSize: '1.6rem',
+          }}
+        >
+          {message}
+        </span>
+        {description && (
+          <p style={{ color: '#fff', margin: 0 }}>{description}</p>
+        )}
+      </div>
+    )
   }
 
-  SnackbarUtils[type](txid ? description : message, {
+  SnackbarUtils[type](description, {
     variant: type,
   })
 

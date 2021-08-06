@@ -270,7 +270,8 @@ export const Label = styled.label`
 export const SubmitButton = styled.button`
   width: 100%;
   height: 4.5rem;
-  background: ${(props) => props.theme.palette.blue.serum};
+  background: ${(props) =>
+    props.isDisabled ? '#93A0B2' : props.theme.palette.blue.serum};
   font-size: 1.4rem;
   text-transform: capitalize;
   border-radius: 1rem;
@@ -280,6 +281,7 @@ export const SubmitButton = styled.button`
   border: none;
   font-family: Avenir Next Medium;
   margin-top: 4rem;
+  transition: 0.3rem;
 `
 export const StyledPaper = styled(Paper)`
   border-radius: 2rem;
