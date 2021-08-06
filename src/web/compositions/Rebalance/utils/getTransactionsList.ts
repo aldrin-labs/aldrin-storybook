@@ -48,9 +48,9 @@ export const getTransactionsList = ({
 
   const tokensToBuyClone = [...tokensToBuy]
 
-  console.log('tokensToSell', tokensToSell)
-  console.log('tokensToBuy', tokensToBuy)
-  console.log('tokensToBuyClone', tokensToBuyClone)
+  // console.log('tokensToSell', tokensToSell)
+  // console.log('tokensToBuy', tokensToBuy)
+  // console.log('tokensToBuyClone', tokensToBuyClone)
 
   if (!tokensToSell || !tokensToBuyClone) {
     return []
@@ -103,7 +103,7 @@ export const getTransactionsList = ({
       } else {
         // if sell token less than buy token
         toSellTokenAmount = Math.abs(elSell.amountDiff)
-        console.log('tokensMap', tokensMap, elBuy)
+        // console.log('tokensMap', tokensMap, elBuy)
 
         // remove part from buy, that bought
         tokensToBuyClone[i] = {
@@ -148,7 +148,7 @@ export const getTransactionsList = ({
             ? tempToken.amount
             : toSellTokenAmount
 
-          console.log('tokenAmount', tokenAmount)
+          // console.log('tokenAmount', tokenAmount)
 
           const feeMultiplicator = (100 - REBALANCE_CONFIG.SLIPPAGE) / 100
 
@@ -186,7 +186,7 @@ export const getTransactionsList = ({
           })
 
           price = +funcToRound(loadedMarket?.tickSize)(price, pricePrecision)
-          console.log('price', price)
+          // console.log('price', price)
           // update orderbook data due to making some updates in this transaction
           // so in next t-on this orders will be included
           orderbooksClone = updatedOrderbooks

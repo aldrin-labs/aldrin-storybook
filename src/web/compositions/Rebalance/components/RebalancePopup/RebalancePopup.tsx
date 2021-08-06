@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Theme } from '@material-ui/core'
-import { Connection, PublicKey, Transaction } from '@solana/web3.js'
-
-import { swap } from '@sb/dexUtils/pools'
+import { Connection } from '@solana/web3.js'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
@@ -26,18 +24,13 @@ import {
   TokensDiff,
 } from '../../Rebalance.types'
 import { WalletAdapter } from '@sb/dexUtils/types'
-import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/send-and-confirm-transaction-via-wallet'
 import { StyledPaper } from './styles'
 
-import { MOCKED_MINTS_MAP } from '@sb/compositions/Rebalance/Rebalance.mock'
 import { RawMarketData, useAllMarketsList } from '@sb/dexUtils/markets'
 import { ReloadTimer } from '../ReloadTimer'
-import { getPoolsSwaps, getSwapsChunks } from '@sb/compositions/Rebalance/utils'
 import { TransactionComponent } from './TransactionComponent'
 import { PopupFooter } from './PopupFooter'
-import { REBALANCE_CONFIG } from '../../Rebalance.config'
 import { getTransactionsListWithPrices } from '../../utils/getTransactionsListWithPrices'
-import { getVariablesForPlacingOrder } from '../../utils/marketOrderProgram/getVariablesForPlacingOrder'
 import { placeAllOrders } from '../../utils/marketOrderProgram/placeAllOrders'
 import { loadMarketOrderProgram } from '../../utils/marketOrderProgram/loadProgram'
 
@@ -129,15 +122,33 @@ export const RebalancePopup = ({
     })
   }, [updateTransactionsList])
 
+  const currentSOLAmount = tokensMap['SOL'].amount
+  const targetSOLAmount = tokensMap['SOL'].targetAmount
+
   const totalFeesUSD = rebalanceTransactionsList.reduce(
     (acc, el) => el.feeUSD + acc,
     0
   )
 
-  const totalFeesSOL = rebalanceTransactionsList.reduce(
-    (acc, el) => 0.00001 + (el.openOrders.length === 0 ? 0.0239 : 0) + acc,
-    0
-  )
+  const totalFeesSOL =
+    rebalanceTransactionsList.reduce((acc, el, i, arr) => {
+      const placeOrderAndSettleFee = 0.00001
+
+      // if we have two transactions on one market without user's openOrders account,
+      // we'll create it only once
+      const isOpenOrdersAccountCreated =
+        arr.findIndex((transaction) => transaction.symbol === el.symbol) === i
+
+      const createOpenOrdersAccountFee =
+        el.openOrders.length === 0 && !isOpenOrdersAccountCreated ? 0.0239 : 0
+
+      return acc + placeOrderAndSettleFee + createOpenOrdersAccountFee
+    }, 0)
+
+  const isNotEnoughSOL =
+    totalFeesSOL > currentSOLAmount || totalFeesSOL > targetSOLAmount
+
+  const isDisabled = rebalanceTransactionsList.length === 0 || isNotEnoughSOL
 
   return (
     <DialogWrapper
@@ -162,7 +173,10 @@ export const RebalancePopup = ({
             duration={20}
             callback={() => {
               // if rebalance didn't start
-              if (rebalanceStep === 'initial') {
+              if (
+                rebalanceStep === 'initial' &&
+                rebalanceTransactionsList.length !== 0
+              ) {
                 updateTransactionsList({
                   wallet,
                   connection,
@@ -198,10 +212,16 @@ export const RebalancePopup = ({
         ))}
       </RowContainer>
       <RowContainer
-        style={{ borderTop: '1px solid #383B45' }}
-        height={'15rem'}
-        padding={'2rem'}
+        style={{ borderTop: '.1rem solid #383B45' }}
+        padding={'2rem 2rem 0 2rem'}
       >
+        {isNotEnoughSOL ? (
+          <Text color={theme.palette.red.main} style={{ margin: '1rem 0' }}>
+            {`Not enough ${
+              totalFeesSOL > targetSOLAmount ? 'target ' : ''
+            }SOL amount to cover fees.`}
+          </Text>
+        ) : null}
         {rebalanceStep === 'initial' && (
           <RowContainer direction={'column'}>
             <PopupFooter
@@ -230,7 +250,7 @@ export const RebalancePopup = ({
                 transition={'all .4s ease-out'}
                 style={{ whiteSpace: 'nowrap' }}
               >
-                Cancel{' '}
+                Cancel
               </BtnCustom>
               <BtnCustom
                 theme={theme}
@@ -238,16 +258,6 @@ export const RebalancePopup = ({
                   changeRebalanceStep('pending')
 
                   try {
-                    // refresh data right before rebalance - not sure
-                    // const transactionsList = await updateTransactionsList({
-                    //   wallet,
-                    //   connection,
-                    //   marketsData,
-                    //   tokensDiff,
-                    //   tokensMap,
-                    //   allMarketsMap,
-                    // })
-
                     const marketOrderProgram = loadMarketOrderProgram({
                       wallet,
                       connection,
@@ -267,62 +277,12 @@ export const RebalancePopup = ({
                       await refreshRebalance()
                       await close()
                     }, 5000)
-
-                    // console.log('transactionsVariables', transactionsVariables)
-
-                    // const swaps = getPoolsSwaps({
-                    //   wallet,
-                    //   connection,
-                    //   transactionsList: rebalanceTransactionsList,
-                    //   tokensMap,
-                    // })
-
-                    // try {
-                    //   setPendingStateText('Creating swaps...')
-                    //   const promisedSwaps = await Promise.all(
-                    //     swaps.map((el) => swap(el))
-                    //   )
-                    //   const swapsTransactions = promisedSwaps.map((el) => el[0])
-
-                    //   const swapTransactionsGroups = getSwapsChunks(
-                    //     swapsTransactions,
-                    //     REBALANCE_CONFIG.SWAPS_PER_TRANSACTION_LIMIT
-                    //   )
-                    //   console.log(
-                    //     'swapTransactionsGroups: ',
-                    //     swapTransactionsGroups
-                    //   )
-
-                    //   await Promise.all(
-                    //     swapTransactionsGroups.map(
-                    //       async (swapTransactionGroup) => {
-                    //         setPendingStateText('Creating transaction...')
-                    //         const commonTransaction = new Transaction().add(
-                    //           ...swapTransactionGroup
-                    //         )
-                    //         setPendingStateText(
-                    //           'Awaitng for Rebalance confirmation...'
-                    //         )
-                    //         await sendAndConfirmTransactionViaWallet(
-                    //           wallet,
-                    //           connection,
-                    //           commonTransaction
-                    //         )
-                    //       }
-                    //     )
-                    //   )
-
-                    // After all completed
                   } catch (e) {
                     console.log('e: ', e)
                     changeRebalanceStep('failed')
                   }
-
-                  // await setTimeout(() => {
-                  //   changeRebalanceStep('initial')
-                  // }, 5000)
                 }}
-                disabled={rebalanceTransactionsList.length === 0}
+                disabled={isDisabled}
                 needMinWidth={false}
                 btnWidth="calc(50% - 1rem)"
                 height="auto"
@@ -337,7 +297,11 @@ export const RebalancePopup = ({
                 transition={'all .4s ease-out'}
                 style={{ whiteSpace: 'nowrap' }}
               >
-                Start Rebalance
+                {totalFeesSOL > currentSOLAmount
+                  ? 'Insufficient SOL balance'
+                  : totalFeesSOL > targetSOLAmount
+                  ? 'Insufficient target SOL balance'
+                  : 'Start Rebalance'}
               </BtnCustom>
             </RowContainer>
           </RowContainer>

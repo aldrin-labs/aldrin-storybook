@@ -51,8 +51,6 @@ export const loadMarketsByNames = async ({
       wallet.publicKey
     )
 
-    console.log('market', market, market._decoded.bids)
-
     marketsMap[name] = { market, vaultSigner, openOrders }
 
     if (i % 2 === 0) sleep(1 * 1000)

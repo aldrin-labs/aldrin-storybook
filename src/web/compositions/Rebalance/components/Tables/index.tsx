@@ -36,6 +36,7 @@ import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 import { AddCoinPopup } from '../AddCoinPopup'
 import { Loading } from '@sb/components'
 import AddTokenDialog from '../AddTokensPopup/AddTokensPopup'
+import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 
 const tooltipTexts = {
   'no pool':
@@ -260,6 +261,29 @@ export const TableMainRow = ({
       oldTargetPercentage + (oldLeftToDistributedValue * 100) / totalTokensValue
 
     // console.log('maxDistributedValue: ', maxDistributedValue)
+
+    if (
+      el.mint === WRAPPED_SOL_MINT.toString() &&
+      (value * totalTokensValue) / 100 / el.price < 0.1
+    ) {
+      token.targetAmount = 0.1
+      token.targetTokenValue = token.targetAmount * token.price
+      token.targetPercentage = (token.targetTokenValue / totalTokensValue) * 100
+
+      // Here we are handling case when undistributed value might be negative
+      const leftToDistributeRaw =
+        oldLeftToDistributedValue +
+        ((oldTargetPercentage - token.targetPercentage) / 100) *
+          totalTokensValue
+      // console.log('leftToDistributeRaw: ', leftToDistributeRaw)
+      const leftToDistributeNew =
+        leftToDistributeRaw < 0 ? 0 : leftToDistributeRaw
+      setLeftToDistributeValue(leftToDistributeNew)
+
+      setTokensMap({ ...tokensMap })
+
+      return
+    }
 
     // Only for zero case
     if (value <= 0) {

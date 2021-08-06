@@ -19,7 +19,7 @@ export const getVariablesForPlacingOrder = async ({
   connection: Connection
   market: Market,
   vaultSigner: PublicKey | BN,
-  openOrders: OpenOrders,
+  openOrders: OpenOrders[],
   side: 'buy' | 'sell'
   tokenAccountA: PublicKey,
   tokenAccountB: PublicKey,

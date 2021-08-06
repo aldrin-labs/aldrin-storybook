@@ -31,6 +31,7 @@ export const placeAllOrders = async ({
   // place max 2 orders in one transaction, if need to create oo - probably one, determine it.
   // 2 orders + 1 create OO, or 1 order + sol token address, if no extra transactions - 2 orders
   const Side = { Ask: { ask: {} }, Bid: { bid: {} } }
+  const createdOpenOrdersAccounts: { [marketName: string]: PublicKey } = {}
 
   let commonTransaction = new Transaction()
   let commonSigners: Account[] = []
@@ -51,7 +52,9 @@ export const placeAllOrders = async ({
     }
   }
 
-  const filteredTransactions = transactions.filter(transaction => !!transaction.amount)
+  const filteredTransactions = transactions.filter(
+    (transaction) => !!transaction.amount
+  )
 
   for (const transaction of filteredTransactions) {
     const isBuySide = transaction.side === 'buy'
@@ -100,7 +103,7 @@ export const placeAllOrders = async ({
         : isBuySide
 
       let result
-      
+
       if (needTransferSOL) {
         result = await transferSOLToWrappedAccountAndClose({
           wallet,
@@ -146,6 +149,16 @@ export const placeAllOrders = async ({
       tokenAccountB: new PublicKey(tokenAccountB),
     })
 
+    // check if openOrdersAccount created in prev transactions
+    if (
+      !variablesForPlacingOrder.market.openOrders &&
+      createdOpenOrdersAccounts[transaction.symbol]
+    ) {
+      // use created one
+      variablesForPlacingOrder.market.openOrders =
+        createdOpenOrdersAccounts[transaction.symbol]
+    }
+
     // create openOrders account if no created already
     // 32 weight uniq, in total without next transaction same keys 128
     if (!variablesForPlacingOrder.market.openOrders) {
@@ -159,6 +172,8 @@ export const placeAllOrders = async ({
 
       const openOrdersAccount = new Account()
       variablesForPlacingOrder.market.openOrders = openOrdersAccount.publicKey
+      createdOpenOrdersAccounts[transaction.symbol] =
+        openOrdersAccount.publicKey
 
       commonSigners.push(openOrdersAccount)
       commonTransaction.add(

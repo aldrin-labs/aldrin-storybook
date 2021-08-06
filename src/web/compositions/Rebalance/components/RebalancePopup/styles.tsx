@@ -28,4 +28,5 @@ export const StyledPaper = styled(Paper)`
   background: #222429;
   border-radius: 0.8rem;
   overflow: hidden;
+  max-height: 100%;
 `
