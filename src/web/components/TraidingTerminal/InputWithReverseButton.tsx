@@ -26,17 +26,24 @@ export const InputWithReverseButton = ({
         value={value}
         type={'text'}
         pattern={pattern}
+        onTitleClick={() => {
+          if (mode === 'amount') {
+            setMode('total')
+          } else {
+            setMode('amount')
+          }
+        }}
         onChange={onChange}
-        symbol={symbol[1]}
+        symbol={mode === 'amount' ? symbol[0] : symbol[1]}
       />
       <SvgIcon
         src={ReverseArrows}
-        width={'3rem'}
+        width={'2rem'}
         height={'auto'}
         style={{
           position: 'absolute',
-          left: mode === 'amount' ? '11rem' : '8rem',
-          top: '2.5rem',
+          left: mode === 'amount' ? '10rem' : '7rem',
+          top: '3rem',
         }}
         onClick={() => {
           if (mode === 'amount') {

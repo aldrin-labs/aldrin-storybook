@@ -522,7 +522,7 @@ export const PercentageTab = styled.button`
     height: 5.5rem;
     border-radius: 1.5rem;
     border: none;
-    font-size: 1.8rem;
+    font-size: 1.5rem;
   }
 `
 export const ConnectWalletDropdownContainer = styled(RowContainer)`

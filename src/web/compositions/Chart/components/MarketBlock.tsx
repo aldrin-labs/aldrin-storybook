@@ -342,9 +342,9 @@ const MarketBlock = ({
           />{' '}
           <SvgIcon
             src={terminalViewMode === 'mobileChart' ? ArrowLeft : ChartIcon}
-            width={'3rem'}
+            width={'5rem'}
             height={'auto'}
-            style={{ margin: '0 0 0 4rem' }}
+            style={{ margin: '0 0 0 2rem', padding: '1rem' }}
             onClick={() => {
               if (terminalViewMode === 'mobileChart') {
                 updateTerminalViewMode('default')

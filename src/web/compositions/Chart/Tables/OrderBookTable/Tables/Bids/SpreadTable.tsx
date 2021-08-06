@@ -132,7 +132,7 @@ class SpreadTable extends Component<IProps> {
               onRowClick={({ event, index, rowData }) => {
                 updateTerminalPriceFromOrderbook(+rowData.price)
               }}
-              headerHeight={height / 7}
+              headerHeight={height / 6}
               headerStyle={{
                 color: theme.palette.grey.text,
                 paddingLeft: '.5rem',
@@ -146,7 +146,7 @@ class SpreadTable extends Component<IProps> {
               }}
               rowCount={tableData.length}
               rowHeight={
-                terminalViewMode === 'mobileChart' ? height / 7 : height / 6
+                terminalViewMode === 'mobileChart' ? height / 6 : height / 5
               }
               overscanRowCount={0}
               rowGetter={({ index }) => tableData[index]}

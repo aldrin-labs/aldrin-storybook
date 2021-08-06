@@ -538,6 +538,7 @@ class SelectPairListComponent extends React.PureComponent<
               inputProps={{
                 style: {
                   color: '#96999C',
+                  fontSize: '16px',
                 },
               }}
               endAdornment={

@@ -21,7 +21,7 @@ export const TablesBlockWrapper = styled(Grid)`
   @media (max-width: 600px) {
     max-width: 50%;
     flex-basis: 50%;
-    height: 62%;
+    height: 60%;
     display: ${(props) =>
       props.terminalViewMode === 'fullScreenTablesMobile' ||
       props.terminalViewMode === 'mobileChart'
