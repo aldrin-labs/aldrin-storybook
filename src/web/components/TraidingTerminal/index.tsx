@@ -819,7 +819,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                       return
                     }
 
-                    const newValue = (maxAmount / 100) * value
+                    const newValue = maxAmount * (value / 100)
 
                     const newAmount = isBuyType
                       ? +stripDigitPlaces(
