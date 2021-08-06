@@ -536,8 +536,8 @@ export const combineSelectWrapperData = ({
               }}
             >
               <span>
-                {`${sign24hChange}${formatNumberToUSFormat(
-                  stripDigitPlaces(lastPriceDiff, pricePrecision)
+                {`${formatNumberToUSFormat(
+                  stripDigitPlaces(closePrice, pricePrecision)
                 )} ${quote}`}
               </span>
               <span

@@ -70,7 +70,7 @@ const OrderBookTable = ({
               onRowClick={({ event, index, rowData }) => {
                 updateTerminalPriceFromOrderbook(+rowData.price)
               }}
-              headerHeight={mode === 'both' ? height / 9 : height / 18}
+              headerHeight={mode === 'both' ? height / 8 : height / 18}
               headerStyle={{
                 color: theme.palette.grey.text,
                 paddingLeft: '.5rem',
@@ -81,9 +81,9 @@ const OrderBookTable = ({
                 borderBottom: theme.palette.border.main,
                 fontSize: '1rem',
               }}
-              rowHeight={mode === 'both' ? height / 9 : height / 18}
+              rowHeight={mode === 'both' ? height / 8 : height / 18}
               overscanRowCount={0}
-              scrollToIndex={0}
+              scrollToIndex={tableData.length - 1}
               rowGetter={({ index }) => tableData[index]}
               rowRenderer={(...rest) =>
                 defaultRowRenderer({
@@ -146,7 +146,7 @@ const OrderBookTable = ({
               onRowClick={({ event, index, rowData }) => {
                 updateTerminalPriceFromOrderbook(+rowData.price)
               }}
-              headerHeight={height / 7}
+              headerHeight={height / 6}
               headerStyle={{
                 color: theme.palette.grey.text,
                 paddingLeft: '.5rem',
@@ -158,7 +158,7 @@ const OrderBookTable = ({
                 fontFamily: 'Avenir Next Light',
                 textTransform: 'capitalize',
               }}
-              rowHeight={height / 7}
+              rowHeight={height / 6}
               overscanRowCount={0}
               scrollToIndex={
                 isMobile && terminalViewMode === 'mobileChart'

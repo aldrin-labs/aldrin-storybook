@@ -14,12 +14,12 @@ export const TableWrapper = styled.div`
 `
 
 export const BidsWrapper = styled.div`
-  top: 0.2rem;
+  // top: 0.2rem;
   width: 100%;
 
   ${({ mode, isFullHeight }: { mode: OrderbookMode; isFullHeight: boolean }) =>
     mode === 'both'
-      ? 'height: calc(50% - 5rem)'
+      ? 'height: calc(50% - 2.5rem)'
       : isFullHeight
       ? 'height: calc(100% - 7rem)'
       : 'display: none'};
@@ -33,7 +33,7 @@ export const BidsWrapper = styled.div`
 `
 
 export const AsksWrapper = styled.div`
-  bottom: 0.2rem;
+  // bottom: 0.2rem;
   width: 100%;
   ${({ mode, isFullHeight }: { mode: OrderbookMode; isFullHeight: boolean }) =>
     mode === 'both'

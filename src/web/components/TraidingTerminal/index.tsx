@@ -158,6 +158,7 @@ export const TradeInputContent = ({
   textDecoration,
   titleForTooltip = '',
   needTitleBlock = false,
+  onTitleClick,
 }: {
   isValid?: boolean
   showErrors?: boolean
@@ -186,6 +187,7 @@ export const TradeInputContent = ({
   needTooltip?: boolean
   titleForTooltip?: string
   needTitleBlock?: boolean
+  onTitleClick?: any
 }) => {
   const handleSelect = (e) => {
     e.target.select()
@@ -198,7 +200,10 @@ export const TradeInputContent = ({
       style={{ position: 'relative' }}
     >
       {needTitle && (
-        <AbsoluteInputTitle style={{ ...(fontSize ? { fontSize } : {}) }}>
+        <AbsoluteInputTitle
+          onClick={() => onTitleClick()}
+          style={{ ...(fontSize ? { fontSize } : {}) }}
+        >
           {title}
         </AbsoluteInputTitle>
       )}
@@ -814,7 +819,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                       return
                     }
 
-                    const newValue = (maxAmount / 100) * value
+                    const newValue = maxAmount * (value / 100)
 
                     const newAmount = isBuyType
                       ? +stripDigitPlaces(

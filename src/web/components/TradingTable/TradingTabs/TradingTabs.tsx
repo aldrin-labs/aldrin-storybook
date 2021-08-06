@@ -111,7 +111,16 @@ const TradingTabs = ({
         >
           Market Balances
         </StyledTitleTab>
-        <ExpandTableButton theme={theme}>
+        <ExpandTableButton
+          onClick={() => {
+            if (terminalViewMode === 'default') {
+              updateTerminalViewMode('fullScreenTablesMobile')
+            } else {
+              updateTerminalViewMode('default')
+            }
+          }}
+          theme={theme}
+        >
           <SvgIcon
             src={
               terminalViewMode === 'fullScreenTablesMobile'
@@ -120,13 +129,6 @@ const TradingTabs = ({
             }
             width={'25%'}
             height={'auto'}
-            onClick={() => {
-              if (terminalViewMode === 'default') {
-                updateTerminalViewMode('fullScreenTablesMobile')
-              } else {
-                updateTerminalViewMode('default')
-              }
-            }}
           />
         </ExpandTableButton>
       </TitleTabsGroup>

@@ -364,7 +364,7 @@ export const TopChartsContainer = styled(
     flex-basis: ${(props) =>
       props.terminalViewMode === 'mobileChart' ? '100%' : '50%'};
     height: ${(props) =>
-      props.terminalViewMode === 'mobileChart' ? '100%' : '62%'};
+      props.terminalViewMode === 'mobileChart' ? '100%' : '60%'};
     display: ${(props) =>
       props.terminalViewMode === 'fullScreenTablesMobile' ? 'none' : 'block'};
   }
@@ -484,7 +484,7 @@ export const Container = styled(Grid)`
   height: calc(100vh - 12rem);
 
   @media (max-width: 600px) {
-    height: calc(100vh - 36rem);
+    height: calc((var(--vh, 1vh) * 100) - 36rem);
   }
 `
 
