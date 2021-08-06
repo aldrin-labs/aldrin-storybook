@@ -9,7 +9,7 @@ export const getTokensMap = ({
     tokens: TokenInfoWithDisableReason[] | TokenInfoWithTargetData[]
 }): TokensMapType => {
   const tokensMap = tokens.reduce((acc: TokensMapType, el) => {
-    if (el.targetPercentage) {
+    if (el.targetPercentage !== undefined) {
         acc[el.symbol] = {
             ...el,
         }

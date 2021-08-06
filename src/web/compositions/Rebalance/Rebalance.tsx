@@ -241,6 +241,8 @@ const RebalanceComposition = ({
     [wallet, connection]
   )
 
+  // console.log('tokensMap', tokensMap)
+
   return (
     <RowContainer
       theme={theme}

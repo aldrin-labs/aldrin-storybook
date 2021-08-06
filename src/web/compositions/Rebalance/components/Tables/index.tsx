@@ -313,10 +313,12 @@ export const TableMainRow = ({
 
     token.targetPercentage =
       token.targetPercentage - stepCount * token.stepInPercentageToken
+
     token.targetAmount = +(
       token.targetAmount -
       stepCount * token.stepInAmountToken
     ).toFixed(token.decimalCount)
+
     token.targetTokenValue =
       token.targetTokenValue - stepCount * token.stepInValueToken
 
@@ -345,6 +347,7 @@ export const TableMainRow = ({
     // console.log('general case leftToDistributeRaw: ', leftToDistributeRaw)
     const leftToDistributeNew =
       leftToDistributeRaw < 0 ? 0 : leftToDistributeRaw
+
     setTokensMap({ ...tokensMap })
 
     // console.log('leftToDistributeNew: ', leftToDistributeNew)
