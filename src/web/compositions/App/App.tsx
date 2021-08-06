@@ -55,6 +55,7 @@ import WalletMigrationPopup from '@sb/components/WalletMigrationPopup'
 import { TokenRegistryProvider } from '@sb/dexUtils/tokenRegistry'
 import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
 import { MobileNavBar } from '../Chart/components/MobileNavbar/MobileNavbar'
+import useWindowSize from '@webhooks/useWindowSize'
 
 const version = `10.9.143`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
@@ -75,6 +76,13 @@ if (currentVersion !== version) {
   if (localPassword !== null) {
     localStorage.setItem('localPassword', localPassword)
   }
+}
+
+const DetermineMobileWindowHeight = () => {
+  const { width, height } = useWindowSize()
+  let vh = height * 0.01
+  document.documentElement.style.setProperty('--vh', `${vh}px`)
+  return null
 }
 
 const AppRaw = ({
@@ -185,6 +193,7 @@ const AppRaw = ({
                           }}
                         />
                       )} */}
+                        <DetermineMobileWindowHeight />
                       </AppGridLayout>
                       {/* <ShowWarningOnMoblieDevice /> */}
                     </PreferencesProvider>

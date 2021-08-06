@@ -11,7 +11,11 @@ import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
 
 import { notify } from '@sb/dexUtils//notifications'
 import { isValidPublicKey } from '@sb/dexUtils//utils'
-import { useAccountInfo, useConnection, useConnectionConfig } from '@sb/dexUtils/connection'
+import {
+  useAccountInfo,
+  useConnection,
+  useConnectionConfig,
+} from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import Clear from '@material-ui/icons/Clear'
@@ -37,6 +41,24 @@ const StyledPaper = styled(Paper)`
   width: 55rem;
 `
 
+const Input = styled.input`
+  width: 100%;
+  height: ${(props) => props.height || '5rem'};
+  margin-bottom: 1rem;
+  background: ${(props) =>
+    props.disabled
+      ? props.theme.palette.grey.disabledInput
+      : props.theme.palette.grey.input};
+  border: ${(props) => `0.1rem solid ${props.theme.palette.text.white}`};
+  border-radius: 0.4rem;
+  padding-left: 1rem;
+  color: ${(props) => props.theme.palette.text.light};
+
+  &::placeholder {
+    color: #abbad1;
+    font-weight: normal;
+  }
+`
 const StyledInput = styled(Input)`
   height: 4rem;
 `
