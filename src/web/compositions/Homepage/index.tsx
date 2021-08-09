@@ -1,14 +1,16 @@
 import React from 'react'
 
 import {
+  LinksRow,
   MainContainer,
-  MainContainerForSmallScreens,
   NewLink,
   StyledA,
+  StyledImg,
+  StyledPicture,
 } from './styles'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import newBanner from '@icons/newBanner.svg'
-import newBannerForSmallScreens from '@icons/newBannerForSmallScreens.svg'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import newBanner from '@icons/newBanner.png'
+import newBannerForSmallScreens from '@icons/newBannerForSmallScreens.png'
 
 import {
   LinkToDiscord,
@@ -17,23 +19,40 @@ import {
   LinkToTwitter,
   LinkToYouTube,
 } from './SocialsLinksComponents'
-import SvgIcon from '@sb/components/SvgIcon'
+import { MobileNavBar } from '../Chart/components/MobileNavbar/MobileNavbar'
+import { withTheme } from '@material-ui/core/styles'
+import { compose } from 'recompose'
+import { Theme } from '@sb/types/materialUI'
 
-export const Homepage = () => {
+const Homepage = ({ theme }: { theme: Theme }) => {
   return (
     <>
-      <MainContainer>
-        <RowContainer padding={'5rem 25rem'} justify={'space-between'}>
+      <MainContainer direction={'column'}>
+        <LinksRow
+          height={'15%'}
+          padding={'5rem 25rem'}
+          justify={'space-between'}
+        >
           <LinkToTwitter />
           <LinkToTelegram />
           <LinkToDiscord />
           <LinkToMedium />
           <LinkToYouTube />
+        </LinksRow>
+        <RowContainer height={'70%'} padding={'0'}>
+          <StyledPicture>
+            <source
+              srcSet={newBannerForSmallScreens}
+              media="(max-width: 600px)"
+            />
+            <StyledImg srcSet={newBanner} alt="My default image" />
+          </StyledPicture>
         </RowContainer>
-        <RowContainer height={'62rem'} padding={'0 25rem'}>
-          <SvgIcon width={'100%'} height={'auto'} src={newBanner} />
-        </RowContainer>
-        <RowContainer padding={'5rem 25rem'} justify={'space-between'}>
+        <LinksRow
+          height={'15%'}
+          padding={'5rem 25rem'}
+          justify={'space-between'}
+        >
           <NewLink to="/chart">Trading</NewLink>
           <StyledA
             href={'https://wallet.cryptocurrencies.ai'}
@@ -46,17 +65,10 @@ export const Homepage = () => {
           {/* <NewLink to="/pools">Liquidity Pools</NewLink>
           <NewLink to="/swaps">Swap</NewLink>
           <NewLink to="/rebalance">Rebalance</NewLink> */}
-        </RowContainer>
+        </LinksRow>
       </MainContainer>
-      <MainContainerForSmallScreens>
-        <RowContainer padding="0rem 3rem">
-          <SvgIcon
-            src={newBannerForSmallScreens}
-            width={'100%'}
-            height={'auto'}
-          />
-        </RowContainer>
-      </MainContainerForSmallScreens>
     </>
   )
 }
+
+export default compose(withTheme())(Homepage)
