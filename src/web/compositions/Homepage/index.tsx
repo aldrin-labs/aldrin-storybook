@@ -19,8 +19,12 @@ import {
   LinkToTwitter,
   LinkToYouTube,
 } from './SocialsLinksComponents'
+import { MobileNavBar } from '../Chart/components/MobileNavbar/MobileNavbar'
+import { withTheme } from '@material-ui/core/styles'
+import { compose } from 'recompose'
+import { Theme } from '@sb/types/materialUI'
 
-export const Homepage = () => {
+const Homepage = ({ theme }: { theme: Theme }) => {
   return (
     <>
       <MainContainer direction={'column'}>
@@ -66,3 +70,5 @@ export const Homepage = () => {
     </>
   )
 }
+
+export default compose(withTheme())(Homepage)

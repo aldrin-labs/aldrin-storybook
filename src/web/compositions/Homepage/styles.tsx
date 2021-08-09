@@ -249,6 +249,11 @@ export const StyledLink = styled.a`
   width: 3rem;
   height: 3rem;
   margin: 0 1rem;
+
+  @media only screen and (max-width: 600px) {
+    height: 5rem;
+    width: 5rem;
+  }
 `
 
 export const StyledImg = styled.img`
