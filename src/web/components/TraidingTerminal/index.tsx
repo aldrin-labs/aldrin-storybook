@@ -627,9 +627,9 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                 padding: 0,
                 display: 'flex',
                 justifyContent: 'space-around',
-                height: '8.5rem',
+                height: '6rem',
                 background: '#383B45',
-                borderRadius: '2.5rem',
+                borderRadius: '2rem',
                 alignItems: 'center',
               }}
               firstHalfStyleProperties={{
@@ -669,9 +669,9 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                 padding: 0,
                 display: 'flex',
                 justifyContent: 'space-around',
-                height: '8.5rem',
+                height: '6rem',
                 background: '#383B45',
-                borderRadius: '2.5rem',
+                borderRadius: '2rem',
                 alignItems: 'center',
                 marginTop: '2rem',
               }}
@@ -890,10 +890,10 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                       onClick={() => this.setState({ isWalletPopupOpen: true })}
                       needMinWidth={false}
                       btnWidth="100%"
-                      height="7rem"
+                      height="6rem"
                       fontSize="1.6rem"
                       padding="2rem 8rem"
-                      borderRadius="2rem"
+                      borderRadius="1.5rem"
                       borderColor={theme.palette.blue.serum}
                       btnColor={'#fff'}
                       backgroundColor={theme.palette.blue.serum}

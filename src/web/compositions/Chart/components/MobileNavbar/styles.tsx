@@ -7,7 +7,7 @@ export const NavBarForSmallScreens = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  height: 12rem;
+  height: 11rem;
   padding: 0 3rem;
   background: #222429;
   @media (min-width: 600px) {
@@ -29,7 +29,7 @@ export const DisconnectButton = styled(BtnCustom)`
 export const StyledPaper = styled(Paper)`
   border-radius: 0;
   width: 100%;
-  height: calc(100% - 24rem);
+  height: calc(100% - 22rem);
   background: #17181a;
   display: flex;
   justify-content: space-between;

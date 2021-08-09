@@ -24,9 +24,9 @@ export const StyledGrid = styled(Grid)`
   border: ${(props) => props.theme.palette.border.new};
   filter: drop-shadow(0px 0px 8px rgba(125, 125, 131, 0.2));
   @media (max-width: 600px) {
-    top: 24rem;
+    top: 21rem;
     width: 100%;
-    height: calc(100% - 36rem);
+    height: calc(100% - 32rem);
     border-radius: 0;
     filter: none;
     min-width: auto;
@@ -97,24 +97,13 @@ export const StyledColumn = styled.div`
   }
 `
 
-export const AutoSizerDesktop = styled(AutoSizer)`
-  @media (max-width: 600px) {
-    display: none;
-  }
+export const StyledAutoSizer = styled(AutoSizer)`
   .pairSelectorRow:hover,
   .pairSelectorRow:focus {
     background: rgba(55, 56, 62, 0.75);
   }
 `
-export const AutoSizerMobile = styled(AutoSizer)`
-  @media (min-width: 600px) {
-    display: none;
-  }
-  .pairSelectorRow:hover,
-  .pairSelectorRow:focus {
-    background: rgba(55, 56, 62, 0.75);
-  }
-`
+
 export const TradeHistoryGrid = styled(Grid)`
   height: 100%;
   flex-basis: ${(props) =>

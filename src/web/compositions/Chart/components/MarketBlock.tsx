@@ -85,7 +85,7 @@ const MobileMarketStatsContainer = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  height: 12rem;
+  height: 10rem;
   padding: 0 3rem;
   background: #17181a;
   border-bottom: ${(props) => props.theme.palette.border.new};

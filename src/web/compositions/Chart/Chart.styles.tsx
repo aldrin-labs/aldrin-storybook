@@ -484,7 +484,7 @@ export const Container = styled(Grid)`
   height: calc(100vh - 12rem);
 
   @media (max-width: 600px) {
-    height: calc((var(--vh, 1vh) * 100) - 36rem);
+    height: calc((var(--vh, 1vh) * 100) - 32rem);
   }
 `
 

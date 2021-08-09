@@ -270,7 +270,7 @@ export const TradeInput = styled.input`
   }
 
   @media (max-width: 600px) {
-    height: 8rem;
+    height: 6rem;
     border: none;
     border-radius: 2rem;
     font-size: 16px;
@@ -406,7 +406,7 @@ export const SendButton = styled(StyledTab)`
   }
 
   @media (max-width: 600px) {
-    height: 7.5rem;
+    height: 6rem;
     border-radius: 2rem;
     font-size: 2rem;
   }
@@ -519,7 +519,7 @@ export const PercentageTab = styled.button`
 
   @media (max-width: 600px) {
     width: 22%;
-    height: 5.5rem;
+    height: 4.5rem;
     border-radius: 1.5rem;
     border: none;
     font-size: 1.5rem;
