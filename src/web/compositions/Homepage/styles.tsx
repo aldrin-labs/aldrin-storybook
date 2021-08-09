@@ -15,14 +15,11 @@ export const BlockForText = styled(Row)`
   width: 90%;
 `
 
-export const MainContainer = styled.div`
+export const MainContainer = styled(RowContainer)`
   width: 100%;
   height: 100%;
-
-  @media only screen and (max-width: 600px) {
-    display: none;
-  }
 `
+
 export const MainContainerForSmallScreens = styled.div`
   width: 100%;
   height: 100%;
@@ -230,5 +227,36 @@ export const StyledA = styled.a`
         fill: #366ce5;
       }
     }
+  }
+`
+
+export const LinksRow = styled(RowContainer)`
+  @media only screen and (max-width: 600px) {
+    display: none;
+  }
+`
+
+export const StyledPicture = styled.picture`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 70%;
+  height: 100%;
+`
+
+export const StyledLink = styled.a`
+  width: 3rem;
+  height: 3rem;
+  margin: 0 1rem;
+`
+
+export const StyledImg = styled.img`
+  height: auto;
+  width: 100%;
+
+  @media only screen and (max-width: 600px) {
+    height: 100%;
+    width: auto;
   }
 `

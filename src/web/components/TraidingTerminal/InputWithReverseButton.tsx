@@ -42,8 +42,9 @@ export const InputWithReverseButton = ({
         height={'auto'}
         style={{
           position: 'absolute',
-          left: mode === 'amount' ? '10rem' : '7rem',
+          left: mode === 'amount' ? '10.5rem' : '7.5rem',
           top: '3rem',
+          transform: 'translateY(-50%)',
         }}
         onClick={() => {
           if (mode === 'amount') {

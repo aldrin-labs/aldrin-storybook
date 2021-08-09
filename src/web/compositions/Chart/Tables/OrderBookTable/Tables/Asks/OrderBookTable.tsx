@@ -10,13 +10,10 @@ import { IProps } from './OrderBookTable.types'
 
 import { getDataFromTree } from '@core/utils/chartPageUtils'
 
-import defaultRowRenderer from '../../utils'
+import defaultRowRenderer, { getRowHeight } from '../../utils'
 import { AsksWrapper } from '../../OrderBookTableContainer.styles'
 import styled from 'styled-components'
-import {
-  AutoSizerDesktop,
-  AutoSizerMobile,
-} from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapperStyles'
+import { StyledAutoSizer } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapperStyles'
 import useMobileSize from '@webhooks/useMobileSize'
 
 const StyledTable = styled(Table)`
@@ -59,7 +56,7 @@ const OrderBookTable = ({
       mode={mode}
       isFullHeight={mode === 'asks'}
     >
-      <AutoSizerDesktop>
+      <StyledAutoSizer>
         {({ width, height }: { width: number; height: number }) => {
           return (
             <StyledTable
@@ -70,7 +67,13 @@ const OrderBookTable = ({
               onRowClick={({ event, index, rowData }) => {
                 updateTerminalPriceFromOrderbook(+rowData.price)
               }}
-              headerHeight={mode === 'both' ? height / 8 : height / 18}
+              headerHeight={getRowHeight({
+                mode,
+                height,
+                isMobile,
+                side: 'asks',
+                terminalViewMode,
+              })}
               headerStyle={{
                 color: theme.palette.grey.text,
                 paddingLeft: '.5rem',
@@ -78,10 +81,17 @@ const OrderBookTable = ({
                 marginLeft: 0,
                 marginRight: 0,
                 letterSpacing: '.01rem',
-                borderBottom: theme.palette.border.main,
-                fontSize: '1rem',
+                fontSize: isMobile ? '2rem' : '1.4rem',
+                fontFamily: 'Avenir Next Light',
+                textTransform: 'capitalize',
               }}
-              rowHeight={mode === 'both' ? height / 8 : height / 18}
+              rowHeight={getRowHeight({
+                mode,
+                height,
+                isMobile,
+                side: 'asks',
+                terminalViewMode,
+              })}
               overscanRowCount={0}
               scrollToIndex={tableData.length - 1}
               rowGetter={({ index }) => tableData[index]}
@@ -106,18 +116,22 @@ const OrderBookTable = ({
                 style={{
                   color: theme.palette.red.main,
                   fontFamily: 'Avenir Next Demi',
+                  ...(isMobile ? { fontSize: '1.8rem' } : {}),
                 }}
               />
-              <Column
-                label={`Size (${base})`}
-                dataKey="size"
-                headerStyle={{ textAlign: 'left', paddingRight: '6px' }}
-                width={width}
-                style={{
-                  textAlign: 'left',
-                  color: theme.palette.white.primary,
-                }}
-              />
+              {!isMobile && (
+                <Column
+                  label={`Size (${base})`}
+                  dataKey="size"
+                  headerStyle={{ textAlign: 'left', paddingRight: '6px' }}
+                  width={width}
+                  style={{
+                    textAlign: 'left',
+                    color: theme.palette.white.primary,
+                  }}
+                />
+              )}
+
               <Column
                 label={`Total (${quote})`}
                 dataKey="total"
@@ -129,13 +143,14 @@ const OrderBookTable = ({
                 style={{
                   textAlign: 'right',
                   color: theme.palette.white.primary,
+                  ...(isMobile ? { fontSize: '1.8rem' } : {}),
                 }}
               />
             </StyledTable>
           )
         }}
-      </AutoSizerDesktop>
-      <AutoSizerMobile>
+      </StyledAutoSizer>
+      {/* <AutoSizerMobile>
         {({ width, height }: { width: number; height: number }) => {
           return (
             <StyledTable
@@ -146,7 +161,13 @@ const OrderBookTable = ({
               onRowClick={({ event, index, rowData }) => {
                 updateTerminalPriceFromOrderbook(+rowData.price)
               }}
-              headerHeight={height / 6}
+              headerHeight={getRowHeight({
+                mode,
+                height,
+                isMobile,
+                side: 'asks',
+                terminalViewMode,
+              })}
               headerStyle={{
                 color: theme.palette.grey.text,
                 paddingLeft: '.5rem',
@@ -158,7 +179,13 @@ const OrderBookTable = ({
                 fontFamily: 'Avenir Next Light',
                 textTransform: 'capitalize',
               }}
-              rowHeight={height / 6}
+              rowHeight={getRowHeight({
+                mode,
+                height,
+                isMobile,
+                side: 'asks',
+                terminalViewMode,
+              })}
               overscanRowCount={0}
               scrollToIndex={
                 isMobile && terminalViewMode === 'mobileChart'
@@ -208,7 +235,7 @@ const OrderBookTable = ({
             </StyledTable>
           )
         }}
-      </AutoSizerMobile>
+      </AutoSizerMobile> */}
     </AsksWrapper>
   )
 }

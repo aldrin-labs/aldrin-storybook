@@ -1063,7 +1063,7 @@ export const combineBalancesTable = (
       columnForMobile: {
         render: (
           <RowContainer height={'20rem'} padding={'0 2rem'}>
-            <RowContainer style={{ width: '65%' }} direction={'column'}>
+            <RowContainer style={{ width: '40%' }} direction={'column'}>
               <RowContainer justify={'flex-start'}>
                 <StyledTitle color={'#fbf2f2'}>{coin}</StyledTitle>
               </RowContainer>
@@ -1081,7 +1081,7 @@ export const combineBalancesTable = (
               </RowContainer>
             </RowContainer>
 
-            <RowContainer style={{ width: '35%' }} justify={'center'}>
+            <RowContainer style={{ width: '60%' }} justify={'center'}>
               <BtnCustom
                 btnWidth={'50%'}
                 height="auto"

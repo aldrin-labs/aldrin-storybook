@@ -11,7 +11,7 @@ import { FooterComponent } from './styles'
 
 export const MobileFooter = ({ pathname }) => {
   return (
-    <FooterComponent height={'12rem'} justify={'space-around'}>
+    <FooterComponent height={'11rem'} justify={'space-around'}>
       <TradeLink isActive={pathname.includes('chart')} />
       {/* <AnalyticsLink isActive={pathname.includes('analytics')} />
       <PoolsLink isActive={pathname.includes('pools')} />
