@@ -1,5 +1,3 @@
-import { roundDown } from '@core/utils/chartPageUtils'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { OpenOrders } from '@project-serum/serum'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { WalletAdapter } from '@sb/dexUtils/adapters'
@@ -8,8 +6,8 @@ import {
   createSOLAccountAndClose,
   transferSOLToWrappedAccountAndClose,
 } from '@sb/dexUtils/pools'
+import { sendTransaction } from '@sb/dexUtils/send'
 import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/send-and-confirm-transaction-via-wallet'
-import { getDecimalCount } from '@sb/dexUtils/utils'
 import { Account, Connection, PublicKey, Transaction } from '@solana/web3.js'
 import BN from 'bn.js'
 import { TokensMapType, TransactionType } from '../../Rebalance.types'
@@ -29,7 +27,7 @@ export const placeAllOrders = async ({
   marketOrderProgram: any
 }) => {
   // place max 2 orders in one transaction, if need to create oo - probably one, determine it.
-  // 2 orders + 1 create OO, or 1 order + sol token address, if no extra transactions - 2 orders
+  // 2 orders + 1 create OO, or 1 order + sol token address, if no extra instructions - 2 orders
   const Side = { Ask: { ask: {} }, Bid: { bid: {} } }
   const createdOpenOrdersAccounts: { [marketName: string]: PublicKey } = {}
 
@@ -37,14 +35,15 @@ export const placeAllOrders = async ({
   let commonSigners: Account[] = []
   let i = 0
 
-  const sendTransaction = async () => {
+  const sendSavedTransaction = async () => {
     if (commonTransaction.instructions.length > 0) {
-      await sendAndConfirmTransactionViaWallet(
+      await sendTransaction({
         wallet,
         connection,
-        commonTransaction,
-        ...commonSigners
-      )
+        transaction: commonTransaction,
+        signers: commonSigners,
+        focusPopup: true,
+      })
 
       commonTransaction = new Transaction()
       commonSigners = []
@@ -95,7 +94,7 @@ export const placeAllOrders = async ({
     if (isTransactionWithNativeSOL) {
       // due to exceeding the limit in case of concating 2 market orders + sol token creation
       // we need to place prev market order, because we cannot concat with current market order
-      await sendTransaction()
+      await sendSavedTransaction()
 
       const isSOLBaseAccount = tokenAMint === WRAPPED_SOL_MINT.toString()
       const needTransferSOL = isSOLBaseAccount
@@ -167,7 +166,7 @@ export const placeAllOrders = async ({
         !isTransactionWithNativeSOL &&
         commonTransaction.instructions.length > 1
       ) {
-        await sendTransaction()
+        await sendSavedTransaction()
       }
 
       const openOrdersAccount = new Account()
@@ -213,18 +212,19 @@ export const placeAllOrders = async ({
     i++
     // if more than 2, split by 2 max in one transaction
     if (i % 2 === 0 || isTransactionWithNativeSOL) {
-      await sendTransaction()
+      await sendSavedTransaction()
     }
   }
 
   console.log('commonTransaction', commonTransaction)
 
   if (commonTransaction.instructions.length > 0) {
-    await sendAndConfirmTransactionViaWallet(
+    await sendTransaction({
       wallet,
       connection,
-      commonTransaction,
-      ...commonSigners
-    )
+      transaction: commonTransaction,
+      signers: commonSigners,
+      focusPopup: true,
+    })
   }
 }

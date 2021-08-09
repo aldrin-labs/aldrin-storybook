@@ -19,6 +19,7 @@ export const createTokens = async ({
   const addToken = async (mint: PublicKey) => {
     const token = new Token(wallet, connection, mint, TOKEN_PROGRAM_ID)
 
+    // todo: assoc here
     const [_, tokenAccount, transaction] = await token.createAccount(
       wallet.publicKey
     )

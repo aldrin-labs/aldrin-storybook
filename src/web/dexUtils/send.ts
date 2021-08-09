@@ -788,7 +788,7 @@ export async function sendTransaction({
   successMessage?: string
   timeout?: number
   operationType?: string
-  params: any,
+  params?: any,
   focusPopup?: boolean
 }) {
   transaction.recentBlockhash = (
@@ -806,7 +806,10 @@ export async function sendTransaction({
     transaction.partialSign(...signers)
   }
 
-  const transactionFromWallet = await wallet.signTransaction(transaction, focusPopup)
+  const transactionFromWallet = await wallet.signTransaction(transaction, focusPopup).then((res) => {
+    window.focus()
+    return res;
+  })
 
   console.log('sendTransaction transactionFromWallet: ', transactionFromWallet)
 

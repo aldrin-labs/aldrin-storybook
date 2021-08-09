@@ -40,7 +40,6 @@ import AttentionComponent from '@sb/components/AttentionBlock'
 import { SelectCoinPopup } from '../SelectCoin'
 import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
 import { TOKEN_SWAP_PROGRAM_ID } from '@sb/dexUtils/token-swap/token-swap'
-import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/send-and-confirm-transaction-via-wallet'
 
 export const AddLiquidityPopup = ({
   theme,

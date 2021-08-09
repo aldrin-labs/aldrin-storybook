@@ -1,10 +1,10 @@
-import Wallet from '@project-serum/sol-wallet-adapter';
+import { CommonWalletAdapter } from '../CommonWallet/index'
 import { notify } from '../../notifications';
 
 export function CcaiExtensionAdapter(_, network) {
   const ccai = (window as any).ccai;
   if (ccai) {
-    return new Wallet(ccai, network);
+    return new CommonWalletAdapter(ccai, network);
   }
 
   return {

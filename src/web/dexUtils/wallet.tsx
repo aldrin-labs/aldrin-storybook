@@ -4,7 +4,7 @@ import {
   SolongWalletAdapter,
   SolletExtensionAdapter,
   MathWalletAdapter,
-  CcaiWalletAdapter,
+  CommonWalletAdapter,
   CcaiExtensionAdapter,
   PhantomWalletAdapter,
   LedgerWalletAdapter,
@@ -41,7 +41,7 @@ export const WALLET_PROVIDERS = [
   {
     name: 'Wallet™',
     url: CCAIProviderURL,
-    adapter: Wallet,
+    adapter: CommonWalletAdapter,
     icon: WalletCCAI,
     isExtension: false,
   },
@@ -55,7 +55,7 @@ export const WALLET_PROVIDERS = [
   {
     name: 'Sollet.io',
     url: 'https://www.sollet.io',
-    adapter: Wallet,
+    adapter: CommonWalletAdapter,
     icon: Sollet,
     isExtension: false,
   },
