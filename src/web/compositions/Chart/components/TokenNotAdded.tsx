@@ -249,11 +249,7 @@ const TokenNotAddedDialog = ({ open, pair, onClose, theme }) => {
               <VioletButton
                 theme={theme}
                 onClick={async () => {
-<<<<<<< Updated upstream
-                  await createTokens({ wallet, connection, mints: [mint] })
-=======
                   await createAssociatedTokenAccount({ wallet, connection, splTokenMintAddress: new PublicKey(mint) })
->>>>>>> Stashed changes
                   await setIsTokenSuccessfullyAdded(true)
                   await setTokenName(getTokenNameByMintAddress(mint.toString()))
                 }}
