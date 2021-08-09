@@ -29,7 +29,7 @@ export const DisconnectButton = styled(BtnCustom)`
 export const StyledPaper = styled(Paper)`
   border-radius: 0;
   width: 100%;
-  height: calc(100% - 24rem);
+  height: calc(100% - 22rem);
   background: #17181a;
   display: flex;
   justify-content: space-between;
