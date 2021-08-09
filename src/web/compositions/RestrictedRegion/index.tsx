@@ -4,7 +4,11 @@ import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 
 import RedPlanetImg from '@sb/images/red_planet.png'
 import { withTheme, Theme } from '@material-ui/core'
-import { DiscordLink, TelegramLink, TwitterLink } from '../Homepage/styles'
+import {
+  LinkToDiscord,
+  LinkToTelegram,
+  LinkToTwitter,
+} from '../Homepage/SocialsLinksComponents'
 
 const MainTitle = styled.h2`
   font-size: 2.4rem;
@@ -56,9 +60,9 @@ const RestrictedRegion = ({ theme }: { theme: Theme }) => {
         </Link>
         <Text theme={theme}>or</Text>
         <Row>
-          <TwitterLink />
-          <TelegramLink />
-          <DiscordLink />
+          <LinkToTwitter />
+          <LinkToTelegram />
+          <LinkToDiscord />
         </Row>
       </Row>
     </RowContainer>
