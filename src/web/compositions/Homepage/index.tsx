@@ -1,42 +1,54 @@
 import React from 'react'
 
 import {
+  LinksRow,
+  MainContainer,
+  NewLink,
+  StyledA,
+  StyledImg,
+  StyledPicture,
+} from './styles'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import newBanner from '@icons/newBanner.png'
+import newBannerForSmallScreens from '@icons/newBannerForSmallScreens.png'
+
+import {
   LinkToDiscord,
   LinkToMedium,
   LinkToTelegram,
   LinkToTwitter,
   LinkToYouTube,
-  MainContainer,
-  MainContainerForSmallScreens,
-  NewLink,
-  StyledA,
-} from './styles'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import newBanner from '@icons/newBanner.svg'
-import newBannerForSmallScreens from '@icons/newBannerForSmallScreens.svg'
-import swapsIcon from '@icons/swapsIcon.svg'
-import rebalanceIcon from '@icons/rebalanceIcon.svg'
-import sunWalletIcon from '@icons/sunWalletIcon.svg'
-import analyticsIcon from '@icons/analyticsicon.svg'
-import serumCCAILogo from '@icons/serumCCAILogo.svg'
-
-import SvgIcon from '@sb/components/SvgIcon'
+} from './SocialsLinksComponents'
 
 export const Homepage = () => {
   return (
     <>
-      <MainContainer>
-        <RowContainer padding={'5rem 25rem'} justify={'space-between'}>
+      <MainContainer direction={'column'}>
+        <LinksRow
+          height={'15%'}
+          padding={'5rem 25rem'}
+          justify={'space-between'}
+        >
           <LinkToTwitter />
           <LinkToTelegram />
           <LinkToDiscord />
           <LinkToMedium />
           <LinkToYouTube />
+        </LinksRow>
+        <RowContainer height={'70%'} padding={'0'}>
+          <StyledPicture>
+            <source
+              srcSet={newBannerForSmallScreens}
+              media="(max-width: 600px)"
+            />
+            <StyledImg srcSet={newBanner} alt="My default image" />
+          </StyledPicture>
         </RowContainer>
-        <RowContainer height={'62rem'} padding={'0 25rem'}>
-          <SvgIcon width={'100%'} height={'auto'} src={newBanner} />
-        </RowContainer>
-        <RowContainer padding={'5rem 25rem'} justify={'space-between'}>
+        <LinksRow
+          height={'15%'}
+          padding={'5rem 25rem'}
+          justify={'space-between'}
+        >
           <NewLink to="/chart">Trading</NewLink>
           <StyledA
             href={'https://wallet.cryptocurrencies.ai'}
@@ -46,37 +58,11 @@ export const Homepage = () => {
             Wallet
           </StyledA>
           <NewLink to="/analytics">Analytics</NewLink>
-          {/* <NewLink to="/pools">Liquidity Pools</NewLink> */}
-          {/* <NewLink to="/swaps">Swap</NewLink> */}
-          {/* <NewLink to="/rebalance">Rebalance</NewLink> */}
-        </RowContainer>
+          {/* <NewLink to="/pools">Liquidity Pools</NewLink>
+          <NewLink to="/swaps">Swap</NewLink>
+          <NewLink to="/rebalance">Rebalance</NewLink> */}
+        </LinksRow>
       </MainContainer>
-      <MainContainerForSmallScreens>
-        <RowContainer
-          justify={'space-between'}
-          height="15rem"
-          padding="5rem 3rem"
-          style={{ backgroundColor: '#222429' }}
-        >
-          <SvgIcon src={serumCCAILogo} width={'40%'} height={'auto'} />
-          <Row justify={'space-between'} width={'40%'}>
-            <LinkToTwitter />
-            <LinkToDiscord />
-          </Row>
-        </RowContainer>
-        <RowContainer padding="5rem 3rem">
-          <SvgIcon
-            src={newBannerForSmallScreens}
-            width={'100%'}
-            height={'auto'}
-          />
-        </RowContainer>
-        <RowContainer
-          align={'baseline'}
-          padding={'2rem 3rem'}
-          justify={'space-between'}
-        ></RowContainer>
-      </MainContainerForSmallScreens>
     </>
   )
 }
