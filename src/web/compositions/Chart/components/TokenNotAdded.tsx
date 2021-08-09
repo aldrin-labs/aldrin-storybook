@@ -5,7 +5,7 @@ import { compose } from 'recompose'
 import { Paper } from '@material-ui/core'
 
 import { notify } from '@sb/dexUtils//notifications'
-import { useBalanceInfo, useWallet } from '@sb/dexUtils/wallet'
+import { createAssociatedTokenAccount, useBalanceInfo, useWallet } from '@sb/dexUtils/wallet'
 
 import { StyledDialogContent } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
@@ -20,7 +20,7 @@ import {
 } from '@sb/dexUtils/markets'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import clipboardCopy from 'clipboard-copy'
-import { LAMPORTS_PER_SOL } from '@solana/web3.js'
+import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { useConnection } from '@sb/dexUtils/connection'
 import { BlueButton } from '../Inputs/SelectWrapper/SelectWrapperStyles'
@@ -249,7 +249,11 @@ const TokenNotAddedDialog = ({ open, pair, onClose, theme }) => {
               <VioletButton
                 theme={theme}
                 onClick={async () => {
+<<<<<<< Updated upstream
                   await createTokens({ wallet, connection, mints: [mint] })
+=======
+                  await createAssociatedTokenAccount({ wallet, connection, splTokenMintAddress: new PublicKey(mint) })
+>>>>>>> Stashed changes
                   await setIsTokenSuccessfullyAdded(true)
                   await setTokenName(getTokenNameByMintAddress(mint.toString()))
                 }}
