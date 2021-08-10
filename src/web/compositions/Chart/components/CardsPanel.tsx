@@ -212,7 +212,6 @@ export const CardsPanel = ({ theme }) => {
               pathname={location.pathname === '/' ? location.pathname : ''}
               component={(props) => <Link to={`/`} {...props} />}
             >
-              {' '}
               Home
             </NavLinkButton>
             {MASTER_BUILD && (
@@ -253,7 +252,6 @@ export const CardsPanel = ({ theme }) => {
               pathname={location.pathname}
               component={(props) => <Link to={`/analytics/all`} {...props} />}
             >
-              {' '}
               Analytics
             </NavLinkButton>
             {/* <NavLinkButton
@@ -263,7 +261,7 @@ export const CardsPanel = ({ theme }) => {
               pathname={location.pathname}
               component={(props) => <Link to={`/addressbook`} {...props} />}
             >
-              {' '}
+              
               Addressbook
             </NavLinkButton> */}
             {!MASTER_BUILD && (
@@ -273,7 +271,6 @@ export const CardsPanel = ({ theme }) => {
                 pathname={location.pathname}
                 component={(props) => <Link to={`/pools`} {...props} />}
               >
-                {' '}
                 Pools
               </NavLinkButton>
             )}
@@ -284,10 +281,9 @@ export const CardsPanel = ({ theme }) => {
                 pathname={location.pathname}
                 component={(props) => <Link to={`/swaps`} {...props} />}
               >
-                {' '}
                 Swaps
               </NavLinkButton>
-            )}{' '}
+            )}
             {!MASTER_BUILD && (
               <NavLinkButton
                 style={{ color: '#386DE6' }}
@@ -464,7 +460,7 @@ const TopBar = ({ theme }) => {
                 <>
                   <span style={{ fontFamily: 'Avenir Next Demi' }}>
                     Wallet™
-                  </span>{' '}
+                  </span>
                   &nbsp; by Cryptocurrencies.Ai
                 </>
               ) : isSolletActive ? (

@@ -44,6 +44,7 @@ export const WALLET_PROVIDERS = [
     adapter: Wallet,
     icon: WalletCCAI,
     isExtension: false,
+    showOnMobile: true,
   },
   {
     name: 'Wallet™ Extension',
@@ -51,6 +52,7 @@ export const WALLET_PROVIDERS = [
     adapter: CcaiExtensionAdapter,
     icon: WalletCCAI,
     isExtension: true,
+    showOnMobile: false,
   },
   {
     name: 'Sollet.io',
@@ -58,6 +60,7 @@ export const WALLET_PROVIDERS = [
     adapter: Wallet,
     icon: Sollet,
     isExtension: false,
+    showOnMobile: true,
   },
   {
     name: 'Sollet Extension',
@@ -65,6 +68,7 @@ export const WALLET_PROVIDERS = [
     adapter: SolletExtensionAdapter,
     icon: Sollet,
     isExtension: true,
+    showOnMobile: false,
   },
   {
     name: 'Ledger',
@@ -72,6 +76,7 @@ export const WALLET_PROVIDERS = [
     icon: `https://cdn.jsdelivr.net/gh/solana-labs/oyster@main/assets/wallets/ledger.svg`,
     adapter: LedgerWalletAdapter,
     isExtension: false,
+    showOnMobile: false,
   },
   {
     name: 'Phantom',
@@ -79,6 +84,7 @@ export const WALLET_PROVIDERS = [
     icon: `https://www.phantom.app/img/logo.png`,
     adapter: PhantomWalletAdapter,
     isExtension: false,
+    showOnMobile: false,
   },
   {
     name: 'MathWallet',
@@ -86,6 +92,7 @@ export const WALLET_PROVIDERS = [
     adapter: MathWalletAdapter,
     icon: Mathwallet,
     isExtension: false,
+    showOnMobile: false,
   },
   {
     name: 'Solong',
@@ -93,6 +100,7 @@ export const WALLET_PROVIDERS = [
     adapter: SolongWalletAdapter,
     icon: Solong,
     isExtension: false,
+    showOnMobile: false,
   },
 ]
 
