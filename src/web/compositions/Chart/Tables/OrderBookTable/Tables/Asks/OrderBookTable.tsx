@@ -93,7 +93,11 @@ const OrderBookTable = ({
                 terminalViewMode,
               })}
               overscanRowCount={0}
-              scrollToIndex={tableData.length - 1}
+              scrollToIndex={
+                isMobile && terminalViewMode === 'mobileChart'
+                  ? 0
+                  : tableData.length - 1
+              }
               rowGetter={({ index }) => tableData[index]}
               rowRenderer={(...rest) =>
                 defaultRowRenderer({

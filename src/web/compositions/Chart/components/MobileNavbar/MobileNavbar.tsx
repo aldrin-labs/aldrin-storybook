@@ -55,7 +55,7 @@ export const MobileNavBar = ({
         <SvgIcon src={serumCCAILogo} width={'100%'} height={'auto'} />
       </Link>
       {pathname === '/' ? (
-        <Row justify={'space-between'} width={'45%'}>
+        <Row justify={'space-between'} width={'50%'}>
           <LinkToTwitter />
           <LinkToTelegram />
           <LinkToDiscord />
