@@ -1081,7 +1081,7 @@ export const combineBalancesTable = (
               </RowContainer>
             </RowContainer>
 
-            <RowContainer style={{ width: '60%' }} justify={'center'}>
+            <RowContainer style={{ width: '60%' }} justify={'flex-end'}>
               <BtnCustom
                 btnWidth={'50%'}
                 height="auto"

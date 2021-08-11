@@ -339,7 +339,7 @@ const MarketBlock = ({
             exchange={activeExchange}
             quantityPrecision={quantityPrecision}
             pricePrecision={pricePrecision}
-          />{' '}
+          />
           <SvgIcon
             src={terminalViewMode === 'mobileChart' ? ArrowLeft : ChartIcon}
             width={'5rem'}

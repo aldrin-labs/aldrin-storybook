@@ -441,7 +441,7 @@ export const MobileTradingTabelContainer = styled(
   position: relative;
   height: ${(props) =>
     props.isDefaultTerminalViewMode
-      ? '38%'
+      ? '40%'
       : props.isTablesExpanded
       ? '100%'
       : '0%'};

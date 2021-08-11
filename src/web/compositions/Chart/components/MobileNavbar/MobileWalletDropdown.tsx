@@ -36,7 +36,7 @@ export const MobileWalletDropdown = ({
       aria-labelledby="responsive-dialog-title"
     >
       <RowContainer direction={'column'}>
-        {WALLET_PROVIDERS.filter((el) => !el.isExtension).map((provider) => {
+        {WALLET_PROVIDERS.filter((el) => el.showOnMobile).map((provider) => {
           return (
             <RowContainer
               style={{

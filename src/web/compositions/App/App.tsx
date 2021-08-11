@@ -31,7 +31,7 @@ import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
 import SnackbarWrapper from './SnackbarWrapper/SnackbarWrapper'
 import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
 
-import { AppContainer, AppGridLayout, FontStyle } from './App.styles'
+import { AppGridLayout, AppInnerContainer } from './App.styles'
 // import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
 import { GlobalStyle } from '@sb/styles/global.styles'
 import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
@@ -141,7 +141,6 @@ const AppRaw = ({
           <SnackbarWrapper>
             <SnackbarUtilsConfigurator />
             <CssBaseline />
-            {/* <FontStyle /> */}
             <ConnectionProvider>
               <TokenRegistryProvider>
                 <MarketProvider>
@@ -161,12 +160,13 @@ const AppRaw = ({
                             hide={fullscreen}
                           />
                         )}
-                        <AppContainer
-                          isChartPage={isChartPage}
+                        <AppInnerContainer
                           showFooter={showFooter}
+                          isChartPage={isChartPage}
+                          currentPage={currentPage}
                         >
                           {children}
-                        </AppContainer>
+                        </AppInnerContainer>
                         {showFooter && (
                           <FooterWithTheme isRewards={isRewards} />
                         )}
