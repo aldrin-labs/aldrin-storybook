@@ -315,7 +315,7 @@ export const getStrategyFields = ({
             }}
           >
             <a>
-              {((amount * entryOrderPrice) / leverage).toFixed(2)} {pairArr[1]}
+              {((amount * entryOrderPrice) / leverage)?.toFixed(2)} {pairArr[1]}
             </a>
             <a
               style={{
@@ -323,7 +323,7 @@ export const getStrategyFields = ({
                 fontSize: '1.2rem',
               }}
             >
-              {amount.toFixed(quantityPrecision)} {pairArr[0]}
+              {amount?.toFixed(quantityPrecision)} {pairArr[0]}
             </a>
             <a
               style={{
@@ -331,7 +331,7 @@ export const getStrategyFields = ({
                 fontSize: '1.2rem',
               }}
             >
-              {(amount * entryOrderPrice).toFixed(2)} {pairArr[1]}
+              {(amount * entryOrderPrice)?.toFixed(2)} {pairArr[1]}
             </a>
           </div>
         </SubColumnValue>
@@ -394,14 +394,14 @@ export const getStrategyFields = ({
                     return (
                       <TableRow>
                         <TableCell theme={theme}>
-                          {level.price.toFixed(pricePrecision)} {pairArr[1]}
+                          {level.price?.toFixed(pricePrecision)} {pairArr[1]}
                         </TableCell>
                         <TableCell theme={theme}>
                           {level.quantity} {index === 0 ? pairArr[0] : '%'} /{' '}
-                          {level.margin.toFixed(pricePrecision)} {pairArr[1]}
+                          {level.margin?.toFixed(pricePrecision)} {pairArr[1]}
                         </TableCell>
                         <TableCell theme={theme}>
-                          {level.estimatedAveragingPrice.toFixed(
+                          {level.estimatedAveragingPrice?.toFixed(
                             pricePrecision
                           )}{' '}
                           {pairArr[1]}
@@ -500,11 +500,11 @@ export const getStrategyFields = ({
                 {' '}
                 {entryOrderPrice ? (
                   side === 'buy' ? (
-                    (entryOrderPrice * (1 - stopLoss / 100 / leverage)).toFixed(
+                    (entryOrderPrice * (1 - stopLoss / 100 / leverage))?.toFixed(
                       pricePrecision
                     ) + ` ${pairArr[1]}`
                   ) : (
-                    (entryOrderPrice * (1 + stopLoss / 100 / leverage)).toFixed(
+                    (entryOrderPrice * (1 + stopLoss / 100 / leverage))?.toFixed(
                       pricePrecision
                     ) + ` ${pairArr[1]}`
                   )
@@ -660,12 +660,12 @@ export const getStrategyFields = ({
                     (
                       entryOrderPrice *
                       (1 + takeProfitPercentage / 100 / leverage)
-                    ).toFixed(pricePrecision) + ` ${pairArr[1]}`
+                    )?.toFixed(pricePrecision) + ` ${pairArr[1]}`
                   ) : (
                     (
                       entryOrderPrice *
                       (1 - takeProfitPercentage / 100 / leverage)
-                    ).toFixed(pricePrecision) + ` ${pairArr[1]}`
+                    )?.toFixed(pricePrecision) + ` ${pairArr[1]}`
                   )
                 ) : (
                   <a style={{ textTransform: 'none', alignSelf: 'baseline' }}>
