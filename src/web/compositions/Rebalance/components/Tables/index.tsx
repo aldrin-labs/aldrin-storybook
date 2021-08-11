@@ -19,32 +19,24 @@ import {
 
 import { BlockTemplate } from '@sb/compositions/Pools/index.styles'
 
-import TooltipIcon from '@icons/TooltipImg.svg'
-
 import { Text } from '@sb/compositions/Addressbook/index'
-import SvgIcon from '@sb/components/SvgIcon'
-import { TokenIconsContainer } from '@sb/compositions/Pools/components/Tables/components'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import Slider from '@sb/components/Slider/Slider'
-
-import MockedToken from '@icons/ccaiToken.svg'
 import { Theme } from '@material-ui/core'
-import { isEqual, throttle, debounce } from 'lodash'
+import { throttle } from 'lodash'
 import { formatSymbol } from '@sb/components/AllocationBlock/DonutChart/utils'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
-import { AddCoinPopup } from '../AddCoinPopup'
 import { Loading } from '@sb/components'
 import AddTokenDialog from '../AddTokensPopup/AddTokensPopup'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
+import { REBALANCE_CONFIG } from '../../Rebalance.config'
 
 const tooltipTexts = {
-  'no pool':
-    "It's currently impossible to buy or sell this token because no pools available for such token. Although, you can create a pool or deposit liquidity to the existing one and earn fees from each transaction through this pool.",
+  'no market':
+    "It's currently impossible to buy or sell this token because no markets available for such token.",
   'no price':
     "It's currently impossible to buy or sell this token because this token is not supported.",
-  'no liquidity in pool':
-    "It's currently impossible to buy or sell this token due to a lack of liquidity. Although, you can create a pool or deposit liquidity to the existing one and earn fees from each transaction through this pool.",
 }
 
 const HeaderRow = ({
@@ -261,12 +253,16 @@ export const TableMainRow = ({
       oldTargetPercentage + (oldLeftToDistributedValue * 100) / totalTokensValue
 
     // console.log('maxDistributedValue: ', maxDistributedValue)
+    const newAmount = (value * totalTokensValue) / 100 / el.price
+
+    const isSOLAmountLessThanMin = el.amount < REBALANCE_CONFIG.MIN_SOL_AMOUNT
+    const minSOLAmount = isSOLAmountLessThanMin ? el.amount : REBALANCE_CONFIG.MIN_SOL_AMOUNT
 
     if (
       el.mint === WRAPPED_SOL_MINT.toString() &&
-      (value * totalTokensValue) / 100 / el.price < 0.1
+      (newAmount < minSOLAmount || (newAmount < el.amount && isSOLAmountLessThanMin))
     ) {
-      token.targetAmount = 0.1
+      token.targetAmount = minSOLAmount
       token.targetTokenValue = token.targetAmount * token.price
       token.targetPercentage = (token.targetTokenValue / totalTokensValue) * 100
 
@@ -476,7 +472,6 @@ const RebalanceTable = ({
   loadingRebalanceData: boolean
 }) => {
   const [isAddCoinPopupOpen, openAddCoinPopup] = useState(false)
-  console.log('data', data)
 
   return (
     <RowContainer height={'80%'} align={'flex-end'}>

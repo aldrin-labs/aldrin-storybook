@@ -1,6 +1,7 @@
 import { sleep } from '@core/utils/helpers'
 import { Market, OpenOrders } from '@project-serum/serum'
 import { WalletAdapter } from '@sb/dexUtils/adapters'
+import { MarketsMap } from '@sb/dexUtils/markets'
 import { Connection, PublicKey } from '@solana/web3.js'
 import BN from 'bn.js'
 import { getVaultOwnerAndNonce } from './marketOrderProgram/getVaultOwnerAndNonce'
@@ -23,7 +24,7 @@ export const loadMarketsByNames = async ({
   wallet: WalletAdapter
   connection: Connection
   marketsNames: string[]
-  allMarketsMap: Map<string, any>
+  allMarketsMap: MarketsMap
 }): Promise<LoadedMarketsMap> => {
   const marketsMap: LoadedMarketsMap = {}
   let i = 0

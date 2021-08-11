@@ -92,7 +92,7 @@ export class CommonWalletAdapter extends EventEmitter implements WalletAdapter {
       window.name = 'parent'
       this._popup = window.open(
         this._providerUrl?.toString(),
-        '_blank',
+        'child',
         'location,resizable,width=460,height=675'
       )
       return new Promise((resolve) => {
@@ -129,7 +129,6 @@ export class CommonWalletAdapter extends EventEmitter implements WalletAdapter {
     ++this._nextRequestId
     return new Promise((resolve, reject) => {
       this._responsePromises.set(requestId, [resolve, reject])
-      console.log('this._injectedProvider', this._injectedProvider)
       if (this._injectedProvider) {
         this._injectedProvider.postMessage({
           jsonrpc: '2.0',
@@ -151,17 +150,8 @@ export class CommonWalletAdapter extends EventEmitter implements WalletAdapter {
           this._providerUrl?.origin ?? ''
         )
 
-        console.log(
-          'this.autoApprove',
-          this.autoApprove,
-          focusPopup,
-          this._popup?.focus
-        )
-
         if (!this.autoApprove || focusPopup) {
-          document.body.click();
-          console.log('document', document)
-          this._popup?.focus()
+          window.open('', 'child')
         }
       }
     })

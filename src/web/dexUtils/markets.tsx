@@ -73,7 +73,9 @@ export interface RawCustomMarketData extends RawMarketData {
   isCustomUserMarket: boolean
 }
 
-export function useAllMarketsList(): Map<string, RawMarketData> {
+export type MarketsMap = Map<string, RawMarketData>
+
+export function useAllMarketsList(): MarketsMap {
   const ALL_MARKETS_MAP = new Map()
 
   const { customMarkets } = useCustomMarkets()

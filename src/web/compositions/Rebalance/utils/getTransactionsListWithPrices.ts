@@ -1,40 +1,32 @@
 import { WalletAdapter } from '@sb/dexUtils/adapters'
 import { TAKER_FEE } from '@sb/dexUtils/config'
-import { RawMarketData } from '@sb/dexUtils/markets'
+import { MarketsMap } from '@sb/dexUtils/markets'
 import { Connection } from '@solana/web3.js'
 import { REBALANCE_CONFIG } from '../Rebalance.config'
-import {
-  MarketData,
-  TokensDiff,
-  TokensMapType,
-  TransactionType,
-} from '../Rebalance.types'
+import { TokensMapType, TransactionType } from '../Rebalance.types'
 import { addPercentageToPricesInOrderbooks } from './addPercentageToPricesInOrderbooks'
 import { getOrderbookForMarkets } from './getOrderbookForMarkets'
 import { getTransactionsList } from './getTransactionsList'
 import { loadMarketsByNames } from './loadMarketsByNames'
+import { sortRebalanceTransactions } from './sortRebalanceTransactions'
 
 export const getTransactionsListWithPrices = async ({
   wallet,
   connection,
-  marketsData,
-  tokensDiff,
   tokensMap,
   allMarketsMap,
 }: {
-  wallet: WalletAdapter,
+  wallet: WalletAdapter
   connection: Connection
-  marketsData: MarketData[]
-  tokensDiff: TokensDiff
   tokensMap: TokensMapType
-  allMarketsMap: Map<string, RawMarketData>
+  allMarketsMap: MarketsMap
 }): Promise<TransactionType[]> => {
+
   // getting names of markets to load
   const rebalanceTransactionsList = getTransactionsList({
-    tokensDiff,
     orderbooks: {},
-    marketsData,
     tokensMap,
+    allMarketsMap,
     loadedMarketsMap: {},
   })
 
@@ -60,17 +52,20 @@ export const getTransactionsListWithPrices = async ({
 
   // transactions with all prices
   const rebalanceAllTransactionsListWithPrices = getTransactionsList({
-    tokensDiff,
-    marketsData,
+    allMarketsMap,
     orderbooks: orderbooksWithTakerFees,
     tokensMap,
     loadedMarketsMap,
   })
+
+  const sortedRebalanceTransactions = sortRebalanceTransactions(
+    rebalanceAllTransactionsListWithPrices
+  )
 
   console.log(
     'data second rebalanceAllTransactionsPrices',
     rebalanceAllTransactionsListWithPrices
   )
 
-  return rebalanceAllTransactionsListWithPrices
+  return sortedRebalanceTransactions
 }

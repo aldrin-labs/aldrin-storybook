@@ -5,7 +5,9 @@ import { Connection } from '@solana/web3.js'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BoldHeader } from '@sb/compositions/Pools/components/Popups/index.styles'
+
 import SvgIcon from '@sb/components/SvgIcon'
+import AttentionComponent from '@sb/components/AttentionBlock'
 
 import Close from '@icons/closeIcon.svg'
 import { Text } from '@sb/compositions/Addressbook/index'
@@ -18,109 +20,147 @@ import RedCross from '@icons/Cross.svg'
 
 import {
   RebalancePopupStep,
-  MarketData,
   TokensMapType,
   TransactionType,
-  TokensDiff,
 } from '../../Rebalance.types'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import { StyledPaper } from './styles'
+import Info from '@icons/inform.svg'
 
-import { RawMarketData, useAllMarketsList } from '@sb/dexUtils/markets'
+import { MarketsMap, useAllMarketsList } from '@sb/dexUtils/markets'
 import { ReloadTimer } from '../ReloadTimer'
 import { TransactionComponent } from './TransactionComponent'
 import { PopupFooter } from './PopupFooter'
 import { getTransactionsListWithPrices } from '../../utils/getTransactionsListWithPrices'
 import { placeAllOrders } from '../../utils/marketOrderProgram/placeAllOrders'
 import { loadMarketOrderProgram } from '../../utils/marketOrderProgram/loadProgram'
+import { LoadingTransactions } from './LoadingTransactions'
+import { Placeholder } from '@sb/components/TraidingTerminal/styles'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { CCAIProviderURL } from '@sb/dexUtils/utils'
+
+export const isWebWallet = (providerUrl: string) => {
+  return (
+    providerUrl === CCAIProviderURL || providerUrl === 'https://www.sollet.io'
+  )
+}
 
 export const RebalancePopup = ({
-  rebalanceStep,
-  changeRebalanceStep,
   theme,
   open,
   close,
   tokensMap,
-  marketsData,
   wallet,
   connection,
   refreshRebalance,
   setLoadingRebalanceData,
 }: {
-  rebalanceStep: RebalancePopupStep
-  changeRebalanceStep: (step: RebalancePopupStep) => void
   theme: Theme
   open: boolean
   close: () => void
   tokensMap: TokensMapType
-  marketsData: MarketData[]
   wallet: WalletAdapter
   connection: Connection
   refreshRebalance: () => void
   setLoadingRebalanceData: (loadingState: boolean) => void
 }) => {
-  const [pendingStateText, setPendingStateText] = useState('Pending')
+  const [rebalanceStep, changeRebalanceStep] = useState<RebalancePopupStep>(
+    'pending'
+  )
+
+  const [
+    rebalanceTransactionsLoaded,
+    setRebalanceTransactionsLoaded,
+  ] = useState(false)
+  const [
+    numberOfCompletedTransactions,
+    setNumberOfCompletedTransactions,
+  ] = useState(0)
   const [rebalanceTransactionsList, setRebalanceTransactionsList] = useState<
     TransactionType[]
   >([])
 
   const allMarketsMap = useAllMarketsList()
 
-  const tokensDiff: TokensDiff = Object.values(tokensMap)
-    .map((el) => ({
-      symbol: el.symbol,
-      amountDiff: +(el.targetAmount - el.amount).toFixed(el.decimals),
-      decimalCount: el.decimals,
-      price: el.price || 0,
-    }))
-    .filter((el) => el.amountDiff !== 0)
+  const showConfirmTradeButton = isWebWallet(wallet?._providerUrl?.origin)
 
   const updateTransactionsList = useCallback(
     async ({
       wallet,
       connection,
-      marketsData,
-      tokensDiff,
       tokensMap,
       allMarketsMap,
     }: {
       wallet: WalletAdapter
       connection: Connection
-      marketsData: MarketData[]
-      tokensDiff: TokensDiff
       tokensMap: TokensMapType
-      allMarketsMap: Map<string, RawMarketData>
+      allMarketsMap: MarketsMap
     }) => {
       // transactions with all prices
       const rebalanceAllTransactionsListWithPrices = await getTransactionsListWithPrices(
         {
           wallet,
           connection,
-          marketsData,
-          tokensDiff,
           tokensMap,
           allMarketsMap,
         }
       )
 
       setRebalanceTransactionsList(rebalanceAllTransactionsListWithPrices)
+      setRebalanceTransactionsLoaded(true)
 
       return rebalanceAllTransactionsListWithPrices
     },
-    [wallet?.publicKey?.toString(), JSON.stringify([...allMarketsMap.values()])]
+    [
+      wallet?.publicKey?.toString(),
+      JSON.stringify(tokensMap),
+      JSON.stringify([...allMarketsMap.values()]),
+    ]
   )
 
-  // only on markets update
+  const executeRebalance = async () => {
+    changeRebalanceStep('pending')
+
+    try {
+      const marketOrderProgram = loadMarketOrderProgram({
+        wallet,
+        connection,
+      })
+
+      await placeAllOrders({
+        wallet,
+        connection,
+        marketOrderProgram,
+        tokensMap,
+        transactions: rebalanceTransactionsList,
+        setNumberOfCompletedTransactions,
+      })
+
+      await changeRebalanceStep('done')
+      await setLoadingRebalanceData(true)
+
+      await setTimeout(async () => {
+        await refreshRebalance()
+        close()
+      }, 5000)
+    } catch (e) {
+      console.log('e: ', e)
+      changeRebalanceStep('failed')
+      setTimeout(async () => {
+        await refreshRebalance()
+        close()
+      }, 5000)
+    }
+  }
+
   useEffect(() => {
     updateTransactionsList({
       wallet,
       connection,
-      marketsData,
-      tokensDiff,
       tokensMap,
       allMarketsMap,
     })
-  }, [updateTransactionsList])
+  }, [])
 
   const currentSOLAmount = tokensMap['SOL'].amount
   const targetSOLAmount = tokensMap['SOL'].targetAmount
@@ -130,25 +170,27 @@ export const RebalancePopup = ({
     0
   )
 
-  const totalFeesSOL =
-    rebalanceTransactionsList.reduce((acc, el, i, arr) => {
-      const placeOrderAndSettleFee = 0.00001
+  const totalFeesSOL = rebalanceTransactionsList.reduce((acc, el, i, arr) => {
+    const placeOrderAndSettleFee = 0.00001
 
-      // if we have two transactions on one market without user's openOrders account,
-      // we'll create it only once
-      const isOpenOrdersAccountCreated =
-        arr.findIndex((transaction) => transaction.symbol === el.symbol) === i
+    // if we have two transactions on one market without user's openOrders account,
+    // we'll create it only once
+    const isOpenOrdersAccountCreated =
+      arr.findIndex((transaction) => transaction.symbol === el.symbol) === i
 
-      const createOpenOrdersAccountFee =
-        el.openOrders.length === 0 && !isOpenOrdersAccountCreated ? 0.0239 : 0
+    const createOpenOrdersAccountFee =
+      el.openOrders.length === 0 && !isOpenOrdersAccountCreated ? 0.0239 : 0
 
-      return acc + placeOrderAndSettleFee + createOpenOrdersAccountFee
-    }, 0)
+    return acc + placeOrderAndSettleFee + createOpenOrdersAccountFee
+  }, 0)
 
   const isNotEnoughSOL =
     totalFeesSOL > currentSOLAmount || totalFeesSOL > targetSOLAmount
 
-  const isDisabled = rebalanceTransactionsList.length === 0 || isNotEnoughSOL
+  const isDisabled =
+    !rebalanceTransactionsLoaded ||
+    isNotEnoughSOL ||
+    rebalanceTransactionsList.length === 0
 
   return (
     <DialogWrapper
@@ -159,6 +201,13 @@ export const RebalancePopup = ({
       maxWidth={'md'}
       open={open}
       aria-labelledby="responsive-dialog-title"
+      id="rebalancePopup"
+      onEnter={() => {
+        changeRebalanceStep('initial')
+        setRebalanceTransactionsLoaded(false)
+        setNumberOfCompletedTransactions(0)
+        setRebalanceTransactionsList([])
+      }}
     >
       <RowContainer
         justify={'space-between'}
@@ -169,25 +218,19 @@ export const RebalancePopup = ({
       >
         <BoldHeader>Rebalance</BoldHeader>
         <Row style={{ flexWrap: 'nowrap' }}>
-          <ReloadTimer
-            duration={20}
-            callback={() => {
-              // if rebalance didn't start
-              if (
-                rebalanceStep === 'initial' &&
-                rebalanceTransactionsList.length !== 0
-              ) {
+          {rebalanceStep === 'initial' && rebalanceTransactionsLoaded && (
+            <ReloadTimer
+              duration={20}
+              callback={() => {
                 updateTransactionsList({
                   wallet,
                   connection,
-                  marketsData,
-                  tokensDiff,
                   tokensMap,
                   allMarketsMap,
                 })
-              }
-            }}
-          />
+              }}
+            />
+          )}
           <SvgIcon
             style={{ cursor: 'pointer' }}
             onClick={() => close()}
@@ -196,7 +239,7 @@ export const RebalancePopup = ({
         </Row>
       </RowContainer>
       <RowContainer style={{ maxHeight: '40rem', overflowY: 'scroll' }}>
-        {rebalanceTransactionsList.map((el) => (
+        {rebalanceTransactionsList.map((el, i, arr) => (
           <TransactionComponent
             key={`${el.symbol}${el.side}${el.price}${el.slippage}${el.total}${el.amount}`}
             symbol={el.symbol}
@@ -207,7 +250,11 @@ export const RebalancePopup = ({
             side={el.side}
             theme={theme}
             market={el.loadedMarket}
+            index={i}
+            rebalanceStep={rebalanceStep}
+            numberOfCompletedTransactions={numberOfCompletedTransactions}
             isNotEnoughLiquidity={el.isNotEnoughLiquidity}
+            isLastTransaction={i === arr.length - 1}
           />
         ))}
       </RowContainer>
@@ -215,21 +262,27 @@ export const RebalancePopup = ({
         style={{ borderTop: '.1rem solid #383B45' }}
         padding={'2rem 2rem 0 2rem'}
       >
-        {isNotEnoughSOL ? (
-          <Text color={theme.palette.red.main} style={{ margin: '1rem 0' }}>
-            {`Not enough ${
-              totalFeesSOL > targetSOLAmount ? 'target ' : ''
-            }SOL amount to cover fees.`}
-          </Text>
-        ) : null}
         {rebalanceStep === 'initial' && (
           <RowContainer direction={'column'}>
-            <PopupFooter
-              theme={theme}
-              totalFeesUSD={totalFeesUSD}
-              totalFeesSOL={totalFeesSOL}
-            />
-            <RowContainer justify={'space-between'}>
+            {rebalanceTransactionsLoaded ? (
+              <>
+                <PopupFooter
+                  theme={theme}
+                  totalFeesUSD={totalFeesUSD}
+                  totalFeesSOL={totalFeesSOL}
+                />
+                <RowContainer margin={'2rem 0 0 0'}>
+                  <AttentionComponent
+                    text={
+                      'You will need to confirm several transactions in pop-ups from your wallet.'
+                    }
+                  />
+                </RowContainer>
+              </>
+            ) : (
+              <LoadingTransactions />
+            )}
+            <RowContainer margin={'2rem 0 0 0'} justify={'space-between'}>
               <BtnCustom
                 theme={theme}
                 onClick={() => {
@@ -246,95 +299,126 @@ export const RebalancePopup = ({
                 btnColor={'#fff'}
                 backgroundColor={'none'}
                 textTransform={'none'}
-                margin={'4rem 0 0 0'}
                 transition={'all .4s ease-out'}
                 style={{ whiteSpace: 'nowrap' }}
               >
                 Cancel
               </BtnCustom>
-              <BtnCustom
-                theme={theme}
-                onClick={async () => {
-                  changeRebalanceStep('pending')
-
-                  try {
-                    const marketOrderProgram = loadMarketOrderProgram({
-                      wallet,
-                      connection,
-                    })
-
-                    await placeAllOrders({
-                      wallet,
-                      connection,
-                      marketOrderProgram,
-                      tokensMap,
-                      transactions: rebalanceTransactionsList,
-                    })
-
-                    await changeRebalanceStep('done')
-                    await setLoadingRebalanceData(true)
-                    await setTimeout(async () => {
-                      await refreshRebalance()
-                      await close()
-                    }, 5000)
-                  } catch (e) {
-                    console.log('e: ', e)
-                    changeRebalanceStep('failed')
+              {isNotEnoughSOL ? (
+                <DarkTooltip
+                  title={
+                    <>
+                      <p>
+                        Insufficient{' '}
+                        {currentSOLAmount < totalFeesSOL ? '' : 'target'} SOL
+                        balance to complete the rebalance.
+                      </p>
+                      <p>
+                        Deposit some SOL to your wallet for successful
+                        transactions.
+                      </p>
+                    </>
                   }
-                }}
-                disabled={isDisabled}
-                needMinWidth={false}
-                btnWidth="calc(50% - 1rem)"
-                height="auto"
-                fontSize="1.4rem"
-                padding="1.5rem 8rem"
-                borderRadius="1.1rem"
-                borderColor={theme.palette.blue.serum}
-                btnColor={'#fff'}
-                backgroundColor={theme.palette.blue.serum}
-                textTransform={'none'}
-                margin={'4rem 0 0 0'}
-                transition={'all .4s ease-out'}
-                style={{ whiteSpace: 'nowrap' }}
-              >
-                {totalFeesSOL > currentSOLAmount
-                  ? 'Insufficient SOL balance'
-                  : totalFeesSOL > targetSOLAmount
-                  ? 'Insufficient target SOL balance'
-                  : 'Start Rebalance'}
-              </BtnCustom>
+                >
+                  <Row width={'calc(50% - 1rem)'}>
+                    <Placeholder height={'6rem'}>
+                      Insufficient{' '}
+                      {currentSOLAmount < totalFeesSOL ? '' : 'target'} SOL
+                      balance.
+                      <SvgIcon src={Info} width={'2rem'} />
+                    </Placeholder>
+                  </Row>
+                </DarkTooltip>
+              ) : (
+                <BtnCustom
+                  theme={theme}
+                  onClick={executeRebalance}
+                  disabled={isDisabled}
+                  needMinWidth={false}
+                  btnWidth="calc(50% - 1rem)"
+                  height="auto"
+                  fontSize="1.4rem"
+                  padding="1.5rem 0rem"
+                  borderRadius="1.1rem"
+                  borderColor={theme.palette.blue.serum}
+                  btnColor={'#fff'}
+                  backgroundColor={theme.palette.blue.serum}
+                  textTransform={'none'}
+                  transition={'all .4s ease-out'}
+                  style={{ whiteSpace: 'nowrap' }}
+                >
+                  Start Rebalance
+                </BtnCustom>
+              )}
             </RowContainer>
           </RowContainer>
         )}
+
         {rebalanceStep === 'pending' && (
-          <RowContainer
-            style={{ height: '100%', alignItems: 'center', display: 'flex' }}
-            direction={'column'}
-          >
-            <Loading color={'#F29C38'} size={42} />
-            <Text color={'#F29C38'} style={{ marginTop: '1rem' }}>
-              {pendingStateText}
-            </Text>
+          <RowContainer>
+            {showConfirmTradeButton ? (
+              <RowContainer height={'100%'} direction={'column'}>
+                <RowContainer direction={'column'} margin={'0 0 2rem 0'}>
+                  <AttentionComponent
+                    text={
+                      'You will need to confirm several transactions in pop-ups from your wallet. If a pop-up didn’t appear – press the button below. After signing a transaction click outside the pop-up. Repeat until the last transaction.'
+                    }
+                  />
+                  <BtnCustom
+                    theme={theme}
+                    onClick={() => {
+                      window.open('', 'child')
+                    }}
+                    needMinWidth={false}
+                    btnWidth="calc(50% - 1rem)"
+                    height="auto"
+                    fontSize="1.4rem"
+                    padding="1.5rem 0rem"
+                    margin={'4rem 0 0 0'}
+                    borderRadius="1.1rem"
+                    borderColor={theme.palette.blue.serum}
+                    btnColor={'#fff'}
+                    backgroundColor={theme.palette.blue.serum}
+                    textTransform={'none'}
+                    transition={'all .4s ease-out'}
+                    style={{ whiteSpace: 'nowrap' }}
+                  >
+                    Confirm Transaction
+                  </BtnCustom>
+                </RowContainer>
+                <RowContainer direction={'column'} margin={'2rem 0'}>
+                  <Loading color={'#F29C38'} size={'6rem'} />
+                  <Text style={{ marginTop: '1rem' }} color={'#F29C38'}>
+                    Pending...
+                  </Text>
+                </RowContainer>
+              </RowContainer>
+            ) : (
+              <RowContainer margin={'2rem 0 0 0'}>
+                <AttentionComponent
+                  text={
+                    'You will need to confirm several transactions in pop-ups from your wallet.'
+                  }
+                />
+              </RowContainer>
+            )}
           </RowContainer>
         )}
         {rebalanceStep === 'done' && (
-          <RowContainer
-            style={{ height: '100%', alignItems: 'center', display: 'flex' }}
-            direction={'column'}
-          >
+          <RowContainer height={'100%'} margin={'4rem 0'} direction={'column'}>
             <SvgIcon src={GreenCheckMark} width={'3rem'} height={'3rem'} />{' '}
-            <Text color={'#A5E898'} style={{ marginTop: '1rem' }}>
+            <Text
+              color={theme.palette.green.main}
+              style={{ marginTop: '1rem' }}
+            >
               Done
             </Text>
           </RowContainer>
         )}
         {rebalanceStep === 'failed' && (
-          <RowContainer
-            style={{ height: '100%', alignItems: 'center', display: 'flex' }}
-            direction={'column'}
-          >
+          <RowContainer height={'100%'} margin={'4rem 0'} direction={'column'}>
             <SvgIcon src={RedCross} width={'3rem'} height={'3rem'} />{' '}
-            <Text color={'#fff'} style={{ marginTop: '1rem' }}>
+            <Text color={theme.palette.red.main} style={{ marginTop: '1rem' }}>
               Failed
             </Text>
           </RowContainer>

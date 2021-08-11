@@ -10,14 +10,8 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import {
   getPricesForTokens,
   getTokenValuesForTokens,
-  getSortedTokensByValue,
   getTotalTokenValue,
-  getPercentageAllocationForTokens,
-  getAvailableTokensForRebalance,
-  getTokensMap,
   getAllTokensData,
-  getSliderStepForTokens,
-  getMarketsData,
 } from './utils'
 import { useConnection } from '@sb/dexUtils/connection'
 
@@ -25,12 +19,8 @@ import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import {
-  PoolInfo,
   TokensMapType,
   Colors,
-  RebalancePopupStep,
-  TokenInfo,
-  MarketData,
 } from './Rebalance.types'
 import RebalanceTable from './components/Tables'
 import RebalanceHeaderComponent from './components/Header'
@@ -38,15 +28,13 @@ import DonutChartWithLegend from '@sb/components/AllocationBlock/index'
 import BalanceDistributedComponent from './components/BalanceDistributed'
 import { RebalancePopup } from './components/RebalancePopup/RebalancePopup'
 
-import { getPoolsInfoMockData } from './Rebalance.mock'
-
 import {
   generateLegendColors,
   generateChartColors,
 } from './utils/colorGenerating'
 import { useCallback } from 'react'
 import { processAllTokensData } from './utils/processAllTokensData'
-import { useAllMarketsList } from '@sb/dexUtils/markets'
+import { MarketsMap, useAllMarketsList } from '@sb/dexUtils/markets'
 import { filterDuplicateTokensByAmount } from './utils/filterDuplicateTokensByAmount'
 
 // const MemoizedCurrentValueChartWithLegend = React.memo(
@@ -124,10 +112,6 @@ const RebalanceComposition = ({
   const allMarketsMap = useAllMarketsList()
 
   const [isRebalancePopupOpen, changeRebalancePopupState] = useState(false)
-  const [rebalanceStep, changeRebalanceStep] = useState<RebalancePopupStep>(
-    'initial'
-  )
-
   const isWalletConnected = !!wallet?.publicKey
 
   const [tokensMap, setTokensMap] = useState<TokensMapType>({})
@@ -135,8 +119,6 @@ const RebalanceComposition = ({
   const [leftToDistributeValue, setLeftToDistributeValue] = useState(0)
   const [rebalanceState, setRefreshStateRebalance] = useState(false)
   const [loadingRebalanceData, setLoadingRebalanceData] = useState(false)
-
-  const [marketsData, setMarketsData] = useState<MarketData[]>([])
 
   const [colors, setColors] = useState<Colors>({})
   const [colorsForLegend, setColorsForLegend] = useState<Colors>({})
@@ -166,10 +148,8 @@ const RebalanceComposition = ({
         // console.log('tokensWithTokenValue', tokensWithTokenValue)
         const totalTokenValue = getTotalTokenValue(tokensWithTokenValue)
 
-        const marketsData = await getMarketsData(allMarketsMap)
-
         const availableTokensForRebalanceMap = processAllTokensData({
-          marketsData,
+          allMarketsMap,
           tokensWithPrices,
         })
 
@@ -184,7 +164,6 @@ const RebalanceComposition = ({
         setColors(chartColors)
         setColorsForLegend(legendColors)
         setTotalTokensValue(totalTokenValue)
-        setMarketsData(marketsData)
         console.timeEnd('rebalance initial data set time')
       } catch (e) {
         // set error
@@ -202,13 +181,11 @@ const RebalanceComposition = ({
   const softRefresh = useCallback(
     async ({
       tokensMap,
-      marketsData,
+      allMarketsMap,
     }: {
       tokensMap: TokensMapType
-      marketsData: MarketData[]
+      allMarketsMap: MarketsMap
     }) => {
-      console.log('marketsData', marketsData)
-
       const allTokensData = await getAllTokensData(wallet.publicKey, connection)
       const filteredAllTokensData = filterDuplicateTokensByAmount(allTokensData)
 
@@ -222,7 +199,7 @@ const RebalanceComposition = ({
       const tokensWithPrices = await getPricesForTokens(allTokensDataWithValues)
 
       const availableTokensForRebalanceMap = processAllTokensData({
-        marketsData,
+        allMarketsMap,
         tokensWithPrices,
       })
 
@@ -240,8 +217,6 @@ const RebalanceComposition = ({
     },
     [wallet, connection]
   )
-
-  // console.log('tokensMap', tokensMap)
 
   return (
     <RowContainer
@@ -295,7 +270,7 @@ const RebalanceComposition = ({
               theme={theme}
               tokensMap={tokensMap}
               setTokensMap={setTokensMap}
-              softRefresh={() => softRefresh({ marketsData, tokensMap })}
+              softRefresh={() => softRefresh({ allMarketsMap, tokensMap })}
               leftToDistributeValue={leftToDistributeValue}
               setLeftToDistributeValue={setLeftToDistributeValue}
               totalTokensValue={totalTokensValue}
@@ -374,15 +349,9 @@ const RebalanceComposition = ({
           tokensMap={tokensMap}
           refreshRebalance={refreshRebalance}
           setLoadingRebalanceData={setLoadingRebalanceData}
-          marketsData={marketsData}
           theme={theme}
           open={isRebalancePopupOpen}
-          rebalanceStep={rebalanceStep}
-          changeRebalanceStep={changeRebalanceStep}
-          close={() => {
-            changeRebalanceStep('initial')
-            changeRebalancePopupState(false)
-          }}
+          close={() => changeRebalancePopupState(false)}
         />
       )}
     </RowContainer>

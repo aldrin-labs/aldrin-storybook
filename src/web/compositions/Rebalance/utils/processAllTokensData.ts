@@ -1,3 +1,4 @@
+import { MarketsMap } from "@sb/dexUtils/markets"
 import { MarketData, TokenInfoWithPrice } from "../Rebalance.types"
 import { getAvailableTokensForRebalance } from "./getAvailableTokensForRebalance"
 import { getPercentageAllocationForTokens } from "./getPercentageAllocationForTokens"
@@ -9,10 +10,10 @@ import { getTotalTokenValue } from "./getTotalTokenValue"
 
 export const processAllTokensData = ({
   tokensWithPrices,
-  marketsData
+  allMarketsMap
 }: {
   tokensWithPrices: TokenInfoWithPrice[]
-  marketsData: MarketData[],
+  allMarketsMap: MarketsMap,
 }) => {
   const tokensWithTokenValue = getTokenValuesForTokens(tokensWithPrices)
   const sortedTokensByTokenValue = getSortedTokensByValue(
@@ -31,10 +32,8 @@ export const processAllTokensData = ({
     totalTokenValue
   )
 
-  // TODO: Can be splitted and move up
   const availableTokensForRebalance = getAvailableTokensForRebalance(
-    // getPoolsInfoMockData,
-    marketsData,
+    allMarketsMap,
     tokensWithSliderSteps
   )
   const availableTokensForRebalanceMap = getTokensMap({

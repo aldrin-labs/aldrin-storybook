@@ -7,7 +7,6 @@ import {
   transferSOLToWrappedAccountAndClose,
 } from '@sb/dexUtils/pools'
 import { sendTransaction } from '@sb/dexUtils/send'
-import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/send-and-confirm-transaction-via-wallet'
 import { Account, Connection, PublicKey, Transaction } from '@solana/web3.js'
 import BN from 'bn.js'
 import { TokensMapType, TransactionType } from '../../Rebalance.types'
@@ -19,12 +18,14 @@ export const placeAllOrders = async ({
   transactions,
   tokensMap,
   marketOrderProgram,
+  setNumberOfCompletedTransactions,
 }: {
   wallet: WalletAdapter
   connection: Connection
   transactions: TransactionType[]
   tokensMap: TokensMapType
   marketOrderProgram: any
+  setNumberOfCompletedTransactions: (n: number) => void
 }) => {
   // place max 2 orders in one transaction, if need to create oo - probably one, determine it.
   // 2 orders + 1 create OO, or 1 order + sol token address, if no extra instructions - 2 orders
@@ -35,6 +36,8 @@ export const placeAllOrders = async ({
   let commonSigners: Account[] = []
   let i = 0
 
+  let transactionIndex = 0
+
   const sendSavedTransaction = async () => {
     if (commonTransaction.instructions.length > 0) {
       await sendTransaction({
@@ -44,6 +47,8 @@ export const placeAllOrders = async ({
         signers: commonSigners,
         focusPopup: true,
       })
+
+      await setNumberOfCompletedTransactions(transactionIndex)
 
       commonTransaction = new Transaction()
       commonSigners = []
@@ -210,6 +215,7 @@ export const placeAllOrders = async ({
     )
 
     i++
+    transactionIndex++
     // if more than 2, split by 2 max in one transaction
     if (i % 2 === 0 || isTransactionWithNativeSOL) {
       await sendSavedTransaction()
@@ -219,12 +225,6 @@ export const placeAllOrders = async ({
   console.log('commonTransaction', commonTransaction)
 
   if (commonTransaction.instructions.length > 0) {
-    await sendTransaction({
-      wallet,
-      connection,
-      transaction: commonTransaction,
-      signers: commonSigners,
-      focusPopup: true,
-    })
+    await sendSavedTransaction()
   }
 }

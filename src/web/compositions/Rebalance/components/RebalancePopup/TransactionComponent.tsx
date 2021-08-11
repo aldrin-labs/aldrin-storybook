@@ -4,11 +4,48 @@ import { Theme } from '@material-ui/core'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
 
-import { TextColumnContainer } from '@sb/compositions/Pools/components/Tables/index.styles'
-import { Stroke, StyledPaper } from './styles'
+import { Stroke, StyledTextColumnContainer } from './styles'
 import { BlockForCoins } from './BlockForCoins'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { Market } from '@project-serum/serum'
+import { RebalancePopupStep } from '../../Rebalance.types'
+import { Loading, SvgIcon } from '@sb/components'
+import GreenCheckMark from '@icons/greenDoneMark.svg'
+import RedCross from '@icons/Cross.svg'
+
+const getTransactionState = ({
+  rebalanceStep,
+  isTransactionCompleted,
+}: {
+  rebalanceStep: RebalancePopupStep
+  isTransactionCompleted: boolean
+}): RebalancePopupStep | null => {
+  switch (rebalanceStep) {
+    case 'initial': {
+      return null
+    }
+    case 'pending': {
+      if (isTransactionCompleted) {
+        return 'done'
+      } else {
+        return 'pending'
+      }
+    }
+    case 'failed': {
+      if (isTransactionCompleted) {
+        return 'done'
+      } else {
+        return 'failed'
+      }
+    }
+    case 'done': {
+      return 'done'
+    }
+    default: {
+      return null
+    }
+  }
+}
 
 export const TransactionComponent = ({
   theme,
@@ -19,7 +56,11 @@ export const TransactionComponent = ({
   amount,
   total,
   market,
+  index,
+  rebalanceStep,
   isNotEnoughLiquidity,
+  isLastTransaction,
+  numberOfCompletedTransactions,
 }: {
   theme: Theme
   symbol: string
@@ -29,122 +70,135 @@ export const TransactionComponent = ({
   total: number
   side: 'buy' | 'sell'
   market: Market
+  index: number
+  rebalanceStep: RebalancePopupStep
   isNotEnoughLiquidity: boolean
+  isLastTransaction: boolean
+  numberOfCompletedTransactions: number
 }) => {
+  const isBuySide = side === 'buy'
   const [base, quote] = symbol.split('_')
   const showError = amount === 0 || isNotEnoughLiquidity
   const errorText = isNotEnoughLiquidity
-    ? 'Not enough liquidity in orderbook'
-    : `Min order size is ${market.minOrderSize}`
+    ? 'Insufficient liquidity.'
+    : `Amount < min order size (${market.minOrderSize} ${base}).`
+
+  const isTransactionCompleted = numberOfCompletedTransactions >= index + 1
+  const transactionState = getTransactionState({
+    rebalanceStep,
+    isTransactionCompleted,
+  })
 
   return (
-    <Stroke>
-      <Row>
+    <Stroke showBorder={!isLastTransaction}>
+      {transactionState && (
+        <Row width={'2rem'}>
+          {transactionState === 'pending' ? (
+            <Loading color={'#F29C38'} size={'2rem'} />
+          ) : transactionState === 'failed' ? (
+            <SvgIcon src={RedCross} width={'2rem'} height={'2rem'} />
+          ) : (
+            <SvgIcon src={GreenCheckMark} width={'2rem'} height={'2rem'} />
+          )}
+        </Row>
+      )}
+      <Row width={'calc(45% - 4rem)'} margin={'0 0 0 2rem'}>
         <BlockForCoins symbol={symbol} side={side} />
       </Row>
-      <Row>
+      <Row width={'calc(55%)'} justify={'flex-end'} margin={'0 0 0 0rem'}>
         {showError ? (
-          <TextColumnContainer>
-            <Row>
+          <StyledTextColumnContainer style={{ justifyContent: 'flex-end' }}>
+            <Row justify={'flex-end'} padding={'.3rem 0'}>
               <Text
-                theme={theme}
                 color={theme.palette.red.main}
                 style={{
                   whiteSpace: 'nowrap',
                   paddingRight: '1rem',
-                  fontSize: '1.4rem',
+                  fontSize: '1.3rem',
                 }}
               >
-                Error. {errorText}
+                {errorText}
               </Text>
             </Row>
-            <Row>
+            <Row padding={'.3rem 0'}>
               <Text
-                theme={theme}
                 color={theme.palette.red.main}
                 style={{
                   whiteSpace: 'nowrap',
                   paddingRight: '1rem',
-                  fontSize: '1.4rem',
+                  fontSize: '1.3rem',
                 }}
               >
-                Transaction won't be executed
+                This trade will be skipped.
               </Text>
             </Row>
-          </TextColumnContainer>
+          </StyledTextColumnContainer>
         ) : (
-          <TextColumnContainer style={{ alignItems: 'flex-end' }}>
-            <Row padding={'1rem 0'}>
+          <StyledTextColumnContainer style={{ justifyContent: 'flex-end' }}>
+            <Row justify={'flex-end'} padding={'.3rem 0'}>
               <Text
-                theme={theme}
-                color={theme.palette.grey.new}
-                style={{
-                  whiteSpace: 'nowrap',
-                  fontSize: '1.4rem',
-                  paddingRight: '1rem',
-                }}
-              >
-                Est. Slippage:
-              </Text>{' '}
-              <Text
-                theme={theme}
-                style={{
-                  whiteSpace: 'nowrap',
-                  fontSize: '1.4rem',
-                }}
-              >
-                {slippage}%
-              </Text>
-            </Row>
-
-            <Row>
-              <Text
-                theme={theme}
                 color={theme.palette.grey.new}
                 style={{
                   whiteSpace: 'nowrap',
                   paddingRight: '1rem',
-                  fontSize: '1.4rem',
-                }}
-              >
-                Est. Total:
-              </Text>
-
-              <Text
-                theme={theme}
-                style={{
-                  whiteSpace: 'nowrap',
-                  fontSize: '1.4rem',
-                }}
-              >
-                {`${amount} ${base}`} ={' '}
-                {`${stripDigitPlaces(total, 4)} ${quote}`}
-              </Text>
-            </Row>
-            <Row>
-              <Text
-                theme={theme}
-                color={theme.palette.grey.new}
-                style={{
-                  whiteSpace: 'nowrap',
-                  paddingRight: '1rem',
-                  fontSize: '1.4rem',
+                  fontSize: '1.3rem',
                 }}
               >
                 Est. Price:
               </Text>
 
               <Text
-                theme={theme}
                 style={{
                   whiteSpace: 'nowrap',
-                  fontSize: '1.4rem',
+                  fontSize: '1.3rem',
                 }}
               >
-                1 {base} = {price ? +stripDigitPlaces(price, 4) : 0} {quote}
+                <Text color={theme.palette.green.main}>
+                  <Text
+                    color={theme.palette.green.main}
+                    style={{ fontFamily: 'Avenir Next Demi' }}
+                  >
+                    1
+                  </Text>{' '}
+                  {base}
+                </Text>{' '}
+                ={' '}
+                <Text color={theme.palette.green.main}>
+                  <Text
+                    color={theme.palette.green.main}
+                    style={{ fontFamily: 'Avenir Next Demi' }}
+                  >
+                    {price ? +stripDigitPlaces(price, 4) : 0}
+                  </Text>{' '}
+                  {quote}
+                </Text>
               </Text>
             </Row>
-          </TextColumnContainer>
+            <Row justify={'flex-end'} padding={'.3rem 0'}>
+              <Text
+                color={theme.palette.grey.new}
+                style={{
+                  whiteSpace: 'nowrap',
+                  paddingRight: '1rem',
+                  fontSize: '1.3rem',
+                }}
+              >
+                Minimum received:
+              </Text>
+
+              <Text
+                style={{
+                  whiteSpace: 'nowrap',
+                  fontSize: '1.3rem',
+                }}
+              >
+                <Text style={{ fontFamily: 'Avenir Next Demi' }}>
+                  {isBuySide ? amount : stripDigitPlaces(total, 4)}
+                </Text>{' '}
+                {isBuySide ? base : quote}
+              </Text>
+            </Row>
+          </StyledTextColumnContainer>
         )}
       </Row>
     </Stroke>

@@ -1,51 +1,35 @@
 import {
   TokensMapType,
   TransactionType,
-  MarketDataProcessed,
   MarketData,
-  TokensDiff,
   Orderbooks,
 } from '../Rebalance.types'
 import { Graph } from '@core/utils/graph/Graph'
 import { REBALANCE_CONFIG } from '../Rebalance.config'
 import { LoadedMarketsMap } from './loadMarketsByNames'
 import { getPricesForTransactionsFromOrderbook } from './getPricesForTransactionsFromOrderbook'
-import { roundDown } from '@core/utils/chartPageUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { getDecimalCount } from '@sb/dexUtils/utils'
+import { getTokensToBuy } from './getTokensToBuy'
+import { getTokensToSell } from './getTokensToSell'
+import { MarketsMap } from '@sb/dexUtils/markets'
+import { getMarketsData } from './getMarketsData'
 
 export const getTransactionsList = ({
-  tokensDiff,
   tokensMap,
-  marketsData,
   loadedMarketsMap,
   orderbooks,
+  allMarketsMap,
 }: {
-  tokensDiff: TokensDiff
-  marketsData: MarketData[]
   tokensMap: TokensMapType
   loadedMarketsMap: LoadedMarketsMap
   orderbooks: Orderbooks
+  allMarketsMap: MarketsMap
 }): TransactionType[] => {
-  const tokensToSell = tokensDiff
-    .filter((el) => el.amountDiff < 0)
-    .map((el) => ({
-      ...el,
-      tokenValue: +(el.price * Math.abs(el.amountDiff)).toFixed(
-        el.decimalCount
-      ),
-      isSold: false,
-    }))
-    .sort((a, b) => a.tokenValue - b.tokenValue)
-
-  const tokensToBuy = tokensDiff
-    .filter((el) => el.amountDiff > 0)
-    .map((el) => ({
-      ...el,
-      tokenValue: +(el.price * el.amountDiff).toFixed(el.decimalCount),
-    }))
-    .sort((a, b) => b.tokenValue - a.tokenValue)
-
+  const marketsData = getMarketsData(allMarketsMap)
+  const tokensToSell = getTokensToSell(tokensMap)
+  const tokensToBuy = getTokensToBuy(tokensMap)
+  
   const tokensToBuyClone = [...tokensToBuy]
 
   // console.log('tokensToSell', tokensToSell)
@@ -60,12 +44,12 @@ export const getTransactionsList = ({
   // we'll change orderbook in each transaction
   let orderbooksClone = { ...orderbooks }
 
-  const poolsGraph = new Graph()
+  const marketsGraph = new Graph()
   marketsData.forEach((el) => {
     const [base, quote] = el.name.split('_')
 
-    poolsGraph.addEdge(base, quote)
-    poolsGraph.addEdge(quote, base)
+    marketsGraph.addEdge(base, quote)
+    marketsGraph.addEdge(quote, base)
   })
 
   let i = 0
@@ -80,7 +64,7 @@ export const getTransactionsList = ({
         break
       }
 
-      const pathElement = poolsGraph.shortestPath(elSell.symbol, elBuy.symbol) // FTT, USDT || SOL, SRM, USDT, KIN
+      const pathElement = marketsGraph.shortestPath(elSell.symbol, elBuy.symbol) // FTT, USDT || SOL, SRM, USDT, KIN
 
       // Checking that we want to sell full amount of coin or only part of it
       const diffBuySell = elSell.tokenValue - elBuy.tokenValue
@@ -162,12 +146,6 @@ export const getTransactionsList = ({
             vaultSigner: null,
           }
 
-          const funcToRound = (minSize: number) =>
-            minSize >= 1
-              ? (num: number) => roundDown(num, minSize)
-              : (num: number, precision: number) =>
-                  stripDigitPlaces(num, precision)
-
           const quantityPrecision =
             loadedMarket?.minOrderSize &&
             getDecimalCount(loadedMarket.minOrderSize)
@@ -185,7 +163,11 @@ export const getTransactionsList = ({
             transactionsList: [{ side, amount: tokenAmount, symbol }],
           })
 
-          price = +funcToRound(loadedMarket?.tickSize)(price, pricePrecision)
+          price = +stripDigitPlaces(
+            price,
+            pricePrecision,
+            loadedMarket?.tickSize
+          )
           // console.log('price', price)
           // update orderbook data due to making some updates in this transaction
           // so in next t-on this orders will be included
@@ -196,13 +178,16 @@ export const getTransactionsList = ({
 
           const moduleAmountDiff = tokenAmount
           const amount =
-            +funcToRound(loadedMarket?.minOrderSize)(
+            +stripDigitPlaces(
               base === pathSymbol
                 ? moduleAmountDiff
                 : (moduleAmountDiff / price) *
                     (side === 'buy' ? slippageMultiplicator : 1),
-              quantityPrecision
+              quantityPrecision,
+              loadedMarket?.minOrderSize
             ) || 0
+
+          console.log('tokensMap, quote', tokensMap, quote)
 
           const totalRaw = +(amount * price).toFixed(
             tokensMap[quote].decimalCount
