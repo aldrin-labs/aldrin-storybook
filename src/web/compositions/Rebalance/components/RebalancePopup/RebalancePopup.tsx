@@ -72,10 +72,12 @@ export const RebalancePopup = ({
     rebalanceTransactionsLoaded,
     setRebalanceTransactionsLoaded,
   ] = useState(false)
+
   const [
     numberOfCompletedTransactions,
     setNumberOfCompletedTransactions,
   ] = useState(0)
+
   const [rebalanceTransactionsList, setRebalanceTransactionsList] = useState<
     TransactionType[]
   >([])

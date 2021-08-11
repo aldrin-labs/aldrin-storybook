@@ -68,15 +68,13 @@ export default function AddTokenDialog({
   onClose,
   userTokens,
   theme,
-  allTokensData,
   softRefresh,
 }: {
   open: boolean
   onClose: () => void
   userTokens: any[]
   theme: Theme
-  allTokensData: any[]
-  softRefresh: () => void,
+  softRefresh: () => void
 }) {
   const { wallet } = useWallet()
 
@@ -96,8 +94,7 @@ export default function AddTokenDialog({
     8
   )
 
-  const SOLBalance =
-    allTokensData?.find((el) => el.symbol === 'SOL')?.amount || 0
+  const SOLBalance = userTokens?.find((el) => el.symbol === 'SOL')?.amount || 0
 
   const isBalanceLowerCost = SOLBalance < cost
   const isDisabled = !valid || isBalanceLowerCost || sending

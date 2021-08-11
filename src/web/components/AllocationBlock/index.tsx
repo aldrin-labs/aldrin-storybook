@@ -20,6 +20,10 @@ import {
   ChartContainer,
 } from './index.styles'
 
+import { DarkTooltip } from '../TooltipCustom/Tooltip'
+import Info from '@icons/inform.svg'
+import SvgIcon from '../SvgIcon'
+
 export const ROWS_TO_SHOW_IN_LEGEND = 4
 
 const DonutChartWithLegend = ({
@@ -77,8 +81,21 @@ const DonutChartWithLegend = ({
       <ChartContainer>
         <HeaderContainer theme={theme} justify={'space-between'}>
           <RowContainer padding={'2rem'} style={{ flexWrap: 'nowrap' }}>
-            <WhiteTitle theme={theme} style={{ marginRight: '2rem' }}>
-              {id === 'target' ? 'Target Allocation' : 'Current Allocation'}
+            <WhiteTitle theme={theme} style={{ marginRight: '1rem' }}>
+              {id === 'target' ? (
+                <DarkTooltip
+                  title={
+                    'The final distribution may differ slightly from the set distribution due to differences in min. order size values in different markets, as well as market movements.'
+                  }
+                >
+                  <Row wrap={'nowrap'}>
+                    <span>Est. Target Allocation</span>
+                    <SvgIcon src={Info} width={'3rem'} padding={'0 0 0 1rem'} />
+                  </Row>
+                </DarkTooltip>
+              ) : (
+                'Current Allocation'
+              )}
             </WhiteTitle>
             <Line style={{ border: '0.1rem solid #383B45' }} />
           </RowContainer>

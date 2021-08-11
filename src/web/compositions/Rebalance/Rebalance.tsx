@@ -18,10 +18,7 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import {
-  TokensMapType,
-  Colors,
-} from './Rebalance.types'
+import { TokensMapType, Colors } from './Rebalance.types'
 import RebalanceTable from './components/Tables'
 import RebalanceHeaderComponent from './components/Header'
 import DonutChartWithLegend from '@sb/components/AllocationBlock/index'
@@ -36,6 +33,9 @@ import { useCallback } from 'react'
 import { processAllTokensData } from './utils/processAllTokensData'
 import { MarketsMap, useAllMarketsList } from '@sb/dexUtils/markets'
 import { filterDuplicateTokensByAmount } from './utils/filterDuplicateTokensByAmount'
+import { resetTargetAllocation } from './utils/resetTargetAllocation'
+import { getTokensToSell } from './utils/getTokensToSell'
+import { getTokensToBuy } from './utils/getTokensToBuy'
 
 // const MemoizedCurrentValueChartWithLegend = React.memo(
 //   DonutChartWithLegend,
@@ -112,7 +112,9 @@ const RebalanceComposition = ({
   const allMarketsMap = useAllMarketsList()
 
   const [isRebalancePopupOpen, changeRebalancePopupState] = useState(false)
-  const isWalletConnected = !!wallet?.publicKey
+  const isWalletConnected = wallet.connected
+
+  console.log('isWalletConnected', wallet, isWalletConnected)
 
   const [tokensMap, setTokensMap] = useState<TokensMapType>({})
   const [totalTokensValue, setTotalTokensValue] = useState(0)
@@ -164,6 +166,7 @@ const RebalanceComposition = ({
         setColors(chartColors)
         setColorsForLegend(legendColors)
         setTotalTokensValue(totalTokenValue)
+        setLeftToDistributeValue(0)
         console.timeEnd('rebalance initial data set time')
       } catch (e) {
         // set error
@@ -172,7 +175,6 @@ const RebalanceComposition = ({
       setLoadingRebalanceData(false)
     }
 
-    console.log('isWalletConnected', isWalletConnected)
     if (isWalletConnected) {
       fetchData()
     }
@@ -193,8 +195,6 @@ const RebalanceComposition = ({
         ...token,
         ...(tokensMap[token.symbol] ? tokensMap[token.symbol] : {}),
       }))
-
-      console.log('allTokensDataWithValues', allTokensDataWithValues)
 
       const tokensWithPrices = await getPricesForTokens(allTokensDataWithValues)
 
@@ -218,6 +218,19 @@ const RebalanceComposition = ({
     [wallet, connection]
   )
 
+  const resetTargetAllocationFunc = useCallback((tokensMap: TokensMapType) => {
+    const resettedTokensMap = resetTargetAllocation(tokensMap)
+    setTokensMap(resettedTokensMap)
+    setLeftToDistributeValue(0)
+  }, [])
+
+  const tokensToSell = getTokensToSell(tokensMap)
+  const tokensToBuy = getTokensToBuy(tokensMap)
+
+  const isButtonDisabled =
+    (tokensToSell.length === 0 && tokensToBuy.length === 0) ||
+    +leftToDistributeValue.toFixed(2) !== 0
+
   return (
     <RowContainer
       theme={theme}
@@ -229,7 +242,7 @@ const RebalanceComposition = ({
         minHeight: '500px',
       }}
     >
-      {!publicKey ? (
+      {!isWalletConnected ? (
         <>
           <BtnCustom
             theme={theme}
@@ -266,7 +279,7 @@ const RebalanceComposition = ({
               leftToDistributeValue={leftToDistributeValue}
             />
             <RebalanceTable
-              data={Object.values(tokensMap).map((el) => el)}
+              data={Object.values(tokensMap)}
               theme={theme}
               tokensMap={tokensMap}
               setTokensMap={setTokensMap}
@@ -275,7 +288,7 @@ const RebalanceComposition = ({
               setLeftToDistributeValue={setLeftToDistributeValue}
               totalTokensValue={totalTokensValue}
               loadingRebalanceData={loadingRebalanceData}
-              allTokensData={Object.values(tokensMap)}
+              resetTargetAllocation={() => resetTargetAllocationFunc(tokensMap)}
             />
           </Row>
           <Row
@@ -333,7 +346,7 @@ const RebalanceComposition = ({
                 transition={'all .4s ease-out'}
                 padding={'2rem'}
                 style={{ whiteSpace: 'nowrap' }}
-                disabled={+leftToDistributeValue.toFixed(2) !== 0}
+                disabled={isButtonDisabled}
               >
                 Rebalance Now
               </BtnCustom>
