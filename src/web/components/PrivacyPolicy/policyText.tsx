@@ -7,14 +7,14 @@ export default (
     <br />
     <br />
     Cryptocurrencies.Ai Inc. ("us", "we", or "our") operates the
-    https://cryptocurrencies.ai/ website (the "Service").
+    https://aldrin.com/ website (the "Service").
     <br />
     <br />
     We use your data to provide and improve the Service. By using the Service,
     you agree to the collection and use of information in accordance with this
     policy. Unless otherwise defined in this Privacy Policy, terms used in this
     Privacy Policy have the same meanings as in our Terms and Conditions,
-    accessible from https://cryptocurrencies.ai/
+    accessible from https://aldrin.com/
     <br />
     <br />
     <Typography gutterBottom={true} variant="h5">

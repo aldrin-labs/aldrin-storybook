@@ -39,7 +39,7 @@ export const Homepage = () => {
         <RowContainer padding={'5rem 25rem'} justify={'space-between'}>
           <NewLink to="/chart">Trading</NewLink>
           <StyledA
-            href={'https://wallet.cryptocurrencies.ai'}
+            href={'https://wallet.aldrin.com'}
             target="_blank"
             rel="noopener noreferrer"
           >

@@ -67,9 +67,9 @@ const DevUrlPopup = ({
             }}
             target="_blank"
             rel="noopener noreferrer"
-            href={'https://dex.cryptocurrencies.ai/'}
+            href={'https://dex.aldrin.com/'}
           >
-            dex.cryptocurrencies.ai
+            dex.aldrin.com
           </a>
           .
         </Text>
@@ -79,7 +79,7 @@ const DevUrlPopup = ({
           style={{ textDecoration: 'none', width: '100%' }}
           target="_blank"
           rel="noopener noreferrer"
-          href={'https://dex.cryptocurrencies.ai/'}
+          href={'https://dex.aldrin.com/'}
         >
           {' '}
           <BlueButton
@@ -92,7 +92,7 @@ const DevUrlPopup = ({
             theme={theme}
             onClick={() => {}}
           >
-            Go to dex.cryptocurrencies.ai
+            Go to dex.aldrin.com
           </BlueButton>
         </a>
       </RowContainer>

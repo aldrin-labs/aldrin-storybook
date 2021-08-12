@@ -35,7 +35,7 @@ import { ENDPOINTS, useConnectionConfig } from '@sb/dexUtils/connection'
 import { Line } from '@sb/compositions/AnalyticsRoute/index.styles'
 import styled from 'styled-components'
 import OvalSelector from '@sb/components/OvalSelector'
-import SerumCCAILogo from '@icons/serumCCAILogo.svg'
+import AldrinLogo from '@icons/Aldrin.svg'
 import LightLogo from '@icons/lightLogo.svg'
 import SvgIcon from '@sb/components/SvgIcon'
 
@@ -161,15 +161,16 @@ export const CardsPanel = ({ theme }) => {
           <Link
             to={'/'}
             style={{
-              padding: '0.5rem 0',
+              width: '13rem',
               height: '100%',
             }}
           >
             <img
               style={{
+                width: '100%',
                 height: '100%',
               }}
-              src={isDarkTheme ? SerumCCAILogo : LightLogo}
+              src={isDarkTheme ? AldrinLogo : LightLogo}
             />
           </Link>
           <div
@@ -184,15 +185,6 @@ export const CardsPanel = ({ theme }) => {
               alignItems: 'center',
             }}
           >
-            <NavLinkButton
-              theme={theme}
-              page={'/'}
-              pathname={location.pathname === '/' ? location.pathname : ''}
-              component={(props) => <Link to={`/`} {...props} />}
-            >
-              {' '}
-              Home
-            </NavLinkButton>
             {MASTER_BUILD && (
               <NavLinkButton
                 theme={theme}
@@ -279,7 +271,7 @@ export const CardsPanel = ({ theme }) => {
               </NavLinkButton>
             )}
             <TokenLink
-              href="https://ccai.cryptocurrencies.ai/"
+              href="https://rin.aldrin.com/"
               target="_blank"
               rel="noopener noreferrer"
             >
