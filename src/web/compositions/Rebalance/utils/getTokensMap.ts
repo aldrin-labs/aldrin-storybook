@@ -9,6 +9,8 @@ export const getTokensMap = ({
     tokens: TokenInfoWithDisableReason[] | TokenInfoWithTargetData[]
 }): TokensMapType => {
   const tokensMap = tokens.reduce((acc: TokensMapType, el) => {
+      
+    // for add coin feature to not change target values of sliders
     if (el.targetPercentage !== undefined) {
         acc[el.symbol] = {
             ...el,

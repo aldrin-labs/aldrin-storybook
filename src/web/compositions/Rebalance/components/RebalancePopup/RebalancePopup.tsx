@@ -83,7 +83,6 @@ export const RebalancePopup = ({
   >([])
 
   const allMarketsMap = useAllMarketsList()
-
   const showConfirmTradeButton = isWebWallet(wallet?._providerUrl?.origin)
 
   const updateTransactionsList = useCallback(

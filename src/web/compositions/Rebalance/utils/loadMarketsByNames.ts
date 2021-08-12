@@ -54,7 +54,7 @@ export const loadMarketsByNames = async ({
 
     marketsMap[name] = { market, vaultSigner, openOrders }
 
-    if (i % 2 === 0) sleep(1 * 1000)
+    if (i % 2 === 0) await sleep(1 * 1000)
 
     i++
   }

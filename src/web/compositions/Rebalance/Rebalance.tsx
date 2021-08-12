@@ -189,12 +189,15 @@ const RebalanceComposition = ({
       tokensMap: TokensMapType
       allMarketsMap: MarketsMap
     }) => {
+      // new tokens + new amounts
       const allTokensData = await getAllTokensData(wallet.publicKey, connection)
       const filteredAllTokensData = filterDuplicateTokensByAmount(allTokensData)
 
+      // add new coins
       const allTokensDataWithValues = filteredAllTokensData.map((token) => ({
         ...token,
-        ...(tokensMap[token.symbol] ? tokensMap[token.symbol] : {}),
+        // set amount to snapshot value, doing nothing for new coins
+        ...(tokensMap[token.symbol] ? tokensMap[token.symbol] : {}), 
       }))
 
       const tokensWithPrices = await getPricesForTokens(allTokensDataWithValues)
@@ -332,7 +335,6 @@ const RebalanceComposition = ({
               <BtnCustom
                 theme={theme}
                 onClick={() => {
-                  // refreshRebalance()
                   changeRebalancePopupState(true)
                 }}
                 needMinWidth={false}
@@ -368,7 +370,7 @@ const RebalanceComposition = ({
           close={() => changeRebalancePopupState(false)}
         />
       )}
-      <MeetRebalancePopup theme={theme} open={true}  />
+      {/* <MeetRebalancePopup theme={theme} open={true}  /> */}
     </RowContainer>
   )
 }
