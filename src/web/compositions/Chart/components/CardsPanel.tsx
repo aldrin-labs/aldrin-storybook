@@ -1,61 +1,39 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState } from 'react'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
-import greenArrow from '@icons/greenArrow.svg'
+import styled from 'styled-components'
+
 import { NavLink } from 'react-router-dom'
 import { MASTER_BUILD } from '@core/utils/config'
 
-import copy from 'clipboard-copy'
-import { useLocation, useHistory, Link } from 'react-router-dom'
+import { useLocation, Link } from 'react-router-dom'
 import {
   RowContainer,
   Row,
   ReusableTitle as Title,
 } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { IdoBtn, WhiteButton } from '../../Homepage/styles'
+import { WhiteButton } from '../../Homepage/styles'
 
-import MarketStats from './MarketStats/MarketStats'
-import { TooltipCustom } from '@sb/components/index'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { changePositionMode } from '@core/graphql/mutations/chart/changePositionMode'
 import { TOGGLE_THEME_MODE } from '@core/graphql/mutations/app/toggleThemeMode'
-import { changeHedgeModeInCache } from '@core/utils/tradingComponent.utils'
-import { checkLoginStatus } from '@core/utils/loginUtils'
 import { PanelWrapper, CustomCard } from '../Chart.styles'
 import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
 import { updateThemeMode } from '@core/graphql/mutations/chart/updateThemeMode'
-import { useMarket } from '@sb/dexUtils/markets'
-import { CCAIProviderURL, getDecimalCount } from '@sb/dexUtils/utils'
+import { CCAIProviderURL } from '@sb/dexUtils/utils'
 import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
-import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 
-import { DEFAULT_MARKET } from '@sb/dexUtils/markets'
-import { useWallet, WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
-import { ENDPOINTS, useConnectionConfig } from '@sb/dexUtils/connection'
-import { Line } from '@sb/compositions/AnalyticsRoute/index.styles'
-import styled from 'styled-components'
-import OvalSelector from '@sb/components/OvalSelector'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { useConnectionConfig } from '@sb/dexUtils/connection'
+
 import SerumCCAILogo from '@icons/serumCCAILogo.svg'
 import LightLogo from '@icons/lightLogo.svg'
 import SvgIcon from '@sb/components/SvgIcon'
 
-import Wallet from '@icons/Wallet.svg'
-
-import SunDisabled from '@icons/sunDisabled.svg'
-import SunActive from '@icons/sunActive.svg'
-
-import MoonDisabled from '@icons/moonDisabled.svg'
-import MoonActive from '@icons/moonActive.svg'
-
-import IconButton from '@material-ui/core/IconButton'
-import TelegramIcon from '@icons/telegram.svg'
-import DiscordIcon from '@icons/discord.svg'
-import TwitterIcon from '@icons/twitter.svg'
 import { withTheme } from '@material-ui/core'
 import WalletIcon from '@icons/walletIcon.svg'
 import NetworkDropdown from '@sb/compositions/Chart/components/NetworkDropdown/NetworkDropdown'
 
-import Dropdown from '@sb/components/Dropdown'
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown/index'
 import { FeedbackPopup } from './UsersFeedbackPopup'
@@ -119,23 +97,6 @@ const RedButton = styled((props) => (
   />
 ))`
   outline: none;
-`
-const TokenLink = styled.a`
-  font-family: Avenir Next Demi;
-  text-transform: capitalize;
-  text-decoration: none;
-  font-size: 1.4rem;
-  background: linear-gradient(
-    106.89deg,
-    rgba(94, 181, 168, 0.8) 17.87%,
-    rgba(56, 98, 193, 0.8) 82.13%
-  );
-  display: flex;
-  align-items: center;
-  padding: 0 2rem;
-  height: 100%;
-  border-radius: 0.6rem;
-  color: #f8faff;
 `
 
 export const CardsPanel = ({ theme }) => {
@@ -206,25 +167,14 @@ export const CardsPanel = ({ theme }) => {
               alignItems: 'center',
             }}
           >
-            <NavLinkButton
+            {/* <NavLinkButton
               theme={theme}
               page={'/'}
               pathname={location.pathname === '/' ? location.pathname : ''}
               component={(props) => <Link to={`/`} {...props} />}
             >
               Home
-            </NavLinkButton>
-            {MASTER_BUILD && (
-              <NavLinkButton
-                theme={theme}
-                data-tut="farming"
-                pathname={location.pathname}
-                page={'wallet'}
-                component={(props) => <a href={CCAIProviderURL} {...props} />}
-              >
-                Wallet
-              </NavLinkButton>
-            )}
+            </NavLinkButton> */}
             <NavLinkButton
               theme={theme}
               pathname={location.pathname}
@@ -234,17 +184,6 @@ export const CardsPanel = ({ theme }) => {
             >
               Trading
             </NavLinkButton>
-            {/* {!MASTER_BUILD && (
-              <NavLinkButton
-                theme={theme}
-                pathname={location.pathname}
-                to="/rebalance"
-                page={'rebalance'}
-                component={(props) => <Link to={`/rebalance`} {...props} />}
-              >
-                Rebalance
-              </NavLinkButton>
-            )} */}
             <NavLinkButton
               theme={theme}
               data-tut="analytics"
@@ -254,17 +193,27 @@ export const CardsPanel = ({ theme }) => {
             >
               Analytics
             </NavLinkButton>
-            {/* <NavLinkButton
+            {!MASTER_BUILD && (
+              <NavLinkButton
+                theme={theme}
+                pathname={location.pathname}
+                to="/rebalance"
+                page={'rebalance'}
+                component={(props) => <Link to={`/rebalance`} {...props} />}
+              >
+                Rebalance
+              </NavLinkButton>
+            )}
+            <NavLinkButton
               theme={theme}
               data-tut="farming"
-              page={'addressbook'}
               pathname={location.pathname}
-              component={(props) => <Link to={`/addressbook`} {...props} />}
+              page={'wallet'}
+              component={(props) => <a href={CCAIProviderURL} {...props} />}
             >
-              
-              Addressbook
-            </NavLinkButton> */}
-            {!MASTER_BUILD && (
+              Wallet
+            </NavLinkButton>
+            {/* {!MASTER_BUILD && (
               <NavLinkButton
                 theme={theme}
                 page={'/pools'}
@@ -295,15 +244,23 @@ export const CardsPanel = ({ theme }) => {
               >
                 SunWallet
               </NavLinkButton>
-            )}
-            <TokenLink
-              href="https://ccai.cryptocurrencies.ai/"
-              target="_blank"
-              rel="noopener noreferrer"
+            )} */}
+            <NavLinkButton
+              theme={theme}
+              data-tut="token"
+              page={'token'}
+              pathname={location.pathname}
+              component={(props) => (
+                <a
+                  href="https://ccai.cryptocurrencies.ai/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  {...props}
+                />
+              )}
             >
               Token
-            </TokenLink>
-            {/* <IdoBtn>CCAI IDO</IdoBtn> */}
+            </NavLinkButton>
           </div>
         </CustomCard>
 
@@ -326,19 +283,9 @@ const TopBar = ({ theme }) => {
     wallet,
     providerUrl,
     updateProviderUrl,
-    setProvider,
-    setAutoConnect,
   } = useWallet()
 
   const { endpoint, setEndpoint } = useConnectionConfig()
-  const location = useLocation()
-  // const history = useHistory()
-  const [isOpenPopup, setPopupOpen] = useState(false)
-
-  const publicKey = wallet?.publicKey?.toBase58()
-
-  const isDarkTheme = theme.palette.type === 'dark'
-  const isWalletConnected = connected
 
   const isCCAIActive = providerUrl === CCAIProviderURL
   const isSolletActive = providerUrl === 'https://www.sollet.io'
@@ -349,83 +296,6 @@ const TopBar = ({ theme }) => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-      {/* <SvgIcon
-        width={'auto'}
-        height={'100%'}
-        styledComponentsAdditionalStyle={{
-          padding: '1rem 2rem 1rem 0',
-          cursor: 'pointer',
-        }}
-        src={isDarkTheme ? SunDisabled : SunActive}
-        onClick={() => {
-          if (isDarkTheme) {
-            theme.updateMode('light')
-          }
-        }}
-      />
-
-      <SvgIcon
-        width={'auto'}
-        height={'100%'}
-        styledComponentsAdditionalStyle={{
-          padding: '1rem 2rem 1rem 0',
-          cursor: 'pointer',
-        }}
-        src={isDarkTheme ? MoonActive : MoonDisabled}
-        onClick={() => {
-          if (!isDarkTheme) {
-            theme.updateMode('dark')
-          }
-        }}
-      /> */}
-
-      {/* <div>
-        <OvalSelector
-          theme={theme}
-          selectStyles={selectStyles(theme)}
-          onChange={({ value }) => {
-            setEndpoint(value)
-          }}
-          value={{
-            value: endpoint,
-            label: ENDPOINTS.find((a) => a.endpoint === endpoint).name,
-          }}
-          options={ENDPOINTS.map((endpoint) => ({
-            value: endpoint.endpoint,
-            label: endpoint.name,
-          }))}
-        />
-      </div>
-      <div>
-        <OvalSelector
-          theme={theme}
-          selectStyles={selectStyles(theme)}
-          onChange={({ value }) => {
-            setProvider(value)
-          }}
-          value={{ value: providerUrl, label: providerName }}
-          options={WALLET_PROVIDERS.map((provider) => ({
-            value: provider.url,
-            label: provider.name,
-          }))}
-        />
-      </div> */}
-      {/* <div>
-        <OvalSelector
-          theme={theme}
-          selectStyles={selectStyles(theme)}
-          onChange={({ value }) => {
-            setProvider(value)
-            console.log('value', value)
-          }}
-          value={{ value: providerUrl, label: providerName }}
-          options={WALLET_PROVIDERS.map((provider) => ({
-            value: provider.url,
-            label: provider.name,
-          }))}
-        />
-      </div> */}
-      {/* <WalletBlock /> */}
       <div data-tut="connection-dropdown">
         <NetworkDropdown
           endpoint={endpoint}
