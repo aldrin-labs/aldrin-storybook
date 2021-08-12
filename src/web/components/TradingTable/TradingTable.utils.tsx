@@ -1104,19 +1104,19 @@ export const combineBalancesTable = (
         showOnMobile: true,
       },
       wallet: {
-        render: roundAndFormatNumber(wallet, 8, true) || '-',
+        render: roundAndFormatNumber(wallet, 8, true) || '0',
         style: { textAlign: 'left' },
         contentToSort: +wallet,
         showOnMobile: false,
       },
       orders: {
-        render: roundAndFormatNumber(orders, 8, true) || '-',
+        render: roundAndFormatNumber(orders, 8, true) || '0',
         style: { textAlign: 'left' },
         contentToSort: +orders,
         showOnMobile: false,
       },
       unsettled: {
-        render: roundAndFormatNumber(unsettled, 8, true) || '-',
+        render: roundAndFormatNumber(unsettled, 8, true) || '0',
         style: { textAlign: 'left' },
         contentToSort: +unsettled,
         showOnMobile: false,

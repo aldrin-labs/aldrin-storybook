@@ -37,6 +37,7 @@ import NetworkDropdown from '@sb/compositions/Chart/components/NetworkDropdown/N
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown/index'
 import { FeedbackPopup } from './UsersFeedbackPopup'
+import { BetaLabel } from '@sb/components/BetaLabel/BetaLabel'
 
 export const NavBarLink = styled(({ style, ...props }) => (
   <NavLink {...props} />
@@ -199,9 +200,10 @@ export const CardsPanel = ({ theme }) => {
                 pathname={location.pathname}
                 to="/rebalance"
                 page={'rebalance'}
+                style={{ width: '13rem' }}
                 component={(props) => <Link to={`/rebalance`} {...props} />}
               >
-                Rebalance
+                Rebalance <BetaLabel theme={theme} style={{ marginLeft: '1rem' }} />
               </NavLinkButton>
             )}
             <NavLinkButton
@@ -278,12 +280,7 @@ export const CardsPanel = ({ theme }) => {
 }
 
 const TopBar = ({ theme }) => {
-  const {
-    connected,
-    wallet,
-    providerUrl,
-    updateProviderUrl,
-  } = useWallet()
+  const { connected, wallet, providerUrl, updateProviderUrl } = useWallet()
 
   const { endpoint, setEndpoint } = useConnectionConfig()
 

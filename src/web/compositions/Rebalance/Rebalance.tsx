@@ -36,6 +36,7 @@ import { filterDuplicateTokensByAmount } from './utils/filterDuplicateTokensByAm
 import { resetTargetAllocation } from './utils/resetTargetAllocation'
 import { getTokensToSell } from './utils/getTokensToSell'
 import { getTokensToBuy } from './utils/getTokensToBuy'
+import { MeetRebalancePopup } from './components/MeetRebalancePopup/MeetRebalancePopup'
 
 // const MemoizedCurrentValueChartWithLegend = React.memo(
 //   DonutChartWithLegend,
@@ -367,6 +368,7 @@ const RebalanceComposition = ({
           close={() => changeRebalancePopupState(false)}
         />
       )}
+      <MeetRebalancePopup theme={theme} open={true}  />
     </RowContainer>
   )
 }

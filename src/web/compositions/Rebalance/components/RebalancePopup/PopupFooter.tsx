@@ -42,12 +42,12 @@ export const PopupFooter = ({
             For example: SOL{'>'}USDC, then USDC{'>'}CCAI.
           </TooltipText>
           <TooltipText style={{ paddingTop: '2rem' }}>
-            All fees required for this transaction are calculated.
+            All fees required for this transaction are calculated as follows.
           </TooltipText>
           <TooltipText
             style={{ fontFamily: 'Avenir Next Demi', paddingTop: '2rem' }}
           >
-            Unconditional:
+            Required:
           </TooltipText>
           <TooltipText>Solana transaction fee.</TooltipText>
           <TooltipText>Serum trade fee. </TooltipText>
@@ -55,7 +55,7 @@ export const PopupFooter = ({
           <TooltipText
             style={{ fontFamily: 'Avenir Next Demi', paddingTop: '2rem' }}
           >
-            Conditional:
+            One Time Fee:
           </TooltipText>
           <TooltipText>
             Limited Serum trade account creation fee (If this is your first time

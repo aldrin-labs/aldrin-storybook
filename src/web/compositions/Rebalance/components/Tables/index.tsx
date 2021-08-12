@@ -43,9 +43,11 @@ const tooltipTexts = {
 const HeaderRow = ({
   theme,
   openAddCoinPopup,
+  resetTargetAllocation,
   loadingRebalanceData,
 }: {
   theme: Theme
+  resetTargetAllocation: () => void
   openAddCoinPopup: (arg: boolean) => {}
   loadingRebalanceData: boolean
 }) => (
@@ -56,62 +58,65 @@ const HeaderRow = ({
     align="center"
     style={{ borderBottom: '0.1rem solid #383B45' }}
   >
-    <RowContainer style={{ width: '30%' }} align="center" justify="end">
+    <Row width={'30%'} align="center" justify="end">
       <Text theme={theme}>Set up your allocation </Text>
 
       {loadingRebalanceData && (
         <Loading size={22} margin="auto auto auto 2rem" />
       )}
-    </RowContainer>
+    </Row>
+    <Row>
+      <BtnCustom
+        needMinWidth={false}
+        btnWidth="auto"
+        height="auto"
+        fontSize="1.4rem"
+        padding="1rem 2.5rem"
+        borderRadius="1.7rem"
+        margin={'0 2rem 0 0'}
+        borderColor={theme.palette.blue.serum}
+        btnColor={'#fff'}
+        backgroundColor={theme.palette.blue.serum}
+        textTransform={'none'}
+        transition={'all .4s ease-out'}
+        style={{ whiteSpace: 'nowrap' }}
+        onClick={resetTargetAllocation}
+      >
+        Reset to current allocation
+      </BtnCustom>
 
-    <BtnCustom
-      theme={theme}
-      onClick={() => {
-        openAddCoinPopup(true)
-      }}
-      needMinWidth={false}
-      btnWidth="auto"
-      height="auto"
-      fontSize="1.4rem"
-      padding="1rem 2.5rem"
-      borderRadius="1.7rem"
-      borderColor={theme.palette.blue.serum}
-      btnColor={'#fff'}
-      backgroundColor={theme.palette.blue.serum}
-      textTransform={'none'}
-      transition={'all .4s ease-out'}
-      style={{ whiteSpace: 'nowrap' }}
-    >
-      Add Coin{' '}
-    </BtnCustom>
+      <BtnCustom
+        theme={theme}
+        onClick={() => {
+          openAddCoinPopup(true)
+        }}
+        needMinWidth={false}
+        btnWidth="auto"
+        height="auto"
+        fontSize="1.4rem"
+        padding="1rem 2.5rem"
+        borderRadius="1.7rem"
+        borderColor={theme.palette.blue.serum}
+        btnColor={'#fff'}
+        backgroundColor={theme.palette.blue.serum}
+        textTransform={'none'}
+        transition={'all .4s ease-out'}
+        style={{ whiteSpace: 'nowrap' }}
+      >
+        Add Coin
+      </BtnCustom>
+    </Row>
   </RowContainer>
 )
 
-const FooterRow = ({
-  theme,
-  resetTargetAllocation,
-}: {
-  theme: Theme
-  resetTargetAllocation: () => void
-}) => (
+const FooterRow = ({ theme }: { theme: Theme }) => (
   <RowContainer
     height={'5rem'}
     padding="0 2rem"
     justify={'space-between'}
     align="center"
     style={{ borderTop: '0.1rem solid #383B45' }}
-  >
-    <BtnCustom
-      textTransform={'capitalize'}
-      background={'inherit'}
-      fontSize={'1.5rem'}
-      color={theme.palette.blue.serum}
-      borderColor={'inherit'}
-      onClick={resetTargetAllocation}
-    >
-      Reset to current allocation
-    </BtnCustom>
-  </RowContainer>
+  ></RowContainer>
 )
 
 export const TokenSymbolColumn = ({ symbol }: { symbol: string }) => (
@@ -483,6 +488,7 @@ const RebalanceTable = ({
       >
         <MemoizedHeaderRow
           loadingRebalanceData={loadingRebalanceData}
+          resetTargetAllocation={resetTargetAllocation}
           openAddCoinPopup={async (...args) => {
             openAddCoinPopup(...args)
           }}
@@ -490,7 +496,7 @@ const RebalanceTable = ({
         />
         <RowContainer
           align="flex-start"
-          style={{ height: 'calc(100% - 15rem)', overflow: 'scroll' }}
+          style={{ height: 'calc(100% - 10rem)', overflow: 'scroll' }}
         >
           <Table>
             <MemoizedTableHeaderRow />
@@ -510,10 +516,10 @@ const RebalanceTable = ({
             </TableBody>
           </Table>
         </RowContainer>
-        <MemoizedFooterRow
+        {/* <MemoizedFooterRow
           theme={theme}
           resetTargetAllocation={resetTargetAllocation}
-        />
+        /> */}
       </BlockTemplate>
       <AddTokenDialog
         theme={theme}
