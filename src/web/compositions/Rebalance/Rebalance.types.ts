@@ -94,6 +94,7 @@ export type TransactionType = MarketDataProcessed & TransactionMainData & {
     loadedMarket: Market
     openOrders: OpenOrders[],
     vaultSigner: PublicKey | BN
+    depthLevel: number
 }
 
 export interface MarketDataProcessed extends MarketData {

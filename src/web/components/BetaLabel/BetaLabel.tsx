@@ -8,7 +8,8 @@ const Text = styled.span`
   background: #f79894;
   font-family: Avenir Next Demi;
   font-size: 1.4rem;
-  line-height: 1.8rem;
+  height: 2rem;
+  line-height: 2rem;
   border-radius: 1.6rem;
   padding: 0 0.6rem;
 

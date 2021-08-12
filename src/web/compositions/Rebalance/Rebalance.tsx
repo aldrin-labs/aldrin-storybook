@@ -37,6 +37,7 @@ import { resetTargetAllocation } from './utils/resetTargetAllocation'
 import { getTokensToSell } from './utils/getTokensToSell'
 import { getTokensToBuy } from './utils/getTokensToBuy'
 import { MeetRebalancePopup } from './components/MeetRebalancePopup/MeetRebalancePopup'
+import { useLocalStorageState } from '@sb/dexUtils/utils'
 
 // const MemoizedCurrentValueChartWithLegend = React.memo(
 //   DonutChartWithLegend,
@@ -113,6 +114,11 @@ const RebalanceComposition = ({
   const allMarketsMap = useAllMarketsList()
 
   const [isRebalancePopupOpen, changeRebalancePopupState] = useState(false)
+  const [
+    isMeetRebalancePopupOpen,
+    setIsMeetRebalancePopupOpen,
+  ] = useLocalStorageState('isMeetRebalancePopupOpen', true)
+
   const isWalletConnected = wallet.connected
 
   console.log('isWalletConnected', wallet, isWalletConnected)
@@ -197,7 +203,7 @@ const RebalanceComposition = ({
       const allTokensDataWithValues = filteredAllTokensData.map((token) => ({
         ...token,
         // set amount to snapshot value, doing nothing for new coins
-        ...(tokensMap[token.symbol] ? tokensMap[token.symbol] : {}), 
+        ...(tokensMap[token.symbol] ? tokensMap[token.symbol] : {}),
       }))
 
       const tokensWithPrices = await getPricesForTokens(allTokensDataWithValues)
@@ -370,7 +376,11 @@ const RebalanceComposition = ({
           close={() => changeRebalancePopupState(false)}
         />
       )}
-      {/* <MeetRebalancePopup theme={theme} open={true}  /> */}
+      <MeetRebalancePopup
+        theme={theme}
+        open={isMeetRebalancePopupOpen}
+        onClose={() => setIsMeetRebalancePopupOpen(false)}
+      />
     </RowContainer>
   )
 }

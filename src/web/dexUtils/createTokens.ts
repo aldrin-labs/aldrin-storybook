@@ -1,8 +1,7 @@
-import { Account, Connection, PublicKey, Transaction } from "@solana/web3.js"
+import { Connection, PublicKey, Transaction } from "@solana/web3.js"
 import { WalletAdapter } from "./adapters"
-import { Token } from "./token/token"
-import { sendAndConfirmTransactionViaWallet } from "./token/utils/send-and-confirm-transaction-via-wallet"
-import { TOKEN_PROGRAM_ID } from "./tokens"
+import { sendTransaction } from "./send"
+import { createAssociatedTokenAccountIx } from "./wallet"
 
 export const createTokens = async ({
   wallet,
@@ -11,31 +10,31 @@ export const createTokens = async ({
 }: {
   wallet: WalletAdapter
   connection: Connection
-  mints: PublicKey[]
+  mints: string[]
 }) => {
   const transactions = new Transaction()
-  const tokenAccounts: Account[] = []
 
-  const addToken = async (mint: PublicKey) => {
-    const token = new Token(wallet, connection, mint, TOKEN_PROGRAM_ID)
-
+  const addToken = async (mint: string) => {
+    console.log('mint', mint)
     // todo: assoc here
-    const [_, tokenAccount, transaction] = await token.createAccount(
-      wallet.publicKey
+    const [transaction] = await createAssociatedTokenAccountIx(
+      wallet.publicKey,
+      wallet.publicKey,
+      new PublicKey(mint)
     )
 
     transactions.add(transaction)
-    tokenAccounts.push(tokenAccount)
 
-    return { transaction, tokenAccount }
+    return { transaction }
   }
 
   await Promise.all(mints.map((mint) => addToken(mint)))
 
-  await sendAndConfirmTransactionViaWallet(
+  await sendTransaction({
     wallet,
     connection,
-    transactions,
-    ...tokenAccounts
-  )
+    transaction: transactions,
+    focusPopup: true,
+    signers: []
+  })
 }

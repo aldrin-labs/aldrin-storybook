@@ -30,17 +30,15 @@ export const getTransactionsList = ({
   const tokensToSell = getTokensToSell(tokensMap)
   const tokensToBuy = getTokensToBuy(tokensMap)
   
+  // 
   const tokensToBuyClone = [...tokensToBuy]
-
-  // console.log('tokensToSell', tokensToSell)
-  // console.log('tokensToBuy', tokensToBuy)
-  // console.log('tokensToBuyClone', tokensToBuyClone)
 
   if (!tokensToSell || !tokensToBuyClone) {
     return []
   }
 
   let allTransactions: TransactionType[] = []
+
   // we'll change orderbook in each transaction
   let orderbooksClone = { ...orderbooks }
 
@@ -55,6 +53,7 @@ export const getTransactionsList = ({
   let i = 0
 
   tokensToSell.forEach((elSellRaw) => {
+    // we need to mutate elSell to keep in updated on every buy token iteration
     const elSell = { ...elSellRaw }
 
     while (elSell.isSold === false) {
@@ -168,7 +167,7 @@ export const getTransactionsList = ({
             pricePrecision,
             loadedMarket?.tickSize
           )
-          // console.log('price', price)
+
           // update orderbook data due to making some updates in this transaction
           // so in next t-on this orders will be included
           orderbooksClone = updatedOrderbooks
@@ -187,29 +186,15 @@ export const getTransactionsList = ({
               loadedMarket?.minOrderSize
             ) || 0
 
-          console.log('tokensMap, quote', tokensMap, quote)
-
           const totalRaw = +(amount * price).toFixed(
             tokensMap[quote].decimalCount
           )
-
-          // getting slippage
-          // const poolsAmountDiff = side === 'sell' ? poolPair.tokenA / amountRaw : poolPair.tokenB / totalRaw
-          // const rawSlippage = 100 / (poolsAmountDiff + 1)
-          // console.log('poolsAmountDiff: ', poolsAmountDiff)
-          // console.log('rawSlippage: ', rawSlippage)
-          // console.log('slippage: ', slippage)
-          // console.log('price', price)
 
           const total = +(
             amount *
             price *
             (side === 'sell' ? slippageMultiplicator : 1)
           )
-
-          // console.log(
-          //   `side ${side}, amountRaw: ${amountRaw}, totalRaw ${totalRaw}, finalAmount ${amount}, finalTotal ${total}`
-          // )
 
           tempToken.amount =
             (base === pathSymbol ? total : amount) * feeMultiplicator
@@ -240,6 +225,7 @@ export const getTransactionsList = ({
             isNotEnoughLiquidity,
             isIntermidiate,
             priceIncludingCurveAndFees: priceIncludingCurveAndFees,
+            depthLevel: index,
           })
         }
       )

@@ -8,6 +8,7 @@ import { addPercentageToPricesInOrderbooks } from './addPercentageToPricesInOrde
 import { getOrderbookForMarkets } from './getOrderbookForMarkets'
 import { getTransactionsList } from './getTransactionsList'
 import { loadMarketsByNames } from './loadMarketsByNames'
+import { mergeRebalanceTransactions } from './mergeRebalanceTransactions'
 import { sortRebalanceTransactions } from './sortRebalanceTransactions'
 
 export const getTransactionsListWithPrices = async ({
@@ -21,7 +22,6 @@ export const getTransactionsListWithPrices = async ({
   tokensMap: TokensMapType
   allMarketsMap: MarketsMap
 }): Promise<TransactionType[]> => {
-
   // getting names of markets to load
   const rebalanceTransactionsList = getTransactionsList({
     orderbooks: {},
@@ -58,13 +58,19 @@ export const getTransactionsListWithPrices = async ({
     loadedMarketsMap,
   })
 
-  const sortedRebalanceTransactions = sortRebalanceTransactions(
+  console.log('rebalanceAllTransactionsListWithPrices', rebalanceAllTransactionsListWithPrices)
+
+  const mergedRebalanceTransactions = mergeRebalanceTransactions(
     rebalanceAllTransactionsListWithPrices
   )
 
+  const sortedRebalanceTransactions = sortRebalanceTransactions(
+    mergedRebalanceTransactions
+  )
+
   console.log(
-    'data second rebalanceAllTransactionsPrices',
-    rebalanceAllTransactionsListWithPrices
+    'data second mergedRebalanceTransactions',
+    mergedRebalanceTransactions
   )
 
   return sortedRebalanceTransactions
