@@ -51,7 +51,6 @@ const BalancesTable = (props) => {
 
       await notify({
         message: 'Successfully settled funds',
-        description: 'No description',
         type: 'success',
       })
     } catch (e) {

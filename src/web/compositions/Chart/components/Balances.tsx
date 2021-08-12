@@ -203,7 +203,6 @@ export const Balances = ({
       if (!!result) {
         notify({
           message: 'Settling funds successfully done',
-          description: 'No description',
           type: 'success',
         })
       }

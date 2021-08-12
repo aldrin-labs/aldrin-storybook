@@ -1296,12 +1296,6 @@
     "deprecated": false
   },
   {
-    "name": "TGT/USDC",
-    "address": "GfokD5aka4n8kqCgRiJtMYi4Xd1ZLBatkynxFGyKdNTc",
-    "programId": "9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin",
-    "deprecated": false
-  },
-  {
     "name": "WOO/USDC",
     "address": "2Ux1EYeWsxywPKouRCNiALCZ1y3m563Tc4hq1kQganiq",
     "programId": "9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin",
@@ -1322,12 +1316,6 @@
   {
     "name": "DGX/USDC",
     "address": "3B1diUDpBciWLQLjPv28h9XPFsymxK8PSeUCnQJBxiJs",
-    "programId": "9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin",
-    "deprecated": false
-  },
-  {
-    "name": "PARTI/USDC",
-    "address": "9xgxfrcUEMbyXg8FQsuyhNXxQ13Gy4kBqXJgZnXDdzSZ",
     "programId": "9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin",
     "deprecated": false
   },
@@ -1362,8 +1350,8 @@
     "deprecated": false
   },
   {
-    "name": "FROG/SOL",
-    "address": "2Si6XDdpv5zcvYna221eZZrsjsp5xeYoz9W1TVdMdbnt",
+    "name": "MNGO/USDC",
+    "address": "3d4rzwpy9iGdCZvgxcu7B1YocYffVLsQXPXkBZKt2zLc",
     "programId": "9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin",
     "deprecated": false
   }
