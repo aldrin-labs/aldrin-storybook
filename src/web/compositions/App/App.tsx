@@ -223,7 +223,7 @@ const Footer = (props) => {
       <Link
         target="_blank"
         rel="noopener noreferrer"
-        href="https://cryptocurrencies.ai/"
+        href="https://aldrin.com/"
       >
         Cryptocurrencies.Ai
       </Link>

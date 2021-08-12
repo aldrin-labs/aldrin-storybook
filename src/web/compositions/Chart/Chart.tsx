@@ -107,7 +107,7 @@ function ChartPageComponent(props: any) {
 
   useEffect(() => {
     return () => {
-      document.title = 'Cryptocurrencies AI'
+      document.title = 'Aldrin'
     }
   }, [props.marketType])
 
