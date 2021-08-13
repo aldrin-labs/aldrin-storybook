@@ -256,14 +256,14 @@ export const CardsPanel = ({ theme }) => {
                 SunWallet
               </NavLinkButton>
             )} */}
-            <Token
+            <NavLinkButton
               theme={theme}
               data-tut="token"
-              page={'token'}
               pathname={location.pathname}
+              page={'token'}
               component={(props) => (
                 <a
-                  href="https://ccai.cryptocurrencies.ai/"
+                  href="https://rin.aldrin.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                   {...props}
@@ -271,7 +271,7 @@ export const CardsPanel = ({ theme }) => {
               )}
             >
               Token
-            </Token>
+            </NavLinkButton>
           </div>
         </CustomCard>
 
