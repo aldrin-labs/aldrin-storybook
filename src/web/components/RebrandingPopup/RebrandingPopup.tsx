@@ -1,23 +1,47 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { Theme } from '@material-ui/core'
-import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-
-import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-
-import {
-  Title,
-  StyledPaper,
-  BlueButton,
-} from '@sb/compositions/Chart/components/WarningPopup'
-import MainLogo from '@icons/Aldrin.svg'
-import AustronautHelmet from '@icons/austronautHelmet.png'
 import { compose } from 'recompose'
 import { withTheme } from '@material-ui/core'
 
-const PaperForRebrandingPopup = styled(StyledPaper)`
+import { Dialog, Paper, Theme } from '@material-ui/core'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+
+import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
+import MainLogo from '@icons/Aldrin.svg'
+import AustronautHelmet from '@icons/austronautHelmet.png'
+
+const DialogWrapper = styled(({ ...props }) => <Dialog {...props} />)`
+  border-radius: 100px;
+`
+
+const WhiteText = styled.span`
+  font-family: Avenir Next;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.01rem;
+  color: #f8faff;
+`
+
+const Title = styled(({ ...props }) => <span {...props} />)`
+  font-family: Avenir Next Bold;
+  line-height: 4rem;
+  letter-spacing: 0.01rem;
+  color: #f8faff;
+  text-transform: none;
+  font-size: 2.5rem;
+`
+
+const PaperForRebrandingPopup = styled(Paper)`
+  border-radius: 2rem;
+  height: auto;
+  background: #222429;
+  border: 0.1rem solid #3a475c;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 2rem;
   padding: 4rem;
   width: 80rem;
   flex-direction: row;
