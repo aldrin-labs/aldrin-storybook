@@ -18,7 +18,7 @@ import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDia
 import { Row } from '../Inputs/PreferencesSelect/index.styles'
 import { Loading } from '@sb/components'
 
-const StyledPaper = styled(Paper)`
+export const StyledPaper = styled(Paper)`
   border-radius: 2rem;
   width: 60rem;
   height: auto;
@@ -30,7 +30,8 @@ const StyledPaper = styled(Paper)`
   margin: 2rem;
   padding: 3rem;
 `
-const Title = styled(({ ...props }) => <MainTitle {...props} />)`
+
+export const Title = styled(({ ...props }) => <MainTitle {...props} />)`
   text-transform: none;
   font-size: 2.5rem;
   margin-bottom: 0;
