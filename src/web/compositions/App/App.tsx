@@ -57,6 +57,7 @@ import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
 import { MobileNavBar } from '../Chart/components/MobileNavbar/MobileNavbar'
 import useWindowSize from '@webhooks/useWindowSize'
 import { RebrandingPopup } from '@sb/components/RebrandingPopup/RebrandingPopup'
+import { useLocalStorageState } from '@sb/dexUtils/utils'
 
 const version = `10.9.145`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
@@ -92,6 +93,10 @@ const AppRaw = ({
   location: { pathname: currentPage, search },
 }: any) => {
   const [isDevUrlPopupOpen, openDevUrlPopup] = useState(true)
+  const [
+    isRebrandingPopupOpen,
+    setIsRebrandingPopupOpen,
+  ] = useLocalStorageState('isRebrandingPopupOpen', true)
   // const [isMigrationToNewUrlPopupOpen, openMigrationToNewUrlPopup] = useState(
   //   true
   // )
@@ -186,7 +191,10 @@ const AppRaw = ({
                             }}
                           />
                         )}
-                        <RebrandingPopup  open={true} />
+                        <RebrandingPopup
+                          open={isRebrandingPopupOpen}
+                          onClose={() => setIsRebrandingPopupOpen(false)}
+                        />
                         {/* {!isWalletMigrationToNewUrlPopupDone && (
                         <WalletMigrationPopup
                           open={isMigrationToNewUrlPopupOpen}

@@ -76,6 +76,8 @@ const MarketStatsContainer = styled.div`
   height: 6rem;
   padding: 0 3rem;
   border-bottom: ${(props) => props.theme.palette.border.new};
+  background: ${props => props.theme.palette.background.paper};
+
   @media (max-width: 600px) {
     display: none;
   }
