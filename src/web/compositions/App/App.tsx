@@ -56,6 +56,7 @@ import { TokenRegistryProvider } from '@sb/dexUtils/tokenRegistry'
 import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
 import { MobileNavBar } from '../Chart/components/MobileNavbar/MobileNavbar'
 import useWindowSize from '@webhooks/useWindowSize'
+import { RebrandingPopup } from '@sb/components/RebrandingPopup/RebrandingPopup'
 
 const version = `10.9.145`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
@@ -185,6 +186,7 @@ const AppRaw = ({
                             }}
                           />
                         )}
+                        <RebrandingPopup  open={true} />
                         {/* {!isWalletMigrationToNewUrlPopupDone && (
                         <WalletMigrationPopup
                           open={isMigrationToNewUrlPopupOpen}

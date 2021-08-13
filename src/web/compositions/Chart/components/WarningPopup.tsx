@@ -37,8 +37,14 @@ export const Title = styled(({ ...props }) => <MainTitle {...props} />)`
 `
 
 export const BlueButton = styled(
-  ({ disabled, showLoader, children, ...props }) => (
-    <BtnCustom {...props}>
+  ({
+    disabled,
+    showLoader,
+    children,
+    textTransform = 'capitalize',
+    ...props
+  }) => (
+    <BtnCustom textTransform={textTransform} {...props}>
       {showLoader ? (
         <Loading
           color={'#fff'}
@@ -53,7 +59,6 @@ export const BlueButton = styled(
 )`
   font-size: 1.4rem;
   height: 4.5rem;
-  text-transform: capitalize;
   background-color: ${(props: { disabled: boolean; theme: Theme }) =>
     !props.disabled
       ? props.theme.palette.blue.serum
