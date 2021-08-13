@@ -337,7 +337,7 @@ const TopBar = ({ theme }) => {
                   <span style={{ fontFamily: 'Avenir Next Demi' }}>
                     Wallet™
                   </span>{' '}
-                  &nbsp; by Cryptocurrencies.Ai
+                  &nbsp; by Aldrin.com
                 </>
               ) : isSolletActive ? (
                 'Sollet Wallet'

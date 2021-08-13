@@ -9,7 +9,7 @@ export default (
     <Typography>
       These Terms of Use constitute a legally binding agreement made between
       you, whether personally or on behalf of an entity (&quot;you&quot;) and
-      Cryptocurrencies.Ai Inc. (&quot;Company&quot;, &quot;we&quot;,
+      Aldrin.com Inc. (&quot;Company&quot;, &quot;we&quot;,
       &quot;us&quot;, or &quot;our&quot;), concerning your access to and use of
       the https://aldrin.com website as well as any other media form, media
       channel, mobile website or mobile application related, linked, or
@@ -106,8 +106,8 @@ export default (
     </Typography>
     <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
       If you are unsatisfied with our services, please email us at&nbsp;
-      <a href="mailto:contact@cryptocurrencies.ai">
-        contact@cryptocurrencies.ai
+      <a href="mailto:contact@aldrin.com">
+        contact@aldrin.com
       </a>
     </Typography>
     <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
@@ -675,8 +675,8 @@ export default (
     </Typography>
 
     <Typography>
-      <a href="mailto:contact@cryptocurrencies.ai">
-        contact@cryptocurrencies.ai{' '}
+      <a href="mailto:contact@aldrin.com">
+        contact@aldrin.com{' '}
       </a>
     </Typography>
   </>
