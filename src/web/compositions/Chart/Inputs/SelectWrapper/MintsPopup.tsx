@@ -10,7 +10,7 @@ export const MintsPopup = ({
   theme,
   onClose,
   open,
-  symbol = 'CCAI/USDC',
+  symbol = 'RIN/USDC',
   marketAddress,
 }: {
   theme: Theme
