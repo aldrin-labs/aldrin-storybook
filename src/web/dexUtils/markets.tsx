@@ -52,7 +52,7 @@ const USE_MARKETS = _IGNORE_DEPRECATED
   : [
       {
         address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
-        name: 'CCAI/USDC',
+        name: 'RIN/USDC',
         programId: new PublicKey(
           '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'
         ),
@@ -306,7 +306,7 @@ function getMarketDetails(market, marketInfos) {
 }
 
 const getPairFromLocation = () => {
-  let pair = 'CCAI_USDC'
+  let pair = 'RIN_USDC'
   const { pathname } = location
 
   const isChartPage = pathname.includes('chart')
