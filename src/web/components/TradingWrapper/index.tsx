@@ -54,7 +54,7 @@ class SimpleTabs extends React.Component<any, any> {
     mode: 'market' | 'limit'
   } = {
     side: 'buy',
-    mode: 'market',
+    mode: 'limit',
     leverage: false,
     reduceOnly: false,
     orderMode: 'ioc',
@@ -259,20 +259,6 @@ class SimpleTabs extends React.Component<any, any> {
                 <TerminalModeButton
                   style={{ width: '10rem' }}
                   theme={theme}
-                  active={mode === 'market'}
-                  onClick={() => {
-                    this.setState({
-                      mode: 'market',
-                      orderMode: 'ioc',
-                      TVAlertsBotEnabled: false,
-                    })
-                  }}
-                >
-                  Market
-                </TerminalModeButton>
-                <TerminalModeButton
-                  style={{ width: '10rem' }}
-                  theme={theme}
                   active={mode === 'limit'}
                   onClick={() => {
                     this.setState({
@@ -286,6 +272,20 @@ class SimpleTabs extends React.Component<any, any> {
                   }}
                 >
                   Limit
+                </TerminalModeButton>
+                <TerminalModeButton
+                  style={{ width: '10rem' }}
+                  theme={theme}
+                  active={mode === 'market'}
+                  onClick={() => {
+                    this.setState({
+                      mode: 'market',
+                      orderMode: 'ioc',
+                      TVAlertsBotEnabled: false,
+                    })
+                  }}
+                >
+                  Market
                 </TerminalModeButton>
               </div>
               <div
