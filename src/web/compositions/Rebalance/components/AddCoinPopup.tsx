@@ -72,9 +72,7 @@ export const AddCoinPopup = ({ theme, open, close }) => {
           Cancel{' '}
         </BtnCustom>
         <a
-          href={
-            'https://develop.wallet.cryptocurrencies.ai/wallet#add_token_to_rebalance'
-          }
+          href={'https://wallet.aldrin.com/wallet#add_token_to_rebalance'}
           target="_blank"
           rel="noopener noreferrer"
           style={{ textDecoration: 'none', width: 'calc(50% - 1rem)' }}

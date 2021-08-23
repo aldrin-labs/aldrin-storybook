@@ -142,6 +142,7 @@ const MarketBlock = ({ theme, activeExchange = 'serum', marketType = 0 }) => {
         height: '6rem',
         padding: '0 3rem',
         borderBottom: theme.palette.border.new,
+        background: theme.palette.background.paper,
       }}
     >
       <Row justify="flex-start">

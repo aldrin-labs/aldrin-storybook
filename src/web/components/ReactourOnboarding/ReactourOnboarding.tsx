@@ -311,7 +311,7 @@ export const tourConfig = [
       <Container>
         <Block>Wallet</Block>
         <Text padding={'1rem 1.5rem'}>
-          Connect your Cryptocurrencies.Ai wallet here to start trading.
+          Connect your Aldrin.com wallet here to start trading.
         </Text>
         <Text padding={'1rem 1.5rem'}>
           Note: remember to create the address of token you want to trade before

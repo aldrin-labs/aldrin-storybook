@@ -12,8 +12,8 @@ export function CcaiExtensionAdapter(_, network) {
     connect: () => {
       window.open('https://chrome.google.com/webstore/detail/cryptocurrenciesai-wallet/oomlbhdllfeiglglhhaacafbkkbibhel', '_blank');
       notify({
-        message: 'Ccai Extension Error',
-        description: 'Please install the Ccai Extension for Chrome',
+        message: 'Aldrin Extension Error',
+        description: 'Please install the Aldrin Extension for Chrome',
       });
     }
   }

@@ -105,7 +105,7 @@ function ChartPageComponent(props: any) {
 
   useEffect(() => {
     return () => {
-      document.title = 'Cryptocurrencies AI'
+      document.title = 'Aldrin'
     }
   }, [props.marketType])
 
@@ -140,7 +140,7 @@ function ChartPageComponent(props: any) {
   const setCorrectMarketAddress = async () => {
     const pair = !!location.pathname.split('/')[3]
       ? location.pathname.split('/')[3]
-      : 'CCAI_USDC'
+      : 'RIN_USDC'
 
     const userMarkets = getUserCustomMarketsQuery.getUserCustomMarkets.map(
       ({ publicKey, marketId, isPrivate, ...rest }) => ({
@@ -168,7 +168,7 @@ function ChartPageComponent(props: any) {
     )
 
     if (!selectedMarketFromUrl) {
-      history.push('/chart/spot/CCAI_USDC')
+      history.push('/chart/spot/RIN_USDC')
       return
     }
 

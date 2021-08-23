@@ -23,8 +23,12 @@ import { updateThemeMode } from '@core/graphql/mutations/chart/updateThemeMode'
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
 import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
 
-import { useWallet } from '@sb/dexUtils/wallet'
-import { useConnectionConfig } from '@sb/dexUtils/connection'
+import { DEFAULT_MARKET } from '@sb/dexUtils/markets'
+import { useWallet, WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
+import { ENDPOINTS, useConnectionConfig } from '@sb/dexUtils/connection'
+import { Line } from '@sb/compositions/AnalyticsRoute/index.styles'
+import OvalSelector from '@sb/components/OvalSelector'
+import AldrinLogo from '@icons/Aldrin.svg'
 
 import SerumCCAILogo from '@icons/serumCCAILogo.svg'
 import LightLogo from '@icons/lightLogo.svg'
@@ -76,10 +80,16 @@ export const NavBarALink = styled(({ style, ...props }) => <a {...props} />)`
   }
 `
 
-const LinkBlock = styled.a`
-  display: flex;
-  justify-content: center;
+const Token = styled.a`
   height: 100%;
+  width: 10rem;
+  border-radius: 0.7rem;
+  background: linear-gradient(106.89deg, #5eb5a8 17.87%, #3862c1 82.13%);
+  font-family: 'Avenir Next Demi';
+  color: #fff;
+  padding: 1rem 0;
+  text-align: center;
+  font-size: 1.2rem;
 `
 
 const RedButton = styled((props) => (
@@ -124,15 +134,16 @@ export const CardsPanel = ({ theme }) => {
           <Link
             to={'/'}
             style={{
-              padding: '0.5rem 0',
+              width: '13rem',
               height: '100%',
             }}
           >
             <img
               style={{
+                width: '100%',
                 height: '100%',
               }}
-              src={isDarkTheme ? SerumCCAILogo : LightLogo}
+              src={isDarkTheme ? AldrinLogo : LightLogo}
             />
           </Link>
           <Row
@@ -248,11 +259,11 @@ export const CardsPanel = ({ theme }) => {
             <NavLinkButton
               theme={theme}
               data-tut="token"
-              page={'token'}
               pathname={location.pathname}
+              page={'token'}
               component={(props) => (
                 <a
-                  href="https://ccai.cryptocurrencies.ai/"
+                  href="https://rin.aldrin.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                   {...props}
@@ -278,12 +289,7 @@ export const CardsPanel = ({ theme }) => {
 }
 
 const TopBar = ({ theme }) => {
-  const {
-    connected,
-    wallet,
-    providerUrl,
-    updateProviderUrl,
-  } = useWallet()
+  const { connected, wallet, providerUrl, updateProviderUrl } = useWallet()
 
   const { endpoint, setEndpoint } = useConnectionConfig()
 
@@ -331,7 +337,7 @@ const TopBar = ({ theme }) => {
                   <span style={{ fontFamily: 'Avenir Next Demi' }}>
                     Wallet™
                   </span>{' '}
-                  &nbsp; by Cryptocurrencies.Ai
+                  &nbsp; by Aldrin.com
                 </>
               ) : isSolletActive ? (
                 'Sollet Wallet'

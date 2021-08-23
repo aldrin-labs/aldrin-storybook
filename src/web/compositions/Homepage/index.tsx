@@ -51,7 +51,7 @@ export const Homepage = () => {
         >
           <NewLink to="/chart">Trading</NewLink>
           <StyledA
-            href={'https://wallet.cryptocurrencies.ai'}
+            href={'https://wallet.aldrin.com'}
             target="_blank"
             rel="noopener noreferrer"
           >
