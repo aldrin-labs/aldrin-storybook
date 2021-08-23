@@ -114,15 +114,15 @@ export const WarningPopup = ({
           </>
         ) : isPoolsPage ? (
           <WhiteText theme={theme}>
-            On Cryptocurrencies.Ai DEX anyone can create their own market and
-            pool for this market. This pool is one of those unofficial custom
-            pools. Use at your own risk.
+            On Aldrin.com DEX anyone can create their own market and pool for
+            this market. This pool is one of those unofficial custom pools. Use
+            at your own risk.
           </WhiteText>
         ) : (
           <WhiteText theme={theme}>
-            On Cryptocurrencies.Ai DEX anyone can create their own market and
-            pool for this market. This pool is one of those unofficial custom
-            pools. Use at your own risk.
+            On Aldrin.com DEX anyone can create their own market and pool for
+            this market. This pool is one of those unofficial custom pools. Use
+            at your own risk.
           </WhiteText>
         )}
       </RowContainer>

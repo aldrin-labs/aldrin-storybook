@@ -6,7 +6,7 @@ export default (
     Effective date: August 28, 2018
     <br />
     <br />
-    Cryptocurrencies.Ai Inc. ("us", "we", or "our") operates the
+    Aldrin.com Inc. ("us", "we", or "our") operates the
     https://aldrin.com/ website (the "Service").
     <br />
     <br />
@@ -79,7 +79,7 @@ export default (
     <Typography gutterBottom={true} variant="h5">
       Use of Data
     </Typography>
-    Cryptocurrencies.Ai Inc. uses the collected data for various purposes:
+    Aldrin.com Inc. uses the collected data for various purposes:
     <br />
     <br />
     <ul>
@@ -117,7 +117,7 @@ export default (
     information represents your agreement to that transfer.
     <br />
     <br />
-    Cryptocurrencies.Ai Inc. will take all steps reasonably necessary to ensure
+    Aldrin.com Inc. will take all steps reasonably necessary to ensure
     that your data is treated securely and in accordance with this Privacy
     Policy and no transfer of your Personal Data will take place to an
     organization or a country unless there are adequate controls in place
@@ -130,12 +130,12 @@ export default (
     <Typography gutterBottom={true} variant="h6">
       Legal Requirements
     </Typography>
-    Cryptocurrencies.Ai Inc. may disclose your Personal Data in the good faith
+    Aldrin.com Inc. may disclose your Personal Data in the good faith
     belief that such action is necessary to:
     <ul>
       <li>To comply with a legal obligation</li>
       <li>
-        To protect and defend the rights or property of Cryptocurrencies.Ai Inc.
+        To protect and defend the rights or property of Aldrin.com Inc.
       </li>
       <li>
         To prevent or investigate possible wrongdoing in connection with the

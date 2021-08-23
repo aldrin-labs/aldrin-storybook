@@ -38,9 +38,9 @@ const _sortList = ({ sortBy, sortDirection, data }) => {
     if (pairObjectB.symbol.contentToSort === 'All markets')
       return isASCSort ? -1 : 1
 
-    if (pairObjectA.symbol.contentToSort === 'CCAI_USDC')
+    if (pairObjectA.symbol.contentToSort === 'RIN_USDC')
       return isASCSort ? 1 : -1
-    if (pairObjectB.symbol.contentToSort === 'CCAI_USDC')
+    if (pairObjectB.symbol.contentToSort === 'RIN_USDC')
       return isASCSort ? -1 : 1
 
     if (sortBy === 'volume24hChange') {
@@ -60,7 +60,7 @@ const _sortList = ({ sortBy, sortDirection, data }) => {
   }
 
   // const ccaiIndex = newList.findIndex(
-  //   (v) => v.symbol.contentToSort === 'CCAI_USDC'
+  //   (v) => v.symbol.contentToSort === 'RIN_USDC'
   // )
 
   // if (ccaiIndex === -1) return newList

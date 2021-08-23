@@ -235,7 +235,7 @@ const Footer = (props) => {
         rel="noopener noreferrer"
         href="https://aldrin.com/"
       >
-        Cryptocurrencies.Ai
+        Aldrin.com
       </Link>
       <Link
         href="https://t.me/CCAI_Official"

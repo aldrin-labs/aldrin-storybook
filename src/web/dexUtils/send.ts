@@ -343,7 +343,7 @@ export const validateVariablesForPlacingOrder = ({
     market?.tickSize?.toFixed(getDecimalCount(market.tickSize)) ||
     market?.tickSize
 
-  if (pair === 'CCAI_USDC' && !isCCAITradingEnabled()) {
+  if (pair === 'RIN_USDC' && !isCCAITradingEnabled()) {
     notify({
       message: 'Please, wait until 2pm UTC time before trading CCAI',
       type: 'error',

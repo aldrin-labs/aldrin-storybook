@@ -352,6 +352,10 @@ export const combineSelectWrapperData = ({
   processedData = processedData.filter((el) =>
     filterDataBySymbolForDifferentDeviders({ searchValue, symbol: el.symbol })
   )
+
+
+  processedData = processedData.filter(el => el.symbol !== 'CCAI_USDC')
+
   const filtredData = processedData.map((el) => {
     const {
       symbol = '',
@@ -466,9 +470,17 @@ export const combineSelectWrapperData = ({
         render: (
           <Row direction={'column'} align={'initial'}>
             {baseTokenInfo && baseTokenInfo?.name && (
-              <StyledSymbol>
-                {baseTokenInfo?.name.replace('(Sollet)', '')}
-              </StyledSymbol>
+              <span
+                style={{
+                  fontSize: '1.3rem',
+                  textTransform: 'capitalize',
+                  color: '#96999C',
+                  fontFamily: 'Avenir Next Thin',
+                  marginBottom: '1rem',
+                }}
+              >
+                {baseTokenInfo?.name === 'Cryptocurrencies.Ai' ? 'Aldrin' : baseTokenInfo?.name.replace('(Sollet)', '')}
+              </span>
             )}
             <StyledTokenName>{marketName}</StyledTokenName>{' '}
           </Row>

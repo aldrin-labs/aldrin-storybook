@@ -258,14 +258,14 @@ export const CardsPanel = ({ theme }) => {
                 SunWallet
               </NavLinkButton>
             )} */}
-            <Token
+            <NavLinkButton
               theme={theme}
               data-tut="token"
-              page={'token'}
               pathname={location.pathname}
+              page={'token'}
               component={(props) => (
                 <a
-                  href="https://ccai.cryptocurrencies.ai/"
+                  href="https://rin.aldrin.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                   {...props}
@@ -273,7 +273,7 @@ export const CardsPanel = ({ theme }) => {
               )}
             >
               Token
-            </Token>
+            </NavLinkButton>
           </div>
         </CustomCard>
 
@@ -338,8 +338,8 @@ const TopBar = ({ theme }) => {
                 <>
                   <span style={{ fontFamily: 'Avenir Next Demi' }}>
                     Wallet™
-                  </span>
-                  &nbsp; by Cryptocurrencies.Ai
+                  </span>{' '}
+                  &nbsp; by Aldrin.com
                 </>
               ) : isSolletActive ? (
                 'Sollet Wallet'
