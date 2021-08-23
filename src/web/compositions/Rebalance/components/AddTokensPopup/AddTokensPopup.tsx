@@ -223,11 +223,15 @@ export default function AddTokenDialog({
             disabled={isDisabled}
             onClick={async () => {
               await setSending(true)
-              await createTokens({
-                wallet,
-                connection,
-                mints: selectedTokens.map((el) => el.mintAddress),
-              })
+              try {
+                await createTokens({
+                  wallet,
+                  connection,
+                  mints: selectedTokens.map((el) => el.mintAddress),
+                })
+              } catch (e) {
+                console.log('adding tokens error:', e)
+              }
               await softRefresh()
               await setSending(false)
               await onClose()
