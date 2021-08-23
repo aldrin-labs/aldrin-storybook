@@ -38,6 +38,8 @@ import { LoadingTransactions } from './LoadingTransactions'
 import { Placeholder } from '@sb/components/TraidingTerminal/styles'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
+import { getTransactionState } from '../../utils/getTransactionState'
+import { isTransactionWithError } from '../../utils/isTransactionWithError'
 
 export const isWebWallet = (providerUrl: string) => {
   return (
@@ -240,24 +242,37 @@ export const RebalancePopup = ({
         </Row>
       </RowContainer>
       <RowContainer style={{ maxHeight: '40rem', overflowY: 'scroll' }}>
-        {rebalanceTransactionsList.map((el, i, arr) => (
-          <TransactionComponent
-            key={`${el.symbol}${el.side}${el.price}${el.slippage}${el.total}${el.amount}`}
-            symbol={el.symbol}
-            slippage={el.slippage}
-            price={el.price}
-            amount={el.amount}
-            total={el.total}
-            side={el.side}
-            theme={theme}
-            market={el.loadedMarket}
-            index={i}
-            rebalanceStep={rebalanceStep}
-            numberOfCompletedTransactions={numberOfCompletedTransactions}
-            isNotEnoughLiquidity={el.isNotEnoughLiquidity}
-            isLastTransaction={i === arr.length - 1}
-          />
-        ))}
+        {rebalanceTransactionsList.map((el, i, arr) => {
+          const numberOfFailedTransactionsBeforeCurrent = arr.filter(
+            (el, subIndex) => isTransactionWithError(el) && subIndex <= i
+          ).length
+          
+          const isTransactionCompleted =
+            numberOfCompletedTransactions >=
+            i + numberOfFailedTransactionsBeforeCurrent + 1
+
+          const transactionState = getTransactionState({
+            rebalanceStep,
+            isTransactionCompleted,
+          })
+
+          return (
+            <TransactionComponent
+              key={`${el.symbol}${el.side}${el.price}${el.slippage}${el.total}${el.amount}`}
+              symbol={el.symbol}
+              slippage={el.slippage}
+              price={el.price}
+              amount={el.amount}
+              total={el.total}
+              side={el.side}
+              theme={theme}
+              market={el.loadedMarket}
+              transactionState={transactionState}
+              isNotEnoughLiquidity={el.isNotEnoughLiquidity}
+              isLastTransaction={i === arr.length - 1}
+            />
+          )
+        })}
       </RowContainer>
       <RowContainer
         style={{ borderTop: '.1rem solid #383B45' }}

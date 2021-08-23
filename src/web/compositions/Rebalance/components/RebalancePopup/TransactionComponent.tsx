@@ -13,40 +13,6 @@ import { Loading, SvgIcon } from '@sb/components'
 import GreenCheckMark from '@icons/greenDoneMark.svg'
 import RedCross from '@icons/Cross.svg'
 
-const getTransactionState = ({
-  rebalanceStep,
-  isTransactionCompleted,
-}: {
-  rebalanceStep: RebalancePopupStep
-  isTransactionCompleted: boolean
-}): RebalancePopupStep | null => {
-  switch (rebalanceStep) {
-    case 'initial': {
-      return null
-    }
-    case 'pending': {
-      if (isTransactionCompleted) {
-        return 'done'
-      } else {
-        return 'pending'
-      }
-    }
-    case 'failed': {
-      if (isTransactionCompleted) {
-        return 'done'
-      } else {
-        return 'failed'
-      }
-    }
-    case 'done': {
-      return 'done'
-    }
-    default: {
-      return null
-    }
-  }
-}
-
 export const TransactionComponent = ({
   theme,
   symbol,
@@ -56,11 +22,9 @@ export const TransactionComponent = ({
   amount,
   total,
   market,
-  index,
-  rebalanceStep,
+  transactionState,
   isNotEnoughLiquidity,
   isLastTransaction,
-  numberOfCompletedTransactions,
 }: {
   theme: Theme
   symbol: string
@@ -70,11 +34,9 @@ export const TransactionComponent = ({
   total: number
   side: 'buy' | 'sell'
   market: Market
-  index: number
-  rebalanceStep: RebalancePopupStep
+  transactionState: RebalancePopupStep | null
   isNotEnoughLiquidity: boolean
   isLastTransaction: boolean
-  numberOfCompletedTransactions: number
 }) => {
   const isBuySide = side === 'buy'
   const [base, quote] = symbol.split('_')
@@ -83,20 +45,14 @@ export const TransactionComponent = ({
     ? 'Insufficient liquidity.'
     : `Amount < min order size (${market.minOrderSize} ${base}).`
 
-  const isTransactionCompleted = numberOfCompletedTransactions >= index + 1
-  const transactionState = getTransactionState({
-    rebalanceStep,
-    isTransactionCompleted,
-  })
-
   return (
     <Stroke showBorder={!isLastTransaction}>
       {transactionState && (
         <Row width={'2rem'}>
-          {transactionState === 'pending' ? (
-            <Loading color={'#F29C38'} size={'2rem'} />
-          ) : transactionState === 'failed' ? (
+          {transactionState === 'failed' || showError ? (
             <SvgIcon src={RedCross} width={'2rem'} height={'2rem'} />
+          ) : transactionState === 'pending' ? (
+            <Loading color={'#F29C38'} size={'2rem'} />
           ) : (
             <SvgIcon src={GreenCheckMark} width={'2rem'} height={'2rem'} />
           )}
@@ -176,16 +132,26 @@ export const TransactionComponent = ({
             </Row>
             <Row justify={'flex-end'} padding={'.3rem 0'}>
               <Text
-                color={theme.palette.grey.new}
                 style={{
                   whiteSpace: 'nowrap',
-                  paddingRight: '1rem',
                   fontSize: '1.3rem',
                 }}
               >
-                Minimum received:
+                <Text style={{ fontFamily: 'Avenir Next Demi' }}>
+                  {!isBuySide ? amount : stripDigitPlaces(total, 4)}
+                </Text>{' '}
+                {!isBuySide ? base : quote}
+              </Text>{' '}
+              <Text
+                color={theme.palette.grey.new}
+                style={{
+                  whiteSpace: 'nowrap',
+                  padding: '0 .6rem',
+                  fontSize: '1.3rem',
+                }}
+              >
+                to
               </Text>
-
               <Text
                 style={{
                   whiteSpace: 'nowrap',
