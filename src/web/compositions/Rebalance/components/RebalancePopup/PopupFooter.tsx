@@ -97,7 +97,7 @@ export const PopupFooter = ({
             fontSize: '1.9rem',
           }}
         >
-          {stripDigitPlaces(totalFeesSOL, 8)} SOL
+          {stripDigitPlaces(totalFeesSOL, 5)} SOL
         </Text>
         <SvgIcon
           src={Info}
