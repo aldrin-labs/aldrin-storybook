@@ -22,6 +22,7 @@ const AllocationLegend = ({ data, colors, theme }: LegendProps) => {
     <>
       {data?.map((tokenData, i) => (
         <RowContainer
+          height={'20%'}
           wrap={'nowrap'}
           key={`${tokenData.symbol}-${tokenData?.value}`}
         >

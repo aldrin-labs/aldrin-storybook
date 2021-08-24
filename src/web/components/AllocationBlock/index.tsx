@@ -109,8 +109,9 @@ const DonutChartWithLegend = ({
               tooltipData={sortedData}
             />
           </AllocationChartContainer>
-          <AllocationLegendContainer>
+          <AllocationLegendContainer centerRows={legendData.length <= 4}>
             <AllocationLegend
+              id={'legend'}
               theme={theme}
               data={legendData}
               colors={formattedColorsForLegend}

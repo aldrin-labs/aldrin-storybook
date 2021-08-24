@@ -7,7 +7,12 @@ const AllocationChartContainer = styled(({ ...props }) => <Row {...props} />)`
   height: 100%;
 `
 
-const AllocationLegendContainer = styled(({ ...props }) => <Row {...props} />)`
+const AllocationLegendContainer = styled(({ centerRows, ...props }) => (
+  <Row {...props} />
+))`
+  flex-direction: column;
+  justify-content: ${(props) => (props.centerRows ? 'center' : 'space-around')};
+
   width: 65%;
   height: 100%;
   padding: 2rem;
