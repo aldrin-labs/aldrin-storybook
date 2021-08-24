@@ -69,6 +69,7 @@ export const Text = styled.span`
   color: ${(props: TextProps) => props.color || '#ecf0f3'};
   white-space: ${(props) => props.whiteSpace || 'normal'};
   padding: ${(props) => props.padding || '0'};
+  letter-spacing: 0.01rem;
 `
 
 export const Input = styled.input`

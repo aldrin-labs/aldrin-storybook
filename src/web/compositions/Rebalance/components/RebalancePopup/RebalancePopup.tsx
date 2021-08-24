@@ -246,7 +246,7 @@ export const RebalancePopup = ({
           const numberOfFailedTransactionsBeforeCurrent = arr.filter(
             (el, subIndex) => isTransactionWithError(el) && subIndex <= i
           ).length
-          
+
           const isTransactionCompleted =
             numberOfCompletedTransactions >=
             i + numberOfFailedTransactionsBeforeCurrent + 1
@@ -274,14 +274,11 @@ export const RebalancePopup = ({
           )
         })}
       </RowContainer>
-      <RowContainer
-        style={{ borderTop: '.1rem solid #383B45' }}
-        padding={'2rem 2rem 0 2rem'}
-      >
+      <RowContainer style={{ borderTop: '.1rem solid #383B45' }}>
         {rebalanceStep === 'initial' && (
           <RowContainer direction={'column'}>
             {rebalanceTransactionsLoaded ? (
-              <>
+              <RowContainer padding={'2rem 2rem 0 2rem'} direction={'column'}>
                 <PopupFooter
                   theme={theme}
                   totalFeesUSD={totalFeesUSD}
@@ -294,11 +291,14 @@ export const RebalancePopup = ({
                     }
                   />
                 </RowContainer>
-              </>
+              </RowContainer>
             ) : (
               <LoadingTransactions />
             )}
-            <RowContainer margin={'2rem 0 0 0'} justify={'space-between'}>
+            <RowContainer
+              padding={'3rem 2rem 0 2rem'}
+              justify={'space-between'}
+            >
               <BtnCustom
                 theme={theme}
                 onClick={() => {
