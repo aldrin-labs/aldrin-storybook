@@ -18,7 +18,7 @@ export const CCAI_MINT: string = "E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp"
 
 export const CCAIProviderURL = MASTER_BUILD
   ? 'https://wallet.aldrin.com'
-  : 'https://develop.wallet.aldrin.com'
+  : 'https://wallet.aldrin.com'
 
 export const CCAIListingTime = 1623333600
 
