@@ -44,7 +44,12 @@ export const MeetRebalancePopup = ({
           <Title>Meet Rebalance </Title>
           <BetaLabel theme={theme} style={{ marginLeft: '1.5rem' }} />
         </Row>
-        <SvgIcon src={CloseIcon} width={'2rem'} height={'auto'} />
+        <SvgIcon
+          src={CloseIcon}
+          width={'2rem'}
+          height={'auto'}
+          style={{ cursor: 'pointer' }}
+        />
       </RowContainer>
       <RowContainer direction={'column'} style={{ marginBottom: '3rem' }}>
         <WhiteText theme={theme} style={{ color: theme.palette.white.text }}>

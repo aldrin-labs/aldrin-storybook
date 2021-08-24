@@ -138,7 +138,9 @@ export const TransactionComponent = ({
                 }}
               >
                 <Text style={{ fontFamily: 'Avenir Next Demi' }}>
-                  {!isBuySide ? amount : stripDigitPlaces(total, 4)}
+                  {!isBuySide
+                    ? stripDigitPlaces(amount, 8)
+                    : stripDigitPlaces(total, 4)}
                 </Text>{' '}
                 {!isBuySide ? base : quote}
               </Text>{' '}
@@ -159,7 +161,9 @@ export const TransactionComponent = ({
                 }}
               >
                 <Text style={{ fontFamily: 'Avenir Next Demi' }}>
-                  {isBuySide ? amount : stripDigitPlaces(total, 4)}
+                  {isBuySide
+                    ? stripDigitPlaces(amount, 8)
+                    : stripDigitPlaces(total, 4)}
                 </Text>{' '}
                 {isBuySide ? base : quote}
               </Text>

@@ -44,10 +44,12 @@ const HeaderRow = ({
   theme,
   openAddCoinPopup,
   loadingRebalanceData,
+  resetTargetAllocation,
 }: {
   theme: Theme
   openAddCoinPopup: (arg: boolean) => {}
   loadingRebalanceData: boolean
+  resetTargetAllocation: () => void
 }) => (
   <RowContainer
     height={'10rem'}
@@ -64,6 +66,23 @@ const HeaderRow = ({
       )}
     </Row>
     <Row>
+      <BtnCustom
+        needMinWidth={false}
+        btnWidth="auto"
+        height="auto"
+        fontSize="1.4rem"
+        padding=".4rem 1rem"
+        margin="0 2rem 0 0"
+        borderColor={'inherit'}
+        btnColor={theme.palette.blue.serum}
+        backgroundColor={'inherit'}
+        textTransform={'none'}
+        transition={'all .4s ease-out'}
+        style={{ whiteSpace: 'nowrap' }}
+        onClick={resetTargetAllocation}
+      >
+        Reset to current allocation
+      </BtnCustom>
       <BtnCustom
         theme={theme}
         onClick={() => {
@@ -101,24 +120,7 @@ const FooterRow = ({
     justify={'space-between'}
     align="center"
     style={{ borderTop: '0.1rem solid #383B45' }}
-  >
-    <BtnCustom
-      needMinWidth={false}
-      btnWidth="auto"
-      height="auto"
-      fontSize="1.4rem"
-      padding=".4rem 1rem"
-      borderColor={'inherit'}
-      btnColor={theme.palette.blue.serum}
-      backgroundColor={'inherit'}
-      textTransform={'none'}
-      transition={'all .4s ease-out'}
-      style={{ whiteSpace: 'nowrap' }}
-      onClick={resetTargetAllocation}
-    >
-      Reset to current allocation
-    </BtnCustom>
-  </RowContainer>
+  ></RowContainer>
 )
 
 export const TokenSymbolColumn = ({ symbol }: { symbol: string }) => (
@@ -489,6 +491,7 @@ const RebalanceTable = ({
         justify={'end'}
       >
         <MemoizedHeaderRow
+          resetTargetAllocation={resetTargetAllocation}
           loadingRebalanceData={loadingRebalanceData}
           resetTargetAllocation={resetTargetAllocation}
           openAddCoinPopup={async (...args) => {
@@ -498,7 +501,7 @@ const RebalanceTable = ({
         />
         <RowContainer
           align="flex-start"
-          style={{ height: 'calc(100% - 15rem)', overflow: 'scroll' }}
+          style={{ height: 'calc(100% - 10rem)', overflow: 'scroll' }}
         >
           <Table>
             <MemoizedTableHeaderRow />
@@ -518,10 +521,10 @@ const RebalanceTable = ({
             </TableBody>
           </Table>
         </RowContainer>
-        <MemoizedFooterRow
+        {/* <MemoizedFooterRow
           theme={theme}
           resetTargetAllocation={resetTargetAllocation}
-        />
+        /> */}
       </BlockTemplate>
       <AddTokenDialog
         theme={theme}

@@ -248,8 +248,9 @@ export const RebalancePopup = ({
           ).length
 
           const isTransactionCompleted =
-            numberOfCompletedTransactions >=
-            i + numberOfFailedTransactionsBeforeCurrent + 1
+            numberOfCompletedTransactions +
+              numberOfFailedTransactionsBeforeCurrent >=
+            i + 1
 
           const transactionState = getTransactionState({
             rebalanceStep,

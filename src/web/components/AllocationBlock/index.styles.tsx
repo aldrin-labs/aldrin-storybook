@@ -18,7 +18,7 @@ const AllocationLegendContainer = styled(({ centerRows, ...props }) => (
   padding: 2rem;
 `
 export const ChartContainer = styled(RowContainer)`
-  height: 30rem;
+  height: 100%;
 `
 
 export { AllocationChartContainer, AllocationLegendContainer }
