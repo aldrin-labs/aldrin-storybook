@@ -475,7 +475,7 @@ export async function placeOrder({
       amount: size,
       baseSymbol: pair.split('_')[0],
       quoteSymbol: pair.split('_')[1],
-      orderType: orderType === 'ioc' ? 'market' : 'limit',
+      orderType: isMarketOrder ? 'market' : 'limit',
     },
   })
 }
