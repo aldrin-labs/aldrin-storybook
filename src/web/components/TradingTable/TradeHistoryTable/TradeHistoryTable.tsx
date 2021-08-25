@@ -87,6 +87,8 @@ const TradeHistoryTable = (props) => {
           letterSpacing: '.1rem',
           borderBottom: theme.palette.border.main,
           boxShadow: 'none',
+          paddingTop: '.8rem',
+          paddingBottom: '.8rem'
         },
         tab: {
           padding: 0,
