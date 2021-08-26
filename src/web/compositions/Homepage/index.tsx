@@ -19,6 +19,7 @@ import {
   LinkToTwitter,
   LinkToYouTube,
 } from './SocialsLinksComponents'
+import { CCAIProviderURL } from '@sb/dexUtils/utils'
 
 export const Homepage = () => {
   return (
@@ -51,7 +52,7 @@ export const Homepage = () => {
         >
           <NewLink to="/chart">Trading</NewLink>
           <StyledA
-            href={'https://wallet.aldrin.com'}
+            href={CCAIProviderURL}
             target="_blank"
             rel="noopener noreferrer"
           >

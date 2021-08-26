@@ -10,12 +10,11 @@ import {
   getNumberOfDecimalsFromNumber,
 } from '@core/utils/chartPageUtils'
 
-import { filterOpenOrders } from '@sb/components/TradingTable/TradingTable.utils'
-
 import RedArrow from '@icons/redArrow.png'
 import GreenArrow from '@icons/greenArrow.png'
 import { isDataForThisMarket } from '@sb/components/TradingTable/TradingTable.utils'
 import { Theme } from '@material-ui/core'
+import { filterOpenOrders } from '@sb/components/TradingTable/OpenOrdersTable/OpenOrdersTable.utils'
 
 // ${rowStyles}
 // ${(props: { style: CSSProperties }) =>
@@ -117,8 +116,7 @@ export default function defaultRowRenderer({
 
   const colorStyles =
     fall !== undefined
-      ?
-        {
+      ? {
           color: fall ? theme.palette.red.main : theme.palette.green.main,
         }
       : {}
@@ -265,4 +263,30 @@ export default function defaultRowRenderer({
       <div className="needHover" />
     </div>
   )
+}
+
+export const getRowHeight = ({
+  mode,
+  height,
+  isMobile,
+  side,
+  terminalViewMode,
+}: {
+  mode: string
+  height: number
+  isMobile: boolean
+  side: string
+  terminalViewMode: string
+}) => {
+  const isAsks = side === 'asks'
+
+  if (isMobile) {
+    if (isAsks) {
+      return height / 6
+    } else {
+      return terminalViewMode === 'mobileChart' ? height / 6 : height / 5
+    }
+  } else {
+    return mode === 'both' ? height / 8 : height / 18
+  }
 }

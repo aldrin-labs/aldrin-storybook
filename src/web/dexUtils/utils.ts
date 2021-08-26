@@ -18,7 +18,7 @@ export const CCAI_MINT: string = "E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp"
 
 export const CCAIProviderURL = MASTER_BUILD
   ? 'https://wallet.aldrin.com'
-  : 'https://develop.wallet.aldrin.com'
+  : 'https://wallet.aldrin.com'
 
 export const CCAIListingTime = 1623333600
 
@@ -48,6 +48,10 @@ export function floorToDecimal(value, decimals) {
 
 export function roundToDecimal(value, decimals) {
   return decimals ? Math.round(value * 10 ** decimals) / 10 ** decimals : value
+}
+
+export function getUniqueListBy(arr: any[], key: string): any[] {
+  return [...new Map(arr.map(item => [item[key], item])).values()]
 }
 
 export function getDecimalCount(value) {

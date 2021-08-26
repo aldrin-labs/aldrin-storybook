@@ -2,42 +2,21 @@ import React, { useState } from 'react'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import { useLocation } from 'react-router-dom'
-import { withTheme } from '@material-ui/styles'
-
-import QueryRenderer from '@core/components/QueryRenderer'
 import { TableWithSort } from '@sb/components'
 
-import { IProps, IState } from './TradeHistoryTable.types'
 import {
-  combineTradeHistoryTable,
-  updateTradeHistoryQuerryFunction,
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
 
 import { addSerumTransaction } from '@core/graphql/mutations/chart/addSerumTransaction'
 
-import { PaginationBlock } from '../TradingTablePagination'
-import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
-// import TradingTitle from '@sb/components/TradingTable/TradingTitle/TradingTitle'
-import { getTradeHistory } from '@core/graphql/queries/chart/getTradeHistory'
-import { TRADE_HISTORY } from '@core/graphql/subscriptions/TRADE_HISTORY'
-// import { CSS_CONFIG } from '@sb/config/cssConfig'
-
 import { useFills } from '@sb/dexUtils/markets'
-import { useWallet } from '@sb/dexUtils/wallet'
+import { combineTradeHistoryTable } from './TradeHistoryTable.utils'
 
 // @withTheme()
 const TradeHistoryTable = (props) => {
-  const {
-    tab,
-    show,
-    theme,
-    marketType,
-    arrayOfMarketIds,
-    handlePairChange,
-    keys,
-  } = props
+  const { tab, show, theme, marketType, handlePairChange } = props
 
   const fills = useFills()
   const location = useLocation()
@@ -59,9 +38,7 @@ const TradeHistoryTable = (props) => {
   const tradeHistoryProcessedData = combineTradeHistoryTable(
     dataSource,
     theme,
-    arrayOfMarketIds,
     marketType,
-    keys,
     handlePairChange
   )
 
@@ -87,6 +64,8 @@ const TradeHistoryTable = (props) => {
           letterSpacing: '.1rem',
           borderBottom: theme.palette.border.main,
           boxShadow: 'none',
+          paddingTop: '.8rem',
+          paddingBottom: '.8rem',
         },
         tab: {
           padding: 0,

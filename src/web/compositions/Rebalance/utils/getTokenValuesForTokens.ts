@@ -1,5 +1,6 @@
+import { TokenInfoWithPrice, TokenInfoWithValue } from "../Rebalance.types"
 
-export const getTokenValuesForTokens = (tokens: {symbol: string, decimals: number, amount: number, price: number | null, mint: string}[]) => {
+export const getTokenValuesForTokens = (tokens: TokenInfoWithPrice[]): TokenInfoWithValue[] => {
     const tokenWithValues = tokens.map(el => ({ 
         ...el,
         tokenValue: (el.price || 0) * el.amount

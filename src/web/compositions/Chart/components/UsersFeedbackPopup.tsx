@@ -75,7 +75,7 @@ export const FeedbackPopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={onClose}
-      onEnter={()=>{
+      onEnter={() => {
         submitFeedback(false)
         setFeedbackData({
           messagge: '',

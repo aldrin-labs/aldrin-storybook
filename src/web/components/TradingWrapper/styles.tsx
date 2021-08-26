@@ -17,6 +17,17 @@ export const TablesBlockWrapper = styled(Grid)`
   && {
     box-shadow: none !important;
   }
+
+  @media (max-width: 600px) {
+    max-width: 50%;
+    flex-basis: 50%;
+    height: 60%;
+    display: ${(props) =>
+      props.terminalViewMode === 'fullScreenTablesMobile' ||
+      props.terminalViewMode === 'mobileChart'
+        ? 'none'
+        : 'flex'};
+  }
 `
 
 export const TerminalContainer = styled.div`
@@ -92,9 +103,14 @@ export const SellTab = styled(StyledTab)`
 
 export const TerminalHeader = styled.div`
   width: 100%;
+  display: flex;
   position: relative;
   background-color: ${(props) => props.theme.palette.grey.main};
   border-bottom: ${(props) => props.theme.palette.border.main};
+
+  @media (max-width: 600px) {
+    display: none;
+  }
 `
 
 export const TerminalMainGrid = styled(({ marketType, ...rest }) => (
@@ -103,6 +119,9 @@ export const TerminalMainGrid = styled(({ marketType, ...rest }) => (
   height: calc(
     100% - ${(props) => (props.marketType === 0 ? '3.4rem' : '5.2rem')}
   );
+  @media (max-width: 600px) {
+    height: 100%;
+  }
 `
 
 export const FullHeightGrid = styled(({ needBorderRight, ...rest }) => (
@@ -111,6 +130,19 @@ export const FullHeightGrid = styled(({ needBorderRight, ...rest }) => (
   height: 100%;
   border-right: ${(props) =>
     props.needBorderRight && props.theme.palette.border.main};
+`
+export const BuyTerminal = styled(FullHeightGrid)`
+  @media (max-width: 600px) {
+    width: 100%;
+    max-width: 100%;
+    flex-basis: 100%;
+  }
+`
+
+export const SellTerminal = styled(FullHeightGrid)`
+  @media (max-width: 600px) {
+    display: none;
+  }
 `
 
 export const TerminalModeButton = styled(
@@ -219,13 +251,13 @@ export const SettingsLabel = styled(LeverageLabel)`
 export const StyledSelect = styled.select`
   width: 100%;
   background: ${(props) =>
-    (!props.disabled && props.theme.palette.white.background) ||
-    '#16253D'};
-  border: ${(props) => props.theme.palette.border.main || '.1rem solid #e0e5ec'};
+    (!props.disabled && props.theme.palette.white.background) || '#16253D'};
+  border: ${(props) =>
+    props.theme.palette.border.main || '.1rem solid #e0e5ec'};
   border-radius: 0.2rem;
   padding: 0.2rem;
   margin: 0 0.5rem;
-  color: ${(props) => props.theme.palette.grey.light ||'#7284a0'};
+  color: ${(props) => props.theme.palette.grey.light || '#7284a0'};
   font-weight: bold;
   font-size: 1rem;
   text-align: center;
@@ -278,4 +310,11 @@ export const SpotBalanceSpan = styled.span`
   font-size: 1rem;
   font-weight: bold;
   letter-spacing: 0.1rem;
+`
+
+export const TerminalComponentsContainer = styled(Grid)`
+  @media (max-width: 600px) {
+    display: ${(props) =>
+      props.terminalViewMode === 'mobileChart' ? 'none' : 'block'};
+  }
 `
