@@ -41,9 +41,16 @@ import { TokenIcon } from '@sb/components/TokenIcon'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 import LinkToSolanaExp from '../../components/LinkToSolanaExp'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { LinkToAnalytics, LinkToTwitter } from '../../components/MarketBlock'
+import { LinkToAnalytics, LinkToTwitter } from '../../components/MarketBlock/MarketBlock.styles'
 import { getNumberOfDecimalsFromNumber } from '@core/utils/chartPageUtils'
 import { MintsPopup } from './MintsPopup'
+import {
+  IconContainer,
+  StyledColumn,
+  StyledRow,
+  StyledSymbol,
+  StyledTokenName,
+} from './SelectWrapperStyles'
 
 export const selectWrapperColumnNames = [
   { label: '', id: 'favorite', isSortable: false },
@@ -447,14 +454,7 @@ export const combineSelectWrapperData = ({
                 : 'This is the official Serum market.'
             }
           >
-            <div
-              style={{
-                width: '4rem',
-                fontSize: '2rem',
-                display: 'flex',
-                justifyContent: 'center',
-              }}
-            >
+            <IconContainer>
               <TokenIcon
                 mint={mint}
                 width={'50%'}
@@ -462,7 +462,7 @@ export const combineSelectWrapperData = ({
                 isAwesomeMarket={isAwesomeMarket}
                 isAdditionalCustomUserMarket={isAdditionalCustomUserMarket}
               />
-            </div>
+            </IconContainer>
           </DarkTooltip>
         ),
       },
@@ -482,7 +482,7 @@ export const combineSelectWrapperData = ({
                 {baseTokenInfo?.name === 'Cryptocurrencies.Ai' ? 'Aldrin' : baseTokenInfo?.name.replace('(Sollet)', '')}
               </span>
             )}
-            <span>{marketName}</span>{' '}
+            <StyledTokenName>{marketName}</StyledTokenName>{' '}
           </Row>
         ),
         onClick: () =>
@@ -518,24 +518,47 @@ export const combineSelectWrapperData = ({
       price24hChange: {
         isNumber: true,
         render: (
-          <span
-            style={{
-              color:
-                +lastPriceDiff === 0
-                  ? ''
-                  : +lastPriceDiff > 0
-                  ? theme.palette.green.main
-                  : theme.palette.red.main,
-            }}
-          >
-            {`${sign24hChange}${formatNumberToUSFormat(
-              stripDigitPlaces(lastPriceDiff, pricePrecision)
-            )}`}{' '}
-            <span style={{ color: '#96999C' }}> / </span>{' '}
-            {`${sign24hChange}${formatNumberToUSFormat(
-              stripDigitPlaces(priceChangePercentage, 2)
-            )}%`}
-          </span>
+          <>
+            <StyledRow
+              style={{
+                color:
+                  +lastPriceDiff === 0
+                    ? ''
+                    : +lastPriceDiff > 0
+                    ? theme.palette.green.main
+                    : theme.palette.red.main,
+              }}
+            >
+              {`${sign24hChange}${formatNumberToUSFormat(
+                stripDigitPlaces(lastPriceDiff, pricePrecision)
+              )}`}{' '}
+              <span style={{ color: '#96999C' }}> / </span>{' '}
+              {`${sign24hChange}${formatNumberToUSFormat(
+                stripDigitPlaces(priceChangePercentage, 2)
+              )}%`}
+            </StyledRow>
+            <StyledColumn
+              style={{
+                color:
+                  +lastPriceDiff === 0
+                    ? ''
+                    : +lastPriceDiff > 0
+                    ? theme.palette.green.main
+                    : theme.palette.red.main,
+              }}
+            >
+              <span>
+                {`${formatNumberToUSFormat(
+                  stripDigitPlaces(closePrice, pricePrecision)
+                )} ${quote}`}
+              </span>
+              <span
+                style={{ fontFamily: 'Avenir Next Thin', marginTop: '1rem' }}
+              >{`${sign24hChange}${formatNumberToUSFormat(
+                stripDigitPlaces(priceChangePercentage, 2)
+              )}%`}</span>
+            </StyledColumn>
+          </>
         ),
 
         contentToSort: +priceChangePercentage,

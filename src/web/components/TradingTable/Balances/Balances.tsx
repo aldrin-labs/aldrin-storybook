@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { TableWithSort } from '@sb/components'
 
 import {
-  combineBalancesTable,
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
@@ -18,6 +17,7 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { settleFunds } from '@sb/dexUtils/send'
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
+import { combineBalancesTable } from './Balances.utils'
 
 const BalancesTable = (props) => {
   const { tab, theme, show, page, perPage, marketType } = props

@@ -4,7 +4,7 @@ import {
   SolongWalletAdapter,
   SolletExtensionAdapter,
   MathWalletAdapter,
-  CcaiWalletAdapter,
+  CommonWalletAdapter,
   CcaiExtensionAdapter,
   PhantomWalletAdapter,
   LedgerWalletAdapter,
@@ -41,50 +41,66 @@ export const WALLET_PROVIDERS = [
   {
     name: 'Wallet™',
     url: CCAIProviderURL,
-    adapter: Wallet,
+    adapter: CommonWalletAdapter,
+    isExtension: false,
+    showOnMobile: true,
     icon: WalletAldrin,
   },
   {
     name: 'Wallet™ Extension',
     url: `${CCAIProviderURL}/extension`,
     adapter: CcaiExtensionAdapter,
+    isExtension: true,
+    showOnMobile: false,
     icon: WalletAldrin,
   },
   {
     name: 'Sollet.io',
     url: 'https://www.sollet.io',
-    adapter: Wallet,
+    adapter: CommonWalletAdapter,
     icon: Sollet,
+    isExtension: false,
+    showOnMobile: true,
   },
   {
     name: 'Sollet Extension',
     url: 'https://www.sollet.io/extension',
     adapter: SolletExtensionAdapter,
     icon: Sollet,
+    isExtension: true,
+    showOnMobile: false,
   },
   {
     name: 'Ledger',
     url: 'https://www.ledger.com',
     icon: `https://cdn.jsdelivr.net/gh/solana-labs/oyster@main/assets/wallets/ledger.svg`,
     adapter: LedgerWalletAdapter,
+    isExtension: false,
+    showOnMobile: false,
   },
   {
     name: 'Phantom',
     url: 'https://www.phantom.app',
     icon: `https://www.phantom.app/img/logo.png`,
     adapter: PhantomWalletAdapter,
+    isExtension: false,
+    showOnMobile: false,
   },
   {
     name: 'MathWallet',
     url: 'https://www.mathwallet.org',
     adapter: MathWalletAdapter,
     icon: Mathwallet,
+    isExtension: false,
+    showOnMobile: false,
   },
   {
     name: 'Solong',
     url: 'https://solongwallet.com',
     adapter: SolongWalletAdapter,
     icon: Solong,
+    isExtension: false,
+    showOnMobile: false,
   },
 ]
 
@@ -514,7 +530,7 @@ export async function createAssociatedTokenAccount({
 
   return [address, txSig]
 }
-async function createAssociatedTokenAccountIx(
+export async function createAssociatedTokenAccountIx(
   fundingAddress,
   walletAddress,
   splTokenMintAddress

@@ -250,9 +250,9 @@ export const StyledLink = styled.a`
   height: 3rem;
   margin: 0 1rem;
 
-  @media only screen and (max-width: 600px) {
-    height: 5rem;
+  @media (max-width: 600px) {
     width: 5rem;
+    height: 5rem;
   }
 `
 

@@ -607,7 +607,8 @@ export async function signTransactions({
     }
   })
   return await wallet.signAllTransactions(
-    transactionsAndSigners.map(({ transaction }) => transaction)
+    transactionsAndSigners.map(({ transaction }) => transaction),
+    true
   )
 }
 
@@ -772,23 +773,23 @@ export async function sendTransaction({
   wallet,
   signers = [],
   connection,
-  sendingMessage = 'Sending transaction...',
   sentMessage = 'Transaction sent',
   successMessage = 'Transaction confirmed',
   timeout = DEFAULT_TIMEOUT,
   operationType,
   params,
+  focusPopup,
 }: {
   transaction: Transaction
   wallet: WalletAdapter
   signers: Account[]
   connection: Connection
-  sendingMessage?: string
   sentMessage?: string
   successMessage?: string
   timeout?: number
   operationType?: string
-  params: any
+  params?: any,
+  focusPopup?: boolean
 }) {
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash('max')
@@ -805,7 +806,10 @@ export async function sendTransaction({
     transaction.partialSign(...signers)
   }
 
-  const transactionFromWallet = await wallet.signTransaction(transaction)
+  const transactionFromWallet = await wallet.signTransaction(transaction, focusPopup).then((res) => {
+    window.focus()
+    return res;
+  })
 
   console.log('sendTransaction transactionFromWallet: ', transactionFromWallet)
 
