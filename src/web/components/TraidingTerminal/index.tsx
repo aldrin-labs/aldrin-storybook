@@ -326,7 +326,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
     }
 
     if (this.state.priceFromOrderbook !== this.props.priceFromOrderbook) {
-      const { priceFromOrderbook, leverage } = this.props
+      const { updateState,priceFromOrderbook, leverage } = this.props
 
       updateState({ mode: 'limit' })
 
