@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { compose } from 'recompose'
 import { Grid, Input, InputAdornment } from '@material-ui/core'
 import { withTheme } from '@material-ui/core/styles'
@@ -78,135 +78,111 @@ export const datesForQuery = {
 
 export const fiatRegexp = new RegExp(fiatPairs.join('|'), 'gi')
 
-class SelectWrapper extends React.PureComponent<IProps, IState> {
-  state: IState = {
-    searchValue: '',
-    tab: 'all',
-    tabSpecificCoin: '',
-  }
+const SelectWrapper = (props: IProps) => {
+  const [searchValue, setSearchValue] = useState('')
+  const [tab, setTab] = useState<SelectTabType>('all')
 
-  onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!`${e.target.value}`.match(/[a-zA-Z1-9]/) && e.target.value !== '') {
       return
     }
 
-    this.setState({ searchValue: e.target.value })
+    setSearchValue(e.target.value)
   }
 
-  onTabChange = (tab: SelectTabType) => {
-    // this.setState({ tab, tabSpecificCoin: '' })
-    this.setState((prevState) => ({
-      tab,
-      tabSpecificCoin: prevState.tab !== tab ? '' : prevState.tabSpecificCoin,
-    }))
+  const {
+    getSelectorSettingsQuery,
+    getSerumMarketDataQuery = { getSerumMarketData: [] },
+  } = props
+
+  const {
+    getAccountSettings: {
+      selectorSettings: { favoritePairs } = { favoritePairs: [] },
+    } = {
+      selectorSettings: { favoritePairs: [] },
+    },
+  } = getSelectorSettingsQuery || {
+    getAccountSettings: {
+      selectorSettings: { favoritePairs: [] },
+    },
   }
 
-  onSpecificCoinChange = ({ value }: { value: string }) => {
-    this.setState({ tabSpecificCoin: value })
-  }
-  render() {
-    const { searchValue, tab, tabSpecificCoin } = this.state
-    const {
-      marketsByExchangeQuery,
-      getSelectorSettingsQuery,
-      markets,
-      AWESOME_TOKENS = [],
-      setCustomMarkets,
-      customMarkets,
-      getSerumMarketDataQuery = { getSerumMarketData: [] },
-      getSerumMarketDataQueryRefetch,
-    } = this.props
+  const filtredMarketsByExchange = getSerumMarketDataQuery.getSerumMarketData.filter(
+    (el) =>
+      el.symbol &&
+      !Array.isArray(el.symbol.match(fiatRegexp)) &&
+      !excludedPairs.includes(el.symbol)
+  )
 
-    const {
-      getAccountSettings: {
-        selectorSettings: { favoritePairs } = { favoritePairs: [] },
-      } = {
-        selectorSettings: { favoritePairs: [] },
-      },
-    } = getSelectorSettingsQuery || {
-      getAccountSettings: {
-        selectorSettings: { favoritePairs: [] },
-      },
+  const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
+  const altCoinsRegexp = new RegExp(`${stableCoins.join('|')}|BTC`, 'g')
+  const altCoinsPairsMap = new Map()
+  const stableCoinsPairsMap = new Map()
+  const btcCoinsPairsMap = new Map()
+  const usdcPairsMap = new Map()
+  const usdtPairsMap = new Map()
+
+  const favoritePairsMap = favoritePairs.reduce(
+    (acc: Map<string, string>, el: string) => {
+      acc.set(el, el)
+
+      return acc
+    },
+    new Map()
+  )
+
+  filtredMarketsByExchange.forEach((el) => {
+    if (
+      stableCoinsRegexp.test(el.symbol.split('_')[0]) ||
+      stableCoinsRegexp.test(el.symbol.split('_')[1])
+    ) {
+      stableCoinsPairsMap.set(el.symbol, el.price)
     }
 
-    const filtredMarketsByExchange = getSerumMarketDataQuery.getSerumMarketData.filter(
-      (el) =>
-        el.symbol &&
-        !Array.isArray(el.symbol.match(fiatRegexp)) &&
-        !excludedPairs.includes(el.symbol)
-    )
+    if (
+      /BTC/g.test(el.symbol.split('_')[1]) &&
+      !stableCoinsRegexp.test(el.symbol.split('_')[0]) &&
+      !stableCoinsRegexp.test(el.symbol.split('_')[1])
+    ) {
+      btcCoinsPairsMap.set(el.symbol, el.price)
+    }
+    if (
+      /USDC/g.test(el.symbol.split('_')[0]) ||
+      /USDC/g.test(el.symbol.split('_')[1])
+    ) {
+      usdcPairsMap.set(el.symbol, el.price)
+    }
+    if (
+      /USDT/g.test(el.symbol.split('_')[0]) ||
+      /USDT/g.test(el.symbol.split('_')[1])
+    ) {
+      usdtPairsMap.set(el.symbol, el.price)
+    }
+    if (
+      !altCoinsRegexp.test(el.symbol) &&
+      !stableCoinsRegexp.test(el.symbol.split('_')[0]) &&
+      !stableCoinsRegexp.test(el.symbol.split('_')[1])
+    ) {
+      altCoinsPairsMap.set(el.symbol, el.price)
+    }
+  })
 
-    const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
-    const altCoinsRegexp = new RegExp(`${stableCoins.join('|')}|BTC`, 'g')
-    let altCoinsPairsMap = new Map()
-    let stableCoinsPairsMap = new Map()
-    let btcCoinsPairsMap = new Map()
-    let usdcPairsMap = new Map()
-    let usdtPairsMap = new Map()
-    const favoritePairsMap = favoritePairs.reduce(
-      (acc: Map<string, string>, el: string) => {
-        acc.set(el, el)
-
-        return acc
-      },
-      new Map()
-    )
-
-    filtredMarketsByExchange.forEach((el) => {
-      if (
-        stableCoinsRegexp.test(el.symbol.split('_')[0]) ||
-        stableCoinsRegexp.test(el.symbol.split('_')[1])
-      ) {
-        stableCoinsPairsMap.set(el.symbol, el.price)
-      }
-
-      if (
-        /BTC/g.test(el.symbol.split('_')[1]) &&
-        !stableCoinsRegexp.test(el.symbol.split('_')[0]) &&
-        !stableCoinsRegexp.test(el.symbol.split('_')[1])
-      ) {
-        btcCoinsPairsMap.set(el.symbol, el.price)
-      }
-      if (
-        /USDC/g.test(el.symbol.split('_')[0]) ||
-        /USDC/g.test(el.symbol.split('_')[1])
-      ) {
-        usdcPairsMap.set(el.symbol, el.price)
-      }
-      if (
-        /USDT/g.test(el.symbol.split('_')[0]) ||
-        /USDT/g.test(el.symbol.split('_')[1])
-      ) {
-        usdtPairsMap.set(el.symbol, el.price)
-      }
-      if (
-        !altCoinsRegexp.test(el.symbol) &&
-        !stableCoinsRegexp.test(el.symbol.split('_')[0]) &&
-        !stableCoinsRegexp.test(el.symbol.split('_')[1])
-      ) {
-        altCoinsPairsMap.set(el.symbol, el.price)
-      }
-    })
-
-    return (
-      <SelectPairListComponent
-        data={filtredMarketsByExchange}
-        favoritePairsMap={favoritePairsMap}
-        stableCoinsPairsMap={stableCoinsPairsMap}
-        btcCoinsPairsMap={btcCoinsPairsMap}
-        altCoinsPairsMap={altCoinsPairsMap}
-        usdcPairsMap={usdcPairsMap}
-        usdtPairsMap={usdtPairsMap}
-        searchValue={searchValue}
-        tab={tab}
-        tabSpecificCoin={tabSpecificCoin}
-        onChangeSearch={this.onChangeSearch}
-        onTabChange={this.onTabChange}
-        onSpecificCoinChange={this.onSpecificCoinChange}
-        {...this.props}
-      />
-    )
-  }
+  return (
+    <SelectPairListComponent
+      data={filtredMarketsByExchange}
+      favoritePairsMap={favoritePairsMap}
+      stableCoinsPairsMap={stableCoinsPairsMap}
+      btcCoinsPairsMap={btcCoinsPairsMap}
+      altCoinsPairsMap={altCoinsPairsMap}
+      usdcPairsMap={usdcPairsMap}
+      usdtPairsMap={usdtPairsMap}
+      searchValue={searchValue}
+      tab={tab}
+      onChangeSearch={onChangeSearch}
+      onTabChange={setTab}
+      {...props}
+    />
+  )
 }
 
 class SelectPairListComponent extends React.PureComponent<
@@ -465,13 +441,11 @@ class SelectPairListComponent extends React.PureComponent<
       searchValue,
       tab,
       id,
-      tabSpecificCoin,
       onChangeSearch,
       marketType,
       publicKey,
       wallet,
       history,
-      onSpecificCoinChange,
       marketsByExchangeQuery,
       setCustomMarkets,
       customMarkets,

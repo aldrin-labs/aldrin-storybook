@@ -161,13 +161,11 @@ export const filterDataBySymbolForDifferentDeviders = ({
 
 export const combineSelectWrapperData = ({
   data,
-  // updateFavoritePairsMutation,
   previousData,
   onSelectPair,
   theme,
   searchValue,
   tab,
-  tabSpecificCoin,
   stableCoinsPairsMap,
   btcCoinsPairsMap,
   altCoinsPairsMap,
@@ -176,29 +174,18 @@ export const combineSelectWrapperData = ({
   favoritePairsMap,
   marketType,
   needFiltrations = true,
-  customMarkets,
-  market,
   tokenMap,
   serumMarketsDataMap,
   allMarketsMap,
-  isMintsPopupOpen,
   setIsMintsPopupOpen,
   changeChoosenMarketData,
 }: {
   data: ISelectData
-  // updateFavoritePairsMutation: (variableObj: {
-  //   variables: {
-  //     input: {
-  //       favoritePairs: tabSpecificCoin[]
-  //     }
-  //   }
-  // }) => Promise<void>
   previousData?: ISelectData
   onSelectPair: ({ value }: { value: string }) => void
   theme: any
   searchValue: string
   tab: SelectTabType
-  tabSpecificCoin: string
   favoritePairsMap: Map<string, string>
   stableCoinsPairsMap: Map<string, string>
   btcCoinsPairsMap: Map<string, string>
@@ -222,12 +209,6 @@ export const combineSelectWrapperData = ({
         (marketInFindIndex) => marketInFindIndex.symbol === market.symbol
       ) === index
   )
-
-  if (tabSpecificCoin !== '' && tabSpecificCoin !== 'ALL' && needFiltrations) {
-    processedData = processedData.filter((el) =>
-      new RegExp(`${tabSpecificCoin}`, 'gi').test(el.symbol)
-    )
-  }
 
   if (tab !== 'all' && needFiltrations) {
     if (tab === 'alts') {
