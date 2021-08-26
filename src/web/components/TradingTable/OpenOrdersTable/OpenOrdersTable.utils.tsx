@@ -230,6 +230,7 @@ export const combineOpenOrdersTable = (
               }}
             />
           ),
+          style: { textAlign: 'right' },
           showOnMobile: false,
         },
       }
