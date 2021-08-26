@@ -1,7 +1,6 @@
 import React from 'react'
-import { compose } from 'recompose'
 
-import { IProps, IQueryProps, INextQueryProps } from './TradingTabs.types'
+import { IProps } from './TradingTabs.types'
 import {
   TitleTab,
   TitleTabsGroup,
@@ -11,18 +10,8 @@ import {
 } from './TradingTabs.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
-import { isSPOTMarketType } from '@core/utils/chartPageUtils'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import {
-  filterOpenOrders,
-  filterPositions,
-} from '@sb/components/TradingTable/TradingTable.utils'
 import ExpandTableIcon from '@icons/expandIcon.svg'
 import SqueezeTableIcon from '@icons/squeezeIcon.svg'
-
-import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
-import { getActivePositions } from '@core/graphql/queries/chart/getActivePositions'
-import { getActiveStrategies } from '@core/graphql/queries/chart/getActiveStrategies'
 
 const TradingTabs = ({
   tab,
@@ -59,19 +48,6 @@ const TradingTabs = ({
   //   })
   // ).length
 
-  const positionsLength = getActivePositions.filter((position) =>
-    filterPositions({
-      position,
-      canceledPositions: canceledOrders,
-    })
-  ).length
-
-  const activeTradesLength = getActiveStrategies.strategies.filter(
-    (a) =>
-      a !== null &&
-      (a.enabled ||
-        (a.conditions.isTemplate && a.conditions.templateStatus !== 'disabled'))
-  ).length
   return (
     <>
       <TitleTabsGroup theme={theme}>

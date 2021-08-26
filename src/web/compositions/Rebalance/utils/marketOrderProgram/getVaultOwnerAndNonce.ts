@@ -1,4 +1,4 @@
-import { DEX_PID } from "@sb/dexUtils/config";
+import { DEX_PID } from '@core/config/dex'
 import { PublicKey } from "@solana/web3.js";
 import BN from "bn.js";
 

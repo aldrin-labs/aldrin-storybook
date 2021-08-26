@@ -27,7 +27,5 @@ export const addPercentageToPricesInOrderbooks = ({
     orderbooksWithPercentage
   )
 
-  console.log('orderbooksMapWithPercentage', orderbooksMapWithPercentage)
-
   return orderbooksMapWithPercentage
 }

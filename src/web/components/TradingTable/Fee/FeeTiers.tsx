@@ -3,7 +3,6 @@ import { TableWithSort } from '@sb/components'
 import { useSnackbar } from 'notistack'
 
 import {
-  updateOpenOrderHistoryQuerryFunction,
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'

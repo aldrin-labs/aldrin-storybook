@@ -1,6 +1,6 @@
 import { Market, OpenOrders } from '@project-serum/serum'
 import { WalletAdapter } from '@sb/dexUtils/adapters'
-import { DEX_PID } from '@sb/dexUtils/config'
+import { DEX_PID } from '@core/config/dex'
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { Connection, PublicKey, SYSVAR_RENT_PUBKEY } from '@solana/web3.js'
 import BN from 'bn.js'
@@ -26,15 +26,6 @@ export const getVariablesForPlacingOrder = async ({
 }) => {
   const isBuySide = side === 'buy'
   const orderPayerTokenAccount = isBuySide ? tokenAccountB : tokenAccountA
-
-  console.log({
-    openOrders,
-    vaultSigner,
-    market,
-    tokenA: tokenAccountA.toString(),
-    tokenB: tokenAccountB.toString(),
-    side
-  })
 
   const accounts = {
     market: {

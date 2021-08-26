@@ -1,5 +1,5 @@
 import { WalletAdapter } from '@sb/dexUtils/adapters'
-import { TAKER_FEE } from '@sb/dexUtils/config'
+import { TAKER_FEE } from '@core/config/dex'
 import { MarketsMap } from '@sb/dexUtils/markets'
 import { Connection } from '@solana/web3.js'
 import { REBALANCE_CONFIG } from '../Rebalance.config'

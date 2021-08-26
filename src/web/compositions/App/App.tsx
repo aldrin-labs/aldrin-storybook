@@ -43,7 +43,7 @@ import { syncStorage } from '@storage'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { useQuery } from 'react-apollo'
 import CardsPanel from '@sb/compositions/Chart/components/CardsPanel'
-import MarketBlock from '@sb/compositions/Chart/components/MarketBlock'
+import MarketBlock from '@sb/compositions/Chart/components/MarketBlock/MarketBlock'
 
 import { ConnectionProvider } from '@sb/dexUtils/connection'
 import { WalletProvider } from '@sb/dexUtils/wallet'

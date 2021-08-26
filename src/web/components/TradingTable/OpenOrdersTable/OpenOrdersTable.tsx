@@ -2,19 +2,16 @@ import React, { useState } from 'react'
 import { TableWithSort } from '@sb/components'
 
 import {
-  updateOpenOrderHistoryQuerryFunction,
-  combineOpenOrdersTable,
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
 
-import { PaginationBlock } from '../TradingTablePagination'
-import { cancelOrderStatus } from '@core/utils/tradingUtils'
 import { useOpenOrders } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { cancelOrder } from '@sb/dexUtils/send'
+import { combineOpenOrdersTable } from './OpenOrdersTable.utils'
 
 const OpenOrdersTable = (props) => {
   const { wallet } = useWallet()
@@ -58,20 +55,9 @@ const OpenOrdersTable = (props) => {
     tab,
     theme,
     show,
-    page,
-    perPage,
     marketType,
-    allKeys,
-    specificPair,
-    handleChangePage,
-    handleChangeRowsPerPage,
-    getOpenOrderHistoryQuery,
-    handleToggleAllKeys,
-    handleToggleSpecificPair,
-    arrayOfMarketIds,
     canceledOrders,
     handlePairChange,
-    keys,
   } = props
 
   const openOrders = useOpenOrders()
@@ -84,10 +70,8 @@ const OpenOrdersTable = (props) => {
     openOrders,
     cancelOrderWithStatus,
     theme,
-    arrayOfMarketIds,
     marketType,
     canceledOrders,
-    keys,
     handlePairChange
   )
   return (
@@ -104,33 +88,6 @@ const OpenOrdersTable = (props) => {
         sortDirection: 'desc',
       }}
       withCheckboxes={false}
-      // pagination={{
-      //   fakePagination: false,
-      //   enabled: true,
-      //   totalCount: 0,
-      //   page: page,
-      //   rowsPerPage: perPage,
-      //   rowsPerPageOptions: [10, 20, 30, 50, 100],
-      //   handleChangePage: handleChangePage,
-      //   handleChangeRowsPerPage: handleChangeRowsPerPage,
-      //   additionalBlock: (
-      //     <PaginationBlock
-      //       {...{
-      //         theme,
-      //         allKeys,
-      //         specificPair,
-      //         handleToggleAllKeys,
-      //         handleToggleSpecificPair,
-      //       }}
-      //     />
-      //   ),
-      //   paginationStyles: {
-      //     width: 'calc(100%)',
-      //     backgroundColor: theme.palette.white.background,
-      //     border: theme.palette.border.main,
-      //     borderRight: 0,
-      //   },
-      // }}
       tableStyles={{
         cell: {
           color: theme.palette.dark.main,

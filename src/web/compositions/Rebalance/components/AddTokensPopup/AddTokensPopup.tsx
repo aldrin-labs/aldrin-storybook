@@ -1,10 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
-
-import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
-import { Paper } from '@material-ui/core'
-
-import Link from '@material-ui/core/Link'
 
 import { useWallet } from '@sb/dexUtils/wallet'
 import { Theme } from '@sb/types/materialUI'
@@ -14,49 +8,20 @@ import {
 } from '@core/utils/PortfolioTableUtils'
 import { abbreviateAddress } from '@sb/dexUtils/utils'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { WhiteButton } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
-import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-import LoadingIndicator from '@sb/compositions/Chart/components/LoadingIndicator'
-import { Title } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapperStyles'
-import { StyledTab, StyledTabs, Input, ListCard } from '../../Rebalance.styles'
-import { useAsyncData } from '@sb/dexUtils/fetch-loop'
+import { ListCard } from '../../Rebalance.styles'
 import { useConnection } from '@sb/dexUtils/connection'
-import {
-  InputWithPaste,
-  InputWithSearch,
-} from '@sb/compositions/Chart/components/Inputs'
+import { InputWithSearch } from '@sb/compositions/Chart/components/Inputs/Inputs'
 import {
   ALL_TOKENS_MINTS,
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
-import { TokenIcon } from '@sb/components/TokenIcon'
-import { sleep } from '@core/utils/helpers'
 import { createTokens } from '@sb/dexUtils/createTokens'
-
-const WhiteText = styled(Title)`
-  font-size: 1.4rem;
-  font-family: Avenir Next Demi;
-`
-
-const StyledPaper = styled(Paper)`
-  border-radius: 2rem;
-  width: 55rem;
-  height: auto;
-  background: #222429;
-  border: 0.1rem solid #3a475c;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 2rem;
-  padding: 3rem;
-`
-
-const GreenText = styled(WhiteText)`
-  color: #a5e898;
-`
+import { TokenListItem } from './TokenListItem'
+import { StyledPaper, WhiteText, GreenText } from './AddTokensPopup.styles'
 
 export const feeFormat = new Intl.NumberFormat(undefined, {
   minimumFractionDigits: 6,
@@ -126,6 +91,7 @@ export default function AddTokenDialog({
             </WhiteText>
             <RowContainer margin="2rem 0">
               <InputWithSearch
+                theme={theme}
                 type={'text'}
                 value={searchValue}
                 onChange={(e) => {
@@ -242,72 +208,5 @@ export default function AddTokenDialog({
         </RowContainer>
       </RowContainer>
     </DialogWrapper>
-  )
-}
-
-export function TokenListItem({
-  name: tokenName,
-  symbol: tokenSymbol,
-  mintAddress,
-  disabled,
-  existingAccount,
-  selectedTokens,
-  setSelectedTokens,
-  theme,
-}: {
-  name: string
-  symbol: string
-  mintAddress: string
-  disabled: boolean
-  existingAccount: boolean
-  selectedTokens: any[]
-  setSelectedTokens: any
-  theme: Theme
-}) {
-  const alreadyExists = !!existingAccount
-
-  const selectedTokenIndex = selectedTokens.findIndex(
-    (token) => token.mintAddress === mintAddress
-  )
-  const checked = selectedTokenIndex !== -1
-  const isDisabled = disabled || alreadyExists
-
-  return (
-    <>
-      <RowContainer
-        key={`${tokenName}${tokenSymbol}${mintAddress}`}
-        justify="space-between"
-        style={{
-          borderBottom: '0.1rem solid #3a475c',
-          cursor: 'pointer',
-          minHeight: '4.5rem',
-        }}
-        onClick={() => {
-          if (isDisabled) return
-
-          if (checked) {
-            setSelectedTokens([
-              ...selectedTokens.slice(0, selectedTokenIndex),
-              ...selectedTokens.slice(selectedTokenIndex + 1),
-            ])
-          } else {
-            setSelectedTokens([...selectedTokens, { mintAddress }])
-          }
-        }}
-      >
-        <Row>
-          <TokenIcon mint={mintAddress} width={'2.5rem'} height={'2.5rem'} />
-          <WhiteText theme={theme} style={{ marginLeft: '1rem' }}>
-            {tokenName.replace('(Sollet)', '')}
-            {tokenSymbol ? ` (${tokenSymbol})` : null}
-          </WhiteText>
-        </Row>
-        <SCheckbox
-          theme={theme}
-          checked={checked || isDisabled}
-          disabled={isDisabled}
-        />
-      </RowContainer>
-    </>
   )
 }

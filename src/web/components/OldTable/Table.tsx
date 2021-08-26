@@ -28,7 +28,7 @@ export const Title = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  background: ${(props: { background: string }) => props.background};
+  background: ${(props: { background?: string }) => props.background};
   text-align: center;
   vertical-align: middle;
 

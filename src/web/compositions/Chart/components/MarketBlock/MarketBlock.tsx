@@ -2,99 +2,39 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { compose } from 'recompose'
 import { Theme, withTheme } from '@material-ui/core'
-import { Link, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import {
   getTokenMintAddressByName,
   useMarket,
   useMarkPrice,
 } from '@sb/dexUtils/markets'
 import { getDecimalCount } from '@sb/dexUtils/utils'
-import AutoSuggestSelect from '../Inputs/AutoSuggestSelect/AutoSuggestSelect'
-import MarketStats from './MarketStats/MarketStats'
+import AutoSuggestSelect from '../../Inputs/AutoSuggestSelect/AutoSuggestSelect'
+import MarketStats from '../MarketStats/MarketStats'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import LinkToSolanaExp from './LinkToSolanaExp'
-import GreenCheckmark from '@icons/successIcon.svg'
-import ThinkingFace from '@icons/thinkingFace.png'
-import Warning from '@icons/warningPairSel.png'
-import CCAILogo from '@icons/auth0Logo.svg'
+import LinkToSolanaExp from '../LinkToSolanaExp'
 import BlueTwitterIcon from '@icons/blueTwitter.svg'
 import AnalyticsIcon from '@icons/analytics.svg'
 import SvgIcon from '@sb/components/SvgIcon'
-import { TokenInfo, TokenListProvider } from '@solana/spl-token-registry'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import tokensLinksMap from '@core/config/tokensTwitterLinks'
 import Coinmarketcap from '@icons/coinmarketcap.svg'
 import CoinGecko from '@icons/coingecko.svg'
 import Inform from '@icons/inform.svg'
-import { MintsPopup } from '../Inputs/SelectWrapper/MintsPopup'
+import { MintsPopup } from '../../Inputs/SelectWrapper/MintsPopup'
 import ChartIcon from '@icons/chartIcon.svg'
 import ArrowLeft from '@icons/ArrowLeft.svg'
 
-export const ExclamationMark = styled(({ fontSize, lineHeight, ...props }) => (
-  <span {...props}>!</span>
-))`
-  color: ${(props) => props.color || props.theme.palette.orange.dark};
-  font-family: Avenir Next Demi;
-  font-size: ${(props) => props.fontSize || '5rem'};
-  line-height: ${(props) => props.lineHeight || '6rem'};
-  margin: ${(props) => props.margin || '0 2rem 0 0'};
-`
-
-export const Title = styled(
-  ({ width, fontFamily, fontSize, color, textAlign, margin, ...props }) => (
-    <span {...props} />
-  )
-)`
-  width: ${(props) => props.width || 'auto'};
-  font-family: ${(props) => props.fontFamily || 'Avenir Next Medium'};
-  font-style: normal;
-  font-weight: normal;
-  font-size: ${(props) => props.fontSize || '1.4rem'};
-  text-align: center;
-  color: ${(props) => props.color || '#ecf0f3'};
-  text-align: ${(props) => props.textAlign || 'center'};
-  margin: ${(props) => props.margin || '0'};
-`
-export const LinkToAnalytics = styled(Link)`
-  font-size: 2rem;
-  cursor: pointer;
-  margin-left: 1.5rem;
-`
-
-export const LinkToTwitter = styled.a`
-  font-size: 2rem;
-  cursor: pointer;
-  margin-left: 1.5rem;
-`
-const MarketStatsContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  height: 6rem;
-  padding: 0 3rem;
-  border-bottom: ${(props) => props.theme.palette.border.new};
-  background: ${props => props.theme.palette.background.paper};
-
-  @media (max-width: 600px) {
-    display: none;
-  }
-`
-const MobileMarketStatsContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  height: 10rem;
-  padding: 0 3rem;
-  background: #17181a;
-  border-bottom: ${(props) => props.theme.palette.border.new};
-  @media (min-width: 600px) {
-    display: none;
-  }
-`
+import {
+  ExclamationMark,
+  LinkToAnalytics,
+  LinkToTwitter,
+  MarketStatsContainer,
+  MobileMarketStatsContainer,
+  Title,
+} from './MarketBlock.styles'
 
 const selectStyles = (theme: Theme) => ({
   height: '100%',
@@ -160,8 +100,6 @@ const MarketBlock = ({
   }
 
   const [base, quote] = pair.split('_')
-
-  const baseTokenInfo = tokenMap.get(getTokenMintAddressByName(base))
 
   const marketName = pair.replaceAll('_', '/')
   const currentMarket = customMarkets?.find(

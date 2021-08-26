@@ -1,7 +1,7 @@
 import { OpenOrders } from '@project-serum/serum'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { WalletAdapter } from '@sb/dexUtils/adapters'
-import { DEX_PID } from '@sb/dexUtils/config'
+import { DEX_PID } from '@core/config/dex'
 import {
   createSOLAccountAndClose,
   transferSOLToWrappedAccountAndClose,
@@ -85,13 +85,6 @@ export const placeAllOrders = async ({
     const swapAmount = +(transaction.amount * 10 ** tokenADecimals).toFixed(0)
     const swapTotal = +(transaction.total * 10 ** tokenBDecimals).toFixed(0)
 
-    console.log({
-      tokenAccountA,
-      tokenAccountB,
-      swapAmount,
-      swapTotal,
-      wallet,
-    })
 
     const afterSwapTransaction = new Transaction()
 
@@ -204,16 +197,6 @@ export const placeAllOrders = async ({
       afterSwapTransaction
     )
 
-    console.log(
-      'place order args',
-      isBuySide ? Side.Bid : Side.Ask,
-      isBuySide ? swapTotal : swapAmount,
-      isBuySide ? swapAmount : swapTotal,
-      {
-        accounts: variablesForPlacingOrder,
-      }
-    )
-
     i++
     transactionIndex++
     // if more than 2, split by 2 max in one transaction
@@ -221,8 +204,6 @@ export const placeAllOrders = async ({
       await sendSavedTransaction()
     }
   }
-
-  console.log('commonTransaction', commonTransaction)
 
   if (commonTransaction.instructions.length > 0) {
     await sendSavedTransaction()

@@ -1,15 +1,5 @@
 import React, { Component, ChangeEvent } from 'react'
 
-import QueryRenderer from '@core/components/QueryRenderer'
-
-import { checkLoginStatus } from '@core/utils/loginUtils'
-import { getOpenOrderHistory } from '@core/graphql/queries/chart/getOpenOrderHistory'
-import { OPEN_ORDER_HISTORY } from '@core/graphql/subscriptions/OPEN_ORDER_HISTORY'
-import {
-  filterOpenOrders,
-  updateOpenOrderHistoryQuerryFunction,
-} from '@sb/components/TradingTable/TradingTable.utils'
-
 import OrderBookTable from './Tables/Asks/OrderBookTable'
 import SpreadTable from './Tables/Bids/SpreadTable'
 import LastTrade, { LastTradeMobile } from './Tables/LastTrade/LastTrade'
@@ -104,9 +94,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
       getOpenOrderHistory: { orders: [], count: 0 },
     }
 
-    const openOrders = getOpenOrderHistory.orders.filter((order) =>
-      filterOpenOrders({ order, canceledOrders: [] })
-    )
+    const openOrders = getOpenOrderHistory.orders
     const aggregationModes = getAggregationsFromPricePrecision(pricePrecision)
     return (
       <>
@@ -224,43 +212,5 @@ class OrderBookTableContainer extends Component<IProps, IState> {
     )
   }
 }
-
-// const APIWrapper = (props) => {
-//   const authenticated = checkLoginStatus()
-
-//   return (
-//     <QueryRenderer
-//       component={OrderBookTableContainer}
-//       variables={{
-//         openOrderInput: {
-//           activeExchangeKey: props.selectedKey.keyId,
-//           marketType: props.marketType,
-//           allKeys: true,
-//           page: 0,
-//           perPage: 30,
-//         },
-//       }}
-//       withOutSpinner={true}
-//       withTableLoader={false}
-//       skip={!authenticated}
-//       query={getOpenOrderHistory}
-//       name={`getOpenOrderHistoryQuery`}
-//       fetchPolicy="cache-and-network"
-//       subscriptionArgs={{
-//         subscription: OPEN_ORDER_HISTORY,
-//         variables: {
-//           openOrderInput: {
-//             marketType: props.marketType,
-//             activeExchangeKey: props.selectedKey.keyId,
-//             allKeys: true,
-//           },
-//         },
-//         updateQueryFunction: updateOpenOrderHistoryQuerryFunction,
-//       }}
-//       withoutLoading={true}
-//       {...props}
-//     />
-//   )
-// }
 
 export default OrderBookTableContainer

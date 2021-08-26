@@ -27,9 +27,7 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { FormInputContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
 
 import HeightIcon from '@material-ui/icons/Height'
-import CustomSwitcher, {
-  SwitcherHalf,
-} from '@sb/components/SwitchOnOff/CustomSwitcher'
+import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
 
 import { TradeInputContent as Input } from '@sb/components/TraidingTerminal/index'
@@ -40,7 +38,6 @@ import {
   TargetTitle,
   TargetValue,
   AdditionalSettingsButton,
-  ChangeOrderTypeBtn,
   Switcher,
 } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 

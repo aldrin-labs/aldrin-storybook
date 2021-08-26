@@ -1,6 +1,6 @@
 import React from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
-import { CardTitle } from '@sb/components/ChartCardHeader'
+import { CardTitle } from '@sb/components/ChartCardHeader/styles'
 import { Card, Grid, Button, Theme } from '@material-ui/core'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 

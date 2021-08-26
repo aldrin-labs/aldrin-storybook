@@ -41,7 +41,7 @@ import { TokenIcon } from '@sb/components/TokenIcon'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 import LinkToSolanaExp from '../../components/LinkToSolanaExp'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { LinkToAnalytics, LinkToTwitter } from '../../components/MarketBlock'
+import { LinkToAnalytics, LinkToTwitter } from '../../components/MarketBlock/MarketBlock.styles'
 import { getNumberOfDecimalsFromNumber } from '@core/utils/chartPageUtils'
 import { MintsPopup } from './MintsPopup'
 import {
