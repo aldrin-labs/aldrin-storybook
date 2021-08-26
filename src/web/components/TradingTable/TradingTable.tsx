@@ -5,11 +5,7 @@ import { isEqual } from 'lodash'
 import { withTheme } from '@material-ui/styles'
 
 import { Key } from '@core/types/ChartTypes'
-import {
-  IProps,
-  IState,
-  IStateKeys,
-} from './TradingTable.types'
+import { IProps, IState, IStateKeys } from './TradingTable.types'
 import { StyleForCalendar } from '@sb/components/GitTransactionCalendar/Calendar.styles'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 
@@ -18,6 +14,7 @@ import Balances from './Balances/Balances'
 import FeeTiers from './Fee/FeeTiers'
 import TradeHistoryTable from './TradeHistoryTable/TradeHistoryDataWrapper'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
+import withMobileSize from '@core/hoc/withMobileSize'
 
 class TradingTable extends React.PureComponent<IProps, IState> {
   state: IState = {
@@ -38,10 +35,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
     perPageSmartTrades: 30,
   }
 
-  // componentDidMount() {
-  //   console.log('TradingTable componentDidMount')
-  // }
-
   componentDidUpdate(prevProps) {
     // console.log('TradingTable componentDidUpdate prevProps', prevProps)
     // console.log('TradingTable componentDidUpdate this.props', this.props)
@@ -53,6 +46,10 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       ) {
         this.setState({ tab: 'activeTrades' })
       }
+    }
+
+    if (prevProps.isMobile !== this.props.isMobile) {
+      this.setState({ tab: this.props.isMobile ? 'balances' : 'activeTrades' })
     }
   }
 
@@ -126,6 +123,9 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       getAllUserKeysQuery = {
         myPortfolios: [],
       },
+      updateTerminalViewMode,
+      terminalViewMode,
+      isMobile,
     } = this.props
     const { myPortfolios = [] } = getAllUserKeysQuery || { myPortfolios: [] }
 
@@ -175,6 +175,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             perPagePositions,
             pageSmartTrades,
             perPageSmartTrades,
+            updateTerminalViewMode,
+            terminalViewMode,
           }}
         />
         <OpenOrdersTable
@@ -259,7 +261,7 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             handlePairChange: this.handlePairChange,
           }}
         />
-        <FeeTiers 
+        <FeeTiers
           {...{
             tab,
             keys,
@@ -289,7 +291,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
 const TradingTableWrapper = compose(
   withRouter,
   withErrorFallback,
-  withTheme()
+  withTheme(),
+  withMobileSize
 )(TradingTable)
 
 export default React.memo(
@@ -310,7 +313,9 @@ export default React.memo(
       prevProps.quantityPrecision === nextProps.quantityPrecision &&
       prevProps.priceFromOrderbook === nextProps.priceFromOrderbook &&
       prevProps.currencyPair === nextProps.currencyPair &&
-      prevProps.arrayOfMarketIds.length === nextProps.arrayOfMarketIds.length
+      prevProps.arrayOfMarketIds.length === nextProps.arrayOfMarketIds.length &&
+      prevProps.terminalViewMode === nextProps.terminalViewMode &&
+      prevProps.isMobile === nextProps.isMobile
     ) {
       return true
     }

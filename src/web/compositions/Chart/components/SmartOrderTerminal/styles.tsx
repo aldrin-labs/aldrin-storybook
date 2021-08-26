@@ -109,9 +109,17 @@ export const InputRowContainer = styled.div`
   flex-direction: ${(props: InputRowProps) => props.direction || 'row'};
   justify-content: ${(props: InputRowProps) => props.justify};
   padding: ${(props: InputRowProps) => props.padding || '0 0 .6rem 0'};
-
+  margin: ${(props: InputRowProps) => props.margin || 'auto 0'};
   @media (min-width: 1921px) {
     padding-bottom: ${(props) => props.padding || '0 0 .8rem 0'};
+  }
+  @media (max-width: 600px) {
+    margin: 0;
+  }
+`
+export const InputsBlock = styled(InputRowContainer)`
+  @media (max-width: 600px) {
+    margin: 1.2rem 0 0 0;
   }
 `
 

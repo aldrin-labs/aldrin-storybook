@@ -10,7 +10,7 @@ import {
 } from '@project-serum/serum'
 import { PublicKey } from '@solana/web3.js'
 import React, { useContext, useEffect, useState } from 'react'
-import { useLocalStorageState } from './utils'
+import { getUniqueListBy, useLocalStorageState } from './utils'
 import { refreshCache, useAsyncData } from './fetch-loop'
 import {
   useAccountData,
@@ -26,8 +26,10 @@ import { getTokenAccountInfo } from './tokens'
 import { useAwesomeMarkets, AWESOME_TOKENS } from '@sb/dexUtils/serum'
 import { getDexProgramIdByEndpoint } from '@core/config/dex'
 
-// not uniq here
-export const ALL_TOKENS_MINTS = [...TOKEN_MINTS, ...AWESOME_TOKENS]
+export const ALL_TOKENS_MINTS = getUniqueListBy([...TOKEN_MINTS, ...AWESOME_TOKENS], "name")
+
+console.log('ALL_TOKENS_MINTS', ALL_TOKENS_MINTS)
+
 export const ALL_TOKENS_MINTS_MAP = ALL_TOKENS_MINTS.reduce((acc, el) => {
   acc[el.address] = el.name
   acc[el.name] = el.address
@@ -67,12 +69,13 @@ export interface RawMarketData {
   programId: PublicKey
   deprecated: boolean
 }
-
 export interface RawCustomMarketData extends RawMarketData {
   isCustomUserMarket: boolean
 }
 
-export function useAllMarketsList(): Map<string, RawMarketData> {
+export type MarketsMap = Map<string, RawMarketData>
+
+export function useAllMarketsList(): MarketsMap {
   const ALL_MARKETS_MAP = new Map()
 
   const { customMarkets } = useCustomMarkets()
@@ -82,23 +85,27 @@ export function useAllMarketsList(): Map<string, RawMarketData> {
 
   const officialMarkets = [...serumMarkets, ...awesomeMarkets]
 
-  officialMarkets?.forEach((market) =>
-    ALL_MARKETS_MAP.set(market.name.replaceAll('/', '_'), market)
-  )
+  officialMarkets?.forEach((market: RawMarketData) => {
+    const marketName = market.name.replaceAll('/', '_')
+    ALL_MARKETS_MAP.set(marketName, { ...market, name: marketName })
+  })
 
-  const usersMarkets = customMarkets.filter(
-    (market) =>
-      market.isCustomUserMarket &&
-      !ALL_MARKETS_MAP.has(market.name.replaceAll('/', '_'))
-  )
+  const usersMarkets = customMarkets.filter((market: RawCustomMarketData) => {
+    const marketName = market.name.replaceAll('/', '_')
 
-  usersMarkets?.forEach((market) =>
-    ALL_MARKETS_MAP.set(market.name.replaceAll('/', '_'), {
+    return market.isCustomUserMarket && !ALL_MARKETS_MAP.has(marketName)
+  })
+
+  usersMarkets?.forEach((market: RawMarketData) => {
+    const marketName = market.name.replaceAll('/', '_')
+
+    ALL_MARKETS_MAP.set(marketName, {
       ...market,
+      name: marketName,
       address: new PublicKey(market.address),
       programId: new PublicKey(market.programId),
     })
-  )
+  })
 
   return ALL_MARKETS_MAP
 }
@@ -140,8 +147,7 @@ export function useAllMarkets() {
       // .slice(0, 2)
       marketInfos.map(async (marketInfo) => {
         try {
-          console.log('marketInfo.address', marketInfo.address, ++i)
-
+          // console.log('marketInfo.address', marketInfo.address, ++i)
           const market = await Market.load(
             connection,
             marketInfo.address,
@@ -149,10 +155,15 @@ export function useAllMarkets() {
             marketInfo.programId
           )
 
+          const asks = await market.loadAsks(connection)
+          const bids = await market.loadBids(connection)
+
           return {
             market,
             marketName: marketInfo.name,
             programId: marketInfo.programId,
+            asks,
+            bids,
           }
         } catch (e) {
           notify({
@@ -481,15 +492,17 @@ export function useOrderbookAccounts() {
 export function useOrderbook(depth = 200) {
   const { bidOrderbook, askOrderbook } = useOrderbookAccounts()
   const { market } = useMarket()
+
   const bids =
     !bidOrderbook || !market
       ? []
       : bidOrderbook.getL2(depth).map(([price, size]) => [price, size])
+
   const asks =
     !askOrderbook || !market
       ? []
       : askOrderbook.getL2(depth).map(([price, size]) => [price, size])
-
+      
   return [{ bids, asks }, !!bids || !!asks]
 }
 

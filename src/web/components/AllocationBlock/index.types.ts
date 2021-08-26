@@ -9,7 +9,7 @@ type TokenData = {
 type IProps = {
   data: TokenData[]
   theme: Theme
-  id?: string
+  id: string
   colors: string[]
   colorsForLegend: string[]
 }

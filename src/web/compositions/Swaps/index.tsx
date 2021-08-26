@@ -18,7 +18,7 @@ import { notify } from '@sb/dexUtils/notifications'
 
 import { TransactionSettingsPopup } from './components/TransactionSettingsPopup'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
-import { getAllTokensData } from '../Rebalance/utils'
+import { getAllTokensData, getMarketsData } from '../Rebalance/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import Inform from '@icons/inform.svg'
@@ -33,6 +33,7 @@ import {
   ALL_TOKENS_MINTS,
   ALL_TOKENS_MINTS_MAP,
   getTokenNameByMintAddress,
+  useAllMarketsList,
 } from '@sb/dexUtils/markets'
 import { getTokenDataByMint } from '../Pools/utils'
 import { TokenAddressesPopup } from './components/TokenAddressesPopup'
@@ -62,6 +63,8 @@ const SwapsPage = ({
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
+  const allMarketsMap = useAllMarketsList()
+
   const [slippageTolerance, setSlippageTolerance] = useState<number>(0.3)
   const [isTokensAddressesPopupOpen, openTokensAddressesPopup] = useState(false)
   const [isSelectCoinPopupOpen, setIsSelectCoinPopupOpen] = useState(false)
@@ -89,9 +92,16 @@ const SwapsPage = ({
 
   const [baseTokenMintAddress, setBaseTokenMintAddress] = useState<string>('')
   const [quoteTokenMintAddress, setQuoteTokenMintAddress] = useState<string>('')
-  const [selectedPool, selectPool] = useState<PoolInfo | null>(null)
   const [isWarningPopupOpen, openWarningPopup] = useState(true)
 
+    // const selectedTokens = marketsData.find(
+  //   (market) =>
+  //     (market.tokenA === getTokenNameByMintAddress(baseTokenMintAddress) &&
+  //       market.tokenB === getTokenNameByMintAddress(quoteTokenMintAddress)) ||
+  //     market.tokenB === getTokenNameByMintAddress(baseTokenMintAddress) ||
+  //       market.tokenB === getTokenNameByMintAddress(quoteTokenMintAddress)
+  // )
+  
   const selectedTokens = getPoolsInfoQuery.getPoolsInfo.find(
     (pool) =>
       (pool?.tokenA === baseTokenMintAddress ||
@@ -225,7 +235,7 @@ const SwapsPage = ({
   const rawSlippage = 100 / (poolsAmountDiff + 1)
 
   const sumFeesPercentages =
-    REBALANCE_CONFIG.POOL_FEE + slippageTolerance + rawSlippage
+    REBALANCE_CONFIG.SLIPPAGE + slippageTolerance + rawSlippage
 
   const totalWithFees = +quoteAmount - (+quoteAmount / 100) * sumFeesPercentages
 
@@ -509,7 +519,7 @@ const SwapsPage = ({
                     style={{ padding: '0 0.5rem 0 0.5rem' }}
                     fontFamily={'Avenir Next Bold'}
                   >
-                    {REBALANCE_CONFIG.POOL_FEE}%
+                    {REBALANCE_CONFIG.SLIPPAGE}%
                   </Text>
                 </Row>
               </RowContainer>
@@ -523,6 +533,7 @@ const SwapsPage = ({
         close={() => openTransactionSettingsPopup(false)}
         setSlippageTolerance={setSlippageTolerance}
       />
+
       <SelectCoinPopup
         getPoolsInfoQuery={getPoolsInfoQuery}
         theme={theme}
@@ -557,6 +568,7 @@ const SwapsPage = ({
         }}
         close={() => setIsSelectCoinPopupOpen(false)}
       />
+
       <TokenAddressesPopup
         theme={theme}
         quoteTokenMintAddress={quoteTokenMintAddress}
@@ -565,6 +577,7 @@ const SwapsPage = ({
         open={isTokensAddressesPopupOpen}
         close={() => openTokensAddressesPopup(false)}
       />
+
       <WarningPopup
         theme={theme}
         open={isWarningPopupOpen}

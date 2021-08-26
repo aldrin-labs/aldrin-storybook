@@ -1,8 +1,13 @@
-export const getPercentageAllocationForTokens = (tokens: {symbol: string, decimals: number, amount: number, price: number | null, mint: string, tokenValue: number}[], totalTokensValue: number) => {
-    const tokensWithPercentageAllocations = tokens.map(el => ({...el, percentage: el.tokenValue * 100 / totalTokensValue }))
+import { TokenInfoWithPercentage, TokenInfoWithValue } from "../Rebalance.types"
 
-    return tokensWithPercentageAllocations
+export const getPercentageAllocationForTokens = (
+  tokens: TokenInfoWithValue[],
+  totalTokensValue: number
+): TokenInfoWithPercentage[] => {
+  const tokensWithPercentageAllocations = tokens.map((el) => ({
+    ...el,
+    percentage: (el.tokenValue * 100) / totalTokensValue,
+  }))
+
+  return tokensWithPercentageAllocations
 }
-
-//
-//

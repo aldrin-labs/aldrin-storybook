@@ -39,6 +39,8 @@ import { useAwesomeMarkets } from '@sb/dexUtils/serum'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { WarningPopup } from './components/WarningPopup'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
+import MarketBlock from './components/MarketBlock/MarketBlock'
+// import { ParticleRuggedPopup } from '@sb/components/ParticleRuggedPopup'
 import { TokenDelistPopup } from '@sb/components/TokenDelistPopup'
 import { tokensToDelist } from '@core/config/dex'
 
@@ -259,7 +261,10 @@ function ChartPageComponent(props: any) {
           localStorage.setItem('isOnboardingDone', 'true')
         }}
       />
-      {/* {view === 'default' && ( */}
+      <MarketBlock
+        terminalViewMode={terminalViewMode}
+        updateTerminalViewMode={updateTerminalViewMode}
+      />
       <DefaultView
         id={'_id'}
         view={'default'}

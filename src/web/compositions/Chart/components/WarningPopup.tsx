@@ -27,8 +27,7 @@ export const StyledPaper = styled(Paper)`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 2rem;
-  padding: 3rem;
+  padding: 2rem;
 `
 
 export const Title = styled(({ ...props }) => <MainTitle {...props} />)`
@@ -36,6 +35,7 @@ export const Title = styled(({ ...props }) => <MainTitle {...props} />)`
   font-size: 2.5rem;
   margin-bottom: 0;
 `
+
 export const BlueButton = styled(
   ({
     disabled,
@@ -59,7 +59,6 @@ export const BlueButton = styled(
 )`
   font-size: 1.4rem;
   height: 4.5rem;
-  text-transform: capitalize;
   background-color: ${(props: { disabled: boolean; theme: Theme }) =>
     !props.disabled
       ? props.theme.palette.blue.serum
@@ -68,7 +67,7 @@ export const BlueButton = styled(
   border-color: none;
   cursor: pointer;
   color: ${(props: { disabled: boolean }) =>
-    !props.disabled ? '#f8faff' : '#222429'};
+    !props.disabled ? '#f8faff' : '#fff'};
   border: none;
 `
 

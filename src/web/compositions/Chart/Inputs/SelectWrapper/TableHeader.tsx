@@ -1,6 +1,6 @@
 import React from 'react'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { StyledTab } from './SelectWrapperStyles'
+import { StyledTab, StyledHeader } from './SelectWrapperStyles'
 import { marketsByCategories } from '@core/config/marketsByCategories'
 import { Grid } from '@material-ui/core'
 
@@ -13,18 +13,7 @@ export const TableHeader = ({
   marketType,
 }) => {
   return (
-    <RowContainer
-      style={{
-        height: '12rem',
-        padding: '0.5rem',
-        justifyContent: 'flex-start',
-        flexDirection: 'row',
-        flexWrap: 'normal',
-        alignItems: 'center',
-        borderBottom: theme.palette.border.new,
-        background: '#17181A',
-      }}
-    >
+    <StyledHeader theme={theme}>
       <StyledTab
         theme={theme}
         isSelected={tab === 'all'}
@@ -209,6 +198,6 @@ export const TableHeader = ({
           </Grid>
         </>
       )}
-    </RowContainer>
+    </StyledHeader>
   )
 }

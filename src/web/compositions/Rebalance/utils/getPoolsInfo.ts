@@ -66,7 +66,7 @@ export const getPoolsInfo = async (totalUserWalletUSDValue: number): Promise<Poo
   }, {})
 
 
-  console.log('totalUserWalletUSDValue: ', totalUserWalletUSDValue)
+  // console.log('totalUserWalletUSDValue: ', totalUserWalletUSDValue)
 
   // Exact pools filtering
   const filtredPools = JSON.parse(JSON.stringify(poolsWithoutRevertedDupes))

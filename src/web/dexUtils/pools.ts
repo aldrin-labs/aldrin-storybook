@@ -107,7 +107,7 @@ export async function createTokenSwap({
     connection,
     authority,
     null,
-    2,
+    8,
     TOKEN_PROGRAM_ID
   )
 
@@ -877,7 +877,7 @@ export async function swap({
  * @param baseSwapToken The flag which will determine swapIn and swapOut tokens
  * @returns Transaction and signer for this transaction (userTransferAuthority in our case to approve transfer funds from userSourceAccount to poolSourceAccount)
  */
- export async function swapWithHandleNativeSol({
+export async function swapWithHandleNativeSol({
   wallet,
   connection,
   userTokenAccountA,
@@ -927,34 +927,34 @@ export async function swap({
           tokenAccountA,
         ]
 
-    // in case tokenA/B is SOL
-    const beforeSwapTransaction = new Transaction()
-    const beforeSwapTransactionSigners = []
-  
-    const afterSwapTransaction = new Transaction()
-  
-    // if SOL - create new token address
-    if (sourceMint.equals(WRAPPED_SOL_MINT)) {
-      const result = await transferSOLToWrappedAccountAndClose({
-        wallet,
-        connection,
-        amount: swapAmountIn,
-      })
-  
-      // change account to use from native to wrapped
-      userSourceAccount = result[0]
-      const [
-        _,
-        createWrappedAccountTransaction,
-        createWrappedAccountTransactionSigner,
-        closeAccountTransaction,
-      ] = result
-  
-      beforeSwapTransaction.add(createWrappedAccountTransaction)
-      beforeSwapTransactionSigners.push(createWrappedAccountTransactionSigner)
-  
-      afterSwapTransaction.add(closeAccountTransaction)
-    }
+  // in case tokenA/B is SOL
+  const beforeSwapTransaction = new Transaction()
+  const beforeSwapTransactionSigners = []
+
+  const afterSwapTransaction = new Transaction()
+
+  // if SOL - create new token address
+  if (sourceMint.equals(WRAPPED_SOL_MINT)) {
+    const result = await transferSOLToWrappedAccountAndClose({
+      wallet,
+      connection,
+      amount: swapAmountIn,
+    })
+
+    // change account to use from native to wrapped
+    userSourceAccount = result[0]
+    const [
+      _,
+      createWrappedAccountTransaction,
+      createWrappedAccountTransactionSigner,
+      closeAccountTransaction,
+    ] = result
+
+    beforeSwapTransaction.add(createWrappedAccountTransaction)
+    beforeSwapTransactionSigners.push(createWrappedAccountTransactionSigner)
+
+    afterSwapTransaction.add(closeAccountTransaction)
+  }
 
   const [swapTransaction] = await tokenSwap.swap(
     userSourceAccount,
@@ -970,7 +970,7 @@ export async function swap({
   const commonTransaction = new Transaction().add(
     beforeSwapTransaction,
     swapTransaction,
-    afterSwapTransaction,
+    afterSwapTransaction
   )
 
   return [commonTransaction, beforeSwapTransactionSigners]
@@ -1099,11 +1099,48 @@ export const closeSolAccount = async ({
   )
 }
 
+export const createSOLAccountAndClose = async ({
+  wallet,
+  connection,
+}: {
+  wallet: WalletAdapter
+  connection: Connection
+}): Promise<[PublicKey, Transaction, Account, Transaction]> => {
+  // if SOL - create new token address
+
+  const tokenMint = new Token(
+    wallet,
+    connection,
+    WRAPPED_SOL_MINT,
+    TOKEN_PROGRAM_ID
+  )
+
+  const [
+    createdWrappedAccount,
+    createWrappedAccountSigner,
+    createWrappedAccountTransaction,
+  ] = await tokenMint.createAccount(wallet.publicKey)
+
+  const [closeAccountTransaction] = await tokenMint.closeAccount(
+    createdWrappedAccount,
+    wallet.publicKey,
+    wallet.publicKey,
+    []
+  )
+
+  return [
+    createdWrappedAccount,
+    createWrappedAccountTransaction,
+    createWrappedAccountSigner,
+    closeAccountTransaction,
+  ]
+}
+
 /**
  * Transfer amount of SOL from native account to wrapped to be able to interact with pools
  * @returns Address, transaction for creation this account and closing
  */
-const transferSOLToWrappedAccountAndClose = async ({
+export const transferSOLToWrappedAccountAndClose = async ({
   wallet,
   connection,
   amount,
@@ -1184,10 +1221,12 @@ export const getParsedTransactionData = async ({
   signature: TransactionSignature
 }) => {
   try {
-    const ts = await connection.getParsedConfirmedTransaction(signature, 'confirmed')
+    const ts = await connection.getParsedConfirmedTransaction(
+      signature,
+      'confirmed'
+    )
     console.log('transaction data: ', ts)
   } catch (e) {
     console.log('e', e)
   }
 }
-
