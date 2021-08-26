@@ -36,7 +36,7 @@ export const PopupFooter = ({
         <div style={{ padding: '2rem' }}>
           <TooltipText>
             If there is no direct market between the tokens you want to swap,
-            the algorithm will find the best way through several markets.
+            the algorithm will find the best way through multiple markets.
           </TooltipText>
           <TooltipText>
             For example: SOL{'>'}USDC, then USDC{'>'}CCAI.

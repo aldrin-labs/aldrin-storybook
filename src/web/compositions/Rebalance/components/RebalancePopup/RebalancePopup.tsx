@@ -288,7 +288,7 @@ export const RebalancePopup = ({
                 <RowContainer margin={'2rem 0 0 0'}>
                   <AttentionComponent
                     text={
-                      'You will need to confirm several transactions in pop-ups from your wallet.'
+                      'You will need to confirm multiple transactions in pop-ups from your wallet.'
                     }
                   />
                 </RowContainer>
@@ -378,7 +378,7 @@ export const RebalancePopup = ({
                 <RowContainer direction={'column'} margin={'0 0 2rem 0'}>
                   <AttentionComponent
                     text={
-                      'You will need to confirm several transactions in pop-ups from your wallet. If a pop-up didn’t appear – press the button below. After signing a transaction click outside the pop-up. Repeat until the last transaction.'
+                      'You will need to confirm multiple transactions in pop-ups from your wallet. If a pop-up didn’t appear – press the button below. After signing a transaction click outside the pop-up. Repeat until the last transaction.'
                     }
                   />
                   <BtnCustom
@@ -414,7 +414,7 @@ export const RebalancePopup = ({
               <RowContainer margin={'2rem 0 0 0'}>
                 <AttentionComponent
                   text={
-                    'You will need to confirm several transactions in pop-ups from your wallet.'
+                    'You will need to confirm multiple transactions in pop-ups from your wallet.'
                   }
                 />
               </RowContainer>
