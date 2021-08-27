@@ -326,7 +326,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
     }
 
     if (this.state.priceFromOrderbook !== this.props.priceFromOrderbook) {
-      const { updateState,priceFromOrderbook, leverage } = this.props
+      const { updateState, priceFromOrderbook, leverage } = this.props
 
       // updateState({ mode: 'limit' })
 
@@ -434,7 +434,8 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
     const currentMaxAmount =
       isBuyType || !isSPOTMarket ? maxAmount / priceForCalculate : maxAmount
 
-    const isAmountMoreThanMax = e.target.value > currentMaxAmount
+    // const isAmountMoreThanMax = e.target.value > currentMaxAmount
+    const isAmountMoreThanMax = false
     const isAmountLessThanMin =
       stripDigitPlaces(e.target.value, quantityPrecision) < minOrderSize &&
       stripDigitPlaces(e.target.value, quantityPrecision) !== '' &&
@@ -1045,12 +1046,16 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       byType,
       priceType,
       pair,
+      funds,
+      isBuyType,
       isSPOTMarket,
       reduceOnly,
       orderMode,
       TIFMode,
       trigger,
       leverage,
+      marketPrice,
+      setFieldValue,
       enqueueSnackbar,
       minSpotNotional,
       minFuturesStep,
@@ -1110,6 +1115,25 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       notify({
         type: 'error',
         message: 'Your amount is 0',
+      })
+
+      return
+    }
+
+    const maxAmount = isBuyType ? funds[1].quantity : funds[0].quantity
+
+    const priceForCalculate =
+      priceType !== 'market' && priceType !== 'maker-only'
+        ? values.price
+        : marketPrice
+
+    const currentMaxAmount =
+      isBuyType || !isSPOTMarket ? maxAmount / priceForCalculate : maxAmount
+
+    if (values.amount > currentMaxAmount) {
+      notify({
+        type: 'error',
+        message: 'Order amount is more than your max amount.',
       })
 
       return
