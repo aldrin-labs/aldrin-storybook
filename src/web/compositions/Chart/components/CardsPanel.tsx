@@ -205,18 +205,17 @@ export const CardsPanel = ({ theme }) => {
             >
               Analytics
             </NavLinkButton>
-            {!MASTER_BUILD && (
-              <NavLinkButton
-                theme={theme}
-                pathname={location.pathname}
-                to="/rebalance"
-                page={'rebalance'}
-                style={{ width: '13rem' }}
-                component={(props) => <Link to={`/rebalance`} {...props} />}
-              >
-                Rebalance <BetaLabel theme={theme} style={{ marginLeft: '1rem' }} />
-              </NavLinkButton>
-            )}
+            <NavLinkButton
+              theme={theme}
+              pathname={location.pathname}
+              to="/rebalance"
+              page={'rebalance'}
+              style={{ width: '13rem' }}
+              component={(props) => <Link to={`/rebalance`} {...props} />}
+            >
+              Rebalance{' '}
+              <BetaLabel theme={theme} style={{ marginLeft: '1rem' }} />
+            </NavLinkButton>
             <NavLinkButton
               theme={theme}
               data-tut="farming"

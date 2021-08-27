@@ -178,11 +178,16 @@ export const RebalancePopup = ({
 
     // if we have two transactions on one market without user's openOrders account,
     // we'll create it only once
-    const isOpenOrdersAccountCreated =
-      arr.findIndex((transaction) => transaction.symbol === el.symbol) === i
+    const isNeedToCreateOpenOrdersAccount =
+      arr.findIndex(
+        (transaction) =>
+          transaction.symbol === el.symbol &&
+          transaction.openOrders.length === 0
+      ) === i
 
-    const createOpenOrdersAccountFee =
-      el.openOrders.length === 0 && !isOpenOrdersAccountCreated ? 0.0239 : 0
+    const createOpenOrdersAccountFee = isNeedToCreateOpenOrdersAccount
+      ? 0.0239
+      : 0
 
     return acc + placeOrderAndSettleFee + createOpenOrdersAccountFee
   }, 0)
@@ -288,7 +293,7 @@ export const RebalancePopup = ({
                 <RowContainer margin={'2rem 0 0 0'}>
                   <AttentionComponent
                     text={
-                      'You will need to confirm several transactions in pop-ups from your wallet.'
+                      'You will need to confirm multiple transactions in pop-ups from your wallet.'
                     }
                   />
                 </RowContainer>
@@ -378,7 +383,7 @@ export const RebalancePopup = ({
                 <RowContainer direction={'column'} margin={'0 0 2rem 0'}>
                   <AttentionComponent
                     text={
-                      'You will need to confirm several transactions in pop-ups from your wallet. If a pop-up didn’t appear – press the button below. After signing a transaction click outside the pop-up. Repeat until the last transaction.'
+                      'You will need to confirm multiple transactions in pop-ups from your wallet. If a pop-up didn’t appear – press the button below. After signing a transaction click outside the pop-up. Repeat until the last transaction.'
                     }
                   />
                   <BtnCustom
@@ -414,7 +419,7 @@ export const RebalancePopup = ({
               <RowContainer margin={'2rem 0 0 0'}>
                 <AttentionComponent
                   text={
-                    'You will need to confirm several transactions in pop-ups from your wallet.'
+                    'You will need to confirm multiple transactions in pop-ups from your wallet.'
                   }
                 />
               </RowContainer>
