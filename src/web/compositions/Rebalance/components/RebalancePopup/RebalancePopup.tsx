@@ -178,11 +178,16 @@ export const RebalancePopup = ({
 
     // if we have two transactions on one market without user's openOrders account,
     // we'll create it only once
-    const isOpenOrdersAccountCreated =
-      arr.findIndex((transaction) => transaction.symbol === el.symbol) === i
+    const isNeedToCreateOpenOrdersAccount =
+      arr.findIndex(
+        (transaction) =>
+          transaction.symbol === el.symbol &&
+          transaction.openOrders.length === 0
+      ) === i
 
-    const createOpenOrdersAccountFee =
-      el.openOrders.length === 0 && !isOpenOrdersAccountCreated ? 0.0239 : 0
+    const createOpenOrdersAccountFee = isNeedToCreateOpenOrdersAccount
+      ? 0.0239
+      : 0
 
     return acc + placeOrderAndSettleFee + createOpenOrdersAccountFee
   }, 0)

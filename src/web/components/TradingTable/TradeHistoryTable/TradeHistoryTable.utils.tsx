@@ -40,48 +40,6 @@ export const combineTradeHistoryTable = (
 
     return {
       id: `${orderId}_${size}_${price}`,
-      columnForMobile: {
-        render: (
-          <RowContainer padding={'0 2rem'} direction={'column'} height="20rem">
-            <RowContainer justify={'space-between'}>
-              <StyledTitle color={'#fbf2f2'}>
-                {pair[0]}/{pair[1]}
-              </StyledTitle>
-              <StyledTitle
-                style={{
-                  textTransform: 'capitalize',
-                  color:
-                    side === 'buy'
-                      ? theme.palette.green.main
-                      : theme.palette.red.main,
-                }}
-              >
-                {side}
-              </StyledTitle>
-            </RowContainer>
-            <RowContainer justify={'space-between'}>
-              <StyledTitle>Price(USDC)</StyledTitle>{' '}
-              <StyledTitle color={'#fbf2f2'}>{`${stripDigitPlaces(
-                price,
-                pricePrecision
-              )}`}</StyledTitle>
-            </RowContainer>
-            <RowContainer justify={'space-between'}>
-              <StyledTitle>Amount (CCAI)</StyledTitle>
-              <StyledTitle color={'#fbf2f2'}>
-                {stripDigitPlaces(size, quantityPrecision)}
-              </StyledTitle>
-            </RowContainer>
-            <RowContainer justify={'space-between'}>
-              <StyledTitle>Total (USDC)</StyledTitle>
-              <StyledTitle color={'#fbf2f2'}>
-                {stripDigitPlaces(size * price, quantityPrecision)}
-              </StyledTitle>
-            </RowContainer>
-          </RowContainer>
-        ),
-        showOnMobile: true,
-      },
       pair: {
         render: (
           <div
@@ -146,6 +104,48 @@ export const combineTradeHistoryTable = (
         render: `${stripDigitPlaces(feeCost, quantityPrecision)} ${pair[1]}`,
         contentToSort: feeCost,
         showOnMobile: false,
+      },
+      columnForMobile: {
+        render: (
+          <RowContainer padding={'0 2rem'} direction={'column'} height="20rem">
+            <RowContainer justify={'space-between'}>
+              <StyledTitle color={'#fbf2f2'}>
+                {pair[0]}/{pair[1]}
+              </StyledTitle>
+              <StyledTitle
+                style={{
+                  textTransform: 'capitalize',
+                  color:
+                    side === 'buy'
+                      ? theme.palette.green.main
+                      : theme.palette.red.main,
+                }}
+              >
+                {side}
+              </StyledTitle>
+            </RowContainer>
+            <RowContainer justify={'space-between'}>
+              <StyledTitle>Price(USDC)</StyledTitle>{' '}
+              <StyledTitle color={'#fbf2f2'}>{`${stripDigitPlaces(
+                price,
+                pricePrecision
+              )}`}</StyledTitle>
+            </RowContainer>
+            <RowContainer justify={'space-between'}>
+              <StyledTitle>Amount (CCAI)</StyledTitle>
+              <StyledTitle color={'#fbf2f2'}>
+                {stripDigitPlaces(size, quantityPrecision)}
+              </StyledTitle>
+            </RowContainer>
+            <RowContainer justify={'space-between'}>
+              <StyledTitle>Total (USDC)</StyledTitle>
+              <StyledTitle color={'#fbf2f2'}>
+                {stripDigitPlaces(size * price, quantityPrecision)}
+              </StyledTitle>
+            </RowContainer>
+          </RowContainer>
+        ),
+        showOnMobile: true,
       },
     }
   })

@@ -86,58 +86,6 @@ export const combineOpenOrdersTable = (
 
       return {
         id: `${orderId}${size}${price}`,
-        columnForMobile: {
-          render: (
-            <RowContainer height="20rem" padding={'0 2rem'}>
-              <RowContainer style={{ width: '65%' }} direction={'column'}>
-                <RowContainer justify={'space-between'}>
-                  <StyledTitle color={'#fbf2f2'}>
-                    {pair[0]}/{pair[1]}
-                  </StyledTitle>
-                  <StyledTitle
-                    style={{
-                      textTransform: 'capitalize',
-                      color:
-                        side === 'buy'
-                          ? theme.palette.green.main
-                          : theme.palette.red.main,
-                    }}
-                  >
-                    {side}
-                  </StyledTitle>
-                </RowContainer>
-                <RowContainer justify={'space-between'}>
-                  <StyledTitle>Price(USDC)</StyledTitle>{' '}
-                  <StyledTitle color={'#fbf2f2'}>{`${stripDigitPlaces(
-                    price,
-                    pricePrecision
-                  )}`}</StyledTitle>
-                </RowContainer>
-                <RowContainer justify={'space-between'}>
-                  <StyledTitle>Amount (CCAI)</StyledTitle>
-                  <StyledTitle color={'#fbf2f2'}>
-                    {stripDigitPlaces(size, quantityPrecision)}
-                  </StyledTitle>
-                </RowContainer>
-                <RowContainer justify={'space-between'}>
-                  <StyledTitle>Total (USDC)</StyledTitle>
-                  <StyledTitle color={'#fbf2f2'}>
-                    {stripDigitPlaces(+size * price, quantityPrecision)}
-                  </StyledTitle>
-                </RowContainer>
-              </RowContainer>
-              <RowContainer style={{ width: '35%', padding: '0 0 0 4rem' }}>
-                <CloseButton
-                  i={i}
-                  onClick={() => {
-                    cancelOrderFunc(el)
-                  }}
-                />
-              </RowContainer>
-            </RowContainer>
-          ),
-          showOnMobile: true,
-        },
         pair: {
           render: (
             <div
@@ -230,7 +178,60 @@ export const combineOpenOrdersTable = (
               }}
             />
           ),
+          style: { textAlign: 'right' },
           showOnMobile: false,
+        },
+        columnForMobile: {
+          render: (
+            <RowContainer height="20rem" padding={'0 2rem'}>
+              <RowContainer style={{ width: '65%' }} direction={'column'}>
+                <RowContainer justify={'space-between'}>
+                  <StyledTitle color={'#fbf2f2'}>
+                    {pair[0]}/{pair[1]}
+                  </StyledTitle>
+                  <StyledTitle
+                    style={{
+                      textTransform: 'capitalize',
+                      color:
+                        side === 'buy'
+                          ? theme.palette.green.main
+                          : theme.palette.red.main,
+                    }}
+                  >
+                    {side}
+                  </StyledTitle>
+                </RowContainer>
+                <RowContainer justify={'space-between'}>
+                  <StyledTitle>Price(USDC)</StyledTitle>{' '}
+                  <StyledTitle color={'#fbf2f2'}>{`${stripDigitPlaces(
+                    price,
+                    pricePrecision
+                  )}`}</StyledTitle>
+                </RowContainer>
+                <RowContainer justify={'space-between'}>
+                  <StyledTitle>Amount (CCAI)</StyledTitle>
+                  <StyledTitle color={'#fbf2f2'}>
+                    {stripDigitPlaces(size, quantityPrecision)}
+                  </StyledTitle>
+                </RowContainer>
+                <RowContainer justify={'space-between'}>
+                  <StyledTitle>Total (USDC)</StyledTitle>
+                  <StyledTitle color={'#fbf2f2'}>
+                    {stripDigitPlaces(+size * price, quantityPrecision)}
+                  </StyledTitle>
+                </RowContainer>
+              </RowContainer>
+              <RowContainer style={{ width: '35%', padding: '0 0 0 4rem' }}>
+                <CloseButton
+                  i={i}
+                  onClick={() => {
+                    cancelOrderFunc(el)
+                  }}
+                />
+              </RowContainer>
+            </RowContainer>
+          ),
+          showOnMobile: true,
         },
       }
     })
