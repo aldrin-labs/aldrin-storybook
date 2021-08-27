@@ -13,7 +13,7 @@ import {
   LinkToTelegram,
   LinkToTwitter,
 } from '@sb/compositions/Homepage/SocialsLinksComponents'
-import serumCCAILogo from '@icons/serumCCAILogo.svg'
+import AldrinLogo from '@icons/Aldrin.svg'
 
 import {
   Row,
@@ -52,7 +52,7 @@ export const MobileNavBar = ({
   return (
     <NavBarForSmallScreens theme={theme}>
       <Link style={{ width: '30%' }} to="/">
-        <SvgIcon src={serumCCAILogo} width={'100%'} height={'auto'} />
+        <SvgIcon src={AldrinLogo} width={'100%'} height={'auto'} />
       </Link>
       {pathname === '/' ? (
         <Row justify={'space-between'} width={'50%'}>

@@ -6,8 +6,12 @@ import { SvgIcon } from '@sb/components'
 import GreenCheckmark from '@icons/successIcon.svg'
 import Warning from '@icons/warningPairSel.png'
 import ThinkingFace from '@icons/thinkingFace.png'
+import MangoLogo from '@icons/mango_logo.png'
+import RinLogo from '@icons/rin_logo.png'
+
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { CCAI_MINT } from '@sb/dexUtils/utils'
+import { ALL_TOKENS_MINTS_MAP } from '@sb/dexUtils/markets'
 
 export const TokenIcon = ({
   mint,
@@ -43,7 +47,21 @@ export const TokenIcon = ({
     )
   }
 
-  const token = tokenMap.get(mint)
+  let token = tokenMap.get(mint)
+
+  // mango has no logo for now
+  if (ALL_TOKENS_MINTS_MAP[mint] === 'MNGO') {
+    token = {
+      logoURI: MangoLogo,
+    }
+  }
+
+  // rin has no logo for now
+  if (ALL_TOKENS_MINTS_MAP[mint] === 'RIN') {
+    token = {
+      logoURI: RinLogo,
+    }
+  }
 
   if (!token || !token.logoURI) {
     if (emojiIfNoLogo) {

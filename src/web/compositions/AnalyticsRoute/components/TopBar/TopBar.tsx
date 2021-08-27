@@ -16,7 +16,7 @@ import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
 import { getDecimalCount } from '@sb/dexUtils/utils'
 import SvgIcon from '@sb/components/SvgIcon'
 import SrmLogo from '@icons/srmLogo.svg'
-import CCAILogo from '@icons/auth0Logo.svg'
+import RINLogo from '@icons/RINLogo.svg'
 
 import {
   Row,
@@ -84,9 +84,9 @@ const TopBar = ({
           style={{ marginRight: '1rem' }}
           height={'50%'}
           width={'auto'}
-          src={CCAILogo}
+          src={RINLogo}
         />
-        <TokenWhiteTitle theme={theme}>CCAI</TokenWhiteTitle>
+        <TokenWhiteTitle theme={theme}>RIN</TokenWhiteTitle>
         <GreenTitle
           style={{ color: showGreen ? '#A5E898' : '#F26D68' }}
           theme={theme}
@@ -98,24 +98,24 @@ const TopBar = ({
       </Row>
       <Row>
         <TokenTitleBlockContainer>
-          <TopBarTitle theme={theme}>CCAI Marketcap</TopBarTitle>{' '}
+          <TopBarTitle theme={theme}>RIN Marketcap</TopBarTitle>{' '}
           <Text theme={theme}>
             ${formatNumberToUSFormat(CCAImarketcap.toFixed(0))}
           </Text>
         </TokenTitleBlockContainer>
         <TokenTitleBlockContainer>
-          <TopBarTitle theme={theme}>CCAI Total Supply</TopBarTitle>
+          <TopBarTitle theme={theme}>RIN Total Supply</TopBarTitle>
           <BlockContainer>
             <Text theme={theme}>
-              {formatNumberToUSFormat(totalySupply.toFixed(0))} CCAI
+              {formatNumberToUSFormat(totalySupply.toFixed(0))} RIN
             </Text>
           </BlockContainer>
         </TokenTitleBlockContainer>
         <TokenTitleBlockContainer>
-          <TopBarTitle theme={theme}>CCAI Circulating Supply</TopBarTitle>
+          <TopBarTitle theme={theme}>RIN Circulating Supply</TopBarTitle>
           <BlockContainer>
             <Text theme={theme}>
-              {formatNumberToUSFormat(CCAICirculatingSupply.toFixed(0))} CCAI
+              {formatNumberToUSFormat(CCAICirculatingSupply.toFixed(0))} RIN
             </Text>
           </BlockContainer>
         </TokenTitleBlockContainer>

@@ -1063,7 +1063,10 @@ export const combineBalancesTable = (
       columnForMobile: {
         render: (
           <RowContainer height={'20rem'} padding={'0 2rem'}>
-            <RowContainer style={{ width: '40%' }} direction={'column'}>
+            <RowContainer
+              style={{ width: showSettle ? '40%' : '100%' }}
+              direction={'column'}
+            >
               <RowContainer justify={'flex-start'}>
                 <StyledTitle color={'#fbf2f2'}>{coin}</StyledTitle>
               </RowContainer>
@@ -1080,25 +1083,26 @@ export const combineBalancesTable = (
                 </StyledTitle>
               </RowContainer>
             </RowContainer>
-
-            <RowContainer style={{ width: '60%' }} justify={'flex-end'}>
-              <BtnCustom
-                btnWidth={'50%'}
-                height="auto"
-                fontSize="1.6rem"
-                textTransform={'none'}
-                padding=".5rem 1rem .4rem 1rem"
-                borderRadius="1.4rem"
-                btnColor={theme.palette.dark.main}
-                borderColor={theme.palette.blue.serum}
-                backgroundColor={theme.palette.blue.serum}
-                transition={'all .4s ease-out'}
-                margin={'0 0 0 2rem'}
-                onClick={() => onSettleFunds(market, openOrders)}
-              >
-                Settle
-              </BtnCustom>
-            </RowContainer>
+            {showSettle ? (
+              <RowContainer style={{ width: '60%' }} justify={'flex-end'}>
+                <BtnCustom
+                  btnWidth={'50%'}
+                  height="auto"
+                  fontSize="1.6rem"
+                  textTransform={'none'}
+                  padding=".5rem 1rem .4rem 1rem"
+                  borderRadius="1.4rem"
+                  btnColor={theme.palette.dark.main}
+                  borderColor={theme.palette.blue.serum}
+                  backgroundColor={theme.palette.blue.serum}
+                  transition={'all .4s ease-out'}
+                  margin={'0 0 0 2rem'}
+                  onClick={() => onSettleFunds(market, openOrders)}
+                >
+                  Settle
+                </BtnCustom>
+              </RowContainer>
+            ) : null}
           </RowContainer>
         ),
         showOnMobile: true,

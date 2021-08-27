@@ -56,6 +56,8 @@ import { TokenRegistryProvider } from '@sb/dexUtils/tokenRegistry'
 import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
 import { MobileNavBar } from '../Chart/components/MobileNavbar/MobileNavbar'
 import useWindowSize from '@webhooks/useWindowSize'
+import { RebrandingPopup } from '@sb/components/RebrandingPopup/RebrandingPopup'
+import { useLocalStorageState } from '@sb/dexUtils/utils'
 
 const version = `10.9.143`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
@@ -91,6 +93,10 @@ const AppRaw = ({
   location: { pathname: currentPage, search },
 }: any) => {
   const [isDevUrlPopupOpen, openDevUrlPopup] = useState(true)
+  const [
+    isRebrandingPopupOpen,
+    setIsRebrandingPopupOpen,
+  ] = useLocalStorageState('isRebrandingPopupOpen', true)
   // const [isMigrationToNewUrlPopupOpen, openMigrationToNewUrlPopup] = useState(
   //   true
   // )
@@ -186,6 +192,10 @@ const AppRaw = ({
                             }}
                           />
                         )}
+                        <RebrandingPopup
+                          open={isRebrandingPopupOpen}
+                          onClose={() => setIsRebrandingPopupOpen(false)}
+                        />
                         {/* {!isWalletMigrationToNewUrlPopupDone && (
                         <WalletMigrationPopup
                           open={isMigrationToNewUrlPopupOpen}
@@ -224,9 +234,9 @@ const Footer = (props) => {
       <Link
         target="_blank"
         rel="noopener noreferrer"
-        href="https://cryptocurrencies.ai/"
+        href="https://aldrin.com/"
       >
-        Cryptocurrencies.Ai
+        Aldrin.com
       </Link>
       <Link
         href="https://t.me/CCAI_Official"

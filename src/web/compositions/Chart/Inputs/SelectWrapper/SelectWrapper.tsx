@@ -403,7 +403,7 @@ class SelectPairListComponent extends React.PureComponent<
       return newList
     }
 
-    // const CCAIMarket = newList.find(v => v.symbol.contentToSort === 'CCAI_USDC')
+    // const CCAIMarket = newList.find(v => v.symbol.contentToSort === 'RIN_USDC')
 
     if (this.props.marketType === 0 && sortBy === 'volume24hChange') {
       newList.sort((pairObjectA, pairObjectB) => {
@@ -434,7 +434,7 @@ class SelectPairListComponent extends React.PureComponent<
     }
 
     const ccaiIndex = newList.findIndex(
-      (v) => v.symbol.contentToSort === 'CCAI_USDC'
+      (v) => v.symbol.contentToSort === 'RIN_USDC'
     )
     if (ccaiIndex === -1) return newList
 

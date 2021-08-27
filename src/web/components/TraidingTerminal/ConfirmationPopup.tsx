@@ -21,6 +21,8 @@ import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderT
 import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
 
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import useMobileSize from '@webhooks/useMobileSize'
+import { autoLogin } from 'src/storybook/src/utils/autoLogin'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -138,7 +140,7 @@ export const ConfirmationPopup = ({
 }) => {
   const isSlippageHigh = spread > 2
   const [isAwareOfHighSlippage, confirmIsAwareOfHighSlippage] = useState(false)
-
+  const isMobile = useMobileSize()
   return (
     <DialogWrapper
       theme={theme}
@@ -329,6 +331,7 @@ export const ConfirmationPopup = ({
               await onClose()
             }}
             style={{
+              height: isMobile ? '7.5rem' : '4rem',
               background: !isAwareOfHighSlippage
                 ? theme.palette.grey.title
                 : '',
@@ -368,7 +371,7 @@ export const ConfirmationPopup = ({
               await onClose()
             }}
             type={sideType}
-            style={{ width: '49%' }}
+            style={{ width: '49%', height: isMobile ? '7.5rem' : '4rem' }}
             theme={theme}
           >
             {isSPOTMarket

@@ -57,7 +57,7 @@ class SimpleTabs extends React.Component<any, any> {
     mode: 'market' | 'limit'
   } = {
     side: 'buy',
-    mode: 'market',
+    mode: 'limit',
     leverage: false,
     reduceOnly: false,
     orderMode: 'ioc',
@@ -240,6 +240,8 @@ class SimpleTabs extends React.Component<any, any> {
       providerUrl,
       setProvider,
       terminalViewMode,
+      baseCurrencyAccount,
+      quoteCurrencyAccount,
     } = this.props
 
     const isSPOTMarket = isSPOTMarketType(marketType)
@@ -269,6 +271,23 @@ class SimpleTabs extends React.Component<any, any> {
                 <TerminalModeButton
                   style={{ width: '10rem' }}
                   theme={theme}
+                  active={mode === 'limit'}
+                  onClick={() => {
+                    this.setState({
+                      mode: 'limit',
+                      orderMode: 'TIF',
+                      tradingBotEnabled: false,
+                      TVAlertsBotEnabled: false,
+                    })
+
+                    this.updateState('takeProfit', false)
+                  }}
+                >
+                  Limit
+                </TerminalModeButton>
+                <TerminalModeButton
+                  style={{ width: '10rem' }}
+                  theme={theme}
                   active={mode === 'market'}
                   onClick={() => {
                     this.setState({
@@ -279,23 +298,6 @@ class SimpleTabs extends React.Component<any, any> {
                   }}
                 >
                   Market
-                </TerminalModeButton>
-                <TerminalModeButton
-                  style={{ width: '10rem' }}
-                  theme={theme}
-                  active={mode === 'limit'}
-                  onClick={() => {
-                    this.setState({
-                      mode: 'limit',
-                      orderMode: 'TIF',
-                      tradingBotEnabled: false,
-                      TVAlertsBotEnabled: false,
-                    })
-
-                    this.setState({ takeProfit: false })
-                  }}
-                >
-                  Limit
                 </TerminalModeButton>
               </div>
               <div
@@ -498,6 +500,8 @@ class SimpleTabs extends React.Component<any, any> {
                   >
                     <TerminalContainer>
                       <TraidingTerminal
+                        baseCurrencyAccount={baseCurrencyAccount}
+                        quoteCurrencyAccount={quoteCurrencyAccount}
                         byType={side}
                         spread={spread}
                         theme={theme}
@@ -699,6 +703,8 @@ class SimpleTabs extends React.Component<any, any> {
                     <SellTerminal theme={theme} xs={6} item>
                       <TerminalContainer>
                         <TraidingTerminal
+                          baseCurrencyAccount={baseCurrencyAccount}
+                          quoteCurrencyAccount={quoteCurrencyAccount}
                           byType={'sell'}
                           sideType={'sell'}
                           setAutoConnect={setAutoConnect}

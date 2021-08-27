@@ -50,6 +50,7 @@ import {
   TradeHistoryGrid,
 } from '../Inputs/SelectWrapper/SelectWrapperStyles'
 import { TerminalComponentsContainer } from './styles'
+import { useConnection } from '@sb/dexUtils/connection'
 
 // fix props type
 export const DefaultViewComponent = (
@@ -92,7 +93,7 @@ export const DefaultViewComponent = (
   >(null)
   const [showTokenNotAddedPopup, setShowTokenNotAdded] = useState(false)
   const [isTradingBlockedPopupOpen, setIsTradingBlockedPopupOpen] = useState(
-    !isCCAITradingEnabled() && currencyPair === 'CCAI_USDC'
+    !isCCAITradingEnabled() && currencyPair === 'RIN_USDC'
   )
 
   const [base, quote] = currencyPair.split('_')
