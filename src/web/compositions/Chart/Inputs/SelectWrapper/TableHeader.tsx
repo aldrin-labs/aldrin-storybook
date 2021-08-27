@@ -1,203 +1,254 @@
 import React from 'react'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { StyledTab, StyledHeader } from './SelectWrapperStyles'
 import { marketsByCategories } from '@core/config/marketsByCategories'
-import { Grid } from '@material-ui/core'
+
+import { SvgIcon } from '@sb/components'
+import ExpandTableIcon from '@icons/expandIcon.svg'
+import SqueezeTableIcon from '@icons/squeezeIcon.svg'
+import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 
 export const TableHeader = ({
   theme,
   tab,
   data,
+  tokenMap,
+  favoritePairsMap,
+  isAdvancedSelectorMode,
+  setSelectorMode,
   onTabChange,
   allMarketsMap,
-  marketType,
 }) => {
-  return (
-    <StyledHeader theme={theme}>
-      <StyledTab
-        theme={theme}
-        isSelected={tab === 'all'}
-        onClick={() => onTabChange('all')}
-      >
-        All{' '}
-        <span
-          style={{
-            color: tab === 'all' ? '#fbf2f2' : '#96999C',
-            marginLeft: '0.5rem',
-          }}
-        >
-          {`(${data.filter((el) => !el.isCustomUserMarket).length})`}
-        </span>
-      </StyledTab>{' '}
-      <StyledTab
-        theme={theme}
-        isSelected={tab === 'usdt'}
-        onClick={() => onTabChange('usdt')}
-      >
-        USDT{' '}
-        <span
-          style={{
-            color: tab === 'usdt' ? '#fbf2f2' : '#96999C',
-            marginLeft: '0.5rem',
-          }}
-        >
-          {`(${data.filter((el) => el.symbol.includes('USDT')).length})`}
-        </span>
-      </StyledTab>
-      <StyledTab
-        theme={theme}
-        isSelected={tab === 'usdc'}
-        onClick={() => onTabChange('usdc')}
-      >
-        USDC
-        <span
-          style={{
-            color: tab === 'usdc' ? '#fbf2f2' : '#96999C',
-            marginLeft: '0.5rem',
-          }}
-        >
-          {`(${data.filter((el) => el.symbol.includes('USDC')).length})`}
-        </span>
-      </StyledTab>
-      <StyledTab
-        theme={theme}
-        isSelected={tab === 'sol'}
-        onClick={() => onTabChange('sol')}
-      >
-        SOL{' '}
-        <span
-          style={{
-            color: tab === 'sol' ? '#fbf2f2' : '#96999C',
-            marginLeft: '0.5rem',
-          }}
-        >
-          {`(${
-            data.filter((el) => {
-              const [base, quote] = el.symbol.split('_')
-              return quote === 'SOL'
-            }).length
-          })`}
-        </span>
-      </StyledTab>{' '}
-      <StyledTab
-        theme={theme}
-        isSelected={tab === 'topGainers'}
-        onClick={() => {
-          onTabChange('topGainers')
-        }}
-      >
-        Top Gainers{' '}
-        <span
-          style={{
-            color: tab === 'topGainers' ? '#fbf2f2' : '#96999C',
-            marginLeft: '0.5rem',
-          }}
-        ></span>
-      </StyledTab>
-      <StyledTab
-        theme={theme}
-        isSelected={tab === 'topLosers'}
-        onClick={() => {
-          onTabChange('topLosers')
-        }}
-      >
-        Top Losers{' '}
-        <span
-          style={{
-            color: tab === 'topLosers' ? '#fbf2f2' : '#96999C',
-            marginLeft: '0.5rem',
-          }}
-        ></span>
-      </StyledTab>
-      {Object.entries(marketsByCategories).map(([category, categoriesData]) => {
-        return (
-          <StyledTab
-            theme={theme}
-            isSelected={tab === category}
-            onClick={() => onTabChange(category)}
-          >
-            {categoriesData.name}
+  const dataWithoutCustomMarkets = data.filter((el) => !el.isCustomUserMarket)
 
-            <span
-              style={{
-                color: tab === category ? '#fbf2f2' : '#96999C',
-                marginLeft: '0.5rem',
-              }}
-            >
-              {`(${
-                data.filter((el) => {
-                  const [base, quote] = el.symbol.split('_')
-                  return (
-                    categoriesData?.tokens?.includes(base) &&
-                    !el.isCustomUserMarket
-                  )
-                }).length
-              })`}
-            </span>
-          </StyledTab>
-        )
-      })}{' '}
-      <StyledTab
-        theme={theme}
-        isSelected={tab === 'leveraged'}
-        onClick={() => onTabChange('leveraged')}
+  return (
+    <StyledHeader theme={theme} isAdvancedSelectorMode={isAdvancedSelectorMode}>
+      <Row
+        width="calc(100% - 10rem)"
+        justify="flex-start"
+        padding="0 1rem 0 0"
+        style={{ borderRight: '.1rem solid #383B45' }}
       >
-        Leveraged tokens{' '}
-        <span
-          style={{
-            color: tab === 'leveraged' ? '#fbf2f2' : '#96999C',
-            marginLeft: '0.5rem',
-          }}
+        <StyledTab
+          theme={theme}
+          isSelected={tab === 'all'}
+          onClick={() => onTabChange('all')}
         >
-          {`(${
-            data.filter(
-              (el) =>
-                el.symbol.includes('BULL') ||
-                (el.symbol.includes('BEAR') && !el.isCustomUserMarket)
-            ).length
-          })`}
-        </span>
-      </StyledTab>
-      <StyledTab
-        theme={theme}
-        isSelected={tab === 'customMarkets'}
-        onClick={() => onTabChange('customMarkets')}
-      >
-        Custom markets{' '}
-        <span
-          style={{
-            color: tab === 'public' ? '#fbf2f2' : '#96999C',
-            marginLeft: '0.5rem',
-          }}
-        >
-          {`(${
-            data.filter(
-              (el) =>
-                allMarketsMap?.has(el.symbol) &&
-                allMarketsMap?.get(el.symbol).isCustomUserMarket
-            ).length
-          })`}
-        </span>
-      </StyledTab>
-      {marketType === 0 && (
-        <>
-          <Grid
+          All{' '}
+          <span
             style={{
-              padding: '1rem',
-              background: tab === 'btc' ? theme.palette.grey.main : '',
-              display: 'flex',
-              alignItems: 'center',
-              cursor: 'pointer',
-              fontSize: '1.2rem',
-              color: theme.palette.grey.light,
-              fontWeight: 'bold',
+              color: tab === 'all' ? '#fbf2f2' : '#96999C',
+              marginLeft: '0.5rem',
             }}
-            onClick={() => onTabChange('btc')}
           >
-            BTC
-          </Grid>
-        </>
-      )}
+            {`(${dataWithoutCustomMarkets.length})`}
+          </span>
+        </StyledTab>
+        <StyledTab
+          theme={theme}
+          isSelected={tab === 'favorite'}
+          onClick={() => onTabChange('favorite')}
+        >
+          Favorite{' '}
+          <span
+            style={{
+              color: tab === 'favorite' ? '#fbf2f2' : '#96999C',
+              marginLeft: '0.5rem',
+            }}
+          >
+            {`(${favoritePairsMap.size})`}
+          </span>
+        </StyledTab>
+        <StyledTab
+          theme={theme}
+          isSelected={tab === 'solanaNative'}
+          onClick={() => onTabChange('solanaNative')}
+        >
+          Solana Native{' '}
+          <span
+            style={{
+              color: tab === 'solanaNative' ? '#fbf2f2' : '#96999C',
+              marginLeft: '0.5rem',
+            }}
+          >
+            {`(${
+              dataWithoutCustomMarkets.filter((el) => {
+                const [base] = el.symbol.split('_')
+                const baseTokenInfo = tokenMap?.get(
+                  getTokenMintAddressByName(base)
+                )
+
+                return (
+                  !baseTokenInfo?.name?.includes('Wrapped') || base === 'SOL'
+                )
+              }).length
+            })`}
+          </span>
+        </StyledTab>
+        <StyledTab
+          theme={theme}
+          isSelected={tab === 'usdt'}
+          onClick={() => onTabChange('usdt')}
+        >
+          USDT{' '}
+          <span
+            style={{
+              color: tab === 'usdt' ? '#fbf2f2' : '#96999C',
+              marginLeft: '0.5rem',
+            }}
+          >
+            {`(${
+              dataWithoutCustomMarkets.filter((el) =>
+                el.symbol.includes('USDT')
+              ).length
+            })`}
+          </span>
+        </StyledTab>
+        <StyledTab
+          theme={theme}
+          isSelected={tab === 'usdc'}
+          onClick={() => onTabChange('usdc')}
+        >
+          USDC
+          <span
+            style={{
+              color: tab === 'usdc' ? '#fbf2f2' : '#96999C',
+              marginLeft: '0.5rem',
+            }}
+          >
+            {`(${
+              dataWithoutCustomMarkets.filter((el) =>
+                el.symbol.includes('USDC')
+              ).length
+            })`}
+          </span>
+        </StyledTab>
+        <StyledTab
+          theme={theme}
+          isSelected={tab === 'sol'}
+          onClick={() => onTabChange('sol')}
+        >
+          SOL{' '}
+          <span
+            style={{
+              color: tab === 'sol' ? '#fbf2f2' : '#96999C',
+              marginLeft: '0.5rem',
+            }}
+          >
+            {`(${
+              dataWithoutCustomMarkets.filter((el) => {
+                const [base, quote] = el.symbol.split('_')
+                return quote === 'SOL'
+              }).length
+            })`}
+          </span>
+        </StyledTab>{' '}
+        <StyledTab
+          theme={theme}
+          isSelected={tab === 'topGainers'}
+          onClick={() => {
+            onTabChange('topGainers')
+          }}
+        >
+          Top Gainers
+        </StyledTab>
+        <StyledTab
+          theme={theme}
+          isSelected={tab === 'topLosers'}
+          onClick={() => {
+            onTabChange('topLosers')
+          }}
+        >
+          Top Losers
+        </StyledTab>
+        {isAdvancedSelectorMode && (
+          <>
+            {Object.entries(marketsByCategories).map(
+              ([category, categoriesData]) => {
+                return (
+                  <StyledTab
+                    theme={theme}
+                    isSelected={tab === category}
+                    onClick={() => onTabChange(category)}
+                  >
+                    {categoriesData.name}
+
+                    <span
+                      style={{
+                        color: tab === category ? '#fbf2f2' : '#96999C',
+                        marginLeft: '0.5rem',
+                      }}
+                    >
+                      {`(${
+                        data.filter((el) => {
+                          const [base, quote] = el.symbol.split('_')
+                          return (
+                            categoriesData?.tokens?.includes(base) &&
+                            !el.isCustomUserMarket
+                          )
+                        }).length
+                      })`}
+                    </span>
+                  </StyledTab>
+                )
+              }
+            )}
+            <StyledTab
+              theme={theme}
+              isSelected={tab === 'leveraged'}
+              onClick={() => onTabChange('leveraged')}
+            >
+              Leveraged tokens{' '}
+              <span
+                style={{
+                  color: tab === 'leveraged' ? '#fbf2f2' : '#96999C',
+                  marginLeft: '0.5rem',
+                }}
+              >
+                {`(${
+                  dataWithoutCustomMarkets.filter(
+                    (el) =>
+                      el.symbol.includes('BULL') || el.symbol.includes('BEAR')
+                  ).length
+                })`}
+              </span>
+            </StyledTab>
+            <StyledTab
+              theme={theme}
+              isSelected={tab === 'customMarkets'}
+              onClick={() => onTabChange('customMarkets')}
+            >
+              Custom markets{' '}
+              <span
+                style={{
+                  color: tab === 'public' ? '#fbf2f2' : '#96999C',
+                  marginLeft: '0.5rem',
+                }}
+              >
+                {`(${
+                  data.filter(
+                    (el) =>
+                      allMarketsMap?.has(el.symbol) &&
+                      allMarketsMap?.get(el.symbol).isCustomUserMarket
+                  ).length
+                })`}
+              </span>
+            </StyledTab>
+          </>
+        )}
+      </Row>
+      <Row
+        width="10rem"
+        onClick={() => {
+          setSelectorMode(isAdvancedSelectorMode ? 'basic' : 'advanced')
+        }}
+      >
+        <SvgIcon
+          src={isAdvancedSelectorMode ? SqueezeTableIcon : ExpandTableIcon}
+          width={'25%'}
+          height={'auto'}
+        />
+      </Row>
     </StyledHeader>
   )
 }

@@ -29,17 +29,12 @@ export interface IProps {
 export interface IPropsSelectPairListComponent extends IProps {
   data: ISelectData
   favoritePairsMap: Map<string, string>
-  stableCoinsPairsMap: Map<string, string>
-  btcCoinsPairsMap: Map<string, string>
-  altCoinsPairsMap: Map<string, string>
-  usdcPairsMap: Map<string, string>
-  usdtPairsMap: Map<string, string>
   searchValue: string
   tab: SelectTabType
-  tabSpecificCoin: string
+  selectorMode: string
+  setSelectorMode: (mode: string) => void
   onChangeSearch: (e: React.ChangeEvent<HTMLInputElement>) => void
   onTabChange: (tab: SelectTabType) => void
-  onSpecificCoinChange: ({ value }: { value: string }) => void
 }
 
 export interface IStateSelectPairListComponent {
