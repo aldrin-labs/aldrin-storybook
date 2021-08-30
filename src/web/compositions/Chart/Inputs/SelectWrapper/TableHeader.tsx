@@ -13,7 +13,7 @@ export const TableHeader = ({
   tab,
   data,
   tokenMap,
-  favoritePairsMap,
+  favouritePairsMap,
   isAdvancedSelectorMode,
   setSelectorMode,
   onTabChange,
@@ -24,10 +24,22 @@ export const TableHeader = ({
   return (
     <StyledHeader theme={theme} isAdvancedSelectorMode={isAdvancedSelectorMode}>
       <Row
+        width="10rem"
+        onClick={() => {
+          setSelectorMode(isAdvancedSelectorMode ? 'basic' : 'advanced')
+        }}
+      >
+        <SvgIcon
+          src={isAdvancedSelectorMode ? SqueezeTableIcon : ExpandTableIcon}
+          width={'25%'}
+          height={'auto'}
+        />
+      </Row>
+      <Row
         width="calc(100% - 10rem)"
         justify="flex-start"
-        padding="0 1rem 0 0"
-        style={{ borderRight: '.1rem solid #383B45' }}
+        padding="0 0 0 1rem"
+        style={{ borderLeft: '.1rem solid #383B45' }}
       >
         <StyledTab
           theme={theme}
@@ -46,17 +58,17 @@ export const TableHeader = ({
         </StyledTab>
         <StyledTab
           theme={theme}
-          isSelected={tab === 'favorite'}
-          onClick={() => onTabChange('favorite')}
+          isSelected={tab === 'favourite'}
+          onClick={() => onTabChange('favourite')}
         >
-          Favorite{' '}
+          Favourite{' '}
           <span
             style={{
-              color: tab === 'favorite' ? '#fbf2f2' : '#96999C',
+              color: tab === 'favourite' ? '#fbf2f2' : '#96999C',
               marginLeft: '0.5rem',
             }}
           >
-            {`(${favoritePairsMap.size})`}
+            {`(${favouritePairsMap.size})`}
           </span>
         </StyledTab>
         <StyledTab
@@ -78,9 +90,7 @@ export const TableHeader = ({
                   getTokenMintAddressByName(base)
                 )
 
-                return (
-                  !baseTokenInfo?.name?.includes('Wrapped') || base === 'SOL'
-                )
+                return !baseTokenInfo?.name?.includes('Wrapped')
               }).length
             })`}
           </span>
@@ -150,7 +160,7 @@ export const TableHeader = ({
             onTabChange('topGainers')
           }}
         >
-          Top Gainers
+          Top Gainers 24h
         </StyledTab>
         <StyledTab
           theme={theme}
@@ -159,7 +169,7 @@ export const TableHeader = ({
             onTabChange('topLosers')
           }}
         >
-          Top Losers
+          Top Losers 24h
         </StyledTab>
         {isAdvancedSelectorMode && (
           <>
@@ -236,18 +246,6 @@ export const TableHeader = ({
             </StyledTab>
           </>
         )}
-      </Row>
-      <Row
-        width="10rem"
-        onClick={() => {
-          setSelectorMode(isAdvancedSelectorMode ? 'basic' : 'advanced')
-        }}
-      >
-        <SvgIcon
-          src={isAdvancedSelectorMode ? SqueezeTableIcon : ExpandTableIcon}
-          width={'25%'}
-          height={'auto'}
-        />
       </Row>
     </StyledHeader>
   )

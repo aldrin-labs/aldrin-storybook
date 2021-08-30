@@ -2,7 +2,6 @@ import React from 'react'
 import { client } from '@core/graphql/apolloClient'
 import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSettings'
 import { SvgIcon } from '@sb/components'
-import { DarkTooltip, DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 import { marketsByCategories } from '@core/config/marketsByCategories'
 
@@ -13,15 +12,11 @@ import {
   roundAndFormatNumber,
 } from '@core/utils/PortfolioTableUtils'
 
-import GreenCheckmark from '@icons/successIcon.svg'
-import Warning from '@icons/warningPairSel.png'
-import ThinkingFace from '@icons/thinkingFace.png'
-import CCAILogo from '@icons/auth0Logo.svg'
 import AnalyticsIcon from '@icons/analytics.svg'
 import BlueTwitterIcon from '@icons/blueTwitter.svg'
 
-import favoriteSelected from '@icons/favoriteSelected.svg'
-import favoriteUnselected from '@icons/favoriteUnselected.svg'
+import favouriteSelected from '@icons/favouriteSelected.svg'
+import favouriteUnselected from '@icons/favouriteUnselected.svg'
 
 import LessVolumeArrow from '@icons/lessVolumeArrow.svg'
 import MoreVolumeArrow from '@icons/moreVolumeArrow.svg'
@@ -34,7 +29,6 @@ import tokensLinksMap from '@core/config/tokensTwitterLinks'
 import {
   GetSelectorSettingsType,
   ISelectData,
-  UpdateFavoritePairsMutationType,
   SelectTabType,
 } from './SelectWrapper.types'
 import { TokenIcon } from '@sb/components/TokenIcon'
@@ -55,9 +49,10 @@ import {
   StyledTokenName,
 } from './SelectWrapperStyles'
 import stableCoins from '@core/config/stableCoins'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 export const selectWrapperColumnNames = [
-  { label: '', id: 'favorite', isSortable: false },
+  { label: '', id: 'favourite', isSortable: false },
   { label: 'Pair', id: 'symbol', isSortable: true },
   { label: 'Last price', id: 'lastPrice', isSortable: true },
   { label: '24H change', id: '24hChange', isNumber: true, isSortable: true },
@@ -128,67 +123,6 @@ export const getMarketsMapsByCoins = (markets) => {
   }
 }
 
-export const getUpdatedFavoritePairsList = (
-  clonedData: GetSelectorSettingsType,
-  symbol: string
-) => {
-  const {
-    getAccountSettings: {
-      selectorSettings: { favoritePairs },
-    },
-  } = clonedData
-
-  let updatedList
-  const isAlreadyInTheList = favoritePairs.find((el) => el === symbol)
-  if (isAlreadyInTheList) {
-    updatedList = favoritePairs.filter((el) => el !== symbol)
-  } else {
-    updatedList = [...favoritePairs, symbol]
-  }
-
-  return updatedList
-}
-
-export const updateFavoritePairsCache = (
-  clonedData: GetSelectorSettingsType,
-  updatedFavoritePairsList: string[]
-) => {
-  client.writeQuery({
-    query: getSelectorSettings,
-    data: {
-      getAccountSettings: {
-        selectorSettings: {
-          favoritePairs: updatedFavoritePairsList,
-          __typename: 'AccountSettingsSelectorSettings',
-        },
-        __typename: 'AccountSettings',
-      },
-    },
-  })
-}
-
-export const updateFavoritePairsHandler = async (
-  updateFavoritePairsMutation: UpdateFavoritePairsMutationType,
-  symbol: string
-) => {
-  const favoritePairsData = client.readQuery({ query: getSelectorSettings })
-  const clonedData = JSON.parse(JSON.stringify(favoritePairsData))
-  const updatedFavoritePairsList = getUpdatedFavoritePairsList(
-    clonedData,
-    symbol
-  )
-
-  updateFavoritePairsCache(clonedData, updatedFavoritePairsList)
-
-  try {
-    await updateFavoritePairsMutation({
-      variables: { input: { favoritePairs: updatedFavoritePairsList } },
-    })
-  } catch (e) {
-    console.log('update favorite symbols failed')
-  }
-}
-
 export const filterDataBySymbolForDifferentDeviders = ({
   searchValue,
   symbol,
@@ -225,7 +159,7 @@ export const combineSelectWrapperData = ({
   theme,
   searchValue,
   tab,
-  favoritePairsMap,
+  favouritePairsMap,
   marketType,
   needFiltrations = true,
   tokenMap,
@@ -233,7 +167,7 @@ export const combineSelectWrapperData = ({
   allMarketsMap,
   setIsMintsPopupOpen,
   changeChoosenMarketData,
-  toggleFavoriteMarket,
+  toggleFavouriteMarket,
 }: {
   data: ISelectData
   previousData?: ISelectData
@@ -241,11 +175,11 @@ export const combineSelectWrapperData = ({
   theme: any
   searchValue: string
   tab: SelectTabType
-  favoritePairsMap: Map<string, string>
+  favouritePairsMap: Map<string, string>
   marketType: number
   needFiltrations?: boolean
   allMarketsMap: any
-  toggleFavoriteMarket: (pair: string) => void
+  toggleFavouriteMarket: (pair: string) => void
 }) => {
   const marketsCategoriesData = Object.entries(marketsByCategories)
   // no need actually in this, need to be done by filter func for data by categories
@@ -285,9 +219,9 @@ export const combineSelectWrapperData = ({
         stableCoinsPairsMap.has(el.symbol)
       )
     }
-    if (tab === 'favorite') {
+    if (tab === 'favourite') {
       processedData = processedData.filter((el) =>
-        favoritePairsMap.has(el.symbol)
+        favouritePairsMap.has(el.symbol)
       )
     }
     if (tab === 'usdc') {
@@ -320,7 +254,7 @@ export const combineSelectWrapperData = ({
         const [base] = el.symbol.split('_')
         const baseTokenInfo = tokenMap?.get(getTokenMintAddressByName(base))
 
-        return !baseTokenInfo?.name?.includes('Wrapped') || base === 'SOL'
+        return !baseTokenInfo?.name?.includes('Wrapped')
       })
     }
 
@@ -476,20 +410,18 @@ export const combineSelectWrapperData = ({
       ? Coinmarketcap
       : CoinGecko
 
-    console.log(favoritePairsMap, symbol, favoritePairsMap[symbol])
-
     return {
       id: `${symbol}`,
-      favorite: {
+      favourite: {
         isSortable: false,
         render: (
           <SvgIcon
             onClick={(e) => {
               e.stopPropagation()
-              toggleFavoriteMarket(symbol)
+              toggleFavouriteMarket(symbol)
             }}
             src={
-              favoritePairsMap.get(symbol) ? favoriteSelected : favoriteUnselected
+              favouritePairsMap.get(symbol) ? favouriteSelected : favouriteUnselected
             }
             width="2.5rem"
             height="auto"

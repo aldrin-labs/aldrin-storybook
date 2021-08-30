@@ -88,20 +88,20 @@ const SelectWrapper = (props: IProps) => {
     'advanced'
   )
 
-  const [favoriteMarketsRaw, setFavoriteMarkets] = useLocalStorageState(
-    'favoriteMarkets',
+  const [favouriteMarketsRaw, setFavouriteMarkets] = useLocalStorageState(
+    'favouriteMarkets',
     JSON.stringify([])
   )
 
-  const favoriteMarkets = JSON.parse(favoriteMarketsRaw)
+  const favouriteMarkets = JSON.parse(favouriteMarketsRaw)
 
-  const toggleFavoriteMarket = (pair) => {
-    if (favoriteMarkets.includes(pair)) {
-      setFavoriteMarkets(
-        JSON.stringify(favoriteMarkets.filter((el) => el !== pair))
+  const toggleFavouriteMarket = (pair) => {
+    if (favouriteMarkets.includes(pair)) {
+      setFavouriteMarkets(
+        JSON.stringify(favouriteMarkets.filter((el) => el !== pair))
       )
     } else {
-      setFavoriteMarkets(JSON.stringify([...favoriteMarkets, pair]))
+      setFavouriteMarkets(JSON.stringify([...favouriteMarkets, pair]))
     }
   }
 
@@ -122,9 +122,7 @@ const SelectWrapper = (props: IProps) => {
       !excludedPairs.includes(el.symbol)
   )
 
-  console.log('favoriteMarkets', favoriteMarkets, favoriteMarkets.length)
-
-  const favoritePairsMap = favoriteMarkets.reduce(
+  const favouritePairsMap = favouriteMarkets.reduce(
     (acc: Map<string, string>, el: string) => {
       acc.set(el, el)
 
@@ -137,13 +135,13 @@ const SelectWrapper = (props: IProps) => {
     <SelectPairListComponent
       tab={tab}
       data={filtredMarketsByExchange}
-      favoritePairsMap={favoritePairsMap}
+      favouritePairsMap={favouritePairsMap}
       searchValue={searchValue}
       selectorMode={selectorMode}
       setSelectorMode={setSelectorMode}
       onChangeSearch={onChangeSearch}
       onTabChange={setTab}
-      toggleFavoriteMarket={toggleFavoriteMarket}
+      toggleFavouriteMarket={toggleFavouriteMarket}
       {...props}
     />
   )
@@ -179,7 +177,7 @@ class SelectPairListComponent extends React.PureComponent<
   componentDidMount() {
     const {
       data,
-      toggleFavoriteMarket,
+      toggleFavouriteMarket,
       onSelectPair,
       theme,
       searchValue,
@@ -190,7 +188,7 @@ class SelectPairListComponent extends React.PureComponent<
       tokenMap,
       markets,
       allMarketsMap,
-      favoritePairsMap,
+      favouritePairsMap,
       marketType,
     } = this.props
 
@@ -213,9 +211,9 @@ class SelectPairListComponent extends React.PureComponent<
 
     const processedSelectData = combineSelectWrapperData({
       data,
-      toggleFavoriteMarket,
+      toggleFavouriteMarket,
       onSelectPair,
-      favoritePairsMap,
+      favouritePairsMap,
       theme,
       searchValue,
       tab,
@@ -246,12 +244,12 @@ class SelectPairListComponent extends React.PureComponent<
   componentWillReceiveProps(nextProps: IPropsSelectPairListComponent) {
     const {
       data,
-      toggleFavoriteMarket,
+      toggleFavouriteMarket,
       onSelectPair,
       theme,
       searchValue,
       tab,
-      favoritePairsMap,
+      favouritePairsMap,
       marketType,
       markets,
       customMarkets,
@@ -276,13 +274,13 @@ class SelectPairListComponent extends React.PureComponent<
     )
     const processedSelectData = combineSelectWrapperData({
       data,
-      toggleFavoriteMarket,
+      toggleFavouriteMarket,
       previousData: prevPropsData,
       onSelectPair,
       theme,
       searchValue,
       tab,
-      favoritePairsMap,
+      favouritePairsMap,
       marketType,
       customMarkets,
       market,
@@ -389,7 +387,7 @@ class SelectPairListComponent extends React.PureComponent<
       history,
       tokenMap,
       selectorMode,
-      favoritePairsMap,
+      favouritePairsMap,
       setSelectorMode,
       setCustomMarkets,
       customMarkets,
@@ -433,7 +431,7 @@ class SelectPairListComponent extends React.PureComponent<
           <TableHeader
             theme={theme}
             tab={tab}
-            favoritePairsMap={favoritePairsMap}
+            favouritePairsMap={favouritePairsMap}
             tokenMap={tokenMap}
             data={this.props.data}
             onTabChange={onTabChange}

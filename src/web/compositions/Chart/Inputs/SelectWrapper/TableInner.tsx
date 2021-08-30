@@ -69,7 +69,7 @@ export const TableInner = ({
           >
             <Column
               label={` `}
-              dataKey="favorite"
+              dataKey="favourite"
               headerStyle={{
                 color: '#fff',
                 paddingRight: 'calc(10px)',

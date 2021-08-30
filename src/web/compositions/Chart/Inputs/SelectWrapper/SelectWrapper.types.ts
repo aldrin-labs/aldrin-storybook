@@ -1,7 +1,7 @@
 import { Theme } from '@material-ui/core'
 import { IExchange, IGetMarketsByExchangeQuery } from '@core/types/ChartTypes'
 
-export type SelectTabType = 'favorite' | 'btc' | 'alts' | 'fiat' | 'all' | 'usdt' | 'usdc' | 'leveraged' | 'public' | 'private'
+export type SelectTabType = 'favourite' | 'btc' | 'alts' | 'fiat' | 'all' | 'usdt' | 'usdc' | 'leveraged' | 'public' | 'private'
 
 export interface IState {
   searchValue: string
@@ -18,7 +18,6 @@ export interface IProps {
       }
     }
   }
-  updateFavoritePairsMutation: UpdateFavoritePairsMutationType
   onSelectPair: ({ value }: { value: string }) => Promise<void>
   theme: Theme
   closeMenu: () => void
@@ -28,7 +27,7 @@ export interface IProps {
 
 export interface IPropsSelectPairListComponent extends IProps {
   data: ISelectData
-  favoritePairsMap: Map<string, string>
+  favouritePairsMap: Map<string, string>
   searchValue: string
   tab: SelectTabType
   selectorMode: string

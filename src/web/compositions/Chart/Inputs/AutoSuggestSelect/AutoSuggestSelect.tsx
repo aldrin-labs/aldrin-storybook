@@ -18,7 +18,6 @@ import { IProps } from './AutoSuggestSeletec.types'
 import { ExchangePair, SelectR } from './AutoSuggestSelect.styles'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
-import { updateFavoritePairs } from '@core/graphql/mutations/chart/updateFavoritePairs'
 import SelectWrapper from '../SelectWrapper/SelectWrapper'
 import useMobileSize from '@webhooks/useMobileSize'
 
@@ -29,7 +28,6 @@ const IntegrationReactSelect = (props: IProps) => {
     },
     theme,
     selectStyles,
-    updateFavoritePairsMutation,
     activeExchange,
     market,
     marketName,
@@ -41,7 +39,7 @@ const IntegrationReactSelect = (props: IProps) => {
   } = props
 
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const isMobile = useMobileSize() || true
+  const isMobile = useMobileSize()
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
@@ -92,7 +90,6 @@ const IntegrationReactSelect = (props: IProps) => {
         <SelectWrapper
           id={'selectWrapper'}
           theme={theme}
-          updateFavoritePairsMutation={updateFavoritePairsMutation}
           onSelectPair={handleChange}
           closeMenu={closeMenu}
           marketType={1}
@@ -123,9 +120,6 @@ export default compose(
   }),
   graphql(CHANGE_CURRENCY_PAIR, {
     name: 'changeCurrencyPairMutation',
-  }),
-  graphql(updateFavoritePairs, {
-    name: 'updateFavoritePairsMutation',
   }),
   graphql(ADD_CHART, { name: 'addChartMutation' }),
   withMarketUtilsHOC
