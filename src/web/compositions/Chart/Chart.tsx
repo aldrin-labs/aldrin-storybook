@@ -43,6 +43,7 @@ import MarketBlock from './components/MarketBlock/MarketBlock'
 // import { ParticleRuggedPopup } from '@sb/components/ParticleRuggedPopup'
 import { TokenDelistPopup } from '@sb/components/TokenDelistPopup'
 import { tokensToDelist } from '@core/config/dex'
+import { TransactionsConfirmationWarningPopup } from '@sb/components/TransactionsConfirmationWarningPopup/TransactionsConfirmationWarningPopup'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
   // Check if the arrays are the same length
@@ -309,17 +310,21 @@ function ChartPageComponent(props: any) {
         closeChartPagePopup={closeChartPagePopup}
         changeChartLayoutMutation={changeChartLayoutMutation}
       />
+
       <WarningPopup
         open={isWarningPopupOpen}
         onClose={() => openWarningPopup(false)}
         theme={theme}
       />
+
       <TokenDelistPopup
         open={isDelistPopupOpen}
         onClose={() => openDelistPopup(false)}
         theme={theme}
         tokenToDelist={tokenToDelist}
       />
+
+      <TransactionsConfirmationWarningPopup theme={theme} />
 
       {/* )} */}
       {/* <JoyrideOnboarding
