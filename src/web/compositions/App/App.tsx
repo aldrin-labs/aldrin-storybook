@@ -43,7 +43,7 @@ import { syncStorage } from '@storage'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { useQuery } from 'react-apollo'
 import CardsPanel from '@sb/compositions/Chart/components/CardsPanel'
-import MarketBlock from '@sb/compositions/Chart/components/MarketBlock'
+import MarketBlock from '@sb/compositions/Chart/components/MarketBlock/MarketBlock'
 
 import { ConnectionProvider } from '@sb/dexUtils/connection'
 import { WalletProvider } from '@sb/dexUtils/wallet'
@@ -59,11 +59,11 @@ import useWindowSize from '@webhooks/useWindowSize'
 import { RebrandingPopup } from '@sb/components/RebrandingPopup/RebrandingPopup'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
 
-const version = `10.9.143`
+const version = `10.9.146-rebalance`
 const isOnboardingDone = localStorage.getItem('isOnboardingDone')
 const isNotificationDone = localStorage.getItem('isNotificationDone')
-const isWalletMigrationToNewUrlPopupDone = localStorage.getItem(
-  'isWalletMigrationToNewUrlPopupDone'
+const isRebrandingPopupOpen = localStorage.getItem(
+  'isRebrandingPopupOpen'
 )
 const localPassword = localStorage.getItem('localPassword')
 const currentVersion = localStorage.getItem('version')
@@ -73,6 +73,7 @@ if (currentVersion !== version) {
   localStorage.setItem('version', version)
   localStorage.setItem('isOnboardingDone', isOnboardingDone)
   localStorage.setItem('isNotificationDone', isNotificationDone)
+  localStorage.setItem('isRebrandingPopupOpen', isRebrandingPopupOpen)
   document.location.reload()
 
   if (localPassword !== null) {
@@ -147,7 +148,6 @@ const AppRaw = ({
           <SnackbarWrapper>
             <SnackbarUtilsConfigurator />
             <CssBaseline />
-            {/* <FontStyle /> */}
             <ConnectionProvider>
               <TokenRegistryProvider>
                 <MarketProvider>

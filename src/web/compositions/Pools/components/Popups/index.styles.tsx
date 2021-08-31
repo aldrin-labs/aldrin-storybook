@@ -3,10 +3,10 @@ import styled from 'styled-components'
 
 import { Paper } from '@material-ui/core'
 
-export const BoldHeader = styled.h1`
+export const BoldHeader = styled.h2`
   font-family: Avenir Next Bold;
   font-size: 2.5rem;
-  letter-spacing: -1.04615px;
+  letter-spacing: 0.01rem;
   color: #f5f5fb;
 `
 export const StyledInput = styled.div`

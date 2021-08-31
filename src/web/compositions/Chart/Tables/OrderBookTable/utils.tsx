@@ -10,12 +10,11 @@ import {
   getNumberOfDecimalsFromNumber,
 } from '@core/utils/chartPageUtils'
 
-import { filterOpenOrders } from '@sb/components/TradingTable/TradingTable.utils'
-
 import RedArrow from '@icons/redArrow.png'
 import GreenArrow from '@icons/greenArrow.png'
 import { isDataForThisMarket } from '@sb/components/TradingTable/TradingTable.utils'
 import { Theme } from '@material-ui/core'
+import { filterOpenOrders } from '@sb/components/TradingTable/OpenOrdersTable/OpenOrdersTable.utils'
 
 // ${rowStyles}
 // ${(props: { style: CSSProperties }) =>

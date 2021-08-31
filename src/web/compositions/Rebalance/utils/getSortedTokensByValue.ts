@@ -1,5 +1,12 @@
-export const getSortedTokensByValue = (tokens: {symbol: string, decimals: number, amount: number, price: number | null, mint: string, tokenValue: number }[]) => {
-    const sortedTokens = tokens.sort((a, b) => b.tokenValue - a.tokenValue)
+import { TokenInfoWithValue } from '../Rebalance.types'
 
-    return sortedTokens
+export const getSortedTokensByValue = (tokens: TokenInfoWithValue[]) => {
+  const sortedTokens = tokens.sort((a, b) => {
+    if (b.tokenValue === 0 && a.tokenValue === 0)
+      return a.symbol.localeCompare(b.symbol)
+
+    return b.tokenValue - a.tokenValue
+  })
+
+  return sortedTokens
 }

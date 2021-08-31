@@ -1,14 +1,13 @@
-import { TokenType } from '../Rebalance.types'
+import { TokenInfoWithPercentage, TokenInfoWithSliderStep } from '../Rebalance.types'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
-export const getSliderStepForTokens = (tokens: TokenType[], totalTokenValue: number) => {
+export const getSliderStepForTokens = (tokens: TokenInfoWithPercentage[], totalTokenValue: number): TokenInfoWithSliderStep[] => {
     const tokensWithSliderStep = tokens.map(el => {
-        let decimalCount, stepInAmountToken, stepInValueToken, stepInPercentageToken
-
-            decimalCount = el.decimals
-            stepInAmountToken = stripDigitPlaces(1 / Math.pow(10, decimalCount), decimalCount)
-            stepInValueToken = stepInAmountToken * el.price
-            stepInPercentageToken = stepInAmountToken * 100 / (totalTokenValue / el.price)
+        const decimalCount = el.decimals
+        const tokenPrice = el.price || 0
+        const stepInAmountToken = +stripDigitPlaces(1 / Math.pow(10, decimalCount), decimalCount) 
+        const stepInValueToken = stepInAmountToken * tokenPrice
+        const stepInPercentageToken = stepInAmountToken * 100 / (totalTokenValue / tokenPrice)
 
         return { ...el, stepInAmountToken, stepInValueToken, stepInPercentageToken, decimalCount }
     })

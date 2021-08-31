@@ -349,10 +349,11 @@ const renderCell = ({
   },
 }: renderCellType) => {
   const align = numeric ? 'right' : 'left'
+  
   if (cell !== null && typeof cell === 'object') {
     return (
       <StyledCustomTableCell
-        showOnMobile={cell.showOnMobile ?? true}
+        showOnMobile={cell.showOnMobile ?? false}
         scope="row"
         variant={variant}
         style={{ ...cell.style, ...tableStyles.cell, color: cell.color }}
@@ -371,6 +372,7 @@ const renderCell = ({
   if (typeof cell !== 'object') {
     return (
       <CustomTableCell
+        showOnMobile={false}
         style={{ ...tableStyles.cell }}
         padding={padding}
         scope="row"
@@ -384,6 +386,7 @@ const renderCell = ({
   }
   return (
     <CustomTableCell
+      showOnMobile={false}
       padding={padding}
       scope="row"
       style={{ ...tableStyles.cell }}

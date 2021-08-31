@@ -50,7 +50,7 @@ export const MainTitle = styled.span`
   font-size: 3rem;
   line-height: 4rem;
   text-align: center;
-  letter-spacing: -1.04615px;
+  letter-spacing: 0.01rem;
   color: #f8faff;
   margin-bottom: 2rem;
 `

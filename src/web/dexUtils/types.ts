@@ -8,8 +8,8 @@ export interface WalletAdapter {
   publicKey: PublicKey;
   autoApprove: boolean;
   connected: boolean;
-  signTransaction: (transaction: Transaction) => Promise<Transaction>;
-  signAllTransactions: (transaction: Transaction[]) => Promise<Transaction[]>;
+  signTransaction: (transaction: Transaction, focusPopup?: boolean) => Promise<Transaction>;
+  signAllTransactions: (transaction: Transaction[], focusPopup?: boolean) => Promise<Transaction[]>;
   connect: () => any;
   disconnect: () => any;
   on<T>(event: string, fn: () => void): this;

@@ -5,7 +5,7 @@ import { compose } from 'recompose'
 import { Paper } from '@material-ui/core'
 
 import { notify } from '@sb/dexUtils//notifications'
-import { useBalanceInfo, useWallet } from '@sb/dexUtils/wallet'
+import { createAssociatedTokenAccount, useBalanceInfo, useWallet } from '@sb/dexUtils/wallet'
 
 import { StyledDialogContent } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
@@ -20,13 +20,14 @@ import {
 } from '@sb/dexUtils/markets'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import clipboardCopy from 'clipboard-copy'
-import { LAMPORTS_PER_SOL } from '@solana/web3.js'
+import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { useConnection } from '@sb/dexUtils/connection'
 import { BlueButton } from '../Inputs/SelectWrapper/SelectWrapperStyles'
 import SvgIcon from '@sb/components/SvgIcon'
 import greenDoneMark from '@icons/greenDoneMark.svg'
 import { createToken } from '@sb/dexUtils/createToken'
+import { createTokens } from '@sb/dexUtils/createTokens'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -248,7 +249,7 @@ const TokenNotAddedDialog = ({ open, pair, onClose, theme }) => {
               <VioletButton
                 theme={theme}
                 onClick={async () => {
-                  await createToken({ wallet, connection, mint })
+                  await createAssociatedTokenAccount({ wallet, connection, splTokenMintAddress: new PublicKey(mint) })
                   await setIsTokenSuccessfullyAdded(true)
                   await setTokenName(getTokenNameByMintAddress(mint.toString()))
                 }}

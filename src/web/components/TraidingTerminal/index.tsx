@@ -298,33 +298,12 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
       marketPriceAfterPairChange,
       values: { amount, price, total },
       setFieldValue,
+      updateState,
     } = this.props
 
-    // Handling case with balances in TradingTerminal
     const isBuyType = sideType === 'buy'
-    const fundsAssetValue = isBuyType ? funds[1].quantity : funds[0].quantity
-    const previousFundsAssetValue = isBuyType
-      ? prevProps.funds[1].quantity
-      : prevProps.funds[0].quantity
 
     const priceForCalculate = priceType !== 'market' ? price : marketPrice
-
-    // if (
-    //   fundsAssetValue !== previousFundsAssetValue &&
-    //   fundsAssetValue &&
-    //   priceForCalculate
-    // ) {
-    //   const newValue = fundsAssetValue
-
-    //   const newAmount = isBuyType
-    //     ? +stripDigitPlaces(newValue / priceForCalculate, quantityPrecision)
-    //     : +stripDigitPlaces(newValue, quantityPrecision)
-
-    //   const newTotal = newAmount * priceForCalculate
-
-    //   setFieldValue('amount', newAmount)
-    //   setFieldValue('total', stripDigitPlaces(newTotal, 2))
-    // }
 
     if (marketPriceAfterPairChange !== prevProps.marketPriceAfterPairChange) {
       this.onPriceChange({
@@ -353,11 +332,10 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
       )
     }
 
-    if (
-      this.state.priceFromOrderbook !== this.props.priceFromOrderbook &&
-      priceType !== 'market'
-    ) {
-      const { priceFromOrderbook, leverage } = this.props
+    if (this.state.priceFromOrderbook !== this.props.priceFromOrderbook) {
+      const { updateState,priceFromOrderbook, leverage } = this.props
+
+      // updateState({ mode: 'limit' })
 
       this.setFormatted(
         'price',

@@ -9,7 +9,7 @@ import { getAllTokensData } from './getAllTokensData'
 import { getSliderStepForTokens } from './getSliderStepForTokens'
 import { getTransactionsList } from './getTransactionsList'
 import { getPoolsSwaps } from './getPoolsSwaps'
-import { getPoolsInfo } from './getPoolsInfo'
+import { getMarketsData } from './getMarketsData'
 import { getSwapsChunks } from './getSwapsChunks'
 
 export {
@@ -24,6 +24,6 @@ export {
   getSliderStepForTokens,
   getTransactionsList,
   getPoolsSwaps,
-  getPoolsInfo,
+  getMarketsData,
   getSwapsChunks,
 }
