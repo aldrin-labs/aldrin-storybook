@@ -60,7 +60,7 @@ class SimpleTabs extends React.Component<any, any> {
     mode: 'limit',
     leverage: false,
     reduceOnly: false,
-    orderMode: 'ioc',
+    orderMode: 'TIF',
     TIFMode: 'GTC',
     trigger: 'last price',
     orderIsCreating: false,
@@ -294,6 +294,7 @@ class SimpleTabs extends React.Component<any, any> {
                       mode: 'market',
                       orderMode: 'ioc',
                       TVAlertsBotEnabled: false,
+                      takeProfit: false,
                     })
                   }}
                 >

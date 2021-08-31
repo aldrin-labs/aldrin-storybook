@@ -3,19 +3,12 @@ import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 dayjs.extend(localizedFormat)
 
-import { OrderType, TradeType, FundsType, Key } from '@core/types/ChartTypes'
-import {
-  DesktopRow,
-  MobileRow,
-  StyledTitle,
-  TableButton,
-} from './TradingTable.styles'
+import { TradeType } from '@core/types/ChartTypes'
+import { StyledTitle, TableButton } from './TradingTable.styles'
 
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components/index'
 import stableCoins from '@core/config/stableCoins'
 import { cloneDeep } from 'lodash-es'
-import { getPrecisionItem } from '@core/utils/getPrecisionItem'
 
 export const CloseButton = ({
   i,
@@ -35,9 +28,14 @@ export const CloseButton = ({
       style={{
         color: isCancelled ? 'grey' : '#fbf2f2',
       }}
-      onClick={() => {
-        onClick()
+      onClick={async () => {
         cancelOrder(true)
+
+        try {
+          await onClick()
+        } catch (e) {
+          cancelOrder(false)
+        }
       }}
     >
       {isCancelled ? (
@@ -65,12 +63,13 @@ import {
   orderHistoryBody,
   tradeHistoryBody,
 } from '@sb/components/TradingTable/TradingTable.mocks'
-
-import { Theme } from '@material-ui/core'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
+import {
+  roundAndFormatNumber,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { Row } from '../OldTable/Table'
+import { getPrecisionItem } from '@core/utils/getPrecisionItem'
+import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
 
 export const getTableBody = (tab: string) =>
   tab === 'openOrders'
@@ -209,55 +208,55 @@ type IStatus = {
   profitPercentage: number
 }
 
-const getActiveOrderStatus = ({
-  theme,
-  strategy,
-  state,
-  profitPercentage,
-}: IStatus): [
-  'Trailing entry' | 'In Profit' | 'In Loss' | 'Preparing' | 'Timeout',
-  string
-] => {
-  if (strategy.conditions.isTemplate) {
-    if (strategy.conditions.templateStatus === 'enabled') {
-      return ['Waiting alert', theme.palette.green.main]
-    }
-    if (strategy.conditions.templateStatus === 'paused') {
-      return ['On pause', theme.palette.blue.background]
-    }
-  }
+// const getActiveOrderStatus = ({
+//   theme,
+//   strategy,
+//   state,
+//   profitPercentage,
+// }: IStatus): [
+//   'Trailing entry' | 'In Profit' | 'In Loss' | 'Preparing' | 'Timeout',
+//   string
+// ] => {
+//   if (strategy.conditions.isTemplate) {
+//     if (strategy.conditions.templateStatus === 'enabled') {
+//       return ['Waiting alert', theme.palette.green.main]
+//     }
+//     if (strategy.conditions.templateStatus === 'paused') {
+//       return ['On pause', theme.palette.blue.background]
+//     }
+//   }
 
-  if (
-    strategy.conditions.hedging &&
-    strategy.conditions.hedgeStrategyId === null
-  ) {
-    return ['Waiting hedge', theme.palette.green.main]
-  }
+//   if (
+//     strategy.conditions.hedging &&
+//     strategy.conditions.hedgeStrategyId === null
+//   ) {
+//     return ['Waiting hedge', theme.palette.green.main]
+//   }
 
-  if (state && state.state && state.state !== 'WaitForEntry') {
-    const { state: status } = state
+//   if (state && state.state && state.state !== 'WaitForEntry') {
+//     const { state: status } = state
 
-    if (status === 'TrailingEntry') {
-      return ['Trailing entry', theme.palette.green.main]
-    }
+//     if (status === 'TrailingEntry') {
+//       return ['Trailing entry', theme.palette.green.main]
+//     }
 
-    if (status === 'Timeout') {
-      return ['Timeout', theme.palette.green.main]
-    }
+//     if (status === 'Timeout') {
+//       return ['Timeout', theme.palette.green.main]
+//     }
 
-    // if (status === 'InEntry') {
-    //   return ['Active', theme.palette.green.main]
-    // }
+//     // if (status === 'InEntry') {
+//     //   return ['Active', theme.palette.green.main]
+//     // }
 
-    if (profitPercentage > 0) {
-      return ['In Profit', theme.palette.green.main]
-    } else {
-      return ['In Loss', theme.palette.red.main]
-    }
-  } else {
-    return ['Preparing', theme.palette.blue.background]
-  }
-}
+//     if (profitPercentage > 0) {
+//       return ['In Profit', theme.palette.green.main]
+//     } else {
+//       return ['In Loss', theme.palette.red.main]
+//     }
+//   } else {
+//     return ['Preparing', theme.palette.blue.background]
+//   }
+// }
 
 export const filterOpenOrders = ({
   order,
@@ -1252,348 +1251,6 @@ export const updateStrategiesHistoryQuerryFunction = (
     prev.getStrategiesHistory.strategies = [
       { ...subscriptionData.data.listenActiveStrategies },
       ...prev.getStrategiesHistory.strategies,
-    ]
-
-    result = { ...prev }
-  }
-
-  return result
-}
-
-export const updateActivePositionsQuerryFunction = (
-  previous,
-  { subscriptionData }
-) => {
-  // console.log(
-  //   'updateActivePositionsQuerryFunction subscriptionData',
-  //   subscriptionData
-  // )
-  const isEmptySubscription =
-    !subscriptionData.data || !subscriptionData.data.listenFuturesPositions
-
-  if (isEmptySubscription) {
-    return previous
-  }
-
-  const prev = cloneDeep(previous)
-
-  const positionHasTheSameIndex = prev.getActivePositions.findIndex(
-    (el: TradeType) =>
-      el._id === subscriptionData.data.listenFuturesPositions._id
-  )
-
-  const positionAlreadyExists = positionHasTheSameIndex !== -1
-
-  let result
-
-  if (positionAlreadyExists) {
-    prev.getActivePositions[positionHasTheSameIndex] = {
-      ...prev.getActivePositions[positionHasTheSameIndex],
-      ...subscriptionData.data.listenFuturesPositions,
-    }
-
-    result = { ...prev }
-  } else {
-    prev.getActivePositions = [
-      { ...subscriptionData.data.listenFuturesPositions },
-      ...prev.getActivePositions,
-    ]
-
-    result = { ...prev }
-  }
-
-  return result
-}
-
-export const updateOpenOrderHistoryQuerryFunction = (
-  previous,
-  { subscriptionData }
-) => {
-  const isEmptySubscription =
-    !subscriptionData.data || !subscriptionData.data.listenOpenOrders
-
-  if (isEmptySubscription) {
-    return previous
-  }
-
-  const prev = cloneDeep(previous)
-
-  const openOrderHasTheSameOrder = prev.getOpenOrderHistory.orders.find(
-    (el: OrderType) => {
-      if (el.info && el.info.orderId) {
-        return (
-          el.info.orderId ===
-          subscriptionData.data.listenOpenOrders.info.orderId
-        )
-      } else {
-        return el._id === subscriptionData.data.listenOpenOrders._id
-      }
-    }
-  )
-
-  const openOrderHasTheSameOrderIndex = prev.getOpenOrderHistory.orders.findIndex(
-    (el: OrderType) => {
-      if (el.info && el.info.orderId) {
-        return (
-          el.info.orderId ===
-          subscriptionData.data.listenOpenOrders.info.orderId
-        )
-      } else {
-        return el._id === subscriptionData.data.listenOpenOrders._id
-      }
-    }
-  )
-
-  const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
-
-  let result
-
-  if (openOrderAlreadyExists) {
-    prev.getOpenOrderHistory.orders[openOrderHasTheSameOrderIndex] = {
-      ...prev.getOpenOrderHistory.orders[openOrderHasTheSameOrderIndex],
-      ...subscriptionData.data.listenOpenOrders,
-    }
-
-    if (subscriptionData.data.listenOpenOrders.status === 'open') {
-      result = { ...prev }
-    } else {
-      result = {
-        getOpenOrderHistory: {
-          ...prev.getOpenOrderHistory,
-          count:
-            openOrderHasTheSameOrder.status === 'open'
-              ? prev.getOpenOrderHistory.count - 1
-              : prev.getOpenOrderHistory.count,
-        },
-      }
-    }
-  } else {
-    prev.getOpenOrderHistory = {
-      orders: [
-        { ...subscriptionData.data.listenOpenOrders },
-        ...prev.getOpenOrderHistory.orders,
-      ],
-      count: prev.getOpenOrderHistory.count + 1,
-      __typename: 'getOpenOrderHistory',
-    }
-
-    result = { ...prev }
-  }
-
-  return result
-}
-
-export const updateOrderHistoryQuerryFunction = (
-  previous,
-  { subscriptionData }
-) => {
-  // console.log(
-  //   'updateOrderHistoryQuerryFunction subscriptionData',
-  //   subscriptionData
-  // )
-
-  const isEmptySubscription =
-    !subscriptionData.data || !subscriptionData.data.listenOrderHistory
-
-  if (isEmptySubscription) {
-    return previous
-  }
-
-  const prev = cloneDeep(previous)
-
-  const openOrderHasTheSameOrderIndex = prev.getOrderHistory.orders.findIndex(
-    (el: OrderType) => {
-      if (el.info && el.info.orderId) {
-        return (
-          el.info.orderId ===
-          subscriptionData.data.listenOrderHistory.info.orderId
-        )
-      } else {
-        return el._id === subscriptionData.data.listenOrderHistory._id
-      }
-    }
-  )
-
-  const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
-
-  let result
-
-  if (openOrderAlreadyExists) {
-    const oldDataElement = prev.getOrderHistory[openOrderHasTheSameOrderIndex]
-    const newDataElement = subscriptionData.data.listenOrderHistory
-
-    if (
-      newDataElement.status !== 'open' &&
-      !(
-        newDataElement.status === 'partially_filled' &&
-        oldDataElement.status === 'filled'
-      )
-    ) {
-      // here we handling wrong order of subscribtion events
-      prev.getOrderHistory[openOrderHasTheSameOrderIndex] = {
-        ...prev.getOrderHistory[openOrderHasTheSameOrderIndex],
-        ...subscriptionData.data.listenOrderHistory,
-      }
-    }
-
-    result = { ...prev }
-  } else {
-    prev.getOrderHistory = [
-      { ...subscriptionData.data.listenOrderHistory },
-      ...prev.getOrderHistory,
-    ]
-
-    result = { ...prev }
-  }
-
-  return result
-}
-
-export const updatePaginatedOrderHistoryQuerryFunction = (
-  previous,
-  { subscriptionData },
-  enqueueSnackbar = (msg: string, obj: { variant: string }) => {}
-) => {
-  const isEmptySubscription =
-    !subscriptionData.data || !subscriptionData.data.listenOrderHistory
-
-  if (isEmptySubscription) {
-    return previous
-  }
-
-  const prev = cloneDeep(previous)
-
-  const openOrderHasTheSameOrderIndex = prev.getPaginatedOrderHistory.orders.findIndex(
-    (el: OrderType) => {
-      if (el.info && el.info.orderId) {
-        return (
-          el.info.orderId ===
-          subscriptionData.data.listenOrderHistory.info.orderId
-        )
-      } else {
-        return el._id === subscriptionData.data.listenOrderHistory._id
-      }
-    }
-  )
-  const openOrderAlreadyExists = openOrderHasTheSameOrderIndex !== -1
-
-  let result
-
-  if (openOrderAlreadyExists) {
-    const oldDataElement =
-      prev.getPaginatedOrderHistory.orders[openOrderHasTheSameOrderIndex]
-    const newDataElement = subscriptionData.data.listenOrderHistory
-
-    if (
-      oldDataElement.status !== 'filled' &&
-      newDataElement.status === 'filled' &&
-      newDataElement.type !== 'market'
-    ) {
-      enqueueSnackbar(
-        `${
-          newDataElement.type
-            ? `${newDataElement.type
-                .charAt(0)
-                .toUpperCase()}${newDataElement.type.slice(1)} order`
-            : 'Order'
-        } ${
-          newDataElement.type === 'maker-only'
-            ? ''
-            : `with price ${newDataElement.price}`
-        } was executed!`,
-        {
-          variant: 'success',
-        }
-      )
-    }
-
-    if (
-      newDataElement.status !== 'open' &&
-      !(
-        newDataElement.status === 'partially_filled' &&
-        oldDataElement.status === 'filled'
-      )
-    ) {
-      // here we handling wrong order of subscribtion events
-      prev.getPaginatedOrderHistory.orders[openOrderHasTheSameOrderIndex] = {
-        ...prev.getPaginatedOrderHistory.orders[openOrderHasTheSameOrderIndex],
-        ...subscriptionData.data.listenOrderHistory,
-      }
-    }
-
-    result = { ...prev }
-  } else {
-    const newDataElement = subscriptionData.data.listenOrderHistory
-
-    prev.getPaginatedOrderHistory.orders = [
-      { ...newDataElement },
-      ...prev.getPaginatedOrderHistory.orders,
-    ]
-
-    if (
-      newDataElement.status === 'filled' &&
-      newDataElement.type !== 'market'
-    ) {
-      enqueueSnackbar(
-        `${
-          newDataElement.type
-            ? `${newDataElement.type
-                .charAt(0)
-                .toUpperCase()}${newDataElement.type.slice(1)} order`
-            : 'Order'
-        } ${
-          newDataElement.type === 'maker-only'
-            ? ''
-            : `with price ${newDataElement.price}`
-        } was executed!`,
-        {
-          variant: 'success',
-        }
-      )
-    }
-
-    result = { ...prev }
-  }
-
-  return result
-}
-
-export const updateTradeHistoryQuerryFunction = (
-  previous,
-  { subscriptionData }
-) => {
-  // console.log(
-  //   'updateTradeHistoryQuerryFunction subscriptionData',
-  //   subscriptionData
-  // )
-
-  const isEmptySubscription =
-    !subscriptionData.data || !subscriptionData.data.listenTradeHistory
-
-  if (isEmptySubscription) {
-    return previous
-  }
-
-  const prev = cloneDeep(previous)
-
-  const tradeHasTheSameIndex = prev.getTradeHistory.trades.findIndex(
-    (el: TradeType) => el.id === subscriptionData.data.listenTradeHistory.id
-  )
-  const tradeAlreadyExists = tradeHasTheSameIndex !== -1
-
-  let result
-
-  if (tradeAlreadyExists) {
-    prev.getTradeHistory.trades[tradeHasTheSameIndex] = {
-      ...prev.getTradeHistory.trades[tradeHasTheSameIndex],
-      ...subscriptionData.data.listenTradeHistory,
-    }
-
-    result = { ...prev }
-  } else {
-    prev.getTradeHistory.trades = [
-      { ...subscriptionData.data.listenTradeHistory },
-      ...prev.getTradeHistory.trades,
     ]
 
     result = { ...prev }

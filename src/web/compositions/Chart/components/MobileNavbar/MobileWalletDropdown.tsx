@@ -9,6 +9,7 @@ import { MainTitle } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
 import { StyledPaper } from './styles'
+import useMobileSize from '@webhooks/useMobileSize'
 
 export const MobileWalletDropdown = ({
   theme,
@@ -25,6 +26,9 @@ export const MobileWalletDropdown = ({
   setAutoConnect: (arg: boolean) => void
   setProvider: any
 }) => {
+  const isMobile = useMobileSize()
+  if (!isMobile) return null
+
   return (
     <DialogWrapper
       theme={theme}

@@ -4,13 +4,13 @@ import { compose } from 'recompose'
 import { withTheme } from '@material-ui/styles'
 import { Card } from '@material-ui/core'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
-import { TriggerTitle } from '@sb/components/ChartCardHeader'
+import { TriggerTitle } from '@sb/components/ChartCardHeader/styles'
 import { CHARTS_API_URL, maxMobileScreenResolution } from '@core/utils/config'
 import { TerminalModeButton } from '@sb/components/TradingWrapper/styles'
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 
 import { useWallet } from '@sb/dexUtils/wallet'
-import useMobileSize from '../../../webhooks/useMobileSize'
+import useMobileSize from '@webhooks/useMobileSize'
 
 const Wrapper = styled(Card)`
   display: flex;

@@ -4,7 +4,7 @@ import {
   SolongWalletAdapter,
   SolletExtensionAdapter,
   MathWalletAdapter,
-  CcaiWalletAdapter,
+  CommonWalletAdapter,
   CcaiExtensionAdapter,
   PhantomWalletAdapter,
   LedgerWalletAdapter,
@@ -41,20 +41,23 @@ export const WALLET_PROVIDERS = [
   {
     name: 'Wallet™',
     url: CCAIProviderURL,
-    adapter: Wallet,
-    icon: WalletAldrin,
+    adapter: CommonWalletAdapter,
+    isExtension: false,
     showOnMobile: true,
+    icon: WalletAldrin,
   },
   {
     name: 'Wallet™ Extension',
     url: `${CCAIProviderURL}/extension`,
     adapter: CcaiExtensionAdapter,
+    isExtension: true,
+    showOnMobile: false,
     icon: WalletAldrin,
   },
   {
     name: 'Sollet.io',
     url: 'https://www.sollet.io',
-    adapter: Wallet,
+    adapter: CommonWalletAdapter,
     icon: Sollet,
     isExtension: false,
     showOnMobile: true,
@@ -527,7 +530,7 @@ export async function createAssociatedTokenAccount({
 
   return [address, txSig]
 }
-async function createAssociatedTokenAccountIx(
+export async function createAssociatedTokenAccountIx(
   fundingAddress,
   walletAddress,
   splTokenMintAddress
