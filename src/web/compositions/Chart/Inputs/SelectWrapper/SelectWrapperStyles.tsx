@@ -173,6 +173,9 @@ export const Title = styled(({ ...props }) => <MainTitle {...props} />)`
   text-transform: none;
   font-size: 2.5rem;
   margin-bottom: 0;
+  @media (max-width: 600px) {
+    font-size: 4rem;
+  }
 `
 export const BlueButton = styled(
   ({ isUserConfident, showLoader, children, ...props }) => (
@@ -189,8 +192,8 @@ export const BlueButton = styled(
     </BtnCustom>
   )
 )`
-  font-size: 1.4rem;
-  height: 4.5rem;
+  font-size: ${(props) => (props.isMobile ? '2.5rem' : '1.4rem')};
+  height: ${(props) => (props.isMobile ? '9.5rem' : '4.5rem')};
   text-transform: capitalize;
   background-color: ${(props) =>
     props.background || props.theme.palette.blue.serum};
@@ -222,6 +225,22 @@ export const TextField = styled.input`
   &::placeholder {
     padding-top: 1rem;
   }
+  @media (max-width: 600px) {
+    height: 9.5rem;
+    font-size: 2rem;
+    margin-bottom: 5rem;
+
+    &::placeholder {
+      font-size: 2rem;
+    }
+  }
+`
+
+export const StyledRowContainer = styled(RowContainer)`
+  margin: 1rem 0;
+  @media (max-width: 600px) {
+    margin-top: 5rem;
+  }
 `
 export const StyledTextArea = styled.textarea`
   width: 100%;
@@ -240,7 +259,14 @@ export const StyledTextArea = styled.textarea`
   margin-top: 1rem;
   padding-top: 1rem;
   resize: none;
-
+  @media (max-width: 600px) {
+    height: 30rem;
+    font-size: 2rem;
+    margin-bottom: 3rem;
+    &::placeholder {
+      font-size: 2rem;
+    }
+  }
   &:focus {
     border: ${(props) => `0.1rem solid ${props.theme.palette.blue.serum}`};
   }
@@ -271,6 +297,11 @@ export const SubmitButton = styled.button`
   font-family: Avenir Next Medium;
   margin-top: 4rem;
   transition: 0.3rem;
+
+  @media (max-width: 600px) {
+    height: 9.5rem;
+    font-size: 2.5rem;
+  }
 `
 export const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -283,6 +314,17 @@ export const StyledPaper = styled(Paper)`
   align-items: center;
   margin: 2rem;
   padding: 3rem;
+
+  @media (max-width: 600px) {
+    border: 0;
+    border-radius: 0;
+    width: 100%;
+    height: calc(100% - 22rem);
+    max-height: 100%;
+    margin: 0;
+    justify-content: center;
+    background: #17181a;
+  }
 `
 
 export const TextArea = styled.div`

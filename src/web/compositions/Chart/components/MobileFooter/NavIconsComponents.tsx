@@ -1,6 +1,6 @@
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
 import React from 'react'
-import { StyledLink, StyledA } from './styles'
+import { StyledLink, StyledA, StyledButton } from './styles'
 
 export const TradeLink = ({ isActive }: { isActive: boolean }) => {
   return (
@@ -163,5 +163,31 @@ export const WalletLink = ({ isActive }) => {
       </svg>
       <span style={{ color: isActive ? '#366CE5' : '#F5F5FB' }}>Wallet™</span>
     </StyledA>
+  )
+}
+
+export const FeedbackBtn = ({
+  isActive,
+  onClick,
+}: {
+  isActive: boolean
+  onClick: any
+}) => {
+  return (
+    <StyledButton onClick={onClick}>
+      <svg
+        width="auto"
+        height="60%"
+        viewBox="0 0 19 17"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M11.56 0C11.1993 0 10.8534 0.143285 10.5983 0.398335C10.3433 0.653384 10.2 0.999306 10.2 1.36V4.08C10.2 4.44069 10.3433 4.78662 10.5983 5.04167C10.8534 5.29671 11.1993 5.44 11.56 5.44V7.48L14.008 5.44H17C17.3607 5.44 17.7066 5.29671 17.9617 5.04167C18.2167 4.78662 18.36 4.44069 18.36 4.08V1.36C18.36 0.999306 18.2167 0.653384 17.9617 0.398335C17.7066 0.143285 17.3607 0 17 0H11.56ZM5.44 3.4C4.71861 3.4 4.02677 3.68657 3.51667 4.19667C3.00657 4.70677 2.72 5.39861 2.72 6.12C2.72 6.84139 3.00657 7.53323 3.51667 8.04333C4.02677 8.55343 4.71861 8.84 5.44 8.84C6.16139 8.84 6.85323 8.55343 7.36333 8.04333C7.87343 7.53323 8.16 6.84139 8.16 6.12C8.16 5.39861 7.87343 4.70677 7.36333 4.19667C6.85323 3.68657 6.16139 3.4 5.44 3.4ZM8.84 10.2H2.04C1.49896 10.2 0.980076 10.4149 0.597502 10.7975C0.214928 11.1801 0 11.699 0 12.24C0 13.7578 0.62424 14.9736 1.64832 15.7964C2.65608 16.6056 4.00792 17 5.44 17C6.87208 17 8.22392 16.6056 9.23168 15.7964C10.2544 14.9736 10.88 13.7578 10.88 12.24C10.88 11.699 10.6651 11.1801 10.2825 10.7975C9.89992 10.4149 9.38104 10.2 8.84 10.2Z"
+          fill={isActive ? '#366CE5' : '#F5F5FB'}
+        />
+      </svg>
+      <span style={{ color: isActive ? '#366CE5' : '#F5F5FB' }}>Feedback</span>
+    </StyledButton>
   )
 }
