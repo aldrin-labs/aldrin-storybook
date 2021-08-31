@@ -291,7 +291,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
       marketPriceAfterPairChange,
       values: { amount, price, total },
       setFieldValue,
-      updateState,
+      updateWrapperState,
     } = this.props
 
     const isBuyType = sideType === 'buy'
@@ -326,9 +326,14 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
     }
 
     if (this.state.priceFromOrderbook !== this.props.priceFromOrderbook) {
-      const { updateState,priceFromOrderbook, leverage } = this.props
+      const { priceFromOrderbook, leverage } = this.props
 
-      // updateState({ mode: 'limit' })
+      updateWrapperState({
+        mode: 'limit',
+        orderMode: 'TIF',
+        tradingBotEnabled: false,
+        TVAlertsBotEnabled: false,
+      })
 
       this.setFormatted(
         'price',
@@ -1145,7 +1150,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
 
       // await props.addLoaderToButton(byType)
       if (tradingBotEnabled) {
-        updateState('tradingBotIsActive', true)
+        updateWrapperState('tradingBotIsActive', true)
       }
 
       const result = await props.confirmOperation(

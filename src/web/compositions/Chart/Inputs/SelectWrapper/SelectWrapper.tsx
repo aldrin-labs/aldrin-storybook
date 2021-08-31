@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { compose } from 'recompose'
 import { Grid, Input, InputAdornment } from '@material-ui/core'
 import { withTheme } from '@material-ui/core/styles'
@@ -14,7 +14,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import stableCoins, { fiatPairs } from '@core/config/stableCoins'
 import CustomMarketDialog from '@sb/compositions/Chart/Inputs/SelectWrapper/AddCustomMarketPopup'
 import search from '@icons/search.svg'
-import _ from 'lodash'
+import _, { isArray } from 'lodash'
 
 import { StyledGrid, StyledInput, TableFooter } from './SelectWrapperStyles'
 import { notify } from '@sb/dexUtils/notifications'
@@ -44,6 +44,7 @@ import { TableHeader } from './TableHeader'
 import { TableInner } from './TableInner'
 import { MintsPopup } from './MintsPopup'
 import { MarketsFeedbackPopup } from './MarketsFeedbackPopup'
+import { useLocalStorageState } from '@sb/dexUtils/utils'
 
 export const excludedPairs = [
   // 'USDC_ODOP',
@@ -78,135 +79,72 @@ export const datesForQuery = {
 
 export const fiatRegexp = new RegExp(fiatPairs.join('|'), 'gi')
 
-class SelectWrapper extends React.PureComponent<IProps, IState> {
-  state: IState = {
-    searchValue: '',
-    tab: 'all',
-    tabSpecificCoin: '',
+const SelectWrapper = (props: IProps) => {
+  const [searchValue, setSearchValue] = useState('')
+  const [tab, setTab] = useState<SelectTabType>('all')
+
+  const [selectorMode, setSelectorMode] = useLocalStorageState(
+    'selectorMode',
+    'advanced'
+  )
+
+  const [favouriteMarketsRaw, setFavouriteMarkets] = useLocalStorageState(
+    'favouriteMarkets',
+    JSON.stringify([])
+  )
+
+  const favouriteMarkets = JSON.parse(favouriteMarketsRaw)
+
+  const toggleFavouriteMarket = (pair) => {
+    if (favouriteMarkets.includes(pair)) {
+      setFavouriteMarkets(
+        JSON.stringify(favouriteMarkets.filter((el) => el !== pair))
+      )
+    } else {
+      setFavouriteMarkets(JSON.stringify([...favouriteMarkets, pair]))
+    }
   }
 
-  onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!`${e.target.value}`.match(/[a-zA-Z1-9]/) && e.target.value !== '') {
       return
     }
 
-    this.setState({ searchValue: e.target.value })
+    setSearchValue(e.target.value)
   }
 
-  onTabChange = (tab: SelectTabType) => {
-    // this.setState({ tab, tabSpecificCoin: '' })
-    this.setState((prevState) => ({
-      tab,
-      tabSpecificCoin: prevState.tab !== tab ? '' : prevState.tabSpecificCoin,
-    }))
-  }
+  const { getSerumMarketDataQuery = { getSerumMarketData: [] } } = props
 
-  onSpecificCoinChange = ({ value }: { value: string }) => {
-    this.setState({ tabSpecificCoin: value })
-  }
-  render() {
-    const { searchValue, tab, tabSpecificCoin } = this.state
-    const {
-      marketsByExchangeQuery,
-      getSelectorSettingsQuery,
-      markets,
-      AWESOME_TOKENS = [],
-      setCustomMarkets,
-      customMarkets,
-      getSerumMarketDataQuery = { getSerumMarketData: [] },
-      getSerumMarketDataQueryRefetch,
-    } = this.props
+  const filtredMarketsByExchange = getSerumMarketDataQuery.getSerumMarketData.filter(
+    (el) =>
+      el.symbol &&
+      !Array.isArray(el.symbol.match(fiatRegexp)) &&
+      !excludedPairs.includes(el.symbol)
+  )
 
-    const {
-      getAccountSettings: {
-        selectorSettings: { favoritePairs } = { favoritePairs: [] },
-      } = {
-        selectorSettings: { favoritePairs: [] },
-      },
-    } = getSelectorSettingsQuery || {
-      getAccountSettings: {
-        selectorSettings: { favoritePairs: [] },
-      },
-    }
+  const favouritePairsMap = favouriteMarkets.reduce(
+    (acc: Map<string, string>, el: string) => {
+      acc.set(el, el)
 
-    const filtredMarketsByExchange = getSerumMarketDataQuery.getSerumMarketData.filter(
-      (el) =>
-        el.symbol &&
-        !Array.isArray(el.symbol.match(fiatRegexp)) &&
-        !excludedPairs.includes(el.symbol)
-    )
+      return acc
+    },
+    new Map()
+  )
 
-    const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
-    const altCoinsRegexp = new RegExp(`${stableCoins.join('|')}|BTC`, 'g')
-    let altCoinsPairsMap = new Map()
-    let stableCoinsPairsMap = new Map()
-    let btcCoinsPairsMap = new Map()
-    let usdcPairsMap = new Map()
-    let usdtPairsMap = new Map()
-    const favoritePairsMap = favoritePairs.reduce(
-      (acc: Map<string, string>, el: string) => {
-        acc.set(el, el)
-
-        return acc
-      },
-      new Map()
-    )
-
-    filtredMarketsByExchange.forEach((el) => {
-      if (
-        stableCoinsRegexp.test(el.symbol.split('_')[0]) ||
-        stableCoinsRegexp.test(el.symbol.split('_')[1])
-      ) {
-        stableCoinsPairsMap.set(el.symbol, el.price)
-      }
-
-      if (
-        /BTC/g.test(el.symbol.split('_')[1]) &&
-        !stableCoinsRegexp.test(el.symbol.split('_')[0]) &&
-        !stableCoinsRegexp.test(el.symbol.split('_')[1])
-      ) {
-        btcCoinsPairsMap.set(el.symbol, el.price)
-      }
-      if (
-        /USDC/g.test(el.symbol.split('_')[0]) ||
-        /USDC/g.test(el.symbol.split('_')[1])
-      ) {
-        usdcPairsMap.set(el.symbol, el.price)
-      }
-      if (
-        /USDT/g.test(el.symbol.split('_')[0]) ||
-        /USDT/g.test(el.symbol.split('_')[1])
-      ) {
-        usdtPairsMap.set(el.symbol, el.price)
-      }
-      if (
-        !altCoinsRegexp.test(el.symbol) &&
-        !stableCoinsRegexp.test(el.symbol.split('_')[0]) &&
-        !stableCoinsRegexp.test(el.symbol.split('_')[1])
-      ) {
-        altCoinsPairsMap.set(el.symbol, el.price)
-      }
-    })
-
-    return (
-      <SelectPairListComponent
-        data={filtredMarketsByExchange}
-        favoritePairsMap={favoritePairsMap}
-        stableCoinsPairsMap={stableCoinsPairsMap}
-        btcCoinsPairsMap={btcCoinsPairsMap}
-        altCoinsPairsMap={altCoinsPairsMap}
-        usdcPairsMap={usdcPairsMap}
-        usdtPairsMap={usdtPairsMap}
-        searchValue={searchValue}
-        tab={tab}
-        tabSpecificCoin={tabSpecificCoin}
-        onChangeSearch={this.onChangeSearch}
-        onTabChange={this.onTabChange}
-        onSpecificCoinChange={this.onSpecificCoinChange}
-        {...this.props}
-      />
-    )
-  }
+  return (
+    <SelectPairListComponent
+      tab={tab}
+      data={filtredMarketsByExchange}
+      favouritePairsMap={favouritePairsMap}
+      searchValue={searchValue}
+      selectorMode={selectorMode}
+      setSelectorMode={setSelectorMode}
+      onChangeSearch={onChangeSearch}
+      onTabChange={setTab}
+      toggleFavouriteMarket={toggleFavouriteMarket}
+      {...props}
+    />
+  )
 }
 
 class SelectPairListComponent extends React.PureComponent<
@@ -239,26 +177,19 @@ class SelectPairListComponent extends React.PureComponent<
   componentDidMount() {
     const {
       data,
-      updateFavoritePairsMutation,
+      toggleFavouriteMarket,
       onSelectPair,
       theme,
       searchValue,
       tab,
-      tabSpecificCoin,
-      stableCoinsPairsMap,
-      btcCoinsPairsMap,
-      altCoinsPairsMap,
-      favoritePairsMap,
-      usdcPairsMap,
-      usdtPairsMap,
-      marketType,
       getSerumTradesDataQuery,
       customMarkets,
       market,
       tokenMap,
       markets,
       allMarketsMap,
-      onTabChange,
+      favouritePairsMap,
+      marketType,
     } = this.props
 
     const serumMarketsDataMap = new Map()
@@ -266,6 +197,7 @@ class SelectPairListComponent extends React.PureComponent<
     const { left } = document
       .getElementById('ExchangePair')
       ?.getBoundingClientRect()
+
     const {
       sortBy,
       sortDirection,
@@ -279,18 +211,12 @@ class SelectPairListComponent extends React.PureComponent<
 
     const processedSelectData = combineSelectWrapperData({
       data,
-      updateFavoritePairsMutation,
+      toggleFavouriteMarket,
       onSelectPair,
+      favouritePairsMap,
       theme,
       searchValue,
       tab,
-      tabSpecificCoin,
-      stableCoinsPairsMap,
-      btcCoinsPairsMap,
-      altCoinsPairsMap,
-      favoritePairsMap,
-      usdcPairsMap,
-      usdtPairsMap,
       marketType,
       customMarkets,
       market,
@@ -318,18 +244,12 @@ class SelectPairListComponent extends React.PureComponent<
   componentWillReceiveProps(nextProps: IPropsSelectPairListComponent) {
     const {
       data,
-      updateFavoritePairsMutation,
+      toggleFavouriteMarket,
       onSelectPair,
       theme,
       searchValue,
       tab,
-      tabSpecificCoin,
-      stableCoinsPairsMap,
-      btcCoinsPairsMap,
-      altCoinsPairsMap,
-      usdcPairsMap,
-      usdtPairsMap,
-      favoritePairsMap,
+      favouritePairsMap,
       marketType,
       markets,
       customMarkets,
@@ -354,21 +274,14 @@ class SelectPairListComponent extends React.PureComponent<
     )
     const processedSelectData = combineSelectWrapperData({
       data,
-      updateFavoritePairsMutation,
+      toggleFavouriteMarket,
       previousData: prevPropsData,
       onSelectPair,
       theme,
       searchValue,
       tab,
-      tabSpecificCoin,
-      stableCoinsPairsMap,
-      btcCoinsPairsMap,
-      altCoinsPairsMap,
-      usdcPairsMap,
-      usdtPairsMap,
-      favoritePairsMap,
+      favouritePairsMap,
       marketType,
-      customMarkets,
       market,
       tokenMap,
       serumMarketsDataMap: serumMarketsDataMap,
@@ -460,26 +373,31 @@ class SelectPairListComponent extends React.PureComponent<
       isMintsPopupOpen,
       isFeedBackPopupOpen,
     } = this.state
+
     const {
       theme,
       searchValue,
       tab,
       id,
-      tabSpecificCoin,
       onChangeSearch,
       marketType,
       publicKey,
       wallet,
       history,
-      onSpecificCoinChange,
-      marketsByExchangeQuery,
+      tokenMap,
+      selectorMode,
+      favouritePairsMap,
+      setSelectorMode,
       setCustomMarkets,
       customMarkets,
       allMarketsMap,
       getSerumMarketDataQueryRefetch,
       onTabChange,
       marketName,
+      closeMenu,
     } = this.props
+
+    const isAdvancedSelectorMode = selectorMode === 'advanced'
 
     const onAddCustomMarket = (customMarket: any) => {
       const marketInfo = [...allMarketsMap.values()].some(
@@ -501,33 +419,24 @@ class SelectPairListComponent extends React.PureComponent<
       console.log('onAddCustomMarket', newCustomMarkets)
       return true
     }
+
     return (
       <>
         <StyledGrid
           theme={theme}
           id={id}
-          // style={{
-          //   top: `calc(100% - 1rem)`,
-          //   left: `0rem`,
-          //   fontFamily: 'DM Sans',
-          //   position: 'absolute',
-          //   zIndex: 900,
-          //   background: '#222429',
-          //   minWidth: '155rem',
-          //   height: '73rem',
-          //   borderRadius: '2rem',
-          //   overflow: 'hidden',
-          //   border: theme.palette.border.new,
-          //   filter: 'drop-shadow(0px 0px 8px rgba(125, 125, 131, 0.2))',
-          // }}
+          isAdvancedSelectorMode={isAdvancedSelectorMode}
         >
           <TableHeader
             theme={theme}
             tab={tab}
+            favouritePairsMap={favouritePairsMap}
+            tokenMap={tokenMap}
             data={this.props.data}
             onTabChange={onTabChange}
             allMarketsMap={allMarketsMap}
-            marketType={marketType}
+            isAdvancedSelectorMode={isAdvancedSelectorMode}
+            setSelectorMode={setSelectorMode}
           />
           <Grid container style={{ justifyContent: 'flex-end', width: '100%' }}>
             <StyledInput
@@ -560,7 +469,9 @@ class SelectPairListComponent extends React.PureComponent<
           </Grid>
           <TableInner
             theme={theme}
+            selectorMode={selectorMode}
             processedSelectData={processedSelectData}
+            isAdvancedSelectorMode={isAdvancedSelectorMode}
             sort={this._sort}
             sortBy={this.state.sortBy}
             sortDirection={this.state.sortDirection}
@@ -607,6 +518,7 @@ class SelectPairListComponent extends React.PureComponent<
                 }
 
                 this.setState({ showAddMarketPopup: true })
+                closeMenu()
               }}
             >
               + Add Market
