@@ -1,14 +1,17 @@
-import React from 'react'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import React, { useMemo, useCallback } from 'react'
+import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { StyledTab, StyledHeader } from './SelectWrapperStyles'
 import { marketsByCategories } from '@core/config/marketsByCategories'
 
 import { SvgIcon } from '@sb/components'
 import ExpandTableIcon from '@icons/expandIcon.svg'
 import SqueezeTableIcon from '@icons/squeezeIcon.svg'
-import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 
-export const TableHeader = ({
+import { filterSelectorDataByTab } from './SelectWrapper.utils'
+import { Theme } from '@material-ui/core'
+import { ISelectData, SelectTabType } from './SelectWrapper.types'
+
+const TableHeader = ({
   theme,
   tab,
   data,
@@ -18,8 +21,34 @@ export const TableHeader = ({
   setSelectorMode,
   onTabChange,
   allMarketsMap,
+}: {
+  theme: Theme
+  tab: SelectTabType
+  data: ISelectData
+  isAdvancedSelectorMode: boolean
+  allMarketsMap: Map<string, any>
+  tokenMap: Map<string, any>
+  favouritePairsMap: Map<string, string>
+  setSelectorMode: (mode: string) => void
+  onTabChange: (tab: string) => void
 }) => {
-  const dataWithoutCustomMarkets = data.filter((el) => !el.isCustomUserMarket)
+  const filterSelectorDataForTab = useCallback(
+    (tab) => {
+      return filterSelectorDataByTab({
+        tab,
+        data,
+        allMarketsMap,
+        favouritePairsMap,
+        tokenMap,
+      })
+    },
+    [data, allMarketsMap, favouritePairsMap, tokenMap]
+  )
+
+  const dataWithoutCustomMarkets = useMemo(
+    () => data.filter((el) => !el.isCustomUserMarket),
+    [data]
+  )
 
   return (
     <StyledHeader theme={theme} isAdvancedSelectorMode={isAdvancedSelectorMode}>
@@ -83,16 +112,7 @@ export const TableHeader = ({
               marginLeft: '0.5rem',
             }}
           >
-            {`(${
-              dataWithoutCustomMarkets.filter((el) => {
-                const [base] = el.symbol.split('_')
-                const baseTokenInfo = tokenMap?.get(
-                  getTokenMintAddressByName(base)
-                )
-
-                return !baseTokenInfo?.name?.includes('Wrapped')
-              }).length
-            })`}
+            {`(${filterSelectorDataForTab('solanaNative').length})`}
           </span>
         </StyledTab>
         <StyledTab
@@ -107,11 +127,7 @@ export const TableHeader = ({
               marginLeft: '0.5rem',
             }}
           >
-            {`(${
-              dataWithoutCustomMarkets.filter((el) =>
-                el.symbol.includes('USDT')
-              ).length
-            })`}
+            {`(${filterSelectorDataForTab('usdt').length})`}
           </span>
         </StyledTab>
         <StyledTab
@@ -126,11 +142,7 @@ export const TableHeader = ({
               marginLeft: '0.5rem',
             }}
           >
-            {`(${
-              dataWithoutCustomMarkets.filter((el) =>
-                el.symbol.includes('USDC')
-              ).length
-            })`}
+            {`(${filterSelectorDataForTab('usdc').length})`}
           </span>
         </StyledTab>
         <StyledTab
@@ -145,12 +157,7 @@ export const TableHeader = ({
               marginLeft: '0.5rem',
             }}
           >
-            {`(${
-              dataWithoutCustomMarkets.filter((el) => {
-                const [base, quote] = el.symbol.split('_')
-                return quote === 'SOL'
-              }).length
-            })`}
+            {`(${filterSelectorDataForTab('sol').length})`}
           </span>
         </StyledTab>{' '}
         <StyledTab
@@ -189,15 +196,7 @@ export const TableHeader = ({
                         marginLeft: '0.5rem',
                       }}
                     >
-                      {`(${
-                        data.filter((el) => {
-                          const [base, quote] = el.symbol.split('_')
-                          return (
-                            categoriesData?.tokens?.includes(base) &&
-                            !el.isCustomUserMarket
-                          )
-                        }).length
-                      })`}
+                      {`(${filterSelectorDataForTab(category).length})`}
                     </span>
                   </StyledTab>
                 )
@@ -215,12 +214,7 @@ export const TableHeader = ({
                   marginLeft: '0.5rem',
                 }}
               >
-                {`(${
-                  dataWithoutCustomMarkets.filter(
-                    (el) =>
-                      el.symbol.includes('BULL') || el.symbol.includes('BEAR')
-                  ).length
-                })`}
+                {`(${filterSelectorDataForTab('leveraged').length})`}
               </span>
             </StyledTab>
             <StyledTab
@@ -231,17 +225,11 @@ export const TableHeader = ({
               Custom markets{' '}
               <span
                 style={{
-                  color: tab === 'public' ? '#fbf2f2' : '#96999C',
+                  color: tab === 'customMarkets' ? '#fbf2f2' : '#96999C',
                   marginLeft: '0.5rem',
                 }}
               >
-                {`(${
-                  data.filter(
-                    (el) =>
-                      allMarketsMap?.has(el.symbol) &&
-                      allMarketsMap?.get(el.symbol).isCustomUserMarket
-                  ).length
-                })`}
+                {`(${filterSelectorDataForTab('customMarkets').length})`}
               </span>
             </StyledTab>
           </>
@@ -250,3 +238,7 @@ export const TableHeader = ({
     </StyledHeader>
   )
 }
+
+const MemoizedTableHeader = React.memo(TableHeader)
+
+export { MemoizedTableHeader as TableHeader }

@@ -1,7 +1,17 @@
 import { Theme } from '@material-ui/core'
 import { IExchange, IGetMarketsByExchangeQuery } from '@core/types/ChartTypes'
 
-export type SelectTabType = 'favourite' | 'btc' | 'alts' | 'fiat' | 'all' | 'usdt' | 'usdc' | 'leveraged' | 'public' | 'private'
+export type SelectTabType =
+  | 'favourite'
+  | 'solanaNative'
+  | 'all'
+  | 'usdt'
+  | 'usdc'
+  | 'sol'
+  | 'topGainers'
+  | 'topLosers'
+  | 'leveraged'
+  | 'customMarkets'
 
 export interface IState {
   searchValue: string
@@ -56,7 +66,7 @@ export type GetSelectorSettingsType = {
 
 export type ISelectData = {
   symbol: string
-  volume: number,
+  volume: number
   tradesCount: number
   tradesDiff: number
   volumeChange: number

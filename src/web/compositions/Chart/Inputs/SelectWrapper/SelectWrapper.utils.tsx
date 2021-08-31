@@ -1,6 +1,4 @@
 import React from 'react'
-import { client } from '@core/graphql/apolloClient'
-import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSettings'
 import { SvgIcon } from '@sb/components'
 
 import { marketsByCategories } from '@core/config/marketsByCategories'
@@ -27,7 +25,6 @@ import Inform from '@icons/inform.svg'
 import tokensLinksMap from '@core/config/tokensTwitterLinks'
 
 import {
-  GetSelectorSettingsType,
   ISelectData,
   SelectTabType,
 } from './SelectWrapper.types'
@@ -40,12 +37,10 @@ import {
   LinkToTwitter,
 } from '../../components/MarketBlock/MarketBlock.styles'
 import { getNumberOfDecimalsFromNumber } from '@core/utils/chartPageUtils'
-import { MintsPopup } from './MintsPopup'
 import {
   IconContainer,
   StyledColumn,
   StyledRow,
-  StyledSymbol,
   StyledTokenName,
 } from './SelectWrapperStyles'
 import stableCoins from '@core/config/stableCoins'
@@ -58,6 +53,153 @@ export const selectWrapperColumnNames = [
   { label: '24H change', id: '24hChange', isNumber: true, isSortable: true },
   { label: '24H volume', id: '24hVolume', isNumber: true, isSortable: true },
 ]
+
+export const filterNativeSolanaMarkets = (data, tokenMap) =>
+  data.filter((el) => {
+    const [base] = el.symbol.split('_')
+    const baseTokenInfo = tokenMap?.get(getTokenMintAddressByName(base))
+
+    return !baseTokenInfo?.name?.includes('Wrapped')
+  })
+
+export const filterSelectorDataByTab = ({
+  tab,
+  data,
+  tokenMap,
+  allMarketsMap,
+  favouritePairsMap,
+}: {
+  tab: SelectTabType
+  data: ISelectData
+  allMarketsMap: Map<string, any>
+  tokenMap: Map<string, any>
+  favouritePairsMap: Map<string, string>
+}) => {
+  let processedData = [...data]
+
+  const {
+    usdcPairsMap,
+    usdtPairsMap,
+  } = getMarketsMapsByCoins(data)
+
+  const marketsCategoriesData = Object.entries(marketsByCategories)
+
+  if (tab !== 'all') {
+    if (tab === 'favourite') {
+      processedData = processedData.filter((el) =>
+        favouritePairsMap.has(el.symbol)
+      )
+    }
+    if (tab === 'usdc') {
+      processedData = processedData.filter(
+        (el) =>
+          !el.symbol.includes('BULL') &&
+          !el.symbol.includes('BEAR') &&
+          usdcPairsMap.has(el.symbol)
+      )
+    }
+
+    if (tab === 'usdt') {
+      processedData = processedData.filter(
+        (el) =>
+          !el.symbol.includes('BULL') &&
+          !el.symbol.includes('BEAR') &&
+          usdtPairsMap.has(el.symbol)
+      )
+    }
+
+    if (tab === 'sol') {
+      processedData = processedData.filter((el) => {
+        const [_, quote] = el.symbol.split('_')
+        return quote === 'SOL'
+      })
+    }
+
+    if (tab === 'solanaNative') {
+      processedData = processedData.filter((el) => {
+        const [base] = el.symbol.split('_')
+        const baseTokenInfo = tokenMap?.get(getTokenMintAddressByName(base))
+
+        return !baseTokenInfo?.name?.includes('Wrapped')
+      })
+    }
+
+    marketsCategoriesData?.forEach(([category, data]) => {
+      const tokens = data.tokens
+
+      if (tab === category) {
+        processedData = processedData.filter((el) => {
+          const [base] = el.symbol.split('_')
+          return tokens.includes(base)
+        })
+      }
+    })
+
+    if (tab === 'leveraged') {
+      processedData = processedData.filter(
+        (el) => el.symbol.includes('BULL') || el.symbol.includes('BEAR')
+      )
+    }
+
+    if (tab === 'topGainers' || tab === 'topLosers') {
+      processedData = processedData.sort((a, b) => {
+        const pricePrecisionA = getNumberOfDecimalsFromNumber(a.closePrice)
+
+        const strippedLastPriceDiffA = +stripDigitPlaces(
+          a.lastPriceDiff,
+          pricePrecisionA
+        )
+
+        const strippedMarkPriceA = +stripDigitPlaces(
+          a.closePrice,
+          pricePrecisionA
+        )
+
+        const prevClosePriceA = strippedMarkPriceA - strippedLastPriceDiffA
+
+        const priceChangePercentageA = !prevClosePriceA
+          ? 0
+          : (a.closePrice - prevClosePriceA) / (prevClosePriceA / 100)
+
+        const pricePrecisionB = getNumberOfDecimalsFromNumber(b.closePrice)
+
+        const strippedLastPriceDiffB = +stripDigitPlaces(
+          b.lastPriceDiff,
+          pricePrecisionB
+        )
+
+        const strippedMarkPriceB = +stripDigitPlaces(
+          b.closePrice,
+          pricePrecisionB
+        )
+
+        const prevClosePriceB = strippedMarkPriceB - strippedLastPriceDiffB
+
+        const priceChangePercentageB = !prevClosePriceB
+          ? 0
+          : (b.closePrice - prevClosePriceB) / (prevClosePriceB / 100)
+
+        return tab === 'topGainers'
+          ? priceChangePercentageB - priceChangePercentageA
+          : priceChangePercentageA - priceChangePercentageB
+      })
+    }
+
+    if (tab === 'customMarkets') {
+      processedData = data.filter(
+        (el) =>
+          allMarketsMap.has(el.symbol) &&
+          allMarketsMap.get(el.symbol).isCustomUserMarket
+      )
+    } else {
+      processedData = processedData.filter((el) => !el.isCustomUserMarket)
+    }
+  } else {
+    processedData = processedData.filter((el) => !el.isCustomUserMarket)
+  }
+
+  return processedData
+}
 
 export const getIsNotUSDTQuote = (symbol) => {
   const [base, quote] = symbol.split('_')
@@ -160,8 +302,6 @@ export const combineSelectWrapperData = ({
   searchValue,
   tab,
   favouritePairsMap,
-  marketType,
-  needFiltrations = true,
   tokenMap,
   serumMarketsDataMap,
   allMarketsMap,
@@ -176,22 +316,19 @@ export const combineSelectWrapperData = ({
   searchValue: string
   tab: SelectTabType
   favouritePairsMap: Map<string, string>
-  marketType: number
-  needFiltrations?: boolean
-  allMarketsMap: any
+  allMarketsMap: Map<string, any>
+  tokenMap: Map<string, any>
+  serumMarketsDataMap: Map<string, any>
+  changeChoosenMarketData: ({
+    symbol,
+    marketAddress,
+  }: {
+    symbol: string
+    marketAddress: string
+  }) => void
+  setIsMintsPopupOpen: (isOpen: boolean) => void
   toggleFavouriteMarket: (pair: string) => void
 }) => {
-  const marketsCategoriesData = Object.entries(marketsByCategories)
-  // no need actually in this, need to be done by filter func for data by categories
-  const {
-    stableCoinsPairsMap,
-    btcCoinsPairsMap,
-    altCoinsPairsMap,
-    usdcPairsMap,
-    usdtPairsMap,
-  } = getMarketsMapsByCoins(data)
-
-  // create map & filter out from custom
   if (!data && !Array.isArray(data)) {
     return []
   }
@@ -203,134 +340,13 @@ export const combineSelectWrapperData = ({
       ) === index
   )
 
-  if (tab !== 'all' && needFiltrations) {
-    if (tab === 'alts') {
-      processedData = processedData.filter((el) =>
-        altCoinsPairsMap.has(el.symbol)
-      )
-    }
-    if (tab === 'btc') {
-      processedData = processedData.filter((el) =>
-        btcCoinsPairsMap.has(el.symbol)
-      )
-    }
-    if (tab === 'fiat') {
-      processedData = processedData.filter((el) =>
-        stableCoinsPairsMap.has(el.symbol)
-      )
-    }
-    if (tab === 'favourite') {
-      processedData = processedData.filter((el) =>
-        favouritePairsMap.has(el.symbol)
-      )
-    }
-    if (tab === 'usdc') {
-      processedData = processedData.filter(
-        (el) =>
-          !el.symbol.includes('BULL') &&
-          !el.symbol.includes('BEAR') &&
-          usdcPairsMap.has(el.symbol)
-      )
-    }
-
-    if (tab === 'usdt') {
-      processedData = processedData.filter(
-        (el) =>
-          !el.symbol.includes('BULL') &&
-          !el.symbol.includes('BEAR') &&
-          usdtPairsMap.has(el.symbol)
-      )
-    }
-
-    if (tab === 'sol') {
-      processedData = processedData.filter((el) => {
-        const [base, quote] = el.symbol.split('_')
-        return quote === 'SOL'
-      })
-    }
-
-    if (tab === 'solanaNative') {
-      processedData = processedData.filter((el) => {
-        const [base] = el.symbol.split('_')
-        const baseTokenInfo = tokenMap?.get(getTokenMintAddressByName(base))
-
-        return !baseTokenInfo?.name?.includes('Wrapped')
-      })
-    }
-
-    marketsCategoriesData?.forEach(([category, data]) => {
-      const tokens = data.tokens
-
-      if (tab === category) {
-        processedData = processedData.filter((el) => {
-          const [base, quote] = el.symbol.split('_')
-          return tokens.includes(base)
-        })
-      }
-    })
-
-    if (tab === 'leveraged') {
-      processedData = processedData.filter(
-        (el) => el.symbol.includes('BULL') || el.symbol.includes('BEAR')
-      )
-    }
-
-    if (tab === 'topGainers' || tab === 'topLosers') {
-      processedData = processedData.sort((a, b) => {
-        const pricePrecisionA = getNumberOfDecimalsFromNumber(a.closePrice)
-
-        const strippedLastPriceDiffA = +stripDigitPlaces(
-          a.lastPriceDiff,
-          pricePrecisionA
-        )
-
-        const strippedMarkPriceA = +stripDigitPlaces(
-          a.closePrice,
-          pricePrecisionA
-        )
-
-        const prevClosePriceA = strippedMarkPriceA - strippedLastPriceDiffA
-
-        const priceChangePercentageA = !prevClosePriceA
-          ? 0
-          : (a.closePrice - prevClosePriceA) / (prevClosePriceA / 100)
-
-        const pricePrecisionB = getNumberOfDecimalsFromNumber(b.closePrice)
-
-        const strippedLastPriceDiffB = +stripDigitPlaces(
-          b.lastPriceDiff,
-          pricePrecisionB
-        )
-
-        const strippedMarkPriceB = +stripDigitPlaces(
-          b.closePrice,
-          pricePrecisionB
-        )
-
-        const prevClosePriceB = strippedMarkPriceB - strippedLastPriceDiffB
-
-        const priceChangePercentageB = !prevClosePriceB
-          ? 0
-          : (b.closePrice - prevClosePriceB) / (prevClosePriceB / 100)
-
-        return tab === 'topGainers'
-          ? priceChangePercentageB - priceChangePercentageA
-          : priceChangePercentageA - priceChangePercentageB
-      })
-    }
-
-    if (tab === 'customMarkets') {
-      processedData = data.filter(
-        (el) =>
-          allMarketsMap.has(el.symbol) &&
-          allMarketsMap.get(el.symbol).isCustomUserMarket
-      )
-    } else {
-      processedData = processedData.filter((el) => !el.isCustomUserMarket)
-    }
-  } else if (needFiltrations) {
-    processedData = processedData.filter((el) => !el.isCustomUserMarket)
-  }
+  processedData = filterSelectorDataByTab({
+    tab,
+    data: processedData,
+    tokenMap,
+    allMarketsMap,
+    favouritePairsMap,
+  })
 
   processedData = processedData.filter((el) =>
     filterDataBySymbolForDifferentDeviders({ searchValue, symbol: el.symbol })
@@ -349,8 +365,6 @@ export const combineSelectWrapperData = ({
       volumeChange = 0,
       address = '',
       programId = '',
-      isCustomUserMarket,
-      isPrivateCustomMarket,
       minPrice = 0,
       maxPrice = 0,
     } = el || {
@@ -363,8 +377,6 @@ export const combineSelectWrapperData = ({
       volumeChange: 0,
       address: '',
       programId: '',
-      isCustomUserMarket,
-      isPrivateCustomMarket,
       minPrice: 0,
       maxPrice: 0,
     }
@@ -421,7 +433,9 @@ export const combineSelectWrapperData = ({
               toggleFavouriteMarket(symbol)
             }}
             src={
-              favouritePairsMap.get(symbol) ? favouriteSelected : favouriteUnselected
+              favouritePairsMap.get(symbol)
+                ? favouriteSelected
+                : favouriteUnselected
             }
             width="2.5rem"
             height="auto"

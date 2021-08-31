@@ -282,7 +282,6 @@ class SelectPairListComponent extends React.PureComponent<
       tab,
       favouritePairsMap,
       marketType,
-      customMarkets,
       market,
       tokenMap,
       serumMarketsDataMap: serumMarketsDataMap,
