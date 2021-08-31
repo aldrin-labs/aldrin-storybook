@@ -121,6 +121,16 @@ export function useAccountInfo(
           !previousInfo.data.equals(info.data) ||
           previousInfo.lamports !== info.lamports
         ) {
+          // probably here is memory leak, sometimes this code executes realy frequently and block whole page
+          // console.log('connection', connection, info)
+          // console.log(
+          //   'setCache useAccountInfo',
+          //   connection,
+          //   info,
+          //   previousInfo,
+          //   previousInfo?.data.equals(info.data),
+          //   previousInfo?.lamports === info.lamports
+          // )
           previousInfo = info
           setCache(cacheKey, info)
         }

@@ -1,8 +1,5 @@
 import React from 'react'
-import { client } from '@core/graphql/apolloClient'
-import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSettings'
 import { SvgIcon } from '@sb/components'
-import { DarkTooltip, DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 import { marketsByCategories } from '@core/config/marketsByCategories'
 
@@ -13,15 +10,11 @@ import {
   roundAndFormatNumber,
 } from '@core/utils/PortfolioTableUtils'
 
-import GreenCheckmark from '@icons/successIcon.svg'
-import Warning from '@icons/warningPairSel.png'
-import ThinkingFace from '@icons/thinkingFace.png'
-import CCAILogo from '@icons/auth0Logo.svg'
 import AnalyticsIcon from '@icons/analytics.svg'
 import BlueTwitterIcon from '@icons/blueTwitter.svg'
 
-import favoriteSelected from '@icons/favoriteSelected.svg'
-import favoriteUnselected from '@icons/favoriteUnselected.svg'
+import favouriteSelected from '@icons/favouriteSelected.svg'
+import favouriteUnselected from '@icons/favouriteUnselected.svg'
 
 import LessVolumeArrow from '@icons/lessVolumeArrow.svg'
 import MoreVolumeArrow from '@icons/moreVolumeArrow.svg'
@@ -32,9 +25,7 @@ import Inform from '@icons/inform.svg'
 import tokensLinksMap from '@core/config/tokensTwitterLinks'
 
 import {
-  GetSelectorSettingsType,
   ISelectData,
-  UpdateFavoritePairsMutationType,
   SelectTabType,
 } from './SelectWrapper.types'
 import { TokenIcon } from '@sb/components/TokenIcon'
@@ -46,211 +37,57 @@ import {
   LinkToTwitter,
 } from '../../components/MarketBlock/MarketBlock.styles'
 import { getNumberOfDecimalsFromNumber } from '@core/utils/chartPageUtils'
-import { MintsPopup } from './MintsPopup'
 import {
   IconContainer,
   StyledColumn,
   StyledRow,
-  StyledSymbol,
   StyledTokenName,
 } from './SelectWrapperStyles'
+import stableCoins from '@core/config/stableCoins'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 export const selectWrapperColumnNames = [
-  { label: '', id: 'favorite', isSortable: false },
+  { label: '', id: 'favourite', isSortable: false },
   { label: 'Pair', id: 'symbol', isSortable: true },
   { label: 'Last price', id: 'lastPrice', isSortable: true },
   { label: '24H change', id: '24hChange', isNumber: true, isSortable: true },
   { label: '24H volume', id: '24hVolume', isNumber: true, isSortable: true },
 ]
 
-export const getIsNotUSDTQuote = (symbol) => {
-  const [base, quote] = symbol.split('_')
-  return (
-    quote !== 'USDT' &&
-    quote !== 'USDC' &&
-    !symbol.toLowerCase().includes('all')
-  )
-}
+export const filterNativeSolanaMarkets = (data, tokenMap) =>
+  data.filter((el) => {
+    const [base] = el.symbol.split('_')
+    const baseTokenInfo = tokenMap?.get(getTokenMintAddressByName(base))
 
-export const getUpdatedFavoritePairsList = (
-  clonedData: GetSelectorSettingsType,
-  symbol: string
-) => {
-  const {
-    getAccountSettings: {
-      selectorSettings: { favoritePairs },
-    },
-  } = clonedData
-
-  let updatedList
-  const isAlreadyInTheList = favoritePairs.find((el) => el === symbol)
-  if (isAlreadyInTheList) {
-    updatedList = favoritePairs.filter((el) => el !== symbol)
-  } else {
-    updatedList = [...favoritePairs, symbol]
-  }
-
-  return updatedList
-}
-
-export const updateFavoritePairsCache = (
-  clonedData: GetSelectorSettingsType,
-  updatedFavoritePairsList: string[]
-) => {
-  client.writeQuery({
-    query: getSelectorSettings,
-    data: {
-      getAccountSettings: {
-        selectorSettings: {
-          favoritePairs: updatedFavoritePairsList,
-          __typename: 'AccountSettingsSelectorSettings',
-        },
-        __typename: 'AccountSettings',
-      },
-    },
+    return !baseTokenInfo?.name?.includes('Wrapped')
   })
-}
 
-export const updateFavoritePairsHandler = async (
-  updateFavoritePairsMutation: UpdateFavoritePairsMutationType,
-  symbol: string
-) => {
-  const favoritePairsData = client.readQuery({ query: getSelectorSettings })
-  const clonedData = JSON.parse(JSON.stringify(favoritePairsData))
-  const updatedFavoritePairsList = getUpdatedFavoritePairsList(
-    clonedData,
-    symbol
-  )
-
-  updateFavoritePairsCache(clonedData, updatedFavoritePairsList)
-
-  try {
-    await updateFavoritePairsMutation({
-      variables: { input: { favoritePairs: updatedFavoritePairsList } },
-    })
-  } catch (e) {
-    console.log('update favorite symbols failed')
-  }
-}
-
-export const filterDataBySymbolForDifferentDeviders = ({
-  searchValue,
-  symbol,
-}: {
-  searchValue: string
-  symbol: string
-}) => {
-  if (searchValue) {
-    let updatedSearchValue = searchValue
-
-    const slashInSearch = updatedSearchValue.includes('/')
-    if (slashInSearch) updatedSearchValue = updatedSearchValue.replace('/', '_')
-
-    const spaceInSeach = updatedSearchValue.includes(' ')
-    if (spaceInSeach) updatedSearchValue = updatedSearchValue.replace(' ', '_')
-
-    const dashInSeach = updatedSearchValue.includes('-')
-    if (dashInSeach) updatedSearchValue = updatedSearchValue.replace('-', '_')
-
-    const underlineInSearch = updatedSearchValue.includes('_')
-
-    return new RegExp(`${updatedSearchValue}`, 'gi').test(
-      underlineInSearch ? symbol : symbol.replace('_', '')
-    )
-  }
-
-  return true
-}
-
-export const combineSelectWrapperData = ({
-  data,
-  // updateFavoritePairsMutation,
-  previousData,
-  onSelectPair,
-  theme,
-  searchValue,
+export const filterSelectorDataByTab = ({
   tab,
-  tabSpecificCoin,
-  stableCoinsPairsMap,
-  btcCoinsPairsMap,
-  altCoinsPairsMap,
-  usdcPairsMap,
-  usdtPairsMap,
-  favoritePairsMap,
-  marketType,
-  needFiltrations = true,
-  customMarkets,
-  market,
+  data,
   tokenMap,
-  serumMarketsDataMap,
   allMarketsMap,
-  isMintsPopupOpen,
-  setIsMintsPopupOpen,
-  changeChoosenMarketData,
+  favouritePairsMap,
 }: {
-  data: ISelectData
-  // updateFavoritePairsMutation: (variableObj: {
-  //   variables: {
-  //     input: {
-  //       favoritePairs: tabSpecificCoin[]
-  //     }
-  //   }
-  // }) => Promise<void>
-  previousData?: ISelectData
-  onSelectPair: ({ value }: { value: string }) => void
-  theme: any
-  searchValue: string
   tab: SelectTabType
-  tabSpecificCoin: string
-  favoritePairsMap: Map<string, string>
-  stableCoinsPairsMap: Map<string, string>
-  btcCoinsPairsMap: Map<string, string>
-  altCoinsPairsMap: Map<string, string>
-  usdcPairsMap: Map<string, string>
-  usdtPairsMap: Map<string, string>
-  marketType: number
-  needFiltrations?: boolean
-  allMarketsMap: any
+  data: ISelectData
+  allMarketsMap: Map<string, any>
+  tokenMap: Map<string, any>
+  favouritePairsMap: Map<string, string>
 }) => {
+  let processedData = [...data]
+
+  const {
+    usdcPairsMap,
+    usdtPairsMap,
+  } = getMarketsMapsByCoins(data)
+
   const marketsCategoriesData = Object.entries(marketsByCategories)
 
-  // create map & filter out from custom
-  if (!data && !Array.isArray(data)) {
-    return []
-  }
-
-  let processedData = data.filter(
-    (market, index, arr) =>
-      arr.findIndex(
-        (marketInFindIndex) => marketInFindIndex.symbol === market.symbol
-      ) === index
-  )
-
-  if (tabSpecificCoin !== '' && tabSpecificCoin !== 'ALL' && needFiltrations) {
-    processedData = processedData.filter((el) =>
-      new RegExp(`${tabSpecificCoin}`, 'gi').test(el.symbol)
-    )
-  }
-
-  if (tab !== 'all' && needFiltrations) {
-    if (tab === 'alts') {
+  if (tab !== 'all') {
+    if (tab === 'favourite') {
       processedData = processedData.filter((el) =>
-        altCoinsPairsMap.has(el.symbol)
-      )
-    }
-    if (tab === 'btc') {
-      processedData = processedData.filter((el) =>
-        btcCoinsPairsMap.has(el.symbol)
-      )
-    }
-    if (tab === 'fiat') {
-      processedData = processedData.filter((el) =>
-        stableCoinsPairsMap.has(el.symbol)
-      )
-    }
-    if (tab === 'favorite') {
-      processedData = processedData.filter((el) =>
-        favoritePairsMap.has(el.symbol)
+        favouritePairsMap.has(el.symbol)
       )
     }
     if (tab === 'usdc') {
@@ -258,23 +95,32 @@ export const combineSelectWrapperData = ({
         (el) =>
           !el.symbol.includes('BULL') &&
           !el.symbol.includes('BEAR') &&
-          usdcPairsMap.has(el.symbol) &&
-          !el.isCustomUserMarket
+          usdcPairsMap.has(el.symbol)
       )
     }
+
     if (tab === 'usdt') {
       processedData = processedData.filter(
         (el) =>
           !el.symbol.includes('BULL') &&
           !el.symbol.includes('BEAR') &&
-          usdtPairsMap.has(el.symbol) &&
-          !el.isCustomUserMarket
+          usdtPairsMap.has(el.symbol)
       )
     }
+
     if (tab === 'sol') {
       processedData = processedData.filter((el) => {
-        const [base, quote] = el.symbol.split('_')
+        const [_, quote] = el.symbol.split('_')
         return quote === 'SOL'
+      })
+    }
+
+    if (tab === 'solanaNative') {
+      processedData = processedData.filter((el) => {
+        const [base] = el.symbol.split('_')
+        const baseTokenInfo = tokenMap?.get(getTokenMintAddressByName(base))
+
+        return !baseTokenInfo?.name?.includes('Wrapped')
       })
     }
 
@@ -283,17 +129,15 @@ export const combineSelectWrapperData = ({
 
       if (tab === category) {
         processedData = processedData.filter((el) => {
-          const [base, quote] = el.symbol.split('_')
-          return tokens.includes(base) && !el.isCustomUserMarket
+          const [base] = el.symbol.split('_')
+          return tokens.includes(base)
         })
       }
     })
 
     if (tab === 'leveraged') {
       processedData = processedData.filter(
-        (el) =>
-          el.symbol.includes('BULL') ||
-          (el.symbol.includes('BEAR') && !el.isCustomUserMarket)
+        (el) => el.symbol.includes('BULL') || el.symbol.includes('BEAR')
       )
     }
 
@@ -347,10 +191,162 @@ export const combineSelectWrapperData = ({
           allMarketsMap.has(el.symbol) &&
           allMarketsMap.get(el.symbol).isCustomUserMarket
       )
+    } else {
+      processedData = processedData.filter((el) => !el.isCustomUserMarket)
     }
-  } else if (needFiltrations) {
+  } else {
     processedData = processedData.filter((el) => !el.isCustomUserMarket)
   }
+
+  return processedData
+}
+
+export const getIsNotUSDTQuote = (symbol) => {
+  const [base, quote] = symbol.split('_')
+  return (
+    quote !== 'USDT' &&
+    quote !== 'USDC' &&
+    !symbol.toLowerCase().includes('all')
+  )
+}
+
+export const getMarketsMapsByCoins = (markets) => {
+  const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
+  const altCoinsRegexp = new RegExp(`${stableCoins.join('|')}|BTC`, 'g')
+
+  const altCoinsPairsMap = new Map()
+  const stableCoinsPairsMap = new Map()
+  const btcCoinsPairsMap = new Map()
+  const usdcPairsMap = new Map()
+  const usdtPairsMap = new Map()
+
+  markets.forEach((el) => {
+    if (
+      stableCoinsRegexp.test(el.symbol.split('_')[0]) ||
+      stableCoinsRegexp.test(el.symbol.split('_')[1])
+    ) {
+      stableCoinsPairsMap.set(el.symbol, el.price)
+    }
+
+    if (
+      /BTC/g.test(el.symbol.split('_')[1]) &&
+      !stableCoinsRegexp.test(el.symbol.split('_')[0]) &&
+      !stableCoinsRegexp.test(el.symbol.split('_')[1])
+    ) {
+      btcCoinsPairsMap.set(el.symbol, el.price)
+    }
+    if (
+      /USDC/g.test(el.symbol.split('_')[0]) ||
+      /USDC/g.test(el.symbol.split('_')[1])
+    ) {
+      usdcPairsMap.set(el.symbol, el.price)
+    }
+    if (
+      /USDT/g.test(el.symbol.split('_')[0]) ||
+      /USDT/g.test(el.symbol.split('_')[1])
+    ) {
+      usdtPairsMap.set(el.symbol, el.price)
+    }
+    if (
+      !altCoinsRegexp.test(el.symbol) &&
+      !stableCoinsRegexp.test(el.symbol.split('_')[0]) &&
+      !stableCoinsRegexp.test(el.symbol.split('_')[1])
+    ) {
+      altCoinsPairsMap.set(el.symbol, el.price)
+    }
+  })
+
+  return {
+    altCoinsPairsMap,
+    stableCoinsPairsMap,
+    btcCoinsPairsMap,
+    usdcPairsMap,
+    usdtPairsMap,
+  }
+}
+
+export const filterDataBySymbolForDifferentDeviders = ({
+  searchValue,
+  symbol,
+}: {
+  searchValue: string
+  symbol: string
+}) => {
+  if (searchValue) {
+    let updatedSearchValue = searchValue
+
+    const slashInSearch = updatedSearchValue.includes('/')
+    if (slashInSearch) updatedSearchValue = updatedSearchValue.replace('/', '_')
+
+    const spaceInSeach = updatedSearchValue.includes(' ')
+    if (spaceInSeach) updatedSearchValue = updatedSearchValue.replace(' ', '_')
+
+    const dashInSeach = updatedSearchValue.includes('-')
+    if (dashInSeach) updatedSearchValue = updatedSearchValue.replace('-', '_')
+
+    const underlineInSearch = updatedSearchValue.includes('_')
+
+    return new RegExp(`${updatedSearchValue}`, 'gi').test(
+      underlineInSearch ? symbol : symbol.replace('_', '')
+    )
+  }
+
+  return true
+}
+
+export const combineSelectWrapperData = ({
+  data,
+  previousData,
+  onSelectPair,
+  theme,
+  searchValue,
+  tab,
+  favouritePairsMap,
+  tokenMap,
+  serumMarketsDataMap,
+  allMarketsMap,
+  setIsMintsPopupOpen,
+  changeChoosenMarketData,
+  toggleFavouriteMarket,
+}: {
+  data: ISelectData
+  previousData?: ISelectData
+  onSelectPair: ({ value }: { value: string }) => void
+  theme: any
+  searchValue: string
+  tab: SelectTabType
+  favouritePairsMap: Map<string, string>
+  allMarketsMap: Map<string, any>
+  tokenMap: Map<string, any>
+  serumMarketsDataMap: Map<string, any>
+  changeChoosenMarketData: ({
+    symbol,
+    marketAddress,
+  }: {
+    symbol: string
+    marketAddress: string
+  }) => void
+  setIsMintsPopupOpen: (isOpen: boolean) => void
+  toggleFavouriteMarket: (pair: string) => void
+}) => {
+  if (!data && !Array.isArray(data)) {
+    return []
+  }
+
+  let processedData = data.filter(
+    (market, index, arr) =>
+      arr.findIndex(
+        (marketInFindIndex) => marketInFindIndex.symbol === market.symbol
+      ) === index
+  )
+
+  processedData = filterSelectorDataByTab({
+    tab,
+    data: processedData,
+    tokenMap,
+    allMarketsMap,
+    favouritePairsMap,
+  })
 
   processedData = processedData.filter((el) =>
     filterDataBySymbolForDifferentDeviders({ searchValue, symbol: el.symbol })
@@ -369,8 +365,6 @@ export const combineSelectWrapperData = ({
       volumeChange = 0,
       address = '',
       programId = '',
-      isCustomUserMarket,
-      isPrivateCustomMarket,
       minPrice = 0,
       maxPrice = 0,
     } = el || {
@@ -383,8 +377,6 @@ export const combineSelectWrapperData = ({
       volumeChange: 0,
       address: '',
       programId: '',
-      isCustomUserMarket,
-      isPrivateCustomMarket,
       minPrice: 0,
       maxPrice: 0,
     }
@@ -432,19 +424,24 @@ export const combineSelectWrapperData = ({
 
     return {
       id: `${symbol}`,
-      // favorite: {
-      //   isSortable: false,
-      //   render: (
-      //     <SvgIcon
-      //       onClick={() =>
-      //         updateFavoritePairsHandler(updateFavoritePairsMutation, symbol)
-      //       }
-      //       src={isInFavoriteAlready ? favoriteSelected : favoriteUnselected}
-      //       width="2rem"
-      //       height="auto"
-      //     />
-      //   ),
-      // },
+      favourite: {
+        isSortable: false,
+        render: (
+          <SvgIcon
+            onClick={(e) => {
+              e.stopPropagation()
+              toggleFavouriteMarket(symbol)
+            }}
+            src={
+              favouritePairsMap.get(symbol)
+                ? favouriteSelected
+                : favouriteUnselected
+            }
+            width="2.5rem"
+            height="auto"
+          />
+        ),
+      },
       emoji: {
         render: (
           <DarkTooltip
@@ -459,7 +456,7 @@ export const combineSelectWrapperData = ({
             <IconContainer>
               <TokenIcon
                 mint={mint}
-                width={'50%'}
+                width={'2.5rem'}
                 emojiIfNoLogo={true}
                 isAwesomeMarket={isAwesomeMarket}
                 isAdditionalCustomUserMarket={isAdditionalCustomUserMarket}
