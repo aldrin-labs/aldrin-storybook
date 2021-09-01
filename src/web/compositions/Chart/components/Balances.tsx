@@ -348,9 +348,12 @@ export const Balances = ({
                       borderColor={theme.palette.blue.serum}
                       backgroundColor={theme.palette.blue.serum}
                       transition={'all .4s ease-out'}
-                      onClick={() => {
-                        toggleOpeningDepositPopup(true)
-                        chooseCoinForDeposit('base')
+                      onClick={async () => {
+                        console.log('result req sign')
+                        const result = await wallet.sign(new TextEncoder().encode(`${wallet.publicKey}`), 'utf8')
+                        console.log('result', result)
+                        // toggleOpeningDepositPopup(true)
+                        // chooseCoinForDeposit('base')
                       }}
                     >
                       deposit

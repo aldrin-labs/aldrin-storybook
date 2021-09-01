@@ -204,7 +204,7 @@ export class CommonWalletAdapter extends EventEmitter implements WalletAdapter {
     const response = (await this.sendRequest('sign', {
       data,
       display,
-    })) as { publicKey: string; signature: string }
+    }, true)) as { publicKey: string; signature: string }
     const signature = bs58.decode(response.signature)
     const publicKey = new PublicKey(response.publicKey)
     return {

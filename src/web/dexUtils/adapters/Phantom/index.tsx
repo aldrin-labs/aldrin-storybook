@@ -2,6 +2,7 @@ import EventEmitter from 'eventemitter3';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import { notify } from '../../notifications';
 import { DEFAULT_PUBLIC_KEY, WalletAdapter } from '../types';
+import bs58 from 'bs58'
 
 type PhantomEvent = 'disconnect' | 'connect';
 type PhantomRequestMethod =
@@ -74,6 +75,28 @@ export class PhantomWalletAdapter
     }
 
     return this._provider.signTransaction(transaction);
+  }
+
+  async sign(
+    data: Uint8Array,
+    display: unknown
+  ): Promise<{
+    signature: Buffer
+    publicKey: PublicKey
+  }> {
+    if (!(data instanceof Uint8Array)) {
+      throw new Error('Data must be an instance of Uint8Array')
+    }
+
+    const response = (await window.solana.signMessage(data, display)) as { publicKey: PublicKey; signature: Buffer }
+    console.log('response', response)
+
+    const signature = response.signature
+    const publicKey = response.publicKey
+    return {
+      signature,
+      publicKey,
+    }
   }
 
   connect() {
