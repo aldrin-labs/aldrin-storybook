@@ -581,6 +581,10 @@ export default compose(
       timestampTo: endOfDayTimestamp,
       timestampFrom: endOfDayTimestamp - dayDuration * 14,
     }),
+    withoutLoading: true,
+    withOutSpinner: true,
+    withTableLoader: false,
+    showNoLoader: true,
     fetchPolicy: 'cache-and-network',
   })
 )(SelectWrapper)
