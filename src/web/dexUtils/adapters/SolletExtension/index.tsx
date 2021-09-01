@@ -6,7 +6,6 @@ export function SolletExtensionAdapter(_, network) {
   if (sollet) {
     return new CommonWalletAdapter(sollet, network);
   }
-
   return {
     on: () => {},
     connect: () => {

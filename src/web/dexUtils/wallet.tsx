@@ -35,6 +35,7 @@ import Mathwallet from '@icons/mathwallet.svg'
 import Solong from '@icons/solong.svg'
 import WalletAldrin from '@icons/RINLogo.svg'
 import { WalletAdapter } from './adapters'
+import { Coin98ExtensionAdapter } from './adapters/Coin98Wallet'
 
 export const WALLET_PROVIDERS = [
   // { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },
@@ -101,6 +102,14 @@ export const WALLET_PROVIDERS = [
     icon: Solong,
     isExtension: false,
     showOnMobile: false,
+  },
+  {
+    name: 'Coin98',
+    url: 'https://wallet.coin98.com/',
+    adapter: Coin98ExtensionAdapter,
+    icon: Solong,
+    isExtension: true,
+    showOnMobile: true,
   },
 ]
 
