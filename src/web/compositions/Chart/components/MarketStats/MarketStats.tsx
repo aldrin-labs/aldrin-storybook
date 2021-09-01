@@ -305,7 +305,7 @@ export default compose(
       prevEndTimestamp: `${datesForQuery.prevEndTimestamp}`,
     }),
     fetchPolicy: 'cache-and-network',
-    pollInterval: 30000,
+    pollInterval: 60000,
     withOutSpinner: true,
     withTableLoader: true,
     withoutLoading: true,
