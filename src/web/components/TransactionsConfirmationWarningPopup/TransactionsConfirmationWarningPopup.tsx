@@ -29,7 +29,7 @@ export const TransactionsConfirmationWarningPopup = ({
   const onClose = () => setIsPopupOpen(false)
 
   return (
-    <Container direction="column" padding="6rem 4rem">
+    <Container showOnTheBottom={true} direction="column" padding="6rem 4rem">
       <RowContainer justify="space-between" margin="0 0 4rem 0">
         <Row width="80%" direction={'column'}>
           <DemiText theme={theme} style={{ margin: '0 0 4rem 0' }}>
