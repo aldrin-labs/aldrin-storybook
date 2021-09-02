@@ -37,22 +37,22 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
   useEffect(() => {
     setIsPopupOpen(isBalanceUnsettled)
   }, [isBalanceUnsettled])
-  
+
   const isMobile = useMobileSize()
 
-  if (isMobile || !isPopupOpen) return null
+  if (!isPopupOpen) return null
 
   return (
     <Container
       showOnTheTop={true}
       style={{
-        height: '35.5%',
+        height: isMobile ? '38.5%' : '35.5%',
         top: 'auto',
         bottom: '0',
-        width: '42%',
+        width: isMobile ? '100%' : '42%',
         right: '0',
         zIndex: '10',
-        borderTopLeftRadius: '1rem',
+        borderTopLeftRadius: isMobile ? '0' : '1rem',
       }}
       direction="column"
       align="flex-start"
@@ -61,7 +61,7 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
     >
       <RowContainer
         justify="space-between"
-        align={'baseline'}
+        align={isMobile ? 'center' : 'baseline'}
         direction="column"
         height="100%"
       >
@@ -77,7 +77,11 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
         >
           You have an unsettled balance.
         </DemiText>
-        <RowContainer align="flex-start" justify="space-between">
+        <RowContainer
+          height={isMobile ? '18%' : 'auto'}
+          align="flex-start"
+          justify="space-between"
+        >
           <Row
             height={'100%'}
             direction={'column'}
@@ -87,7 +91,7 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
             <Text
               style={{
                 lineHeight: '2rem',
-                fontSize: '1.8rem',
+                fontSize: isMobile ? '2.3rem' : '1.8rem',
               }}
               theme={theme}
             >
@@ -99,7 +103,7 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
             <Text
               style={{
                 lineHeight: '2rem',
-                fontSize: '1.8rem',
+                fontSize: isMobile ? '2.3rem' : '1.8rem',
               }}
               theme={theme}
             >
@@ -109,13 +113,41 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
               </span>
             </Text>
           </Row>
+          {!isMobile ? (
+            <BlackButton
+              disabled={false}
+              theme={theme}
+              hoverBackground={'#20292d'}
+              width={'auto'}
+              fontSize={'1.5rem'}
+              style={{ padding: '1rem 5rem' }}
+              onClick={async () => {
+                await settleFunds({
+                  market,
+                  openOrders,
+                  connection,
+                  wallet,
+                  baseCurrency,
+                  quoteCurrency,
+                  baseTokenAccount,
+                  quoteTokenAccount,
+                  baseUnsettled: balances[0].unsettled,
+                  quoteUnsettled: balances[1].unsettled,
+                })
+              }}
+            >
+              Settle All
+            </BlackButton>
+          ) : null}
+        </RowContainer>
+        {isMobile && (
           <BlackButton
             disabled={false}
             theme={theme}
             hoverBackground={'#20292d'}
-            width={'auto'}
-            fontSize={'1.5rem'}
-            style={{ padding: '1rem 5rem' }}
+            width={'100%'}
+            fontSize={'2rem'}
+            style={{ padding: '4rem 5rem' }}
             onClick={async () => {
               await settleFunds({
                 market,
@@ -133,7 +165,7 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
           >
             Settle All
           </BlackButton>
-        </RowContainer>
+        )}
       </RowContainer>
     </Container>
   )
