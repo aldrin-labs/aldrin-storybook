@@ -60,25 +60,10 @@ import { RebrandingPopup } from '@sb/components/RebrandingPopup/RebrandingPopup'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
 
 const version = `10.9.146-rebalance`
-const isOnboardingDone = localStorage.getItem('isOnboardingDone')
-const isNotificationDone = localStorage.getItem('isNotificationDone')
-const isRebrandingPopupOpen = localStorage.getItem(
-  'isRebrandingPopupOpen'
-)
-const localPassword = localStorage.getItem('localPassword')
 const currentVersion = localStorage.getItem('version')
 
 if (currentVersion !== version) {
-  localStorage.clear()
-  localStorage.setItem('version', version)
-  localStorage.setItem('isOnboardingDone', isOnboardingDone)
-  localStorage.setItem('isNotificationDone', isNotificationDone)
-  localStorage.setItem('isRebrandingPopupOpen', isRebrandingPopupOpen)
   document.location.reload()
-
-  if (localPassword !== null) {
-    localStorage.setItem('localPassword', localPassword)
-  }
 }
 
 const DetermineMobileWindowHeight = () => {
