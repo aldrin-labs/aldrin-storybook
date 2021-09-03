@@ -63,6 +63,7 @@ const version = `10.9.146-rebalance`
 const currentVersion = localStorage.getItem('version')
 
 if (currentVersion !== version) {
+  localStorage.setItem('version', version)
   document.location.reload()
 }
 

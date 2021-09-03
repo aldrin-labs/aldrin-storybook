@@ -52,7 +52,7 @@ export const TransactionsConfirmationWarningPopup = ({
           hoverBackground={'#20292d'}
           onClick={onClose}
         >
-          Ok, never show again.
+          Never show again.
         </BlackButton>
         <BlackButton
           disabled={false}
