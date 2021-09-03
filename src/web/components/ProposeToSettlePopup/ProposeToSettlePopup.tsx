@@ -133,6 +133,7 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
                   quoteTokenAccount,
                   baseUnsettled: balances[0].unsettled,
                   quoteUnsettled: balances[1].unsettled,
+                  focusPopup: true,
                 })
               }}
             >
@@ -160,6 +161,7 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
                 quoteTokenAccount,
                 baseUnsettled: balances[0].unsettled,
                 quoteUnsettled: balances[1].unsettled,
+                focusPopup: true,
               })
             }}
           >
