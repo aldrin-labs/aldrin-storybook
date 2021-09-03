@@ -1,7 +1,5 @@
 import { client } from '@core/graphql/apolloClient'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
-import { priceStore } from '@sb/dexUtils/price'
-import { MARKETS_BY_NAME_MAP } from '@sb/dexUtils/serum'
 import { TokenInfo, TokenInfoWithPrice } from '../Rebalance.types'
 
 export const getPricesForTokens = async (

@@ -23,7 +23,7 @@ import tuple from 'immutable-tuple'
 import { notify } from './notifications'
 import { BN } from 'bn.js'
 import { getTokenAccountInfo } from './tokens'
-import { useAwesomeMarkets, AWESOME_TOKENS } from '@sb/dexUtils/serum'
+import { useAwesomeMarkets, AWESOME_TOKENS } from '@core/utils/awesomeMarkets/serum'
 import { getDexProgramIdByEndpoint } from '@core/config/dex'
 
 export const ALL_TOKENS_MINTS = getUniqueListBy([...TOKEN_MINTS, ...AWESOME_TOKENS], "name")

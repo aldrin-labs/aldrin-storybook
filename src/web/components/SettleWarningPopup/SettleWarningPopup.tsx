@@ -17,7 +17,7 @@ import SvgIcon from '../SvgIcon'
 export const SettleWarningPopup = ({ theme }: { theme: Theme }) => {
   const [isPopupTemporaryHidden, setIsPopupTemporaryHidden] = useState(false)
   const [isPopupOpen, setIsPopupOpen] = useLocalStorageState(
-    'isTransactionsConfirmationWarningPopupOpen',
+    'isSettleWarningPopupOpen',
     true
   )
   const isMobile = useMobileSize()
@@ -56,7 +56,7 @@ export const SettleWarningPopup = ({ theme }: { theme: Theme }) => {
         <div
           style={{
             position: 'absolute',
-            top: '120px',
+            top: '7rem',
             width: '46%',
             right: '1.1%',
           }}
