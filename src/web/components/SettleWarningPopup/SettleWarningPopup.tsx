@@ -56,7 +56,7 @@ export const SettleWarningPopup = ({ theme }: { theme: Theme }) => {
         <div
           style={{
             position: 'absolute',
-            top: '120px',
+            top: '7rem',
             width: '46%',
             right: '1.1%',
           }}
