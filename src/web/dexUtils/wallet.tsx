@@ -29,12 +29,13 @@ import { TokenListProvider } from '@solana/spl-token-registry'
 import { TokenInstructions } from '@project-serum/serum'
 import { useAsyncData } from './fetch-loop'
 import { getMaxWithdrawAmount } from './pools'
-import { MINT_LAYOUT, parseTokenAccountData } from './tokens'
+import { getTokenAccountInfo, MINT_LAYOUT, parseTokenAccountData } from './tokens'
 import Sollet from '@icons/sollet.svg'
 import Mathwallet from '@icons/mathwallet.svg'
 import Solong from '@icons/solong.svg'
 import WalletAldrin from '@icons/RINLogo.svg'
 import { WalletAdapter } from './adapters'
+import { _VERY_SLOW_REFRESH_INTERVAL } from './markets'
 
 export const WALLET_PROVIDERS = [
   // { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },
@@ -279,7 +280,8 @@ export function useWalletPublicKeys() {
 
   const [tokenAccountInfo, loaded] = useAsyncData(
     () => getTokenAccountInfo(connection, wallet.publicKey),
-    'getTokenAccountInfo'
+    'getTokenAccountInfo',
+    { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
   )
 
   let publicKeys = [
