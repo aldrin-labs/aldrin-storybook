@@ -5,7 +5,7 @@ import { Theme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 import CloseIcon from '@icons/closeIcon.svg'
 import CoolIcon from '@icons/coolIcon.svg'
@@ -20,8 +20,10 @@ import {
   TextField,
   Title,
   StyledTextArea,
+  StyledLabel,
 } from '../Inputs/SelectWrapper/SelectWrapperStyles'
 import { notify } from '@sb/dexUtils/notifications'
+import { SRadio } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
 export const FeedbackPopup = ({
   theme,
@@ -39,6 +41,7 @@ export const FeedbackPopup = ({
     contact: '',
   })
 
+  const [isProblemReport, setIsProblemReport] = useState(false)
   const setData = ({ fieldName, value }) => {
     return setFeedbackData({ ...feedbackData, [fieldName]: value })
   }
@@ -141,6 +144,26 @@ export const FeedbackPopup = ({
           action="/success"
         >
           <input type="hidden" name="form-name" value="usersFeedback" />
+          <RowContainer>
+            <Row justify="flex-start" width={'50%'}>
+              <SRadio
+                checked={isProblemReport}
+                onChange={() => {
+                  setIsProblemReport(true)
+                }}
+              />
+              <StyledLabel>I want to report a problem.</StyledLabel>
+            </Row>
+            <Row justify="flex-start" width={'50%'}>
+              <SRadio
+                checked={!isProblemReport}
+                onChange={() => {
+                  setIsProblemReport(false)
+                }}
+              />
+              <StyledLabel>I want to suggest an idea.</StyledLabel>
+            </Row>
+          </RowContainer>
           <RowContainer margin={'1rem 0'}>
             <RowContainer wrap="nowrap">
               <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
