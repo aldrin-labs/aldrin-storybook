@@ -77,7 +77,8 @@ export const StyledHeader = styled(RowContainer)`
 `
 export const StyledTable = styled(Grid)`
   overflow: hidden;
-  height: ${props => props.isAdvancedSelectorMode ? 'calc(100% - 24rem)' : 'calc(100% - 18rem)'};
+  height: ${(props) =>
+    props.isAdvancedSelectorMode ? 'calc(100% - 24rem)' : 'calc(100% - 18rem)'};
 
   @media (max-width: 600px) {
     height: calc(100% - 10rem);
@@ -301,4 +302,12 @@ export const TextArea = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
+`
+export const StyledLabel = styled.label`
+  color: #96999c;
+  font-size: 1.5rem;
+  font-family: Avenir Next Medium;
+  white-space: nowrap;
+  letter-spacing: 0.01rem;
+  cursor: pointer;
 `
