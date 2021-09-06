@@ -41,7 +41,7 @@ export const FeedbackPopup = ({
     contact: '',
   })
 
-  const [isProblemReport, setIsProblemReport] = useState(false)
+  const [isProblemReport, setIsProblemReport] = useState(true)
   const setData = ({ fieldName, value }) => {
     return setFeedbackData({ ...feedbackData, [fieldName]: value })
   }
@@ -174,117 +174,62 @@ export const FeedbackPopup = ({
               </StyledLabel>
             </Row>
           </RowContainer>
-          {isProblemReport ? (
-            <>
-              {' '}
-              <RowContainer margin={'1rem 0'}>
-                <RowContainer wrap="nowrap">
-                  <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
-                    Tell us your problem
-                  </Text>
-                  <Line />
-                </RowContainer>
-                <RowContainer justify={'space-between'}>
-                  <StyledTextArea
-                    height={'20rem'}
-                    type="text"
-                    name="messagge"
-                    id="messagge"
-                    autoComplete="off"
-                    theme={theme}
-                    placeholder={'Message'}
-                    value={feedbackData.messagge}
-                    onChange={(e) =>
-                      setData({
-                        fieldName: 'messagge',
-                        value: e.target.value,
-                      })
-                    }
-                  />
-                </RowContainer>
-              </RowContainer>
-              <RowContainer margin={'1rem 0'}>
-                <RowContainer wrap="nowrap">
-                  <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
-                    How we can contact you to help?{' '}
-                  </Text>
-                  <Line />
-                </RowContainer>
-                <RowContainer justify={'space-between'}>
-                  <TextField
-                    type="text"
-                    name="contact"
-                    id="contact"
-                    autoComplete="off"
-                    theme={theme}
-                    placeholder={'Specify a way to contact you'}
-                    value={feedbackData.contact}
-                    onChange={(e) =>
-                      setData({
-                        fieldName: 'contact',
-                        value: e.target.value,
-                      })
-                    }
-                  />
-                </RowContainer>
-              </RowContainer>
-            </>
-          ) : (
-            <>
-              <RowContainer margin={'1rem 0'}>
-                <RowContainer wrap="nowrap">
-                  <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
-                    Tell us how we can improve{' '}
-                  </Text>
-                  <Line />
-                </RowContainer>
-                <RowContainer justify={'space-between'}>
-                  <StyledTextArea
-                    height={'20rem'}
-                    type="text"
-                    name="messagge"
-                    id="messagge"
-                    autoComplete="off"
-                    theme={theme}
-                    placeholder={'Message'}
-                    value={feedbackData.messagge}
-                    onChange={(e) =>
-                      setData({
-                        fieldName: 'messagge',
-                        value: e.target.value,
-                      })
-                    }
-                  />
-                </RowContainer>
-              </RowContainer>
-              <RowContainer margin={'1rem 0'}>
-                <RowContainer wrap="nowrap">
-                  <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
-                    Would you like a representative to contact you? (optional){' '}
-                  </Text>
-                  <Line />
-                </RowContainer>
-                <RowContainer justify={'space-between'}>
-                  <TextField
-                    type="text"
-                    name="contact"
-                    id="contact"
-                    autoComplete="off"
-                    theme={theme}
-                    placeholder={'Specify a way to contact you'}
-                    value={feedbackData.contact}
-                    onChange={(e) =>
-                      setData({
-                        fieldName: 'contact',
-                        value: e.target.value,
-                      })
-                    }
-                  />
-                </RowContainer>
-              </RowContainer>
-            </>
-          )}
 
+          <RowContainer margin={'1rem 0'}>
+            <RowContainer wrap="nowrap">
+              <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
+                {isProblemReport
+                  ? 'Tell us your problem'
+                  : 'Tell us how we can improve'}
+              </Text>
+              <Line />
+            </RowContainer>
+            <RowContainer justify={'space-between'}>
+              <StyledTextArea
+                height={'20rem'}
+                type="text"
+                name="messagge"
+                id="messagge"
+                autoComplete="off"
+                theme={theme}
+                placeholder={'Message'}
+                value={feedbackData.messagge}
+                onChange={(e) =>
+                  setData({
+                    fieldName: 'messagge',
+                    value: e.target.value,
+                  })
+                }
+              />
+            </RowContainer>
+          </RowContainer>
+          <RowContainer margin={'1rem 0'}>
+            <RowContainer wrap="nowrap">
+              <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
+                {isProblemReport
+                  ? 'How we can contact you to help?'
+                  : 'Would you like a representative to contact you? (optional)'}{' '}
+              </Text>
+              <Line />
+            </RowContainer>
+            <RowContainer justify={'space-between'}>
+              <TextField
+                type="text"
+                name="contact"
+                id="contact"
+                autoComplete="off"
+                theme={theme}
+                placeholder={'Specify a way to contact you'}
+                value={feedbackData.contact}
+                onChange={(e) =>
+                  setData({
+                    fieldName: 'contact',
+                    value: e.target.value,
+                  })
+                }
+              />
+            </RowContainer>
+          </RowContainer>
           <RowContainer>
             <SubmitButton
               isDisabled={isDisabled}
