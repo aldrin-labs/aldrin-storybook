@@ -23,10 +23,21 @@ import tuple from 'immutable-tuple'
 import { notify } from './notifications'
 import { BN } from 'bn.js'
 import { getTokenAccountInfo } from './tokens'
-import { useAwesomeMarkets, AWESOME_TOKENS } from '@core/utils/awesomeMarkets/serum'
+import {
+  useAwesomeMarkets,
+  AWESOME_TOKENS,
+} from '@core/utils/awesomeMarkets/serum'
 import { getDexProgramIdByEndpoint } from '@core/config/dex'
+import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  Token,
+  TOKEN_PROGRAM_ID,
+} from './token/token'
 
-export const ALL_TOKENS_MINTS = getUniqueListBy([...TOKEN_MINTS, ...AWESOME_TOKENS], "name")
+export const ALL_TOKENS_MINTS = getUniqueListBy(
+  [...TOKEN_MINTS, ...AWESOME_TOKENS],
+  'name'
+)
 
 console.log('ALL_TOKENS_MINTS', ALL_TOKENS_MINTS)
 
@@ -264,7 +275,7 @@ export function useUnmigratedOpenOrdersAccounts() {
 
 const MarketContext = React.createContext(null)
 
-const _VERY_SLOW_REFRESH_INTERVAL = 5000 * 1000
+export const _VERY_SLOW_REFRESH_INTERVAL = 5000 * 1000
 
 // For things that don't really change
 const _SLOW_REFRESH_INTERVAL = 3 * 1000
@@ -431,22 +442,15 @@ export function useMarkPrice() {
   const [markPrice, setMarkPrice] = useState(null)
 
   const [orderbook] = useOrderbook(2)
-  const trades = useTrades()
 
   useEffect(() => {
     let bb = orderbook?.bids?.length > 0 && Number(orderbook.bids[0][0])
     let ba = orderbook?.asks?.length > 0 && Number(orderbook.asks[0][0])
-    let last = trades?.length > 0 && trades[0].price
 
-    let markPrice =
-      bb && ba
-        ? last
-          ? [bb, ba, last].sort((a, b) => a - b)[1]
-          : (bb + ba) / 2
-        : null
+    let markPrice = bb && ba ? (bb + ba) / 2 : null
 
     setMarkPrice(markPrice)
-  }, [orderbook, trades])
+  }, [orderbook])
 
   return markPrice
 }
@@ -463,7 +467,7 @@ export function _useUnfilteredTrades(limit = 10000) {
   const [trades] = useAsyncData(
     getUnfilteredTrades,
     tuple('getUnfilteredTrades', market, connection),
-    { refreshInterval: _SLOW_REFRESH_INTERVAL }
+    { refreshInterval: 10_000 }
   )
   return trades
   // NOTE: For now, websocket is too expensive since the event queue is large
@@ -502,7 +506,7 @@ export function useOrderbook(depth = 200) {
     !askOrderbook || !market
       ? []
       : askOrderbook.getL2(depth).map(([price, size]) => [price, size])
-      
+
   return [{ bids, asks }, !!bids || !!asks]
 }
 
@@ -558,7 +562,7 @@ export function useTokenAccounts() {
   return useAsyncData(
     getTokenAccounts,
     tuple('getTokenAccounts', wallet, connected),
-    { refreshInterval: _SLOW_REFRESH_INTERVAL }
+    { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
   )
 }
 
@@ -608,39 +612,87 @@ export function getSelectedTokenAccountForMint(
 }
 
 export function useSelectedQuoteCurrencyAccount() {
-  const [accounts, loaded] = useTokenAccounts()
+  const [accounts] = useTokenAccounts()
   const { market } = useMarket()
   const [selectedTokenAccounts] = useSelectedTokenAccounts()
 
   const mintAddress = market?.quoteMintAddress
 
-  return getSelectedTokenAccountForMint(
-    market,
-    accounts,
-    mintAddress,
-    mintAddress && selectedTokenAccounts[mintAddress.toBase58()],
-    'base'
-  )
-}
+  const [associatedTokenAddress] = useAssociatedTokenAddressByMint(mintAddress)
+  const [associatedTokenInfo] = useAccountInfo(associatedTokenAddress)
 
-export function useSelectedBaseCurrencyAccount() {
-  const [accounts] = useTokenAccounts()
-  const { market } = useMarket()
-  const [selectedTokenAccounts] = useSelectedTokenAccounts()
-
-  const mintAddress = market?.baseMintAddress
-
-  return getSelectedTokenAccountForMint(
+  const quoteTokenAddress = getSelectedTokenAccountForMint(
     market,
     accounts,
     mintAddress,
     mintAddress && selectedTokenAccounts[mintAddress.toBase58()],
     'quote'
   )
+
+  // if not found in accounts, but token added as associated
+  if (!quoteTokenAddress && associatedTokenInfo) {
+    return {
+      pubkey: associatedTokenAddress,
+    }
+  }
+
+  return quoteTokenAddress
+}
+
+const useAssociatedTokenAddressByMint = (mint: PublicKey) => {
+  const { connected, wallet } = useWallet()
+
+  async function getAssociatedTokenAddress() {
+    if (!connected) {
+      return null
+    }
+    return await Token.getAssociatedTokenAddress(
+      ASSOCIATED_TOKEN_PROGRAM_ID,
+      TOKEN_PROGRAM_ID,
+      mint,
+      wallet.publicKey
+    )
+  }
+
+  return useAsyncData(
+    getAssociatedTokenAddress,
+    tuple('getAssociatedTokenAddress', mint, wallet.publicKey),
+    { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
+  )
+}
+
+export function useSelectedBaseCurrencyAccount() {
+  // getProgramAccounts
+  const [accounts] = useTokenAccounts()
+  const { market } = useMarket()
+  const [selectedTokenAccounts] = useSelectedTokenAccounts()
+
+  const mintAddress = market?.baseMintAddress
+
+  const [associatedTokenAddress] = useAssociatedTokenAddressByMint(mintAddress)
+  const [associatedTokenInfo] = useAccountInfo(associatedTokenAddress)
+
+  const baseTokenAddress = getSelectedTokenAccountForMint(
+    market,
+    accounts,
+    mintAddress,
+    mintAddress && selectedTokenAccounts[mintAddress.toBase58()],
+    'base'
+  )
+
+  // if not found in accounts, but token added as associated
+  if (!baseTokenAddress && associatedTokenInfo) {
+    return {
+      pubkey: associatedTokenAddress,
+    }
+  }
+
+  return baseTokenAddress
 }
 
 // TODO: Update to use websocket
 export function useQuoteCurrencyBalances() {
+  // or accos here - try get account info
   const quoteCurrencyAccount = useSelectedQuoteCurrencyAccount()
   const { market } = useMarket()
   const [accountInfo, loaded, refresh] = useAccountInfo(

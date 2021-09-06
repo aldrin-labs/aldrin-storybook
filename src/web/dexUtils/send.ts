@@ -120,6 +120,7 @@ export async function settleFunds({
   quoteTokenAccount,
   baseUnsettled,
   quoteUnsettled,
+  focusPopup = false,
 }: {
   market: Market,
   wallet: WalletAdapter
@@ -131,6 +132,7 @@ export async function settleFunds({
   quoteTokenAccount: any,
   baseUnsettled: number,
   quoteUnsettled: number,
+  focusPopup?: boolean,
 }) {
   if (!wallet) {
     notify({ message: 'Please, connect wallet to settle funds' })
@@ -295,6 +297,7 @@ export async function settleFunds({
       baseUnsettled: baseUnsettled,
       quoteUnsettled: quoteUnsettled,
     },
+    focusPopup,
   })
 }
 

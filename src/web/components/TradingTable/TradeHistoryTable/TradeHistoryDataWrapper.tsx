@@ -107,6 +107,11 @@ export default class OrderHistoryDataWrapper extends React.PureComponent<
     const maximumDate = dayjs().endOf('day')
     const minimumDate = dayjs().subtract(3, 'year')
 
+    if (!show) {
+      return null
+    }
+  
+
     return (
       <TradeHistoryTable
         {...{
