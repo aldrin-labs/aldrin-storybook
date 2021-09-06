@@ -492,7 +492,8 @@ export async function signAndSendTransaction(
   transaction,
   wallet,
   signers,
-  skipPreflight = false
+  skipPreflight = false,
+  focusPopup = false
 ) {
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash('max')
@@ -507,7 +508,7 @@ export async function signAndSendTransaction(
     transaction.partialSign(...signers)
   }
 
-  transaction = await wallet.signTransaction(transaction)
+  transaction = await wallet.signTransaction(transaction, focusPopup)
   const rawTransaction = transaction.serialize()
   return await connection.sendRawTransaction(rawTransaction, {
     skipPreflight,
@@ -528,7 +529,7 @@ export async function createAssociatedTokenAccount({
   const tx = new Transaction()
   tx.add(ix)
   tx.feePayer = wallet.publicKey
-  const txSig = await signAndSendTransaction(connection, tx, wallet, [])
+  const txSig = await signAndSendTransaction(connection, tx, wallet, [], false, true)
 
   return [address, txSig]
 }
