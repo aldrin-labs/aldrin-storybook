@@ -8,10 +8,10 @@ import {
   TOKEN_MINTS,
   OpenOrders,
 } from '@project-serum/serum'
-import { PublicKey } from '@solana/web3.js'
+import { Account, PublicKey } from '@solana/web3.js'
 import React, { useContext, useEffect, useState } from 'react'
 import { getUniqueListBy, useLocalStorageState } from './utils'
-import { refreshCache, useAsyncData } from './fetch-loop'
+import { getCache, refreshCache, setCache, useAsyncData } from './fetch-loop'
 import {
   useAccountData,
   useAccountInfo,
@@ -27,7 +27,7 @@ import {
   useAwesomeMarkets,
   AWESOME_TOKENS,
 } from '@core/utils/awesomeMarkets/serum'
-import { getDexProgramIdByEndpoint } from '@core/config/dex'
+import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   Token,
@@ -510,12 +510,11 @@ export function useOrderbook(depth = 200) {
   return [{ bids, asks }, !!bids || !!asks]
 }
 
-// Want the balances table to be fast-updating, dont want open orders to flicker
-// TODO: Update to use websocket
-export function useOpenOrdersAccounts(fast = false) {
+const useOpenOrdersFromProgramAccounts = () => {
   const { market } = useMarket()
   const { connected, wallet } = useWallet()
   const connection = useConnection()
+
   async function getOpenOrdersAccounts() {
     if (!connected) {
       return null
@@ -531,15 +530,72 @@ export function useOpenOrdersAccounts(fast = false) {
 
     return accounts
   }
+
   return useAsyncData(
     getOpenOrdersAccounts,
-    tuple('getOpenOrdersAccounts', wallet, market, connected),
-    { refreshInterval: fast ? _FAST_REFRESH_INTERVAL : _SLOW_REFRESH_INTERVAL }
+    tuple('getOpenOrdersAccountsFromProgramAccounts', wallet, market, connected),
+    { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
+  )
+}
+
+// Want the balances table to be fast-updating, dont want open orders to flicker
+// TODO: Update to use websocket
+export function useOpenOrdersAccounts(fast = false) {
+  const { market } = useMarket()
+  const { connected, wallet } = useWallet()
+  const connection = useConnection()
+
+  const [openOrders] = useOpenOrdersFromProgramAccounts()
+
+  async function getOpenOrdersAccounts() {
+    if (!connected) {
+      return null
+    }
+    if (!market) {
+      return null
+    }
+
+    const isOpenOrdersAlreadyCreated = openOrders && openOrders.length > 0
+
+    let prePreatedOpenOrders = getCache(
+      `preCreatedOpenOrdersFor${market?.publicKey}`
+    )
+
+    if (!prePreatedOpenOrders && !isOpenOrdersAlreadyCreated) {
+      prePreatedOpenOrders = new Account()
+      setCache(
+        `preCreatedOpenOrdersFor${market?.publicKey}`,
+        prePreatedOpenOrders
+      )
+    }
+
+    const openOrdersAccountInfo = await connection.getAccountInfo(
+      prePreatedOpenOrders?.publicKey
+    )
+
+    // use openOrders only here for hooks using
+    if (isOpenOrdersAlreadyCreated) return openOrders
+
+    if (!openOrdersAccountInfo) return undefined
+
+    const openOrdersAccount = OpenOrders.fromAccountInfo(
+      prePreatedOpenOrders?.publicKey,
+      openOrdersAccountInfo,
+      DEX_PID
+    )
+
+    return [openOrdersAccount]
+  }
+
+  return useAsyncData(
+    getOpenOrdersAccounts,
+    tuple('getOpenOrdersAccountsWithPreCached', wallet, market, connected),
+    { refreshInterval: _SLOW_REFRESH_INTERVAL }
   )
 }
 
 export function useSelectedOpenOrdersAccount(fast = false) {
-  const [accounts, loaded] = useOpenOrdersAccounts(fast)
+  const [accounts] = useOpenOrdersAccounts(fast)
 
   if (!accounts) {
     return null
