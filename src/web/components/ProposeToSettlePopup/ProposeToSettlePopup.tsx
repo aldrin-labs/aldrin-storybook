@@ -34,9 +34,9 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
 
   const isBalanceUnsettled = balances[0]?.unsettled || balances[1]?.unsettled
 
-  useEffect(() => {
-    setIsPopupOpen(isBalanceUnsettled)
-  }, [isBalanceUnsettled])
+  // useEffect(() => {
+  //   setIsPopupOpen(isBalanceUnsettled)
+  // }, [isBalanceUnsettled])
 
   const isMobile = useMobileSize()
 
