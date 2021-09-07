@@ -29,6 +29,7 @@ import {
   ALL_TOKENS_MINTS,
 } from './markets'
 import { WalletAdapter } from './types'
+import { getCache } from './fetch-loop'
 
 const getNotificationText = ({
   baseSymbol = 'CCAI',
@@ -122,17 +123,17 @@ export async function settleFunds({
   quoteUnsettled,
   focusPopup = false,
 }: {
-  market: Market,
+  market: Market
   wallet: WalletAdapter
-  connection: Connection,
-  openOrders: OpenOrders,
-  baseCurrency: string,
-  quoteCurrency: string,
-  baseTokenAccount: any,
-  quoteTokenAccount: any,
-  baseUnsettled: number,
-  quoteUnsettled: number,
-  focusPopup?: boolean,
+  connection: Connection
+  openOrders: OpenOrders
+  baseCurrency: string
+  quoteCurrency: string
+  baseTokenAccount: any
+  quoteTokenAccount: any
+  baseUnsettled: number
+  quoteUnsettled: number
+  focusPopup?: boolean
 }) {
   if (!wallet) {
     notify({ message: 'Please, connect wallet to settle funds' })
@@ -144,7 +145,8 @@ export async function settleFunds({
     return
   }
 
-  if (!baseCurrency && !quoteCurrency) {
+  if (!baseCurrency || !quoteCurrency) {
+    notify({ message: `Sorry, looks base & quote symbols doesnt loaded in the market`})
     return
   }
 
@@ -203,6 +205,11 @@ export async function settleFunds({
         return null
       }
 
+      // handling case when user might settle with 11111111111111111111111111111111 instead of the user's pubkey
+      if (SystemProgram.programId.equals(selectedBaseTokenAccount) || SystemProgram.programId.equals(selectedQuoteTokenAccount) ) {
+        return null
+      }
+
       let referrerQuoteWallet = null
 
       if (market?.supportsReferralFees) {
@@ -244,7 +251,7 @@ export async function settleFunds({
     (x): x is { signers: [PublicKey | Account]; transaction: Transaction } =>
       !!x
   )
-  
+
   if (
     (!settleTransactions || settleTransactions.length === 0) &&
     !wallet.autoApprove
@@ -437,6 +444,11 @@ export async function placeOrder({
     })
     return
   }
+
+  const openOrdersAccount = getCache(
+    `preCreatedOpenOrdersFor${market?.publicKey}`
+  )
+
   const params = {
     owner,
     payer,
@@ -446,6 +458,7 @@ export async function placeOrder({
     pair,
     orderType,
     isMarketOrder,
+    ...(!!openOrdersAccount ? { openOrdersAccount } : {}),
   }
   console.log(params)
 
@@ -791,7 +804,7 @@ export async function sendTransaction({
   successMessage?: string
   timeout?: number
   operationType?: string
-  params?: any,
+  params?: any
   focusPopup?: boolean
 }) {
   transaction.recentBlockhash = (
@@ -809,10 +822,12 @@ export async function sendTransaction({
     transaction.partialSign(...signers)
   }
 
-  const transactionFromWallet = await wallet.signTransaction(transaction, focusPopup).then((res) => {
-    window.focus()
-    return res;
-  })
+  const transactionFromWallet = await wallet
+    .signTransaction(transaction, focusPopup)
+    .then((res) => {
+      window.focus()
+      return res
+    })
 
   console.log('sendTransaction transactionFromWallet: ', transactionFromWallet)
 
