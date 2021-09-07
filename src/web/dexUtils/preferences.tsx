@@ -53,8 +53,6 @@ export function PreferencesProvider({ children }) {
             ? market.quoteSplSizeToNumber(selectedOpenOrders.quoteTokenFree)
             : null
 
-            console.log('baseUnsettled', baseUnsettled, quoteUnsettled)
-
         if (baseUnsettled > 0 || quoteUnsettled > 0) {
           await settleFunds({
             market,
