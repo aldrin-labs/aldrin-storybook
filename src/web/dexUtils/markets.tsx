@@ -533,7 +533,12 @@ const useOpenOrdersFromProgramAccounts = () => {
 
   return useAsyncData(
     getOpenOrdersAccounts,
-    tuple('getOpenOrdersAccountsFromProgramAccounts', wallet, market, connected),
+    tuple(
+      'getOpenOrdersAccountsFromProgramAccounts',
+      wallet,
+      market,
+      connected
+    ),
     { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
   )
 }
@@ -559,9 +564,13 @@ export function useOpenOrdersAccounts(fast = false) {
     let preCreatedOpenOrders = getCache(
       `preCreatedOpenOrdersFor${market?.publicKey}`
     )
+    let openOrdersPublicKey = null
 
-    if (!preCreatedOpenOrders && !isOpenOrdersAlreadyCreated) {
+    if (isOpenOrdersAlreadyCreated) {
+      openOrdersPublicKey = openOrders[0].publicKey
+    } else if (!preCreatedOpenOrders) {
       preCreatedOpenOrders = new Account()
+      openOrdersPublicKey = preCreatedOpenOrders.publicKey
       setCache(
         `preCreatedOpenOrdersFor${market?.publicKey}`,
         preCreatedOpenOrders
@@ -569,26 +578,34 @@ export function useOpenOrdersAccounts(fast = false) {
     }
 
     const openOrdersAccountInfo = await connection.getAccountInfo(
-      preCreatedOpenOrders?.publicKey
+      openOrdersPublicKey
     )
 
-    // use openOrders only here for hooks using
-    if (isOpenOrdersAlreadyCreated) return openOrders
-
-    if (!openOrdersAccountInfo) return undefined
+    if (!openOrdersAccountInfo) {
+      return openOrders
+    }
 
     const openOrdersAccount = OpenOrders.fromAccountInfo(
-      preCreatedOpenOrders?.publicKey,
+      openOrdersPublicKey,
       openOrdersAccountInfo,
       DEX_PID
     )
 
-    return [openOrdersAccount]
+    // openOrders except 0
+    const restOpenOrders = isOpenOrdersAlreadyCreated ? openOrders.slice(1) : []
+
+    return [openOrdersAccount, ...restOpenOrders]
   }
 
   return useAsyncData(
     getOpenOrdersAccounts,
-    tuple('getOpenOrdersAccountsWithPreCached', wallet, market, connected, openOrders),
+    tuple(
+      'getOpenOrdersAccountsWithPreCached',
+      wallet,
+      market,
+      connected,
+      openOrders
+    ),
     { refreshInterval: _SLOW_REFRESH_INTERVAL }
   )
 }
