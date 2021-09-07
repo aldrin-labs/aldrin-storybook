@@ -554,7 +554,6 @@ export function useOpenOrdersAccounts(fast = false) {
     if (!market) {
       return null
     }
-
     const isOpenOrdersAlreadyCreated = openOrders && openOrders.length > 0
 
     let preCreatedOpenOrders = getCache(
@@ -589,7 +588,7 @@ export function useOpenOrdersAccounts(fast = false) {
 
   return useAsyncData(
     getOpenOrdersAccounts,
-    tuple('getOpenOrdersAccountsWithPreCached', wallet, market, connected),
+    tuple('getOpenOrdersAccountsWithPreCached', wallet, market, connected, openOrders),
     { refreshInterval: _SLOW_REFRESH_INTERVAL }
   )
 }
