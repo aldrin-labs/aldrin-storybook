@@ -122,8 +122,9 @@ export const FeedbackPopup = ({
               whiteSpace: 'normal',
             }}
           >
-            Thank you for your feedback, we will review it shortly and take
-            action.
+            {isProblemReport
+              ? 'Thank you for your feedback, please allow support team 24 hours to respond.'
+              : 'Thank you for your feedback, we will review it shortly and take action.'}
           </Text>
           <BlueButton
             style={{ width: '100%', margin: '6rem 0 0 0' }}
