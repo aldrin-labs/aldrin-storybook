@@ -144,7 +144,8 @@ export async function settleFunds({
     return
   }
 
-  if (!baseCurrency && !quoteCurrency) {
+  if (!baseCurrency || !quoteCurrency) {
+    notify({ message: `Sorry, looks base & quote symbols doesnt loaded in the market`})
     return
   }
 
@@ -200,6 +201,11 @@ export async function settleFunds({
       const selectedQuoteTokenAccount = quoteTokenAccount?.pubkey
 
       if (!selectedBaseTokenAccount || !selectedQuoteTokenAccount) {
+        return null
+      }
+
+      // handling case when user might settle with 11111111111111111111111111111111 instead of the user's pubkey
+      if (SystemProgram.programId.equals(selectedBaseTokenAccount) || SystemProgram.programId.equals(selectedQuoteTokenAccount) ) {
         return null
       }
 
