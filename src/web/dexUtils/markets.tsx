@@ -557,20 +557,20 @@ export function useOpenOrdersAccounts(fast = false) {
 
     const isOpenOrdersAlreadyCreated = openOrders && openOrders.length > 0
 
-    let prePreatedOpenOrders = getCache(
+    let preCreatedOpenOrders = getCache(
       `preCreatedOpenOrdersFor${market?.publicKey}`
     )
 
-    if (!prePreatedOpenOrders && !isOpenOrdersAlreadyCreated) {
-      prePreatedOpenOrders = new Account()
+    if (!preCreatedOpenOrders && !isOpenOrdersAlreadyCreated) {
+      preCreatedOpenOrders = new Account()
       setCache(
         `preCreatedOpenOrdersFor${market?.publicKey}`,
-        prePreatedOpenOrders
+        preCreatedOpenOrders
       )
     }
 
     const openOrdersAccountInfo = await connection.getAccountInfo(
-      prePreatedOpenOrders?.publicKey
+      preCreatedOpenOrders?.publicKey
     )
 
     // use openOrders only here for hooks using
@@ -579,7 +579,7 @@ export function useOpenOrdersAccounts(fast = false) {
     if (!openOrdersAccountInfo) return undefined
 
     const openOrdersAccount = OpenOrders.fromAccountInfo(
-      prePreatedOpenOrders?.publicKey,
+      preCreatedOpenOrders?.publicKey,
       openOrdersAccountInfo,
       DEX_PID
     )
