@@ -418,7 +418,7 @@ export async function placeOrder({
   wallet,
   baseCurrencyAccount,
   quoteCurrencyAccount,
-  feeAccounts,
+  openOrdersAccount,
 }) {
   console.log('place ORDER', market?.minOrderSize, size)
   const isValidationSuccessfull = validateVariablesForPlacingOrder({
@@ -445,9 +445,11 @@ export async function placeOrder({
     return
   }
 
-  const openOrdersAccount = getCache(
+  const openOrdersAccountFromCache = getCache(
     `preCreatedOpenOrdersFor${market?.publicKey}`
   )
+
+  console.log('openOrdersAccount in placeOrder', openOrdersAccount)
 
   const params = {
     owner,
@@ -458,7 +460,7 @@ export async function placeOrder({
     pair,
     orderType,
     isMarketOrder,
-    ...(!!openOrdersAccount ? { openOrdersAccount } : {}),
+    ...(!openOrdersAccount ? { openOrdersAccount: openOrdersAccountFromCache } : {}),
   }
   console.log(params)
 
