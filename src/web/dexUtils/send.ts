@@ -449,6 +449,8 @@ export async function placeOrder({
     `preCreatedOpenOrdersFor${market?.publicKey}`
   )
 
+  console.log('openOrdersAccount in placeOrder', openOrdersAccount)
+
   const params = {
     owner,
     payer,

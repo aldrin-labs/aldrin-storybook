@@ -570,11 +570,13 @@ export function useOpenOrdersAccounts(fast = false) {
       openOrdersPublicKey = openOrders[0].publicKey
     } else if (!preCreatedOpenOrders) {
       preCreatedOpenOrders = new Account()
-      openOrdersPublicKey = preCreatedOpenOrders.publicKey
+      openOrdersPublicKey = preCreatedOpenOrders?.publicKey
       setCache(
         `preCreatedOpenOrdersFor${market?.publicKey}`,
         preCreatedOpenOrders
       )
+    } else {
+      openOrdersPublicKey = preCreatedOpenOrders?.publicKey
     }
 
     const openOrdersAccountInfo = await connection.getAccountInfo(
