@@ -6,6 +6,7 @@ import { useWallet } from './wallet'
 import {
   useMarket,
   useSelectedBaseCurrencyAccount,
+  useSelectedOpenOrdersAccount,
   useSelectedQuoteCurrencyAccount,
 } from './markets'
 import { settleFunds } from './send'
@@ -23,6 +24,7 @@ export function PreferencesProvider({ children }) {
 
   const { market, baseCurrency, quoteCurrency } = useMarket()
 
+  const openOrdersAccount = useSelectedOpenOrdersAccount()
   const baseTokenAccount = useSelectedBaseCurrencyAccount()
   const quoteTokenAccount = useSelectedQuoteCurrencyAccount()
 
@@ -30,12 +32,7 @@ export function PreferencesProvider({ children }) {
     const autoSettle = async () => {
       // const markets = (marketList || []).map((m) => m.market);
       try {
-        const openOrders = await market.findOpenOrdersAccountsForOwner(
-          connection,
-          wallet.publicKey
-        )
-
-        const selectedOpenOrders = openOrders[0]
+        const selectedOpenOrders = openOrdersAccount
 
         const baseExists =
           selectedOpenOrders &&
@@ -56,10 +53,12 @@ export function PreferencesProvider({ children }) {
             ? market.quoteSplSizeToNumber(selectedOpenOrders.quoteTokenFree)
             : null
 
+            console.log('baseUnsettled', baseUnsettled, quoteUnsettled)
+
         if (baseUnsettled > 0 || quoteUnsettled > 0) {
           await settleFunds({
             market,
-            openOrders,
+            openOrders: openOrdersAccount,
             connection,
             wallet,
             baseCurrency,
