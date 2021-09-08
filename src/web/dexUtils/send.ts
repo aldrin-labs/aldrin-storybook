@@ -967,9 +967,8 @@ const awaitTransactionSignatureConfirmationWithNotifications = async ({
     }
 
     notify({ message: 'Transaction failed', type: 'error' })
-    console.log('error', err)
     Metrics.sendMetrics({
-      metricName: `transactionFailed-timeout`,
+      metricName: `transactionFailed-${JSON.stringify(err)}`,
     })
     return null
   }
@@ -1032,7 +1031,9 @@ async function awaitTransactionSignatureConfirmation({
               } else if (result.err) {
                 console.log('REST error for', txid, result)
                 Metrics.sendMetrics({
-                  metricName: `getSignatureStatuses-error-${result.err}`,
+                  metricName: `getSignatureStatuses-error-${JSON.stringify(
+                    result.err
+                  )}`,
                 })
                 done = true
                 reject(result.err)
@@ -1048,7 +1049,7 @@ async function awaitTransactionSignatureConfirmation({
             if (!done) {
               console.log('REST connection error: txid', txid, e)
               Metrics.sendMetrics({
-                metricName: `connectionError-${e}`,
+                metricName: `connectionError-${JSON.stringify(e)}`,
               })
             }
           }
