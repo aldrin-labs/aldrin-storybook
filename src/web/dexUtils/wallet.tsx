@@ -29,13 +29,18 @@ import { TokenListProvider } from '@solana/spl-token-registry'
 import { TokenInstructions } from '@project-serum/serum'
 import { useAsyncData } from './fetch-loop'
 import { getMaxWithdrawAmount } from './pools'
-import { getTokenAccountInfo, MINT_LAYOUT, parseTokenAccountData } from './tokens'
+import {
+  getTokenAccountInfo,
+  MINT_LAYOUT,
+  parseTokenAccountData,
+} from './tokens'
 import Sollet from '@icons/sollet.svg'
 import Mathwallet from '@icons/mathwallet.svg'
 import Solong from '@icons/solong.svg'
 import WalletAldrin from '@icons/RINLogo.svg'
 import { WalletAdapter } from './adapters'
 import { _VERY_SLOW_REFRESH_INTERVAL } from './markets'
+import { MASTER_BUILD } from '@core/utils/config'
 
 export const WALLET_PROVIDERS = [
   // { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },
@@ -47,14 +52,14 @@ export const WALLET_PROVIDERS = [
     showOnMobile: true,
     icon: WalletAldrin,
   },
-  {
-    name: 'Wallet™ Extension',
-    url: `${CCAIProviderURL}/extension`,
-    adapter: CcaiExtensionAdapter,
-    isExtension: true,
-    showOnMobile: false,
-    icon: WalletAldrin,
-  },
+  // {
+  //   name: 'Wallet™ Extension',
+  //   url: `${CCAIProviderURL}/extension`,
+  //   adapter: CcaiExtensionAdapter,
+  //   isExtension: true,
+  //   showOnMobile: false,
+  //   icon: WalletAldrin,
+  // },
   {
     name: 'Sollet.io',
     url: 'https://www.sollet.io',
@@ -529,7 +534,14 @@ export async function createAssociatedTokenAccount({
   const tx = new Transaction()
   tx.add(ix)
   tx.feePayer = wallet.publicKey
-  const txSig = await signAndSendTransaction(connection, tx, wallet, [], false, true)
+  const txSig = await signAndSendTransaction(
+    connection,
+    tx,
+    wallet,
+    [],
+    false,
+    true
+  )
 
   return [address, txSig]
 }
