@@ -65,7 +65,7 @@ export const notify = ({
         style={{
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between',
+          justifyContent: description ? 'space-between' : 'center',
           marginLeft: '.5rem',
           height: '6rem',
         }}

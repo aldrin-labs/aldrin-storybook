@@ -146,7 +146,9 @@ export async function settleFunds({
   }
 
   if (!baseCurrency || !quoteCurrency) {
-    notify({ message: `Sorry, looks base & quote symbols doesnt loaded in the market`})
+    notify({
+      message: `Sorry, looks base & quote symbols doesnt loaded in the market`,
+    })
     return
   }
 
@@ -206,7 +208,10 @@ export async function settleFunds({
       }
 
       // handling case when user might settle with 11111111111111111111111111111111 instead of the user's pubkey
-      if (SystemProgram.programId.equals(selectedBaseTokenAccount) || SystemProgram.programId.equals(selectedQuoteTokenAccount) ) {
+      if (
+        SystemProgram.programId.equals(selectedBaseTokenAccount) ||
+        SystemProgram.programId.equals(selectedQuoteTokenAccount)
+      ) {
         return null
       }
 
@@ -460,7 +465,9 @@ export async function placeOrder({
     pair,
     orderType,
     isMarketOrder,
-    ...(!openOrdersAccount ? { openOrdersAccount: openOrdersAccountFromCache } : {}),
+    ...(!openOrdersAccount
+      ? { openOrdersAccount: openOrdersAccountFromCache }
+      : {}),
   }
   console.log(params)
 
@@ -536,7 +543,7 @@ export async function sendSignedTransaction({
     }
   })()
   try {
-    await awaitTransactionSignatureConfirmation(txid, timeout, connection)
+    await awaitTransactionSignatureConfirmation({ txid, timeout, connection })
   } catch (err) {
     if (err.timeout) {
       throw new Error('Timed out awaiting confirmation on transaction')
@@ -784,7 +791,7 @@ const getUnixTs = () => {
   return new Date().getTime() / 1000
 }
 
-const DEFAULT_TIMEOUT = 15000
+const DEFAULT_TIMEOUT = 30000
 
 export async function sendTransaction({
   transaction,
@@ -885,41 +892,88 @@ export async function sendTransaction({
         'sendTransaction resultOfSendingConfirm',
         resultOfSendingConfirm
       )
-      await sleep(700)
+      await sleep(1200)
     }
   })()
-  try {
-    const resultOfSignature = await awaitTransactionSignatureConfirmation(
+
+  let result = await awaitTransactionSignatureConfirmationWithNotifications({
+    txid,
+    timeout,
+    connection,
+    showErrorForTimeout: false,
+  })
+
+  if (result === 'timeout') {
+    console.log('execute second')
+    result = await awaitTransactionSignatureConfirmationWithNotifications({
       txid,
       timeout,
-      connection
-    )
-
-    console.log('sendTransaction resultOfSignature', resultOfSignature)
-  } catch (err) {
-    if (err.timeout) {
-      notify({
-        message: 'Timed out awaiting confirmation on transaction',
-        type: 'error',
-      })
-      throw new Error('Timed out awaiting confirmation on transaction')
-    }
-
-    notify({ message: 'Transaction failed', type: 'error' })
-    throw new Error('Transaction failed')
-  } finally {
-    done = true
+      connection,
+      interval: 2400,
+      showErrorForTimeout: true,
+    })
   }
+
+  done = true
+  if (result !== true) return null
+
   if (!operationType) notify({ message: successMessage, type: 'success', txid })
   console.log('Latency', txid, getUnixTs() - startTime)
   return txid
 }
 
-async function awaitTransactionSignatureConfirmation(
+const awaitTransactionSignatureConfirmationWithNotifications = async ({
   txid,
   timeout,
-  connection
-) {
+  interval,
+  connection,
+  showErrorForTimeout = false,
+}: {
+  txid: string
+  timeout: number
+  interval?: number,
+  connection: Connection
+  showErrorForTimeout: boolean
+}) => {
+  try {
+    const resultOfSignature = await awaitTransactionSignatureConfirmation({
+      txid,
+      timeout,
+      interval,
+      connection,
+    })
+
+    console.log('sendTransaction resultOfSignature', resultOfSignature)
+  } catch (err) {
+    console.log('sendTransaction error', err)
+    if (err.timeout && !showErrorForTimeout) {
+      notify({
+        message: 'Timed out awaiting confirmation on transaction',
+        type: 'info',
+        description: 'We\'ll continue checking confirmations for this transactions'
+      })
+
+      return 'timeout'
+    }
+
+    notify({ message: 'Transaction failed', type: 'error' })
+    return null
+  } 
+
+  return true
+}
+
+async function awaitTransactionSignatureConfirmation({
+  txid,
+  timeout,
+  connection,
+  interval = 1200,
+}: {
+  txid: string
+  timeout: number
+  connection: Connection
+  interval?: number
+}) {
   let done = false
   const result = await new Promise((resolve, reject) => {
     ;(async () => {
@@ -979,7 +1033,7 @@ async function awaitTransactionSignatureConfirmation(
             }
           }
         })()
-        await sleep(700)
+        await sleep(interval)
       }
     })()
   })
