@@ -30,6 +30,7 @@ import {
 } from './markets'
 import { WalletAdapter } from './types'
 import { getCache } from './fetch-loop'
+import { Metrics } from '../../utils/metrics'
 
 const getNotificationText = ({
   baseSymbol = 'CCAI',
@@ -904,7 +905,10 @@ export async function sendTransaction({
   })
 
   if (result === 'timeout') {
-    console.log('execute second')
+    Metrics.sendMetrics({
+      metricName: 'timeoutConfirmationTransaction',
+      metricScope: 'Frontend.DEX',
+    })
     result = await awaitTransactionSignatureConfirmationWithNotifications({
       txid,
       timeout,
@@ -912,6 +916,13 @@ export async function sendTransaction({
       interval: 2400,
       showErrorForTimeout: true,
     })
+
+    if (!result) {
+      Metrics.sendMetrics({
+        metricName: 'secondTimeoutConfirmationTransaction',
+        metricScope: 'Frontend.DEX',
+      })
+    }
   }
 
   done = true
@@ -931,7 +942,7 @@ const awaitTransactionSignatureConfirmationWithNotifications = async ({
 }: {
   txid: string
   timeout: number
-  interval?: number,
+  interval?: number
   connection: Connection
   showErrorForTimeout: boolean
 }) => {
@@ -950,15 +961,20 @@ const awaitTransactionSignatureConfirmationWithNotifications = async ({
       notify({
         message: 'Timed out awaiting confirmation on transaction',
         type: 'info',
-        description: 'We\'ll continue checking confirmations for this transactions'
+        description:
+          "We'll continue checking confirmations for this transactions",
       })
 
       return 'timeout'
     }
 
     notify({ message: 'Transaction failed', type: 'error' })
+    Metrics.sendMetrics({
+      metricName: `transactionFailed-${err}`,
+      metricScope: 'Frontend.DEX',
+    })
     return null
-  } 
+  }
 
   return true
 }
@@ -1017,6 +1033,10 @@ async function awaitTransactionSignatureConfirmation({
                 console.log('REST null result for', txid, result)
               } else if (result.err) {
                 console.log('REST error for', txid, result)
+                Metrics.sendMetrics({
+                  metricName: `getSignatureStatuses-error-${result.err}`,
+                  metricScope: 'Frontend.DEX',
+                })
                 done = true
                 reject(result.err)
               } else if (!result.confirmations) {
@@ -1030,6 +1050,10 @@ async function awaitTransactionSignatureConfirmation({
           } catch (e) {
             if (!done) {
               console.log('REST connection error: txid', txid, e)
+              Metrics.sendMetrics({
+                metricName: `connectionError-${e}`,
+                metricScope: 'Frontend.DEX',
+              })
             }
           }
         })()
