@@ -907,7 +907,6 @@ export async function sendTransaction({
   if (result === 'timeout') {
     Metrics.sendMetrics({
       metricName: 'timeoutConfirmationTransaction',
-      metricScope: 'Frontend.DEX',
     })
     result = await awaitTransactionSignatureConfirmationWithNotifications({
       txid,
@@ -920,7 +919,6 @@ export async function sendTransaction({
     if (!result) {
       Metrics.sendMetrics({
         metricName: 'secondTimeoutConfirmationTransaction',
-        metricScope: 'Frontend.DEX',
       })
     }
   }
@@ -969,9 +967,9 @@ const awaitTransactionSignatureConfirmationWithNotifications = async ({
     }
 
     notify({ message: 'Transaction failed', type: 'error' })
+    console.log('error', err)
     Metrics.sendMetrics({
-      metricName: `transactionFailed-${err}`,
-      metricScope: 'Frontend.DEX',
+      metricName: `transactionFailed-timeout`,
     })
     return null
   }
@@ -1035,7 +1033,6 @@ async function awaitTransactionSignatureConfirmation({
                 console.log('REST error for', txid, result)
                 Metrics.sendMetrics({
                   metricName: `getSignatureStatuses-error-${result.err}`,
-                  metricScope: 'Frontend.DEX',
                 })
                 done = true
                 reject(result.err)
@@ -1052,7 +1049,6 @@ async function awaitTransactionSignatureConfirmation({
               console.log('REST connection error: txid', txid, e)
               Metrics.sendMetrics({
                 metricName: `connectionError-${e}`,
-                metricScope: 'Frontend.DEX',
               })
             }
           }

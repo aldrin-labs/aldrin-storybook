@@ -8,7 +8,7 @@ export const Metrics = {
       metricTimingData = 0,
     }: {
       metricName: string
-      metricScope: 'Frontend.DEX'
+      metricScope?: string
       metricTimingData?: number
     } = {
       metricName: 'test.frontend.metric',
