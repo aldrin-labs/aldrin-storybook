@@ -578,8 +578,8 @@ export default compose(
     name: 'getSerumTradesDataQuery',
     variables: (props) => ({
       timezone: getTimezone(),
-      timestampTo: endOfDayTimestamp,
-      timestampFrom: endOfDayTimestamp - dayDuration * 14,
+      timestampTo: endOfDayTimestamp(),
+      timestampFrom: endOfDayTimestamp() - dayDuration * 14,
     }),
     withoutLoading: true,
     withOutSpinner: true,
