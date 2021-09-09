@@ -52,7 +52,7 @@ const TableHeader = ({
 
   return (
     <StyledHeader theme={theme} isAdvancedSelectorMode={isAdvancedSelectorMode}>
-      <Row
+      {/* <Row
         width="10rem"
         onClick={() => {
           setSelectorMode(isAdvancedSelectorMode ? 'basic' : 'advanced')
@@ -63,9 +63,9 @@ const TableHeader = ({
           width={'25%'}
           height={'auto'}
         />
-      </Row>
+      </Row> */}
       <Row
-        width="calc(100% - 10rem)"
+        width="calc(100%)"
         justify="flex-start"
         padding="0 0 0 1rem"
         style={{ borderLeft: '.1rem solid #383B45' }}

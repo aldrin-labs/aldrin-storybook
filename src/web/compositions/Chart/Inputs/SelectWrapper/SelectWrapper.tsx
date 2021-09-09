@@ -85,7 +85,7 @@ const SelectWrapper = (props: IProps) => {
 
   const [selectorMode, setSelectorMode] = useLocalStorageState(
     'selectorMode',
-    'advanced'
+    'basic'
   )
 
   const [favouriteMarketsRaw, setFavouriteMarkets] = useLocalStorageState(

@@ -132,7 +132,7 @@ export const TableInner = ({
                   textAlign: 'left',
                   fontFamily: 'Avenir Next Light',
                 }}
-                width={width * 1.2}
+                width={width * 2}
                 style={{
                   textAlign: 'left',
                   fontSize: '1.4rem',
@@ -141,7 +141,7 @@ export const TableInner = ({
                 cellRenderer={({ cellData }) => cellData.render}
               />
             )}
-            <Column
+            {(isAdvancedSelectorMode && !isMobile) && <Column
               label={`change 24h`}
               dataKey="price24hChange"
               headerStyle={{
@@ -158,7 +158,7 @@ export const TableInner = ({
                 fontWeight: 'bold',
               }}
               cellRenderer={({ cellData }) => cellData.render}
-            />
+            />}
             {!isMobile && isAdvancedSelectorMode && (
               <Column
                 label={`Min 24h`}
@@ -179,7 +179,7 @@ export const TableInner = ({
                 cellRenderer={({ cellData }) => cellData.render}
               />
             )}
-            {!isMobile && isAdvancedSelectorMode && (
+            {(!isMobile && isAdvancedSelectorMode) && (
               <Column
                 label={`Max 24h`}
                 dataKey="max24h"
@@ -199,7 +199,7 @@ export const TableInner = ({
                 cellRenderer={({ cellData }) => cellData.render}
               />
             )}
-            {!isMobile && isAdvancedSelectorMode && (
+            {(!isMobile && isAdvancedSelectorMode) && (
               <Column
                 label={`volume 24h`}
                 dataKey="volume24hChange"
@@ -219,7 +219,7 @@ export const TableInner = ({
                 cellRenderer={({ cellData }) => cellData.render}
               />
             )}
-            {!isMobile && isAdvancedSelectorMode && (
+            {(!isMobile && isAdvancedSelectorMode) && (
               <Column
                 label={`trades 24h`}
                 dataKey="trades24h"
@@ -239,7 +239,7 @@ export const TableInner = ({
                 cellRenderer={({ cellData }) => cellData.render}
               />
             )}
-            {!isMobile && isAdvancedSelectorMode && (
+            {(!isMobile && isAdvancedSelectorMode) && (
               <Column
                 label={`Avg.Buy 14d`}
                 dataKey="avgBuy14d"
@@ -259,7 +259,7 @@ export const TableInner = ({
                 cellRenderer={({ cellData }) => cellData.render}
               />
             )}
-            {!isMobile && isAdvancedSelectorMode && (
+            {(!isMobile && isAdvancedSelectorMode) && (
               <Column
                 label={`Avg.Sell 14d`}
                 dataKey="avgSell14d"
