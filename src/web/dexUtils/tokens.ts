@@ -1,10 +1,11 @@
 import { useMemo } from 'react'
 import * as BufferLayout from 'buffer-layout';
 import bs58 from 'bs58';
-import { PublicKey } from '@solana/web3.js';
+import { Connection, PublicKey } from '@solana/web3.js';
 import { TOKEN_MINTS } from '@project-serum/serum';
 import { useAllMarkets, useCustomMarkets } from '@sb/dexUtils/markets'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions';
+import { DEX_PID } from '@core/config/dex';
 
 export const ACCOUNT_LAYOUT = BufferLayout.struct([
   BufferLayout.blob(32, 'mint'),
@@ -52,6 +53,24 @@ export const TOKEN_PROGRAM_ID = new PublicKey(
   'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
 );
 
+export async function getTokenAccountsByOwner(connection: Connection, publicKey: PublicKey) {
+  const result = await connection.getTokenAccountsByOwner(
+    publicKey,
+    { programId: TOKEN_PROGRAM_ID },
+  );
+
+  return result.value
+    .map(({ pubkey, account: { data, executable, owner, lamports } }) => ({
+      publicKey: new PublicKey(pubkey),
+      accountInfo: {
+        data,
+        executable,
+        owner: new PublicKey(owner),
+        lamports,
+      },
+    }))
+}
+
 export async function getOwnedTokenAccounts(connection, publicKey) {
   let filters = getOwnedAccountsFilters(publicKey);
   let resp = await connection.getProgramAccounts(
@@ -75,9 +94,10 @@ export async function getOwnedTokenAccounts(connection, publicKey) {
 
 export async function getTokenAccountInfo(connection, ownerAddress) {
   let [splAccounts, account] = await Promise.all([
-    getOwnedTokenAccounts(connection, ownerAddress),
+    getTokenAccountsByOwner(connection, ownerAddress),
     connection.getAccountInfo(ownerAddress),
   ]);
+
   const parsedSplAccounts = splAccounts.map(({ publicKey, accountInfo }) => {
     return {
       pubkey: publicKey,
