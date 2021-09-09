@@ -906,7 +906,7 @@ export async function sendTransaction({
 
   if (result === 'timeout') {
     Metrics.sendMetrics({
-      metricName: 'timeoutConfirmationTransaction',
+      metricName: 'error.rpc.timeoutConfirmationTransaction',
     })
     result = await awaitTransactionSignatureConfirmationWithNotifications({
       txid,
@@ -918,7 +918,7 @@ export async function sendTransaction({
 
     if (!result) {
       Metrics.sendMetrics({
-        metricName: 'secondTimeoutConfirmationTransaction',
+        metricName: 'error.rpc.secondTimeoutConfirmationTransaction',
       })
     }
   }
