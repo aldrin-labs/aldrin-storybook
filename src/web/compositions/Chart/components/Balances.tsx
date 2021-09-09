@@ -422,7 +422,7 @@ export const Balances = ({
                   width: '100%',
                   padding: '0 0.5rem',
                 }}
-              >
+              > 
                 {!wallet.connected ? null : isQuoteCoinExistsInWallet ? (
                   <>
                     {showSettle && (
