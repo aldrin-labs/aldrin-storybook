@@ -968,7 +968,7 @@ const awaitTransactionSignatureConfirmationWithNotifications = async ({
 
     notify({ message: 'Transaction failed', type: 'error' })
     Metrics.sendMetrics({
-      metricName: `transactionFailed-${JSON.stringify(err)}`,
+      metricName: `error.rpc.transactionFailed-${JSON.stringify(err)}`,
     })
     return null
   }
@@ -1031,7 +1031,7 @@ async function awaitTransactionSignatureConfirmation({
               } else if (result.err) {
                 console.log('REST error for', txid, result)
                 Metrics.sendMetrics({
-                  metricName: `getSignatureStatuses-error-${JSON.stringify(
+                  metricName: `error.rpc.getSignatureStatusesError-${JSON.stringify(
                     result.err
                   )}`,
                 })
@@ -1049,7 +1049,7 @@ async function awaitTransactionSignatureConfirmation({
             if (!done) {
               console.log('REST connection error: txid', txid, e)
               Metrics.sendMetrics({
-                metricName: `connectionError-${JSON.stringify(e)}`,
+                metricName: `error.rpc.connectionError-${JSON.stringify(e)}`,
               })
             }
           }
