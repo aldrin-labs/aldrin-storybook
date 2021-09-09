@@ -24,6 +24,7 @@ import { settleFunds } from '@sb/dexUtils/send'
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
 import { notify } from '@sb/dexUtils/notifications'
 
+import { Loading } from '@sb/components/Loading/Loading'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 export const BalanceTitle = styled.div`
@@ -142,6 +143,7 @@ export const Balances = ({
   setShowTokenNotAdded: (show: boolean) => void
 }) => {
   const [openDepositPopup, toggleOpeningDepositPopup] = useState(false)
+  const [showLoading, setShowLoading] = useState(false)
   const [coinForDepositPopup, chooseCoinForDeposit] = useState('')
 
   const balances = useBalances()
@@ -156,9 +158,6 @@ export const Balances = ({
   const isBaseCoinExistsInWallet = market ? baseTokenAccount : true
   const isQuoteCoinExistsInWallet = market ? quoteTokenAccount : true
 
-  async function onSettleSuccess() {
-    console.log('settled funds success')
-  }
   async function onSettleFunds(market, openOrders) {
     if (!wallet.connected) {
       notify({
@@ -179,6 +178,8 @@ export const Balances = ({
 
       return
     }
+    setShowLoading(true)
+    // add loading
 
     try {
       const result = await settleFunds({
@@ -209,9 +210,13 @@ export const Balances = ({
         description: e.message,
         type: 'error',
       })
+      // remove loading
+      setShowLoading(false)
       return
     }
-    onSettleSuccess && onSettleSuccess()
+
+    // remove loading
+    setShowLoading(false)
   }
 
   const [baseBalances, quoteBalances] = balances
@@ -363,12 +368,21 @@ export const Balances = ({
                         backgroundColor={theme.palette.blue.serum}
                         // hoverBackground="#3992a9"
                         transition={'all .4s ease-out'}
+                        disabled={showLoading}
                         onClick={() => {
                           const { market, openOrders } = baseBalances
                           onSettleFunds(market, openOrders)
                         }}
                       >
-                        settle
+                        {showLoading ? (
+                          <Loading
+                            centerAligned={true}
+                            color={'#fff'}
+                            size={'1rem'}
+                          />
+                        ) : (
+                          'settle'
+                        )}
                       </BtnCustom>
                     )}
                   </>
@@ -470,12 +484,21 @@ export const Balances = ({
                         borderColor={theme.palette.blue.serum}
                         backgroundColor={theme.palette.blue.serum}
                         transition={'all .4s ease-out'}
+                        disabled={showLoading}
                         onClick={() => {
                           const { market, openOrders } = quoteBalances
                           onSettleFunds(market, openOrders)
                         }}
                       >
-                        settle
+                        {showLoading ? (
+                          <Loading
+                            centerAligned={true}
+                            color={'#fff'}
+                            size={'1rem'}
+                          />
+                        ) : (
+                          'settle'
+                        )}
                       </BtnCustom>
                     )}
                   </>
