@@ -83,10 +83,15 @@ const SelectWrapper = (props: IProps) => {
   const [searchValue, setSearchValue] = useState('')
   const [tab, setTab] = useState<SelectTabType>('all')
 
-  const [selectorMode, setSelectorMode] = useLocalStorageState(
-    'selectorMode',
-    'basic'
-  )
+  // TODO: Uncomment once Postgres HA deployed
+
+  // const [selectorMode, setSelectorMode] = useLocalStorageState(
+  //   'selectorMode',
+  //   'basic'
+  // )
+
+  const selectorMode = 'basic'
+  const setSelectorMode = () => {}
 
   const [favouriteMarketsRaw, setFavouriteMarkets] = useLocalStorageState(
     'favouriteMarkets',
