@@ -546,7 +546,7 @@ const useOpenOrdersPubkeys = (): string[] => {
       )
     )
 
-    return accounts
+    return accounts.map((acc: OpenOrders) => acc.publicKey)
   }
 
   return useAsyncData(

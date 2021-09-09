@@ -158,8 +158,6 @@ export const Balances = ({
 
   async function onSettleSuccess() {
     console.log('settled funds success')
-
-    setTimeout(refresh, 5000)
   }
   async function onSettleFunds(market, openOrders) {
     if (!wallet.connected) {
