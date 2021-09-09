@@ -551,7 +551,7 @@ const useOpenOrdersPubkeys = (): string[] => {
 
   return useAsyncData(
     getOpenOrdersAccounts,
-    tuple('getOpenOrdersAccountsFromProgramAccounts', connected),
+    tuple('getOpenOrdersAccountsFromProgramAccounts', connected, openOrdersKey),
     { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
   )
 }
