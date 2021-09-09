@@ -17,7 +17,6 @@ import {
   useMarket,
   useSelectedBaseCurrencyAccount,
   useSelectedQuoteCurrencyAccount,
-  useUnmigratedOpenOrdersAccounts,
 } from '@sb/dexUtils/markets'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -149,7 +148,6 @@ export const Balances = ({
   const connection = useConnection()
 
   const { wallet, providerUrl } = useWallet()
-  const { refresh } = useUnmigratedOpenOrdersAccounts()
   const { market, baseCurrency, quoteCurrency } = useMarket()
 
   const baseTokenAccount = useSelectedBaseCurrencyAccount()
@@ -160,8 +158,6 @@ export const Balances = ({
 
   async function onSettleSuccess() {
     console.log('settled funds success')
-
-    setTimeout(refresh, 5000)
   }
   async function onSettleFunds(market, openOrders) {
     if (!wallet.connected) {
@@ -338,26 +334,9 @@ export const Balances = ({
               >
                 {!wallet.connected ? null : isBaseCoinExistsInWallet ? ( // /> //   containerStyle={{ padding: '0' }} //   id={'connectButtonBase'} //   height={'2rem'} //   showOnTop={true} //   theme={theme} // <ConnectWalletDropdown
                   <>
-                    <BtnCustom
-                      btnWidth={!showSettle ? '100%' : 'calc(50% - .25rem)'}
-                      height="auto"
-                      fontSize=".8rem"
-                      padding=".5rem 0 .4rem 0;"
-                      borderRadius=".8rem"
-                      btnColor={theme.palette.dark.main}
-                      borderColor={theme.palette.blue.serum}
-                      backgroundColor={theme.palette.blue.serum}
-                      transition={'all .4s ease-out'}
-                      onClick={() => {
-                        toggleOpeningDepositPopup(true)
-                        chooseCoinForDeposit('base')
-                      }}
-                    >
-                      deposit
-                    </BtnCustom>
                     {showSettle && (
                       <BtnCustom
-                        btnWidth={'calc(50% - .25rem)'}
+                        btnWidth={'100%'}
                         height="auto"
                         fontSize=".8rem"
                         padding=".5rem 0 .4rem 0;"
@@ -446,26 +425,9 @@ export const Balances = ({
               >
                 {!wallet.connected ? null : isQuoteCoinExistsInWallet ? (
                   <>
-                    <BtnCustom
-                      btnWidth={!showSettle ? '100%' : 'calc(50% - .25rem)'}
-                      height="auto"
-                      fontSize=".8rem"
-                      padding=".5rem 0 .4rem 0;"
-                      borderRadius=".8rem"
-                      btnColor={theme.palette.dark.main}
-                      borderColor={theme.palette.blue.serum}
-                      backgroundColor={theme.palette.blue.serum}
-                      transition={'all .4s ease-out'}
-                      onClick={() => {
-                        toggleOpeningDepositPopup(true)
-                        chooseCoinForDeposit('quote')
-                      }}
-                    >
-                      deposit
-                    </BtnCustom>
                     {showSettle && (
                       <BtnCustom
-                        btnWidth={'calc(50% - .25rem)'}
+                        btnWidth={'100%'}
                         height="auto"
                         fontSize=".8rem"
                         padding=".5rem 0 .4rem 0;"

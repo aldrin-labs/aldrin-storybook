@@ -510,10 +510,12 @@ export function useOrderbook(depth = 200) {
   return [{ bids, asks }, !!bids || !!asks]
 }
 
-const useOpenOrdersFromProgramAccounts = () => {
+const useOpenOrdersPubkeys = (): string[] => {
   const { market } = useMarket()
   const { connected, wallet } = useWallet()
   const connection = useConnection()
+
+  const openOrdersKey = `openOrdersPubkeys-${wallet?.publicKey}-${market?.publicKey}-${DEX_PID}`
 
   async function getOpenOrdersAccounts() {
     if (!connected) {
@@ -523,22 +525,33 @@ const useOpenOrdersFromProgramAccounts = () => {
       return null
     }
 
+    const openOrdersPubkeys = JSON.parse(
+      localStorage.getItem(openOrdersKey) || '[]'
+    )
+
+    // check localStorage for existing openOrdersAccount for current market + wallet
+    if (openOrdersPubkeys && openOrdersPubkeys.length > 0)
+      return openOrdersPubkeys.map((acc: string) => new PublicKey(acc))
+
     const accounts = await market.findOpenOrdersAccountsForOwner(
       connection,
       wallet.publicKey
     )
 
-    return accounts
+    // keep string addresses in localStorage
+    localStorage.setItem(
+      openOrdersKey,
+      JSON.stringify(
+        accounts.map((acc: OpenOrders) => acc.publicKey?.toString())
+      )
+    )
+
+    return accounts.map((acc: OpenOrders) => acc.publicKey)
   }
 
   return useAsyncData(
     getOpenOrdersAccounts,
-    tuple(
-      'getOpenOrdersAccountsFromProgramAccounts',
-      wallet,
-      market,
-      connected
-    ),
+    tuple('getOpenOrdersAccountsFromProgramAccounts', connected, openOrdersKey),
     { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
   )
 }
@@ -550,7 +563,7 @@ export function useOpenOrdersAccounts(fast = false) {
   const { connected, wallet } = useWallet()
   const connection = useConnection()
 
-  const [openOrders] = useOpenOrdersFromProgramAccounts()
+  const [openOrdersPubkeys] = useOpenOrdersPubkeys()
 
   async function getOpenOrdersAccounts() {
     if (!connected) {
@@ -559,16 +572,21 @@ export function useOpenOrdersAccounts(fast = false) {
     if (!market) {
       return null
     }
-    const isOpenOrdersAlreadyCreated = openOrders && openOrders.length > 0
+
+    const isOpenOrdersAlreadyCreated =
+      openOrdersPubkeys && openOrdersPubkeys.length > 0
 
     let preCreatedOpenOrders = getCache(
       `preCreatedOpenOrdersFor${market?.publicKey}`
     )
     let openOrdersPublicKey = null
 
+    // for already created openOrders account we take pubkey
     if (isOpenOrdersAlreadyCreated) {
-      openOrdersPublicKey = openOrders[0].publicKey
+      openOrdersPublicKey = openOrdersPubkeys[0]
     } else if (!preCreatedOpenOrders) {
+      // for not created oo + not added to cache we create oo pubkey
+      // that will be used in order creation
       preCreatedOpenOrders = new Account()
       openOrdersPublicKey = preCreatedOpenOrders?.publicKey
       setCache(
@@ -576,15 +594,17 @@ export function useOpenOrdersAccounts(fast = false) {
         preCreatedOpenOrders
       )
     } else {
+      // for not created but setted in cache we take pubkey
       openOrdersPublicKey = preCreatedOpenOrders?.publicKey
     }
 
+    // update openOrders info by address
     const openOrdersAccountInfo = await connection.getAccountInfo(
       openOrdersPublicKey
     )
 
     if (!openOrdersAccountInfo) {
-      return openOrders
+      return null
     }
 
     const openOrdersAccount = OpenOrders.fromAccountInfo(
@@ -593,10 +613,9 @@ export function useOpenOrdersAccounts(fast = false) {
       DEX_PID
     )
 
-    // openOrders except 0
-    const restOpenOrders = isOpenOrdersAlreadyCreated ? openOrders.slice(1) : []
-
-    return [openOrdersAccount, ...restOpenOrders]
+    // for using several openOrdersAccoutns we'll need to update this method
+    // currently it updates info only for first OO
+    return [openOrdersAccount]
   }
 
   return useAsyncData(
@@ -606,7 +625,7 @@ export function useOpenOrdersAccounts(fast = false) {
       wallet,
       market,
       connected,
-      openOrders
+      openOrdersPubkeys
     ),
     { refreshInterval: _SLOW_REFRESH_INTERVAL }
   )
