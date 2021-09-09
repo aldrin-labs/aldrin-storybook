@@ -48,9 +48,9 @@ Chart.register(
 const NUMBER_OF_DAYS_TO_SHOW = 6
 
 const getEmptyData = (
-  fisrtTimestamp: number = endOfDayTimestamp -
+  fisrtTimestamp: number = endOfDayTimestamp() -
     dayDuration * NUMBER_OF_DAYS_TO_SHOW,
-  lastTimestamp: number = endOfDayTimestamp
+  lastTimestamp: number = endOfDayTimestamp()
 ) => {
   let dayEndTimestamp: number = dayjs
     .unix(lastTimestamp)
