@@ -17,7 +17,6 @@ import {
   useMarket,
   useSelectedBaseCurrencyAccount,
   useSelectedQuoteCurrencyAccount,
-  useUnmigratedOpenOrdersAccounts,
 } from '@sb/dexUtils/markets'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -149,7 +148,6 @@ export const Balances = ({
   const connection = useConnection()
 
   const { wallet, providerUrl } = useWallet()
-  const { refresh } = useUnmigratedOpenOrdersAccounts()
   const { market, baseCurrency, quoteCurrency } = useMarket()
 
   const baseTokenAccount = useSelectedBaseCurrencyAccount()
@@ -160,8 +158,6 @@ export const Balances = ({
 
   async function onSettleSuccess() {
     console.log('settled funds success')
-
-    setTimeout(refresh, 5000)
   }
   async function onSettleFunds(market, openOrders) {
     if (!wallet.connected) {

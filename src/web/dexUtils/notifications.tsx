@@ -20,8 +20,8 @@ export const notify = ({
       <Link
         rel="noopener noreferrer"
         target="_blank"
-        to={'https://explorer.solana.com/tx/' + txid}
-        href={'https://explorer.solana.com/tx/' + txid}
+        to={'https://solscan.io/tx/' + txid}
+        href={'https://solscan.io/tx/' + txid}
       >
         {description ? (
           <div
@@ -65,7 +65,7 @@ export const notify = ({
         style={{
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between',
+          justifyContent: description ? 'space-between' : 'center',
           marginLeft: '.5rem',
           height: '6rem',
         }}
