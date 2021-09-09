@@ -234,10 +234,10 @@ const MarketBlock = ({
         <Row>
           <Row align={'flex-start'} direction="column">
             <Title color={theme.palette.green.main}>
-              SOL is the fuel for transactions on Solana. You must have
+              You have to settle funds after each trade to transfer{' '}
             </Title>
             <Title color={theme.palette.green.main}>
-              some SOL in your wallet for DEX trading or other transactions.
+              funds from your trading account to your wallet account.
             </Title>
           </Row>
           <ExclamationMark

@@ -290,7 +290,7 @@ const MarketInfo = ({
                 <PurpleTitle
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={`https://explorer.solana.com/address/${
+                  href={`https://solscan.io/account/${
                     market ? market.address.toBase58() : '--'
                   }`}
                   theme={theme}
