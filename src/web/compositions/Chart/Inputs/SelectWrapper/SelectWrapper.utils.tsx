@@ -504,7 +504,7 @@ export const combineSelectWrapperData = ({
                 color: theme.palette.green.main,
               }}
             >
-              {formatNumberToUSFormat(
+              {closePrice === 0 ? '-' : formatNumberToUSFormat(
                 stripDigitPlaces(closePrice, pricePrecision)
               )}
             </span>

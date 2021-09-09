@@ -85,7 +85,7 @@ const SelectWrapper = (props: IProps) => {
 
   const [selectorMode, setSelectorMode] = useLocalStorageState(
     'selectorMode',
-    'advanced'
+    'basic'
   )
 
   const [favouriteMarketsRaw, setFavouriteMarkets] = useLocalStorageState(
@@ -573,18 +573,18 @@ export default compose(
     withTableLoader: false,
     showNoLoader: true,
   }),
-  queryRendererHoc({
-    query: getSerumTradesData,
-    name: 'getSerumTradesDataQuery',
-    variables: (props) => ({
-      timezone: getTimezone(),
-      timestampTo: endOfDayTimestamp(),
-      timestampFrom: endOfDayTimestamp() - dayDuration * 14,
-    }),
-    withoutLoading: true,
-    withOutSpinner: true,
-    withTableLoader: false,
-    showNoLoader: true,
-    fetchPolicy: 'cache-and-network',
-  })
+  // queryRendererHoc({
+  //   query: getSerumTradesData,
+  //   name: 'getSerumTradesDataQuery',
+  //   variables: (props) => ({
+  //     timezone: getTimezone(),
+  //     timestampTo: endOfDayTimestamp(),
+  //     timestampFrom: endOfDayTimestamp() - dayDuration * 14,
+  //   }),
+  //   withoutLoading: true,
+  //   withOutSpinner: true,
+  //   withTableLoader: false,
+  //   showNoLoader: true,
+  //   fetchPolicy: 'cache-and-network',
+  // })
 )(SelectWrapper)

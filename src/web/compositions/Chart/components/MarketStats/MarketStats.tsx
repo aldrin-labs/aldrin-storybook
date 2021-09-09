@@ -26,6 +26,7 @@ import {
   MarketStatsContainer,
 } from '../../Chart.styles'
 import { ReusableTitle as Title } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { getRandomInt } from '@core/utils/helpers'
 export interface IProps {
   theme: Theme
   symbol: string
@@ -305,7 +306,7 @@ export default compose(
       prevEndTimestamp: `${datesForQuery.prevEndTimestamp()}`,
     }),
     fetchPolicy: 'cache-and-network',
-    pollInterval: 60000,
+    pollInterval: 60000 * getRandomInt(7, 10),
     withOutSpinner: true,
     withTableLoader: true,
     withoutLoading: true,
