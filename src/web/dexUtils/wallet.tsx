@@ -41,7 +41,7 @@ import WalletAldrin from '@icons/RINLogo.svg'
 import { WalletAdapter } from './adapters'
 import { _VERY_SLOW_REFRESH_INTERVAL } from './markets'
 import { MASTER_BUILD } from '@core/utils/config'
-import { Coin98WalletAdapter } from './adapters/Coin98WalletAdapter/Coin98WalletAdapter'
+import { Coin98WalletAdapter } from './adapters/Coin98WalletAdapter'
 import { SolflareExtensionWalletAdapter } from './adapters/SolflareWallet'
 
 export const WALLET_PROVIDERS = [
@@ -114,7 +114,7 @@ export const WALLET_PROVIDERS = [
     name: 'Coin98',
     url: 'https://wallet.coin98.com/',
     adapter: Coin98WalletAdapter,
-    icon: Solong,
+    icon: `https://gblobscdn.gitbook.com/spaces%2F-MLfdRENhXE4S22AEr9Q%2Favatar-1616412978424.png`,
     isExtension: true,
     showOnMobile: true,
   },
@@ -122,7 +122,7 @@ export const WALLET_PROVIDERS = [
     name: 'Solflare',
     url: 'https://solflare.com/',
     adapter: SolflareExtensionWalletAdapter,
-    icon: Solong,
+    icon: `https://cdn.jsdelivr.net/gh/solana-labs/oyster@main/assets/wallets/solflare.svg`,
     isExtension: true,
     showOnMobile: true,
   },
