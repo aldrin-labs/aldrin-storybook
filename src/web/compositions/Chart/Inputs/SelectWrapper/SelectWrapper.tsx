@@ -57,21 +57,21 @@ export const excludedPairs = [
 ]
 
 export const datesForQuery = {
-  startOfTime: dayjs()
+  startOfTime: () => dayjs()
     .startOf('hour')
     .subtract(24, 'hour')
     .unix(),
 
-  endOfTime: dayjs()
+  endOfTime: () => dayjs()
     .endOf('hour')
     .unix(),
 
-  prevStartTimestamp: dayjs()
+  prevStartTimestamp: () => dayjs()
     .startOf('hour')
     .subtract(48, 'hour')
     .unix(),
 
-  prevEndTimestamp: dayjs()
+  prevEndTimestamp: () => dayjs()
     .startOf('hour')
     .subtract(24, 'hour')
     .unix(),
@@ -563,10 +563,10 @@ export default compose(
       exchange: 'serum',
       publicKey: props.publicKey,
       marketType: 0,
-      startTimestamp: `${datesForQuery.startOfTime}`,
-      endTimestamp: `${datesForQuery.endOfTime}`,
-      prevStartTimestamp: `${datesForQuery.prevStartTimestamp}`,
-      prevEndTimestamp: `${datesForQuery.prevEndTimestamp}`,
+      startTimestamp: `${datesForQuery.startOfTime()}`,
+      endTimestamp: `${datesForQuery.endOfTime()}`,
+      prevStartTimestamp: `${datesForQuery.prevStartTimestamp()}`,
+      prevEndTimestamp: `${datesForQuery.prevEndTimestamp()}`,
     }),
     fetchPolicy: 'cache-and-network',
     withOutSpinner: true,
