@@ -538,15 +538,17 @@ const useOpenOrdersPubkeys = (): string[] => {
       wallet.publicKey
     )
 
+    const sortedAccountsByCountOfExistingOpenOrders = accounts.sort((a: { freeSlotBits: typeof BN }, b: { freeSlotBits: typeof BN }) => a?.freeSlotBits?.cmp(b?.freeSlotBits))
+
     // keep string addresses in localStorage
     localStorage.setItem(
       openOrdersKey,
       JSON.stringify(
-        accounts.map((acc: OpenOrders) => acc.publicKey?.toString())
+        sortedAccountsByCountOfExistingOpenOrders.map((acc: OpenOrders) => acc.publicKey?.toString())
       )
     )
 
-    return accounts.map((acc: OpenOrders) => acc.publicKey)
+    return sortedAccountsByCountOfExistingOpenOrders.map((acc: OpenOrders) => acc.publicKey)
   }
 
   return useAsyncData(
