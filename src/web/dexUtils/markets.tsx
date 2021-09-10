@@ -358,13 +358,18 @@ export function MarketProvider({ children }) {
   )
 
   const marketName = getPairFromLocation()
+  console.log('marketName', marketName)
   const connection = useConnection()
   const marketInfos = getMarketInfos(customMarkets)
+
+  console.log('marketInfos', marketInfos)
 
   // here we try to get non deprecated one
   let marketInfo = marketInfos.find(
     (market) => market.name === marketName && !market.deprecated
   )
+
+  console.log('marketInfo', marketInfo)
 
   if (!marketInfo) {
     marketInfo = marketInfos.find((market) => market.name === marketName)
