@@ -775,6 +775,9 @@ export function useSelectedBaseCurrencyAccount() {
     'base'
   )
 
+  console.log('quoteTokenAddress', baseTokenAddress?.toString())
+  console.log('associatedTokenInfo', associatedTokenInfo, associatedTokenAddress?.toString())
+
   // if not found in accounts, but token added as associated
   if (!baseTokenAddress && associatedTokenInfo) {
     return {
