@@ -10,6 +10,7 @@ import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
 import { StyledPaper, WalletRowContainer } from './styles'
 import useMobileSize from '@webhooks/useMobileSize'
+import { isIos, isAndroid } from 'react-device-detect'
 
 export const MobileWalletDropdown = ({
   theme,
@@ -54,6 +55,14 @@ export const MobileWalletDropdown = ({
             </WalletRowContainer>
           )
         })}
+        <WalletRowContainer onClick={()=>{}}>
+          <SvgIcon
+            src={`https://gblobscdn.gitbook.com/spaces%2F-MLfdRENhXE4S22AEr9Q%2Favatar-1616412978424.png`}
+            width={'6rem'}
+            height={'100%'}
+          />
+          Coin98
+        </WalletRowContainer>
       </RowContainer>
     </DialogWrapper>
   )

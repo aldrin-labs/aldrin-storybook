@@ -116,7 +116,7 @@ export const WALLET_PROVIDERS = [
     adapter: Coin98WalletAdapter,
     icon: `https://gblobscdn.gitbook.com/spaces%2F-MLfdRENhXE4S22AEr9Q%2Favatar-1616412978424.png`,
     isExtension: true,
-    showOnMobile: true,
+    showOnMobile: false,
   },
   {
     name: 'Solflare',
@@ -124,7 +124,7 @@ export const WALLET_PROVIDERS = [
     adapter: SolflareExtensionWalletAdapter,
     icon: `https://cdn.jsdelivr.net/gh/solana-labs/oyster@main/assets/wallets/solflare.svg`,
     isExtension: true,
-    showOnMobile: true,
+    showOnMobile: false,
   },
 ]
 
