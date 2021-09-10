@@ -21,14 +21,12 @@ import {
   parseInstructionErrorResponse,
 } from '@project-serum/serum'
 
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-import { feeTiers } from '@sb/components/TradingTable/Fee/FeeTiers'
-import {
-  getSelectedTokenAccountForMint,
-  getOpenOrdersAccountsCustom,
-  ALL_TOKENS_MINTS,
-} from './markets'
 import { WalletAdapter } from './types'
+import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  Token,
+  TOKEN_PROGRAM_ID,
+} from '@solana/spl-token'
 import { getCache } from './fetch-loop'
 import { Metrics } from '../../utils/metrics'
 
@@ -88,26 +86,34 @@ export async function createTokenAccountTransaction({
   connection,
   wallet,
   mintPublicKey,
-}) {
-  const newAccount = new Account()
-  const transaction = SystemProgram.createAccount({
-    fromPubkey: wallet.publicKey,
-    newAccountPubkey: newAccount.publicKey,
-    lamports: await connection.getMinimumBalanceForRentExemption(165),
-    space: 165,
-    programId: TokenInstructions.TOKEN_PROGRAM_ID,
-  })
+}: {
+  connection: Connection
+  wallet: WalletAdapter
+  mintPublicKey: PublicKey
+}): Promise<{
+  transaction: Transaction
+  newAccountPubkey: PublicKey
+}> {
+  const ata = await Token.getAssociatedTokenAddress(
+    ASSOCIATED_TOKEN_PROGRAM_ID,
+    TOKEN_PROGRAM_ID,
+    mintPublicKey,
+    wallet.publicKey
+  )
+  const transaction = new Transaction()
   transaction.add(
-    TokenInstructions.initializeAccount({
-      account: newAccount.publicKey,
-      mint: mintPublicKey,
-      owner: wallet.publicKey,
-    })
+    Token.createAssociatedTokenAccountInstruction(
+      ASSOCIATED_TOKEN_PROGRAM_ID,
+      TOKEN_PROGRAM_ID,
+      mintPublicKey,
+      ata,
+      wallet.publicKey,
+      wallet.publicKey
+    )
   )
   return {
     transaction,
-    signer: newAccount,
-    newAccountPubkey: newAccount.publicKey,
+    newAccountPubkey: ata,
   }
 }
 
@@ -158,108 +164,64 @@ export async function settleFunds({
     return
   }
 
-  const programIds: PublicKey[] = []
-  const m = market
-  ;[m]
-    .reduce((cumulative, m) => {
-      // @ts-ignore
-      cumulative.push(m._programId)
-      return cumulative
-    }, [])
-    .forEach((programId) => {
-      if (!programIds.find((p) => p.equals(programId))) {
-        programIds.push(programId)
-      }
-    })
+  const usdcRef = process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS
+  const usdtRef = process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS
 
-  const getOpenOrdersAccountsForProgramId = async (programId) => {
-    const openOrdersAccounts = await OpenOrders.findForOwner(
+  let createAccountTransaction: Transaction | undefined
+  let baseCurrencyAccountPubkey = baseTokenAccount?.pubkey
+  let quoteCurrencyAccountPubkey = quoteTokenAccount?.pubkey
+
+  if (!baseCurrencyAccountPubkey) {
+    const result = await createTokenAccountTransaction({
       connection,
-      wallet.publicKey,
-      programId
-    )
-    return openOrdersAccounts.filter(
-      (openOrders) =>
-        openOrders.baseTokenFree.toNumber() ||
-        openOrders.quoteTokenFree.toNumber()
-    )
-  }
-
-  const openOrdersAccountsForProgramIds = await Promise.all(
-    programIds.map((programId) => getOpenOrdersAccountsForProgramId(programId))
-  )
-
-  const openOrdersAccounts = openOrdersAccountsForProgramIds.reduce(
-    (accounts, current) => accounts.concat(current),
-    []
-  )
-
-  let settleTransactions = await Promise.all(
-    openOrdersAccounts.map((openOrdersAccount) => {
-      const market = [m].find((m) =>
-        // @ts-ignore
-        m._decoded?.ownAddress?.equals(openOrdersAccount.market)
-      )
-
-      const selectedBaseTokenAccount = baseTokenAccount?.pubkey
-      const selectedQuoteTokenAccount = quoteTokenAccount?.pubkey
-
-      if (!selectedBaseTokenAccount || !selectedQuoteTokenAccount) {
-        return null
-      }
-
-      // handling case when user might settle with 11111111111111111111111111111111 instead of the user's pubkey
-      if (
-        SystemProgram.programId.equals(selectedBaseTokenAccount) ||
-        SystemProgram.programId.equals(selectedQuoteTokenAccount)
-      ) {
-        return null
-      }
-
-      let referrerQuoteWallet = null
-
-      if (market?.supportsReferralFees) {
-        if (
-          process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS &&
-          market.quoteMintAddress.equals(
-            ALL_TOKENS_MINTS.find(({ name }) => name === 'USDT').address
-          )
-        ) {
-          referrerQuoteWallet = new PublicKey(
-            process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS
-          )
-        } else if (
-          process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS &&
-          market.quoteMintAddress.equals(
-            ALL_TOKENS_MINTS.find(({ name }) => name === 'USDC').address
-          )
-        ) {
-          referrerQuoteWallet = new PublicKey(
-            process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS
-          )
-        }
-      }
-
-      return (
-        market &&
-        market.makeSettleFundsTransaction(
-          connection,
-          openOrdersAccount,
-          selectedBaseTokenAccount,
-          selectedQuoteTokenAccount,
-          referrerQuoteWallet
-        )
-      )
+      wallet,
+      mintPublicKey: market.baseMintAddress,
     })
+    baseCurrencyAccountPubkey = result?.newAccountPubkey
+    createAccountTransaction = result?.transaction
+  }
+  if (!quoteCurrencyAccountPubkey) {
+    const result = await createTokenAccountTransaction({
+      connection,
+      wallet,
+      mintPublicKey: market.quoteMintAddress,
+    })
+    quoteCurrencyAccountPubkey = result?.newAccountPubkey
+    createAccountTransaction = result?.transaction
+  }
+  let referrerQuoteWallet: PublicKey | null = null
+  if (market.supportsReferralFees) {
+    const usdt = TOKEN_MINTS.find(({ name }) => name === 'USDT')
+    const usdc = TOKEN_MINTS.find(({ name }) => name === 'USDC')
+    if (usdtRef && usdt && market.quoteMintAddress.equals(usdt.address)) {
+      referrerQuoteWallet = usdtRef
+    } else if (
+      usdcRef &&
+      usdc &&
+      market.quoteMintAddress.equals(usdc.address)
+    ) {
+      referrerQuoteWallet = usdcRef
+    }
+  }
+  const {
+    transaction: settleFundsTransaction,
+    signers: settleFundsSigners,
+  } = await market.makeSettleFundsTransaction(
+    connection,
+    openOrders,
+    baseCurrencyAccountPubkey,
+    quoteCurrencyAccountPubkey,
+    referrerQuoteWallet
   )
 
-  settleTransactions = settleTransactions.filter(
-    (x): x is { signers: [PublicKey | Account]; transaction: Transaction } =>
-      !!x
-  )
+  let transaction = mergeTransactions([
+    createAccountTransaction,
+    settleFundsTransaction,
+  ])
 
   if (
-    (!settleTransactions || settleTransactions.length === 0) &&
+    (!settleFundsTransaction ||
+      settleFundsTransaction.instructions.length === 0) &&
     !wallet.autoApprove
   ) {
     notify({
@@ -270,37 +232,9 @@ export async function settleFunds({
     return
   }
 
-  const transactions = settleTransactions.slice(0, 4).map((t) => t.transaction)
-  const signers: Array<Account | PublicKey> = []
-  settleTransactions
-    .reduce(
-      (cumulative: Array<Account | PublicKey>, t) =>
-        cumulative.concat(t.signers),
-      []
-    )
-    .forEach((signer) => {
-      if (
-        !signers.find((s) => {
-          if (s.constructor.name !== signer.constructor.name) {
-            return false
-          } else if (s.constructor.name === 'PublicKey') {
-            // @ts-ignore
-            return s.equals(signer)
-          } else {
-            // @ts-ignore
-            return s.publicKey.equals(signer.publicKey)
-          }
-        })
-      ) {
-        signers.push(signer)
-      }
-    })
-
-  const transaction = mergeTransactions(transactions)
-
   return await sendTransaction({
     transaction,
-    signers,
+    signers: settleFundsSigners,
     wallet,
     connection,
     operationType: 'settleFunds',
@@ -441,8 +375,42 @@ export async function placeOrder({
 
   const owner = wallet.publicKey
 
+  const openOrdersAccountFromCache = getCache(
+    `preCreatedOpenOrdersFor${market?.publicKey}`
+  )
+
+  console.log('openOrdersAccount in placeOrder', openOrdersAccount)
+
+  const transaction = new Transaction()
+
+  if (!baseCurrencyAccount) {
+    const {
+      transaction: createAccountTransaction,
+      newAccountPubkey,
+    } = await createTokenAccountTransaction({
+      connection,
+      wallet,
+      mintPublicKey: market.baseMintAddress,
+    })
+    transaction.add(createAccountTransaction)
+    baseCurrencyAccount = { pubkey: newAccountPubkey }
+  }
+  if (!quoteCurrencyAccount) {
+    const {
+      transaction: createAccountTransaction,
+      newAccountPubkey,
+    } = await createTokenAccountTransaction({
+      connection,
+      wallet,
+      mintPublicKey: market.quoteMintAddress,
+    })
+    transaction.add(createAccountTransaction)
+    quoteCurrencyAccount = { pubkey: newAccountPubkey }
+  }
+
   const payer =
     side === 'sell' ? baseCurrencyAccount.pubkey : quoteCurrencyAccount.pubkey
+
   if (!payer) {
     notify({
       message: 'Need an SPL token account for cost currency',
@@ -450,12 +418,6 @@ export async function placeOrder({
     })
     return
   }
-
-  const openOrdersAccountFromCache = getCache(
-    `preCreatedOpenOrdersFor${market?.publicKey}`
-  )
-
-  console.log('openOrdersAccount in placeOrder', openOrdersAccount)
 
   const params = {
     owner,
@@ -472,8 +434,8 @@ export async function placeOrder({
   }
   console.log(params)
 
-  const transaction = market.makeMatchOrdersTransaction(5)
-  console.log('placeOrder transaction: ', transaction)
+  transaction.add(market.makeMatchOrdersTransaction(5))
+  let referrerQuoteWallet: PublicKey | null = null
   let {
     transaction: placeOrderTx,
     signers,
@@ -487,6 +449,25 @@ export async function placeOrder({
   transaction.add(market.makeMatchOrdersTransaction(5))
 
   console.log('placeOrder transaction after add', transaction)
+
+  let baseCurrencyAccountPubkey = baseCurrencyAccount?.pubkey
+  let quoteCurrencyAccountPubkey = quoteCurrencyAccount?.pubkey
+
+  if (isMarketOrder && openOrdersAccount) {
+    const {
+      transaction: settleFundsTransaction,
+      signers: settleFundsSigners,
+    } = await market.makeSettleFundsTransaction(
+      connection,
+      openOrdersAccount,
+      baseCurrencyAccountPubkey,
+      quoteCurrencyAccountPubkey,
+      referrerQuoteWallet
+    )
+
+    transaction.add(settleFundsTransaction)
+    signers.push(...settleFundsSigners)
+  }
 
   return await sendTransaction({
     transaction,

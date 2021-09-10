@@ -67,6 +67,7 @@ export const TableInner = ({
             }
             rowGetter={({ index }) => processedSelectData[index]}
           >
+            {!isMobile &&
             <Column
               label={` `}
               dataKey="favourite"
@@ -85,6 +86,7 @@ export const TableInner = ({
               }}
               cellRenderer={({ cellData }) => cellData.render}
             />
+            }
             <Column
               label={` `}
               dataKey="emoji"
@@ -95,7 +97,7 @@ export const TableInner = ({
                 textAlign: 'left',
                 fontFamily: 'Avenir Next Light',
               }}
-              width={width / 2}
+              width={isMobile ? width / 4.5 : width / 2}
               style={{
                 textAlign: 'left',
                 fontSize: '1.4rem',
@@ -121,8 +123,7 @@ export const TableInner = ({
               }}
               cellRenderer={({ cellData }) => cellData.render}
             />
-            {!isMobile && (
-              <Column
+            <Column
                 label={`last price`}
                 dataKey="price"
                 headerStyle={{
@@ -139,8 +140,7 @@ export const TableInner = ({
                   fontWeight: 'bold',
                 }}
                 cellRenderer={({ cellData }) => cellData.render}
-              />
-            )}
+            />
             {(isAdvancedSelectorMode && !isMobile) && <Column
               label={`change 24h`}
               dataKey="price24hChange"
