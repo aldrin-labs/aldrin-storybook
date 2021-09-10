@@ -63,12 +63,19 @@ const version = `10.9.147-fix-open-orders`
 const currentVersion = localStorage.getItem('version')
 
 if (currentVersion !== version) {
+  const isMeetRebalancePopupOpen = localStorage.getItem("isMeetRebalancePopupOpen")
+  const isNotificationDone = localStorage.getItem("isNotificationDone")
+  const isOnboardingDone = localStorage.getItem("isOnboardingDone")
+  const isRebrandingPopupOpen = localStorage.getItem("isRebrandingPopupOpen")
+  const isRpcWarningPopupOpen = localStorage.getItem("isRpcWarningPopupOpen")
+
   localStorage.clear()
-  localStorage.setItem("isMeetRebalancePopupOpen", "false")
-  localStorage.setItem("isNotificationDone", "null")
-  localStorage.setItem("isOnboardingDone", "null")
-  localStorage.setItem("isRebrandingPopupOpen", "false")
-  localStorage.setItem("isRpcWarningPopupOpen", "false")
+
+  localStorage.setItem("isMeetRebalancePopupOpen", isMeetRebalancePopupOpen)
+  localStorage.setItem("isNotificationDone", isNotificationDone)
+  localStorage.setItem("isOnboardingDone", isOnboardingDone)
+  localStorage.setItem("isRebrandingPopupOpen", isRebrandingPopupOpen)
+  localStorage.setItem("isRpcWarningPopupOpen", isRpcWarningPopupOpen)
 
   localStorage.setItem('version', version)
   document.location.reload()
