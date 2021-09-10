@@ -452,7 +452,7 @@ export async function placeOrder({
 
   console.log('placeOrder transaction after add', transaction)
 
-  if (isMarketOrder) {
+  if (isMarketOrder && openOrdersAccount) {
     const {
       transaction: settleFundsTransaction,
       signers: settleFundsSigners,
