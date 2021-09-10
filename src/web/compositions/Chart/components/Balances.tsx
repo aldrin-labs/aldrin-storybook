@@ -345,7 +345,7 @@ export const Balances = ({
                     {showSettle && (
                       <BtnCustom
                         btnWidth={'100%'}
-                        height="auto"
+                        height="2.5rem"
                         fontSize=".8rem"
                         padding=".5rem 0 .4rem 0;"
                         borderRadius=".8rem"
@@ -430,7 +430,7 @@ export const Balances = ({
                     {showSettle && (
                       <BtnCustom
                         btnWidth={'100%'}
-                        height="auto"
+                        height="2.5rem"
                         fontSize=".8rem"
                         padding=".5rem 0 .4rem 0;"
                         borderRadius=".8rem"
