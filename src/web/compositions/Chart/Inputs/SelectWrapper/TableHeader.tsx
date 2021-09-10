@@ -68,7 +68,7 @@ const TableHeader = ({
         width="calc(100%)"
         justify="flex-start"
         padding="0 0 0 1rem"
-        style={{ borderLeft: '.1rem solid #383B45' }}
+        // style={{ borderLeft: '.1rem solid #383B45' }}
       >
         <StyledTab
           theme={theme}
