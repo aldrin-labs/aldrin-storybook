@@ -64,6 +64,12 @@ const currentVersion = localStorage.getItem('version')
 
 if (currentVersion !== version) {
   localStorage.clear()
+  localStorage.setItem("isMeetRebalancePopupOpen", "false")
+  localStorage.setItem("isNotificationDone", "null")
+  localStorage.setItem("isOnboardingDone", "null")
+  localStorage.setItem("isRebrandingPopupOpen", "false")
+  localStorage.setItem("isRpcWarningPopupOpen", "false")
+
   localStorage.setItem('version', version)
   document.location.reload()
 }
