@@ -42,6 +42,7 @@ import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown/index'
 import { FeedbackPopup } from './UsersFeedbackPopup'
 import { BetaLabel } from '@sb/components/BetaLabel/BetaLabel'
+import { ListingRequestPopup } from './ListingRequestPopup'
 
 export const NavBarLink = styled(({ style, ...props }) => (
   <NavLink {...props} />
@@ -113,6 +114,9 @@ const RedButton = styled((props) => (
 export const CardsPanel = ({ theme }) => {
   const location = useLocation()
   const [isFeedBackPopupOpen, setIsFeedBackPopupOpen] = useState(false)
+  const [isListingRequestPopupOpen, setIsListingRequestPopupOpen] = useState(
+    false
+  )
 
   const isDarkTheme = theme.palette.type === 'dark'
   const isAnalytics = location.pathname.includes('analytics')
@@ -153,6 +157,7 @@ export const CardsPanel = ({ theme }) => {
               margin: '0 0 0 4rem',
               justifyContent: 'flex-end',
               padding: '0 0rem 0 4rem',
+              flexWrap: 'nowrap',
             }}
           >
             <WhiteButton
@@ -165,6 +170,18 @@ export const CardsPanel = ({ theme }) => {
               onClick={() => setIsFeedBackPopupOpen(true)}
             >
               Leave feedback
+            </WhiteButton>{' '}
+            <WhiteButton
+              style={{
+                borderRadius: '1.5rem',
+                width: 'auto',
+                padding: '0 2rem',
+                margin: '0 0 0 2rem',
+              }}
+              theme={theme}
+              onClick={() => setIsListingRequestPopupOpen(true)}
+            >
+              Request listing
             </WhiteButton>
           </Row>
           <div
@@ -283,6 +300,13 @@ export const CardsPanel = ({ theme }) => {
         open={isFeedBackPopupOpen}
         onClose={() => {
           setIsFeedBackPopupOpen(false)
+        }}
+      />
+      <ListingRequestPopup
+        theme={theme}
+        open={isListingRequestPopupOpen}
+        onClose={() => {
+          setIsListingRequestPopupOpen(false)
         }}
       />
     </ChartGridContainer>
