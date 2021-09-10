@@ -59,10 +59,11 @@ import useWindowSize from '@webhooks/useWindowSize'
 import { RebrandingPopup } from '@sb/components/RebrandingPopup/RebrandingPopup'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
 
-const version = `10.9.146-rebalance`
+const version = `10.9.147-fix-open-orders`
 const currentVersion = localStorage.getItem('version')
 
 if (currentVersion !== version) {
+  localStorage.clear()
   localStorage.setItem('version', version)
   document.location.reload()
 }
