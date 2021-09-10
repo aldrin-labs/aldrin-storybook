@@ -234,6 +234,8 @@ export function refreshCache(cacheKey: any, clearCache = false): void {
   }
   const loop = globalLoops.loops.get(cacheKey);
   if (loop) {
+    console.log('refreshCache notifyListeners')
+
     loop.refresh();
     if (clearCache) {
       loop.notifyListeners();
@@ -258,6 +260,7 @@ export function setCache(
   globalCache.set(cacheKey, value);
   const loop = globalLoops.loops.get(cacheKey);
   if (loop) {
+    console.log('setCache notifyListeners')
     loop.notifyListeners();
   }
 }

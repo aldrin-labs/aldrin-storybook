@@ -182,6 +182,7 @@ export type InputRowProps = {
   align?:string
   padding?: string
   width?: string
+  margin?: string
 }
 
 export type CommonForBlocks = {

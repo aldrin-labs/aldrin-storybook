@@ -22,6 +22,21 @@ export const AppGridLayout = styled.div`
       ? 'calc(100vh)'
       : 'calc(100vh)'};
   min-height: 100vh;
+  @media (max-width: 600px) {
+    height: calc(var(--vh, 1vh) * 100);
+    min-height: auto;
+  }
+`
+
+export const AppContainer = styled.div`
+  height: ${(props) =>
+    props.showFooter ? 'calc(100% - 11.7rem)' : 'calc(100% - 6rem)'};
+
+  overflow: ${(props) => (props.currentPage == '/' ? 'hidden' : 'auto')};
+
+  @media (max-width: 600px) {
+    height: calc(100% - 22rem);
+  }
 `
 
 // height: calc(100vh - 3rem)
@@ -86,13 +101,8 @@ export const AppGridLayout = styled.div`
 
 export const AppInnerContainer = styled.div`
   height: ${(props) =>
-    props.showFooter
-      ? 'calc(100% - 11.7rem)'
-      : props.isChartPage
-      ? 'calc(100% - 12rem)'
-      : 'calc(100% - 6rem)'};
+    props.showFooter ? 'calc(100% - 11.7rem)' : 'calc(100% - 6rem)'};
   overflow: ${(props) => (props.currentPage == '/' ? 'hidden' : 'auto')};
   @media (max-width:600px){
-    height: ${(props) =>
-      props.currentPage == '/' ? 'calc(100% - 11rem)' : 'calc(100% - 6rem)'};
+    height: calc(100% - 22rem);
 `

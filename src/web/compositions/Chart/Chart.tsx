@@ -35,12 +35,18 @@ import {
 import { useMarket } from '@sb/dexUtils/markets'
 import { getDecimalCount } from '@sb/dexUtils/utils'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
-import { useAwesomeMarkets } from '@sb/dexUtils/serum'
+import { useAwesomeMarkets } from '@core/utils/awesomeMarkets/serum'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { WarningPopup } from './components/WarningPopup'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
+import MarketBlock from './components/MarketBlock/MarketBlock'
+// import { ParticleRuggedPopup } from '@sb/components/ParticleRuggedPopup'
 import { TokenDelistPopup } from '@sb/components/TokenDelistPopup'
 import { tokensToDelist } from '@core/config/dex'
+import { TransactionsConfirmationWarningPopup } from '@sb/components/TransactionsConfirmationWarningPopup/TransactionsConfirmationWarningPopup'
+import { SettleWarningPopup } from '@sb/components/SettleWarningPopup/SettleWarningPopup'
+import { ProposeToSettlePopup } from '@sb/components/ProposeToSettlePopup/ProposeToSettlePopup'
+import { RpcCapacityWarningPopup } from '@sb/components/RpcWarningPopup/RpcWarningPopup'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
   // Check if the arrays are the same length
@@ -259,7 +265,10 @@ function ChartPageComponent(props: any) {
           localStorage.setItem('isOnboardingDone', 'true')
         }}
       />
-      {/* {view === 'default' && ( */}
+      <MarketBlock
+        terminalViewMode={terminalViewMode}
+        updateTerminalViewMode={updateTerminalViewMode}
+      />
       <DefaultView
         id={'_id'}
         view={'default'}
@@ -304,11 +313,13 @@ function ChartPageComponent(props: any) {
         closeChartPagePopup={closeChartPagePopup}
         changeChartLayoutMutation={changeChartLayoutMutation}
       />
+
       <WarningPopup
         open={isWarningPopupOpen}
         onClose={() => openWarningPopup(false)}
         theme={theme}
       />
+
       <TokenDelistPopup
         open={isDelistPopupOpen}
         onClose={() => openDelistPopup(false)}
@@ -316,6 +327,10 @@ function ChartPageComponent(props: any) {
         tokenToDelist={tokenToDelist}
       />
 
+      <TransactionsConfirmationWarningPopup theme={theme} />
+      {/* <SettleWarningPopup theme={theme} /> */}
+      <ProposeToSettlePopup theme={theme} />
+      <RpcCapacityWarningPopup theme={theme} />
       {/* )} */}
       {/* <JoyrideOnboarding
         continuous={true}

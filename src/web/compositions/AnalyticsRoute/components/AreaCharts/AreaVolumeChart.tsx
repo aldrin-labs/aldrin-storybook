@@ -13,8 +13,6 @@ import {
 
 import AreaChart from './AreaChart'
 
-const sinceTimestamp = endOfDayTimestamp - dayDuration * 30
-
 const AreaVolumeChart = ({
   theme,
   getSerumQuoteTradeVolumeStatsQuery,
@@ -48,8 +46,8 @@ export default compose(
     name: 'getSerumQuoteTradeVolumeStatsQuery',
     variables: (props) => ({
       pair: props.selectedPair,
-      toTimestamp: endOfDayTimestamp,
-      sinceTimestamp,
+      toTimestamp: endOfDayTimestamp(),
+      sinceTimestamp: endOfDayTimestamp() - dayDuration * 30,
       timezone: getTimezone(),
     }),
     fetchPolicy: 'cache-and-network',

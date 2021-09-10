@@ -26,6 +26,9 @@ import {
   SettingsContainer,
   SettingsLabel,
   FuturesSettings,
+  BuyTerminal,
+  SellTerminal,
+  TerminalComponentsContainer,
 } from './styles'
 
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
@@ -50,14 +53,14 @@ const generateToken = () =>
     .substring(2, 15)
 
 class SimpleTabs extends React.Component<any, any> {
-  state: { 
+  state: {
     mode: 'market' | 'limit'
   } = {
     side: 'buy',
     mode: 'limit',
     leverage: false,
     reduceOnly: false,
-    orderMode: 'ioc',
+    orderMode: 'TIF',
     TIFMode: 'GTC',
     trigger: 'last price',
     orderIsCreating: false,
@@ -86,10 +89,6 @@ class SimpleTabs extends React.Component<any, any> {
     }
   }
 
-  updateState = (name, property) => {
-    this.setState({ [name]: property })
-  }
-
   shouldComponentUpdate(nextProps) {
     if (this.state.mode !== 'market' && this.props.price !== nextProps.price) {
       return false
@@ -116,7 +115,11 @@ class SimpleTabs extends React.Component<any, any> {
       this.setState({ tradingBotEnabled: false, tradingBotIsActive: false })
     }
 
-    if (prevProps.wallet.connected && this.props.wallet.connected && this.state.TVAlertsBotIsActive) {
+    if (
+      prevProps.wallet.connected &&
+      this.props.wallet.connected &&
+      this.state.TVAlertsBotIsActive
+    ) {
       this.unsubscribe()
 
       this.setState((prev) => ({
@@ -130,6 +133,9 @@ class SimpleTabs extends React.Component<any, any> {
   componentWillUnmount() {
     this.unsubscribe()
   }
+
+  updateWrapperState = (newState: { [key: string]: any }) =>
+    this.setState(newState)
 
   subscribe = () => {
     const that = this
@@ -230,13 +236,17 @@ class SimpleTabs extends React.Component<any, any> {
       minOrderSize,
       market,
       wallet,
+      setAutoConnect,
+      providerUrl,
+      setProvider,
+      terminalViewMode,
     } = this.props
 
     const isSPOTMarket = isSPOTMarketType(marketType)
     const maxAmount = [funds[1].quantity, funds[0].quantity]
-
     return (
-      <Grid
+      <TerminalComponentsContainer
+        terminalViewMode={terminalViewMode}
         id="tradingTerminal"
         item
         xs={12}
@@ -245,7 +255,7 @@ class SimpleTabs extends React.Component<any, any> {
         <CustomCard theme={theme} style={{ borderTop: 0, overflow: 'unset' }}>
           <TerminalHeader
             key={'spotTerminal'}
-            style={{ display: 'flex' }}
+            // style={{ display: 'flex' }}
             theme={theme}
           >
             <div
@@ -282,6 +292,7 @@ class SimpleTabs extends React.Component<any, any> {
                       mode: 'market',
                       orderMode: 'ioc',
                       TVAlertsBotEnabled: false,
+                      takeProfit: false,
                     })
                   }}
                 >
@@ -314,7 +325,7 @@ class SimpleTabs extends React.Component<any, any> {
                         checked={takeProfit}
                         disabled={mode === 'limit'}
                         onChange={() => {
-                          this.updateState('takeProfit', !takeProfit)
+                          this.setState({ takeProfit: !takeProfit })
                         }}
                         style={{
                           padding: '0 0.8rem 0 0',
@@ -366,7 +377,11 @@ class SimpleTabs extends React.Component<any, any> {
                             })
                           }
                         />
-                        <SettingsLabel theme={theme} htmlFor="ioc" style={{ textTransform: 'uppercase' }}>
+                        <SettingsLabel
+                          theme={theme}
+                          htmlFor="ioc"
+                          style={{ textTransform: 'uppercase' }}
+                        >
                           ioc
                         </SettingsLabel>
                       </FuturesSettings>
@@ -382,7 +397,11 @@ class SimpleTabs extends React.Component<any, any> {
                     borderRight: 0,
                     borderLeft: theme.palette.border.main,
                     ...(TVAlertsBotIsActive
-                      ? { backgroundColor: '#F07878', color: '#fff', borderBottom: '0' }
+                      ? {
+                          backgroundColor: '#F07878',
+                          color: '#fff',
+                          borderBottom: '0',
+                        }
                       : {}),
                   }}
                   active={TVAlertsBotEnabled}
@@ -412,7 +431,7 @@ class SimpleTabs extends React.Component<any, any> {
                         top: 0,
                       }}
                     />
-                  )} 
+                  )}
                   {TVAlertsBotIsActive ? 'Stop Alert BOT' : 'Alert BOT'}
                 </TerminalModeButton>
                 {/* {pair.join('_') === 'SRM_USDT' && (
@@ -468,11 +487,11 @@ class SimpleTabs extends React.Component<any, any> {
                   publicKey={publicKey}
                   subscribeToTVAlert={this.subscribe}
                   quantityPrecision={quantityPrecision}
-                  updateState={this.updateState}
+                  updateWrapperState={this.updateWrapperState}
                 />
               ) : (
                 <>
-                  <FullHeightGrid
+                  <BuyTerminal
                     theme={theme}
                     xs={6}
                     item
@@ -480,11 +499,14 @@ class SimpleTabs extends React.Component<any, any> {
                   >
                     <TerminalContainer>
                       <TraidingTerminal
-                        byType={'buy'}
+                        byType={side}
                         spread={spread}
                         theme={theme}
-                        sideType={'buy'}
+                        sideType={side}
                         priceType={mode}
+                        setAutoConnect={setAutoConnect}
+                        providerUrl={providerUrl}
+                        setProvider={setProvider}
                         hedgeMode={hedgeMode}
                         minOrderSize={minOrderSize}
                         publicKey={publicKey}
@@ -525,11 +547,11 @@ class SimpleTabs extends React.Component<any, any> {
                           breakEvenPoint,
                           cancelOrder,
                           addLoaderToButton: this.addLoaderToButton,
-                          updateState: this.updateState,
+                          updateWrapperState: this.updateWrapperState,
                         }}
                       />
                     </TerminalContainer>
-                  </FullHeightGrid>
+                  </BuyTerminal>
 
                   {tradingBotEnabled && !tradingBotIsActive ? (
                     <FullHeightGrid theme={theme} xs={6} item>
@@ -581,10 +603,9 @@ class SimpleTabs extends React.Component<any, any> {
                                     needTitle={true}
                                     value={takeProfitPercentage}
                                     onChange={(e) => {
-                                      this.updateState(
-                                        'takeProfitPercentage',
-                                        e.target.value
-                                      )
+                                      this.setState({
+                                        takeProfitPercentage: e.target.value,
+                                      })
                                     }}
                                   />
 
@@ -596,10 +617,9 @@ class SimpleTabs extends React.Component<any, any> {
                                       margin: '0 0 0 1.5%',
                                     }}
                                     onChange={(value) => {
-                                      this.updateState(
-                                        'takeProfitPercentage',
-                                        value / 20
-                                      )
+                                      this.setState({
+                                        takeProfitPercentage: value / 20,
+                                      })
                                     }}
                                   />
                                 </InputRowContainer>
@@ -639,15 +659,13 @@ class SimpleTabs extends React.Component<any, any> {
                                   value={tradingBotTotalTime}
                                   onChange={(e) => {
                                     if (+e.target.value > 720) {
-                                      this.updateState(
-                                        'tradingBotTotalTime',
-                                        720
-                                      )
+                                      this.setState({
+                                        tradingBotTotalTime: 720,
+                                      })
                                     } else {
-                                      this.updateState(
-                                        'tradingBotTotalTime',
-                                        e.target.value
-                                      )
+                                      this.setState({
+                                        tradingBotTotalTime: e.target.value,
+                                      })
                                     }
                                   }}
                                   inputStyles={{
@@ -667,10 +685,9 @@ class SimpleTabs extends React.Component<any, any> {
                                     margin: '0 .5rem 0 1rem',
                                   }}
                                   onChange={(value) => {
-                                    this.updateState(
-                                      'tradingBotTotalTime',
-                                      value
-                                    )
+                                    this.setState({
+                                      tradingBotTotalTime: value,
+                                    })
                                   }}
                                 />
                               </InputRowContainer>
@@ -680,11 +697,14 @@ class SimpleTabs extends React.Component<any, any> {
                       </TerminalContainer>
                     </FullHeightGrid>
                   ) : (
-                    <FullHeightGrid theme={theme} xs={6} item>
+                    <SellTerminal theme={theme} xs={6} item>
                       <TerminalContainer>
                         <TraidingTerminal
                           byType={'sell'}
                           sideType={'sell'}
+                          setAutoConnect={setAutoConnect}
+                          providerUrl={providerUrl}
+                          setProvider={setProvider}
                           market={market}
                           priceType={mode}
                           minOrderSize={minOrderSize}
@@ -721,17 +741,17 @@ class SimpleTabs extends React.Component<any, any> {
                           orderMode={orderMode}
                           TIFMode={TIFMode}
                           trigger={trigger}
-                          updateState={this.updateState}
+                          updateWrapperState={this.updateWrapperState}
                         />
                       </TerminalContainer>
-                    </FullHeightGrid>
+                    </SellTerminal>
                   )}
                 </>
               )}
             </div>
           </TerminalMainGrid>
         </CustomCard>
-      </Grid>
+      </TerminalComponentsContainer>
     )
   }
 }

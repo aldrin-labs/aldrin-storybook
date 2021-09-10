@@ -8,11 +8,11 @@ import {
 
 export const StyledTable = styled(Table)`
   td:first-child {
-    padding: 0.75rem 1rem 0.75rem 0.75rem;
+    padding: 0.75rem 1rem 0.75rem 1.75rem;
   }
 
   th:first-child {
-    padding: 0.75rem 1rem 0.75rem 0.75rem;
+    padding: 0.75rem 1rem 0.75rem 1.75rem;
   }
 `
 

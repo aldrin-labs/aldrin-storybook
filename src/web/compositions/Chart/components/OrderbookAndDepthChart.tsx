@@ -29,6 +29,7 @@ const OrderbookAndDepthChart = (props) => {
     updateTerminalPriceFromOrderbook,
     hideDepthChart,
     sizeDigits,
+    terminalViewMode,
     pricePrecision: serumPricePrecision,
   } = props
 
@@ -96,13 +97,6 @@ const OrderbookAndDepthChart = (props) => {
       aggregation: +getAggregationsFromPricePrecision(pricePrecision)[0].value,
       sizeDigits: props.sizeDigits,
     })
-
-    console.log(
-      'aggregation',
-      aggregation,
-      'getAggregationsFromPricePrecision(pricePrecision)[0].value',
-      getAggregationsFromPricePrecision(pricePrecision)[0].value
-    )
 
     if (
       String(aggregation) !==
@@ -172,6 +166,7 @@ const OrderbookAndDepthChart = (props) => {
           markPrice={markPrice}
           pricePrecision={pricePrecision}
           data={dataToSend}
+          terminalViewMode={terminalViewMode}
         />
       </Grid>
     </RowContainer>

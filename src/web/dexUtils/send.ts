@@ -21,19 +21,14 @@ import {
   parseInstructionErrorResponse,
 } from '@project-serum/serum'
 
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-import { feeTiers } from '@sb/components/TradingTable/Fee/FeeTiers'
-import {
-  getSelectedTokenAccountForMint,
-  getOpenOrdersAccountsCustom,
-  ALL_TOKENS_MINTS,
-} from './markets'
 import { WalletAdapter } from './types'
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   Token,
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token'
+import { getCache } from './fetch-loop'
+import { Metrics } from '../../utils/metrics'
 
 const getNotificationText = ({
   baseSymbol = 'CCAI',
@@ -133,6 +128,7 @@ export async function settleFunds({
   quoteTokenAccount,
   baseUnsettled,
   quoteUnsettled,
+  focusPopup = false,
 }: {
   market: Market
   wallet: WalletAdapter
@@ -144,6 +140,7 @@ export async function settleFunds({
   quoteTokenAccount: any
   baseUnsettled: number
   quoteUnsettled: number
+  focusPopup?: boolean
 }) {
   if (!wallet) {
     notify({ message: 'Please, connect wallet to settle funds' })
@@ -155,7 +152,10 @@ export async function settleFunds({
     return
   }
 
-  if (!baseCurrency && !quoteCurrency) {
+  if (!baseCurrency || !quoteCurrency) {
+    notify({
+      message: `Sorry, looks base & quote symbols doesnt loaded in the market`,
+    })
     return
   }
 
@@ -244,6 +244,7 @@ export async function settleFunds({
       baseUnsettled: baseUnsettled,
       quoteUnsettled: quoteUnsettled,
     },
+    focusPopup,
   })
 }
 
@@ -357,7 +358,6 @@ export async function placeOrder({
   wallet,
   baseCurrencyAccount,
   quoteCurrencyAccount,
-  feeAccounts,
   openOrdersAccount,
 }) {
   let baseCurrencyAccountPubkey = baseCurrencyAccount?.pubkey
@@ -387,6 +387,13 @@ export async function placeOrder({
     })
     return
   }
+
+  const openOrdersAccountFromCache = getCache(
+    `preCreatedOpenOrdersFor${market?.publicKey}`
+  )
+
+  console.log('openOrdersAccount in placeOrder', openOrdersAccount)
+
   const params = {
     owner,
     payer,
@@ -396,6 +403,9 @@ export async function placeOrder({
     pair,
     orderType,
     isMarketOrder,
+    ...(!openOrdersAccount
+      ? { openOrdersAccount: openOrdersAccountFromCache }
+      : {}),
   }
   console.log(params)
 
@@ -471,7 +481,7 @@ export async function placeOrder({
       amount: size,
       baseSymbol: pair.split('_')[0],
       quoteSymbol: pair.split('_')[1],
-      orderType: orderType === 'ioc' ? 'market' : 'limit',
+      orderType: isMarketOrder ? 'market' : 'limit',
     },
   })
 }
@@ -514,7 +524,7 @@ export async function sendSignedTransaction({
     }
   })()
   try {
-    await awaitTransactionSignatureConfirmation(txid, timeout, connection)
+    await awaitTransactionSignatureConfirmation({ txid, timeout, connection })
   } catch (err) {
     if (err.timeout) {
       throw new Error('Timed out awaiting confirmation on transaction')
@@ -603,7 +613,8 @@ export async function signTransactions({
     }
   })
   return await wallet.signAllTransactions(
-    transactionsAndSigners.map(({ transaction }) => transaction)
+    transactionsAndSigners.map(({ transaction }) => transaction),
+    true
   )
 }
 
@@ -761,30 +772,30 @@ const getUnixTs = () => {
   return new Date().getTime() / 1000
 }
 
-const DEFAULT_TIMEOUT = 15000
+const DEFAULT_TIMEOUT = 30000
 
 export async function sendTransaction({
   transaction,
   wallet,
   signers = [],
   connection,
-  sendingMessage = 'Sending transaction...',
   sentMessage = 'Transaction sent',
   successMessage = 'Transaction confirmed',
   timeout = DEFAULT_TIMEOUT,
   operationType,
   params,
+  focusPopup,
 }: {
   transaction: Transaction
   wallet: WalletAdapter
   signers: Account[]
   connection: Connection
-  sendingMessage?: string
   sentMessage?: string
   successMessage?: string
   timeout?: number
   operationType?: string
-  params: any
+  params?: any
+  focusPopup?: boolean
 }) {
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash('max')
@@ -801,7 +812,12 @@ export async function sendTransaction({
     transaction.partialSign(...signers)
   }
 
-  const transactionFromWallet = await wallet.signTransaction(transaction)
+  const transactionFromWallet = await wallet
+    .signTransaction(transaction, focusPopup)
+    .then((res) => {
+      window.focus()
+      return res
+    })
 
   console.log('sendTransaction transactionFromWallet: ', transactionFromWallet)
 
@@ -857,41 +873,100 @@ export async function sendTransaction({
         'sendTransaction resultOfSendingConfirm',
         resultOfSendingConfirm
       )
-      await sleep(700)
+      await sleep(1200)
     }
   })()
-  try {
-    const resultOfSignature = await awaitTransactionSignatureConfirmation(
+
+  let result = await awaitTransactionSignatureConfirmationWithNotifications({
+    txid,
+    timeout,
+    connection,
+    showErrorForTimeout: false,
+  })
+
+  if (result === 'timeout') {
+    Metrics.sendMetrics({
+      metricName: 'error.rpc.timeoutConfirmationTransaction',
+    })
+    result = await awaitTransactionSignatureConfirmationWithNotifications({
       txid,
       timeout,
-      connection
-    )
+      connection,
+      interval: 2400,
+      showErrorForTimeout: true,
+    })
 
-    console.log('sendTransaction resultOfSignature', resultOfSignature)
-  } catch (err) {
-    if (err.timeout) {
-      notify({
-        message: 'Timed out awaiting confirmation on transaction',
-        type: 'error',
+    if (!result) {
+      Metrics.sendMetrics({
+        metricName: 'error.rpc.secondTimeoutConfirmationTransaction',
       })
-      throw new Error('Timed out awaiting confirmation on transaction')
     }
-
-    notify({ message: 'Transaction failed', type: 'error' })
-    throw new Error('Transaction failed')
-  } finally {
-    done = true
   }
+
+  done = true
+  if (result !== true) return null
+
   if (!operationType) notify({ message: successMessage, type: 'success', txid })
   console.log('Latency', txid, getUnixTs() - startTime)
   return txid
 }
 
-async function awaitTransactionSignatureConfirmation(
+const awaitTransactionSignatureConfirmationWithNotifications = async ({
   txid,
   timeout,
-  connection
-) {
+  interval,
+  connection,
+  showErrorForTimeout = false,
+}: {
+  txid: string
+  timeout: number
+  interval?: number
+  connection: Connection
+  showErrorForTimeout: boolean
+}) => {
+  try {
+    const resultOfSignature = await awaitTransactionSignatureConfirmation({
+      txid,
+      timeout,
+      interval,
+      connection,
+    })
+
+    console.log('sendTransaction resultOfSignature', resultOfSignature)
+  } catch (err) {
+    console.log('sendTransaction error', err)
+    if (err.timeout && !showErrorForTimeout) {
+      notify({
+        message: 'Timed out awaiting confirmation on transaction',
+        type: 'info',
+        description:
+          "We'll continue checking confirmations for this transactions",
+      })
+
+      return 'timeout'
+    }
+
+    notify({ message: 'Transaction failed', type: 'error' })
+    Metrics.sendMetrics({
+      metricName: `error.rpc.transactionFailed-${JSON.stringify(err)}`,
+    })
+    return null
+  }
+
+  return true
+}
+
+async function awaitTransactionSignatureConfirmation({
+  txid,
+  timeout,
+  connection,
+  interval = 1200,
+}: {
+  txid: string
+  timeout: number
+  connection: Connection
+  interval?: number
+}) {
   let done = false
   const result = await new Promise((resolve, reject) => {
     ;(async () => {
@@ -935,6 +1010,11 @@ async function awaitTransactionSignatureConfirmation(
                 console.log('REST null result for', txid, result)
               } else if (result.err) {
                 console.log('REST error for', txid, result)
+                Metrics.sendMetrics({
+                  metricName: `error.rpc.getSignatureStatusesError-${JSON.stringify(
+                    result.err
+                  )}`,
+                })
                 done = true
                 reject(result.err)
               } else if (!result.confirmations) {
@@ -948,10 +1028,13 @@ async function awaitTransactionSignatureConfirmation(
           } catch (e) {
             if (!done) {
               console.log('REST connection error: txid', txid, e)
+              Metrics.sendMetrics({
+                metricName: `error.rpc.connectionError-${JSON.stringify(e)}`,
+              })
             }
           }
         })()
-        await sleep(700)
+        await sleep(interval)
       }
     })()
   })

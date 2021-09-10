@@ -1,5 +1,7 @@
 import { Account, PublicKey, Transaction, Connection } from '@solana/web3.js'
 import { WalletAdapter } from '@sb/dexUtils/types'
+import { Market, OpenOrders } from '@project-serum/serum'
+import BN from 'bn.js'
 
 export type PoolTVL = {
     tokenA: number
@@ -24,6 +26,15 @@ export type PoolInfo = {
     totalFeesPaid: PoolTotalFeesPaid
 }
 
+export type MarketData = {
+    name: string
+    address: PublicKey
+    programId: PublicKey
+    deprecated: boolean
+    tokenA: string
+    tokenB: string
+}
+
 export interface TokenInfo {
     symbol: string
     amount: number
@@ -32,33 +43,62 @@ export interface TokenInfo {
     address: string   
 }
 
-export type Colors = { [ symbol: string]: string }
-export interface TokenType extends TokenInfo {
+export interface TokenInfoWithPrice extends TokenInfo {
     price: number | null
+}
+
+export interface TokenInfoWithValue extends TokenInfoWithPrice {
+    tokenValue: number
+}
+
+export interface TokenInfoWithPercentage extends TokenInfoWithValue {
     percentage: number
-    tokenValue: number,
-    targetTokenValue: number,
-    targetAmount: number,
-    targetPercentage: number,
+}
+
+export interface TokenInfoWithSliderStep extends TokenInfoWithPercentage {
+    stepInAmountToken: number
+    stepInValueToken: number
+    stepInPercentageToken: number
+    decimalCount: number
+}
+
+export interface TokenInfoWithDisableReason extends TokenInfoWithSliderStep {
     disabled?: true | false
     disabledReason?: string
     poolWithLiquidityExists?: true | false
     poolExists?: true | false  
-    decimalCount: number
 }
 
-export type TokensMapType = { [cacheKey: string]: TokenType }
+export interface TokenInfoWithTargetData extends TokenInfoWithDisableReason {
+    targetTokenValue: number
+    targetAmount: number
+    targetPercentage: number
+}
 
-export type TransactionType = PoolInfoElement & { amount: number, total: number, side: 'sell' | 'buy', feeUSD: number }
+export type Colors = { [ symbol: string]: string }
 
-export type PoolInfoElement = {
+export type TokensMapType = { [cacheKey: string]: TokenInfoWithTargetData }
+
+export type TransactionMainData = {
+    side: 'sell' | 'buy'
+    symbol: string
+    amount: number
+}
+
+export type TransactionType = MarketDataProcessed & TransactionMainData & { 
+    price: number, 
+    total: number, 
+    feeUSD: number 
+    slippage: number
+    isNotEnoughLiquidity: boolean
+    loadedMarket: Market
+    openOrders: OpenOrders[],
+    vaultSigner: PublicKey | BN
+    depthLevel: number
+}
+
+export interface MarketDataProcessed extends MarketData {
   symbol: string
-  slippage: number
-  price: number
-  tokenSwapPublicKey: string
-  tokenA: number
-  tokenB: number
-  priceIncludingCurveAndFees: number
 }
 
 export type SwapsType = {
@@ -73,3 +113,13 @@ export type SwapsType = {
 }
 
 export type RebalancePopupStep = 'initial' | 'pending' | 'done' | 'failed'
+
+export type Orderbook = { asks: [number, number][], bids: [number, number][] }
+export type Orderbooks = { [key: string]: Orderbook }
+
+export type TokensDiff = {
+    symbol: string
+    amountDiff: number
+    decimalCount: number
+    price: number
+}[]

@@ -31,7 +31,7 @@ import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
 import SnackbarWrapper from './SnackbarWrapper/SnackbarWrapper'
 import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
 
-import { AppGridLayout, AppInnerContainer, FontStyle } from './App.styles'
+import { AppGridLayout, AppInnerContainer } from './App.styles'
 // import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
 import { GlobalStyle } from '@sb/styles/global.styles'
 import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
@@ -43,7 +43,7 @@ import { syncStorage } from '@storage'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { useQuery } from 'react-apollo'
 import CardsPanel from '@sb/compositions/Chart/components/CardsPanel'
-import MarketBlock from '@sb/compositions/Chart/components/MarketBlock'
+import MarketBlock from '@sb/compositions/Chart/components/MarketBlock/MarketBlock'
 
 import { ConnectionProvider } from '@sb/dexUtils/connection'
 import { WalletProvider } from '@sb/dexUtils/wallet'
@@ -53,29 +53,25 @@ import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
 import DevUrlPopup from '@sb/components/PopupForDevUrl'
 import WalletMigrationPopup from '@sb/components/WalletMigrationPopup'
 import { TokenRegistryProvider } from '@sb/dexUtils/tokenRegistry'
+import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
 import { MobileNavBar } from '../Chart/components/MobileNavbar/MobileNavbar'
+import useWindowSize from '@webhooks/useWindowSize'
 import { RebrandingPopup } from '@sb/components/RebrandingPopup/RebrandingPopup'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
 
-const version = `10.9.143`
-const isOnboardingDone = localStorage.getItem('isOnboardingDone')
-const isNotificationDone = localStorage.getItem('isNotificationDone')
-const isWalletMigrationToNewUrlPopupDone = localStorage.getItem(
-  'isWalletMigrationToNewUrlPopupDone'
-)
-const localPassword = localStorage.getItem('localPassword')
+const version = `10.9.146-rebalance`
 const currentVersion = localStorage.getItem('version')
 
 if (currentVersion !== version) {
-  localStorage.clear()
   localStorage.setItem('version', version)
-  localStorage.setItem('isOnboardingDone', isOnboardingDone)
-  localStorage.setItem('isNotificationDone', isNotificationDone)
   document.location.reload()
+}
 
-  if (localPassword !== null) {
-    localStorage.setItem('localPassword', localPassword)
-  }
+const DetermineMobileWindowHeight = () => {
+  const { width, height } = useWindowSize()
+  let vh = height * 0.01
+  document.documentElement.style.setProperty('--vh', `${vh}px`)
+  return null
 }
 
 const AppRaw = ({
@@ -138,7 +134,6 @@ const AppRaw = ({
           <SnackbarWrapper>
             <SnackbarUtilsConfigurator />
             <CssBaseline />
-            {/* <FontStyle /> */}
             <ConnectionProvider>
               <TokenRegistryProvider>
                 <MarketProvider>
@@ -151,14 +146,13 @@ const AppRaw = ({
                         isPNL={isPNL}
                         isChartPage={isChartPage}
                       >
-                        {currentPage === '/' && <MobileNavBar />}
+                        <MobileNavBar pathname={currentPage} />
                         {!pageIsRegistration && (
                           <CardsPanel
                             pathname={currentPage}
                             hide={fullscreen}
                           />
                         )}
-                        {isChartPage && <MarketBlock />}
                         <AppInnerContainer
                           showFooter={showFooter}
                           isChartPage={isChartPage}
@@ -169,6 +163,7 @@ const AppRaw = ({
                         {showFooter && (
                           <FooterWithTheme isRewards={isRewards} />
                         )}
+                        <MobileFooter pathname={currentPage} />
                         {/* 
                     <Footer
                       isChartPage={isChartPage}
@@ -195,6 +190,7 @@ const AppRaw = ({
                           }}
                         />
                       )} */}
+                        <DetermineMobileWindowHeight />
                       </AppGridLayout>
                       {/* <ShowWarningOnMoblieDevice /> */}
                     </PreferencesProvider>

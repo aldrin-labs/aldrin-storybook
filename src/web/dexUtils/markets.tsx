@@ -8,10 +8,10 @@ import {
   TOKEN_MINTS,
   OpenOrders,
 } from '@project-serum/serum'
-import { PublicKey } from '@solana/web3.js'
+import { Account, PublicKey } from '@solana/web3.js'
 import React, { useContext, useEffect, useState } from 'react'
-import { useLocalStorageState } from './utils'
-import { refreshCache, useAsyncData } from './fetch-loop'
+import { getUniqueListBy, useLocalStorageState } from './utils'
+import { getCache, refreshCache, setCache, useAsyncData } from './fetch-loop'
 import {
   useAccountData,
   useAccountInfo,
@@ -23,11 +23,24 @@ import tuple from 'immutable-tuple'
 import { notify } from './notifications'
 import { BN } from 'bn.js'
 import { getTokenAccountInfo } from './tokens'
-import { useAwesomeMarkets, AWESOME_TOKENS } from '@sb/dexUtils/serum'
-import { getDexProgramIdByEndpoint } from '@core/config/dex'
+import {
+  useAwesomeMarkets,
+  AWESOME_TOKENS,
+} from '@core/utils/awesomeMarkets/serum'
+import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
+import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  Token,
+  TOKEN_PROGRAM_ID,
+} from './token/token'
 
-// not uniq here
-export const ALL_TOKENS_MINTS = [...TOKEN_MINTS, ...AWESOME_TOKENS]
+export const ALL_TOKENS_MINTS = getUniqueListBy(
+  [...TOKEN_MINTS, ...AWESOME_TOKENS],
+  'name'
+)
+
+console.log('ALL_TOKENS_MINTS', ALL_TOKENS_MINTS)
+
 export const ALL_TOKENS_MINTS_MAP = ALL_TOKENS_MINTS.reduce((acc, el) => {
   acc[el.address] = el.name
   acc[el.name] = el.address
@@ -67,12 +80,13 @@ export interface RawMarketData {
   programId: PublicKey
   deprecated: boolean
 }
-
 export interface RawCustomMarketData extends RawMarketData {
   isCustomUserMarket: boolean
 }
 
-export function useAllMarketsList(): Map<string, RawMarketData> {
+export type MarketsMap = Map<string, RawMarketData>
+
+export function useAllMarketsList(): MarketsMap {
   const ALL_MARKETS_MAP = new Map()
 
   const { customMarkets } = useCustomMarkets()
@@ -82,23 +96,27 @@ export function useAllMarketsList(): Map<string, RawMarketData> {
 
   const officialMarkets = [...serumMarkets, ...awesomeMarkets]
 
-  officialMarkets?.forEach((market) =>
-    ALL_MARKETS_MAP.set(market.name.replaceAll('/', '_'), market)
-  )
+  officialMarkets?.forEach((market: RawMarketData) => {
+    const marketName = market.name.replaceAll('/', '_')
+    ALL_MARKETS_MAP.set(marketName, { ...market, name: marketName })
+  })
 
-  const usersMarkets = customMarkets.filter(
-    (market) =>
-      market.isCustomUserMarket &&
-      !ALL_MARKETS_MAP.has(market.name.replaceAll('/', '_'))
-  )
+  const usersMarkets = customMarkets.filter((market: RawCustomMarketData) => {
+    const marketName = market.name.replaceAll('/', '_')
 
-  usersMarkets?.forEach((market) =>
-    ALL_MARKETS_MAP.set(market.name.replaceAll('/', '_'), {
+    return market.isCustomUserMarket && !ALL_MARKETS_MAP.has(marketName)
+  })
+
+  usersMarkets?.forEach((market: RawMarketData) => {
+    const marketName = market.name.replaceAll('/', '_')
+
+    ALL_MARKETS_MAP.set(marketName, {
       ...market,
+      name: marketName,
       address: new PublicKey(market.address),
       programId: new PublicKey(market.programId),
     })
-  )
+  })
 
   return ALL_MARKETS_MAP
 }
@@ -140,8 +158,7 @@ export function useAllMarkets() {
       // .slice(0, 2)
       marketInfos.map(async (marketInfo) => {
         try {
-          console.log('marketInfo.address', marketInfo.address, ++i)
-
+          // console.log('marketInfo.address', marketInfo.address, ++i)
           const market = await Market.load(
             connection,
             marketInfo.address,
@@ -149,10 +166,15 @@ export function useAllMarkets() {
             marketInfo.programId
           )
 
+          const asks = await market.loadAsks(connection)
+          const bids = await market.loadBids(connection)
+
           return {
             market,
             marketName: marketInfo.name,
             programId: marketInfo.programId,
+            asks,
+            bids,
           }
         } catch (e) {
           notify({
@@ -253,7 +275,7 @@ export function useUnmigratedOpenOrdersAccounts() {
 
 const MarketContext = React.createContext(null)
 
-const _VERY_SLOW_REFRESH_INTERVAL = 5000 * 1000
+export const _VERY_SLOW_REFRESH_INTERVAL = 5000 * 1000
 
 // For things that don't really change
 const _SLOW_REFRESH_INTERVAL = 3 * 1000
@@ -420,22 +442,15 @@ export function useMarkPrice() {
   const [markPrice, setMarkPrice] = useState(null)
 
   const [orderbook] = useOrderbook(2)
-  const trades = useTrades()
 
   useEffect(() => {
     let bb = orderbook?.bids?.length > 0 && Number(orderbook.bids[0][0])
     let ba = orderbook?.asks?.length > 0 && Number(orderbook.asks[0][0])
-    let last = trades?.length > 0 && trades[0].price
 
-    let markPrice =
-      bb && ba
-        ? last
-          ? [bb, ba, last].sort((a, b) => a - b)[1]
-          : (bb + ba) / 2
-        : null
+    let markPrice = bb && ba ? (bb + ba) / 2 : null
 
     setMarkPrice(markPrice)
-  }, [orderbook, trades])
+  }, [orderbook])
 
   return markPrice
 }
@@ -452,7 +467,7 @@ export function _useUnfilteredTrades(limit = 10000) {
   const [trades] = useAsyncData(
     getUnfilteredTrades,
     tuple('getUnfilteredTrades', market, connection),
-    { refreshInterval: _SLOW_REFRESH_INTERVAL }
+    { refreshInterval: 10_000 }
   )
   return trades
   // NOTE: For now, websocket is too expensive since the event queue is large
@@ -481,10 +496,12 @@ export function useOrderbookAccounts() {
 export function useOrderbook(depth = 200) {
   const { bidOrderbook, askOrderbook } = useOrderbookAccounts()
   const { market } = useMarket()
+
   const bids =
     !bidOrderbook || !market
       ? []
       : bidOrderbook.getL2(depth).map(([price, size]) => [price, size])
+
   const asks =
     !askOrderbook || !market
       ? []
@@ -493,12 +510,13 @@ export function useOrderbook(depth = 200) {
   return [{ bids, asks }, !!bids || !!asks]
 }
 
-// Want the balances table to be fast-updating, dont want open orders to flicker
-// TODO: Update to use websocket
-export function useOpenOrdersAccounts(fast = false) {
+const useOpenOrdersPubkeys = (): string[] => {
   const { market } = useMarket()
   const { connected, wallet } = useWallet()
   const connection = useConnection()
+
+  const openOrdersKey = `openOrdersPubkeys-${wallet?.publicKey}-${market?.publicKey}-${DEX_PID}`
+
   async function getOpenOrdersAccounts() {
     if (!connected) {
       return null
@@ -507,22 +525,114 @@ export function useOpenOrdersAccounts(fast = false) {
       return null
     }
 
+    const openOrdersPubkeys = JSON.parse(
+      localStorage.getItem(openOrdersKey) || '[]'
+    )
+
+    // check localStorage for existing openOrdersAccount for current market + wallet
+    if (openOrdersPubkeys && openOrdersPubkeys.length > 0)
+      return openOrdersPubkeys.map((acc: string) => new PublicKey(acc))
+
     const accounts = await market.findOpenOrdersAccountsForOwner(
       connection,
       wallet.publicKey
     )
 
-    return accounts
+    // keep string addresses in localStorage
+    localStorage.setItem(
+      openOrdersKey,
+      JSON.stringify(
+        accounts.map((acc: OpenOrders) => acc.publicKey?.toString())
+      )
+    )
+
+    return accounts.map((acc: OpenOrders) => acc.publicKey)
   }
+
   return useAsyncData(
     getOpenOrdersAccounts,
-    tuple('getOpenOrdersAccounts', wallet, market, connected),
-    { refreshInterval: fast ? _FAST_REFRESH_INTERVAL : _SLOW_REFRESH_INTERVAL }
+    tuple('getOpenOrdersAccountsFromProgramAccounts', connected, openOrdersKey),
+    { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
+  )
+}
+
+// Want the balances table to be fast-updating, dont want open orders to flicker
+// TODO: Update to use websocket
+export function useOpenOrdersAccounts(fast = false) {
+  const { market } = useMarket()
+  const { connected, wallet } = useWallet()
+  const connection = useConnection()
+
+  const [openOrdersPubkeys] = useOpenOrdersPubkeys()
+
+  async function getOpenOrdersAccounts() {
+    if (!connected) {
+      return null
+    }
+    if (!market) {
+      return null
+    }
+
+    const isOpenOrdersAlreadyCreated =
+      openOrdersPubkeys && openOrdersPubkeys.length > 0
+
+    let preCreatedOpenOrders = getCache(
+      `preCreatedOpenOrdersFor${market?.publicKey}`
+    )
+    let openOrdersPublicKey = null
+
+    // for already created openOrders account we take pubkey
+    if (isOpenOrdersAlreadyCreated) {
+      openOrdersPublicKey = openOrdersPubkeys[0]
+    } else if (!preCreatedOpenOrders) {
+      // for not created oo + not added to cache we create oo pubkey
+      // that will be used in order creation
+      preCreatedOpenOrders = new Account()
+      openOrdersPublicKey = preCreatedOpenOrders?.publicKey
+      setCache(
+        `preCreatedOpenOrdersFor${market?.publicKey}`,
+        preCreatedOpenOrders
+      )
+    } else {
+      // for not created but setted in cache we take pubkey
+      openOrdersPublicKey = preCreatedOpenOrders?.publicKey
+    }
+
+    // update openOrders info by address
+    const openOrdersAccountInfo = await connection.getAccountInfo(
+      openOrdersPublicKey
+    )
+
+    if (!openOrdersAccountInfo) {
+      return null
+    }
+
+    const openOrdersAccount = OpenOrders.fromAccountInfo(
+      openOrdersPublicKey,
+      openOrdersAccountInfo,
+      DEX_PID
+    )
+
+    // for using several openOrdersAccoutns we'll need to update this method
+    // currently it updates info only for first OO
+    return [openOrdersAccount]
+  }
+
+  return useAsyncData(
+    getOpenOrdersAccounts,
+    tuple(
+      'getOpenOrdersAccountsWithPreCached',
+      wallet,
+      market,
+      connected,
+      openOrdersPubkeys
+    ),
+    { refreshInterval: _SLOW_REFRESH_INTERVAL }
   )
 }
 
 export function useSelectedOpenOrdersAccount(fast = false) {
-  const [accounts, loaded] = useOpenOrdersAccounts(fast)
+  const [accounts] = useOpenOrdersAccounts(fast)
 
   if (!accounts) {
     return null
@@ -545,7 +655,7 @@ export function useTokenAccounts() {
   return useAsyncData(
     getTokenAccounts,
     tuple('getTokenAccounts', wallet, connected),
-    { refreshInterval: _SLOW_REFRESH_INTERVAL }
+    { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
   )
 }
 
@@ -595,39 +705,87 @@ export function getSelectedTokenAccountForMint(
 }
 
 export function useSelectedQuoteCurrencyAccount() {
-  const [accounts, loaded] = useTokenAccounts()
+  const [accounts] = useTokenAccounts()
   const { market } = useMarket()
   const [selectedTokenAccounts] = useSelectedTokenAccounts()
 
   const mintAddress = market?.quoteMintAddress
 
-  return getSelectedTokenAccountForMint(
-    market,
-    accounts,
-    mintAddress,
-    mintAddress && selectedTokenAccounts[mintAddress.toBase58()],
-    'base'
-  )
-}
+  const [associatedTokenAddress] = useAssociatedTokenAddressByMint(mintAddress)
+  const [associatedTokenInfo] = useAccountInfo(associatedTokenAddress)
 
-export function useSelectedBaseCurrencyAccount() {
-  const [accounts] = useTokenAccounts()
-  const { market } = useMarket()
-  const [selectedTokenAccounts] = useSelectedTokenAccounts()
-
-  const mintAddress = market?.baseMintAddress
-
-  return getSelectedTokenAccountForMint(
+  const quoteTokenAddress = getSelectedTokenAccountForMint(
     market,
     accounts,
     mintAddress,
     mintAddress && selectedTokenAccounts[mintAddress.toBase58()],
     'quote'
   )
+
+  // if not found in accounts, but token added as associated
+  if (!quoteTokenAddress && associatedTokenInfo) {
+    return {
+      pubkey: associatedTokenAddress,
+    }
+  }
+
+  return quoteTokenAddress
+}
+
+const useAssociatedTokenAddressByMint = (mint: PublicKey) => {
+  const { connected, wallet } = useWallet()
+
+  async function getAssociatedTokenAddress() {
+    if (!connected) {
+      return null
+    }
+    return await Token.getAssociatedTokenAddress(
+      ASSOCIATED_TOKEN_PROGRAM_ID,
+      TOKEN_PROGRAM_ID,
+      mint,
+      wallet.publicKey
+    )
+  }
+
+  return useAsyncData(
+    getAssociatedTokenAddress,
+    tuple('getAssociatedTokenAddress', mint, wallet.publicKey),
+    { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
+  )
+}
+
+export function useSelectedBaseCurrencyAccount() {
+  // getProgramAccounts
+  const [accounts] = useTokenAccounts()
+  const { market } = useMarket()
+  const [selectedTokenAccounts] = useSelectedTokenAccounts()
+
+  const mintAddress = market?.baseMintAddress
+
+  const [associatedTokenAddress] = useAssociatedTokenAddressByMint(mintAddress)
+  const [associatedTokenInfo] = useAccountInfo(associatedTokenAddress)
+
+  const baseTokenAddress = getSelectedTokenAccountForMint(
+    market,
+    accounts,
+    mintAddress,
+    mintAddress && selectedTokenAccounts[mintAddress.toBase58()],
+    'base'
+  )
+
+  // if not found in accounts, but token added as associated
+  if (!baseTokenAddress && associatedTokenInfo) {
+    return {
+      pubkey: associatedTokenAddress,
+    }
+  }
+
+  return baseTokenAddress
 }
 
 // TODO: Update to use websocket
 export function useQuoteCurrencyBalances() {
+  // or accos here - try get account info
   const quoteCurrencyAccount = useSelectedQuoteCurrencyAccount()
   const { market } = useMarket()
   const [accountInfo, loaded, refresh] = useAccountInfo(

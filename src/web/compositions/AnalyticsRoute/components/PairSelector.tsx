@@ -74,7 +74,7 @@ const _sortList = ({ sortBy, sortDirection, data }) => {
   return newList
 }
 
-function defaultRowRenderer({
+export const defaultRowRenderer = ({
   className,
   columns,
   index,
@@ -87,7 +87,7 @@ function defaultRowRenderer({
   rowData,
   style,
   selectedPair,
-}) {
+}) => {
   const a11yProps = { 'aria-rowindex': index + 1 }
 
   if (
@@ -125,6 +125,8 @@ function defaultRowRenderer({
     (rowData.symbol.contentToSort === selectedPair ||
       (rowData.symbol.contentToSort.toLowerCase().includes('all') &&
         selectedPair === 'all'))
+
+  console.log('className', className)
 
   return (
     <div
@@ -249,7 +251,7 @@ const PairSelector = ({
       stableCoinsPairsMap: new Map(),
       btcCoinsPairsMap: new Map(),
       altCoinsPairsMap: new Map(),
-      favoritePairsMap: new Map(),
+      favouritePairsMap: new Map(),
       usdcPairsMap: new Map(),
       usdtPairsMap: new Map(),
       marketType: 0,
@@ -427,10 +429,10 @@ export default compose(
       exchange: 'serum',
       publicKey: props.publicKey,
       marketType: 0,
-      startTimestamp: `${datesForQuery.startOfTime}`,
-      endTimestamp: `${datesForQuery.endOfTime}`,
-      prevStartTimestamp: `${datesForQuery.prevStartTimestamp}`,
-      prevEndTimestamp: `${datesForQuery.prevEndTimestamp}`,
+      startTimestamp: `${datesForQuery.startOfTime()}`,
+      endTimestamp: `${datesForQuery.endOfTime()}`,
+      prevStartTimestamp: `${datesForQuery.prevStartTimestamp()}`,
+      prevEndTimestamp: `${datesForQuery.prevEndTimestamp()}`,
     }),
     // TODO: make chache-first here and in CHART by refetching this after adding market
     fetchPolicy: 'cache-and-network',

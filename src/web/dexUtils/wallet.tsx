@@ -4,7 +4,7 @@ import {
   SolongWalletAdapter,
   SolletExtensionAdapter,
   MathWalletAdapter,
-  CcaiWalletAdapter,
+  CommonWalletAdapter,
   CcaiExtensionAdapter,
   PhantomWalletAdapter,
   LedgerWalletAdapter,
@@ -29,62 +29,84 @@ import { TokenListProvider } from '@solana/spl-token-registry'
 import { TokenInstructions } from '@project-serum/serum'
 import { useAsyncData } from './fetch-loop'
 import { getMaxWithdrawAmount } from './pools'
-import { MINT_LAYOUT, parseTokenAccountData } from './tokens'
+import {
+  getTokenAccountInfo,
+  MINT_LAYOUT,
+  parseTokenAccountData,
+} from './tokens'
 import Sollet from '@icons/sollet.svg'
 import Mathwallet from '@icons/mathwallet.svg'
 import Solong from '@icons/solong.svg'
 import WalletAldrin from '@icons/RINLogo.svg'
 import { WalletAdapter } from './adapters'
+import { _VERY_SLOW_REFRESH_INTERVAL } from './markets'
+import { MASTER_BUILD } from '@core/utils/config'
 
 export const WALLET_PROVIDERS = [
   // { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },
   {
     name: 'Wallet™',
     url: CCAIProviderURL,
-    adapter: Wallet,
+    adapter: CommonWalletAdapter,
+    isExtension: false,
+    showOnMobile: true,
     icon: WalletAldrin,
   },
-  {
-    name: 'Wallet™ Extension',
-    url: `${CCAIProviderURL}/extension`,
-    adapter: CcaiExtensionAdapter,
-    icon: WalletAldrin,
-  },
+  // {
+  //   name: 'Wallet™ Extension',
+  //   url: `${CCAIProviderURL}/extension`,
+  //   adapter: CcaiExtensionAdapter,
+  //   isExtension: true,
+  //   showOnMobile: false,
+  //   icon: WalletAldrin,
+  // },
   {
     name: 'Sollet.io',
     url: 'https://www.sollet.io',
-    adapter: Wallet,
+    adapter: CommonWalletAdapter,
     icon: Sollet,
+    isExtension: false,
+    showOnMobile: true,
   },
   {
     name: 'Sollet Extension',
     url: 'https://www.sollet.io/extension',
     adapter: SolletExtensionAdapter,
     icon: Sollet,
+    isExtension: true,
+    showOnMobile: false,
   },
   {
     name: 'Ledger',
     url: 'https://www.ledger.com',
     icon: `https://cdn.jsdelivr.net/gh/solana-labs/oyster@main/assets/wallets/ledger.svg`,
     adapter: LedgerWalletAdapter,
+    isExtension: false,
+    showOnMobile: false,
   },
   {
     name: 'Phantom',
     url: 'https://www.phantom.app',
     icon: `https://www.phantom.app/img/logo.png`,
     adapter: PhantomWalletAdapter,
+    isExtension: false,
+    showOnMobile: false,
   },
   {
     name: 'MathWallet',
     url: 'https://www.mathwallet.org',
     adapter: MathWalletAdapter,
     icon: Mathwallet,
+    isExtension: false,
+    showOnMobile: false,
   },
   {
     name: 'Solong',
     url: 'https://solongwallet.com',
     adapter: SolongWalletAdapter,
     icon: Solong,
+    isExtension: false,
+    showOnMobile: false,
   },
 ]
 
@@ -263,7 +285,8 @@ export function useWalletPublicKeys() {
 
   const [tokenAccountInfo, loaded] = useAsyncData(
     () => getTokenAccountInfo(connection, wallet.publicKey),
-    'getTokenAccountInfo'
+    'getTokenAccountInfo',
+    { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
   )
 
   let publicKeys = [
@@ -474,7 +497,8 @@ export async function signAndSendTransaction(
   transaction,
   wallet,
   signers,
-  skipPreflight = false
+  skipPreflight = false,
+  focusPopup = false
 ) {
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash('max')
@@ -489,7 +513,7 @@ export async function signAndSendTransaction(
     transaction.partialSign(...signers)
   }
 
-  transaction = await wallet.signTransaction(transaction)
+  transaction = await wallet.signTransaction(transaction, focusPopup)
   const rawTransaction = transaction.serialize()
   return await connection.sendRawTransaction(rawTransaction, {
     skipPreflight,
@@ -510,11 +534,18 @@ export async function createAssociatedTokenAccount({
   const tx = new Transaction()
   tx.add(ix)
   tx.feePayer = wallet.publicKey
-  const txSig = await signAndSendTransaction(connection, tx, wallet, [])
+  const txSig = await signAndSendTransaction(
+    connection,
+    tx,
+    wallet,
+    [],
+    false,
+    true
+  )
 
   return [address, txSig]
 }
-async function createAssociatedTokenAccountIx(
+export async function createAssociatedTokenAccountIx(
   fundingAddress,
   walletAddress,
   splTokenMintAddress

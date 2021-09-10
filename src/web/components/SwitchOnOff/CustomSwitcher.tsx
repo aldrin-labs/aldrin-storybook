@@ -1,68 +1,7 @@
 import React, { CSSProperties } from 'react'
-import styled from 'styled-components'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Theme } from '@material-ui/core'
 
-const SwitcherHalf = styled(
-  ({
-    isDisabled,
-    activeBackgroundColor,
-    activeColor,
-    activeBorderColor,
-    isFirstHalf,
-    borderRadius,
-    width,
-    height,
-    padding,
-    theme,
-    ...rest
-  }) => (
-    <BtnCustom
-      btnWidth={width}
-      fontSize="1.3rem"
-      padding={padding}
-      btnColor={isDisabled ? theme.palette.grey.text : activeColor}
-      backgroundColor={
-        isDisabled ? theme.palette.white.background : activeBackgroundColor
-      }
-      borderColor={isDisabled ? theme.palette.grey.border : activeBorderColor}
-      {...rest}
-    />
-  )
-)`
-  height: ${(props) => props.height};
-  font-weight: ${(props) => props.fontWeight || 'normal'};
-  text-transform: ${(props) => props.textTransform || 'capitalize'};
-  white-space: nowrap;
-  cursor: ${(props) => (props.isDisabled ? 'unset' : 'pointer')};
-  letter-spacing: 0.15rem;
-  min-width: 0;
-
-  &:hover {
-    color: ${(props) => props.isDisabled && props.activeColor};
-    background-color: ${(props) =>
-      props.isDisabled && props.activeBackgroundColor};
-    border: ${(props) =>
-      props.isDisabled && `0.1rem solid ${props.activeBorderColor}`};
-    cursor: ${(props) => props.isDisabled && 'pointer'};
-  }
-
-  border-radius: ${(props) =>
-    props.isFirstHalf
-      ? `${props.borderRadius} 0 0 ${props.borderRadius}`
-      : `0 ${props.borderRadius} ${props.borderRadius} 0`};
-  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-
-  @media (min-width: 1921px) {
-    height: ${(props) => `calc(${props.height} - .5rem)`};
-    font-size: 1.1rem;
-    padding-top: 0.2rem;
-  }
-
-  & span {
-    line-height: normal;
-  }
-`
+import { SwitcherHalf } from './styles'
 
 const CustomSwitcher = ({
   firstHalfIsActive,
@@ -73,7 +12,9 @@ const CustomSwitcher = ({
   secondHalfStyleProperties,
   buttonHeight,
   containerStyles,
+  needBorderRadius,
   theme,
+  needBorder,
 }: {
   firstHalfIsActive: boolean
   changeHalf: () => void
@@ -83,7 +24,9 @@ const CustomSwitcher = ({
   secondHalfStyleProperties: CSSProperties
   buttonHeight: string
   containerStyles: CSSProperties
+  needBorderRadius: boolean
   theme: Theme
+  needBorder: boolean
 }) => {
   return (
     <div style={{ display: 'inline-block', ...containerStyles }}>
@@ -95,6 +38,8 @@ const CustomSwitcher = ({
         onClick={() => !firstHalfIsActive && changeHalf()}
         height={buttonHeight}
         width={'50%'}
+        needBorderRadius
+        needBorder
         {...firstHalfStyleProperties}
       >
         {firstHalfText}
@@ -106,6 +51,8 @@ const CustomSwitcher = ({
         onClick={() => firstHalfIsActive && changeHalf()}
         height={buttonHeight}
         width={'50%'}
+        needBorderRadius
+        needBorder
         {...secondHalfStyleProperties}
       >
         {secondHalfText}

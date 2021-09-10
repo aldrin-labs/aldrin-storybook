@@ -1,10 +1,9 @@
-import React from 'react'
 import {
   fixedColors,
   fixedColorsForLegend,
   getRandomBlueColor,
 } from '@sb/components/AllocationBlock/DonutChart/utils'
-import { Colors, TokensDataType, TokensMapType } from '../Rebalance.types'
+import { Colors, TokensMapType } from '../Rebalance.types'
 
 export const generateChartColors = ({
   data,

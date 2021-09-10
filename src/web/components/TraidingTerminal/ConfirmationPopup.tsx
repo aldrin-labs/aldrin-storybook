@@ -33,13 +33,22 @@ const StyledPaper = styled(Paper)`
   align-items: center;
   margin: 2rem;
   padding: 3rem;
+  @media (max-width: 600px) {
+    border-radius: o;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    margin: 0;
+    border: 0;
+    padding: 43rem 3rem;
+  }
 `
 export const MainTitle = styled.span`
   font-family: Avenir Next Bold;
   font-size: 3rem;
   line-height: 4rem;
   text-align: center;
-  letter-spacing: -1.04615px;
+  letter-spacing: 0.01rem;
   color: #f8faff;
   margin-bottom: 2rem;
 `
@@ -74,13 +83,19 @@ export const WhiteButton = styled((props) => (
   />
 ))`
   outline: none;
+
+  @media (max-width: 600px) {
+    height: 7.5rem;
+    border-radius: 2rem;
+    font-size: 2rem;
+  }
 `
 export const WhiteText = styled.span`
   font-family: Avenir Next;
   font-size: 1.5rem;
   display: flex;
   align-items: center;
-  letter-spacing: -0.523077px;
+  letter-spacing: 0.01rem;
   color: #f8faff;
 `
 const WarningBlock = styled.div`
@@ -286,7 +301,7 @@ export const ConfirmationPopup = ({
                   fontFamily: 'Avenir Next Medium',
                   whiteSpace: 'nowrap',
                   letterSpacing: '0.01rem',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
                 }}
               >
                 I am aware of the risks associated with high Spread and still
@@ -318,7 +333,6 @@ export const ConfirmationPopup = ({
                 ? theme.palette.grey.title
                 : '',
               width: '49%',
-              height: '4.5rem',
               color: theme.palette.grey.terminal,
             }}
             theme={theme}
@@ -354,7 +368,7 @@ export const ConfirmationPopup = ({
               await onClose()
             }}
             type={sideType}
-            style={{ width: '49%', height: '4.5rem' }}
+            style={{ width: '49%' }}
             theme={theme}
           >
             {isSPOTMarket

@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import * as BufferLayout from 'buffer-layout'
-import bs58 from 'bs58'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { Theme } from '@material-ui/core'
@@ -17,23 +15,20 @@ import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import {
   calculateWithdrawAmount,
   depositAllTokenTypes,
-  getParsedTransactionData,
 } from '@sb/dexUtils/pools'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
-import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
-import { PoolInfo, DexTokensPrices } from '@sb/compositions/Pools/index.types'
+import {
+  PublicKey,
+} from '@solana/web3.js'
+import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { notify } from '@sb/dexUtils/notifications'
-import { Token, TOKEN_PROGRAM_ID } from '@sb/dexUtils/token/token'
-import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import AttentionComponent from '@sb/components/AttentionBlock'
-import { SelectCoinPopup } from '../SelectCoin'
 import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
-import { TOKEN_SWAP_PROGRAM_ID } from '@sb/dexUtils/token-swap/token-swap'
 
 export const AddLiquidityPopup = ({
   theme,
