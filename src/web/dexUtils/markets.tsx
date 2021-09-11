@@ -192,9 +192,10 @@ export function useAllMarkets() {
     )
   }
 
-  const memoizedGetAllMarkets = useMemo(() => getAllMarkets, [
-    JSON.stringify(customMarkets),
-  ])
+  const memoizedGetAllMarkets = useMemo(
+    () => getAllMarkets,
+    [JSON.stringify(customMarkets)]
+  )
 
   // console.log('memoizedGetAllMarkets', memoizedGetAllMarkets)
 
@@ -219,9 +220,9 @@ export function useUnmigratedOpenOrdersAccounts() {
     let deprecatedOpenOrdersAccounts = []
     const deprecatedProgramIds = Array.from(
       new Set(
-        USE_MARKETS.filter(
-          ({ deprecated }) => deprecated
-        ).map(({ programId }) => programId.toBase58())
+        USE_MARKETS.filter(({ deprecated }) => deprecated).map(
+          ({ programId }) => programId.toBase58()
+        )
       )
     ).map((publicKeyStr) => new PublicKey(publicKeyStr))
     let programId
@@ -525,30 +526,55 @@ const useOpenOrdersPubkeys = (): string[] => {
       return null
     }
 
-    const openOrdersPubkeys = JSON.parse(
-      localStorage.getItem(openOrdersKey) || '[]'
-    )
+    // const openOrdersPubkeys = []
+    // JSON.parse(
+    //   localStorage.getItem(openOrdersKey) || '[]'
+    // )
 
     // check localStorage for existing openOrdersAccount for current market + wallet
-    if (openOrdersPubkeys && openOrdersPubkeys.length > 0)
-      return openOrdersPubkeys.map((acc: string) => new PublicKey(acc))
+    // if (openOrdersPubkeys && openOrdersPubkeys.length > 0)
+    //   return openOrdersPubkeys.map((acc: string) => new PublicKey(acc))
 
     const accounts = await market.findOpenOrdersAccountsForOwner(
       connection,
       wallet.publicKey
     )
 
-    const sortedAccountsByCountOfExistingOpenOrders = accounts.sort((a: { freeSlotBits: typeof BN }, b: { freeSlotBits: typeof BN }) => a?.freeSlotBits?.cmp(b?.freeSlotBits))
+    // BE AWARE: .sort() mutates the arrey
+
+    const sortedAccountsByCountOfExistingOpenOrders = accounts.sort(
+      (a: { freeSlotBits: typeof BN }, b: { freeSlotBits: typeof BN }) =>
+        a?.freeSlotBits?.cmp(b?.freeSlotBits)
+    )
+    const sortedAccountsByUnsettledBalances =
+      sortedAccountsByCountOfExistingOpenOrders.sort(
+        (
+          a: { baseTokenFree: typeof BN; quoteTokenFree: typeof BN },
+          b: { baseTokenFree: typeof BN; quoteTokenFree: typeof BN }
+        ) =>
+          a?.baseTokenFree.cmp(b?.baseTokenFree) === 1 ||
+          a?.quoteTokenFree.cmp(b?.quoteTokenFree) === 1
+            ? -1
+            : a?.baseTokenFree.cmp(b?.baseTokenFree) === -1 ||
+              a?.quoteTokenFree.cmp(b?.quoteTokenFree) === -1
+            ? 1
+            : 0
+      )
+
+
+      console.log('[getOpenOrdersAccounts] current openOrderAccount: ', sortedAccountsByUnsettledBalances[0]?.address?.toBase58())
 
     // keep string addresses in localStorage
-    localStorage.setItem(
-      openOrdersKey,
-      JSON.stringify(
-        sortedAccountsByCountOfExistingOpenOrders.map((acc: OpenOrders) => acc.publicKey?.toString())
-      )
-    )
+    // localStorage.setItem(
+    //   openOrdersKey,
+    //   JSON.stringify(
+    //     sortedAccountsByCountOfExistingOpenOrders.map((acc: OpenOrders) => acc.publicKey?.toString())
+    //   )
+    // )
 
-    return sortedAccountsByCountOfExistingOpenOrders.map((acc: OpenOrders) => acc.publicKey)
+    return sortedAccountsByUnsettledBalances.map(
+      (acc: OpenOrders) => acc.publicKey
+    )
   }
 
   return useAsyncData(
@@ -774,9 +800,6 @@ export function useSelectedBaseCurrencyAccount() {
     mintAddress && selectedTokenAccounts[mintAddress.toBase58()],
     'base'
   )
-
-  console.log('quoteTokenAddress', baseTokenAddress?.toString())
-  console.log('associatedTokenInfo', associatedTokenInfo, associatedTokenAddress?.toString())
 
   // if not found in accounts, but token added as associated
   if (!baseTokenAddress && associatedTokenInfo) {
@@ -1138,10 +1161,8 @@ export function useSelectedTokenAccounts(): [
   SelectedTokenAccounts,
   (newSelectedTokenAccounts: SelectedTokenAccounts) => void
 ] {
-  const [
-    selectedTokenAccounts,
-    setSelectedTokenAccounts,
-  ] = useLocalStorageState<SelectedTokenAccounts>('selectedTokenAccounts', {})
+  const [selectedTokenAccounts, setSelectedTokenAccounts] =
+    useLocalStorageState<SelectedTokenAccounts>('selectedTokenAccounts', {})
   return [selectedTokenAccounts, setSelectedTokenAccounts]
 }
 
