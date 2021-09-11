@@ -360,9 +360,6 @@ export async function placeOrder({
   quoteCurrencyAccount,
   openOrdersAccount,
 }) {
-  let baseCurrencyAccountPubkey = baseCurrencyAccount?.pubkey
-  let quoteCurrencyAccountPubkey = quoteCurrencyAccount?.pubkey
-
   console.log('place ORDER', market?.minOrderSize, size)
   const isValidationSuccessfull = validateVariablesForPlacingOrder({
     price,
@@ -378,8 +375,42 @@ export async function placeOrder({
 
   const owner = wallet.publicKey
 
+  const openOrdersAccountFromCache = getCache(
+    `preCreatedOpenOrdersFor${market?.publicKey}`
+  )
+
+  console.log('openOrdersAccount in placeOrder', openOrdersAccount)
+
+  const transaction = new Transaction()
+
+  if (!baseCurrencyAccount) {
+    const {
+      transaction: createAccountTransaction,
+      newAccountPubkey,
+    } = await createTokenAccountTransaction({
+      connection,
+      wallet,
+      mintPublicKey: market.baseMintAddress,
+    })
+    transaction.add(createAccountTransaction)
+    baseCurrencyAccount = { pubkey: newAccountPubkey }
+  }
+  if (!quoteCurrencyAccount) {
+    const {
+      transaction: createAccountTransaction,
+      newAccountPubkey,
+    } = await createTokenAccountTransaction({
+      connection,
+      wallet,
+      mintPublicKey: market.quoteMintAddress,
+    })
+    transaction.add(createAccountTransaction)
+    quoteCurrencyAccount = { pubkey: newAccountPubkey }
+  }
+
   const payer =
     side === 'sell' ? baseCurrencyAccount.pubkey : quoteCurrencyAccount.pubkey
+
   if (!payer) {
     notify({
       message: 'Need an SPL token account for cost currency',
@@ -387,12 +418,6 @@ export async function placeOrder({
     })
     return
   }
-
-  const openOrdersAccountFromCache = getCache(
-    `preCreatedOpenOrdersFor${market?.publicKey}`
-  )
-
-  console.log('openOrdersAccount in placeOrder', openOrdersAccount)
 
   const params = {
     owner,
@@ -409,33 +434,6 @@ export async function placeOrder({
   }
   console.log(params)
 
-  const transaction = new Transaction()
-
-  if (!baseCurrencyAccount) {
-    const {
-      transaction: createAccountTransaction,
-      newAccountPubkey,
-    } = await createTokenAccountTransaction({
-      connection,
-      wallet,
-      mintPublicKey: market.baseMintAddress,
-    })
-    transaction.add(createAccountTransaction)
-    baseCurrencyAccount = newAccountPubkey
-  }
-  if (!quoteCurrencyAccount) {
-    const {
-      transaction: createAccountTransaction,
-      newAccountPubkey,
-    } = await createTokenAccountTransaction({
-      connection,
-      wallet,
-      mintPublicKey: market.quoteMintAddress,
-    })
-    transaction.add(createAccountTransaction)
-    quoteCurrencyAccount = newAccountPubkey
-  }
-
   transaction.add(market.makeMatchOrdersTransaction(5))
   let referrerQuoteWallet: PublicKey | null = null
   let {
@@ -451,6 +449,9 @@ export async function placeOrder({
   transaction.add(market.makeMatchOrdersTransaction(5))
 
   console.log('placeOrder transaction after add', transaction)
+
+  let baseCurrencyAccountPubkey = baseCurrencyAccount?.pubkey
+  let quoteCurrencyAccountPubkey = quoteCurrencyAccount?.pubkey
 
   if (isMarketOrder && openOrdersAccount) {
     const {
