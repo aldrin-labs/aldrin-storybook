@@ -561,6 +561,9 @@ const useOpenOrdersPubkeys = (): string[] => {
             : 0
       )
 
+
+      console.log('[getOpenOrdersAccounts] current openOrderAccount: ', sortedAccountsByUnsettledBalances[0]?.address?.toBase58())
+
     // keep string addresses in localStorage
     // localStorage.setItem(
     //   openOrdersKey,
