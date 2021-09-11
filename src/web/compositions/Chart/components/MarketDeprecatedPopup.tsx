@@ -36,7 +36,7 @@ export const MarketDeprecatedPopup = ({
   const [isPopupOpen, setIsPopupOpen] = useState(true)
 
   const currentMarketPublicKey = market?.publicKey?.toString()
-  const showNewMarket = currentMarketPublicKey === newMarketID
+  const isNewMarket = currentMarketPublicKey === newMarketID
   const showPopup =
     currentMarketPublicKey === newMarketID ||
     currentMarketPublicKey === oldMarketID
@@ -57,7 +57,7 @@ export const MarketDeprecatedPopup = ({
       aria-labelledby="responsive-dialog-title"
     >
       <RowContainer style={{ marginBottom: '10rem' }} justify={'space-between'}>
-        <Title>{!showNewMarket ? 'Market Deprecated' : 'Market Updated'}</Title>{' '}
+        <Title>{isNewMarket ? 'Market Updated' : 'Market Deprecated'}</Title>{' '}
         <SvgIcon
           onClick={() => onClose()}
           src={CloseIcon}
@@ -72,7 +72,7 @@ export const MarketDeprecatedPopup = ({
           is also moving.
         </WhiteText>
         <WhiteText style={{ display: 'inline', fontSize: '1.7rem' }}>
-          You can close your open orders on this market and continue your
+          You can close your open orders on {isNewMarket ? 'old' : 'this'} market and continue your
           trading on the new one:{' '}
           <a
             style={{ color: theme.palette.blue.serum, textDecoration: 'none' }}
