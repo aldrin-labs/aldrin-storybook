@@ -430,7 +430,7 @@ export async function placeOrder({
     isMarketOrder,
     ...(!openOrdersAccount
       ? { openOrdersAccount: openOrdersAccountFromCache }
-      : {}),
+      : { openOrdersAccount }),
   }
   console.log(params)
 
