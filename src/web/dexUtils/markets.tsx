@@ -525,13 +525,14 @@ const useOpenOrdersPubkeys = (): string[] => {
       return null
     }
 
-    const openOrdersPubkeys = JSON.parse(
-      localStorage.getItem(openOrdersKey) || '[]'
-    )
+    // const openOrdersPubkeys = []
+    // JSON.parse(
+    //   localStorage.getItem(openOrdersKey) || '[]'
+    // )
 
     // check localStorage for existing openOrdersAccount for current market + wallet
-    if (openOrdersPubkeys && openOrdersPubkeys.length > 0)
-      return openOrdersPubkeys.map((acc: string) => new PublicKey(acc))
+    // if (openOrdersPubkeys && openOrdersPubkeys.length > 0)
+    //   return openOrdersPubkeys.map((acc: string) => new PublicKey(acc))
 
     const accounts = await market.findOpenOrdersAccountsForOwner(
       connection,
@@ -541,12 +542,12 @@ const useOpenOrdersPubkeys = (): string[] => {
     const sortedAccountsByCountOfExistingOpenOrders = accounts.sort((a: { freeSlotBits: typeof BN }, b: { freeSlotBits: typeof BN }) => a?.freeSlotBits?.cmp(b?.freeSlotBits))
 
     // keep string addresses in localStorage
-    localStorage.setItem(
-      openOrdersKey,
-      JSON.stringify(
-        sortedAccountsByCountOfExistingOpenOrders.map((acc: OpenOrders) => acc.publicKey?.toString())
-      )
-    )
+    // localStorage.setItem(
+    //   openOrdersKey,
+    //   JSON.stringify(
+    //     sortedAccountsByCountOfExistingOpenOrders.map((acc: OpenOrders) => acc.publicKey?.toString())
+    //   )
+    // )
 
     return sortedAccountsByCountOfExistingOpenOrders.map((acc: OpenOrders) => acc.publicKey)
   }
@@ -774,9 +775,6 @@ export function useSelectedBaseCurrencyAccount() {
     mintAddress && selectedTokenAccounts[mintAddress.toBase58()],
     'base'
   )
-
-  console.log('quoteTokenAddress', baseTokenAddress?.toString())
-  console.log('associatedTokenInfo', associatedTokenInfo, associatedTokenAddress?.toString())
 
   // if not found in accounts, but token added as associated
   if (!baseTokenAddress && associatedTokenInfo) {
