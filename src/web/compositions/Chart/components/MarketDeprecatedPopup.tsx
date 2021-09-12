@@ -11,6 +11,8 @@ import { BlueButton, Title } from './WarningPopup'
 import { useMarket } from '@sb/dexUtils/markets'
 import CloseIcon from '@icons/closeIcon.svg'
 import SvgIcon from '@sb/components/SvgIcon'
+import { Link } from 'react-router-dom'
+import { useLocalStorageState } from '@sb/dexUtils/utils'
 
 export const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -33,27 +35,37 @@ export const MarketDeprecatedPopup = ({
   newMarketID: string
 }) => {
   const { market, baseCurrency, quoteCurrency } = useMarket()
-  const [isPopupOpen, setIsPopupOpen] = useState(true)
+  const [
+    isDeprecatedMarketPopupOpen,
+    setIsDeprecatedMarketPopupOpen,
+  ] = useLocalStorageState(`isDeprecatedMarketPopupOpen-${oldMarketID}`, true)
+  const [
+    isUpdatedMarketPopupOpen,
+    setIsUpdatedMarketPopupOpen,
+  ] = useLocalStorageState(`isUpdatedMarketPopupOpen-${newMarketID}`, true)
 
   const currentMarketPublicKey = market?.publicKey?.toString()
   const isNewMarket = currentMarketPublicKey === newMarketID
   const showPopup =
-    currentMarketPublicKey === newMarketID ||
-    currentMarketPublicKey === oldMarketID
+    (currentMarketPublicKey === newMarketID && isUpdatedMarketPopupOpen) ||
+    (currentMarketPublicKey === oldMarketID && isDeprecatedMarketPopupOpen)
 
-  if (!showPopup || !isPopupOpen) {
+  if (!showPopup) {
     return null
   }
-  const onClose = () => setIsPopupOpen(false)
+  const onClose = () =>
+    isNewMarket
+      ? setIsUpdatedMarketPopupOpen(false)
+      : setIsDeprecatedMarketPopupOpen(false)
 
   return (
     <DialogWrapper
       theme={theme}
       PaperComponent={StyledPaper}
       fullScreen={false}
-      onClose={onClose}
+      onClose={() => {}} // close only by ok
       maxWidth={'md'}
-      open={isPopupOpen}
+      open={true}
       aria-labelledby="responsive-dialog-title"
     >
       <RowContainer style={{ marginBottom: '10rem' }} justify={'space-between'}>
@@ -72,15 +84,40 @@ export const MarketDeprecatedPopup = ({
           is also moving.
         </WhiteText>
         <WhiteText style={{ display: 'inline', fontSize: '1.7rem' }}>
-          You can close your open orders on {isNewMarket ? 'old' : 'this'} market and continue your
-          trading on the new one:{' '}
-          <a
-            style={{ color: theme.palette.blue.serum, textDecoration: 'none' }}
-            href={`${baseCurrency}_${quoteCurrency}`}
-          >
-            {' '}
-            {baseCurrency}/{quoteCurrency}
-          </a>
+          You can close your open orders on{' '}
+          {isNewMarket ? (
+            <>
+              <span>old</span>{' '}
+              <Link
+                style={{
+                  color: theme.palette.blue.serum,
+                  textDecoration: 'none',
+                }}
+                to={`/chart/spot/${baseCurrency}_${quoteCurrency}_deprecated`}
+              >
+                {baseCurrency}/{quoteCurrency}
+              </Link>
+            </>
+          ) : (
+            'this'
+          )}{' '}
+          market and continue your trading on the new one{' '}
+          {isNewMarket ? (
+            'here'
+          ) : (
+            <>
+              :{' '}
+              <Link
+                style={{
+                  color: theme.palette.blue.serum,
+                  textDecoration: 'none',
+                }}
+                to={`/chart/spot/${baseCurrency}_${quoteCurrency}`}
+              >
+                {baseCurrency}/{quoteCurrency}
+              </Link>
+            </>
+          )}
         </WhiteText>
       </RowContainer>
       <RowContainer
