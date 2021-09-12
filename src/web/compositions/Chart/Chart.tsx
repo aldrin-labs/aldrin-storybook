@@ -47,6 +47,7 @@ import { TransactionsConfirmationWarningPopup } from '@sb/components/Transaction
 import { SettleWarningPopup } from '@sb/components/SettleWarningPopup/SettleWarningPopup'
 import { ProposeToSettlePopup } from '@sb/components/ProposeToSettlePopup/ProposeToSettlePopup'
 import { RpcCapacityWarningPopup } from '@sb/components/RpcWarningPopup/RpcWarningPopup'
+import { MarketDeprecatedPopup } from '@sb/components/MarketDeprecatedPopup/MarketDeprecatedPopup'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
   // Check if the arrays are the same length
@@ -330,6 +331,11 @@ function ChartPageComponent(props: any) {
       <TransactionsConfirmationWarningPopup theme={theme} />
       {/* <SettleWarningPopup theme={theme} /> */}
       <ProposeToSettlePopup theme={theme} />
+      <MarketDeprecatedPopup
+        theme={theme}
+        newMarketID={'D7p7PebNjpkH6VNHJhmiDFNmpz9XE7UaTv9RouxJMrwb'}
+        oldMarketID={'FLKUQGh9VAG4otn4njLPUf5gaUPx5aAZ2Q6xWiD3hH5u'}
+      />
       <RpcCapacityWarningPopup theme={theme} />
       {/* )} */}
       {/* <JoyrideOnboarding

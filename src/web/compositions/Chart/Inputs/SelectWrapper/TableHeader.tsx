@@ -217,23 +217,23 @@ const TableHeader = ({
                 {`(${filterSelectorDataForTab('leveraged').length})`}
               </span>
             </StyledTab>
-            <StyledTab
-              theme={theme}
-              isSelected={tab === 'customMarkets'}
-              onClick={() => onTabChange('customMarkets')}
-            >
-              Custom markets{' '}
-              <span
-                style={{
-                  color: tab === 'customMarkets' ? '#fbf2f2' : '#96999C',
-                  marginLeft: '0.5rem',
-                }}
-              >
-                {`(${filterSelectorDataForTab('customMarkets').length})`}
-              </span>
-            </StyledTab>
           </>
         )}
+        <StyledTab
+          theme={theme}
+          isSelected={tab === 'customMarkets'}
+          onClick={() => onTabChange('customMarkets')}
+        >
+          Custom markets{' '}
+          <span
+            style={{
+              color: tab === 'customMarkets' ? '#fbf2f2' : '#96999C',
+              marginLeft: '0.5rem',
+            }}
+          >
+            {`(${filterSelectorDataForTab('customMarkets').length})`}
+          </span>
+        </StyledTab>
       </Row>
     </StyledHeader>
   )
