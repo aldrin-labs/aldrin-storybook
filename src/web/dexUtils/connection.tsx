@@ -46,9 +46,16 @@ export function ConnectionProvider({ children }) {
             ],
             'recent'
           )
-        : new Connection(
-            ENDPOINTS.find((endpointInfo) => endpointInfo.endpoint === endpoint)
-              ?.endpoint || MAINNET_BETA_ENDPOINT,
+        : new MultiEndpointsConnection(
+            [
+              {
+                url:
+                  ENDPOINTS.find(
+                    (endpointInfo) => endpointInfo.endpoint === endpoint
+                  )?.endpoint || MAINNET_BETA_ENDPOINT,
+                RPS: 20,
+              },
+            ],
             'recent'
           ),
     [endpoint]
@@ -57,10 +64,7 @@ export function ConnectionProvider({ children }) {
   // is empty after opening its first time, preventing subsequent subscriptions from receiving responses.
   // This is a hack to prevent the list from every getting empty
   useEffect(() => {
-    const rawConnection =
-      endpoint === MAINNET_BETA_ENDPOINT
-        ? connection.getConnection()
-        : connection
+    const rawConnection = connection.getConnection()
 
     const id = rawConnection.onAccountChange(new Account().publicKey, () => {})
 
@@ -70,10 +74,7 @@ export function ConnectionProvider({ children }) {
   }, [endpoint, connection])
 
   useEffect(() => {
-    const rawConnection =
-      endpoint === MAINNET_BETA_ENDPOINT
-        ? connection.getConnection()
-        : connection
+    const rawConnection = connection.getConnection()
 
     const id = rawConnection.onSlotChange(() => null)
 
@@ -149,7 +150,7 @@ export function useAccountInfo(
   //   }
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [cacheKey])
-  
+
   const previousInfoRef = useRef<AccountInfo<Buffer> | null | undefined>(null)
   if (
     !accountInfo ||
@@ -165,4 +166,18 @@ export function useAccountInfo(
 export function useAccountData(publicKey) {
   const [accountInfo] = useAccountInfo(publicKey)
   return accountInfo && accountInfo.data
+}
+
+export const getConnectionFromMultiConnections = ({ connection }) => {
+  const rawConnection = connection?.getConnection()
+  console.log('rawConnection', rawConnection)
+
+  return rawConnection
+}
+
+export const getProviderNameFromUrl = ({ rawConnection }) => {
+  const rpcProvider = rawConnection._rpcEndpoint
+    .replace('https://', '')
+    .replaceAll('.', '-')
+  return rpcProvider
 }
