@@ -40,9 +40,10 @@ export const MarketDeprecatedPopup = ({
     (currentMarketPublicKey === newMarketID && isUpdatedMarketPopupOpen) ||
     (currentMarketPublicKey === oldMarketID && isDeprecatedMarketPopupOpen)
 
-  if (!showPopup) {
+  if (!showPopup || !currentMarketPublicKey) {
     return null
   }
+
   const onClose = () =>
     isNewMarket
       ? setIsUpdatedMarketPopupOpen(false)
