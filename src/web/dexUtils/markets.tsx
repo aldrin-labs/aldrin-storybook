@@ -312,13 +312,6 @@ function getMarketDetails(market, marketInfos) {
     (marketInfo?.quoteLabel && `${marketInfo?.quoteLabel}*`) ||
     'UNKNOWN'
 
-  console.log('market data', {
-    marketName: marketInfo?.name,
-    baseCurrency,
-    quoteCurrency,
-    marketInfo,
-  })
-
   return {
     ...marketInfo,
     marketName: marketInfo?.name,

@@ -396,7 +396,7 @@ export const combineSelectWrapperData = ({
     const sign24hChange = +priceChangePercentage > 0 ? `+` : ``
     const signTrades24hChange = +precentageTradesDiff > 0 ? '+' : '-'
 
-    const marketName = symbol?.replaceAll('_', '/')
+    const marketName = symbol?.replace('_', '/')
     const currentMarket = allMarketsMap?.get(symbol)
 
     const isAdditionalCustomUserMarket = el.isCustomUserMarket
