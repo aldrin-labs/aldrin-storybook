@@ -29,6 +29,10 @@ import {
 } from '@solana/spl-token'
 import { getCache } from './fetch-loop'
 import { Metrics } from '../../utils/metrics'
+import {
+  getConnectionFromMultiConnections,
+  getProviderNameFromUrl,
+} from './connection'
 
 const getNotificationText = ({
   baseSymbol = 'CCAI',
@@ -878,28 +882,42 @@ export async function sendTransaction({
     }
   })()
 
+  const rawConnection = getConnectionFromMultiConnections({
+    connection: connection,
+  })
+
   let result = await awaitTransactionSignatureConfirmationWithNotifications({
     txid,
     timeout,
-    connection,
+    connection: rawConnection,
     showErrorForTimeout: false,
   })
-
   if (result === 'timeout') {
+    const rpcProvider = getProviderNameFromUrl({ rawConnection })
     Metrics.sendMetrics({
-      metricName: 'error.rpc.timeoutConfirmationTransaction',
+      metricName: `error.rpc.${rpcProvider}.timeoutConfirmationTransaction`,
     })
+
+    // trying again for another 30s with probably another connection
+    const rawConnectionForRetry = getConnectionFromMultiConnections({
+      connection: connection,
+    })
+
     result = await awaitTransactionSignatureConfirmationWithNotifications({
       txid,
       timeout,
-      connection,
+      connection: rawConnectionForRetry,
       interval: 2400,
       showErrorForTimeout: true,
     })
 
     if (!result) {
+      const rpcProvider = getProviderNameFromUrl({
+        rawConnection: rawConnectionForRetry,
+      })
+
       Metrics.sendMetrics({
-        metricName: 'error.rpc.secondTimeoutConfirmationTransaction',
+        metricName: `error.rpc.${rpcProvider}.secondTimeoutConfirmationTransaction`,
       })
     }
   }
@@ -948,8 +966,14 @@ const awaitTransactionSignatureConfirmationWithNotifications = async ({
     }
 
     notify({ message: 'Transaction failed', type: 'error' })
+    const rpcProvider = getProviderNameFromUrl({
+      rawConnection: connection,
+    })
+
     Metrics.sendMetrics({
-      metricName: `error.rpc.transactionFailed-${JSON.stringify(err)}`,
+      metricName: `error.rpc.${rpcProvider}.transactionFailed-${JSON.stringify(
+        err
+      )}`,
     })
     return null
   }
@@ -1001,6 +1025,9 @@ async function awaitTransactionSignatureConfirmation({
       while (!done) {
         // eslint-disable-next-line no-loop-func
         ;(async () => {
+          const rpcProvider = getProviderNameFromUrl({
+            rawConnection: connection,
+          })
           try {
             const signatureStatuses = await connection.getSignatureStatuses([
               txid,
@@ -1011,8 +1038,9 @@ async function awaitTransactionSignatureConfirmation({
                 console.log('REST null result for', txid, result)
               } else if (result.err) {
                 console.log('REST error for', txid, result)
+
                 Metrics.sendMetrics({
-                  metricName: `error.rpc.getSignatureStatusesError-${JSON.stringify(
+                  metricName: `error.rpc.${rpcProvider}.getSignatureStatusesError-${JSON.stringify(
                     result.err
                   )}`,
                 })
@@ -1030,7 +1058,9 @@ async function awaitTransactionSignatureConfirmation({
             if (!done) {
               console.log('REST connection error: txid', txid, e)
               Metrics.sendMetrics({
-                metricName: `error.rpc.connectionError-${JSON.stringify(e)}`,
+                metricName: `error.rpc.${rpcProvider}.connectionError-${JSON.stringify(
+                  e
+                )}`,
               })
             }
           }
