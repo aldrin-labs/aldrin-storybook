@@ -63,7 +63,7 @@ const TopBar = ({
   const CCAIPrice =
     getDexTokensPricesQuery?.getDexTokensPrices?.filter(
       (el) => el.symbol === 'CCAI'
-    )[0].price || 0
+    )[0]?.price || 0
 
   useEffect(() => {
     if (CCAIPrice > previousPrice) {
@@ -91,7 +91,7 @@ const TopBar = ({
           style={{ color: showGreen ? '#A5E898' : '#F26D68' }}
           theme={theme}
         >
-          {`$${formatNumberToUSFormat(
+          {CCAIPrice === 0 ? '-' : `$${formatNumberToUSFormat(
             roundAndFormatNumber(CCAIPrice, 4, false)
           )}`}
         </GreenTitle>
@@ -100,7 +100,7 @@ const TopBar = ({
         <TokenTitleBlockContainer>
           <TopBarTitle theme={theme}>RIN Marketcap</TopBarTitle>{' '}
           <Text theme={theme}>
-            ${formatNumberToUSFormat(CCAImarketcap.toFixed(0))}
+            {CCAImarketcap === 0 ? '-' : `$${formatNumberToUSFormat(CCAImarketcap.toFixed(0))}`}
           </Text>
         </TokenTitleBlockContainer>
         <TokenTitleBlockContainer>

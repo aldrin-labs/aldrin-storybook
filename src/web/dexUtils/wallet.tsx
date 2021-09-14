@@ -29,12 +29,20 @@ import { TokenListProvider } from '@solana/spl-token-registry'
 import { TokenInstructions } from '@project-serum/serum'
 import { useAsyncData } from './fetch-loop'
 import { getMaxWithdrawAmount } from './pools'
-import { MINT_LAYOUT, parseTokenAccountData } from './tokens'
+import {
+  getTokenAccountInfo,
+  MINT_LAYOUT,
+  parseTokenAccountData,
+} from './tokens'
 import Sollet from '@icons/sollet.svg'
 import Mathwallet from '@icons/mathwallet.svg'
 import Solong from '@icons/solong.svg'
 import WalletAldrin from '@icons/RINLogo.svg'
 import { WalletAdapter } from './adapters'
+import { _VERY_SLOW_REFRESH_INTERVAL } from './markets'
+import { MASTER_BUILD } from '@core/utils/config'
+import { Coin98WalletAdapter } from './adapters/Coin98WalletAdapter'
+import { SolflareExtensionWalletAdapter } from './adapters/SolflareWallet'
 
 export const WALLET_PROVIDERS = [
   // { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },
@@ -46,14 +54,14 @@ export const WALLET_PROVIDERS = [
     showOnMobile: true,
     icon: WalletAldrin,
   },
-  {
-    name: 'Wallet™ Extension',
-    url: `${CCAIProviderURL}/extension`,
-    adapter: CcaiExtensionAdapter,
-    isExtension: true,
-    showOnMobile: false,
-    icon: WalletAldrin,
-  },
+  // {
+  //   name: 'Wallet™ Extension',
+  //   url: `${CCAIProviderURL}/extension`,
+  //   adapter: CcaiExtensionAdapter,
+  //   isExtension: true,
+  //   showOnMobile: false,
+  //   icon: WalletAldrin,
+  // },
   {
     name: 'Sollet.io',
     url: 'https://www.sollet.io',
@@ -101,6 +109,22 @@ export const WALLET_PROVIDERS = [
     icon: Solong,
     isExtension: false,
     showOnMobile: false,
+  },
+  {
+    name: 'Coin98',
+    url: 'https://wallet.coin98.com/',
+    adapter: Coin98WalletAdapter,
+    icon: `https://gblobscdn.gitbook.com/spaces%2F-MLfdRENhXE4S22AEr9Q%2Favatar-1616412978424.png`,
+    isExtension: true,
+    showOnMobile: true,
+  },
+  {
+    name: 'Solflare',
+    url: 'https://solflare.com/',
+    adapter: SolflareExtensionWalletAdapter,
+    icon: `https://cdn.jsdelivr.net/gh/solana-labs/oyster@main/assets/wallets/solflare.svg`,
+    isExtension: true,
+    showOnMobile: true,
   },
 ]
 
@@ -279,7 +303,8 @@ export function useWalletPublicKeys() {
 
   const [tokenAccountInfo, loaded] = useAsyncData(
     () => getTokenAccountInfo(connection, wallet.publicKey),
-    'getTokenAccountInfo'
+    'getTokenAccountInfo',
+    { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
   )
 
   let publicKeys = [
@@ -490,7 +515,8 @@ export async function signAndSendTransaction(
   transaction,
   wallet,
   signers,
-  skipPreflight = false
+  skipPreflight = false,
+  focusPopup = false
 ) {
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash('max')
@@ -505,7 +531,7 @@ export async function signAndSendTransaction(
     transaction.partialSign(...signers)
   }
 
-  transaction = await wallet.signTransaction(transaction)
+  transaction = await wallet.signTransaction(transaction, focusPopup)
   const rawTransaction = transaction.serialize()
   return await connection.sendRawTransaction(rawTransaction, {
     skipPreflight,
@@ -526,7 +552,14 @@ export async function createAssociatedTokenAccount({
   const tx = new Transaction()
   tx.add(ix)
   tx.feePayer = wallet.publicKey
-  const txSig = await signAndSendTransaction(connection, tx, wallet, [])
+  const txSig = await signAndSendTransaction(
+    connection,
+    tx,
+    wallet,
+    [],
+    false,
+    true
+  )
 
   return [address, txSig]
 }

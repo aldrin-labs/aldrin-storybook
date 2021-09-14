@@ -26,6 +26,7 @@ import {
   MarketStatsContainer,
 } from '../../Chart.styles'
 import { ReusableTitle as Title } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { getRandomInt } from '@core/utils/helpers'
 export interface IProps {
   theme: Theme
   symbol: string
@@ -299,13 +300,13 @@ export default compose(
       symbol: props.symbol,
       exchange: 'serum',
       marketType: props.marketType,
-      startTimestamp: `${datesForQuery.startOfTime}`,
-      endTimestamp: `${datesForQuery.endOfTime}`,
-      prevStartTimestamp: `${datesForQuery.prevStartTimestamp}`,
-      prevEndTimestamp: `${datesForQuery.prevEndTimestamp}`,
+      startTimestamp: `${datesForQuery.startOfTime()}`,
+      endTimestamp: `${datesForQuery.endOfTime()}`,
+      prevStartTimestamp: `${datesForQuery.prevStartTimestamp()}`,
+      prevEndTimestamp: `${datesForQuery.prevEndTimestamp()}`,
     }),
     fetchPolicy: 'cache-and-network',
-    pollInterval: 30000,
+    pollInterval: 60000 * getRandomInt(7, 10),
     withOutSpinner: true,
     withTableLoader: true,
     withoutLoading: true,

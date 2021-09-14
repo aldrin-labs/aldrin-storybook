@@ -5,7 +5,7 @@ import { Theme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 import CloseIcon from '@icons/closeIcon.svg'
 import CoolIcon from '@icons/coolIcon.svg'
@@ -20,10 +20,11 @@ import {
   TextField,
   Title,
   StyledTextArea,
-  StyledRowContainer,
+  StyledRowContainer,StyledLabel
 } from '../Inputs/SelectWrapper/SelectWrapperStyles'
 import { notify } from '@sb/dexUtils/notifications'
 import useMobileSize from '@webhooks/useMobileSize'
+import { SRadio } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
 export const FeedbackPopup = ({
   theme,
@@ -41,6 +42,7 @@ export const FeedbackPopup = ({
     contact: '',
   })
 
+  const [isProblemReport, setIsProblemReport] = useState(true)
   const setData = ({ fieldName, value }) => {
     return setFeedbackData({ ...feedbackData, [fieldName]: value })
   }
@@ -69,7 +71,9 @@ export const FeedbackPopup = ({
     e.preventDefault()
   }
 
-  const isDisabled = feedbackData.messagge === ''
+  const isDisabled = isProblemReport
+    ? feedbackData.messagge === '' || feedbackData.contact === ''
+    : feedbackData.messagge === ''
 
   return (
     <DialogWrapper
@@ -126,8 +130,9 @@ export const FeedbackPopup = ({
               fontSize: isMobile ? '2rem' : '1.5rem',
             }}
           >
-            Thank you for your feedback, we will review it shortly and take
-            action.
+            {isProblemReport
+              ? 'Thank you for your feedback, please allow support team 24 hours to respond.'
+              : 'Thank you for your feedback, we will review it shortly and take action.'}
           </Text>
           <BlueButton
             isMobile={isMobile}
@@ -154,14 +159,41 @@ export const FeedbackPopup = ({
           action="/success"
         >
           <input type="hidden" name="form-name" value="usersFeedback" />
-          <StyledRowContainer>
+          <RowContainer>
+            <Row justify="flex-start" width={'50%'}>
+              <SRadio
+                checked={isProblemReport}
+                onChange={() => {
+                  setIsProblemReport(true)
+                }}
+                id="problem-report-btn"
+                style={{ padding: '1rem 1rem 1rem 0' }}
+              />
+              <StyledLabel htmlFor="problem-report-btn">
+                I want to report a problem.
+              </StyledLabel>
+            </Row>
+            <Row justify="flex-end" width={'50%'}>
+              <SRadio
+                checked={!isProblemReport}
+                onChange={() => {
+                  setIsProblemReport(false)
+                }}
+                id="idea-suggest-btn"
+                style={{ padding: '1rem 1rem 1rem 0' }}
+              />
+              <StyledLabel htmlFor="idea-suggest-btn">
+                I want to suggest an idea.
+              </StyledLabel>
+            </Row>
+          </RowContainer>
+
+          <StyledRowContainer margin={'1rem 0'}>
             <RowContainer wrap="nowrap">
-              <Text
-                padding={'0 1rem 0 0'}
-                fontSize={isMobile ? '2rem' : 'auto'}
-                whiteSpace="nowrap"
-              >
-                Tell us how we can improve{' '}
+              <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
+                {isProblemReport
+                  ? 'Tell us your problem'
+                  : 'Tell us how we can improve'}
               </Text>
               <Line />
             </RowContainer>
@@ -186,12 +218,10 @@ export const FeedbackPopup = ({
           </StyledRowContainer>
           <RowContainer margin={'1rem 0'}>
             <RowContainer wrap="nowrap">
-              <Text
-                padding={'0 1rem 0 0'}
-                fontSize={isMobile ? '2rem' : 'auto'}
-                whiteSpace="nowrap"
-              >
-                Would you like a representative to contact you? (optional){' '}
+              <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
+                {isProblemReport
+                  ? 'How we can contact you to help?'
+                  : 'Would you like a representative to contact you? (optional)'}{' '}
               </Text>
               <Line />
             </RowContainer>

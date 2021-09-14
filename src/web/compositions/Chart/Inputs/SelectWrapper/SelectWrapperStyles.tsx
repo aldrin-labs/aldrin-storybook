@@ -17,12 +17,13 @@ export const StyledGrid = styled(Grid)`
   position: absolute;
   z-index: 900;
   background: #222429;
-  min-width: 155rem;
-  height: 73rem;
+  min-width: ${(props) => (props.isAdvancedSelectorMode ? '160rem' : '90rem')};
+  height: ${(props) => (props.isAdvancedSelectorMode ? '73rem' : '60rem')};
   border-radius: 2rem;
   overflow: hidden;
   border: ${(props) => props.theme.palette.border.new};
   filter: drop-shadow(0px 0px 8px rgba(125, 125, 131, 0.2));
+
   @media (max-width: 600px) {
     top: 21rem;
     width: 100%;
@@ -61,7 +62,7 @@ export const IconContainer = styled.div`
 `
 
 export const StyledHeader = styled(RowContainer)`
-  height: 12rem;
+  height: ${(props) => (props.isAdvancedSelectorMode ? '15rem' : '9rem')};
   padding: 0.5rem;
   justify-content: flex-start;
   flex-direction: row;
@@ -69,13 +70,16 @@ export const StyledHeader = styled(RowContainer)`
   align-items: center;
   border-bottom: ${(props) => props.theme.palette.border.new};
   background: #17181a;
+
   @media (max-width: 600px) {
     display: none;
   }
 `
 export const StyledTable = styled(Grid)`
   overflow: hidden;
-  height: calc(100% - 21rem);
+  height: ${(props) =>
+    props.isAdvancedSelectorMode ? 'calc(100% - 24rem)' : 'calc(100% - 18rem)'};
+
   @media (max-width: 600px) {
     height: calc(100% - 10rem);
   }
@@ -340,4 +344,12 @@ export const TextArea = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
+`
+export const StyledLabel = styled.label`
+  color: #96999c;
+  font-size: 1.5rem;
+  font-family: Avenir Next Medium;
+  white-space: nowrap;
+  letter-spacing: 0.01rem;
+  cursor: pointer;
 `
