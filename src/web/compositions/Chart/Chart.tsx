@@ -46,8 +46,10 @@ import { tokensToDelist } from '@core/config/dex'
 import { TransactionsConfirmationWarningPopup } from '@sb/components/TransactionsConfirmationWarningPopup/TransactionsConfirmationWarningPopup'
 import { SettleWarningPopup } from '@sb/components/SettleWarningPopup/SettleWarningPopup'
 import { ProposeToSettlePopup } from '@sb/components/ProposeToSettlePopup/ProposeToSettlePopup'
-import { RpcCapacityWarningPopup } from '@sb/components/RpcWarningPopup/RpcWarningPopup'
+import { AldrinIsOverCapacityPopup } from '@sb/components/AldrinIsOverCapacityPopup'
+import { RpcCapacityWarningPopup } from '@sb/components/RpcWarningPopup'
 import { MarketDeprecatedPopup } from '@sb/components/MarketDeprecatedPopup/MarketDeprecatedPopup'
+import { useConnection } from '@sb/dexUtils/connection'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
   // Check if the arrays are the same length
@@ -335,7 +337,9 @@ function ChartPageComponent(props: any) {
       <MarketDeprecatedPopup
         theme={theme}
         newMarketID={allMarketsMap.get('LIQ_USDC')?.address.toString()}
-        oldMarketID={allMarketsMap.get('LIQ_USDC_deprecated')?.address.toString()}
+        oldMarketID={allMarketsMap
+          .get('LIQ_USDC_deprecated')
+          ?.address.toString()}
       />
       <RpcCapacityWarningPopup theme={theme} />
       {/* )} */}
