@@ -24,6 +24,7 @@ import { settleFunds } from '@sb/dexUtils/send'
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
 import { notify } from '@sb/dexUtils/notifications'
 
+import { Loading } from '@sb/components/Loading/Loading'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 export const BalanceTitle = styled.div`
@@ -108,7 +109,7 @@ const BalanceValuesContainer = styled(RowContainer)`
   background: ${(props) => props.theme.palette.grey.terminal};
   border-radius: 0.4rem;
   justify-content: flex-start;
-  margin-bottom: 0.8rem;
+  margin-bottom: ${(props) => (props.needMargin ? '0.8rem' : '0')};
 `
 
 export const Balances = ({
@@ -142,6 +143,7 @@ export const Balances = ({
   setShowTokenNotAdded: (show: boolean) => void
 }) => {
   const [openDepositPopup, toggleOpeningDepositPopup] = useState(false)
+  const [showLoading, setShowLoading] = useState(false)
   const [coinForDepositPopup, chooseCoinForDeposit] = useState('')
 
   const balances = useBalances()
@@ -156,9 +158,6 @@ export const Balances = ({
   const isBaseCoinExistsInWallet = market ? baseTokenAccount : true
   const isQuoteCoinExistsInWallet = market ? quoteTokenAccount : true
 
-  async function onSettleSuccess() {
-    console.log('settled funds success')
-  }
   async function onSettleFunds(market, openOrders) {
     if (!wallet.connected) {
       notify({
@@ -179,6 +178,8 @@ export const Balances = ({
 
       return
     }
+    setShowLoading(true)
+    // add loading
 
     try {
       const result = await settleFunds({
@@ -209,14 +210,18 @@ export const Balances = ({
         description: e.message,
         type: 'error',
       })
+      // remove loading
+      setShowLoading(false)
       return
     }
-    onSettleSuccess && onSettleSuccess()
+
+    // remove loading
+    setShowLoading(false)
   }
 
   const [baseBalances, quoteBalances] = balances
   const isCCAIWallet = providerUrl === CCAIProviderURL
-  const showSettle = !isCCAIWallet || !wallet.connected || !wallet.autoApprove
+  const showSettle = !wallet.connected || !wallet.autoApprove
   const quote = pair[1].toUpperCase()
   const isQuoteUSDT =
     quote === 'USDT' ||
@@ -303,7 +308,7 @@ export const Balances = ({
                 />
               </BalanceTitle> */}
               <BalanceValues>
-                <BalanceValuesContainer theme={theme}>
+                <BalanceValuesContainer needMargin={true} theme={theme}>
                   <BalanceFuturesTitle theme={theme}>
                     {pair[0]} Wallet
                   </BalanceFuturesTitle>
@@ -313,7 +318,13 @@ export const Balances = ({
                       : (0).toFixed(8)}
                   </BalanceQuantity>
                 </BalanceValuesContainer>
-                <BalanceValuesContainer theme={theme}>
+                <BalanceValuesContainer
+                  needMargin={
+                    wallet.connected &&
+                    (showSettle || !isBaseCoinExistsInWallet)
+                  }
+                  theme={theme}
+                >
                   <BalanceFuturesTitle theme={theme}>
                     {pair[0]} Unsettled
                   </BalanceFuturesTitle>
@@ -332,11 +343,11 @@ export const Balances = ({
                   padding: '0 0.5rem',
                 }}
               >
-                {!wallet.connected ? null : isBaseCoinExistsInWallet ? ( // /> //   containerStyle={{ padding: '0' }} //   id={'connectButtonBase'} //   height={'2rem'} //   showOnTop={true} //   theme={theme} // <ConnectWalletDropdown
+                {!wallet.connected ? null : (
                   <>
-                    {showSettle && (
+                    {!isBaseCoinExistsInWallet ? (
                       <BtnCustom
-                        btnWidth={'100%'}
+                        btnWidth="100%"
                         height="auto"
                         fontSize=".8rem"
                         padding=".5rem 0 .4rem 0;"
@@ -347,32 +358,43 @@ export const Balances = ({
                         // hoverBackground="#3992a9"
                         transition={'all .4s ease-out'}
                         onClick={() => {
-                          const { market, openOrders } = baseBalances
-                          onSettleFunds(market, openOrders)
+                          setShowTokenNotAdded(true)
                         }}
                       >
-                        settle
+                        Add to the wallet
                       </BtnCustom>
+                    ) : (
+                      showSettle && (
+                        <BtnCustom
+                          btnWidth={'100%'}
+                          height="2.5rem"
+                          fontSize=".8rem"
+                          padding=".5rem 0 .4rem 0;"
+                          borderRadius=".8rem"
+                          btnColor={theme.palette.dark.main}
+                          borderColor={theme.palette.blue.serum}
+                          backgroundColor={theme.palette.blue.serum}
+                          // hoverBackground="#3992a9"
+                          transition={'all .4s ease-out'}
+                          disabled={showLoading}
+                          onClick={() => {
+                            const { market, openOrders } = baseBalances
+                            onSettleFunds(market, openOrders)
+                          }}
+                        >
+                          {showLoading ? (
+                            <Loading
+                              centerAligned={true}
+                              color={'#fff'}
+                              size={'1rem'}
+                            />
+                          ) : (
+                            'settle'
+                          )}
+                        </BtnCustom>
+                      )
                     )}
                   </>
-                ) : (
-                  <BtnCustom
-                    btnWidth="100%"
-                    height="auto"
-                    fontSize=".8rem"
-                    padding=".5rem 0 .4rem 0;"
-                    borderRadius=".8rem"
-                    btnColor={theme.palette.dark.main}
-                    borderColor={theme.palette.blue.serum}
-                    backgroundColor={theme.palette.blue.serum}
-                    // hoverBackground="#3992a9"
-                    transition={'all .4s ease-out'}
-                    onClick={() => {
-                      setShowTokenNotAdded(true)
-                    }}
-                  >
-                    Add to the wallet
-                  </BtnCustom>
                 )}
               </div>
             </Grid>
@@ -394,7 +416,7 @@ export const Balances = ({
                 />
               </BalanceTitle> */}
               <BalanceValues>
-                <BalanceValuesContainer theme={theme}>
+                <BalanceValuesContainer needMargin={true} theme={theme}>
                   <BalanceFuturesTitle theme={theme}>
                     {pair[1]} Wallet
                   </BalanceFuturesTitle>
@@ -404,7 +426,13 @@ export const Balances = ({
                       : (0).toFixed(isQuoteUSDT ? 2 : 8)}
                   </BalanceQuantity>
                 </BalanceValuesContainer>
-                <BalanceValuesContainer theme={theme}>
+                <BalanceValuesContainer
+                  needMargin={
+                    wallet.connected &&
+                    (showSettle || isQuoteCoinExistsInWallet)
+                  }
+                  theme={theme}
+                >
                   <BalanceFuturesTitle theme={theme}>
                     {pair[1]} Unsettled
                   </BalanceFuturesTitle>
@@ -422,12 +450,12 @@ export const Balances = ({
                   width: '100%',
                   padding: '0 0.5rem',
                 }}
-              > 
-                {!wallet.connected ? null : isQuoteCoinExistsInWallet ? (
+              >
+                {!wallet.connected ? null : (
                   <>
-                    {showSettle && (
+                    {!isQuoteCoinExistsInWallet ? (
                       <BtnCustom
-                        btnWidth={'100%'}
+                        btnWidth="100%"
                         height="auto"
                         fontSize=".8rem"
                         padding=".5rem 0 .4rem 0;"
@@ -435,34 +463,45 @@ export const Balances = ({
                         btnColor={theme.palette.dark.main}
                         borderColor={theme.palette.blue.serum}
                         backgroundColor={theme.palette.blue.serum}
+                        // hoverBackground="#3992a9"
                         transition={'all .4s ease-out'}
                         onClick={() => {
-                          const { market, openOrders } = quoteBalances
-                          onSettleFunds(market, openOrders)
+                          setShowTokenNotAdded(true)
                         }}
                       >
-                        settle
+                        Add to the wallet
                       </BtnCustom>
+                    ) : (
+                      showSettle && (
+                        <BtnCustom
+                          btnWidth={'100%'}
+                          height="2.5rem"
+                          fontSize=".8rem"
+                          padding=".5rem 0 .4rem 0;"
+                          borderRadius=".8rem"
+                          btnColor={theme.palette.dark.main}
+                          borderColor={theme.palette.blue.serum}
+                          backgroundColor={theme.palette.blue.serum}
+                          transition={'all .4s ease-out'}
+                          disabled={showLoading}
+                          onClick={() => {
+                            const { market, openOrders } = quoteBalances
+                            onSettleFunds(market, openOrders)
+                          }}
+                        >
+                          {showLoading ? (
+                            <Loading
+                              centerAligned={true}
+                              color={'#fff'}
+                              size={'1rem'}
+                            />
+                          ) : (
+                            'settle'
+                          )}
+                        </BtnCustom>
+                      )
                     )}
                   </>
-                ) : (
-                  <BtnCustom
-                    btnWidth="100%"
-                    height="auto"
-                    fontSize=".8rem"
-                    padding=".5rem 0 .4rem 0;"
-                    borderRadius=".8rem"
-                    btnColor={theme.palette.dark.main}
-                    borderColor={theme.palette.blue.serum}
-                    backgroundColor={theme.palette.blue.serum}
-                    // hoverBackground="#3992a9"
-                    transition={'all .4s ease-out'}
-                    onClick={() => {
-                      setShowTokenNotAdded(true)
-                    }}
-                  >
-                    Add to the wallet
-                  </BtnCustom>
                 )}
               </div>
             </Grid>

@@ -59,10 +59,24 @@ import useWindowSize from '@webhooks/useWindowSize'
 import { RebrandingPopup } from '@sb/components/RebrandingPopup/RebrandingPopup'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
 
-const version = `10.9.146-rebalance`
+const version = `10.9.147-fix-open-orders`
 const currentVersion = localStorage.getItem('version')
 
 if (currentVersion !== version) {
+  const isMeetRebalancePopupOpen = localStorage.getItem("isMeetRebalancePopupOpen")
+  const isNotificationDone = localStorage.getItem("isNotificationDone")
+  const isOnboardingDone = localStorage.getItem("isOnboardingDone")
+  const isRebrandingPopupOpen = localStorage.getItem("isRebrandingPopupOpen")
+  const isRpcWarningPopupOpen = localStorage.getItem("isRpcWarningPopupOpen")
+
+  localStorage.clear()
+
+  localStorage.setItem("isMeetRebalancePopupOpen", isMeetRebalancePopupOpen)
+  localStorage.setItem("isNotificationDone", isNotificationDone)
+  localStorage.setItem("isOnboardingDone", isOnboardingDone)
+  localStorage.setItem("isRebrandingPopupOpen", isRebrandingPopupOpen)
+  localStorage.setItem("isRpcWarningPopupOpen", isRpcWarningPopupOpen)
+
   localStorage.setItem('version', version)
   document.location.reload()
 }

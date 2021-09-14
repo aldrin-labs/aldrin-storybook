@@ -83,10 +83,15 @@ const SelectWrapper = (props: IProps) => {
   const [searchValue, setSearchValue] = useState('')
   const [tab, setTab] = useState<SelectTabType>('all')
 
-  const [selectorMode, setSelectorMode] = useLocalStorageState(
-    'selectorMode',
-    'advanced'
-  )
+  // TODO: Uncomment once Postgres HA deployed
+
+  // const [selectorMode, setSelectorMode] = useLocalStorageState(
+  //   'selectorMode',
+  //   'basic'
+  // )
+
+  const selectorMode = 'basic'
+  const setSelectorMode = () => {}
 
   const [favouriteMarketsRaw, setFavouriteMarkets] = useLocalStorageState(
     'favouriteMarkets',
@@ -573,18 +578,18 @@ export default compose(
     withTableLoader: false,
     showNoLoader: true,
   }),
-  queryRendererHoc({
-    query: getSerumTradesData,
-    name: 'getSerumTradesDataQuery',
-    variables: (props) => ({
-      timezone: getTimezone(),
-      timestampTo: endOfDayTimestamp(),
-      timestampFrom: endOfDayTimestamp() - dayDuration * 14,
-    }),
-    withoutLoading: true,
-    withOutSpinner: true,
-    withTableLoader: false,
-    showNoLoader: true,
-    fetchPolicy: 'cache-and-network',
-  })
+  // queryRendererHoc({
+  //   query: getSerumTradesData,
+  //   name: 'getSerumTradesDataQuery',
+  //   variables: (props) => ({
+  //     timezone: getTimezone(),
+  //     timestampTo: endOfDayTimestamp(),
+  //     timestampFrom: endOfDayTimestamp() - dayDuration * 14,
+  //   }),
+  //   withoutLoading: true,
+  //   withOutSpinner: true,
+  //   withTableLoader: false,
+  //   showNoLoader: true,
+  //   fetchPolicy: 'cache-and-network',
+  // })
 )(SelectWrapper)

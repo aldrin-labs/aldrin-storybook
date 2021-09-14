@@ -52,7 +52,7 @@ const TableHeader = ({
 
   return (
     <StyledHeader theme={theme} isAdvancedSelectorMode={isAdvancedSelectorMode}>
-      <Row
+      {/* <Row
         width="10rem"
         onClick={() => {
           setSelectorMode(isAdvancedSelectorMode ? 'basic' : 'advanced')
@@ -63,12 +63,12 @@ const TableHeader = ({
           width={'25%'}
           height={'auto'}
         />
-      </Row>
+      </Row> */}
       <Row
-        width="calc(100% - 10rem)"
+        width="calc(100%)"
         justify="flex-start"
         padding="0 0 0 1rem"
-        style={{ borderLeft: '.1rem solid #383B45' }}
+        // style={{ borderLeft: '.1rem solid #383B45' }}
       >
         <StyledTab
           theme={theme}
@@ -217,23 +217,23 @@ const TableHeader = ({
                 {`(${filterSelectorDataForTab('leveraged').length})`}
               </span>
             </StyledTab>
-            <StyledTab
-              theme={theme}
-              isSelected={tab === 'customMarkets'}
-              onClick={() => onTabChange('customMarkets')}
-            >
-              Custom markets{' '}
-              <span
-                style={{
-                  color: tab === 'customMarkets' ? '#fbf2f2' : '#96999C',
-                  marginLeft: '0.5rem',
-                }}
-              >
-                {`(${filterSelectorDataForTab('customMarkets').length})`}
-              </span>
-            </StyledTab>
           </>
         )}
+        <StyledTab
+          theme={theme}
+          isSelected={tab === 'customMarkets'}
+          onClick={() => onTabChange('customMarkets')}
+        >
+          Custom markets{' '}
+          <span
+            style={{
+              color: tab === 'customMarkets' ? '#fbf2f2' : '#96999C',
+              marginLeft: '0.5rem',
+            }}
+          >
+            {`(${filterSelectorDataForTab('customMarkets').length})`}
+          </span>
+        </StyledTab>
       </Row>
     </StyledHeader>
   )

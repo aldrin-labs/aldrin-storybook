@@ -196,7 +196,7 @@ export const CardsPanel = ({ theme }) => {
             >
               Trading
             </NavLinkButton>
-            <NavLinkButton
+            {/* <NavLinkButton
               theme={theme}
               data-tut="analytics"
               page={'analytics'}
@@ -204,7 +204,7 @@ export const CardsPanel = ({ theme }) => {
               component={(props) => <Link to={`/analytics/all`} {...props} />}
             >
               Analytics
-            </NavLinkButton>
+            </NavLinkButton> */}
             <NavLinkButton
               theme={theme}
               pathname={location.pathname}

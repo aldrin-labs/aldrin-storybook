@@ -32,7 +32,7 @@ import {
   GlobalStyles,
 } from '@sb/compositions/Chart/Chart.styles'
 
-import { useMarket } from '@sb/dexUtils/markets'
+import { useAllMarketsList, useMarket } from '@sb/dexUtils/markets'
 import { getDecimalCount } from '@sb/dexUtils/utils'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import { useAwesomeMarkets } from '@core/utils/awesomeMarkets/serum'
@@ -47,6 +47,8 @@ import { TransactionsConfirmationWarningPopup } from '@sb/components/Transaction
 import { SettleWarningPopup } from '@sb/components/SettleWarningPopup/SettleWarningPopup'
 import { ProposeToSettlePopup } from '@sb/components/ProposeToSettlePopup/ProposeToSettlePopup'
 import { RpcCapacityWarningPopup } from '@sb/components/RpcWarningPopup/RpcWarningPopup'
+import { MarketDeprecatedPopup } from '@sb/components/MarketDeprecatedPopup/MarketDeprecatedPopup'
+import { useConnection } from '@sb/dexUtils/connection'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
   // Check if the arrays are the same length
@@ -107,6 +109,7 @@ function ChartPageComponent(props: any) {
     localStorage.getItem('isNotificationDone') == 'null'
   )
 
+  const allMarketsMap = useAllMarketsList()
   const AWESOME_MARKETS = useAwesomeMarkets()
 
   useEffect(() => {
@@ -330,6 +333,13 @@ function ChartPageComponent(props: any) {
       <TransactionsConfirmationWarningPopup theme={theme} />
       {/* <SettleWarningPopup theme={theme} /> */}
       <ProposeToSettlePopup theme={theme} />
+      <MarketDeprecatedPopup
+        theme={theme}
+        newMarketID={allMarketsMap.get('LIQ_USDC')?.address.toString()}
+        oldMarketID={allMarketsMap
+          .get('LIQ_USDC_deprecated')
+          ?.address.toString()}
+      />
       <RpcCapacityWarningPopup theme={theme} />
       {/* )} */}
       {/* <JoyrideOnboarding
