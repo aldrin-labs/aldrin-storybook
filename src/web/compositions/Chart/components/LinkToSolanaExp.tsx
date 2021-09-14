@@ -30,7 +30,7 @@ const LinkToSolanaExp = ({
   return (
     <StyleLink
       padding={padding}
-      href={`https://solscan.io/account/${marketAddress}`}
+      href={`https://solanabeach.io/account/${marketAddress}`}
       rel="noopener noreferrer"
       target="_blank"
     >
