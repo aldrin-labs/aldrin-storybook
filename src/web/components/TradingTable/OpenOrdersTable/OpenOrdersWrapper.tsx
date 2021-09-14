@@ -9,6 +9,7 @@ export const OpenOrdersTableWrapper = ({
   marketType,
   canceledOrders,
   handlePairChange,
+  terminalViewMode,
 }: {
   tab
   theme
@@ -16,19 +17,21 @@ export const OpenOrdersTableWrapper = ({
   marketType
   canceledOrders
   handlePairChange
+  terminalViewMode
 }) => {
   const openOrders = useOpenOrders()
 
   return (
     <OpenOrdersTable
       {...{
-        tab,
-        theme,
-        show,
-        marketType,
-        canceledOrders,
-        handlePairChange,
-        openOrders,
+        tab: tab,
+        theme: theme,
+        show: show,
+        marketType: marketType,
+        canceledOrders: canceledOrders,
+        handlePairChange: handlePairChange,
+        openOrders: openOrders,
+        terminalViewMode: terminalViewMode,
       }}
     />
   )

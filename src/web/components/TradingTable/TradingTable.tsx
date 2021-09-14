@@ -95,12 +95,13 @@ class TradingTable extends React.PureComponent<IProps, IState> {
           }}
         />
         <OpenOrdersTableWrapper
-          tab
-          theme
+          tab={tab}
+          theme={theme}
           show={tab === 'openOrders'}
-          marketType
-          canceledOrders
+          marketType={marketType}
+          canceledOrders={canceledOrders}
           handlePairChange={this.handlePairChange}
+          terminalViewMode={terminalViewMode}
         />
         <TradeHistoryTable
           {...{
