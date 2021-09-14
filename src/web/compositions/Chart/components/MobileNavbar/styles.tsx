@@ -1,6 +1,7 @@
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import styled from 'styled-components'
 import { Paper } from '@material-ui/core'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 export const NavBarForSmallScreens = styled.div`
   display: flex;
@@ -37,4 +38,17 @@ export const StyledPaper = styled(Paper)`
   padding: 0 3rem;
   margin: 0;
   box-shadow: none;
+`
+export const WalletRowContainer = styled(RowContainer)`
+  display: flex;
+  height: 15rem;
+  justify-content: space-between;
+  text-transform: none;
+  white-space: normal;
+  text-align: right;
+  background: #17181a;
+  border-bottom: 0.2rem solid #383b45;
+  font-size: 2.5rem;
+  color: #fbf2f2;
+  font-family: Avenir Next Medium;
 `
