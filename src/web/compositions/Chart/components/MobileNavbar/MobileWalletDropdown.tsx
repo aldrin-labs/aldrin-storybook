@@ -55,14 +55,19 @@ export const MobileWalletDropdown = ({
             </WalletRowContainer>
           )
         })}
-        <WalletRowContainer onClick={()=>{}}>
-          <SvgIcon
-            src={`https://gblobscdn.gitbook.com/spaces%2F-MLfdRENhXE4S22AEr9Q%2Favatar-1616412978424.png`}
-            width={'6rem'}
-            height={'100%'}
-          />
-          Coin98
-        </WalletRowContainer>
+        <a
+          style={{ width: '100%', textDecoration: 'none' }}
+          href="http://coin98.app.link/CP5tTJgExjb"
+        >
+          <WalletRowContainer>
+            <SvgIcon
+              src={`https://gblobscdn.gitbook.com/spaces%2F-MLfdRENhXE4S22AEr9Q%2Favatar-1616412978424.png`}
+              width={'6rem'}
+              height={'100%'}
+            />
+            Coin98
+          </WalletRowContainer>
+        </a>
       </RowContainer>
     </DialogWrapper>
   )
