@@ -121,6 +121,20 @@ export function useAllMarketsList(): MarketsMap {
   return ALL_MARKETS_MAP
 }
 
+export function useAllMarketsMapById(): MarketsMap {
+  const allMarketsMap = useAllMarketsList()
+
+  const allMarketsMapById = [...allMarketsMap.values()].reduce(
+    (acc, current) => {
+      acc.set(current.address.toString(), current)
+      return acc
+    },
+    new Map()
+  )
+
+  return allMarketsMapById
+}
+
 export function useMarketsList() {
   const { endpoint } = useConnectionConfig()
   const programId = getDexProgramIdByEndpoint(endpoint)
@@ -192,10 +206,9 @@ export function useAllMarkets() {
     )
   }
 
-  const memoizedGetAllMarkets = useMemo(
-    () => getAllMarkets,
-    [JSON.stringify(customMarkets)]
-  )
+  const memoizedGetAllMarkets = useMemo(() => getAllMarkets, [
+    JSON.stringify(customMarkets),
+  ])
 
   // console.log('memoizedGetAllMarkets', memoizedGetAllMarkets)
 
@@ -220,9 +233,9 @@ export function useUnmigratedOpenOrdersAccounts() {
     let deprecatedOpenOrdersAccounts = []
     const deprecatedProgramIds = Array.from(
       new Set(
-        USE_MARKETS.filter(({ deprecated }) => deprecated).map(
-          ({ programId }) => programId.toBase58()
-        )
+        USE_MARKETS.filter(
+          ({ deprecated }) => deprecated
+        ).map(({ programId }) => programId.toBase58())
       )
     ).map((publicKeyStr) => new PublicKey(publicKeyStr))
     let programId
@@ -539,23 +552,24 @@ const useOpenOrdersPubkeys = (): string[] => {
       (a: { freeSlotBits: typeof BN }, b: { freeSlotBits: typeof BN }) =>
         a?.freeSlotBits?.cmp(b?.freeSlotBits)
     )
-    const sortedAccountsByUnsettledBalances =
-      sortedAccountsByCountOfExistingOpenOrders.sort(
-        (
-          a: { baseTokenFree: typeof BN; quoteTokenFree: typeof BN },
-          b: { baseTokenFree: typeof BN; quoteTokenFree: typeof BN }
-        ) =>
-          a?.baseTokenFree.cmp(b?.baseTokenFree) === 1 ||
-          a?.quoteTokenFree.cmp(b?.quoteTokenFree) === 1
-            ? -1
-            : a?.baseTokenFree.cmp(b?.baseTokenFree) === -1 ||
-              a?.quoteTokenFree.cmp(b?.quoteTokenFree) === -1
-            ? 1
-            : 0
-      )
+    const sortedAccountsByUnsettledBalances = sortedAccountsByCountOfExistingOpenOrders.sort(
+      (
+        a: { baseTokenFree: typeof BN; quoteTokenFree: typeof BN },
+        b: { baseTokenFree: typeof BN; quoteTokenFree: typeof BN }
+      ) =>
+        a?.baseTokenFree.cmp(b?.baseTokenFree) === 1 ||
+        a?.quoteTokenFree.cmp(b?.quoteTokenFree) === 1
+          ? -1
+          : a?.baseTokenFree.cmp(b?.baseTokenFree) === -1 ||
+            a?.quoteTokenFree.cmp(b?.quoteTokenFree) === -1
+          ? 1
+          : 0
+    )
 
-
-      console.log('[getOpenOrdersAccounts] current openOrderAccount: ', sortedAccountsByUnsettledBalances[0]?.address?.toBase58())
+    console.log(
+      '[getOpenOrdersAccounts] current openOrderAccount: ',
+      sortedAccountsByUnsettledBalances[0]?.address?.toBase58()
+    )
 
     // keep string addresses in localStorage
     // localStorage.setItem(
@@ -1154,8 +1168,10 @@ export function useSelectedTokenAccounts(): [
   SelectedTokenAccounts,
   (newSelectedTokenAccounts: SelectedTokenAccounts) => void
 ] {
-  const [selectedTokenAccounts, setSelectedTokenAccounts] =
-    useLocalStorageState<SelectedTokenAccounts>('selectedTokenAccounts', {})
+  const [
+    selectedTokenAccounts,
+    setSelectedTokenAccounts,
+  ] = useLocalStorageState<SelectedTokenAccounts>('selectedTokenAccounts', {})
   return [selectedTokenAccounts, setSelectedTokenAccounts]
 }
 
