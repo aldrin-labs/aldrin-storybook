@@ -11,12 +11,11 @@ import {
 import { Market, OpenOrders } from '@project-serum/serum'
 import { settleFunds } from '@sb/dexUtils/send'
 import { notify } from '@sb/dexUtils/notifications'
+import { Theme } from '@material-ui/core'
 
-const UnsettledBalancesTable = (props) => {
+const UnsettledBalancesTable = ({ theme, userTokenAccounts }: {theme: Theme}) => {
   const { wallet } = useWallet()
   const connection = useConnection()
-
-  const { theme } = props
 
   async function onSettleFunds({
     market,
@@ -55,7 +54,7 @@ const UnsettledBalancesTable = (props) => {
   }
 
   const unsettledBalancesProcessedData = combineUnsettledBalances({
-    onSettleFunds: () => {},
+    onSettleFunds,
     theme,
     unsettledBalances: [],
   })

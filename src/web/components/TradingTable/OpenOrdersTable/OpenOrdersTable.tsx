@@ -48,9 +48,9 @@ const OpenOrdersTable = (props) => {
     marketType,
     canceledOrders,
     handlePairChange,
+    openOrders
   } = props
 
-  const openOrders = useOpenOrders()
 
   if (!show) {
     return null
