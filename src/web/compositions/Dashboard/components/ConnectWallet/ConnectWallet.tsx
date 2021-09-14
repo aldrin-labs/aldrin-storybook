@@ -9,16 +9,22 @@ import {
 
 import { Theme } from '@material-ui/core'
 
-import DarkLogo from '@icons/DarkLogo.svg'
+import LightLogo from '@icons/lightLogo.svg'
 
 const ConnectWallet = ({ theme }: { theme: Theme }) => {
   return (
     <RowContainer direction="column" height={'100%'}>
-      <RowContainer>
-        <SvgIcon src={DarkLogo} />
+      <RowContainer margin={'0 0 4rem 0'}>
+        <SvgIcon src={LightLogo} width={'16rem'} height={'16rem'} />
       </RowContainer>
-      <RowContainer>
-        <Title color={theme.palette.white.main}>Connect wallet to begin.</Title>
+      <RowContainer margin={'0 0 2.4rem 0'}>
+        <Title
+          fontFamily={'Avenir Next Demi'}
+          fontSize={'2.5rem'}
+          color={theme.palette.white.main}
+        >
+          Connect your wallet to begin.
+        </Title>
       </RowContainer>
       <RowContainer>
         <ConnectWalletDropdown
@@ -28,12 +34,12 @@ const ConnectWallet = ({ theme }: { theme: Theme }) => {
           showOnTop={true}
           containerStyles={{
             width: '30rem',
-            fontSize: '3rem'
+            fontSize: '3rem',
           }}
           buttonStyles={{
             borderRadius: '1.2rem',
             fontSize: '1.6rem',
-            textTransform: 'capitalize'
+            textTransform: 'capitalize',
           }}
         />
       </RowContainer>

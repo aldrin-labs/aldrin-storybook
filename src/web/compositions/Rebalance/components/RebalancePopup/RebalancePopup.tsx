@@ -34,7 +34,7 @@ import { PopupFooter } from './PopupFooter'
 import { getTransactionsListWithPrices } from '../../utils/getTransactionsListWithPrices'
 import { placeAllOrders } from '../../utils/marketOrderProgram/placeAllOrders'
 import { loadMarketOrderProgram } from '../../utils/marketOrderProgram/loadProgram'
-import { LoadingTransactions } from './LoadingTransactions'
+import { LoadingWithHint } from './LoadingWithHint'
 import { Placeholder } from '@sb/components/TraidingTerminal/styles'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
@@ -299,7 +299,11 @@ export const RebalancePopup = ({
                 </RowContainer>
               </RowContainer>
             ) : (
-              <LoadingTransactions />
+              <LoadingWithHint
+                text={
+                  'Your transactions are being processed. It may take up to 30 seconds.'
+                }
+              />
             )}
             <RowContainer
               padding={'3rem 2rem 0 2rem'}
