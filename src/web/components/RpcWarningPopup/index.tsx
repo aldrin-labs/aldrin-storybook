@@ -45,7 +45,7 @@ export const RpcCapacityWarningPopup = ({ theme }: { theme: Theme }) => {
             fontFamily: 'Avenir Next Bold',
           }}
         >
-          Important note!
+          Solana Cluster Unstable{' '}
         </DemiText>
       </RowContainer>
       <RowContainer height="40%" align="flex-start" justify="space-between">

@@ -8,10 +8,10 @@ import {
   TOKEN_MINTS,
   OpenOrders,
 } from '@project-serum/serum'
-import { PublicKey } from '@solana/web3.js'
+import { Account, PublicKey } from '@solana/web3.js'
 import React, { useContext, useEffect, useState } from 'react'
 import { getUniqueListBy, useLocalStorageState } from './utils'
-import { refreshCache, useAsyncData } from './fetch-loop'
+import { getCache, refreshCache, setCache, useAsyncData } from './fetch-loop'
 import {
   useAccountData,
   useAccountInfo,
@@ -23,10 +23,21 @@ import tuple from 'immutable-tuple'
 import { notify } from './notifications'
 import { BN } from 'bn.js'
 import { getTokenAccountInfo } from './tokens'
-import { useAwesomeMarkets, AWESOME_TOKENS } from '@core/utils/awesomeMarkets/serum'
-import { getDexProgramIdByEndpoint } from '@core/config/dex'
+import {
+  useAwesomeMarkets,
+  AWESOME_TOKENS,
+} from '@core/utils/awesomeMarkets/serum'
+import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
+import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  Token,
+  TOKEN_PROGRAM_ID,
+} from './token/token'
 
-export const ALL_TOKENS_MINTS = getUniqueListBy([...TOKEN_MINTS, ...AWESOME_TOKENS], "name")
+export const ALL_TOKENS_MINTS = getUniqueListBy(
+  [...TOKEN_MINTS, ...AWESOME_TOKENS],
+  'name'
+)
 
 console.log('ALL_TOKENS_MINTS', ALL_TOKENS_MINTS)
 
@@ -181,9 +192,10 @@ export function useAllMarkets() {
     )
   }
 
-  const memoizedGetAllMarkets = useMemo(() => getAllMarkets, [
-    JSON.stringify(customMarkets),
-  ])
+  const memoizedGetAllMarkets = useMemo(
+    () => getAllMarkets,
+    [JSON.stringify(customMarkets)]
+  )
 
   // console.log('memoizedGetAllMarkets', memoizedGetAllMarkets)
 
@@ -208,9 +220,9 @@ export function useUnmigratedOpenOrdersAccounts() {
     let deprecatedOpenOrdersAccounts = []
     const deprecatedProgramIds = Array.from(
       new Set(
-        USE_MARKETS.filter(
-          ({ deprecated }) => deprecated
-        ).map(({ programId }) => programId.toBase58())
+        USE_MARKETS.filter(({ deprecated }) => deprecated).map(
+          ({ programId }) => programId.toBase58()
+        )
       )
     ).map((publicKeyStr) => new PublicKey(publicKeyStr))
     let programId
@@ -264,7 +276,7 @@ export function useUnmigratedOpenOrdersAccounts() {
 
 const MarketContext = React.createContext(null)
 
-const _VERY_SLOW_REFRESH_INTERVAL = 5000 * 1000
+export const _VERY_SLOW_REFRESH_INTERVAL = 5000 * 1000
 
 // For things that don't really change
 const _SLOW_REFRESH_INTERVAL = 3 * 1000
@@ -299,13 +311,6 @@ function getMarketDetails(market, marketInfos) {
       )?.name) ||
     (marketInfo?.quoteLabel && `${marketInfo?.quoteLabel}*`) ||
     'UNKNOWN'
-
-  console.log('market data', {
-    marketName: marketInfo?.name,
-    baseCurrency,
-    quoteCurrency,
-    marketInfo,
-  })
 
   return {
     ...marketInfo,
@@ -431,22 +436,15 @@ export function useMarkPrice() {
   const [markPrice, setMarkPrice] = useState(null)
 
   const [orderbook] = useOrderbook(2)
-  const trades = useTrades()
 
   useEffect(() => {
     let bb = orderbook?.bids?.length > 0 && Number(orderbook.bids[0][0])
     let ba = orderbook?.asks?.length > 0 && Number(orderbook.asks[0][0])
-    let last = trades?.length > 0 && trades[0].price
 
-    let markPrice =
-      bb && ba
-        ? last
-          ? [bb, ba, last].sort((a, b) => a - b)[1]
-          : (bb + ba) / 2
-        : null
+    let markPrice = bb && ba ? (bb + ba) / 2 : null
 
     setMarkPrice(markPrice)
-  }, [orderbook, trades])
+  }, [orderbook])
 
   return markPrice
 }
@@ -463,7 +461,7 @@ export function _useUnfilteredTrades(limit = 10000) {
   const [trades] = useAsyncData(
     getUnfilteredTrades,
     tuple('getUnfilteredTrades', market, connection),
-    { refreshInterval: _SLOW_REFRESH_INTERVAL }
+    { refreshInterval: 10_000 }
   )
   return trades
   // NOTE: For now, websocket is too expensive since the event queue is large
@@ -502,16 +500,17 @@ export function useOrderbook(depth = 200) {
     !askOrderbook || !market
       ? []
       : askOrderbook.getL2(depth).map(([price, size]) => [price, size])
-      
+
   return [{ bids, asks }, !!bids || !!asks]
 }
 
-// Want the balances table to be fast-updating, dont want open orders to flicker
-// TODO: Update to use websocket
-export function useOpenOrdersAccounts(fast = false) {
+const useOpenOrdersPubkeys = (): string[] => {
   const { market } = useMarket()
   const { connected, wallet } = useWallet()
   const connection = useConnection()
+
+  const openOrdersKey = `openOrdersPubkeys-${wallet?.publicKey}-${market?.publicKey}-${DEX_PID}`
+
   async function getOpenOrdersAccounts() {
     if (!connected) {
       return null
@@ -520,22 +519,141 @@ export function useOpenOrdersAccounts(fast = false) {
       return null
     }
 
+    // const openOrdersPubkeys = []
+    // JSON.parse(
+    //   localStorage.getItem(openOrdersKey) || '[]'
+    // )
+
+    // check localStorage for existing openOrdersAccount for current market + wallet
+    // if (openOrdersPubkeys && openOrdersPubkeys.length > 0)
+    //   return openOrdersPubkeys.map((acc: string) => new PublicKey(acc))
+
     const accounts = await market.findOpenOrdersAccountsForOwner(
       connection,
       wallet.publicKey
     )
 
-    return accounts
+    // BE AWARE: .sort() mutates the arrey
+
+    const sortedAccountsByCountOfExistingOpenOrders = accounts.sort(
+      (a: { freeSlotBits: typeof BN }, b: { freeSlotBits: typeof BN }) =>
+        a?.freeSlotBits?.cmp(b?.freeSlotBits)
+    )
+    const sortedAccountsByUnsettledBalances =
+      sortedAccountsByCountOfExistingOpenOrders.sort(
+        (
+          a: { baseTokenFree: typeof BN; quoteTokenFree: typeof BN },
+          b: { baseTokenFree: typeof BN; quoteTokenFree: typeof BN }
+        ) =>
+          a?.baseTokenFree.cmp(b?.baseTokenFree) === 1 ||
+          a?.quoteTokenFree.cmp(b?.quoteTokenFree) === 1
+            ? -1
+            : a?.baseTokenFree.cmp(b?.baseTokenFree) === -1 ||
+              a?.quoteTokenFree.cmp(b?.quoteTokenFree) === -1
+            ? 1
+            : 0
+      )
+
+
+      console.log('[getOpenOrdersAccounts] current openOrderAccount: ', sortedAccountsByUnsettledBalances[0]?.address?.toBase58())
+
+    // keep string addresses in localStorage
+    // localStorage.setItem(
+    //   openOrdersKey,
+    //   JSON.stringify(
+    //     sortedAccountsByCountOfExistingOpenOrders.map((acc: OpenOrders) => acc.publicKey?.toString())
+    //   )
+    // )
+
+    return sortedAccountsByUnsettledBalances.map(
+      (acc: OpenOrders) => acc.publicKey
+    )
   }
+
   return useAsyncData(
     getOpenOrdersAccounts,
-    tuple('getOpenOrdersAccounts', wallet, market, connected),
-    { refreshInterval: fast ? _FAST_REFRESH_INTERVAL : _SLOW_REFRESH_INTERVAL }
+    tuple('getOpenOrdersAccountsFromProgramAccounts', connected, openOrdersKey),
+    { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
+  )
+}
+
+// Want the balances table to be fast-updating, dont want open orders to flicker
+// TODO: Update to use websocket
+export function useOpenOrdersAccounts(fast = false) {
+  const { market } = useMarket()
+  const { connected, wallet } = useWallet()
+  const connection = useConnection()
+
+  const [openOrdersPubkeys] = useOpenOrdersPubkeys()
+
+  async function getOpenOrdersAccounts() {
+    if (!connected) {
+      return null
+    }
+    if (!market) {
+      return null
+    }
+
+    const isOpenOrdersAlreadyCreated =
+      openOrdersPubkeys && openOrdersPubkeys.length > 0
+
+    let preCreatedOpenOrders = getCache(
+      `preCreatedOpenOrdersFor${market?.publicKey}`
+    )
+    let openOrdersPublicKey = null
+
+    // for already created openOrders account we take pubkey
+    if (isOpenOrdersAlreadyCreated) {
+      openOrdersPublicKey = openOrdersPubkeys[0]
+    } else if (!preCreatedOpenOrders) {
+      // for not created oo + not added to cache we create oo pubkey
+      // that will be used in order creation
+      preCreatedOpenOrders = new Account()
+      openOrdersPublicKey = preCreatedOpenOrders?.publicKey
+      setCache(
+        `preCreatedOpenOrdersFor${market?.publicKey}`,
+        preCreatedOpenOrders
+      )
+    } else {
+      // for not created but setted in cache we take pubkey
+      openOrdersPublicKey = preCreatedOpenOrders?.publicKey
+    }
+
+    // update openOrders info by address
+    const openOrdersAccountInfo = await connection.getAccountInfo(
+      openOrdersPublicKey
+    )
+
+    if (!openOrdersAccountInfo) {
+      return null
+    }
+
+    const openOrdersAccount = OpenOrders.fromAccountInfo(
+      openOrdersPublicKey,
+      openOrdersAccountInfo,
+      DEX_PID
+    )
+
+    // for using several openOrdersAccoutns we'll need to update this method
+    // currently it updates info only for first OO
+    return [openOrdersAccount]
+  }
+
+  return useAsyncData(
+    getOpenOrdersAccounts,
+    tuple(
+      'getOpenOrdersAccountsWithPreCached',
+      wallet,
+      market,
+      connected,
+      openOrdersPubkeys
+    ),
+    { refreshInterval: _SLOW_REFRESH_INTERVAL }
   )
 }
 
 export function useSelectedOpenOrdersAccount(fast = false) {
-  const [accounts, loaded] = useOpenOrdersAccounts(fast)
+  const [accounts] = useOpenOrdersAccounts(fast)
 
   if (!accounts) {
     return null
@@ -558,7 +676,7 @@ export function useTokenAccounts() {
   return useAsyncData(
     getTokenAccounts,
     tuple('getTokenAccounts', wallet, connected),
-    { refreshInterval: _SLOW_REFRESH_INTERVAL }
+    { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
   )
 }
 
@@ -608,39 +726,87 @@ export function getSelectedTokenAccountForMint(
 }
 
 export function useSelectedQuoteCurrencyAccount() {
-  const [accounts, loaded] = useTokenAccounts()
+  const [accounts] = useTokenAccounts()
   const { market } = useMarket()
   const [selectedTokenAccounts] = useSelectedTokenAccounts()
 
   const mintAddress = market?.quoteMintAddress
 
-  return getSelectedTokenAccountForMint(
-    market,
-    accounts,
-    mintAddress,
-    mintAddress && selectedTokenAccounts[mintAddress.toBase58()],
-    'base'
-  )
-}
+  const [associatedTokenAddress] = useAssociatedTokenAddressByMint(mintAddress)
+  const [associatedTokenInfo] = useAccountInfo(associatedTokenAddress)
 
-export function useSelectedBaseCurrencyAccount() {
-  const [accounts] = useTokenAccounts()
-  const { market } = useMarket()
-  const [selectedTokenAccounts] = useSelectedTokenAccounts()
-
-  const mintAddress = market?.baseMintAddress
-
-  return getSelectedTokenAccountForMint(
+  const quoteTokenAddress = getSelectedTokenAccountForMint(
     market,
     accounts,
     mintAddress,
     mintAddress && selectedTokenAccounts[mintAddress.toBase58()],
     'quote'
   )
+
+  // if not found in accounts, but token added as associated
+  if (!quoteTokenAddress && associatedTokenInfo) {
+    return {
+      pubkey: associatedTokenAddress,
+    }
+  }
+
+  return quoteTokenAddress
+}
+
+const useAssociatedTokenAddressByMint = (mint: PublicKey) => {
+  const { connected, wallet } = useWallet()
+
+  async function getAssociatedTokenAddress() {
+    if (!connected) {
+      return null
+    }
+    return await Token.getAssociatedTokenAddress(
+      ASSOCIATED_TOKEN_PROGRAM_ID,
+      TOKEN_PROGRAM_ID,
+      mint,
+      wallet.publicKey
+    )
+  }
+
+  return useAsyncData(
+    getAssociatedTokenAddress,
+    tuple('getAssociatedTokenAddress', mint, wallet.publicKey),
+    { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
+  )
+}
+
+export function useSelectedBaseCurrencyAccount() {
+  // getProgramAccounts
+  const [accounts] = useTokenAccounts()
+  const { market } = useMarket()
+  const [selectedTokenAccounts] = useSelectedTokenAccounts()
+
+  const mintAddress = market?.baseMintAddress
+
+  const [associatedTokenAddress] = useAssociatedTokenAddressByMint(mintAddress)
+  const [associatedTokenInfo] = useAccountInfo(associatedTokenAddress)
+
+  const baseTokenAddress = getSelectedTokenAccountForMint(
+    market,
+    accounts,
+    mintAddress,
+    mintAddress && selectedTokenAccounts[mintAddress.toBase58()],
+    'base'
+  )
+
+  // if not found in accounts, but token added as associated
+  if (!baseTokenAddress && associatedTokenInfo) {
+    return {
+      pubkey: associatedTokenAddress,
+    }
+  }
+
+  return baseTokenAddress
 }
 
 // TODO: Update to use websocket
 export function useQuoteCurrencyBalances() {
+  // or accos here - try get account info
   const quoteCurrencyAccount = useSelectedQuoteCurrencyAccount()
   const { market } = useMarket()
   const [accountInfo, loaded, refresh] = useAccountInfo(
@@ -778,120 +944,6 @@ export function useFills(limit = 100) {
     .map((fill) => ({ ...fill, marketName }))
 }
 
-// TODO: Update to use websocket
-export function useFillsForAllMarkets(limit = 100) {
-  const { connected, wallet } = useWallet()
-
-  const connection = useConnection()
-  const allMarkets = useAllMarkets()
-
-  async function getFillsForAllMarkets() {
-    let fills = []
-    if (!connected) {
-      return fills
-    }
-
-    let marketData
-    for (marketData of allMarkets) {
-      const { market, marketName } = marketData
-      if (!market) {
-        return fills
-      }
-      const openOrdersAccounts = await market.findOpenOrdersAccountsForOwner(
-        connection,
-        wallet.publicKey
-      )
-      const openOrdersAccount = openOrdersAccounts && openOrdersAccounts[0]
-      if (!openOrdersAccount) {
-        return fills
-      }
-      const eventQueueData = await connection.getAccountInfo(
-        market && market._decoded.eventQueue
-      )
-      let data = eventQueueData?.data
-      if (!data) {
-        return fills
-      }
-      const events = decodeEventQueue(data, limit)
-      const fillsForMarket = events
-        .filter(
-          (event) => event.eventFlags.fill && event.nativeQuantityPaid.gtn(0)
-        )
-        .map(market.parseFillEvent.bind(market))
-      const ownFillsForMarket = fillsForMarket
-        .filter((fill) => fill.openOrders.equals(openOrdersAccount.publicKey))
-        .map((fill) => ({ ...fill, marketName }))
-      fills = fills.concat(ownFillsForMarket)
-    }
-
-    console.log(JSON.stringify(fills))
-    return fills
-  }
-
-  return useAsyncData(
-    getFillsForAllMarkets,
-    tuple('getFillsForAllMarkets', connected, connection, allMarkets, wallet),
-    { refreshInterval: _FAST_REFRESH_INTERVAL }
-  )
-}
-
-// TODO: Update to use websocket
-export function useOpenOrdersForAllMarkets() {
-  const { connected, wallet } = useWallet()
-
-  const connection = useConnection()
-  const allMarkets = useAllMarkets()
-
-  async function getOpenOrdersForAllMarkets() {
-    let orders = []
-    if (!connected) {
-      return orders
-    }
-
-    let marketData
-    for (marketData of allMarkets) {
-      const { market, marketName } = marketData
-      if (!market) {
-        return orders
-      }
-      const openOrdersAccounts = await market.findOpenOrdersAccountsForOwner(
-        connection,
-        wallet.publicKey
-      )
-      const openOrdersAccount = openOrdersAccounts && openOrdersAccounts[0]
-      if (!openOrdersAccount) {
-        return orders
-      }
-      const [bids, asks] = await Promise.all([
-        market.loadBids(connection),
-        market.loadAsks(connection),
-      ])
-      const ordersForMarket = [...bids, ...asks]
-        .filter((order) => {
-          return order.openOrdersAddress.equals(openOrdersAccount.publicKey)
-        })
-        .map((order) => {
-          return { ...order, marketName }
-        })
-      orders = orders.concat(ordersForMarket)
-    }
-
-    return orders
-  }
-
-  return useAsyncData(
-    getOpenOrdersForAllMarkets,
-    tuple(
-      'getOpenOrdersForAllMarkets',
-      connected,
-      connection,
-      wallet,
-      allMarkets
-    ),
-    { refreshInterval: _SLOW_REFRESH_INTERVAL }
-  )
-}
-
 export function useBalances() {
   const { baseCurrency, quoteCurrency, market } = useMarket()
 
@@ -1027,109 +1079,6 @@ async function getCurrencyBalance(market, connection, wallet, base = true) {
   return tokenAccountBalances?.value?.uiAmount
 }
 
-export function useOpenOrderAccountBalancesForAllMarkets() {
-  const { connected, wallet } = useWallet()
-
-  const connection = useConnection()
-  const allMarkets = useAllMarkets()
-
-  async function getOpenOrderAccountsForAllMarkets() {
-    let accounts = []
-    if (!connected) {
-      return accounts
-    }
-
-    let marketData
-    for (marketData of allMarkets) {
-      const { market, marketName } = marketData
-      if (!market) {
-        return accounts
-      }
-      const openOrderAccounts = await market.findOpenOrdersAccountsForOwner(
-        connection,
-        wallet.publicKey
-      )
-      if (!openOrderAccounts) {
-        continue
-      }
-      const baseCurrencyAccounts = await market.findBaseTokenAccountsForOwner(
-        connection,
-        wallet.publicKey
-      )
-      const quoteCurrencyAccounts = await market.findQuoteTokenAccountsForOwner(
-        connection,
-        wallet.publicKey
-      )
-
-      const baseCurrency = marketName.includes('/') && marketName.split('/')[0]
-      const quoteCurrency = marketName.includes('/') && marketName.split('/')[1]
-
-      const openOrderAccountBalances = []
-      openOrderAccounts.forEach((openOrdersAccount) => {
-        const inOrdersBase =
-          openOrdersAccount?.baseTokenTotal &&
-          openOrdersAccount?.baseTokenFree &&
-          market.baseSplSizeToNumber(
-            openOrdersAccount.baseTokenTotal.sub(
-              openOrdersAccount.baseTokenFree
-            )
-          )
-        const inOrdersQuote =
-          openOrdersAccount?.quoteTokenTotal &&
-          openOrdersAccount?.quoteTokenFree &&
-          market.baseSplSizeToNumber(
-            openOrdersAccount.quoteTokenTotal.sub(
-              openOrdersAccount.quoteTokenFree
-            )
-          )
-        const unsettledBase =
-          openOrdersAccount?.baseTokenFree &&
-          market.baseSplSizeToNumber(openOrdersAccount.baseTokenFree)
-        const unsettledQuote =
-          openOrdersAccount?.quoteTokenFree &&
-          market.baseSplSizeToNumber(openOrdersAccount.quoteTokenFree)
-        openOrderAccountBalances.push({
-          market: marketName,
-          coin: baseCurrency,
-          key: baseCurrency,
-          orders: inOrdersBase,
-          unsettled: unsettledBase,
-          openOrdersAccount: openOrdersAccount,
-          baseCurrencyAccount: baseCurrencyAccounts && baseCurrencyAccounts[0],
-          quoteCurrencyAccount:
-            quoteCurrencyAccounts && quoteCurrencyAccounts[0],
-        })
-        openOrderAccountBalances.push({
-          market: marketName,
-          coin: quoteCurrency,
-          key: quoteCurrency,
-          orders: inOrdersQuote,
-          unsettled: unsettledQuote,
-          openOrdersAccount: openOrdersAccount,
-          baseCurrencyAccount: baseCurrencyAccounts && baseCurrencyAccounts[0],
-          quoteCurrencyAccount:
-            quoteCurrencyAccounts && quoteCurrencyAccounts[0],
-        })
-      })
-      accounts = accounts.concat(openOrderAccountBalances)
-    }
-
-    return accounts
-  }
-
-  return useAsyncData(
-    getOpenOrderAccountsForAllMarkets,
-    tuple(
-      'getOpenOrderAccountsForAllMarkets',
-      connected,
-      connection,
-      wallet,
-      allMarkets
-    ),
-    { refreshInterval: _SLOW_REFRESH_INTERVAL }
-  )
-}
-
 export function useUnmigratedDeprecatedMarkets() {
   const connection = useConnection()
   const { accounts } = useUnmigratedOpenOrdersAccounts()
@@ -1205,18 +1154,9 @@ export function useSelectedTokenAccounts(): [
   SelectedTokenAccounts,
   (newSelectedTokenAccounts: SelectedTokenAccounts) => void
 ] {
-  const [
-    selectedTokenAccounts,
-    setSelectedTokenAccounts,
-  ] = useLocalStorageState<SelectedTokenAccounts>('selectedTokenAccounts', {})
+  const [selectedTokenAccounts, setSelectedTokenAccounts] =
+    useLocalStorageState<SelectedTokenAccounts>('selectedTokenAccounts', {})
   return [selectedTokenAccounts, setSelectedTokenAccounts]
-}
-
-export async function getOpenOrdersAccountsCustom(connection, wallet, market) {
-  return await market.findOpenOrdersAccountsForOwner(
-    connection,
-    wallet.publicKey
-  )
 }
 
 export const getTokenMintAddressByName = (name: string): string | null => {

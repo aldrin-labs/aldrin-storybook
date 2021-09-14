@@ -57,21 +57,21 @@ export const excludedPairs = [
 ]
 
 export const datesForQuery = {
-  startOfTime: dayjs()
+  startOfTime: () => dayjs()
     .startOf('hour')
     .subtract(24, 'hour')
     .unix(),
 
-  endOfTime: dayjs()
+  endOfTime: () => dayjs()
     .endOf('hour')
     .unix(),
 
-  prevStartTimestamp: dayjs()
+  prevStartTimestamp: () => dayjs()
     .startOf('hour')
     .subtract(48, 'hour')
     .unix(),
 
-  prevEndTimestamp: dayjs()
+  prevEndTimestamp: () => dayjs()
     .startOf('hour')
     .subtract(24, 'hour')
     .unix(),
@@ -83,10 +83,15 @@ const SelectWrapper = (props: IProps) => {
   const [searchValue, setSearchValue] = useState('')
   const [tab, setTab] = useState<SelectTabType>('all')
 
-  const [selectorMode, setSelectorMode] = useLocalStorageState(
-    'selectorMode',
-    'advanced'
-  )
+  // TODO: Uncomment once Postgres HA deployed
+
+  // const [selectorMode, setSelectorMode] = useLocalStorageState(
+  //   'selectorMode',
+  //   'basic'
+  // )
+
+  const selectorMode = 'basic'
+  const setSelectorMode = () => {}
 
   const [favouriteMarketsRaw, setFavouriteMarkets] = useLocalStorageState(
     'favouriteMarkets',
@@ -563,28 +568,28 @@ export default compose(
       exchange: 'serum',
       publicKey: props.publicKey,
       marketType: 0,
-      startTimestamp: `${datesForQuery.startOfTime}`,
-      endTimestamp: `${datesForQuery.endOfTime}`,
-      prevStartTimestamp: `${datesForQuery.prevStartTimestamp}`,
-      prevEndTimestamp: `${datesForQuery.prevEndTimestamp}`,
+      startTimestamp: `${datesForQuery.startOfTime()}`,
+      endTimestamp: `${datesForQuery.endOfTime()}`,
+      prevStartTimestamp: `${datesForQuery.prevStartTimestamp()}`,
+      prevEndTimestamp: `${datesForQuery.prevEndTimestamp()}`,
     }),
     fetchPolicy: 'cache-and-network',
     withOutSpinner: true,
     withTableLoader: false,
     showNoLoader: true,
   }),
-  queryRendererHoc({
-    query: getSerumTradesData,
-    name: 'getSerumTradesDataQuery',
-    variables: (props) => ({
-      timezone: getTimezone(),
-      timestampTo: endOfDayTimestamp,
-      timestampFrom: endOfDayTimestamp - dayDuration * 14,
-    }),
-    withoutLoading: true,
-    withOutSpinner: true,
-    withTableLoader: false,
-    showNoLoader: true,
-    fetchPolicy: 'cache-and-network',
-  })
+  // queryRendererHoc({
+  //   query: getSerumTradesData,
+  //   name: 'getSerumTradesDataQuery',
+  //   variables: (props) => ({
+  //     timezone: getTimezone(),
+  //     timestampTo: endOfDayTimestamp(),
+  //     timestampFrom: endOfDayTimestamp() - dayDuration * 14,
+  //   }),
+  //   withoutLoading: true,
+  //   withOutSpinner: true,
+  //   withTableLoader: false,
+  //   showNoLoader: true,
+  //   fetchPolicy: 'cache-and-network',
+  // })
 )(SelectWrapper)

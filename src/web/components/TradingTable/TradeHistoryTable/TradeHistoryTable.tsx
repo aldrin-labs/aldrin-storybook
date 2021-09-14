@@ -16,18 +16,9 @@ import { combineTradeHistoryTable } from './TradeHistoryTable.utils'
 
 // @withTheme()
 const TradeHistoryTable = (props) => {
-  const { tab, show, theme, marketType, handlePairChange } = props
+  const { tab, theme, marketType, handlePairChange } = props
 
   const fills = useFills()
-  const location = useLocation()
-
-  const pair = location.pathname.split('/')[3]
-    ? location.pathname.split('/')[3]
-    : null
-
-  if (!show || !pair) {
-    return null
-  }
 
   const dataSource = (fills || []).map((fill) => ({
     ...fill,

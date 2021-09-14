@@ -6,7 +6,7 @@ export const LinkToTelegram = () => {
     <StyledLink
       target="_blank"
       rel="noopener noreferrer"
-      href={'https://t.me/CCAI_Official'}
+      href={'https://t.me/Aldrin_Exchange'}
     >
       <svg
         width="100%"
@@ -30,7 +30,7 @@ export const LinkToTwitter = () => {
     <StyledLink
       target="_blank"
       rel="noopener noreferrer"
-      href="https://twitter.com/CCAI_Official"
+      href="https://twitter.com/Aldrin_Exchange"
     >
       <svg
         width="100%"
@@ -54,7 +54,7 @@ export const LinkToDiscord = () => {
     <StyledLink
       target="_blank"
       rel="noopener noreferrer"
-      href="https://discord.gg/2EaKvrs"
+      href="https://discord.gg/4VZyNxT2WU"
     >
       <svg
         width="100%"
