@@ -13,6 +13,7 @@ import FeeTiers from './Fee/FeeTiers'
 import TradeHistoryTable from './TradeHistoryTable/TradeHistoryDataWrapper'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import withMobileSize from '@core/hoc/withMobileSize'
+import { OpenOrdersTableWrapper } from './OpenOrdersTable/OpenOrdersWrapper'
 
 class TradingTable extends React.PureComponent<IProps, IState> {
   state: IState = {
@@ -93,15 +94,13 @@ class TradingTable extends React.PureComponent<IProps, IState> {
             terminalViewMode,
           }}
         />
-        <OpenOrdersTable
-          {...{
-            tab,
-            theme,
-            show: tab === 'openOrders',
-            marketType,
-            canceledOrders,
-            handlePairChange: this.handlePairChange,
-          }}
+        <OpenOrdersTableWrapper
+          tab
+          theme
+          show={tab === 'openOrders'}
+          marketType
+          canceledOrders
+          handlePairChange={this.handlePairChange}
         />
         <TradeHistoryTable
           {...{
@@ -142,17 +141,14 @@ const TradingTableWrapper = compose(
   withMobileSize
 )(TradingTable)
 
-export default React.memo(
-  TradingTableWrapper,
-  (prevProps, nextProps) => {
-    if (
-      prevProps.marketType === nextProps.marketType &&
-      prevProps.terminalViewMode === nextProps.terminalViewMode &&
-      prevProps.isMobile === nextProps.isMobile
-    ) {
-      return true
-    }
-
-    return false
+export default React.memo(TradingTableWrapper, (prevProps, nextProps) => {
+  if (
+    prevProps.marketType === nextProps.marketType &&
+    prevProps.terminalViewMode === nextProps.terminalViewMode &&
+    prevProps.isMobile === nextProps.isMobile
+  ) {
+    return true
   }
-)
+
+  return false
+})
