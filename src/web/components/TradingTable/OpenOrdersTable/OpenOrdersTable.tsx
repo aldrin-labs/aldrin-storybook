@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { TableWithSort } from '@sb/components'
 
 import {
@@ -38,17 +38,7 @@ const OpenOrdersTable = (props) => {
   }
 
   const cancelOrderWithStatus = async (order) => {
-    const { showCancelResult } = props
-
-    // await props.addOrderToCanceled(orderId)
-    const result = await onCancelOrder(order)
-    // const status = await cancelOrderStatus(result)
-
-    // if (status.result === 'error') {
-    //   await props.clearCanceledOrders()
-    // }
-
-    // showCancelResult(status)
+    await onCancelOrder(order)
   }
 
   const {
@@ -74,6 +64,7 @@ const OpenOrdersTable = (props) => {
     canceledOrders,
     handlePairChange
   )
+
   return (
     <TableWithSort
       style={{
@@ -114,30 +105,9 @@ const OpenOrdersTable = (props) => {
 const MemoizedWrapper = React.memo(OpenOrdersTable, (prevProps, nextProps) => {
   // TODO: Refactor isShowEqual --- not so clean
   const isShowEqual = !nextProps.show && !prevProps.show
-  const showAllAccountsEqual =
-    prevProps.showOpenOrdersFromAllAccounts ===
-    nextProps.showOpenOrdersFromAllAccounts
-  const showAllPairsEqual =
-    prevProps.showAllOpenOrderPairs === nextProps.showAllOpenOrderPairs
-  // TODO: here must be smart condition if specificPair is not changed
-  const pairIsEqual = prevProps.currencyPair === nextProps.currencyPair
-  // TODO: here must be smart condition if showAllAccountsEqual is true & is not changed
-  const selectedKeyIsEqual =
-    prevProps.selectedKey.keyId === nextProps.selectedKey.keyId
   const isMarketIsEqual = prevProps.marketType === nextProps.marketType
-  const pageIsEqual = prevProps.page === nextProps.page
-  const perPageIsEqual = prevProps.perPage === nextProps.perPage
 
-  if (
-    isShowEqual &&
-    showAllAccountsEqual &&
-    showAllPairsEqual &&
-    pairIsEqual &&
-    selectedKeyIsEqual &&
-    isMarketIsEqual &&
-    pageIsEqual &&
-    perPageIsEqual
-  ) {
+  if (isShowEqual && isMarketIsEqual) {
     return true
   }
 

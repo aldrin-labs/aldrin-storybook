@@ -213,8 +213,17 @@ export const CardsPanel = ({ theme }) => {
               style={{ width: '13rem' }}
               component={(props) => <Link to={`/rebalance`} {...props} />}
             >
-              Rebalance{' '}
+              Rebalance
               <BetaLabel theme={theme} style={{ marginLeft: '1rem' }} />
+            </NavLinkButton>
+            <NavLinkButton
+              theme={theme}
+              pathname={location.pathname}
+              to="/dashboard"
+              page={'dashboard'}
+              component={(props) => <Link to={`/dashboard`} {...props} />}
+            >
+              Dashboard
             </NavLinkButton>
             <NavLinkButton
               theme={theme}

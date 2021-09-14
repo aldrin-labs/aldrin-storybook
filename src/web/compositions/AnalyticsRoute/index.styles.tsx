@@ -161,7 +161,7 @@ export const Title = styled.span`
   font-family: Avenir Next;
   color: ${(props: TitleProps) =>
     props.color || props.theme.palette.grey.title};
-  font-size: 1.6rem;
+  font-size: ${(props: TitleProps) => props.fontSize || '1.6rem'};
 `
 
 export const TopBarTitle = styled((props) => <Title {...props} />)`
