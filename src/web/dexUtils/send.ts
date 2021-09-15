@@ -82,6 +82,7 @@ const getNotificationText = ({
       } has been successfully settled in your wallet.`,
     ],
     cancelAll: ['Orders canceled.', ``],
+    settleAllFunds: ['Funds settled.', ''],
   }
 
   return texts[operationType]
@@ -122,7 +123,7 @@ export async function createTokenAccountTransaction({
   }
 }
 
-export async function settleFunds({
+export async function getSettleFundsTransaction({
   market,
   openOrders,
   connection,
@@ -131,9 +132,6 @@ export async function settleFunds({
   quoteCurrency,
   baseTokenAccount,
   quoteTokenAccount,
-  baseUnsettled,
-  quoteUnsettled,
-  focusPopup = false,
 }: {
   market: Market
   wallet: WalletAdapter
@@ -143,10 +141,7 @@ export async function settleFunds({
   quoteCurrency: string
   baseTokenAccount: any
   quoteTokenAccount: any
-  baseUnsettled: number
-  quoteUnsettled: number
-  focusPopup?: boolean
-}) {
+}): Promise<[Transaction, Account[]] | null | undefined> {
   if (!wallet) {
     notify({ message: 'Please, connect wallet to settle funds' })
     return
@@ -240,6 +235,49 @@ export async function settleFunds({
 
     return
   }
+
+  return [transaction, settleFundsSigners]
+}
+
+export async function settleFunds({
+  market,
+  openOrders,
+  connection,
+  wallet,
+  baseCurrency,
+  quoteCurrency,
+  baseTokenAccount,
+  quoteTokenAccount,
+  baseUnsettled,
+  quoteUnsettled,
+  focusPopup = false,
+}: {
+  market: Market
+  wallet: WalletAdapter
+  connection: Connection
+  openOrders: OpenOrders
+  baseCurrency: string
+  quoteCurrency: string
+  baseTokenAccount: any
+  quoteTokenAccount: any
+  baseUnsettled: number
+  quoteUnsettled: number
+  focusPopup?: boolean
+}) {
+  const result = await getSettleFundsTransaction({
+    market,
+    openOrders,
+    connection,
+    wallet,
+    baseCurrency,
+    quoteCurrency,
+    baseTokenAccount,
+    quoteTokenAccount,
+  })
+
+  if (!result) return
+
+  const [transaction, settleFundsSigners] = result
 
   return await sendTransaction({
     transaction,

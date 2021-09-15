@@ -666,6 +666,35 @@ export function useOpenOrdersAccounts(fast = false) {
   )
 }
 
+export function useAllOpenOrdersAccounts() {
+  const { connected, wallet } = useWallet()
+  const connection = useConnection()
+
+  async function getOpenOrdersAccounts() {
+    if (!connected) {
+      return null
+    }
+
+    const openOrdersAccounts = await OpenOrders.findForOwner(
+      connection,
+      wallet.publicKey,
+      DEX_PID
+    )
+
+    return openOrdersAccounts
+  }
+
+  return useAsyncData(
+    getOpenOrdersAccounts,
+    tuple(
+      'useAllOpenOrdersAccounts',
+      wallet,
+      connected,
+    ),
+    { refreshInterval: _SLOW_REFRESH_INTERVAL }
+  )
+}
+
 export function useSelectedOpenOrdersAccount(fast = false) {
   const [accounts] = useOpenOrdersAccounts(fast)
 

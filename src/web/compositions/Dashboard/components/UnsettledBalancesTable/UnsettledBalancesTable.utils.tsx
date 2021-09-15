@@ -4,11 +4,32 @@ import { Theme } from '@material-ui/core'
 import { Market, OpenOrders } from '@project-serum/serum'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
-export const UnsettledBalancesColumnNames = [
+export const getUnsettledBalancesColumnNames = ({
+  theme,
+  onSettleAll,
+}: {
+  theme: Theme
+  onSettleAll: () => void
+}) => [
   { label: 'Market', id: 'marketName' },
   { label: 'Base unsettled', id: 'baseUnsettled' },
   { label: 'Quote unsettled', id: 'quoteUnsettled' },
-  { label: 'Settle', id: 'settle', isNumber: true },
+  {
+    label: (
+      <BtnCustom
+        onClick={() => onSettleAll()}
+        btnColor={theme.palette.green.main}
+        btnWidth={'8rem'}
+        height={'auto'}
+        borderRadius={'1.2rem'}
+        textTransform={'capitalize'}
+      >
+        Settle All
+      </BtnCustom>
+    ),
+    id: 'settle',
+    isNumber: true,
+  },
 ]
 
 export type UnsettledBalance = {
@@ -45,13 +66,15 @@ export const combineUnsettledBalances = ({
           showOnMobile: false,
         },
         baseUnsettled: {
-          render: `${roundAndFormatNumber(baseUnsettled, 8, true)} ${base}` || '0',
+          render:
+            `${roundAndFormatNumber(baseUnsettled, 8, true)} ${base}` || '0',
           style: { textAlign: 'left' },
           contentToSort: +baseUnsettled,
           showOnMobile: false,
         },
         quoteUnsettled: {
-          render: `${roundAndFormatNumber(quoteUnsettled, 8, true)} ${quote}` || '0',
+          render:
+            `${roundAndFormatNumber(quoteUnsettled, 8, true)} ${quote}` || '0',
           style: { textAlign: 'left' },
           contentToSort: +quoteUnsettled,
           showOnMobile: false,

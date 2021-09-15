@@ -52,7 +52,7 @@ export const TableButton = styled(({ ...rest }) => <Button {...rest} />)`
     text-transform: none;
     width: auto;
     height: auto;
-    margin: 1rem;
+    margin: 1rem 0 1rem .4rem;
     @media (max-width: 600px) {
       font-size: 2rem;
       padding: 0.5rem 2.5rem;

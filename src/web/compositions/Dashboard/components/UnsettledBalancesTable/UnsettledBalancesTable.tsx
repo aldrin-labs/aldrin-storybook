@@ -5,8 +5,8 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 import {
   combineUnsettledBalances,
+  getUnsettledBalancesColumnNames,
   UnsettledBalance,
-  UnsettledBalancesColumnNames,
 } from './UnsettledBalancesTable.utils'
 
 import { settleFunds } from '@sb/dexUtils/send'
@@ -18,10 +18,14 @@ const UnsettledBalancesTable = ({
   theme,
   userTokenAccountsMap,
   unsettledBalances,
+  onSettleAll,
+  refreshUnsettledBalances,
 }: {
   theme: Theme
   userTokenAccountsMap: Map<string, TokenAccount>
   unsettledBalances: UnsettledBalance[]
+  onSettleAll: () => void
+  refreshUnsettledBalances: () => void
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -60,6 +64,8 @@ const UnsettledBalancesTable = ({
         message: 'Successfully settled funds',
         type: 'success',
       })
+
+      await refreshUnsettledBalances()
     } catch (e) {
       notify({
         message: 'Error settling funds',
@@ -82,7 +88,6 @@ const UnsettledBalancesTable = ({
         overflowX: 'hidden',
       }}
       stylesForTable={{
-        position: 'relative',
         backgroundColor: '#222429',
         height: '100%',
       }}
@@ -100,8 +105,9 @@ const UnsettledBalancesTable = ({
           borderBottom: theme.palette.border.main,
           backgroundColor: 'inherit',
           boxShadow: 'none',
-          padding: '1rem 2rem',
-          fontFamily: 'Avenir Next Medium'
+          paddingTop: '1rem',
+          paddingBottom: '1rem',
+          fontFamily: 'Avenir Next Medium',
         },
         tab: {
           padding: 0,
@@ -110,7 +116,7 @@ const UnsettledBalancesTable = ({
       }}
       emptyTableText={'All your balances are settled.'}
       data={{ body: unsettledBalancesProcessedData }}
-      columnNames={UnsettledBalancesColumnNames}
+      columnNames={getUnsettledBalancesColumnNames({ theme, onSettleAll })}
     />
   )
   // }

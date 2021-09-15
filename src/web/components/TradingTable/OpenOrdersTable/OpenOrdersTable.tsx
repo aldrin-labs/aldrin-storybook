@@ -3,19 +3,33 @@ import { TableWithSort } from '@sb/components'
 
 import {
   getEmptyTextPlaceholder,
-  getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
 
-import { useOpenOrders } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { cancelOrder } from '@sb/dexUtils/send'
 import { combineOpenOrdersTable } from './OpenOrdersTable.utils'
+import { openOrdersColumnNames } from '../TradingTable.mocks'
 
 const OpenOrdersTable = (props) => {
   const { wallet } = useWallet()
   const connection = useConnection()
+
+  const {
+    tab,
+    theme,
+    show,
+    marketType,
+    canceledOrders,
+    handlePairChange,
+    openOrders,
+    onCancelAll,
+    cancelOrderCallback = () => {},
+    styles = {},
+    stylesForTable = {},
+    tableBodyStyles = {}
+  } = props
 
   const onCancelOrder = async (order) => {
     try {
@@ -26,6 +40,7 @@ const OpenOrdersTable = (props) => {
         wallet,
         signers: [],
       })
+      cancelOrderCallback()
     } catch (e) {
       notify({
         message: 'Error cancelling order',
@@ -41,23 +56,11 @@ const OpenOrdersTable = (props) => {
     await onCancelOrder(order)
   }
 
-  const {
-    tab,
-    theme,
-    show,
-    marketType,
-    canceledOrders,
-    handlePairChange,
-    openOrders,
-    styles = {},
-    stylesForTable = {},
-    tableBodyStyles = {}
-  } = props
-
-
   if (!show) {
     return null
   }
+
+  const showCancelAllButton = !!onCancelAll
 
   const openOrdersProcessedData = combineOpenOrdersTable(
     openOrders,
@@ -101,7 +104,7 @@ const OpenOrdersTable = (props) => {
       }}
       emptyTableText={getEmptyTextPlaceholder(tab)}
       data={{ body: openOrdersProcessedData }}
-      columnNames={getTableHead(tab, marketType)}
+      columnNames={openOrdersColumnNames(marketType, showCancelAllButton, onCancelAll)}
     />
   )
   // }

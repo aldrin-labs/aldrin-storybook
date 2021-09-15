@@ -16,28 +16,65 @@ import { useAllMarketsList, useAllMarketsMapById } from '@sb/dexUtils/markets'
 import UnsettledBalancesTable from './components/UnsettledBalancesTable/UnsettledBalancesTable'
 import { onlyUnique } from '@sb/dexUtils/utils'
 import { getOrderbookForMarkets } from '../Rebalance/utils/getOrderbookForMarkets'
-import { loadMarketsByNames } from '../Rebalance/utils/loadMarketsByNames'
+import {
+  LoadedMarketsMap,
+  loadMarketsByNames,
+} from '../Rebalance/utils/loadMarketsByNames'
 import { TableContainer } from './Dashboard.styles'
 import { ConnectWalletScreen } from '@sb/components/ConnectWalletScreen/ConnectWalletScreen'
-import { Order } from '@project-serum/serum/lib/market'
 import { UnsettledBalance } from './components/UnsettledBalancesTable/UnsettledBalancesTable.utils'
 import { getOpenOrdersAccountsMapByMarketId } from './utils/getOpenOrdersAccountsMapByMarketId'
 import { getUnsettledBalances } from './utils/getUnsettledBalances'
-import { getOpenOrdersFromOrderbooks } from './utils/getOpenOrdersFromOrderbooks'
+import {
+  getOpenOrdersFromOrderbooks,
+  OrderWithMarket,
+} from './utils/getOpenOrdersFromOrderbooks'
+import { loadOpenOrderAccountsFromPubkeys } from './utils/loadOpenOrderAccountsFromPubkeys'
+import { cancelOrdersForAllMarkets } from './utils/cancelOrdersForAllMarkets'
+import { sleep } from '@core/utils/helpers'
+import { useInterval } from '@sb/dexUtils/useInterval'
+import { Loading } from '@sb/components'
+import { settleUnsettledBalancesForAllMarkets } from './utils/settleUnsettledBalancesForAllMarkets'
 
 /* dashboard shows all open orders and all unsettled balances by using open orders accounts
 it gives you ability to settle your funds and cancel orders */
 
 const Dashboard = ({ theme }: { theme: Theme }) => {
   const [isDataLoading, setIsDataLoading] = useState(false)
-  const [openOrdersData, setOpenOrdersData] = useState<Order[]>([])
+
+  const [openOrdersAccounts, setOpenOrdersAccounts] = useState<OpenOrders[]>([])
+  const [loadedMarketsMap, setLoadedMarketsMap] = useState<LoadedMarketsMap>(
+    new Map()
+  )
+
+  // for unsettled balances table + refresh
   const [unsettledBalances, setUnsettledBalances] = useState<
     UnsettledBalance[]
   >([])
+  const [
+    refreshUnsettledBalancesCounter,
+    setRefreshUnsettledBalancesCounter,
+  ] = useState(0)
+  const [
+    isUnsettledBalancesUpdating,
+    setIsUnsettledBalancesUpdating,
+  ] = useState(false)
+  const refreshUnsettledBalances = () =>
+    setRefreshUnsettledBalancesCounter(refreshUnsettledBalancesCounter + 1)
+
+  // for open orders table + refresh
+  const [openOrders, setOpenOrders] = useState<OrderWithMarket[]>([])
+  const [refreshOpenOrdersCounter, setRefreshOpenOrdersCounter] = useState(0)
+  const [isOpenOrdersUpdating, setIsOpenOrdersUpdating] = useState(false)
+  const refreshOpenOrders = () => {
+    setRefreshOpenOrdersCounter(refreshOpenOrdersCounter + 1)
+    // after canceling order(s) their amount moves to unsettled balance
+    refreshUnsettledBalances()
+  }
 
   const { wallet, connected } = useWallet()
   const connection = useConnection()
-  
+
   const [
     userTokenAccountsMap,
     userTokenAccountsMapLoaded,
@@ -57,7 +94,6 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
         DEX_PID
       )
 
-      // map of open orders accounts by marketId
       const openOrdersAccountsMapByMarketId = getOpenOrdersAccountsMapByMarketId(
         openOrdersAccounts
       )
@@ -90,7 +126,6 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
         loadedMarketsMap,
       })
 
-      // filterForOpenOrders - after load asks + bids
       const openOrders = getOpenOrdersFromOrderbooks({
         loadedMarketsMap,
         orderbooksMap: orderbooks,
@@ -98,14 +133,73 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
       })
 
       setIsDataLoading(false)
-      setOpenOrdersData(openOrders)
+      setOpenOrdersAccounts(openOrdersAccounts)
+      setLoadedMarketsMap(loadedMarketsMap)
+
+      setOpenOrders(openOrders)
       setUnsettledBalances(unsettledBalances)
     }
     if (connected) getOpenOrdersAccounts()
   }, [connected])
 
   // on every action we need to update all OOA and unsettled balances
+  useEffect(() => {
+    // load accountInfo for every openOrderAccount
+    const updateUnsettledBalances = async () => {
+      await sleep(10 * 1000)
+      setIsUnsettledBalancesUpdating(true)
+
+      const updatedOpenOrdersAccounts = await loadOpenOrderAccountsFromPubkeys({
+        connection,
+        openOrdersAccountsPubkeys: openOrdersAccounts.map(
+          (account) => account.address
+        ),
+      })
+
+      const unsettledBalances = getUnsettledBalances({
+        openOrdersAccounts: updatedOpenOrdersAccounts,
+        allMarketsMapById,
+        loadedMarketsMap,
+      })
+
+      setOpenOrdersAccounts(updatedOpenOrdersAccounts)
+      setUnsettledBalances(unsettledBalances)
+      setIsUnsettledBalancesUpdating(false)
+    }
+
+    if (refreshUnsettledBalancesCounter > 0) updateUnsettledBalances()
+  }, [refreshUnsettledBalancesCounter])
+
   // on cancelling orders we need to update orderbooks and open orders
+  useEffect(() => {
+    const updateOpenOrders = async () => {
+      await sleep(10 * 1000)
+      setIsOpenOrdersUpdating(true)
+
+      const openOrdersAccountsMapByMarketId = getOpenOrdersAccountsMapByMarketId(
+        openOrdersAccounts
+      )
+
+      const orderbooks = await getOrderbookForMarkets({
+        connection,
+        loadedMarketsMap,
+      })
+
+      const openOrders = getOpenOrdersFromOrderbooks({
+        loadedMarketsMap,
+        orderbooksMap: orderbooks,
+        openOrdersAccountsMapByMarketId,
+      })
+
+      console.log('refreshed openOrders', openOrders)
+      setOpenOrders(openOrders)
+      setIsOpenOrdersUpdating(false)
+    }
+
+    if (refreshOpenOrdersCounter > 0) updateOpenOrders()
+  }, [refreshOpenOrdersCounter])
+
+  useInterval(() => !isDataLoading && refreshOpenOrders(), 30000)
 
   if (!connected) return <ConnectWalletScreen theme={theme} />
 
@@ -122,7 +216,10 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
       }}
     >
       <Row direction="column" width="70%" margin="5rem 0 0 0">
-        <RowContainer justify="flex-start" margin="0 0 3rem 0">
+        <RowContainer
+          justify={isUnsettledBalancesUpdating ? 'space-between' : 'flex-start'}
+          margin="0 0 3rem 0"
+        >
           <Title
             color={theme.palette.white.primary}
             fontFamily="Avenir Next Demi"
@@ -130,18 +227,35 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
           >
             Unsettled Balances
           </Title>
+          {isUnsettledBalancesUpdating && (
+            <Loading margin={'0'} size={'3rem'} />
+          )}
         </RowContainer>
         <TableContainer>
           <UnsettledBalancesTable
             theme={theme}
+            onSettleAll={async () => {
+              await settleUnsettledBalancesForAllMarkets({
+                wallet,
+                connection,
+                unsettledBalances,
+                userTokenAccountsMap,
+              })
+
+              await refreshUnsettledBalances()
+            }}
             userTokenAccountsMap={userTokenAccountsMap}
             unsettledBalances={unsettledBalances}
+            refreshUnsettledBalances={refreshUnsettledBalances}
           />
         </TableContainer>
       </Row>
 
       <Row direction="column" width="70%" margin="5rem 0 0 0">
-        <RowContainer justify="flex-start" margin="0 0 3rem 0">
+        <RowContainer
+          justify={isOpenOrdersUpdating ? 'space-between' : 'flex-start'}
+          margin="0 0 3rem 0"
+        >
           <Title
             color={theme.palette.white.primary}
             fontFamily="Avenir Next Demi"
@@ -149,6 +263,7 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
           >
             Open Orders
           </Title>
+          {isOpenOrdersUpdating && <Loading margin={'0'} size={'3rem'} />}
         </RowContainer>
         <TableContainer>
           <OpenOrdersTable
@@ -156,9 +271,19 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
             theme={theme}
             show={true}
             marketType={0}
+            cancelOrderCallback={refreshOpenOrders}
+            onCancelAll={async () => {
+              await cancelOrdersForAllMarkets({
+                wallet,
+                connection,
+                orders: openOrders,
+              })
+
+              await refreshOpenOrders()
+            }}
             canceledOrders={[]}
             handlePairChange={() => {}}
-            openOrders={openOrdersData}
+            openOrders={openOrders}
             styles={{
               height: '100%',
             }}

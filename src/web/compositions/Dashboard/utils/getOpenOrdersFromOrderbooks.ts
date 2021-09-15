@@ -17,7 +17,7 @@ export const getOpenOrdersFromOrderbooks = ({
   loadedMarketsMap: LoadedMarketsMap
   orderbooksMap: OrderbooksMap
   openOrdersAccountsMapByMarketId: OpenOrdersMapByMarketId
-}): Order[] => {
+}): OrderWithMarket[] => {
   return [...loadedMarketsMap.values()]
     .map((marketData) => {
       const { market, marketName } = marketData

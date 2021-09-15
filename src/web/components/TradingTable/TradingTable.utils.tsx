@@ -3,10 +3,8 @@ import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 dayjs.extend(localizedFormat)
 
-import { TradeType, } from '@core/types/ChartTypes'
-import {
-  TableButton,
-} from './TradingTable.styles'
+import { TradeType } from '@core/types/ChartTypes'
+import { TableButton } from './TradingTable.styles'
 
 import { Loading } from '@sb/components/index'
 import stableCoins from '@core/config/stableCoins'
@@ -35,6 +33,7 @@ export const CloseButton = ({
 
         try {
           await onClick()
+          await cancelOrder(false)
         } catch (e) {
           cancelOrder(false)
         }
