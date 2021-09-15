@@ -85,11 +85,9 @@ const UnsettledBalancesTable = ({
         backgroundColor: 'inherit',
       }}
       stylesForTable={{
+        position: 'relative',
         backgroundColor: theme.palette.white.background,
         height: '100%',
-      }}
-      tableBodyStyles={{
-        position: 'relative',
       }}
       defaultSort={{
         sortColumn: 'date',

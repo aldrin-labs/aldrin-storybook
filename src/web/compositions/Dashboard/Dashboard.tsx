@@ -87,20 +87,24 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
       const openOrders = [...loadedMarketsMap.values()]
         .map((marketData) => {
           const { market, marketName } = marketData
-          const { asks, bids } = orderbooks.get(marketName) || { asks: null, bids: null }
+          const { asks, bids } = orderbooks.get(marketName) || {
+            asks: null,
+            bids: null,
+          }
 
           if (!asks || !bids) return
-          
+
           return market.filterForOpenOrders(
             bids,
             asks,
             openOrdersAccountsMapByMarketId.get(market.address.toString())
           )
-        }).flat()
+        })
+        .flat()
 
-        setIsDataLoading(false)
+      setIsDataLoading(false)
 
-        console.log('openOrders', openOrders)
+      console.log('openOrders', openOrders)
       // go through every loaded market => Market.filterForOpenOrders(ask, bid by name, openOrdersAccounts -> )
     }
     if (connected) getOpenOrdersAccounts()
@@ -112,7 +116,8 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
 
   if (!connected) return <ConnectWallet theme={theme} />
 
-  if (isDataLoading || !userTokenAccountsMapLoaded) return <LoadingScreenWithHint />
+  if (isDataLoading || !userTokenAccountsMapLoaded)
+    return <LoadingScreenWithHint />
 
   return (
     <RowContainer height="100%" direction="column" justify="flex-start">
@@ -154,8 +159,11 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
             canceledOrders={[]}
             handlePairChange={() => {}}
             openOrders={[]}
-            stylesForTable={{ height: '100%', background: theme.palette.white.background }}
-            tableBodyStyles={{ position: 'relative' }}
+            stylesForTable={{
+              position: 'relative',
+              height: '100%',
+              background: theme.palette.white.background,
+            }}
           />
         </RowContainer>
       </Row>
