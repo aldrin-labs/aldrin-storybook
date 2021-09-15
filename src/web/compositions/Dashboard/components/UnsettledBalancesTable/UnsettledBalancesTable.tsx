@@ -79,14 +79,14 @@ const UnsettledBalancesTable = ({
   return (
     <TableWithSort
       style={{
-        borderRadius: 0,
+        borderRadius: '1.5rem',
         height: 'calc(100% - 6rem)',
         overflowX: 'hidden',
-        backgroundColor: 'inherit',
+        backgroundColor: '#222429',
       }}
       stylesForTable={{
         position: 'relative',
-        backgroundColor: theme.palette.white.background,
+        backgroundColor: '#222429',
         height: '100%',
       }}
       defaultSort={{

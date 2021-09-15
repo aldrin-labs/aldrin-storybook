@@ -22,12 +22,14 @@ import UnsettledBalancesTable from './components/UnsettledBalancesTable/Unsettle
 import { onlyUnique } from '@sb/dexUtils/utils'
 import { getOrderbookForMarkets } from '../Rebalance/utils/getOrderbookForMarkets'
 import { loadMarketsByNames } from '../Rebalance/utils/loadMarketsByNames'
+import { TableContainer } from './Dashboard.styles'
 
 /* dashboard shows all open orders and all unsettled balances by using open orders accounts
 it gives you ability to settle your funds and cancel orders */
 
 const Dashboard = ({ theme }: { theme: Theme }) => {
   const [isDataLoading, setIsDataLoading] = useState(false)
+  const [openOrdersData, setOpenOrdersData] = useState<Order>([])
 
   const { wallet, connected } = useWallet()
   const connection = useConnection()
@@ -103,9 +105,8 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
         .flat()
 
       setIsDataLoading(false)
-
+      setOpenOrdersData(openOrders)
       console.log('openOrders', openOrders)
-      // go through every loaded market => Market.filterForOpenOrders(ask, bid by name, openOrdersAccounts -> )
     }
     if (connected) getOpenOrdersAccounts()
   }, [connected])
@@ -120,9 +121,16 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
     return <LoadingScreenWithHint />
 
   return (
-    <RowContainer height="100%" direction="column" justify="flex-start">
+    <RowContainer
+      height="100%"
+      direction="column"
+      justify="flex-start"
+      style={{
+        background: theme.palette.grey.additional,
+      }}
+    >
       <Row direction="column" width="70%" margin="5rem 0 0 0">
-        <RowContainer justify="flex-start">
+        <RowContainer justify="flex-start" margin="0 0 3rem 0">
           <Title
             color={theme.palette.white.primary}
             fontFamily="Avenir Next Demi"
@@ -131,17 +139,17 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
             Unsettled Balances
           </Title>
         </RowContainer>
-        <RowContainer style={{ minHeight: '30rem' }}>
+        <TableContainer>
           <UnsettledBalancesTable
             theme={theme}
             userTokenAccountsMap={userTokenAccountsMap}
             unsettledBalances={[]}
           />
-        </RowContainer>
+        </TableContainer>
       </Row>
 
       <Row direction="column" width="70%" margin="5rem 0 0 0">
-        <RowContainer justify="flex-start">
+        <RowContainer justify="flex-start" margin="0 0 3rem 0">
           <Title
             color={theme.palette.white.primary}
             fontFamily="Avenir Next Demi"
@@ -150,7 +158,7 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
             Open Orders
           </Title>
         </RowContainer>
-        <RowContainer style={{ minHeight: '30rem' }}>
+        <TableContainer>
           <OpenOrdersTable
             tab={'openOrders'}
             theme={theme}
@@ -158,14 +166,12 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
             marketType={0}
             canceledOrders={[]}
             handlePairChange={() => {}}
-            openOrders={[]}
+            openOrders={openOrdersData}
             stylesForTable={{
               position: 'relative',
-              height: '100%',
-              background: theme.palette.white.background,
             }}
           />
-        </RowContainer>
+        </TableContainer>
       </Row>
     </RowContainer>
   )
