@@ -100,6 +100,8 @@ const UnsettledBalancesTable = ({
           borderBottom: theme.palette.border.main,
           backgroundColor: 'inherit',
           boxShadow: 'none',
+          padding: '1rem 2rem',
+          fontFamily: 'Avenir Next Medium'
         },
         tab: {
           padding: 0,

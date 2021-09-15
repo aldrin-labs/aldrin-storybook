@@ -200,13 +200,13 @@ export async function settleFunds({
     const usdt = TOKEN_MINTS.find(({ name }) => name === 'USDT')
     const usdc = TOKEN_MINTS.find(({ name }) => name === 'USDC')
     if (usdtRef && usdt && market.quoteMintAddress.equals(usdt.address)) {
-      referrerQuoteWallet = usdtRef
+      referrerQuoteWallet = new PublicKey(usdtRef)
     } else if (
       usdcRef &&
       usdc &&
       market.quoteMintAddress.equals(usdc.address)
     ) {
-      referrerQuoteWallet = usdcRef
+      referrerQuoteWallet = new PublicKey(usdcRef)
     }
   }
 
@@ -451,17 +451,15 @@ export async function placeOrder({
     const usdt = TOKEN_MINTS.find(({ name }) => name === 'USDT')
     const usdc = TOKEN_MINTS.find(({ name }) => name === 'USDC')
     if (usdtRef && usdt && market.quoteMintAddress.equals(usdt.address)) {
-      referrerQuoteWallet = usdtRef
+      referrerQuoteWallet = new PublicKey(usdtRef)
     } else if (
       usdcRef &&
       usdc &&
       market.quoteMintAddress.equals(usdc.address)
     ) {
-      referrerQuoteWallet = usdcRef
+      referrerQuoteWallet = new PublicKey(usdcRef)
     }
   }
-
-  console.log('referrerQuoteWallet', referrerQuoteWallet)
 
   let {
     transaction: placeOrderTx,

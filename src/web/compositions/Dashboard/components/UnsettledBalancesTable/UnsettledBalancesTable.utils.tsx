@@ -63,7 +63,8 @@ export const combineUnsettledBalances = ({
               onClick={() => onSettleFunds(el)}
               btnColor={theme.palette.green.main}
               btnWidth={'8rem'}
-              height={'100%'}
+              height={'auto'}
+              borderRadius={'1.2rem'}
               textTransform={'capitalize'}
             >
               Settle

@@ -75,7 +75,7 @@ if (currentVersion !== version) {
   localStorage.setItem("isNotificationDone", isNotificationDone)
   localStorage.setItem("isOnboardingDone", isOnboardingDone)
   localStorage.setItem("isRebrandingPopupOpen", isRebrandingPopupOpen)
-  localStorage.setItem("isRpcWarningPopupOpen", isRpcWarningPopupOpen)
+  // localStorage.setItem("isRpcWarningPopupOpen", isRpcWarningPopupOpen)
 
   localStorage.setItem('version', version)
   document.location.reload()

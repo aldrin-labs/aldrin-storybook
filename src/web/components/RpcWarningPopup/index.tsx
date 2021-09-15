@@ -17,7 +17,7 @@ import SvgIcon from '../SvgIcon'
 export const RpcCapacityWarningPopup = ({ theme }: { theme: Theme }) => {
   const [isPopupTemporaryHidden, setIsPopupTemporaryHidden] = useState(false)
   const [isPopupOpen, setIsPopupOpen] = useLocalStorageState(
-    'isRpcWarningPopupOpen',
+    'isRpcProblemWarningPopupOpen',
     true
   )
   const isMobile = useMobileSize()
@@ -45,27 +45,17 @@ export const RpcCapacityWarningPopup = ({ theme }: { theme: Theme }) => {
             fontFamily: 'Avenir Next Bold',
           }}
         >
-          Important note!
+          Solana Cluster Unstable{' '}
         </DemiText>
       </RowContainer>
-      <RowContainer align="flex-start" justify="space-between">
+      <RowContainer height="40%" align="flex-start" justify="space-between">
         <Row
           width="60%"
           direction={'column'}
-          justify="flex-start"
+          justify="space-between"
           align="flex-start"
+          height="100%"
         >
-          <DemiText
-            theme={theme}
-            style={{
-              lineHeight: '4rem',
-              marginBottom: '3rem',
-              fontSize: '1.8rem',
-              textAlign: 'left',
-            }}
-          >
-            Aldrin is at over capacity.{' '}
-          </DemiText>
           <Text
             style={{
               lineHeight: '3rem',
@@ -74,9 +64,8 @@ export const RpcCapacityWarningPopup = ({ theme }: { theme: Theme }) => {
             }}
             theme={theme}
           >
-            We’re having some issues and team is working on it right now. We’re
-            having a spike in users and getting our RPC capacity increased as
-            well.
+            The mainnet-beta cluster is experiencing some instability at the
+            moment.
           </Text>
           <Text
             style={{
@@ -86,7 +75,8 @@ export const RpcCapacityWarningPopup = ({ theme }: { theme: Theme }) => {
             }}
             theme={theme}
           >
-            In the next 2-3 days all should smooth out for a lot more users.
+            This can be the reason for the failure of trading, settling and
+            transaction processing.
           </Text>
           <Text
             style={{
@@ -96,20 +86,28 @@ export const RpcCapacityWarningPopup = ({ theme }: { theme: Theme }) => {
             }}
             theme={theme}
           >
-            We know this is frustrating for everyone and the last thing we want
-            our users to be experiencing but these issues will get fixed really
-            soon.
+            Team are aware of the problem and currently looking into it.{' '}
           </Text>
           <Text
             style={{
               lineHeight: '3rem',
-              marginTop: '2rem',
               fontSize: '1.8rem',
             }}
             theme={theme}
           >
-            The biggest positive from all of this is that Aldrin is growing and
-            once we’re stable it is going to be exciting times ahead.
+            Learn More:{' '}
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href={'https://status.solana.com/'}
+              style={{
+                fontFamily: 'Avenir Next Bold',
+                textDecoration: 'none',
+                color: '#000',
+              }}
+            >
+              https://status.solana.com/
+            </a>
           </Text>
         </Row>
         <Row width={'40%'} height={'100%'}>
