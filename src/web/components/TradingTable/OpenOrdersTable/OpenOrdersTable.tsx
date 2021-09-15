@@ -49,6 +49,7 @@ const OpenOrdersTable = (props) => {
     canceledOrders,
     handlePairChange,
     openOrders,
+    styles = {},
     stylesForTable = {},
     tableBodyStyles = {}
   } = props
@@ -74,6 +75,7 @@ const OpenOrdersTable = (props) => {
         height: 'calc(100% - 6rem)',
         overflowX: 'hidden',
         backgroundColor: 'inherit',
+        ...styles
       }}
       stylesForTable={{ backgroundColor: 'inherit', ...stylesForTable }}
       tableBodyStyles={{ ...tableBodyStyles }}

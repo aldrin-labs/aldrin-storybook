@@ -11,10 +11,7 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { Row, RowContainer, Title } from '../AnalyticsRoute/index.styles'
 import { LoadingScreenWithHint } from '@sb/components/LoadingScreenWithHint/LoadingScreenWithHint'
 import OpenOrdersTable from '@sb/components/TradingTable/OpenOrdersTable/OpenOrdersTable'
-import {
-  useAllMarketsList,
-  useAllMarketsMapById,
-} from '@sb/dexUtils/markets'
+import { useAllMarketsList, useAllMarketsMapById } from '@sb/dexUtils/markets'
 
 import UnsettledBalancesTable from './components/UnsettledBalancesTable/UnsettledBalancesTable'
 import { onlyUnique } from '@sb/dexUtils/utils'
@@ -95,11 +92,17 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
 
           if (!asks || !bids) return
 
-          return market.filterForOpenOrders(
-            bids,
-            asks,
-            openOrdersAccountsMapByMarketId.get(market.address.toString())
-          )
+          return market
+            .filterForOpenOrders(
+              bids,
+              asks,
+              openOrdersAccountsMapByMarketId.get(market.address.toString())
+            )
+            .map((order) => ({
+              ...order,
+              market,
+              marketName,
+            }))
         })
         .flat()
 
@@ -162,8 +165,8 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
             canceledOrders={[]}
             handlePairChange={() => {}}
             openOrders={openOrdersData}
-            stylesForTable={{
-              position: 'relative',
+            styles={{
+              height: '100%',
             }}
           />
         </TableContainer>

@@ -80,7 +80,7 @@ const UnsettledBalancesTable = ({
     <TableWithSort
       style={{
         borderRadius: '1.5rem',
-        height: 'calc(100% - 6rem)',
+        height: '100%',
         overflowX: 'hidden',
         backgroundColor: '#222429',
       }}
