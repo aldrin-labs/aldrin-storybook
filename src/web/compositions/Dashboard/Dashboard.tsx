@@ -11,24 +11,26 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { Row, RowContainer, Title } from '../AnalyticsRoute/index.styles'
 import { LoadingScreenWithHint } from '@sb/components/LoadingScreenWithHint/LoadingScreenWithHint'
 import OpenOrdersTable from '@sb/components/TradingTable/OpenOrdersTable/OpenOrdersTable'
-import {
-  useAllMarketsList,
-  useAllMarketsMapById,
-} from '@sb/dexUtils/markets'
+import { useAllMarketsList, useAllMarketsMapById } from '@sb/dexUtils/markets'
 
 import UnsettledBalancesTable from './components/UnsettledBalancesTable/UnsettledBalancesTable'
-import { onlyUnique } from '@sb/dexUtils/utils'
+import { notEmpty, onlyUnique } from '@sb/dexUtils/utils'
 import { getOrderbookForMarkets } from '../Rebalance/utils/getOrderbookForMarkets'
 import { loadMarketsByNames } from '../Rebalance/utils/loadMarketsByNames'
 import { TableContainer } from './Dashboard.styles'
 import { ConnectWalletScreen } from '@sb/components/ConnectWalletScreen/ConnectWalletScreen'
+import { Order } from '@project-serum/serum/lib/market'
+import { UnsettledBalance } from './components/UnsettledBalancesTable/UnsettledBalancesTable.utils'
 
 /* dashboard shows all open orders and all unsettled balances by using open orders accounts
 it gives you ability to settle your funds and cancel orders */
 
 const Dashboard = ({ theme }: { theme: Theme }) => {
   const [isDataLoading, setIsDataLoading] = useState(false)
-  const [openOrdersData, setOpenOrdersData] = useState<Order>([])
+  const [openOrdersData, setOpenOrdersData] = useState<Order[]>([])
+  const [unsettledBalances, setUnsettledBalances] = useState<
+    UnsettledBalance[]
+  >([])
 
   const { wallet, connected } = useWallet()
   const connection = useConnection()
@@ -79,13 +81,44 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
         allMarketsMap,
       })
 
+      const unsettledBalances: UnsettledBalance[] = openOrdersAccounts
+        .map((openOrders) => {
+          const marketNameFromId =
+            allMarketsMapById.get(openOrders.market.toString())?.name ||
+            'Unknown market'
+          const marketData = loadedMarketsMap.get(marketNameFromId)
+
+          const { market, marketName } = marketData || {
+            market: null,
+            marketName: null,
+          }
+
+          if (!market || !marketName) return null
+
+          return {
+            openOrders,
+            baseUnsettled: market.baseSplSizeToNumber(openOrders.baseTokenFree),
+            quoteUnsettled: market.quoteSplSizeToNumber(
+              openOrders.quoteTokenFree
+            ),
+            market,
+            marketName,
+          }
+        })
+        .filter(notEmpty)
+        .filter(
+          (unsettledBalance) =>
+            unsettledBalance.baseUnsettled > 0 ||
+            unsettledBalance.quoteUnsettled > 0
+        )
+
       const orderbooks = await getOrderbookForMarkets({
         connection,
         loadedMarketsMap,
       })
 
       // filterForOpenOrders - after load asks + bids
-      const openOrders = [...loadedMarketsMap.values()]
+      const openOrders: Order[] = [...loadedMarketsMap.values()]
         .map((marketData) => {
           const { market, marketName } = marketData
           const { asks, bids } = orderbooks.get(marketName) || {
@@ -93,7 +126,7 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
             bids: null,
           }
 
-          if (!asks || !bids) return
+          if (!asks || !bids) return null
 
           return market.filterForOpenOrders(
             bids,
@@ -101,11 +134,15 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
             openOrdersAccountsMapByMarketId.get(market.address.toString())
           )
         })
+        .filter(notEmpty)
         .flat()
 
       setIsDataLoading(false)
       setOpenOrdersData(openOrders)
+      setUnsettledBalances(unsettledBalances)
+
       console.log('openOrders', openOrders)
+      console.log('unsettledBalances', unsettledBalances)
     }
     if (connected) getOpenOrdersAccounts()
   }, [connected])
@@ -138,7 +175,7 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
           <UnsettledBalancesTable
             theme={theme}
             userTokenAccountsMap={userTokenAccountsMap}
-            unsettledBalances={[]}
+            unsettledBalances={unsettledBalances}
           />
         </TableContainer>
       </Row>
