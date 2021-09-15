@@ -81,6 +81,7 @@ const getNotificationText = ({
           : quoteSettleText
       } has been successfully settled in your wallet.`,
     ],
+    cancelAll: ['Orders canceled.', ``],
   }
 
   return texts[operationType]

@@ -1,8 +1,13 @@
-import { Order } from '@project-serum/serum/lib/market'
+import { Market, Order } from '@project-serum/serum/lib/market'
 import { OrderbooksMap } from '@sb/compositions/Rebalance/utils/getOrderbookForMarkets'
 import { LoadedMarketsMap } from '@sb/compositions/Rebalance/utils/loadMarketsByNames'
 import { notEmpty } from '@sb/dexUtils/utils'
 import { OpenOrdersMapByMarketId } from './getOpenOrdersAccountsMapByMarketId'
+
+export interface OrderWithMarket extends Order {
+  market: Market
+  marketName: string
+}
 
 export const getOpenOrdersFromOrderbooks = ({
   loadedMarketsMap,
