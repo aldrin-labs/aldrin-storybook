@@ -55,7 +55,7 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
           if (acc.has(marketId)) {
             acc.set(marketId, [...acc.get(marketId), current])
           } else {
-            acc.set(marketId, current)
+            acc.set(marketId, [current])
           }
           return acc
         },
