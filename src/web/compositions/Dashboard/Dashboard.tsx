@@ -213,6 +213,9 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
       justify="flex-start"
       style={{
         background: theme.palette.grey.additional,
+        flexWrap: 'nowrap',
+        overflow: 'auto',
+        padding: '0 0 6rem 0',
       }}
     >
       <Row direction="column" width="70%" margin="5rem 0 0 0">
@@ -284,6 +287,7 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
             canceledOrders={[]}
             handlePairChange={() => {}}
             openOrders={openOrders}
+            stylesForTable={{ borderRadius: '1.5rem' }}
             styles={{
               height: '100%',
             }}
