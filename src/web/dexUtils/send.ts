@@ -456,8 +456,6 @@ export async function placeOrder({
     }
   }
 
-  console.log('referrerQuoteWallet', referrerQuoteWallet)
-
   let {
     transaction: placeOrderTx,
     signers,
