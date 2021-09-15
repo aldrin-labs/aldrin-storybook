@@ -46,7 +46,8 @@ import { tokensToDelist } from '@core/config/dex'
 import { TransactionsConfirmationWarningPopup } from '@sb/components/TransactionsConfirmationWarningPopup/TransactionsConfirmationWarningPopup'
 import { SettleWarningPopup } from '@sb/components/SettleWarningPopup/SettleWarningPopup'
 import { ProposeToSettlePopup } from '@sb/components/ProposeToSettlePopup/ProposeToSettlePopup'
-import { RpcCapacityWarningPopup } from '@sb/components/RpcWarningPopup/RpcWarningPopup'
+import { AldrinIsOverCapacityPopup } from '@sb/components/AldrinIsOverCapacityPopup'
+import { RpcCapacityWarningPopup } from '@sb/components/RpcWarningPopup'
 import { MarketDeprecatedPopup } from '@sb/components/MarketDeprecatedPopup/MarketDeprecatedPopup'
 import { useConnection } from '@sb/dexUtils/connection'
 
@@ -340,7 +341,9 @@ function ChartPageComponent(props: any) {
           .get('LIQ_USDC_deprecated')
           ?.address.toString()}
       />
-      <RpcCapacityWarningPopup theme={theme} />
+      <AldrinIsOverCapacityPopup theme={theme} />
+      {/* <RpcCapacityWarningPopup theme={theme} /> */}
+
       {/* )} */}
       {/* <JoyrideOnboarding
         continuous={true}
