@@ -8,7 +8,7 @@ export const UnsettledBalancesColumnNames = [
   { label: 'Market', id: 'marketName' },
   { label: 'Base unsettled', id: 'baseUnsettled' },
   { label: 'Quote unsettled', id: 'quoteUnsettled' },
-  { label: 'Settle', id: 'settle' },
+  { label: 'Settle', id: 'settle', isNumber: true },
 ]
 
 export type UnsettledBalance = {
@@ -34,24 +34,24 @@ export const combineUnsettledBalances = ({
 
   const processedUnsettledBalances = unsettledBalances.map(
     (el: UnsettledBalance) => {
-      const {
-        market,
-        marketName,
-        baseUnsettled,
-        quoteUnsettled,
-      } = el
+      const { market, marketName, baseUnsettled, quoteUnsettled } = el
+
+      const [base, quote] = marketName.split('_')
 
       return {
         id: `${marketName}${baseUnsettled}${quoteUnsettled}`,
-        marketName: { render: marketName || 'unknown', showOnMobile: false },
+        marketName: {
+          render: marketName.replace('_', '/') || 'unknown',
+          showOnMobile: false,
+        },
         baseUnsettled: {
-          render: roundAndFormatNumber(baseUnsettled, 8, true) || '0',
+          render: `${roundAndFormatNumber(baseUnsettled, 8, true)} ${base}` || '0',
           style: { textAlign: 'left' },
           contentToSort: +baseUnsettled,
           showOnMobile: false,
         },
         quoteUnsettled: {
-          render: roundAndFormatNumber(quoteUnsettled, 8, true) || '0',
+          render: `${roundAndFormatNumber(quoteUnsettled, 8, true)} ${quote}` || '0',
           style: { textAlign: 'left' },
           contentToSort: +quoteUnsettled,
           showOnMobile: false,
@@ -59,18 +59,18 @@ export const combineUnsettledBalances = ({
         settle: {
           render: (
             <BtnCustom
-              type="text"
-              size="large"
               disabled={!market}
               onClick={() => onSettleFunds(el)}
-              btnColor={theme.palette.blue.serum}
-              btnWidth={'14rem'}
+              btnColor={theme.palette.green.main}
+              btnWidth={'8rem'}
               height={'100%'}
+              textTransform={'capitalize'}
             >
               Settle
             </BtnCustom>
           ),
           showOnMobile: false,
+          style: { textAlign: 'right' },
         },
       }
     }

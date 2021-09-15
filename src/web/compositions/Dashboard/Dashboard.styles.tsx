@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import { RowContainer } from '../AnalyticsRoute/index.styles'
 
 export const TableContainer = styled(RowContainer)`
+  align-items: flex-start;
   min-height: 30rem;
   max-height: 60rem;
   background: #222429;

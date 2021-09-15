@@ -146,9 +146,6 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
       setIsDataLoading(false)
       setOpenOrdersData(openOrders)
       setUnsettledBalances(unsettledBalances)
-
-      console.log('openOrders', openOrders)
-      console.log('unsettledBalances', unsettledBalances)
     }
     if (connected) getOpenOrdersAccounts()
   }, [connected])
