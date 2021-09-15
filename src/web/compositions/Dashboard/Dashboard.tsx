@@ -14,15 +14,14 @@ import OpenOrdersTable from '@sb/components/TradingTable/OpenOrdersTable/OpenOrd
 import {
   useAllMarketsList,
   useAllMarketsMapById,
-  useTokenAccounts,
 } from '@sb/dexUtils/markets'
 
-import ConnectWallet from './components/ConnectWallet/ConnectWallet'
 import UnsettledBalancesTable from './components/UnsettledBalancesTable/UnsettledBalancesTable'
 import { onlyUnique } from '@sb/dexUtils/utils'
 import { getOrderbookForMarkets } from '../Rebalance/utils/getOrderbookForMarkets'
 import { loadMarketsByNames } from '../Rebalance/utils/loadMarketsByNames'
 import { TableContainer } from './Dashboard.styles'
+import { ConnectWalletScreen } from '@sb/components/ConnectWalletScreen/ConnectWalletScreen'
 
 /* dashboard shows all open orders and all unsettled balances by using open orders accounts
 it gives you ability to settle your funds and cancel orders */
@@ -111,11 +110,7 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
     if (connected) getOpenOrdersAccounts()
   }, [connected])
 
-  if (!connected) {
-    return <ConnectWallet theme={theme} />
-  }
-
-  if (!connected) return <ConnectWallet theme={theme} />
+  if (!connected) return <ConnectWalletScreen theme={theme} />
 
   if (isDataLoading || !userTokenAccountsMapLoaded)
     return <LoadingScreenWithHint />
