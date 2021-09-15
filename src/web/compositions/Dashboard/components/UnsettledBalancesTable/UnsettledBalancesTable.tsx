@@ -33,7 +33,7 @@ const UnsettledBalancesTable = ({
     baseUnsettled,
     quoteUnsettled,
   }: UnsettledBalance) {
-    const [baseCurrency, quoteCurrency] = marketName.split('/')
+    const [baseCurrency, quoteCurrency] = marketName.split('_')
 
     const baseTokenAccount = userTokenAccountsMap.get(
       market.baseMintAddress.toString()

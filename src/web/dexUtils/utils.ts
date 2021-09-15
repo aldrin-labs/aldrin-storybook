@@ -143,3 +143,7 @@ export function useRefEqual<T>(
 export function onlyUnique(value, index, self) {
   return self.indexOf(value) === index
 }
+
+export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
+  return value !== null && value !== undefined;
+}
