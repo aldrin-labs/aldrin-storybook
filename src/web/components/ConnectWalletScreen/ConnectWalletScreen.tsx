@@ -11,7 +11,7 @@ import { Theme } from '@material-ui/core'
 
 import LightLogo from '@icons/lightLogo.svg'
 
-const ConnectWallet = ({ theme }: { theme: Theme }) => {
+export const ConnectWalletScreen = ({ theme }: { theme: Theme }) => {
   return (
     <RowContainer direction="column" height={'100%'}>
       <RowContainer margin={'0 0 4rem 0'}>
@@ -46,5 +46,3 @@ const ConnectWallet = ({ theme }: { theme: Theme }) => {
     </RowContainer>
   )
 }
-
-export default ConnectWallet
