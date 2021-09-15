@@ -8,12 +8,21 @@ import {
   UnsettledBalance,
   UnsettledBalancesColumnNames,
 } from './UnsettledBalancesTable.utils'
-import { Market, OpenOrders } from '@project-serum/serum'
+
 import { settleFunds } from '@sb/dexUtils/send'
 import { notify } from '@sb/dexUtils/notifications'
 import { Theme } from '@material-ui/core'
+import { TokenAccount } from '@sb/dexUtils/markets'
 
-const UnsettledBalancesTable = ({ theme, userTokenAccounts }: {theme: Theme}) => {
+const UnsettledBalancesTable = ({
+  theme,
+  userTokenAccountsMap,
+  unsettledBalances,
+}: {
+  theme: Theme
+  userTokenAccountsMap: Map<string, TokenAccount>
+  unsettledBalances: UnsettledBalance[]
+}) => {
   const { wallet } = useWallet()
   const connection = useConnection()
 
@@ -22,9 +31,17 @@ const UnsettledBalancesTable = ({ theme, userTokenAccounts }: {theme: Theme}) =>
     marketName,
     openOrders,
     baseUnsettled,
-    quoteUnsettled
+    quoteUnsettled,
   }: UnsettledBalance) {
     const [baseCurrency, quoteCurrency] = marketName.split('/')
+
+    const baseTokenAccount = userTokenAccountsMap.get(
+      market.baseMintAddress.toString()
+    )
+    const quoteTokenAccount = userTokenAccountsMap.get(
+      market.quoteMintAddress.toString()
+    )
+
     try {
       await settleFunds({
         market,
@@ -56,7 +73,7 @@ const UnsettledBalancesTable = ({ theme, userTokenAccounts }: {theme: Theme}) =>
   const unsettledBalancesProcessedData = combineUnsettledBalances({
     onSettleFunds,
     theme,
-    unsettledBalances: [],
+    unsettledBalances,
   })
 
   return (
@@ -67,7 +84,13 @@ const UnsettledBalancesTable = ({ theme, userTokenAccounts }: {theme: Theme}) =>
         overflowX: 'hidden',
         backgroundColor: 'inherit',
       }}
-      stylesForTable={{ backgroundColor: 'inherit' }}
+      stylesForTable={{
+        backgroundColor: theme.palette.white.background,
+        height: '100%',
+      }}
+      tableBodyStyles={{
+        position: 'relative',
+      }}
       defaultSort={{
         sortColumn: 'date',
         sortDirection: 'desc',

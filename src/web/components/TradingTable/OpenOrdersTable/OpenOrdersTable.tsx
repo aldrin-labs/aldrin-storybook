@@ -48,7 +48,9 @@ const OpenOrdersTable = (props) => {
     marketType,
     canceledOrders,
     handlePairChange,
-    openOrders
+    openOrders,
+    stylesForTable = {},
+    tableBodyStyles = {}
   } = props
 
 
@@ -73,7 +75,8 @@ const OpenOrdersTable = (props) => {
         overflowX: 'hidden',
         backgroundColor: 'inherit',
       }}
-      stylesForTable={{ backgroundColor: 'inherit' }}
+      stylesForTable={{ backgroundColor: 'inherit', ...stylesForTable }}
+      tableBodyStyles={{ ...tableBodyStyles }}
       defaultSort={{
         sortColumn: 'date',
         sortDirection: 'desc',

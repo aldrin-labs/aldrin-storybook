@@ -8,7 +8,7 @@ import {
   TOKEN_MINTS,
   OpenOrders,
 } from '@project-serum/serum'
-import { Account, PublicKey } from '@solana/web3.js'
+import { Account, AccountInfo, PublicKey } from '@solana/web3.js'
 import React, { useContext, useEffect, useState } from 'react'
 import { getUniqueListBy, useLocalStorageState } from './utils'
 import { getCache, refreshCache, setCache, useAsyncData } from './fetch-loop'
@@ -676,7 +676,15 @@ export function useSelectedOpenOrdersAccount(fast = false) {
   return accounts[0]
 }
 
-export function useTokenAccounts() {
+export type TokenAccount = {
+  pubkey: PublicKey
+  account: AccountInfo<Buffer>
+  effectiveMint: PublicKey
+}
+
+export type TokenAccounts = TokenAccount[] | undefined | null
+
+export function useTokenAccounts(): [TokenAccounts, boolean] {
   const { connected, wallet } = useWallet()
   const connection = useConnection()
 
@@ -692,6 +700,20 @@ export function useTokenAccounts() {
     tuple('getTokenAccounts', wallet, connected),
     { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
   )
+}
+
+export function useTokenAccountsMap(): [Map<string, TokenAccount>, boolean] {
+  const [accounts, loaded] = useTokenAccounts()
+
+  if (!loaded || !accounts) return [new Map(), loaded]
+
+  return [
+    accounts.reduce(
+      (acc, current) => acc.set(current.effectiveMint.toString(), current),
+      new Map()
+    ),
+    loaded,
+  ]
 }
 
 export function getSelectedTokenAccountForMint(

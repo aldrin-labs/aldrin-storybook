@@ -1,27 +1,24 @@
 import { sleep } from '@core/utils/helpers'
+import { Orderbook } from '@project-serum/serum'
 import { Connection } from '@solana/web3.js'
 import { LoadedMarketsMap } from './loadMarketsByNames'
 
-export interface OrderbooksMap {
-  [key: string]: { asks: [number, number][]; bids: [number, number][] }
-}
+export type OrderbooksMap = Map<string, { asks: Orderbook, bids: Orderbook }>
 
 export const getOrderbookForMarkets = async ({
   connection,
   loadedMarketsMap,
-  allMarketsMap,
 }: {
   connection: Connection
   loadedMarketsMap: LoadedMarketsMap
-  allMarketsMap: Map<string, any>
 }): Promise<OrderbooksMap> => {
-  const orderbooksMap: OrderbooksMap = {}
+  const orderbooksMap: OrderbooksMap = new Map()
 
   let i = 0
 
   console.time('orderbooks')
 
-  const loadedMarketsArray = Object.entries(loadedMarketsMap)
+  const loadedMarketsArray = [...loadedMarketsMap.entries()]
 
   for (let [name, { market }] of loadedMarketsArray) {
     const [asks, bids] = await Promise.all([
@@ -29,10 +26,10 @@ export const getOrderbookForMarkets = async ({
       market.loadBids(connection),
     ])
 
-    orderbooksMap[name] = {
-      asks: asks.getL2(300).map(([price, size]) => [price, size]),
-      bids: bids.getL2(300).map(([price, size]) => [price, size]),
-    }
+    orderbooksMap.set(name, {
+      asks,
+      bids,
+    })
 
     if (i % 3 === 0) await sleep(1 * 1000)
 

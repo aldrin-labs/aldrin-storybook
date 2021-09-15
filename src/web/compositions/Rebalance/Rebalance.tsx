@@ -121,8 +121,6 @@ const RebalanceComposition = ({
 
   const isWalletConnected = wallet.connected
 
-  console.log('isWalletConnected', wallet, isWalletConnected)
-
   const [tokensMap, setTokensMap] = useState<TokensMapType>({})
   const [totalTokensValue, setTotalTokensValue] = useState(0)
   const [leftToDistributeValue, setLeftToDistributeValue] = useState(0)

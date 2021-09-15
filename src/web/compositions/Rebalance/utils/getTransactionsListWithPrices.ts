@@ -7,9 +7,10 @@ import { TokensMapType, TransactionType } from '../Rebalance.types'
 import { addPercentageToPricesInOrderbooks } from './addPercentageToPricesInOrderbooks'
 import { getOrderbookForMarkets } from './getOrderbookForMarkets'
 import { getTransactionsList } from './getTransactionsList'
-import { loadMarketsByNames } from './loadMarketsByNames'
 import { mergeRebalanceTransactions } from './mergeRebalanceTransactions'
 import { sortRebalanceTransactions } from './sortRebalanceTransactions'
+import { loadMarketsWithDataForTransactions } from './loadMarketsWithDataForTransactions'
+import { getRowsFromOrderbooks } from './getRowsFromOrderbooks'
 
 export const getTransactionsListWithPrices = async ({
   wallet,
@@ -27,24 +28,25 @@ export const getTransactionsListWithPrices = async ({
     orderbooks: {},
     tokensMap,
     allMarketsMap,
-    loadedMarketsMap: {},
+    loadedMarketsMap: new Map(),
   })
 
-  const loadedMarketsMap = await loadMarketsByNames({
+  const loadedMarketsMap = await loadMarketsWithDataForTransactions({
     wallet,
     connection,
     marketsNames: rebalanceTransactionsList.map((t) => t.name),
     allMarketsMap,
   })
 
-  const orderbooks = await getOrderbookForMarkets({
+  const orderbooksMap = await getOrderbookForMarkets({
     connection,
     loadedMarketsMap,
-    allMarketsMap,
   })
 
+  const orderbooksRowsMap = getRowsFromOrderbooks({ orderbooksMap })
+
   const orderbooksWithTakerFees = addPercentageToPricesInOrderbooks({
-    orderbooksMap: orderbooks,
+    orderbooksMap: orderbooksRowsMap,
     percentage: TAKER_FEE + REBALANCE_CONFIG.SLIPPAGE / 100,
   })
 

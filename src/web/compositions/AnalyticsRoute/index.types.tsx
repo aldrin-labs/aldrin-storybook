@@ -15,7 +15,7 @@ export type TitleProps = {
   color?: string
   theme?: Theme
   fontSize?: string
-  fontFamily: string
+  fontFamily?: string
 }
 
 export type LineProps = {

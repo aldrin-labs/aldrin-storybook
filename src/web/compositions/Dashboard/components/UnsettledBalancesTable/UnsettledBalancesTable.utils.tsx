@@ -1,3 +1,4 @@
+import React from 'react'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 import { Theme } from '@material-ui/core'
 import { Market, OpenOrders } from '@project-serum/serum'
@@ -11,7 +12,7 @@ export const UnsettledBalancesColumnNames = [
 ]
 
 export type UnsettledBalance = {
-  market?: Market
+  market: Market
   marketName: string
   openOrders: OpenOrders
   baseUnsettled: number
@@ -24,7 +25,7 @@ export const combineUnsettledBalances = ({
   theme,
 }: {
   unsettledBalances: UnsettledBalance[]
-  onSettleFunds: (market: Market, openOrders: OpenOrders) => void
+  onSettleFunds: (unsettledBalances: UnsettledBalance) => void
   theme: Theme
 }) => {
   if (!unsettledBalances && !Array.isArray(unsettledBalances)) {
@@ -38,7 +39,6 @@ export const combineUnsettledBalances = ({
         marketName,
         baseUnsettled,
         quoteUnsettled,
-        openOrders,
       } = el
 
       return {
@@ -62,7 +62,7 @@ export const combineUnsettledBalances = ({
               type="text"
               size="large"
               disabled={!market}
-              onClick={() => onSettleFunds(market, openOrders)}
+              onClick={() => onSettleFunds(el)}
               btnColor={theme.palette.blue.serum}
               btnWidth={'14rem'}
               height={'100%'}
