@@ -341,7 +341,9 @@ function ChartPageComponent(props: any) {
           .get('LIQ_USDC_deprecated')
           ?.address.toString()}
       />
-      <RpcCapacityWarningPopup theme={theme} />
+      <AldrinIsOverCapacityPopup theme={theme} />
+      {/* <RpcCapacityWarningPopup theme={theme} /> */}
+
       {/* )} */}
       {/* <JoyrideOnboarding
         continuous={true}
