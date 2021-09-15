@@ -31,7 +31,7 @@ const ConnectWallet = ({ theme }: { theme: Theme }) => {
           height={'6rem'}
           theme={theme}
           id={'Dashboard-Wallet-Connect'}
-          showOnTop={true}
+          showOnTop={false}
           containerStyles={{
             width: '30rem',
             fontSize: '3rem',
