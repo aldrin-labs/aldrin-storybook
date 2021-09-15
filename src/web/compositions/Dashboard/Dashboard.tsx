@@ -14,13 +14,16 @@ import OpenOrdersTable from '@sb/components/TradingTable/OpenOrdersTable/OpenOrd
 import { useAllMarketsList, useAllMarketsMapById } from '@sb/dexUtils/markets'
 
 import UnsettledBalancesTable from './components/UnsettledBalancesTable/UnsettledBalancesTable'
-import { notEmpty, onlyUnique } from '@sb/dexUtils/utils'
+import { onlyUnique } from '@sb/dexUtils/utils'
 import { getOrderbookForMarkets } from '../Rebalance/utils/getOrderbookForMarkets'
 import { loadMarketsByNames } from '../Rebalance/utils/loadMarketsByNames'
 import { TableContainer } from './Dashboard.styles'
 import { ConnectWalletScreen } from '@sb/components/ConnectWalletScreen/ConnectWalletScreen'
 import { Order } from '@project-serum/serum/lib/market'
 import { UnsettledBalance } from './components/UnsettledBalancesTable/UnsettledBalancesTable.utils'
+import { getOpenOrdersAccountsMapByMarketId } from './utils/getOpenOrdersAccountsMapByMarketId'
+import { getUnsettledBalances } from './utils/getUnsettledBalances'
+import { getOpenOrdersFromOrderbooks } from './utils/getOpenOrdersFromOrderbooks'
 
 /* dashboard shows all open orders and all unsettled balances by using open orders accounts
 it gives you ability to settle your funds and cancel orders */
@@ -45,27 +48,20 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
   useEffect(() => {
     const getOpenOrdersAccounts = async () => {
       setIsDataLoading(true)
-      // 1. load all OOA by using users publicKey
+
+      //load all open orders accounts by using users publicKey
       const openOrdersAccounts = await OpenOrders.findForOwner(
         connection,
         wallet.publicKey,
         DEX_PID
       )
 
-      // map of ooa by marketid
-      const openOrdersAccountsMapByMarketId = openOrdersAccounts.reduce(
-        (acc, current) => {
-          const marketId = current.market.toString()
-          if (acc.has(marketId)) {
-            acc.set(marketId, [...acc.get(marketId), current])
-          } else {
-            acc.set(marketId, [current])
-          }
-          return acc
-        },
-        new Map()
+      // map of open orders accounts by marketId
+      const openOrdersAccountsMapByMarketId = getOpenOrdersAccountsMapByMarketId(
+        openOrdersAccounts
       )
 
+      // by using open orders accounts we can know unique markets that need to be loadad
       const uniqueMarketsIds = openOrdersAccounts
         .map((el) => el.market.toString())
         .filter(onlyUnique)
@@ -81,36 +77,12 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
         allMarketsMap,
       })
 
-      const unsettledBalances: UnsettledBalance[] = openOrdersAccounts
-        .map((openOrders) => {
-          const marketNameFromId =
-            allMarketsMapById.get(openOrders.market.toString())?.name ||
-            'Unknown market'
-          const marketData = loadedMarketsMap.get(marketNameFromId)
-
-          const { market, marketName } = marketData || {
-            market: null,
-            marketName: null,
-          }
-
-          if (!market || !marketName) return null
-
-          return {
-            openOrders,
-            baseUnsettled: market.baseSplSizeToNumber(openOrders.baseTokenFree),
-            quoteUnsettled: market.quoteSplSizeToNumber(
-              openOrders.quoteTokenFree
-            ),
-            market,
-            marketName,
-          }
-        })
-        .filter(notEmpty)
-        .filter(
-          (unsettledBalance) =>
-            unsettledBalance.baseUnsettled > 0 ||
-            unsettledBalance.quoteUnsettled > 0
-        )
+      // from open orders accounts we can take unsettled balances
+      const unsettledBalances = getUnsettledBalances({
+        openOrdersAccounts,
+        allMarketsMapById,
+        loadedMarketsMap,
+      })
 
       const orderbooks = await getOrderbookForMarkets({
         connection,
@@ -118,30 +90,11 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
       })
 
       // filterForOpenOrders - after load asks + bids
-      const openOrders: Order[] = [...loadedMarketsMap.values()]
-        .map((marketData) => {
-          const { market, marketName } = marketData
-          const { asks, bids } = orderbooks.get(marketName) || {
-            asks: null,
-            bids: null,
-          }
-
-          if (!asks || !bids) return null
-
-          return market
-            .filterForOpenOrders(
-              bids,
-              asks,
-              openOrdersAccountsMapByMarketId.get(market.address.toString())
-            )
-            .map((order) => ({
-              ...order,
-              market,
-              marketName,
-            }))
-        })
-        .filter(notEmpty)
-        .flat()
+      const openOrders = getOpenOrdersFromOrderbooks({
+        loadedMarketsMap,
+        orderbooksMap: orderbooks,
+        openOrdersAccountsMapByMarketId,
+      })
 
       setIsDataLoading(false)
       setOpenOrdersData(openOrders)
@@ -213,8 +166,3 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
 }
 
 export default withTheme()(Dashboard)
-
-// 2. from OOA we can take unsettled balances
-// 3. by using OOA we can know unique markets that need to be loadad
-// 4. load OB and markets and store it
-// 5. now we can to show settle button and open orders
