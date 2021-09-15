@@ -30,6 +30,8 @@ export const loadMarketsByNames = async ({
   for (let name of filteredMarketNames) {
     const marketInfo = allMarketsMap.get(name)
 
+    if (!marketInfo) continue
+
     const market = await Market.load(
       connection,
       marketInfo.address,
