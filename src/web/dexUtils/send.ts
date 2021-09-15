@@ -414,6 +414,8 @@ export async function placeOrder({
 
   const payer =
     side === 'sell' ? baseCurrencyAccount.pubkey : quoteCurrencyAccount.pubkey
+  const usdcRef = process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS
+  const usdtRef = process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS
 
   if (!payer) {
     notify({
@@ -440,6 +442,19 @@ export async function placeOrder({
 
   transaction.add(market.makeMatchOrdersTransaction(5))
   let referrerQuoteWallet: PublicKey | null = null
+  if (market.supportsReferralFees) {
+    const usdt = TOKEN_MINTS.find(({ name }) => name === 'USDT')
+    const usdc = TOKEN_MINTS.find(({ name }) => name === 'USDC')
+    if (usdtRef && usdt && market.quoteMintAddress.equals(usdt.address)) {
+      referrerQuoteWallet = new PublicKey(usdtRef)
+    } else if (
+      usdcRef &&
+      usdc &&
+      market.quoteMintAddress.equals(usdc.address)
+    ) {
+      referrerQuoteWallet = new PublicKey(usdcRef)
+    }
+  }
 
   console.log('referrerQuoteWallet', referrerQuoteWallet)
 
