@@ -37,6 +37,7 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
 
   const { wallet, connected } = useWallet()
   const connection = useConnection()
+  
   const [
     userTokenAccountsMap,
     userTokenAccountsMapLoaded,
@@ -102,6 +103,9 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
     }
     if (connected) getOpenOrdersAccounts()
   }, [connected])
+
+  // on every action we need to update all OOA and unsettled balances
+  // on cancelling orders we need to update orderbooks and open orders
 
   if (!connected) return <ConnectWalletScreen theme={theme} />
 
