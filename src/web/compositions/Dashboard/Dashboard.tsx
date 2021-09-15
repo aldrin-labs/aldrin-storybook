@@ -41,6 +41,7 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
 
   useEffect(() => {
     const getOpenOrdersAccounts = async () => {
+      setIsDataLoading(true)
       // 1. load all OOA by using users publicKey
       const openOrdersAccounts = await OpenOrders.findForOwner(
         connection,
@@ -97,6 +98,8 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
           )
         }).flat()
 
+        setIsDataLoading(false)
+
         console.log('openOrders', openOrders)
       // go through every loaded market => Market.filterForOpenOrders(ask, bid by name, openOrdersAccounts -> )
     }
@@ -109,8 +112,7 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
 
   if (!connected) return <ConnectWallet theme={theme} />
 
-  // || !userTokenAccountsMapLoaded
-  if (isDataLoading) return <LoadingScreenWithHint />
+  if (isDataLoading || !userTokenAccountsMapLoaded) return <LoadingScreenWithHint />
 
   return (
     <RowContainer height="100%" direction="column" justify="flex-start">
