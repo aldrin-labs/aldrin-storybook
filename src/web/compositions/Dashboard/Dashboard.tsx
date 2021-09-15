@@ -95,7 +95,7 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
             asks,
             openOrdersAccountsMapByMarketId.get(market.address.toString())
           )
-        })
+        }).flat()
 
         console.log('openOrders', openOrders)
       // go through every loaded market => Market.filterForOpenOrders(ask, bid by name, openOrdersAccounts -> )
