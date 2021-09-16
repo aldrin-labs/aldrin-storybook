@@ -19,10 +19,12 @@ export const getUnsettledBalancesColumnNames = ({
       <BtnCustom
         onClick={() => onSettleAll()}
         btnColor={theme.palette.green.main}
-        btnWidth={'8rem'}
-        height={'auto'}
-        borderRadius={'1.2rem'}
+        btnWidth={'12rem'}
+        height={'3.5rem'}
+        borderRadius={'1.8rem'}
         textTransform={'capitalize'}
+        fontSize={'1.2rem'}
+        margin={'1rem 0'}
       >
         Settle All
       </BtnCustom>
@@ -85,10 +87,11 @@ export const combineUnsettledBalances = ({
               disabled={!market}
               onClick={() => onSettleFunds(el)}
               btnColor={theme.palette.green.main}
-              btnWidth={'8rem'}
-              height={'auto'}
-              borderRadius={'1.2rem'}
+              btnWidth={'10rem'}
+              height={'3.5rem'}
+              borderRadius={'1.8rem'}
               textTransform={'capitalize'}
+              fontSize={'1.2rem'}
             >
               Settle
             </BtnCustom>
