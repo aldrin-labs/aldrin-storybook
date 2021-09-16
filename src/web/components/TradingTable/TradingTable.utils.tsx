@@ -26,7 +26,7 @@ export const CloseButton = ({
       size={`small`}
       disabled={isCancelled}
       style={{
-        color: isCancelled ? 'grey' : '#fbf2f2',
+        color: isCancelled ? 'grey' : '#F69894',
       }}
       onClick={async () => {
         cancelOrder(true)

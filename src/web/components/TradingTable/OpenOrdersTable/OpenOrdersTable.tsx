@@ -74,7 +74,7 @@ const OpenOrdersTable = (props) => {
   return (
     <TableWithSort
       style={{
-        borderRadius: 0,
+        borderRadius: 'auto',
         height: 'calc(100% - 6rem)',
         overflowX: 'hidden',
         backgroundColor: 'inherit',

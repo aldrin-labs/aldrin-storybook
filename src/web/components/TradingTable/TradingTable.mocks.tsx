@@ -234,7 +234,7 @@ export const openOrdersColumnNames = (
     {
       label: showCancelAllButton ? (
         <TableButton size="small" variant="outlined" onClick={onCancelAll}>
-          Cancel all
+          Cancel All
         </TableButton>
       ) : (
         ' '

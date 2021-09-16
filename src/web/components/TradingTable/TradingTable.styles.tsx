@@ -41,18 +41,18 @@ export const TitleButton = styled(
 
 export const TableButton = styled(({ ...rest }) => <Button {...rest} />)`
   &&& {
-    font-size: ${CSS_CONFIG.chart.content.fontSize};
     padding: 0.25rem 1.5rem;
-    border-radius: 1.2rem;
-    background: #f79894;
-    color: #fbf2f2;
+    border-radius: 1.8rem;
+    background: transparent;
+    color: #f69894;
     font-family: Avenir Next Medium;
     text-align: center;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     text-transform: none;
-    width: auto;
-    height: auto;
-    margin: 1rem 0 1rem .4rem;
+    width: 12rem;
+    height: 3.5rem;
+    margin: 1rem 0 1rem 0;
+    border: 0.1rem solid #f69894;
     @media (max-width: 600px) {
       font-size: 2rem;
       padding: 0.5rem 2.5rem;
