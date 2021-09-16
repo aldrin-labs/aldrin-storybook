@@ -17,11 +17,13 @@ export const getTransactionsListWithPrices = async ({
   connection,
   tokensMap,
   allMarketsMap,
+  allMarketsMapById
 }: {
   wallet: WalletAdapter
   connection: Connection
   tokensMap: TokensMapType
   allMarketsMap: MarketsMap
+  allMarketsMapById: MarketsMap
 }): Promise<TransactionType[]> => {
   // getting names of markets to load
   const rebalanceTransactionsList = getTransactionsList({
@@ -36,6 +38,7 @@ export const getTransactionsListWithPrices = async ({
     connection,
     marketsNames: rebalanceTransactionsList.map((t) => t.name),
     allMarketsMap,
+    allMarketsMapById
   })
 
   const orderbooksMap = await getOrderbookForMarkets({

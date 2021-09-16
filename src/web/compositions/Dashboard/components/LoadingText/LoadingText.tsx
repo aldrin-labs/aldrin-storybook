@@ -8,12 +8,10 @@ import { Theme } from '@sb/types/materialUI'
 
 const LoadingText = ({
   theme,
-  nameOfLoadingMarket,
   percentageOfLoadedMarkets,
   percentageOfLoadedOrderbooks,
 }: {
   theme: Theme
-  nameOfLoadingMarket: string
   percentageOfLoadedMarkets: number
   percentageOfLoadedOrderbooks: number
 }) => {
@@ -37,7 +35,7 @@ const LoadingText = ({
         fontSize="2rem"
         theme={theme}
       >
-        Checking the {nameOfLoadingMarket.replace('_', '/')} market for{' '}
+        Checking the markets for{' '}
         {percentageOfLoadedMarkets === 100
           ? 'open orders'
           : 'unsettled balances'}

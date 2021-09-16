@@ -31,7 +31,7 @@ import {
 } from './utils/colorGenerating'
 import { useCallback } from 'react'
 import { processAllTokensData } from './utils/processAllTokensData'
-import { MarketsMap, useAllMarketsList } from '@sb/dexUtils/markets'
+import { MarketsMap, useAllMarketsList, useAllMarketsMapById } from '@sb/dexUtils/markets'
 import { filterDuplicateTokensByAmount } from './utils/filterDuplicateTokensByAmount'
 import { resetTargetAllocation } from './utils/resetTargetAllocation'
 import { getTokensToSell } from './utils/getTokensToSell'

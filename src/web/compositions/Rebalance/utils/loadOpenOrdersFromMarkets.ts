@@ -1,6 +1,7 @@
-import { sleep } from '@core/utils/helpers'
+import { DEX_PID } from '@core/config/dex'
 import { OpenOrders } from '@project-serum/serum'
 import { WalletAdapter } from '@sb/dexUtils/adapters'
+import { MarketsMap } from '@sb/dexUtils/markets'
 import { Connection } from '@solana/web3.js'
 import { LoadedMarket, LoadedMarketsMap } from './loadMarketsByNames'
 
@@ -22,23 +23,23 @@ export const loadOpenOrdersFromMarkets = async ({
   loadedMarketsMap: LoadedMarketsMap
 }): Promise<LoadedMarketsWithOpenOrdersMap> => {
   const marketsWithSignersMap: LoadedMarketsWithOpenOrdersMap = new Map()
-  let i = 0
 
   console.time('openOrders')
+
+  const openOrdersAccounts = await OpenOrders.findForOwner(
+    connection,
+    wallet.publicKey,
+    DEX_PID
+  )
 
   for (let marketData of loadedMarketsMap.values()) {
     const { market, marketName } = marketData
 
-    const openOrders = await market.findOpenOrdersAccountsForOwner(
-      connection,
-      wallet.publicKey
+    const openOrders = openOrdersAccounts.filter((account) =>
+      account.market.equals(market.address)
     )
 
     marketsWithSignersMap.set(marketName, { ...marketData, openOrders })
-
-    if (i % 4 === 0) await sleep(1 * 1000)
-
-    i++
   }
 
   console.timeEnd('openOrders')

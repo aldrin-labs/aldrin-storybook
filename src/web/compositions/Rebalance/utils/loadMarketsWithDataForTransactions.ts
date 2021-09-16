@@ -20,17 +20,19 @@ export const loadMarketsWithDataForTransactions = async ({
   connection,
   marketsNames,
   allMarketsMap,
+  allMarketsMapById
 }: {
   wallet: WalletAdapter
   connection: Connection
   marketsNames: string[]
   allMarketsMap: MarketsMap
+  allMarketsMapById: MarketsMap
 }): Promise<LoadedMarketsWithVaultSignersAndOpenOrdersMap> => {
   const loadedMarketsMap = await loadMarketsByNames({
-    wallet,
     connection,
     marketsNames,
     allMarketsMap,
+    allMarketsMapById
   })
 
   const loadedMarketMapWithVaultSigners = await loadVaultSignersFromMarkets({

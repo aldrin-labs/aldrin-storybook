@@ -79,7 +79,6 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
     percentageOfLoadedOrderbooks,
     setPercentageOfLoadedOrderbooks,
   ] = useState(0)
-  const [nameOfLoadingMarket, setNameOfLoadingMarket] = useState('')
 
   const { wallet, connected } = useWallet()
   const connection = useConnection()
@@ -94,6 +93,7 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
 
   useEffect(() => {
     const getOpenOrdersAccounts = async () => {
+      console.log('load all data for dashboard', connected, isDataLoading)
       setIsDataLoading(true)
 
       //load all open orders accounts by using users publicKey
@@ -117,18 +117,13 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
         .filter(notEmpty)
 
       const loadedMarketsMap = await loadMarketsByNames({
-        wallet,
         connection,
         marketsNames: uniqueMarketsNames,
         allMarketsMap,
-        onLoadMarket: ({ index, nextMarketName }) => {
-          setPercentageOfLoadedMarkets(
-            ((index + 1) / uniqueMarketsNames.length) * 100
-          )
-
-          setNameOfLoadingMarket(nextMarketName)
-        },
+        allMarketsMapById,
       })
+
+      setPercentageOfLoadedMarkets(100)
 
       // from open orders accounts we can take unsettled balances
       const unsettledBalances = getUnsettledBalances({
@@ -140,13 +135,6 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
       const orderbooks = await getOrderbookForMarkets({
         connection,
         loadedMarketsMap,
-        onOrderbookLoad: ({ index, nextMarketName }) => {
-          setPercentageOfLoadedOrderbooks(
-            ((index + 1) / uniqueMarketsNames.length) * 100
-          )
-
-          setNameOfLoadingMarket(nextMarketName)
-        },
       })
 
       const openOrders = getOpenOrdersFromOrderbooks({
@@ -156,6 +144,7 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
       })
 
       setIsDataLoading(false)
+      setPercentageOfLoadedOrderbooks(100)
       setOpenOrdersAccounts(openOrdersAccounts)
       setLoadedMarketsMap(loadedMarketsMap)
 
@@ -169,7 +158,6 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
   useEffect(() => {
     // load accountInfo for every openOrderAccount
     const updateUnsettledBalances = async () => {
-      await sleep(10 * 1000)
       setIsUnsettledBalancesUpdating(true)
 
       const updatedOpenOrdersAccounts = await loadOpenOrderAccountsFromPubkeys({
@@ -196,7 +184,6 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
   // on cancelling orders we need to update orderbooks and open orders
   useEffect(() => {
     const updateOpenOrders = async () => {
-      await sleep(10 * 1000)
       setIsOpenOrdersUpdating(true)
 
       const openOrdersAccountsMapByMarketId = getOpenOrdersAccountsMapByMarketId(
@@ -222,7 +209,7 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
     if (refreshOpenOrdersCounter > 0) updateOpenOrders()
   }, [refreshOpenOrdersCounter])
 
-  useInterval(() => !isDataLoading && refreshOpenOrders(), 60000)
+  useInterval(() => !isDataLoading && refreshOpenOrders(), 15000)
 
   if (!connected) return <ConnectWalletScreen theme={theme} />
 
@@ -232,7 +219,6 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
         loadingText={
           <LoadingText
             theme={theme}
-            nameOfLoadingMarket={nameOfLoadingMarket}
             percentageOfLoadedMarkets={percentageOfLoadedMarkets}
             percentageOfLoadedOrderbooks={percentageOfLoadedOrderbooks}
           />

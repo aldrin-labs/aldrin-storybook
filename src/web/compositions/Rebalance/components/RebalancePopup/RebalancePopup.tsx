@@ -27,7 +27,7 @@ import { WalletAdapter } from '@sb/dexUtils/types'
 import { StyledPaper } from './styles'
 import Info from '@icons/inform.svg'
 
-import { MarketsMap, useAllMarketsList } from '@sb/dexUtils/markets'
+import { MarketsMap, useAllMarketsList, useAllMarketsMapById } from '@sb/dexUtils/markets'
 import { ReloadTimer } from '../ReloadTimer'
 import { TransactionComponent } from './TransactionComponent'
 import { PopupFooter } from './PopupFooter'
@@ -66,6 +66,8 @@ export const RebalancePopup = ({
   refreshRebalance: () => void
   setLoadingRebalanceData: (loadingState: boolean) => void
 }) => {
+  const allMarketsMapById = useAllMarketsMapById()
+
   const [rebalanceStep, changeRebalanceStep] = useState<RebalancePopupStep>(
     'pending'
   )
@@ -106,6 +108,7 @@ export const RebalancePopup = ({
           connection,
           tokensMap,
           allMarketsMap,
+          allMarketsMapById
         }
       )
 
