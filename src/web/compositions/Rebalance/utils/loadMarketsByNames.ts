@@ -22,9 +22,11 @@ export const loadMarketsByNames = async ({
   allMarketsMap: MarketsMap
   onLoadMarket?: ({
     marketName,
+    nextMarketName,
     index,
   }: {
     marketName: string
+    nextMarketName: string
     index: number
   }) => void
 }): Promise<LoadedMarketsMap> => {
@@ -52,6 +54,10 @@ export const loadMarketsByNames = async ({
       onLoadMarket({
         marketName: name,
         index: i,
+        nextMarketName:
+          i + 1 === filteredMarketNames.length
+            ? name
+            : filteredMarketNames[i + 1],
       })
 
     if (i % 4 === 0) await sleep(1 * 1000)

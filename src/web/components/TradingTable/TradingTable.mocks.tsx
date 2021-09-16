@@ -215,7 +215,6 @@ export const positionsBody = new Array(13).fill(undefined).map((el, i) => ({
 }))
 
 export const openOrdersColumnNames = (
-  marketType: number,
   showCancelAllButton: boolean,
   onCancelAll: () => void
 ) =>
@@ -224,8 +223,8 @@ export const openOrdersColumnNames = (
     // { label: 'Type', id: 'type' },
     { label: 'Side/Type', id: 'side' },
     { label: 'Price', id: 'price' },
-    marketType === 0 ? { label: 'Quantity', id: 'quantity' } : {},
-    { label: marketType === 0 ? 'Total' : 'size', id: 'amount' },
+    { label: 'Quantity', id: 'quantity' },
+    { label:  'Total', id: 'amount' },
     // { label: 'Filled %', id: 'filled',  },
     // marketType === 0 ? { label: 'Size', id: 'amount' } : {},
     // { label: 'Trigger', id: 'triggerConditions' },

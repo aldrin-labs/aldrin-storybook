@@ -14,7 +14,7 @@ import OpenOrdersTable from '@sb/components/TradingTable/OpenOrdersTable/OpenOrd
 import { useAllMarketsList, useAllMarketsMapById } from '@sb/dexUtils/markets'
 
 import UnsettledBalancesTable from './components/UnsettledBalancesTable/UnsettledBalancesTable'
-import { onlyUnique } from '@sb/dexUtils/utils'
+import { notEmpty, onlyUnique } from '@sb/dexUtils/utils'
 import { getOrderbookForMarkets } from '../Rebalance/utils/getOrderbookForMarkets'
 import {
   LoadedMarketsMap,
@@ -35,6 +35,7 @@ import { sleep } from '@core/utils/helpers'
 import { useInterval } from '@sb/dexUtils/useInterval'
 import { Loading } from '@sb/components'
 import { settleUnsettledBalancesForAllMarkets } from './utils/settleUnsettledBalancesForAllMarkets'
+import LoadingText from './components/LoadingText/LoadingText'
 
 /* dashboard shows all open orders and all unsettled balances by using open orders accounts
 it gives you ability to settle your funds and cancel orders */
@@ -111,23 +112,21 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
         .map((el) => el.market.toString())
         .filter(onlyUnique)
 
-      const uniqueMarketsNames = uniqueMarketsIds.map(
-        (marketId) => allMarketsMapById.get(marketId)?.name || 'Unknown Market'
-      )
+      const uniqueMarketsNames = uniqueMarketsIds
+        .map((marketId) => allMarketsMapById.get(marketId)?.name || null)
+        .filter(notEmpty)
 
       const loadedMarketsMap = await loadMarketsByNames({
         wallet,
         connection,
         marketsNames: uniqueMarketsNames,
         allMarketsMap,
-        onLoadMarket: ({ index }) => {
+        onLoadMarket: ({ index, nextMarketName }) => {
           setPercentageOfLoadedMarkets(
-            (index + 1 / uniqueMarketsNames.length) * 100
+            ((index + 1) / uniqueMarketsNames.length) * 100
           )
 
-          if (index + 1 !== uniqueMarketsNames.length) {
-            setNameOfLoadingMarket(uniqueMarketsNames[index + 1])
-          }
+          setNameOfLoadingMarket(nextMarketName)
         },
       })
 
@@ -141,6 +140,13 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
       const orderbooks = await getOrderbookForMarkets({
         connection,
         loadedMarketsMap,
+        onOrderbookLoad: ({ index, nextMarketName }) => {
+          setPercentageOfLoadedOrderbooks(
+            ((index + 1) / uniqueMarketsNames.length) * 100
+          )
+
+          setNameOfLoadingMarket(nextMarketName)
+        },
       })
 
       const openOrders = getOpenOrdersFromOrderbooks({
@@ -224,19 +230,12 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
     return (
       <LoadingScreenWithHint
         loadingText={
-          <>
-            <Title>
-              Loading:{' '}
-              {percentageOfLoadedMarkets / 2 + percentageOfLoadedOrderbooks / 2}
-            </Title>
-            <Title>
-              Checking the {nameOfLoadingMarket} market for{' '}
-              {percentageOfLoadedMarkets === 100
-                ? 'open orders'
-                : 'unsettled balances'}
-              ...
-            </Title>
-          </>
+          <LoadingText
+            theme={theme}
+            nameOfLoadingMarket={nameOfLoadingMarket}
+            percentageOfLoadedMarkets={percentageOfLoadedMarkets}
+            percentageOfLoadedOrderbooks={percentageOfLoadedOrderbooks}
+          />
         }
       />
     )
@@ -308,7 +307,6 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
             tab={'openOrders'}
             theme={theme}
             show={true}
-            marketType={0}
             cancelOrderCallback={refreshOpenOrders}
             onCancelAll={async () => {
               await cancelOrdersForAllMarkets({
@@ -319,7 +317,6 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
 
               await refreshOpenOrders()
             }}
-            canceledOrders={[]}
             handlePairChange={() => {}}
             openOrders={openOrders}
             stylesForTable={{ borderRadius: '1.5rem' }}

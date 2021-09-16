@@ -3,14 +3,24 @@ import { Orderbook } from '@project-serum/serum'
 import { Connection } from '@solana/web3.js'
 import { LoadedMarketsMap } from './loadMarketsByNames'
 
-export type OrderbooksMap = Map<string, { asks: Orderbook, bids: Orderbook }>
+export type OrderbooksMap = Map<string, { asks: Orderbook; bids: Orderbook }>
 
 export const getOrderbookForMarkets = async ({
   connection,
   loadedMarketsMap,
+  onOrderbookLoad,
 }: {
   connection: Connection
   loadedMarketsMap: LoadedMarketsMap
+  onOrderbookLoad?: ({
+    index,
+    marketName,
+    nextMarketName,
+  }: {
+    index: number
+    marketName: string
+    nextMarketName: string
+  }) => void
 }): Promise<OrderbooksMap> => {
   const orderbooksMap: OrderbooksMap = new Map()
 
@@ -26,6 +36,15 @@ export const getOrderbookForMarkets = async ({
       market.loadBids(connection),
     ])
 
+    onOrderbookLoad &&
+      onOrderbookLoad({
+        index: i,
+        marketName: name,
+        nextMarketName:
+          i + 1 === loadedMarketsArray.length
+            ? name
+            : loadedMarketsArray[i + 1][0],
+      })
     orderbooksMap.set(name, {
       asks,
       bids,

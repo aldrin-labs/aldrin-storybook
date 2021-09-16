@@ -20,8 +20,6 @@ const OpenOrdersTable = (props) => {
     tab,
     theme,
     show,
-    marketType,
-    canceledOrders,
     handlePairChange,
     openOrders,
     onCancelAll,
@@ -66,8 +64,6 @@ const OpenOrdersTable = (props) => {
     openOrders,
     cancelOrderWithStatus,
     theme,
-    marketType,
-    canceledOrders,
     handlePairChange
   )
 
@@ -104,22 +100,9 @@ const OpenOrdersTable = (props) => {
       }}
       emptyTableText={getEmptyTextPlaceholder(tab)}
       data={{ body: openOrdersProcessedData }}
-      columnNames={openOrdersColumnNames(marketType, showCancelAllButton, onCancelAll)}
+      columnNames={openOrdersColumnNames(showCancelAllButton, onCancelAll)}
     />
   )
-  // }
 }
 
-const MemoizedWrapper = React.memo(OpenOrdersTable, (prevProps, nextProps) => {
-  // TODO: Refactor isShowEqual --- not so clean
-  const isShowEqual = !nextProps.show && !prevProps.show
-  const isMarketIsEqual = prevProps.marketType === nextProps.marketType
-
-  if (isShowEqual && isMarketIsEqual) {
-    return true
-  }
-
-  return false
-})
-
-export default MemoizedWrapper
+export default OpenOrdersTable

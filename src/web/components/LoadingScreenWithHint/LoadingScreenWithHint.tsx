@@ -6,7 +6,7 @@ import { LoadingWithHint } from '@sb/compositions/Rebalance/components/Rebalance
 export const LoadingScreenWithHint = ({
   loadingText,
 }: {
-  loadingText?: ReactChild
+  loadingText?: string | ReactChild
 }) => {
   return (
     <RowContainer height="100%">
