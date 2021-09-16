@@ -72,6 +72,14 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
     refreshUnsettledBalances()
   }
 
+  // percentage of markets loaded, percentage of ob loaded, name of market/ob loading
+  const [percentageOfLoadedMarkets, setPercentageOfLoadedMarkets] = useState(0)
+  const [
+    percentageOfLoadedOrderbooks,
+    setPercentageOfLoadedOrderbooks,
+  ] = useState(0)
+  const [nameOfLoadingMarket, setNameOfLoadingMarket] = useState('')
+
   const { wallet, connected } = useWallet()
   const connection = useConnection()
 
@@ -112,6 +120,15 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
         connection,
         marketsNames: uniqueMarketsNames,
         allMarketsMap,
+        onLoadMarket: ({ index }) => {
+          setPercentageOfLoadedMarkets(
+            (index + 1 / uniqueMarketsNames.length) * 100
+          )
+
+          if (index + 1 !== uniqueMarketsNames.length) {
+            setNameOfLoadingMarket(uniqueMarketsNames[index + 1])
+          }
+        },
       })
 
       // from open orders accounts we can take unsettled balances
@@ -199,12 +216,30 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
     if (refreshOpenOrdersCounter > 0) updateOpenOrders()
   }, [refreshOpenOrdersCounter])
 
-  useInterval(() => !isDataLoading && refreshOpenOrders(), 30000)
+  useInterval(() => !isDataLoading && refreshOpenOrders(), 60000)
 
   if (!connected) return <ConnectWalletScreen theme={theme} />
 
   if (isDataLoading || !userTokenAccountsMapLoaded)
-    return <LoadingScreenWithHint />
+    return (
+      <LoadingScreenWithHint
+        loadingText={
+          <>
+            <Title>
+              Loading:{' '}
+              {percentageOfLoadedMarkets / 2 + percentageOfLoadedOrderbooks / 2}
+            </Title>
+            <Title>
+              Checking the {nameOfLoadingMarket} market for{' '}
+              {percentageOfLoadedMarkets === 100
+                ? 'open orders'
+                : 'unsettled balances'}
+              ...
+            </Title>
+          </>
+        }
+      />
+    )
 
   return (
     <RowContainer

@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react'
+import React, { CSSProperties, ReactChild } from 'react'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { HintQuoteBlock } from '@sb/components/HintQuoteBlock/HintQuoteBlock'
@@ -7,12 +7,12 @@ import LoadingLogo from '@icons/logo_loader.webp'
 
 export const LoadingWithHint = ({
   loaderSize = '9rem',
-  text = 'Loading...',
+  loadingText = 'Loading...',
   loaderTextStyles = {},
   hintTextStyles = {},
 }: {
   loaderSize?: string
-  text?: string
+  loadingText?: string | ReactChild
   loaderTextStyles?: CSSProperties
   hintTextStyles?: CSSProperties
 }) => (
@@ -27,7 +27,7 @@ export const LoadingWithHint = ({
         style={{ width: loaderSize, height: loaderSize }}
       />
       <Text padding={'2rem 0 0 0'} style={{ ...loaderTextStyles }}>
-        {text}
+        {loadingText}
       </Text>
     </RowContainer>
     <RowContainer

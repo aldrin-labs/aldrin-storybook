@@ -14,11 +14,19 @@ export const loadMarketsByNames = async ({
   connection,
   marketsNames,
   allMarketsMap,
+  onLoadMarket,
 }: {
   wallet: WalletAdapter
   connection: Connection
   marketsNames: string[]
   allMarketsMap: MarketsMap
+  onLoadMarket?: ({
+    marketName,
+    index,
+  }: {
+    marketName: string
+    index: number
+  }) => void
 }): Promise<LoadedMarketsMap> => {
   const marketsMap: LoadedMarketsMap = new Map()
   let i = 0
@@ -40,6 +48,11 @@ export const loadMarketsByNames = async ({
     )
 
     marketsMap.set(name, { market, marketName: name })
+    onLoadMarket &&
+      onLoadMarket({
+        marketName: name,
+        index: i,
+      })
 
     if (i % 4 === 0) await sleep(1 * 1000)
 
