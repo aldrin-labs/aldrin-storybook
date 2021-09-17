@@ -206,7 +206,6 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
         openOrdersAccountsMapByMarketId,
       })
 
-      console.log('refreshed openOrders', openOrders)
       setOpenOrders(openOrders)
       setIsOpenOrdersUpdating(false)
     }
