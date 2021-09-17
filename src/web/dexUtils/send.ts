@@ -169,28 +169,60 @@ export async function settleFunds({
   }
 
   // handling case when user might settle with 11111111111111111111111111111111 instead of the user's pubkey
-  if ((baseTokenAccount && baseTokenAccount.pubkey && quoteTokenAccount && quoteTokenAccount.pubkey) && (SystemProgram.programId.equals(baseTokenAccount.pubkey) || SystemProgram.programId.equals(quoteTokenAccount.pubkey))) {
-    notify({ message: 'Sorry, your base/quote pubKey related to Solana Program Id.' })
-    return 
+  if (
+    (baseTokenAccount &&
+      baseTokenAccount.pubkey &&
+      SystemProgram.programId.equals(baseTokenAccount.pubkey)) ||
+    (quoteTokenAccount &&
+      quoteTokenAccount.pubkey &&
+      SystemProgram.programId.equals(quoteTokenAccount.pubkey))
+  ) {
+    notify({
+      message: 'Sorry, your base/quote pubKey related to Solana Program Id.',
+    })
+    return
   }
 
   if (SystemProgram.programId.equals(wallet?.publicKey)) {
-    notify({ message: 'Sorry, your wallet pubKey related to Solana Program Id.' })
-    return 
+    notify({
+      message: 'Sorry, your wallet pubKey related to Solana Program Id.',
+    })
+    return
   }
 
   if (baseTokenAccount?.pubkey && quoteTokenAccount?.pubkey) {
-    const baseToken = new Token(connection, new PublicKey(market.baseMintAddress), TOKEN_PROGRAM_ID, new Account())
-    const baseTokenInfo = await baseToken.getAccountInfo(new PublicKey(baseTokenAccount.pubkey))
-    const quoteToken = new Token(connection, new PublicKey(market.quoteMintAddress), TOKEN_PROGRAM_ID, new Account())
-    const quoteTokenInfo = await quoteToken.getAccountInfo(new PublicKey(quoteTokenAccount.pubkey))
+    const baseToken = new Token(
+      connection,
+      new PublicKey(market.baseMintAddress),
+      TOKEN_PROGRAM_ID,
+      new Account()
+    )
+    const baseTokenInfo = await baseToken.getAccountInfo(
+      new PublicKey(baseTokenAccount.pubkey)
+    )
+    const quoteToken = new Token(
+      connection,
+      new PublicKey(market.quoteMintAddress),
+      TOKEN_PROGRAM_ID,
+      new Account()
+    )
+    const quoteTokenInfo = await quoteToken.getAccountInfo(
+      new PublicKey(quoteTokenAccount.pubkey)
+    )
 
-    if (!baseTokenInfo.owner.equals(wallet.publicKey) || !quoteTokenInfo.owner.equals(wallet.publicKey)) {
-      notify({ message: `Sorry, your wallet pubKey doesn't related to your base/quote tokenAccount owners.` })
+    if (
+      !baseTokenInfo.owner.equals(wallet.publicKey) ||
+      !quoteTokenInfo.owner.equals(wallet.publicKey) ||
+      quoteTokenInfo.owner.equals(SystemProgram.programId) ||
+      baseTokenInfo.owner.equals(SystemProgram.programId)
+    ) {
+      notify({
+        message: `Sorry, your wallet pubKey doesn't related to your base/quote tokenAccount owners.`,
+      })
       console.log('baseTokenInfo.owner', baseTokenInfo.owner.toBase58())
       console.log('quoteTokenInfo.owner', quoteTokenInfo.owner.toBase58())
 
-      return 
+      return
     }
   }
 
@@ -200,7 +232,6 @@ export async function settleFunds({
   let createAccountTransaction: Transaction | undefined
   let baseCurrencyAccountPubkey = baseTokenAccount?.pubkey
   let quoteCurrencyAccountPubkey = quoteTokenAccount?.pubkey
-  
 
   if (!baseCurrencyAccountPubkey) {
     const result = await createTokenAccountTransaction({
@@ -234,16 +265,14 @@ export async function settleFunds({
       referrerQuoteWallet = new PublicKey(usdcRef)
     }
   }
-  const {
-    transaction: settleFundsTransaction,
-    signers: settleFundsSigners,
-  } = await market.makeSettleFundsTransaction(
-    connection,
-    openOrders,
-    baseCurrencyAccountPubkey,
-    quoteCurrencyAccountPubkey,
-    referrerQuoteWallet
-  )
+  const { transaction: settleFundsTransaction, signers: settleFundsSigners } =
+    await market.makeSettleFundsTransaction(
+      connection,
+      openOrders,
+      baseCurrencyAccountPubkey,
+      quoteCurrencyAccountPubkey,
+      referrerQuoteWallet
+    )
 
   let transaction = mergeTransactions([
     createAccountTransaction,
@@ -413,55 +442,82 @@ export async function placeOrder({
   console.log('openOrdersAccount in placeOrder', openOrdersAccount)
 
   // handling case when user might settle with 11111111111111111111111111111111 instead of the user's pubkey
-  if ((baseCurrencyAccount && baseCurrencyAccount?.pubkey && quoteCurrencyAccount && quoteCurrencyAccount.pubkey) && (SystemProgram.programId.equals(baseCurrencyAccount.pubkey) || SystemProgram.programId.equals(quoteCurrencyAccount?.pubkey)) ) {
-    notify({ message: 'Sorry, your base/quote pubKey related to Solana Program Id.' })
-    return 
+  if (
+    (baseCurrencyAccount &&
+      baseCurrencyAccount?.pubkey &&
+      SystemProgram.programId.equals(baseCurrencyAccount.pubkey)) ||
+    (quoteCurrencyAccount &&
+      quoteCurrencyAccount.pubkey &&
+      SystemProgram.programId.equals(quoteCurrencyAccount?.pubkey))
+  ) {
+    notify({
+      message: 'Sorry, your base/quote pubKey related to Solana Program Id.',
+    })
+    return
   }
 
   if (SystemProgram.programId.equals(wallet?.publicKey)) {
-    notify({ message: 'Sorry, your wallet pubKey related to Solana Program Id.' })
-    return 
+    notify({
+      message: 'Sorry, your wallet pubKey related to Solana Program Id.',
+    })
+    return
   }
 
   if (baseCurrencyAccount?.pubkey && quoteCurrencyAccount?.pubkey) {
-    const baseToken = new Token(connection, new PublicKey(market.baseMintAddress), TOKEN_PROGRAM_ID, new Account())
-    const baseTokenInfo = await baseToken.getAccountInfo(new PublicKey(baseCurrencyAccount?.pubkey))
-    const quoteToken = new Token(connection, new PublicKey(market.quoteMintAddress), TOKEN_PROGRAM_ID, new Account())
-    const quoteTokenInfo = await quoteToken.getAccountInfo(new PublicKey(quoteCurrencyAccount?.pubkey))
+    const baseToken = new Token(
+      connection,
+      new PublicKey(market.baseMintAddress),
+      TOKEN_PROGRAM_ID,
+      new Account()
+    )
+    const baseTokenInfo = await baseToken.getAccountInfo(
+      new PublicKey(baseCurrencyAccount?.pubkey)
+    )
+    const quoteToken = new Token(
+      connection,
+      new PublicKey(market.quoteMintAddress),
+      TOKEN_PROGRAM_ID,
+      new Account()
+    )
+    const quoteTokenInfo = await quoteToken.getAccountInfo(
+      new PublicKey(quoteCurrencyAccount?.pubkey)
+    )
 
-    if (!baseTokenInfo.owner.equals(wallet.publicKey) || !quoteTokenInfo.owner.equals(wallet.publicKey)) {
-      notify({ message: `Sorry, your wallet pubKey doesn't related to your base/quote tokenAccount owners.` })
+    if (
+      !baseTokenInfo.owner.equals(wallet.publicKey) ||
+      !quoteTokenInfo.owner.equals(wallet.publicKey) ||
+      baseTokenInfo.owner.equals(SystemProgram.programId) ||
+      quoteTokenInfo.owner.equals(SystemProgram.programId)
+    ) {
+      notify({
+        message: `Sorry, your wallet pubKey doesn't related to your base/quote tokenAccount owners.`,
+      })
       console.log('baseTokenInfo.owner', baseTokenInfo.owner.toBase58())
       console.log('quoteTokenInfo.owner', quoteTokenInfo.owner.toBase58())
 
-      return 
+      return
     }
   }
-
 
   const transaction = new Transaction()
 
   if (!baseCurrencyAccount) {
-    const {
-      transaction: createAccountTransaction,
-      newAccountPubkey,
-    } = await createTokenAccountTransaction({
-      connection,
-      wallet,
-      mintPublicKey: market.baseMintAddress,
-    })
+    const { transaction: createAccountTransaction, newAccountPubkey } =
+      await createTokenAccountTransaction({
+        connection,
+        wallet,
+        mintPublicKey: market.baseMintAddress,
+      })
     transaction.add(createAccountTransaction)
     baseCurrencyAccount = { pubkey: newAccountPubkey }
   }
   if (!quoteCurrencyAccount) {
-    const {
-      transaction: createAccountTransaction,
-      newAccountPubkey,
-    } = await createTokenAccountTransaction({
-      connection,
-      wallet,
-      mintPublicKey: market.quoteMintAddress,
-    })
+    const { transaction: createAccountTransaction, newAccountPubkey } =
+      await createTokenAccountTransaction({
+        connection,
+        wallet,
+        mintPublicKey: market.quoteMintAddress,
+      })
     transaction.add(createAccountTransaction)
     quoteCurrencyAccount = { pubkey: newAccountPubkey }
   }
@@ -528,16 +584,14 @@ export async function placeOrder({
   let quoteCurrencyAccountPubkey = quoteCurrencyAccount?.pubkey
 
   if (isMarketOrder && openOrdersAccount) {
-    const {
-      transaction: settleFundsTransaction,
-      signers: settleFundsSigners,
-    } = await market.makeSettleFundsTransaction(
-      connection,
-      openOrdersAccount,
-      baseCurrencyAccountPubkey,
-      quoteCurrencyAccountPubkey,
-      referrerQuoteWallet
-    )
+    const { transaction: settleFundsTransaction, signers: settleFundsSigners } =
+      await market.makeSettleFundsTransaction(
+        connection,
+        openOrdersAccount,
+        baseCurrencyAccountPubkey,
+        quoteCurrencyAccountPubkey,
+        referrerQuoteWallet
+      )
 
     transaction.add(settleFundsTransaction)
     signers.push(...settleFundsSigners)
