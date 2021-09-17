@@ -216,21 +216,6 @@ export async function getSettleFundsTransaction({
       referrerQuoteWallet = new PublicKey(usdcRef)
     }
   }
-<<<<<<< HEAD
-
-  console.log('referrerQuoteWallet', referrerQuoteWallet)
-
-  const {
-    transaction: settleFundsTransaction,
-    signers: settleFundsSigners,
-  } = await market.makeSettleFundsTransaction(
-    connection,
-    openOrders,
-    baseCurrencyAccountPubkey,
-    quoteCurrencyAccountPubkey,
-    referrerQuoteWallet
-  )
-=======
   const { transaction: settleFundsTransaction, signers: settleFundsSigners } =
     await market.makeSettleFundsTransaction(
       connection,
@@ -239,7 +224,6 @@ export async function getSettleFundsTransaction({
       quoteCurrencyAccountPubkey,
       referrerQuoteWallet
     )
->>>>>>> 797aff34f3a4d7f7b866780022fa910df11e13e6
 
   let transaction = mergeTransactions([
     createAccountTransaction,
