@@ -19,6 +19,7 @@ import { CCAIProviderURL, useLocalStorageState, useRefEqual } from './utils'
 import {
   Connection,
   PublicKey,
+  SystemProgram,
   SYSVAR_RENT_PUBKEY,
   Transaction,
   TransactionInstruction,
@@ -208,7 +209,7 @@ export function WalletProvider({ children }) {
   useEffect(() => {
     if (wallet) {
       wallet.on('connect', async () => {
-        if (wallet?.publicKey) {
+        if (wallet?.publicKey && !wallet?.publicKey?.equals(SystemProgram.programId)) {
           console.log('connected')
           setConnected(true)
           const walletPublicKey = wallet?.publicKey.toBase58()
