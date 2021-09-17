@@ -18,12 +18,14 @@ const UnsettledBalancesTable = ({
   theme,
   userTokenAccountsMap,
   unsettledBalances,
+  isSettlingAllBalances,
   onSettleAll,
   refreshUnsettledBalances,
 }: {
   theme: Theme
   userTokenAccountsMap: Map<string, TokenAccount>
   unsettledBalances: UnsettledBalance[]
+  isSettlingAllBalances: boolean
   onSettleAll: () => void
   refreshUnsettledBalances: () => void
 }) => {
@@ -47,7 +49,7 @@ const UnsettledBalancesTable = ({
     )
 
     try {
-      await settleFunds({
+      const result = await settleFunds({
         market,
         openOrders,
         connection,
@@ -66,12 +68,15 @@ const UnsettledBalancesTable = ({
       })
 
       await refreshUnsettledBalances()
+
+      return result
     } catch (e) {
       notify({
         message: 'Error settling funds',
         description: e.message,
         type: 'error',
       })
+
       return
     }
   }
@@ -80,6 +85,7 @@ const UnsettledBalancesTable = ({
     onSettleFunds,
     theme,
     unsettledBalances,
+    isSettlingAllBalances,
   })
 
   return (
@@ -108,6 +114,9 @@ const UnsettledBalancesTable = ({
           paddingTop: '1rem',
           paddingBottom: '1rem',
           fontFamily: 'Avenir Next Medium',
+        },
+        heading: {
+          backgroundColor: '#222429',
         },
         tab: {
           padding: 0,

@@ -39,15 +39,7 @@ export function ConnectionProvider({ children }) {
 
   const connection = useMemo(
     () =>
-      pathname === '/dashboard'
-        ? new MultiEndpointsConnection(
-            [
-              { url: 'https://solana-api.projectserum.com', RPS: 2 },
-              // { url: 'https://api.mainnet-beta.solana.com', RPS: 4 },
-            ],
-            'recent'
-          )
-        : endpoint === MAINNET_BETA_ENDPOINT
+      endpoint === MAINNET_BETA_ENDPOINT
         ? // multi connection only for mainnet
           new MultiEndpointsConnection(
             [
@@ -69,8 +61,35 @@ export function ConnectionProvider({ children }) {
             ],
             'recent'
           ),
-    [endpoint, pathname]
+    [endpoint]
   )
+
+  const serumConnection = useMemo(
+    () =>
+      endpoint === MAINNET_BETA_ENDPOINT
+        ? new MultiEndpointsConnection(
+            [
+              { url: 'https://solana-api.projectserum.com', RPS: 2 },
+              // { url: 'https://api.mainnet-beta.solana.com', RPS: 4 },
+              // { url: 'https://api-cryptocurrencies-ai.rpcpool.com', RPS: 20 },
+            ],
+            'recent'
+          )
+        : new MultiEndpointsConnection(
+            [
+              {
+                url:
+                  ENDPOINTS.find(
+                    (endpointInfo) => endpointInfo.endpoint === endpoint
+                  )?.endpoint || MAINNET_BETA_ENDPOINT,
+                RPS: 20,
+              },
+            ],
+            'recent'
+          ),
+    [endpoint]
+  )
+
   // The websocket library solana/web3.js uses closes its websocket connection when the subscription list
   // is empty after opening its first time, preventing subsequent subscriptions from receiving responses.
   // This is a hack to prevent the list from every getting empty
@@ -95,7 +114,9 @@ export function ConnectionProvider({ children }) {
   }, [endpoint, connection])
 
   return (
-    <ConnectionContext.Provider value={{ endpoint, setEndpoint, connection }}>
+    <ConnectionContext.Provider
+      value={{ endpoint, setEndpoint, connection, serumConnection }}
+    >
       {children}
     </ConnectionContext.Provider>
   )
@@ -103,6 +124,11 @@ export function ConnectionProvider({ children }) {
 export function useConnection(): Connection {
   return useContext(ConnectionContext).connection
 }
+
+export function useSerumConnection(): Connection {
+  return useContext(ConnectionContext).serumConnection
+}
+
 export function useConnectionConfig() {
   const context = useContext(ConnectionContext)
   return { endpoint: context.endpoint, setEndpoint: context.setEndpoint }

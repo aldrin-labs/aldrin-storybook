@@ -1,9 +1,7 @@
 import React from 'react'
 import { TableWithSort } from '@sb/components'
 
-import {
-  getEmptyTextPlaceholder,
-} from '@sb/components/TradingTable/TradingTable.utils'
+import { getEmptyTextPlaceholder } from '@sb/components/TradingTable/TradingTable.utils'
 
 import { notify } from '@sb/dexUtils/notifications'
 import { useConnection } from '@sb/dexUtils/connection'
@@ -23,10 +21,11 @@ const OpenOrdersTable = (props) => {
     handlePairChange,
     openOrders,
     onCancelAll,
+    isCancellingAllOrders,
     cancelOrderCallback = () => {},
     styles = {},
     stylesForTable = {},
-    tableBodyStyles = {}
+    tableBodyStyles = {},
   } = props
 
   const onCancelOrder = async (order) => {
@@ -64,7 +63,8 @@ const OpenOrdersTable = (props) => {
     openOrders,
     cancelOrderWithStatus,
     theme,
-    handlePairChange
+    handlePairChange,
+    isCancellingAllOrders,
   )
 
   return (
@@ -74,7 +74,7 @@ const OpenOrdersTable = (props) => {
         height: 'calc(100% - 6rem)',
         overflowX: 'hidden',
         backgroundColor: 'inherit',
-        ...styles
+        ...styles,
       }}
       stylesForTable={{ backgroundColor: 'inherit', ...stylesForTable }}
       tableBodyStyles={{ ...tableBodyStyles }}
@@ -92,6 +92,9 @@ const OpenOrdersTable = (props) => {
           borderBottom: theme.palette.border.main,
           backgroundColor: 'inherit',
           boxShadow: 'none',
+        },
+        heading: {
+          backgroundColor: '#222429',
         },
         tab: {
           padding: 0,

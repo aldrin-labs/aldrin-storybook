@@ -1,8 +1,57 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 import { Theme } from '@material-ui/core'
 import { Market, OpenOrders } from '@project-serum/serum'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { Loading } from '@sb/components'
+
+const SettleButton = ({
+  theme,
+  el,
+  onSettleFunds,
+  showLoader,
+}: {
+  theme: Theme
+  el: UnsettledBalance
+  onSettleFunds: (
+    unsettledBalances: UnsettledBalance
+  ) => Promise<string | null | undefined>
+  showLoader: boolean
+}) => {
+  const [isBalancesSettling, setIsBalancesSettling] = useState(false)
+  return (
+    <BtnCustom
+      key={`${el.marketName}${el.baseUnsettled}${el.quoteUnsettled}`}
+      onClick={async () => {
+        setIsBalancesSettling(true)
+
+        try {
+          const result = await onSettleFunds(el)
+          if (!result) {
+            // remove loader if error inside and no result
+            setIsBalancesSettling(false)
+          }
+        } catch (e) {
+          setIsBalancesSettling(false)
+        }
+      }}
+      btnColor={theme.palette.green.main}
+      btnWidth={'10rem'}
+      height={'3.5rem'}
+      borderRadius={'1.8rem'}
+      textTransform={'capitalize'}
+      fontSize={'1.2rem'}
+    >
+      {isBalancesSettling || showLoader ? (
+        <div>
+          <Loading size={16} style={{ height: '16px' }} />
+        </div>
+      ) : (
+        'Settle'
+      )}
+    </BtnCustom>
+  )
+}
 
 export const getUnsettledBalancesColumnNames = ({
   theme,
@@ -44,11 +93,15 @@ export type UnsettledBalance = {
 
 export const combineUnsettledBalances = ({
   unsettledBalances,
+  isSettlingAllBalances,
   onSettleFunds,
   theme,
 }: {
   unsettledBalances: UnsettledBalance[]
-  onSettleFunds: (unsettledBalances: UnsettledBalance) => void
+  isSettlingAllBalances: boolean
+  onSettleFunds: (
+    unsettledBalances: UnsettledBalance
+  ) => Promise<string | null | undefined>
   theme: Theme
 }) => {
   if (!unsettledBalances && !Array.isArray(unsettledBalances)) {
@@ -83,18 +136,12 @@ export const combineUnsettledBalances = ({
         },
         settle: {
           render: (
-            <BtnCustom
-              disabled={!market}
-              onClick={() => onSettleFunds(el)}
-              btnColor={theme.palette.green.main}
-              btnWidth={'10rem'}
-              height={'3.5rem'}
-              borderRadius={'1.8rem'}
-              textTransform={'capitalize'}
-              fontSize={'1.2rem'}
-            >
-              Settle
-            </BtnCustom>
+            <SettleButton
+              theme={theme}
+              el={el}
+              onSettleFunds={onSettleFunds}
+              showLoader={isSettlingAllBalances}
+            />
           ),
           showOnMobile: false,
           style: { textAlign: 'right' },

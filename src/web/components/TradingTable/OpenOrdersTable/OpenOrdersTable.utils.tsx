@@ -34,7 +34,8 @@ export const combineOpenOrdersTable = (
   openOrdersData: OrderType[],
   cancelOrderFunc: (el: OrderType) => Promise<any>,
   theme: Theme,
-  handlePairChange: (pair: string) => void
+  handlePairChange: (pair: string) => void,
+  isCancellingAllOrders: boolean,
 ) => {
   if (!openOrdersData && !Array.isArray(openOrdersData)) {
     return []
@@ -171,6 +172,7 @@ export const combineOpenOrdersTable = (
           ) : (
             <CloseButton
               i={i}
+              showLoader={isCancellingAllOrders}
               onClick={() => {
                 cancelOrderFunc(el)
               }}

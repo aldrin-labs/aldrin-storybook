@@ -13,9 +13,11 @@ import { cloneDeep } from 'lodash-es'
 export const CloseButton = ({
   i,
   onClick,
+  showLoader,
 }: {
   i: number
   onClick: () => void
+  showLoader: boolean
 }) => {
   const [isCancelled, cancelOrder] = useState(false)
 
@@ -33,13 +35,13 @@ export const CloseButton = ({
 
         try {
           await onClick()
-          await cancelOrder(false)
+          // await cancelOrder(false)
         } catch (e) {
           cancelOrder(false)
         }
       }}
     >
-      {isCancelled ? (
+      {isCancelled || showLoader ? (
         <div>
           <Loading size={16} style={{ height: '16px' }} />
         </div>

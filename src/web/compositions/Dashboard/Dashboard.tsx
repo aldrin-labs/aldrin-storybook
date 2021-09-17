@@ -6,7 +6,7 @@ import { DEX_PID } from '@core/config/dex'
 
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useTokenAccountsMap } from '@sb/dexUtils/markets'
-import { useConnection } from '@sb/dexUtils/connection'
+import { useConnection, useSerumConnection } from '@sb/dexUtils/connection'
 
 import { Row, RowContainer, Title } from '../AnalyticsRoute/index.styles'
 import { LoadingScreenWithHint } from '@sb/components/LoadingScreenWithHint/LoadingScreenWithHint'
@@ -14,7 +14,7 @@ import OpenOrdersTable from '@sb/components/TradingTable/OpenOrdersTable/OpenOrd
 import { useAllMarketsList, useAllMarketsMapById } from '@sb/dexUtils/markets'
 
 import UnsettledBalancesTable from './components/UnsettledBalancesTable/UnsettledBalancesTable'
-import { notEmpty, onlyUnique } from '@sb/dexUtils/utils'
+import { notEmpty, onlyUnique, sleep } from '@sb/dexUtils/utils'
 import { getOrderbookForMarkets } from '../Rebalance/utils/getOrderbookForMarkets'
 import {
   LoadedMarketsMap,
@@ -31,11 +31,11 @@ import {
 } from './utils/getOpenOrdersFromOrderbooks'
 import { loadOpenOrderAccountsFromPubkeys } from './utils/loadOpenOrderAccountsFromPubkeys'
 import { cancelOrdersForAllMarkets } from './utils/cancelOrdersForAllMarkets'
-import { sleep } from '@core/utils/helpers'
 import { useInterval } from '@sb/dexUtils/useInterval'
 import { Loading } from '@sb/components'
 import { settleUnsettledBalancesForAllMarkets } from './utils/settleUnsettledBalancesForAllMarkets'
 import LoadingText from './components/LoadingText/LoadingText'
+import { notifyWithLog } from '@sb/dexUtils/notifications'
 
 /* dashboard shows all open orders and all unsettled balances by using open orders accounts
 it gives you ability to settle your funds and cancel orders */
@@ -80,8 +80,13 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
     setPercentageOfLoadedOrderbooks,
   ] = useState(0)
 
+  // flags for operations with  settle/cancel all buttons
+  const [isSettlingAllBalances, setIsSettlingAllBalances] = useState(false)
+  const [isCancellingAllOrders, setsCancellingAllOrders] = useState(false)
+
   const { wallet, connected } = useWallet()
   const connection = useConnection()
+  const serumConnection = useSerumConnection()
 
   const [
     userTokenAccountsMap,
@@ -98,7 +103,7 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
 
       //load all open orders accounts by using users publicKey
       const openOrdersAccounts = await OpenOrders.findForOwner(
-        connection,
+        serumConnection,
         wallet.publicKey,
         DEX_PID
       )
@@ -257,14 +262,26 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
         <TableContainer>
           <UnsettledBalancesTable
             theme={theme}
+            isSettlingAllBalances={isSettlingAllBalances}
             onSettleAll={async () => {
-              await settleUnsettledBalancesForAllMarkets({
-                wallet,
-                connection,
-                unsettledBalances,
-                userTokenAccountsMap,
-              })
+              setIsSettlingAllBalances(true)
+              try {
+                await settleUnsettledBalancesForAllMarkets({
+                  wallet,
+                  connection,
+                  unsettledBalances,
+                  userTokenAccountsMap,
+                })
+              } catch (e) {
+                notifyWithLog({
+                  message: 'Error settling all funds',
+                  e,
+                })
 
+                // removing loaders only in case of error
+                setIsSettlingAllBalances(false)
+              }
+              await sleep(5 * 1000)
               await refreshUnsettledBalances()
             }}
             userTokenAccountsMap={userTokenAccountsMap}
@@ -293,14 +310,26 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
             tab={'openOrders'}
             theme={theme}
             show={true}
+            isCancellingAllOrders={isCancellingAllOrders}
             cancelOrderCallback={refreshOpenOrders}
             onCancelAll={async () => {
-              await cancelOrdersForAllMarkets({
-                wallet,
-                connection,
-                orders: openOrders,
-              })
+              setsCancellingAllOrders(true)
+              try {
+                await cancelOrdersForAllMarkets({
+                  wallet,
+                  connection,
+                  orders: openOrders,
+                })
+              } catch (e) {
+                notifyWithLog({
+                  message: 'Error cancelling all orders',
+                  e,
+                })
 
+                // removing loaders only in case of error
+                setsCancellingAllOrders(false)
+              }
+              await sleep(5 * 1000)
               await refreshOpenOrders()
             }}
             handlePairChange={() => {}}
