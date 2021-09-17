@@ -31,13 +31,18 @@ import {
 } from './utils/colorGenerating'
 import { useCallback } from 'react'
 import { processAllTokensData } from './utils/processAllTokensData'
-import { MarketsMap, useAllMarketsList, useAllMarketsMapById } from '@sb/dexUtils/markets'
+import {
+  MarketsMap,
+  useAllMarketsList,
+  useAllMarketsMapById,
+} from '@sb/dexUtils/markets'
 import { filterDuplicateTokensByAmount } from './utils/filterDuplicateTokensByAmount'
 import { resetTargetAllocation } from './utils/resetTargetAllocation'
 import { getTokensToSell } from './utils/getTokensToSell'
 import { getTokensToBuy } from './utils/getTokensToBuy'
 import { MeetRebalancePopup } from './components/MeetRebalancePopup/MeetRebalancePopup'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
+import { ConnectWalletScreen } from '@sb/components/ConnectWalletScreen/ConnectWalletScreen'
 
 // const MemoizedCurrentValueChartWithLegend = React.memo(
 //   DonutChartWithLegend,
@@ -251,27 +256,7 @@ const RebalanceComposition = ({
       }}
     >
       {!isWalletConnected ? (
-        <>
-          <BtnCustom
-            theme={theme}
-            onClick={wallet.connect}
-            needMinWidth={false}
-            btnWidth="auto"
-            height="auto"
-            fontSize="1.4rem"
-            padding="2rem 8rem"
-            borderRadius="1.1rem"
-            borderColor={theme.palette.blue.serum}
-            btnColor={'#fff'}
-            backgroundColor={theme.palette.blue.serum}
-            textTransform={'none'}
-            margin={'4rem 0 0 0'}
-            transition={'all .4s ease-out'}
-            style={{ whiteSpace: 'nowrap' }}
-          >
-            Connect wallet
-          </BtnCustom>
-        </>
+        <ConnectWalletScreen theme={theme} />
       ) : (
         <RowContainer theme={theme} height="100%" padding={'6rem 0'}>
           <Row
