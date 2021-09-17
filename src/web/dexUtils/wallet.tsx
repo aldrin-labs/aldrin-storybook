@@ -202,8 +202,6 @@ export function WalletProvider({ children }) {
     return wallet
   }, [provider, endpoint])
 
-  const publicKey = wallet?.publicKey?.toString()
-
   const connectWalletHash = useMemo(() => window.location.hash, [
     wallet?.connected,
   ])
@@ -249,7 +247,7 @@ export function WalletProvider({ children }) {
         setConnected(false)
       }
     }
-  }, [wallet, publicKey])
+  }, [wallet])
 
   useEffect(() => {
     if (wallet && autoConnect) {
@@ -258,14 +256,14 @@ export function WalletProvider({ children }) {
     }
 
     return () => {}
-  }, [wallet, publicKey, autoConnect])
+  }, [wallet, autoConnect])
 
   useEffect(() => {
     if (wallet && connectWalletHash === '#connect_wallet') {
       setProviderUrl(CCAIProviderURL)
       wallet?.connect()
     }
-  }, [wallet, publicKey])
+  }, [wallet])
 
   return (
     <WalletContext.Provider
