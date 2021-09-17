@@ -51,35 +51,13 @@ import { MarketProvider } from '@sb/dexUtils/markets'
 import { PreferencesProvider } from '@sb/dexUtils/preferences'
 import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
 import DevUrlPopup from '@sb/components/PopupForDevUrl'
-import WalletMigrationPopup from '@sb/components/WalletMigrationPopup'
 import { TokenRegistryProvider } from '@sb/dexUtils/tokenRegistry'
 import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
 import { MobileNavBar } from '../Chart/components/MobileNavbar/MobileNavbar'
 import useWindowSize from '@webhooks/useWindowSize'
 import { RebrandingPopup } from '@sb/components/RebrandingPopup/RebrandingPopup'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
-
-const version = `10.9.147-fix-open-orders`
-const currentVersion = localStorage.getItem('version')
-
-if (currentVersion !== version) {
-  const isMeetRebalancePopupOpen = localStorage.getItem("isMeetRebalancePopupOpen")
-  const isNotificationDone = localStorage.getItem("isNotificationDone")
-  const isOnboardingDone = localStorage.getItem("isOnboardingDone")
-  const isRebrandingPopupOpen = localStorage.getItem("isRebrandingPopupOpen")
-  const isRpcWarningPopupOpen = localStorage.getItem("isRpcWarningPopupOpen")
-
-  localStorage.clear()
-
-  localStorage.setItem("isMeetRebalancePopupOpen", isMeetRebalancePopupOpen)
-  localStorage.setItem("isNotificationDone", isNotificationDone)
-  localStorage.setItem("isOnboardingDone", isOnboardingDone)
-  localStorage.setItem("isRebrandingPopupOpen", isRebrandingPopupOpen)
-  // localStorage.setItem("isRpcWarningPopupOpen", isRpcWarningPopupOpen)
-
-  localStorage.setItem('version', version)
-  document.location.reload()
-}
+import { withVersionCheck } from '@core/hoc/withVersionCheck'
 
 const DetermineMobileWindowHeight = () => {
   const { width, height } = useWindowSize()
@@ -302,6 +280,7 @@ const Link = styled.a`
 export const App = compose(
   withRouter,
   withAuthStatus,
+  withVersionCheck,
   queryRendererHoc({
     query: GET_VIEW_MODE,
     name: 'getViewModeQuery',
