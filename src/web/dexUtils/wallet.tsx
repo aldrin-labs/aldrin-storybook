@@ -19,6 +19,7 @@ import { CCAIProviderURL, useLocalStorageState, useRefEqual } from './utils'
 import {
   Connection,
   PublicKey,
+  SystemProgram,
   SYSVAR_RENT_PUBKEY,
   Transaction,
   TransactionInstruction,
@@ -201,6 +202,8 @@ export function WalletProvider({ children }) {
     return wallet
   }, [provider, endpoint])
 
+  const publicKey = wallet?.publicKey?.toString()
+
   const connectWalletHash = useMemo(() => window.location.hash, [
     wallet?.connected,
   ])
@@ -208,7 +211,7 @@ export function WalletProvider({ children }) {
   useEffect(() => {
     if (wallet) {
       wallet.on('connect', async () => {
-        if (wallet?.publicKey) {
+        if (wallet?.publicKey && !wallet?.publicKey?.equals(SystemProgram.programId)) {
           console.log('connected')
           setConnected(true)
           const walletPublicKey = wallet?.publicKey.toBase58()
@@ -246,7 +249,7 @@ export function WalletProvider({ children }) {
         setConnected(false)
       }
     }
-  }, [wallet])
+  }, [wallet, publicKey])
 
   useEffect(() => {
     if (wallet && autoConnect) {
@@ -255,14 +258,14 @@ export function WalletProvider({ children }) {
     }
 
     return () => {}
-  }, [wallet, autoConnect])
+  }, [wallet, publicKey, autoConnect])
 
   useEffect(() => {
     if (wallet && connectWalletHash === '#connect_wallet') {
       setProviderUrl(CCAIProviderURL)
       wallet?.connect()
     }
-  }, [wallet])
+  }, [wallet, publicKey])
 
   return (
     <WalletContext.Provider
