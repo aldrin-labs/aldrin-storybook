@@ -8,7 +8,7 @@ import {
   TOKEN_MINTS,
   OpenOrders,
 } from '@project-serum/serum'
-import { Account, PublicKey } from '@solana/web3.js'
+import { Account, PublicKey, SystemProgram } from '@solana/web3.js'
 import React, { useContext, useEffect, useState } from 'react'
 import { getUniqueListBy, useLocalStorageState } from './utils'
 import { getCache, refreshCache, setCache, useAsyncData } from './fetch-loop'
@@ -760,6 +760,11 @@ const useAssociatedTokenAddressByMint = (mint: PublicKey) => {
     if (!connected) {
       return null
     }
+
+    if (wallet.publicKey.equals(SystemProgram.programId)) {
+      return null
+    }
+
     return await Token.getAssociatedTokenAddress(
       ASSOCIATED_TOKEN_PROGRAM_ID,
       TOKEN_PROGRAM_ID,
