@@ -33,6 +33,7 @@ import {
   getConnectionFromMultiConnections,
   getProviderNameFromUrl,
 } from './connection'
+import { isTokenAccountsForSettleValid } from './isTokenAccountsForSettleValid'
 
 const getNotificationText = ({
   baseSymbol = 'CCAI',
@@ -168,62 +169,15 @@ export async function settleFunds({
     return
   }
 
-  // handling case when user might settle with 11111111111111111111111111111111 instead of the user's pubkey
-  if (
-    (baseTokenAccount &&
-      baseTokenAccount.pubkey &&
-      SystemProgram.programId.equals(baseTokenAccount.pubkey)) ||
-    (quoteTokenAccount &&
-      quoteTokenAccount.pubkey &&
-      SystemProgram.programId.equals(quoteTokenAccount.pubkey))
-  ) {
-    notify({
-      message: 'Sorry, your base/quote pubKey related to Solana Program Id.',
-    })
-    return
-  }
-
-  if (SystemProgram.programId.equals(wallet?.publicKey)) {
-    notify({
-      message: 'Sorry, your wallet pubKey related to Solana Program Id.',
-    })
-    return
-  }
-
-  if (baseTokenAccount?.pubkey && quoteTokenAccount?.pubkey) {
-    const baseToken = new Token(
-      connection,
-      new PublicKey(market.baseMintAddress),
-      TOKEN_PROGRAM_ID,
-      new Account()
-    )
-    const baseTokenInfo = await baseToken.getAccountInfo(
-      new PublicKey(baseTokenAccount.pubkey)
-    )
-    const quoteToken = new Token(
-      connection,
-      new PublicKey(market.quoteMintAddress),
-      TOKEN_PROGRAM_ID,
-      new Account()
-    )
-    const quoteTokenInfo = await quoteToken.getAccountInfo(
-      new PublicKey(quoteTokenAccount.pubkey)
-    )
-
-    if (
-      !baseTokenInfo.owner.equals(wallet.publicKey) ||
-      !quoteTokenInfo.owner.equals(wallet.publicKey) ||
-      quoteTokenInfo.owner.equals(SystemProgram.programId) ||
-      baseTokenInfo.owner.equals(SystemProgram.programId)
-    ) {
-      notify({
-        message: `Sorry, your wallet pubKey doesn't related to your base/quote tokenAccount owners.`,
-      })
-      console.log('baseTokenInfo.owner', baseTokenInfo.owner.toBase58())
-      console.log('quoteTokenInfo.owner', quoteTokenInfo.owner.toBase58())
-
-      return
+  try {
+    const isTokenAccountsValid = await isTokenAccountsForSettleValid({ wallet, connection, market, baseTokenAccount, quoteTokenAccount, })
+    if (!isTokenAccountsValid) {
+      throw new Error('Error checking tokenAccounts validity')
     }
+  } catch(e) {
+    console.log(`[settleFunds] Check validity of tokenAccounts is failed, err: `, e)
+    notify({ message: 'Sorry, validity of tokenAccounts is failed' })
+    return
   }
 
   const usdcRef = process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS
@@ -441,62 +395,15 @@ export async function placeOrder({
 
   console.log('openOrdersAccount in placeOrder', openOrdersAccount)
 
-  // handling case when user might settle with 11111111111111111111111111111111 instead of the user's pubkey
-  if (
-    (baseCurrencyAccount &&
-      baseCurrencyAccount?.pubkey &&
-      SystemProgram.programId.equals(baseCurrencyAccount.pubkey)) ||
-    (quoteCurrencyAccount &&
-      quoteCurrencyAccount.pubkey &&
-      SystemProgram.programId.equals(quoteCurrencyAccount?.pubkey))
-  ) {
-    notify({
-      message: 'Sorry, your base/quote pubKey related to Solana Program Id.',
-    })
-    return
-  }
-
-  if (SystemProgram.programId.equals(wallet?.publicKey)) {
-    notify({
-      message: 'Sorry, your wallet pubKey related to Solana Program Id.',
-    })
-    return
-  }
-
-  if (baseCurrencyAccount?.pubkey && quoteCurrencyAccount?.pubkey) {
-    const baseToken = new Token(
-      connection,
-      new PublicKey(market.baseMintAddress),
-      TOKEN_PROGRAM_ID,
-      new Account()
-    )
-    const baseTokenInfo = await baseToken.getAccountInfo(
-      new PublicKey(baseCurrencyAccount?.pubkey)
-    )
-    const quoteToken = new Token(
-      connection,
-      new PublicKey(market.quoteMintAddress),
-      TOKEN_PROGRAM_ID,
-      new Account()
-    )
-    const quoteTokenInfo = await quoteToken.getAccountInfo(
-      new PublicKey(quoteCurrencyAccount?.pubkey)
-    )
-
-    if (
-      !baseTokenInfo.owner.equals(wallet.publicKey) ||
-      !quoteTokenInfo.owner.equals(wallet.publicKey) ||
-      baseTokenInfo.owner.equals(SystemProgram.programId) ||
-      quoteTokenInfo.owner.equals(SystemProgram.programId)
-    ) {
-      notify({
-        message: `Sorry, your wallet pubKey doesn't related to your base/quote tokenAccount owners.`,
-      })
-      console.log('baseTokenInfo.owner', baseTokenInfo.owner.toBase58())
-      console.log('quoteTokenInfo.owner', quoteTokenInfo.owner.toBase58())
-
-      return
+  try {
+    const isTokenAccountsValid = await isTokenAccountsForSettleValid({ wallet, connection, market, baseTokenAccount: baseCurrencyAccount, quoteTokenAccount: quoteCurrencyAccount, })
+    if (!isTokenAccountsValid) {
+      throw new Error('Error checking tokenAccounts validity')
     }
+  } catch(e) {
+    console.log(`[settleFunds] Check validity of tokenAccounts is failed, err: `, e)
+    notify({ message: 'Sorry, validity of tokenAccounts is failed' })
+    return
   }
 
   const transaction = new Transaction()
