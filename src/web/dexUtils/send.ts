@@ -33,6 +33,7 @@ import {
   getConnectionFromMultiConnections,
   getProviderNameFromUrl,
 } from './connection'
+import { isTokenAccountsForSettleValid } from './isTokenAccountsForSettleValid'
 
 const getNotificationText = ({
   baseSymbol = 'CCAI',
@@ -168,6 +169,17 @@ export async function settleFunds({
     return
   }
 
+  try {
+    const isTokenAccountsValid = await isTokenAccountsForSettleValid({ wallet, connection, market, baseTokenAccount, quoteTokenAccount, })
+    if (!isTokenAccountsValid) {
+      throw new Error('Error checking tokenAccounts validity')
+    }
+  } catch(e) {
+    console.log(`[settleFunds] Check validity of tokenAccounts is failed, err: `, e)
+    notify({ message: 'Sorry, validity of tokenAccounts is failed' })
+    return
+  }
+
   const usdcRef = process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS
   const usdtRef = process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS
 
@@ -207,16 +219,14 @@ export async function settleFunds({
       referrerQuoteWallet = new PublicKey(usdcRef)
     }
   }
-  const {
-    transaction: settleFundsTransaction,
-    signers: settleFundsSigners,
-  } = await market.makeSettleFundsTransaction(
-    connection,
-    openOrders,
-    baseCurrencyAccountPubkey,
-    quoteCurrencyAccountPubkey,
-    referrerQuoteWallet
-  )
+  const { transaction: settleFundsTransaction, signers: settleFundsSigners } =
+    await market.makeSettleFundsTransaction(
+      connection,
+      openOrders,
+      baseCurrencyAccountPubkey,
+      quoteCurrencyAccountPubkey,
+      referrerQuoteWallet
+    )
 
   let transaction = mergeTransactions([
     createAccountTransaction,
@@ -385,29 +395,36 @@ export async function placeOrder({
 
   console.log('openOrdersAccount in placeOrder', openOrdersAccount)
 
+  try {
+    const isTokenAccountsValid = await isTokenAccountsForSettleValid({ wallet, connection, market, baseTokenAccount: baseCurrencyAccount, quoteTokenAccount: quoteCurrencyAccount, })
+    if (!isTokenAccountsValid) {
+      throw new Error('Error checking tokenAccounts validity')
+    }
+  } catch(e) {
+    console.log(`[settleFunds] Check validity of tokenAccounts is failed, err: `, e)
+    notify({ message: 'Sorry, validity of tokenAccounts is failed' })
+    return
+  }
+
   const transaction = new Transaction()
 
   if (!baseCurrencyAccount) {
-    const {
-      transaction: createAccountTransaction,
-      newAccountPubkey,
-    } = await createTokenAccountTransaction({
-      connection,
-      wallet,
-      mintPublicKey: market.baseMintAddress,
-    })
+    const { transaction: createAccountTransaction, newAccountPubkey } =
+      await createTokenAccountTransaction({
+        connection,
+        wallet,
+        mintPublicKey: market.baseMintAddress,
+      })
     transaction.add(createAccountTransaction)
     baseCurrencyAccount = { pubkey: newAccountPubkey }
   }
   if (!quoteCurrencyAccount) {
-    const {
-      transaction: createAccountTransaction,
-      newAccountPubkey,
-    } = await createTokenAccountTransaction({
-      connection,
-      wallet,
-      mintPublicKey: market.quoteMintAddress,
-    })
+    const { transaction: createAccountTransaction, newAccountPubkey } =
+      await createTokenAccountTransaction({
+        connection,
+        wallet,
+        mintPublicKey: market.quoteMintAddress,
+      })
     transaction.add(createAccountTransaction)
     quoteCurrencyAccount = { pubkey: newAccountPubkey }
   }
@@ -474,16 +491,14 @@ export async function placeOrder({
   let quoteCurrencyAccountPubkey = quoteCurrencyAccount?.pubkey
 
   if (isMarketOrder && openOrdersAccount) {
-    const {
-      transaction: settleFundsTransaction,
-      signers: settleFundsSigners,
-    } = await market.makeSettleFundsTransaction(
-      connection,
-      openOrdersAccount,
-      baseCurrencyAccountPubkey,
-      quoteCurrencyAccountPubkey,
-      referrerQuoteWallet
-    )
+    const { transaction: settleFundsTransaction, signers: settleFundsSigners } =
+      await market.makeSettleFundsTransaction(
+        connection,
+        openOrdersAccount,
+        baseCurrencyAccountPubkey,
+        quoteCurrencyAccountPubkey,
+        referrerQuoteWallet
+      )
 
     transaction.add(settleFundsTransaction)
     signers.push(...settleFundsSigners)
