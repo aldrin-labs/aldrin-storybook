@@ -92,10 +92,11 @@ const UnsettledBalancesTable = ({
     <TableWithSort
       style={{
         overflowX: 'hidden',
+        height: '100%',
+        background: 'inherit',
       }}
       stylesForTable={{
         backgroundColor: '#222429',
-        height: '100%',
       }}
       defaultSort={{
         sortColumn: 'date',

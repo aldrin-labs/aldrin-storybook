@@ -4,6 +4,8 @@ import { Theme } from '@material-ui/core'
 import { Market, OpenOrders } from '@project-serum/serum'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { StyledTitle } from '@sb/components/TradingTable/TradingTable.styles'
 
 const SettleButton = ({
   theme,
@@ -120,16 +122,53 @@ export const combineUnsettledBalances = ({
           render: marketName.replace('_', '/') || 'unknown',
           showOnMobile: false,
         },
+        columnForMobile: {
+          render: (
+            <RowContainer height={'20rem'} padding={'0 2rem'}>
+              <RowContainer style={{ width: '40%' }} direction={'column'}>
+                <RowContainer justify={'flex-start'}>
+                  <StyledTitle color={'#fbf2f2'}>
+                    {marketName.replace('_', '/')}
+                  </StyledTitle>
+                </RowContainer>
+                <RowContainer justify={'space-between'}>
+                  <StyledTitle>Base unsettled:</StyledTitle>
+                  <StyledTitle color={'#fbf2f2'}>
+                    {`${roundAndFormatNumber(baseUnsettled, 8, true)} ${base}`}
+                  </StyledTitle>
+                </RowContainer>
+                <RowContainer justify={'space-between'}>
+                  <StyledTitle>Quote unsettled:</StyledTitle>
+                  <StyledTitle color={'#fbf2f2'}>
+                    {`${roundAndFormatNumber(
+                      quoteUnsettled,
+                      8,
+                      true
+                    )} ${quote}`}
+                  </StyledTitle>
+                </RowContainer>
+              </RowContainer>
+
+              <RowContainer style={{ width: '60%' }} justify={'flex-end'}>
+                <SettleButton
+                  theme={theme}
+                  el={el}
+                  onSettleFunds={onSettleFunds}
+                  showLoader={isSettlingAllBalances}
+                />
+              </RowContainer>
+            </RowContainer>
+          ),
+          showOnMobile: true,
+        },
         baseUnsettled: {
-          render:
-            `${roundAndFormatNumber(baseUnsettled, 8, true)} ${base}` || '0',
+          render: `${roundAndFormatNumber(baseUnsettled, 8, true)} ${base}`,
           style: { textAlign: 'left' },
           contentToSort: +baseUnsettled,
           showOnMobile: false,
         },
         quoteUnsettled: {
-          render:
-            `${roundAndFormatNumber(quoteUnsettled, 8, true)} ${quote}` || '0',
+          render: `${roundAndFormatNumber(quoteUnsettled, 8, true)} ${quote}`,
           style: { textAlign: 'left' },
           contentToSort: +quoteUnsettled,
           showOnMobile: false,

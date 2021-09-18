@@ -20,7 +20,7 @@ import {
   LoadedMarketsMap,
   loadMarketsByNames,
 } from '../Rebalance/utils/loadMarketsByNames'
-import { TableContainer } from './Dashboard.styles'
+import { TableContainer, TableWithTitleContainer } from './Dashboard.styles'
 import { ConnectWalletScreen } from '@sb/components/ConnectWalletScreen/ConnectWalletScreen'
 import { UnsettledBalance } from './components/UnsettledBalancesTable/UnsettledBalancesTable.utils'
 import { getOpenOrdersAccountsMapByMarketId } from './utils/getOpenOrdersAccountsMapByMarketId'
@@ -242,7 +242,7 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
         padding: '0 0 6rem 0',
       }}
     >
-      <Row direction="column" width="70%" margin="5rem 0 0 0">
+      <TableWithTitleContainer direction="column" margin="5rem 0 0 0">
         <RowContainer
           justify={isUnsettledBalancesUpdating ? 'space-between' : 'flex-start'}
           margin="0 0 3rem 0"
@@ -288,9 +288,9 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
             refreshUnsettledBalances={refreshUnsettledBalances}
           />
         </TableContainer>
-      </Row>
+      </TableWithTitleContainer>
 
-      <Row direction="column" width="70%" margin="5rem 0 0 0">
+      <TableWithTitleContainer direction="column" margin="5rem 0 0 0">
         <RowContainer
           justify={isOpenOrdersUpdating ? 'space-between' : 'flex-start'}
           margin="0 0 3rem 0"
@@ -339,7 +339,7 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
             }}
           />
         </TableContainer>
-      </Row>
+      </TableWithTitleContainer>
     </RowContainer>
   )
 }

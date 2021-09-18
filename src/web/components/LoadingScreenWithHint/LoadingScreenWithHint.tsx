@@ -1,7 +1,8 @@
 import React, { ReactChild } from 'react'
 
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { LoadingWithHint } from '@sb/compositions/Rebalance/components/RebalancePopup/LoadingWithHint'
+import { LoadingScreenWithHintContainer } from './LoadingScreenWithHint.styles'
 
 export const LoadingScreenWithHint = ({
   loadingText,
@@ -10,7 +11,7 @@ export const LoadingScreenWithHint = ({
 }) => {
   return (
     <RowContainer height="100%">
-      <Row width="50%" justify="center">
+      <LoadingScreenWithHintContainer justify="center">
         <LoadingWithHint
           loadingText={loadingText}
           loaderSize={'16rem'}
@@ -20,7 +21,7 @@ export const LoadingScreenWithHint = ({
           }}
           hintTextStyles={{ justifyContent: 'flex-start' }}
         />
-      </Row>
+      </LoadingScreenWithHintContainer>
     </RowContainer>
   )
 }
