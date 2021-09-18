@@ -73,7 +73,7 @@ export const TokenIcon = ({
     }
   }
 
-  if (ALL_TOKENS_MINTS_MAP[mint] === 'PTR') {
+  if (ALL_TOKENS_MINTS_MAP[mint] === 'PRT') {
     token = {
       logoURI: PTRLogo,
     }
