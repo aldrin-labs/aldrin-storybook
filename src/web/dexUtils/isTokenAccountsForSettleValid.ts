@@ -47,52 +47,52 @@ export const isTokenAccountsForSettleValid = async ({
     return false
   }
 
-  if (baseTokenAccount?.pubkey) {
-    const baseToken = new Token(
-      connection,
-      new PublicKey(market.baseMintAddress),
-      TOKEN_PROGRAM_ID,
-      new Account()
-    )
-    const baseTokenInfo = await baseToken.getAccountInfo(
-      new PublicKey(baseTokenAccount.pubkey)
-    )
+  // if (baseTokenAccount?.pubkey) {
+  //   const baseToken = new Token(
+  //     connection,
+  //     new PublicKey(market.baseMintAddress),
+  //     TOKEN_PROGRAM_ID,
+  //     new Account()
+  //   )
+  //   const baseTokenInfo = await baseToken.getAccountInfo(
+  //     new PublicKey(baseTokenAccount.pubkey)
+  //   )
 
-    if (
-      !baseTokenInfo.owner.equals(wallet.publicKey) ||
-      baseTokenInfo.owner.equals(SystemProgram.programId)
-    ) {
-      notify({
-        message: `Sorry, your wallet pubKey doesn't related to your base tokenAccount owners.`,
-      })
-      console.log('baseTokenInfo.owner', baseTokenInfo.owner.toBase58())
-      return false
-    }
-  }
+  //   if (
+  //     !baseTokenInfo.owner.equals(wallet.publicKey) ||
+  //     baseTokenInfo.owner.equals(SystemProgram.programId)
+  //   ) {
+  //     notify({
+  //       message: `Sorry, your wallet pubKey doesn't related to your base tokenAccount owners.`,
+  //     })
+  //     console.log('baseTokenInfo.owner', baseTokenInfo.owner.toBase58())
+  //     return false
+  //   }
+  // }
 
-  if (quoteTokenAccount?.pubkey) {
-    const quoteToken = new Token(
-      connection,
-      new PublicKey(market.quoteMintAddress),
-      TOKEN_PROGRAM_ID,
-      new Account()
-    )
-    const quoteTokenInfo = await quoteToken.getAccountInfo(
-      new PublicKey(quoteTokenAccount.pubkey)
-    )
+  // if (quoteTokenAccount?.pubkey) {
+  //   const quoteToken = new Token(
+  //     connection,
+  //     new PublicKey(market.quoteMintAddress),
+  //     TOKEN_PROGRAM_ID,
+  //     new Account()
+  //   )
+  //   const quoteTokenInfo = await quoteToken.getAccountInfo(
+  //     new PublicKey(quoteTokenAccount.pubkey)
+  //   )
 
-    if (
-      !quoteTokenInfo.owner.equals(wallet.publicKey) ||
-      quoteTokenInfo.owner.equals(SystemProgram.programId)
-    ) {
-      notify({
-        message: `Sorry, your wallet pubKey doesn't related to your quote tokenAccount owners.`,
-      })
-      console.log('quoteTokenInfo.owner', quoteTokenInfo.owner.toBase58())
+  //   if (
+  //     !quoteTokenInfo.owner.equals(wallet.publicKey) ||
+  //     quoteTokenInfo.owner.equals(SystemProgram.programId)
+  //   ) {
+  //     notify({
+  //       message: `Sorry, your wallet pubKey doesn't related to your quote tokenAccount owners.`,
+  //     })
+  //     console.log('quoteTokenInfo.owner', quoteTokenInfo.owner.toBase58())
 
-      return false
-    }
-  }
+  //     return false
+  //   }
+  // }
 
   return true
 }
