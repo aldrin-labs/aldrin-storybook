@@ -872,7 +872,7 @@ export async function sendTransaction({
   operationType?: string
   params?: any
   focusPopup?: boolean
-}) {
+}): Promise<string | null> {
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash('max')
   ).blockhash

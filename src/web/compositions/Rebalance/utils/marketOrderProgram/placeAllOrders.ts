@@ -40,13 +40,17 @@ export const placeAllOrders = async ({
 
   const sendSavedTransaction = async () => {
     if (commonTransaction.instructions.length > 0) {
-      await sendTransaction({
+      const result = await sendTransaction({
         wallet,
         connection,
         transaction: commonTransaction,
         signers: commonSigners,
         focusPopup: true,
       })
+
+      if (!result) {
+        throw Error('Error confirming transaction in rebalance')
+      }
 
       await setNumberOfCompletedTransactions(transactionIndex)
 

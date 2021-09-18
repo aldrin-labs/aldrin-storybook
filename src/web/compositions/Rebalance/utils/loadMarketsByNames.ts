@@ -79,7 +79,7 @@ export const loadMarketsByNames = async ({
     ) || { decimals: null }
 
     const { decimals: quoteNumberOfDecimals } = mintsMap.get(
-      decoded.baseMint?.toString()
+      decoded.quoteMint?.toString()
     ) || { decimals: null }
 
     if (!baseNumberOfDecimals || !quoteNumberOfDecimals) {

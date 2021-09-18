@@ -11,8 +11,9 @@ export const getRowsFromOrderbooks = ({
   orderbooksMap: OrderbooksMap
 }): OrderbooksRowsMap => {
   const orderbooksRowsMap: OrderbooksRowsMap = new Map()
+  const orderbooks = [...orderbooksMap.entries()]
 
-  for (let [name, { asks, bids }] of orderbooksMap) {
+  for (let [name, { asks, bids }] of orderbooks) {
     orderbooksRowsMap.set(name, {
       asks: asks.getL2(300).map(([price, size]) => [price, size]),
       bids: bids.getL2(300).map(([price, size]) => [price, size]),

@@ -33,10 +33,12 @@ export const getTransactionsListWithPrices = async ({
     loadedMarketsMap: new Map(),
   })
 
+  const marketsNames = rebalanceTransactionsList.map((t) => t.name)
+
   const loadedMarketsMap = await loadMarketsWithDataForTransactions({
     wallet,
     connection,
-    marketsNames: rebalanceTransactionsList.map((t) => t.name),
+    marketsNames,
     allMarketsMap,
     allMarketsMapById
   })
