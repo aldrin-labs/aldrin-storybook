@@ -34,9 +34,8 @@ export const combineOpenOrdersTable = (
   openOrdersData: OrderType[],
   cancelOrderFunc: (el: OrderType) => Promise<any>,
   theme: Theme,
-  marketType: 0 | 1,
-  canceledOrders: string[],
-  handlePairChange: (pair: string) => void
+  handlePairChange: (pair: string) => void,
+  isCancellingAllOrders: boolean,
 ) => {
   if (!openOrdersData && !Array.isArray(openOrdersData)) {
     return []
@@ -46,7 +45,7 @@ export const combineOpenOrdersTable = (
     .filter((el) =>
       filterOpenOrders({
         order: el,
-        canceledOrders,
+        canceledOrders: [],
       })
     )
     .map((el: OrderType, i: number) => {
@@ -80,7 +79,7 @@ export const combineOpenOrdersTable = (
         price === 0 && (!!type.match(/market/) || isMakerOnlyOrder)
 
       const { pricePrecision, quantityPrecision } = getPrecisionItem({
-        marketType,
+        marketType: 0,
         symbol: marketName,
       })
 
@@ -173,6 +172,7 @@ export const combineOpenOrdersTable = (
           ) : (
             <CloseButton
               i={i}
+              showLoader={isCancellingAllOrders}
               onClick={() => {
                 cancelOrderFunc(el)
               }}

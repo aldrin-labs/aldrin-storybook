@@ -1,63 +1,120 @@
-import { sleep } from '@core/utils/helpers'
-import { Market, OpenOrders } from '@project-serum/serum'
-import { WalletAdapter } from '@sb/dexUtils/adapters'
-import { MarketsMap } from '@sb/dexUtils/markets'
+import { Market } from '@project-serum/serum'
+import { getTokenMintAddressByName, MarketsMap } from '@sb/dexUtils/markets'
+import {
+  notifyForDevelop,
+  notifyWithLog,
+} from '@sb/dexUtils/notifications'
+import { notEmpty, onlyUnique } from '@sb/dexUtils/utils'
 import { Connection, PublicKey } from '@solana/web3.js'
-import BN from 'bn.js'
-import { getVaultOwnerAndNonce } from './marketOrderProgram/getVaultOwnerAndNonce'
-
+import { loadMintsDecimalsInfo } from './loadMintsDecimalsInfo'
 export interface LoadedMarket {
   market: Market
-  vaultSigner: PublicKey | BN
-  openOrders: OpenOrders[]
+  marketName: string
 }
-export interface LoadedMarketsMap {
-  [key: string]: LoadedMarket
-}
+export type LoadedMarketsMap = Map<string, LoadedMarket>
 
 export const loadMarketsByNames = async ({
-  wallet,
   connection,
   marketsNames,
   allMarketsMap,
+  allMarketsMapById,
 }: {
-  wallet: WalletAdapter
   connection: Connection
   marketsNames: string[]
   allMarketsMap: MarketsMap
+  allMarketsMapById: MarketsMap
 }): Promise<LoadedMarketsMap> => {
-  const marketsMap: LoadedMarketsMap = {}
-  let i = 0
+  const marketsMap: LoadedMarketsMap = new Map()
 
-  const filteredMarketNames = [...new Set(marketsNames)]
+  const filteredMarketIds = [...new Set(marketsNames)].map((name) =>
+    allMarketsMap.get(name)?.address.toString()
+  )
 
-  console.time('markets')
+  const mints = marketsNames
+    .flatMap((name) => {
+      const [base, quote] = name.split('_')
+      return [base, quote]
+    })
+    .filter(onlyUnique)
+    .map((tokenName) => getTokenMintAddressByName(tokenName))
+    .filter(notEmpty)
 
-  for (let name of filteredMarketNames) {
-    const marketInfo = allMarketsMap.get(name)
+  const mintsMap = await loadMintsDecimalsInfo({ connection, mints })
 
-    const market = await Market.load(
-      connection,
-      marketInfo.address,
-      {},
-      marketInfo.programId
-    )
+  const loadedMarkets = await connection._rpcRequest('getMultipleAccounts', [
+    filteredMarketIds,
+    { encoding: 'base64' },
+  ])
 
-    const [vaultSigner] = await getVaultOwnerAndNonce(
-      market._decoded.ownAddress
-    )
+  if (loadedMarkets.result.error || !loadedMarkets.result.value) {
+    notifyWithLog({
+      message:
+        'Something went wrong while loading markets, please try again later.',
+      result: loadedMarkets.result,
+    })
 
-    const openOrders = await market.findOpenOrdersAccountsForOwner(
-      connection,
-      wallet.publicKey
-    )
-
-    marketsMap[name] = { market, vaultSigner, openOrders }
-
-    if (i % 2 === 0) await sleep(1 * 1000)
-
-    i++
+    return marketsMap
   }
+
+  loadedMarkets.result.value.forEach((encodedMarket) => {
+    const arrayFromBase64 = new Buffer(encodedMarket.data[0], 'base64')
+
+    const decoded = Market.getLayout(new PublicKey(encodedMarket.owner)).decode(
+      arrayFromBase64
+    )
+
+    if (
+      !decoded ||
+      !decoded.accountFlags.initialized ||
+      !decoded.accountFlags.market ||
+      !decoded.baseMint
+    ) {
+      notifyForDevelop({ message: 'Market decoded incorrectly.', decoded })
+      return
+    }
+
+    // get base & quote spl sizes from mints
+    const { decimals: baseNumberOfDecimals } = mintsMap.get(
+      decoded.baseMint?.toString()
+    ) || { decimals: null }
+
+    const { decimals: quoteNumberOfDecimals } = mintsMap.get(
+      decoded.baseMint?.toString()
+    ) || { decimals: null }
+
+    if (!baseNumberOfDecimals || !quoteNumberOfDecimals) {
+      notifyForDevelop({
+        message: 'No decimals info.',
+        decoded,
+        baseNumberOfDecimals,
+        quoteNumberOfDecimals,
+      })
+
+      return
+    }
+
+    const market = new Market(
+      decoded,
+      baseNumberOfDecimals,
+      quoteNumberOfDecimals,
+      {},
+      new PublicKey(encodedMarket.owner)
+    )
+
+    const name = allMarketsMapById.get(market.address.toString())?.name
+
+    if (!name) {
+      notifyForDevelop({
+        message: 'No name for loaded market.',
+        market,
+        allMarketsMapById,
+      })
+
+      return
+    }
+
+    marketsMap.set(name, { market, marketName: name })
+  })
 
   console.timeEnd('markets')
 

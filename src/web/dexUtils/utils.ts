@@ -14,7 +14,7 @@ export function isValidPublicKey(key) {
   }
 }
 
-export const CCAI_MINT: string = "E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp"
+export const CCAI_MINT: string = 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp'
 
 export const CCAIProviderURL = MASTER_BUILD
   ? 'https://wallet.aldrin.com'
@@ -22,7 +22,7 @@ export const CCAIProviderURL = MASTER_BUILD
 
 export const CCAIListingTime = 1623333600
 
-export const isCCAITradingEnabled = () => Date.now() / 1000 > CCAIListingTime 
+export const isCCAITradingEnabled = () => Date.now() / 1000 > CCAIListingTime
 
 export async function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -36,9 +36,7 @@ export const percentFormat = new Intl.NumberFormat(undefined, {
 
 export const encode = (data) => {
   return Object.keys(data)
-    .map(
-      (key) => encodeURIComponent(key) + '=' + encodeURIComponent(data[key])
-    )
+    .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
     .join('&')
 }
 
@@ -51,7 +49,7 @@ export function roundToDecimal(value, decimals) {
 }
 
 export function getUniqueListBy(arr: any[], key: string): any[] {
-  return [...new Map(arr.map(item => [item[key], item])).values()]
+  return [...new Map(arr.map((item) => [item[key], item])).values()]
 }
 
 export function getDecimalCount(value) {
@@ -63,7 +61,11 @@ export function getDecimalCount(value) {
   return 0
 }
 
-export function useLocalStorageState(key, defaultState = null, setIfNotChanged = false) {
+export function useLocalStorageState(
+  key,
+  defaultState = null,
+  setIfNotChanged = false
+) {
   const [state, setState] = useState(() => {
     // NOTE: Not sure if this is ok
     const storedState = localStorage.getItem(key)
@@ -129,11 +131,27 @@ export function isEqual(obj1, obj2, keys) {
 
 export function useRefEqual<T>(
   value: T,
-  areEqual: (oldValue: T, newValue: T) => boolean,
+  areEqual: (oldValue: T, newValue: T) => boolean
 ): T {
-  const prevRef = useRef<T>(value);
+  const prevRef = useRef<T>(value)
   if (prevRef.current !== value && !areEqual(prevRef.current, value)) {
-    prevRef.current = value;
+    prevRef.current = value
   }
-  return prevRef.current;
+  return prevRef.current
+}
+
+export function onlyUnique(value, index, self) {
+  return self.indexOf(value) === index
+}
+
+export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
+  return value !== null && value !== undefined;
+}
+
+function charCodeAt (c) {
+  return c.charCodeAt(0)
+}
+
+export function convertDataURIToBinary(base64: string) {
+  return new Buffer(base64, "base64")
 }
