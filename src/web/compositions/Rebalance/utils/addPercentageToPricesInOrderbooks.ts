@@ -1,13 +1,14 @@
-import { OrderbooksMap } from './getOrderbookForMarkets'
+import { Orderbooks } from '../Rebalance.types'
+import { OrderbooksRowsMap } from './getRowsFromOrderbooks'
 
 export const addPercentageToPricesInOrderbooks = ({
   orderbooksMap,
   percentage,
 }: {
-  orderbooksMap: OrderbooksMap
+  orderbooksMap: OrderbooksRowsMap
   percentage: number
-}) => {
-  const orderbooksWithPercentage = Object.entries(orderbooksMap).map(
+}): Orderbooks => {
+  const orderbooksWithPercentage = [...orderbooksMap.entries()].map(
     ([name, orderbook]) => {
       const asksWithPercentage = orderbook.asks.map(([price, amount]) => {
         const priceWithPercentage = price * (1 + percentage)
@@ -23,7 +24,7 @@ export const addPercentageToPricesInOrderbooks = ({
     }
   )
 
-  const orderbooksMapWithPercentage = Object.fromEntries(
+  const orderbooksMapWithPercentage: Orderbooks = Object.fromEntries(
     orderbooksWithPercentage
   )
 

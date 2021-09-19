@@ -115,14 +115,7 @@ const AppRaw = ({
     getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
 
   const fullscreen: boolean = isChartPage && chartPageView !== 'default'
-  const showFooter =
-    !currentPage.includes('/analytics') &&
-    currentPage !== '/tech_issues' &&
-    !isChartPage &&
-    currentPage !== '/' &&
-    currentPage !== '/pools' &&
-    currentPage !== '/rebalance' &&
-    currentPage !== '/swaps'
+  const showFooter = false
 
   const isPNL = currentPage.includes('/portfolio/main')
   // TODO: Check this variable

@@ -1,24 +1,13 @@
-import { ChangeEvent } from 'react'
 import dayjs from 'dayjs'
 
-import { Key } from '@core/types/ChartTypes'
+import { Theme } from '@material-ui/core'
 
 export interface IProps {
   tab: string
   show: boolean
-  handleTabChange: (e: ChangeEvent<{}>, tabIndex: number | any) => void
-  selectedKey: Key
-  arrayOfMarketIds: string[]
+  theme: Theme,
+  handlePairChange: (pair: string) => void
   marketType: number
-  keys: Key[]
-  currencyPair: string
-  canceledOrders: string[]
-  showAllPositionPairs: boolean
-  showAllOpenOrderPairs: boolean
-  showAllSmartTradePairs: boolean
-  showPositionsFromAllAccounts: boolean
-  showOpenOrdersFromAllAccounts: boolean
-  showSmartTradesFromAllAccounts: boolean
 }
 
 export interface IState {

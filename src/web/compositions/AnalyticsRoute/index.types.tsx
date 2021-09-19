@@ -13,7 +13,9 @@ export type RowProps = {
 
 export type TitleProps = {
   color?: string
-  theme: Theme
+  theme?: Theme
+  fontSize?: string
+  fontFamily?: string
 }
 
 export type LineProps = {
