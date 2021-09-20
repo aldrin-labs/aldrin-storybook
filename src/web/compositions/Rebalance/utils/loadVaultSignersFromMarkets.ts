@@ -1,6 +1,6 @@
 import BN from 'bn.js'
 import { sleep } from '@core/utils/helpers'
-import { WalletAdapter } from '@sb/dexUtils/adapters'
+import { WalletAdapter } from '@sb/dexUtils/types'
 import { Connection, PublicKey } from '@solana/web3.js'
 import { LoadedMarket, LoadedMarketsMap } from './loadMarketsByNames'
 import { getVaultOwnerAndNonce } from './marketOrderProgram/getVaultOwnerAndNonce'
