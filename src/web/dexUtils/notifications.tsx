@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from '@material-ui/core'
 
 import SnackbarUtils from '@sb/utils/SnackbarUtils'
+import { MASTER_BUILD } from '@core/utils/config'
 
 export const notify = ({
   message,
@@ -20,8 +21,8 @@ export const notify = ({
       <Link
         rel="noopener noreferrer"
         target="_blank"
-        to={'https://solscan.io/tx/' + txid}
-        href={'https://solscan.io/tx/' + txid}
+        to={'https://solanabeach.io/tx/' + txid}
+        href={'https://solanabeach.io/tx/' + txid}
       >
         {description ? (
           <div
@@ -91,4 +92,29 @@ export const notify = ({
   })
 
   return null
+}
+
+export const notifyForDevelop = ({
+  message = 'Something went wrong',
+  type = 'error',
+  ...args
+}) => {
+  console.error(`${message}`, args)
+  !MASTER_BUILD &&
+    notify({
+      type,
+      message,
+    })
+}
+
+export const notifyWithLog = ({
+  message = 'Something went wrong',
+  type = 'error',
+  ...args
+}) => {
+  console.error(`${message}`, args)
+  notify({
+    type,
+    message,
+  })
 }

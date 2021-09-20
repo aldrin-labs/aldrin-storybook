@@ -1,12 +1,10 @@
 import {
   TokensMapType,
   TransactionType,
-  MarketData,
   Orderbooks,
 } from '../Rebalance.types'
 import { Graph } from '@core/utils/graph/Graph'
 import { REBALANCE_CONFIG } from '../Rebalance.config'
-import { LoadedMarketsMap } from './loadMarketsByNames'
 import { getPricesForTransactionsFromOrderbook } from './getPricesForTransactionsFromOrderbook'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { getDecimalCount } from '@sb/dexUtils/utils'
@@ -14,6 +12,7 @@ import { getTokensToBuy } from './getTokensToBuy'
 import { getTokensToSell } from './getTokensToSell'
 import { MarketsMap } from '@sb/dexUtils/markets'
 import { getMarketsData } from './getMarketsData'
+import { LoadedMarketsWithVaultSignersAndOpenOrdersMap } from './loadMarketsWithDataForTransactions'
 
 export const getTransactionsList = ({
   tokensMap,
@@ -22,7 +21,7 @@ export const getTransactionsList = ({
   allMarketsMap,
 }: {
   tokensMap: TokensMapType
-  loadedMarketsMap: LoadedMarketsMap
+  loadedMarketsMap: LoadedMarketsWithVaultSignersAndOpenOrdersMap
   orderbooks: Orderbooks
   allMarketsMap: MarketsMap
 }): TransactionType[] => {
@@ -139,7 +138,7 @@ export const getTransactionsList = ({
             market: loadedMarket,
             openOrders,
             vaultSigner,
-          } = loadedMarketsMap[symbol] || {
+          } = loadedMarketsMap.get(symbol) || {
             market: null,
             openOrders: null,
             vaultSigner: null,

@@ -349,7 +349,7 @@ const renderCell = ({
   },
 }: renderCellType) => {
   const align = numeric ? 'right' : 'left'
-  
+
   if (cell !== null && typeof cell === 'object') {
     return (
       <StyledCustomTableCell
@@ -589,7 +589,8 @@ const CustomTable = (props: Props) => {
     autoRefetch = false,
     needRefetch = false,
     toggleAutoRefetch,
-    stylesForTable,
+    stylesForTable = {},
+    tableBodyStyles = {},
     paperAdditionalStyle = '',
     hideCommonCheckbox = false,
   } = props
@@ -762,7 +763,7 @@ const CustomTable = (props: Props) => {
           </TableRow>
         </StyledTableHead>
 
-        <TableBody>
+        <TableBody style={{ ...tableBodyStyles }}>
           {data.body.length === 0 ? (
             <CustomPlaceholder theme={theme} text={emptyTableText} />
           ) : (

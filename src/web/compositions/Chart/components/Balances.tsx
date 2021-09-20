@@ -319,7 +319,10 @@ export const Balances = ({
                   </BalanceQuantity>
                 </BalanceValuesContainer>
                 <BalanceValuesContainer
-                  needMargin={wallet.connected && showSettle}
+                  needMargin={
+                    wallet.connected &&
+                    (showSettle || !isBaseCoinExistsInWallet)
+                  }
                   theme={theme}
                 >
                   <BalanceFuturesTitle theme={theme}>
@@ -340,12 +343,12 @@ export const Balances = ({
                   padding: '0 0.5rem',
                 }}
               >
-                {!wallet.connected ? null : ( // /> //   containerStyle={{ padding: '0' }} //   id={'connectButtonBase'} //   height={'2rem'} //   showOnTop={true} //   theme={theme} // <ConnectWalletDropdown
+                {!wallet.connected ? null : (
                   <>
-                    {showSettle && (
+                    {!isBaseCoinExistsInWallet ? (
                       <BtnCustom
-                        btnWidth={'100%'}
-                        height="2.5rem"
+                        btnWidth="100%"
+                        height="auto"
                         fontSize=".8rem"
                         padding=".5rem 0 .4rem 0;"
                         borderRadius=".8rem"
@@ -354,22 +357,42 @@ export const Balances = ({
                         backgroundColor={theme.palette.blue.serum}
                         // hoverBackground="#3992a9"
                         transition={'all .4s ease-out'}
-                        disabled={showLoading}
                         onClick={() => {
-                          const { market, openOrders } = baseBalances
-                          onSettleFunds(market, openOrders)
+                          setShowTokenNotAdded(true)
                         }}
                       >
-                        {showLoading ? (
-                          <Loading
-                            centerAligned={true}
-                            color={'#fff'}
-                            size={'1rem'}
-                          />
-                        ) : (
-                          'settle'
-                        )}
+                        Add to the wallet
                       </BtnCustom>
+                    ) : (
+                      showSettle && (
+                        <BtnCustom
+                          btnWidth={'100%'}
+                          height="2.5rem"
+                          fontSize=".8rem"
+                          padding=".5rem 0 .4rem 0;"
+                          borderRadius=".8rem"
+                          btnColor={theme.palette.dark.main}
+                          borderColor={theme.palette.blue.serum}
+                          backgroundColor={theme.palette.blue.serum}
+                          // hoverBackground="#3992a9"
+                          transition={'all .4s ease-out'}
+                          disabled={showLoading}
+                          onClick={() => {
+                            const { market, openOrders } = baseBalances
+                            onSettleFunds(market, openOrders)
+                          }}
+                        >
+                          {showLoading ? (
+                            <Loading
+                              centerAligned={true}
+                              color={'#fff'}
+                              size={'1rem'}
+                            />
+                          ) : (
+                            'settle'
+                          )}
+                        </BtnCustom>
+                      )
                     )}
                   </>
                 )}
@@ -404,7 +427,10 @@ export const Balances = ({
                   </BalanceQuantity>
                 </BalanceValuesContainer>
                 <BalanceValuesContainer
-                  needMargin={wallet.connected && showSettle}
+                  needMargin={
+                    wallet.connected &&
+                    (showSettle || isQuoteCoinExistsInWallet)
+                  }
                   theme={theme}
                 >
                   <BalanceFuturesTitle theme={theme}>
@@ -425,38 +451,58 @@ export const Balances = ({
                   padding: '0 0.5rem',
                 }}
               >
-                {!wallet.connected ? null : isQuoteCoinExistsInWallet ? (
+                {!wallet.connected ? null : (
                   <>
-                    {showSettle && (
+                    {!isQuoteCoinExistsInWallet ? (
                       <BtnCustom
-                        btnWidth={'100%'}
-                        height="2.5rem"
+                        btnWidth="100%"
+                        height="auto"
                         fontSize=".8rem"
                         padding=".5rem 0 .4rem 0;"
                         borderRadius=".8rem"
                         btnColor={theme.palette.dark.main}
                         borderColor={theme.palette.blue.serum}
                         backgroundColor={theme.palette.blue.serum}
+                        // hoverBackground="#3992a9"
                         transition={'all .4s ease-out'}
-                        disabled={showLoading}
                         onClick={() => {
-                          const { market, openOrders } = quoteBalances
-                          onSettleFunds(market, openOrders)
+                          setShowTokenNotAdded(true)
                         }}
                       >
-                        {showLoading ? (
-                          <Loading
-                            centerAligned={true}
-                            color={'#fff'}
-                            size={'1rem'}
-                          />
-                        ) : (
-                          'settle'
-                        )}
+                        Add to the wallet
                       </BtnCustom>
+                    ) : (
+                      showSettle && (
+                        <BtnCustom
+                          btnWidth={'100%'}
+                          height="2.5rem"
+                          fontSize=".8rem"
+                          padding=".5rem 0 .4rem 0;"
+                          borderRadius=".8rem"
+                          btnColor={theme.palette.dark.main}
+                          borderColor={theme.palette.blue.serum}
+                          backgroundColor={theme.palette.blue.serum}
+                          transition={'all .4s ease-out'}
+                          disabled={showLoading}
+                          onClick={() => {
+                            const { market, openOrders } = quoteBalances
+                            onSettleFunds(market, openOrders)
+                          }}
+                        >
+                          {showLoading ? (
+                            <Loading
+                              centerAligned={true}
+                              color={'#fff'}
+                              size={'1rem'}
+                            />
+                          ) : (
+                            'settle'
+                          )}
+                        </BtnCustom>
+                      )
                     )}
                   </>
-                ) : null}
+                )}
               </div>
             </Grid>
           </>

@@ -19,6 +19,7 @@ import { CCAIProviderURL, useLocalStorageState, useRefEqual } from './utils'
 import {
   Connection,
   PublicKey,
+  SystemProgram,
   SYSVAR_RENT_PUBKEY,
   Transaction,
   TransactionInstruction,
@@ -41,6 +42,8 @@ import WalletAldrin from '@icons/RINLogo.svg'
 import { WalletAdapter } from './adapters'
 import { _VERY_SLOW_REFRESH_INTERVAL } from './markets'
 import { MASTER_BUILD } from '@core/utils/config'
+import { Coin98WalletAdapter } from './adapters/Coin98WalletAdapter'
+import { SolflareExtensionWalletAdapter } from './adapters/SolflareWallet'
 
 export const WALLET_PROVIDERS = [
   // { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },
@@ -107,6 +110,22 @@ export const WALLET_PROVIDERS = [
     icon: Solong,
     isExtension: false,
     showOnMobile: false,
+  },
+  {
+    name: 'Coin98',
+    url: 'https://wallet.coin98.com/',
+    adapter: Coin98WalletAdapter,
+    icon: `https://gblobscdn.gitbook.com/spaces%2F-MLfdRENhXE4S22AEr9Q%2Favatar-1616412978424.png`,
+    isExtension: true,
+    showOnMobile: true,
+  },
+  {
+    name: 'Solflare',
+    url: 'https://solflare.com/',
+    adapter: SolflareExtensionWalletAdapter,
+    icon: `https://cdn.jsdelivr.net/gh/solana-labs/oyster@main/assets/wallets/solflare.svg`,
+    isExtension: true,
+    showOnMobile: true,
   },
 ]
 
@@ -190,7 +209,7 @@ export function WalletProvider({ children }) {
   useEffect(() => {
     if (wallet) {
       wallet.on('connect', async () => {
-        if (wallet?.publicKey) {
+        if (wallet?.publicKey && !wallet?.publicKey?.equals(SystemProgram.programId)) {
           console.log('connected')
           setConnected(true)
           const walletPublicKey = wallet?.publicKey.toBase58()

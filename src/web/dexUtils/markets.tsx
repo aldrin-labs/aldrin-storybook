@@ -8,7 +8,7 @@ import {
   TOKEN_MINTS,
   OpenOrders,
 } from '@project-serum/serum'
-import { Account, PublicKey } from '@solana/web3.js'
+import { Account, AccountInfo, PublicKey, SystemProgram } from '@solana/web3.js'
 import React, { useContext, useEffect, useState } from 'react'
 import { getUniqueListBy, useLocalStorageState } from './utils'
 import { getCache, refreshCache, setCache, useAsyncData } from './fetch-loop'
@@ -119,6 +119,20 @@ export function useAllMarketsList(): MarketsMap {
   })
 
   return ALL_MARKETS_MAP
+}
+
+export function useAllMarketsMapById(): MarketsMap {
+  const allMarketsMap = useAllMarketsList()
+
+  const allMarketsMapById = [...allMarketsMap.values()].reduce(
+    (acc, current) => {
+      acc.set(current.address.toString(), current)
+      return acc
+    },
+    new Map()
+  )
+
+  return allMarketsMapById
 }
 
 export function useMarketsList() {
@@ -310,13 +324,6 @@ function getMarketDetails(market, marketInfos) {
       )?.name) ||
     (marketInfo?.quoteLabel && `${marketInfo?.quoteLabel}*`) ||
     'UNKNOWN'
-
-  console.log('market data', {
-    marketName: marketInfo?.name,
-    baseCurrency,
-    quoteCurrency,
-    marketInfo,
-  })
 
   return {
     ...marketInfo,
@@ -525,30 +532,56 @@ const useOpenOrdersPubkeys = (): string[] => {
       return null
     }
 
-    const openOrdersPubkeys = JSON.parse(
-      localStorage.getItem(openOrdersKey) || '[]'
-    )
+    // const openOrdersPubkeys = []
+    // JSON.parse(
+    //   localStorage.getItem(openOrdersKey) || '[]'
+    // )
 
     // check localStorage for existing openOrdersAccount for current market + wallet
-    if (openOrdersPubkeys && openOrdersPubkeys.length > 0)
-      return openOrdersPubkeys.map((acc: string) => new PublicKey(acc))
+    // if (openOrdersPubkeys && openOrdersPubkeys.length > 0)
+    //   return openOrdersPubkeys.map((acc: string) => new PublicKey(acc))
 
     const accounts = await market.findOpenOrdersAccountsForOwner(
       connection,
       wallet.publicKey
     )
 
-    const sortedAccountsByCountOfExistingOpenOrders = accounts.sort((a: { freeSlotBits: typeof BN }, b: { freeSlotBits: typeof BN }) => a?.freeSlotBits?.cmp(b?.freeSlotBits))
+    // BE AWARE: .sort() mutates the arrey
 
-    // keep string addresses in localStorage
-    localStorage.setItem(
-      openOrdersKey,
-      JSON.stringify(
-        sortedAccountsByCountOfExistingOpenOrders.map((acc: OpenOrders) => acc.publicKey?.toString())
-      )
+    const sortedAccountsByCountOfExistingOpenOrders = accounts.sort(
+      (a: { freeSlotBits: typeof BN }, b: { freeSlotBits: typeof BN }) =>
+        a?.freeSlotBits?.cmp(b?.freeSlotBits)
+    )
+    const sortedAccountsByUnsettledBalances = sortedAccountsByCountOfExistingOpenOrders.sort(
+      (
+        a: { baseTokenFree: typeof BN; quoteTokenFree: typeof BN },
+        b: { baseTokenFree: typeof BN; quoteTokenFree: typeof BN }
+      ) =>
+        a?.baseTokenFree.cmp(b?.baseTokenFree) === 1 ||
+        a?.quoteTokenFree.cmp(b?.quoteTokenFree) === 1
+          ? -1
+          : a?.baseTokenFree.cmp(b?.baseTokenFree) === -1 ||
+            a?.quoteTokenFree.cmp(b?.quoteTokenFree) === -1
+          ? 1
+          : 0
     )
 
-    return sortedAccountsByCountOfExistingOpenOrders.map((acc: OpenOrders) => acc.publicKey)
+    console.log(
+      '[getOpenOrdersAccounts] current openOrderAccount: ',
+      sortedAccountsByUnsettledBalances[0]?.address?.toBase58()
+    )
+
+    // keep string addresses in localStorage
+    // localStorage.setItem(
+    //   openOrdersKey,
+    //   JSON.stringify(
+    //     sortedAccountsByCountOfExistingOpenOrders.map((acc: OpenOrders) => acc.publicKey?.toString())
+    //   )
+    // )
+
+    return sortedAccountsByUnsettledBalances.map(
+      (acc: OpenOrders) => acc.publicKey
+    )
   }
 
   return useAsyncData(
@@ -633,6 +666,35 @@ export function useOpenOrdersAccounts(fast = false) {
   )
 }
 
+export function useAllOpenOrdersAccounts() {
+  const { connected, wallet } = useWallet()
+  const connection = useConnection()
+
+  async function getOpenOrdersAccounts() {
+    if (!connected) {
+      return null
+    }
+
+    const openOrdersAccounts = await OpenOrders.findForOwner(
+      connection,
+      wallet.publicKey,
+      DEX_PID
+    )
+
+    return openOrdersAccounts
+  }
+
+  return useAsyncData(
+    getOpenOrdersAccounts,
+    tuple(
+      'useAllOpenOrdersAccounts',
+      wallet,
+      connected,
+    ),
+    { refreshInterval: _SLOW_REFRESH_INTERVAL }
+  )
+}
+
 export function useSelectedOpenOrdersAccount(fast = false) {
   const [accounts] = useOpenOrdersAccounts(fast)
 
@@ -643,7 +705,15 @@ export function useSelectedOpenOrdersAccount(fast = false) {
   return accounts[0]
 }
 
-export function useTokenAccounts() {
+export type TokenAccount = {
+  pubkey: PublicKey
+  account: AccountInfo<Buffer>
+  effectiveMint: PublicKey
+}
+
+export type TokenAccounts = TokenAccount[] | undefined | null
+
+export function useTokenAccounts(): [TokenAccounts, boolean] {
   const { connected, wallet } = useWallet()
   const connection = useConnection()
 
@@ -659,6 +729,20 @@ export function useTokenAccounts() {
     tuple('getTokenAccounts', wallet, connected),
     { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
   )
+}
+
+export function useTokenAccountsMap(): [Map<string, TokenAccount>, boolean] {
+  const [accounts, loaded] = useTokenAccounts()
+
+  if (!loaded || !accounts) return [new Map(), loaded]
+
+  return [
+    accounts.reduce(
+      (acc, current) => acc.set(current.effectiveMint.toString(), current),
+      new Map()
+    ),
+    loaded,
+  ]
 }
 
 export function getSelectedTokenAccountForMint(
@@ -741,6 +825,11 @@ const useAssociatedTokenAddressByMint = (mint: PublicKey) => {
     if (!connected) {
       return null
     }
+
+    if (wallet.publicKey.equals(SystemProgram.programId)) {
+      return null
+    }
+
     return await Token.getAssociatedTokenAddress(
       ASSOCIATED_TOKEN_PROGRAM_ID,
       TOKEN_PROGRAM_ID,

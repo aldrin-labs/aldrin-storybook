@@ -75,7 +75,7 @@ if (currentVersion !== version) {
   localStorage.setItem("isNotificationDone", isNotificationDone)
   localStorage.setItem("isOnboardingDone", isOnboardingDone)
   localStorage.setItem("isRebrandingPopupOpen", isRebrandingPopupOpen)
-  localStorage.setItem("isRpcWarningPopupOpen", isRpcWarningPopupOpen)
+  // localStorage.setItem("isRpcWarningPopupOpen", isRpcWarningPopupOpen)
 
   localStorage.setItem('version', version)
   document.location.reload()
@@ -115,14 +115,7 @@ const AppRaw = ({
     getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
 
   const fullscreen: boolean = isChartPage && chartPageView !== 'default'
-  const showFooter =
-    !currentPage.includes('/analytics') &&
-    currentPage !== '/tech_issues' &&
-    !isChartPage &&
-    currentPage !== '/' &&
-    currentPage !== '/pools' &&
-    currentPage !== '/rebalance' &&
-    currentPage !== '/swaps'
+  const showFooter = false
 
   const isPNL = currentPage.includes('/portfolio/main')
   // TODO: Check this variable
