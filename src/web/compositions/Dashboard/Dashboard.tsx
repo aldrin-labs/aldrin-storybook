@@ -98,7 +98,6 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
 
   useEffect(() => {
     const getOpenOrdersAccounts = async () => {
-      console.log('load all data for dashboard', connected, isDataLoading)
       setIsDataLoading(true)
 
       //load all open orders accounts by using users publicKey
@@ -120,7 +119,7 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
       const uniqueMarketsNames = uniqueMarketsIds
         .map((marketId) => allMarketsMapById.get(marketId)?.name || null)
         .filter(notEmpty)
-
+        
       const loadedMarketsMap = await loadMarketsByNames({
         connection,
         marketsNames: uniqueMarketsNames,

@@ -13,7 +13,11 @@ import LightLogo from '@icons/lightLogo.svg'
 
 export const ConnectWalletScreen = ({ theme }: { theme: Theme }) => {
   return (
-    <RowContainer direction="column" height={'100%'}>
+    <RowContainer
+      direction="column"
+      height={'100%'}
+      style={{ background: theme.palette.grey.additional }}
+    >
       <RowContainer margin={'0 0 4rem 0'}>
         <SvgIcon src={LightLogo} width={'16rem'} height={'16rem'} />
       </RowContainer>

@@ -86,6 +86,8 @@ export const loadMarketsByNames = async ({
       notifyForDevelop({
         message: 'No decimals info.',
         decoded,
+        baseMint: decoded.baseMint.toString(),
+        quoteMint: decoded.quoteMint.toString(),
         baseNumberOfDecimals,
         quoteNumberOfDecimals,
       })

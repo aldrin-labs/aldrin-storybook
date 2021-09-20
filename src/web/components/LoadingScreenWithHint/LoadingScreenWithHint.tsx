@@ -10,7 +10,10 @@ export const LoadingScreenWithHint = ({
   loadingText?: string | ReactChild
 }) => {
   return (
-    <RowContainer height="100%">
+    <RowContainer
+      height="100%"
+      style={{ background: theme.palette.grey.additional }}
+    >
       <LoadingScreenWithHintContainer justify="center">
         <LoadingWithHint
           loadingText={loadingText}
