@@ -19,7 +19,7 @@ import type {
 import * as Layout from './layout';
 import {sendAndConfirmTransaction} from './utils/send-and-confirm-transaction';
 import { sendAndConfirmTransactionViaWallet } from './utils/send-and-confirm-transaction-via-wallet'
-import { WalletAdapter } from '../types';
+import { WalletAdapter } from '@sb/dexUtils/types'
 
 export const TOKEN_PROGRAM_ID: PublicKey = new PublicKey(
   'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',

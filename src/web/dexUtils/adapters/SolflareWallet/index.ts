@@ -1,6 +1,6 @@
 import EventEmitter from 'eventemitter3'
 import { PublicKey, Transaction } from '@solana/web3.js'
-import { DEFAULT_PUBLIC_KEY, WalletAdapter } from '../types'
+import { WalletAdapter } from '@sb/dexUtils/types'
 import { notify } from '@sb/dexUtils/notifications'
 
 type SolflareExtensionEvent = 'disconnect' | 'connect'
@@ -66,7 +66,7 @@ export class SolflareExtensionWalletAdapter extends EventEmitter
   }
 
   get publicKey() {
-    return this._provider?.publicKey || DEFAULT_PUBLIC_KEY
+    return this._provider?.publicKey
   }
 
   async signTransaction(transaction: Transaction) {
