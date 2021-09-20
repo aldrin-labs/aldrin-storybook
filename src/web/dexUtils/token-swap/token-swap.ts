@@ -14,7 +14,7 @@ import {
 import * as Layout from './layout';
 import {sendAndConfirmTransaction} from './utils/send-and-confirm-transaction';
 import {loadAccount} from './utils/account';
-import { WalletAdapter } from '../types';
+import { WalletAdapter } from '@sb/dexUtils/types'
 import { sendAndConfirmTransactionViaWallet } from '../token/utils/send-and-confirm-transaction-via-wallet';
 
 export const TOKEN_SWAP_PROGRAM_ID: PublicKey = new PublicKey(

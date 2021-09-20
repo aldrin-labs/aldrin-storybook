@@ -21,7 +21,7 @@ import {
   parseInstructionErrorResponse,
 } from '@project-serum/serum'
 
-import { WalletAdapter } from './types'
+import { WalletAdapter } from '@sb/dexUtils/types'
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   Token,
