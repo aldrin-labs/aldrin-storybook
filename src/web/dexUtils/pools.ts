@@ -18,7 +18,7 @@ import {
   TOKEN_SWAP_PROGRAM_ID,
   TokenFarmingLayout,
 } from './token-swap/token-swap'
-import { WalletAdapter } from './types'
+import { WalletAdapter } from '@sb/dexUtils/types'
 import { sendAndConfirmTransactionViaWallet } from './token/utils/send-and-confirm-transaction-via-wallet'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { notify } from './notifications'

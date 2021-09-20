@@ -103,8 +103,15 @@ export function useAllMarketsList(): MarketsMap {
 
   const usersMarkets = customMarkets.filter((market: RawCustomMarketData) => {
     const marketName = market.name.replaceAll('/', '_')
+    const isCustomMarketAlreadyExistInOfficial = officialMarkets.find(
+      (officialMarket) => officialMarket.address.toString() === market.address
+    )
 
-    return market.isCustomUserMarket && !ALL_MARKETS_MAP.has(marketName)
+    return (
+      market.isCustomUserMarket &&
+      !ALL_MARKETS_MAP.has(marketName) &&
+      !isCustomMarketAlreadyExistInOfficial
+    )
   })
 
   usersMarkets?.forEach((market: RawMarketData) => {
@@ -686,11 +693,7 @@ export function useAllOpenOrdersAccounts() {
 
   return useAsyncData(
     getOpenOrdersAccounts,
-    tuple(
-      'useAllOpenOrdersAccounts',
-      wallet,
-      connected,
-    ),
+    tuple('useAllOpenOrdersAccounts', wallet, connected),
     { refreshInterval: _SLOW_REFRESH_INTERVAL }
   )
 }

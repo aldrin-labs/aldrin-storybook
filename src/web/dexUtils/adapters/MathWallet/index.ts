@@ -1,6 +1,6 @@
 import EventEmitter from 'eventemitter3';
 import { PublicKey, Transaction } from '@solana/web3.js';
-import { DEFAULT_PUBLIC_KEY, WalletAdapter } from '../types';
+import { WalletAdapter } from '@sb/dexUtils/types'
 import { notify } from '@sb/dexUtils/notifications';
 
 export class MathWalletAdapter extends EventEmitter implements WalletAdapter {
@@ -40,7 +40,7 @@ export class MathWalletAdapter extends EventEmitter implements WalletAdapter {
   }
 
   get publicKey() {
-    return this._publicKey || DEFAULT_PUBLIC_KEY;
+    return this._publicKey;
   }
 
   async signTransaction(transaction: Transaction) {
