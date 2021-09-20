@@ -1,4 +1,4 @@
-import { WalletAdapter } from '@sb/dexUtils/adapters'
+import { WalletAdapter } from '@sb/dexUtils/types'
 import { TAKER_FEE } from '@core/config/dex'
 import { MarketsMap } from '@sb/dexUtils/markets'
 import { Connection } from '@solana/web3.js'

@@ -6,4 +6,3 @@ export * from './MathWallet';
 export * from './CcaiWallet'
 export * from './CcaiExtension'
 export * from './CommonWallet'
-export * from './types';

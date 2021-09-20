@@ -6,7 +6,7 @@ import { PublicKey } from '@solana/web3.js';
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
 import { notify } from '../../notifications';
 import { getPublicKey, signTransaction } from './core';
-import { DEFAULT_PUBLIC_KEY, WalletAdapter } from '../types';
+import { WalletAdapter } from '@sb/dexUtils/types'
 
 export class LedgerWalletAdapter extends EventEmitter implements WalletAdapter {
   _connecting: boolean;
@@ -21,7 +21,7 @@ export class LedgerWalletAdapter extends EventEmitter implements WalletAdapter {
   }
 
   get publicKey() {
-    return this._publicKey || DEFAULT_PUBLIC_KEY;
+    return this._publicKey;
   }
 
   get connected() {
