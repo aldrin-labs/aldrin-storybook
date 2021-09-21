@@ -1,6 +1,6 @@
 import { Token, TOKEN_PROGRAM_ID } from './token/token'
 import { PublicKey, Connection } from '@solana/web3.js'
-import { WalletAdapter } from './types'
+import { WalletAdapter } from '@sb/dexUtils/types'
 import { sendAndConfirmTransactionViaWallet } from './token/utils/send-and-confirm-transaction-via-wallet'
 
 export const createToken = async ({

@@ -8,6 +8,9 @@ import Warning from '@icons/warningPairSel.png'
 import ThinkingFace from '@icons/thinkingFace.png'
 import MangoLogo from '@icons/mango_logo.png'
 import RinLogo from '@icons/rin_logo.png'
+import SunnyLogo from '@icons/sunny_logo.jpg'
+import PTRLogo from '@icons/ptr_logo.png'
+
 
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { CCAI_MINT } from '@sb/dexUtils/utils'
@@ -60,6 +63,19 @@ export const TokenIcon = ({
   if (ALL_TOKENS_MINTS_MAP[mint] === 'RIN') {
     token = {
       logoURI: RinLogo,
+    }
+  }
+
+  // sunny has no logo for now
+  if (ALL_TOKENS_MINTS_MAP[mint] === 'SUNNY') {
+    token = {
+      logoURI: SunnyLogo,
+    }
+  }
+
+  if (ALL_TOKENS_MINTS_MAP[mint] === 'PRT') {
+    token = {
+      logoURI: PTRLogo,
     }
   }
 

@@ -1,5 +1,5 @@
 import { Market, OpenOrders } from '@project-serum/serum'
-import { WalletAdapter } from '@sb/dexUtils/adapters'
+import { WalletAdapter } from '@sb/dexUtils/types'
 import { DEX_PID } from '@core/config/dex'
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { Connection, PublicKey, SYSVAR_RENT_PUBKEY } from '@solana/web3.js'

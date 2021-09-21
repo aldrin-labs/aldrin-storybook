@@ -17,37 +17,9 @@ const TradingTabs = ({
   tab,
   theme,
   handleTabChange,
-  marketType,
-  getOpenOrderHistoryQuery: {
-    getOpenOrderHistory = { orders: [], count: 0 },
-  } = {
-    getOpenOrderHistory: { orders: [], count: 0 },
-  },
-  getActivePositionsQuery: { getActivePositions = [] } = {
-    getActivePositions: [],
-  },
-  getActiveStrategiesQuery: {
-    getActiveStrategies = { strategies: [], count: 0 },
-  } = {
-    getActiveStrategies: { strategies: [], count: 0 },
-  },
-  canceledOrders,
-  arrayOfMarketIds,
-  currencyPair,
-  subscribeToMore,
-  showAllSmartTradePairs,
-  showSmartTradesFromAllAccounts,
   updateTerminalViewMode,
   terminalViewMode,
-  ...props
 }: IProps) => {
-  // const openOrdersLength = getOpenOrderHistory.orders.filter((order) =>
-  //   filterOpenOrders({
-  //     order,
-  //     canceledOrders,
-  //   })
-  // ).length
-
   return (
     <>
       <TitleTabsGroup theme={theme}>

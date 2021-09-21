@@ -290,7 +290,7 @@ const MarketInfo = ({
                 <PurpleTitle
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={`https://explorer.solana.com/address/${
+                  href={`https://solanabeach.io/account/${
                     market ? market.address.toBase58() : '--'
                   }`}
                   theme={theme}
@@ -334,10 +334,10 @@ export default compose(
       symbol: props.selectedPair,
       exchange: 'serum',
       marketType: props.marketType,
-      startTimestamp: `${datesForQuery.startOfTime}`,
-      endTimestamp: `${datesForQuery.endOfTime}`,
-      prevStartTimestamp: `${datesForQuery.prevStartTimestamp}`,
-      prevEndTimestamp: `${datesForQuery.prevEndTimestamp}`,
+      startTimestamp: `${datesForQuery.startOfTime()}`,
+      endTimestamp: `${datesForQuery.endOfTime()}`,
+      prevStartTimestamp: `${datesForQuery.prevStartTimestamp()}`,
+      prevEndTimestamp: `${datesForQuery.prevEndTimestamp()}`,
     }),
     fetchPolicy: 'cache-and-network',
     pollInterval: 30000,

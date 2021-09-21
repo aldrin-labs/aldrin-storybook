@@ -9,6 +9,7 @@ import {
   LinkToTelegram,
   LinkToTwitter,
 } from '../Homepage/SocialsLinksComponents'
+import useMobileSize from '@webhooks/useMobileSize'
 
 const MainTitle = styled.h2`
   font-size: 2.4rem;
@@ -29,6 +30,7 @@ const Link = styled.a`
 `
 
 const RestrictedRegion = ({ theme }: { theme: Theme }) => {
+  const isMobile = useMobileSize()
   return (
     <RowContainer direction="column" height="100%">
       <RowContainer margin="0 0 6rem 0">
@@ -50,7 +52,7 @@ const RestrictedRegion = ({ theme }: { theme: Theme }) => {
           question, please contact us via:
         </Text>
       </RowContainer>
-      <Row justify="space-between" width="30%">
+      <Row justify="space-between" width={isMobile ? '75%' : '30%'}>
         <Link
           theme={theme}
           href="mailto:contact@aldrin.com"

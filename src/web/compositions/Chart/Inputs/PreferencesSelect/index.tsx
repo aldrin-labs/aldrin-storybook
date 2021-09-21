@@ -49,7 +49,6 @@ class IntegrationReactSelect extends React.PureComponent {
       toggleThemeMode,
       changePositionModeWithStatus,
       selectStyles,
-      updateFavoritePairsMutation,
       marketType,
       activeExchange,
       hideDepthChart,

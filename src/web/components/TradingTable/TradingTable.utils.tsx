@@ -3,10 +3,8 @@ import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 dayjs.extend(localizedFormat)
 
-import { TradeType, } from '@core/types/ChartTypes'
-import {
-  TableButton,
-} from './TradingTable.styles'
+import { TradeType } from '@core/types/ChartTypes'
+import { TableButton } from './TradingTable.styles'
 
 import { Loading } from '@sb/components/index'
 import stableCoins from '@core/config/stableCoins'
@@ -15,9 +13,11 @@ import { cloneDeep } from 'lodash-es'
 export const CloseButton = ({
   i,
   onClick,
+  showLoader,
 }: {
   i: number
   onClick: () => void
+  showLoader: boolean
 }) => {
   const [isCancelled, cancelOrder] = useState(false)
 
@@ -28,19 +28,20 @@ export const CloseButton = ({
       size={`small`}
       disabled={isCancelled}
       style={{
-        color: isCancelled ? 'grey' : '#fbf2f2',
+        color: isCancelled ? 'grey' : '#F69894',
       }}
       onClick={async () => {
         cancelOrder(true)
 
         try {
           await onClick()
+          // await cancelOrder(false)
         } catch (e) {
           cancelOrder(false)
         }
       }}
     >
-      {isCancelled ? (
+      {isCancelled || showLoader ? (
         <div>
           <Loading size={16} style={{ height: '16px' }} />
         </div>

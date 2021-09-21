@@ -59,26 +59,26 @@ import useWindowSize from '@webhooks/useWindowSize'
 import { RebrandingPopup } from '@sb/components/RebrandingPopup/RebrandingPopup'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
 
-const version = `10.9.146-rebalance`
-const isOnboardingDone = localStorage.getItem('isOnboardingDone')
-const isNotificationDone = localStorage.getItem('isNotificationDone')
-const isRebrandingPopupOpen = localStorage.getItem(
-  'isRebrandingPopupOpen'
-)
-const localPassword = localStorage.getItem('localPassword')
+const version = `10.9.147-fix-open-orders`
 const currentVersion = localStorage.getItem('version')
 
 if (currentVersion !== version) {
-  localStorage.clear()
-  localStorage.setItem('version', version)
-  localStorage.setItem('isOnboardingDone', isOnboardingDone)
-  localStorage.setItem('isNotificationDone', isNotificationDone)
-  localStorage.setItem('isRebrandingPopupOpen', isRebrandingPopupOpen)
-  document.location.reload()
+  const isMeetRebalancePopupOpen = localStorage.getItem("isMeetRebalancePopupOpen")
+  const isNotificationDone = localStorage.getItem("isNotificationDone")
+  const isOnboardingDone = localStorage.getItem("isOnboardingDone")
+  const isRebrandingPopupOpen = localStorage.getItem("isRebrandingPopupOpen")
+  const isRpcWarningPopupOpen = localStorage.getItem("isRpcWarningPopupOpen")
 
-  if (localPassword !== null) {
-    localStorage.setItem('localPassword', localPassword)
-  }
+  localStorage.clear()
+
+  localStorage.setItem("isMeetRebalancePopupOpen", isMeetRebalancePopupOpen)
+  localStorage.setItem("isNotificationDone", isNotificationDone)
+  localStorage.setItem("isOnboardingDone", isOnboardingDone)
+  localStorage.setItem("isRebrandingPopupOpen", isRebrandingPopupOpen)
+  // localStorage.setItem("isRpcWarningPopupOpen", isRpcWarningPopupOpen)
+
+  localStorage.setItem('version', version)
+  document.location.reload()
 }
 
 const DetermineMobileWindowHeight = () => {
@@ -115,14 +115,7 @@ const AppRaw = ({
     getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
 
   const fullscreen: boolean = isChartPage && chartPageView !== 'default'
-  const showFooter =
-    !currentPage.includes('/analytics') &&
-    currentPage !== '/tech_issues' &&
-    !isChartPage &&
-    currentPage !== '/' &&
-    currentPage !== '/pools' &&
-    currentPage !== '/rebalance' &&
-    currentPage !== '/swaps'
+  const showFooter = false
 
   const isPNL = currentPage.includes('/portfolio/main')
   // TODO: Check this variable

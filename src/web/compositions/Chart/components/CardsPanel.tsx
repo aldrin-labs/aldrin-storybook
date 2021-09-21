@@ -196,7 +196,7 @@ export const CardsPanel = ({ theme }) => {
             >
               Trading
             </NavLinkButton>
-            <NavLinkButton
+            {/* <NavLinkButton
               theme={theme}
               data-tut="analytics"
               page={'analytics'}
@@ -204,7 +204,7 @@ export const CardsPanel = ({ theme }) => {
               component={(props) => <Link to={`/analytics/all`} {...props} />}
             >
               Analytics
-            </NavLinkButton>
+            </NavLinkButton> */}
             <NavLinkButton
               theme={theme}
               pathname={location.pathname}
@@ -213,7 +213,18 @@ export const CardsPanel = ({ theme }) => {
               style={{ width: '13rem' }}
               component={(props) => <Link to={`/rebalance`} {...props} />}
             >
-              Rebalance{' '}
+              Rebalance
+              <BetaLabel theme={theme} style={{ marginLeft: '1rem' }} />
+            </NavLinkButton>
+            <NavLinkButton
+              theme={theme}
+              pathname={location.pathname}
+              to="/dashboard"
+              page={'dashboard'}
+              style={{ width: '13rem' }}
+              component={(props) => <Link to={`/dashboard`} {...props} />}
+            >
+              Dashboard
               <BetaLabel theme={theme} style={{ marginLeft: '1rem' }} />
             </NavLinkButton>
             <NavLinkButton

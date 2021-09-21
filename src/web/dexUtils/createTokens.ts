@@ -1,5 +1,5 @@
 import { Connection, PublicKey, Transaction } from "@solana/web3.js"
-import { WalletAdapter } from "./adapters"
+import { WalletAdapter } from '@sb/dexUtils/types'
 import { sendTransaction } from "./send"
 import { createAssociatedTokenAccountIx } from "./wallet"
 

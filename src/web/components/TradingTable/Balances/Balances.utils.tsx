@@ -22,7 +22,6 @@ export const combineBalancesTable = (
 
   const processedFundsData = filtredFundsData.map((el: FundsType) => {
     const {
-      marketName,
       coin,
       wallet,
       orders,

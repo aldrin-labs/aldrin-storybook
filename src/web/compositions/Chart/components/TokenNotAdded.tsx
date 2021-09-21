@@ -249,7 +249,22 @@ const TokenNotAddedDialog = ({ open, pair, onClose, theme }) => {
               <VioletButton
                 theme={theme}
                 onClick={async () => {
-                  await createAssociatedTokenAccount({ wallet, connection, splTokenMintAddress: new PublicKey(mint) })
+                  try {
+                    await createAssociatedTokenAccount({ wallet, connection, splTokenMintAddress: new PublicKey(mint) })
+                  } catch (e) {
+                    notify({
+                      message: 'Token was not added, please try again',
+                      type: 'error',
+                    })
+
+                    return 
+                  }
+
+                  notify({
+                    message: 'Token successfully added!',
+                    type: 'success',
+                  })
+
                   await setIsTokenSuccessfullyAdded(true)
                   await setTokenName(getTokenNameByMintAddress(mint.toString()))
                 }}

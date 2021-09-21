@@ -73,7 +73,7 @@ export const getTimestampsForDays = (
 export const generateIDFromValues = (arr: any[]) =>
   arr.reduce((acc, cur) => acc + cur.buy + cur.sell, '')
 
-export const endOfDayTimestamp = moment()
+export const endOfDayTimestamp = () => moment()
   .endOf('day')
   .unix()
 
@@ -102,8 +102,8 @@ export const createButterflyChart = (
   const isNotUSDTQuote = getIsNotUSDTQuote(selectedPair)
 
   const dataMap = getTimestampsForDays(
-    endOfDayTimestamp - dayDuration * 14,
-    endOfDayTimestamp
+    endOfDayTimestamp() - dayDuration * 14,
+    endOfDayTimestamp()
   )
 
   data.forEach((dayData) => {
@@ -360,8 +360,8 @@ export const createAreaChart = (data: any, selectedPair = '', theme) => {
   const isNotUSDTQuote = getIsNotUSDTQuote(selectedPair)
 
   const dataMap = getTimestampsForDays(
-    endOfDayTimestamp - dayDuration * 30,
-    endOfDayTimestamp
+    endOfDayTimestamp() - dayDuration * 30,
+    endOfDayTimestamp()
   )
 
   data.forEach((dayData) => {

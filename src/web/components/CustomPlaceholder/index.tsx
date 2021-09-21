@@ -31,8 +31,8 @@ const Typography = styled.td`
   color: ${(props) =>
     (props.theme &&
       props.theme.palette &&
-      props.theme.palette.grey &&
-      props.theme.palette.grey.light) ||
-    '#7284A0'};
+      props.theme.palette.white &&
+      props.theme.palette.white.primary) ||
+    '#F8FAFF'};
   font-size: 3rem;
 `
