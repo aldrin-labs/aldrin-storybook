@@ -48,6 +48,19 @@ export const ALL_TOKENS_MINTS_MAP = ALL_TOKENS_MINTS.reduce((acc, el) => {
   return acc
 }, {})
 
+export const REFFERER_ACCOUNT_ADDRESSES: {[key: string]: string | undefined}  = {
+  "USDT": process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS,
+  "USDC": process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS,
+  "SOL": process.env.REACT_APP_SOL_REFERRAL_FEES_ADDRESS,
+  "WUSDT": process.env.REACT_APP_WUSDT_REFERRAL_FEES_ADDRESS,
+  "ODOP": process.env.REACT_APP_ODOP_REFERRAL_FEES_ADDRESS,
+  "TRYB": process.env.REACT_APP_TRYB_REFERRAL_FEES_ADDRESS,
+  "SRM": process.env.REACT_APP_SRM_REFERRAL_FEES_ADDRESS,
+  "ETH": process.env.REACT_APP_ETH_REFERRAL_FEES_ADDRESS,
+  "RAY": process.env.REACT_APP_RAY_REFERRAL_FEES_ADDRESS,
+}
+
+
 // const ALL_TOKENS_MINTS_MAP = new Map();
 
 // ALL_TOKENS_MINTS.forEach(tokenMint => {
