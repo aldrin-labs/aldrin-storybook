@@ -185,7 +185,7 @@ export const RebalancePopup = ({
       arr.findIndex(
         (transaction) =>
           transaction.symbol === el.symbol &&
-          transaction.openOrders.length === 0
+          transaction.openOrders?.length === 0
       ) === i
 
     const createOpenOrdersAccountFee = isNeedToCreateOpenOrdersAccount
