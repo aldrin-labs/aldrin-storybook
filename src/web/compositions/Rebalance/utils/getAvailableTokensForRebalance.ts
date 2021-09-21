@@ -18,7 +18,6 @@ export const getAvailableTokensForRebalance = (
   }, [])))
 
   const tokensWithPoolsAndLiquidity = tokens.map(el => {
-    console.log('el', el)
     const isTokenHasPrice = !!el.price
     const isTokenHasPool = availableTokens.includes(el.symbol)
 
