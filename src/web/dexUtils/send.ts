@@ -34,6 +34,7 @@ import {
   getProviderNameFromUrl,
 } from './connection'
 import { isTokenAccountsForSettleValid } from './isTokenAccountsForSettleValid'
+import { getReferrerQuoteWallet } from './getReferrerQuoteWallet'
 
 const getNotificationText = ({
   baseSymbol = 'CCAI',
@@ -176,9 +177,6 @@ export async function getSettleFundsTransaction({
     return
   }
 
-  const usdcRef = process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS
-  const usdtRef = process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS
-
   let createAccountTransaction: Transaction | undefined
   let baseCurrencyAccountPubkey = baseTokenAccount?.pubkey
   let quoteCurrencyAccountPubkey = quoteTokenAccount?.pubkey
@@ -202,20 +200,8 @@ export async function getSettleFundsTransaction({
     createAccountTransaction = result?.transaction
   }
 
-  let referrerQuoteWallet: PublicKey | null = null
-  if (market.supportsReferralFees) {
-    const usdt = TOKEN_MINTS.find(({ name }) => name === 'USDT')
-    const usdc = TOKEN_MINTS.find(({ name }) => name === 'USDC')
-    if (usdtRef && usdt && market.quoteMintAddress.equals(usdt.address)) {
-      referrerQuoteWallet = new PublicKey(usdtRef)
-    } else if (
-      usdcRef &&
-      usdc &&
-      market.quoteMintAddress.equals(usdc.address)
-    ) {
-      referrerQuoteWallet = new PublicKey(usdcRef)
-    }
-  }
+  const referrerQuoteWallet: PublicKey | null = getReferrerQuoteWallet({ quoteMintAddress: market.quoteMintAddress, supportsReferralFees: market.supportsReferralFees })
+
   const { transaction: settleFundsTransaction, signers: settleFundsSigners } =
     await market.makeSettleFundsTransaction(
       connection,
@@ -413,6 +399,8 @@ export async function placeOrder({
   baseCurrencyAccount,
   quoteCurrencyAccount,
   openOrdersAccount,
+}: {
+  market: Market
 }) {
   console.log('place ORDER', market?.minOrderSize, size)
   const isValidationSuccessfull = validateVariablesForPlacingOrder({
@@ -471,8 +459,6 @@ export async function placeOrder({
 
   const payer =
     side === 'sell' ? baseCurrencyAccount.pubkey : quoteCurrencyAccount.pubkey
-  const usdcRef = process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS
-  const usdtRef = process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS
 
   if (!payer) {
     notify({
@@ -498,20 +484,7 @@ export async function placeOrder({
   console.log(params)
 
   transaction.add(market.makeMatchOrdersTransaction(5))
-  let referrerQuoteWallet: PublicKey | null = null
-  if (market.supportsReferralFees) {
-    const usdt = TOKEN_MINTS.find(({ name }) => name === 'USDT')
-    const usdc = TOKEN_MINTS.find(({ name }) => name === 'USDC')
-    if (usdtRef && usdt && market.quoteMintAddress.equals(usdt.address)) {
-      referrerQuoteWallet = new PublicKey(usdtRef)
-    } else if (
-      usdcRef &&
-      usdc &&
-      market.quoteMintAddress.equals(usdc.address)
-    ) {
-      referrerQuoteWallet = new PublicKey(usdcRef)
-    }
-  }
+  const referrerQuoteWallet: PublicKey | null = getReferrerQuoteWallet({ quoteMintAddress: market.quoteMintAddress, supportsReferralFees: market.supportsReferralFees })
 
   let {
     transaction: placeOrderTx,
