@@ -18,6 +18,7 @@ import defaultRowRenderer, { getRowHeight } from '../../utils'
 import { BidsWrapper } from '../../OrderBookTableContainer.styles'
 import { StyledAutoSizer } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapperStyles'
 import useMobileSize from '@webhooks/useMobileSize'
+import { useOpenOrders } from '@sb/dexUtils/markets'
 
 const SpreadTable = ({
   theme,
@@ -32,6 +33,7 @@ const SpreadTable = ({
   currencyPair,
   terminalViewMode,
 }) => {
+  const openOrders = useOpenOrders()
   const isMobile = useMobileSize()
   const tableData = getDataFromTree(data.bids, 'bids').reverse()
   const amountForBackground =
@@ -91,7 +93,7 @@ const SpreadTable = ({
                 marketType,
                 arrayOfMarketIds,
                 amountForBackground,
-                openOrderHistory,
+                openOrderHistory: openOrders,
               })
             }
           >
