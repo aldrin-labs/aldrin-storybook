@@ -10,6 +10,7 @@ import React, { useContext, useEffect, useMemo, useRef } from 'react'
 import { refreshCache, setCache, useAsyncData } from './fetch-loop'
 import tuple from 'immutable-tuple'
 import MultiEndpointsConnection from './MultiEndpointsConnection'
+import { useHistory } from 'react-router-dom'
 
 export const MAINNET_BETA_ENDPOINT = clusterApiUrl('mainnet-beta')
 export const ENDPOINTS = [
@@ -22,13 +23,19 @@ export const ENDPOINTS = [
   { name: 'localnet', endpoint: 'http://127.0.0.1:8899' },
 ]
 
-const accountListenerCount = new Map()
 const ConnectionContext = React.createContext(null)
+
 export function ConnectionProvider({ children }) {
   const [endpoint, setEndpoint] = useLocalStorageState(
     'connectionEndpts',
     ENDPOINTS[0].endpoint
   )
+
+  const history = useHistory()
+  const { pathname } = history.location
+
+  console.log('pathname', pathname, pathname === '/dashboard')
+  // projectserum connection for dashboard
 
   const connection = useMemo(
     () =>
@@ -36,13 +43,9 @@ export function ConnectionProvider({ children }) {
         ? // multi connection only for mainnet
           new MultiEndpointsConnection(
             [
-              // { url: 'https://mango.rpcpool.com/', RPS: 10 },
               // { url: 'https://solana-api.projectserum.com', RPS: 2 },
               // { url: 'https://api.mainnet-beta.solana.com', RPS: 4 },
               { url: 'https://api-cryptocurrencies-ai.rpcpool.com', RPS: 20 },
-              // { url: 'https://raydium.rpcpool.com/', RPS: 10 },
-              // { url: 'https://orca.rpcpool.com/', RPS: 10 },
-              // { url: 'https://api.rpcpool.com', RPS: 10 },
             ],
             'recent'
           )
@@ -60,6 +63,33 @@ export function ConnectionProvider({ children }) {
           ),
     [endpoint]
   )
+
+  const serumConnection = useMemo(
+    () =>
+      endpoint === MAINNET_BETA_ENDPOINT
+        ? new MultiEndpointsConnection(
+            [
+              { url: 'https://solana-api.projectserum.com', RPS: 2 },
+              // { url: 'https://api.mainnet-beta.solana.com', RPS: 4 },
+              // { url: 'https://api-cryptocurrencies-ai.rpcpool.com', RPS: 20 },
+            ],
+            'recent'
+          )
+        : new MultiEndpointsConnection(
+            [
+              {
+                url:
+                  ENDPOINTS.find(
+                    (endpointInfo) => endpointInfo.endpoint === endpoint
+                  )?.endpoint || MAINNET_BETA_ENDPOINT,
+                RPS: 20,
+              },
+            ],
+            'recent'
+          ),
+    [endpoint]
+  )
+
   // The websocket library solana/web3.js uses closes its websocket connection when the subscription list
   // is empty after opening its first time, preventing subsequent subscriptions from receiving responses.
   // This is a hack to prevent the list from every getting empty
@@ -84,7 +114,9 @@ export function ConnectionProvider({ children }) {
   }, [endpoint, connection])
 
   return (
-    <ConnectionContext.Provider value={{ endpoint, setEndpoint, connection }}>
+    <ConnectionContext.Provider
+      value={{ endpoint, setEndpoint, connection, serumConnection }}
+    >
       {children}
     </ConnectionContext.Provider>
   )
@@ -92,6 +124,11 @@ export function ConnectionProvider({ children }) {
 export function useConnection(): Connection {
   return useContext(ConnectionContext).connection
 }
+
+export function useSerumConnection(): Connection {
+  return useContext(ConnectionContext).serumConnection
+}
+
 export function useConnectionConfig() {
   const context = useContext(ConnectionContext)
   return { endpoint: context.endpoint, setEndpoint: context.setEndpoint }
@@ -179,5 +216,6 @@ export const getProviderNameFromUrl = ({ rawConnection }) => {
   const rpcProvider = rawConnection._rpcEndpoint
     .replace('https://', '')
     .replaceAll('.', '-')
+
   return rpcProvider
 }

@@ -141,6 +141,7 @@ export interface Props {
   needRefetch?: boolean
   toggleAutoRefetch: () => void
   stylesForTable?: CSSProperties
+  tableBodyStyles?: CSSProperties
 }
 
 export type Pagination = {

@@ -1,6 +1,6 @@
 import { OpenOrders } from '@project-serum/serum'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
-import { WalletAdapter } from '@sb/dexUtils/adapters'
+import { WalletAdapter } from '@sb/dexUtils/types'
 import { DEX_PID } from '@core/config/dex'
 import {
   createSOLAccountAndClose,
@@ -40,13 +40,17 @@ export const placeAllOrders = async ({
 
   const sendSavedTransaction = async () => {
     if (commonTransaction.instructions.length > 0) {
-      await sendTransaction({
+      const result = await sendTransaction({
         wallet,
         connection,
         transaction: commonTransaction,
         signers: commonSigners,
         focusPopup: true,
       })
+
+      if (!result) {
+        throw Error('Error confirming transaction in rebalance')
+      }
 
       await setNumberOfCompletedTransactions(transactionIndex)
 

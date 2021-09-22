@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { TableWithSort } from '@sb/components'
-import { useSnackbar } from 'notistack'
 
 import {
   getEmptyTextPlaceholder,
@@ -31,7 +30,8 @@ export const feeTiers = [
 ]
 
 export const combineFeeTiers = (feeTiers, feeAccounts) => {
-  const userTier = feeAccounts && feeAccounts.length > 0 ? feeAccounts[0].feeTier : 0
+  const userTier =
+    feeAccounts && feeAccounts.length > 0 ? feeAccounts[0].feeTier : 0
 
   const processedFundsData = feeTiers.map((el) => {
     const { feeTier, taker, maker, token, balance } = el
@@ -103,30 +103,9 @@ const FeeTiers = (props) => {
 const MemoizedWrapper = React.memo(FeeTiers, (prevProps, nextProps) => {
   // TODO: Refactor isShowEqual --- not so clean
   const isShowEqual = !nextProps.show && !prevProps.show
-  const showAllAccountsEqual =
-    prevProps.showOpenOrdersFromAllAccounts ===
-    nextProps.showOpenOrdersFromAllAccounts
-  const showAllPairsEqual =
-    prevProps.showAllOpenOrderPairs === nextProps.showAllOpenOrderPairs
-  // TODO: here must be smart condition if specificPair is not changed
-  const pairIsEqual = prevProps.currencyPair === nextProps.currencyPair
-  // TODO: here must be smart condition if showAllAccountsEqual is true & is not changed
-  const selectedKeyIsEqual =
-    prevProps.selectedKey.keyId === nextProps.selectedKey.keyId
   const isMarketIsEqual = prevProps.marketType === nextProps.marketType
-  const pageIsEqual = prevProps.page === nextProps.page
-  const perPageIsEqual = prevProps.perPage === nextProps.perPage
 
-  if (
-    isShowEqual &&
-    showAllAccountsEqual &&
-    showAllPairsEqual &&
-    pairIsEqual &&
-    selectedKeyIsEqual &&
-    isMarketIsEqual &&
-    pageIsEqual &&
-    perPageIsEqual
-  ) {
+  if (isShowEqual && isMarketIsEqual) {
     return true
   }
 

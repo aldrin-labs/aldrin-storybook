@@ -19,6 +19,7 @@ import { CCAIProviderURL, useLocalStorageState, useRefEqual } from './utils'
 import {
   Connection,
   PublicKey,
+  SystemProgram,
   SYSVAR_RENT_PUBKEY,
   Transaction,
   TransactionInstruction,
@@ -38,7 +39,7 @@ import Sollet from '@icons/sollet.svg'
 import Mathwallet from '@icons/mathwallet.svg'
 import Solong from '@icons/solong.svg'
 import WalletAldrin from '@icons/RINLogo.svg'
-import { WalletAdapter } from './adapters'
+import { WalletAdapter } from '@sb/dexUtils/types'
 import { _VERY_SLOW_REFRESH_INTERVAL } from './markets'
 import { MASTER_BUILD } from '@core/utils/config'
 import { Coin98WalletAdapter } from './adapters/Coin98WalletAdapter'
@@ -208,7 +209,7 @@ export function WalletProvider({ children }) {
   useEffect(() => {
     if (wallet) {
       wallet.on('connect', async () => {
-        if (wallet?.publicKey) {
+        if (wallet?.publicKey && !wallet?.publicKey?.equals(SystemProgram.programId)) {
           console.log('connected')
           setConnected(true)
           const walletPublicKey = wallet?.publicKey.toBase58()

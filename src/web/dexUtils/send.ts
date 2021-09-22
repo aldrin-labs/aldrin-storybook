@@ -21,7 +21,7 @@ import {
   parseInstructionErrorResponse,
 } from '@project-serum/serum'
 
-import { WalletAdapter } from './types'
+import { WalletAdapter } from '@sb/dexUtils/types'
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   Token,
@@ -33,6 +33,7 @@ import {
   getConnectionFromMultiConnections,
   getProviderNameFromUrl,
 } from './connection'
+import { isTokenAccountsForSettleValid } from './isTokenAccountsForSettleValid'
 
 const getNotificationText = ({
   baseSymbol = 'CCAI',
@@ -81,6 +82,8 @@ const getNotificationText = ({
           : quoteSettleText
       } has been successfully settled in your wallet.`,
     ],
+    cancelAll: ['Orders canceled.', ``],
+    settleAllFunds: ['Funds settled.', ''],
   }
 
   return texts[operationType]
@@ -121,7 +124,7 @@ export async function createTokenAccountTransaction({
   }
 }
 
-export async function settleFunds({
+export async function getSettleFundsTransaction({
   market,
   openOrders,
   connection,
@@ -130,9 +133,6 @@ export async function settleFunds({
   quoteCurrency,
   baseTokenAccount,
   quoteTokenAccount,
-  baseUnsettled,
-  quoteUnsettled,
-  focusPopup = false,
 }: {
   market: Market
   wallet: WalletAdapter
@@ -142,10 +142,7 @@ export async function settleFunds({
   quoteCurrency: string
   baseTokenAccount: any
   quoteTokenAccount: any
-  baseUnsettled: number
-  quoteUnsettled: number
-  focusPopup?: boolean
-}) {
+}): Promise<[Transaction, Account[]] | null | undefined> {
   if (!wallet) {
     notify({ message: 'Please, connect wallet to settle funds' })
     return
@@ -165,6 +162,17 @@ export async function settleFunds({
 
   if (!connection || !openOrders) {
     notify({ message: 'Sorry, something went wrong while settling funds' })
+    return
+  }
+
+  try {
+    const isTokenAccountsValid = await isTokenAccountsForSettleValid({ wallet, connection, market, baseTokenAccount, quoteTokenAccount, })
+    if (!isTokenAccountsValid) {
+      throw new Error('Error checking tokenAccounts validity')
+    }
+  } catch(e) {
+    console.log(`[settleFunds] Check validity of tokenAccounts is failed, err: `, e)
+    notify({ message: 'Sorry, validity of tokenAccounts is failed' })
     return
   }
 
@@ -193,30 +201,29 @@ export async function settleFunds({
     quoteCurrencyAccountPubkey = result?.newAccountPubkey
     createAccountTransaction = result?.transaction
   }
+
   let referrerQuoteWallet: PublicKey | null = null
   if (market.supportsReferralFees) {
     const usdt = TOKEN_MINTS.find(({ name }) => name === 'USDT')
     const usdc = TOKEN_MINTS.find(({ name }) => name === 'USDC')
     if (usdtRef && usdt && market.quoteMintAddress.equals(usdt.address)) {
-      referrerQuoteWallet = usdtRef
+      referrerQuoteWallet = new PublicKey(usdtRef)
     } else if (
       usdcRef &&
       usdc &&
       market.quoteMintAddress.equals(usdc.address)
     ) {
-      referrerQuoteWallet = usdcRef
+      referrerQuoteWallet = new PublicKey(usdcRef)
     }
   }
-  const {
-    transaction: settleFundsTransaction,
-    signers: settleFundsSigners,
-  } = await market.makeSettleFundsTransaction(
-    connection,
-    openOrders,
-    baseCurrencyAccountPubkey,
-    quoteCurrencyAccountPubkey,
-    referrerQuoteWallet
-  )
+  const { transaction: settleFundsTransaction, signers: settleFundsSigners } =
+    await market.makeSettleFundsTransaction(
+      connection,
+      openOrders,
+      baseCurrencyAccountPubkey,
+      quoteCurrencyAccountPubkey,
+      referrerQuoteWallet
+    )
 
   let transaction = mergeTransactions([
     createAccountTransaction,
@@ -235,6 +242,49 @@ export async function settleFunds({
 
     return
   }
+
+  return [transaction, settleFundsSigners]
+}
+
+export async function settleFunds({
+  market,
+  openOrders,
+  connection,
+  wallet,
+  baseCurrency,
+  quoteCurrency,
+  baseTokenAccount,
+  quoteTokenAccount,
+  baseUnsettled,
+  quoteUnsettled,
+  focusPopup = false,
+}: {
+  market: Market
+  wallet: WalletAdapter
+  connection: Connection
+  openOrders: OpenOrders
+  baseCurrency: string
+  quoteCurrency: string
+  baseTokenAccount: any
+  quoteTokenAccount: any
+  baseUnsettled: number
+  quoteUnsettled: number
+  focusPopup?: boolean
+}) {
+  const result = await getSettleFundsTransaction({
+    market,
+    openOrders,
+    connection,
+    wallet,
+    baseCurrency,
+    quoteCurrency,
+    baseTokenAccount,
+    quoteTokenAccount,
+  })
+
+  if (!result) return
+
+  const [transaction, settleFundsSigners] = result
 
   return await sendTransaction({
     transaction,
@@ -385,35 +435,44 @@ export async function placeOrder({
 
   console.log('openOrdersAccount in placeOrder', openOrdersAccount)
 
+  try {
+    const isTokenAccountsValid = await isTokenAccountsForSettleValid({ wallet, connection, market, baseTokenAccount: baseCurrencyAccount, quoteTokenAccount: quoteCurrencyAccount, })
+    if (!isTokenAccountsValid) {
+      throw new Error('Error checking tokenAccounts validity')
+    }
+  } catch(e) {
+    console.log(`[settleFunds] Check validity of tokenAccounts is failed, err: `, e)
+    notify({ message: 'Sorry, validity of tokenAccounts is failed' })
+    return
+  }
+
   const transaction = new Transaction()
 
   if (!baseCurrencyAccount) {
-    const {
-      transaction: createAccountTransaction,
-      newAccountPubkey,
-    } = await createTokenAccountTransaction({
-      connection,
-      wallet,
-      mintPublicKey: market.baseMintAddress,
-    })
+    const { transaction: createAccountTransaction, newAccountPubkey } =
+      await createTokenAccountTransaction({
+        connection,
+        wallet,
+        mintPublicKey: market.baseMintAddress,
+      })
     transaction.add(createAccountTransaction)
     baseCurrencyAccount = { pubkey: newAccountPubkey }
   }
   if (!quoteCurrencyAccount) {
-    const {
-      transaction: createAccountTransaction,
-      newAccountPubkey,
-    } = await createTokenAccountTransaction({
-      connection,
-      wallet,
-      mintPublicKey: market.quoteMintAddress,
-    })
+    const { transaction: createAccountTransaction, newAccountPubkey } =
+      await createTokenAccountTransaction({
+        connection,
+        wallet,
+        mintPublicKey: market.quoteMintAddress,
+      })
     transaction.add(createAccountTransaction)
     quoteCurrencyAccount = { pubkey: newAccountPubkey }
   }
 
   const payer =
     side === 'sell' ? baseCurrencyAccount.pubkey : quoteCurrencyAccount.pubkey
+  const usdcRef = process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS
+  const usdtRef = process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS
 
   if (!payer) {
     notify({
@@ -440,6 +499,20 @@ export async function placeOrder({
 
   transaction.add(market.makeMatchOrdersTransaction(5))
   let referrerQuoteWallet: PublicKey | null = null
+  if (market.supportsReferralFees) {
+    const usdt = TOKEN_MINTS.find(({ name }) => name === 'USDT')
+    const usdc = TOKEN_MINTS.find(({ name }) => name === 'USDC')
+    if (usdtRef && usdt && market.quoteMintAddress.equals(usdt.address)) {
+      referrerQuoteWallet = new PublicKey(usdtRef)
+    } else if (
+      usdcRef &&
+      usdc &&
+      market.quoteMintAddress.equals(usdc.address)
+    ) {
+      referrerQuoteWallet = new PublicKey(usdcRef)
+    }
+  }
+
   let {
     transaction: placeOrderTx,
     signers,
@@ -458,16 +531,14 @@ export async function placeOrder({
   let quoteCurrencyAccountPubkey = quoteCurrencyAccount?.pubkey
 
   if (isMarketOrder && openOrdersAccount) {
-    const {
-      transaction: settleFundsTransaction,
-      signers: settleFundsSigners,
-    } = await market.makeSettleFundsTransaction(
-      connection,
-      openOrdersAccount,
-      baseCurrencyAccountPubkey,
-      quoteCurrencyAccountPubkey,
-      referrerQuoteWallet
-    )
+    const { transaction: settleFundsTransaction, signers: settleFundsSigners } =
+      await market.makeSettleFundsTransaction(
+        connection,
+        openOrdersAccount,
+        baseCurrencyAccountPubkey,
+        quoteCurrencyAccountPubkey,
+        referrerQuoteWallet
+      )
 
     transaction.add(settleFundsTransaction)
     signers.push(...settleFundsSigners)
@@ -801,7 +872,7 @@ export async function sendTransaction({
   operationType?: string
   params?: any
   focusPopup?: boolean
-}) {
+}): Promise<string | null> {
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash('max')
   ).blockhash

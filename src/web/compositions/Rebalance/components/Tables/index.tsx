@@ -58,7 +58,7 @@ const HeaderRow = ({
     align="center"
     style={{ borderBottom: '0.1rem solid #383B45' }}
   >
-    <Row width={'30%'} align="center" justify="end">
+    <Row width={'30%'} align="center" justify="flex-start">
       <Text theme={theme}>Set up your allocation </Text>
 
       {loadingRebalanceData && (

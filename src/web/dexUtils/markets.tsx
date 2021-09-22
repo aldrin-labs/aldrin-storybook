@@ -8,7 +8,7 @@ import {
   TOKEN_MINTS,
   OpenOrders,
 } from '@project-serum/serum'
-import { Account, PublicKey } from '@solana/web3.js'
+import { Account, AccountInfo, PublicKey, SystemProgram } from '@solana/web3.js'
 import React, { useContext, useEffect, useState } from 'react'
 import { getUniqueListBy, useLocalStorageState } from './utils'
 import { getCache, refreshCache, setCache, useAsyncData } from './fetch-loop'
@@ -87,7 +87,8 @@ export interface RawCustomMarketData extends RawMarketData {
 export type MarketsMap = Map<string, RawMarketData>
 
 export function useAllMarketsList(): MarketsMap {
-  const ALL_MARKETS_MAP = new Map()
+  const allMarketsMapByName = new Map()
+  const allMarketsMapById = new Map()
 
   const { customMarkets } = useCustomMarkets()
 
@@ -98,19 +99,30 @@ export function useAllMarketsList(): MarketsMap {
 
   officialMarkets?.forEach((market: RawMarketData) => {
     const marketName = market.name.replaceAll('/', '_')
-    ALL_MARKETS_MAP.set(marketName, { ...market, name: marketName })
+    allMarketsMapByName.set(marketName, { ...market, name: marketName })
+    allMarketsMapById.set(market.address.toString(), {
+      ...market,
+      name: marketName,
+    })
   })
 
   const usersMarkets = customMarkets.filter((market: RawCustomMarketData) => {
     const marketName = market.name.replaceAll('/', '_')
+    const isCustomMarketAlreadyExistInOfficial = allMarketsMapById.has(
+      market.address
+    )
 
-    return market.isCustomUserMarket && !ALL_MARKETS_MAP.has(marketName)
+    return (
+      market.isCustomUserMarket &&
+      !allMarketsMapByName.has(marketName) &&
+      !isCustomMarketAlreadyExistInOfficial
+    )
   })
 
   usersMarkets?.forEach((market: RawMarketData) => {
     const marketName = market.name.replaceAll('/', '_')
 
-    ALL_MARKETS_MAP.set(marketName, {
+    allMarketsMapByName.set(marketName, {
       ...market,
       name: marketName,
       address: new PublicKey(market.address),
@@ -118,7 +130,21 @@ export function useAllMarketsList(): MarketsMap {
     })
   })
 
-  return ALL_MARKETS_MAP
+  return allMarketsMapByName
+}
+
+export function useAllMarketsMapById(): MarketsMap {
+  const allMarketsMap = useAllMarketsList()
+
+  const allMarketsMapById = [...allMarketsMap.values()].reduce(
+    (acc, current) => {
+      acc.set(current.address.toString(), current)
+      return acc
+    },
+    new Map()
+  )
+
+  return allMarketsMapById
 }
 
 export function useMarketsList() {
@@ -192,10 +218,9 @@ export function useAllMarkets() {
     )
   }
 
-  const memoizedGetAllMarkets = useMemo(
-    () => getAllMarkets,
-    [JSON.stringify(customMarkets)]
-  )
+  const memoizedGetAllMarkets = useMemo(() => getAllMarkets, [
+    JSON.stringify(customMarkets),
+  ])
 
   // console.log('memoizedGetAllMarkets', memoizedGetAllMarkets)
 
@@ -220,9 +245,9 @@ export function useUnmigratedOpenOrdersAccounts() {
     let deprecatedOpenOrdersAccounts = []
     const deprecatedProgramIds = Array.from(
       new Set(
-        USE_MARKETS.filter(({ deprecated }) => deprecated).map(
-          ({ programId }) => programId.toBase58()
-        )
+        USE_MARKETS.filter(
+          ({ deprecated }) => deprecated
+        ).map(({ programId }) => programId.toBase58())
       )
     ).map((publicKeyStr) => new PublicKey(publicKeyStr))
     let programId
@@ -539,23 +564,24 @@ const useOpenOrdersPubkeys = (): string[] => {
       (a: { freeSlotBits: typeof BN }, b: { freeSlotBits: typeof BN }) =>
         a?.freeSlotBits?.cmp(b?.freeSlotBits)
     )
-    const sortedAccountsByUnsettledBalances =
-      sortedAccountsByCountOfExistingOpenOrders.sort(
-        (
-          a: { baseTokenFree: typeof BN; quoteTokenFree: typeof BN },
-          b: { baseTokenFree: typeof BN; quoteTokenFree: typeof BN }
-        ) =>
-          a?.baseTokenFree.cmp(b?.baseTokenFree) === 1 ||
-          a?.quoteTokenFree.cmp(b?.quoteTokenFree) === 1
-            ? -1
-            : a?.baseTokenFree.cmp(b?.baseTokenFree) === -1 ||
-              a?.quoteTokenFree.cmp(b?.quoteTokenFree) === -1
-            ? 1
-            : 0
-      )
+    const sortedAccountsByUnsettledBalances = sortedAccountsByCountOfExistingOpenOrders.sort(
+      (
+        a: { baseTokenFree: typeof BN; quoteTokenFree: typeof BN },
+        b: { baseTokenFree: typeof BN; quoteTokenFree: typeof BN }
+      ) =>
+        a?.baseTokenFree.cmp(b?.baseTokenFree) === 1 ||
+        a?.quoteTokenFree.cmp(b?.quoteTokenFree) === 1
+          ? -1
+          : a?.baseTokenFree.cmp(b?.baseTokenFree) === -1 ||
+            a?.quoteTokenFree.cmp(b?.quoteTokenFree) === -1
+          ? 1
+          : 0
+    )
 
-
-      console.log('[getOpenOrdersAccounts] current openOrderAccount: ', sortedAccountsByUnsettledBalances[0]?.address?.toBase58())
+    console.log(
+      '[getOpenOrdersAccounts] current openOrderAccount: ',
+      sortedAccountsByUnsettledBalances[0]?.address?.toBase58()
+    )
 
     // keep string addresses in localStorage
     // localStorage.setItem(
@@ -652,6 +678,31 @@ export function useOpenOrdersAccounts(fast = false) {
   )
 }
 
+export function useAllOpenOrdersAccounts() {
+  const { connected, wallet } = useWallet()
+  const connection = useConnection()
+
+  async function getOpenOrdersAccounts() {
+    if (!connected) {
+      return null
+    }
+
+    const openOrdersAccounts = await OpenOrders.findForOwner(
+      connection,
+      wallet.publicKey,
+      DEX_PID
+    )
+
+    return openOrdersAccounts
+  }
+
+  return useAsyncData(
+    getOpenOrdersAccounts,
+    tuple('useAllOpenOrdersAccounts', wallet, connected),
+    { refreshInterval: _SLOW_REFRESH_INTERVAL }
+  )
+}
+
 export function useSelectedOpenOrdersAccount(fast = false) {
   const [accounts] = useOpenOrdersAccounts(fast)
 
@@ -662,7 +713,15 @@ export function useSelectedOpenOrdersAccount(fast = false) {
   return accounts[0]
 }
 
-export function useTokenAccounts() {
+export type TokenAccount = {
+  pubkey: PublicKey
+  account: AccountInfo<Buffer>
+  effectiveMint: PublicKey
+}
+
+export type TokenAccounts = TokenAccount[] | undefined | null
+
+export function useTokenAccounts(): [TokenAccounts, boolean] {
   const { connected, wallet } = useWallet()
   const connection = useConnection()
 
@@ -678,6 +737,20 @@ export function useTokenAccounts() {
     tuple('getTokenAccounts', wallet, connected),
     { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
   )
+}
+
+export function useTokenAccountsMap(): [Map<string, TokenAccount>, boolean] {
+  const [accounts, loaded] = useTokenAccounts()
+
+  if (!loaded || !accounts) return [new Map(), loaded]
+
+  return [
+    accounts.reduce(
+      (acc, current) => acc.set(current.effectiveMint.toString(), current),
+      new Map()
+    ),
+    loaded,
+  ]
 }
 
 export function getSelectedTokenAccountForMint(
@@ -760,6 +833,11 @@ const useAssociatedTokenAddressByMint = (mint: PublicKey) => {
     if (!connected) {
       return null
     }
+
+    if (wallet.publicKey.equals(SystemProgram.programId)) {
+      return null
+    }
+
     return await Token.getAssociatedTokenAddress(
       ASSOCIATED_TOKEN_PROGRAM_ID,
       TOKEN_PROGRAM_ID,
@@ -1154,8 +1232,10 @@ export function useSelectedTokenAccounts(): [
   SelectedTokenAccounts,
   (newSelectedTokenAccounts: SelectedTokenAccounts) => void
 ] {
-  const [selectedTokenAccounts, setSelectedTokenAccounts] =
-    useLocalStorageState<SelectedTokenAccounts>('selectedTokenAccounts', {})
+  const [
+    selectedTokenAccounts,
+    setSelectedTokenAccounts,
+  ] = useLocalStorageState<SelectedTokenAccounts>('selectedTokenAccounts', {})
   return [selectedTokenAccounts, setSelectedTokenAccounts]
 }
 

@@ -18,20 +18,20 @@ export const getAvailableTokensForRebalance = (
   }, [])))
 
   const tokensWithPoolsAndLiquidity = tokens.map(el => {
-  const isTokenHasPrice = el.price !== null
-  const isTokenHasPool = availableTokens.includes(el.symbol)
+    const isTokenHasPrice = !!el.price
+    const isTokenHasPool = availableTokens.includes(el.symbol)
 
-  return {
-      ...el,
-      ...(isTokenHasPool ? { poolExists: true } : {
-        disabled: true,
-        disabledReason: "no market"
-      }),
-      ...(isTokenHasPrice ? {} : {
-        disabled: true,
-        disabledReason: "no price"
-      }),
-    }
+    return {
+        ...el,
+        ...(isTokenHasPool ? { poolExists: true } : {
+          disabled: true,
+          disabledReason: "no market"
+        }),
+        ...(isTokenHasPrice ? {} : {
+          disabled: true,
+          disabledReason: "no price"
+        }),
+      }
   })
 
   return tokensWithPoolsAndLiquidity

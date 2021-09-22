@@ -34,9 +34,8 @@ export const combineOpenOrdersTable = (
   openOrdersData: OrderType[],
   cancelOrderFunc: (el: OrderType) => Promise<any>,
   theme: Theme,
-  marketType: 0 | 1,
-  canceledOrders: string[],
-  handlePairChange: (pair: string) => void
+  handlePairChange: (pair: string) => void,
+  isCancellingAllOrders: boolean
 ) => {
   if (!openOrdersData && !Array.isArray(openOrdersData)) {
     return []
@@ -46,7 +45,7 @@ export const combineOpenOrdersTable = (
     .filter((el) =>
       filterOpenOrders({
         order: el,
-        canceledOrders,
+        canceledOrders: [],
       })
     )
     .map((el: OrderType, i: number) => {
@@ -80,7 +79,7 @@ export const combineOpenOrdersTable = (
         price === 0 && (!!type.match(/market/) || isMakerOnlyOrder)
 
       const { pricePrecision, quantityPrecision } = getPrecisionItem({
-        marketType,
+        marketType: 0,
         symbol: marketName,
       })
 
@@ -102,7 +101,59 @@ export const combineOpenOrdersTable = (
           contentToSort: orderSymbol,
           showOnMobile: false,
         },
-        // type: type,
+        columnForMobile: {
+          render: (
+            <RowContainer height="20rem" padding={'0 2rem'}>
+              <RowContainer style={{ width: '65%' }} direction={'column'}>
+                <RowContainer justify={'space-between'}>
+                  <StyledTitle color={'#fbf2f2'}>
+                    {pair[0]}/{pair[1]}
+                  </StyledTitle>
+                  <StyledTitle
+                    style={{
+                      textTransform: 'capitalize',
+                      color:
+                        side === 'buy'
+                          ? theme.palette.green.main
+                          : theme.palette.red.main,
+                    }}
+                  >
+                    {side}
+                  </StyledTitle>
+                </RowContainer>
+                <RowContainer justify={'space-between'}>
+                  <StyledTitle>Price(USDC)</StyledTitle>{' '}
+                  <StyledTitle color={'#fbf2f2'}>{`${stripDigitPlaces(
+                    price,
+                    pricePrecision
+                  )}`}</StyledTitle>
+                </RowContainer>
+                <RowContainer justify={'space-between'}>
+                  <StyledTitle>Amount (CCAI)</StyledTitle>
+                  <StyledTitle color={'#fbf2f2'}>
+                    {stripDigitPlaces(size, quantityPrecision)}
+                  </StyledTitle>
+                </RowContainer>
+                <RowContainer justify={'space-between'}>
+                  <StyledTitle>Total (USDC)</StyledTitle>
+                  <StyledTitle color={'#fbf2f2'}>
+                    {stripDigitPlaces(+size * price, quantityPrecision)}
+                  </StyledTitle>
+                </RowContainer>
+              </RowContainer>
+              <RowContainer style={{ width: '35%', padding: '0 0 0 4rem' }}>
+                <CloseButton
+                  i={i}
+                  showLoader={isCancellingAllOrders}
+                  onClick={() => {
+                    cancelOrderFunc(el)
+                  }}
+                />
+              </RowContainer>
+            </RowContainer>
+          ),
+          showOnMobile: true,
+        },
         side: {
           render: (
             <div>
@@ -173,6 +224,7 @@ export const combineOpenOrdersTable = (
           ) : (
             <CloseButton
               i={i}
+              showLoader={isCancellingAllOrders}
               onClick={() => {
                 cancelOrderFunc(el)
               }}
@@ -180,58 +232,6 @@ export const combineOpenOrdersTable = (
           ),
           style: { textAlign: 'right' },
           showOnMobile: false,
-        },
-        columnForMobile: {
-          render: (
-            <RowContainer height="20rem" padding={'0 2rem'}>
-              <RowContainer style={{ width: '65%' }} direction={'column'}>
-                <RowContainer justify={'space-between'}>
-                  <StyledTitle color={'#fbf2f2'}>
-                    {pair[0]}/{pair[1]}
-                  </StyledTitle>
-                  <StyledTitle
-                    style={{
-                      textTransform: 'capitalize',
-                      color:
-                        side === 'buy'
-                          ? theme.palette.green.main
-                          : theme.palette.red.main,
-                    }}
-                  >
-                    {side}
-                  </StyledTitle>
-                </RowContainer>
-                <RowContainer justify={'space-between'}>
-                  <StyledTitle>Price(USDC)</StyledTitle>{' '}
-                  <StyledTitle color={'#fbf2f2'}>{`${stripDigitPlaces(
-                    price,
-                    pricePrecision
-                  )}`}</StyledTitle>
-                </RowContainer>
-                <RowContainer justify={'space-between'}>
-                  <StyledTitle>Amount (CCAI)</StyledTitle>
-                  <StyledTitle color={'#fbf2f2'}>
-                    {stripDigitPlaces(size, quantityPrecision)}
-                  </StyledTitle>
-                </RowContainer>
-                <RowContainer justify={'space-between'}>
-                  <StyledTitle>Total (USDC)</StyledTitle>
-                  <StyledTitle color={'#fbf2f2'}>
-                    {stripDigitPlaces(+size * price, quantityPrecision)}
-                  </StyledTitle>
-                </RowContainer>
-              </RowContainer>
-              <RowContainer style={{ width: '35%', padding: '0 0 0 4rem' }}>
-                <CloseButton
-                  i={i}
-                  onClick={() => {
-                    cancelOrderFunc(el)
-                  }}
-                />
-              </RowContainer>
-            </RowContainer>
-          ),
-          showOnMobile: true,
         },
       }
     })

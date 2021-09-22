@@ -333,7 +333,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
     }
 
     if (this.state.priceFromOrderbook !== this.props.priceFromOrderbook) {
-      const { priceFromOrderbook, leverage } = this.props
+      const { priceFromOrderbook } = this.props
 
       updateWrapperState({
         mode: 'limit',
@@ -446,7 +446,8 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
     const currentMaxAmount =
       isBuyType || !isSPOTMarket ? maxAmount / priceForCalculate : maxAmount
 
-    const isAmountMoreThanMax = e.target.value > currentMaxAmount
+    // const isAmountMoreThanMax = e.target.value > currentMaxAmount
+    const isAmountMoreThanMax = false
     const isAmountLessThanMin =
       stripDigitPlaces(e.target.value, quantityPrecision) < minOrderSize &&
       stripDigitPlaces(e.target.value, quantityPrecision) !== '' &&
@@ -984,6 +985,8 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       TIFMode,
       trigger,
       leverage,
+      marketPrice,
+      setFieldValue,
       enqueueSnackbar,
       minSpotNotional,
       minFuturesStep,
@@ -998,7 +1001,6 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       sideType,
       lockedAmount,
       funds,
-      marketPrice,
       isQuoteCoinExistsInWallet,
       isBaseCoinExistsInWallet,
       openOrdersAccount,
@@ -1008,8 +1010,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
     const isBuyType = sideType === 'buy'
     const priceForCalculate =
       priceType !== 'market' &&
-      priceType !== 'maker-only' &&
-      values.limit !== null
+      priceType !== 'maker-only'
         ? values.price
         : marketPrice
 
@@ -1023,7 +1024,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
 
     //   return
     // }
-    let maxAmount = 0
+    const maxAmount = isBuyType ? funds[1].quantity : funds[0].quantity
 
     const needCreateOpenOrdersAccount = !openOrdersAccount
 
@@ -1039,17 +1040,6 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       )
 
       return
-    }
-
-    if (isSPOTMarket) {
-      maxAmount = isBuyType ? funds[1].quantity : funds[0].quantity
-      if (tradingBotEnabled && maxAmount > 50) {
-        maxAmount = 50
-      }
-    } else if (reduceOnly) {
-      maxAmount = lockedAmount * priceForCalculate
-    } else {
-      maxAmount = funds[1].quantity * leverage
     }
 
     let minSOlAmountForTransaction = 0
@@ -1101,6 +1091,18 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       notify({
         type: 'error',
         message: 'Your amount is 0',
+      })
+
+      return
+    }
+
+    const currentMaxAmount =
+      isBuyType || !isSPOTMarket ? maxAmount / priceForCalculate : maxAmount
+
+    if (values.amount > currentMaxAmount) {
+      notify({
+        type: 'error',
+        message: 'Order amount is more than your max amount.',
       })
 
       return
