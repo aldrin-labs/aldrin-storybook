@@ -1102,7 +1102,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
     if (values.amount > currentMaxAmount) {
       notify({
         type: 'error',
-        message: 'Order amount is more than your max amount.',
+        message: 'Order amount is higher than your available balance.',
       })
 
       return
