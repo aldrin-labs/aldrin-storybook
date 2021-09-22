@@ -147,8 +147,6 @@ export default function defaultRowRenderer({
         ? aggregation
         : getNumberOfDecimalsFromNumber(aggregation)
 
-    console.log(openOrders, rowData)
-
     needHighlightPrice =
       openOrders.findIndex((order) => {
         const orderPrice = order.price
