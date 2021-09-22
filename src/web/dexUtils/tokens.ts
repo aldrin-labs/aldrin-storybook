@@ -52,6 +52,24 @@ export const TOKEN_PROGRAM_ID = new PublicKey(
   'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
 );
 
+export async function getTokenAccountsByOwner(connection, publicKey) {
+  const result = await connection.getTokenAccountsByOwner(
+    publicKey,
+    { programId: TOKEN_PROGRAM_ID },
+  );
+
+  return result.value
+    .map(({ pubkey, account: { data, executable, owner, lamports } }) => ({
+      publicKey: pubkey,
+      accountInfo: {
+        data,
+        executable,
+        owner,
+        lamports,
+      },
+    }))
+}
+
 export async function getOwnedTokenAccounts(connection, publicKey) {
   let filters = getOwnedAccountsFilters(publicKey);
   let resp = await connection._rpcRequest('getProgramAccounts', [
@@ -100,7 +118,7 @@ export async function getOwnedTokenAccounts(connection, publicKey) {
 
 export async function getTokenAccountInfo(connection, ownerAddress) {
   let [splAccounts, account] = await Promise.all([
-    getOwnedTokenAccounts(connection, ownerAddress),
+    getTokenAccountsByOwner(connection, ownerAddress),
     connection.getAccountInfo(ownerAddress),
   ]);
   const parsedSplAccounts = splAccounts.map(({ publicKey, accountInfo }) => {
