@@ -50,6 +50,7 @@ import {
   TradeHistoryGrid,
 } from '../Inputs/SelectWrapper/SelectWrapperStyles'
 import { TerminalComponentsContainer } from './styles'
+import { useConnection } from '@sb/dexUtils/connection'
 
 // fix props type
 export const DefaultViewComponent = (

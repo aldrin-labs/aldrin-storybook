@@ -65,6 +65,13 @@ import CustomSwitcher from '../SwitchOnOff/CustomSwitcher'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
 import { MobileWalletDropdown } from '@sb/compositions/Chart/components/MobileNavbar/MobileWalletDropdown'
+import {
+  costOfAddingToken,
+  costsOfTheFirstTrade,
+  costsOfWrappingSOL,
+  SOLFeeForTrade,
+} from './utils'
+import { InsufficientBalancePlaceholder } from './InsufficientBalancePlaceholder'
 
 export const TradeInputHeader = ({
   title = 'Input',
@@ -326,7 +333,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
     }
 
     if (this.state.priceFromOrderbook !== this.props.priceFromOrderbook) {
-      const { priceFromOrderbook, leverage } = this.props
+      const { priceFromOrderbook } = this.props
 
       updateWrapperState({
         mode: 'limit',
@@ -439,7 +446,8 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
     const currentMaxAmount =
       isBuyType || !isSPOTMarket ? maxAmount / priceForCalculate : maxAmount
 
-    const isAmountMoreThanMax = e.target.value > currentMaxAmount
+    // const isAmountMoreThanMax = e.target.value > currentMaxAmount
+    const isAmountMoreThanMax = false
     const isAmountLessThanMin =
       stripDigitPlaces(e.target.value, quantityPrecision) < minOrderSize &&
       stripDigitPlaces(e.target.value, quantityPrecision) !== '' &&
@@ -561,10 +569,10 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
       setAutoConnect,
       providerUrl,
       setProvider,
+      baseCurrencyAccount,
+      quoteCurrencyAccount,
     } = this.props
 
-    const costsOfTheFirstTrade = 0.024
-    const SOLFeeForTrade = 0.00001
     const needCreateOpenOrdersAccount = !openOrdersAccount
 
     if (!funds) return null
@@ -589,6 +597,21 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
       maxAmount = lockedAmount * priceForCalculate
     } else {
       maxAmount = funds[1].quantity * leverage
+    }
+
+    const onSendOrder = ({ values, market, wallet }) => {
+      const isValidationSuccessfull = validateVariablesForPlacingOrder({
+        price: values.price,
+        size: values.amount,
+        market,
+        wallet,
+      })
+
+      if (!isValidationSuccessfull) {
+        return
+      }
+
+      this.openConfirmationPopup()
     }
 
     return (
@@ -889,108 +912,14 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                     </BtnCustom>
                   </ConnectWalletButtonContainer>
                 </>
-              ) : (needCreateOpenOrdersAccount &&
-                  SOLAmount < costsOfTheFirstTrade) ||
-                SOLAmount < SOLFeeForTrade ? (
-                needCreateOpenOrdersAccount ? (
-                  <DarkTooltip
-                    title={
-                      <>
-                        <p>
-                          Deposit some SOL to your wallet for successful
-                          trading.
-                        </p>
-                        <p>
-                          Due to Serum design there is need to open a trading
-                          account for this pair to trade it.
-                        </p>
-                        <p>
-                          So, the “first trade” fee is{' '}
-                          <span style={{ color: '#BFEAB6' }}>
-                            {' '}
-                            ≈{costsOfTheFirstTrade} SOL
-                          </span>
-                          .
-                        </p>
-                        <p>
-                          The fee for all further trades on this pair will be
-                          <span style={{ color: '#BFEAB6' }}>
-                            {' '}
-                            ≈{SOLFeeForTrade} SOL
-                          </span>
-                          .{' '}
-                        </p>
-                      </>
-                    }
-                  >
-                    <Placeholder>
-                      Insufficient SOL balance to complete the transaction.
-                      <SvgIcon src={Info} width={'5%'} />
-                    </Placeholder>
-                  </DarkTooltip>
-                ) : (
-                  <DarkTooltip
-                    title={
-                      <>
-                        <p>
-                          Deposit some SOL to your wallet for successful
-                          trading.
-                        </p>
-                        <p>
-                          The fee size for each trade on the DEX is{' '}
-                          <span style={{ color: '#BFEAB6' }}>
-                            {' '}
-                            ≈0.00001 SOL
-                          </span>
-                          .{' '}
-                        </p>
-                      </>
-                    }
-                  >
-                    <Placeholder>
-                      Insufficient SOL balance to complete the transaction.
-                      <SvgIcon src={Info} width={'5%'} />
-                    </Placeholder>
-                  </DarkTooltip>
-                )
               ) : (
-                <SendButton
+                <InsufficientBalancePlaceholder
+                  pair={pair}
+                  SOLAmount={SOLAmount}
+                  sideType={sideType}
                   theme={theme}
-                  style={{
-                    ...(tradingBotEnabled && !tradingBotIsActive
-                      ? { position: 'absolute', width: '95%' }
-                      : {}),
-                  }}
-                  type={sideType}
-                  onClick={() => {
-                    const isValidationSuccessfull = validateVariablesForPlacingOrder(
-                      {
-                        price: values.price,
-                        size: values.amount,
-                        market,
-                        wallet,
-                      }
-                    )
-
-                    if (!isValidationSuccessfull) {
-                      return
-                    }
-
-                    this.openConfirmationPopup()
-                  }}
-                >
-                  {isSPOTMarket
-                    ? sideType === 'buy'
-                      ? priceType === 'market' && pair.join('_') === 'SRM_USDT'
-                        ? tradingBotEnabled && !tradingBotIsActive
-                          ? 'Start Cycle Bot'
-                          : 'buy SRM'
-                        : `buy ${pair[0]}`
-                      : `sell ${pair[0]}`
-                    : sideType === 'buy'
-                    ? 'long'
-                    : 'short'}
-                </SendButton>
+                  onClick={() => onSendOrder({ values, market, wallet })}
+                />
               )}
               <MobileWalletDropdown
                 theme={theme}
@@ -1056,6 +985,8 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       TIFMode,
       trigger,
       leverage,
+      marketPrice,
+      setFieldValue,
       enqueueSnackbar,
       minSpotNotional,
       minFuturesStep,
@@ -1067,7 +998,21 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       tradingBotTotalTime,
       updateWrapperState,
       publicKey,
+      sideType,
+      lockedAmount,
+      funds,
+      isQuoteCoinExistsInWallet,
+      isBaseCoinExistsInWallet,
+      openOrdersAccount,
+      SOLAmount,
     } = props
+
+    const isBuyType = sideType === 'buy'
+    const priceForCalculate =
+      priceType !== 'market' &&
+      priceType !== 'maker-only'
+        ? values.price
+        : marketPrice
 
     // if (values.total < minSpotNotional && isSPOTMarket) {
     //   enqueueSnackbar(
@@ -1079,6 +1024,12 @@ const formikEnhancer = withFormik<IProps, FormValues>({
 
     //   return
     // }
+    const maxAmount = isBuyType ? funds[1].quantity : funds[0].quantity
+
+    const needCreateOpenOrdersAccount = !openOrdersAccount
+
+    const needToAddToken =
+      !isBaseCoinExistsInWallet || !isQuoteCoinExistsInWallet
 
     if (values.amount < minFuturesStep && !isSPOTMarket) {
       enqueueSnackbar(
@@ -1088,6 +1039,31 @@ const formikEnhancer = withFormik<IProps, FormValues>({
         }
       )
 
+      return
+    }
+
+    let minSOlAmountForTransaction = 0
+
+    if (isBuyType && pair[1] === 'SOL') {
+      minSOlAmountForTransaction +=
+        costsOfWrappingSOL + costOfAddingToken + values.total
+    } else if (!isBuyType && pair[0] === 'SOL') {
+      minSOlAmountForTransaction +=
+        costsOfWrappingSOL + costOfAddingToken + values.amount
+    }
+
+    if (needToAddToken) {
+      minSOlAmountForTransaction += costOfAddingToken
+    }
+
+    if (needCreateOpenOrdersAccount) {
+      minSOlAmountForTransaction += costsOfTheFirstTrade
+    }
+
+    if (SOLAmount < minSOlAmountForTransaction) {
+      enqueueSnackbar(`Insufficient SOL balance to complete the transaction.`, {
+        variant: 'error',
+      })
       return
     }
 
@@ -1115,6 +1091,18 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       notify({
         type: 'error',
         message: 'Your amount is 0',
+      })
+
+      return
+    }
+
+    const currentMaxAmount =
+      isBuyType || !isSPOTMarket ? maxAmount / priceForCalculate : maxAmount
+
+    if (values.amount > currentMaxAmount) {
+      notify({
+        type: 'error',
+        message: 'Order amount is more than your max amount.',
       })
 
       return

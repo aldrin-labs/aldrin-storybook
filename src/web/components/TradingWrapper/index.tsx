@@ -240,6 +240,8 @@ class SimpleTabs extends React.Component<any, any> {
       providerUrl,
       setProvider,
       terminalViewMode,
+      baseCurrencyAccount,
+      quoteCurrencyAccount,
     } = this.props
 
     const isSPOTMarket = isSPOTMarketType(marketType)
@@ -499,6 +501,8 @@ class SimpleTabs extends React.Component<any, any> {
                   >
                     <TerminalContainer>
                       <TraidingTerminal
+                        baseCurrencyAccount={baseCurrencyAccount}
+                        quoteCurrencyAccount={quoteCurrencyAccount}
                         byType={side}
                         spread={spread}
                         theme={theme}
@@ -700,6 +704,8 @@ class SimpleTabs extends React.Component<any, any> {
                     <SellTerminal theme={theme} xs={6} item>
                       <TerminalContainer>
                         <TraidingTerminal
+                          baseCurrencyAccount={baseCurrencyAccount}
+                          quoteCurrencyAccount={quoteCurrencyAccount}
                           byType={'sell'}
                           sideType={'sell'}
                           setAutoConnect={setAutoConnect}

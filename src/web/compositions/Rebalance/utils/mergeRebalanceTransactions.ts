@@ -22,9 +22,9 @@ export const mergeRebalanceTransactions = (transactions: TransactionType[]) => {
       const price = (transactionToMergeWith.price + transactionToMerge.price) / 2
       const feeUSD = transactionToMergeWith.feeUSD + transactionToMerge.feeUSD
       const openOrdersAccount =
-      transactionToMergeWith.openOrders.length === 0
-        ? []
-        : transactionToMerge.openOrders
+        transactionToMergeWith.openOrders?.length === 0
+        ? transactionToMerge.openOrders
+        : transactionToMergeWith.openOrders
 
       const mergedTransaction = { ...transactionToMergeWith, amount, total, price, openOrdersAccount, feeUSD }
 

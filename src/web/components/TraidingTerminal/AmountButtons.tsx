@@ -79,6 +79,7 @@ export const ButtonsWithAmountFieldRowForBasic = ({
               title={`amount`}
               value={localAmount}
               type={'number'}
+              pattern="\d*"
               pattern={isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'}
               onChange={onAmountChange}
               symbol={pair[0]}
@@ -94,6 +95,7 @@ export const ButtonsWithAmountFieldRowForBasic = ({
               theme={theme}
               needTitle
               type={'number'}
+              pattern="\d*"
               title={`total`}
               value={localTotal || 0}
               onChange={onTotalChange}
