@@ -81,7 +81,7 @@ export const addressBookColumnNames = [
   { label: 'Date added', id: 'dateAdded' },
   { label: 'Contact', id: 'contact' },
   { label: 'Public Address', id: 'publicAddress' },
-  { label: ' ', id: 'updatePopupDots'}
+  { label: ' ', id: 'updatePopupDots' },
 ]
 
 export const activeTradesColumnNames = [
@@ -214,26 +214,32 @@ export const positionsBody = new Array(13).fill(undefined).map((el, i) => ({
   },
 }))
 
-export const openOrdersColumnNames = (marketType: number) =>
+export const openOrdersColumnNames = (
+  showCancelAllButton: boolean,
+  onCancelAll: () => void
+) =>
   [
     { label: 'Market', id: 'pair' },
     // { label: 'Type', id: 'type' },
     { label: 'Side/Type', id: 'side' },
     { label: 'Price', id: 'price' },
-    marketType === 0 ? { label: 'Quantity', id: 'quantity' } : {},
-    { label: marketType === 0 ? 'Total' : 'size', id: 'amount' },
+    { label: 'Quantity', id: 'quantity' },
+    { label:  'Total', id: 'amount' },
     // { label: 'Filled %', id: 'filled',  },
     // marketType === 0 ? { label: 'Size', id: 'amount' } : {},
     // { label: 'Trigger', id: 'triggerConditions' },
     // marketType === 1 ? { label: 'Reduce Only', id: 'reduceOnly' } : {},
     // { label: 'date', isNumber: true, id: 'date' },
     {
-      label:
-        // <TableButton size="small" variant="outlined">
-        //   Cancel all
-        // </TableButton>
-        ' ',
+      label: showCancelAllButton ? (
+        <TableButton size="small" variant="outlined" onClick={onCancelAll}>
+          Cancel All
+        </TableButton>
+      ) : (
+        ' '
+      ),
       id: 'cancel',
+      isNumber: true,
       isSortable: false,
     },
   ].filter((x) => x.label)
@@ -319,13 +325,14 @@ export const tradeHistoryBody = new Array(13).fill(undefined).map((el, i) => ({
   total: 100,
 }))
 
-export const balancesColumnNames = (showSettle) => ([
-  { label: 'Coin', id: 'coin' },
-  { label: 'Wallet balance', id: 'wallet' },
-  { label: 'Orders', id: 'orders' },
-  { label: 'Unsettled', id: 'settled' },
-  ...(showSettle ? [{ label: 'Settle', id: 'settle' }] : [{}]),
-].filter(a => !!a.label))
+export const balancesColumnNames = (showSettle) =>
+  [
+    { label: 'Coin', id: 'coin' },
+    { label: 'Wallet balance', id: 'wallet' },
+    { label: 'Orders', id: 'orders' },
+    { label: 'Unsettled', id: 'settled' },
+    ...(showSettle ? [{ label: 'Settle', id: 'settle' }] : [{}]),
+  ].filter((a) => !!a.label)
 
 export const fundsBody = new Array(13).fill(undefined).map((el, i) => ({
   coin: `${String.fromCharCode(getRandomInt(65, 80)) +

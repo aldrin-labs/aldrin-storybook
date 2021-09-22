@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { Grid } from '@material-ui/core'
-import { LineProps, RowProps, TitleProps } from './index.types'
+import { LineProps, RowProps } from './index.types'
 
 export const Line = styled.div`
   position: absolute;
@@ -139,7 +139,6 @@ export const ChartContainer = styled((props) => <RowContainer {...props} />)`
 `
 
 export const Text = styled.div`
-  text-shadow: 0px 0px ю6куь rgba(199, 255, 208, 0.3);
   font-style: normal;
   font-weight: bold;
   font-size: 1.6rem;
@@ -157,11 +156,12 @@ export const Text = styled.div`
   }
 `
 
-export const Title = styled.span`
-  font-family: Avenir Next;
-  color: ${(props: TitleProps) =>
-    props.color || props.theme.palette.grey.title};
-  font-size: 1.6rem;
+export const Title = styled(
+  ({ color, theme, fontSize, fontFamily, ...rest }) => <span {...rest} />
+)`
+  color: ${(props) => props.color || props.theme.palette.grey.title};
+  font-size: ${(props) => props.fontSize || '1.6rem'};
+  font-family: ${(props) => props.fontFamily || 'Avenir Next'};
 `
 
 export const TopBarTitle = styled((props) => <Title {...props} />)`

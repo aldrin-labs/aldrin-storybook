@@ -97,7 +97,7 @@ export const WhiteText = styled.span`
   font-size: 1.5rem;
   display: flex;
   align-items: center;
-  letter-spacing: -0.523077px;
+  letter-spacing: 0.01rem;
   color: #f8faff;
 `
 const WarningBlock = styled.div`

@@ -1,7 +1,7 @@
 import EventEmitter from 'eventemitter3';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import { notify } from '../../notifications';
-import { DEFAULT_PUBLIC_KEY, WalletAdapter } from '../types';
+import { WalletAdapter } from '@sb/dexUtils/types'
 
 type PhantomEvent = 'disconnect' | 'connect';
 type PhantomRequestMethod =
@@ -65,7 +65,7 @@ export class PhantomWalletAdapter
   }
 
   get publicKey() {
-    return this._provider?.publicKey || DEFAULT_PUBLIC_KEY;
+    return this._provider?.publicKey;
   }
 
   async signTransaction(transaction: Transaction) {

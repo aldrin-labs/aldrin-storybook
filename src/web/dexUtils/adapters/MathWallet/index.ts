@@ -1,7 +1,7 @@
 import EventEmitter from 'eventemitter3';
 import { PublicKey, Transaction } from '@solana/web3.js';
-import { notify } from '../../notifications'
-import { DEFAULT_PUBLIC_KEY, WalletAdapter } from '../types';
+import { WalletAdapter } from '@sb/dexUtils/types'
+import { notify } from '@sb/dexUtils/notifications';
 
 export class MathWalletAdapter extends EventEmitter implements WalletAdapter {
   _publicKey?: PublicKey;
@@ -40,7 +40,7 @@ export class MathWalletAdapter extends EventEmitter implements WalletAdapter {
   }
 
   get publicKey() {
-    return this._publicKey || DEFAULT_PUBLIC_KEY;
+    return this._publicKey;
   }
 
   async signTransaction(transaction: Transaction) {
@@ -59,8 +59,8 @@ export class MathWalletAdapter extends EventEmitter implements WalletAdapter {
     if (!this._provider) {
       window.open('https://mathwallet.org/', '_blank');
       notify({
-        message: 'Please install mathwallet and reload page',
-        // description: 'Please install mathwallet',
+        message: 'Math Wallet Error',
+        description: 'Please install mathwallet',
       });
       return;
     }

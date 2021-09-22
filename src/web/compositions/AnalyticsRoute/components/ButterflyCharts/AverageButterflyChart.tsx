@@ -45,8 +45,8 @@ export default compose(
     name: 'getSerumAvgTotalStatsQuery',
     variables: (props) => ({
       pair: props.selectedPair,
-      toTimestamp: endOfDayTimestamp,
-      sinceTimestamp: endOfDayTimestamp - dayDuration * 14,
+      toTimestamp: endOfDayTimestamp(),
+      sinceTimestamp: endOfDayTimestamp() - dayDuration * 14,
       timezone: getTimezone(),
     }),
     fetchPolicy: 'cache-and-network',
