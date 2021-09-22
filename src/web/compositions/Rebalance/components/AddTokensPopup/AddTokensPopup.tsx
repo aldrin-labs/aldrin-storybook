@@ -28,7 +28,7 @@ export const feeFormat = new Intl.NumberFormat(undefined, {
   maximumFractionDigits: 6,
 })
 
-export default function AddTokenDialog({
+export default function TokenDialog({
   open,
   onClose,
   userTokens,
@@ -60,6 +60,11 @@ export default function AddTokenDialog({
   )
 
   const SOLBalance = userTokens?.find((el) => el.symbol === 'SOL')?.amount || 0
+
+  const userTokensMap = userTokens.reduce((acc, current) => {
+    acc.set(current.mint, current)
+    return acc
+  }, new Map())
 
   const isBalanceLowerCost = SOLBalance < cost
   const isDisabled = !valid || isBalanceLowerCost || sending
@@ -145,9 +150,7 @@ export default function AddTokenDialog({
                       mintAddress={
                         tokenInfo ? tokenInfo?.address : el.address?.toString()
                       }
-                      existingAccount={userTokens.find(
-                        (tokenData) => tokenData.mint === tokenInfo?.address
-                      )}
+                      existingAccount={userTokensMap.has(tokenInfo?.address)}
                       disabled={sending}
                       selectedTokens={selectedTokens}
                       setSelectedTokens={setSelectedTokens}
