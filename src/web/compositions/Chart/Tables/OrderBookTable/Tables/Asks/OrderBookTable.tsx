@@ -15,6 +15,7 @@ import { AsksWrapper } from '../../OrderBookTableContainer.styles'
 import styled from 'styled-components'
 import { StyledAutoSizer } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapperStyles'
 import useMobileSize from '@webhooks/useMobileSize'
+import { useOpenOrders } from '@sb/dexUtils/markets'
 
 const StyledTable = styled(Table)`
   & .ReactVirtualized__Grid__innerScrollContainer {
@@ -41,6 +42,7 @@ const OrderBookTable = ({
   terminalViewMode,
 }) => {
   const isMobile = useMobileSize()
+  const openOrders = useOpenOrders()
   const tableData =
     isMobile && terminalViewMode === 'mobileChart'
       ? getDataFromTree(data.asks, 'asks')
@@ -107,7 +109,7 @@ const OrderBookTable = ({
                   marketType,
                   aggregation,
                   arrayOfMarketIds,
-                  openOrderHistory,
+                  openOrderHistory: openOrders,
                   amountForBackground,
                 })
               }

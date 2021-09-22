@@ -11,7 +11,7 @@ export const WhiteText = styled(Title)`
 export const StyledPaper = styled(Paper)`
   border-radius: 2rem;
   width: 55rem;
-  height: auto;
+  height: 55rem;
   background: #222429;
   border: 0.1rem solid #3a475c;
   display: flex;
