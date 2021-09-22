@@ -85,13 +85,13 @@ const MemoizedRebalancePopup = React.memo(
 
 const DebouncedMemoizedCurrentValueChartWithLegend = debounceRender(
   DonutChartWithLegend,
-  5000,
+  1500,
   { leading: false }
 )
 
 const DebouncedMemoizedTargetValueChartWithLegend = debounceRender(
   DonutChartWithLegend,
-  5000,
+  1500,
   { leading: false }
 )
 
