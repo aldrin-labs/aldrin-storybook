@@ -158,7 +158,9 @@ export const ButtonsWithAmountFieldRowForBasic = ({
                     </>
                   }
                 >
-                  <SvgIcon width="100%" height="2rem" src={Info} />
+                  <RowContainer height="2rem">
+                    <SvgIcon width="100%" height="100%" src={Info} />
+                  </RowContainer>
                 </DarkTooltip>
               </AmountTooltip>
             </PercentageTabsContainer>
