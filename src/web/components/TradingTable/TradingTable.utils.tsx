@@ -66,9 +66,13 @@ import {
   orderHistoryBody,
   tradeHistoryBody,
 } from '@sb/components/TradingTable/TradingTable.mocks'
-import { getPrecisionItem } from '@core/utils/getPrecisionItem'
+import {
+  roundAndFormatNumber,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import { getPrecisionItem } from '@core/utils/getPrecisionItem'
+import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
 import { Theme } from '@sb/types/materialUI'
 
 export const getTableBody = (tab: string) =>
@@ -208,55 +212,55 @@ type IStatus = {
   profitPercentage: number
 }
 
-const getActiveOrderStatus = ({
-  theme,
-  strategy,
-  state,
-  profitPercentage,
-}: IStatus): [
-  'Trailing entry' | 'In Profit' | 'In Loss' | 'Preparing' | 'Timeout',
-  string
-] => {
-  if (strategy.conditions.isTemplate) {
-    if (strategy.conditions.templateStatus === 'enabled') {
-      return ['Waiting alert', theme.palette.green.main]
-    }
-    if (strategy.conditions.templateStatus === 'paused') {
-      return ['On pause', theme.palette.blue.background]
-    }
-  }
+// const getActiveOrderStatus = ({
+//   theme,
+//   strategy,
+//   state,
+//   profitPercentage,
+// }: IStatus): [
+//   'Trailing entry' | 'In Profit' | 'In Loss' | 'Preparing' | 'Timeout',
+//   string
+// ] => {
+//   if (strategy.conditions.isTemplate) {
+//     if (strategy.conditions.templateStatus === 'enabled') {
+//       return ['Waiting alert', theme.palette.green.main]
+//     }
+//     if (strategy.conditions.templateStatus === 'paused') {
+//       return ['On pause', theme.palette.blue.background]
+//     }
+//   }
 
-  if (
-    strategy.conditions.hedging &&
-    strategy.conditions.hedgeStrategyId === null
-  ) {
-    return ['Waiting hedge', theme.palette.green.main]
-  }
+//   if (
+//     strategy.conditions.hedging &&
+//     strategy.conditions.hedgeStrategyId === null
+//   ) {
+//     return ['Waiting hedge', theme.palette.green.main]
+//   }
 
-  if (state && state.state && state.state !== 'WaitForEntry') {
-    const { state: status } = state
+//   if (state && state.state && state.state !== 'WaitForEntry') {
+//     const { state: status } = state
 
-    if (status === 'TrailingEntry') {
-      return ['Trailing entry', theme.palette.green.main]
-    }
+//     if (status === 'TrailingEntry') {
+//       return ['Trailing entry', theme.palette.green.main]
+//     }
 
-    if (status === 'Timeout') {
-      return ['Timeout', theme.palette.green.main]
-    }
+//     if (status === 'Timeout') {
+//       return ['Timeout', theme.palette.green.main]
+//     }
 
-    // if (status === 'InEntry') {
-    //   return ['Active', theme.palette.green.main]
-    // }
+//     // if (status === 'InEntry') {
+//     //   return ['Active', theme.palette.green.main]
+//     // }
 
-    if (profitPercentage > 0) {
-      return ['In Profit', theme.palette.green.main]
-    } else {
-      return ['In Loss', theme.palette.red.main]
-    }
-  } else {
-    return ['Preparing', theme.palette.blue.background]
-  }
-}
+//     if (profitPercentage > 0) {
+//       return ['In Profit', theme.palette.green.main]
+//     } else {
+//       return ['In Loss', theme.palette.red.main]
+//     }
+//   } else {
+//     return ['Preparing', theme.palette.blue.background]
+//   }
+// }
 
 export const filterOpenOrders = ({
   order,
@@ -400,7 +404,7 @@ export const combineOpenOrdersTable = (
                 <RowContainer justify={'space-between'}>
                   <StyledTitle>Total (USDC)</StyledTitle>
                   <StyledTitle color={'#fbf2f2'}>
-                    {stripDigitPlaces(size * price, quantityPrecision)}
+                    {stripDigitPlaces(+size * price, quantityPrecision)}
                   </StyledTitle>
                 </RowContainer>
               </RowContainer>

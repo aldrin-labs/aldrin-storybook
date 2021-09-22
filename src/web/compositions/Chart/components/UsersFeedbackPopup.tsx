@@ -20,9 +20,10 @@ import {
   TextField,
   Title,
   StyledTextArea,
-  StyledLabel,
+  StyledRowContainer,StyledLabel
 } from '../Inputs/SelectWrapper/SelectWrapperStyles'
 import { notify } from '@sb/dexUtils/notifications'
+import useMobileSize from '@webhooks/useMobileSize'
 import { SRadio } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
 export const FeedbackPopup = ({
@@ -35,7 +36,7 @@ export const FeedbackPopup = ({
   open: boolean
 }) => {
   const [isFeedbackSubmitted, submitFeedback] = useState(false)
-
+  const isMobile = useMobileSize()
   const [feedbackData, setFeedbackData] = useState({
     messagge: '',
     contact: '',
@@ -91,7 +92,10 @@ export const FeedbackPopup = ({
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer style={{ marginBottom: '2rem' }} justify={'space-between'}>
+      <RowContainer
+        style={{ marginBottom: '2rem' }}
+        justify={isMobile ? 'center' : 'space-between'}
+      >
         <Title>
           {isFeedbackSubmitted
             ? 'Feedback Submitted'
@@ -100,26 +104,30 @@ export const FeedbackPopup = ({
         <SvgIcon
           onClick={() => onClose()}
           src={CloseIcon}
-          style={{ cursor: 'pointer' }}
+          style={{ cursor: 'pointer', display: isMobile ? 'none' : 'auto' }}
           width={'2rem'}
           height={'2rem'}
         />
       </RowContainer>
       {isFeedbackSubmitted ? (
-        <RowContainer direction={'column'}>
+        <RowContainer
+          direction={'column'}
+          justify={isMobile ? 'space-around' : 'center'}
+        >
           <SvgIcon
             src={CoolIcon}
-            width={'9rem'}
-            height={'10rem'}
-            style={{ marginTop: '6rem' }}
+            width={isMobile ? '17rem' : '9rem'}
+            height={isMobile ? '19rem' : '10rem'}
+            style={{ marginTop: isMobile ? '15rem' : '6rem' }}
           />
           <Text
             padding={'0 1rem 0 0'}
             style={{
               width: '50%',
-              marginTop: '2rem',
+              marginTop: isMobile ? '6rem' : '2rem',
               textAlign: 'center',
               whiteSpace: 'normal',
+              fontSize: isMobile ? '2rem' : '1.5rem',
             }}
           >
             {isProblemReport
@@ -127,7 +135,11 @@ export const FeedbackPopup = ({
               : 'Thank you for your feedback, we will review it shortly and take action.'}
           </Text>
           <BlueButton
-            style={{ width: '100%', margin: '6rem 0 0 0' }}
+            isMobile={isMobile}
+            style={{
+              width: '100%',
+              margin: isMobile ? '15rem 0 0 0' : '6rem 0 0 0',
+            }}
             disabled={false}
             theme={theme}
             onClick={() => {
@@ -176,7 +188,7 @@ export const FeedbackPopup = ({
             </Row>
           </RowContainer>
 
-          <RowContainer margin={'1rem 0'}>
+          <StyledRowContainer margin={'1rem 0'}>
             <RowContainer wrap="nowrap">
               <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
                 {isProblemReport
@@ -203,7 +215,7 @@ export const FeedbackPopup = ({
                 }
               />
             </RowContainer>
-          </RowContainer>
+          </StyledRowContainer>
           <RowContainer margin={'1rem 0'}>
             <RowContainer wrap="nowrap">
               <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">

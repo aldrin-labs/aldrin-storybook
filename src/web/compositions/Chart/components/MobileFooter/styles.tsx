@@ -42,3 +42,16 @@ export const FooterComponent = styled(RowContainer)`
     padding: 0 2rem;
   }
 `
+export const StyledButton = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  width: 7rem;
+  height: 7rem;
+  text-align: center;
+  text-decoration: none;
+  color: #fbf2f2;
+  font-family: Avenir Next Medium;
+  font-size: 1.6rem;
+`
