@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { FeedbackPopup } from '../UsersFeedbackPopup'
 import {
   AnalyticsLink,
+  FeedbackBtn,
   PoolsLink,
   RebalanceLink,
   SwapsLink,
@@ -11,6 +13,8 @@ import {
 import { FooterComponent } from './styles'
 
 export const MobileFooter = ({ pathname }) => {
+  const [isFeedBackPopupOpen, setIsFeedBackPopupOpen] = useState(false)
+
   return (
     <FooterComponent height={'11rem'} justify={'space-around'}>
       <TradeLink isActive={pathname.includes('chart')} />
@@ -20,6 +24,20 @@ export const MobileFooter = ({ pathname }) => {
       <SwapsLink isActive={pathname.includes('swaps')} />
       <RebalanceLink isActive={pathname.includes('rebalance')} /> */}
       <WalletLink />
+      <FeedbackBtn
+        onClick={() => {
+          setIsFeedBackPopupOpen(true)
+          console.log('aa', isFeedBackPopupOpen)
+        }}
+        isActive={isFeedBackPopupOpen}
+      />
+      <FeedbackPopup
+        theme={theme}
+        open={isFeedBackPopupOpen}
+        onClose={() => {
+          setIsFeedBackPopupOpen(false)
+        }}
+      />
     </FooterComponent>
   )
 }
