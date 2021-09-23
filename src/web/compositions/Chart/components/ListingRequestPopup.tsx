@@ -99,10 +99,10 @@ const ListingRequestPopup = ({
         ...requestData,
       }),
     })
-      .then(() => {
-        onSubmit()
-        console.log('Success!')
-      })
+      // .then(() => {
+      //   onSubmit()
+      //   console.log('Success!')
+      // })
       .catch((error) => {
         console.log(error)
         notify({
@@ -332,7 +332,7 @@ const ListingRequestPopup = ({
     'Leveraged Tokens',
     'NFT, Games & Gambling',
   ]
-  console.log('isContactValid', isContactValid)
+
   return (
     <DialogWrapper
       theme={theme}
@@ -409,6 +409,13 @@ const ListingRequestPopup = ({
           action="/success"
         >
           <input type="hidden" name="form-name" value="listingRequest" />
+          <input
+            type="text"
+            name="category"
+            value={requestData.category.join(' ')}
+            id="category"
+            style={{ display: 'none' }}
+          />
           <RowContainer justify="space-between" margin={'1rem 0'}>
             <Row width={'49%'}>
               <RowContainer wrap="nowrap">
@@ -721,7 +728,7 @@ const ListingRequestPopup = ({
               </RowContainer>
             </Row>{' '}
           </RowContainer>
-          {!isContactValid && (
+          {requestData.contact !== '' && !isContactValid && (
             <RowContainer justify="flex-start">
               <Text style={{ color: '#F69894' }}>
                 Not valid contact. Please, use @username or left link to your

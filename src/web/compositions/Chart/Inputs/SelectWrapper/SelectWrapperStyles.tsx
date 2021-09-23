@@ -78,7 +78,7 @@ export const StyledHeader = styled(RowContainer)`
 export const StyledTable = styled(Grid)`
   overflow: hidden;
   height: ${(props) =>
-    props.isAdvancedSelectorMode ? 'calc(100% - 24rem)' : 'calc(100% - 18rem)'};
+    props.isAdvancedSelectorMode ? 'calc(100% - 24rem)' : 'calc(100% - 19rem)'};
 
   @media (max-width: 600px) {
     height: calc(100% - 10rem);
@@ -145,6 +145,7 @@ export const StyledInput = styled(Input)`
 `
 
 export const TableFooter = styled(Grid)`
+  height: 4rem;
   justify-content: space-between;
   width: 100%;
   position: relative;
@@ -312,6 +313,30 @@ export const SubmitButton = styled.button`
 export const StyledPaper = styled(Paper)`
   border-radius: 2rem;
   width: 91rem;
+  height: auto;
+  background: #222429;
+  border: 0.1rem solid #3a475c;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 2rem;
+  padding: 3rem;
+
+  @media (max-width: 600px) {
+    border: 0;
+    border-radius: 0;
+    width: 100%;
+    height: calc(100% - 22rem);
+    max-height: 100%;
+    margin: 0;
+    justify-content: center;
+    background: #17181a;
+  }
+`
+
+export const StyledPaperMediumWidth = styled(Paper)`
+  border-radius: 2rem;
+  width: 60rem;
   height: auto;
   background: #222429;
   border: 0.1rem solid #3a475c;

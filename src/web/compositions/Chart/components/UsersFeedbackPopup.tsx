@@ -15,12 +15,13 @@ import { encode } from '@sb/dexUtils/utils'
 import {
   BlueButton,
   Form,
-  StyledPaper,
   SubmitButton,
   TextField,
   Title,
   StyledTextArea,
-  StyledRowContainer,StyledLabel
+  StyledRowContainer,
+  StyledLabel,
+  StyledPaperMediumWidth,
 } from '../Inputs/SelectWrapper/SelectWrapperStyles'
 import { notify } from '@sb/dexUtils/notifications'
 import useMobileSize from '@webhooks/useMobileSize'
@@ -78,7 +79,7 @@ export const FeedbackPopup = ({
   return (
     <DialogWrapper
       theme={theme}
-      PaperComponent={StyledPaper}
+      PaperComponent={StyledPaperMediumWidth}
       fullScreen={false}
       onClose={onClose}
       onEnter={() => {
