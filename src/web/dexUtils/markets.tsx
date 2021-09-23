@@ -1035,15 +1035,6 @@ export function useBalances() {
   const quoteExists =
     openOrders && openOrders.quoteTokenTotal && openOrders.quoteTokenFree
   
-  // if (
-  //   baseCurrency === 'UNKNOWN' ||
-  //   quoteCurrency === 'UNKNOWN' ||
-  //   !baseCurrency ||
-  //   !quoteCurrency
-  // ) {
-  //   return []
-  // }
-
   return [
     {
       market,
