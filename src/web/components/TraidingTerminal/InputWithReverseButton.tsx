@@ -24,8 +24,8 @@ export const InputWithReverseButton = ({
         needTitle
         title={title}
         value={value}
-        type={'text'}
-        pattern={pattern}
+        type={'number'}
+        pattern="\d*"
         onTitleClick={() => {
           if (mode === 'amount') {
             setMode('total')

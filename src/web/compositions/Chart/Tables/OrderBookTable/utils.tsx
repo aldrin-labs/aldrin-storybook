@@ -15,6 +15,7 @@ import GreenArrow from '@icons/greenArrow.png'
 import { isDataForThisMarket } from '@sb/components/TradingTable/TradingTable.utils'
 import { Theme } from '@material-ui/core'
 import { filterOpenOrders } from '@sb/components/TradingTable/OpenOrdersTable/OpenOrdersTable.utils'
+import { Order } from '@project-serum/serum/lib/market'
 
 // ${rowStyles}
 // ${(props: { style: CSSProperties }) =>
@@ -148,25 +149,9 @@ export default function defaultRowRenderer({
 
     needHighlightPrice =
       openOrders.findIndex((order) => {
-        const orderPrice = functionToRound(order.price, digitsByGroup)
+        const orderPrice = order.price
 
-        return (
-          +orderPrice === +rowData.price &&
-          (isDataForThisMarket(marketType, arrayOfMarketIds, order.marketId) ||
-            order.marketId === '0') &&
-          !order.stopPrice
-        )
-      }) !== -1
-
-    needHighlightStopPrice =
-      openOrders.findIndex((order) => {
-        const orderStopPrice = functionToRound(order.stopPrice, digitsByGroup)
-
-        return (
-          +orderStopPrice === +rowData.price &&
-          (isDataForThisMarket(marketType, arrayOfMarketIds, order.marketId) ||
-            order.marketId === '0')
-        )
+        return +orderPrice === +rowData.price
       }) !== -1
   }
 
@@ -214,11 +199,11 @@ export default function defaultRowRenderer({
       style={{
         ...style,
         ...colorStyles,
-        backgroundColor: needHighlightPrice
-          ? 'rgba(224, 229, 236, 0.5)'
-          : needHighlightStopPrice
-          ? 'rgba(68, 204, 255, 0.5)'
-          : '',
+        // backgroundColor: needHighlightPrice
+        //   ? 'rgba(224, 229, 236, 0.5)'
+        //   : needHighlightStopPrice
+        //   ? 'rgba(68, 204, 255, 0.5)'
+        //   : '',
       }}
     >
       <img
@@ -246,6 +231,20 @@ export default function defaultRowRenderer({
         src={GreenArrow}
       />
       {columns}
+      {needHighlightPrice && (
+        <div
+          style={{
+            width: '.7rem',
+            height: '.7rem',
+            borderRadius: '50%',
+            position: 'absolute',
+            top: '50%',
+            left: '0',
+            transform: 'translate(50%, -50%)',
+            background: '#fff',
+          }}
+        ></div>
+      )}
       <div
         className="amountForBackground"
         style={{
