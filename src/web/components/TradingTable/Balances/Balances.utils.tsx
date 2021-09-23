@@ -43,13 +43,13 @@ export const combineBalancesTable = (
               <RowContainer justify={'space-between'}>
                 <StyledTitle>Wallet</StyledTitle>
                 <StyledTitle color={'#fbf2f2'}>
-                  {roundAndFormatNumber(wallet, 8, true) || '-'}
+                  {roundAndFormatNumber(wallet, 8, true) || '0'}
                 </StyledTitle>
               </RowContainer>
               <RowContainer justify={'space-between'}>
                 <StyledTitle>Unsettled</StyledTitle>
                 <StyledTitle color={'#fbf2f2'}>
-                  {roundAndFormatNumber(unsettled, 8, true) || '-'}
+                  {roundAndFormatNumber(unsettled, 8, true) || '0'}
                 </StyledTitle>
               </RowContainer>
             </RowContainer>
