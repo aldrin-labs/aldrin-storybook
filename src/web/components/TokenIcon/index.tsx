@@ -10,6 +10,7 @@ import MangoLogo from '@icons/mango_logo.png'
 import RinLogo from '@icons/rin_logo.png'
 import SunnyLogo from '@icons/sunny_logo.jpg'
 import PTRLogo from '@icons/ptr_logo.png'
+import SYPLogo from '@icons/syp_logo.png'
 
 
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
@@ -76,6 +77,12 @@ export const TokenIcon = ({
   if (ALL_TOKENS_MINTS_MAP[mint] === 'PRT') {
     token = {
       logoURI: PTRLogo,
+    }
+  }
+
+  if (ALL_TOKENS_MINTS_MAP[mint] === 'SYP') {
+    token = {
+      logoURI: SYPLogo,
     }
   }
 
