@@ -290,7 +290,7 @@ const MarketInfo = ({
                 <PurpleTitle
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={`https://solanabeach.io/account/${
+                  href={`https://solanabeach.io/address/${
                     market ? market.address.toBase58() : '--'
                   }`}
                   theme={theme}
