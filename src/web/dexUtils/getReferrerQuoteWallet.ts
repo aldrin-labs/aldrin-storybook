@@ -15,9 +15,14 @@ export const getReferrerQuoteWallet = ({
     const tokenName: string = ALL_TOKENS_MINTS_MAP[quoteMintAddress.toString()]
     const reffererAccountAddress = REFFERER_ACCOUNT_ADDRESSES[tokenName]
 
+    console.log('[getReferrerQuoteWallet] tokenName: ', tokenName)
+    console.log('[getReferrerQuoteWallet] reffererAccountAddress: ', reffererAccountAddress)
+
     if (!!reffererAccountAddress) {
       referrerQuoteWallet = new PublicKey(reffererAccountAddress)
     }
+
+    console.log('[getReferrerQuoteWallet] referrerQuoteWallet', referrerQuoteWallet)
   }
 
   return referrerQuoteWallet
