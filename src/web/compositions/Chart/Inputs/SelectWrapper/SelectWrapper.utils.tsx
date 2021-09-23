@@ -38,6 +38,7 @@ import {
   IconContainer,
   StyledColumn,
   StyledRow,
+  StyledSymbol,
   StyledTokenName,
 } from './SelectWrapperStyles'
 import stableCoins from '@core/config/stableCoins'
@@ -463,19 +464,11 @@ export const combineSelectWrapperData = ({
         render: (
           <Row direction={'column'} align={'initial'}>
             {baseTokenInfo && baseTokenInfo?.name && (
-              <span
-                style={{
-                  fontSize: '1.3rem',
-                  textTransform: 'capitalize',
-                  color: '#96999C',
-                  fontFamily: 'Avenir Next Thin',
-                  marginBottom: '1rem',
-                }}
-              >
+              <StyledSymbol>
                 {baseTokenInfo?.name === 'Cryptocurrencies.Ai'
                   ? 'Aldrin'
                   : baseTokenInfo?.name.replace('(Sollet)', '')}
-              </span>
+              </StyledSymbol>
             )}
             <StyledTokenName>{marketName}</StyledTokenName>{' '}
           </Row>

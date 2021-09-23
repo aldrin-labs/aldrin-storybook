@@ -66,7 +66,7 @@ export function TokenListItem({
         </Row>
         <SCheckbox
           theme={theme}
-          checked={checked || isDisabled}
+          checked={checked || alreadyExists}
           disabled={isDisabled}
         />
       </RowContainer>

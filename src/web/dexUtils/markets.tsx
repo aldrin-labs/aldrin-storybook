@@ -87,7 +87,8 @@ export interface RawCustomMarketData extends RawMarketData {
 export type MarketsMap = Map<string, RawMarketData>
 
 export function useAllMarketsList(): MarketsMap {
-  const ALL_MARKETS_MAP = new Map()
+  const allMarketsMapByName = new Map()
+  const allMarketsMapById = new Map()
 
   const { customMarkets } = useCustomMarkets()
 
@@ -98,19 +99,30 @@ export function useAllMarketsList(): MarketsMap {
 
   officialMarkets?.forEach((market: RawMarketData) => {
     const marketName = market.name.replaceAll('/', '_')
-    ALL_MARKETS_MAP.set(marketName, { ...market, name: marketName })
+    allMarketsMapByName.set(marketName, { ...market, name: marketName })
+    allMarketsMapById.set(market.address.toString(), {
+      ...market,
+      name: marketName,
+    })
   })
 
   const usersMarkets = customMarkets.filter((market: RawCustomMarketData) => {
     const marketName = market.name.replaceAll('/', '_')
+    const isCustomMarketAlreadyExistInOfficial = allMarketsMapById.has(
+      market.address
+    )
 
-    return market.isCustomUserMarket && !ALL_MARKETS_MAP.has(marketName)
+    return (
+      market.isCustomUserMarket &&
+      !allMarketsMapByName.has(marketName) &&
+      !isCustomMarketAlreadyExistInOfficial
+    )
   })
 
   usersMarkets?.forEach((market: RawMarketData) => {
     const marketName = market.name.replaceAll('/', '_')
 
-    ALL_MARKETS_MAP.set(marketName, {
+    allMarketsMapByName.set(marketName, {
       ...market,
       name: marketName,
       address: new PublicKey(market.address),
@@ -118,7 +130,7 @@ export function useAllMarketsList(): MarketsMap {
     })
   })
 
-  return ALL_MARKETS_MAP
+  return allMarketsMapByName
 }
 
 export function useAllMarketsMapById(): MarketsMap {
@@ -686,11 +698,7 @@ export function useAllOpenOrdersAccounts() {
 
   return useAsyncData(
     getOpenOrdersAccounts,
-    tuple(
-      'useAllOpenOrdersAccounts',
-      wallet,
-      connected,
-    ),
+    tuple('useAllOpenOrdersAccounts', wallet, connected),
     { refreshInterval: _SLOW_REFRESH_INTERVAL }
   )
 }

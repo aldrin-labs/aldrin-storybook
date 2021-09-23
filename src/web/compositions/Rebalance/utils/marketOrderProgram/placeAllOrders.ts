@@ -1,6 +1,6 @@
 import { OpenOrders } from '@project-serum/serum'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
-import { WalletAdapter } from '@sb/dexUtils/adapters'
+import { WalletAdapter } from '@sb/dexUtils/types'
 import { DEX_PID } from '@core/config/dex'
 import {
   createSOLAccountAndClose,

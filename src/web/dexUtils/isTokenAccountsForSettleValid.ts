@@ -10,7 +10,7 @@ import {
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token'
 import { Market } from '@project-serum/serum'
-import { WalletAdapter } from './adapters'
+import { WalletAdapter } from '@sb/dexUtils/types'
 
 export const isTokenAccountsForSettleValid = async ({
   baseTokenAccount,

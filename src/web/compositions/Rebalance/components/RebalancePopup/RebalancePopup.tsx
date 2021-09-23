@@ -27,7 +27,11 @@ import { WalletAdapter } from '@sb/dexUtils/types'
 import { StyledPaper } from './styles'
 import Info from '@icons/inform.svg'
 
-import { MarketsMap, useAllMarketsList, useAllMarketsMapById } from '@sb/dexUtils/markets'
+import {
+  MarketsMap,
+  useAllMarketsList,
+  useAllMarketsMapById,
+} from '@sb/dexUtils/markets'
 import { ReloadTimer } from '../ReloadTimer'
 import { TransactionComponent } from './TransactionComponent'
 import { PopupFooter } from './PopupFooter'
@@ -108,7 +112,7 @@ export const RebalancePopup = ({
           connection,
           tokensMap,
           allMarketsMap,
-          allMarketsMapById
+          allMarketsMapById,
         }
       )
 
@@ -185,7 +189,7 @@ export const RebalancePopup = ({
       arr.findIndex(
         (transaction) =>
           transaction.symbol === el.symbol &&
-          transaction.openOrders.length === 0
+          transaction.openOrders?.length === 0
       ) === i
 
     const createOpenOrdersAccountFee = isNeedToCreateOpenOrdersAccount
@@ -283,11 +287,14 @@ export const RebalancePopup = ({
           )
         })}
       </RowContainer>
-      <RowContainer style={{ borderTop: '.1rem solid #383B45' }}>
+      <RowContainer>
         {rebalanceStep === 'initial' && (
           <RowContainer direction={'column'}>
             {rebalanceTransactionsLoaded ? (
-              <RowContainer padding={'2rem 2rem 0 2rem'} direction={'column'}>
+              <RowContainer
+                padding={'2rem 2rem 2rem 2rem'}
+                direction={'column'}
+              >
                 <PopupFooter
                   theme={theme}
                   totalFeesUSD={totalFeesUSD}
@@ -303,7 +310,8 @@ export const RebalancePopup = ({
               </RowContainer>
             ) : (
               <LoadingWithHint
-                text={
+                hintTextStyles={{ minHeight: '6rem' }}
+                loadingText={
                   'Your transactions are being processed. It may take up to 30 seconds.'
                 }
               />
