@@ -147,7 +147,7 @@ export const SelectCoinPopup = ({
                   <a
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={`https://solscan.io/account/${mint}`}
+                    href={`https://solscan.io/address/${mint}`}
                   >
                     {' '}
                     <SvgIcon
