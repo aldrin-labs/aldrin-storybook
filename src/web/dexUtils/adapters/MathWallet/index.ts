@@ -1,7 +1,7 @@
 import EventEmitter from 'eventemitter3';
 import { PublicKey, Transaction } from '@solana/web3.js';
-import { DEFAULT_PUBLIC_KEY, WalletAdapter } from '../../types';
-import { notify } from '../../notifications';
+import { WalletAdapter } from '@sb/dexUtils/types'
+import { notify } from '@sb/dexUtils/notifications';
 
 export class MathWalletAdapter extends EventEmitter implements WalletAdapter {
   _publicKey?: PublicKey;
@@ -40,7 +40,7 @@ export class MathWalletAdapter extends EventEmitter implements WalletAdapter {
   }
 
   get publicKey() {
-    return this._publicKey || DEFAULT_PUBLIC_KEY;
+    return this._publicKey;
   }
 
   async signTransaction(transaction: Transaction) {
@@ -54,16 +54,6 @@ export class MathWalletAdapter extends EventEmitter implements WalletAdapter {
   connect() {
     if (this._onProcess) {
       return;
-    }
-
-    if (!window.solana) {
-      notify({ message: 'Please, open the mathwallet plugin and switch to Solana' })
-      return
-    }
-
-    if (!window.solana?.getAccounts) {
-      notify({ message: 'Sorry, Mathwallet is under maintenance now, try to connect later.' })
-      return
     }
 
     if (!this._provider) {

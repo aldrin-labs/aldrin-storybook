@@ -1,9 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import { withTheme } from '@material-ui/core/styles'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 // import stableCoins from '@core/config/stableCoins'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
@@ -15,145 +14,97 @@ import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
 
 // import TextInputLoader from '@sb/components/Placeholders/TextInputLoader'
 
-import { IProps, IState } from './AutoSuggestSeletec.types'
+import { IProps } from './AutoSuggestSeletec.types'
 import { ExchangePair, SelectR } from './AutoSuggestSelect.styles'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
-import { updateFavoritePairs } from '@core/graphql/mutations/chart/updateFavoritePairs'
 import SelectWrapper from '../SelectWrapper/SelectWrapper'
+import useMobileSize from '@webhooks/useMobileSize'
 
-class IntegrationReactSelect extends React.PureComponent<IProps, IState> {
-  state = {
-    isClosed: true,
-    isMenuOpen: false,
-    id: null,
+const IntegrationReactSelect = (props: IProps) => {
+  const {
+    theme: {
+      palette: { divider },
+    },
+    theme,
+    selectStyles,
+    activeExchange,
+    market,
+    marketName,
+    markets,
+    allMarketsMap,
+    tokenMap,
+    isMintsPopupOpen,
+    setIsMintsPopupOpen,
+  } = props
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const isMobile = useMobileSize()
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen)
   }
 
-  componentWillUnmount() {
-    clearInterval(this.state.id)
+  const closeMenu = () => {
+    setIsMenuOpen(false)
   }
 
-  onMenuOpen = () => {
-    this.setState({ isClosed: false })
-  }
-
-  onMenuClose = () => {
-    this.setState({ isClosed: true })
-  }
-
-  toggleMenu = () => {
-    this.setState((prevState) => ({ isMenuOpen: !prevState.isMenuOpen }))
-  }
-
-  closeMenu = () => {
-    this.setState({ isMenuOpen: false })
-  }
-
-  openMenu = () => {
-    this.setState({ isMenuOpen: true })
-  }
-
-  handleChange = ({
-    value,
-    isCustomUserMarket,
-    address,
-  }: {
-    value: string
-    isCustomUserMarket: boolean
-    address: string
-  }) => {
-    const { markets, customMarkets, history } = this.props
-
-    console.log(
-      'onSelectPair',
-      value,
-      markets,
-      customMarkets,
-      isCustomUserMarket
-    )
+  const handleChange = ({ value }: { value: string }) => {
+    const { history } = props
 
     if (!value) {
       return
     }
 
-    this.closeMenu()
-
+    closeMenu()
     history.push(`/chart/spot/${value}`)
 
     return
   }
 
-  render() {
-    const {
-      value,
-      theme: {
-        palette: { divider },
-      },
-      theme,
-      selectStyles,
-      updateFavoritePairsMutation,
-      marketType,
-      activeExchange,
-    } = this.props
-
-    const {
-      market,
-      marketName,
-      customMarkets,
-      setCustomMarkets,
-      markets,
-      style,
-      handleDeprecated,
-      setHandleDeprecated,
-      addMarketVisible,
-      setAddMarketVisible,
-      deprecatedMarkets,
-      getMarketInfos,
-    } = this.props
-
-    const { isClosed, isMenuOpen } = this.state
-
-    return (
-      <>
-        <ExchangePair
-          id={'ExchangePair'}
-          style={{ width: '14.4rem', ...style }}
-          border={divider}
-          selectStyles={selectStyles}
-          fixed={isMenuOpen}
+  return (
+    <>
+      <ExchangePair
+        id={'ExchangePair'}
+        border={divider}
+        selectStyles={selectStyles}
+        fixed={isMenuOpen}
+      >
+        <div
+          onClick={isMobile && toggleMenu}
+          style={{ display: 'flex', width: '100%' }}
         >
-          <div
-            onClick={this.toggleMenu}
-            style={{ display: 'flex', width: '100%' }}
-          >
-            <SelectR
-              id={this.props.id}
-              style={{ width: '100%' }}
-              value={
-                isClosed &&
-                marketName && {
-                  marketName,
-                  label: marketName,
-                }
+          <SelectR
+            style={{ width: '100%' }}
+            value={
+              !isMenuOpen &&
+              marketName && {
+                marketName,
+                label: marketName,
               }
-              fullWidth={true}
-              isDisabled={true}
-            />
-          </div>
-          <SelectWrapper
-            id={'selectWrapper'}
-            theme={theme}
-            updateFavoritePairsMutation={updateFavoritePairsMutation}
-            onSelectPair={this.handleChange}
-            closeMenu={this.closeMenu}
-            marketType={1}
-            activeExchange={activeExchange}
-            markets={markets}
+            }
+            fullWidth={true}
+            isDisabled={true}
           />
-        </ExchangePair>
-      </>
-    )
-  }
+        </div>
+        <SelectWrapper
+          id={'selectWrapper'}
+          theme={theme}
+          onSelectPair={handleChange}
+          closeMenu={closeMenu}
+          marketType={1}
+          activeExchange={activeExchange}
+          markets={markets}
+          allMarketsMap={allMarketsMap}
+          market={market}
+          tokenMap={tokenMap}
+          isMintsPopupOpen={isMintsPopupOpen}
+          setIsMintsPopupOpen={setIsMintsPopupOpen}
+          marketName={marketName}
+        />
+      </ExchangePair>
+    </>
+  )
 }
 
 export default compose(
@@ -169,9 +120,6 @@ export default compose(
   }),
   graphql(CHANGE_CURRENCY_PAIR, {
     name: 'changeCurrencyPairMutation',
-  }),
-  graphql(updateFavoritePairs, {
-    name: 'updateFavoritePairsMutation',
   }),
   graphql(ADD_CHART, { name: 'addChartMutation' }),
   withMarketUtilsHOC

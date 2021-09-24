@@ -12,7 +12,6 @@ import { BlockTemplate } from '@sb/compositions/Pools/index.styles'
 
 import AllocationDonutChart from './DonutChart'
 import AllocationLegend from './Legend'
-import { fixedColors, getRandomBlueColor } from './DonutChart/utils'
 
 import { IProps } from './index.types'
 import {
@@ -21,45 +20,42 @@ import {
   ChartContainer,
 } from './index.styles'
 
-const fixedColorsForLegend = [
-  'linear-gradient(90deg, #366CE5 0%, #747CF6 95.65%)',
-  'linear-gradient(90deg, #D3A987 0%, #EE7A96 100%)',
-  'linear-gradient(90deg, #95D2BA 0%, #83E6EC 100%)',
-  'linear-gradient(90deg, #4071B6 0%, #52B7F6 100%)',
-]
+import { DarkTooltip } from '../TooltipCustom/Tooltip'
+import Info from '@icons/inform.svg'
+import SvgIcon from '../SvgIcon'
 
 export const ROWS_TO_SHOW_IN_LEGEND = 4
 
-const DonutChartWithLegend = ({ data = [], theme, id }: IProps) => {
-  const [colors, setColors] = useState<string[]>([])
-  const [colorsForLegend, setColorsForLegend] = useState<string[]>([])
-
-  useEffect(() => {
-    const generatedColors = data.map((_, i) =>
-      i < fixedColors.length ? fixedColors[i] : getRandomBlueColor()
-    )
-
-    const generatedColorsForLegend = data.map((_, i) =>
-      i < fixedColorsForLegend.length
-        ? fixedColorsForLegend[i]
-        : getRandomBlueColor()
-    )
-
-    setColors(generatedColors)
-    setColorsForLegend(generatedColorsForLegend)
-  }, [data])
-
-  const sortedData = data
+const DonutChartWithLegend = ({
+  data = [],
+  theme,
+  id,
+  colors,
+  colorsForLegend,
+}: IProps) => {
+  const formattedData = Object.values(data)
+    .map((el) => ({
+      symbol: el.symbol,
+      value: id === 'target' ? el.targetPercentage : el.percentage,
+    }))
     .sort((a, b) => b.value - a.value)
+
+  const sortedData = formattedData
+    // .sort((a, b) => b.value - a.value)
     .map((tokenData) => ({
       ...tokenData,
       value: tokenData.value,
     }))
 
   const chartData = sortedData.map((tokenData) => tokenData.value)
+
+  const formattedColorsForLegend = formattedData.map(
+    (el) => colorsForLegend[el.symbol]
+  )
+
+  const formattedColorsForChart = formattedData.map((el) => colors[el.symbol])
   // const chartId = chartData.reduce((prev, value) => prev + value + id, '')
 
-  // we need to show only 4 rows in legend
   const otherTokensProgressBarData =
     sortedData.length > ROWS_TO_SHOW_IN_LEGEND
       ? sortedData.slice(ROWS_TO_SHOW_IN_LEGEND).reduce(
@@ -75,8 +71,6 @@ const DonutChartWithLegend = ({ data = [], theme, id }: IProps) => {
     otherTokensProgressBarData
   )
 
-  // console.log('generatedColorsForLegend', colorsForLegend)
-
   return (
     <BlockTemplate
       style={{ margin: '0 0 2rem 0', overflow: 'scroll' }}
@@ -87,27 +81,40 @@ const DonutChartWithLegend = ({ data = [], theme, id }: IProps) => {
       <ChartContainer>
         <HeaderContainer theme={theme} justify={'space-between'}>
           <RowContainer padding={'2rem'} style={{ flexWrap: 'nowrap' }}>
-            <WhiteTitle theme={theme} style={{ marginRight: '2rem' }}>
-              {id === 'target' ? 'Target Allocation' : 'Current Allocation'}
+            <WhiteTitle theme={theme} style={{ marginRight: '1rem' }}>
+              {id === 'target' ? (
+                <DarkTooltip
+                  title={
+                    'The final distribution may differ slightly from the set distribution due to differences in min. order size values in different markets, as well as market movements.'
+                  }
+                >
+                  <Row wrap={'nowrap'}>
+                    <span>Est. Target Allocation</span>
+                    <SvgIcon src={Info} width={'3rem'} padding={'0 0 0 1rem'} />
+                  </Row>
+                </DarkTooltip>
+              ) : (
+                'Current Allocation'
+              )}
             </WhiteTitle>
             <Line style={{ border: '0.1rem solid #383B45' }} />
           </RowContainer>
         </HeaderContainer>
         <RowContainer height={'calc(100% - 5rem)'}>
           <AllocationChartContainer>
-            {/* we need to re-render chart on data update */}
             <AllocationDonutChart
               id={id}
               data={chartData}
-              colors={colors}
+              colors={formattedColorsForChart}
               tooltipData={sortedData}
             />
           </AllocationChartContainer>
-          <AllocationLegendContainer>
+          <AllocationLegendContainer centerRows={legendData.length <= 4}>
             <AllocationLegend
+              id={'legend'}
               theme={theme}
               data={legendData}
-              colors={colorsForLegend}
+              colors={formattedColorsForLegend}
             />
           </AllocationLegendContainer>
         </RowContainer>

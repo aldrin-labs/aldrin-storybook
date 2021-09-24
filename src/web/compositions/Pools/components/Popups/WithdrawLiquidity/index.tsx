@@ -17,7 +17,7 @@ import {
 import { PublicKey } from '@solana/web3.js'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
-import { PoolInfo, PoolsPrices } from '@sb/compositions/Pools/index.types'
+import { PoolInfo, DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
@@ -27,7 +27,7 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 export const WithdrawalPopup = ({
   theme,
   open,
-  poolsPrices,
+  dexTokensPrices,
   selectedPool,
   allTokensData,
   close,
@@ -35,7 +35,7 @@ export const WithdrawalPopup = ({
 }: {
   theme: Theme
   open: boolean
-  poolsPrices: PoolsPrices[]
+  dexTokensPrices: DexTokensPrices[]
   selectedPool: PoolInfo
   allTokensData: TokenInfo[]
   close: () => void
@@ -107,14 +107,14 @@ export const WithdrawalPopup = ({
     !withdrawAmountTokenB
 
   const baseTokenPrice =
-    poolsPrices.find(
+    dexTokensPrices.find(
       (tokenInfo) =>
         tokenInfo.symbol === selectedPool.tokenA ||
         tokenInfo.symbol === baseSymbol
     )?.price || 0
 
   const quoteTokenPrice =
-    poolsPrices.find(
+    dexTokensPrices.find(
       (tokenInfo) =>
         tokenInfo.symbol === selectedPool.tokenB ||
         tokenInfo.symbol === quoteSymbol

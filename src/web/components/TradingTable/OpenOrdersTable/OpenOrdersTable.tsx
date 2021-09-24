@@ -1,24 +1,32 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { TableWithSort } from '@sb/components'
 
-import {
-  updateOpenOrderHistoryQuerryFunction,
-  combineOpenOrdersTable,
-  getEmptyTextPlaceholder,
-  getTableHead,
-} from '@sb/components/TradingTable/TradingTable.utils'
+import { getEmptyTextPlaceholder } from '@sb/components/TradingTable/TradingTable.utils'
 
-import { PaginationBlock } from '../TradingTablePagination'
-import { cancelOrderStatus } from '@core/utils/tradingUtils'
-import { useOpenOrders } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { cancelOrder } from '@sb/dexUtils/send'
+import { combineOpenOrdersTable } from './OpenOrdersTable.utils'
+import { openOrdersColumnNames } from '../TradingTable.mocks'
 
 const OpenOrdersTable = (props) => {
   const { wallet } = useWallet()
   const connection = useConnection()
+
+  const {
+    tab,
+    theme,
+    show,
+    handlePairChange,
+    openOrders,
+    onCancelAll,
+    isCancellingAllOrders,
+    cancelOrderCallback = () => {},
+    styles = {},
+    stylesForTable = {},
+    tableBodyStyles = {},
+  } = props
 
   const onCancelOrder = async (order) => {
     try {
@@ -27,8 +35,9 @@ const OpenOrdersTable = (props) => {
         market: order.market,
         connection,
         wallet,
-        signers: []
+        signers: [],
       })
+      cancelOrderCallback()
     } catch (e) {
       notify({
         message: 'Error cancelling order',
@@ -41,97 +50,39 @@ const OpenOrdersTable = (props) => {
   }
 
   const cancelOrderWithStatus = async (order) => {
-    const { showCancelResult } = props
-
-    // await props.addOrderToCanceled(orderId)
-    const result = await onCancelOrder(order)
-    // const status = await cancelOrderStatus(result)
-
-    // if (status.result === 'error') {
-    //   await props.clearCanceledOrders()
-    // }
-
-    // showCancelResult(status)
+    await onCancelOrder(order)
   }
-
-  const {
-    tab,
-    theme,
-    show,
-    page,
-    perPage,
-    marketType,
-    allKeys,
-    specificPair,
-    handleChangePage,
-    handleChangeRowsPerPage,
-    getOpenOrderHistoryQuery,
-    handleToggleAllKeys,
-    handleToggleSpecificPair,
-    arrayOfMarketIds,
-    canceledOrders,
-    handlePairChange,
-    keys,
-  } = props
-
-  const openOrders = useOpenOrders()
 
   if (!show) {
     return null
   }
 
+  const showCancelAllButton = !!onCancelAll
+
   const openOrdersProcessedData = combineOpenOrdersTable(
     openOrders,
     cancelOrderWithStatus,
     theme,
-    arrayOfMarketIds,
-    marketType,
-    canceledOrders,
-    keys,
-    handlePairChange
+    handlePairChange,
+    isCancellingAllOrders,
   )
 
   return (
     <TableWithSort
       style={{
-        borderRadius: 0,
+        borderRadius: 'auto',
         height: 'calc(100% - 6rem)',
         overflowX: 'hidden',
         backgroundColor: 'inherit',
+        ...styles,
       }}
-      stylesForTable={{ backgroundColor: 'inherit' }}
+      stylesForTable={{ backgroundColor: 'inherit', ...stylesForTable }}
+      tableBodyStyles={{ ...tableBodyStyles }}
       defaultSort={{
         sortColumn: 'date',
         sortDirection: 'desc',
       }}
       withCheckboxes={false}
-      // pagination={{
-      //   fakePagination: false,
-      //   enabled: true,
-      //   totalCount: 0,
-      //   page: page,
-      //   rowsPerPage: perPage,
-      //   rowsPerPageOptions: [10, 20, 30, 50, 100],
-      //   handleChangePage: handleChangePage,
-      //   handleChangeRowsPerPage: handleChangeRowsPerPage,
-      //   additionalBlock: (
-      //     <PaginationBlock
-      //       {...{
-      //         theme,
-      //         allKeys,
-      //         specificPair,
-      //         handleToggleAllKeys,
-      //         handleToggleSpecificPair,
-      //       }}
-      //     />
-      //   ),
-      //   paginationStyles: {
-      //     width: 'calc(100%)',
-      //     backgroundColor: theme.palette.white.background,
-      //     border: theme.palette.border.main,
-      //     borderRight: 0,
-      //   },
-      // }}
       tableStyles={{
         cell: {
           color: theme.palette.dark.main,
@@ -142,6 +93,9 @@ const OpenOrdersTable = (props) => {
           backgroundColor: 'inherit',
           boxShadow: 'none',
         },
+        heading: {
+          backgroundColor: '#222429',
+        },
         tab: {
           padding: 0,
           boxShadow: 'none',
@@ -149,43 +103,9 @@ const OpenOrdersTable = (props) => {
       }}
       emptyTableText={getEmptyTextPlaceholder(tab)}
       data={{ body: openOrdersProcessedData }}
-      columnNames={getTableHead(tab, marketType)}
+      columnNames={openOrdersColumnNames(showCancelAllButton, onCancelAll)}
     />
   )
-  // }
 }
 
-const MemoizedWrapper = React.memo(OpenOrdersTable, (prevProps, nextProps) => {
-  // TODO: Refactor isShowEqual --- not so clean
-  const isShowEqual = !nextProps.show && !prevProps.show
-  const showAllAccountsEqual =
-    prevProps.showOpenOrdersFromAllAccounts ===
-    nextProps.showOpenOrdersFromAllAccounts
-  const showAllPairsEqual =
-    prevProps.showAllOpenOrderPairs === nextProps.showAllOpenOrderPairs
-  // TODO: here must be smart condition if specificPair is not changed
-  const pairIsEqual = prevProps.currencyPair === nextProps.currencyPair
-  // TODO: here must be smart condition if showAllAccountsEqual is true & is not changed
-  const selectedKeyIsEqual =
-    prevProps.selectedKey.keyId === nextProps.selectedKey.keyId
-  const isMarketIsEqual = prevProps.marketType === nextProps.marketType
-  const pageIsEqual = prevProps.page === nextProps.page
-  const perPageIsEqual = prevProps.perPage === nextProps.perPage
-
-  if (
-    isShowEqual &&
-    showAllAccountsEqual &&
-    showAllPairsEqual &&
-    pairIsEqual &&
-    selectedKeyIsEqual &&
-    isMarketIsEqual &&
-    pageIsEqual &&
-    perPageIsEqual
-  ) {
-    return true
-  }
-
-  return false
-})
-
-export default MemoizedWrapper
+export default OpenOrdersTable

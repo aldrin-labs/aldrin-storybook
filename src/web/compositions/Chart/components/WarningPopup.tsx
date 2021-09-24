@@ -18,7 +18,7 @@ import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDia
 import { Row } from '../Inputs/PreferencesSelect/index.styles'
 import { Loading } from '@sb/components'
 
-const StyledPaper = styled(Paper)`
+export const StyledPaper = styled(Paper)`
   border-radius: 2rem;
   width: 60rem;
   height: auto;
@@ -27,17 +27,24 @@ const StyledPaper = styled(Paper)`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 2rem;
-  padding: 3rem;
+  padding: 2rem;
 `
-const Title = styled(({ ...props }) => <MainTitle {...props} />)`
+
+export const Title = styled(({ ...props }) => <MainTitle {...props} />)`
   text-transform: none;
   font-size: 2.5rem;
   margin-bottom: 0;
 `
+
 export const BlueButton = styled(
-  ({ isUserConfident, showLoader, children, ...props }) => (
-    <BtnCustom {...props}>
+  ({
+    disabled,
+    showLoader,
+    children,
+    textTransform = 'capitalize',
+    ...props
+  }) => (
+    <BtnCustom textTransform={textTransform} {...props}>
       {showLoader ? (
         <Loading
           color={'#fff'}
@@ -52,16 +59,15 @@ export const BlueButton = styled(
 )`
   font-size: 1.4rem;
   height: 4.5rem;
-  text-transform: capitalize;
-  background-color: ${(props: { isUserConfident: boolean; theme: Theme }) =>
-    props.isUserConfident
+  background-color: ${(props: { disabled: boolean; theme: Theme }) =>
+    !props.disabled
       ? props.theme.palette.blue.serum
       : props.theme.palette.grey.title};
   border-radius: 1rem;
   border-color: none;
   cursor: pointer;
-  color: ${(props: { isUserConfident: boolean }) =>
-    props.isUserConfident ? '#f8faff' : '#222429'};
+  color: ${(props: { disabled: boolean }) =>
+    !props.disabled ? '#f8faff' : '#fff'};
   border: none;
 `
 
@@ -69,10 +75,14 @@ export const WarningPopup = ({
   theme,
   onClose,
   open,
+  isPoolsPage = false,
+  isSwapPage = false,
 }: {
   theme: Theme
   onClose: () => void
   open: boolean
+  isPoolsPage?: boolean
+  isSwapPage?: boolean
 }) => {
   const [isUserConfident, userConfident] = useState(false)
   return (
@@ -89,15 +99,35 @@ export const WarningPopup = ({
         <Title>Warning!</Title>
         <SvgIcon src={Warning} width={'10%'} height={'auto'} />
       </RowContainer>
-      <RowContainer style={{ marginBottom: '2rem' }}>
-        <WhiteText theme={theme}>
-          On Cryptocurrencies.Ai DEX anyone can create their own market. This
-          market is one of those unofficial custom markets. Use at your own
-          risk.
-        </WhiteText>
+      <RowContainer direction={'column'} style={{ marginBottom: '2rem' }}>
+        {isSwapPage ? (
+          <>
+            <WhiteText theme={theme}>
+              Anyone can create a token on Solana, it may be fake version of
+              existing tokens, or token, that claim to represent projects that
+              don't have a token.
+            </WhiteText>
+            <WhiteText style={{ marginTop: '2rem' }} theme={theme}>
+              Always check the quoted price and that the pool has sufficient
+              liquidity before trading.
+            </WhiteText>
+          </>
+        ) : isPoolsPage ? (
+          <WhiteText theme={theme}>
+            On Aldrin.com DEX anyone can create their own market and pool for
+            this market. This pool is one of those unofficial custom pools. Use
+            at your own risk.
+          </WhiteText>
+        ) : (
+          <WhiteText theme={theme}>
+            On Aldrin.com DEX anyone can create their own market and pool for
+            this market. This pool is one of those unofficial custom pools. Use
+            at your own risk.
+          </WhiteText>
+        )}
       </RowContainer>
       <RowContainer justify="space-between" style={{ marginBottom: '2rem' }}>
-        <Row width={'calc(45%)'} justify="space-between" margin="2rem 0 0 0">
+        <Row width={'calc(45%)'} justify="flex-start" margin="2rem 0 0 0">
           <SCheckbox
             id={'warning_checkbox'}
             style={{ padding: 0, marginRight: '1rem' }}
@@ -117,7 +147,9 @@ export const WarningPopup = ({
                 letterSpacing: '0.01rem',
               }}
             >
-              I am confident in the reliability of this market.
+              {isSwapPage
+                ? 'I am aware of the risks'
+                : 'I am confident in the reliability of this market.'}
             </WhiteText>
           </label>
         </Row>

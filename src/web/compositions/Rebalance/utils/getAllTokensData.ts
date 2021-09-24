@@ -3,6 +3,8 @@ import { ALL_TOKENS_MINTS_MAP } from '@sb/dexUtils/markets'
 import { Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
 import { TokenInfo } from '../Rebalance.types'
 
+import { MOCKED_MINTS_MAP } from '@sb/compositions/Rebalance/Rebalance.mock'
+
 export const getAllTokensData = async (
   owner: PublicKey,
   connection: Connection
@@ -20,15 +22,21 @@ export const getAllTokensData = async (
     address: owner.toString(),
   }
 
-  const parsedTokensData = parsedTokenAccounts.value.map((el) => ({
-    symbol: ALL_TOKENS_MINTS_MAP[el.account.data.parsed.info.mint]
+  const parsedTokensData = parsedTokenAccounts.value.map((el) => {
+    const symbol = ALL_TOKENS_MINTS_MAP[el.account.data.parsed.info.mint]
       ? ALL_TOKENS_MINTS_MAP[el.account.data.parsed.info.mint]
-      : el.account.data.parsed.info.mint,
-    decimals: el.account.data.parsed.info.tokenAmount.decimals,
-    amount: el.account.data.parsed.info.tokenAmount.uiAmount,
-    mint: el.account.data.parsed.info.mint,
-    address: el.pubkey.toString(),
-  }))
+      : MOCKED_MINTS_MAP[el.account.data.parsed.info.mint]
+      ? MOCKED_MINTS_MAP[el.account.data.parsed.info.mint]
+      : el.account.data.parsed.info.mint
+
+    return {
+      symbol,
+      decimals: el.account.data.parsed.info.tokenAmount.decimals,
+      amount: el.account.data.parsed.info.tokenAmount.uiAmount,
+      mint: el.account.data.parsed.info.mint,
+      address: el.pubkey.toString(),
+    }
+  })
 
   const allTokensData = [SOLToken, ...parsedTokensData]
 

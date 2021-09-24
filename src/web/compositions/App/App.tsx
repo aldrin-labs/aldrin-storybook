@@ -31,7 +31,7 @@ import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
 import SnackbarWrapper from './SnackbarWrapper/SnackbarWrapper'
 import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
 
-import { AppGridLayout, FontStyle } from './App.styles'
+import { AppGridLayout, AppInnerContainer } from './App.styles'
 // import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
 import { GlobalStyle } from '@sb/styles/global.styles'
 import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
@@ -43,7 +43,7 @@ import { syncStorage } from '@storage'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { useQuery } from 'react-apollo'
 import CardsPanel from '@sb/compositions/Chart/components/CardsPanel'
-import MarketBlock from '@sb/compositions/Chart/components/MarketBlock'
+import MarketBlock from '@sb/compositions/Chart/components/MarketBlock/MarketBlock'
 
 import { ConnectionProvider } from '@sb/dexUtils/connection'
 import { WalletProvider } from '@sb/dexUtils/wallet'
@@ -51,23 +51,41 @@ import { MarketProvider } from '@sb/dexUtils/markets'
 import { PreferencesProvider } from '@sb/dexUtils/preferences'
 import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
 import DevUrlPopup from '@sb/components/PopupForDevUrl'
+import WalletMigrationPopup from '@sb/components/WalletMigrationPopup'
+import { TokenRegistryProvider } from '@sb/dexUtils/tokenRegistry'
+import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
+import { MobileNavBar } from '../Chart/components/MobileNavbar/MobileNavbar'
+import useWindowSize from '@webhooks/useWindowSize'
+import { RebrandingPopup } from '@sb/components/RebrandingPopup/RebrandingPopup'
+import { useLocalStorageState } from '@sb/dexUtils/utils'
 
-const version = `10.9.120`
-const isOnboardingDone = localStorage.getItem('isOnboardingDone')
-const isNotificationDone = localStorage.getItem('isNotificationDone')
-const localPassword = localStorage.getItem('localPassword')
+const version = `10.9.147-fix-open-orders`
 const currentVersion = localStorage.getItem('version')
 
 if (currentVersion !== version) {
-  localStorage.clear()
-  localStorage.setItem('version', version)
-  localStorage.setItem('isOnboardingDone', isOnboardingDone)
-  localStorage.setItem('isNotificationDone', isNotificationDone)
-  document.location.reload()
+  const isMeetRebalancePopupOpen = localStorage.getItem("isMeetRebalancePopupOpen")
+  const isNotificationDone = localStorage.getItem("isNotificationDone")
+  const isOnboardingDone = localStorage.getItem("isOnboardingDone")
+  const isRebrandingPopupOpen = localStorage.getItem("isRebrandingPopupOpen")
+  const isRpcWarningPopupOpen = localStorage.getItem("isRpcWarningPopupOpen")
 
-  if (localPassword !== null) {
-    localStorage.setItem('localPassword', localPassword)
-  }
+  localStorage.clear()
+
+  localStorage.setItem("isMeetRebalancePopupOpen", isMeetRebalancePopupOpen)
+  localStorage.setItem("isNotificationDone", isNotificationDone)
+  localStorage.setItem("isOnboardingDone", isOnboardingDone)
+  localStorage.setItem("isRebrandingPopupOpen", isRebrandingPopupOpen)
+  // localStorage.setItem("isRpcWarningPopupOpen", isRpcWarningPopupOpen)
+
+  localStorage.setItem('version', version)
+  document.location.reload()
+}
+
+const DetermineMobileWindowHeight = () => {
+  const { width, height } = useWindowSize()
+  let vh = height * 0.01
+  document.documentElement.style.setProperty('--vh', `${vh}px`)
+  return null
 }
 
 const AppRaw = ({
@@ -76,6 +94,13 @@ const AppRaw = ({
   location: { pathname: currentPage, search },
 }: any) => {
   const [isDevUrlPopupOpen, openDevUrlPopup] = useState(true)
+  const [
+    isRebrandingPopupOpen,
+    setIsRebrandingPopupOpen,
+  ] = useLocalStorageState('isRebrandingPopupOpen', true)
+  // const [isMigrationToNewUrlPopupOpen, openMigrationToNewUrlPopup] = useState(
+  //   true
+  // )
 
   const isChartPage = /chart/.test(currentPage)
 
@@ -90,13 +115,7 @@ const AppRaw = ({
     getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
 
   const fullscreen: boolean = isChartPage && chartPageView !== 'default'
-  const showFooter =
-    !currentPage.includes('/analytics') &&
-    currentPage !== '/tech_issues' &&
-    !isChartPage &&
-    currentPage !== '/' &&
-    currentPage !== '/pools' &&
-    currentPage !== '/rebalance'
+  const showFooter = false
 
   const isPNL = currentPage.includes('/portfolio/main')
   // TODO: Check this variable
@@ -122,54 +141,69 @@ const AppRaw = ({
           <SnackbarWrapper>
             <SnackbarUtilsConfigurator />
             <CssBaseline />
-            {/* <FontStyle /> */}
             <ConnectionProvider>
-              <MarketProvider>
-                <WalletProvider>
-                  <PreferencesProvider>
-                    <AppGridLayout
-                      id={'react-notification'}
-                      showFooter={showFooter}
-                      isRewards={isRewards}
-                      isPNL={isPNL}
-                      isChartPage={isChartPage}
-                    >
-                      {!pageIsRegistration && (
-                        <CardsPanel pathname={currentPage} hide={fullscreen} />
-                      )}
-                      {isChartPage && <MarketBlock />}
-                      <div
-                        style={{
-                          height: showFooter
-                            ? 'calc(100% - 11.7rem)'
-                            : isChartPage
-                            ? 'calc(100% - 12rem)'
-                            : 'calc(100% - 6rem)',
-                          overflow: currentPage == '/' ? 'hidden' : 'auto',
-                        }}
+              <TokenRegistryProvider>
+                <MarketProvider>
+                  <WalletProvider>
+                    <PreferencesProvider>
+                      <AppGridLayout
+                        id={'react-notification'}
+                        showFooter={showFooter}
+                        isRewards={isRewards}
+                        isPNL={isPNL}
+                        isChartPage={isChartPage}
                       >
-                        {children}
-                      </div>
-                      {showFooter && <FooterWithTheme isRewards={isRewards} />}
-                      {/* 
+                        <MobileNavBar pathname={currentPage} />
+                        {!pageIsRegistration && (
+                          <CardsPanel
+                            pathname={currentPage}
+                            hide={fullscreen}
+                          />
+                        )}
+                        <AppInnerContainer
+                          showFooter={showFooter}
+                          isChartPage={isChartPage}
+                          currentPage={currentPage}
+                        >
+                          {children}
+                        </AppInnerContainer>
+                        {showFooter && (
+                          <FooterWithTheme isRewards={isRewards} />
+                        )}
+                        <MobileFooter pathname={currentPage} />
+                        {/* 
                     <Footer
                       isChartPage={isChartPage}
                       fullscreenMode={fullscreen}
                       showFooter={showFooter}
                     /> */}
-                      {!MASTER_BUILD && !LOCAL_BUILD && (
-                        <DevUrlPopup
-                          open={isDevUrlPopupOpen}
+                        {!MASTER_BUILD && !LOCAL_BUILD && (
+                          <DevUrlPopup
+                            open={isDevUrlPopupOpen}
+                            close={() => {
+                              openDevUrlPopup(false)
+                            }}
+                          />
+                        )}
+                        <RebrandingPopup
+                          open={isRebrandingPopupOpen}
+                          onClose={() => setIsRebrandingPopupOpen(false)}
+                        />
+                        {/* {!isWalletMigrationToNewUrlPopupDone && (
+                        <WalletMigrationPopup
+                          open={isMigrationToNewUrlPopupOpen}
                           close={() => {
-                            openDevUrlPopup(false)
+                            openMigrationToNewUrlPopup(false)
                           }}
                         />
-                      )}
-                    </AppGridLayout>
-                    {/* <ShowWarningOnMoblieDevice /> */}
-                  </PreferencesProvider>
-                </WalletProvider>
-              </MarketProvider>
+                      )} */}
+                        <DetermineMobileWindowHeight />
+                      </AppGridLayout>
+                      {/* <ShowWarningOnMoblieDevice /> */}
+                    </PreferencesProvider>
+                  </WalletProvider>
+                </MarketProvider>
+              </TokenRegistryProvider>
             </ConnectionProvider>
             <GlobalStyle />
             <GlobalStyles />
@@ -193,9 +227,9 @@ const Footer = (props) => {
       <Link
         target="_blank"
         rel="noopener noreferrer"
-        href="https://cryptocurrencies.ai/"
+        href="https://aldrin.com/"
       >
-        Cryptocurrencies.Ai
+        Aldrin.com
       </Link>
       <Link
         href="https://t.me/CCAI_Official"

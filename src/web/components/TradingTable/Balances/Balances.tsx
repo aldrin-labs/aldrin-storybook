@@ -1,34 +1,35 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { TableWithSort } from '@sb/components'
-import { useSnackbar } from 'notistack'
 
 import {
-  updateOpenOrderHistoryQuerryFunction,
-  combineBalancesTable,
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
 
 import {
-  useTokenAccounts,
-  getSelectedTokenAccountForMint,
   useBalances,
-  useSelectedTokenAccounts,
+  useMarket,
+  useSelectedBaseCurrencyAccount,
+  useSelectedQuoteCurrencyAccount,
 } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { settleFunds } from '@sb/dexUtils/send'
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
+import { combineBalancesTable } from './Balances.utils'
 
 const BalancesTable = (props) => {
-  const { tab, theme, show, page, perPage, marketType } = props
+  const { tab, theme, show, marketType } = props
 
   const balances = useBalances()
-  const [accounts] = useTokenAccounts()
   const connection = useConnection()
+
   const { wallet, providerUrl } = useWallet()
-  const [selectedTokenAccounts] = useSelectedTokenAccounts()
+  const { market, baseCurrency, quoteCurrency } = useMarket()
+
+  const baseTokenAccount = useSelectedBaseCurrencyAccount()
+  const quoteTokenAccount = useSelectedQuoteCurrencyAccount()
 
   const isCCAIWallet = providerUrl === CCAIProviderURL
   const showSettle = !isCCAIWallet || !wallet.connected || !wallet.autoApprove
@@ -40,21 +41,16 @@ const BalancesTable = (props) => {
         openOrders,
         connection,
         wallet,
-        baseCurrencyAccount: getSelectedTokenAccountForMint(
-          accounts,
-          market?.baseMintAddress
-        ),
-        quoteCurrencyAccount: getSelectedTokenAccountForMint(
-          accounts,
-          market?.quoteMintAddress
-        ),
-        selectedTokenAccounts,
-        tokenAccounts: accounts,
+        baseCurrency,
+        quoteCurrency,
+        baseTokenAccount,
+        quoteTokenAccount,
+        baseUnsettled: balances[0].unsettled,
+        quoteUnsettled: balances[1].unsettled,
       })
 
       await notify({
         message: 'Successfully settled funds',
-        description: 'No description',
         type: 'success',
       })
     } catch (e) {
@@ -77,7 +73,6 @@ const BalancesTable = (props) => {
     theme,
     showSettle
   )
-
   return (
     <TableWithSort
       rowsWithHover={false}
@@ -119,30 +114,9 @@ const BalancesTable = (props) => {
 const MemoizedWrapper = React.memo(BalancesTable, (prevProps, nextProps) => {
   // TODO: Refactor isShowEqual --- not so clean
   const isShowEqual = !nextProps.show && !prevProps.show
-  const showAllAccountsEqual =
-    prevProps.showOpenOrdersFromAllAccounts ===
-    nextProps.showOpenOrdersFromAllAccounts
-  const showAllPairsEqual =
-    prevProps.showAllOpenOrderPairs === nextProps.showAllOpenOrderPairs
-  // TODO: here must be smart condition if specificPair is not changed
-  const pairIsEqual = prevProps.currencyPair === nextProps.currencyPair
-  // TODO: here must be smart condition if showAllAccountsEqual is true & is not changed
-  const selectedKeyIsEqual =
-    prevProps.selectedKey.keyId === nextProps.selectedKey.keyId
   const isMarketIsEqual = prevProps.marketType === nextProps.marketType
-  const pageIsEqual = prevProps.page === nextProps.page
-  const perPageIsEqual = prevProps.perPage === nextProps.perPage
 
-  if (
-    isShowEqual &&
-    showAllAccountsEqual &&
-    showAllPairsEqual &&
-    pairIsEqual &&
-    selectedKeyIsEqual &&
-    isMarketIsEqual &&
-    pageIsEqual &&
-    perPageIsEqual
-  ) {
+  if (isShowEqual && isMarketIsEqual) {
     return true
   }
 

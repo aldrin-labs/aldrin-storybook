@@ -4,18 +4,14 @@ import { useInterval } from './useInterval'
 import { useConnection } from './connection'
 import { useWallet } from './wallet'
 import {
-  useAllMarkets,
-  useTokenAccounts,
   useMarket,
-  useSelectedTokenAccounts,
-  getSelectedTokenAccountForMint,
+  useSelectedBaseCurrencyAccount,
+  useSelectedOpenOrdersAccount,
+  useSelectedQuoteCurrencyAccount,
 } from './markets'
-import { settleAllFunds, settleFunds } from './send'
-import { PreferencesContextValues } from './types'
+import { settleFunds } from './send'
 
-const PreferencesContext = React.createContext<PreferencesContextValues | null>(
-  null
-)
+const PreferencesContext = React.createContext(null)
 
 export function PreferencesProvider({ children }) {
   const [autoSettleEnabled, setAutoSettleEnabled] = useLocalStorageState(
@@ -23,39 +19,54 @@ export function PreferencesProvider({ children }) {
     true
   )
 
-  const [tokenAccounts] = useTokenAccounts()
   const { connected, wallet } = useWallet()
-
-  // const [marketList] = useAllMarkets();
-  const { market } = useMarket()
   const connection = useConnection()
-  const [selectedTokenAccounts] = useSelectedTokenAccounts()
+
+  const { market, baseCurrency, quoteCurrency } = useMarket()
+
+  const openOrdersAccount = useSelectedOpenOrdersAccount()
+  const baseTokenAccount = useSelectedBaseCurrencyAccount()
+  const quoteTokenAccount = useSelectedQuoteCurrencyAccount()
 
   useInterval(() => {
     const autoSettle = async () => {
       // const markets = (marketList || []).map((m) => m.market);
       try {
-        const openOrders = await market.findOpenOrdersAccountsForOwner(
-          connection,
-          wallet.publicKey
-        )
-        // await settleAllFunds({ connection, wallet, tokenAccounts: (tokenAccounts || []), markets, selectedTokenAccounts });
-        await settleFunds({
-          market,
-          openOrders,
-          connection,
-          wallet,
-          baseCurrencyAccount: getSelectedTokenAccountForMint(
-            tokenAccounts,
-            market?.baseMintAddress
-          ),
-          quoteCurrencyAccount: getSelectedTokenAccountForMint(
-            tokenAccounts,
-            market?.quoteMintAddress
-          ),
-          selectedTokenAccounts: selectedTokenAccounts,
-          tokenAccounts,
-        })
+        const selectedOpenOrders = openOrdersAccount
+
+        const baseExists =
+          selectedOpenOrders &&
+          selectedOpenOrders.baseTokenTotal &&
+          selectedOpenOrders.baseTokenFree
+
+        const quoteExists =
+          selectedOpenOrders &&
+          selectedOpenOrders.quoteTokenTotal &&
+          selectedOpenOrders.quoteTokenFree
+
+        const baseUnsettled =
+          baseExists && market
+            ? market.baseSplSizeToNumber(selectedOpenOrders.baseTokenFree)
+            : null
+        const quoteUnsettled =
+          quoteExists && market
+            ? market.quoteSplSizeToNumber(selectedOpenOrders.quoteTokenFree)
+            : null
+
+        if (baseUnsettled > 0 || quoteUnsettled > 0) {
+          await settleFunds({
+            market,
+            openOrders: openOrdersAccount,
+            connection,
+            wallet,
+            baseCurrency,
+            quoteCurrency,
+            baseTokenAccount,
+            quoteTokenAccount,
+            baseUnsettled,
+            quoteUnsettled,
+          })
+        }
       } catch (e) {
         // console.log('Error auto settling funds: ' + e.message)
       }

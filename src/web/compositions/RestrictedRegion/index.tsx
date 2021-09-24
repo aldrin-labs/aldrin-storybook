@@ -4,7 +4,12 @@ import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 
 import RedPlanetImg from '@sb/images/red_planet.png'
 import { withTheme, Theme } from '@material-ui/core'
-import { DiscordLink, TelegramLink, TwitterLink } from '../Homepage/styles'
+import {
+  LinkToDiscord,
+  LinkToTelegram,
+  LinkToTwitter,
+} from '../Homepage/SocialsLinksComponents'
+import useMobileSize from '@webhooks/useMobileSize'
 
 const MainTitle = styled.h2`
   font-size: 2.4rem;
@@ -25,6 +30,7 @@ const Link = styled.a`
 `
 
 const RestrictedRegion = ({ theme }: { theme: Theme }) => {
+  const isMobile = useMobileSize()
   return (
     <RowContainer direction="column" height="100%">
       <RowContainer margin="0 0 6rem 0">
@@ -32,12 +38,12 @@ const RestrictedRegion = ({ theme }: { theme: Theme }) => {
       </RowContainer>
       <RowContainer margin="0 0 2rem 0">
         <MainTitle theme={theme}>
-          Sorry, Cryptocurrencies.Ai is not available in your country.
+          Sorry, Aldrin.com is not available in your country.
         </MainTitle>
       </RowContainer>
       <RowContainer direction="column" margin="0 0 4rem 0">
         <Text theme={theme}>
-          Cryptocurrencies.Ai doesn't offer its services in your region.
+          Aldrin.com doesn't offer its services in your region.
         </Text>
       </RowContainer>
       <RowContainer margin="0 0 2rem 0">
@@ -46,19 +52,19 @@ const RestrictedRegion = ({ theme }: { theme: Theme }) => {
           question, please contact us via:
         </Text>
       </RowContainer>
-      <Row justify="space-between" width="30%">
+      <Row justify="space-between" width={isMobile ? '75%' : '30%'}>
         <Link
           theme={theme}
-          href="mailto:contact@cryptocurrencies.ai"
+          href="mailto:contact@aldrin.com"
           style={{ marginRight: '16px' }}
         >
-          contact@cryptocurrencies.ai
+          contact@aldrin.com
         </Link>
         <Text theme={theme}>or</Text>
         <Row>
-          <TwitterLink />
-          <TelegramLink />
-          <DiscordLink />
+          <LinkToTwitter />
+          <LinkToTelegram />
+          <LinkToDiscord />
         </Row>
       </Row>
     </RowContainer>

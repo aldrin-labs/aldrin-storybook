@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
+import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 
 import { Theme } from '@material-ui/core'
 import { getSerumData } from '@core/graphql/queries/chart/getSerumData'
@@ -7,6 +8,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 
 import {
   formatNumberToUSFormat,
+  roundAndFormatNumber,
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 
@@ -14,103 +16,120 @@ import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
 import { getDecimalCount } from '@sb/dexUtils/utils'
 import SvgIcon from '@sb/components/SvgIcon'
 import SrmLogo from '@icons/srmLogo.svg'
+import RINLogo from '@icons/RINLogo.svg'
 
 import {
   Row,
   BlockContainer,
   GreenTitle,
-  SerumTitleBlockContainer,
-  SerumWhiteTitle,
+  TokenTitleBlockContainer,
+  TokenWhiteTitle,
   Text,
   TopBarTitle,
 } from '../../index.styles'
 
-import SRMPriceBlock from './SRMPriceBlock'
-import SRMMarketCap from './SRMMarketCap'
+import PriceBlock from './tokenPriceBlock'
+import MarketCap from './tokenMarketCap'
+import { getCCAICirculationSupply } from '../CirculationSupply'
+import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 
-export const serumData = {
-  totalySupply: 161000001,
-  burned: 925972.231,
+export const ccaiData = {
+  totalySupply: 50000000,
+  burned: 0,
   circulatingSupply: 50000000,
 }
 
 const TopBar = ({
   theme,
+  getDexTokensPricesQuery,
 }: {
   theme: Theme
+  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }) => {
+  const [CCAICirculatingSupply, setCirculatingSupply] = useState(0)
+  const [showGreen, updateToGreen] = useState(false)
+  const [previousPrice, savePreviousPrice] = useState(0)
+
+  useEffect(() => {
+    const getCCAISupply = async () => {
+      const CCAICircSupplyValue = await getCCAICirculationSupply()
+      setCirculatingSupply(CCAICircSupplyValue)
+    }
+    getCCAISupply()
+  }, [])
+
   const { market } = useMarket() || { market: { tickSize: 8 } }
 
-  let circulatingSupply =
-    serumData.circulatingSupply -
-    serumData.burned
-  let totalySupply =
-    serumData.totalySupply -
-    serumData.burned
+  const CCAIPrice =
+    getDexTokensPricesQuery?.getDexTokensPrices?.filter(
+      (el) => el.symbol === 'CCAI'
+    )[0]?.price || 0
 
-  let pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
+  useEffect(() => {
+    if (CCAIPrice > previousPrice) {
+      updateToGreen(true)
+    } else {
+      updateToGreen(false)
+    }
 
+    savePreviousPrice(CCAIPrice)
+  }, [CCAIPrice])
+
+  let totalySupply = ccaiData.totalySupply - ccaiData.burned
+  const CCAImarketcap = CCAICirculatingSupply * CCAIPrice
   return (
     <>
       <Row height={'100%'}>
         <SvgIcon
-          style={{ marginRight: '.75rem' }}
+          style={{ marginRight: '1rem' }}
           height={'50%'}
           width={'auto'}
-          src={SrmLogo}
+          src={RINLogo}
         />
-        <SerumWhiteTitle theme={theme}>SRM / Serum</SerumWhiteTitle>
-        <SRMPriceBlock
+        <TokenWhiteTitle theme={theme}>RIN</TokenWhiteTitle>
+        <GreenTitle
+          style={{ color: showGreen ? '#A5E898' : '#F26D68' }}
           theme={theme}
-          pricePrecision={3}
-          exchange={{ symbol: 'binance' }}
-          marketType={0}
-          symbol={'SRM_USDT'}
-        />
+        >
+          {CCAIPrice === 0 ? '-' : `$${formatNumberToUSFormat(
+            roundAndFormatNumber(CCAIPrice, 4, false)
+          )}`}
+        </GreenTitle>
       </Row>
       <Row>
-        <SerumTitleBlockContainer>
-          <TopBarTitle theme={theme}>SRM Marketcap</TopBarTitle>
-          <SRMMarketCap
-            theme={theme}
-            pricePrecision={3}
-            exchange={{ symbol: 'binance' }}
-            marketType={0}
-            symbol={'SRM_USDT'}
-            circulatingSupply={circulatingSupply}
-          />
-        </SerumTitleBlockContainer>
-        <SerumTitleBlockContainer>
-          <TopBarTitle theme={theme}>SRM Total Supply</TopBarTitle>
+        <TokenTitleBlockContainer>
+          <TopBarTitle theme={theme}>RIN Marketcap</TopBarTitle>{' '}
+          <Text theme={theme}>
+            {CCAImarketcap === 0 ? '-' : `$${formatNumberToUSFormat(CCAImarketcap.toFixed(0))}`}
+          </Text>
+        </TokenTitleBlockContainer>
+        <TokenTitleBlockContainer>
+          <TopBarTitle theme={theme}>RIN Total Supply</TopBarTitle>
           <BlockContainer>
             <Text theme={theme}>
-              {formatNumberToUSFormat(totalySupply.toFixed(0))} SRM
+              {formatNumberToUSFormat(totalySupply.toFixed(0))} RIN
             </Text>
           </BlockContainer>
-        </SerumTitleBlockContainer>
-        <SerumTitleBlockContainer>
-          <TopBarTitle theme={theme}>SRM Circulating Supply</TopBarTitle>
+        </TokenTitleBlockContainer>
+        <TokenTitleBlockContainer>
+          <TopBarTitle theme={theme}>RIN Circulating Supply</TopBarTitle>
           <BlockContainer>
             <Text theme={theme}>
-              {formatNumberToUSFormat(circulatingSupply.toFixed(0))} SRM
+              {formatNumberToUSFormat(CCAICirculatingSupply.toFixed(0))} RIN
             </Text>
           </BlockContainer>
-        </SerumTitleBlockContainer>
-        <SerumTitleBlockContainer>
-          <TopBarTitle theme={theme}>SRM Burned</TopBarTitle>
-          <BlockContainer>
-            {' '}
-            <Text theme={theme}>
-              {formatNumberToUSFormat(
-                serumData.burned.toFixed(0)
-              )}{' '}
-              SRM
-            </Text>
-          </BlockContainer>
-        </SerumTitleBlockContainer>
+        </TokenTitleBlockContainer>
       </Row>
     </>
   )
 }
 
-export default TopBar
+export default compose(
+  queryRendererHoc({
+    query: getDexTokensPrices,
+    name: 'getDexTokensPricesQuery',
+    fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
+    pollInterval: 10000,
+  })
+)(TopBar)

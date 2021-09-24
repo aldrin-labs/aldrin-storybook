@@ -1,10 +1,11 @@
 import { useMemo } from 'react'
 import * as BufferLayout from 'buffer-layout';
 import bs58 from 'bs58';
-import { PublicKey } from '@solana/web3.js';
+import { Connection, PublicKey } from '@solana/web3.js';
 import { TOKEN_MINTS } from '@project-serum/serum';
 import { useAllMarkets, useCustomMarkets } from '@sb/dexUtils/markets'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions';
+import { DEX_PID } from '@core/config/dex';
 
 export const ACCOUNT_LAYOUT = BufferLayout.struct([
   BufferLayout.blob(32, 'mint'),
@@ -52,57 +53,51 @@ export const TOKEN_PROGRAM_ID = new PublicKey(
   'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
 );
 
-export async function getOwnedTokenAccounts(connection, publicKey) {
-  let filters = getOwnedAccountsFilters(publicKey);
-  let resp = await connection._rpcRequest('getProgramAccounts', [
-    TOKEN_PROGRAM_ID.toBase58(),
-    {
-      commitment: connection.commitment,
-      filters,
-    },
-  ]);
-  if (resp.error) {
-    throw new Error(
-      'failed to get token accounts owned by ' +
-      publicKey.toBase58() +
-      ': ' +
-      resp.error.message,
-    );
-  }
-  return resp.result
+export async function getTokenAccountsByOwner(connection: Connection, publicKey: PublicKey) {
+  const result = await connection.getTokenAccountsByOwner(
+    publicKey,
+    { programId: TOKEN_PROGRAM_ID },
+  );
+
+  return result.value
     .map(({ pubkey, account: { data, executable, owner, lamports } }) => ({
       publicKey: new PublicKey(pubkey),
       accountInfo: {
-        data: bs58.decode(data),
+        data,
         executable,
         owner: new PublicKey(owner),
         lamports,
       },
     }))
-    .filter(({ accountInfo }) => {
-      // TODO: remove this check once mainnet is updated
-      return filters.every((filter) => {
-        if (filter.dataSize) {
-          return accountInfo.data.length === filter.dataSize;
-        } else if (filter.memcmp) {
-          let filterBytes = bs58.decode(filter.memcmp.bytes);
-          return accountInfo.data
-            .slice(
-              filter.memcmp.offset,
-              filter.memcmp.offset + filterBytes.length,
-            )
-            .equals(filterBytes);
-        }
-        return false;
-      });
-    });
 }
+
+export async function getOwnedTokenAccounts(connection, publicKey) {
+  let filters = getOwnedAccountsFilters(publicKey);
+  let resp = await connection.getProgramAccounts(
+    TOKEN_PROGRAM_ID,
+    {
+      filters,
+    },
+  );
+  return resp
+    .map(({ pubkey, account: { data, executable, owner, lamports } }) => ({
+      publicKey: new PublicKey(pubkey),
+      accountInfo: {
+        data,
+        executable,
+        owner: new PublicKey(owner),
+        lamports,
+      },
+    }))
+}
+
 
 export async function getTokenAccountInfo(connection, ownerAddress) {
   let [splAccounts, account] = await Promise.all([
-    getOwnedTokenAccounts(connection, ownerAddress),
+    getTokenAccountsByOwner(connection, ownerAddress),
     connection.getAccountInfo(ownerAddress),
   ]);
+
   const parsedSplAccounts = splAccounts.map(({ publicKey, accountInfo }) => {
     return {
       pubkey: publicKey,

@@ -14,7 +14,7 @@ import {
 import * as Layout from './layout';
 import {sendAndConfirmTransaction} from './utils/send-and-confirm-transaction';
 import {loadAccount} from './utils/account';
-import { WalletAdapter } from '../types';
+import { WalletAdapter } from '@sb/dexUtils/types'
 import { sendAndConfirmTransactionViaWallet } from '../token/utils/send-and-confirm-transaction-via-wallet';
 
 export const TOKEN_SWAP_PROGRAM_ID: PublicKey = new PublicKey(
@@ -617,17 +617,17 @@ export class TokenSwap {
     poolDestination: PublicKey,
     userDestination: PublicKey,
     hostFeeAccount: ?PublicKey,
-    userTransferAuthority: Account,
+    userTransferAuthority: PublicKey,
     amountIn: number | Numberu64,
     minimumAmountOut: number | Numberu64,
-  ): Promise<[Transaction, Account]> {
+  ): Promise<[Transaction]> {
     const transaction = new Transaction();
 
     transaction.add(
       TokenSwap.swapInstruction(
         this.tokenSwap,
         this.authority,
-        userTransferAuthority.publicKey,
+        userTransferAuthority,
         userSource,
         poolSource,
         poolDestination,
@@ -649,7 +649,7 @@ export class TokenSwap {
     //   userTransferAuthority,
     // );
 
-    return [transaction, userTransferAuthority]
+    return [transaction]
   }
 
   static swapInstruction(

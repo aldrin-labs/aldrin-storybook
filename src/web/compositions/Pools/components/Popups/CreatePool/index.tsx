@@ -23,7 +23,7 @@ import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
-import { PoolInfo, PoolsPrices } from '@sb/compositions/Pools/index.types'
+import { PoolInfo, DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import { notify } from '@sb/dexUtils/notifications'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
@@ -38,7 +38,7 @@ export const CreatePoolPopup = ({
   theme,
   open,
   allTokensData,
-  poolsPrices,
+  dexTokensPrices,
   getPoolsInfoQuery,
   close,
   refreshAllTokensData,
@@ -46,7 +46,7 @@ export const CreatePoolPopup = ({
   theme: Theme
   open: boolean
   allTokensData: TokenInfo[]
-  poolsPrices: PoolsPrices[]
+  dexTokensPrices: DexTokensPrices[]
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
   close: () => void
   refreshAllTokensData: () => void
@@ -151,14 +151,14 @@ export const CreatePoolPopup = ({
       : false
 
   const baseTokenPrice =
-    poolsPrices.find(
+    dexTokensPrices.find(
       (tokenInfo) =>
         tokenInfo.symbol === baseTokenMintAddress ||
         tokenInfo.symbol === baseSymbol
     )?.price || 0
 
   const quoteTokenPrice =
-    poolsPrices.find(
+    dexTokensPrices.find(
       (tokenInfo) =>
         tokenInfo.symbol === quoteTokenMintAddress ||
         tokenInfo.symbol === quoteSymbol
@@ -180,16 +180,16 @@ export const CreatePoolPopup = ({
       fullScreen={false}
       onClose={close}
       onEnter={() => {
-        setBaseTokenAddressFromSeveral('');
-        setQuoteTokenAddressFromSeveral('');
-        setBaseTokenMintAddress('');
-        setQuoteTokenMintAddress('');
-        setBaseAmount('');
-        setQuoteAmount('');
-        setIsSelectCoinPopupOpen(false);
-        setIsBaseTokenSelecting(false);
-        setWarningChecked(false);
-        setOperationLoading(false);
+        setBaseTokenAddressFromSeveral('')
+        setQuoteTokenAddressFromSeveral('')
+        setBaseTokenMintAddress('')
+        setQuoteTokenMintAddress('')
+        setBaseAmount('')
+        setQuoteAmount('')
+        setIsSelectCoinPopupOpen(false)
+        setIsBaseTokenSelecting(false)
+        setWarningChecked(false)
+        setOperationLoading(false)
       }}
       maxWidth={'md'}
       open={open}
@@ -251,11 +251,11 @@ export const CreatePoolPopup = ({
           <AttentionComponent
             text={
               isNeedToLeftSomeSOL
-                ? 'Sorry, but you need to left some SOL (al least 0.1 SOL) on your wallet SOL account to successfully execute further transactions.'
+                ? 'Sorry, but you need to left some SOL (at least 0.1 SOL) on your wallet SOL account to successfully execute further transactions.'
                 : baseAmount > maxBaseAmount
-                ? `You entered more tokenA amount than you have.`
+                ? `You entered more token A amount than you have.`
                 : quoteAmount > maxQuoteAmount
-                ? `You entered more tokenB amount than you have.`
+                ? `You entered more token B amount than you have.`
                 : ''
             }
             blockHeight={'8rem'}
@@ -398,7 +398,7 @@ export const CreatePoolPopup = ({
         mints={filteredMints}
         allTokensData={allTokensData}
         open={isSelectCoinPopupOpen}
-        poolsPrices={poolsPrices}
+        dexTokensPrices={dexTokensPrices}
         isBaseTokenSelecting={isBaseTokenSelecting}
         setBaseTokenAddressFromSeveral={setBaseTokenAddressFromSeveral}
         setQuoteTokenAddressFromSeveral={setQuoteTokenAddressFromSeveral}

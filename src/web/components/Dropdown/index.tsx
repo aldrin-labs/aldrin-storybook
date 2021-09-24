@@ -39,7 +39,15 @@ const WalletStatusButton = ({ wallet, connected, theme, id }) => (
   </BtnCustom>
 )
 
-const ConnectWalletButton = ({ wallet, theme, height, id }) => (
+const ConnectWalletButton = ({
+  wallet,
+  theme,
+  height,
+  id,
+  buttonStyles = {},
+}: {
+  buttonStyles?: React.CSSProperties
+}) => (
   <BtnCustom
     onClick={wallet?.connect}
     btnColor={'#F8FAFF'}
@@ -55,6 +63,7 @@ const ConnectWalletButton = ({ wallet, theme, height, id }) => (
       textTransform: 'none',
       padding: '1rem',
       whiteSpace: 'nowrap',
+      ...buttonStyles,
     }}
     id={id}
   >
@@ -91,6 +100,7 @@ export default class Dropdown extends React.Component<IProps> {
       height,
       showOnTop,
       containerStyle,
+      buttonStyles,
     } = this.props
 
     return (
@@ -115,6 +125,7 @@ export default class Dropdown extends React.Component<IProps> {
               height={height}
               theme={theme}
               id={id}
+              buttonStyles={buttonStyles}
             />
           )}
           <StyledPaper
@@ -170,7 +181,7 @@ export default class Dropdown extends React.Component<IProps> {
                     >
                       <SvgIcon
                         src={provider.icon}
-                        width={'auto'}
+                        width={'2.5rem'}
                         height={'100%'}
                       />
                       {provider.name}

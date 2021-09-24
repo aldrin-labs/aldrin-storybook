@@ -80,7 +80,7 @@ const TechIssues = () => {
         <ButtonLink
           target="_blank"
           rel="noopener noreferrer"
-          href={'https://t.me/CCAI_Official'}
+          href={'https://t.me/Aldrin_Exchange'}
           style={{ marginRight: '1.5rem' }}
         >
           <SvgIcon
@@ -99,7 +99,7 @@ const TechIssues = () => {
           target="_blank"
           rel="noopener noreferrer"
           background={'#886AED'}
-          href={'https://discord.com/invite/2EaKvrs'}
+          href="https://discord.gg/4VZyNxT2WU"
           style={{ marginRight: '1.5rem' }}
         >
           <SvgIcon

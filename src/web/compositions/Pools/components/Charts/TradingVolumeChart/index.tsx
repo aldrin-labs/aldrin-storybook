@@ -74,8 +74,8 @@ export default compose(
     name: 'getTradingVolumeHistoryQuery',
     variables: {
       timezone: getTimezone(),
-      timestampFrom: endOfDayTimestamp - dayDuration * 6,
-      timestampTo: endOfDayTimestamp,
+      timestampFrom: endOfDayTimestamp() - dayDuration * 6,
+      timestampTo: endOfDayTimestamp(),
     },
     fetchPolicy: 'cache-and-network',
   })

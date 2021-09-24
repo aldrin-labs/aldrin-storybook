@@ -4,10 +4,6 @@ import { Redirect, withRouter } from 'react-router-dom'
 import { withTheme } from '@material-ui/styles'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
-import { client } from '@core/graphql/apolloClient'
-import { isEqual } from 'lodash'
-import { MASTER_BUILD } from '@core/utils/config'
-
 import Tour from 'reactour'
 // import { Grid, Hidden } from '@material-ui/core'
 
@@ -18,52 +14,42 @@ import {
 } from '@sb/components/ReactourOnboarding/ReactourOnboarding'
 // import { CardsPanel } from './components'
 import DefaultView from './DefaultView/StatusWrapper'
-import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
-import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
-import { GET_TOOLTIP_SETTINGS } from '@core/graphql/queries/user/getTooltipSettings'
+
 import { getChartLayout } from '@core/graphql/queries/chart/getChartLayout'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
 import { changeChartLayout } from '@core/graphql/mutations/chart/changeChartLayout'
 import { finishJoyride } from '@core/utils/joyride'
 // import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
-import { getChartSteps } from '@sb/config/joyrideSteps'
 
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getChartData } from '@core/graphql/queries/chart/getChartData'
-import { pairProperties } from '@core/graphql/queries/chart/getPairProperties'
 import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
 
-import {
-  prefetchCoinSelector,
-  prefetchDifferentMarketForCoinSelector,
-  prefetchPortfolio,
-  prefetchPortfolioMainSpot,
-  prefetchPortfolioMainFutures,
-  prefetchDeposit,
-  prefetchWithdrawal,
-} from '@core/utils/prefetching'
-import { checLoginStatusWrapper } from '@core/utils/loginUtils'
-
-import withAuth from '@core/hoc/withAuth'
 import { checkLoginStatus } from '@core/utils/loginUtils'
 import {
   MainContainer,
   GlobalStyles,
 } from '@sb/compositions/Chart/Chart.styles'
-import { IProps } from './Chart.types'
 
-import { useMarket } from '@sb/dexUtils/markets'
-
+import { useAllMarketsList, useMarket } from '@sb/dexUtils/markets'
 import { getDecimalCount } from '@sb/dexUtils/utils'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
-import { AWESOME_MARKETS } from '@sb/dexUtils/serum'
+import { useAwesomeMarkets } from '@core/utils/awesomeMarkets/serum'
 import { withPublicKey } from '@core/hoc/withPublicKey'
-import { useWallet } from '@sb/dexUtils/wallet'
 import { WarningPopup } from './components/WarningPopup'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
-import { DevUrlPopup } from '@sb/components/PopupForDevUrl'
+import MarketBlock from './components/MarketBlock/MarketBlock'
+// import { ParticleRuggedPopup } from '@sb/components/ParticleRuggedPopup'
+import { TokenDelistPopup } from '@sb/components/TokenDelistPopup'
+import { tokensToDelist } from '@core/config/dex'
+import { TransactionsConfirmationWarningPopup } from '@sb/components/TransactionsConfirmationWarningPopup/TransactionsConfirmationWarningPopup'
+import { SettleWarningPopup } from '@sb/components/SettleWarningPopup/SettleWarningPopup'
+import { ProposeToSettlePopup } from '@sb/components/ProposeToSettlePopup/ProposeToSettlePopup'
+import { AldrinIsOverCapacityPopup } from '@sb/components/AldrinIsOverCapacityPopup'
+import { RpcCapacityWarningPopup } from '@sb/components/RpcWarningPopup'
+import { MarketDeprecatedPopup } from '@sb/components/MarketDeprecatedPopup/MarketDeprecatedPopup'
+import { useConnection } from '@sb/dexUtils/connection'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
   // Check if the arrays are the same length
@@ -81,24 +67,6 @@ const arraysCustomMarketsMatch = (arr1, arr2) => {
 function ChartPageComponent(props: any) {
   const {
     theme,
-    // getChartDataQuery: {
-    //   getMyProfile: { _id } = { _id: '' },
-    //   getTradingSettings: {
-    //     selectedTradingKey,
-    //     hedgeMode,
-    //     isFuturesWarsKey,
-    //   } = {
-    //     selectedTradingKey: '',
-    //     hedgeMode: false,
-    //     isFuturesWarsKey: false,
-    //   },
-    //   marketByMarketType = [],
-    //   chart: { activeExchange, currencyPair: { pair }, view } = {
-    //     currencyPair: { pair: 'BTC_USDT' },
-    //     activeExchange: { name: 'Binance', symbol: 'binance' },
-    //     view: 'default',
-    //   },
-    // },
     getTooltipSettingsQuery: {
       getTooltipSettings = { chartPage: false, chartPagePopup: false },
     } = {
@@ -136,14 +104,18 @@ function ChartPageComponent(props: any) {
   const [terminalViewMode, updateTerminalViewMode] = useState('default')
   const [isTourOpen, setIsTourOpen] = useState(false)
   const [isWarningPopupOpen, openWarningPopup] = useState(false)
+  const [isDelistPopupOpen, openDelistPopup] = useState(false)
 
   const [isNotificationTourOpen, setNotificationTourOpen] = useState(
     localStorage.getItem('isNotificationDone') == 'null'
   )
 
+  const allMarketsMap = useAllMarketsList()
+  const AWESOME_MARKETS = useAwesomeMarkets()
+
   useEffect(() => {
     return () => {
-      document.title = 'Cryptocurrencies AI'
+      document.title = 'Aldrin'
     }
   }, [props.marketType])
 
@@ -171,7 +143,6 @@ function ChartPageComponent(props: any) {
       JSON.parse(savedCustomMarkets),
       [...updatedMarkets, ...userMarkets]
     )
-    console.log('isDataChanged', isDataChanged)
 
     if (isDataChanged) setCustomMarkets([...updatedMarkets, ...userMarkets])
   }, [getUserCustomMarketsQuery.getUserCustomMarkets.length])
@@ -179,7 +150,7 @@ function ChartPageComponent(props: any) {
   const setCorrectMarketAddress = async () => {
     const pair = !!location.pathname.split('/')[3]
       ? location.pathname.split('/')[3]
-      : 'CCAI_USDC'
+      : 'RIN_USDC'
 
     const userMarkets = getUserCustomMarketsQuery.getUserCustomMarkets.map(
       ({ publicKey, marketId, isPrivate, ...rest }) => ({
@@ -191,21 +162,23 @@ function ChartPageComponent(props: any) {
       })
     )
 
-    const updatedMarkets = AWESOME_MARKETS.map((el) => ({
+    const UPDATED_AWESOME_MARKETS = AWESOME_MARKETS.map((el) => ({
       ...el,
       address: el.address.toString(),
       programId: el.programId.toString(),
       isCustomUserMarket: true,
     }))
 
-    const allMarkets = [...props.markets, ...userMarkets, ...updatedMarkets]
+    const updatedMarkets = [...props.markets, ...UPDATED_AWESOME_MARKETS]
+
+    const allMarkets = [...updatedMarkets, ...userMarkets]
 
     const selectedMarketFromUrl = allMarkets.find(
       (el) => el.name.replaceAll('_', '/') === pair.replaceAll('_', '/')
     )
 
     if (!selectedMarketFromUrl) {
-      history.push('/chart/spot/CCAI_USDC')
+      history.push('/chart/spot/RIN_USDC')
       return
     }
 
@@ -216,13 +189,20 @@ function ChartPageComponent(props: any) {
     const isPublicUsersMarket = userMarkets?.find(
       (el) => el.name.replaceAll('_', '/') === pair.replaceAll('_', '/')
     )
+
     if (isPublicUsersMarket !== undefined && !isCustomUsersMarket) {
       openWarningPopup(true)
     }
   }
 
+  const [base, quote] = selectedPair.split('_')
+  const tokenToDelist = tokensToDelist[base] || tokensToDelist[quote]
+
   useEffect(() => {
     setCorrectMarketAddress()
+    if (tokenToDelist) {
+      openDelistPopup(true)
+    }
   }, [selectedPair])
 
   const closeChartPagePopup = () => {
@@ -250,6 +230,7 @@ function ChartPageComponent(props: any) {
   pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
 
   const accentColor = '#09ACC7'
+
   return (
     <MainContainer fullscreen={false}>
       {/* {!isTourOpen && (
@@ -288,7 +269,10 @@ function ChartPageComponent(props: any) {
           localStorage.setItem('isOnboardingDone', 'true')
         }}
       />
-      {/* {view === 'default' && ( */}
+      <MarketBlock
+        terminalViewMode={terminalViewMode}
+        updateTerminalViewMode={updateTerminalViewMode}
+      />
       <DefaultView
         id={'_id'}
         view={'default'}
@@ -333,11 +317,32 @@ function ChartPageComponent(props: any) {
         closeChartPagePopup={closeChartPagePopup}
         changeChartLayoutMutation={changeChartLayoutMutation}
       />
+
       <WarningPopup
         open={isWarningPopupOpen}
         onClose={() => openWarningPopup(false)}
         theme={theme}
       />
+
+      <TokenDelistPopup
+        open={isDelistPopupOpen}
+        onClose={() => openDelistPopup(false)}
+        theme={theme}
+        tokenToDelist={tokenToDelist}
+      />
+
+      <TransactionsConfirmationWarningPopup theme={theme} />
+      {/* <SettleWarningPopup theme={theme} /> */}
+      <ProposeToSettlePopup theme={theme} />
+      <MarketDeprecatedPopup
+        theme={theme}
+        newMarketID={allMarketsMap.get('LIQ_USDC')?.address.toString()}
+        oldMarketID={allMarketsMap
+          .get('LIQ_USDC_deprecated')
+          ?.address.toString()}
+      />
+      <AldrinIsOverCapacityPopup theme={theme} />
+      {/* <RpcCapacityWarningPopup theme={theme} /> */}
 
       {/* )} */}
       {/* <JoyrideOnboarding
@@ -437,7 +442,7 @@ export default compose(
   queryRendererHoc({
     query: getUserCustomMarkets,
     name: 'getUserCustomMarketsQuery',
-    fetchPolicy: 'cache-first',
+    fetchPolicy: 'cache-and-network',
     variables: (props) => ({
       publicKey: props.publicKey,
     }),

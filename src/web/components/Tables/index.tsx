@@ -52,6 +52,8 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos'
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
 
 import CustomPlaceholder from '@sb/components/CustomPlaceholder'
+import { StyledTableHead } from './styles'
+import styled from 'styled-components'
 
 const CustomTableCell = withStyles((theme) => ({
   head: {
@@ -95,6 +97,13 @@ const CustomTableCell = withStyles((theme) => ({
     },
   },
 }))(TableCell)
+
+const StyledCustomTableCell = styled(CustomTableCell)`
+  display: ${(props) => props.showOnMobile && 'none'};
+  @media (max-width: 600px) {
+    display: ${(props) => (props.showOnMobile ? 'table-cell' : 'none')};
+  }
+`
 
 const ActionButton = withStyles(() => ({
   root: { padding: 0 },
@@ -340,9 +349,11 @@ const renderCell = ({
   },
 }: renderCellType) => {
   const align = numeric ? 'right' : 'left'
+
   if (cell !== null && typeof cell === 'object') {
     return (
-      <CustomTableCell
+      <StyledCustomTableCell
+        showOnMobile={cell.showOnMobile ?? false}
         scope="row"
         variant={variant}
         style={{ ...cell.style, ...tableStyles.cell, color: cell.color }}
@@ -354,12 +365,14 @@ const renderCell = ({
         onClick={cell.onClick}
       >
         {cell.render}
-      </CustomTableCell>
+      </StyledCustomTableCell>
     )
   }
+
   if (typeof cell !== 'object') {
     return (
       <CustomTableCell
+        showOnMobile={false}
         style={{ ...tableStyles.cell }}
         padding={padding}
         scope="row"
@@ -371,9 +384,9 @@ const renderCell = ({
       </CustomTableCell>
     )
   }
-
   return (
     <CustomTableCell
+      showOnMobile={false}
       padding={padding}
       scope="row"
       style={{ ...tableStyles.cell }}
@@ -576,7 +589,8 @@ const CustomTable = (props: Props) => {
     autoRefetch = false,
     needRefetch = false,
     toggleAutoRefetch,
-    stylesForTable,
+    stylesForTable = {},
+    tableBodyStyles = {},
     paperAdditionalStyle = '',
     hideCommonCheckbox = false,
   } = props
@@ -654,7 +668,7 @@ const CustomTable = (props: Props) => {
           ...stylesForTable,
         }}
       >
-        <TableHead>
+        <StyledTableHead>
           {title && (
             <TableRow className={classes.headRow}>
               <CustomTableCell
@@ -747,9 +761,9 @@ const CustomTable = (props: Props) => {
               )
             })}
           </TableRow>
-        </TableHead>
+        </StyledTableHead>
 
-        <TableBody>
+        <TableBody style={{ ...tableBodyStyles }}>
           {data.body.length === 0 ? (
             <CustomPlaceholder theme={theme} text={emptyTableText} />
           ) : (

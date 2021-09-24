@@ -4,8 +4,10 @@ import {
   SolongWalletAdapter,
   SolletExtensionAdapter,
   MathWalletAdapter,
-  CcaiWalletAdapter,
+  CommonWalletAdapter,
   CcaiExtensionAdapter,
+  PhantomWalletAdapter,
+  LedgerWalletAdapter,
 } from '@sb/dexUtils/adapters'
 import { notify } from './notifications'
 import {
@@ -17,6 +19,7 @@ import { CCAIProviderURL, useLocalStorageState, useRefEqual } from './utils'
 import {
   Connection,
   PublicKey,
+  SystemProgram,
   SYSVAR_RENT_PUBKEY,
   Transaction,
   TransactionInstruction,
@@ -27,50 +30,102 @@ import { TokenListProvider } from '@solana/spl-token-registry'
 import { TokenInstructions } from '@project-serum/serum'
 import { useAsyncData } from './fetch-loop'
 import { getMaxWithdrawAmount } from './pools'
-import { MINT_LAYOUT, parseTokenAccountData } from './tokens'
+import {
+  getTokenAccountInfo,
+  MINT_LAYOUT,
+  parseTokenAccountData,
+} from './tokens'
 import Sollet from '@icons/sollet.svg'
 import Mathwallet from '@icons/mathwallet.svg'
 import Solong from '@icons/solong.svg'
-import CCAI from '@icons/ccai.svg'
-import { WalletAdapter } from './adapters'
+import WalletAldrin from '@icons/RINLogo.svg'
+import { WalletAdapter } from '@sb/dexUtils/types'
+import { _VERY_SLOW_REFRESH_INTERVAL } from './markets'
+import { MASTER_BUILD } from '@core/utils/config'
+import { Coin98WalletAdapter } from './adapters/Coin98WalletAdapter'
+import { SolflareExtensionWalletAdapter } from './adapters/SolflareWallet'
 
 export const WALLET_PROVIDERS = [
   // { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },
   {
     name: 'Wallet™',
     url: CCAIProviderURL,
-    adapter: Wallet,
-    icon: CCAI,
+    adapter: CommonWalletAdapter,
+    isExtension: false,
+    showOnMobile: true,
+    icon: WalletAldrin,
   },
   // {
   //   name: 'Wallet™ Extension',
   //   url: `${CCAIProviderURL}/extension`,
   //   adapter: CcaiExtensionAdapter,
-  //   icon: CCAI,
+  //   isExtension: true,
+  //   showOnMobile: false,
+  //   icon: WalletAldrin,
   // },
   {
     name: 'Sollet.io',
     url: 'https://www.sollet.io',
-    adapter: Wallet,
+    adapter: CommonWalletAdapter,
     icon: Sollet,
+    isExtension: false,
+    showOnMobile: true,
   },
   {
     name: 'Sollet Extension',
     url: 'https://www.sollet.io/extension',
     adapter: SolletExtensionAdapter,
     icon: Sollet,
+    isExtension: true,
+    showOnMobile: false,
   },
-  // {
-  //   name: 'MathWallet',
-  //   url: 'https://www.mathwallet.org',
-  //   adapter: MathWalletAdapter,
-  //   icon: Mathwallet,
-  // },
+  {
+    name: 'Ledger',
+    url: 'https://www.ledger.com',
+    icon: `https://cdn.jsdelivr.net/gh/solana-labs/oyster@main/assets/wallets/ledger.svg`,
+    adapter: LedgerWalletAdapter,
+    isExtension: false,
+    showOnMobile: false,
+  },
+  {
+    name: 'Phantom',
+    url: 'https://www.phantom.app',
+    icon: `https://www.phantom.app/img/logo.png`,
+    adapter: PhantomWalletAdapter,
+    isExtension: false,
+    showOnMobile: false,
+  },
+  {
+    name: 'MathWallet',
+    url: 'https://www.mathwallet.org',
+    adapter: MathWalletAdapter,
+    icon: Mathwallet,
+    isExtension: false,
+    showOnMobile: false,
+  },
   {
     name: 'Solong',
     url: 'https://solongwallet.com',
     adapter: SolongWalletAdapter,
     icon: Solong,
+    isExtension: false,
+    showOnMobile: false,
+  },
+  {
+    name: 'Coin98',
+    url: 'https://wallet.coin98.com/',
+    adapter: Coin98WalletAdapter,
+    icon: `https://gblobscdn.gitbook.com/spaces%2F-MLfdRENhXE4S22AEr9Q%2Favatar-1616412978424.png`,
+    isExtension: true,
+    showOnMobile: true,
+  },
+  {
+    name: 'Solflare',
+    url: 'https://solflare.com/',
+    adapter: SolflareExtensionWalletAdapter,
+    icon: `https://cdn.jsdelivr.net/gh/solana-labs/oyster@main/assets/wallets/solflare.svg`,
+    isExtension: true,
+    showOnMobile: true,
   },
 ]
 
@@ -82,28 +137,11 @@ export const WRAPPED_SOL_MINT = new PublicKey(
   'So11111111111111111111111111111111111111112'
 )
 
-export const MAINNET_URL = 'https://solana-api.projectserum.com'
+export const MAINNET_URL = 'https://api.mainnet-beta.solana.com'
 
 export const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey(
   'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
 )
-
-const getWalletByProviderUrl = (providerUrl: string) => {
-  switch (providerUrl) {
-    case 'https://solongwallet.com': {
-      return SolongWallet
-    }
-    case 'https://www.mathwallet.org': {
-      return MathWallet
-    }
-    case CCAIProviderURL: {
-      return CcaiWallet
-    }
-    default: {
-      return Wallet
-    }
-  }
-}
 
 const WalletContext = React.createContext(null)
 
@@ -171,7 +209,7 @@ export function WalletProvider({ children }) {
   useEffect(() => {
     if (wallet) {
       wallet.on('connect', async () => {
-        if (wallet?.publicKey) {
+        if (wallet?.publicKey && !wallet?.publicKey?.equals(SystemProgram.programId)) {
           console.log('connected')
           setConnected(true)
           const walletPublicKey = wallet?.publicKey.toBase58()
@@ -204,7 +242,7 @@ export function WalletProvider({ children }) {
 
     return () => {
       setConnected(false)
-      if (wallet) {
+      if (wallet && wallet.disconnect) {
         wallet.disconnect()
         setConnected(false)
       }
@@ -266,7 +304,8 @@ export function useWalletPublicKeys() {
 
   const [tokenAccountInfo, loaded] = useAsyncData(
     () => getTokenAccountInfo(connection, wallet.publicKey),
-    'getTokenAccountInfo'
+    'getTokenAccountInfo',
+    { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
   )
 
   let publicKeys = [
@@ -477,7 +516,8 @@ export async function signAndSendTransaction(
   transaction,
   wallet,
   signers,
-  skipPreflight = false
+  skipPreflight = false,
+  focusPopup = false
 ) {
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash('max')
@@ -492,7 +532,7 @@ export async function signAndSendTransaction(
     transaction.partialSign(...signers)
   }
 
-  transaction = await wallet.signTransaction(transaction)
+  transaction = await wallet.signTransaction(transaction, focusPopup)
   const rawTransaction = transaction.serialize()
   return await connection.sendRawTransaction(rawTransaction, {
     skipPreflight,
@@ -513,11 +553,18 @@ export async function createAssociatedTokenAccount({
   const tx = new Transaction()
   tx.add(ix)
   tx.feePayer = wallet.publicKey
-  const txSig = await signAndSendTransaction(connection, tx, wallet, [])
+  const txSig = await signAndSendTransaction(
+    connection,
+    tx,
+    wallet,
+    [],
+    false,
+    true
+  )
 
   return [address, txSig]
 }
-async function createAssociatedTokenAccountIx(
+export async function createAssociatedTokenAccountIx(
   fundingAddress,
   walletAddress,
   splTokenMintAddress

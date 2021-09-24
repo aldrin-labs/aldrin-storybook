@@ -14,77 +14,101 @@ import {
   rowStyles,
 } from '@core/utils/chartPageUtils'
 
-import defaultRowRenderer from '../../utils'
+import defaultRowRenderer, { getRowHeight } from '../../utils'
 import { BidsWrapper } from '../../OrderBookTableContainer.styles'
+import { StyledAutoSizer } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapperStyles'
+import useMobileSize from '@webhooks/useMobileSize'
+import { useOpenOrders } from '@sb/dexUtils/markets'
 
-@withTheme()
-class SpreadTable extends Component<IProps> {
-  render() {
-    const {
-      theme,
-      data,
-      aggregation,
-      openOrderHistory,
-      mode,
-      marketType,
-      arrayOfMarketIds,
-      // amountForBackground,
-      updateTerminalPriceFromOrderbook,
-      currencyPair,
-    } = this.props
+const SpreadTable = ({
+  theme,
+  data,
+  aggregation,
+  openOrderHistory,
+  mode,
+  marketType,
+  arrayOfMarketIds,
+  // amountForBackground,
+  updateTerminalPriceFromOrderbook,
+  currencyPair,
+  terminalViewMode,
+}) => {
+  const openOrders = useOpenOrders()
+  const isMobile = useMobileSize()
+  const tableData = getDataFromTree(data.bids, 'bids').reverse()
+  const amountForBackground =
+    tableData.reduce((acc, curr) => acc + +curr.size, 0) / tableData.length
 
-    const tableData = getDataFromTree(data.bids, 'bids').reverse()
-    const amountForBackground =
-      tableData.reduce((acc, curr) => acc + +curr.size, 0) / tableData.length
-
-    const [base, quote] = currencyPair.split('_')
-
-    return (
-      <BidsWrapper mode={mode} isFullHeight={mode === 'bids'}>
-        <AutoSizer>
-          {({ width, height }: { width: number; height: number }) => (
-            <Table
-              disableHeader={mode !== 'bids'}
+  const [base, quote] = currencyPair.split('_')
+  const showHeader = mode === 'bids' || terminalViewMode === 'mobileChart'
+  return (
+    <BidsWrapper
+      terminalViewMode={terminalViewMode}
+      mode={mode}
+      isFullHeight={mode === 'bids'}
+    >
+      <StyledAutoSizer>
+        {({ width, height }: { width: number; height: number }) => (
+          <Table
+            disableHeader={!showHeader}
+            width={width}
+            height={height}
+            headerHeight={getRowHeight({
+              mode,
+              height,
+              isMobile,
+              side: 'bids',
+              terminalViewMode,
+            })}
+            onRowClick={({ event, index, rowData }) => {
+              updateTerminalPriceFromOrderbook(+rowData.price)
+            }}
+            headerStyle={{
+              color: theme.palette.grey.text,
+              paddingLeft: '.5rem',
+              paddingTop: '.25rem',
+              marginLeft: 0,
+              marginRight: 0,
+              letterSpacing: '.01rem',
+              fontSize: isMobile ? '2rem' : '1.4rem',
+              fontFamily: 'Avenir Next Light',
+              textTransform: 'capitalize',
+            }}
+            rowCount={tableData.length}
+            rowHeight={getRowHeight({
+              mode,
+              height,
+              isMobile,
+              side: 'bids',
+              terminalViewMode,
+            })}
+            overscanRowCount={0}
+            rowGetter={({ index }) => tableData[index]}
+            rowRenderer={(...rest) =>
+              defaultRowRenderer({
+                theme,
+                ...rest[0],
+                side: 'bids',
+                aggregation,
+                marketType,
+                arrayOfMarketIds,
+                amountForBackground,
+                openOrderHistory: openOrders,
+              })
+            }
+          >
+            <Column
+              label={showHeader ? `price` : ''}
+              dataKey="price"
+              headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
               width={width}
-              height={height}
-              headerHeight={mode === 'both' ? height / 8 : height / 18}
-              onRowClick={({ event, index, rowData }) => {
-                updateTerminalPriceFromOrderbook(+rowData.price)
+              style={{
+                color: theme.palette.green.main,
+                fontFamily: 'Avenir Next Demi',
+                ...(isMobile ? { fontSize: '1.8rem' } : {}),
               }}
-              headerStyle={{
-                color: '#7284A0',
-                paddingLeft: '.5rem',
-                marginLeft: 0,
-                marginRight: 0,
-                paddingTop: '.25rem',
-                letterSpacing: '.075rem',
-                borderBottom: theme.palette.border.main,
-                fontSize: '1rem',
-              }}
-              rowCount={tableData.length}
-              rowHeight={mode === 'both' ? height / 8 : height / 18}
-              overscanRowCount={0}
-              rowGetter={({ index }) => tableData[index]}
-              rowRenderer={(...rest) =>
-                defaultRowRenderer({
-                  theme,
-                  ...rest[0],
-                  side: 'bids',
-                  aggregation,
-                  marketType,
-                  arrayOfMarketIds,
-                  amountForBackground,
-                  openOrderHistory,
-                })
-              }
-            >
-              <Column
-                label={mode === 'bids' ? `price` : ''}
-                dataKey="price"
-                headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
-                width={width}
-                style={{ color: theme.palette.green.main, fontFamily: 'Avenir Next Demi' }}
-              />
+            />
+            {!isMobile && (
               <Column
                 label={mode === 'bids' ? `size (${base})` : ''}
                 dataKey="size"
@@ -95,22 +119,26 @@ class SpreadTable extends Component<IProps> {
                   color: theme.palette.white.primary,
                 }}
               />
-              <Column
-                label={mode === 'bids' ? `total (${quote})` : ''}
-                dataKey="total"
-                width={width}
-                headerStyle={{
-                  paddingRight: 'calc(.5rem + 10px)',
-                  textAlign: 'right',
-                }}
-                style={{ textAlign: 'right', color: theme.palette.white.primary }}
-              />
-            </Table>
-          )}
-        </AutoSizer>
-      </BidsWrapper>
-    )
-  }
+            )}
+            <Column
+              label={showHeader ? `total (${quote})` : ''}
+              dataKey="total"
+              width={width}
+              headerStyle={{
+                paddingRight: 'calc(.5rem + 10px)',
+                textAlign: 'right',
+              }}
+              style={{
+                textAlign: 'right',
+                color: theme.palette.white.primary,
+                ...(isMobile ? { fontSize: '1.8rem' } : {}),
+              }}
+            />
+          </Table>
+        )}
+      </StyledAutoSizer>
+    </BidsWrapper>
+  )
 }
 
 export default withErrorFallback(SpreadTable)

@@ -1,174 +1,262 @@
-import React, { useMemo, useEffect, useState } from 'react'
-import { Connection, LAMPORTS_PER_SOL } from '@solana/web3.js'
+import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 import { withTheme, Theme } from '@material-ui/core/styles'
-import { TokenInstructions } from '@project-serum/serum'
-import { isEqual } from 'lodash'
-import debounceRender from 'react-debounce-render';
-
+import { Connection } from '@solana/web3.js'
+import debounceRender from 'react-debounce-render'
 
 import { withPublicKey } from '@core/hoc/withPublicKey'
-import { useWallet, WRAPPED_SOL_MINT } from '@sb/dexUtils/wallet'
-import { ALL_TOKENS_MINTS_MAP } from '@sb/dexUtils/markets'
+import { useWallet } from '@sb/dexUtils/wallet'
 
 import {
   getPricesForTokens,
   getTokenValuesForTokens,
-  getSortedTokensByValue,
   getTotalTokenValue,
-  getPercentageAllocationForTokens,
-  getAvailableTokensForRebalance,
-  getTokensMap,
   getAllTokensData,
-  getSliderStepForTokens,
 } from './utils'
 import { useConnection } from '@sb/dexUtils/connection'
-
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { PoolInfo } from './Rebalance.types'
+import { TokensMapType, Colors } from './Rebalance.types'
 import RebalanceTable from './components/Tables'
 import RebalanceHeaderComponent from './components/Header'
 import DonutChartWithLegend from '@sb/components/AllocationBlock/index'
 import BalanceDistributedComponent from './components/BalanceDistributed'
-import { RebalancePopup } from './components/RebalancePopup'
+import { RebalancePopup } from './components/RebalancePopup/RebalancePopup'
 
-// const handleSliderChange = (setTokensMap, e, newValue) => {
-//     // console.log('setTokensMap: ', setTokensMap)
-//     console.log('newValue: ', newValue)
-// }
+import {
+  generateLegendColors,
+  generateChartColors,
+} from './utils/colorGenerating'
+import { useCallback } from 'react'
+import { processAllTokensData } from './utils/processAllTokensData'
+import {
+  MarketsMap,
+  useAllMarketsList,
+  useAllMarketsMapById,
+} from '@sb/dexUtils/markets'
+import { filterDuplicateTokensByAmount } from './utils/filterDuplicateTokensByAmount'
+import { resetTargetAllocation } from './utils/resetTargetAllocation'
+import { getTokensToSell } from './utils/getTokensToSell'
+import { getTokensToBuy } from './utils/getTokensToBuy'
+import { MeetRebalancePopup } from './components/MeetRebalancePopup/MeetRebalancePopup'
+import { useLocalStorageState } from '@sb/dexUtils/utils'
+import { ConnectWalletScreen } from '@sb/components/ConnectWalletScreen/ConnectWalletScreen'
 
-const MemoizedDonutChartWithLegend = React.memo(DonutChartWithLegend, (prevProps, nextProps) => {
+// const MemoizedCurrentValueChartWithLegend = React.memo(
+//   DonutChartWithLegend,
+//   (prevProps, nextProps) => {
+//     return (
+//       isEqual(
+//         Object.values(prevProps.data)?.map((el) => el.percentage),
+//         Object.values(nextProps.data)?.map((el) => el.percentage)
+//       ) &&
+//       isEqual(prevProps.colors, nextProps.colors) &&
+//       isEqual(prevProps.colorsForLegend, nextProps.colorsForLegend)
+//     )
+//   }
+// )
 
-  return isEqual(prevProps.data, nextProps.data)
-})
+// const MemoizedTargetValueChartWithLegend = React.memo(
+//   DonutChartWithLegend,
+//   (prevProps, nextProps) => {
+//     return (
+//       isEqual(
+//         Object.values(prevProps.data)?.map((el) => el.targetPercentage),
+//         Object.values(nextProps.data)?.map((el) => el.targetPercentage)
+//       ) &&
+//       isEqual(prevProps.colors, nextProps.colors) &&
+//       isEqual(prevProps.colorsForLegend, nextProps.colorsForLegend)
+//     )
+//   }
+// )
 
-const MemoizedRebalancePopup = React.memo(RebalancePopup, (prevProps, nextProps) => {
+const MemoizedRebalancePopup = React.memo(
+  RebalancePopup,
+  (prevProps, nextProps) => {
+    return (
+      prevProps.open === nextProps.open &&
+      prevProps.rebalanceStep === nextProps.rebalanceStep &&
+      prevProps.softRefresh === nextProps.softRefresh
+    )
+  }
+)
 
-  return prevProps.open === nextProps.open && prevProps.rebalanceStep && nextProps.rebalanceStep
+const DebouncedMemoizedCurrentValueChartWithLegend = debounceRender(
+  DonutChartWithLegend,
+  1500,
+  { leading: false }
+)
 
-})
+const DebouncedMemoizedTargetValueChartWithLegend = debounceRender(
+  DonutChartWithLegend,
+  1500,
+  { leading: false }
+)
 
-const DebouncedMemoizedDonutChartWithLegend = debounceRender(MemoizedDonutChartWithLegend, 100, { leading: false })
+const DebouncedMemoizedRebalanceHeaderComponent = debounceRender(
+  RebalanceHeaderComponent,
+  100,
+  { leading: false }
+)
 
-const DebouncedMemoizedRebalanceHeaderComponent = debounceRender(RebalanceHeaderComponent, 100, { leading: false })
-
-const DebouncedBalanceDistributedComponent = debounceRender(BalanceDistributedComponent, 100, { leading: false })
-
+const DebouncedBalanceDistributedComponent = debounceRender(
+  BalanceDistributedComponent,
+  100,
+  { leading: false }
+)
 
 const RebalanceComposition = ({
   publicKey,
   theme,
-  getPoolsInfoQuery: { getPoolsInfo },
 }: {
   publicKey: string
   theme: Theme
-  getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
 }) => {
   const { wallet } = useWallet()
-  const [isRebalancePopupOpen, changeRebalancePopupState] = useState(false)
-  const [rebalanceStep, changeRebalanceStep] = useState('')
-
-  // const [publicKeys = []] = useWalletPublicKeys();
-  // console.log('publicKeys: ', publicKeys)
-
   const connection: Connection = useConnection()
-  const isWalletConnected = !!wallet?.publicKey
+  const allMarketsMap = useAllMarketsList()
 
-  const [tokensMap, setTokensMap] = useState({})
+  const [isRebalancePopupOpen, changeRebalancePopupState] = useState(false)
+  const [
+    isMeetRebalancePopupOpen,
+    setIsMeetRebalancePopupOpen,
+  ] = useLocalStorageState('isMeetRebalancePopupOpen', true)
+
+  const isWalletConnected = wallet.connected
+
+  const [tokensMap, setTokensMap] = useState<TokensMapType>({})
   const [totalTokensValue, setTotalTokensValue] = useState(0)
   const [leftToDistributeValue, setLeftToDistributeValue] = useState(0)
+  const [rebalanceState, setRefreshStateRebalance] = useState(false)
+  const [loadingRebalanceData, setLoadingRebalanceData] = useState(false)
+
+  const [colors, setColors] = useState<Colors>({})
+  const [colorsForLegend, setColorsForLegend] = useState<Colors>({})
+
+  const refreshRebalance = () => {
+    setRefreshStateRebalance(!rebalanceState)
+  }
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log('fetchData: ', fetchData)
-
+      setLoadingRebalanceData(true)
       try {
         console.time('rebalance initial data set time')
-        const allTokensData = await getAllTokensData(wallet.publicKey, connection)
+        const allTokensData = await getAllTokensData(
+          wallet.publicKey,
+          connection
+        )
 
-        const tokensWithPrices = await getPricesForTokens(allTokensData)
+        const filteredAllTokensData = filterDuplicateTokensByAmount(
+          allTokensData
+        )
+
+        // console.log('filteredAllTokensData', filteredAllTokensData)
+        const tokensWithPrices = await getPricesForTokens(filteredAllTokensData)
+        // console.log('tokensWithPrices', tokensWithPrices)
         const tokensWithTokenValue = getTokenValuesForTokens(tokensWithPrices)
-        const sortedTokensByTokenValue = getSortedTokensByValue(
-          tokensWithTokenValue
-        )
+        // console.log('tokensWithTokenValue', tokensWithTokenValue)
+        const totalTokenValue = getTotalTokenValue(tokensWithTokenValue)
 
-        const totalTokenValue = getTotalTokenValue(sortedTokensByTokenValue)
+        const availableTokensForRebalanceMap = processAllTokensData({
+          allMarketsMap,
+          tokensWithPrices,
+        })
 
-        const tokensWithPercentages = getPercentageAllocationForTokens(
-          sortedTokensByTokenValue,
-          totalTokenValue
-        )
-
-        const tokensWithSliderSteps = getSliderStepForTokens(tokensWithPercentages, totalTokenValue)
-
-        // TODO: Can be splitted and move up
-        const availableTokensForRebalance = getAvailableTokensForRebalance(
-          getPoolsInfo,
-          tokensWithSliderSteps
-        )
-        const availableTokensForRebalanceMap = getTokensMap(
-          availableTokensForRebalance
-        )
-
-        console.log('availableTokensForRebalanceMap: ', availableTokensForRebalanceMap)
-        console.log('totalTokenValue: ', totalTokenValue)
+        const chartColors = generateChartColors({
+          data: availableTokensForRebalanceMap,
+        })
+        const legendColors = generateLegendColors({
+          data: availableTokensForRebalanceMap,
+        })
 
         setTokensMap(availableTokensForRebalanceMap)
+        setColors(chartColors)
+        setColorsForLegend(legendColors)
         setTotalTokensValue(totalTokenValue)
-
-        // console.log('availableTokensForRebalanceMap: ', availableTokensForRebalanceMap)
+        setLeftToDistributeValue(0)
         console.timeEnd('rebalance initial data set time')
       } catch (e) {
         // set error
         console.log('e: ', e)
       }
+      setLoadingRebalanceData(false)
     }
 
     if (isWalletConnected) {
       fetchData()
     }
-  }, [wallet.publicKey])
+  }, [wallet.publicKey, rebalanceState])
 
-  // const bindedHandleSliderChange = handleSliderChange.bind(this, setTokensMap)
+  const softRefresh = useCallback(
+    async ({
+      tokensMap,
+      allMarketsMap,
+    }: {
+      tokensMap: TokensMapType
+      allMarketsMap: MarketsMap
+    }) => {
+      // new tokens + new amounts
+      const allTokensData = await getAllTokensData(wallet.publicKey, connection)
+      const filteredAllTokensData = filterDuplicateTokensByAmount(allTokensData)
 
-  // console.log('tokensMap: ', tokensMap)
+      // add new coins
+      const allTokensDataWithValues = filteredAllTokensData.map((token) => ({
+        ...token,
+        // set amount to snapshot value, doing nothing for new coins
+        ...(tokensMap[token.symbol] ? tokensMap[token.symbol] : {}),
+      }))
 
-  // console.log('Object.values(tokensMap): ', Object.values(tokensMap))
+      const tokensWithPrices = await getPricesForTokens(allTokensDataWithValues)
+
+      const availableTokensForRebalanceMap = processAllTokensData({
+        allMarketsMap,
+        tokensWithPrices,
+      })
+
+      const chartColors = generateChartColors({
+        data: availableTokensForRebalanceMap,
+      })
+
+      const legendColors = generateLegendColors({
+        data: availableTokensForRebalanceMap,
+      })
+
+      setTokensMap(availableTokensForRebalanceMap)
+      setColors(chartColors)
+      setColorsForLegend(legendColors)
+    },
+    [wallet, connection]
+  )
+
+  const resetTargetAllocationFunc = useCallback((tokensMap: TokensMapType) => {
+    const resettedTokensMap = resetTargetAllocation(tokensMap)
+    setTokensMap(resettedTokensMap)
+    setLeftToDistributeValue(0)
+  }, [])
+
+  const tokensToSell = getTokensToSell(tokensMap)
+  const tokensToBuy = getTokensToBuy(tokensMap)
+
+  const isButtonDisabled =
+    (tokensToSell.length === 0 && tokensToBuy.length === 0) ||
+    +leftToDistributeValue.toFixed(2) !== 0
 
   return (
     <RowContainer
       theme={theme}
       height="100%"
-      style={{ background: theme.palette.grey.additional }}
+      style={{
+        background: theme.palette.grey.additional,
+        minWidth: '1000px',
+        overflow: 'auto',
+        minHeight: '500px',
+      }}
     >
-      {!publicKey ? (
-        <>
-          {/* connect wallet */}
-          <BtnCustom
-            theme={theme}
-            onClick={wallet.connect}
-            needMinWidth={false}
-            btnWidth="auto"
-            height="auto"
-            fontSize="1.4rem"
-            padding="2rem 8rem"
-            borderRadius="1.1rem"
-            borderColor={theme.palette.blue.serum}
-            btnColor={'#fff'}
-            backgroundColor={theme.palette.blue.serum}
-            textTransform={'none'}
-            margin={'4rem 0 0 0'}
-            transition={'all .4s ease-out'}
-            style={{ whiteSpace: 'nowrap' }}
-          >
-            Connect wallet
-          </BtnCustom>
-        </>
+      {!isWalletConnected ? (
+        <ConnectWalletScreen theme={theme} />
       ) : (
         <RowContainer theme={theme} height="100%" padding={'6rem 0'}>
           <Row
@@ -177,19 +265,23 @@ const RebalanceComposition = ({
             width={'60%'}
             margin={'0 2rem 0 0'}
             justify={'space-between'}
+            style={{ flexWrap: 'nowrap' }}
           >
             <DebouncedMemoizedRebalanceHeaderComponent
               totalTokensValue={totalTokensValue}
               leftToDistributeValue={leftToDistributeValue}
             />
             <RebalanceTable
-              data={Object.values(tokensMap).map((el) => el)}
+              data={Object.values(tokensMap)}
               theme={theme}
               tokensMap={tokensMap}
               setTokensMap={setTokensMap}
+              softRefresh={() => softRefresh({ allMarketsMap, tokensMap })}
               leftToDistributeValue={leftToDistributeValue}
               setLeftToDistributeValue={setLeftToDistributeValue}
               totalTokensValue={totalTokensValue}
+              loadingRebalanceData={loadingRebalanceData}
+              resetTargetAllocation={() => resetTargetAllocationFunc(tokensMap)}
             />
           </Row>
           <Row
@@ -197,20 +289,19 @@ const RebalanceComposition = ({
             width={'35%'}
             direction="column"
             justify="space-between"
+            style={{ flexWrap: 'nowrap' }}
           >
             <RowContainer height={'calc(85% - 2rem)'}>
-              <DebouncedMemoizedDonutChartWithLegend
-                data={Object.values(tokensMap).map((el) => ({
-                  symbol: el.symbol,
-                  value: el.percentage,
-                }))}
+              <DebouncedMemoizedCurrentValueChartWithLegend
+                data={tokensMap}
+                colors={colors}
+                colorsForLegend={colorsForLegend}
                 id={'current'}
               />
-              <DebouncedMemoizedDonutChartWithLegend
-                data={Object.values(tokensMap).map((el) => ({
-                  symbol: el.symbol,
-                  value: el.targetPercentage,
-                }))}
+              <DebouncedMemoizedTargetValueChartWithLegend
+                data={tokensMap}
+                colors={colors}
+                colorsForLegend={colorsForLegend}
                 id={'target'}
               />
             </RowContainer>
@@ -219,16 +310,16 @@ const RebalanceComposition = ({
               align={'flex-end'}
               height={'16%'}
             >
-              {' '}
               <Row
                 align={'flex-end'}
                 height={'100%'}
                 width={'calc(45% - 1rem)'}
               >
-                <DebouncedBalanceDistributedComponent 
+                <DebouncedBalanceDistributedComponent
                   totalTokensValue={totalTokensValue}
                   leftToDistributeValue={leftToDistributeValue}
-                  theme={theme} />
+                  theme={theme}
+                />
               </Row>
               <BtnCustom
                 theme={theme}
@@ -247,6 +338,7 @@ const RebalanceComposition = ({
                 transition={'all .4s ease-out'}
                 padding={'2rem'}
                 style={{ whiteSpace: 'nowrap' }}
+                disabled={isButtonDisabled}
               >
                 Rebalance Now
               </BtnCustom>
@@ -255,23 +347,25 @@ const RebalanceComposition = ({
         </RowContainer>
       )}
 
-      <MemoizedRebalancePopup
+      {isRebalancePopupOpen && (
+        <MemoizedRebalancePopup
+          wallet={wallet}
+          connection={connection}
+          tokensMap={tokensMap}
+          refreshRebalance={refreshRebalance}
+          setLoadingRebalanceData={setLoadingRebalanceData}
+          theme={theme}
+          open={isRebalancePopupOpen}
+          close={() => changeRebalancePopupState(false)}
+        />
+      )}
+      <MeetRebalancePopup
         theme={theme}
-        open={isRebalancePopupOpen}
-        rebalanceStep={rebalanceStep}
-        changeRebalanceStep={changeRebalanceStep}
-        close={() => changeRebalancePopupState(false)}
+        open={isMeetRebalancePopupOpen}
+        onClose={() => setIsMeetRebalancePopupOpen(false)}
       />
     </RowContainer>
   )
 }
 
-export default compose(
-  withTheme(),
-  withPublicKey,
-  queryRendererHoc({
-    query: getPoolsInfo,
-    name: 'getPoolsInfoQuery',
-    fetchPolicy: 'cache-and-network',
-  })
-)(RebalanceComposition)
+export default compose(withTheme(), withPublicKey)(RebalanceComposition)

@@ -244,9 +244,9 @@ export default ({ themeMode, isChartPage, children }) => {
               normalBlack: '#DBD9E6',
             },
             background: {
-              default: themeMode === 'light' ? '#fafafa' : '#16161D',
-              paper: themeMode === 'light' ? '#fff' : '#16161D',
-              table: themeMode === 'light' ? '#FFFFFF' : '#27272D',
+              default: '#16161D',
+              paper: '#16161D',
+              table: '#27272D',
             },
             white: {
               main: '#fff',

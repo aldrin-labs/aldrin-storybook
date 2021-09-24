@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { Grid } from '@material-ui/core'
-import { LineProps, RowProps, TitleProps } from './index.types'
+import { LineProps, RowProps } from './index.types'
 
 export const Line = styled.div`
   position: absolute;
@@ -45,7 +45,7 @@ export const ReusableTitle = styled(
   margin: ${(props) => props.margin || '0'};
 `
 
-export const SerumTitleBlockContainer = styled(({ theme, ...props }) => (
+export const TokenTitleBlockContainer = styled(({ theme, ...props }) => (
   <Row {...props} />
 ))`
   display: flex;
@@ -139,7 +139,6 @@ export const ChartContainer = styled((props) => <RowContainer {...props} />)`
 `
 
 export const Text = styled.div`
-  text-shadow: 0px 0px ю6куь rgba(199, 255, 208, 0.3);
   font-style: normal;
   font-weight: bold;
   font-size: 1.6rem;
@@ -157,11 +156,12 @@ export const Text = styled.div`
   }
 `
 
-export const Title = styled.span`
-  font-family: Avenir Next;
-  color: ${(props: TitleProps) =>
-    props.color || props.theme.palette.grey.title};
-  font-size: 1.6rem;
+export const Title = styled(
+  ({ color, theme, fontSize, fontFamily, ...rest }) => <span {...rest} />
+)`
+  color: ${(props) => props.color || props.theme.palette.grey.title};
+  font-size: ${(props) => props.fontSize || '1.6rem'};
+  font-family: ${(props) => props.fontFamily || 'Avenir Next'};
 `
 
 export const TopBarTitle = styled((props) => <Title {...props} />)`
@@ -187,7 +187,7 @@ export const WhiteTitle = styled((props) => <Title {...props} />)`
   }
 `
 
-export const SerumWhiteTitle = styled((props) => <WhiteTitle {...props} />)`
+export const TokenWhiteTitle = styled((props) => <WhiteTitle {...props} />)`
   @media (min-width: 1440px) and (max-width: 1560px) {
     font-size: 1.6rem;
   }
@@ -206,7 +206,7 @@ export const Dot = styled.div`
   margin-right: 0.7rem;
 `
 
-export const GreenTitle = styled((props) => <SerumWhiteTitle {...props} />)`
+export const GreenTitle = styled((props) => <TokenWhiteTitle {...props} />)`
   color: ${(props) => props.theme.palette.green.analytics};
   padding-left: 1rem;
 `

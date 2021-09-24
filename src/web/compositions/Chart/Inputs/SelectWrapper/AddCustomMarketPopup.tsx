@@ -11,7 +11,11 @@ import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
 
 import { notify } from '@sb/dexUtils//notifications'
 import { isValidPublicKey } from '@sb/dexUtils//utils'
-import { useAccountInfo, useConnection } from '@sb/dexUtils/connection'
+import {
+  useAccountInfo,
+  useConnection,
+  useConnectionConfig,
+} from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import Clear from '@material-ui/icons/Clear'
@@ -21,22 +25,40 @@ import {
   StyledDialogTitle,
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
-import { Input } from '@sb/compositions/Addressbook/index'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { PurpleButton } from '@sb/compositions/Addressbook/components/Popups/NewCoinPopup'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-import ListNewMarketPopup from './ListNewMarketPopup'
+import ListNewMarketPopup, { Input } from './ListNewMarketPopup'
 import { addSerumCustomMarket } from '@core/graphql/mutations/chart/addSerumCustomMarket'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { readQueryData, writeQueryData } from '@core/utils/TradingTable.utils'
 import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getDexProgramIdByEndpoint } from '@core/config/dex'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
   width: 55rem;
 `
 
+const Input = styled.input`
+  width: 100%;
+  height: ${(props) => props.height || '5rem'};
+  margin-bottom: 1rem;
+  background: ${(props) =>
+    props.disabled
+      ? props.theme.palette.grey.disabledInput
+      : props.theme.palette.grey.input};
+  border: ${(props) => `0.1rem solid ${props.theme.palette.text.white}`};
+  border-radius: 0.4rem;
+  padding-left: 1rem;
+  color: ${(props) => props.theme.palette.text.light};
+
+  &::placeholder {
+    color: #abbad1;
+    font-weight: normal;
+  }
+`
 const StyledInput = styled(Input)`
   height: 4rem;
 `
@@ -67,6 +89,7 @@ const CustomMarketDialog = ({
 
   const [showCreateMarketPopup, changeShowCreateMarketPopup] = useState(false)
   const connection = useConnection()
+  const { endpoint } = useConnectionConfig()
 
   const [marketId, setMarketId] = useState('')
   const [loading, changeLoading] = useState(false)
@@ -86,7 +109,7 @@ const CustomMarketDialog = ({
   )
   const programId = marketAccountInfo
     ? marketAccountInfo.owner.toBase58()
-    : MARKETS?.find(({ deprecated }) => !deprecated).programId.toBase58()
+    : getDexProgramIdByEndpoint(endpoint)?.toString()
 
   useEffect(() => {
     if (!wellFormedMarketId || !programId) {

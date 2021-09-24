@@ -29,6 +29,7 @@ const OrderbookAndDepthChart = (props) => {
     updateTerminalPriceFromOrderbook,
     hideDepthChart,
     sizeDigits,
+    terminalViewMode,
     pricePrecision: serumPricePrecision,
   } = props
 
@@ -60,6 +61,9 @@ const OrderbookAndDepthChart = (props) => {
   const [aggregation, setAggregation] = useState(
     String(getAggregationsFromPricePrecision(pricePrecision)[0].value)
   )
+  const [prevAggregation, setPrevAggregation] = useState(
+    String(getAggregationsFromPricePrecision(pricePrecision)[0].value)
+  )
 
   useEffect(
     () =>
@@ -73,13 +77,14 @@ const OrderbookAndDepthChart = (props) => {
     if (
       pricePrecision === undefined ||
       sizeDigits === undefined ||
-      !orderbook?.asks ||
-      !orderbook?.bids ||
-      JSON.stringify(orderbook) === JSON.stringify(prevOrderbook)
+      (!orderbook?.asks && !orderbook?.bids) ||
+      (JSON.stringify(orderbook) === JSON.stringify(prevOrderbook) &&
+        prevAggregation === aggregation)
     )
       return
 
     setPrevOrderbook(orderbook)
+    setPrevAggregation(aggregation)
 
     const asks = orderbook.asks.map((row) => [row[0], [row[1], Date.now()]])
     const bids = orderbook.bids.map((row) => [row[0], [row[1], Date.now()]])
@@ -161,6 +166,7 @@ const OrderbookAndDepthChart = (props) => {
           markPrice={markPrice}
           pricePrecision={pricePrecision}
           data={dataToSend}
+          terminalViewMode={terminalViewMode}
         />
       </Grid>
     </RowContainer>
