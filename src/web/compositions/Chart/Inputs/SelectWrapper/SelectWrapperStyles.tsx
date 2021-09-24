@@ -62,7 +62,7 @@ export const IconContainer = styled.div`
 `
 
 export const StyledHeader = styled(RowContainer)`
-  height: ${(props) => (props.isAdvancedSelectorMode ? '15rem' : '10rem')};
+  height: ${(props) => (props.isAdvancedSelectorMode ? '15rem' : '6rem')};
   padding: 0.5rem;
   justify-content: flex-start;
   flex-direction: row;
@@ -78,7 +78,7 @@ export const StyledHeader = styled(RowContainer)`
 export const StyledTable = styled(Grid)`
   overflow: hidden;
   height: ${(props) =>
-    props.isAdvancedSelectorMode ? 'calc(100% - 24rem)' : 'calc(100% - 19rem)'};
+    props.isAdvancedSelectorMode ? 'calc(100% - 24rem)' : 'calc(100% - 15rem)'};
 
   @media (max-width: 600px) {
     height: calc(100% - 10rem);
