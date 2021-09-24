@@ -167,7 +167,7 @@ export const StyledTab = styled(({ isSelected, ...props }) => (
     border-radius: 1.3rem;
     cursor: pointer;
     font-family: ${(props) =>
-      props.isSelected ? 'Avenir Next Demi' : 'Avenir Next Medium'};
+      props.isSelected ? 'Avenir Next' : 'Avenir Next'};
     font-size: 1.4rem;
     margin: 0.6rem 0.55rem;
     color: #fbf2f2;

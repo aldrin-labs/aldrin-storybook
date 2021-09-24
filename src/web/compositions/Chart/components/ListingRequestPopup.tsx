@@ -34,7 +34,7 @@ import {
 import { PublicKey } from '@solana/web3.js'
 import { getDexProgramIdByEndpoint } from '@core/config/dex'
 import { Market, MARKETS, TOKEN_MINTS } from '@project-serum/serum'
-import { useAllMarketsList } from '@sb/dexUtils/markets'
+import { useAllMarketsList, useAllMarketsMapById } from '@sb/dexUtils/markets'
 import { compose } from 'recompose'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import { graphql } from '@apollo/react-hoc'
@@ -82,9 +82,11 @@ const ListingRequestPopup = ({
 
   const { wallet } = useWallet()
   const connection = useConnection()
-  const { endpoint } = useConnectionConfig()
-  const allMarketsMap = useAllMarketsList()
   const history = useHistory()
+  const { endpoint } = useConnectionConfig()
+
+  const allMarketsMap = useAllMarketsList()
+  const allMarketsMapById = useAllMarketsMapById()
 
   const setData = ({ fieldName, value }) => {
     return setRequestData({ ...requestData, [fieldName]: value })
@@ -99,10 +101,10 @@ const ListingRequestPopup = ({
         ...requestData,
       }),
     })
-      // .then(() => {
-      //   onSubmit()
-      //   console.log('Success!')
-      // })
+      .then(() => {
+        submitRequest(true)
+        console.log('Success!')
+      })
       .catch((error) => {
         console.log(error)
         notify({
@@ -175,11 +177,14 @@ const ListingRequestPopup = ({
     wellFormedMarketId && fetch()
   }, [requestData.marketID, wellFormedMarketId])
 
-  const knownMarket = MARKETS.find(
-    (m) =>
-      m.address.toBase58() === requestData.marketID &&
-      m.programId.toBase58() === programId
+  const marketLabel = requestData.baseTokenName.concat(
+    '_',
+    requestData.quoteTokenName
   )
+
+  const knownMarketByName = allMarketsMap.has(marketLabel)
+  const knownMarketById = allMarketsMapById.has(requestData.marketID)
+
   const knownProgram = MARKETS.find((m) => m.programId.toBase58() === programId)
 
   const knownBaseCurrency =
@@ -194,15 +199,17 @@ const ListingRequestPopup = ({
 
   const isContactValid = checkForLinkOrUsername(requestData.contact)
   const canSubmit =
-    (!loadingMarket &&
-      !!market &&
-      market.publicKey.toBase58() === requestData.marketID &&
-      requestData.marketID &&
-      programId &&
-      (knownBaseCurrency || requestData.baseTokenName) &&
-      (knownQuoteCurrency || requestData.quoteTokenName) &&
-      wellFormedMarketId) ||
-    isContactValid
+    !loadingMarket &&
+    !!market &&
+    market.publicKey.toBase58() === requestData.marketID &&
+    requestData.marketID &&
+    programId &&
+    (knownBaseCurrency || requestData.baseTokenName) &&
+    (knownQuoteCurrency || requestData.quoteTokenName) &&
+    wellFormedMarketId &&
+    isContactValid &&
+    !knownMarketById &&
+    !knownMarketByName
 
   const isDisabled =
     requestData.baseTokenName === '' ||
@@ -211,11 +218,6 @@ const ListingRequestPopup = ({
     requestData.contact === '' ||
     loading ||
     !canSubmit
-
-  const marketLabel = requestData.baseTokenName.concat(
-    '_',
-    requestData.quoteTokenName
-  )
 
   const onSubmit = async () => {
     if (!canSubmit) {
@@ -248,14 +250,6 @@ const ListingRequestPopup = ({
       'knownQuoteCurrency || quoteLabel',
       knownQuoteCurrency || requestData.quoteTokenName
     )
-
-    if (!marketLabel.includes('_')) {
-      notify({
-        message: 'Please use "_" for devider',
-        type: 'error',
-      })
-      return
-    }
 
     await changeLoading(true)
 
@@ -515,10 +509,9 @@ const ListingRequestPopup = ({
               {!market && !loadingMarket && (
                 <Text style={{ color: '#F69894' }}>Not a valid market</Text>
               )}
-              {market && knownMarket && (
+              {market && knownMarketById && (
                 <Text style={{ color: '#F69894' }}>
-                  This market already exists and cannot be duplicated:{' '}
-                  {knownMarket.name}
+                  This market already exists and cannot be duplicated.
                 </Text>
               )}
               {market && !knownProgram && (
@@ -528,16 +521,19 @@ const ListingRequestPopup = ({
               )}
               {market && knownProgram && knownProgram.deprecated && (
                 <Text style={{ color: '#F69894' }}>
-                  Warning: deprecated DEX program
+                  Warning: deprecated DEX program.
                 </Text>
               )}
             </RowContainer>
+          ) : requestData.marketID && !wellFormedMarketId ? (
+            <RowContainer justify={'flex-start'} margin={'2rem 0 0 0'}>
+              <Text style={{ color: '#F69894' }}>Invalid market ID</Text>
+            </RowContainer>
           ) : (
-            requestData.marketID &&
-            !wellFormedMarketId && (
-              <RowContainer justify={'flex-start'} margin={'2rem 0 0 0'}>
-                <Text style={{ color: '#F69894' }}>Invalid market ID</Text>
-              </RowContainer>
+            knownMarketByName && (
+              <Text style={{ color: '#F69894' }}>
+                Market with such name already exists and cannot be duplicated.
+              </Text>
             )
           )}
           <RowContainer justify="space-between" margin={'1rem 0'}>
