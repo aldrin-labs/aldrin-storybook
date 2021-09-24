@@ -15,7 +15,7 @@ import { encode } from '@sb/dexUtils/utils'
 import {
   BlueButton,
   Form,
-  StyledPaper,
+  StyledPaperMediumWidth,
   SubmitButton,
   TextField,
   Title,
@@ -70,7 +70,7 @@ export const MarketsFeedbackPopup = ({
   return (
     <DialogWrapper
       theme={theme}
-      PaperComponent={StyledPaper}
+      PaperComponent={StyledPaperMediumWidth}
       fullScreen={false}
       onClose={onClose}
       maxWidth={'md'}

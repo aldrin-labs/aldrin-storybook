@@ -42,6 +42,7 @@ import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown/index'
 import { FeedbackPopup } from './UsersFeedbackPopup'
 import { BetaLabel } from '@sb/components/BetaLabel/BetaLabel'
+import ListingRequestPopup from './ListingRequestPopup/ListingRequestPopup'
 
 export const NavBarLink = styled(({ style, ...props }) => (
   <NavLink {...props} />
@@ -113,6 +114,9 @@ const RedButton = styled((props) => (
 export const CardsPanel = ({ theme }) => {
   const location = useLocation()
   const [isFeedBackPopupOpen, setIsFeedBackPopupOpen] = useState(false)
+  const [isListingRequestPopupOpen, setIsListingRequestPopupOpen] = useState(
+    false
+  )
 
   const isDarkTheme = theme.palette.type === 'dark'
   const isAnalytics = location.pathname.includes('analytics')
@@ -137,6 +141,7 @@ export const CardsPanel = ({ theme }) => {
             style={{
               width: '13rem',
               height: '100%',
+              marginRight: '4rem',
             }}
           >
             <img
@@ -150,27 +155,29 @@ export const CardsPanel = ({ theme }) => {
           <Row
             style={{
               borderLeft: theme.palette.border.new,
-              margin: '0 0 0 4rem',
               justifyContent: 'flex-end',
-              padding: '0 0rem 0 4rem',
+              padding: '1rem 2rem',
+              flexWrap: 'nowrap',
             }}
           >
-            <WhiteButton
-              style={{
-                borderRadius: '1.5rem',
-                width: 'auto',
-                padding: '0 2rem',
-              }}
+            <NavLinkButton
               theme={theme}
+              style={{ width: '13rem' }}
               onClick={() => setIsFeedBackPopupOpen(true)}
             >
               Leave feedback
-            </WhiteButton>
+            </NavLinkButton>
+            <NavLinkButton
+              theme={theme}
+              style={{ width: '13rem' }}
+              onClick={() => setIsListingRequestPopupOpen(true)}
+            >
+              Request listing
+            </NavLinkButton>
           </Row>
           <div
             style={{
               width: '100%',
-              marginLeft: '4rem',
               padding: '1rem 4rem 1rem 4rem',
               borderRight: theme.palette.border.new,
               borderLeft: theme.palette.border.new,
@@ -187,6 +194,7 @@ export const CardsPanel = ({ theme }) => {
             >
               Home
             </NavLinkButton> */}
+
             <NavLinkButton
               theme={theme}
               pathname={location.pathname}
@@ -214,7 +222,7 @@ export const CardsPanel = ({ theme }) => {
               component={(props) => <Link to={`/rebalance`} {...props} />}
             >
               Rebalance
-              <BetaLabel theme={theme} style={{ marginLeft: '1rem' }} />
+              <BetaLabel theme={theme} style={{ marginLeft: '.5rem' }} />
             </NavLinkButton>
             <NavLinkButton
               theme={theme}
@@ -225,7 +233,7 @@ export const CardsPanel = ({ theme }) => {
               component={(props) => <Link to={`/dashboard`} {...props} />}
             >
               Dashboard
-              <BetaLabel theme={theme} style={{ marginLeft: '1rem' }} />
+              <BetaLabel theme={theme} style={{ marginLeft: '.5rem' }} />
             </NavLinkButton>
             <NavLinkButton
               theme={theme}
@@ -294,6 +302,13 @@ export const CardsPanel = ({ theme }) => {
         open={isFeedBackPopupOpen}
         onClose={() => {
           setIsFeedBackPopupOpen(false)
+        }}
+      />
+      <ListingRequestPopup
+        theme={theme}
+        open={isListingRequestPopupOpen}
+        onClose={() => {
+          setIsListingRequestPopupOpen(false)
         }}
       />
     </ChartGridContainer>

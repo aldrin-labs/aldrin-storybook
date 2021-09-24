@@ -10,7 +10,7 @@ const NavLinkButton = ({
   pathname,
   theme,
   theme: { palette },
-  page,
+  page = '',
   marketName,
   style,
   onClick,
@@ -24,7 +24,7 @@ const NavLinkButton = ({
   style: any
   onClick: any
 }) => {
-  const isActivePage = pathname.match(page)
+  const isActivePage = page !== '' && pathname.match(page)
 
   return (
     <SButton
