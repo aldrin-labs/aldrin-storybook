@@ -439,25 +439,15 @@ export const combineSelectWrapperData = ({
       },
       emoji: {
         render: (
-          <DarkTooltip
-            title={
-              isAdditionalCustomUserMarket
-                ? 'This is an unofficial custom market. Use at your own risk.'
-                : isAwesomeMarket
-                ? 'This is curated but unofficial market.'
-                : 'This is the official Serum market.'
-            }
-          >
-            <IconContainer>
-              <TokenIcon
-                mint={mint}
-                width={'2.5rem'}
-                emojiIfNoLogo={true}
-                isAwesomeMarket={isAwesomeMarket}
-                isAdditionalCustomUserMarket={isAdditionalCustomUserMarket}
-              />
-            </IconContainer>
-          </DarkTooltip>
+          <IconContainer>
+            <TokenIcon
+              mint={mint}
+              width={'2.5rem'}
+              emojiIfNoLogo={true}
+              isAwesomeMarket={isAwesomeMarket}
+              isAdditionalCustomUserMarket={isAdditionalCustomUserMarket}
+            />
+          </IconContainer>
         ),
       },
       symbol: {

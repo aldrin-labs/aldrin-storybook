@@ -160,7 +160,7 @@ const TableHeader = ({
             {`(${filterSelectorDataForTab('sol').length})`}
           </span>
         </StyledTab>{' '}
-        <StyledTab
+        {/* <StyledTab
           theme={theme}
           isSelected={tab === 'topGainers'}
           onClick={() => {
@@ -177,7 +177,7 @@ const TableHeader = ({
           }}
         >
           Top Losers 24h
-        </StyledTab>
+        </StyledTab> */}
         {isAdvancedSelectorMode && (
           <>
             {Object.entries(marketsByCategories).map(
@@ -219,21 +219,6 @@ const TableHeader = ({
             </StyledTab>
           </>
         )}
-        <StyledTab
-          theme={theme}
-          isSelected={tab === 'customMarkets'}
-          onClick={() => onTabChange('customMarkets')}
-        >
-          Custom markets{' '}
-          <span
-            style={{
-              color: tab === 'customMarkets' ? '#fbf2f2' : '#96999C',
-              marginLeft: '0.5rem',
-            }}
-          >
-            {`(${filterSelectorDataForTab('customMarkets').length})`}
-          </span>
-        </StyledTab>
       </Row>
     </StyledHeader>
   )

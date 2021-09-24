@@ -18,7 +18,7 @@ export const StyledGrid = styled(Grid)`
   z-index: 900;
   background: #222429;
   min-width: ${(props) => (props.isAdvancedSelectorMode ? '160rem' : '90rem')};
-  height: ${(props) => (props.isAdvancedSelectorMode ? '73rem' : '60rem')};
+  height: ${(props) => (props.isAdvancedSelectorMode ? '73rem' : '61rem')};
   border-radius: 2rem;
   overflow: hidden;
   border: ${(props) => props.theme.palette.border.new};
@@ -62,7 +62,7 @@ export const IconContainer = styled.div`
 `
 
 export const StyledHeader = styled(RowContainer)`
-  height: ${(props) => (props.isAdvancedSelectorMode ? '15rem' : '9rem')};
+  height: ${(props) => (props.isAdvancedSelectorMode ? '15rem' : '6rem')};
   padding: 0.5rem;
   justify-content: flex-start;
   flex-direction: row;
@@ -78,7 +78,7 @@ export const StyledHeader = styled(RowContainer)`
 export const StyledTable = styled(Grid)`
   overflow: hidden;
   height: ${(props) =>
-    props.isAdvancedSelectorMode ? 'calc(100% - 24rem)' : 'calc(100% - 18rem)'};
+    props.isAdvancedSelectorMode ? 'calc(100% - 24rem)' : 'calc(100% - 15rem)'};
 
   @media (max-width: 600px) {
     height: calc(100% - 10rem);
@@ -145,6 +145,7 @@ export const StyledInput = styled(Input)`
 `
 
 export const TableFooter = styled(Grid)`
+  height: 4rem;
   justify-content: space-between;
   width: 100%;
   position: relative;
@@ -157,19 +158,21 @@ export const TableFooter = styled(Grid)`
 `
 
 export const StyledTab = styled(({ isSelected, ...props }) => (
-  <Row {...props} />
+  <BtnCustom {...props} />
 ))`
   && {
     text-transform: capitalize;
-    padding: 0.5rem 1.5rem;
+    padding: 0.2rem 0.75rem;
     background: ${(props) => (props.isSelected ? '#366CE5' : '#383B45')};
     border-radius: 1.3rem;
     cursor: pointer;
     font-family: ${(props) =>
-      props.isSelected ? 'Avenir Next Demi' : 'Avenir Next Medium'};
+      props.isSelected ? 'Avenir Next' : 'Avenir Next'};
     font-size: 1.4rem;
-    margin: 0.5rem 0.75rem;
-    color: #fff;
+    margin: 0.6rem 0.55rem;
+    color: #fbf2f2;
+    width: auto;
+    height: auto;
   }
 `
 
@@ -309,6 +312,30 @@ export const SubmitButton = styled.button`
 `
 export const StyledPaper = styled(Paper)`
   border-radius: 2rem;
+  width: 91rem;
+  height: auto;
+  background: #222429;
+  border: 0.1rem solid #3a475c;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 2rem;
+  padding: 3rem;
+
+  @media (max-width: 600px) {
+    border: 0;
+    border-radius: 0;
+    width: 100%;
+    height: calc(100% - 22rem);
+    max-height: 100%;
+    margin: 0;
+    justify-content: center;
+    background: #17181a;
+  }
+`
+
+export const StyledPaperMediumWidth = styled(Paper)`
+  border-radius: 2rem;
   width: 60rem;
   height: auto;
   background: #222429;
@@ -346,7 +373,7 @@ export const TextArea = styled.div`
   justify-content: flex-start;
 `
 export const StyledLabel = styled.label`
-  color: #96999c;
+  color: ${(props) => props.color || '#96999c'};
   font-size: 1.5rem;
   font-family: Avenir Next Medium;
   white-space: nowrap;

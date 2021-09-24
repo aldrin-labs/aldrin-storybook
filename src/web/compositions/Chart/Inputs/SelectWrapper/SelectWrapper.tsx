@@ -501,7 +501,7 @@ class SelectPairListComponent extends React.PureComponent<
             >
               Found an error in the catalog? Let us know!
             </Row>
-            <Row
+            {/* <Row
               style={{
                 padding: '0 2rem',
                 height: '4rem',
@@ -527,7 +527,7 @@ class SelectPairListComponent extends React.PureComponent<
               }}
             >
               + Add Market
-            </Row>
+            </Row> */}
           </TableFooter>
           <CustomMarketDialog
             theme={theme}
