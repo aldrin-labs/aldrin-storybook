@@ -1,5 +1,3 @@
-import React from 'react'
-
 export const checkForUsername = (value: string) => {
   const isUserName = value.includes('@')
   return isUserName

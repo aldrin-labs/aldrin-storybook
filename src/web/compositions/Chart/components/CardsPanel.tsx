@@ -42,7 +42,7 @@ import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown/index'
 import { FeedbackPopup } from './UsersFeedbackPopup'
 import { BetaLabel } from '@sb/components/BetaLabel/BetaLabel'
-import ListingRequestPopup from './ListingRequestPopup'
+import ListingRequestPopup from './ListingRequestPopup/ListingRequestPopup'
 
 export const NavBarLink = styled(({ style, ...props }) => (
   <NavLink {...props} />

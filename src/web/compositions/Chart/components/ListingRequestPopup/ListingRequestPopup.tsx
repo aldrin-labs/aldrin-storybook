@@ -19,15 +19,13 @@ import {
   SubmitButton,
   TextField,
   Title,
-  StyledTextArea,
   StyledLabel,
   StyledTab,
-} from '../Inputs/SelectWrapper/SelectWrapperStyles'
+} from '../../Inputs/SelectWrapper/SelectWrapperStyles'
 import { notify } from '@sb/dexUtils/notifications'
 import { SRadio } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { useWallet } from '@sb/dexUtils/wallet'
 import {
-  useAccountInfo,
   useConnection,
   useConnectionConfig,
 } from '@sb/dexUtils/connection'
@@ -42,10 +40,11 @@ import { addSerumCustomMarket } from '@core/graphql/mutations/chart/addSerumCust
 import { writeQueryData } from '@core/utils/TradingTable.utils'
 import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { withPublicKey } from '@core/hoc/withPublicKey'
 import { useHistory } from 'react-router-dom'
 import { Loading } from '@sb/components/Loading'
-import { checkForLinkOrUsername } from '@sb/compositions/Rebalance/utils/checkForLinkOrUsername'
+import { checkForLinkOrUsername } from '@sb/dexUtils/checkForLinkOrUsername'
+import { categoriesOfMarkets, defaultRequestDataState } from './ListingRequestPopup.config'
+
 
 const ListingRequestPopup = ({
   theme,
@@ -60,7 +59,7 @@ const ListingRequestPopup = ({
   onClose: () => void
   open: boolean
   customMarkets: any
-  setCustomMarkets: ([]) => void
+  setCustomMarkets: (markets: any[]) => void
   addSerumCustomMarketMutation: any
   getUserCustomMarketsQuery: any
 }) => {
@@ -69,16 +68,7 @@ const ListingRequestPopup = ({
   const [market, setMarket] = useState(null)
   const [loading, changeLoading] = useState(false)
   const [newMarketAccountInfo, setNewMarketAccountInfo] = useState(null)
-  const [requestData, setRequestData] = useState({
-    baseTokenName: '',
-    quoteTokenName: '',
-    marketID: '',
-    twitterLink: '',
-    coinMarketCapLink: '',
-    category: [],
-    defiShow: 'No',
-    contact: '',
-  })
+  const [requestData, setRequestData] = useState(defaultRequestDataState)
 
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -103,7 +93,6 @@ const ListingRequestPopup = ({
     })
       .then(() => {
         submitRequest(true)
-        console.log('Success!')
       })
       .catch((error) => {
         console.log(error)
@@ -133,7 +122,6 @@ const ListingRequestPopup = ({
     const newCustomMarkets = [...customMarkets, customMarket]
     setCustomMarkets(newCustomMarkets)
     history.push(`/chart/spot/${customMarket.name.replace('/', '_')}`)
-    console.log('onAddCustomMarket', newCustomMarkets)
     return true
   }
 
@@ -242,15 +230,6 @@ const ListingRequestPopup = ({
       params.quoteLabel = requestData.quoteTokenName
     }
 
-    console.log(
-      'knownBaseCurrency || baseLabel',
-      knownBaseCurrency || requestData.baseTokenName
-    )
-    console.log(
-      'knownQuoteCurrency || quoteLabel',
-      knownQuoteCurrency || requestData.quoteTokenName
-    )
-
     await changeLoading(true)
 
     const resultOfAdding = await onAddCustomMarket(params)
@@ -312,21 +291,6 @@ const ListingRequestPopup = ({
     onClose()
   }
 
-  const categoriesOfMarkets = [
-    'DeFi',
-    'Currency',
-    'Oracle',
-    'Farm & Agregator',
-    'Trade & Liquidity',
-    'Meme & Social',
-    'dApp',
-    'Lending & Yield',
-    'Infrastructure',
-    'Exchange & Derivatives',
-    'Leveraged Tokens',
-    'NFT, Games & Gambling',
-  ]
-
   return (
     <DialogWrapper
       theme={theme}
@@ -335,16 +299,7 @@ const ListingRequestPopup = ({
       onClose={onClose}
       onEnter={() => {
         submitRequest(false)
-        setRequestData({
-          baseTokenName: '',
-          quoteTokenName: '',
-          marketID: '',
-          twitterLink: '',
-          coinMarketCapLink: '',
-          category: [],
-          defiShow: 'No',
-          contact: '',
-        })
+        setRequestData(defaultRequestDataState)
       }}
       maxWidth={'md'}
       open={open}
