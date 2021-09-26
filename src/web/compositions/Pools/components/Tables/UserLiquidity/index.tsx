@@ -78,6 +78,7 @@ const UserLiquitidyTable = ({
   const { getFeesEarnedByAccount = [] } = getFeesEarnedByAccountQuery || {
     getFeesEarnedByAccountQuery: [],
   }
+  console.log('getPoolsInfo', getPoolsInfo)
 
   return (
     <RowContainer>
