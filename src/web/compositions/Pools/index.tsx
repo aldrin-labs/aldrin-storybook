@@ -20,19 +20,15 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { WarningPopup } from '../Chart/components/WarningPopup'
 import { useInterval } from '@sb/dexUtils/useInterval'
+import TablesSwitcher from './components/Tables/TablesSwitcher/TablesSwitcher'
 
 const Pools = ({
   theme,
-  getDexTokensPricesQuery,
+  // getDexTokensPricesQuery,
 }: {
   theme: Theme
-  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
+  // getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }) => {
-  const [
-    refreshAllTokensDataCounter,
-    setRefreshAllTokensDataCounter,
-  ] = useState<number>(0)
-  const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
   const [selectedPool, selectPool] = useState<PoolInfo | null>(null)
   const [isWarningPopupOpen, openWarningPopup] = useState(true)
 
@@ -40,30 +36,6 @@ const Pools = ({
   const [isCreatePoolPopupOpen, setIsCreatePoolPopupOpen] = useState(false)
   const [isWithdrawalPopupOpen, setIsWithdrawalPopupOpen] = useState(false)
 
-  const { wallet } = useWallet()
-  const connection = useConnection()
-
-  const { getDexTokensPrices = [] } = getDexTokensPricesQuery || {
-    getDexTokensPrices: [],
-  }
-
-  const refreshAllTokensData = () =>
-    setRefreshAllTokensDataCounter(refreshAllTokensDataCounter + 1)
-
-  useInterval(refreshAllTokensData, 10000)
-
-  // useTokenAccountsMap - need to refresh? mb button for it and after every action?
-  useEffect(() => {
-    const fetchData = async () => {
-      const allTokensData = await getAllTokensData(wallet.publicKey, connection)
-
-      await setAllTokensData(allTokensData)
-    }
-
-    if (!!wallet?.publicKey) {
-      fetchData()
-    }
-  }, [wallet?.publicKey, refreshAllTokensDataCounter])
 
   return (
     <RowContainer direction={'column'} padding={'2rem 3rem'}>
@@ -86,7 +58,7 @@ const Pools = ({
         </BlockTemplate>
       </RowContainer>
 
-      {wallet.connected ? (
+      {/* {wallet.connected ? (
         <UserLiquitidyTable
           allTokensData={allTokensData}
           theme={theme}
@@ -97,48 +69,28 @@ const Pools = ({
           setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
           setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
         />
-      ) : null}
+      ) : null} */}
 
-      <AllPoolsTable
+      <TablesSwitcher
+        theme={theme}
+      />
+
+      {/* <AllPoolsTable
         theme={theme}
         selectPool={selectPool}
         dexTokensPrices={getDexTokensPrices}
         setIsCreatePoolPopupOpen={setIsCreatePoolPopupOpen}
         setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
-      />
+      /> */}
 
-      <CreatePoolPopup
+      {/* <CreatePoolPopup
         theme={theme}
         dexTokensPrices={getDexTokensPrices}
         close={() => setIsCreatePoolPopupOpen(false)}
         open={isCreatePoolPopupOpen}
         allTokensData={allTokensData}
         refreshAllTokensData={refreshAllTokensData}
-      />
-
-      {selectedPool && (
-        <AddLiquidityPopup
-          theme={theme}
-          dexTokensPrices={getDexTokensPrices}
-          selectedPool={selectedPool}
-          allTokensData={allTokensData}
-          close={() => setIsAddLiquidityPopupOpen(false)}
-          open={isAddLiquidityPopupOpen}
-          refreshAllTokensData={refreshAllTokensData}
-        />
-      )}
-
-      {selectedPool && (
-        <WithdrawalPopup
-          theme={theme}
-          selectedPool={selectedPool}
-          dexTokensPrices={getDexTokensPrices}
-          allTokensData={allTokensData}
-          close={() => setIsWithdrawalPopupOpen(false)}
-          open={isWithdrawalPopupOpen}
-          refreshAllTokensData={refreshAllTokensData}
-        />
-      )}
+      /> */}
 
       <WarningPopup
         theme={theme}
@@ -152,13 +104,13 @@ const Pools = ({
 
 const Wrapper = compose(
   withTheme(),
-  queryRendererHoc({
-    query: getDexTokensPrices,
-    name: 'getDexTokensPricesQuery',
-    fetchPolicy: 'cache-and-network',
-    withoutLoading: true,
-    pollInterval: 60000,
-  })
+  // queryRendererHoc({
+  //   query: getDexTokensPrices,
+  //   name: 'getDexTokensPricesQuery',
+  //   fetchPolicy: 'cache-and-network',
+  //   withoutLoading: true,
+  //   pollInterval: 60000,
+  // })
 )(Pools)
 
 export { Wrapper as PoolsComponent }
