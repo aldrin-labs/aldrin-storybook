@@ -39,6 +39,7 @@ import {
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import AllPoolsTableComponent from './AllPoolsTable'
 
 const AllPoolsTable = ({
   theme,
@@ -117,7 +118,12 @@ const AllPoolsTable = ({
           </Row>
         </RowContainer>
         <RowContainer>
-          <Table>
+          <AllPoolsTableComponent
+            dexTokensPrices={dexTokensPrices}
+            feesPerPoolMap={feesPerPoolMap}
+            theme={theme}
+          />
+          {/* <Table>
             <TableHeader>
               <RowTd>Pool</RowTd>
               <RowTd>TVL</RowTd>
@@ -139,128 +145,69 @@ const AllPoolsTable = ({
                   </div>
                 </DarkTooltip>
               </RowTd>
-              <RowTd></RowTd>
-            </TableHeader>
-            {filteredData
-              .sort((poolA: PoolInfo, poolB: PoolInfo) => {
-                const [poolABaseTokenPrice, poolBBaseTokenPrice] = [
-                  dexTokensPrices.find(
-                    (tokenInfo) =>
-                      tokenInfo.symbol ===
-                      getTokenNameByMintAddress(poolA.tokenA)
-                  )?.price || 10,
-                  dexTokensPrices.find(
-                    (tokenInfo) =>
-                      tokenInfo.symbol ===
-                      getTokenNameByMintAddress(poolB.tokenA)
-                  )?.price || 10,
-                ]
-
-                const [poolAQuoteTokenPrice, poolBQuoteTokenPrice] = [
-                  dexTokensPrices.find(
-                    (tokenInfo) =>
-                      tokenInfo.symbol ===
-                      getTokenNameByMintAddress(poolA.tokenB)
-                  )?.price || 10,
-                  dexTokensPrices.find(
-                    (tokenInfo) =>
-                      tokenInfo.symbol ===
-                      getTokenNameByMintAddress(poolB.tokenB)
-                  )?.price || 10,
-                ]
-
-                const poolATvlUSD =
-                  poolABaseTokenPrice * poolA.tvl.tokenA +
-                  poolAQuoteTokenPrice * poolA.tvl.tokenB
-
-                const poolBTvlUSD =
-                  poolBBaseTokenPrice * poolB.tvl.tokenA +
-                  poolBQuoteTokenPrice * poolB.tvl.tokenB
-
-                return poolBTvlUSD - poolATvlUSD
-              })
-              .map((el) => {
-                const baseSymbol = getTokenNameByMintAddress(el.tokenA)
-                const quoteSymbol = getTokenNameByMintAddress(el.tokenB)
-
-                const baseTokenPrice =
-                  dexTokensPrices.find(
-                    (tokenInfo) => tokenInfo.symbol === baseSymbol
-                  )?.price || 10
-
-                const quoteTokenPrice =
-                  dexTokensPrices.find(
-                    (tokenInfo) => tokenInfo.symbol === quoteSymbol
-                  )?.price || 10
-
-                const tvlUSD =
-                  baseTokenPrice * el.tvl.tokenA +
-                  quoteTokenPrice * el.tvl.tokenB
-
-                const fees = feesPerPoolMap.get(el.swapToken) || 0
-                const apy = el.apy24h || 0
-
-                return (
-                  <TableRow>
-                    <RowTd>
-                      <TokenIconsContainer
-                        tokenA={el.tokenA}
-                        tokenB={el.tokenB}
-                      />
-                    </RowTd>
-                    <RowDataTd>
-                      <TextColumnContainer>
-                        <RowDataTdTopText theme={theme}>
-                          ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
-                        </RowDataTdTopText>
-                        <RowDataTdText
-                          theme={theme}
-                          color={theme.palette.grey.new}
-                        >
-                          {formatNumberToUSFormat(
-                            stripDigitPlaces(el.tvl.tokenA, 2)
-                          )}{' '}
-                          {getTokenNameByMintAddress(el.tokenA)} /{' '}
-                          {formatNumberToUSFormat(
-                            stripDigitPlaces(el.tvl.tokenB, 2)
-                          )}{' '}
-                          {getTokenNameByMintAddress(el.tokenB)}
-                        </RowDataTdText>
-                      </TextColumnContainer>
-                    </RowDataTd>
-                    <RowDataTd>
-                      <RowDataTdText theme={theme}>
-                        ${stripDigitPlaces(fees, 6)}
+            </TableHeader> */}
+          {/* {mock.map((el) => {
+              return (
+                <TableRow>
+                  <RowTd>
+                    <TokenIconsContainer
+                      tokenA={el.tokenA}
+                      tokenB={el.tokenB}
+                    />
+                  </RowTd>
+                  <RowDataTd>
+                    <TextColumnContainer>
+                      <RowDataTdTopText theme={theme}>
+                        $2.55
+                        {formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
+                      </RowDataTdTopText>
+                      <RowDataTdText
+                        theme={theme}
+                        color={theme.palette.grey.new}
+                      >
+                        {formatNumberToUSFormat(
+                          stripDigitPlaces(el.tvl.tokenA, 2)
+                        )}{' '}
+                        {getTokenNameByMintAddress(el.tokenA)} /{' '}
+                        {formatNumberToUSFormat(
+                          stripDigitPlaces(el.tvl.tokenB, 2)
+                        )}{' '}
+                        {getTokenNameByMintAddress(el.tokenB)}
                       </RowDataTdText>
-                    </RowDataTd>
-                    <RowDataTd>
-                      <RowDataTdText theme={theme}>
-                        {stripDigitPlaces(apy, 6)}%
-                      </RowDataTdText>
-                    </RowDataTd>
-                    <RowTd>
-                      <Row justify={'flex-end'} width={'100%'}>
-                        <BorderButton
-                          onClick={() => {
-                            if (wallet.connected) {
-                              selectPool(el)
-                              setIsAddLiquidityPopupOpen(true)
-                            } else {
-                              wallet.connect()
-                            }
-                          }}
-                          borderColor={'#366CE5'}
-                        >
-                          {wallet.connected
-                            ? 'Add Liquidity'
-                            : 'Connect wallet'}
-                        </BorderButton>
-                      </Row>
-                    </RowTd>
-                  </TableRow>
-                )
-              })}
-          </Table>
+                    </TextColumnContainer>
+                  </RowDataTd>
+                  <RowDataTd>
+                    <RowDataTdText theme={theme}>
+                      ${stripDigitPlaces(fees, 6)}
+                      0.55554
+                    </RowDataTdText>
+                  </RowDataTd>
+                  <RowDataTd>
+                    <RowDataTdText theme={theme}>
+                      {stripDigitPlaces(apy, 6)}
+                      0.6%
+                    </RowDataTdText>
+                  </RowDataTd>
+                  <RowTd>
+                    <Row justify={'flex-end'} width={'100%'}>
+                      <BorderButton
+                        onClick={() => {
+                          if (wallet.connected) {
+                            selectPool(el)
+                            setIsAddLiquidityPopupOpen(true)
+                          } else {
+                            wallet.connect()
+                          }
+                        }}
+                        borderColor={'#366CE5'}
+                      >
+                        {wallet.connected ? 'Add Liquidity' : 'Connect wallet'}
+                      </BorderButton>
+                    </Row>
+                  </RowTd>
+                </TableRow>
+              )
+            }) */}
         </RowContainer>
       </BlockTemplate>
     </RowContainer>

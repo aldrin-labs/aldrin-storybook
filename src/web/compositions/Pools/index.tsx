@@ -5,7 +5,7 @@ import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BlockTemplate } from './index.styles'
 import { TotalVolumeLockedChart, TradingVolumeChart } from './components/Charts'
 import UserLiquitidyTable from './components/Tables/UserLiquidity'
-import AllPoolsTable from './components/Tables/Pools'
+import AllPoolsTable from './components/Tables/AllPools'
 import {
   CreatePoolPopup,
   WithdrawalPopup,
