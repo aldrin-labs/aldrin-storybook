@@ -104,12 +104,6 @@ export const MainContentContainer = styled((props) => (
   }
 `
 
-export const BlockTemplate = styled((props) => <Row {...props} />)`
-  background: ${(props) => props.theme.palette.black.card};
-  border: ${(props) => props.theme.palette.border.new};
-  box-shadow: 0px 0px 0.8rem rgba(0, 0, 0, 0.95);
-`
-
 export const BlockContainer = styled.div`
   display: flex;
   flex-direction: row;

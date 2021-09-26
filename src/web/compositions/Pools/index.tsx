@@ -52,6 +52,7 @@ const Pools = ({
 
   useInterval(refreshAllTokensData, 10000)
 
+  // useTokenAccountsMap - need to refresh? mb button for it and after every action?
   useEffect(() => {
     const fetchData = async () => {
       const allTokensData = await getAllTokensData(wallet.publicKey, connection)

@@ -18,11 +18,11 @@ import { IProps } from './index.types'
 import {
   Row,
   RowContainer,
-  BlockTemplate,
   Container,
   MainContentContainer,
   TopBarContainer,
 } from './index.styles'
+import { BlockTemplate } from '../Pools/index.styles'
 
 const AnalyticsRoute = ({
   markets,

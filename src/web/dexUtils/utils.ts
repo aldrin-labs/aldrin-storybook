@@ -148,10 +148,6 @@ export function notEmpty<TValue>(value: TValue | null | undefined): value is TVa
   return value !== null && value !== undefined;
 }
 
-function charCodeAt (c) {
-  return c.charCodeAt(0)
-}
-
 export function convertDataURIToBinary(base64: string) {
   return new Buffer(base64, "base64")
 }
