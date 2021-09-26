@@ -4,8 +4,7 @@ import { Theme } from '@material-ui/core'
 import { CSSProperties } from 'react'
 
 const Text = styled.span`
-  color: ${(props) => props.theme.palette.white.text};
-  background: #f79894;
+  color: ${(props) => props.theme.palette.red.main};
   font-family: Avenir Next Demi;
   font-size: 1.4rem;
   height: 2rem;
