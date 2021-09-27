@@ -175,15 +175,15 @@ const styles = (theme: Theme) =>
     },
     rowExpanded: {
       height: theme.spacing.unit * 4,
-      backgroundColor: theme.palette.action.selected,
-      '&:hover': {
-        backgroundColor: theme.palette.action.hover,
-      },
-      '&:hover td': {
-        backgroundColor: `${
-          theme.palette.hover[theme.palette.type]
-        } !important`,
-      },
+      // backgroundColor: theme.palette.action.selected,
+      // '&:hover': {
+      //   backgroundColor: theme.palette.action.hover,
+      // },
+      // '&:hover td': {
+      //   backgroundColor: `${
+      //     theme.palette.hover[theme.palette.type]
+      //   } !important`,
+      // },
     },
     indeterminateCheckbox: {
       color: theme.palette.primary.main,
