@@ -22,6 +22,7 @@ import { TokenIcon } from '@sb/components/TokenIcon'
 import tokensLinksMap from '@core/config/tokensTwitterLinks'
 import Coinmarketcap from '@icons/coinmarketcap.svg'
 import CoinGecko from '@icons/coingecko.svg'
+import NomicsIcon from '@icons/nomics.svg'
 import Inform from '@icons/inform.svg'
 import { MintsPopup } from '../../Inputs/SelectWrapper/MintsPopup'
 import ChartIcon from '@icons/chartIcon.svg'
@@ -118,7 +119,9 @@ const MarketBlock = ({
   const marketCapLink = tokensLinksMap?.get(base)?.marketCapLink || ''
   const marketCapIcon = marketCapLink.includes('coinmarketcap')
     ? Coinmarketcap
-    : CoinGecko
+    : marketCapLink.includes('coingecko')
+    ? CoinGecko
+    : NomicsIcon
 
   return (
     <>
