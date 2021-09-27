@@ -15,13 +15,10 @@ import {
   RowDataTdTopText,
 } from '@sb/compositions/Pools/components/Tables/index.styles'
 
-import { BlockTemplate } from '../../../index.styles'
-
 import { TokenIconsContainer } from '../components/index'
 
 import TooltipIcon from '@icons/TooltipImg.svg'
 
-import { Text } from '@sb/compositions/Addressbook/index'
 import SvgIcon from '@sb/components/SvgIcon'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getFeesEarnedByAccount } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
@@ -34,14 +31,13 @@ import {
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
-import { getTokenDataByMint } from '@sb/compositions/Pools/utils/getTokenDataByMint'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 import { WalletAdapter } from '@sb/dexUtils/types'
-import { getTotalUserLiquidity } from './utils'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
 
 const UserLiquitidyTable = ({
   theme,
@@ -64,16 +60,7 @@ const UserLiquitidyTable = ({
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
 }) => {
-  const allTokensDataMap = allTokensData.reduce(
-    (acc, tokenData) => acc.set(tokenData.mint, tokenData),
-    new Map()
-  )
-
-  const usersPools = poolsInfo.filter(
-    (el) =>
-      allTokensDataMap.has(el.poolTokenMint) &&
-      allTokensDataMap.get(el.poolTokenMint).amount > 0
-  )
+  const usersPools = getUserPoolsFromAll({ poolsInfo, allTokensData })
 
   const { getFeesEarnedByAccount = [] } = getFeesEarnedByAccountQuery || {
     getFeesEarnedByAccountQuery: [],
