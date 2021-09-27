@@ -12,6 +12,7 @@ import {
   combineAllPoolsData,
 } from './AllPoolsTable.utils'
 import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
+import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 
 export const mock = [
   {
@@ -63,11 +64,11 @@ export const mock = [
 
 const AllPoolsTableComponent = ({
   theme,
-  dexTokensPrices,
+  dexTokensPricesMap,
   feesPerPoolMap,
 }: {
   theme: Theme
-  dexTokensPrices: any
+  dexTokensPricesMap: Map<string, DexTokensPrices>
   feesPerPoolMap: any
 }) => {
   const [expandedRows, expandRows] = useState([])
@@ -80,7 +81,7 @@ const AllPoolsTableComponent = ({
 
   const allPoolsData = combineAllPoolsData({
     theme,
-    dexTokensPrices,
+    dexTokensPricesMap,
     feesPerPoolMap,
   })
   return (

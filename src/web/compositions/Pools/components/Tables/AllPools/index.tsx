@@ -43,7 +43,8 @@ import AllPoolsTableComponent from './AllPoolsTable'
 
 const AllPoolsTable = ({
   theme,
-  dexTokensPrices,
+  searchValue,
+  dexTokensPricesMap,
   poolsInfo,
   getFeesEarnedByPoolQuery,
   selectPool,
@@ -51,16 +52,14 @@ const AllPoolsTable = ({
   setIsAddLiquidityPopupOpen,
 }: {
   theme: Theme
-  dexTokensPrices: DexTokensPrices[]
+  searchValue: string
+  dexTokensPricesMap: Map<string, DexTokensPrices>
   poolsInfo: PoolInfo[]
   getFeesEarnedByPoolQuery: { getFeesEarnedByPool: FeesEarned[] }
   selectPool: (pool: PoolInfo) => void
   // setIsCreatePoolPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
 }) => {
-  const { wallet } = useWallet()
-  const [searchValue, onChangeSearch] = useState('')
-
   const { getFeesEarnedByPool = [] } = getFeesEarnedByPoolQuery || {
     getFeesEarnedByPool: [],
   }
@@ -81,7 +80,7 @@ const AllPoolsTable = ({
   return (
     <RowContainer>
       <AllPoolsTableComponent
-        dexTokensPrices={dexTokensPrices}
+        dexTokensPricesMap={dexTokensPricesMap}
         feesPerPoolMap={feesPerPoolMap}
         theme={theme}
       />

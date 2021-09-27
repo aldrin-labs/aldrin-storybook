@@ -64,10 +64,11 @@ const UserLiquitidyTable = ({
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
 }) => {
-  const allTokensDataMap = new Map()
-
-  allTokensData.forEach((el) => allTokensDataMap.set(el.mint, el))
-
+  const allTokensDataMap = allTokensData.reduce(
+    (acc, tokenData) => acc.set(tokenData.mint, tokenData),
+    new Map()
+  )
+  
   const usersPools = poolsInfo.filter(
     (el) =>
       allTokensDataMap.has(el.poolTokenMint) &&
@@ -161,7 +162,10 @@ const UserLiquitidyTable = ({
               const {
                 amount: poolTokenRawAmount,
                 decimals: poolTokenDecimals,
-              } = getTokenDataByMint(allTokensData, el.poolTokenMint)
+              } = allTokensDataMap.get(el.poolTokenMint) || {
+                amount: 0,
+                decimals: 0,
+              }
 
               const poolTokenAmount =
                 poolTokenRawAmount * 10 ** poolTokenDecimals

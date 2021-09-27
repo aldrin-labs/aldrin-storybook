@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Theme } from '@sb/types/materialUI'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 
-import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 
 import { TokenIconsContainer } from '../components'
@@ -83,35 +83,27 @@ export type Pools = {}
 
 export const combineAllPoolsData = ({
   theme,
-  dexTokensPrices,
+  dexTokensPricesMap,
   feesPerPoolMap,
 }: {
   theme: Theme
-  dexTokensPrices: any
+  dexTokensPricesMap: Map<string, DexTokensPrices>
   feesPerPoolMap: any
 }) => {
   const processedAllPoolsData = mock
     .sort((poolA: PoolInfo, poolB: PoolInfo) => {
       const [poolABaseTokenPrice, poolBBaseTokenPrice] = [
-        dexTokensPrices.find(
-          (tokenInfo) =>
-            tokenInfo.symbol === getTokenNameByMintAddress(poolA.tokenA)
-        )?.price || 10,
-        dexTokensPrices.find(
-          (tokenInfo) =>
-            tokenInfo.symbol === getTokenNameByMintAddress(poolB.tokenA)
-        )?.price || 10,
+        dexTokensPricesMap.get(getTokenNameByMintAddress(poolA.tokenA))
+          ?.price || 10,
+        dexTokensPricesMap.get(getTokenNameByMintAddress(poolB.tokenA))
+          ?.price || 10,
       ]
 
       const [poolAQuoteTokenPrice, poolBQuoteTokenPrice] = [
-        dexTokensPrices.find(
-          (tokenInfo) =>
-            tokenInfo.symbol === getTokenNameByMintAddress(poolA.tokenB)
-        )?.price || 10,
-        dexTokensPrices.find(
-          (tokenInfo) =>
-            tokenInfo.symbol === getTokenNameByMintAddress(poolB.tokenB)
-        )?.price || 10,
+        dexTokensPricesMap.get(getTokenNameByMintAddress(poolA.tokenB))
+          ?.price || 10,
+        dexTokensPricesMap.get(getTokenNameByMintAddress(poolB.tokenB))
+          ?.price || 10,
       ]
 
       const poolATvlUSD =
@@ -128,13 +120,8 @@ export const combineAllPoolsData = ({
       const baseSymbol = getTokenNameByMintAddress(el.tokenA)
       const quoteSymbol = getTokenNameByMintAddress(el.tokenB)
 
-      const baseTokenPrice =
-        dexTokensPrices.find((tokenInfo) => tokenInfo.symbol === baseSymbol)
-          ?.price || 10
-
-      const quoteTokenPrice =
-        dexTokensPrices.find((tokenInfo) => tokenInfo.symbol === quoteSymbol)
-          ?.price || 10
+      const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 10
+      const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 10
 
       const tvlUSD =
         baseTokenPrice * el.tvl.tokenA + quoteTokenPrice * el.tvl.tokenB

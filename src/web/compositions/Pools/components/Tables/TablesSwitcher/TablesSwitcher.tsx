@@ -18,7 +18,6 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
 import { getAllTokensData } from '@sb/compositions/Rebalance/utils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { TableModeButton } from './TablesSwitcher.styles'
 
 const TablesSwitcher = ({
@@ -54,7 +53,6 @@ const TablesSwitcher = ({
   useEffect(() => {
     const fetchData = async () => {
       const allTokensData = await getAllTokensData(wallet.publicKey, connection)
-
       await setAllTokensData(allTokensData)
     }
 
@@ -64,6 +62,11 @@ const TablesSwitcher = ({
   }, [wallet?.publicKey, refreshAllTokensDataCounter])
 
   const isAllPoolsSelected = selectedTable === 'all'
+
+  const dexTokensPricesMap = getDexTokensPrices.reduce(
+    (acc, tokenPrice) => acc.set(tokenPrice.symbol, tokenPrice),
+    new Map()
+  )
 
   return (
     <RowContainer>
@@ -95,7 +98,7 @@ const TablesSwitcher = ({
           </Row>
           <Row
             style={{ flexWrap: 'nowrap' }}
-            justify={'space-between'}
+            justify={'flex-end'}
             width={'calc(100% / 3)'}
           >
             <SearchInputWithLoop
@@ -111,7 +114,7 @@ const TablesSwitcher = ({
             theme={theme}
             poolsInfo={getPoolsInfo}
             selectPool={selectPool}
-            dexTokensPrices={getDexTokensPrices}
+            dexTokensPricesMap={dexTokensPricesMap}
             setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
           />
         ) : (
