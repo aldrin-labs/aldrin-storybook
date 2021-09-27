@@ -20,6 +20,7 @@ import LessVolumeArrow from '@icons/lessVolumeArrow.svg'
 import MoreVolumeArrow from '@icons/moreVolumeArrow.svg'
 import Coinmarketcap from '@icons/coinmarketcap.svg'
 import CoinGecko from '@icons/coingecko.svg'
+import NomicsIcon from '@icons/nomics.svg'
 import Inform from '@icons/inform.svg'
 
 import tokensLinksMap from '@core/config/tokensTwitterLinks'
@@ -415,7 +416,9 @@ export const combineSelectWrapperData = ({
     const marketCapLink = tokensLinksMap?.get(base)?.marketCapLink || ''
     const marketCapIcon = marketCapLink.includes('coinmarketcap')
       ? Coinmarketcap
-      : CoinGecko
+      : marketCapLink.includes('coingecko')
+      ? CoinGecko
+      : NomicsIcon
 
     return {
       id: `${symbol}`,
