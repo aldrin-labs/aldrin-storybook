@@ -111,7 +111,7 @@ const AllPoolsTableComponent = ({
           boxShadow: 'none',
         },
       }}
-      emptyTableText={'All your balances are settled.'}
+      emptyTableText={'No pools available.'}
       data={{ body: allPoolsData }}
       columnNames={allPoolsTableColumnsNames}
     />

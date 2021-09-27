@@ -80,137 +80,16 @@ const AllPoolsTable = ({
 
   return (
     <RowContainer>
-        {/* <RowContainer padding="2rem" justify={'space-between'} align="center">
-          <Text theme={theme}>All Pools</Text>
-          <Row
-            style={{ flexWrap: 'nowrap' }}
-            justify={'space-between'}
-            width={'34%'}
-          >
-            <SearchInputWithLoop
-              searchValue={searchValue}
-              onChangeSearch={onChangeSearch}
-              placeholder={'Search...'}
-            />
-            <BorderButton
-              onClick={() => {
-                if (wallet.connected) {
-                  setIsCreatePoolPopupOpen(true)
-                } else {
-                  wallet.connect()
-                }
-              }}
-              style={{ marginLeft: '2rem', whiteSpace: 'nowrap' }}
-              padding={wallet.connected ? '0 2.6rem' : '0 2rem'}
-              borderColor={'#A5E898'}
-            >
-              {wallet.connected ? 'Create pool' : 'Connect wallet'}
-            </BorderButton>
-          </Row>
-        </RowContainer> */}
-        <RowContainer>
-          <AllPoolsTableComponent
-            dexTokensPrices={dexTokensPrices}
-            feesPerPoolMap={feesPerPoolMap}
-            theme={theme}
-          />
-          {/* <Table>
-            <TableHeader>
-              <RowTd>Pool</RowTd>
-              <RowTd>TVL</RowTd>
-              <RowTd>Total Fees Paid</RowTd>
-              <RowTd>
-                <DarkTooltip
-                  title={
-                    'Annualized, non-compounded return on investment based on the fees earned in the last 24 hours, relative to the size of the pool.'
-                  }
-                >
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <SvgIcon
-                      width={'1.2rem'}
-                      height={'1.2rem'}
-                      style={{ marginRight: '1rem' }}
-                      src={TooltipIcon}
-                    />
-                    APY (24h)
-                  </div>
-                </DarkTooltip>
-              </RowTd>
-            </TableHeader> */}
-          {/* {mock.map((el) => {
-              return (
-                <TableRow>
-                  <RowTd>
-                    <TokenIconsContainer
-                      tokenA={el.tokenA}
-                      tokenB={el.tokenB}
-                    />
-                  </RowTd>
-                  <RowDataTd>
-                    <TextColumnContainer>
-                      <RowDataTdTopText theme={theme}>
-                        $2.55
-                        {formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
-                      </RowDataTdTopText>
-                      <RowDataTdText
-                        theme={theme}
-                        color={theme.palette.grey.new}
-                      >
-                        {formatNumberToUSFormat(
-                          stripDigitPlaces(el.tvl.tokenA, 2)
-                        )}{' '}
-                        {getTokenNameByMintAddress(el.tokenA)} /{' '}
-                        {formatNumberToUSFormat(
-                          stripDigitPlaces(el.tvl.tokenB, 2)
-                        )}{' '}
-                        {getTokenNameByMintAddress(el.tokenB)}
-                      </RowDataTdText>
-                    </TextColumnContainer>
-                  </RowDataTd>
-                  <RowDataTd>
-                    <RowDataTdText theme={theme}>
-                      ${stripDigitPlaces(fees, 6)}
-                      0.55554
-                    </RowDataTdText>
-                  </RowDataTd>
-                  <RowDataTd>
-                    <RowDataTdText theme={theme}>
-                      {stripDigitPlaces(apy, 6)}
-                      0.6%
-                    </RowDataTdText>
-                  </RowDataTd>
-                  <RowTd>
-                    <Row justify={'flex-end'} width={'100%'}>
-                      <BorderButton
-                        onClick={() => {
-                          if (wallet.connected) {
-                            selectPool(el)
-                            setIsAddLiquidityPopupOpen(true)
-                          } else {
-                            wallet.connect()
-                          }
-                        }}
-                        borderColor={'#366CE5'}
-                      >
-                        {wallet.connected ? 'Add Liquidity' : 'Connect wallet'}
-                      </BorderButton>
-                    </Row>
-                  </RowTd>
-                </TableRow>
-              )
-            }) */}
-        </RowContainer>
+      <AllPoolsTableComponent
+        dexTokensPrices={dexTokensPrices}
+        feesPerPoolMap={feesPerPoolMap}
+        theme={theme}
+      />
     </RowContainer>
   )
 }
 
 export default compose(
-  queryRendererHoc({
-    name: 'getPoolsInfoQuery',
-    query: getPoolsInfo,
-    fetchPolicy: 'cache-and-network',
-    pollInterval: 60000,
-  }),
   queryRendererHoc({
     name: 'getFeesEarnedByPoolQuery',
     query: getFeesEarnedByPool,

@@ -2,30 +2,32 @@ import React, { useEffect, useState } from 'react'
 
 import { Theme } from '@material-ui/core'
 
-import {
-  Row,
-  RowContainer,
-  Text,
-} from '@sb/compositions/AnalyticsRoute/index.styles'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BlockTemplate } from '@sb/compositions/Pools/index.styles'
 import { SearchInputWithLoop } from '../components'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import AllPoolsTable from '../AllPools'
-import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
+import UserLiquitidyTable from '../UserLiquidity'
+
+import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { AddLiquidityPopup, WithdrawalPopup } from '../../Popups'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
 import { getAllTokensData } from '@sb/compositions/Rebalance/utils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { TableModeButton } from './TablesSwitcher.styles'
 
 const TablesSwitcher = ({
   theme,
+  getPoolsInfoQuery: { getPoolsInfo = [] },
   getDexTokensPricesQuery: { getDexTokensPrices = [] },
 }: {
   theme: Theme
+  getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }) => {
   const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
@@ -61,6 +63,8 @@ const TablesSwitcher = ({
     }
   }, [wallet?.publicKey, refreshAllTokensDataCounter])
 
+  const isAllPoolsSelected = selectedTable === 'all'
+
   return (
     <RowContainer>
       <BlockTemplate
@@ -73,7 +77,22 @@ const TablesSwitcher = ({
         justify={'end'}
       >
         <RowContainer padding="2rem" justify={'space-between'} align="center">
-          <Text theme={theme}>All Pools</Text>
+          <Row>
+            <TableModeButton
+              theme={theme}
+              isActive={isAllPoolsSelected}
+              onClick={() => setSelectedTable('all')}
+            >
+              All Pools
+            </TableModeButton>
+            <TableModeButton
+              theme={theme}
+              isActive={!isAllPoolsSelected}
+              onClick={() => setSelectedTable('userLiquidity')}
+            >
+              Your liquidity
+            </TableModeButton>
+          </Row>
           <Row
             style={{ flexWrap: 'nowrap' }}
             justify={'space-between'}
@@ -86,12 +105,29 @@ const TablesSwitcher = ({
             />
           </Row>
         </RowContainer>
-        <AllPoolsTable
-          theme={theme}
-          selectPool={selectPool}
-          dexTokensPrices={getDexTokensPrices}
-          setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
-        />
+
+        {selectedTable === 'all' ? (
+          <AllPoolsTable
+            theme={theme}
+            poolsInfo={getPoolsInfo}
+            selectPool={selectPool}
+            dexTokensPrices={getDexTokensPrices}
+            setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
+          />
+        ) : (
+          <UserLiquitidyTable
+            allTokensData={allTokensData}
+            poolsInfo={getPoolsInfo}
+            theme={theme}
+            wallet={wallet}
+            selectedPool={selectedPool}
+            selectPool={selectPool}
+            dexTokensPrices={getDexTokensPrices}
+            setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
+            setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
+          />
+        )}
+
         {selectedPool && (
           <AddLiquidityPopup
             theme={theme}
