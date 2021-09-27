@@ -13,7 +13,15 @@ const Pools = ({ theme }: { theme: Theme }) => {
   const [isWarningPopupOpen, openWarningPopup] = useState(true)
 
   return (
-    <RowContainer direction={'column'} padding={'2rem 3rem'}>
+    <RowContainer
+      height="100%"
+      direction={'column'}
+      padding={'2rem 3rem'}
+      justify={'flex-start'}
+      style={{
+        background: theme.palette.grey.additional,
+      }}
+    >
       <RowContainer justify={'space-between'}>
         <BlockTemplate
           theme={theme}
