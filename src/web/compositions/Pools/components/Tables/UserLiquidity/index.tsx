@@ -81,47 +81,6 @@ const UserLiquitidyTable = ({
 
   return (
     <RowContainer>
-      {/* <RowContainer padding="2rem" justify={'space-between'} align="center">
-          <Text theme={theme}>Your Liquidity</Text>
-          <Row width={'33%'}>
-            <LiquidityDataContainer>
-              <RowDataTdText theme={theme} color={theme.palette.grey.new}>
-                Liquidity (Including Fees)
-              </RowDataTdText>
-              <Text
-                theme={theme}
-                color={theme.palette.green.new}
-                fontFamily={'Avenir Next Demi'}
-              >
-                $
-                {formatNumberToUSFormat(
-                  stripDigitPlaces(
-                    getTotalUserLiquidity({ usersPools, dexTokensPrices }),
-                    2
-                  )
-                )}
-              </Text>
-            </LiquidityDataContainer>
-            <LiquidityDataContainer style={{ paddingLeft: '3rem' }}>
-              <RowDataTdText theme={theme} color={theme.palette.grey.new}>
-                Fees Earned (Cumulative)
-              </RowDataTdText>
-              <Text
-                theme={theme}
-                color={theme.palette.green.new}
-                fontFamily={'Avenir Next Demi'}
-              >
-                $
-                {stripDigitPlaces(
-                  getFeesEarnedByAccount.reduce((acc, el: FeesEarned) => {
-                    return acc + el.earnedUSD
-                  }, 0),
-                  3
-                )}
-              </Text>
-            </LiquidityDataContainer>
-          </Row>
-        </RowContainer>*/}
       <RowContainer>
         <Table>
           <TableHeader>

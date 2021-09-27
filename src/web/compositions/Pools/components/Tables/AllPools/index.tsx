@@ -44,7 +44,7 @@ import AllPoolsTableComponent from './AllPoolsTable'
 const AllPoolsTable = ({
   theme,
   dexTokensPrices,
-  getPoolsInfoQuery,
+  poolsInfo,
   getFeesEarnedByPoolQuery,
   selectPool,
   // setIsCreatePoolPopupOpen,
@@ -52,7 +52,7 @@ const AllPoolsTable = ({
 }: {
   theme: Theme
   dexTokensPrices: DexTokensPrices[]
-  getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
+  poolsInfo: PoolInfo[]
   getFeesEarnedByPoolQuery: { getFeesEarnedByPool: FeesEarned[] }
   selectPool: (pool: PoolInfo) => void
   // setIsCreatePoolPopupOpen: (value: boolean) => void
@@ -65,7 +65,7 @@ const AllPoolsTable = ({
     getFeesEarnedByPool: [],
   }
 
-  const filteredData = getPoolsInfoQuery.getPoolsInfo.filter((el) =>
+  const filteredData = poolsInfo.filter((el) =>
     filterDataBySymbolForDifferentDeviders({
       searchValue,
       symbol: el.parsedName,
