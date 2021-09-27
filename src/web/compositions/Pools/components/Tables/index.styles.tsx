@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import { Row } from '../../../AnalyticsRoute/index.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Text } from '@sb/compositions/Addressbook'
+import React from 'react'
+import { Loading } from '@sb/components/Loading'
 
 export const LiquidityDataContainer = styled(Row)`
   width: 50%;
@@ -104,4 +106,38 @@ export const SearchInput = styled.input`
     font-size: 1.7rem;
     font-family: 'Avenir Next Thin';
   }
+`
+export const GreenButton = styled(
+  ({
+    disabled,
+    showLoader,
+    children,
+    textTransform = 'capitalize',
+    ...props
+  }) => (
+    <BtnCustom textTransform={textTransform} {...props}>
+      {showLoader ? (
+        <Loading
+          color={'#fff'}
+          size={24}
+          style={{ display: 'flex', alignItems: 'center', height: '4.5rem' }}
+        />
+      ) : (
+        children
+      )}
+    </BtnCustom>
+  )
+)`
+  font-size: 1.4rem;
+  height: 4.5rem;
+  background-color: ${(props: { disabled: boolean; theme: Theme }) =>
+    !props.disabled
+      ? '#A5E898'
+      : props.theme.palette.grey.title};
+  border-radius: 1rem;
+  border-color: none;
+  cursor: pointer;
+  color: ${(props: { disabled: boolean }) =>
+    !props.disabled ? '#17181A' : '#fff'};
+  border: none;
 `

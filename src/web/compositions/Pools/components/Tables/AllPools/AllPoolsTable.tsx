@@ -28,6 +28,7 @@ export const mock = [
     },
     apy24h: 0.21, //%
     supply: 120000,
+    liquidity: 9835570,
   },
   {
     name:
@@ -43,6 +44,7 @@ export const mock = [
     },
     apy24h: 0.21, //%
     supply: 120000,
+    liquidity: 0,
   },
   {
     name:
@@ -58,6 +60,7 @@ export const mock = [
     },
     apy24h: 0.21, //%
     supply: 120000,
+    liquidity: 935570,
   },
 ]
 
@@ -127,11 +130,12 @@ const AllPoolsTableComponent = ({
         },
       }}
       emptyTableText={'No pools available.'}
+      // @ts-ignore
       data={{ body: allPoolsData }}
+      // @ts-ignore
       columnNames={allPoolsTableColumnsNames}
     />
   )
-  // }
 }
 
 export default AllPoolsTableComponent
