@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { TableWithSort } from '@sb/components'
 
 import { useConnection } from '@sb/dexUtils/connection'
@@ -11,6 +11,7 @@ import {
   allPoolsTableColumnsNames,
   combineAllPoolsData,
 } from './AllPoolsTable.utils'
+import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
 
 export const mock = [
   {
@@ -35,7 +36,7 @@ export const mock = [
     tokenA: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
     tokenB: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
     swapToken: '55',
-    poolTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
+    poolTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLoxFcMd6z8ddCk5wp',
     tvl: {
       tokenA: 0.44,
       tokenB: 0.765,
@@ -50,7 +51,7 @@ export const mock = [
     tokenA: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
     tokenB: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
     swapToken: '55',
-    poolTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
+    poolTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYkDLCxFcMd6z8ddCk5wp',
     tvl: {
       tokenA: 0.44,
       tokenB: 0.765,
@@ -69,14 +70,24 @@ const AllPoolsTableComponent = ({
   dexTokensPrices: any
   feesPerPoolMap: any
 }) => {
+  const [expandedRows, expandRows] = useState([])
+
+  const setExpandedRows = (id: string) => {
+    console.log('here', expandedRows)
+
+    expandRows(onCheckBoxClick(expandedRows, id))
+  }
+
   const allPoolsData = combineAllPoolsData({
     theme,
     dexTokensPrices,
     feesPerPoolMap,
   })
-
   return (
     <TableWithSort
+      expandableRows={true}
+      expandedRows={expandedRows}
+      onChange={setExpandedRows}
       style={{
         overflowX: 'hidden',
         height: '100%',
@@ -93,7 +104,7 @@ const AllPoolsTableComponent = ({
       tableStyles={{
         cell: {
           color: theme.palette.dark.main,
-          fontSize: '1rem', // 1.2 if bold
+          fontSize: '1rem',
           fontWeight: 'bold',
           letterSpacing: '.1rem',
           borderBottom: theme.palette.border.main,
@@ -104,14 +115,18 @@ const AllPoolsTableComponent = ({
           fontFamily: 'Avenir Next Medium',
         },
         heading: {
+          borderTop: theme.palette.border.main,
           backgroundColor: '#222429',
+          fontFamily: 'Avenir Next Thin',
+          color: '#fbf2f2',
+          fontSize: '1.3rem',
         },
         tab: {
           padding: 0,
           boxShadow: 'none',
         },
       }}
-      emptyTableText={'All your balances are settled.'}
+      emptyTableText={'You have no pools.'}
       data={{ body: allPoolsData }}
       columnNames={allPoolsTableColumnsNames}
     />

@@ -46,21 +46,23 @@ export const RowTd = styled.td`
   padding: 0 2rem;
   font-family: 'Avenir Next';
   border-top: 0.2rem solid #383b45;
-  color: #f5f5fb; 
+  color: #f5f5fb;
   font-size: 1.5rem;
 `
 
 export const RowDataTd = styled(RowTd)`
-  padding-top: .5rem;
-  padding-bottom: .5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 `
 
 export const RowDataTdText = styled(Text)`
   white-space: nowrap;
+  font-family: ${(props: TextProps) => props.fontFamily || 'Avenir Next Thin'};
+  color: ${(props) => props.color || '#fbf2f2'};
 `
 
 export const RowDataTdTopText = styled(RowDataTdText)`
-  padding-bottom: .5rem;
+  padding-bottom: 0.5rem;
 `
 
 export const TextColumnContainer = styled(Row)`

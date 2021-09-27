@@ -1,21 +1,82 @@
-import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
-import { StyledTitle } from '@sb/components/TradingTable/TradingTable.styles'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import React, { useState } from 'react'
+import { Theme } from '@sb/types/materialUI'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
+
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import { Theme } from '@sb/types/materialUI'
-import React from 'react'
+
 import { TokenIconsContainer } from '../components'
+import {
+  RowDataTdText,
+  RowDataTdTopText,
+  TextColumnContainer,
+} from '../index.styles'
+
+import GreyArrow from '@icons/greyArrow.svg'
+import Info from '@icons/inform.svg'
+
 import { mock } from './AllPoolsTable'
+import { SvgIcon } from '@sb/components'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 
 export const allPoolsTableColumnsNames = [
   { label: 'Pool', id: 'pool' },
   { label: 'Total Value Locked', id: 'tvl' },
-  { label: 'Volume 24h', id: 'vol24h' },
-  { label: 'Volume 7d', id: 'vol7d' },
-  { label: 'Fees 24h', id: 'fees' },
-  { label: 'APY 24h', id: 'apy' },
-  { label: 'Farming', id: 'farming' },
+  {
+    label: (
+      <>
+        <span>Volume</span>{' '}
+        <span style={{ color: '#96999C', padding: '0 0 0 0.5rem' }}> 24h</span>
+      </>
+    ),
+    id: 'vol24h',
+  },
+  {
+    label: (
+      <>
+        <span>Volume</span>{' '}
+        <span style={{ color: '#96999C', padding: '0 0 0 0.5rem' }}> 7d</span>
+      </>
+    ),
+    id: 'vol7d',
+  },
+  {
+    label: (
+      <>
+        <span>Fees</span>{' '}
+        <span style={{ color: '#96999C', padding: '0 0 0 0.5rem' }}> 24h</span>
+      </>
+    ),
+    id: 'fees',
+  },
+  {
+    label: (
+      <>
+        <span>APY</span>{' '}
+        <span style={{ color: '#96999C', padding: '0 0 0 0.5rem' }}> 24h</span>
+      </>
+    ),
+    id: 'apy',
+  },
+  {
+    label: (
+      <>
+        Farming
+        <SvgIcon
+          src={Info}
+          width={'1.5rem'}
+          height={'auto'}
+          style={{ marginLeft: '1rem' }}
+        />
+      </>
+    ),
+    id: 'farming',
+  },
+  { label: '', id: 'details' },
 ]
 
 export type Pools = {}
@@ -81,6 +142,7 @@ export const combineAllPoolsData = ({
       const fees = feesPerPoolMap.get(el.swapToken) || 0
       const apy = el.apy24h || 0
       return {
+        id: `${el.name}${el.tvl}${el.poolTokenMint}`,
         pool: {
           render: (
             <div style={{ width: '15rem' }}>
@@ -89,24 +151,142 @@ export const combineAllPoolsData = ({
           ),
         },
         tvl: {
-          render: tvlUSD,
+          render: (
+            <TextColumnContainer>
+              <RowDataTdTopText theme={theme}>
+                ${tvlUSD}
+                {formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
+              </RowDataTdTopText>
+              <RowDataTdText theme={theme} color={theme.palette.grey.new}>
+                {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenA, 2))}{' '}
+                {getTokenNameByMintAddress(el.tokenA)} /{' '}
+                {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenB, 2))}{' '}
+                {getTokenNameByMintAddress(el.tokenB)}
+              </RowDataTdText>
+            </TextColumnContainer>
+          ),
           showOnMobile: false,
         },
         vol24h: {
-          render: '3',
+          render: (
+            <RowDataTdText theme={theme}>
+              ${formatNumberToUSFormat(stripDigitPlaces(2000000, 2))}
+            </RowDataTdText>
+          ),
           style: { textAlign: 'left' },
           contentToSort: '',
           showOnMobile: false,
         },
-        fees: { render: fees },
+
         vol7d: {
-          render: '43',
+          render: (
+            <RowDataTdText theme={theme}>
+              ${formatNumberToUSFormat(stripDigitPlaces(2000000, 2))}
+            </RowDataTdText>
+          ),
           style: { textAlign: 'left' },
           contentToSort: '',
           showOnMobile: false,
         },
-        apy: { render: apy },
-        farming: { render: '0' },
+        fees: {
+          render: (
+            <RowDataTdText theme={theme}>
+              ${stripDigitPlaces(fees, 6)}
+            </RowDataTdText>
+          ),
+        },
+        apy: {
+          render: (
+            <RowDataTdText
+              color={'#A5E898'}
+              fontFamily="Avenir Next Medium"
+              theme={theme}
+            >
+              {stripDigitPlaces(apy, 6)}%
+            </RowDataTdText>
+          ),
+        },
+        farming: {
+          render: <RowDataTdText theme={theme}>0</RowDataTdText>,
+        },
+        details: {
+          render: (
+            <Row>
+              <RowDataTdText
+                theme={theme}
+                color={theme.palette.grey.new}
+                fontFamily="Avenir Next Medium"
+                style={{ marginRight: '1rem' }}
+              >
+                Details
+              </RowDataTdText>
+              <SvgIcon width="1rem" height="auto" src={GreyArrow} />
+            </Row>
+          ),
+        },
+        expandableContent: [
+          {
+            row: {
+              render: (
+                <RowContainer margin="1rem 0" style={{ background: '#222429' }}>
+                  <Row
+                    style={{
+                      borderRight: `0.2rem solid #383B45`,
+                    }}
+                    justify="space-between"
+                    width="60%"
+                  >
+                    <Row align="flex-start" direction="column" width="30%">
+                      <RowDataTdText
+                        theme={theme}
+                        color={theme.palette.grey.new}
+                        style={{ marginBottom: '1rem' }}
+                      >
+                        Your Liquitity:
+                      </RowDataTdText>
+                      <RowDataTdText
+                        color={'#A5E898'}
+                        fontFamily="Avenir Next Medium"
+                        theme={theme}
+                      >
+                        100 RIN / 2 SOL ($1,000){' '}
+                      </RowDataTdText>
+                    </Row>
+                    <Row align="flex-start" direction="column" width="30%">
+                      <RowDataTdText
+                        theme={theme}
+                        color={theme.palette.grey.new}
+                        style={{ marginBottom: '1rem' }}
+                      >
+                        Fees Earned:
+                      </RowDataTdText>
+                      <RowDataTdText
+                        color={'#A5E898'}
+                        fontFamily="Avenir Next Medium"
+                        theme={theme}
+                      >
+                        100 RIN / 2 SOL ($1,000){' '}
+                      </RowDataTdText>
+                    </Row>
+                    <Row direction="column" width="30%">
+                      <BlueButton
+                        theme={theme}
+                        style={{ marginBottom: '1rem' }}
+                      >
+                        Deposit Liquidity{' '}
+                      </BlueButton>
+                      <BlueButton theme={theme}>
+                        Withdraw Liquidity + Fees
+                      </BlueButton>
+                    </Row>
+                  </Row>
+                  <Row width="40%"></Row>
+                </RowContainer>
+              ),
+              colspan: 8,
+            },
+          },
+        ],
       }
     })
 
