@@ -47,7 +47,7 @@ const AllPoolsTable = ({
   getPoolsInfoQuery,
   getFeesEarnedByPoolQuery,
   selectPool,
-  setIsCreatePoolPopupOpen,
+  // setIsCreatePoolPopupOpen,
   setIsAddLiquidityPopupOpen,
 }: {
   theme: Theme
@@ -55,7 +55,7 @@ const AllPoolsTable = ({
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
   getFeesEarnedByPoolQuery: { getFeesEarnedByPool: FeesEarned[] }
   selectPool: (pool: PoolInfo) => void
-  setIsCreatePoolPopupOpen: (value: boolean) => void
+  // setIsCreatePoolPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
 }) => {
   const { wallet } = useWallet()
@@ -80,16 +80,7 @@ const AllPoolsTable = ({
 
   return (
     <RowContainer>
-      <BlockTemplate
-        width={'100%'}
-        height={'auto'}
-        style={{ marginTop: '2rem' }}
-        align={'start'}
-        theme={theme}
-        direction={'column'}
-        justify={'end'}
-      >
-        <RowContainer padding="2rem" justify={'space-between'} align="center">
+        {/* <RowContainer padding="2rem" justify={'space-between'} align="center">
           <Text theme={theme}>All Pools</Text>
           <Row
             style={{ flexWrap: 'nowrap' }}
@@ -116,7 +107,7 @@ const AllPoolsTable = ({
               {wallet.connected ? 'Create pool' : 'Connect wallet'}
             </BorderButton>
           </Row>
-        </RowContainer>
+        </RowContainer> */}
         <RowContainer>
           <AllPoolsTableComponent
             dexTokensPrices={dexTokensPrices}
@@ -209,7 +200,6 @@ const AllPoolsTable = ({
               )
             }) */}
         </RowContainer>
-      </BlockTemplate>
     </RowContainer>
   )
 }

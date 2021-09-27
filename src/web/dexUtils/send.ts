@@ -28,7 +28,7 @@ import {
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token'
 import { getCache } from './fetch-loop'
-import { Metrics } from '../../utils/metrics'
+import { Metrics } from '@core/utils/metrics'
 import {
   getConnectionFromMultiConnections,
   getProviderNameFromUrl,
