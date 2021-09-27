@@ -10,13 +10,14 @@ import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 
 import { TokenIconsContainer } from '../components'
 import {
+  GreenButton,
   RowDataTdText,
   RowDataTdTopText,
   TextColumnContainer,
 } from '../index.styles'
 
 import GreyArrow from '@icons/greyArrow.svg'
-import Info from '@icons/inform.svg'
+import Info from '@icons/TooltipImg.svg'
 
 import { mock } from './AllPoolsTable'
 import { SvgIcon } from '@sb/components'
@@ -58,6 +59,12 @@ export const allPoolsTableColumnsNames = [
       <>
         <span>APY</span>{' '}
         <span style={{ color: '#96999C', padding: '0 0 0 0.5rem' }}> 24h</span>
+        <SvgIcon
+          src={Info}
+          width={'1.5rem'}
+          height={'auto'}
+          style={{ marginLeft: '1rem' }}
+        />
       </>
     ),
     id: 'apy',
@@ -239,22 +246,24 @@ export const combineAllPoolsData = ({
                         100 RIN / 2 SOL ($1,000){' '}
                       </RowDataTdText>
                     </Row>
-                    <Row align="flex-start" direction="column" width="30%">
-                      <RowDataTdText
-                        theme={theme}
-                        color={theme.palette.grey.new}
-                        style={{ marginBottom: '1rem' }}
-                      >
-                        Fees Earned:
-                      </RowDataTdText>
-                      <RowDataTdText
-                        color={'#A5E898'}
-                        fontFamily="Avenir Next Medium"
-                        theme={theme}
-                      >
-                        100 RIN / 2 SOL ($1,000){' '}
-                      </RowDataTdText>
-                    </Row>
+                    {el.liquidity ? (
+                      <Row align="flex-start" direction="column" width="30%">
+                        <RowDataTdText
+                          theme={theme}
+                          color={theme.palette.grey.new}
+                          style={{ marginBottom: '1rem' }}
+                        >
+                          Fees Earned:
+                        </RowDataTdText>
+                        <RowDataTdText
+                          color={'#A5E898'}
+                          fontFamily="Avenir Next Medium"
+                          theme={theme}
+                        >
+                          100 RIN / 2 SOL ($1,000){' '}
+                        </RowDataTdText>
+                      </Row>
+                    ) : null}
                     <Row direction="column" width="30%">
                       <BlueButton
                         theme={theme}
@@ -262,12 +271,60 @@ export const combineAllPoolsData = ({
                       >
                         Deposit Liquidity{' '}
                       </BlueButton>
-                      <BlueButton theme={theme}>
-                        Withdraw Liquidity + Fees
-                      </BlueButton>
+                      {el.liquidity ? (
+                        <BlueButton theme={theme}>
+                          Withdraw Liquidity + Fees
+                        </BlueButton>
+                      ) : null}
                     </Row>
                   </Row>
-                  <Row width="40%"></Row>
+                  <Row justify="space-between" width="40%" padding="0 0 0 4rem">
+                    <Row align="flex-start" direction="column" width="60%">
+                      <RowDataTdText
+                        theme={theme}
+                        fontFamily={'Avenir Next Medium'}
+                        style={{ marginBottom: '2rem' }}
+                      >
+                        Farming
+                      </RowDataTdText>
+                      <RowDataTdText theme={theme}>
+                        {el.liquidity ? (
+                          <>
+                            Stake your pool tokens to start
+                            <span
+                              style={{ color: '#A5E898', padding: '0 0.5rem' }}
+                            >
+                              RIN
+                            </span>
+                            farming
+                          </>
+                        ) : (
+                          <>
+                            Deposit liquidity to farm{' '}
+                            <span style={{ color: '#A5E898' }}>RIN</span>
+                          </>
+                        )}
+                      </RowDataTdText>
+                    </Row>
+                    {el.liquidity ? (
+                      <Row direction="column" width="40%" align="flex-end">
+                        {' '}
+                        <RowDataTdText
+                          theme={theme}
+                          fontFamily={'Avenir Next Medium'}
+                          style={{ marginBottom: '2rem' }}
+                        >
+                          <span
+                            style={{ color: '#A5E898', padding: '0 0.5rem' }}
+                          >
+                            0
+                          </span>{' '}
+                          RIN
+                        </RowDataTdText>
+                        <GreenButton>Stake Pool Token</GreenButton>
+                      </Row>
+                    ) : null}
+                  </Row>
                 </RowContainer>
               ),
               colspan: 8,
