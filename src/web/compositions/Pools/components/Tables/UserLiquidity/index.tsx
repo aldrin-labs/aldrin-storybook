@@ -48,7 +48,7 @@ const UserLiquitidyTable = ({
   wallet,
   allTokensData,
   poolsInfo,
-  dexTokensPrices,
+  dexTokensPricesMap,
   getFeesEarnedByAccountQuery,
   selectPool,
   setIsWithdrawalPopupOpen,
@@ -58,7 +58,7 @@ const UserLiquitidyTable = ({
   wallet: WalletAdapter
   allTokensData: TokenInfo[]
   poolsInfo: PoolInfo[]
-  dexTokensPrices: DexTokensPrices[]
+  dexTokensPricesMap: Map<string, DexTokensPrices>
   getFeesEarnedByAccountQuery: { getFeesEarnedByAccount: FeesEarned[] }
   selectPool: (pool: PoolInfo) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
@@ -68,7 +68,7 @@ const UserLiquitidyTable = ({
     (acc, tokenData) => acc.set(tokenData.mint, tokenData),
     new Map()
   )
-  
+
   const usersPools = poolsInfo.filter(
     (el) =>
       allTokensDataMap.has(el.poolTokenMint) &&
@@ -111,25 +111,17 @@ const UserLiquitidyTable = ({
           {usersPools
             .sort((poolA: PoolInfo, poolB: PoolInfo) => {
               const [poolABaseTokenPrice, poolBBaseTokenPrice] = [
-                dexTokensPrices.find(
-                  (tokenInfo) =>
-                    tokenInfo.symbol === getTokenNameByMintAddress(poolA.tokenA)
-                )?.price || 10,
-                dexTokensPrices.find(
-                  (tokenInfo) =>
-                    tokenInfo.symbol === getTokenNameByMintAddress(poolB.tokenA)
-                )?.price || 10,
+                dexTokensPricesMap.get(getTokenNameByMintAddress(poolA.tokenA))
+                  ?.price || 10,
+                dexTokensPricesMap.get(getTokenNameByMintAddress(poolB.tokenA))
+                  ?.price || 10,
               ]
 
               const [poolAQuoteTokenPrice, poolBQuoteTokenPrice] = [
-                dexTokensPrices.find(
-                  (tokenInfo) =>
-                    tokenInfo.symbol === getTokenNameByMintAddress(poolA.tokenB)
-                )?.price || 10,
-                dexTokensPrices.find(
-                  (tokenInfo) =>
-                    tokenInfo.symbol === getTokenNameByMintAddress(poolB.tokenB)
-                )?.price || 10,
+                dexTokensPricesMap.get(getTokenNameByMintAddress(poolA.tokenB))
+                  ?.price || 10,
+                dexTokensPricesMap.get(getTokenNameByMintAddress(poolB.tokenB))
+                  ?.price || 10,
               ]
 
               const poolATvlUSD =
@@ -147,14 +139,10 @@ const UserLiquitidyTable = ({
               const quoteSymbol = getTokenNameByMintAddress(el.tokenB)
 
               const baseTokenPrice =
-                dexTokensPrices.find(
-                  (tokenInfo) => tokenInfo.symbol === baseSymbol
-                )?.price || 10
+                dexTokensPricesMap.get(baseSymbol)?.price || 10
 
               const quoteTokenPrice =
-                dexTokensPrices.find(
-                  (tokenInfo) => tokenInfo.symbol === quoteSymbol
-                )?.price || 10
+                dexTokensPricesMap.get(quoteSymbol)?.price || 10
 
               const tvlUSD =
                 baseTokenPrice * el.tvl.tokenA + quoteTokenPrice * el.tvl.tokenB

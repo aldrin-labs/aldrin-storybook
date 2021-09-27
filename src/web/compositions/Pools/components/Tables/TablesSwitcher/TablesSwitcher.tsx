@@ -125,7 +125,7 @@ const TablesSwitcher = ({
             wallet={wallet}
             selectedPool={selectedPool}
             selectPool={selectPool}
-            dexTokensPrices={getDexTokensPrices}
+            dexTokensPricesMap={dexTokensPricesMap}
             setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
             setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
           />
