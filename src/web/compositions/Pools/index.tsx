@@ -35,12 +35,12 @@ const Pools = ({ theme }: { theme: Theme }) => {
 
       <TablesSwitcher theme={theme} />
 
-      <WarningPopup
+      {/* <WarningPopup
         theme={theme}
         open={isWarningPopupOpen}
         onClose={() => openWarningPopup(false)}
         isPoolsPage={true}
-      />
+      /> */}
     </RowContainer>
   )
 }
