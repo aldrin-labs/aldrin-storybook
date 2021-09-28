@@ -116,6 +116,7 @@ const TablesSwitcher = ({
             selectPool={selectPool}
             dexTokensPricesMap={dexTokensPricesMap}
             setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
+            setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
           />
         ) : (
           <UserLiquitidyTable
@@ -134,7 +135,7 @@ const TablesSwitcher = ({
         {selectedPool && (
           <AddLiquidityPopup
             theme={theme}
-            dexTokensPrices={getDexTokensPrices}
+            dexTokensPricesMap={dexTokensPricesMap}
             selectedPool={selectedPool}
             allTokensData={allTokensData}
             close={() => setIsAddLiquidityPopupOpen(false)}

@@ -80,6 +80,7 @@ const AllPoolsTable = ({
   return (
     <RowContainer>
       <AllPoolsTableComponent
+        poolsInfo={filteredData}
         dexTokensPricesMap={dexTokensPricesMap}
         feesPerPoolMap={feesPerPoolMap}
         theme={theme}

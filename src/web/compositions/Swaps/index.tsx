@@ -94,14 +94,14 @@ const SwapsPage = ({
   const [quoteTokenMintAddress, setQuoteTokenMintAddress] = useState<string>('')
   const [isWarningPopupOpen, openWarningPopup] = useState(true)
 
-    // const selectedTokens = marketsData.find(
+  // const selectedTokens = marketsData.find(
   //   (market) =>
   //     (market.tokenA === getTokenNameByMintAddress(baseTokenMintAddress) &&
   //       market.tokenB === getTokenNameByMintAddress(quoteTokenMintAddress)) ||
   //     market.tokenB === getTokenNameByMintAddress(baseTokenMintAddress) ||
   //       market.tokenB === getTokenNameByMintAddress(quoteTokenMintAddress)
   // )
-  
+
   const selectedTokens = getPoolsInfoQuery.getPoolsInfo.find(
     (pool) =>
       (pool?.tokenA === baseTokenMintAddress ||
@@ -249,7 +249,13 @@ const SwapsPage = ({
   const isButtonDisabled = isTokenABalanceInsufficient || !selectedTokens
 
   return (
-    <RowContainer direction={'column'} height={'100%'}>
+    <RowContainer
+      direction={'column'}
+      height={'100%'}
+      style={{
+        background: theme.palette.grey.additional,
+      }}
+    >
       <>
         {' '}
         <BlockTemplate

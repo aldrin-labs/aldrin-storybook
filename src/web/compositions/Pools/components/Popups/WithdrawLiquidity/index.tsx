@@ -27,15 +27,15 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 export const WithdrawalPopup = ({
   theme,
   open,
-  dexTokensPrices,
+  dexTokensPricesMap,
   selectedPool,
   allTokensData,
   close,
-  refreshAllTokensData
+  refreshAllTokensData,
 }: {
   theme: Theme
   open: boolean
-  dexTokensPrices: DexTokensPrices[]
+  dexTokensPricesMap: Map<string, DexTokensPrices>
   selectedPool: PoolInfo
   allTokensData: TokenInfo[]
   close: () => void
@@ -107,17 +107,15 @@ export const WithdrawalPopup = ({
     !withdrawAmountTokenB
 
   const baseTokenPrice =
-    dexTokensPrices.find(
-      (tokenInfo) =>
-        tokenInfo.symbol === selectedPool.tokenA ||
-        tokenInfo.symbol === baseSymbol
+    (
+      dexTokensPricesMap.get(selectedPool.tokenA) ||
+      dexTokensPricesMap.get(baseSymbol)
     )?.price || 0
 
   const quoteTokenPrice =
-    dexTokensPrices.find(
-      (tokenInfo) =>
-        tokenInfo.symbol === selectedPool.tokenB ||
-        tokenInfo.symbol === quoteSymbol
+    (
+      dexTokensPricesMap.get(selectedPool.tokenB) ||
+      dexTokensPricesMap.get(quoteSymbol)
     )?.price || 0
 
   const total = +baseAmount * baseTokenPrice + +quoteAmount * quoteTokenPrice
@@ -129,9 +127,9 @@ export const WithdrawalPopup = ({
       fullScreen={false}
       onClose={close}
       onEnter={() => {
-        setBaseAmount('');
-        setQuoteAmount('');
-        setOperationLoading(false);
+        setBaseAmount('')
+        setQuoteAmount('')
+        setOperationLoading(false)
       }}
       maxWidth={'md'}
       open={open}

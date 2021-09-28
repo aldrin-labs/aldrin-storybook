@@ -18,9 +18,7 @@ import {
 } from '@sb/dexUtils/pools'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
-import {
-  PublicKey,
-} from '@solana/web3.js'
+import { PublicKey } from '@solana/web3.js'
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
@@ -33,7 +31,7 @@ import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
 export const AddLiquidityPopup = ({
   theme,
   open,
-  dexTokensPrices,
+  dexTokensPricesMap,
   selectedPool,
   allTokensData,
   close,
@@ -41,7 +39,7 @@ export const AddLiquidityPopup = ({
 }: {
   theme: Theme
   open: boolean
-  dexTokensPrices: DexTokensPrices[]
+  dexTokensPricesMap: Map<string, DexTokensPrices>
   selectedPool: PoolInfo
   allTokensData: TokenInfo[]
   close: () => void
@@ -169,17 +167,15 @@ export const AddLiquidityPopup = ({
     quoteAmount > maxQuoteAmount
 
   const baseTokenPrice =
-    dexTokensPrices.find(
-      (tokenInfo) =>
-        tokenInfo.symbol === selectedPool.tokenA ||
-        tokenInfo.symbol === baseSymbol
+    (
+      dexTokensPricesMap.get(selectedPool.tokenA) ||
+      dexTokensPricesMap.get(baseSymbol)
     )?.price || 0
 
   const quoteTokenPrice =
-    dexTokensPrices.find(
-      (tokenInfo) =>
-        tokenInfo.symbol === selectedPool.tokenB ||
-        tokenInfo.symbol === quoteSymbol
+    (
+      dexTokensPricesMap.get(selectedPool.tokenB) ||
+      dexTokensPricesMap.get(quoteSymbol)
     )?.price || 0
 
   const total = +baseAmount * baseTokenPrice + +quoteAmount * quoteTokenPrice
