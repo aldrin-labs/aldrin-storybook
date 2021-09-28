@@ -1,18 +1,20 @@
 import React, { useState } from 'react'
 import { TableWithSort } from '@sb/components'
 
-import { useConnection } from '@sb/dexUtils/connection'
-import { useWallet } from '@sb/dexUtils/wallet'
-
-import { notify } from '@sb/dexUtils/notifications'
 import { Theme } from '@material-ui/core'
-import { TokenAccount } from '@sb/dexUtils/markets'
 import {
   allPoolsTableColumnsNames,
   combineAllPoolsData,
 } from './AllPoolsTable.utils'
 import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
-import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
+import {
+  DexTokensPrices,
+  FeesEarned,
+  PoolInfo,
+} from '@sb/compositions/Pools/index.types'
+import { compose } from 'recompose'
+import { getFeesEarnedByPool } from '@core/graphql/queries/pools/getFeesEarnedByPool'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
 
 export const mock = [
   {
@@ -67,25 +69,48 @@ export const mock = [
 
 const AllPoolsTableComponent = ({
   theme,
+  searchValue,
   dexTokensPricesMap,
-  feesPerPoolMap,
+  poolsInfo,
+  getFeesEarnedByPoolQuery,
+  selectPool,
+  // setIsCreatePoolPopupOpen,
+  setIsAddLiquidityPopupOpen,
 }: {
   theme: Theme
+  searchValue: string
   dexTokensPricesMap: Map<string, DexTokensPrices>
-  feesPerPoolMap: any
+  poolsInfo: PoolInfo[]
+  getFeesEarnedByPoolQuery: { getFeesEarnedByPool: FeesEarned[] }
+  selectPool: (pool: PoolInfo) => void
+  // setIsCreatePoolPopupOpen: (value: boolean) => void
+  setIsAddLiquidityPopupOpen: (value: boolean) => void
 }) => {
-  const [expandedRows, expandRows] = useState([])
+  const [expandedRows, expandRows] = useState<string[]>([])
 
   const setExpandedRows = (id: string) => {
     expandRows(onCheckBoxClick(expandedRows, id))
   }
 
+  const { getFeesEarnedByPool = [] } = getFeesEarnedByPoolQuery || {
+    getFeesEarnedByPool: [],
+  }
+
+  const feesPerPoolMap = new Map()
+
+  getFeesEarnedByPool.forEach((feeEarnedByPool) => {
+    feesPerPoolMap.set(feeEarnedByPool.pool, feeEarnedByPool.earnedUSD)
+  })
+
   const allPoolsData = combineAllPoolsData({
     theme,
+    searchValue,
     dexTokensPricesMap,
     feesPerPoolMap,
   })
+
   return (
+    // @ts-ignore
     <TableWithSort
       expandableRows={true}
       expandedRows={expandedRows}
@@ -135,4 +160,12 @@ const AllPoolsTableComponent = ({
   )
 }
 
-export default AllPoolsTableComponent
+export default compose(
+  queryRendererHoc({
+    name: 'getFeesEarnedByPoolQuery',
+    query: getFeesEarnedByPool,
+    fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
+    pollInterval: 60000,
+  })
+)(AllPoolsTableComponent)

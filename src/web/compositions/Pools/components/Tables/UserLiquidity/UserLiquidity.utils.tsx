@@ -95,12 +95,12 @@ export const combineUserLiquidityData = ({
   theme,
   dexTokensPricesMap,
   usersPools,
-  allTokensDataMap,
+  allTokensData,
 }: {
   theme: Theme
   dexTokensPricesMap: Map<string, DexTokensPrices>
   usersPools: any
-  allTokensDataMap: any
+  allTokensData: any
 }) => {
   const processedAllPoolsData = mock
     .sort((poolA: PoolInfo, poolB: PoolInfo) => {
@@ -142,7 +142,9 @@ export const combineUserLiquidityData = ({
       const {
         amount: poolTokenRawAmount,
         decimals: poolTokenDecimals,
-      } = allTokensDataMap.get(el.poolTokenMint) || {
+      } = allTokensData.find(
+        (tokenData) => tokenData.mint === el.poolTokenMint
+      ) || {
         amount: 0,
         decimals: 0,
       }

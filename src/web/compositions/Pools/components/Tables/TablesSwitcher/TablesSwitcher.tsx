@@ -8,7 +8,7 @@ import { SearchInputWithLoop } from '../components'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
-import AllPoolsTable from '../AllPools'
+import AllPoolsTable from '../AllPools/AllPoolsTable'
 import UserLiquitidyTable from '../UserLiquidity'
 
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'

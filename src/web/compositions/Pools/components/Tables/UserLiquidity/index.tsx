@@ -168,7 +168,7 @@ const UserLiquitidyTable = ({
             <UserLiquidityTableComponent
               usersPools={usersPools}
               dexTokensPricesMap={dexTokensPricesMap}
-              allTokensDataMap={allTokensDataMap}
+              allTokensData={allTokensData}
               theme={theme}
             />
           </TableRow>

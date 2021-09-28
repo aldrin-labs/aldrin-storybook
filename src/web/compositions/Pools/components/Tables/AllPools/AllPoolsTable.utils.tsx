@@ -23,6 +23,7 @@ import { mock } from './AllPoolsTable'
 import { SvgIcon } from '@sb/components'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
+import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 
 export const allPoolsTableColumnsNames = [
   { label: 'Pool', id: 'pool' },
@@ -90,14 +91,22 @@ export type Pools = {}
 
 export const combineAllPoolsData = ({
   theme,
+  searchValue,
   dexTokensPricesMap,
   feesPerPoolMap,
 }: {
   theme: Theme
+  searchValue: string
   dexTokensPricesMap: Map<string, DexTokensPrices>
   feesPerPoolMap: any
 }) => {
   const processedAllPoolsData = mock
+    .filter((el) =>
+      filterDataBySymbolForDifferentDeviders({
+        searchValue,
+        symbol: el.parsedName,
+      })
+    )
     // .sort((poolA: PoolInfo, poolB: PoolInfo) => {
     //   const [poolABaseTokenPrice, poolBBaseTokenPrice] = [
     //     dexTokensPricesMap.get(getTokenNameByMintAddress(poolA.tokenA))

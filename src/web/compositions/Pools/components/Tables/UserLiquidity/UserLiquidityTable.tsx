@@ -19,12 +19,12 @@ const UserLiquidityTableComponent = ({
   theme,
   dexTokensPricesMap,
   usersPools,
-  allTokensDataMap,
+  allTokensData,
 }: {
   theme: Theme
   dexTokensPricesMap: Map<string, DexTokensPrices>
   usersPools: any
-  allTokensDataMap: any
+  allTokensData: any
 }) => {
   const [expandedRows, expandRows] = useState([])
 
@@ -36,10 +36,11 @@ const UserLiquidityTableComponent = ({
     theme,
     dexTokensPricesMap,
     usersPools,
-    allTokensDataMap,
+    allTokensData,
   })
 
   return (
+    // @ts-ignore
     <TableWithSort
       expandableRows={true}
       expandedRows={expandedRows}
