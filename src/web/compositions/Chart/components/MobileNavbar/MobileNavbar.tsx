@@ -82,9 +82,9 @@ export const MobileNavBar = ({
                     {isCCAIActive ? (
                       <>
                         <span style={{ fontFamily: 'Avenir Next Demi' }}>
-                          Wallet™
+                          Aldrin Wallet™
                         </span>
-                        &nbsp; by CCAI Connected
+                        &nbsp;Connected
                       </>
                     ) : isSolletActive ? (
                       'Sollet Wallet Connected'
