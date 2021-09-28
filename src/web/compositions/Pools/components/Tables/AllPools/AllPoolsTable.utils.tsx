@@ -98,31 +98,31 @@ export const combineAllPoolsData = ({
   feesPerPoolMap: any
 }) => {
   const processedAllPoolsData = mock
-    .sort((poolA: PoolInfo, poolB: PoolInfo) => {
-      const [poolABaseTokenPrice, poolBBaseTokenPrice] = [
-        dexTokensPricesMap.get(getTokenNameByMintAddress(poolA.tokenA))
-          ?.price || 10,
-        dexTokensPricesMap.get(getTokenNameByMintAddress(poolB.tokenA))
-          ?.price || 10,
-      ]
+    // .sort((poolA: PoolInfo, poolB: PoolInfo) => {
+    //   const [poolABaseTokenPrice, poolBBaseTokenPrice] = [
+    //     dexTokensPricesMap.get(getTokenNameByMintAddress(poolA.tokenA))
+    //       ?.price || 10,
+    //     dexTokensPricesMap.get(getTokenNameByMintAddress(poolB.tokenA))
+    //       ?.price || 10,
+    //   ]
 
-      const [poolAQuoteTokenPrice, poolBQuoteTokenPrice] = [
-        dexTokensPricesMap.get(getTokenNameByMintAddress(poolA.tokenB))
-          ?.price || 10,
-        dexTokensPricesMap.get(getTokenNameByMintAddress(poolB.tokenB))
-          ?.price || 10,
-      ]
+    //   const [poolAQuoteTokenPrice, poolBQuoteTokenPrice] = [
+    //     dexTokensPricesMap.get(getTokenNameByMintAddress(poolA.tokenB))
+    //       ?.price || 10,
+    //     dexTokensPricesMap.get(getTokenNameByMintAddress(poolB.tokenB))
+    //       ?.price || 10,
+    //   ]
 
-      const poolATvlUSD =
-        poolABaseTokenPrice * poolA.tvl.tokenA +
-        poolAQuoteTokenPrice * poolA.tvl.tokenB
+    //   const poolATvlUSD =
+    //     poolABaseTokenPrice * poolA.tvl.tokenA +
+    //     poolAQuoteTokenPrice * poolA.tvl.tokenB
 
-      const poolBTvlUSD =
-        poolBBaseTokenPrice * poolB.tvl.tokenA +
-        poolBQuoteTokenPrice * poolB.tvl.tokenB
+    //   const poolBTvlUSD =
+    //     poolBBaseTokenPrice * poolB.tvl.tokenA +
+    //     poolBQuoteTokenPrice * poolB.tvl.tokenB
 
-      return poolBTvlUSD - poolATvlUSD
-    })
+    //   return poolBTvlUSD - poolATvlUSD
+    // })
     .map((el) => {
       const baseSymbol = getTokenNameByMintAddress(el.tokenA)
       const quoteSymbol = getTokenNameByMintAddress(el.tokenB)
