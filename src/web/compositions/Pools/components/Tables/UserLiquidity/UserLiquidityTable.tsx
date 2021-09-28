@@ -7,72 +7,24 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { notify } from '@sb/dexUtils/notifications'
 import { Theme } from '@material-ui/core'
 import { TokenAccount } from '@sb/dexUtils/markets'
-import {
-  allPoolsTableColumnsNames,
-  combineAllPoolsData,
-} from './AllPoolsTable.utils'
+
 import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
 import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
+import {
+  combineUserLiquidityData,
+  userLiquidityTableColumnsNames,
+} from './UserLiquidity.utils'
 
-export const mock = [
-  {
-    name:
-      'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp_EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    parsedName: 'RIN_USDC',
-    tokenA: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
-    tokenB: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    swapToken: '55',
-    poolTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
-    tvl: {
-      tokenA: 45,
-      tokenB: 2,
-    },
-    apy24h: 0.21, //%
-    supply: 120000,
-    liquidity: 9835570,
-  },
-  {
-    name:
-      'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp_EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    parsedName: 'RIN_USDC',
-    tokenA: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
-    tokenB: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    swapToken: '55',
-    poolTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLoxFcMd6z8ddCk5wp',
-    tvl: {
-      tokenA: 44,
-      tokenB: 765,
-    },
-    apy24h: 0.21, //%
-    supply: 120000,
-    liquidity: 0,
-  },
-  {
-    name:
-      'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp_EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    parsedName: 'RIN_USDC',
-    tokenA: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
-    tokenB: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    swapToken: '55',
-    poolTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYkDLCxFcMd6z8ddCk5wp',
-    tvl: {
-      tokenA: 44,
-      tokenB: 765,
-    },
-    apy24h: 0.21, //%
-    supply: 120000,
-    liquidity: 935570,
-  },
-]
-
-const AllPoolsTableComponent = ({
+const UserLiquidityTableComponent = ({
   theme,
   dexTokensPricesMap,
-  feesPerPoolMap,
+  usersPools,
+  allTokensDataMap,
 }: {
   theme: Theme
   dexTokensPricesMap: Map<string, DexTokensPrices>
-  feesPerPoolMap: any
+  usersPools: any
+  allTokensDataMap: any
 }) => {
   const [expandedRows, expandRows] = useState([])
 
@@ -80,11 +32,13 @@ const AllPoolsTableComponent = ({
     expandRows(onCheckBoxClick(expandedRows, id))
   }
 
-  const allPoolsData = combineAllPoolsData({
+  const userLiquidityData = combineUserLiquidityData({
     theme,
     dexTokensPricesMap,
-    feesPerPoolMap,
+    usersPools,
+    allTokensDataMap,
   })
+
   return (
     <TableWithSort
       expandableRows={true}
@@ -129,10 +83,10 @@ const AllPoolsTableComponent = ({
         },
       }}
       emptyTableText={'No pools available.'}
-      data={{ body: allPoolsData }}
-      columnNames={allPoolsTableColumnsNames}
+      data={{ body: userLiquidityData }}
+      columnNames={userLiquidityTableColumnsNames}
     />
   )
 }
 
-export default AllPoolsTableComponent
+export default UserLiquidityTableComponent

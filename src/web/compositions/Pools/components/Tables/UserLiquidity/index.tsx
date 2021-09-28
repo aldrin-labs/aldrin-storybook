@@ -1,28 +1,12 @@
 import React from 'react'
 import { compose } from 'recompose'
 
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
-  LiquidityDataContainer,
-  TableHeader,
   TableRow,
   Table,
-  BorderButton,
-  RowTd,
-  RowDataTd,
-  RowDataTdText,
-  TextColumnContainer,
-  RowDataTdTopText,
 } from '@sb/compositions/Pools/components/Tables/index.styles'
 
-import { BlockTemplate } from '../../../index.styles'
-
-import { TokenIconsContainer } from '../components/index'
-
-import TooltipIcon from '@icons/TooltipImg.svg'
-
-import { Text } from '@sb/compositions/Addressbook/index'
-import SvgIcon from '@sb/components/SvgIcon'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getFeesEarnedByAccount } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
 import { Theme } from '@material-ui/core'
@@ -32,16 +16,10 @@ import {
   DexTokensPrices,
 } from '@sb/compositions/Pools/index.types'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
-import { getTokenDataByMint } from '@sb/compositions/Pools/utils/getTokenDataByMint'
-import {
-  formatNumberToUSFormat,
-  stripDigitPlaces,
-} from '@core/utils/PortfolioTableUtils'
+
 import { WalletAdapter } from '@sb/dexUtils/types'
-import { getTotalUserLiquidity } from './utils'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+
+import UserLiquidityTableComponent from './UserLiquidityTable'
 
 const UserLiquitidyTable = ({
   theme,
@@ -84,95 +62,8 @@ const UserLiquitidyTable = ({
     <RowContainer>
       <RowContainer>
         <Table>
-          <TableHeader>
-            <RowTd>Pool</RowTd>
-            <RowTd>TVL</RowTd>
-            <RowTd>
-              <DarkTooltip
-                title={
-                  'Annualized, non-compounded return on investment based on the fees earned in the last 24 hours, relative to the size of the pool.'
-                }
-              >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <SvgIcon
-                    width={'1.2rem'}
-                    height={'1.2rem'}
-                    style={{ marginRight: '1rem' }}
-                    src={TooltipIcon}
-                  />
-                  APY (24h)
-                </div>
-              </DarkTooltip>
-            </RowTd>
-            <RowTd>Your Liquidity (Including Fees)</RowTd>
-            <RowTd>Total Fees Earned</RowTd>
-            <RowTd></RowTd>
-          </TableHeader>
-          {usersPools
-            .sort((poolA: PoolInfo, poolB: PoolInfo) => {
-              const [poolABaseTokenPrice, poolBBaseTokenPrice] = [
-                dexTokensPricesMap.get(getTokenNameByMintAddress(poolA.tokenA))
-                  ?.price || 10,
-                dexTokensPricesMap.get(getTokenNameByMintAddress(poolB.tokenA))
-                  ?.price || 10,
-              ]
-
-              const [poolAQuoteTokenPrice, poolBQuoteTokenPrice] = [
-                dexTokensPricesMap.get(getTokenNameByMintAddress(poolA.tokenB))
-                  ?.price || 10,
-                dexTokensPricesMap.get(getTokenNameByMintAddress(poolB.tokenB))
-                  ?.price || 10,
-              ]
-
-              const poolATvlUSD =
-                poolABaseTokenPrice * poolA.tvl.tokenA +
-                poolAQuoteTokenPrice * poolA.tvl.tokenB
-
-              const poolBTvlUSD =
-                poolBBaseTokenPrice * poolB.tvl.tokenA +
-                poolBQuoteTokenPrice * poolB.tvl.tokenB
-
-              return poolBTvlUSD - poolATvlUSD
-            })
-            .map((el: PoolInfo) => {
-              const baseSymbol = getTokenNameByMintAddress(el.tokenA)
-              const quoteSymbol = getTokenNameByMintAddress(el.tokenB)
-
-              const baseTokenPrice =
-                dexTokensPricesMap.get(baseSymbol)?.price || 10
-
-              const quoteTokenPrice =
-                dexTokensPricesMap.get(quoteSymbol)?.price || 10
-
-              const tvlUSD =
-                baseTokenPrice * el.tvl.tokenA + quoteTokenPrice * el.tvl.tokenB
-
-              const {
-                amount: poolTokenRawAmount,
-                decimals: poolTokenDecimals,
-              } = allTokensDataMap.get(el.poolTokenMint) || {
-                amount: 0,
-                decimals: 0,
-              }
-
-              const poolTokenAmount =
-                poolTokenRawAmount * 10 ** poolTokenDecimals
-
-              const [
-                userAmountTokenA,
-                userAmountTokenB,
-              ] = calculateWithdrawAmount({
-                selectedPool: el,
-                poolTokenAmount: poolTokenAmount,
-              })
-
-              const userLiquidityUSD =
-                baseTokenPrice * userAmountTokenA +
-                quoteTokenPrice * userAmountTokenB
-
-              return (
-                <TableRow>
-                  <RowTd>
+          <TableRow>
+            {/* <RowTd>
                     <TokenIconsContainer
                       tokenA={el.tokenA}
                       tokenB={el.tokenB}
@@ -270,10 +161,14 @@ const UserLiquitidyTable = ({
                         {wallet.connected ? 'Add Liquidity' : 'Connect wallet'}
                       </BorderButton>
                     </Row>
-                  </RowTd>
-                </TableRow>
-              )
-            })}
+                  </RowTd> */}
+            <UserLiquidityTableComponent
+              usersPools={usersPools}
+              dexTokensPricesMap={dexTokensPricesMap}
+              allTokensDataMap={allTokensDataMap}
+              theme={theme}
+            />
+          </TableRow>
         </Table>
       </RowContainer>
     </RowContainer>
