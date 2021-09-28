@@ -20,18 +20,10 @@ export const combineBalancesTable = (
 
   const filtredFundsData = fundsData
 
-  const processedFundsData = filtredFundsData.map((el: FundsType) => {
-    const {
-      coin,
-      wallet,
-      orders,
-      unsettled,
-      market,
-      openOrders,
-    } = el
-
+  const processedFundsData = filtredFundsData.map((el: FundsType, i: number) => {
+    const { coin, wallet, orders, unsettled, market, openOrders } = el
     return {
-      id: `${coin}${wallet}`,
+      id: `${coin}${wallet}${unsettled}${i}`,
       coin: { render: coin || 'unknown', showOnMobile: false },
       columnForMobile: {
         render: (

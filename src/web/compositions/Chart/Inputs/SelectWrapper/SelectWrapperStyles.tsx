@@ -306,6 +306,7 @@ export const SubmitButton = styled.button`
   transition: 0.3rem;
 
   @media (max-width: 600px) {
+    width: 48%;
     height: 9.5rem;
     font-size: 2.5rem;
   }
@@ -350,7 +351,7 @@ export const StyledPaperMediumWidth = styled(Paper)`
     border: 0;
     border-radius: 0;
     width: 100%;
-    height: calc(100% - 22rem);
+    height: calc(100%);
     max-height: 100%;
     margin: 0;
     justify-content: center;

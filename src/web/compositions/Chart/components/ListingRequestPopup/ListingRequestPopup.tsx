@@ -25,10 +25,7 @@ import {
 import { notify } from '@sb/dexUtils/notifications'
 import { SRadio } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { useWallet } from '@sb/dexUtils/wallet'
-import {
-  useConnection,
-  useConnectionConfig,
-} from '@sb/dexUtils/connection'
+import { useConnection, useConnectionConfig } from '@sb/dexUtils/connection'
 import { PublicKey } from '@solana/web3.js'
 import { getDexProgramIdByEndpoint } from '@core/config/dex'
 import { Market, MARKETS, TOKEN_MINTS } from '@project-serum/serum'
@@ -43,8 +40,10 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { useHistory } from 'react-router-dom'
 import { Loading } from '@sb/components/Loading'
 import { checkForLinkOrUsername } from '@sb/dexUtils/checkForLinkOrUsername'
-import { categoriesOfMarkets, defaultRequestDataState } from './ListingRequestPopup.config'
-
+import {
+  categoriesOfMarkets,
+  defaultRequestDataState,
+} from './ListingRequestPopup.config'
 
 const ListingRequestPopup = ({
   theme,
@@ -434,7 +433,21 @@ const ListingRequestPopup = ({
                 padding={'0 1rem 0 0'}
                 whiteSpace="nowrap"
               >
-                Market ID<span style={{ color: '#FFBDAE' }}>*</span>
+                Market ID
+                <span style={{ color: '#FFBDAE', marginLeft: '0.5rem' }}>
+                  *
+                </span>{' '}
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="https://docs.aldrin.com/dex/how-to-list-a-market-on-aldrin-dex"
+                  style={{
+                    color: theme.palette.blue.serum,
+                    textDecoration: 'none',
+                  }}
+                >
+                  Learn More
+                </a>
               </Text>
               <Line />
             </RowContainer>
@@ -636,8 +649,19 @@ const ListingRequestPopup = ({
                   padding={'0 1rem 0 0'}
                   whiteSpace="nowrap"
                 >
-                  Would the team like to be interviewed on the Simplifi DeFi
-                  show?
+                  Would the team like to be interviewed on the{' '}
+                  <a
+                    href="https://www.youtube.com/channel/UCO6TDGIdWPQsa6Dio7GFbUQ"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      color: theme.palette.blue.serum,
+                      textDecoration: 'none',
+                    }}
+                  >
+                    Simplifi DeFi show
+                  </a>
+                  ?
                 </Text>
                 <Line />
               </RowContainer>
