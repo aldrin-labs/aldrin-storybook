@@ -14,11 +14,11 @@ const Pools = ({ theme }: { theme: Theme }) => {
 
   return (
     <RowContainer
-      height="100%"
       direction={'column'}
       padding={'2rem 3rem'}
       justify={'flex-start'}
       style={{
+        minHeight: '100%',
         background: theme.palette.grey.additional,
       }}
     >
