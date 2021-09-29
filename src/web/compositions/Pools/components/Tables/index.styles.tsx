@@ -96,7 +96,7 @@ export const SearchInput = styled.input`
   color: #f2fbfb;
   background: #383b45;
   border: 0.1rem solid #3a475c;
-  border-radius: 1.5rem;
+  border-radius: 1.2rem;
   font-family: 'Avenir Next Thin';
   height: 4rem;
   width: ${(props) => props.width || '100%'};
