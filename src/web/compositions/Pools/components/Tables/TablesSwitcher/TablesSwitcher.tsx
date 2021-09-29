@@ -9,7 +9,7 @@ import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import AllPoolsTable from '../AllPools/AllPoolsTable'
-import UserLiquitidyTable from '../UserLiquidity'
+import UserLiquitidyTable from '../UserLiquidity/UserLiquidityTable'
 
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
@@ -156,7 +156,7 @@ const TablesSwitcher = ({
           <WithdrawalPopup
             theme={theme}
             selectedPool={selectedPool}
-            dexTokensPrices={getDexTokensPrices}
+            dexTokensPricesMap={dexTokensPricesMap}
             allTokensData={allTokensData}
             close={() => setIsWithdrawalPopupOpen(false)}
             open={isWithdrawalPopupOpen}

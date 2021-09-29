@@ -17,6 +17,7 @@ import {
   TokenSwap,
   TOKEN_SWAP_PROGRAM_ID,
   TokenFarmingLayout,
+  TokenSwapLayout,
 } from './token-swap/token-swap'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import { sendAndConfirmTransactionViaWallet } from './token/utils/send-and-confirm-transaction-via-wallet'
@@ -1229,4 +1230,18 @@ export const getParsedTransactionData = async ({
   } catch (e) {
     console.log('e', e)
   }
+}
+
+export const getPools = async (connection, tokenSwapProgramId) => {
+  const tokenSwapOwnedAccounts = await connection.getProgramAccounts(
+    tokenSwapProgramId,
+    'finalized'
+  )
+
+  console.log(
+    'tokenSwapOwnedAccounts',
+    tokenSwapOwnedAccounts
+      .filter((a) => a.account.data.length === 537)
+      .map((a) => a.pubkey.toString())
+  )
 }

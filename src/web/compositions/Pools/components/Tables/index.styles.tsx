@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { Row } from '../../../AnalyticsRoute/index.styles'
+import { Row, RowContainer } from '../../../AnalyticsRoute/index.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Text } from '@sb/compositions/Addressbook'
 import React from 'react'
@@ -140,4 +140,10 @@ export const GreenButton = styled(
   color: ${(props: { disabled: boolean }) =>
     !props.disabled ? '#17181A' : '#fff'};
   border: none;
+`
+
+export const TableContainer = styled(RowContainer)`
+  align-items: flex-start;
+  min-height: 30rem;
+  position: relative;
 `

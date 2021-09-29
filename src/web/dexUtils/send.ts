@@ -4,6 +4,7 @@ import {
   Account,
   Commitment,
   Connection,
+  Keypair,
   PublicKey,
   RpcResponseAndContext,
   SimulatedTransactionResponse,
@@ -837,7 +838,7 @@ export async function sendTransaction({
 }: {
   transaction: Transaction
   wallet: WalletAdapter
-  signers: Account[]
+  signers: (Account | Keypair)[]
   connection: Connection
   sentMessage?: string
   successMessage?: string
