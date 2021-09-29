@@ -194,8 +194,7 @@ export const combineAllPoolsData = ({
           render: (
             <TextColumnContainer>
               <RowDataTdTopText theme={theme}>
-                ${tvlUSD}
-                {formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
+                ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
               </RowDataTdTopText>
               <RowDataTdText theme={theme} color={theme.palette.grey.new}>
                 {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenA, 2))}{' '}
