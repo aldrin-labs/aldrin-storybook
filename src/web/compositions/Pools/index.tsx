@@ -34,7 +34,7 @@ const Pools = ({ theme }: { theme: Theme }) => {
           'HwTyFCPy3xi842Be2PyU4ZPu3YmaxorV5RY4b77Pb898'
         ),
         baseTokenAddress: new PublicKey(
-          'HwTyFCPy3xi842Be2PyU4ZPu3YmaxorV5RY4b77Pb898'
+          'A1BsqP5rH3HXhoFK6xLK6EFv9KsUzgR1UwBQhzMW9D2m'
         ),
         quoteTokenAddress: new PublicKey(
           'HwTyFCPy3xi842Be2PyU4ZPu3YmaxorV5RY4b77Pb898'

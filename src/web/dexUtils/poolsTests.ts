@@ -1043,8 +1043,14 @@ export async function createBasketViaWallet({
 
   const account = await program.account.pool.fetch(poolPublicKey)
   console.log('account', account)
-  const { baseTokenMint, baseTokenVault, quoteTokenVault, poolMint } = account
-  console.log('baseTokenVault', baseTokenVault.toString(), poolMint.toString())
+  const { baseTokenMint, baseTokenVault, quoteTokenMint, quoteTokenVault, poolMint } = account
+  console.log({
+    poolMint: poolMint.toString(),
+    baseTokenMint: baseTokenMint.toString(),
+    baseTokenVault: baseTokenVault.toString(),
+    quoteTokenMint: quoteTokenMint.toString(),
+    quoteTokenVault: quoteTokenVault.toString()
+  })
 
   const poolToken = new Token(wallet, connection, poolMint, TOKEN_PROGRAM_ID)
 

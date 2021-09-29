@@ -74,6 +74,22 @@ export const mock = [
     supply: 120000,
     liquidity: 935570,
   },
+  {
+    name:
+      'A1BsqP5rH3HXhoFK6xLK6EFv9KsUzgR1UwBQhzMW9D2m_EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    parsedName: 'PTA_PTB',
+    tokenA: 'A1BsqP5rH3HXhoFK6xLK6EFv9KsUzgR1UwBQhzMW9D2m',
+    tokenB: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    swapToken: 'HwTyFCPy3xi842Be2PyU4ZPu3YmaxorV5RY4b77Pb898',
+    poolTokenMint: '2TU6yyd8DSv2Xksz1oNe84D6qsxTCo7imiLBT2hsQVVY',
+    tvl: {
+      tokenA: 44,
+      tokenB: 765,
+    },
+    apy24h: 0.21, //%
+    supply: 120000,
+    liquidity: 935570,
+  },
 ]
 
 export const allPoolsTableColumnsNames = [
