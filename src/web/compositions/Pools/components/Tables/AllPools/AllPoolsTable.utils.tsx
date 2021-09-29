@@ -4,10 +4,14 @@ import {
   formatNumberToUSFormat,
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
+import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 
+import { SvgIcon } from '@sb/components'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { TokenIconsContainer } from '../components'
 import {
   GreenButton,
@@ -18,12 +22,11 @@ import {
 
 import GreyArrow from '@icons/greyArrow.svg'
 import Info from '@icons/TooltipImg.svg'
+import CrownIcon from '@icons/crownIcon.svg'
+import ForbiddenIcon from '@icons/fobiddenIcon.svg'
 
 import { mock } from './AllPoolsTable'
-import { SvgIcon } from '@sb/components'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
-import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 export const allPoolsTableColumnsNames = [
   { label: 'Pool', id: 'pool' },
@@ -148,9 +151,32 @@ export const combineAllPoolsData = ({
         id: `${el.name}${el.tvl}${el.poolTokenMint}`,
         pool: {
           render: (
-            <div style={{ width: '15rem' }}>
-              <TokenIconsContainer tokenA={el.tokenA} tokenB={el.tokenB} />
-            </div>
+            <Row style={{ width: '18rem', flexWrap: 'nowrap' }}>
+              <TokenIconsContainer tokenA={el.tokenA} tokenB={el.tokenB} />{' '}
+              {el.locked ? (
+                <SvgIcon
+                  style={{ marginLeft: '1rem' }}
+                  width="2rem"
+                  height="auto"
+                  src={CrownIcon}
+                />
+              ) : el.executed ? (
+                <DarkTooltip
+                  title={
+                    'RIN token founders complained about this pool, it will be excluded from the catalog and AMM. You can withdraw liquidity and deposit it in the official pool at "All Pools" tab.'
+                  }
+                >
+                  <div>
+                    <SvgIcon
+                      style={{ marginLeft: '1rem' }}
+                      width="2rem"
+                      height="auto"
+                      src={ForbiddenIcon}
+                    />
+                  </div>
+                </DarkTooltip>
+              ) : null}
+            </Row>
           ),
         },
         tvl: {

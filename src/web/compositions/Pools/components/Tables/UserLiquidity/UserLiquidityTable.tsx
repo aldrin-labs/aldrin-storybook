@@ -42,6 +42,8 @@ const UserLiquidityTableComponent = ({
   return (
     // @ts-ignore
     <TableWithSort
+      hideCommonCheckbox={true}
+      hideRowsCheckboxes={true}
       expandableRows={true}
       expandedRows={expandedRows}
       onChange={setExpandedRows}

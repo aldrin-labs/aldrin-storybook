@@ -19,6 +19,8 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { getAllTokensData } from '@sb/compositions/Rebalance/utils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { TableModeButton } from './TablesSwitcher.styles'
+import AddIcon from '@icons/addIcon.svg'
+import { SvgIcon } from '@sb/components'
 
 const TablesSwitcher = ({
   theme,
@@ -106,6 +108,12 @@ const TablesSwitcher = ({
               onChangeSearch={onChangeSearch}
               placeholder={'Search...'}
             />
+            {/* <SvgIcon
+              src={AddIcon}
+              width="auto"
+              height="4rem"
+              style={{ margin: '0 0 0 2rem', cursor: 'pointer' }}
+            /> */}
           </Row>
         </RowContainer>
 

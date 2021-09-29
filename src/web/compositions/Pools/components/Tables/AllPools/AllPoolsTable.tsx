@@ -32,6 +32,8 @@ export const mock = [
     apy24h: 0.21, //%
     supply: 120000,
     liquidity: 9835570,
+    locked: true,
+    executed: false,
   },
   {
     name:
@@ -48,6 +50,8 @@ export const mock = [
     apy24h: 0.21, //%
     supply: 120000,
     liquidity: 0,
+    locked: false,
+    executed: true,
   },
   {
     name:
@@ -64,6 +68,8 @@ export const mock = [
     apy24h: 0.21, //%
     supply: 120000,
     liquidity: 935570,
+    locked: true,
+    executed: false,
   },
 ]
 
@@ -112,6 +118,8 @@ const AllPoolsTableComponent = ({
   return (
     // @ts-ignore
     <TableWithSort
+      hideCommonCheckbox={true}
+      hideRowsCheckboxes={true}
       expandableRows={true}
       expandedRows={expandedRows}
       onChange={setExpandedRows}
