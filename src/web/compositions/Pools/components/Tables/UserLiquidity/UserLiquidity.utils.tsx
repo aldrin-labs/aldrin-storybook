@@ -134,50 +134,26 @@ export const combineUserLiquidityData = ({
     const userLiquidityUSD =
       baseTokenPrice * userAmountTokenA + quoteTokenPrice * userAmountTokenB
 
-      return {
-        id: `${el.name}${el.tvl}${el.poolTokenMint}`,
-        pool: {
-          render: (
-            <div style={{ width: '15rem' }}>
-              <TokenIconsContainer tokenA={el.tokenA} tokenB={el.tokenB} />
-            </div>
-          ),
-        },
-        tvl: {
-          render: (
-            <TextColumnContainer>
-              <RowDataTdTopText theme={theme}>
-                ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
-              </RowDataTdTopText>
-              <RowDataTdText theme={theme} color={theme.palette.grey.new}>
-                {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenA, 2))}{' '}
-                {getTokenNameByMintAddress(el.tokenA)} /{' '}
-                {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenB, 2))}{' '}
-                {getTokenNameByMintAddress(el.tokenB)}
-              </RowDataTdText>
-            </TextColumnContainer>
-          ),
-          showOnMobile: false,
-        },
-        userLiquidity: {
-          render: (
-            <TextColumnContainer>
-              <RowDataTdTopText theme={theme}>
-                ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
-              </RowDataTdTopText>
-              <RowDataTdText theme={theme} color={theme.palette.grey.new}>
-                {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenA, 2))}{' '}
-                {getTokenNameByMintAddress(el.tokenA)} /{' '}
-                {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenB, 2))}{' '}
-                {getTokenNameByMintAddress(el.tokenB)}
-              </RowDataTdText>
-            </TextColumnContainer>
-          ),
-        },
-        fees: {
-          render: (
-            <RowDataTdText theme={theme}>
-              ${stripDigitPlaces(600000000, 6)}
+    return {
+      id: `${el.name}${el.tvl}${el.poolTokenMint}`,
+      pool: {
+        render: (
+          <div style={{ width: '15rem' }}>
+            <TokenIconsContainer tokenA={el.tokenA} tokenB={el.tokenB} />
+          </div>
+        ),
+      },
+      tvl: {
+        render: (
+          <TextColumnContainer>
+            <RowDataTdTopText theme={theme}>
+              ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
+            </RowDataTdTopText>
+            <RowDataTdText theme={theme} color={theme.palette.grey.new}>
+              {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenA, 2))}{' '}
+              {getTokenNameByMintAddress(el.tokenA)} /{' '}
+              {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenB, 2))}{' '}
+              {getTokenNameByMintAddress(el.tokenB)}
             </RowDataTdText>
           </TextColumnContainer>
         ),
