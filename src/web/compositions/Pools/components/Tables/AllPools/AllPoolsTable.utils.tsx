@@ -19,11 +19,62 @@ import {
 import GreyArrow from '@icons/greyArrow.svg'
 import Info from '@icons/TooltipImg.svg'
 
-import { mock } from './AllPoolsTable'
 import { SvgIcon } from '@sb/components'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
+import { WalletAdapter } from '@sb/dexUtils/types'
+
+export const mock = [
+  {
+    name:
+      'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp_EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    parsedName: 'RIN_USDC',
+    tokenA: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
+    tokenB: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    swapToken: '55',
+    poolTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
+    tvl: {
+      tokenA: 45,
+      tokenB: 2,
+    },
+    apy24h: 0.21, //%
+    supply: 120000,
+    liquidity: 9835570,
+  },
+  {
+    name:
+      'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp_EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    parsedName: 'RIN_USDC',
+    tokenA: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
+    tokenB: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    swapToken: '55',
+    poolTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLoxFcMd6z8ddCk5wp',
+    tvl: {
+      tokenA: 44,
+      tokenB: 765,
+    },
+    apy24h: 0.21, //%
+    supply: 120000,
+    liquidity: 0,
+  },
+  {
+    name:
+      'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp_EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    parsedName: 'RIN_USDC',
+    tokenA: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
+    tokenB: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    swapToken: '55',
+    poolTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYkDLCxFcMd6z8ddCk5wp',
+    tvl: {
+      tokenA: 44,
+      tokenB: 765,
+    },
+    apy24h: 0.21, //%
+    supply: 120000,
+    liquidity: 935570,
+  },
+]
 
 export const allPoolsTableColumnsNames = [
   { label: 'Pool', id: 'pool' },
@@ -91,15 +142,26 @@ export type Pools = {}
 
 export const combineAllPoolsData = ({
   theme,
+  wallet,
+  poolsInfo,
   searchValue,
   dexTokensPricesMap,
   feesPerPoolMap,
+  selectPool,
+  setIsAddLiquidityPopupOpen,
+  setIsWithdrawalPopupOpen,
 }: {
   theme: Theme
+  wallet: WalletAdapter
+  poolsInfo: PoolInfo[]
   searchValue: string
   dexTokensPricesMap: Map<string, DexTokensPrices>
-  feesPerPoolMap: any
+  feesPerPoolMap: Map<string, number>
+  selectPool: (pool: PoolInfo) => void
+  setIsAddLiquidityPopupOpen: (value: boolean) => void
+  setIsWithdrawalPopupOpen: (value: boolean) => void
 }) => {
+  // const processedAllPoolsData = poolsInfo
   const processedAllPoolsData = mock
     .filter((el) =>
       filterDataBySymbolForDifferentDeviders({
@@ -107,31 +169,6 @@ export const combineAllPoolsData = ({
         symbol: el.parsedName,
       })
     )
-    // .sort((poolA: PoolInfo, poolB: PoolInfo) => {
-    //   const [poolABaseTokenPrice, poolBBaseTokenPrice] = [
-    //     dexTokensPricesMap.get(getTokenNameByMintAddress(poolA.tokenA))
-    //       ?.price || 10,
-    //     dexTokensPricesMap.get(getTokenNameByMintAddress(poolB.tokenA))
-    //       ?.price || 10,
-    //   ]
-
-    //   const [poolAQuoteTokenPrice, poolBQuoteTokenPrice] = [
-    //     dexTokensPricesMap.get(getTokenNameByMintAddress(poolA.tokenB))
-    //       ?.price || 10,
-    //     dexTokensPricesMap.get(getTokenNameByMintAddress(poolB.tokenB))
-    //       ?.price || 10,
-    //   ]
-
-    //   const poolATvlUSD =
-    //     poolABaseTokenPrice * poolA.tvl.tokenA +
-    //     poolAQuoteTokenPrice * poolA.tvl.tokenB
-
-    //   const poolBTvlUSD =
-    //     poolBBaseTokenPrice * poolB.tvl.tokenA +
-    //     poolBQuoteTokenPrice * poolB.tvl.tokenB
-
-    //   return poolBTvlUSD - poolATvlUSD
-    // })
     .map((el) => {
       const baseSymbol = getTokenNameByMintAddress(el.tokenA)
       const quoteSymbol = getTokenNameByMintAddress(el.tokenB)
@@ -277,12 +314,36 @@ export const combineAllPoolsData = ({
                       <BlueButton
                         theme={theme}
                         style={{ marginBottom: '1rem' }}
+                        onClick={() => {
+                          if (!wallet.connected) {
+                            wallet.connect()
+                            return
+                          }
+
+                          selectPool(el)
+                          setIsAddLiquidityPopupOpen(true)
+                        }}
                       >
-                        Deposit Liquidity{' '}
+                        {wallet.connected
+                          ? 'Deposit Liquidity'
+                          : 'Connect Wallet'}
                       </BlueButton>
                       {el.liquidity ? (
-                        <BlueButton theme={theme}>
-                          Withdraw Liquidity + Fees
+                        <BlueButton
+                          theme={theme}
+                          onClick={() => {
+                            if (!wallet.connected) {
+                              wallet.connect()
+                              return
+                            }
+
+                            selectPool(el)
+                            setIsWithdrawalPopupOpen(true)
+                          }}
+                        >
+                          {wallet.connected
+                            ? 'Withdraw Liquidity + Fees'
+                            : 'Connect Wallet'}
                         </BlueButton>
                       ) : null}
                     </Row>
@@ -330,7 +391,18 @@ export const combineAllPoolsData = ({
                           </span>{' '}
                           RIN
                         </RowDataTdText>
-                        <GreenButton>Stake Pool Token</GreenButton>
+                        <GreenButton
+                          onClick={() => {
+                            if (!wallet.connected) {
+                              wallet.connect()
+                              return
+                            }
+                          }}
+                        >
+                          {wallet.connected
+                            ? 'Stake Pool Token'
+                            : 'Connect Wallet'}
+                        </GreenButton>
                       </Row>
                     ) : null}
                   </Row>
