@@ -32,6 +32,7 @@ const OWNER: PublicKey = new PublicKey(
 const ownerKey = OWNER.toString()
 
 const SLIPPAGE_PERCENTAGE = 5
+export const NUMBER_OF_RETRIES = 5
 
 // Pool fees
 const TRADING_FEE_NUMERATOR = 25
@@ -1113,7 +1114,7 @@ export const createSOLAccountAndClose = async ({
 }: {
   wallet: WalletAdapter
   connection: Connection
-}): Promise<[PublicKey, Transaction, Account, Transaction]> => {
+}): Promise<[Account, Transaction, Transaction]> => {
   // if SOL - create new token address
 
   const tokenMint = new Token(
@@ -1124,22 +1125,21 @@ export const createSOLAccountAndClose = async ({
   )
 
   const [
-    createdWrappedAccount,
-    createWrappedAccountSigner,
+    _,
+    createWrappedAccount,
     createWrappedAccountTransaction,
   ] = await tokenMint.createAccount(wallet.publicKey)
 
   const [closeAccountTransaction] = await tokenMint.closeAccount(
-    createdWrappedAccount,
+    createWrappedAccount.publicKey,
     wallet.publicKey,
     wallet.publicKey,
     []
   )
 
   return [
-    createdWrappedAccount,
+    createWrappedAccount,
     createWrappedAccountTransaction,
-    createWrappedAccountSigner,
     closeAccountTransaction,
   ]
 }

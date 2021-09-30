@@ -14,7 +14,6 @@ import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import {
   calculateWithdrawAmount,
-  depositAllTokenTypes,
 } from '@sb/dexUtils/pools'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
@@ -27,7 +26,7 @@ import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { notify } from '@sb/dexUtils/notifications'
 import AttentionComponent from '@sb/components/AttentionBlock'
 import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
-import { createBasket } from '@sb/dexUtils/poolsTests'
+import { createBasket } from '@sb/dexUtils/pools/createBasket'
 
 export const AddLiquidityPopup = ({
   theme,

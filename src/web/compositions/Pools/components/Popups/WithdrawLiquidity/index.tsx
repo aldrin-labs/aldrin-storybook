@@ -23,7 +23,7 @@ import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-import { redeemBasketViaWallet } from '@sb/dexUtils/poolsTests'
+import { redeemBasket } from '@sb/dexUtils/pools/redeemBasket'
 
 export const WithdrawalPopup = ({
   theme,
@@ -205,7 +205,7 @@ export const WithdrawalPopup = ({
             //   userTokenAccountB: new PublicKey(userTokenAccountB),
             //   poolTokenAccount: new PublicKey(userPoolTokenAccount),
             // })
-            const result = redeemBasketViaWallet({
+            const result = await redeemBasket({
               wallet,
               connection,
               poolPublicKey: new PublicKey(selectedPool.swapToken),
@@ -214,7 +214,7 @@ export const WithdrawalPopup = ({
               userBaseTokenAccount: new PublicKey(userTokenAccountA),
               userQuoteTokenAccount: new PublicKey(userTokenAccountB),
             })
-            
+
             await refreshAllTokensData()
             await setOperationLoading(false)
 
