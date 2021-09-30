@@ -18,10 +18,15 @@ import {
   TextColumnContainer,
 } from '../index.styles'
 
+import CrownIcon from '@icons/crownIcon.svg'
+import ForbiddenIcon from '@icons/fobiddenIcon.svg'
 import GreyArrow from '@icons/greyArrow.svg'
 import Info from '@icons/TooltipImg.svg'
 import { mock } from '../AllPools/AllPoolsTable.utils'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { TokenIcon } from '@sb/components/TokenIcon'
+import { UserLiquidityDetails } from './components/UserLiquidityDetails'
 
 export const getTotalUserLiquidity = ({
   usersPools,
@@ -138,9 +143,35 @@ export const combineUserLiquidityData = ({
       id: `${el.name}${el.tvl}${el.poolTokenMint}`,
       pool: {
         render: (
-          <div style={{ width: '15rem' }}>
-            <TokenIconsContainer tokenA={el.tokenA} tokenB={el.tokenB} />
-          </div>
+          <Row
+            justify="flex-start"
+            style={{ width: '18rem', flexWrap: 'nowrap' }}
+          >
+            <TokenIconsContainer tokenA={el.tokenA} tokenB={el.tokenB} />{' '}
+            {el.locked ? (
+              <SvgIcon
+                style={{ marginLeft: '1rem' }}
+                width="2rem"
+                height="auto"
+                src={CrownIcon}
+              />
+            ) : el.executed ? (
+              <DarkTooltip
+                title={
+                  'RIN token founders complained about this pool, it will be excluded from the catalog and AMM. You can withdraw liquidity and deposit it in the official pool at "All Pools" tab.'
+                }
+              >
+                <div>
+                  <SvgIcon
+                    style={{ marginLeft: '1rem' }}
+                    width="2rem"
+                    height="auto"
+                    src={ForbiddenIcon}
+                  />
+                </div>
+              </DarkTooltip>
+            ) : null}
+          </Row>
         ),
       },
       tvl: {
@@ -194,7 +225,32 @@ export const combineUserLiquidityData = ({
         ),
       },
       farming: {
-        render: <RowDataTdText theme={theme}>0</RowDataTdText>,
+        render: (
+          <RowContainer justify="flex-start" theme={theme}>
+            <Row margin="0 1rem 0 0" justify="flex-start">
+              <TokenIcon
+                mint={el.tokenA}
+                width={'3rem'}
+                emojiIfNoLogo={false}
+                // isAwesomeMarket={isCustomUserMarket}
+                // isAdditionalCustomUserMarket={isPrivateCustomMarket}
+              />
+            </Row>
+            <Row align="flex-start" direction="column">
+              <RowDataTdText
+                fontFamily="Avenir Next Medium"
+                style={{ marginBottom: '1rem' }}
+                theme={theme}
+              >
+                {getTokenNameByMintAddress(el.tokenA)}
+              </RowDataTdText>
+              <RowDataTdText>
+                <span style={{ color: '#A5E898' }}>12</span> RIN/Day for each $
+                <span style={{ color: '#A5E898' }}>1000</span>
+              </RowDataTdText>
+            </Row>
+          </RowContainer>
+        ),
       },
       details: {
         render: (
@@ -214,140 +270,7 @@ export const combineUserLiquidityData = ({
       expandableContent: [
         {
           row: {
-            render: (
-              <RowContainer margin="1rem 0" style={{ background: '#222429' }}>
-                <Row
-                  style={{
-                    borderRight: `0.2rem solid #383B45`,
-                  }}
-                  justify="space-between"
-                  width="60%"
-                >
-                  <Row align="flex-start" direction="column" width="25%">
-                    <RowDataTdText
-                      theme={theme}
-                      color={theme.palette.grey.new}
-                      style={{ marginBottom: '1rem' }}
-                    >
-                      Your Liquitity:
-                    </RowDataTdText>
-                    <RowDataTdText
-                      color={'#A5E898'}
-                      fontFamily="Avenir Next Medium"
-                      theme={theme}
-                    >
-                      100{' '}
-                      <span style={{ color: '#fbf2f2' }}>
-                        {getTokenNameByMintAddress(el.tokenA)}
-                      </span>{' '}
-                      / 2{' '}
-                      <span style={{ color: '#fbf2f2' }}>
-                        {getTokenNameByMintAddress(el.tokenB)}
-                      </span>{' '}
-                      (<span style={{ color: '#fbf2f2' }}>$</span>1,000){' '}
-                    </RowDataTdText>
-                  </Row>
-                  {el.liquidity ? (
-                    <Row align="flex-start" direction="column" width="25%">
-                      <RowDataTdText
-                        theme={theme}
-                        color={theme.palette.grey.new}
-                        style={{ marginBottom: '1rem' }}
-                      >
-                        Fees Earned:
-                      </RowDataTdText>
-                      <RowDataTdText
-                        color={'#A5E898'}
-                        fontFamily="Avenir Next Medium"
-                        theme={theme}
-                      >
-                        100{' '}
-                        <span style={{ color: '#fbf2f2' }}>
-                          {getTokenNameByMintAddress(el.tokenA)}
-                        </span>{' '}
-                        / 2{' '}
-                        <span style={{ color: '#fbf2f2' }}>
-                          {getTokenNameByMintAddress(el.tokenB)}
-                        </span>{' '}
-                        (<span style={{ color: '#fbf2f2' }}>$</span>1,000){' '}
-                      </RowDataTdText>
-                    </Row>
-                  ) : null}{' '}
-                  <Row align="flex-start" direction="column" width="25%">
-                    <RowDataTdText
-                      theme={theme}
-                      color={theme.palette.grey.new}
-                      style={{ marginBottom: '1rem' }}
-                    >
-                      Pool Tokens:
-                    </RowDataTdText>
-                    <RowDataTdText
-                      color={'#A5E898'}
-                      fontFamily="Avenir Next Medium"
-                      theme={theme}
-                    >
-                      <span style={{ color: '#fbf2f2' }}>Total:</span> 500{' '}
-                      <span style={{ color: '#fbf2f2' }}>Staked:</span> 200
-                    </RowDataTdText>
-                  </Row>
-                  <Row direction="column" width="25%">
-                    <BlueButton theme={theme} style={{ marginBottom: '1rem' }}>
-                      Deposit Liquidity{' '}
-                    </BlueButton>
-                    {el.liquidity ? (
-                      <BlueButton theme={theme}>
-                        Withdraw Liquidity + Fees
-                      </BlueButton>
-                    ) : null}
-                  </Row>
-                </Row>
-                <Row justify="space-between" width="40%" padding="0 0 0 4rem">
-                  <Row align="flex-start" direction="column" width="60%">
-                    <RowDataTdText
-                      theme={theme}
-                      fontFamily={'Avenir Next Medium'}
-                      style={{ marginBottom: '2rem' }}
-                    >
-                      Farming
-                    </RowDataTdText>
-                    <RowDataTdText theme={theme}>
-                      {el.liquidity ? (
-                        <>
-                          Stake your pool tokens to start
-                          <span
-                            style={{ color: '#A5E898', padding: '0 0.5rem' }}
-                          >
-                            RIN
-                          </span>
-                          farming
-                        </>
-                      ) : (
-                        <>
-                          Deposit liquidity to farm{' '}
-                          <span style={{ color: '#A5E898' }}>RIN</span>
-                        </>
-                      )}
-                    </RowDataTdText>
-                  </Row>
-                  {el.liquidity ? (
-                    <Row direction="column" width="40%" align="flex-end">
-                      {' '}
-                      <RowDataTdText
-                        theme={theme}
-                        fontFamily={'Avenir Next Medium'}
-                        style={{ marginBottom: '2rem' }}
-                      >
-                        <span style={{ color: '#A5E898', padding: '0 0.5rem' }}>
-                          0
-                        </span>{' '}
-                        RIN
-                      </RowDataTdText>
-                      <GreenButton>Stake Pool Token</GreenButton>
-                    </Row>
-                  ) : null}
-                </Row>
-              </RowContainer>
-            ),
+            render: <UserLiquidityDetails theme={theme} pool={el} />,
             colspan: 8,
           },
         },

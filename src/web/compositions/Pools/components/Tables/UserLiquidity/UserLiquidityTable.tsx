@@ -65,6 +65,8 @@ const UserLiquidityTableComponent = ({
     <TableContainer>
       {/* @ts-ignore */}
       <TableWithSort
+        hideCommonCheckbox={true}
+        hideRowsCheckboxes={true}
         expandableRows={true}
         expandedRows={expandedRows}
         onChange={setExpandedRows}
@@ -72,6 +74,7 @@ const UserLiquidityTableComponent = ({
           overflowX: 'hidden',
           height: '100%',
           background: 'inherit',
+          borderRadius: '1.6rem',
         }}
         stylesForTable={{
           backgroundColor: '#222429',

@@ -18,7 +18,7 @@ export const TableModeButton = styled.button`
     props.isActive ? '#f5f5f5' : '#93A0B2'};
   padding: 0.4rem 0;
   margin: 0 1.6rem 0 0;
-
+  outline: none;
   font-size: 1.4rem;
   font-family: Avenir Next Demi;
   text-transform: capitalize;
