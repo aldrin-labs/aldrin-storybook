@@ -851,7 +851,7 @@ export async function sendTransaction({
     await connection.getRecentBlockhash('max')
   ).blockhash
 
-  console.log('signers', signers)
+  console.log('signers', signers, wallet)
 
   transaction.setSigners(
     wallet.publicKey,

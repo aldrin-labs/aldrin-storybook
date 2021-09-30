@@ -27,6 +27,7 @@ import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { notify } from '@sb/dexUtils/notifications'
 import AttentionComponent from '@sb/components/AttentionBlock'
 import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
+import { createBasket } from '@sb/dexUtils/poolsTests'
 
 export const AddLiquidityPopup = ({
   theme,
@@ -209,7 +210,7 @@ export const AddLiquidityPopup = ({
       aria-labelledby="responsive-dialog-title"
     >
       <Row justify={'space-between'} width={'100%'}>
-        <BoldHeader>Add Liquidity</BoldHeader>
+        <BoldHeader>Deposit Liquidity</BoldHeader>
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </Row>
       <RowContainer>
@@ -245,6 +246,9 @@ export const AddLiquidityPopup = ({
         <Line />
         <InputWithTotal theme={theme} value={total} />
       </RowContainer>
+
+      {/* TODO */}
+      {/* here should be tvl locked info, check design */}
       <Row margin={'2rem 0 1rem 0'} justify={'space-between'}>
         <Row direction={'column'} align={'start'}>
           <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
@@ -333,14 +337,14 @@ export const AddLiquidityPopup = ({
           showLoader={operationLoading}
           theme={theme}
           onClick={async () => {
-            const userAmountTokenA = +baseAmount * 10 ** baseTokenDecimals
-            const userAmountTokenB = +quoteAmount * 10 ** quoteTokenDecimals
+            const userBaseTokenAmount = +baseAmount * 10 ** baseTokenDecimals
+            const userQuoteTokenAmount = +quoteAmount * 10 ** quoteTokenDecimals
 
             if (
               !userTokenAccountA ||
               !userTokenAccountB ||
-              !userAmountTokenA ||
-              !userAmountTokenB
+              !userBaseTokenAmount ||
+              !userQuoteTokenAmount
             ) {
               notify({
                 message: `Sorry, something went wrong with your amount of ${
@@ -354,8 +358,8 @@ export const AddLiquidityPopup = ({
                 userTokenAccountB,
                 baseTokenDecimals,
                 quoteTokenDecimals,
-                userAmountTokenA,
-                userAmountTokenB,
+                userBaseTokenAmount,
+                userQuoteTokenAmount,
               })
 
               return
@@ -364,17 +368,17 @@ export const AddLiquidityPopup = ({
             console.log('userPoolTokenAccount', userPoolTokenAccount)
             await setOperationLoading(true)
 
-            const result = await depositAllTokenTypes({
+            const result = await createBasket({
               wallet,
               connection,
-              userAmountTokenA,
-              userAmountTokenB,
-              tokenSwapPublicKey: new PublicKey(selectedPool.swapToken),
-              userTokenAccountA: new PublicKey(userTokenAccountA),
-              userTokenAccountB: new PublicKey(userTokenAccountB),
+              poolPublicKey: new PublicKey(selectedPool.swapToken),
+              userBaseTokenAmount,
+              userQuoteTokenAmount,
+              userBaseTokenAccount: new PublicKey(userTokenAccountA),
+              userQuoteTokenAccount: new PublicKey(userTokenAccountB),
               ...(userPoolTokenAccount
-                ? { poolTokenAccount: new PublicKey(userPoolTokenAccount) }
-                : {}),
+                ? { userPoolTokenAccount: new PublicKey(userPoolTokenAccount) }
+                : { userPoolTokenAccount: null }),
               transferSOLToWrapped: isPoolWithSOLToken && isNativeSOLSelected,
             })
 
@@ -394,7 +398,7 @@ export const AddLiquidityPopup = ({
             await close()
           }}
         >
-          Add liquidity
+          Deposit liquidity
         </BlueButton>
       </RowContainer>
       <SelectSeveralAddressesPopup

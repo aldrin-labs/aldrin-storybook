@@ -29,6 +29,12 @@ import { Token } from './token/token'
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { ProgramsMultiton } from './ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from './ProgramsMultiton/utils'
+import { notify } from './notifications'
+import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
+import {
+  getMaxWithdrawAmount,
+  transferSOLToWrappedAccountAndClose,
+} from './pools'
 
 // Configure the client to use the local cluster.
 const pool = Keypair.generate()
@@ -62,6 +68,7 @@ const retbufAccount = Keypair.generate()
 // const poolAuthority = new Account(JSON.parse(process.env.POOL_AUTHORITY))
 const poolInitializer = Keypair.generate()
 
+const SLIPPAGE_PERCENTAGE = 5
 const CREATION_SIZE = 100
 const RATIO = 4500
 
@@ -811,76 +818,6 @@ const tests = () => {
   })
 }
 
-async function createBasket(
-  creSize: number,
-  walletAuthority: Keypair,
-  lpTicket: Keypair,
-  lpTokenAddress: PublicKey,
-  baseTokenAddress: PublicKey,
-  quoteTokenAddress: PublicKey,
-  sizeMod: number = 1
-) {
-  const mintAuthority = NodeWallet.local().payer
-  const creationSize = new BN(creSize)
-  const tokenAmountA = new BN(creSize * sizeMod)
-  const tokenAmountB = new BN(creSize * sizeMod)
-    .mul(new BN(RATIO))
-    .mul(new BN(mint1Diff))
-  const account = await program.account.pool.fetch(pool.publicKey)
-  const mint1 = account.baseTokenMint
-  const mint2 = account.quoteTokenMint
-  const vault1 = account.baseTokenVault
-  const vault2 = account.quoteTokenVault
-  const poolMint = account.poolMint
-
-  const createMintAssociatedAccountTx = new Transaction().add(
-    TokenInstructions.mintTo({
-      mint: mint1,
-      amount: tokenAmountA,
-      destination: baseTokenAddress,
-      mintAuthority: mintAuthority.publicKey,
-    }),
-    TokenInstructions.mintTo({
-      mint: mint2,
-      amount: tokenAmountB,
-      destination: quoteTokenAddress,
-      mintAuthority: mintAuthority.publicKey,
-    })
-  )
-
-  await provider.send(createMintAssociatedAccountTx, [mintAuthority])
-
-  const tx = await program.rpc.createBasket(
-    creationSize,
-    tokenAmountA,
-    tokenAmountB,
-    {
-      accounts: {
-        pool: pool.publicKey,
-        poolMint: poolMint,
-        lpTicket: lpTicket.publicKey,
-        poolSigner: vaultSigner,
-        userBaseTokenAccount: baseTokenAddress,
-        userQuoteTokenAccount: quoteTokenAddress,
-        baseTokenVault: vault1,
-        quoteTokenVault: vault2,
-        userPoolTokenAccount: lpTokenAddress,
-        walletAuthority: walletAuthority.publicKey,
-        tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
-        clock: SYSVAR_CLOCK_PUBKEY,
-        rent: SYSVAR_RENT_PUBKEY,
-      },
-      instructions: [
-        await program.account.lpTicket.createInstruction(lpTicket),
-      ],
-      signers: [walletAuthority, lpTicket],
-    }
-  )
-  if (DEBUG_OUTPUT && TX_SIGNATURE_LOGGING) {
-    console.log('transaction signature', tx)
-  }
-}
-
 async function redeemBasket(
   redemptionSize: number,
   walletAuthority: Keypair,
@@ -1011,25 +948,38 @@ async function getPoolBasket(
   throw new Error('Failed to find pool basket in logs')
 }
 
-export async function createBasketViaWallet({
+export async function createBasket({
   wallet,
   connection,
   poolPublicKey,
   userPoolTokenAccount,
-  baseTokenAddress,
-  quoteTokenAddress,
-  userAmountTokenA,
-  userAmountTokenB,
+  userBaseTokenAccount,
+  userQuoteTokenAccount,
+  userBaseTokenAmount,
+  userQuoteTokenAmount,
+  transferSOLToWrapped,
 }: {
   wallet: WalletAdapter
   connection: Connection
   poolPublicKey: PublicKey
   userPoolTokenAccount: PublicKey | null
-  baseTokenAddress: PublicKey
-  quoteTokenAddress: PublicKey
-  userAmountTokenA: number
-  userAmountTokenB: number
+  userBaseTokenAccount: PublicKey
+  userQuoteTokenAccount: PublicKey
+  userBaseTokenAmount: number
+  userQuoteTokenAmount: number
+  transferSOLToWrapped: boolean
 }) {
+  console.log({
+    wallet,
+    connection,
+    poolPublicKey,
+    userPoolTokenAccount,
+    userBaseTokenAccount,
+    userQuoteTokenAccount,
+    userBaseTokenAmount,
+    userQuoteTokenAmount,
+  })
+
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
@@ -1041,15 +991,20 @@ export async function createBasketViaWallet({
     program.programId
   )
 
-  const account = await program.account.pool.fetch(poolPublicKey)
-  console.log('account', account)
-  const { baseTokenMint, baseTokenVault, quoteTokenMint, quoteTokenVault, poolMint } = account
+  const {
+    baseTokenMint,
+    baseTokenVault,
+    quoteTokenMint,
+    quoteTokenVault,
+    poolMint,
+  } = await program.account.pool.fetch(poolPublicKey)
+
   console.log({
     poolMint: poolMint.toString(),
     baseTokenMint: baseTokenMint.toString(),
     baseTokenVault: baseTokenVault.toString(),
     quoteTokenMint: quoteTokenMint.toString(),
-    quoteTokenVault: quoteTokenVault.toString()
+    quoteTokenVault: quoteTokenVault.toString(),
   })
 
   const poolToken = new Token(wallet, connection, poolMint, TOKEN_PROGRAM_ID)
@@ -1065,23 +1020,44 @@ export async function createBasketViaWallet({
     baseTokenMint,
     TOKEN_PROGRAM_ID
   )
+
   const poolTokenA = await tokenMintA.getAccountInfo(baseTokenVault)
   const poolTokenAmountA = poolTokenA.amount.toNumber()
 
-  const poolTokenAmount = Math.floor(
-    (supply * userAmountTokenA) / poolTokenAmountA
+  // delete
+  const tokenMintB = new Token(
+    wallet,
+    connection,
+    quoteTokenMint,
+    TOKEN_PROGRAM_ID
   )
 
-  const commonTransaction = new Transaction()
+  const poolTokenB = await tokenMintB.getAccountInfo(quoteTokenVault)
+  const poolTokenAmountB = poolTokenB.amount.toNumber()
+
+  console.log({
+    poolTokenAmountA,
+    poolTokenAmountB,
+  })
+
+  let poolTokenAmount = Math.floor(
+    (supply * userBaseTokenAmount) / poolTokenAmountA
+  )
+
+  const transactionBeforeDeposit = new Transaction()
   const commonSigners = []
 
+  const transactionAfterDeposit = new Transaction()
+
   // open liq. provider ticket, will close on redeem
-  const lpTicket = new Keypair()
+  const lpTicket = Keypair.generate()
   const lpTicketTransaction = await program.account.lpTicket.createInstruction(
     lpTicket
   )
 
-  commonTransaction.add(lpTicketTransaction)
+  console.log('lpTicketTransaction', lpTicketTransaction)
+
+  transactionBeforeDeposit.add(lpTicketTransaction)
   commonSigners.push(lpTicket)
 
   // create pool token account for user if not exist
@@ -1093,22 +1069,70 @@ export async function createBasketViaWallet({
     ] = await poolToken.createAccount(wallet.publicKey)
 
     userPoolTokenAccount = newUserPoolTokenAccount
-    commonTransaction.add(userPoolTokenAccountTransaction)
+    transactionBeforeDeposit.add(userPoolTokenAccountTransaction)
     commonSigners.push(userPoolTokenAccountSignature)
   }
 
-  const createBasketTransaction = await program.instruction.createBasket(
-    poolTokenAmount,
-    userAmountTokenA,
-    userAmountTokenB,
-    {
-      accounts: {
+  // if SOL - create new token address
+  if (baseTokenMint.equals(WRAPPED_SOL_MINT) && transferSOLToWrapped) {
+    const result = await transferSOLToWrappedAccountAndClose({
+      wallet,
+      connection,
+      amount: userBaseTokenAmount,
+    })
+
+    const [
+      wrappedAccount,
+      createWrappedAccountTransaction,
+      closeAccountTransaction,
+    ] = result
+
+    // change account to use from native to wrapped
+    userBaseTokenAccount = wrappedAccount.publicKey
+    transactionBeforeDeposit.add(createWrappedAccountTransaction)
+    commonSigners.push(wrappedAccount)
+
+    transactionAfterDeposit.add(closeAccountTransaction)
+  } else if (quoteTokenMint.equals(WRAPPED_SOL_MINT) && transferSOLToWrapped) {
+    const result = await transferSOLToWrappedAccountAndClose({
+      wallet,
+      connection,
+      amount: userQuoteTokenAmount,
+    })
+
+    const [
+      wrappedAccount,
+      createWrappedAccountTransaction,
+      closeAccountTransaction,
+    ] = result
+
+    // change account to use from native to wrapped
+    userQuoteTokenAccount = wrappedAccount.publicKey
+    transactionBeforeDeposit.add(createWrappedAccountTransaction)
+    commonSigners.push(wrappedAccount)
+
+    transactionAfterDeposit.add(closeAccountTransaction)
+  }
+
+  let counter = 0
+  let commonTransaction = new Transaction()
+  while (counter < SLIPPAGE_PERCENTAGE) {
+    try {
+      if (counter > 0) {
+        await notify({
+          type: 'error',
+          message:
+            'Deposit failed, trying with bigger slippage. Please confirm transaction again.',
+        })
+      }
+
+      console.log({
         pool: poolPublicKey,
         poolMint,
         lpTicket: lpTicket.publicKey,
         poolSigner: vaultSigner,
-        userBaseTokenAccount: baseTokenAddress,
-        userQuoteTokenAccount: quoteTokenAddress,
+        userBaseTokenAccount,
+        userQuoteTokenAccount,
         baseTokenVault,
         quoteTokenVault,
         userPoolTokenAccount,
@@ -1116,18 +1140,167 @@ export async function createBasketViaWallet({
         tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
         clock: SYSVAR_CLOCK_PUBKEY,
         rent: SYSVAR_RENT_PUBKEY,
+      })
+
+      const createBasketTransaction = await program.instruction.createBasket(
+        new BN(poolTokenAmount),
+        new BN(userBaseTokenAmount),
+        new BN(userQuoteTokenAmount),
+        {
+          accounts: {
+            pool: poolPublicKey,
+            poolMint,
+            lpTicket: lpTicket.publicKey,
+            poolSigner: vaultSigner,
+            userBaseTokenAccount,
+            userQuoteTokenAccount,
+            baseTokenVault,
+            quoteTokenVault,
+            userPoolTokenAccount,
+            walletAuthority: wallet.publicKey,
+            tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
+            clock: SYSVAR_CLOCK_PUBKEY,
+            rent: SYSVAR_RENT_PUBKEY,
+          },
+        }
+      )
+
+      commonTransaction.add(transactionBeforeDeposit)
+      commonTransaction.add(createBasketTransaction)
+
+      if (transactionAfterDeposit.instructions.length > 0) {
+        commonTransaction.add(transactionAfterDeposit)
+      }
+
+      console.log('commonTransaction', commonTransaction)
+
+      const tx = await sendTransaction({
+        wallet,
+        connection,
+        transaction: commonTransaction,
+        signers: commonSigners,
+      })
+
+      if (DEBUG_OUTPUT && TX_SIGNATURE_LOGGING) {
+        console.log('transaction signature', tx)
+      }
+
+      if (tx) {
+        return 'success'
+      }
+    } catch (e) {
+      console.log('deposit catch error', e)
+      commonTransaction = new Transaction()
+      counter++
+      poolTokenAmount *= 0.99
+
+      if (e.message.includes('cancelled')) {
+        return 'cancelled'
+      }
+    }
+  }
+
+  return 'failed'
+}
+
+export async function redeemBasketViaWallet({
+  wallet,
+  connection,
+  poolPublicKey,
+  userPoolTokenAccount,
+  userBaseTokenAccount,
+  userQuoteTokenAccount,
+  userPoolTokenAmount,
+}: {
+  wallet: WalletAdapter
+  connection: Connection
+  poolPublicKey: PublicKey
+  userPoolTokenAccount: PublicKey | null
+  userBaseTokenAccount: PublicKey
+  userQuoteTokenAccount: PublicKey
+  userPoolTokenAmount: number
+}) {
+  // find lp ticket via gPA
+  const program = ProgramsMultiton.getProgramByAddress({
+    wallet,
+    connection,
+    programAddress: POOLS_PROGRAM_ADDRESS,
+  })
+
+  const tickets = await connection.getProgramAccounts(
+    new PublicKey(POOLS_PROGRAM_ADDRESS),
+    {
+      commitment: 'finalized',
+      filters: [
+        {
+          dataSize: 88,
+        },
+      ],
+    }
+  )
+
+  // filter tickets + determine amount on them + use all that need
+  console.log('tickets', tickets)
+  console.log('tickets addresses', tickets.map(t => t.pubkey.toString()))
+
+  const {
+    baseTokenMint,
+    baseTokenVault,
+    quoteTokenMint,
+    quoteTokenVault,
+    poolMint,
+    feeBaseAccount,
+    feeQuoteAccount,
+  } = await program.account.pool.fetch(poolPublicKey)
+
+  let [
+    baseTokenAmountToWithdraw,
+    quoteTokenAmountToWithdraw,
+  ] = await getMaxWithdrawAmount({
+    wallet,
+    connection,
+    poolPublicKey,
+    baseTokenMint,
+    quoteTokenMint,
+    basePoolTokenPublicKey: baseTokenVault,
+    quotePoolTokenPublicKey: quoteTokenVault,
+    poolTokenMint: poolMint,
+    poolTokenAmount: userPoolTokenAmount,
+  })
+
+  console.log({
+    baseTokenAmountToWithdraw,
+    quoteTokenAmountToWithdraw,
+  })
+
+  // todo: make number bigger
+  baseTokenAmountToWithdraw *= 0.99
+  quoteTokenAmountToWithdraw *= 0.99
+
+  const tx = await program.instruction.redeemBasket(
+    new BN(userPoolTokenAmount),
+    new BN(baseTokenAmountToWithdraw),
+    new BN(quoteTokenAmountToWithdraw),
+    {
+      accounts: {
+        pool: pool.publicKey,
+        poolMint: poolMint,
+        baseTokenVault,
+        quoteTokenVault,
+        poolSigner: vaultSigner,
+        userPoolTokenAccount,
+        userBaseTokenAccount,
+        userQuoteTokenAccount,
+        walletAuthority: wallet.publicKey,
+        userSolAccount: wallet.publicKey,
+        lpTicket: lpTicketAddress,
+        tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
+        feeBaseAccount,
+        feeQuoteAccount,
+        clock: SYSVAR_CLOCK_PUBKEY,
       },
     }
   )
-  commonTransaction.add(createBasketTransaction)
-
-  const tx = sendTransaction({
-    wallet,
-    connection,
-    transaction: commonTransaction,
-    signers: commonSigners,
-  })
-
   if (DEBUG_OUTPUT && TX_SIGNATURE_LOGGING) {
     console.log('transaction signature', tx)
   }
