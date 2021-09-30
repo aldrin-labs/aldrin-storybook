@@ -26,23 +26,23 @@ const Pools = ({ theme }: { theme: Theme }) => {
       new PublicKey('RinKtB5mZkTYfVvhCyLrwGxaYsfXruZg4r4AmzPM4wx')
     )
 
-    wallet &&
-      createBasketViaWallet({
-        wallet,
-        connection,
-        poolPublicKey: new PublicKey(
-          'HwTyFCPy3xi842Be2PyU4ZPu3YmaxorV5RY4b77Pb898'
-        ),
-        baseTokenAddress: new PublicKey(
-          'A1BsqP5rH3HXhoFK6xLK6EFv9KsUzgR1UwBQhzMW9D2m'
-        ),
-        quoteTokenAddress: new PublicKey(
-          'HwTyFCPy3xi842Be2PyU4ZPu3YmaxorV5RY4b77Pb898'
-        ),
-        userAmountTokenA: 0,
-        userAmountTokenB: 0,
-        userPoolTokenAccount: null,
-      })
+    // wallet &&
+    //   createBasketViaWallet({
+    //     wallet,
+    //     connection,
+    //     poolPublicKey: new PublicKey(
+    //       'HwTyFCPy3xi842Be2PyU4ZPu3YmaxorV5RY4b77Pb898'
+    //     ),
+    //     baseTokenAddress: new PublicKey(
+    //       'A1BsqP5rH3HXhoFK6xLK6EFv9KsUzgR1UwBQhzMW9D2m'
+    //     ),
+    //     quoteTokenAddress: new PublicKey(
+    //       'HwTyFCPy3xi842Be2PyU4ZPu3YmaxorV5RY4b77Pb898'
+    //     ),
+    //     userAmountTokenA: 0,
+    //     userAmountTokenB: 0,
+    //     userPoolTokenAccount: null,
+    //   })
   }, [])
 
   return (

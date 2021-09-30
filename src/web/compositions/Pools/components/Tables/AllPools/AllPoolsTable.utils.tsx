@@ -90,18 +90,18 @@ export const mock = [
   },
   {
     name:
-      'A1BsqP5rH3HXhoFK6xLK6EFv9KsUzgR1UwBQhzMW9D2m_EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+      'A1BsqP5rH3HXhoFK6xLK6EFv9KsUzgR1UwBQhzMW9D2m_8wxoc2AnVsT6aLXDyA2G9PKfpx8mVT1Q5pPgvQLpCEVM',
     parsedName: 'PTA_PTB',
     tokenA: 'A1BsqP5rH3HXhoFK6xLK6EFv9KsUzgR1UwBQhzMW9D2m',
-    tokenB: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    tokenB: '8wxoc2AnVsT6aLXDyA2G9PKfpx8mVT1Q5pPgvQLpCEVM',
     swapToken: 'HwTyFCPy3xi842Be2PyU4ZPu3YmaxorV5RY4b77Pb898',
     poolTokenMint: '2TU6yyd8DSv2Xksz1oNe84D6qsxTCo7imiLBT2hsQVVY',
     tvl: {
-      tokenA: 44,
-      tokenB: 765,
+      tokenA: 1099,
+      tokenB: 4945524,
     },
     apy24h: 0.21, //%
-    supply: 120000,
+    supply: 1099002507,
     liquidity: 935570,
     staked: 0,
     locked: false,

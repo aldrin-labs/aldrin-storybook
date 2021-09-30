@@ -23,6 +23,7 @@ import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import { redeemBasketViaWallet } from '@sb/dexUtils/poolsTests'
 
 export const WithdrawalPopup = ({
   theme,
@@ -195,15 +196,25 @@ export const WithdrawalPopup = ({
             }
 
             await setOperationLoading(true)
-            const result = await withdrawAllTokenTypes({
+            // const result = await withdrawAllTokenTypes({
+            //   wallet,
+            //   connection,
+            //   poolTokenAmount: poolTokenAmountToWithdraw,
+            //   tokenSwapPublicKey: new PublicKey(selectedPool.swapToken),
+            //   userTokenAccountA: new PublicKey(userTokenAccountA),
+            //   userTokenAccountB: new PublicKey(userTokenAccountB),
+            //   poolTokenAccount: new PublicKey(userPoolTokenAccount),
+            // })
+            const result = redeemBasketViaWallet({
               wallet,
               connection,
-              poolTokenAmount: poolTokenAmountToWithdraw,
-              tokenSwapPublicKey: new PublicKey(selectedPool.swapToken),
-              userTokenAccountA: new PublicKey(userTokenAccountA),
-              userTokenAccountB: new PublicKey(userTokenAccountB),
-              poolTokenAccount: new PublicKey(userPoolTokenAccount),
+              poolPublicKey: new PublicKey(selectedPool.swapToken),
+              userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
+              userPoolTokenAmount: poolTokenAmountToWithdraw,
+              userBaseTokenAccount: new PublicKey(userTokenAccountA),
+              userQuoteTokenAccount: new PublicKey(userTokenAccountB),
             })
+            
             await refreshAllTokensData()
             await setOperationLoading(false)
 
