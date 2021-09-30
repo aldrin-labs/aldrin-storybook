@@ -64,6 +64,8 @@ export const mock = [
     apy24h: 0.21, //%
     supply: 120000,
     liquidity: 0,
+    staked: 0,
+
     locked: false,
     executed: true,
   },
@@ -101,6 +103,7 @@ export const mock = [
     apy24h: 0.21, //%
     supply: 120000,
     liquidity: 935570,
+    staked: 0,
     locked: false,
     executed: true,
   },

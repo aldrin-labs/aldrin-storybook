@@ -3,9 +3,12 @@ import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { GreenButton, RowDataTdText } from '../../index.styles'
-import { StakePopup } from '../../../Popups/Staking'
+import { StakePopup } from '../../../Popups/Staking/StakePopup'
+import { UnstakePopup } from '../../../Popups/Staking/UnstakePopup'
 
 export const UserLiquidityDetails = ({ theme, pool }) => {
+  const [isUnstakePopupOpen, setIsUnstakePopupOpen] = useState(false)
+
   const [isStakePopupOpen, setIsStakePopupOpen] = useState(false)
 
   return (
@@ -137,6 +140,9 @@ export const UserLiquidityDetails = ({ theme, pool }) => {
                   theme={theme}
                   disabled={pool.locked}
                   style={{ width: '48%' }}
+                  onClick={() => {
+                    setIsUnstakePopupOpen(true)
+                  }}
                 >
                   {pool.locked
                     ? 'Locked until Oct 16, 2021'
@@ -177,7 +183,14 @@ export const UserLiquidityDetails = ({ theme, pool }) => {
       <StakePopup
         theme={theme}
         open={isStakePopupOpen}
+        pool={pool}
         close={() => setIsStakePopupOpen(false)}
+      />
+      <UnstakePopup
+        theme={theme}
+        open={isUnstakePopupOpen}
+        pool={pool}
+        close={() => setIsUnstakePopupOpen(false)}
       />
     </RowContainer>
   )
