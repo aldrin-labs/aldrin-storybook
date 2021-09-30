@@ -75,7 +75,7 @@ const TablesSwitcher = ({
       <BlockTemplate
         width={'100%'}
         height={'auto'}
-        style={{ marginTop: '2rem' }}
+        style={{ marginTop: '2rem', borderRadius: '1.6rem' }}
         align={'start'}
         theme={theme}
         direction={'column'}

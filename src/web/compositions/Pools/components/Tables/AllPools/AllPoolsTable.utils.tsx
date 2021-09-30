@@ -26,6 +26,8 @@ import CrownIcon from '@icons/crownIcon.svg'
 import ForbiddenIcon from '@icons/fobiddenIcon.svg'
 
 import { WalletAdapter } from '@sb/dexUtils/types'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { TokenIcon } from '@sb/components/TokenIcon'
 
 export const mock = [
   {
@@ -43,11 +45,14 @@ export const mock = [
     apy24h: 0.21, //%
     supply: 120000,
     liquidity: 9835570,
+    staked: 50,
+    locked: true,
+    executed: false,
   },
   {
     name:
       'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp_EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    parsedName: 'RIN_USDC',
+    parsedName: 'RI8888N_U8SDC',
     tokenA: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
     tokenB: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
     swapToken: '55',
@@ -59,6 +64,10 @@ export const mock = [
     apy24h: 0.21, //%
     supply: 120000,
     liquidity: 0,
+    staked: 0,
+
+    locked: false,
+    executed: true,
   },
   {
     name:
@@ -75,6 +84,9 @@ export const mock = [
     apy24h: 0.21, //%
     supply: 120000,
     liquidity: 935570,
+    locked: false,
+    executed: false,
+    staked: 50,
   },
   {
     name:
@@ -91,6 +103,9 @@ export const mock = [
     apy24h: 0.21, //%
     supply: 1099002507,
     liquidity: 935570,
+    staked: 0,
+    locked: false,
+    executed: true,
   },
 ]
 
@@ -203,7 +218,10 @@ export const combineAllPoolsData = ({
         id: `${el.name}${el.tvl}${el.poolTokenMint}`,
         pool: {
           render: (
-            <Row style={{ width: '18rem', flexWrap: 'nowrap' }}>
+            <Row
+              justify="flex-start"
+              style={{ width: '18rem', flexWrap: 'nowrap' }}
+            >
               <TokenIconsContainer tokenA={el.tokenA} tokenB={el.tokenB} />{' '}
               {el.locked ? (
                 <SvgIcon
@@ -287,7 +305,32 @@ export const combineAllPoolsData = ({
           ),
         },
         farming: {
-          render: <RowDataTdText theme={theme}>0</RowDataTdText>,
+          render: (
+            <RowContainer justify="flex-start" theme={theme}>
+              <Row margin="0 1rem 0 0" justify="flex-start">
+                <TokenIcon
+                  mint={el.tokenA}
+                  width={'3rem'}
+                  emojiIfNoLogo={false}
+                  // isAwesomeMarket={isCustomUserMarket}
+                  // isAdditionalCustomUserMarket={isPrivateCustomMarket}
+                />
+              </Row>
+              <Row align="flex-start" direction="column">
+                <RowDataTdText
+                  fontFamily="Avenir Next Medium"
+                  style={{ marginBottom: '1rem' }}
+                  theme={theme}
+                >
+                  {getTokenNameByMintAddress(el.tokenA)}
+                </RowDataTdText>
+                <RowDataTdText>
+                  <span style={{ color: '#A5E898' }}>12</span> RIN/Day for each
+                  $<span style={{ color: '#A5E898' }}>1000</span>
+                </RowDataTdText>
+              </Row>
+            </RowContainer>
+          ),
         },
         details: {
           render: (
@@ -329,7 +372,7 @@ export const combineAllPoolsData = ({
                         fontFamily="Avenir Next Medium"
                         theme={theme}
                       >
-                        100 RIN / 2 SOL ($1,000){' '}
+                        {!el.liquidity ? '$0' : '100 RIN / 2 SOL ($1,000)'}{' '}
                       </RowDataTdText>
                     </Row>
                     {el.liquidity ? (
