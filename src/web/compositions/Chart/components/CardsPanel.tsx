@@ -162,10 +162,10 @@ export const CardsPanel = ({ theme }) => {
           >
             <NavLinkButton
               theme={theme}
-              style={{ width: '13rem' }}
+              style={{ width: '16rem' }}
               onClick={() => setIsFeedBackPopupOpen(true)}
             >
-              Leave feedback
+              Feedback & Support
             </NavLinkButton>
             <NavLinkButton
               theme={theme}

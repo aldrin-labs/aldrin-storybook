@@ -26,6 +26,7 @@ import {
 import { notify } from '@sb/dexUtils/notifications'
 import useMobileSize from '@webhooks/useMobileSize'
 import { SRadio } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
+import { WhiteButton } from './TokenNotAdded'
 
 export const FeedbackPopup = ({
   theme,
@@ -244,7 +245,21 @@ export const FeedbackPopup = ({
               />
             </RowContainer>
           </RowContainer>
-          <RowContainer>
+          <RowContainer justify="space-between">
+            {isMobile ? (
+              <WhiteButton
+                style={{
+                  width: '48%',
+                  height: '9.5rem',
+                  marginTop: '4rem',
+                  fontSize: '2.3rem',
+                }}
+                theme={theme}
+                onClick={onClose}
+              >
+                Cancel
+              </WhiteButton>
+            ) : null}
             <SubmitButton
               isDisabled={isDisabled}
               disabled={isDisabled}
