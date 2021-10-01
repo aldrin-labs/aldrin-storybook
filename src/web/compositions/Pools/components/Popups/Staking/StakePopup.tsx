@@ -14,25 +14,51 @@ import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { InputWithCoins } from '../components'
 import { HintContainer } from './styles'
 import { ExclamationMark } from '@sb/compositions/Chart/components/MarketBlock/MarketBlock.styles'
+import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
+import AttentionComponent from '@sb/components/AttentionBlock'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { startFarming } from '@sb/dexUtils/pools/startFarming'
+import { PublicKey } from '@solana/web3.js'
+import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { useConnection } from '@sb/dexUtils/connection'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { notify } from '@sb/dexUtils/notifications'
 
 export const StakePopup = ({
   theme,
   open,
   close,
   pool,
+  allTokensData,
 }: {
   theme: Theme
   open: boolean
   close: () => void
-  pool: number
+  pool: PoolInfo
+  allTokensData: any
 }) => {
+  const [poolTokenAmount, setPoolTokenAmount] = useState('')
+  const [operationLoading, setOperationLoading] = useState(false)
+
+  const { wallet } = useWallet()
+  const connection = useConnection()
+  const {
+    amount: maxPoolTokenAmount,
+    address: userPoolTokenAccount,
+    decimals: poolTokenDecimals,
+  } = getTokenDataByMint(allTokensData, pool.poolTokenMint)
+
+  const isNotEnoughPoolTokens = +poolTokenAmount > maxPoolTokenAmount
   return (
     <DialogWrapper
       theme={theme}
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
-      onEnter={() => {}}
+      onEnter={() => {
+        setOperationLoading(false)
+        setPoolTokenAmount('')
+      }}
       maxWidth={'md'}
       open={open}
       aria-labelledby="responsive-dialog-title"
@@ -48,13 +74,13 @@ export const StakePopup = ({
       </RowContainer>
       <RowContainer>
         <InputWithCoins
-          placeholder={''}
+          placeholder={'0'}
           theme={theme}
-          value={pool.staked}
-          onChange={() => {}}
+          onChange={setPoolTokenAmount}
+          value={poolTokenAmount}
           symbol={'Pool Tokens'}
-          alreadyInPool={0}
-          maxBalance={pool.staked}
+          // alreadyInPool={0}
+          maxBalance={maxPoolTokenAmount}
           needAlreadyInPool={false}
         />
       </RowContainer>
@@ -66,7 +92,7 @@ export const StakePopup = ({
         </Text>
       </RowContainer>
       <HintContainer justify={'flex-start'} margin="2rem 0">
-        <Row width="20%">
+        <Row justify="flex-start" width="20%">
           <ExclamationMark
             theme={theme}
             margin={'0 0 0 2rem'}
@@ -85,13 +111,44 @@ export const StakePopup = ({
           </Text>
         </Row>
       </HintContainer>
+      {isNotEnoughPoolTokens && (
+        <RowContainer margin={'2rem 0 0 0'}>
+          <AttentionComponent
+            text={`You entered more Pool tokens than you have.`}
+            blockHeight={'8rem'}
+          />
+        </RowContainer>
+      )}
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
         <BlueButton
           style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
-          disabled={false}
+          disabled={isNotEnoughPoolTokens}
           isUserConfident={true}
           theme={theme}
-          onClick={() => {}}
+          showLoader={operationLoading}
+          onClick={async () => {
+            await setOperationLoading(true)
+
+            const result = await startFarming({
+              wallet,
+              connection,
+              poolTokenAmount: +poolTokenAmount,
+              userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
+              poolPublicKey: new PublicKey(pool.swapToken),
+            })
+
+            await setOperationLoading(false)
+
+            await notify({
+              type: result === 'success' ? 'success' : 'error',
+              message:
+                result === 'success'
+                  ? 'Staking successful'
+                  : 'Staking cancelled',
+            })
+
+            await close()
+          }}
         >
           Stake
         </BlueButton>

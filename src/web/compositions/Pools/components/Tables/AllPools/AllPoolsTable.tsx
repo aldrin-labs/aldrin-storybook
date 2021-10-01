@@ -24,6 +24,7 @@ const AllPoolsTableComponent = ({
   dexTokensPricesMap,
   poolsInfo,
   getFeesEarnedByPoolQuery,
+  allTokensData,
   selectPool,
   // setIsCreatePoolPopupOpen,
   setIsAddLiquidityPopupOpen,
@@ -34,6 +35,7 @@ const AllPoolsTableComponent = ({
   dexTokensPricesMap: Map<string, DexTokensPrices>
   poolsInfo: PoolInfo[]
   getFeesEarnedByPoolQuery: { getFeesEarnedByPool: FeesEarned[] }
+  allTokensData: any
   selectPool: (pool: PoolInfo) => void
   // setIsCreatePoolPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
@@ -64,6 +66,7 @@ const AllPoolsTableComponent = ({
     searchValue,
     dexTokensPricesMap,
     feesPerPoolMap,
+    allTokensData,
     selectPool,
     setIsAddLiquidityPopupOpen,
     setIsWithdrawalPopupOpen,
@@ -82,7 +85,7 @@ const AllPoolsTableComponent = ({
           overflowX: 'hidden',
           height: '100%',
           background: 'inherit',
-          borderRadius:'1.6rem'
+          borderRadius: '1.6rem',
         }}
         stylesForTable={{
           backgroundColor: '#222429',

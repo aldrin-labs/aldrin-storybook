@@ -6,7 +6,7 @@ import { GreenButton, RowDataTdText } from '../../index.styles'
 import { StakePopup } from '../../../Popups/Staking/StakePopup'
 import { UnstakePopup } from '../../../Popups/Staking/UnstakePopup'
 
-export const UserLiquidityDetails = ({ theme, pool }) => {
+export const UserLiquidityDetails = ({ theme, pool, allTokensData }) => {
   const [isUnstakePopupOpen, setIsUnstakePopupOpen] = useState(false)
 
   const [isStakePopupOpen, setIsStakePopupOpen] = useState(false)
@@ -185,12 +185,14 @@ export const UserLiquidityDetails = ({ theme, pool }) => {
         open={isStakePopupOpen}
         pool={pool}
         close={() => setIsStakePopupOpen(false)}
+        allTokensData={allTokensData}
       />
       <UnstakePopup
         theme={theme}
         open={isUnstakePopupOpen}
         pool={pool}
         close={() => setIsUnstakePopupOpen(false)}
+        allTokensData={allTokensData}
       />
     </RowContainer>
   )

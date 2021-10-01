@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Theme } from '@sb/types/materialUI'
 import {
   formatNumberToUSFormat,
@@ -28,6 +28,7 @@ import ForbiddenIcon from '@icons/fobiddenIcon.svg'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { TokenIcon } from '@sb/components/TokenIcon'
+import { StakePopup } from '../../Popups/Staking/StakePopup'
 
 export const mock = [
   {
@@ -180,6 +181,7 @@ export const combineAllPoolsData = ({
   searchValue,
   dexTokensPricesMap,
   feesPerPoolMap,
+  allTokensData,
   selectPool,
   setIsAddLiquidityPopupOpen,
   setIsWithdrawalPopupOpen,
@@ -190,10 +192,13 @@ export const combineAllPoolsData = ({
   searchValue: string
   dexTokensPricesMap: Map<string, DexTokensPrices>
   feesPerPoolMap: Map<string, number>
+  allTokensData: any
   selectPool: (pool: PoolInfo) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
 }) => {
+  const [isStakePopupOpen, setIsStakePopupOpen] = useState(false)
+
   // const processedAllPoolsData = poolsInfo
   const processedAllPoolsData = mock
     .filter((el) =>
@@ -480,6 +485,7 @@ export const combineAllPoolsData = ({
                               wallet.connect()
                               return
                             }
+                            setIsStakePopupOpen(true)
                           }}
                         >
                           {wallet.connected
@@ -489,6 +495,13 @@ export const combineAllPoolsData = ({
                       </Row>
                     ) : null}
                   </Row>
+                  <StakePopup
+                    theme={theme}
+                    open={isStakePopupOpen}
+                    pool={el}
+                    close={() => setIsStakePopupOpen(false)}
+                    allTokensData={allTokensData}
+                  />
                 </RowContainer>
               ),
               colspan: 8,
