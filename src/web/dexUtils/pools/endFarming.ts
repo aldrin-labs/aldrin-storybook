@@ -149,8 +149,6 @@ export const endFarming = async ({
         return 'cancelled'
       }
     }
-
-    // add retries
   }
 
   return 'failed'

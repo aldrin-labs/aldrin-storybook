@@ -16,7 +16,6 @@ import { HintContainer } from './styles'
 import { ExclamationMark } from '@sb/compositions/Chart/components/MarketBlock/MarketBlock.styles'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import AttentionComponent from '@sb/components/AttentionBlock'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { startFarming } from '@sb/dexUtils/pools/startFarming'
 import { PublicKey } from '@solana/web3.js'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
@@ -135,6 +134,7 @@ export const StakePopup = ({
               poolTokenAmount: +poolTokenAmount,
               userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
               poolPublicKey: new PublicKey(pool.swapToken),
+              farmingState: new PublicKey(pool.farmingStatePublicKey),
             })
 
             await setOperationLoading(false)

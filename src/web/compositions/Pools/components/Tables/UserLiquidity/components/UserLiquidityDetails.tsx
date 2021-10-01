@@ -5,8 +5,10 @@ import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { GreenButton, RowDataTdText } from '../../index.styles'
 import { StakePopup } from '../../../Popups/Staking/StakePopup'
 import { UnstakePopup } from '../../../Popups/Unstaking/UnstakePopup'
+import { useWallet } from '@sb/dexUtils/wallet'
 
 export const UserLiquidityDetails = ({ theme, pool, allTokensData }) => {
+  const { wallet } = useWallet()
   const [isUnstakePopupOpen, setIsUnstakePopupOpen] = useState(false)
 
   const [isStakePopupOpen, setIsStakePopupOpen] = useState(false)
@@ -89,12 +91,32 @@ export const UserLiquidityDetails = ({ theme, pool, allTokensData }) => {
           </RowDataTdText>
         </Row>
         <Row direction="column" width="25%">
-          <BlueButton theme={theme} style={{ marginBottom: '1rem' }}>
-            Deposit Liquidity{' '}
+          <BlueButton
+            theme={theme}
+            style={{ marginBottom: '1rem' }}
+            onClick={() => {
+              if (!wallet.connected) {
+                wallet.connect()
+                return
+              }
+            }}
+          >
+            {!wallet.connected ? 'Connect Wallet' : 'Deposit Liquidity'}
           </BlueButton>
 
-          <BlueButton disabled={pool.locked} theme={theme}>
-            {pool.locked
+          <BlueButton
+            onClick={() => {
+              if (!wallet.connected) {
+                wallet.connect()
+                return
+              }
+            }}
+            disabled={pool.locked}
+            theme={theme}
+          >
+            {!wallet.connected
+              ? 'Connect Wallet'
+              : pool.locked
               ? 'Locked until Oct 16, 2021'
               : 'Withdraw Liquidity + Fees'}
           </BlueButton>
@@ -129,22 +151,32 @@ export const UserLiquidityDetails = ({ theme, pool, allTokensData }) => {
               <RowContainer justify="space-between">
                 <GreenButton
                   onClick={() => {
+                    if (!wallet.connected) {
+                      wallet.connect()
+                      return
+                    }
                     setIsStakePopupOpen(true)
                   }}
                   theme={theme}
                   style={{ width: '48%' }}
                 >
-                  Stake Pool Token
+                  {!wallet.connected ? 'Connect Wallet' : 'Stake Pool Token'}
                 </GreenButton>
                 <GreenButton
                   theme={theme}
-                  disabled={pool.locked}
+                  disabled={pool.locked || !wallet.connected}
                   style={{ width: '48%' }}
                   onClick={() => {
+                    if (!wallet.connected) {
+                      wallet.connect()
+                      return
+                    }
                     setIsUnstakePopupOpen(true)
                   }}
                 >
-                  {pool.locked
+                  {!wallet.connected
+                    ? 'Connect Wallet'
+                    : pool.locked
                     ? 'Locked until Oct 16, 2021'
                     : 'Unstake Pool Token'}
                 </GreenButton>
@@ -172,10 +204,14 @@ export const UserLiquidityDetails = ({ theme, pool, allTokensData }) => {
             </RowDataTdText>
             <GreenButton
               onClick={() => {
+                if (!wallet.connected) {
+                  wallet.connect()
+                  return
+                }
                 setIsStakePopupOpen(true)
               }}
             >
-              Stake Pool Token
+              {wallet.connected ? 'Stake Pool Token' : 'Connect Wallet'}
             </GreenButton>
           </Row>
         )}

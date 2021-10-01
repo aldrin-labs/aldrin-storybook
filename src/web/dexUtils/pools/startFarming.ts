@@ -48,12 +48,14 @@ export const startFarming = async ({
   poolTokenAmount,
   poolPublicKey,
   userPoolTokenAccount,
+  farmingState,
 }: {
   wallet: WalletAdapter
   connection: Connection
   poolTokenAmount: number
   poolPublicKey: PublicKey
   userPoolTokenAccount: PublicKey
+  farmingState: PublicKey
 }) => {
   console.log(poolPublicKey.toString())
   const program = ProgramsMultiton.getProgramByAddress({
@@ -95,9 +97,7 @@ export const startFarming = async ({
     {
       accounts: {
         pool: poolPublicKey,
-        farmingState: new PublicKey(
-          'Hg4hHQ2QZjS7bAGHXg9Kijvyw2mxDuBuqRFLajfPBTcr'
-        ), // take from mock, later from backend
+        farmingState,
         farmingTicket: farmingTicket.publicKey,
         lpTokenFreezeVault: lpTokenFreezeVault,
         userLpTokenAccount: userPoolTokenAccount,
