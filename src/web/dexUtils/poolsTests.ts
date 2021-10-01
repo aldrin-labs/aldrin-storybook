@@ -700,11 +700,11 @@ const tests = () => {
       const tx = await program.rpc.endFarming({
         accounts: {
           pool: pool.publicKey,
-          farmingState: farmingState.publicKey,
-          farmingSnapshots: snapshotQueue.publicKey,
-          farmingTicket: farmingTicket.publicKey,
+          farmingState: farmingState.publicKey, // from args - add to mock for now
+          farmingSnapshots: snapshotQueue.publicKey, // from args - add to mock for now
+          farmingTicket: farmingTicket.publicKey, // gPA like in withdraw
           lpTokenFreezeVault: lpTokenFreezeVault,
-          poolSigner: pda,
+          poolSigner: pda, // vault signer
           userPoolTokenAccount: creatorPoolTokenAddress,
           userKey: creator.publicKey,
           tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
@@ -758,18 +758,18 @@ const tests = () => {
       )
 
       const farmingStateAccount = await program.account.farmingState.fetch(
-        farmingState.publicKey
+        farmingState.publicKey // from args - add to mock for now
       )
 
       const tx = await program.rpc.withdrawFarmed({
         accounts: {
           pool: pool.publicKey,
-          farmingState: farmingState.publicKey,
-          farmingSnapshots: snapshotQueue.publicKey,
-          farmingTicket: farmingTicket.publicKey,
+          farmingState: farmingState.publicKey, // from args - add to mock for now
+          farmingSnapshots: snapshotQueue.publicKey, // from args - add to mock for now
+          farmingTicket: farmingTicket.publicKey, // gPA
           farmingTokenVault: farmingStateAccount.farmingTokenVault,
-          poolSigner: pda,
-          userFarmingTokenAccount: farmingAccount,
+          poolSigner: pda, // vaultSigner
+          userFarmingTokenAccount: farmingAccount, // create acc somehow
           userKey: creator.publicKey,
           userSolAccount: creator.publicKey,
           tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
