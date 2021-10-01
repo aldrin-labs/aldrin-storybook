@@ -122,6 +122,7 @@ const TablesSwitcher = ({
             theme={theme}
             poolsInfo={getPoolsInfo}
             selectPool={selectPool}
+            allTokensData={allTokensData}
             dexTokensPricesMap={dexTokensPricesMap}
             setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
             setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}

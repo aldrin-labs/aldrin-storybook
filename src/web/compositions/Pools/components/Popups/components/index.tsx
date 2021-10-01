@@ -26,7 +26,7 @@ export const InputWithCoins = ({
   theme: Theme
   value: string | number
   symbol: string
-  alreadyInPool: number
+  alreadyInPool?: number
   maxBalance: number
   placeholder: string
   needAlreadyInPool: boolean

@@ -270,7 +270,13 @@ export const combineUserLiquidityData = ({
       expandableContent: [
         {
           row: {
-            render: <UserLiquidityDetails theme={theme} pool={el} />,
+            render: (
+              <UserLiquidityDetails
+                allTokensData={allTokensData}
+                theme={theme}
+                pool={el}
+              />
+            ),
             colspan: 8,
           },
         },
