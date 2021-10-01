@@ -99,7 +99,7 @@ export const mock = [
     poolTokenMint: '2TU6yyd8DSv2Xksz1oNe84D6qsxTCo7imiLBT2hsQVVY',
     tvl: {
       tokenA: 1099,
-      tokenB: 4945524,
+      tokenB: 4945509,
     },
     apy24h: 0.21, //%
     supply: 1099002507,
