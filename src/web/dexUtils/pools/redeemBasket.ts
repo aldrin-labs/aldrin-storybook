@@ -200,9 +200,11 @@ export async function redeemBasket({
 
         const percentageOfAllPoolTokensToWithdraw =
           (poolTokensToWithdraw / userPoolTokenAmount) * 100
+          
         const baseTokenAmountToWithdrawFromTicket =
           (baseTokenAmountToWithdraw / 100) *
           percentageOfAllPoolTokensToWithdraw
+
         const quoteTokenAmountToWithdrawFromTicket =
           (quoteTokenAmountToWithdraw / 100) *
           percentageOfAllPoolTokensToWithdraw
