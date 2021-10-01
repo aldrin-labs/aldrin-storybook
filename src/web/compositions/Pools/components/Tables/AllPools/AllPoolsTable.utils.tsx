@@ -43,7 +43,7 @@ export const mock = [
       tokenA: 45,
       tokenB: 2,
     },
-    apy24h: 0.21, //%
+    apy24h: 900, //%
     supply: 120000,
     liquidity: 9835570,
     staked: 50,
@@ -62,7 +62,7 @@ export const mock = [
       tokenA: 44,
       tokenB: 765,
     },
-    apy24h: 0.21, //%
+    apy24h: 900, //%
     supply: 120000,
     liquidity: 0,
     staked: 0,
@@ -82,7 +82,7 @@ export const mock = [
       tokenA: 44,
       tokenB: 765,
     },
-    apy24h: 0.21, //%
+    apy24h: 900, //%
     supply: 120000,
     liquidity: 935570,
     locked: false,
@@ -101,7 +101,7 @@ export const mock = [
       tokenA: 1099,
       tokenB: 4945509,
     },
-    apy24h: 0.21, //%
+    apy24h: 900, //%
     supply: 1099002507,
     liquidity: 935570,
     staked: 60,

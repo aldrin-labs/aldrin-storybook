@@ -101,11 +101,17 @@ export const combineUserLiquidityData = ({
   dexTokensPricesMap,
   usersPools,
   allTokensData,
+  selectPool,
+  setIsWithdrawalPopupOpen,
+  setIsAddLiquidityPopupOpen,
 }: {
   theme: Theme
   dexTokensPricesMap: Map<string, DexTokensPrices>
   usersPools: any
   allTokensData: any
+  selectPool: (pool: PoolInfo) => void
+  setIsWithdrawalPopupOpen: (value: boolean) => void
+  setIsAddLiquidityPopupOpen: (value: boolean) => void
 }) => {
   // const processedUserLiquidityData = usersPools
   const processedUserLiquidityData = mock.map((el: PoolInfo) => {
@@ -272,6 +278,9 @@ export const combineUserLiquidityData = ({
           row: {
             render: (
               <UserLiquidityDetails
+                setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
+                setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
+                selectPool={selectPool}
                 allTokensData={allTokensData}
                 theme={theme}
                 pool={el}

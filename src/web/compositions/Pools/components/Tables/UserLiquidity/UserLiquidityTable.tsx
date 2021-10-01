@@ -59,6 +59,9 @@ const UserLiquidityTableComponent = ({
     dexTokensPricesMap,
     usersPools,
     allTokensData,
+    selectPool,
+    setIsWithdrawalPopupOpen,
+    setIsAddLiquidityPopupOpen,
   })
 
   return (

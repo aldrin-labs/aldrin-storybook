@@ -7,7 +7,14 @@ import { StakePopup } from '../../../Popups/Staking/StakePopup'
 import { UnstakePopup } from '../../../Popups/Unstaking/UnstakePopup'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-export const UserLiquidityDetails = ({ theme, pool, allTokensData }) => {
+export const UserLiquidityDetails = ({
+  theme,
+  pool,
+  allTokensData,
+  selectPool,
+  setIsWithdrawalPopupOpen,
+  setIsAddLiquidityPopupOpen,
+}) => {
   const { wallet } = useWallet()
   const [isUnstakePopupOpen, setIsUnstakePopupOpen] = useState(false)
 
@@ -99,20 +106,26 @@ export const UserLiquidityDetails = ({ theme, pool, allTokensData }) => {
                 wallet.connect()
                 return
               }
+
+              selectPool(pool)
+              setIsAddLiquidityPopupOpen(true)
             }}
           >
-            {!wallet.connected ? 'Connect Wallet' : 'Deposit Liquidity'}
+            {wallet.connected ? 'Deposit Liquidity' : 'Connect Wallet'}
           </BlueButton>
 
           <BlueButton
+            theme={theme}
+            disabled={pool.locked}
             onClick={() => {
               if (!wallet.connected) {
                 wallet.connect()
                 return
               }
+
+              selectPool(pool)
+              setIsWithdrawalPopupOpen(true)
             }}
-            disabled={pool.locked}
-            theme={theme}
           >
             {!wallet.connected
               ? 'Connect Wallet'
