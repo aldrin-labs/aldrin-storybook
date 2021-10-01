@@ -1,6 +1,5 @@
 import BN from 'bn.js'
 import { TokenInstructions } from '@project-serum/serum'
-import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import {
   Connection,
   Keypair,
@@ -11,17 +10,11 @@ import {
 } from '@solana/web3.js'
 
 import { notify } from '../notifications'
-import {
-  NUMBER_OF_RETRIES,
-  transferSOLToWrappedAccountAndClose,
-} from '../pools'
+import { NUMBER_OF_RETRIES } from '../pools'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { sendTransaction } from '../send'
-import { Token } from '../token/token'
 import { WalletAdapter } from '../types'
-
-const { TOKEN_PROGRAM_ID } = TokenInstructions
 
 const loadUserTicketsPerPool = async ({
   connection,
@@ -79,7 +72,7 @@ export const startFarming = async ({
     farmingStates.map((f) => {
       const data = Buffer.from(f.account.data)
       const ticketData = program.coder.accounts.decode('FarmingState', data)
-
+      console.log('ticketData', ticketData.farmingSnapshots.toString())
       return {
         lpTicketAddress: f.pubkey.toString(),
         //   lpTokens: ticketData.lpTokens.toNumber(),

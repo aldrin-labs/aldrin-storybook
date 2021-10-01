@@ -21,6 +21,9 @@ import { WalletAdapter } from '../types'
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
 
+// separate gPA
+const a = {}
+
 const loadUserTicketsPerPool = async ({
   wallet,
   connection,

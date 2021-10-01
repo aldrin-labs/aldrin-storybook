@@ -4,7 +4,7 @@ import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { GreenButton, RowDataTdText } from '../../index.styles'
 import { StakePopup } from '../../../Popups/Staking/StakePopup'
-import { UnstakePopup } from '../../../Popups/Staking/UnstakePopup'
+import { UnstakePopup } from '../../../Popups/Unstaking/UnstakePopup'
 
 export const UserLiquidityDetails = ({ theme, pool, allTokensData }) => {
   const [isUnstakePopupOpen, setIsUnstakePopupOpen] = useState(false)

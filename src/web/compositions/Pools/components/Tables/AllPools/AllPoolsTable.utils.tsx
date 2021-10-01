@@ -104,9 +104,11 @@ export const mock = [
     apy24h: 0.21, //%
     supply: 1099002507,
     liquidity: 935570,
-    staked: 0,
+    staked: 60,
     locked: false,
     executed: true,
+    farmingStatePublicKey: 'Hg4hHQ2QZjS7bAGHXg9Kijvyw2mxDuBuqRFLajfPBTcr',
+    farmingSnapshotQueue: 'CieRc6NeDoE3cnTVqsThrHdUkCP5LGeT2ibsuEJv25ri',
   },
 ]
 

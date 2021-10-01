@@ -12,17 +12,37 @@ import Close from '@icons/closeIcon.svg'
 
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { InputWithCoins } from '../components'
-import { HintContainer } from './styles'
+import { HintContainer } from '../Staking/styles'
+import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
+import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import AttentionComponent from '@sb/components/AttentionBlock'
+
+import { endFarming } from '@sb/dexUtils/pools/endFarming'
+import { PublicKey } from '@solana/web3.js'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { useConnection } from '@sb/dexUtils/connection'
 
 export const UnstakePopup = ({
   theme,
   open,
+  allTokensData,
+  pool,
   close,
 }: {
   theme: Theme
   open: boolean
+  allTokensData: any
+  pool: PoolInfo
   close: () => void
 }) => {
+  const { wallet } = useWallet()
+  const connection = useConnection()
+  const {
+    amount: maxPoolTokenAmount,
+    address: userPoolTokenAccount,
+    decimals: poolTokenDecimals,
+  } = getTokenDataByMint(allTokensData, pool.poolTokenMint)
+
   return (
     <DialogWrapper
       theme={theme}
@@ -44,18 +64,6 @@ export const UnstakePopup = ({
           still be able to claim rewards in “Your Liquidity” tab.{' '}
         </Text>
       </RowContainer>
-      <RowContainer>
-        <InputWithCoins
-          placeholder={''}
-          theme={theme}
-          value={1}
-          onChange={() => {}}
-          symbol={'Pool Tokens'}
-          alreadyInPool={10}
-          maxBalance={10}
-          needAlreadyInPool={false}
-        />
-      </RowContainer>
 
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
         <BlueButton
@@ -63,9 +71,18 @@ export const UnstakePopup = ({
           disabled={false}
           isUserConfident={true}
           theme={theme}
-          onClick={() => {}}
+          onClick={() => {
+            endFarming({
+              wallet,
+              connection,
+              poolPublicKey: new PublicKey(pool.swapToken),
+              userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
+              farmingStatePublicKey: new PublicKey(pool.farmingStatePublicKey),
+              snapshotQueuePublicKey: new PublicKey(pool.farmingSnapshotQueue),
+            })
+          }}
         >
-          Stake{' '}
+          Untake{' '}
         </BlueButton>
       </RowContainer>
     </DialogWrapper>
