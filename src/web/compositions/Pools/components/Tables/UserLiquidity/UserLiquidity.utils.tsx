@@ -27,6 +27,7 @@ import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { UserLiquidityDetails } from './components/UserLiquidityDetails'
+import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 
 export const getTotalUserLiquidity = ({
   usersPools,
@@ -100,18 +101,22 @@ export const combineUserLiquidityData = ({
   theme,
   dexTokensPricesMap,
   usersPools,
-  allTokensData,
+  allTokensDataMap,
   selectPool,
   setIsWithdrawalPopupOpen,
   setIsAddLiquidityPopupOpen,
+  setIsStakePopupOpen,
+  setIsUnstakePopupOpen,
 }: {
   theme: Theme
   dexTokensPricesMap: Map<string, DexTokensPrices>
   usersPools: any
-  allTokensData: any
+  allTokensDataMap: Map<string, TokenInfo>
   selectPool: (pool: PoolInfo) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
+  setIsStakePopupOpen: (value: boolean) => void
+  setIsUnstakePopupOpen: (value: boolean) => void
 }) => {
   // const processedUserLiquidityData = usersPools
   const processedUserLiquidityData = mock.map((el: PoolInfo) => {
@@ -128,9 +133,7 @@ export const combineUserLiquidityData = ({
     const {
       amount: poolTokenRawAmount,
       decimals: poolTokenDecimals,
-    } = allTokensData.find(
-      (tokenData) => tokenData.mint === el.poolTokenMint
-    ) || {
+    } = allTokensDataMap.get(el.poolTokenMint) || {
       amount: 0,
       decimals: 0,
     }
@@ -278,10 +281,12 @@ export const combineUserLiquidityData = ({
           row: {
             render: (
               <UserLiquidityDetails
+                setIsStakePopupOpen={setIsStakePopupOpen}
+                setIsUnstakePopupOpen={setIsUnstakePopupOpen}
                 setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
                 setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
                 selectPool={selectPool}
-                allTokensData={allTokensData}
+                allTokensDataMap={allTokensDataMap}
                 theme={theme}
                 pool={el}
               />

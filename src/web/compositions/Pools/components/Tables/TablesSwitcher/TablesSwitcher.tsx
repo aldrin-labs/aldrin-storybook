@@ -21,6 +21,8 @@ import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { TableModeButton } from './TablesSwitcher.styles'
 import AddIcon from '@icons/addIcon.svg'
 import { SvgIcon } from '@sb/components'
+import { StakePopup } from '../../Popups/Staking/StakePopup'
+import { UnstakePopup } from '../../Popups/Unstaking/UnstakePopup'
 
 const TablesSwitcher = ({
   theme,
@@ -39,6 +41,8 @@ const TablesSwitcher = ({
 
   const [isAddLiquidityPopupOpen, setIsAddLiquidityPopupOpen] = useState(false)
   const [isWithdrawalPopupOpen, setIsWithdrawalPopupOpen] = useState(false)
+  const [isUnstakePopupOpen, setIsUnstakePopupOpen] = useState(false)
+  const [isStakePopupOpen, setIsStakePopupOpen] = useState(false)
 
   const [
     refreshAllTokensDataCounter,
@@ -67,6 +71,11 @@ const TablesSwitcher = ({
 
   const dexTokensPricesMap = getDexTokensPrices.reduce(
     (acc, tokenPrice) => acc.set(tokenPrice.symbol, tokenPrice),
+    new Map()
+  )
+
+  const allTokensDataMap = allTokensData.reduce(
+    (acc, tokenData) => acc.set(tokenData.mint, tokenData),
     new Map()
   )
 
@@ -122,14 +131,16 @@ const TablesSwitcher = ({
             theme={theme}
             poolsInfo={getPoolsInfo}
             selectPool={selectPool}
-            allTokensData={allTokensData}
+            allTokensDataMap={allTokensDataMap}
             dexTokensPricesMap={dexTokensPricesMap}
             setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
             setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
+            setIsStakePopupOpen={setIsStakePopupOpen}
+            setIsUnstakePopupOpen={setIsUnstakePopupOpen}
           />
         ) : (
           <UserLiquitidyTable
-            allTokensData={allTokensData}
+            allTokensDataMap={allTokensDataMap}
             poolsInfo={getPoolsInfo}
             theme={theme}
             wallet={wallet}
@@ -138,6 +149,8 @@ const TablesSwitcher = ({
             dexTokensPricesMap={dexTokensPricesMap}
             setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
             setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
+            setIsStakePopupOpen={setIsStakePopupOpen}
+            setIsUnstakePopupOpen={setIsUnstakePopupOpen}
           />
         )}
 
@@ -162,6 +175,26 @@ const TablesSwitcher = ({
             close={() => setIsWithdrawalPopupOpen(false)}
             open={isWithdrawalPopupOpen}
             refreshAllTokensData={refreshAllTokensData}
+          />
+        )}
+
+        {selectedPool && (
+          <StakePopup
+            theme={theme}
+            open={isStakePopupOpen}
+            pool={selectedPool}
+            close={() => setIsStakePopupOpen(false)}
+            allTokensData={allTokensData}
+          />
+        )}
+
+        {selectedPool && (
+          <UnstakePopup
+            theme={theme}
+            open={isUnstakePopupOpen}
+            pool={selectedPool}
+            close={() => setIsUnstakePopupOpen(false)}
+            allTokensData={allTokensData}
           />
         )}
       </BlockTemplate>

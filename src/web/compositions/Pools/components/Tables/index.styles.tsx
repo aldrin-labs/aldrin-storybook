@@ -131,9 +131,7 @@ export const GreenButton = styled(
   font-size: 1.4rem;
   height: 4.5rem;
   background-color: ${(props: { disabled: boolean; theme: Theme }) =>
-    !props.disabled
-      ? '#A5E898'
-      : props.theme.palette.grey.title};
+    !props.disabled ? '#A5E898' : props.theme.palette.grey.title};
   border-radius: 1rem;
   border-color: none;
   cursor: pointer;
@@ -146,4 +144,12 @@ export const TableContainer = styled(RowContainer)`
   align-items: flex-start;
   min-height: 30rem;
   position: relative;
+`
+
+export const AmountText = styled.span`
+  color: #a5e898;
+`
+
+export const WhiteText = styled.span`
+  color: #fbf2f2;
 `

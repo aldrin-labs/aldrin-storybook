@@ -17,6 +17,7 @@ import { getFeesEarnedByPool } from '@core/graphql/queries/pools/getFeesEarnedBy
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { TableContainer } from '../index.styles'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 
 const AllPoolsTableComponent = ({
   theme,
@@ -24,22 +25,24 @@ const AllPoolsTableComponent = ({
   dexTokensPricesMap,
   poolsInfo,
   getFeesEarnedByPoolQuery,
-  allTokensData,
+  allTokensDataMap,
   selectPool,
-  // setIsCreatePoolPopupOpen,
   setIsAddLiquidityPopupOpen,
   setIsWithdrawalPopupOpen,
+  setIsStakePopupOpen,
+  setIsUnstakePopupOpen,
 }: {
   theme: Theme
   searchValue: string
   dexTokensPricesMap: Map<string, DexTokensPrices>
   poolsInfo: PoolInfo[]
   getFeesEarnedByPoolQuery: { getFeesEarnedByPool: FeesEarned[] }
-  allTokensData: any
+  allTokensDataMap: Map<string, TokenInfo>
   selectPool: (pool: PoolInfo) => void
-  // setIsCreatePoolPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
+  setIsStakePopupOpen: (value: boolean) => void
+  setIsUnstakePopupOpen: (value: boolean) => void
 }) => {
   const [expandedRows, expandRows] = useState<string[]>([])
 
@@ -66,10 +69,12 @@ const AllPoolsTableComponent = ({
     searchValue,
     dexTokensPricesMap,
     feesPerPoolMap,
-    allTokensData,
+    allTokensDataMap,
     selectPool,
     setIsAddLiquidityPopupOpen,
     setIsWithdrawalPopupOpen,
+    setIsStakePopupOpen,
+    setIsUnstakePopupOpen
   })
 
   return (

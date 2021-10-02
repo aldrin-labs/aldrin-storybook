@@ -29,6 +29,8 @@ import { WalletAdapter } from '@sb/dexUtils/types'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { StakePopup } from '../../Popups/Staking/StakePopup'
+import { UserLiquidityDetails } from '../UserLiquidity/components/UserLiquidityDetails'
+import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 
 export const mock = [
   {
@@ -183,10 +185,12 @@ export const combineAllPoolsData = ({
   searchValue,
   dexTokensPricesMap,
   feesPerPoolMap,
-  allTokensData,
+  allTokensDataMap,
   selectPool,
   setIsAddLiquidityPopupOpen,
   setIsWithdrawalPopupOpen,
+  setIsStakePopupOpen,
+  setIsUnstakePopupOpen,
 }: {
   theme: Theme
   wallet: WalletAdapter
@@ -194,13 +198,13 @@ export const combineAllPoolsData = ({
   searchValue: string
   dexTokensPricesMap: Map<string, DexTokensPrices>
   feesPerPoolMap: Map<string, number>
-  allTokensData: any
+  allTokensDataMap: Map<string, TokenInfo>
   selectPool: (pool: PoolInfo) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
+  setIsStakePopupOpen: (value: boolean) => void
+  setIsUnstakePopupOpen: (value: boolean) => void
 }) => {
-  const [isStakePopupOpen, setIsStakePopupOpen] = useState(false)
-
   // const processedAllPoolsData = poolsInfo
   const processedAllPoolsData = mock
     .filter((el) =>
@@ -358,153 +362,16 @@ export const combineAllPoolsData = ({
           {
             row: {
               render: (
-                <RowContainer margin="1rem 0" style={{ background: '#222429' }}>
-                  <Row
-                    style={{
-                      borderRight: `0.2rem solid #383B45`,
-                    }}
-                    justify="space-between"
-                    width="60%"
-                  >
-                    <Row align="flex-start" direction="column" width="30%">
-                      <RowDataTdText
-                        theme={theme}
-                        color={theme.palette.grey.new}
-                        style={{ marginBottom: '1rem' }}
-                      >
-                        Your Liquitity:
-                      </RowDataTdText>
-                      <RowDataTdText
-                        color={'#A5E898'}
-                        fontFamily="Avenir Next Medium"
-                        theme={theme}
-                      >
-                        {!el.liquidity ? '$0' : '100 RIN / 2 SOL ($1,000)'}{' '}
-                      </RowDataTdText>
-                    </Row>
-                    {el.liquidity ? (
-                      <Row align="flex-start" direction="column" width="30%">
-                        <RowDataTdText
-                          theme={theme}
-                          color={theme.palette.grey.new}
-                          style={{ marginBottom: '1rem' }}
-                        >
-                          Fees Earned:
-                        </RowDataTdText>
-                        <RowDataTdText
-                          color={'#A5E898'}
-                          fontFamily="Avenir Next Medium"
-                          theme={theme}
-                        >
-                          100 RIN / 2 SOL ($1,000){' '}
-                        </RowDataTdText>
-                      </Row>
-                    ) : null}
-                    <Row direction="column" width="30%">
-                      <BlueButton
-                        theme={theme}
-                        style={{ marginBottom: '1rem' }}
-                        onClick={() => {
-                          if (!wallet.connected) {
-                            wallet.connect()
-                            return
-                          }
-
-                          selectPool(el)
-                          setIsAddLiquidityPopupOpen(true)
-                        }}
-                      >
-                        {wallet.connected
-                          ? 'Deposit Liquidity'
-                          : 'Connect Wallet'}
-                      </BlueButton>
-                      {el.liquidity ? (
-                        <BlueButton
-                          theme={theme}
-                          onClick={() => {
-                            if (!wallet.connected) {
-                              wallet.connect()
-                              return
-                            }
-
-                            selectPool(el)
-                            setIsWithdrawalPopupOpen(true)
-                          }}
-                        >
-                          {wallet.connected
-                            ? 'Withdraw Liquidity + Fees'
-                            : 'Connect Wallet'}
-                        </BlueButton>
-                      ) : null}
-                    </Row>
-                  </Row>
-                  <Row justify="space-between" width="40%" padding="0 0 0 4rem">
-                    <Row align="flex-start" direction="column" width="60%">
-                      <RowDataTdText
-                        theme={theme}
-                        fontFamily={'Avenir Next Medium'}
-                        style={{ marginBottom: '2rem' }}
-                      >
-                        Farming
-                      </RowDataTdText>
-                      <RowDataTdText theme={theme}>
-                        {el.liquidity ? (
-                          <>
-                            Stake your pool tokens to start
-                            <span
-                              style={{ color: '#A5E898', padding: '0 0.5rem' }}
-                            >
-                              RIN
-                            </span>
-                            farming
-                          </>
-                        ) : (
-                          <>
-                            Deposit liquidity to farm{' '}
-                            <span style={{ color: '#A5E898' }}>RIN</span>
-                          </>
-                        )}
-                      </RowDataTdText>
-                    </Row>
-                    {el.liquidity ? (
-                      <Row direction="column" width="40%" align="flex-end">
-                        {' '}
-                        <RowDataTdText
-                          theme={theme}
-                          fontFamily={'Avenir Next Medium'}
-                          style={{ marginBottom: '2rem' }}
-                        >
-                          <span
-                            style={{ color: '#A5E898', padding: '0 0.5rem' }}
-                          >
-                            0
-                          </span>{' '}
-                          RIN
-                        </RowDataTdText>
-                        <GreenButton
-                          onClick={() => {
-                            if (!wallet.connected) {
-                              wallet.connect()
-                              return
-                            }
-                            setIsStakePopupOpen(true)
-                          }}
-                        >
-                          {wallet.connected
-                            ? 'Stake Pool Token'
-                            : 'Connect Wallet'}
-                        </GreenButton>
-                      </Row>
-                    ) : null}
-                  </Row>
-                  <StakePopup
-                    theme={theme}
-                    open={isStakePopupOpen}
-                    pool={el}
-                    close={() => setIsStakePopupOpen(false)}
-                    allTokensData={allTokensData}
-                  />
-                </RowContainer>
+                <UserLiquidityDetails
+                  setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
+                  setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
+                  setIsStakePopupOpen={setIsStakePopupOpen}
+                  setIsUnstakePopupOpen={setIsUnstakePopupOpen}
+                  selectPool={selectPool}
+                  allTokensDataMap={allTokensDataMap}
+                  theme={theme}
+                  pool={el}
+                />
               ),
               colspan: 8,
             },

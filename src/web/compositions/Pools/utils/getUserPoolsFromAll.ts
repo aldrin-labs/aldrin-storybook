@@ -3,12 +3,14 @@ import { PoolInfo } from '../index.types'
 
 export const getUserPoolsFromAll = ({
   poolsInfo,
-  allTokensData,
+  allTokensDataMap,
 }: {
-  allTokensData: TokenInfo[]
+  allTokensDataMap: Map<string, TokenInfo>
   poolsInfo: PoolInfo[]
 }) => {
-  return poolsInfo.filter((el) =>
-    allTokensData.find((tokenData) => tokenData.mint === el.poolTokenMint)
+  return poolsInfo.filter(
+    (el) =>
+      allTokensDataMap.has(el.poolTokenMint) &&
+      allTokensDataMap.get(el.poolTokenMint)?.amount > 0
   )
 }
