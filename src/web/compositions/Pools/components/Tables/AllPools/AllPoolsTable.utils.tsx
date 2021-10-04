@@ -33,7 +33,7 @@ import { StakePopup } from '../../Popups/Staking/StakePopup'
 import { UserLiquidityDetails } from '../UserLiquidity/components/UserLiquidityDetails'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 
-export const mock = [
+export const mock: PoolInfo[] = [
   {
     name:
       'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp_EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
@@ -52,6 +52,13 @@ export const mock = [
     staked: 50,
     locked: true,
     executed: false,
+    farmingStates: ['Hg4hHQ2QZjS7bAGHXg9Kijvyw2mxDuBuqRFLajfPBTcr'],
+    farmingSnapshots: ['CieRc6NeDoE3cnTVqsThrHdUkCP5LGeT2ibsuEJv25ri'],
+    farmingTokenMing: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
+    periodLength: 3600 * 24 * 7,
+    tokensPerPeriod: 30,
+    tokensTotal: 1000,
+    tokensUnlocked: 500,
   },
   {
     name:
@@ -72,6 +79,13 @@ export const mock = [
 
     locked: false,
     executed: true,
+    farmingStates: ['Hg4hHQ2QZjS7bAGHXg9Kijvyw2mxDuBuqRFLajfPBTcr'],
+    farmingSnapshots: ['CieRc6NeDoE3cnTVqsThrHdUkCP5LGeT2ibsuEJv25ri'],
+    farmingTokenMing: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
+    periodLength: 3600 * 24 * 7,
+    tokensPerPeriod: 30,
+    tokensTotal: 1000,
+    tokensUnlocked: 500,
   },
   {
     name:
@@ -91,6 +105,13 @@ export const mock = [
     locked: false,
     executed: false,
     staked: 50,
+    farmingStates: ['Hg4hHQ2QZjS7bAGHXg9Kijvyw2mxDuBuqRFLajfPBTcr'],
+    farmingSnapshots: ['CieRc6NeDoE3cnTVqsThrHdUkCP5LGeT2ibsuEJv25ri'],
+    farmingTokenMing: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
+    periodLength: 3600 * 24 * 7,
+    tokensPerPeriod: 30,
+    tokensTotal: 1000,
+    tokensUnlocked: 500,
   },
   {
     name:
@@ -110,8 +131,13 @@ export const mock = [
     staked: 60,
     locked: false,
     executed: true,
-    farmingStatePublicKey: 'Hg4hHQ2QZjS7bAGHXg9Kijvyw2mxDuBuqRFLajfPBTcr',
-    farmingSnapshotQueue: 'CieRc6NeDoE3cnTVqsThrHdUkCP5LGeT2ibsuEJv25ri',
+    farmingStates: ['Hg4hHQ2QZjS7bAGHXg9Kijvyw2mxDuBuqRFLajfPBTcr'],
+    farmingSnapshots: ['CieRc6NeDoE3cnTVqsThrHdUkCP5LGeT2ibsuEJv25ri'],
+    farmingTokenMing: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
+    periodLength: 3600 * 24 * 7,
+    tokensPerPeriod: 30,
+    tokensTotal: 1000,
+    tokensUnlocked: 500,
   },
 ]
 

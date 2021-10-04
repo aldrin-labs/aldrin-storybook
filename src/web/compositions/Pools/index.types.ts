@@ -5,6 +5,13 @@ export type PoolInfo = {
   tokenB: string
   swapToken: string
   poolTokenMint: string
+  farmingStates: string[]
+  farmingTokenMing: string
+  farmingSnapshots: string[]
+  tokensUnlocked: number
+  tokensTotal: number
+  tokensPerPeriod: number
+  periodLength: number
   tvl: {
     tokenA: number
     tokenB: number

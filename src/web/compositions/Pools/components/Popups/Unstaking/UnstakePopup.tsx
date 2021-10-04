@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { Theme } from '@material-ui/core'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BoldHeader, Line, StyledPaper } from '../index.styles'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { BoldHeader, StyledPaper } from '../index.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
 
 import SvgIcon from '@sb/components/SvgIcon'
@@ -11,11 +11,8 @@ import SvgIcon from '@sb/components/SvgIcon'
 import Close from '@icons/closeIcon.svg'
 
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
-import { InputWithCoins } from '../components'
-import { HintContainer } from '../Staking/styles'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
-import AttentionComponent from '@sb/components/AttentionBlock'
 
 import { endFarming } from '@sb/dexUtils/pools/endFarming'
 import { PublicKey } from '@solana/web3.js'
@@ -86,8 +83,8 @@ export const UnstakePopup = ({
               connection,
               poolPublicKey: new PublicKey(pool.swapToken),
               userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
-              farmingStatePublicKey: new PublicKey(pool.farmingStatePublicKey),
-              snapshotQueuePublicKey: new PublicKey(pool.farmingSnapshotQueue),
+              farmingStatePublicKey: new PublicKey(pool.farmingStates[0]),
+              snapshotQueuePublicKey: new PublicKey(pool.farmingSnapshots[0]),
             })
 
             await setOperationLoading(false)
