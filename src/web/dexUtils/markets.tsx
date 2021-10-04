@@ -1,38 +1,32 @@
-import { useMemo } from 'react'
+import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
+import { AWESOME_TOKENS, useAwesomeMarkets } from '@core/utils/awesomeMarkets/serum'
 import {
   Market,
-  Orderbook,
-  decodeEventQueue,
-  TokenInstructions,
   MARKETS,
-  TOKEN_MINTS,
-  OpenOrders,
+  OpenOrders, Orderbook,
+  TokenInstructions,
+  TOKEN_MINTS
 } from '@project-serum/serum'
 import { Account, AccountInfo, PublicKey, SystemProgram } from '@solana/web3.js'
-import React, { useContext, useEffect, useState } from 'react'
-import { getUniqueListBy, useLocalStorageState } from './utils'
-import { getCache, refreshCache, setCache, useAsyncData } from './fetch-loop'
+import { BN } from 'bn.js'
+import tuple from 'immutable-tuple'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import {
   useAccountData,
   useAccountInfo,
   useConnection,
-  useConnectionConfig,
+  useConnectionConfig
 } from './connection'
-import { useWallet } from './wallet'
-import tuple from 'immutable-tuple'
+import { getCache, refreshCache, setCache, useAsyncData } from './fetch-loop'
 import { notify } from './notifications'
-import { BN } from 'bn.js'
-import { getTokenAccountInfo } from './tokens'
-import {
-  useAwesomeMarkets,
-  AWESOME_TOKENS,
-} from '@core/utils/awesomeMarkets/serum'
-import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   Token,
-  TOKEN_PROGRAM_ID,
+  TOKEN_PROGRAM_ID
 } from './token/token'
+import { getTokenAccountInfo } from './tokens'
+import { getUniqueListBy, useLocalStorageState } from './utils'
+import { useWallet } from './wallet'
 
 export const ALL_TOKENS_MINTS = getUniqueListBy(
   [...TOKEN_MINTS, ...AWESOME_TOKENS],
@@ -48,7 +42,7 @@ export const ALL_TOKENS_MINTS_MAP = ALL_TOKENS_MINTS.reduce((acc, el) => {
   return acc
 }, {})
 
-export const REFFERER_ACCOUNT_ADDRESSES: {[key: string]: string | undefined}  = {
+export const REFFERER_ACCOUNT_ADDRESSES: { [key: string]: string | undefined } = {
   "USDT": process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS,
   "USDC": process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS,
   "SOL": process.env.REACT_APP_SOL_REFERRAL_FEES_ADDRESS,
@@ -76,15 +70,15 @@ const _IGNORE_DEPRECATED = false
 const USE_MARKETS = _IGNORE_DEPRECATED
   ? MARKETS.map((m) => ({ ...m, deprecated: false }))
   : [
-      {
-        address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
-        name: 'RIN/USDC',
-        programId: new PublicKey(
-          '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'
-        ),
-        deprecated: false,
-      },
-    ].concat(MARKETS)
+    {
+      address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
+      name: 'RIN/USDC',
+      programId: new PublicKey(
+        '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'
+      ),
+      deprecated: false,
+    },
+  ].concat(MARKETS)
 // : MARKETS
 
 export interface RawMarketData {
@@ -312,7 +306,11 @@ export function useUnmigratedOpenOrdersAccounts() {
   }
 }
 
-const MarketContext = React.createContext(null)
+interface Context {
+  market: Market
+}
+
+const MarketContext = React.createContext<Context>(null)
 
 export const _VERY_SLOW_REFRESH_INTERVAL = 5000 * 1000
 
@@ -395,14 +393,14 @@ export function MarketProvider({ children }) {
 
   // here we try to get non deprecated one
   let marketInfo = marketInfos.find(
-    (market) => market.name === marketName && !market.deprecated
+    (m) => m.name === marketName && !m.deprecated
   )
 
   if (!marketInfo) {
-    marketInfo = marketInfos.find((market) => market.name === marketName)
+    marketInfo = marketInfos.find((m) => m.name === marketName)
   }
 
-  const [market, setMarket] = useState()
+  const [market, setMarket] = useState<Market | null>(null)
   // add state for markets
   // add useEffect for customMarkets
   useEffect(() => {
@@ -583,12 +581,12 @@ const useOpenOrdersPubkeys = (): string[] => {
         b: { baseTokenFree: typeof BN; quoteTokenFree: typeof BN }
       ) =>
         a?.baseTokenFree.cmp(b?.baseTokenFree) === 1 ||
-        a?.quoteTokenFree.cmp(b?.quoteTokenFree) === 1
+          a?.quoteTokenFree.cmp(b?.quoteTokenFree) === 1
           ? -1
           : a?.baseTokenFree.cmp(b?.baseTokenFree) === -1 ||
             a?.quoteTokenFree.cmp(b?.quoteTokenFree) === -1
-          ? 1
-          : 0
+            ? 1
+            : 0
     )
 
     console.log(
@@ -1047,7 +1045,7 @@ export function useBalances() {
     openOrders && openOrders.baseTokenTotal && openOrders.baseTokenFree
   const quoteExists =
     openOrders && openOrders.quoteTokenTotal && openOrders.quoteTokenFree
-  
+
   return [
     {
       market,
@@ -1057,8 +1055,8 @@ export function useBalances() {
       orders:
         baseExists && market
           ? market.baseSplSizeToNumber(
-              openOrders.baseTokenTotal.sub(openOrders.baseTokenFree)
-            )
+            openOrders.baseTokenTotal.sub(openOrders.baseTokenFree)
+          )
           : null,
       openOrders,
       unsettled:
@@ -1076,8 +1074,8 @@ export function useBalances() {
       orders:
         quoteExists && market
           ? market.quoteSplSizeToNumber(
-              openOrders.quoteTokenTotal.sub(openOrders.quoteTokenFree)
-            )
+            openOrders.quoteTokenTotal.sub(openOrders.quoteTokenFree)
+          )
           : null,
       unsettled:
         quoteExists && market

@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react'
-
+import Info from '@icons/inform.svg'
+import SvgIcon from '@sb/components/SvgIcon'
+import { TradeInputContent as Input } from '@sb/components/TraidingTerminal/TradeInputContent'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
+import { SliderWithPriceAndPercentageFieldRowProps } from '@sb/compositions/Chart/components/SmartOrderTerminal/types'
+import React, { useEffect, useState } from 'react'
+import { DarkTooltip } from '../TooltipCustom/Tooltip'
+import { InputWithReverseButton } from './InputWithReverseButton'
 import {
   AmountTooltip,
   PercentageTab,
   PercentageTabsContainer,
   ReverseInputContainer,
-  StyledInputsContainer,
+  StyledInputsContainer
 } from './styles'
 
-import SvgIcon from '@sb/components/SvgIcon'
-import Info from '@icons/inform.svg'
-import { DarkTooltip } from '../TooltipCustom/Tooltip'
-import { SliderWithPriceAndPercentageFieldRowProps } from '@sb/compositions/Chart/components/SmartOrderTerminal/types'
 
-import { TradeInputContent as Input } from '@sb/components/TraidingTerminal/index'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { InputWithReverseButton } from './InputWithReverseButton'
+
 
 const percentages = [
   {

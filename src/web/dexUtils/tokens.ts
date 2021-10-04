@@ -1,11 +1,9 @@
-import { useMemo } from 'react'
-import * as BufferLayout from 'buffer-layout';
-import bs58 from 'bs58';
-import { Connection, PublicKey } from '@solana/web3.js';
 import { TOKEN_MINTS } from '@project-serum/serum';
-import { useAllMarkets, useCustomMarkets } from '@sb/dexUtils/markets'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions';
-import { DEX_PID } from '@core/config/dex';
+import { useAllMarkets, useCustomMarkets } from '@sb/dexUtils/markets';
+import { Connection, PublicKey } from '@solana/web3.js';
+import * as BufferLayout from 'buffer-layout';
+import { useMemo } from 'react';
 
 export const ACCOUNT_LAYOUT = BufferLayout.struct([
   BufferLayout.blob(32, 'mint'),

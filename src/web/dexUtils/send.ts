@@ -1,5 +1,16 @@
-import { notify } from './notifications'
-import { getDecimalCount, isCCAITradingEnabled, sleep } from './utils'
+import { Metrics } from '@core/utils/metrics'
+import {
+  DexInstructions,
+  Market,
+  OpenOrders,
+  parseInstructionErrorResponse, TokenInstructions
+} from '@project-serum/serum'
+import { WalletAdapter } from '@sb/dexUtils/types'
+import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  Token,
+  TOKEN_PROGRAM_ID
+} from '@solana/spl-token'
 import {
   Account,
   Commitment,
@@ -9,32 +20,19 @@ import {
   SimulatedTransactionResponse,
   SystemProgram,
   Transaction,
-  TransactionSignature,
+  TransactionSignature
 } from '@solana/web3.js'
 import { BN } from 'bn.js'
 import {
-  DexInstructions,
-  Market,
-  TOKEN_MINTS,
-  TokenInstructions,
-  OpenOrders,
-  parseInstructionErrorResponse,
-} from '@project-serum/serum'
-
-import { WalletAdapter } from '@sb/dexUtils/types'
-import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  Token,
-  TOKEN_PROGRAM_ID,
-} from '@solana/spl-token'
-import { getCache } from './fetch-loop'
-import { Metrics } from '@core/utils/metrics'
-import {
   getConnectionFromMultiConnections,
-  getProviderNameFromUrl,
+  getProviderNameFromUrl
 } from './connection'
-import { isTokenAccountsForSettleValid } from './isTokenAccountsForSettleValid'
+import { getCache } from './fetch-loop'
 import { getReferrerQuoteWallet } from './getReferrerQuoteWallet'
+import { isTokenAccountsForSettleValid } from './isTokenAccountsForSettleValid'
+import { notify } from './notifications'
+import { getDecimalCount, isCCAITradingEnabled, sleep } from './utils'
+
 
 const getNotificationText = ({
   baseSymbol = 'CCAI',
@@ -66,7 +64,7 @@ const getNotificationText = ({
         1
       )} order placed.`,
       `${baseSymbol}/${quoteSymbol}: ${side} ${amount} ${baseSymbol} order placed${
-        orderType === 'market' ? '' : ` at ${price} ${quoteSymbol}`
+      orderType === 'market' ? '' : ` at ${price} ${quoteSymbol}`
       }.`,
     ],
     cancelOrder: [
@@ -76,9 +74,9 @@ const getNotificationText = ({
     settleFunds: [
       `Funds Settled.`,
       `${
-        baseUnsettled > 0 && quoteUnsettled > 0
-          ? `${baseSettleText} and ${quoteSettleText}`
-          : baseUnsettled > 0
+      baseUnsettled > 0 && quoteUnsettled > 0
+        ? `${baseSettleText} and ${quoteSettleText}`
+        : baseUnsettled > 0
           ? baseSettleText
           : quoteSettleText
       } has been successfully settled in your wallet.`,
@@ -171,7 +169,7 @@ export async function getSettleFundsTransaction({
     if (!isTokenAccountsValid) {
       throw new Error('Error checking tokenAccounts validity')
     }
-  } catch(e) {
+  } catch (e) {
     console.log(`[settleFunds] Check validity of tokenAccounts is failed, err: `, e)
     notify({ message: 'Sorry, validity of tokenAccounts is failed' })
     return
@@ -428,7 +426,7 @@ export async function placeOrder({
     if (!isTokenAccountsValid) {
       throw new Error('Error checking tokenAccounts validity')
     }
-  } catch(e) {
+  } catch (e) {
     console.log(`[settleFunds] Check validity of tokenAccounts is failed, err: `, e)
     notify({ message: 'Sorry, validity of tokenAccounts is failed' })
     return
@@ -564,14 +562,14 @@ export async function sendSignedTransaction({
   console.log('Started awaiting confirmation for', txid)
 
   let done = false
-  ;(async () => {
-    while (!done && getUnixTs() - startTime < timeout) {
-      connection.sendRawTransaction(rawTransaction, {
-        skipPreflight: true,
-      })
-      await sleep(700)
-    }
-  })()
+    ; (async () => {
+      while (!done && getUnixTs() - startTime < timeout) {
+        connection.sendRawTransaction(rawTransaction, {
+          skipPreflight: true,
+        })
+        await sleep(700)
+      }
+    })()
   try {
     await awaitTransactionSignatureConfirmation({ txid, timeout, connection })
   } catch (err) {
@@ -583,7 +581,7 @@ export async function sendSignedTransaction({
       simulateResult = (
         await simulateTransaction(connection, signedTransaction, 'single')
       ).value
-    } catch (e) {}
+    } catch (e) { }
     if (simulateResult && simulateResult.err) {
       if (simulateResult.logs) {
         for (let i = simulateResult.logs.length - 1; i >= 0; --i) {
@@ -909,22 +907,22 @@ export async function sendTransaction({
   console.log('Started awaiting confirmation for', txid)
 
   let done = false
-  ;(async () => {
-    while (!done && getUnixTs() - startTime < timeout) {
-      const resultOfSendingConfirm = connection.sendRawTransaction(
-        rawTransaction,
-        {
-          skipPreflight: true,
-        }
-      )
+    ; (async () => {
+      while (!done && getUnixTs() - startTime < timeout) {
+        const resultOfSendingConfirm = connection.sendRawTransaction(
+          rawTransaction,
+          {
+            skipPreflight: true,
+          }
+        )
 
-      console.log(
-        'sendTransaction resultOfSendingConfirm',
-        resultOfSendingConfirm
-      )
-      await sleep(1200)
-    }
-  })()
+        console.log(
+          'sendTransaction resultOfSendingConfirm',
+          resultOfSendingConfirm
+        )
+        await sleep(1200)
+      }
+    })()
 
   const rawConnection = getConnectionFromMultiConnections({
     connection: connection,
@@ -1038,7 +1036,7 @@ async function awaitTransactionSignatureConfirmation({
 }) {
   let done = false
   const result = await new Promise((resolve, reject) => {
-    ;(async () => {
+    ; (async () => {
       setTimeout(() => {
         if (done) {
           return
@@ -1068,7 +1066,7 @@ async function awaitTransactionSignatureConfirmation({
       }
       while (!done) {
         // eslint-disable-next-line no-loop-func
-        ;(async () => {
+        ; (async () => {
           const rpcProvider = getProviderNameFromUrl({
             rawConnection: connection,
           })

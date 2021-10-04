@@ -1,41 +1,39 @@
-import React, { useState, useEffect } from 'react'
-import styled from 'styled-components'
-import { compose } from 'recompose'
+import tokensLinksMap from '@core/config/tokensTwitterLinks'
+import AnalyticsIcon from '@icons/analytics.svg'
+import ArrowLeft from '@icons/ArrowLeft.svg'
+import BlueTwitterIcon from '@icons/blueTwitter.svg'
+import ChartIcon from '@icons/chartIcon.svg'
+import CoinGecko from '@icons/coingecko.svg'
+import Coinmarketcap from '@icons/coinmarketcap.svg'
+import Inform from '@icons/inform.svg'
+import NomicsIcon from '@icons/nomics.svg'
 import { Theme, withTheme } from '@material-ui/core'
-import { useLocation } from 'react-router-dom'
+import SvgIcon from '@sb/components/SvgIcon'
+import { TokenIcon } from '@sb/components/TokenIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
   getTokenMintAddressByName,
-  useMarket,
-  useMarkPrice,
+  useMarket
 } from '@sb/dexUtils/markets'
-import { getDecimalCount } from '@sb/dexUtils/utils'
-import AutoSuggestSelect from '../../Inputs/AutoSuggestSelect/AutoSuggestSelect'
-import MarketStats from '../MarketStats/MarketStats'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import LinkToSolanaExp from '../LinkToSolanaExp'
-import BlueTwitterIcon from '@icons/blueTwitter.svg'
-import AnalyticsIcon from '@icons/analytics.svg'
-import SvgIcon from '@sb/components/SvgIcon'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
-import { TokenIcon } from '@sb/components/TokenIcon'
-import tokensLinksMap from '@core/config/tokensTwitterLinks'
-import Coinmarketcap from '@icons/coinmarketcap.svg'
-import CoinGecko from '@icons/coingecko.svg'
-import NomicsIcon from '@icons/nomics.svg'
-import Inform from '@icons/inform.svg'
+import { getDecimalCount } from '@sb/dexUtils/utils'
+import React, { useState } from 'react'
+import { useLocation } from 'react-router-dom'
+import { compose } from 'recompose'
+import AutoSuggestSelect from '../../Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import { MintsPopup } from '../../Inputs/SelectWrapper/MintsPopup'
-import ChartIcon from '@icons/chartIcon.svg'
-import ArrowLeft from '@icons/ArrowLeft.svg'
-
+import LinkToSolanaExp from '../LinkToSolanaExp'
+import MarketStats from '../MarketStats/MarketStats'
 import {
   ExclamationMark,
   LinkToAnalytics,
   LinkToTwitter,
   MarketStatsContainer,
   MobileMarketStatsContainer,
-  Title,
+  Title
 } from './MarketBlock.styles'
+
 
 const selectStyles = (theme: Theme) => ({
   height: '100%',
@@ -120,8 +118,8 @@ const MarketBlock = ({
   const marketCapIcon = marketCapLink.includes('coinmarketcap')
     ? Coinmarketcap
     : marketCapLink.includes('coingecko')
-    ? CoinGecko
-    : NomicsIcon
+      ? CoinGecko
+      : NomicsIcon
 
   return (
     <>
@@ -132,8 +130,8 @@ const MarketBlock = ({
               isPrivateCustomMarket
                 ? 'This is an unofficial custom market. Use at your own risk.'
                 : isCustomUserMarket
-                ? 'This is curated but unofficial market.'
-                : 'This is the official market.'
+                  ? 'This is curated but unofficial market.'
+                  : 'This is the official market.'
             }
           >
             <div

@@ -1,28 +1,19 @@
+import Attention from '@icons/attention.svg'
+import Info from '@icons/inform.svg'
+import { Paper } from '@material-ui/core'
+import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
+import SvgIcon from '@sb/components/SvgIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
+import useMobileSize from '@webhooks/useMobileSize'
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Paper } from '@material-ui/core'
-
-import Info from '@icons/inform.svg'
-import Attention from '@icons/attention.svg'
-import SvgIcon from '@sb/components/SvgIcon'
-
-import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import {
-  SCheckbox,
-  StyledDialogTitle,
-} from '../SharePortfolioDialog/SharePortfolioDialog.styles'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-
+import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
+import { SCheckbox } from '../SharePortfolioDialog/SharePortfolioDialog.styles'
 import { ButtonsWithAmountFieldRowForBasic } from './AmountButtons'
 import { TradeInputContent } from './index'
 import { SendButton } from './styles'
-import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
-import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
-
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import useMobileSize from '@webhooks/useMobileSize'
-import { autoLogin } from 'src/storybook/src/utils/autoLogin'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -181,24 +172,24 @@ export const ConfirmationPopup = ({
         ) : null}
         <RowContainer>
           {priceType !== 'market' &&
-          priceType !== 'stop-market' &&
-          priceType !== 'maker-only' ? (
-            <InputRowContainer
-              key={'limit-price'}
-              padding={'.6rem 0'}
-              direction={'column'}
-            >
-              <TradeInputContent
-                theme={theme}
-                needTitle
-                type={'text'}
-                title={`price`}
-                value={values.price || ''}
-                onChange={onPriceChange}
-                symbol={pair[1]}
-              />
-            </InputRowContainer>
-          ) : null}
+            priceType !== 'stop-market' &&
+            priceType !== 'maker-only' ? (
+              <InputRowContainer
+                key={'limit-price'}
+                padding={'.6rem 0'}
+                direction={'column'}
+              >
+                <TradeInputContent
+                  theme={theme}
+                  needTitle
+                  type={'text'}
+                  title={`price`}
+                  value={values.price || ''}
+                  onChange={onPriceChange}
+                  symbol={pair[1]}
+                />
+              </InputRowContainer>
+            ) : null}
           <ButtonsWithAmountFieldRowForBasic
             {...{
               pair,
@@ -248,30 +239,30 @@ export const ConfirmationPopup = ({
                 </span>
               </DarkTooltip>
             ) : (
-              <DarkTooltip
-                title={
-                  <>
-                    <p>
-                      Due to Serum design there is need to open a trading
-                      account for this pair to trade it.
+                <DarkTooltip
+                  title={
+                    <>
+                      <p>
+                        Due to Serum design there is need to open a trading
+                        account for this pair to trade it.
                     </p>
-                    <p>So, the “first trade” fee is ≈0.023 SOL.</p>
-                    <p>
-                      The fee for all further trades on this pair will be
-                      ≈0.00001 SOL.
+                      <p>So, the “first trade” fee is ≈0.023 SOL.</p>
+                      <p>
+                        The fee for all further trades on this pair will be
+                        ≈0.00001 SOL.
                     </p>
-                  </>
-                }
-              >
-                <span style={{ width: '12%' }}>
-                  <SvgIcon
-                    src={Info}
-                    width={'100%'}
-                    style={{ marginLeft: '1rem' }}
-                  />
-                </span>
-              </DarkTooltip>
-            )}
+                    </>
+                  }
+                >
+                  <span style={{ width: '12%' }}>
+                    <SvgIcon
+                      src={Info}
+                      width={'100%'}
+                      style={{ marginLeft: '1rem' }}
+                    />
+                  </span>
+                </DarkTooltip>
+              )}
           </WhiteText>
         </RowContainer>
         {priceType === 'market' && isSlippageHigh ? (
@@ -352,8 +343,8 @@ export const ConfirmationPopup = ({
                     ? `buy ${pair[0]} anyway`
                     : `sell ${pair[0]} anyway`
                   : sideType === 'buy'
-                  ? 'long'
-                  : 'short'}
+                    ? 'long'
+                    : 'short'}
               </span>
               <span style={{ fontSize: '1.2rem', textTransform: 'lowercase' }}>
                 (it may cause a loss of funds)
@@ -361,28 +352,28 @@ export const ConfirmationPopup = ({
             </RowContainer>
           </SendButton>
         ) : (
-          <SendButton
-            onClick={async () => {
-              const result = await validateForm()
-              console.log('result', result)
-              if (Object.keys(result).length === 0 || !isSPOTMarket) {
-                handleSubmit(values)
-              }
-              await onClose()
-            }}
-            type={sideType}
-            style={{ width: '49%', height: isMobile ? '7.5rem' : '4rem' }}
-            theme={theme}
-          >
-            {isSPOTMarket
-              ? sideType === 'buy'
-                ? `buy ${pair[0]}`
-                : `sell ${pair[0]}`
-              : sideType === 'buy'
-              ? 'long'
-              : 'short'}
-          </SendButton>
-        )}
+            <SendButton
+              onClick={async () => {
+                const result = await validateForm()
+                console.log('result', result)
+                if (Object.keys(result).length === 0 || !isSPOTMarket) {
+                  handleSubmit(values)
+                }
+                await onClose()
+              }}
+              type={sideType}
+              style={{ width: '49%', height: isMobile ? '7.5rem' : '4rem' }}
+              theme={theme}
+            >
+              {isSPOTMarket
+                ? sideType === 'buy'
+                  ? `buy ${pair[0]}`
+                  : `sell ${pair[0]}`
+                : sideType === 'buy'
+                  ? 'long'
+                  : 'short'}
+            </SendButton>
+          )}
       </RowContainer>
     </DialogWrapper>
   )

@@ -1,11 +1,11 @@
+import { Button, Grid, TextField, Theme } from '@material-ui/core'
+import { withStyles } from '@material-ui/styles'
+import { StyledTab } from '@sb/components/TradingWrapper/styles'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { CSS_CONFIG } from '@sb/config/cssConfig'
 import React from 'react'
 import styled from 'styled-components'
-import { StyledTab } from '@sb/components/TradingWrapper/styles'
-import { Button, TextField, Grid } from '@material-ui/core'
-import { withStyles } from '@material-ui/styles'
 
-import { CSS_CONFIG } from '@sb/config/cssConfig'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 const styles = {
   button: {
@@ -21,16 +21,17 @@ const styles = {
   },
 }
 
-export const TitleForInput = styled.div`
+export interface TitleForInputProps {
+  textDecoration?: string
+  theme: Theme
+}
+
+export const TitleForInput = styled.div<TitleForInputProps>`
   width: auto;
   min-height: 3rem;
   white-space: nowrap;
   text-decoration: ${(props) => props.textDecoration || 'none'};
-  border: ${(props) =>
-    props.theme &&
-    props.theme.palette &&
-    props.theme.palette.border &&
-    props.theme.palette.border.main};
+  border: ${(props) => props.theme.palette.border.main};
   border-top-left-radius: 0.3rem;
   border-bottom-left-radius: 0.3rem;
   border-right: none;
@@ -212,13 +213,22 @@ export const TradeBlock = styled(BalanceGrid)`
     props.position === 'right' ? '0 0 0 1rem' : '0 1rem 0 0'};
 `
 
-export const TradeInput = styled.input`
+export interface TradeInputProps {
+  isValid?: boolean
+  haveSelector?: boolean
+  needCharacter?: boolean
+  needPadding?: boolean
+  symbolLength?: number
+  align?: string
+}
+
+export const TradeInput = styled.input<TradeInputProps>`
   width: 100%;
   min-height: 3rem;
   border: ${(props) =>
     props.isValid
       ? `.1rem solid ${props.theme.palette.grey.newborder}` ||
-        '.1rem solid #e0e5ec'
+      '.1rem solid #e0e5ec'
       : '.1rem solid #DD6956'};
   border-radius: 0.7rem;
   border-top-right-radius: ${(props) => props.haveSelector && '0'};
@@ -233,15 +243,15 @@ export const TradeInput = styled.input`
   background-color: ${(props) =>
     props.disabled
       ? (props.theme &&
-          props.theme.palette &&
-          props.theme.palette.grey &&
-          props.theme.palette.grey.background) ||
-        '#f2f4f6'
+        props.theme.palette &&
+        props.theme.palette.grey &&
+        props.theme.palette.grey.background) ||
+      '#f2f4f6'
       : (props.theme &&
-          props.theme.palette &&
-          props.theme.palette.grey &&
-          props.theme.palette.grey.terminal) ||
-        '#fff'};
+        props.theme.palette &&
+        props.theme.palette.grey &&
+        props.theme.palette.grey.terminal) ||
+      '#fff'};
   font-size: 1.3rem;
 
   font-weight: bold;
@@ -251,8 +261,8 @@ export const TradeInput = styled.input`
   padding-right: ${(props) =>
     props.needPadding
       ? `calc(${props.symbolLength}rem + ${
-          props.symbolLength < 4 ? '2.5rem' : '2rem'
-        })`
+      props.symbolLength < 4 ? '2.5rem' : '2rem'
+      })`
       : '1.5rem'};
   &:focus {
     border: 0.14rem solid #a1aaf4;
@@ -278,11 +288,11 @@ export const TradeInput = styled.input`
     margin-bottom: 0.8rem;
 
     padding-right: ${(props) =>
-      props.needPadding
-        ? `calc(${props.symbolLength}rem + ${
-            props.symbolLength < 4 ? '4.5rem' : '4rem'
-          })`
-        : '3.5rem'};
+    props.needPadding
+      ? `calc(${props.symbolLength}rem + ${
+      props.symbolLength < 4 ? '4.5rem' : '4rem'
+      })`
+      : '3.5rem'};
   }
 `
 
@@ -375,15 +385,15 @@ export const SendButton = styled(StyledTab)`
   background: ${(props) =>
     props.type === 'buy'
       ? (props.theme &&
-          props.theme.palette &&
-          props.theme.palette.green &&
-          props.theme.palette.green.button) ||
-        '#29AC80'
+        props.theme.palette &&
+        props.theme.palette.green &&
+        props.theme.palette.green.button) ||
+      '#29AC80'
       : (props.theme &&
-          props.theme.palette &&
-          props.theme.palette.red &&
-          props.theme.palette.red.button) ||
-        '#DD6956'};
+        props.theme.palette &&
+        props.theme.palette.red &&
+        props.theme.palette.red.button) ||
+      '#DD6956'};
   box-shadow: 0px 0.7rem 1rem rgba(8, 22, 58, 0.3);
   border-radius: 1rem;
   border: none;
@@ -392,17 +402,17 @@ export const SendButton = styled(StyledTab)`
 
   &:hover {
     background-color: ${(props) =>
-      props.type === 'buy'
-        ? (props.theme &&
-            props.theme.palette &&
-            props.theme.palette.green &&
-            props.theme.palette.green.main) ||
-          '#29AC80'
-        : (props.theme &&
-            props.theme.palette &&
-            props.theme.palette.red &&
-            props.theme.palette.red.main) ||
-          '#DD6956'};
+    props.type === 'buy'
+      ? (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.green &&
+        props.theme.palette.green.main) ||
+      '#29AC80'
+      : (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.red &&
+        props.theme.palette.red.main) ||
+      '#DD6956'};
   }
 
   @media (max-width: 600px) {
@@ -418,29 +428,29 @@ export const SmartTradeButton = styled(SendButton)`
   background-color: ${(props) =>
     props.type === 'buy'
       ? (props.theme &&
-          props.theme.palette &&
-          props.theme.palette.blue &&
-          props.theme.palette.blue.main) ||
-        '#165BE0'
+        props.theme.palette &&
+        props.theme.palette.blue &&
+        props.theme.palette.blue.main) ||
+      '#165BE0'
       : (props.theme &&
-          props.theme.palette &&
-          props.theme.palette.red &&
-          props.theme.palette.red.main) ||
-        '#DD6956'};
+        props.theme.palette &&
+        props.theme.palette.red &&
+        props.theme.palette.red.main) ||
+      '#DD6956'};
 
   &:hover {
     background-color: ${(props) =>
-      props.type === 'buy'
-        ? (props.theme &&
-            props.theme.palette &&
-            props.theme.palette.blue &&
-            props.theme.palette.blue.main) ||
-          '#165BE0'
-        : (props.theme &&
-            props.theme.palette &&
-            props.theme.palette.red &&
-            props.theme.palette.red.main) ||
-          '#DD6956'};
+    props.type === 'buy'
+      ? (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.blue &&
+        props.theme.palette.blue.main) ||
+      '#165BE0'
+      : (props.theme &&
+        props.theme.palette &&
+        props.theme.palette.red &&
+        props.theme.palette.red.main) ||
+      '#DD6956'};
   }
 
   @media (max-width: 1600px) {
@@ -464,7 +474,11 @@ export const TradeInputBlock = styled.div`
   width: 100%;
 `
 
-export const SeparateInputTitle = styled.span`
+interface SeparatorInputTitleProps {
+  haveTooltip?: boolean
+}
+
+export const SeparateInputTitle = styled.span<SeparatorInputTitleProps>`
   color: ${(props) => props.theme.palette.dark.main};
   font-size: 1rem;
   font-weight: bold;

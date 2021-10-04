@@ -1,40 +1,40 @@
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
-import { withRouter } from 'react-router'
-import { compose } from 'recompose'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getDexProgramIdByEndpoint } from '@core/config/dex'
+import { addSerumCustomMarket } from '@core/graphql/mutations/chart/addSerumCustomMarket'
+import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
+import { withPublicKey } from '@core/hoc/withPublicKey'
+import { writeQueryData } from '@core/utils/TradingTable.utils'
 import { Paper } from '@material-ui/core'
-import { PublicKey } from '@solana/web3.js'
+import Clear from '@material-ui/icons/Clear'
 import { Market, MARKETS, TOKEN_MINTS } from '@project-serum/serum'
-import { graphql } from 'react-apollo'
-import { BlueSwitcherStyles } from '@sb/compositions/Chart/components/SmartOrderTerminal/utils'
-import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
+import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
+import {
+  ClearButton, StyledDialogContent,
 
+  StyledDialogTitle
+} from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
+import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
+import { PurpleButton } from '@sb/compositions/Addressbook/components/Popups/NewCoinPopup'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { BlueSwitcherStyles } from '@sb/compositions/Chart/components/SmartOrderTerminal/utils'
 import { notify } from '@sb/dexUtils//notifications'
 import { isValidPublicKey } from '@sb/dexUtils//utils'
 import {
   useAccountInfo,
   useConnection,
-  useConnectionConfig,
+  useConnectionConfig
 } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
-
-import Clear from '@material-ui/icons/Clear'
-import {
-  StyledDialogContent,
-  ClearButton,
-  StyledDialogTitle,
-} from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-
-import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { PurpleButton } from '@sb/compositions/Addressbook/components/Popups/NewCoinPopup'
-import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { PublicKey } from '@solana/web3.js'
+import React, { useEffect, useState } from 'react'
+import { graphql } from 'react-apollo'
+import { withRouter } from 'react-router'
+import { compose } from 'recompose'
+import styled from 'styled-components'
 import ListNewMarketPopup, { Input } from './ListNewMarketPopup'
-import { addSerumCustomMarket } from '@core/graphql/mutations/chart/addSerumCustomMarket'
-import { withPublicKey } from '@core/hoc/withPublicKey'
-import { readQueryData, writeQueryData } from '@core/utils/TradingTable.utils'
-import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getDexProgramIdByEndpoint } from '@core/config/dex'
+
+
+
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -71,8 +71,8 @@ const Text = styled.span`
     props.type === 'danger'
       ? '#E04D6B'
       : props.type === 'warning'
-      ? '#f4d413'
-      : '#ecf0f3'};
+        ? '#f4d413'
+        : '#ecf0f3'};
 `
 
 const CustomMarketDialog = ({
@@ -253,7 +253,7 @@ const CustomMarketDialog = ({
 
     await history.push(
       `/chart/spot/${knownBaseCurrency || baseLabel}_${knownQuoteCurrency ||
-        quoteLabel}`
+      quoteLabel}`
     )
 
     await onDoClose()
@@ -367,21 +367,21 @@ const CustomMarketDialog = ({
             </RowContainer>
           </>
         ) : (
-          <>
-            {marketId && !wellFormedMarketId && (
-              <RowContainer margin={'2rem 0 0 0'}>
-                <Text type="danger">Invalid market ID</Text>
-              </RowContainer>
-            )}
-          </>
-        )}
+            <>
+              {marketId && !wellFormedMarketId && (
+                <RowContainer margin={'2rem 0 0 0'}>
+                  <Text type="danger">Invalid market ID</Text>
+                </RowContainer>
+              )}
+            </>
+          )}
         <RowContainer margin={'2rem 0 0 0'}>
           <StyledInput
             theme={theme}
             placeholder="Market Id"
             value={marketId}
             onChange={(e) => setMarketId(e.target.value)}
-            // suffix={loadingMarket ? <Loading /> : null}
+          // suffix={loadingMarket ? <Loading /> : null}
           />
         </RowContainer>
         <RowContainer margin={'1rem 0 0 0'}>

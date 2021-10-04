@@ -1,9 +1,9 @@
+import { Grid } from '@material-ui/core'
+import Switch from '@material-ui/core/Switch'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import React from 'react'
 import styled from 'styled-components'
-import { Grid } from '@material-ui/core'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { HeaderProperties, BlockProperties, InputRowProps } from './types'
-import Switch from '@material-ui/core/Switch'
+import { BlockProperties, HeaderProperties, InputRowProps } from './types'
 
 export const TerminalBlocksContainer = styled(Grid)`
   padding-top: 1rem;
@@ -101,15 +101,15 @@ export const SubBlocksContainer = styled.div`
   padding-right: 0.4rem;
 `
 
-export const InputRowContainer = styled.div`
+export const InputRowContainer = styled.div<InputRowProps>`
   display: flex;
-  align-items: ${(props: InputRowProps) => props.align || 'center'};
+  align-items: ${(props) => props.align || 'center'};
   position: relative;
-  width: ${(props: InputRowProps) => props.width || '100%'};
-  flex-direction: ${(props: InputRowProps) => props.direction || 'row'};
-  justify-content: ${(props: InputRowProps) => props.justify};
-  padding: ${(props: InputRowProps) => props.padding || '0 0 .6rem 0'};
-  margin: ${(props: InputRowProps) => props.margin || 'auto 0'};
+  width: ${(props) => props.width || '100%'};
+  flex-direction: ${(props) => props.direction || 'row'};
+  justify-content: ${(props) => props.justify};
+  padding: ${(props) => props.padding || '0 0 .6rem 0'};
+  margin: ${(props) => props.margin || 'auto 0'};
   @media (min-width: 1921px) {
     padding-bottom: ${(props) => props.padding || '0 0 .8rem 0'};
   }
@@ -165,38 +165,38 @@ export const AdditionalSettingsButton = styled(
     needHover: true
     isActive: false
   }) => (
-    <BtnCustom
-      btnWidth="calc(48.5%)"
-      height={'3rem'}
-      fontSize="1.2rem"
-      fontWeight="normal"
-      padding="0"
-      borderRadius=".4rem"
-      borderColor={
-        isActive ? theme.palette.blue.serum : theme.palette.grey.border
-      }
-      btnColor={isActive ? theme.palette.white.main : theme.palette.grey.text}
-      backgroundColor={
-        isActive ? theme.palette.blue.serum : theme.palette.grey.main
-      }
-      hoverColor={
-        needHover ? theme.palette.white.main : theme.palette.grey.text
-      }
-      hoverBorderColor={
-        needHover ? theme.palette.blue.serum : theme.palette.grey.border
-      }
-      hoverBackground={
-        needHover ? theme.palette.blue.serum : theme.palette.grey.main
-      }
-      transition={'all .25s ease-out'}
-      textTransform="none"
-      boxShadow={'0px .2rem .3rem rgba(8, 22, 58, 0.15)'}
-      margin={'0 3% 0 0'}
-      {...rest}
-    >
-      {children}
-    </BtnCustom>
-  )
+      <BtnCustom
+        btnWidth="calc(48.5%)"
+        height={'3rem'}
+        fontSize="1.2rem"
+        fontWeight="normal"
+        padding="0"
+        borderRadius=".4rem"
+        borderColor={
+          isActive ? theme.palette.blue.serum : theme.palette.grey.border
+        }
+        btnColor={isActive ? theme.palette.white.main : theme.palette.grey.text}
+        backgroundColor={
+          isActive ? theme.palette.blue.serum : theme.palette.grey.main
+        }
+        hoverColor={
+          needHover ? theme.palette.white.main : theme.palette.grey.text
+        }
+        hoverBorderColor={
+          needHover ? theme.palette.blue.serum : theme.palette.grey.border
+        }
+        hoverBackground={
+          needHover ? theme.palette.blue.serum : theme.palette.grey.main
+        }
+        transition={'all .25s ease-out'}
+        textTransform="none"
+        boxShadow={'0px .2rem .3rem rgba(8, 22, 58, 0.15)'}
+        margin={'0 3% 0 0'}
+        {...rest}
+      >
+        {children}
+      </BtnCustom>
+    )
 )`
   display: flex;
   justify-content: flex-start;

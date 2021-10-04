@@ -1,10 +1,10 @@
-import React from 'react'
-
 import { Theme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-
-import { StyledPaper } from './SelectWrapperStyles'
+import React from 'react'
 import { CoinAddressWithLabel, MarketAddressWithLabel } from './MintsPopupRow'
+import { StyledPaper } from './SelectWrapperStyles'
+
+
 
 export const MintsPopup = ({
   theme,

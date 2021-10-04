@@ -20,11 +20,11 @@ export const StyledDialogContent = styled(DialogContent)`
 
   border-radius: none;
   border: ${(props) =>
-      (props.theme &&
-        props.theme.palette &&
-        props.theme.palette.border &&
-        props.theme.palette.border.main) ||
-      '.1rem solid #e0e5ec'};
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.border &&
+      props.theme.palette.border.main) ||
+    '.1rem solid #e0e5ec'};
   border-top: 0;
   padding: 0 2.4rem 2.4rem;
   font-family: DM Sans;
@@ -174,7 +174,11 @@ export const ClearButton = styled(IconButton)`
   padding: 0.5rem;
 `
 
-export const Line = styled.div`
+interface LineProps {
+  lineMargin?: string
+}
+
+export const Line = styled.div<LineProps>`
   content: '';
   width: 100%;
   background-color: ${(props) => props.theme.palette.grey.border};
@@ -422,7 +426,7 @@ export const StyledInput = styled.input`
 
   @media (min-width: 1921px) {
     width: ${(props) =>
-      props.width === '100' ? props.width : props.width - 4}%;
+    props.width === '100' ? props.width : props.width - 4}%;
     font-size: 1.2rem;
     padding: 1.1rem;
 

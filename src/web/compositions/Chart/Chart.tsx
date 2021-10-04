@@ -1,55 +1,42 @@
-import React, { useState, useEffect } from 'react'
-import { Redirect, withRouter } from 'react-router-dom'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { tokensToDelist } from '@core/config/dex'
+import { changeChartLayout } from '@core/graphql/mutations/chart/changeChartLayout'
+import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
+import { getChartLayout } from '@core/graphql/queries/chart/getChartLayout'
+import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
+import { withAuthStatus } from '@core/hoc/withAuthStatus'
+// import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
+import { withErrorFallback } from '@core/hoc/withErrorFallback'
+import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
+import { withPublicKey } from '@core/hoc/withPublicKey'
+import { withRegionCheck } from '@core/hoc/withRegionCheck'
+import { useAwesomeMarkets } from '@core/utils/awesomeMarkets/serum'
+import { finishJoyride } from '@core/utils/joyride'
+import { checkLoginStatus } from '@core/utils/loginUtils'
 // import Joyride from 'react-joyride'
 import { withTheme } from '@material-ui/styles'
-import { compose } from 'recompose'
-import { graphql } from 'react-apollo'
-import Tour from 'reactour'
+import { MarketDeprecatedPopup } from '@sb/components/MarketDeprecatedPopup/MarketDeprecatedPopup'
+import { ProposeToSettlePopup } from '@sb/components/ProposeToSettlePopup/ProposeToSettlePopup'
 // import { Grid, Hidden } from '@material-ui/core'
-
-import {
-  tourConfig,
-  FinishBtn,
-  WrapperForNotificationTour,
-} from '@sb/components/ReactourOnboarding/ReactourOnboarding'
+import { FinishBtn, tourConfig } from '@sb/components/ReactourOnboarding/ReactourOnboarding'
+// import { ParticleRuggedPopup } from '@sb/components/ParticleRuggedPopup'
+import { TokenDelistPopup } from '@sb/components/TokenDelistPopup'
+import { TransactionsConfirmationWarningPopup } from '@sb/components/TransactionsConfirmationWarningPopup/TransactionsConfirmationWarningPopup'
+import { MainContainer } from '@sb/compositions/Chart/Chart.styles'
+import { useAllMarketsList, useMarket } from '@sb/dexUtils/markets'
+import { getDecimalCount } from '@sb/dexUtils/utils'
+import React, { useEffect, useState } from 'react'
+import { graphql } from 'react-apollo'
+import { withRouter } from 'react-router-dom'
+import Tour from 'reactour'
+import { compose } from 'recompose'
+import MarketBlock from './components/MarketBlock/MarketBlock'
+import { WarningPopup } from './components/WarningPopup'
 // import { CardsPanel } from './components'
 import DefaultView from './DefaultView/StatusWrapper'
 
-import { getChartLayout } from '@core/graphql/queries/chart/getChartLayout'
-import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
-import { changeChartLayout } from '@core/graphql/mutations/chart/changeChartLayout'
-import { finishJoyride } from '@core/utils/joyride'
-// import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 
-import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import { withAuthStatus } from '@core/hoc/withAuthStatus'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
 
-import { checkLoginStatus } from '@core/utils/loginUtils'
-import {
-  MainContainer,
-  GlobalStyles,
-} from '@sb/compositions/Chart/Chart.styles'
-
-import { useAllMarketsList, useMarket } from '@sb/dexUtils/markets'
-import { getDecimalCount } from '@sb/dexUtils/utils'
-import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
-import { useAwesomeMarkets } from '@core/utils/awesomeMarkets/serum'
-import { withPublicKey } from '@core/hoc/withPublicKey'
-import { WarningPopup } from './components/WarningPopup'
-import { withRegionCheck } from '@core/hoc/withRegionCheck'
-import MarketBlock from './components/MarketBlock/MarketBlock'
-// import { ParticleRuggedPopup } from '@sb/components/ParticleRuggedPopup'
-import { TokenDelistPopup } from '@sb/components/TokenDelistPopup'
-import { tokensToDelist } from '@core/config/dex'
-import { TransactionsConfirmationWarningPopup } from '@sb/components/TransactionsConfirmationWarningPopup/TransactionsConfirmationWarningPopup'
-import { SettleWarningPopup } from '@sb/components/SettleWarningPopup/SettleWarningPopup'
-import { ProposeToSettlePopup } from '@sb/components/ProposeToSettlePopup/ProposeToSettlePopup'
-import { AldrinIsOverCapacityPopup } from '@sb/components/AldrinIsOverCapacityPopup'
-import { RpcCapacityWarningPopup } from '@sb/components/RpcWarningPopup'
-import { MarketDeprecatedPopup } from '@sb/components/MarketDeprecatedPopup/MarketDeprecatedPopup'
-import { useConnection } from '@sb/dexUtils/connection'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
   // Check if the arrays are the same length
@@ -374,7 +361,7 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
     !prev.pairPropertiesQuery.marketByName[0] ||
     prev.pairPropertiesQuery.networkStatus === 2 ||
     prev.pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
-      prev.selectedPair.replace('_', '')
+    prev.selectedPair.replace('_', '')
 
   const nextIsPairDataLoading =
     next.loading ||
@@ -382,17 +369,17 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
     !next.pairPropertiesQuery.marketByName[0] ||
     next.pairPropertiesQuery.networkStatus === 2 ||
     next.pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
-      next.selectedPair.replace('_', '')
+    next.selectedPair.replace('_', '')
 
   const tooltipQueryChanged =
     (prev.getTooltipSettingsQuery.getTooltipSettings &&
       prev.getTooltipSettingsQuery.getTooltipSettings.chartPage) ===
-      (next.getTooltipSettingsQuery.getTooltipSettings &&
-        next.getTooltipSettingsQuery.getTooltipSettings.chartPage) &&
+    (next.getTooltipSettingsQuery.getTooltipSettings &&
+      next.getTooltipSettingsQuery.getTooltipSettings.chartPage) &&
     (prev.getTooltipSettingsQuery.getTooltipSettings &&
       prev.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup) ===
-      (next.getTooltipSettingsQuery.getTooltipSettings &&
-        next.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup)
+    (next.getTooltipSettingsQuery.getTooltipSettings &&
+      next.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup)
 
   return (
     // prev.marketType === next.marketType &&

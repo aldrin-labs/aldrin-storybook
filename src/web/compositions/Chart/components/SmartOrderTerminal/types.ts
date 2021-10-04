@@ -1,5 +1,5 @@
-import { ChangeEvent, CSSProperties } from 'react'
 import { Theme } from '@material-ui/core'
+import { ChangeEvent, CSSProperties } from 'react'
 
 export interface IProps {
   price: number
@@ -179,9 +179,9 @@ export type InputProps = {
 export type InputRowProps = {
   direction?: string
   justify?: string
-  align?:string
-  padding?: string
-  width?: string
+  align?: string
+  padding?: string | number
+  width?: string | number
   margin?: string
 }
 
@@ -191,7 +191,7 @@ export type CommonForBlocks = {
   validateField: (needValidate: boolean, value: any) => boolean,
   updateBlockValue: (blockName: string, valueName: string, value: any) => void,
   updateSubBlockValue: (blockName: string, subBlockName: string, valueName: string, value: any) => void,
-  updateStopLossAndTakeProfitPrices: (obj: { 
+  updateStopLossAndTakeProfitPrices: (obj: {
     side?: string,
     price?: number,
     deviationPercentage?: number
