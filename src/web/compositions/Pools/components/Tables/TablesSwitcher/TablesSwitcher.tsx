@@ -8,6 +8,7 @@ import { SearchInputWithLoop } from '../components'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
+
 import AllPoolsTable from '../AllPools/AllPoolsTable'
 import UserLiquitidyTable from '../UserLiquidity/UserLiquidityTable'
 
@@ -19,10 +20,9 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { getAllTokensData } from '@sb/compositions/Rebalance/utils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { TableModeButton } from './TablesSwitcher.styles'
-import AddIcon from '@icons/addIcon.svg'
-import { SvgIcon } from '@sb/components'
 import { StakePopup } from '../../Popups/Staking/StakePopup'
 import { UnstakePopup } from '../../Popups/Unstaking/UnstakePopup'
+import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/endFarming'
 
 const TablesSwitcher = ({
   theme,
@@ -34,6 +34,10 @@ const TablesSwitcher = ({
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }) => {
   const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
+  // staking data
+  const [userStakingAmountsMap, setUserStakingAmountsMap] = useState<
+    Map<string, number>
+  >(new Map())
 
   const [selectedPool, selectPool] = useState(null)
   const [searchValue, onChangeSearch] = useState('')
@@ -59,7 +63,28 @@ const TablesSwitcher = ({
   useEffect(() => {
     const fetchData = async () => {
       const allTokensData = await getAllTokensData(wallet.publicKey, connection)
-      await setAllTokensData(allTokensData)
+      const allUserFarmingTickets = await getParsedUserFarmingTickets({
+        wallet,
+        connection,
+      })
+
+      const userStakingAmountsMap = allUserFarmingTickets.reduce(
+        (acc, farmingTicket) => {
+          const { pool, tokensFrozen } = farmingTicket
+
+          if (acc.has(pool)) {
+            acc.set(pool, acc.get(pool) + tokensFrozen)
+          } else {
+            acc.set(pool, tokensFrozen)
+          }
+
+          return acc
+        },
+        new Map()
+      )
+
+      setAllTokensData(allTokensData)
+      setUserStakingAmountsMap(userStakingAmountsMap)
     }
 
     if (!!wallet?.publicKey) {
@@ -130,9 +155,10 @@ const TablesSwitcher = ({
           <AllPoolsTable
             theme={theme}
             poolsInfo={getPoolsInfo}
-            selectPool={selectPool}
             allTokensDataMap={allTokensDataMap}
             dexTokensPricesMap={dexTokensPricesMap}
+            userStakingAmountsMap={userStakingAmountsMap}
+            selectPool={selectPool}
             setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
             setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
             setIsStakePopupOpen={setIsStakePopupOpen}
@@ -145,8 +171,9 @@ const TablesSwitcher = ({
             theme={theme}
             wallet={wallet}
             selectedPool={selectedPool}
-            selectPool={selectPool}
             dexTokensPricesMap={dexTokensPricesMap}
+            userStakingAmountsMap={userStakingAmountsMap}
+            selectPool={selectPool}
             setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
             setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
             setIsStakePopupOpen={setIsStakePopupOpen}

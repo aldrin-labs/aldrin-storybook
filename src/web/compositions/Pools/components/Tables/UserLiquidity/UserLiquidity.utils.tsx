@@ -102,6 +102,7 @@ export const combineUserLiquidityData = ({
   dexTokensPricesMap,
   usersPools,
   allTokensDataMap,
+  earnedFeesInPoolForUserMap,
   selectPool,
   setIsWithdrawalPopupOpen,
   setIsAddLiquidityPopupOpen,
@@ -112,6 +113,7 @@ export const combineUserLiquidityData = ({
   dexTokensPricesMap: Map<string, DexTokensPrices>
   usersPools: any
   allTokensDataMap: Map<string, TokenInfo>
+  earnedFeesInPoolForUserMap: Map<string, number>
   selectPool: (pool: PoolInfo) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
@@ -218,7 +220,11 @@ export const combineUserLiquidityData = ({
       fees: {
         render: (
           <RowDataTdText theme={theme}>
-            ${stripDigitPlaces(600, 6)}
+            $
+            {stripDigitPlaces(
+              earnedFeesInPoolForUserMap.get(el.swapToken) || 0,
+              6
+            )}
           </RowDataTdText>
         ),
       },
@@ -229,7 +235,7 @@ export const combineUserLiquidityData = ({
             fontFamily="Avenir Next Medium"
             theme={theme}
           >
-            {stripDigitPlaces(700, 6)}%
+            {stripDigitPlaces(el.apy24h, 6)}%
           </RowDataTdText>
         ),
       },

@@ -29,7 +29,7 @@ export class ProgramsMultiton {
         programAddress,
       })
       
-      return
+      return null
     }
 
     console.log('create program', wallet)

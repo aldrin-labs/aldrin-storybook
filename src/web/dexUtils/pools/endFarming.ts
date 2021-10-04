@@ -1,3 +1,4 @@
+import { Program } from '@project-serum/anchor'
 import { TokenInstructions } from '@project-serum/serum'
 import {
   Connection,
@@ -13,39 +14,76 @@ import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { sendTransaction } from '../send'
 import { WalletAdapter } from '../types'
+import { loadAccountsFromPoolsProgram } from './loadAccountsFromPoolsProgram'
 
-const loadUserTicketsPerPool = async ({
+const loadUserFarmingTickets = async ({
   wallet,
   connection,
   poolPublicKey,
 }: {
   wallet: WalletAdapter
   connection: Connection
-  poolPublicKey: PublicKey
+  poolPublicKey?: PublicKey
 }) => {
-  return await connection.getProgramAccounts(
-    new PublicKey(POOLS_PROGRAM_ADDRESS),
-    {
-      commitment: 'finalized',
-      filters: [
-        {
-          dataSize: 584,
+  return await loadAccountsFromPoolsProgram({
+    connection,
+    filters: [
+      {
+        dataSize: 584,
+      },
+      ...(poolPublicKey
+        ? [
+            {
+              memcmp: {
+                offset: 64,
+                bytes: poolPublicKey.toBase58(),
+              },
+            },
+          ]
+        : []),
+      {
+        memcmp: {
+          offset: 32,
+          bytes: wallet.publicKey.toBase58(),
         },
-        // {
-        //   memcmp: {
-        //     offset: 8 + 16 + 32,
-        //     bytes: poolPublicKey.toBase58(),
-        //   },
-        // },
-        // {
-        //   memcmp: {
-        //     offset: 8 + 16,
-        //     bytes: wallet.publicKey.toBase58(),
-        //   },
-        // },
-      ],
+      },
+    ],
+  })
+}
+
+export const getParsedUserFarmingTickets = async ({
+  wallet,
+  connection,
+  poolPublicKey,
+}: {
+  wallet: WalletAdapter
+  connection: Connection
+  poolPublicKey?: PublicKey
+}) => {
+  const program = ProgramsMultiton.getProgramByAddress({
+    wallet,
+    connection,
+    programAddress: POOLS_PROGRAM_ADDRESS,
+  })
+
+  const tickets = await loadUserFarmingTickets({
+    wallet,
+    connection,
+    poolPublicKey,
+  })
+
+  const allUserTicketsPerPool = tickets.map((ticket) => {
+    const data = Buffer.from(ticket.account.data)
+    const ticketData = program.coder.accounts.decode('FarmingTicket', data)
+
+    return {
+      tokensFrozen: ticketData.tokensFrozen.toNumber(),
+      pool: ticketData.pool.toString(),
+      farmingTicket: ticket.pubkey,
     }
-  )
+  })
+
+  return allUserTicketsPerPool
 }
 
 export const endFarming = async ({
@@ -78,24 +116,10 @@ export const endFarming = async ({
 
   const lpTokenFreezeVault = poolAccount.lpTokenFreezeVault
 
-  const tickets = await loadUserTicketsPerPool({
+  const allUserTicketsPerPool = await getParsedUserFarmingTickets({
     wallet,
     connection,
     poolPublicKey,
-  })
-
-  const allUserTicketsPerPool = tickets.map((ticket) => {
-    const data = Buffer.from(ticket.account.data)
-    const ticketData = program.coder.accounts.decode(
-      'FarmingTicket',
-      data,
-      ticket.pubkey.toString()
-    )
-
-    return {
-      tokensFrozen: ticketData.tokensFrozen.toNumber(),
-      farmingTicket: ticket.pubkey,
-    }
   })
 
   let counter = 0

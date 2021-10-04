@@ -18,11 +18,9 @@ import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { sendTransaction } from '../send'
 import { WalletAdapter } from '../types'
+import { loadAccountsFromPoolsProgram } from './loadAccountsFromPoolsProgram'
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
-
-// separate gPA
-const a = {}
 
 const loadUserTicketsPerPool = async ({
   wallet,
@@ -33,29 +31,26 @@ const loadUserTicketsPerPool = async ({
   connection: Connection
   poolPublicKey: PublicKey
 }) => {
-  return await connection.getProgramAccounts(
-    new PublicKey(POOLS_PROGRAM_ADDRESS),
-    {
-      commitment: 'finalized',
-      filters: [
-        {
-          dataSize: 88,
+  return await loadAccountsFromPoolsProgram({
+    connection,
+    filters: [
+      {
+        dataSize: 88,
+      },
+      {
+        memcmp: {
+          offset: 56,
+          bytes: poolPublicKey.toBase58(),
         },
-        {
-          memcmp: {
-            offset: 8 + 16 + 32,
-            bytes: poolPublicKey.toBase58(),
-          },
+      },
+      {
+        memcmp: {
+          offset: 24,
+          bytes: wallet.publicKey.toBase58(),
         },
-        {
-          memcmp: {
-            offset: 8 + 16,
-            bytes: wallet.publicKey.toBase58(),
-          },
-        },
-      ],
-    }
-  )
+      },
+    ],
+  })
 }
 
 export async function redeemBasket({
@@ -203,7 +198,7 @@ export async function redeemBasket({
 
         const percentageOfAllPoolTokensToWithdraw =
           (poolTokensToWithdraw / userPoolTokenAmount) * 100
-          
+
         const baseTokenAmountToWithdrawFromTicket =
           (baseTokenAmountToWithdraw / 100) *
           percentageOfAllPoolTokensToWithdraw

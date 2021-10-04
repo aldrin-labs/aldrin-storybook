@@ -54,15 +54,23 @@ const UserLiquidityTableComponent = ({
 
   const usersPools = getUserPoolsFromAll({ poolsInfo, allTokensDataMap })
 
-  // const { getFeesEarnedByAccount = [] } = getFeesEarnedByAccountQuery || {
-  //   getFeesEarnedByAccountQuery: [],
-  // }
+  const { getFeesEarnedByAccount = [] } = getFeesEarnedByAccountQuery || {
+    getFeesEarnedByAccountQuery: {
+      getFeesEarnedByAccount: [],
+    },
+  }
+
+  const earnedFeesInPoolForUserMap = getFeesEarnedByAccount.reduce(
+    (acc, feesEarned) => acc.set(feesEarned.pool, feesEarned.earnedUSD),
+    new Map()
+  )
 
   const userLiquidityData = combineUserLiquidityData({
     theme,
     dexTokensPricesMap,
     usersPools,
     allTokensDataMap,
+    earnedFeesInPoolForUserMap,
     selectPool,
     setIsWithdrawalPopupOpen,
     setIsAddLiquidityPopupOpen,
