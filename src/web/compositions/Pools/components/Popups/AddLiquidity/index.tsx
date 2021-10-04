@@ -220,7 +220,7 @@ export const AddLiquidityPopup = ({
       </RowContainer>
       <RowContainer>
         <InputWithCoins
-          placeholder={''}
+          placeholder={'0'}
           theme={theme}
           value={baseAmount}
           onChange={setBaseAmountWithQuote}
@@ -234,7 +234,7 @@ export const AddLiquidityPopup = ({
           </Text>
         </Row>
         <InputWithCoins
-          placeholder={''}
+          placeholder={'0'}
           theme={theme}
           value={quoteAmount}
           onChange={setQuoteAmountWithBase}

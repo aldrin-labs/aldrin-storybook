@@ -188,6 +188,7 @@ export const combineAllPoolsData = ({
   feesPerPoolMap,
   expandedRows,
   allTokensDataMap,
+  userStakingAmountsMap,
   selectPool,
   setIsAddLiquidityPopupOpen,
   setIsWithdrawalPopupOpen,
@@ -202,6 +203,7 @@ export const combineAllPoolsData = ({
   feesPerPoolMap: Map<string, number>
   expandedRows: string[]
   allTokensDataMap: Map<string, TokenInfo>
+  userStakingAmountsMap: Map<string, number>
   selectPool: (pool: PoolInfo) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
@@ -381,6 +383,8 @@ export const combineAllPoolsData = ({
                   setIsStakePopupOpen={setIsStakePopupOpen}
                   setIsUnstakePopupOpen={setIsUnstakePopupOpen}
                   selectPool={selectPool}
+                  userStakingAmountsMap={userStakingAmountsMap}
+                  dexTokensPricesMap={dexTokensPricesMap}
                   allTokensDataMap={allTokensDataMap}
                   theme={theme}
                   pool={el}

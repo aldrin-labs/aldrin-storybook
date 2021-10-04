@@ -21,7 +21,7 @@ export class ProgramsMultiton {
       return this[programAddress]
     }
 
-    if (!wallet || !connection) {
+    if (!wallet || !connection || !wallet.publicKey) {
       notifyForDevelop({
         message: 'No wallet or connection in getProgramByAddress',
         wallet,

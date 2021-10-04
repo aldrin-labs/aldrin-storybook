@@ -21,6 +21,7 @@ import { endFarming } from '@sb/dexUtils/pools/endFarming'
 import { PublicKey } from '@solana/web3.js'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
+import { notify } from '@sb/dexUtils/notifications'
 
 export const UnstakePopup = ({
   theme,
@@ -28,15 +29,20 @@ export const UnstakePopup = ({
   allTokensData,
   pool,
   close,
+  refreshAllTokensData,
 }: {
   theme: Theme
   open: boolean
   allTokensData: any
   pool: PoolInfo
   close: () => void
+  refreshAllTokensData: () => void
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
+
+  const [operationLoading, setOperationLoading] = useState(false)
+
   const {
     amount: maxPoolTokenAmount,
     address: userPoolTokenAccount,
@@ -71,8 +77,11 @@ export const UnstakePopup = ({
           disabled={false}
           isUserConfident={true}
           theme={theme}
-          onClick={() => {
-            endFarming({
+          showLoader={operationLoading}
+          onClick={async () => {
+            await setOperationLoading(true)
+
+            const result = await endFarming({
               wallet,
               connection,
               poolPublicKey: new PublicKey(pool.swapToken),
@@ -80,9 +89,23 @@ export const UnstakePopup = ({
               farmingStatePublicKey: new PublicKey(pool.farmingStatePublicKey),
               snapshotQueuePublicKey: new PublicKey(pool.farmingSnapshotQueue),
             })
+
+            await setOperationLoading(false)
+
+            await notify({
+              type: result === 'success' ? 'success' : 'error',
+              message:
+                result === 'success'
+                  ? 'Successfully unstaked.'
+                  : 'Unstaking cancelled.',
+            })
+
+            await refreshAllTokensData()
+
+            await close()
           }}
         >
-          Untake{' '}
+          Untake
         </BlueButton>
       </RowContainer>
     </DialogWrapper>

@@ -212,6 +212,7 @@ const TablesSwitcher = ({
             pool={selectedPool}
             close={() => setIsStakePopupOpen(false)}
             allTokensData={allTokensData}
+            refreshAllTokensData={refreshAllTokensData}
           />
         )}
 
@@ -222,6 +223,7 @@ const TablesSwitcher = ({
             pool={selectedPool}
             close={() => setIsUnstakePopupOpen(false)}
             allTokensData={allTokensData}
+            refreshAllTokensData={refreshAllTokensData}
           />
         )}
       </BlockTemplate>

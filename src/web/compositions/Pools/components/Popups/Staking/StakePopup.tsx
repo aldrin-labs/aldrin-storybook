@@ -29,12 +29,14 @@ export const StakePopup = ({
   close,
   pool,
   allTokensData,
+  refreshAllTokensData,
 }: {
   theme: Theme
   open: boolean
   close: () => void
   pool: PoolInfo
   allTokensData: any
+  refreshAllTokensData: () => void
 }) => {
   const [poolTokenAmount, setPoolTokenAmount] = useState('')
   const [operationLoading, setOperationLoading] = useState(false)
@@ -121,7 +123,7 @@ export const StakePopup = ({
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
         <BlueButton
           style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
-          disabled={isNotEnoughPoolTokens}
+          disabled={isNotEnoughPoolTokens || !poolTokenAmount}
           isUserConfident={true}
           theme={theme}
           showLoader={operationLoading}
@@ -143,9 +145,11 @@ export const StakePopup = ({
               type: result === 'success' ? 'success' : 'error',
               message:
                 result === 'success'
-                  ? 'Staking successful'
-                  : 'Staking cancelled',
+                  ? 'Successfully staked.'
+                  : 'Staking cancelled.',
             })
+
+            await refreshAllTokensData()
 
             await close()
           }}

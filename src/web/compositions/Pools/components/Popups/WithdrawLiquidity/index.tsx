@@ -142,7 +142,7 @@ export const WithdrawalPopup = ({
       </Row>
       <RowContainer>
         <SimpleInput
-          placeholder={''}
+          placeholder={'0'}
           theme={theme}
           symbol={baseSymbol}
           value={baseAmount}
@@ -155,7 +155,7 @@ export const WithdrawalPopup = ({
           </Text>
         </Row>
         <SimpleInput
-          placeholder={''}
+          placeholder={'0'}
           theme={theme}
           symbol={quoteSymbol}
           value={quoteAmount}
@@ -196,15 +196,7 @@ export const WithdrawalPopup = ({
             }
 
             await setOperationLoading(true)
-            // const result = await withdrawAllTokenTypes({
-            //   wallet,
-            //   connection,
-            //   poolTokenAmount: poolTokenAmountToWithdraw,
-            //   tokenSwapPublicKey: new PublicKey(selectedPool.swapToken),
-            //   userTokenAccountA: new PublicKey(userTokenAccountA),
-            //   userTokenAccountB: new PublicKey(userTokenAccountB),
-            //   poolTokenAccount: new PublicKey(userPoolTokenAccount),
-            // })
+
             const result = await redeemBasket({
               wallet,
               connection,

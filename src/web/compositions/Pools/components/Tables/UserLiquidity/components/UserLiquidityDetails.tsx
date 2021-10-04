@@ -10,18 +10,21 @@ import {
 } from '../../index.styles'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { Theme } from '@material-ui/core'
-import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
+import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 
 export const UserLiquidityDetails = ({
   theme,
   pool,
   allTokensDataMap,
+  dexTokensPricesMap,
+  userStakingAmountsMap,
   selectPool,
   setIsWithdrawalPopupOpen,
   setIsAddLiquidityPopupOpen,
@@ -31,6 +34,8 @@ export const UserLiquidityDetails = ({
   theme: Theme
   pool: PoolInfo
   allTokensDataMap: Map<string, TokenInfo>
+  dexTokensPricesMap: Map<string, DexTokensPrices>
+  userStakingAmountsMap: Map<string, number>
   selectPool: (pool: PoolInfo) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
@@ -40,7 +45,7 @@ export const UserLiquidityDetails = ({
   const { wallet } = useWallet()
 
   const poolTokenAmount = allTokensDataMap.get(pool.poolTokenMint)?.amount || 0
-  const stakedTokens = 0
+  const stakedTokens = userStakingAmountsMap.get(pool.swapToken) || 0
 
   // if has pool tokens or staked
   const hasPoolTokens = poolTokenAmount > 0
@@ -53,8 +58,17 @@ export const UserLiquidityDetails = ({
     poolTokenAmount,
   })
 
+  const poolTokenPrice = calculatePoolTokenPrice({
+    pool,
+    dexTokensPricesMap,
+  })
+
   return (
-    <RowContainer margin="1rem 0" style={{ background: '#222429' }}>
+    <RowContainer
+      height="10rem"
+      margin="1rem 0"
+      style={{ background: '#222429' }}
+    >
       <Row
         style={{
           borderRight: `0.2rem solid #383B45`,
@@ -80,9 +94,10 @@ export const UserLiquidityDetails = ({
               {formatNumberToUSFormat(stripDigitPlaces(baseTokenAmount, 8))}{' '}
               <WhiteText>{getTokenNameByMintAddress(pool.tokenA)}</WhiteText> /{' '}
               {formatNumberToUSFormat(stripDigitPlaces(quoteTokenAmount, 8))}{' '}
-              <WhiteText>{getTokenNameByMintAddress(pool.tokenB)}</WhiteText> (
-              <WhiteText>$</WhiteText>
-              <span>{formatNumberToUSFormat(stripDigitPlaces(1000, 2))}</span>)
+              <WhiteText>{getTokenNameByMintAddress(pool.tokenB)}</WhiteText>{' '}
+              <WhiteText>$(</WhiteText>
+              <span>{formatNumberToUSFormat(stripDigitPlaces(1000, 2))}</span>
+              <WhiteText>)</WhiteText>
             </RowDataTdText>
           ) : (
             <RowDataTdText
@@ -110,14 +125,9 @@ export const UserLiquidityDetails = ({
               theme={theme}
             >
               100{' '}
-              <span style={{ color: '#fbf2f2' }}>
-                {getTokenNameByMintAddress(pool.tokenA)}
-              </span>{' '}
-              / 2{' '}
-              <span style={{ color: '#fbf2f2' }}>
-                {getTokenNameByMintAddress(pool.tokenB)}
-              </span>{' '}
-              (<span style={{ color: '#fbf2f2' }}>$</span>1,000){' '}
+              <WhiteText>{getTokenNameByMintAddress(pool.tokenA)}</WhiteText> /
+              2 <WhiteText>{getTokenNameByMintAddress(pool.tokenB)}</WhiteText>{' '}
+              <WhiteText>$(</WhiteText>1,000<WhiteText>)</WhiteText>
             </RowDataTdText>
           </Row>
         )}
@@ -136,8 +146,12 @@ export const UserLiquidityDetails = ({
               fontFamily="Avenir Next Medium"
               theme={theme}
             >
-              <span style={{ color: '#fbf2f2' }}>Total:</span> {poolTokenAmount}{' '}
-              <span style={{ color: '#fbf2f2' }}>Staked:</span> 200
+              <WhiteText>Total:</WhiteText>{' '}
+              {formatNumberToUSFormat(
+                stripDigitPlaces(poolTokenAmount + stakedTokens, 2)
+              )}{' '}
+              <WhiteText>Staked:</WhiteText>{' '}
+              {formatNumberToUSFormat(stripDigitPlaces(stakedTokens, 2))}
             </RowDataTdText>
           </Row>
         )}
@@ -162,7 +176,6 @@ export const UserLiquidityDetails = ({
           {hasLiquidity && (
             <BlueButton
               theme={theme}
-              disabled={pool.locked}
               onClick={() => {
                 if (!wallet.connected) {
                   wallet.connect()
@@ -188,12 +201,17 @@ export const UserLiquidityDetails = ({
               style={{ marginBottom: '3.5rem' }}
             >
               Staked:{' '}
-              <span style={{ color: '#A5E898', padding: '0 0.5rem' }}>200</span>{' '}
-              Pool Tokens ($
-              <span style={{ color: '#A5E898', padding: '0 0.5rem' }}>
-                1000
+              <AmountText style={{ padding: '0 0.5rem' }}>
+                {formatNumberToUSFormat(stripDigitPlaces(stakedTokens, 2))}
+              </AmountText>{' '}
+              <span>
+                Pool Tokens
+                <AmountText style={{ padding: '0 0.5rem' }}>
+                  <WhiteText>($</WhiteText>
+                  {stakedTokens * poolTokenPrice}
+                  <WhiteText>)</WhiteText>
+                </AmountText>
               </span>
-              )
             </RowDataTdText>
           ) : (
             <RowDataTdText
@@ -247,29 +265,25 @@ export const UserLiquidityDetails = ({
             ) : hasPoolTokens ? (
               <RowDataTdText>
                 Stake your pool tokens to start
-                <span style={{ color: '#A5E898', padding: '0 0.5rem' }}>
-                  RIN
-                </span>
+                <AmountText style={{ padding: '0 0.5rem' }}>RIN</AmountText>
                 farming
               </RowDataTdText>
             ) : (
               <RowDataTdText>
-                Deposit liquidity to farm{' '}
-                <span style={{ color: '#A5E898' }}>RIN</span>
+                Deposit liquidity to farm <AmountText>RIN</AmountText>
               </RowDataTdText>
             )}
           </RowContainer>
         </Row>
 
-        {hasPoolTokens && (
+        {hasPoolTokens && !hasStakedTokens && (
           <Row direction="column" width="40%" align="flex-end">
             <RowDataTdText
               theme={theme}
               fontFamily={'Avenir Next Medium'}
               style={{ marginBottom: '2rem' }}
             >
-              <span style={{ color: '#A5E898', padding: '0 0.5rem' }}>0</span>{' '}
-              RIN
+              <AmountText style={{ padding: '0 0.5rem' }}>0</AmountText> RIN
             </RowDataTdText>
             <GreenButton
               onClick={() => {

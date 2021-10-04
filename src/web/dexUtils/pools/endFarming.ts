@@ -1,4 +1,3 @@
-import { Program } from '@project-serum/anchor'
 import { TokenInstructions } from '@project-serum/serum'
 import {
   Connection,
@@ -16,6 +15,9 @@ import { sendTransaction } from '../send'
 import { WalletAdapter } from '../types'
 import { loadAccountsFromPoolsProgram } from './loadAccountsFromPoolsProgram'
 
+// (2 ** 63) - 1
+const DEFAULT_FARMING_TICKET_END_TIME = '9223372036854775807'
+
 const loadUserFarmingTickets = async ({
   wallet,
   connection,
@@ -25,28 +27,30 @@ const loadUserFarmingTickets = async ({
   connection: Connection
   poolPublicKey?: PublicKey
 }) => {
+  const filterByPoolPublicKey = poolPublicKey
+    ? [
+        {
+          memcmp: {
+            offset: 64,
+            bytes: poolPublicKey.toBase58(),
+          },
+        },
+      ]
+    : []
+
   return await loadAccountsFromPoolsProgram({
     connection,
     filters: [
       {
         dataSize: 584,
       },
-      ...(poolPublicKey
-        ? [
-            {
-              memcmp: {
-                offset: 64,
-                bytes: poolPublicKey.toBase58(),
-              },
-            },
-          ]
-        : []),
       {
         memcmp: {
           offset: 32,
           bytes: wallet.publicKey.toBase58(),
         },
       },
+      ...filterByPoolPublicKey,
     ],
   })
 }
@@ -72,16 +76,23 @@ export const getParsedUserFarmingTickets = async ({
     poolPublicKey,
   })
 
-  const allUserTicketsPerPool = tickets.map((ticket) => {
-    const data = Buffer.from(ticket.account.data)
-    const ticketData = program.coder.accounts.decode('FarmingTicket', data)
+  const allUserTicketsPerPool = tickets
+    .map((ticket) => {
+      const data = Buffer.from(ticket.account.data)
+      const ticketData = program.coder.accounts.decode('FarmingTicket', data)
 
-    return {
-      tokensFrozen: ticketData.tokensFrozen.toNumber(),
-      pool: ticketData.pool.toString(),
-      farmingTicket: ticket.pubkey,
-    }
-  })
+      return {
+        tokensFrozen: ticketData.tokensFrozen.toNumber(),
+        endTime: ticketData.endTime.toString(),
+        startTime: ticketData.startTime.toString(),
+        pool: ticketData.pool.toString(),
+        farmingTicket: ticket.pubkey,
+      }
+    })
+    .filter((ticket) => ticket.endTime === DEFAULT_FARMING_TICKET_END_TIME)
+    // filter by startTimestamp + period_length from farmingState fr using only avlb
+
+  console.log('allUserTicketsPerPool', allUserTicketsPerPool)
 
   return allUserTicketsPerPool
 }
@@ -112,9 +123,7 @@ export const endFarming = async ({
     program.programId
   )
 
-  const poolAccount = await program.account.pool.fetch(poolPublicKey)
-
-  const lpTokenFreezeVault = poolAccount.lpTokenFreezeVault
+  const { lpTokenFreezeVault } = await program.account.pool.fetch(poolPublicKey)
 
   const allUserTicketsPerPool = await getParsedUserFarmingTickets({
     wallet,
@@ -122,7 +131,6 @@ export const endFarming = async ({
     poolPublicKey,
   })
 
-  let counter = 0
   const commonTransaction = new Transaction()
 
   for (let ticketData of allUserTicketsPerPool) {
@@ -144,6 +152,7 @@ export const endFarming = async ({
     commonTransaction.add(endFarmingTransaction)
   }
 
+  let counter = 0
   while (counter < NUMBER_OF_RETRIES) {
     try {
       if (counter > 0) {

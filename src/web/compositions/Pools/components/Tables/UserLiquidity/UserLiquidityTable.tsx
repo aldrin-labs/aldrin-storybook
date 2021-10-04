@@ -28,6 +28,7 @@ const UserLiquidityTableComponent = ({
   poolsInfo,
   dexTokensPricesMap,
   getFeesEarnedByAccountQuery,
+  userStakingAmountsMap,
   selectPool,
   setIsWithdrawalPopupOpen,
   setIsAddLiquidityPopupOpen,
@@ -40,6 +41,7 @@ const UserLiquidityTableComponent = ({
   poolsInfo: PoolInfo[]
   dexTokensPricesMap: Map<string, DexTokensPrices>
   getFeesEarnedByAccountQuery: { getFeesEarnedByAccount: FeesEarned[] }
+  userStakingAmountsMap: Map<string, number>
   selectPool: (pool: PoolInfo) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
@@ -69,7 +71,9 @@ const UserLiquidityTableComponent = ({
     theme,
     dexTokensPricesMap,
     usersPools,
+    expandedRows,
     allTokensDataMap,
+    userStakingAmountsMap,
     earnedFeesInPoolForUserMap,
     selectPool,
     setIsWithdrawalPopupOpen,

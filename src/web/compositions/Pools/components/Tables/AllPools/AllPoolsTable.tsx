@@ -26,6 +26,7 @@ const AllPoolsTableComponent = ({
   poolsInfo,
   getFeesEarnedByPoolQuery,
   allTokensDataMap,
+  userStakingAmountsMap,
   selectPool,
   setIsAddLiquidityPopupOpen,
   setIsWithdrawalPopupOpen,
@@ -38,6 +39,7 @@ const AllPoolsTableComponent = ({
   poolsInfo: PoolInfo[]
   getFeesEarnedByPoolQuery: { getFeesEarnedByPool: FeesEarned[] }
   allTokensDataMap: Map<string, TokenInfo>
+  userStakingAmountsMap: Map<string, number>
   selectPool: (pool: PoolInfo) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
@@ -71,11 +73,12 @@ const AllPoolsTableComponent = ({
     feesPerPoolMap,
     expandedRows,
     allTokensDataMap,
+    userStakingAmountsMap,
     selectPool,
     setIsAddLiquidityPopupOpen,
     setIsWithdrawalPopupOpen,
     setIsStakePopupOpen,
-    setIsUnstakePopupOpen
+    setIsUnstakePopupOpen,
   })
 
   return (

@@ -16,32 +16,6 @@ import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { sendTransaction } from '../send'
 import { WalletAdapter } from '../types'
 
-const loadUserTicketsPerPool = async ({
-  connection,
-  poolPublicKey,
-}: {
-  connection: Connection
-  poolPublicKey: PublicKey
-}) => {
-  return await connection.getProgramAccounts(
-    new PublicKey(POOLS_PROGRAM_ADDRESS),
-    {
-      commitment: 'finalized',
-      filters: [
-        {
-          dataSize: 169,
-        },
-        {
-          memcmp: {
-            offset: 73,
-            bytes: poolPublicKey.toBase58(),
-          },
-        },
-      ],
-    }
-  )
-}
-
 export const startFarming = async ({
   wallet,
   connection,
@@ -63,30 +37,12 @@ export const startFarming = async ({
     programAddress: POOLS_PROGRAM_ADDRESS,
   })
 
-  // const farmingStates = await loadUserTicketsPerPool({
-  //   connection,
-  //   poolPublicKey,
-  // })
+  const { lpTokenFreezeVault } = await program.account.pool.fetch(poolPublicKey)
 
-  // console.log(
-  //   'farmingStates',
-  //   farmingStates.map((f) => {
-  //     const data = Buffer.from(f.account.data)
-  //     const ticketData = program.coder.accounts.decode('FarmingState', data)
-  //     console.log('ticketData', ticketData)
-
-  //     return ticketData
-  //   })
-  // )
-
-  const poolAccount = await program.account.pool.fetch(poolPublicKey)
-  const lpTokenFreezeVault = poolAccount.lpTokenFreezeVault
   const farmingTicket = Keypair.generate()
   const farmingTicketInstruction = await program.account.farmingTicket.createInstruction(
     farmingTicket
   )
-
-  let counter = 0
 
   const startFarmingTransaction = await program.instruction.startFarming(
     new BN(poolTokenAmount),
@@ -113,6 +69,7 @@ export const startFarming = async ({
   commonTransaction.add(farmingTicketInstruction)
   commonTransaction.add(startFarmingTransaction)
 
+  let counter = 0
   while (counter < NUMBER_OF_RETRIES) {
     try {
       if (counter > 0) {

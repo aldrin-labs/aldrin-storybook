@@ -102,7 +102,9 @@ export const combineUserLiquidityData = ({
   theme,
   dexTokensPricesMap,
   usersPools,
+  expandedRows,
   allTokensDataMap,
+  userStakingAmountsMap,
   earnedFeesInPoolForUserMap,
   selectPool,
   setIsWithdrawalPopupOpen,
@@ -112,8 +114,10 @@ export const combineUserLiquidityData = ({
 }: {
   theme: Theme
   dexTokensPricesMap: Map<string, DexTokensPrices>
-  usersPools: any
+  usersPools: PoolInfo[]
+  expandedRows: string[]
   allTokensDataMap: Map<string, TokenInfo>
+  userStakingAmountsMap: Map<string, number>
   earnedFeesInPoolForUserMap: Map<string, number>
   selectPool: (pool: PoolInfo) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
@@ -206,8 +210,7 @@ export const combineUserLiquidityData = ({
         render: (
           <TextColumnContainer>
             <RowDataTdTopText theme={theme}>
-              ${tvlUSD}
-              {formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
+              ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
             </RowDataTdTopText>
             <RowDataTdText theme={theme} color={theme.palette.grey.new}>
               {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenA, 2))}{' '}
@@ -283,6 +286,7 @@ export const combineUserLiquidityData = ({
               width="1rem"
               height="auto"
               src={
+                // separate to variable
                 expandedRows.includes(`${el.name}${el.tvl}${el.poolTokenMint}`)
                   ? ArrowToBottom
                   : ArrowToTop
@@ -301,6 +305,8 @@ export const combineUserLiquidityData = ({
                 setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
                 setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
                 selectPool={selectPool}
+                userStakingAmountsMap={userStakingAmountsMap}
+                dexTokensPricesMap={dexTokensPricesMap}
                 allTokensDataMap={allTokensDataMap}
                 theme={theme}
                 pool={el}
