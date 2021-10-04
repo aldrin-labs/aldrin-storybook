@@ -74,7 +74,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
     const priceForCalculate = priceType !== 'market' ? price : marketPrice
 
     if (marketPriceAfterPairChange !== prevProps.marketPriceAfterPairChange) {
-      this.onPriceChange(stripDigitPlaces(marketPriceAfterPairChange, pricePrecision))
+      this.onPriceChange(`${stripDigitPlaces(marketPriceAfterPairChange, pricePrecision)}`)
     }
 
     if (
@@ -152,7 +152,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
   }
 
   onTotalChange = (
-    e: SyntheticEvent<Element> | { target: { value: number } }
+    value: string
   ) => {
     const {
       priceType,
@@ -164,24 +164,20 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
       setFieldValue,
     } = this.props
 
-    if (`${e.target.value}`.match(/[a-zA-Z]/)) {
-      return
-    }
-
     const priceForCalculate =
       priceType !== 'market' && priceType !== 'maker-only' ? price : marketPrice
 
-    setFieldValue('total', e.target.value)
+    setFieldValue('total', value)
 
     if (priceForCalculate) {
-      const amount = e.target.value / priceForCalculate
+      const amount = parseFloat(value) / priceForCalculate
 
       setFieldValue('amount', stripDigitPlaces(amount, quantityPrecision))
     }
   }
 
   onAmountChange = (
-    e: SyntheticEvent<Element> | { target: { value: number } }
+    value: string
   ) => {
     const {
       funds,
@@ -197,10 +193,6 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
       quantityPrecision,
     } = this.props
 
-    if (`${e.target.value}`.match(/[a-zA-Z]/)) {
-      return
-    }
-
     const priceForCalculate =
       priceType !== 'market' && priceType !== 'maker-only' ? price : marketPrice
     const isBuyType = sideType === 'buy'
@@ -212,16 +204,17 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
 
     // const isAmountMoreThanMax = e.target.value > currentMaxAmount
     const isAmountMoreThanMax = false
+    const valueStripped = stripDigitPlaces(value, quantityPrecision)
     const isAmountLessThanMin =
-      stripDigitPlaces(e.target.value, quantityPrecision) < minOrderSize &&
-      stripDigitPlaces(e.target.value, quantityPrecision) !== '' &&
-      stripDigitPlaces(e.target.value, quantityPrecision) !== '0'
+      valueStripped < minOrderSize &&
+      valueStripped !== '' &&
+      valueStripped !== '0'
 
     const amountForUpdate = isAmountMoreThanMax
       ? currentMaxAmount
       : isAmountLessThanMin && minOrderSize < 1
         ? minOrderSize
-        : e.target.value
+        : value
 
     const total = amountForUpdate * priceForCalculate
 
@@ -229,7 +222,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
       ? stripDigitPlaces(amountForUpdate, quantityPrecision)
       : isAmountLessThanMin
         ? amountForUpdate
-        : e.target.value
+        : value
 
     setFieldValue('amount', strippedAmount)
     setFieldValue('total', stripDigitPlaces(total, 3))
@@ -476,6 +469,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                 total={values.total}
                 leverage={leverage}
                 isBuyType={isBuyType}
+                market={market}
                 onAfterSliderChange={(value) => {
                   if (!priceForCalculate) {
                     return
@@ -610,6 +604,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                 needCreateOpenOrdersAccount={needCreateOpenOrdersAccount}
                 validateForm={validateForm}
                 handleSubmit={handleSubmit}
+                market={market}
               />
             </Grid>
           </ButtonBlock>

@@ -1,6 +1,6 @@
 import Info from '@icons/inform.svg'
 import SvgIcon from '@sb/components/SvgIcon'
-import { TradeInputContent as Input } from '@sb/components/TraidingTerminal/TradeInputContent'
+import { DecimalInput } from '@sb/components/TraidingTerminal/TradeInputContent'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 import { SliderWithPriceAndPercentageFieldRowProps } from '@sb/compositions/Chart/components/SmartOrderTerminal/types'
@@ -48,6 +48,7 @@ export const ButtonsWithAmountFieldRowForBasic = ({
   amount,
   total,
   needButtons,
+  market,
 }: SliderWithPriceAndPercentageFieldRowProps) => {
   const [localAmount, updateLocalAmount] = useState(amount)
   const [localTotal, updateLocalTotal] = useState(total)
@@ -73,16 +74,16 @@ export const ButtonsWithAmountFieldRowForBasic = ({
       >
         <StyledInputsContainer mode={priceType}>
           <InputRowContainer padding="0 0 1.2rem 0" style={{ width: '100%' }}>
-            <Input
+            <DecimalInput
               theme={theme}
               needTitle
               title={`amount`}
               value={localAmount}
               type={'number'}
-              pattern="\d*"
               pattern={isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'}
               onChange={onAmountChange}
               symbol={pair[0]}
+              step={market?.minOrderSize}
             />
           </InputRowContainer>
           <InputRowContainer
@@ -91,7 +92,7 @@ export const ButtonsWithAmountFieldRowForBasic = ({
             direction={'column'}
             style={{ width: '100%' }}
           >
-            <Input
+            <DecimalInput
               theme={theme}
               needTitle
               type={'number'}
@@ -100,6 +101,7 @@ export const ButtonsWithAmountFieldRowForBasic = ({
               value={localTotal || 0}
               onChange={onTotalChange}
               symbol={pair[1]}
+              step={market?.tickSize}
             />
           </InputRowContainer>
         </StyledInputsContainer>

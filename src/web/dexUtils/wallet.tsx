@@ -1,49 +1,41 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import Mathwallet from '@icons/mathwallet.svg'
+import WalletAldrin from '@icons/RINLogo.svg'
+import Sollet from '@icons/sollet.svg'
+import Solong from '@icons/solong.svg'
+import { TokenInstructions } from '@project-serum/serum'
 import Wallet from '@project-serum/sol-wallet-adapter'
 import {
-  SolongWalletAdapter,
-  SolletExtensionAdapter,
-  MathWalletAdapter,
   CommonWalletAdapter,
-  CcaiExtensionAdapter,
-  PhantomWalletAdapter,
-  LedgerWalletAdapter,
+  LedgerWalletAdapter, MathWalletAdapter,
+  PhantomWalletAdapter, SolletExtensionAdapter, SolongWalletAdapter
 } from '@sb/dexUtils/adapters'
-import { notify } from './notifications'
+import { WalletAdapter } from '@sb/dexUtils/types'
 import {
-  useAccountInfo,
-  useConnection,
-  useConnectionConfig,
-} from './connection'
-import { CCAIProviderURL, useLocalStorageState, useRefEqual } from './utils'
-import {
-  Connection,
   PublicKey,
   SystemProgram,
   SYSVAR_RENT_PUBKEY,
   Transaction,
-  TransactionInstruction,
+  TransactionInstruction
 } from '@solana/web3.js'
-
-import { clusterApiUrl } from '@solana/web3.js'
-import { TokenListProvider } from '@solana/spl-token-registry'
-import { TokenInstructions } from '@project-serum/serum'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
+import { Coin98WalletAdapter } from './adapters/Coin98WalletAdapter'
+import { SolflareExtensionWalletAdapter } from './adapters/SolflareWallet'
+import {
+  useAccountInfo,
+  useConnection,
+  useConnectionConfig
+} from './connection'
 import { useAsyncData } from './fetch-loop'
+import { _VERY_SLOW_REFRESH_INTERVAL } from './markets'
+import { notify } from './notifications'
 import { getMaxWithdrawAmount } from './pools'
 import {
   getTokenAccountInfo,
   MINT_LAYOUT,
-  parseTokenAccountData,
+  parseTokenAccountData
 } from './tokens'
-import Sollet from '@icons/sollet.svg'
-import Mathwallet from '@icons/mathwallet.svg'
-import Solong from '@icons/solong.svg'
-import WalletAldrin from '@icons/RINLogo.svg'
-import { WalletAdapter } from '@sb/dexUtils/types'
-import { _VERY_SLOW_REFRESH_INTERVAL } from './markets'
-import { MASTER_BUILD } from '@core/utils/config'
-import { Coin98WalletAdapter } from './adapters/Coin98WalletAdapter'
-import { SolflareExtensionWalletAdapter } from './adapters/SolflareWallet'
+import { CCAIProviderURL, useLocalStorageState, useRefEqual } from './utils'
+
 
 export const WALLET_PROVIDERS = [
   // { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },
@@ -159,38 +151,6 @@ export function WalletProvider({ children }) {
     [providerUrl]
   )
 
-  // let [wallet, setWallet] = useState<WalletAdapter | undefined>(
-  //   new Wallet(providerUrl, endpoint)
-  // )
-
-  // useEffect(() => {
-  //   if (provider) {
-  //     const updateWallet = () => {
-  //       // hack to also update wallet synchronously in case it disconnects
-  //       // eslint-disable-next-line react-hooks/exhaustive-deps
-  //       wallet = new (provider.adapter || Wallet)(
-  //         providerUrl,
-  //         endpoint
-  //       ) as WalletAdapter
-  //       setWallet(wallet)
-  //     }
-
-  //     if (document.readyState !== 'complete') {
-  //       // wait to ensure that browser extensions are loaded
-  //       const listener = () => {
-  //         updateWallet()
-  //         window.removeEventListener('load', listener)
-  //       }
-  //       window.addEventListener('load', listener)
-  //       return () => window.removeEventListener('load', listener)
-  //     } else {
-  //       updateWallet()
-  //     }
-  //   }
-
-  //   return () => {}
-  // }, [provider, providerUrl, endpoint])
-
   const [connected, setConnected] = useState(false)
 
   const wallet = useMemo(() => {
@@ -216,12 +176,12 @@ export function WalletProvider({ children }) {
           const keyToDisplay =
             walletPublicKey.length > 20
               ? `${walletPublicKey.substring(
-                  0,
-                  7
-                )}.....${walletPublicKey.substring(
-                  walletPublicKey.length - 7,
-                  walletPublicKey.length
-                )}`
+                0,
+                7
+              )}.....${walletPublicKey.substring(
+                walletPublicKey.length - 7,
+                walletPublicKey.length
+              )}`
               : walletPublicKey
 
           notify({
@@ -255,7 +215,7 @@ export function WalletProvider({ children }) {
       setAutoConnect(false)
     }
 
-    return () => {}
+    return () => { }
   }, [wallet, autoConnect])
 
   useEffect(() => {
@@ -353,100 +313,6 @@ export function parseMintData(data) {
   return { decimals }
 }
 
-// const TokenListContext = React.createContext({});
-
-// export const CLUSTERS = [
-//   {
-//     name: 'mainnet-beta',
-//     apiUrl: MAINNET_URL,
-//     label: 'Mainnet Beta'
-//   },
-//   {
-//     name: 'devnet',
-//     apiUrl: clusterApiUrl('devnet'),
-//     label: 'Devnet'
-//   },
-//   {
-//     name: 'testnet',
-//     apiUrl: clusterApiUrl('testnet'),
-//     label: 'Testnet'
-//   },
-//   {
-//     name: 'localnet',
-//     apiUrl: 'http://localhost:8899',
-//     label: null
-//   }
-// ];
-
-// export function clusterForEndpoint(endpoint) {
-//   return CLUSTERS.find(({ apiUrl }) => apiUrl === endpoint);
-// }
-
-// export function useTokenInfos() {
-//   const { tokenInfos } = useContext(TokenListContext);
-//   return tokenInfos;
-// }
-
-// const nameUpdated = new EventEmitter();
-// nameUpdated.setMaxListeners(100);
-
-// export function useTokenInfo(mint) {
-//   const { endpoint } = useConnectionConfig();
-//   useListener(nameUpdated, 'update');
-//   const tokenInfos = useTokenInfos();
-//   return getTokenInfo(mint, endpoint, tokenInfos);
-// }
-
-// export function TokenRegistryProvider(props) {
-//   const { endpoint } = useConnectionConfig();
-//   const [tokenInfos, setTokenInfos] = useState(null);
-//   useEffect(() => {
-//     const tokenListProvider = new TokenListProvider();
-//     tokenListProvider.resolve().then((tokenListContainer) => {
-//       const cluster = clusterForEndpoint(endpoint);
-
-//       const filteredTokenListContainer = tokenListContainer?.filterByClusterSlug(
-//         cluster?.name,
-//       );
-//       const tokenInfos =
-//         tokenListContainer !== filteredTokenListContainer
-//           ? filteredTokenListContainer?.getList()
-//           : null; // Workaround for filter return all on unknown slug
-//       setTokenInfos(tokenInfos);
-//     });
-//   }, [endpoint]);
-
-//   return (
-//     <TokenListContext.Provider value={{ tokenInfos }}>
-//       {props.children}
-//     </TokenListContext.Provider>
-//   );
-// }
-
-// const customTokenNamesByNetwork = JSON.parse(
-//   localStorage.getItem('tokenNames') ?? '{}',
-// );
-
-// export function getTokenInfo(mint, endpoint, tokenInfos) {
-//   if (!mint) {
-//     return { name: null, symbol: null };
-//   }
-
-//   let info = customTokenNamesByNetwork?.[endpoint]?.[mint.toBase58()];
-//   let match = tokenInfos?.find(
-//     (tokenInfo) => tokenInfo.address === mint.toBase58(),
-//   );
-//   if (match) {
-//     if (!info) {
-//       info = { ...match, logoUri: match.logoURI };
-//     }
-//     // The user has overridden a name locally.
-//     else {
-//       info = { ...info, logoUri: match.logoURI };
-//     }
-//   }
-//   return { ...info };
-// }
 
 export function useBalanceInfo(publicKey) {
   let [accountInfo, accountInfoLoaded] = useAccountInfo(publicKey)

@@ -1,5 +1,6 @@
 import { Theme } from '@material-ui/core'
 import { ChangeEvent, CSSProperties } from 'react'
+import { Market } from '@project-serum/serum'
 
 export interface IProps {
   price: number
@@ -210,4 +211,7 @@ export interface SliderWithPriceAndPercentageFieldRowProps extends CommonForBloc
   priceForCalculate: number,
   pricePrecision: number
   updateTerminalViewMode?: (newMode: string) => void
+  market: Market
+  onAmountChange: (v: string) => void
+  onTotalChange: (v: string) => void
 }

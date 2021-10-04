@@ -1,6 +1,7 @@
 import Attention from '@icons/attention.svg'
 import Info from '@icons/inform.svg'
 import { Paper } from '@material-ui/core'
+import { Market } from '@project-serum/serum'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
@@ -12,8 +13,8 @@ import styled from 'styled-components'
 import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
 import { SCheckbox } from '../SharePortfolioDialog/SharePortfolioDialog.styles'
 import { ButtonsWithAmountFieldRowForBasic } from './AmountButtons'
-import { TradeInputContent } from './index'
 import { SendButton } from './styles'
+import { DecimalInput } from './TradeInputContent'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -102,33 +103,42 @@ const WarningBlock = styled.div`
   border-radius: 1rem;
 `
 
-export const ConfirmationPopup = ({
-  pair,
-  theme,
-  maxAmount,
-  minOrderSize,
-  priceType,
-  onAmountChange,
-  onTotalChange,
-  isSPOTMarket,
-  quantityPrecision,
-  priceForCalculate,
-  amount,
-  total,
-  leverage,
-  isBuyType,
-  open,
-  onPriceChange,
-  values,
-  sideType,
-  onClose,
-  costsOfTheFirstTrade,
-  SOLFeeForTrade,
-  needCreateOpenOrdersAccount,
-  validateForm,
-  handleSubmit,
-  spread,
-}) => {
+interface ConfirmationPopupProps {
+  onPriceChange: (v: string) => void
+  onAmountChange: (v: string) => void
+  onTotalChange: (v: string) => void
+  market: Market
+}
+
+export const ConfirmationPopup = (props: ConfirmationPopupProps) => {
+  const {
+    pair,
+    theme,
+    maxAmount,
+    minOrderSize,
+    priceType,
+    onAmountChange,
+    onTotalChange,
+    isSPOTMarket,
+    quantityPrecision,
+    priceForCalculate,
+    amount,
+    total,
+    leverage,
+    isBuyType,
+    open,
+    onPriceChange,
+    values,
+    sideType,
+    onClose,
+    costsOfTheFirstTrade,
+    SOLFeeForTrade,
+    needCreateOpenOrdersAccount,
+    validateForm,
+    handleSubmit,
+    spread,
+    market
+  } = props
   const isSlippageHigh = spread > 2
   const [isAwareOfHighSlippage, confirmIsAwareOfHighSlippage] = useState(false)
   const isMobile = useMobileSize()
@@ -179,7 +189,7 @@ export const ConfirmationPopup = ({
                 padding={'.6rem 0'}
                 direction={'column'}
               >
-                <TradeInputContent
+                <DecimalInput
                   theme={theme}
                   needTitle
                   type={'text'}
@@ -187,6 +197,7 @@ export const ConfirmationPopup = ({
                   value={values.price || ''}
                   onChange={onPriceChange}
                   symbol={pair[1]}
+                  step={market?.tickSize}
                 />
               </InputRowContainer>
             ) : null}

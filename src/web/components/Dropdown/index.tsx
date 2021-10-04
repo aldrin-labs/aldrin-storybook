@@ -1,22 +1,18 @@
-import * as React from 'react'
-import ReactDOM from 'react-dom'
-import { withRouter } from 'react-router-dom'
-import { MenuList, Grid, withWidth } from '@material-ui/core'
-import {
-  StyledDropdown,
-  StyledPaper,
-  StyledMenuItem,
-  StyledMenuItemText,
-  StyledLink,
-  StyledButton,
-} from './Dropdown.styles'
+import { MenuList } from '@material-ui/core'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import SvgIcon from '@sb/components/SvgIcon'
-
-import { IProps } from './types'
-import styled from 'styled-components'
-
 import { WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
+import * as React from 'react'
+import { withRouter } from 'react-router-dom'
+import styled from 'styled-components'
+import {
+  StyledButton, StyledDropdown,
+
+  StyledMenuItem, StyledPaper
+} from './Dropdown.styles'
+import { IProps } from './types'
+
+
 
 const WalletStatusButton = ({ wallet, connected, theme, id }) => (
   <BtnCustom
@@ -48,28 +44,28 @@ const ConnectWalletButton = ({
 }: {
   buttonStyles?: React.CSSProperties
 }) => (
-  <BtnCustom
-    onClick={wallet?.connect}
-    btnColor={'#F8FAFF'}
-    backgroundColor={theme.palette.blue.serum}
-    btnWidth={'100%'}
-    borderColor={theme.palette.blue.serum}
-    textTransform={'capitalize'}
-    height={height}
-    borderRadius=".6rem"
-    fontSize={'1.2rem'}
-    style={{
-      display: 'flex',
-      textTransform: 'none',
-      padding: '1rem',
-      whiteSpace: 'nowrap',
-      ...buttonStyles,
-    }}
-    id={id}
-  >
-    Connect wallet
-  </BtnCustom>
-)
+    <BtnCustom
+      onClick={wallet?.connect}
+      btnColor={'#F8FAFF'}
+      backgroundColor={theme.palette.blue.serum}
+      btnWidth={'100%'}
+      borderColor={theme.palette.blue.serum}
+      textTransform={'capitalize'}
+      height={height}
+      borderRadius=".6rem"
+      fontSize={'1.2rem'}
+      style={{
+        display: 'flex',
+        textTransform: 'none',
+        padding: '1rem',
+        whiteSpace: 'nowrap',
+        ...buttonStyles,
+      }}
+      id={id}
+    >
+      Connect wallet
+    </BtnCustom>
+  )
 
 const StyledButton = styled(BtnCustom)`
   & span {
@@ -119,15 +115,15 @@ export default class Dropdown extends React.Component<IProps> {
               id={id}
             />
           ) : (
-            <ConnectWalletButton
-              wallet={wallet}
-              connected={connected}
-              height={height}
-              theme={theme}
-              id={id}
-              buttonStyles={buttonStyles}
-            />
-          )}
+              <ConnectWalletButton
+                wallet={wallet}
+                connected={connected}
+                height={height}
+                theme={theme}
+                id={id}
+                buttonStyles={buttonStyles}
+              />
+            )}
           <StyledPaper
             style={{
               display: isSelected ? 'none' : '',
