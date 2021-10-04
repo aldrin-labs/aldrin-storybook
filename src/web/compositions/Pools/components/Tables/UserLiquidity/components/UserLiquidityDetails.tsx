@@ -1,17 +1,57 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import { GreenButton, RowDataTdText } from '../../index.styles'
-import { StakePopup } from '../../../Popups/Staking/StakePopup'
-import { UnstakePopup } from '../../../Popups/Unstaking/UnstakePopup'
+import {
+  AmountText,
+  GreenButton,
+  RowDataTdText,
+  WhiteText,
+} from '../../index.styles'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { Theme } from '@material-ui/core'
+import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
+import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 
-export const UserLiquidityDetails = ({ theme, pool, allTokensData }) => {
+export const UserLiquidityDetails = ({
+  theme,
+  pool,
+  allTokensDataMap,
+  selectPool,
+  setIsWithdrawalPopupOpen,
+  setIsAddLiquidityPopupOpen,
+  setIsStakePopupOpen,
+  setIsUnstakePopupOpen,
+}: {
+  theme: Theme
+  pool: PoolInfo
+  allTokensDataMap: Map<string, TokenInfo>
+  selectPool: (pool: PoolInfo) => void
+  setIsWithdrawalPopupOpen: (value: boolean) => void
+  setIsAddLiquidityPopupOpen: (value: boolean) => void
+  setIsStakePopupOpen: (value: boolean) => void
+  setIsUnstakePopupOpen: (value: boolean) => void
+}) => {
   const { wallet } = useWallet()
-  const [isUnstakePopupOpen, setIsUnstakePopupOpen] = useState(false)
 
-  const [isStakePopupOpen, setIsStakePopupOpen] = useState(false)
+  const poolTokenAmount = allTokensDataMap.get(pool.poolTokenMint)?.amount || 0
+  const stakedTokens = 0
+
+  // if has pool tokens or staked
+  const hasPoolTokens = poolTokenAmount > 0
+  const hasStakedTokens = stakedTokens > 0
+
+  const hasLiquidity = hasPoolTokens || hasStakedTokens
+
+  const [baseTokenAmount, quoteTokenAmount] = calculateWithdrawAmount({
+    selectedPool: pool,
+    poolTokenAmount,
+  })
 
   return (
     <RowContainer margin="1rem 0" style={{ background: '#222429' }}>
@@ -30,100 +70,119 @@ export const UserLiquidityDetails = ({ theme, pool, allTokensData }) => {
           >
             Your Liquitity:
           </RowDataTdText>
-          <RowDataTdText
-            color={'#A5E898'}
-            fontFamily="Avenir Next Medium"
-            theme={theme}
-          >
-            100{' '}
-            <span style={{ color: '#fbf2f2' }}>
-              {getTokenNameByMintAddress(pool.tokenA)}
-            </span>{' '}
-            / 2{' '}
-            <span style={{ color: '#fbf2f2' }}>
-              {getTokenNameByMintAddress(pool.tokenB)}
-            </span>{' '}
-            (<span style={{ color: '#fbf2f2' }}>$</span>1,000){' '}
-          </RowDataTdText>
+
+          {hasLiquidity ? (
+            <RowDataTdText
+              color={'#A5E898'}
+              fontFamily="Avenir Next Medium"
+              theme={theme}
+            >
+              {formatNumberToUSFormat(stripDigitPlaces(baseTokenAmount, 8))}{' '}
+              <WhiteText>{getTokenNameByMintAddress(pool.tokenA)}</WhiteText> /{' '}
+              {formatNumberToUSFormat(stripDigitPlaces(quoteTokenAmount, 8))}{' '}
+              <WhiteText>{getTokenNameByMintAddress(pool.tokenB)}</WhiteText> (
+              <WhiteText>$</WhiteText>
+              <span>{formatNumberToUSFormat(stripDigitPlaces(1000, 2))}</span>)
+            </RowDataTdText>
+          ) : (
+            <RowDataTdText
+              color={'#A5E898'}
+              fontFamily="Avenir Next Medium"
+              theme={theme}
+            >
+              0$
+            </RowDataTdText>
+          )}
         </Row>
 
-        <Row align="flex-start" direction="column" width="25%">
-          <RowDataTdText
-            theme={theme}
-            color={theme.palette.grey.new}
-            style={{ marginBottom: '1rem' }}
-          >
-            Fees Earned:
-          </RowDataTdText>
-          <RowDataTdText
-            color={'#A5E898'}
-            fontFamily="Avenir Next Medium"
-            theme={theme}
-          >
-            100{' '}
-            <span style={{ color: '#fbf2f2' }}>
-              {getTokenNameByMintAddress(pool.tokenA)}
-            </span>{' '}
-            / 2{' '}
-            <span style={{ color: '#fbf2f2' }}>
-              {getTokenNameByMintAddress(pool.tokenB)}
-            </span>{' '}
-            (<span style={{ color: '#fbf2f2' }}>$</span>1,000){' '}
-          </RowDataTdText>
-        </Row>
+        {hasLiquidity && (
+          <Row align="flex-start" direction="column" width="25%">
+            <RowDataTdText
+              theme={theme}
+              color={theme.palette.grey.new}
+              style={{ marginBottom: '1rem' }}
+            >
+              Fees Earned:
+            </RowDataTdText>
+            <RowDataTdText
+              color={'#A5E898'}
+              fontFamily="Avenir Next Medium"
+              theme={theme}
+            >
+              100{' '}
+              <span style={{ color: '#fbf2f2' }}>
+                {getTokenNameByMintAddress(pool.tokenA)}
+              </span>{' '}
+              / 2{' '}
+              <span style={{ color: '#fbf2f2' }}>
+                {getTokenNameByMintAddress(pool.tokenB)}
+              </span>{' '}
+              (<span style={{ color: '#fbf2f2' }}>$</span>1,000){' '}
+            </RowDataTdText>
+          </Row>
+        )}
 
-        <Row align="flex-start" direction="column" width="25%">
-          <RowDataTdText
-            theme={theme}
-            color={theme.palette.grey.new}
-            style={{ marginBottom: '1rem' }}
-          >
-            Pool Tokens:
-          </RowDataTdText>
-          <RowDataTdText
-            color={'#A5E898'}
-            fontFamily="Avenir Next Medium"
-            theme={theme}
-          >
-            <span style={{ color: '#fbf2f2' }}>Total:</span> 500{' '}
-            <span style={{ color: '#fbf2f2' }}>Staked:</span> 200
-          </RowDataTdText>
-        </Row>
+        {hasLiquidity && (
+          <Row align="flex-start" direction="column" width="25%">
+            <RowDataTdText
+              theme={theme}
+              color={theme.palette.grey.new}
+              style={{ marginBottom: '1rem' }}
+            >
+              Pool Tokens:
+            </RowDataTdText>
+            <RowDataTdText
+              color={'#A5E898'}
+              fontFamily="Avenir Next Medium"
+              theme={theme}
+            >
+              <span style={{ color: '#fbf2f2' }}>Total:</span> {poolTokenAmount}{' '}
+              <span style={{ color: '#fbf2f2' }}>Staked:</span> 200
+            </RowDataTdText>
+          </Row>
+        )}
+
         <Row direction="column" width="25%">
           <BlueButton
             theme={theme}
-            style={{ marginBottom: '1rem' }}
+            style={{ marginBottom: hasLiquidity ? '1rem' : '0' }}
             onClick={() => {
               if (!wallet.connected) {
                 wallet.connect()
                 return
               }
+
+              selectPool(pool)
+              setIsAddLiquidityPopupOpen(true)
             }}
           >
-            {!wallet.connected ? 'Connect Wallet' : 'Deposit Liquidity'}
+            {wallet.connected ? 'Deposit Liquidity' : 'Connect Wallet'}
           </BlueButton>
 
-          <BlueButton
-            onClick={() => {
-              if (!wallet.connected) {
-                wallet.connect()
-                return
-              }
-            }}
-            disabled={pool.locked}
-            theme={theme}
-          >
-            {!wallet.connected
-              ? 'Connect Wallet'
-              : pool.locked
-              ? 'Locked until Oct 16, 2021'
-              : 'Withdraw Liquidity + Fees'}
-          </BlueButton>
+          {hasLiquidity && (
+            <BlueButton
+              theme={theme}
+              disabled={pool.locked}
+              onClick={() => {
+                if (!wallet.connected) {
+                  wallet.connect()
+                  return
+                }
+
+                selectPool(pool)
+                setIsWithdrawalPopupOpen(true)
+              }}
+            >
+              {!wallet.connected
+                ? 'Connect Wallet'
+                : 'Withdraw Liquidity + Fees'}
+            </BlueButton>
+          )}
         </Row>
       </Row>
       <Row justify="space-between" width="40%" padding="0 0 0 4rem">
         <Row align="flex-start" direction="column" width="60%">
-          {pool.staked ? (
+          {hasStakedTokens ? (
             <RowDataTdText
               fontFamily={'Avenir Next Medium'}
               style={{ marginBottom: '3.5rem' }}
@@ -145,8 +204,9 @@ export const UserLiquidityDetails = ({ theme, pool, allTokensData }) => {
               Farming
             </RowDataTdText>
           )}
+
           <RowContainer justify="flex-start" theme={theme}>
-            {pool.staked ? (
+            {hasStakedTokens ? (
               <RowContainer justify="space-between">
                 <GreenButton
                   onClick={() => {
@@ -154,6 +214,8 @@ export const UserLiquidityDetails = ({ theme, pool, allTokensData }) => {
                       wallet.connect()
                       return
                     }
+
+                    selectPool(pool)
                     setIsStakePopupOpen(true)
                   }}
                   theme={theme}
@@ -170,6 +232,8 @@ export const UserLiquidityDetails = ({ theme, pool, allTokensData }) => {
                       wallet.connect()
                       return
                     }
+
+                    selectPool(pool)
                     setIsUnstakePopupOpen(true)
                   }}
                 >
@@ -180,7 +244,7 @@ export const UserLiquidityDetails = ({ theme, pool, allTokensData }) => {
                     : 'Unstake Pool Token'}
                 </GreenButton>
               </RowContainer>
-            ) : (
+            ) : hasPoolTokens ? (
               <RowDataTdText>
                 Stake your pool tokens to start
                 <span style={{ color: '#A5E898', padding: '0 0.5rem' }}>
@@ -188,10 +252,16 @@ export const UserLiquidityDetails = ({ theme, pool, allTokensData }) => {
                 </span>
                 farming
               </RowDataTdText>
+            ) : (
+              <RowDataTdText>
+                Deposit liquidity to farm{' '}
+                <span style={{ color: '#A5E898' }}>RIN</span>
+              </RowDataTdText>
             )}
           </RowContainer>
         </Row>
-        {!pool.staked && (
+
+        {hasPoolTokens && (
           <Row direction="column" width="40%" align="flex-end">
             <RowDataTdText
               theme={theme}
@@ -207,6 +277,8 @@ export const UserLiquidityDetails = ({ theme, pool, allTokensData }) => {
                   wallet.connect()
                   return
                 }
+
+                selectPool(pool)
                 setIsStakePopupOpen(true)
               }}
             >
