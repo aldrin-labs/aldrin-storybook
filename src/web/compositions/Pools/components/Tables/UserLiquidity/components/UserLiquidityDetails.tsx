@@ -215,20 +215,6 @@ export const UserLiquidityDetails = ({ theme, pool, allTokensData }) => {
           </Row>
         )}
       </Row>
-      <StakePopup
-        theme={theme}
-        open={isStakePopupOpen}
-        pool={pool}
-        close={() => setIsStakePopupOpen(false)}
-        allTokensData={allTokensData}
-      />
-      <UnstakePopup
-        theme={theme}
-        open={isUnstakePopupOpen}
-        pool={pool}
-        close={() => setIsUnstakePopupOpen(false)}
-        allTokensData={allTokensData}
-      />
     </RowContainer>
   )
 }

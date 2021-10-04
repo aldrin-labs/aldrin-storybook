@@ -104,8 +104,6 @@ const TablesSwitcher = ({
     new Map()
   )
 
-  console.log('allTokensData',allTokensData)
-
   return (
     <RowContainer>
       <BlockTemplate
