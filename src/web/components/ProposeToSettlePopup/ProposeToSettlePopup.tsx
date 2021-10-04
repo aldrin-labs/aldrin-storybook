@@ -27,7 +27,7 @@ import SvgIcon from '../SvgIcon'
 
 export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
   const [isPopupOpen, setIsPopupOpen] = useLocalStorageState(
-    'isSettlePopuoPopupOpen',
+    'isSettlePopupOpen',
     true
   )
   const [isPopupTemporaryHidden, setIsPopupTemporaryHidden] = useState(false)
