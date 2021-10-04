@@ -27,6 +27,7 @@ const AllPoolsTableComponent = ({
   getFeesEarnedByPoolQuery,
   allTokensDataMap,
   userStakingAmountsMap,
+  earnedFeesInPoolForUserMap,
   selectPool,
   setIsAddLiquidityPopupOpen,
   setIsWithdrawalPopupOpen,
@@ -35,11 +36,12 @@ const AllPoolsTableComponent = ({
 }: {
   theme: Theme
   searchValue: string
-  dexTokensPricesMap: Map<string, DexTokensPrices>
   poolsInfo: PoolInfo[]
   getFeesEarnedByPoolQuery: { getFeesEarnedByPool: FeesEarned[] }
+  dexTokensPricesMap: Map<string, DexTokensPrices>
   allTokensDataMap: Map<string, TokenInfo>
   userStakingAmountsMap: Map<string, number>
+  earnedFeesInPoolForUserMap: Map<string, number>
   selectPool: (pool: PoolInfo) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
@@ -58,11 +60,11 @@ const AllPoolsTableComponent = ({
     getFeesEarnedByPool: [],
   }
 
-  const feesPerPoolMap = new Map()
-
-  getFeesEarnedByPool.forEach((feeEarnedByPool) => {
-    feesPerPoolMap.set(feeEarnedByPool.pool, feeEarnedByPool.earnedUSD)
-  })
+  const feesPerPoolMap = getFeesEarnedByPool.reduce(
+    (acc, feeEarnedByPool) =>
+      acc.set(feeEarnedByPool.pool, feeEarnedByPool.earnedUSD),
+    new Map()
+  )
 
   const allPoolsData = combineAllPoolsData({
     theme,
@@ -74,6 +76,7 @@ const AllPoolsTableComponent = ({
     expandedRows,
     allTokensDataMap,
     userStakingAmountsMap,
+    earnedFeesInPoolForUserMap,
     selectPool,
     setIsAddLiquidityPopupOpen,
     setIsWithdrawalPopupOpen,

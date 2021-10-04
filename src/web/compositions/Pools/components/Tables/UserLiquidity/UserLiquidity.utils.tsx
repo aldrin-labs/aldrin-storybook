@@ -29,6 +29,7 @@ import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { UserLiquidityDetails } from './components/UserLiquidityDetails'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
+import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 
 export const getTotalUserLiquidity = ({
   usersPools,
@@ -96,10 +97,9 @@ export const userLiquidityTableColumnsNames = [
   { label: '', id: 'details' },
 ]
 
-export type Pools = {}
-
 export const combineUserLiquidityData = ({
   theme,
+  searchValue,
   dexTokensPricesMap,
   usersPools,
   expandedRows,
@@ -113,6 +113,7 @@ export const combineUserLiquidityData = ({
   setIsUnstakePopupOpen,
 }: {
   theme: Theme
+  searchValue: string
   dexTokensPricesMap: Map<string, DexTokensPrices>
   usersPools: PoolInfo[]
   expandedRows: string[]
@@ -126,198 +127,208 @@ export const combineUserLiquidityData = ({
   setIsUnstakePopupOpen: (value: boolean) => void
 }) => {
   // const processedUserLiquidityData = usersPools
-  const processedUserLiquidityData = mock.map((el: PoolInfo) => {
-    const baseSymbol = getTokenNameByMintAddress(el.tokenA)
-    const quoteSymbol = getTokenNameByMintAddress(el.tokenB)
+  const processedUserLiquidityData = mock
+    .filter((el) =>
+      filterDataBySymbolForDifferentDeviders({
+        searchValue,
+        symbol: el.parsedName,
+      })
+    )
+    .map((el: PoolInfo) => {
+      const baseSymbol = getTokenNameByMintAddress(el.tokenA)
+      const quoteSymbol = getTokenNameByMintAddress(el.tokenB)
 
-    const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 10
+      const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 10
 
-    const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 10
+      const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 10
 
-    const tvlUSD =
-      baseTokenPrice * el.tvl.tokenA + quoteTokenPrice * el.tvl.tokenB
+      const tvlUSD =
+        baseTokenPrice * el.tvl.tokenA + quoteTokenPrice * el.tvl.tokenB
 
-    const {
-      amount: poolTokenRawAmount,
-      decimals: poolTokenDecimals,
-    } = allTokensDataMap.get(el.poolTokenMint) || {
-      amount: 0,
-      decimals: 0,
-    }
+      const {
+        amount: poolTokenRawAmount,
+        decimals: poolTokenDecimals,
+      } = allTokensDataMap.get(el.poolTokenMint) || {
+        amount: 0,
+        decimals: 0,
+      }
 
-    const poolTokenAmount = poolTokenRawAmount * 10 ** poolTokenDecimals
+      const poolTokenAmount = poolTokenRawAmount * 10 ** poolTokenDecimals
 
-    const [userAmountTokenA, userAmountTokenB] = calculateWithdrawAmount({
-      selectedPool: el,
-      poolTokenAmount: poolTokenAmount,
-    })
+      const [userAmountTokenA, userAmountTokenB] = calculateWithdrawAmount({
+        selectedPool: el,
+        poolTokenAmount: poolTokenAmount,
+      })
 
-    const userLiquidityUSD =
-      baseTokenPrice * userAmountTokenA + quoteTokenPrice * userAmountTokenB
+      const userLiquidityUSD =
+        baseTokenPrice * userAmountTokenA + quoteTokenPrice * userAmountTokenB
 
-    return {
-      id: `${el.name}${el.tvl}${el.poolTokenMint}`,
-      pool: {
-        render: (
-          <Row
-            justify="flex-start"
-            style={{ width: '18rem', flexWrap: 'nowrap' }}
-          >
-            <TokenIconsContainer tokenA={el.tokenA} tokenB={el.tokenB} />{' '}
-            {el.locked ? (
-              <SvgIcon
-                style={{ marginLeft: '1rem' }}
-                width="2rem"
-                height="auto"
-                src={CrownIcon}
-              />
-            ) : el.executed ? (
-              <DarkTooltip
-                title={
-                  'RIN token founders complained about this pool, it will be excluded from the catalog and AMM. You can withdraw liquidity and deposit it in the official pool at "All Pools" tab.'
-                }
-              >
-                <div>
-                  <SvgIcon
-                    style={{ marginLeft: '1rem' }}
-                    width="2rem"
-                    height="auto"
-                    src={ForbiddenIcon}
-                  />
-                </div>
-              </DarkTooltip>
-            ) : null}
-          </Row>
-        ),
-      },
-      tvl: {
-        render: (
-          <TextColumnContainer>
-            <RowDataTdTopText theme={theme}>
-              ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
-            </RowDataTdTopText>
-            <RowDataTdText theme={theme} color={theme.palette.grey.new}>
-              {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenA, 2))}{' '}
-              {getTokenNameByMintAddress(el.tokenA)} /{' '}
-              {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenB, 2))}{' '}
-              {getTokenNameByMintAddress(el.tokenB)}
-            </RowDataTdText>
-          </TextColumnContainer>
-        ),
-        showOnMobile: false,
-      },
-      userLiquidity: {
-        render: (
-          <TextColumnContainer>
-            <RowDataTdTopText theme={theme}>
-              ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
-            </RowDataTdTopText>
-            <RowDataTdText theme={theme} color={theme.palette.grey.new}>
-              {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenA, 2))}{' '}
-              {getTokenNameByMintAddress(el.tokenA)} /{' '}
-              {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenB, 2))}{' '}
-              {getTokenNameByMintAddress(el.tokenB)}
-            </RowDataTdText>
-          </TextColumnContainer>
-        ),
-      },
-      fees: {
-        render: (
-          <RowDataTdText theme={theme}>
-            $
-            {stripDigitPlaces(
-              earnedFeesInPoolForUserMap.get(el.swapToken) || 0,
-              6
-            )}
-          </RowDataTdText>
-        ),
-      },
-      apy: {
-        render: (
-          <RowDataTdText
-            color={'#A5E898'}
-            fontFamily="Avenir Next Medium"
-            theme={theme}
-          >
-            {stripDigitPlaces(el.apy24h, 6)}%
-          </RowDataTdText>
-        ),
-      },
-      farming: {
-        render: (
-          <RowContainer justify="flex-start" theme={theme}>
-            <Row margin="0 1rem 0 0" justify="flex-start">
-              <TokenIcon
-                mint={el.tokenA}
-                width={'3rem'}
-                emojiIfNoLogo={false}
-                // isAwesomeMarket={isCustomUserMarket}
-                // isAdditionalCustomUserMarket={isPrivateCustomMarket}
-              />
-            </Row>
-            <Row align="flex-start" direction="column">
-              <RowDataTdText
-                fontFamily="Avenir Next Medium"
-                style={{ marginBottom: '1rem' }}
-                theme={theme}
-              >
-                {getTokenNameByMintAddress(el.tokenA)}
-              </RowDataTdText>
-              <RowDataTdText>
-                <span style={{ color: '#A5E898' }}>12</span> RIN/Day for each $
-                <span style={{ color: '#A5E898' }}>1000</span>
-              </RowDataTdText>
-            </Row>
-          </RowContainer>
-        ),
-      },
-      details: {
-        render: (
-          <Row>
-            <RowDataTdText
-              theme={theme}
-              color={theme.palette.grey.new}
-              fontFamily="Avenir Next Medium"
-              style={{ marginRight: '1rem' }}
+      return {
+        id: `${el.name}${el.tvl}${el.poolTokenMint}`,
+        pool: {
+          render: (
+            <Row
+              justify="flex-start"
+              style={{ width: '18rem', flexWrap: 'nowrap' }}
             >
-              Details
-            </RowDataTdText>
-            <SvgIcon
-              width="1rem"
-              height="auto"
-              src={
-                // separate to variable
-                expandedRows.includes(`${el.name}${el.tvl}${el.poolTokenMint}`)
-                  ? ArrowToBottom
-                  : ArrowToTop
-              }
-            />
-          </Row>
-        ),
-      },
-      expandableContent: [
-        {
-          row: {
-            render: (
-              <UserLiquidityDetails
-                setIsStakePopupOpen={setIsStakePopupOpen}
-                setIsUnstakePopupOpen={setIsUnstakePopupOpen}
-                setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
-                setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
-                selectPool={selectPool}
-                userStakingAmountsMap={userStakingAmountsMap}
-                dexTokensPricesMap={dexTokensPricesMap}
-                allTokensDataMap={allTokensDataMap}
-                theme={theme}
-                pool={el}
-              />
-            ),
-            colspan: 8,
-          },
+              <TokenIconsContainer tokenA={el.tokenA} tokenB={el.tokenB} />{' '}
+              {el.locked ? (
+                <SvgIcon
+                  style={{ marginLeft: '1rem' }}
+                  width="2rem"
+                  height="auto"
+                  src={CrownIcon}
+                />
+              ) : el.executed ? (
+                <DarkTooltip
+                  title={
+                    'RIN token founders complained about this pool, it will be excluded from the catalog and AMM. You can withdraw liquidity and deposit it in the official pool at "All Pools" tab.'
+                  }
+                >
+                  <div>
+                    <SvgIcon
+                      style={{ marginLeft: '1rem' }}
+                      width="2rem"
+                      height="auto"
+                      src={ForbiddenIcon}
+                    />
+                  </div>
+                </DarkTooltip>
+              ) : null}
+            </Row>
+          ),
         },
-      ],
-    }
-  })
+        tvl: {
+          render: (
+            <TextColumnContainer>
+              <RowDataTdTopText theme={theme}>
+                ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
+              </RowDataTdTopText>
+              <RowDataTdText theme={theme} color={theme.palette.grey.new}>
+                {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenA, 2))}{' '}
+                {getTokenNameByMintAddress(el.tokenA)} /{' '}
+                {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenB, 2))}{' '}
+                {getTokenNameByMintAddress(el.tokenB)}
+              </RowDataTdText>
+            </TextColumnContainer>
+          ),
+          showOnMobile: false,
+        },
+        userLiquidity: {
+          render: (
+            <TextColumnContainer>
+              <RowDataTdTopText theme={theme}>
+                ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
+              </RowDataTdTopText>
+              <RowDataTdText theme={theme} color={theme.palette.grey.new}>
+                {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenA, 2))}{' '}
+                {getTokenNameByMintAddress(el.tokenA)} /{' '}
+                {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenB, 2))}{' '}
+                {getTokenNameByMintAddress(el.tokenB)}
+              </RowDataTdText>
+            </TextColumnContainer>
+          ),
+        },
+        fees: {
+          render: (
+            <RowDataTdText theme={theme}>
+              $
+              {stripDigitPlaces(
+                earnedFeesInPoolForUserMap.get(el.swapToken) || 0,
+                6
+              )}
+            </RowDataTdText>
+          ),
+        },
+        apy: {
+          render: (
+            <RowDataTdText
+              color={'#A5E898'}
+              fontFamily="Avenir Next Medium"
+              theme={theme}
+            >
+              {stripDigitPlaces(el.apy24h, 6)}%
+            </RowDataTdText>
+          ),
+        },
+        farming: {
+          render: (
+            <RowContainer justify="flex-start" theme={theme}>
+              <Row margin="0 1rem 0 0" justify="flex-start">
+                <TokenIcon
+                  mint={el.tokenA}
+                  width={'3rem'}
+                  emojiIfNoLogo={false}
+                  // isAwesomeMarket={isCustomUserMarket}
+                  // isAdditionalCustomUserMarket={isPrivateCustomMarket}
+                />
+              </Row>
+              <Row align="flex-start" direction="column">
+                <RowDataTdText
+                  fontFamily="Avenir Next Medium"
+                  style={{ marginBottom: '1rem' }}
+                  theme={theme}
+                >
+                  {getTokenNameByMintAddress(el.tokenA)}
+                </RowDataTdText>
+                <RowDataTdText>
+                  <span style={{ color: '#A5E898' }}>12</span> RIN/Day for each
+                  $<span style={{ color: '#A5E898' }}>1000</span>
+                </RowDataTdText>
+              </Row>
+            </RowContainer>
+          ),
+        },
+        details: {
+          render: (
+            <Row>
+              <RowDataTdText
+                theme={theme}
+                color={theme.palette.grey.new}
+                fontFamily="Avenir Next Medium"
+                style={{ marginRight: '1rem' }}
+              >
+                Details
+              </RowDataTdText>
+              <SvgIcon
+                width="1rem"
+                height="auto"
+                src={
+                  // separate to variable
+                  expandedRows.includes(
+                    `${el.name}${el.tvl}${el.poolTokenMint}`
+                  )
+                    ? ArrowToBottom
+                    : ArrowToTop
+                }
+              />
+            </Row>
+          ),
+        },
+        expandableContent: [
+          {
+            row: {
+              render: (
+                <UserLiquidityDetails
+                  setIsStakePopupOpen={setIsStakePopupOpen}
+                  setIsUnstakePopupOpen={setIsUnstakePopupOpen}
+                  setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
+                  setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
+                  selectPool={selectPool}
+                  userStakingAmountsMap={userStakingAmountsMap}
+                  earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
+                  dexTokensPricesMap={dexTokensPricesMap}
+                  allTokensDataMap={allTokensDataMap}
+                  theme={theme}
+                  pool={el}
+                />
+              ),
+              colspan: 8,
+            },
+          },
+        ],
+      }
+    })
 
   return processedUserLiquidityData.filter((el) => !!el)
 }

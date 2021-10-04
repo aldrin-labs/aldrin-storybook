@@ -12,7 +12,11 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import AllPoolsTable from '../AllPools/AllPoolsTable'
 import UserLiquitidyTable from '../UserLiquidity/UserLiquidityTable'
 
-import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
+import {
+  DexTokensPrices,
+  FeesEarned,
+  PoolInfo,
+} from '@sb/compositions/Pools/index.types'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { AddLiquidityPopup, WithdrawalPopup } from '../../Popups'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -23,15 +27,19 @@ import { TableModeButton } from './TablesSwitcher.styles'
 import { StakePopup } from '../../Popups/Staking/StakePopup'
 import { UnstakePopup } from '../../Popups/Unstaking/UnstakePopup'
 import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/endFarming'
+import { getFeesEarnedByAccount } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
+import { withPublicKey } from '@core/hoc/withPublicKey'
 
 const TablesSwitcher = ({
   theme,
   getPoolsInfoQuery: { getPoolsInfo = [] },
   getDexTokensPricesQuery: { getDexTokensPrices = [] },
+  getFeesEarnedByAccountQuery: { getFeesEarnedByAccount = [] },
 }: {
   theme: Theme
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
+  getFeesEarnedByAccountQuery: { getFeesEarnedByAccount: FeesEarned[] }
 }) => {
   const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
   // staking data
@@ -39,9 +47,11 @@ const TablesSwitcher = ({
     Map<string, number>
   >(new Map())
 
-  const [selectedPool, selectPool] = useState(null)
+  const [selectedPool, selectPool] = useState<PoolInfo | null>(null)
   const [searchValue, onChangeSearch] = useState('')
-  const [selectedTable, setSelectedTable] = useState('all')
+  const [selectedTable, setSelectedTable] = useState<'all' | 'userLiquidity'>(
+    'all'
+  )
 
   const [isAddLiquidityPopupOpen, setIsAddLiquidityPopupOpen] = useState(false)
   const [isWithdrawalPopupOpen, setIsWithdrawalPopupOpen] = useState(false)
@@ -104,6 +114,11 @@ const TablesSwitcher = ({
     new Map()
   )
 
+  const earnedFeesInPoolForUserMap = getFeesEarnedByAccount.reduce(
+    (acc, feesEarned) => acc.set(feesEarned.pool, feesEarned.earnedUSD),
+    new Map()
+  )
+
   return (
     <RowContainer>
       <BlockTemplate
@@ -142,22 +157,18 @@ const TablesSwitcher = ({
               onChangeSearch={onChangeSearch}
               placeholder={'Search...'}
             />
-            {/* <SvgIcon
-              src={AddIcon}
-              width="auto"
-              height="4rem"
-              style={{ margin: '0 0 0 2rem', cursor: 'pointer' }}
-            /> */}
           </Row>
         </RowContainer>
 
         {selectedTable === 'all' ? (
           <AllPoolsTable
             theme={theme}
+            searchValue={searchValue}
             poolsInfo={getPoolsInfo}
             allTokensDataMap={allTokensDataMap}
             dexTokensPricesMap={dexTokensPricesMap}
             userStakingAmountsMap={userStakingAmountsMap}
+            earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
             selectPool={selectPool}
             setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
             setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
@@ -169,10 +180,10 @@ const TablesSwitcher = ({
             allTokensDataMap={allTokensDataMap}
             poolsInfo={getPoolsInfo}
             theme={theme}
-            wallet={wallet}
-            selectedPool={selectedPool}
+            searchValue={searchValue}
             dexTokensPricesMap={dexTokensPricesMap}
             userStakingAmountsMap={userStakingAmountsMap}
+            earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
             selectPool={selectPool}
             setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
             setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
@@ -232,6 +243,7 @@ const TablesSwitcher = ({
 }
 
 export default compose(
+  withPublicKey,
   queryRendererHoc({
     query: getDexTokensPrices,
     name: 'getDexTokensPricesQuery',
@@ -244,5 +256,14 @@ export default compose(
     query: getPoolsInfo,
     fetchPolicy: 'cache-and-network',
     pollInterval: 60000,
+  }),
+  queryRendererHoc({
+    query: getFeesEarnedByAccount,
+    name: 'getFeesEarnedByAccountQuery',
+    variables: (props) => ({
+      account: props.wallet.publicKey?.toString() || '',
+    }),
+    fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
   })
 )(TablesSwitcher)

@@ -6,7 +6,6 @@ import { Theme } from '@material-ui/core'
 import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
 import {
   DexTokensPrices,
-  FeesEarned,
   PoolInfo,
 } from '@sb/compositions/Pools/index.types'
 import {
@@ -14,20 +13,16 @@ import {
   userLiquidityTableColumnsNames,
 } from './UserLiquidity.utils'
 import { TableContainer } from '../index.styles'
-import { WalletAdapter } from '@sb/dexUtils/types'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
-import { compose } from 'recompose'
-import { getFeesEarnedByAccount } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 
 const UserLiquidityTableComponent = ({
   theme,
-  wallet,
+  searchValue,
   allTokensDataMap,
   poolsInfo,
   dexTokensPricesMap,
-  getFeesEarnedByAccountQuery,
+  earnedFeesInPoolForUserMap,
   userStakingAmountsMap,
   selectPool,
   setIsWithdrawalPopupOpen,
@@ -36,11 +31,11 @@ const UserLiquidityTableComponent = ({
   setIsUnstakePopupOpen,
 }: {
   theme: Theme
-  wallet: WalletAdapter
-  allTokensDataMap: Map<string, TokenInfo>
+  searchValue: string
   poolsInfo: PoolInfo[]
+  allTokensDataMap: Map<string, TokenInfo>
   dexTokensPricesMap: Map<string, DexTokensPrices>
-  getFeesEarnedByAccountQuery: { getFeesEarnedByAccount: FeesEarned[] }
+  earnedFeesInPoolForUserMap: Map<string, number>
   userStakingAmountsMap: Map<string, number>
   selectPool: (pool: PoolInfo) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
@@ -56,26 +51,15 @@ const UserLiquidityTableComponent = ({
 
   const usersPools = getUserPoolsFromAll({ poolsInfo, allTokensDataMap })
 
-  const { getFeesEarnedByAccount = [] } = getFeesEarnedByAccountQuery || {
-    getFeesEarnedByAccountQuery: {
-      getFeesEarnedByAccount: [],
-    },
-  }
-
-  const earnedFeesInPoolForUserMap = getFeesEarnedByAccount.reduce(
-    (acc, feesEarned) => acc.set(feesEarned.pool, feesEarned.earnedUSD),
-    new Map()
-  )
-
   const userLiquidityData = combineUserLiquidityData({
     theme,
+    searchValue,
     dexTokensPricesMap,
     usersPools,
     expandedRows,
     allTokensDataMap,
     userStakingAmountsMap,
     earnedFeesInPoolForUserMap,
-    expandedRows,
     selectPool,
     setIsWithdrawalPopupOpen,
     setIsAddLiquidityPopupOpen,
@@ -139,14 +123,4 @@ const UserLiquidityTableComponent = ({
   )
 }
 
-export default compose(
-  queryRendererHoc({
-    query: getFeesEarnedByAccount,
-    name: 'getFeesEarnedByAccountQuery',
-    variables: (props) => ({
-      account: props.wallet.publicKey?.toString() || '',
-    }),
-    fetchPolicy: 'cache-and-network',
-    withoutLoading: true,
-  })
-)(UserLiquidityTableComponent)
+export default UserLiquidityTableComponent

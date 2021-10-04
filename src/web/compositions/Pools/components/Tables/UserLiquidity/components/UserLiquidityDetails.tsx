@@ -25,6 +25,7 @@ export const UserLiquidityDetails = ({
   allTokensDataMap,
   dexTokensPricesMap,
   userStakingAmountsMap,
+  earnedFeesInPoolForUserMap,
   selectPool,
   setIsWithdrawalPopupOpen,
   setIsAddLiquidityPopupOpen,
@@ -36,6 +37,7 @@ export const UserLiquidityDetails = ({
   allTokensDataMap: Map<string, TokenInfo>
   dexTokensPricesMap: Map<string, DexTokensPrices>
   userStakingAmountsMap: Map<string, number>
+  earnedFeesInPoolForUserMap: Map<string, number>
   selectPool: (pool: PoolInfo) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
@@ -46,6 +48,7 @@ export const UserLiquidityDetails = ({
 
   const poolTokenAmount = allTokensDataMap.get(pool.poolTokenMint)?.amount || 0
   const stakedTokens = userStakingAmountsMap.get(pool.swapToken) || 0
+  const earnedFees = earnedFeesInPoolForUserMap.get(pool.swapToken) || 0
 
   // if has pool tokens or staked
   const hasPoolTokens = poolTokenAmount > 0
@@ -127,7 +130,9 @@ export const UserLiquidityDetails = ({
               100{' '}
               <WhiteText>{getTokenNameByMintAddress(pool.tokenA)}</WhiteText> /
               2 <WhiteText>{getTokenNameByMintAddress(pool.tokenB)}</WhiteText>{' '}
-              <WhiteText>$(</WhiteText>1,000<WhiteText>)</WhiteText>
+              <WhiteText>$(</WhiteText>
+              {formatNumberToUSFormat(stripDigitPlaces(earnedFees, 2))}
+              <WhiteText>)</WhiteText>
             </RowDataTdText>
           </Row>
         )}
