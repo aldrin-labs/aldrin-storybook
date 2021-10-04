@@ -74,7 +74,7 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
         width: isMobile ? '100%' : '42%',
         left: '0',
         zIndex: '100',
-        borderTopLeftRadius: isMobile ? '0' : '1rem',
+        borderTopRightRadius: isMobile ? '0' : '1rem',
       }}
       direction="column"
       align="flex-start"
