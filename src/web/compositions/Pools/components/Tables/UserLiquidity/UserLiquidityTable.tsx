@@ -71,6 +71,7 @@ const UserLiquidityTableComponent = ({
     usersPools,
     allTokensDataMap,
     earnedFeesInPoolForUserMap,
+    expandedRows,
     selectPool,
     setIsWithdrawalPopupOpen,
     setIsAddLiquidityPopupOpen,
