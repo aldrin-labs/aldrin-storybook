@@ -18,9 +18,9 @@ export const ENDPOINTS = [
     name: 'mainnet-beta',
     endpoint: MAINNET_BETA_ENDPOINT,
   },
-  { name: 'testnet', endpoint: clusterApiUrl('testnet') },
-  { name: 'devnet', endpoint: 'https://api.devnet.solana.com' },
-  { name: 'localnet', endpoint: 'http://127.0.0.1:8899' },
+  // { name: 'testnet', endpoint: clusterApiUrl('testnet') },
+  // { name: 'devnet', endpoint: 'https://api.devnet.solana.com' },
+  // { name: 'localnet', endpoint: 'http://127.0.0.1:8899' },
 ]
 
 const ConnectionContext = React.createContext(null)
@@ -41,26 +41,26 @@ export function ConnectionProvider({ children }) {
     () =>
       endpoint === MAINNET_BETA_ENDPOINT
         ? // multi connection only for mainnet
-          new MultiEndpointsConnection(
-            [
-              // { url: 'https://solana-api.projectserum.com', RPS: 2 },
-              // { url: 'https://api.mainnet-beta.solana.com', RPS: 4 },
-              { url: 'https://api-cryptocurrencies-ai.rpcpool.com', RPS: 20 },
-            ],
-            'recent'
-          )
+        new MultiEndpointsConnection(
+          [
+            // { url: 'https://solana-api.projectserum.com', RPS: 2 },
+            // { url: 'https://api.mainnet-beta.solana.com', RPS: 4 },
+            { url: 'https://api-cryptocurrencies-ai.rpcpool.com', RPS: 20 },
+          ],
+          'recent'
+        )
         : new MultiEndpointsConnection(
-            [
-              {
-                url:
-                  ENDPOINTS.find(
-                    (endpointInfo) => endpointInfo.endpoint === endpoint
-                  )?.endpoint || MAINNET_BETA_ENDPOINT,
-                RPS: 20,
-              },
-            ],
-            'recent'
-          ),
+          [
+            {
+              url:
+                ENDPOINTS.find(
+                  (endpointInfo) => endpointInfo.endpoint === endpoint
+                )?.endpoint || MAINNET_BETA_ENDPOINT,
+              RPS: 20,
+            },
+          ],
+          'recent'
+        ),
     [endpoint]
   )
 
@@ -68,25 +68,25 @@ export function ConnectionProvider({ children }) {
     () =>
       endpoint === MAINNET_BETA_ENDPOINT
         ? new MultiEndpointsConnection(
-            [
-              { url: 'https://solana-api.projectserum.com', RPS: 2 },
-              // { url: 'https://api.mainnet-beta.solana.com', RPS: 4 },
-              // { url: 'https://api-cryptocurrencies-ai.rpcpool.com', RPS: 20 },
-            ],
-            'recent'
-          )
+          [
+            { url: 'https://solana-api.projectserum.com', RPS: 2 },
+            // { url: 'https://api.mainnet-beta.solana.com', RPS: 4 },
+            // { url: 'https://api-cryptocurrencies-ai.rpcpool.com', RPS: 20 },
+          ],
+          'recent'
+        )
         : new MultiEndpointsConnection(
-            [
-              {
-                url:
-                  ENDPOINTS.find(
-                    (endpointInfo) => endpointInfo.endpoint === endpoint
-                  )?.endpoint || MAINNET_BETA_ENDPOINT,
-                RPS: 20,
-              },
-            ],
-            'recent'
-          ),
+          [
+            {
+              url:
+                ENDPOINTS.find(
+                  (endpointInfo) => endpointInfo.endpoint === endpoint
+                )?.endpoint || MAINNET_BETA_ENDPOINT,
+              RPS: 20,
+            },
+          ],
+          'recent'
+        ),
     [endpoint]
   )
 
@@ -96,7 +96,7 @@ export function ConnectionProvider({ children }) {
   useEffect(() => {
     const rawConnection = connection.getConnection()
 
-    const id = rawConnection.onAccountChange(new Account().publicKey, () => {})
+    const id = rawConnection.onAccountChange(new Account().publicKey, () => { })
 
     return () => {
       rawConnection.removeAccountChangeListener(id)

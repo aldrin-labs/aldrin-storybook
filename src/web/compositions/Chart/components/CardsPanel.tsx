@@ -11,6 +11,7 @@ import {
   RowContainer,
   Row,
   ReusableTitle as Title,
+  Line,
 } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { WhiteButton } from '../../Homepage/styles'
 
@@ -26,7 +27,6 @@ import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
 import { DEFAULT_MARKET } from '@sb/dexUtils/markets'
 import { useWallet, WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
 import { ENDPOINTS, useConnectionConfig } from '@sb/dexUtils/connection'
-import { Line } from '@sb/compositions/AnalyticsRoute/index.styles'
 import OvalSelector from '@sb/components/OvalSelector'
 import AldrinLogo from '@icons/Aldrin.svg'
 
@@ -36,7 +36,6 @@ import SvgIcon from '@sb/components/SvgIcon'
 
 import { withTheme } from '@material-ui/core'
 import WalletIcon from '@icons/walletIcon.svg'
-import NetworkDropdown from '@sb/compositions/Chart/components/NetworkDropdown/NetworkDropdown'
 
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown/index'
@@ -165,7 +164,7 @@ export const CardsPanel = ({ theme }) => {
               style={{ width: '16rem' }}
               onClick={() => setIsFeedBackPopupOpen(true)}
             >
-              Feedback & Support
+              Feedback &amp; Support
             </NavLinkButton>
             <NavLinkButton
               theme={theme}
@@ -329,14 +328,14 @@ const TopBar = ({ theme }) => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-      <div data-tut="connection-dropdown">
+      {/* <div data-tut="connection-dropdown">
         <NetworkDropdown
           endpoint={endpoint}
           setEndpoint={setEndpoint}
           theme={theme}
           isWalletConnected={connected}
         />
-      </div>
+      </div> */}
 
       {!connected && (
         <Row style={{ paddingLeft: '4rem' }} data-tut="wallet" wrap={'nowrap'}>
@@ -375,8 +374,8 @@ const TopBar = ({ theme }) => {
               ) : isSolongWallet ? (
                 'Solong Wallet'
               ) : (
-                'Wallet'
-              )}
+                          'Wallet'
+                        )}
             </Title>
             <Title
               fontFamily="Avenir Next"
