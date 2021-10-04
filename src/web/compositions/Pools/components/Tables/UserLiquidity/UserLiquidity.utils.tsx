@@ -20,7 +20,8 @@ import {
 
 import CrownIcon from '@icons/crownIcon.svg'
 import ForbiddenIcon from '@icons/fobiddenIcon.svg'
-import GreyArrow from '@icons/greyArrow.svg'
+import ArrowToBottom from '@icons/greyArrow.svg'
+import ArrowToTop from '@icons/arrowToTop.svg'
 import Info from '@icons/TooltipImg.svg'
 import { mock } from '../AllPools/AllPoolsTable.utils'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
@@ -101,11 +102,13 @@ export const combineUserLiquidityData = ({
   dexTokensPricesMap,
   usersPools,
   allTokensData,
+  expandedRows,
 }: {
   theme: Theme
   dexTokensPricesMap: Map<string, DexTokensPrices>
   usersPools: any
   allTokensData: any
+  expandedRows: string[]
 }) => {
   // const processedUserLiquidityData = usersPools
   const processedUserLiquidityData = mock.map((el: PoolInfo) => {
@@ -263,7 +266,15 @@ export const combineUserLiquidityData = ({
             >
               Details
             </RowDataTdText>
-            <SvgIcon width="1rem" height="auto" src={GreyArrow} />
+            <SvgIcon
+              width="1rem"
+              height="auto"
+              src={
+                expandedRows.includes(`${el.name}${el.tvl}${el.poolTokenMint}`)
+                  ? ArrowToBottom
+                  : ArrowToTop
+              }
+            />
           </Row>
         ),
       },

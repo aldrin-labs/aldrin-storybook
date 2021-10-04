@@ -67,6 +67,7 @@ const AllPoolsTableComponent = ({
     dexTokensPricesMap,
     feesPerPoolMap,
     allTokensData,
+    expandedRows,
     selectPool,
     setIsAddLiquidityPopupOpen,
     setIsWithdrawalPopupOpen,

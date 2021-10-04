@@ -20,7 +20,8 @@ import {
   TextColumnContainer,
 } from '../index.styles'
 
-import GreyArrow from '@icons/greyArrow.svg'
+import ArrowToBottom from '@icons/greyArrow.svg'
+import ArrowToTop from '@icons/arrowToTop.svg'
 import Info from '@icons/TooltipImg.svg'
 import CrownIcon from '@icons/crownIcon.svg'
 import ForbiddenIcon from '@icons/fobiddenIcon.svg'
@@ -29,6 +30,7 @@ import { WalletAdapter } from '@sb/dexUtils/types'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { StakePopup } from '../../Popups/Staking/StakePopup'
+import { UserLiquidityDetails } from '../UserLiquidity/components/UserLiquidityDetails'
 
 export const mock = [
   {
@@ -184,6 +186,7 @@ export const combineAllPoolsData = ({
   dexTokensPricesMap,
   feesPerPoolMap,
   allTokensData,
+  expandedRows,
   selectPool,
   setIsAddLiquidityPopupOpen,
   setIsWithdrawalPopupOpen,
@@ -195,6 +198,7 @@ export const combineAllPoolsData = ({
   dexTokensPricesMap: Map<string, DexTokensPrices>
   feesPerPoolMap: Map<string, number>
   allTokensData: any
+  expandedRows: string[]
   selectPool: (pool: PoolInfo) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
@@ -350,7 +354,17 @@ export const combineAllPoolsData = ({
               >
                 Details
               </RowDataTdText>
-              <SvgIcon width="1rem" height="auto" src={GreyArrow} />
+              <SvgIcon
+                width="1rem"
+                height="auto"
+                src={
+                  expandedRows.includes(
+                    `${el.name}${el.tvl}${el.poolTokenMint}`
+                  )
+                    ? ArrowToBottom
+                    : ArrowToTop
+                }
+              />
             </Row>
           ),
         },

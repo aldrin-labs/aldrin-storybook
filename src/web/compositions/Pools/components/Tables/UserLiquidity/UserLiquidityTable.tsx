@@ -59,6 +59,7 @@ const UserLiquidityTableComponent = ({
     dexTokensPricesMap,
     usersPools,
     allTokensData,
+    expandedRows,
   })
 
   return (
