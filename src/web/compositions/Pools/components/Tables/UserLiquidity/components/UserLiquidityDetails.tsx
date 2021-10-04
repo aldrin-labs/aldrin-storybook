@@ -30,7 +30,6 @@ export const UserLiquidityDetails = ({ theme, pool, allTokensData }) => {
           >
             Your Liquitity:
           </RowDataTdText>
-
           <RowDataTdText
             color={'#A5E898'}
             fontFamily="Avenir Next Medium"

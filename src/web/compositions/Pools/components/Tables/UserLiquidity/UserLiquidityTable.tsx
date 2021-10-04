@@ -24,23 +24,27 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 const UserLiquidityTableComponent = ({
   theme,
   wallet,
-  allTokensData,
+  allTokensDataMap,
   poolsInfo,
   dexTokensPricesMap,
   getFeesEarnedByAccountQuery,
   selectPool,
   setIsWithdrawalPopupOpen,
   setIsAddLiquidityPopupOpen,
+  setIsStakePopupOpen,
+  setIsUnstakePopupOpen,
 }: {
   theme: Theme
   wallet: WalletAdapter
-  allTokensData: TokenInfo[]
+  allTokensDataMap: Map<string, TokenInfo>
   poolsInfo: PoolInfo[]
   dexTokensPricesMap: Map<string, DexTokensPrices>
   getFeesEarnedByAccountQuery: { getFeesEarnedByAccount: FeesEarned[] }
   selectPool: (pool: PoolInfo) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
+  setIsStakePopupOpen: (value: boolean) => void
+  setIsUnstakePopupOpen: (value: boolean) => void
 }) => {
   const [expandedRows, expandRows] = useState([])
 
@@ -48,18 +52,22 @@ const UserLiquidityTableComponent = ({
     expandRows(onCheckBoxClick(expandedRows, id))
   }
 
-  const usersPools = getUserPoolsFromAll({ poolsInfo, allTokensData })
+  const usersPools = getUserPoolsFromAll({ poolsInfo, allTokensDataMap })
 
-  const { getFeesEarnedByAccount = [] } = getFeesEarnedByAccountQuery || {
-    getFeesEarnedByAccountQuery: [],
-  }
+  // const { getFeesEarnedByAccount = [] } = getFeesEarnedByAccountQuery || {
+  //   getFeesEarnedByAccountQuery: [],
+  // }
 
   const userLiquidityData = combineUserLiquidityData({
     theme,
     dexTokensPricesMap,
     usersPools,
-    allTokensData,
-    expandedRows,
+    allTokensDataMap,
+    selectPool,
+    setIsWithdrawalPopupOpen,
+    setIsAddLiquidityPopupOpen,
+    setIsStakePopupOpen,
+    setIsUnstakePopupOpen,
   })
 
   return (

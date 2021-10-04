@@ -57,32 +57,28 @@ export const startFarming = async ({
   userPoolTokenAccount: PublicKey
   farmingState: PublicKey
 }) => {
-  console.log(poolPublicKey.toString())
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
     programAddress: POOLS_PROGRAM_ADDRESS,
   })
 
-  const farmingStates = await loadUserTicketsPerPool({
-    connection,
-    poolPublicKey,
-  })
+  // const farmingStates = await loadUserTicketsPerPool({
+  //   connection,
+  //   poolPublicKey,
+  // })
 
-  console.log(
-    'farmingStates',
-    farmingStates.map((f) => {
-      const data = Buffer.from(f.account.data)
-      const ticketData = program.coder.accounts.decode('FarmingState', data)
-      console.log('ticketData', ticketData.farmingSnapshots.toString())
-      return {
-        lpTicketAddress: f.pubkey.toString(),
-        //   lpTokens: ticketData.lpTokens.toNumber(),
-        pool: ticketData.pool.toString(),
-        //   userKey: ticketData.userKey.toString(),
-      }
-    })
-  )
+  // console.log(
+  //   'farmingStates',
+  //   farmingStates.map((f) => {
+  //     const data = Buffer.from(f.account.data)
+  //     const ticketData = program.coder.accounts.decode('FarmingState', data)
+  //     console.log('ticketData', ticketData)
+
+  //     return ticketData
+  //   })
+  // )
+
   const poolAccount = await program.account.pool.fetch(poolPublicKey)
   const lpTokenFreezeVault = poolAccount.lpTokenFreezeVault
   const farmingTicket = Keypair.generate()
@@ -146,7 +142,7 @@ export const startFarming = async ({
         return 'cancelled'
       }
     }
-
-    // add retries
   }
+
+  return 'failed'
 }
