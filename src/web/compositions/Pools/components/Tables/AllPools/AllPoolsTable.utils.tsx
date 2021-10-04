@@ -20,7 +20,8 @@ import {
   TextColumnContainer,
 } from '../index.styles'
 
-import GreyArrow from '@icons/greyArrow.svg'
+import ArrowToBottom from '@icons/greyArrow.svg'
+import ArrowToTop from '@icons/arrowToTop.svg'
 import Info from '@icons/TooltipImg.svg'
 import CrownIcon from '@icons/crownIcon.svg'
 import ForbiddenIcon from '@icons/fobiddenIcon.svg'
@@ -185,6 +186,7 @@ export const combineAllPoolsData = ({
   searchValue,
   dexTokensPricesMap,
   feesPerPoolMap,
+  expandedRows,
   allTokensDataMap,
   selectPool,
   setIsAddLiquidityPopupOpen,
@@ -198,6 +200,7 @@ export const combineAllPoolsData = ({
   searchValue: string
   dexTokensPricesMap: Map<string, DexTokensPrices>
   feesPerPoolMap: Map<string, number>
+  expandedRows: string[]
   allTokensDataMap: Map<string, TokenInfo>
   selectPool: (pool: PoolInfo) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
@@ -354,7 +357,17 @@ export const combineAllPoolsData = ({
               >
                 Details
               </RowDataTdText>
-              <SvgIcon width="1rem" height="auto" src={GreyArrow} />
+              <SvgIcon
+                width="1rem"
+                height="auto"
+                src={
+                  expandedRows.includes(
+                    `${el.name}${el.tvl}${el.poolTokenMint}`
+                  )
+                    ? ArrowToBottom
+                    : ArrowToTop
+                }
+              />
             </Row>
           ),
         },

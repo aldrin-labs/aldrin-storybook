@@ -69,6 +69,7 @@ const AllPoolsTableComponent = ({
     searchValue,
     dexTokensPricesMap,
     feesPerPoolMap,
+    expandedRows,
     allTokensDataMap,
     selectPool,
     setIsAddLiquidityPopupOpen,
