@@ -105,7 +105,9 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
             onClick={() => {
               setIsPopupTemporaryHidden(true)
             }}
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: 'pointer', padding: '1rem' }}
+            width="3.5rem"
+            height="auto"
           />
         </RowContainer>
 
