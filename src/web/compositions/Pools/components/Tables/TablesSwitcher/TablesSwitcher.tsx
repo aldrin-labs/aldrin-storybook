@@ -83,8 +83,8 @@ const TablesSwitcher = ({
         new Map()
       )
 
-      setAllTokensData(allTokensData)
-      setUserStakingAmountsMap(userStakingAmountsMap)
+      await setAllTokensData(allTokensData)
+      await setUserStakingAmountsMap(userStakingAmountsMap)
     }
 
     if (!!wallet?.publicKey) {
@@ -103,6 +103,8 @@ const TablesSwitcher = ({
     (acc, tokenData) => acc.set(tokenData.mint, tokenData),
     new Map()
   )
+
+  console.log('allTokensData',allTokensData)
 
   return (
     <RowContainer>
