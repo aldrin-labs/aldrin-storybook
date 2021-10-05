@@ -7,7 +7,7 @@ import {
   Transaction,
 } from '@solana/web3.js'
 
-import { notify } from '../notifications'
+import { notify, notifyForDevelop } from '../notifications'
 import { NUMBER_OF_RETRIES } from '../pools'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
@@ -55,6 +55,27 @@ const loadUserFarmingTickets = async ({
   })
 }
 
+export type FarmingTicket = {
+  tokensFrozen: number
+  endTime: string
+  startTime: number
+  pool: string
+  farmingTicket: PublicKey
+}
+
+// closed farming tickets - which was unstaked
+export const filterClosedFarmingTickets = (
+  tickets: FarmingTicket[] | undefined
+) => {
+  if (!tickets) {
+    return []
+  }
+
+  return tickets.filter(
+    (ticket) => ticket.endTime === DEFAULT_FARMING_TICKET_END_TIME
+  )
+}
+
 export const getParsedUserFarmingTickets = async ({
   wallet,
   connection,
@@ -63,7 +84,7 @@ export const getParsedUserFarmingTickets = async ({
   wallet: WalletAdapter
   connection: Connection
   poolPublicKey?: PublicKey
-}) => {
+}): Promise<FarmingTicket[]> => {
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
@@ -76,23 +97,18 @@ export const getParsedUserFarmingTickets = async ({
     poolPublicKey,
   })
 
-  const allUserTicketsPerPool = tickets
-    .map((ticket) => {
-      const data = Buffer.from(ticket.account.data)
-      const ticketData = program.coder.accounts.decode('FarmingTicket', data)
+  const allUserTicketsPerPool = tickets.map((ticket) => {
+    const data = Buffer.from(ticket.account.data)
+    const ticketData = program.coder.accounts.decode('FarmingTicket', data)
 
-      return {
-        tokensFrozen: ticketData.tokensFrozen.toNumber(),
-        endTime: ticketData.endTime.toString(),
-        startTime: ticketData.startTime.toString(),
-        pool: ticketData.pool.toString(),
-        farmingTicket: ticket.pubkey,
-      }
-    })
-    .filter((ticket) => ticket.endTime === DEFAULT_FARMING_TICKET_END_TIME)
-    // filter by startTimestamp + period_length from farmingState fr using only avlb
-
-  console.log('allUserTicketsPerPool', allUserTicketsPerPool)
+    return {
+      tokensFrozen: ticketData.tokensFrozen.toNumber(),
+      endTime: ticketData.endTime.toString(),
+      startTime: ticketData.startTime.toString(),
+      pool: ticketData.pool.toString(),
+      farmingTicket: ticket.pubkey,
+    }
+  })
 
   return allUserTicketsPerPool
 }

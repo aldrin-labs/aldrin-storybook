@@ -6,7 +6,7 @@ export type PoolInfo = {
   swapToken: string
   poolTokenMint: string
   farmingStates: string[]
-  farmingTokenMing: string
+  farmingTokenMint: string
   farmingSnapshots: string[]
   tokensUnlocked: number
   tokensTotal: number

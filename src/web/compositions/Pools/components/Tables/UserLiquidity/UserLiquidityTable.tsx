@@ -15,6 +15,7 @@ import {
 import { TableContainer } from '../index.styles'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
+import { FarmingTicket } from '@sb/dexUtils/pools/endFarming'
 
 const UserLiquidityTableComponent = ({
   theme,
@@ -22,8 +23,8 @@ const UserLiquidityTableComponent = ({
   allTokensDataMap,
   poolsInfo,
   dexTokensPricesMap,
+  farmingTicketsMap,
   earnedFeesInPoolForUserMap,
-  userStakingAmountsMap,
   selectPool,
   setIsWithdrawalPopupOpen,
   setIsAddLiquidityPopupOpen,
@@ -35,8 +36,8 @@ const UserLiquidityTableComponent = ({
   poolsInfo: PoolInfo[]
   allTokensDataMap: Map<string, TokenInfo>
   dexTokensPricesMap: Map<string, DexTokensPrices>
+  farmingTicketsMap: Map<string, FarmingTicket[]>,
   earnedFeesInPoolForUserMap: Map<string, number>
-  userStakingAmountsMap: Map<string, number>
   selectPool: (pool: PoolInfo) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
@@ -54,11 +55,11 @@ const UserLiquidityTableComponent = ({
   const userLiquidityData = combineUserLiquidityData({
     theme,
     searchValue,
-    dexTokensPricesMap,
     usersPools,
     expandedRows,
     allTokensDataMap,
-    userStakingAmountsMap,
+    dexTokensPricesMap,
+    farmingTicketsMap,
     earnedFeesInPoolForUserMap,
     selectPool,
     setIsWithdrawalPopupOpen,

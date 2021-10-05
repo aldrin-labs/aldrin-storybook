@@ -154,22 +154,6 @@ const SwapsPage = ({
     ? getTokenNameByMintAddress(quoteTokenMintAddress)
     : 'Select token'
 
-  const baseTokenPrice =
-    getDexTokensPrices.find(
-      (tokenInfo) =>
-        tokenInfo.symbol === baseTokenMintAddress ||
-        tokenInfo.symbol === baseSymbol
-    )?.price || 10
-
-  const quoteTokenPrice =
-    getDexTokensPrices.find(
-      (tokenInfo) =>
-        tokenInfo.symbol === quoteTokenMintAddress ||
-        tokenInfo.symbol === quoteSymbol
-    )?.price || 10
-
-  const swapTokens = ALL_TOKENS_MINTS.map((el) => el.address.toString())
-
   const isSwapBaseToQuote = selectedTokens?.tokenA === baseTokenMintAddress
 
   const [poolAmountTokenA, poolAmountTokenB] = [
@@ -421,17 +405,6 @@ const SwapsPage = ({
                   const swapAmountOut =
                     +totalWithFees * 10 ** quoteTokenDecimals
 
-                  // const [transaction, signers] = await swapWithHandleNativeSol({
-                  //   wallet,
-                  //   connection,
-                  //   userTokenAccountA: new PublicKey(userTokenAccountA),
-                  //   userTokenAccountB: new PublicKey(userTokenAccountB),
-                  //   tokenSwapPublicKey: new PublicKey(selectedTokens.swapToken),
-                  //   swapAmountIn: +baseAmount * 10 ** swapAmountInDecimals,
-                  //   swapAmountOut: +totalWithFees * 10 ** swapAmountOutDecimals,
-                  //   baseSwapToken: baseTokenSwap,
-                  // })
-
                   // for cases with SOL token
                   const isBaseTokenSOL = baseSymbol === 'SOL'
                   const isQuoteTokenSOL = quoteSymbol === 'SOL'
@@ -447,9 +420,15 @@ const SwapsPage = ({
                       wallet,
                       connection,
                       poolPublicKey: new PublicKey(selectedTokens.swapToken),
-                      userBaseTokenAccount: new PublicKey(userBaseTokenAccount),
+                      userBaseTokenAccount: new PublicKey(
+                        isSwapBaseToQuote
+                          ? userBaseTokenAccount
+                          : userQuoteTokenAccount
+                      ),
                       userQuoteTokenAccount: new PublicKey(
-                        userQuoteTokenAccount
+                        isSwapBaseToQuote
+                          ? userQuoteTokenAccount
+                          : userBaseTokenAccount
                       ),
                       swapAmountIn,
                       swapAmountOut,
@@ -458,12 +437,12 @@ const SwapsPage = ({
                         isPoolWithSOLToken && isNativeSOLSelected,
                     })
 
-                    // await notify({
-                    //   type: result ? 'success' : 'error',
-                    //   message: result
-                    //     ? 'Swap executed successfully.'
-                    //     : 'Swap operation failed. Please, try to increase slippage tolerance.',
-                    // })
+                    await notify({
+                      type: result ? 'success' : 'error',
+                      message: result
+                        ? 'Swap executed successfully.'
+                        : 'Swap operation failed. Please, try to increase slippage tolerance.',
+                    })
                   } catch (e) {
                     console.error('swap error:', e)
                     if (e.message.includes('cancelled')) {

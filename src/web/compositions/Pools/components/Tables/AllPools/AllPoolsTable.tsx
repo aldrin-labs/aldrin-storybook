@@ -18,6 +18,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { TableContainer } from '../index.styles'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
+import { FarmingTicket } from '@sb/dexUtils/pools/endFarming'
 
 const AllPoolsTableComponent = ({
   theme,
@@ -26,7 +27,7 @@ const AllPoolsTableComponent = ({
   poolsInfo,
   getFeesEarnedByPoolQuery,
   allTokensDataMap,
-  userStakingAmountsMap,
+  farmingTicketsMap,
   earnedFeesInPoolForUserMap,
   selectPool,
   setIsAddLiquidityPopupOpen,
@@ -40,7 +41,7 @@ const AllPoolsTableComponent = ({
   getFeesEarnedByPoolQuery: { getFeesEarnedByPool: FeesEarned[] }
   dexTokensPricesMap: Map<string, DexTokensPrices>
   allTokensDataMap: Map<string, TokenInfo>
-  userStakingAmountsMap: Map<string, number>
+  farmingTicketsMap: Map<string, FarmingTicket[]>
   earnedFeesInPoolForUserMap: Map<string, number>
   selectPool: (pool: PoolInfo) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
@@ -75,7 +76,7 @@ const AllPoolsTableComponent = ({
     feesPerPoolMap,
     expandedRows,
     allTokensDataMap,
-    userStakingAmountsMap,
+    farmingTicketsMap,
     earnedFeesInPoolForUserMap,
     selectPool,
     setIsAddLiquidityPopupOpen,

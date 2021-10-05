@@ -26,7 +26,11 @@ import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { TableModeButton } from './TablesSwitcher.styles'
 import { StakePopup } from '../../Popups/Staking/StakePopup'
 import { UnstakePopup } from '../../Popups/Unstaking/UnstakePopup'
-import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/endFarming'
+import {
+  FarmingTicket,
+  filterClosedFarmingTickets,
+  getParsedUserFarmingTickets,
+} from '@sb/dexUtils/pools/endFarming'
 import { getFeesEarnedByAccount } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 
@@ -42,9 +46,9 @@ const TablesSwitcher = ({
   getFeesEarnedByAccountQuery: { getFeesEarnedByAccount: FeesEarned[] }
 }) => {
   const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
-  // staking data
-  const [userStakingAmountsMap, setUserStakingAmountsMap] = useState<
-    Map<string, number>
+
+  const [farmingTicketsMap, setFarmingTicketsMap] = useState<
+    Map<string, FarmingTicket[]>
   >(new Map())
 
   const [selectedPool, selectPool] = useState<PoolInfo | null>(null)
@@ -69,7 +73,6 @@ const TablesSwitcher = ({
   const refreshAllTokensData = () =>
     setRefreshAllTokensDataCounter(refreshAllTokensDataCounter + 1)
 
-  // useTokenAccountsMap - need to refresh? mb button for it and after every action?
   useEffect(() => {
     const fetchData = async () => {
       const allTokensData = await getAllTokensData(wallet.publicKey, connection)
@@ -78,14 +81,14 @@ const TablesSwitcher = ({
         connection,
       })
 
-      const userStakingAmountsMap = allUserFarmingTickets.reduce(
+      const farmingTicketsMap = allUserFarmingTickets.reduce(
         (acc, farmingTicket) => {
-          const { pool, tokensFrozen } = farmingTicket
+          const { pool } = farmingTicket
 
           if (acc.has(pool)) {
-            acc.set(pool, acc.get(pool) + tokensFrozen)
+            acc.set(pool, [...acc.get(pool), farmingTicket])
           } else {
-            acc.set(pool, tokensFrozen)
+            acc.set(pool, [farmingTicket])
           }
 
           return acc
@@ -94,7 +97,7 @@ const TablesSwitcher = ({
       )
 
       await setAllTokensData(allTokensData)
-      await setUserStakingAmountsMap(userStakingAmountsMap)
+      await setFarmingTicketsMap(farmingTicketsMap)
     }
 
     if (!!wallet?.publicKey) {
@@ -167,7 +170,7 @@ const TablesSwitcher = ({
             poolsInfo={getPoolsInfo}
             allTokensDataMap={allTokensDataMap}
             dexTokensPricesMap={dexTokensPricesMap}
-            userStakingAmountsMap={userStakingAmountsMap}
+            farmingTicketsMap={farmingTicketsMap}
             earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
             selectPool={selectPool}
             setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
@@ -182,7 +185,7 @@ const TablesSwitcher = ({
             theme={theme}
             searchValue={searchValue}
             dexTokensPricesMap={dexTokensPricesMap}
-            userStakingAmountsMap={userStakingAmountsMap}
+            farmingTicketsMap={farmingTicketsMap}
             earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
             selectPool={selectPool}
             setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}

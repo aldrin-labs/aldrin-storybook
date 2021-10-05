@@ -153,12 +153,8 @@ export const swap = async ({
             quoteTokenVault,
             feePoolTokenAccount: feePoolTokenAccount,
             walletAuthority: wallet.publicKey,
-            userBaseTokenAccount: isSwapBaseToQuote
-              ? userBaseTokenAccount
-              : userQuoteTokenAccount,
-            userQuoteTokenAccount: isSwapBaseToQuote
-              ? userQuoteTokenAccount
-              : userBaseTokenAccount,
+            userBaseTokenAccount,
+            userQuoteTokenAccount,
             tokenProgram: TOKEN_PROGRAM_ID,
           },
         }

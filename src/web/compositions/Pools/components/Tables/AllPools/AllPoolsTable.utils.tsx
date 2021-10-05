@@ -32,6 +32,8 @@ import { TokenIcon } from '@sb/components/TokenIcon'
 import { StakePopup } from '../../Popups/Staking/StakePopup'
 import { UserLiquidityDetails } from '../UserLiquidity/components/UserLiquidityDetails'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
+import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
+import { FarmingTicket } from '@sb/dexUtils/pools/endFarming'
 
 export const mock: PoolInfo[] = [
   {
@@ -54,7 +56,7 @@ export const mock: PoolInfo[] = [
     executed: false,
     farmingStates: ['Hg4hHQ2QZjS7bAGHXg9Kijvyw2mxDuBuqRFLajfPBTcr'],
     farmingSnapshots: ['CieRc6NeDoE3cnTVqsThrHdUkCP5LGeT2ibsuEJv25ri'],
-    farmingTokenMing: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
+    farmingTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
     periodLength: 3600 * 24 * 7,
     tokensPerPeriod: 30,
     tokensTotal: 1000,
@@ -81,7 +83,7 @@ export const mock: PoolInfo[] = [
     executed: true,
     farmingStates: ['Hg4hHQ2QZjS7bAGHXg9Kijvyw2mxDuBuqRFLajfPBTcr'],
     farmingSnapshots: ['CieRc6NeDoE3cnTVqsThrHdUkCP5LGeT2ibsuEJv25ri'],
-    farmingTokenMing: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
+    farmingTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
     periodLength: 3600 * 24 * 7,
     tokensPerPeriod: 30,
     tokensTotal: 1000,
@@ -105,9 +107,9 @@ export const mock: PoolInfo[] = [
     locked: false,
     executed: false,
     staked: 50,
-    farmingStates: ['Hg4hHQ2QZjS7bAGHXg9Kijvyw2mxDuBuqRFLajfPBTcr'],
+    farmingStates: [],
     farmingSnapshots: ['CieRc6NeDoE3cnTVqsThrHdUkCP5LGeT2ibsuEJv25ri'],
-    farmingTokenMing: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
+    farmingTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
     periodLength: 3600 * 24 * 7,
     tokensPerPeriod: 30,
     tokensTotal: 1000,
@@ -133,7 +135,7 @@ export const mock: PoolInfo[] = [
     executed: true,
     farmingStates: ['Hg4hHQ2QZjS7bAGHXg9Kijvyw2mxDuBuqRFLajfPBTcr'],
     farmingSnapshots: ['CieRc6NeDoE3cnTVqsThrHdUkCP5LGeT2ibsuEJv25ri'],
-    farmingTokenMing: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
+    farmingTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
     periodLength: 3600 * 24 * 7,
     tokensPerPeriod: 30,
     tokensTotal: 1000,
@@ -176,12 +178,16 @@ export const allPoolsTableColumnsNames = [
       <>
         <span>APY</span>{' '}
         <span style={{ color: '#96999C', padding: '0 0 0 0.5rem' }}> 24h</span>
-        <SvgIcon
-          src={Info}
-          width={'1.5rem'}
-          height={'auto'}
-          style={{ marginLeft: '1rem' }}
-        />
+        <DarkTooltip title={'apy'}>
+          <div>
+            <SvgIcon
+              src={Info}
+              width={'1.5rem'}
+              height={'auto'}
+              style={{ marginLeft: '1rem' }}
+            />
+          </div>
+        </DarkTooltip>
       </>
     ),
     id: 'apy',
@@ -190,12 +196,16 @@ export const allPoolsTableColumnsNames = [
     label: (
       <>
         Farming
-        <SvgIcon
-          src={Info}
-          width={'1.5rem'}
-          height={'auto'}
-          style={{ marginLeft: '1rem' }}
-        />
+        <DarkTooltip title={'farming'}>
+          <div>
+            <SvgIcon
+              src={Info}
+              width={'1.5rem'}
+              height={'auto'}
+              style={{ marginLeft: '1rem' }}
+            />
+          </div>
+        </DarkTooltip>
       </>
     ),
     id: 'farming',
@@ -214,7 +224,7 @@ export const combineAllPoolsData = ({
   feesPerPoolMap,
   expandedRows,
   allTokensDataMap,
-  userStakingAmountsMap,
+  farmingTicketsMap,
   earnedFeesInPoolForUserMap,
   selectPool,
   setIsAddLiquidityPopupOpen,
@@ -230,7 +240,7 @@ export const combineAllPoolsData = ({
   feesPerPoolMap: Map<string, number>
   expandedRows: string[]
   allTokensDataMap: Map<string, TokenInfo>
-  userStakingAmountsMap: Map<string, number>
+  farmingTicketsMap: Map<string, FarmingTicket[]>
   earnedFeesInPoolForUserMap: Map<string, number>
   selectPool: (pool: PoolInfo) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
@@ -268,12 +278,16 @@ export const combineAllPoolsData = ({
             >
               <TokenIconsContainer tokenA={el.tokenA} tokenB={el.tokenB} />{' '}
               {el.locked ? (
-                <SvgIcon
-                  style={{ marginLeft: '1rem' }}
-                  width="2rem"
-                  height="auto"
-                  src={CrownIcon}
-                />
+                <DarkTooltip title={'Founders liquidity locked.'}>
+                  <div>
+                    <SvgIcon
+                      style={{ marginLeft: '1rem' }}
+                      width="2rem"
+                      height="auto"
+                      src={CrownIcon}
+                    />
+                  </div>
+                </DarkTooltip>
               ) : el.executed ? (
                 <DarkTooltip
                   title={
@@ -349,32 +363,42 @@ export const combineAllPoolsData = ({
           ),
         },
         farming: {
-          render: (
-            <RowContainer justify="flex-start" theme={theme}>
-              <Row margin="0 1rem 0 0" justify="flex-start">
-                <TokenIcon
-                  mint={el.tokenA}
-                  width={'3rem'}
-                  emojiIfNoLogo={false}
-                  // isAwesomeMarket={isCustomUserMarket}
-                  // isAdditionalCustomUserMarket={isPrivateCustomMarket}
-                />
-              </Row>
-              <Row align="flex-start" direction="column">
-                <RowDataTdText
-                  fontFamily="Avenir Next Medium"
-                  style={{ marginBottom: '1rem' }}
-                  theme={theme}
-                >
-                  {getTokenNameByMintAddress(el.tokenA)}
-                </RowDataTdText>
-                <RowDataTdText>
-                  <span style={{ color: '#A5E898' }}>12</span> RIN/Day for each
-                  $<span style={{ color: '#A5E898' }}>1000</span>
-                </RowDataTdText>
-              </Row>
-            </RowContainer>
-          ),
+          render:
+            el.farmingStates.length > 0 ? (
+              <RowContainer justify="flex-start" theme={theme}>
+                <Row margin="0 1rem 0 0" justify="flex-start">
+                  <TokenIcon
+                    mint={el.farmingTokenMint}
+                    width={'3rem'}
+                    emojiIfNoLogo={false}
+                  />
+                </Row>
+                <Row align="flex-start" direction="column">
+                  <RowDataTdText
+                    fontFamily="Avenir Next Medium"
+                    style={{ marginBottom: '1rem' }}
+                    theme={theme}
+                  >
+                    {getTokenNameByMintAddress(el.farmingTokenMint)}
+                  </RowDataTdText>
+                  <RowDataTdText>
+                    <span style={{ color: '#A5E898' }}>
+                      {formatNumberToUSFormat(
+                        stripDigitPlaces(
+                          el.tokensPerPeriod / (tvlUSD / 1000),
+                          8
+                        )
+                      )}
+                    </span>{' '}
+                    {getTokenNameByMintAddress(el.farmingTokenMint)} /{' '}
+                    {el.periodLength / dayDuration} Days for each $
+                    <span style={{ color: '#A5E898' }}>1000</span>
+                  </RowDataTdText>
+                </Row>
+              </RowContainer>
+            ) : (
+              '-'
+            ),
         },
         details: {
           render: (
@@ -394,8 +418,8 @@ export const combineAllPoolsData = ({
                   expandedRows.includes(
                     `${el.name}${el.tvl}${el.poolTokenMint}`
                   )
-                    ? ArrowToBottom
-                    : ArrowToTop
+                    ? ArrowToTop
+                    : ArrowToBottom
                 }
               />
             </Row>
@@ -412,7 +436,7 @@ export const combineAllPoolsData = ({
                   setIsUnstakePopupOpen={setIsUnstakePopupOpen}
                   selectPool={selectPool}
                   earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
-                  userStakingAmountsMap={userStakingAmountsMap}
+                  farmingTicketsMap={farmingTicketsMap}
                   dexTokensPricesMap={dexTokensPricesMap}
                   allTokensDataMap={allTokensDataMap}
                   theme={theme}

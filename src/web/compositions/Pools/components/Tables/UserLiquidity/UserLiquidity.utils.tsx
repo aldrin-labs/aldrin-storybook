@@ -30,6 +30,8 @@ import { TokenIcon } from '@sb/components/TokenIcon'
 import { UserLiquidityDetails } from './components/UserLiquidityDetails'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
+import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
+import { FarmingTicket } from '@sb/dexUtils/pools/endFarming'
 
 export const getTotalUserLiquidity = ({
   usersPools,
@@ -70,12 +72,16 @@ export const userLiquidityTableColumnsNames = [
       <>
         <span>APY</span>{' '}
         <span style={{ color: '#96999C', padding: '0 0 0 0.5rem' }}> 24h</span>
-        <SvgIcon
-          src={Info}
-          width={'1.5rem'}
-          height={'auto'}
-          style={{ marginLeft: '1rem' }}
-        />
+        <DarkTooltip title={'farming'}>
+          <div>
+            <SvgIcon
+              src={Info}
+              width={'1.5rem'}
+              height={'auto'}
+              style={{ marginLeft: '1rem' }}
+            />
+          </div>
+        </DarkTooltip>
       </>
     ),
     id: 'apy',
@@ -84,12 +90,16 @@ export const userLiquidityTableColumnsNames = [
     label: (
       <>
         Farming
-        <SvgIcon
-          src={Info}
-          width={'1.5rem'}
-          height={'auto'}
-          style={{ marginLeft: '1rem' }}
-        />
+        <DarkTooltip title={'farming'}>
+          <div>
+            <SvgIcon
+              src={Info}
+              width={'1.5rem'}
+              height={'auto'}
+              style={{ marginLeft: '1rem' }}
+            />
+          </div>
+        </DarkTooltip>
       </>
     ),
     id: 'farming',
@@ -100,11 +110,11 @@ export const userLiquidityTableColumnsNames = [
 export const combineUserLiquidityData = ({
   theme,
   searchValue,
-  dexTokensPricesMap,
   usersPools,
   expandedRows,
   allTokensDataMap,
-  userStakingAmountsMap,
+  dexTokensPricesMap,
+  farmingTicketsMap,
   earnedFeesInPoolForUserMap,
   selectPool,
   setIsWithdrawalPopupOpen,
@@ -118,7 +128,7 @@ export const combineUserLiquidityData = ({
   usersPools: PoolInfo[]
   expandedRows: string[]
   allTokensDataMap: Map<string, TokenInfo>
-  userStakingAmountsMap: Map<string, number>
+  farmingTicketsMap: Map<string, FarmingTicket[]>
   earnedFeesInPoolForUserMap: Map<string, number>
   selectPool: (pool: PoolInfo) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
@@ -252,32 +262,42 @@ export const combineUserLiquidityData = ({
           ),
         },
         farming: {
-          render: (
-            <RowContainer justify="flex-start" theme={theme}>
-              <Row margin="0 1rem 0 0" justify="flex-start">
-                <TokenIcon
-                  mint={el.tokenA}
-                  width={'3rem'}
-                  emojiIfNoLogo={false}
-                  // isAwesomeMarket={isCustomUserMarket}
-                  // isAdditionalCustomUserMarket={isPrivateCustomMarket}
-                />
-              </Row>
-              <Row align="flex-start" direction="column">
-                <RowDataTdText
-                  fontFamily="Avenir Next Medium"
-                  style={{ marginBottom: '1rem' }}
-                  theme={theme}
-                >
-                  {getTokenNameByMintAddress(el.tokenA)}
-                </RowDataTdText>
-                <RowDataTdText>
-                  <span style={{ color: '#A5E898' }}>12</span> RIN/Day for each
-                  $<span style={{ color: '#A5E898' }}>1000</span>
-                </RowDataTdText>
-              </Row>
-            </RowContainer>
-          ),
+          render:
+            el.farmingStates.length > 0 ? (
+              <RowContainer justify="flex-start" theme={theme}>
+                <Row margin="0 1rem 0 0" justify="flex-start">
+                  <TokenIcon
+                    mint={el.farmingTokenMint}
+                    width={'3rem'}
+                    emojiIfNoLogo={false}
+                  />
+                </Row>
+                <Row align="flex-start" direction="column">
+                  <RowDataTdText
+                    fontFamily="Avenir Next Medium"
+                    style={{ marginBottom: '1rem' }}
+                    theme={theme}
+                  >
+                    {getTokenNameByMintAddress(el.farmingTokenMint)}
+                  </RowDataTdText>
+                  <RowDataTdText>
+                    <span style={{ color: '#A5E898' }}>
+                      {formatNumberToUSFormat(
+                        stripDigitPlaces(
+                          el.tokensPerPeriod / (tvlUSD / 1000),
+                          8
+                        )
+                      )}
+                    </span>{' '}
+                    {getTokenNameByMintAddress(el.farmingTokenMint)} /{' '}
+                    {el.periodLength / dayDuration} Days for each $
+                    <span style={{ color: '#A5E898' }}>1000</span>
+                  </RowDataTdText>
+                </Row>
+              </RowContainer>
+            ) : (
+              '-'
+            ),
         },
         details: {
           render: (
@@ -298,8 +318,8 @@ export const combineUserLiquidityData = ({
                   expandedRows.includes(
                     `${el.name}${el.tvl}${el.poolTokenMint}`
                   )
-                    ? ArrowToBottom
-                    : ArrowToTop
+                    ? ArrowToTop
+                    : ArrowToBottom
                 }
               />
             </Row>
@@ -315,7 +335,7 @@ export const combineUserLiquidityData = ({
                   setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
                   setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
                   selectPool={selectPool}
-                  userStakingAmountsMap={userStakingAmountsMap}
+                  farmingTicketsMap={farmingTicketsMap}
                   earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
                   dexTokensPricesMap={dexTokensPricesMap}
                   allTokensDataMap={allTokensDataMap}

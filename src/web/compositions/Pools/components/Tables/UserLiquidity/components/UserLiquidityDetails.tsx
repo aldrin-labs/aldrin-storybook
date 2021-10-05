@@ -18,13 +18,15 @@ import {
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
+import { FarmingTicket } from '@sb/dexUtils/pools/endFarming'
+import { getStakedTokensForPool } from '@sb/dexUtils/pools/getStakedTokensForPool'
 
 export const UserLiquidityDetails = ({
   theme,
   pool,
   allTokensDataMap,
   dexTokensPricesMap,
-  userStakingAmountsMap,
+  farmingTicketsMap,
   earnedFeesInPoolForUserMap,
   selectPool,
   setIsWithdrawalPopupOpen,
@@ -35,8 +37,8 @@ export const UserLiquidityDetails = ({
   theme: Theme
   pool: PoolInfo
   allTokensDataMap: Map<string, TokenInfo>
+  farmingTicketsMap: Map<string, FarmingTicket[]>
   dexTokensPricesMap: Map<string, DexTokensPrices>
-  userStakingAmountsMap: Map<string, number>
   earnedFeesInPoolForUserMap: Map<string, number>
   selectPool: (pool: PoolInfo) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
@@ -47,7 +49,7 @@ export const UserLiquidityDetails = ({
   const { wallet } = useWallet()
 
   const poolTokenAmount = allTokensDataMap.get(pool.poolTokenMint)?.amount || 0
-  const stakedTokens = userStakingAmountsMap.get(pool.swapToken) || 0
+  const stakedTokens = getStakedTokensForPool({ pool, farmingTicketsMap })
   const earnedFees = earnedFeesInPoolForUserMap.get(pool.swapToken) || 0
 
   // if has pool tokens or staked
@@ -55,6 +57,7 @@ export const UserLiquidityDetails = ({
   const hasStakedTokens = stakedTokens > 0
 
   const hasLiquidity = hasPoolTokens || hasStakedTokens
+  const hasFarming = pool.farmingStates.length > 0
 
   const [baseTokenAmount, quoteTokenAmount] = calculateWithdrawAmount({
     selectedPool: pool,
@@ -200,7 +203,7 @@ export const UserLiquidityDetails = ({
       </Row>
       <Row justify="space-between" width="40%" padding="0 0 0 4rem">
         <Row align="flex-start" direction="column" width="60%">
-          {hasStakedTokens ? (
+          {hasStakedTokens && hasFarming ? (
             <RowDataTdText
               fontFamily={'Avenir Next Medium'}
               style={{ marginBottom: '3.5rem' }}
@@ -229,7 +232,9 @@ export const UserLiquidityDetails = ({
           )}
 
           <RowContainer justify="flex-start" theme={theme}>
-            {hasStakedTokens ? (
+            {!hasFarming ? (
+              <RowDataTdText>No farming available in this pool.</RowDataTdText>
+            ) : hasStakedTokens ? (
               <RowContainer justify="space-between">
                 <GreenButton
                   onClick={() => {
@@ -270,12 +275,17 @@ export const UserLiquidityDetails = ({
             ) : hasPoolTokens ? (
               <RowDataTdText>
                 Stake your pool tokens to start
-                <AmountText style={{ padding: '0 0.5rem' }}>RIN</AmountText>
+                <AmountText style={{ padding: '0 0.5rem' }}>
+                  {getTokenNameByMintAddress(pool.farmingTokenMint)}
+                </AmountText>
                 farming
               </RowDataTdText>
             ) : (
               <RowDataTdText>
-                Deposit liquidity to farm <AmountText>RIN</AmountText>
+                Deposit liquidity to farm{' '}
+                <AmountText>
+                  {getTokenNameByMintAddress(pool.farmingTokenMint)}
+                </AmountText>
               </RowDataTdText>
             )}
           </RowContainer>
@@ -288,7 +298,8 @@ export const UserLiquidityDetails = ({
               fontFamily={'Avenir Next Medium'}
               style={{ marginBottom: '2rem' }}
             >
-              <AmountText style={{ padding: '0 0.5rem' }}>0</AmountText> RIN
+              <AmountText style={{ padding: '0 0.5rem' }}>0</AmountText>{' '}
+              {getTokenNameByMintAddress(pool.farmingTokenMint)}
             </RowDataTdText>
             <GreenButton
               onClick={() => {
