@@ -31,3 +31,14 @@ export const BlackButton = styled(({ ...props }) => <BlueButton {...props} />)`
   width: ${(props) => props.width || 'calc(50% - 2rem)'};
   white-space: nowrap;
 `
+export const TextButton = styled.button`
+  background: none;
+  color: #222429;
+  text-decoration: underline;
+  font-family: Avenir Next Light;
+  outline: none;
+  border: none;
+  margin: 0 3rem 0 0;
+  cursor: pointer;
+  transition: 0.5s;
+`
