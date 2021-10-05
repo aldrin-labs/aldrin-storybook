@@ -36,35 +36,22 @@ export const VESTING_PROGRAM_ADDRESS =
 
 console.log('VESTING_PROGRAM_ADDRESS: ', VESTING_PROGRAM_ADDRESS)
 
-export async function getOwnedVestingAccounts(
-  connection: Connection,
-  publicKey: PublicKey
-) {
+export async function getOwnedVestingAccounts(connection, publicKey) {
   let filters = getOwnedAccountsFilters(publicKey)
-  let resp = await connection._rpcRequest('getProgramAccounts', [
-    VESTING_PROGRAM_ADDRESS,
+  let resp = await connection.getProgramAccounts(
+    new PublicKey(VESTING_PROGRAM_ADDRESS),
     {
-      commitment: connection.commitment,
       filters,
-    },
-  ])
+    }
+  )
 
-  if (resp.error) {
-    throw new Error(
-      'failed to get token accounts owned by ' +
-        publicKey.toBase58() +
-        ': ' +
-        resp.error.message
-    )
-  }
-
-  return resp.result
+  const respFiltered = resp
     .map(({ pubkey, account: { data, executable, owner, lamports } }) => ({
-      publicKey: new PublicKey(pubkey),
+      publicKey: pubkey,
       accountInfo: {
-        data: bs58.decode(data),
+        data,
         executable,
-        owner: new PublicKey(owner),
+        owner,
         lamports,
       },
     }))
@@ -85,6 +72,8 @@ export async function getOwnedVestingAccounts(
         return false
       })
     })
+
+  return respFiltered
 }
 
 export const getMaxWithdrawBalance = async ({
