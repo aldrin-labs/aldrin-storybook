@@ -1,16 +1,45 @@
-import React, { useState } from 'react'
-// import './app.styles.global.css';
-import styled from 'styled-components'
-import { compose } from 'recompose'
-import { withRouter } from 'react-router-dom'
-// https://material-ui.com/customization/css-in-js/#other-html-element
-import JssProvider from 'react-jss/lib/JssProvider'
-import { create } from 'jss'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
+import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
+//
+import { withAuthStatus } from '@core/hoc/withAuthStatus'
+import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
+import CssBaseline from '@material-ui/core/CssBaseline'
 import {
   createGenerateClassName,
   jssPreset,
-  withTheme,
+  withTheme
 } from '@material-ui/core/styles'
+import DevUrlPopup from '@sb/components/PopupForDevUrl'
+import { RebrandingPopup } from '@sb/components/RebrandingPopup/RebrandingPopup'
+import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
+import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
+import CardsPanel from '@sb/compositions/Chart/components/CardsPanel'
+import { ConnectionProvider } from '@sb/dexUtils/connection'
+import { MarketProvider } from '@sb/dexUtils/markets'
+import { PreferencesProvider } from '@sb/dexUtils/preferences'
+import { TokenRegistryProvider } from '@sb/dexUtils/tokenRegistry'
+import { useLocalStorageState } from '@sb/dexUtils/utils'
+import { WalletProvider } from '@sb/dexUtils/wallet'
+// import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
+import { GlobalStyle } from '@sb/styles/global.styles'
+import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
+import { syncStorage } from '@storage'
+import useWindowSize from '@webhooks/useWindowSize'
+import { create } from 'jss'
+import React, { useState } from 'react'
+// https://material-ui.com/customization/css-in-js/#other-html-element
+import JssProvider from 'react-jss/lib/JssProvider'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'recompose'
+// import './app.styles.global.css';
+import styled from 'styled-components'
+import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
+import { MobileNavBar } from '../Chart/components/MobileNavbar/MobileNavbar'
+import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
+import { AppGridLayout, AppInnerContainer } from './App.styles'
+import SnackbarWrapper from './SnackbarWrapper/SnackbarWrapper'
+import ThemeWrapper from './ThemeWrapper/ThemeWrapper'
 
 const generateClassName = createGenerateClassName({
   dangerouslyUseGlobalCSS: false,
@@ -20,44 +49,6 @@ const generateClassName = createGenerateClassName({
 const jss = create(jssPreset())
 // We define a custom insertion point that JSS will look for injecting the styles in the DOM.
 jss.options.insertionPoint = document.getElementById('jss-insertion-point')
-//
-
-import { withAuthStatus } from '@core/hoc/withAuthStatus'
-import CssBaseline from '@material-ui/core/CssBaseline'
-// import Footer from '@sb/components/Footer'
-import AnimatedNavBar from '@sb/components/NavBar/AnimatedNavBar'
-import ThemeWrapper from './ThemeWrapper/ThemeWrapper'
-import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
-import SnackbarWrapper from './SnackbarWrapper/SnackbarWrapper'
-import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
-
-import { AppGridLayout, AppInnerContainer } from './App.styles'
-// import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
-import { GlobalStyle } from '@sb/styles/global.styles'
-import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
-import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
-import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
-import { syncStorage } from '@storage'
-import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
-import { useQuery } from 'react-apollo'
-import CardsPanel from '@sb/compositions/Chart/components/CardsPanel'
-import MarketBlock from '@sb/compositions/Chart/components/MarketBlock/MarketBlock'
-
-import { ConnectionProvider } from '@sb/dexUtils/connection'
-import { WalletProvider } from '@sb/dexUtils/wallet'
-import { MarketProvider } from '@sb/dexUtils/markets'
-import { PreferencesProvider } from '@sb/dexUtils/preferences'
-import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
-import DevUrlPopup from '@sb/components/PopupForDevUrl'
-import WalletMigrationPopup from '@sb/components/WalletMigrationPopup'
-import { TokenRegistryProvider } from '@sb/dexUtils/tokenRegistry'
-import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
-import { MobileNavBar } from '../Chart/components/MobileNavbar/MobileNavbar'
-import useWindowSize from '@webhooks/useWindowSize'
-import { RebrandingPopup } from '@sb/components/RebrandingPopup/RebrandingPopup'
-import { useLocalStorageState } from '@sb/dexUtils/utils'
 
 const version = `10.9.147-fix-open-orders`
 const currentVersion = localStorage.getItem('version')

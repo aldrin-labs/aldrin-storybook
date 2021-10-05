@@ -1,31 +1,27 @@
-import React, { useState, useEffect } from 'react'
-import { withRouter } from 'react-router-dom'
-import { compose } from 'recompose'
-import { Grid, Input, InputAdornment } from '@material-ui/core'
-import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
-import { Column, Table, SortDirection } from 'react-virtualized'
-import 'react-virtualized/styles.css'
-
-import { Theme } from '@material-ui/core'
-import { getSerumMarketData } from '@core/graphql/queries/chart/getSerumMarketData'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { combineSelectWrapperData } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
+import { getSerumMarketData } from '@core/graphql/queries/chart/getSerumMarketData'
 import search from '@icons/search.svg'
-
+import { Grid, Input, InputAdornment, Theme } from '@material-ui/core'
 import { SvgIcon } from '@sb/components'
-
 import {
   datesForQuery,
   excludedPairs,
-  fiatRegexp,
+  fiatRegexp
 } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
-
+import { combineSelectWrapperData } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
+import { useAllMarketsList } from '@sb/dexUtils/markets'
+import React, { useEffect, useState } from 'react'
+import { withRouter } from 'react-router-dom'
+import { Column, SortDirection, Table } from 'react-virtualized'
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
+import 'react-virtualized/styles.css'
+import { compose } from 'recompose'
 import {
   HeaderContainer,
-  WhiteTitle,
-  PairSelectorContainerGrid,
+
+  PairSelectorContainerGrid, WhiteTitle
 } from '../index.styles'
-import { useAllMarketsList, useCustomMarkets } from '@sb/dexUtils/markets'
+
 
 const _sortList = ({ sortBy, sortDirection, data }) => {
   let dataToSort = data

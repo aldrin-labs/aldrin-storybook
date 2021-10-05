@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { PublicKey } from '@solana/web3.js'
 import { MASTER_BUILD } from '@core/utils/config'
+import { PublicKey } from '@solana/web3.js'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 export function isValidPublicKey(key) {
   if (!key) {
@@ -61,12 +61,12 @@ export function getDecimalCount(value) {
   return 0
 }
 
-export function useLocalStorageState(
-  key,
-  defaultState = null,
-  setIfNotChanged = false
-) {
-  const [state, setState] = useState(() => {
+export function useLocalStorageState<T>(
+  key: string,
+  defaultState: T | null = null,
+  forceUpdate = false
+): [T, (newState: T) => void] {
+  const [state, setState] = useState<T>(() => {
     // NOTE: Not sure if this is ok
     const storedState = localStorage.getItem(key)
     if (storedState) {
@@ -76,9 +76,9 @@ export function useLocalStorageState(
   })
 
   const setLocalStorageState = useCallback(
-    (newState) => {
+    (newState: T) => {
       const changed = state !== newState
-      if (!changed && !setIfNotChanged) {
+      if (!changed && !forceUpdate) {
         return
       }
       setState(newState)
@@ -88,7 +88,7 @@ export function useLocalStorageState(
         localStorage.setItem(key, JSON.stringify(newState))
       }
     },
-    [state, key, setIfNotChanged]
+    [state, key, forceUpdate]
   )
 
   return [state, setLocalStorageState]
@@ -148,7 +148,7 @@ export function notEmpty<TValue>(value: TValue | null | undefined): value is TVa
   return value !== null && value !== undefined;
 }
 
-function charCodeAt (c) {
+function charCodeAt(c) {
   return c.charCodeAt(0)
 }
 

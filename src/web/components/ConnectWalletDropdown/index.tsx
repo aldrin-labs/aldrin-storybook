@@ -1,19 +1,11 @@
-import React, { CSSProperties } from 'react'
+import { Theme } from '@material-ui/core'
 import Dropdown from '@sb/components/Dropdown'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { compose } from 'recompose'
 import { withTheme } from '@sb/types/materialUI'
-import { Theme } from '@material-ui/core'
+import React, { CSSProperties } from 'react'
+import { compose } from 'recompose'
 
-const ConnectWalletDropdown = ({
-  isNavBar = false,
-  height,
-  theme,
-  id,
-  showOnTop,
-  containerStyles = {},
-  buttonStyles = {},
-}: {
+interface ConnectWalletDropdownProps {
   isNavBar?: boolean
   height: string
   theme: Theme
@@ -21,12 +13,24 @@ const ConnectWalletDropdown = ({
   showOnTop?: boolean
   containerStyles?: CSSProperties
   buttonStyles?: CSSProperties
-}) => {
+}
+
+const ConnectWalletDropdown: React.FC<ConnectWalletDropdownProps> = (props) => {
+  const {
+    isNavBar = false,
+    height,
+    theme,
+    id,
+    showOnTop,
+    containerStyles = {},
+    buttonStyles = {},
+  } = props
+
   const {
     connected,
     wallet,
     providerUrl,
-    setProvider,
+    setProviderUrl,
     setAutoConnect,
   } = useWallet()
 
@@ -39,7 +43,7 @@ const ConnectWalletDropdown = ({
       theme={theme}
       id={id}
       showOnTop={showOnTop}
-      setProvider={setProvider}
+      setProviderUrl={setProviderUrl}
       providerUrl={providerUrl}
       setAutoConnect={setAutoConnect}
       containerStyle={containerStyles}
