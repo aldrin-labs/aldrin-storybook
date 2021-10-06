@@ -1,50 +1,44 @@
-import React, { useState } from 'react'
-import { compose } from 'recompose'
-import { Grid, Input, InputAdornment } from '@material-ui/core'
-import { withTheme } from '@material-ui/core/styles'
-import { SortDirection } from 'react-virtualized'
-import 'react-virtualized/styles.css'
-import dayjs from 'dayjs'
-import { WarningPopup } from '@sb/compositions/Chart/components/WarningPopup'
-import { withAuthStatus } from '@core/hoc/withAuthStatus'
-
-import { getSerumMarketData } from '@core/graphql/queries/chart/getSerumMarketData'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
-
-import stableCoins, { fiatPairs } from '@core/config/stableCoins'
-import CustomMarketDialog from '@sb/compositions/Chart/Inputs/SelectWrapper/AddCustomMarketPopup'
-import search from '@icons/search.svg'
-import _, { isArray } from 'lodash'
-
-import { StyledGrid, StyledInput, TableFooter } from './SelectWrapperStyles'
-import { notify } from '@sb/dexUtils/notifications'
-
-import { SvgIcon } from '@sb/components'
-
-import {
-  IProps,
-  IState,
-  IPropsSelectPairListComponent,
-  IStateSelectPairListComponent,
-  SelectTabType,
-} from './SelectWrapper.types'
-
-import { combineSelectWrapperData } from './SelectWrapper.utils'
+import { fiatPairs } from '@core/config/stableCoins'
+import { getSerumMarketData } from '@core/graphql/queries/chart/getSerumMarketData'
+import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import { withPublicKey } from '@core/hoc/withPublicKey'
+import search from '@icons/search.svg'
+import { sortBy as sort } from 'lodash-es'
+import { Grid, InputAdornment } from '@material-ui/core'
+import { withTheme } from '@material-ui/core/styles'
+import { SvgIcon } from '@sb/components'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { WarningPopup } from '@sb/compositions/Chart/components/WarningPopup'
+import CustomMarketDialog from '@sb/compositions/Chart/Inputs/SelectWrapper/AddCustomMarketPopup'
+import { notify } from '@sb/dexUtils/notifications'
+import { useLocalStorageState } from '@sb/dexUtils/utils'
+import dayjs from 'dayjs'
+import React, { useState } from 'react'
 import { withRouter } from 'react-router'
+import { SortDirection } from 'react-virtualized'
+import 'react-virtualized/styles.css'
+import { compose } from 'recompose'
+import { MarketsFeedbackPopup } from './MarketsFeedbackPopup'
+import { MintsPopup } from './MintsPopup'
 import {
-  dayDuration,
-  endOfDayTimestamp,
-  getTimezone,
-} from '@sb/compositions/AnalyticsRoute/components/utils'
-import { getSerumTradesData } from '@core/graphql/queries/chart/getSerumTradesData'
+  IProps,
+
+  IPropsSelectPairListComponent,
+  IStateSelectPairListComponent,
+  SelectTabType
+} from './SelectWrapper.types'
+import { combineSelectWrapperData } from './SelectWrapper.utils'
+import { StyledGrid, StyledInput, TableFooter } from './SelectWrapperStyles'
 import { TableHeader } from './TableHeader'
 import { TableInner } from './TableInner'
-import { MintsPopup } from './MintsPopup'
-import { MarketsFeedbackPopup } from './MarketsFeedbackPopup'
-import { useLocalStorageState } from '@sb/dexUtils/utils'
+
+
+
+
+
+
 
 export const excludedPairs = [
   // 'USDC_ODOP',
@@ -91,7 +85,7 @@ const SelectWrapper = (props: IProps) => {
   // )
 
   const selectorMode = 'basic'
-  const setSelectorMode = () => {}
+  const setSelectorMode = () => { }
 
   const [favouriteMarketsRaw, setFavouriteMarkets] = useLocalStorageState(
     'favouriteMarkets',
@@ -155,7 +149,7 @@ const SelectWrapper = (props: IProps) => {
 class SelectPairListComponent extends React.PureComponent<
   IPropsSelectPairListComponent,
   IStateSelectPairListComponent
-> {
+  > {
   state: IStateSelectPairListComponent = {
     processedSelectData: [],
     showAddMarketPopup: false,
@@ -308,6 +302,7 @@ class SelectPairListComponent extends React.PureComponent<
     })
   }
 
+
   _sortList = ({ sortBy, sortDirection, data, tab }) => {
     let dataToSort = data
 
@@ -345,7 +340,7 @@ class SelectPairListComponent extends React.PureComponent<
         }
       })
     } else {
-      newList = _.sortBy(dataToSort, [`${sortBy}.contentToSort`])
+      newList = sort(dataToSort, [`${sortBy}.contentToSort`])
       if (sortDirection === SortDirection.DESC) {
         newList = newList.reverse()
       }

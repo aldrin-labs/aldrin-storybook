@@ -1,14 +1,32 @@
-import React, { useState, useEffect } from 'react'
-
-import { Fade, Grid, Theme } from '@material-ui/core'
-import SingleChartWithButtons from '@sb/components/Chart'
-import TokenNotAddedPopup from '@sb/compositions/Chart/components/TokenNotAdded'
 import Balances from '@core/components/Balances'
 import TradingComponent from '@core/components/TradingComponent'
+import { Grid, Theme } from '@material-ui/core'
+import SingleChartWithButtons from '@sb/components/Chart'
 import TradingTable from '@sb/components/TradingTable/TradingTable'
 import { TablesBlockWrapper } from '@sb/components/TradingWrapper/styles'
-import { TradeHistory, OrderbookAndDepthChart } from '../components'
-import { isEqual } from 'lodash'
+import TokenNotAddedPopup from '@sb/compositions/Chart/components/TokenNotAdded'
+import { isCCAITradingEnabled } from '@sb/dexUtils/utils'
+import { isEqual } from 'lodash-es'
+import React, { useEffect, useState } from 'react'
+import {
+  BalancesContainer,
+
+
+  ChartAndOrderbookContainer, ChartsContainer, Container,
+
+
+
+
+
+  MobileTradingTabelContainer, TopChartsContainer, TradingTabelContainer,
+  TradingTerminalContainer
+} from '../Chart.styles'
+import { OrderbookAndDepthChart, TradeHistory } from '../components'
+import {
+  OrderBookGrid,
+  TradeHistoryGrid
+} from '../Inputs/SelectWrapper/SelectWrapperStyles'
+
 
 const TerminalContainer = ({
   isDefaultTerminalViewMode,
@@ -21,36 +39,18 @@ const TerminalContainer = ({
   theme: Theme
   terminalViewMode: sting
 }) => (
-  <TablesBlockWrapper
-    item
-    container
-    theme={theme}
-    xs={isDefaultTerminalViewMode ? 5 : 12}
-    isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-    terminalViewMode={terminalViewMode}
-  >
-    {children}
-  </TablesBlockWrapper>
-)
+    <TablesBlockWrapper
+      item
+      container
+      theme={theme}
+      xs={isDefaultTerminalViewMode ? 5 : 12}
+      isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+      terminalViewMode={terminalViewMode}
+    >
+      {children}
+    </TablesBlockWrapper>
+  )
 
-import {
-  Container,
-  ChartsContainer,
-  TradingTabelContainer,
-  TradingTerminalContainer,
-  BalancesContainer,
-  TopChartsContainer,
-  MobileTradingTabelContainer,
-  ChartAndOrderbookContainer,
-} from '../Chart.styles'
-import TradingBlocked from '../components/TradingBlocked'
-import { CCAIListingTime, isCCAITradingEnabled } from '@sb/dexUtils/utils'
-import {
-  OrderBookGrid,
-  TradeHistoryGrid,
-} from '../Inputs/SelectWrapper/SelectWrapperStyles'
-import { TerminalComponentsContainer } from './styles'
-import { useConnection } from '@sb/dexUtils/connection'
 
 // fix props type
 export const DefaultViewComponent = (

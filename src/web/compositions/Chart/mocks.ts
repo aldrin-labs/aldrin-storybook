@@ -3,7 +3,6 @@ function getRandomArbitrary(min: number, max: number) {
 }
 
 export const getFakeDepthChartData = () => {
-  /* tslint:disable */
   const orderBookFakeData = []
   for (let index = 1; index < 101; index++) {
     orderBookFakeData.push({
@@ -21,7 +20,6 @@ export const getFakeDepthChartData = () => {
       percentageOfChange: 23,
     })
   }
-  /* tslint:enable */
 
   return { usdSpreadFakeData, orderBookFakeData }
 }

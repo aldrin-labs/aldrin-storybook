@@ -1,6 +1,6 @@
-const webpackMerge = require('webpack-merge')
+const { merge } = require('webpack-merge')
 const path = require('path')
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
+// const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
 const webpack = require('webpack')
 
 module.exports = (baseConfig, env, ...rest) => {
@@ -8,7 +8,7 @@ module.exports = (baseConfig, env, ...rest) => {
   const platform = process.env.PLATFORM || 'web'
 
 
-  
+
   const config = {
     devtool: 'eval-cheap-module-source-map',
     resolve: {
@@ -26,6 +26,17 @@ module.exports = (baseConfig, env, ...rest) => {
         '@utils': path.join(__dirname, '..', 'src', 'utils'),
         '@nodemodules': path.resolve(__dirname, '..', 'node_modules'),
       },
+      fallback: {
+        fs: false,
+        os: false,
+        path: false,
+        net: false,
+        tls: false,
+        child_process: false,
+      },
+    },
+    optimization: {
+      moduleIds: 'named'
     },
     module: {
       rules: [
@@ -36,7 +47,7 @@ module.exports = (baseConfig, env, ...rest) => {
             path.join(__dirname, '..', '/src/core/node_modules/'),
 
           ],
-          loaders: ['babel-loader?cacheDirectory=true'],
+          use: ['babel-loader?cacheDirectory=true'],
         },
         {
           test: /\.svg$/,
@@ -48,7 +59,7 @@ module.exports = (baseConfig, env, ...rest) => {
         {
           test: /\.css$/,
           include: /node_modules/,
-          loaders: ['style-loader', 'css-loader'],
+          use: ['style-loader', 'css-loader'],
         },
         {
           test: /\.(png|jpg|gif)$/,
@@ -62,19 +73,18 @@ module.exports = (baseConfig, env, ...rest) => {
       ],
     },
     plugins: [
-      new HardSourceWebpackPlugin(),
+      // new HardSourceWebpackPlugin(),
       // Add module names to factory functions so they appear in browser profiler.
-      new webpack.NamedModulesPlugin(),
     ],
     // Some libraries import Node modules but don't use them in the browser.
     // Tell Webpack to provide empty mocks for them so importing them works.
-    node: {
-      dgram: 'empty',
-      fs: 'empty',
-      net: 'empty',
-      tls: 'empty',
-      child_process: 'empty',
-    },
+    // node: {
+    //   dgram: 'mock',
+    //   fs: 'mock',
+    //   net: 'mock',
+    //   tls: 'mock',
+    //   child_process: 'mock',
+    // },
     // Turn off performance hints during development because we don't do any
     // splitting or minification in interest of speed. These warnings become
     // cumbersome.
@@ -83,6 +93,6 @@ module.exports = (baseConfig, env, ...rest) => {
     },
   }
 
-  const mergedConfig = webpackMerge(baseConfig, config)
+  const mergedConfig = merge(baseConfig, config)
   return mergedConfig
 }
