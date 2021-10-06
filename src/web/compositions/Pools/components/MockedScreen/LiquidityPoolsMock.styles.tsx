@@ -41,6 +41,7 @@ export const LinkContainer = styled.a`
   }
 `
 export const VioletButton = styled.a`
+  text-decoration: none;
   display: flex;
   align-items: center;
   border-radius: 1.5rem;
@@ -83,7 +84,7 @@ export const SpinAnimatedImage = styled.img`
     }
   }
   @media (max-width: 600px) {
-    width: 90%;
+    width: 60%;
   }
 `
 export const AnimatedImage = styled.img`

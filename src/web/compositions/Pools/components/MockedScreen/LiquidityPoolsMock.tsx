@@ -21,12 +21,14 @@ import MarketcapIcon from '@icons/violetMarketcap.svg'
 import DiscordIcon from '@icons/violetDiscord.svg'
 import TwitterIcon from '@icons/violetTwitter.svg'
 import KudelskiLogo from '@icons/kudelski.svg'
-import ComingSoonCircle from '@icons/comingSoonCircle.svg'
+import ComingSoonCircle from '@icons/comingSoonCircle.png'
 import AldrinLogo from '@icons/aldrinLogoWithShadow.svg'
 import useMobileSize from '@webhooks/useMobileSize'
+import AMMAudit from './AldrinAMMAuditReport.pdf'
 
 export const LiquidityPoolsMock = ({}) => {
   const isMobile = useMobileSize()
+
   return (
     <RowContainer
       style={{
@@ -48,19 +50,39 @@ export const LiquidityPoolsMock = ({}) => {
         }}
       >
         <Row width={isMobile ? '90%' : '60%'} justify="space-between">
-          <LinkContainer>
+          <LinkContainer
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://twitter.com/Aldrin_Exchange"
+          >
             <SvgIcon width="100%" height="100%" src={TwitterIcon} />
           </LinkContainer>
-          <LinkContainer>
+          <LinkContainer
+            target="_blank"
+            rel="noopener noreferrer"
+            href={'https://t.me/Aldrin_Exchange'}
+          >
             <SvgIcon width="100%" height="100%" src={TelegramIcon} />
           </LinkContainer>
-          <LinkContainer>
+          <LinkContainer
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://discord.gg/4VZyNxT2WU"
+          >
             <SvgIcon width="100%" height="100%" src={DiscordIcon} />
           </LinkContainer>
-          <LinkContainer>
+          <LinkContainer
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://ccaiofficial.medium.com/"
+          >
             <SvgIcon width="100%" height="100%" src={MediumIcon} />
           </LinkContainer>
-          <LinkContainer>
+          <LinkContainer
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://coinmarketcap.com/currencies/aldrin/"
+          >
             <SvgIcon width="100%" height="100%" src={MarketcapIcon} />
           </LinkContainer>
         </Row>
@@ -68,7 +90,9 @@ export const LiquidityPoolsMock = ({}) => {
           Aldrin will be the first full 3rd party audited Automated Market Maker
           (AMM) on Solana.
         </Header>
-        <VioletButton>VIEW AUDIT REPORT</VioletButton>
+        <VioletButton href={AMMAudit} target="_blank">
+          VIEW AUDIT REPORT
+        </VioletButton>
         <Row
           width="40%"
           direction="column"
@@ -86,7 +110,7 @@ export const LiquidityPoolsMock = ({}) => {
         <MobileImageContainer top="4rem" left="4rem">
           <AnimatedImage src={AldrinLogo} />
         </MobileImageContainer>
-        <MobileImageContainer bottom="5rem" right="5rem">
+        <MobileImageContainer bottom="5rem" left="31rem">
           <SpinAnimatedImage src={ComingSoonCircle} />
         </MobileImageContainer>
       </Row>
