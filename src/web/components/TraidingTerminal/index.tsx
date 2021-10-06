@@ -83,7 +83,7 @@ export const TradeInputHeader = ({
   haveTooltip = false,
   tooltipText = '',
   tooltipStyles = {},
-  onValueClick = () => {},
+  onValueClick = () => { },
   theme,
 }) => {
   return (
@@ -103,9 +103,9 @@ export const TradeInputHeader = ({
             <SeparateInputTitle
               theme={theme}
               haveTooltip={haveTooltip}
-              // style={{
-              //   borderBottom: haveTooltip ? '.1rem solid #e0e5ec' : 'none',
-              // }}
+            // style={{
+            //   borderBottom: haveTooltip ? '.1rem solid #e0e5ec' : 'none',
+            // }}
             >
               {title}
             </SeparateInputTitle>
@@ -113,15 +113,15 @@ export const TradeInputHeader = ({
           {/* </TooltipContainer> */}
         </>
       ) : (
-        <SeparateInputTitle
-          theme={theme}
+          <SeparateInputTitle
+            theme={theme}
           // style={{
           //   borderBottom: haveTooltip ? '.1rem solid #e0e5ec' : 'none',
           // }}
-        >
-          {title}
-        </SeparateInputTitle>
-      )}
+          >
+            {title}
+          </SeparateInputTitle>
+        )}
       {/* <SeparateInputTitle
         style={{ borderBottom: haveTooltip ? '.1rem dashed #e0e5ec' : 'none' }}
       >
@@ -157,7 +157,7 @@ export const TradeInputContent = ({
   width = '100%',
   fontSize = '',
   textAlign = 'right',
-  onChange = () => {},
+  onChange = () => { },
   inputStyles,
   header = '',
   theme,
@@ -228,10 +228,10 @@ export const TradeInputContent = ({
               </TitleForInput>
             </DarkTooltip>
           ) : (
-            <TitleForInput theme={theme} textDecoration={textDecoration}>
-              {header}
-            </TitleForInput>
-          )}
+              <TitleForInput theme={theme} textDecoration={textDecoration}>
+                {header}
+              </TitleForInput>
+            )}
         </>
       ) : null}
 
@@ -258,8 +258,8 @@ export const TradeInputContent = ({
           !!symbolRightIndent
             ? symbolRightIndent
             : symbol.length <= 2
-            ? '2.5rem'
-            : '1rem'
+              ? '2.5rem'
+              : '1rem'
         }
       >
         {symbol}
@@ -456,16 +456,16 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
     const amountForUpdate = isAmountMoreThanMax
       ? currentMaxAmount
       : isAmountLessThanMin && minOrderSize < 1
-      ? minOrderSize
-      : e.target.value
+        ? minOrderSize
+        : e.target.value
 
     const total = amountForUpdate * priceForCalculate
 
     const strippedAmount = isAmountMoreThanMax
       ? stripDigitPlaces(amountForUpdate, quantityPrecision)
       : isAmountLessThanMin
-      ? amountForUpdate
-      : e.target.value
+        ? amountForUpdate
+        : e.target.value
 
     setFieldValue('amount', strippedAmount)
     setFieldValue('total', stripDigitPlaces(total, 3))
@@ -581,8 +581,8 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
 
     const priceForCalculate =
       priceType !== 'market' &&
-      priceType !== 'maker-only' &&
-      values.limit !== null
+        priceType !== 'maker-only' &&
+        values.limit !== null
         ? values.price
         : marketPrice
 
@@ -613,6 +613,8 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
 
       this.openConfirmationPopup()
     }
+
+    // console.log('TRADING tERMINAL')
 
     return (
       <Container background={'transparent'}>
@@ -719,24 +721,24 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
           <Grid item container xs={9} style={{ maxWidth: '100%' }}>
             <InputsBlock direction="column">
               {priceType !== 'market' &&
-              priceType !== 'stop-market' &&
-              priceType !== 'maker-only' ? (
-                <InputRowContainer
-                  key={'limit-price'}
-                  padding={'.6rem 0'}
-                  direction={'column'}
-                >
-                  <TradeInputContent
-                    theme={theme}
-                    needTitle
-                    type={'text'}
-                    title={`price`}
-                    value={values.price || ''}
-                    onChange={this.onPriceChange}
-                    symbol={pair[1]}
-                  />
-                </InputRowContainer>
-              ) : null}
+                priceType !== 'stop-market' &&
+                priceType !== 'maker-only' ? (
+                  <InputRowContainer
+                    key={'limit-price'}
+                    padding={'.6rem 0'}
+                    direction={'column'}
+                  >
+                    <TradeInputContent
+                      theme={theme}
+                      needTitle
+                      type={'text'}
+                      title={`price`}
+                      value={values.price || ''}
+                      onChange={this.onPriceChange}
+                      symbol={pair[1]}
+                    />
+                  </InputRowContainer>
+                ) : null}
               {/* {priceType === 'market' && !tradingBotEnabled && (
                 <InputRowContainer
                   style={{ visibility: !isBuyType ? 'hidden' : 'visible' }}
@@ -829,15 +831,15 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
 
                     const newAmount = isBuyType
                       ? +stripDigitPlaces(
-                          newValue / priceForCalculate,
-                          quantityPrecision,
-                          market?.minOrderSize
-                        )
+                        newValue / priceForCalculate,
+                        quantityPrecision,
+                        market?.minOrderSize
+                      )
                       : +stripDigitPlaces(
-                          newValue,
-                          quantityPrecision,
-                          market?.minOrderSize
-                        )
+                        newValue,
+                        quantityPrecision,
+                        market?.minOrderSize
+                      )
 
                     const newTotal = newAmount * priceForCalculate
 
@@ -913,14 +915,14 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                   </ConnectWalletButtonContainer>
                 </>
               ) : (
-                <InsufficientBalancePlaceholder
-                  pair={pair}
-                  SOLAmount={SOLAmount}
-                  sideType={sideType}
-                  theme={theme}
-                  onClick={() => onSendOrder({ values, market, wallet })}
-                />
-              )}
+                  <InsufficientBalancePlaceholder
+                    pair={pair}
+                    SOLAmount={SOLAmount}
+                    sideType={sideType}
+                    theme={theme}
+                    onClick={() => onSendOrder({ values, market, wallet })}
+                  />
+                )}
               <MobileWalletDropdown
                 theme={theme}
                 open={this.state.isWalletPopupOpen}
@@ -1010,7 +1012,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
     const isBuyType = sideType === 'buy'
     const priceForCalculate =
       priceType !== 'market' &&
-      priceType !== 'maker-only'
+        priceType !== 'maker-only'
         ? values.price
         : marketPrice
 
@@ -1112,13 +1114,13 @@ const formikEnhancer = withFormik<IProps, FormValues>({
       const filtredValues =
         priceType === 'limit'
           ? {
-              limit: values.limit,
-              price: values.price,
-              amount: values.amount,
-            }
+            limit: values.limit,
+            price: values.price,
+            amount: values.amount,
+          }
           : priceType === 'market'
-          ? { amount: values.amount }
-          : {
+            ? { amount: values.amount }
+            : {
               stop: values.stop,
               price: values.price,
               amount: values.amount,
@@ -1152,14 +1154,14 @@ const formikEnhancer = withFormik<IProps, FormValues>({
             ? orderMode === 'TIF' && priceType !== 'stop-market'
               ? { timeInForce: TIFMode, postOnly: false }
               : orderMode === 'postOnly'
-              ? { timeInForce: TIFMode, postOnly: true }
-              : { postOnly: true }
+                ? { timeInForce: TIFMode, postOnly: true }
+                : { postOnly: true }
             : {}),
           ...(priceType === 'stop-limit' || priceType === 'stop-market'
             ? {
-                workingType:
-                  trigger === 'mark price' ? 'MARK_PRICE' : 'CONTRACT_PRICE',
-              }
+              workingType:
+                trigger === 'mark price' ? 'MARK_PRICE' : 'CONTRACT_PRICE',
+            }
             : {}),
           ...{ reduceOnly },
           orderMode,
