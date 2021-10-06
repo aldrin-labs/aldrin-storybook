@@ -1,4 +1,5 @@
 import React from 'react'
+import dayjs from 'dayjs'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
@@ -68,6 +69,18 @@ export const UserLiquidityDetails = ({
     pool,
     dexTokensPricesMap,
   })
+
+  const farmingTickets = farmingTicketsMap.get(pool.swapToken) || []
+  const lastFarmingTicket =
+    farmingTickets.length > 0
+      ? farmingTickets?.sort((a, b) => b.startTime - a.startTime)[0]
+      : null
+
+  const unlockAvailableDate = lastFarmingTicket
+    ? lastFarmingTicket.startTime + pool.periodLength
+    : 0
+
+  const isUnstakeLocked = unlockAvailableDate < Date.now()
 
   return (
     <RowContainer
@@ -253,7 +266,7 @@ export const UserLiquidityDetails = ({
                 </GreenButton>
                 <GreenButton
                   theme={theme}
-                  disabled={pool.locked || !wallet.connected}
+                  disabled={isUnstakeLocked || !wallet.connected}
                   style={{ width: '48%' }}
                   onClick={() => {
                     if (!wallet.connected) {
@@ -267,8 +280,9 @@ export const UserLiquidityDetails = ({
                 >
                   {!wallet.connected
                     ? 'Connect Wallet'
-                    : pool.locked
-                    ? 'Locked until Oct 16, 2021'
+                    : isUnstakeLocked
+                    // todo test
+                    ? `Locked until ${dayjs(unlockAvailableDate).format('MMM DD, YYYY')}`
                     : 'Unstake Pool Token'}
                 </GreenButton>
               </RowContainer>
