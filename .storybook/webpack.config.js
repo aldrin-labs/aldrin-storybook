@@ -4,21 +4,30 @@ const path = require('path')
 const webpack = require('webpack')
 
 module.exports = (baseConfig, env, ...rest) => {
-
   const platform = process.env.PLATFORM || 'web'
-
-
 
   const config = {
     devtool: 'eval-cheap-module-source-map',
     resolve: {
-      extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      extensions: ['.js', '.jsx', '.ts', '.tsx', '.pdf'],
       alias: {
         '@storage': path.join(__dirname, '..', 'src', 'core', 'src', 'mocks'),
         '@core': path.join(__dirname, '..', 'src', 'core', 'src'),
         '@sb': path.join(__dirname, '..', 'src', `${platform}`),
-        '@components': path.join(__dirname, '..', 'src', `${platform}`, 'components'),
-        '@compositions': path.join(__dirname, '..', 'src', `${platform}`, 'compositions'),
+        '@components': path.join(
+          __dirname,
+          '..',
+          'src',
+          `${platform}`,
+          'components'
+        ),
+        '@compositions': path.join(
+          __dirname,
+          '..',
+          'src',
+          `${platform}`,
+          'compositions'
+        ),
         '@config': path.join(__dirname, '..', 'src', `${platform}`, 'config'),
         '@styles': path.join(__dirname, '..', 'src', `${platform}`, 'styles'),
 
@@ -45,7 +54,6 @@ module.exports = (baseConfig, env, ...rest) => {
           exclude: [
             path.join(__dirname, '..', '/node_modules/'),
             path.join(__dirname, '..', '/src/core/node_modules/'),
-
           ],
           use: ['babel-loader?cacheDirectory=true'],
         },
@@ -62,11 +70,17 @@ module.exports = (baseConfig, env, ...rest) => {
           use: ['style-loader', 'css-loader'],
         },
         {
-          test: /\.(png|jpg|gif)$/,
+          test: /\.pdf$/,
+          use: ['file-loader'],
+        },
+        {
+          test: /\.(png|svg|jpg|gif)$/,
           use: [
             {
               loader: 'file-loader',
-              options: {},
+              options: {
+                name: '[name].[ext]',
+              },
             },
           ],
         },
