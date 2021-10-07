@@ -194,7 +194,6 @@ export const CardsPanel = ({ theme }) => {
             >
               Home
             </NavLinkButton> */}
-
             <NavLinkButton
               theme={theme}
               pathname={location.pathname}
@@ -222,7 +221,6 @@ export const CardsPanel = ({ theme }) => {
               component={(props) => <Link to={`/rebalance`} {...props} />}
             >
               Rebalance
-              <BetaLabel theme={theme} style={{ marginLeft: '.5rem' }} />
             </NavLinkButton>
             <NavLinkButton
               theme={theme}
@@ -244,16 +242,17 @@ export const CardsPanel = ({ theme }) => {
             >
               Wallet
             </NavLinkButton>
-            {/* {!MASTER_BUILD && (
+            {!MASTER_BUILD && (
               <NavLinkButton
                 theme={theme}
                 page={'/pools'}
                 pathname={location.pathname}
                 component={(props) => <Link to={`/pools`} {...props} />}
               >
-                Pools
+                Liquidity Pools
               </NavLinkButton>
-            )}
+            )}{' '}
+            {/* 
             {!MASTER_BUILD && (
               <NavLinkButton
                 theme={theme}
