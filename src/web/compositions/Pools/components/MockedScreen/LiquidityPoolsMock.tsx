@@ -74,7 +74,7 @@ export const LiquidityPoolsMock = ({}) => {
           <LinkContainer
             target="_blank"
             rel="noopener noreferrer"
-            href="https://ccaiofficial.medium.com/"
+            href="https://aldrin-rin.medium.com/"
           >
             <SvgIcon width="100%" height="100%" src={MediumIcon} />
           </LinkContainer>
