@@ -1,3 +1,14 @@
+export type FarmingState = {
+  farmingState: string
+  farmingTokenVault: string
+  farmingSnapshots: string
+  tokensUnlocked: number
+  tokensTotal: number
+  tokensPerPeriod: number
+  periodLength: number
+  vestingPeriod: number
+}
+
 export type PoolInfo = {
   name: string
   parsedName: string
@@ -5,13 +16,7 @@ export type PoolInfo = {
   tokenB: string
   swapToken: string
   poolTokenMint: string
-  farmingStates: string[]
-  farmingTokenMint: string
-  farmingSnapshots: string[]
-  tokensUnlocked: number
-  tokensTotal: number
-  tokensPerPeriod: number
-  periodLength: number
+  farming: FarmingState[]
   tvl: {
     tokenA: number
     tokenB: number

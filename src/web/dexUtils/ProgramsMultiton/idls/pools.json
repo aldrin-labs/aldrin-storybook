@@ -61,16 +61,6 @@
           "isSigner": false
         },
         {
-          "name": "dexMarketAddress",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "dexMarketProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
           "name": "tokenProgram",
           "isMut": false,
           "isSigner": false
@@ -219,11 +209,6 @@
           "isSigner": true
         },
         {
-          "name": "lpTicket",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
           "name": "tokenProgram",
           "isMut": false,
           "isSigner": false
@@ -304,11 +289,6 @@
         },
         {
           "name": "userSolAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "lpTicket",
           "isMut": true,
           "isSigner": false
         },
@@ -886,46 +866,6 @@
             "type": {
               "defined": "Fees"
             }
-          },
-          {
-            "name": "baseCounter",
-            "type": "i128"
-          },
-          {
-            "name": "quoteCounter",
-            "type": "i128"
-          },
-          {
-            "name": "dexMarketAddress",
-            "type": "publicKey"
-          },
-          {
-            "name": "dexProgram",
-            "type": "publicKey"
-          }
-        ]
-      }
-    },
-    {
-      "name": "LPTicket",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "lpTokens",
-            "type": "u64"
-          },
-          {
-            "name": "startTime",
-            "type": "i64"
-          },
-          {
-            "name": "userKey",
-            "type": "publicKey"
-          },
-          {
-            "name": "pool",
-            "type": "publicKey"
           }
         ]
       }
@@ -1064,40 +1004,6 @@
           },
           {
             "name": "Ask"
-          }
-        ]
-      }
-    },
-    {
-      "name": "OrderType",
-      "type": {
-        "kind": "enum",
-        "variants": [
-          {
-            "name": "ImmediateOrCancel"
-          },
-          {
-            "name": "Limit"
-          },
-          {
-            "name": "PostOnly"
-          }
-        ]
-      }
-    },
-    {
-      "name": "SelfTradeBehavior",
-      "type": {
-        "kind": "enum",
-        "variants": [
-          {
-            "name": "DecrementTake"
-          },
-          {
-            "name": "AbortTransaction"
-          },
-          {
-            "name": "CancelProvide"
           }
         ]
       }
@@ -1262,8 +1168,5 @@
       "name": "CannotSnapshotNoTokensFrozen",
       "msg": "No tokens frozen"
     }
-  ],
-  "metadata": {
-    "address": "RinKtB5mZkTYfVvhCyLrwGxaYsfXruZg4r4AmzPM4wx"
-  }
+  ]
 }

@@ -170,6 +170,8 @@ export const combineUserLiquidityData = ({
         poolTokenAmount: poolTokenAmount,
       })
 
+      const farmingState = el.farming[0]
+
       const userLiquidityUSD =
         baseTokenPrice * userAmountTokenA + quoteTokenPrice * userAmountTokenB
 
@@ -262,42 +264,41 @@ export const combineUserLiquidityData = ({
           ),
         },
         farming: {
-          render:
-            el.farmingStates.length > 0 ? (
-              <RowContainer justify="flex-start" theme={theme}>
-                <Row margin="0 1rem 0 0" justify="flex-start">
-                  <TokenIcon
-                    mint={el.farmingTokenMint}
-                    width={'3rem'}
-                    emojiIfNoLogo={false}
-                  />
-                </Row>
-                <Row align="flex-start" direction="column">
-                  <RowDataTdText
-                    fontFamily="Avenir Next Medium"
-                    style={{ marginBottom: '1rem' }}
-                    theme={theme}
-                  >
-                    {getTokenNameByMintAddress(el.farmingTokenMint)}
-                  </RowDataTdText>
-                  <RowDataTdText>
-                    <span style={{ color: '#A5E898' }}>
-                      {formatNumberToUSFormat(
-                        stripDigitPlaces(
-                          el.tokensPerPeriod / (tvlUSD / 1000),
-                          8
-                        )
-                      )}
-                    </span>{' '}
-                    {getTokenNameByMintAddress(el.farmingTokenMint)} /{' '}
-                    {el.periodLength / dayDuration} Days for each $
-                    <span style={{ color: '#A5E898' }}>1000</span>
-                  </RowDataTdText>
-                </Row>
-              </RowContainer>
-            ) : (
-              '-'
-            ),
+          render: farmingState ? (
+            <RowContainer justify="flex-start" theme={theme}>
+              <Row margin="0 1rem 0 0" justify="flex-start">
+                <TokenIcon
+                  mint={farmingState.farmingTokenMint}
+                  width={'3rem'}
+                  emojiIfNoLogo={false}
+                />
+              </Row>
+              <Row align="flex-start" direction="column">
+                <RowDataTdText
+                  fontFamily="Avenir Next Medium"
+                  style={{ marginBottom: '1rem' }}
+                  theme={theme}
+                >
+                  {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
+                </RowDataTdText>
+                <RowDataTdText>
+                  <span style={{ color: '#A5E898' }}>
+                    {formatNumberToUSFormat(
+                      stripDigitPlaces(
+                        farmingState.tokensPerPeriod / (tvlUSD / 1000),
+                        8
+                      )
+                    )}
+                  </span>{' '}
+                  {getTokenNameByMintAddress(farmingState.farmingTokenMint)} /{' '}
+                  {farmingState.periodLength / dayDuration} Days for each $
+                  <span style={{ color: '#A5E898' }}>1000</span>
+                </RowDataTdText>
+              </Row>
+            </RowContainer>
+          ) : (
+            '-'
+          ),
         },
         details: {
           render: (

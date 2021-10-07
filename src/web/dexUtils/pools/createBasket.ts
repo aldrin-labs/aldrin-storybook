@@ -90,13 +90,13 @@ export async function createBasket({
   const transactionAfterDeposit = new Transaction()
 
   // open liq. provider ticket, will close on redeem
-  const lpTicket = Keypair.generate()
-  const lpTicketTransaction = await program.account.lpTicket.createInstruction(
-    lpTicket
-  )
+  // const lpTicket = Keypair.generate()
+  // const lpTicketTransaction = await program.account.lpTicket.createInstruction(
+  //   lpTicket
+  // )
 
-  transactionBeforeDeposit.add(lpTicketTransaction)
-  commonSigners.push(lpTicket)
+  // transactionBeforeDeposit.add(lpTicketTransaction)
+  // commonSigners.push(lpTicket)
 
   // create pool token account for user if not exist
   if (!userPoolTokenAccount) {
@@ -165,6 +165,22 @@ export async function createBasket({
         })
       }
 
+      console.log(poolTokenAmount, userBaseTokenAmount, userQuoteTokenAmount, {
+        pool: poolPublicKey,
+        poolMint,
+        // lpTicket: lpTicket.publicKey,
+        poolSigner: vaultSigner,
+        userBaseTokenAccount,
+        userQuoteTokenAccount,
+        baseTokenVault,
+        quoteTokenVault,
+        userPoolTokenAccount,
+        walletAuthority: wallet.publicKey,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        clock: SYSVAR_CLOCK_PUBKEY,
+        rent: SYSVAR_RENT_PUBKEY,
+      })
+
       const createBasketTransaction = await program.instruction.createBasket(
         new BN(poolTokenAmount),
         new BN(userBaseTokenAmount),
@@ -173,7 +189,7 @@ export async function createBasket({
           accounts: {
             pool: poolPublicKey,
             poolMint,
-            lpTicket: lpTicket.publicKey,
+            // lpTicket: lpTicket.publicKey,
             poolSigner: vaultSigner,
             userBaseTokenAccount,
             userQuoteTokenAccount,

@@ -28,11 +28,11 @@ import { StakePopup } from '../../Popups/Staking/StakePopup'
 import { UnstakePopup } from '../../Popups/Unstaking/UnstakePopup'
 import {
   FarmingTicket,
-  filterClosedFarmingTickets,
   getParsedUserFarmingTickets,
 } from '@sb/dexUtils/pools/endFarming'
 import { getFeesEarnedByAccount } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
 import { withPublicKey } from '@core/hoc/withPublicKey'
+import { addAmountToClaimForFarmingTickets } from '@sb/dexUtils/pools/addAmountToClaimForFarmingTickets'
 
 const TablesSwitcher = ({
   theme,
@@ -81,7 +81,16 @@ const TablesSwitcher = ({
         connection,
       })
 
-      const farmingTicketsMap = allUserFarmingTickets.reduce(
+      const allUserFarmingTicketsWithAmountToClaim = await addAmountToClaimForFarmingTickets(
+        {
+          pools: getPoolsInfo,
+          wallet,
+          connection,
+          allUserFarmingTickets,
+        }
+      )
+
+      const farmingTicketsMap = allUserFarmingTicketsWithAmountToClaim.reduce(
         (acc, farmingTicket) => {
           const { pool } = farmingTicket
 
@@ -195,7 +204,7 @@ const TablesSwitcher = ({
           />
         )}
 
-        {selectedPool && (
+        {selectedPool && isAddLiquidityPopupOpen && (
           <AddLiquidityPopup
             theme={theme}
             dexTokensPricesMap={dexTokensPricesMap}
@@ -207,7 +216,7 @@ const TablesSwitcher = ({
           />
         )}
 
-        {selectedPool && (
+        {selectedPool && isWithdrawalPopupOpen && (
           <WithdrawalPopup
             theme={theme}
             selectedPool={selectedPool}
@@ -219,7 +228,7 @@ const TablesSwitcher = ({
           />
         )}
 
-        {selectedPool && (
+        {selectedPool && isStakePopupOpen && (
           <StakePopup
             theme={theme}
             open={isStakePopupOpen}
@@ -230,7 +239,7 @@ const TablesSwitcher = ({
           />
         )}
 
-        {selectedPool && (
+        {selectedPool && isUnstakePopupOpen && (
           <UnstakePopup
             theme={theme}
             open={isUnstakePopupOpen}

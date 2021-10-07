@@ -29,7 +29,6 @@ import ForbiddenIcon from '@icons/fobiddenIcon.svg'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { TokenIcon } from '@sb/components/TokenIcon'
-import { StakePopup } from '../../Popups/Staking/StakePopup'
 import { UserLiquidityDetails } from '../UserLiquidity/components/UserLiquidityDetails'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
@@ -54,13 +53,7 @@ export const mock: PoolInfo[] = [
     staked: 50,
     locked: true,
     executed: false,
-    farmingStates: ['Hg4hHQ2QZjS7bAGHXg9Kijvyw2mxDuBuqRFLajfPBTcr'],
-    farmingSnapshots: ['CieRc6NeDoE3cnTVqsThrHdUkCP5LGeT2ibsuEJv25ri'],
-    farmingTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
-    periodLength: 3600 * 24 * 7,
-    tokensPerPeriod: 30,
-    tokensTotal: 1000,
-    tokensUnlocked: 500,
+    farming: [],
   },
   {
     name:
@@ -81,13 +74,7 @@ export const mock: PoolInfo[] = [
 
     locked: false,
     executed: true,
-    farmingStates: ['Hg4hHQ2QZjS7bAGHXg9Kijvyw2mxDuBuqRFLajfPBTcr'],
-    farmingSnapshots: ['CieRc6NeDoE3cnTVqsThrHdUkCP5LGeT2ibsuEJv25ri'],
-    farmingTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
-    periodLength: 3600 * 24 * 7,
-    tokensPerPeriod: 30,
-    tokensTotal: 1000,
-    tokensUnlocked: 500,
+    farming: [],
   },
   {
     name:
@@ -107,13 +94,7 @@ export const mock: PoolInfo[] = [
     locked: false,
     executed: false,
     staked: 50,
-    farmingStates: [],
-    farmingSnapshots: ['CieRc6NeDoE3cnTVqsThrHdUkCP5LGeT2ibsuEJv25ri'],
-    farmingTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
-    periodLength: 3600 * 24 * 7,
-    tokensPerPeriod: 30,
-    tokensTotal: 1000,
-    tokensUnlocked: 500,
+    farming: [],
   },
   {
     name:
@@ -133,13 +114,18 @@ export const mock: PoolInfo[] = [
     staked: 60,
     locked: false,
     executed: true,
-    farmingStates: ['Hg4hHQ2QZjS7bAGHXg9Kijvyw2mxDuBuqRFLajfPBTcr'],
-    farmingSnapshots: ['CieRc6NeDoE3cnTVqsThrHdUkCP5LGeT2ibsuEJv25ri'],
-    farmingTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
-    periodLength: 3600 * 24 * 7,
-    tokensPerPeriod: 30,
-    tokensTotal: 1000,
-    tokensUnlocked: 500,
+    farming: [
+      {
+        farmingState: 'Hg4hHQ2QZjS7bAGHXg9Kijvyw2mxDuBuqRFLajfPBTcr',
+        farmingSnapshots: 'CieRc6NeDoE3cnTVqsThrHdUkCP5LGeT2ibsuEJv25ri',
+        farmingTokenVault: 'GsDrPKsNJRSEBChMFA6yuw2md41tLErcD4ymJ1PMqcFo',
+        periodLength: 3600 * 24 * 7,
+        tokensPerPeriod: 30,
+        tokensTotal: 1000,
+        tokensUnlocked: 500,
+        vestingPeriod: 10,
+      },
+    ],
   },
 ]
 
@@ -268,6 +254,8 @@ export const combineAllPoolsData = ({
 
       const fees = feesPerPoolMap.get(el.swapToken) || 0
       const apy = el.apy24h || 0
+      const farmingState = el.farming[0]
+
       return {
         id: `${el.name}${el.tvl}${el.poolTokenMint}`,
         pool: {
@@ -363,42 +351,41 @@ export const combineAllPoolsData = ({
           ),
         },
         farming: {
-          render:
-            el.farmingStates.length > 0 ? (
-              <RowContainer justify="flex-start" theme={theme}>
-                <Row margin="0 1rem 0 0" justify="flex-start">
-                  <TokenIcon
-                    mint={el.farmingTokenMint}
-                    width={'3rem'}
-                    emojiIfNoLogo={false}
-                  />
-                </Row>
-                <Row align="flex-start" direction="column">
-                  <RowDataTdText
-                    fontFamily="Avenir Next Medium"
-                    style={{ marginBottom: '1rem' }}
-                    theme={theme}
-                  >
-                    {getTokenNameByMintAddress(el.farmingTokenMint)}
-                  </RowDataTdText>
-                  <RowDataTdText>
-                    <span style={{ color: '#A5E898' }}>
-                      {formatNumberToUSFormat(
-                        stripDigitPlaces(
-                          el.tokensPerPeriod / (tvlUSD / 1000),
-                          8
-                        )
-                      )}
-                    </span>{' '}
-                    {getTokenNameByMintAddress(el.farmingTokenMint)} /{' '}
-                    {el.periodLength / dayDuration} Days for each $
-                    <span style={{ color: '#A5E898' }}>1000</span>
-                  </RowDataTdText>
-                </Row>
-              </RowContainer>
-            ) : (
-              '-'
-            ),
+          render: farmingState ? (
+            <RowContainer justify="flex-start" theme={theme}>
+              <Row margin="0 1rem 0 0" justify="flex-start">
+                <TokenIcon
+                  mint={farmingState.farmingTokenMint}
+                  width={'3rem'}
+                  emojiIfNoLogo={false}
+                />
+              </Row>
+              <Row align="flex-start" direction="column">
+                <RowDataTdText
+                  fontFamily="Avenir Next Medium"
+                  style={{ marginBottom: '1rem' }}
+                  theme={theme}
+                >
+                  {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
+                </RowDataTdText>
+                <RowDataTdText>
+                  <span style={{ color: '#A5E898' }}>
+                    {formatNumberToUSFormat(
+                      stripDigitPlaces(
+                        farmingState.tokensPerPeriod / (tvlUSD / 1000),
+                        8
+                      )
+                    )}
+                  </span>{' '}
+                  {getTokenNameByMintAddress(farmingState.farmingTokenMint)} /{' '}
+                  {farmingState.periodLength / dayDuration} Days for each $
+                  <span style={{ color: '#A5E898' }}>1000</span>
+                </RowDataTdText>
+              </Row>
+            </RowContainer>
+          ) : (
+            '-'
+          ),
         },
         details: {
           render: (

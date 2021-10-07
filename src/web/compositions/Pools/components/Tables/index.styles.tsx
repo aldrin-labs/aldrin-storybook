@@ -115,7 +115,7 @@ export const GreenButton = styled(
     textTransform = 'capitalize',
     ...props
   }) => (
-    <BtnCustom textTransform={textTransform} {...props}>
+    <BtnCustom disabled={disabled} textTransform={textTransform} {...props}>
       {showLoader ? (
         <Loading
           color={'#fff'}

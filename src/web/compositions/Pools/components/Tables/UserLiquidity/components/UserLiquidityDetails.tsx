@@ -21,6 +21,9 @@ import {
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 import { FarmingTicket } from '@sb/dexUtils/pools/endFarming'
 import { getStakedTokensForPool } from '@sb/dexUtils/pools/getStakedTokensForPool'
+import { getAvailableFarmingTokensForPool } from '@sb/dexUtils/pools/getAvailableFarmingTokensForPool'
+import { withdrawFarmed } from '@sb/dexUtils/pools/withdrawFarmed'
+import { useConnection } from '@sb/dexUtils/connection'
 
 export const UserLiquidityDetails = ({
   theme,
@@ -48,17 +51,22 @@ export const UserLiquidityDetails = ({
   setIsUnstakePopupOpen: (value: boolean) => void
 }) => {
   const { wallet } = useWallet()
+  const connection = useConnection()
 
   const poolTokenAmount = allTokensDataMap.get(pool.poolTokenMint)?.amount || 0
   const stakedTokens = getStakedTokensForPool({ pool, farmingTicketsMap })
   const earnedFees = earnedFeesInPoolForUserMap.get(pool.swapToken) || 0
+  const availableToClaimFarmingTokens = getAvailableFarmingTokensForPool({
+    pool,
+    farmingTicketsMap,
+  })
 
   // if has pool tokens or staked
   const hasPoolTokens = poolTokenAmount > 0
   const hasStakedTokens = stakedTokens > 0
 
   const hasLiquidity = hasPoolTokens || hasStakedTokens
-  const hasFarming = pool.farmingStates.length > 0
+  const hasFarming = pool.farming.length > 0
 
   const [baseTokenAmount, quoteTokenAmount] = calculateWithdrawAmount({
     selectedPool: pool,
@@ -76,11 +84,12 @@ export const UserLiquidityDetails = ({
       ? farmingTickets?.sort((a, b) => b.startTime - a.startTime)[0]
       : null
 
+  const farmingState = pool.farming[0]
   const unlockAvailableDate = lastFarmingTicket
-    ? lastFarmingTicket.startTime + pool.periodLength
+    ? +lastFarmingTicket.startTime + +farmingState?.periodLength
     : 0
 
-  const isUnstakeLocked = unlockAvailableDate < Date.now()
+  const isUnstakeLocked = unlockAvailableDate > Date.now() / 1000
 
   return (
     <RowContainer
@@ -281,8 +290,10 @@ export const UserLiquidityDetails = ({
                   {!wallet.connected
                     ? 'Connect Wallet'
                     : isUnstakeLocked
-                    // todo test
-                    ? `Locked until ${dayjs(unlockAvailableDate).format('MMM DD, YYYY')}`
+                    ? // todo test
+                      `Locked until ${dayjs
+                        .unix(unlockAvailableDate)
+                        .format('MMM DD, YYYY')}`
                     : 'Unstake Pool Token'}
                 </GreenButton>
               </RowContainer>
@@ -290,7 +301,7 @@ export const UserLiquidityDetails = ({
               <RowDataTdText>
                 Stake your pool tokens to start
                 <AmountText style={{ padding: '0 0.5rem' }}>
-                  {getTokenNameByMintAddress(pool.farmingTokenMint)}
+                  {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
                 </AmountText>
                 farming
               </RowDataTdText>
@@ -298,35 +309,53 @@ export const UserLiquidityDetails = ({
               <RowDataTdText>
                 Deposit liquidity to farm{' '}
                 <AmountText>
-                  {getTokenNameByMintAddress(pool.farmingTokenMint)}
+                  {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
                 </AmountText>
               </RowDataTdText>
             )}
           </RowContainer>
         </Row>
 
-        {hasPoolTokens && !hasStakedTokens && (
+        {hasPoolTokens && hasFarming && (
           <Row direction="column" width="40%" align="flex-end">
             <RowDataTdText
               theme={theme}
               fontFamily={'Avenir Next Medium'}
-              style={{ marginBottom: '2rem' }}
+              style={{ marginBottom: '3.5rem' }}
             >
-              <AmountText style={{ padding: '0 0.5rem' }}>0</AmountText>{' '}
-              {getTokenNameByMintAddress(pool.farmingTokenMint)}
+              {/* info here */}
+              <AmountText style={{ padding: '0 0.5rem' }}>
+                {availableToClaimFarmingTokens}
+              </AmountText>{' '}
+              {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
             </RowDataTdText>
             <GreenButton
-              onClick={() => {
+              onClick={async () => {
                 if (!wallet.connected) {
                   wallet.connect()
                   return
                 }
 
-                selectPool(pool)
-                setIsStakePopupOpen(true)
+                if (availableToClaimFarmingTokens > 0) {
+                  // add loader
+                  await withdrawFarmed({
+                    wallet,
+                    connection,
+                    pool,
+                    allTokensDataMap,
+                    farmingTickets,
+                  })
+                } else {
+                  selectPool(pool)
+                  setIsStakePopupOpen(true)
+                }
               }}
             >
-              {wallet.connected ? 'Stake Pool Token' : 'Connect Wallet'}
+              {wallet.connected
+                ? availableToClaimFarmingTokens > 0
+                  ? 'Claim reward'
+                  : 'Stake Pool Token'
+                : 'Connect Wallet'}
             </GreenButton>
           </Row>
         )}

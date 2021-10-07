@@ -46,6 +46,9 @@ export const UnstakePopup = ({
     decimals: poolTokenDecimals,
   } = getTokenDataByMint(allTokensData, pool.poolTokenMint)
 
+  const farmingState = pool.farming[0]
+  if (!farmingState) return null
+
   return (
     <DialogWrapper
       theme={theme}
@@ -83,8 +86,10 @@ export const UnstakePopup = ({
               connection,
               poolPublicKey: new PublicKey(pool.swapToken),
               userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
-              farmingStatePublicKey: new PublicKey(pool.farmingStates[0]),
-              snapshotQueuePublicKey: new PublicKey(pool.farmingSnapshots[0]),
+              farmingStatePublicKey: new PublicKey(farmingState.farmingState),
+              snapshotQueuePublicKey: new PublicKey(
+                farmingState.farmingSnapshots
+              ),
             })
 
             await setOperationLoading(false)
