@@ -73,6 +73,7 @@ const BalancesTable = (props) => {
     theme,
     showSettle
   )
+
   return (
     <TableWithSort
       rowsWithHover={false}

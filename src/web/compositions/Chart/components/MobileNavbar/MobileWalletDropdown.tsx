@@ -1,14 +1,12 @@
-import React, { useState } from 'react'
-import styled from 'styled-components'
+import React from 'react'
 
-import { Paper, Theme } from '@material-ui/core'
+import { Theme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
-import { MainTitle } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
-import { StyledPaper, WalletRowContainer } from './styles'
+import { StyledPaper, WalletRowContainer, MobileWalletWarning } from './styles'
 import useMobileSize from '@webhooks/useMobileSize'
 
 export const MobileWalletDropdown = ({
@@ -39,7 +37,7 @@ export const MobileWalletDropdown = ({
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer direction={'column'}>
+      <RowContainer style={{ flex: 1 }} direction={'column'}>
         {WALLET_PROVIDERS.filter((el) => el.showOnMobile).map((provider) => {
           return (
             <WalletRowContainer
@@ -54,6 +52,14 @@ export const MobileWalletDropdown = ({
             </WalletRowContainer>
           )
         })}
+        <MobileWalletWarning style={{ marginTop: 'auto' }}>
+          <p>
+            Due to technical limitations of most wallets, only three are available for trading from the phone at the moment. To use another wallet, use the full version of DEX.
+          </p>
+          <p>
+            You can also import your seed phrase from any wallet into one of the wallets presented above.
+          </p>
+        </MobileWalletWarning>
       </RowContainer>
     </DialogWrapper>
   )

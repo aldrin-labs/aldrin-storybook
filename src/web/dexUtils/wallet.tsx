@@ -117,7 +117,7 @@ export const WALLET_PROVIDERS = [
     adapter: Coin98WalletAdapter,
     icon: `https://gblobscdn.gitbook.com/spaces%2F-MLfdRENhXE4S22AEr9Q%2Favatar-1616412978424.png`,
     isExtension: true,
-    showOnMobile: true,
+    showOnMobile: false,
   },
   {
     name: 'Solflare',
@@ -216,12 +216,12 @@ export function WalletProvider({ children }) {
           const keyToDisplay =
             walletPublicKey.length > 20
               ? `${walletPublicKey.substring(
-                  0,
-                  7
-                )}.....${walletPublicKey.substring(
-                  walletPublicKey.length - 7,
-                  walletPublicKey.length
-                )}`
+                0,
+                7
+              )}.....${walletPublicKey.substring(
+                walletPublicKey.length - 7,
+                walletPublicKey.length
+              )}`
               : walletPublicKey
 
           notify({
@@ -255,7 +255,7 @@ export function WalletProvider({ children }) {
       setAutoConnect(false)
     }
 
-    return () => {}
+    return () => { }
   }, [wallet, autoConnect])
 
   useEffect(() => {

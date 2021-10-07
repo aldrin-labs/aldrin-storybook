@@ -7,6 +7,7 @@ import { Theme } from '@sb/types/materialUI'
 import { DisconnectButton, NavBarForSmallScreens } from './styles'
 import { Link } from 'react-router-dom'
 
+import Close from '@icons/closeIcon.svg'
 import SvgIcon from '@sb/components/SvgIcon'
 import {
   LinkToDiscord,
@@ -26,9 +27,6 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import WalletIcon from '@icons/walletIcon.svg'
 
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
-import { formatSymbol } from '@sb/components/AllocationBlock/DonutChart/utils'
-import { useBalances } from '@sb/dexUtils/markets'
-import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown'
 import { MobileWalletDropdown } from './MobileWalletDropdown'
 
 export const MobileNavBar = ({
@@ -63,7 +61,7 @@ export const MobileNavBar = ({
       ) : (
         <Row
           justify={wallet.connected ? 'space-between' : 'flex-end'}
-          width={wallet.connected ? '65%' : '40%'}
+          width={wallet.connected ? '65%' : '45%'}
         >
           {wallet.connected ? (
             <RowContainer
@@ -106,8 +104,8 @@ export const MobileNavBar = ({
                     {`${wallet?.publicKey
                       ?.toBase58()
                       .slice(0, 7)}...${wallet?.publicKey
-                      ?.toBase58()
-                      .slice(wallet?.publicKey?.toBase58().length - 7)}`}
+                        ?.toBase58()
+                        .slice(wallet?.publicKey?.toBase58().length - 7)}`}
                   </Title>
                 </Row>
               </Row>
@@ -118,13 +116,16 @@ export const MobileNavBar = ({
               </DisconnectButton>
             </RowContainer>
           ) : isWalletsDropdownOpen ? (
-            <Title
-              fontSize="2rem"
-              fontFamily="Avenir Next Medium"
-              style={{ margin: '0 0 1rem 0' }}
-            >
-              Select Wallet to Connect
-            </Title>
+            <Row style={{ flex: 1 }} direction="row" justify="space-between">
+              <Title
+                fontSize="2rem"
+                fontFamily="Avenir Next Medium"
+              >
+                Select Wallet to Connect
+              </Title>
+              <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
+            </Row>
+
           ) : (
             <BtnCustom
               theme={theme}

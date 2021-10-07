@@ -2,7 +2,7 @@ import React from 'react'
 
 import { FundsType } from '@core/types/ChartTypes'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { StyledTitle } from '../TradingTable.styles'
 import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 import { Theme } from '@material-ui/core'
@@ -20,54 +20,66 @@ export const combineBalancesTable = (
 
   const filtredFundsData = fundsData
 
+  const mobileColumns = {
+    id: `balances_mobiile`,
+    columnForMobile: {
+      render: (
+        <RowContainer margin="0" padding={'1rem 0'}>{
+          filtredFundsData.map((el, i) => {
+            const { coin, wallet, unsettled } = el
+
+            return (
+              <Row margin="0 2rem" style={{ flex: 1 }} key={`balance_${market}_${coin}`}>
+                <RowContainer justify={'flex-start'}>
+                  <StyledTitle color={'#fbf2f2'}>{coin}</StyledTitle>
+                </RowContainer>
+                <RowContainer justify={'space-between'}>
+                  <StyledTitle>Wallet</StyledTitle>
+                  <StyledTitle color={'#fbf2f2'}>
+                    {roundAndFormatNumber(wallet, 8, true) || '0'}
+                  </StyledTitle>
+                </RowContainer>
+                <RowContainer justify={'space-between'}>
+                  <StyledTitle>Unsettled</StyledTitle>
+                  <StyledTitle color={'#fbf2f2'}>
+                    {roundAndFormatNumber(unsettled, 8, true) || '0'}
+                  </StyledTitle>
+                </RowContainer>
+                <RowContainer justify={'flex-end'}>
+                  <BtnCustom
+                    btnWidth={'100%'}
+                    height="6rem"
+                    fontSize="1.6rem"
+                    textTransform={'none'}
+                    padding=".5rem 1rem .4rem 1rem"
+                    borderRadius="1.5rem"
+                    btnColor={theme.palette.dark.main}
+                    borderColor={theme.palette.blue.serum}
+                    backgroundColor={theme.palette.blue.serum}
+                    transition={'all .4s ease-out'}
+                    margin={'2rem 0'}
+                    onClick={() => onSettleFunds(market, openOrders)}
+                  >
+                    Settle
+                  </BtnCustom>
+                </RowContainer>
+
+              </Row>
+            )
+          }
+
+          )
+        }</RowContainer>
+      ),
+      showOnMobile: true
+    }
+  }
+
   const processedFundsData = filtredFundsData.map((el: FundsType, i: number) => {
     const { coin, wallet, orders, unsettled, market, openOrders } = el
     return {
       id: `${coin}${wallet}${unsettled}${i}`,
       coin: { render: coin || 'unknown', showOnMobile: false },
-      columnForMobile: {
-        render: (
-          <RowContainer height={'20rem'} padding={'0 2rem'}>
-            <RowContainer style={{ width: '40%' }} direction={'column'}>
-              <RowContainer justify={'flex-start'}>
-                <StyledTitle color={'#fbf2f2'}>{coin}</StyledTitle>
-              </RowContainer>
-              <RowContainer justify={'space-between'}>
-                <StyledTitle>Wallet</StyledTitle>
-                <StyledTitle color={'#fbf2f2'}>
-                  {roundAndFormatNumber(wallet, 8, true) || '0'}
-                </StyledTitle>
-              </RowContainer>
-              <RowContainer justify={'space-between'}>
-                <StyledTitle>Unsettled</StyledTitle>
-                <StyledTitle color={'#fbf2f2'}>
-                  {roundAndFormatNumber(unsettled, 8, true) || '0'}
-                </StyledTitle>
-              </RowContainer>
-            </RowContainer>
-
-            <RowContainer style={{ width: '60%' }} justify={'flex-end'}>
-              <BtnCustom
-                btnWidth={'50%'}
-                height="auto"
-                fontSize="1.6rem"
-                textTransform={'none'}
-                padding=".5rem 1rem .4rem 1rem"
-                borderRadius="1.4rem"
-                btnColor={theme.palette.dark.main}
-                borderColor={theme.palette.blue.serum}
-                backgroundColor={theme.palette.blue.serum}
-                transition={'all .4s ease-out'}
-                margin={'0 0 0 2rem'}
-                onClick={() => onSettleFunds(market, openOrders)}
-              >
-                Settle
-              </BtnCustom>
-            </RowContainer>
-          </RowContainer>
-        ),
-        showOnMobile: true,
-      },
       wallet: {
         render: roundAndFormatNumber(wallet, 8, true) || '0',
         style: { textAlign: 'left' },
@@ -88,25 +100,25 @@ export const combineBalancesTable = (
       },
       ...(showSettle
         ? {
-            settle: {
-              render: (
-                <BtnCustom
-                  type="text"
-                  size="large"
-                  onClick={() => onSettleFunds(market, openOrders)}
-                  btnColor={theme.palette.blue.serum}
-                  btnWidth={'14rem'}
-                  height={'100%'}
-                >
-                  Settle
-                </BtnCustom>
-              ),
-              showOnMobile: false,
-            },
-          }
+          settle: {
+            render: (
+              <BtnCustom
+                type="text"
+                size="large"
+                onClick={() => onSettleFunds(market, openOrders)}
+                btnColor={theme.palette.blue.serum}
+                btnWidth={'14rem'}
+                height={'100%'}
+              >
+                Settle
+              </BtnCustom>
+            ),
+            showOnMobile: false,
+          },
+        }
         : {}),
     }
   })
 
-  return processedFundsData.filter((el) => !!el)
+  return [mobileColumns, ...processedFundsData.filter((el) => !!el)]
 }

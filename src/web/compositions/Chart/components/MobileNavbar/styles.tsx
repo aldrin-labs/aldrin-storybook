@@ -52,3 +52,15 @@ export const WalletRowContainer = styled(RowContainer)`
   color: #fbf2f2;
   font-family: Avenir Next Medium;
 `
+
+export const MobileWalletWarning = styled.div`
+  margin: auto 1rem 4rem;
+  background: rgba(255, 219, 94, 0.25);
+  color: #F8FAFF;
+  padding: 2.5rem;
+  font-size: 2.5rem;
+  line-height: 4rem;
+  border-radius: 2.5rem;
+  font-family: Avenir Next Medium;
+
+`

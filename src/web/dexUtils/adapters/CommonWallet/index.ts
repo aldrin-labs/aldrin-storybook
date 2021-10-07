@@ -5,6 +5,8 @@ import { WalletAdapter } from '@sb/dexUtils/types'
 
 type InjectedProvider = { postMessage: (params: unknown) => void }
 
+interface SignResult { publicKey: string; signature: string }
+
 export class CommonWalletAdapter extends EventEmitter implements WalletAdapter {
   private _providerUrl: URL | undefined
   private _injectedProvider?: InjectedProvider
@@ -15,7 +17,7 @@ export class CommonWalletAdapter extends EventEmitter implements WalletAdapter {
   private _autoApprove = false
   private _responsePromises: Map<
     number,
-    [(value: string) => void, (reason: Error) => void]
+    [(value: string | any) => void, (reason: Error) => void]
   > = new Map()
 
   constructor(provider: unknown, private _network: string) {
@@ -93,7 +95,7 @@ export class CommonWalletAdapter extends EventEmitter implements WalletAdapter {
       this._popup = window.open(
         this._providerUrl?.toString(),
         'child',
-        'location,resizable,width=460,height=675'
+        'location,resizable,width=460,height=675,modal=yes'
       )
       return new Promise((resolve) => {
         this.once('connect', resolve)
@@ -117,11 +119,11 @@ export class CommonWalletAdapter extends EventEmitter implements WalletAdapter {
     })
   }
 
-  private async sendRequest(
+  private async sendRequest<T>(
     method: string,
     params: Record<string, unknown>,
     focusPopup?: boolean
-  ) {
+  ): Promise<T> {
     if (method !== 'connect' && !this.connected) {
       throw new Error('Wallet not connected')
     }
@@ -152,6 +154,7 @@ export class CommonWalletAdapter extends EventEmitter implements WalletAdapter {
 
         if (!this.autoApprove || focusPopup) {
           window.open('', 'child')
+          this._popup?.focus()
         }
       }
     })
@@ -201,10 +204,10 @@ export class CommonWalletAdapter extends EventEmitter implements WalletAdapter {
       throw new Error('Data must be an instance of Uint8Array')
     }
 
-    const response = (await this.sendRequest('sign', {
+    const response = await this.sendRequest<SignResult>('sign', {
       data,
       display,
-    })) as { publicKey: string; signature: string }
+    })
     const signature = bs58.decode(response.signature)
     const publicKey = new PublicKey(response.publicKey)
     return {
@@ -217,13 +220,13 @@ export class CommonWalletAdapter extends EventEmitter implements WalletAdapter {
     transaction: Transaction,
     focusPopup?: boolean
   ): Promise<Transaction> {
-    const response = (await this.sendRequest(
+    const response = await this.sendRequest<SignResult>(
       'signTransaction',
       {
         message: bs58.encode(transaction.serializeMessage()),
       },
       focusPopup
-    )) as { publicKey: string; signature: string }
+    )
     const signature = bs58.decode(response.signature)
     const publicKey = new PublicKey(response.publicKey)
     transaction.addSignature(publicKey, signature)
@@ -234,13 +237,13 @@ export class CommonWalletAdapter extends EventEmitter implements WalletAdapter {
     transactions: Transaction[],
     focusPopup?: boolean
   ): Promise<Transaction[]> {
-    const response = (await this.sendRequest(
+    const response = await this.sendRequest<{ publicKey: string; signatures: string[] }>(
       'signAllTransactions',
       {
         messages: transactions.map((tx) => bs58.encode(tx.serializeMessage())),
       },
       focusPopup
-    )) as { publicKey: string; signatures: string[] }
+    )
     const signatures = response.signatures.map((s) => bs58.decode(s))
     const publicKey = new PublicKey(response.publicKey)
     transactions = transactions.map((tx, idx) => {
