@@ -242,16 +242,14 @@ export const CardsPanel = ({ theme }) => {
             >
               Wallet
             </NavLinkButton>
-            {!MASTER_BUILD && (
-              <NavLinkButton
-                theme={theme}
-                page={'/pools'}
-                pathname={location.pathname}
-                component={(props) => <Link to={`/pools`} {...props} />}
-              >
-                Liquidity Pools
-              </NavLinkButton>
-            )}{' '}
+            <NavLinkButton
+              theme={theme}
+              page={'/pools'}
+              pathname={location.pathname}
+              component={(props) => <Link to={`/pools`} {...props} />}
+            >
+              Liquidity Pools
+            </NavLinkButton>
             {/* 
             {!MASTER_BUILD && (
               <NavLinkButton
