@@ -5,6 +5,7 @@ import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.
 
 import { StyledPaper } from './SelectWrapperStyles'
 import { CoinAddressWithLabel, MarketAddressWithLabel } from './MintsPopupRow'
+import { ITheme } from '../../../../types/materialUI'
 
 export const MintsPopup = ({
   theme,
@@ -13,7 +14,7 @@ export const MintsPopup = ({
   symbol = 'RIN/USDC',
   marketAddress,
 }: {
-  theme: Theme
+  theme: ITheme
   onClose: () => void
   open: boolean
   symbol: string

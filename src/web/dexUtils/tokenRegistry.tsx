@@ -1,18 +1,21 @@
-import { TokenListProvider } from '@solana/spl-token-registry'
+import { TokenInfo, TokenListProvider } from '@solana/spl-token-registry'
 import React, { useContext, useEffect, useState } from 'react'
 import { clusterForEndpoint } from './clusters'
 import { useConnectionConfig } from './connection'
 
-const TokenListContext = React.createContext({})
+type TokenListContext = {
+  tokenInfos: Map<string, TokenInfo>
+}
+const TokenListContext = React.createContext<TokenListContext>({ tokenInfos: new Map() })
 
 export function useTokenInfos() {
   const { tokenInfos } = useContext(TokenListContext)
   return tokenInfos
 }
 
-export function TokenRegistryProvider(props) {
+export const TokenRegistryProvider: React.FC = (props) => {
   const { endpoint } = useConnectionConfig()
-  const [tokenInfos, setTokenInfos] = useState(new Map())
+  const [tokenInfos, setTokenInfos] = useState(new Map<string, TokenInfo>())
 
   useEffect(() => {
     const tokenListProvider = new TokenListProvider()
@@ -32,7 +35,7 @@ export function TokenRegistryProvider(props) {
         tokenInfos.reduce((map, item) => {
           map.set(item.address, item)
           return map
-        }, new Map())
+        }, new Map<string, TokenInfo>())
       )
     })
   }, [endpoint])

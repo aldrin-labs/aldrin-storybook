@@ -113,15 +113,15 @@ export const TradeInputHeader = ({
           {/* </TooltipContainer> */}
         </>
       ) : (
-          <SeparateInputTitle
-            theme={theme}
-          // style={{
-          //   borderBottom: haveTooltip ? '.1rem solid #e0e5ec' : 'none',
-          // }}
-          >
-            {title}
-          </SeparateInputTitle>
-        )}
+        <SeparateInputTitle
+          theme={theme}
+        // style={{
+        //   borderBottom: haveTooltip ? '.1rem solid #e0e5ec' : 'none',
+        // }}
+        >
+          {title}
+        </SeparateInputTitle>
+      )}
       {/* <SeparateInputTitle
         style={{ borderBottom: haveTooltip ? '.1rem dashed #e0e5ec' : 'none' }}
       >
@@ -228,10 +228,10 @@ export const TradeInputContent = ({
               </TitleForInput>
             </DarkTooltip>
           ) : (
-              <TitleForInput theme={theme} textDecoration={textDecoration}>
-                {header}
-              </TitleForInput>
-            )}
+            <TitleForInput theme={theme} textDecoration={textDecoration}>
+              {header}
+            </TitleForInput>
+          )}
         </>
       ) : null}
 
@@ -614,8 +614,6 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
       this.openConfirmationPopup()
     }
 
-    // console.log('TRADING tERMINAL')
-
     return (
       <Container background={'transparent'}>
         <TerminalGridContainer
@@ -723,22 +721,22 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
               {priceType !== 'market' &&
                 priceType !== 'stop-market' &&
                 priceType !== 'maker-only' ? (
-                  <InputRowContainer
-                    key={'limit-price'}
-                    padding={'.6rem 0'}
-                    direction={'column'}
-                  >
-                    <TradeInputContent
-                      theme={theme}
-                      needTitle
-                      type={'text'}
-                      title={`price`}
-                      value={values.price || ''}
-                      onChange={this.onPriceChange}
-                      symbol={pair[1]}
-                    />
-                  </InputRowContainer>
-                ) : null}
+                <InputRowContainer
+                  key={'limit-price'}
+                  padding={'.6rem 0'}
+                  direction={'column'}
+                >
+                  <TradeInputContent
+                    theme={theme}
+                    needTitle
+                    type={'text'}
+                    title={`price`}
+                    value={values.price || ''}
+                    onChange={this.onPriceChange}
+                    symbol={pair[1]}
+                  />
+                </InputRowContainer>
+              ) : null}
               {/* {priceType === 'market' && !tradingBotEnabled && (
                 <InputRowContainer
                   style={{ visibility: !isBuyType ? 'hidden' : 'visible' }}
@@ -915,14 +913,14 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                   </ConnectWalletButtonContainer>
                 </>
               ) : (
-                  <InsufficientBalancePlaceholder
-                    pair={pair}
-                    SOLAmount={SOLAmount}
-                    sideType={sideType}
-                    theme={theme}
-                    onClick={() => onSendOrder({ values, market, wallet })}
-                  />
-                )}
+                <InsufficientBalancePlaceholder
+                  pair={pair}
+                  SOLAmount={SOLAmount}
+                  sideType={sideType}
+                  theme={theme}
+                  onClick={() => onSendOrder({ values, market, wallet })}
+                />
+              )}
               <MobileWalletDropdown
                 theme={theme}
                 open={this.state.isWalletPopupOpen}

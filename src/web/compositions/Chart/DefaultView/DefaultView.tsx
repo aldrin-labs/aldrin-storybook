@@ -10,14 +10,7 @@ import { isEqual } from 'lodash-es'
 import React, { useEffect, useState } from 'react'
 import {
   BalancesContainer,
-
-
   ChartAndOrderbookContainer, ChartsContainer, Container,
-
-
-
-
-
   MobileTradingTabelContainer, TopChartsContainer, TradingTabelContainer,
   TradingTerminalContainer
 } from '../Chart.styles'
@@ -37,19 +30,19 @@ const TerminalContainer = ({
   isDefaultTerminalViewMode: boolean
   children: React.ReactChild
   theme: Theme
-  terminalViewMode: sting
+  terminalViewMode: string
 }) => (
-    <TablesBlockWrapper
-      item
-      container
-      theme={theme}
-      xs={isDefaultTerminalViewMode ? 5 : 12}
-      isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-      terminalViewMode={terminalViewMode}
-    >
-      {children}
-    </TablesBlockWrapper>
-  )
+  <TablesBlockWrapper
+    item
+    container
+    theme={theme}
+    xs={isDefaultTerminalViewMode ? 5 : 12}
+    isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+    terminalViewMode={terminalViewMode}
+  >
+    {children}
+  </TablesBlockWrapper>
+)
 
 
 // fix props type

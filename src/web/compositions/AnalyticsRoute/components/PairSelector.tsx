@@ -247,15 +247,8 @@ const PairSelector = ({
       theme,
       searchValue,
       tab: 'all',
-      tabSpecificCoin: '',
-      stableCoinsPairsMap: new Map(),
-      btcCoinsPairsMap: new Map(),
-      altCoinsPairsMap: new Map(),
-      favouritePairsMap: new Map(),
-      usdcPairsMap: new Map(),
-      usdtPairsMap: new Map(),
-      marketType: 0,
-      needFiltrations: false,
+      favouritePairs: new Set(),
+      tokenMap: new Map(),
       allMarketsMap,
     })
 

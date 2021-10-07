@@ -48,7 +48,7 @@ export const ALL_TOKENS_MINTS_MAP = ALL_TOKENS_MINTS.reduce((acc, el) => {
   return acc
 }, {})
 
-export const REFFERER_ACCOUNT_ADDRESSES: {[key: string]: string | undefined}  = {
+export const REFFERER_ACCOUNT_ADDRESSES: { [key: string]: string | undefined } = {
   "USDT": process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS,
   "USDC": process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS,
   "SOL": process.env.REACT_APP_SOL_REFERRAL_FEES_ADDRESS,
@@ -76,15 +76,15 @@ const _IGNORE_DEPRECATED = false
 const USE_MARKETS = _IGNORE_DEPRECATED
   ? MARKETS.map((m) => ({ ...m, deprecated: false }))
   : [
-      {
-        address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
-        name: 'RIN/USDC',
-        programId: new PublicKey(
-          '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'
-        ),
-        deprecated: false,
-      },
-    ].concat(MARKETS)
+    {
+      address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
+      name: 'RIN/USDC',
+      programId: new PublicKey(
+        '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'
+      ),
+      deprecated: false,
+    },
+  ].concat(MARKETS)
 // : MARKETS
 
 export interface RawMarketData {
@@ -92,6 +92,7 @@ export interface RawMarketData {
   address: PublicKey
   programId: PublicKey
   deprecated: boolean
+  isAwesomeMarket: boolean
 }
 export interface RawCustomMarketData extends RawMarketData {
   isCustomUserMarket: boolean
@@ -100,8 +101,9 @@ export interface RawCustomMarketData extends RawMarketData {
 export type MarketsMap = Map<string, RawMarketData>
 
 export function useAllMarketsList(): MarketsMap {
-  const allMarketsMapByName = new Map()
-  const allMarketsMapById = new Map()
+  // console.log('Use markets as list')
+  const allMarketsMapByName = new Map<string, RawMarketData>()
+  const allMarketsMapById = new Map<string, RawMarketData>()
 
   const { customMarkets } = useCustomMarkets()
 
@@ -122,7 +124,7 @@ export function useAllMarketsList(): MarketsMap {
   const usersMarkets = customMarkets.filter((market: RawCustomMarketData) => {
     const marketName = market.name.replaceAll('/', '_')
     const isCustomMarketAlreadyExistInOfficial = allMarketsMapById.has(
-      market.address
+      market.address.toString()
     )
 
     return (
@@ -312,7 +314,10 @@ export function useUnmigratedOpenOrdersAccounts() {
   }
 }
 
-const MarketContext = React.createContext(null)
+export type MarketContext = {
+
+}
+const MarketContext = React.createContext<MarketContext>(null)
 
 export const _VERY_SLOW_REFRESH_INTERVAL = 5000 * 1000
 
@@ -452,6 +457,7 @@ export function MarketProvider({ children }) {
 
   // console.log('marketData', market, marketInfo, marketData)
 
+  const context: MarketContext = {}
   return (
     <MarketContext.Provider
       value={{
@@ -583,12 +589,12 @@ const useOpenOrdersPubkeys = (): string[] => {
         b: { baseTokenFree: typeof BN; quoteTokenFree: typeof BN }
       ) =>
         a?.baseTokenFree.cmp(b?.baseTokenFree) === 1 ||
-        a?.quoteTokenFree.cmp(b?.quoteTokenFree) === 1
+          a?.quoteTokenFree.cmp(b?.quoteTokenFree) === 1
           ? -1
           : a?.baseTokenFree.cmp(b?.baseTokenFree) === -1 ||
             a?.quoteTokenFree.cmp(b?.quoteTokenFree) === -1
-          ? 1
-          : 0
+            ? 1
+            : 0
     )
 
     console.log(
@@ -1047,7 +1053,7 @@ export function useBalances() {
     openOrders && openOrders.baseTokenTotal && openOrders.baseTokenFree
   const quoteExists =
     openOrders && openOrders.quoteTokenTotal && openOrders.quoteTokenFree
-  
+
   return [
     {
       market,
@@ -1057,8 +1063,8 @@ export function useBalances() {
       orders:
         baseExists && market
           ? market.baseSplSizeToNumber(
-              openOrders.baseTokenTotal.sub(openOrders.baseTokenFree)
-            )
+            openOrders.baseTokenTotal.sub(openOrders.baseTokenFree)
+          )
           : null,
       openOrders,
       unsettled:
@@ -1076,8 +1082,8 @@ export function useBalances() {
       orders:
         quoteExists && market
           ? market.quoteSplSizeToNumber(
-              openOrders.quoteTokenTotal.sub(openOrders.quoteTokenFree)
-            )
+            openOrders.quoteTokenTotal.sub(openOrders.quoteTokenFree)
+          )
           : null,
       unsettled:
         quoteExists && market

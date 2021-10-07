@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { CSSProperties, useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import { withTheme } from '@material-ui/core/styles'
 import { compose } from 'recompose'
@@ -62,6 +62,7 @@ const IntegrationReactSelect = (props: IProps) => {
     return
   }
 
+
   return (
     <>
       <ExchangePair
@@ -69,15 +70,15 @@ const IntegrationReactSelect = (props: IProps) => {
         border={divider}
         selectStyles={selectStyles}
         fixed={isMenuOpen}
+        onMouseEnter={() => setIsMenuOpen(true)}
+        onMouseLeave={() => setIsMenuOpen(false)}
       >
         <div
-          onClick={isMobile && toggleMenu}
+          onClick={!isMobile ? toggleMenu : () => null}
           style={{ display: 'flex', width: '100%' }}
         >
           <SelectR
-            style={{ width: '100%' }}
             value={
-              !isMenuOpen &&
               marketName && {
                 marketName,
                 label: marketName,
@@ -87,21 +88,24 @@ const IntegrationReactSelect = (props: IProps) => {
             isDisabled={true}
           />
         </div>
-        <SelectWrapper
-          id={'selectWrapper'}
-          theme={theme}
-          onSelectPair={handleChange}
-          closeMenu={closeMenu}
-          marketType={1}
-          activeExchange={activeExchange}
-          markets={markets}
-          allMarketsMap={allMarketsMap}
-          market={market}
-          tokenMap={tokenMap}
-          isMintsPopupOpen={isMintsPopupOpen}
-          setIsMintsPopupOpen={setIsMintsPopupOpen}
-          marketName={marketName}
-        />
+        {isMenuOpen &&
+          <SelectWrapper
+            id="selectWrapper"
+            theme={theme}
+            onSelectPair={handleChange}
+            closeMenu={closeMenu}
+            marketType={1}
+            activeExchange={activeExchange}
+            markets={markets}
+            allMarketsMap={allMarketsMap}
+            market={market}
+            tokenMap={tokenMap}
+            isMintsPopupOpen={isMintsPopupOpen}
+            setIsMintsPopupOpen={setIsMintsPopupOpen}
+            marketName={marketName}
+          />
+        }
+
       </ExchangePair>
     </>
   )

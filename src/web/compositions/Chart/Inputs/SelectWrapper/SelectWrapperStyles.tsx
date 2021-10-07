@@ -9,8 +9,12 @@ import { MainTitle } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { Input } from '@material-ui/core'
 import { AutoSizer } from 'react-virtualized'
 
-export const StyledGrid = styled(Grid)`
-  display: none;
+interface StyledGridProps {
+  isAdvancedSelectorMode: boolean
+}
+
+export const StyledGrid = styled(Grid) <StyledGridProps>`
+  display: block;
   top: calc(100% - 1rem);
   left: 0rem;
   font-family: Avenir Next Medium;
@@ -75,7 +79,12 @@ export const StyledHeader = styled(RowContainer)`
     display: none;
   }
 `
-export const StyledTable = styled(Grid)`
+
+interface StyledTableProps {
+  isAdvancedSelectorMode: boolean
+}
+
+export const StyledTable = styled(Grid) <StyledTableProps>`
   overflow: hidden;
   height: ${(props) =>
     props.isAdvancedSelectorMode ? 'calc(100% - 24rem)' : 'calc(100% - 15rem)'};
@@ -167,7 +176,7 @@ export const StyledTab = styled(({ isSelected, ...props }) => (
     border-radius: 1.3rem;
     cursor: pointer;
     font-family: ${(props) =>
-      props.isSelected ? 'Avenir Next' : 'Avenir Next'};
+    props.isSelected ? 'Avenir Next' : 'Avenir Next'};
     font-size: 1.4rem;
     margin: 0.6rem 0.55rem;
     color: #fbf2f2;

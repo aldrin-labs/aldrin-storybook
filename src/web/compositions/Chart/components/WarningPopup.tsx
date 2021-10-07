@@ -17,6 +17,7 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { Row } from '../Inputs/PreferencesSelect/index.styles'
 import { Loading } from '@sb/components'
+import { ITheme } from '../../../types/materialUI'
 
 export const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -78,7 +79,7 @@ export const WarningPopup = ({
   isPoolsPage = false,
   isSwapPage = false,
 }: {
-  theme: Theme
+  theme: ITheme
   onClose: () => void
   open: boolean
   isPoolsPage?: boolean
@@ -90,7 +91,7 @@ export const WarningPopup = ({
       theme={theme}
       PaperComponent={StyledPaper}
       fullScreen={false}
-      onClose={isUserConfident ? onClose : () => {}}
+      onClose={isUserConfident ? onClose : () => { }}
       maxWidth={'md'}
       open={open}
       aria-labelledby="responsive-dialog-title"

@@ -1,8 +1,6 @@
 import React from 'react'
 import { SvgIcon } from '@sb/components'
 
-import { marketsByCategories } from '@core/config/marketsByCategories'
-
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
@@ -25,9 +23,9 @@ import Inform from '@icons/inform.svg'
 
 import tokensLinksMap from '@core/config/tokensTwitterLinks'
 
-import { ISelectData, SelectTabType } from './SelectWrapper.types'
+import { ISelectData, ISelectUIDataItem, SelectTabType } from './SelectWrapper.types'
 import { TokenIcon } from '@sb/components/TokenIcon'
-import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
+import { getTokenMintAddressByName, RawMarketData } from '@sb/dexUtils/markets'
 import LinkToSolanaExp from '../../components/LinkToSolanaExp'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
@@ -44,6 +42,7 @@ import {
 } from './SelectWrapperStyles'
 import stableCoins from '@core/config/stableCoins'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { TokenInfo, TokenInfoMap } from '@solana/spl-token-registry'
 
 export const selectWrapperColumnNames = [
   { label: '', id: 'favourite', isSortable: false },
@@ -53,44 +52,49 @@ export const selectWrapperColumnNames = [
   { label: '24H volume', id: '24hVolume', isNumber: true, isSortable: true },
 ]
 
-export const filterNativeSolanaMarkets = (data, tokenMap) =>
-  data.filter((el) => {
-    const [base] = el.symbol.split('_')
-    const baseTokenInfo = tokenMap?.get(getTokenMintAddressByName(base))
+// export const filterNativeSolanaMarkets = (data, tokenMap) =>
+//   data.filter((el) => {
+//     const [base] = el.symbol.split('_')
+//     const baseTokenInfo = tokenMap?.get(getTokenMintAddressByName(base))
 
-    return !baseTokenInfo?.name?.includes('Wrapped')
-  })
+//     return !baseTokenInfo?.name?.includes('Wrapped')
+//   })
 
-export const filterSelectorDataByTab = ({
-  tab,
-  data,
-  tokenMap,
-  allMarketsMap,
-  favouritePairsMap,
-}: {
+interface FilterSelectorData {
   tab: SelectTabType
   data: ISelectData
-  allMarketsMap: Map<string, any>
-  tokenMap: Map<string, any>
-  favouritePairsMap: Map<string, string>
-}) => {
-  let processedData = [...data]
+  allMarketsMap?: Map<string, any>
+  tokenMap?: Map<string, any>
+  favouritePairs?: Set<string>
+}
+
+const isBullOrBear = (symbol: string) => symbol.includes('BULL') || symbol.includes('BEAR')
+
+export const filterSelectorDataByTab = (params: FilterSelectorData) => {
+  const {
+    tab,
+    data,
+    tokenMap,
+    allMarketsMap,
+    favouritePairs,
+  } = params
+
+  let processedData: ISelectData = data
 
   const { usdcPairsMap, usdtPairsMap } = getMarketsMapsByCoins(data)
 
-  const marketsCategoriesData = Object.entries(marketsByCategories)
+  // const marketsCategoriesData = Object.entries(marketsByCategories)
 
   if (tab !== 'all') {
     if (tab === 'favourite') {
       processedData = processedData.filter((el) =>
-        favouritePairsMap.has(el.symbol)
+        favouritePairs?.has(el.symbol)
       )
     }
     if (tab === 'usdc') {
       processedData = processedData.filter(
         (el) =>
-          !el.symbol.includes('BULL') &&
-          !el.symbol.includes('BEAR') &&
+          !isBullOrBear(el.symbol) &&
           usdcPairsMap.has(el.symbol)
       )
     }
@@ -98,42 +102,44 @@ export const filterSelectorDataByTab = ({
     if (tab === 'usdt') {
       processedData = processedData.filter(
         (el) =>
-          !el.symbol.includes('BULL') &&
-          !el.symbol.includes('BEAR') &&
+          !isBullOrBear(el.symbol) &&
           usdtPairsMap.has(el.symbol)
       )
     }
 
     if (tab === 'sol') {
-      processedData = processedData.filter((el) => {
-        const [_, quote] = el.symbol.split('_')
-        return quote === 'SOL'
-      })
+      processedData = processedData.filter((el) => el.symbol.endsWith('_SOL'))
     }
 
     if (tab === 'solanaNative') {
       processedData = processedData.filter((el) => {
         const [base] = el.symbol.split('_')
-        const baseTokenInfo = tokenMap?.get(getTokenMintAddressByName(base))
+        const baseTokenInfo = tokenMap?.get(getTokenMintAddressByName(base) || '')
 
         return !baseTokenInfo?.name?.includes('Wrapped')
       })
     }
 
-    marketsCategoriesData?.forEach(([category, data]) => {
-      const tokens = data.tokens
+    // console.log('marketsCategoriesData', marketsCategoriesData)
 
-      if (tab === category) {
-        processedData = processedData.filter((el) => {
-          const [base] = el.symbol.split('_')
-          return tokens.includes(base)
-        })
-      }
-    })
+    // That case not working now, comment to prevent unnecessary iterate
+    // TODO: rewrite with map
+
+    // marketsCategoriesData?.forEach(([category, data]) => {
+    //   console.log('Iterate over category:', category, data)
+    //   const tokens = data.tokens
+
+    //   if (tab === category) {
+    //     processedData = processedData.filter((el) => {
+    //       const [base] = el.symbol.split('_')
+    //       return tokens.includes(base)
+    //     })
+    //   }
+    // })
 
     if (tab === 'leveraged') {
       processedData = processedData.filter(
-        (el) => el.symbol.includes('BULL') || el.symbol.includes('BEAR')
+        (el) => isBullOrBear(el.symbol)
       )
     }
 
@@ -184,8 +190,8 @@ export const filterSelectorDataByTab = ({
     if (tab === 'customMarkets') {
       processedData = data.filter(
         (el) =>
-          allMarketsMap.has(el.symbol) &&
-          allMarketsMap.get(el.symbol).isCustomUserMarket
+          allMarketsMap?.has(el.symbol) &&
+          allMarketsMap?.get(el.symbol).isCustomUserMarket
       )
     } else {
       processedData = processedData.filter((el) => !el.isCustomUserMarket)
@@ -197,58 +203,58 @@ export const filterSelectorDataByTab = ({
   return processedData
 }
 
-export const getIsNotUSDTQuote = (symbol) => {
-  const [base, quote] = symbol.split('_')
+export const getIsNotUSDTQuote = (symbol: string) => {
   return (
-    quote !== 'USDT' &&
-    quote !== 'USDC' &&
+    !symbol.endsWith('_USDT') &&
+    !symbol.endsWith('_USDC') &&
     !symbol.toLowerCase().includes('all')
   )
 }
 
-export const getMarketsMapsByCoins = (markets) => {
-  const stableCoinsRegexp = new RegExp(stableCoins.join('|'), 'g')
-  const altCoinsRegexp = new RegExp(`${stableCoins.join('|')}|BTC`, 'g')
+const STABLE_COINS_REGEXP = new RegExp(stableCoins.join('|'), 'g')
+const ALT_COINS_REGEXP = new RegExp(`${stableCoins.join('|')}|BTC`, 'g')
 
-  const altCoinsPairsMap = new Map()
-  const stableCoinsPairsMap = new Map()
-  const btcCoinsPairsMap = new Map()
-  const usdcPairsMap = new Map()
-  const usdtPairsMap = new Map()
+const getMarketsMapsByCoins = (markets: ISelectData) => {
+
+  const altCoinsPairsMap = new Set()
+  const stableCoinsPairsMap = new Set()
+  const btcCoinsPairsMap = new Set()
+  const usdcPairsMap = new Set()
+  const usdtPairsMap = new Set()
 
   markets.forEach((el) => {
     if (
-      stableCoinsRegexp.test(el.symbol.split('_')[0]) ||
-      stableCoinsRegexp.test(el.symbol.split('_')[1])
+      STABLE_COINS_REGEXP.test(el.symbol.split('_')[0]) ||
+      ALT_COINS_REGEXP.test(el.symbol.split('_')[1])
     ) {
-      stableCoinsPairsMap.set(el.symbol, el.price)
+      stableCoinsPairsMap.add(el.symbol)
     }
 
     if (
       /BTC/g.test(el.symbol.split('_')[1]) &&
-      !stableCoinsRegexp.test(el.symbol.split('_')[0]) &&
-      !stableCoinsRegexp.test(el.symbol.split('_')[1])
+      !STABLE_COINS_REGEXP.test(el.symbol.split('_')[0]) &&
+      !ALT_COINS_REGEXP.test(el.symbol.split('_')[1])
     ) {
-      btcCoinsPairsMap.set(el.symbol, el.price)
+      btcCoinsPairsMap.add(el.symbol)
     }
     if (
       /USDC/g.test(el.symbol.split('_')[0]) ||
       /USDC/g.test(el.symbol.split('_')[1])
     ) {
-      usdcPairsMap.set(el.symbol, el.price)
+      usdcPairsMap.add(el.symbol)
     }
     if (
       /USDT/g.test(el.symbol.split('_')[0]) ||
       /USDT/g.test(el.symbol.split('_')[1])
     ) {
-      usdtPairsMap.set(el.symbol, el.price)
+      usdtPairsMap.add(el.symbol)
     }
     if (
-      !altCoinsRegexp.test(el.symbol) &&
-      !stableCoinsRegexp.test(el.symbol.split('_')[0]) &&
-      !stableCoinsRegexp.test(el.symbol.split('_')[1])
+      !ALT_COINS_REGEXP.test(el.symbol) &&
+      !STABLE_COINS_REGEXP.test(el.symbol.split('_')[0]) &&
+      !STABLE_COINS_REGEXP.test(el.symbol.split('_')[1])
     ) {
-      altCoinsPairsMap.set(el.symbol, el.price)
+      altCoinsPairsMap.add(el.symbol)
     }
   })
 
@@ -290,6 +296,57 @@ export const filterDataBySymbolForDifferentDeviders = ({
   return true
 }
 
+
+
+export const prepareData = (
+  data: ISelectData,
+  favouritePairs: Set<String>,
+  allMarketsMap: Map<string, RawMarketData>,
+  tokenMap: TokenInfoMap,
+  searchValue: string,
+): ISelectUIDataItem[] => {
+  return data
+    .filter((el) =>
+      filterDataBySymbolForDifferentDeviders({ searchValue, symbol: el.symbol })
+    )
+    .map((r) => {
+
+      const { symbol } = r
+      const [base, quote] = symbol.split('_')
+
+      const currentMarket = allMarketsMap.get(symbol)
+
+      const mint = getTokenMintAddressByName(base)
+      const baseTokenInfo = tokenMap?.get(mint || '')
+      const isAwesomeMarket = currentMarket?.isAwesomeMarket
+      const marketName = symbol?.replace('_', '/')
+      const pricePrecision = getNumberOfDecimalsFromNumber(r.closePrice)
+      const marketAddress = allMarketsMap?.get(symbol)?.address?.toBase58()
+
+      const twitterLink = tokensLinksMap?.get(base)?.twitterLink || ''
+      const marketCapLink = tokensLinksMap?.get(base)?.marketCapLink || ''
+
+
+      const result: ISelectUIDataItem = {
+        ...r,
+        base,
+        quote,
+        marketName,
+        marketAddress,
+        favourite: favouritePairs.has(symbol),
+        mint,
+        isAwesomeMarket: isAwesomeMarket || false,
+        baseTokenInfo,
+        pricePrecision,
+        twitterLink,
+        marketCapLink,
+      }
+
+      return result
+    })
+}
+
+
 export const combineSelectWrapperData = ({
   data,
   previousData,
@@ -297,13 +354,13 @@ export const combineSelectWrapperData = ({
   theme,
   searchValue,
   tab,
-  favouritePairsMap,
+  favouritePairs,
   tokenMap,
   serumMarketsDataMap,
   allMarketsMap,
-  setIsMintsPopupOpen,
-  changeChoosenMarketData,
-  toggleFavouriteMarket,
+  setIsMintsPopupOpen = () => null,
+  changeChoosenMarketData = () => null,
+  toggleFavouriteMarket = () => null,
 }: {
   data: ISelectData
   previousData?: ISelectData
@@ -311,19 +368,19 @@ export const combineSelectWrapperData = ({
   theme: any
   searchValue: string
   tab: SelectTabType
-  favouritePairsMap: Map<string, string>
-  allMarketsMap: Map<string, any>
-  tokenMap: Map<string, any>
-  serumMarketsDataMap: Map<string, any>
-  changeChoosenMarketData: ({
+  favouritePairs?: Set<string>
+  allMarketsMap?: Map<string, any>
+  tokenMap?: Map<string, any>
+  serumMarketsDataMap?: Map<string, any>
+  changeChoosenMarketData?: ({
     symbol,
     marketAddress,
   }: {
     symbol: string
     marketAddress: string
   }) => void
-  setIsMintsPopupOpen: (isOpen: boolean) => void
-  toggleFavouriteMarket: (pair: string) => void
+  setIsMintsPopupOpen?: (isOpen: boolean) => void
+  toggleFavouriteMarket?: (pair: string) => void
 }) => {
   if (!data && !Array.isArray(data)) {
     return []
@@ -341,7 +398,7 @@ export const combineSelectWrapperData = ({
     data: processedData,
     tokenMap,
     allMarketsMap,
-    favouritePairsMap,
+    favouritePairs,
   })
 
   processedData = processedData.filter((el) =>
@@ -417,8 +474,8 @@ export const combineSelectWrapperData = ({
     const marketCapIcon = marketCapLink.includes('coinmarketcap')
       ? Coinmarketcap
       : marketCapLink.includes('coingecko')
-      ? CoinGecko
-      : NomicsIcon
+        ? CoinGecko
+        : NomicsIcon
 
     return {
       id: `${symbol}`,
@@ -431,7 +488,7 @@ export const combineSelectWrapperData = ({
               toggleFavouriteMarket(symbol)
             }}
             src={
-              favouritePairsMap.get(symbol)
+              favouritePairs?.has(symbol)
                 ? favouriteSelected
                 : favouriteUnselected
             }
@@ -490,8 +547,8 @@ export const combineSelectWrapperData = ({
                 {closePrice === 0
                   ? '-'
                   : formatNumberToUSFormat(
-                      stripDigitPlaces(closePrice, pricePrecision)
-                    )}
+                    stripDigitPlaces(closePrice, pricePrecision)
+                  )}
               </span>
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
                 {quote}
@@ -506,8 +563,8 @@ export const combineSelectWrapperData = ({
                 {closePrice === 0
                   ? '-'
                   : formatNumberToUSFormat(
-                      stripDigitPlaces(closePrice, pricePrecision)
-                    )}
+                    stripDigitPlaces(closePrice, pricePrecision)
+                  )}
               </span>
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
                 {quote}
@@ -528,8 +585,8 @@ export const combineSelectWrapperData = ({
                   +lastPriceDiff === 0
                     ? ''
                     : +lastPriceDiff > 0
-                    ? theme.palette.green.main
-                    : theme.palette.red.main,
+                      ? theme.palette.green.main
+                      : theme.palette.red.main,
               }}
             >
               {`${sign24hChange}${formatNumberToUSFormat(
@@ -546,8 +603,8 @@ export const combineSelectWrapperData = ({
                   +lastPriceDiff === 0
                     ? ''
                     : +lastPriceDiff > 0
-                    ? theme.palette.green.main
-                    : theme.palette.red.main,
+                      ? theme.palette.green.main
+                      : theme.palette.red.main,
               }}
             >
               <span>
@@ -593,8 +650,8 @@ export const combineSelectWrapperData = ({
                   +precentageTradesDiff === 0
                     ? ''
                     : +precentageTradesDiff > 0
-                    ? theme.palette.green.main
-                    : theme.palette.red.main,
+                      ? theme.palette.green.main
+                      : theme.palette.red.main,
               }}
             >
               {`${signTrades24hChange}${formatNumberToUSFormat(

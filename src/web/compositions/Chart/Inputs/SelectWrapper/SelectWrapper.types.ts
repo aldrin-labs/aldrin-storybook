@@ -1,17 +1,24 @@
 import { Theme } from '@material-ui/core'
 import { IExchange, IGetMarketsByExchangeQuery } from '@core/types/ChartTypes'
 
-export type SelectTabType =
-  | 'favourite'
-  | 'solanaNative'
-  | 'all'
-  | 'usdt'
-  | 'usdc'
-  | 'sol'
-  | 'topGainers'
-  | 'topLosers'
-  | 'leveraged'
-  | 'customMarkets'
+import { marketsByCategories } from '@core/config/marketsByCategories'
+import { ITheme } from '../../../../types/materialUI'
+import { TokenInfo } from '@solana/spl-token-registry'
+
+export enum UserTabs {
+  favourite = 'favourite',
+  solanaNative = 'solanaNative',
+  all = 'all',
+  usdt = 'usdt',
+  usdc = 'usdc',
+  sol = 'sol',
+  topGainers = 'topGainers',
+  topLosers = 'topLosers',
+  leveraged = 'leveraged',
+  customMarkets = 'customMarkets',
+}
+
+export type SelectTabType = keyof typeof UserTabs | keyof typeof marketsByCategories
 
 export interface IState {
   searchValue: string
@@ -20,6 +27,7 @@ export interface IState {
 }
 
 export interface IProps {
+  id: string
   marketsByExchangeQuery: IGetMarketsByExchangeQuery
   getSelectorSettingsQuery: {
     getAccountSettings: {
@@ -28,32 +36,39 @@ export interface IProps {
       }
     }
   }
-  onSelectPair: ({ value }: { value: string }) => Promise<void>
-  theme: Theme
+  getSerumMarketDataQuery: {
+    getSerumMarketData: ISelectData
+  }
+  onSelectPair: (pair: { value: string }) => Promise<void>
+  theme: ITheme
   closeMenu: () => void
-  marketType: number | 0 | 1
+  marketType: 0 | 1
   activeExchange: IExchange
 }
 
 export interface IPropsSelectPairListComponent extends IProps {
   data: ISelectData
-  favouritePairsMap: Map<string, string>
+  favouritePairs: Set<string>
   searchValue: string
   tab: SelectTabType
   selectorMode: string
   setSelectorMode: (mode: string) => void
   onChangeSearch: (e: React.ChangeEvent<HTMLInputElement>) => void
   onTabChange: (tab: SelectTabType) => void
+  toggleFavouriteMarket: (pair: string) => void
+  id: string
+}
+
+export interface ProcessedItem {
+  id: string
+  favorite: any
+  symbol: any
+  price24hChange: any
+  volume24hChange: any
 }
 
 export interface IStateSelectPairListComponent {
-  processedSelectData: {
-    id: string
-    favorite: any
-    symbol: any
-    price24hChange: any
-    volume24hChange: any
-  }[]
+  processedSelectData: ProcessedItem[]
 }
 
 export type GetSelectorSettingsType = {
@@ -64,7 +79,7 @@ export type GetSelectorSettingsType = {
   }
 }
 
-export type ISelectData = {
+export interface ISelectDataItem {
   symbol: string
   volume: number
   tradesCount: number
@@ -79,7 +94,24 @@ export type ISelectData = {
   isPrivateCustomMarket: boolean
   address: string
   programId: string
-}[]
+}
+
+export interface ISelectUIDataItem extends ISelectDataItem {
+  base: string
+  quote: string
+  marketName: string
+  marketAddress?: string
+  favourite: boolean
+  mint: string | null
+  isAwesomeMarket: boolean
+  baseTokenInfo?: TokenInfo
+  closePrice: number
+  pricePrecision: number
+  twitterLink: string
+  marketCapLink: string
+}
+
+export type ISelectData = ISelectDataItem[]
 
 export type UpdateFavoritePairsMutationType = (variableObj: {
   variables: {

@@ -21,13 +21,14 @@ import {
   Title,
 } from './SelectWrapperStyles'
 import { notify } from '@sb/dexUtils/notifications'
+import { ITheme } from '../../../../types/materialUI'
 
 export const MarketsFeedbackPopup = ({
   theme,
   onClose,
   open,
 }: {
-  theme: Theme
+  theme: ITheme
   onClose: () => void
   open: boolean
 }) => {
