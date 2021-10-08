@@ -1,4 +1,4 @@
-import { Account, PublicKey, Transaction, Connection } from '@solana/web3.js'
+import { PublicKey, Connection } from '@solana/web3.js'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import { Market, OpenOrders } from '@project-serum/serum'
 import BN from 'bn.js'

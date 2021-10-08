@@ -15,7 +15,7 @@ import {
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
+import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,

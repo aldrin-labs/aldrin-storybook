@@ -2,7 +2,6 @@
 import React, { CSSProperties } from 'react'
 import styled from 'styled-components'
 import {
-  rowStyles,
   roundUp,
   roundDown,
   roundDownSmall,
@@ -12,10 +11,8 @@ import {
 
 import RedArrow from '@icons/redArrow.png'
 import GreenArrow from '@icons/greenArrow.png'
-import { isDataForThisMarket } from '@sb/components/TradingTable/TradingTable.utils'
 import { Theme } from '@material-ui/core'
 import { filterOpenOrders } from '@sb/components/TradingTable/OpenOrdersTable/OpenOrdersTable.utils'
-import { Order } from '@project-serum/serum/lib/market'
 
 // ${rowStyles}
 // ${(props: { style: CSSProperties }) =>

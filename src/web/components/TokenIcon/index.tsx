@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import { TokenListProvider, TokenInfo } from '@solana/spl-token-registry'
+import React from 'react'
 import CoinPlaceholder from '@icons/coinPlaceholder.svg'
 import { SvgIcon } from '@sb/components'
 

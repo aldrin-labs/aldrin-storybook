@@ -2,17 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { compose } from 'recompose'
 import { Theme } from '@material-ui/core'
 
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import {
-  PanelCard,
-  PanelCardTitle,
-  PanelCardValue,
-  PanelCardSubValue,
-} from '@sb/compositions/Chart/Chart.styles'
-
 import {
   formatNumberToUSFormat,
-  stripDigitPlaces,
   roundAndFormatNumber,
 } from '@core/utils/PortfolioTableUtils'
 import { getPrice } from '@core/graphql/queries/chart/getPrice'

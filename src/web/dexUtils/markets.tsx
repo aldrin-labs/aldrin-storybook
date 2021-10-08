@@ -2,7 +2,6 @@ import React, { useMemo, useContext, useEffect, useState } from 'react'
 import {
   Market,
   Orderbook,
-  decodeEventQueue,
   TokenInstructions,
   MARKETS,
   TOKEN_MINTS,

@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from 'react'
 import Img from '@icons/twitterPost.png'
-import copy from 'clipboard-copy'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 export const Canvas = (props) => {

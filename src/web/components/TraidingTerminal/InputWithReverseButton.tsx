@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 import { TradeInputContent as Input } from '@sb/components/TraidingTerminal/index'
 import ReverseArrows from '@icons/reverseArrows.svg'

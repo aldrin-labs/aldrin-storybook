@@ -10,7 +10,6 @@ import copy from 'clipboard-copy'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import Close from '@icons/closeIcon.svg'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { notify } from '@sb/dexUtils/notifications'
 

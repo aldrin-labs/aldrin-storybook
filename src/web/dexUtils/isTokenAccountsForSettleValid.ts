@@ -1,5 +1,4 @@
-import { Account, Connection, PublicKey, SystemProgram } from '@solana/web3.js'
-import { Token, TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import { Connection, SystemProgram } from '@solana/web3.js'
 import { Market } from '@project-serum/serum'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import { notify } from './notifications'

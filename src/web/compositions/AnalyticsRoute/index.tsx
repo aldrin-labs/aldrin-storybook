@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { compose } from 'recompose'
 import { withTheme } from '@material-ui/core/styles'
 
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 
-import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
 import TopBar from './components/TopBar/TopBar'
 import MarketInfo from './components/MarketInfo/MarketInfo'
 import PairSelector from './components/PairSelector'

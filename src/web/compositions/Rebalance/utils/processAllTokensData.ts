@@ -1,5 +1,5 @@
 import { MarketsMap } from '@sb/dexUtils/markets'
-import { MarketData, TokenInfoWithPrice } from '../Rebalance.types'
+import { TokenInfoWithPrice } from '../Rebalance.types'
 import { getAvailableTokensForRebalance } from './getAvailableTokensForRebalance'
 import { getPercentageAllocationForTokens } from './getPercentageAllocationForTokens'
 import { getSliderStepForTokens } from './getSliderStepForTokens'

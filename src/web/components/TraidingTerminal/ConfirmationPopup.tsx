@@ -7,22 +7,17 @@ import Attention from '@icons/attention.svg'
 import SvgIcon from '@sb/components/SvgIcon'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import useMobileSize from '@webhooks/useMobileSize'
-import { autoLogin } from 'src/storybook/src/utils/autoLogin'
 import { ButtonsWithAmountFieldRowForBasic } from './AmountButtons'
 import { TradeInputContent } from './index'
 import { SendButton } from './styles'
 import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
 
-import {
-  SCheckbox,
-  StyledDialogTitle,
-} from '../SharePortfolioDialog/SharePortfolioDialog.styles'
+import { SCheckbox } from '../SharePortfolioDialog/SharePortfolioDialog.styles'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;

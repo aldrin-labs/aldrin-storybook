@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
@@ -9,13 +9,9 @@ import SvgIcon from '@sb/components/SvgIcon'
 import Close from '@icons/closeIcon.svg'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { TokenIcon } from '@sb/components/TokenIcon'
-import {
-  ALL_TOKENS_MINTS_MAP,
-  getTokenNameByMintAddress,
-} from '@sb/dexUtils/markets'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { StyledPaper } from '../index.styles'
-import { SearchInputWithLoop } from '../../Tables/components/index'
 
 const UpdatedPaper = styled(({ ...props }) => <StyledPaper {...props} />)`
   width: 45rem;

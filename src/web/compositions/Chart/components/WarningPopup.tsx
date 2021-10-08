@@ -8,7 +8,6 @@ import SvgIcon from '@sb/components/SvgIcon'
 import {
   MainTitle,
   WhiteText,
-  WhiteButton,
 } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 

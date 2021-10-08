@@ -1,13 +1,8 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import { Dialog, Paper } from '@material-ui/core'
+import { Paper } from '@material-ui/core'
 
-import {
-  TypographyTitle,
-  StyledDialogContent,
-  ClearButton,
-  StyledDialogTitle,
-} from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
+import { StyledDialogContent } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'

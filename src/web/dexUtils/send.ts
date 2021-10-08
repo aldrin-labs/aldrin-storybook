@@ -13,7 +13,6 @@ import { BN } from 'bn.js'
 import {
   DexInstructions,
   Market,
-  TOKEN_MINTS,
   TokenInstructions,
   OpenOrders,
   parseInstructionErrorResponse,

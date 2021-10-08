@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import React from 'react'
 
 import { Grid, Paper, Input } from '@material-ui/core'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components/Loading'
 import { MainTitle } from '@sb/components/TraidingTerminal/ConfirmationPopup'

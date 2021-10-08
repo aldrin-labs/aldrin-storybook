@@ -27,14 +27,11 @@ import {
 
 import { LeverageLabel } from '@sb/components/TradingWrapper/styles'
 
-import { maxLeverage } from '@sb/compositions/Chart/mocks'
-
 import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
 import { FormInputContainer, Select } from './InputComponents'
 
 import {
-  HeaderTitle,
   HeaderLabel,
   SubBlocksContainer,
   InputRowContainer,

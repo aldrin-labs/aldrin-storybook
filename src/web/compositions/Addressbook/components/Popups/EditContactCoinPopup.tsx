@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Dialog, Paper } from '@material-ui/core'
+import { Paper } from '@material-ui/core'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 
@@ -12,9 +12,7 @@ import {
 } from '@sb/components/ReactSelectComponents/CoinOption'
 
 import {
-  TypographyTitle,
   StyledDialogContent,
-  ClearButton,
   StyledDialogTitle,
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { editContactCoin } from '@core/graphql/mutations/chart/editContactCoin'

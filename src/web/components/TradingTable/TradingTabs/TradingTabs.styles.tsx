@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Button, Theme } from '@material-ui/core'
+import { Theme } from '@material-ui/core'
 
 export const TitleTab = styled(({ active, theme, ...rest }) => {
   return <button {...rest} />

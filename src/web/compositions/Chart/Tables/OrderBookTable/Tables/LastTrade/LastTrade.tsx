@@ -6,10 +6,8 @@ import ArrowDown from '@icons/ArrowDown.svg'
 
 import {
   LastTradeContainer,
-  LastTradeValue,
   LastTradeContainerMobile,
   LastTradePrice,
-  ArrowIcon,
 } from './LastTrade.styles'
 
 import { OrderbookMode } from '../../OrderBookTableContainer.types'

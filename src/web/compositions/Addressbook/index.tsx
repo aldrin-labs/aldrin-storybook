@@ -4,16 +4,9 @@ import styled from 'styled-components'
 import { AES, enc, MD5 } from 'crypto-js'
 import { BtnCustom, BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
 
 import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
-import {
-  Card,
-  HeaderCell,
-  Cell,
-  TableRow,
-  Table,
-} from '@sb/compositions/Rewards/index'
+import { Card } from '@sb/compositions/Rewards/index'
 import { Icon } from '@sb/styles/cssUtils'
 import dayjs from 'dayjs'
 import { notify } from '@sb/dexUtils/notifications'
@@ -21,7 +14,7 @@ import { withTheme } from '@material-ui/styles'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { withAddressbookPassword } from '@core/hoc/withAddressbookPassword'
 
-import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { compose } from 'recompose'
 import { addressBookColumnNames } from '@sb/components/TradingTable/TradingTable.mocks'
 import { getUserAddressbook } from '@core/graphql/queries/chart/getUserAddressbook'

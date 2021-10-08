@@ -13,7 +13,6 @@ import {
 
 import { WalletAdapter } from '@sb/dexUtils/types'
 import * as Layout from './layout'
-import { sendAndConfirmTransaction } from './utils/send-and-confirm-transaction'
 import { loadAccount } from './utils/account'
 import { sendAndConfirmTransactionViaWallet } from '../token/utils/send-and-confirm-transaction-via-wallet'
 

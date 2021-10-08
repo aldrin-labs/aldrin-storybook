@@ -1,13 +1,5 @@
 import React from 'react'
-import Tour from 'reactour'
 import styled from 'styled-components'
-
-import SvgIcon from '@sb/components/SvgIcon'
-import exclamationMarkNotification from '@icons/exclamationMarkNotification.svg'
-
-import twitter from '@icons/twitter.svg'
-import telegram from '@icons/telegram.svg'
-import discord from '@icons/discord.svg'
 
 export const FinishBtn = styled.button`
   width: 8rem;

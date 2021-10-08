@@ -2,8 +2,6 @@ import React, { useState } from 'react'
 import copy from 'clipboard-copy'
 import styled from 'styled-components'
 
-import { SERUM_ORDERS_BY_TV_ALERTS } from '@core/graphql/subscriptions/SERUM_ORDERS_BY_TV_ALERTS'
-
 import {
   getSecondValueFromFirst,
   GreenSwitcherStyles,
@@ -17,30 +15,20 @@ import { API_URL } from '@core/utils/config'
 import WebHookImg from '@sb/images/WebHookImg.png'
 import MessageImg from '@sb/images/MessageImg.png'
 
-import { SettingsLabel } from '@sb/components/TradingWrapper/styles'
-import CloseIcon from '@material-ui/icons/Close'
-
-import { SRadio } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { FormInputContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
 
-import HeightIcon from '@material-ui/icons/Height'
 import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
-import BlueSlider from '@sb/components/Slider/BlueSlider'
 
 import { TradeInputContent as Input } from '@sb/components/TraidingTerminal/index'
 
 import {
   TerminalBlock,
   InputRowContainer,
-  TargetTitle,
-  TargetValue,
-  AdditionalSettingsButton,
   Switcher,
 } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { SliderWithPriceAndPercentageFieldRow } from '@sb/compositions/Chart/components/SmartOrderTerminal/SliderComponents'
 
 import { notify } from '@sb/dexUtils/notifications'
 import TradingViewConfirmPopup from './TradingViewConfirmPopup'

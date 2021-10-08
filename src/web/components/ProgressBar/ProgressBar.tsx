@@ -1,4 +1,4 @@
-import React, { PureComponent, memo } from 'react'
+import React, { PureComponent } from 'react'
 import { withStyles, withTheme } from '@material-ui/styles'
 
 import { LinearProgressCustom } from './ProgressBar.styles'

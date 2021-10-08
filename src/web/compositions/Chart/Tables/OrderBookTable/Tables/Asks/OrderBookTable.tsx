@@ -1,7 +1,5 @@
-import React, { Component } from 'react'
-import { withTheme } from '@material-ui/styles'
+import React from 'react'
 
-import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
 import { Column, Table } from 'react-virtualized'
 import 'react-virtualized/styles.css'
 
@@ -15,7 +13,6 @@ import useMobileSize from '@webhooks/useMobileSize'
 import { useOpenOrders } from '@sb/dexUtils/markets'
 import { AsksWrapper } from '../../OrderBookTableContainer.styles'
 import defaultRowRenderer, { getRowHeight } from '../../utils'
-import { IProps } from './OrderBookTable.types'
 
 const StyledTable = styled(Table)`
   & .ReactVirtualized__Grid__innerScrollContainer {

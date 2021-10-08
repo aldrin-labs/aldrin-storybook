@@ -10,10 +10,7 @@ import SortByBoth from '@icons/SortByBoth.svg'
 import SortByAsks from '@icons/SortByAsks.svg'
 import SortByBids from '@icons/SortByBids.svg'
 
-import {
-  getAggregationsFromMinPriceDigits,
-  getAggregationsFromPricePrecision,
-} from '@core/utils/chartPageUtils'
+import { getAggregationsFromPricePrecision } from '@core/utils/chartPageUtils'
 import { IProps, IState, OrderbookMode } from './OrderBookTableContainer.types'
 
 import { ModesContainer, SvgMode } from './OrderBookTableContainer.styles'

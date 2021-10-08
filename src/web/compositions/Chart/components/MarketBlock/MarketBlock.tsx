@@ -1,15 +1,10 @@
-import React, { useState, useEffect } from 'react'
-import styled from 'styled-components'
+import React, { useState } from 'react'
 import { compose } from 'recompose'
 import { Theme, withTheme } from '@material-ui/core'
 import { useLocation } from 'react-router-dom'
-import {
-  getTokenMintAddressByName,
-  useMarket,
-  useMarkPrice,
-} from '@sb/dexUtils/markets'
+import { getTokenMintAddressByName, useMarket } from '@sb/dexUtils/markets'
 import { getDecimalCount } from '@sb/dexUtils/utils'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import BlueTwitterIcon from '@icons/blueTwitter.svg'
 import AnalyticsIcon from '@icons/analytics.svg'

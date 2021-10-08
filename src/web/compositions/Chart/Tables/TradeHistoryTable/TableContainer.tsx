@@ -6,8 +6,6 @@ import {
   getNumberOfDigitsAfterDecimal,
 } from '@core/utils/chartPageUtils'
 
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-
 import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
 
 import { client } from '@core/graphql/apolloClient'

@@ -1,5 +1,4 @@
 import { randomInteger } from '@core/utils/helpers'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { Chart, DoughnutController, ArcElement } from 'chart.js'
 
 Chart.register(DoughnutController, ArcElement)

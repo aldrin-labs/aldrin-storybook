@@ -2,10 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles'
 import { ThemeOptions } from '@material-ui/core/styles/createMuiTheme'
 import { fade } from '@material-ui/core/styles/colorManipulator'
-import { client } from '@core/graphql/apolloClient'
-import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
-import { useQuery } from 'react-apollo'
-import { Props } from './ThemeWrapper.types'
 
 declare module '@material-ui/core/styles/createMuiTheme' {
   interface Theme {

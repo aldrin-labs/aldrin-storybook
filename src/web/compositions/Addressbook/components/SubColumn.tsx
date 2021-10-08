@@ -1,5 +1,4 @@
 import React from 'react'
-import styled from 'styled-components'
 import { compose } from 'recompose'
 import { withTheme } from '@material-ui/styles'
 import LazyLoad from 'react-lazyload'

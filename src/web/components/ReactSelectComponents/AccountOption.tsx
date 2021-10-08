@@ -2,8 +2,6 @@ import React from 'react'
 import { components } from 'react-select'
 import { Grid } from '@material-ui/core'
 
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-
 type ComponentData = {
   label: string
   name: string

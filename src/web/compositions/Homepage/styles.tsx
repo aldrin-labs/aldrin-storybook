@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { Link } from 'react-router-dom'

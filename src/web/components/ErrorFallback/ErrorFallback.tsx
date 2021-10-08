@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'

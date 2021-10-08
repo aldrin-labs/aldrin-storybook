@@ -8,7 +8,7 @@ import {
 import React, { useContext, useEffect, useMemo, useRef } from 'react'
 import tuple from 'immutable-tuple'
 import { useHistory } from 'react-router-dom'
-import { refreshCache, setCache, useAsyncData } from './fetch-loop'
+import { useAsyncData } from './fetch-loop'
 import MultiEndpointsConnection from './MultiEndpointsConnection'
 import { useLocalStorageState } from './utils'
 

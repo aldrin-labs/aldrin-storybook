@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { CardText, Card } from '@sb/compositions/Rewards/index'
+import { CardText } from '@sb/compositions/Rewards/index'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import styled from 'styled-components'
 import { compose } from 'recompose'
@@ -15,14 +15,10 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 import blackTwitter from '@icons/blackTwitter.svg'
 
-import connectDefiCefi from '@icons/conectDefiCefi.gif'
 import DecefiTemplate1 from '@icons/DecefiTemplate1.png'
 import { Paper } from '@material-ui/core'
-import farmDistrub from '@icons/farmDistrub.png'
-import speedGif from '@icons/speedGif.gif'
 import DecefiTemplate4 from '@icons/DecefiTemplate4.png'
 import DecefiTemplate3 from '@icons/DecefiTemplate3.png'
-import Solana from '@icons/Solana.gif'
 import DecefiTemplate2 from '@icons/DecefiTemplate2.png'
 
 const SharePop = styled.div`

@@ -2,7 +2,6 @@ import React, { memo } from 'react'
 import { withStyles, createStyles, Theme } from '@material-ui/styles'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell, { Padding } from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
 import Checkbox from '@material-ui/core/Checkbox'
@@ -46,11 +45,7 @@ import {
   TableStyles,
   PaginationFunctionType,
 } from './index.types'
-import {
-  StyledTable,
-  StyledTableSortLabel,
-  StyledTablePagination,
-} from './Table.styles'
+import { StyledTable, StyledTableSortLabel } from './Table.styles'
 
 const CustomTableCell = withStyles((theme) => ({
   head: {

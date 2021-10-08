@@ -1,9 +1,4 @@
-import {
-  useSnackbar,
-  VariantType,
-  withSnackbarProps,
-  OptionsObject,
-} from 'notistack'
+import { useSnackbar, withSnackbarProps, OptionsObject } from 'notistack'
 import React from 'react'
 
 interface IProps {

@@ -1,5 +1,5 @@
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import React from 'react'
 
 import { IProps } from '../index.types'

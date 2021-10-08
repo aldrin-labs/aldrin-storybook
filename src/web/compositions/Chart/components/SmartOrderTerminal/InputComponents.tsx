@@ -5,11 +5,7 @@ import {
   TradeSelect,
   Coin,
 } from '@sb/components/TraidingTerminal/styles'
-import {
-  TradeInputContent,
-  TradeInputHeader,
-} from '@sb/components/TraidingTerminal/index'
-import { TooltipContainer, Tooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { TradeInputHeader } from '@sb/components/TraidingTerminal/index'
 
 import { Theme } from '@material-ui/core'
 import { BeforeCharacter, InputRowContainer } from './styles'

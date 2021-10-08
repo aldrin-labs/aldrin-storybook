@@ -23,12 +23,10 @@ import MessageImg from '@sb/images/MessageImg.png'
 import { SendButton } from '@sb/components/TraidingTerminal/styles'
 
 import {
-  StyledZoomIcon,
   LeverageLabel,
   LeverageTitle,
   SettingsLabel,
 } from '@sb/components/TradingWrapper/styles'
-import GreenSwitcher from '@sb/components/SwitchOnOff/GreenSwitcher'
 import CloseIcon from '@material-ui/icons/Close'
 
 import {
@@ -41,7 +39,6 @@ import HeightIcon from '@material-ui/icons/Height'
 import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
 import SmallSlider from '@sb/components/Slider/SmallSlider'
-import PillowButton from '@sb/components/SwitchOnOff/PillowButton'
 
 import {
   TradeInputContent as Input,
@@ -54,26 +51,20 @@ import {
   TerminalHeaders,
   TerminalBlock,
   TerminalHeader,
-  HeaderTitle,
   BlockHeader,
-  HeaderLabel,
-  CloseHeader,
   SubBlocksContainer,
   InputRowContainer,
   TimeoutTitle,
   TargetTitle,
   TargetValue,
   BluredBackground,
-  SwitcherContainer,
   AdditionalSettingsButton,
-  StyledSwitch,
   Switcher,
 } from './styles'
 
 import {
   EditTakeProfitPopup,
   EditStopLossPopup,
-  EditHedgePopup,
   EditEntryOrderPopup,
 } from './EditOrderPopups'
 import { FormInputContainer, Select } from './InputComponents'

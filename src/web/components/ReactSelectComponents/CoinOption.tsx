@@ -1,10 +1,9 @@
-import React, { Ref } from 'react'
+import React from 'react'
 import { components } from 'react-select'
-import LazyLoad from 'react-lazyload'
 
 import { Grid } from '@material-ui/core'
 
-import { SvgIcon, Loading } from '@sb/components'
+import { SvgIcon } from '@sb/components'
 import {
   importCoinIcon,
   onErrorImportCoinUrl,

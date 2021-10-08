@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import styled, { createGlobalStyle } from 'styled-components'
+import styled from 'styled-components'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import Timer from 'react-compound-timer'
@@ -12,7 +12,7 @@ import dayjs from 'dayjs'
 import { Loading } from '@sb/components/Loading/Loading'
 
 import SvgIcon from '@sb/components/SvgIcon'
-import QueryRenderer, { queryRendererHoc } from '@core/components/QueryRenderer'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getTotalVolumeForSerumKey } from '@core/graphql/queries/chart/getTotalVolumeForSerumKey'
 import { getTotalSerumVolume } from '@core/graphql/queries/chart/getTotalSerumVolume'
 import { getTopTwitterFarming } from '@core/graphql/queries/serum/getTopTwitterFarming'
@@ -32,7 +32,6 @@ import lightBird from '@icons/lightBird.svg'
 import shape from '@icons/shape.svg'
 
 import { withTheme } from '@material-ui/styles'
-import { useWallet, useWallet } from '@sb/dexUtils/wallet'
 import { notify } from '@sb/dexUtils/notifications'
 
 import { withPublicKey } from '@core/hoc/withPublicKey'
@@ -52,8 +51,6 @@ import {
 } from '@core/utils/PortfolioTableUtils'
 import { Styles } from './index.styles'
 import LinearChart from './components/Chart'
-
-import { data } from '../Screener/Selector/selectsData'
 
 const utc = require('dayjs/plugin/utc')
 

@@ -4,13 +4,11 @@ import { graphql } from 'react-apollo'
 import styled from 'styled-components'
 
 import { NavLink, useLocation, Link } from 'react-router-dom'
-import { MASTER_BUILD } from '@core/utils/config'
 
 import {
   RowContainer,
   Row,
   ReusableTitle as Title,
-  Line,
 } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
@@ -25,13 +23,10 @@ import {
   CustomCard,
 } from '@sb/compositions/Chart/Chart.styles'
 
-import { DEFAULT_MARKET } from '@sb/dexUtils/markets'
-import { useWallet, WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
-import { ENDPOINTS, useConnectionConfig } from '@sb/dexUtils/connection'
-import OvalSelector from '@sb/components/OvalSelector'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { useConnectionConfig } from '@sb/dexUtils/connection'
 import AldrinLogo from '@icons/Aldrin.svg'
 
-import SerumCCAILogo from '@icons/serumCCAILogo.svg'
 import LightLogo from '@icons/lightLogo.svg'
 import SvgIcon from '@sb/components/SvgIcon'
 
@@ -42,7 +37,6 @@ import NetworkDropdown from '@sb/compositions/Chart/components/NetworkDropdown/N
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown/index'
 import { BetaLabel } from '@sb/components/BetaLabel/BetaLabel'
-import { WhiteButton } from '../../Homepage/styles'
 import { FeedbackPopup } from './UsersFeedbackPopup'
 import ListingRequestPopup from './ListingRequestPopup/ListingRequestPopup'
 

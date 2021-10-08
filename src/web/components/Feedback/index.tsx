@@ -5,7 +5,6 @@ import { Button } from '@material-ui/core'
 import SvgIcon from '@sb/components/SvgIcon'
 import TelegramIcon from '@icons/uil-telegram.svg'
 import config from '@core/utils/linkConfig'
-import { BoldButton } from './Feedback.styles'
 
 export default class Feedback extends Component<{}, {}> {
   state = {

@@ -2,7 +2,6 @@ import {
   compose,
   withState,
   branch,
-  mapProps,
   renderComponent,
   setDisplayName,
   lifecycle,

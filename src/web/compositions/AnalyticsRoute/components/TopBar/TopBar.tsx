@@ -3,19 +3,15 @@ import { compose } from 'recompose'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 
 import { Theme } from '@material-ui/core'
-import { getSerumData } from '@core/graphql/queries/chart/getSerumData'
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 
 import {
   formatNumberToUSFormat,
   roundAndFormatNumber,
-  stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 
-import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
-import { getDecimalCount } from '@sb/dexUtils/utils'
+import { useMarket } from '@sb/dexUtils/markets'
 import SvgIcon from '@sb/components/SvgIcon'
-import SrmLogo from '@icons/srmLogo.svg'
 import RINLogo from '@icons/RINLogo.svg'
 
 import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
@@ -29,8 +25,6 @@ import {
   TopBarTitle,
 } from '../../index.styles'
 
-import PriceBlock from './tokenPriceBlock'
-import MarketCap from './tokenMarketCap'
 import { getCCAICirculationSupply } from '../CirculationSupply'
 
 export const ccaiData = {

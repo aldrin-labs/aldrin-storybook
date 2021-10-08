@@ -10,21 +10,19 @@ import styled from 'styled-components'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { listMarket } from '@sb/dexUtils/send'
 import { isValidPublicKey } from '@sb/dexUtils/utils'
-import { parseTokenMintData, useMintToTickers } from '@sb/dexUtils/tokens'
+import { parseTokenMintData } from '@sb/dexUtils/tokens'
 
-import { Dialog, Paper } from '@material-ui/core'
+import { Paper } from '@material-ui/core'
 import { FormInputContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { PurpleButton } from '@sb/compositions/Addressbook/components/Popups/NewCoinPopup'
 import Clear from '@material-ui/icons/Clear'
 import {
-  TypographyTitle,
   StyledDialogContent,
   ClearButton,
   StyledDialogTitle,
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { PasteButton } from '@sb/compositions/Addressbook/components/Popups/NewContactPopup'
-import { Loading } from '@sb/components'
 import { InputRowContainer } from '../../components/SmartOrderTerminal/styles'
 
 // const { Text, Title } = Typography;

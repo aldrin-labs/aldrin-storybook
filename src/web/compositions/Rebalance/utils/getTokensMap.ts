@@ -1,4 +1,3 @@
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import {
   TokenInfoWithDisableReason,
   TokenInfoWithTargetData,

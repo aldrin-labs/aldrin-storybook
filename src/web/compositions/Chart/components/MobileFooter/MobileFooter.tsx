@@ -1,11 +1,7 @@
 import React, { useState } from 'react'
 import { FeedbackPopup } from '../UsersFeedbackPopup'
 import {
-  AnalyticsLink,
   FeedbackBtn,
-  PoolsLink,
-  RebalanceLink,
-  SwapsLink,
   TradeLink,
   WalletLink,
   DashboardLink,

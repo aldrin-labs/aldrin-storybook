@@ -1,7 +1,6 @@
 import * as React from 'react'
-import ReactDOM from 'react-dom'
 import { withRouter } from 'react-router-dom'
-import { MenuList, Grid, withWidth } from '@material-ui/core'
+import { MenuList } from '@material-ui/core'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
@@ -13,8 +12,6 @@ import {
   StyledDropdown,
   StyledPaper,
   StyledMenuItem,
-  StyledMenuItemText,
-  StyledLink,
   StyledButton,
 } from './Dropdown.styles'
 

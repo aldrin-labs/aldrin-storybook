@@ -2,12 +2,10 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
-import { Dialog, Paper } from '@material-ui/core'
+import { Paper } from '@material-ui/core'
 
 import {
-  TypographyTitle,
   StyledDialogContent,
-  ClearButton,
   StyledDialogTitle,
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
@@ -18,7 +16,7 @@ import { deleteContact } from '@core/graphql/mutations/chart/deleteContact'
 import { deleteContactCoin } from '@core/graphql/mutations/chart/deleteContactCoin'
 
 import { notify } from '@sb/dexUtils/notifications'
-import { Input, encrypt, createHash } from '../../index'
+import { createHash } from '../../index'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;

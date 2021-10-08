@@ -5,7 +5,6 @@ import CardsPanel from '@sb/compositions/Chart/components/CardsPanel'
 import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
 import { withTheme } from '@material-ui/core'
 import { compose } from 'recompose'
-import { NavBar } from './NavBar'
 
 export interface Props {
   pathname: string

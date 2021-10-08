@@ -25,11 +25,7 @@ import { notify } from '@sb/dexUtils/notifications'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import AttentionComponent from '@sb/components/AttentionBlock'
-import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
-import {
-  TokenSwapLayout,
-  TOKEN_SWAP_PROGRAM_ID,
-} from '@sb/dexUtils/token-swap/token-swap'
+
 import { SelectCoinPopup } from '../SelectCoin'
 import { InputWithSelector } from '../components'
 import { BoldHeader, StyledPaper } from '../index.styles'

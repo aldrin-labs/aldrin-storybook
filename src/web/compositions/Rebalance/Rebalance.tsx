@@ -11,11 +11,7 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import DonutChartWithLegend from '@sb/components/AllocationBlock/index'
-import {
-  MarketsMap,
-  useAllMarketsList,
-  useAllMarketsMapById,
-} from '@sb/dexUtils/markets'
+import { MarketsMap, useAllMarketsList } from '@sb/dexUtils/markets'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
 import { ConnectWalletScreen } from '@sb/components/ConnectWalletScreen/ConnectWalletScreen'
 import {

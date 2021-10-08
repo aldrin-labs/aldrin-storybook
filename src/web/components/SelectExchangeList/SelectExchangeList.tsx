@@ -1,6 +1,4 @@
 import * as React from 'react'
-import { getExchangesForKeysListQuery } from '@core/graphql/queries/user/getExchangesForKeysListQuery'
-import QueryRenderer from '@core/components/QueryRenderer'
 import { SelectR } from '@sb/styles/cssUtils'
 
 const SelectExchangeList = ({

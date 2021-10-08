@@ -30,7 +30,7 @@ import { PurpleButton } from '@sb/compositions/Addressbook/components/Popups/New
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { addSerumCustomMarket } from '@core/graphql/mutations/chart/addSerumCustomMarket'
 import { withPublicKey } from '@core/hoc/withPublicKey'
-import { readQueryData, writeQueryData } from '@core/utils/TradingTable.utils'
+import { writeQueryData } from '@core/utils/TradingTable.utils'
 import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexProgramIdByEndpoint } from '@core/config/dex'

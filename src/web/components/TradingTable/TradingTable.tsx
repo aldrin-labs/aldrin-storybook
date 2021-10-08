@@ -9,7 +9,6 @@ import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import withMobileSize from '@core/hoc/withMobileSize'
 import { IProps, IState, IStateKeys } from './TradingTable.types'
 
-import OpenOrdersTable from './OpenOrdersTable/OpenOrdersTable'
 import Balances from './Balances/Balances'
 import FeeTiers from './Fee/FeeTiers'
 import TradeHistoryTable from './TradeHistoryTable/TradeHistoryDataWrapper'

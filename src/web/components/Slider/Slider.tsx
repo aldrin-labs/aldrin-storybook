@@ -1,5 +1,4 @@
 import React from 'react'
-import { TooltipCustom } from '@sb/components/index'
 import { StyledSlider, StyledLock } from './Slider.styles'
 import { DarkTooltip } from '../TooltipCustom/Tooltip'
 

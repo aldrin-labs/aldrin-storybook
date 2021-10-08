@@ -10,8 +10,6 @@ import BigRightArrow from '@icons/bigRightArrow.svg'
 import CryptoCube from '@sb/images/Logo.png'
 import SmartTerminal from '@sb/images/SmartTerminal.png'
 
-import { finishJoyride } from '@core/utils/joyride'
-
 const Container = styled.div`
   position: absolute;
   z-index: 300;

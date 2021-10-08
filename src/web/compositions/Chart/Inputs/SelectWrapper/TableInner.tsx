@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid, Theme } from '@material-ui/core'
+import { Theme } from '@material-ui/core'
 import { Column, Table } from 'react-virtualized'
 import useMobileSize from '@webhooks/useMobileSize'
 import { StyledTable, StyledAutoSizer } from './SelectWrapperStyles'

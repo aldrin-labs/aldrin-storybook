@@ -1,7 +1,6 @@
 import { DEX_PID } from '@core/config/dex'
 import { OpenOrders } from '@project-serum/serum'
 import { WalletAdapter } from '@sb/dexUtils/types'
-import { MarketsMap } from '@sb/dexUtils/markets'
 import { Connection } from '@solana/web3.js'
 import { LoadedMarket, LoadedMarketsMap } from './loadMarketsByNames'
 

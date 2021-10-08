@@ -1,5 +1,5 @@
 import React, { CSSProperties, HTMLAttributes } from 'react'
-import { Dialog, DialogContent, StepLabel, Tab, Tabs } from '@material-ui/core'
+import { Tab, Tabs } from '@material-ui/core'
 import styled from 'styled-components'
 
 export interface TextInterface extends HTMLAttributes<HTMLSpanElement> {

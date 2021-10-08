@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useContext } from 'react'
 import { useLocalStorageState } from './utils'
 import { useInterval } from './useInterval'
 import { useConnection } from './connection'

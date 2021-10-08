@@ -1,5 +1,5 @@
 import React from 'react'
-import styled, { createGlobalStyle, css } from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Grid, Card, Theme, LinearProgress } from '@material-ui/core'
 import { GridProps } from '@material-ui/core/Grid'
 

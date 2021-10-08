@@ -22,21 +22,18 @@ import withTheme from '@material-ui/core/styles/withTheme'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import {
   ALL_TOKENS_MINTS,
-  ALL_TOKENS_MINTS_MAP,
   getTokenNameByMintAddress,
   useAllMarketsList,
 } from '@sb/dexUtils/markets'
 import { withPublicKey } from '@core/hoc/withPublicKey'
+import { swapWithHandleNativeSol } from '@sb/dexUtils/pools'
+import { PublicKey } from '@solana/web3.js'
+import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/send-and-confirm-transaction-via-wallet'
 import { getTokenDataByMint } from '../Pools/utils'
 import { TokenAddressesPopup } from './components/TokenAddressesPopup'
 import { REBALANCE_CONFIG } from '../Rebalance/Rebalance.config'
-import { filterDataBySymbolForDifferentDeviders } from '../Chart/Inputs/SelectWrapper/SelectWrapper.utils'
-import Pools from '../Pools/components/Tables/Pools'
-import { swap, swapWithHandleNativeSol } from '@sb/dexUtils/pools'
-import { PublicKey } from '@solana/web3.js'
-import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/send-and-confirm-transaction-via-wallet'
 import { TokenInfo } from '../Rebalance/Rebalance.types'
-import { getAllTokensData, getMarketsData } from '../Rebalance/utils'
+import { getAllTokensData } from '../Rebalance/utils'
 import { TransactionSettingsPopup } from './components/TransactionSettingsPopup'
 import { SelectCoinPopup } from './components/SelectCoinPopup'
 import { Card } from './styles'

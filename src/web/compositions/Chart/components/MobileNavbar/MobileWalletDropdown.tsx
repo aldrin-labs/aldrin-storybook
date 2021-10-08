@@ -1,12 +1,10 @@
-import React, { useState } from 'react'
-import styled from 'styled-components'
+import React from 'react'
 
-import { Paper, Theme } from '@material-ui/core'
+import { Theme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
-import { MainTitle } from '@sb/components/TraidingTerminal/ConfirmationPopup'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
 import useMobileSize from '@webhooks/useMobileSize'
 import { StyledPaper, WalletRowContainer } from './styles'

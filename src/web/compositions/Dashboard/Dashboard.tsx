@@ -19,7 +19,7 @@ import { ConnectWalletScreen } from '@sb/components/ConnectWalletScreen/ConnectW
 import { useInterval } from '@sb/dexUtils/useInterval'
 import { Loading } from '@sb/components'
 import { notifyWithLog } from '@sb/dexUtils/notifications'
-import { Row, RowContainer, Title } from '../AnalyticsRoute/index.styles'
+import { RowContainer, Title } from '../AnalyticsRoute/index.styles'
 
 import UnsettledBalancesTable from './components/UnsettledBalancesTable/UnsettledBalancesTable'
 import { getOrderbookForMarkets } from '../Rebalance/utils/getOrderbookForMarkets'

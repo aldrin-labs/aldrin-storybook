@@ -3,67 +3,44 @@ import React, { PureComponent, SyntheticEvent, CSSProperties } from 'react'
 import { compose } from 'recompose'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { withTheme } from '@material-ui/styles'
-import { withSnackbar } from 'notistack'
-import {
-  withFormik,
-  validateYupSchema,
-  yupToFormErrors,
-  FastField,
-} from 'formik'
+import { withFormik } from 'formik'
 
-import { Grid, InputAdornment, Typography, Theme } from '@material-ui/core'
-import { Loading } from '@sb/components/index'
+import { Grid, Theme } from '@material-ui/core'
 
-import { isEqual, stubFalse, toNumber, toPairs } from 'lodash-es'
-import { traidingErrorMessages } from '@core/config/errorMessages'
-import Info from '@icons/inform.svg'
-import SvgIcon from '@sb/components/SvgIcon'
+import { toNumber } from 'lodash-es'
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
 import { notify } from '@sb/dexUtils/notifications'
 
-import {
-  Line,
-  SCheckbox,
-} from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
+import { Line } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import {
   InputRowContainer,
-  AdditionalSettingsButton,
   InputsBlock,
 } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { FormInputContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
 import { validateVariablesForPlacingOrder } from '@sb/dexUtils/send'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { MobileWalletDropdown } from '@sb/compositions/Chart/components/MobileNavbar/MobileWalletDropdown'
 import { ButtonsWithAmountFieldRowForBasic } from './AmountButtons'
 import ConnectWalletDropdown from '../ConnectWalletDropdown/index'
 import CustomSwitcher from '../SwitchOnOff/CustomSwitcher'
 import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
 import {
-  SendButton,
   Container,
-  GridContainer,
-  Coin,
   UpdatedCoin,
-  InputTitle,
-  InputWrapper,
-  TradeInputBlock,
   TitleForInput,
   TradeInput,
   BlueInputTitle,
   SeparateInputTitle,
   AbsoluteInputTitle,
-  Placeholder,
   SwitchersContainer,
   ConnectWalletButtonContainer,
   ConnectWalletDropdownContainer,
-  ButtonContainer,
   ButtonBlock,
   TerminalGridContainer,
 } from './styles'
-import { IProps, FormValues, IPropsWithFormik, priceType } from './types'
+import { IProps, FormValues, IPropsWithFormik } from './types'
 import { ConfirmationPopup } from './ConfirmationPopup'
 import {
   costOfAddingToken,

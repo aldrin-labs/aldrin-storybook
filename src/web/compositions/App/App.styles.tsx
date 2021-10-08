@@ -1,12 +1,4 @@
-import React from 'react'
-
-import styled, { createGlobalStyle } from 'styled-components'
-import DMSans from '@sb/fonts/DMSans.woff2'
-import Monaco from '@sb/fonts/Monaco.woff2'
-import DMSansMedium from '@sb/fonts/DMSans-Medium.woff2'
-import AvenirNextDemi from '@sb/fonts/AvenirNextCyr-Demi.woff2'
-import FontAwesome from '@sb/fonts/fontawesome-webfont.woff2'
-import IBMPlexSansCondensed from '@sb/fonts/IBMPlexSansCondensed.woff2'
+import styled from 'styled-components'
 // put overflow-x hidden since
 // we dont need it to horizontal scrollbar
 // on whole page

@@ -8,11 +8,9 @@ import { Theme } from '@material-ui/core'
 import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
 import { getDecimalCount } from '@sb/dexUtils/utils'
 import WhiteArrow from '@icons/whiteArrow.svg'
-import CoinPlaceholder from '@icons/coinPlaceholder.svg'
 import CopyIcon from '@icons/copyIcon.png'
 import { SvgIcon } from '@sb/components/index'
 
-import { Link } from 'react-router-dom'
 import { marketDataByTickers } from '@core/graphql/queries/chart/marketDataByTickers'
 import { datesForQuery } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
 import { getIsNotUSDTQuote } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
@@ -25,12 +23,7 @@ import {
 import {
   Row,
   RowContainer,
-  BlockContainer,
   WhiteTitle,
-  SerumTitleBlockContainer,
-  SerumWhiteTitle,
-  Text,
-  TopBarTitle,
   BlockTemplate,
 } from '../../index.styles'
 

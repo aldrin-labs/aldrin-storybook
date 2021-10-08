@@ -6,7 +6,6 @@ import { Theme } from '@material-ui/core'
 import {
   WhiteTitle,
   HeaderContainer,
-  Row,
   ChartContainer,
   RowContainer,
 } from '@sb/compositions/AnalyticsRoute/index.styles'

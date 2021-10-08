@@ -1,14 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
-import { withRouter } from 'react-router'
-import { compose } from 'recompose'
-import { Paper, withTheme } from '@material-ui/core'
+import { Paper } from '@material-ui/core'
 
 import { StyledDialogContent } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { withPublicKey } from '@core/hoc/withPublicKey'
 import Warning from '@icons/newWarning.svg'
 import { SvgIcon } from '@sb/components'
 import Timer from 'react-compound-timer/build'

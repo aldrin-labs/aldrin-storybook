@@ -1,14 +1,9 @@
 import React from 'react'
 import SvgIcon from '@sb/components/SvgIcon'
-import TooltipCustom from '@sb/components/TooltipCustom/TooltipCustom'
 import Help from '@material-ui/icons/Help'
 import Reimport from '@icons/reimport.svg'
 import { Loading } from '@sb/components/index'
-import {
-  TooltipContainer,
-  Tooltip,
-  DarkTooltip,
-} from '@sb/components/TooltipCustom/Tooltip'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { TableButton } from './TradingTable.styles'
 
 const arrayOfSides = ['sell', 'buy']

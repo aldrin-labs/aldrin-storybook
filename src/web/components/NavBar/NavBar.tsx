@@ -1,34 +1,24 @@
 import React, { SFC, useState } from 'react'
-import { withApollo, graphql } from 'react-apollo'
+import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
 import Dropdown from '@sb/components/Dropdown'
-import ArrowBottom from '@icons/arrowBottom.svg'
-import SvgIcon from '@sb/components/SvgIcon'
 
 import { client } from '@core/graphql/apolloClient'
-import { LoginComponent as Login } from '@sb/components/Login'
 import { WithTheme, withTheme } from '@material-ui/core/styles'
-import { Grid, Typography } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import { NavLink as Link } from 'react-router-dom'
 
 import { handleLogout, checkLoginStatus } from '@core/utils/loginUtils'
 import Hidden from '@material-ui/core/Hidden'
-import { syncStorage } from '@storage'
 
 import Logo from '@sb/components/Logo/Logo'
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 import TotalBalance from '@sb/components/NavBar/TotalBalance'
 import NavBarProfileSelector from '@sb/components/NavBar/NavBarProfileSelector'
 
-import MainIcon from '@material-ui/icons/LineStyle'
-import IndustryIcon from '@material-ui/icons/DonutLarge'
-import RebalanceIcon from '@material-ui/icons/SwapHoriz'
-
 import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
-import { marketsQuery } from '@core/graphql/queries/coinMarketCap/marketsQuery'
 import { GET_MARKET_TYPE } from '@core/graphql/queries/chart/getMarketType'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
-import { GET_FOLLOWING_SIGNALS_QUERY } from '@core/graphql/queries/signals/getFollowingSignals'
 import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
 import { LOGOUT } from '@core/graphql/mutations/login'
 
@@ -42,13 +32,11 @@ import {
   prefetchPortfolio,
 } from '@core/utils/prefetching'
 
-import { MASTER_BUILD } from '@core/utils/config'
 import {
   Nav,
   StyledToolbar,
   NavLinkButtonWrapper,
   NavBarWrapper,
-  NavBreadcrumbTypography,
 } from './NavBar.styles'
 
 export interface Props extends WithTheme {

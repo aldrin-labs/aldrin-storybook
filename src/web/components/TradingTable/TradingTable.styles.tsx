@@ -1,8 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Button, Theme } from '@material-ui/core'
-import { CSS_CONFIG } from '@sb/config/cssConfig'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 export const TitleSecondRowContainer = styled.div`
   position: relative;

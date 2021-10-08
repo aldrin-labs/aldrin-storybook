@@ -9,10 +9,7 @@ import { isSPOTMarketType } from '@core/utils/chartPageUtils'
 
 import { client } from '@core/graphql/apolloClient'
 
-import {
-  SRadio,
-  SCheckbox,
-} from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
+import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import Bell from '@icons/bell.svg'
 
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
@@ -22,10 +19,7 @@ import TraidingTerminal, {
   TradeInputContent,
 } from '@sb/components/TraidingTerminal/index'
 import { FormInputContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
-import {
-  InputRowContainer,
-  AdditionalSettingsButton,
-} from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
+import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { TradingViewBotTerminalMemo } from './TradingViewBotTerminal'

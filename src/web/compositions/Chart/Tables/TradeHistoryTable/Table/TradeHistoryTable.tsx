@@ -1,13 +1,9 @@
-import React, { PureComponent } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import { withTheme } from '@material-ui/styles'
-import { IProps, IState } from './TradeHistoryTable.types'
 
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
 import { Column, Table } from 'react-virtualized'
 import 'react-virtualized/styles.css'
-
-import { rowStyles } from '@core/utils/chartPageUtils'
 
 import useMobileSize from '@webhooks/useMobileSize'
 import defaultRowRenderer from '../../OrderBookTable/utils'

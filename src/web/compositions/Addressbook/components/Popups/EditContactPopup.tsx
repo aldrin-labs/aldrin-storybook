@@ -2,12 +2,10 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
-import { Dialog, Paper } from '@material-ui/core'
+import { Paper } from '@material-ui/core'
 
 import {
-  TypographyTitle,
   StyledDialogContent,
-  ClearButton,
   StyledDialogTitle,
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 

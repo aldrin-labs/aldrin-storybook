@@ -6,7 +6,6 @@ import { marketsByCategories } from '@core/config/marketsByCategories'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
-  reverseFor,
   roundAndFormatNumber,
 } from '@core/utils/PortfolioTableUtils'
 

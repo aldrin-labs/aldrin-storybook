@@ -25,9 +25,6 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import WalletIcon from '@icons/walletIcon.svg'
 
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
-import { formatSymbol } from '@sb/components/AllocationBlock/DonutChart/utils'
-import { useBalances } from '@sb/dexUtils/markets'
-import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown'
 import { DisconnectButton, NavBarForSmallScreens } from './styles'
 import { MobileWalletDropdown } from './MobileWalletDropdown'
 

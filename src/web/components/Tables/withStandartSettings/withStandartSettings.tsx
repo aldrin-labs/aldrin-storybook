@@ -2,7 +2,6 @@ import React from 'react'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 import { Menu, MenuItem } from '@material-ui/core'
 import Switch from '@material-ui/core/Switch'
-import { saveAs } from 'file-saver'
 
 import GetApp from '@material-ui/icons/GetApp'
 import Tooltip from '@material-ui/core/Tooltip'

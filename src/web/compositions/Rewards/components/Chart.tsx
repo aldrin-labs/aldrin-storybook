@@ -1,13 +1,6 @@
 import React, { useEffect } from 'react'
 import { createLinearChart } from '../../AnalyticsRoute/components/utils'
-import {
-  WhiteTitle,
-  HeaderContainer,
-  Row,
-  ChartContainer,
-} from '../../AnalyticsRoute/index.styles'
-
-import { srmVolumesInUSDT, dcfiVolumes } from '../index'
+import { ChartContainer } from '../../AnalyticsRoute/index.styles'
 
 const LinearChart = ({
   theme,

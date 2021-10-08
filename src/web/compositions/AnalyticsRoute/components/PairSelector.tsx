@@ -19,7 +19,7 @@ import {
   fiatRegexp,
 } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
 
-import { useAllMarketsList, useCustomMarkets } from '@sb/dexUtils/markets'
+import { useAllMarketsList } from '@sb/dexUtils/markets'
 import {
   HeaderContainer,
   WhiteTitle,

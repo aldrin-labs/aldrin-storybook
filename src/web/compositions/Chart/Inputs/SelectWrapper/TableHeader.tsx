@@ -2,10 +2,6 @@ import React, { useMemo, useCallback } from 'react'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { marketsByCategories } from '@core/config/marketsByCategories'
 
-import { SvgIcon } from '@sb/components'
-import ExpandTableIcon from '@icons/expandIcon.svg'
-import SqueezeTableIcon from '@icons/squeezeIcon.svg'
-
 import { Theme } from '@material-ui/core'
 import { filterSelectorDataByTab } from './SelectWrapper.utils'
 import { StyledTab, StyledHeader } from './SelectWrapperStyles'

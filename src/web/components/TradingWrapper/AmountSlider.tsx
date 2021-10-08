@@ -7,15 +7,10 @@ import {
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
-import HeightIcon from '@material-ui/icons/Height'
 import { SliderWithPriceAndPercentageFieldRowProps } from '@sb/compositions/Chart/components/SmartOrderTerminal/types'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
 
 import { TradeInputContent as Input } from '@sb/components/TraidingTerminal/index'
-import {
-  Select,
-  FormInputContainer,
-} from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
 
 export const SliderWithAmountFieldRow = ({
   pair,

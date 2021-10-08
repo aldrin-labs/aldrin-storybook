@@ -5,28 +5,23 @@ import {
   SolletExtensionAdapter,
   MathWalletAdapter,
   CommonWalletAdapter,
-  CcaiExtensionAdapter,
   PhantomWalletAdapter,
   LedgerWalletAdapter,
 } from '@sb/dexUtils/adapters'
 import {
-  Connection,
   PublicKey,
   SystemProgram,
   SYSVAR_RENT_PUBKEY,
   Transaction,
   TransactionInstruction,
-  clusterApiUrl,
 } from '@solana/web3.js'
 
-import { TokenListProvider } from '@solana/spl-token-registry'
 import { TokenInstructions } from '@project-serum/serum'
 import Sollet from '@icons/sollet.svg'
 import Mathwallet from '@icons/mathwallet.svg'
 import Solong from '@icons/solong.svg'
 import WalletAldrin from '@icons/RINLogo.svg'
 import { WalletAdapter } from '@sb/dexUtils/types'
-import { MASTER_BUILD } from '@core/utils/config'
 import { _VERY_SLOW_REFRESH_INTERVAL } from './markets'
 import {
   getTokenAccountInfo,

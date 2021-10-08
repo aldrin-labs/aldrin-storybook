@@ -5,7 +5,6 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import {
   endOfDayTimestamp,
   dayDuration,
-  generateIDFromValues,
   getTimezone,
 } from '@sb/compositions/AnalyticsRoute/components/utils'
 
@@ -14,7 +13,6 @@ import { Theme } from '@material-ui/core'
 import {
   WhiteTitle,
   HeaderContainer,
-  Row,
   ChartContainer,
   RowContainer,
 } from '@sb/compositions/AnalyticsRoute/index.styles'

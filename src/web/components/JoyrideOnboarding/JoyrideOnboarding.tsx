@@ -1,4 +1,3 @@
-import React from 'react'
 // import Joyride from 'react-joyride'
 
 // function JoyrideOnboarding(props) {

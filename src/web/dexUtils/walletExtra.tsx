@@ -2,7 +2,6 @@ import { useRef } from 'react'
 
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useTokenAccounts } from '@sb/dexUtils/markets'
-import { useAsyncData } from './fetch-loop'
 
 export function useRefEqual<T>(
   value: T,

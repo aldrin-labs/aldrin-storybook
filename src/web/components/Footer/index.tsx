@@ -3,17 +3,11 @@ import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
 import styled from 'styled-components'
 import { withTheme } from '@material-ui/styles'
-import Telegram from '@material-ui/icons/NearMeSharp'
-import { AppBar, IconButton, Switch, Typography } from '@material-ui/core'
+import { AppBar } from '@material-ui/core'
 
-import { PrivacyPolicy } from '@sb/components/index'
-import Feedback from '@sb/components/Feedback'
-
-import { MASTER_BUILD } from '@core/utils/config'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { TOGGLE_THEME_MODE } from '@core/graphql/mutations/app/toggleThemeMode'
-import { StyledButton, StyledTypography } from './index.styles'
 import Props from './index.types'
 
 const Footer = ({

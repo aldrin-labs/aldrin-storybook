@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Redirect, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 // import Joyride from 'react-joyride'
 import { withTheme } from '@material-ui/styles'
 import { compose } from 'recompose'
@@ -10,7 +10,6 @@ import Tour from 'reactour'
 import {
   tourConfig,
   FinishBtn,
-  WrapperForNotificationTour,
 } from '@sb/components/ReactourOnboarding/ReactourOnboarding'
 // import { CardsPanel } from './components'
 
@@ -26,10 +25,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
 
 import { checkLoginStatus } from '@core/utils/loginUtils'
-import {
-  MainContainer,
-  GlobalStyles,
-} from '@sb/compositions/Chart/Chart.styles'
+import { MainContainer } from '@sb/compositions/Chart/Chart.styles'
 
 import { useAllMarketsList, useMarket } from '@sb/dexUtils/markets'
 import { getDecimalCount } from '@sb/dexUtils/utils'
@@ -41,12 +37,8 @@ import { withRegionCheck } from '@core/hoc/withRegionCheck'
 import { TokenDelistPopup } from '@sb/components/TokenDelistPopup'
 import { tokensToDelist } from '@core/config/dex'
 import { TransactionsConfirmationWarningPopup } from '@sb/components/TransactionsConfirmationWarningPopup/TransactionsConfirmationWarningPopup'
-import { SettleWarningPopup } from '@sb/components/SettleWarningPopup/SettleWarningPopup'
 import { ProposeToSettlePopup } from '@sb/components/ProposeToSettlePopup/ProposeToSettlePopup'
-import { AldrinIsOverCapacityPopup } from '@sb/components/AldrinIsOverCapacityPopup'
-import { RpcCapacityWarningPopup } from '@sb/components/RpcWarningPopup'
 import { MarketDeprecatedPopup } from '@sb/components/MarketDeprecatedPopup/MarketDeprecatedPopup'
-import { useConnection } from '@sb/dexUtils/connection'
 import MarketBlock from './components/MarketBlock/MarketBlock'
 import { WarningPopup } from './components/WarningPopup'
 import DefaultView from './DefaultView/StatusWrapper'

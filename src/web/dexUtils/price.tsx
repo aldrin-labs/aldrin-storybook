@@ -1,5 +1,3 @@
-import { Connection } from '@solana/web3.js'
-
 // Create a cached API wrapper to avoid rate limits.
 class PriceStore {
   public cache: {

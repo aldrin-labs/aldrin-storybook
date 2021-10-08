@@ -4,7 +4,7 @@ import {
   IGetMyProfile,
   Key,
 } from '@core/types/ChartTypes'
-import { TooltipMutationType, TooltipQueryType } from '@core/types/TooltipTypes'
+import { TooltipMutationType } from '@core/types/TooltipTypes'
 import { TooltipsType } from '@core/types/PortfolioTypes'
 
 export interface GetChartDataQueryInterface extends IGetMyProfile, IGetCharts {
