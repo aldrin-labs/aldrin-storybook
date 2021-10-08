@@ -24,6 +24,8 @@ import { sendAndConfirmTransactionViaWallet } from './token/utils/send-and-confi
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { notify } from './notifications'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
+import { DEX_PID } from '@core/config/dex'
+import { MARKET_STATE_LAYOUT_V3 } from '@project-serum/serum'
 
 const OWNER: PublicKey = new PublicKey(
   '5rWKzCUY9ESdmobivjyjQzvdfHSePf37WouX39sMmfx9'
@@ -1250,4 +1252,20 @@ export const getPools = async (connection, tokenSwapProgramId) => {
       .filter((a) => a.account.data.length === 537)
       .map((a) => a.pubkey.toString())
   )
+}
+
+export const getMarketByTokens = async (
+  connection: Connection,
+  tokenA: PublicKey,
+  tokenB: PublicKey
+) => {
+  const markets = await connection.getProgramAccounts(DEX_PID, {
+    filters: [
+      { memcmp: { offset: MARKET_STATE_LAYOUT_V3.offsetOf('baseMint'), bytes: tokenA.toBase58() } },
+      { memcmp: { offset: MARKET_STATE_LAYOUT_V3.offsetOf('quoteMint'), bytes: tokenB.toBase58() } },
+    ],
+  })
+
+  // decode later
+  console.log('markets', markets)
 }

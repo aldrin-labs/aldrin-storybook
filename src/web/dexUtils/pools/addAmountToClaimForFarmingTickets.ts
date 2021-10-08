@@ -20,10 +20,18 @@ export const addAmountToClaimForFarmingTickets = async ({
   allUserFarmingTickets: FarmingTicket[]
 }): Promise<FarmingTicket[]> => {
   const rewardsToClaimTransaction = new Transaction()
+  const poolsMap = pools.reduce(
+    (acc, pool) => acc.set(pool.swapToken, pool),
+    new Map()
+  )
 
-  for (let ticket of allUserFarmingTickets) {
+  const ticketsWithExistingPools = allUserFarmingTickets.filter((ticket) =>
+    poolsMap.has(ticket.pool)
+  )
+
+  for (let ticket of ticketsWithExistingPools) {
     // todo use getPoolsInfo
-    const pool = mock.find((pool) => pool.swapToken === ticket.pool)
+    const pool = pools.find((pool) => pool.swapToken === ticket.pool)
 
     if (!pool) continue
 
@@ -45,7 +53,7 @@ export const addAmountToClaimForFarmingTickets = async ({
   }
 
   if (rewardsToClaimTransaction.instructions.length === 0)
-    return allUserFarmingTickets
+    return ticketsWithExistingPools
 
   rewardsToClaimTransaction?.feePayer = wallet.publicKey
 
@@ -55,9 +63,11 @@ export const addAmountToClaimForFarmingTickets = async ({
     connection.commitment ?? 'single'
   )
 
+  console.log('value', value)
+
   // for through logs + use index to get ticket -> pool and add claim value
   if (value.err) {
-    return allUserFarmingTickets
+    return ticketsWithExistingPools
   }
 
   const amountsToClaim =
@@ -68,7 +78,9 @@ export const addAmountToClaimForFarmingTickets = async ({
           parseFloat(log.replace(START_OF_LOG_WITH_AMOUNT_TO_CLAIM, '')) + i
       ) || []
 
-  return allUserFarmingTickets.map((ticket, index) => ({
+  console.log('amountsToClaim', amountsToClaim)
+
+  return ticketsWithExistingPools.map((ticket, index) => ({
     ...ticket,
     amountToClaim: amountsToClaim[index] || 0,
   }))

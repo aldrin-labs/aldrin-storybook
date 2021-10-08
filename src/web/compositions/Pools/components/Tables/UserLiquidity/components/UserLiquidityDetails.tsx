@@ -24,6 +24,9 @@ import { getStakedTokensForPool } from '@sb/dexUtils/pools/getStakedTokensForPoo
 import { getAvailableFarmingTokensForPool } from '@sb/dexUtils/pools/getAvailableFarmingTokensForPool'
 import { withdrawFarmed } from '@sb/dexUtils/pools/withdrawFarmed'
 import { useConnection } from '@sb/dexUtils/connection'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { SvgIcon } from '@sb/components'
+import Info from '@icons/TooltipImg.svg'
 
 export const UserLiquidityDetails = ({
   theme,
@@ -61,6 +64,8 @@ export const UserLiquidityDetails = ({
     farmingTicketsMap,
   })
 
+  console.log('farmingTicketsMap', farmingTicketsMap, pool)
+
   // if has pool tokens or staked
   const hasPoolTokens = poolTokenAmount > 0
   const hasStakedTokens = stakedTokens > 0
@@ -68,7 +73,7 @@ export const UserLiquidityDetails = ({
   const hasLiquidity = hasPoolTokens || hasStakedTokens
   const hasFarming = pool.farming && pool.farming.length > 0
 
-  const [baseTokenAmount, quoteTokenAmount] = calculateWithdrawAmount({
+  const [baseUserTokenAmount, quoteUserTokenAmount] = calculateWithdrawAmount({
     selectedPool: pool,
     poolTokenAmount,
   })
@@ -90,6 +95,16 @@ export const UserLiquidityDetails = ({
     : 0
 
   const isUnstakeLocked = unlockAvailableDate > Date.now() / 1000
+
+  const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
+  const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
+
+  const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 10
+  const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 10
+
+  const userLiquidityUSD =
+    baseTokenPrice * baseUserTokenAmount +
+    quoteTokenPrice * quoteUserTokenAmount
 
   return (
     <RowContainer
@@ -120,13 +135,21 @@ export const UserLiquidityDetails = ({
                 fontFamily="Avenir Next Medium"
                 theme={theme}
               >
-                {formatNumberToUSFormat(stripDigitPlaces(baseTokenAmount, 8))}{' '}
+                {formatNumberToUSFormat(
+                  stripDigitPlaces(baseUserTokenAmount, 8)
+                )}{' '}
                 <WhiteText>{getTokenNameByMintAddress(pool.tokenA)}</WhiteText>{' '}
                 /{' '}
-                {formatNumberToUSFormat(stripDigitPlaces(quoteTokenAmount, 8))}{' '}
+                {formatNumberToUSFormat(
+                  stripDigitPlaces(quoteUserTokenAmount, 8)
+                )}{' '}
                 <WhiteText>{getTokenNameByMintAddress(pool.tokenB)}</WhiteText>{' '}
                 <WhiteText>$(</WhiteText>
-                <span>{formatNumberToUSFormat(stripDigitPlaces(1000, 2))}</span>
+                <span>
+                  {formatNumberToUSFormat(
+                    stripDigitPlaces(userLiquidityUSD, 2)
+                  )}
+                </span>
                 <WhiteText>)</WhiteText>
               </RowDataTdText>
 
@@ -323,13 +346,24 @@ export const UserLiquidityDetails = ({
               fontFamily={'Avenir Next Medium'}
               style={{ marginBottom: '3.5rem' }}
             >
-              {/* info here */}
+              <DarkTooltip title={'farming'}>
+                <div style={{ display: 'inline'}}>
+                  <SvgIcon
+                    src={Info}
+                    width={'1.5rem'}
+                    height={'auto'}
+                    style={{ marginRight: '1rem' }}
+                  />
+                </div>
+              </DarkTooltip>
               <AmountText style={{ padding: '0 0.5rem' }}>
                 {availableToClaimFarmingTokens}
               </AmountText>{' '}
               {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
             </RowDataTdText>
             <GreenButton
+              theme={theme}
+              disabled={hasStakedTokens && availableToClaimFarmingTokens === 0}
               onClick={async () => {
                 if (!wallet.connected) {
                   wallet.connect()
@@ -352,7 +386,7 @@ export const UserLiquidityDetails = ({
               }}
             >
               {wallet.connected
-                ? availableToClaimFarmingTokens > 0
+                ? hasStakedTokens
                   ? 'Claim reward'
                   : 'Stake Pool Token'
                 : 'Connect Wallet'}

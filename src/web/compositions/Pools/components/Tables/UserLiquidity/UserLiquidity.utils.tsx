@@ -149,7 +149,6 @@ export const combineUserLiquidityData = ({
       const quoteSymbol = getTokenNameByMintAddress(el.tokenB)
 
       const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 10
-
       const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 10
 
       const tvlUSD =
@@ -230,12 +229,12 @@ export const combineUserLiquidityData = ({
           render: (
             <TextColumnContainer>
               <RowDataTdTopText theme={theme}>
-                ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
+                ${formatNumberToUSFormat(stripDigitPlaces(userLiquidityUSD, 2))}
               </RowDataTdTopText>
               <RowDataTdText theme={theme} color={theme.palette.grey.new}>
-                {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenA, 2))}{' '}
+                {formatNumberToUSFormat(stripDigitPlaces(userAmountTokenA, 2))}{' '}
                 {getTokenNameByMintAddress(el.tokenA)} /{' '}
-                {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenB, 2))}{' '}
+                {formatNumberToUSFormat(stripDigitPlaces(userAmountTokenB, 2))}{' '}
                 {getTokenNameByMintAddress(el.tokenB)}
               </RowDataTdText>
             </TextColumnContainer>
@@ -288,7 +287,7 @@ export const combineUserLiquidityData = ({
                         (farmingState.tokensPerPeriod *
                           (dayDuration / farmingState.periodLength)) /
                           (tvlUSD / 1000),
-                        8
+                        2
                       )
                     )}
                   </span>{' '}
