@@ -102,8 +102,8 @@ export const mock: PoolInfo[] = [
     parsedName: 'PTA_PTB',
     tokenA: 'A1BsqP5rH3HXhoFK6xLK6EFv9KsUzgR1UwBQhzMW9D2m',
     tokenB: '8wxoc2AnVsT6aLXDyA2G9PKfpx8mVT1Q5pPgvQLpCEVM',
-    swapToken: 'HwTyFCPy3xi842Be2PyU4ZPu3YmaxorV5RY4b77Pb898',
-    poolTokenMint: '2TU6yyd8DSv2Xksz1oNe84D6qsxTCo7imiLBT2hsQVVY',
+    swapToken: 'WsqPnvaF9jhFuJ7TSiQwdpYo9hSvvQGoJN4N8SV67cq',
+    poolTokenMint: '6U4vmQfbSd2Djvf8w18BJiNYXsGnpGrhFZz4DpQ4Cj3U',
     tvl: {
       tokenA: 1099,
       tokenB: 4945509,
@@ -234,8 +234,8 @@ export const combineAllPoolsData = ({
   setIsStakePopupOpen: (value: boolean) => void
   setIsUnstakePopupOpen: (value: boolean) => void
 }) => {
-  // const processedAllPoolsData = poolsInfo
-  const processedAllPoolsData = mock
+  const processedAllPoolsData = poolsInfo
+  // const processedAllPoolsData = mock
     .filter((el) =>
       filterDataBySymbolForDifferentDeviders({
         searchValue,
@@ -254,7 +254,7 @@ export const combineAllPoolsData = ({
 
       const fees = feesPerPoolMap.get(el.swapToken) || 0
       const apy = el.apy24h || 0
-      const farmingState = el.farming[0]
+      const farmingState = el.farming && el.farming[0]
 
       return {
         id: `${el.name}${el.tvl}${el.poolTokenMint}`,
@@ -372,14 +372,15 @@ export const combineAllPoolsData = ({
                   <span style={{ color: '#A5E898' }}>
                     {formatNumberToUSFormat(
                       stripDigitPlaces(
-                        farmingState.tokensPerPeriod / (tvlUSD / 1000),
-                        8
+                        (farmingState.tokensPerPeriod *
+                          (dayDuration / farmingState.periodLength)) /
+                          (tvlUSD / 1000),
+                        2
                       )
                     )}
                   </span>{' '}
-                  {getTokenNameByMintAddress(farmingState.farmingTokenMint)} /{' '}
-                  {farmingState.periodLength / dayDuration} Days for each $
-                  <span style={{ color: '#A5E898' }}>1000</span>
+                  {getTokenNameByMintAddress(farmingState.farmingTokenMint)} /
+                  Day for each $<span style={{ color: '#A5E898' }}>1000</span>
                 </RowDataTdText>
               </Row>
             </RowContainer>

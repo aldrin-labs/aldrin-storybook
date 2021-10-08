@@ -18,40 +18,8 @@ import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { sendTransaction } from '../send'
 import { WalletAdapter } from '../types'
-import { loadAccountsFromPoolsProgram } from './loadAccountsFromPoolsProgram'
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
-
-const loadUserTicketsPerPool = async ({
-  wallet,
-  connection,
-  poolPublicKey,
-}: {
-  wallet: WalletAdapter
-  connection: Connection
-  poolPublicKey: PublicKey
-}) => {
-  return await loadAccountsFromPoolsProgram({
-    connection,
-    filters: [
-      {
-        dataSize: 88,
-      },
-      {
-        memcmp: {
-          offset: 56,
-          bytes: poolPublicKey.toBase58(),
-        },
-      },
-      {
-        memcmp: {
-          offset: 24,
-          bytes: wallet.publicKey.toBase58(),
-        },
-      },
-    ],
-  })
-}
 
 export async function redeemBasket({
   wallet,
@@ -81,23 +49,23 @@ export async function redeemBasket({
     program.programId
   )
 
-  const tickets = await loadUserTicketsPerPool({
-    wallet,
-    connection,
-    poolPublicKey,
-  })
+  // const tickets = await loadUserTicketsPerPool({
+  //   wallet,
+  //   connection,
+  //   poolPublicKey,
+  // })
 
-  const allUserTicketsPerPool = tickets.map((ticket) => {
-    const data = Buffer.from(ticket.account.data)
-    const ticketData = program.coder.accounts.decode('LPTicket', data)
+  // const allUserTicketsPerPool = tickets.map((ticket) => {
+  //   const data = Buffer.from(ticket.account.data)
+  //   const ticketData = program.coder.accounts.decode('LPTicket', data)
 
-    return {
-      lpTicketAddress: ticket.pubkey.toString(),
-      lpTokens: ticketData.lpTokens.toNumber(),
-      pool: ticketData.pool.toString(),
-      userKey: ticketData.userKey.toString(),
-    }
-  })
+  //   return {
+  //     lpTicketAddress: ticket.pubkey.toString(),
+  //     lpTokens: ticketData.lpTokens.toNumber(),
+  //     pool: ticketData.pool.toString(),
+  //     userKey: ticketData.userKey.toString(),
+  //   }
+  // })
 
   const {
     baseTokenMint,

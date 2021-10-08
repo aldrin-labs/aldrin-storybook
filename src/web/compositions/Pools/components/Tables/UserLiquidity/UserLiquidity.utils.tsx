@@ -136,8 +136,8 @@ export const combineUserLiquidityData = ({
   setIsStakePopupOpen: (value: boolean) => void
   setIsUnstakePopupOpen: (value: boolean) => void
 }) => {
-  // const processedUserLiquidityData = usersPools
-  const processedUserLiquidityData = mock
+  const processedUserLiquidityData = usersPools
+    // const processedUserLiquidityData = mock
     .filter((el) =>
       filterDataBySymbolForDifferentDeviders({
         searchValue,
@@ -170,7 +170,7 @@ export const combineUserLiquidityData = ({
         poolTokenAmount: poolTokenAmount,
       })
 
-      const farmingState = el.farming[0]
+      const farmingState = el.farming && el.farming[0]
 
       const userLiquidityUSD =
         baseTokenPrice * userAmountTokenA + quoteTokenPrice * userAmountTokenB
@@ -285,14 +285,15 @@ export const combineUserLiquidityData = ({
                   <span style={{ color: '#A5E898' }}>
                     {formatNumberToUSFormat(
                       stripDigitPlaces(
-                        farmingState.tokensPerPeriod / (tvlUSD / 1000),
+                        (farmingState.tokensPerPeriod *
+                          (dayDuration / farmingState.periodLength)) /
+                          (tvlUSD / 1000),
                         8
                       )
                     )}
                   </span>{' '}
-                  {getTokenNameByMintAddress(farmingState.farmingTokenMint)} /{' '}
-                  {farmingState.periodLength / dayDuration} Days for each $
-                  <span style={{ color: '#A5E898' }}>1000</span>
+                  {getTokenNameByMintAddress(farmingState.farmingTokenMint)} /
+                  Day for each $<span style={{ color: '#A5E898' }}>1000</span>
                 </RowDataTdText>
               </Row>
             </RowContainer>

@@ -98,7 +98,7 @@ export const withdrawFarmed = async ({
           farmingState: new PublicKey(farmingState.farmingState),
           farmingSnapshots: new PublicKey(farmingState.farmingSnapshots),
           farmingTicket: new PublicKey(ticketData.farmingTicket),
-          farmingTokenVault: new PublicKey(farmingState.farmingTokenMint),
+          farmingTokenVault: new PublicKey(farmingState.farmingTokenVault),
           poolSigner: vaultSigner,
           userFarmingTokenAccount,
           userKey: wallet.publicKey,

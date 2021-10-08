@@ -66,7 +66,7 @@ export const UserLiquidityDetails = ({
   const hasStakedTokens = stakedTokens > 0
 
   const hasLiquidity = hasPoolTokens || hasStakedTokens
-  const hasFarming = pool.farming.length > 0
+  const hasFarming = pool.farming && pool.farming.length > 0
 
   const [baseTokenAmount, quoteTokenAmount] = calculateWithdrawAmount({
     selectedPool: pool,
@@ -84,7 +84,7 @@ export const UserLiquidityDetails = ({
       ? farmingTickets?.sort((a, b) => b.startTime - a.startTime)[0]
       : null
 
-  const farmingState = pool.farming[0]
+  const farmingState = pool.farming && pool.farming[0]
   const unlockAvailableDate = lastFarmingTicket
     ? +lastFarmingTicket.startTime + +farmingState?.periodLength
     : 0
@@ -93,7 +93,7 @@ export const UserLiquidityDetails = ({
 
   return (
     <RowContainer
-      height="10rem"
+      height="12rem"
       margin="1rem 0"
       style={{ background: '#222429' }}
     >
@@ -104,7 +104,7 @@ export const UserLiquidityDetails = ({
         justify="space-between"
         width="60%"
       >
-        <Row align="flex-start" direction="column" width="25%">
+        <Row align="flex-start" direction="column" width="40%">
           <RowDataTdText
             theme={theme}
             color={theme.palette.grey.new}
@@ -114,19 +114,43 @@ export const UserLiquidityDetails = ({
           </RowDataTdText>
 
           {hasLiquidity ? (
-            <RowDataTdText
-              color={'#A5E898'}
-              fontFamily="Avenir Next Medium"
-              theme={theme}
-            >
-              {formatNumberToUSFormat(stripDigitPlaces(baseTokenAmount, 8))}{' '}
-              <WhiteText>{getTokenNameByMintAddress(pool.tokenA)}</WhiteText> /{' '}
-              {formatNumberToUSFormat(stripDigitPlaces(quoteTokenAmount, 8))}{' '}
-              <WhiteText>{getTokenNameByMintAddress(pool.tokenB)}</WhiteText>{' '}
-              <WhiteText>$(</WhiteText>
-              <span>{formatNumberToUSFormat(stripDigitPlaces(1000, 2))}</span>
-              <WhiteText>)</WhiteText>
-            </RowDataTdText>
+            <>
+              <RowDataTdText
+                color={'#A5E898'}
+                fontFamily="Avenir Next Medium"
+                theme={theme}
+              >
+                {formatNumberToUSFormat(stripDigitPlaces(baseTokenAmount, 8))}{' '}
+                <WhiteText>{getTokenNameByMintAddress(pool.tokenA)}</WhiteText>{' '}
+                /{' '}
+                {formatNumberToUSFormat(stripDigitPlaces(quoteTokenAmount, 8))}{' '}
+                <WhiteText>{getTokenNameByMintAddress(pool.tokenB)}</WhiteText>{' '}
+                <WhiteText>$(</WhiteText>
+                <span>{formatNumberToUSFormat(stripDigitPlaces(1000, 2))}</span>
+                <WhiteText>)</WhiteText>
+              </RowDataTdText>
+
+              <RowDataTdText
+                theme={theme}
+                color={theme.palette.grey.new}
+                style={{ margin: '2rem 0 1rem 0' }}
+              >
+                Fees Earned:
+              </RowDataTdText>
+              <RowDataTdText
+                color={'#A5E898'}
+                fontFamily="Avenir Next Medium"
+                theme={theme}
+              >
+                100{' '}
+                <WhiteText>{getTokenNameByMintAddress(pool.tokenA)}</WhiteText>{' '}
+                / 2{' '}
+                <WhiteText>{getTokenNameByMintAddress(pool.tokenB)}</WhiteText>{' '}
+                <WhiteText>$(</WhiteText>
+                {formatNumberToUSFormat(stripDigitPlaces(earnedFees, 2))}
+                <WhiteText>)</WhiteText>
+              </RowDataTdText>
+            </>
           ) : (
             <RowDataTdText
               color={'#A5E898'}
@@ -139,31 +163,7 @@ export const UserLiquidityDetails = ({
         </Row>
 
         {hasLiquidity && (
-          <Row align="flex-start" direction="column" width="25%">
-            <RowDataTdText
-              theme={theme}
-              color={theme.palette.grey.new}
-              style={{ marginBottom: '1rem' }}
-            >
-              Fees Earned:
-            </RowDataTdText>
-            <RowDataTdText
-              color={'#A5E898'}
-              fontFamily="Avenir Next Medium"
-              theme={theme}
-            >
-              100{' '}
-              <WhiteText>{getTokenNameByMintAddress(pool.tokenA)}</WhiteText> /
-              2 <WhiteText>{getTokenNameByMintAddress(pool.tokenB)}</WhiteText>{' '}
-              <WhiteText>$(</WhiteText>
-              {formatNumberToUSFormat(stripDigitPlaces(earnedFees, 2))}
-              <WhiteText>)</WhiteText>
-            </RowDataTdText>
-          </Row>
-        )}
-
-        {hasLiquidity && (
-          <Row align="flex-start" direction="column" width="25%">
+          <Row align="flex-start" direction="column" width="30%">
             <RowDataTdText
               theme={theme}
               color={theme.palette.grey.new}

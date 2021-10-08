@@ -107,6 +107,39 @@ const TablesSwitcher = ({
 
       await setAllTokensData(allTokensData)
       await setFarmingTicketsMap(farmingTicketsMap)
+
+      const getFarmingTokenMintsMap = async (pools) => {
+    
+        const farmingTokenVaults = pools.reduce((acc, pool) => {
+          const isFarmingForPoolExists = pool.farming && Array.isArray(pool.farming) && pool.farming.length
+    
+          if (isFarmingForPoolExists) {
+            pool.farming.forEach((farming) => {
+              acc.push(farming.farmingTokenVault)
+            })
+          }
+          
+          return acc
+        }, [])
+    
+        const farmingTokenVaultsData = await connection._rpcRequest('getMultipleAccounts', [farmingTokenVaults.map(el => el.toString()), { encoding: 'jsonParsed' }])
+    
+        const farmingTokenMintsMap = farmingTokenVaultsData.result.value.reduce((acc, el) => {
+          console.log('el', el)
+          // const infoData = el.data.parsed.info
+          // const mintAuthority = infoData.mintAuthority
+          // const supply = infoData.supply
+    
+          // acc[mintAuthority] = supply
+    
+          return acc
+        }, {})
+    
+        return farmingTokenMintsMap
+    }
+
+    const map = getFarmingTokenMintsMap(getPoolsInfo)
+    
     }
 
     if (!!wallet?.publicKey) {
@@ -130,6 +163,8 @@ const TablesSwitcher = ({
     (acc, feesEarned) => acc.set(feesEarned.pool, feesEarned.earnedUSD),
     new Map()
   )
+
+  console.log('getPoolsInfo', getPoolsInfo)
 
   return (
     <RowContainer>

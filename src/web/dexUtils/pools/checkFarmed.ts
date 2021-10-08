@@ -30,9 +30,9 @@ export const checkFarmed = async ({
   const { swapToken, farming } = pool
   const poolPublicKey = new PublicKey(swapToken)
 
-  if (farming.length === 0) return null
+  if (farming && farming.length === 0) return null
 
-  const { farmingState, farmingSnapshots, farmingTokenMint } = farming[0]
+  const { farmingState, farmingSnapshots, farmingTokenVault } = farming[0]
 
   const [vaultSigner] = await PublicKey.findProgramAddress(
     [poolPublicKey.toBuffer()],
@@ -45,7 +45,7 @@ export const checkFarmed = async ({
       farmingState: new PublicKey(farmingState),
       farmingSnapshots: new PublicKey(farmingSnapshots),
       farmingTicket: new PublicKey(farmingTicket.farmingTicket),
-      farmingTokenVault: new PublicKey(farmingTokenMint),
+      farmingTokenVault: new PublicKey(farmingTokenVault),
       poolSigner: vaultSigner,
       clock: SYSVAR_CLOCK_PUBKEY,
       rent: SYSVAR_RENT_PUBKEY,

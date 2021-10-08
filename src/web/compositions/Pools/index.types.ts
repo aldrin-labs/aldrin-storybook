@@ -1,6 +1,7 @@
 export type FarmingState = {
   farmingState: string
   farmingTokenVault: string
+  farmingTokenMint: string
   farmingSnapshots: string
   tokensUnlocked: number
   tokensTotal: number
