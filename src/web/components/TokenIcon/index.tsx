@@ -11,7 +11,8 @@ import RinLogo from '@icons/rin_logo.png'
 import SunnyLogo from '@icons/sunny_logo.jpg'
 import PTRLogo from '@icons/ptr_logo.png'
 import SYPLogo from '@icons/syp_logo.png'
-
+import CobanLogo from '@icons/coban_logo.png'
+import SfcnLogo from '@icons/sfcn_logo.png'
 
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { CCAI_MINT } from '@sb/dexUtils/utils'
@@ -83,6 +84,18 @@ export const TokenIcon = ({
   if (ALL_TOKENS_MINTS_MAP[mint] === 'SYP') {
     token = {
       logoURI: SYPLogo,
+    }
+  }
+
+  if (ALL_TOKENS_MINTS_MAP[mint] === 'COBAN') {
+    token = {
+      logoURI: CobanLogo,
+    }
+  }
+
+  if (ALL_TOKENS_MINTS_MAP[mint] === 'SFCN') {
+    token = {
+      logoURI: SfcnLogo,
     }
   }
 
